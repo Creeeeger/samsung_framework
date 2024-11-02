@@ -45,7 +45,6 @@ public class FastDataInput implements DataInput, Closeable {
         this.mStringRefCount = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setInput(InputStream in) {
         if (this.mIn != null) {
             throw new IllegalStateException("setInput() called before calling release()");
@@ -56,7 +55,6 @@ public class FastDataInput implements DataInput, Closeable {
         this.mStringRefCount = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void fill(int need) throws IOException {
         int i = this.mBufferLim;
         int i2 = this.mBufferPos;

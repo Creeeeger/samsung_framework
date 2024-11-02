@@ -20,7 +20,6 @@ public class AsyncPlayer {
     private final LinkedList<Command> mCmdQueue = new LinkedList<>();
     private int mState = 2;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class Command {
         AudioAttributes attributes;
@@ -30,6 +29,10 @@ public class AsyncPlayer {
         long requestTime;
         Uri uri;
 
+        /* synthetic */ Command(CommandIA commandIA) {
+            this();
+        }
+
         private Command() {
         }
 
@@ -38,7 +41,6 @@ public class AsyncPlayer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void startSound(Command cmd) {
         try {
             MediaPlayer player = new MediaPlayer();
@@ -61,7 +63,6 @@ public class AsyncPlayer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class Thread extends java.lang.Thread {
         Thread() {
@@ -241,7 +242,6 @@ public class AsyncPlayer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void releaseWakeLock() {
         PowerManager.WakeLock wakeLock = this.mWakeLock;
         if (wakeLock != null) {

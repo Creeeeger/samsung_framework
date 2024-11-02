@@ -69,7 +69,6 @@ public abstract class CodedOutputStream extends ByteOutput {
 
     public abstract void writeMessage(int i, MessageLite messageLite) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract void writeMessage(int i, MessageLite messageLite, Schema schema) throws IOException;
 
     public abstract void writeMessageNoTag(MessageLite messageLite) throws IOException;
@@ -96,7 +95,10 @@ public abstract class CodedOutputStream extends ByteOutput {
 
     public abstract void writeUInt64NoTag(long j) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ CodedOutputStream(AnonymousClass1 x0) {
+        this();
+    }
+
     public static int computePreferredBufferSize(int dataLength) {
         if (dataLength > 4096) {
             return 4096;
@@ -145,7 +147,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         this.serializationDeterministic = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isSerializationDeterministic() {
         return this.serializationDeterministic;
     }
@@ -337,7 +338,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         return computeTagSize(fieldNumber) + computeMessageSizeNoTag(value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeMessageSize(int fieldNumber, MessageLite value, Schema schema) {
         return computeTagSize(fieldNumber) + computeMessageSizeNoTag(value, schema);
     }
@@ -478,12 +478,10 @@ public abstract class CodedOutputStream extends ByteOutput {
         return computeLengthDelimitedFieldSize(value.getSerializedSize());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeMessageSizeNoTag(MessageLite value, Schema schema) {
         return computeLengthDelimitedFieldSize(((AbstractMessageLite) value).getSerializedSize(schema));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeLengthDelimitedFieldSize(int fieldLength) {
         return computeUInt32SizeNoTag(fieldLength) + fieldLength;
     }
@@ -542,7 +540,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         writeTag(fieldNumber, 4);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Deprecated
     public final void writeGroup(int fieldNumber, MessageLite value, Schema schema) throws IOException {
         writeTag(fieldNumber, 3);
@@ -565,7 +562,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         return (computeTagSize(fieldNumber) * 2) + value.getSerializedSize();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Deprecated
     public static int computeGroupSize(int fieldNumber, MessageLite value, Schema schema) {
         return (computeTagSize(fieldNumber) * 2) + computeGroupSizeNoTag(value, schema);
@@ -611,7 +607,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         writeFixed64NoTag(value);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ArrayEncoder extends CodedOutputStream {
         private final byte[] buffer;
@@ -733,8 +728,9 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        final void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        public final void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeUInt32NoTag(((AbstractMessageLite) value).getSerializedSize(schema));
             schema.writeTo(value, this.wrapper);
@@ -969,7 +965,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class HeapNioEncoder extends ArrayEncoder {
         private final ByteBuffer byteBuffer;
@@ -987,7 +982,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class SafeDirectNioEncoder extends CodedOutputStream {
         private final ByteBuffer buffer;
@@ -1078,8 +1072,9 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        public void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeMessageNoTag(value, schema);
         }
@@ -1279,7 +1274,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class UnsafeDirectNioEncoder extends CodedOutputStream {
         private final long address;
@@ -1385,8 +1379,9 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        public void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeMessageNoTag(value, schema);
         }
@@ -1631,7 +1626,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static abstract class AbstractBufferedEncoder extends CodedOutputStream {
         final byte[] buffer;
@@ -1755,7 +1749,7 @@ public abstract class CodedOutputStream extends ByteOutput {
                 long r8 = (long) r8
                 int r10 = (int) r12
                 r10 = r10 & 127(0x7f, float:1.78E-43)
-                r10 = r10 | 128(0x80, float:1.8E-43)
+                r10 = r10 | 128(0x80, float:1.794E-43)
                 byte r10 = (byte) r10
                 com.android.framework.protobuf.UnsafeUtil.putByte(r0, r8, r10)
                 long r12 = r12 >>> r1
@@ -1782,7 +1776,7 @@ public abstract class CodedOutputStream extends ByteOutput {
                 r11.position = r7
                 int r7 = (int) r12
                 r7 = r7 & 127(0x7f, float:1.78E-43)
-                r7 = r7 | 128(0x80, float:1.8E-43)
+                r7 = r7 | 128(0x80, float:1.794E-43)
                 byte r7 = (byte) r7
                 r0[r6] = r7
                 int r0 = r11.totalBytesWritten
@@ -1959,8 +1953,9 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        public void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeMessageNoTag(value, schema);
         }
@@ -2123,7 +2118,6 @@ public abstract class CodedOutputStream extends ByteOutput {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class OutputStreamEncoder extends AbstractBufferedEncoder {
         private final OutputStream out;
@@ -2242,8 +2236,9 @@ public abstract class CodedOutputStream extends ByteOutput {
             writeMessageNoTag(value);
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.CodedOutputStream
-        void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
+        public void writeMessage(int fieldNumber, MessageLite value, Schema schema) throws IOException {
             writeTag(fieldNumber, 2);
             writeMessageNoTag(value, schema);
         }

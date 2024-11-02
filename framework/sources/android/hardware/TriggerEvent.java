@@ -6,7 +6,6 @@ public final class TriggerEvent {
     public long timestamp;
     public final float[] values;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TriggerEvent(int size) {
         this.values = new float[size];
     }

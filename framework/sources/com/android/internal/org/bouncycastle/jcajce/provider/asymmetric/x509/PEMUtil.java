@@ -5,16 +5,18 @@ import com.android.internal.org.bouncycastle.util.encoders.Base64;
 import java.io.IOException;
 import java.io.InputStream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class PEMUtil {
     private final Boundaries[] _supportedBoundaries;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class Boundaries {
         private final String _footer;
         private final String _header;
+
+        /* synthetic */ Boundaries(PEMUtil pEMUtil, String str, BoundariesIA boundariesIA) {
+            this(str);
+        }
 
         private Boundaries(String type) {
             this._header = "-----BEGIN " + type + "-----";
@@ -30,12 +32,14 @@ public class PEMUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PEMUtil(String type) {
         this._supportedBoundaries = new Boundaries[]{new Boundaries(type), new Boundaries("X509 " + type), new Boundaries("PKCS7")};
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x001f, code lost:            if (r0.length() == 0) goto L33;     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x001f, code lost:
+    
+        if (r0.length() == 0) goto L68;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -105,7 +109,6 @@ public class PEMUtil {
         return boundary;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Sequence readPEMObject(InputStream in) throws IOException {
         StringBuffer pemBuf = new StringBuffer();
         Boundaries header = null;

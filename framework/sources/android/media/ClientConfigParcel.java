@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class ClientConfigParcel implements Parcelable {
     public static final Parcelable.Creator<ClientConfigParcel> CREATOR = new Parcelable.Creator<ClientConfigParcel>() { // from class: android.media.ClientConfigParcel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ClientConfigParcel createFromParcel(Parcel _aidl_source) {
             ClientConfigParcel _aidl_out = new ClientConfigParcel();
@@ -15,7 +17,6 @@ public class ClientConfigParcel implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClientConfigParcel[] newArray(int _aidl_size) {
             return new ClientConfigParcel[_aidl_size];
@@ -29,6 +30,25 @@ public class ClientConfigParcel implements Parcelable {
     public int height = 0;
     public long timeStamp = 0;
     public long id = 0;
+
+    /* renamed from: android.media.ClientConfigParcel$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ClientConfigParcel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClientConfigParcel createFromParcel(Parcel _aidl_source) {
+            ClientConfigParcel _aidl_out = new ClientConfigParcel();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClientConfigParcel[] newArray(int _aidl_size) {
+            return new ClientConfigParcel[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

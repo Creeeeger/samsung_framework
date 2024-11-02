@@ -11,7 +11,6 @@ import java.security.NoSuchProviderException;
 public abstract class BaseAlgorithmParameterGeneratorSpi extends AlgorithmParameterGeneratorSpi {
     private final JcaJceHelper helper = new BCJcaJceHelper();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final AlgorithmParameters createParametersInstance(String algorithm) throws NoSuchAlgorithmException, NoSuchProviderException {
         return this.helper.createAlgorithmParameters(algorithm);
     }

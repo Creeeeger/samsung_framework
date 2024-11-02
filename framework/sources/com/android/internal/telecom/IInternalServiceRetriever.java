@@ -86,8 +86,9 @@ public interface IInternalServiceRetriever extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IInternalServiceRetriever {
+        public static class Proxy implements IInternalServiceRetriever {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

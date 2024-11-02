@@ -14,7 +14,9 @@ public final class GateKeeperResponse implements Parcelable {
     private int mTimeout;
     public static final GateKeeperResponse ERROR = createGenericResponse(-1);
     public static final Parcelable.Creator<GateKeeperResponse> CREATOR = new Parcelable.Creator<GateKeeperResponse>() { // from class: android.service.gatekeeper.GateKeeperResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GateKeeperResponse createFromParcel(Parcel source) {
             int responseCode = source.readInt();
@@ -37,7 +39,6 @@ public final class GateKeeperResponse implements Parcelable {
             return response3;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GateKeeperResponse[] newArray(int size) {
             return new GateKeeperResponse[size];
@@ -52,7 +53,6 @@ public final class GateKeeperResponse implements Parcelable {
         return new GateKeeperResponse(responseCode);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static GateKeeperResponse createRetryResponse(int timeout) {
         GateKeeperResponse response = new GateKeeperResponse(1);
         response.mTimeout = timeout;
@@ -69,6 +69,40 @@ public final class GateKeeperResponse implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.service.gatekeeper.GateKeeperResponse$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GateKeeperResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GateKeeperResponse createFromParcel(Parcel source) {
+            int responseCode = source.readInt();
+            if (responseCode == 1) {
+                GateKeeperResponse response = GateKeeperResponse.createRetryResponse(source.readInt());
+                return response;
+            }
+            if (responseCode == 0) {
+                boolean shouldReEnroll = source.readInt() == 1;
+                byte[] payload = null;
+                int size = source.readInt();
+                if (size > 0) {
+                    payload = new byte[size];
+                    source.readByteArray(payload);
+                }
+                GateKeeperResponse response2 = GateKeeperResponse.createOkResponse(payload, shouldReEnroll);
+                return response2;
+            }
+            GateKeeperResponse response3 = GateKeeperResponse.createGenericResponse(responseCode);
+            return response3;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GateKeeperResponse[] newArray(int size) {
+            return new GateKeeperResponse[size];
+        }
     }
 
     @Override // android.os.Parcelable

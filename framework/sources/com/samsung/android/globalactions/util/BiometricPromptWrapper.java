@@ -21,8 +21,7 @@ public class BiometricPromptWrapper {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private BiometricPrompt.AuthenticationCallback mCallback = new AnonymousClass1();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.globalactions.util.BiometricPromptWrapper$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.globalactions.util.BiometricPromptWrapper$1 */
     /* loaded from: classes5.dex */
     public class AnonymousClass1 extends BiometricPrompt.AuthenticationCallback {
         AnonymousClass1() {
@@ -42,7 +41,6 @@ public class BiometricPromptWrapper {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAuthenticationError$0() {
             BiometricPromptWrapper.this.mFailRunnable.run();
         }
@@ -60,7 +58,6 @@ public class BiometricPromptWrapper {
             super.onAuthenticationSucceeded(result);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAuthenticationSucceeded$1() {
             BiometricPromptWrapper.this.mSuccessRunnable.run();
         }

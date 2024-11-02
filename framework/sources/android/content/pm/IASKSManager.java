@@ -57,6 +57,8 @@ public interface IASKSManager extends IInterface {
 
     String readASKSFiles(String str, String str2) throws RemoteException;
 
+    void setASKSPolicyVersion(String str) throws RemoteException;
+
     void setTrustTimebyStatusChanged() throws RemoteException;
 
     void systemReady() throws RemoteException;
@@ -173,6 +175,10 @@ public interface IASKSManager extends IInterface {
             return 0;
         }
 
+        @Override // android.content.pm.IASKSManager
+        public void setASKSPolicyVersion(String newVersion) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
@@ -201,6 +207,7 @@ public interface IASKSManager extends IInterface {
         static final int TRANSACTION_isUnknownApps = 14;
         static final int TRANSACTION_postASKSsetup = 3;
         static final int TRANSACTION_readASKSFiles = 21;
+        static final int TRANSACTION_setASKSPolicyVersion = 24;
         static final int TRANSACTION_setTrustTimebyStatusChanged = 10;
         static final int TRANSACTION_systemReady = 1;
         static final int TRANSACTION_verifyASKStokenForPackage = 2;
@@ -273,6 +280,8 @@ public interface IASKSManager extends IInterface {
                     return "isTrustedStore";
                 case 23:
                     return "checkSecurityEnabled";
+                case 24:
+                    return "setASKSPolicyVersion";
                 default:
                     return null;
             }
@@ -477,26 +486,29 @@ public interface IASKSManager extends IInterface {
                             reply.writeNoException();
                             reply.writeInt(_result16);
                             return true;
+                        case 24:
+                            String _arg016 = data.readString();
+                            data.enforceNoDataAvail();
+                            setASKSPolicyVersion(_arg016);
+                            reply.writeNoException();
+                            return true;
                         default:
                             return super.onTransact(code, data, reply, flags);
                     }
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg3, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg3.put(k, v);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$1(Parcel reply, String k, String v) {
             reply.writeString(k);
             reply.writeString(v);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IASKSManager {
             private IBinder mRemote;
@@ -889,13 +901,11 @@ public interface IASKSManager extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$checkIfSuspiciousValue$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$checkIfSuspiciousValue$1(Parcel _reply, Map results, int i) {
                 String k = _reply.readString();
                 String v = _reply.readString();
@@ -1016,11 +1026,26 @@ public interface IASKSManager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.content.pm.IASKSManager
+            public void setASKSPolicyVersion(String newVersion) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IASKSManager.DESCRIPTOR);
+                    _data.writeString(newVersion);
+                    this.mRemote.transact(24, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 22;
+            return 23;
         }
     }
 }

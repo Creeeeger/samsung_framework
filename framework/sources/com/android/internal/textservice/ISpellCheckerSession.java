@@ -125,8 +125,9 @@ public interface ISpellCheckerSession extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISpellCheckerSession {
+        public static class Proxy implements ISpellCheckerSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

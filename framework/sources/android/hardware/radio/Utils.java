@@ -19,7 +19,6 @@ final class Utils {
     Utils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void writeStringMap(Parcel dest, Map<String, String> map) {
         if (map == null) {
             dest.writeInt(0);
@@ -32,7 +31,6 @@ final class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Map<String, String> readStringMap(Parcel in) {
         int size = in.readInt();
         Map<String, String> map = new HashMap<>(size);
@@ -49,7 +47,6 @@ final class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void writeStringIntMap(Parcel dest, Map<String, Integer> map) {
         if (map == null) {
             dest.writeInt(0);
@@ -62,7 +59,6 @@ final class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Map<String, Integer> readStringIntMap(Parcel in) {
         int size = in.readInt();
         Map<String, Integer> map = new HashMap<>(size);
@@ -79,7 +75,6 @@ final class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T extends Parcelable> void writeSet(final Parcel dest, Set<T> set) {
         if (set == null) {
             dest.writeInt(0);
@@ -94,7 +89,6 @@ final class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> Set<T> createSet(Parcel in, Parcelable.Creator<T> c) {
         int size = in.readInt();
         HashSet hashSet = new HashSet(size);
@@ -109,7 +103,6 @@ final class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void writeIntSet(final Parcel dest, Set<Integer> set) {
         if (set == null) {
             dest.writeInt(0);
@@ -124,7 +117,6 @@ final class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Set<Integer> createIntSet(Parcel in) {
         int size = in.readInt();
         Set<Integer> set = new HashSet<>(size);
@@ -139,7 +131,6 @@ final class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T extends Parcelable> void writeTypedCollection(Parcel dest, Collection<T> coll) {
         ArrayList<T> list = null;
         if (coll != null) {
@@ -152,7 +143,6 @@ final class Utils {
         dest.writeTypedList(list);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void close(ICloseHandle handle) {
         try {
             handle.close();

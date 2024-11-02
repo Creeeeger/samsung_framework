@@ -30,21 +30,39 @@ public class CompatibilityInfo implements Parcelable {
     public final float applicationScale;
     private final int mCompatibilityFlags;
     public static final CompatibilityInfo DEFAULT_COMPATIBILITY_INFO = new CompatibilityInfo() { // from class: android.content.res.CompatibilityInfo.1
+        AnonymousClass1() {
+        }
     };
     private static float sOverrideInvertedScale = 1.0f;
     public static final Parcelable.Creator<CompatibilityInfo> CREATOR = new Parcelable.Creator<CompatibilityInfo>() { // from class: android.content.res.CompatibilityInfo.2
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CompatibilityInfo createFromParcel(Parcel source) {
             return new CompatibilityInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityInfo[] newArray(int size) {
             return new CompatibilityInfo[size];
         }
     };
+
+    /* synthetic */ CompatibilityInfo(CompatibilityInfoIA compatibilityInfoIA) {
+        this();
+    }
+
+    /* synthetic */ CompatibilityInfo(Parcel parcel, CompatibilityInfoIA compatibilityInfoIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.content.res.CompatibilityInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends CompatibilityInfo {
+        AnonymousClass1() {
+        }
+    }
 
     @Deprecated
     public CompatibilityInfo(ApplicationInfo appInfo, int screenLayout, int sw, boolean forceCompat) {
@@ -487,6 +505,23 @@ public class CompatibilityInfo implements Parcelable {
         dest.writeInt(this.applicationDensity);
         dest.writeFloat(this.applicationScale);
         dest.writeFloat(this.applicationInvertedScale);
+    }
+
+    /* renamed from: android.content.res.CompatibilityInfo$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 implements Parcelable.Creator<CompatibilityInfo> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompatibilityInfo createFromParcel(Parcel source) {
+            return new CompatibilityInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompatibilityInfo[] newArray(int size) {
+            return new CompatibilityInfo[size];
+        }
     }
 
     private CompatibilityInfo(Parcel source) {

@@ -77,24 +77,23 @@ public final class CredentialManager {
         }
     }
 
-    public void prepareGetCredential(GetCredentialRequest getCredentialRequest, CancellationSignal cancellationSignal, Executor executor, OutcomeReceiver<PrepareGetCredentialResponse, GetCredentialException> outcomeReceiver) {
-        Objects.requireNonNull(getCredentialRequest, "request must not be null");
+    public void prepareGetCredential(GetCredentialRequest request, CancellationSignal cancellationSignal, Executor executor, OutcomeReceiver<PrepareGetCredentialResponse, GetCredentialException> callback) {
+        Objects.requireNonNull(request, "request must not be null");
         Objects.requireNonNull(executor, "executor must not be null");
-        Objects.requireNonNull(outcomeReceiver, "callback must not be null");
+        Objects.requireNonNull(callback, "callback must not be null");
         if (cancellationSignal != null && cancellationSignal.isCanceled()) {
             Log.w(TAG, "prepareGetCredential already canceled");
             return;
         }
-        ICancellationSignal iCancellationSignal = null;
-        byte b = 0;
-        GetCredentialTransportPendingUseCase getCredentialTransportPendingUseCase = new GetCredentialTransportPendingUseCase();
+        ICancellationSignal cancelRemote = null;
+        GetCredentialTransportPendingUseCase getCredentialTransport = new GetCredentialTransportPendingUseCase();
         try {
-            iCancellationSignal = this.mService.executePrepareGetCredential(getCredentialRequest, new PrepareGetCredentialTransport(executor, outcomeReceiver, getCredentialTransportPendingUseCase), getCredentialTransportPendingUseCase, this.mContext.getOpPackageName());
+            cancelRemote = this.mService.executePrepareGetCredential(request, new PrepareGetCredentialTransport(executor, callback, getCredentialTransport), getCredentialTransport, this.mContext.getOpPackageName());
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
-        if (cancellationSignal != null && iCancellationSignal != null) {
-            cancellationSignal.setRemote(iCancellationSignal);
+        if (cancellationSignal != null && cancelRemote != null) {
+            cancellationSignal.setRemote(cancelRemote);
         }
     }
 
@@ -221,12 +220,15 @@ public final class CredentialManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class PrepareGetCredentialTransport extends IPrepareGetCredentialCallback.Stub {
         private final OutcomeReceiver<PrepareGetCredentialResponse, GetCredentialException> mCallback;
         private final Executor mExecutor;
         private final GetCredentialTransportPendingUseCase mGetCredentialTransport;
+
+        /* synthetic */ PrepareGetCredentialTransport(Executor executor, OutcomeReceiver outcomeReceiver, GetCredentialTransportPendingUseCase getCredentialTransportPendingUseCase, PrepareGetCredentialTransportIA prepareGetCredentialTransportIA) {
+            this(executor, outcomeReceiver, getCredentialTransportPendingUseCase);
+        }
 
         private PrepareGetCredentialTransport(Executor executor, OutcomeReceiver<PrepareGetCredentialResponse, GetCredentialException> callback, GetCredentialTransportPendingUseCase getCredentialTransport) {
             this.mExecutor = executor;
@@ -249,7 +251,6 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$0(PrepareGetCredentialResponseInternal response) {
             this.mCallback.onResult(new PrepareGetCredentialResponse(response, this.mGetCredentialTransport));
         }
@@ -269,16 +270,18 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$1(String errorType, String message) {
             this.mCallback.onError(new GetCredentialException(errorType, message));
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes.dex */
     public static class GetCredentialTransportPendingUseCase extends IGetCredentialCallback.Stub {
         private PrepareGetCredentialResponse.GetPendingCredentialInternalCallback mCallback;
+
+        /* synthetic */ GetCredentialTransportPendingUseCase(GetCredentialTransportPendingUseCaseIA getCredentialTransportPendingUseCaseIA) {
+            this();
+        }
 
         private GetCredentialTransportPendingUseCase() {
             this.mCallback = null;
@@ -331,12 +334,15 @@ public final class CredentialManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class GetCredentialTransport extends IGetCredentialCallback.Stub {
         private final OutcomeReceiver<GetCredentialResponse, GetCredentialException> mCallback;
         private final Context mContext;
         private final Executor mExecutor;
+
+        /* synthetic */ GetCredentialTransport(Context context, Executor executor, OutcomeReceiver outcomeReceiver, GetCredentialTransportIA getCredentialTransportIA) {
+            this(context, executor, outcomeReceiver);
+        }
 
         private GetCredentialTransport(Context context, Executor executor, OutcomeReceiver<GetCredentialResponse, GetCredentialException> callback) {
             this.mContext = context;
@@ -364,7 +370,6 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPendingIntent$0() {
             this.mCallback.onError(new GetCredentialException(GetCredentialException.TYPE_UNKNOWN));
         }
@@ -384,7 +389,6 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$1(GetCredentialResponse response) {
             this.mCallback.onResult(response);
         }
@@ -404,18 +408,20 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$2(String errorType, String message) {
             this.mCallback.onError(new GetCredentialException(errorType, message));
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class CreateCredentialTransport extends ICreateCredentialCallback.Stub {
         private final OutcomeReceiver<CreateCredentialResponse, CreateCredentialException> mCallback;
         private final Context mContext;
         private final Executor mExecutor;
+
+        /* synthetic */ CreateCredentialTransport(Context context, Executor executor, OutcomeReceiver outcomeReceiver, CreateCredentialTransportIA createCredentialTransportIA) {
+            this(context, executor, outcomeReceiver);
+        }
 
         private CreateCredentialTransport(Context context, Executor executor, OutcomeReceiver<CreateCredentialResponse, CreateCredentialException> callback) {
             this.mContext = context;
@@ -443,7 +449,6 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPendingIntent$0() {
             this.mCallback.onError(new CreateCredentialException(CreateCredentialException.TYPE_UNKNOWN));
         }
@@ -463,7 +468,6 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$1(CreateCredentialResponse response) {
             this.mCallback.onResult(response);
         }
@@ -483,17 +487,19 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$2(String errorType, String message) {
             this.mCallback.onError(new CreateCredentialException(errorType, message));
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ClearCredentialStateTransport extends IClearCredentialStateCallback.Stub {
         private final OutcomeReceiver<Void, ClearCredentialStateException> mCallback;
         private final Executor mExecutor;
+
+        /* synthetic */ ClearCredentialStateTransport(Executor executor, OutcomeReceiver outcomeReceiver, ClearCredentialStateTransportIA clearCredentialStateTransportIA) {
+            this(executor, outcomeReceiver);
+        }
 
         private ClearCredentialStateTransport(Executor executor, OutcomeReceiver<Void, ClearCredentialStateException> callback) {
             this.mExecutor = executor;
@@ -525,17 +531,19 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$0(String errorType, String message) {
             this.mCallback.onError(new ClearCredentialStateException(errorType, message));
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class SetEnabledProvidersTransport extends ISetEnabledProvidersCallback.Stub {
         private final OutcomeReceiver<Void, SetEnabledProvidersException> mCallback;
         private final Executor mExecutor;
+
+        /* synthetic */ SetEnabledProvidersTransport(Executor executor, OutcomeReceiver outcomeReceiver, SetEnabledProvidersTransportIA setEnabledProvidersTransportIA) {
+            this(executor, outcomeReceiver);
+        }
 
         private SetEnabledProvidersTransport(Executor executor, OutcomeReceiver<Void, SetEnabledProvidersException> callback) {
             this.mExecutor = executor;
@@ -556,7 +564,6 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$0(Void result) {
             this.mCallback.onResult(result);
         }
@@ -576,7 +583,6 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResponse$1() {
             this.mCallback.onResult(null);
         }
@@ -596,7 +602,6 @@ public final class CredentialManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$2(String errorType, String message) {
             this.mCallback.onError(new SetEnabledProvidersException(errorType, message));
         }

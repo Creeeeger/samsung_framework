@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import sun.misc.Unsafe;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
 /* loaded from: classes4.dex */
 public final class MessageSchema<T> implements Schema<T> {
@@ -67,7 +66,6 @@ public final class MessageSchema<T> implements Schema<T> {
         this.mapFieldSchema = mapFieldSchema;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> MessageSchema<T> newSchema(Class<T> messageClass, MessageInfo messageInfo, NewInstanceSchema newInstanceSchema, ListFieldSchema listFieldSchema, UnknownFieldSchema<?, ?> unknownFieldSchema, ExtensionSchema<?> extensionSchema, MapFieldSchema mapFieldSchema) {
         if (messageInfo instanceof RawMessageInfo) {
             return newSchemaForRawMessageInfo((RawMessageInfo) messageInfo, newInstanceSchema, listFieldSchema, unknownFieldSchema, extensionSchema, mapFieldSchema);
@@ -3725,14 +3723,45 @@ public final class MessageSchema<T> implements Schema<T> {
         mergeFromHelper(this.unknownFieldSchema, this.extensionSchema, message, reader, extensionRegistry);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:219:0x00cc, code lost:            r10 = r20.checkInitializedCount;        r11 = r6;     */
-    /* JADX WARN: Code restructure failed: missing block: B:221:0x00d2, code lost:            if (r10 >= r20.repeatedFieldOffsetStart) goto L276;     */
-    /* JADX WARN: Code restructure failed: missing block: B:222:0x00d4, code lost:            r11 = filterMapUnknownEnumValues(r23, r20.intArray[r10], r11, r21, r23);        r10 = r10 + 1;        r5 = r5;        r2 = r2;        r3 = r3;        r4 = r4;        r9 = r9;     */
-    /* JADX WARN: Code restructure failed: missing block: B:224:0x00f8, code lost:            r14 = r4;     */
-    /* JADX WARN: Code restructure failed: missing block: B:225:0x0100, code lost:            if (r11 == null) goto L279;     */
-    /* JADX WARN: Code restructure failed: missing block: B:226:0x0102, code lost:            r7.setBuilderToMessage(r14, r11);     */
-    /* JADX WARN: Code restructure failed: missing block: B:227:0x0105, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:228:?, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:219:0x00cc, code lost:
+    
+        r10 = r20.checkInitializedCount;
+        r11 = r6;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:221:0x00d2, code lost:
+    
+        if (r10 >= r20.repeatedFieldOffsetStart) goto L560;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:222:0x00d4, code lost:
+    
+        r11 = filterMapUnknownEnumValues(r23, r20.intArray[r10], r11, r21, r23);
+        r10 = r10 + 1;
+        r5 = r5;
+        r2 = r2;
+        r3 = r3;
+        r4 = r4;
+        r9 = r9;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:224:0x00f8, code lost:
+    
+        r14 = r4;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:225:0x0100, code lost:
+    
+        if (r11 == null) goto L563;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:226:0x0102, code lost:
+    
+        r7.setBuilderToMessage(r14, r11);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:227:0x0105, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:228:?, code lost:
+    
+        return;
+     */
     /* JADX WARN: Failed to find 'out' block for switch in B:13:0x0129. Please report as an issue. */
     /* JADX WARN: Removed duplicated region for block: B:42:0x077b A[LOOP:2: B:40:0x0777->B:42:0x077b, LOOP_END] */
     /* JADX WARN: Removed duplicated region for block: B:45:0x0791  */
@@ -3751,7 +3780,6 @@ public final class MessageSchema<T> implements Schema<T> {
         throw new UnsupportedOperationException("Method not decompiled: com.android.framework.protobuf.MessageSchema.mergeFromHelper(com.android.framework.protobuf.UnknownFieldSchema, com.android.framework.protobuf.ExtensionSchema, java.lang.Object, com.android.framework.protobuf.Reader, com.android.framework.protobuf.ExtensionRegistryLite):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static UnknownFieldSetLite getMutableUnknownFields(Object message) {
         UnknownFieldSetLite unknownFields = ((GeneratedMessageLite) message).unknownFields;
         if (unknownFields == UnknownFieldSetLite.getDefaultInstance()) {
@@ -3762,8 +3790,7 @@ public final class MessageSchema<T> implements Schema<T> {
         return unknownFields;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.MessageSchema$1, reason: invalid class name */
+    /* renamed from: com.android.framework.protobuf.MessageSchema$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
@@ -4316,7 +4343,6 @@ public final class MessageSchema<T> implements Schema<T> {
         return (Internal.EnumVerifier) this.objects[((pos / 3) * 2) + 1];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Failed to find 'out' block for switch in B:111:0x0097. Please report as an issue. */
     public int parseProto2Message(T message, byte[] data, int position, int limit, int endGroup, ArrayDecoders.Registers registers) throws IOException {
         Unsafe unsafe;
@@ -5984,7 +6010,6 @@ public final class MessageSchema<T> implements Schema<T> {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSchemaSize() {
         return this.buffer.length * 3;
     }

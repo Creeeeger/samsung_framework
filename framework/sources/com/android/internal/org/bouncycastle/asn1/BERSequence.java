@@ -19,7 +19,6 @@ public class BERSequence extends ASN1Sequence {
         super(elements);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         int count = this.elements.length;
@@ -32,7 +31,6 @@ public class BERSequence extends ASN1Sequence {
         return i2 + 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncodedIndef(withTag, 48, this.elements);

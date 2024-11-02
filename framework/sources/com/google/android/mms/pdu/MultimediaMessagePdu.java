@@ -14,7 +14,6 @@ public class MultimediaMessagePdu extends GenericPdu {
         this.mMessageBody = body;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MultimediaMessagePdu(PduHeaders headers) {
         super(headers);
     }

@@ -9,7 +9,6 @@ import android.filterfw.core.GLEnvironment;
 public class MffEnvironment {
     private FilterContext mContext;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public MffEnvironment(FrameManager frameManager) {
         frameManager = frameManager == null ? new CachedFrameManager() : frameManager;
         FilterContext filterContext = new FilterContext();

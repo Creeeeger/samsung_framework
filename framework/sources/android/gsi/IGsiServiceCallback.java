@@ -84,8 +84,9 @@ public interface IGsiServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IGsiServiceCallback {
+        public static class Proxy implements IGsiServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

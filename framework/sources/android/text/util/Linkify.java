@@ -66,6 +66,9 @@ public class Linkify {
     public static final int SEM_WEB_URLS_KOR = 8192;
     public static final int WEB_URLS = 1;
     public static final MatchFilter sUrlMatchFilter = new MatchFilter() { // from class: android.text.util.Linkify.1
+        AnonymousClass1() {
+        }
+
         @Override // android.text.util.Linkify.MatchFilter
         public final boolean acceptMatch(CharSequence s, int start, int end) {
             if (start == 0 || s.charAt(start - 1) != '@') {
@@ -75,6 +78,9 @@ public class Linkify {
         }
     };
     public static final MatchFilter sPhoneNumberMatchFilter = new MatchFilter() { // from class: android.text.util.Linkify.2
+        AnonymousClass2() {
+        }
+
         @Override // android.text.util.Linkify.MatchFilter
         public final boolean acceptMatch(CharSequence s, int start, int end) {
             int digitCount = 0;
@@ -87,6 +93,9 @@ public class Linkify {
         }
     };
     public static final TransformFilter sPhoneNumberTransformFilter = new TransformFilter() { // from class: android.text.util.Linkify.3
+        AnonymousClass3() {
+        }
+
         @Override // android.text.util.Linkify.TransformFilter
         public final String transformUrl(Matcher match, String url) {
             return Patterns.digitsAndPlusOnly(match);
@@ -112,6 +121,51 @@ public class Linkify {
     /* loaded from: classes3.dex */
     public interface TransformFilter {
         String transformUrl(Matcher matcher, String str);
+    }
+
+    /* renamed from: android.text.util.Linkify$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements MatchFilter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.text.util.Linkify.MatchFilter
+        public final boolean acceptMatch(CharSequence s, int start, int end) {
+            if (start == 0 || s.charAt(start - 1) != '@') {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    /* renamed from: android.text.util.Linkify$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 implements MatchFilter {
+        AnonymousClass2() {
+        }
+
+        @Override // android.text.util.Linkify.MatchFilter
+        public final boolean acceptMatch(CharSequence s, int start, int end) {
+            int digitCount = 0;
+            for (int i = start; i < end; i++) {
+                if (Character.isDigit(s.charAt(i)) && (digitCount = digitCount + 1) >= 5) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /* renamed from: android.text.util.Linkify$3 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass3 implements TransformFilter {
+        AnonymousClass3() {
+        }
+
+        @Override // android.text.util.Linkify.TransformFilter
+        public final String transformUrl(Matcher match, String url) {
+            return Patterns.digitsAndPlusOnly(match);
+        }
     }
 
     public static final boolean addLinks(Spannable text, int mask) {
@@ -477,8 +531,29 @@ public class Linkify {
         }
     }
 
+    /* renamed from: android.text.util.Linkify$4 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass4 implements Comparator<LinkSpec> {
+        AnonymousClass4() {
+        }
+
+        @Override // java.util.Comparator
+        public final int compare(LinkSpec a, LinkSpec b) {
+            if (a.start < b.start) {
+                return -1;
+            }
+            if (a.start <= b.start && a.end >= b.end) {
+                return a.end > b.end ? -1 : 0;
+            }
+            return 1;
+        }
+    }
+
     private static final void pruneOverlaps(ArrayList<LinkSpec> links) {
         Comparator<LinkSpec> c = new Comparator<LinkSpec>() { // from class: android.text.util.Linkify.4
+            AnonymousClass4() {
+            }
+
             @Override // java.util.Comparator
             public final int compare(LinkSpec a, LinkSpec b) {
                 if (a.start < b.start) {
@@ -514,7 +589,6 @@ public class Linkify {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ URLSpan lambda$static$0(String string) {
         return new URLSpan(string);
     }

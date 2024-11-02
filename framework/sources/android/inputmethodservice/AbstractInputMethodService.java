@@ -28,7 +28,6 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
 
     public abstract AbstractInputMethodSessionImpl onCreateInputMethodSessionInterface();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final InputMethod getInputMethodInternal() {
         return this.mInputMethod;
     }
@@ -114,7 +113,6 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
         return this.mDispatcherState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
     }
@@ -130,8 +128,28 @@ public abstract class AbstractInputMethodService extends WindowProviderService i
         return new IInputMethodWrapper(this.mInputMethodServiceInternal, this.mInputMethod);
     }
 
+    /* renamed from: android.inputmethodservice.AbstractInputMethodService$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 implements InputMethodServiceInternal {
+        AnonymousClass1() {
+        }
+
+        @Override // android.inputmethodservice.InputMethodServiceInternal
+        public Context getContext() {
+            return AbstractInputMethodService.this;
+        }
+
+        @Override // android.inputmethodservice.InputMethodServiceInternal
+        public void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
+            AbstractInputMethodService.this.dump(fd, fout, args);
+        }
+    }
+
     InputMethodServiceInternal createInputMethodServiceInternal() {
         return new InputMethodServiceInternal() { // from class: android.inputmethodservice.AbstractInputMethodService.1
+            AnonymousClass1() {
+            }
+
             @Override // android.inputmethodservice.InputMethodServiceInternal
             public Context getContext() {
                 return AbstractInputMethodService.this;

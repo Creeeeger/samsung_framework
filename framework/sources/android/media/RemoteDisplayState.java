@@ -8,13 +8,14 @@ import java.util.ArrayList;
 /* loaded from: classes2.dex */
 public final class RemoteDisplayState implements Parcelable {
     public static final Parcelable.Creator<RemoteDisplayState> CREATOR = new Parcelable.Creator<RemoteDisplayState>() { // from class: android.media.RemoteDisplayState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteDisplayState createFromParcel(Parcel in) {
             return new RemoteDisplayState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteDisplayState[] newArray(int size) {
             return new RemoteDisplayState[size];
@@ -58,16 +59,34 @@ public final class RemoteDisplayState implements Parcelable {
         dest.writeTypedList(this.displays);
     }
 
+    /* renamed from: android.media.RemoteDisplayState$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoteDisplayState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteDisplayState createFromParcel(Parcel in) {
+            return new RemoteDisplayState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteDisplayState[] newArray(int size) {
+            return new RemoteDisplayState[size];
+        }
+    }
+
     /* loaded from: classes2.dex */
     public static final class RemoteDisplayInfo implements Parcelable {
         public static final Parcelable.Creator<RemoteDisplayInfo> CREATOR = new Parcelable.Creator<RemoteDisplayInfo>() { // from class: android.media.RemoteDisplayState.RemoteDisplayInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RemoteDisplayInfo createFromParcel(Parcel in) {
                 return new RemoteDisplayInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RemoteDisplayInfo[] newArray(int size) {
                 return new RemoteDisplayInfo[size];
@@ -141,6 +160,23 @@ public final class RemoteDisplayState implements Parcelable {
 
         public String toString() {
             return "RemoteDisplayInfo{ id=" + this.id + ", name=" + this.name + ", description=" + this.description + ", status=" + this.status + ", volume=" + this.volume + ", volumeMax=" + this.volumeMax + ", volumeHandling=" + this.volumeHandling + ", presentationDisplayId=" + this.presentationDisplayId + " }";
+        }
+
+        /* renamed from: android.media.RemoteDisplayState$RemoteDisplayInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RemoteDisplayInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RemoteDisplayInfo createFromParcel(Parcel in) {
+                return new RemoteDisplayInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RemoteDisplayInfo[] newArray(int size) {
+                return new RemoteDisplayInfo[size];
+            }
         }
     }
 }

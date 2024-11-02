@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Telefonen är instabil eftersom ett SD-kort som innehåller installerade appar har tagits bort. Telefonen gör en omstart om %d sekunder för att kunna fungera normalt. Spara alla data som inte har sparats innan telefonen startas om.</item>
+        <item quantity="other">Surfplattan är instabil eftersom ett SD-kort med installerade appar har tagits bort. Surfplattan startar om om %d sekunder för att kunna fungera normalt. Spara alla data som inte har sparats innan surfplattan startas om.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefonen är instabil eftersom ett SD-kort som innehåller installerade appar har tagits bort. Telefonen gör en omstart om %d sekund för att kunna fungera normalt. Spara alla data som inte har sparats innan telefonen startas om.</item>
+        <item quantity="one">Surfplattan är instabil eftersom ett SD-kort med installerade appar har tagits bort. Surfplattan startar om om %d sekund för att kunna fungera normalt. Spara alla data som inte har sparats innan surfplattan startas om.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefonen startas om om %d sekunder</item>
+        <item quantity="other">Surfplattan startar om om %d sekunder</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefonen startas om om %d sekund</item>
+        <item quantity="one">Surfplattan startar om om %d sekund</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

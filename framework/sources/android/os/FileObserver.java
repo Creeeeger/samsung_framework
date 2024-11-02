@@ -38,7 +38,6 @@ public abstract class FileObserver {
 
     public abstract void onEvent(int i, String str);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class ObserverThread extends Thread {
         private SparseArray<WeakReference> mRealObservers;

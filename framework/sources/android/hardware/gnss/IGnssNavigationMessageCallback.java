@@ -119,8 +119,9 @@ public interface IGnssNavigationMessageCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGnssNavigationMessageCallback {
+        public static class Proxy implements IGnssNavigationMessageCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -205,7 +206,9 @@ public interface IGnssNavigationMessageCallback extends IInterface {
     /* loaded from: classes2.dex */
     public static class GnssNavigationMessage implements Parcelable {
         public static final Parcelable.Creator<GnssNavigationMessage> CREATOR = new Parcelable.Creator<GnssNavigationMessage>() { // from class: android.hardware.gnss.IGnssNavigationMessageCallback.GnssNavigationMessage.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public GnssNavigationMessage createFromParcel(Parcel _aidl_source) {
                 GnssNavigationMessage _aidl_out = new GnssNavigationMessage();
@@ -213,7 +216,6 @@ public interface IGnssNavigationMessageCallback extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssNavigationMessage[] newArray(int _aidl_size) {
                 return new GnssNavigationMessage[_aidl_size];
@@ -246,6 +248,25 @@ public interface IGnssNavigationMessageCallback extends IInterface {
             public static final int QZS_L1CA = 1025;
             public static final int SBS = 513;
             public static final int UNKNOWN = 0;
+        }
+
+        /* renamed from: android.hardware.gnss.IGnssNavigationMessageCallback$GnssNavigationMessage$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<GnssNavigationMessage> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GnssNavigationMessage createFromParcel(Parcel _aidl_source) {
+                GnssNavigationMessage _aidl_out = new GnssNavigationMessage();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GnssNavigationMessage[] newArray(int _aidl_size) {
+                return new GnssNavigationMessage[_aidl_size];
+            }
         }
 
         @Override // android.os.Parcelable

@@ -29,7 +29,6 @@ public class ChooserGridLayoutManager extends GridLayoutManager {
         return super.getRowCountForAccessibility(recycler, state) - 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setVerticalScrollEnabled(boolean verticalScrollEnabled) {
         this.mVerticalScrollEnabled = verticalScrollEnabled;
     }

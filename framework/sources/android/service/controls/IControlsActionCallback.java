@@ -86,8 +86,9 @@ public interface IControlsActionCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IControlsActionCallback {
+        public static class Proxy implements IControlsActionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -10,7 +10,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ParcelImage implements Parcelable {
     public static final Parcelable.Creator<ParcelImage> CREATOR = new Parcelable.Creator<ParcelImage>() { // from class: android.hardware.camera2.extension.ParcelImage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelImage createFromParcel(Parcel _aidl_source) {
             ParcelImage _aidl_out = new ParcelImage();
@@ -18,7 +20,6 @@ public class ParcelImage implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelImage[] newArray(int _aidl_size) {
             return new ParcelImage[_aidl_size];
@@ -34,6 +35,25 @@ public class ParcelImage implements Parcelable {
     public int scalingMode = 0;
     public long timestamp = 0;
     public int planeCount = 0;
+
+    /* renamed from: android.hardware.camera2.extension.ParcelImage$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ParcelImage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelImage createFromParcel(Parcel _aidl_source) {
+            ParcelImage _aidl_out = new ParcelImage();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelImage[] newArray(int _aidl_size) {
+            return new ParcelImage[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

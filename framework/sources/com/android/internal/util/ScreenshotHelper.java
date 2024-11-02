@@ -10,6 +10,10 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import com.android.internal.R;
@@ -28,8 +32,27 @@ public class ScreenshotHelper {
     private IBinder mScreenshotService = null;
     private ServiceConnection mScreenshotConnection = null;
 
+    /* renamed from: com.android.internal.util.ScreenshotHelper$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            synchronized (ScreenshotHelper.this.mScreenshotLock) {
+                if ("android.intent.action.USER_SWITCHED".equals(intent.getAction())) {
+                    ScreenshotHelper.this.resetConnection();
+                }
+            }
+        }
+    }
+
     public ScreenshotHelper(Context context) {
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.internal.util.ScreenshotHelper.1
+        AnonymousClass1 anonymousClass1 = new BroadcastReceiver() { // from class: com.android.internal.util.ScreenshotHelper.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 synchronized (ScreenshotHelper.this.mScreenshotLock) {
@@ -39,10 +62,10 @@ public class ScreenshotHelper {
                 }
             }
         };
-        this.mBroadcastReceiver = broadcastReceiver;
+        this.mBroadcastReceiver = anonymousClass1;
         this.mContext = context;
         IntentFilter filter = new IntentFilter("android.intent.action.USER_SWITCHED");
-        context.registerReceiver(broadcastReceiver, filter, 2);
+        context.registerReceiver(anonymousClass1, filter, 2);
     }
 
     public void takeScreenshot(int source, Handler handler, Consumer<Uri> completionConsumer) {
@@ -54,12 +77,15 @@ public class ScreenshotHelper {
         takeScreenshotInternal(request, handler, completionConsumer, JobInfo.MIN_BACKOFF_MILLIS);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0070, code lost:            resetConnection();     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0070, code lost:
+    
+        resetConnection();
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void takeScreenshotInternal(com.android.internal.util.ScreenshotRequest r20, final android.os.Handler r21, final java.util.function.Consumer<android.net.Uri> r22, long r23) {
+    public void takeScreenshotInternal(com.android.internal.util.ScreenshotRequest r20, android.os.Handler r21, final java.util.function.Consumer<android.net.Uri> r22, long r23) {
         /*
             r19 = this;
             r7 = r19
@@ -172,7 +198,6 @@ public class ScreenshotHelper {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.util.ScreenshotHelper.takeScreenshotInternal(com.android.internal.util.ScreenshotRequest, android.os.Handler, java.util.function.Consumer, long):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$takeScreenshotInternal$0(Consumer completionConsumer) {
         synchronized (this.mScreenshotLock) {
             if (this.mScreenshotConnection != null) {
@@ -186,7 +211,92 @@ public class ScreenshotHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.util.ScreenshotHelper$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends Handler {
+        final /* synthetic */ Consumer val$completionConsumer;
+        final /* synthetic */ Handler val$handler;
+        final /* synthetic */ Runnable val$mScreenshotTimeout;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass2(Looper looper, Consumer consumer, Handler handler, Runnable runnable) {
+            super(looper);
+            r3 = consumer;
+            r4 = handler;
+            r5 = runnable;
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    Consumer consumer = r3;
+                    if (consumer != null) {
+                        consumer.accept((Uri) msg.obj);
+                    }
+                    r4.removeCallbacks(r5);
+                    return;
+                case 2:
+                    synchronized (ScreenshotHelper.this.mScreenshotLock) {
+                        ScreenshotHelper.this.resetConnection();
+                    }
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /* renamed from: com.android.internal.util.ScreenshotHelper$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 implements ServiceConnection {
+        final /* synthetic */ Consumer val$completionConsumer;
+        final /* synthetic */ Handler val$handler;
+        final /* synthetic */ Runnable val$mScreenshotTimeout;
+        final /* synthetic */ Message val$msg;
+
+        AnonymousClass3(Message message, Consumer consumer, Handler handler, Runnable runnable) {
+            r2 = message;
+            r3 = consumer;
+            r4 = handler;
+            r5 = runnable;
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            synchronized (ScreenshotHelper.this.mScreenshotLock) {
+                if (ScreenshotHelper.this.mScreenshotConnection != this) {
+                    return;
+                }
+                ScreenshotHelper.this.mScreenshotService = service;
+                Messenger messenger = new Messenger(ScreenshotHelper.this.mScreenshotService);
+                try {
+                    messenger.send(r2);
+                } catch (RemoteException e) {
+                    Log.e(ScreenshotHelper.TAG, "Couldn't take screenshot: " + e);
+                    Consumer consumer = r3;
+                    if (consumer != null) {
+                        consumer.accept(null);
+                    }
+                }
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            synchronized (ScreenshotHelper.this.mScreenshotLock) {
+                if (ScreenshotHelper.this.mScreenshotConnection != null) {
+                    ScreenshotHelper.this.resetConnection();
+                    if (r4.hasCallbacks(r5)) {
+                        Log.e(ScreenshotHelper.TAG, "Screenshot service disconnected");
+                        r4.removeCallbacks(r5);
+                        ScreenshotHelper.this.notifyScreenshotError();
+                    }
+                }
+            }
+        }
+    }
+
     public void resetConnection() {
         ServiceConnection serviceConnection = this.mScreenshotConnection;
         if (serviceConnection != null) {
@@ -196,7 +306,6 @@ public class ScreenshotHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyScreenshotError() {
         ComponentName errorComponent = ComponentName.unflattenFromString(this.mContext.getResources().getString(R.string.config_screenshotErrorReceiverComponent));
         Intent errorIntent = new Intent(Intent.ACTION_USER_PRESENT);

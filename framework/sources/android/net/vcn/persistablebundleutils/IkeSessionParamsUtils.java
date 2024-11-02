@@ -193,7 +193,6 @@ public final class IkeSessionParamsUtils {
         return builder.build();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class AuthConfigUtils {
         private static final String AUTH_METHOD_KEY = "AUTH_METHOD_KEY";
@@ -260,7 +259,6 @@ public final class IkeSessionParamsUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class IkeAuthPskConfigUtils {
         private static final String PSK_KEY = "PSK_KEY";
@@ -289,7 +287,6 @@ public final class IkeSessionParamsUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class IkeAuthDigitalSignConfigUtils {
         private static final String END_CERT_KEY = "END_CERT_KEY";
@@ -366,7 +363,6 @@ public final class IkeSessionParamsUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class IkeAuthEapConfigUtils {
         private static final String EAP_CONFIG_KEY = "EAP_CONFIG_KEY";
@@ -393,7 +389,6 @@ public final class IkeSessionParamsUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class ConfigRequest {
         private static final String ADDRESS_KEY = "address";
@@ -417,7 +412,6 @@ public final class IkeSessionParamsUtils {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ConfigRequest(PersistableBundle in) {
             Objects.requireNonNull(in, "PersistableBundle was null");
             this.type = in.getInt("type");

@@ -9,23 +9,23 @@ public final class Presentations {
     private InlinePresentation mInlineTooltipPresentation;
     private RemoteViews mMenuPresentation;
 
-    /* renamed from: -$$Nest$smdefaultDialogPresentation, reason: not valid java name */
-    static /* bridge */ /* synthetic */ RemoteViews m3600$$Nest$smdefaultDialogPresentation() {
+    /* renamed from: -$$Nest$smdefaultDialogPresentation */
+    static /* bridge */ /* synthetic */ RemoteViews m3599$$Nest$smdefaultDialogPresentation() {
         return defaultDialogPresentation();
     }
 
-    /* renamed from: -$$Nest$smdefaultInlinePresentation, reason: not valid java name */
-    static /* bridge */ /* synthetic */ InlinePresentation m3601$$Nest$smdefaultInlinePresentation() {
+    /* renamed from: -$$Nest$smdefaultInlinePresentation */
+    static /* bridge */ /* synthetic */ InlinePresentation m3600$$Nest$smdefaultInlinePresentation() {
         return defaultInlinePresentation();
     }
 
-    /* renamed from: -$$Nest$smdefaultInlineTooltipPresentation, reason: not valid java name */
-    static /* bridge */ /* synthetic */ InlinePresentation m3602$$Nest$smdefaultInlineTooltipPresentation() {
+    /* renamed from: -$$Nest$smdefaultInlineTooltipPresentation */
+    static /* bridge */ /* synthetic */ InlinePresentation m3601$$Nest$smdefaultInlineTooltipPresentation() {
         return defaultInlineTooltipPresentation();
     }
 
-    /* renamed from: -$$Nest$smdefaultMenuPresentation, reason: not valid java name */
-    static /* bridge */ /* synthetic */ RemoteViews m3603$$Nest$smdefaultMenuPresentation() {
+    /* renamed from: -$$Nest$smdefaultMenuPresentation */
+    static /* bridge */ /* synthetic */ RemoteViews m3602$$Nest$smdefaultMenuPresentation() {
         return defaultMenuPresentation();
     }
 
@@ -119,16 +119,16 @@ public final class Presentations {
             long j = this.mBuilderFieldsSet | 16;
             this.mBuilderFieldsSet = j;
             if ((j & 1) == 0) {
-                this.mMenuPresentation = Presentations.m3603$$Nest$smdefaultMenuPresentation();
+                this.mMenuPresentation = Presentations.m3602$$Nest$smdefaultMenuPresentation();
             }
             if ((this.mBuilderFieldsSet & 2) == 0) {
-                this.mInlinePresentation = Presentations.m3601$$Nest$smdefaultInlinePresentation();
+                this.mInlinePresentation = Presentations.m3600$$Nest$smdefaultInlinePresentation();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mDialogPresentation = Presentations.m3600$$Nest$smdefaultDialogPresentation();
+                this.mDialogPresentation = Presentations.m3599$$Nest$smdefaultDialogPresentation();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mInlineTooltipPresentation = Presentations.m3602$$Nest$smdefaultInlineTooltipPresentation();
+                this.mInlineTooltipPresentation = Presentations.m3601$$Nest$smdefaultInlineTooltipPresentation();
             }
             Presentations o = new Presentations(this.mMenuPresentation, this.mInlinePresentation, this.mDialogPresentation, this.mInlineTooltipPresentation);
             return o;

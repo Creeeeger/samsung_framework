@@ -8,13 +8,14 @@ import java.util.ArrayList;
 /* loaded from: classes5.dex */
 public class PublishDialog implements Parcelable {
     public static final Parcelable.Creator<PublishDialog> CREATOR = new Parcelable.Creator<PublishDialog>() { // from class: com.android.internal.telephony.PublishDialog.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PublishDialog createFromParcel(Parcel in) {
             return new PublishDialog(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PublishDialog[] newArray(int size) {
             return new PublishDialog[size];
@@ -409,5 +410,22 @@ public class PublishDialog implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.android.internal.telephony.PublishDialog$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PublishDialog> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PublishDialog createFromParcel(Parcel in) {
+            return new PublishDialog(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PublishDialog[] newArray(int size) {
+            return new PublishDialog[size];
+        }
     }
 }

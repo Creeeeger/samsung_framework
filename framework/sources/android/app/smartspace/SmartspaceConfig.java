@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SmartspaceConfig implements Parcelable {
     public static final Parcelable.Creator<SmartspaceConfig> CREATOR = new Parcelable.Creator<SmartspaceConfig>() { // from class: android.app.smartspace.SmartspaceConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmartspaceConfig createFromParcel(Parcel parcel) {
             return new SmartspaceConfig(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartspaceConfig[] newArray(int size) {
             return new SmartspaceConfig[size];
@@ -27,6 +28,14 @@ public final class SmartspaceConfig implements Parcelable {
     private String mPackageName;
     private final int mSmartspaceTargetCount;
     private final String mUiSurface;
+
+    /* synthetic */ SmartspaceConfig(Parcel parcel, SmartspaceConfigIA smartspaceConfigIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ SmartspaceConfig(String str, int i, String str2, Bundle bundle, SmartspaceConfigIA smartspaceConfigIA) {
+        this(str, i, str2, bundle);
+    }
 
     private SmartspaceConfig(String uiSurface, int numPredictedTargets, String packageName, Bundle extras) {
         this.mUiSurface = uiSurface;
@@ -87,6 +96,23 @@ public final class SmartspaceConfig implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mSmartspaceTargetCount), this.mUiSurface, this.mPackageName, this.mExtras);
+    }
+
+    /* renamed from: android.app.smartspace.SmartspaceConfig$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmartspaceConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartspaceConfig createFromParcel(Parcel parcel) {
+            return new SmartspaceConfig(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartspaceConfig[] newArray(int size) {
+            return new SmartspaceConfig[size];
+        }
     }
 
     @SystemApi

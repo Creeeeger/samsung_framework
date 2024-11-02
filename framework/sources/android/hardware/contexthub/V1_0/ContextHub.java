@@ -10,7 +10,7 @@ import java.util.Objects;
 public final class ContextHub {
     public String name = new String();
 
-    /* renamed from: vendor, reason: collision with root package name */
+    /* renamed from: vendor */
     public String f2vendor = new String();
     public String toolchain = new String();
     public int platformVersion = 0;

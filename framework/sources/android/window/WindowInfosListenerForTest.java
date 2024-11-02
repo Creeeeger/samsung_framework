@@ -38,9 +38,39 @@ public class WindowInfosListenerForTest {
         }
     }
 
-    public void addWindowInfosListener(final Consumer<List<WindowInfo>> consumer) {
-        final CountDownLatch calledWithInitialState = new CountDownLatch(1);
-        WindowInfosListener windowInfosListener = new WindowInfosListener() { // from class: android.window.WindowInfosListenerForTest.1
+    /* renamed from: android.window.WindowInfosListenerForTest$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends WindowInfosListener {
+        final /* synthetic */ CountDownLatch val$calledWithInitialState;
+        final /* synthetic */ Consumer val$consumer;
+
+        AnonymousClass1(CountDownLatch countDownLatch, Consumer consumer) {
+            calledWithInitialState = countDownLatch;
+            consumer = consumer;
+        }
+
+        @Override // android.window.WindowInfosListener
+        public void onWindowInfosChanged(InputWindowHandle[] windowHandles, WindowInfosListener.DisplayInfo[] displayInfos) {
+            try {
+                calledWithInitialState.await();
+            } catch (InterruptedException e) {
+                Log.e(WindowInfosListenerForTest.TAG, "Exception thrown while waiting for listener to be called with initial state");
+            }
+            consumer.accept(WindowInfosListenerForTest.buildWindowInfos(windowHandles, displayInfos));
+        }
+    }
+
+    public void addWindowInfosListener(Consumer<List<WindowInfo>> consumer) {
+        CountDownLatch calledWithInitialState = new CountDownLatch(1);
+        AnonymousClass1 listener = new WindowInfosListener() { // from class: android.window.WindowInfosListenerForTest.1
+            final /* synthetic */ CountDownLatch val$calledWithInitialState;
+            final /* synthetic */ Consumer val$consumer;
+
+            AnonymousClass1(CountDownLatch calledWithInitialState2, Consumer consumer2) {
+                calledWithInitialState = calledWithInitialState2;
+                consumer = consumer2;
+            }
+
             @Override // android.window.WindowInfosListener
             public void onWindowInfosChanged(InputWindowHandle[] windowHandles, WindowInfosListener.DisplayInfo[] displayInfos) {
                 try {
@@ -51,10 +81,10 @@ public class WindowInfosListenerForTest {
                 consumer.accept(WindowInfosListenerForTest.buildWindowInfos(windowHandles, displayInfos));
             }
         };
-        this.mListeners.put(consumer, windowInfosListener);
-        Pair<InputWindowHandle[], WindowInfosListener.DisplayInfo[]> initialState = windowInfosListener.register();
-        consumer.accept(buildWindowInfos(initialState.first, initialState.second));
-        calledWithInitialState.countDown();
+        this.mListeners.put(consumer2, listener);
+        Pair<InputWindowHandle[], WindowInfosListener.DisplayInfo[]> initialState = listener.register();
+        consumer2.accept(buildWindowInfos(initialState.first, initialState.second));
+        calledWithInitialState2.countDown();
     }
 
     public void removeWindowInfosListener(Consumer<List<WindowInfo>> consumer) {
@@ -65,7 +95,6 @@ public class WindowInfosListenerForTest {
         listener.unregister();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static List<WindowInfo> buildWindowInfos(InputWindowHandle[] windowHandles, WindowInfosListener.DisplayInfo[] displayInfos) {
         ArrayList<WindowInfo> windowInfos = new ArrayList<>(windowHandles.length);
         SparseArray<WindowInfosListener.DisplayInfo> displayInfoById = new SparseArray<>(displayInfos.length);

@@ -34,7 +34,6 @@ public class OperatorChain extends OpPriorityComputable implements Operator {
         }).collect(Collectors.toList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Stream lambda$new$0(Operator e) {
         return e instanceof OperatorChain ? ((OperatorChain) e).stream() : Stream.of(e);
     }
@@ -50,7 +49,6 @@ public class OperatorChain extends OpPriorityComputable implements Operator {
         }).collect(Collectors.toList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Stream lambda$new$1(Operator e) {
         return e instanceof OperatorChain ? ((OperatorChain) e).stream() : Stream.of(e);
     }

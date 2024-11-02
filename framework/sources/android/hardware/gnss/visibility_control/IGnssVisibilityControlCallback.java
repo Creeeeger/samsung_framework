@@ -161,8 +161,9 @@ public interface IGnssVisibilityControlCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGnssVisibilityControlCallback {
+        public static class Proxy implements IGnssVisibilityControlCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -266,7 +267,9 @@ public interface IGnssVisibilityControlCallback extends IInterface {
     /* loaded from: classes2.dex */
     public static class NfwNotification implements Parcelable {
         public static final Parcelable.Creator<NfwNotification> CREATOR = new Parcelable.Creator<NfwNotification>() { // from class: android.hardware.gnss.visibility_control.IGnssVisibilityControlCallback.NfwNotification.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public NfwNotification createFromParcel(Parcel _aidl_source) {
                 NfwNotification _aidl_out = new NfwNotification();
@@ -274,7 +277,6 @@ public interface IGnssVisibilityControlCallback extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public NfwNotification[] newArray(int _aidl_size) {
                 return new NfwNotification[_aidl_size];
@@ -288,6 +290,25 @@ public interface IGnssVisibilityControlCallback extends IInterface {
         public int requestor;
         public String requestorId;
         public int responseType;
+
+        /* renamed from: android.hardware.gnss.visibility_control.IGnssVisibilityControlCallback$NfwNotification$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<NfwNotification> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public NfwNotification createFromParcel(Parcel _aidl_source) {
+                NfwNotification _aidl_out = new NfwNotification();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public NfwNotification[] newArray(int _aidl_size) {
+                return new NfwNotification[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

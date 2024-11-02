@@ -87,7 +87,7 @@ public class ActivityChooserModel extends DataSetObservable {
         return dataModel;
     }
 
-    private ActivityChooserModel(Context context, String str) {
+    private ActivityChooserModel(Context context, String historyFileName) {
         DataModelPackageMonitor dataModelPackageMonitor = new DataModelPackageMonitor();
         this.mPackageMonitor = dataModelPackageMonitor;
         this.mActivitySorter = new DefaultSorter();
@@ -98,10 +98,10 @@ public class ActivityChooserModel extends DataSetObservable {
         this.mReloadActivities = false;
         Context applicationContext = context.getApplicationContext();
         this.mContext = applicationContext;
-        if (!TextUtils.isEmpty(str) && !str.endsWith(HISTORY_FILE_EXTENSION)) {
-            this.mHistoryFileName = str + HISTORY_FILE_EXTENSION;
+        if (!TextUtils.isEmpty(historyFileName) && !historyFileName.endsWith(HISTORY_FILE_EXTENSION)) {
+            this.mHistoryFileName = historyFileName + HISTORY_FILE_EXTENSION;
         } else {
-            this.mHistoryFileName = str;
+            this.mHistoryFileName = historyFileName;
         }
         dataModelPackageMonitor.register(applicationContext, null, true);
     }
@@ -442,10 +442,15 @@ public class ActivityChooserModel extends DataSetObservable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private final class DefaultSorter implements ActivitySorter {
+    public final class DefaultSorter implements ActivitySorter {
         private static final float WEIGHT_DECAY_COEFFICIENT = 0.95f;
         private final Map<ComponentName, ActivityResolveInfo> mPackageNameToActivityMap;
+
+        /* synthetic */ DefaultSorter(ActivityChooserModel activityChooserModel, DefaultSorterIA defaultSorterIA) {
+            this();
+        }
 
         private DefaultSorter() {
             this.mPackageNameToActivityMap = new HashMap();
@@ -546,9 +551,12 @@ public class ActivityChooserModel extends DataSetObservable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class PersistHistoryAsyncTask extends AsyncTask<Object, Void, Void> {
+        /* synthetic */ PersistHistoryAsyncTask(ActivityChooserModel activityChooserModel, PersistHistoryAsyncTaskIA persistHistoryAsyncTaskIA) {
+            this();
+        }
+
         private PersistHistoryAsyncTask() {
         }
 
@@ -568,8 +576,13 @@ public class ActivityChooserModel extends DataSetObservable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private final class DataModelPackageMonitor extends PackageMonitor {
+    public final class DataModelPackageMonitor extends PackageMonitor {
+        /* synthetic */ DataModelPackageMonitor(ActivityChooserModel activityChooserModel, DataModelPackageMonitorIA dataModelPackageMonitorIA) {
+            this();
+        }
+
         private DataModelPackageMonitor() {
         }
 

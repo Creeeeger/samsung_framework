@@ -9,13 +9,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class Rating implements Parcelable {
     public static final Parcelable.Creator<Rating> CREATOR = new Parcelable.Creator<Rating>() { // from class: android.media.Rating.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Rating createFromParcel(Parcel p) {
             return new Rating(p.readInt(), p.readFloat());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Rating[] newArray(int size) {
             return new Rating[size];
@@ -43,6 +44,10 @@ public final class Rating implements Parcelable {
     public @interface Style {
     }
 
+    /* synthetic */ Rating(int i, float f, RatingIA ratingIA) {
+        this(i, f);
+    }
+
     private Rating(int ratingStyle, float rating) {
         this.mRatingStyle = ratingStyle;
         this.mRatingValue = rating;
@@ -63,6 +68,23 @@ public final class Rating implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mRatingStyle);
         dest.writeFloat(this.mRatingValue);
+    }
+
+    /* renamed from: android.media.Rating$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Rating> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Rating createFromParcel(Parcel p) {
+            return new Rating(p.readInt(), p.readFloat());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Rating[] newArray(int size) {
+            return new Rating[size];
+        }
     }
 
     public static Rating newUnratedRating(int ratingStyle) {

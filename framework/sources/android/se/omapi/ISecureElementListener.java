@@ -80,8 +80,9 @@ public interface ISecureElementListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISecureElementListener {
+        public static class Proxy implements ISecureElementListener {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

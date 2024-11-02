@@ -9,19 +9,24 @@ import java.util.Map;
 /* loaded from: classes4.dex */
 public final class CompatibilityOverrideConfig implements Parcelable {
     public static final Parcelable.Creator<CompatibilityOverrideConfig> CREATOR = new Parcelable.Creator<CompatibilityOverrideConfig>() { // from class: com.android.internal.compat.CompatibilityOverrideConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CompatibilityOverrideConfig createFromParcel(Parcel in) {
             return new CompatibilityOverrideConfig(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityOverrideConfig[] newArray(int size) {
             return new CompatibilityOverrideConfig[size];
         }
     };
     public final Map<Long, PackageOverride> overrides;
+
+    /* synthetic */ CompatibilityOverrideConfig(Parcel parcel, CompatibilityOverrideConfigIA compatibilityOverrideConfigIA) {
+        this(parcel);
+    }
 
     public CompatibilityOverrideConfig(Map<Long, PackageOverride> overrides) {
         this.overrides = overrides;
@@ -47,6 +52,23 @@ public final class CompatibilityOverrideConfig implements Parcelable {
         for (Long key : this.overrides.keySet()) {
             dest.writeLong(key.longValue());
             this.overrides.get(key).writeToParcel(dest);
+        }
+    }
+
+    /* renamed from: com.android.internal.compat.CompatibilityOverrideConfig$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CompatibilityOverrideConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompatibilityOverrideConfig createFromParcel(Parcel in) {
+            return new CompatibilityOverrideConfig(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompatibilityOverrideConfig[] newArray(int size) {
+            return new CompatibilityOverrideConfig[size];
         }
     }
 }

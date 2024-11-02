@@ -164,8 +164,9 @@ public interface IAuthFactorTouchService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements IAuthFactorTouchService {
+        public static class Proxy implements IAuthFactorTouchService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

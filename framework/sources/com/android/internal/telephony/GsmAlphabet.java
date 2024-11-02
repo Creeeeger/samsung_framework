@@ -950,7 +950,6 @@ public class GsmAlphabet {
         sGsmSpaceChar = charToGsm.get(32);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class LanguagePairCount {
         final int languageCode;

@@ -273,7 +273,6 @@ public interface ICredentialManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements ICredentialManager {
             private IBinder mRemote;

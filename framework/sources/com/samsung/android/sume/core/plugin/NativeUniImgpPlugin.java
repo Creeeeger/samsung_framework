@@ -144,7 +144,6 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MFDescriptor lambda$bindToFixture$0() {
         return new ImgpDescriptor(ImgpPlugin.Type.NATIVE_UNIIMGP);
     }
@@ -536,7 +535,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         ibuf.asList().forEach(new Consumer() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                NativeUniImgpPlugin.this.m8818xdfdf96db(obuf, dataMap, (MediaBuffer) obj);
+                NativeUniImgpPlugin.this.m8810xdfdf96db(obuf, dataMap, (MediaBuffer) obj);
             }
         });
         ByteBuffer input = toDirectByteBuffer((ByteBuffer) ibuf.getTypedData(ByteBuffer.class));
@@ -560,9 +559,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         return obuf;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$encode$1$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin, reason: not valid java name */
-    public /* synthetic */ void m8818xdfdf96db(MutableMediaBuffer obuf, HashMap dataMap, MediaBuffer it) {
+    /* renamed from: lambda$encode$1$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin */
+    public /* synthetic */ void m8810xdfdf96db(MutableMediaBuffer obuf, HashMap dataMap, MediaBuffer it) {
         if (it.getFormat().contains("exif")) {
             MediaBuffer exifBuffer = obuf.getFormat().getColorFormat().isPlanar() ? adjustExif(it) : it;
             dataMap.put("exif", toDirectByteBuffer((ByteBuffer) exifBuffer.getTypedData(ByteBuffer.class)));
@@ -598,7 +596,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         ibuf.asList().forEach(new Consumer() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda19
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                NativeUniImgpPlugin.this.m8819x6bd652a(obuf, dataMap, (MediaBuffer) obj);
+                NativeUniImgpPlugin.this.m8811x6bd652a(obuf, dataMap, (MediaBuffer) obj);
             }
         });
         ByteBuffer input = toDirectByteBuffer((ByteBuffer) ibuf.getTypedData(ByteBuffer.class));
@@ -628,9 +626,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         return obuf;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$encodeHDR$2$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin, reason: not valid java name */
-    public /* synthetic */ void m8819x6bd652a(MutableMediaBuffer obuf, HashMap dataMap, MediaBuffer it) {
+    /* renamed from: lambda$encodeHDR$2$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin */
+    public /* synthetic */ void m8811x6bd652a(MutableMediaBuffer obuf, HashMap dataMap, MediaBuffer it) {
         if (it.getFormat().contains("exif")) {
             MediaBuffer exifBuffer = obuf.getFormat().getColorFormat().isPlanar() ? adjustExif(it) : it;
             dataMap.put("exif", toDirectByteBuffer((ByteBuffer) exifBuffer.getTypedData(ByteBuffer.class)));
@@ -756,9 +753,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin.run(com.samsung.android.sume.core.buffer.MediaBuffer, com.samsung.android.sume.core.buffer.MutableMediaBuffer):com.samsung.android.sume.core.buffer.MutableMediaBuffer");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$run$3$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin, reason: not valid java name */
-    public /* synthetic */ void m8821xff46b99e(HashMap dataMap, MediaBuffer buf) {
+    /* renamed from: lambda$run$3$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin */
+    public /* synthetic */ void m8813xff46b99e(HashMap dataMap, MediaBuffer buf) {
         if (buf.getFormat().contains("exif")) {
             MediaBuffer exifBuffer = buf;
             if (this.persistentOutputFormat.getColorFormat().isPlanar() || this.preferredColorFormat.isPlanar()) {
@@ -920,7 +916,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
             blockBuffers = (List) IntStream.range(0, blockNum.intValue()).mapToObj(new IntFunction() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda2
                 @Override // java.util.function.IntFunction
                 public final Object apply(int i) {
-                    return NativeUniImgpPlugin.this.m8820x5755f344(dataMap, i);
+                    return NativeUniImgpPlugin.this.m8812x5755f344(dataMap, i);
                 }
             }).collect(Collectors.toList());
         }
@@ -943,9 +939,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         return primaryBuffer;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$makeBufferFromMap$4$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin, reason: not valid java name */
-    public /* synthetic */ MediaBuffer m8820x5755f344(HashMap dataMap, int it) {
+    /* renamed from: lambda$makeBufferFromMap$4$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin */
+    public /* synthetic */ MediaBuffer m8812x5755f344(HashMap dataMap, int it) {
         return makeImageBuffer((String) dataMap.get("block" + it + "-buffer"), dataMap.get("block" + it + "-data"));
     }
 

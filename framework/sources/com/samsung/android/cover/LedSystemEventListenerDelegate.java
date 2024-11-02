@@ -15,7 +15,6 @@ class LedSystemEventListenerDelegate extends INfcLedCoverTouchListenerCallback.S
     private ListenerDelegateHandler mHandler;
     private CoverManager.LedSystemEventListener mListener;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LedSystemEventListenerDelegate(CoverManager.LedSystemEventListener listener, Handler handler, Context context) {
         this.mListener = listener;
         Looper looper = handler == null ? context.getMainLooper() : handler.getLooper();
@@ -54,8 +53,9 @@ class LedSystemEventListenerDelegate extends INfcLedCoverTouchListenerCallback.S
         msg.sendToTarget();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class ListenerDelegateHandler extends Handler {
+    public static class ListenerDelegateHandler extends Handler {
         private final CoverManager.LedSystemEventListener mListener;
 
         ListenerDelegateHandler(Looper looper, CoverManager.LedSystemEventListener listener) {

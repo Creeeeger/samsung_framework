@@ -148,6 +148,42 @@ public class BinderCallsStats implements BinderInternal.Observer {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.os.BinderCallsStats$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (BinderCallsStats.this.mCallStatsObserver == null) {
+                return;
+            }
+            BinderCallsStats.this.noteCallsStatsDelayed();
+            synchronized (BinderCallsStats.this.mLock) {
+                int size = BinderCallsStats.this.mSendUidsToObserver.size();
+                for (int i = 0; i < size; i++) {
+                    UidEntry uidEntry = (UidEntry) BinderCallsStats.this.mUidEntries.get(((Integer) BinderCallsStats.this.mSendUidsToObserver.valueAt(i)).intValue());
+                    if (uidEntry != null) {
+                        ArrayMap<CallStatKey, CallStat> callStats = uidEntry.mCallStats;
+                        int csize = callStats.size();
+                        ArrayList<CallStat> tmpCallStats = new ArrayList<>(csize);
+                        for (int j = 0; j < csize; j++) {
+                            tmpCallStats.add(callStats.valueAt(j).m7429clone());
+                        }
+                        BinderCallsStats.this.mCallStatsObserver.noteCallStats(uidEntry.workSourceUid, uidEntry.incrementalCallCount, tmpCallStats);
+                        uidEntry.incrementalCallCount = 0L;
+                        for (int j2 = callStats.size() - 1; j2 >= 0; j2--) {
+                            callStats.valueAt(j2).incrementalCallCount = 0L;
+                        }
+                    }
+                }
+                BinderCallsStats.this.mSendUidsToObserver.clear();
+            }
+        }
+    }
+
     /* loaded from: classes5.dex */
     public static class Injector {
         public Random getRandomGenerator() {
@@ -197,6 +233,9 @@ public class BinderCallsStats implements BinderInternal.Observer {
         this.mEnablePackageStats = false;
         this.mSendUidsToObserver = new ArraySet<>(32);
         this.mCallStatsObserverRunnable = new Runnable() { // from class: com.android.internal.os.BinderCallsStats.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (BinderCallsStats.this.mCallStatsObserver == null) {
@@ -212,7 +251,7 @@ public class BinderCallsStats implements BinderInternal.Observer {
                             int csize = callStats.size();
                             ArrayList<CallStat> tmpCallStats = new ArrayList<>(csize);
                             for (int j = 0; j < csize; j++) {
-                                tmpCallStats.add(callStats.valueAt(j).m7434clone());
+                                tmpCallStats.add(callStats.valueAt(j).m7429clone());
                             }
                             BinderCallsStats.this.mCallStatsObserver.noteCallStats(uidEntry.workSourceUid, uidEntry.incrementalCallCount, tmpCallStats);
                             uidEntry.incrementalCallCount = 0L;
@@ -299,7 +338,6 @@ public class BinderCallsStats implements BinderInternal.Observer {
         noteCallsStatsDelayed();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void noteCallsStatsDelayed() {
         this.mCallStatsObserverHandler.removeCallbacks(this.mCallStatsObserverRunnable);
         if (this.mCallStatsObserver != null) {
@@ -781,8 +819,7 @@ public class BinderCallsStats implements BinderInternal.Observer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.os.BinderCallsStats$1ExportedCallStatKey, reason: invalid class name */
+    /* renamed from: com.android.internal.os.BinderCallsStats$1ExportedCallStatKey */
     /* loaded from: classes5.dex */
     public class C1ExportedCallStatKey {
         public Class<? extends Binder> binderClass;
@@ -946,8 +983,7 @@ public class BinderCallsStats implements BinderInternal.Observer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.os.BinderCallsStats$1SimpleCallStat, reason: invalid class name */
+    /* renamed from: com.android.internal.os.BinderCallsStats$1SimpleCallStat */
     /* loaded from: classes5.dex */
     public class C1SimpleCallStat {
         public int callCount;
@@ -1082,7 +1118,6 @@ public class BinderCallsStats implements BinderInternal.Observer {
                     	at jadx.core.utils.InsnRemover.unbindInsn(InsnRemover.java:80)
                     	at jadx.core.utils.InsnRemover.addAndUnbind(InsnRemover.java:56)
                     	at jadx.core.dex.visitors.ModVisitor.removeStep(ModVisitor.java:452)
-                    	at jadx.core.dex.visitors.ModVisitor.visit(ModVisitor.java:96)
                     */
                 @Override // java.util.function.ToDoubleFunction
                 public final double applyAsDouble(java.lang.Object r3) {
@@ -1109,7 +1144,6 @@ public class BinderCallsStats implements BinderInternal.Observer {
                 	at jadx.core.utils.InsnRemover.unbindInsn(InsnRemover.java:80)
                 	at jadx.core.utils.InsnRemover.addAndUnbind(InsnRemover.java:56)
                 	at jadx.core.dex.visitors.ModVisitor.removeStep(ModVisitor.java:452)
-                	at jadx.core.dex.visitors.ModVisitor.visit(ModVisitor.java:96)
                 */
             @Override // java.util.function.ToDoubleFunction
             public final double applyAsDouble(java.lang.Object r3) {
@@ -1601,8 +1635,8 @@ public class BinderCallsStats implements BinderInternal.Observer {
             this.packageName = packageName;
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-        public CallStat m7434clone() {
+        /* renamed from: clone */
+        public CallStat m7429clone() {
             CallStat clone = new CallStat(this.callingUid, this.binderClass, this.transactionCode, this.screenInteractive, this.packageName);
             clone.recordedCallCount = this.recordedCallCount;
             clone.callCount = this.callCount;
@@ -1779,17 +1813,14 @@ public class BinderCallsStats implements BinderInternal.Observer {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int compareByActCpuDesc(ExportedCallStat a, ExportedCallStat b) {
         return Long.compare((b.cpuTimeMicros / b.recordedCallCount) * b.callCount, (a.cpuTimeMicros / a.recordedCallCount) * a.callCount);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int compareByCpuDesc(ExportedCallStat a, ExportedCallStat b) {
         return Long.compare(b.cpuTimeMicros, a.cpuTimeMicros);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int compareByBinderClassAndCode(ExportedCallStat a, ExportedCallStat b) {
         int result = a.className.compareTo(b.className);
         if (result != 0) {

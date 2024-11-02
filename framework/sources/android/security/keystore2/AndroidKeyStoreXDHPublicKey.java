@@ -39,7 +39,6 @@ public class AndroidKeyStoreXDHPublicKey extends AndroidKeyStorePublicKey implem
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.security.keystore2.AndroidKeyStorePublicKey
     public AndroidKeyStorePrivateKey getPrivateKey() {
         return new AndroidKeyStoreXDHPrivateKey(getUserKeyDescriptor(), getKeyIdDescriptor().nspace, getAuthorizations(), KeyProperties.KEY_ALGORITHM_XDH, getSecurityLevel());

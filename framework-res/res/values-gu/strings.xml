@@ -274,12 +274,12 @@
     <string name="allow_settings_changes">સુરક્ષા નીતિ સેટિંગ્સ બદલી અટકાવે છે.</string>
     <string name="alwaysUse">આ ક્રિયા માટે ડિફોલ્ટ તરીકે ઉપયોગમાં લો.</string>
     <string name="android_preparing_apk">%1$s તૈયાર કરી રહ્યું છે.</string>
-    <string name="android_start_title">ફોન શરૂ થઈ રહ્યો છે…</string>
+    <string name="android_start_title">ટૅબ્લેટ શરૂ થઈ રહ્યું છે…</string>
     <string name="android_system_label">Android સિસ્ટમ</string>
     <string name="android_upgrading_complete">બૂટ સમાપ્ત કરી રહ્યાં છે.</string>
     <string name="android_upgrading_notification_title">સિસ્ટમ અપડેટ સમાપ્ત કરી રહ્યાં છીએ…</string>
     <string name="android_upgrading_starting_apps">ઍપ્લિકેશનો શરૂ કરી રહ્યાં છે.</string>
-    <string name="android_upgrading_title">ફોન અપડેટ થઈ રહ્યો છે…</string>
+    <string name="android_upgrading_title">ટૅબ્લેટ અપડેટ થઈ રહ્યું છે…</string>
     <string name="anr_activity_application">%2$s પ્રતિસાદ આપી રહી નથી</string>
     <string name="anr_activity_process">%1$s પ્રતિસાદ આપી રહી નથી</string>
     <string name="anr_application_process">%1$s પ્રતિસાદ આપી રહી નથી</string>
@@ -301,16 +301,16 @@
     <string name="app_not_found">આ ક્રિયાને હેન્ડલ કરવા માટે કોઈ ઍપ્લિકેશન મળી નહીં</string>
     <string name="app_running_notification_text">વધુ માહિતી માટે અથવા ઍપ્લિકેશન રોકવા માટે ટૅપ કરો.</string>
     <string name="app_running_notification_title">%1$s ચાલી રહી છે</string>
-    <string name="app_streaming_blocked_message">અત્યારે આને તમારા %1$s પર ઍક્સેસ કરી શકાતી નથી. તેના બદલે તમારા ફોન પર પ્રયાસ કરો.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">આ ઍપ દ્વારા વધારાની સુરક્ષાની વિનંતી કરવામાં આવી રહી છે. તેના બદલે તમારા ફોન પર પ્રયાસ કરો.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">આને તમારા %1$s પર ઍક્સેસ કરી શકાતી નથી. તેના બદલે તમારા ફોન પર પ્રયાસ કરો.</string>
+    <string name="app_streaming_blocked_message">અત્યારે આને તમારા %1$s પર ઍક્સેસ કરી શકાતી નથી. તેના બદલે તમારા ટૅબ્લેટ પર પ્રયાસ કરો.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">આ ઍપ દ્વારા વધારાની સુરક્ષાની વિનંતી કરવામાં આવી રહી છે. તેના બદલે તમારા ટૅબ્લેટ પર પ્રયાસ કરો.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">આને તમારા %1$s પર ઍક્સેસ કરી શકાતી નથી. તેના બદલે તમારા ટૅબ્લેટ પર પ્રયાસ કરો.</string>
     <string name="app_streaming_blocked_title">%1$s ઉપલબ્ધ નથી</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">કૅમેરા ઉપલબ્ધ નથી</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">ફોન પર ચાલુ રાખો</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">માઇક્રોફોન ઉપલબ્ધ નથી</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">પરવાનગી જરૂરી છે</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store ઉપલબ્ધ નથી</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">ફોન સેટિંગ ઉપલબ્ધ નથી</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">ટૅબ્લેટ સેટિંગ ઉપલબ્ધ નથી</string>
     <string name="app_suspended_default_message">%1$s હમણાં ઉપલબ્ધ નથી. આને %2$s દ્વારા મેનેજ કરવામાં આવે છે.</string>
     <string name="app_suspended_more_details">વધુ જાણો</string>
     <string name="app_suspended_title">ઍપ ઉપલબ્ધ નથી</string>
@@ -352,7 +352,7 @@
     <string name="backup_restrict">સુરક્ષા નીતિ બેકઅપના ઉપયોગને અટકાવે છે.</string>
     <string name="badPin">તમે લખેલો જૂનો પિન સાચો નથી.</string>
     <string name="badPuk">તમે લખેલો PUK સાચો નથી.</string>
-    <string name="battery_saver_charged_notification_summary">ફોનમાં પૂરતો ચાર્જ છે. સુવિધાઓ હવે મર્યાદિત નથી.</string>
+    <string name="battery_saver_charged_notification_summary">ટૅબ્લેટમાં પૂરતો ચાર્જ છે. સુવિધાઓ હવે મર્યાદિત નથી.</string>
     <string name="battery_saver_description">બૅટરી સેવર ઘેરી થીમની સુવિધા ચાલુ કરે છે અને બૅકગ્રાઉન્ડ પ્રવૃત્તિ, અમુક વિઝ્યુઅલ ઇફેક્ટ, અમુક સુવિધાઓ અને કેટલાક નેટવર્ક કનેક્શન મર્યાદિત કે બંધ કરે છે.</string>
     <string name="battery_saver_description_with_learn_more">બૅટરી સેવર ઘેરી થીમની સુવિધા ચાલુ કરે છે અને બૅકગ્રાઉન્ડ પ્રવૃત્તિ, અમુક વિઝ્યુઅલ ઇફેક્ટ, અમુક સુવિધાઓ અને કેટલાક નેટવર્ક કનેક્શન મર્યાદિત કે બંધ કરે છે.</string>
     <string name="battery_saver_notification_channel_name">બૅટરી સેવર</string>
@@ -530,7 +530,7 @@
     <string name="decline">નકારો</string>
     <string name="decline_remote_bugreport_action">નકારો</string>
     <string name="default_audio_route_category_name">સિસ્ટમ</string>
-    <string name="default_audio_route_name">ફોન</string>
+    <string name="default_audio_route_name">ટેબ્લેટ</string>
     <string name="default_audio_route_name_dock_speakers">સ્પીકર્સ ડૉક કરો</string>
     <string name="default_audio_route_name_external_device">બહારનું ડિવાઇસ</string>
     <string name="default_audio_route_name_headphones">હેડફોન</string>
@@ -615,7 +615,7 @@
     <string name="emergency_call_dialog_number_for_display">ઇમર્જન્સી નંબર</string>
     <string name="emergency_calls_only">ફક્ત ઇમર્જન્સી કૉલ</string>
     <string name="enablePin">અસફળ, સિમ/RUIM લૉક સક્ષમ કરો.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s ટચ દ્વારા અન્વેષણ કરવાને સક્ષમ કરવા માંગે છે. જ્યારે ટચ દ્વારા અન્વેષણ ચાલુ હોય ત્યારે તમે તમારી આંગળી નીચે જે છે તેનું વર્ણન જોઈ અથવા સાંભળી શકો છો અથવા ફોન સાથે ક્રિયાપ્રતિક્રિયા કરવા માટે હાવભાવ ભજવી શકો છો.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s ટચ દ્વારા અન્વેષણ કરવાને સક્ષમ કરવા માંગે છે. જ્યારે ટચ દ્વારા અન્વેષણ ચાલુ હોય ત્યારે તમે તમારી આંગળી નીચે જે છે તેનું વર્ણન જોઈ અથવા સાંભળી શકો છો અથવા ટેબ્લેટ સાથે ક્રિયાપ્રતિક્રિયા કરવા માટે હાવભાવ ભજવી શકો છો.</string>
     <string name="enable_explore_by_touch_warning_title">સ્પર્શ કરીને શોધખોળ કરવું સક્ષમ કરીએ?</string>
     <string name="error_message_change_not_allowed">તમારા વ્યવસ્થાપકે આ ફેરફારની મંજૂરી આપી નથી</string>
     <string name="error_message_title">ભૂલ</string>
@@ -841,7 +841,7 @@
     <string name="global_action_toggle_sealed_mode">Sealed mode</string>
     <string name="global_action_toggle_silent_mode">સાઇલેન્ટ મોડ</string>
     <string name="global_action_voice_assist">વૉઇસ સહાય</string>
-    <string name="global_actions">ફોન વિકલ્પો</string>
+    <string name="global_actions">ટેબ્લેટ વિકલ્પો</string>
     <string name="global_actions_airplane_mode_off_status">એરપ્લેન મોડ બંધ છે.</string>
     <string name="global_actions_airplane_mode_on_status">એરપ્લેન મોડ ચાલુ છે.</string>
     <string name="global_actions_toggle_airplane_mode">એરપ્લેન મોડ</string>
@@ -984,11 +984,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">પાસવર્ડ ટાઇપ કરવા માટે ટૅપ કરો</font></string>
     <string name="keyguard_password_wrong_pin_code">ખોટો પિન કોડ.</string>
     <string name="kg_enter_confirm_pin_hint">જોઈતા પિન કોડની પુષ્ટિ કરો</string>
-    <string name="kg_failed_attempts_almost_at_login">"તમે તમારી અનલૉક પૅટર્ન %1$d વખત ખોટી રીતે દોરી. હજી %2$d અસફળ પ્રયાસ પછી, તમને ઇમેઇલ એકાઉન્ટનો ઉપયોગ કરીને ફોનને અનલૉક કરવાનું કહેવામાં આવશે.
+    <string name="kg_failed_attempts_almost_at_login">"તમે %1$d વખત ખોટી રીતે અનલૉક પૅટર્ન દોરી છે. વધુ %2$d વખત અસફળ પ્રયાસો પછી, તમને એક ઇમેઇલ એકાઉન્ટનો ઉપયોગ કરીને તમારા ટૅબ્લેટને અનલૉક કરવા માટે પૂછવામાં આવશે.
 
-%3$d સેકન્ડમાં ફરીથી પ્રયાસ કરો."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">તમે ફોનને અનલૉક કરવા માટે %1$d વખત ખોટી રીતે પ્રયાસ કર્યો. %2$d વધુ અસફળ પ્રયાસો પછી, ફોનને ફેક્ટરી ડિફોલ્ટ પર ફરીથી સેટ કરવામાં આવશે અને તેનો તમામ ડેટા કાઢી નાખવામાં આવશે.</string>
-    <string name="kg_failed_attempts_now_wiping">તમે %d વખત ખોટી રીતે ફોનને અનલૉક કરવાનો પ્રયાસ કર્યો. ફોન હવે ફેક્ટરી ડિફોલ્ટ પર ફરીથી સેટ કરવામાં આવશે.</string>
+%3$d સેકન્ડમાં ફરી પ્રયાસ કરો."</string>
+    <string name="kg_failed_attempts_almost_at_wipe">તમે ટેબ્લેટને અનલૉક કરવા માટે %1$d વખત ખોટી રીતે પ્રયાસ કર્યો. %2$d વધુ અસફળ પ્રયાસ પછી, ટેબ્લેટને ફેક્ટરી ડિફોલ્ટ પર ફરીથી સેટ કરવામાં આવશે અને તેનો તમામ ડેટા કાઢી નાખવામાં આવશે.</string>
+    <string name="kg_failed_attempts_now_wiping">તમે %d વખત ખોટી રીતે ટેબ્લેટને અનલૉક કરવાનો પ્રયાસ કર્યો. ટેબ્લેટ હવે ફેક્ટરી ડિફોલ્ટ પર ફરીથી સેટ કરવામાં આવશે.</string>
     <string name="kg_forgot_pattern_button_text">પૅટર્ન ભૂલી ગયાં</string>
     <string name="kg_invalid_confirm_pin_hint">પિન કોડ મેળ ખાતા નથી</string>
     <string name="kg_invalid_puk">સાચો PUK કોડ ફરીથી દાખલ કરો. પુનરાવર્તિત પ્રયાસો સિમ ને કાયમી રીતે અક્ષમ કરશે.</string>
@@ -1055,11 +1055,11 @@
     <string name="lockscreen_access_pattern_start">પૅટર્ન શરૂ કરી</string>
     <string name="lockscreen_carrier_default">કોઈ સેવા નથી</string>
     <string name="lockscreen_emergency_call">ઇમર્જન્સી</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">તમે ફોનને અનલૉક કરવા માટે %1$d વખત ખોટી રીતે પ્રયાસ કર્યો. %2$d વધુ અસફળ પ્રયાસો પછી, ફોનને ફેક્ટરી ડિફોલ્ટ પર ફરીથી સેટ કરવામાં આવશે અને તેનો તમામ ડેટા કાઢી નાખવામાં આવશે.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"તમે %1$d વખત ખોટી રીતે અનલૉક પૅટર્ન દોરી છે. વધુ %2$d વખત અસફળ પ્રયાસ પછી, તમને તમારા Google સાઇન ઇનનો ઉપયોગ કરીને તમારા ફોનને અનલૉક કરવા માટે કહેવામાં આવશે.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">તમે ટેબ્લેટને અનલૉક કરવા માટે %1$d વખત ખોટી રીતે પ્રયાસ કર્યો. %2$d વધુ અસફળ પ્રયાસ પછી, ટેબ્લેટને ફેક્ટરી ડિફોલ્ટ પર ફરીથી સેટ કરવામાં આવશે અને તેનો તમામ ડેટા કાઢી નાખવામાં આવશે.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"તમે %1$d વખત ખોટી રીતે અનલૉક પૅટર્ન દોરી છે. વધુ %2$d વખત અસફળ પ્રયાસ પછી, તમને તમારા Google સાઇન ઇનનો ઉપયોગ કરીને તમારા ટૅબ્લેટને અનલૉક કરવા માટે કહેવામાં આવશે.
 
 %3$d સેકન્ડમાં ફરી પ્રયાસ કરો."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">તમે %d વખત ખોટી રીતે ફોનને અનલૉક કરવાનો પ્રયાસ કર્યો. ફોન હવે ફેક્ટરી ડિફોલ્ટ પર ફરીથી સેટ કરવામાં આવશે.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">તમે %d વખત ખોટી રીતે ટેબ્લેટને અનલૉક કરવાનો પ્રયાસ કર્યો. ટેબ્લેટ હવે ફેક્ટરી ડિફોલ્ટ પર ફરીથી સેટ કરવામાં આવશે.</string>
     <string name="lockscreen_forgot_pattern_button_text">પૅટર્ન ભૂલી ગયા છો?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"તમારું વપરાશકર્તાનામ અથવા પાસવર્ડ ભૂલાઈ ગયો?
  "<b>google.com/accounts/recovery</b> ની મુલાકાત લો.</string>
@@ -1075,7 +1075,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">અનલૉક કરવા માટે અથવા કટોકટીનો કૉલ કરવા માટે મેનૂ દબાવો.</string>
     <string name="lockscreen_missing_sim_instructions">સિમ કાર્ડ ઉમેરો.</string>
     <string name="lockscreen_missing_sim_instructions_long">સિમ કાર્ડ ખૂટે છે અથવા વાંચી શકાય એવું નથી. સિમ કાર્ડ ઉમેરો.</string>
-    <string name="lockscreen_missing_sim_message">ફોનમાં કોઈ સિમ કાર્ડ નથી.</string>
+    <string name="lockscreen_missing_sim_message">ટૅબ્લેટમાં કોઈ સિમ કાર્ડ નથી.</string>
     <string name="lockscreen_missing_sim_message_short">કોઈ સિમ કાર્ડ નથી</string>
     <string name="lockscreen_network_locked_message">નેટવર્ક લૉક થયું</string>
     <string name="lockscreen_password_wrong">ફરી પ્રયાસ કરો</string>
@@ -1115,7 +1115,7 @@
     <string name="low_internal_storage_view_text">કેટલાક સિસ્ટમ Tasks કામ કરી શકશે નહીં</string>
     <string name="low_internal_storage_view_text_no_boot">સિસ્ટમ માટે પર્યાપ્ત સ્ટોરેજ નથી. ખાતરી કરો કે તમારી પાસે 250MB ખાલી સ્થાન છે અને ફરીથી પ્રારંભ કરો.</string>
     <string name="low_internal_storage_view_title">સ્ટોરેજ સ્થાન સમાપ્ત થયું</string>
-    <string name="low_memory">ફોન સ્ટોરેજ પૂર્ણ ભરેલું છે. સ્થાન ખાલી કરવા માટે કેટલીક ફાઇલો કાઢી નાખો.</string>
+    <string name="low_memory">ટેબ્લેટ સ્ટોરેજ પૂર્ણ ભરેલું છે. સ્થાન ખાલી કરવા માટે કેટલીક ફાઇલો કાઢી નાખો.</string>
     <string name="managed_profile_app_label">ઑફિસની %1$s પર સ્વિચ કરો</string>
     <string name="managed_profile_label">કાર્યાલયની પ્રોફાઇલ પર સ્વિચ કરો</string>
     <string name="managed_profile_label_badge">ઑફિસ %1$s</string>
@@ -1453,23 +1453,23 @@
     <string name="permdesc_bindNotificationListenerService">ધારકને નોટિફિકેશન લિસનર સેવાના ઉચ્ચ-સ્તર ઇન્ટરફેસથી પ્રતિબદ્ધ થવાની મંજૂરી આપે છે. સામાન્ય ઍપ્લિકેશનો માટે ક્યારેય જરૂરી હોતું નથી.</string>
     <string name="permdesc_bind_connection_service">એપ્લિકેશનને કૉલ્સ કરવા/પ્રાપ્ત કરવા માટે ટેલિફોની સેવાઓ સાથે ક્રિયાપ્રતિક્રિયા કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_bind_incall_service">વપરાશકર્તા ઇન-કૉલ સ્ર્કીન ક્યારે અને કેવી રીતે જુએ છે તે નિયંત્રિત કરવાની એપ્લિકેશનને મંજૂરી આપે છે.</string>
-    <string name="permdesc_bluetooth">એપ્લિકેશનને ફોન પર બ્લૂટૂથ ની ગોઠવણી જોવાની અને જોડી કરેલ ઉપકરણો સાથે કનેક્શન્સ કરવાની અને સ્વીકારવાની મંજૂરી આપે છે.</string>
-    <string name="permdesc_bluetoothAdmin">એપ્લિકેશનને સ્થાનિક બ્લૂટૂથ ફોન ગોઠવવાની અને રિમોટ ઉપકરણો શોધવા અને તેમની સાથે જોડી કરવાની મંજૂરી આપે છે.</string>
+    <string name="permdesc_bluetooth">એપ્લિકેશનને ટેબ્લેટ પર બ્લૂટૂથ ની ગોઠવણી જોવાની અને જોડી કરેલ ઉપકરણો સાથે કનેક્શન્સ કરવાની અને સ્વીકારવાની મંજૂરી આપે છે.</string>
+    <string name="permdesc_bluetoothAdmin">એપ્લિકેશનને સ્થાનિક બ્લૂટૂથ ટેબ્લેટ ગોઠવવાની અને રિમોટ ઉપકરણો શોધવા અને તેમની સાથે જોડી કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_bluetooth_advertise">નજીકના બ્લૂટૂથ ડિવાઇસ પર ઍપને જાહેરાત કરવાની મંજૂરી આપે છે</string>
     <string name="permdesc_bluetooth_connect">ઍપને જોડી કરેલા બ્લૂટૂથ ડિવાઇસ સાથે કનેક્ટ કરવાની મંજૂરી આપે છે</string>
     <string name="permdesc_bluetooth_scan">ઍપને આસપાસના બ્લૂટૂથ ડિવાઇસ શોધવાની અને તેની સાથે જોડી કરવાની મંજૂરી આપે છે</string>
     <string name="permdesc_bodySensors">ઍપ ઉપયોગમાં હોય, ત્યારે ઍપને હૃદયના ધબકારા, તાપમાન અને લોહીમાં ઑક્સિજનની ટકાવારી જેવા બૉડી સેન્સર ડેટાનો ઍક્સેસ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_bodySensors_background">ઍપ બૅકગ્રાઉન્ડમાં હોય, ત્યારે ઍપને હૃદયના ધબકારા, તાપમાન અને લોહીમાં ઑક્સિજનની ટકાવારી જેવા બૉડી સેન્સર ડેટાનો ઍક્સેસ કરવાની મંજૂરી આપે છે.</string>
-    <string name="permdesc_broadcastSticky">એપ્લિકેશનને સ્ટિકી બ્રોડકાસ્ટ્સ મોકલવાની મંજૂરી આપે છે, જે બ્રોડકાસ્ટ્સ સમાપ્ત થયા પછી પણ રહે છે. અતિરિક્ત ઉપયોગ ફોનને વધુ પડતી મેમરીનો ઉપયોગ કરવાને કારણે તેને ધીમું અથવા અસ્થિર બનાવી શકે છે.</string>
+    <string name="permdesc_broadcastSticky">એપ્લિકેશનને સ્ટિકી બ્રોડકાસ્ટ્સ મોકલવાની મંજૂરી આપે છે, જે બ્રોડકાસ્ટ સમાપ્ત થયા પછી પણ રહે છે. અતિરિક્ત ઉપયોગ ટેબ્લેટને વધુ પડતી મેમરીનો ઉપયોગ કરવાને કારણે તેને ધીમું અથવા અસ્થિર બનાવી શકે છે.</string>
     <string name="permdesc_callCompanionApp">ઍપને ડિવાઇસ પરના ચાલી રહેલા કૉલને જોવાની અને નિયંત્રિત કરવાની મંજૂરી આપે છે. આમાં કૉલ માટેના કૉલ નંબર અને તેની સ્થિતિ જેવી માહિતી શામેલ હોય છે.</string>
     <string name="permdesc_callPhone">ઍપને તમારા હસ્તક્ષેપ વિના ફોન નંબર પર કૉલ કરવાની મંજૂરી આપે છે. આનું પરિણામ અનપેક્ષિત શુલ્ક અથવા કૉલ હોઈ શકે છે. નોંધ કરજો કે આનાથી ઍપને ઇમર્જન્સી નંબર પર કૉલ કરવાની મંજૂરી મળતી નથી. દુર્ભાવનાપૂર્ણ ઍપ તમારા કન્ફર્મેશન વિના કૉલ કરીને તમારા પૈસા ખર્ચી શકે છે અથવા તે મોબાઇલ ઑપરેટરના કોડ ડાયલ કરી શકે છે, જેના કારણે ઇનકમિંગ કૉલ ઑટોમૅટિક રીતે બીજા નંબર પર ફૉરવર્ડ થાય છે.</string>
     <string name="permdesc_camera">આ ઍપ ઉપયોગમાં હોય ત્યારે તે કૅમેરાનો ઉપયોગ કરીને ફોટા લઈ શકે છે અને વીડિયો રેકોર્ડ કરી શકે છે.</string>
     <string name="permdesc_cameraOpenCloseListener">જ્યારે કોઈ કૅમેરા ડિવાઇસ (કયા ઍપ્લિકેશન વડે) ખોલવા કે બંધ કરવામાં આવે, ત્યારે આ ઍપ કૉલબૅક પ્રાપ્ત કરી શકે છે.</string>
     <string name="permdesc_changeNetworkState">એપ્લિકેશનને નેટવર્ક કનેક્ટિવિટીની સ્થિતિ બદલવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_changeTetherState">એપ્લિકેશનને ટિથર્ડ નેટવર્ક કનેક્ટિવિટીની સ્થિતિ બદલવાની મંજૂરી આપે છે.</string>
-    <string name="permdesc_changeWifiMulticastState">એપ્લિકેશનને ફક્ત તમારા ફોન પર નહીં, પણ મલ્ટિકાસ્ટ સરનામાંનો ઉપયોગ કરીને વાઇ-ફાઇ નેટવર્ક પર તમામ ઉપકરણોને મોકલાયેલ પૅકેટ્સ પ્રાપ્ત કરવાની મંજૂરી આપે છે. તે બિન-મલ્ટિકાસ્ટ મોડ કરતાં વધુ પાવર વાપરે છે.</string>
+    <string name="permdesc_changeWifiMulticastState">એપ્લિકેશનને ફક્ત તમારા ટેબ્લેટ પર નહીં, પણ મલ્ટિકાસ્ટ સરનામાંનો ઉપયોગ કરીને વાઇ-ફાઇ નેટવર્ક પરના તમામ ઉપકરણોને મોકલાયેલ પૅકેટ્સ પ્રાપ્ત કરવાની મંજૂરી આપે છે. તે બિન-મલ્ટિકાસ્ટ મોડ કરતાં વધુ પાવર વાપરે છે.</string>
     <string name="permdesc_changeWifiState">એપ્લિકેશનને વાઇ-ફાઇ ઍક્સેસ બિંદુઓથી કનેક્ટ થવા અને ડિસ્કનેક્ટ થવાની અને વાઇ-ફાઇ નેટવર્ક્સ માટે ઉપકરણ ગોઠવણી પર ફેરફારો કરવાની મંજૂરી આપે છે.</string>
-    <string name="permdesc_changeWimaxState">ફોનને WiMAX નેટવર્ક્સ પર કનેક્ટ કરવાની અને ફોનને તેનાથી ડિસ્કનેક્ટ કરવાની મંજૂરી એપ્લિકેશનને આપે છે.</string>
+    <string name="permdesc_changeWimaxState">ટેબ્લેટને WiMAX નેટવર્ક્સ પર કનેક્ટ કરવાની અને ટેબ્લેટને તેનાથી ડિસ્કનેક્ટ કરવાની મંજૂરી એપ્લિકેશનને આપે છે.</string>
     <string name="permdesc_companionProfileWatch">વૉચ મેનેજ કરવા માટે સાથી ઍપને મંજૂરી આપે છે.</string>
     <string name="permdesc_connection_manager">ઍપને ટેલિકોમ કનેક્શનને મેનેજ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_control_incall_experience">એપ્લિકેશનને કૉલમાં વપરાશકર્તા અનુભવ પ્રદાન કરવાની મંજૂરી આપે છે.</string>
@@ -1497,7 +1497,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">ઍપને \"specialUse\" પ્રકારની પરવાનગી વડે ફૉરગ્રાઉન્ડ સેવાઓનો ઉપયોગ કરવાની મંજૂરી આપે છે</string>
     <string name="permdesc_foregroundServiceSystemExempted">ઍપને \"systemExempted\" પ્રકારની પરવાનગી વડે ફૉરગ્રાઉન્ડ સેવાઓનો ઉપયોગ કરવાની મંજૂરી આપે છે</string>
     <string name="permdesc_fullScreenIntent">ઍપને લૉક કરેલા ડિવાઇસ પર પૂર્ણ સ્ક્રીન પરની પ્રવૃતિઓની જેમ નોટિફિકેશન બતાવવાની મંજૂરી આપે છે</string>
-    <string name="permdesc_getAccounts">એપ્લિકેશનને ફોન દ્વારા પરિચિત એકાઉન્ટ્સની સૂચિ મેળવવાની મંજૂરી આપે છે. આમાં તમે ઇન્સ્ટોલ કરેલ ઍપ્લિકેશનો દ્વારા બનાવેલ કોઈપણ એકાઉન્ટ્સ શામેલ હોઈ શકે છે.</string>
+    <string name="permdesc_getAccounts">એપ્લિકેશનને ટેબ્લેટ દ્વારા પરિચિત એકાઉન્ટ્સની સૂચિ મેળવવાની મંજૂરી આપે છે. આમાં તમે ઇન્સ્ટોલ કરેલ ઍપ્લિકેશનો દ્વારા બનાવેલ કોઈપણ એકાઉન્ટ્સ શામેલ હોઈ શકે છે.</string>
     <string name="permdesc_getPackageSize">એપ્લિકેશનને તેનો કોડ, ડેટા અને કેશ કદ પુનઃપ્રાપ્ત કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_getTasks">એપ્લિકેશનને વર્તમાનમાં અને તાજેતરમાં ચાલી રહેલ Tasks વિશેની વિગતવાર માહિતી પુનઃપ્રાપ્ત કરવાની મંજૂરી આપે છે. આ એપ્લિકેશનને ઉપકરણ પર કઈ એપ્લિકેશન્સનો ઉપયોગ થાય છે તેના વિશેની માહિતી શોધવાની મંજૂરી આપી શકે છે.</string>
     <string name="permdesc_handoverStatus">એપ્લિકેશનને Android બીમ ટ્રાંસ્ફર્સ વિશે માહિતી પ્રાપ્ત કરવાની મંજૂરી આપે છે</string>
@@ -1579,16 +1579,16 @@
     <string name="permdesc_nearby_wifi_devices">ઍપને નજીકના વાઇ-ફાઇ ડિવાઇસની માહિતી બતાવવાની, તેની સાથે કનેક્ટ કરવાની અને તેની સંબંધિત સ્થિતિ નક્કી કરવાની મંજૂરી આપો</string>
     <string name="permdesc_nfc">ઍપ્લિકેશનને નિઅર ફીલ્ડ કમ્યુનિકેશન (NFC) ટૅગ, કાર્ડ અને રીડર સાથે સંચાર કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_observeCompanionDevicePresence">સાથી ડિવાઇસ નજીકમાં અથવા દૂર હોય ત્યારે તેમની હાજરીનું અવલોકન કરવા માટે સાથી ઍપને મંજૂરી આપે છે.</string>
-    <string name="permdesc_persistentActivity">એપ્લિકેશનને મેમરીમાં પોતાના ભાગ સતત બનાવવાની મંજૂરી આપે છે. આ ફોનને ધીમો કરીને અન્ય ઍપ્લિકેશનો પર ઉપલબ્ધ મેમરીને સીમિત કરી શકે છે.</string>
+    <string name="permdesc_persistentActivity">એપ્લિકેશનને મેમરીમાં પોતાના ભાગ સતત બનાવવાની મંજૂરી આપે છે. આ ટેબ્લેટને ધીમું કરીને અન્ય ઍપ્લિકેશનો પર ઉપલબ્ધ મેમરીને સીમિત કરી શકે છે.</string>
     <string name="permdesc_postNotification">ઍપને નોટિફિકેશન બતાવવાની મંજૂરી આપે છે</string>
     <string name="permdesc_preferredPaymentInfo">આ મંજૂરીને આપવાથી, ઍપ તમારી પસંદગીની NFC ચુકવણીની સેવા વિશે માહિતી મેળવી શકે છે, જેમ કે રજિસ્ટર થયેલી સહાય અને નિર્ધારિત સ્થાન.</string>
     <string name="permdesc_processOutgoingCalls">એપ્લિકેશનને આઉટગોઇંગ કૉલ દરમિયાન કૉલને એક અલગ નંબર પર રીડાયરેક્ટ કરવા અથવા કૉલને સંપૂર્ણપણે છોડી દેવાનાં વિકલ્પ સાથે ડાયલ થઈ રહેલા નંબરને જોવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_queryAllPackages">કોઈ ઍપને ઇન્સ્ટૉલ કરેલા બધા પૅકેજ જોવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_readBasicPhoneState">ડિવાઇસની ટેલિફોન માટેની મૂળભૂત સુવિધાઓ ઍક્સેસ કરવાની મંજૂરી ઍપને આપે છે.</string>
-    <string name="permdesc_readCalendar">આ ઍપ્લિકેશન, તમારા ફોન પર સંગ્રહિત તમામ કૅલેન્ડર ઇવેન્ટ્સને વાંચી શકે છે અને તમારા કૅલેન્ડર ડેટાને શેર કરી અથવા સાચવી શકે છે.</string>
+    <string name="permdesc_readCalendar">આ ઍપ્લિકેશન, તમારા ટેબ્લેટ પર સંગ્રહિત તમામ કૅલેન્ડર ઇવેન્ટ્સને વાંચી શકે છે અને તમારા કૅલેન્ડર ડેટાને શેર કરી અથવા સાચવી શકે છે.</string>
     <string name="permdesc_readCallLog">આ ઍપ્લિકેશન, તમારો કૉલ ઇતિહાસ વાંચી શકે છે.</string>
     <string name="permdesc_readCellBroadcasts">ઍપ તમારા ડિવાઇસ દ્વારા પ્રાપ્ત થયેલ સેલ બ્રોડકાસ્ટ સંદેશાને વાંચવાની મંજૂરી આપે છે. સેલ બ્રોડકાસ્ટ ચેતવણીઓ તમને ઇમર્જન્સીની સ્થિતિઓ અંગે ચેતવવા માટે કેટલાક સ્થાનોમાં વિતરિત થાય છે. જ્યારે ઇમર્જન્સીનો સેલ બ્રોડકાસ્ટ પ્રાપ્ત થાય ત્યારે દુર્ભાવનાપૂર્ણ ઍપ તમારા ડિવાઇસના કાર્યપ્રદર્શન અથવા ઓપરેશનમાં હસ્તક્ષેપ કરી શકે છે.</string>
-    <string name="permdesc_readContacts">ઍપને તમારા ફોનમાં સ્ટોર કરેલા તમારા સંપર્કો વિશેનો ડેટા વાંચવાની મંજૂરી આપે છે. ઍપને તમારા ફોન પર સંપર્કો બનાવનારાં એકાઉન્ટનો પણ ઍક્સેસ રહેશે. તેમાં તમે ઇન્સ્ટૉલ કરેલી ઍપ દ્વારા બનાવાયેલાં એકાઉન્ટનો પણ સમાવેશ થઈ શકે છે. આ પરવાનગી ઍપને તમારા સંપર્કનો ડેટા સાચવવાની મંજૂરી આપે છે અને દુર્ભાવનાપૂર્ણ ઍપ તમારી જાણ બહાર સંપર્કનો ડેટા શેર કરે તેમ બની શકે છે.</string>
+    <string name="permdesc_readContacts">ઍપને તમારા ટૅબ્લેટમાં સ્ટોર કરેલા તમારા સંપર્કો વિશેનો ડેટા વાંચવાની મંજૂરી આપે છે. ઍપને તમારા ટૅબ્લેટ પર સંપર્કો બનાવનારાં એકાઉન્ટનો પણ ઍક્સેસ રહેશે. તેમાં તમે ઇન્સ્ટૉલ કરેલી ઍપ દ્વારા બનાવાયેલાં એકાઉન્ટનો પણ સમાવેશ થઈ શકે છે. આ પરવાનગી ઍપને તમારા સંપર્કનો ડેટા સાચવવાની મંજૂરી આપે છે અને દુર્ભાવનાપૂર્ણ ઍપ તમારી જાણ બહાર સંપર્કનો ડેટા શેર કરે તેમ બની શકે છે.</string>
     <string name="permdesc_readInstallSessions">એપ્લિકેશનને ઇન્સ્ટોલ સત્રોને વાંચવાની મંજૂરી આપે છે. આ તેને સક્રિય પૅકેજ ઇન્સ્ટોલેશન્સ વિશે વિગતો જોવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_readMediaAudio">ઍપને તમારા શેર કરાયેલા સ્ટોરેજમાંથી ઑડિયો ફાઇલો વાંચવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_readMediaImages">ઍપને તમારા શેર કરાયેલા સ્ટોરેજમાંથી છબી ફાઇલો વાંચવાની મંજૂરી આપે છે.</string>
@@ -1596,11 +1596,11 @@
     <string name="permdesc_readNetworkUsageHistory">એપ્લિકેશનને ચોક્કસ નેટવર્ક્સ અને ઍપ્લિકેશનો માટે ઐતિહાસિક નેટવર્ક વપરાશ વાંચવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_readPhoneNumbers">ઍપ્લિકેશનને ઉપકરણનાં ફોન નંબરને ઍક્સેસ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_readPhoneState">એપ્લિકેશનને ફોન સુવિધાઓને ઍક્સેસ કરવાની મંજૂરી આપે છે. આ પરવાનગી એપ્લિકેશનને ફોન નંબર અને ઉપકરણ ID, કૉલ સક્રિય છે અને કોઈ કૉલ દ્વારા કનેક્ટ થયેલ રિમોટ નંબર નિર્ધારિત કરવાની મંજૂરી આપે છે.</string>
-    <string name="permdesc_readSms">આ ઍપ્લિકેશન, તમારા ફોન પર સંગ્રહિત તમામ SMS (ટેક્સ્ટ) સંદેશા વાંચી શકે છે.</string>
+    <string name="permdesc_readSms">આ ઍપ્લિકેશન, તમારા ટેબ્લેટ પર સંગ્રહિત તમામ SMS (ટેક્સ્ટ) સંદેશા વાંચી શકે છે.</string>
     <string name="permdesc_readSyncSettings">ઍપને એકાઉન્ટ માટે સિંક સેટિંગને વાંચવાની મંજૂરી આપે છે. ઉદાહરણ તરીકે, આ એકાઉન્ટ સાથે લોકો ઍપ સિંક થઈ છે કે કેમ તે નિર્ધારિત કરી શકે છે.</string>
     <string name="permdesc_readSyncStats">એપ્લિકેશનને સમન્વયન ઇવેન્ટ્સનો ઇતિહાસ અને કેટલો ડેટા સમન્વયિત થયો છે તે સહિત કોઈ એકાઉન્ટ માટેનાં સમન્વયન આંકડા વાંચવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_readVisualUserSelect">ઍપને તમારા શેર કરેલા સ્ટોરેજમાંથી તમે પસંદ કરેલી છબી અને વીડિયો ફાઇલો વાંચવાની મંજૂરી આપે છે.</string>
-    <string name="permdesc_receiveBootCompleted">એપ્લિકેશનને સિસ્ટમ બૂટ થવાનું સમાપ્ત કરી લે કે તરત જ પોતાની જાતે પ્રારંભ થવાની મંજૂરી આપે છે. આનાથી ફોનને પ્રારંભ થવામાં વધુ સમય લાગી શકે છે અને એપ્લિકેશનને હંમેશાં ચાલુ રહીને ફોનને એકંદર ધીમું કરવાની મંજૂરી આપી શકે છે.</string>
+    <string name="permdesc_receiveBootCompleted">એપ્લિકેશનને સિસ્ટમ બૂટ થવાનું સમાપ્ત કરી લે કે તરત જ પોતાની જાતે પ્રારંભ થવાની મંજૂરી આપે છે. આનાથી ટેબ્લેટને પ્રારંભ થવામાં વધુ લાંબો સમય લાગી શકે છે અને એપ્લિકેશનને હંમેશા ચાલુ રહીને ટેબ્લેટને એકંદર ધીમું કરવાની મંજૂરી આપી શકે છે.</string>
     <string name="permdesc_receiveMms">ઍપ્લિકેશનને MMS સંદેશા પ્રાપ્ત કરવાની અને તેના પર પ્રક્રિયા કરવાની મંજૂરી આપે છે. આનો અર્થ એ કે ઍપ્લિકેશન તમને દર્શાવ્યા વિના તમારા ઉપકરણ પર મોકલેલ સંદેશાઓનું નિરીક્ષણ કરી શકે છે અથવા કાઢી નાખી શકે છે.</string>
     <string name="permdesc_receiveSms">ઍપ્લિકેશનને SMS સંદેશા પ્રાપ્ત કરવાની અને તેના પર પ્રક્રિયા કરવાની મંજૂરી આપે છે. આનો અર્થ એ કે ઍપ્લિકેશન તમને દર્શાવ્યા વિના તમારા ઉપકરણ પર મોકલેલ સંદેશાઓનું નિરીક્ષણ કરી શકે છે અથવા કાઢી નાખી શકે છે.</string>
     <string name="permdesc_receiveWapPush">એપ્લિકેશનને WAP સંદેશા પ્રાપ્ત કરવાની અને તેના પર પ્રક્રિયા કરવાની મંજૂરી આપે છે. આ પરવાનગીમાં તમને દર્શાવ્યા વિના તમને મોકલેલ સંદેશાઓનું નિરીક્ષણ કરવાની અને કાઢી નાખવાની ક્ષમતાનો સમાવેશ થાય છે.</string>
@@ -1622,7 +1622,7 @@
     <string name="permdesc_sendSms">એપ્લિકેશનને SMS સંદેશા મોકલવાની મંજૂરી આપે છે. આના પરિણામે અનપેક્ષિત શુલ્ક લાગી શકે છે. દુર્ભાવનાપૂર્ણ ઍપ્લિકેશનો તમારી પુષ્ટિ વિના સંદેશા મોકલીને તમારા નાણા ખર્ચાવી શકે છે.</string>
     <string name="permdesc_setAlarm">એપ્લિકેશનને ઇન્સ્ટોલ કરેલ અલાર્મ ઘડિયાળ એપ્લિકેશનમાં અલાર્મ સેટ કરવાની મંજૂરી આપે છે. કેટલીક અલાર્મ ઘડિયાળ ઍપ્લિકેશનો, આ સુવિધા લાગુ કરી શકતી નથી.</string>
     <string name="permdesc_setInputCalibration">એપ્લિકેશનને ટચ સ્ક્રીનના કેલિબ્રેશન પેરામીટર્સને સંશોધિત કરવાની મંજૂરી આપે છે. સામાન્ય ઍપ્લિકેશનો માટે ક્યારેય જરૂરી હોતું નથી.</string>
-    <string name="permdesc_setTimeZone">એપ્લિકેશનને ફોનનો સમય ઝોન બદલવાની મંજૂરી આપે છે.</string>
+    <string name="permdesc_setTimeZone">એપ્લિકેશનને ટેબ્લેટનો સમય ઝોન બદલવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_setWallpaper">એપ્લિકેશનને સિસ્ટમ વૉલપેપર સેટ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_setWallpaperHints">એપ્લિકેશનને સિસ્ટમ વૉલપેપર કદના સંકેતો સેટ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_sim_communication">એપ્લિકેશનને સિમ પરા આદેશો મોકલવાની મંજૂરી આપે છે. આ ખૂબ જ ખતરનાક છે.</string>
@@ -1635,7 +1635,7 @@
     <string name="permdesc_subscribedFeedsRead">એપ્લિકેશનને હાલમાં સમન્વયિત ફીડ્સ વિશે વિગતો મેળવવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_systemAlertWindow">આ ઍપ્લિકેશન, અન્ય ઍપ્લિકેશોની ટોચ પર અથવા સ્ક્રીનના અન્ય ભાગોમાં દેખાઈ શકે છે. આ સામાન્ય ઍપ્લિકેશન વપરાશમાં હસ્તક્ષેપ કરી શકે છે અને અન્ય ઍપ્લિકેશનોની દેખાવાની રીતને બદલી શકે છે.</string>
     <string name="permdesc_systemCamera">આ વિશેષાધિકૃત અથવા સિસ્ટમ ઍપ કોઈપણ સમયે સિસ્ટમ કૅમેરાનો ઉપયોગ કરીને ફોટા લઈ અને વીડિયો રેકૉર્ડ કરી શકે છે. ઍપ દ્વારા આયોજિત કરવા માટે android.permission.CAMERAની પરવાનગી પણ જરૂરી છે</string>
-    <string name="permdesc_transmitIr">એપ્લિકેશનને ફોનના ઇન્ફ્રારેડ ટ્રાન્સમિટરનો ઉપયોગ કરવાની મંજૂરી આપે છે.</string>
+    <string name="permdesc_transmitIr">એપ્લિકેશનને ટેબ્લેટના ઇન્ફ્રારેડ ટ્રાન્સમીટરનો ઉપયોગ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_turnScreenOn">ઍપને સ્ક્રીન ચાલુ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_ucsPlugin">તૃતીય-પક્ષ ઓળખપત્ર સંગ્રહ પ્લગ-ઇન્સ સાથે કાર્ય કરો.</string>
     <string name="permdesc_uninstall_shortcut">એપ્લિકેશનને વપરાશકર્તા હસ્તક્ષેપ વગર હોમસ્ક્રીન શોર્ટકટ્સ દૂર કરવાની મંજૂરી આપે છે.</string>
@@ -1649,10 +1649,10 @@
     <string name="permdesc_vibrate">એપ્લિકેશનને વાઇબ્રેટરને નિયંત્રિત કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_vibrator_state">ઍપને વાઇબ્રેટર સ્થિતિને ઍક્સેસ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_videoWrite">એપને તમારો વિડિઓ સંગ્રહ સંશોધિત કરવાની મંજૂરી આપે છે.</string>
-    <string name="permdesc_wakeLock">એપ્લિકેશનને ફોનને નિષ્ક્રિય થઈ જતો અટકાવવાની મંજૂરી આપે છે.</string>
-    <string name="permdesc_writeCalendar">આ ઍપ્લિકેશન, તમારા ફોન પર કૅલેન્ડર ઇવેન્ટ્સ ઉમેરી, દૂર કરી અથવા બદલી શકે છે. આ ઍપ્લિકેશન, કૅલેન્ડર માલિકો તરફથી આવતાં હોય તેવા લાગતાં સંદેશા મોકલી શકે છે અથવા તેમના માલિકોને સૂચિત કર્યા વિના ઇવેન્ટ્સ બદલી શકે છે.</string>
-    <string name="permdesc_writeCallLog">એપ્લિકેશનને ઇનકમિંગ અને આઉટગોઇંગ કૉલ્સ વિશેનાં ડેટા સહિત, તમારા ફોનના કૉલ લૉગને સંશોધિત કરવાની મંજૂરી આપે છે. દુર્ભાવનાપૂર્ણ ઍપ્લિકેશનો આનો ઉપયોગ તમારા કૉલ લૉગને કાઢી નાખવા અથવા સંશોધિત માટે કરી શકે છે.</string>
-    <string name="permdesc_writeContacts">ઍપને તમારા ફોનમાં સ્ટોર કરેલા તમારા સંપર્કો વિશેનો ડેટા સંશોધિત કરવાની મંજૂરી આપે છે. આ પરવાનગી ઍપને સંપર્ક ડેટા ડિલીટ કરવાની મંજૂરી આપે છે.</string>
+    <string name="permdesc_wakeLock">એપ્લિકેશનને ટેબ્લેટને નિષ્ક્રિય થઈ જતો અટકાવવાની મંજૂરી આપે છે.</string>
+    <string name="permdesc_writeCalendar">આ ઍપ્લિકેશન, તમારા ટેબ્લેટ પર કૅલેન્ડર ઇવેન્ટ્સ ઉમેરી, દૂર કરી અથવા બદલી શકે છે. આ ઍપ્લિકેશન, કૅલેન્ડર માલિકો તરફથી આવતાં હોય તેવા લાગતાં સંદેશા મોકલી શકે છે અથવા તેમના માલિકોને સૂચિત કર્યા વિના ઇવેન્ટ્સ બદલી શકે છે.</string>
+    <string name="permdesc_writeCallLog">એપ્લિકેશનને ઇનકમિંગ અને આઉટગોઇંગ કૉલ્સ વિશેનાં ડેટા સહિત, તમારા ટેબ્લેટના કૉલ લૉગને સંશોધિત કરવાની મંજૂરી આપે છે. દુર્ભાવનાપૂર્ણ ઍપ્લિકેશનો આનો ઉપયોગ તમારા કૉલ લૉગને કાઢી નાખવા અથવા સંશોધિત માટે કરી શકે છે.</string>
+    <string name="permdesc_writeContacts">ઍપને તમારા ટૅબ્લેટ પર સ્ટોર કરેલા તમારા સંપર્કો વિશેનો ડેટા સંશોધિત કરવાની મંજૂરી આપે છે. આ પરવાનગી ઍપને સંપર્ક ડેટા ડિલીટ કરવાની મંજૂરી આપે છે.</string>
     <string name="permdesc_writeSettings">ઍપને તમારા સિસ્ટમના સેટિંગ ડેટાને સંશોધિત કરવાની મંજૂરી આપે છે. દુર્ભાવનાપૂર્ણ ઍપ તમારા સિસ્ટમની ગોઠવણીને દૂષિત કરી શકે છે.</string>
     <string name="permdesc_writeSyncSettings">ઍપને એકાઉન્ટ માટે સિંક સેટિંગમાં ફેરફાર કરવાની મંજૂરી આપે છે. ઉદાહરણ તરીકે, આનો ઉપયોગ એકાઉન્ટ સાથે લોકો ઍપના સિંકને ચાલુ કરવા માટે થઈ શકે છે.</string>
     <string name="permgroupdesc_activityRecognition">તમારી શારીરિક પ્રવૃત્તિને ઍક્સેસ કરવી</string>
@@ -1914,7 +1914,7 @@
     <string name="permlab_uwb_ranging">અલ્ટ્રા-વાઇડબૅન્ડ ડિવાઇસની વચ્ચેનું અંતર નક્કી કરો</string>
     <string name="permlab_vibrate">વાઇબ્રેશન નિયંત્રિત કરો</string>
     <string name="permlab_videoWrite">આપનો વિડિઓ સંગ્રહ સંશોધિત કરવો</string>
-    <string name="permlab_wakeLock">ફોનને નિષ્ક્રિય થતો અટકાવો</string>
+    <string name="permlab_wakeLock">ટેબ્લેટને નિષ્ક્રિય થતું અટકાવો</string>
     <string name="permlab_writeCalendar">"કૅલેન્ડર  ઇવેન્ટ્સ ઉમેરો અથવા સંશોધિત કરો અને માલિકની જાણ બહાર અતિથિઓને ઇમેઇલ મોકલો"</string>
     <string name="permlab_writeCallLog">કૉલ લૉગ લખો</string>
     <string name="permlab_writeContacts">તમારા સંપર્કો સંશોધિત કરો</string>
@@ -1957,10 +1957,10 @@
     <string name="policydesc_limitPassword">સ્ક્રીન લૉક પાસવર્ડ અને પિનમાં મંજૂર લંબાઈ અને અક્ષરોને નિયંત્રિત કરો.</string>
     <string name="policydesc_resetPassword">સ્ક્રીન લૉક બદલો.</string>
     <string name="policydesc_setGlobalProxy">પૉલિસી ચાલુ હોય તે વખતે ઉપયોગ કરવા માટેના ડિવાઇસ વૈશ્વિક પ્રોક્સીને સેટ કરો. ફક્ત ડિવાઇસના માલિક વૈશ્વિક પ્રોક્સી સેટ કરી શકે છે.</string>
-    <string name="policydesc_watchLogin">સ્ક્રીનને અનલૉક કરતી વખતે લખેલા ખોટા પાસવર્ડ્સની સંખ્યાને મૉનિટર કરો અને જો ઘણા બધા ખોટા પાસવર્ડ્સ લખ્યાં છે તો ફોનને લૉક કરો અથવા ફોનનો તમામ ડેટા કાઢી નાખો.</string>
-    <string name="policydesc_watchLogin_secondaryUser">સ્ક્રીનને અનલૉક કરતી વખતે લખેલા ખોટા પાસવર્ડ્સની સંખ્યાને મૉનિટર કરો અને જો ઘણા બધા ખોટા પાસવર્ડ્સ લખ્યાં છે તો ફોનને લૉક કરો અથવા આ વપરાશકર્તાનો તમામ ડેટા કાઢી નાખો.</string>
-    <string name="policydesc_wipeData">ફેક્ટરી ડેટા ફરીથી સેટ કરોને કરીને ચેતવણી વિના ફોનનો ડેટા કાઢી નાખો.</string>
-    <string name="policydesc_wipeData_secondaryUser">ચેતવણી વિના આ ફોન પરનો આ વપરાશકર્તાનો ડેટા કાઢી નાખો.</string>
+    <string name="policydesc_watchLogin">સ્ક્રીનને અનલૉક કરતી વખતે લખેલા ખોટા પાસવર્ડ્સની સંખ્યાને મૉનિટર કરો અને જો ઘણા બધા ખોટા પાસવર્ડ્સ લખ્યાં છે તો ટેબ્લેટને લૉક કરો અથવા ટેબ્લેટનો તમામ ડેટા કાઢી નાખો.</string>
+    <string name="policydesc_watchLogin_secondaryUser">સ્ક્રીનને અનલૉક કરતી વખતે લખેલા ખોટા પાસવર્ડ્સની સંખ્યાને મૉનિટર કરો અને જો ઘણા બધા ખોટા પાસવર્ડ્સ લખ્યાં છે તો ટેબ્લેટને લૉક કરો અથવા આ વપરાશકર્તાનો તમામ ડેટા કાઢી નાખો.</string>
+    <string name="policydesc_wipeData">ફેક્ટરી ડેટા ફરીથી સેટ કરોને કરીને ચેતવણી વિના ટેબ્લેટનો ડેટા કાઢી નાખો.</string>
+    <string name="policydesc_wipeData_secondaryUser">ચેતવણી વિના આ ટેબ્લેટ પરનો આ વપરાશકર્તાનો ડેટા કાઢી નાખો.</string>
     <string name="policylab_disableCamera">કૅમેરા અક્ષમ કરો</string>
     <string name="policylab_disableKeyguardFeatures">અમુક સ્ક્રીનલૉક સુવિધા બંધ કરો</string>
     <string name="policylab_encryptedStorage">સંગ્રહ એન્ક્રિપ્શન સેટ કરો</string>
@@ -1977,7 +1977,7 @@
     <string name="postalTypeHome">ઘર</string>
     <string name="postalTypeOther">અન્ય</string>
     <string name="postalTypeWork">ઑફિસ</string>
-    <string name="power_dialog">ફોન વિકલ્પો</string>
+    <string name="power_dialog">ટેબ્લેટ વિકલ્પો</string>
     <string name="power_off">પાવર બંધ કરો</string>
     <string name="prepend_shortcut_label">મેનૂ+</string>
     <string name="preposition_for_date">%s ના રોજ</string>
@@ -2174,7 +2174,7 @@
     <string name="shortcut_restore_unknown_issue">શૉર્ટકટ પાછો મેળવી શકાયો નથી</string>
     <string name="shortcut_restored_on_lower_version">આ ઍપનું વર્ઝન ડાઉનગ્રેડ કરવામાં આવ્યું છે અથવા આ શૉર્ટકટ સાથે સુસંગત નથી</string>
     <string name="show_ime">જ્યારે ભૌતિક કીબોર્ડ સક્રિય હોય ત્યારે તેને સ્ક્રીન પર રાખો</string>
-    <string name="shutdown_confirm">તમારો ફોન બંધ થઈ જશે.</string>
+    <string name="shutdown_confirm">તમારું ટેબ્લેટ શટ ડાઉન થઈ જશે.</string>
     <string name="shutdown_confirm_question">શું તમે શટ ડાઉન કરવા માગો છો?</string>
     <string name="shutdown_progress">શટ ડાઉન થઈ રહ્યું છે…</string>
     <string name="silent_mode">સાઇલેન્ટ મોડ</string>
@@ -2301,7 +2301,7 @@
     <string name="usb_camera_disconnected_notification_title">કૅમેરા ડિસ્કનેક્ટ થયો.</string>
     <string name="usb_cd_installer_notification_title">સ્થાપક તરીકે જોડાયેલ છે</string>
     <string name="usb_charging_notification_title">આ ડિવાઇસને USB મારફતે ચાર્જ કરી રહ્યાં છીએ.</string>
-    <string name="usb_charing_only_notification_title">ચાર્જ કરવા માટે જોડ્યું</string>
+    <string name="usb_charing_only_notification_title">જોડાયું</string>
     <string name="usb_contaminant_detected_message">USB પોર્ટ ઑટોમૅટિક રીતે બંધ કરવામાં આવ્યો છે. વધુ જાણવા માટે ટૅપ કરો.</string>
     <string name="usb_contaminant_detected_title">USB પોર્ટમાં પ્રવાહી કે ધૂળ</string>
     <string name="usb_contaminant_not_detected_message">ફોનને હવે કોઈ પ્રવાહી કે ધૂળ હોવાનું જણાયું નથી.</string>
@@ -2359,7 +2359,7 @@
     <string name="user_switched">વર્તમાન વપરાશકર્તા %1$s.</string>
     <string name="user_switching_message">%1$s પર સ્વિચ કરી રહ્યાં છે…</string>
     <string name="validity_period">માન્યતા:</string>
-    <string name="vdm_camera_access_denied">તમારા %1$s પરથી ફોનના કૅમેરાનો ઍક્સેસ કરી શકતાં નથી</string>
+    <string name="vdm_camera_access_denied">તમારા %1$s પરથી ટૅબ્લેટના કૅમેરાનો ઍક્સેસ કરી શકતાં નથી</string>
     <string name="vdm_pip_blocked">સ્ટ્રીમ કરતી વખતે ચિત્ર-માં-ચિત્ર જોઈ શકતા નથી</string>
     <string name="vdm_secure_window">સ્ટ્રીમ કરતી વખતે આ ઍક્સેસ કરી શકાતું નથી. તેના બદલે તમારા ફોન પર પ્રયાસ કરો.</string>
     <string name="view_and_control_notification_content">%s તમારી સ્ક્રીન જોઈ અને નિયંત્રિત કરી શકે છે. રિવ્યૂ કરવા માટે ટૅપ કરો.</string>

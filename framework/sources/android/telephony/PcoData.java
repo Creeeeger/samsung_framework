@@ -8,6 +8,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public class PcoData implements Parcelable {
     public static final Parcelable.Creator<PcoData> CREATOR = new Parcelable.Creator() { // from class: android.telephony.PcoData.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PcoData createFromParcel(Parcel in) {
             return new PcoData(in);
@@ -48,6 +51,23 @@ public class PcoData implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.PcoData$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PcoData createFromParcel(Parcel in) {
+            return new PcoData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PcoData[] newArray(int size) {
+            return new PcoData[size];
+        }
     }
 
     public String toString() {

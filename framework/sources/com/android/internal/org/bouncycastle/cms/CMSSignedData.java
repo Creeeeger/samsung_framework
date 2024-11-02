@@ -66,11 +66,17 @@ public class CMSSignedData implements Encodable {
         this(CMSUtils.readContentInfo(sigData));
     }
 
-    public CMSSignedData(final CMSProcessable signedContent, ContentInfo sigData) throws CMSException {
+    public CMSSignedData(CMSProcessable signedContent, ContentInfo sigData) throws CMSException {
         if (signedContent instanceof CMSTypedData) {
             this.signedContent = (CMSTypedData) signedContent;
         } else {
             this.signedContent = new CMSTypedData() { // from class: com.android.internal.org.bouncycastle.cms.CMSSignedData.1
+                final /* synthetic */ CMSProcessable val$signedContent;
+
+                AnonymousClass1(CMSProcessable signedContent2) {
+                    signedContent = signedContent2;
+                }
+
                 @Override // com.android.internal.org.bouncycastle.cms.CMSTypedData
                 public ASN1ObjectIdentifier getContentType() {
                     return CMSSignedData.this.signedData.getEncapContentInfo().getContentType();
@@ -89,6 +95,32 @@ public class CMSSignedData implements Encodable {
         }
         this.contentInfo = sigData;
         this.signedData = getSignedData();
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.org.bouncycastle.cms.CMSSignedData$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements CMSTypedData {
+        final /* synthetic */ CMSProcessable val$signedContent;
+
+        AnonymousClass1(CMSProcessable signedContent2) {
+            signedContent = signedContent2;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.cms.CMSTypedData
+        public ASN1ObjectIdentifier getContentType() {
+            return CMSSignedData.this.signedData.getEncapContentInfo().getContentType();
+        }
+
+        @Override // com.android.internal.org.bouncycastle.cms.CMSProcessable
+        public void write(OutputStream out) throws IOException, CMSException {
+            signedContent.write(out);
+        }
+
+        @Override // com.android.internal.org.bouncycastle.cms.CMSProcessable
+        public Object getContent() {
+            return signedContent.getContent();
+        }
     }
 
     public CMSSignedData(Map hashes, ContentInfo sigData) throws CMSException {

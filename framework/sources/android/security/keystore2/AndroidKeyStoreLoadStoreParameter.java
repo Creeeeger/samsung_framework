@@ -15,7 +15,6 @@ public class AndroidKeyStoreLoadStoreParameter implements KeyStore.LoadStorePara
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getNamespace() {
         return this.mNamespace;
     }

@@ -3,9 +3,10 @@ package android.filterfw.core;
 import android.os.SystemClock;
 import android.util.Log;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: StopWatchMap.java */
 /* loaded from: classes.dex */
-class StopWatch {
+public class StopWatch {
     private String mName;
     private int STOP_WATCH_LOGGING_PERIOD = 200;
     private String TAG = "MFF";

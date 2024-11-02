@@ -12,7 +12,6 @@ import java.util.HashMap;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @Deprecated
 /* loaded from: classes3.dex */
 public abstract class GenericInflater<T, P extends Parent> {
@@ -54,14 +53,12 @@ public abstract class GenericInflater<T, P extends Parent> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public GenericInflater(Context context) {
         this.DEBUG = false;
         this.mConstructorArgs = new Object[2];
         this.mContext = context;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public GenericInflater(GenericInflater<T, P> original, Context newContext) {
         this.DEBUG = false;
         this.mConstructorArgs = new Object[2];

@@ -8,7 +8,6 @@ public class SContextApproachAttribute extends SContextAttribute {
     private static final String TAG = "SContextApproachAttribute";
     private int mUserID;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextApproachAttribute() {
         this.mUserID = -1;
         setAttribute();

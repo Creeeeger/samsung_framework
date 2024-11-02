@@ -38,7 +38,6 @@ public abstract class CellSignalStrength {
         return (asu * 2) - 113;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final int getAsuFromRssiDbm(int dbm) {
         if (dbm == Integer.MAX_VALUE) {
             return 99;
@@ -53,7 +52,6 @@ public abstract class CellSignalStrength {
         return asu - 120;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final int getAsuFromRscpDbm(int dbm) {
         if (dbm == Integer.MAX_VALUE) {
             return 255;
@@ -68,7 +66,6 @@ public abstract class CellSignalStrength {
         return (asu / 2) - 24;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax) {
         if (value < rangeMin || value > rangeMax) {
             return Integer.MAX_VALUE;
@@ -76,7 +73,6 @@ public abstract class CellSignalStrength {
         return value;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax, int special) {
         if ((value < rangeMin || value > rangeMax) && value != special) {
             return Integer.MAX_VALUE;

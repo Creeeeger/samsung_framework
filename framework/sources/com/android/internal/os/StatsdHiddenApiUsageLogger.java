@@ -7,7 +7,6 @@ import com.android.internal.logging.nano.MetricsProto;
 import com.android.internal.util.FrameworkStatsLog;
 import dalvik.system.VMRuntime;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class StatsdHiddenApiUsageLogger implements VMRuntime.HiddenApiUsageLogger {
     private static final StatsdHiddenApiUsageLogger sInstance = new StatsdHiddenApiUsageLogger();
@@ -18,14 +17,12 @@ public class StatsdHiddenApiUsageLogger implements VMRuntime.HiddenApiUsageLogge
     StatsdHiddenApiUsageLogger() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setHiddenApiAccessLogSampleRates(int sampleRate, int newSampleRate) {
         StatsdHiddenApiUsageLogger statsdHiddenApiUsageLogger = sInstance;
         statsdHiddenApiUsageLogger.mHiddenApiAccessLogSampleRate = sampleRate;
         statsdHiddenApiUsageLogger.mHiddenApiAccessStatslogSampleRate = newSampleRate;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static StatsdHiddenApiUsageLogger getInstance() {
         return sInstance;
     }

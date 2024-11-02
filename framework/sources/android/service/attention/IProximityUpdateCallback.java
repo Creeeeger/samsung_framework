@@ -84,8 +84,9 @@ public interface IProximityUpdateCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IProximityUpdateCallback {
+        public static class Proxy implements IProximityUpdateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

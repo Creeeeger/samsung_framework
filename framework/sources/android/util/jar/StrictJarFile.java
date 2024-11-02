@@ -35,12 +35,10 @@ public final class StrictJarFile {
 
     private static native ZipEntry nativeFindEntry(long j, String str);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native ZipEntry nativeNextEntry(long j);
 
     private static native long nativeOpenJarFile(String str, int i) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeStartIteration(long j, String str);
 
     public StrictJarFile(String fileName) throws IOException, SecurityException {
@@ -177,7 +175,6 @@ public final class StrictJarFile {
         return new ZipInflaterInputStream(wrapped, new Inflater(true), bufSize, ze);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class EntryIterator implements Iterator<ZipEntry> {
         private final long iterationHandle;
@@ -226,7 +223,6 @@ public final class StrictJarFile {
         return metaEntries;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class JarFileInputStream extends FilterInputStream {
         private long count;

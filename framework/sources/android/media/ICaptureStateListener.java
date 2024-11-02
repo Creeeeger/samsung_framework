@@ -71,8 +71,9 @@ public interface ICaptureStateListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ICaptureStateListener {
+        public static class Proxy implements ICaptureStateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

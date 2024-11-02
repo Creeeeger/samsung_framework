@@ -16,13 +16,14 @@ public class AudioProfile implements Parcelable {
     public static final int AUDIO_ENCAPSULATION_TYPE_NONE = 0;
     public static final int AUDIO_ENCAPSULATION_TYPE_PCM = 2;
     public static final Parcelable.Creator<AudioProfile> CREATOR = new Parcelable.Creator<AudioProfile>() { // from class: android.media.AudioProfile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioProfile createFromParcel(Parcel p) {
             return new AudioProfile(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioProfile[] newArray(int size) {
             return new AudioProfile[size];
@@ -37,6 +38,10 @@ public class AudioProfile implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface EncapsulationType {
+    }
+
+    /* synthetic */ AudioProfile(Parcel parcel, AudioProfileIA audioProfileIA) {
+        this(parcel);
     }
 
     @SystemApi
@@ -148,5 +153,22 @@ public class AudioProfile implements Parcelable {
         this.mChannelMasks = in.createIntArray();
         this.mChannelIndexMasks = in.createIntArray();
         this.mEncapsulationType = in.readInt();
+    }
+
+    /* renamed from: android.media.AudioProfile$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioProfile createFromParcel(Parcel p) {
+            return new AudioProfile(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioProfile[] newArray(int size) {
+            return new AudioProfile[size];
+        }
     }
 }

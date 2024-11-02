@@ -287,13 +287,11 @@ public class SimpleIconFactory {
         return bitmap;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createIconBitmap$0(Rect childRect, Drawable drawable) {
         drawable.setBounds(childRect);
         drawable.draw(this.mCanvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createIconBitmap$1(Rect childRect, Drawable drawable) {
         drawable.setBounds(childRect);
         drawable.draw(this.mCanvas);
@@ -318,8 +316,14 @@ public class SimpleIconFactory {
         return icon;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:85:0x0042, code lost:            if (r3 <= r22.mMaxSize) goto L25;     */
-    /* JADX WARN: Code restructure failed: missing block: B:87:0x0045, code lost:            r6 = r3;     */
+    /* JADX WARN: Code restructure failed: missing block: B:85:0x0042, code lost:
+    
+        if (r3 <= r22.mMaxSize) goto L126;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:87:0x0045, code lost:
+    
+        r6 = r3;
+     */
     /* JADX WARN: Removed duplicated region for block: B:24:0x007f  */
     /* JADX WARN: Removed duplicated region for block: B:48:0x00d3 A[ADDED_TO_REGION] */
     /* JADX WARN: Removed duplicated region for block: B:54:0x00ed A[Catch: all -> 0x01a2, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:21:0x0056, B:26:0x008a, B:33:0x009c, B:36:0x00a5, B:41:0x00b9, B:43:0x00c4, B:52:0x00dd, B:54:0x00ed, B:58:0x00ff, B:59:0x00f8, B:62:0x0102, B:65:0x0122, B:67:0x0134, B:68:0x0168, B:70:0x0171, B:71:0x017e, B:73:0x0186, B:75:0x018d, B:80:0x0117, B:82:0x0030, B:84:0x0040, B:90:0x004c, B:95:0x0053, B:96:0x0047), top: B:3:0x0007 }] */

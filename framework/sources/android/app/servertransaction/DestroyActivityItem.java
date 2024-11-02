@@ -10,13 +10,14 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class DestroyActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<DestroyActivityItem> CREATOR = new Parcelable.Creator<DestroyActivityItem>() { // from class: android.app.servertransaction.DestroyActivityItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DestroyActivityItem createFromParcel(Parcel in) {
             return new DestroyActivityItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DestroyActivityItem[] newArray(int size) {
             return new DestroyActivityItem[size];
@@ -24,6 +25,10 @@ public class DestroyActivityItem extends ActivityLifecycleItem {
     };
     private int mConfigChanges;
     private boolean mFinished;
+
+    /* synthetic */ DestroyActivityItem(Parcel parcel, DestroyActivityItemIA destroyActivityItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.BaseClientRequest
     public void preExecute(ClientTransactionHandler client, IBinder token) {
@@ -72,6 +77,23 @@ public class DestroyActivityItem extends ActivityLifecycleItem {
     private DestroyActivityItem(Parcel in) {
         this.mFinished = in.readBoolean();
         this.mConfigChanges = in.readInt();
+    }
+
+    /* renamed from: android.app.servertransaction.DestroyActivityItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DestroyActivityItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DestroyActivityItem createFromParcel(Parcel in) {
+            return new DestroyActivityItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DestroyActivityItem[] newArray(int size) {
+            return new DestroyActivityItem[size];
+        }
     }
 
     public boolean equals(Object o) {

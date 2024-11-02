@@ -14,13 +14,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InlineSuggestionInfo implements Parcelable {
     public static final Parcelable.Creator<InlineSuggestionInfo> CREATOR = new Parcelable.Creator<InlineSuggestionInfo>() { // from class: android.view.inputmethod.InlineSuggestionInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionInfo[] newArray(int size) {
             return new InlineSuggestionInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionInfo createFromParcel(Parcel in) {
             return new InlineSuggestionInfo(in);
@@ -171,6 +172,23 @@ public final class InlineSuggestionInfo implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) type);
         this.mPinned = pinned;
         this.mTooltip = tooltip;
+    }
+
+    /* renamed from: android.view.inputmethod.InlineSuggestionInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InlineSuggestionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlineSuggestionInfo[] newArray(int size) {
+            return new InlineSuggestionInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlineSuggestionInfo createFromParcel(Parcel in) {
+            return new InlineSuggestionInfo(in);
+        }
     }
 
     @Deprecated

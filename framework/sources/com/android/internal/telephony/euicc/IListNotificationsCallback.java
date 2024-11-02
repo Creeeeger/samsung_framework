@@ -86,8 +86,9 @@ public interface IListNotificationsCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IListNotificationsCallback {
+        public static class Proxy implements IListNotificationsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

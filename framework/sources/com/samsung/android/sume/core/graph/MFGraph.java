@@ -41,6 +41,10 @@ import java.util.stream.Stream;
 public class MFGraph extends GraphBase<MediaFilter> {
     private static final String TAG = Def.tagOf((Class<?>) MFGraph.class);
 
+    /* synthetic */ MFGraph(List x0, BufferChannel x1, BufferChannel x2, Graph.Option x3, AnonymousClass1 x4) {
+        this(x0, x1, x2, x3);
+    }
+
     private MFGraph(List<GraphNode<MediaFilter>> graphNodes, final BufferChannel inputChannel, final BufferChannel outputChannel, final Graph.Option option) {
         super(graphNodes, option);
         this.inputChannel = inputChannel;
@@ -52,7 +56,7 @@ public class MFGraph extends GraphBase<MediaFilter> {
         graphNodes.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.MFGraph$$ExternalSyntheticLambda8
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MFGraph.this.m8803lambda$new$0$comsamsungandroidsumecoregraphMFGraph(inputChannel, inputNodes, outputChannel, outputNodes, option, (GraphNode) obj);
+                MFGraph.this.m8795lambda$new$0$comsamsungandroidsumecoregraphMFGraph(inputChannel, inputNodes, outputChannel, outputNodes, option, (GraphNode) obj);
             }
         });
         Def.check(!inputNodes.isEmpty(), "no input node given", new Object[0]);
@@ -60,9 +64,8 @@ public class MFGraph extends GraphBase<MediaFilter> {
         Log.i(str, "success to create MediaFilter graph");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$0$com-samsung-android-sume-core-graph-MFGraph, reason: not valid java name */
-    public /* synthetic */ void m8803lambda$new$0$comsamsungandroidsumecoregraphMFGraph(BufferChannel inputChannel, List inputNodes, BufferChannel outputChannel, List outputNodes, Graph.Option option, GraphNode it) {
+    /* renamed from: lambda$new$0$com-samsung-android-sume-core-graph-MFGraph */
+    public /* synthetic */ void m8795lambda$new$0$comsamsungandroidsumecoregraphMFGraph(BufferChannel inputChannel, List inputNodes, BufferChannel outputChannel, List outputNodes, Graph.Option option, GraphNode it) {
         if (!it.hasInputEdge()) {
             it.addInputEdge(new GraphEdge(inputChannel));
             inputNodes.add(it);
@@ -87,7 +90,7 @@ public class MFGraph extends GraphBase<MediaFilter> {
             inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.MFGraph$$ExternalSyntheticLambda1
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    MFGraph.this.m8804lambda$run$1$comsamsungandroidsumecoregraphMFGraph((MediaBuffer) obj);
+                    MFGraph.this.m8796lambda$run$1$comsamsungandroidsumecoregraphMFGraph((MediaBuffer) obj);
                 }
             });
         }
@@ -102,10 +105,10 @@ public class MFGraph extends GraphBase<MediaFilter> {
             this.messagePublisher.sendMessage(Event.of(6, new HashMap<String, Object>(diskCache) { // from class: com.samsung.android.sume.core.graph.MFGraph.1
                 final /* synthetic */ DiskCache val$diskCache;
 
-                {
-                    this.val$diskCache = diskCache;
+                AnonymousClass1(final DiskCache diskCache2) {
+                    this.val$diskCache = diskCache2;
                     boolean storeCache = MFGraph.this.option.contains(0);
-                    put("cache", new Pair(diskCache, Boolean.valueOf(storeCache)));
+                    put("cache", new Pair(diskCache2, Boolean.valueOf(storeCache)));
                 }
             }));
         }
@@ -114,7 +117,7 @@ public class MFGraph extends GraphBase<MediaFilter> {
             List<MediaBuffer> bufferList = (List) IntStream.range(0, outBuffers.size()).mapToObj(new IntFunction() { // from class: com.samsung.android.sume.core.graph.MFGraph$$ExternalSyntheticLambda3
                 @Override // java.util.function.IntFunction
                 public final Object apply(int i) {
-                    return MFGraph.this.m8805lambda$run$3$comsamsungandroidsumecoregraphMFGraph(inBuffers, outBuffers, i);
+                    return MFGraph.this.m8797lambda$run$3$comsamsungandroidsumecoregraphMFGraph(inBuffers, outBuffers, i);
                 }
             }).collect(Collectors.toList());
             inBuffers.clear();
@@ -155,13 +158,11 @@ public class MFGraph extends GraphBase<MediaFilter> {
         Log.d(str, "run X");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$run$1$com-samsung-android-sume-core-graph-MFGraph, reason: not valid java name */
-    public /* synthetic */ void m8804lambda$run$1$comsamsungandroidsumecoregraphMFGraph(MediaBuffer it) {
+    /* renamed from: lambda$run$1$com-samsung-android-sume-core-graph-MFGraph */
+    public /* synthetic */ void m8796lambda$run$1$comsamsungandroidsumecoregraphMFGraph(MediaBuffer it) {
         it.setExtra(Message.KEY_END_TIME_US, Long.valueOf(this.option.getMaxDuration(TimeUnit.MICROSECONDS)));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$run$2(DiskCache diskCache, MediaBuffer it) {
         try {
             if (it.containsExtra(Message.KEY_CACHE_ID)) {
@@ -180,41 +181,65 @@ public class MFGraph extends GraphBase<MediaFilter> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$run$3$com-samsung-android-sume-core-graph-MFGraph, reason: not valid java name */
-    public /* synthetic */ MediaBuffer m8805lambda$run$3$comsamsungandroidsumecoregraphMFGraph(List inBuffers, List outBuffers, int it) {
+    /* renamed from: com.samsung.android.sume.core.graph.MFGraph$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends HashMap<String, Object> {
+        final /* synthetic */ DiskCache val$diskCache;
+
+        AnonymousClass1(final DiskCache diskCache2) {
+            this.val$diskCache = diskCache2;
+            boolean storeCache = MFGraph.this.option.contains(0);
+            put("cache", new Pair(diskCache2, Boolean.valueOf(storeCache)));
+        }
+    }
+
+    /* renamed from: lambda$run$3$com-samsung-android-sume-core-graph-MFGraph */
+    public /* synthetic */ MediaBuffer m8797lambda$run$3$comsamsungandroidsumecoregraphMFGraph(List inBuffers, List outBuffers, int it) {
         MediaBuffer inBuffer = (MediaBuffer) inBuffers.get(it);
         MediaBuffer outBuffer = (MediaBuffer) outBuffers.get(it);
         MediaBuffer buffer = MediaBuffer.groupOf(new ArrayList<MediaBuffer>(inBuffer, outBuffer) { // from class: com.samsung.android.sume.core.graph.MFGraph.2
             final /* synthetic */ MediaBuffer val$inBuffer;
             final /* synthetic */ MediaBuffer val$outBuffer;
 
-            {
-                this.val$inBuffer = inBuffer;
-                this.val$outBuffer = outBuffer;
-                add(inBuffer);
-                add(outBuffer);
+            AnonymousClass2(MediaBuffer inBuffer2, MediaBuffer outBuffer2) {
+                this.val$inBuffer = inBuffer2;
+                this.val$outBuffer = outBuffer2;
+                add(inBuffer2);
+                add(outBuffer2);
             }
         });
-        if (inBuffer.containsExtra(Message.KEY_CONTENTS_ID)) {
-            buffer.setExtra(Message.KEY_CONTENTS_ID, inBuffer.getExtra(Message.KEY_CONTENTS_ID));
+        if (inBuffer2.containsExtra(Message.KEY_CONTENTS_ID)) {
+            buffer.setExtra(Message.KEY_CONTENTS_ID, inBuffer2.getExtra(Message.KEY_CONTENTS_ID));
         }
-        if (inBuffer.containsExtra(Message.KEY_IN_FILE)) {
-            buffer.setExtra(Message.KEY_IN_FILE, inBuffer.getExtra(Message.KEY_IN_FILE));
+        if (inBuffer2.containsExtra(Message.KEY_IN_FILE)) {
+            buffer.setExtra(Message.KEY_IN_FILE, inBuffer2.getExtra(Message.KEY_IN_FILE));
         }
-        if (outBuffer.containsExtra(Message.KEY_OUT_FILE)) {
-            buffer.setExtra(Message.KEY_OUT_FILE, outBuffer.getExtra(Message.KEY_OUT_FILE));
+        if (outBuffer2.containsExtra(Message.KEY_OUT_FILE)) {
+            buffer.setExtra(Message.KEY_OUT_FILE, outBuffer2.getExtra(Message.KEY_OUT_FILE));
         }
         buffer.setFlags(1);
         return buffer;
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.sume.core.graph.MFGraph$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends ArrayList<MediaBuffer> {
+        final /* synthetic */ MediaBuffer val$inBuffer;
+        final /* synthetic */ MediaBuffer val$outBuffer;
+
+        AnonymousClass2(MediaBuffer inBuffer2, MediaBuffer outBuffer2) {
+            this.val$inBuffer = inBuffer2;
+            this.val$outBuffer = outBuffer2;
+            add(inBuffer2);
+            add(outBuffer2);
+        }
+    }
+
     public static /* synthetic */ Integer lambda$run$4(List inBuffers, Integer it) {
         return (Integer) ((MediaBuffer) inBuffers.get(it.intValue())).getExtra(Message.KEY_CONTENTS_ID);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$run$5(List inBuffers, List outBuffers, int index) {
         ExifInterface exif = (ExifInterface) ((MediaBuffer) inBuffers.get(index)).getExtra("exif");
         if (exif != null) {

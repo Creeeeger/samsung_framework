@@ -31,7 +31,7 @@ public class GameService extends Service {
         }
     };
 
-    /* renamed from: android.service.games.GameService$1, reason: invalid class name */
+    /* renamed from: android.service.games.GameService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IGameService.Stub {
         AnonymousClass1() {
@@ -63,7 +63,6 @@ public class GameService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0() {
         Log.w(TAG, "System service binder died. Shutting down");
         Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new GameService$$ExternalSyntheticLambda1(), this));
@@ -77,7 +76,6 @@ public class GameService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doOnConnected(IGameServiceController gameServiceController) {
         IGameManagerService asInterface = IGameManagerService.Stub.asInterface(ServiceManager.getService(Context.GAME_SERVICE));
         this.mGameManagerService = asInterface;

@@ -9,7 +9,6 @@ public abstract class EGLObjectHandle {
         this.mHandle = handle;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public EGLObjectHandle(long handle) {
         this.mHandle = handle;
     }

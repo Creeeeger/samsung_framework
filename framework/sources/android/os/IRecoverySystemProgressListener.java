@@ -77,8 +77,9 @@ public interface IRecoverySystemProgressListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRecoverySystemProgressListener {
+        public static class Proxy implements IRecoverySystemProgressListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

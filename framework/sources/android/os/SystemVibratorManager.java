@@ -141,7 +141,6 @@ public class SystemVibratorManager extends VibratorManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class OnVibratorStateChangedListenerDelegate extends IVibratorStateListener.Stub {
         private final Executor mExecutor;
@@ -152,7 +151,6 @@ public class SystemVibratorManager extends VibratorManager {
             this.mListener = listener;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVibrating$0(boolean isVibrating) {
             this.mListener.onVibratorStateChanged(isVibrating);
         }
@@ -176,7 +174,6 @@ public class SystemVibratorManager extends VibratorManager {
             this.mVibratorInfo = vibratorInfo;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.Vibrator
         public VibratorInfo getInfo() {
             return this.mVibratorInfo;

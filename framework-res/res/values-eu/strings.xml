@@ -269,12 +269,12 @@ Lasterbide hau beste eginbide batengatik aldatzeko, joan Ezarpenak > Erabilerraz
     <string name="allow">Eman baimena</string>
     <string name="alwaysUse">Erabili modu lehenetsian ekintza honetarako.</string>
     <string name="android_preparing_apk">%1$s prestatzen.</string>
-    <string name="android_start_title">Telefonoa abiarazten ari da…</string>
+    <string name="android_start_title">Tableta abiarazten ari da…</string>
     <string name="android_system_label">Android sistema</string>
     <string name="android_upgrading_complete">Bertsio-berritzea amaitzen.</string>
     <string name="android_upgrading_notification_title">Sistema eguneratzen amaitzen…</string>
     <string name="android_upgrading_starting_apps">Aplikazioak abiarazten.</string>
-    <string name="android_upgrading_title">Telefonoa eguneratzen ari da…</string>
+    <string name="android_upgrading_title">Tableta eguneratzen ari da…</string>
     <string name="anr_activity_application">%2$s aplikazioak ez du erantzuten</string>
     <string name="anr_activity_process">%1$s aplikazioak ez du erantzuten</string>
     <string name="anr_application_process">%1$s aplikazioak ez du erantzuten</string>
@@ -295,16 +295,16 @@ Lasterbide hau beste eginbide batengatik aldatzeko, joan Ezarpenak > Erabilerraz
     <string name="app_not_found">Ez da ekintza gauza dezakeen aplikaziorik aurkitu</string>
     <string name="app_running_notification_text">Sakatu informazio gehiago lortzeko edo aplikazioa gelditzeko.</string>
     <string name="app_running_notification_title">%1$s abian da</string>
-    <string name="app_streaming_blocked_message">Une honetan, aplikazioa ezin da %1$s erabilita atzitu. Gailu horren ordez, erabili telefonoa.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Segurtasun gehigarria eskatzen ari da aplikazioa. Gailu horren ordez, erabili telefonoa.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Aplikazioa ezin da %1$s erabilita atzitu. Gailu horren ordez, erabili telefonoa.</string>
+    <string name="app_streaming_blocked_message">Une honetan, aplikazioa ezin da %1$s erabilita atzitu. Gailu horren ordez, erabili tableta.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Segurtasun gehigarria eskatzen ari da aplikazioa. Gailu horren ordez, erabili tableta.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Aplikazioa ezin da %1$s erabilita atzitu. Gailu horren ordez, erabili tableta.</string>
     <string name="app_streaming_blocked_title">%1$s ez dago erabilgarri</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera ez dago erabilgarri</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Jarraitu telefonoan</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofonoa ez dago erabilgarri</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Baimena behar da</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store ez dago erabilgarri</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Telefonoaren ezarpenak ez daude erabilgarri</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Tabletaren ezarpenak ez daude erabilgarri</string>
     <string name="app_suspended_default_message">%1$s ez dago erabilgarri une honetan. Haren erabilgarritasuna %2$s aplikazioak kudeatzen du.</string>
     <string name="app_suspended_more_details">Lortu informazio gehiago</string>
     <string name="app_suspended_title">Aplikazioa ez dago erabilgarri</string>
@@ -344,7 +344,7 @@ Lasterbide hau beste eginbide batengatik aldatzeko, joan Ezarpenak > Erabilerraz
     <string name="back_button_label">Atzera</string>
     <string name="badPin">Idatzi duzun PIN zaharra ez da zuzena.</string>
     <string name="badPuk">Idatzi duzun PUK kode zaharra ez da zuzena. Saiatu berriro.</string>
-    <string name="battery_saver_charged_notification_summary">Behar adina bateria dauka telefonoak. Jada ez dago eginbiderik murriztuta.</string>
+    <string name="battery_saver_charged_notification_summary">Behar adina bateria dauka tabletak. Jada ez dago eginbiderik murriztuta.</string>
     <string name="battery_saver_description">Bateria-aurreztaileak gai iluna aktibatzen du, eta atzeko planoko jarduerak, zenbait efektu bisual, eta eginbide jakin eta sareko konexio batzuk mugatzen edo desaktibatzen ditu.</string>
     <string name="battery_saver_description_with_learn_more">Bateria-aurreztaileak gai iluna aktibatzen du, eta atzeko planoko jarduerak, zenbait efektu bisual, eta eginbide jakin eta sareko konexio batzuk mugatzen edo desaktibatzen ditu.</string>
     <string name="battery_saver_notification_channel_name">Bateria-aurreztailea</string>
@@ -486,7 +486,7 @@ Entzungailuen bolumena gomendatutakoa baino ozenago eduki da, eta baliteke horre
     <string name="decline">Baztertu</string>
     <string name="decline_remote_bugreport_action">BAZTERTU</string>
     <string name="default_audio_route_category_name">Sistema</string>
-    <string name="default_audio_route_name">Telefonoa</string>
+    <string name="default_audio_route_name">Tableta</string>
     <string name="default_audio_route_name_dock_speakers">Konektatu bozgorailuak oinarrira</string>
     <string name="default_audio_route_name_external_device">Kanpoko gailua</string>
     <string name="default_audio_route_name_headphones">Entzungailuak</string>
@@ -563,7 +563,7 @@ Entzungailuen bolumena gomendatutakoa baino ozenago eduki da, eta baliteke horre
     <string name="emergency_call_dialog_number_for_display">Larrialdietarako zenbakia</string>
     <string name="emergency_calls_only">Larrialdi-deiak soilik</string>
     <string name="enablePin">Ezin izan da aldatu. Gaitu SIM edo RUIM txartelaren blokeoa.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s zerbitzuak \"Arakatu ukituta\" eginbidea gaitu nahi du. Eginbide hori aktibatuta dagoenean, hatzaren azpian duzunaren azalpena ikus edo entzun dezakezu, edo telefonoarekin interakzioan aritzeko keinuak egin ditzakezu.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s zerbitzuak \"Arakatu ukituta\" eginbidea gaitu nahi du. Eginbide hori aktibatuta dagoenean, hatzaren azpian duzunaren azalpena ikus edo entzun dezakezu, edo tabletarekin interakzioan aritzeko keinuak egin ditzakezu.</string>
     <string name="enable_explore_by_touch_warning_title">\"Arakatu ukituta\" eginbidea gaitu nahi duzu?</string>
     <string name="error_message_change_not_allowed">Administratzaileak ez du eman aldaketa egiteko baimena</string>
     <string name="error_message_title">Errorea</string>
@@ -776,7 +776,7 @@ Uki ezazu arin, hatz-marka konfiguratu bitartean."</string>
     <string name="global_action_silent_mode_on_status">Soinua DESAKTIBATUTA dago</string>
     <string name="global_action_toggle_silent_mode">Isilik modua</string>
     <string name="global_action_voice_assist">Ahots-laguntza</string>
-    <string name="global_actions">Telefonoaren aukerak</string>
+    <string name="global_actions">Tabletaren aukerak</string>
     <string name="global_actions_airplane_mode_off_status">Hegaldi modua DESAKTIBATUTA dago</string>
     <string name="global_actions_airplane_mode_on_status">Hegaldi modua AKTIBATUTA dago</string>
     <string name="global_actions_toggle_airplane_mode">Hegaldi modua</string>
@@ -917,11 +917,11 @@ Ziur orritik irten nahi duzula?"</string>
     <string name="keyguard_password_entry_touch_hint"><font size="17">Sakatu pasahitza idazteko</font></string>
     <string name="keyguard_password_wrong_pin_code">PIN kodea okerra da.</string>
     <string name="kg_enter_confirm_pin_hint">Berretsi erabili nahi duzun PIN kodea</string>
-    <string name="kg_failed_attempts_almost_at_login">"Desblokeatzeko eredua oker marraztu duzu %1$d aldiz. Beste %2$d aldiz oker marrazten baduzu, telefonoa posta-kontu baten bidez desblokeatzeko eskatuko dizugu.
+    <string name="kg_failed_attempts_almost_at_login">"Desblokeatzeko eredua oker marraztu duzu %1$d aldiz. Beste %2$d aldiz oker marrazten baduzu, tableta posta-kontu baten bidez desblokeatzeko eskatuko dizugu.
 
  Saiatu berriro %3$d segundo barru."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Telefonoa desblokeatzen saiatu zara %1$d aldiz. Beste %2$d saiakera okerren ondoren, jatorrizko ezarpen lehenetsiak berrezarriko dira telefonoan eta erabiltzaile-datu guztiak galduko dira.</string>
-    <string name="kg_failed_attempts_now_wiping">Telefonoa desblokeatzen saiatu zara %d aldiz. Jatorrizko ezarpen lehenetsiak berrezarriko dira.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Tableta desblokeatzen saiatu zara %1$d aldiz. Beste %2$d saiakera okerren ondoren, jatorrizko ezarpen lehenetsiak berrezarriko dira tabletan eta erabiltzaile-datu guztiak galduko dira.</string>
+    <string name="kg_failed_attempts_now_wiping">Tableta desblokeatzen saiatu zara %d aldiz. Jatorrizko ezarpen lehenetsiak berrezarriko dira.</string>
     <string name="kg_forgot_pattern_button_text">Eredua ahaztu zaizu</string>
     <string name="kg_invalid_confirm_pin_hint">PIN kodeak ez datoz bat</string>
     <string name="kg_invalid_puk">Idatzi berriro PUK kode zuzena. Hainbat saiakera oker eginez gero, betiko desgaituko da SIMa.</string>
@@ -986,11 +986,11 @@ Saiatu berriro %2$d segundo barru."</string>
     <string name="lockscreen_access_pattern_start">Eredua marrazten hasi zara</string>
     <string name="lockscreen_carrier_default">Ez dago zerbitzurik</string>
     <string name="lockscreen_emergency_call">Larrialdi-deiak</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Telefonoa %1$d aldiz desblokeatzen saiatu zara. Beste %2$d aldiz huts egiten baduzu, fabrikako ezarpen lehenetsiak berrezarriko dira eta datu guztiak galduko dituzu.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Desblokeatzeko eredua oker marraztu duzu %1$d aldiz. Beste %2$d aldiz idazten baduzu oker, telefonoa desblokeatzeko, Google-n saioa hasteko kredentzialak erabiltzea eskatuko dizugu.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Tableta %1$d aldiz desblokeatzen saiatu zara. Beste %2$d aldiz huts egiten baduzu, fabrikako ezarpen lehenetsiak berrezarriko dira eta datu guztiak galduko dituzu.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Desblokeatzeko eredua oker marraztu duzu %1$d aldiz. Beste %2$d aldiz idazten baduzu oker, tableta desblokeatzeko, Google-n saioa hasteko kredentzialak erabiltzea eskatuko dizugu.
 
  Saiatu berriro %3$d segundo barru."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Telefonoa %d aldiz desblokeatzen saiatu zara. Orain, fabrikako ezarpen lehenetsiak berrezarriko dira.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Tableta %d aldiz desblokeatzen saiatu zara. Orain, fabrikako ezarpen lehenetsiak berrezarriko dira.</string>
     <string name="lockscreen_forgot_pattern_button_text">Eredua ahaztu zaizu?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Erabiltzaile-izena edo pasahitza ahaztu zaizu?
 Joan "<b>google.com/accounts/recovery</b> helbidera.</string>
@@ -1006,7 +1006,7 @@ Joan "<b>google.com/accounts/recovery</b> helbidera.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Desblokeatzeko edo larrialdi-deia egiteko, sakatu Menua.</string>
     <string name="lockscreen_missing_sim_instructions">Gehitu SIM bat.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIMa falta da, edo ezin da irakurri. Gehitu SIM bat.</string>
-    <string name="lockscreen_missing_sim_message">Ez dago SIMik telefonoan.</string>
+    <string name="lockscreen_missing_sim_message">Ez dago SIMik tabletan.</string>
     <string name="lockscreen_missing_sim_message_short">Ez dago SIMik</string>
     <string name="lockscreen_network_locked_message">Sarea blokeatuta dago</string>
     <string name="lockscreen_password_wrong">Saiatu berriro</string>
@@ -1046,7 +1046,7 @@ Saiatu berriro %2$d segundo barru."</string>
     <string name="low_internal_storage_view_text">Sistemaren funtzio batzuek ez dute agian funtzionatuko</string>
     <string name="low_internal_storage_view_text_no_boot">Sisteman ez dago behar adina memoria. Ziurtatu gutxienez 250 MB erabilgarri dituzula eta, ondoren, berrabiarazi gailua.</string>
     <string name="low_internal_storage_view_title">Memoria betetzen ari da</string>
-    <string name="low_memory">Telefonoaren memoria beteta dago. Tokia egiteko, ezabatu fitxategi batzuk.</string>
+    <string name="low_memory">Tabletaren memoria beteta dago. Tokia egiteko, ezabatu fitxategi batzuk.</string>
     <string name="managed_profile_app_label">Aldatu %1$s aplikazioko laneko profilera</string>
     <string name="managed_profile_label">Aldatu laneko profilera</string>
     <string name="managed_profile_label_badge">Laneko %1$s</string>
@@ -1376,23 +1376,23 @@ Jakinarazpen hobetuek jakinarazpenen eduki osoa atzi dezakete, informazio pertso
     <string name="permdesc_bindNotificationListenerService">Jakinarazpen-hautemaile baten goi-mailako interfazera lotzeko aukera ematen dio titularrari. Aplikazio normalek ez dute baimen hau behar.</string>
     <string name="permdesc_bind_connection_service">Deiak egiteko eta jasotzeko telefonia-zerbitzuekin interakzioan aritzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_bind_incall_service">Erabiltzaileak deiaren pantaila noiz eta nola ikusten duen kontrolatzeko baimena ematen die aplikazioei.</string>
-    <string name="permdesc_bluetooth">Telefonoaren Bluetooth konfigurazioa ikusteko eta parekatutako gailuekin konexioak egiteko eta onartzeko baimena ematen die aplikazioei.</string>
-    <string name="permdesc_bluetoothAdmin">Tokiko Bluetooth telefonoa konfiguratzea eta urruneko gailuak detektatzea eta haiekin parekatzea baimentzen die aplikazioei.</string>
+    <string name="permdesc_bluetooth">Tabletaren Bluetooth konfigurazioa ikusteko eta parekatutako gailuekin konexioak egiteko eta onartzeko baimena ematen die aplikazioei.</string>
+    <string name="permdesc_bluetoothAdmin">Tokiko Bluetooth tableta konfiguratzea eta urruneko gailuak detektatzea eta haiekin parekatzea baimentzen die aplikazioei.</string>
     <string name="permdesc_bluetooth_advertise">Inguruko Bluetooth bidezko gailuetan informazioa iragartzeko baimena ematen die aplikazioei</string>
     <string name="permdesc_bluetooth_connect">Parekatutako Bluetooth bidezko gailuetara konektatzeko baimena ematen die aplikazioei</string>
     <string name="permdesc_bluetooth_scan">Inguruko Bluetooth bidezko gailuak hautemateko eta haiekin parekatzeko baimena ematen die aplikazioei</string>
     <string name="permdesc_bodySensors">Aplikazioak erabiltzen diren bitartean, gorputz-sentsoreen datuak (besteak beste, bihotz-maiztasuna, tenperatura eta odolean dagoen oxigenoaren ehunekoa) erabiltzeko baimena ematen die aplikazio horiei.</string>
     <string name="permdesc_bodySensors_background">Aplikazioak atzeko planoan egon bitartean, gorputz-sentsoreen datuak (besteak beste, bihotz-maiztasuna, tenperatura eta odolean dagoen oxigenoaren ehunekoa) erabiltzeko baimena ematen die aplikazio horiei.</string>
-    <string name="permdesc_broadcastSticky">Igorpen iraunkorrak emateko baimena ematen die; horiek igorpena amaitu ondoren mantentzen dira. Gehiegi erabiliz gero, telefonoa motel edo ezegonkor ibiliko da, memoria gehiago erabiliko delako.</string>
+    <string name="permdesc_broadcastSticky">Igorpen iraunkorrak emateko baimena ematen die; horiek igorpena amaitu ondoren mantentzen dira. Gehiegi erabiliz gero, tableta motel edo ezegonkor ibiliko da, memoria gehiago erabiliko delako.</string>
     <string name="permdesc_callCompanionApp">Gailuan abian diren deiak eta deion informazioa ikusi eta kontrolatzeko baimena ematen die aplikazioei; besteak beste, deien zenbakiak eta deien egoera.</string>
     <string name="permdesc_callPhone">Zuk ezer egin beharrik gabe, telefono-zenbakietara deitzeko baimena ematen die aplikazioei. Ondorioz, baliteke ustekabeko gastuak edo deiak eragitea. Kontuan izan aplikazioak ezingo duela deitu larrialdietarako zenbakietara. Zuk berretsi gabeko deiak eginda, asmo txarreko aplikazioek baimen hori erabil dezakete gastuak eragiteko edo operadore-kode jakin batzuk markatzeko, sarrerako deiak beste zenbaki batera automatikoki desbideratzeko asmoarekin.</string>
     <string name="permdesc_camera">Aplikazioak abian den bitartean erabil dezake kamera argazkiak ateratzeko eta bideoak grabatzeko.</string>
     <string name="permdesc_cameraOpenCloseListener">Kamera ireki edo itxi dela (eta zer aplikaziorekin) dioten jakinarazpenak jaso ditzake aplikazio honek.</string>
     <string name="permdesc_changeNetworkState">Sarearen konexioaren egoera aldatzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_changeTetherState">Partekatutako Interneterako konexioaren egoera aldatzeko baimena ematen die aplikazioei.</string>
-    <string name="permdesc_changeWifiMulticastState">Wi-Fi sarearen bidez gailu guztiei bidalitako paketeak jasotzeko baimena ematen die aplikazioei multidifusio-helbideak erabilita, ez telefonoa soilik. Multidifusiokoa ez den moduak baino bateria gehiago erabiltzen du.</string>
+    <string name="permdesc_changeWifiMulticastState">Wi-Fi sarearen bidez gailu guztiei bidalitako paketeak jasotzeko baimena ematen die aplikazioei multidifusio-helbideak erabilita, ez tableta soilik. Multidifusiokoa ez den moduak baino bateria gehiago erabiltzen du.</string>
     <string name="permdesc_changeWifiState">Wi-Fi sarbide-puntuetara konektatzeko edo haietatik deskonektatzeko baimena ematen die aplikazioei, baita Wi-Fi sareen gailu-konfigurazioari aldaketak egitekoa ere.</string>
-    <string name="permdesc_changeWimaxState">Telefonoa WiMAX sareetara konektatzeko edo haietatik deskonektatzeko baimena ematen die aplikazioei.</string>
+    <string name="permdesc_changeWimaxState">Tableta WiMAX sareetara konektatzeko edo haietatik deskonektatzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_companionProfileWatch">Erlojuak kudeatzeko baimena ematen die aplikazio osagarriei.</string>
     <string name="permdesc_connection_manager">Telekomunikabideekiko konexioak kudeatzea baimentzen die aplikazioei.</string>
     <string name="permdesc_control_incall_experience">Deiak abian direnean erabiltzeko aukera eskaintzea baimentzen die aplikazioei.</string>
@@ -1418,7 +1418,7 @@ Jakinarazpen hobetuek jakinarazpenen eduki osoa atzi dezakete, informazio pertso
     <string name="permdesc_foregroundServiceSpecialUse">Aurreko planoko zerbitzuak (specialUse motakoak) erabiltzeko baimena ematen dio aplikazioari</string>
     <string name="permdesc_foregroundServiceSystemExempted">Aurreko planoko zerbitzuak (systemExempted motakoak) erabiltzeko baimena ematen dio aplikazioari</string>
     <string name="permdesc_fullScreenIntent">Blokeatutako gailu batean jakinarazpenak pantaila osoko jarduera gisa bistaratzeko baimena ematen die aplikazioei</string>
-    <string name="permdesc_getAccounts">Telefonoak ezagutzen dituen kontuen zerrenda lortzeko baimena ematen die aplikazioei. Instalatuta dauzkazun aplikazioek sortutako kontuak har daitezke barnean.</string>
+    <string name="permdesc_getAccounts">Tabletak ezagutzen dituen kontuen zerrenda lortzeko baimena ematen die aplikazioei. Instalatuta dauzkazun aplikazioek sortutako kontuak har daitezke barnean.</string>
     <string name="permdesc_getPackageSize">Bere kodea, datuak eta cache-tamainak eskuratzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_getTasks">Une honetan edo duela gutxi exekutatutako zereginei buruzko informazioa lortzeko baimena ematen die aplikazioei. Horrela, aplikazioak gailuan erabiltzen ari diren aplikazioei buruzko informazioa ezagut dezake.</string>
     <string name="permdesc_handoverStatus">Oraingo Android Beam transferentziei buruzko informazioa jasotzeko baimena ematen die aplikazioei</string>
@@ -1441,16 +1441,16 @@ Jakinarazpen hobetuek jakinarazpenen eduki osoa atzi dezakete, informazio pertso
     <string name="permdesc_nearby_wifi_devices">Inguruko wifi-gailuetan iragartzeko, haiekin konektatzeko eta haien kokapena zehazteko baimena ematen die aplikazioei</string>
     <string name="permdesc_nfc">Near Field Communication (NFC) etiketekin, txartelekin eta irakurgailuekin komunikatzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_observeCompanionDevicePresence">Gailu osagarrien presentzia begiratzeko baimena ematen die aplikazio osagarriei gailuak inguruan edo urrun daudenean.</string>
-    <string name="permdesc_persistentActivity">Beren zati batzuk memoria modu iraunkorrean ezartzeko baimena ematen die aplikazioei. Horrela, beste aplikazioek erabilgarri duten memoria murritz daiteke eta telefonoa motel daiteke.</string>
+    <string name="permdesc_persistentActivity">Beren zati batzuk memoria modu iraunkorrean ezartzeko baimena ematen die aplikazioei. Horrela, beste aplikazioek erabilgarri duten memoria murritz daiteke eta tableta motel daiteke.</string>
     <string name="permdesc_postNotification">Jakinarazpenak erakusteko baimena ematen die aplikazioei</string>
     <string name="permdesc_preferredPaymentInfo">NFC bidezko ordainketa-zerbitzu lehenetsiari buruzko informazioa jasotzeko baimena ematen die aplikazioei, hala nola erregistratutako laguntzaileak eta ibilbidearen helmuga.</string>
     <string name="permdesc_processOutgoingCalls">Irteerako deian markatutako zenbakia ikusteko baimena ematen die aplikazioei, deia beste zenbaki batera birbideratzeko edo deia bertan behera uzteko aukerarekin.</string>
     <string name="permdesc_queryAllPackages">Instalatutako pakete guztiak ikusteko baimena ematen dio aplikazioari.</string>
     <string name="permdesc_readBasicPhoneState">Gailuaren oinarrizko eginbide telefonikoak erabiltzeko baimena ematen dio aplikazioari.</string>
-    <string name="permdesc_readCalendar">Aplikazioak telefonoan gordetako egutegiko gertaerak irakur ditzake eta egutegiko datuak parteka eta gorde ditzake.</string>
+    <string name="permdesc_readCalendar">Aplikazioak tabletan gordetako egutegiko gertaerak irakur ditzake eta egutegiko datuak parteka eta gorde ditzake.</string>
     <string name="permdesc_readCallLog">Aplikazioak deien historia irakur dezake.</string>
     <string name="permdesc_readCellBroadcasts">Gailuak jasotako sare mugikor bidezko igorpen-mezuak irakurtzeko baimena ematen die aplikazioei. Sare mugikor bidezko igorpen-alertak kokapen batzuetan ematen dira larrialdi-egoeren berri emateko. Asmo txarreko aplikazioek gailuaren errendimendua edo funtzionamendua oztopa dezakete larrialdi-igorpen horietako bat jasotzen denean.</string>
-    <string name="permdesc_readContacts">Telefonoan gordetako kontaktuei buruzko datuak irakurtzeko baimena ematen die aplikazioei. Kontaktuak sortu dituzten telefonoko kontuak ere atzitu ahalko dituzte aplikazioek. Horrek barnean hartuko ditu instalatutako aplikazioek sortutako kontuak, agian. Baimen horrekin, kontaktuen datuak gorde ditzakete aplikazioek, eta baliteke asmo txarreko aplikazioek zuk jakin gabe partekatzea datu horiek.</string>
+    <string name="permdesc_readContacts">Tabletan gordetako kontaktuei buruzko datuak irakurtzeko baimena ematen die aplikazioei. Kontaktuak sortu dituzten tabletako kontuak ere atzitu ahalko dituzte aplikazioek. Horrek barnean hartuko ditu instalatutako aplikazioek sortutako kontuak, agian. Baimen horrekin, kontaktuen datuak gorde ditzakete aplikazioek, eta baliteke asmo txarreko aplikazioek zuk jakin gabe partekatzea datu horiek.</string>
     <string name="permdesc_readInstallSessions">Instalazio-saioak irakurtzeko baimena ematen die aplikazioei. Horrela, pakete-instalazio aktiboei buruzko xehetasunak ikus ditzakete.</string>
     <string name="permdesc_readMediaAudio">Biltegi partekatuko audio-fitxategiak irakurtzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_readMediaImages">Biltegi partekatuko irudi-fitxategiak irakurtzeko baimena ematen die aplikazioei.</string>
@@ -1458,11 +1458,11 @@ Jakinarazpen hobetuek jakinarazpenen eduki osoa atzi dezakete, informazio pertso
     <string name="permdesc_readNetworkUsageHistory">Sare eta aplikazio jakin batzuen sare-erabileraren historia irakurtzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_readPhoneNumbers">Gailuaren telefono-zenbakiak erabiltzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_readPhoneState">Gailuaren telefono-eginbideak erabiltzeko baimena ematen die aplikazioei. Baimen horrek aplikazioari telefono-zenbakia eta gailu IDak zein diren, deirik aktibo dagoen eta deia zer zenbakirekin konektatuta dagoen zehazteko baimena ematen die aplikazioei.</string>
-    <string name="permdesc_readSms">Aplikazioak telefonoan gordetako SMS mezu (testu-mezu) guztiak irakur ditzake.</string>
+    <string name="permdesc_readSms">Aplikazioak tabletan gordetako SMS mezu (testu-mezu) guztiak irakur ditzake.</string>
     <string name="permdesc_readSyncSettings">Kontu baten sinkronizazio-ezarpenak irakurtzeko baimena ematen die aplikazioei. Adibidez, Jendea aplikazioa konturen batekin sinkronizatuta dagoen zehatz dezake.</string>
     <string name="permdesc_readSyncStats">Kontu baten sinkronizazio-estatistikak irakurtzeko baimena ematen dio; besteak beste, sinkronizazio-gertaeren historia eta sinkronizatutako datu kopurua.</string>
     <string name="permdesc_readVisualUserSelect">Biltegi partekatuko irudi- eta bideo-fitxategiak irakurtzeko baimena ematen die aplikazioei.</string>
-    <string name="permdesc_receiveBootCompleted">Sistema berrabiarazi bezain laster abiarazteko baimena ematen die aplikazioei. Horrela, agian denbora gehiago beharko du telefonoak abiarazteko, eta telefonoaren funtzionamendu orokorra mantso daiteke, baimen hori duten aplikazioak beti abian egongo baitira.</string>
+    <string name="permdesc_receiveBootCompleted">Sistema berrabiarazi bezain laster abiarazteko baimena ematen die aplikazioei. Horrela, agian denbora gehiago beharko du tabletak abiarazteko, eta tabletaren funtzionamendu orokorra mantso daiteke, baimen hori duten aplikazioak beti abian egongo baitira.</string>
     <string name="permdesc_receiveMms">MMS mezuak jasotzeko eta prozesatzeko baimena ematen die aplikazioei. Horrela, aplikazioak gailura bidalitako mezuak kontrola eta ezaba ditzake zuri erakutsi gabe.</string>
     <string name="permdesc_receiveSms">SMS mezuak jasotzeko eta prozesatzeko baimena ematen die aplikazioei. Horrela, aplikazioak gailura bidalitako mezuak kontrola eta ezaba ditzake zuri erakutsi gabe.</string>
     <string name="permdesc_receiveWapPush">WAP mezuak jasotzeko eta prozesatzeko baimena ematen die aplikazioei. Horrela, aplikazioak, besteak beste, gailura bidalitako mezuak kontrola eta ezaba ditzake zuri erakutsi gabe.</string>
@@ -1484,7 +1484,7 @@ Jakinarazpen hobetuek jakinarazpenen eduki osoa atzi dezakete, informazio pertso
     <string name="permdesc_sendSms">SMS mezuak bidaltzeko baimena ematen die aplikazioei. Horrela, ustekabeko gastuak eragin daitezke. Asmo txarreko aplikazioek erabil dezakete zuk berretsi gabeko mezuak bidalita gastuak eragiteko.</string>
     <string name="permdesc_setAlarm">Instalatutako alarma batean alarmak ezartzea baimentzen die aplikazioei. Alarma-aplikazio batzuek agian ez dute eginbide hori inplementatuko.</string>
     <string name="permdesc_setInputCalibration">Ukipen-pantailaren kalibrazio-parametroak aldatzeko baimena ematen die aplikazioei. Aplikazio normalek ez lukete beharko.</string>
-    <string name="permdesc_setTimeZone">Telefonoaren ordu-zona aldatzeko baimena ematen die aplikazioei.</string>
+    <string name="permdesc_setTimeZone">Tabletaren ordu-zona aldatzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_setWallpaper">Sistemaren horma-papera aldatzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_setWallpaperHints">Sistemaren horma-paperaren tamainaren doitzeak ezartzea baimentzen die aplikazioei.</string>
     <string name="permdesc_sim_communication">SIM txartelera aginduak bidaltzeko baimena ematen die aplikazioei. Oso arriskutsua da.</string>
@@ -1497,7 +1497,7 @@ Jakinarazpen hobetuek jakinarazpenen eduki osoa atzi dezakete, informazio pertso
     <string name="permdesc_subscribedFeedsRead">Une horretan sinkronizatutako jarioei buruzko xehetasunak lortzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_systemAlertWindow">Beste aplikazio batzuen edo pantailako beste zati batzuen gainean ager daiteke aplikazioa. Aplikazioaren funtzionamendu normala oztopa dezake eta beste aplikazio batzuen itxura alda dezake.</string>
     <string name="permdesc_systemCamera">Pribilegioa duen edo sistemakoa den aplikazio honek edonoiz erabil dezake kamera argazkiak ateratzeko eta bideoak grabatzeko. Halaber, android.permission.CAMERA baimena izan behar du aplikazioak.</string>
-    <string name="permdesc_transmitIr">Telefonoaren infragorri-igorlea erabiltzeko baimena ematen die aplikazioei.</string>
+    <string name="permdesc_transmitIr">Tabletaren infragorri-igorlea erabiltzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_turnScreenOn">Pantaila pizteko baimena ematen dio aplikazioari.</string>
     <string name="permdesc_uninstall_shortcut">Erabiltzaileak ezer egin gabe hasierako pantailako lasterbideak kentzeko aukera ematen die aplikazioei.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Lehendik instalatu duen aplikazioa erabiltzaileak ezer egin gabe eguneratzeko baimena ematen dio titularrari</string>
@@ -1510,10 +1510,10 @@ Jakinarazpen hobetuek jakinarazpenen eduki osoa atzi dezakete, informazio pertso
     <string name="permdesc_vibrate">Bibragailua kontrolatzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_vibrator_state">Dardara-egoera erabiltzeko baimena ematen die aplikazioei.</string>
     <string name="permdesc_videoWrite">Bideo bilduma aldatzeko baimena ematen die aplikazioei.</string>
-    <string name="permdesc_wakeLock">Telefonoa inaktibo ezartzea galaraztea baimentzen die aplikazioei.</string>
-    <string name="permdesc_writeCalendar">Telefonoko gertaerak gehitzeko, kentzeko edo aldatzeko aukera du aplikazioak. Gainera, egutegien jabeenak diruditen mezuak bidal ditzake, eta gertaerak alda ditzake jabeei beraiei jakinarazi gabe.</string>
-    <string name="permdesc_writeCallLog">Telefonoaren deien erregistroa aldatzeko baimena ematen die aplikazioei, sarrerako eta irteerako deiei buruzko datuak barne. Asmo txarreko aplikazioek deien erregistroa ezabatzeko edo aldatzeko erabil dezakete.</string>
-    <string name="permdesc_writeContacts">Telefonoan gordetako kontaktuei buruzko datuak aldatzeko baimena ematen die aplikazioei. Baimen horrekin, aplikazioek kontaktuen datuak ezaba ditzakete.</string>
+    <string name="permdesc_wakeLock">Tableta inaktibo ezartzea galaraztea baimentzen die aplikazioei.</string>
+    <string name="permdesc_writeCalendar">Tabletako gertaerak gehitzeko, kentzeko edo aldatzeko aukera du aplikazioak. Gainera, egutegien jabeenak diruditen mezuak bidal ditzake, eta gertaerak alda ditzake jabeei beraiei jakinarazi gabe.</string>
+    <string name="permdesc_writeCallLog">Tabletaren deien erregistroa aldatzeko baimena ematen die aplikazioei, sarrerako eta irteerako deiei buruzko datuak barne. Asmo txarreko aplikazioek deien erregistroa ezabatzeko edo aldatzeko erabil dezakete.</string>
+    <string name="permdesc_writeContacts">Tabletan gordetako kontaktuei buruzko datuak aldatzeko baimena ematen die aplikazioei. Baimen horrekin, aplikazioek kontaktuen datuak ezaba ditzakete.</string>
     <string name="permdesc_writeSettings">Sistemaren ezarpenen datuak aldatzeko baimena ematen die aplikazioei. Asmo txarreko aplikazioek sistemaren konfigurazioa hondatzeko erabil dezakete.</string>
     <string name="permdesc_writeSyncSettings">Kontu baten sinkronizazio-ezarpenak aldatzeko baimena ematen die aplikazioei. Adibidez, Jendea aplikazioa kontu batekin sinkronizatzeko erabil daiteke.</string>
     <string name="permgroupdesc_activityRecognition">jarduera fisikoa atzitu</string>
@@ -1710,7 +1710,7 @@ eskatu du."</string>
     <string name="permlab_uwb_ranging">banda ultrazabala darabilten inguruko gailuen arteko distantzia erlatiboa zehaztu</string>
     <string name="permlab_vibrate">kontrolatu dardara</string>
     <string name="permlab_videoWrite">bideo bilduma aldatu</string>
-    <string name="permlab_wakeLock">eragotzi telefonoa inaktibo ezartzea</string>
+    <string name="permlab_wakeLock">eragotzi tableta inaktibo ezartzea</string>
     <string name="permlab_writeCalendar">gehitu edo aldatu egutegiko gertaerak eta bidali mezu elektronikoak gonbidatuei jabeek jakin gabe</string>
     <string name="permlab_writeCallLog">idatzi deien erregistroan</string>
     <string name="permlab_writeContacts">aldatu kontaktuak</string>
@@ -1753,10 +1753,10 @@ eskatu du."</string>
     <string name="policydesc_limitPassword">Kontrolatu pantaila blokeoaren pasahitzen eta PINen luzera eta onartutako karaktereak.</string>
     <string name="policydesc_resetPassword">Aldatu pantailaren blokeoa.</string>
     <string name="policydesc_setGlobalProxy">Ezarri gailuaren proxy orokorra gidalerroak gaituta dauden bitartean erabiltzeko. Gailuaren jabeak soilik ezar dezake proxy orokorra.</string>
-    <string name="policydesc_watchLogin">Kontrolatu pantaila desblokeatzen saiatzean idatzitako pasahitz oker kopurua, eta blokeatu telefonoa edo ezabatu bere datuak pasahitza gehiegitan oker idazten bada.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Kontrolatu pantaila desblokeatzen saiatzean idatzitako pasahitz oker kopurua, eta blokeatu telefonoa edo ezabatu erabiltzaile-datuak pasahitza gehiegitan oker idazten bada.</string>
-    <string name="policydesc_wipeData">Ezabatu telefonoaren datuak abisatu gabe, jatorrizko datuak berrezarrita.</string>
-    <string name="policydesc_wipeData_secondaryUser">Ezabatu erabiltzaileak telefonoan dituen datuak abisatu gabe.</string>
+    <string name="policydesc_watchLogin">Kontrolatu pantaila desblokeatzen saiatzean idatzitako pasahitz oker kopurua, eta blokeatu tableta edo ezabatu bere datuak pasahitza gehiegitan oker idazten bada.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Kontrolatu pantaila desblokeatzen saiatzean idatzitako pasahitz oker kopurua, eta blokeatu tableta edo ezabatu erabiltzaile-datuak pasahitza gehiegitan oker idazten bada.</string>
+    <string name="policydesc_wipeData">Ezabatu tabletaren datuak abisatu gabe, jatorrizko datuak berrezarrita.</string>
+    <string name="policydesc_wipeData_secondaryUser">Ezabatu erabiltzaileak tabletan dituen datuak abisatu gabe.</string>
     <string name="policylab_disableCamera">Desgaitu kamerak</string>
     <string name="policylab_disableKeyguardFeatures">Desgaitu pantailaren blokeoko eginbide batzuk</string>
     <string name="policylab_encryptedStorage">Ezarri memoria-enkriptatzea</string>
@@ -1773,7 +1773,7 @@ eskatu du."</string>
     <string name="postalTypeHome">Etxekoa</string>
     <string name="postalTypeOther">Beste bat</string>
     <string name="postalTypeWork">Lantokia</string>
-    <string name="power_dialog">Telefonoaren aukerak</string>
+    <string name="power_dialog">Tabletaren aukerak</string>
     <string name="power_off">Itzali</string>
     <string name="prepend_shortcut_label">Menua+</string>
     <string name="preposition_for_date">%s</string>
@@ -1945,7 +1945,7 @@ Musika bolumen handian eta denbora luzez entzuteak entzumena kalte diezazuke."</
     <string name="shortcut_restore_unknown_issue">Ezin izan da leheneratu lasterbidea</string>
     <string name="shortcut_restored_on_lower_version">Aplikazioaren bertsio zaharrago batera aldatu da, edo aplikazioa ez da lasterbide honekin bateragarria</string>
     <string name="show_ime">Erakutsi pantailan teklatu fisikoa aktibo dagoen bitartean</string>
-    <string name="shutdown_confirm">Telefonoa itzali egingo da.</string>
+    <string name="shutdown_confirm">Tableta itzali egingo da.</string>
     <string name="shutdown_confirm_question">Itzali egin nahi duzu?</string>
     <string name="shutdown_progress">Itzaltzen…</string>
     <string name="silent_mode">Isilik modua</string>
@@ -2115,7 +2115,7 @@ Musika bolumen handian eta denbora luzez entzuteak entzumena kalte diezazuke."</
     <string name="user_switched">Erabiltzailea: %1$s.</string>
     <string name="user_switching_message">\"%1$s\" erabiltzailera aldatzen…</string>
     <string name="validity_period">Balio-aldia:</string>
-    <string name="vdm_camera_access_denied">Ezin da atzitu telefonoaren kamera %1$s gailutik</string>
+    <string name="vdm_camera_access_denied">Ezin da atzitu tabletaren kamera %1$s gailutik</string>
     <string name="vdm_pip_blocked">Edukia zuzenean erreproduzitu bitartean ezin da pantaila txiki gainjarrian ikusi</string>
     <string name="vdm_secure_window">Ezin da atzitu edukia hura igorri bitartean. Oraingo gailuaren ordez, erabili telefonoa.</string>
     <string name="view_and_control_notification_content">%s zerbitzuak pantaila ikusi eta kontrola dezake. Sakatu berrikusteko.</string>

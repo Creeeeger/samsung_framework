@@ -161,7 +161,6 @@ public class NetworkScoreManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class NetworkScoreCallbackProxy extends INetworkScoreCache.Stub {
         private final NetworkScoreCallback mCallback;
@@ -187,7 +186,6 @@ public class NetworkScoreManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$updateScores$0(List networks) {
             this.mCallback.onScoresUpdated(networks);
         }
@@ -207,7 +205,6 @@ public class NetworkScoreManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$clearScores$1() {
             this.mCallback.onScoresInvalidated();
         }

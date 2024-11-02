@@ -23,8 +23,7 @@ public class ImsEcbmImplBase {
     private Executor mExecutor = new PendingIntent$$ExternalSyntheticLambda1();
     private final IImsEcbm mImsEcbm = new AnonymousClass1();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.stub.ImsEcbmImplBase$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.stub.ImsEcbmImplBase$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IImsEcbm.Stub {
         AnonymousClass1() {
@@ -40,7 +39,6 @@ public class ImsEcbmImplBase {
             }, "setListener");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$0(IImsEcbmListener listener) {
             if (ImsEcbmImplBase.this.mListener != null && !ImsEcbmImplBase.this.mListener.asBinder().isBinderAlive()) {
                 Log.w(ImsEcbmImplBase.TAG, "setListener: discarding dead Binder");
@@ -59,7 +57,6 @@ public class ImsEcbmImplBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$exitEmergencyCallbackMode$1() {
             ImsEcbmImplBase.this.exitEmergencyCallbackMode();
         }

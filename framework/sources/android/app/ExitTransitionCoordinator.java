@@ -74,7 +74,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         this.mExitCallbacks = exitCallbacks;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.os.ResultReceiver
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
@@ -123,7 +122,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void delayCancel() {
         Handler handler = this.mHandler;
         if (handler != null) {
@@ -151,12 +149,18 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
 
     private void sharedElementExitBack() {
         Bundle bundle;
-        final ViewGroup decorView = getDecor();
+        ViewGroup decorView = getDecor();
         if (decorView != null) {
             decorView.suppressLayout(true);
         }
         if (decorView != null && (bundle = this.mExitSharedElementBundle) != null && !bundle.isEmpty() && !this.mSharedElements.isEmpty() && getSharedElementTransition() != null) {
             startTransition(new Runnable() { // from class: android.app.ExitTransitionCoordinator.1
+                final /* synthetic */ ViewGroup val$decorView;
+
+                AnonymousClass1(ViewGroup decorView2) {
+                    decorView = decorView2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     ExitTransitionCoordinator.this.startSharedElementExit(decorView);
@@ -167,10 +171,42 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.app.ExitTransitionCoordinator$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ ViewGroup val$decorView;
+
+        AnonymousClass1(ViewGroup decorView2) {
+            decorView = decorView2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ExitTransitionCoordinator.this.startSharedElementExit(decorView);
+        }
+    }
+
+    /* renamed from: android.app.ExitTransitionCoordinator$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 extends TransitionListenerAdapter {
+        AnonymousClass2() {
+        }
+
+        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
+        public void onTransitionEnd(Transition transition) {
+            transition.removeListener(this);
+            if (ExitTransitionCoordinator.this.isViewsTransitionComplete()) {
+                ExitTransitionCoordinator.this.delayCancel();
+            }
+        }
+    }
+
     public void startSharedElementExit(ViewGroup decorView) {
         Transition transition = getSharedElementExitTransition();
         transition.addListener(new TransitionListenerAdapter() { // from class: android.app.ExitTransitionCoordinator.2
+            AnonymousClass2() {
+            }
+
             @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
             public void onTransitionEnd(Transition transition2) {
                 transition2.removeListener(this);
@@ -197,7 +233,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         decorView.invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startSharedElementExit$0(ArrayList sharedElementSnapshots) {
         setSharedElementState(this.mExitSharedElementBundle, sharedElementSnapshots);
     }
@@ -246,6 +281,9 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
                 decorView.suppressLayout(true);
             }
             this.mHandler = new Handler() { // from class: android.app.ExitTransitionCoordinator.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     ExitTransitionCoordinator.this.mIsCanceled = true;
@@ -263,6 +301,9 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
             ArrayList<String> sharedElementNames = targetsM ? this.mSharedElementNames : this.mAllSharedElementNames;
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, this, sharedElementNames, resultCode, data);
             activity.convertToTranslucent(new Activity.TranslucentConversionListener() { // from class: android.app.ExitTransitionCoordinator.4
+                AnonymousClass4() {
+                }
+
                 @Override // android.app.Activity.TranslucentConversionListener
                 public void onTranslucentConversionComplete(boolean drawComplete) {
                     if (!ExitTransitionCoordinator.this.mIsCanceled) {
@@ -279,6 +320,33 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         }
     }
 
+    /* renamed from: android.app.ExitTransitionCoordinator$3 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass3 extends Handler {
+        AnonymousClass3() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            ExitTransitionCoordinator.this.mIsCanceled = true;
+            ExitTransitionCoordinator.this.finish();
+        }
+    }
+
+    /* renamed from: android.app.ExitTransitionCoordinator$4 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass4 implements Activity.TranslucentConversionListener {
+        AnonymousClass4() {
+        }
+
+        @Override // android.app.Activity.TranslucentConversionListener
+        public void onTranslucentConversionComplete(boolean drawComplete) {
+            if (!ExitTransitionCoordinator.this.mIsCanceled) {
+                ExitTransitionCoordinator.this.fadeOutBackground();
+            }
+        }
+    }
+
     public void stop(Activity activity) {
         if (this.mIsReturning && this.mExitCallbacks != null) {
             activity.convertToTranslucent((Activity.TranslucentConversionListener) null, (ActivityOptions) null);
@@ -286,7 +354,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void startExitTransition() {
         Transition transition = getExitTransition();
         ViewGroup decorView = getDecor();
@@ -300,7 +367,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         transitionStarted();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void fadeOutBackground() {
         Drawable background;
         if (this.mBackgroundAnimator == null) {
@@ -311,6 +377,9 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
                 ObjectAnimator ofInt = ObjectAnimator.ofInt(background2, "alpha", 0);
                 this.mBackgroundAnimator = ofInt;
                 ofInt.addListener(new AnimatorListenerAdapter() { // from class: android.app.ExitTransitionCoordinator.5
+                    AnonymousClass5() {
+                    }
+
                     @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                     public void onAnimationEnd(Animator animation) {
                         ExitTransitionCoordinator.this.mBackgroundAnimator = null;
@@ -330,6 +399,23 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         }
     }
 
+    /* renamed from: android.app.ExitTransitionCoordinator$5 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass5 extends AnimatorListenerAdapter {
+        AnonymousClass5() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ExitTransitionCoordinator.this.mBackgroundAnimator = null;
+            if (!ExitTransitionCoordinator.this.mIsCanceled) {
+                ExitTransitionCoordinator.this.mIsBackgroundReady = true;
+                ExitTransitionCoordinator.this.notifyComplete();
+            }
+            ExitTransitionCoordinator.this.backgroundAnimatorComplete();
+        }
+    }
+
     private Transition getExitTransition() {
         Transition viewsTransition = null;
         if (this.mTransitioningViews != null && !this.mTransitioningViews.isEmpty()) {
@@ -342,11 +428,14 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         if (viewsTransition == null) {
             viewsTransitionComplete();
         } else {
-            final ArrayList<View> transitioningViews = this.mTransitioningViews;
+            ArrayList<View> transitioningViews = this.mTransitioningViews;
             viewsTransition.addListener(new ActivityTransitionCoordinator.ContinueTransitionListener() { // from class: android.app.ExitTransitionCoordinator.6
+                final /* synthetic */ ArrayList val$transitioningViews;
+
                 /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                {
+                AnonymousClass6(ArrayList transitioningViews2) {
                     super();
+                    transitioningViews = transitioningViews2;
                 }
 
                 @Override // android.app.ActivityTransitionCoordinator.ContinueTransitionListener, android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
@@ -367,6 +456,32 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         return viewsTransition;
     }
 
+    /* renamed from: android.app.ExitTransitionCoordinator$6 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass6 extends ActivityTransitionCoordinator.ContinueTransitionListener {
+        final /* synthetic */ ArrayList val$transitioningViews;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass6(ArrayList transitioningViews2) {
+            super();
+            transitioningViews = transitioningViews2;
+        }
+
+        @Override // android.app.ActivityTransitionCoordinator.ContinueTransitionListener, android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
+        public void onTransitionEnd(Transition transition) {
+            ArrayList<View> arrayList;
+            ExitTransitionCoordinator.this.viewsTransitionComplete();
+            if (ExitTransitionCoordinator.this.mIsHidden && (arrayList = transitioningViews) != null) {
+                ExitTransitionCoordinator.this.showViews(arrayList, true);
+                ExitTransitionCoordinator.this.setTransitioningViewsVisiblity(0, true);
+            }
+            if (ExitTransitionCoordinator.this.mSharedElementBundle != null) {
+                ExitTransitionCoordinator.this.delayCancel();
+            }
+            super.onTransitionEnd(transition);
+        }
+    }
+
     private Transition getSharedElementExitTransition() {
         Transition sharedElementTransition = null;
         if (!this.mSharedElements.isEmpty()) {
@@ -376,6 +491,9 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
             sharedElementTransitionComplete();
         } else {
             sharedElementTransition.addListener(new ActivityTransitionCoordinator.ContinueTransitionListener() { // from class: android.app.ExitTransitionCoordinator.7
+                AnonymousClass7() {
+                }
+
                 @Override // android.app.ActivityTransitionCoordinator.ContinueTransitionListener, android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
                 public void onTransitionEnd(Transition transition) {
                     ExitTransitionCoordinator.this.sharedElementTransitionComplete();
@@ -391,7 +509,23 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         return sharedElementTransition;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.app.ExitTransitionCoordinator$7 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass7 extends ActivityTransitionCoordinator.ContinueTransitionListener {
+        AnonymousClass7() {
+        }
+
+        @Override // android.app.ActivityTransitionCoordinator.ContinueTransitionListener, android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
+        public void onTransitionEnd(Transition transition) {
+            ExitTransitionCoordinator.this.sharedElementTransitionComplete();
+            if (ExitTransitionCoordinator.this.mIsHidden) {
+                ExitTransitionCoordinator exitTransitionCoordinator = ExitTransitionCoordinator.this;
+                exitTransitionCoordinator.showViews(exitTransitionCoordinator.mSharedElements, true);
+            }
+            super.onTransitionEnd(transition);
+        }
+    }
+
     public void beginTransitions() {
         Transition sharedElementTransition = getSharedElementExitTransition();
         Transition viewsTransition = getExitTransition();
@@ -419,7 +553,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         return (this.mSharedElementBundle == null || this.mResultReceiver == null || !this.mIsBackgroundReady) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.ActivityTransitionCoordinator
     public void sharedElementTransitionComplete() {
         this.mSharedElementBundle = this.mExitSharedElementBundle == null ? captureSharedElementState() : captureExitSharedElementsState();
@@ -462,9 +595,17 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
                     notifyExitComplete();
                     return;
                 } else {
-                    final ResultReceiver resultReceiver = this.mResultReceiver;
-                    final Bundle sharedElementBundle = this.mSharedElementBundle;
+                    ResultReceiver resultReceiver = this.mResultReceiver;
+                    Bundle sharedElementBundle = this.mSharedElementBundle;
                     this.mListener.onSharedElementsArrived(this.mSharedElementNames, this.mSharedElements, new SharedElementCallback.OnSharedElementsReadyListener() { // from class: android.app.ExitTransitionCoordinator.8
+                        final /* synthetic */ ResultReceiver val$resultReceiver;
+                        final /* synthetic */ Bundle val$sharedElementBundle;
+
+                        AnonymousClass8(ResultReceiver resultReceiver2, Bundle sharedElementBundle2) {
+                            resultReceiver = resultReceiver2;
+                            sharedElementBundle = sharedElementBundle2;
+                        }
+
                         @Override // android.app.SharedElementCallback.OnSharedElementsReadyListener
                         public void onSharedElementsReady() {
                             resultReceiver.send(103, sharedElementBundle);
@@ -478,7 +619,24 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.app.ExitTransitionCoordinator$8 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass8 implements SharedElementCallback.OnSharedElementsReadyListener {
+        final /* synthetic */ ResultReceiver val$resultReceiver;
+        final /* synthetic */ Bundle val$sharedElementBundle;
+
+        AnonymousClass8(ResultReceiver resultReceiver2, Bundle sharedElementBundle2) {
+            resultReceiver = resultReceiver2;
+            sharedElementBundle = sharedElementBundle2;
+        }
+
+        @Override // android.app.SharedElementCallback.OnSharedElementsReadyListener
+        public void onSharedElementsReady() {
+            resultReceiver.send(103, sharedElementBundle);
+            ExitTransitionCoordinator.this.notifyExitComplete();
+        }
+    }
+
     public void notifyExitComplete() {
         if (!this.mExitNotified && isViewsTransitionComplete()) {
             this.mExitNotified = true;
@@ -500,7 +658,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void finish() {
         stopCancel();
         ExitTransitionCallbacks exitTransitionCallbacks = this.mExitCallbacks;
@@ -511,7 +668,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
         clearState();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.ActivityTransitionCoordinator
     public void clearState() {
         this.mHandler = null;
@@ -559,7 +715,6 @@ public class ExitTransitionCoordinator extends ActivityTransitionCoordinator {
     public static class ActivityExitTransitionCallbacks implements ExitTransitionCallbacks {
         final Activity mActivity;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ActivityExitTransitionCallbacks(Activity activity) {
             this.mActivity = activity;
         }

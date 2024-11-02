@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SrvccCall implements Parcelable {
     public static final Parcelable.Creator<SrvccCall> CREATOR = new Parcelable.Creator<SrvccCall>() { // from class: android.hardware.radio.ims.SrvccCall.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SrvccCall createFromParcel(Parcel _aidl_source) {
             SrvccCall _aidl_out = new SrvccCall();
@@ -17,7 +19,6 @@ public class SrvccCall implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SrvccCall[] newArray(int _aidl_size) {
             return new SrvccCall[_aidl_size];
@@ -52,6 +53,25 @@ public class SrvccCall implements Parcelable {
         public static final int LOCAL = 1;
         public static final int NETWORK = 2;
         public static final int NONE = 0;
+    }
+
+    /* renamed from: android.hardware.radio.ims.SrvccCall$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SrvccCall> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SrvccCall createFromParcel(Parcel _aidl_source) {
+            SrvccCall _aidl_out = new SrvccCall();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SrvccCall[] newArray(int _aidl_size) {
+            return new SrvccCall[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

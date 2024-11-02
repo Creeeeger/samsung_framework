@@ -8,13 +8,14 @@ import java.io.PrintWriter;
 /* loaded from: classes4.dex */
 public class MergedConfiguration implements Parcelable {
     public static final Parcelable.Creator<MergedConfiguration> CREATOR = new Parcelable.Creator<MergedConfiguration>() { // from class: android.util.MergedConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MergedConfiguration createFromParcel(Parcel in) {
             return new MergedConfiguration(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MergedConfiguration[] newArray(int size) {
             return new MergedConfiguration[size];
@@ -23,6 +24,10 @@ public class MergedConfiguration implements Parcelable {
     private final Configuration mGlobalConfig;
     private final Configuration mMergedConfig;
     private final Configuration mOverrideConfig;
+
+    /* synthetic */ MergedConfiguration(Parcel parcel, MergedConfigurationIA mergedConfigurationIA) {
+        this(parcel);
+    }
 
     public MergedConfiguration() {
         this.mGlobalConfig = new Configuration();
@@ -74,6 +79,23 @@ public class MergedConfiguration implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.util.MergedConfiguration$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MergedConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MergedConfiguration createFromParcel(Parcel in) {
+            return new MergedConfiguration(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MergedConfiguration[] newArray(int size) {
+            return new MergedConfiguration[size];
+        }
     }
 
     public void setConfiguration(Configuration globalConfig, Configuration overrideConfig) {

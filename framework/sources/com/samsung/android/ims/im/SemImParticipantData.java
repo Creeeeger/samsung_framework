@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemImParticipantData implements Parcelable {
     public static final Parcelable.Creator<SemImParticipantData> CREATOR = new Parcelable.Creator<SemImParticipantData>() { // from class: com.samsung.android.ims.im.SemImParticipantData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemImParticipantData createFromParcel(Parcel in) {
             return new SemImParticipantData(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImParticipantData[] newArray(int size) {
             return new SemImParticipantData[size];
@@ -23,6 +24,10 @@ public class SemImParticipantData implements Parcelable {
     private int mStatus;
     private String mUriString;
     private String mUserAlias;
+
+    /* synthetic */ SemImParticipantData(Parcel parcel, SemImParticipantDataIA semImParticipantDataIA) {
+        this(parcel);
+    }
 
     public SemImParticipantData(String chatId, String uri, int id, int status, String userAlias) {
         this.mChatId = chatId;
@@ -92,5 +97,22 @@ public class SemImParticipantData implements Parcelable {
         this.mId = in.readInt();
         this.mStatus = in.readInt();
         this.mUserAlias = in.readString();
+    }
+
+    /* renamed from: com.samsung.android.ims.im.SemImParticipantData$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemImParticipantData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemImParticipantData createFromParcel(Parcel in) {
+            return new SemImParticipantData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemImParticipantData[] newArray(int size) {
+            return new SemImParticipantData[size];
+        }
     }
 }

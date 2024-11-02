@@ -103,7 +103,6 @@ public class HardwareRenderer {
 
     public static native void disableVsync();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static native boolean isWebViewOverlaysEnabled();
 
     private static native void nAddObserver(long j, long j2);
@@ -128,7 +127,6 @@ public class HardwareRenderer {
 
     private static native long nCreateTextureLayer(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nDeleteProxy(long j);
 
     private static native void nDestroy(long j, long j2);
@@ -147,10 +145,8 @@ public class HardwareRenderer {
 
     private static native void nForceDrawNextFrame(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native int nGetRenderThreadTid(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nInitDisplayInfo(int i, int i2, float f, int i3, long j, long j2, boolean z, boolean z2);
 
     private static native boolean nIsDrawingEnabled();
@@ -179,7 +175,6 @@ public class HardwareRenderer {
 
     private static native void nRemoveRenderNode(long j, long j2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nRotateProcessStatsBuffer();
 
     private static native boolean nSemSetResourceCacheLimit(int i);
@@ -202,17 +197,14 @@ public class HardwareRenderer {
 
     private static native void nSetFrameCallback(long j, FrameDrawingCallback frameDrawingCallback);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetFrameCommitCallback(long j, FrameCommitCallback frameCommitCallback);
 
     private static native void nSetFrameCompleteCallback(long j, FrameCompleteCallback frameCompleteCallback);
 
     private static native void nSetHighContrastText(boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetIsHighEndGfx(boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetIsLowRam(boolean z);
 
     private static native void nSetIsSystemOrPersistent(boolean z);
@@ -233,7 +225,6 @@ public class HardwareRenderer {
 
     private static native void nSetPrepareSurfaceControlForWebviewCallback(long j, PrepareSurfaceControlForWebviewCallback prepareSurfaceControlForWebviewCallback);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetProcessStatsBuffer(int i);
 
     private static native void nSetRtAnimationsEnabled(boolean z);
@@ -324,11 +315,14 @@ public class HardwareRenderer {
         private FrameInfo mFrameInfo;
         private boolean mWaitForPresent;
 
+        /* synthetic */ FrameRenderRequest(HardwareRenderer hardwareRenderer, FrameRenderRequestIA frameRenderRequestIA) {
+            this();
+        }
+
         private FrameRenderRequest() {
             this.mFrameInfo = new FrameInfo();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void reset() {
             this.mWaitForPresent = false;
             HardwareRenderer.this.mRenderRequest.setVsyncTime(AnimationUtils.currentAnimationTimeMillis() * 1000000);
@@ -384,7 +378,6 @@ public class HardwareRenderer {
     }
 
     public int syncAndDrawFrame(FrameInfo frameInfo) {
-        forceDrawIfSTBFrame();
         return nSyncAndDrawFrame(this.mNativeProxy, frameInfo.frameInfo, frameInfo.frameInfo.length);
     }
 
@@ -516,12 +509,10 @@ public class HardwareRenderer {
         nCancelLayerUpdate(this.mNativeProxy, layer.getDeferredLayerUpdater());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setASurfaceTransactionCallback(ASurfaceTransactionCallback callback) {
         nSetASurfaceTransactionCallback(this.mNativeProxy, callback);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setPrepareSurfaceControlForWebviewCallback(PrepareSurfaceControlForWebviewCallback callback) {
         nSetPrepareSurfaceControlForWebviewCallback(this.mNativeProxy, callback);
     }
@@ -650,7 +641,6 @@ public class HardwareRenderer {
 
         public abstract void onCopyFinished(int i);
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public CopyRequest(Rect srcRect, Bitmap destinationBitmap) {
             this.mDestinationBitmap = destinationBitmap;
             if (srcRect != null) {
@@ -724,8 +714,9 @@ public class HardwareRenderer {
         nSetRtAnimationsEnabled(enabled);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static final class DestroyContextRunnable implements Runnable {
+    public static final class DestroyContextRunnable implements Runnable {
         private final long mNativeInstance;
 
         DestroyContextRunnable(long nativeInstance) {
@@ -738,7 +729,6 @@ public class HardwareRenderer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ProcessInitializer {
         static ProcessInitializer sInstance = new ProcessInitializer();
@@ -749,11 +739,27 @@ public class HardwareRenderer {
         private boolean mDisplayInitialized = false;
         private boolean mIsolated = false;
         private IGraphicsStatsCallback mGraphicsStatsCallback = new IGraphicsStatsCallback.Stub() { // from class: android.graphics.HardwareRenderer.ProcessInitializer.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.IGraphicsStatsCallback
             public void onRotateGraphicsStatsBuffer() throws RemoteException {
                 ProcessInitializer.this.rotateBuffer();
             }
         };
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.graphics.HardwareRenderer$ProcessInitializer$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 extends IGraphicsStatsCallback.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.view.IGraphicsStatsCallback
+            public void onRotateGraphicsStatsBuffer() throws RemoteException {
+                ProcessInitializer.this.rotateBuffer();
+            }
+        }
 
         private ProcessInitializer() {
         }
@@ -892,7 +898,6 @@ public class HardwareRenderer {
             this.mDisplayInitialized = true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void rotateBuffer() {
             HardwareRenderer.nRotateProcessStatsBuffer();
             requestBuffer();

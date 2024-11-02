@@ -8,13 +8,14 @@ import java.util.Objects;
 public class SplitActivityInfo implements Parcelable {
     public static final String ANY_ACTIVITY = "*";
     public static final Parcelable.Creator<SplitActivityInfo> CREATOR = new Parcelable.Creator<SplitActivityInfo>() { // from class: com.samsung.android.multiwindow.splitactivity.SplitActivityInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SplitActivityInfo createFromParcel(Parcel in) {
             return new SplitActivityInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitActivityInfo[] newArray(int size) {
             return new SplitActivityInfo[size];
@@ -36,12 +37,27 @@ public class SplitActivityInfo implements Parcelable {
         this.mMode = in.readInt();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.multiwindow.splitactivity.SplitActivityInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SplitActivityInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SplitActivityInfo createFromParcel(Parcel in) {
+            return new SplitActivityInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SplitActivityInfo[] newArray(int size) {
+            return new SplitActivityInfo[size];
+        }
+    }
+
     public boolean match(String sourceName, String targetName) {
         return this.mSourceName.equals(sourceName) && this.mTargetName.equals(targetName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean matchWithWildcard(String sourceName, String targetName) {
         return this.mSourceName.equals(sourceName) && (this.mTargetName.equals("*") || this.mTargetName.equals(targetName));
     }
@@ -88,7 +104,6 @@ public class SplitActivityInfo implements Parcelable {
         dest.writeInt(this.mMode);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String toShortString() {
         return String.format("{ %s -> %s }", this.mSourceName, this.mTargetName);
     }

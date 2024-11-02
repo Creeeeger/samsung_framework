@@ -91,7 +91,6 @@ public class UsbRequest {
         return connection.queueRequest(this, buffer, length);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean queueIfConnectionOpen(ByteBuffer buffer, int length) {
         int length2;
         boolean result;
@@ -134,7 +133,6 @@ public class UsbRequest {
         return connection.queueRequest(this, buffer);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:33:0x006e A[Catch: all -> 0x00ad, TryCatch #0 {, blocks: (B:14:0x0032, B:16:0x0037, B:17:0x00a3, B:23:0x003e, B:25:0x004c, B:26:0x0057, B:31:0x0063, B:33:0x006e, B:35:0x007c, B:36:0x0092, B:37:0x0095), top: B:13:0x0032 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -248,7 +246,6 @@ public class UsbRequest {
         throw new UnsupportedOperationException("Method not decompiled: android.hardware.usb.UsbRequest.queueIfConnectionOpen(java.nio.ByteBuffer):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dequeue(boolean useBufferOverflowInsteadOfIllegalArg) {
         int bytesTransferred;
         boolean isSend = this.mEndpoint.getDirection() == 0;
@@ -311,7 +308,6 @@ public class UsbRequest {
         return connection.cancelRequest(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean cancelIfOpen() {
         UsbDeviceConnection connection = this.mConnection;
         if (this.mNativeContext == 0 || (connection != null && !connection.isOpen())) {

@@ -97,8 +97,9 @@ public interface ISetEnabledProvidersCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISetEnabledProvidersCallback {
+        public static class Proxy implements ISetEnabledProvidersCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

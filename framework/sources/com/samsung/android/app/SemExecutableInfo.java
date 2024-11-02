@@ -77,18 +77,36 @@ public final class SemExecutableInfo implements Parcelable {
     String mUid;
     private static final boolean DEBUG = Debug.semIsProductDev();
     public static final Parcelable.Creator<SemExecutableInfo> CREATOR = new Parcelable.Creator<SemExecutableInfo>() { // from class: com.samsung.android.app.SemExecutableInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemExecutableInfo createFromParcel(Parcel in) {
             return new SemExecutableInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemExecutableInfo[] newArray(int size) {
             return new SemExecutableInfo[size];
         }
     };
+
+    /* renamed from: com.samsung.android.app.SemExecutableInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemExecutableInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemExecutableInfo createFromParcel(Parcel in) {
+            return new SemExecutableInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemExecutableInfo[] newArray(int size) {
+            return new SemExecutableInfo[size];
+        }
+    }
 
     public SemExecutableInfo() {
         this.mUid = null;

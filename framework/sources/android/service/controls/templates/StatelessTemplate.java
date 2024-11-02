@@ -9,7 +9,6 @@ public final class StatelessTemplate extends ControlTemplate {
         return 8;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public StatelessTemplate(Bundle b) {
         super(b);
     }

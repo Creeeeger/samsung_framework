@@ -114,8 +114,9 @@ public interface IGroupCallCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IGroupCallCallback {
+        public static class Proxy implements IGroupCallCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

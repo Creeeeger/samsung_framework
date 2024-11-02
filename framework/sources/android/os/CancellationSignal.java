@@ -110,9 +110,14 @@ public final class CancellationSignal {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static final class Transport extends ICancellationSignal.Stub {
+    public static final class Transport extends ICancellationSignal.Stub {
         final CancellationSignal mCancellationSignal;
+
+        /* synthetic */ Transport(TransportIA transportIA) {
+            this();
+        }
 
         private Transport() {
             this.mCancellationSignal = new CancellationSignal();

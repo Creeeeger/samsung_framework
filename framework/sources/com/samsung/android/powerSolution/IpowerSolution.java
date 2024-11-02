@@ -60,8 +60,9 @@ public interface IpowerSolution extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IpowerSolution {
+        public static class Proxy implements IpowerSolution {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

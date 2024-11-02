@@ -65,7 +65,6 @@ public class DrmInfo {
         return this.mInfoType;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isValid() {
         byte[] bArr;
         String str = this.mMimeType;

@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendGuardInterval implements Parcelable {
     public static final Parcelable.Creator<FrontendGuardInterval> CREATOR = new Parcelable.Creator<FrontendGuardInterval>() { // from class: android.hardware.tv.tuner.FrontendGuardInterval.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendGuardInterval createFromParcel(Parcel _aidl_source) {
             return new FrontendGuardInterval(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendGuardInterval[] newArray(int _aidl_size) {
             return new FrontendGuardInterval[_aidl_size];
@@ -29,6 +30,10 @@ public final class FrontendGuardInterval implements Parcelable {
         public static final int dtmb = 2;
         public static final int dvbt = 0;
         public static final int isdbt = 1;
+    }
+
+    /* synthetic */ FrontendGuardInterval(Parcel parcel, FrontendGuardIntervalIA frontendGuardIntervalIA) {
+        this(parcel);
     }
 
     public FrontendGuardInterval() {
@@ -91,6 +96,23 @@ public final class FrontendGuardInterval implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.FrontendGuardInterval$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendGuardInterval> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendGuardInterval createFromParcel(Parcel _aidl_source) {
+            return new FrontendGuardInterval(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendGuardInterval[] newArray(int _aidl_size) {
+            return new FrontendGuardInterval[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

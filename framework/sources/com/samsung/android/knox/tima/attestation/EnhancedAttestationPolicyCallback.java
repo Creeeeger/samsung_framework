@@ -9,13 +9,15 @@ public abstract class EnhancedAttestationPolicyCallback {
     private static final String TAG = "SEMEAPolicyCb";
     private EnhancedAttestationPolicyCallback acb = this;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract void onAttestationFinished(EnhancedAttestationResult enhancedAttestationResult);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class EaAttestationPolicyCallback extends IEnhancedAttestationPolicyCallback.Stub {
         private String mNonce;
+
+        /* synthetic */ EaAttestationPolicyCallback(EnhancedAttestationPolicyCallback enhancedAttestationPolicyCallback, EaAttestationPolicyCallbackIA eaAttestationPolicyCallbackIA) {
+            this();
+        }
 
         private EaAttestationPolicyCallback() {
             this.mNonce = "";
@@ -29,7 +31,6 @@ public abstract class EnhancedAttestationPolicyCallback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IEnhancedAttestationPolicyCallback getEaAttestationCb(String nonce) {
         EaAttestationPolicyCallback eaAttestationCb = new EaAttestationPolicyCallback();
         eaAttestationCb.mNonce = nonce;

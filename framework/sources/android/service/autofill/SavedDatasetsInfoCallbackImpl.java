@@ -15,7 +15,6 @@ final class SavedDatasetsInfoCallbackImpl implements SavedDatasetsInfoCallback {
     private final IResultReceiver mReceiver;
     private final String mType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SavedDatasetsInfoCallbackImpl(IResultReceiver receiver, String type) {
         this.mReceiver = (IResultReceiver) Objects.requireNonNull(receiver);
         this.mType = (String) Objects.requireNonNull(type);

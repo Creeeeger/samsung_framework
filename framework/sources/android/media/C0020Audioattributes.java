@@ -1,6 +1,6 @@
 package android.media;
 
-/* renamed from: android.media.Audioattributes, reason: case insensitive filesystem */
+/* renamed from: android.media.Audioattributes */
 /* loaded from: classes2.dex */
 public final class C0020Audioattributes {
     public static final int ALARM = 4;

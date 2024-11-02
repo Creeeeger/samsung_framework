@@ -1171,7 +1171,7 @@ public abstract class AbstractMessageParser {
         return html.toString();
     }
 
-    /* renamed from: com.google.android.util.AbstractMessageParser$1, reason: invalid class name */
+    /* renamed from: com.google.android.util.AbstractMessageParser$1 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$android$util$AbstractMessageParser$Token$Type;

@@ -81,7 +81,6 @@ public class ActionBarContextView extends AbsActionBarView {
         a.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.widget.AbsActionBarView, android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -217,7 +216,7 @@ public class ActionBarContextView extends AbsActionBarView {
         }
     }
 
-    public void initForMode(final ActionMode mode) {
+    public void initForMode(ActionMode mode) {
         View view = this.mClose;
         if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(this.mContext);
@@ -229,12 +228,21 @@ public class ActionBarContextView extends AbsActionBarView {
         }
         View closeButton = this.mClose.findViewById(R.id.action_mode_close_button);
         closeButton.setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarContextView.1
+            final /* synthetic */ ActionMode val$mode;
+
+            AnonymousClass1(ActionMode mode2) {
+                mode = mode2;
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 mode.finish();
             }
         });
         closeButton.setOnLongClickListener(new View.OnLongClickListener() { // from class: com.android.internal.widget.ActionBarContextView.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.View.OnLongClickListener
             public boolean onLongClick(View v) {
                 int xOffset;
@@ -259,7 +267,7 @@ public class ActionBarContextView extends AbsActionBarView {
                 return false;
             }
         });
-        MenuBuilder menu = (MenuBuilder) mode.getMenu();
+        MenuBuilder menu = (MenuBuilder) mode2.getMenu();
         if (this.mActionMenuPresenter != null) {
             this.mActionMenuPresenter.dismissPopupMenus();
         }
@@ -281,6 +289,52 @@ public class ActionBarContextView extends AbsActionBarView {
         this.mMenuView = (ActionMenuView) this.mActionMenuPresenter.getMenuView(this);
         this.mMenuView.setBackgroundDrawable(this.mSplitBackground);
         this.mSplitView.addView(this.mMenuView, layoutParams);
+    }
+
+    /* renamed from: com.android.internal.widget.ActionBarContextView$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements View.OnClickListener {
+        final /* synthetic */ ActionMode val$mode;
+
+        AnonymousClass1(ActionMode mode2) {
+            mode = mode2;
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            mode.finish();
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ActionBarContextView$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements View.OnLongClickListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.View.OnLongClickListener
+        public boolean onLongClick(View v) {
+            int xOffset;
+            int[] screenPos = new int[2];
+            ActionBarContextView.this.getLocationOnScreen(screenPos);
+            int width = ActionBarContextView.this.getWidth();
+            int height = ActionBarContextView.this.getHeight();
+            int paddingStart = ActionBarContextView.this.getPaddingStart();
+            int paddingEnd = ActionBarContextView.this.getPaddingEnd();
+            int[] windowPos = new int[2];
+            ActionBarContextView.this.getLocationInWindow(windowPos);
+            Rect displayFrame = new Rect();
+            ActionBarContextView.this.getWindowVisibleDisplayFrame(displayFrame);
+            int yOffset = windowPos[1] + height;
+            if (ActionBarContextView.this.getLayoutDirection() == 0) {
+                xOffset = ((((displayFrame.right - displayFrame.left) - (windowPos[0] + width)) + (((width - paddingStart) - paddingEnd) / 2)) + paddingEnd) - 0;
+            } else {
+                int xOffset2 = windowPos[0];
+                xOffset = ((xOffset2 + width) - (((width - paddingStart) - paddingEnd) / 2)) - paddingStart;
+            }
+            ActionBarContextView.this.setTooltipPosition(xOffset, yOffset);
+            return false;
+        }
     }
 
     public void closeMode() {
@@ -332,8 +386,10 @@ public class ActionBarContextView extends AbsActionBarView {
         return new ViewGroup.MarginLayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Code restructure failed: missing block: B:36:0x00ce, code lost:            if (r2.getVisibility() == 8) goto L41;     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x00ce, code lost:
+    
+        if (r2.getVisibility() == 8) goto L154;
+     */
     @Override // android.view.View
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -347,7 +403,6 @@ public class ActionBarContextView extends AbsActionBarView {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.widget.ActionBarContextView.onMeasure(int, int):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int x;

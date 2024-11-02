@@ -84,8 +84,9 @@ public interface ISemBiometricSysUiDisplayBrightnessCallback extends IInterface 
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemBiometricSysUiDisplayBrightnessCallback {
+        public static class Proxy implements ISemBiometricSysUiDisplayBrightnessCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

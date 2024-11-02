@@ -8,7 +8,6 @@ public final class TimedMetaData {
     private byte[] mMetaData;
     private long mTimestampUs;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static TimedMetaData createTimedMetaDataFromParcel(Parcel parcel) {
         return new TimedMetaData(parcel);
     }

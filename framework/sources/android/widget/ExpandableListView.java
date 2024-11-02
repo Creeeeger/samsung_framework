@@ -192,7 +192,6 @@ public class ExpandableListView extends ListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ListView, android.widget.AbsListView, android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         int headerViewsCount;
@@ -325,7 +324,6 @@ public class ExpandableListView extends ListView {
         this.mChildDivider = childDivider;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.ListView
     public void drawDivider(Canvas canvas, Rect bounds, int childIndex) {
         int flatListPosition = this.mFirstPosition + childIndex;
@@ -668,23 +666,27 @@ public class ExpandableListView extends ListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.ExpandableListView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
         ArrayList<ExpandableListConnector.GroupMetadata> expandedGroupMetadataList;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState, ArrayList<ExpandableListConnector.GroupMetadata> expandedGroupMetadataList) {
             super(superState);
@@ -702,6 +704,23 @@ public class ExpandableListView extends ListView {
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
             out.writeList(this.expandedGroupMetadataList);
+        }
+
+        /* renamed from: android.widget.ExpandableListView$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 

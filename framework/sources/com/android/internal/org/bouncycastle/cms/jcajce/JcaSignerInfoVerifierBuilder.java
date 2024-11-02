@@ -59,8 +59,13 @@ public class JcaSignerInfoVerifierBuilder {
         return new SignerInformationVerifier(this.sigAlgNameGen, this.sigAlgIDFinder, this.helper.createContentVerifierProvider(pubKey), this.digestProvider);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class Helper {
+    public class Helper {
+        /* synthetic */ Helper(JcaSignerInfoVerifierBuilder jcaSignerInfoVerifierBuilder, HelperIA helperIA) {
+            this();
+        }
+
         private Helper() {
         }
 

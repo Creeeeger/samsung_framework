@@ -53,8 +53,9 @@ public class AppWidgetHost {
         void updateAppWidget(RemoteViews remoteViews);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    static class Callbacks extends IAppWidgetHost.Stub {
+    public static class Callbacks extends IAppWidgetHost.Stub {
         private final WeakReference<Handler> mWeakHandler;
 
         public Callbacks(Handler handler) {
@@ -121,8 +122,9 @@ public class AppWidgetHost {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    class UpdateHandler extends Handler {
+    public class UpdateHandler extends Handler {
         public UpdateHandler(Looper looper) {
             super(looper);
         }

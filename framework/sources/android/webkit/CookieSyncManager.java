@@ -73,7 +73,6 @@ public final class CookieSyncManager extends WebSyncManager {
     public void stopSync() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setGetInstanceIsAllowed() {
         sGetInstanceAllowed = true;
     }

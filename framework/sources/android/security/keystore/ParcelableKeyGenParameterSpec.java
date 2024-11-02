@@ -15,19 +15,24 @@ public final class ParcelableKeyGenParameterSpec implements Parcelable {
     private static final int ALGORITHM_PARAMETER_SPEC_NONE = 1;
     private static final int ALGORITHM_PARAMETER_SPEC_RSA = 2;
     public static final Parcelable.Creator<ParcelableKeyGenParameterSpec> CREATOR = new Parcelable.Creator<ParcelableKeyGenParameterSpec>() { // from class: android.security.keystore.ParcelableKeyGenParameterSpec.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelableKeyGenParameterSpec createFromParcel(Parcel in) {
             return new ParcelableKeyGenParameterSpec(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableKeyGenParameterSpec[] newArray(int size) {
             return new ParcelableKeyGenParameterSpec[size];
         }
     };
     private final KeyGenParameterSpec mSpec;
+
+    /* synthetic */ ParcelableKeyGenParameterSpec(Parcel parcel, ParcelableKeyGenParameterSpecIA parcelableKeyGenParameterSpecIA) {
+        this(parcel);
+    }
 
     public ParcelableKeyGenParameterSpec(KeyGenParameterSpec spec) {
         this.mSpec = spec;
@@ -162,6 +167,23 @@ public final class ParcelableKeyGenParameterSpec implements Parcelable {
         String attestKeyAlias = in.readString();
         long boundToSecureUserId = in.readLong();
         this.mSpec = new KeyGenParameterSpec(keystoreAlias, namespace, keySize, algorithmSpec, certificateSubject, certificateSerialNumber, certificateNotBefore, certificateNotAfter, keyValidityStartDate, keyValidityForOriginationEnd, keyValidityForConsumptionEnd, purposes, digests, encryptionPaddings, signaturePaddings, blockModes, randomizedEncryptionRequired, userAuthenticationRequired, userAuthenticationValidityDurationSeconds, userAuthenticationTypes, userPresenceRequired, attestationChallenge, devicePropertiesAttestationIncluded, attestationIds, uniqueIdIncluded, userAuthenticationValidWhileOnBody, invalidatedByBiometricEnrollment, isStrongBoxBacked, userConfirmationRequired, unlockedDeviceRequired, criticalToDeviceEncryption, maxUsageCount, attestKeyAlias, boundToSecureUserId);
+    }
+
+    /* renamed from: android.security.keystore.ParcelableKeyGenParameterSpec$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ParcelableKeyGenParameterSpec> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableKeyGenParameterSpec createFromParcel(Parcel in) {
+            return new ParcelableKeyGenParameterSpec(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableKeyGenParameterSpec[] newArray(int size) {
+            return new ParcelableKeyGenParameterSpec[size];
+        }
     }
 
     public KeyGenParameterSpec getSpec() {

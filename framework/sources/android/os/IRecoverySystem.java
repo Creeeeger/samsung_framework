@@ -237,8 +237,9 @@ public interface IRecoverySystem extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRecoverySystem {
+        public static class Proxy implements IRecoverySystem {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

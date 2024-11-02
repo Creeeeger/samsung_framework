@@ -59,7 +59,6 @@ public class EditTextPreference extends DialogPreference {
         return this.mText;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
     public void onBindDialogView(View view) {
         super.onBindDialogView(view);
@@ -77,7 +76,6 @@ public class EditTextPreference extends DialogPreference {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
     public void showDialog(Bundle state) {
         super.showDialog(state);
@@ -92,7 +90,6 @@ public class EditTextPreference extends DialogPreference {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
     public void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
@@ -123,7 +120,6 @@ public class EditTextPreference extends DialogPreference {
         return this.mEditText;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference, android.preference.Preference
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -135,7 +131,6 @@ public class EditTextPreference extends DialogPreference {
         return myState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference, android.preference.Preference
     public void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
@@ -147,17 +142,17 @@ public class EditTextPreference extends DialogPreference {
         setText(myState.text);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.EditTextPreference.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -178,6 +173,23 @@ public class EditTextPreference extends DialogPreference {
 
         public SavedState(Parcelable superState) {
             super(superState);
+        }
+
+        /* renamed from: android.preference.EditTextPreference$SavedState$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 }

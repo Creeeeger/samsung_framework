@@ -43,7 +43,6 @@ public class AndroidKeyStoreSecretKeyFactorySpi extends SecretKeyFactorySpi {
         return getKeyInfo(keystoreKey);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Failed to find 'out' block for switch in B:12:0x0053. Please report as an issue. */
     public static KeyInfo getKeyInfo(AndroidKeyStoreKey key) {
         Date keyValidityStart;

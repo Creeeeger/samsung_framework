@@ -74,37 +74,30 @@ public class TelephonyFrameworkInitializer {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ TelephonyManager lambda$registerServiceWrappers$0(Context context) {
         return new TelephonyManager(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ SubscriptionManager lambda$registerServiceWrappers$1(Context context) {
         return new SubscriptionManager(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CarrierConfigManager lambda$registerServiceWrappers$2(Context context) {
         return new CarrierConfigManager(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ EuiccManager lambda$registerServiceWrappers$3(Context context) {
         return new EuiccManager(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ EuiccCardManager lambda$registerServiceWrappers$4(Context context) {
         return new EuiccCardManager(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ImsManager lambda$registerServiceWrappers$5(Context context) {
         return new ImsManager(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ SatelliteManager lambda$registerServiceWrappers$7(Context context) {
         return new SatelliteManager(context);
     }

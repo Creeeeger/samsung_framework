@@ -104,11 +104,19 @@ public abstract class FileSystemProvider extends DocumentsProvider {
         }
         String mimeType = getDocumentType(documentId);
         if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mimeType)) {
-            final Int64Ref treeCount = new Int64Ref(0L);
-            final Int64Ref treeSize = new Int64Ref(0L);
+            Int64Ref treeCount = new Int64Ref(0L);
+            Int64Ref treeSize = new Int64Ref(0L);
             try {
                 Path path = FileSystems.getDefault().getPath(file.getAbsolutePath(), new String[0]);
                 Files.walkFileTree(path, new FileVisitor<Path>() { // from class: com.android.internal.content.FileSystemProvider.1
+                    final /* synthetic */ Int64Ref val$treeCount;
+                    final /* synthetic */ Int64Ref val$treeSize;
+
+                    AnonymousClass1(Int64Ref treeCount2, Int64Ref treeSize2) {
+                        treeCount = treeCount2;
+                        treeSize = treeSize2;
+                    }
+
                     @Override // java.nio.file.FileVisitor
                     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                         return FileVisitResult.CONTINUE;
@@ -132,8 +140,8 @@ public abstract class FileSystemProvider extends DocumentsProvider {
                     }
                 });
                 Bundle res = new Bundle();
-                res.putLong(DocumentsContract.METADATA_TREE_COUNT, treeCount.value);
-                res.putLong(DocumentsContract.METADATA_TREE_SIZE, treeSize.value);
+                res.putLong(DocumentsContract.METADATA_TREE_COUNT, treeCount2.value);
+                res.putLong(DocumentsContract.METADATA_TREE_SIZE, treeSize2.value);
                 return res;
             } catch (IOException e) {
                 Log.e(TAG, "An error occurred retrieving the metadata", e);
@@ -163,6 +171,40 @@ public abstract class FileSystemProvider extends DocumentsProvider {
             return null;
         } finally {
             IoUtils.closeQuietly(stream);
+        }
+    }
+
+    /* renamed from: com.android.internal.content.FileSystemProvider$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements FileVisitor<Path> {
+        final /* synthetic */ Int64Ref val$treeCount;
+        final /* synthetic */ Int64Ref val$treeSize;
+
+        AnonymousClass1(Int64Ref treeCount2, Int64Ref treeSize2) {
+            treeCount = treeCount2;
+            treeSize = treeSize2;
+        }
+
+        @Override // java.nio.file.FileVisitor
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override // java.nio.file.FileVisitor
+        public FileVisitResult visitFile(Path file2, BasicFileAttributes attrs) {
+            treeCount.value++;
+            treeSize.value += attrs.size();
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override // java.nio.file.FileVisitor
+        public FileVisitResult visitFileFailed(Path file2, IOException exc) {
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override // java.nio.file.FileVisitor
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+            return FileVisitResult.CONTINUE;
         }
     }
 
@@ -387,7 +429,6 @@ public abstract class FileSystemProvider extends DocumentsProvider {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$openDocument$0(String documentId, File visibleFile, IOException e) {
         onDocIdChanged(documentId);
         scanFile(visibleFile);
@@ -517,7 +558,6 @@ public abstract class FileSystemProvider extends DocumentsProvider {
         return projection == null ? this.mDefaultProjection : projection;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void startObserving(File file, Uri notifyUri, DirectoryCursor cursor) {
         synchronized (this.mObservers) {
             DirectoryObserver observer = this.mObservers.get(file);
@@ -530,7 +570,6 @@ public abstract class FileSystemProvider extends DocumentsProvider {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void stopObserving(File file, DirectoryCursor cursor) {
         synchronized (this.mObservers) {
             DirectoryObserver observer = this.mObservers.get(file);
@@ -545,7 +584,6 @@ public abstract class FileSystemProvider extends DocumentsProvider {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class DirectoryObserver extends FileObserver {
         private static final int NOTIFY_EVENTS = 4044;
@@ -580,7 +618,6 @@ public abstract class FileSystemProvider extends DocumentsProvider {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class DirectoryCursor extends MatrixCursor {
         private final File mFile;

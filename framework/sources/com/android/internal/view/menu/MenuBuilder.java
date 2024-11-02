@@ -240,7 +240,6 @@ public class MenuBuilder implements Menu {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public String getActionViewStatesKey() {
         return ACTION_VIEW_STATES_KEY;
     }
@@ -395,7 +394,6 @@ public class MenuBuilder implements Menu {
         onItemsChanged(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setExclusiveItemChecked(MenuItem item) {
         int group = item.getGroupId();
         int N = this.mItems.size();
@@ -534,7 +532,6 @@ public class MenuBuilder implements Menu {
         throw new IllegalArgumentException("order does not contain a valid category.");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isQwertyMode() {
         return this.mQwertyMode;
     }
@@ -547,7 +544,10 @@ public class MenuBuilder implements Menu {
         onItemsChanged(false);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:5:0x0017, code lost:            if (android.view.ViewConfiguration.get(r2.mContext).shouldShowMenuShortcutsWhenKeyboardPresent() != false) goto L9;     */
+    /* JADX WARN: Code restructure failed: missing block: B:5:0x0017, code lost:
+    
+        if (android.view.ViewConfiguration.get(r2.mContext).shouldShowMenuShortcutsWhenKeyboardPresent() != false) goto L20;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -587,7 +587,6 @@ public class MenuBuilder implements Menu {
         return this.mContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean dispatchMenuItemSelected(MenuBuilder menu, MenuItem item) {
         Callback callback = this.mCallback;
         return callback != null && callback.onMenuItemSelected(menu, item);
@@ -764,13 +763,11 @@ public class MenuBuilder implements Menu {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onItemVisibleChanged(MenuItemImpl item) {
         this.mIsVisibleItemsStale = true;
         onItemsChanged(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onItemActionRequestChanged(MenuItemImpl item) {
         this.mIsActionItemsStale = true;
         onItemsChanged(true);
@@ -868,31 +865,26 @@ public class MenuBuilder implements Menu {
         onItemsChanged(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public MenuBuilder setHeaderTitleInt(CharSequence title) {
         setHeaderInternal(0, title, 0, null, null);
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public MenuBuilder setHeaderTitleInt(int titleRes) {
         setHeaderInternal(titleRes, null, 0, null, null);
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public MenuBuilder setHeaderIconInt(Drawable icon) {
         setHeaderInternal(0, null, 0, icon, null);
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public MenuBuilder setHeaderIconInt(int iconRes) {
         setHeaderInternal(0, null, iconRes, null, null);
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public MenuBuilder setHeaderViewInt(View view) {
         setHeaderInternal(0, null, 0, null, view);
         return this;
@@ -923,7 +915,6 @@ public class MenuBuilder implements Menu {
         this.mOptionalIconsVisible = visible;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean getOptionalIconsVisible() {
         return this.mOptionalIconsVisible;
     }

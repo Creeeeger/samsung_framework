@@ -180,8 +180,9 @@ public interface IIrisServiceReceiver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IIrisServiceReceiver {
+        public static class Proxy implements IIrisServiceReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

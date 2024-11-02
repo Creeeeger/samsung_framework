@@ -29,7 +29,10 @@ public class DefaultMimeMapFactory {
         return builder.build();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0077, code lost:            throw new java.lang.IllegalArgumentException("Malformed line: " + r3);     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0077, code lost:
+    
+        throw new java.lang.IllegalArgumentException("Malformed line: " + r3);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

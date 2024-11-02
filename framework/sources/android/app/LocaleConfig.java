@@ -27,13 +27,14 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public class LocaleConfig implements Parcelable {
     public static final Parcelable.Creator<LocaleConfig> CREATOR = new Parcelable.Creator<LocaleConfig>() { // from class: android.app.LocaleConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LocaleConfig createFromParcel(Parcel source) {
             return new LocaleConfig(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocaleConfig[] newArray(int size) {
             return new LocaleConfig[size];
@@ -51,6 +52,10 @@ public class LocaleConfig implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Status {
+    }
+
+    /* synthetic */ LocaleConfig(Parcel parcel, LocaleConfigIA localeConfigIA) {
+        this(parcel);
     }
 
     public LocaleConfig(Context context) {
@@ -141,6 +146,23 @@ public class LocaleConfig implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mStatus);
         dest.writeTypedObject(this.mLocales, flags);
+    }
+
+    /* renamed from: android.app.LocaleConfig$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LocaleConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocaleConfig createFromParcel(Parcel source) {
+            return new LocaleConfig(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocaleConfig[] newArray(int size) {
+            return new LocaleConfig[size];
+        }
     }
 
     public boolean isSameLocaleConfig(LocaleConfig other) {

@@ -9,14 +9,12 @@ import java.nio.ByteBuffer;
 public class SimpleFrame extends Frame {
     private Object mObject;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SimpleFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         initWithFormat(format);
         setReusable(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SimpleFrame wrapObject(Object object, FrameManager frameManager) {
         FrameFormat format = ObjectFormat.fromObject(object, 1);
         SimpleFrame result = new SimpleFrame(format, frameManager);
@@ -49,13 +47,11 @@ public class SimpleFrame extends Frame {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public boolean hasNativeAllocation() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public void releaseNativeAllocation() {
     }

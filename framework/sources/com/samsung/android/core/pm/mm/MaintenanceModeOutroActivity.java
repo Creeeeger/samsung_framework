@@ -39,7 +39,6 @@ public class MaintenanceModeOutroActivity extends Activity {
     private boolean mIsTablet = false;
     private boolean mIsFold = false;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +86,6 @@ public class MaintenanceModeOutroActivity extends Activity {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setContentView$0(View v) {
         showDialog();
     }
@@ -148,12 +146,10 @@ public class MaintenanceModeOutroActivity extends Activity {
         dialog.show();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$showDialog$1(DialogInterface dialog, int which) {
         confirmSecureLock();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$showDialog$2(DialogInterface dialog, int which) {
     }
 
@@ -165,8 +161,7 @@ public class MaintenanceModeOutroActivity extends Activity {
         biometricPrompt.authenticateUser(new CancellationSignal(), getMainExecutor(), new AnonymousClass1(), 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$1 */
     /* loaded from: classes5.dex */
     public class AnonymousClass1 extends BiometricPrompt.AuthenticationCallback {
         AnonymousClass1() {
@@ -196,12 +191,10 @@ public class MaintenanceModeOutroActivity extends Activity {
             }, 120000L);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAuthenticationSucceeded$0() {
             MaintenanceModeOutroActivity.this.exitMaintenanceMode();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAuthenticationSucceeded$1() {
             MaintenanceModeOutroActivity.this.mWm.removeView(MaintenanceModeOutroActivity.this.mProgressView);
             MaintenanceModeOutroActivity.this.mExitButton.setClickable(true);
@@ -213,7 +206,6 @@ public class MaintenanceModeOutroActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void exitMaintenanceMode() {
         try {
             UserManager um = (UserManager) this.mContext.getSystemService("user");

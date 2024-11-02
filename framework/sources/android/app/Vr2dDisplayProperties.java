@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class Vr2dDisplayProperties implements Parcelable {
     public static final Parcelable.Creator<Vr2dDisplayProperties> CREATOR = new Parcelable.Creator<Vr2dDisplayProperties>() { // from class: android.app.Vr2dDisplayProperties.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Vr2dDisplayProperties createFromParcel(Parcel source) {
             return new Vr2dDisplayProperties(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Vr2dDisplayProperties[] newArray(int size) {
             return new Vr2dDisplayProperties[size];
@@ -33,6 +34,14 @@ public final class Vr2dDisplayProperties implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Vr2dDisplayFlag {
+    }
+
+    /* synthetic */ Vr2dDisplayProperties(int i, int i2, int i3, int i4, int i5, Vr2dDisplayPropertiesIA vr2dDisplayPropertiesIA) {
+        this(i, i2, i3, i4, i5);
+    }
+
+    /* synthetic */ Vr2dDisplayProperties(Parcel parcel, Vr2dDisplayPropertiesIA vr2dDisplayPropertiesIA) {
+        this(parcel);
     }
 
     public Vr2dDisplayProperties(int width, int height, int dpi) {
@@ -82,6 +91,23 @@ public final class Vr2dDisplayProperties implements Parcelable {
         dest.writeInt(this.mDpi);
         dest.writeInt(this.mAddedFlags);
         dest.writeInt(this.mRemovedFlags);
+    }
+
+    /* renamed from: android.app.Vr2dDisplayProperties$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Vr2dDisplayProperties> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Vr2dDisplayProperties createFromParcel(Parcel source) {
+            return new Vr2dDisplayProperties(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Vr2dDisplayProperties[] newArray(int size) {
+            return new Vr2dDisplayProperties[size];
+        }
     }
 
     private Vr2dDisplayProperties(Parcel source) {

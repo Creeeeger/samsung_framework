@@ -14,7 +14,6 @@ public class AccountAuthenticatorActivity extends Activity {
         this.mResultBundle = result;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);

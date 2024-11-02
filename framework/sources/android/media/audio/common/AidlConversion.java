@@ -436,7 +436,6 @@ public class AidlConversion {
         return port;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ExtraAudioDescriptor[] lambda$api2aidl_AudioDeviceAttributes_AudioPort$1(int x$0) {
         return new ExtraAudioDescriptor[x$0];
     }

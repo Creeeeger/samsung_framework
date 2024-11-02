@@ -83,8 +83,9 @@ public interface IVrStateCallbacks extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IVrStateCallbacks {
+        public static class Proxy implements IVrStateCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

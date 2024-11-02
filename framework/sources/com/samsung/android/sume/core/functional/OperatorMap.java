@@ -32,7 +32,7 @@ public class OperatorMap implements Operator {
     private final Map<Enum<?>, Operator> processorMap;
     private boolean usePersistentFormat = false;
 
-    /* renamed from: com.samsung.android.sume.core.functional.OperatorMap$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.sume.core.functional.OperatorMap$1 */
     /* loaded from: classes4.dex */
     class AnonymousClass1 extends HashMap<ImgpType, OpPriorityComputable.ComputeBridge> {
         AnonymousClass1() {
@@ -92,7 +92,6 @@ public class OperatorMap implements Operator {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$2(MutableMediaFormat input, final MediaFormat output, OpPriorityCompute priorityCompute) {
             boolean isNotTiled = Arrays.stream(new String[]{"split-type", "merge-type"}).map(new Function() { // from class: com.samsung.android.sume.core.functional.OperatorMap$1$$ExternalSyntheticLambda9
                 @Override // java.util.function.Function
@@ -116,17 +115,14 @@ public class OperatorMap implements Operator {
             return -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ SplitType lambda$new$0(MediaFormat output, String e) {
             return (SplitType) output.get(e, SplitType.NONE);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$new$1(SplitType e) {
             return e != SplitType.TILE;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$3(MutableMediaFormat input, MediaFormat output, OpPriorityCompute priorityCompute) {
             if ((input.contains(Message.KEY_FILE_DESCRIPTOR) || input.contains(Message.KEY_IN_FILE)) && output.getColorFormat() != ColorFormat.NONE) {
                 return 0.0f;
@@ -134,7 +130,6 @@ public class OperatorMap implements Operator {
             return -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$4(MutableMediaFormat input, MediaFormat output, OpPriorityCompute priorityCompute) {
             if ((output.contains(Message.KEY_FILE_DESCRIPTOR) || output.contains(Message.KEY_OUT_FILE)) && input.getColorFormat() != ColorFormat.NONE) {
                 return Float.MAX_VALUE;
@@ -142,7 +137,6 @@ public class OperatorMap implements Operator {
             return -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$5(MutableMediaFormat input, MediaFormat output, OpPriorityCompute priorityCompute) {
             if (output.getColorFormat() != ColorFormat.NONE && input.getColorFormat() != output.getColorFormat()) {
                 return priorityCompute.compute(input.getColorFormat(), output.getColorFormat());
@@ -150,7 +144,6 @@ public class OperatorMap implements Operator {
             return -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$6(MutableMediaFormat input, MediaFormat output, OpPriorityCompute priorityCompute) {
             if (output.getDataType() != DataType.NONE && input.getDataType() != output.getDataType()) {
                 return priorityCompute.compute(input.getDataType(), output.getDataType());
@@ -158,7 +151,6 @@ public class OperatorMap implements Operator {
             return -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$7(MutableMediaFormat input, MediaFormat output, OpPriorityCompute priorityCompute) {
             boolean inShapeIsGiven = input.size() != 0;
             if (inShapeIsGiven && output.contains("rotation-degrees")) {
@@ -167,7 +159,6 @@ public class OperatorMap implements Operator {
             return -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$8(MutableMediaFormat input, MediaFormat output, OpPriorityCompute priorityCompute) {
             if (output.containsAnyOf("crop", "center-crop")) {
                 return Float.MIN_VALUE;
@@ -175,7 +166,6 @@ public class OperatorMap implements Operator {
             return -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$9(MutableMediaFormat input, MediaFormat output, OpPriorityCompute priorityCompute) {
             if (output.contains("split-type")) {
                 return Float.MAX_VALUE;
@@ -183,7 +173,6 @@ public class OperatorMap implements Operator {
             return -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ float lambda$new$10(MutableMediaFormat input, MediaFormat output, OpPriorityCompute priorityCompute) {
             if (output.contains("merge-type")) {
                 return 0.0f;
@@ -227,7 +216,6 @@ public class OperatorMap implements Operator {
         return obuf;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public static /* synthetic */ void lambda$run$0(MutableMediaFormat ifmt, MutableMediaBuffer obuf, Map processorPriorityMap, Operator operator) {
         float priority = ((OpPriorityComputable) operator).compute(ifmt, obuf.getFormat());
@@ -247,20 +235,18 @@ public class OperatorMap implements Operator {
         }).forEach(new Consumer() { // from class: com.samsung.android.sume.core.functional.OperatorMap$$ExternalSyntheticLambda6
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                OperatorMap.this.m8794x20aa76dd((OpPriorityComputable) obj);
+                OperatorMap.this.m8786x20aa76dd((OpPriorityComputable) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public static /* synthetic */ OpPriorityComputable lambda$config$1(Operator operator) {
         return (OpPriorityComputable) operator;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$config$2$com-samsung-android-sume-core-functional-OperatorMap, reason: not valid java name */
-    public /* synthetic */ void m8794x20aa76dd(OpPriorityComputable it) {
+    /* renamed from: lambda$config$2$com-samsung-android-sume-core-functional-OperatorMap */
+    public /* synthetic */ void m8786x20aa76dd(OpPriorityComputable it) {
         it.setComputeBridge(priorityCheckMap.get(it.getType()), this.priorityCompute);
     }
 
@@ -292,7 +278,6 @@ public class OperatorMap implements Operator {
         }).collect(Collectors.toList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$inferOperations$4(Map.Entry e) {
         return ((Float) e.getValue()).floatValue() >= 0.0f;
     }

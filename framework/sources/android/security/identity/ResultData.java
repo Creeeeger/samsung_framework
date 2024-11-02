@@ -36,7 +36,6 @@ public abstract class ResultData {
 
     public abstract int getStatus(String str, String str2);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] getSignature() {
         throw new UnsupportedOperationException();
     }

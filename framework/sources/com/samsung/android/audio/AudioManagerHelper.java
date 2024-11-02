@@ -27,7 +27,10 @@ public class AudioManagerHelper {
     private static final boolean USER_SHIP;
     private static final ArrayList<String> mLoggingPackages = new ArrayList<>(Arrays.asList("android", AsPackageName.SYSTEMUI, "com.android.settings", AsPackageName.BLUETOOTH));
 
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x002f, code lost:            if (android.os.SystemProperties.getBoolean("ro.product_ship", true) != false) goto L8;     */
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x002f, code lost:
+    
+        if (android.os.SystemProperties.getBoolean("ro.product_ship", true) != false) goto L18;
+     */
     static {
         /*
             java.util.ArrayList r0 = new java.util.ArrayList
@@ -164,7 +167,6 @@ public class AudioManagerHelper {
         }).collect(Collectors.joining("<-"));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String makeMethodString(StackTraceElement element) {
         return getSimpleClassName(element) + MediaMetrics.SEPARATOR + element.getMethodName() + ":" + element.getLineNumber();
     }
@@ -178,7 +180,6 @@ public class AudioManagerHelper {
         }).orElse("");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$getSimpleClassName$0(String first, String second) {
         return second;
     }

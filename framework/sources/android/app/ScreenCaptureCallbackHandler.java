@@ -21,7 +21,6 @@ public class ScreenCaptureCallbackHandler {
         this.mObserver = new ScreenCaptureObserver(arrayMap);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ScreenCaptureRegistration {
         Activity.ScreenCaptureCallback mCallback;
@@ -33,7 +32,6 @@ public class ScreenCaptureCallbackHandler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ScreenCaptureObserver extends IScreenCaptureObserver.Stub {
         ArrayMap<Activity.ScreenCaptureCallback, ScreenCaptureRegistration> mRegistrations;

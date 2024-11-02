@@ -30,7 +30,6 @@ public final class WHADeviceInfo {
         public static final int NA = -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public WHADeviceInfo(Bundle bundle) {
         this.mBundle = null;
         this.mBundle = bundle;

@@ -17,23 +17,19 @@ import java.security.PublicKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class ECUtils {
     ECUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AsymmetricKeyParameter generatePublicKeyParameter(PublicKey key) throws InvalidKeyException {
         return key instanceof BCECPublicKey ? ((BCECPublicKey) key).engineGetKeyParameters() : ECUtil.generatePublicKeyParameter(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static X9ECParameters getDomainParametersFromGenSpec(ECGenParameterSpec genSpec) {
         return getDomainParametersFromName(genSpec.getName());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static X9ECParameters getDomainParametersFromName(String curveName) {
         X9ECParameters domainParameters;
         try {
@@ -53,7 +49,6 @@ public class ECUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static X962Parameters getDomainParametersFromName(ECParameterSpec ecSpec, boolean withCompression) {
         if (ecSpec instanceof ECNamedCurveSpec) {
             ASN1ObjectIdentifier curveOid = ECUtil.getNamedCurveOid(((ECNamedCurveSpec) ecSpec).getName());

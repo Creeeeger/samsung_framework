@@ -71,7 +71,6 @@ public final class TemperatureControlTemplate extends ControlTemplate {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TemperatureControlTemplate(Bundle b) {
         super(b);
         this.mTemplate = ControlTemplate.createTemplateFromBundle(b.getBundle(KEY_TEMPLATE));

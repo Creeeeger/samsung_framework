@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class BluetoothProfileConnectionInfo implements Parcelable {
     public static final Parcelable.Creator<BluetoothProfileConnectionInfo> CREATOR = new Parcelable.Creator<BluetoothProfileConnectionInfo>() { // from class: android.media.BluetoothProfileConnectionInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BluetoothProfileConnectionInfo createFromParcel(Parcel source) {
             return new BluetoothProfileConnectionInfo(source.readInt(), source.readBoolean(), source.readInt(), source.readBoolean());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BluetoothProfileConnectionInfo[] newArray(int size) {
             return new BluetoothProfileConnectionInfo[size];
@@ -25,6 +26,10 @@ public final class BluetoothProfileConnectionInfo implements Parcelable {
     private final boolean mSupprNoisy;
     private final int mVolume;
 
+    /* synthetic */ BluetoothProfileConnectionInfo(int i, boolean z, int i2, boolean z2, BluetoothProfileConnectionInfoIA bluetoothProfileConnectionInfoIA) {
+        this(i, z, i2, z2);
+    }
+
     private BluetoothProfileConnectionInfo(int profile, boolean suppressNoisyIntent, int volume, boolean isLeOutput) {
         this.mProfile = profile;
         this.mSupprNoisy = suppressNoisyIntent;
@@ -34,6 +39,23 @@ public final class BluetoothProfileConnectionInfo implements Parcelable {
 
     public BluetoothProfileConnectionInfo(int profile) {
         this(profile, false, -1, false);
+    }
+
+    /* renamed from: android.media.BluetoothProfileConnectionInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BluetoothProfileConnectionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BluetoothProfileConnectionInfo createFromParcel(Parcel source) {
+            return new BluetoothProfileConnectionInfo(source.readInt(), source.readBoolean(), source.readInt(), source.readBoolean());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BluetoothProfileConnectionInfo[] newArray(int size) {
+            return new BluetoothProfileConnectionInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

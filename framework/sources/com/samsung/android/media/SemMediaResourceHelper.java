@@ -251,8 +251,9 @@ public final class SemMediaResourceHelper {
         mMediaResourceHelper = null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class EventHandler extends Handler {
+    public class EventHandler extends Handler {
         private SemMediaResourceHelper mMediaResourceHelper;
 
         public EventHandler(SemMediaResourceHelper semMediaResourceHelper, Looper looper) {

@@ -16,14 +16,12 @@ public final class AudioInjection {
     private final Object mLock = new Object();
     private int mPlayState = 1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSilent(boolean isSilent) {
         synchronized (this.mLock) {
             this.mIsSilent = isSilent;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAudioTrack(AudioTrack audioTrack) {
         Log.d(TAG, "set AudioTrack with " + audioTrack);
         synchronized (this.mLock) {
@@ -46,12 +44,10 @@ public final class AudioInjection {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioInjection(AudioFormat audioFormat) {
         this.mAudioFormat = audioFormat;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void close() {
         synchronized (this.mLock) {
             AudioTrack audioTrack = this.mAudioTrack;

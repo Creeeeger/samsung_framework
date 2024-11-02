@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PreciseDataConnectionState implements Parcelable {
     public static final Parcelable.Creator<PreciseDataConnectionState> CREATOR = new Parcelable.Creator<PreciseDataConnectionState>() { // from class: android.telephony.PreciseDataConnectionState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PreciseDataConnectionState createFromParcel(Parcel in) {
             return new PreciseDataConnectionState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PreciseDataConnectionState[] newArray(int size) {
             return new PreciseDataConnectionState[size];
@@ -32,6 +33,14 @@ public final class PreciseDataConnectionState implements Parcelable {
     private final int mNetworkType;
     private final int mState;
     private final int mTransportType;
+
+    /* synthetic */ PreciseDataConnectionState(int i, int i2, int i3, int i4, LinkProperties linkProperties, int i5, ApnSetting apnSetting, PreciseDataConnectionStateIA preciseDataConnectionStateIA) {
+        this(i, i2, i3, i4, linkProperties, i5, apnSetting);
+    }
+
+    /* synthetic */ PreciseDataConnectionState(Parcel parcel, PreciseDataConnectionStateIA preciseDataConnectionStateIA) {
+        this(parcel);
+    }
 
     @Deprecated
     public PreciseDataConnectionState(int state, int networkType, int apnTypes, String apn, LinkProperties linkProperties, int failCause) {
@@ -132,6 +141,23 @@ public final class PreciseDataConnectionState implements Parcelable {
         out.writeParcelable(this.mLinkProperties, flags);
         out.writeInt(this.mFailCause);
         out.writeParcelable(this.mApnSetting, flags);
+    }
+
+    /* renamed from: android.telephony.PreciseDataConnectionState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PreciseDataConnectionState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PreciseDataConnectionState createFromParcel(Parcel in) {
+            return new PreciseDataConnectionState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PreciseDataConnectionState[] newArray(int size) {
+            return new PreciseDataConnectionState[size];
+        }
     }
 
     public int hashCode() {

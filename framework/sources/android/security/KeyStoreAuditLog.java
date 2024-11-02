@@ -198,7 +198,6 @@ public class KeyStoreAuditLog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class LogMessage {
         public static final String KEEP = null;
@@ -283,7 +282,6 @@ public class KeyStoreAuditLog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static byte[] convertCertificatesToPem(Certificate[] certificates) {
         if (certificates == null) {
             return null;
@@ -302,7 +300,6 @@ public class KeyStoreAuditLog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static List<X509Certificate> mergeUserCertAndChain(byte[] userCert, byte[] chain) {
         X509Certificate leaf = toCertificate(userCert);
         if (leaf == null) {
@@ -365,7 +362,6 @@ public class KeyStoreAuditLog {
         return (key == null || !key.startsWith(Credentials.USER_PRIVATE_KEY)) ? TvInteractiveAppView.BI_INTERACTIVE_APP_KEY_CERTIFICATE : "private key";
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int getUserId(int uid) {
         return UserHandle.getUserId(uid);
     }

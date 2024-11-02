@@ -73,35 +73,131 @@ public class MenuInflater {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x0047, code lost:            switch(r1) {            case 1: goto L58;            case 2: goto L38;            case 3: goto L17;            default: goto L70;        };     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x004c, code lost:            r8 = r11.getName();     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0050, code lost:            if (r2 == false) goto L22;     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0056, code lost:            if (r8.equals(r3) == false) goto L22;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0058, code lost:            r2 = false;        r3 = null;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x00d2, code lost:            r1 = r11.next();     */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0060, code lost:            if (r8.equals(android.view.MenuInflater.XML_GROUP) == false) goto L25;     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x0062, code lost:            r0.resetGroup();     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x006b, code lost:            if (r8.equals("item") == false) goto L35;     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0071, code lost:            if (r0.hasAddedItem() != false) goto L61;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0077, code lost:            if (r0.itemActionProvider == null) goto L34;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0081, code lost:            if (r0.itemActionProvider.hasSubMenu() == false) goto L34;     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0083, code lost:            registerMenu(r0.addSubMenuItem(), r12);     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x008b, code lost:            registerMenu(r0.addItem(), r12);     */
-    /* JADX WARN: Code restructure failed: missing block: B:36:0x0097, code lost:            if (r8.equals(android.view.MenuInflater.XML_MENU) == false) goto L64;     */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x0099, code lost:            r4 = true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x009b, code lost:            if (r2 == false) goto L40;     */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x009e, code lost:            r8 = r11.getName();     */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x00a6, code lost:            if (r8.equals(android.view.MenuInflater.XML_GROUP) == false) goto L43;     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x00a8, code lost:            r0.readGroup(r12);     */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x00b0, code lost:            if (r8.equals("item") == false) goto L46;     */
-    /* JADX WARN: Code restructure failed: missing block: B:47:0x00b2, code lost:            r0.readItem(r12);     */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x00ba, code lost:            if (r8.equals(android.view.MenuInflater.XML_MENU) == false) goto L49;     */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x00bc, code lost:            r6 = r0.addSubMenuItem();        registerMenu(r6, r12);        parseMenu(r11, r12, r6);     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x00c7, code lost:            r2 = true;        r3 = r8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x00d1, code lost:            throw new java.lang.RuntimeException("Unexpected end of document");     */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x00d8, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0040, code lost:            r4 = false;     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x0041, code lost:            if (r4 != false) goto L57;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0047, code lost:
+    
+        switch(r1) {
+            case 1: goto L130;
+            case 2: goto L110;
+            case 3: goto L89;
+            default: goto L142;
+        };
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x004c, code lost:
+    
+        r8 = r11.getName();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0050, code lost:
+    
+        if (r2 == false) goto L94;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0056, code lost:
+    
+        if (r8.equals(r3) == false) goto L94;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0058, code lost:
+    
+        r2 = false;
+        r3 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x00d2, code lost:
+    
+        r1 = r11.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x0060, code lost:
+    
+        if (r8.equals(android.view.MenuInflater.XML_GROUP) == false) goto L97;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0062, code lost:
+    
+        r0.resetGroup();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x006b, code lost:
+    
+        if (r8.equals("item") == false) goto L107;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0071, code lost:
+    
+        if (r0.hasAddedItem() != false) goto L133;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0077, code lost:
+    
+        if (r0.itemActionProvider == null) goto L106;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0081, code lost:
+    
+        if (r0.itemActionProvider.hasSubMenu() == false) goto L106;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0083, code lost:
+    
+        registerMenu(r0.addSubMenuItem(), r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x008b, code lost:
+    
+        registerMenu(r0.addItem(), r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x0097, code lost:
+    
+        if (r8.equals(android.view.MenuInflater.XML_MENU) == false) goto L136;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x0099, code lost:
+    
+        r4 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x009b, code lost:
+    
+        if (r2 == false) goto L112;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x009e, code lost:
+    
+        r8 = r11.getName();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x00a6, code lost:
+    
+        if (r8.equals(android.view.MenuInflater.XML_GROUP) == false) goto L115;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x00a8, code lost:
+    
+        r0.readGroup(r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x00b0, code lost:
+    
+        if (r8.equals("item") == false) goto L118;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x00b2, code lost:
+    
+        r0.readItem(r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x00ba, code lost:
+    
+        if (r8.equals(android.view.MenuInflater.XML_MENU) == false) goto L121;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x00bc, code lost:
+    
+        r6 = r0.addSubMenuItem();
+        registerMenu(r6, r12);
+        parseMenu(r11, r12, r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x00c7, code lost:
+    
+        r2 = true;
+        r3 = r8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x00d1, code lost:
+    
+        throw new java.lang.RuntimeException("Unexpected end of document");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x00d8, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x0040, code lost:
+    
+        r4 = false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x0041, code lost:
+    
+        if (r4 != false) goto L129;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -169,9 +265,9 @@ public class MenuInflater {
             if (r6 == 0) goto L93
             boolean r6 = r0.hasAddedItem()
             if (r6 != 0) goto Ld2
-            android.view.ActionProvider r6 = android.view.MenuInflater.MenuState.m5139$$Nest$fgetitemActionProvider(r0)
+            android.view.ActionProvider r6 = android.view.MenuInflater.MenuState.m5134$$Nest$fgetitemActionProvider(r0)
             if (r6 == 0) goto L8b
-            android.view.ActionProvider r6 = android.view.MenuInflater.MenuState.m5139$$Nest$fgetitemActionProvider(r0)
+            android.view.ActionProvider r6 = android.view.MenuInflater.MenuState.m5134$$Nest$fgetitemActionProvider(r0)
             boolean r6 = r6.hasSubMenu()
             if (r6 == 0) goto L8b
             android.view.SubMenu r6 = r0.addSubMenuItem()
@@ -235,7 +331,6 @@ public class MenuInflater {
         return this.mContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class InflatedOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
         private static final Class<?>[] PARAM_TYPES = {MenuItem.class};
@@ -268,7 +363,6 @@ public class MenuInflater {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Object getRealOwner() {
         if (this.mRealOwner == null) {
             this.mRealOwner = findRealOwner(this.mContext);
@@ -286,7 +380,6 @@ public class MenuInflater {
         return owner;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class MenuState {
         private static final int defaultGroupId = 0;

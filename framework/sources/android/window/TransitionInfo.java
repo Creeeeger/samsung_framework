@@ -28,13 +28,14 @@ import java.util.function.Predicate;
 /* loaded from: classes4.dex */
 public final class TransitionInfo implements Parcelable {
     public static final Parcelable.Creator<TransitionInfo> CREATOR = new Parcelable.Creator<TransitionInfo>() { // from class: android.window.TransitionInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TransitionInfo createFromParcel(Parcel in) {
             return new TransitionInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransitionInfo[] newArray(int size) {
             return new TransitionInfo[size];
@@ -95,6 +96,10 @@ public final class TransitionInfo implements Parcelable {
     public @interface TransitionMode {
     }
 
+    /* synthetic */ TransitionInfo(Parcel parcel, TransitionInfoIA transitionInfoIA) {
+        this(parcel);
+    }
+
     public TransitionInfo(int type, int flags) {
         this.mTrack = 0;
         this.mChanges = new ArrayList<>();
@@ -144,6 +149,23 @@ public final class TransitionInfo implements Parcelable {
             if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE_TRANSFER) {
                 dest.writeBoolean(this.mCanTransferAnimation);
             }
+        }
+    }
+
+    /* renamed from: android.window.TransitionInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TransitionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransitionInfo createFromParcel(Parcel in) {
+            return new TransitionInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransitionInfo[] newArray(int size) {
+            return new TransitionInfo[size];
         }
     }
 
@@ -580,13 +602,14 @@ public final class TransitionInfo implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class Change implements Parcelable {
         public static final Parcelable.Creator<Change> CREATOR = new Parcelable.Creator<Change>() { // from class: android.window.TransitionInfo.Change.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Change createFromParcel(Parcel in) {
                 return new Change(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Change[] newArray(int size) {
                 return new Change[size];
@@ -632,6 +655,10 @@ public final class TransitionInfo implements Parcelable {
         private int mStartRotation;
         private ActivityManager.RunningTaskInfo mTaskInfo;
         private final Rect mTentModeClipRect;
+
+        /* synthetic */ Change(Parcel parcel, ChangeIA changeIA) {
+            this(parcel);
+        }
 
         public void setTentModeClipRect(Rect rect) {
             this.mTentModeClipRect.set(rect);
@@ -785,7 +812,6 @@ public final class TransitionInfo implements Parcelable {
             rect5.readFromParcel(in);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Change localRemoteCopy() {
             Change out = new Change(this.mContainer, new SurfaceControl(this.mLeash, "localRemote"));
             out.mParent = this.mParent;
@@ -1164,6 +1190,23 @@ public final class TransitionInfo implements Parcelable {
             this.mInsetsForRecentsTransition.writeToParcel(dest, flags);
         }
 
+        /* renamed from: android.window.TransitionInfo$Change$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Change> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Change createFromParcel(Parcel in) {
+                return new Change(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Change[] newArray(int size) {
+                return new Change[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -1261,13 +1304,14 @@ public final class TransitionInfo implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class AnimationOptions implements Parcelable {
         public static final Parcelable.Creator<AnimationOptions> CREATOR = new Parcelable.Creator<AnimationOptions>() { // from class: android.window.TransitionInfo.AnimationOptions.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AnimationOptions createFromParcel(Parcel in) {
                 return new AnimationOptions(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AnimationOptions[] newArray(int size) {
                 return new AnimationOptions[size];
@@ -1437,6 +1481,23 @@ public final class TransitionInfo implements Parcelable {
             dest.writeTypedObject(this.mCustomActivityCloseTransition, flags);
         }
 
+        /* renamed from: android.window.TransitionInfo$AnimationOptions$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AnimationOptions> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AnimationOptions createFromParcel(Parcel in) {
+                return new AnimationOptions(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AnimationOptions[] newArray(int size) {
+                return new AnimationOptions[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -1468,13 +1529,14 @@ public final class TransitionInfo implements Parcelable {
         /* loaded from: classes4.dex */
         public static class CustomActivityTransition implements Parcelable {
             public static final Parcelable.Creator<CustomActivityTransition> CREATOR = new Parcelable.Creator<CustomActivityTransition>() { // from class: android.window.TransitionInfo.AnimationOptions.CustomActivityTransition.1
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Parcelable.Creator
                 public CustomActivityTransition createFromParcel(Parcel in) {
                     return new CustomActivityTransition(in);
                 }
 
-                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public CustomActivityTransition[] newArray(int size) {
                     return new CustomActivityTransition[size];
@@ -1522,19 +1584,37 @@ public final class TransitionInfo implements Parcelable {
                 dest.writeInt(this.mCustomExitResId);
                 dest.writeInt(this.mCustomBackgroundColor);
             }
+
+            /* renamed from: android.window.TransitionInfo$AnimationOptions$CustomActivityTransition$1 */
+            /* loaded from: classes4.dex */
+            class AnonymousClass1 implements Parcelable.Creator<CustomActivityTransition> {
+                AnonymousClass1() {
+                }
+
+                @Override // android.os.Parcelable.Creator
+                public CustomActivityTransition createFromParcel(Parcel in) {
+                    return new CustomActivityTransition(in);
+                }
+
+                @Override // android.os.Parcelable.Creator
+                public CustomActivityTransition[] newArray(int size) {
+                    return new CustomActivityTransition[size];
+                }
+            }
         }
     }
 
     /* loaded from: classes4.dex */
     public static final class Root implements Parcelable {
         public static final Parcelable.Creator<Root> CREATOR = new Parcelable.Creator<Root>() { // from class: android.window.TransitionInfo.Root.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Root createFromParcel(Parcel in) {
                 return new Root(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Root[] newArray(int size) {
                 return new Root[size];
@@ -1545,6 +1625,10 @@ public final class TransitionInfo implements Parcelable {
         private boolean mIsActivityRootLeash;
         private final SurfaceControl mLeash;
         private final Point mOffset;
+
+        /* synthetic */ Root(Parcel parcel, RootIA rootIA) {
+            this(parcel);
+        }
 
         public Root(int displayId, SurfaceControl leash, int offsetLeft, int offsetTop) {
             this(displayId, leash, offsetLeft, offsetTop, null, false);
@@ -1583,7 +1667,6 @@ public final class TransitionInfo implements Parcelable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Root localRemoteCopy() {
             if (CoreRune.MW_SHELL_TRANSITION) {
                 return new Root(this.mDisplayId, new SurfaceControl(this.mLeash, "localRemote"), this.mOffset.x, this.mOffset.y, this.mConfiguration, this.mIsActivityRootLeash);
@@ -1619,6 +1702,23 @@ public final class TransitionInfo implements Parcelable {
             if (CoreRune.MW_SHELL_TRANSITION) {
                 this.mConfiguration.writeToParcel(dest, flags);
                 dest.writeBoolean(this.mIsActivityRootLeash);
+            }
+        }
+
+        /* renamed from: android.window.TransitionInfo$Root$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Root> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Root createFromParcel(Parcel in) {
+                return new Root(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Root[] newArray(int size) {
+                return new Root[size];
             }
         }
 

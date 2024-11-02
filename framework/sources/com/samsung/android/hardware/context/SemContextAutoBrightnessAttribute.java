@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextAutoBrightnessAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextAutoBrightnessAttribute> CREATOR = new Parcelable.Creator<SemContextAutoBrightnessAttribute>() { // from class: com.samsung.android.hardware.context.SemContextAutoBrightnessAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextAutoBrightnessAttribute createFromParcel(Parcel in) {
             return new SemContextAutoBrightnessAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoBrightnessAttribute[] newArray(int size) {
             return new SemContextAutoBrightnessAttribute[size];
@@ -27,7 +28,23 @@ public class SemContextAutoBrightnessAttribute extends SemContextAttribute {
     private byte[] mLuminanceTable;
     private int mMode;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextAutoBrightnessAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextAutoBrightnessAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextAutoBrightnessAttribute createFromParcel(Parcel in) {
+            return new SemContextAutoBrightnessAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextAutoBrightnessAttribute[] newArray(int size) {
+            return new SemContextAutoBrightnessAttribute[size];
+        }
+    }
+
     public SemContextAutoBrightnessAttribute() {
         this.mLuminanceTable = null;
         this.mDeviceMode = 0;

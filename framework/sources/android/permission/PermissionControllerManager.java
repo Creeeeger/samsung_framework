@@ -106,7 +106,7 @@ public final class PermissionControllerManager {
     public @interface Reason {
     }
 
-    public PermissionControllerManager(Context context, final Handler handler) {
+    public PermissionControllerManager(Context context, Handler handler) {
         synchronized (sLock) {
             try {
                 Pair<Integer, Thread> key = new Pair<>(Integer.valueOf(context.getUserId()), handler.getLooper().getThread());
@@ -127,6 +127,14 @@ public final class PermissionControllerManager {
                             return IPermissionController.Stub.asInterface((IBinder) obj);
                         }
                     }) { // from class: android.permission.PermissionControllerManager.1
+                        final /* synthetic */ Handler val$handler;
+
+                        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                        AnonymousClass1(Context context2, Intent intent2, int bindingFlags, int userId, Function function, Handler handler2) {
+                            super(context2, intent2, bindingFlags, userId, function);
+                            handler = handler2;
+                        }
+
                         @Override // com.android.internal.infra.ServiceConnector.Impl
                         protected Handler getJobHandler() {
                             return handler;
@@ -158,7 +166,35 @@ public final class PermissionControllerManager {
             }
         }
         this.mContext = context;
-        this.mHandler = handler;
+        this.mHandler = handler2;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.permission.PermissionControllerManager$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends ServiceConnector.Impl<IPermissionController> {
+        final /* synthetic */ Handler val$handler;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(Context context2, Intent intent2, int bindingFlags, int userId, Function function, Handler handler2) {
+            super(context2, intent2, bindingFlags, userId, function);
+            handler = handler2;
+        }
+
+        @Override // com.android.internal.infra.ServiceConnector.Impl
+        protected Handler getJobHandler() {
+            return handler;
+        }
+
+        @Override // com.android.internal.infra.ServiceConnector.Impl
+        protected long getRequestTimeoutMs() {
+            return 60000L;
+        }
+
+        @Override // com.android.internal.infra.ServiceConnector.Impl
+        protected long getAutoDisconnectTimeoutMs() {
+            return 10000L;
+        }
     }
 
     private void enforceSomePermissionsGrantedToSelf(String... requiredPermissions) {
@@ -194,7 +230,6 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CompletableFuture lambda$revokeRuntimePermissions$0(Map request, boolean doDryRun, int reason, IPermissionController service) throws Exception {
         Bundle bundledizedRequest = new Bundle();
         for (Map.Entry<String, List<String>> appRequest : request.entrySet()) {
@@ -205,7 +240,6 @@ public final class PermissionControllerManager {
         return revokeRuntimePermissionsResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$revokeRuntimePermissions$1(OnRevokeRuntimePermissionsCallback callback, Map revoked, Throwable err) {
         long token = Binder.clearCallingIdentity();
         try {
@@ -238,14 +272,12 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$setRuntimePermissionGrantStateByDeviceAdmin$2(String callerPackageName, AdminPermissionControlParams params, IPermissionController service) throws Exception {
         AndroidFuture<Boolean> setRuntimePermissionGrantStateResult = new AndroidFuture<>();
         service.setRuntimePermissionGrantStateByDeviceAdminFromParams(callerPackageName, params, setRuntimePermissionGrantStateResult);
         return setRuntimePermissionGrantStateResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$setRuntimePermissionGrantStateByDeviceAdmin$3(String callerPackageName, Consumer callback, Boolean setRuntimePermissionGrantStateResult, Throwable err) {
         long token = Binder.clearCallingIdentity();
         try {
@@ -285,7 +317,6 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getRuntimePermissionBackup$6(Consumer callback, byte[] bytes, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Error getting permission backup", err);
@@ -319,7 +350,6 @@ public final class PermissionControllerManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$stageAndApplyRuntimePermissionsBackup$9(Void nullResult, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Error sending permission backup", err);
@@ -345,14 +375,12 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$applyStagedRuntimePermissionBackup$10(String packageName, UserHandle user, IPermissionController service) throws Exception {
         AndroidFuture<Boolean> applyStagedRuntimePermissionBackupResult = new AndroidFuture<>();
         service.applyStagedRuntimePermissionBackup(packageName, user, applyStagedRuntimePermissionBackupResult);
         return applyStagedRuntimePermissionBackupResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$applyStagedRuntimePermissionBackup$11(String packageName, Consumer callback, Boolean applyStagedRuntimePermissionBackupResult, Throwable err) {
         long token = Binder.clearCallingIdentity();
         try {
@@ -409,14 +437,12 @@ public final class PermissionControllerManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$getAppPermissions$14(String packageName, IPermissionController service) throws Exception {
         AndroidFuture<List<RuntimePermissionPresentationInfo>> getAppPermissionsResult = new AndroidFuture<>();
         service.getAppPermissions(packageName, getAppPermissionsResult);
         return getAppPermissionsResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getAppPermissions$15(Throwable err, OnGetAppPermissionResultCallback callback, List getAppPermissionsResult) {
         if (err != null) {
             Log.e(TAG, "Error getting app permission", err);
@@ -460,14 +486,12 @@ public final class PermissionControllerManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$countPermissionApps$18(List permissionNames, int flags, IPermissionController service) throws Exception {
         AndroidFuture<Integer> countPermissionAppsResult = new AndroidFuture<>();
         service.countPermissionApps(permissionNames, flags, countPermissionAppsResult);
         return countPermissionAppsResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$countPermissionApps$19(Throwable err, OnCountPermissionAppsResultCallback callback, Integer countPermissionAppsResult) {
         if (err != null) {
             Log.e(TAG, "Error counting permission apps", err);
@@ -494,14 +518,12 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$getPermissionUsages$21(boolean countSystem, long numMillis, IPermissionController service) throws Exception {
         AndroidFuture<List<RuntimePermissionUsageInfo>> getPermissionUsagesResult = new AndroidFuture<>();
         service.getPermissionUsages(countSystem, numMillis, getPermissionUsagesResult);
         return getPermissionUsagesResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getPermissionUsages$22(OnPermissionUsageResultCallback callback, List getPermissionUsagesResult, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Error getting permission usages", err);
@@ -530,7 +552,6 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$grantOrUpgradeDefaultRuntimePermissions$23(IPermissionController service) throws Exception {
         AndroidFuture<Boolean> grantOrUpgradeDefaultRuntimePermissionsResult = new AndroidFuture<>();
         Log.i(TAG, "Calling grantOrUpgradeDefaultRuntimePermissions");
@@ -538,7 +559,6 @@ public final class PermissionControllerManager {
         return grantOrUpgradeDefaultRuntimePermissionsResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$grantOrUpgradeDefaultRuntimePermissions$24(Consumer callback, Boolean grantOrUpgradeDefaultRuntimePermissionsResult, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Error granting or upgrading runtime permissions", err);
@@ -562,14 +582,12 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$getPrivilegesDescriptionStringForProfile$25(String profileName, IPermissionController service) throws Exception {
         AndroidFuture<String> future = new AndroidFuture<>();
         service.getPrivilegesDescriptionStringForProfile(profileName, future);
         return future;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getPrivilegesDescriptionStringForProfile$26(Consumer callback, String description, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Error from getPrivilegesDescriptionStringForProfile", err);
@@ -597,14 +615,12 @@ public final class PermissionControllerManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$updateUserSensitiveForApp$27(int uid, IPermissionController service) throws Exception {
         AndroidFuture<Void> future = new AndroidFuture<>();
         service.updateUserSensitiveForApp(uid, future);
         return future;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$updateUserSensitiveForApp$28(int uid, Void res, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Error updating user_sensitive flags for uid " + uid, err);
@@ -634,14 +650,12 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$getPlatformPermissionsForGroup$30(String permissionGroupName, IPermissionController service) throws Exception {
         AndroidFuture<List<String>> future = new AndroidFuture<>();
         service.getPlatformPermissionsForGroup(permissionGroupName, future);
         return future;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getPlatformPermissionsForGroup$31(String permissionGroupName, Consumer callback, List result, Throwable err) {
         long token = Binder.clearCallingIdentity();
         try {
@@ -670,14 +684,12 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$getGroupOfPlatformPermission$32(String permissionName, IPermissionController service) throws Exception {
         AndroidFuture<String> future = new AndroidFuture<>();
         service.getGroupOfPlatformPermission(permissionName, future);
         return future;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getGroupOfPlatformPermission$33(String permissionName, Consumer callback, String result, Throwable err) {
         long token = Binder.clearCallingIdentity();
         try {
@@ -708,14 +720,12 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$getUnusedAppCount$34(IPermissionController service) throws Exception {
         AndroidFuture<Integer> unusedAppCountResult = new AndroidFuture<>();
         service.getUnusedAppCount(unusedAppCountResult);
         return unusedAppCountResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getUnusedAppCount$35(IntConsumer callback, Integer count, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Error getting unused app count", err);
@@ -746,14 +756,12 @@ public final class PermissionControllerManager {
         }, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$getHibernationEligibility$36(String packageName, IPermissionController service) throws Exception {
         AndroidFuture<Integer> eligibilityResult = new AndroidFuture<>();
         service.getHibernationEligibility(packageName, eligibilityResult);
         return eligibilityResult;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getHibernationEligibility$37(IntConsumer callback, Integer eligibility, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Error getting hibernation eligibility", err);
@@ -782,14 +790,12 @@ public final class PermissionControllerManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ CompletableFuture lambda$revokeSelfPermissionsOnKill$38(String packageName, List permissions, IPermissionController service) throws Exception {
         AndroidFuture<Void> callback = new AndroidFuture<>();
         service.revokeSelfPermissionsOnKill(packageName, permissions, callback);
         return callback;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$revokeSelfPermissionsOnKill$39(List permissions, String packageName, Void result, Throwable err) {
         if (err != null) {
             Log.e(TAG, "Failed to self revoke " + String.join(",", permissions) + " for package " + packageName, err);

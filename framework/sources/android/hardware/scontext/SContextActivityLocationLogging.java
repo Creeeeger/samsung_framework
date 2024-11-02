@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextActivityLocationLogging extends SContextEventContext {
     public static final Parcelable.Creator<SContextActivityLocationLogging> CREATOR = new Parcelable.Creator<SContextActivityLocationLogging>() { // from class: android.hardware.scontext.SContextActivityLocationLogging.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextActivityLocationLogging createFromParcel(Parcel in) {
             return new SContextActivityLocationLogging(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityLocationLogging[] newArray(int size) {
             return new SContextActivityLocationLogging[size];
@@ -24,7 +25,6 @@ public class SContextActivityLocationLogging extends SContextEventContext {
     private Bundle mInfo;
     private int mType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextActivityLocationLogging() {
         this.mContext = new Bundle();
         this.mInfo = new Bundle();
@@ -150,5 +150,22 @@ public class SContextActivityLocationLogging extends SContextEventContext {
         this.mContext = src.readBundle();
         this.mInfo = src.readBundle();
         this.mType = src.readInt();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextActivityLocationLogging$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextActivityLocationLogging> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextActivityLocationLogging createFromParcel(Parcel in) {
+            return new SContextActivityLocationLogging(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextActivityLocationLogging[] newArray(int size) {
+            return new SContextActivityLocationLogging[size];
+        }
     }
 }

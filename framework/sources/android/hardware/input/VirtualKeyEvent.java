@@ -13,13 +13,14 @@ public final class VirtualKeyEvent implements Parcelable {
     public static final int ACTION_UNKNOWN = -1;
     public static final int ACTION_UP = 1;
     public static final Parcelable.Creator<VirtualKeyEvent> CREATOR = new Parcelable.Creator<VirtualKeyEvent>() { // from class: android.hardware.input.VirtualKeyEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualKeyEvent createFromParcel(Parcel source) {
             return new VirtualKeyEvent(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualKeyEvent[] newArray(int size) {
             return new VirtualKeyEvent[size];
@@ -37,6 +38,14 @@ public final class VirtualKeyEvent implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface SupportedKeycode {
+    }
+
+    /* synthetic */ VirtualKeyEvent(int i, int i2, long j, VirtualKeyEventIA virtualKeyEventIA) {
+        this(i, i2, j);
+    }
+
+    /* synthetic */ VirtualKeyEvent(Parcel parcel, VirtualKeyEventIA virtualKeyEventIA) {
+        this(parcel);
     }
 
     private VirtualKeyEvent(int action, int keyCode, long eventTimeNanos) {
@@ -107,6 +116,23 @@ public final class VirtualKeyEvent implements Parcelable {
             }
             this.mEventTimeNanos = eventTimeNanos;
             return this;
+        }
+    }
+
+    /* renamed from: android.hardware.input.VirtualKeyEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualKeyEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualKeyEvent createFromParcel(Parcel source) {
+            return new VirtualKeyEvent(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualKeyEvent[] newArray(int size) {
+            return new VirtualKeyEvent[size];
         }
     }
 }

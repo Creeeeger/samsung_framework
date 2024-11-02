@@ -41,9 +41,10 @@ public abstract class SelectionToolbarRenderService extends Service {
 
     public abstract void onShow(int i, ShowInfo showInfo, RemoteCallbackWrapper remoteCallbackWrapper);
 
-    /* renamed from: android.service.selectiontoolbar.SelectionToolbarRenderService$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.service.selectiontoolbar.SelectionToolbarRenderService$1 */
     /* loaded from: classes3.dex */
-    class AnonymousClass1 extends ISelectionToolbarRenderService.Stub {
+    public class AnonymousClass1 extends ISelectionToolbarRenderService.Stub {
         AnonymousClass1() {
         }
 
@@ -115,12 +116,10 @@ public abstract class SelectionToolbarRenderService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnConnected(IBinder callback) {
         this.mServiceCallback = ISelectionToolbarRenderServiceCallback.Stub.asInterface(callback);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void transferTouch(IBinder source, IBinder target) {
         ISelectionToolbarRenderServiceCallback callback = this.mServiceCallback;
         if (callback == null) {
@@ -185,8 +184,9 @@ public abstract class SelectionToolbarRenderService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private class CleanCacheRunnable implements Runnable {
+    public class CleanCacheRunnable implements Runnable {
         int mCleanUid;
 
         CleanCacheRunnable(int cleanUid) {

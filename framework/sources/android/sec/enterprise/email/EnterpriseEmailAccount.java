@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class EnterpriseEmailAccount implements Parcelable {
     public static final Parcelable.Creator<EnterpriseEmailAccount> CREATOR = new Parcelable.Creator<EnterpriseEmailAccount>() { // from class: android.sec.enterprise.email.EnterpriseEmailAccount.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EnterpriseEmailAccount createFromParcel(Parcel in) {
             return new EnterpriseEmailAccount(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnterpriseEmailAccount[] newArray(int size) {
             return new EnterpriseEmailAccount[size];
@@ -72,9 +73,30 @@ public class EnterpriseEmailAccount implements Parcelable {
     public int mSyncInterval;
     public int mSyncLookback;
 
+    /* synthetic */ EnterpriseEmailAccount(Parcel parcel, EnterpriseEmailAccountIA enterpriseEmailAccountIA) {
+        this(parcel);
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.sec.enterprise.email.EnterpriseEmailAccount$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EnterpriseEmailAccount> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EnterpriseEmailAccount createFromParcel(Parcel in) {
+            return new EnterpriseEmailAccount(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EnterpriseEmailAccount[] newArray(int size) {
+            return new EnterpriseEmailAccount[size];
+        }
     }
 
     private EnterpriseEmailAccount(Parcel in) {

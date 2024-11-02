@@ -247,6 +247,9 @@ public class ScrollView extends FrameLayout {
         this.SWITCH_CONTROL_SCROLL_MAX_DURATION = 17.1f;
         this.mAutoscrollDurationGap = 1.178f;
         this.mGoToTopEdgeEffectRunnable = new Runnable() { // from class: android.widget.ScrollView.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ScrollView.this.mEdgeGlowTop.onAbsorb(10000);
@@ -256,18 +259,27 @@ public class ScrollView extends FrameLayout {
         this.mHoverScrollSpeed = 0;
         this.GO_TO_TOP_HIDE = 2500;
         this.mSemGoToTopFadeOutRunnable = new Runnable() { // from class: android.widget.ScrollView.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ScrollView.this.semPlayGoToTopFadeOut();
             }
         };
         this.mSemGoToTopFadeInRunnable = new Runnable() { // from class: android.widget.ScrollView.4
+            AnonymousClass4() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ScrollView.this.semPlayGoToTopFadeIn();
             }
         };
         this.mSemAutoHide = new Runnable() { // from class: android.widget.ScrollView.5
+            AnonymousClass5() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ScrollView.this.semSetupGoToTop(0);
@@ -295,7 +307,6 @@ public class ScrollView extends FrameLayout {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getTopFadingEdgeStrength() {
         if (getChildCount() == 0) {
@@ -308,7 +319,6 @@ public class ScrollView extends FrameLayout {
         return 1.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getBottomFadingEdgeStrength() {
         if (getChildCount() == 0) {
@@ -459,7 +469,6 @@ public class ScrollView extends FrameLayout {
         this.mSmoothScrollingEnabled = smoothScrollingEnabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthPadding;
@@ -533,6 +542,9 @@ public class ScrollView extends FrameLayout {
                 if (semIsSupportGotoTop() && this.mSemGoToTopState == 2) {
                     if (canScrollUp()) {
                         post(new Runnable() { // from class: android.widget.ScrollView.1
+                            AnonymousClass1() {
+                            }
+
                             @Override // java.lang.Runnable
                             public void run() {
                                 ScrollView.this.smoothScrollTo(0, 0);
@@ -660,6 +672,32 @@ public class ScrollView extends FrameLayout {
                 break;
         }
         return super.dispatchTouchEvent(event);
+    }
+
+    /* renamed from: android.widget.ScrollView$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ScrollView.this.smoothScrollTo(0, 0);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.ScrollView$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ScrollView.this.mEdgeGlowTop.onAbsorb(10000);
+            ScrollView.this.invalidate();
+        }
     }
 
     private boolean semIsTalkBackIsRunning() {
@@ -885,7 +923,6 @@ public class ScrollView extends FrameLayout {
         this.HOVERSCROLL_DELAY = hoverdelay;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     @Override // android.view.ViewGroup, android.view.View
     public boolean dispatchHoverEvent(MotionEvent ev) {
@@ -1637,7 +1674,6 @@ public class ScrollView extends FrameLayout {
         smoothScrollByWithDuration(x - this.mScrollX, y - this.mScrollY, scrollDuration);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollRange() {
         int count = getChildCount();
@@ -1657,13 +1693,11 @@ public class ScrollView extends FrameLayout {
         return scrollRange;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollOffset() {
         return Math.max(0, super.computeVerticalScrollOffset());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
         ViewGroup.LayoutParams lp = child.getLayoutParams();
@@ -1673,7 +1707,6 @@ public class ScrollView extends FrameLayout {
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
@@ -1814,7 +1847,6 @@ public class ScrollView extends FrameLayout {
         super.requestChildFocus(child, focused);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         View nextFocus;
@@ -1846,7 +1878,6 @@ public class ScrollView extends FrameLayout {
         super.requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -1867,7 +1898,6 @@ public class ScrollView extends FrameLayout {
         super.onWindowFocusChanged(hasWindowFocus);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -1900,7 +1930,6 @@ public class ScrollView extends FrameLayout {
         scrollTo(this.mScrollX, this.mScrollY);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -2010,13 +2039,11 @@ public class ScrollView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean verifyDrawable(Drawable dr) {
         return this.mSemGoToTopImage == dr || super.verifyDrawable(dr);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -2161,7 +2188,6 @@ public class ScrollView extends FrameLayout {
         return n;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         if (this.mContext.getApplicationInfo().targetSdkVersion <= 18 || !(state instanceof SavedState)) {
@@ -2174,7 +2200,6 @@ public class ScrollView extends FrameLayout {
         requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         if (this.mContext.getApplicationInfo().targetSdkVersion <= 18) {
@@ -2186,24 +2211,23 @@ public class ScrollView extends FrameLayout {
         return ss;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("fillViewport", this.mFillViewport);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.ScrollView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -2229,9 +2253,25 @@ public class ScrollView extends FrameLayout {
         public String toString() {
             return "ScrollView.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " scrollPosition=" + this.scrollPosition + "}";
         }
+
+        /* renamed from: android.widget.ScrollView$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class HoverScrollHandler extends Handler {
         private final WeakReference<ScrollView> mScrollView;
@@ -2249,7 +2289,6 @@ public class ScrollView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleMessage(Message msg) {
         int offset;
         switch (msg.what) {
@@ -2334,7 +2373,45 @@ public class ScrollView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.ScrollView$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ScrollView.this.semPlayGoToTopFadeOut();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.ScrollView$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements Runnable {
+        AnonymousClass4() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ScrollView.this.semPlayGoToTopFadeIn();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.ScrollView$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements Runnable {
+        AnonymousClass5() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ScrollView.this.semSetupGoToTop(0);
+        }
+    }
+
     public void semSetupGoToTop(int where) {
         int overlappedW;
         int overlappedW2;
@@ -2402,7 +2479,6 @@ public class ScrollView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void semPlayGoToTopFadeOut() {
         if (this.mSemGoToTopFadeOutAnimator.isRunning()) {
             return;
@@ -2411,7 +2487,6 @@ public class ScrollView extends FrameLayout {
         this.mSemGoToTopFadeOutAnimator.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void semPlayGoToTopFadeIn() {
         if (this.mSemGoToTopFadeInAnimator.isRunning()) {
             return;
@@ -2444,6 +2519,9 @@ public class ScrollView extends FrameLayout {
             ofInt.setDuration(333L);
             this.mSemGoToTopFadeInAnimator.setInterpolator(new PathInterpolator(0.33f, 0.0f, 0.3f, 1.0f));
             this.mSemGoToTopFadeInAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.ScrollView.6
+                AnonymousClass6() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int value = ((Integer) animation.getAnimatedValue()).intValue();
@@ -2456,6 +2534,9 @@ public class ScrollView extends FrameLayout {
             ofInt2.setDuration(333L);
             this.mSemGoToTopFadeOutAnimator.setInterpolator(new PathInterpolator(0.33f, 0.0f, 0.3f, 1.0f));
             this.mSemGoToTopFadeOutAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.ScrollView.7
+                AnonymousClass7() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int value = ((Integer) animation.getAnimatedValue()).intValue();
@@ -2464,6 +2545,9 @@ public class ScrollView extends FrameLayout {
                 }
             });
             this.mSemGoToTopFadeOutAnimator.addListener(new Animator.AnimatorListener() { // from class: android.widget.ScrollView.8
+                AnonymousClass8() {
+                }
+
                 @Override // android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                 }
@@ -2485,6 +2569,59 @@ public class ScrollView extends FrameLayout {
             RenderNode renderNode = new RenderNode("goToTop");
             this.mGoToTopRenderNode = renderNode;
             renderNode.setElevation(this.mGoToTopElevation);
+        }
+    }
+
+    /* renamed from: android.widget.ScrollView$6 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass6 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass6() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            int value = ((Integer) animation.getAnimatedValue()).intValue();
+            ScrollView.this.mSemGoToTopImage.setAlpha(value);
+            ScrollView.this.invalidate();
+        }
+    }
+
+    /* renamed from: android.widget.ScrollView$7 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass7 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass7() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            int value = ((Integer) animation.getAnimatedValue()).intValue();
+            ScrollView.this.mSemGoToTopImage.setAlpha(value);
+            ScrollView.this.invalidate();
+        }
+    }
+
+    /* renamed from: android.widget.ScrollView$8 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass8 implements Animator.AnimatorListener {
+        AnonymousClass8() {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ScrollView.this.mIsGoToTopShown = true;
+            ScrollView.this.semSetupGoToTop(0);
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationRepeat(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
         }
     }
 

@@ -29,8 +29,9 @@ public class AndroidKeyStoreEdECPublicKey extends AndroidKeyStorePublicKey imple
         this.mPoint = pointFromKeyByteArray(Arrays.copyOfRange(encodedKey, preambleLength, encodedKey.length));
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.security.keystore2.AndroidKeyStorePublicKey
-    AndroidKeyStorePrivateKey getPrivateKey() {
+    public AndroidKeyStorePrivateKey getPrivateKey() {
         return new AndroidKeyStoreEdECPrivateKey(getUserKeyDescriptor(), getKeyIdDescriptor().nspace, getAuthorizations(), "EdDSA", getSecurityLevel());
     }
 

@@ -85,8 +85,9 @@ public interface IUserVisibleJobObserver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IUserVisibleJobObserver {
+        public static class Proxy implements IUserVisibleJobObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

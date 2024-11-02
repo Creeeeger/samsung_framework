@@ -962,12 +962,10 @@ public class Element extends BaseObj {
         this.mVectorSize = size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Element(long id, RenderScript rs) {
         super(id, rs);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.renderscript.BaseObj
     public void updateFromNative() {
         super.updateFromNative();
@@ -1076,8 +1074,7 @@ public class Element extends BaseObj {
         return new Element(id, rs, dt, dk, true, size);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.renderscript.Element$1, reason: invalid class name */
+    /* renamed from: android.renderscript.Element$1 */
     /* loaded from: classes3.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$renderscript$Element$DataKind;

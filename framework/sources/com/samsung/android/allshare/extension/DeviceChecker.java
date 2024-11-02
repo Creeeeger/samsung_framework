@@ -101,19 +101,58 @@ public class DeviceChecker {
         return adaptiveList;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x004f, code lost:            r7 = r6[3];     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0058, code lost:            if (r7.matches("..:..:..:..:..:..") == false) goto L64;     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x005a, code lost:            r3 = r7.trim();     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:            r4.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0069, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x006a, code lost:            com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() IOE", r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x0064, code lost:            r1 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x0065, code lost:            com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() E", r1);     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0071, code lost:            r4.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x007a, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x007b, code lost:            com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() IOE", r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0075, code lost:            r1 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x0076, code lost:            com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() E", r1);     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x004f, code lost:
+    
+        r7 = r6[3];
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0058, code lost:
+    
+        if (r7.matches("..:..:..:..:..:..") == false) goto L140;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x005a, code lost:
+    
+        r3 = r7.trim();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:
+    
+        r4.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0069, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x006a, code lost:
+    
+        com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() IOE", r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x0064, code lost:
+    
+        r1 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x0065, code lost:
+    
+        com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() E", r1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0071, code lost:
+    
+        r4.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x007a, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x007b, code lost:
+    
+        com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() IOE", r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0075, code lost:
+    
+        r1 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x0076, code lost:
+    
+        com.samsung.android.allshare.DLog.w_api(com.samsung.android.allshare.extension.DeviceChecker.TAG_CLASS, "getMacAddrFromArpTable br.close() E", r1);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -24,7 +24,6 @@ public abstract class AsyncTaskLoader<D> extends Loader<D> {
 
     public abstract D loadInBackground();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public final class LoadTask extends AsyncTask<Void, Void, D> implements Runnable {
         private final CountDownLatch mDone = new CountDownLatch(1);
@@ -33,7 +32,6 @@ public abstract class AsyncTaskLoader<D> extends Loader<D> {
         LoadTask() {
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public D doInBackground(Void... voidArr) {
             try {
@@ -95,7 +93,6 @@ public abstract class AsyncTaskLoader<D> extends Loader<D> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.Loader
     public void onForceLoad() {
         super.onForceLoad();

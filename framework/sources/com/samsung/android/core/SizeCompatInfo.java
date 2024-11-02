@@ -9,13 +9,14 @@ import com.samsung.android.rune.CoreRune;
 /* loaded from: classes5.dex */
 public class SizeCompatInfo implements Parcelable {
     public static final Parcelable.Creator<SizeCompatInfo> CREATOR = new Parcelable.Creator<SizeCompatInfo>() { // from class: com.samsung.android.core.SizeCompatInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SizeCompatInfo createFromParcel(Parcel in) {
             return new SizeCompatInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SizeCompatInfo[] newArray(int size) {
             return new SizeCompatInfo[size];
@@ -49,6 +50,10 @@ public class SizeCompatInfo implements Parcelable {
         public static final int NONE = 0;
     }
 
+    /* synthetic */ SizeCompatInfo(Parcel parcel, SizeCompatInfoIA sizeCompatInfoIA) {
+        this(parcel);
+    }
+
     public SizeCompatInfo() {
         this.mBundle = new Bundle();
     }
@@ -65,6 +70,23 @@ public class SizeCompatInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.samsung.android.core.SizeCompatInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SizeCompatInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SizeCompatInfo createFromParcel(Parcel in) {
+            return new SizeCompatInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SizeCompatInfo[] newArray(int size) {
+            return new SizeCompatInfo[size];
+        }
     }
 
     public void setMode(int mode) {

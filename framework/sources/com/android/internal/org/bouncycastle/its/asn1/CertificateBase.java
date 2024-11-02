@@ -11,7 +11,6 @@ public class CertificateBase extends ASN1Object {
     private CertificateType type;
     private byte[] version;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public CertificateBase(ASN1Sequence seq) {
     }
 

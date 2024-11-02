@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SubListTemplateData extends BaseTemplateData {
     public static final Parcelable.Creator<SubListTemplateData> CREATOR = new Parcelable.Creator<SubListTemplateData>() { // from class: android.app.smartspace.uitemplatedata.SubListTemplateData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SubListTemplateData createFromParcel(Parcel in) {
             return new SubListTemplateData(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubListTemplateData[] newArray(int size) {
             return new SubListTemplateData[size];
@@ -26,6 +27,10 @@ public final class SubListTemplateData extends BaseTemplateData {
     private final TapAction mSubListAction;
     private final Icon mSubListIcon;
     private final List<Text> mSubListTexts;
+
+    /* synthetic */ SubListTemplateData(int i, BaseTemplateData.SubItemInfo subItemInfo, BaseTemplateData.SubItemInfo subItemInfo2, BaseTemplateData.SubItemInfo subItemInfo3, BaseTemplateData.SubItemInfo subItemInfo4, BaseTemplateData.SubItemInfo subItemInfo5, int i2, Icon icon, List list, TapAction tapAction, SubListTemplateDataIA subListTemplateDataIA) {
+        this(i, subItemInfo, subItemInfo2, subItemInfo3, subItemInfo4, subItemInfo5, i2, icon, list, tapAction);
+    }
 
     SubListTemplateData(Parcel in) {
         super(in);
@@ -51,6 +56,23 @@ public final class SubListTemplateData extends BaseTemplateData {
 
     public TapAction getSubListAction() {
         return this.mSubListAction;
+    }
+
+    /* renamed from: android.app.smartspace.uitemplatedata.SubListTemplateData$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SubListTemplateData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SubListTemplateData createFromParcel(Parcel in) {
+            return new SubListTemplateData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SubListTemplateData[] newArray(int size) {
+            return new SubListTemplateData[size];
+        }
     }
 
     @Override // android.app.smartspace.uitemplatedata.BaseTemplateData, android.os.Parcelable

@@ -102,7 +102,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class RemoteServiceHandler extends Handler implements ServiceConnection {
         private static String DISPLAY_CATEGORY_BUILTIN = "com.samsung.android.hardware.display.category.BUILTIN";
@@ -296,7 +295,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class RemoteViewsFrameLayout extends AppWidgetHostView {
         public int cacheIndex;
@@ -332,8 +330,13 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class RemoteViewsFrameLayoutRefSet extends SparseArray<ArrayList<RemoteViewsFrameLayout>> {
+    public class RemoteViewsFrameLayoutRefSet extends SparseArray<ArrayList<RemoteViewsFrameLayout>> {
+        /* synthetic */ RemoteViewsFrameLayoutRefSet(RemoteViewsAdapter remoteViewsAdapter, RemoteViewsFrameLayoutRefSetIA remoteViewsFrameLayoutRefSetIA) {
+            this();
+        }
+
         private RemoteViewsFrameLayoutRefSet() {
         }
 
@@ -370,7 +373,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class RemoteViewsMetaData {
         int count;
@@ -423,7 +425,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class RemoteViewsIndexMetaData {
         long itemId;
@@ -443,7 +444,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class FixedSizeRemoteViewsCache {
         private static final float sMaxCountSlackPercent = 0.75f;
@@ -622,7 +622,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class RemoteViewsCacheKey {
         final Intent.FilterComparison filter;
@@ -720,7 +719,7 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
             android.content.res.Resources r3 = r7.getResources()     // Catch: java.lang.Throwable -> Ldc
             android.content.res.Configuration r3 = r3.getConfiguration()     // Catch: java.lang.Throwable -> Ldc
             if (r2 == 0) goto Lca
-            android.content.res.Configuration r4 = android.widget.RemoteViewsAdapter.FixedSizeRemoteViewsCache.m6495$$Nest$fgetmConfiguration(r2)     // Catch: java.lang.Throwable -> Ldc
+            android.content.res.Configuration r4 = android.widget.RemoteViewsAdapter.FixedSizeRemoteViewsCache.m6490$$Nest$fgetmConfiguration(r2)     // Catch: java.lang.Throwable -> Ldc
             int r4 = r4.diff(r3)     // Catch: java.lang.Throwable -> Ldc
             r5 = -1073737216(0xffffffffc0001200, float:-2.0010986)
             r4 = r4 & r5
@@ -730,9 +729,9 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
             java.lang.Object r4 = r1.get(r0)     // Catch: java.lang.Throwable -> Ldc
             android.widget.RemoteViewsAdapter$FixedSizeRemoteViewsCache r4 = (android.widget.RemoteViewsAdapter.FixedSizeRemoteViewsCache) r4     // Catch: java.lang.Throwable -> Ldc
             r6.mCache = r4     // Catch: java.lang.Throwable -> Ldc
-            android.widget.RemoteViewsAdapter$RemoteViewsMetaData r5 = android.widget.RemoteViewsAdapter.FixedSizeRemoteViewsCache.m6497$$Nest$fgetmMetaData(r4)     // Catch: java.lang.Throwable -> Ldc
+            android.widget.RemoteViewsAdapter$RemoteViewsMetaData r5 = android.widget.RemoteViewsAdapter.FixedSizeRemoteViewsCache.m6492$$Nest$fgetmMetaData(r4)     // Catch: java.lang.Throwable -> Ldc
             monitor-enter(r5)     // Catch: java.lang.Throwable -> Ldc
-            android.widget.RemoteViewsAdapter$RemoteViewsMetaData r4 = android.widget.RemoteViewsAdapter.FixedSizeRemoteViewsCache.m6497$$Nest$fgetmMetaData(r4)     // Catch: java.lang.Throwable -> Lc7
+            android.widget.RemoteViewsAdapter$RemoteViewsMetaData r4 = android.widget.RemoteViewsAdapter.FixedSizeRemoteViewsCache.m6492$$Nest$fgetmMetaData(r4)     // Catch: java.lang.Throwable -> Lc7
             int r4 = r4.count     // Catch: java.lang.Throwable -> Lc7
             if (r4 <= 0) goto Lc5
             r4 = 1
@@ -817,7 +816,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$saveRemoteViewsCache$0(RemoteViewsCacheKey key) {
         HashMap<RemoteViewsCacheKey, FixedSizeRemoteViewsCache> hashMap = sCachedRemoteViewsCaches;
         synchronized (hashMap) {
@@ -826,7 +824,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateTemporaryMetaData(IRemoteViewsFactory factory) {
         RemoteViews firstView;
         try {
@@ -856,7 +853,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateRemoteViews(IRemoteViewsFactory factory, int position, boolean notifyWhenLoaded) {
         boolean viewTypeInRange;
         int cacheCount;
@@ -1008,7 +1004,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         return getCount() <= 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int[] getVisibleWindow(int count) {
         int[] window;
         int lower = this.mVisibleWindowLowerBound;
@@ -1051,7 +1046,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         this.mServiceHandler.sendEmptyMessage(2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void superNotifyDataSetChanged() {
         super.notifyDataSetChanged();
     }
@@ -1085,13 +1079,11 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void requestBindService() {
         this.mServiceHandler.removeMessages(4);
         Message.obtain(this.mServiceHandler, 1, this.mAppWidgetId, 0, this.mIntent).sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class HandlerThreadExecutor implements Executor {
         private final HandlerThread mThread;
@@ -1110,7 +1102,6 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class LoadingViewTemplate {
         public int defaultHeight;
@@ -1122,8 +1113,33 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
             this.defaultHeight = Math.round(50.0f * density);
         }
 
+        /* renamed from: android.widget.RemoteViewsAdapter$LoadingViewTemplate$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements RemoteViews.OnViewAppliedListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.widget.RemoteViews.OnViewAppliedListener
+            public void onViewApplied(View v) {
+                try {
+                    v.measure(View.MeasureSpec.makeMeasureSpec(0, 0), View.MeasureSpec.makeMeasureSpec(0, 0));
+                    LoadingViewTemplate.this.defaultHeight = v.getMeasuredHeight();
+                } catch (Exception e) {
+                    onError(e);
+                }
+            }
+
+            @Override // android.widget.RemoteViews.OnViewAppliedListener
+            public void onError(Exception e) {
+                Log.w(RemoteViewsAdapter.TAG, "Error inflating first RemoteViews", e);
+            }
+        }
+
         public void loadFirstViewHeight(RemoteViews firstView, Context context, Executor executor) {
             firstView.applyAsync(context, new RemoteViewsFrameLayout(context, null), executor, new RemoteViews.OnViewAppliedListener() { // from class: android.widget.RemoteViewsAdapter.LoadingViewTemplate.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.widget.RemoteViews.OnViewAppliedListener
                 public void onViewApplied(View v) {
                     try {

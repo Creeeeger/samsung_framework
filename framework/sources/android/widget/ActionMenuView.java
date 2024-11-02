@@ -136,7 +136,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         this.mOnMenuItemClickListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         MenuBuilder menuBuilder;
@@ -198,7 +197,7 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
     /* JADX WARN: Removed duplicated region for block: B:124:0x02e0  */
     /* JADX WARN: Removed duplicated region for block: B:125:0x02d6  */
     /* JADX WARN: Type inference failed for: r3v11 */
-    /* JADX WARN: Type inference failed for: r3v12, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r3v12, types: [int, boolean] */
     /* JADX WARN: Type inference failed for: r3v30 */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -212,7 +211,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         throw new UnsupportedOperationException("Method not decompiled: android.widget.ActionMenuView.onMeasureExactFormat(int, int):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int measureChildForCells(View child, int cellSize, int cellsRemaining, int parentHeightMeasureSpec, int parentHeightPadding) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
         int childHeightSize = View.MeasureSpec.getSize(parentHeightMeasureSpec) - parentHeightPadding;
@@ -244,7 +242,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         return cellsUsed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int i;
@@ -403,7 +400,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         this.mReserveOverflow = reserveOverflow;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         LayoutParams params = new LayoutParams(-2, -2);
@@ -416,7 +412,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         LayoutParams result;
@@ -435,7 +430,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         return result2;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p != null && (p instanceof LayoutParams);
@@ -471,7 +465,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
             Context context = getContext();
             MenuBuilder menuBuilder = new MenuBuilder(context);
             this.mMenu = menuBuilder;
-            byte b = 0;
             menuBuilder.setCallback(new MenuBuilderCallback());
             ActionMenuPresenter actionMenuPresenter = new ActionMenuPresenter(context);
             this.mPresenter = actionMenuPresenter;
@@ -524,7 +517,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout
     public boolean hasDividerBeforeChildAt(int childIndex) {
         if (childIndex == 0) {
@@ -554,9 +546,12 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class MenuBuilderCallback implements MenuBuilder.Callback {
+        /* synthetic */ MenuBuilderCallback(ActionMenuView actionMenuView, MenuBuilderCallbackIA menuBuilderCallbackIA) {
+            this();
+        }
+
         private MenuBuilderCallback() {
         }
 
@@ -573,9 +568,12 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ActionMenuPresenterCallback implements MenuPresenter.Callback {
+        /* synthetic */ ActionMenuPresenterCallback(ActionMenuView actionMenuView, ActionMenuPresenterCallbackIA actionMenuPresenterCallbackIA) {
+            this();
+        }
+
         private ActionMenuPresenterCallback() {
         }
 
@@ -631,7 +629,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
             this.isOverflowButton = isOverflowButton;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.LinearLayout.LayoutParams, android.view.ViewGroup.MarginLayoutParams, android.view.ViewGroup.LayoutParams
         public void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
@@ -643,7 +640,6 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int semGetSumOfDigitsInBadges() {
         if (this.mMenu == null) {
             return 0;

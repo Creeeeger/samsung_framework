@@ -29,7 +29,6 @@ public class Font extends BaseObj {
         initFontFamilyMap();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class FontFamily {
         String mBoldFileName;
@@ -37,6 +36,10 @@ public class Font extends BaseObj {
         String mItalicFileName;
         String[] mNames;
         String mNormalFileName;
+
+        /* synthetic */ FontFamily(FontFamilyIA fontFamilyIA) {
+            this();
+        }
 
         private FontFamily() {
         }
@@ -92,8 +95,7 @@ public class Font extends BaseObj {
         return "DroidSans.ttf";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.renderscript.Font$1, reason: invalid class name */
+    /* renamed from: android.renderscript.Font$1 */
     /* loaded from: classes3.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$renderscript$Font$Style;

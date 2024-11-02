@@ -8,7 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SatellitePvt implements Parcelable {
     public static final Parcelable.Creator<SatellitePvt> CREATOR = new Parcelable.Creator<SatellitePvt>() { // from class: android.hardware.gnss.SatellitePvt.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SatellitePvt createFromParcel(Parcel _aidl_source) {
             SatellitePvt _aidl_out = new SatellitePvt();
@@ -16,7 +18,6 @@ public class SatellitePvt implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SatellitePvt[] newArray(int _aidl_size) {
             return new SatellitePvt[_aidl_size];
@@ -43,6 +44,25 @@ public class SatellitePvt implements Parcelable {
         public static final int OTHER = 3;
         public static final int SERVER_LONG_TERM = 2;
         public static final int SERVER_NORMAL = 1;
+    }
+
+    /* renamed from: android.hardware.gnss.SatellitePvt$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SatellitePvt> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SatellitePvt createFromParcel(Parcel _aidl_source) {
+            SatellitePvt _aidl_out = new SatellitePvt();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SatellitePvt[] newArray(int _aidl_size) {
+            return new SatellitePvt[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

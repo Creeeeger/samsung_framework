@@ -4,7 +4,6 @@ import android.content.Context;
 
 /* loaded from: classes5.dex */
 public class SemDvfsHyPerManager extends SemDvfsManager {
-    /* JADX INFO: Access modifiers changed from: protected */
     public SemDvfsHyPerManager(Context context, String packageName, int type) {
         super(context, packageName, type);
         this.LOG_TAG = SemDvfsHyPerManager.class.getSimpleName();

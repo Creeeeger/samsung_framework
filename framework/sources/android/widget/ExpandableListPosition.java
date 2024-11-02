@@ -2,7 +2,6 @@ package android.widget;
 
 import java.util.ArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ExpandableListPosition {
     public static final int CHILD = 1;
@@ -24,22 +23,18 @@ public class ExpandableListPosition {
     private ExpandableListPosition() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getPackedPosition() {
         return this.type == 1 ? ExpandableListView.getPackedPositionForChild(this.groupPos, this.childPos) : ExpandableListView.getPackedPositionForGroup(this.groupPos);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ExpandableListPosition obtainGroupPosition(int groupPosition) {
         return obtain(2, groupPosition, 0, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ExpandableListPosition obtainChildPosition(int groupPosition, int childPosition) {
         return obtain(1, groupPosition, childPosition, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ExpandableListPosition obtainPosition(long packedPosition) {
         if (packedPosition == 4294967295L) {
             return null;
@@ -55,7 +50,6 @@ public class ExpandableListPosition {
         return elp;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ExpandableListPosition obtain(int type, int groupPos, int childPos, int flatListPos) {
         ExpandableListPosition elp = getRecycledOrCreate();
         elp.type = type;

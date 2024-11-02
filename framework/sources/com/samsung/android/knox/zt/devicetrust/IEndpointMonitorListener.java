@@ -116,8 +116,9 @@ public interface IEndpointMonitorListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IEndpointMonitorListener {
+        public static class Proxy implements IEndpointMonitorListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

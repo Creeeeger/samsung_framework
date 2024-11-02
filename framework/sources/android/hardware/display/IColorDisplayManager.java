@@ -479,8 +479,9 @@ public interface IColorDisplayManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IColorDisplayManager {
+        public static class Proxy implements IColorDisplayManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

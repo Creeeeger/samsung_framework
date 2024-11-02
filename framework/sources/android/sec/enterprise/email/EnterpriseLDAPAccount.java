@@ -8,13 +8,14 @@ public class EnterpriseLDAPAccount implements Parcelable {
     public static final String ACTION_CREATE_LDAP_ACCOUNT = "com.samsung.android.knox.intent.action.CREATE_LDAPACCOUNT_INTERNAL";
     public static final String ACTION_LDAP_CREATE_ACCOUNT_RESULT = "com.samsung.android.knox.intent.action.LDAP_CREATE_ACCT_RESULT_INTERNAL";
     public static final Parcelable.Creator<EnterpriseLDAPAccount> CREATOR = new Parcelable.Creator<EnterpriseLDAPAccount>() { // from class: android.sec.enterprise.email.EnterpriseLDAPAccount.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EnterpriseLDAPAccount createFromParcel(Parcel in) {
             return new EnterpriseLDAPAccount(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnterpriseLDAPAccount[] newArray(int size) {
             return new EnterpriseLDAPAccount[size];
@@ -58,6 +59,23 @@ public class EnterpriseLDAPAccount implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.sec.enterprise.email.EnterpriseLDAPAccount$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EnterpriseLDAPAccount> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EnterpriseLDAPAccount createFromParcel(Parcel in) {
+            return new EnterpriseLDAPAccount(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EnterpriseLDAPAccount[] newArray(int size) {
+            return new EnterpriseLDAPAccount[size];
+        }
     }
 
     public EnterpriseLDAPAccount(Parcel in) {

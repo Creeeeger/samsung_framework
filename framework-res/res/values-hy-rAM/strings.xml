@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">Այս սարքը չի ապահովում այս %s-ի գործողությունը: Թակեք՝ ապահովվող ձևաչափով նախադրելու համար:</string>
     <string name="ext_media_unsupported_notification_title">Չապահովվող %s</string>
     <string name="ext_storage_bad_removal_button">Վերսկսել</string>
-    <string name="ext_storage_bad_removal_title">Վերագործարկեք հեռախոսը</string>
+    <string name="ext_storage_bad_removal_title">Վերագործարկեք պլանշետը</string>
     <string name="extmedia_format_button_format">Ձևաչափ</string>
     <string name="extmedia_format_message_usbhost">Ձեր USB կրիչում պահվող բոլոր ֆայլերը կջնջվեն: Այս գործողությունը անշրջելի է:</string>
     <string name="extmedia_format_title_usbhost">Ֆորմատավորե՞լ USB կրիչը:</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Ձայնը հնչում է Bluetooth ձայնասարքով: Թակեք այստեղ՝ այն անջատելու համար</string>
     <string name="multisound_sound_via_headphone">%s ձայնը հնչեցվում է ականջակալներով: Թակեք այստեղ՝ այն անջատելու համար:</string>
     <string name="multisound_sound_via_headphone_multiselection">Ձայնը հնչում է ականջակալներով: Թակեք այստեղ՝ այն անջատելու համար:</string>
-    <string name="multisound_sound_via_phone_speaker">%s ձայնը հնչեցվում է հեռախոսի բարձրախոսով: Թակեք այստեղ՝ այն անջատելու համար:</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Ձայնը հնչում է հեռախոսի բարձրախոսով: Թակեք այստեղ՝ այն անջատելու համար:</string>
+    <string name="multisound_sound_via_phone_speaker">%s ձայնը հնչեցվում է պլանշետի բարձրախոսով: Թակեք այստեղ՝ այն անջատելու համար:</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Ձայնը հնչում է պլանշետի բարձրախոսով: Թակեք այստեղ՝ այն անջատելու համար:</string>
     <string name="multisound_sound_via_usb_audio">%s-ի ձայնը հնչում է USB ձայնասարքով: Թակեք այստեղ՝ այն անջատելու համար:</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Ձայնը հնչում է USB ձայնասարքով: Թակեք այստեղ՝ այն անջատելու համար:</string>
     <string name="multisound_title">Առանձին ծրագրի ձայն</string>
     <string name="multisound_turn_off_multisound">Անջատել</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Հնարավոր չէ %s գործարկել Samsung DeX-ում: Փորձեք գործարկել հեռախոսի ռեժիմում:</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Հնարավոր չէ %s գործարկել Samsung DeX-ում: Այն նախատեսված է հեռախոսի Հիմնական էկրանների համար:</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Որոշ խաղեր գործում են միայն հպազգայուն էկրանների վրա: Եթե մկնիկով կառավարման տարրերը չեն աշխատում Samsung DeX-ում, փոխարենը փորձեք խաղալ հեռախոսի ռեժիմում:</string>
-    <string name="my_device">Այս հեռախոսը</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Հնարավոր չէ %s գործարկել Samsung DeX-ում: Փորձեք գործարկել պլանշետի ռեժիմում:</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Հնարավոր չէ %s գործարկել Samsung DeX-ում: Այն նախատեսված է պլանշետի Հիմնական էկրանների համար:</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Որոշ խաղեր գործում են միայն հպազգայուն էկրանների վրա: Եթե մկնիկով կառավարման տարրերը չեն աշխատում Samsung DeX-ում, փոխարենը փորձեք խաղալ պլանշետի ռեժիմում:</string>
+    <string name="my_device">Այս պլանշետը</string>
     <string name="network_locked_sim_dialog_message_ais">Ձեր SIM քարտն այս հեռախոսի հետ ամբողջությամբ համատեղելի չէ, քանի որ այն չի համապատասխանում Ձեր բաժանորդագրության դրույթներին և պայմաններին: Եթե ունեք հարցեր կամ այս խնդրի վերաբերյալ լրացուցիչ տեղեկատվության կարիք, ապա դիմեք Samsung-ի Հաճախորդների սպասարկման գրասենյակ կամ այն խանութ, որտեղից այդ ապրանքները գնել եք:</string>
     <string name="network_locked_sim_notification_text">Ցանցում կողպված SIM քարտ է մտցվել:</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">Արգելել աշխատասեղանի համաժամացման օգտագործումը:</string>
     <string name="policydesc_allow_internetsharing">Արգելել Շարժական թեժ կետի օգտագործումը:</string>
     <string name="policydesc_allow_irda">Արգելել IrDA-ի օգտագործումը:</string>
-    <string name="policydesc_allow_popimapemail">Արգելել POP and IMAP էլփոստի օգտագործումը հեռախոսում:</string>
+    <string name="policydesc_allow_popimapemail">Արգելել POP and IMAP էլփոստի օգտագործումը պլանշետում:</string>
     <string name="policydesc_allow_storagecard">Արգելել SD քարտերի օգտագործումը:</string>
     <string name="policydesc_allow_textmessaging">Արգելել տեքստային և մուլտիմեդիա հաղորդագրման օգտագործումը:</string>
     <string name="policydesc_allow_thirdParty">Այս ծրագիրը կարող է արգելել երրորդ անձանց ծրագրերի գործարկումը:</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">Անվտանգության քաղաքականությունը պահանջում է, որ փոխեք Ձեր գաղտնաբառը:</string>
     <string name="recording_fail">Հնարավոր չէ միկրոֆոն օգտագործել %1$s-ում, քանի դեռ այն օգտագործվում է %2$s-ում:</string>
     <string name="recording_popup">%s-ն օգտագործում է միկրոֆոնը:</string>
-    <string name="recording_popup_device">Հեռախոս</string>
+    <string name="recording_popup_device">Պլանշետ</string>
     <string name="recording_popup_with_bluetooth">%s-ն օգտագործում է Bluetooth միկրոֆոնը:</string>
     <string name="recording_popup_with_device">%1$s-ն օգտագործում է %2$s-ի միկրոֆոնը:</string>
     <string name="redo">Վերարկել</string>
@@ -904,12 +904,12 @@
     <string name="screencapture_restrict">Անվտանգության քաղաքականությունը թույլ չի տալիս էկրանի սևեռման օգտագործում:</string>
     <string name="sd_card_unavailable_message">Դուք չեք կարող օգտագործել SD քարտը, որովհետև այն տեղադրել էր, երբ ուրիշ օգտվողի պրոֆիլ էր գործածվում:</string>
     <string name="sd_card_unavailable_title">SD քարտն անմատչելի է</string>
-    <string name="sdcard_bad_removal_message">SD քարտ էր հեռացվել ոչ անվտանգ կերպով: Հեռախոսի անսպասելի վերագործարկում թույլ չտալու համար պահպանեք չպահպանված տվյալները և վերագործարկեք հիմա:</string>
+    <string name="sdcard_bad_removal_message">SD քարտ էր հեռացվել ոչ անվտանգ կերպով: Պլանշետի անսպասելի վերագործարկում թույլ չտալու համար պահպանեք չպահպանված տվյալները և վերագործարկեք հիմա:</string>
     <string name="sdcard_batch_decrypt_noti_content">Վերծանել SD քարտը</string>
     <string name="sdcard_batch_decrypt_noti_title">SD քարտի վերծանում</string>
     <string name="sdcard_batch_decrypt_popup_content">Ծածկագրված SD քարտը պետք է վերծանվի նախքան օգտագործվելը: Վերծանումը կարող է տևել մեկ ժամ կամ ավելի: Սկսեք լիցքավորված մարտկոցով և սարքը պահեք վարդակից միացված, մինչև վերծանումն ավարտվի: Վերծանման գործընթացի ընդհատումը կարող է որոշ կամ բոլոր տվյալների կորստի պատճառ դառնալ:</string>
     <string name="sdcard_decrypt_err_notification">SD քարտի վերծանման սխալ է տեղի ունեցել:</string>
-    <string name="sdcard_decrypt_error_otherdevice">Ձեր SD քարտի որոշ ֆայլեր ծածկագրվել են մեկ այլ սարքում և չեն կարող օգտագործվել այս հեռախոսում:</string>
+    <string name="sdcard_decrypt_error_otherdevice">Ձեր SD քարտի որոշ ֆայլեր ծածկագրվել են մեկ այլ սարքում և չեն կարող օգտագործվել այս պլանշետում:</string>
     <string name="sdcard_decrypt_notification">SD քարտը վերծանվեց:</string>
     <string name="sdcard_decrypt_title_notification">SD քարտի վերծանում</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD քարտը վերծանվում է…</string>
@@ -1235,7 +1235,7 @@
     <string name="usb_abnormal_reset_title">USB միացումը կայուն չէ</string>
     <string name="usb_abnormal_reset_toast">USB միացումը կայուն չէ: Խրոցակից հանեք հաղորդալարը և նորից միացրեք կամ փորձեք ուրիշ հաղորդալար:</string>
     <string name="usb_accessory_notification_title">Միացել է USB լրասարքին</string>
-    <string name="usb_bad_removal_message">USB հիշասարք էր հեռացվել ոչ անվտանգ կերպով: Հեռախոսի անսպասելի վերագործարկում թույլ չտալու համար պահպանեք չպահպանված տվյալները և վերագործարկեք հիմա:</string>
+    <string name="usb_bad_removal_message">USB հիշասարք էր հեռացվել ոչ անվտանգ կերպով: Պլանշետի անսպասելի վերագործարկում թույլ չտալու համար պահպանեք չպահպանված տվյալները և վերագործարկեք հիմա:</string>
     <string name="usb_blocked_by_emergency_mode">USB-ի որոշ գործառույթներ անմատչելի են Արտակարգ իրավիճակի ռեժիմում:</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Անհնար է օգտագործել կապակցված USB սարքին առնչվող գործառույթներ, քանի դեռ Էներգիայի առավելագույն խնայման ռեժիմն ընձեռված է:</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">USB-ի որոշ գործառույթներ կսահմանափակվեն, քանի դեռ Էներգիայի առավելագույն խնայման ռեժիմը միացված է:</string>
@@ -1244,13 +1244,13 @@
     <string name="usb_camera_connected_notification_title">Մեդիա սարքը կապակցվեց</string>
     <string name="usb_camera_disconnected_notification_title">Մեդիա սարքն անջատված է կապից</string>
     <string name="usb_cd_installer_notification_title">Ծրագրակազմի թարմացում</string>
-    <string name="usb_charing_only_notification_title">Լիցքավորում USB-ով</string>
+    <string name="usb_charing_only_notification_title">Կապակցված</string>
     <string name="usb_debugging_only_notification_title">Միայն վրիպազերծում</string>
-    <string name="usb_host_resource_exceed_message">Ձեր հեռախոսի USB կոնտրոլերը չունի այս սարքին կապակցվելու համար բավարար ռեսուրսներ: Փորձեք կապից անջատել սարքը և նորից կապակցել այն:</string>
+    <string name="usb_host_resource_exceed_message">Ձեր պլանշետի USB կոնտրոլերը չունի այս սարքին կապակցվելու համար բավարար ռեսուրսներ: Փորձեք կապից անջատել սարքը և նորից կապակցել այն:</string>
     <string name="usb_host_resource_exceed_title">USB կոնտրոլերի բավարար ռեսուրսներ չկան</string>
-    <string name="usb_hub_depth_exceed_message">Ձեր հեռախոսը կարող է միաժամանակ ապահովել առավելագույնը 5 USB հանգույցների միացումներ:</string>
+    <string name="usb_hub_depth_exceed_message">Ձեր պլանշետը կարող է միաժամանակ ապահովել առավելագույնը 5 USB հանգույցների միացումներ:</string>
     <string name="usb_hub_depth_exceed_title">USB հանգույցի առավ. միացումներ</string>
-    <string name="usb_hub_power_exceed_message">Ձեր հեռախոսը չի կարող բավարար սնուցում տրամադրել այս USB սարքի համար: Սարքը կապակցեք ինքնասնուցվող USB հանգույցի հետ, նախքան այն կկապակցեք Ձեր հեռախոսին:</string>
+    <string name="usb_hub_power_exceed_message">Ձեր պլանշետը չի կարող բավարար սնուցում տրամադրել այս USB սարքի համար: Սարքը կապակցեք ինքնասնուցվող USB հանգույցի հետ, նախքան այն կկապակցեք Ձեր պլանշետին:</string>
     <string name="usb_increase_battery_usage">USB-ի կապակցումը կարող է մեծացնել մարտկոցի օգտագործումը:</string>
     <string name="usb_mass_storage_restrict">Անվտանգության քաղաքականությունը թույլ չի տալիս USB զանգվածային պահոցի օգտագործում:</string>
     <string name="usb_midi_notification_title">USB՝ MIDI-ի համար</string>
@@ -1276,8 +1276,8 @@
     <string name="usb_storage_stop_title">USB պահոցն օգտագործվում է:</string>
     <string name="usb_storage_title">USB-ն միացված է:</string>
     <string name="usb_type_c_supply_power_notification_title">Կպկցվծ սարքի լիցքավորում USB-ով</string>
-    <string name="usb_unblock_by_screen_unlock">Արգելաբացեք Ձեր հեռախոսը՝ կապակցված USB սարքն օգտագործելու համար:</string>
-    <string name="usb_unsupport_accessory_message">Այս USB սարքը չի ապահովվում Ձեր հեռախոսի կողմից:</string>
+    <string name="usb_unblock_by_screen_unlock">Արգելաբացեք Ձեր պլանշետը՝ կապակցված USB սարքն օգտագործելու համար:</string>
+    <string name="usb_unsupport_accessory_message">Այս USB սարքը չի ապահովվում Ձեր պլանշետի կողմից:</string>
     <string name="usb_unsupport_accessory_title">USB սարքը չի ապահովվում</string>
     <string name="usb_unsupported_device">Կապակցված USB սարքը չի ապահովվում:</string>
     <string name="usb_unsupported_device_title">Սարքը չի ապահովվում</string>
@@ -1295,19 +1295,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Կարող եք արագացնել չորացումը՝ օդափոխիչը կամ չորացուցիչը (միայն սառը օդով) ուղղելով դեպի միացքը:</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Խոնավություն կամ օտար նյութ է հայտնաբերվել լիցքավորման կամ USB միացքում:
 
-Ստուգեք լիցքավորման կամ USB միացքում որևէ օտար նյութի, օրինակ՝ փոշու կամ փշուրների առկայությունը: Հեռախոսի վնասումը կանխելու համար ոչինչ մի միացրեք, քանի դեռ լիցքավորման միացքը մաքուր չէ և խոնավությունը չի հեռացվել:
+Ստուգեք լիցքավորման կամ USB միացքում որևէ օտար նյութի, օրինակ՝ փոշու կամ փշուրների առկայությունը: Պլանշետի վնասումը կանխելու համար ոչինչ մի միացրեք, քանի դեռ լիցքավորման միացքը մաքուր չէ, և խոնավությունը չի հեռացվել:
 
 Միացքը չորացնելու համար թափահարելով հանեք խոնավությունը, հետո սպասեք, մինչև չորանա, ինչը կարող է տևել մի քանի ժամ: Կարող եք արագացնել չորացումը՝ օդափոխիչը կամ չորացուցիչը (միայն սառը օդով) ուղղելով դեպի միացքը:"</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Խոնավություն կամ օտար նյութ է հայտնաբերվել լիցքավորման կամ USB միացքում:
 
-Ստուգեք լիցքավորման կամ USB միացքում որևէ օտար նյութի, օրինակ՝ փոշու կամ փշուրների առկայությունը: Հեռախոսի վնասումը կանխելու համար ոչինչ մի միացրեք, քանի դեռ լիցքավորման միացքը մաքուր չէ և խոնավությունը չի հեռացվել:
+Ստուգեք լիցքավորման կամ USB միացքում որևէ օտար նյութի, օրինակ՝ փոշու կամ փշուրների առկայությունը: Պլանշետի վնասումը կանխելու համար ոչինչ մի միացրեք, քանի դեռ լիցքավորման միացքը մաքուր չէ, և խոնավությունը չի հեռացվել:
 
 Միացքը չորացնելու համար թափահարելով հանեք խոնավությունը, հետո սպասեք, մինչև չորանա, ինչը կարող է տևել մի քանի ժամ: Կարող եք արագացնել չորացումը՝ օդափոխիչը կամ չորացուցիչը (միայն սառը օդով) ուղղելով դեպի միացքը:
 
-Մինչ այդ, կարող եք հեռախոսը լիցքավորել անլար կապով:"</string>
+Մինչ այդ, կարող եք պլանշետը լիցքավորել անլար կապով:"</string>
     <string name="usb_water_notification_content">Խոնավություն կամ օտար նյութ կա լիցքավորման կամ USB միացքում: Ստուգեք լիցքավորելուց առաջ:</string>
-    <string name="usb_water_notification_message">Խոնավություն է հայտնաբերվել լիցքավորիչում կամ USB միացքում: Հեռախոսը լիցքավորելուց առաջ համոզվեք, որ այն չոր է: Ամբողջովին չորանալու համար որոշ ժամանակ կպահանջվի:</string>
+    <string name="usb_water_notification_message">Խոնավություն է հայտնաբերվել լիցքավորիչում կամ USB միացքում: Պլանշետը լիցքավորելուց առաջ համոզվեք, որ այն չոր է: Ամբողջովին չորանալու համար որոշ ժամանակ կպահանջվի:</string>
     <string name="usb_water_notification_message_button">Մանրամասներ</string>
     <string name="usb_water_notification_title">Ստուգեք լիցքավորիչը և USB պորտը</string>
     <string name="usbhostStorage_restrict">Անվտանգության քաղաքականությունը թույլ չի տալիս USB գլխավոր պահոցի օգտագործում:</string>

@@ -60,12 +60,10 @@ public class NoAppsAvailableEmptyStateProvider implements AbstractMultiProfilePa
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getEmptyState$0() {
         return this.mContext.getString(R.string.resolver_no_personal_apps_available);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getEmptyState$1() {
         return this.mContext.getString(R.string.resolver_no_work_apps_available);
     }

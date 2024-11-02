@@ -28,7 +28,9 @@ import libcore.io.Memory;
 /* loaded from: classes3.dex */
 public class ParcelFileDescriptor implements Parcelable, Closeable {
     public static final Parcelable.Creator<ParcelFileDescriptor> CREATOR = new Parcelable.Creator<ParcelFileDescriptor>() { // from class: android.os.ParcelFileDescriptor.2
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelFileDescriptor createFromParcel(Parcel in) {
             int hasCommChannel = in.readInt();
@@ -40,7 +42,6 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
             return new ParcelFileDescriptor(fd, commChannel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelFileDescriptor[] newArray(int size) {
             return new ParcelFileDescriptor[size];
@@ -129,7 +130,7 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         return fromFd(original, handler, listener);
     }
 
-    public static ParcelFileDescriptor fromFd(FileDescriptor fd, Handler handler, final OnCloseListener listener) throws IOException {
+    public static ParcelFileDescriptor fromFd(FileDescriptor fd, Handler handler, OnCloseListener listener) throws IOException {
         if (handler == null) {
             throw new IllegalArgumentException("Handler must not be null");
         }
@@ -138,8 +139,14 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
         FileDescriptor[] comm = createCommSocketPair();
         ParcelFileDescriptor pfd = new ParcelFileDescriptor(fd, comm[0]);
-        final MessageQueue queue = handler.getLooper().getQueue();
+        MessageQueue queue = handler.getLooper().getQueue();
         queue.addOnFileDescriptorEventListener(comm[1], 1, new MessageQueue.OnFileDescriptorEventListener() { // from class: android.os.ParcelFileDescriptor.1
+            final /* synthetic */ OnCloseListener val$listener;
+
+            AnonymousClass1(OnCloseListener listener2) {
+                listener = listener2;
+            }
+
             @Override // android.os.MessageQueue.OnFileDescriptorEventListener
             public int onFileDescriptorEvents(FileDescriptor fd2, int events) {
                 Status status = null;
@@ -159,6 +166,34 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
             }
         });
         return pfd;
+    }
+
+    /* renamed from: android.os.ParcelFileDescriptor$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements MessageQueue.OnFileDescriptorEventListener {
+        final /* synthetic */ OnCloseListener val$listener;
+
+        AnonymousClass1(OnCloseListener listener2) {
+            listener = listener2;
+        }
+
+        @Override // android.os.MessageQueue.OnFileDescriptorEventListener
+        public int onFileDescriptorEvents(FileDescriptor fd2, int events) {
+            Status status = null;
+            if ((events & 1) != 0) {
+                byte[] buf = new byte[1024];
+                status = ParcelFileDescriptor.readCommStatus(fd2, buf);
+            } else if ((events & 4) != 0) {
+                status = new Status(-2);
+            }
+            if (status != null) {
+                MessageQueue.this.removeOnFileDescriptorEventListener(fd2);
+                IoUtils.closeQuietly(fd2);
+                listener.onClose(status.asIOException());
+                return 0;
+            }
+            return 1;
+        }
     }
 
     private static FileDescriptor openInternal(File file, int mode) throws FileNotFoundException {
@@ -500,7 +535,6 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Status readCommStatus(FileDescriptor comm, byte[] buf) {
         try {
             int n = Os.read(comm, buf, 0, buf.length);
@@ -684,6 +718,29 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
     }
 
+    /* renamed from: android.os.ParcelFileDescriptor$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 implements Parcelable.Creator<ParcelFileDescriptor> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelFileDescriptor createFromParcel(Parcel in) {
+            int hasCommChannel = in.readInt();
+            FileDescriptor fd = in.readRawFileDescriptor();
+            FileDescriptor commChannel = null;
+            if (hasCommChannel != 0) {
+                commChannel = in.readRawFileDescriptor();
+            }
+            return new ParcelFileDescriptor(fd, commChannel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelFileDescriptor[] newArray(int size) {
+            return new ParcelFileDescriptor[size];
+        }
+    }
+
     /* loaded from: classes3.dex */
     public static class FileDescriptorDetachedException extends IOException {
         private static final long serialVersionUID = 955542466045L;
@@ -693,7 +750,6 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class Status {
         public static final int DEAD = -2;

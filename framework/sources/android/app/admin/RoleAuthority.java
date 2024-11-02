@@ -12,19 +12,24 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class RoleAuthority extends Authority {
     public static final Parcelable.Creator<RoleAuthority> CREATOR = new Parcelable.Creator<RoleAuthority>() { // from class: android.app.admin.RoleAuthority.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RoleAuthority createFromParcel(Parcel source) {
             return new RoleAuthority(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RoleAuthority[] newArray(int size) {
             return new RoleAuthority[size];
         }
     };
     private final Set<String> mRoles;
+
+    /* synthetic */ RoleAuthority(Parcel parcel, RoleAuthorityIA roleAuthorityIA) {
+        this(parcel);
+    }
 
     public RoleAuthority(Set<String> roles) {
         this.mRoles = new HashSet((Collection) Objects.requireNonNull(roles));
@@ -74,5 +79,22 @@ public final class RoleAuthority extends Authority {
 
     public String toString() {
         return "RoleAuthority { mRoles= " + this.mRoles + " }";
+    }
+
+    /* renamed from: android.app.admin.RoleAuthority$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RoleAuthority> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RoleAuthority createFromParcel(Parcel source) {
+            return new RoleAuthority(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RoleAuthority[] newArray(int size) {
+            return new RoleAuthority[size];
+        }
     }
 }

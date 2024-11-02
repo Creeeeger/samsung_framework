@@ -55,32 +55,32 @@ public final class AmbientContextEvent implements Parcelable {
     public @interface LevelValue {
     }
 
-    /* renamed from: -$$Nest$smdefaultConfidenceLevel, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultConfidenceLevel */
     static /* bridge */ /* synthetic */ int m584$$Nest$smdefaultConfidenceLevel() {
         return defaultConfidenceLevel();
     }
 
-    /* renamed from: -$$Nest$smdefaultDensityLevel, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultDensityLevel */
     static /* bridge */ /* synthetic */ int m585$$Nest$smdefaultDensityLevel() {
         return defaultDensityLevel();
     }
 
-    /* renamed from: -$$Nest$smdefaultEndTime, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultEndTime */
     static /* bridge */ /* synthetic */ Instant m586$$Nest$smdefaultEndTime() {
         return defaultEndTime();
     }
 
-    /* renamed from: -$$Nest$smdefaultEventType, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultEventType */
     static /* bridge */ /* synthetic */ int m587$$Nest$smdefaultEventType() {
         return defaultEventType();
     }
 
-    /* renamed from: -$$Nest$smdefaultStartTime, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultStartTime */
     static /* bridge */ /* synthetic */ Instant m588$$Nest$smdefaultStartTime() {
         return defaultStartTime();
     }
 
-    /* renamed from: -$$Nest$smdefaultVendorData, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultVendorData */
     static /* bridge */ /* synthetic */ PersistableBundle m589$$Nest$smdefaultVendorData() {
         return defaultVendorData();
     }
@@ -200,13 +200,14 @@ public final class AmbientContextEvent implements Parcelable {
             sParcellingForEndTime = Parcelling.Cache.put(new Parcelling.BuiltIn.ForInstant());
         }
         CREATOR = new Parcelable.Creator<AmbientContextEvent>() { // from class: android.app.ambientcontext.AmbientContextEvent.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AmbientContextEvent[] newArray(int size) {
                 return new AmbientContextEvent[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AmbientContextEvent createFromParcel(Parcel in) {
                 return new AmbientContextEvent(in);
@@ -248,6 +249,23 @@ public final class AmbientContextEvent implements Parcelable {
         AnnotationValidations.validate((Class<? extends Annotation>) LevelValue.class, (Annotation) null, densityLevel);
         this.mVendorData = vendorData;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) vendorData);
+    }
+
+    /* renamed from: android.app.ambientcontext.AmbientContextEvent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AmbientContextEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AmbientContextEvent[] newArray(int size) {
+            return new AmbientContextEvent[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AmbientContextEvent createFromParcel(Parcel in) {
+            return new AmbientContextEvent(in);
+        }
     }
 
     /* loaded from: classes.dex */

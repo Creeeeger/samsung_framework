@@ -1,6 +1,5 @@
 package android.view;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ViewTraversalTracingStrings {
     public final String classSimpleName;
@@ -9,7 +8,6 @@ public class ViewTraversalTracingStrings {
     public final String onMeasureBeforeLayout;
     public final String requestLayoutStacktracePrefix;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewTraversalTracingStrings(View v) {
         String className = v.getClass().getSimpleName();
         this.classSimpleName = className;

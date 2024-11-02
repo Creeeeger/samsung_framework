@@ -46,12 +46,10 @@ public class WorkProfilePausedEmptyStateProvider implements AbstractMultiProfile
         }, this.mMetricsCategory);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getEmptyState$0() {
         return this.mContext.getString(R.string.resolver_turn_on_work_apps);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getEmptyState$1(AbstractMultiProfilePagerAdapter.EmptyState.TabControl tab) {
         tab.showSpinner();
         AbstractMultiProfilePagerAdapter.OnSwitchOnWorkSelectedListener onSwitchOnWorkSelectedListener = this.mOnSwitchOnWorkSelectedListener;

@@ -412,26 +412,22 @@ public interface ITuner extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg0, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg0.put(k, v);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$1(Parcel reply, String k, String v) {
             reply.writeString(k);
             reply.writeString(v);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$2(Parcel reply, String k, String v) {
             reply.writeString(k);
             reply.writeString(v);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class Proxy implements ITuner {
             private IBinder mRemote;
@@ -762,13 +758,11 @@ public interface ITuner extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$setParameters$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$setParameters$1(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 String v = _reply.readString();
@@ -799,7 +793,6 @@ public interface ITuner extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$getParameters$2(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 String v = _reply.readString();

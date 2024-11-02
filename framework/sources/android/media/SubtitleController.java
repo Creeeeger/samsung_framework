@@ -24,6 +24,9 @@ public class SubtitleController {
     private SubtitleTrack mSelectedTrack;
     private MediaTimeProvider mTimeProvider;
     private final Handler.Callback mCallback = new Handler.Callback() { // from class: android.media.SubtitleController.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler.Callback
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
@@ -45,6 +48,9 @@ public class SubtitleController {
         }
     };
     private CaptioningManager.CaptioningChangeListener mCaptioningChangeListener = new CaptioningManager.CaptioningChangeListener() { // from class: android.media.SubtitleController.2
+        AnonymousClass2() {
+        }
+
         @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
         public void onEnabledChanged(boolean enabled) {
             SubtitleController.this.selectDefaultTrack();
@@ -78,6 +84,52 @@ public class SubtitleController {
         public abstract SubtitleTrack createTrack(MediaFormat mediaFormat);
 
         public abstract boolean supports(MediaFormat mediaFormat);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.SubtitleController$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 implements Handler.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler.Callback
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    SubtitleController.this.doShow();
+                    return true;
+                case 2:
+                    SubtitleController.this.doHide();
+                    return true;
+                case 3:
+                    SubtitleController.this.doSelectTrack((SubtitleTrack) msg.obj);
+                    return true;
+                case 4:
+                    SubtitleController.this.doSelectDefaultTrack();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.SubtitleController$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 extends CaptioningManager.CaptioningChangeListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
+        public void onEnabledChanged(boolean enabled) {
+            SubtitleController.this.selectDefaultTrack();
+        }
+
+        @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
+        public void onLocaleChanged(Locale locale) {
+            SubtitleController.this.selectDefaultTrack();
+        }
     }
 
     public SubtitleController(Context context, MediaTimeProvider timeProvider, Listener listener) {
@@ -120,7 +172,6 @@ public class SubtitleController {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doSelectTrack(SubtitleTrack track) {
         this.mTrackIsExplicit = true;
         SubtitleTrack subtitleTrack = this.mSelectedTrack;
@@ -169,7 +220,6 @@ public class SubtitleController {
         processOnAnchor(this.mHandler.obtainMessage(4));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doSelectDefaultTrack() {
         SubtitleTrack subtitleTrack;
         if (this.mTrackIsExplicit) {
@@ -241,7 +291,6 @@ public class SubtitleController {
         processOnAnchor(this.mHandler.obtainMessage(1));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doShow() {
         this.mShowing = true;
         this.mVisibilityIsExplicit = true;
@@ -255,7 +304,6 @@ public class SubtitleController {
         processOnAnchor(this.mHandler.obtainMessage(2));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doHide() {
         this.mVisibilityIsExplicit = true;
         SubtitleTrack subtitleTrack = this.mSelectedTrack;

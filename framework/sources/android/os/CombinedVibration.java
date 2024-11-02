@@ -11,7 +11,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public abstract class CombinedVibration implements Parcelable {
     public static final Parcelable.Creator<CombinedVibration> CREATOR = new Parcelable.Creator<CombinedVibration>() { // from class: android.os.CombinedVibration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CombinedVibration createFromParcel(Parcel in) {
             int token = in.readInt();
@@ -27,7 +29,6 @@ public abstract class CombinedVibration implements Parcelable {
             throw new IllegalStateException("Unexpected combined vibration event type token in parcel.");
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CombinedVibration[] newArray(int size) {
             return new CombinedVibration[size];
@@ -139,14 +140,15 @@ public abstract class CombinedVibration implements Parcelable {
     /* loaded from: classes3.dex */
     public static final class Mono extends CombinedVibration {
         public static final Parcelable.Creator<Mono> CREATOR = new Parcelable.Creator<Mono>() { // from class: android.os.CombinedVibration.Mono.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Mono createFromParcel(Parcel in) {
                 in.readInt();
                 return new Mono(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Mono[] newArray(int size) {
                 return new Mono[size];
@@ -212,19 +214,38 @@ public abstract class CombinedVibration implements Parcelable {
             out.writeInt(1);
             this.mEffect.writeToParcel(out, flags);
         }
+
+        /* renamed from: android.os.CombinedVibration$Mono$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Mono> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Mono createFromParcel(Parcel in) {
+                in.readInt();
+                return new Mono(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Mono[] newArray(int size) {
+                return new Mono[size];
+            }
+        }
     }
 
     /* loaded from: classes3.dex */
     public static final class Stereo extends CombinedVibration {
         public static final Parcelable.Creator<Stereo> CREATOR = new Parcelable.Creator<Stereo>() { // from class: android.os.CombinedVibration.Stereo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Stereo createFromParcel(Parcel in) {
                 in.readInt();
                 return new Stereo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Stereo[] newArray(int size) {
                 return new Stereo[size];
@@ -331,19 +352,38 @@ public abstract class CombinedVibration implements Parcelable {
                 this.mEffects.valueAt(i).writeToParcel(out, flags);
             }
         }
+
+        /* renamed from: android.os.CombinedVibration$Stereo$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Stereo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Stereo createFromParcel(Parcel in) {
+                in.readInt();
+                return new Stereo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Stereo[] newArray(int size) {
+                return new Stereo[size];
+            }
+        }
     }
 
     /* loaded from: classes3.dex */
     public static final class Sequential extends CombinedVibration {
         public static final Parcelable.Creator<Sequential> CREATOR = new Parcelable.Creator<Sequential>() { // from class: android.os.CombinedVibration.Sequential.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Sequential createFromParcel(Parcel in) {
                 in.readInt();
                 return new Sequential(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Sequential[] newArray(int size) {
                 return new Sequential[size];
@@ -473,6 +513,51 @@ public abstract class CombinedVibration implements Parcelable {
                 out.writeInt(this.mDelays.get(i).intValue());
                 this.mEffects.get(i).writeToParcel(out, flags);
             }
+        }
+
+        /* renamed from: android.os.CombinedVibration$Sequential$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Sequential> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Sequential createFromParcel(Parcel in) {
+                in.readInt();
+                return new Sequential(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Sequential[] newArray(int size) {
+                return new Sequential[size];
+            }
+        }
+    }
+
+    /* renamed from: android.os.CombinedVibration$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CombinedVibration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CombinedVibration createFromParcel(Parcel in) {
+            int token = in.readInt();
+            if (token == 1) {
+                return new Mono(in);
+            }
+            if (token == 2) {
+                return new Stereo(in);
+            }
+            if (token == 3) {
+                return new Sequential(in);
+            }
+            throw new IllegalStateException("Unexpected combined vibration event type token in parcel.");
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CombinedVibration[] newArray(int size) {
+            return new CombinedVibration[size];
         }
     }
 }

@@ -307,9 +307,12 @@ public class UsbManager {
         DEFAULT_MODES = new int[]{2, 4, 6, 0, 1};
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class DisplayPortAltModeInfoDispatchingListener extends IDisplayPortAltModeInfoListener.Stub {
+        /* synthetic */ DisplayPortAltModeInfoDispatchingListener(UsbManager usbManager, DisplayPortAltModeInfoDispatchingListenerIA displayPortAltModeInfoDispatchingListenerIA) {
+            this();
+        }
+
         private DisplayPortAltModeInfoDispatchingListener() {
         }
 
@@ -669,7 +672,6 @@ public class UsbManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UsbPortStatus getPortStatus(UsbPort port) {
         try {
             return this.mService.getPortStatus(port.getId());
@@ -678,7 +680,6 @@ public class UsbManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setPortRoles(UsbPort port, int powerRole, int dataRole) {
         Log.d(TAG, "setPortRoles: portId=" + port.getId() + " powerRole=" + powerRole + " dataRole=" + dataRole);
         Log.d(TAG, "setPortRoles Package:" + this.mContext.getPackageName());
@@ -689,7 +690,6 @@ public class UsbManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void enableContaminantDetection(UsbPort port, boolean enable) {
         try {
             this.mService.enableContaminantDetection(port.getId(), enable);
@@ -698,7 +698,6 @@ public class UsbManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void enableLimitPowerTransfer(UsbPort port, boolean limit, int operationId, IUsbOperationInternal callback) {
         Objects.requireNonNull(port, "enableLimitPowerTransfer:port must not be null. opId:" + operationId);
         try {
@@ -714,7 +713,6 @@ public class UsbManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetUsbPort(UsbPort port, int operationId, IUsbOperationInternal callback) {
         Objects.requireNonNull(port, "resetUsbPort: port must not be null. opId:" + operationId);
         try {
@@ -730,7 +728,6 @@ public class UsbManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean enableUsbData(UsbPort port, boolean enable, int operationId, IUsbOperationInternal callback) {
         Objects.requireNonNull(port, "enableUsbData: port must not be null. opId:" + operationId);
         try {
@@ -746,7 +743,6 @@ public class UsbManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void enableUsbDataWhileDocked(UsbPort port, int operationId, IUsbOperationInternal callback) {
         Objects.requireNonNull(port, "enableUsbDataWhileDocked: port must not be null. opId:" + operationId);
         try {

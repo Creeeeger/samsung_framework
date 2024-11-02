@@ -16,7 +16,6 @@ import com.android.internal.widget.SubtitleView;
 import java.util.ArrayList;
 import java.util.Vector;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: WebVttRenderer.java */
 /* loaded from: classes2.dex */
 public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.RenderingWidget {
@@ -51,6 +50,9 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
         this.mRegionBoxes = new ArrayMap<>();
         this.mCueBoxes = new ArrayMap<>();
         this.mCaptioningListener = new CaptioningManager.CaptioningChangeListener() { // from class: android.media.WebVttRenderingWidget.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
             public void onFontScaleChanged(float fontScale) {
                 float fontSize = WebVttRenderingWidget.this.getHeight() * fontScale * WebVttRenderingWidget.LINE_HEIGHT_RATIO;
@@ -163,7 +165,6 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setCaptionStyle(CaptioningManager.CaptionStyle captionStyle, float fontSize) {
         CaptioningManager.CaptionStyle captionStyle2 = DEFAULT_CAPTION_STYLE.applyStyle(captionStyle);
         this.mCaptionStyle = captionStyle2;
@@ -220,7 +221,6 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -236,7 +236,6 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int viewportWidth = r - l;
@@ -330,7 +329,6 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
         return 100;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int resolveCueAlignment(int layoutDirection, int alignment) {
         switch (alignment) {
             case 201:
@@ -342,7 +340,28 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* compiled from: WebVttRenderer.java */
+    /* renamed from: android.media.WebVttRenderingWidget$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends CaptioningManager.CaptioningChangeListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
+        public void onFontScaleChanged(float fontScale) {
+            float fontSize = WebVttRenderingWidget.this.getHeight() * fontScale * WebVttRenderingWidget.LINE_HEIGHT_RATIO;
+            WebVttRenderingWidget webVttRenderingWidget = WebVttRenderingWidget.this;
+            webVttRenderingWidget.setCaptionStyle(webVttRenderingWidget.mCaptionStyle, fontSize);
+        }
+
+        @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
+        public void onUserStyleChanged(CaptioningManager.CaptionStyle userStyle) {
+            WebVttRenderingWidget webVttRenderingWidget = WebVttRenderingWidget.this;
+            webVttRenderingWidget.setCaptionStyle(userStyle, webVttRenderingWidget.mFontSize);
+        }
+    }
+
     /* compiled from: WebVttRenderer.java */
     /* loaded from: classes2.dex */
     public static class RegionLayout extends LinearLayout {
@@ -430,7 +449,6 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: WebVttRenderer.java */
     /* loaded from: classes2.dex */
     public static class CueLayout extends LinearLayout {
@@ -510,7 +528,6 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.LinearLayout, android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -566,7 +583,6 @@ public class WebVttRenderingWidget extends ViewGroup implements SubtitleTrack.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: WebVttRenderer.java */
     /* loaded from: classes2.dex */
     public static class SpanLayout extends SubtitleView {

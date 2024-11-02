@@ -32,6 +32,10 @@ public class ShapeDrawable extends Drawable {
         public abstract Shader resize(int i, int i2);
     }
 
+    /* synthetic */ ShapeDrawable(ShapeState shapeState, Resources resources, ShapeDrawableIA shapeDrawableIA) {
+        this(shapeState, resources);
+    }
+
     public ShapeDrawable() {
         this(new ShapeState(), null);
     }
@@ -221,14 +225,12 @@ public class ShapeDrawable extends Drawable {
         invalidateSelf();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         updateShape();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         ShapeState state = this.mShapeState;
@@ -250,7 +252,6 @@ public class ShapeDrawable extends Drawable {
         return this.mShapeState.mTint != null && this.mShapeState.mTint.hasFocusStateSpecified();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean inflateTag(String name, Resources r, XmlPullParser parser, AttributeSet attrs) {
         if (!"padding".equals(name)) {
             return false;
@@ -365,7 +366,6 @@ public class ShapeDrawable extends Drawable {
         this.mMutated = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class ShapeState extends Drawable.ConstantState {
         int mAlpha;

@@ -9,13 +9,14 @@ import android.window.IOnBackInvokedCallback;
 /* loaded from: classes4.dex */
 public final class BackNavigationInfo implements Parcelable {
     public static final Parcelable.Creator<BackNavigationInfo> CREATOR = new Parcelable.Creator<BackNavigationInfo>() { // from class: android.window.BackNavigationInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BackNavigationInfo createFromParcel(Parcel in) {
             return new BackNavigationInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackNavigationInfo[] newArray(int size) {
             return new BackNavigationInfo[size];
@@ -37,6 +38,14 @@ public final class BackNavigationInfo implements Parcelable {
 
     /* loaded from: classes4.dex */
     public @interface BackTargetType {
+    }
+
+    /* synthetic */ BackNavigationInfo(int i, RemoteCallback remoteCallback, IOnBackInvokedCallback iOnBackInvokedCallback, boolean z, boolean z2, CustomAnimationInfo customAnimationInfo, BackNavigationInfoIA backNavigationInfoIA) {
+        this(i, remoteCallback, iOnBackInvokedCallback, z, z2, customAnimationInfo);
+    }
+
+    /* synthetic */ BackNavigationInfo(Parcel parcel, BackNavigationInfoIA backNavigationInfoIA) {
+        this(parcel);
     }
 
     private BackNavigationInfo(int type, RemoteCallback onBackNavigationDone, IOnBackInvokedCallback onBackInvokedCallback, boolean isPrepareRemoteAnimation, boolean isAnimationCallback, CustomAnimationInfo customAnimationInfo) {
@@ -100,6 +109,23 @@ public final class BackNavigationInfo implements Parcelable {
         return 0;
     }
 
+    /* renamed from: android.window.BackNavigationInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BackNavigationInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BackNavigationInfo createFromParcel(Parcel in) {
+            return new BackNavigationInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BackNavigationInfo[] newArray(int size) {
+            return new BackNavigationInfo[size];
+        }
+    }
+
     public String toString() {
         return "BackNavigationInfo{mType=" + typeToString(this.mType) + " (" + this.mType + "), mOnBackNavigationDone=" + this.mOnBackNavigationDone + ", mOnBackInvokedCallback=" + this.mOnBackInvokedCallback + ", mPrepareRemoteAnimation=" + this.mPrepareRemoteAnimation + ", mAnimationCallback=" + this.mAnimationCallback + ", mCustomizeAnimationInfo=" + this.mCustomAnimationInfo + '}';
     }
@@ -126,13 +152,14 @@ public final class BackNavigationInfo implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class CustomAnimationInfo implements Parcelable {
         public static final Parcelable.Creator<CustomAnimationInfo> CREATOR = new Parcelable.Creator<CustomAnimationInfo>() { // from class: android.window.BackNavigationInfo.CustomAnimationInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public CustomAnimationInfo createFromParcel(Parcel in) {
                 return new CustomAnimationInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CustomAnimationInfo[] newArray(int size) {
                 return new CustomAnimationInfo[size];
@@ -143,6 +170,10 @@ public final class BackNavigationInfo implements Parcelable {
         private int mCustomExitAnim;
         private final String mPackageName;
         private int mWindowAnimations;
+
+        /* synthetic */ CustomAnimationInfo(Parcel parcel, CustomAnimationInfoIA customAnimationInfoIA) {
+            this(parcel);
+        }
 
         public String getPackageName() {
             return this.mPackageName;
@@ -192,6 +223,23 @@ public final class BackNavigationInfo implements Parcelable {
 
         public String toString() {
             return "CustomAnimationInfo, package name= " + this.mPackageName;
+        }
+
+        /* renamed from: android.window.BackNavigationInfo$CustomAnimationInfo$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<CustomAnimationInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CustomAnimationInfo createFromParcel(Parcel in) {
+                return new CustomAnimationInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CustomAnimationInfo[] newArray(int size) {
+                return new CustomAnimationInfo[size];
+            }
         }
     }
 

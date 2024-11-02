@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class DeleteRangeGesture extends PreviewableHandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<DeleteRangeGesture> CREATOR = new Parcelable.Creator<DeleteRangeGesture>() { // from class: android.view.inputmethod.DeleteRangeGesture.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DeleteRangeGesture createFromParcel(Parcel source) {
             return new DeleteRangeGesture(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeleteRangeGesture[] newArray(int size) {
             return new DeleteRangeGesture[size];
@@ -23,6 +24,14 @@ public final class DeleteRangeGesture extends PreviewableHandwritingGesture impl
     private RectF mEndArea;
     private int mGranularity;
     private RectF mStartArea;
+
+    /* synthetic */ DeleteRangeGesture(int i, RectF rectF, RectF rectF2, String str, DeleteRangeGestureIA deleteRangeGestureIA) {
+        this(i, rectF, rectF2, str);
+    }
+
+    /* synthetic */ DeleteRangeGesture(Parcel parcel, DeleteRangeGestureIA deleteRangeGestureIA) {
+        this(parcel);
+    }
 
     private DeleteRangeGesture(int granularity, RectF startArea, RectF endArea, String fallbackText) {
         this.mType = 64;
@@ -89,6 +98,23 @@ public final class DeleteRangeGesture extends PreviewableHandwritingGesture impl
                 throw new IllegalArgumentException("Deletion granularity must be set.");
             }
             return new DeleteRangeGesture(this.mGranularity, this.mStartArea, this.mEndArea, this.mFallbackText);
+        }
+    }
+
+    /* renamed from: android.view.inputmethod.DeleteRangeGesture$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DeleteRangeGesture> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeleteRangeGesture createFromParcel(Parcel source) {
+            return new DeleteRangeGesture(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeleteRangeGesture[] newArray(int size) {
+            return new DeleteRangeGesture[size];
         }
     }
 

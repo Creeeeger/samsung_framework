@@ -33,7 +33,6 @@ public class RemeasuringLinearLayout extends LinearLayout {
         this.mMatchParentViews = new ArrayList<>();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

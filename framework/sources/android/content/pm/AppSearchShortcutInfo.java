@@ -146,7 +146,6 @@ public class AppSearchShortcutInfo extends GenericDocument {
         return new ShortcutInfo(userId, getId(), packageName, activity, null, shortLabel, 0, null, longLabel, 0, null, disabledMessage, 0, null, categoriesSet, intents, Integer.MAX_VALUE, extras, getCreationTimestampMillis(), flags, iconResId, iconResName, null, iconUri, disabledReason, persons, locusId, null, capabilityBindings);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Intent lambda$toShortcutInfo$0(String uri) {
         if (TextUtils.isEmpty(uri)) {
             return new Intent("android.intent.action.VIEW");
@@ -158,12 +157,10 @@ public class AppSearchShortcutInfo extends GenericDocument {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Intent[] lambda$toShortcutInfo$1(int x$0) {
         return new Intent[x$0];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Bundle[] lambda$toShortcutInfo$2(int x$0) {
         return new Bundle[x$0];
     }
@@ -232,7 +229,6 @@ public class AppSearchShortcutInfo extends GenericDocument {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ String[] lambda$setCategories$0(int x$0) {
             return new String[x$0];
         }
@@ -274,7 +270,6 @@ public class AppSearchShortcutInfo extends GenericDocument {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ String[] lambda$setIntents$2(int x$0) {
             return new String[x$0];
         }
@@ -369,7 +364,6 @@ public class AppSearchShortcutInfo extends GenericDocument {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ String lambda$setCapabilityBindings$3(String capabilityName, String paramName, String v) {
             return capabilityName + "/" + paramName + "/" + v;
         }
@@ -381,7 +375,6 @@ public class AppSearchShortcutInfo extends GenericDocument {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static byte[] transformToByteArray(PersistableBundle extras) {
         Objects.requireNonNull(extras);
         try {
@@ -398,7 +391,6 @@ public class AppSearchShortcutInfo extends GenericDocument {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Bundle transformToBundle(byte[] extras) {
         if (extras == null) {
             return null;
@@ -435,7 +427,6 @@ public class AppSearchShortcutInfo extends GenericDocument {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String[] flattenFlags(int flags) {
         List<String> flattenedFlags = new ArrayList<>();
         for (int i = 0; i < 31; i++) {
@@ -553,7 +544,6 @@ public class AppSearchShortcutInfo extends GenericDocument {
         return ret;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$parseCapabilityBindings$3(Map ret, String binding) {
         int capabilityStopIndex;
         if (TextUtils.isEmpty(binding) || (capabilityStopIndex = binding.indexOf("/")) == -1 || capabilityStopIndex == binding.length() - 1) {

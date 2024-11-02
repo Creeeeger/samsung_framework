@@ -31,13 +31,14 @@ public class SemContextCarryingDetection extends SemContextEventContext {
     public static final int AOD_STATUS_ON = 1;
     public static final int AOD_TIMEOUT_DURATION = 3;
     public static final Parcelable.Creator<SemContextCarryingDetection> CREATOR = new Parcelable.Creator<SemContextCarryingDetection>() { // from class: com.samsung.android.hardware.context.SemContextCarryingDetection.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextCarryingDetection createFromParcel(Parcel in) {
             return new SemContextCarryingDetection(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextCarryingDetection[] newArray(int size) {
             return new SemContextCarryingDetection[size];
@@ -55,7 +56,23 @@ public class SemContextCarryingDetection extends SemContextEventContext {
     public static final int REASON_ON_RUNNING_STOPPED = 5;
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextCarryingDetection$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextCarryingDetection> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextCarryingDetection createFromParcel(Parcel in) {
+            return new SemContextCarryingDetection(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextCarryingDetection[] newArray(int size) {
+            return new SemContextCarryingDetection[size];
+        }
+    }
+
     public SemContextCarryingDetection() {
         this.mContext = new Bundle();
     }

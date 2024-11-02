@@ -61,7 +61,6 @@ public class BackdropFrameRenderer extends Thread implements Choreographer.Frame
         start();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onResourcesLoaded(DecorView decorView, Drawable resizingBackgroundDrawable, Drawable captionBackgroundDrawableDrawable, Drawable userCaptionBackgroundDrawable, int statusBarColor, int navigationBarColor) {
         Drawable drawable;
         Drawable drawable2;
@@ -131,7 +130,6 @@ public class BackdropFrameRenderer extends Thread implements Choreographer.Frame
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void releaseRenderer() {
         synchronized (this) {
             ThreadedRenderer threadedRenderer = this.mRenderer;
@@ -190,7 +188,6 @@ public class BackdropFrameRenderer extends Thread implements Choreographer.Frame
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean onContentDrawn(int xOffset, int yOffset, int xSize, int ySize) {
         boolean z;
         synchronized (this) {
@@ -210,7 +207,6 @@ public class BackdropFrameRenderer extends Thread implements Choreographer.Frame
         return z;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onRequestDraw(boolean reportNextDraw) {
         synchronized (this) {
             this.mReportNextDraw = reportNextDraw;
@@ -293,7 +289,6 @@ public class BackdropFrameRenderer extends Thread implements Choreographer.Frame
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setUserCaptionBackgroundDrawable(Drawable userCaptionBackgroundDrawable) {
         synchronized (this) {
             this.mUserCaptionBackgroundDrawable = userCaptionBackgroundDrawable;

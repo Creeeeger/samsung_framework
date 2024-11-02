@@ -384,12 +384,12 @@
     <string name="allow_settings_changes">Політика безпеки попереджає змінення установок.</string>
     <string name="alwaysUse">Використ. за умовч. для цієї дії.</string>
     <string name="android_preparing_apk">Підготовка додатка %1$s.</string>
-    <string name="android_start_title">Телефон запускається…</string>
+    <string name="android_start_title">Планшет запускається…</string>
     <string name="android_system_label">Система Android</string>
     <string name="android_upgrading_complete">Завершення завантаження.</string>
     <string name="android_upgrading_notification_title">Завершується оновлення системи…</string>
     <string name="android_upgrading_starting_apps">Запуск програм.</string>
-    <string name="android_upgrading_title">Телефон оновлюється…</string>
+    <string name="android_upgrading_title">Планшет оновлюється…</string>
     <string name="anr_activity_application">Додаток %2$s не відповідає</string>
     <string name="anr_activity_process">Дія \"%1$s\" не відповідає</string>
     <string name="anr_application_process">Додаток %1$s не відповідає</string>
@@ -423,16 +423,16 @@
     <string name="app_restricted_message_concentration_mode">Програму «%s» заблоковано в режимі концентрації. Зверніться до свого ІТ-адміністратора за додатковою інформацією.</string>
     <string name="app_running_notification_text">Торкніться, щоб дізнатися більше або зупинити додаток.</string>
     <string name="app_running_notification_title">%1$s працює</string>
-    <string name="app_streaming_blocked_message">Цей додаток зараз недоступний на вашому %1$s. Спробуйте натомість скористатися телефоном.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Цьому додатку потрібен додатковий рівень безпеки. Спробуйте натомість скористатися телефоном.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Немає доступу на вашому пристрої (%1$s). Спробуйте натомість скористатися телефоном.</string>
+    <string name="app_streaming_blocked_message">Цей додаток зараз недоступний на вашому %1$s. Спробуйте натомість скористатися планшетом.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Цьому додатку потрібен додатковий рівень безпеки. Спробуйте натомість скористатися планшетом.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Немає доступу на вашому пристрої (%1$s). Спробуйте натомість скористатися планшетом.</string>
     <string name="app_streaming_blocked_title">Недоступно: %1$s</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Камера недоступна</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Продовжте на телефоні</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Мікрофон недоступний</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Потрібен дозвіл</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Додаток Play Маркет недоступний</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Налаштування телефона недоступні</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Налаштування планшета недоступні</string>
     <string name="app_suspended_default_message">Додаток %1$s зараз недоступний. Керує додаток %2$s.</string>
     <string name="app_suspended_more_details">Докладніше</string>
     <string name="app_suspended_title">Додаток недоступний</string>
@@ -503,7 +503,7 @@
     <string name="badPuk">Введений PUK-код не правильний.</string>
     <string name="badPuk2">Введено хибний PUK2</string>
     <string name="batt_cooldown_mode_ok">ОК</string>
-    <string name="battery_saver_charged_notification_summary">Телефон має достатньо заряду акумулятора. Функції вже не обмежено.</string>
+    <string name="battery_saver_charged_notification_summary">Планшет має достатньо заряду акумулятора. Функції вже не обмежено.</string>
     <string name="battery_saver_description">У режимі енергозбереження вмикається темна тема й обмежуються чи вимикаються дії у фоновому режимі, а також деякі візуальні ефекти, функції та з’єднання з мережами.</string>
     <string name="battery_saver_description_with_learn_more">У режимі енергозбереження вмикається темна тема й обмежуються чи вимикаються дії у фоновому режимі, а також деякі візуальні ефекти, функції та з’єднання з мережами.</string>
     <string name="battery_saver_notification_channel_name">Режим енергозбереження</string>
@@ -733,7 +733,7 @@
     <string name="decline">Відхилити</string>
     <string name="decline_remote_bugreport_action">ВІДХИЛИТИ</string>
     <string name="default_audio_route_category_name">Система</string>
-    <string name="default_audio_route_name">Телефон</string>
+    <string name="default_audio_route_name">Планшетний ПК</string>
     <string name="default_audio_route_name_dock_speakers">Динаміки док-станції</string>
     <string name="default_audio_route_name_external_device">Зовнішній пристрій</string>
     <string name="default_audio_route_name_headphones">Навушники</string>
@@ -860,7 +860,7 @@
     <string name="emergency_call_dialog_number_for_display">Аварійний номер</string>
     <string name="emergency_calls_only">Лише екстрені виклики</string>
     <string name="enablePin">Помилка. Увімкніть блокування SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s хоче ввімкнути функцію дослідження дотиком. Увімкнувши функцію дослідження дотиком, можна чути або бачити опис елемента, розташованого під вашим пальцем, або виконувати жести для взаємодії з телефоном.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s хоче ввімкнути функцію дослідження дотиком. Увімкнувши функцію дослідження дотиком, можна чути або бачити опис елемента, розташованого під вашим пальцем, або виконувати жести для взаємодії з планшетним ПК.</string>
     <string name="enable_explore_by_touch_warning_title">Увімкнути дослідження дотиком?</string>
     <string name="error_message_change_not_allowed">Ця дія заборонена адміністратором</string>
     <string name="error_message_title">Помилка</string>
@@ -924,7 +924,7 @@
     <string name="ext_media_unsupported_notification_message">Цей пристрій не підтримує дану %s. Торкніться для налаштування у підтримуваному форматі.</string>
     <string name="ext_media_unsupported_notification_title">Непідтрим. %s</string>
     <string name="ext_storage_bad_removal_button">Перезапустити</string>
-    <string name="ext_storage_bad_removal_title">Перезапустіть телефон</string>
+    <string name="ext_storage_bad_removal_title">Перезапустіть планшет</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message">Усі дані на вашій карті буде втрачено.</string>
     <string name="extmedia_format_message_usbhost">Усі файли, збережені у вашому носії USB, буде стерто. Цю дію не можна скасувати!</string>
@@ -1128,7 +1128,7 @@
     <string name="global_action_toggle_sealed_mode">Закритий режим</string>
     <string name="global_action_toggle_silent_mode">Беззвуч. режим</string>
     <string name="global_action_voice_assist">Голос. підказки</string>
-    <string name="global_actions">Параметри телеф.</string>
+    <string name="global_actions">Парам. пристрою</string>
     <string name="global_actions_airplane_mode_off_status">Режим польоту ВИМК.</string>
     <string name="global_actions_airplane_mode_on_status">Режим польоту ВВІМК.</string>
     <string name="global_actions_toggle_airplane_mode">Режим польоту</string>
@@ -1313,11 +1313,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Торкніться, щоб ввести пароль&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Неправильний PIN-код.</string>
     <string name="kg_enter_confirm_pin_hint">Підтвердьте потрібний PIN-код</string>
-    <string name="kg_failed_attempts_almost_at_login">"Ключ розблокування неправильно намальовано стільки разів: %1$d. У вас є ще стільки спроб: %2$d. У разі невдачі з’явиться запит розблокувати телефон за допомогою облікового запису електронної пошти.
+    <string name="kg_failed_attempts_almost_at_login">"Ключ розблокування неправильно намальовано стільки разів: %1$d. У вас є ще стільки спроб: %2$d. У разі невдачі з’явиться запит розблокувати планшетний ПК за допомогою облікового запису електронної пошти.
 
  Повторіть спробу через %3$d сек."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Кількість невдалих спроб розблокувати телефон: %1$d. У вас є ще стільки спроб: %2$d. У разі невдачі налаштування телефону буде змінено на заводські за умовчанням, а всі дані користувача – втрачено.</string>
-    <string name="kg_failed_attempts_now_wiping">Кількість невдалих спроб розблокувати телефон: %d. Налаштування телефону буде змінено на заводські за умовчанням.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Кількість невдалих спроб розблокувати планшетний ПК: %1$d. У вас є ще стільки спроб: %2$d. У разі невдачі налаштування планшетного ПК буде змінено на заводські за умовчанням, а всі дані користувача – втрачено.</string>
+    <string name="kg_failed_attempts_now_wiping">Кількість невдалих спроб розблокувати планшетний ПК: %d. Налаштування планшетного ПК буде змінено на заводські за умовчанням.</string>
     <string name="kg_forgot_pattern_button_text">Не пам’ятаю ключ</string>
     <string name="kg_invalid_confirm_pin_hint">PIN-коди не збігаються</string>
     <string name="kg_invalid_puk">Повторно введіть правильний PUK-код. Численні спроби назавжди вимкнуть SIM-карту.</string>
@@ -1405,11 +1405,11 @@
     <string name="lockscreen_carrier_default">Немає зв’язку</string>
     <string name="lockscreen_carrier_noservice">(Немає мережі).</string>
     <string name="lockscreen_emergency_call">Екстрений виклик</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Кількість невдалих спроб розблокувати телефон: %1$d. Налаштування телефону буде змінено на заводські за умовчанням, а всі дані користувача буде втрачено після ще стількох невдалих спроб: %2$d.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Ключ розблокування неправильно намальовано стільки разів: %1$d. Ваш телефон потрібно буде розблокувати за допомогою входу в Google після ще стількох неуспішних спроб: %2$d.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Кількість невдалих спроб розблокувати пристрій: %1$d. Налаштування пристрою буде змінено на заводські за умовчанням, а всі дані користувача буде втрачено після ще стількох невдалих спроб: %2$d.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Ключ розблокування неправильно намальовано стільки разів: %1$d. Ваш планшетний ПК потрібно буде розблокувати за допомогою входу в Google після ще стількох неуспішних спроб: %2$d.
 
  Повторіть спробу через %3$d сек."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Кількість невдалих спроб розблокувати телефон: %d. Налаштування телефону буде змінено на заводські за умовчанням.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Кількість невдалих спроб розблокувати пристрій: %d. Налаштування пристрою буде змінено на заводські за умовчанням.</string>
     <string name="lockscreen_forgot_pattern_button_text">Забули ключ?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Не пам’ятаєте ім’я користувача чи пароль?
 Відвідайте сторінку "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1425,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Натис. меню, щоб розбл. чи зробити авар. виклик.</string>
     <string name="lockscreen_missing_sim_instructions">Додайте SIM-карту.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM-карта відсутня або недоступна для читання. Додайте SIM-карту.</string>
-    <string name="lockscreen_missing_sim_message">У телефоні немає SIM-карти.</string>
+    <string name="lockscreen_missing_sim_message">У планшеті немає SIM-карти.</string>
     <string name="lockscreen_missing_sim_message_short">Немає SIM-карти</string>
     <string name="lockscreen_network_locked_message">Мережу заблок.</string>
     <string name="lockscreen_password_wrong">Повторіть спробу</string>
@@ -1465,7 +1465,7 @@
     <string name="low_internal_storage_view_text">Деякі системні функції можуть не працювати</string>
     <string name="low_internal_storage_view_text_no_boot">Недостатньо місця для системи. Переконайтесь, що на пристрої є 250 МБ вільного місця, і повторіть спробу.</string>
     <string name="low_internal_storage_view_title">Закінчується пам’ять</string>
-    <string name="low_memory">Пам’ять телефону заповнено. Видаліть якісь файли, щоб звільнити місце.</string>
+    <string name="low_memory">Пам’ять планшетного ПК заповнено. Видаліть якісь файли, щоб звільнити місце.</string>
     <string name="ltb_kill_content_v2_phone">Програму «%s» закрито, оскільки вона спричиняла перегрів телефона. Ви зможете відкрити її знову, коли телефон охолоне.</string>
     <string name="ltb_kill_content_v2_tablet">Програму «%s» закрито, оскільки вона спричиняла перегрів планшета. Ви зможете відкрити її знову, коли планшет охолоне.</string>
     <string name="ltb_warning_button">Не закривати</string>
@@ -1777,18 +1777,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Звук відтворюється через аудіопристрій Bluetooth. Торкніться тут, щоб вимкнути його</string>
     <string name="multisound_sound_via_headphone">Звук з %s відтворюється в навушниках. Торкніться тут, щоб вимкнути його.</string>
     <string name="multisound_sound_via_headphone_multiselection">Звук відтворюється через навушники. Торкніться тут, щоб вимкнути його.</string>
-    <string name="multisound_sound_via_phone_speaker">Звук з %s відтворюється через динамік телефону. Торкніться тут, щоб вимкнути його.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Звук відтворюється через динамік телефона. Торкніться тут, щоб вимкнути його.</string>
+    <string name="multisound_sound_via_phone_speaker">Звук з %s відтворюється через динамік планшета. Торкніться тут, щоб вимкнути його.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Звук відтворюється через динамік планшета. Торкніться тут, щоб вимкнути його.</string>
     <string name="multisound_sound_via_usb_audio">Звук з %s відтворюється на USB-аудіопристрої. Торкніться тут, щоб вимкнути його.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Звук відтворюється через USB-аудіопристрій. Торкніться тут, щоб вимкнути його.</string>
     <string name="multisound_title">Звук з окремої програми</string>
     <string name="multisound_turn_off_multisound">Вимкнути</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Програма %s не працює в Samsung DeX. Спробуйте запустити її в режимі телефону.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Програма %s не працює в Samsung DeX. Її розроблено для головного екрана телефону.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Деякі ігри працюють лише на сенсорних екранах. Якщо в Samsung DeX не працюють елементи керування мишею, спробуйте запустити гру в режимі телефону.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Програма %s не працює в Samsung DeX. Спробуйте запустити її в режимі планшета.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Програма %s не працює в Samsung DeX. Її призначено для головного екрана телефону.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Деякі ігри працюють лише на сенсорних екранах. Якщо в Samsung DeX не працюють елементи керування мишею, спробуйте запустити гру в режимі планшета.</string>
     <string name="music_recognition_manager_service">Сервіс Music Recognition Manager</string>
     <string name="muted_by">%1$s вимикає деякі звуки</string>
-    <string name="my_device">Цей телефон</string>
+    <string name="my_device">Цей планшет</string>
     <string name="nas_upgrade_notification_content">Тепер пропоновані дії та відповіді відображаються в покращених сповіщеннях. Адаптивні сповіщення Android більше не підтримуються.</string>
     <string name="nas_upgrade_notification_disable_action">Вимкнути</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1953,23 +1953,23 @@
     <string name="permdesc_bindNotificationListenerService">Дозволяє власнику прив’язуватися до інтерфейсу верхнього рівня служби читання сповіщень. Ніколи не застосовується для звичайних програм.</string>
     <string name="permdesc_bind_connection_service">Дозволяє додатку взаємодіяти з телефонними службами, щоб здійснювати/приймати дзвінки.</string>
     <string name="permdesc_bind_incall_service">Додаток може контролювати, коли та як користувач бачить екран вхідного дзвінка.</string>
-    <string name="permdesc_bluetooth">Дозволяє програмі переглядати конфігурацію Bluetooth на телефоні, а також створювати та приймати з’єднання зі спареними пристроями.</string>
-    <string name="permdesc_bluetoothAdmin">Дозволяє програмі налаштовувати телефон із локальним Bluetooth, а також знаходити віддалені пристрої та створювати з ними пару.</string>
+    <string name="permdesc_bluetooth">Дозволяє програмі переглядати конфігурацію Bluetooth на планшетному ПК, а також створювати та приймати з’єднання зі спареними пристроями.</string>
+    <string name="permdesc_bluetoothAdmin">Дозволяє програмі налаштовувати планшетний ПК із локальним Bluetooth, а також знаходити віддалені пристрої та створювати з ними пару.</string>
     <string name="permdesc_bluetooth_advertise">Додаток зможе показувати рекламу на пристроях із Bluetooth поблизу</string>
     <string name="permdesc_bluetooth_connect">Дозволяє додатку підключатися до пристроїв із Bluetooth, з якими створено пару</string>
     <string name="permdesc_bluetooth_scan">Дозволяє додатку знаходити поблизу пристрої Bluetooth і створювати з ними пару</string>
     <string name="permdesc_bodySensors">Під час використання додатка він матиме доступ до даних датчиків на тілі, наприклад пульсу, температури та відсотка кисню в крові.</string>
     <string name="permdesc_bodySensors_background">Коли додаток працюватиме у фоновому режимі, він матиме доступ до показників датчиків на тілі, наприклад пульсу, температури та відсотка кисню в крові.</string>
-    <string name="permdesc_broadcastSticky">Дозволяє програмі надсилати закріплені широкомовні повідомлення, які залишаються після відтворення широкомовного повідомлення. Надмірне використання може сповільнювати роботу телефону або порушувати її стабільність, спричиняючи завелике використання пам’яті.</string>
+    <string name="permdesc_broadcastSticky">Дозволяє програмі надсилати закріплені широкомовні повідомлення, які залишаються після відтворення широкомовного повідомлення. Надмірне використання може сповільнювати роботу планшетного ПК або порушувати її стабільність, спричиняючи завелике використання пам’яті.</string>
     <string name="permdesc_callCompanionApp">Додаток може переглядати поточні виклики на пристрої та керувати ними. Це стосується такої інформації, як номери та стан викликів.</string>
     <string name="permdesc_callPhone">Дозволяє додатку набирати номери телефонів без вашого відома. Це може спричинити неочікуване стягнення плати чи здійснення викликів. Зверніть увагу, що додаток не зможе набирати екстрені номери. Шкідливі додатки можуть здійснювати дзвінки без вашого підтвердження, за що з вас стягуватимуться кошти, або набирати коди оператора, після чого вхідні виклики переадресовуватимуться на інший номер.</string>
     <string name="permdesc_camera">Цей додаток може робити фотографії та записувати відео за допомогою камери, коли ви використовуєте його.</string>
     <string name="permdesc_cameraOpenCloseListener">Цей додаток може отримувати зворотні виклики, коли одна з камер вмикається (певним додатком) чи вимикається.</string>
     <string name="permdesc_changeNetworkState">Дозволяє програмі змінювати стан під’єднання до мережі.</string>
     <string name="permdesc_changeTetherState">Дозволяє програмі змінювати стан під’єднання до мережі в режимі модема.</string>
-    <string name="permdesc_changeWifiMulticastState">Дозволяє програмі отримувати пакети, надіслані за допомогою групової адресації на всі пристрої в мережі Wi-Fi, а не лише на ваш телефон. Використовує більше заряду, ніж режим небагатоадресних пакетів.</string>
+    <string name="permdesc_changeWifiMulticastState">Дозволяє програмі отримувати пакети, надіслані за допомогою групової адресації на всі пристрої в мережі Wi-Fi, а не лише на ваш планшетний ПК. Використовує більше заряду, ніж режим небагатоадресних пакетів.</string>
     <string name="permdesc_changeWifiState">Дозволяє програмі під’єднуватися та від’єднуватися від точок доступу Wi-Fi, а також вносити зміни в налаштування пристрою для мереж Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Дозволяє програмі під’єднувати телефон до мереж WiMAX і від’єднувати його від них.</string>
+    <string name="permdesc_changeWimaxState">Дозволяє програмі під’єднувати планшетний ПК до мереж WiMAX і від’єднувати його від них.</string>
     <string name="permdesc_companionProfileWatch">Дозволяє супутньому додатку керувати годинниками.</string>
     <string name="permdesc_connection_manager">Додаток може керувати телекомунікаційними з’єднаннями.</string>
     <string name="permdesc_control_incall_experience">Додаток може працювати під час розмови.</string>
@@ -1997,7 +1997,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">Дозволяє додатку використовувати активні сервіси типу specialUse</string>
     <string name="permdesc_foregroundServiceSystemExempted">Дозволяє додатку використовувати активні сервіси типу systemExempted</string>
     <string name="permdesc_fullScreenIntent">Додаток зможе показувати сповіщення як активності на весь екран заблокованого пристрою</string>
-    <string name="permdesc_getAccounts">Дозволяє програмі отримувати список облікових записів, відомих телефону. Він може включати всі облікові записи, створені встановленими програмами.</string>
+    <string name="permdesc_getAccounts">Дозволяє програмі отримувати список облікових записів, відомих планшетному ПК. Він може включати всі облікові записи, створені встановленими програмами.</string>
     <string name="permdesc_getAppList">Дозволяє програмі зчитувати список установлених програм.</string>
     <string name="permdesc_getPackageSize">Дозволяє програмі отримувати її код, дані та розміри кеш-пам’яті</string>
     <string name="permdesc_getTasks">Дозволяє програмі отримувати інформацію про поточні й останні запущені завдання. Це може дозволити програмі виявляти інформацію про програми, які використовуються на пристрої.</string>
@@ -2096,16 +2096,16 @@
     <string name="permdesc_nearby_wifi_devices">Додаток може виявляти пристрої Wi‑Fi поблизу, підключатися до них і визначати їх відносне розташування</string>
     <string name="permdesc_nfc">Дозволяє програмі обмінюватися даними з тегами, картками та читачами екрана Near Field Communication (NFC).</string>
     <string name="permdesc_observeCompanionDevicePresence">Дозволяє супутньому додатку виявляти пристутність супутнього пристрою, коли пристрої перебувають поблизу чи далеко.</string>
-    <string name="permdesc_persistentActivity">Дозволяє програмі робити свої частини сталими в пам’яті. Це може зменшувати обсяг пам’яті, доступної для інших програм, і сповільнювати роботу телефону.</string>
+    <string name="permdesc_persistentActivity">Дозволяє програмі робити свої частини сталими в пам’яті. Це може зменшувати обсяг пам’яті, доступної для інших програм, і сповільнювати роботу планшетного ПК.</string>
     <string name="permdesc_postNotification">Дозволяє додатку показувати сповіщення</string>
     <string name="permdesc_preferredPaymentInfo">"Дозволяє додатку отримувати доступ до інформації потрібного платіжного NFC-сервісу (наприклад, пов'язаних ідентифікаторів чи даних про маршрутизацію трансакцій)."</string>
     <string name="permdesc_processOutgoingCalls">Дозволяє додатку читати номер вихідного дзвінка, переспрямовувати дзвінок на інший номер або переривати його.</string>
     <string name="permdesc_queryAllPackages">Дозволяє додатку переглядати всі встановлені пакети.</string>
     <string name="permdesc_readBasicPhoneState">Дозволяє додатку отримувати доступ до базових функцій телефонії на пристрої.</string>
-    <string name="permdesc_readCalendar">Цей додаток може переглядати всі події календаря, збережені на вашому телефоні, а також надсилати та зберігати дані календаря.</string>
+    <string name="permdesc_readCalendar">Цей додаток може переглядати всі події календаря, збережені на вашому планшеті, а також надсилати та зберігати дані календаря.</string>
     <string name="permdesc_readCallLog">Цей додаток може переглядати історію викликів.</string>
     <string name="permdesc_readCellBroadcasts">Дозволяє програмі читати широкомовні повідомлення мережі, отримані пристроєм. Широкомовні сповіщення мережі надсилаються в деяких країнах для попередження про надзвичайні ситуації. Шкідливі програми можуть втручатися у швидкодію чи роботу пристрою під час отримання широкомовного повідомлення мережі про надзвичайну ситуацію.</string>
-    <string name="permdesc_readContacts">Дозволяє додатку переглядати дані про контакти, які зберігаються на вашому телефоні. Додатки також отримають доступ до облікових записів на вашому телефоні (зокрема до створених іншими встановленими додатками), у яких було створено контакти. Додатки з цим дозволом можуть зберігати ваші контактні дані. Шкідливі додатки можуть надсилати контактні дані без вашого відома.</string>
+    <string name="permdesc_readContacts">Дозволяє додатку переглядати дані про контакти, які зберігаються на вашому планшеті. Додатки також отримають доступ до облікових записів на вашому планшеті (зокрема до створених іншими встановленими додатками), у яких було створено контакти. Додатки з цим дозволом можуть зберігати ваші контактні дані. Шкідливі додатки можуть надсилати контактні дані без вашого відома.</string>
     <string name="permdesc_readInstallSessions">Дозволяє додатку читати дані сеансів встановлення. Додаток може бачити деталі про активні встановлення пакетів.</string>
     <string name="permdesc_readMediaAudio">Дозволяє додатку зчитувати аудіофайли з вашого спільного сховища.</string>
     <string name="permdesc_readMediaImages">Дозволяє додатку зчитувати файли зображень із вашого спільного сховища.</string>
@@ -2113,11 +2113,11 @@
     <string name="permdesc_readNetworkUsageHistory">Дозволяє програмі читати історію використання мережі для певних мереж і програм.</string>
     <string name="permdesc_readPhoneNumbers">Надає додаткам доступ до номерів телефону на пристрої.</string>
     <string name="permdesc_readPhoneState">Дозволяє програмі отримувати доступ до телефонних функцій пристрою. Такий дозвіл дає програмі змогу визначати номер телефону й ідентифікатори пристрою, активність виклику, а також віддалений номер, на який здійснюється виклик.</string>
-    <string name="permdesc_readSms">Цей додаток може переглядати всі SMS-повідомлення, збережені на телефоні.</string>
+    <string name="permdesc_readSms">Цей додаток може переглядати всі SMS-повідомлення, збережені на планшеті.</string>
     <string name="permdesc_readSyncSettings">Дозволяє програмі читати налаштування синхронізації для облікового запису, наприклад, визначати, чи програма Люди синхронізується з обліковим записом.</string>
     <string name="permdesc_readSyncStats">Дозволяє програмі читати статистику синхронізації облікового запису, зокрема історію синхронізацій і обсяг синхронізованих даних.</string>
     <string name="permdesc_readVisualUserSelect">Дозволяє додатку зчитувати вибрані вами файли зображень і відео зі спільного сховища.</string>
-    <string name="permdesc_receiveBootCompleted">Дозволяє програмі запускатися, щойно завантаження системи закінчиться. Це може затримувати запуск телефону та дозволяє програмі сповільнювати загальну роботу телефону своїм постійним функціонуванням.</string>
+    <string name="permdesc_receiveBootCompleted">Дозволяє програмі запускатися, щойно завантаження системи закінчиться. Це може затримувати запуск планшетного ПК та дозволяє програмі сповільнювати загальну роботу планшетного ПК своїм постійним функціонуванням.</string>
     <string name="permdesc_receiveMms">Дозволяє програмі отримувати й обробляти MMS-повідомлення. Це означає, що програма може відстежувати чи видаляти повідомлення, надіслані на ваш пристрій, навіть не показуючи їх вам.</string>
     <string name="permdesc_receiveSms">Дозволяє програмі отримувати й обробляти SMS-повідомлення. Це означає, що програма може відстежувати чи видаляти повідомлення, надіслані на ваш пристрій, навіть не показуючи їх вам.</string>
     <string name="permdesc_receiveWapPush">Дозволяє програмі отримувати й обробляти WAP-повідомлення. Це означає, що програма може відстежувати чи видаляти повідомлення, надіслані на ваш пристрій, навіть не показуючи їх вам.</string>
@@ -2139,7 +2139,7 @@
     <string name="permdesc_sendSms">Дозволяє програмі надсилати SMS-повідомлення. Це може спричинити неочікуване стягнення плати. Шкідливі програми можуть надсилати повідомлення без вашого підтвердження, за що з вас стягуватимуться кошти.</string>
     <string name="permdesc_setAlarm">Дозволяє програмі налаштовувати сигнал у встановленій програмі будильника. У деяких програмах будильника ця функція може не застосовуватися.</string>
     <string name="permdesc_setInputCalibration">Програма може змінювати параметри калібрування сенсорного екрана. Ніколи не застосовується для звичайних програм.</string>
-    <string name="permdesc_setTimeZone">Дозволяє програмі змінювати часовий пояс телефону.</string>
+    <string name="permdesc_setTimeZone">Дозволяє програмі змінювати часовий пояс планшетного ПК.</string>
     <string name="permdesc_setWallpaper">Дозволяє програмі встановлювати фоновий малюнок системи.</string>
     <string name="permdesc_setWallpaperHints">Дозволяє програмі встановлювати підказки щодо розміру фонового малюнка системи.</string>
     <string name="permdesc_sim_communication">Дозволяє програмі надсилати команди на SIM-карту. Це дуже небезпечно.</string>
@@ -2153,7 +2153,7 @@
     <string name="permdesc_subscribedFeedsRead">Дозволяє програмі отримувати відомості про поточно синхронізовані канали.</string>
     <string name="permdesc_systemAlertWindow">Цей додаток може відображатися поверх інших додатків або частин екрана. Це може заважати нормальній взаємодії з додатком або змінити відображення інших додатків.</string>
     <string name="permdesc_systemCamera">Цей пріоритетний системний додаток може будь-коли робити фото й записувати відео, використовуючи камеру системи. Додатку потрібен дозвіл android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Дозволяє програмі використовувати інфрачервоний передавач телефону.</string>
+    <string name="permdesc_transmitIr">Дозволяє програмі використовувати інфрачервоний передавач планшета.</string>
     <string name="permdesc_turnScreenOn">Дозволяє додатку вмикати екран.</string>
     <string name="permdesc_ucsPlugin">Робота з плагінами сторонніх сховищ для облікових даних.</string>
     <string name="permdesc_uninstall_shortcut">Дозволяє програмі самостійно вилучати ярлики з головного екрана.</string>
@@ -2167,10 +2167,10 @@
     <string name="permdesc_vibrate">Дозволяє програмі контролювати вібросигнал.</string>
     <string name="permdesc_vibrator_state">Надає додатку доступ до стану вібрації.</string>
     <string name="permdesc_videoWrite">Додаток зможе змінювати вашу колекцію відео.</string>
-    <string name="permdesc_wakeLock">Дозволяє програмі не допускати перехід телефону в режим сну.</string>
-    <string name="permdesc_writeCalendar">Цей додаток може додавати, вилучати та змінювати події календаря на вашому телефоні. Він також може надсилати повідомлення від імені власників календаря або редагувати події без відома власників.</string>
-    <string name="permdesc_writeCallLog">Дозволяє програмі змінювати журнал викликів вашого телефону, включно з даними про вхідні та вихідні дзвінки. Шкідливі програми можуть використовувати це для стирання або зміни вашого журналу викликів.</string>
-    <string name="permdesc_writeContacts">Дозволяє додатку змінювати дані про контакти, які зберігаються на вашому телефоні, а також видаляти їх.</string>
+    <string name="permdesc_wakeLock">Дозволяє програмі не допускати перехід планшетного ПК у режим сну.</string>
+    <string name="permdesc_writeCalendar">Цей додаток може додавати, вилучати та змінювати події календаря на вашому планшеті. Він також може надсилати повідомлення від імені власників календаря або редагувати події без відома власників.</string>
+    <string name="permdesc_writeCallLog">Дозволяє програмі змінювати журнал викликів вашого планшетного ПК, включно з даними про вхідні та вихідні дзвінки. Шкідливі програми можуть використовувати це для стирання або зміни вашого журналу викликів.</string>
+    <string name="permdesc_writeContacts">Дозволяє додатку змінювати дані про контакти, які зберігаються на вашому планшеті, а також видаляти їх.</string>
     <string name="permdesc_writeSettings">Дозволяє програмі змінювати дані налаштувань системи. Шкідливі програми можуть пошкодити конфігурацію вашої системи.</string>
     <string name="permdesc_writeSyncSettings">Дозволяє програмі змінювати налаштування синхронізації для облікового запису, наприклад, вмикати синхронізацію програми Люди з обліковим записом.</string>
     <string name="permgroupdesc_activityRecognition">переглядати дані про фізичну активність</string>
@@ -2445,7 +2445,7 @@
     <string name="permlab_uwb_ranging">визначення відстані між пристроями поблизу з надширокосмуговим зв’язком</string>
     <string name="permlab_vibrate">контролювати вібросигнал</string>
     <string name="permlab_videoWrite">змінювати колекцію відео</string>
-    <string name="permlab_wakeLock">Вимкнення режиму сну</string>
+    <string name="permlab_wakeLock">не доп.перехід пристр.в реж.сну</string>
     <string name="permlab_writeCalendar">додавати та змінювати події календаря, а також надсилати гостям електронні листи без відома власників</string>
     <string name="permlab_writeCallLog">записувати в журнал викликів</string>
     <string name="permlab_writeContacts">змінювати контакти</string>
@@ -2487,7 +2487,7 @@
     <string name="policydesc_allow_desktopsync">Заборона на синхронізацію з комп’ютером.</string>
     <string name="policydesc_allow_internetsharing">Заборона на використання мобільної точки доступу.</string>
     <string name="policydesc_allow_irda">Заборона на використання ІЧ-порту IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Заборона на використання в телефоні протоколів електронної пошти POP та IMAP.</string>
+    <string name="policydesc_allow_popimapemail">Заборона на використання в планшеті протоколів електронної пошти POP та IMAP.</string>
     <string name="policydesc_allow_storagecard">Заборона на використання SD-карт.</string>
     <string name="policydesc_allow_textmessaging">Заборона на обмін текстовими та мультимедійними повідомленнями.</string>
     <string name="policydesc_allow_thirdParty">Ця програма дає змогу забороняти запуск сторонніх програм.</string>
@@ -2505,10 +2505,10 @@
     <string name="policydesc_setGlobalProxy">Використовуйте глобальний проксі-сервер пристрою, коли це правило ввімкнено. Налаштувати глобальний проксі-сервер може лише власник пристрою.</string>
     <string name="policydesc_unsigned_app">Ця програма дає змогу забороняти запуск програм із невідомих джерел.</string>
     <string name="policydesc_unsigned_pkg">Ця програма дає змогу забороняти встановлення програм із невідомих джерел.</string>
-    <string name="policydesc_watchLogin">"Відстежувати кількість неправильних паролів, введених під час розблокування екрана, і блокувати  телефон або стирати всі його дані, якщо введено забагато неправильних паролів."</string>
-    <string name="policydesc_watchLogin_secondaryUser">Відстежуйте кількість неправильних паролів, введених під час розблокування екрана. Блокуйте телефон або стирайте всі його дані, якщо пароль введено неправильно забагато разів.</string>
-    <string name="policydesc_wipeData">Стирати дані телефона без попередження, відновивши заводські налаштування.</string>
-    <string name="policydesc_wipeData_secondaryUser">Видаляйте дані користувача на цьому телефоні без попередження.</string>
+    <string name="policydesc_watchLogin">Відстежувати кількість неправильних паролів, введених під час розблокування екрана, і блокувати планшетний ПК або стирати всі його дані, якщо введено забагато неправильних паролів.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Відстежуйте кількість неправильних паролів, введених під час розблокування екрана. Блокуйте планшет або стирайте всі його дані, якщо пароль введено неправильно забагато разів.</string>
+    <string name="policydesc_wipeData">Стирати дані планшетного ПК без попередження, відновлюючи заводські налаштування.</string>
+    <string name="policydesc_wipeData_secondaryUser">Видаляйте дані користувача на цьому планшеті без попередження.</string>
     <string name="policylab_allow_bluetoothmode">Вимкнути Bluetooth</string>
     <string name="policylab_allow_browser">Вимкнути доступ до Інтернету</string>
     <string name="policylab_allow_camera">Вимкнення камер</string>
@@ -2542,7 +2542,7 @@
     <string name="postalTypeHome">Домашня</string>
     <string name="postalTypeOther">Інше</string>
     <string name="postalTypeWork">Роб.</string>
-    <string name="power_dialog">Параметри тел.</string>
+    <string name="power_dialog">Парам. пристрою</string>
     <string name="power_off">Вимкнути</string>
     <string name="prepend_shortcut_label">Меню+</string>
     <string name="preposition_for_date">%s</string>
@@ -2588,7 +2588,7 @@
     <string name="recent_tasks_title">Останні</string>
     <string name="recording_fail">Неможливо використовувати мікрофон у %1$s, якщо він уже використовується в %2$s.</string>
     <string name="recording_popup">Програма %s використовує мікрофон.</string>
-    <string name="recording_popup_device">Телефон</string>
+    <string name="recording_popup_device">Планшет</string>
     <string name="recording_popup_with_bluetooth">Програма «%s» використовує Bluetooth-мікрофон.</string>
     <string name="recording_popup_with_device">Програма «%1$s» використовує мікрофон пристрою (%2$s).</string>
     <string name="redo">Повторити</string>
@@ -2736,12 +2736,12 @@
     <string name="screenshot_edit">Редагувати</string>
     <string name="sd_card_unavailable_message">Ви не можете використовувати SD-карту, тому що під час її установлення використовувався інший профіль користувача.</string>
     <string name="sd_card_unavailable_title">SD-карта недоступна</string>
-    <string name="sdcard_bad_removal_message">SD-карту вилучено небезпечним чином. Щоб уникнути несподіваного перезапуску телефона, збережіть усі дані та перезапустіть його зараз.</string>
+    <string name="sdcard_bad_removal_message">SD-карту вилучено небезпечним чином. Щоб уникнути несподіваного перезапуску планшета, збережіть усі дані та перезапустіть його зараз.</string>
     <string name="sdcard_batch_decrypt_noti_content">Дешифруйте карту пам’яті</string>
     <string name="sdcard_batch_decrypt_noti_title">Дешифрування карти пам’яті</string>
     <string name="sdcard_batch_decrypt_popup_content">Зашифровану карту пам’яті потрібно дешифрувати перед використанням. Дешифрування може тривати годину або довше. Розпочинайте за повністю зарядженого акумулятора та не від’єднуйте пристрій, доки дешифрування не буде завершено. Переривання процесу дешифрування може призвести до втрати деяких або всіх даних.</string>
     <string name="sdcard_decrypt_err_notification">Сталася помилка дешифрування карти пам’яті.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Деякі файли на SD-карті було зашифровано іншим пристроєм. Їх неможливо використовувати на цьому телефоні.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Деякі файли на SD-карті було зашифровано іншим пристроєм. Їх неможливо використовувати на цьому планшеті.</string>
     <string name="sdcard_decrypt_notification">Карту пам’яті дешифровано.</string>
     <string name="sdcard_decrypt_title_notification">Дешифрування карти пам’яті</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Дешифрування SD-карти…</string>
@@ -3000,7 +3000,7 @@
     <string name="showing_touch_sensitivity_noti_action">Увімкнути</string>
     <string name="showing_touch_sensitivity_noti_text">Увімкніть функцію «Чутливість до дотику» під час використання чохла-обкладинки або захисної плівки, щоб покращити точність реагування екрана на дотики.</string>
     <string name="showing_touch_sensitivity_noti_title">Збільшення чутливості</string>
-    <string name="shutdown_confirm">Ваш телефон буде вимкнено.</string>
+    <string name="shutdown_confirm">Ваш пристрій буде вимкнено.</string>
     <string name="shutdown_confirm_question">Вимкнути?</string>
     <string name="shutdown_progress">Вимкнення...</string>
     <string name="side_key_double_press_deleted_app">Програму видалено. Виберіть іншу програму.</string>
@@ -3227,7 +3227,7 @@
     <string name="usb_abnormal_reset_title">USB-підключення нестабільне</string>
     <string name="usb_abnormal_reset_toast">Підключення через USB нестабільне. Від’єднайте кабель, а потім знову під’єднайте його або спробуйте використати інший кабель.</string>
     <string name="usb_accessory_notification_title">Підключено до USB-пристрою</string>
-    <string name="usb_bad_removal_message">USB-накопичувач вилучено небезпечним чином. Щоб уникнути несподіваного перезапуску телефона, збережіть усі дані та перезапустіть його зараз.</string>
+    <string name="usb_bad_removal_message">USB-накопичувач вилучено небезпечним чином. Щоб уникнути несподіваного перезапуску планшета, збережіть усі дані та перезапустіть його зараз.</string>
     <string name="usb_blocked_by_emergency_mode">Деякі функції USB недоступні в екстреному режимі.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Неможливо скористатися функціями, пов’язаними з підключеним USB-пристроєм, при увімкненому режимі максимального енергозбереження.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">У режимі максимального енергозбереження функції USB можуть бути обмежені.</string>
@@ -3237,7 +3237,7 @@
     <string name="usb_camera_disconnected_notification_title">Медіапристрій відключено</string>
     <string name="usb_cd_installer_notification_title">Оновлення ПЗ</string>
     <string name="usb_charging_notification_title">Пристрій заряджається через USB</string>
-    <string name="usb_charing_only_notification_title">Заряджання по USB</string>
+    <string name="usb_charing_only_notification_title">Підключено</string>
     <string name="usb_contaminant_detected_message">USB-порт автоматично вимкнено. Торкніться, щоб дізнатися більше.</string>
     <string name="usb_contaminant_detected_title">Рідина або сміття в USB-порту</string>
     <string name="usb_contaminant_not_detected_message">Телефон уже не виявляє рідини або сміття.</string>
@@ -3249,11 +3249,11 @@
     <string name="usb_host_cable_disconnected_notification_title">З’єднувач USB від’єднано.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Неможливо отримати доступ до цього пристрою. Для підключеного пристрою потрібне зовнішнє джерело живлення.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">USB-пристрій зі значним споживанням енергії підключено.</string>
-    <string name="usb_host_resource_exceed_message">Потужності USB-контролера телефону недостатньо для підключення цього пристрою. Від’єднайте та знову під’єднайте пристрій.</string>
+    <string name="usb_host_resource_exceed_message">Потужності USB-контролера планшета недостатньо для підключення цього пристрою. Від’єднайте та знову під’єднайте пристрій.</string>
     <string name="usb_host_resource_exceed_title">Недостатньо потужності USB-контролера</string>
-    <string name="usb_hub_depth_exceed_message">Телефон підтримує 5 одночасних USB-підключень до хаба.</string>
+    <string name="usb_hub_depth_exceed_message">Планшет підтримує 5 одночасних USB-підключень до хаба.</string>
     <string name="usb_hub_depth_exceed_title">Максимум USB-підключень до хаба</string>
-    <string name="usb_hub_power_exceed_message">Ваш телефон не забезпечує достатню потужність для цього USB-пристрою. Спочатку підключіть пристрій до автономного USB-хаба.</string>
+    <string name="usb_hub_power_exceed_message">Ваш планшет не забезпечує достатню потужність для цього USB-пристрою. Спочатку підключіть пристрій до автономного USB-хаба.</string>
     <string name="usb_increase_battery_usage">Використання підключення по USB може збільшити використання заряду батареї.</string>
     <string name="usb_keyboard_connected_notification_title">Клавіатуру підключено</string>
     <string name="usb_keyboard_disconnected_notification_title">Клавіатуру відключено</string>
@@ -3296,8 +3296,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB-накопичувач неочікувано вийнято.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB-накопичувач підключено</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB-накопичувач безпечно вийнято.</string>
-    <string name="usb_unblock_by_screen_unlock">Розблокуйте телефон, щоб використовувати підключений USB-пристрій.</string>
-    <string name="usb_unsupport_accessory_message">Ваш телефон не підтримує цей USB-пристрій.</string>
+    <string name="usb_unblock_by_screen_unlock">Розблокуйте планшет, щоб використовувати підключений USB-пристрій.</string>
+    <string name="usb_unsupport_accessory_message">Ваш планшет не підтримує цей USB-пристрій.</string>
     <string name="usb_unsupport_accessory_title">USB-пристрій не підтримується</string>
     <string name="usb_unsupported_audio_accessory_message">Під’єднаний пристрій несумісний із цим телефоном. Торкніться, щоб дізнатися більше.</string>
     <string name="usb_unsupported_audio_accessory_title">Виявлено аналоговий аксесуар для аудіо</string>
@@ -3318,19 +3318,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Щоб швидше висушити порт, направте на нього вентилятор або сушарку (з прохолодним потоком повітря).</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"У порту заряджання/USB-порту виявлено ​​вологу чи сторонні предмети.
 
-Перевірте порт на наявність сторонніх часток, наприклад пилу або бруду. Щоб запобігти пошкодженню телефона, не підключайте до нього пристрої, доки порт не буде очищено, а вологу усунено.
+Перевірте порт на наявність сторонніх часток, наприклад пилу або бруду. Щоб запобігти пошкодженню планшета, не підключайте до нього пристрої, доки порт не буде очищено, а вологу усунено.
 
 Щоб висушити порт, витрусіть із нього вологу та почекайте, поки він висохне. Це може зайняти кілька годин. Щоб прискорити висихання, спрямуйте на порт вентилятор або фен (тільки в режимі холодного повітря)."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
-    <string name="usb_water_dialg_support_wireless_charging">"У порту заряджання/USB-порту виявлено ​​вологу чи сторонні предмети.
+    <string name="usb_water_dialg_support_wireless_charging">"У порту заряджання/USB-порті виявлено ​​вологу чи сторонні предмети.
 
-Перевірте порт на наявність сторонніх часток, наприклад пилу або бруду. Щоб запобігти пошкодженню телефона, не підключайте до нього пристрої, доки порт не буде очищено, а вологу усунено.
+Перевірте порт заряджання/USB-порт на наявність сторонніх предметів, наприклад пилу або бруду. Щоб запобігти пошкодженню планшета, не під’єднуйте до нього пристрої, доки порт не буде очищено, вологу усунено.
 
 Щоб висушити порт, витрусіть із нього вологу та почекайте, поки він висохне. Це може зайняти кілька годин. Щоб прискорити висихання, спрямуйте на порт вентилятор або фен (тільки в режимі холодного повітря).
 
-Поки телефон сохне, ви можете скористатися функцією бездротового заряджання."</string>
+Тим часом, ви можете скористатися функцією бездротового заряджання."</string>
     <string name="usb_water_notification_content">На зарядний чи USB-порт потрапила рідина або сторонні предмети. Огляньте його перед заряджанням.</string>
-    <string name="usb_water_notification_message">На порту зарядного пристрою або порту USB виявлено рідину. Перед заряджанням телефону переконайтеся, що він абсолютно сухий. Для висихання рідини, що потрапила на порт, може знадобитися деякий час.</string>
+    <string name="usb_water_notification_message">На порту зарядного пристрою або порту USB виявлено рідину. Перед заряджанням планшета переконайтеся, що він абсолютно сухий. Для висихання рідини, що потрапила на порт, може знадобитися деякий час.</string>
     <string name="usb_water_notification_message_button">Деталі</string>
     <string name="usb_water_notification_title">Перев. порту зарядн.пристр./USB</string>
     <string name="usbhostStorage_restrict">Політика безпеки попереджає використання сховища USB-хосту.</string>
@@ -3348,7 +3348,7 @@
     <string name="user_switched">Поточний користувач: %1$s.</string>
     <string name="user_switching_message">Перехід у режим \"%1$s\"…</string>
     <string name="validity_period">Чинність:</string>
-    <string name="vdm_camera_access_denied">Не вдається отримати доступ до камери телефона з пристрою %1$s</string>
+    <string name="vdm_camera_access_denied">Не вдається отримати доступ до камери планшета з пристрою %1$s</string>
     <string name="vdm_pip_blocked">Ви не можете переглядати картинку в картинці під час трансляції</string>
     <string name="vdm_secure_window">Цей контент недоступний під час потокового передавання. Спробуйте натомість скористатися телефоном.</string>
     <string name="view_and_control_notification_content">%s може переглядати екран вашого пристрою та керувати ним. Натисніть, щоб переглянути.</string>

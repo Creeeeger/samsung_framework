@@ -23,7 +23,6 @@ public class RuntimeManifestPolicies {
         this.mApplications.addAll(applications);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$getApplicationPolicies$0(PolicyInfo o1, PolicyInfo o2) {
         return o2.getPriority() - o1.getPriority();
     }
@@ -87,7 +86,6 @@ public class RuntimeManifestPolicies {
         return policies;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$getAndSortFromMap$1(PolicyInfo o1, PolicyInfo o2) {
         return o2.getPriority() - o1.getPriority();
     }
@@ -103,7 +101,6 @@ public class RuntimeManifestPolicies {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$sortMap$2(PolicyInfo o1, PolicyInfo o2) {
         return o2.getPriority() - o1.getPriority();
     }

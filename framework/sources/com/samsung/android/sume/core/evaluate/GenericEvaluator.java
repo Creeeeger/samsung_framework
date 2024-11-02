@@ -6,13 +6,11 @@ import com.samsung.android.sume.core.Def;
 import java.lang.Comparable;
 import java.util.stream.Stream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public abstract class GenericEvaluator<T extends Comparable<T>> implements Evaluator, Parcelable {
     private static final String TAG = Def.tagOf((Class<?>) GenericEvaluator.class);
     T value;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GenericEvaluator(T value) {
         this.value = value;
     }
@@ -22,7 +20,6 @@ public abstract class GenericEvaluator<T extends Comparable<T>> implements Evalu
         return this.value;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public <V> V getValue(Class<V> cls) {
         if (this.value instanceof Number) {
             if (Float.class.isAssignableFrom(cls)) {
@@ -53,7 +50,6 @@ public abstract class GenericEvaluator<T extends Comparable<T>> implements Evalu
         return this.value.getClass();
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.lang.Comparable
     public int compareTo(Evaluator other) {
         if (other instanceof GenericEvaluator) {
@@ -88,7 +84,6 @@ public abstract class GenericEvaluator<T extends Comparable<T>> implements Evalu
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public GenericEvaluator(Parcel in) {
         try {
             String className = in.readString();

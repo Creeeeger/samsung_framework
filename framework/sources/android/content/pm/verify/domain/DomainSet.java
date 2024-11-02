@@ -10,13 +10,14 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public class DomainSet implements Parcelable {
     public static final Parcelable.Creator<DomainSet> CREATOR = new Parcelable.Creator<DomainSet>() { // from class: android.content.pm.verify.domain.DomainSet.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DomainSet[] newArray(int size) {
             return new DomainSet[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DomainSet createFromParcel(Parcel in) {
             return new DomainSet(in);
@@ -71,6 +72,23 @@ public class DomainSet implements Parcelable {
         Set<String> domains = unparcelDomains(in);
         this.mDomains = domains;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) domains);
+    }
+
+    /* renamed from: android.content.pm.verify.domain.DomainSet$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DomainSet> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DomainSet[] newArray(int size) {
+            return new DomainSet[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DomainSet createFromParcel(Parcel in) {
+            return new DomainSet(in);
+        }
     }
 
     @Deprecated

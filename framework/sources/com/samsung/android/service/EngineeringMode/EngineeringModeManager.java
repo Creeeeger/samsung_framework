@@ -65,8 +65,9 @@ public final class EngineeringModeManager {
     public static final int[] ERRORINTARR_NOT_SUPPORTED = {NATIVE_NO_PERMISSION};
     public static final int[] ERRORINTARR_NOT_INSTALLED = {-268435451};
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class EngineeringModeNative {
+    public class EngineeringModeNative {
         private Context mClientContext;
         private boolean mSupportJNI;
 

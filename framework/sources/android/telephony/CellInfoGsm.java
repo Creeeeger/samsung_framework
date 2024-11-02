@@ -6,14 +6,15 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class CellInfoGsm extends CellInfo implements Parcelable {
     public static final Parcelable.Creator<CellInfoGsm> CREATOR = new Parcelable.Creator<CellInfoGsm>() { // from class: android.telephony.CellInfoGsm.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellInfoGsm createFromParcel(Parcel in) {
             in.readInt();
             return CellInfoGsm.createFromParcelBody(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoGsm[] newArray(int size) {
             return new CellInfoGsm[size];
@@ -116,7 +117,24 @@ public final class CellInfoGsm extends CellInfo implements Parcelable {
         this.mCellSignalStrengthGsm = CellSignalStrengthGsm.CREATOR.createFromParcel(in);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.telephony.CellInfoGsm$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellInfoGsm> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellInfoGsm createFromParcel(Parcel in) {
+            in.readInt();
+            return CellInfoGsm.createFromParcelBody(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellInfoGsm[] newArray(int size) {
+            return new CellInfoGsm[size];
+        }
+    }
+
     public static CellInfoGsm createFromParcelBody(Parcel in) {
         return new CellInfoGsm(in);
     }

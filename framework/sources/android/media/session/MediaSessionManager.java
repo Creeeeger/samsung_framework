@@ -504,7 +504,6 @@ public final class MediaSessionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addOnMediaKeyEventSessionChangedListener$0(OnMediaKeyEventSessionChangedListener listener) {
         listener.onMediaKeyEventSessionChanged(this.mCurMediaKeyEventSessionPackage, this.mCurMediaKeyEventSession);
     }
@@ -615,7 +614,6 @@ public final class MediaSessionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class SessionsChangedWrapper {
         private Context mContext;
@@ -629,8 +627,7 @@ public final class MediaSessionManager {
             this.mExecutor = executor;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.media.session.MediaSessionManager$SessionsChangedWrapper$1, reason: invalid class name */
+        /* renamed from: android.media.session.MediaSessionManager$SessionsChangedWrapper$1 */
         /* loaded from: classes2.dex */
         public class AnonymousClass1 extends IActiveSessionsListener.Stub {
             AnonymousClass1() {
@@ -649,13 +646,11 @@ public final class MediaSessionManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onActiveSessionsChanged$0(List tokens) {
                 SessionsChangedWrapper.this.callOnActiveSessionsChangedListener(tokens);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void callOnActiveSessionsChangedListener(List<MediaSession.Token> tokens) {
             Context context = this.mContext;
             if (context != null) {
@@ -671,7 +666,6 @@ public final class MediaSessionManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void release() {
             this.mListener = null;
             this.mContext = null;
@@ -679,21 +673,18 @@ public final class MediaSessionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class Session2TokensChangedWrapper {
         private final Executor mExecutor;
         private final OnSession2TokensChangedListener mListener;
         private final ISession2TokensListener.Stub mStub = new AnonymousClass1();
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.media.session.MediaSessionManager$Session2TokensChangedWrapper$1, reason: invalid class name */
+        /* renamed from: android.media.session.MediaSessionManager$Session2TokensChangedWrapper$1 */
         /* loaded from: classes2.dex */
         public class AnonymousClass1 extends ISession2TokensListener.Stub {
             AnonymousClass1() {
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onSession2TokensChanged$0(List tokens) {
                 Session2TokensChangedWrapper.this.mListener.onSession2TokensChanged(tokens);
             }
@@ -719,8 +710,9 @@ public final class MediaSessionManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static final class OnVolumeKeyLongPressListenerImpl extends IOnVolumeKeyLongPressListener.Stub {
+    public static final class OnVolumeKeyLongPressListenerImpl extends IOnVolumeKeyLongPressListener.Stub {
         private Handler mHandler;
         private OnVolumeKeyLongPressListener mListener;
 
@@ -730,12 +722,18 @@ public final class MediaSessionManager {
         }
 
         @Override // android.media.session.IOnVolumeKeyLongPressListener
-        public void onVolumeKeyLongPress(final KeyEvent event) {
+        public void onVolumeKeyLongPress(KeyEvent event) {
             Handler handler;
             if (this.mListener == null || (handler = this.mHandler) == null) {
                 Log.w(MediaSessionManager.TAG, "Failed to call volume key long-press listener. Either mListener or mHandler is null");
             } else {
                 handler.post(new Runnable() { // from class: android.media.session.MediaSessionManager.OnVolumeKeyLongPressListenerImpl.1
+                    final /* synthetic */ KeyEvent val$event;
+
+                    AnonymousClass1(KeyEvent event2) {
+                        event = event2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         OnVolumeKeyLongPressListenerImpl.this.mListener.onVolumeKeyLongPress(event);
@@ -743,10 +741,26 @@ public final class MediaSessionManager {
                 });
             }
         }
+
+        /* renamed from: android.media.session.MediaSessionManager$OnVolumeKeyLongPressListenerImpl$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ KeyEvent val$event;
+
+            AnonymousClass1(KeyEvent event2) {
+                event = event2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                OnVolumeKeyLongPressListenerImpl.this.mListener.onVolumeKeyLongPress(event);
+            }
+        }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static final class OnMediaKeyListenerImpl extends IOnMediaKeyListener.Stub {
+    public static final class OnMediaKeyListenerImpl extends IOnMediaKeyListener.Stub {
         private Handler mHandler;
         private OnMediaKeyListener mListener;
 
@@ -756,12 +770,20 @@ public final class MediaSessionManager {
         }
 
         @Override // android.media.session.IOnMediaKeyListener
-        public void onMediaKey(final KeyEvent event, final ResultReceiver result) {
+        public void onMediaKey(KeyEvent event, ResultReceiver result) {
             Handler handler;
             if (this.mListener == null || (handler = this.mHandler) == null) {
                 Log.w(MediaSessionManager.TAG, "Failed to call media key listener. Either mListener or mHandler is null");
             } else {
                 handler.post(new Runnable() { // from class: android.media.session.MediaSessionManager.OnMediaKeyListenerImpl.1
+                    final /* synthetic */ KeyEvent val$event;
+                    final /* synthetic */ ResultReceiver val$result;
+
+                    AnonymousClass1(KeyEvent event2, ResultReceiver result2) {
+                        event = event2;
+                        result = result2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         boolean onMediaKey = OnMediaKeyListenerImpl.this.mListener.onMediaKey(event);
@@ -774,10 +796,37 @@ public final class MediaSessionManager {
                 });
             }
         }
+
+        /* renamed from: android.media.session.MediaSessionManager$OnMediaKeyListenerImpl$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ KeyEvent val$event;
+            final /* synthetic */ ResultReceiver val$result;
+
+            AnonymousClass1(KeyEvent event2, ResultReceiver result2) {
+                event = event2;
+                result = result2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                boolean onMediaKey = OnMediaKeyListenerImpl.this.mListener.onMediaKey(event);
+                Log.d(MediaSessionManager.TAG, "The media key listener is returned " + onMediaKey);
+                ResultReceiver resultReceiver = result;
+                if (resultReceiver != null) {
+                    resultReceiver.send(onMediaKey ? 1 : 0, null);
+                }
+            }
+        }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class OnMediaKeyEventDispatchedListenerStub extends IOnMediaKeyEventDispatchedListener.Stub {
+    public final class OnMediaKeyEventDispatchedListenerStub extends IOnMediaKeyEventDispatchedListener.Stub {
+        /* synthetic */ OnMediaKeyEventDispatchedListenerStub(MediaSessionManager mediaSessionManager, OnMediaKeyEventDispatchedListenerStubIA onMediaKeyEventDispatchedListenerStubIA) {
+            this();
+        }
+
         private OnMediaKeyEventDispatchedListenerStub() {
         }
 
@@ -796,8 +845,13 @@ public final class MediaSessionManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class OnMediaKeyEventSessionChangedListenerStub extends IOnMediaKeyEventSessionChangedListener.Stub {
+    public final class OnMediaKeyEventSessionChangedListenerStub extends IOnMediaKeyEventSessionChangedListener.Stub {
+        /* synthetic */ OnMediaKeyEventSessionChangedListenerStub(MediaSessionManager mediaSessionManager, OnMediaKeyEventSessionChangedListenerStubIA onMediaKeyEventSessionChangedListenerStubIA) {
+            this();
+        }
+
         private OnMediaKeyEventSessionChangedListenerStub() {
         }
 
@@ -818,8 +872,13 @@ public final class MediaSessionManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class RemoteSessionCallbackStub extends IRemoteSessionCallback.Stub {
+    public final class RemoteSessionCallbackStub extends IRemoteSessionCallback.Stub {
+        /* synthetic */ RemoteSessionCallbackStub(MediaSessionManager mediaSessionManager, RemoteSessionCallbackStubIA remoteSessionCallbackStubIA) {
+            this();
+        }
+
         private RemoteSessionCallbackStub() {
         }
 

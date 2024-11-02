@@ -31,7 +31,6 @@ public enum AudioUsage {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AudioUsage fromString(String rawString) {
         for (AudioUsage _f : values()) {
             if (_f.getRawName().equals(rawString)) {

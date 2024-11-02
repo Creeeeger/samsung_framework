@@ -838,7 +838,7 @@ public interface ISehRadioIndication extends vendor.samsung.hardware.radio.V2_1.
         }
 
         @Override // android.os.HwBinder
-        public void onTransact(int _hidl_code, HwParcel _hidl_request, final HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
+        public void onTransact(int _hidl_code, HwParcel _hidl_request, HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
             switch (_hidl_code) {
                 case 1:
                     _hidl_request.enforceInterface(vendor.samsung.hardware.radio.V2_0.ISehRadioIndication.kInterfaceName);
@@ -1009,6 +1009,12 @@ public interface ISehRadioIndication extends vendor.samsung.hardware.radio.V2_1.
                     _hidl_request.enforceInterface(vendor.samsung.hardware.radio.V2_0.ISehRadioIndication.kInterfaceName);
                     String iface = _hidl_request.readString();
                     needPacketUsage(iface, new ISehRadioIndication.needPacketUsageCallback() { // from class: vendor.samsung.hardware.radio.V2_2.ISehRadioIndication.Stub.1
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass1(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // vendor.samsung.hardware.radio.V2_0.ISehRadioIndication.needPacketUsageCallback
                         public void onValues(int error, SehPacketUsage usage) {
                             _hidl_reply.writeStatus(0);
@@ -1029,16 +1035,16 @@ public interface ISehRadioIndication extends vendor.samsung.hardware.radio.V2_1.
                     int type26 = _hidl_request.readInt32();
                     ArrayList<SehCallDetails> callDetails = SehCallDetails.readVectorFromParcel(_hidl_request);
                     callDetailsChanged(type26, callDetails);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 30:
                     _hidl_request.enforceInterface(ISehRadioIndication.kInterfaceName);
                     int type27 = _hidl_request.readInt32();
                     ArrayList<SehVendorConfiguration> configurations = SehVendorConfiguration.readVectorFromParcel(_hidl_request);
                     vendorConfigurationChanged(type27, configurations);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 31:
                     _hidl_request.enforceInterface(ISehRadioIndication.kInterfaceName);
@@ -1046,35 +1052,35 @@ public interface ISehRadioIndication extends vendor.samsung.hardware.radio.V2_1.
                     SehEriInfo eriInfo = new SehEriInfo();
                     eriInfo.readFromParcel(_hidl_request);
                     eriInfoReceived(type28, eriInfo);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 256067662:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<String> _hidl_out_descriptors = interfaceChain();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeStringVector(_hidl_out_descriptors);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeStringVector(_hidl_out_descriptors);
+                    _hidl_reply2.send();
                     return;
                 case 256131655:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     NativeHandle fd = _hidl_request.readNativeHandle();
                     ArrayList<String> options = _hidl_request.readStringVector();
                     debug(fd, options);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 256136003:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     String _hidl_out_descriptor = interfaceDescriptor();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeString(_hidl_out_descriptor);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeString(_hidl_out_descriptor);
+                    _hidl_reply2.send();
                     return;
                 case 256398152:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<byte[]> _hidl_out_hashchain = getHashChain();
-                    _hidl_reply.writeStatus(0);
+                    _hidl_reply2.writeStatus(0);
                     HwBlob _hidl_blob = new HwBlob(16);
                     int _hidl_vec_size = _hidl_out_hashchain.size();
                     _hidl_blob.putInt32(8L, _hidl_vec_size);
@@ -1089,8 +1095,8 @@ public interface ISehRadioIndication extends vendor.samsung.hardware.radio.V2_1.
                         childBlob.putInt8Array(_hidl_array_offset_1, _hidl_array_item_1);
                     }
                     _hidl_blob.putBlob(0L, childBlob);
-                    _hidl_reply.writeBuffer(_hidl_blob);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeBuffer(_hidl_blob);
+                    _hidl_reply2.send();
                     return;
                 case 256462420:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
@@ -1102,20 +1108,38 @@ public interface ISehRadioIndication extends vendor.samsung.hardware.radio.V2_1.
                 case 256921159:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ping();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 257049926:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     DebugInfo _hidl_out_info = getDebugInfo();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_out_info.writeToParcel(_hidl_reply);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_out_info.writeToParcel(_hidl_reply2);
+                    _hidl_reply2.send();
                     return;
                 case 257120595:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     notifySyspropsChanged();
                     return;
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.radio.V2_2.ISehRadioIndication$Stub$1 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass1 implements ISehRadioIndication.needPacketUsageCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass1(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // vendor.samsung.hardware.radio.V2_0.ISehRadioIndication.needPacketUsageCallback
+            public void onValues(int error, SehPacketUsage usage) {
+                _hidl_reply.writeStatus(0);
+                _hidl_reply.writeInt32(error);
+                usage.writeToParcel(_hidl_reply);
+                _hidl_reply.send();
             }
         }
     }

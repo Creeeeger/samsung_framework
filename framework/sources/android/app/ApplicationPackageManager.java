@@ -138,6 +138,10 @@ public class ApplicationPackageManager extends PackageManager {
     private static final ArrayMap<String, Method> sLiveIconLoaders = new ArrayMap<>();
     private static final ArrayMap<String, String> sLiveIconPackageMatchers = new ArrayMap<>();
     private static final PropertyInvalidatedCache<HasSystemFeatureQuery, Boolean> mHasSystemFeatureCache = new PropertyInvalidatedCache<HasSystemFeatureQuery, Boolean>(256, "cache_key.has_system_feature") { // from class: android.app.ApplicationPackageManager.1
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
         @Override // android.app.PropertyInvalidatedCache
         public Boolean recompute(HasSystemFeatureQuery query) {
             try {
@@ -150,6 +154,10 @@ public class ApplicationPackageManager extends PackageManager {
     };
     private static final String CACHE_KEY_PACKAGES_FOR_UID_PROPERTY = "cache_key.get_packages_for_uid";
     private static final PropertyInvalidatedCache<Integer, GetPackagesForUidResult> mGetPackagesForUidCache = new PropertyInvalidatedCache<Integer, GetPackagesForUidResult>(32, CACHE_KEY_PACKAGES_FOR_UID_PROPERTY) { // from class: android.app.ApplicationPackageManager.3
+        AnonymousClass3(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
         @Override // android.app.PropertyInvalidatedCache
         public GetPackagesForUidResult recompute(Integer uid) {
             try {
@@ -659,7 +667,6 @@ public class ApplicationPackageManager extends PackageManager {
         return hasSystemFeature(name, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class HasSystemFeatureQuery {
         public final String name;
@@ -684,6 +691,24 @@ public class ApplicationPackageManager extends PackageManager {
 
         public int hashCode() {
             return (Objects.hashCode(this.name) * 13) + this.version;
+        }
+    }
+
+    /* renamed from: android.app.ApplicationPackageManager$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends PropertyInvalidatedCache<HasSystemFeatureQuery, Boolean> {
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(HasSystemFeatureQuery query) {
+            try {
+                ActivityThread.currentActivityThread();
+                return Boolean.valueOf(ActivityThread.getPackageManager().hasSystemFeature(query.name, query.version));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
         }
     }
 
@@ -871,7 +896,7 @@ public class ApplicationPackageManager extends PackageManager {
     }
 
     @Override // android.content.pm.PackageManager
-    public void requestChecksums(String packageName, boolean includeSplits, int required, List<Certificate> trustedInstallers, final PackageManager.OnChecksumsReadyListener onChecksumsReadyListener) throws CertificateEncodingException, PackageManager.NameNotFoundException {
+    public void requestChecksums(String packageName, boolean includeSplits, int required, List<Certificate> trustedInstallers, PackageManager.OnChecksumsReadyListener onChecksumsReadyListener) throws CertificateEncodingException, PackageManager.NameNotFoundException {
         Objects.requireNonNull(packageName);
         Objects.requireNonNull(onChecksumsReadyListener);
         Objects.requireNonNull(trustedInstallers);
@@ -884,6 +909,12 @@ public class ApplicationPackageManager extends PackageManager {
         }
         try {
             IOnChecksumsReadyListener onChecksumsReadyListenerDelegate = new IOnChecksumsReadyListener.Stub() { // from class: android.app.ApplicationPackageManager.2
+                final /* synthetic */ PackageManager.OnChecksumsReadyListener val$onChecksumsReadyListener;
+
+                AnonymousClass2(PackageManager.OnChecksumsReadyListener onChecksumsReadyListener2) {
+                    onChecksumsReadyListener = onChecksumsReadyListener2;
+                }
+
                 @Override // android.content.pm.IOnChecksumsReadyListener
                 public void onChecksumsReady(List<ApkChecksum> checksums) throws RemoteException {
                     onChecksumsReadyListener.onChecksumsReady(checksums);
@@ -898,7 +929,21 @@ public class ApplicationPackageManager extends PackageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.app.ApplicationPackageManager$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends IOnChecksumsReadyListener.Stub {
+        final /* synthetic */ PackageManager.OnChecksumsReadyListener val$onChecksumsReadyListener;
+
+        AnonymousClass2(PackageManager.OnChecksumsReadyListener onChecksumsReadyListener2) {
+            onChecksumsReadyListener = onChecksumsReadyListener2;
+        }
+
+        @Override // android.content.pm.IOnChecksumsReadyListener
+        public void onChecksumsReady(List<ApkChecksum> checksums) throws RemoteException {
+            onChecksumsReadyListener.onChecksumsReady(checksums);
+        }
+    }
+
     /* loaded from: classes.dex */
     public static class GetPackagesForUidResult {
         private final String[] mValue;
@@ -934,6 +979,29 @@ public class ApplicationPackageManager extends PackageManager {
             Arrays.sort(r);
             Arrays.sort(l);
             return Arrays.equals(l, r);
+        }
+    }
+
+    /* renamed from: android.app.ApplicationPackageManager$3 */
+    /* loaded from: classes.dex */
+    class AnonymousClass3 extends PropertyInvalidatedCache<Integer, GetPackagesForUidResult> {
+        AnonymousClass3(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public GetPackagesForUidResult recompute(Integer uid) {
+            try {
+                ActivityThread.currentActivityThread();
+                return new GetPackagesForUidResult(ActivityThread.getPackageManager().getPackagesForUid(uid.intValue()));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public String queryToString(Integer uid) {
+            return String.format("uid=%d", Integer.valueOf(uid.intValue()));
         }
     }
 
@@ -1640,8 +1708,7 @@ public class ApplicationPackageManager extends PackageManager {
         return getUserManager().isManagedProfile(user.getIdentifier()) ? DevicePolicyResources.Drawables.WORK_PROFILE_ICON_BADGE : DevicePolicyResources.UNDEFINED;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: getDefaultUserIconBadge, reason: merged with bridge method [inline-methods] */
+    /* renamed from: getDefaultUserIconBadge */
     public Drawable lambda$getUserBadgedIcon$0(UserHandle user) {
         return this.mContext.getDrawable(getUserManager().getUserIconBadgeResId(user.getIdentifier()));
     }
@@ -1700,8 +1767,7 @@ public class ApplicationPackageManager extends PackageManager {
         return getUserManager().isManagedProfile(user.getIdentifier()) ? DevicePolicyResources.Drawables.WORK_PROFILE_ICON : DevicePolicyResources.UNDEFINED;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: getDefaultUserBadgeForDensity, reason: merged with bridge method [inline-methods] */
+    /* renamed from: getDefaultUserBadgeForDensity */
     public Drawable lambda$getUserBadgeForDensity$1(UserHandle user, int density) {
         return getDrawableForDensity(getUserManager().getUserBadgeResId(user.getIdentifier()), density);
     }
@@ -1741,8 +1807,7 @@ public class ApplicationPackageManager extends PackageManager {
         return badge;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: getDefaultUserBadgeNoBackgroundForDensity, reason: merged with bridge method [inline-methods] */
+    /* renamed from: getDefaultUserBadgeNoBackgroundForDensity */
     public Drawable lambda$getUserBadgeForDensityNoBackground$2(UserHandle user, int density) {
         return getDrawableForDensity(getUserManager().getUserBadgeNoBackgroundResId(user.getIdentifier()), density);
     }
@@ -1848,7 +1913,6 @@ public class ApplicationPackageManager extends PackageManager {
         getPermissionManager().removeOnPermissionsChangeListener(listener);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void configurationChanged() {
         synchronized (sSync) {
             sIconCache.clear();
@@ -1856,7 +1920,6 @@ public class ApplicationPackageManager extends PackageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ApplicationPackageManager(ContextImpl context, IPackageManager pm) {
         this.mContext = context;
         this.mPM = pm;
@@ -1923,7 +1986,6 @@ public class ApplicationPackageManager extends PackageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void handlePackageBroadcast(int cmd, String[] pkgList, boolean hasPkgInfo) {
         boolean immediateGc = false;
         if (cmd == 1) {
@@ -1959,7 +2021,6 @@ public class ApplicationPackageManager extends PackageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class ResourceName {
         final int iconId;
@@ -2108,16 +2169,24 @@ public class ApplicationPackageManager extends PackageManager {
         return getKnoxSdkHook().getRequestedRuntimePermissionsForMdm(pkgName);
     }
 
+    /* renamed from: android.app.ApplicationPackageManager$4 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass4 implements KnoxSdkHook {
+        AnonymousClass4() {
+        }
+    }
+
     private KnoxSdkHook getKnoxSdkHook() {
         if (this.mKnoxSdkHook == null) {
             this.mKnoxSdkHook = new KnoxSdkHook() { // from class: android.app.ApplicationPackageManager.4
+                AnonymousClass4() {
+                }
             };
             this.mKnoxSdkHook = new KnoxSdkHookImpl();
         }
         return this.mKnoxSdkHook;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public interface KnoxSdkHook {
         default boolean applyRuntimePermissionsForMdm(String pkgName, List<String> permissions, int permState, int userId) {
@@ -2133,7 +2202,6 @@ public class ApplicationPackageManager extends PackageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public class KnoxSdkHookImpl implements KnoxSdkHook {
         KnoxSdkHookImpl() {
@@ -3106,8 +3174,9 @@ public class ApplicationPackageManager extends PackageManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class MoveCallbackDelegate extends IPackageMoveObserver.Stub implements Handler.Callback {
+    public static class MoveCallbackDelegate extends IPackageMoveObserver.Stub implements Handler.Callback {
         private static final int MSG_CREATED = 1;
         private static final int MSG_STATUS_CHANGED = 2;
         final PackageManager.MoveCallback mCallback;
@@ -3195,6 +3264,10 @@ public class ApplicationPackageManager extends PackageManager {
         final String dexModulePath;
         final String message;
         final boolean success;
+
+        /* synthetic */ DexModuleRegisterResult(String str, boolean z, String str2, DexModuleRegisterResultIA dexModuleRegisterResultIA) {
+            this(str, z, str2);
+        }
 
         private DexModuleRegisterResult(String dexModulePath, boolean success, String message) {
             this.dexModulePath = dexModulePath;

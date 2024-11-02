@@ -34,18 +34,23 @@ public final class CellSignalStrengthLte extends CellSignalStrength implements P
     private static final int[] sRssnrThresholds = {-3, 1, 5, 13};
     private static final CellSignalStrengthLte sInvalid = new CellSignalStrengthLte();
     public static final Parcelable.Creator<CellSignalStrengthLte> CREATOR = new Parcelable.Creator<CellSignalStrengthLte>() { // from class: android.telephony.CellSignalStrengthLte.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthLte createFromParcel(Parcel in) {
             return new CellSignalStrengthLte(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthLte[] newArray(int size) {
             return new CellSignalStrengthLte[size];
         }
     };
+
+    /* synthetic */ CellSignalStrengthLte(Parcel parcel, CellSignalStrengthLteIA cellSignalStrengthLteIA) {
+        this(parcel);
+    }
 
     public CellSignalStrengthLte() {
         setDefaultValues();
@@ -311,6 +316,23 @@ public final class CellSignalStrengthLte extends CellSignalStrength implements P
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.CellSignalStrengthLte$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellSignalStrengthLte> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellSignalStrengthLte createFromParcel(Parcel in) {
+            return new CellSignalStrengthLte(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellSignalStrengthLte[] newArray(int size) {
+            return new CellSignalStrengthLte[size];
+        }
     }
 
     private static void log(String s) {

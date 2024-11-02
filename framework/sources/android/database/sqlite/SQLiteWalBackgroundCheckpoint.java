@@ -27,11 +27,14 @@ public final class SQLiteWalBackgroundCheckpoint {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class WalCheckpointExecutor extends Thread {
         private static final String TAG = "WalCheckpointExecutor";
         private final SQLiteDatabase mDatabase;
+
+        /* synthetic */ WalCheckpointExecutor(SQLiteWalBackgroundCheckpoint sQLiteWalBackgroundCheckpoint, SQLiteDatabase sQLiteDatabase, WalCheckpointExecutorIA walCheckpointExecutorIA) {
+            this(sQLiteDatabase);
+        }
 
         private WalCheckpointExecutor(SQLiteDatabase db) {
             this.mDatabase = db;

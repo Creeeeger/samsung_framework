@@ -14,13 +14,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TelephonyTimeSuggestion implements Parcelable {
     public static final Parcelable.Creator<TelephonyTimeSuggestion> CREATOR = new Parcelable.Creator<TelephonyTimeSuggestion>() { // from class: android.app.timedetector.TelephonyTimeSuggestion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TelephonyTimeSuggestion createFromParcel(Parcel in) {
             return TelephonyTimeSuggestion.createFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyTimeSuggestion[] newArray(int size) {
             return new TelephonyTimeSuggestion[size];
@@ -30,13 +31,33 @@ public final class TelephonyTimeSuggestion implements Parcelable {
     private final int mSlotIndex;
     private final UnixEpochTime mUnixEpochTime;
 
+    /* synthetic */ TelephonyTimeSuggestion(Builder builder, TelephonyTimeSuggestionIA telephonyTimeSuggestionIA) {
+        this(builder);
+    }
+
+    /* renamed from: android.app.timedetector.TelephonyTimeSuggestion$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TelephonyTimeSuggestion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyTimeSuggestion createFromParcel(Parcel in) {
+            return TelephonyTimeSuggestion.createFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyTimeSuggestion[] newArray(int size) {
+            return new TelephonyTimeSuggestion[size];
+        }
+    }
+
     private TelephonyTimeSuggestion(Builder builder) {
         this.mSlotIndex = builder.mSlotIndex;
         this.mUnixEpochTime = builder.mUnixEpochTime;
         this.mDebugInfo = builder.mDebugInfo != null ? new ArrayList<>(builder.mDebugInfo) : null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static TelephonyTimeSuggestion createFromParcel(Parcel in) {
         int slotIndex = in.readInt();
         UnixEpochTime unixEpochTime = (UnixEpochTime) in.readParcelable(null, UnixEpochTime.class);

@@ -60,14 +60,13 @@ public class EvaluableMap<T> implements Evaluator {
         }).findFirst().map(new Function() { // from class: com.samsung.android.sume.core.evaluate.EvaluableMap$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return EvaluableMap.this.m8753lambda$get$1$comsamsungandroidsumecoreevaluateEvaluableMap((Evaluator) obj);
+                return EvaluableMap.this.m8745lambda$get$1$comsamsungandroidsumecoreevaluateEvaluableMap((Evaluator) obj);
             }
         }).orElseThrow(new SurfaceChannelImpl$$ExternalSyntheticLambda5());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$get$1$com-samsung-android-sume-core-evaluate-EvaluableMap, reason: not valid java name */
-    public /* synthetic */ Object m8753lambda$get$1$comsamsungandroidsumecoreevaluateEvaluableMap(Evaluator e) {
+    /* renamed from: lambda$get$1$com-samsung-android-sume-core-evaluate-EvaluableMap */
+    public /* synthetic */ Object m8745lambda$get$1$comsamsungandroidsumecoreevaluateEvaluableMap(Evaluator e) {
         return this.data.get(e);
     }
 
@@ -82,14 +81,13 @@ public class EvaluableMap<T> implements Evaluator {
         }).findFirst().map(new Function() { // from class: com.samsung.android.sume.core.evaluate.EvaluableMap$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return EvaluableMap.this.m8754xaea5c52c((Evaluator) obj);
+                return EvaluableMap.this.m8746xaea5c52c((Evaluator) obj);
             }
         }).orElse(t);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$getOr$3$com-samsung-android-sume-core-evaluate-EvaluableMap, reason: not valid java name */
-    public /* synthetic */ Object m8754xaea5c52c(Evaluator e) {
+    /* renamed from: lambda$getOr$3$com-samsung-android-sume-core-evaluate-EvaluableMap */
+    public /* synthetic */ Object m8746xaea5c52c(Evaluator e) {
         return this.data.get(e);
     }
 }

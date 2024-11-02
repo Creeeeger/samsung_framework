@@ -10,13 +10,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes.dex */
 public final class UserSelectionDialogResult extends BaseDialogResult implements Parcelable {
     public static final Parcelable.Creator<UserSelectionDialogResult> CREATOR = new Parcelable.Creator<UserSelectionDialogResult>() { // from class: android.credentials.ui.UserSelectionDialogResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UserSelectionDialogResult createFromParcel(Parcel in) {
             return new UserSelectionDialogResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UserSelectionDialogResult[] newArray(int size) {
             return new UserSelectionDialogResult[size];
@@ -93,5 +94,22 @@ public final class UserSelectionDialogResult extends BaseDialogResult implements
     @Override // android.credentials.ui.BaseDialogResult, android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.credentials.ui.UserSelectionDialogResult$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UserSelectionDialogResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserSelectionDialogResult createFromParcel(Parcel in) {
+            return new UserSelectionDialogResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserSelectionDialogResult[] newArray(int size) {
+            return new UserSelectionDialogResult[size];
+        }
     }
 }

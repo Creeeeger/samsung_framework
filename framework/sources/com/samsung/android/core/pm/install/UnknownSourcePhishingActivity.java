@@ -31,7 +31,7 @@ public class UnknownSourcePhishingActivity extends Activity {
     private static final String LANGUAGE_KOR = "ko";
     private static final String TAG = "UnknownSourceAppManager";
     private HashMap<Integer, String> htmlMap = new HashMap<Integer, String>() { // from class: com.samsung.android.core.pm.install.UnknownSourcePhishingActivity.1
-        {
+        AnonymousClass1() {
             put(110, UnknownSourcePhishingActivity.AASA_KOR_WARN_FILE_0);
             put(111, UnknownSourcePhishingActivity.AASA_KOR_WARN_FILE_1);
             put(112, UnknownSourcePhishingActivity.AASA_KOR_WARN_FILE_2);
@@ -47,6 +47,23 @@ public class UnknownSourcePhishingActivity extends Activity {
     private boolean mButtonClicked = false;
     private int mInstallType;
     private int mSessionId;
+
+    /* renamed from: com.samsung.android.core.pm.install.UnknownSourcePhishingActivity$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends HashMap<Integer, String> {
+        AnonymousClass1() {
+            put(110, UnknownSourcePhishingActivity.AASA_KOR_WARN_FILE_0);
+            put(111, UnknownSourcePhishingActivity.AASA_KOR_WARN_FILE_1);
+            put(112, UnknownSourcePhishingActivity.AASA_KOR_WARN_FILE_2);
+            put(113, UnknownSourcePhishingActivity.AASA_KOR_WARN_FILE_3);
+            put(114, UnknownSourcePhishingActivity.AASA_KOR_WARN_FILE_4);
+            put(120, UnknownSourcePhishingActivity.AASA_KOR_BLOCK_FILE_0);
+            put(121, UnknownSourcePhishingActivity.AASA_KOR_BLOCK_FILE_1);
+            put(122, UnknownSourcePhishingActivity.AASA_KOR_BLOCK_FILE_2);
+            put(123, UnknownSourcePhishingActivity.AASA_KOR_BLOCK_FILE_3);
+            put(124, UnknownSourcePhishingActivity.AASA_KOR_BLOCK_FILE_4);
+        }
+    }
 
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {

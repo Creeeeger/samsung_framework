@@ -100,8 +100,9 @@ public interface IOnClipboardEventListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IOnClipboardEventListener {
+        public static class Proxy implements IOnClipboardEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -113,7 +113,6 @@ public class EnergyConsumerStats {
             return new Config(supportedStandardBuckets, customBucketNames, supportedMultiStateBuckets, stateNames);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public int getNumberOfBuckets() {
             return this.mSupportedStandardBuckets.length + this.mCustomBucketNames.length;
         }
@@ -134,7 +133,6 @@ public class EnergyConsumerStats {
             return this.mStateNames;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public String getBucketName(int index) {
             if (EnergyConsumerStats.isValidStandardBucket(index)) {
                 return DebugUtils.valueToString(EnergyConsumerStats.class, "POWER_BUCKET_", index);
@@ -492,7 +490,6 @@ public class EnergyConsumerStats {
         return customBucket + 10;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int indexToCustomBucket(int index) {
         return index - 10;
     }
@@ -503,7 +500,6 @@ public class EnergyConsumerStats {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidStandardBucket(int bucket) {
         return bucket >= 0 && bucket < 10;
     }

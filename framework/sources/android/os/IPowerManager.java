@@ -1451,8 +1451,9 @@ public interface IPowerManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IPowerManager {
+        public static class Proxy implements IPowerManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -2855,7 +2856,9 @@ public interface IPowerManager extends IInterface {
     /* loaded from: classes3.dex */
     public static class LowPowerStandbyPolicy implements Parcelable {
         public static final Parcelable.Creator<LowPowerStandbyPolicy> CREATOR = new Parcelable.Creator<LowPowerStandbyPolicy>() { // from class: android.os.IPowerManager.LowPowerStandbyPolicy.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public LowPowerStandbyPolicy createFromParcel(Parcel _aidl_source) {
                 LowPowerStandbyPolicy _aidl_out = new LowPowerStandbyPolicy();
@@ -2863,7 +2866,6 @@ public interface IPowerManager extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public LowPowerStandbyPolicy[] newArray(int _aidl_size) {
                 return new LowPowerStandbyPolicy[_aidl_size];
@@ -2873,6 +2875,25 @@ public interface IPowerManager extends IInterface {
         public int allowedReasons = 0;
         public List<String> exemptPackages;
         public String identifier;
+
+        /* renamed from: android.os.IPowerManager$LowPowerStandbyPolicy$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<LowPowerStandbyPolicy> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public LowPowerStandbyPolicy createFromParcel(Parcel _aidl_source) {
+                LowPowerStandbyPolicy _aidl_out = new LowPowerStandbyPolicy();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public LowPowerStandbyPolicy[] newArray(int _aidl_size) {
+                return new LowPowerStandbyPolicy[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -2949,7 +2970,9 @@ public interface IPowerManager extends IInterface {
     /* loaded from: classes3.dex */
     public static class LowPowerStandbyPortDescription implements Parcelable {
         public static final Parcelable.Creator<LowPowerStandbyPortDescription> CREATOR = new Parcelable.Creator<LowPowerStandbyPortDescription>() { // from class: android.os.IPowerManager.LowPowerStandbyPortDescription.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public LowPowerStandbyPortDescription createFromParcel(Parcel _aidl_source) {
                 LowPowerStandbyPortDescription _aidl_out = new LowPowerStandbyPortDescription();
@@ -2957,7 +2980,6 @@ public interface IPowerManager extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public LowPowerStandbyPortDescription[] newArray(int _aidl_size) {
                 return new LowPowerStandbyPortDescription[_aidl_size];
@@ -2967,6 +2989,25 @@ public interface IPowerManager extends IInterface {
         public int protocol = 0;
         public int portMatcher = 0;
         public int portNumber = 0;
+
+        /* renamed from: android.os.IPowerManager$LowPowerStandbyPortDescription$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<LowPowerStandbyPortDescription> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public LowPowerStandbyPortDescription createFromParcel(Parcel _aidl_source) {
+                LowPowerStandbyPortDescription _aidl_out = new LowPowerStandbyPortDescription();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public LowPowerStandbyPortDescription[] newArray(int _aidl_size) {
+                return new LowPowerStandbyPortDescription[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

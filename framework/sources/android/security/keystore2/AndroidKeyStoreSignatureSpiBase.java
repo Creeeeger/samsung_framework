@@ -38,7 +38,6 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
 
     protected abstract String getAlgorithm();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AndroidKeyStoreSignatureSpiBase() {
         this.appRandom = null;
         this.mMessageStreamer = null;
@@ -92,7 +91,6 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void initKey(AndroidKeyStoreKey key) throws InvalidKeyException {
         this.mKey = key;
     }
@@ -102,7 +100,6 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
         this.mOperation = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void resetAll() {
         abortOperation();
         this.mOperationChallenge = 0L;
@@ -113,7 +110,6 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
         this.mCachedException = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void resetWhilePreservingInitState() {
         abortOperation();
         this.mOperationChallenge = 0L;
@@ -142,7 +138,6 @@ abstract class AndroidKeyStoreSignatureSpiBase extends SignatureSpi implements K
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public KeyStoreCryptoOperationStreamer createMainDataStreamer(KeyStoreOperation operation) {
         return new KeyStoreCryptoOperationChunkedStreamer(new KeyStoreCryptoOperationChunkedStreamer.MainDataStream(operation));
     }

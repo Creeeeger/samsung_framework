@@ -85,8 +85,9 @@ public interface IDumpCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IDumpCallback {
+        public static class Proxy implements IDumpCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

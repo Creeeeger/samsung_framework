@@ -10,7 +10,6 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.Modifier;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: LoaderManager.java */
 /* loaded from: classes.dex */
 public class LoaderManagerImpl extends LoaderManager {
@@ -25,7 +24,6 @@ public class LoaderManagerImpl extends LoaderManager {
     final SparseArray<LoaderInfo> mLoaders = new SparseArray<>(0);
     final SparseArray<LoaderInfo> mInactiveLoaders = new SparseArray<>(0);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: LoaderManager.java */
     /* loaded from: classes.dex */
     public final class LoaderInfo implements Loader.OnLoadCompleteListener<Object>, Loader.OnLoadCanceledListener<Object> {
@@ -347,14 +345,12 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LoaderManagerImpl(String who, FragmentHostCallback host, boolean started) {
         this.mWho = who;
         this.mHost = host;
         this.mStarted = started;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateHostController(FragmentHostCallback host) {
         this.mHost = host;
     }
@@ -509,7 +505,6 @@ public class LoaderManagerImpl extends LoaderManager {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doStart() {
         if (DEBUG) {
             Log.v(TAG, "Starting in " + this);
@@ -526,7 +521,6 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doStop() {
         if (DEBUG) {
             Log.v(TAG, "Stopping in " + this);
@@ -543,7 +537,6 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doRetain() {
         if (DEBUG) {
             Log.v(TAG, "Retaining in " + this);
@@ -561,7 +554,6 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishRetain() {
         if (this.mRetaining) {
             if (DEBUG) {
@@ -574,21 +566,18 @@ public class LoaderManagerImpl extends LoaderManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doReportNextStart() {
         for (int i = this.mLoaders.size() - 1; i >= 0; i--) {
             this.mLoaders.valueAt(i).mReportNextStart = true;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doReportStart() {
         for (int i = this.mLoaders.size() - 1; i >= 0; i--) {
             this.mLoaders.valueAt(i).reportStart();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doDestroy() {
         if (!this.mRetaining) {
             if (DEBUG) {

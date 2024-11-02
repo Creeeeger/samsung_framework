@@ -10,13 +10,14 @@ import java.util.Map;
 /* loaded from: classes3.dex */
 public class CertInfo implements Parcelable {
     public static final Parcelable.Creator<CertInfo> CREATOR = new Parcelable.Creator<CertInfo>() { // from class: android.spay.CertInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CertInfo createFromParcel(Parcel in) {
             return new CertInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CertInfo[] newArray(int size) {
             return new CertInfo[size];
@@ -25,8 +26,29 @@ public class CertInfo implements Parcelable {
     private static final String TAG = "CertInfo";
     public Map<String, byte[]> mCerts;
 
+    /* synthetic */ CertInfo(Parcel parcel, CertInfoIA certInfoIA) {
+        this(parcel);
+    }
+
     public CertInfo() {
         this.mCerts = new HashMap();
+    }
+
+    /* renamed from: android.spay.CertInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CertInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CertInfo createFromParcel(Parcel in) {
+            return new CertInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CertInfo[] newArray(int size) {
+            return new CertInfo[size];
+        }
     }
 
     private CertInfo(Parcel in) {

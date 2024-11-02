@@ -11,7 +11,6 @@ public abstract class PolicyValue<V> implements Parcelable {
         this.mValue = (V) Objects.requireNonNull(v);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PolicyValue() {
     }
 
@@ -19,7 +18,6 @@ public abstract class PolicyValue<V> implements Parcelable {
         return this.mValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setValue(V value) {
         this.mValue = value;
     }

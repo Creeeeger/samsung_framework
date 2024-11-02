@@ -17,13 +17,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class OverlayManagerTransaction implements Parcelable {
     public static final Parcelable.Creator<OverlayManagerTransaction> CREATOR = new Parcelable.Creator<OverlayManagerTransaction>() { // from class: android.content.om.OverlayManagerTransaction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public OverlayManagerTransaction createFromParcel(Parcel source) {
             return new OverlayManagerTransaction(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverlayManagerTransaction[] newArray(int size) {
             return new OverlayManagerTransaction[size];
@@ -31,6 +32,14 @@ public final class OverlayManagerTransaction implements Parcelable {
     };
     private final List<Request> mRequests;
     private final boolean mSelfTargeting;
+
+    /* synthetic */ OverlayManagerTransaction(Parcel parcel, OverlayManagerTransactionIA overlayManagerTransactionIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ OverlayManagerTransaction(List list, boolean z, OverlayManagerTransactionIA overlayManagerTransactionIA) {
+        this((List<Request>) list, z);
+    }
 
     private OverlayManagerTransaction(List<Request> requests, boolean selfTargeting) {
         Objects.requireNonNull(requests);
@@ -164,7 +173,23 @@ public final class OverlayManagerTransaction implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.content.om.OverlayManagerTransaction$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<OverlayManagerTransaction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OverlayManagerTransaction createFromParcel(Parcel source) {
+            return new OverlayManagerTransaction(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OverlayManagerTransaction[] newArray(int size) {
+            return new OverlayManagerTransaction[size];
+        }
+    }
+
     public static Request generateRegisterFabricatedOverlayRequest(FabricatedOverlay overlay) {
         Objects.requireNonNull(overlay);
         Bundle extras = new Bundle();
@@ -172,7 +197,6 @@ public final class OverlayManagerTransaction implements Parcelable {
         return new Request(2, overlay.getIdentifier(), -1, extras);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Request generateUnRegisterFabricatedOverlayRequest(OverlayIdentifier overlayIdentifier) {
         Objects.requireNonNull(overlayIdentifier);
         return new Request(3, overlayIdentifier, -1);
@@ -186,7 +210,6 @@ public final class OverlayManagerTransaction implements Parcelable {
         this.mRequests.add(generateUnRegisterFabricatedOverlayRequest(overlay));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isSelfTargeting() {
         return this.mSelfTargeting;
     }

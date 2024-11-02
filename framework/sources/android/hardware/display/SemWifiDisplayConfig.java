@@ -15,13 +15,14 @@ public final class SemWifiDisplayConfig implements Parcelable {
     public static final int CONNECTION_TYPE_P2P = 1;
     public static final int CONNECTION_TYPE_USB = 3;
     public static final Parcelable.Creator<SemWifiDisplayConfig> CREATOR = new Parcelable.Creator<SemWifiDisplayConfig>() { // from class: android.hardware.display.SemWifiDisplayConfig.2
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemWifiDisplayConfig createFromParcel(Parcel in) {
             return new SemWifiDisplayConfig(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiDisplayConfig[] newArray(int size) {
             return new SemWifiDisplayConfig[size];
@@ -44,12 +45,31 @@ public final class SemWifiDisplayConfig implements Parcelable {
     private String mPort;
     private HashMap<String, List<SemWifiDisplayParameter>> mPrameterGroups;
 
+    /* synthetic */ SemWifiDisplayConfig(int i, String str, String str2, String str3, String str4, SemWifiDisplayConfigIA semWifiDisplayConfigIA) {
+        this(i, str, str2, str3, str4);
+    }
+
+    /* synthetic */ SemWifiDisplayConfig(String str, SemWifiDisplayConfigIA semWifiDisplayConfigIA) {
+        this(str);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.display.SemWifiDisplayConfig$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends HashMap<String, List<SemWifiDisplayParameter>> {
+        AnonymousClass1() {
+            put(SemWifiDisplayParameter.INIT_PARAMETER, new ArrayList());
+            put(SemWifiDisplayParameter.GET_PARAMETER, new ArrayList());
+            put(SemWifiDisplayParameter.SET_PARAMETER, new ArrayList());
+        }
+    }
+
     public SemWifiDisplayConfig() {
         this.mConnectionType = 1;
         this.mFlags = 0;
         this.mMode = 0;
         this.mPrameterGroups = new HashMap<String, List<SemWifiDisplayParameter>>() { // from class: android.hardware.display.SemWifiDisplayConfig.1
-            {
+            AnonymousClass1() {
                 put(SemWifiDisplayParameter.INIT_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.GET_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.SET_PARAMETER, new ArrayList());
@@ -62,7 +82,7 @@ public final class SemWifiDisplayConfig implements Parcelable {
         this.mFlags = 0;
         this.mMode = 0;
         this.mPrameterGroups = new HashMap<String, List<SemWifiDisplayParameter>>() { // from class: android.hardware.display.SemWifiDisplayConfig.1
-            {
+            AnonymousClass1() {
                 put(SemWifiDisplayParameter.INIT_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.GET_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.SET_PARAMETER, new ArrayList());
@@ -80,7 +100,7 @@ public final class SemWifiDisplayConfig implements Parcelable {
         this.mFlags = 0;
         this.mMode = 0;
         this.mPrameterGroups = new HashMap<String, List<SemWifiDisplayParameter>>() { // from class: android.hardware.display.SemWifiDisplayConfig.1
-            {
+            AnonymousClass1() {
                 put(SemWifiDisplayParameter.INIT_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.GET_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.SET_PARAMETER, new ArrayList());
@@ -101,7 +121,7 @@ public final class SemWifiDisplayConfig implements Parcelable {
         this.mFlags = 0;
         this.mMode = 0;
         this.mPrameterGroups = new HashMap<String, List<SemWifiDisplayParameter>>() { // from class: android.hardware.display.SemWifiDisplayConfig.1
-            {
+            AnonymousClass1() {
                 put(SemWifiDisplayParameter.INIT_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.GET_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.SET_PARAMETER, new ArrayList());
@@ -123,6 +143,23 @@ public final class SemWifiDisplayConfig implements Parcelable {
         this.mPrameterGroups.get(SemWifiDisplayParameter.INIT_PARAMETER).addAll(initParameters);
         this.mPrameterGroups.get(SemWifiDisplayParameter.GET_PARAMETER).addAll(getParameters);
         this.mPrameterGroups.get(SemWifiDisplayParameter.SET_PARAMETER).addAll(setParameters);
+    }
+
+    /* renamed from: android.hardware.display.SemWifiDisplayConfig$2 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass2 implements Parcelable.Creator<SemWifiDisplayConfig> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiDisplayConfig createFromParcel(Parcel in) {
+            return new SemWifiDisplayConfig(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiDisplayConfig[] newArray(int size) {
+            return new SemWifiDisplayConfig[size];
+        }
     }
 
     public void addFlags(int flags) {
@@ -276,12 +313,23 @@ public final class SemWifiDisplayConfig implements Parcelable {
         private int mFlags = 0;
         private int mMode = 0;
         private HashMap<String, List<SemWifiDisplayParameter>> mPrameterGroups = new HashMap<String, List<SemWifiDisplayParameter>>() { // from class: android.hardware.display.SemWifiDisplayConfig.Builder.1
-            {
+            AnonymousClass1() {
                 put(SemWifiDisplayParameter.INIT_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.GET_PARAMETER, new ArrayList());
                 put(SemWifiDisplayParameter.SET_PARAMETER, new ArrayList());
             }
         };
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.hardware.display.SemWifiDisplayConfig$Builder$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 extends HashMap<String, List<SemWifiDisplayParameter>> {
+            AnonymousClass1() {
+                put(SemWifiDisplayParameter.INIT_PARAMETER, new ArrayList());
+                put(SemWifiDisplayParameter.GET_PARAMETER, new ArrayList());
+                put(SemWifiDisplayParameter.SET_PARAMETER, new ArrayList());
+            }
+        }
 
         public SemWifiDisplayConfig build() {
             SemWifiDisplayConfig wifiDisplayConfig;

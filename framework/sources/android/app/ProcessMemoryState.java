@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class ProcessMemoryState implements Parcelable {
     public static final Parcelable.Creator<ProcessMemoryState> CREATOR = new Parcelable.Creator<ProcessMemoryState>() { // from class: android.app.ProcessMemoryState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProcessMemoryState createFromParcel(Parcel in) {
             return new ProcessMemoryState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProcessMemoryState[] newArray(int size) {
             return new ProcessMemoryState[size];
@@ -41,6 +42,10 @@ public final class ProcessMemoryState implements Parcelable {
     public @interface HostingComponentType {
     }
 
+    /* synthetic */ ProcessMemoryState(Parcel parcel, ProcessMemoryStateIA processMemoryStateIA) {
+        this(parcel);
+    }
+
     public ProcessMemoryState(int uid, int pid, String processName, int oomScore, boolean hasForegroundServices, int hostingComponentTypes, int historicalHostingComponentTypes) {
         this.uid = uid;
         this.pid = pid;
@@ -59,6 +64,23 @@ public final class ProcessMemoryState implements Parcelable {
         this.hasForegroundServices = in.readInt() == 1;
         this.mHostingComponentTypes = in.readInt();
         this.mHistoricalHostingComponentTypes = in.readInt();
+    }
+
+    /* renamed from: android.app.ProcessMemoryState$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProcessMemoryState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProcessMemoryState createFromParcel(Parcel in) {
+            return new ProcessMemoryState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProcessMemoryState[] newArray(int size) {
+            return new ProcessMemoryState[size];
+        }
     }
 
     @Override // android.os.Parcelable

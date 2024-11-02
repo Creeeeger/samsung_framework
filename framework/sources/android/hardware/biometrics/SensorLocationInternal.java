@@ -13,13 +13,14 @@ public class SensorLocationInternal implements Parcelable {
     public final int sensorRadius;
     public static final SensorLocationInternal DEFAULT = new SensorLocationInternal("", 0, 0, 0);
     public static final Parcelable.Creator<SensorLocationInternal> CREATOR = new Parcelable.Creator<SensorLocationInternal>() { // from class: android.hardware.biometrics.SensorLocationInternal.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SensorLocationInternal createFromParcel(Parcel in) {
             return new SensorLocationInternal(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SensorLocationInternal[] newArray(int size) {
             return new SensorLocationInternal[size];
@@ -51,6 +52,23 @@ public class SensorLocationInternal implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.hardware.biometrics.SensorLocationInternal$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SensorLocationInternal> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SensorLocationInternal createFromParcel(Parcel in) {
+            return new SensorLocationInternal(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SensorLocationInternal[] newArray(int size) {
+            return new SensorLocationInternal[size];
+        }
     }
 
     public String toString() {

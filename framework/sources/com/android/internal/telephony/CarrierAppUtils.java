@@ -52,7 +52,10 @@ public final class CarrierAppUtils {
         return (ai.flags & 128) != 0;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:123:0x00fc, code lost:            if ((r0.flags & 8388608) == 0) goto L59;     */
+    /* JADX WARN: Code restructure failed: missing block: B:123:0x00fc, code lost:
+    
+        if ((r0.flags & 8388608) == 0) goto L267;
+     */
     /* JADX WARN: Removed duplicated region for block: B:133:0x008e A[EXC_TOP_SPLITTER, SYNTHETIC] */
     /* JADX WARN: Removed duplicated region for block: B:28:0x00ca  */
     /* JADX WARN: Removed duplicated region for block: B:33:0x0200  */
@@ -71,7 +74,6 @@ public final class CarrierAppUtils {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.telephony.CarrierAppUtils.disableCarrierAppsUntilPrivileged(java.lang.String, android.telephony.TelephonyManager, android.content.ContentResolver, int, java.util.Set, java.util.Map, android.content.Context):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$disableCarrierAppsUntilPrivileged$0(Boolean isSuccess) {
     }
 
@@ -145,7 +147,6 @@ public final class CarrierAppUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static final class AssociatedAppInfo {
         public final int addedInSdk;

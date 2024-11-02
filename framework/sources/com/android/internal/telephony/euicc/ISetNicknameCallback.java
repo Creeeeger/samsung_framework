@@ -84,8 +84,9 @@ public interface ISetNicknameCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISetNicknameCallback {
+        public static class Proxy implements ISetNicknameCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

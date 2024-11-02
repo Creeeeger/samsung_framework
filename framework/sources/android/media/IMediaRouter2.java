@@ -159,8 +159,9 @@ public interface IMediaRouter2 extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMediaRouter2 {
+        public static class Proxy implements IMediaRouter2 {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

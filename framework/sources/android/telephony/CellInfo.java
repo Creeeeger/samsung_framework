@@ -13,7 +13,9 @@ public abstract class CellInfo implements Parcelable {
     public static final int CONNECTION_SECONDARY_SERVING = 2;
     public static final int CONNECTION_UNKNOWN = Integer.MAX_VALUE;
     public static final Parcelable.Creator<CellInfo> CREATOR = new Parcelable.Creator<CellInfo>() { // from class: android.telephony.CellInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellInfo createFromParcel(Parcel in) {
             int type = in.readInt();
@@ -35,7 +37,6 @@ public abstract class CellInfo implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfo[] newArray(int size) {
             return new CellInfo[size];
@@ -76,21 +77,18 @@ public abstract class CellInfo implements Parcelable {
     @Override // android.os.Parcelable
     public abstract void writeToParcel(Parcel parcel, int i);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public CellInfo(int cellConnectionStatus, boolean registered, long timestamp) {
         this.mCellConnectionStatus = cellConnectionStatus;
         this.mRegistered = registered;
         this.mTimeStamp = timestamp;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public CellInfo() {
         this.mRegistered = false;
         this.mTimeStamp = Long.MAX_VALUE;
         this.mCellConnectionStatus = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public CellInfo(CellInfo ci) {
         this.mRegistered = ci.mRegistered;
         this.mTimeStamp = ci.mTimeStamp;
@@ -158,7 +156,6 @@ public abstract class CellInfo implements Parcelable {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void writeToParcel(Parcel parcel, int i, int i2) {
         parcel.writeInt(i2);
         parcel.writeInt(this.mRegistered ? 1 : 0);
@@ -166,10 +163,42 @@ public abstract class CellInfo implements Parcelable {
         parcel.writeInt(this.mCellConnectionStatus);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public CellInfo(Parcel in) {
         this.mRegistered = in.readInt() == 1;
         this.mTimeStamp = in.readLong();
         this.mCellConnectionStatus = in.readInt();
+    }
+
+    /* renamed from: android.telephony.CellInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellInfo createFromParcel(Parcel in) {
+            int type = in.readInt();
+            switch (type) {
+                case 1:
+                    return CellInfoGsm.createFromParcelBody(in);
+                case 2:
+                    return CellInfoCdma.createFromParcelBody(in);
+                case 3:
+                    return CellInfoLte.createFromParcelBody(in);
+                case 4:
+                    return CellInfoWcdma.createFromParcelBody(in);
+                case 5:
+                    return CellInfoTdscdma.createFromParcelBody(in);
+                case 6:
+                    return CellInfoNr.createFromParcelBody(in);
+                default:
+                    throw new RuntimeException("Bad CellInfo Parcel");
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellInfo[] newArray(int size) {
+            return new CellInfo[size];
+        }
     }
 }

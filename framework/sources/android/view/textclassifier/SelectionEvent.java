@@ -22,13 +22,14 @@ public final class SelectionEvent implements Parcelable {
     public static final int ACTION_SHARE = 104;
     public static final int ACTION_SMART_SHARE = 105;
     public static final Parcelable.Creator<SelectionEvent> CREATOR = new Parcelable.Creator<SelectionEvent>() { // from class: android.view.textclassifier.SelectionEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SelectionEvent createFromParcel(Parcel in) {
             return new SelectionEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectionEvent[] newArray(int size) {
             return new SelectionEvent[size];
@@ -78,7 +79,10 @@ public final class SelectionEvent implements Parcelable {
     public @interface InvocationMethod {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ SelectionEvent(Parcel parcel, SelectionEventIA selectionEventIA) {
+        this(parcel);
+    }
+
     public SelectionEvent(int start, int end, int eventType, String entityType, int invocationMethod, String resultId) {
         this.mPackageName = "";
         this.mWidgetType = "unknown";
@@ -222,12 +226,10 @@ public final class SelectionEvent implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getAbsoluteStart() {
         return this.mAbsoluteStart;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getAbsoluteEnd() {
         return this.mAbsoluteEnd;
     }
@@ -244,7 +246,6 @@ public final class SelectionEvent implements Parcelable {
         return this.mEntityType;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setEntityType(String entityType) {
         this.mEntityType = (String) Objects.requireNonNull(entityType);
     }
@@ -253,7 +254,6 @@ public final class SelectionEvent implements Parcelable {
         return this.mPackageName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSystemTextClassifierMetadata(SystemTextClassifierMetadata systemTcMetadata) {
         this.mSystemTcMetadata = systemTcMetadata;
     }
@@ -289,7 +289,6 @@ public final class SelectionEvent implements Parcelable {
         return this.mResultId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SelectionEvent setResultId(String resultId) {
         this.mResultId = resultId;
         return this;
@@ -299,7 +298,6 @@ public final class SelectionEvent implements Parcelable {
         return this.mEventTime;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SelectionEvent setEventTime(long timeMs) {
         this.mEventTime = timeMs;
         return this;
@@ -309,7 +307,6 @@ public final class SelectionEvent implements Parcelable {
         return this.mDurationSinceSessionStart;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SelectionEvent setDurationSinceSessionStart(long durationMs) {
         this.mDurationSinceSessionStart = durationMs;
         return this;
@@ -319,7 +316,6 @@ public final class SelectionEvent implements Parcelable {
         return this.mDurationSincePreviousEvent;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SelectionEvent setDurationSincePreviousEvent(long durationMs) {
         this.mDurationSincePreviousEvent = durationMs;
         return this;
@@ -417,5 +413,22 @@ public final class SelectionEvent implements Parcelable {
 
     public String toString() {
         return String.format(Locale.US, "SelectionEvent {absoluteStart=%d, absoluteEnd=%d, eventType=%d, entityType=%s, widgetVersion=%s, packageName=%s, widgetType=%s, invocationMethod=%s, resultId=%s, eventTime=%d, durationSinceSessionStart=%d, durationSincePreviousEvent=%d, eventIndex=%d,sessionId=%s, start=%d, end=%d, smartStart=%d, smartEnd=%d, systemTcMetadata=%s}", Integer.valueOf(this.mAbsoluteStart), Integer.valueOf(this.mAbsoluteEnd), Integer.valueOf(this.mEventType), this.mEntityType, this.mWidgetVersion, this.mPackageName, this.mWidgetType, Integer.valueOf(this.mInvocationMethod), this.mResultId, Long.valueOf(this.mEventTime), Long.valueOf(this.mDurationSinceSessionStart), Long.valueOf(this.mDurationSincePreviousEvent), Integer.valueOf(this.mEventIndex), this.mSessionId, Integer.valueOf(this.mStart), Integer.valueOf(this.mEnd), Integer.valueOf(this.mSmartStart), Integer.valueOf(this.mSmartEnd), this.mSystemTcMetadata);
+    }
+
+    /* renamed from: android.view.textclassifier.SelectionEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SelectionEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SelectionEvent createFromParcel(Parcel in) {
+            return new SelectionEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SelectionEvent[] newArray(int size) {
+            return new SelectionEvent[size];
+        }
     }
 }

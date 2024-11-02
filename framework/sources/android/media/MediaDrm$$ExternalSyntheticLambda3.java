@@ -1,6 +1,7 @@
 package android.media;
 
 import android.media.MediaDrm;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /* compiled from: D8$$SyntheticClass */
@@ -14,6 +15,8 @@ public final /* synthetic */ class MediaDrm$$ExternalSyntheticLambda3 implements
 
     @Override // java.util.function.Function
     public final Object apply(Object obj) {
-        return MediaDrm.$r8$lambda$DBm6MfiQUe_BeKKOb0QA9tkZBZ4(this.f$0, (MediaDrm.OnKeyStatusChangeListener) obj);
+        Consumer createOnKeyStatusChangeListener;
+        createOnKeyStatusChangeListener = this.f$0.createOnKeyStatusChangeListener((MediaDrm.OnKeyStatusChangeListener) obj);
+        return createOnKeyStatusChangeListener;
     }
 }

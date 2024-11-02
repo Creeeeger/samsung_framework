@@ -23,7 +23,6 @@ public class XmlWriter implements Closeable {
         this.startLine = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void print(String code) {
         String[] lines = code.split("\n", -1);
         for (int i = 0; i < lines.length; i++) {
@@ -38,12 +37,10 @@ public class XmlWriter implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void increaseIndent() {
         this.indent++;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void decreaseIndent() {
         this.indent--;
     }

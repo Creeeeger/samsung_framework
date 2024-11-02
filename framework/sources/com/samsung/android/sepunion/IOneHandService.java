@@ -143,8 +143,9 @@ public interface IOneHandService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IOneHandService {
+        public static class Proxy implements IOneHandService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

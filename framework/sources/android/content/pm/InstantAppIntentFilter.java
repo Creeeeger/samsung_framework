@@ -11,13 +11,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class InstantAppIntentFilter implements Parcelable {
     public static final Parcelable.Creator<InstantAppIntentFilter> CREATOR = new Parcelable.Creator<InstantAppIntentFilter>() { // from class: android.content.pm.InstantAppIntentFilter.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InstantAppIntentFilter createFromParcel(Parcel in) {
             return new InstantAppIntentFilter(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppIntentFilter[] newArray(int size) {
             return new InstantAppIntentFilter[size];
@@ -60,5 +61,22 @@ public final class InstantAppIntentFilter implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(this.mSplitName);
         out.writeList(this.mFilters);
+    }
+
+    /* renamed from: android.content.pm.InstantAppIntentFilter$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InstantAppIntentFilter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstantAppIntentFilter createFromParcel(Parcel in) {
+            return new InstantAppIntentFilter(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstantAppIntentFilter[] newArray(int size) {
+            return new InstantAppIntentFilter[size];
+        }
     }
 }

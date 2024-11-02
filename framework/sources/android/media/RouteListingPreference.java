@@ -16,13 +16,14 @@ import java.util.Objects;
 public final class RouteListingPreference implements Parcelable {
     public static final String ACTION_TRANSFER_MEDIA = "android.media.action.TRANSFER_MEDIA";
     public static final Parcelable.Creator<RouteListingPreference> CREATOR = new Parcelable.Creator<RouteListingPreference>() { // from class: android.media.RouteListingPreference.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RouteListingPreference createFromParcel(Parcel in) {
             return new RouteListingPreference(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RouteListingPreference[] newArray(int size) {
             return new RouteListingPreference[size];
@@ -32,6 +33,31 @@ public final class RouteListingPreference implements Parcelable {
     private final List<Item> mItems;
     private final ComponentName mLinkedItemComponentName;
     private final boolean mUseSystemOrdering;
+
+    /* synthetic */ RouteListingPreference(Builder builder, RouteListingPreferenceIA routeListingPreferenceIA) {
+        this(builder);
+    }
+
+    /* synthetic */ RouteListingPreference(Parcel parcel, RouteListingPreferenceIA routeListingPreferenceIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.media.RouteListingPreference$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RouteListingPreference> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RouteListingPreference createFromParcel(Parcel in) {
+            return new RouteListingPreference(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RouteListingPreference[] newArray(int size) {
+            return new RouteListingPreference[size];
+        }
+    }
 
     private RouteListingPreference(Builder builder) {
         this.mItems = builder.mItems;
@@ -114,13 +140,14 @@ public final class RouteListingPreference implements Parcelable {
     /* loaded from: classes2.dex */
     public static final class Item implements Parcelable {
         public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() { // from class: android.media.RouteListingPreference.Item.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Item createFromParcel(Parcel in) {
                 return new Item(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Item[] newArray(int size) {
                 return new Item[size];
@@ -160,6 +187,31 @@ public final class RouteListingPreference implements Parcelable {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes2.dex */
         public @interface SubText {
+        }
+
+        /* synthetic */ Item(Builder builder, ItemIA itemIA) {
+            this(builder);
+        }
+
+        /* synthetic */ Item(Parcel parcel, ItemIA itemIA) {
+            this(parcel);
+        }
+
+        /* renamed from: android.media.RouteListingPreference$Item$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Item> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Item createFromParcel(Parcel in) {
+                return new Item(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Item[] newArray(int size) {
+                return new Item[size];
+            }
         }
 
         private Item(Builder builder) {

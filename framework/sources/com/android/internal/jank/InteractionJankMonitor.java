@@ -151,7 +151,6 @@ public class InteractionJankMonitor {
     public @interface CujType {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     @FunctionalInterface
     /* loaded from: classes4.dex */
     public interface TimeFunction {
@@ -173,7 +172,6 @@ public class InteractionJankMonitor {
         SEC_CUJ_TO_STATSD_INTERACTION_TYPE = new int[]{-1, 10001, 10002, -1, -1};
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class InstanceHolder {
         public static final InteractionJankMonitor INSTANCE = new InteractionJankMonitor(new HandlerThread(InteractionJankMonitor.DEFAULT_WORKER_NAME));
@@ -211,7 +209,6 @@ public class InteractionJankMonitor {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(Context context) {
         try {
             this.mPropertiesChangedListener.onPropertiesChanged(DeviceConfig.getProperties("interaction_jank_monitor", new String[0]));
@@ -249,8 +246,7 @@ public class InteractionJankMonitor {
         return new FrameTracker(this, session, config.getHandler(), threadedRenderer, viewRoot, surfaceControl, choreographer, frameMetrics, new FrameTracker.StatsLogWrapper(this.mDisplayResolutionTracker), this.mTraceThresholdMissedFrames, this.mTraceThresholdFrameTimeMillis, eventsListener, config);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: handleCujEvents, reason: merged with bridge method [inline-methods] */
+    /* renamed from: handleCujEvents */
     public void lambda$createFrameTracker$1(String action, final Session session) {
         if (needRemoveTasks(action, session)) {
             getTracker(session.getCuj()).getHandler().runWithScissors(new Runnable() { // from class: com.android.internal.jank.InteractionJankMonitor$$ExternalSyntheticLambda0
@@ -262,7 +258,6 @@ public class InteractionJankMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleCujEvents$2(Session session) {
         removeTimeout(session.getCuj());
         removeTracker(session.getCuj(), session.getReason());
@@ -328,7 +323,6 @@ public class InteractionJankMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$begin$4(TrackerResult result, Configuration config) {
         result.mResult = beginInternal(config);
     }
@@ -350,7 +344,6 @@ public class InteractionJankMonitor {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$beginInternal$5(int cujType) {
         cancel(cujType, 19);
     }
@@ -397,7 +390,6 @@ public class InteractionJankMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$end$7(TrackerResult result, int cujType) {
         result.mResult = endInternal(cujType);
     }
@@ -449,7 +441,6 @@ public class InteractionJankMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$cancel$9(TrackerResult result, int cujType, int reason) {
         result.mResult = cancelInternal(cujType, reason);
     }
@@ -495,7 +486,6 @@ public class InteractionJankMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateProperties(DeviceConfig.Properties properties) {
         InteractionMonitorDebugOverlay interactionMonitorDebugOverlay;
         this.mSamplingInterval = properties.getInt("sampling_interval", 1);
@@ -694,10 +684,13 @@ public class InteractionJankMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class TrackerResult {
         private boolean mResult;
+
+        /* synthetic */ TrackerResult(TrackerResultIA trackerResultIA) {
+            this();
+        }
 
         private TrackerResult() {
         }
@@ -714,6 +707,10 @@ public class InteractionJankMonitor {
         private final String mTag;
         private final long mTimeout;
         private final View mView;
+
+        /* synthetic */ Configuration(int i, View view, String str, long j, boolean z, Context context, SurfaceControl surfaceControl, boolean z2, ConfigurationIA configurationIA) {
+            this(i, view, str, j, z, context, surfaceControl, z2);
+        }
 
         /* loaded from: classes4.dex */
         public static class Builder {

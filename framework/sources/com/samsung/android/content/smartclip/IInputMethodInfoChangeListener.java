@@ -99,8 +99,9 @@ public interface IInputMethodInfoChangeListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IInputMethodInfoChangeListener {
+        public static class Proxy implements IInputMethodInfoChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

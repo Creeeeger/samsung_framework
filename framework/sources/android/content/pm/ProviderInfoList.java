@@ -8,19 +8,24 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class ProviderInfoList implements Parcelable {
     public static final Parcelable.Creator<ProviderInfoList> CREATOR = new Parcelable.Creator<ProviderInfoList>() { // from class: android.content.pm.ProviderInfoList.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProviderInfoList createFromParcel(Parcel source) {
             return new ProviderInfoList(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProviderInfoList[] newArray(int size) {
             return new ProviderInfoList[size];
         }
     };
     private final List<ProviderInfo> mList;
+
+    /* synthetic */ ProviderInfoList(Parcel parcel, ProviderInfoListIA providerInfoListIA) {
+        this(parcel);
+    }
 
     private ProviderInfoList(Parcel source) {
         ArrayList<ProviderInfo> list = new ArrayList<>();
@@ -42,6 +47,23 @@ public final class ProviderInfoList implements Parcelable {
         boolean prevAllowSquashing = dest.allowSquashing();
         dest.writeTypedList(this.mList, flags);
         dest.restoreAllowSquashing(prevAllowSquashing);
+    }
+
+    /* renamed from: android.content.pm.ProviderInfoList$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProviderInfoList> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderInfoList createFromParcel(Parcel source) {
+            return new ProviderInfoList(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderInfoList[] newArray(int size) {
+            return new ProviderInfoList[size];
+        }
     }
 
     public List<ProviderInfo> getList() {

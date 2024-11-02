@@ -21,12 +21,33 @@ public class ExponentialBackoff {
         void removeCallbacks(Runnable runnable);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.telephony.ExponentialBackoff$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements HandlerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.telephony.ExponentialBackoff.HandlerAdapter
+        public boolean postDelayed(Runnable runnable, long delayMillis) {
+            return ExponentialBackoff.this.mHandler.postDelayed(runnable, delayMillis);
+        }
+
+        @Override // com.android.internal.telephony.ExponentialBackoff.HandlerAdapter
+        public void removeCallbacks(Runnable runnable) {
+            ExponentialBackoff.this.mHandler.removeCallbacks(runnable);
+        }
+    }
+
     public ExponentialBackoff(long initialDelayMs, long maximumDelayMs, int multiplier, Looper looper, Runnable runnable) {
         this(initialDelayMs, maximumDelayMs, multiplier, new Handler(looper), runnable);
     }
 
     public ExponentialBackoff(long initialDelayMs, long maximumDelayMs, int multiplier, Handler handler, Runnable runnable) {
         this.mHandlerAdapter = new HandlerAdapter() { // from class: com.android.internal.telephony.ExponentialBackoff.1
+            AnonymousClass1() {
+            }
+
             @Override // com.android.internal.telephony.ExponentialBackoff.HandlerAdapter
             public boolean postDelayed(Runnable runnable2, long delayMillis) {
                 return ExponentialBackoff.this.mHandler.postDelayed(runnable2, delayMillis);

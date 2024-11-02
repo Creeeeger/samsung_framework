@@ -12,13 +12,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class UsageEvents implements Parcelable {
     public static final Parcelable.Creator<UsageEvents> CREATOR = new Parcelable.Creator<UsageEvents>() { // from class: android.app.usage.UsageEvents.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UsageEvents createFromParcel(Parcel source) {
             return new UsageEvents(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsageEvents[] newArray(int size) {
             return new UsageEvents[size];
@@ -212,7 +213,6 @@ public final class UsageEvents implements Parcelable {
             return this.mLocusId;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void copyFrom(Event orig) {
             this.mPackage = orig.mPackage;
             this.mClass = orig.mClass;
@@ -259,7 +259,6 @@ public final class UsageEvents implements Parcelable {
         this.mIncludeTaskRoots = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UsageEvents() {
         this.mEventsToWrite = null;
         this.mParcel = null;
@@ -484,5 +483,22 @@ public final class UsageEvents implements Parcelable {
             }
         }
         dest.writeBlob(p.marshall());
+    }
+
+    /* renamed from: android.app.usage.UsageEvents$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UsageEvents> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsageEvents createFromParcel(Parcel source) {
+            return new UsageEvents(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsageEvents[] newArray(int size) {
+            return new UsageEvents[size];
+        }
     }
 }

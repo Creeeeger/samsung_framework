@@ -135,6 +135,10 @@ public class EdgeEffect {
         this.mTmpPoints = null;
         this.mPath = new Path();
         this.mHandler = new Handler(Looper.getMainLooper()) { // from class: android.widget.EdgeEffect.1
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -147,6 +151,9 @@ public class EdgeEffect {
             }
         };
         this.mForceCallOnRelease = new Runnable() { // from class: android.widget.EdgeEffect.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 EdgeEffect edgeEffect = EdgeEffect.this;
@@ -214,6 +221,41 @@ public class EdgeEffect {
     private boolean isEdgeEffectRunning() {
         int i = this.mState;
         return i == 5 || i == 6 || i == 3 || i == 2;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.EdgeEffect$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    EdgeEffect.this.onRelease();
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.EdgeEffect$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            EdgeEffect edgeEffect = EdgeEffect.this;
+            edgeEffect.onPull(edgeEffect.mTempDeltaDistance, EdgeEffect.this.mTempDisplacement);
+            EdgeEffect.this.mHandler.sendEmptyMessageDelayed(1, 700L);
+        }
     }
 
     public void onPullCallOnRelease(float deltaDistance, float displacement, int delayTime) {

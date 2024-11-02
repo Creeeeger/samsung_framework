@@ -17,19 +17,16 @@ public class DLExternal extends ASN1External {
         super(directReference, indirectReference, dataValueDescriptor, encoding, externalData);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1External, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1External, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         return getEncoded().length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -177,7 +177,6 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mToRecycle = new ArrayList<>();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -255,7 +254,6 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         this.mConversationMinHeight = getResources().getDimensionPixelSize(R.dimen.conversation_expand_button_height);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$0(Integer visibility) {
         boolean isGone = visibility.intValue() == 8;
         int oldVisibility = this.mConversationIconBadgeBg.getVisibility();
@@ -279,20 +277,17 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$1(Boolean forceHidden) {
         this.mPeopleHelper.animateViewForceHidden(this.mConversationIconBadgeBg, forceHidden.booleanValue());
         this.mPeopleHelper.animateViewForceHidden(this.mImportanceRingView, forceHidden.booleanValue());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$2(Boolean forceHidden) {
         this.mPeopleHelper.animateViewForceHidden(this.mConversationIconBadgeBg, forceHidden.booleanValue());
         this.mPeopleHelper.animateViewForceHidden(this.mImportanceRingView, forceHidden.booleanValue());
         this.mPeopleHelper.animateViewForceHidden(this.mIcon, forceHidden.booleanValue());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$3(Integer visibility) {
         onAppNameVisibilityChanged();
     }
@@ -323,14 +318,14 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         if (animate && isImportantConversation) {
             final GradientDrawable ring = (GradientDrawable) this.mImportanceRingView.getDrawable();
             ring.mutate();
-            final GradientDrawable bg = (GradientDrawable) this.mConversationIconBadgeBg.getDrawable();
+            GradientDrawable bg = (GradientDrawable) this.mConversationIconBadgeBg.getDrawable();
             bg.mutate();
             final int ringColor = getResources().getColor(R.color.conversation_important_highlight);
             int standardThickness = getResources().getDimensionPixelSize(R.dimen.importance_ring_stroke_width);
             int largeThickness = getResources().getDimensionPixelSize(R.dimen.importance_ring_anim_max_stroke_width);
             int standardSize = getResources().getDimensionPixelSize(R.dimen.importance_ring_size);
             final int baseSize = standardSize - (standardThickness * 2);
-            final int bgSize = getResources().getDimensionPixelSize(R.dimen.conversation_icon_size_badged);
+            int bgSize = getResources().getDimensionPixelSize(R.dimen.conversation_icon_size_badged);
             ValueAnimator.AnimatorUpdateListener animatorUpdateListener = new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.internal.widget.ConversationLayout$$ExternalSyntheticLambda5
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public final void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -347,6 +342,16 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
             shrinkAnimation.setInterpolator(OVERSHOOT);
             shrinkAnimation.addUpdateListener(animatorUpdateListener);
             shrinkAnimation.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.ConversationLayout.1
+                final /* synthetic */ int val$baseSize;
+                final /* synthetic */ GradientDrawable val$bg;
+                final /* synthetic */ int val$bgSize;
+
+                AnonymousClass1(GradientDrawable bg2, final int baseSize2, int bgSize2) {
+                    bg = bg2;
+                    baseSize = baseSize2;
+                    bgSize = bgSize2;
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     GradientDrawable gradientDrawable = bg;
@@ -369,13 +374,42 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setIsImportantConversation$4(GradientDrawable ring, int ringColor, int baseSize, ValueAnimator animation) {
         int strokeWidth = Math.round(((Float) animation.getAnimatedValue()).floatValue());
         ring.setStroke(strokeWidth, ringColor);
         int newSize = (strokeWidth * 2) + baseSize;
         ring.setSize(newSize, newSize);
         this.mImportanceRingView.invalidate();
+    }
+
+    /* renamed from: com.android.internal.widget.ConversationLayout$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        final /* synthetic */ int val$baseSize;
+        final /* synthetic */ GradientDrawable val$bg;
+        final /* synthetic */ int val$bgSize;
+
+        AnonymousClass1(GradientDrawable bg2, final int baseSize2, int bgSize2) {
+            bg = bg2;
+            baseSize = baseSize2;
+            bgSize = bgSize2;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+            GradientDrawable gradientDrawable = bg;
+            int i2 = baseSize;
+            gradientDrawable.setSize(i2, i2);
+            ConversationLayout.this.mConversationIconBadgeBg.invalidate();
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            GradientDrawable gradientDrawable = bg;
+            int i2 = bgSize;
+            gradientDrawable.setSize(i2, i2);
+            ConversationLayout.this.mConversationIconBadgeBg.invalidate();
+        }
     }
 
     public boolean isImportantConversation() {
@@ -710,7 +744,6 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$removeGroups$5(MessagingGroup group) {
         this.mMessagingLinearLayout.removeTransientView(group);
         group.recycle();
@@ -951,12 +984,14 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (!this.mAddedQueue.isEmpty()) {
             getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.widget.ConversationLayout.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                 public boolean onPreDraw() {
                     for (MessagingGroup group : ConversationLayout.this.mAddedQueue) {
@@ -985,6 +1020,27 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
             this.mTouchDelegate.add(new TouchDelegate(feedbackTouchRect, this.mFeedbackIcon));
         }
         setTouchDelegate(this.mTouchDelegate);
+    }
+
+    /* renamed from: com.android.internal.widget.ConversationLayout$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 implements ViewTreeObserver.OnPreDrawListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            for (MessagingGroup group : ConversationLayout.this.mAddedQueue) {
+                if (group.isShown()) {
+                    MessagingPropertyAnimator.fadeIn(group.getAvatar());
+                    MessagingPropertyAnimator.fadeIn(group.getSenderView());
+                    MessagingPropertyAnimator.startLocalTranslationFrom(group, group.getHeight(), ConversationLayout.LINEAR_OUT_SLOW_IN);
+                }
+            }
+            ConversationLayout.this.mAddedQueue.clear();
+            ConversationLayout.this.getViewTreeObserver().removeOnPreDrawListener(this);
+            return true;
+        }
     }
 
     private void getRelativeTouchRect(Rect touchRect, View view) {
@@ -1106,6 +1162,10 @@ public class ConversationLayout extends FrameLayout implements ImageMessageConsu
     /* loaded from: classes5.dex */
     private static class TouchDelegateComposite extends TouchDelegate {
         private final ArrayList<TouchDelegate> mDelegates;
+
+        /* synthetic */ TouchDelegateComposite(View view, TouchDelegateCompositeIA touchDelegateCompositeIA) {
+            this(view);
+        }
 
         private TouchDelegateComposite(View view) {
             super(new Rect(), view);

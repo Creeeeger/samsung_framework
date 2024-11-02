@@ -78,6 +78,25 @@ public class ResolverDrawerLayout extends ViewGroup {
         void onDismissed();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.widget.ResolverDrawerLayout$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements ViewTreeObserver.OnTouchModeChangeListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnTouchModeChangeListener
+        public void onTouchModeChanged(boolean isInTouchMode) {
+            if (isInTouchMode || !ResolverDrawerLayout.this.hasFocus()) {
+                return;
+            }
+            ResolverDrawerLayout resolverDrawerLayout = ResolverDrawerLayout.this;
+            if (resolverDrawerLayout.isDescendantClipped(resolverDrawerLayout.getFocusedChild())) {
+                ResolverDrawerLayout.this.smoothScrollTo(0, 0.0f);
+            }
+        }
+    }
+
     public ResolverDrawerLayout(Context context) {
         this(context, null);
     }
@@ -93,6 +112,9 @@ public class ResolverDrawerLayout extends ViewGroup {
         this.mActivePointerId = -1;
         this.mTempRect = new Rect();
         this.mTouchModeChangeListener = new ViewTreeObserver.OnTouchModeChangeListener() { // from class: com.android.internal.widget.ResolverDrawerLayout.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.ViewTreeObserver.OnTouchModeChangeListener
             public void onTouchModeChanged(boolean isInTouchMode) {
                 if (isInTouchMode || !ResolverDrawerLayout.this.hasFocus()) {
@@ -565,7 +587,6 @@ public class ResolverDrawerLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void smoothScrollTo(int yOffset, float velocity) {
         int duration;
         abortAnimation();
@@ -626,7 +647,6 @@ public class ResolverDrawerLayout extends ViewGroup {
         return listChild != null && isDescendantClipped(listChild);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isDescendantClipped(View child) {
         View v;
         this.mTempRect.set(0, 0, child.getWidth(), child.getHeight());
@@ -669,14 +689,12 @@ public class ResolverDrawerLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnTouchModeChangeListener(this.mTouchModeChangeListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -856,7 +874,6 @@ public class ResolverDrawerLayout extends ViewGroup {
         super.onDrawForeground(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSize;
@@ -952,7 +969,6 @@ public class ResolverDrawerLayout extends ViewGroup {
         return this.mAlwaysShowHeight;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int width;
@@ -1046,7 +1062,6 @@ public class ResolverDrawerLayout extends ViewGroup {
         return new LayoutParams(-1, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         SavedState ss = new SavedState(super.onSaveInstanceState());
@@ -1055,7 +1070,6 @@ public class ResolverDrawerLayout extends ViewGroup {
         return ss;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
@@ -1112,17 +1126,17 @@ public class ResolverDrawerLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.widget.ResolverDrawerLayout.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1130,6 +1144,10 @@ public class ResolverDrawerLayout extends ViewGroup {
         };
         private int mCollapsibleHeightReserved;
         boolean open;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -1147,11 +1165,31 @@ public class ResolverDrawerLayout extends ViewGroup {
             parcel.writeInt(this.open ? 1 : 0);
             parcel.writeInt(this.mCollapsibleHeightReserved);
         }
+
+        /* renamed from: com.android.internal.widget.ResolverDrawerLayout$SavedState$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class RunOnDismissedListener implements Runnable {
+        /* synthetic */ RunOnDismissedListener(ResolverDrawerLayout resolverDrawerLayout, RunOnDismissedListenerIA runOnDismissedListenerIA) {
+            this();
+        }
+
         private RunOnDismissedListener() {
         }
 

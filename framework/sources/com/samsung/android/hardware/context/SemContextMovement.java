@@ -8,13 +8,14 @@ import android.os.Parcelable;
 public class SemContextMovement extends SemContextEventContext {
     public static final int ACTION = 1;
     public static final Parcelable.Creator<SemContextMovement> CREATOR = new Parcelable.Creator<SemContextMovement>() { // from class: com.samsung.android.hardware.context.SemContextMovement.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextMovement createFromParcel(Parcel in) {
             return new SemContextMovement(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextMovement[] newArray(int size) {
             return new SemContextMovement[size];
@@ -23,7 +24,23 @@ public class SemContextMovement extends SemContextEventContext {
     public static final int NONE = 0;
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextMovement$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextMovement> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextMovement createFromParcel(Parcel in) {
+            return new SemContextMovement(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextMovement[] newArray(int size) {
+            return new SemContextMovement[size];
+        }
+    }
+
     public SemContextMovement() {
         this.mContext = new Bundle();
     }

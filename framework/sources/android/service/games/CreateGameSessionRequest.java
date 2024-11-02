@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CreateGameSessionRequest implements Parcelable {
     public static final Parcelable.Creator<CreateGameSessionRequest> CREATOR = new Parcelable.Creator<CreateGameSessionRequest>() { // from class: android.service.games.CreateGameSessionRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CreateGameSessionRequest createFromParcel(Parcel source) {
             return new CreateGameSessionRequest(source.readInt(), source.readString8());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CreateGameSessionRequest[] newArray(int size) {
             return new CreateGameSessionRequest[0];
@@ -23,6 +24,23 @@ public final class CreateGameSessionRequest implements Parcelable {
     };
     private final String mGamePackageName;
     private final int mTaskId;
+
+    /* renamed from: android.service.games.CreateGameSessionRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CreateGameSessionRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CreateGameSessionRequest createFromParcel(Parcel source) {
+            return new CreateGameSessionRequest(source.readInt(), source.readString8());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CreateGameSessionRequest[] newArray(int size) {
+            return new CreateGameSessionRequest[0];
+        }
+    }
 
     public CreateGameSessionRequest(int taskId, String gamePackageName) {
         this.mTaskId = taskId;

@@ -3,13 +3,11 @@ package com.android.internal.widget;
 import android.view.View;
 import com.android.internal.widget.RecyclerView;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class ScrollbarHelper {
     ScrollbarHelper() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeScrollOffset(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled, boolean reverseLayout) {
         int itemsBefore;
         if (lm.getChildCount() == 0 || state.getItemCount() == 0 || startChild == null || endChild == null) {
@@ -31,7 +29,6 @@ public class ScrollbarHelper {
         return Math.round((itemsBefore * avgSizePerRow) + (orientation.getStartAfterPadding() - orientation.getDecoratedStart(startChild)));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeScrollExtent(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled) {
         if (lm.getChildCount() == 0 || state.getItemCount() == 0 || startChild == null || endChild == null) {
             return 0;
@@ -43,7 +40,6 @@ public class ScrollbarHelper {
         return Math.min(orientation.getTotalSpace(), extend);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeScrollRange(RecyclerView.State state, OrientationHelper orientation, View startChild, View endChild, RecyclerView.LayoutManager lm, boolean smoothScrollbarEnabled) {
         if (lm.getChildCount() == 0 || state.getItemCount() == 0 || startChild == null || endChild == null) {
             return 0;

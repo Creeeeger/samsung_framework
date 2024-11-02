@@ -12,7 +12,6 @@ import android.util.Log;
 public class DisableCarModeActivity extends Activity {
     private static final String TAG = "DisableCarModeActivity";
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

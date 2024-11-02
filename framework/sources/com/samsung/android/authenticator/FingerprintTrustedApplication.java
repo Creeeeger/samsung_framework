@@ -10,7 +10,6 @@ final class FingerprintTrustedApplication implements TrustedApplication {
     static final byte[] GET_AUTH_RESULT_COMMAND = {2};
     private static final byte[] SUCCESS = {0};
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FingerprintTrustedApplication(int handle) {
         this.mHandle = handle;
     }

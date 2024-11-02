@@ -102,7 +102,6 @@ public class CachedDeviceState {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void start() {
             synchronized (this.mLock) {
                 if (!isRunning()) {
@@ -111,7 +110,6 @@ public class CachedDeviceState {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void stop() {
             synchronized (this.mLock) {
                 if (isRunning()) {

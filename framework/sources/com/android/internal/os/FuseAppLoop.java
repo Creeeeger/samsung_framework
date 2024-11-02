@@ -35,6 +35,9 @@ public class FuseAppLoop implements Handler.Callback {
     private static final String TAG = "FuseAppLoop";
     private static final boolean DEBUG = Log.isLoggable(TAG, 3);
     private static final ThreadFactory sDefaultThreadFactory = new ThreadFactory() { // from class: com.android.internal.os.FuseAppLoop.1
+        AnonymousClass1() {
+        }
+
         @Override // java.util.concurrent.ThreadFactory
         public Thread newThread(Runnable r) {
             return new Thread(r, FuseAppLoop.TAG);
@@ -68,6 +71,18 @@ public class FuseAppLoop implements Handler.Callback {
 
     native void native_start(long j);
 
+    /* renamed from: com.android.internal.os.FuseAppLoop$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements ThreadFactory {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.concurrent.ThreadFactory
+        public Thread newThread(Runnable r) {
+            return new Thread(r, FuseAppLoop.TAG);
+        }
+    }
+
     public FuseAppLoop(int mountPointId, ParcelFileDescriptor fd, ThreadFactory factory) {
         this.mMountPointId = mountPointId;
         factory = factory == null ? sDefaultThreadFactory : factory;
@@ -82,7 +97,6 @@ public class FuseAppLoop implements Handler.Callback {
         newThread.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0() {
         native_start(this.mInstance);
         synchronized (this.mLock) {
@@ -152,7 +166,7 @@ public class FuseAppLoop implements Handler.Callback {
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:133)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.searchAndApplyVarDebugInfo(DebugInfoApplyVisitor.java:75)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.lambda$applyDebugInfo$0(DebugInfoApplyVisitor.java:68)
-    	at java.base/java.util.ArrayList.forEach(Unknown Source)
+    	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:68)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.visit(DebugInfoApplyVisitor.java:55)
      */
@@ -245,7 +259,6 @@ public class FuseAppLoop implements Handler.Callback {
         return (int) inode;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class CallbackEntry {
         final ProxyFileDescriptorCallback callback;
@@ -262,11 +275,14 @@ public class FuseAppLoop implements Handler.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class BytesMapEntry {
         byte[] bytes;
         int counter;
+
+        /* synthetic */ BytesMapEntry(BytesMapEntryIA bytesMapEntryIA) {
+            this();
+        }
 
         private BytesMapEntry() {
             this.counter = 0;
@@ -274,10 +290,13 @@ public class FuseAppLoop implements Handler.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class BytesMap {
         final Map<Long, BytesMapEntry> mEntries;
+
+        /* synthetic */ BytesMap(BytesMapIA bytesMapIA) {
+            this();
+        }
 
         private BytesMap() {
             this.mEntries = new HashMap();
@@ -307,14 +326,19 @@ public class FuseAppLoop implements Handler.Callback {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class Args {
+    public static class Args {
         byte[] data;
         CallbackEntry entry;
         long inode;
         long offset;
         int size;
         long unique;
+
+        /* synthetic */ Args(ArgsIA argsIA) {
+            this();
+        }
 
         private Args() {
         }

@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class CdmaSmsCbProgramResults implements Parcelable {
     public static final Parcelable.Creator<CdmaSmsCbProgramResults> CREATOR = new Parcelable.Creator<CdmaSmsCbProgramResults>() { // from class: android.telephony.cdma.CdmaSmsCbProgramResults.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CdmaSmsCbProgramResults createFromParcel(Parcel in) {
             return new CdmaSmsCbProgramResults(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsCbProgramResults[] newArray(int size) {
             return new CdmaSmsCbProgramResults[size];
@@ -69,5 +70,22 @@ public class CdmaSmsCbProgramResults implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.cdma.CdmaSmsCbProgramResults$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CdmaSmsCbProgramResults> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaSmsCbProgramResults createFromParcel(Parcel in) {
+            return new CdmaSmsCbProgramResults(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaSmsCbProgramResults[] newArray(int size) {
+            return new CdmaSmsCbProgramResults[size];
+        }
     }
 }

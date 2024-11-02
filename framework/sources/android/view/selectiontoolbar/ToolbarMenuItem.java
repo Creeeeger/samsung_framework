@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ToolbarMenuItem implements Parcelable {
     public static final Parcelable.Creator<ToolbarMenuItem> CREATOR = new Parcelable.Creator<ToolbarMenuItem>() { // from class: android.view.selectiontoolbar.ToolbarMenuItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ToolbarMenuItem[] newArray(int size) {
             return new ToolbarMenuItem[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ToolbarMenuItem createFromParcel(Parcel in) {
             return new ToolbarMenuItem(in);
@@ -176,6 +177,23 @@ public final class ToolbarMenuItem implements Parcelable {
         this.mIcon = icon;
         this.mTooltipText = tooltipText;
         this.mPriority = priority;
+    }
+
+    /* renamed from: android.view.selectiontoolbar.ToolbarMenuItem$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ToolbarMenuItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ToolbarMenuItem[] newArray(int size) {
+            return new ToolbarMenuItem[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ToolbarMenuItem createFromParcel(Parcel in) {
+            return new ToolbarMenuItem(in);
+        }
     }
 
     /* loaded from: classes4.dex */

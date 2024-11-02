@@ -40,7 +40,6 @@ public class NotificationHistoryImageProvider extends ContentProvider {
         return sNotificationHistoryImageProvider;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG = "NotiHistoryImg.DB";

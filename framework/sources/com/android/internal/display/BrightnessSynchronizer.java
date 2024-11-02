@@ -177,7 +177,6 @@ public class BrightnessSynchronizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void runUpdate() {
         BrightnessUpdate brightnessUpdate;
         do {
@@ -206,12 +205,10 @@ public class BrightnessSynchronizer {
         return this.mDisplayManager.getBrightness(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getScreenBrightnessInt() {
         return Settings.System.getIntForUser(this.mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, -1, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setScreenBrightnessInt(int brightnessInt) {
         Settings.System.putIntForUser(this.mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, brightnessInt, -2);
     }
@@ -383,8 +380,9 @@ public class BrightnessSynchronizer {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    class BrightnessSynchronizerHandler extends Handler {
+    public class BrightnessSynchronizerHandler extends Handler {
         BrightnessSynchronizerHandler(Looper looper) {
             super(looper);
         }
@@ -402,13 +400,21 @@ public class BrightnessSynchronizer {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class BrightnessSyncObserver {
+    public class BrightnessSyncObserver {
         private boolean mIsObserving;
         private final DisplayManager.DisplayListener mListener;
 
+        /* synthetic */ BrightnessSyncObserver(BrightnessSynchronizer brightnessSynchronizer, BrightnessSyncObserverIA brightnessSyncObserverIA) {
+            this();
+        }
+
         private BrightnessSyncObserver() {
             this.mListener = new DisplayManager.DisplayListener() { // from class: com.android.internal.display.BrightnessSynchronizer.BrightnessSyncObserver.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.hardware.display.DisplayManager.DisplayListener
                 public void onDisplayAdded(int displayId) {
                 }
@@ -427,8 +433,55 @@ public class BrightnessSynchronizer {
             };
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.android.internal.display.BrightnessSynchronizer$BrightnessSyncObserver$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements DisplayManager.DisplayListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayAdded(int displayId) {
+            }
+
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayRemoved(int displayId) {
+            }
+
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayChanged(int displayId) {
+                Slog.d(BrightnessSynchronizer.TAG, "onDisplayChanged() : displayId=" + displayId);
+                if (displayId == 0) {
+                    ((DisplaySynchronizer) BrightnessSynchronizer.this.mDisplaySynchronizers.get(displayId)).updateScreenBrightness(2);
+                }
+            }
+        }
+
+        /* renamed from: com.android.internal.display.BrightnessSynchronizer$BrightnessSyncObserver$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 extends ContentObserver {
+            AnonymousClass2(Handler handler) {
+                super(handler);
+            }
+
+            @Override // android.database.ContentObserver
+            public void onChange(boolean selfChange, Uri uri) {
+                if (selfChange) {
+                    return;
+                }
+                Slog.d(BrightnessSynchronizer.TAG, "onChange : " + uri);
+                if (BrightnessSynchronizer.BRIGHTNESS_URI.equals(uri)) {
+                    ((DisplaySynchronizer) BrightnessSynchronizer.this.mDisplaySynchronizers.get(0)).updateScreenBrightness(1);
+                }
+            }
+        }
+
         private ContentObserver createBrightnessContentObserver(Handler handler) {
             return new ContentObserver(handler) { // from class: com.android.internal.display.BrightnessSynchronizer.BrightnessSyncObserver.2
+                AnonymousClass2(Handler handler2) {
+                    super(handler2);
+                }
+
                 @Override // android.database.ContentObserver
                 public void onChange(boolean selfChange, Uri uri) {
                     if (selfChange) {

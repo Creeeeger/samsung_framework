@@ -194,11 +194,14 @@ public final class SystemFonts {
         return buildSystemFallback(fontConfig, new ArrayMap());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class NativeFamilyListSet {
         public List<FontFamily> familyList;
         public SparseIntArray seenXmlFamilies;
+
+        /* synthetic */ NativeFamilyListSet(NativeFamilyListSetIA nativeFamilyListSetIA) {
+            this();
+        }
 
         private NativeFamilyListSet() {
             this.familyList = new ArrayList();

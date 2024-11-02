@@ -3,7 +3,6 @@ package android.app;
 import android.app.AppOpsManager;
 import java.util.Objects;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public class AppOpInfo {
     public final AppOpsManager.RestrictionBypass allowSystemRestrictionBypass;
@@ -54,7 +53,6 @@ public class AppOpInfo {
         private boolean mRestrictRead = false;
         private boolean mForceCollectNotes = false;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder(int code, String name, String simpleName) {
             if (code < -1) {
                 throw new IllegalArgumentException();

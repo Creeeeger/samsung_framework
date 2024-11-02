@@ -9,19 +9,24 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TopPriority<V> extends ResolutionMechanism<V> {
     public static final Parcelable.Creator<TopPriority<?>> CREATOR = new Parcelable.Creator<TopPriority<?>>() { // from class: android.app.admin.TopPriority.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TopPriority<?> createFromParcel(Parcel source) {
             return new TopPriority<>(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TopPriority<?>[] newArray(int size) {
             return new TopPriority[size];
         }
     };
     private final List<Authority> mHighestToLowestPriorityAuthorities;
+
+    /* synthetic */ TopPriority(Parcel parcel, TopPriorityIA topPriorityIA) {
+        this(parcel);
+    }
 
     public TopPriority(List<Authority> highestToLowestPriorityAuthorities) {
         this.mHighestToLowestPriorityAuthorities = (List) Objects.requireNonNull(highestToLowestPriorityAuthorities);
@@ -72,6 +77,23 @@ public final class TopPriority<V> extends ResolutionMechanism<V> {
         dest.writeInt(this.mHighestToLowestPriorityAuthorities.size());
         for (Authority authority : this.mHighestToLowestPriorityAuthorities) {
             dest.writeParcelable(authority, flags);
+        }
+    }
+
+    /* renamed from: android.app.admin.TopPriority$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TopPriority<?>> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TopPriority<?> createFromParcel(Parcel source) {
+            return new TopPriority<>(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TopPriority<?>[] newArray(int size) {
+            return new TopPriority[size];
         }
     }
 }

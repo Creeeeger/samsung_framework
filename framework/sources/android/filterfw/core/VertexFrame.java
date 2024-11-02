@@ -19,7 +19,6 @@ public class VertexFrame extends Frame {
 
     private native boolean setNativeInts(int[] iArr);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VertexFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         this.vertexFrameId = -1;
@@ -31,13 +30,11 @@ public class VertexFrame extends Frame {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public synchronized boolean hasNativeAllocation() {
         return this.vertexFrameId != -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public synchronized void releaseNativeAllocation() {
         nativeDeallocate();

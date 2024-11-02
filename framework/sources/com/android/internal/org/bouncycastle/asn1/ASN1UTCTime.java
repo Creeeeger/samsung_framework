@@ -59,7 +59,6 @@ public class ASN1UTCTime extends ASN1Primitive {
         this.time = Strings.toByteArray(dateF.format(time));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1UTCTime(byte[] time) {
         if (time.length < 2) {
             throw new IllegalArgumentException("UTCTime string too short");
@@ -114,26 +113,22 @@ public class ASN1UTCTime extends ASN1Primitive {
         return bArr.length > pos && (b = bArr[pos]) >= 48 && b <= 57;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() {
         int length = this.time.length;
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 23, this.time);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1UTCTime)) {

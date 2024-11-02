@@ -54,7 +54,9 @@ public final class CaptureRequest extends CameraMetadata<Key<?>> implements Parc
     private Object mUserTag;
     private static final ArraySet<Surface> mEmptySurfaceSet = new ArraySet<>();
     public static final Parcelable.Creator<CaptureRequest> CREATOR = new Parcelable.Creator<CaptureRequest>() { // from class: android.hardware.camera2.CaptureRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CaptureRequest createFromParcel(Parcel in) {
             CaptureRequest request = new CaptureRequest();
@@ -62,7 +64,6 @@ public final class CaptureRequest extends CameraMetadata<Key<?>> implements Parc
             return request;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CaptureRequest[] newArray(int size) {
             return new CaptureRequest[size];
@@ -98,6 +99,8 @@ public final class CaptureRequest extends CameraMetadata<Key<?>> implements Parc
 
     @PublicKey
     public static final Key<Range<Integer>> CONTROL_AE_TARGET_FPS_RANGE = new Key<>("android.control.aeTargetFpsRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CaptureRequest.2
+        AnonymousClass2() {
+        }
     });
 
     @PublicKey
@@ -273,6 +276,18 @@ public final class CaptureRequest extends CameraMetadata<Key<?>> implements Parc
     @PublicKey
     public static final Key<Integer> EXTENSION_STRENGTH = new Key<>("android.extension.strength", Integer.TYPE);
 
+    /* synthetic */ CaptureRequest(CaptureRequestIA captureRequestIA) {
+        this();
+    }
+
+    /* synthetic */ CaptureRequest(CaptureRequest captureRequest, CaptureRequestIA captureRequestIA) {
+        this(captureRequest);
+    }
+
+    /* synthetic */ CaptureRequest(CameraMetadataNative cameraMetadataNative, boolean z, int i, String str, Set set, CaptureRequestIA captureRequestIA) {
+        this(cameraMetadataNative, z, i, str, set);
+    }
+
     /* loaded from: classes.dex */
     public static final class Key<T> {
         private final CameraMetadataNative.Key<T> mKey;
@@ -409,7 +424,6 @@ public final class CaptureRequest extends CameraMetadata<Key<?>> implements Parc
         return (T) this.mLogicalCameraSettings.get(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.hardware.camera2.CameraMetadata
     public <T> T getProtected(Key<?> key) {
         return (T) this.mLogicalCameraSettings.get(key);
@@ -461,7 +475,25 @@ public final class CaptureRequest extends CameraMetadata<Key<?>> implements Parc
         return HashCodeHelpers.hashCodeGeneric(this.mPhysicalCameraSettings, this.mSurfaceSet, this.mUserTag);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.hardware.camera2.CaptureRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CaptureRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CaptureRequest createFromParcel(Parcel in) {
+            CaptureRequest request = new CaptureRequest();
+            request.readFromParcel(in);
+            return request;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CaptureRequest[] newArray(int size) {
+            return new CaptureRequest[size];
+        }
+    }
+
     public void readFromParcel(Parcel in) {
         int physicalCameraCount = in.readInt();
         if (physicalCameraCount <= 0) {
@@ -705,6 +737,13 @@ public final class CaptureRequest extends CameraMetadata<Key<?>> implements Parc
 
         public boolean isEmpty() {
             return this.mRequest.mLogicalCameraSettings.isEmpty();
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.CaptureRequest$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends TypeReference<Range<Integer>> {
+        AnonymousClass2() {
         }
     }
 }

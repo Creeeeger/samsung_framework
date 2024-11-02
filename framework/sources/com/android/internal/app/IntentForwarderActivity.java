@@ -99,7 +99,6 @@ public class IntentForwarderActivity extends Activity {
         void showToast(String str, int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         try {
@@ -115,7 +114,6 @@ public class IntentForwarderActivity extends Activity {
         this.mExecutorService.shutdown();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         int targetUserIdForKnox;
@@ -221,7 +219,6 @@ public class IntentForwarderActivity extends Activity {
         }, getApplicationContext().getMainExecutor());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ ResolveInfo lambda$onCreate$0(int callingUserId, int targetUserId, Intent newIntent, Intent intentReceived, String className, ResolveInfo targetResolveInfo) {
         if ((callingUserId == 0 && SemPersonaManager.isSecureFolderId(targetUserId)) || (SemPersonaManager.isSecureFolderId(callingUserId) && targetUserId == 0)) {
             Slog.d(TAG, "startActivityAsCaller 1 : " + targetUserId);
@@ -236,7 +233,6 @@ public class IntentForwarderActivity extends Activity {
         return targetResolveInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onCreate$1(String className, String userMessage, Intent intentReceived, Intent newIntent, UserInfo managedProfile, ResolveInfo result) {
         if (className.equals(FORWARD_INTENT_TO_PARENT)) {
             Slog.d(TAG, "maybeShowDisclosure | " + userMessage);
@@ -305,12 +301,10 @@ public class IntentForwarderActivity extends Activity {
         contentView.animate().alpha(1.0f).translationY(contentView.getHeight()).setListener(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$maybeShowUserConsentMiniResolver$2(View v) {
         finish();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$maybeShowUserConsentMiniResolver$3(Intent launchIntent, int targetUserId, View v) {
         startActivityAsCaller(launchIntent, ActivityOptions.makeCustomAnimation(getApplicationContext(), R.anim.activity_open_enter, R.anim.push_down_out).toBundle(), false, targetUserId);
         finish();
@@ -370,17 +364,14 @@ public class IntentForwarderActivity extends Activity {
         }, targetLabel);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getOpenInWorkMessage$4() {
         return getString(R.string.miniresolver_call_in_work);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getOpenInWorkMessage$5() {
         return getString(R.string.miniresolver_switch_to_work);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getOpenInWorkMessage$6(CharSequence targetLabel) {
         return getString(R.string.miniresolver_open_work, targetLabel);
     }
@@ -409,12 +400,10 @@ public class IntentForwarderActivity extends Activity {
         return "";
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getWorkTelephonyInfoSectionMessage$7() {
         return getString(R.string.miniresolver_call_information);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getWorkTelephonyInfoSectionMessage$8() {
         return getString(R.string.miniresolver_sms_information);
     }
@@ -434,7 +423,6 @@ public class IntentForwarderActivity extends Activity {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getForwardToPersonalMessage$9() {
         return getString(R.string.forward_intent_to_owner);
     }
@@ -450,7 +438,6 @@ public class IntentForwarderActivity extends Activity {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getForwardToWorkMessage$10() {
         return getString(R.string.forward_intent_to_work);
     }
@@ -636,7 +623,6 @@ public class IntentForwarderActivity extends Activity {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Intent canForward(Intent incomingIntent, int sourceUserId, int targetUserId, IPackageManager packageManager, ContentResolver contentResolver) {
         Intent forwardIntent = new Intent(incomingIntent);
         forwardIntent.addFlags(50331648);
@@ -696,9 +682,12 @@ public class IntentForwarderActivity extends Activity {
         return new InjectorImpl();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class InjectorImpl implements Injector {
+        /* synthetic */ InjectorImpl(IntentForwarderActivity intentForwarderActivity, InjectorImplIA injectorImplIA) {
+            this();
+        }
+
         private InjectorImpl() {
         }
 
@@ -729,7 +718,6 @@ public class IntentForwarderActivity extends Activity {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ ResolveInfo lambda$resolveActivityAsUser$0(Intent intent, int flags, int userId) {
             return getPackageManager().resolveActivityAsUser(intent, flags, userId);
         }
@@ -740,9 +728,39 @@ public class IntentForwarderActivity extends Activity {
         }
     }
 
+    /* renamed from: com.android.internal.app.IntentForwarderActivity$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                if (intent != null && intent.getAction() == null) {
+                    return;
+                }
+                String action = intent.getAction();
+                Slog.e(IntentForwarderActivity.TAG, "onReceive, action : " + action);
+                if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(action)) {
+                    String reason = intent.getStringExtra("reason");
+                    Slog.e(IntentForwarderActivity.TAG, "reason :" + reason);
+                    if (IntentForwarderActivity.SYSTEM_DIALOG_REASON_HOME_KEY.equals(reason)) {
+                        IntentForwarderActivity.this.finish();
+                    } else if (IntentForwarderActivity.SYSTEM_DIALOG_REASON_RECENT_APPS.equals(reason)) {
+                        IntentForwarderActivity.this.finish();
+                    }
+                }
+            }
+        }
+    }
+
     private void showKeyguard(int userId) {
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.internal.app.IntentForwarderActivity.1
+        AnonymousClass1 anonymousClass1 = new BroadcastReceiver() { // from class: com.android.internal.app.IntentForwarderActivity.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context, Intent intent) {
                 if (intent != null) {
@@ -763,8 +781,8 @@ public class IntentForwarderActivity extends Activity {
                 }
             }
         };
-        this.mBroadcastReceiver = broadcastReceiver;
-        registerReceiver(broadcastReceiver, filter);
+        this.mBroadcastReceiver = anonymousClass1;
+        registerReceiver(anonymousClass1, filter);
         KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         Intent confirmCredentialIntent = km.createConfirmDeviceCredentialIntent(null, null, userId);
         if (confirmCredentialIntent == null) {

@@ -11,7 +11,9 @@ import java.util.Iterator;
 /* loaded from: classes5.dex */
 public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implements Parcelable {
     public static final Parcelable.Creator<SmartClipMetaTagArrayImpl> CREATOR = new Parcelable.Creator<SmartClipMetaTagArrayImpl>() { // from class: com.samsung.android.content.smartclip.SmartClipMetaTagArrayImpl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmartClipMetaTagArrayImpl createFromParcel(Parcel in) {
             Log.d(SmartClipMetaTagArrayImpl.TAG, "SmartClipMetaTagArrayImpl.createFromParcel called");
@@ -20,7 +22,6 @@ public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implemen
             return data;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartClipMetaTagArrayImpl[] newArray(int size) {
             return new SmartClipMetaTagArrayImpl[size];
@@ -160,6 +161,26 @@ public class SmartClipMetaTagArrayImpl extends SemSmartClipMetaTagArray implemen
                 return;
             }
             add(tag);
+        }
+    }
+
+    /* renamed from: com.samsung.android.content.smartclip.SmartClipMetaTagArrayImpl$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmartClipMetaTagArrayImpl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartClipMetaTagArrayImpl createFromParcel(Parcel in) {
+            Log.d(SmartClipMetaTagArrayImpl.TAG, "SmartClipMetaTagArrayImpl.createFromParcel called");
+            SmartClipMetaTagArrayImpl data = new SmartClipMetaTagArrayImpl();
+            data.readFromParcel(in);
+            return data;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartClipMetaTagArrayImpl[] newArray(int size) {
+            return new SmartClipMetaTagArrayImpl[size];
         }
     }
 }

@@ -293,7 +293,7 @@
     <bool name="config_disableTaskSnapshots">false</bool>
     <bool name="config_disableTransitionAnimation">false</bool>
     <bool name="config_disableUsbPermissionDialogs">false</bool>
-    <bool name="config_disable_all_cb_messages">false</bool>
+    <bool name="config_disable_all_cb_messages">true</bool>
     <bool name="config_dismissDreamOnActivityStart">false</bool>
     <bool name="config_displayBlanksAfterDoze">false</bool>
     <bool name="config_displayBrightnessBucketsInDoze">false</bool>
@@ -442,7 +442,7 @@
     <bool name="config_matchSecondaryInternalDisplaysOrientationToReverseDefaultDisplay">true</bool>
     <bool name="config_mdnie_scenario_control_enabled">true</bool>
     <bool name="config_mms_content_disposition_support">true</bool>
-    <bool name="config_mobile_data_capable">true</bool>
+    <bool name="config_mobile_data_capable">false</bool>
     <bool name="config_multiuserDelayUserDataLocking">false</bool>
     <bool name="config_multiuserVisibleBackgroundUsers">false</bool>
     <bool name="config_multiuserVisibleBackgroundUsersOnDefaultDisplay">false</bool>
@@ -511,7 +511,7 @@
     <bool name="config_smma_notification_supported_over_ims">true</bool>
     <bool name="config_smppsim_response_via_ims">false</bool>
     <bool name="config_sms_ask_every_time_support">false</bool>
-    <bool name="config_sms_capable">true</bool>
+    <bool name="config_sms_capable">false</bool>
     <bool name="config_sms_decode_gsm_8bit_data">true</bool>
     <bool name="config_sms_force_7bit_encoding">false</bool>
     <bool name="config_sms_utf8_support">false</bool>
@@ -583,7 +583,7 @@
     <bool name="config_user_notification_of_restrictied_mobile_access">true</bool>
     <bool name="config_using_patterned_svc_led">true</bool>
     <bool name="config_vehicleInternalNetworkAlwaysRequested">false</bool>
-    <bool name="config_voice_capable">true</bool>
+    <bool name="config_voice_capable">false</bool>
     <bool name="config_voice_data_sms_auto_fallback">false</bool>
     <bool name="config_volumeAdjustmentForRemoteGroupSessions">true</bool>
     <bool name="config_volumeHushGestureEnabled">true</bool>

@@ -88,8 +88,9 @@ public interface IIncidentAuthListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IIncidentAuthListener {
+        public static class Proxy implements IIncidentAuthListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

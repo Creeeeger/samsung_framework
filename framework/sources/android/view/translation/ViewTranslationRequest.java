@@ -17,13 +17,14 @@ import java.util.Set;
 /* loaded from: classes4.dex */
 public final class ViewTranslationRequest implements Parcelable {
     public static final Parcelable.Creator<ViewTranslationRequest> CREATOR = new Parcelable.Creator<ViewTranslationRequest>() { // from class: android.view.translation.ViewTranslationRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ViewTranslationRequest[] newArray(int size) {
             return new ViewTranslationRequest[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ViewTranslationRequest createFromParcel(Parcel in) {
             return new ViewTranslationRequest(in);
@@ -39,8 +40,8 @@ public final class ViewTranslationRequest implements Parcelable {
     public @interface Id {
     }
 
-    /* renamed from: -$$Nest$smdefaultTranslationRequestValues, reason: not valid java name */
-    static /* bridge */ /* synthetic */ Map m5866$$Nest$smdefaultTranslationRequestValues() {
+    /* renamed from: -$$Nest$smdefaultTranslationRequestValues */
+    static /* bridge */ /* synthetic */ Map m5861$$Nest$smdefaultTranslationRequestValues() {
         return defaultTranslationRequestValues();
     }
 
@@ -94,7 +95,7 @@ public final class ViewTranslationRequest implements Parcelable {
             long j = this.mBuilderFieldsSet | 4;
             this.mBuilderFieldsSet = j;
             if ((j & 2) == 0) {
-                this.mTranslationRequestValues = ViewTranslationRequest.m5866$$Nest$smdefaultTranslationRequestValues();
+                this.mTranslationRequestValues = ViewTranslationRequest.m5861$$Nest$smdefaultTranslationRequestValues();
             }
             ViewTranslationRequest o = new ViewTranslationRequest(this.mAutofillId, this.mTranslationRequestValues);
             return o;
@@ -163,6 +164,23 @@ public final class ViewTranslationRequest implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
         this.mTranslationRequestValues = translationRequestValues;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) translationRequestValues);
+    }
+
+    /* renamed from: android.view.translation.ViewTranslationRequest$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ViewTranslationRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ViewTranslationRequest[] newArray(int size) {
+            return new ViewTranslationRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ViewTranslationRequest createFromParcel(Parcel in) {
+            return new ViewTranslationRequest(in);
+        }
     }
 
     @Deprecated

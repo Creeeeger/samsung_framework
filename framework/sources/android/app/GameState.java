@@ -8,13 +8,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class GameState implements Parcelable {
     public static final Parcelable.Creator<GameState> CREATOR = new Parcelable.Creator<GameState>() { // from class: android.app.GameState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GameState createFromParcel(Parcel in) {
             return new GameState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GameState[] newArray(int size) {
             return new GameState[size];
@@ -33,6 +34,27 @@ public final class GameState implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     @interface GameStateMode {
+    }
+
+    /* synthetic */ GameState(Parcel parcel, GameStateIA gameStateIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.app.GameState$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GameState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameState createFromParcel(Parcel in) {
+            return new GameState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameState[] newArray(int size) {
+            return new GameState[size];
+        }
     }
 
     public GameState(boolean isLoading, int mode) {

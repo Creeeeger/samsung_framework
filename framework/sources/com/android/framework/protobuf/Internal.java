@@ -31,7 +31,8 @@ public final class Internal {
         boolean getBoolean(int i);
 
         @Override // 
-        ProtobufList<Boolean> mutableCopyWithCapacity(int i);
+        /* renamed from: mutableCopyWithCapacity */
+        ProtobufList<Boolean> mutableCopyWithCapacity2(int i);
 
         boolean setBoolean(int i, boolean z);
     }
@@ -43,7 +44,8 @@ public final class Internal {
         double getDouble(int i);
 
         @Override // com.android.framework.protobuf.Internal.ProtobufList, com.android.framework.protobuf.Internal.BooleanList
-        ProtobufList<Double> mutableCopyWithCapacity(int i);
+        /* renamed from: mutableCopyWithCapacity */
+        ProtobufList<Double> mutableCopyWithCapacity2(int i);
 
         double setDouble(int i, double d);
     }
@@ -70,7 +72,8 @@ public final class Internal {
         float getFloat(int i);
 
         @Override // com.android.framework.protobuf.Internal.ProtobufList, com.android.framework.protobuf.Internal.BooleanList
-        ProtobufList<Float> mutableCopyWithCapacity(int i);
+        /* renamed from: mutableCopyWithCapacity */
+        ProtobufList<Float> mutableCopyWithCapacity2(int i);
 
         float setFloat(int i, float f);
     }
@@ -82,7 +85,8 @@ public final class Internal {
         int getInt(int i);
 
         @Override // com.android.framework.protobuf.Internal.ProtobufList, com.android.framework.protobuf.Internal.BooleanList
-        ProtobufList<Integer> mutableCopyWithCapacity(int i);
+        /* renamed from: mutableCopyWithCapacity */
+        ProtobufList<Integer> mutableCopyWithCapacity2(int i);
 
         int setInt(int i, int i2);
     }
@@ -94,7 +98,8 @@ public final class Internal {
         long getLong(int i);
 
         @Override // com.android.framework.protobuf.Internal.ProtobufList, com.android.framework.protobuf.Internal.BooleanList
-        ProtobufList<Long> mutableCopyWithCapacity(int i);
+        /* renamed from: mutableCopyWithCapacity */
+        ProtobufList<Long> mutableCopyWithCapacity2(int i);
 
         long setLong(int i, long j);
     }
@@ -105,7 +110,8 @@ public final class Internal {
 
         void makeImmutable();
 
-        ProtobufList<E> mutableCopyWithCapacity(int i);
+        /* renamed from: mutableCopyWithCapacity */
+        ProtobufList<E> mutableCopyWithCapacity2(int i);
     }
 
     private Internal() {
@@ -118,7 +124,6 @@ public final class Internal {
         EMPTY_CODED_INPUT_STREAM = CodedInputStream.newInstance(bArr);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> T checkNotNull(T obj) {
         if (obj == null) {
             throw new NullPointerException();
@@ -126,7 +131,6 @@ public final class Internal {
         return obj;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> T checkNotNull(T obj, String message) {
         if (obj == null) {
             throw new NullPointerException(message);
@@ -227,7 +231,6 @@ public final class Internal {
         return h;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int partialHash(int h, byte[] bytes, int offset, int length) {
         for (int i = offset; i < offset + length; i++) {
             h = (h * 31) + bytes[i];
@@ -296,7 +299,6 @@ public final class Internal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Object mergeMessage(Object destination, Object source) {
         return ((MessageLite) destination).toBuilder().mergeFrom((MessageLite) source).buildPartial();
     }
@@ -339,16 +341,41 @@ public final class Internal {
             B doForward(A a);
         }
 
-        public static <T extends EnumLite> Converter<Integer, T> newEnumConverter(final EnumLiteMap<T> enumLiteMap, final T t) {
-            return (Converter<Integer, T>) new Converter<Integer, T>() { // from class: com.android.framework.protobuf.Internal.MapAdapter.1
-                /* JADX WARN: Incorrect return type in method signature: (Ljava/lang/Integer;)TT; */
+        /* renamed from: com.android.framework.protobuf.Internal$MapAdapter$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1<T> implements Converter<Integer, T> {
+            final /* synthetic */ EnumLite val$unrecognizedValue;
+
+            AnonymousClass1(EnumLite enumLite) {
+                t = enumLite;
+            }
+
+            @Override // com.android.framework.protobuf.Internal.MapAdapter.Converter
+            public EnumLite doForward(Integer value) {
+                EnumLite findValueByNumber = EnumLiteMap.this.findValueByNumber(value.intValue());
+                return findValueByNumber == null ? t : findValueByNumber;
+            }
+
+            @Override // com.android.framework.protobuf.Internal.MapAdapter.Converter
+            public Integer doBackward(EnumLite enumLite) {
+                return Integer.valueOf(enumLite.getNumber());
+            }
+        }
+
+        public static <T extends EnumLite> Converter<Integer, T> newEnumConverter(EnumLiteMap<T> enumMap, T unrecognizedValue) {
+            return new Converter<Integer, T>() { // from class: com.android.framework.protobuf.Internal.MapAdapter.1
+                final /* synthetic */ EnumLite val$unrecognizedValue;
+
+                AnonymousClass1(EnumLite unrecognizedValue2) {
+                    t = unrecognizedValue2;
+                }
+
                 @Override // com.android.framework.protobuf.Internal.MapAdapter.Converter
                 public EnumLite doForward(Integer value) {
                     EnumLite findValueByNumber = EnumLiteMap.this.findValueByNumber(value.intValue());
                     return findValueByNumber == null ? t : findValueByNumber;
                 }
 
-                /* JADX WARN: Incorrect types in method signature: (TT;)Ljava/lang/Integer; */
                 @Override // com.android.framework.protobuf.Internal.MapAdapter.Converter
                 public Integer doBackward(EnumLite enumLite) {
                     return Integer.valueOf(enumLite.getNumber());
@@ -427,7 +454,6 @@ public final class Internal {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public class EntryAdapter implements Map.Entry<K, V> {
             private final Map.Entry<K, RealValue> realEntry;

@@ -14,13 +14,14 @@ public final class ImsExternalCallState implements Parcelable {
     public static final int CALL_STATE_CONFIRMED = 1;
     public static final int CALL_STATE_TERMINATED = 2;
     public static final Parcelable.Creator<ImsExternalCallState> CREATOR = new Parcelable.Creator<ImsExternalCallState>() { // from class: android.telephony.ims.ImsExternalCallState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsExternalCallState createFromParcel(Parcel in) {
             return new ImsExternalCallState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsExternalCallState[] newArray(int size) {
             return new ImsExternalCallState[size];
@@ -107,6 +108,23 @@ public final class ImsExternalCallState implements Parcelable {
         parcel.writeInt(this.mCallType);
         parcel.writeInt(this.mIsHeld ? 1 : 0);
         Rlog.d(TAG, "ImsExternalCallState writeToParcel = " + parcel.toString());
+    }
+
+    /* renamed from: android.telephony.ims.ImsExternalCallState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsExternalCallState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsExternalCallState createFromParcel(Parcel in) {
+            return new ImsExternalCallState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsExternalCallState[] newArray(int size) {
+            return new ImsExternalCallState[size];
+        }
     }
 
     public int getCallId() {

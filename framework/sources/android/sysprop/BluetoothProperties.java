@@ -75,7 +75,6 @@ public final class BluetoothProperties {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Integer tryParseUInt(String str) {
         try {
             return Integer.valueOf(Integer.parseUnsignedInt(str));
@@ -108,7 +107,6 @@ public final class BluetoothProperties {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String tryParseString(String str) {
         if ("".equals(str)) {
             return null;

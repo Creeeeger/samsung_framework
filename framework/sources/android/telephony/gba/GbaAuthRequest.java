@@ -18,7 +18,9 @@ public final class GbaAuthRequest implements Parcelable {
     private int mToken;
     private static AtomicInteger sUniqueToken = new AtomicInteger(0);
     public static final Parcelable.Creator<GbaAuthRequest> CREATOR = new Parcelable.Creator<GbaAuthRequest>() { // from class: android.telephony.gba.GbaAuthRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GbaAuthRequest createFromParcel(Parcel in) {
             int token = in.readInt();
@@ -33,7 +35,6 @@ public final class GbaAuthRequest implements Parcelable {
             return new GbaAuthRequest(token, subId, appType, nafUrl, protocol, forceBootStrapping, callback);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GbaAuthRequest[] newArray(int size) {
             return new GbaAuthRequest[size];
@@ -100,6 +101,32 @@ public final class GbaAuthRequest implements Parcelable {
         out.writeByteArray(this.mSecurityProtocol);
         out.writeBoolean(this.mForceBootStrapping);
         out.writeStrongInterface(this.mCallback);
+    }
+
+    /* renamed from: android.telephony.gba.GbaAuthRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GbaAuthRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GbaAuthRequest createFromParcel(Parcel in) {
+            int token = in.readInt();
+            int subId = in.readInt();
+            int appType = in.readInt();
+            Uri nafUrl = (Uri) in.readParcelable(GbaAuthRequest.class.getClassLoader(), Uri.class);
+            int len = in.readInt();
+            byte[] protocol = new byte[len];
+            in.readByteArray(protocol);
+            boolean forceBootStrapping = in.readBoolean();
+            IBootstrapAuthenticationCallback callback = IBootstrapAuthenticationCallback.Stub.asInterface(in.readStrongBinder());
+            return new GbaAuthRequest(token, subId, appType, nafUrl, protocol, forceBootStrapping, callback);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GbaAuthRequest[] newArray(int size) {
+            return new GbaAuthRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

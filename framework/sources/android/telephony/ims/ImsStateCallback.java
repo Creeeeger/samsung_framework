@@ -26,7 +26,7 @@ public abstract class ImsStateCallback {
 
     public abstract void onAvailable();
 
-    /* renamed from: onError, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onError */
     public abstract void lambda$binderDied$0();
 
     public abstract void onUnavailable(int i);
@@ -38,7 +38,6 @@ public abstract class ImsStateCallback {
         this.mCallback = new IImsStateCallbackStub(this, executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class IImsStateCallbackStub extends IImsStateCallback.Stub {
         private Executor mExecutor;
@@ -67,7 +66,6 @@ public abstract class ImsStateCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAvailable$1(final ImsStateCallback callback) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ImsStateCallback$IImsStateCallbackStub$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
@@ -91,7 +89,6 @@ public abstract class ImsStateCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUnavailable$3(final ImsStateCallback callback, final int reason) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ImsStateCallback$IImsStateCallbackStub$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable

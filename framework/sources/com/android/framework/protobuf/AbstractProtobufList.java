@@ -121,7 +121,6 @@ public abstract class AbstractProtobufList<E> extends AbstractList<E> implements
         return (E) super.set(i, e);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void ensureIsMutable() {
         if (!this.isMutable) {
             throw new UnsupportedOperationException();

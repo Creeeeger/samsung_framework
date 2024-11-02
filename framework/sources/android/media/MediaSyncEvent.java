@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class MediaSyncEvent implements Parcelable {
     public static final Parcelable.Creator<MediaSyncEvent> CREATOR = new Parcelable.Creator<MediaSyncEvent>() { // from class: android.media.MediaSyncEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MediaSyncEvent createFromParcel(Parcel p) {
             return new MediaSyncEvent(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaSyncEvent[] newArray(int size) {
             return new MediaSyncEvent[size];
@@ -27,6 +28,10 @@ public class MediaSyncEvent implements Parcelable {
     public static final int SYNC_EVENT_SHARE_AUDIO_HISTORY = 100;
     private int mAudioSession;
     private final int mType;
+
+    /* synthetic */ MediaSyncEvent(Parcel parcel, MediaSyncEventIA mediaSyncEventIA) {
+        this(parcel);
+    }
 
     public static MediaSyncEvent createEvent(int eventType) throws IllegalArgumentException {
         if (!isValidType(eventType)) {
@@ -83,6 +88,23 @@ public class MediaSyncEvent implements Parcelable {
         this.mAudioSession = 0;
         this.mType = in.readInt();
         this.mAudioSession = in.readInt();
+    }
+
+    /* renamed from: android.media.MediaSyncEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MediaSyncEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaSyncEvent createFromParcel(Parcel p) {
+            return new MediaSyncEvent(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaSyncEvent[] newArray(int size) {
+            return new MediaSyncEvent[size];
+        }
     }
 
     public boolean equals(Object o) {

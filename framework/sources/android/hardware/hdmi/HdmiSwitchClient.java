@@ -23,13 +23,27 @@ public class HdmiSwitchClient extends HdmiClient {
         void onSelect(int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public HdmiSwitchClient(IHdmiControlService service) {
         super(service);
     }
 
-    private static IHdmiControlCallback getCallbackWrapper(final OnSelectListener listener) {
+    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends IHdmiControlCallback.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.hardware.hdmi.IHdmiControlCallback
+        public void onComplete(int result) {
+            OnSelectListener.this.onSelect(result);
+        }
+    }
+
+    private static IHdmiControlCallback getCallbackWrapper(OnSelectListener listener) {
         return new IHdmiControlCallback.Stub() { // from class: android.hardware.hdmi.HdmiSwitchClient.1
+            AnonymousClass1() {
+            }
+
             @Override // android.hardware.hdmi.IHdmiControlCallback
             public void onComplete(int result) {
                 OnSelectListener.this.onSelect(result);
@@ -74,7 +88,7 @@ public class HdmiSwitchClient extends HdmiClient {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$2, reason: invalid class name */
+    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$2 */
     /* loaded from: classes2.dex */
     class AnonymousClass2 extends IHdmiControlCallback.Stub {
         final /* synthetic */ Executor val$executor;
@@ -114,7 +128,7 @@ public class HdmiSwitchClient extends HdmiClient {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$3, reason: invalid class name */
+    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$3 */
     /* loaded from: classes2.dex */
     class AnonymousClass3 extends IHdmiControlCallback.Stub {
         final /* synthetic */ Executor val$executor;

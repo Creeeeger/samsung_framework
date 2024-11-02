@@ -286,7 +286,10 @@ public final class CodedOutputByteBufferNano {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0023, code lost:            return r12 + r0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0023, code lost:
+    
+        return r12 + r0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -623,7 +626,6 @@ public final class CodedOutputByteBufferNano {
         return (n << 1) ^ (n >> 63);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeFieldSize(int number, int type, Object object) {
         switch (type) {
             case 1:
@@ -667,7 +669,6 @@ public final class CodedOutputByteBufferNano {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeField(int number, int type, Object value) throws IOException {
         switch (type) {
             case 1:

@@ -317,13 +317,86 @@ public class ActivityOptions extends ComponentOptions {
         return opts;
     }
 
-    private void setOnAnimationStartedListener(final Handler handler, final OnAnimationStartedListener listener) {
+    /* renamed from: android.app.ActivityOptions$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends IRemoteCallback.Stub {
+        final /* synthetic */ Handler val$handler;
+        final /* synthetic */ OnAnimationStartedListener val$listener;
+
+        AnonymousClass1(Handler handler, OnAnimationStartedListener onAnimationStartedListener) {
+            handler = handler;
+            listener = onAnimationStartedListener;
+        }
+
+        /* renamed from: android.app.ActivityOptions$1$1 */
+        /* loaded from: classes.dex */
+        class RunnableC00011 implements Runnable {
+            final /* synthetic */ long val$elapsedRealtime;
+
+            RunnableC00011(long j) {
+                elapsedRealtime = j;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                listener.onAnimationStarted(elapsedRealtime);
+            }
+        }
+
+        @Override // android.os.IRemoteCallback
+        public void sendResult(Bundle data) throws RemoteException {
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            handler.post(new Runnable() { // from class: android.app.ActivityOptions.1.1
+                final /* synthetic */ long val$elapsedRealtime;
+
+                RunnableC00011(long elapsedRealtime2) {
+                    elapsedRealtime = elapsedRealtime2;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    listener.onAnimationStarted(elapsedRealtime);
+                }
+            });
+        }
+    }
+
+    private void setOnAnimationStartedListener(Handler handler, OnAnimationStartedListener listener) {
         if (listener != null) {
             this.mAnimationStartedListener = new IRemoteCallback.Stub() { // from class: android.app.ActivityOptions.1
+                final /* synthetic */ Handler val$handler;
+                final /* synthetic */ OnAnimationStartedListener val$listener;
+
+                AnonymousClass1(Handler handler2, OnAnimationStartedListener listener2) {
+                    handler = handler2;
+                    listener = listener2;
+                }
+
+                /* renamed from: android.app.ActivityOptions$1$1 */
+                /* loaded from: classes.dex */
+                class RunnableC00011 implements Runnable {
+                    final /* synthetic */ long val$elapsedRealtime;
+
+                    RunnableC00011(long elapsedRealtime2) {
+                        elapsedRealtime = elapsedRealtime2;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        listener.onAnimationStarted(elapsedRealtime);
+                    }
+                }
+
                 @Override // android.os.IRemoteCallback
                 public void sendResult(Bundle data) throws RemoteException {
-                    final long elapsedRealtime = SystemClock.elapsedRealtime();
+                    long elapsedRealtime2 = SystemClock.elapsedRealtime();
                     handler.post(new Runnable() { // from class: android.app.ActivityOptions.1.1
+                        final /* synthetic */ long val$elapsedRealtime;
+
+                        RunnableC00011(long elapsedRealtime22) {
+                            elapsedRealtime = elapsedRealtime22;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             listener.onAnimationStarted(elapsedRealtime);
@@ -334,13 +407,86 @@ public class ActivityOptions extends ComponentOptions {
         }
     }
 
-    private void setOnAnimationFinishedListener(final Handler handler, final OnAnimationFinishedListener listener) {
+    /* renamed from: android.app.ActivityOptions$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 extends IRemoteCallback.Stub {
+        final /* synthetic */ Handler val$handler;
+        final /* synthetic */ OnAnimationFinishedListener val$listener;
+
+        AnonymousClass2(Handler handler, OnAnimationFinishedListener onAnimationFinishedListener) {
+            handler = handler;
+            listener = onAnimationFinishedListener;
+        }
+
+        /* renamed from: android.app.ActivityOptions$2$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ long val$elapsedRealtime;
+
+            AnonymousClass1(long j) {
+                elapsedRealtime = j;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                listener.onAnimationFinished(elapsedRealtime);
+            }
+        }
+
+        @Override // android.os.IRemoteCallback
+        public void sendResult(Bundle data) throws RemoteException {
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            handler.post(new Runnable() { // from class: android.app.ActivityOptions.2.1
+                final /* synthetic */ long val$elapsedRealtime;
+
+                AnonymousClass1(long elapsedRealtime2) {
+                    elapsedRealtime = elapsedRealtime2;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    listener.onAnimationFinished(elapsedRealtime);
+                }
+            });
+        }
+    }
+
+    private void setOnAnimationFinishedListener(Handler handler, OnAnimationFinishedListener listener) {
         if (listener != null) {
             this.mAnimationFinishedListener = new IRemoteCallback.Stub() { // from class: android.app.ActivityOptions.2
+                final /* synthetic */ Handler val$handler;
+                final /* synthetic */ OnAnimationFinishedListener val$listener;
+
+                AnonymousClass2(Handler handler2, OnAnimationFinishedListener listener2) {
+                    handler = handler2;
+                    listener = listener2;
+                }
+
+                /* renamed from: android.app.ActivityOptions$2$1 */
+                /* loaded from: classes.dex */
+                class AnonymousClass1 implements Runnable {
+                    final /* synthetic */ long val$elapsedRealtime;
+
+                    AnonymousClass1(long elapsedRealtime2) {
+                        elapsedRealtime = elapsedRealtime2;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        listener.onAnimationFinished(elapsedRealtime);
+                    }
+                }
+
                 @Override // android.os.IRemoteCallback
                 public void sendResult(Bundle data) throws RemoteException {
-                    final long elapsedRealtime = SystemClock.elapsedRealtime();
+                    long elapsedRealtime2 = SystemClock.elapsedRealtime();
                     handler.post(new Runnable() { // from class: android.app.ActivityOptions.2.1
+                        final /* synthetic */ long val$elapsedRealtime;
+
+                        AnonymousClass1(long elapsedRealtime22) {
+                            elapsedRealtime = elapsedRealtime22;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             listener.onAnimationFinished(elapsedRealtime);
@@ -513,7 +659,6 @@ public class ActivityOptions extends ComponentOptions {
         ExitTransitionCoordinator.sMaxWaitMillis = timeoutMillis;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ActivityOptions makeSceneTransitionAnimation(Activity activity, ExitTransitionCoordinator exitCoordinator, ArrayList<String> sharedElementNames, int resultCode, Intent resultData) {
         ActivityOptions opts = new ActivityOptions();
         opts.mAnimationType = 5;
@@ -902,7 +1047,6 @@ public class ActivityOptions extends ComponentOptions {
         this.mIsMlLaunch = mlLaunch;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isCrossTask() {
         return this.mExitCoordinatorIndex < 0;
     }
@@ -1792,13 +1936,14 @@ public class ActivityOptions extends ComponentOptions {
     /* loaded from: classes.dex */
     public static class SourceInfo implements Parcelable {
         public static final Parcelable.Creator<SourceInfo> CREATOR = new Parcelable.Creator<SourceInfo>() { // from class: android.app.ActivityOptions.SourceInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SourceInfo createFromParcel(Parcel in) {
                 return new SourceInfo(in.readInt(), in.readLong());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SourceInfo[] newArray(int size) {
                 return new SourceInfo[size];
@@ -1830,6 +1975,23 @@ public class ActivityOptions extends ComponentOptions {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: android.app.ActivityOptions$SourceInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SourceInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SourceInfo createFromParcel(Parcel in) {
+                return new SourceInfo(in.readInt(), in.readLong());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SourceInfo[] newArray(int size) {
+                return new SourceInfo[size];
+            }
         }
     }
 

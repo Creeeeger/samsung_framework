@@ -99,7 +99,6 @@ public interface IAmbientContextObserver extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IAmbientContextObserver {
             private IBinder mRemote;

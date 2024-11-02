@@ -33,7 +33,9 @@ public class SemWifiConfiguration implements Parcelable {
     public int networkScore;
     public static final String[] networkDisableReasonStrings = {"DISABLED_NONE", "DISABLED_SUSPICIOUS_NETWORK", "DISABLED_AUTHENTICATION_FAILURE", "DISABLED_ASSOCIATION_REJECTED", "DISABLED_DHCP_FAILED", "DISABLED_CAPTIVE_PORTAL", "DISABLED_TEMPORARY_NO_INTERNET", "DISABLED_PERMANENTLY_NO_INTERNET", "DISABLED_PERMANENTLY_NO_INTERNET_INITIAL", "DISABLED_TEMPORARY_ELE_DETECTION", "DISABLED_TEMPORARY_SILENT_ROAMING", "DISABLED_AUTHENTICATION_CA_CERTIFICATION_ERROR"};
     public static final Parcelable.Creator<SemWifiConfiguration> CREATOR = new Parcelable.Creator<SemWifiConfiguration>() { // from class: com.samsung.android.wifi.SemWifiConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemWifiConfiguration createFromParcel(Parcel in) {
             SemWifiConfiguration config = new SemWifiConfiguration();
@@ -50,7 +52,6 @@ public class SemWifiConfiguration implements Parcelable {
             return config;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiConfiguration[] newArray(int size) {
             return new SemWifiConfiguration[size];
@@ -174,5 +175,33 @@ public class SemWifiConfiguration implements Parcelable {
         dest.writeInt(this.altNetworkTargetRssi);
         dest.writeInt(this.networkDisableReason);
         dest.writeLong(this.creationTime);
+    }
+
+    /* renamed from: com.samsung.android.wifi.SemWifiConfiguration$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemWifiConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiConfiguration createFromParcel(Parcel in) {
+            SemWifiConfiguration config = new SemWifiConfiguration();
+            config.configKey = in.readString();
+            config.networkScore = in.readInt();
+            config.isCaptivePortal = in.readBoolean();
+            config.isLockDown = in.readBoolean();
+            config.isNoInternetAccessExpected = in.readBoolean();
+            config.disableTimeByWcm = in.readLong();
+            config.disableTimeByEle = in.readLong();
+            config.altNetworkTargetRssi = in.readInt();
+            config.networkDisableReason = in.readInt();
+            config.creationTime = in.readLong();
+            return config;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiConfiguration[] newArray(int size) {
+            return new SemWifiConfiguration[size];
+        }
     }
 }

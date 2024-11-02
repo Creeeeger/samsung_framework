@@ -16,7 +16,6 @@ public final class GestureUtils {
     private GestureUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void closeStream(Closeable stream) {
         if (stream != null) {
             try {
@@ -288,7 +287,6 @@ public final class GestureUtils {
         return vector;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float[] computeCentroid(float[] points) {
         float centerX = 0.0f;
         float centerY = 0.0f;
@@ -360,7 +358,6 @@ public final class GestureUtils {
         return ((float) Math.hypot(dx, dy)) / totalLen;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float squaredEuclideanDistance(float[] vector1, float[] vector2) {
         float squaredDistance = 0.0f;
         int size = vector1.length;
@@ -380,7 +377,6 @@ public final class GestureUtils {
         return (float) Math.acos(sum);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float minimumCosineDistance(float[] vector1, float[] vector2, int numOrientations) {
         int len = vector1.length;
         float a = 0.0f;
@@ -484,7 +480,6 @@ public final class GestureUtils {
         return targetVector;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float[] rotate(float[] points, float angle) {
         float cos = (float) Math.cos(angle);
         float sin = (float) Math.sin(angle);
@@ -498,7 +493,6 @@ public final class GestureUtils {
         return points;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float[] translate(float[] points, float dx, float dy) {
         int size = points.length;
         for (int i = 0; i < size; i += 2) {
@@ -509,7 +503,6 @@ public final class GestureUtils {
         return points;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float[] scale(float[] points, float sx, float sy) {
         int size = points.length;
         for (int i = 0; i < size; i += 2) {

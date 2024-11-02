@@ -30,13 +30,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public class SubscriptionInfo implements Parcelable {
     public static final Parcelable.Creator<SubscriptionInfo> CREATOR = new Parcelable.Creator<SubscriptionInfo>() { // from class: android.telephony.SubscriptionInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SubscriptionInfo createFromParcel(Parcel source) {
             return new Builder().setId(source.readInt()).setIccId(source.readString()).setSimSlotIndex(source.readInt()).setDisplayName(TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source)).setCarrierName(TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source)).setDisplayNameSource(source.readInt()).setIconTint(source.readInt()).setNumber(source.readString()).setDataRoaming(source.readInt()).setMcc(source.readString()).setMnc(source.readString()).setCountryIso(source.readString()).setEmbedded(source.readBoolean()).setNativeAccessRules((UiccAccessRule[]) source.createTypedArray(UiccAccessRule.CREATOR)).setCardString(source.readString()).setCardId(source.readInt()).setPortIndex(source.readInt()).setOpportunistic(source.readBoolean()).setGroupUuid(source.readString8()).setGroupDisabled(source.readBoolean()).setCarrierId(source.readInt()).setProfileClass(source.readInt()).setType(source.readInt()).setEhplmns(source.createStringArray()).setHplmns(source.createStringArray()).setGroupOwner(source.readString()).setCarrierConfigAccessRules((UiccAccessRule[]) source.createTypedArray(UiccAccessRule.CREATOR)).setUiccApplicationsEnabled(source.readBoolean()).setUsageSetting(source.readInt()).build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubscriptionInfo[] newArray(int size) {
             return new SubscriptionInfo[size];
@@ -73,6 +74,10 @@ public class SubscriptionInfo implements Parcelable {
     private final int mSimSlotIndex;
     private final int mType;
     private final int mUsageSetting;
+
+    /* synthetic */ SubscriptionInfo(Builder builder, SubscriptionInfoIA subscriptionInfoIA) {
+        this(builder);
+    }
 
     @Deprecated
     public SubscriptionInfo(int id, String iccId, int simSlotIndex, CharSequence displayName, CharSequence carrierName, int nameSource, int iconTint, String number, int roaming, Bitmap icon, String mcc, String mnc, String countryIso, boolean isEmbedded, UiccAccessRule[] nativeAccessRules, String cardString) {
@@ -376,6 +381,23 @@ public class SubscriptionInfo implements Parcelable {
 
     public int getUsageSetting() {
         return this.mUsageSetting;
+    }
+
+    /* renamed from: android.telephony.SubscriptionInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SubscriptionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SubscriptionInfo createFromParcel(Parcel source) {
+            return new Builder().setId(source.readInt()).setIccId(source.readString()).setSimSlotIndex(source.readInt()).setDisplayName(TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source)).setCarrierName(TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source)).setDisplayNameSource(source.readInt()).setIconTint(source.readInt()).setNumber(source.readString()).setDataRoaming(source.readInt()).setMcc(source.readString()).setMnc(source.readString()).setCountryIso(source.readString()).setEmbedded(source.readBoolean()).setNativeAccessRules((UiccAccessRule[]) source.createTypedArray(UiccAccessRule.CREATOR)).setCardString(source.readString()).setCardId(source.readInt()).setPortIndex(source.readInt()).setOpportunistic(source.readBoolean()).setGroupUuid(source.readString8()).setGroupDisabled(source.readBoolean()).setCarrierId(source.readInt()).setProfileClass(source.readInt()).setType(source.readInt()).setEhplmns(source.createStringArray()).setHplmns(source.createStringArray()).setGroupOwner(source.readString()).setCarrierConfigAccessRules((UiccAccessRule[]) source.createTypedArray(UiccAccessRule.CREATOR)).setUiccApplicationsEnabled(source.readBoolean()).setUsageSetting(source.readInt()).build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SubscriptionInfo[] newArray(int size) {
+            return new SubscriptionInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

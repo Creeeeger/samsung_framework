@@ -19,13 +19,14 @@ import java.util.List;
 /* loaded from: classes4.dex */
 public class DisplayResolveInfo implements TargetInfo, Parcelable {
     public static final Parcelable.Creator<DisplayResolveInfo> CREATOR = new Parcelable.Creator<DisplayResolveInfo>() { // from class: com.android.internal.app.chooser.DisplayResolveInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DisplayResolveInfo createFromParcel(Parcel in) {
             return new DisplayResolveInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayResolveInfo[] newArray(int size) {
             return new DisplayResolveInfo[size];
@@ -42,6 +43,10 @@ public class DisplayResolveInfo implements TargetInfo, Parcelable {
     private final Intent mResolvedIntent;
     private ArrayList<DisplayResolveInfo> mSimilarList;
     private final List<Intent> mSourceIntents;
+
+    /* synthetic */ DisplayResolveInfo(Parcel parcel, DisplayResolveInfoIA displayResolveInfoIA) {
+        this(parcel);
+    }
 
     public DisplayResolveInfo(Intent originalIntent, ResolveInfo pri, Intent pOrigIntent, ResolverListAdapter.ResolveInfoPresentationGetter resolveInfoPresentationGetter) {
         this(originalIntent, pri, null, null, pOrigIntent, resolveInfoPresentationGetter);
@@ -83,7 +88,6 @@ public class DisplayResolveInfo implements TargetInfo, Parcelable {
         this.mResolveInfoPresentationGetter = resolveInfoPresentationGetter;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DisplayResolveInfo(DisplayResolveInfo other) {
         ArrayList arrayList = new ArrayList();
         this.mSourceIntents = arrayList;
@@ -224,6 +228,23 @@ public class DisplayResolveInfo implements TargetInfo, Parcelable {
         dest.writeBoolean(this.mIsSuspended);
         dest.writeBoolean(this.mPinned);
         dest.writeParcelable(this.mResolveInfo, 0);
+    }
+
+    /* renamed from: com.android.internal.app.chooser.DisplayResolveInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DisplayResolveInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayResolveInfo createFromParcel(Parcel in) {
+            return new DisplayResolveInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayResolveInfo[] newArray(int size) {
+            return new DisplayResolveInfo[size];
+        }
     }
 
     private DisplayResolveInfo(Parcel in) {

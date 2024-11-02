@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Içinde gurnalan goýmalar bilen SD kart aýrylan sebäpli, telefonyňyz durnuksyz. Adaty tertibine dolanmak üçin, telefonyňyz %d sekuntdan ýapyp açylar. Telefon ýapyp açylandan öň, her ýazdyrylmadyk maglumaty ýazdyryň.</item>
+        <item quantity="other">Içinde gurnalan goýmalar bilen SD kart aýrylan sebäpli, planşetiňiz durnuksyz. Adaty tertibine dolanmak üçin, planşetiňiz %d sekuntdan ýapyp açylar. Planşet ýapyp açylandan öň, her ýazdyrylmadyk maglumaty ýazdyryň.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Içinde gurnalan goýmalar bilen SD kart aýrylan sebäpli, telefonyňyz durnuksyz. Adaty tertibine dolanmak üçin, telefonyňyz %d sekuntdan ýapyp açylar. Telefon ýapyp açylandan öň, her ýazdyrylmadyk maglumaty ýazdyryň.</item>
+        <item quantity="one">Içinde gurnalan goýmalar bilen SD kart aýrylan sebäpli, planşetiňiz durnuksyz. Adaty tertibine dolanmak üçin, planşetiňiz %d sekuntdan ýapyp açylar. Planşet ýapyp açylandan öň, her ýazdyrylmadyk maglumaty ýazdyryň.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefonyňyz %d sekuntdan ýapyp açylar</item>
+        <item quantity="other">Planşetiňiz %d sekuntdan ýapyp açylar</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefonyňyz %d sekuntdan ýapyp açylar</item>
+        <item quantity="one">Planşetiňiz %d sekuntdan ýapyp açylar</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

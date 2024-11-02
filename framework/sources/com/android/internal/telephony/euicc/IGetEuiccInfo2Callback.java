@@ -85,8 +85,9 @@ public interface IGetEuiccInfo2Callback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGetEuiccInfo2Callback {
+        public static class Proxy implements IGetEuiccInfo2Callback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

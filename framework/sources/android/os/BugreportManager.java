@@ -65,13 +65,34 @@ public final class BugreportManager {
     }
 
     /* JADX WARN: Can't wrap try/catch for region: R(12:2|3|(1:5)(1:33)|(8:9|(2:11|12)(1:31)|13|14|15|(1:20)|17|18)|32|(0)(0)|13|14|15|(0)|17|18) */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x006e, code lost:            r0 = e;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x008d, code lost:            throw r0.rethrowFromSystemServer();     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x006c, code lost:            r0 = e;     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0077, code lost:            android.util.Log.wtf(android.os.BugreportManager.TAG, "Not able to find /dev/null file: ", r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x007f, code lost:            libcore.io.IoUtils.closeQuietly(r19);     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0082, code lost:            if (r8 == null) goto L47;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:?, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x006e, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x008d, code lost:
+    
+        throw r0.rethrowFromSystemServer();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x006c, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0077, code lost:
+    
+        android.util.Log.wtf(android.os.BugreportManager.TAG, "Not able to find /dev/null file: ", r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x007f, code lost:
+    
+        libcore.io.IoUtils.closeQuietly(r19);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0082, code lost:
+    
+        if (r8 == null) goto L95;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:?, code lost:
+    
+        return;
+     */
     /* JADX WARN: Removed duplicated region for block: B:11:0x0026 A[Catch: all -> 0x0070, FileNotFoundException -> 0x0074, RemoteException -> 0x0086, TRY_LEAVE, TryCatch #4 {RemoteException -> 0x0086, FileNotFoundException -> 0x0074, all -> 0x0070, blocks: (B:3:0x0002, B:11:0x0026), top: B:2:0x0002 }] */
     /* JADX WARN: Removed duplicated region for block: B:20:0x0085 A[ORIG_RETURN, RETURN] */
     /* JADX WARN: Removed duplicated region for block: B:31:0x0035  */
@@ -112,7 +133,7 @@ public final class BugreportManager {
             java.io.File r1 = new java.io.File     // Catch: java.lang.Throwable -> L70 java.io.FileNotFoundException -> L74 android.os.RemoteException -> L86
             java.lang.String r2 = "/dev/null"
             r1.<init>(r2)     // Catch: java.lang.Throwable -> L70 java.io.FileNotFoundException -> L74 android.os.RemoteException -> L86
-            r2 = 268435456(0x10000000, float:2.524355E-29)
+            r2 = 268435456(0x10000000, float:2.5243549E-29)
             android.os.ParcelFileDescriptor r1 = android.os.ParcelFileDescriptor.open(r1, r2)     // Catch: java.lang.Throwable -> L70 java.io.FileNotFoundException -> L74 android.os.RemoteException -> L86
             r8 = r1
             goto L37
@@ -230,7 +251,6 @@ public final class BugreportManager {
         ActivityManager.getService().requestBugReportWithDescription(title, description, params.getMode());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public final class DumpstateListener extends IDumpstateListener.Stub {
         private final BugreportCallback mCallback;
@@ -260,7 +280,6 @@ public final class BugreportManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onProgress$0(int progress) {
             this.mCallback.onProgress(progress);
         }
@@ -280,7 +299,6 @@ public final class BugreportManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$1(int errorCode) {
             this.mCallback.onError(errorCode);
         }
@@ -309,12 +327,10 @@ public final class BugreportManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFinished$2(String bugreportFile) {
             this.mCallback.onFinished(bugreportFile);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFinished$3() {
             this.mCallback.onFinished();
         }
@@ -333,7 +349,6 @@ public final class BugreportManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onScreenshotTaken$4(boolean success) {
             int message;
             if (success) {
@@ -359,7 +374,6 @@ public final class BugreportManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUiIntensiveBugreportDumpsFinished$5() {
             this.mCallback.onEarlyReportFinished();
         }

@@ -176,8 +176,9 @@ public interface IInlineSuggestionsRequestCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IInlineSuggestionsRequestCallback {
+        public static class Proxy implements IInlineSuggestionsRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

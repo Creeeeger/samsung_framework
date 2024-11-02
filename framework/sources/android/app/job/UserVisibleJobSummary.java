@@ -7,13 +7,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class UserVisibleJobSummary implements Parcelable {
     public static final Parcelable.Creator<UserVisibleJobSummary> CREATOR = new Parcelable.Creator<UserVisibleJobSummary>() { // from class: android.app.job.UserVisibleJobSummary.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UserVisibleJobSummary createFromParcel(Parcel in) {
             return new UserVisibleJobSummary(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UserVisibleJobSummary[] newArray(int size) {
             return new UserVisibleJobSummary[size];
@@ -105,5 +106,22 @@ public class UserVisibleJobSummary implements Parcelable {
         dest.writeString(this.mSourcePackageName);
         dest.writeString(this.mNamespace);
         dest.writeInt(this.mJobId);
+    }
+
+    /* renamed from: android.app.job.UserVisibleJobSummary$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UserVisibleJobSummary> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserVisibleJobSummary createFromParcel(Parcel in) {
+            return new UserVisibleJobSummary(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserVisibleJobSummary[] newArray(int size) {
+            return new UserVisibleJobSummary[size];
+        }
     }
 }

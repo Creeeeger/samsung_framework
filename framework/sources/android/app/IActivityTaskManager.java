@@ -2617,14 +2617,12 @@ public interface IActivityTaskManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg4, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg4.put(k, v);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IActivityTaskManager {
             private IBinder mRemote;
@@ -4983,7 +4981,6 @@ public interface IActivityTaskManager extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$sendSaLoggingBroadcast$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);

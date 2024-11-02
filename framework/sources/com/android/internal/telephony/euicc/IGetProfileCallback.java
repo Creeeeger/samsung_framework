@@ -86,8 +86,9 @@ public interface IGetProfileCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGetProfileCallback {
+        public static class Proxy implements IGetProfileCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

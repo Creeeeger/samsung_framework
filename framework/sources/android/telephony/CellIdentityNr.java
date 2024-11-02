@@ -15,14 +15,15 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class CellIdentityNr extends CellIdentity {
     public static final Parcelable.Creator<CellIdentityNr> CREATOR = new Parcelable.Creator<CellIdentityNr>() { // from class: android.telephony.CellIdentityNr.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellIdentityNr createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityNr.createFromParcelBody(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityNr[] newArray(int size) {
             return new CellIdentityNr[size];
@@ -177,7 +178,24 @@ public final class CellIdentityNr extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.telephony.CellIdentityNr$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellIdentityNr> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityNr createFromParcel(Parcel in) {
+            in.readInt();
+            return CellIdentityNr.createFromParcelBody(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityNr[] newArray(int size) {
+            return new CellIdentityNr[size];
+        }
+    }
+
     public static CellIdentityNr createFromParcelBody(Parcel in) {
         return new CellIdentityNr(in);
     }

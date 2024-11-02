@@ -36,12 +36,10 @@ public class SignerInfoGenerator {
     private final SignerIdentifier signerIdentifier;
     private final CMSAttributeTableGenerator unsAttrGen;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder) throws OperatorCreationException {
         this(signerIdentifier, signer, digesterProvider, sigEncAlgFinder, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder, boolean isDirectSignature) throws OperatorCreationException {
         DefaultDigestAlgorithmIdentifierFinder defaultDigestAlgorithmIdentifierFinder = new DefaultDigestAlgorithmIdentifierFinder();
         this.digAlgFinder = defaultDigestAlgorithmIdentifierFinder;
@@ -74,7 +72,6 @@ public class SignerInfoGenerator {
         this.unsAttrGen = unsAttrGen;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder, CMSAttributeTableGenerator sAttrGen, CMSAttributeTableGenerator unsAttrGen) throws OperatorCreationException {
         DefaultDigestAlgorithmIdentifierFinder defaultDigestAlgorithmIdentifierFinder = new DefaultDigestAlgorithmIdentifierFinder();
         this.digAlgFinder = defaultDigestAlgorithmIdentifierFinder;
@@ -169,7 +166,6 @@ public class SignerInfoGenerator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAssociatedCertificate(X509CertificateHolder certHolder) {
         this.certHolder = certHolder;
     }

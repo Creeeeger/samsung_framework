@@ -267,7 +267,6 @@ public class GridLayoutManager extends LinearLayoutManager {
         return iArr2[startSpan + spanSize] - iArr2[startSpan];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.widget.LinearLayoutManager
     public void onAnchorReady(RecyclerView.Recycler recycler, RecyclerView.State state, LinearLayoutManager.AnchorInfo anchorInfo, int itemDirection) {
         super.onAnchorReady(recycler, state, anchorInfo, itemDirection);
@@ -412,7 +411,7 @@ public class GridLayoutManager extends LinearLayoutManager {
 
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r12v0 */
-    /* JADX WARN: Type inference failed for: r12v1, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r12v1, types: [int, boolean] */
     /* JADX WARN: Type inference failed for: r12v21 */
     @Override // com.android.internal.widget.LinearLayoutManager
     void layoutChunk(RecyclerView.Recycler recycler, RecyclerView.State state, LinearLayoutManager.LayoutState layoutState, LinearLayoutManager.LayoutChunkResult result) {

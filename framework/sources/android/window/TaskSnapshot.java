@@ -13,13 +13,14 @@ import android.os.SystemClock;
 /* loaded from: classes4.dex */
 public class TaskSnapshot implements Parcelable {
     public static final Parcelable.Creator<TaskSnapshot> CREATOR = new Parcelable.Creator<TaskSnapshot>() { // from class: android.window.TaskSnapshot.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaskSnapshot createFromParcel(Parcel source) {
             return new TaskSnapshot(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskSnapshot[] newArray(int size) {
             return new TaskSnapshot[size];
@@ -44,6 +45,10 @@ public class TaskSnapshot implements Parcelable {
     private final Point mTaskSize;
     private final ComponentName mTopActivityComponent;
     private final int mWindowingMode;
+
+    /* synthetic */ TaskSnapshot(Parcel parcel, TaskSnapshotIA taskSnapshotIA) {
+        this(parcel);
+    }
 
     public TaskSnapshot(long id, long captureTime, ComponentName topActivityComponent, HardwareBuffer snapshot, ColorSpace colorSpace, int orientation, int rotation, Point taskSize, Rect contentInsets, Rect letterboxInsets, boolean isLowResolution, boolean isRealSnapshot, int windowingMode, int appearance, boolean isTranslucent, boolean hasImeSurface) {
         this(id, captureTime, topActivityComponent, snapshot, colorSpace, orientation, rotation, taskSize, contentInsets, letterboxInsets, isLowResolution, isRealSnapshot, windowingMode, appearance, isTranslucent, hasImeSurface, null);
@@ -218,6 +223,23 @@ public class TaskSnapshot implements Parcelable {
         HardwareBuffer hardwareBuffer2 = this.mSnapshot;
         int height = hardwareBuffer2 != null ? hardwareBuffer2.getHeight() : 0;
         return "TaskSnapshot{ mId=" + this.mId + " mCaptureTime=" + this.mCaptureTime + " mTopActivityComponent=" + this.mTopActivityComponent.flattenToShortString() + " mSnapshot=" + this.mSnapshot + " (" + width + "x" + height + ") mColorSpace=" + this.mColorSpace.toString() + " mOrientation=" + this.mOrientation + " mRotation=" + this.mRotation + " mTaskSize=" + this.mTaskSize.toString() + " mContentInsets=" + this.mContentInsets.toShortString() + " mLetterboxInsets=" + this.mLetterboxInsets.toShortString() + " mIsLowResolution=" + this.mIsLowResolution + " mIsRealSnapshot=" + this.mIsRealSnapshot + " mWindowingMode=" + this.mWindowingMode + " mAppearance=" + this.mAppearance + " mIsTranslucent=" + this.mIsTranslucent + " mHasImeSurface=" + this.mHasImeSurface;
+    }
+
+    /* renamed from: android.window.TaskSnapshot$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaskSnapshot> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskSnapshot createFromParcel(Parcel source) {
+            return new TaskSnapshot(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskSnapshot[] newArray(int size) {
+            return new TaskSnapshot[size];
+        }
     }
 
     /* loaded from: classes4.dex */

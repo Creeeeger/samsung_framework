@@ -36,6 +36,10 @@ public final class LocationAccessPolicy {
         public final int minSdkVersionForCoarse;
         public final int minSdkVersionForFine;
 
+        /* synthetic */ LocationPermissionQuery(String str, String str2, int i, int i2, int i3, int i4, boolean z, String str3, LocationPermissionQueryIA locationPermissionQueryIA) {
+            this(str, str2, i, i2, i3, i4, z, str3);
+        }
+
         private LocationPermissionQuery(String callingPackage, String callingFeatureId, int callingUid, int callingPid, int minSdkVersionForCoarse, int minSdkVersionForFine, boolean logAsInfo, String method) {
             this.callingPackage = callingPackage;
             this.callingFeatureId = callingFeatureId;

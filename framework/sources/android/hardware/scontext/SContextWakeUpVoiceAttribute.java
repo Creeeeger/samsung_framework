@@ -23,7 +23,6 @@ public class SContextWakeUpVoiceAttribute extends SContextAttribute {
         setAttribute();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextWakeUpVoiceAttribute(int mode) {
         this.mMode = -1;
         this.mVoiceMode = 1;

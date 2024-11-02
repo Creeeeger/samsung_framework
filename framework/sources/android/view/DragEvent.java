@@ -37,7 +37,9 @@ public class DragEvent implements Parcelable {
     private static int gRecyclerUsed = 0;
     private static DragEvent gRecyclerTop = null;
     public static final Parcelable.Creator<DragEvent> CREATOR = new Parcelable.Creator<DragEvent>() { // from class: android.view.DragEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DragEvent createFromParcel(Parcel in) {
             DragEvent event = DragEvent.obtain();
@@ -65,7 +67,6 @@ public class DragEvent implements Parcelable {
             return event;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DragEvent[] newArray(int size) {
             return new DragEvent[size];
@@ -247,6 +248,45 @@ public class DragEvent implements Parcelable {
         } else {
             parcel.writeInt(1);
             parcel.writeStrongBinder(this.mDragAndDropPermissions.asBinder());
+        }
+    }
+
+    /* renamed from: android.view.DragEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DragEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DragEvent createFromParcel(Parcel in) {
+            DragEvent event = DragEvent.obtain();
+            event.mAction = in.readInt();
+            event.mX = in.readFloat();
+            event.mY = in.readFloat();
+            event.mOffsetX = in.readFloat();
+            event.mOffsetY = in.readFloat();
+            event.mDragResult = in.readInt() != 0;
+            event.mIsEavesDropEvent = in.readBoolean();
+            event.mIsStickyEvent = in.readBoolean();
+            if (in.readInt() != 0) {
+                event.mClipData = ClipData.CREATOR.createFromParcel(in);
+            }
+            if (in.readInt() != 0) {
+                event.mClipDescription = ClipDescription.CREATOR.createFromParcel(in);
+            }
+            if (in.readInt() != 0) {
+                event.mDragSurface = SurfaceControl.CREATOR.createFromParcel(in);
+                event.mDragSurface.setUnreleasedWarningCallSite("DragEvent");
+            }
+            if (in.readInt() != 0) {
+                event.mDragAndDropPermissions = IDragAndDropPermissions.Stub.asInterface(in.readStrongBinder());
+            }
+            return event;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DragEvent[] newArray(int size) {
+            return new DragEvent[size];
         }
     }
 

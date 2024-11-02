@@ -210,7 +210,9 @@ public class AccessibilityNodeInfo implements Parcelable {
         LEASHED_NODE_ID = makeNodeId(LEASHED_ITEM_ID, -1);
         DEFAULT = new AccessibilityNodeInfo();
         CREATOR = new Parcelable.Creator<AccessibilityNodeInfo>() { // from class: android.view.accessibility.AccessibilityNodeInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AccessibilityNodeInfo createFromParcel(Parcel parcel) {
                 AccessibilityNodeInfo info = new AccessibilityNodeInfo();
@@ -218,7 +220,6 @@ public class AccessibilityNodeInfo implements Parcelable {
                 return info;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AccessibilityNodeInfo[] newArray(int size) {
                 return new AccessibilityNodeInfo[size];
@@ -1918,7 +1919,7 @@ public class AccessibilityNodeInfo implements Parcelable {
         if (otherChildNodeIds != null && otherChildNodeIds.size() > 0) {
             LongArray longArray2 = this.mChildNodeIds;
             if (longArray2 == null) {
-                this.mChildNodeIds = otherChildNodeIds.m4929clone();
+                this.mChildNodeIds = otherChildNodeIds.m4928clone();
             } else {
                 longArray2.addAll(otherChildNodeIds);
             }
@@ -1938,275 +1939,274 @@ public class AccessibilityNodeInfo implements Parcelable {
         this.mLeashedParentNodeId = other.mLeashedParentNodeId;
     }
 
-    private void initCopyInfos(AccessibilityNodeInfo accessibilityNodeInfo) {
+    private void initCopyInfos(AccessibilityNodeInfo other) {
         RangeInfo rangeInfo;
         CollectionInfo collectionInfo;
         CollectionItemInfo build;
-        RangeInfo rangeInfo2 = accessibilityNodeInfo.mRangeInfo;
+        RangeInfo ri = other.mRangeInfo;
         ExtraRenderingInfo extraRenderingInfo = null;
-        byte b = 0;
-        if (rangeInfo2 == null) {
+        if (ri == null) {
             rangeInfo = null;
         } else {
-            rangeInfo = new RangeInfo(rangeInfo2.mType, rangeInfo2.mMin, rangeInfo2.mMax, rangeInfo2.mCurrent);
+            rangeInfo = new RangeInfo(ri.mType, ri.mMin, ri.mMax, ri.mCurrent);
         }
         this.mRangeInfo = rangeInfo;
-        CollectionInfo collectionInfo2 = accessibilityNodeInfo.mCollectionInfo;
-        if (collectionInfo2 == null) {
+        CollectionInfo ci = other.mCollectionInfo;
+        if (ci == null) {
             collectionInfo = null;
         } else {
-            collectionInfo = new CollectionInfo(collectionInfo2.mRowCount, collectionInfo2.mColumnCount, collectionInfo2.mHierarchical, collectionInfo2.mSelectionMode);
+            collectionInfo = new CollectionInfo(ci.mRowCount, ci.mColumnCount, ci.mHierarchical, ci.mSelectionMode);
         }
         this.mCollectionInfo = collectionInfo;
-        CollectionItemInfo collectionItemInfo = accessibilityNodeInfo.mCollectionItemInfo;
+        CollectionItemInfo cii = other.mCollectionItemInfo;
         CollectionItemInfo.Builder builder = new CollectionItemInfo.Builder();
-        if (collectionItemInfo == null) {
+        if (cii == null) {
             build = null;
         } else {
-            build = builder.setRowTitle(collectionItemInfo.mRowTitle).setRowIndex(collectionItemInfo.mRowIndex).setRowSpan(collectionItemInfo.mRowSpan).setColumnTitle(collectionItemInfo.mColumnTitle).setColumnIndex(collectionItemInfo.mColumnIndex).setColumnSpan(collectionItemInfo.mColumnSpan).setHeading(collectionItemInfo.mHeading).setSelected(collectionItemInfo.mSelected).build();
+            build = builder.setRowTitle(cii.mRowTitle).setRowIndex(cii.mRowIndex).setRowSpan(cii.mRowSpan).setColumnTitle(cii.mColumnTitle).setColumnIndex(cii.mColumnIndex).setColumnSpan(cii.mColumnSpan).setHeading(cii.mHeading).setSelected(cii.mSelected).build();
         }
         this.mCollectionItemInfo = build;
-        ExtraRenderingInfo extraRenderingInfo2 = accessibilityNodeInfo.mExtraRenderingInfo;
-        if (extraRenderingInfo2 != null) {
-            extraRenderingInfo = new ExtraRenderingInfo(extraRenderingInfo2);
+        ExtraRenderingInfo ti = other.mExtraRenderingInfo;
+        if (ti != null) {
+            extraRenderingInfo = new ExtraRenderingInfo(ti);
         }
         this.mExtraRenderingInfo = extraRenderingInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void initFromParcel(Parcel parcel) {
-        boolean z;
+        boolean sealed;
         ArrayList<String> arrayList;
         Bundle bundle;
         RangeInfo rangeInfo;
         CollectionInfo collectionInfo;
         CollectionItemInfo collectionItemInfo;
-        long readLong = parcel.readLong();
-        int i = 0 + 1;
-        if (BitUtils.isBitSet(readLong, 0)) {
-            z = parcel.readInt() == 1;
+        long nonDefaultFields = parcel.readLong();
+        int fieldIndex = 0 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, 0)) {
+            sealed = parcel.readInt() == 1;
         } else {
-            z = DEFAULT.mSealed;
+            sealed = DEFAULT.mSealed;
         }
-        int i2 = i + 1;
-        if (BitUtils.isBitSet(readLong, i)) {
+        int fieldIndex2 = fieldIndex + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex)) {
             this.mSourceNodeId = parcel.readLong();
         }
-        int i3 = i2 + 1;
-        if (BitUtils.isBitSet(readLong, i2)) {
+        int fieldIndex3 = fieldIndex2 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex2)) {
             this.mWindowId = parcel.readInt();
         }
-        int i4 = i3 + 1;
-        if (BitUtils.isBitSet(readLong, i3)) {
+        int fieldIndex4 = fieldIndex3 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex3)) {
             this.mParentNodeId = parcel.readLong();
         }
-        int i5 = i4 + 1;
-        if (BitUtils.isBitSet(readLong, i4)) {
+        int fieldIndex5 = fieldIndex4 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex4)) {
             this.mLabelForId = parcel.readLong();
         }
-        int i6 = i5 + 1;
-        if (BitUtils.isBitSet(readLong, i5)) {
+        int fieldIndex6 = fieldIndex5 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex5)) {
             this.mLabeledById = parcel.readLong();
         }
-        int i7 = i6 + 1;
-        if (BitUtils.isBitSet(readLong, i6)) {
+        int fieldIndex7 = fieldIndex6 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex6)) {
             this.mTraversalBefore = parcel.readLong();
         }
-        int i8 = i7 + 1;
-        if (BitUtils.isBitSet(readLong, i7)) {
+        int fieldIndex8 = fieldIndex7 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex7)) {
             this.mTraversalAfter = parcel.readLong();
         }
-        int i9 = i8 + 1;
-        if (BitUtils.isBitSet(readLong, i8)) {
+        int fieldIndex9 = fieldIndex8 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex8)) {
             this.mMinDurationBetweenContentChanges = parcel.readLong();
         }
-        int i10 = i9 + 1;
-        if (BitUtils.isBitSet(readLong, i9)) {
+        int fieldIndex10 = fieldIndex9 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex9)) {
             this.mConnectionId = parcel.readInt();
         }
-        int i11 = i10 + 1;
-        ExtraRenderingInfo extraRenderingInfo = null;
-        byte b = 0;
-        if (BitUtils.isBitSet(readLong, i10)) {
-            int readInt = parcel.readInt();
-            if (readInt > 0) {
-                this.mChildNodeIds = new LongArray(readInt);
-                for (int i12 = 0; i12 < readInt; i12++) {
-                    this.mChildNodeIds.add(parcel.readLong());
+        int fieldIndex11 = fieldIndex10 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex10)) {
+            int childrenSize = parcel.readInt();
+            if (childrenSize > 0) {
+                this.mChildNodeIds = new LongArray(childrenSize);
+                for (int i = 0; i < childrenSize; i++) {
+                    long childId = parcel.readLong();
+                    this.mChildNodeIds.add(childId);
                 }
             } else {
                 this.mChildNodeIds = null;
             }
         }
-        int i13 = i11 + 1;
-        if (BitUtils.isBitSet(readLong, i11)) {
+        int childrenSize2 = fieldIndex11 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex11)) {
             this.mBoundsInParent.top = parcel.readInt();
             this.mBoundsInParent.bottom = parcel.readInt();
             this.mBoundsInParent.left = parcel.readInt();
             this.mBoundsInParent.right = parcel.readInt();
         }
-        int i14 = i13 + 1;
-        if (BitUtils.isBitSet(readLong, i13)) {
+        int fieldIndex12 = childrenSize2 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, childrenSize2)) {
             this.mBoundsInScreen.top = parcel.readInt();
             this.mBoundsInScreen.bottom = parcel.readInt();
             this.mBoundsInScreen.left = parcel.readInt();
             this.mBoundsInScreen.right = parcel.readInt();
         }
-        int i15 = i14 + 1;
-        if (BitUtils.isBitSet(readLong, i14)) {
+        int fieldIndex13 = fieldIndex12 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex12)) {
             this.mBoundsInWindow.top = parcel.readInt();
             this.mBoundsInWindow.bottom = parcel.readInt();
             this.mBoundsInWindow.left = parcel.readInt();
             this.mBoundsInWindow.right = parcel.readInt();
         }
-        int i16 = i15 + 1;
-        if (BitUtils.isBitSet(readLong, i15)) {
-            addStandardActions(parcel.readLong());
-            int readInt2 = parcel.readInt();
-            for (int i17 = 0; i17 < readInt2; i17++) {
-                addActionUnchecked(AccessibilityAction.CREATOR.createFromParcel(parcel));
+        int fieldIndex14 = fieldIndex13 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex13)) {
+            long standardActions = parcel.readLong();
+            addStandardActions(standardActions);
+            int nonStandardActionCount = parcel.readInt();
+            for (int i2 = 0; i2 < nonStandardActionCount; i2++) {
+                AccessibilityAction action = AccessibilityAction.CREATOR.createFromParcel(parcel);
+                addActionUnchecked(action);
             }
         }
-        int i18 = i16 + 1;
-        if (BitUtils.isBitSet(readLong, i16)) {
+        int nonStandardActionCount2 = fieldIndex14 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex14)) {
             this.mMaxTextLength = parcel.readInt();
         }
-        int i19 = i18 + 1;
-        if (BitUtils.isBitSet(readLong, i18)) {
+        int fieldIndex15 = nonStandardActionCount2 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, nonStandardActionCount2)) {
             this.mMovementGranularities = parcel.readInt();
         }
-        int i20 = i19 + 1;
-        if (BitUtils.isBitSet(readLong, i19)) {
+        int fieldIndex16 = fieldIndex15 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex15)) {
             this.mBooleanProperties = parcel.readInt();
         }
-        int i21 = i20 + 1;
-        if (BitUtils.isBitSet(readLong, i20)) {
+        int fieldIndex17 = fieldIndex16 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex16)) {
             this.mPackageName = parcel.readCharSequence();
         }
-        int i22 = i21 + 1;
-        if (BitUtils.isBitSet(readLong, i21)) {
+        int fieldIndex18 = fieldIndex17 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex17)) {
             this.mClassName = parcel.readCharSequence();
         }
-        int i23 = i22 + 1;
-        if (BitUtils.isBitSet(readLong, i22)) {
+        int fieldIndex19 = fieldIndex18 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex18)) {
             this.mText = parcel.readCharSequence();
         }
-        int i24 = i23 + 1;
-        if (BitUtils.isBitSet(readLong, i23)) {
+        int fieldIndex20 = fieldIndex19 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex19)) {
             this.mHintText = parcel.readCharSequence();
         }
-        int i25 = i24 + 1;
-        if (BitUtils.isBitSet(readLong, i24)) {
+        int fieldIndex21 = fieldIndex20 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex20)) {
             this.mError = parcel.readCharSequence();
         }
-        int i26 = i25 + 1;
-        if (BitUtils.isBitSet(readLong, i25)) {
+        int fieldIndex22 = fieldIndex21 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex21)) {
             this.mStateDescription = parcel.readCharSequence();
         }
-        int i27 = i26 + 1;
-        if (BitUtils.isBitSet(readLong, i26)) {
+        int fieldIndex23 = fieldIndex22 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex22)) {
             this.mContentDescription = parcel.readCharSequence();
         }
-        int i28 = i27 + 1;
-        if (BitUtils.isBitSet(readLong, i27)) {
+        int fieldIndex24 = fieldIndex23 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex23)) {
             this.mPaneTitle = parcel.readCharSequence();
         }
-        int i29 = i28 + 1;
-        if (BitUtils.isBitSet(readLong, i28)) {
+        int fieldIndex25 = fieldIndex24 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex24)) {
             this.mTooltipText = parcel.readCharSequence();
         }
-        int i30 = i29 + 1;
-        if (BitUtils.isBitSet(readLong, i29)) {
+        int fieldIndex26 = fieldIndex25 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex25)) {
             this.mContainerTitle = parcel.readCharSequence();
         }
-        int i31 = i30 + 1;
-        if (BitUtils.isBitSet(readLong, i30)) {
+        int fieldIndex27 = fieldIndex26 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex26)) {
             this.mViewIdResourceName = parcel.readString();
         }
-        int i32 = i31 + 1;
-        if (BitUtils.isBitSet(readLong, i31)) {
+        int fieldIndex28 = fieldIndex27 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex27)) {
             this.mUniqueId = parcel.readString();
         }
-        int i33 = i32 + 1;
-        if (BitUtils.isBitSet(readLong, i32)) {
+        int fieldIndex29 = fieldIndex28 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex28)) {
             this.mTextSelectionStart = parcel.readInt();
         }
-        int i34 = i33 + 1;
-        if (BitUtils.isBitSet(readLong, i33)) {
+        int fieldIndex30 = fieldIndex29 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex29)) {
             this.mTextSelectionEnd = parcel.readInt();
         }
-        int i35 = i34 + 1;
-        if (BitUtils.isBitSet(readLong, i34)) {
+        int fieldIndex31 = fieldIndex30 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex30)) {
             this.mInputType = parcel.readInt();
         }
-        int i36 = i35 + 1;
-        if (BitUtils.isBitSet(readLong, i35)) {
+        int fieldIndex32 = fieldIndex31 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex31)) {
             this.mLiveRegion = parcel.readInt();
         }
-        int i37 = i36 + 1;
-        if (BitUtils.isBitSet(readLong, i36)) {
+        int fieldIndex33 = fieldIndex32 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex32)) {
             this.mDrawingOrderInParent = parcel.readInt();
         }
-        int i38 = i37 + 1;
-        if (BitUtils.isBitSet(readLong, i37)) {
+        int fieldIndex34 = fieldIndex33 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex33)) {
             arrayList = parcel.createStringArrayList();
         } else {
             arrayList = null;
         }
         this.mExtraDataKeys = arrayList;
-        int i39 = i38 + 1;
-        if (BitUtils.isBitSet(readLong, i38)) {
+        int fieldIndex35 = fieldIndex34 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex34)) {
             bundle = parcel.readBundle();
         } else {
             bundle = null;
         }
         this.mExtras = bundle;
-        int i40 = i39 + 1;
-        if (BitUtils.isBitSet(readLong, i39)) {
+        int fieldIndex36 = fieldIndex35 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex35)) {
             rangeInfo = new RangeInfo(parcel.readInt(), parcel.readFloat(), parcel.readFloat(), parcel.readFloat());
         } else {
             rangeInfo = null;
         }
         this.mRangeInfo = rangeInfo;
-        int i41 = i40 + 1;
-        if (BitUtils.isBitSet(readLong, i40)) {
+        int fieldIndex37 = fieldIndex36 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex36)) {
             collectionInfo = new CollectionInfo(parcel.readInt(), parcel.readInt(), parcel.readInt() == 1, parcel.readInt());
         } else {
             collectionInfo = null;
         }
         this.mCollectionInfo = collectionInfo;
-        int i42 = i41 + 1;
-        if (BitUtils.isBitSet(readLong, i41)) {
+        int fieldIndex38 = fieldIndex37 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex37)) {
             collectionItemInfo = new CollectionItemInfo(parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt() == 1, parcel.readInt() == 1);
         } else {
             collectionItemInfo = null;
         }
         this.mCollectionItemInfo = collectionItemInfo;
-        int i43 = i42 + 1;
-        if (BitUtils.isBitSet(readLong, i42)) {
+        int fieldIndex39 = fieldIndex38 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex38)) {
             this.mTouchDelegateInfo = TouchDelegateInfo.CREATOR.createFromParcel(parcel);
         }
-        int i44 = i43 + 1;
-        if (BitUtils.isBitSet(readLong, i43)) {
-            ExtraRenderingInfo extraRenderingInfo2 = new ExtraRenderingInfo(extraRenderingInfo);
-            this.mExtraRenderingInfo = extraRenderingInfo2;
-            extraRenderingInfo2.mLayoutSize = (Size) parcel.readValue(null);
+        int fieldIndex40 = fieldIndex39 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex39)) {
+            ExtraRenderingInfo extraRenderingInfo = new ExtraRenderingInfo(null);
+            this.mExtraRenderingInfo = extraRenderingInfo;
+            extraRenderingInfo.mLayoutSize = (Size) parcel.readValue(null);
             this.mExtraRenderingInfo.mTextSizeInPx = parcel.readFloat();
             this.mExtraRenderingInfo.mTextSizeUnit = parcel.readInt();
         }
-        int i45 = i44 + 1;
-        if (BitUtils.isBitSet(readLong, i44)) {
+        int fieldIndex41 = fieldIndex40 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex40)) {
             this.mLeashedChild = parcel.readStrongBinder();
         }
-        int i46 = i45 + 1;
-        if (BitUtils.isBitSet(readLong, i45)) {
+        int fieldIndex42 = fieldIndex41 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex41)) {
             this.mLeashedParent = parcel.readStrongBinder();
         }
-        int i47 = i46 + 1;
-        if (BitUtils.isBitSet(readLong, i46)) {
+        int i3 = fieldIndex42 + 1;
+        if (BitUtils.isBitSet(nonDefaultFields, fieldIndex42)) {
             this.mLeashedParentNodeId = parcel.readLong();
         }
-        this.mSealed = z;
+        this.mSealed = sealed;
     }
 
     private void clear() {
@@ -2249,7 +2249,6 @@ public class AccessibilityNodeInfo implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String getActionSymbolicName(int action) {
         switch (action) {
             case 1:
@@ -2454,7 +2453,6 @@ public class AccessibilityNodeInfo implements Parcelable {
         return builder.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static AccessibilityNodeInfo getNodeForAccessibilityId(int connectionId, int windowId, long accessibilityId) {
         return getNodeForAccessibilityId(connectionId, windowId, accessibilityId, 7);
     }
@@ -2554,18 +2552,23 @@ public class AccessibilityNodeInfo implements Parcelable {
         public static final AccessibilityAction ACTION_DRAG_CANCEL = new AccessibilityAction(16908375);
         public static final AccessibilityAction ACTION_SHOW_TEXT_SUGGESTIONS = new AccessibilityAction(16908376);
         public static final Parcelable.Creator<AccessibilityAction> CREATOR = new Parcelable.Creator<AccessibilityAction>() { // from class: android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AccessibilityAction createFromParcel(Parcel in) {
                 return new AccessibilityAction(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AccessibilityAction[] newArray(int size) {
                 return new AccessibilityAction[size];
             }
         };
+
+        /* synthetic */ AccessibilityAction(Parcel parcel, AccessibilityActionIA accessibilityActionIA) {
+            this(parcel);
+        }
 
         public AccessibilityAction(int actionId, CharSequence label) {
             this.mSerializationFlag = -1L;
@@ -2618,6 +2621,23 @@ public class AccessibilityNodeInfo implements Parcelable {
         public void writeToParcel(Parcel out, int flags) {
             out.writeInt(this.mActionId);
             out.writeCharSequence(this.mLabel);
+        }
+
+        /* renamed from: android.view.accessibility.AccessibilityNodeInfo$AccessibilityAction$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AccessibilityAction> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AccessibilityAction createFromParcel(Parcel in) {
+                return new AccessibilityAction(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AccessibilityAction[] newArray(int size) {
+                return new AccessibilityAction[size];
+            }
         }
 
         private AccessibilityAction(Parcel in) {
@@ -2748,6 +2768,10 @@ public class AccessibilityNodeInfo implements Parcelable {
         private int mRowSpan;
         private String mRowTitle;
         private boolean mSelected;
+
+        /* synthetic */ CollectionItemInfo(CollectionItemInfoIA collectionItemInfoIA) {
+            this();
+        }
 
         @Deprecated
         public static CollectionItemInfo obtain(CollectionItemInfo other) {
@@ -2907,7 +2931,9 @@ public class AccessibilityNodeInfo implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class TouchDelegateInfo implements Parcelable {
         public static final Parcelable.Creator<TouchDelegateInfo> CREATOR = new Parcelable.Creator<TouchDelegateInfo>() { // from class: android.view.accessibility.AccessibilityNodeInfo.TouchDelegateInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public TouchDelegateInfo createFromParcel(Parcel parcel) {
                 int size = parcel.readInt();
@@ -2924,7 +2950,6 @@ public class AccessibilityNodeInfo implements Parcelable {
                 return touchDelegateInfo;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TouchDelegateInfo[] newArray(int size) {
                 return new TouchDelegateInfo[size];
@@ -2954,12 +2979,10 @@ public class AccessibilityNodeInfo implements Parcelable {
             this.mTargetMap = targetMap;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setConnectionId(int connectionId) {
             this.mConnectionId = connectionId;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setWindowId(int windowId) {
             this.mWindowId = windowId;
         }
@@ -2995,6 +3018,34 @@ public class AccessibilityNodeInfo implements Parcelable {
                 dest.writeLong(accessibilityId.longValue());
             }
         }
+
+        /* renamed from: android.view.accessibility.AccessibilityNodeInfo$TouchDelegateInfo$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<TouchDelegateInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TouchDelegateInfo createFromParcel(Parcel parcel) {
+                int size = parcel.readInt();
+                if (size == 0) {
+                    return null;
+                }
+                ArrayMap<Region, Long> targetMap = new ArrayMap<>(size);
+                for (int i = 0; i < size; i++) {
+                    Region region = Region.CREATOR.createFromParcel(parcel);
+                    long accessibilityId = parcel.readLong();
+                    targetMap.put(region, Long.valueOf(accessibilityId));
+                }
+                TouchDelegateInfo touchDelegateInfo = new TouchDelegateInfo(targetMap, false);
+                return touchDelegateInfo;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TouchDelegateInfo[] newArray(int size) {
+                return new TouchDelegateInfo[size];
+            }
+        }
     }
 
     /* loaded from: classes4.dex */
@@ -3003,6 +3054,10 @@ public class AccessibilityNodeInfo implements Parcelable {
         private Size mLayoutSize;
         private float mTextSizeInPx;
         private int mTextSizeUnit;
+
+        /* synthetic */ ExtraRenderingInfo(ExtraRenderingInfo extraRenderingInfo, ExtraRenderingInfoIA extraRenderingInfoIA) {
+            this(extraRenderingInfo);
+        }
 
         @Deprecated
         public static ExtraRenderingInfo obtain() {
@@ -3056,6 +3111,25 @@ public class AccessibilityNodeInfo implements Parcelable {
             this.mLayoutSize = null;
             this.mTextSizeInPx = -1.0f;
             this.mTextSizeUnit = -1;
+        }
+    }
+
+    /* renamed from: android.view.accessibility.AccessibilityNodeInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AccessibilityNodeInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityNodeInfo createFromParcel(Parcel parcel) {
+            AccessibilityNodeInfo info = new AccessibilityNodeInfo();
+            info.initFromParcel(parcel);
+            return info;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityNodeInfo[] newArray(int size) {
+            return new AccessibilityNodeInfo[size];
         }
     }
 }

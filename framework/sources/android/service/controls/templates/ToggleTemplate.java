@@ -15,7 +15,6 @@ public final class ToggleTemplate extends ControlTemplate {
         this.mButton = button;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ToggleTemplate(Bundle b) {
         super(b);
         this.mButton = (ControlButton) b.getParcelable(KEY_BUTTON, ControlButton.class);

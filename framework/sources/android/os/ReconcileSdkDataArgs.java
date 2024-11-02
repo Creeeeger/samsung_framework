@@ -6,7 +6,9 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public class ReconcileSdkDataArgs implements Parcelable {
     public static final Parcelable.Creator<ReconcileSdkDataArgs> CREATOR = new Parcelable.Creator<ReconcileSdkDataArgs>() { // from class: android.os.ReconcileSdkDataArgs.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ReconcileSdkDataArgs createFromParcel(Parcel _aidl_source) {
             ReconcileSdkDataArgs _aidl_out = new ReconcileSdkDataArgs();
@@ -14,7 +16,6 @@ public class ReconcileSdkDataArgs implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ReconcileSdkDataArgs[] newArray(int _aidl_size) {
             return new ReconcileSdkDataArgs[_aidl_size];
@@ -28,6 +29,25 @@ public class ReconcileSdkDataArgs implements Parcelable {
     public int appId = 0;
     public int previousAppId = 0;
     public int flags = 0;
+
+    /* renamed from: android.os.ReconcileSdkDataArgs$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ReconcileSdkDataArgs> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ReconcileSdkDataArgs createFromParcel(Parcel _aidl_source) {
+            ReconcileSdkDataArgs _aidl_out = new ReconcileSdkDataArgs();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ReconcileSdkDataArgs[] newArray(int _aidl_size) {
+            return new ReconcileSdkDataArgs[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

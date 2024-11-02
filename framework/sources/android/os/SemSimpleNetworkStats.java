@@ -9,18 +9,36 @@ public final class SemSimpleNetworkStats implements Parcelable {
     private int mUid;
     private static final String TAG = SemSimpleNetworkStats.class.getSimpleName();
     public static final Parcelable.Creator<SemSimpleNetworkStats> CREATOR = new Parcelable.Creator<SemSimpleNetworkStats>() { // from class: android.os.SemSimpleNetworkStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemSimpleNetworkStats createFromParcel(Parcel in) {
             return new SemSimpleNetworkStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemSimpleNetworkStats[] newArray(int size) {
             return new SemSimpleNetworkStats[size];
         }
     };
+
+    /* renamed from: android.os.SemSimpleNetworkStats$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemSimpleNetworkStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSimpleNetworkStats createFromParcel(Parcel in) {
+            return new SemSimpleNetworkStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSimpleNetworkStats[] newArray(int size) {
+            return new SemSimpleNetworkStats[size];
+        }
+    }
 
     public SemSimpleNetworkStats() {
         initialize();

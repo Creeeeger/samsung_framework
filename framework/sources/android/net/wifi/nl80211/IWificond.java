@@ -346,8 +346,9 @@ public interface IWificond extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IWificond {
+        public static class Proxy implements IWificond {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

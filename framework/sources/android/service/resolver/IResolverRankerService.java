@@ -101,8 +101,9 @@ public interface IResolverRankerService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IResolverRankerService {
+        public static class Proxy implements IResolverRankerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

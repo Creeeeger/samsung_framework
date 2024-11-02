@@ -49,13 +49,14 @@ public final class SmsCbCmasInfo implements Parcelable {
     public static final int CMAS_URGENCY_IMMEDIATE = 0;
     public static final int CMAS_URGENCY_UNKNOWN = -1;
     public static final Parcelable.Creator<SmsCbCmasInfo> CREATOR = new Parcelable.Creator<SmsCbCmasInfo>() { // from class: android.telephony.SmsCbCmasInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmsCbCmasInfo createFromParcel(Parcel in) {
             return new SmsCbCmasInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsCbCmasInfo[] newArray(int size) {
             return new SmsCbCmasInfo[size];
@@ -117,7 +118,6 @@ public final class SmsCbCmasInfo implements Parcelable {
         this.mLanguage = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SmsCbCmasInfo(Parcel in) {
         this.mMessageClass = in.readInt();
         this.mCategory = in.readInt();
@@ -178,6 +178,23 @@ public final class SmsCbCmasInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.SmsCbCmasInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmsCbCmasInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsCbCmasInfo createFromParcel(Parcel in) {
+            return new SmsCbCmasInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsCbCmasInfo[] newArray(int size) {
+            return new SmsCbCmasInfo[size];
+        }
     }
 
     public SmsCbCmasInfo(int messageClass, int category, int responseType, int severity, int urgency, int certainty, int recordTypeAll) {

@@ -14,7 +14,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class StaplePluginStore extends PluginStore {
     public StaplePluginStore(Context context) {
@@ -31,7 +30,7 @@ public class StaplePluginStore extends PluginStore {
         }), Optional.ofNullable(fixture.getDescriptorStreamLoader()).flatMap(new Function() { // from class: com.samsung.android.sume.core.plugin.StaplePluginStore$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return StaplePluginStore.this.m8826xccf3d0d6((DescriptorStreamLoader) obj);
+                return StaplePluginStore.this.m8818xccf3d0d6((DescriptorStreamLoader) obj);
             }
         })}).filter(new Predicate() { // from class: com.samsung.android.sume.core.plugin.StaplePluginStore$$ExternalSyntheticLambda4
             @Override // java.util.function.Predicate
@@ -43,9 +42,8 @@ public class StaplePluginStore extends PluginStore {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$add$1$com-samsung-android-sume-core-plugin-StaplePluginStore, reason: not valid java name */
-    public /* synthetic */ Optional m8826xccf3d0d6(final DescriptorStreamLoader e) {
+    /* renamed from: lambda$add$1$com-samsung-android-sume-core-plugin-StaplePluginStore */
+    public /* synthetic */ Optional m8818xccf3d0d6(final DescriptorStreamLoader e) {
         return Optional.ofNullable(this.context).map(new Function() { // from class: com.samsung.android.sume.core.plugin.StaplePluginStore$$ExternalSyntheticLambda5
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
@@ -66,19 +64,17 @@ public class StaplePluginStore extends PluginStore {
         }).findFirst().map(new Function() { // from class: com.samsung.android.sume.core.plugin.StaplePluginStore$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return StaplePluginStore.this.m8827x1d949b77((Map.Entry) obj);
+                return StaplePluginStore.this.m8819x1d949b77((Map.Entry) obj);
             }
         }).orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$remove$2(PluginFixture fixture, Map.Entry e) {
         return ((PluginStore.Entry) e.getValue()).getPluginFixture() == fixture;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$remove$3$com-samsung-android-sume-core-plugin-StaplePluginStore, reason: not valid java name */
-    public /* synthetic */ PluginFixture m8827x1d949b77(Map.Entry e) {
+    /* renamed from: lambda$remove$3$com-samsung-android-sume-core-plugin-StaplePluginStore */
+    public /* synthetic */ PluginFixture m8819x1d949b77(Map.Entry e) {
         return this.registry.remove(e.getKey()).getPluginFixture();
     }
 

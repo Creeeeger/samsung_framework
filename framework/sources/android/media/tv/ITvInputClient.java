@@ -500,8 +500,9 @@ public interface ITvInputClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ITvInputClient {
+        public static class Proxy implements ITvInputClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -110,8 +110,9 @@ public interface IMediaProjectionCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMediaProjectionCallback {
+        public static class Proxy implements IMediaProjectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

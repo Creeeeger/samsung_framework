@@ -13,13 +13,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class StreamingCall implements Parcelable {
     public static final Parcelable.Creator<StreamingCall> CREATOR = new Parcelable.Creator<StreamingCall>() { // from class: android.telecom.StreamingCall.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StreamingCall createFromParcel(Parcel in) {
             return new StreamingCall(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StreamingCall[] newArray(int size) {
             return new StreamingCall[size];
@@ -41,6 +42,10 @@ public final class StreamingCall implements Parcelable {
     public @interface StreamingCallState {
     }
 
+    /* synthetic */ StreamingCall(Parcel parcel, StreamingCallIA streamingCallIA) {
+        this(parcel);
+    }
+
     private StreamingCall(Parcel in) {
         this.mAdapter = null;
         this.mComponentName = (ComponentName) in.readParcelable(ComponentName.class.getClassLoader());
@@ -48,6 +53,23 @@ public final class StreamingCall implements Parcelable {
         this.mAddress = (Uri) in.readParcelable(Uri.class.getClassLoader());
         this.mExtras = in.readBundle();
         this.mState = in.readInt();
+    }
+
+    /* renamed from: android.telecom.StreamingCall$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StreamingCall> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StreamingCall createFromParcel(Parcel in) {
+            return new StreamingCall(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StreamingCall[] newArray(int size) {
+            return new StreamingCall[size];
+        }
     }
 
     @Override // android.os.Parcelable

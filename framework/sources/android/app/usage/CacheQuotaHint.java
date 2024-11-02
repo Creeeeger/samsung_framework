@@ -10,14 +10,15 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class CacheQuotaHint implements Parcelable {
     public static final Parcelable.Creator<CacheQuotaHint> CREATOR = new Parcelable.Creator<CacheQuotaHint>() { // from class: android.app.usage.CacheQuotaHint.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CacheQuotaHint createFromParcel(Parcel in) {
             Builder builder = new Builder();
             return builder.setVolumeUuid(in.readString()).setUid(in.readInt()).setQuota(in.readLong()).setUsageStats((UsageStats) in.readParcelable(UsageStats.class.getClassLoader(), UsageStats.class)).build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CacheQuotaHint[] newArray(int size) {
             return new CacheQuotaHint[size];
@@ -118,6 +119,24 @@ public final class CacheQuotaHint implements Parcelable {
 
         public CacheQuotaHint build() {
             return new CacheQuotaHint(this);
+        }
+    }
+
+    /* renamed from: android.app.usage.CacheQuotaHint$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CacheQuotaHint> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CacheQuotaHint createFromParcel(Parcel in) {
+            Builder builder = new Builder();
+            return builder.setVolumeUuid(in.readString()).setUid(in.readInt()).setQuota(in.readLong()).setUsageStats((UsageStats) in.readParcelable(UsageStats.class.getClassLoader(), UsageStats.class)).build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CacheQuotaHint[] newArray(int size) {
+            return new CacheQuotaHint[size];
         }
     }
 }

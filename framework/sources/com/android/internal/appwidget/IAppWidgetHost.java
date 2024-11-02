@@ -142,7 +142,6 @@ public interface IAppWidgetHost extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IAppWidgetHost {
             private IBinder mRemote;

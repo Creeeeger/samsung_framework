@@ -221,7 +221,6 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         return super.onApplyWindowInsets(insets);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -240,7 +239,6 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         canvas.restore();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         int NP;
@@ -473,7 +471,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
 
     /* JADX WARN: Type inference failed for: r4v10 */
     /* JADX WARN: Type inference failed for: r4v7 */
-    /* JADX WARN: Type inference failed for: r4v8, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r4v8, types: [int, boolean] */
     @Override // android.view.WindowManagerPolicyConstants.PointerEventListener
     public void onPointerEvent(MotionEvent event) {
         ?? r4;
@@ -697,7 +695,6 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -717,7 +714,6 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         logInputDevices();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -774,7 +770,6 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         return x;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static final class FasterStringBuilder {
         private char[] mChars = new char[64];
@@ -877,8 +872,7 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.PointerLocationView$1, reason: invalid class name */
+    /* renamed from: com.android.internal.widget.PointerLocationView$1 */
     /* loaded from: classes5.dex */
     public class AnonymousClass1 extends ISystemGestureExclusionListener.Stub {
         AnonymousClass1() {
@@ -903,7 +897,6 @@ public class PointerLocationView extends View implements InputManager.InputDevic
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSystemGestureExclusionChanged$0(Region exclusion, Region rejected) {
             PointerLocationView.this.mSystemGestureExclusion.set(exclusion);
             PointerLocationView.this.mSystemGestureExclusionRejected.set(rejected);
@@ -912,7 +905,6 @@ public class PointerLocationView extends View implements InputManager.InputDevic
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

@@ -57,7 +57,6 @@ public final class RemoteConference {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RemoteConference(String id, IConnectionService connectionService) {
         CopyOnWriteArrayList copyOnWriteArrayList = new CopyOnWriteArrayList();
         this.mChildConnections = copyOnWriteArrayList;
@@ -84,19 +83,25 @@ public final class RemoteConference {
         this.mDisconnectCause = disconnectCause;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getId() {
         return this.mId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDestroyed() {
         for (RemoteConnection connection : this.mChildConnections) {
             connection.setConference(null);
         }
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            final Callback callback = record.getCallback();
+            Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.1
+                final /* synthetic */ Callback val$callback;
+                final /* synthetic */ RemoteConference val$conference;
+
+                AnonymousClass1(Callback callback2, RemoteConference this) {
+                    callback = callback2;
+                    conference = conference;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onDestroyed(conference);
@@ -106,17 +111,46 @@ public final class RemoteConference {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
-    public void setState(final int newState) {
+    /* renamed from: android.telecom.RemoteConference$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+
+        AnonymousClass1(Callback callback2, RemoteConference this) {
+            callback = callback2;
+            conference = conference;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onDestroyed(conference);
+        }
+    }
+
+    public void setState(int newState) {
         if (newState != 4 && newState != 5 && newState != 6) {
             Log.w(this, "Unsupported state transition for Conference call.", Connection.stateToString(newState));
             return;
         }
         if (this.mState != newState) {
-            final int oldState = this.mState;
+            int oldState = this.mState;
             this.mState = newState;
             for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-                final Callback callback = record.getCallback();
+                Callback callback = record.getCallback();
                 record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.2
+                    final /* synthetic */ Callback val$callback;
+                    final /* synthetic */ RemoteConference val$conference;
+                    final /* synthetic */ int val$newState;
+                    final /* synthetic */ int val$oldState;
+
+                    AnonymousClass2(Callback callback2, RemoteConference this, int oldState2, int newState2) {
+                        callback = callback2;
+                        conference = conference;
+                        oldState = oldState2;
+                        newState = newState2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onStateChanged(conference, oldState, newState);
@@ -126,14 +160,44 @@ public final class RemoteConference {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public void addConnection(final RemoteConnection connection) {
+    /* renamed from: android.telecom.RemoteConference$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+        final /* synthetic */ int val$newState;
+        final /* synthetic */ int val$oldState;
+
+        AnonymousClass2(Callback callback2, RemoteConference this, int oldState2, int newState2) {
+            callback = callback2;
+            conference = conference;
+            oldState = oldState2;
+            newState = newState2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onStateChanged(conference, oldState, newState);
+        }
+    }
+
+    public void addConnection(RemoteConnection connection) {
         if (!this.mChildConnections.contains(connection)) {
             this.mChildConnections.add(connection);
             connection.setConference(this);
             for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-                final Callback callback = record.getCallback();
+                Callback callback = record.getCallback();
                 record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.3
+                    final /* synthetic */ Callback val$callback;
+                    final /* synthetic */ RemoteConference val$conference;
+                    final /* synthetic */ RemoteConnection val$connection;
+
+                    AnonymousClass3(Callback callback2, RemoteConference this, RemoteConnection connection2) {
+                        callback = callback2;
+                        conference = conference;
+                        connection = connection2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onConnectionAdded(conference, connection);
@@ -144,13 +208,42 @@ public final class RemoteConference {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
-    public void removeConnection(final RemoteConnection connection) {
+    /* renamed from: android.telecom.RemoteConference$3 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass3 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+        final /* synthetic */ RemoteConnection val$connection;
+
+        AnonymousClass3(Callback callback2, RemoteConference this, RemoteConnection connection2) {
+            callback = callback2;
+            conference = conference;
+            connection = connection2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onConnectionAdded(conference, connection);
+        }
+    }
+
+    public void removeConnection(RemoteConnection connection) {
         if (this.mChildConnections.contains(connection)) {
             this.mChildConnections.remove(connection);
             connection.setConference(null);
             for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-                final Callback callback = record.getCallback();
+                Callback callback = record.getCallback();
                 record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.4
+                    final /* synthetic */ Callback val$callback;
+                    final /* synthetic */ RemoteConference val$conference;
+                    final /* synthetic */ RemoteConnection val$connection;
+
+                    AnonymousClass4(Callback callback2, RemoteConference this, RemoteConnection connection2) {
+                        callback = callback2;
+                        conference = conference;
+                        connection = connection2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onConnectionRemoved(conference, connection);
@@ -161,12 +254,39 @@ public final class RemoteConference {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telecom.RemoteConference$4 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass4 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+        final /* synthetic */ RemoteConnection val$connection;
+
+        AnonymousClass4(Callback callback2, RemoteConference this, RemoteConnection connection2) {
+            callback = callback2;
+            conference = conference;
+            connection = connection2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onConnectionRemoved(conference, connection);
+        }
+    }
+
     public void setConnectionCapabilities(int connectionCapabilities) {
         if (this.mConnectionCapabilities != connectionCapabilities) {
             this.mConnectionCapabilities = connectionCapabilities;
             for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-                final Callback callback = record.getCallback();
+                Callback callback = record.getCallback();
                 record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.5
+                    final /* synthetic */ Callback val$callback;
+                    final /* synthetic */ RemoteConference val$conference;
+
+                    AnonymousClass5(Callback callback2, RemoteConference this) {
+                        callback = callback2;
+                        conference = conference;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onConnectionCapabilitiesChanged(conference, RemoteConference.this.mConnectionCapabilities);
@@ -177,12 +297,37 @@ public final class RemoteConference {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telecom.RemoteConference$5 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass5 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+
+        AnonymousClass5(Callback callback2, RemoteConference this) {
+            callback = callback2;
+            conference = conference;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onConnectionCapabilitiesChanged(conference, RemoteConference.this.mConnectionCapabilities);
+        }
+    }
+
     public void setConnectionProperties(int connectionProperties) {
         if (this.mConnectionProperties != connectionProperties) {
             this.mConnectionProperties = connectionProperties;
             for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-                final Callback callback = record.getCallback();
+                Callback callback = record.getCallback();
                 record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.6
+                    final /* synthetic */ Callback val$callback;
+                    final /* synthetic */ RemoteConference val$conference;
+
+                    AnonymousClass6(Callback callback2, RemoteConference this) {
+                        callback = callback2;
+                        conference = conference;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onConnectionPropertiesChanged(conference, RemoteConference.this.mConnectionProperties);
@@ -193,12 +338,37 @@ public final class RemoteConference {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telecom.RemoteConference$6 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass6 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+
+        AnonymousClass6(Callback callback2, RemoteConference this) {
+            callback = callback2;
+            conference = conference;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onConnectionPropertiesChanged(conference, RemoteConference.this.mConnectionProperties);
+        }
+    }
+
     public void setConferenceableConnections(List<RemoteConnection> conferenceableConnections) {
         this.mConferenceableConnections.clear();
         this.mConferenceableConnections.addAll(conferenceableConnections);
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            final Callback callback = record.getCallback();
+            Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.7
+                final /* synthetic */ Callback val$callback;
+                final /* synthetic */ RemoteConference val$conference;
+
+                AnonymousClass7(Callback callback2, RemoteConference this) {
+                    callback = callback2;
+                    conference = conference;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onConferenceableConnectionsChanged(conference, RemoteConference.this.mUnmodifiableConferenceableConnections);
@@ -208,13 +378,40 @@ public final class RemoteConference {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
-    public void setDisconnected(final DisconnectCause disconnectCause) {
+    /* renamed from: android.telecom.RemoteConference$7 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass7 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+
+        AnonymousClass7(Callback callback2, RemoteConference this) {
+            callback = callback2;
+            conference = conference;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onConferenceableConnectionsChanged(conference, RemoteConference.this.mUnmodifiableConferenceableConnections);
+        }
+    }
+
+    public void setDisconnected(DisconnectCause disconnectCause) {
         if (this.mState != 6) {
             this.mDisconnectCause = disconnectCause;
             setState(6);
             for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-                final Callback callback = record.getCallback();
+                Callback callback = record.getCallback();
                 record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.8
+                    final /* synthetic */ Callback val$callback;
+                    final /* synthetic */ RemoteConference val$conference;
+                    final /* synthetic */ DisconnectCause val$disconnectCause;
+
+                    AnonymousClass8(Callback callback2, RemoteConference this, DisconnectCause disconnectCause2) {
+                        callback = callback2;
+                        conference = conference;
+                        disconnectCause = disconnectCause2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onDisconnected(conference, disconnectCause);
@@ -225,6 +422,25 @@ public final class RemoteConference {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telecom.RemoteConference$8 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass8 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+        final /* synthetic */ DisconnectCause val$disconnectCause;
+
+        AnonymousClass8(Callback callback2, RemoteConference this, DisconnectCause disconnectCause2) {
+            callback = callback2;
+            conference = conference;
+            disconnectCause = disconnectCause2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onDisconnected(conference, disconnectCause);
+        }
+    }
+
     public void putExtras(Bundle extras) {
         if (extras == null) {
             return;
@@ -236,7 +452,6 @@ public final class RemoteConference {
         notifyExtrasChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeExtras(List<String> keys) {
         if (this.mExtras == null || keys == null || keys.isEmpty()) {
             return;
@@ -249,13 +464,38 @@ public final class RemoteConference {
 
     private void notifyExtrasChanged() {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            final Callback callback = record.getCallback();
+            Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.RemoteConference.9
+                final /* synthetic */ Callback val$callback;
+                final /* synthetic */ RemoteConference val$conference;
+
+                AnonymousClass9(Callback callback2, RemoteConference this) {
+                    callback = callback2;
+                    conference = conference;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onExtrasChanged(conference, RemoteConference.this.mExtras);
                 }
             });
+        }
+    }
+
+    /* renamed from: android.telecom.RemoteConference$9 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass9 implements Runnable {
+        final /* synthetic */ Callback val$callback;
+        final /* synthetic */ RemoteConference val$conference;
+
+        AnonymousClass9(Callback callback2, RemoteConference this) {
+            callback = callback2;
+            conference = conference;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.onExtrasChanged(conference, RemoteConference.this.mExtras);
         }
     }
 

@@ -31,7 +31,6 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
     private final ScrollCaptureViewHelper<V> mViewHelper;
     private final WeakReference<V> mWeakView;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ScrollCaptureViewSupport(V containingView, ScrollCaptureViewHelper<V> viewHelper) {
         this.mWeakView = new WeakReference<>(containingView);
         this.mViewHelper = viewHelper;
@@ -157,8 +156,7 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: onScrollResult, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onScrollResult */
     public void lambda$onScrollCaptureImageRequest$0(final ScrollCaptureViewHelper.ScrollResult scrollResult, final V view, CancellationSignal signal, final Consumer<Rect> onComplete) {
         if (signal.isCanceled()) {
             Log.w(TAG, "onScrollCaptureImageRequest: cancelled! skipping render.");
@@ -178,8 +176,7 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: doCapture, reason: merged with bridge method [inline-methods] */
+    /* renamed from: doCapture */
     public void lambda$onScrollResult$1(ScrollCaptureViewHelper.ScrollResult scrollResult, V view, Rect viewCaptureArea, Consumer<Rect> onComplete) {
         int result = this.mRenderer.renderView(view, viewCaptureArea);
         if (result == 0 || result == 1) {
@@ -204,7 +201,6 @@ public class ScrollCaptureViewSupport<V extends View> implements ScrollCaptureCa
         onReady.run();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static final class ViewRenderer {
         private static final float AMBIENT_SHADOW_ALPHA = 0.039f;

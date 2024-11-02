@@ -134,8 +134,9 @@ public interface IContentCaptureServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IContentCaptureServiceCallback {
+        public static class Proxy implements IContentCaptureServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -65,7 +65,6 @@ public abstract class Animation implements Cloneable {
         void onAnimationStart(Animation animation);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class NoImagePreloadHolder {
         public static final boolean USE_CLOSEGUARD = SystemProperties.getBoolean("log.closeguard.Animation", false);
@@ -101,10 +100,9 @@ public abstract class Animation implements Cloneable {
         ensureInterpolator();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public Animation mo5544clone() throws CloneNotSupportedException {
+    /* renamed from: clone */
+    public Animation mo5539clone() throws CloneNotSupportedException {
         Animation animation = (Animation) super.clone();
         animation.mPreviousRegion = new RectF();
         animation.mRegion = new RectF();
@@ -152,21 +150,42 @@ public abstract class Animation implements Cloneable {
         this.mInitialized = true;
     }
 
+    /* renamed from: android.view.animation.Animation$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Animation.this.dispatchAnimationStart();
+        }
+    }
+
     public void setListenerHandler(Handler handler) {
         if (this.mListenerHandler == null) {
             this.mOnStart = new Runnable() { // from class: android.view.animation.Animation.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     Animation.this.dispatchAnimationStart();
                 }
             };
             this.mOnRepeat = new Runnable() { // from class: android.view.animation.Animation.2
+                AnonymousClass2() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     Animation.this.dispatchAnimationRepeat();
                 }
             };
             this.mOnEnd = new Runnable() { // from class: android.view.animation.Animation.3
+                AnonymousClass3() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     Animation.this.dispatchAnimationEnd();
@@ -174,6 +193,30 @@ public abstract class Animation implements Cloneable {
             };
         }
         this.mListenerHandler = handler;
+    }
+
+    /* renamed from: android.view.animation.Animation$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Animation.this.dispatchAnimationRepeat();
+        }
+    }
+
+    /* renamed from: android.view.animation.Animation$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Animation.this.dispatchAnimationEnd();
+        }
     }
 
     public void setInterpolator(Context context, int resID) {
@@ -280,7 +323,6 @@ public abstract class Animation implements Cloneable {
     public void setBackgroundColor(int bg) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float getScaleFactor() {
         return this.mScaleFactor;
     }
@@ -399,7 +441,6 @@ public abstract class Animation implements Cloneable {
         this.mListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void ensureInterpolator() {
         if (this.mInterpolator == null) {
             this.mInterpolator = new AccelerateDecelerateInterpolator();
@@ -512,7 +553,6 @@ public abstract class Animation implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchAnimationStart() {
         AnimationListener animationListener = this.mListener;
         if (animationListener != null) {
@@ -527,7 +567,6 @@ public abstract class Animation implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchAnimationEnd() {
         AnimationListener animationListener = this.mListener;
         if (animationListener != null) {
@@ -548,11 +587,9 @@ public abstract class Animation implements Cloneable {
         return this.mEnded;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void applyTransformation(float interpolatedTime, Transformation t) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float resolveSize(int type, float value, int size, int parentSize) {
         switch (type) {
             case 0:
@@ -607,7 +644,6 @@ public abstract class Animation implements Cloneable {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes4.dex */
     public static class Description {
         public int type;
@@ -616,7 +652,6 @@ public abstract class Animation implements Cloneable {
         protected Description() {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static Description parseValue(TypedValue value, Context context) {
             Description d = new Description();
             if (value == null) {

@@ -16,13 +16,14 @@ public final class Country implements Parcelable {
     public static final int COUNTRY_SOURCE_NETWORK = 0;
     public static final int COUNTRY_SOURCE_SIM = 2;
     public static final Parcelable.Creator<Country> CREATOR = new Parcelable.Creator<Country>() { // from class: android.location.Country.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Country createFromParcel(Parcel in) {
             return new Country(in.readString(), in.readInt(), in.readLong());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Country[] newArray(int size) {
             return new Country[size];
@@ -36,6 +37,10 @@ public final class Country implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface CountrySource {
+    }
+
+    /* synthetic */ Country(String str, int i, long j, CountryIA countryIA) {
+        this(str, i, j);
     }
 
     public Country(String countryIso, int source) {
@@ -77,6 +82,23 @@ public final class Country implements Parcelable {
 
     public long getTimestamp() {
         return this.mTimestamp;
+    }
+
+    /* renamed from: android.location.Country$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Country> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Country createFromParcel(Parcel in) {
+            return new Country(in.readString(), in.readInt(), in.readLong());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Country[] newArray(int size) {
+            return new Country[size];
+        }
     }
 
     @Override // android.os.Parcelable

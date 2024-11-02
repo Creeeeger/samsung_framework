@@ -25,7 +25,7 @@ public class SQLiteSdpHelper {
     private void prepare() {
     }
 
-    /* renamed from: android.database.sqlite.SQLiteSdpHelper$1, reason: invalid class name */
+    /* renamed from: android.database.sqlite.SQLiteSdpHelper$1 */
     /* loaded from: classes.dex */
     class AnonymousClass1 extends SQLiteSdpListener {
         AnonymousClass1() {

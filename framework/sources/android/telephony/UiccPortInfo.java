@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class UiccPortInfo implements Parcelable {
     public static final Parcelable.Creator<UiccPortInfo> CREATOR = new Parcelable.Creator<UiccPortInfo>() { // from class: android.telephony.UiccPortInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UiccPortInfo createFromParcel(Parcel in) {
             return new UiccPortInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccPortInfo[] newArray(int size) {
             return new UiccPortInfo[size];
@@ -25,6 +26,27 @@ public final class UiccPortInfo implements Parcelable {
     private final boolean mIsActive;
     private final int mLogicalSlotIndex;
     private final int mPortIndex;
+
+    /* synthetic */ UiccPortInfo(Parcel parcel, UiccPortInfoIA uiccPortInfoIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.telephony.UiccPortInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UiccPortInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UiccPortInfo createFromParcel(Parcel in) {
+            return new UiccPortInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UiccPortInfo[] newArray(int size) {
+            return new UiccPortInfo[size];
+        }
+    }
 
     private UiccPortInfo(Parcel in) {
         this.mIccId = in.readString8();

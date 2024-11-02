@@ -22,18 +22,6 @@ public final class RotationPolicy {
     public static final int NATURAL_ROTATION = 0;
     private static final String TAG = "RotationPolicy";
 
-    /* loaded from: classes5.dex */
-    public static abstract class RotationPolicyListener {
-        final ContentObserver mObserver = new ContentObserver(new Handler()) { // from class: com.android.internal.view.RotationPolicy.RotationPolicyListener.1
-            @Override // android.database.ContentObserver
-            public void onChange(boolean selfChange, Uri uri) {
-                RotationPolicyListener.this.onChange();
-            }
-        };
-
-        public abstract void onChange();
-    }
-
     private RotationPolicy() {
     }
 
@@ -96,8 +84,42 @@ public final class RotationPolicy {
         return true;
     }
 
-    private static void setRotationLock(final boolean enabled, final int rotation) {
+    /* renamed from: com.android.internal.view.RotationPolicy$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ boolean val$enabled;
+        final /* synthetic */ int val$rotation;
+
+        AnonymousClass1(boolean z, int i) {
+            enabled = z;
+            rotation = i;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+                if (enabled) {
+                    wm.freezeRotation(rotation);
+                } else {
+                    wm.thawRotation();
+                }
+            } catch (RemoteException e) {
+                Log.w(RotationPolicy.TAG, "Unable to save auto-rotate setting");
+            }
+        }
+    }
+
+    private static void setRotationLock(boolean enabled, int rotation) {
         AsyncTask.execute(new Runnable() { // from class: com.android.internal.view.RotationPolicy.1
+            final /* synthetic */ boolean val$enabled;
+            final /* synthetic */ int val$rotation;
+
+            AnonymousClass1(boolean enabled2, int rotation2) {
+                enabled = enabled2;
+                rotation = rotation2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -125,5 +147,34 @@ public final class RotationPolicy {
 
     public static void unregisterRotationPolicyListener(Context context, RotationPolicyListener listener) {
         context.getContentResolver().unregisterContentObserver(listener.mObserver);
+    }
+
+    /* loaded from: classes5.dex */
+    public static abstract class RotationPolicyListener {
+        final ContentObserver mObserver = new ContentObserver(new Handler()) { // from class: com.android.internal.view.RotationPolicy.RotationPolicyListener.1
+            AnonymousClass1(Handler handler) {
+                super(handler);
+            }
+
+            @Override // android.database.ContentObserver
+            public void onChange(boolean selfChange, Uri uri) {
+                RotationPolicyListener.this.onChange();
+            }
+        };
+
+        public abstract void onChange();
+
+        /* renamed from: com.android.internal.view.RotationPolicy$RotationPolicyListener$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 extends ContentObserver {
+            AnonymousClass1(Handler handler) {
+                super(handler);
+            }
+
+            @Override // android.database.ContentObserver
+            public void onChange(boolean selfChange, Uri uri) {
+                RotationPolicyListener.this.onChange();
+            }
+        }
     }
 }

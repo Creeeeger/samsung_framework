@@ -11,7 +11,6 @@ class UnstyledTextExtractor implements Tokenizer.OnTokenListener {
     Vector<TextTrackCueSpan[]> mLines = new Vector<>();
     Vector<TextTrackCueSpan> mCurrentLine = new Vector<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UnstyledTextExtractor() {
         init();
     }

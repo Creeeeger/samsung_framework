@@ -14,18 +14,23 @@ public final class LongMultiStateCounter implements Parcelable {
     private final int mStateCount;
     private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(LongMultiStateCounter.class.getClassLoader(), native_getReleaseFunc());
     public static final Parcelable.Creator<LongMultiStateCounter> CREATOR = new Parcelable.Creator<LongMultiStateCounter>() { // from class: com.android.internal.os.LongMultiStateCounter.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LongMultiStateCounter createFromParcel(Parcel in) {
             return new LongMultiStateCounter(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LongMultiStateCounter[] newArray(int size) {
             return new LongMultiStateCounter[size];
         }
     };
+
+    /* synthetic */ LongMultiStateCounter(Parcel parcel, LongMultiStateCounterIA longMultiStateCounterIA) {
+        this(parcel);
+    }
 
     @CriticalNative
     private static native void native_addCount(long j, long j2);
@@ -139,5 +144,22 @@ public final class LongMultiStateCounter implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.android.internal.os.LongMultiStateCounter$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LongMultiStateCounter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LongMultiStateCounter createFromParcel(Parcel in) {
+            return new LongMultiStateCounter(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LongMultiStateCounter[] newArray(int size) {
+            return new LongMultiStateCounter[size];
+        }
     }
 }

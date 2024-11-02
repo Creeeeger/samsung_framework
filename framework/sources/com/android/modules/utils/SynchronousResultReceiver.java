@@ -25,18 +25,23 @@ public final class SynchronousResultReceiver<T> implements Parcelable {
     private static final Object sLock = new Object();
     private static final ConcurrentLinkedQueue<SynchronousResultReceiver> sAvailableReceivers = new ConcurrentLinkedQueue<>();
     public static final Parcelable.Creator<SynchronousResultReceiver<?>> CREATOR = new Parcelable.Creator<SynchronousResultReceiver<?>>() { // from class: com.android.modules.utils.SynchronousResultReceiver.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SynchronousResultReceiver<?> createFromParcel(Parcel in) {
             return new SynchronousResultReceiver<>(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SynchronousResultReceiver<?>[] newArray(int size) {
             return new SynchronousResultReceiver[size];
         }
     };
+
+    /* synthetic */ SynchronousResultReceiver(Parcel parcel, SynchronousResultReceiverIA synchronousResultReceiverIA) {
+        this(parcel);
+    }
 
     public static <T> SynchronousResultReceiver<T> get() {
         synchronized (sLock) {
@@ -70,7 +75,6 @@ public final class SynchronousResultReceiver<T> implements Parcelable {
         this.mIsCompleted = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public CompletableFuture<Result<T>> getFuture() {
         CompletableFuture<Result<T>> completableFuture;
         synchronized (sLock) {
@@ -82,6 +86,9 @@ public final class SynchronousResultReceiver<T> implements Parcelable {
     /* loaded from: classes5.dex */
     public static class Result<T> implements Parcelable {
         public static final Parcelable.Creator<Result<?>> CREATOR = new Parcelable.Creator<Result<?>>() { // from class: com.android.modules.utils.SynchronousResultReceiver.Result.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Result<?> createFromParcel(Parcel in) {
                 return new Result<>(in);
@@ -94,6 +101,10 @@ public final class SynchronousResultReceiver<T> implements Parcelable {
         };
         private final RuntimeException mException;
         private final T mObject;
+
+        /* synthetic */ Result(Parcel parcel, ResultIA resultIA) {
+            this(parcel);
+        }
 
         public Result(RuntimeException exception) {
             this.mObject = null;
@@ -131,6 +142,23 @@ public final class SynchronousResultReceiver<T> implements Parcelable {
         private Result(Parcel parcel) {
             this.mObject = (T) parcel.readValue(null);
             this.mException = (RuntimeException) parcel.readValue(null);
+        }
+
+        /* renamed from: com.android.modules.utils.SynchronousResultReceiver$Result$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Result<?>> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Result<?> createFromParcel(Parcel in) {
+                return new Result<>(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Result<?>[] newArray(int size) {
+                return new Result[size];
+            }
         }
     }
 
@@ -190,6 +218,10 @@ public final class SynchronousResultReceiver<T> implements Parcelable {
 
     /* loaded from: classes5.dex */
     private final class MyResultReceiver extends ISynchronousResultReceiver.Stub {
+        /* synthetic */ MyResultReceiver(SynchronousResultReceiver synchronousResultReceiver, MyResultReceiverIA myResultReceiverIA) {
+            this();
+        }
+
         private MyResultReceiver() {
         }
 
@@ -223,5 +255,22 @@ public final class SynchronousResultReceiver<T> implements Parcelable {
         this.mLocal = false;
         this.mIsCompleted = false;
         this.mReceiver = ISynchronousResultReceiver.Stub.asInterface(in.readStrongBinder());
+    }
+
+    /* renamed from: com.android.modules.utils.SynchronousResultReceiver$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SynchronousResultReceiver<?>> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SynchronousResultReceiver<?> createFromParcel(Parcel in) {
+            return new SynchronousResultReceiver<>(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SynchronousResultReceiver<?>[] newArray(int size) {
+            return new SynchronousResultReceiver[size];
+        }
     }
 }

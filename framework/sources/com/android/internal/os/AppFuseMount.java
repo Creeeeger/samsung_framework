@@ -8,13 +8,14 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes5.dex */
 public class AppFuseMount implements Parcelable {
     public static final Parcelable.Creator<AppFuseMount> CREATOR = new Parcelable.Creator<AppFuseMount>() { // from class: com.android.internal.os.AppFuseMount.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AppFuseMount createFromParcel(Parcel in) {
             return new AppFuseMount(in.readInt(), (ParcelFileDescriptor) in.readParcelable(null, ParcelFileDescriptor.class));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppFuseMount[] newArray(int size) {
             return new AppFuseMount[size];
@@ -38,5 +39,22 @@ public class AppFuseMount implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mountPointId);
         dest.writeParcelable(this.fd, flags);
+    }
+
+    /* renamed from: com.android.internal.os.AppFuseMount$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AppFuseMount> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppFuseMount createFromParcel(Parcel in) {
+            return new AppFuseMount(in.readInt(), (ParcelFileDescriptor) in.readParcelable(null, ParcelFileDescriptor.class));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppFuseMount[] newArray(int size) {
+            return new AppFuseMount[size];
+        }
     }
 }

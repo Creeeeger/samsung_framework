@@ -508,7 +508,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void syncRoutesOnHandler(List<MediaRoute2Info> currentRoutes, RoutingSessionInfo currentSystemSessionInfo) {
         if (currentRoutes == null || currentRoutes.isEmpty() || currentSystemSessionInfo == null) {
             Log.e(TAG, "syncRoutesOnHandler: Received wrong data. currentRoutes=" + currentRoutes + ", currentSystemSessionInfo=" + currentSystemSessionInfo);
@@ -528,7 +527,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchFilteredRoutesUpdatedOnHandler(List<MediaRoute2Info> newRoutes) {
         List<MediaRoute2Info> addedRoutes = new ArrayList<>();
         List<MediaRoute2Info> removedRoutes = new ArrayList<>();
@@ -571,7 +569,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateRoutesOnHandler(List<MediaRoute2Info> routes) {
         synchronized (this.mLock) {
             this.mRoutes.clear();
@@ -592,7 +589,6 @@ public final class MediaRouter2 {
         }, this, this.mFilteredRoutes));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void createControllerOnHandler(int requestId, RoutingSessionInfo sessionInfo) {
         RoutingController newController;
         ControllerCreationRequest matchingRequest = null;
@@ -643,7 +639,6 @@ public final class MediaRouter2 {
         notifyTransfer(oldController, newController);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateControllerOnHandler(RoutingSessionInfo sessionInfo) {
         RoutingController matchingController;
         if (sessionInfo == null) {
@@ -672,7 +667,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void releaseControllerOnHandler(RoutingSessionInfo sessionInfo) {
         RoutingController matchingController;
         if (sessionInfo == null) {
@@ -696,7 +690,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onRequestCreateControllerByManagerOnHandler(RoutingSessionInfo oldSession, MediaRoute2Info route, long managerRequestId) {
         RoutingController controller;
         RoutingController controller2;
@@ -714,12 +707,10 @@ public final class MediaRouter2 {
         requestCreateController(controller2, route, managerRequestId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isSystemRouter() {
         return this.mClientPackageName != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public RoutingSessionInfo ensureClientPackageNameForSystemSession(RoutingSessionInfo sessionInfo) {
         if (!sessionInfo.isSystemSession() || !TextUtils.isEmpty(sessionInfo.getClientPackageName())) {
             return sessionInfo;
@@ -746,7 +737,6 @@ public final class MediaRouter2 {
         return sortedRoutes;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$getSortedRoutes$1(Map packagePriority, MediaRoute2Info r) {
         return -((Integer) packagePriority.getOrDefault(r.getPackageName(), 0)).intValue();
     }
@@ -781,7 +771,6 @@ public final class MediaRouter2 {
         return filteredRoutes;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateAllRoutesFromManager() {
         if (!isSystemRouter()) {
             return;
@@ -857,7 +846,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyPreferredFeaturesChanged(final List<String> features) {
         Iterator<RouteCallbackRecord> it = this.mRouteCallbackRecords.iterator();
         while (it.hasNext()) {
@@ -871,7 +859,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyTransfer(final RoutingController oldController, final RoutingController newController) {
         Iterator<TransferCallbackRecord> it = this.mTransferCallbackRecords.iterator();
         while (it.hasNext()) {
@@ -885,7 +872,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyTransferFailure(final MediaRoute2Info route) {
         Iterator<TransferCallbackRecord> it = this.mTransferCallbackRecords.iterator();
         while (it.hasNext()) {
@@ -899,7 +885,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyStop(final RoutingController controller) {
         Iterator<TransferCallbackRecord> it = this.mTransferCallbackRecords.iterator();
         while (it.hasNext()) {
@@ -913,7 +898,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyControllerUpdated(final RoutingController controller) {
         Iterator<ControllerCallbackRecord> it = this.mControllerCallbackRecords.iterator();
         while (it.hasNext()) {
@@ -1307,8 +1291,9 @@ public final class MediaRouter2 {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
-    class SystemRoutingController extends RoutingController {
+    public class SystemRoutingController extends RoutingController {
         SystemRoutingController(RoutingSessionInfo sessionInfo) {
             super(sessionInfo);
         }
@@ -1328,7 +1313,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static final class RouteCallbackRecord {
         public final Executor mExecutor;
@@ -1353,7 +1337,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static final class TransferCallbackRecord {
         public final Executor mExecutor;
@@ -1376,7 +1359,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static final class ControllerCallbackRecord {
         public final ControllerCallback mCallback;
@@ -1399,7 +1381,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static final class ControllerCreationRequest {
         public final long mManagerRequestId;
@@ -1415,7 +1396,6 @@ public final class MediaRouter2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public class MediaRouter2Stub extends IMediaRouter2.Stub {
         MediaRouter2Stub() {
@@ -1482,8 +1462,9 @@ public final class MediaRouter2 {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
-    class ManagerCallback implements MediaRouter2Manager.Callback {
+    public class ManagerCallback implements MediaRouter2Manager.Callback {
         ManagerCallback() {
         }
 

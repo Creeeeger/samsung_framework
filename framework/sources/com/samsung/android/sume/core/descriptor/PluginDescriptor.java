@@ -26,14 +26,13 @@ public abstract class PluginDescriptor extends MFDescriptorBase {
         return (String) Optional.ofNullable(getAll().get(Integer.valueOf(PLUGIN_CLASS_NAME))).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.descriptor.PluginDescriptor$$ExternalSyntheticLambda0
             @Override // java.util.function.Supplier
             public final Object get() {
-                return PluginDescriptor.this.m8750x62801927();
+                return PluginDescriptor.this.m8742x62801927();
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$getPluginClassName$0$com-samsung-android-sume-core-descriptor-PluginDescriptor, reason: not valid java name */
-    public /* synthetic */ Object m8750x62801927() {
+    /* renamed from: lambda$getPluginClassName$0$com-samsung-android-sume-core-descriptor-PluginDescriptor */
+    public /* synthetic */ Object m8742x62801927() {
         return Optional.ofNullable(getPluginClass()).map(new Function() { // from class: com.samsung.android.sume.core.descriptor.PluginDescriptor$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
@@ -61,7 +60,6 @@ public abstract class PluginDescriptor extends MFDescriptorBase {
         }).collect(Collectors.joining("#"));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getFilterId$1(String it) {
         return !it.isEmpty();
     }

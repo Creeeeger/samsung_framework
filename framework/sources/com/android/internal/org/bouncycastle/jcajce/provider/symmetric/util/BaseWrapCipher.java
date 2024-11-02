@@ -51,7 +51,6 @@ public abstract class BaseWrapCipher extends CipherSpi implements PBE {
     protected Wrapper wrapEngine;
     private ErasableOutputStream wrapStream;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseWrapCipher() {
         this.availableSpecs = new Class[]{PBEParameterSpec.class, IvParameterSpec.class};
         this.pbeType = 2;
@@ -62,7 +61,6 @@ public abstract class BaseWrapCipher extends CipherSpi implements PBE {
         this.helper = new DefaultJcaJceHelper();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseWrapCipher(Wrapper wrapEngine) {
         this(wrapEngine, 0);
     }
@@ -117,7 +115,6 @@ public abstract class BaseWrapCipher extends CipherSpi implements PBE {
         return this.engineParams;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final AlgorithmParameters createParametersInstance(String algorithm) throws NoSuchAlgorithmException, NoSuchProviderException {
         return this.helper.createAlgorithmParameters(algorithm);
     }
@@ -400,7 +397,6 @@ public abstract class BaseWrapCipher extends CipherSpi implements PBE {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes5.dex */
     public static final class ErasableOutputStream extends ByteArrayOutputStream {
         public byte[] getBuf() {
@@ -413,12 +409,10 @@ public abstract class BaseWrapCipher extends CipherSpi implements PBE {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes5.dex */
     public static class InvalidKeyOrParametersException extends InvalidKeyException {
         private final Throwable cause;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public InvalidKeyOrParametersException(String msg, Throwable cause) {
             super(msg);
             this.cause = cause;

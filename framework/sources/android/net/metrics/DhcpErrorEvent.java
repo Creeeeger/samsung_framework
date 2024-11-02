@@ -14,13 +14,14 @@ public final class DhcpErrorEvent implements IpConnectivityLog.Event {
     public static final int BOOTP_TOO_SHORT = 67174400;
     public static final int BUFFER_UNDERFLOW = 83951616;
     public static final Parcelable.Creator<DhcpErrorEvent> CREATOR = new Parcelable.Creator<DhcpErrorEvent>() { // from class: android.net.metrics.DhcpErrorEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DhcpErrorEvent createFromParcel(Parcel in) {
             return new DhcpErrorEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DhcpErrorEvent[] newArray(int size) {
             return new DhcpErrorEvent[size];
@@ -52,6 +53,10 @@ public final class DhcpErrorEvent implements IpConnectivityLog.Event {
     public static final int RECEIVE_ERROR = 84017152;
     public final int errorCode;
 
+    /* synthetic */ DhcpErrorEvent(Parcel parcel, DhcpErrorEventIA dhcpErrorEventIA) {
+        this(parcel);
+    }
+
     public DhcpErrorEvent(int errorCode) {
         this.errorCode = errorCode;
     }
@@ -68,6 +73,23 @@ public final class DhcpErrorEvent implements IpConnectivityLog.Event {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.net.metrics.DhcpErrorEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DhcpErrorEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DhcpErrorEvent createFromParcel(Parcel in) {
+            return new DhcpErrorEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DhcpErrorEvent[] newArray(int size) {
+            return new DhcpErrorEvent[size];
+        }
     }
 
     public static int errorCodeWithOption(int errorCode, int option) {

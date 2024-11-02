@@ -59,16 +59,18 @@ public class ActivityTaskManager {
     public static final int SUPPORTS_FLEX_PANEL_PACKAGES = 16;
     private static int sMaxRecentTasks = -1;
     private static final Singleton<ActivityTaskManager> sInstance = new Singleton<ActivityTaskManager>() { // from class: android.app.ActivityTaskManager.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.util.Singleton
         public ActivityTaskManager create() {
             return new ActivityTaskManager();
         }
     };
     private static final Singleton<IActivityTaskManager> IActivityTaskManagerSingleton = new Singleton<IActivityTaskManager>() { // from class: android.app.ActivityTaskManager.2
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.util.Singleton
         public IActivityTaskManager create() {
             IBinder b = ServiceManager.getService(Context.ACTIVITY_TASK_SERVICE);
@@ -92,6 +94,10 @@ public class ActivityTaskManager {
     public @interface SplitCreateMode {
     }
 
+    /* synthetic */ ActivityTaskManager(ActivityTaskManagerIA activityTaskManagerIA) {
+        this();
+    }
+
     public static String splitCreateModeToString(int splitCreateMode) {
         switch (splitCreateMode) {
             case -1:
@@ -111,6 +117,18 @@ public class ActivityTaskManager {
         }
     }
 
+    /* renamed from: android.app.ActivityTaskManager$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends Singleton<ActivityTaskManager> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.Singleton
+        public ActivityTaskManager create() {
+            return new ActivityTaskManager();
+        }
+    }
+
     private ActivityTaskManager() {
     }
 
@@ -120,6 +138,19 @@ public class ActivityTaskManager {
 
     public static IActivityTaskManager getService() {
         return IActivityTaskManagerSingleton.get();
+    }
+
+    /* renamed from: android.app.ActivityTaskManager$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends Singleton<IActivityTaskManager> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.util.Singleton
+        public IActivityTaskManager create() {
+            IBinder b = ServiceManager.getService(Context.ACTIVITY_TASK_SERVICE);
+            return IActivityTaskManager.Stub.asInterface(b);
+        }
     }
 
     public void removeRootTasksInWindowingModes(int[] windowingModes) {
@@ -342,13 +373,14 @@ public class ActivityTaskManager {
     /* loaded from: classes.dex */
     public static class RootTaskInfo extends TaskInfo implements Parcelable {
         public static final Parcelable.Creator<RootTaskInfo> CREATOR = new Parcelable.Creator<RootTaskInfo>() { // from class: android.app.ActivityTaskManager.RootTaskInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RootTaskInfo createFromParcel(Parcel source) {
                 return new RootTaskInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RootTaskInfo[] newArray(int size) {
                 return new RootTaskInfo[size];
@@ -361,6 +393,10 @@ public class ActivityTaskManager {
         public int[] childTaskUserIds;
         public int position;
         public boolean visible;
+
+        /* synthetic */ RootTaskInfo(Parcel parcel, RootTaskInfoIA rootTaskInfoIA) {
+            this(parcel);
+        }
 
         @Override // android.os.Parcelable
         public int describeContents() {
@@ -379,8 +415,9 @@ public class ActivityTaskManager {
             super.writeToParcel(parcel, i);
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.app.TaskInfo
-        void readFromParcel(Parcel source) {
+        public void readFromParcel(Parcel source) {
             this.bounds = (Rect) source.readTypedObject(Rect.CREATOR);
             this.childTaskIds = source.createIntArray();
             this.childTaskNames = source.createStringArray();
@@ -389,6 +426,23 @@ public class ActivityTaskManager {
             this.visible = source.readInt() > 0;
             this.position = source.readInt();
             super.readFromParcel(source);
+        }
+
+        /* renamed from: android.app.ActivityTaskManager$RootTaskInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RootTaskInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RootTaskInfo createFromParcel(Parcel source) {
+                return new RootTaskInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RootTaskInfo[] newArray(int size) {
+                return new RootTaskInfo[size];
+            }
         }
 
         public RootTaskInfo() {

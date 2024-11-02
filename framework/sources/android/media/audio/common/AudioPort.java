@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioPort implements Parcelable {
     public static final Parcelable.Creator<AudioPort> CREATOR = new Parcelable.Creator<AudioPort>() { // from class: android.media.audio.common.AudioPort.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioPort createFromParcel(Parcel _aidl_source) {
             AudioPort _aidl_out = new AudioPort();
@@ -18,7 +20,6 @@ public class AudioPort implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPort[] newArray(int _aidl_size) {
             return new AudioPort[_aidl_size];
@@ -31,6 +32,25 @@ public class AudioPort implements Parcelable {
     public int id = 0;
     public String name;
     public AudioProfile[] profiles;
+
+    /* renamed from: android.media.audio.common.AudioPort$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioPort> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPort createFromParcel(Parcel _aidl_source) {
+            AudioPort _aidl_out = new AudioPort();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPort[] newArray(int _aidl_size) {
+            return new AudioPort[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

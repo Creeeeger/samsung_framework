@@ -124,8 +124,7 @@ public class CrossProfileApps {
         return isManagedProfile ? DevicePolicyResources.Strings.Core.SWITCH_TO_WORK_LABEL : DevicePolicyResources.Strings.Core.SWITCH_TO_PERSONAL_LABEL;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: getDefaultProfileSwitchingLabel, reason: merged with bridge method [inline-methods] */
+    /* renamed from: getDefaultProfileSwitchingLabel */
     public String lambda$getProfileSwitchingLabel$0(boolean isManagedProfile, String label) {
         int stringRes = isManagedProfile ? R.string.managed_profile_app_label : R.string.user_owner_app_label;
         return this.mResources.getString(stringRes, label);
@@ -220,7 +219,6 @@ public class CrossProfileApps {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$resetInteractAcrossProfilesAppOps$1(Set newCrossProfilePackages, String packageName) {
         return !newCrossProfilePackages.contains(packageName);
     }

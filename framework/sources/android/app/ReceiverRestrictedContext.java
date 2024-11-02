@@ -11,11 +11,9 @@ import android.os.Handler;
 import android.os.UserHandle;
 import java.util.concurrent.Executor;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: ContextImpl.java */
 /* loaded from: classes.dex */
 public class ReceiverRestrictedContext extends ContextWrapper {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ReceiverRestrictedContext(Context base) {
         super(base);
     }

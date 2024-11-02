@@ -10,13 +10,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes4.dex */
 public final class VerifiedMotionEvent extends VerifiedInputEvent implements Parcelable {
     public static final Parcelable.Creator<VerifiedMotionEvent> CREATOR = new Parcelable.Creator<VerifiedMotionEvent>() { // from class: android.view.VerifiedMotionEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VerifiedMotionEvent[] newArray(int size) {
             return new VerifiedMotionEvent[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifiedMotionEvent createFromParcel(Parcel in) {
             return new VerifiedMotionEvent(in);
@@ -142,6 +143,23 @@ public final class VerifiedMotionEvent extends VerifiedInputEvent implements Par
         this.mFlags = flags;
         this.mMetaState = metaState;
         this.mButtonState = buttonState;
+    }
+
+    /* renamed from: android.view.VerifiedMotionEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VerifiedMotionEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifiedMotionEvent[] newArray(int size) {
+            return new VerifiedMotionEvent[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifiedMotionEvent createFromParcel(Parcel in) {
+            return new VerifiedMotionEvent(in);
+        }
     }
 
     @Deprecated

@@ -89,8 +89,9 @@ public interface IDownloadProgressListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDownloadProgressListener {
+        public static class Proxy implements IDownloadProgressListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

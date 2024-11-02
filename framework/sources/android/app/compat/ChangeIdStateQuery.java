@@ -4,8 +4,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
-final class ChangeIdStateQuery {
+public final class ChangeIdStateQuery {
     static final int QUERY_BY_PACKAGE_NAME = 0;
     static final int QUERY_BY_UID = 1;
     public long changeId;
@@ -27,12 +28,10 @@ final class ChangeIdStateQuery {
         this.userId = userId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ChangeIdStateQuery byPackageName(long changeId, String packageName, int userId) {
         return new ChangeIdStateQuery(0, changeId, packageName, 0, userId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ChangeIdStateQuery byUid(long changeId, int uid) {
         return new ChangeIdStateQuery(1, changeId, null, uid, 0);
     }

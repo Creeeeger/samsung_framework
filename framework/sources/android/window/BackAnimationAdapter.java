@@ -7,13 +7,14 @@ import android.window.IBackAnimationRunner;
 /* loaded from: classes4.dex */
 public class BackAnimationAdapter implements Parcelable {
     public static final Parcelable.Creator<BackAnimationAdapter> CREATOR = new Parcelable.Creator<BackAnimationAdapter>() { // from class: android.window.BackAnimationAdapter.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BackAnimationAdapter createFromParcel(Parcel in) {
             return new BackAnimationAdapter(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackAnimationAdapter[] newArray(int size) {
             return new BackAnimationAdapter[size];
@@ -41,5 +42,22 @@ public class BackAnimationAdapter implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStrongInterface(this.mRunner);
+    }
+
+    /* renamed from: android.window.BackAnimationAdapter$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BackAnimationAdapter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BackAnimationAdapter createFromParcel(Parcel in) {
+            return new BackAnimationAdapter(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BackAnimationAdapter[] newArray(int size) {
+            return new BackAnimationAdapter[size];
+        }
     }
 }

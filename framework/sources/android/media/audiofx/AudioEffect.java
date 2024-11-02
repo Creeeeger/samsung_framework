@@ -553,7 +553,6 @@ public class AudioEffect {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class NativeEventHandler extends Handler {
         private AudioEffect mAudioEffect;

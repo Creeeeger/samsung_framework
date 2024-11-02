@@ -1,6 +1,7 @@
 package android.media;
 
 import android.media.MediaDrm;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /* compiled from: D8$$SyntheticClass */
@@ -14,6 +15,8 @@ public final /* synthetic */ class MediaDrm$$ExternalSyntheticLambda1 implements
 
     @Override // java.util.function.Function
     public final Object apply(Object obj) {
-        return MediaDrm.m2323$r8$lambda$iwosyGtIlMvu02reUfBr9wVPBc(this.f$0, (MediaDrm.OnExpirationUpdateListener) obj);
+        Consumer createOnExpirationUpdateListener;
+        createOnExpirationUpdateListener = this.f$0.createOnExpirationUpdateListener((MediaDrm.OnExpirationUpdateListener) obj);
+        return createOnExpirationUpdateListener;
     }
 }

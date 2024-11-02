@@ -248,15 +248,15 @@ public interface ISessionProcessorImpl extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg2, int i) {
             String k = data.readString();
             CameraMetadataNative v = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
             _arg2.put(k, v);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISessionProcessorImpl {
+        public static class Proxy implements ISessionProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -304,7 +304,6 @@ public interface ISessionProcessorImpl extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$initSession$0(Parcel _data, String k, CameraMetadataNative v) {
                 _data.writeString(k);
                 _data.writeTypedObject(v, 0);

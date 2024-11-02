@@ -171,8 +171,9 @@ public interface IVideoCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IVideoCallback {
+        public static class Proxy implements IVideoCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

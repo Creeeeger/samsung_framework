@@ -31,7 +31,6 @@ public class UnlaunchableAppActivity extends Activity implements DialogInterface
     private TelecomManager mTelecomManager;
     private int mUserId;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         Resources resources;
@@ -109,7 +108,6 @@ public class UnlaunchableAppActivity extends Activity implements DialogInterface
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getDialogTitle$0() {
         return getString(R.string.work_mode_off_title_alert, getWorkProfileName());
     }
@@ -144,7 +142,6 @@ public class UnlaunchableAppActivity extends Activity implements DialogInterface
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onClick$1(UserManager userManager) {
         userManager.requestQuietModeEnabled(false, UserHandle.of(this.mUserId), this.mTarget);
     }

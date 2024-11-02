@@ -4,7 +4,6 @@ import android.system.Os;
 import android.system.OsConstants;
 import java.io.FileDescriptor;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class MemoryMappedFileDataSource implements DataSource {
     private static final long MEMORY_PAGE_SIZE_BYTES = Os.sysconf(OsConstants._SC_PAGESIZE);
@@ -12,7 +11,6 @@ public class MemoryMappedFileDataSource implements DataSource {
     private final long mFilePosition;
     private final long mSize;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MemoryMappedFileDataSource(FileDescriptor fd, long position, long size) {
         this.mFd = fd;
         this.mFilePosition = position;

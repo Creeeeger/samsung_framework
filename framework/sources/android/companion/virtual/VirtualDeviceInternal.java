@@ -55,8 +55,69 @@ public class VirtualDeviceInternal {
     private final ArrayMap<VirtualDeviceManager.SoundEffectListener, SoundEffectListenerDelegate> mSoundEffectListeners = new ArrayMap<>();
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.companion.virtual.VirtualDeviceInternal$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends IVirtualDeviceActivityListener.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.companion.virtual.IVirtualDeviceActivityListener
+        public void onTopActivityChanged(int displayId, ComponentName topActivity, int userId) {
+            long token = Binder.clearCallingIdentity();
+            try {
+                synchronized (VirtualDeviceInternal.this.mActivityListenersLock) {
+                    for (int i = 0; i < VirtualDeviceInternal.this.mActivityListeners.size(); i++) {
+                        ((ActivityListenerDelegate) VirtualDeviceInternal.this.mActivityListeners.valueAt(i)).onTopActivityChanged(displayId, topActivity);
+                        ((ActivityListenerDelegate) VirtualDeviceInternal.this.mActivityListeners.valueAt(i)).onTopActivityChanged(displayId, topActivity, userId);
+                    }
+                }
+            } finally {
+                Binder.restoreCallingIdentity(token);
+            }
+        }
+
+        @Override // android.companion.virtual.IVirtualDeviceActivityListener
+        public void onDisplayEmpty(int displayId) {
+            long token = Binder.clearCallingIdentity();
+            try {
+                synchronized (VirtualDeviceInternal.this.mActivityListenersLock) {
+                    for (int i = 0; i < VirtualDeviceInternal.this.mActivityListeners.size(); i++) {
+                        ((ActivityListenerDelegate) VirtualDeviceInternal.this.mActivityListeners.valueAt(i)).onDisplayEmpty(displayId);
+                    }
+                }
+            } finally {
+                Binder.restoreCallingIdentity(token);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.companion.virtual.VirtualDeviceInternal$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 extends IVirtualDeviceSoundEffectListener.Stub {
+        AnonymousClass2() {
+        }
+
+        @Override // android.companion.virtual.IVirtualDeviceSoundEffectListener
+        public void onPlaySoundEffect(int soundEffect) {
+            long token = Binder.clearCallingIdentity();
+            try {
+                synchronized (VirtualDeviceInternal.this.mSoundEffectListenersLock) {
+                    for (int i = 0; i < VirtualDeviceInternal.this.mSoundEffectListeners.size(); i++) {
+                        ((SoundEffectListenerDelegate) VirtualDeviceInternal.this.mSoundEffectListeners.valueAt(i)).onPlaySoundEffect(soundEffect);
+                    }
+                }
+            } finally {
+                Binder.restoreCallingIdentity(token);
+            }
+        }
+    }
+
     public VirtualDeviceInternal(IVirtualDeviceManager service, Context context, int associationId, VirtualDeviceParams params) throws RemoteException {
-        IVirtualDeviceActivityListener.Stub stub = new IVirtualDeviceActivityListener.Stub() { // from class: android.companion.virtual.VirtualDeviceInternal.1
+        AnonymousClass1 anonymousClass1 = new IVirtualDeviceActivityListener.Stub() { // from class: android.companion.virtual.VirtualDeviceInternal.1
+            AnonymousClass1() {
+            }
+
             @Override // android.companion.virtual.IVirtualDeviceActivityListener
             public void onTopActivityChanged(int displayId, ComponentName topActivity, int userId) {
                 long token = Binder.clearCallingIdentity();
@@ -86,8 +147,11 @@ public class VirtualDeviceInternal {
                 }
             }
         };
-        this.mActivityListenerBinder = stub;
-        IVirtualDeviceSoundEffectListener.Stub stub2 = new IVirtualDeviceSoundEffectListener.Stub() { // from class: android.companion.virtual.VirtualDeviceInternal.2
+        this.mActivityListenerBinder = anonymousClass1;
+        AnonymousClass2 anonymousClass2 = new IVirtualDeviceSoundEffectListener.Stub() { // from class: android.companion.virtual.VirtualDeviceInternal.2
+            AnonymousClass2() {
+            }
+
             @Override // android.companion.virtual.IVirtualDeviceSoundEffectListener
             public void onPlaySoundEffect(int soundEffect) {
                 long token = Binder.clearCallingIdentity();
@@ -102,14 +166,13 @@ public class VirtualDeviceInternal {
                 }
             }
         };
-        this.mSoundEffectListener = stub2;
+        this.mSoundEffectListener = anonymousClass2;
         this.mService = service;
         Context applicationContext = context.getApplicationContext();
         this.mContext = applicationContext;
-        this.mVirtualDevice = service.createVirtualDevice(new Binder(), applicationContext.getPackageName(), associationId, params, stub, stub2);
+        this.mVirtualDevice = service.createVirtualDevice(new Binder(), applicationContext.getPackageName(), associationId, params, anonymousClass1, anonymousClass2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getDeviceId() {
         try {
             return this.mVirtualDevice.getDeviceId();
@@ -118,7 +181,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Context createContext() {
         try {
             return this.mContext.createDeviceContext(this.mVirtualDevice.getDeviceId());
@@ -127,7 +189,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public List<VirtualSensor> getVirtualSensorList() {
         try {
             return this.mVirtualDevice.getVirtualSensorList();
@@ -136,7 +197,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void launchPendingIntent(int displayId, PendingIntent pendingIntent, Executor executor, IntConsumer listener) {
         try {
             this.mVirtualDevice.launchPendingIntent(displayId, pendingIntent, new AnonymousClass3(new Handler(Looper.getMainLooper()), executor, listener));
@@ -145,8 +205,7 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.companion.virtual.VirtualDeviceInternal$3, reason: invalid class name */
+    /* renamed from: android.companion.virtual.VirtualDeviceInternal$3 */
     /* loaded from: classes.dex */
     public class AnonymousClass3 extends ResultReceiver {
         final /* synthetic */ Executor val$executor;
@@ -159,7 +218,6 @@ public class VirtualDeviceInternal {
             this.val$listener = intConsumer;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle resultData) {
             super.onReceiveResult(resultCode, resultData);
@@ -174,7 +232,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualDisplay createVirtualDisplay(VirtualDisplayConfig config, Executor executor, VirtualDisplay.Callback callback) {
         IVirtualDisplayCallback callbackWrapper = new DisplayManagerGlobal.VirtualDisplayCallback(callback, executor);
         try {
@@ -186,7 +243,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void close() {
         try {
             this.mVirtualDevice.close();
@@ -200,7 +256,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualDpad createVirtualDpad(VirtualDpadConfig config) {
         try {
             IBinder token = new Binder("android.hardware.input.VirtualDpad:" + config.getInputDeviceName());
@@ -211,7 +266,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualKeyboard createVirtualKeyboard(VirtualKeyboardConfig config) {
         try {
             IBinder token = new Binder("android.hardware.input.VirtualKeyboard:" + config.getInputDeviceName());
@@ -222,7 +276,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualMouse createVirtualMouse(VirtualMouseConfig config) {
         try {
             IBinder token = new Binder("android.hardware.input.VirtualMouse:" + config.getInputDeviceName());
@@ -233,7 +286,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualTouchscreen createVirtualTouchscreen(VirtualTouchscreenConfig config) {
         try {
             IBinder token = new Binder("android.hardware.input.VirtualTouchscreen:" + config.getInputDeviceName());
@@ -244,7 +296,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualNavigationTouchpad createVirtualNavigationTouchpad(VirtualNavigationTouchpadConfig config) {
         try {
             IBinder token = new Binder("android.hardware.input.VirtualNavigationTouchpad:" + config.getInputDeviceName());
@@ -255,7 +306,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualAudioDevice createVirtualAudioDevice(VirtualDisplay display, Executor executor, VirtualAudioDevice.AudioConfigurationChangeCallback callback) {
         if (this.mVirtualAudioDevice == null) {
             this.mVirtualAudioDevice = new VirtualAudioDevice(this.mContext, this.mVirtualDevice, display, executor, callback, new VirtualAudioDevice.CloseListener() { // from class: android.companion.virtual.VirtualDeviceInternal$$ExternalSyntheticLambda0
@@ -268,12 +318,10 @@ public class VirtualDeviceInternal {
         return this.mVirtualAudioDevice;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createVirtualAudioDevice$0() {
         this.mVirtualAudioDevice = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setShowPointerIcon(boolean showPointerIcon) {
         try {
             this.mVirtualDevice.setShowPointerIcon(showPointerIcon);
@@ -282,7 +330,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addActivityListener(Executor executor, VirtualDeviceManager.ActivityListener listener) {
         ActivityListenerDelegate delegate = new ActivityListenerDelegate((VirtualDeviceManager.ActivityListener) Objects.requireNonNull(listener), (Executor) Objects.requireNonNull(executor));
         synchronized (this.mActivityListenersLock) {
@@ -290,14 +337,12 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeActivityListener(VirtualDeviceManager.ActivityListener listener) {
         synchronized (this.mActivityListenersLock) {
             this.mActivityListeners.remove(Objects.requireNonNull(listener));
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addSoundEffectListener(Executor executor, VirtualDeviceManager.SoundEffectListener soundEffectListener) {
         SoundEffectListenerDelegate delegate = new SoundEffectListenerDelegate((Executor) Objects.requireNonNull(executor), (VirtualDeviceManager.SoundEffectListener) Objects.requireNonNull(soundEffectListener));
         synchronized (this.mSoundEffectListenersLock) {
@@ -305,14 +350,12 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeSoundEffectListener(VirtualDeviceManager.SoundEffectListener soundEffectListener) {
         synchronized (this.mSoundEffectListenersLock) {
             this.mSoundEffectListeners.remove(Objects.requireNonNull(soundEffectListener));
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerIntentInterceptor(IntentFilter interceptorFilter, Executor executor, VirtualDeviceManager.IntentInterceptorCallback interceptorCallback) {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(interceptorFilter);
@@ -328,7 +371,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unregisterIntentInterceptor(VirtualDeviceManager.IntentInterceptorCallback interceptorCallback) {
         IntentInterceptorDelegate delegate;
         Objects.requireNonNull(interceptorCallback);
@@ -344,7 +386,6 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ActivityListenerDelegate {
         private final VirtualDeviceManager.ActivityListener mActivityListener;
@@ -355,7 +396,6 @@ public class VirtualDeviceInternal {
             this.mExecutor = executor;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTopActivityChanged$0(int displayId, ComponentName topActivity) {
             this.mActivityListener.onTopActivityChanged(displayId, topActivity);
         }
@@ -378,12 +418,10 @@ public class VirtualDeviceInternal {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTopActivityChanged$1(int displayId, ComponentName topActivity, int userId) {
             this.mActivityListener.onTopActivityChanged(displayId, topActivity, userId);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDisplayEmpty$2(int displayId) {
             this.mActivityListener.onDisplayEmpty(displayId);
         }
@@ -398,11 +436,14 @@ public class VirtualDeviceInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class IntentInterceptorDelegate extends IVirtualDeviceIntentInterceptor.Stub {
         private final Executor mExecutor;
         private final VirtualDeviceManager.IntentInterceptorCallback mIntentInterceptorCallback;
+
+        /* synthetic */ IntentInterceptorDelegate(Executor executor, VirtualDeviceManager.IntentInterceptorCallback intentInterceptorCallback, IntentInterceptorDelegateIA intentInterceptorDelegateIA) {
+            this(executor, intentInterceptorCallback);
+        }
 
         private IntentInterceptorDelegate(Executor executor, VirtualDeviceManager.IntentInterceptorCallback interceptorCallback) {
             this.mExecutor = executor;
@@ -424,24 +465,25 @@ public class VirtualDeviceInternal {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onIntentIntercepted$0(Intent intent) {
             this.mIntentInterceptorCallback.onIntentIntercepted(intent);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class SoundEffectListenerDelegate {
         private final Executor mExecutor;
         private final VirtualDeviceManager.SoundEffectListener mSoundEffectListener;
+
+        /* synthetic */ SoundEffectListenerDelegate(Executor executor, VirtualDeviceManager.SoundEffectListener soundEffectListener, SoundEffectListenerDelegateIA soundEffectListenerDelegateIA) {
+            this(executor, soundEffectListener);
+        }
 
         private SoundEffectListenerDelegate(Executor executor, VirtualDeviceManager.SoundEffectListener soundEffectCallback) {
             this.mSoundEffectListener = soundEffectCallback;
             this.mExecutor = executor;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPlaySoundEffect$0(int effectType) {
             this.mSoundEffectListener.onPlaySoundEffect(effectType);
         }

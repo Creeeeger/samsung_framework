@@ -12,13 +12,14 @@ import java.util.ArrayList;
 /* loaded from: classes4.dex */
 public class ScrollCaptureResponse implements Parcelable {
     public static final Parcelable.Creator<ScrollCaptureResponse> CREATOR = new Parcelable.Creator<ScrollCaptureResponse>() { // from class: android.view.ScrollCaptureResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ScrollCaptureResponse[] newArray(int size) {
             return new ScrollCaptureResponse[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScrollCaptureResponse createFromParcel(Parcel in) {
             return new ScrollCaptureResponse(in);
@@ -170,6 +171,23 @@ public class ScrollCaptureResponse implements Parcelable {
         this.mPackageName = packageName;
         this.mMessages = messages;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) messages);
+    }
+
+    /* renamed from: android.view.ScrollCaptureResponse$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ScrollCaptureResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ScrollCaptureResponse[] newArray(int size) {
+            return new ScrollCaptureResponse[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ScrollCaptureResponse createFromParcel(Parcel in) {
+            return new ScrollCaptureResponse(in);
+        }
     }
 
     /* loaded from: classes4.dex */

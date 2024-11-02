@@ -75,7 +75,6 @@ public class HandlerActionQueue {
         return this.mActions[index].delay;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class HandlerAction {
         final Runnable action;

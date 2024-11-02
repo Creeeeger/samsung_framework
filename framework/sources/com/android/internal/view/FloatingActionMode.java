@@ -39,6 +39,9 @@ public final class FloatingActionMode extends ActionMode {
     private final int[] mViewPositionOnScreen;
     private final Rect mViewRectOnScreen;
     private final Runnable mMovingOff = new Runnable() { // from class: com.android.internal.view.FloatingActionMode.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             if (FloatingActionMode.this.isViewStillActive()) {
@@ -48,6 +51,9 @@ public final class FloatingActionMode extends ActionMode {
         }
     };
     private final Runnable mHideOff = new Runnable() { // from class: com.android.internal.view.FloatingActionMode.2
+        AnonymousClass2() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             if (FloatingActionMode.this.isViewStillActive()) {
@@ -57,6 +63,38 @@ public final class FloatingActionMode extends ActionMode {
         }
     };
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.view.FloatingActionMode$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (FloatingActionMode.this.isViewStillActive()) {
+                FloatingActionMode.this.mFloatingToolbarVisibilityHelper.setMoving(false);
+                FloatingActionMode.this.mFloatingToolbarVisibilityHelper.updateToolbarVisibility();
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.view.FloatingActionMode$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (FloatingActionMode.this.isViewStillActive()) {
+                FloatingActionMode.this.mFloatingToolbarVisibilityHelper.setHideRequested(false);
+                FloatingActionMode.this.mFloatingToolbarVisibilityHelper.updateToolbarVisibility();
+            }
+        }
+    }
+
     public FloatingActionMode(Context context, ActionMode.Callback2 callback, View originatingView, FloatingToolbar floatingToolbar) {
         this.mContext = (Context) Objects.requireNonNull(context);
         this.mCallback = (ActionMode.Callback2) Objects.requireNonNull(callback);
@@ -64,6 +102,9 @@ public final class FloatingActionMode extends ActionMode {
         this.mMenu = defaultShowAsAction;
         setType(1);
         defaultShowAsAction.setCallback(new MenuBuilder.Callback() { // from class: com.android.internal.view.FloatingActionMode.3
+            AnonymousClass3() {
+            }
+
             @Override // com.android.internal.view.menu.MenuBuilder.Callback
             public void onMenuModeChange(MenuBuilder menu) {
             }
@@ -91,6 +132,23 @@ public final class FloatingActionMode extends ActionMode {
         setFloatingToolbar((FloatingToolbar) Objects.requireNonNull(floatingToolbar));
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.view.FloatingActionMode$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 implements MenuBuilder.Callback {
+        AnonymousClass3() {
+        }
+
+        @Override // com.android.internal.view.menu.MenuBuilder.Callback
+        public void onMenuModeChange(MenuBuilder menu) {
+        }
+
+        @Override // com.android.internal.view.menu.MenuBuilder.Callback
+        public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
+            return FloatingActionMode.this.mCallback.onActionItemClicked(FloatingActionMode.this, item);
+        }
+    }
+
     public void setFloatingToolbar(FloatingToolbar floatingToolbar) {
         FloatingToolbar onMenuItemClickListener = floatingToolbar.setMenu(this.mMenu).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() { // from class: com.android.internal.view.FloatingActionMode$$ExternalSyntheticLambda0
             @Override // android.view.MenuItem.OnMenuItemClickListener
@@ -106,7 +164,6 @@ public final class FloatingActionMode extends ActionMode {
         floatingToolbarVisibilityHelper.activate();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$setFloatingToolbar$0(MenuItem item) {
         return this.mMenu.performItemAction(item, 0);
     }
@@ -267,12 +324,10 @@ public final class FloatingActionMode extends ActionMode {
         this.mOriginatingView.removeCallbacks(this.mHideOff);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isViewStillActive() {
         return this.mOriginatingView.getWindowVisibility() == 0 && this.mOriginatingView.isShown();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static final class FloatingToolbarVisibilityHelper {
         private static final long MIN_SHOW_DURATION_FOR_MOVE_HIDE = 500;

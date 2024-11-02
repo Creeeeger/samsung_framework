@@ -48,7 +48,7 @@ public class EasingQuintic implements IEasing {
         return ((c / 2.0f) * t3 * t3 * t3 * t3 * t3) + (c / 2.0f) + b;
     }
 
-    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.interpolater.EasingQuintic$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.interpolater.EasingQuintic$1 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$interpolater$IEasing$EEasing;

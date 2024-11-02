@@ -28,13 +28,14 @@ public class InsetsSource implements Parcelable {
     private Rect mVisibleFrame;
     public static final int ID_IME = createId(null, 0, WindowInsets.Type.ime());
     public static final Parcelable.Creator<InsetsSource> CREATOR = new Parcelable.Creator<InsetsSource>() { // from class: android.view.InsetsSource.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InsetsSource createFromParcel(Parcel in) {
             return new InsetsSource(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InsetsSource[] newArray(int size) {
             return new InsetsSource[size];
@@ -150,7 +151,6 @@ public class InsetsSource implements Parcelable {
         return (this.mFlags & flags) == flags;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isUserControllable() {
         Rect rect = this.mVisibleFrame;
         return rect == null || !rect.isEmpty();
@@ -358,5 +358,22 @@ public class InsetsSource implements Parcelable {
 
     public String toString() {
         return "InsetsSource: {" + Integer.toHexString(this.mId) + " mType=" + WindowInsets.Type.toString(this.mType) + " mFrame=" + this.mFrame.toShortString() + " mVisible=" + this.mVisible + " mFlags=[" + flagsToString(this.mFlags) + NavigationBarInflaterView.SIZE_MOD_END + (this.mInsetsRoundedCornerFrame ? " insetsRoundedCornerFrame" : "") + "}";
+    }
+
+    /* renamed from: android.view.InsetsSource$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InsetsSource> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsetsSource createFromParcel(Parcel in) {
+            return new InsetsSource(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsetsSource[] newArray(int size) {
+            return new InsetsSource[size];
+        }
     }
 }

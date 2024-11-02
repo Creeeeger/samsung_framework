@@ -85,7 +85,6 @@ public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollecto
         }).collect(Collectors.toSet());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getActiveImeLocales$1(LocaleStore.LocaleInfo info) {
         return info.getLocale().getCountry().length() > 0;
     }
@@ -122,7 +121,6 @@ public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollecto
         }).collect(Collectors.toSet());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getSystemCurrentLocales$2(LocaleStore.LocaleInfo info) {
         return info.getLocale().getCountry().length() > 0;
     }

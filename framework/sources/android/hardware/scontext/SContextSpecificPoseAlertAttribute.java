@@ -12,7 +12,6 @@ public class SContextSpecificPoseAlertAttribute extends SContextAttribute {
     private int mMovingThrs;
     private int mRetentionTime;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextSpecificPoseAlertAttribute() {
         this.mRetentionTime = 1;
         this.mMinimumAngle = -90;

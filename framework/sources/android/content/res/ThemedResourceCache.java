@@ -5,7 +5,6 @@ import android.util.ArrayMap;
 import android.util.LongSparseArray;
 import java.lang.ref.WeakReference;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public abstract class ThemedResourceCache<T> {
     public static final int UNDEFINED_GENERATION = -1;

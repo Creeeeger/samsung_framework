@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextTestFlatMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextTestFlatMotion> CREATOR = new Parcelable.Creator<SContextTestFlatMotion>() { // from class: android.hardware.scontext.SContextTestFlatMotion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextTestFlatMotion createFromParcel(Parcel in) {
             return new SContextTestFlatMotion(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextTestFlatMotion[] newArray(int size) {
             return new SContextTestFlatMotion[size];
@@ -46,5 +47,22 @@ public class SContextTestFlatMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextTestFlatMotion$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextTestFlatMotion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextTestFlatMotion createFromParcel(Parcel in) {
+            return new SContextTestFlatMotion(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextTestFlatMotion[] newArray(int size) {
+            return new SContextTestFlatMotion[size];
+        }
     }
 }

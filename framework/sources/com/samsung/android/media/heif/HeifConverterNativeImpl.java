@@ -17,7 +17,6 @@ final class HeifConverterNativeImpl implements SemHeifConverter {
     private final int mFormat;
     private final int mQuality;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public HeifConverterNativeImpl(int format, int quality) {
         this.mFormat = format;
         this.mQuality = quality;

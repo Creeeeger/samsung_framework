@@ -28,7 +28,6 @@ class CoverPowerKeyListenerDelegate extends INfcLedCoverTouchListenerCallback.St
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CoverPowerKeyListenerDelegate(CoverManager.CoverPowerKeyListener listener, Handler handler, Context context) {
         this.mListener = listener;
         Looper looper = handler == null ? context.getMainLooper() : handler.getLooper();
@@ -66,8 +65,9 @@ class CoverPowerKeyListenerDelegate extends INfcLedCoverTouchListenerCallback.St
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class ListenerDelegateHandler extends Handler {
+    public static class ListenerDelegateHandler extends Handler {
         private final CoverManager.CoverPowerKeyListener mListener;
 
         ListenerDelegateHandler(Looper looper, CoverManager.CoverPowerKeyListener listener) {

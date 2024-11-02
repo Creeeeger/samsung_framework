@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.file.FileReceiver;
 import com.sec.android.allshare.iface.CVMessage;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class FileReceiverImpl extends FileReceiver implements IBundleHolder, IHandlerHolder {
     private static final String TAG_CLASS = "FileReceiverImpl";
@@ -29,6 +29,10 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
     private boolean mCancelReq = false;
     private boolean mIsSubscribed = false;
     private AllShareResponseHandler mRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.FileReceiverImpl.2
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
             String action = cvm.getActionID();
@@ -165,7 +169,8 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
     private AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.FileReceiverImpl.3
         private HashMap<String, INotifyProgressEvent> mEventNotiMap;
 
-        {
+        AnonymousClass3(Looper looper) {
+            super(looper);
             HashMap<String, INotifyProgressEvent> hashMap = new HashMap<>();
             this.mEventNotiMap = hashMap;
             hashMap.put(AllShareEvent.FileReceiverEvent.EVENT_FILE_RECEIVER_PROGRESS, new NotifyProgress());
@@ -186,9 +191,10 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         /* renamed from: com.samsung.android.allshare.FileReceiverImpl$3$NotifyProgress */
         /* loaded from: classes5.dex */
-        class NotifyProgress implements INotifyProgressEvent {
+        public class NotifyProgress implements INotifyProgressEvent {
             NotifyProgress() {
             }
 
@@ -213,9 +219,10 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         /* renamed from: com.samsung.android.allshare.FileReceiverImpl$3$NotifyCompleted */
         /* loaded from: classes5.dex */
-        class NotifyCompleted implements INotifyProgressEvent {
+        public class NotifyCompleted implements INotifyProgressEvent {
             NotifyCompleted() {
             }
 
@@ -238,9 +245,10 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         /* renamed from: com.samsung.android.allshare.FileReceiverImpl$3$NotifyFailed */
         /* loaded from: classes5.dex */
-        class NotifyFailed implements INotifyProgressEvent {
+        public class NotifyFailed implements INotifyProgressEvent {
             NotifyFailed() {
             }
 
@@ -258,6 +266,9 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
         }
     };
     private FileReceiver.IFileReceiverProgressUpdateEventListener mProgressEventListener = new FileReceiver.IFileReceiverProgressUpdateEventListener() { // from class: com.samsung.android.allshare.FileReceiverImpl.4
+        AnonymousClass4() {
+        }
+
         @Override // com.samsung.android.allshare.file.FileReceiver.IFileReceiverProgressUpdateEventListener
         public void onProgressUpdated(FileReceiver receiver, String sessionID, long receivedSize, long totalSize, File file, Uri uri, ERROR err) {
             DLog.d_api(FileReceiverImpl.TAG_CLASS, "onProgressUpdated()");
@@ -317,12 +328,12 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
         }
     };
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private interface INotifyProgressEvent {
+    public interface INotifyProgressEvent {
         void onNotifyEvent(FileReceiver.IFileReceiverProgressUpdateEventListener iFileReceiverProgressUpdateEventListener, Bundle bundle);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class SessionInfo {
         private int mCount;
@@ -372,7 +383,6 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FileReceiverImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mDeviceImpl = null;
         this.mAllShareConnector = null;
@@ -400,11 +410,44 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
         return deviceImpl.getNIC();
     }
 
+    /* renamed from: com.samsung.android.allshare.FileReceiverImpl$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Runnable {
+        final /* synthetic */ String val$sessionId;
+
+        AnonymousClass1(String str) {
+            sessionId = str;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            String str = sessionId;
+            if (str != null) {
+                SessionInfo tempSessionInfo = FileReceiverImpl.this.getSessionKeyInfoMap(str);
+                if (tempSessionInfo == null) {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, sessionId=" + sessionId);
+                    return;
+                }
+                FileReceiver.IFileReceiverReceiveResponseListener listener = tempSessionInfo.getResponseListener();
+                if (listener != null) {
+                    listener.onCancelResponseReceived(FileReceiverImpl.this.mReceiver, sessionId, ERROR.FAIL);
+                    FileReceiverImpl.this.removeSessionKeyInfoMap(sessionId);
+                }
+            }
+        }
+    }
+
     @Override // com.samsung.android.allshare.file.FileReceiver
-    public void cancel(final String sessionId) {
+    public void cancel(String sessionId) {
         IAllShareConnector iAllShareConnector = this.mAllShareConnector;
         if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
             this.mRespHandler.postDelayed(new Runnable() { // from class: com.samsung.android.allshare.FileReceiverImpl.1
+                final /* synthetic */ String val$sessionId;
+
+                AnonymousClass1(String sessionId2) {
+                    sessionId = sessionId2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     String str = sessionId;
@@ -424,13 +467,13 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
             }, 1L);
             return;
         }
-        if (sessionId != null) {
+        if (sessionId2 != null) {
             CVMessage req_msg = new CVMessage();
             req_msg.setActionID(AllShareAction.FileReceiverAction.ACTION_FILE_ARRAYLIST_RECEIVER_CANCEL);
             Bundle bundle = req_msg.getBundle();
             bundle.putString("BUNDLE_STRING_ID", this.mDeviceImpl.getID());
-            bundle.putString(AllShareKey.FileReceiverKey.BUNDLE_STRING_SESSIONID, sessionId);
-            DLog.d_api(TAG_CLASS, "sessionID : " + sessionId);
+            bundle.putString(AllShareKey.FileReceiverKey.BUNDLE_STRING_SESSIONID, sessionId2);
+            DLog.d_api(TAG_CLASS, "sessionID : " + sessionId2);
             this.mAllShareConnector.requestCVMAsync(req_msg, this.mRespHandler);
             setCancelRequest();
         }
@@ -440,30 +483,25 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
         this.mCancelReq = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void releaseCancelRequest() {
         this.mCancelReq = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isCancelRequest() {
         return this.mCancelReq;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void putSessionKeyInfoMap(String key, SessionInfo sessionInfo) {
         DLog.d_api(TAG_CLASS, "putSessionKeyInfoMap() called. key : " + key + ", count : " + sessionInfo.getCount());
         SessionInfo sessionKeyInfo = new SessionInfo(sessionInfo.getCount(), sessionInfo.getResponseListener(), sessionInfo.getEventListener());
         this.mSessionKeyInfoMap.put(key, sessionKeyInfo);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public SessionInfo getSessionKeyInfoMap(String key) {
         DLog.d_api(TAG_CLASS, "getSessionKeyInfoMap() called. key : " + key + "size : " + this.mSessionKeyInfoMap.size());
         return this.mSessionKeyInfoMap.get(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeSessionKeyInfoMap(String key) {
         this.mSessionKeyInfoMap.remove(key);
         DLog.d_api(TAG_CLASS, "removeSessionKeyInfoMap() called. key : " + key + "size : " + this.mTimeKeyInfoMap.size());
@@ -475,13 +513,11 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
         this.mTimeKeyInfoMap.put(key, timeKeyInfo);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public SessionInfo getTimeKeyInfoMap(String key) {
         DLog.d_api(TAG_CLASS, "getTimeKeyInfoMap() called. key : " + key);
         return this.mTimeKeyInfoMap.get(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeTimeKeyInfoMap(String key) {
         this.mTimeKeyInfoMap.remove(key);
         DLog.d_api(TAG_CLASS, "removeTimeKeyInfoMap() called. key : " + key + "size : " + this.mTimeKeyInfoMap.size());
@@ -553,8 +589,319 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
         return this.mDeviceImpl.getName();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.FileReceiverImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareResponseHandler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            String action = cvm.getActionID();
+            if (action.equals(AllShareAction.FileReceiverAction.ACTION_FILE_RECEIVER_RECEIVE)) {
+                notifyResponse(action, cvm.getBundle());
+            } else if (action.equals(AllShareAction.FileReceiverAction.ACTION_FILE_RECEIVER_CANCEL)) {
+                notifyResponse(action, cvm.getBundle());
+            }
+            if (action.equals(AllShareAction.FileReceiverAction.ACTION_FILE_ARRAYLIST_RECEIVER_RECEIVE)) {
+                DLog.d_api(FileReceiverImpl.TAG_CLASS, "mRespHandler.handleResponseMessage() called..");
+                notifyListResponse(action, cvm.getBundle());
+            } else if (action.equals(AllShareAction.FileReceiverAction.ACTION_FILE_ARRAYLIST_RECEIVER_CANCEL)) {
+                notifyListResponse(action, cvm.getBundle());
+            }
+        }
+
+        private void notifyListResponse(String action, Bundle bundle) {
+            String errStr = bundle.getString("BUNDLE_ENUM_ERROR");
+            String name = bundle.getString("BUNDLE_STRING_NAME");
+            String sessionId = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_SESSIONID);
+            String uniqueKey = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_UNIQUEKEY);
+            DLog.d_api(FileReceiverImpl.TAG_CLASS, "action : " + action + " sessionID : " + sessionId);
+            ERROR err = ERROR.stringToEnum(errStr);
+            ArrayList<Uri> uriList = new ArrayList<>();
+            if (action.equals(AllShareAction.FileReceiverAction.ACTION_FILE_ARRAYLIST_RECEIVER_RECEIVE)) {
+                DLog.d_api(FileReceiverImpl.TAG_CLASS, "notifyListResponse() ACTION_FILE_ARRAYLIST_RECEIVER_RECEIVE");
+                SessionInfo tempSessionInfo = FileReceiverImpl.this.getTimeKeyInfoMap(uniqueKey);
+                if (tempSessionInfo == null) {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, uniqueKey=" + uniqueKey);
+                    return;
+                }
+                FileReceiverImpl.this.putSessionKeyInfoMap(sessionId, tempSessionInfo);
+                FileReceiverImpl.this.removeTimeKeyInfoMap(uniqueKey);
+                SessionInfo tempSessionInfo2 = FileReceiverImpl.this.getSessionKeyInfoMap(sessionId);
+                if (tempSessionInfo2 == null) {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, sessionId=" + sessionId);
+                    return;
+                }
+                FileReceiver.IFileReceiverReceiveResponseListener listener = tempSessionInfo2.getResponseListener();
+                ArrayList<String> contentUriList = bundle.getStringArrayList(AllShareKey.FileReceiverKey.BUNDLE_STRING_ARRAYLIST_CONTENT_URI);
+                if (contentUriList != null) {
+                    Iterator<String> it = contentUriList.iterator();
+                    while (it.hasNext()) {
+                        String uriPath = it.next();
+                        uriList.add(Uri.parse(uriPath));
+                    }
+                }
+                if (listener != null) {
+                    listener.onReceiveResponseReceived(FileReceiverImpl.this.mReceiver, sessionId, uriList, name, err);
+                    return;
+                } else {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "onReceiveResponseReceived listener is null!");
+                    return;
+                }
+            }
+            if (action.equals(AllShareAction.FileReceiverAction.ACTION_FILE_ARRAYLIST_RECEIVER_CANCEL)) {
+                DLog.d_api(FileReceiverImpl.TAG_CLASS, "notifyListResponse() ACTION_FILE_ARRAYLIST_RECEIVER_CANCEL  sessionID : " + sessionId);
+                SessionInfo tempSessionInfo3 = FileReceiverImpl.this.getSessionKeyInfoMap(sessionId);
+                if (tempSessionInfo3 == null) {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, sessionId= " + sessionId);
+                    return;
+                }
+                FileReceiver.IFileReceiverReceiveResponseListener listener2 = tempSessionInfo3.getResponseListener();
+                if (listener2 != null) {
+                    DLog.d_api(FileReceiverImpl.TAG_CLASS, "listener.onCancelResponseReceived( mReceiver, sessionId, err )");
+                    listener2.onCancelResponseReceived(FileReceiverImpl.this.mReceiver, sessionId, err);
+                    if (FileReceiverImpl.this.isCancelRequest() && tempSessionInfo3.removed()) {
+                        FileReceiverImpl.this.removeSessionKeyInfoMap(sessionId);
+                        FileReceiverImpl.this.releaseCancelRequest();
+                        return;
+                    }
+                    return;
+                }
+                DLog.w_api(FileReceiverImpl.TAG_CLASS, "onCancelResponseReceived listener is null!");
+            }
+        }
+
+        private void notifyResponse(String action, Bundle bundle) {
+            String errStr = bundle.getString("BUNDLE_ENUM_ERROR");
+            String name = bundle.getString("BUNDLE_STRING_NAME");
+            String sessionId = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_SESSIONID);
+            String uniqueKey = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_UNIQUEKEY);
+            ERROR err = ERROR.stringToEnum(errStr);
+            if (action.equals(AllShareAction.FileReceiverAction.ACTION_FILE_RECEIVER_RECEIVE)) {
+                DLog.d_api(FileReceiverImpl.TAG_CLASS, "notifyListResponse()- ACTION_FILE_RECEIVER_RECEIVE");
+                SessionInfo tempSessionInfo = FileReceiverImpl.this.getTimeKeyInfoMap(uniqueKey);
+                if (tempSessionInfo == null) {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, uniqueKey=" + uniqueKey);
+                    return;
+                }
+                FileReceiverImpl.this.putSessionKeyInfoMap(sessionId, tempSessionInfo);
+                FileReceiverImpl.this.removeTimeKeyInfoMap(uniqueKey);
+                SessionInfo tempSessionInfo2 = FileReceiverImpl.this.getSessionKeyInfoMap(sessionId);
+                if (tempSessionInfo2 == null) {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, sessionId=" + sessionId);
+                    return;
+                }
+                FileReceiver.IFileReceiverReceiveResponseListener listener = tempSessionInfo2.getResponseListener();
+                String filePath = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_FILE_PATH);
+                ArrayList<File> fileList = new ArrayList<>();
+                fileList.add(new File(filePath));
+                String uriPath = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_URI_PATH);
+                ArrayList<Uri> uriList = new ArrayList<>();
+                uriList.add(Uri.parse(uriPath));
+                if (listener != null) {
+                    listener.onReceiveResponseReceived(FileReceiverImpl.this.mReceiver, sessionId, uriList, name, err);
+                    return;
+                } else {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "onReceiveResponseReceived listener is null!");
+                    return;
+                }
+            }
+            if (action.equals(AllShareAction.FileReceiverAction.ACTION_FILE_RECEIVER_CANCEL)) {
+                DLog.d_api(FileReceiverImpl.TAG_CLASS, "notifyListResponse()- ACTION_FILE_RECEIVER_CANCEL");
+                SessionInfo tempSessionInfo3 = FileReceiverImpl.this.getSessionKeyInfoMap(sessionId);
+                if (tempSessionInfo3 == null) {
+                    DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, sessionId=" + sessionId);
+                    return;
+                }
+                FileReceiver.IFileReceiverReceiveResponseListener listener2 = tempSessionInfo3.getResponseListener();
+                if (listener2 != null) {
+                    listener2.onCancelResponseReceived(FileReceiverImpl.this.mReceiver, sessionId, err);
+                    if (FileReceiverImpl.this.isCancelRequest() && tempSessionInfo3.removed()) {
+                        FileReceiverImpl.this.removeSessionKeyInfoMap(sessionId);
+                        FileReceiverImpl.this.releaseCancelRequest();
+                        return;
+                    }
+                    return;
+                }
+                DLog.w_api(FileReceiverImpl.TAG_CLASS, "onCancelResponseReceived listener is null!");
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.FileReceiverImpl$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 extends AllShareEventHandler {
+        private HashMap<String, INotifyProgressEvent> mEventNotiMap;
+
+        AnonymousClass3(Looper looper) {
+            super(looper);
+            HashMap<String, INotifyProgressEvent> hashMap = new HashMap<>();
+            this.mEventNotiMap = hashMap;
+            hashMap.put(AllShareEvent.FileReceiverEvent.EVENT_FILE_RECEIVER_PROGRESS, new NotifyProgress());
+            this.mEventNotiMap.put(AllShareEvent.FileReceiverEvent.EVENT_FILE_RECEIVER_COMPLETED, new NotifyCompleted());
+            this.mEventNotiMap.put(AllShareEvent.FileReceiverEvent.EVENT_FILE_RECEIVER_FAILED, new NotifyFailed());
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        void handleEventMessage(CVMessage cvm) {
+            FileReceiver.IFileReceiverProgressUpdateEventListener listener = FileReceiverImpl.this.mProgressEventListener;
+            if (listener == null) {
+                return;
+            }
+            String event = cvm.getEventID();
+            INotifyProgressEvent notifier = this.mEventNotiMap.get(event);
+            if (notifier != null) {
+                notifier.onNotifyEvent(listener, cvm.getBundle());
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.allshare.FileReceiverImpl$3$NotifyProgress */
+        /* loaded from: classes5.dex */
+        public class NotifyProgress implements INotifyProgressEvent {
+            NotifyProgress() {
+            }
+
+            @Override // com.samsung.android.allshare.FileReceiverImpl.INotifyProgressEvent
+            public void onNotifyEvent(FileReceiver.IFileReceiverProgressUpdateEventListener listener, Bundle bundle) {
+                ERROR error;
+                ERROR error2 = ERROR.FAIL;
+                long progress = bundle.getLong(AllShareKey.FileReceiverKey.BUNDLE_LONG_FILE_PROGRESS);
+                long size = bundle.getLong(AllShareKey.FileReceiverKey.BUNDLE_LONG_FILE_SIZE);
+                String path = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_FILE_PATH);
+                String uriPath = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_URI_PATH);
+                String sessionId = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_SESSIONID);
+                String errorStr = bundle.getString("BUNDLE_ENUM_ERROR");
+                if (errorStr == null) {
+                    error = ERROR.FAIL;
+                } else {
+                    error = ERROR.stringToEnum(errorStr);
+                }
+                File file = new File(path);
+                Uri uri = Uri.parse(uriPath);
+                listener.onProgressUpdated(FileReceiverImpl.this.mReceiver, sessionId, progress, size, file, uri, error);
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.allshare.FileReceiverImpl$3$NotifyCompleted */
+        /* loaded from: classes5.dex */
+        public class NotifyCompleted implements INotifyProgressEvent {
+            NotifyCompleted() {
+            }
+
+            @Override // com.samsung.android.allshare.FileReceiverImpl.INotifyProgressEvent
+            public void onNotifyEvent(FileReceiver.IFileReceiverProgressUpdateEventListener listener, Bundle bundle) {
+                ERROR error;
+                ERROR error2 = ERROR.FAIL;
+                String path = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_FILE_PATH);
+                String uriPath = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_URI_PATH);
+                String errorStr = bundle.getString("BUNDLE_ENUM_ERROR");
+                String sessionId = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_SESSIONID);
+                if (errorStr == null) {
+                    error = ERROR.FAIL;
+                } else {
+                    error = ERROR.stringToEnum(errorStr);
+                }
+                File file = new File(path);
+                Uri uri = Uri.parse(uriPath);
+                listener.onCompleted(FileReceiverImpl.this.mReceiver, sessionId, file, uri, error);
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.allshare.FileReceiverImpl$3$NotifyFailed */
+        /* loaded from: classes5.dex */
+        public class NotifyFailed implements INotifyProgressEvent {
+            NotifyFailed() {
+            }
+
+            @Override // com.samsung.android.allshare.FileReceiverImpl.INotifyProgressEvent
+            public void onNotifyEvent(FileReceiver.IFileReceiverProgressUpdateEventListener listener, Bundle bundle) {
+                String path = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_FILE_PATH);
+                String uriPath = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_URI_PATH);
+                String errStr = bundle.getString("BUNDLE_ENUM_ERROR");
+                String sessionId = bundle.getString(AllShareKey.FileReceiverKey.BUNDLE_STRING_SESSIONID);
+                File file = new File(path);
+                Uri uri = Uri.parse(uriPath);
+                ERROR err = ERROR.stringToEnum(errStr);
+                listener.onFailed(FileReceiverImpl.this.mReceiver, sessionId, file, uri, err);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.FileReceiverImpl$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 implements FileReceiver.IFileReceiverProgressUpdateEventListener {
+        AnonymousClass4() {
+        }
+
+        @Override // com.samsung.android.allshare.file.FileReceiver.IFileReceiverProgressUpdateEventListener
+        public void onProgressUpdated(FileReceiver receiver, String sessionID, long receivedSize, long totalSize, File file, Uri uri, ERROR err) {
+            DLog.d_api(FileReceiverImpl.TAG_CLASS, "onProgressUpdated()");
+            SessionInfo tempSessionInfo = FileReceiverImpl.this.getSessionKeyInfoMap(sessionID);
+            if (tempSessionInfo == null) {
+                DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, sessionId=" + sessionID);
+                return;
+            }
+            FileReceiver.IFileReceiverProgressUpdateEventListener listener = tempSessionInfo.getEventListener();
+            if (listener != null) {
+                listener.onProgressUpdated(receiver, sessionID, receivedSize, totalSize, file, uri, err);
+            } else {
+                DLog.w_api(FileReceiverImpl.TAG_CLASS, "onProgressUpdated listener is null!");
+            }
+        }
+
+        @Override // com.samsung.android.allshare.file.FileReceiver.IFileReceiverProgressUpdateEventListener
+        public void onFailed(FileReceiver receiver, String sessionID, File file, Uri uri, ERROR err) {
+            DLog.d_api(FileReceiverImpl.TAG_CLASS, "onFailed()");
+            SessionInfo tempSessionInfo = FileReceiverImpl.this.getSessionKeyInfoMap(sessionID);
+            if (tempSessionInfo == null) {
+                DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, sessionId=" + sessionID);
+                return;
+            }
+            FileReceiver.IFileReceiverProgressUpdateEventListener listener = tempSessionInfo.getEventListener();
+            if (listener != null) {
+                listener.onFailed(receiver, sessionID, file, uri, err);
+            } else {
+                DLog.w_api(FileReceiverImpl.TAG_CLASS, "onFailed listener is null!");
+            }
+            if (FileReceiverImpl.this.isCancelRequest() && tempSessionInfo.removed()) {
+                FileReceiverImpl.this.removeSessionKeyInfoMap(sessionID);
+                FileReceiverImpl.this.releaseCancelRequest();
+            } else if (!FileReceiverImpl.this.isCancelRequest()) {
+                FileReceiverImpl.this.removeSessionKeyInfoMap(sessionID);
+            }
+        }
+
+        @Override // com.samsung.android.allshare.file.FileReceiver.IFileReceiverProgressUpdateEventListener
+        public void onCompleted(FileReceiver receiver, String sessionID, File file, Uri uri, ERROR err) {
+            DLog.d_api(FileReceiverImpl.TAG_CLASS, "onCompleted()");
+            SessionInfo tempSessionInfo = FileReceiverImpl.this.getSessionKeyInfoMap(sessionID);
+            if (tempSessionInfo == null) {
+                DLog.w_api(FileReceiverImpl.TAG_CLASS, "Null pointer Error!, sessionId=" + sessionID);
+                return;
+            }
+            FileReceiver.IFileReceiverProgressUpdateEventListener listener = tempSessionInfo.getEventListener();
+            if (listener != null) {
+                listener.onCompleted(receiver, sessionID, file, uri, err);
+            } else {
+                DLog.w_api(FileReceiverImpl.TAG_CLASS, "onCompleted listener is null!");
+            }
+            if (tempSessionInfo.completed()) {
+                DLog.i_api(FileReceiverImpl.TAG_CLASS, "All of FileTransfer was completed [" + sessionID + ",[" + tempSessionInfo.getCount() + NavigationBarInflaterView.SIZE_MOD_END);
+                FileReceiverImpl.this.removeSessionKeyInfoMap(sessionID);
+            }
+        }
+    }
+
     @Override // com.samsung.android.allshare.file.FileReceiver
-    public void receive(ArrayList<File> filelist, final ArrayList<Uri> urilist, final String senderName, Boolean isFolder, String parentFolder, final FileReceiver.IFileReceiverReceiveResponseListener responseListener, FileReceiver.IFileReceiverProgressUpdateEventListener eventListener) {
+    public void receive(ArrayList<File> filelist, ArrayList<Uri> urilist, String senderName, Boolean isFolder, String parentFolder, FileReceiver.IFileReceiverReceiveResponseListener responseListener, FileReceiver.IFileReceiverProgressUpdateEventListener eventListener) {
         IAllShareConnector iAllShareConnector = this.mAllShareConnector;
         if (iAllShareConnector != null && iAllShareConnector.isAllShareServiceConnected()) {
             if (urilist != null && !urilist.isEmpty()) {
@@ -592,6 +939,16 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
                 return;
             }
             this.mRespHandler.postDelayed(new Runnable() { // from class: com.samsung.android.allshare.FileReceiverImpl.5
+                final /* synthetic */ FileReceiver.IFileReceiverReceiveResponseListener val$responseListener;
+                final /* synthetic */ String val$senderName;
+                final /* synthetic */ ArrayList val$urilist;
+
+                AnonymousClass5(FileReceiver.IFileReceiverReceiveResponseListener responseListener2, ArrayList urilist2, String senderName2) {
+                    responseListener = responseListener2;
+                    urilist = urilist2;
+                    senderName = senderName2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     DLog.d_api(FileReceiverImpl.TAG_CLASS, "mRespHandler.postDelayed.mReceiveResponseListener.onReceiveResponseReceived() called..");
@@ -600,7 +957,27 @@ public final class FileReceiverImpl extends FileReceiver implements IBundleHolde
             }, 1L);
             return;
         }
-        responseListener.onReceiveResponseReceived(this.mReceiver, "", urilist, senderName, ERROR.FAIL);
+        responseListener2.onReceiveResponseReceived(this.mReceiver, "", urilist2, senderName2, ERROR.FAIL);
+    }
+
+    /* renamed from: com.samsung.android.allshare.FileReceiverImpl$5 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass5 implements Runnable {
+        final /* synthetic */ FileReceiver.IFileReceiverReceiveResponseListener val$responseListener;
+        final /* synthetic */ String val$senderName;
+        final /* synthetic */ ArrayList val$urilist;
+
+        AnonymousClass5(FileReceiver.IFileReceiverReceiveResponseListener responseListener2, ArrayList urilist2, String senderName2) {
+            responseListener = responseListener2;
+            urilist = urilist2;
+            senderName = senderName2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            DLog.d_api(FileReceiverImpl.TAG_CLASS, "mRespHandler.postDelayed.mReceiveResponseListener.onReceiveResponseReceived() called..");
+            responseListener.onReceiveResponseReceived(FileReceiverImpl.this.mReceiver, "", urilist, senderName, ERROR.FAIL);
+        }
     }
 
     @Override // com.sec.android.allshare.iface.IBundleHolder

@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class MessageLiteToString {
     private static final String BUILDER_LIST_SUFFIX = "OrBuilderList";
@@ -32,7 +31,6 @@ public final class MessageLiteToString {
     private MessageLiteToString() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String toString(MessageLite messageLite, String commentString) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("# ").append(commentString);
@@ -147,7 +145,6 @@ public final class MessageLiteToString {
         return o instanceof MessageLite ? o == ((MessageLite) o).getDefaultInstanceForType() : (o instanceof Enum) && ((Enum) o).ordinal() == 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void printField(StringBuilder buffer, int indent, String name, Object object) {
         if (object instanceof List) {
             List<?> list = (List) object;

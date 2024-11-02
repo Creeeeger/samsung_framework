@@ -10,7 +10,6 @@ import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 import android.view.animation.Transformation;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class SemDragAndDropAnimationCore {
     static final int SELECT_HIGHLIGHT_ANIM_DURATION = 150;
@@ -20,30 +19,25 @@ public class SemDragAndDropAnimationCore {
     private ItemAnimationListener mItemAnimationListener;
     private View mView;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public interface ItemAnimationListener {
         void onItemAnimatorEnd();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SemDragAndDropAnimationCore(View view) {
         this.mView = view;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAnimationListener(ItemAnimationListener l) {
         this.mItemAnimationListener = l;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static abstract class ItemAnimation {
         int mDuration;
         float mProgress;
         long mStartTime;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public abstract void getTransformation(Transformation transformation);
 
         ItemAnimation() {
@@ -58,7 +52,6 @@ public class SemDragAndDropAnimationCore {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isFinished() {
             long currentTime = SystemClock.uptimeMillis();
             return this.mStartTime + ((long) this.mDuration) <= currentTime;
@@ -68,13 +61,11 @@ public class SemDragAndDropAnimationCore {
             return this.mDuration;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public float getProgress() {
             return this.mProgress;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class TranslateItemAnimation extends ItemAnimation {
         private int mDeltaX;
@@ -83,7 +74,6 @@ public class SemDragAndDropAnimationCore {
         private int mOffsetXDest;
         private int mOffsetYDest;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void translate(int offsetDestX, int deltaX, int offsetDestY, int deltaY) {
             this.mOffsetXDest = offsetDestX;
             this.mDeltaX = deltaX;
@@ -91,7 +81,6 @@ public class SemDragAndDropAnimationCore {
             this.mDeltaY = deltaY;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimation
         public void getTransformation(Transformation outTransform) {
             outTransform.setTransformationType(2);
@@ -103,29 +92,24 @@ public class SemDragAndDropAnimationCore {
             m.setTranslate(translateX, translateY);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getDestOffsetY() {
             return this.mOffsetYDest;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getDestOffsetX() {
             return this.mOffsetXDest;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public float getCurrentTranslateX() {
             float interpolatedProgress = this.mInterpolator.getInterpolation(this.mProgress);
             return this.mOffsetXDest - (this.mDeltaX * (1.0f - interpolatedProgress));
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public float getCurrentTranslateY() {
             float interpolatedProgress = this.mInterpolator.getInterpolation(this.mProgress);
             return this.mOffsetYDest - (this.mDeltaY * (1.0f - interpolatedProgress));
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setStartAndDuration(int duration) {
             this.mStartTime = SystemClock.uptimeMillis();
             this.mDuration = duration;
@@ -134,14 +118,12 @@ public class SemDragAndDropAnimationCore {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setStartAndDuration(float durationMultiplicator) {
             int duration = Math.round(300.0f * durationMultiplicator);
             setStartAndDuration(duration);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class ItemSelectHighlightingAnimation extends ItemAnimation {
         private static final float DEFAULT_FROM_X = 1.0f;
@@ -157,7 +139,6 @@ public class SemDragAndDropAnimationCore {
         private float mFromY = 1.0f;
         private float mToY = 1.08f;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ItemSelectHighlightingAnimation(Rect childHitRect) {
             this.mPivotX = childHitRect.exactCenterX();
             this.mPivotY = childHitRect.exactCenterY();
@@ -172,7 +153,6 @@ public class SemDragAndDropAnimationCore {
             this.mPivotY = pivotY;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimation
         public void getTransformation(Transformation outTransform) {
             outTransform.setTransformationType(2);
@@ -213,7 +193,6 @@ public class SemDragAndDropAnimationCore {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setStartAndDuration(int duration) {
             this.mStartTime = SystemClock.uptimeMillis();
             this.mDuration = duration;
@@ -223,7 +202,6 @@ public class SemDragAndDropAnimationCore {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class ItemAnimator implements Runnable {
         private SparseArray<ItemAnimation> mAnimations = new SparseArray<>();
@@ -232,12 +210,10 @@ public class SemDragAndDropAnimationCore {
         ItemAnimator() {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ItemAnimation getItemAnimation(int position) {
             return this.mAnimations.get(position, null);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void putItemAnimation(int position, ItemAnimation a) {
             this.mAnimations.put(position, a);
         }
@@ -246,12 +222,10 @@ public class SemDragAndDropAnimationCore {
             this.mAnimations.delete(position);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void removeAll() {
             this.mAnimations.clear();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void start() {
             this.mIsAnimating = true;
             SemDragAndDropAnimationCore.this.mView.removeCallbacks(this);

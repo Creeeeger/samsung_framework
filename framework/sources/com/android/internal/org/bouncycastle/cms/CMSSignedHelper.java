@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class CMSSignedHelper {
     static final CMSSignedHelper INSTANCE = new CMSSignedHelper();
@@ -77,7 +76,6 @@ public class CMSSignedHelper {
         encryptionAlgs.put(alias.getId(), encryption);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getEncryptionAlgName(String encryptionAlgOID) {
         String algName = (String) encryptionAlgs.get(encryptionAlgOID);
         if (algName != null) {
@@ -86,7 +84,6 @@ public class CMSSignedHelper {
         return encryptionAlgOID;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AlgorithmIdentifier fixAlgID(AlgorithmIdentifier algId) {
         if (algId.getParameters() == null) {
             return new AlgorithmIdentifier(algId.getAlgorithm(), DERNull.INSTANCE);
@@ -98,7 +95,6 @@ public class CMSSignedHelper {
         addEntries(oid, algorithmName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Store getCertificates(ASN1Set certSet) {
         if (certSet != null) {
             List certList = new ArrayList(certSet.size());
@@ -114,7 +110,6 @@ public class CMSSignedHelper {
         return new CollectionStore(new ArrayList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Store getAttributeCertificates(ASN1Set certSet) {
         if (certSet != null) {
             List certList = new ArrayList(certSet.size());
@@ -130,7 +125,6 @@ public class CMSSignedHelper {
         return new CollectionStore(new ArrayList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Store getCRLs(ASN1Set crlSet) {
         if (crlSet != null) {
             List crlList = new ArrayList(crlSet.size());

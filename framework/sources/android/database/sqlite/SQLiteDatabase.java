@@ -244,7 +244,6 @@ public final class SQLiteDatabase extends SQLiteClosable {
     public void setLockingEnabled(boolean lockingEnabled) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getLabel() {
         String str;
         synchronized (this.mLock) {
@@ -253,7 +252,6 @@ public final class SQLiteDatabase extends SQLiteClosable {
         return str;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onCorruption() {
         int poolSize = 0;
         synchronized (this.mLock) {
@@ -348,12 +346,10 @@ public final class SQLiteDatabase extends SQLiteClosable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SQLiteSession getThreadSession() {
         return this.mThreadSession.get();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SQLiteSession createSession() {
         SQLiteConnectionPool pool;
         synchronized (this.mLock) {
@@ -363,7 +359,6 @@ public final class SQLiteDatabase extends SQLiteClosable {
         return new SQLiteSession(pool);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getThreadDefaultConnectionFlags(boolean readOnly) {
         int flags = readOnly ? 1 : 2;
         if (isMainThread()) {
@@ -695,8 +690,14 @@ public final class SQLiteDatabase extends SQLiteClosable {
         new File(file.getPath() + "-wipecheck").delete();
         File dir = file.getParentFile();
         if (dir != null) {
-            final String prefix = file.getName() + "-mj";
+            String prefix = file.getName() + "-mj";
             File[] files = dir.listFiles(new FileFilter() { // from class: android.database.sqlite.SQLiteDatabase.1
+                final /* synthetic */ String val$prefix;
+
+                AnonymousClass1(String prefix2) {
+                    prefix = prefix2;
+                }
+
                 @Override // java.io.FileFilter
                 public boolean accept(File candidate) {
                     return candidate.getName().startsWith(prefix);
@@ -709,6 +710,21 @@ public final class SQLiteDatabase extends SQLiteClosable {
             }
         }
         return deleted;
+    }
+
+    /* renamed from: android.database.sqlite.SQLiteDatabase$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements FileFilter {
+        final /* synthetic */ String val$prefix;
+
+        AnonymousClass1(String prefix2) {
+            prefix = prefix2;
+        }
+
+        @Override // java.io.FileFilter
+        public boolean accept(File candidate) {
+            return candidate.getName().startsWith(prefix);
+        }
     }
 
     public void reopenReadWrite() {
@@ -1366,7 +1382,6 @@ public final class SQLiteDatabase extends SQLiteClosable {
         return this.mCorruptCode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onCorruption(int errorCode) {
         int poolSize = 0;
         boolean waitCorruptionHandlingAndExit = false;
@@ -1467,7 +1482,6 @@ public final class SQLiteDatabase extends SQLiteClosable {
         return z;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ArrayList<SQLiteDebug.DbStats> getDbStats() {
         ArrayList<SQLiteDebug.DbStats> dbStatsList = new ArrayList<>();
         Iterator<SQLiteDatabase> it = getActiveDatabases().iterator();
@@ -1561,7 +1575,6 @@ public final class SQLiteDatabase extends SQLiteClosable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void dumpAll(Printer printer, boolean verbose, boolean isSystem) {
         ArraySet<String> directories = new ArraySet<>();
         long totalStatementsTimeInMs = 0;
@@ -1847,6 +1860,10 @@ public final class SQLiteDatabase extends SQLiteClosable {
         private final String mSyncMode;
         private final boolean mUserDataRecovery;
 
+        /* synthetic */ OpenParams(int i, CursorFactory cursorFactory, DatabaseErrorHandler databaseErrorHandler, int i2, int i3, long j, long j2, String str, String str2, int i4, boolean z, OpenParamsIA openParamsIA) {
+            this(i, cursorFactory, databaseErrorHandler, i2, i3, j, j2, str, str2, i4, z);
+        }
+
         private OpenParams(int openFlags, CursorFactory cursorFactory, DatabaseErrorHandler errorHandler, int lookasideSlotSize, int lookasideSlotCount, long idleConnectionTimeout, long idleConnectionShrinkTimeout, String journalMode, String syncMode, int cacheSize, boolean userDataRecovery) {
             this.mCursorFactory = cursorFactory;
             this.mErrorHandler = errorHandler;
@@ -2063,7 +2080,6 @@ public final class SQLiteDatabase extends SQLiteClosable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void wtfAsSystemServer(String tag, String message, Throwable stacktrace) {
         Log.e(tag, message, stacktrace);
         ContentResolver.onDbCorruption(tag, message, stacktrace);

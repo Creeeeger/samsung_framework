@@ -17,7 +17,6 @@ public final class FloatAction extends ControlAction {
         this.mNewValue = newValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FloatAction(Bundle b) {
         super(b);
         this.mNewValue = b.getFloat(KEY_NEW_VALUE);
@@ -32,8 +31,9 @@ public final class FloatAction extends ControlAction {
         return 2;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.controls.actions.ControlAction
-    Bundle getDataBundle() {
+    public Bundle getDataBundle() {
         Bundle b = super.getDataBundle();
         b.putFloat(KEY_NEW_VALUE, this.mNewValue);
         return b;

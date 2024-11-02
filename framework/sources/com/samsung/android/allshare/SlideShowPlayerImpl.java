@@ -1,6 +1,7 @@
 package com.samsung.android.allshare;
 
 import android.os.Bundle;
+import android.os.Looper;
 import com.samsung.android.allshare.media.SlideShowPlayer;
 import com.sec.android.allshare.iface.CVMessage;
 import com.sec.android.allshare.iface.IBundleHolder;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class SlideShowPlayerImpl extends SlideShowPlayer implements IBundleHolder {
     private static final String TAG = "SlideShowPlayerImpl";
@@ -21,6 +21,10 @@ public final class SlideShowPlayerImpl extends SlideShowPlayer implements IBundl
     private SlideShowPlayer.ISlideShowPlayerResponseListener mResponseListener = null;
     private boolean mIsSubscribed = false;
     AllShareResponseHandler mResponseHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.SlideShowPlayerImpl.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
             String actionID = cvm.getActionID();
@@ -94,7 +98,8 @@ public final class SlideShowPlayerImpl extends SlideShowPlayer implements IBundl
     private AllShareEventHandler mAllShareEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.SlideShowPlayerImpl.2
         private HashMap<String, SlideShowPlayer.SlideShowPlayerState> mStateMap;
 
-        {
+        AnonymousClass2(Looper looper) {
+            super(looper);
             HashMap<String, SlideShowPlayer.SlideShowPlayerState> hashMap = new HashMap<>();
             this.mStateMap = hashMap;
             hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, SlideShowPlayer.SlideShowPlayerState.BUFFERING);
@@ -133,7 +138,6 @@ public final class SlideShowPlayerImpl extends SlideShowPlayer implements IBundl
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SlideShowPlayerImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mAllShareConnector = null;
         this.mDeviceImpl = null;
@@ -160,6 +164,131 @@ public final class SlideShowPlayerImpl extends SlideShowPlayer implements IBundl
             return null;
         }
         return deviceImpl.getBundle();
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.SlideShowPlayerImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareResponseHandler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            String actionID = cvm.getActionID();
+            Bundle resBundle = cvm.getBundle();
+            if (actionID == null || resBundle == null) {
+                return;
+            }
+            ERROR error = ERROR.FAIL;
+            String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+            if (errorStr != null) {
+                error = ERROR.stringToEnum(errorStr);
+            }
+            if (actionID.equals(AllShareAction.ACTION_SLIDESHOW_PLAYER_START)) {
+                int interval = resBundle.getInt(AllShareKey.BUNDLE_INT_SLIDESHOW_BGM_VOLUME);
+                if (SlideShowPlayerImpl.this.mResponseListener != null) {
+                    SlideShowPlayerImpl.this.mResponseListener.onStartResponseReceived(interval, error);
+                    return;
+                }
+                return;
+            }
+            if (actionID.equals(AllShareAction.ACTION_SLIDESHOW_PLAYER_STOP)) {
+                if (SlideShowPlayerImpl.this.mResponseListener != null) {
+                    SlideShowPlayerImpl.this.mResponseListener.onStopResponseReceived(error);
+                    return;
+                }
+                return;
+            }
+            if (actionID.equals(AllShareAction.ACTION_SLIDESHOW_PLAYER_SETLIST)) {
+                String albumTitle = resBundle.getString(AllShareKey.BUNDLE_STRING_SLIDESHOW_ALBUM_TITLE);
+                ArrayList<Bundle> slideUriList = resBundle.getParcelableArrayList(AllShareKey.BUNDLE_PARCELABLE_ARRAYLIST_SLIDESHOW_IMAGE_CONTENT_URI);
+                ArrayList<Item> itemList = new ArrayList<>();
+                if (slideUriList != null) {
+                    Iterator<Bundle> it = slideUriList.iterator();
+                    while (it.hasNext()) {
+                        Bundle itemBundle = it.next();
+                        Item item = ItemCreator.fromBundle(itemBundle);
+                        itemList.add(item);
+                    }
+                }
+                if (SlideShowPlayerImpl.this.mResponseListener != null) {
+                    SlideShowPlayerImpl.this.mResponseListener.onSetListResponseReceived(albumTitle, itemList, error);
+                    return;
+                }
+                return;
+            }
+            if (actionID.equals(AllShareAction.ACTION_SLIDESHOW_PLAYER_SETBGMLIST)) {
+                ArrayList<Bundle> bgmUriList = resBundle.getParcelableArrayList(AllShareKey.BUNDLE_PARCELABLE_ARRAYLIST_SLIDESHOW_AUDIO_CONTENT_URI);
+                ArrayList<Item> itemList2 = new ArrayList<>();
+                if (bgmUriList != null) {
+                    Iterator<Bundle> it2 = bgmUriList.iterator();
+                    while (it2.hasNext()) {
+                        Bundle itemBundle2 = it2.next();
+                        Item item2 = ItemCreator.fromBundle(itemBundle2);
+                        itemList2.add(item2);
+                    }
+                }
+                if (SlideShowPlayerImpl.this.mResponseListener != null) {
+                    SlideShowPlayerImpl.this.mResponseListener.onSetBGMListResponseReceived(itemList2, error);
+                    return;
+                }
+                return;
+            }
+            if (actionID.equals(AllShareAction.ACTION_SLIDESHOW_PLAYER_SETBGMVOLUME)) {
+                int level = resBundle.getInt(AllShareKey.BUNDLE_INT_SLIDESHOW_BGM_VOLUME);
+                if (SlideShowPlayerImpl.this.mResponseListener != null) {
+                    SlideShowPlayerImpl.this.mResponseListener.onSetBGMVolumeResponseReceived(level, error);
+                }
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.SlideShowPlayerImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareEventHandler {
+        private HashMap<String, SlideShowPlayer.SlideShowPlayerState> mStateMap;
+
+        AnonymousClass2(Looper looper) {
+            super(looper);
+            HashMap<String, SlideShowPlayer.SlideShowPlayerState> hashMap = new HashMap<>();
+            this.mStateMap = hashMap;
+            hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, SlideShowPlayer.SlideShowPlayerState.BUFFERING);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_NOMEDIA, SlideShowPlayer.SlideShowPlayerState.STOPPED);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PAUSED, SlideShowPlayer.SlideShowPlayerState.PLAYING);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_STOPPED, SlideShowPlayer.SlideShowPlayerState.STOPPED);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PLAYING, SlideShowPlayer.SlideShowPlayerState.PLAYING);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            Bundle resBundle = cvm.getBundle();
+            if (resBundle == null) {
+                return;
+            }
+            ERROR error = ERROR.FAIL;
+            SlideShowPlayer.SlideShowPlayerState state = this.mStateMap.get(cvm.getActionID());
+            String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+            ERROR error2 = ERROR.stringToEnum(errorStr);
+            if (state == null) {
+                state = SlideShowPlayer.SlideShowPlayerState.UNKNOWN;
+            }
+            notifyEvent(state, 0, error2);
+        }
+
+        private void notifyEvent(SlideShowPlayer.SlideShowPlayerState state, int trackNumber, ERROR error) {
+            if (SlideShowPlayerImpl.this.mEventListener != null) {
+                try {
+                    SlideShowPlayerImpl.this.mEventListener.onSlideShowPlayerStateChanged(state, trackNumber, error);
+                } catch (Error err) {
+                    DLog.w_api(SlideShowPlayerImpl.TAG, "mEventHandler.notifyEvent Error", err);
+                } catch (Exception e) {
+                    DLog.w_api(SlideShowPlayerImpl.TAG, "mEventHandler.notifyEvent Exception", e);
+                }
+            }
+        }
     }
 
     @Override // com.samsung.android.allshare.media.SlideShowPlayer

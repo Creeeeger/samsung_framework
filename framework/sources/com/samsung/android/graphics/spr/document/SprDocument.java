@@ -651,16 +651,16 @@ public class SprDocument implements Cloneable {
         }
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SprDocument m8419clone() throws CloneNotSupportedException {
+    /* renamed from: clone */
+    public SprDocument m8411clone() throws CloneNotSupportedException {
         SprDocument document = (SprDocument) super.clone();
-        document.mReferenceMap = this.mReferenceMap.m4951clone();
+        document.mReferenceMap = this.mReferenceMap.m4950clone();
         document.mDocuments = new ArrayList<>();
         document.mAnimationObject = new ArrayList<>();
         Iterator<SprObjectShapeGroup> it = this.mDocuments.iterator();
         while (it.hasNext()) {
             SprObjectShapeGroup group = it.next();
-            document.mDocuments.add(group.mo8423clone());
+            document.mDocuments.add(group.mo8415clone());
             ArrayList<SprObjectShapeGroup> arrayList = document.mDocuments;
             document.updateAnimationObjectList(arrayList.get(arrayList.size() - 1));
         }

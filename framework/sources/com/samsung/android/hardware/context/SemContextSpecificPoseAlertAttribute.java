@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextSpecificPoseAlertAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextSpecificPoseAlertAttribute> CREATOR = new Parcelable.Creator<SemContextSpecificPoseAlertAttribute>() { // from class: com.samsung.android.hardware.context.SemContextSpecificPoseAlertAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextSpecificPoseAlertAttribute createFromParcel(Parcel in) {
             return new SemContextSpecificPoseAlertAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSpecificPoseAlertAttribute[] newArray(int size) {
             return new SemContextSpecificPoseAlertAttribute[size];
@@ -26,7 +27,23 @@ public class SemContextSpecificPoseAlertAttribute extends SemContextAttribute {
     private int mMovingThrs;
     private int mRetentionTime;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextSpecificPoseAlertAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextSpecificPoseAlertAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextSpecificPoseAlertAttribute createFromParcel(Parcel in) {
+            return new SemContextSpecificPoseAlertAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextSpecificPoseAlertAttribute[] newArray(int size) {
+            return new SemContextSpecificPoseAlertAttribute[size];
+        }
+    }
+
     public SemContextSpecificPoseAlertAttribute() {
         this.mRetentionTime = 1;
         this.mMinimumAngle = -90;

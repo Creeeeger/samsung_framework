@@ -135,8 +135,9 @@ public interface IScrollCaptureConnection extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IScrollCaptureConnection {
+        public static class Proxy implements IScrollCaptureConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

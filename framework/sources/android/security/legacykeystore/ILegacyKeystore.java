@@ -145,8 +145,9 @@ public interface ILegacyKeystore extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ILegacyKeystore {
+        public static class Proxy implements ILegacyKeystore {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

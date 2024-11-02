@@ -97,8 +97,9 @@ public interface IInlineSuggestionUi extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IInlineSuggestionUi {
+        public static class Proxy implements IInlineSuggestionUi {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

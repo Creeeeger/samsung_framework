@@ -528,8 +528,9 @@ public interface ITvInteractiveAppClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ITvInteractiveAppClient {
+        public static class Proxy implements ITvInteractiveAppClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

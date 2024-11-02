@@ -43,7 +43,6 @@ public class SeekBar extends AbsSeekBar {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar, android.widget.ProgressBar
     public void onProgressRefresh(float scale, boolean fromUser, int progress) {
         super.onProgressRefresh(scale, fromUser, progress);
@@ -57,7 +56,6 @@ public class SeekBar extends AbsSeekBar {
         this.mOnSeekBarChangeListener = l;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public void onStartTrackingTouch() {
         super.onStartTrackingTouch();
@@ -67,7 +65,6 @@ public class SeekBar extends AbsSeekBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public void onStopTrackingTouch() {
         super.onStopTrackingTouch();
@@ -94,7 +91,6 @@ public class SeekBar extends AbsSeekBar {
         this.mOnSeekBarHoverListener = l;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public void onStartTrackingHover(int hoverLevel, int posX, int posY) {
         SemOnSeekBarHoverListener semOnSeekBarHoverListener = this.mOnSeekBarHoverListener;
@@ -104,7 +100,6 @@ public class SeekBar extends AbsSeekBar {
         super.onStartTrackingHover(hoverLevel, posX, posY);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public void onStopTrackingHover() {
         SemOnSeekBarHoverListener semOnSeekBarHoverListener = this.mOnSeekBarHoverListener;
@@ -114,7 +109,6 @@ public class SeekBar extends AbsSeekBar {
         super.onStopTrackingHover();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public void onHoverChanged(int hoverLevel, int posX, int posY) {
         SemOnSeekBarHoverListener semOnSeekBarHoverListener = this.mOnSeekBarHoverListener;

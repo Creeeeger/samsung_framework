@@ -362,9 +362,10 @@ public abstract class BaseKeyListener extends MetaKeyKeyListener implements KeyL
         return false;
     }
 
-    /* renamed from: android.text.method.BaseKeyListener$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.text.method.BaseKeyListener$1 */
     /* loaded from: classes3.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$text$method$TextKeyListener$Capitalize;
 
         static {
@@ -385,7 +386,6 @@ public abstract class BaseKeyListener extends MetaKeyKeyListener implements KeyL
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int makeTextContentType(TextKeyListener.Capitalize caps, boolean autoText) {
         int contentType = 1;
         switch (AnonymousClass1.$SwitchMap$android$text$method$TextKeyListener$Capitalize[caps.ordinal()]) {

@@ -83,6 +83,10 @@ public class Atsc3FrontendSettings extends FrontendSettings {
     public @interface TimeInterleaveMode {
     }
 
+    /* synthetic */ Atsc3FrontendSettings(long j, int i, int i2, Atsc3PlpSettings[] atsc3PlpSettingsArr, Atsc3FrontendSettingsIA atsc3FrontendSettingsIA) {
+        this(j, i, i2, atsc3PlpSettingsArr);
+    }
+
     private Atsc3FrontendSettings(long frequency, int bandwidth, int demodOutputFormat, Atsc3PlpSettings[] plpSettings) {
         super(frequency);
         this.mBandwidth = bandwidth;
@@ -112,6 +116,10 @@ public class Atsc3FrontendSettings extends FrontendSettings {
         private int mDemodOutputFormat;
         private long mFrequency;
         private Atsc3PlpSettings[] mPlpSettings;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;

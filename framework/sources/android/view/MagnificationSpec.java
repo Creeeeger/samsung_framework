@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class MagnificationSpec implements Parcelable {
     public static final Parcelable.Creator<MagnificationSpec> CREATOR = new Parcelable.Creator<MagnificationSpec>() { // from class: android.view.MagnificationSpec.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MagnificationSpec[] newArray(int size) {
             return new MagnificationSpec[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MagnificationSpec createFromParcel(Parcel parcel) {
             MagnificationSpec spec = new MagnificationSpec();
@@ -25,6 +26,9 @@ public class MagnificationSpec implements Parcelable {
     public float scale = 1.0f;
 
     public void initialize(float scale, float offsetX, float offsetY) {
+        if (scale < 1.0f) {
+            throw new IllegalArgumentException("Scale must be greater than or equal to one!");
+        }
         this.scale = scale;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
@@ -87,10 +91,28 @@ public class MagnificationSpec implements Parcelable {
         return "<scale:" + Float.toString(this.scale) + ",offsetX:" + Float.toString(this.offsetX) + ",offsetY:" + Float.toString(this.offsetY) + ">";
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void initFromParcel(Parcel parcel) {
         this.scale = parcel.readFloat();
         this.offsetX = parcel.readFloat();
         this.offsetY = parcel.readFloat();
+    }
+
+    /* renamed from: android.view.MagnificationSpec$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MagnificationSpec> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MagnificationSpec[] newArray(int size) {
+            return new MagnificationSpec[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MagnificationSpec createFromParcel(Parcel parcel) {
+            MagnificationSpec spec = new MagnificationSpec();
+            spec.initFromParcel(parcel);
+            return spec;
+        }
     }
 }

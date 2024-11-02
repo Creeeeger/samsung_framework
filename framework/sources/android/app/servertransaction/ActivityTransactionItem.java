@@ -14,7 +14,6 @@ public abstract class ActivityTransactionItem extends ClientTransactionItem {
         execute(client, r, pendingActions);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ActivityThread.ActivityClientRecord getActivityClientRecord(ClientTransactionHandler client, IBinder token) {
         ActivityThread.ActivityClientRecord r = client.getActivityClient(token);
         if (r == null) {

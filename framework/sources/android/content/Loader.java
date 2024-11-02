@@ -146,7 +146,6 @@ public class Loader<D> {
         onForceLoad();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onForceLoad() {
     }
 
@@ -175,7 +174,6 @@ public class Loader<D> {
         this.mProcessingChange = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onReset() {
     }
 

@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SimSlotStatus implements Parcelable {
     public static final Parcelable.Creator<SimSlotStatus> CREATOR = new Parcelable.Creator<SimSlotStatus>() { // from class: android.hardware.radio.config.SimSlotStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SimSlotStatus createFromParcel(Parcel _aidl_source) {
             SimSlotStatus _aidl_out = new SimSlotStatus();
@@ -18,7 +20,6 @@ public class SimSlotStatus implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SimSlotStatus[] newArray(int _aidl_size) {
             return new SimSlotStatus[_aidl_size];
@@ -29,6 +30,25 @@ public class SimSlotStatus implements Parcelable {
     public SimPortInfo[] portInfo;
     public int cardState = 0;
     public int supportedMepMode = 0;
+
+    /* renamed from: android.hardware.radio.config.SimSlotStatus$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SimSlotStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SimSlotStatus createFromParcel(Parcel _aidl_source) {
+            SimSlotStatus _aidl_out = new SimSlotStatus();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SimSlotStatus[] newArray(int _aidl_size) {
+            return new SimSlotStatus[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -964,10 +964,22 @@ public class RingtoneManager {
         return null;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:49:0x016e, code lost:            if (r3 != null) goto L72;     */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x0170, code lost:            r3.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x0180, code lost:            return r5;     */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x017d, code lost:            if (r3 == null) goto L79;     */
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x016e, code lost:
+    
+        if (r3 != null) goto L165;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x0170, code lost:
+    
+        r3.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x0180, code lost:
+    
+        return r5;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x017d, code lost:
+    
+        if (r3 == null) goto L172;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

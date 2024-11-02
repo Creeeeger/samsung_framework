@@ -23,7 +23,9 @@ public final class ApduServiceInfo implements Parcelable {
     static final String AID_BASED_FALSE = "false";
     static final String AID_BASED_TRUE = "true";
     public static final Parcelable.Creator<ApduServiceInfo> CREATOR = new Parcelable.Creator<ApduServiceInfo>() { // from class: android.nfc.cardemulation.ApduServiceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ApduServiceInfo createFromParcel(Parcel source) {
             ResolveInfo info = ResolveInfo.CREATOR.createFromParcel(source);
@@ -52,7 +54,6 @@ public final class ApduServiceInfo implements Parcelable {
             return new ApduServiceInfo(info, onHost, description, staticAidGroups, dynamicAidGroups, requiresUnlock, requiresScreenOn, bannerResource, uid, settingsActivityName, offHostName, staticOffHostName, isSelected, aidBased, samsungExt);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApduServiceInfo[] newArray(int size) {
             return new ApduServiceInfo[size];
@@ -121,11 +122,26 @@ public final class ApduServiceInfo implements Parcelable {
         this.mSettingsActivityName = settingsActivityName;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0075, code lost:            if ("offhost-apdu-service".equals(r12) == false) goto L32;     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x007f, code lost:            throw new org.xmlpull.v1.XmlPullParserException("Meta-data does not start with <offhost-apdu-service> tag");     */
-    /* JADX WARN: Code restructure failed: missing block: B:80:0x044a, code lost:            r23.mSamsungExt = true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:81:0x044d, code lost:            r15.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:82:?, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0075, code lost:
+    
+        if ("offhost-apdu-service".equals(r12) == false) goto L317;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x007f, code lost:
+    
+        throw new org.xmlpull.v1.XmlPullParserException("Meta-data does not start with <offhost-apdu-service> tag");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:80:0x044a, code lost:
+    
+        r23.mSamsungExt = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:81:0x044d, code lost:
+    
+        r15.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:82:?, code lost:
+    
+        return;
+     */
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Removed duplicated region for block: B:236:0x04b3  */
     /* JADX WARN: Type inference failed for: r15v12 */
@@ -380,6 +396,46 @@ public final class ApduServiceInfo implements Parcelable {
         parcel.writeInt(this.mOtherServiceSelectionState ? 1 : 0);
         parcel.writeInt(this.mAidBased ? 1 : 0);
         parcel.writeInt(this.mSamsungExt ? 1 : 0);
+    }
+
+    /* renamed from: android.nfc.cardemulation.ApduServiceInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ApduServiceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApduServiceInfo createFromParcel(Parcel source) {
+            ResolveInfo info = ResolveInfo.CREATOR.createFromParcel(source);
+            String description = source.readString();
+            boolean onHost = source.readInt() != 0;
+            String offHostName = source.readString();
+            String staticOffHostName = source.readString();
+            ArrayList<AidGroup> staticAidGroups = new ArrayList<>();
+            int numStaticGroups = source.readInt();
+            if (numStaticGroups > 0) {
+                source.readTypedList(staticAidGroups, AidGroup.CREATOR);
+            }
+            ArrayList<AidGroup> dynamicAidGroups = new ArrayList<>();
+            int numDynamicGroups = source.readInt();
+            if (numDynamicGroups > 0) {
+                source.readTypedList(dynamicAidGroups, AidGroup.CREATOR);
+            }
+            boolean requiresUnlock = source.readInt() != 0;
+            boolean requiresScreenOn = source.readInt() != 0;
+            int bannerResource = source.readInt();
+            int uid = source.readInt();
+            String settingsActivityName = source.readString();
+            boolean isSelected = source.readInt() != 0;
+            boolean aidBased = source.readInt() != 0;
+            boolean samsungExt = source.readInt() != 0;
+            return new ApduServiceInfo(info, onHost, description, staticAidGroups, dynamicAidGroups, requiresUnlock, requiresScreenOn, bannerResource, uid, settingsActivityName, offHostName, staticOffHostName, isSelected, aidBased, samsungExt);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApduServiceInfo[] newArray(int size) {
+            return new ApduServiceInfo[size];
+        }
     }
 
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {

@@ -84,8 +84,9 @@ public interface ITextServicesSessionListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ITextServicesSessionListener {
+        public static class Proxy implements ITextServicesSessionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

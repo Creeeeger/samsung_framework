@@ -665,7 +665,6 @@ public interface IImsCallSession extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IImsCallSession {
             private IBinder mRemote;

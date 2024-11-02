@@ -11,6 +11,10 @@ import java.util.Objects;
 public class Highlights {
     private final List<Pair<Paint, int[]>> mHighlights;
 
+    /* synthetic */ Highlights(List list, HighlightsIA highlightsIA) {
+        this(list);
+    }
+
     private Highlights(List<Pair<Paint, int[]>> highlights) {
         this.mHighlights = highlights;
     }

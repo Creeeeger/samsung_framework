@@ -8,13 +8,14 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class BeginCreateCredentialRequest implements Parcelable {
     public static final Parcelable.Creator<BeginCreateCredentialRequest> CREATOR = new Parcelable.Creator<BeginCreateCredentialRequest>() { // from class: android.service.credentials.BeginCreateCredentialRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BeginCreateCredentialRequest createFromParcel(Parcel in) {
             return new BeginCreateCredentialRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BeginCreateCredentialRequest[] newArray(int size) {
             return new BeginCreateCredentialRequest[size];
@@ -23,6 +24,10 @@ public final class BeginCreateCredentialRequest implements Parcelable {
     private final CallingAppInfo mCallingAppInfo;
     private final Bundle mData;
     private final String mType;
+
+    /* synthetic */ BeginCreateCredentialRequest(Parcel parcel, BeginCreateCredentialRequestIA beginCreateCredentialRequestIA) {
+        this(parcel);
+    }
 
     public BeginCreateCredentialRequest(String type, Bundle data, CallingAppInfo callingAppInfo) {
         this.mType = (String) Preconditions.checkStringNotEmpty(type, "type must not be null or empty");
@@ -40,6 +45,23 @@ public final class BeginCreateCredentialRequest implements Parcelable {
         this.mCallingAppInfo = (CallingAppInfo) in.readTypedObject(CallingAppInfo.CREATOR);
         this.mType = in.readString8();
         this.mData = in.readBundle(Bundle.class.getClassLoader());
+    }
+
+    /* renamed from: android.service.credentials.BeginCreateCredentialRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BeginCreateCredentialRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BeginCreateCredentialRequest createFromParcel(Parcel in) {
+            return new BeginCreateCredentialRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BeginCreateCredentialRequest[] newArray(int size) {
+            return new BeginCreateCredentialRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

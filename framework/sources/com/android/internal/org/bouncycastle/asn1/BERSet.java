@@ -19,12 +19,10 @@ public class BERSet extends ASN1Set {
         super(elements, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BERSet(boolean isSorted, ASN1Encodable[] elements) {
         super(isSorted, elements);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         int count = this.elements.length;
@@ -37,7 +35,6 @@ public class BERSet extends ASN1Set {
         return i2 + 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Set, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncodedIndef(withTag, 49, this.elements);

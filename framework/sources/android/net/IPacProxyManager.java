@@ -116,8 +116,9 @@ public interface IPacProxyManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IPacProxyManager {
+        public static class Proxy implements IPacProxyManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

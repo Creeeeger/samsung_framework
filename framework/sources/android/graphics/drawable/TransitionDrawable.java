@@ -21,11 +21,14 @@ public class TransitionDrawable extends LayerDrawable implements Drawable.Callba
     private int mTo;
     private int mTransitionState;
 
+    /* synthetic */ TransitionDrawable(TransitionState transitionState, Resources resources, TransitionDrawableIA transitionDrawableIA) {
+        this(transitionState, resources);
+    }
+
     public TransitionDrawable(Drawable[] layers) {
         this(new TransitionState(null, null, null), layers);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
     public TransitionDrawable() {
         this(new TransitionState(null, null, null), (Resources) null);
@@ -160,7 +163,6 @@ public class TransitionDrawable extends LayerDrawable implements Drawable.Callba
         return this.mCrossFade;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class TransitionState extends LayerDrawable.LayerState {
         TransitionState(TransitionState orig, TransitionDrawable owner, Resources res) {

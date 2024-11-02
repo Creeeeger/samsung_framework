@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class GameStartedEvent implements Parcelable {
     public static final Parcelable.Creator<GameStartedEvent> CREATOR = new Parcelable.Creator<GameStartedEvent>() { // from class: android.service.games.GameStartedEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GameStartedEvent createFromParcel(Parcel source) {
             return new GameStartedEvent(source.readInt(), source.readString());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GameStartedEvent[] newArray(int size) {
             return new GameStartedEvent[0];
@@ -23,6 +24,23 @@ public final class GameStartedEvent implements Parcelable {
     };
     private final String mPackageName;
     private final int mTaskId;
+
+    /* renamed from: android.service.games.GameStartedEvent$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GameStartedEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameStartedEvent createFromParcel(Parcel source) {
+            return new GameStartedEvent(source.readInt(), source.readString());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameStartedEvent[] newArray(int size) {
+            return new GameStartedEvent[0];
+        }
+    }
 
     public GameStartedEvent(int taskId, String packageName) {
         this.mTaskId = taskId;

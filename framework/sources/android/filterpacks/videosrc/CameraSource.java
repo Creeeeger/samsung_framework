@@ -59,6 +59,9 @@ public class CameraSource extends Filter {
         this.mFps = 30;
         this.mWaitForNewFrame = true;
         this.onCameraFrameAvailableListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.filterpacks.videosrc.CameraSource.1
+            AnonymousClass1() {
+            }
+
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public void onFrameAvailable(SurfaceTexture surfaceTexture) {
                 if (CameraSource.this.mLogVerbose) {
@@ -262,5 +265,23 @@ public class CameraSource extends Filter {
             Log.v(TAG, "Requested fps: " + fps + ".Closest frame rate range: [" + (closestRange[0] / 1000.0d) + "," + (closestRange[1] / 1000.0d) + NavigationBarInflaterView.SIZE_MOD_END);
         }
         return closestRange;
+    }
+
+    /* renamed from: android.filterpacks.videosrc.CameraSource$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements SurfaceTexture.OnFrameAvailableListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
+        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+            if (CameraSource.this.mLogVerbose) {
+                Log.v(CameraSource.TAG, "New frame from camera");
+            }
+            synchronized (CameraSource.this) {
+                CameraSource.this.mNewFrameAvailable = true;
+                CameraSource.this.notify();
+            }
+        }
     }
 }

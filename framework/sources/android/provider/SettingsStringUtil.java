@@ -52,7 +52,6 @@ public class SettingsStringUtil {
                 super(colonSeparatedItems);
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.provider.SettingsStringUtil.ColonDelimitedSet
             public String itemFromString(String s) {
                 return s;
@@ -94,14 +93,11 @@ public class SettingsStringUtil {
             super(colonSeparatedPackageNames);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.provider.SettingsStringUtil.ColonDelimitedSet
         public ComponentName itemFromString(String s) {
             return ComponentName.unflattenFromString(s);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.provider.SettingsStringUtil.ColonDelimitedSet
         public String itemToString(ComponentName item) {
             return item != null ? item.flattenToString() : SemCapabilities.FEATURE_TAG_NULL;

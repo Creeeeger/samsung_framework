@@ -51,7 +51,6 @@ public class WatchListDecorLayout extends FrameLayout implements ViewTreeObserve
         this.mMatchParentChildren = new ArrayList<>(1);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -127,7 +126,6 @@ public class WatchListDecorLayout extends FrameLayout implements ViewTreeObserve
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int i;

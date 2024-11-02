@@ -86,8 +86,9 @@ public interface IDreamOverlayClientCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDreamOverlayClientCallback {
+        public static class Proxy implements IDreamOverlayClientCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

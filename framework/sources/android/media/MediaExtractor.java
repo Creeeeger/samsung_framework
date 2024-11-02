@@ -107,11 +107,26 @@ public final class MediaExtractor {
         native_setup();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0054, code lost:            if (0 == 0) goto L31;     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0056, code lost:            r1.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x005e, code lost:            setDataSource(r11.toString(), r12);     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0065, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x005b, code lost:            if (0 == 0) goto L31;     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0054, code lost:
+    
+        if (0 == 0) goto L69;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0056, code lost:
+    
+        r1.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x005e, code lost:
+    
+        setDataSource(r11.toString(), r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0065, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x005b, code lost:
+    
+        if (0 == 0) goto L69;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -282,7 +297,7 @@ public final class MediaExtractor {
         }
         if (formatMap.containsKey("pssh")) {
             Map<UUID, byte[]> psshMap = getPsshInfo();
-            final DrmInitData.SchemeInitData[] schemeInitDatas = (DrmInitData.SchemeInitData[]) psshMap.entrySet().stream().map(new Function() { // from class: android.media.MediaExtractor$$ExternalSyntheticLambda0
+            DrmInitData.SchemeInitData[] schemeInitDatas = (DrmInitData.SchemeInitData[]) psshMap.entrySet().stream().map(new Function() { // from class: android.media.MediaExtractor$$ExternalSyntheticLambda0
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return MediaExtractor.lambda$getDrmInitData$0((Map.Entry) obj);
@@ -293,7 +308,7 @@ public final class MediaExtractor {
                     return MediaExtractor.lambda$getDrmInitData$1(i);
                 }
             });
-            final Map<UUID, DrmInitData.SchemeInitData> initDataMap = (Map) Arrays.stream(schemeInitDatas).collect(Collectors.toMap(new Function() { // from class: android.media.MediaExtractor$$ExternalSyntheticLambda2
+            Map<UUID, DrmInitData.SchemeInitData> initDataMap = (Map) Arrays.stream(schemeInitDatas).collect(Collectors.toMap(new Function() { // from class: android.media.MediaExtractor$$ExternalSyntheticLambda2
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     UUID uuid;
@@ -307,6 +322,14 @@ public final class MediaExtractor {
                 }
             }));
             return new DrmInitData() { // from class: android.media.MediaExtractor.1
+                final /* synthetic */ Map val$initDataMap;
+                final /* synthetic */ DrmInitData.SchemeInitData[] val$schemeInitDatas;
+
+                AnonymousClass1(Map initDataMap2, DrmInitData.SchemeInitData[] schemeInitDatas2) {
+                    initDataMap = initDataMap2;
+                    schemeInitDatas = schemeInitDatas2;
+                }
+
                 @Override // android.media.DrmInitData
                 public DrmInitData.SchemeInitData get(UUID schemeUuid) {
                     return (DrmInitData.SchemeInitData) initDataMap.get(schemeUuid);
@@ -331,8 +354,14 @@ public final class MediaExtractor {
                 buf.rewind();
                 byte[] data = new byte[buf.remaining()];
                 buf.get(data);
-                final DrmInitData.SchemeInitData webmSchemeInitData = new DrmInitData.SchemeInitData(DrmInitData.SchemeInitData.UUID_NIL, "webm", data);
+                DrmInitData.SchemeInitData webmSchemeInitData = new DrmInitData.SchemeInitData(DrmInitData.SchemeInitData.UUID_NIL, "webm", data);
                 return new DrmInitData() { // from class: android.media.MediaExtractor.2
+                    final /* synthetic */ DrmInitData.SchemeInitData val$webmSchemeInitData;
+
+                    AnonymousClass2(DrmInitData.SchemeInitData webmSchemeInitData2) {
+                        webmSchemeInitData = webmSchemeInitData2;
+                    }
+
                     @Override // android.media.DrmInitData
                     public DrmInitData.SchemeInitData get(UUID schemeUuid) {
                         return webmSchemeInitData;
@@ -353,19 +382,68 @@ public final class MediaExtractor {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ DrmInitData.SchemeInitData lambda$getDrmInitData$0(Map.Entry entry) {
         return new DrmInitData.SchemeInitData((UUID) entry.getKey(), "cenc", (byte[]) entry.getValue());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ DrmInitData.SchemeInitData[] lambda$getDrmInitData$1(int x$0) {
         return new DrmInitData.SchemeInitData[x$0];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.MediaExtractor$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends DrmInitData {
+        final /* synthetic */ Map val$initDataMap;
+        final /* synthetic */ DrmInitData.SchemeInitData[] val$schemeInitDatas;
+
+        AnonymousClass1(Map initDataMap2, DrmInitData.SchemeInitData[] schemeInitDatas2) {
+            initDataMap = initDataMap2;
+            schemeInitDatas = schemeInitDatas2;
+        }
+
+        @Override // android.media.DrmInitData
+        public DrmInitData.SchemeInitData get(UUID schemeUuid) {
+            return (DrmInitData.SchemeInitData) initDataMap.get(schemeUuid);
+        }
+
+        @Override // android.media.DrmInitData
+        public int getSchemeInitDataCount() {
+            return schemeInitDatas.length;
+        }
+
+        @Override // android.media.DrmInitData
+        public DrmInitData.SchemeInitData getSchemeInitDataAt(int index) {
+            return schemeInitDatas[index];
+        }
+    }
+
     public static /* synthetic */ DrmInitData.SchemeInitData lambda$getDrmInitData$3(DrmInitData.SchemeInitData initData) {
         return initData;
+    }
+
+    /* renamed from: android.media.MediaExtractor$2 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass2 extends DrmInitData {
+        final /* synthetic */ DrmInitData.SchemeInitData val$webmSchemeInitData;
+
+        AnonymousClass2(DrmInitData.SchemeInitData webmSchemeInitData2) {
+            webmSchemeInitData = webmSchemeInitData2;
+        }
+
+        @Override // android.media.DrmInitData
+        public DrmInitData.SchemeInitData get(UUID schemeUuid) {
+            return webmSchemeInitData;
+        }
+
+        @Override // android.media.DrmInitData
+        public int getSchemeInitDataCount() {
+            return 1;
+        }
+
+        @Override // android.media.DrmInitData
+        public DrmInitData.SchemeInitData getSchemeInitDataAt(int index) {
+            return webmSchemeInitData;
+        }
     }
 
     public List<AudioPresentation> getAudioPresentations(int trackIndex) {

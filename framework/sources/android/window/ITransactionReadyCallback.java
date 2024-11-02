@@ -86,8 +86,9 @@ public interface ITransactionReadyCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements ITransactionReadyCallback {
+        public static class Proxy implements ITransactionReadyCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

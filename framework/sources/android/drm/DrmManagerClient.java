@@ -104,12 +104,10 @@ public class DrmManagerClient implements AutoCloseable {
 
     private native int _openConvertSession(int i, String str);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native DrmInfoStatus _processDrmInfo(int i, DrmInfo drmInfo);
 
     private native void _release(int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native int _removeAllRights(int i);
 
     private native int _removeRights(int i, String str);
@@ -128,7 +126,6 @@ public class DrmManagerClient implements AutoCloseable {
         System.loadLibrary("drmframework_jni");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class EventHandler extends Handler {
         public EventHandler(Looper looper) {
@@ -212,7 +209,6 @@ public class DrmManagerClient implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class InfoHandler extends Handler {
         public static final int INFO_EVENT_TYPE = 1;
@@ -869,7 +865,6 @@ public class DrmManagerClient implements AutoCloseable {
         return _closeConvertSession(this.mUniqueId, convertId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getEventType(int infoType) {
         switch (infoType) {
             case 1:
@@ -881,7 +876,6 @@ public class DrmManagerClient implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getErrorType(int infoType, DrmInfoStatus infoStatus) {
         switch (infoType) {
             case 1:

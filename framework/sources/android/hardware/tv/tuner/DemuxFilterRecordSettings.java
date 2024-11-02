@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxFilterRecordSettings implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterRecordSettings> CREATOR = new Parcelable.Creator<DemuxFilterRecordSettings>() { // from class: android.hardware.tv.tuner.DemuxFilterRecordSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxFilterRecordSettings createFromParcel(Parcel _aidl_source) {
             DemuxFilterRecordSettings _aidl_out = new DemuxFilterRecordSettings();
@@ -15,7 +17,6 @@ public class DemuxFilterRecordSettings implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterRecordSettings[] newArray(int _aidl_size) {
             return new DemuxFilterRecordSettings[_aidl_size];
@@ -24,6 +25,25 @@ public class DemuxFilterRecordSettings implements Parcelable {
     public DemuxFilterScIndexMask scIndexMask;
     public int tsIndexMask = 0;
     public int scIndexType = 0;
+
+    /* renamed from: android.hardware.tv.tuner.DemuxFilterRecordSettings$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterRecordSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterRecordSettings createFromParcel(Parcel _aidl_source) {
+            DemuxFilterRecordSettings _aidl_out = new DemuxFilterRecordSettings();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterRecordSettings[] newArray(int _aidl_size) {
+            return new DemuxFilterRecordSettings[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

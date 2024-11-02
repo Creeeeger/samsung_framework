@@ -19,13 +19,14 @@ import java.util.stream.Stream;
 /* loaded from: classes2.dex */
 public final class ProgramSelector implements Parcelable {
     public static final Parcelable.Creator<ProgramSelector> CREATOR = new Parcelable.Creator<ProgramSelector>() { // from class: android.hardware.radio.ProgramSelector.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProgramSelector createFromParcel(Parcel in) {
             return new ProgramSelector(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProgramSelector[] newArray(int size) {
             return new ProgramSelector[size];
@@ -110,6 +111,10 @@ public final class ProgramSelector implements Parcelable {
     public @interface ProgramType {
     }
 
+    /* synthetic */ ProgramSelector(Parcel parcel, ProgramSelectorIA programSelectorIA) {
+        this(parcel);
+    }
+
     public ProgramSelector(int programType, Identifier primaryId, Identifier[] secondaryIds, long[] vendorIds) {
         secondaryIds = secondaryIds == null ? new Identifier[0] : secondaryIds;
         vendorIds = vendorIds == null ? new long[0] : vendorIds;
@@ -127,7 +132,6 @@ public final class ProgramSelector implements Parcelable {
         this.mVendorIds = vendorIds;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$new$0(Identifier id) {
         return id == null;
     }
@@ -191,12 +195,10 @@ public final class ProgramSelector implements Parcelable {
         return new ProgramSelector(this.mProgramType, this.mPrimaryId, secondaryIds, this.mVendorIds);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$withSecondaryPreferred$1(int preferredType, Identifier id) {
         return id.getType() != preferredType;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Identifier[] lambda$withSecondaryPreferred$2(int x$0) {
         return new Identifier[x$0];
     }
@@ -300,7 +302,6 @@ public final class ProgramSelector implements Parcelable {
         this.mVendorIds = in.createLongArray();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$new$3(Identifier id) {
         return id == null;
     }
@@ -318,16 +319,34 @@ public final class ProgramSelector implements Parcelable {
         return 0;
     }
 
+    /* renamed from: android.hardware.radio.ProgramSelector$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProgramSelector> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProgramSelector createFromParcel(Parcel in) {
+            return new ProgramSelector(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProgramSelector[] newArray(int size) {
+            return new ProgramSelector[size];
+        }
+    }
+
     /* loaded from: classes2.dex */
     public static final class Identifier implements Parcelable {
         public static final Parcelable.Creator<Identifier> CREATOR = new Parcelable.Creator<Identifier>() { // from class: android.hardware.radio.ProgramSelector.Identifier.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Identifier createFromParcel(Parcel in) {
                 return new Identifier(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Identifier[] newArray(int size) {
                 return new Identifier[size];
@@ -335,6 +354,10 @@ public final class ProgramSelector implements Parcelable {
         };
         private final int mType;
         private final long mValue;
+
+        /* synthetic */ Identifier(Parcel parcel, IdentifierIA identifierIA) {
+            this(parcel);
+        }
 
         public Identifier(int type, long value) {
             this.mType = type == 10004 ? 4 : type;
@@ -391,6 +414,23 @@ public final class ProgramSelector implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: android.hardware.radio.ProgramSelector$Identifier$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Identifier> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Identifier createFromParcel(Parcel in) {
+                return new Identifier(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Identifier[] newArray(int size) {
+                return new Identifier[size];
+            }
         }
     }
 }

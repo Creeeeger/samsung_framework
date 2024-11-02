@@ -160,8 +160,9 @@ public interface ISemMobileWipsFramework extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISemMobileWipsFramework {
+        public static class Proxy implements ISemMobileWipsFramework {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -221,24 +221,5 @@ public class ProtectedCommandOpt1 extends ICmdList {
         putAtCommands("AT+ESIMBIND=1,1", this.cmdType);
         putAtCommands("AT+ESIMBIND=1,2", this.cmdType);
         putAtCommands("AT+IMEMTEST=1,5", this.cmdType);
-        putAtCommands("AT+MSLSECUR=0,*", this.cmdType);
-        putAtCommands("AT+MSLSECUR=2,*", this.cmdType);
-        putAtCommands("AT+MSLSECUR=3,*", this.cmdType);
-        putAtCommands("AT+IMEITEST=2,*", this.cmdType);
-        putAtCommands("AT+IMEITEST=3,*", this.cmdType);
-        putAtCommands("AT+IMEITEST=4,*", this.cmdType);
-        putAtCommands("AT+IMEICERT=2,*", this.cmdType);
-        putAtCommands("AT+MEIDAUTH=2,*", this.cmdType);
-        putAtCommands("AT+AOTKEYWR=2,*", this.cmdType);
-        putAtCommands("AT+IMEISIGN=2,*", this.cmdType);
-        putAtCommands("AT+DETALOCK=2,*", this.cmdType);
-        putAtCommands("AT+LOCKINFO=2,*", this.cmdType);
-        putAtCommands("AT+RFBYCODE=2,*", this.cmdType);
-        putAtCommands("AT+CPLDUCFG=2,*", this.cmdType);
-        putAtCommands("AT+BLOBSIGN=2,*", this.cmdType);
-        putAtCommands("AT+SSUCONFG=0,*", this.cmdType);
-        putAtCommands("AT+SSUCONFG=2,*", this.cmdType);
-        putAtCommands("AT+TFSTATUS=*", this.cmdType);
-        putAtCommands("AT+LVOFLOCK=1,*", this.cmdType);
     }
 }

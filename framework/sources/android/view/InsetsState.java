@@ -18,13 +18,14 @@ import java.util.StringJoiner;
 /* loaded from: classes4.dex */
 public class InsetsState implements Parcelable {
     public static final Parcelable.Creator<InsetsState> CREATOR = new Parcelable.Creator<InsetsState>() { // from class: android.view.InsetsState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InsetsState createFromParcel(Parcel in) {
             return new InsetsState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InsetsState[] newArray(int size) {
             return new InsetsState[size];
@@ -326,7 +327,6 @@ public class InsetsState implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getInsetSide(Insets insets) {
         if (Insets.NONE.equals(insets)) {
             return 4;
@@ -547,7 +547,6 @@ public class InsetsState implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
         InsetsSource source = this.mSources.get(InsetsSource.ID_IME);
@@ -641,6 +640,23 @@ public class InsetsState implements Parcelable {
         dest.writeInt(size);
         for (int i = 0; i < size; i++) {
             dest.writeTypedObject(this.mSources.valueAt(i), flags);
+        }
+    }
+
+    /* renamed from: android.view.InsetsState$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InsetsState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsetsState createFromParcel(Parcel in) {
+            return new InsetsState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsetsState[] newArray(int size) {
+            return new InsetsState[size];
         }
     }
 

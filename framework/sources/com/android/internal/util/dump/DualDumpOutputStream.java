@@ -17,10 +17,13 @@ public class DualDumpOutputStream {
     private final IndentingPrintWriter mIpw;
     private final ProtoOutputStream mProtoStream;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static abstract class Dumpable {
         final String name;
+
+        /* synthetic */ Dumpable(String str, DumpableIA dumpableIA) {
+            this(str);
+        }
 
         abstract void print(IndentingPrintWriter indentingPrintWriter, boolean z);
 
@@ -29,9 +32,14 @@ public class DualDumpOutputStream {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class DumpObject extends Dumpable {
+    public static class DumpObject extends Dumpable {
         private final LinkedHashMap<String, ArrayList<Dumpable>> mSubObjects;
+
+        /* synthetic */ DumpObject(String str, DumpObjectIA dumpObjectIA) {
+            this(str);
+        }
 
         private DumpObject(String name) {
             super(name);
@@ -74,9 +82,14 @@ public class DualDumpOutputStream {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class DumpField extends Dumpable {
+    public static class DumpField extends Dumpable {
         private final String mValue;
+
+        /* synthetic */ DumpField(String str, String str2, DumpFieldIA dumpFieldIA) {
+            this(str, str2);
+        }
 
         private DumpField(String name, String value) {
             super(name);
@@ -99,11 +112,11 @@ public class DualDumpOutputStream {
         this.mIpw = null;
     }
 
-    public DualDumpOutputStream(IndentingPrintWriter indentingPrintWriter) {
+    public DualDumpOutputStream(IndentingPrintWriter ipw) {
         LinkedList<DumpObject> linkedList = new LinkedList<>();
         this.mDumpObjects = linkedList;
         this.mProtoStream = null;
-        this.mIpw = indentingPrintWriter;
+        this.mIpw = ipw;
         linkedList.add(new DumpObject(null));
     }
 

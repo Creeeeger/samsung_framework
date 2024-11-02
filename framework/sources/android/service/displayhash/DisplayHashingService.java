@@ -52,7 +52,6 @@ public abstract class DisplayHashingService extends Service {
         return this.mWrapper;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void verifyDisplayHash(byte[] salt, DisplayHash displayHash, RemoteCallback callback) {
         VerifiedDisplayHash verifiedDisplayHash = onVerifyDisplayHash(salt, displayHash);
         Bundle data = new Bundle();
@@ -60,7 +59,6 @@ public abstract class DisplayHashingService extends Service {
         callback.sendResult(data);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void getDisplayHashAlgorithms(RemoteCallback callback) {
         Map<String, DisplayHashParams> displayHashParams = onGetDisplayHashAlgorithms();
         Bundle data = new Bundle();
@@ -70,7 +68,6 @@ public abstract class DisplayHashingService extends Service {
         callback.sendResult(data);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void getDurationBetweenRequestsMillis(RemoteCallback callback) {
         int durationBetweenRequestMillis = onGetIntervalBetweenRequestsMillis();
         Bundle data = new Bundle();
@@ -78,19 +75,30 @@ public abstract class DisplayHashingService extends Service {
         callback.sendResult(data);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class DisplayHashingServiceWrapper extends IDisplayHashingService.Stub {
+    public final class DisplayHashingServiceWrapper extends IDisplayHashingService.Stub {
+        /* synthetic */ DisplayHashingServiceWrapper(DisplayHashingService displayHashingService, DisplayHashingServiceWrapperIA displayHashingServiceWrapperIA) {
+            this();
+        }
+
         private DisplayHashingServiceWrapper() {
         }
 
         @Override // android.service.displayhash.IDisplayHashingService
-        public void generateDisplayHash(byte[] salt, HardwareBuffer buffer, Rect bounds, String hashAlgorithm, final RemoteCallback callback) {
+        public void generateDisplayHash(byte[] salt, HardwareBuffer buffer, Rect bounds, String hashAlgorithm, RemoteCallback callback) {
             DisplayHashingService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new HexConsumer() { // from class: android.service.displayhash.DisplayHashingService$DisplayHashingServiceWrapper$$ExternalSyntheticLambda3
                 @Override // com.android.internal.util.function.HexConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6) {
                     ((DisplayHashingService) obj).onGenerateDisplayHash((byte[]) obj2, (HardwareBuffer) obj3, (Rect) obj4, (String) obj5, (DisplayHashingService.DisplayHashingServiceWrapper.AnonymousClass1) obj6);
                 }
             }, DisplayHashingService.this, salt, buffer, bounds, hashAlgorithm, new DisplayHashResultCallback() { // from class: android.service.displayhash.DisplayHashingService.DisplayHashingServiceWrapper.1
+                final /* synthetic */ RemoteCallback val$callback;
+
+                AnonymousClass1(RemoteCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.view.displayhash.DisplayHashResultCallback
                 public void onDisplayHashResult(DisplayHash displayHash) {
                     Bundle result = new Bundle();
@@ -105,6 +113,30 @@ public abstract class DisplayHashingService extends Service {
                     callback.sendResult(result);
                 }
             }));
+        }
+
+        /* renamed from: android.service.displayhash.DisplayHashingService$DisplayHashingServiceWrapper$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements DisplayHashResultCallback {
+            final /* synthetic */ RemoteCallback val$callback;
+
+            AnonymousClass1(RemoteCallback callback2) {
+                callback = callback2;
+            }
+
+            @Override // android.view.displayhash.DisplayHashResultCallback
+            public void onDisplayHashResult(DisplayHash displayHash) {
+                Bundle result = new Bundle();
+                result.putParcelable(DisplayHashResultCallback.EXTRA_DISPLAY_HASH, displayHash);
+                callback.sendResult(result);
+            }
+
+            @Override // android.view.displayhash.DisplayHashResultCallback
+            public void onDisplayHashError(int errorCode) {
+                Bundle result = new Bundle();
+                result.putInt(DisplayHashResultCallback.EXTRA_DISPLAY_HASH_ERROR_CODE, errorCode);
+                callback.sendResult(result);
+            }
         }
 
         @Override // android.service.displayhash.IDisplayHashingService

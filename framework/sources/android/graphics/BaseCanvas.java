@@ -86,7 +86,6 @@ public abstract class BaseCanvas {
 
     private static native void nPunchHole(long j, float f, float f2, float f3, float f4, float f5, float f6, float f7);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void throwIfCannotDraw(Bitmap bitmap) {
         if (bitmap.isRecycled()) {
             throw new RuntimeException("Canvas: trying to use a recycled bitmap " + bitmap);
@@ -97,7 +96,6 @@ public abstract class BaseCanvas {
         throwIfHwBitmapInSwMode(bitmap);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final void checkRange(int length, int offset, int count) {
         if ((offset | count) < 0 || offset + count > length) {
             throw new ArrayIndexOutOfBoundsException();
@@ -573,7 +571,6 @@ public abstract class BaseCanvas {
         return this.mAllowHwFeaturesInSwMode;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean onHwFeatureInSwMode() {
         return !this.mAllowHwFeaturesInSwMode;
     }

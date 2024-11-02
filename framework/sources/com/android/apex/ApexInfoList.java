@@ -18,7 +18,6 @@ public class ApexInfoList {
         return this.apexInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ApexInfoList read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         ApexInfoList _instance = new ApexInfoList();
@@ -44,7 +43,6 @@ public class ApexInfoList {
         return _instance;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void write(XmlWriter _out, String _name) throws IOException {
         _out.print("<" + _name);
         _out.print(">\n");

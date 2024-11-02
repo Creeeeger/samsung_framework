@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioPortMixExt implements Parcelable {
     public static final Parcelable.Creator<AudioPortMixExt> CREATOR = new Parcelable.Creator<AudioPortMixExt>() { // from class: android.media.audio.common.AudioPortMixExt.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioPortMixExt createFromParcel(Parcel _aidl_source) {
             AudioPortMixExt _aidl_out = new AudioPortMixExt();
@@ -18,7 +20,6 @@ public class AudioPortMixExt implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPortMixExt[] newArray(int _aidl_size) {
             return new AudioPortMixExt[_aidl_size];
@@ -29,6 +30,25 @@ public class AudioPortMixExt implements Parcelable {
     public int maxOpenStreamCount = 0;
     public int maxActiveStreamCount = 0;
     public int recommendedMuteDurationMs = 0;
+
+    /* renamed from: android.media.audio.common.AudioPortMixExt$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioPortMixExt> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPortMixExt createFromParcel(Parcel _aidl_source) {
+            AudioPortMixExt _aidl_out = new AudioPortMixExt();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPortMixExt[] newArray(int _aidl_size) {
+            return new AudioPortMixExt[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

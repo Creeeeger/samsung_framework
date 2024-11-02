@@ -33,7 +33,6 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
     private IRemoteLockscreenValidationService mService;
     private ServiceInfo mServiceInfo;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RemoteLockscreenValidationClientImpl(Context context, Executor bgExecutor, ComponentName serviceComponent) {
         Context applicationContext = context.getApplicationContext();
         this.mContext = applicationContext;
@@ -49,7 +48,7 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
     }
 
     @Override // android.service.remotelockscreenvalidation.RemoteLockscreenValidationClient
-    public void validateLockscreenGuess(final byte[] guess, final IRemoteLockscreenValidationCallback callback) {
+    public void validateLockscreenGuess(byte[] guess, IRemoteLockscreenValidationCallback callback) {
         try {
             if (!isServiceAvailable()) {
                 callback.onFailure("Service is not available");
@@ -59,9 +58,14 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
             Log.e(TAG, "Error while failing for service unavailable", e);
         }
         executeApiCall(new Call() { // from class: android.service.remotelockscreenvalidation.RemoteLockscreenValidationClientImpl.1
+            final /* synthetic */ IRemoteLockscreenValidationCallback val$callback;
+            final /* synthetic */ byte[] val$guess;
+
             /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            {
+            AnonymousClass1(byte[] guess2, IRemoteLockscreenValidationCallback callback2) {
                 super();
+                guess = guess2;
+                callback = callback2;
             }
 
             @Override // android.service.remotelockscreenvalidation.RemoteLockscreenValidationClientImpl.Call
@@ -80,6 +84,34 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
         });
     }
 
+    /* renamed from: android.service.remotelockscreenvalidation.RemoteLockscreenValidationClientImpl$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Call {
+        final /* synthetic */ IRemoteLockscreenValidationCallback val$callback;
+        final /* synthetic */ byte[] val$guess;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(byte[] guess2, IRemoteLockscreenValidationCallback callback2) {
+            super();
+            guess = guess2;
+            callback = callback2;
+        }
+
+        @Override // android.service.remotelockscreenvalidation.RemoteLockscreenValidationClientImpl.Call
+        public void exec(IRemoteLockscreenValidationService service) throws RemoteException {
+            service.validateLockscreenGuess(guess, callback);
+        }
+
+        @Override // android.service.remotelockscreenvalidation.RemoteLockscreenValidationClientImpl.Call
+        void onError(String msg) {
+            try {
+                callback.onFailure(msg);
+            } catch (RemoteException e2) {
+                Log.e(RemoteLockscreenValidationClientImpl.TAG, "Error while failing validateLockscreenGuess", e2);
+            }
+        }
+    }
+
     @Override // android.service.remotelockscreenvalidation.RemoteLockscreenValidationClient
     public void disconnect() {
         this.mHandler.post(new Runnable() { // from class: android.service.remotelockscreenvalidation.RemoteLockscreenValidationClientImpl$$ExternalSyntheticLambda5
@@ -90,7 +122,6 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void disconnectInternal() {
         if (!this.mIsConnected) {
             Log.w(TAG, "already disconnected");
@@ -107,7 +138,6 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
         this.mRequestQueue.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$disconnectInternal$0() {
         this.mContext.unbindService(this);
     }
@@ -121,7 +151,6 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void connectInternal() {
         if (this.mServiceInfo == null) {
             Log.w(TAG, "RemoteLockscreenValidation service unavailable");
@@ -142,13 +171,11 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$connectInternal$1(Intent intent, int flags) {
         this.mContext.bindService(intent, this, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: onConnectedInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onConnectedInternal */
     public void lambda$onServiceConnected$3(IRemoteLockscreenValidationService service) {
         if (!this.mIsConnected) {
             Log.w(TAG, "onConnectInternal but connection closed");
@@ -195,8 +222,7 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: executeInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: executeInternal */
     public void lambda$executeApiCall$2(Call call) {
         IRemoteLockscreenValidationService iRemoteLockscreenValidationService;
         if (this.mIsConnected && (iRemoteLockscreenValidationService = this.mService) != null) {
@@ -246,9 +272,12 @@ public class RemoteLockscreenValidationClientImpl implements RemoteLockscreenVal
         disconnect();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static abstract class Call {
+        /* synthetic */ Call(CallIA callIA) {
+            this();
+        }
+
         abstract void exec(IRemoteLockscreenValidationService iRemoteLockscreenValidationService) throws RemoteException;
 
         abstract void onError(String str);

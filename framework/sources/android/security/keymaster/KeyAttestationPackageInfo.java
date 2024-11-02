@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class KeyAttestationPackageInfo implements Parcelable {
     public static final Parcelable.Creator<KeyAttestationPackageInfo> CREATOR = new Parcelable.Creator<KeyAttestationPackageInfo>() { // from class: android.security.keymaster.KeyAttestationPackageInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeyAttestationPackageInfo createFromParcel(Parcel source) {
             return new KeyAttestationPackageInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyAttestationPackageInfo[] newArray(int size) {
             return new KeyAttestationPackageInfo[size];
@@ -22,6 +23,10 @@ public class KeyAttestationPackageInfo implements Parcelable {
     private final String mPackageName;
     private final Signature[] mPackageSignatures;
     private final long mPackageVersionCode;
+
+    /* synthetic */ KeyAttestationPackageInfo(Parcel parcel, KeyAttestationPackageInfoIA keyAttestationPackageInfoIA) {
+        this(parcel);
+    }
 
     public KeyAttestationPackageInfo(String mPackageName, long mPackageVersionCode, Signature[] mPackageSignatures) {
         this.mPackageName = mPackageName;
@@ -51,6 +56,23 @@ public class KeyAttestationPackageInfo implements Parcelable {
         dest.writeString(this.mPackageName);
         dest.writeLong(this.mPackageVersionCode);
         dest.writeTypedArray(this.mPackageSignatures, flags);
+    }
+
+    /* renamed from: android.security.keymaster.KeyAttestationPackageInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyAttestationPackageInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyAttestationPackageInfo createFromParcel(Parcel source) {
+            return new KeyAttestationPackageInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyAttestationPackageInfo[] newArray(int size) {
+            return new KeyAttestationPackageInfo[size];
+        }
     }
 
     private KeyAttestationPackageInfo(Parcel source) {

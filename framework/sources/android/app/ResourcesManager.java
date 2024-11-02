@@ -62,7 +62,6 @@ public class ResourcesManager {
     private final UpdateHandler mUpdateCallbacks = new UpdateHandler();
     private final ArraySet<String> mApplicationOwnedApks = new ArraySet<>();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ApkKey {
         public final boolean overlay;
@@ -89,10 +88,13 @@ public class ResourcesManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class ApkAssetsSupplier {
         final ArrayMap<ApkKey, ApkAssets> mLocalCache;
+
+        /* synthetic */ ApkAssetsSupplier(ResourcesManager resourcesManager, ApkAssetsSupplierIA apkAssetsSupplierIA) {
+            this();
+        }
 
         private ApkAssetsSupplier() {
             this.mLocalCache = new ArrayMap<>();
@@ -109,13 +111,16 @@ public class ResourcesManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ActivityResources {
         public final ArrayList<ActivityResource> activityResources;
         public final ReferenceQueue<Resources> activityResourcesQueue;
         public final Configuration overrideConfig;
         public int overrideDisplayId;
+
+        /* synthetic */ ActivityResources(ActivityResourcesIA activityResourcesIA) {
+            this();
+        }
 
         private ActivityResources() {
             this.overrideConfig = new Configuration();
@@ -135,12 +140,15 @@ public class ResourcesManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ActivityResource {
         public final Configuration overrideConfig;
         public Integer overrideDisplayId;
         public WeakReference<Resources> resources;
+
+        /* synthetic */ ActivityResource(ActivityResourceIA activityResourceIA) {
+            this();
+        }
 
         private ActivityResource() {
             this.overrideConfig = new Configuration();
@@ -301,7 +309,6 @@ public class ResourcesManager {
         return "/data/resource-cache/" + path.substring(1).replace('/', '@') + "@idmap";
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ApkAssets loadApkAssets(ApkKey key) throws IOException {
         WeakReference<ApkAssets> apkAssetsRef;
         int flags;
@@ -501,7 +508,6 @@ public class ResourcesManager {
         return impl;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ResourcesImpl findOrCreateResourcesImplForKeyLocked(ResourcesKey key) {
         return findOrCreateResourcesImplForKeyLocked(key, null);
     }
@@ -558,7 +564,6 @@ public class ResourcesManager {
         return newKey;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ResourcesKey findKeyForResourceImplLocked(ResourcesImpl resourceImpl) {
         int refCount = this.mResourceImpls.size();
         for (int i = 0; i < refCount; i++) {
@@ -761,7 +766,6 @@ public class ResourcesManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$cleanupReferences$1(Function unwrappingFunction, HashSet deadReferences, Object refContainer) {
         WeakReference weakReference = (WeakReference) unwrappingFunction.apply(refContainer);
         return weakReference == null || deadReferences.contains(weakReference);
@@ -1185,7 +1189,6 @@ public class ResourcesManager {
         return (String[]) paths.toArray(new String[0]);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void redirectResourcesToNewImplLocked(ArrayMap<ResourcesImpl, ResourcesKey> updatedResourceKeys) {
         ResourcesKey key;
         ResourcesKey key2;
@@ -1226,9 +1229,12 @@ public class ResourcesManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class UpdateHandler implements Resources.UpdateCallbacks {
+        /* synthetic */ UpdateHandler(ResourcesManager resourcesManager, UpdateHandlerIA updateHandlerIA) {
+            this();
+        }
+
         private UpdateHandler() {
         }
 

@@ -29,13 +29,14 @@ public final class ImsStreamMediaProfile implements Parcelable {
     public static final int AUDIO_QUALITY_NONE = 0;
     public static final int AUDIO_QUALITY_QCELP13K = 3;
     public static final Parcelable.Creator<ImsStreamMediaProfile> CREATOR = new Parcelable.Creator<ImsStreamMediaProfile>() { // from class: android.telephony.ims.ImsStreamMediaProfile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsStreamMediaProfile createFromParcel(Parcel in) {
             return new ImsStreamMediaProfile(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsStreamMediaProfile[] newArray(int size) {
             return new ImsStreamMediaProfile[size];
@@ -136,6 +137,23 @@ public final class ImsStreamMediaProfile implements Parcelable {
         this.mVideoDirection = in.readInt();
         this.mRttMode = in.readInt();
         this.mIsReceivingRttAudio = in.readBoolean();
+    }
+
+    /* renamed from: android.telephony.ims.ImsStreamMediaProfile$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsStreamMediaProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsStreamMediaProfile createFromParcel(Parcel in) {
+            return new ImsStreamMediaProfile(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsStreamMediaProfile[] newArray(int size) {
+            return new ImsStreamMediaProfile[size];
+        }
     }
 
     public boolean isRttCall() {

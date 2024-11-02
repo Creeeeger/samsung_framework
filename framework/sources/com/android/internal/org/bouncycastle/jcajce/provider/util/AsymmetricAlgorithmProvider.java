@@ -11,7 +11,6 @@ public abstract class AsymmetricAlgorithmProvider extends AlgorithmProvider {
         provider.addAlgorithm("Alg.Alias.Signature.OID." + oid, algorithm);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void addSignatureAlgorithm(ConfigurableProvider provider, String digest, String algorithm, String className, ASN1ObjectIdentifier oid) {
         String mainName = digest + "WITH" + algorithm;
         String jdk11Variation1 = digest + "with" + algorithm;
@@ -25,7 +24,6 @@ public abstract class AsymmetricAlgorithmProvider extends AlgorithmProvider {
         provider.addAlgorithm("Alg.Alias.Signature.OID." + oid, mainName);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void registerOid(ConfigurableProvider provider, ASN1ObjectIdentifier oid, String name, AsymmetricKeyInfoConverter keyFactory) {
         provider.addAlgorithm("Alg.Alias.KeyFactory." + oid, name);
         provider.addAlgorithm("Alg.Alias.KeyPairGenerator." + oid, name);
@@ -36,7 +34,6 @@ public abstract class AsymmetricAlgorithmProvider extends AlgorithmProvider {
         provider.addAlgorithm("Alg.Alias.AlgorithmParameters." + oid, name);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void registerOidAlgorithmParameterGenerator(ConfigurableProvider provider, ASN1ObjectIdentifier oid, String name) {
         provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + oid, name);
         provider.addAlgorithm("Alg.Alias.AlgorithmParameters." + oid, name);

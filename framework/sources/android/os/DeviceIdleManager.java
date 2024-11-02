@@ -14,7 +14,6 @@ public class DeviceIdleManager {
         this.mService = service;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IDeviceIdleController getService() {
         return this.mService;
     }

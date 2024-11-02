@@ -29,13 +29,14 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
         STRIPPED = bundle2;
         bundle2.putInt("STRIPPED", 1);
         CREATOR = new Parcelable.Creator<Bundle>() { // from class: android.os.Bundle.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Bundle createFromParcel(Parcel in) {
                 return in.readBundle();
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Bundle[] newArray(int size) {
                 return new Bundle[size];
@@ -656,6 +657,23 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
         } catch (ClassCastException e) {
             typeWarning(key, o, "IBinder", e);
             return null;
+        }
+    }
+
+    /* renamed from: android.os.Bundle$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Bundle> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Bundle createFromParcel(Parcel in) {
+            return in.readBundle();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Bundle[] newArray(int size) {
+            return new Bundle[size];
         }
     }
 

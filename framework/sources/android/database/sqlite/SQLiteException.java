@@ -29,7 +29,6 @@ public class SQLiteException extends SQLException {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int parseCode(int code, String message) {
         int endIndex;
         if (message != null) {

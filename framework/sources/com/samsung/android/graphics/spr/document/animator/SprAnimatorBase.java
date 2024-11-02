@@ -146,7 +146,6 @@ public abstract class SprAnimatorBase extends ValueAnimator implements Cloneable
 
     public abstract boolean updateValues(UpdateParameter updateParameter);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SprAnimatorBase(byte type) {
         this.mType = type;
     }

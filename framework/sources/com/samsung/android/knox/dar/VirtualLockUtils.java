@@ -43,7 +43,6 @@ public class VirtualLockUtils {
         }).orElse(-10000)).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$reserveUserIdForSystem$0(IDarManagerService s) {
         try {
             return Integer.valueOf(s.reserveUserIdForSystem());
@@ -63,7 +62,6 @@ public class VirtualLockUtils {
         }).orElse(-10000)).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$getReservedUserIdForSystem$1(IDarManagerService s) {
         try {
             return Integer.valueOf(s.getReservedUserIdForSystem());
@@ -83,7 +81,6 @@ public class VirtualLockUtils {
         }).orElse(-10000)).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$getAvailableUserId$2(IDarManagerService s) {
         try {
             return Integer.valueOf(s.getAvailableUserId());
@@ -147,7 +144,6 @@ public class VirtualLockUtils {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Boolean lambda$setResetPasswordToken$3(byte[] token, int userId, IDarManagerService s) {
         try {
             return Boolean.valueOf(s.setResetPasswordToken(token, userId));
@@ -170,7 +166,6 @@ public class VirtualLockUtils {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Boolean lambda$clearResetPasswordToken$4(int userId, IDarManagerService s) {
         try {
             return Boolean.valueOf(s.clearResetPasswordToken(userId));
@@ -193,7 +188,6 @@ public class VirtualLockUtils {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Boolean lambda$isResetPasswordTokenActive$5(int userId, IDarManagerService s) {
         try {
             return Boolean.valueOf(s.isResetPasswordTokenActive(userId));
@@ -216,7 +210,6 @@ public class VirtualLockUtils {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Boolean lambda$resetPasswordWithToken$6(String password, byte[] token, int userId, IDarManagerService s) {
         try {
             return Boolean.valueOf(s.resetPasswordWithToken(password, token, userId));

@@ -9,6 +9,9 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public abstract class ControlAction {
     public static final ControlAction ERROR_ACTION = new ControlAction() { // from class: android.service.controls.actions.ControlAction.1
+        AnonymousClass1() {
+        }
+
         @Override // android.service.controls.actions.ControlAction
         public int getActionType() {
             return -1;
@@ -43,7 +46,23 @@ public abstract class ControlAction {
     public @interface ResponseResult {
     }
 
+    /* synthetic */ ControlAction(ControlActionIA controlActionIA) {
+        this();
+    }
+
     public abstract int getActionType();
+
+    /* renamed from: android.service.controls.actions.ControlAction$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends ControlAction {
+        AnonymousClass1() {
+        }
+
+        @Override // android.service.controls.actions.ControlAction
+        public int getActionType() {
+            return -1;
+        }
+    }
 
     public static final boolean isValidResponse(int response) {
         return response >= 0 && response < 6;
@@ -54,14 +73,12 @@ public abstract class ControlAction {
         this.mChallengeValue = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ControlAction(String templateId, String challengeValue) {
         Preconditions.checkNotNull(templateId);
         this.mTemplateId = templateId;
         this.mChallengeValue = challengeValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ControlAction(Bundle b) {
         this.mTemplateId = b.getString(KEY_TEMPLATE_ID);
         this.mChallengeValue = b.getString(KEY_CHALLENGE_VALUE);
@@ -75,7 +92,6 @@ public abstract class ControlAction {
         return this.mChallengeValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Bundle getDataBundle() {
         Bundle b = new Bundle();
         b.putInt(KEY_ACTION_TYPE, getActionType());
@@ -84,7 +100,6 @@ public abstract class ControlAction {
         return b;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ControlAction createActionFromBundle(Bundle bundle) {
         if (bundle == null) {
             Log.e(TAG, "Null bundle");

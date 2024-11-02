@@ -30,6 +30,9 @@ public class SemWallpaperResourcesUtils {
     private static final String PROP_WALLPAPER = "ro.config.wallpaper";
     private static final String TAG = "WallpaperResourcesUtils";
     private static FilenameFilter mImageFileNameFilter = new FilenameFilter() { // from class: android.app.SemWallpaperResourcesUtils.1
+        AnonymousClass1() {
+        }
+
         @Override // java.io.FilenameFilter
         public boolean accept(File dir, String name) {
             String fileName = name.toLowerCase();
@@ -80,6 +83,19 @@ public class SemWallpaperResourcesUtils {
             return file;
         }
         return null;
+    }
+
+    /* renamed from: android.app.SemWallpaperResourcesUtils$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements FilenameFilter {
+        AnonymousClass1() {
+        }
+
+        @Override // java.io.FilenameFilter
+        public boolean accept(File dir, String name) {
+            String fileName = name.toLowerCase();
+            return fileName.endsWith(".png") || fileName.endsWith(".jpg");
+        }
     }
 
     private static String getOperatorFileName(Context context, int flag, String color) {

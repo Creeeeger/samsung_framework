@@ -1,9 +1,7 @@
 package android.util;
 
-/* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
-/* JADX WARN: Unknown enum class pattern. Please report as an issue! */
 /* loaded from: classes4.dex */
-public class DataUnit {
+public class DataUnit extends Enum<DataUnit> {
     public static final DataUnit KILOBYTES = new AnonymousClass1("KILOBYTES", 0);
     public static final DataUnit MEGABYTES = new AnonymousClass2("MEGABYTES", 1);
     public static final DataUnit GIGABYTES = new AnonymousClass3("GIGABYTES", 2);
@@ -14,9 +12,17 @@ public class DataUnit {
     public static final DataUnit TEBIBYTES = new AnonymousClass8("TEBIBYTES", 7);
     private static final /* synthetic */ DataUnit[] $VALUES = $values();
 
-    /* renamed from: android.util.DataUnit$1, reason: invalid class name */
+    /* synthetic */ DataUnit(String str, int i, DataUnitIA dataUnitIA) {
+        this(str, i);
+    }
+
+    /* renamed from: android.util.DataUnit$1 */
     /* loaded from: classes4.dex */
     enum AnonymousClass1 extends DataUnit {
+        /* synthetic */ AnonymousClass1(String str, int i, C1IA c1ia) {
+            this(str, i);
+        }
+
         private AnonymousClass1(String str, int i) {
             super(str, i);
         }
@@ -32,6 +38,7 @@ public class DataUnit {
     }
 
     private DataUnit(String str, int i) {
+        super(str, i);
     }
 
     public static DataUnit valueOf(String name) {
@@ -42,9 +49,13 @@ public class DataUnit {
         return (DataUnit[]) $VALUES.clone();
     }
 
-    /* renamed from: android.util.DataUnit$2, reason: invalid class name */
+    /* renamed from: android.util.DataUnit$2 */
     /* loaded from: classes4.dex */
     enum AnonymousClass2 extends DataUnit {
+        /* synthetic */ AnonymousClass2(String str, int i, C2IA c2ia) {
+            this(str, i);
+        }
+
         private AnonymousClass2(String str, int i) {
             super(str, i);
         }
@@ -55,9 +66,13 @@ public class DataUnit {
         }
     }
 
-    /* renamed from: android.util.DataUnit$3, reason: invalid class name */
+    /* renamed from: android.util.DataUnit$3 */
     /* loaded from: classes4.dex */
     enum AnonymousClass3 extends DataUnit {
+        /* synthetic */ AnonymousClass3(String str, int i, C3IA c3ia) {
+            this(str, i);
+        }
+
         private AnonymousClass3(String str, int i) {
             super(str, i);
         }
@@ -68,9 +83,13 @@ public class DataUnit {
         }
     }
 
-    /* renamed from: android.util.DataUnit$4, reason: invalid class name */
+    /* renamed from: android.util.DataUnit$4 */
     /* loaded from: classes4.dex */
     enum AnonymousClass4 extends DataUnit {
+        /* synthetic */ AnonymousClass4(String str, int i, C4IA c4ia) {
+            this(str, i);
+        }
+
         private AnonymousClass4(String str, int i) {
             super(str, i);
         }
@@ -81,9 +100,13 @@ public class DataUnit {
         }
     }
 
-    /* renamed from: android.util.DataUnit$5, reason: invalid class name */
+    /* renamed from: android.util.DataUnit$5 */
     /* loaded from: classes4.dex */
     enum AnonymousClass5 extends DataUnit {
+        /* synthetic */ AnonymousClass5(String str, int i, C5IA c5ia) {
+            this(str, i);
+        }
+
         private AnonymousClass5(String str, int i) {
             super(str, i);
         }
@@ -94,9 +117,13 @@ public class DataUnit {
         }
     }
 
-    /* renamed from: android.util.DataUnit$6, reason: invalid class name */
+    /* renamed from: android.util.DataUnit$6 */
     /* loaded from: classes4.dex */
     enum AnonymousClass6 extends DataUnit {
+        /* synthetic */ AnonymousClass6(String str, int i, C6IA c6ia) {
+            this(str, i);
+        }
+
         private AnonymousClass6(String str, int i) {
             super(str, i);
         }
@@ -107,9 +134,13 @@ public class DataUnit {
         }
     }
 
-    /* renamed from: android.util.DataUnit$7, reason: invalid class name */
+    /* renamed from: android.util.DataUnit$7 */
     /* loaded from: classes4.dex */
     enum AnonymousClass7 extends DataUnit {
+        /* synthetic */ AnonymousClass7(String str, int i, C7IA c7ia) {
+            this(str, i);
+        }
+
         private AnonymousClass7(String str, int i) {
             super(str, i);
         }
@@ -120,9 +151,13 @@ public class DataUnit {
         }
     }
 
-    /* renamed from: android.util.DataUnit$8, reason: invalid class name */
+    /* renamed from: android.util.DataUnit$8 */
     /* loaded from: classes4.dex */
     enum AnonymousClass8 extends DataUnit {
+        /* synthetic */ AnonymousClass8(String str, int i, C8IA c8ia) {
+            this(str, i);
+        }
+
         private AnonymousClass8(String str, int i) {
             super(str, i);
         }

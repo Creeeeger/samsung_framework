@@ -34,7 +34,6 @@ public final class UsbOperationInternal extends IUsbOperationInternal.Stub {
     @interface UsbOperationStatus {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UsbOperationInternal(int operationID, String id, Executor executor, Consumer<Integer> consumer) {
         this.mAsynchronous = false;
         this.mResult = 0;
@@ -48,7 +47,6 @@ public final class UsbOperationInternal extends IUsbOperationInternal.Stub {
         this.mAsynchronous = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UsbOperationInternal(int operationID, String id) {
         this.mAsynchronous = false;
         this.mResult = 0;
@@ -98,7 +96,6 @@ public final class UsbOperationInternal extends IUsbOperationInternal.Stub {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onOperationComplete$0() {
         this.mConsumer.accept(Integer.valueOf(this.mResult));
     }

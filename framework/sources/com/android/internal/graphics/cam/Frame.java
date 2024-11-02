@@ -29,17 +29,14 @@ public final class Frame {
         return this.mNbb;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getNcb() {
         return this.mNcb;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getC() {
         return this.mC;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getNc() {
         return this.mNc;
     }
@@ -48,7 +45,6 @@ public final class Frame {
         return this.mRgbD;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getFl() {
         return this.mFl;
     }
@@ -57,7 +53,6 @@ public final class Frame {
         return this.mFlRoot;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getZ() {
         return this.mZ;
     }

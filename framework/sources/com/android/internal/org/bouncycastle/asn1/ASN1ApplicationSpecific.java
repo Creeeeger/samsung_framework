@@ -11,7 +11,6 @@ public abstract class ASN1ApplicationSpecific extends ASN1Primitive {
     protected final byte[] octets;
     protected final int tag;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1ApplicationSpecific(boolean isConstructed, int tag, byte[] octets) {
         this.isConstructed = isConstructed;
         this.tag = tag;
@@ -32,7 +31,6 @@ public abstract class ASN1ApplicationSpecific extends ASN1Primitive {
         throw new IllegalArgumentException("unknown object in getInstance: " + obj.getClass().getName());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int getLengthOfHeader(byte[] data) {
         int length = data[1] & 255;
         if (length == 128 || length <= 127) {
@@ -74,13 +72,11 @@ public abstract class ASN1ApplicationSpecific extends ASN1Primitive {
         return ASN1Primitive.fromByteArray(tmp);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         return StreamUtil.calculateTagLength(this.tag) + StreamUtil.calculateBodyLength(this.octets.length) + this.octets.length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         int flags = 64;
@@ -90,7 +86,6 @@ public abstract class ASN1ApplicationSpecific extends ASN1Primitive {
         out.writeEncoded(withTag, flags, this.tag, this.octets);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1ApplicationSpecific)) {

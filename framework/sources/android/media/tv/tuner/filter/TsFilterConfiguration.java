@@ -7,6 +7,10 @@ import android.annotation.SystemApi;
 public final class TsFilterConfiguration extends FilterConfiguration {
     private final int mTpid;
 
+    /* synthetic */ TsFilterConfiguration(Settings settings, int i, TsFilterConfigurationIA tsFilterConfigurationIA) {
+        this(settings, i);
+    }
+
     private TsFilterConfiguration(Settings settings, int tpid) {
         super(settings);
         this.mTpid = tpid;
@@ -29,6 +33,10 @@ public final class TsFilterConfiguration extends FilterConfiguration {
     public static final class Builder {
         private Settings mSettings;
         private int mTpid;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mTpid = 0;

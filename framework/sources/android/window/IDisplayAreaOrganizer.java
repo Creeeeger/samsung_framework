@@ -114,8 +114,9 @@ public interface IDisplayAreaOrganizer extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IDisplayAreaOrganizer {
+        public static class Proxy implements IDisplayAreaOrganizer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

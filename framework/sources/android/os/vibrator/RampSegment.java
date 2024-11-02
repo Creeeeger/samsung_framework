@@ -10,14 +10,15 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class RampSegment extends VibrationEffectSegment {
     public static final Parcelable.Creator<RampSegment> CREATOR = new Parcelable.Creator<RampSegment>() { // from class: android.os.vibrator.RampSegment.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RampSegment createFromParcel(Parcel in) {
             in.readInt();
             return new RampSegment(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RampSegment[] newArray(int size) {
             return new RampSegment[size];
@@ -29,7 +30,6 @@ public final class RampSegment extends VibrationEffectSegment {
     private final float mStartAmplitude;
     private final float mStartFrequencyHz;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RampSegment(Parcel in) {
         this(in.readFloat(), in.readFloat(), in.readFloat(), in.readFloat(), in.readInt());
     }
@@ -142,5 +142,23 @@ public final class RampSegment extends VibrationEffectSegment {
         out.writeFloat(this.mStartFrequencyHz);
         out.writeFloat(this.mEndFrequencyHz);
         out.writeInt(this.mDuration);
+    }
+
+    /* renamed from: android.os.vibrator.RampSegment$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RampSegment> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RampSegment createFromParcel(Parcel in) {
+            in.readInt();
+            return new RampSegment(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RampSegment[] newArray(int size) {
+            return new RampSegment[size];
+        }
     }
 }

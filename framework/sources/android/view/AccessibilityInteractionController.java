@@ -64,7 +64,6 @@ public final class AccessibilityInteractionController {
     private final Rect mTempRect = new Rect();
     private final RectF mTempRectF = new RectF();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public interface DequeNode {
         void addChildren(AccessibilityNodeInfo accessibilityNodeInfo, PrefetchDeque prefetchDeque);
@@ -95,12 +94,10 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isShown(View view) {
         return view != null && view.getWindowVisibility() == 0 && view.isShown();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isVisibleToAccessibilityService(View view) {
         return view != null && (this.mA11yManager.isRequestFromAccessibilityTool() || !view.isAccessibilityDataSensitive());
     }
@@ -180,7 +177,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void prepareForExtraDataRequestUiThread(Message message) {
         SomeArgs args = (SomeArgs) message.obj;
         int virtualDescendantId = args.argi1;
@@ -199,7 +195,6 @@ public final class AccessibilityInteractionController {
         this.mMessagesWaitingForRequestPreparer.add(messageHolder);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void requestPreparerDoneUiThread(Message message) {
         synchronized (this.mLock) {
             if (message.arg1 != this.mActiveRequestPreparerId) {
@@ -215,7 +210,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void requestPreparerTimeoutUiThread() {
         synchronized (this.mLock) {
             Slog.e(LOG_TAG, "AccessibilityRequestPreparer timed out");
@@ -247,7 +241,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Removed duplicated region for block: B:21:0x00cd  */
     /* JADX WARN: Removed duplicated region for block: B:31:0x00f8  */
     /*
@@ -296,7 +289,6 @@ public final class AccessibilityInteractionController {
         scheduleMessage(message, interrogatingPid, interrogatingTid, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void findAccessibilityNodeInfosByViewIdUiThread(Message message) {
         List<AccessibilityNodeInfo> infos;
         if (this.mViewRootImpl.mView == null || this.mViewRootImpl.mAttachInfo == null) {
@@ -366,7 +358,6 @@ public final class AccessibilityInteractionController {
         scheduleMessage(message, interrogatingPid, interrogatingTid, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void findAccessibilityNodeInfosByTextUiThread(Message message) {
         int interactionId;
         Throwable th;
@@ -466,7 +457,6 @@ public final class AccessibilityInteractionController {
         this.mHandler.sendMessage(message);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void takeScreenshotOfWindowUiThread(int interactionId, ScreenCapture.ScreenCaptureListener listener, IAccessibilityInteractionConnectionCallback callback) {
         try {
             if ((this.mViewRootImpl.getWindowFlags() & 8192) != 0) {
@@ -498,7 +488,6 @@ public final class AccessibilityInteractionController {
         scheduleMessage(message, interrogatingPid, interrogatingTid, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Failed to find 'out' block for switch in B:11:0x004c. Please report as an issue. */
     public void findFocusUiThread(Message message) {
         AccessibilityNodeInfo focused;
@@ -585,7 +574,6 @@ public final class AccessibilityInteractionController {
         scheduleMessage(message, interrogatingPid, interrogatingTid, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void focusSearchUiThread(Message message) {
         View nextView;
         if (this.mViewRootImpl.mView == null || this.mViewRootImpl.mAttachInfo == null) {
@@ -632,7 +620,6 @@ public final class AccessibilityInteractionController {
         scheduleMessage(message, interrogatingPid, interrogatingTid, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void performAccessibilityActionUiThread(Message message) {
         if (this.mViewRootImpl.mView == null || this.mViewRootImpl.mAttachInfo == null || this.mViewRootImpl.mStopped || this.mViewRootImpl.mPausedForTransition) {
             return;
@@ -687,7 +674,6 @@ public final class AccessibilityInteractionController {
         scheduleMessage(message, 0, 0L, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void clearAccessibilityFocusUiThread() {
         if (this.mViewRootImpl.mView == null || this.mViewRootImpl.mAttachInfo == null) {
             return;
@@ -719,7 +705,6 @@ public final class AccessibilityInteractionController {
         scheduleMessage(message, 0, 0L, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyOutsideTouchUiThread() {
         View root;
         if (this.mViewRootImpl.mView != null && this.mViewRootImpl.mAttachInfo != null && !this.mViewRootImpl.mStopped && !this.mViewRootImpl.mPausedForTransition && (root = getRootView()) != null && isShown(root)) {
@@ -998,12 +983,15 @@ public final class AccessibilityInteractionController {
         outRect.set((int) (sourceRectF.left + 0.5d), (int) (sourceRectF.top + 0.5d), (int) (sourceRectF.right + 0.5d), (int) (sourceRectF.bottom + 0.5d));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class AccessibilityNodePrefetcher {
         private int mFetchFlags;
         private boolean mInterruptPrefetch;
         private final ArrayList<View> mTempViewList;
+
+        /* synthetic */ AccessibilityNodePrefetcher(AccessibilityInteractionController accessibilityInteractionController, AccessibilityNodePrefetcherIA accessibilityNodePrefetcherIA) {
+            this();
+        }
 
         private AccessibilityNodePrefetcher() {
             this.mTempViewList = new ArrayList<>();
@@ -1289,7 +1277,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PrivateHandler extends Handler {
         private static final int FIRST_NO_ACCESSIBILITY_CALLBACK_MSG = 100;
@@ -1391,11 +1378,14 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class AddNodeInfosForViewId implements Predicate<View> {
         private List<AccessibilityNodeInfo> mInfos;
         private int mViewId;
+
+        /* synthetic */ AddNodeInfosForViewId(AccessibilityInteractionController accessibilityInteractionController, AddNodeInfosForViewIdIA addNodeInfosForViewIdIA) {
+            this();
+        }
 
         private AddNodeInfosForViewId() {
             this.mViewId = -1;
@@ -1421,7 +1411,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class MessageHolder {
         final int mInterrogatingPid;
@@ -1435,7 +1424,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class SatisfiedFindAccessibilityNodeByAccessibilityIdRequest {
         final IAccessibilityInteractionConnectionCallback mSatisfiedRequestCallback;
@@ -1449,7 +1437,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PrefetchDeque<E extends DequeNode> extends ArrayDeque<E> {
         List<AccessibilityNodeInfo> mPrefetchOutput;
@@ -1491,7 +1478,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ViewNode implements DequeNode {
         private final ArrayList<View> mTempViewList = new ArrayList<>();
@@ -1547,7 +1533,6 @@ public final class AccessibilityInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class VirtualNode implements DequeNode {
         long mInfoId;
@@ -1596,7 +1581,6 @@ public final class AccessibilityInteractionController {
         }, this, sc));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void attachAccessibilityOverlayToWindowUiThread(SurfaceControl sc) {
         SurfaceControl parent = this.mViewRootImpl.getSurfaceControl();
         if (parent.isValid()) {

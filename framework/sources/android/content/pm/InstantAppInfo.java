@@ -9,13 +9,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class InstantAppInfo implements Parcelable {
     public static final Parcelable.Creator<InstantAppInfo> CREATOR = new Parcelable.Creator<InstantAppInfo>() { // from class: android.content.pm.InstantAppInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InstantAppInfo createFromParcel(Parcel parcel) {
             return new InstantAppInfo(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppInfo[] newArray(int size) {
             return new InstantAppInfo[0];
@@ -26,6 +27,10 @@ public final class InstantAppInfo implements Parcelable {
     private final CharSequence mLabelText;
     private final String mPackageName;
     private final String[] mRequestedPermissions;
+
+    /* synthetic */ InstantAppInfo(Parcel parcel, InstantAppInfoIA instantAppInfoIA) {
+        this(parcel);
+    }
 
     public InstantAppInfo(ApplicationInfo appInfo, String[] requestedPermissions, String[] grantedPermissions) {
         this.mApplicationInfo = appInfo;
@@ -99,5 +104,22 @@ public final class InstantAppInfo implements Parcelable {
         parcel.writeStringArray(this.mRequestedPermissions);
         parcel.writeStringArray(this.mGrantedPermissions);
         parcel.writeParcelable(this.mApplicationInfo, flags);
+    }
+
+    /* renamed from: android.content.pm.InstantAppInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InstantAppInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstantAppInfo createFromParcel(Parcel parcel) {
+            return new InstantAppInfo(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstantAppInfo[] newArray(int size) {
+            return new InstantAppInfo[0];
+        }
     }
 }

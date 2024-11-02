@@ -1,7 +1,8 @@
 package android.widget;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class RtlSpacingHelper {
+public class RtlSpacingHelper {
     public static final int UNDEFINED = Integer.MIN_VALUE;
     private int mLeft = 0;
     private int mRight = 0;

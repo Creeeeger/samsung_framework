@@ -20,6 +20,10 @@ class AppZygoteInit {
 
     /* loaded from: classes5.dex */
     private static class AppZygoteServer extends ZygoteServer {
+        /* synthetic */ AppZygoteServer(AppZygoteServerIA appZygoteServerIA) {
+            this();
+        }
+
         private AppZygoteServer() {
         }
 

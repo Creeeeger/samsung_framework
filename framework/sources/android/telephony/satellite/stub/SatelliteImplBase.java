@@ -28,8 +28,7 @@ public class SatelliteImplBase extends SatelliteService {
         return this.mBinder;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.satellite.stub.SatelliteImplBase$1, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.stub.SatelliteImplBase$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends ISatellite.Stub {
         AnonymousClass1() {
@@ -45,7 +44,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "setSatelliteListener");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setSatelliteListener$0(ISatelliteListener listener) {
             SatelliteImplBase.this.setSatelliteListener(listener);
         }
@@ -60,7 +58,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestSatelliteListeningEnabled");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestSatelliteListeningEnabled$1(boolean enable, int timeout, IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.requestSatelliteListeningEnabled(enable, timeout, errorCallback);
         }
@@ -75,7 +72,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "enableCellularModemWhileSatelliteModeIsOn");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$enableCellularModemWhileSatelliteModeIsOn$2(boolean enabled, IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.enableCellularModemWhileSatelliteModeIsOn(enabled, errorCallback);
         }
@@ -90,7 +86,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestSatelliteEnabled");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestSatelliteEnabled$3(boolean enableSatellite, boolean enableDemoMode, IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.requestSatelliteEnabled(enableSatellite, enableDemoMode, errorCallback);
         }
@@ -105,7 +100,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestIsSatelliteEnabled");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestIsSatelliteEnabled$4(IIntegerConsumer errorCallback, IBooleanConsumer callback) {
             SatelliteImplBase.this.requestIsSatelliteEnabled(errorCallback, callback);
         }
@@ -120,7 +114,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestIsSatelliteSupported");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestIsSatelliteSupported$5(IIntegerConsumer errorCallback, IBooleanConsumer callback) {
             SatelliteImplBase.this.requestIsSatelliteSupported(errorCallback, callback);
         }
@@ -135,7 +128,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestSatelliteCapabilities");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestSatelliteCapabilities$6(IIntegerConsumer errorCallback, ISatelliteCapabilitiesConsumer callback) {
             SatelliteImplBase.this.requestSatelliteCapabilities(errorCallback, callback);
         }
@@ -150,7 +142,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "startSendingSatellitePointingInfo");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$startSendingSatellitePointingInfo$7(IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.startSendingSatellitePointingInfo(errorCallback);
         }
@@ -165,7 +156,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "stopSendingSatellitePointingInfo");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$stopSendingSatellitePointingInfo$8(IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.stopSendingSatellitePointingInfo(errorCallback);
         }
@@ -180,7 +170,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "provisionSatelliteService");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$provisionSatelliteService$9(String token, byte[] provisionData, IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.provisionSatelliteService(token, provisionData, errorCallback);
         }
@@ -195,7 +184,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "deprovisionSatelliteService");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$deprovisionSatelliteService$10(String token, IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.deprovisionSatelliteService(token, errorCallback);
         }
@@ -210,7 +198,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestIsSatelliteProvisioned");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestIsSatelliteProvisioned$11(IIntegerConsumer errorCallback, IBooleanConsumer callback) {
             SatelliteImplBase.this.requestIsSatelliteProvisioned(errorCallback, callback);
         }
@@ -225,7 +212,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "pollPendingSatelliteDatagrams");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$pollPendingSatelliteDatagrams$12(IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.pollPendingSatelliteDatagrams(errorCallback);
         }
@@ -240,7 +226,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "sendDatagram");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendSatelliteDatagram$13(SatelliteDatagram datagram, boolean isEmergency, IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.sendSatelliteDatagram(datagram, isEmergency, errorCallback);
         }
@@ -255,7 +240,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestSatelliteModemState");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestSatelliteModemState$14(IIntegerConsumer errorCallback, IIntegerConsumer callback) {
             SatelliteImplBase.this.requestSatelliteModemState(errorCallback, callback);
         }
@@ -270,7 +254,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestIsCommunicationAllowedForCurrentLocation");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestIsSatelliteCommunicationAllowedForCurrentLocation$15(IIntegerConsumer errorCallback, IBooleanConsumer callback) {
             SatelliteImplBase.this.requestIsSatelliteCommunicationAllowedForCurrentLocation(errorCallback, callback);
         }
@@ -285,7 +268,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestTimeForNextSatelliteVisibility");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestTimeForNextSatelliteVisibility$16(IIntegerConsumer errorCallback, IIntegerConsumer callback) {
             SatelliteImplBase.this.requestTimeForNextSatelliteVisibility(errorCallback, callback);
         }
@@ -300,7 +282,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "setSatellitePlmn");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setSatellitePlmn$17(int simSlot, List carrierPlmnList, List devicePlmnList, IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.setSatellitePlmn(simSlot, carrierPlmnList, devicePlmnList, errorCallback);
         }
@@ -315,7 +296,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "setSatelliteEnabledForCarrier");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setSatelliteEnabledForCarrier$18(int simSlot, boolean enableSatellite, IIntegerConsumer errorCallback) {
             SatelliteImplBase.this.setSatelliteEnabledForCarrier(simSlot, enableSatellite, errorCallback);
         }
@@ -330,7 +310,6 @@ public class SatelliteImplBase extends SatelliteService {
             }, "requestIsSatelliteEnabledForCarrier");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestIsSatelliteEnabledForCarrier$19(int simSlot, IIntegerConsumer errorCallback, IBooleanConsumer callback) {
             SatelliteImplBase.this.requestIsSatelliteEnabledForCarrier(simSlot, errorCallback, callback);
         }

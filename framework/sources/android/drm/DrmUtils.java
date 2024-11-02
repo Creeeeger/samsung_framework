@@ -12,13 +12,11 @@ import java.util.Iterator;
 @Deprecated
 /* loaded from: classes.dex */
 public class DrmUtils {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] readBytes(String path) throws IOException {
         File file = new File(path);
         return readBytes(file);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] readBytes(File file) throws IOException {
         FileInputStream inputStream = new FileInputStream(file);
         BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
@@ -36,7 +34,6 @@ public class DrmUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void writeToFile(String path, byte[] data) throws IOException {
         FileOutputStream outputStream = null;
         if (path != null && data != null) {
@@ -49,7 +46,6 @@ public class DrmUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void removeFile(String path) throws IOException {
         File file = new File(path);
         file.delete();
@@ -71,6 +67,10 @@ public class DrmUtils {
     /* loaded from: classes.dex */
     public static class ExtendedMetadataParser {
         HashMap<String, String> mMap;
+
+        /* synthetic */ ExtendedMetadataParser(byte[] bArr, ExtendedMetadataParserIA extendedMetadataParserIA) {
+            this(bArr);
+        }
 
         private int readByte(byte[] constraintData, int arrayIndex) {
             return constraintData[arrayIndex];

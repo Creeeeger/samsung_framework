@@ -17,6 +17,10 @@ public class StateListDrawable extends DrawableContainer {
     private boolean mMutated;
     private StateListState mStateListState;
 
+    /* synthetic */ StateListDrawable(StateListState stateListState, Resources resources, StateListDrawableIA stateListDrawableIA) {
+        this(stateListState, resources);
+    }
+
     public StateListDrawable() {
         this(null, null);
     }
@@ -38,7 +42,6 @@ public class StateListDrawable extends DrawableContainer {
         return this.mStateListState.hasFocusStateSpecified();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         boolean changed = super.onStateChange(stateSet);
@@ -72,13 +75,34 @@ public class StateListDrawable extends DrawableContainer {
         state.mAutoMirrored = a.getBoolean(6, state.mAutoMirrored);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x003f, code lost:            if (r7 == null) goto L18;     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0041, code lost:            r9 = r13.next();     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0047, code lost:            if (r9 != 4) goto L38;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x004a, code lost:            if (r9 != 2) goto L32;     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x004c, code lost:            r7 = android.graphics.drawable.Drawable.createFromXmlInner(r12, r13, r14, r15);     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x006d, code lost:            throw new org.xmlpull.v1.XmlPullParserException(r13.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x006e, code lost:            r0.addStateSet(r8, r7);     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x003f, code lost:
+    
+        if (r7 == null) goto L59;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0041, code lost:
+    
+        r9 = r13.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0047, code lost:
+    
+        if (r9 != 4) goto L79;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x004a, code lost:
+    
+        if (r9 != 2) goto L73;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x004c, code lost:
+    
+        r7 = android.graphics.drawable.Drawable.createFromXmlInner(r12, r13, r14, r15);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x006d, code lost:
+    
+        throw new org.xmlpull.v1.XmlPullParserException(r13.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x006e, code lost:
+    
+        r0.addStateSet(r8, r7);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -148,7 +172,6 @@ public class StateListDrawable extends DrawableContainer {
         throw new UnsupportedOperationException("Method not decompiled: android.graphics.drawable.StateListDrawable.inflateChildElements(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.content.res.Resources$Theme):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int[] extractStateSet(AttributeSet attrs) {
         int j = 0;
         int numAttrs = attrs.getAttributeCount();
@@ -211,7 +234,6 @@ public class StateListDrawable extends DrawableContainer {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.DrawableContainer
     public StateListState cloneConstantState() {
         return new StateListState(this.mStateListState, this, null);
@@ -223,13 +245,11 @@ public class StateListDrawable extends DrawableContainer {
         this.mMutated = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class StateListState extends DrawableContainer.DrawableContainerState {
         int[][] mStateSets;
         int[] mThemeAttrs;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public StateListState(StateListState orig, StateListDrawable owner, Resources res) {
             super(orig, owner, res);
             if (orig != null) {
@@ -253,14 +273,12 @@ public class StateListDrawable extends DrawableContainer {
             this.mStateSets = stateSets;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int addStateSet(int[] stateSet, Drawable drawable) {
             int pos = addChild(drawable);
             this.mStateSets[pos] = stateSet;
             return pos;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int indexOfStateSet(int[] stateSet) {
             int[][] stateSets = this.mStateSets;
             int N = getChildCount();
@@ -306,7 +324,6 @@ public class StateListDrawable extends DrawableContainer {
         onStateChange(getState());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableContainer
     public void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);
@@ -321,7 +338,6 @@ public class StateListDrawable extends DrawableContainer {
         onStateChange(getState());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public StateListDrawable(StateListState state) {
         if (state != null) {
             setConstantState(state);

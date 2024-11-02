@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">یہ آلہ اس %s کا معاون نہیں ہے۔ تعاور یافتہ وضع میں سیٹ اپ کرنے کے لیے تھپکی دیں۔</string>
     <string name="ext_media_unsupported_notification_title">غیر تعاون یافتہ %s</string>
     <string name="ext_storage_bad_removal_button">دوبارہ اسٹارٹ کریں</string>
-    <string name="ext_storage_bad_removal_title">اپنا فون دوبارہ اسٹارٹ کریں</string>
+    <string name="ext_storage_bad_removal_title">اپنا ٹیبلیٹ دوبارہ اسٹارٹ کریں</string>
     <string name="extmedia_format_button_format">فارمیٹ</string>
     <string name="extmedia_format_message_usbhost">‏آپ کی USB اسٹوریج میں اسٹور کردہ سبھی فائلوں کو ہٹا دیا جائے گا۔ اس کارروائی کو لوٹایا نہیں جا سکتا ہے!</string>
     <string name="extmedia_format_title_usbhost">‏USB اسٹوریج فارمیٹ کریں؟</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">آواز آپ کے بلیوٹوتھ آڈیو آلے پر چل رہی ہے۔ اسے آف کرنے کیلئے یہاں تھپتھپائیں</string>
     <string name="multisound_sound_via_headphone">آپ کے ہیڈ فونز کے ذریعے %s آواز پلے ہورہا ہے۔ اسے آف کرنے کے لیے یہاں پر تھپکی دیں۔</string>
     <string name="multisound_sound_via_headphone_multiselection">آواز آپ کے ہیڈ فونز کے ذریعے چل رہی ہے۔ اسے آف کرنے کیلئے یہاں تھپتھپائیں۔</string>
-    <string name="multisound_sound_via_phone_speaker">%s آواز آپ کے فون اسپیکر سے چل رہی ہے۔ اسے آف کرنے کے لیے یہاں پر تھپکی دیں۔</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">آواز آپ کے فون کے اسپیکر کے ذریعے چل رہی ہے۔ اسے آف کرنے کیلئے یہاں تھپتھپائیں۔</string>
+    <string name="multisound_sound_via_phone_speaker">%s کی آواز آپ کے ٹیبلیٹ اسپیکر سے چل رہی ہے۔ اسے آف کرنے کے لیے یہاں پر تھپکی دیں۔</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">آواز آپ کے ٹیبلیٹ کے اسپیکر کے ذریعے چل رہی ہے۔ اسے آف کرنے کیلئے یہاں تھپتھپائیں۔</string>
     <string name="multisound_sound_via_usb_audio">آپ کے USB آڈیو آلہ کے ذریعے %s آواز پلے ہورہا ہے۔ اسے آف کرنے کے لیے یہاں پر تھپکی دیں۔</string>
     <string name="multisound_sound_via_usb_audio_multiselection">آواز آپ کے USB آڈیو آلے کے ذریعے چل رہی ہے۔ اسے آف کرنے کیلئے یہاں تھپتھپائیں۔</string>
     <string name="multisound_title">علیحدہ ایپلیکیشن ساؤنڈ</string>
     <string name="multisound_turn_off_multisound">بند کریں</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">‏Samsung DeX میں %s نہیں چل سکتا۔ فون موڈ میں چلانے کی کوشش کریں۔</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">‏Samsung DeX میں %s کو نہیں چلا سکتا ہے۔ اسے فون ہوم اسکرین کے لیے ڈیزائن کیا گيا ہے۔</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">کچھ گیمز صرف ٹچ اسکرین پر کام کرتے ہیں۔ اگر ماؤس کنٹرولز Samsung DeX میں کام نہیں کرتا ہے، تو اس کے بجائے فون موڈ میں چلانے کی کوشش کریں۔</string>
-    <string name="my_device">یہ فون</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">‏Samsung DeX %s میں نہیں چل سکتا۔ ٹیبلیٹ موڈ میں چلانے کی کوشش کریں۔</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">‏%s Samsung DeX میں نہیں چل سکتا۔ اسے ٹیبلیٹ ہوم اسکرین کے لیے ڈیزائن کیا گيا ہے۔</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">کچھ گیمز صرف ٹچ اسکرین پر کام کرتے ہیں۔ اگر ماؤس کنٹرولز Samsung DeX میں کام نہیں کرتا ہے، تو اس کے بجائے ٹیبلیٹ موڈ میں چلانے کی کوشش کریں۔</string>
+    <string name="my_device">یہ ٹیبلیٹ</string>
     <string name="network_locked_sim_dialog_message_ais">آپ کا SIM کارڈ اس فون کے ساتھ مکمل طور پر آپریشنل نہیں ہے کیونکہ یہ آپ کے سبسکرپشن کے شرائط و ضوابط کی تعمیل نہیں کرتا ہے۔ اگر آپ کے پاس کوئی سوالات ہیں یا اس معاملے کے بارے میں مزید معلومات کی ضرورت ہے تو، براہ کرم Samsung کسٹمر خدمت کے مقام یا اس اسٹور سے رابطہ کریں جس نے آپ کو یہ مصنوعات فروخت کی ہے۔</string>
     <string name="network_locked_sim_notification_text">نیٹ ورک لاک ہوگیا ہے سم کارڈ لگادیا گيا۔</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">ڈسک ٹاپ کے سنک کے استعمال سے روکیں۔</string>
     <string name="policydesc_allow_internetsharing">موبائل ہاٹ اسپاٹ کے استعمال سے روکیں۔</string>
     <string name="policydesc_allow_irda">‏IrDA کے استعمال سے روکیں۔</string>
-    <string name="policydesc_allow_popimapemail">فون پر پاپ اور IMAP ای میل کے استعمال سے روکیں۔</string>
+    <string name="policydesc_allow_popimapemail">ٹیبلیٹ پر پاپ اور IMAP ای میل کے استعمال سے روکیں۔</string>
     <string name="policydesc_allow_storagecard">‏SD کارڈز کے استعمال سے روکیں۔</string>
     <string name="policydesc_allow_textmessaging">متن اور متعدد میڈیا پیغام کاری کے استعمال سے روکیں۔</string>
     <string name="policydesc_allow_thirdParty">یہ ایپلیکیشن تیسرے فریق ایپلیکیشنز کو چلنے سے روک سکتا ہے۔</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">سلامتی پالیسی کو آپ سے اپنے پاس ورڈ کی تبدیلی مطلوب ہے</string>
     <string name="recording_fail">مائک %2$s میں زیر استعمال ہونے کے دوران اسے %1$s میں استعمال نہں کرسکتے ہیں۔</string>
     <string name="recording_popup">%s مائیکروفون استعمال کررہا ہے۔</string>
-    <string name="recording_popup_device">فون</string>
+    <string name="recording_popup_device">ٹیبلیٹ</string>
     <string name="recording_popup_with_bluetooth">%s بلیوٹوتھ مائیکروفون کا استعمال کر رہا ہے۔</string>
     <string name="recording_popup_with_device">%1$s %2$s کے مائیکروفون کا استعمال کر رہا ہے۔</string>
     <string name="redo">دوبارہ</string>
@@ -903,12 +903,12 @@
     <string name="screencapture_restrict">سیکیورٹی پالیسی اسکرین کیپچر استعمال کرنے سے روکتی ہے۔</string>
     <string name="sd_card_unavailable_message">آپ SD کارڈ استعمال نہیں کر سکتے کیونکہ اسے کسی مختلف صارف پروفائل کے زیر استعمال رہتے ہوئے داخل کیا گیا تھا۔</string>
     <string name="sd_card_unavailable_title">‏SD کارڈ دستیاب نہیں ہے</string>
-    <string name="sdcard_bad_removal_message">ایک SD کارڈ کو غیر محفوظ طریقے سے ہٹایا گیا ہے۔ اپنے فون کو غیر متوقع طور پر دوبارہ شروع ہونے سے روکنے کیلئے، غیر محفوظ کردہ ڈیٹا محفوظ کریں اور ابھی دوبارہ شروع کریں۔</string>
+    <string name="sdcard_bad_removal_message">ایک SD کارڈ کو غیر محفوظ طریقے سے ہٹایا گیا ہے۔ اپنے ٹیبلیٹ کو غیر متوقع طور پر دوبارہ شروع ہونے سے روکنے کیلئے، غیر محفوظ کردہ ڈیٹا محفوظ کریں اور ابھی دوبارہ شروع کریں۔</string>
     <string name="sdcard_batch_decrypt_noti_content">‏SD کارڈ خفیہ کشائی کریں</string>
     <string name="sdcard_batch_decrypt_noti_title">‏SD کارڈ خفیہ کشائی</string>
     <string name="sdcard_batch_decrypt_popup_content">استعمال سے قبل خفیہ کاری کیے گئے SD کارڈ کی خفیہ کشائی کی جانی چاہیے۔ خفیہ کشائی میں ایک گھنٹہ یا اس سے زیادہ وقت لگتا ہے۔ ایک چارج شدہ بیٹری سے شروع کریں اور آلہ کا پلگ اس وقت تک لگا رہنے دیں جب تک خفیہ کشائی مکمل نہ ہوجائے۔ خفیہ کشائی عمل کاری میں خلل پڑنے سے کچھ یا تمام کوائف ضائع ہوسکتے ہیں۔</string>
     <string name="sdcard_decrypt_err_notification">‏SD کارڈ خفیہ کشائی غلطی واقع ہوگئی</string>
-    <string name="sdcard_decrypt_error_otherdevice">آپ کے SD کارڈ پر موجود کچھ فائلز دوسرے آلہ پر خفیہ کردیے گئے تھے اور اس فون پر استعمال نہیں کیا جاسکتا ہے۔</string>
+    <string name="sdcard_decrypt_error_otherdevice">آپ کے SD کارڈ پر موجود کچھ فائلز دوسرے آلہ پر خفیہ کردیے گئے تھے اور اس ٹیبلیٹ پر استعمال نہیں کیا جاسکتا ہے۔</string>
     <string name="sdcard_decrypt_notification">‏SD کارڈ خفیہ کشائی ہوگئی۔</string>
     <string name="sdcard_decrypt_title_notification">‏SD کارڈ خفیہ کشائی</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">‏SD کارڈ کی خفیہ کشائی کررہا ہے…</string>
@@ -1234,7 +1234,7 @@
     <string name="usb_abnormal_reset_title">‏USB کنیکشن مستحکم نہیں ہے</string>
     <string name="usb_abnormal_reset_toast">‏USB کنیکشن مستحکم نہیں ہے۔ کیبل کو پلگ سے نکال کر دوبارہ پلگ میں لگائیں، یا الگ کیبل کو آزماکر دیکھیں۔</string>
     <string name="usb_accessory_notification_title">ایک USB لوازمہ سے جڑا ہوا</string>
-    <string name="usb_bad_removal_message">ایک USB اسٹوریج کے آلے کو غیر محفوظ طریقے سے ہٹایا گیا ہے۔ اپنے فون کو غیر متوقع طور پر دوبارہ شروع ہونے سے روکنے کیلئے، غیر محفوظ کردہ ڈیٹا محفوظ کریں اور ابھی دوبارہ شروع کریں۔</string>
+    <string name="usb_bad_removal_message">ایک USB اسٹوریج کے آلے کو غیر محفوظ طریقے سے ہٹایا گیا ہے۔ اپنے ٹیبلیٹ کو غیر متوقع طور پر دوبارہ شروع ہونے سے روکنے کیلئے، غیر محفوظ کردہ ڈیٹا محفوظ کریں اور ابھی دوبارہ شروع کریں۔</string>
     <string name="usb_blocked_by_emergency_mode">کچھ USB فنکشنز ایمرجنسی موڈ میں دستیاب نہیں ہیں۔</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">زیادہ سے زیادہ پاور بچت موڈ کے اہل ہونے پر USB آلہ سے جوڑنے کے لیے متعلقہ فنکشنز استعمال کرنے سے قاصر۔</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">زیادہ سے زیادہ پاور بچت موڈ آن ہونے کے دوران کچھ USB فنکشنز محدود ہوسکتے ہیں۔</string>
@@ -1243,13 +1243,13 @@
     <string name="usb_camera_connected_notification_title">میڈیا آلہ جڑ گیا</string>
     <string name="usb_camera_disconnected_notification_title">میڈیا آلہ منقطع ہوگیا</string>
     <string name="usb_cd_installer_notification_title">سافٹ ویئر اپ ڈیٹ</string>
-    <string name="usb_charing_only_notification_title">‏USB چارجنگ</string>
+    <string name="usb_charing_only_notification_title">منسلک</string>
     <string name="usb_debugging_only_notification_title">صرف ڈی بگ کرنا</string>
-    <string name="usb_host_resource_exceed_message">آپ کے فون کے USB کنٹرولر کے پاس اس آلہ کو مربوط کرنے کے لیے اتنے کافی وسائل نہیں ہیں۔ آلہ کو غیر مربوط کرکے اسے دوبارہ مربوط کرنے کی کوشش کریں۔</string>
+    <string name="usb_host_resource_exceed_message">آپ کے ٹیبلیٹ کے USB کنٹرولر کے پاس اس آلہ کو مربوط کرنے کے لیے اتنے کافی وسائل نہیں ہیں۔ آلہ کو غیر مربوط کرکے اسے دوبارہ مربوط کرنے کی کوشش کریں۔</string>
     <string name="usb_host_resource_exceed_title">کافی USB کنٹرولر وسائل نہیں ہیں</string>
-    <string name="usb_hub_depth_exceed_message">اس وقت آپ کا فون صرف 5 USB ہب کنیکشنز تک ہی قبول کرسکتا ہے۔</string>
+    <string name="usb_hub_depth_exceed_message">اس وقت آپ کا ٹیبلیٹ صرف 5 USB ہب کنیکشنز تک ہی قبول کرسکتا ہے۔</string>
     <string name="usb_hub_depth_exceed_title">زیادہ سے زیادہ USB ہب کنیکشنز</string>
-    <string name="usb_hub_power_exceed_message">آپ کا فون اس USB آلہ کے لیے کافی پاور فراہم نہیں کرسکتا ہے۔ آلہ کو اپنے فون سے مربوط ہونے سے پہلے اسے خود سے چلنے والا USB ہب سے مربوط کریں۔</string>
+    <string name="usb_hub_power_exceed_message">آپ کا ٹیبلیٹ اس USB آلہ کے لیے کافی پاور فراہم نہیں کرسکتا ہے۔ آلہ کو اپنے ٹیبلیٹ سے مربوط ہونے سے پہلے اسے خود سے چلنے والا USB ہب سے مربوط کریں۔</string>
     <string name="usb_increase_battery_usage">‏USB کنیکشن سے بیٹری کا استعمال بڑھ سکتا ہے۔</string>
     <string name="usb_mass_storage_restrict">سیکیورٹی پالیسی USB ماس ذخیرہ استعمال کرنے سے روکتی ہے۔</string>
     <string name="usb_midi_notification_title">‏USB برائے MIDI</string>
@@ -1275,8 +1275,8 @@
     <string name="usb_storage_stop_title">‏USB ذخیرہ زیر استعمال۔</string>
     <string name="usb_storage_title">‏USB سے جڑا ہوا۔</string>
     <string name="usb_type_c_supply_power_notification_title">مربوط آلہ کا USB چارجنگ</string>
-    <string name="usb_unblock_by_screen_unlock">منسلک USB آلے کا استعمال کرنے کیلئے اپنا فون ان لاک کریں۔</string>
-    <string name="usb_unsupport_accessory_message">یہ USB آلہ آپ کے فون میں تعاون یافتہ نہیں ہے۔</string>
+    <string name="usb_unblock_by_screen_unlock">منسلک USB آلے کا استعمال کرنے کیلئے اپنا ٹیبلیٹ ان لاک کریں۔</string>
+    <string name="usb_unsupport_accessory_message">یہ USB آلہ آپ کے ٹیبلیٹ میں تعاون یافتہ نہیں ہے۔</string>
     <string name="usb_unsupport_accessory_title">‏USB آلہ معاون نہیں ہے</string>
     <string name="usb_unsupported_device">مربوط USB آلہ تعاون یافتہ نہیں ہے۔</string>
     <string name="usb_unsupported_device_title">آلہ تعاون یافتہ نہیں ہے</string>
@@ -1294,19 +1294,19 @@
     <string name="usb_water_dialg_method_2_desc_2">آپ پنکھا اور خشک کرنے والا (صرف ٹھنڈی ہوا) کو پورٹ کی طرف کرکے خشک کرنے کی رفتار بڑھا سکتے ہیں۔</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ہمیں آپ کے چارجنگ/USB پورٹ میں نمی یا باہری مواد کا پتا چلا ہے۔
 
-دھول یا گندگی جیسے کسی باہری مواد کیلئے اپنا چارجنگ/USB پورٹ چیک کریں۔ اپنے فون کو نقصان سے بچانے کیلئے، چارجنگ پورٹ کے صاف ہونے اور نمی ختم ہونے تک کوئی چیز پلگ ان نہ کریں۔
+دھول یا گندگی جیسے کسی باہری مواد کیلئے اپنا چارجنگ/USB پورٹ چیک کریں۔ اپنے ٹیبلیٹ کو نقصان سے بچانے کیلئے، چارجنگ پورٹ کے صاف ہونے اور نمی ختم ہونے تک کوئی چیز پلگ ان نہ کریں۔
 
 پورٹ خشک کرنے کیلئے، کسی بھی نمی کو جھٹک کر باہر نکالیں، پھر اس کے خشک ہونے کا انتظار کریں، جس میں کچھ گھنٹے لگ سکتے ہیں۔ آپ پورٹ کی طرف پنکھا یا ڈرائیر (صرف ٹھنڈی ہوا والا) کر کے خشک ہونے کے عمل میں اضافہ کر سکتے ہیں۔"</string>
     <string name="usb_water_dialg_positive_button">ٹھیک ہے</string>
     <string name="usb_water_dialg_support_wireless_charging">"ہمیں آپ کے چارجنگ/USB پورٹ میں نمی یا باہری مواد کا پتا چلا ہے۔
 
-دھول یا گندگی جیسے کسی باہری مواد کیلئے اپنا چارجنگ/USB پورٹ چیک کریں۔ اپنے فون کو نقصان سے بچانے کیلئے، چارجنگ پورٹ کے صاف ہونے اور نمی ختم ہونے تک کوئی چیز پلگ ان نہ کریں۔
+دھول یا گندگی جیسے کسی باہری مواد کیلئے اپنا چارجنگ/USB پورٹ چیک کریں۔ اپنے ٹیبلیٹ کو نقصان سے بچانے کیلئے، چارجنگ پورٹ کے صاف ہونے، نمی ختم ہونے تک کوئی چیز پلگ ان نہ کریں۔
 
 پورٹ خشک کرنے کیلئے، کسی بھی نمی کو جھٹک کر باہر نکالیں، پھر اس کے خشک ہونے کا انتظار کریں، جس میں کچھ گھنٹے لگ سکتے ہیں۔ آپ پورٹ کی طرف پنکھا یا ڈرائیر (صرف ٹھنڈی ہوا والا) کر کے خشک ہونے کے عمل میں اضافہ کر سکتے ہیں۔
 
-اس دوران، آپ اپنے فون کو وائر کے بغیر چارج کر سکتے ہیں۔"</string>
+اس دوران، آپ اپنے ٹیبلیٹ کو وائر کے بغیر چارج کر سکتے ہیں۔"</string>
     <string name="usb_water_notification_content">آپ کے چارجنگ/USB پورٹ میں نمی یا بیرونی مادہ ہے۔ چارج کرنے سے پہلے چیک کریں۔</string>
-    <string name="usb_water_notification_message">آپ کے چارجر/USB پورٹ میں نمی کا پتہ لگ چکا ہے۔ یقین دلائیں کہ یہ آپ کے فون کے چارج کرنے سے قبل مکمل خشک ہوگیا ہے۔ مکمل طورپر خشک کرنے میں اسے کچھ وقت لگ سکتا ہے۔</string>
+    <string name="usb_water_notification_message">آپ کے چارجر/USB پورٹ میں نمی کا پتہ لگ چکا ہے۔ یقین دلائیں کہ یہ آپ کے ٹیبلیٹ کے چارج کرنے سے قبل خشک جاتا ہے۔ مکمل طورپر خشک کرنے میں اسے کچھ وقت لگ سکتا ہے۔</string>
     <string name="usb_water_notification_message_button">تفصیلات</string>
     <string name="usb_water_notification_title">چارجر/USB پورٹ چیک کریں</string>
     <string name="usbhostStorage_restrict">سیکیورٹی پالیسی USB ہوسٹ ذخیرہ استعمال کرنے سے روکتی ہے۔</string>

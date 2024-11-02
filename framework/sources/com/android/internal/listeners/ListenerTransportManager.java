@@ -15,7 +15,6 @@ public abstract class ListenerTransportManager<TTransport extends ListenerTransp
 
     protected abstract void unregisterTransport(TTransport ttransport) throws RemoteException;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ListenerTransportManager(boolean allowServerSideTransportRemoval) {
         if (allowServerSideTransportRemoval) {
             this.mRegistrations = new WeakHashMap();

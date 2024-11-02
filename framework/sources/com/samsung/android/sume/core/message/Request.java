@@ -49,12 +49,10 @@ public final class Request extends Message {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$new$0(Parcelable it) {
         return (MediaBuffer) it;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$new$1(Parcelable it) {
         return (MediaBuffer) it;
     }
@@ -195,7 +193,6 @@ public final class Request extends Message {
         }).orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$getInputBuffer$2(List it) {
         if (it.isEmpty()) {
             return null;
@@ -216,7 +213,6 @@ public final class Request extends Message {
         }).orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$getOutputBuffer$3(List it) {
         if (it.isEmpty()) {
             return null;

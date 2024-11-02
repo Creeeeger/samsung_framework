@@ -25,8 +25,7 @@ public class ImsMultiEndpointImplBase {
     private Executor mExecutor = new PendingIntent$$ExternalSyntheticLambda1();
     private final IImsMultiEndpoint mImsMultiEndpoint = new AnonymousClass1();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.stub.ImsMultiEndpointImplBase$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.stub.ImsMultiEndpointImplBase$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IImsMultiEndpoint.Stub {
         AnonymousClass1() {
@@ -42,7 +41,6 @@ public class ImsMultiEndpointImplBase {
             }, "setListener");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$0(IImsExternalCallStateListener listener) {
             if (ImsMultiEndpointImplBase.this.mListener != null && !ImsMultiEndpointImplBase.this.mListener.asBinder().isBinderAlive()) {
                 Log.w(ImsMultiEndpointImplBase.TAG, "setListener: discarding dead Binder");
@@ -61,7 +59,6 @@ public class ImsMultiEndpointImplBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$requestImsExternalCallStateInfo$1() {
             ImsMultiEndpointImplBase.this.requestImsExternalCallStateInfo();
         }

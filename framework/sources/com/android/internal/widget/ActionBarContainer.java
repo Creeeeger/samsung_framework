@@ -76,7 +76,6 @@ public class ActionBarContainer extends FrameLayout {
         setWillNotDraw(z);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -105,7 +104,6 @@ public class ActionBarContainer extends FrameLayout {
         this.mActionContextView = findViewById(R.id.action_context_bar);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -215,13 +213,11 @@ public class ActionBarContainer extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean verifyDrawable(Drawable who) {
         return (who == this.mBackground && !this.mIsSplit) || (who == this.mStackedBackground && this.mIsStacked) || ((who == this.mSplitBackground && this.mIsSplit) || super.verifyDrawable(who));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -327,7 +323,6 @@ public class ActionBarContainer extends FrameLayout {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isCollapsed(View view) {
         return view == null || view.getVisibility() == 8 || view.getMeasuredHeight() == 0;
     }
@@ -404,8 +399,13 @@ public class ActionBarContainer extends FrameLayout {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class ActionBarBackgroundDrawable extends Drawable {
+    public class ActionBarBackgroundDrawable extends Drawable {
+        /* synthetic */ ActionBarBackgroundDrawable(ActionBarContainer actionBarContainer, ActionBarBackgroundDrawableIA actionBarBackgroundDrawableIA) {
+            this();
+        }
+
         private ActionBarBackgroundDrawable() {
         }
 

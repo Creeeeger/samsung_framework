@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ConversationAction implements Parcelable {
     public static final Parcelable.Creator<ConversationAction> CREATOR = new Parcelable.Creator<ConversationAction>() { // from class: android.view.textclassifier.ConversationAction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ConversationAction createFromParcel(Parcel in) {
             return new ConversationAction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConversationAction[] newArray(int size) {
             return new ConversationAction[size];
@@ -44,6 +45,31 @@ public final class ConversationAction implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes4.dex */
     public @interface ActionType {
+    }
+
+    /* synthetic */ ConversationAction(Parcel parcel, ConversationActionIA conversationActionIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ ConversationAction(String str, RemoteAction remoteAction, CharSequence charSequence, float f, Bundle bundle, ConversationActionIA conversationActionIA) {
+        this(str, remoteAction, charSequence, f, bundle);
+    }
+
+    /* renamed from: android.view.textclassifier.ConversationAction$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConversationAction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConversationAction createFromParcel(Parcel in) {
+            return new ConversationAction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConversationAction[] newArray(int size) {
+            return new ConversationAction[size];
+        }
     }
 
     private ConversationAction(String type, RemoteAction action, CharSequence textReply, float score, Bundle extras) {

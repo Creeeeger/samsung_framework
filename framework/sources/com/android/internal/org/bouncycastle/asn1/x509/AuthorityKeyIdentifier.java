@@ -42,7 +42,6 @@ public class AuthorityKeyIdentifier extends ASN1Object {
         return getInstance(Extensions.getExtensionParsedValue(extensions, Extension.authorityKeyIdentifier));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public AuthorityKeyIdentifier(ASN1Sequence seq) {
         this.keyidentifier = null;
         this.certissuer = null;

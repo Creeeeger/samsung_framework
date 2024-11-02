@@ -90,6 +90,10 @@ public final class DisplayManagerGlobal {
     private final ArrayList<DeviceListenerDelegate> mDeviceListeners = new ArrayList<>();
     private final SparseArray<DisplayInfo> mDisplayInfoCache = new SparseArray<>();
     private PropertyInvalidatedCache<Integer, DisplayInfo> mDisplayCache = new PropertyInvalidatedCache<Integer, DisplayInfo>(8, CACHE_KEY_DISPLAY_INFO_PROPERTY) { // from class: android.hardware.display.DisplayManagerGlobal.1
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
         @Override // android.app.PropertyInvalidatedCache
         public DisplayInfo recompute(Integer id) {
             try {
@@ -114,6 +118,24 @@ public final class DisplayManagerGlobal {
             this.mOverlayProperties = dm.getOverlaySupport();
         } catch (RemoteException ex) {
             throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.display.DisplayManagerGlobal$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends PropertyInvalidatedCache<Integer, DisplayInfo> {
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public DisplayInfo recompute(Integer id) {
+            try {
+                return DisplayManagerGlobal.this.mDm.getDisplayInfo(id.intValue());
+            } catch (RemoteException ex) {
+                throw ex.rethrowFromSystemServer();
+            }
         }
     }
 
@@ -320,7 +342,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayEvent(int displayId, int event) {
         DisplayInfo info;
         DisplayInfo display;
@@ -568,7 +589,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setVirtualDisplayState(IVirtualDisplayCallback token, boolean isOn) {
         try {
             this.mDm.setVirtualDisplayState(token, isOn);
@@ -1103,7 +1123,6 @@ public final class DisplayManagerGlobal {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayVolumeEvent(int event, Bundle data) {
         synchronized (this.mLock) {
             ArrayList<DisplayVolumeListenerDelegate> arrayList = this.mDisplayVolumeListeners;
@@ -1116,7 +1135,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayVolumeKeyEvent(int event) {
         synchronized (this.mLock) {
             ArrayList<DisplayVolumeKeyListenerDelegate> arrayList = this.mDisplayVolumeKeyListeners;
@@ -1129,7 +1147,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleWifiDisplayParameterEvent(int event, List<SemWifiDisplayParameter> parameters) {
         synchronized (this.mLock) {
             ArrayList<WifiDisplayParameterListenerDelegate> arrayList = this.mWifiDisplayParameterListeners;
@@ -1232,7 +1249,6 @@ public final class DisplayManagerGlobal {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDeviceEvent(Bundle msg, int event) {
         synchronized (this.mLock) {
             ArrayList<DeviceListenerDelegate> arrayList = this.mDeviceListeners;
@@ -1255,9 +1271,32 @@ public final class DisplayManagerGlobal {
             this.mHandler = new Handler(handler != null ? handler.getLooper() : Looper.myLooper());
         }
 
+        /* renamed from: android.hardware.display.DisplayManagerGlobal$WifiDisplayConnectionCallback$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ List val$parameters;
+
+            AnonymousClass1(List list) {
+                parameters = list;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (WifiDisplayConnectionCallback.this.mUserCallback != null) {
+                    WifiDisplayConnectionCallback.this.mUserCallback.onSuccess(parameters);
+                }
+            }
+        }
+
         @Override // android.hardware.display.IWifiDisplayConnectionCallback
-        public void onSuccess(final List<SemWifiDisplayParameter> parameters) {
+        public void onSuccess(List<SemWifiDisplayParameter> parameters) {
             this.mHandler.post(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal.WifiDisplayConnectionCallback.1
+                final /* synthetic */ List val$parameters;
+
+                AnonymousClass1(List parameters2) {
+                    parameters = parameters2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (WifiDisplayConnectionCallback.this.mUserCallback != null) {
@@ -1267,9 +1306,32 @@ public final class DisplayManagerGlobal {
             });
         }
 
+        /* renamed from: android.hardware.display.DisplayManagerGlobal$WifiDisplayConnectionCallback$2 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ int val$reason;
+
+            AnonymousClass2(int i) {
+                reason = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (WifiDisplayConnectionCallback.this.mUserCallback != null) {
+                    WifiDisplayConnectionCallback.this.mUserCallback.onFailure(reason);
+                }
+            }
+        }
+
         @Override // android.hardware.display.IWifiDisplayConnectionCallback
-        public void onFailure(final int reason) {
+        public void onFailure(int reason) {
             this.mHandler.post(new Runnable() { // from class: android.hardware.display.DisplayManagerGlobal.WifiDisplayConnectionCallback.2
+                final /* synthetic */ int val$reason;
+
+                AnonymousClass2(int reason2) {
+                    reason = reason2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (WifiDisplayConnectionCallback.this.mUserCallback != null) {
@@ -1280,9 +1342,12 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class DisplayManagerCallback extends IDisplayManagerCallback.Stub {
+        /* synthetic */ DisplayManagerCallback(DisplayManagerGlobal displayManagerGlobal, DisplayManagerCallbackIA displayManagerCallbackIA) {
+            this();
+        }
+
         private DisplayManagerCallback() {
         }
 
@@ -1317,7 +1382,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class DisplayListenerDelegate {
         public volatile long mEventsMask;
@@ -1343,7 +1407,6 @@ public final class DisplayManagerGlobal {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendDisplayEvent$0(long generationId, Message msg) {
             if (generationId == this.mGenerationId.get()) {
                 handleMessage(msg);
@@ -1509,7 +1572,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class DisplayVolumeListenerDelegate extends Handler {
         public final SemDisplayVolumeListener mListener;
@@ -1547,7 +1609,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class DisplayVolumeKeyListenerDelegate extends Handler {
         public final SemDisplayVolumeKeyListener mListener;
@@ -1592,7 +1653,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class WifiDisplayParameterListenerDelegate extends Handler {
         private final SemWifiDisplayParameterListener mListener;
@@ -1625,7 +1685,6 @@ public final class DisplayManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class DeviceListenerDelegate extends Handler {
         public final SemDeviceStatusListener mListener;

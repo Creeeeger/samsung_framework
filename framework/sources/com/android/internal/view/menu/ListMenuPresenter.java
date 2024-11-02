@@ -187,7 +187,6 @@ public class ListMenuPresenter implements MenuPresenter, AdapterView.OnItemClick
         restoreHierarchyState((Bundle) state);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class MenuAdapter extends BaseAdapter {
         private int mExpandedIndex = -1;

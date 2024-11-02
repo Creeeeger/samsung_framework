@@ -735,8 +735,9 @@ public interface IConnectionServiceAdapter extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IConnectionServiceAdapter {
+        public static class Proxy implements IConnectionServiceAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

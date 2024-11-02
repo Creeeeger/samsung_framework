@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class AuthenticatorDescription implements Parcelable {
     public static final Parcelable.Creator<AuthenticatorDescription> CREATOR = new Parcelable.Creator<AuthenticatorDescription>() { // from class: android.accounts.AuthenticatorDescription.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AuthenticatorDescription createFromParcel(Parcel source) {
             return new AuthenticatorDescription(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthenticatorDescription[] newArray(int size) {
             return new AuthenticatorDescription[size];
@@ -25,6 +26,10 @@ public class AuthenticatorDescription implements Parcelable {
     public final String packageName;
     public final int smallIconId;
     public final String type;
+
+    /* synthetic */ AuthenticatorDescription(Parcel parcel, AuthenticatorDescriptionIA authenticatorDescriptionIA) {
+        this(parcel);
+    }
 
     public AuthenticatorDescription(String type, String packageName, int labelId, int iconId, int smallIconId, int prefId, boolean customTokens) {
         if (type == null) {
@@ -106,5 +111,22 @@ public class AuthenticatorDescription implements Parcelable {
         parcel.writeInt(this.smallIconId);
         parcel.writeInt(this.accountPreferencesId);
         parcel.writeByte(this.customTokens ? (byte) 1 : (byte) 0);
+    }
+
+    /* renamed from: android.accounts.AuthenticatorDescription$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AuthenticatorDescription> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AuthenticatorDescription createFromParcel(Parcel source) {
+            return new AuthenticatorDescription(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AuthenticatorDescription[] newArray(int size) {
+            return new AuthenticatorDescription[size];
+        }
     }
 }

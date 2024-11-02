@@ -9,7 +9,9 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class PointerContext implements Parcelable {
     public static final Parcelable.Creator<PointerContext> CREATOR = new Parcelable.Creator<PointerContext>() { // from class: android.hardware.biometrics.fingerprint.PointerContext.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PointerContext createFromParcel(Parcel _aidl_source) {
             PointerContext _aidl_out = new PointerContext();
@@ -17,7 +19,6 @@ public class PointerContext implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PointerContext[] newArray(int _aidl_size) {
             return new PointerContext[_aidl_size];
@@ -32,6 +33,25 @@ public class PointerContext implements Parcelable {
     public boolean isAod = false;
     public long time = 0;
     public long gestureStart = 0;
+
+    /* renamed from: android.hardware.biometrics.fingerprint.PointerContext$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PointerContext> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PointerContext createFromParcel(Parcel _aidl_source) {
+            PointerContext _aidl_out = new PointerContext();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PointerContext[] newArray(int _aidl_size) {
+            return new PointerContext[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

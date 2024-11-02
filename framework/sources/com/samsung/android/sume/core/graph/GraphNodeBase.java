@@ -72,7 +72,7 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
             }, new MediaFilterRetriever.PredicateHandler() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda1
                 @Override // com.samsung.android.sume.core.filter.MediaFilterRetriever.PredicateHandler
                 public final void onPredicate(MediaFilter mediaFilter2, MediaFilter mediaFilter3) {
-                    GraphNodeBase.this.m8800lambda$new$1$comsamsungandroidsumecoregraphGraphNodeBase(mediaFilter2, mediaFilter3);
+                    GraphNodeBase.this.m8792lambda$new$1$comsamsungandroidsumecoregraphGraphNodeBase(mediaFilter2, mediaFilter3);
                 }
             });
             mediaFilterRetriever.retrieve(mediaFilter);
@@ -87,14 +87,12 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$new$0(MediaFilter filter) {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$1$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
-    public /* synthetic */ void m8800lambda$new$1$comsamsungandroidsumecoregraphGraphNodeBase(MediaFilter filter, MediaFilter parent) {
+    /* renamed from: lambda$new$1$com-samsung-android-sume-core-graph-GraphNodeBase */
+    public /* synthetic */ void m8792lambda$new$1$comsamsungandroidsumecoregraphGraphNodeBase(MediaFilter filter, MediaFilter parent) {
         addMessageConsumer(filter);
     }
 
@@ -180,7 +178,7 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
                     ((MediaInputStreamFilter) mediaFilter).setReceiveChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda10
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
-                            return GraphNodeBase.this.m8801x49a0da5f((Enum) obj);
+                            return GraphNodeBase.this.m8793x49a0da5f((Enum) obj);
                         }
                     }, 1);
                 }
@@ -207,7 +205,7 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
                     ((MediaOutputStreamFilter) mediaFilter).setSendChannelQuery(new Function() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda12
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
-                            return GraphNodeBase.this.m8802xd0b715e1((Enum) obj);
+                            return GraphNodeBase.this.m8794xd0b715e1((Enum) obj);
                         }
                     }, 1);
                 }
@@ -220,25 +218,21 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         Log.i(str, "success to prepare MediaFilter");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Enum lambda$prepare$2(GraphEdge e) {
         return (Enum) e.getEvaluator().getValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$prepare$3$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
-    public /* synthetic */ BufferChannel m8801x49a0da5f(Enum type) {
+    /* renamed from: lambda$prepare$3$com-samsung-android-sume-core-graph-GraphNodeBase */
+    public /* synthetic */ BufferChannel m8793x49a0da5f(Enum type) {
         return (BufferChannel) this.inputEdges.stream().findFirst().map(new SendChannelRouter$$ExternalSyntheticLambda2()).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Enum lambda$prepare$4(GraphEdge it) {
         return (Enum) it.getEvaluator().getValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$prepare$5$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
-    public /* synthetic */ BufferChannel m8802xd0b715e1(Enum type) {
+    /* renamed from: lambda$prepare$5$com-samsung-android-sume-core-graph-GraphNodeBase */
+    public /* synthetic */ BufferChannel m8794xd0b715e1(Enum type) {
         return (BufferChannel) this.outputEdges.stream().findFirst().map(new SendChannelRouter$$ExternalSyntheticLambda2()).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
     }
 
@@ -250,7 +244,7 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
             keyOfFilterToIgnoreException.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda3
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    GraphNodeBase.this.m8799x9e96944c(mediaFilterRetriever, obj);
+                    GraphNodeBase.this.m8791x9e96944c(mediaFilterRetriever, obj);
                 }
             });
         }
@@ -263,16 +257,15 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
             }, new MediaFilterRetriever.PredicateHandler() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda5
                 @Override // com.samsung.android.sume.core.filter.MediaFilterRetriever.PredicateHandler
                 public final void onPredicate(MediaFilter mediaFilter, MediaFilter mediaFilter2) {
-                    GraphNodeBase.this.m8797x2d42a2d7(mediaFilter, mediaFilter2);
+                    GraphNodeBase.this.m8789x2d42a2d7(mediaFilter, mediaFilter2);
                 }
             });
         }
         mediaFilterRetriever.retrieve((MediaFilter) get());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$applyGraphOption$8$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
-    public /* synthetic */ void m8799x9e96944c(MediaFilterRetriever mediaFilterRetriever, Object key) {
+    /* renamed from: lambda$applyGraphOption$8$com-samsung-android-sume-core-graph-GraphNodeBase */
+    public /* synthetic */ void m8791x9e96944c(MediaFilterRetriever mediaFilterRetriever, Object key) {
         if (key instanceof NNFW) {
             final NNFW fw = (NNFW) key;
             mediaFilterRetriever.addPredicateHandler(new MediaFilterRetriever.Predictor() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda6
@@ -283,7 +276,7 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
             }, new MediaFilterRetriever.PredicateHandler() { // from class: com.samsung.android.sume.core.graph.GraphNodeBase$$ExternalSyntheticLambda7
                 @Override // com.samsung.android.sume.core.filter.MediaFilterRetriever.PredicateHandler
                 public final void onPredicate(MediaFilter mediaFilter, MediaFilter mediaFilter2) {
-                    GraphNodeBase.this.m8798x5b0b768b(mediaFilter, mediaFilter2);
+                    GraphNodeBase.this.m8790x5b0b768b(mediaFilter, mediaFilter2);
                 }
             });
             return;
@@ -291,25 +284,21 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         throw new UnsupportedOperationException("unknown key: " + key);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$applyGraphOption$6(NNFW fw, MediaFilter filter) {
         return (filter instanceof NNFWFilter) && ((NNFWDescriptor) filter.getDescriptor()).getFw() == fw;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$applyGraphOption$7$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
-    public /* synthetic */ void m8798x5b0b768b(MediaFilter filter, MediaFilter parent) {
+    /* renamed from: lambda$applyGraphOption$7$com-samsung-android-sume-core-graph-GraphNodeBase */
+    public /* synthetic */ void m8790x5b0b768b(MediaFilter filter, MediaFilter parent) {
         ((ArrayList) getOption(6, new ArrayList())).add(filter.getDescriptor().getFilterId());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$applyGraphOption$9(MediaFilter filter) {
         return ((filter instanceof DecorateFilter) || (filter instanceof MediaFilterGroup)) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$applyGraphOption$10$com-samsung-android-sume-core-graph-GraphNodeBase, reason: not valid java name */
-    public /* synthetic */ void m8797x2d42a2d7(MediaFilter filter, MediaFilter parent) {
+    /* renamed from: lambda$applyGraphOption$10$com-samsung-android-sume-core-graph-GraphNodeBase */
+    public /* synthetic */ void m8789x2d42a2d7(MediaFilter filter, MediaFilter parent) {
         String str = TAG;
         Log.d(str, "found leaf filter=" + filter + ", parent=" + parent);
         if (filter instanceof MediaFilterPlaceHolder) {
@@ -377,12 +366,10 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         Log.d(str, "release...X: " + this.nodeId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$release$11(GraphEdge it) {
         return it.getBufferChannel() != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$release$12(GraphEdge it) {
         BufferChannel bufferChannel = it.getBufferChannel();
         Log.d(TAG, NavigationBarInflaterView.SIZE_MOD_START + it.getBeginNode() + " => " + it.getEndNode() + "]cancel buffer channel" + bufferChannel);
@@ -436,7 +423,6 @@ public abstract class GraphNodeBase<T> extends MessageSubscriberBase implements 
         this.quit = quit;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean parseException(Exception exception) {
         try {
             String msg = exception.getMessage();

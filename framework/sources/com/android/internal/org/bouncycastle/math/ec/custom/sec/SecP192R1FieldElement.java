@@ -22,7 +22,6 @@ public class SecP192R1FieldElement extends ECFieldElement.AbstractFp {
         this.x = Nat192.create();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SecP192R1FieldElement(int[] x) {
         this.x = x;
     }

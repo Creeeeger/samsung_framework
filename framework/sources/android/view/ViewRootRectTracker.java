@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ViewRootRectTracker {
     private final Function<View, List<Rect>> mRectCollector;
@@ -19,7 +18,6 @@ public class ViewRootRectTracker {
     private List<ViewInfo> mViewInfos = new ArrayList();
     private List<Rect> mRects = Collections.emptyList();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewRootRectTracker(Function<View, List<Rect>> rectCollector) {
         this.mRectCollector = rectCollector;
     }
@@ -97,13 +95,11 @@ public class ViewRootRectTracker {
         return this.mRootRects;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public List<Rect> getTrackedRectsForView(View v) {
         List<Rect> rects = this.mRectCollector.apply(v);
         return rects == null ? Collections.emptyList() : rects;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ViewInfo {
         public static final int CHANGED = 0;

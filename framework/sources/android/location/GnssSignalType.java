@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class GnssSignalType implements Parcelable {
     public static final Parcelable.Creator<GnssSignalType> CREATOR = new Parcelable.Creator<GnssSignalType>() { // from class: android.location.GnssSignalType.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssSignalType createFromParcel(Parcel parcel) {
             return new GnssSignalType(parcel.readInt(), parcel.readDouble(), parcel.readString());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssSignalType[] newArray(int i) {
             return new GnssSignalType[i];
@@ -24,6 +25,10 @@ public final class GnssSignalType implements Parcelable {
     private final double mCarrierFrequencyHz;
     private final String mCodeType;
     private final int mConstellationType;
+
+    /* synthetic */ GnssSignalType(int i, double d, String str, GnssSignalTypeIA gnssSignalTypeIA) {
+        this(i, d, str);
+    }
 
     public static GnssSignalType create(int constellationType, double carrierFrequencyHz, String codeType) {
         Preconditions.checkArgument(carrierFrequencyHz > SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, "carrierFrequencyHz must be greater than 0.");
@@ -47,6 +52,23 @@ public final class GnssSignalType implements Parcelable {
 
     public String getCodeType() {
         return this.mCodeType;
+    }
+
+    /* renamed from: android.location.GnssSignalType$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssSignalType> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssSignalType createFromParcel(Parcel parcel) {
+            return new GnssSignalType(parcel.readInt(), parcel.readDouble(), parcel.readString());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssSignalType[] newArray(int i) {
+            return new GnssSignalType[i];
+        }
     }
 
     @Override // android.os.Parcelable

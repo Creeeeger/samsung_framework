@@ -13,7 +13,10 @@ public abstract class TypeReference<T> {
     private final int mHash;
     private final Type mType;
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* synthetic */ TypeReference(Type type, TypeReferenceIA typeReferenceIA) {
+        this(type);
+    }
+
     public TypeReference() {
         ParameterizedType thisType = (ParameterizedType) getClass().getGenericSuperclass();
         Type type = thisType.getActualTypeArguments()[0];
@@ -36,14 +39,14 @@ public abstract class TypeReference<T> {
         this.mHash = type.hashCode();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class SpecializedTypeReference<T> extends TypeReference<T> {
+    public static class SpecializedTypeReference<T> extends TypeReference<T> {
         public SpecializedTypeReference(Class<T> klass) {
             super(klass);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class SpecializedBaseTypeReference extends TypeReference {
         public SpecializedBaseTypeReference(Type type) {

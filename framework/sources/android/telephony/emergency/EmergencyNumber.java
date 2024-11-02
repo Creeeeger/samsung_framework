@@ -85,13 +85,14 @@ public final class EmergencyNumber implements Parcelable, Comparable<EmergencyNu
         EMERGENCY_NUMBER_SOURCE_PRECEDENCE = r0;
         int[] iArr = {256, 1, 2, 128, 16, 4};
         CREATOR = new Parcelable.Creator<EmergencyNumber>() { // from class: android.telephony.emergency.EmergencyNumber.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public EmergencyNumber createFromParcel(Parcel in) {
                 return new EmergencyNumber(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EmergencyNumber[] newArray(int size) {
                 return new EmergencyNumber[size];
@@ -128,6 +129,23 @@ public final class EmergencyNumber implements Parcelable, Comparable<EmergencyNu
         dest.writeStringList(this.mEmergencyUrns);
         dest.writeInt(this.mEmergencyNumberSourceBitmask);
         dest.writeInt(this.mEmergencyCallRouting);
+    }
+
+    /* renamed from: android.telephony.emergency.EmergencyNumber$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EmergencyNumber> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EmergencyNumber createFromParcel(Parcel in) {
+            return new EmergencyNumber(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EmergencyNumber[] newArray(int size) {
+            return new EmergencyNumber[size];
+        }
     }
 
     public String getNumber() {

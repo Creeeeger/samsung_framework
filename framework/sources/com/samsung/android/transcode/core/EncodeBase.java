@@ -123,8 +123,9 @@ public abstract class EncodeBase extends Encode {
     protected long mVidioProgressTime = 0;
     protected boolean[] mAsyncCodecReleased = {false, false};
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    enum ASYNC_CODEC_TYPE {
+    public enum ASYNC_CODEC_TYPE {
         VIDEO_DECODER,
         VIDEO_ENCODER
     }
@@ -195,20 +196,50 @@ public abstract class EncodeBase extends Encode {
         LogS.d("TranscodeLib", "Encoding abruptly stopped mUserStop ?" + this.mUserStop + " mCodecError? " + this.mCodecError);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static long unsignedIntToLong(byte[] b) {
         long l = 0 | (b[0] & 255);
         return (((((l << 8) | (b[1] & 255)) << 8) | (b[2] & 255)) << 8) | (b[3] & 255);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x011b, code lost:            com.samsung.android.transcode.util.LogS.d("TranscodeLib", "filePointer does not go forward. Exit.");     */
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0120, code lost:            r13 = false;     */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x00ca, code lost:            if (r28 == false) goto L36;     */
-    /* JADX WARN: Code restructure failed: missing block: B:47:0x00cc, code lost:            r14.read(r9, 0, r9.length);        r13 = com.samsung.android.transcode.core.EncodeBase.mCreationTime;        r14.write(r13, 0, r13.length);     */
-    /* JADX WARN: Code restructure failed: missing block: B:48:0x00ea, code lost:            r13 = true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x00d9, code lost:            r2 = com.samsung.android.transcode.core.EncodeBase.mCreationTime;        r14.read(r2, 0, r2.length);        r2 = com.samsung.android.transcode.core.EncodeBase.mCreationTime;        r14.read(r2, 0, r2.length);        r1.mUpdateCreationTime = true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x00ec, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:52:0x00ed, code lost:            r1 = r0;        r13 = true;     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x011b, code lost:
+    
+        com.samsung.android.transcode.util.LogS.d("TranscodeLib", "filePointer does not go forward. Exit.");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0120, code lost:
+    
+        r13 = false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x00ca, code lost:
+    
+        if (r28 == false) goto L119;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x00cc, code lost:
+    
+        r14.read(r9, 0, r9.length);
+        r13 = com.samsung.android.transcode.core.EncodeBase.mCreationTime;
+        r14.write(r13, 0, r13.length);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:48:0x00ea, code lost:
+    
+        r13 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x00d9, code lost:
+    
+        r2 = com.samsung.android.transcode.core.EncodeBase.mCreationTime;
+        r14.read(r2, 0, r2.length);
+        r2 = com.samsung.android.transcode.core.EncodeBase.mCreationTime;
+        r14.read(r2, 0, r2.length);
+        r1.mUpdateCreationTime = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x00ec, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x00ed, code lost:
+    
+        r1 = r0;
+        r13 = true;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -413,7 +444,6 @@ public abstract class EncodeBase extends Encode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isSlowFast() {
         int i = this.mRecordingMode;
         return i == 2 || i == 1 || i == 12 || i == 21 || i == 13 || i == 15 || i == 19;
@@ -1128,8 +1158,10 @@ public abstract class EncodeBase extends Encode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0091, code lost:            return r16;     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x0091, code lost:
+    
+        return r16;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1231,7 +1263,6 @@ public abstract class EncodeBase extends Encode {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.transcode.core.EncodeBase.getSlowfastSeektime(long):long");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public long getSuperslowSeektime(long seekTimeUs) {
         long j;
         long seekTimeUs2;
@@ -1340,7 +1371,6 @@ public abstract class EncodeBase extends Encode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void startAudioEncoding() {
         sendAudioToDecoder();
         getAudioDecoderOutput();
@@ -1382,7 +1412,6 @@ public abstract class EncodeBase extends Encode {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendVideoFramesToMuxer(int encoderOutputBufferIndex, MediaCodec.BufferInfo videoEncoderOutputBufferInfo) {
         if (!checkEncoderOutputBufferIndex(encoderOutputBufferIndex)) {
             LogS.e("TranscodeLib", "video encoder: sendVideoFramesToMuxer condition error");
@@ -1414,13 +1443,14 @@ public abstract class EncodeBase extends Encode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isVideoDecoderAvailableCondition() {
         return (this.mCodecError || this.mUserStop || this.mVideoDecoderDone || !this.mPrepared || this.mInputVideoDecoder == null || (this.mVideoEncoderOutputMediaFormat != null && !this.mMuxerStarted)) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0017, code lost:            if (r1.mMuxerStarted != false) goto L15;     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0017, code lost:
+    
+        if (r1.mMuxerStarted != false) goto L39;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1490,7 +1520,6 @@ public abstract class EncodeBase extends Encode {
         this.mSkippedFramesCount++;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void getVideoDecoderOutput(int decoderOutputBufferIndex, MediaCodec.BufferInfo videoDecoderOutputBufferInfo) {
         if (checkDecoderOutputBufferIndex(decoderOutputBufferIndex, videoDecoderOutputBufferInfo) && this.mDecoderReleaseListener != null) {
             DecodedFrame decodedFrame = new DecodedFrame(decoderOutputBufferIndex, videoDecoderOutputBufferInfo);
@@ -1503,7 +1532,6 @@ public abstract class EncodeBase extends Encode {
         return releaseFrame.size != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void sendFrametoEncoder() {
         DecodedFrame frame;
         if (!isVideoEncoderAvailableCondition()) {
@@ -1557,8 +1585,7 @@ public abstract class EncodeBase extends Encode {
         return timedelta;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.transcode.core.EncodeBase$3, reason: invalid class name */
+    /* renamed from: com.samsung.android.transcode.core.EncodeBase$3 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass3 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed;
@@ -1714,7 +1741,6 @@ public abstract class EncodeBase extends Encode {
         return retDrop;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isSlow120(int recordingMode, int recordingFps) {
         return recordingMode == 13 || recordingMode == 15 || (recordingMode == 21 && recordingFps == 120);
     }
@@ -1985,13 +2011,11 @@ public abstract class EncodeBase extends Encode {
         return i == 2 || i == 1 || i == 12 || i == 21 || i == 13;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isSuperSlow() {
         int i = this.mRecordingMode;
         return i == 8 || i == 7 || i == 9 || i == 22 || i == 18;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean calculateIsDrop(byte[] a, long presentationTimeUs) {
         int i;
         int layerNumber = getLayerNumber(a);
@@ -2042,7 +2066,6 @@ public abstract class EncodeBase extends Encode {
         this.mInputVideoDecoder.queueInputBuffer(inputBufferIndex, 0, 0, 0L, 4);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void initialize_video() {
         this.mVideoEncoderOutputMediaFormat = null;
         this.mVideoEncoderDone = false;
@@ -2057,8 +2080,51 @@ public abstract class EncodeBase extends Encode {
         this.mDecoderFrameManager = new DecoderFrameManager();
     }
 
+    /* renamed from: com.samsung.android.transcode.core.EncodeBase$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends MediaCodec.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.MediaCodec.Callback
+        public void onInputBufferAvailable(MediaCodec codec, int index) {
+        }
+
+        @Override // android.media.MediaCodec.Callback
+        public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo bufferInfo) {
+            if (!EncodeBase.this.mAsyncCodecReleased[ASYNC_CODEC_TYPE.VIDEO_ENCODER.ordinal()]) {
+                if (EncodeBase.this.isVideoEncoderAvailableCondition()) {
+                    EncodeBase.this.sendVideoFramesToMuxer(index, bufferInfo);
+                } else {
+                    LogS.e("TranscodeLib", "video encoder: [onOutputBufferAvailable] condition error");
+                }
+            }
+        }
+
+        @Override // android.media.MediaCodec.Callback
+        public void onError(MediaCodec codec, MediaCodec.CodecException e) {
+            LogS.e("TranscodeLib", "video encoder: has error");
+            EncodeBase.this.mCodecError = true;
+            synchronized (EncodeBase.this.mOutputVideoEncoder) {
+                EncodeBase.this.mOutputVideoEncoder.notifyAll();
+            }
+        }
+
+        @Override // android.media.MediaCodec.Callback
+        public void onOutputFormatChanged(MediaCodec codec, MediaFormat format) {
+            if (!EncodeBase.this.mCodecError && !EncodeBase.this.mAsyncCodecReleased[ASYNC_CODEC_TYPE.VIDEO_ENCODER.ordinal()]) {
+                EncodeBase.this.mVideoEncoderOutputMediaFormat = format;
+                LogS.e("TranscodeLib", "video encoder: onOutputFormatChanged " + EncodeBase.this.mVideoEncoderOutputMediaFormat);
+                EncodeBase.this.checkMuxerStart();
+            }
+        }
+    }
+
     protected void setVideoEncoderAsyncCallback() {
         this.mOutputVideoEncoder.setCallback(new MediaCodec.Callback() { // from class: com.samsung.android.transcode.core.EncodeBase.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.MediaCodec.Callback
             public void onInputBufferAvailable(MediaCodec codec, int index) {
             }
@@ -2094,8 +2160,47 @@ public abstract class EncodeBase extends Encode {
         });
     }
 
+    /* renamed from: com.samsung.android.transcode.core.EncodeBase$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends MediaCodec.Callback {
+        AnonymousClass2() {
+        }
+
+        @Override // android.media.MediaCodec.Callback
+        public void onInputBufferAvailable(MediaCodec codec, int index) {
+            if (EncodeBase.this.mAsyncCodecReleased[ASYNC_CODEC_TYPE.VIDEO_DECODER.ordinal()] || !EncodeBase.this.isVideoDecoderAvailableCondition()) {
+                return;
+            }
+            EncodeBase.this.sendVideoToDecoder(index);
+        }
+
+        @Override // android.media.MediaCodec.Callback
+        public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo bufferInfo) {
+            if (!EncodeBase.this.mAsyncCodecReleased[ASYNC_CODEC_TYPE.VIDEO_DECODER.ordinal()] && EncodeBase.this.isVideoDecoderAvailableCondition()) {
+                EncodeBase.this.getVideoDecoderOutput(index, bufferInfo);
+            }
+        }
+
+        @Override // android.media.MediaCodec.Callback
+        public void onError(MediaCodec codec, MediaCodec.CodecException e) {
+            LogS.e("TranscodeLib", "video Decoder has error");
+            EncodeBase.this.mCodecError = true;
+            synchronized (EncodeBase.this.mInputVideoDecoder) {
+                EncodeBase.this.mInputVideoDecoder.notifyAll();
+            }
+        }
+
+        @Override // android.media.MediaCodec.Callback
+        public void onOutputFormatChanged(MediaCodec codec, MediaFormat format) {
+            LogS.e("TranscodeLib", "video decoder: onOutputFormatChanged " + format);
+        }
+    }
+
     protected void setVideoDecoderAsyncCallback() {
         this.mInputVideoDecoder.setCallback(new MediaCodec.Callback() { // from class: com.samsung.android.transcode.core.EncodeBase.2
+            AnonymousClass2() {
+            }
+
             @Override // android.media.MediaCodec.Callback
             public void onInputBufferAvailable(MediaCodec codec, int index) {
                 if (EncodeBase.this.mAsyncCodecReleased[ASYNC_CODEC_TYPE.VIDEO_DECODER.ordinal()] || !EncodeBase.this.isVideoDecoderAvailableCondition()) {
@@ -2127,7 +2232,6 @@ public abstract class EncodeBase extends Encode {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void initialize_audio() {
         this.mAudioEncoderOutputBuffers = this.mCopyAudio ? this.mOutputAudioEncoder.getOutputBuffers() : null;
         this.mAudioEncoderInputBuffers = this.mCopyAudio ? this.mOutputAudioEncoder.getInputBuffers() : null;
@@ -2155,7 +2259,6 @@ public abstract class EncodeBase extends Encode {
         this.mAudioProgressTime = 0L;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void startVideoDecoding() {
         LogS.d("TranscodeLib", " starts transcoding");
         this.mDecoderReleaseListener = this.mDecoderFrameManager;
@@ -2601,7 +2704,7 @@ public abstract class EncodeBase extends Encode {
             Runnable schedulerCallback = new Runnable() { // from class: com.samsung.android.transcode.core.EncodeBase$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
-                    EncodeBase.this.m8835x10a9be6d();
+                    EncodeBase.this.m8827x10a9be6d();
                 }
             };
             while (!this.formatupdated) {
@@ -2633,9 +2736,8 @@ public abstract class EncodeBase extends Encode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$preprocessAudioOutputFormat$0$com-samsung-android-transcode-core-EncodeBase, reason: not valid java name */
-    public /* synthetic */ void m8835x10a9be6d() {
+    /* renamed from: lambda$preprocessAudioOutputFormat$0$com-samsung-android-transcode-core-EncodeBase */
+    public /* synthetic */ void m8827x10a9be6d() {
         this.formatupdated = true;
     }
 
@@ -2643,7 +2745,6 @@ public abstract class EncodeBase extends Encode {
         return MediaFormat.MIMETYPE_AUDIO_AC3.equals(mimeType) || MediaFormat.MIMETYPE_AUDIO_EAC3.equals(mimeType) || MediaFormat.MIMETYPE_AUDIO_EAC3_JOC.equals(mimeType) || MediaFormat.MIMETYPE_AUDIO_AC4.equals(mimeType);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isSlowV2() {
         int i = this.mRecordingMode;
         return i == 12 || i == 21 || i == 13 || i == 15 || i == 19;
@@ -2691,7 +2792,6 @@ public abstract class EncodeBase extends Encode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void updateProgress(long frametime, boolean isAudio) {
         long time;
         if (frametime <= 0) {
@@ -2716,7 +2816,6 @@ public abstract class EncodeBase extends Encode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void releaseFramemanager() {
         if (this.mDecoderFrameManager != null) {
             while (this.mDecoderFrameManager.queSize() > 0) {

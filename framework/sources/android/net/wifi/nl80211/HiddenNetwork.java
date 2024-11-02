@@ -7,7 +7,9 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public class HiddenNetwork implements Parcelable {
     public static final Parcelable.Creator<HiddenNetwork> CREATOR = new Parcelable.Creator<HiddenNetwork>() { // from class: android.net.wifi.nl80211.HiddenNetwork.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HiddenNetwork createFromParcel(Parcel in) {
             HiddenNetwork result = new HiddenNetwork();
@@ -15,7 +17,6 @@ public class HiddenNetwork implements Parcelable {
             return result;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HiddenNetwork[] newArray(int size) {
             return new HiddenNetwork[size];
@@ -47,5 +48,24 @@ public class HiddenNetwork implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeByteArray(this.ssid);
+    }
+
+    /* renamed from: android.net.wifi.nl80211.HiddenNetwork$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HiddenNetwork> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HiddenNetwork createFromParcel(Parcel in) {
+            HiddenNetwork result = new HiddenNetwork();
+            result.ssid = in.createByteArray();
+            return result;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HiddenNetwork[] newArray(int size) {
+            return new HiddenNetwork[size];
+        }
     }
 }

@@ -11,8 +11,9 @@ import android.view.WindowManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-final class VoiceInteractionWindow extends Dialog {
+public final class VoiceInteractionWindow extends Dialog {
     private static final boolean DEBUG = false;
     private static final String TAG = "VoiceInteractionWindow";
     private final Rect mBounds;
@@ -25,8 +26,9 @@ final class VoiceInteractionWindow extends Dialog {
     private int mWindowState;
     private final int mWindowType;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    interface Callback {
+    public interface Callback {
         void onBackPressed();
     }
 
@@ -40,7 +42,6 @@ final class VoiceInteractionWindow extends Dialog {
         public static final int TOKEN_SET = 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setToken(IBinder token) {
         switch (this.mWindowState) {
             case 0:
@@ -63,7 +64,6 @@ final class VoiceInteractionWindow extends Dialog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VoiceInteractionWindow(Context context, String name, int theme, Callback callback, KeyEvent.Callback keyEventCallback, KeyEvent.DispatcherState dispatcherState, int windowType, int gravity, boolean takesFocus) {
         super(context, theme);
         this.mBounds = new Rect();

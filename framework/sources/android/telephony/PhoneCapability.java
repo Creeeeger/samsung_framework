@@ -34,6 +34,14 @@ public final class PhoneCapability implements Parcelable {
     public @interface DeviceNrCapability {
     }
 
+    /* synthetic */ PhoneCapability(Parcel parcel, PhoneCapabilityIA phoneCapabilityIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ PhoneCapability(Builder builder, PhoneCapabilityIA phoneCapabilityIA) {
+        this(builder);
+    }
+
     static {
         ModemInfo modemInfo1 = new ModemInfo(0, 0, true, true);
         ModemInfo modemInfo2 = new ModemInfo(1, 0, true, true);
@@ -46,6 +54,9 @@ public final class PhoneCapability implements Parcelable {
         logicalModemList2.add(modemInfo1);
         DEFAULT_SSSS_CAPABILITY = new PhoneCapability(1, 1, logicalModemList2, false, deviceNrCapabilities);
         CREATOR = new Parcelable.Creator() { // from class: android.telephony.PhoneCapability.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PhoneCapability createFromParcel(Parcel in) {
                 return new PhoneCapability(in);
@@ -127,6 +138,23 @@ public final class PhoneCapability implements Parcelable {
         dest.writeBoolean(this.mNetworkValidationBeforeSwitchSupported);
         dest.writeList(this.mLogicalModemList);
         dest.writeIntArray(this.mDeviceNrCapabilities);
+    }
+
+    /* renamed from: android.telephony.PhoneCapability$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhoneCapability createFromParcel(Parcel in) {
+            return new PhoneCapability(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhoneCapability[] newArray(int size) {
+            return new PhoneCapability[size];
+        }
     }
 
     @SystemApi

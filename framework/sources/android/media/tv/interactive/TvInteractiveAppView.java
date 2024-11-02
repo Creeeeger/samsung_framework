@@ -78,6 +78,38 @@ public class TvInteractiveAppView extends ViewGroup {
         boolean onUnhandledInputEvent(InputEvent inputEvent);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.interactive.TvInteractiveAppView$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 implements SurfaceHolder.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            TvInteractiveAppView.this.mSurfaceFormat = format;
+            TvInteractiveAppView.this.mSurfaceWidth = width;
+            TvInteractiveAppView.this.mSurfaceHeight = height;
+            TvInteractiveAppView.this.mSurfaceChanged = true;
+            TvInteractiveAppView tvInteractiveAppView = TvInteractiveAppView.this;
+            tvInteractiveAppView.dispatchSurfaceChanged(tvInteractiveAppView.mSurfaceFormat, TvInteractiveAppView.this.mSurfaceWidth, TvInteractiveAppView.this.mSurfaceHeight);
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceCreated(SurfaceHolder holder) {
+            TvInteractiveAppView.this.mSurface = holder.getSurface();
+            TvInteractiveAppView tvInteractiveAppView = TvInteractiveAppView.this;
+            tvInteractiveAppView.setSessionSurface(tvInteractiveAppView.mSurface);
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            TvInteractiveAppView.this.mSurface = null;
+            TvInteractiveAppView.this.mSurfaceChanged = false;
+            TvInteractiveAppView.this.setSessionSurface(null);
+        }
+    }
+
     public TvInteractiveAppView(Context context) {
         this(context, null, 0);
     }
@@ -91,6 +123,9 @@ public class TvInteractiveAppView extends ViewGroup {
         this.mHandler = new Handler();
         this.mCallbackLock = new Object();
         this.mSurfaceHolderCallback = new SurfaceHolder.Callback() { // from class: android.media.tv.interactive.TvInteractiveAppView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.SurfaceHolder.Callback
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 TvInteractiveAppView.this.mSurfaceFormat = format;
@@ -116,6 +151,9 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         };
         this.mFinishedInputEventCallback = new TvInteractiveAppManager.Session.FinishedInputEventCallback() { // from class: android.media.tv.interactive.TvInteractiveAppView.3
+            AnonymousClass3() {
+            }
+
             @Override // android.media.tv.interactive.TvInteractiveAppManager.Session.FinishedInputEventCallback
             public void onFinishedInputEvent(Object token, boolean handled) {
                 ViewRootImpl viewRootImpl;
@@ -207,16 +245,19 @@ public class TvInteractiveAppView extends ViewGroup {
             removeView(this.mSurfaceView);
         }
         this.mSurface = null;
-        SurfaceView surfaceView2 = new SurfaceView(getContext(), this.mAttrs, this.mDefStyleAttr) { // from class: android.media.tv.interactive.TvInteractiveAppView.2
-            /* JADX INFO: Access modifiers changed from: protected */
+        AnonymousClass2 anonymousClass2 = new SurfaceView(getContext(), this.mAttrs, this.mDefStyleAttr) { // from class: android.media.tv.interactive.TvInteractiveAppView.2
+            AnonymousClass2(Context context, AttributeSet attrs, int defStyleAttr) {
+                super(context, attrs, defStyleAttr);
+            }
+
             @Override // android.view.SurfaceView
             public void updateSurface() {
                 super.updateSurface();
                 TvInteractiveAppView.this.relayoutSessionMediaView();
             }
         };
-        this.mSurfaceView = surfaceView2;
-        surfaceView2.setSecure(true);
+        this.mSurfaceView = anonymousClass2;
+        anonymousClass2.setSecure(true);
         this.mSurfaceView.getHolder().addCallback(this.mSurfaceHolderCallback);
         this.mSurfaceView.getHolder().setFormat(-3);
         this.mSurfaceView.setZOrderOnTop(false);
@@ -224,11 +265,24 @@ public class TvInteractiveAppView extends ViewGroup {
         addView(this.mSurfaceView);
     }
 
+    /* renamed from: android.media.tv.interactive.TvInteractiveAppView$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 extends SurfaceView {
+        AnonymousClass2(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+        }
+
+        @Override // android.view.SurfaceView
+        public void updateSurface() {
+            super.updateSurface();
+            TvInteractiveAppView.this.relayoutSessionMediaView();
+        }
+    }
+
     public void reset() {
         resetInternal();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void createSessionMediaView() {
         if (this.mSession == null || !isAttachedToWindow() || this.mMediaViewCreated) {
             return;
@@ -249,7 +303,6 @@ public class TvInteractiveAppView extends ViewGroup {
         this.mMediaViewFrame = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void relayoutSessionMediaView() {
         if (this.mSession == null || !isAttachedToWindow() || !this.mMediaViewCreated) {
             return;
@@ -271,7 +324,6 @@ public class TvInteractiveAppView extends ViewGroup {
         return frame;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setSessionSurface(Surface surface) {
         TvInteractiveAppManager.Session session = this.mSession;
         if (session == null) {
@@ -280,13 +332,32 @@ public class TvInteractiveAppView extends ViewGroup {
         session.setSurface(surface);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchSurfaceChanged(int format, int width, int height) {
         TvInteractiveAppManager.Session session = this.mSession;
         if (session == null) {
             return;
         }
         session.dispatchSurfaceChanged(format, width, height);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.interactive.TvInteractiveAppView$3 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass3 implements TvInteractiveAppManager.Session.FinishedInputEventCallback {
+        AnonymousClass3() {
+        }
+
+        @Override // android.media.tv.interactive.TvInteractiveAppManager.Session.FinishedInputEventCallback
+        public void onFinishedInputEvent(Object token, boolean handled) {
+            ViewRootImpl viewRootImpl;
+            if (handled) {
+                return;
+            }
+            InputEvent event = (InputEvent) token;
+            if (!TvInteractiveAppView.this.dispatchUnhandledInputEvent(event) && (viewRootImpl = TvInteractiveAppView.this.getViewRootImpl()) != null) {
+                viewRootImpl.dispatchUnhandledInputEvent(event);
+            }
+        }
     }
 
     public boolean dispatchUnhandledInputEvent(InputEvent event) {
@@ -654,7 +725,6 @@ public class TvInteractiveAppView extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class MySessionCallback extends TvInteractiveAppManager.SessionCallback {
         final String mIAppServiceId;
@@ -735,7 +805,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCommandRequest$0(String cmdType, Bundle parameters) {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -762,7 +831,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTimeShiftCommandRequest$1(String cmdType, Bundle parameters) {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -789,7 +857,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSessionStateChanged$2(int state, int err) {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -816,7 +883,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onBiInteractiveAppCreated$3(Uri biIAppUri, String biIAppId) {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -852,7 +918,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSetVideoBounds$4(Rect rect) {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -879,7 +944,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRequestCurrentVideoBounds$5() {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -906,7 +970,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRequestCurrentChannelUri$6() {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -933,7 +996,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRequestCurrentChannelLcn$7() {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -960,7 +1022,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRequestStreamVolume$8() {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {
@@ -987,7 +1048,6 @@ public class TvInteractiveAppView extends ViewGroup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRequestTrackInfoList$9() {
             synchronized (TvInteractiveAppView.this.mCallbackLock) {
                 if (TvInteractiveAppView.this.mCallback != null) {

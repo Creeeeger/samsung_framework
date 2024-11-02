@@ -338,7 +338,7 @@
     <string name="ext_media_unsupported_notification_message">ਇਹ ਡਿਵਾਈਸ ਇਸ %s ਦਾ ਸਮਰਥਨ ਨਹੀਂ ਕਰਦਾ। ਸਮਰਥਿਤ ਫੌਰਮੈਟ ਵਿੱਚ ਸੈੱਟ ਅਪ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ।</string>
     <string name="ext_media_unsupported_notification_title">ਅਸਮਰਥਿਤ %s</string>
     <string name="ext_storage_bad_removal_button">ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ</string>
-    <string name="ext_storage_bad_removal_title">ਆਪਣਾ ਫ਼ੋਨ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ</string>
+    <string name="ext_storage_bad_removal_title">ਆਪਣਾ ਟੈਬਲੇਟ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ</string>
     <string name="extmedia_format_button_format">ਫੌਰਮੈਟ</string>
     <string name="extmedia_format_message">ਕੀ ਤੁਹਾਨੂੰ ਯਕੀਨ ਹੈ ਕਿ ਤੁਸੀਂ SD ਕਾਰਡ ਨੂੰ ਫੌਰਮੇਟ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ? ਤੁਹਾਡੇ ਕਾਰਡ ਤੇ ਸਾਰਾ ਡੈਟਾ ਗੁਆਚ ਜਾਵੇਗਾ।</string>
     <string name="extmedia_format_message_usbhost">ਤੁਹਾਡੀ USB ਸਟੋਰੇਜ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਕੀਤੀ ਕੋਈ ਵੀ ਫਾਈਲ ਮਿਟ ਜਾਵੇਗੀ। ਕਿਰਿਆ ਉਲਟਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ।</string>
@@ -599,16 +599,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ਧੁਨੀ ਤੁਹਾਡੇ ਬਲੂਟੁੱਥ ਆਡੀਓ ਡਿਵਾਈਸ ਤੇ ਪਲੇ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ</string>
     <string name="multisound_sound_via_headphone">%s ਧੁਨੀ ਤੁਹਾਡੇ ਹੈੱਡਫ਼ੋਨਸ ਰਾਹੀਂ ਪਲੇ ਹੋ ਰਹੀ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।</string>
     <string name="multisound_sound_via_headphone_multiselection">ਧੁਨੀ ਤੁਹਾਡੇ ਹੈੱਡਫ਼ੋਨਾਂ ਰਾਹੀਂ ਪਲੇ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।</string>
-    <string name="multisound_sound_via_phone_speaker">%s ਧੁਨੀ ਤੁਹਾਡੇ ਫ਼ੋਨ ਦੇ ਸਪੀਕਰ ਰਾਹੀਂ ਪਲੇ ਹੋ ਰਹੀ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ਧੁਨੀ ਤੁਹਾਡੇ ਫ਼ੋਨ ਦੇ ਸਪੀਕਰ ਰਾਹੀਂ ਪਲੇ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।</string>
+    <string name="multisound_sound_via_phone_speaker">%s ਧੁਨੀ ਨੂੰ ਤੁਹਾਡੇ ਟੈਬਲੇਟ ਦੇ ਸਪੀਕਰ ਰਾਹੀਂ ਪਲੇ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ਧੁਨੀ ਤੁਹਾਡੇ ਟੈਬਲੇਟ ਦੇ ਸਪੀਕਰ ਰਾਹੀਂ ਪਲੇ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।</string>
     <string name="multisound_sound_via_usb_audio">%s ਧੁਨੀ ਤੁਹਾਡੇ USB ਆਡੀਓ ਡਿਵਾਈਸ ਰਾਹੀਂ ਪਲੇ ਹੋ ਰਹੀ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ਧੁਨੀ ਤੁਹਾਡੇ USB ਆਡੀਓ ਡਿਵਾਈਸ ਰਾਹੀਂ ਪਲੇ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ। ਇਸ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।</string>
     <string name="multisound_title">ਵੱਖਰੀ ਐਪ ਧੁਨੀ</string>
     <string name="multisound_turn_off_multisound">ਬੰਦ ਕਰੋ</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ਨੂੰ Samsung DeX ਵਿੱਚ ਚਲਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ। ਫ਼ੋਨ ਮੋਡ ਵਿੱਚ ਚਲਾਉਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX ਵਿੱਚ ਨਹੀਂ ਚਲ ਸਕਦਾ ਹੈ। ਇਹ ਫ਼ੋਨ ਦੀਆਂ ਹੋਮ ਸਕ੍ਰੀਨਾਂ ਲਈ ਬਣਾਇਆ ਗਿਆ।</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ਕੁਝ ਗੇਮਾਂ ਸਿਰਫ਼਼ ਟੱਚ ਸਕ੍ਰੀਨਾਂ ਤੇ ਕੰਮ ਕਰਦੀਆਂ ਹਨ। ਜੇਕਰ Samsung DeX ਵਿੱਚ ਮਾਉਸ ਨਿਯੰਤ੍ਰਣ ਕੰਮ ਨਹੀਂ ਕਰਦਾ ਹੈ, ਤਾਂ ਇਸਦੇ ਬਜਾਏ ਫ਼ੋਨ ਮੋਡ ਵਿੱਚ ਪਲੇ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
-    <string name="my_device">ਇਹ ਫ਼ੋਨ</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ਨੂੰ Samsung DeX ਵਿੱਚ ਚਲਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ। ਟੈਬਲੇਟ ਮੋਡ ਵਿੱਚ ਚਲਾਉਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ਨੂੰ Samsung DeX ਵਿੱਚ ਚਲਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ। ਇਸ ਨੂੰ ਟੈਬਲੇਟ ਦੀਆਂ ਹੋਮ ਸਕ੍ਰੀਨਾਂ ਲਈ ਬਣਾਇਆ ਗਿਆ।</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ਕੁਝ ਗੇਮਾਂ ਸਿਰਫ਼਼ ਟੱਚ ਸਕ੍ਰੀਨਾਂ ਤੇ ਕੰਮ ਕਰਦੀਆਂ ਹਨ। ਜੇਕਰ Samsung DeX ਵਿੱਚ ਮਾਉਸ ਨਿਯੰਤ੍ਰਣ ਕੰਮ ਨਹੀਂ ਕਰਦਾ ਹੈ, ਤਾਂ ਇਸਦੇ ਬਜਾਏ ਟੈਬਲੇਟ ਮੋਡ ਵਿੱਚ ਪਲੇ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
+    <string name="my_device">ਇਹ ਟੈਬਲੇਟ</string>
     <string name="network_locked_sim_dialog_message_ais">ਤੁਹਾਡਾ ਫ਼ੋਨ ਤੁਹਾਡੀ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਦੇ ਨਿਯਮ ਅਤੇ ਸ਼ਰਤਾਂ ਦੀ ਪਾਲਣਾ ਨਾ ਕਰਨ ਕਰਕੇ ਤੁਹਾਡਾ SIM ਕਾਰਡ ਇਸ ਫ਼ੋਨ ਨਾਲ ਪੂਰੀ ਤਰ੍ਹਾਂ ਕਾਰਜਸ਼ੀਲ ਨਹੀਂ ਹੈ। ਜੇਕਰ ਇਸ ਮਾਮਲੇ ਬਾਰੇ ਕੋਈ ਪ੍ਰਸ਼ਨ ਹਨ ਜਾਂ ਤੁਹਾਨੂੰ ਹੋਰ ਜਾਣਕਾਰੀ ਦੀ ਲੋੜ ਹੈ, ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਜਿਸ ਨੇ ਤੁਹਾਨੂੰ ਇਹ ਉਤਪਾਦ ਵੇਚੇ ਹਨ ਉਸ ਸੈਮਸੰਗ ਗਾਹਕ ਸੇਵਾ ਦੇ ਸਥਾਨ ਜਾਂ ਸਟੋਰ ਤੇ ਸੰਪਰਕ ਕਰੋ।</string>
     <string name="network_locked_sim_notification_text">ਨੈੱਟਵਰਕ ਲੌਕ ਹੋ ਗਿਆ ਹੈ SIM ਕਾਰਡ ਦਾਖ਼ਲ ਕੀਤਾ ਗਿਆ ਹੈ।</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -801,7 +801,7 @@
     <string name="policydesc_allow_desktopsync">ਡੈਸਕਟੌਪ ਸਿੰਕ ਦੀ ਵਰਤੋਂ ਨੂੰ ਰੋਕੋ।</string>
     <string name="policydesc_allow_internetsharing">ਮੋਬਾਈਲ ਹੌਟਸਪੌਟ ਦੀ ਵਰਤੋਂ ਨੂੰ ਰੋਕੋ।</string>
     <string name="policydesc_allow_irda">IrDA ਦੀ ਵਰਤੋਂ ਨੂੰ ਰੋਕੋ।</string>
-    <string name="policydesc_allow_popimapemail">ਫ਼ੋਨ ਤੇ POP ਅਤੇ IMAP ਈਮੇਲ ਦੀ ਵਰਤੋਂ ਨੂੰ ਰੋਕੋ।</string>
+    <string name="policydesc_allow_popimapemail">ਟੈਬਲੇਟ ਤੇ POP ਅਤੇ IMAP ਈਮੇਲ ਦੀ ਵਰਤੋਂ ਨੂੰ ਰੋਕੋ।</string>
     <string name="policydesc_allow_storagecard">SD ਕਾਰਡਸ ਦੀ ਵਰਤੋਂ ਨੂੰ ਰੋਕੋ।</string>
     <string name="policydesc_allow_textmessaging">ਟੈਕਸਟ ਅਤੇ ਮਲਟੀਮੀਡੀਆ ਮੈਸੇਜਿੰਗ ਦੀ ਵਰਤੋਂ ਨੂੰ ਰੋਕੋ।</string>
     <string name="policydesc_allow_thirdParty">ਇਹ ਅਨੁਪ੍ਰਯੋਗ ਤੀਜੀ-ਧਿਰ ਦੇ ਅਨੁਪ੍ਰਯੋਗਾਂ ਨੂੰ ਚੱਲਣ ਤੋਂ ਰੋਕ ਸਕਦਾ ਹੈ।</string>
@@ -847,7 +847,7 @@
     <string name="pwd_change_enforced">ਸੁਰੱਖਿਆ ਨੀਤੀ ਦੇ ਅਨੁਸਾਰ ਤੁਹਾਨੂੰ ਤੁਹਾਡੇ ਪਾਸਵਰਡ ਨੂੰ ਬਦਲਣ ਦੀ ਲੋੜ ਹੈ।</string>
     <string name="recording_fail">%2$s ਵਿੱਚ ਮਾਈਕ ਦੀ ਵਰਤੋਂ ਹੋਣ ਦੌਰਾਨ %1$s ਵਿੱਚ ਮਾਈਕ ਦੀ ਵਰਤੋਂ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।</string>
     <string name="recording_popup">%s ਦੁਆਰਾ ਮਾਈਕ੍ਰੋਫ਼ੋਨ ਦੀ ਵਰਤੋਂ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ।</string>
-    <string name="recording_popup_device">ਫ਼ੋਨ</string>
+    <string name="recording_popup_device">ਟੈਬਲੇਟ</string>
     <string name="recording_popup_with_bluetooth">%s ਬਲੂਟੁੱਥ ਮਾਈਕ੍ਰੋਫ਼ੋਨ ਦੀ ਵਰਤੋਂ ਕਰ ਰਿਹਾ ਹੈ।</string>
     <string name="recording_popup_with_device">%1$s %2$s ਦੇ ਮਾਈਕ੍ਰੋਫ਼ੋਨ ਦੀ ਵਰਤੋਂ ਕਰ ਰਿਹਾ ਹੈ।</string>
     <string name="redo">ਦੁਬਾਰਾ ਕਰੋ</string>
@@ -913,12 +913,12 @@
     <string name="screencapture_restrict">ਸੁਰੱਖਿਆ ਨੀਤੀ ਸਕ੍ਰੀਨ ਕੈਪਚਰ ਦੇ ਉਪਯੋਗ ਨੂੰ ਰੋਕਦੀ ਹੈ।</string>
     <string name="sd_card_unavailable_message">ਤੁਸੀਂ SD ਕਾਰਡ ਦੀ ਵਰਤੋਂ ਨਹੀਂ ਕਰ ਸਕਦੇ ਕਿਉਂਕਿ ਇਹ ਉਦੋਂ ਪਾਈ ਗਈ ਸੀ ਜਦੋਂ ਇੱਕ ਵੱਖਰੀ ਉਪਯੋਗਕਰਤਾ ਪ੍ਰੋਫਾਈਲ ਵਰਤੋਂ ਵਿੱਚ ਸੀ।</string>
     <string name="sd_card_unavailable_title">SD ਕਾਰਡ ਉਪਲਬਧ ਨਹੀਂ ਹੈ</string>
-    <string name="sdcard_bad_removal_message">SD ਕਾਰਡ ਅਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਹਟਾ ਦਿੱਤਾ ਗਿਆ ਸੀ। ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਅਚਾਨਕ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਹੋਣ ਤੋਂ ਰੋਕਣ ਲਈ, ਅਸੁਰੱਖਿਅਤ ਡੈਟਾ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰੋ ਅਤੇ ਹੁਣ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ।</string>
+    <string name="sdcard_bad_removal_message">SD ਕਾਰਡ ਅਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਹਟਾ ਦਿੱਤਾ ਗਿਆ ਸੀ। ਆਪਣੇ ਟੈਬਲੇਟ ਨੂੰ ਅਚਾਨਕ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਹੋਣ ਤੋਂ ਰੋਕਣ ਲਈ, ਅਸੁਰੱਖਿਅਤ ਡੈਟਾ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰੋ ਅਤੇ ਹੁਣ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ।</string>
     <string name="sdcard_batch_decrypt_noti_content">SD ਕਾਰਡ ਡੀਕ੍ਰਿਪਟ ਕਰੋ</string>
     <string name="sdcard_batch_decrypt_noti_title">SD ਕਾਰਡ ਡੀਕ੍ਰਿਪਸ਼ਨ</string>
     <string name="sdcard_batch_decrypt_popup_content">ਏਨਕ੍ਰਿਪਟ ਕੀਤਾ SD ਕਾਰਡ ਵਰਤੋਂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਡੀਕ੍ਰਿਪਟ ਕੀਤਾ ਜਾਣਾ ਜ਼ਰੂਰੀ ਹੈ। ਡੀਕ੍ਰਿਪਸ਼ਨ ਇੱਕ ਘੰਟਾ ਜਾਂ ਇਸ ਤੋਂ ਜ਼ਿਆਦਾ ਸਮਾਂ ਲੈ ਸਕਦੀ ਹੈ। ਚਾਰਜ ਕੀਤੀ ਬੈਟਰੀ ਨਾਲ ਅਰੰਭ ਕਰੋ ਅਤੇ ਡੀਕ੍ਰਿਪਸ਼ਨ ਪੂਰੀ ਹੋਣ ਤੱਕ ਡਿਵਾਈਸ ਪਲੱਗ ਕਰਕੇ ਰੱਖੋ। ਡੀਕ੍ਰਿਪਸ਼ਨ ਪ੍ਰਕ੍ਰਿਆ ਵਿੱਚ ਰੁਕਾਵਟ ਪਾਉਣ ਨਾਲ ਕੁਝ ਜਾਂ ਸਾਰਾ ਡੈਟਾ ਲੁਪਤ ਹੋ ਸਕਦਾ ਹੈ।</string>
     <string name="sdcard_decrypt_err_notification">SD ਕਾਰਡ ਵਿੱਚ ਡੀਕ੍ਰਿਪਸ਼ਨ ਤਰੁੱਟੀ ਉਤਪੰਨ ਹੋਈ।</string>
-    <string name="sdcard_decrypt_error_otherdevice">ਤੁਹਾਡੇ SD ਕਾਰਡ ਦੀਆਂ ਕੁਝ ਫ਼ਾਈਲਾਂ ਕਿਸੇ ਹੋਰ ਡਿਵਾਈਸ ਤੇ ਏਨਕ੍ਰਿਪਟ ਹੋਣ ਕਰਕੇ ਉਨ੍ਹਾਂ ਦੀ ਇਸ ਫ਼ੋਨ ਤੇ ਵਰਤੋਂ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।</string>
+    <string name="sdcard_decrypt_error_otherdevice">ਤੁਹਾਡੇ SD ਕਾਰਡ ਦੀਆਂ ਕੁਝ ਫ਼ਾਈਲਾਂ ਕਿਸੇ ਹੋਰ ਡਿਵਾਈਸ ਤੇ ਏਨਕ੍ਰਿਪਟ ਹੋਣ ਕਰਕੇ ਉਨ੍ਹਾਂ ਦੀ ਇਸ ਟੈਬਲੇਟ ਤੇ ਵਰਤੋਂ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।</string>
     <string name="sdcard_decrypt_notification">SD ਕਾਰਡ ਡੀਕ੍ਰਿਪਟ ਹੋਇਆ।</string>
     <string name="sdcard_decrypt_title_notification">SD ਕਾਰਡ ਡੀਕ੍ਰਿਪਸ਼ਨ</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD ਕਾਰਡ ਡੀਕ੍ਰਿਪਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ…</string>
@@ -1248,7 +1248,7 @@
     <string name="usb_abnormal_reset_title">USB ਕਨੈਕਸ਼ਨ ਸਥਿਰ ਨਹੀਂ ਹੈ</string>
     <string name="usb_abnormal_reset_toast">USB ਕਨੈਕਸ਼ਨ ਸਥਿਰ ਨਹੀਂ ਹੈ। ਕੇਬਲ ਨੂੰ ਪਲੱਗ ਵਿੱਚੋਂ ਬਾਹਰ ਕੱਢੋ ਅਤੇ ਦੁਬਾਰਾ ਪਲੱਗ ਵਿੱਚ ਲਗਾਉ, ਜਾਂ ਕਿਸੇ ਹੋਰ ਕੇਬਲ ਨੂੰ ਅਜ਼ਮਾਉ।</string>
     <string name="usb_accessory_notification_title">USB ਉਪਸਾਧਨ ਨਾਲ ਕਨੈਕਟ ਹੋਇਆ</string>
-    <string name="usb_bad_removal_message">USB ਸਟੋਰੇਜ ਡਿਵਾਈਸ ਨੂੰ ਅਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਹਟਾ ਦਿੱਤਾ ਗਿਆ ਸੀ। ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਅਚਾਨਕ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਹੋਣ ਤੋਂ ਰੋਕਣ ਲਈ, ਅਸੁਰੱਖਿਅਤ ਡੈਟਾ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰੋ ਅਤੇ ਹੁਣ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ।</string>
+    <string name="usb_bad_removal_message">USB ਸਟੋਰੇਜ ਡਿਵਾਈਸ ਨੂੰ ਅਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਹਟਾ ਦਿੱਤਾ ਗਿਆ ਸੀ। ਆਪਣੇ ਟੈਬਲੇਟ ਨੂੰ ਅਚਾਨਕ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਹੋਣ ਤੋਂ ਰੋਕਣ ਲਈ, ਅਸੁਰੱਖਿਅਤ ਡੈਟਾ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰੋ ਅਤੇ ਹੁਣ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ।</string>
     <string name="usb_blocked_by_emergency_mode">ਕੁਝ USB ਫੰਕਸ਼ਨਸ ਅਪਾਤਕਾਲ ਮੋਡ ਵਿੱਚ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">ਅਧਿਕਤਮ ਪਾਵਰ ਸੇਵਿੰਗ ਮੋਡ ਦੇ ਸਮਰੱਥ ਹੋਣ ਦੌਰਾਨ ਕਨੈਕਟ ਕੀਤੇ USB ਡਿਵਾਈਸ ਨਾਲ ਸੰਬੰਧਿਤ ਫੰਕਸ਼ਨਸ ਦੀ ਵਰਤੋਂ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ਅਧਿਕਤਮ ਪਾਵਰ ਸੇਵਿੰਗ ਮੋਡ ਦੇ ਚਾਲੂ ਹੋਣ ਦੌਰਾਨ ਕੁਝ USB ਫੰਕਸ਼ਨਸ ਨੂੰ ਸੀਮਿਤ ਕੀਤਾ ਜਾਵੇਗਾ।</string>
@@ -1257,18 +1257,18 @@
     <string name="usb_camera_connected_notification_title">ਮੀਡੀਆ ਡਿਵਾਈਸ ਕਨੈਕਟ ਹੋਇਆ</string>
     <string name="usb_camera_disconnected_notification_title">ਮੀਡੀਆ ਡਿਵਾਈਸ ਡਿਸਕਨੈਕਟ ਹੋਇਆ</string>
     <string name="usb_cd_installer_notification_title">ਸੌਫਟਵੇਅਰ ਅਪਡੇਟ</string>
-    <string name="usb_charing_only_notification_title">USB ਰਾਹੀਂ ਚਾਰਜਿੰਗ</string>
+    <string name="usb_charing_only_notification_title">ਕਨੈਕਟ ਕੀਤਾ ਗਿਆ</string>
     <string name="usb_debugging_only_notification_title">ਸਿਰਫ ਡੀਬਗਿੰਗ</string>
     <string name="usb_host_Unknown_device_connected_notification_title">ਅਗਿਆਤ USB ਡਿਵਾਈਸ ਕਨੈਕਟ ਕੀਤਾ ਗਿਆ।</string>
     <string name="usb_host_cable_connected_notification_title">USB ਕਨੈਕਟਰ ਕਨੈਕਟ ਹੋਇਆ।</string>
     <string name="usb_host_cable_disconnected_notification_title">USB ਕਨੈਕਟਰ ਡਿਸਕਨੈਕਟ ਹੋਇਆ।</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">ਇਸ ਡਿਵਾਈਸ ਨੂੰ ਐਕਸੈੱਸ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ ਹੈ। ਕਨੈਕਟ ਕੀਤੀ ਡਿਵਾਈਸ ਨੂੰ ਬਾਹਰੀ ਪਾਵਰ ਸਪਲਾਈ ਦੀ ਲੋੜ ਹੈ।</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">ਉੱਚ-ਪਾਵਰ USB ਡਿਵਾਈਸ ਕਨੈਕਟ ਹੋਈ।</string>
-    <string name="usb_host_resource_exceed_message">ਤੁਹਾਡੇ ਫ਼ੋਨ ਦੇ USB ਕੰਟਰੋਲਰ ਕੋਲ ਇਸ ਡਿਵਾਈਸ ਨੂੰ ਕਨੈਕਟ ਕਰਨ ਲਈ ਉਚਿਤ ਸਰੋਤ ਨਹੀਂ ਹਨ। ਡਿਵਾਈਸ ਨੂੰ ਡਿਸਕਨੈਕਟ ਕਰਨ ਅਤੇ ਉਸ ਨੂੰ ਦੁਬਾਰਾ ਕਨੈਕਟ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
+    <string name="usb_host_resource_exceed_message">ਤੁਹਾਡੇ ਟੈਬਲੇਟ ਦੇ USB ਕੰਟਰੋਲਰ ਕੋਲ ਇਸ ਡਿਵਾਈਸ ਨੂੰ ਕਨੈਕਟ ਕਰਨ ਲਈ ਉਚਿਤ ਸਰੋਤ ਨਹੀਂ ਹਨ। ਡਿਵਾਈਸ ਨੂੰ ਡਿਸਕਨੈਕਟ ਕਰਨ ਅਤੇ ਉਸ ਨੂੰ ਦੁਬਾਰਾ ਕਨੈਕਟ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
     <string name="usb_host_resource_exceed_title">ਉਚਿਤ USB ਕੰਟਰੋਲਰ ਸਾਧਨ ਨਹੀਂ ਹਨ</string>
-    <string name="usb_hub_depth_exceed_message">ਤੁਹਾਡਾ ਫ਼ੋਨ ਇੱਕੋ ਸਮੇਂ ਸਿਰਫ 5 USB ਹੱਬ ਕਨੈਕਸ਼ਨਸ ਦਾ ਸਮਰਥਨ ਕਰ ਸਕਦਾ ਹੈ।</string>
+    <string name="usb_hub_depth_exceed_message">ਤੁਹਾਡਾ ਟੈਬਲੇਟ ਇੱਕੋ ਸਮੇਂ ਸਿਰਫ 5 USB ਹੱਬ ਕਨੈਕਸ਼ਨਸ ਦਾ ਸਮਰਥਨ ਕਰ ਸਕਦਾ ਹੈ।</string>
     <string name="usb_hub_depth_exceed_title">ਅਧਿਕਤਮ USB ਹੱਬ ਕਨੈਕਸ਼ਨਸ</string>
-    <string name="usb_hub_power_exceed_message">ਤੁਹਾਡਾ ਫ਼ੋਨ ਇਸ USB ਡਿਵਾਈਸ ਲਈ ਉਚਿਤ ਪਾਵਰ ਨਹੀਂ ਦੇ ਸਕਦਾ। ਆਪਣੇ ਫ਼ੋਨ ਨਾਲ ਕਨੈਕਟ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਡਿਵਾਈਸ ਨੂੰ ਸਵੈ-ਪਾਵਰ USB ਹੱਬ ਨਾਲ ਕਨੈਕਟ ਕਰੋ।</string>
+    <string name="usb_hub_power_exceed_message">ਤੁਹਾਡਾ ਟੈਬਲੇਟ ਇਸ USB ਡਿਵਾਈਸ ਲਈ ਉਚਿਤ ਪਾਵਰ ਨਹੀਂ ਦੇ ਸਕਦਾ। ਆਪਣੇ ਟੈਬਲੇਟ ਨਾਲ ਕਨੈਕਟ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਡਿਵਾਈਸ ਨੂੰ ਸਵੈ-ਪਾਵਰ USB ਹੱਬ ਨਾਲ ਕਨੈਕਟ ਕਰੋ।</string>
     <string name="usb_increase_battery_usage">USB ਕਨੈਕਸ਼ਨ ਨਾਲ ਬੈਟਰੀ ਦੀ ਖਪਤ ਵੱਧ ਸਕਦੀ ਹੈ।</string>
     <string name="usb_keyboard_connected_notification_title">ਕੀਬੋਰਡ ਕਨੈਕਟ ਹੋਇਆ</string>
     <string name="usb_keyboard_disconnected_notification_title">ਕੀਬੋਰਡ ਡਿਸਕਨੈਕਟ ਹੋਇਆ</string>
@@ -1301,8 +1301,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB ਮਾਸ ਸਟੋਰੇਜ ਅਚਾਨਕ ਹਟਾਈ ਗਈ।</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB ਮਾਸ ਸਟੋਰੇਜ ਕਨੈਕਟ ਹੋਈ</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB ਮਾਸ ਸਟੋਰੇਜ ਸੁਰੱਖਿਅਤ ਤੌਰ ਤੇ ਹਟਾਈ ਗਈ।</string>
-    <string name="usb_unblock_by_screen_unlock">ਕਨੈਕਟ ਕੀਤੀ ਗਈ USB ਡਿਵਾਈਸ ਦੀ ਵਰਤੋਂ ਕਰਨ ਲਈ ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਅਨਲੌਕ ਕਰੋ।</string>
-    <string name="usb_unsupport_accessory_message">ਇਹ USB ਡਿਵਾਈਸ ਤੁਹਾਡੇ ਫ਼ੋਨ ਦੁਆਰਾ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ।</string>
+    <string name="usb_unblock_by_screen_unlock">ਕਨੈਕਟ ਕੀਤੀ ਗਈ USB ਡਿਵਾਈਸ ਦੀ ਵਰਤੋਂ ਕਰਨ ਲਈ ਆਪਣੇ ਟੈਬਲੇਟ ਨੂੰ ਅਨਲੌਕ ਕਰੋ।</string>
+    <string name="usb_unsupport_accessory_message">ਇਹ USB ਡਿਵਾਈਸ ਤੁਹਾਡੇ ਟੈਬਲੇਟ ਦੁਆਰਾ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ।</string>
     <string name="usb_unsupport_accessory_title">USB ਡਿਵਾਈਸ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ</string>
     <string name="usb_unsupported_device">ਕਨੈਕਟ ਕੀਤੀ ਗਈ USB ਡਿਵਾਈਸ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ।</string>
     <string name="usb_unsupported_device_title">ਡਿਵਾਈਸ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ</string>
@@ -1320,19 +1320,19 @@
     <string name="usb_water_dialg_method_2_desc_2">ਤੁਸੀਂ ਪੱਖੇ ਜਾਂ ਡਰਾਇਰ (ਸਿਰਫ ਠੰਡੀ ਹਵਾ) ਦਾ ਮੂੰਹ ਪੋਰਟ ਵੱਲ ਕਰਕੇ ਪੋਰਟ ਨੂੰ ਤੇਜ਼ੀ ਨਾਲ ਸੁਕਾ ਸਕਦੇ ਹੋ।</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ਸਾਨੂੰ ਤੁਹਾਡੀ ਚਾਰਜਿੰਗ/USB ਪੋਰਟ ਵਿੱਚ ਨਮੀ ਜਾਂ ਬਾਹਰੀ ਪਦਾਰਥ ਦਾ ਪਤਾ ਲੱਗਿਆ ਹੈ।
 
-ਕਿਸੇ ਵੀ ਬਾਹਰੀ ਪਦਾਰਥ ਜਿਵੇਂ ਕਿ ਧੂੜ ਜਾਂ ਮਿੱਟੀ ਲਈ ਆਪਣੀ ਚਾਰਜਿੰਗ/USB ਪੋਰਟ ਦੀ ਜਾਂਚ ਕਰੋ। ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਹੋਣ ਵਾਲੇ ਨੁਕਸਾਨ ਤੋਂ ਰੋਕਣ ਲਈ, ਜਦੋਂ ਤੱਕ ਚਾਰਜਿੰਗ ਪੋਰਟ ਸਾਫ਼ ਨਹੀਂ ਹੋ ਜਾਂਦੀ ਅਤੇ ਨਮੀ ਚਲੀ ਨਹੀਂ ਜਾਂਦੀ, ਉਦੋਂ ਤੱਕ ਕਿਸੇ ਵੀ ਚੀਜ਼ ਦਾ ਪਲੱਗ ਨਾ ਲਗਾਓ।
+ਕਿਸੇ ਵੀ ਬਾਹਰੀ ਪਦਾਰਥ ਜਿਵੇਂ ਕਿ ਧੂੜ ਜਾਂ ਮਿੱਟੀ ਲਈ ਆਪਣੀ ਚਾਰਜਿੰਗ/USB ਪੋਰਟ ਦੀ ਜਾਂਚ ਕਰੋ। ਆਪਣੇ ਟੈਬਲੇਟ ਨੂੰ ਹੋਣ ਵਾਲੇ ਨੁਕਸਾਨ ਤੋਂ ਰੋਕਣ ਲਈ, ਜਦੋਂ ਤੱਕ ਚਾਰਜਿੰਗ ਪੋਰਟ ਸਾਫ਼ ਨਹੀਂ ਹੋ ਜਾਂਦੀ ਅਤੇ ਨਮੀ ਚਲੀ ਨਹੀਂ ਜਾਂਦੀ, ਉਦੋਂ ਤੱਕ ਕਿਸੇ ਵੀ ਚੀਜ਼ ਦਾ ਪਲੱਗ ਨਾ ਲਗਾਓ।
 
 ਪੋਰਟ ਨੂੰ ਸੁਕਾਉਣ ਲਈ, ਨਮੀ ਨੂੰ ਹਿਲਾ ਕੇ ਬਾਹਰ ਕੱਢੋ, ਫਿਰ ਇਸ ਦੇ ਸੁੱਕਣ ਦੀ ਉਡੀਕ ਕਰੋ, ਜਿਸ ਵਿੱਚ ਕਈ ਘੰਟੇ ਲੱਗ ਸਕਦੇ ਹਨ। ਤੁਸੀਂ ਪੱਖੇ ਜਾਂ ਡ੍ਰਾਇਰ (ਸਿਰਫ਼ ਠੰਡੀ ਹਵਾ) ਦਾ ਮੂੰਹ ਪੋਰਟ ਵੱਲ ਕਰਕੇ ਤੇਜ਼ੀ ਨਾਲ ਸੁਕਾ ਸਕਦੇ ਹੋ।"</string>
     <string name="usb_water_dialg_positive_button">ਓਕੇ</string>
     <string name="usb_water_dialg_support_wireless_charging">"ਸਾਨੂੰ ਤੁਹਾਡੀ ਚਾਰਜਿੰਗ/USB ਪੋਰਟ ਵਿੱਚ ਨਮੀ ਜਾਂ ਬਾਹਰੀ ਪਦਾਰਥ ਦਾ ਪਤਾ ਲੱਗਿਆ ਹੈ।
 
-ਕਿਸੇ ਵੀ ਬਾਹਰੀ ਪਦਾਰਥ ਜਿਵੇਂ ਕਿ ਧੂੜ ਜਾਂ ਮਿੱਟੀ ਲਈ ਆਪਣੀ ਚਾਰਜਿੰਗ/USB ਪੋਰਟ ਦੀ ਜਾਂਚ ਕਰੋ। ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਹੋਣ ਵਾਲੇ ਨੁਕਸਾਨ ਤੋਂ ਰੋਕਣ ਲਈ, ਜਦੋਂ ਤੱਕ ਚਾਰਜਿੰਗ ਪੋਰਟ ਸਾਫ਼ ਨਹੀਂ ਹੋ ਜਾਂਦੀ ਅਤੇ ਨਮੀ ਚਲੀ ਨਹੀਂ ਜਾਂਦੀ, ਉਦੋਂ ਤੱਕ ਕਿਸੇ ਵੀ ਚੀਜ਼ ਦਾ ਪਲੱਗ ਨਾ ਲਗਾਓ।
+ਕਿਸੇ ਵੀ ਬਾਹਰੀ ਪਦਾਰਥ ਜਿਵੇਂ ਕਿ ਧੂੜ ਜਾਂ ਮਿੱਟੀ ਲਈ ਆਪਣੀ ਚਾਰਜਿੰਗ/USB ਪੋਰਟ ਦੀ ਜਾਂਚ ਕਰੋ। ਆਪਣੇ ਟੈਬਲੇਟ ਨੂੰ ਹੋਣ ਵਾਲੇ ਨੁਕਸਾਨ ਨੂੰ ਰੋਕਣ ਲਈ, ਜਦੋਂ ਤੱਕ ਚਾਰਜਿੰਗ ਪੋਰਟ ਸਾਫ਼ ਨਹੀਂ ਹੋ ਜਾਂਦੀ ਅਤੇ ਨਮੀ ਚਲੀ ਨਹੀਂ ਜਾਂਦੀ, ਉਦੋਂ ਤੱਕ ਕਿਸੇ ਵੀ ਚੀਜ਼ ਦਾ ਪਲੱਗ ਨਾ ਲਗਾਓ।
 
-ਪੋਰਟ ਨੂੰ ਸੁਕਾਉਣ ਲਈ, ਨਮੀ ਨੂੰ ਹਿਲਾ ਕੇ ਬਾਹਰ ਕੱਢੋ, ਫਿਰ ਇਸ ਦੇ ਸੁੱਕਣ ਦੀ ਉਡੀਕ ਕਰੋ, ਜਿਸ ਵਿੱਚ ਕਈ ਘੰਟੇ ਲੱਗ ਸਕਦੇ ਹਨ। ਤੁਸੀਂ ਪੱਖੇ ਜਾਂ ਡ੍ਰਾਇਰ (ਸਿਰਫ਼ ਠੰਡੀ ਹਵਾ) ਦਾ ਮੂੰਹ ਪੋਰਟ ਵੱਲ ਕਰਕੇ ਤੇਜ਼ੀ ਨਾਲ ਸੁਕਾ ਸਕਦੇ ਹੋ।
+ਪੋਰਟ ਨੂੰ ਸੁਕਾਉਣ ਲਈ, ਨਮੀ ਨੂੰ ਹਿਲਾ ਕੇ ਬਾਹਰ ਕੱਢੋ, ਫਿਰ ਇਸ ਦੇ ਸੁੱਕਣ ਦੀ ਉਡੀਕ ਕਰੋ, ਜਿਸ ਵਿੱਚ ਕਈ ਘੰਟੇ ਲੱਗ ਸਕਦੇ ਹਨ। ਤੁਸੀਂ ਪੱਖੇ ਜਾਂ ਡ੍ਰਾਇਰ (ਸਿਰਫ਼ ਠੰਡੀ ਹਵਾ) ਦਾ ਮੂੰਹ ਪੋਰਟ ਵੱਲ ਕਰਕੇ ਪੋਰਟ ਨੂੰ ਤੇਜ਼ੀ ਨਾਲ ਸੁਕਾ ਸਕਦੇ ਹੋ।
 
-ਇਸ ਦੌਰਾਨ, ਤੁਸੀਂ ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਵਾਇਰਲੈਸ ਰੂਪ ਵਿੱਚ ਚਾਰਜ ਕਰ ਸਕਦੇ ਹੋ।"</string>
+ਇਸ ਦੌਰਾਨ, ਤੁਸੀਂ ਆਪਣੇ ਟੈਬਲੇਟ ਨੂੰ ਵਾਇਰਲੈਸ ਰੂਪ ਵਿੱਚ ਚਾਰਜ ਕਰ ਸਕਦੇ ਹੋ।"</string>
     <string name="usb_water_notification_content">ਤੁਹਾਡੇ ਚਾਰਜਿੰਗ/USB ਪੋਰਟ ਵਿੱਚ ਨਮੀ ਜਾਂ ਬਾਹਰੀ ਸਮੱਗਰੀ ਹੈ। ਚਾਰਜ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਜਾਂਚ ਕਰੋ।</string>
-    <string name="usb_water_notification_message">ਤੁਹਾਡੇ ਚਾਰਜਰ/USB ਪੋਰਟ ਵਿੱਚ ਨਮੀ ਦਾ ਪਤਾ ਲੱਗਿਆ ਹੈ। ਆਪਣੇ ਫ਼ੋਨ ਨੂੰ ਚਾਰਜ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਯਕੀਨੀ ਬਣਾਉ ਕਿ ਉਹ ਪੂਰੀ ਤਰਾਂ ਸੁੱਕ ਗਿਆ ਹੋਵੇ। ਇਸ ਨੂੰ ਪੂਰੀ ਤਰਾਂ ਸੁੱਕਣ ਵਿੱਚ ਕੁਝ ਸਮਾਂ ਲੱਗ ਸਕਦਾ ਹੈ।</string>
+    <string name="usb_water_notification_message">ਤੁਹਾਡੇ ਚਾਰਜਰ/USB ਪੋਰਟ ਵਿੱਚ ਨਮੀ ਦਾ ਪਤਾ ਲੱਗਿਆ ਹੈ। ਆਪਣੇ ਟੈਬਲੇਟ ਨੂੰ ਚਾਰਜ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਯਕੀਨੀ ਬਣਾਉ ਕਿ ਉਹ ਪੂਰੀ ਤਰਾਂ ਸੁੱਕ ਗਿਆ ਹੋਵੇ। ਇਸ ਨੂੰ ਪੂਰੀ ਤਰਾਂ ਸੁੱਕਣ ਵਿੱਚ ਕੁਝ ਸਮਾਂ ਲੱਗ ਸਕਦਾ ਹੈ।</string>
     <string name="usb_water_notification_message_button">ਵੇਰਵੇ</string>
     <string name="usb_water_notification_title">ਚਾਰਜਰ/USB ਪੋਰਟ ਦੀ ਜਾਂਚ ਕਰੋ</string>
     <string name="usbhostStorage_restrict">ਸੁਰੱਖਿਆ ਨੀਤੀ USB ਹੋਸਟ ਸਟੋਰੇਜ ਦੇ ਉਪਯੋਗ ਨੂੰ ਰੋਕਦੀ ਹੈ।</string>

@@ -30,14 +30,15 @@ public final class CellIdentityLte extends CellIdentity {
     private final int mTac;
     private static final String TAG = CellIdentityLte.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityLte> CREATOR = new Parcelable.Creator<CellIdentityLte>() { // from class: android.telephony.CellIdentityLte.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellIdentityLte createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityLte.createFromParcelBody(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityLte[] newArray(int size) {
             return new CellIdentityLte[size];
@@ -88,7 +89,6 @@ public final class CellIdentityLte extends CellIdentity {
         return new CellIdentityLte(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, this.mBands, Integer.MAX_VALUE, this.mMccStr, this.mMncStr, this.mAlphaLong, this.mAlphaShort, this.mAdditionalPlmns, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CellIdentityLte copy() {
         return new CellIdentityLte(this);
     }
@@ -235,7 +235,24 @@ public final class CellIdentityLte extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.telephony.CellIdentityLte$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellIdentityLte> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityLte createFromParcel(Parcel in) {
+            in.readInt();
+            return CellIdentityLte.createFromParcelBody(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityLte[] newArray(int size) {
+            return new CellIdentityLte[size];
+        }
+    }
+
     public static CellIdentityLte createFromParcelBody(Parcel in) {
         return new CellIdentityLte(in);
     }

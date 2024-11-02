@@ -66,7 +66,6 @@ public final class NavigationBarInflaterView extends FrameLayout {
         this.mLandscapeInflater = LayoutInflater.from(this.mContext.createConfigurationContext(landscape));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -87,7 +86,6 @@ public final class NavigationBarInflaterView extends FrameLayout {
         return CONFIG_NAV_BAR_LAYOUT_HANDLE;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setButtonDispatchers(SparseArray<ButtonDispatcher> buttonDispatchers) {
         this.mButtonDispatchers = buttonDispatchers;
         for (int i = 0; i < buttonDispatchers.size(); i++) {
@@ -95,7 +93,6 @@ public final class NavigationBarInflaterView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateButtonDispatchersCurrentView() {
         if (this.mButtonDispatchers != null) {
             View view = this.mHorizontal;
@@ -106,7 +103,6 @@ public final class NavigationBarInflaterView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAlternativeOrder(boolean alternativeOrder) {
         if (alternativeOrder != this.mAlternativeOrder) {
             this.mAlternativeOrder = alternativeOrder;

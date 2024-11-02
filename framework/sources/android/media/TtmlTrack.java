@@ -22,7 +22,6 @@ class TtmlTrack extends SubtitleTrack implements TtmlNodeListener {
     private final TreeSet<Long> mTimeEvents;
     private final ArrayList<TtmlNode> mTtmlNodes;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TtmlTrack(TtmlRenderingWidget renderingWidget, MediaFormat format) {
         super(format);
         this.mParser = new TtmlParser(this);

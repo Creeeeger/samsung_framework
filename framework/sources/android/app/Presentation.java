@@ -37,6 +37,9 @@ public class Presentation extends Dialog {
         super(createPresentationContext(outerContext, display, theme, type), theme, false);
         this.mHandler = new Handler((Looper) Objects.requireNonNull(Looper.myLooper(), "Presentation must be constructed on a looper thread."));
         this.mDisplayListener = new DisplayManager.DisplayListener() { // from class: android.app.Presentation.1
+            AnonymousClass1() {
+            }
+
             @Override // android.hardware.display.DisplayManager.DisplayListener
             public void onDisplayAdded(int displayId) {
             }
@@ -83,7 +86,6 @@ public class Presentation extends Dialog {
         return getContext().getResources();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Dialog
     public void onStart() {
         super.onStart();
@@ -91,7 +93,6 @@ public class Presentation extends Dialog {
         sendPresentationIntent(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Dialog
     public void onStop() {
         sendPresentationIntent(false);
@@ -117,13 +118,11 @@ public class Presentation extends Dialog {
     public void onDisplayChanged() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayRemoved() {
         onDisplayRemoved();
         cancel();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayChanged() {
         onDisplayChanged();
     }
@@ -165,6 +164,32 @@ public class Presentation extends Dialog {
             intent2.putExtra("ownerPackageName", this.mOwnerPackageName);
             this.mContext.sendBroadcast(intent2);
             this.mIsStarted = false;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.Presentation$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements DisplayManager.DisplayListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayAdded(int displayId) {
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayRemoved(int displayId) {
+            if (displayId == Presentation.this.mDisplay.getDisplayId()) {
+                Presentation.this.handleDisplayRemoved();
+            }
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayChanged(int displayId) {
+            if (displayId == Presentation.this.mDisplay.getDisplayId()) {
+                Presentation.this.handleDisplayChanged();
+            }
         }
     }
 }

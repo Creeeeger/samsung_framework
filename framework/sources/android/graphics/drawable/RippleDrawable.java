@@ -93,7 +93,10 @@ public class RippleDrawable extends LayerDrawable {
     public @interface RippleStyle {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ RippleDrawable(RippleState rippleState, Resources resources, RippleDrawableIA rippleDrawableIA) {
+        this(rippleState, resources);
+    }
+
     public RippleDrawable() {
         this(new RippleState(null, null, null), null);
     }
@@ -156,7 +159,6 @@ public class RippleDrawable extends LayerDrawable {
         return -3;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.LayerDrawable, android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         boolean changed = super.onStateChange(stateSet);
@@ -242,7 +244,6 @@ public class RippleDrawable extends LayerDrawable {
         exitPatternedBackgroundAnimation();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.LayerDrawable, android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
@@ -629,7 +630,6 @@ public class RippleDrawable extends LayerDrawable {
         this.mBackgroundAnimation.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startBackgroundAnimation$0(ValueAnimator update) {
         this.mBackgroundOpacity = ((Float) update.getAnimatedValue()).floatValue();
         invalidateSelf(false);
@@ -715,12 +715,10 @@ public class RippleDrawable extends LayerDrawable {
         canvas.restoreToCount(saveCount);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$drawPatterned$1() {
         invalidateSelf(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$drawPatterned$2(RippleAnimationSession session) {
         this.mRunningAnimations.remove(session);
     }
@@ -802,7 +800,6 @@ public class RippleDrawable extends LayerDrawable {
         invalidateSelf(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateSelf(boolean invalidateMask) {
         super.invalidateSelf();
         if (invalidateMask) {
@@ -939,7 +936,6 @@ public class RippleDrawable extends LayerDrawable {
         this.mMask.draw(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Paint updateRipplePaint() {
         if (this.mRipplePaint == null) {
             Paint paint = new Paint();
@@ -1030,13 +1026,11 @@ public class RippleDrawable extends LayerDrawable {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.LayerDrawable
     public RippleState createConstantState(LayerDrawable.LayerState state, Resources res) {
         return new RippleState(state, this, res);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class RippleState extends LayerDrawable.LayerState {
         ColorStateList mColor;
@@ -1064,7 +1058,6 @@ public class RippleDrawable extends LayerDrawable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.graphics.drawable.LayerDrawable.LayerState
         public void onDensityChanged(int sourceDensity, int targetDensity) {
             super.onDensityChanged(sourceDensity, targetDensity);

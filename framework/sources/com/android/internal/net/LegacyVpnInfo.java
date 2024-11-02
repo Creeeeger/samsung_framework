@@ -9,7 +9,9 @@ import android.util.Log;
 /* loaded from: classes4.dex */
 public class LegacyVpnInfo implements Parcelable {
     public static final Parcelable.Creator<LegacyVpnInfo> CREATOR = new Parcelable.Creator<LegacyVpnInfo>() { // from class: com.android.internal.net.LegacyVpnInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LegacyVpnInfo createFromParcel(Parcel in) {
             LegacyVpnInfo info = new LegacyVpnInfo();
@@ -19,7 +21,6 @@ public class LegacyVpnInfo implements Parcelable {
             return info;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LegacyVpnInfo[] newArray(int size) {
             return new LegacyVpnInfo[size];
@@ -48,7 +49,28 @@ public class LegacyVpnInfo implements Parcelable {
         out.writeParcelable(this.intent, flags);
     }
 
-    /* renamed from: com.android.internal.net.LegacyVpnInfo$2, reason: invalid class name */
+    /* renamed from: com.android.internal.net.LegacyVpnInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LegacyVpnInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LegacyVpnInfo createFromParcel(Parcel in) {
+            LegacyVpnInfo info = new LegacyVpnInfo();
+            info.key = in.readString();
+            info.state = in.readInt();
+            info.intent = (PendingIntent) in.readParcelable(null, PendingIntent.class);
+            return info;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LegacyVpnInfo[] newArray(int size) {
+            return new LegacyVpnInfo[size];
+        }
+    }
+
+    /* renamed from: com.android.internal.net.LegacyVpnInfo$2 */
     /* loaded from: classes4.dex */
     static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$android$net$NetworkInfo$DetailedState;

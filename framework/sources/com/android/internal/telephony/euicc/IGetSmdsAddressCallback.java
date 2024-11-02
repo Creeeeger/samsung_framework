@@ -85,8 +85,9 @@ public interface IGetSmdsAddressCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGetSmdsAddressCallback {
+        public static class Proxy implements IGetSmdsAddressCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class RouteSelectionDescriptor implements Parcelable {
     public static final Parcelable.Creator<RouteSelectionDescriptor> CREATOR = new Parcelable.Creator<RouteSelectionDescriptor>() { // from class: android.telephony.data.RouteSelectionDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RouteSelectionDescriptor createFromParcel(Parcel source) {
             return new RouteSelectionDescriptor(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RouteSelectionDescriptor[] newArray(int size) {
             return new RouteSelectionDescriptor[size];
@@ -47,6 +48,10 @@ public final class RouteSelectionDescriptor implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface RouteSscMode {
+    }
+
+    /* synthetic */ RouteSelectionDescriptor(Parcel parcel, RouteSelectionDescriptorIA routeSelectionDescriptorIA) {
+        this(parcel);
     }
 
     public RouteSelectionDescriptor(int precedence, int sessionType, int sscMode, List<NetworkSliceInfo> sliceInfo, List<String> dnn) {
@@ -98,6 +103,23 @@ public final class RouteSelectionDescriptor implements Parcelable {
         dest.writeInt(this.mSscMode);
         dest.writeTypedList(this.mSliceInfo, flags);
         dest.writeStringList(this.mDnn);
+    }
+
+    /* renamed from: android.telephony.data.RouteSelectionDescriptor$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RouteSelectionDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RouteSelectionDescriptor createFromParcel(Parcel source) {
+            return new RouteSelectionDescriptor(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RouteSelectionDescriptor[] newArray(int size) {
+            return new RouteSelectionDescriptor[size];
+        }
     }
 
     @Override // android.os.Parcelable

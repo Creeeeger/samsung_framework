@@ -18,13 +18,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ConversationActions implements Parcelable {
     public static final Parcelable.Creator<ConversationActions> CREATOR = new Parcelable.Creator<ConversationActions>() { // from class: android.view.textclassifier.ConversationActions.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ConversationActions createFromParcel(Parcel in) {
             return new ConversationActions(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConversationActions[] newArray(int size) {
             return new ConversationActions[size];
@@ -32,6 +33,27 @@ public final class ConversationActions implements Parcelable {
     };
     private final List<ConversationAction> mConversationActions;
     private final String mId;
+
+    /* synthetic */ ConversationActions(Parcel parcel, ConversationActionsIA conversationActionsIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.view.textclassifier.ConversationActions$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConversationActions> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConversationActions createFromParcel(Parcel in) {
+            return new ConversationActions(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConversationActions[] newArray(int size) {
+            return new ConversationActions[size];
+        }
+    }
 
     public ConversationActions(List<ConversationAction> conversationActions, String id) {
         this.mConversationActions = Collections.unmodifiableList((List) Objects.requireNonNull(conversationActions));
@@ -71,18 +93,27 @@ public final class ConversationActions implements Parcelable {
         public static final Person PERSON_USER_SELF = new Person.Builder().setKey("text-classifier-conversation-actions-user-self").build();
         public static final Person PERSON_USER_OTHERS = new Person.Builder().setKey("text-classifier-conversation-actions-user-others").build();
         public static final Parcelable.Creator<Message> CREATOR = new Parcelable.Creator<Message>() { // from class: android.view.textclassifier.ConversationActions.Message.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Message createFromParcel(Parcel in) {
                 return new Message(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Message[] newArray(int size) {
                 return new Message[size];
             }
         };
+
+        /* synthetic */ Message(Person person, ZonedDateTime zonedDateTime, CharSequence charSequence, Bundle bundle, MessageIA messageIA) {
+            this(person, zonedDateTime, charSequence, bundle);
+        }
+
+        /* synthetic */ Message(Parcel parcel, MessageIA messageIA) {
+            this(parcel);
+        }
 
         private Message(Person author, ZonedDateTime referenceTime, CharSequence text, Bundle bundle) {
             this.mAuthor = author;
@@ -113,6 +144,23 @@ public final class ConversationActions implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: android.view.textclassifier.ConversationActions$Message$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Message> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Message createFromParcel(Parcel in) {
+                return new Message(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Message[] newArray(int size) {
+                return new Message[size];
+            }
         }
 
         public Person getAuthor() {
@@ -173,13 +221,14 @@ public final class ConversationActions implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class Request implements Parcelable {
         public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() { // from class: android.view.textclassifier.ConversationActions.Request.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Request createFromParcel(Parcel in) {
                 return Request.readFromParcel(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request[] newArray(int size) {
                 return new Request[size];
@@ -199,6 +248,10 @@ public final class ConversationActions implements Parcelable {
         public @interface Hint {
         }
 
+        /* synthetic */ Request(List list, TextClassifier.EntityConfig entityConfig, int i, List list2, Bundle bundle, RequestIA requestIA) {
+            this(list, entityConfig, i, list2, bundle);
+        }
+
         private Request(List<Message> conversation, TextClassifier.EntityConfig typeConfig, int maxSuggestions, List<String> hints, Bundle extras) {
             this.mConversation = (List) Objects.requireNonNull(conversation);
             this.mTypeConfig = (TextClassifier.EntityConfig) Objects.requireNonNull(typeConfig);
@@ -207,7 +260,6 @@ public final class ConversationActions implements Parcelable {
             this.mExtras = extras;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static Request readFromParcel(Parcel in) {
             ArrayList arrayList = new ArrayList();
             in.readParcelableList(arrayList, null, Message.class);
@@ -237,6 +289,23 @@ public final class ConversationActions implements Parcelable {
             return 0;
         }
 
+        /* renamed from: android.view.textclassifier.ConversationActions$Request$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Request> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Request createFromParcel(Parcel in) {
+                return Request.readFromParcel(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Request[] newArray(int size) {
+                return new Request[size];
+            }
+        }
+
         public TextClassifier.EntityConfig getTypeConfig() {
             return this.mTypeConfig;
         }
@@ -261,7 +330,6 @@ public final class ConversationActions implements Parcelable {
             return null;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setSystemTextClassifierMetadata(SystemTextClassifierMetadata systemTcData) {
             this.mSystemTcMetadata = systemTcData;
         }

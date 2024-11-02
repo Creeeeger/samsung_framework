@@ -73,7 +73,10 @@ public class UpdateLock {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x000a, code lost:            if (r0 == 0) goto L6;     */
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x000a, code lost:
+    
+        if (r0 == 0) goto L26;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

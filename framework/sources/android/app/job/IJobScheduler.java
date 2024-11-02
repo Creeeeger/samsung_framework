@@ -387,14 +387,14 @@ public interface IJobScheduler extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, ParceledListSlice v) {
             reply.writeString(k);
             reply.writeTypedObject(v, 1);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IJobScheduler {
+        public static class Proxy implements IJobScheduler {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -536,7 +536,6 @@ public interface IJobScheduler extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$getAllPendingJobs$0(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 ParceledListSlice<JobInfo> v = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);

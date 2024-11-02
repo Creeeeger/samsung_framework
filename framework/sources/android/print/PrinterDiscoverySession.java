@@ -33,7 +33,6 @@ public final class PrinterDiscoverySession {
         void onPrintersChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PrinterDiscoverySession(IPrintManager printManager, Context context, int userId) {
         this.mPrintManager = printManager;
         this.mUserId = userId;
@@ -176,7 +175,6 @@ public final class PrinterDiscoverySession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handlePrintersAdded(List<PrinterInfo> addedPrinters) {
         if (isDestroyed()) {
             return;
@@ -206,7 +204,6 @@ public final class PrinterDiscoverySession {
         notifyOnPrintersChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handlePrintersRemoved(List<PrinterId> printerIds) {
         if (isDestroyed()) {
             return;
@@ -237,8 +234,9 @@ public final class PrinterDiscoverySession {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class SessionHandler extends Handler {
+    public final class SessionHandler extends Handler {
         public SessionHandler(Looper looper) {
             super(looper, null, false);
         }

@@ -181,6 +181,35 @@ public class Toolbar extends ViewGroup {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.Toolbar$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements ActionMenuView.OnMenuItemClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.ActionMenuView.OnMenuItemClickListener
+        public boolean onMenuItemClick(MenuItem item) {
+            if (Toolbar.this.mOnMenuItemClickListener != null) {
+                return Toolbar.this.mOnMenuItemClickListener.onMenuItemClick(item);
+            }
+            return false;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.Toolbar$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Toolbar.this.showOverflowMenu();
+        }
+    }
+
     public Toolbar(Context context) {
         this(context, null);
     }
@@ -204,6 +233,9 @@ public class Toolbar extends ViewGroup {
         this.mHiddenViews = new ArrayList<>();
         this.mTempMargins = new int[2];
         this.mMenuViewItemClickListener = new ActionMenuView.OnMenuItemClickListener() { // from class: android.widget.Toolbar.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.ActionMenuView.OnMenuItemClickListener
             public boolean onMenuItemClick(MenuItem item) {
                 if (Toolbar.this.mOnMenuItemClickListener != null) {
@@ -213,6 +245,9 @@ public class Toolbar extends ViewGroup {
             }
         };
         this.mShowOverflowMenuRunnable = new Runnable() { // from class: android.widget.Toolbar.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Toolbar.this.showOverflowMenu();
@@ -221,6 +256,9 @@ public class Toolbar extends ViewGroup {
         this.mMaxFontScale = 1.3f;
         this.mCollapseHandler = new Handler(Looper.getMainLooper());
         this.mPerformToCollapse = new Runnable() { // from class: android.widget.Toolbar.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Toolbar.this.collapseActionView();
@@ -334,7 +372,6 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         ImageButton imageButton;
@@ -376,7 +413,6 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -1124,7 +1160,19 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.Toolbar$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Toolbar.this.collapseActionView();
+        }
+    }
+
     public void ensureCollapseButtonView() {
         CharSequence descriptionText = getContext().getResources().getString(R.string.action_bar_up_description);
         if (this.mCollapseButtonView == null) {
@@ -1137,6 +1185,9 @@ public class Toolbar extends ViewGroup {
             lp.mViewType = 2;
             this.mCollapseButtonView.setLayoutParams(lp);
             this.mCollapseButtonView.setOnClickListener(new View.OnClickListener() { // from class: android.widget.Toolbar.4
+                AnonymousClass4() {
+                }
+
                 @Override // android.view.View.OnClickListener
                 public void onClick(View v) {
                     if (Toolbar.this.mIsThemeDeviceDefaultFamily) {
@@ -1151,6 +1202,26 @@ public class Toolbar extends ViewGroup {
                 }
             });
             this.mCollapseButtonView.setContentDescription(descriptionText);
+        }
+    }
+
+    /* renamed from: android.widget.Toolbar$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements View.OnClickListener {
+        AnonymousClass4() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            if (Toolbar.this.mIsThemeDeviceDefaultFamily) {
+                InputMethodManager imm = InputMethodManager.peekInstance();
+                if (imm != null && imm.isActive(Toolbar.this.mExpandedActionView)) {
+                    imm.hideSoftInputFromWindow(Toolbar.this.mExpandedActionView.getWindowToken(), 0);
+                }
+                Toolbar.this.mCollapseHandler.postDelayed(Toolbar.this.mPerformToCollapse, 100L);
+                return;
+            }
+            Toolbar.this.collapseActionView();
         }
     }
 
@@ -1173,7 +1244,6 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         SavedState state = new SavedState(super.onSaveInstanceState());
@@ -1185,7 +1255,6 @@ public class Toolbar extends ViewGroup {
         return state;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         MenuItem item;
@@ -1206,7 +1275,6 @@ public class Toolbar extends ViewGroup {
         post(this.mShowOverflowMenuRunnable);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -1231,7 +1299,6 @@ public class Toolbar extends ViewGroup {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public void onSetLayoutParams(View child, ViewGroup.LayoutParams lp) {
         if (!checkLayoutParams(lp)) {
@@ -1285,7 +1352,6 @@ public class Toolbar extends ViewGroup {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int marginStartIndex;
@@ -1417,8 +1483,10 @@ public class Toolbar extends ViewGroup {
         setMeasuredDimension(measuredWidth, shouldCollapse() ? i : measuredHeight);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x015e, code lost:            if (r13.getMeasuredWidth() <= 0) goto L57;     */
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x015e, code lost:
+    
+        if (r13.getMeasuredWidth() <= 0) goto L175;
+     */
     /* JADX WARN: Removed duplicated region for block: B:103:0x0196  */
     /* JADX WARN: Removed duplicated region for block: B:104:0x01a7  */
     /* JADX WARN: Removed duplicated region for block: B:71:0x0179  */
@@ -1576,7 +1644,6 @@ public class Toolbar extends ViewGroup {
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         if (p instanceof LayoutParams) {
@@ -1591,13 +1658,11 @@ public class Toolbar extends ViewGroup {
         return new LayoutParams(p);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-2, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return super.checkLayoutParams(p) && (p instanceof LayoutParams);
@@ -1717,17 +1782,17 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.Toolbar.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel source) {
                 return new SavedState(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1752,13 +1817,33 @@ public class Toolbar extends ViewGroup {
             parcel.writeInt(this.expandedMenuItemId);
             parcel.writeInt(this.isOverflowOpen ? 1 : 0);
         }
+
+        /* renamed from: android.widget.Toolbar$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel source) {
+                return new SavedState(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ExpandedActionViewMenuPresenter implements MenuPresenter {
         MenuItemImpl mCurrentExpandedItem;
         MenuBuilder mMenu;
+
+        /* synthetic */ ExpandedActionViewMenuPresenter(Toolbar toolbar, ExpandedActionViewMenuPresenterIA expandedActionViewMenuPresenterIA) {
+            this();
+        }
 
         private ExpandedActionViewMenuPresenter() {
         }

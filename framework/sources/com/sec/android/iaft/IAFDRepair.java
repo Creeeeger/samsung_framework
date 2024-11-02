@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import com.samsung.android.sm.iafdlib.IafdConstant;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes6.dex */
 public class IAFDRepair {
     public static final int EXP_REPAIRMODE_ONEACTIVITY = 2;

@@ -7,7 +7,7 @@ import libcore.util.NativeAllocationRegistry;
 public final class RenderEffect {
     private final long mNativeRenderEffect;
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnativeGetFinalizer */
     static /* bridge */ /* synthetic */ long m1146$$Nest$smnativeGetFinalizer() {
         return nativeGetFinalizer();
     }
@@ -30,8 +30,9 @@ public final class RenderEffect {
 
     private static native long nativeGetFinalizer();
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class RenderEffectHolder {
+    public static class RenderEffectHolder {
         public static final NativeAllocationRegistry RENDER_EFFECT_REGISTRY = NativeAllocationRegistry.createMalloced(RenderEffect.class.getClassLoader(), RenderEffect.m1146$$Nest$smnativeGetFinalizer());
 
         private RenderEffectHolder() {
@@ -109,7 +110,6 @@ public final class RenderEffect {
         RenderEffectHolder.RENDER_EFFECT_REGISTRY.registerNativeAllocation(this, nativeRenderEffect);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getNativeInstance() {
         return this.mNativeRenderEffect;
     }

@@ -23,7 +23,6 @@ import android.widget.CalendarView;
 import com.android.internal.R;
 import java.util.Locale;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarViewDelegate {
     private static final int ADJUSTMENT_SCROLL_DURATION = 500;
@@ -80,7 +79,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
     private int mWeekSeparatorLineColor;
     private final int mWeekSeparatorLineWidth;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CalendarViewLegacyDelegate(CalendarView delegator, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(delegator, context);
         this.mListScrollTopOffset = 2;
@@ -422,8 +420,9 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         setCurrentLocale(newConfig.locale);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.CalendarView.AbstractCalendarViewDelegate
-    protected void setCurrentLocale(Locale locale) {
+    public void setCurrentLocale(Locale locale) {
         super.setCurrentLocale(locale);
         this.mTempDate = getCalendarForLocale(this.mTempDate, locale);
         this.mFirstDayOfMonth = getCalendarForLocale(this.mFirstDayOfMonth, locale);
@@ -464,6 +463,9 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
             WeeksAdapter weeksAdapter = new WeeksAdapter(this.mContext);
             this.mAdapter = weeksAdapter;
             weeksAdapter.registerDataSetObserver(new DataSetObserver() { // from class: android.widget.CalendarViewLegacyDelegate.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.database.DataSetObserver
                 public void onChanged() {
                     if (CalendarViewLegacyDelegate.this.mOnDateChangeListener != null) {
@@ -475,6 +477,21 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
             this.mListView.setAdapter((ListAdapter) this.mAdapter);
         }
         this.mAdapter.notifyDataSetChanged();
+    }
+
+    /* renamed from: android.widget.CalendarViewLegacyDelegate$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends DataSetObserver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.database.DataSetObserver
+        public void onChanged() {
+            if (CalendarViewLegacyDelegate.this.mOnDateChangeListener != null) {
+                Calendar selectedDay = CalendarViewLegacyDelegate.this.mAdapter.getSelectedDay();
+                CalendarViewLegacyDelegate.this.mOnDateChangeListener.onSelectedDayChange(CalendarViewLegacyDelegate.this.mDelegator, selectedDay.get(1), selectedDay.get(2), selectedDay.get(5));
+            }
+        }
     }
 
     private void setUpHeader() {
@@ -518,6 +535,9 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         this.mListView.setItemsCanFocus(true);
         this.mListView.setVerticalScrollBarEnabled(false);
         this.mListView.setOnScrollListener(new AbsListView.OnScrollListener() { // from class: android.widget.CalendarViewLegacyDelegate.2
+            AnonymousClass2() {
+            }
+
             @Override // android.widget.AbsListView.OnScrollListener
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 CalendarViewLegacyDelegate.this.onScrollStateChanged(view, scrollState);
@@ -530,6 +550,23 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         });
         this.mListView.setFriction(this.mFriction);
         this.mListView.setVelocityScale(this.mVelocityScale);
+    }
+
+    /* renamed from: android.widget.CalendarViewLegacyDelegate$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements AbsListView.OnScrollListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.widget.AbsListView.OnScrollListener
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            CalendarViewLegacyDelegate.this.onScrollStateChanged(view, scrollState);
+        }
+
+        @Override // android.widget.AbsListView.OnScrollListener
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            CalendarViewLegacyDelegate.this.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        }
     }
 
     private void goTo(Calendar date, boolean animate, boolean setSelected, boolean forceScroll) {
@@ -574,12 +611,10 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         this.mScrollStateChangedRunnable.doScrollStateChange(view, scrollState);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         int month;
         int monthDiff;
@@ -631,7 +666,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         this.mPreviousScrollState = this.mCurrentScrollState;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setMonthDisplayed(Calendar calendar) {
         int i = calendar.get(2);
         this.mCurrentMonthDisplayed = i;
@@ -642,7 +676,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         this.mMonthName.invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getWeeksSinceMinDate(Calendar date) {
         if (date.before(this.mMinDate)) {
             throw new IllegalArgumentException("fromDate: " + this.mMinDate.getTime() + " does not precede toDate: " + date.getTime());
@@ -653,11 +686,14 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         return (int) (((endTimeMillis - startTimeMillis) + dayOffsetMillis) / 604800000);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ScrollStateRunnable implements Runnable {
         private int mNewState;
         private AbsListView mView;
+
+        /* synthetic */ ScrollStateRunnable(CalendarViewLegacyDelegate calendarViewLegacyDelegate, ScrollStateRunnableIA scrollStateRunnableIA) {
+            this();
+        }
 
         private ScrollStateRunnable() {
         }
@@ -690,7 +726,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class WeeksAdapter extends BaseAdapter implements View.OnTouchListener {
         private int mFocusedMonth;
@@ -705,7 +740,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
             init();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void init() {
             this.mSelectedWeek = CalendarViewLegacyDelegate.this.getWeeksSinceMinDate(this.mSelectedDate);
             CalendarViewLegacyDelegate calendarViewLegacyDelegate = CalendarViewLegacyDelegate.this;
@@ -789,8 +823,9 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
             CalendarViewLegacyDelegate.this.setMonthDisplayed(day);
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
-        class CalendarGestureListener extends GestureDetector.SimpleOnGestureListener {
+        public class CalendarGestureListener extends GestureDetector.SimpleOnGestureListener {
             CalendarGestureListener() {
             }
 
@@ -801,7 +836,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class WeekView extends View {
         private String[] mDayNumbers;
@@ -952,7 +986,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onDraw(Canvas canvas) {
             drawBackground(canvas);
@@ -1072,7 +1105,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
             CalendarViewLegacyDelegate.this.mSelectedDateVerticalBar.draw(canvas);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onSizeChanged(int w, int h, int oldw, int oldh) {
             this.mWidth = w;
@@ -1098,7 +1130,6 @@ public class CalendarViewLegacyDelegate extends CalendarView.AbstractCalendarVie
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             this.mHeight = ((CalendarViewLegacyDelegate.this.mListView.getHeight() - CalendarViewLegacyDelegate.this.mListView.getPaddingTop()) - CalendarViewLegacyDelegate.this.mListView.getPaddingBottom()) / CalendarViewLegacyDelegate.this.mShownWeekCount;

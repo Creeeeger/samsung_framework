@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class EmergencyRegResult implements Parcelable {
     public static final Parcelable.Creator<EmergencyRegResult> CREATOR = new Parcelable.Creator<EmergencyRegResult>() { // from class: android.telephony.EmergencyRegResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EmergencyRegResult createFromParcel(Parcel in) {
             return new EmergencyRegResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EmergencyRegResult[] newArray(int size) {
             return new EmergencyRegResult[size];
@@ -31,6 +32,10 @@ public final class EmergencyRegResult implements Parcelable {
     private int mNwProvidedEmc;
     private int mNwProvidedEmf;
     private int mRegState;
+
+    /* synthetic */ EmergencyRegResult(Parcel parcel, EmergencyRegResultIA emergencyRegResultIA) {
+        this(parcel);
+    }
 
     public EmergencyRegResult(int accessNetwork, int regState, int domain, boolean isVopsSupported, boolean isEmcBearerSupported, int emc, int emf, String mcc, String mnc, String iso) {
         this.mAccessNetworkType = accessNetwork;
@@ -154,5 +159,22 @@ public final class EmergencyRegResult implements Parcelable {
         this.mMcc = in.readString8();
         this.mMnc = in.readString8();
         this.mIso = in.readString8();
+    }
+
+    /* renamed from: android.telephony.EmergencyRegResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EmergencyRegResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EmergencyRegResult createFromParcel(Parcel in) {
+            return new EmergencyRegResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EmergencyRegResult[] newArray(int size) {
+            return new EmergencyRegResult[size];
+        }
     }
 }

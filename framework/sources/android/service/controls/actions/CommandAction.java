@@ -14,7 +14,6 @@ public final class CommandAction extends ControlAction {
         this(templateId, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CommandAction(Bundle b) {
         super(b);
     }

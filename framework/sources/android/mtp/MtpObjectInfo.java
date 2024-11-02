@@ -26,6 +26,10 @@ public final class MtpObjectInfo {
     private int mThumbPixHeight;
     private int mThumbPixWidth;
 
+    /* synthetic */ MtpObjectInfo(MtpObjectInfoIA mtpObjectInfoIA) {
+        this();
+    }
+
     private MtpObjectInfo() {
         this.mName = "";
         this.mKeywords = "";
@@ -303,7 +307,6 @@ public final class MtpObjectInfo {
         return value < 0 ? value + 4294967296L : value;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int longToUint32(long value, String valueName) {
         Preconditions.checkArgumentInRange(value, 0L, 4294967295L, valueName);
         return (int) value;

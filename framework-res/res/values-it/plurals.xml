@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Lo smartphone è instabile perché è stata rimossa una scheda SD su cui erano installate delle applicazioni. Per tornare al normale funzionamento, lo smartphone verrà riavviato tra %d secondi. Salvate gli eventuali dati non salvati prima del riavvio dello smartphone.</item>
+        <item quantity="other">Il tablet è instabile perché è stata rimossa una scheda SD su cui erano installate delle applicazioni. Per tornare al normale funzionamento, il tablet verrà riavviato tra %d secondi. Salvate gli eventuali dati non salvati prima del riavvio del tablet.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Lo smartphone è instabile perché è stata rimossa una scheda SD su cui erano installate delle applicazioni. Per tornare al normale funzionamento, lo smartphone verrà riavviato tra %d secondo. Salvate gli eventuali dati non salvati prima del riavvio dello smartphone.</item>
+        <item quantity="one">Il tablet è instabile perché è stata rimossa una scheda SD su cui erano installate delle applicazioni. Per tornare al normale funzionamento, il tablet verrà riavviato tra %d secondo. Salvate gli eventuali dati non salvati prima del riavvio del tablet.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Riavvio dello smartphone tra %d secondi</item>
+        <item quantity="other">Il tablet verrà riavviato tra %d secondi</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Riavvio dello smartphone tra %d secondo</item>
+        <item quantity="one">Il tablet verrà riavviato tra %d secondo</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

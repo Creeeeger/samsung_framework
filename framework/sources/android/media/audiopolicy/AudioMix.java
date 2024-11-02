@@ -41,6 +41,10 @@ public class AudioMix {
     public @interface RouteFlags {
     }
 
+    /* synthetic */ AudioMix(AudioMixingRule audioMixingRule, AudioFormat audioFormat, int i, int i2, int i3, String str, AudioMixIA audioMixIA) {
+        this(audioMixingRule, audioFormat, i, i2, i3, str);
+    }
+
     private AudioMix(AudioMixingRule rule, AudioFormat format, int routeFlags, int callbackFlags, int deviceType, String deviceAddress) {
         this.mMixType = -1;
         this.mMixState = -1;
@@ -73,7 +77,6 @@ public class AudioMix {
         return this.mMixType;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setRegistration(String regId) {
         this.mDeviceAddress = regId;
     }
@@ -144,7 +147,6 @@ public class AudioMix {
         private int mRouteFlags;
         private AudioMixingRule mRule;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder() {
             this.mRule = null;
             this.mFormat = null;
@@ -167,7 +169,6 @@ public class AudioMix {
             this.mRule = rule;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder setMixingRule(AudioMixingRule rule) throws IllegalArgumentException {
             if (rule == null) {
                 throw new IllegalArgumentException("Illegal null AudioMixingRule argument");
@@ -176,7 +177,6 @@ public class AudioMix {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder setCallbackFlags(int flags) throws IllegalArgumentException {
             if (flags != 0 && (flags & 1) == 0) {
                 throw new IllegalArgumentException("Illegal callback flags 0x" + Integer.toHexString(flags).toUpperCase());

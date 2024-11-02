@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextDeviceActivityDetectorAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextDeviceActivityDetectorAttribute> CREATOR = new Parcelable.Creator<SemContextDeviceActivityDetectorAttribute>() { // from class: com.samsung.android.hardware.context.SemContextDeviceActivityDetectorAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextDeviceActivityDetectorAttribute createFromParcel(Parcel in) {
             return new SemContextDeviceActivityDetectorAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextDeviceActivityDetectorAttribute[] newArray(int size) {
             return new SemContextDeviceActivityDetectorAttribute[size];
@@ -25,6 +26,23 @@ public class SemContextDeviceActivityDetectorAttribute extends SemContextAttribu
     private int mDuration;
     private boolean mNeedsRequestToUpdate;
     private int mPosture;
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextDeviceActivityDetectorAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextDeviceActivityDetectorAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextDeviceActivityDetectorAttribute createFromParcel(Parcel in) {
+            return new SemContextDeviceActivityDetectorAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextDeviceActivityDetectorAttribute[] newArray(int size) {
+            return new SemContextDeviceActivityDetectorAttribute[size];
+        }
+    }
 
     SemContextDeviceActivityDetectorAttribute() {
         this.mActivity = 1;

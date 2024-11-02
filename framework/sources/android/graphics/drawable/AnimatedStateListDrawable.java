@@ -27,6 +27,10 @@ public class AnimatedStateListDrawable extends StateListDrawable {
     private int mTransitionFromIndex;
     private int mTransitionToIndex;
 
+    /* synthetic */ AnimatedStateListDrawable(AnimatedStateListState animatedStateListState, Resources resources, AnimatedStateListDrawableIA animatedStateListDrawableIA) {
+        this(animatedStateListState, resources);
+    }
+
     public AnimatedStateListDrawable() {
         this(null, null);
     }
@@ -65,7 +69,6 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.StateListDrawable, android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         int targetIndex = this.mState.indexOfKeyframe(stateSet);
@@ -128,9 +131,12 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static abstract class Transition {
+        /* synthetic */ Transition(TransitionIA transitionIA) {
+            this();
+        }
+
         public abstract void start();
 
         public abstract void stop();
@@ -146,7 +152,6 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class AnimatableTransition extends Transition {
         private final Animatable mA;
@@ -167,7 +172,6 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class AnimationDrawableTransition extends Transition {
         private final ObjectAnimator mAnim;
@@ -208,7 +212,6 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class AnimatedVectorDrawableTransition extends Transition {
         private final AnimatedVectorDrawable mAvd;
@@ -327,13 +330,34 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0052, code lost:            return r9.mState.addTransition(r3, r4, r2, r5);     */
-    /* JADX WARN: Code restructure failed: missing block: B:2:0x001d, code lost:            if (r2 == null) goto L4;     */
-    /* JADX WARN: Code restructure failed: missing block: B:3:0x001f, code lost:            r6 = r11.next();     */
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x0025, code lost:            if (r6 != 4) goto L13;     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0028, code lost:            if (r6 != 2) goto L9;     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x002a, code lost:            r2 = android.graphics.drawable.Drawable.createFromXmlInner(r10, r11, r12, r13);     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x004b, code lost:            throw new org.xmlpull.v1.XmlPullParserException(r11.getPositionDescription() + ": <transition> tag requires a 'drawable' attribute or child tag defining a drawable");     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0052, code lost:
+    
+        return r9.mState.addTransition(r3, r4, r2, r5);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:2:0x001d, code lost:
+    
+        if (r2 == null) goto L19;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:3:0x001f, code lost:
+    
+        r6 = r11.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x0025, code lost:
+    
+        if (r6 != 4) goto L28;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:6:0x0028, code lost:
+    
+        if (r6 != 2) goto L24;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x002a, code lost:
+    
+        r2 = android.graphics.drawable.Drawable.createFromXmlInner(r10, r11, r12, r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x004b, code lost:
+    
+        throw new org.xmlpull.v1.XmlPullParserException(r11.getPositionDescription() + ": <transition> tag requires a 'drawable' attribute or child tag defining a drawable");
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -382,13 +406,34 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         throw new UnsupportedOperationException("Method not decompiled: android.graphics.drawable.AnimatedStateListDrawable.parseTransition(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.content.res.Resources$Theme):int");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x0046, code lost:            throw new org.xmlpull.v1.XmlPullParserException(r10.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x004d, code lost:            return r8.mState.addStateSet(r3, r2, r1);     */
-    /* JADX WARN: Code restructure failed: missing block: B:2:0x0017, code lost:            if (r2 == null) goto L4;     */
-    /* JADX WARN: Code restructure failed: missing block: B:3:0x0019, code lost:            r4 = r10.next();     */
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x001f, code lost:            if (r4 != 4) goto L14;     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0023, code lost:            if (r4 != 2) goto L10;     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x0025, code lost:            r2 = android.graphics.drawable.Drawable.createFromXmlInner(r9, r10, r11, r12);     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0046, code lost:
+    
+        throw new org.xmlpull.v1.XmlPullParserException(r10.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x004d, code lost:
+    
+        return r8.mState.addStateSet(r3, r2, r1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:2:0x0017, code lost:
+    
+        if (r2 == null) goto L20;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:3:0x0019, code lost:
+    
+        r4 = r10.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x001f, code lost:
+    
+        if (r4 != 4) goto L30;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x0023, code lost:
+    
+        if (r4 != 2) goto L26;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x0025, code lost:
+    
+        r2 = android.graphics.drawable.Drawable.createFromXmlInner(r9, r10, r11, r12);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -444,7 +489,6 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.StateListDrawable, android.graphics.drawable.DrawableContainer
     public AnimatedStateListState cloneConstantState() {
         return new AnimatedStateListState(this.mState, this, null);
@@ -456,7 +500,6 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         this.mMutated = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class AnimatedStateListState extends StateListDrawable.StateListState {
         private static final long REVERSED_BIT = 4294967296L;
@@ -479,8 +522,8 @@ public class AnimatedStateListDrawable extends StateListDrawable {
 
         @Override // android.graphics.drawable.StateListDrawable.StateListState
         void mutate() {
-            this.mTransitions = this.mTransitions.m4943clone();
-            this.mStateIds = this.mStateIds.m4954clone();
+            this.mTransitions = this.mTransitions.m4942clone();
+            this.mStateIds = this.mStateIds.m4953clone();
         }
 
         int addTransition(int fromId, int toId, Drawable anim, boolean reversible) {
@@ -554,7 +597,6 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.StateListDrawable, android.graphics.drawable.DrawableContainer
     public void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);
@@ -573,8 +615,9 @@ public class AnimatedStateListDrawable extends StateListDrawable {
         jumpToCurrentState();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class FrameInterpolator implements TimeInterpolator {
+    public static class FrameInterpolator implements TimeInterpolator {
         private int[] mFrameTimes;
         private int mFrames;
         private int mTotalDuration;

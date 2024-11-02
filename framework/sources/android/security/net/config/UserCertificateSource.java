@@ -8,9 +8,13 @@ import java.util.Set;
 
 /* loaded from: classes3.dex */
 public final class UserCertificateSource extends DirectoryCertificateSource {
+    /* synthetic */ UserCertificateSource(UserCertificateSourceIA userCertificateSourceIA) {
+        this();
+    }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class NoPreloadHolder {
+    public static class NoPreloadHolder {
         private static final UserCertificateSource INSTANCE = new UserCertificateSource();
 
         private NoPreloadHolder() {

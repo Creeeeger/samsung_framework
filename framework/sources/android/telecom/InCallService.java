@@ -48,6 +48,10 @@ public abstract class InCallService extends Service {
     private CallEndpoint mCallEndpoint;
     private Phone mPhone;
     private final Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: android.telecom.InCallService.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             SomeArgs args;
@@ -140,6 +144,9 @@ public abstract class InCallService extends Service {
         }
     };
     private Phone.Listener mPhoneListener = new Phone.Listener() { // from class: android.telecom.InCallService.2
+        AnonymousClass2() {
+        }
+
         @Override // android.telecom.Phone.Listener
         public void onAudioStateChanged(Phone phone, AudioState audioState) {
             InCallService.this.onAudioStateChanged(audioState);
@@ -225,8 +232,111 @@ public abstract class InCallService extends Service {
         public abstract void unregisterCallback(Callback callback);
     }
 
+    /* renamed from: android.telecom.InCallService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            SomeArgs args;
+            if (InCallService.this.mPhone == null && msg.what != 1) {
+                return;
+            }
+            Rlog.d(InCallService.LOG_TAG, "handleMessage: " + InCallService.eventToString(msg.what));
+            switch (msg.what) {
+                case 1:
+                    String callingPackage = InCallService.this.getApplicationContext().getOpPackageName();
+                    InCallService.this.mPhone = new Phone(new InCallAdapter((IInCallAdapter) msg.obj), callingPackage, InCallService.this.getApplicationContext().getApplicationInfo().targetSdkVersion);
+                    InCallService.this.mPhone.addListener(InCallService.this.mPhoneListener);
+                    InCallService inCallService = InCallService.this;
+                    inCallService.onPhoneCreated(inCallService.mPhone);
+                    return;
+                case 2:
+                    InCallService.this.mPhone.internalAddCall((ParcelableCall) msg.obj);
+                    return;
+                case 3:
+                    InCallService.this.mPhone.internalUpdateCall((ParcelableCall) msg.obj);
+                    return;
+                case 4:
+                    args = (SomeArgs) msg.obj;
+                    try {
+                        String callId = (String) args.arg1;
+                        String remaining = (String) args.arg2;
+                        InCallService.this.mPhone.internalSetPostDialWait(callId, remaining);
+                        return;
+                    } finally {
+                    }
+                case 5:
+                    InCallService.this.mPhone.internalCallAudioStateChanged((CallAudioState) msg.obj);
+                    return;
+                case 6:
+                    InCallService.this.mPhone.internalBringToForeground(msg.arg1 == 1);
+                    return;
+                case 7:
+                    InCallService.this.mPhone.internalSetCanAddCall(msg.arg1 == 1);
+                    return;
+                case 8:
+                    InCallService.this.mPhone.internalSilenceRinger();
+                    return;
+                case 9:
+                    args = (SomeArgs) msg.obj;
+                    try {
+                        String callId2 = (String) args.arg1;
+                        String event = (String) args.arg2;
+                        Bundle extras = (Bundle) args.arg3;
+                        InCallService.this.mPhone.internalOnConnectionEvent(callId2, event, extras);
+                        return;
+                    } finally {
+                    }
+                case 10:
+                    String callId3 = (String) msg.obj;
+                    int requestId = msg.arg1;
+                    InCallService.this.mPhone.internalOnRttUpgradeRequest(callId3, requestId);
+                    return;
+                case 11:
+                    String callId4 = (String) msg.obj;
+                    int reason = msg.arg1;
+                    InCallService.this.mPhone.internalOnRttInitiationFailure(callId4, reason);
+                    return;
+                case 12:
+                    String callId5 = (String) msg.obj;
+                    int error = msg.arg1;
+                    InCallService.this.mPhone.internalOnHandoverFailed(callId5, error);
+                    return;
+                case 13:
+                    String callId6 = (String) msg.obj;
+                    InCallService.this.mPhone.internalOnHandoverComplete(callId6);
+                    return;
+                case 14:
+                    CallEndpoint endpoint = (CallEndpoint) msg.obj;
+                    if (!Objects.equals(InCallService.this.mCallEndpoint, endpoint)) {
+                        InCallService.this.mCallEndpoint = endpoint;
+                        InCallService inCallService2 = InCallService.this;
+                        inCallService2.onCallEndpointChanged(inCallService2.mCallEndpoint);
+                        return;
+                    }
+                    return;
+                case 15:
+                    InCallService.this.onAvailableCallEndpointsChanged((List) msg.obj);
+                    return;
+                case 16:
+                    InCallService.this.onMuteStateChanged(((Boolean) msg.obj).booleanValue());
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     /* loaded from: classes3.dex */
     private final class InCallServiceBinder extends IInCallService.Stub {
+        /* synthetic */ InCallServiceBinder(InCallService inCallService, InCallServiceBinderIA inCallServiceBinderIA) {
+            this();
+        }
+
         private InCallServiceBinder() {
         }
 
@@ -329,6 +439,48 @@ public abstract class InCallService extends Service {
         @Override // com.android.internal.telecom.IInCallService
         public void onHandoverComplete(String callId) {
             InCallService.this.mHandler.obtainMessage(13, callId).sendToTarget();
+        }
+    }
+
+    /* renamed from: android.telecom.InCallService$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 extends Phone.Listener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.telecom.Phone.Listener
+        public void onAudioStateChanged(Phone phone, AudioState audioState) {
+            InCallService.this.onAudioStateChanged(audioState);
+        }
+
+        @Override // android.telecom.Phone.Listener
+        public void onCallAudioStateChanged(Phone phone, CallAudioState callAudioState) {
+            InCallService.this.onCallAudioStateChanged(callAudioState);
+        }
+
+        @Override // android.telecom.Phone.Listener
+        public void onBringToForeground(Phone phone, boolean showDialpad) {
+            InCallService.this.onBringToForeground(showDialpad);
+        }
+
+        @Override // android.telecom.Phone.Listener
+        public void onCallAdded(Phone phone, Call call) {
+            InCallService.this.onCallAdded(call);
+        }
+
+        @Override // android.telecom.Phone.Listener
+        public void onCallRemoved(Phone phone, Call call) {
+            InCallService.this.onCallRemoved(call);
+        }
+
+        @Override // android.telecom.Phone.Listener
+        public void onCanAddCallChanged(Phone phone, boolean canAddCall) {
+            InCallService.this.onCanAddCallChanged(canAddCall);
+        }
+
+        @Override // android.telecom.Phone.Listener
+        public void onSilenceRinger(Phone phone) {
+            InCallService.this.onSilenceRinger();
         }
     }
 
@@ -466,7 +618,6 @@ public abstract class InCallService extends Service {
     public void onConnectionEvent(Call call, String event, Bundle extras) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String eventToString(int event) {
         switch (event) {
             case 1:

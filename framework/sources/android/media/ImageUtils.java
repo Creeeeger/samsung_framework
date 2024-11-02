@@ -7,7 +7,6 @@ import android.util.Size;
 import java.nio.ByteBuffer;
 import libcore.io.Memory;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public class ImageUtils {
     private static final String IMAGEUTILS_LOG_TAG = "ImageUtils";

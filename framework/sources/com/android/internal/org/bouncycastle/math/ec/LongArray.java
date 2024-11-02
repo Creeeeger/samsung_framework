@@ -15,7 +15,6 @@ import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import com.samsung.android.os.SemDvfsManager;
 import java.math.BigInteger;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class LongArray implements Cloneable {
     private static final String ZEROES = "0000000000000000000000000000000000000000000000000000000000000000";
@@ -90,7 +89,6 @@ public class LongArray implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void copyTo(long[] z, int zOff) {
         long[] jArr = this.m_ints;
         System.arraycopy(jArr, 0, z, zOff, jArr.length);
@@ -123,15 +121,42 @@ public class LongArray implements Cloneable {
         return getUsedLengthFrom(this.m_ints.length);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x001f, code lost:            return r8 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0020, code lost:            r8 = r8 - 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0026, code lost:            if (r0[r8] == 0) goto L16;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x002b, code lost:            if (r8 > 0) goto L22;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x002d, code lost:            return 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x002a, code lost:            return r8 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0012, code lost:            if (r0[0] != 0) goto L7;     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0014, code lost:            r8 = r8 - 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x001a, code lost:            if (r0[r8] != 0) goto L18;     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x001f, code lost:
+    
+        return r8 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0020, code lost:
+    
+        r8 = r8 - 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0026, code lost:
+    
+        if (r0[r8] == 0) goto L39;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x002b, code lost:
+    
+        if (r8 > 0) goto L45;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x002d, code lost:
+    
+        return 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x002a, code lost:
+    
+        return r8 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:6:0x0012, code lost:
+    
+        if (r0[0] != 0) goto L30;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x0014, code lost:
+    
+        r8 = r8 - 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x001a, code lost:
+    
+        if (r0[r8] != 0) goto L41;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

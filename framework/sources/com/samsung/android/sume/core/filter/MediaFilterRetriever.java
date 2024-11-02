@@ -48,7 +48,6 @@ public final class MediaFilterRetriever {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$retrieve$0(DecorateFilter decorateFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
         if (predictor.predicate(decorateFilter)) {
             predicateHandler.onPredicate(decorateFilter, parent);
@@ -74,7 +73,6 @@ public final class MediaFilterRetriever {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$retrieve$1(ImgpDecorateFilter imgpDecorateFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
         if (predictor.predicate(imgpDecorateFilter)) {
             predicateHandler.onPredicate(imgpDecorateFilter, parent);
@@ -86,14 +84,13 @@ public final class MediaFilterRetriever {
         filterGroup.stream().forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterRetriever$$ExternalSyntheticLambda2
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MediaFilterRetriever.this.m8759xba46685a(filterGroup, (MediaFilter) obj);
+                MediaFilterRetriever.this.m8751xba46685a(filterGroup, (MediaFilter) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$retrieve$2$com-samsung-android-sume-core-filter-MediaFilterRetriever, reason: not valid java name */
-    public /* synthetic */ void m8759xba46685a(MediaFilterGroup filterGroup, MediaFilter it) {
+    /* renamed from: lambda$retrieve$2$com-samsung-android-sume-core-filter-MediaFilterRetriever */
+    public /* synthetic */ void m8751xba46685a(MediaFilterGroup filterGroup, MediaFilter it) {
         it.accept(this, filterGroup);
     }
 
@@ -107,7 +104,6 @@ public final class MediaFilterRetriever {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$retrieve$3(MediaFilterPlaceHolder mediaFilterPlaceHolder, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
         if (predictor.predicate(mediaFilterPlaceHolder)) {
             predicateHandler.onPredicate(mediaFilterPlaceHolder, parent);
@@ -138,7 +134,6 @@ public final class MediaFilterRetriever {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$retrieve$4(MediaFilter mediaFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
         if (predictor.predicate(mediaFilter)) {
             predicateHandler.onPredicate(mediaFilter, parent);

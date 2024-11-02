@@ -86,8 +86,9 @@ public interface ISamsungOverlayCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISamsungOverlayCallback {
+        public static class Proxy implements ISamsungOverlayCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

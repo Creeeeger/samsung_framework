@@ -13,7 +13,6 @@ public final class FillCallback {
     private static final String TAG = FillCallback.class.getSimpleName();
     private final AugmentedAutofillService.AutofillProxy mProxy;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FillCallback(AugmentedAutofillService.AutofillProxy proxy) {
         this.mProxy = proxy;
     }

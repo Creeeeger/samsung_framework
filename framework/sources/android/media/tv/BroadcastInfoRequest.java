@@ -8,7 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public abstract class BroadcastInfoRequest implements Parcelable {
     public static final Parcelable.Creator<BroadcastInfoRequest> CREATOR = new Parcelable.Creator<BroadcastInfoRequest>() { // from class: android.media.tv.BroadcastInfoRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BroadcastInfoRequest createFromParcel(Parcel source) {
             int type = source.readInt();
@@ -34,7 +36,6 @@ public abstract class BroadcastInfoRequest implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BroadcastInfoRequest[] newArray(int size) {
             return new BroadcastInfoRequest[size];
@@ -51,14 +52,49 @@ public abstract class BroadcastInfoRequest implements Parcelable {
     public @interface RequestOption {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.BroadcastInfoRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BroadcastInfoRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BroadcastInfoRequest createFromParcel(Parcel source) {
+            int type = source.readInt();
+            switch (type) {
+                case 1:
+                    return TsRequest.createFromParcelBody(source);
+                case 2:
+                    return TableRequest.createFromParcelBody(source);
+                case 3:
+                    return SectionRequest.createFromParcelBody(source);
+                case 4:
+                    return PesRequest.createFromParcelBody(source);
+                case 5:
+                    return StreamEventRequest.createFromParcelBody(source);
+                case 6:
+                    return DsmccRequest.createFromParcelBody(source);
+                case 7:
+                    return CommandRequest.createFromParcelBody(source);
+                case 8:
+                    return TimelineRequest.createFromParcelBody(source);
+                default:
+                    throw new IllegalStateException("Unexpected broadcast info request type (value " + type + ") in parcel.");
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BroadcastInfoRequest[] newArray(int size) {
+            return new BroadcastInfoRequest[size];
+        }
+    }
+
     public BroadcastInfoRequest(int type, int requestId, int option) {
         this.mType = type;
         this.mRequestId = requestId;
         this.mOption = option;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BroadcastInfoRequest(int type, Parcel source) {
         this.mType = type;
         this.mRequestId = source.readInt();

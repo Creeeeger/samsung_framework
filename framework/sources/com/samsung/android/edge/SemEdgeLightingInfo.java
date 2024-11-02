@@ -10,13 +10,14 @@ import java.util.Arrays;
 /* loaded from: classes5.dex */
 public final class SemEdgeLightingInfo implements Parcelable {
     public static final Parcelable.Creator<SemEdgeLightingInfo> CREATOR = new Parcelable.Creator<SemEdgeLightingInfo>() { // from class: com.samsung.android.edge.SemEdgeLightingInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemEdgeLightingInfo createFromParcel(Parcel source) {
             return new SemEdgeLightingInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemEdgeLightingInfo[] newArray(int size) {
             return new SemEdgeLightingInfo[size];
@@ -32,6 +33,10 @@ public final class SemEdgeLightingInfo implements Parcelable {
     private int mRepeatCount;
     private final int mType;
     private int mUserId;
+
+    /* synthetic */ SemEdgeLightingInfo(Parcel parcel, SemEdgeLightingInfoIA semEdgeLightingInfoIA) {
+        this(parcel);
+    }
 
     public SemEdgeLightingInfo() {
         this.mUserId = 0;
@@ -128,6 +133,23 @@ public final class SemEdgeLightingInfo implements Parcelable {
         dest.writeInt(this.mRepeatCount);
         dest.writeBundle(this.mExtra);
         dest.writeInt(this.mUserId);
+    }
+
+    /* renamed from: com.samsung.android.edge.SemEdgeLightingInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemEdgeLightingInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemEdgeLightingInfo createFromParcel(Parcel source) {
+            return new SemEdgeLightingInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemEdgeLightingInfo[] newArray(int size) {
+            return new SemEdgeLightingInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

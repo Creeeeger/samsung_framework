@@ -82,8 +82,9 @@ public interface IUndoMediaTransferCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IUndoMediaTransferCallback {
+        public static class Proxy implements IUndoMediaTransferCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

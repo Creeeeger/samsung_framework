@@ -26,14 +26,15 @@ public final class CellIdentityWcdma extends CellIdentity {
     private final int mUarfcn;
     private static final String TAG = CellIdentityWcdma.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityWcdma> CREATOR = new Parcelable.Creator<CellIdentityWcdma>() { // from class: android.telephony.CellIdentityWcdma.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellIdentityWcdma createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityWcdma.createFromParcelBody(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityWcdma[] newArray(int size) {
             return new CellIdentityWcdma[size];
@@ -76,7 +77,6 @@ public final class CellIdentityWcdma extends CellIdentity {
         return new CellIdentityWcdma(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, this.mMccStr, this.mMncStr, this.mAlphaLong, this.mAlphaShort, this.mAdditionalPlmns, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CellIdentityWcdma copy() {
         return new CellIdentityWcdma(this);
     }
@@ -214,7 +214,24 @@ public final class CellIdentityWcdma extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.telephony.CellIdentityWcdma$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellIdentityWcdma> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityWcdma createFromParcel(Parcel in) {
+            in.readInt();
+            return CellIdentityWcdma.createFromParcelBody(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityWcdma[] newArray(int size) {
+            return new CellIdentityWcdma[size];
+        }
+    }
+
     public static CellIdentityWcdma createFromParcelBody(Parcel in) {
         return new CellIdentityWcdma(in);
     }

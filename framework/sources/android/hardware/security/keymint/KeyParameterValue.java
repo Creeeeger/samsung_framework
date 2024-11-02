@@ -8,13 +8,14 @@ import com.android.internal.org.bouncycastle.cms.CMSAttributeTableGenerator;
 /* loaded from: classes2.dex */
 public final class KeyParameterValue implements Parcelable {
     public static final Parcelable.Creator<KeyParameterValue> CREATOR = new Parcelable.Creator<KeyParameterValue>() { // from class: android.hardware.security.keymint.KeyParameterValue.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeyParameterValue createFromParcel(Parcel _aidl_source) {
             return new KeyParameterValue(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyParameterValue[] newArray(int _aidl_size) {
             return new KeyParameterValue[_aidl_size];
@@ -55,6 +56,10 @@ public final class KeyParameterValue implements Parcelable {
         public static final int origin = 6;
         public static final int paddingMode = 3;
         public static final int securityLevel = 9;
+    }
+
+    /* synthetic */ KeyParameterValue(Parcel parcel, KeyParameterValueIA keyParameterValueIA) {
+        this(parcel);
     }
 
     public KeyParameterValue() {
@@ -273,6 +278,23 @@ public final class KeyParameterValue implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.security.keymint.KeyParameterValue$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyParameterValue> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyParameterValue createFromParcel(Parcel _aidl_source) {
+            return new KeyParameterValue(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyParameterValue[] newArray(int _aidl_size) {
+            return new KeyParameterValue[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

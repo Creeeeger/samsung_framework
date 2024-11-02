@@ -21,7 +21,6 @@ public final class RelativeDateTimeFormatter {
     public static final long WEEK_IN_MILLIS = 604800000;
     public static final long YEAR_IN_MILLIS = 31449600000L;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class FormatterCache extends LruCache<String, android.icu.text.RelativeDateTimeFormatter> {
         FormatterCache() {

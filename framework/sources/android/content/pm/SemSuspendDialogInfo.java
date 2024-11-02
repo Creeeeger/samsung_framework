@@ -8,13 +8,14 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes.dex */
 public final class SemSuspendDialogInfo implements Parcelable {
     public static final Parcelable.Creator<SemSuspendDialogInfo> CREATOR = new Parcelable.Creator<SemSuspendDialogInfo>() { // from class: android.content.pm.SemSuspendDialogInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemSuspendDialogInfo createFromParcel(Parcel source) {
             return new SemSuspendDialogInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemSuspendDialogInfo[] newArray(int size) {
             return new SemSuspendDialogInfo[size];
@@ -26,22 +27,22 @@ public final class SemSuspendDialogInfo implements Parcelable {
     private final int mNeutralButtonTextResId;
     private final int mTitleResId;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ SemSuspendDialogInfo(Parcel parcel, SemSuspendDialogInfoIA semSuspendDialogInfoIA) {
+        this(parcel);
+    }
+
     public int getTitleResId() {
         return this.mTitleResId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getDialogMessageResId() {
         return this.mDialogMessageResId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getDialogMessage() {
         return this.mDialogMessage;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getNeutralButtonTextResId() {
         return this.mNeutralButtonTextResId;
     }
@@ -57,6 +58,23 @@ public final class SemSuspendDialogInfo implements Parcelable {
         dest.writeInt(this.mDialogMessageResId);
         dest.writeString(this.mDialogMessage);
         dest.writeInt(this.mNeutralButtonTextResId);
+    }
+
+    /* renamed from: android.content.pm.SemSuspendDialogInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemSuspendDialogInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSuspendDialogInfo createFromParcel(Parcel source) {
+            return new SemSuspendDialogInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSuspendDialogInfo[] newArray(int size) {
+            return new SemSuspendDialogInfo[size];
+        }
     }
 
     private SemSuspendDialogInfo(Parcel source) {

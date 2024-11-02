@@ -16,12 +16,27 @@ public abstract class VrListenerService extends Service {
     private static final int MSG_ON_CURRENT_VR_ACTIVITY_CHANGED = 1;
     public static final String SERVICE_INTERFACE = "android.service.vr.VrListenerService";
     private final IVrListener.Stub mBinder = new IVrListener.Stub() { // from class: android.service.vr.VrListenerService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.service.vr.IVrListener
         public void focusedActivityChanged(ComponentName componentName, boolean z, int i) {
             VrListenerService.this.mHandler.obtainMessage(1, z ? 1 : 0, i, componentName).sendToTarget();
         }
     };
     private final Handler mHandler = new VrListenerHandler(Looper.getMainLooper());
+
+    /* renamed from: android.service.vr.VrListenerService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends IVrListener.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.service.vr.IVrListener
+        public void focusedActivityChanged(ComponentName componentName, boolean z, int i) {
+            VrListenerService.this.mHandler.obtainMessage(1, z ? 1 : 0, i, componentName).sendToTarget();
+        }
+    }
 
     /* loaded from: classes3.dex */
     private final class VrListenerHandler extends Handler {

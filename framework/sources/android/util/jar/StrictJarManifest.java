@@ -25,13 +25,11 @@ public class StrictJarManifest implements Cloneable {
     private static final byte[] VALUE_SEPARATOR = {58, 32};
     static final Attributes.Name ATTRIBUTE_NAME_NAME = new Attributes.Name("Name");
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class Chunk {
         final int end;
         final int start;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Chunk(int start, int end) {
             this.start = start;
             this.end = end;
@@ -53,7 +51,6 @@ public class StrictJarManifest implements Cloneable {
         this.entries = (HashMap) ((HashMap) man.getEntries()).clone();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public StrictJarManifest(byte[] manifestBytes, boolean readChunks) throws IOException {
         this();
         if (readChunks) {
@@ -111,7 +108,6 @@ public class StrictJarManifest implements Cloneable {
         return getEntries().equals(((StrictJarManifest) o).getEntries());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Chunk getChunk(String name) {
         return this.chunks.get(name);
     }
@@ -120,7 +116,6 @@ public class StrictJarManifest implements Cloneable {
         this.chunks = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getMainAttributesEnd() {
         return this.mainEnd;
     }

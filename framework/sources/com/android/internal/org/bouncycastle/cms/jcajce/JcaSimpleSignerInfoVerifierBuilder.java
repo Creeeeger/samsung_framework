@@ -40,8 +40,13 @@ public class JcaSimpleSignerInfoVerifierBuilder {
         return new SignerInformationVerifier(new DefaultCMSSignatureAlgorithmNameGenerator(), new DefaultSignatureAlgorithmIdentifierFinder(), this.helper.createContentVerifierProvider(pubKey), this.helper.createDigestCalculatorProvider());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class Helper {
+    public class Helper {
+        /* synthetic */ Helper(JcaSimpleSignerInfoVerifierBuilder jcaSimpleSignerInfoVerifierBuilder, HelperIA helperIA) {
+            this();
+        }
+
         private Helper() {
         }
 

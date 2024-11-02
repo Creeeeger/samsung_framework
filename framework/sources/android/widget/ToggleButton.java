@@ -107,7 +107,6 @@ public class ToggleButton extends CompoundButton {
         return this.mDisabledAlpha;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -129,7 +128,6 @@ public class ToggleButton extends CompoundButton {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.CompoundButton, android.widget.TextView, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();

@@ -21,14 +21,16 @@ import android.widget.FrameLayout;
 import com.android.internal.R;
 import java.util.Objects;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public final class NavigationBarController {
     private final Callback mImpl;
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private interface Callback {
+    public interface Callback {
         public static final Callback NOOP = new Callback() { // from class: android.inputmethodservice.NavigationBarController.Callback.1
+            AnonymousClass1() {
+            }
         };
 
         default void updateTouchableInsets(InputMethodService.Insets originalInsets, ViewTreeObserver.InternalInsetsInfo dest) {
@@ -52,49 +54,47 @@ public final class NavigationBarController {
         default String toDebugString() {
             return "No-op implementation";
         }
+
+        /* renamed from: android.inputmethodservice.NavigationBarController$Callback$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Callback {
+            AnonymousClass1() {
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public NavigationBarController(InputMethodService inputMethodService) {
         this.mImpl = InputMethodService.canImeRenderGesturalNavButtons() ? new Impl(inputMethodService) : Callback.NOOP;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateTouchableInsets(InputMethodService.Insets originalInsets, ViewTreeObserver.InternalInsetsInfo dest) {
         this.mImpl.updateTouchableInsets(originalInsets, dest);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onSoftInputWindowCreated(SoftInputWindow softInputWindow) {
         this.mImpl.onSoftInputWindowCreated(softInputWindow);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onViewInitialized() {
         this.mImpl.onViewInitialized();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onWindowShown() {
         this.mImpl.onWindowShown();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onDestroy() {
         this.mImpl.onDestroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onNavButtonFlagsChanged(int navButtonFlags) {
         this.mImpl.onNavButtonFlagsChanged(navButtonFlags);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String toDebugString() {
         return this.mImpl.toDebugString();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class Impl implements Callback, Window.DecorCallback {
         private static final int DEFAULT_COLOR_ADAPT_TRANSITION_TIME = 1700;
@@ -263,7 +263,6 @@ public final class NavigationBarController {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$scheduleRelayout$0(NavigationBarFrame frame) {
             Window window;
             View decor;
@@ -387,7 +386,6 @@ public final class NavigationBarController {
             this.mTintAnimator.start();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSystemBarAppearanceChanged$1(ValueAnimator animation) {
             setIconTintInternal(((Float) animation.getAnimatedValue()).floatValue());
         }

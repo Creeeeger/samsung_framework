@@ -62,6 +62,10 @@ public final class VcnGatewayConnectionConfig {
     public @interface VcnSupportedCapability {
     }
 
+    /* synthetic */ VcnGatewayConnectionConfig(String str, IkeTunnelConnectionParams ikeTunnelConnectionParams, Set set, List list, long[] jArr, int i, int i2, Set set2, VcnGatewayConnectionConfigIA vcnGatewayConnectionConfigIA) {
+        this(str, ikeTunnelConnectionParams, set, list, jArr, i, i2, set2);
+    }
+
     static {
         Set<Integer> allowedCaps = new ArraySet<>();
         allowedCaps.add(0);
@@ -160,12 +164,10 @@ public final class VcnGatewayConnectionConfig {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void checkValidCapability(int capability) {
         Preconditions.checkArgument(ALLOWED_CAPABILITIES.contains(Integer.valueOf(capability)), "NetworkCapability " + capability + "out of range");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void validateRetryInterval(long[] retryIntervalsMs) {
         Preconditions.checkArgument(retryIntervalsMs != null && retryIntervalsMs.length > 0 && retryIntervalsMs.length <= 10, "retryIntervalsMs was null, empty or exceed max interval count");
         long repeatingInterval = retryIntervalsMs[retryIntervalsMs.length - 1];
@@ -174,7 +176,6 @@ public final class VcnGatewayConnectionConfig {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void validateNetworkTemplateList(List<VcnUnderlyingNetworkTemplate> networkPriorityRules) {
         Objects.requireNonNull(networkPriorityRules, "networkPriorityRules is null");
         Set<VcnUnderlyingNetworkTemplate> existingRules = new ArraySet<>();
@@ -186,7 +187,6 @@ public final class VcnGatewayConnectionConfig {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void validateGatewayOption(int option) {
         if (!ALLOWED_GATEWAY_OPTIONS.contains(Integer.valueOf(option))) {
             throw new IllegalArgumentException("Invalid vcn gateway option: " + option);

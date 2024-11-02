@@ -24,8 +24,9 @@ public class LinkMovementMethod extends ScrollingMovementMethod {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.BaseMovementMethod
-    protected boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode, int movementMetaState, KeyEvent event) {
+    public boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode, int movementMetaState, KeyEvent event) {
         switch (keyCode) {
             case 23:
             case 66:
@@ -37,32 +38,36 @@ public class LinkMovementMethod extends ScrollingMovementMethod {
         return super.handleMovementKey(widget, buffer, keyCode, movementMetaState, event);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod
-    protected boolean up(TextView widget, Spannable buffer) {
+    public boolean up(TextView widget, Spannable buffer) {
         if (action(2, widget, buffer)) {
             return true;
         }
         return super.up(widget, buffer);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod
-    protected boolean down(TextView widget, Spannable buffer) {
+    public boolean down(TextView widget, Spannable buffer) {
         if (action(3, widget, buffer)) {
             return true;
         }
         return super.down(widget, buffer);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod
-    protected boolean left(TextView widget, Spannable buffer) {
+    public boolean left(TextView widget, Spannable buffer) {
         if (action(2, widget, buffer)) {
             return true;
         }
         return super.left(widget, buffer);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod
-    protected boolean right(TextView widget, Spannable buffer) {
+    public boolean right(TextView widget, Spannable buffer) {
         if (action(3, widget, buffer)) {
             return true;
         }

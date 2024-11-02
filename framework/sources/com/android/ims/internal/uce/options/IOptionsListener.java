@@ -164,8 +164,9 @@ public interface IOptionsListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IOptionsListener {
+        public static class Proxy implements IOptionsListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

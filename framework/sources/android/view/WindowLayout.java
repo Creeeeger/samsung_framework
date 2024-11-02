@@ -23,8 +23,14 @@ public class WindowLayout {
         computeFrames(attrs, state, displayCutoutSafe, windowBounds, windowingMode, requestedWidth, requestedHeight, requestedVisibleTypes, compatScale, frames, 0);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:169:0x018c, code lost:            if (r10 != false) goto L90;     */
-    /* JADX WARN: Code restructure failed: missing block: B:170:0x018e, code lost:            r5 = true;     */
+    /* JADX WARN: Code restructure failed: missing block: B:169:0x018c, code lost:
+    
+        if (r10 != false) goto L305;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:170:0x018e, code lost:
+    
+        r5 = true;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

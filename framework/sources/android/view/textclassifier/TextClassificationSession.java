@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import sun.misc.Cleaner;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class TextClassificationSession implements TextClassifier {
     private static final String LOG_TAG = "TextClassificationSession";
@@ -22,7 +21,6 @@ public final class TextClassificationSession implements TextClassifier {
     private final Object mLock = new Object();
     private final TextClassificationSessionId mSessionId;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TextClassificationSession(TextClassificationContext context, TextClassifier delegate) {
         TextClassificationContext textClassificationContext = (TextClassificationContext) Objects.requireNonNull(context);
         this.mClassificationContext = textClassificationContext;
@@ -36,7 +34,6 @@ public final class TextClassificationSession implements TextClassifier {
         this.mCleaner = Cleaner.create(this, new CleanerRunnable(selectionEventHelper, textClassifier));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextSelection lambda$suggestSelection$0(TextSelection.Request request) {
         return this.mDelegate.suggestSelection(request);
     }
@@ -60,7 +57,6 @@ public final class TextClassificationSession implements TextClassifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextClassification lambda$classifyText$1(TextClassification.Request request) {
         return this.mDelegate.classifyText(request);
     }
@@ -77,7 +73,6 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextLinks lambda$generateLinks$2(TextLinks.Request request) {
         return this.mDelegate.generateLinks(request);
     }
@@ -94,7 +89,6 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ ConversationActions lambda$suggestConversationActions$3(ConversationActions.Request request) {
         return this.mDelegate.suggestConversationActions(request);
     }
@@ -111,7 +105,6 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextLanguage lambda$detectLanguage$4(TextLanguage.Request request) {
         return this.mDelegate.detectLanguage(request);
     }
@@ -152,7 +145,6 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$onSelectionEvent$5(SelectionEvent event) {
         try {
             if (this.mEventHelper.sanitizeEvent(event)) {
@@ -178,7 +170,6 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$onTextClassifierEvent$6(TextClassifierEvent event) {
         try {
             event.mHiddenTempSessionId = this.mSessionId;
@@ -221,7 +212,6 @@ public final class TextClassificationSession implements TextClassifier {
         throw new IllegalStateException("This TextClassification session has been destroyed");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class SelectionEventHelper {
         private final TextClassificationContext mContext;
@@ -324,8 +314,9 @@ public final class TextClassificationSession implements TextClassifier {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class CleanerRunnable implements Runnable {
+    public static class CleanerRunnable implements Runnable {
         private final TextClassifier mDelegate;
         private final SelectionEventHelper mEventHelper;
 

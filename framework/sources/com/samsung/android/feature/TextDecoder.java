@@ -130,7 +130,6 @@ public class TextDecoder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String decode(File file, boolean isTestEnabled) throws IOException {
         byte[] output;
         if (isEncodedGzip(file)) {

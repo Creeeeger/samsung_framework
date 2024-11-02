@@ -11,7 +11,6 @@ public class NotifyRespInd extends GenericPdu {
         setStatus(status);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public NotifyRespInd(PduHeaders headers) {
         super(headers);
     }

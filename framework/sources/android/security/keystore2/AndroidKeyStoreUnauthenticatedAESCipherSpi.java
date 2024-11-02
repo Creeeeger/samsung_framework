@@ -15,8 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 import javax.crypto.spec.IvParameterSpec;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends AndroidKeyStoreCipherSpiBase {
+public abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends AndroidKeyStoreCipherSpiBase {
     private static final int BLOCK_SIZE_BYTES = 16;
     private byte[] mIv;
     private boolean mIvHasBeenUsed;
@@ -136,7 +137,6 @@ abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends AndroidKeyStor
         this.mIvRequired = ivRequired;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     public final void resetAll() {
         this.mIv = null;
@@ -144,7 +144,6 @@ abstract class AndroidKeyStoreUnauthenticatedAESCipherSpi extends AndroidKeyStor
         super.resetAll();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     public final void resetWhilePreservingInitState() {
         super.resetWhilePreservingInitState();

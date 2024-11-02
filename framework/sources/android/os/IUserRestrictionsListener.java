@@ -80,8 +80,9 @@ public interface IUserRestrictionsListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IUserRestrictionsListener {
+        public static class Proxy implements IUserRestrictionsListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -16,13 +16,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SearchTarget implements Parcelable {
     public static final Parcelable.Creator<SearchTarget> CREATOR = new Parcelable.Creator<SearchTarget>() { // from class: android.app.search.SearchTarget.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchTarget createFromParcel(Parcel parcel) {
             return new SearchTarget(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchTarget[] newArray(int size) {
             return new SearchTarget[size];
@@ -57,6 +58,14 @@ public final class SearchTarget implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface SearchResultType {
+    }
+
+    /* synthetic */ SearchTarget(int i, String str, String str2, String str3, float f, boolean z, String str4, UserHandle userHandle, SearchAction searchAction, ShortcutInfo shortcutInfo, Uri uri, AppWidgetProviderInfo appWidgetProviderInfo, Bundle bundle, SearchTargetIA searchTargetIA) {
+        this(i, str, str2, str3, f, z, str4, userHandle, searchAction, shortcutInfo, uri, appWidgetProviderInfo, bundle);
+    }
+
+    /* synthetic */ SearchTarget(Parcel parcel, SearchTargetIA searchTargetIA) {
+        this(parcel);
     }
 
     private SearchTarget(Parcel parcel) {
@@ -168,6 +177,23 @@ public final class SearchTarget implements Parcelable {
         parcel.writeTypedObject(this.mAppWidgetProviderInfo, flags);
         parcel.writeTypedObject(this.mSliceUri, flags);
         parcel.writeBundle(this.mExtras);
+    }
+
+    /* renamed from: android.app.search.SearchTarget$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchTarget> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchTarget createFromParcel(Parcel parcel) {
+            return new SearchTarget(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchTarget[] newArray(int size) {
+            return new SearchTarget[size];
+        }
     }
 
     @SystemApi

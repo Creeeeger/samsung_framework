@@ -21,8 +21,9 @@ public abstract class AsyncQueryHandler extends Handler {
     final WeakReference<ContentResolver> mResolver;
     private Handler mWorkerThreadHandler;
 
+    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes.dex */
-    protected static final class WorkerArgs {
+    public static final class WorkerArgs {
         public Object cookie;
         public Handler handler;
         public String orderBy;
@@ -37,7 +38,6 @@ public abstract class AsyncQueryHandler extends Handler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes.dex */
     public class WorkerHandler extends Handler {
         public WorkerHandler(Looper looper) {

@@ -27,7 +27,6 @@ public class CalendarView extends FrameLayout {
     private static final int MODE_MATERIAL = 1;
     private final CalendarViewDelegate mDelegate;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface CalendarViewDelegate {
         boolean getBoundsForDate(long j, Rect rect);
@@ -333,7 +332,6 @@ public class CalendarView extends FrameLayout {
         return this.mDelegate.getBoundsForDate(date, outBounds);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -345,7 +343,6 @@ public class CalendarView extends FrameLayout {
         return CalendarView.class.getName();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static abstract class AbstractCalendarViewDelegate implements CalendarViewDelegate {
         protected static final String DEFAULT_MAX_DATE = "01/01/2100";
@@ -354,14 +351,12 @@ public class CalendarView extends FrameLayout {
         protected Locale mCurrentLocale;
         protected CalendarView mDelegator;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public AbstractCalendarViewDelegate(CalendarView delegator, Context context) {
             this.mDelegator = delegator;
             this.mContext = context;
             setCurrentLocale(Locale.getDefault());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void setCurrentLocale(Locale locale) {
             if (locale.equals(this.mCurrentLocale)) {
                 return;

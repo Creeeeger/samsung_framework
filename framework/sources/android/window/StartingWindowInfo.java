@@ -15,13 +15,14 @@ import android.window.IWindowlessStartingSurfaceCallback;
 /* loaded from: classes4.dex */
 public final class StartingWindowInfo implements Parcelable {
     public static final Parcelable.Creator<StartingWindowInfo> CREATOR = new Parcelable.Creator<StartingWindowInfo>() { // from class: android.window.StartingWindowInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StartingWindowInfo createFromParcel(Parcel source) {
             return new StartingWindowInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StartingWindowInfo[] newArray(int size) {
             return new StartingWindowInfo[size];
@@ -63,6 +64,10 @@ public final class StartingWindowInfo implements Parcelable {
 
     /* loaded from: classes4.dex */
     public @interface StartingWindowType {
+    }
+
+    /* synthetic */ StartingWindowInfo(Parcel parcel, StartingWindowInfoIA startingWindowInfoIA) {
+        this(parcel);
     }
 
     public void notifyAddComplete(SurfaceControl addedSurface) {
@@ -130,5 +135,22 @@ public final class StartingWindowInfo implements Parcelable {
 
     public String toString() {
         return "StartingWindowInfo{taskId=" + this.taskInfo.taskId + " targetActivityInfo=" + this.targetActivityInfo + " displayId=" + this.taskInfo.displayId + " topActivityType=" + this.taskInfo.topActivityType + " preferredStartingWindowType=" + Integer.toHexString(this.startingWindowTypeParameter) + " insetsState=" + this.topOpaqueWindowInsetsState + " topWindowLayoutParams=" + this.topOpaqueWindowLayoutParams + " mainWindowLayoutParams=" + this.mainWindowLayoutParams + " splashScreenThemeResId " + Integer.toHexString(this.splashScreenThemeResId);
+    }
+
+    /* renamed from: android.window.StartingWindowInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StartingWindowInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StartingWindowInfo createFromParcel(Parcel source) {
+            return new StartingWindowInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StartingWindowInfo[] newArray(int size) {
+            return new StartingWindowInfo[size];
+        }
     }
 }

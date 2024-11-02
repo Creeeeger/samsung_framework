@@ -115,7 +115,6 @@ public abstract class SensorManager {
 
     protected abstract boolean cancelTriggerSensorImpl(TriggerEventListener triggerEventListener, Sensor sensor, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract int configureDirectChannelImpl(SensorDirectChannel sensorDirectChannel, Sensor sensor, int i);
 
     protected abstract SensorDirectChannel createDirectChannelImpl(MemoryFile memoryFile, HardwareBuffer hardwareBuffer);
@@ -126,7 +125,6 @@ public abstract class SensorManager {
 
     protected abstract List<Sensor> getFullDynamicSensorList();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract List<Sensor> getFullSensorList();
 
     protected abstract boolean initDataInjectionImpl(boolean z);
@@ -313,7 +311,6 @@ public abstract class SensorManager {
         return createDirectChannelImpl(null, mem);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void destroyDirectChannel(SensorDirectChannel channel) {
         destroyDirectChannelImpl(channel);
     }

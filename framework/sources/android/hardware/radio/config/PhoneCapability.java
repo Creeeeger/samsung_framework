@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PhoneCapability implements Parcelable {
     public static final Parcelable.Creator<PhoneCapability> CREATOR = new Parcelable.Creator<PhoneCapability>() { // from class: android.hardware.radio.config.PhoneCapability.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PhoneCapability createFromParcel(Parcel _aidl_source) {
             PhoneCapability _aidl_out = new PhoneCapability();
@@ -17,7 +19,6 @@ public class PhoneCapability implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneCapability[] newArray(int _aidl_size) {
             return new PhoneCapability[_aidl_size];
@@ -27,6 +28,25 @@ public class PhoneCapability implements Parcelable {
     public byte maxActiveData = 0;
     public byte maxActiveInternetData = 0;
     public boolean isInternetLingeringSupported = false;
+
+    /* renamed from: android.hardware.radio.config.PhoneCapability$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PhoneCapability> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhoneCapability createFromParcel(Parcel _aidl_source) {
+            PhoneCapability _aidl_out = new PhoneCapability();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhoneCapability[] newArray(int _aidl_size) {
+            return new PhoneCapability[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -109,11 +109,14 @@ public final class TextViewOnReceiveContentListener implements OnReceiveContentL
         return view.getReceiveContentMimeTypes() == null && !Compatibility.isChangeEnabled(AUTOFILL_NON_TEXT_REQUIRES_ON_RECEIVE_CONTENT_LISTENER);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class InputConnectionInfo {
         private final String[] mEditorInfoContentMimeTypes;
         private final WeakReference<InputConnection> mInputConnection;
+
+        /* synthetic */ InputConnectionInfo(InputConnection inputConnection, String[] strArr, InputConnectionInfoIA inputConnectionInfoIA) {
+            this(inputConnection, strArr);
+        }
 
         private InputConnectionInfo(InputConnection inputConnection, String[] editorInfoContentMimeTypes) {
             this.mInputConnection = new WeakReference<>(inputConnection);
@@ -125,7 +128,6 @@ public final class TextViewOnReceiveContentListener implements OnReceiveContentL
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setInputConnectionInfo(TextView view, InputConnection ic, EditorInfo editorInfo) {
         if (!isUsageOfImeCommitContentEnabled(view)) {
             this.mInputConnectionInfo = null;
@@ -139,7 +141,6 @@ public final class TextViewOnReceiveContentListener implements OnReceiveContentL
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearInputConnectionInfo() {
         this.mInputConnectionInfo = null;
     }

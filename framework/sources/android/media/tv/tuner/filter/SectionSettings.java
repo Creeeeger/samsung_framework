@@ -11,7 +11,6 @@ public abstract class SectionSettings extends Settings {
     final boolean mIsRaw;
     final boolean mIsRepeat;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SectionSettings(int mainType, boolean crcEnabled, boolean isRepeat, boolean isRaw, int bitWidthOfLengthField) {
         super(TunerUtils.getFilterSubtype(mainType, 1));
         this.mCrcEnabled = crcEnabled;
@@ -46,7 +45,6 @@ public abstract class SectionSettings extends Settings {
 
         abstract T self();
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder(int mainType) {
             this.mMainType = mainType;
         }

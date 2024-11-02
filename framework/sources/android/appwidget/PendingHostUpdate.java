@@ -7,13 +7,14 @@ import android.widget.RemoteViews;
 /* loaded from: classes.dex */
 public class PendingHostUpdate implements Parcelable {
     public static final Parcelable.Creator<PendingHostUpdate> CREATOR = new Parcelable.Creator<PendingHostUpdate>() { // from class: android.appwidget.PendingHostUpdate.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PendingHostUpdate createFromParcel(Parcel parcel) {
             return new PendingHostUpdate(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PendingHostUpdate[] newArray(int size) {
             return new PendingHostUpdate[size];
@@ -28,6 +29,10 @@ public class PendingHostUpdate implements Parcelable {
     int viewId;
     RemoteViews views;
     AppWidgetProviderInfo widgetInfo;
+
+    /* synthetic */ PendingHostUpdate(Parcel parcel, PendingHostUpdateIA pendingHostUpdateIA) {
+        this(parcel);
+    }
 
     public static PendingHostUpdate updateAppWidget(int appWidgetId, RemoteViews views) {
         PendingHostUpdate update = new PendingHostUpdate(appWidgetId, 0);
@@ -111,6 +116,23 @@ public class PendingHostUpdate implements Parcelable {
             p.writeToParcel(dest, flags);
         } else {
             dest.writeInt(0);
+        }
+    }
+
+    /* renamed from: android.appwidget.PendingHostUpdate$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PendingHostUpdate> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PendingHostUpdate createFromParcel(Parcel parcel) {
+            return new PendingHostUpdate(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PendingHostUpdate[] newArray(int size) {
+            return new PendingHostUpdate[size];
         }
     }
 }

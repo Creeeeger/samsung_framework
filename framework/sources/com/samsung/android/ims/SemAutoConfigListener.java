@@ -124,8 +124,9 @@ public interface SemAutoConfigListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements SemAutoConfigListener {
+        public static class Proxy implements SemAutoConfigListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

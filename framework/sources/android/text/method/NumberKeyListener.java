@@ -20,7 +20,6 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
 
     protected abstract char[] getAcceptedChars();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int lookup(KeyEvent event, Spannable content) {
         return event.getMatch(getAcceptedChars(), getMetaState(content, event));
     }
@@ -49,7 +48,6 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return filtered;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static boolean ok(char[] accept, char c) {
         for (int i = accept.length - 1; i >= 0; i--) {
             if (accept[i] == c) {
@@ -90,7 +88,6 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return super.onKeyDown(view, content, keyCode, event);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean addDigits(Collection<Character> collection, Locale locale) {
         if (locale == null) {
             return false;
@@ -105,7 +102,6 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean addFormatCharsFromSkeleton(Collection<Character> collection, Locale locale, String skeleton, String symbolsToIgnore) {
         if (locale == null) {
             return false;
@@ -143,7 +139,6 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean addFormatCharsFromSkeletons(Collection<Character> collection, Locale locale, String[] skeletons, String symbolsToIgnore) {
         for (String str : skeletons) {
             boolean success = addFormatCharsFromSkeleton(collection, locale, str, symbolsToIgnore);
@@ -154,7 +149,6 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean addAmPmChars(Collection<Character> collection, Locale locale) {
         if (locale == null) {
             return false;
@@ -172,7 +166,6 @@ public abstract class NumberKeyListener extends BaseKeyListener implements Input
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static char[] collectionToArray(Collection<Character> chars) {
         char[] result = new char[chars.size()];
         int i = 0;

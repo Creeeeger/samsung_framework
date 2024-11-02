@@ -146,6 +146,10 @@ public class EnvironmentalReverb extends AudioEffect {
 
     /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
+        /* synthetic */ BaseParameterListener(EnvironmentalReverb environmentalReverb, BaseParameterListenerIA baseParameterListenerIA) {
+            this();
+        }
+
         private BaseParameterListener() {
         }
 

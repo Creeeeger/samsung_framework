@@ -269,12 +269,12 @@ Bu tezkor tugmalarni boshqa funksiyaga Sozlamalar ichidagi Qulayliklar orqali ta
     <string name="allow">Ruxsat berish</string>
     <string name="alwaysUse">Ushbu amaldan standart sifatida foydalanish</string>
     <string name="android_preparing_apk">%1$s tayyorlanmoqda.</string>
-    <string name="android_start_title">Telefon ishga tushirilmoqda…</string>
+    <string name="android_start_title">Planshet ishga tushirilmoqda…</string>
     <string name="android_system_label">Android tizimi</string>
     <string name="android_upgrading_complete">Tizimni yuklashni tugatish.</string>
     <string name="android_upgrading_notification_title">Tizimni yangilash tugay deb qoldi…</string>
     <string name="android_upgrading_starting_apps">Ilovalar ishga tushirilmoqda.</string>
-    <string name="android_upgrading_title">Telefon yangilanmoqda…</string>
+    <string name="android_upgrading_title">Planshet yangilanmoqda…</string>
     <string name="anr_activity_application">%2$s ilovasi javob bermayapti</string>
     <string name="anr_activity_process">%1$s harakati javob bermayapti</string>
     <string name="anr_application_process">%1$s ilovasi javob bermayapti</string>
@@ -295,16 +295,16 @@ Bu tezkor tugmalarni boshqa funksiyaga Sozlamalar ichidagi Qulayliklar orqali ta
     <string name="app_not_found">Ushbu amalni bajaradigan dastur topilmadi</string>
     <string name="app_running_notification_text">Ilovani to‘xtatish yoki qo‘shimcha ma’lumot olish uchun bosing.</string>
     <string name="app_running_notification_title">%1$s ishlamoqda</string>
-    <string name="app_streaming_blocked_message">Ayni vaqtda bu translatsiya %1$s qurilmangizda ishlamaydi. Telefon orqali urininb koʻring.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Bu ilova qoʻshimcha himoyani talab qilmoqda. Telefon orqali urininb koʻring.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Bu %1$s qurilmangizda ochilmaydi. Telefon orqali urininb koʻring.</string>
+    <string name="app_streaming_blocked_message">Ayni vaqtda bu translatsiya %1$s qurilmangizda ishlamaydi. Planshet orqali urinib koʻring.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Bu ilova qoʻshimcha himoyani talab qilmoqda. Planshet orqali urinib koʻring.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Bu %1$s qurilmangizda ochilmaydi. Planshet orqali urinib koʻring.</string>
     <string name="app_streaming_blocked_title">%1$s kanali ish faoliyatida emas</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera ishlamayapti</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Telefonda davom ettirish</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofon ishlamayapti</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Ruxsat zarur</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Market ishlamayapti</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Telefon sozlamalari ishlamayapti</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Planshet sozlamalari ishlamayapti</string>
     <string name="app_suspended_default_message">%1$s ishlamayapti. Uning ishlashini %2$s cheklamoqda.</string>
     <string name="app_suspended_more_details">Batafsil</string>
     <string name="app_suspended_title">Ilova ishlamayapti</string>
@@ -344,7 +344,7 @@ Bu tezkor tugmalarni boshqa funksiyaga Sozlamalar ichidagi Qulayliklar orqali ta
     <string name="back_button_label">Orqaga</string>
     <string name="badPin">Siz kiritgan eski PIN-kod noto‘g‘ri.</string>
     <string name="badPuk">Siz kiritgan PUK-kod noto‘g‘ri.</string>
-    <string name="battery_saver_charged_notification_summary">Telefon yetarli quvvatlandi. Funksiyalar endi cheklovlarsiz ishlaydi.</string>
+    <string name="battery_saver_charged_notification_summary">Planshet yetarli quvvatlandi. Funksiyalar endi cheklovlarsiz ishlaydi.</string>
     <string name="battery_saver_description">Quvvat tejash funksiyasi Tungi mavzuni va cheklovlarni yoqadi hamda fondagi harakatlar, vizual effektlar, ayrim funksiyalar va tarmoq aloqalari kabi boshqa funksiyalarni faolsizlantiradi yoki cheklaydi.</string>
     <string name="battery_saver_description_with_learn_more">Quvvat tejash funksiyasi Tungi mavzuni va cheklovlarni yoqadi hamda fondagi harakatlar, vizual effektlar, ayrim funksiyalar va tarmoq aloqalari kabi boshqa funksiyalarni faolsizlantiradi yoki cheklaydi.</string>
     <string name="battery_saver_notification_channel_name">Quvvat tejash</string>
@@ -486,7 +486,7 @@ Quloqlik tavsiya etilganidan uzoqroq vaqt baland tovushda ishlamoqda va eshitish
     <string name="decline">Rad etish</string>
     <string name="decline_remote_bugreport_action">RAD ETISH</string>
     <string name="default_audio_route_category_name">Tizim</string>
-    <string name="default_audio_route_name">Telefon</string>
+    <string name="default_audio_route_name">Planshet</string>
     <string name="default_audio_route_name_dock_speakers">Dok karnaylar</string>
     <string name="default_audio_route_name_external_device">Tashqi qurilma</string>
     <string name="default_audio_route_name_headphones">Quloq karnaychalari</string>
@@ -776,7 +776,7 @@ Barmoq izini qoʻshish vaqtida tugmaga yengilgina tegining."</string>
     <string name="global_action_silent_mode_on_status">Tovush o‘chirilgan</string>
     <string name="global_action_toggle_silent_mode">Ovozsiz rejim</string>
     <string name="global_action_voice_assist">Ovozli yordam</string>
-    <string name="global_actions">Telefon sozlamalari</string>
+    <string name="global_actions">Planshet sozlamalari</string>
     <string name="global_actions_airplane_mode_off_status">Parvoz rejimi o‘chirilgan</string>
     <string name="global_actions_airplane_mode_on_status">Parvoz usuli yoqilgan</string>
     <string name="global_actions_toggle_airplane_mode">Parvoz rejimi</string>
@@ -917,11 +917,11 @@ Ushbu sahifani rostdan tark etmoqchimisiz?"</string>
     <string name="keyguard_password_entry_touch_hint"><font size="17">Parolni kiritish uchun bosing</font></string>
     <string name="keyguard_password_wrong_pin_code">Noto‘g‘ri PIN-kod.</string>
     <string name="kg_enter_confirm_pin_hint">So‘ralgan PIN kodni tasdiqlang</string>
-    <string name="kg_failed_attempts_almost_at_login">"Siz grafik kalitni %1$d marta noto‘g‘ri chizdingiz. %2$d marta muvaffaqiyatsiz urinishdan so‘ng, sizdan e-pochtangizdan foydalanib, telefon qulfini ochishingiz so‘raladi.
+    <string name="kg_failed_attempts_almost_at_login">"Siz grafik kalitni  %1$d marta noto‘g‘ri kiritdingiz. %2$d marta muvaffaqiyatsiz urinishdan so‘ng, sizdan e-pochtangizdan foydalanib, planshet qulfini ochishingiz so‘raladi.
 
  %3$d soniyadan so‘ng yana urinib ko‘ring."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Siz telefon qulfini ochish uchun %1$d marta muvaffaqiyatsiz urindingiz. %2$d marta muvaffaqiyatsiz urinishlardan so‘ng telefonning zavod sozlamalari tiklanadi va barcha foydalanuvchi ma’lumotlari o‘chiriladi.</string>
-    <string name="kg_failed_attempts_now_wiping">Telefon qulfini ochish uchun %d marta muvaffaqiyatsiz urinib ko‘rdingiz. Telefonning hozir zavod sozlamari tiklanadi.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Siz planshet qulfini ochish uchun %1$d marta muvaffaqiyatsiz urindingiz. %2$d marta muvaffaqiyatsiz urinishlardan so‘ng planshetning zavod sozlamalari tiklanadi va barcha foydalanuvchi ma’lumotlari o‘chiriladi.</string>
+    <string name="kg_failed_attempts_now_wiping">Planshet qulfini ochish uchun %d marta muvaffaqiyatsiz urinib ko‘rdingiz. Planshetning hozir zavod sozlamari tiklanadi.</string>
     <string name="kg_forgot_pattern_button_text">Grafik kalit esimdan chiqdi</string>
     <string name="kg_invalid_confirm_pin_hint">PIN kod mos kelmadi</string>
     <string name="kg_invalid_puk">To‘g‘ri PUK kodni qayta kiriting. Qayta-qayta urinishlar SIM kartani butunlay o‘chirib qo‘yadi.</string>
@@ -986,11 +986,11 @@ Ushbu sahifani rostdan tark etmoqchimisiz?"</string>
     <string name="lockscreen_access_pattern_start">Grafik kalitni chizish boshlandi</string>
     <string name="lockscreen_carrier_default">Xizmat mavjud emas</string>
     <string name="lockscreen_emergency_call">Favqulodda chaqiruv</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Telefon qulfini %1$d marta ochishga urinib ko‘rdingiz. %2$d marta muvaffaqiyatsiz urinishlardan so‘ng, telefon ishlab chiqarilgan holatiga tiklanadi va barcha foydalanuvchi ma’lumotlari yo‘qoladi.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Siz grafik kalitni %1$d marta noto‘g‘ri kiritdingiz. Telefon qulfini ochish uchun yana %2$d marta noto‘g‘ri urinish qilsangiz, sizdan Google hisobingizga kirish talab qilinadi.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Planshet qulfini %1$d marta ochishga urinib ko‘rdingiz. %2$d marta muvaffaqiyatsiz urinishlardan so‘ng, planshet ishlab chiqarilgan holatiga tiklanadi va barcha foydalanuvchi ma’lumotlari yo‘qoladi.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Siz grafik kalitni %1$d marta noto‘g‘ri kiritdingiz. Telefon qulfini ochish uchun yana %2$d marta noto‘g‘ri urinish qilsangiz, sizdan Google hisobingizga kirish talab qilinadi. 
 
  %3$d soniyadan so‘ng qayta urining."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Telefon qulfini %d marta ochishga urinib ko‘rdingiz. Telefon hozir ishlab chiqarilgan holatiga tiklanadi.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Planshet qulfini %d marta ochishga urinib ko‘rdingiz. Planshet hozir ishlab chiqarilgan holatiga tiklanadi.</string>
     <string name="lockscreen_forgot_pattern_button_text">Grafik kalit esingizdan chiqdimi?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Foydalanuvchi nomingiz yoki parolingizni unutdingizmi?
  "<b>google.com/accounts/recovery</b>ga kiring.</string>
@@ -1006,7 +1006,7 @@ Ushbu sahifani rostdan tark etmoqchimisiz?"</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Qulfdan chiqarish yoki favqulodda qo‘ng‘iroqni amalga oshirish uchun \"Menyu\"ni bosing.</string>
     <string name="lockscreen_missing_sim_instructions">SIM karta qoʻshish.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM karta topilmadi yoki oʻqilmadi. SIM karta qoʻshish.</string>
-    <string name="lockscreen_missing_sim_message">Telefonda SIM karta topilmadi.</string>
+    <string name="lockscreen_missing_sim_message">Planshetda SIM karta topilmadi.</string>
     <string name="lockscreen_missing_sim_message_short">SIM kartasiz</string>
     <string name="lockscreen_network_locked_message">Tarmoq qulflangan</string>
     <string name="lockscreen_password_wrong">Qaytadan urining</string>
@@ -1046,7 +1046,7 @@ Ushbu sahifani rostdan tark etmoqchimisiz?"</string>
     <string name="low_internal_storage_view_text">Ayrim funksiyalar ishlamasligi mumkin</string>
     <string name="low_internal_storage_view_text_no_boot">Tizim uchun xotirada joy yetarli emas. Avval 250 megabayt joy bo‘shatib, keyin qurilmani o‘chirib yoqing.</string>
     <string name="low_internal_storage_view_title">Xotirada joy yetarli emas</string>
-    <string name="low_memory">Telefon xotirasi to‘la. Joy ochish uchun ba’zi fayllarni o‘chiring.</string>
+    <string name="low_memory">Planshet xotirasi to‘la. Joy ochish uchun ba’zi fayllarni o‘chiring.</string>
     <string name="managed_profile_app_label">Ishga oid %1$s ilovasiga almashish</string>
     <string name="managed_profile_label">Ishchi profilga almashtirish</string>
     <string name="managed_profile_label_badge">Ish %1$s</string>
@@ -1376,8 +1376,8 @@ Yangicha bildirishnomalar barcha bildirishnomalar kontentini, jumladan kontakt n
     <string name="permdesc_bindNotificationListenerService">Foydalanuvchiga bildirishnomani eshituvchi xizmat yuqori darajali interfeysini bog‘lash imkonini beradi. Oddiy dasturlar uchun hech qachon kerak bo‘lmaydi.</string>
     <string name="permdesc_bind_connection_service">Ilovaga qo‘ng‘iroqlarni amalga oshirish/qabul qilish uchun telefoniya xizmatlari bilan aloqa qilishga ruxsat beradi.</string>
     <string name="permdesc_bind_incall_service">Ilova suhbat vaqtida ekranni boshqarishi mumkin.</string>
-    <string name="permdesc_bluetooth">Ilovaga telefondagi Bluetooth‘ning sozlamasini ko‘rishga va bog‘langan qurilmalarga ulanish va ulardan ulanish so‘rovlarini qabul qulishga imkon beradi.</string>
-    <string name="permdesc_bluetoothAdmin">Ilova Bluetooth funksiyali mahalliy telefon sozlamalarini sozlashi hamda masofadan turib qurilmalarni aniqlash va ular bilan juftlashishni amalga oshirishi mumkin.</string>
+    <string name="permdesc_bluetooth">Ilovaga planshetdagi Bluetooth‘ning sozlamasini ko‘rishga va bog‘langan qurilmalarga ulanish va ulardan ulanish so‘rovlarini qabul qulishga imkon beradi.</string>
+    <string name="permdesc_bluetoothAdmin">Ilova Bluetooth funksiyali mahalliy planshet sozlamalarini sozlashi hamda masofadan turib qurilmalarni aniqlash va ular bilan juftlashishni amalga oshirishi mumkin.</string>
     <string name="permdesc_bluetooth_advertise">Ilovaga yaqin-atrofdagi Bluetooth qurilmalariga reklama yuborish imkonini beradi</string>
     <string name="permdesc_bluetooth_connect">Ilovaga juftlangan Bluetooth qurilmalariga ulanish uchun ruxsat beradi</string>
     <string name="permdesc_bluetooth_scan">Ilovaga yaqin-atrofdagi Bluetooth qurilmalarini topish va juftlashish uchun ruxsat beradi</string>
@@ -1390,9 +1390,9 @@ Yangicha bildirishnomalar barcha bildirishnomalar kontentini, jumladan kontakt n
     <string name="permdesc_cameraOpenCloseListener">Bu ilova har qanday kamera qurilmasi ochilayotganda (istalgan ilova tarafidan) yoki yopilayotganda qayta chaqiruvlar qabul qilishi mumkin.</string>
     <string name="permdesc_changeNetworkState">Ilova tarmoqqa ulanish holatini o‘zgartirishi mumkin.</string>
     <string name="permdesc_changeTetherState">Ilova modem rejimida tarmoqqa ulanish holatini o‘zgartirishi mumkin.</string>
-    <string name="permdesc_changeWifiMulticastState">Ilovaga Wi-Fi tarmoq orqali guruh manzillardan foydalanib, faqat telefoningizga emas, balki barcha qurilmalarga yuborilgan paketlarni qabul qilishga ruxsat beradi. U oddiy rejimdagidan ko‘ra ko‘proq quvvat sarflaydi.</string>
+    <string name="permdesc_changeWifiMulticastState">Ilovaga Wi-Fi tarmoq orqali guruh manzillardan foydalanib, faqat planshetingizga emas, balki barcha qurilmalarga yuborilgan paketlarni qabul qilishga ruxsat beradi. U oddiy rejimdagidan ko‘ra ko‘proq quvvat sarflaydi.</string>
     <string name="permdesc_changeWifiState">Ilovaga Wi-Fi ulanish nuqtalariga ulanish va ulardan uzilishga hamda Wi-Fi tarmoqlari uchun qurilmalar sozlamasiga o‘zgartirishlar kiritishga ruxsat beradi.</string>
-    <string name="permdesc_changeWimaxState">Ilovaga telefonni WiMAX tarmoqlariga ulashga va ulardan uzishga ruxsat beradi.</string>
+    <string name="permdesc_changeWimaxState">Ilovaga planshetni WiMAX tarmoqlariga ulashga va ulardan uzishga ruxsat beradi.</string>
     <string name="permdesc_companionProfileWatch">Hamroh ilovaga soatlarni boshqarishga ruxsat beradi.</string>
     <string name="permdesc_connection_manager">Ilovaga telekommunikatsiya aloqalarini boshqarish uchun ruxsat beradi.</string>
     <string name="permdesc_control_incall_experience">Ilova suhbat vaqtida foydalanuvchi bilan aloqa qilishi mumkin.</string>
@@ -1418,7 +1418,7 @@ Yangicha bildirishnomalar barcha bildirishnomalar kontentini, jumladan kontakt n
     <string name="permdesc_foregroundServiceSpecialUse">Ilovaga “specialUse” turidagi faol xizmatlardan foydalanishga ruxsat beradi</string>
     <string name="permdesc_foregroundServiceSystemExempted">Ilovaga “systemExempted” turidagi faol xizmatlardan foydalanishga ruxsat beradi</string>
     <string name="permdesc_fullScreenIntent">Ilova qulflangan qurilmada toʻliq ekranda bildirishnomalarni koʻrsata oladi</string>
-    <string name="permdesc_getAccounts">Ilovaga telefondagi hisoblar ro‘yxatini olishga ruxsat beradi. Bunga siz o‘rnatgan ilovalar tomonidan yaratilgan har qanday hisoblar kirishi mumkin.</string>
+    <string name="permdesc_getAccounts">Ilovaga planshetdagi hisoblar ro‘yxatini olishga ruxsat beradi. Bunga siz o‘rnatgan ilovalar tomonidan yaratilgan har qanday hisoblar kirishi mumkin.</string>
     <string name="permdesc_getPackageSize">Ilova o‘zining kodi, ma’lumotlari va kesh o‘lchami to‘g‘risidagi ma’lumotlarni olishi mumkin</string>
     <string name="permdesc_getTasks">Ilovaga hozirda va so‘nggi ishga tushirilgan vazifalar haqida to‘liq ma’lumot olishiga ruxsat beradi. Bu ilovaga qurilmadagi ishlatilayotgan ilovalar haqidagi ma’lumotlarga ega bo‘lishiga ruxsat berishi mumkin.</string>
     <string name="permdesc_handoverStatus">"Ushbu ilovaga joriy Android Beam uzatishlari haqida ma'lumotlarni olish ruxsati berilsin."</string>
@@ -1441,16 +1441,16 @@ Yangicha bildirishnomalar barcha bildirishnomalar kontentini, jumladan kontakt n
     <string name="permdesc_nearby_wifi_devices">Ilovaga yaqin-atrofdagi Wi-Fi qurilmalarga reklama yuborish, ulanish va ularning taxminiy joylashuvini aniqlash imkonini beradi.</string>
     <string name="permdesc_nfc">Ilova qisqa masofali aloqa (NFC) texnologiyasi yordamida NFC yorliqlari, kartalar va o‘qish moslamalari bilan ma’lumot almashishi mumkin.</string>
     <string name="permdesc_observeCompanionDevicePresence">Hamroh ilovaga qurilmalar yaqin yoki uzoqligi asosida hamroh qurilma mavjudligini aniqlashga ruxsat beradi.</string>
-    <string name="permdesc_persistentActivity">Ilovaga o‘zining komponentlarini xotirada doimiy saqlashga ruxsat beradi. Bu mavjud xotirani cheklashi va telefonni sekin ishlashiga sabab bo‘lishi mumkin.</string>
+    <string name="permdesc_persistentActivity">Ilovaga o‘zining komponentlarini xotirada doimiy saqlashga ruxsat beradi. Bu mavjud xotirani cheklashi va planshetni sekin ishlashiga sabab bo‘lishi mumkin.</string>
     <string name="permdesc_postNotification">Ilovaga bildirishnomalarni chiqarish uchun ruxsat beradi</string>
     <string name="permdesc_preferredPaymentInfo">Bu ilovaga asosiy NFC toʻlov xizmati haqidagi axborotni olish imkonini beradi (masalan, qayd qilingan AID identifikatorlari va marshrutning yakuniy manzili).</string>
     <string name="permdesc_processOutgoingCalls">Ilova chiquvchi qo‘ng‘iroq vaqtida terilgan raqamni ko‘rishi va zaruratga qarab uni qayta yo‘naltirishi yoki tugatishi mumkin.</string>
     <string name="permdesc_queryAllPackages">Ilova oʻrnatilgan barcha paketlarni koʻrishiga ruxsat beradi</string>
     <string name="permdesc_readBasicPhoneState">Ilovaga qurilmadagi oddiy telefoniya funksiyalaridan foydalanish imkonini beradi.</string>
-    <string name="permdesc_readCalendar">Bu ilova telefondagi barcha taqvim tadbirlarini o‘qiy olishi hamda taqvim ma’lumotlarini ulashishi yoki saqlashi mumkin.</string>
+    <string name="permdesc_readCalendar">Bu ilova planshetdagi barcha taqvim tadbirlarini o‘qiy olishi hamda taqvim ma’lumotlarini ulashishi yoki saqlashi mumkin.</string>
     <string name="permdesc_readCallLog">Bu ilova chaqiruvlar tarixini o‘qiy oladi.</string>
     <string name="permdesc_readCellBroadcasts">Ilovaga qurilmangiz tomonidan qabul qilingan uyali tarmoq operatori xabarlarini o‘qish uchun ruxsat beradi. Uyali tarmoq operatorining ogohlantiruvchi xabarlari ba’zi manzillarga favqulodda holatlar haqida ogohlantirish uchun jo‘natiladi. Zararli ilovalar uyali tarmoq orqali favqulodda xabar qabul qilinganda qurilmangizning ish faoliyati yoki amallariga xalaqit qilishi mumkin</string>
-    <string name="permdesc_readContacts">Bu ilovaga telefoningizdagi kontaktlarga oid axborotni oʻqish huquqini beradi. Ilovalar ham telefondagi kontaktlarni yaratgan hisoblaringizga ruxsat oladi Jumladan, oʻrnatilgan ilovalar ochgan hisoblarga ham ruxsat beriladi. Bu ruxsat ilovalarga kontaktlaringizga oid axborotni saqlash huquqini berib, zararli ilovalar uning yordamida kontakt maʼlumotlarini sizdan beruxsat boshqalarga ulashishi mumkin.</string>
+    <string name="permdesc_readContacts">Bu planshetga telefoningizdagi kontaktlarga oid axborotni oʻqish huquqini beradi. Ilovalar ham planshetdagi kontaktlarni yaratgan hisoblaringizga ruxsat oladi Jumladan, oʻrnatilgan ilovalar ochgan hisoblarga ham ruxsat beriladi. Bu ruxsat ilovalarga kontaktlaringizga oid axborotni saqlash huquqini berib, zararli ilovalar uning yordamida kontakt maʼlumotlarini sizdan beruxsat boshqalarga ulashishi mumkin.</string>
     <string name="permdesc_readInstallSessions">Ilovaga o‘rnatilgan seanslarni o‘qish uchun ruxsat beradi. Bu unga faol paket o‘rnatmalari haqidagi ma’lumotlarni ko‘rish imkonini beradi.</string>
     <string name="permdesc_readMediaAudio">Ilovaga audio fayllarni umumiy xotiradan oʻqish imkonini beradi.</string>
     <string name="permdesc_readMediaImages">Ilovaga rasm fayllarini umumiy xotiradan oʻqish imkonini beradi.</string>
@@ -1458,11 +1458,11 @@ Yangicha bildirishnomalar barcha bildirishnomalar kontentini, jumladan kontakt n
     <string name="permdesc_readNetworkUsageHistory">Ilova muayyan tarmoqlardan va ilovalardan foydalanish tarixini o‘qishi mumkin.</string>
     <string name="permdesc_readPhoneNumbers">Ilovaga qurilmaning telefon raqamlaridan foydalanishiga ruxsat beradi.</string>
     <string name="permdesc_readPhoneState">Ilovaga qurilmangizdagi telefon xususiyatlariga kirishga ruxsat beradi. Bu ruxsat ilovaga telefon raqami va qurilma nomlari, qo‘ng‘iroq faol yoki faolsizligi va masofadagi raqam qo‘ng‘rioq orqali bog‘langanligini aniqlashga imkon beradi.</string>
-    <string name="permdesc_readSms">Bu ilova telefondagi barcha SMS xabarlarini o‘qiy oladi.</string>
+    <string name="permdesc_readSms">Bu ilova planshetdagi barcha SMS xabarlarini o‘qiy oladi.</string>
     <string name="permdesc_readSyncSettings">Ilovaga hisobning sinxronlash sozlamalarini o‘qish uchun ruxsat beradi. Masalan, bu \"Odamlar\" ilovasi hisob bilan sinxronlangan yoki aksini aniqlay oladi.</string>
     <string name="permdesc_readSyncStats">Ilovaga hisobning sinxronlash statistikasini, shu jumladan, sinxronlangan hodisalar tarixi va qancha ma’lumot sinxronlanganligi haqidagi ma’lumotni o‘qishga ruxsat beradi.</string>
     <string name="permdesc_readVisualUserSelect">Ilovaga siz tanlagan rasm va video fayllarni umumiy xotiradan oʻqish imkonini beradi.</string>
-    <string name="permdesc_receiveBootCompleted">Ilova tizim qayta yoqilganidan so‘ng o‘zini ishga tushirishi mumkin. Bu telefonning yonish vaqtini uzaytirishi va doimiy ishlab turivchi ilova tufayli uning tezkor ishlashini kamaytirishi mumkin.</string>
+    <string name="permdesc_receiveBootCompleted">Ilova tizim qayta yoqilganidan so‘ng o‘zini ishga tushirishi mumkin. Bu planshetning yonish vaqtini uzaytirishi va doimiy ishlab turivchi ilova tufayli uning tezkor ishlashini kamaytirishi mumkin.</string>
     <string name="permdesc_receiveMms">Ilovaga MMS xabarlarini qabul qilish va ularni qayta ishlash uchun ruxsat beradi. Bu sizga yuborilgan xabarlarni ilova sizga ko‘rsatmasdan kuzatishi va o‘chirishi mumkinligini bildiradi.</string>
     <string name="permdesc_receiveSms">Ilovaga SMS xabarlarini qabul qilish va va ularni qayta ishlash uchun ruxsat beradi. Bu sizga yuborilgan xabarlarni ilova sizga ko‘rsatmasdan kuzatishi va o‘chirishi mumkinligini bildiradi.</string>
     <string name="permdesc_receiveWapPush">Ilovaga WAP xabarlarni qabul qilish va ularni qayta ishlash uchun ruxsat beradi. Ushbu huquq sizga ko‘rsatmasdan sizga yuborilgan xabarlarni kuzatish yoki o‘chirish xususiyatiga ham ega.</string>
@@ -1484,7 +1484,7 @@ Yangicha bildirishnomalar barcha bildirishnomalar kontentini, jumladan kontakt n
     <string name="permdesc_sendSms">Ilovaga SMS xabarlarini jo‘natish uchun ruxsat beradi. Bu kutilmagan xarajatlarga sabab bo‘lishi mumkin. Zararli ilovalar sizdan so‘roqsiz xabarlar jo‘natish orqali pulingizni sarflashi mumkin.</string>
     <string name="permdesc_setAlarm">Ilova uyg‘otkichni sozlashi mumkin. Ba’zi soat ilovalari ushbu funksiyani qo‘llab-quvvatlamasligi mumkin.</string>
     <string name="permdesc_setInputCalibration">Ilova sensorli ekranning muvozanat ko‘rsatkichlarini o‘zgartirishi mumkin. Oddiy ilovalar uchun talab qilinmaydi.</string>
-    <string name="permdesc_setTimeZone">Ilova telefondagi vaqt zonasini o‘zgartirishi mumkin.</string>
+    <string name="permdesc_setTimeZone">Iloba planshetdagi vaqt zonasini o‘zgartirishi mumkin.</string>
     <string name="permdesc_setWallpaper">Ilova tizim uchun orqa fon rasmlarini o‘rnatishi mumkin.</string>
     <string name="permdesc_setWallpaperHints">Ilova tizimning orqa fon rasmlari uchun o‘lchamlarini ko‘rsatishi mumkin.</string>
     <string name="permdesc_sim_communication">Dasturga SIM kartaga buyruqlar jo‘natishga ruxsat beradi. Bu juda ham xavfli.</string>
@@ -1497,7 +1497,7 @@ Yangicha bildirishnomalar barcha bildirishnomalar kontentini, jumladan kontakt n
     <string name="permdesc_subscribedFeedsRead">Ilova hozirgi vaqtda sinxronlanayotgan elementlar to‘g‘risidagi ma’lumotlarni olishi mumkin.</string>
     <string name="permdesc_systemAlertWindow">Bu ilova ilovalar yoki ekranning boshqa qismlaridan yuqorida ko‘rinishi mumkin. Bu ilovadan odatiy foydalanishga halaqit berishi va boshqa ilovalar ko‘rinishining usullarini o‘zgartirib yuborishi mumkin.</string>
     <string name="permdesc_systemCamera">Bu imtiyozli yoki tizim ilovasi istalgan vaqtda tizim kamerasi orqali surat va videolar olishi mumkin. Ilovada android.permission.CAMERA ruxsati ham yoqilgan boʻlishi talab qilinadi</string>
-    <string name="permdesc_transmitIr">Dasturga telefondagi infraqizil antenadan foydalanish ruxsatini beradi.</string>
+    <string name="permdesc_transmitIr">Dasturga planshetdagi infraqizil antenadan foydalanish ruxsatini beradi.</string>
     <string name="permdesc_turnScreenOn">Ilovaga ekranni yoqish ruxsatini beradi.</string>
     <string name="permdesc_uninstall_shortcut">Dasturga foydalanuvchini aralashtirmasdan, uy ekranidagi yorliqlarni o‘chirishga ruxsat beradi.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Oldin oʻrnatilgan ilovani foydalanuvchi ishtirokisiz yangilash imkonini beradi.</string>
@@ -1510,10 +1510,10 @@ Yangicha bildirishnomalar barcha bildirishnomalar kontentini, jumladan kontakt n
     <string name="permdesc_vibrate">Ilova tebranishli signallarni boshqarishi mumkin.</string>
     <string name="permdesc_vibrator_state">Ilovaga tebranish holatini aniqlash ruxsatini beradi.</string>
     <string name="permdesc_videoWrite">Ilovaga video to‘plamingizni o‘zgartirishga ruxsat beradi.</string>
-    <string name="permdesc_wakeLock">Ilova telefonning uyqu rejimiga o‘tib qolishining oldini olishi mumkin.</string>
-    <string name="permdesc_writeCalendar">Bu ilova telefonga taqvim tadbirlarini qo‘shishi, olib tashlashi yoki o‘zgartirishi mumkin. Bu ilova taqvim egalari nomidan ko‘rinadigan SMS yuborishi yoki egalarini ogohlantirmasdan tadbirlarni o‘zgartirishi mumkin.</string>
-    <string name="permdesc_writeCallLog">Ilovaga telefoningizdagi qo‘ng‘iroq jurnallari, kiruvchi va chiquvchi qo‘ng‘rioqlar haqidagi ma’lumotlarni o‘zgartirishga ruxsat beradi. Zararli ilovalar bundan qo‘ng‘iroqlar jurnalini o‘zgartirish yoki o‘chirish uchun foydalanishi mumkin.</string>
-    <string name="permdesc_writeContacts">Bu ilovaga telefoningizdagi kontaktlarga oid axborotni oʻzgartirish huquqini beradi. Bu ruxsat ilovalarga kontaktlarga oid axborotni oʻchirish imkonini ham beradi.</string>
+    <string name="permdesc_wakeLock">Ilova planshetning uyqu rejimiga o‘tib qolishining oldini olishi mumkin.</string>
+    <string name="permdesc_writeCalendar">Bu ilova planshetga taqvim tadbirlarini qo‘shishi, olib tashlashi yoki o‘zgartirishi mumkin. Bu ilova taqvim egalari nomidan ko‘rinadigan SMS yuborishi yoki egalarini ogohlantirmasdan tadbirlarni o‘zgartirishi mumkin.</string>
+    <string name="permdesc_writeCallLog">Ilovaga planshetingizdagi qo‘ng‘iroq jurnallari, kiruvchi va chiquvchi qo‘ng‘rioqlar haqidagi ma’lumotlarni o‘zgartirishga ruxsat beradi. Zararli ilovalar bundan qo‘ng‘iroqlar jurnalini o‘zgartirish yoki o‘chirish uchun foydalanishi mumkin.</string>
+    <string name="permdesc_writeContacts">Bu ilovaga planshetingizdagi kontaktlarga oid axborotni oʻzgartirish huquqini beradi. Bu ruxsat ilovalarga kontaktlarga oid axborotni oʻchirish imkonini ham beradi.</string>
     <string name="permdesc_writeSettings">Ilova tizim sozlamalarini o‘zgartirishi mumkin. Zararli dasturlar uning yordamida tizimni ishdan chiqarishi mumkin.</string>
     <string name="permdesc_writeSyncSettings">Ilovaga hisobning sinxronlash sozlamalarini o‘zgartirish uchun ruxsat beradi. Masalan, bundan \"Odamlar\" ilovasini hisob bilan sinxronlanlash uchun foydalanish mumkin.</string>
     <string name="permgroupdesc_activityRecognition">jismoniy harakatlar axborotiga ruxsat</string>
@@ -1710,7 +1710,7 @@ ruxsat so‘raldi"</string>
     <string name="permlab_uwb_ranging">Atrofdagi ultra-keng aloqa kanalli qurilmalarning nisbiy joylashuvini aniqlash</string>
     <string name="permlab_vibrate">tebranishni boshqarish</string>
     <string name="permlab_videoWrite">video to‘plamni o‘zgartirish</string>
-    <string name="permlab_wakeLock">telefonni uxlashiga yo‘l qo‘ymaslik</string>
+    <string name="permlab_wakeLock">planshetni uyquga ketishiga yo‘l qo‘ymaslik</string>
     <string name="permlab_writeCalendar">taqvimga tadbir qo‘shish/o‘zgartirish yoki taqvim egasini ogohlantirmasdan mehmonlarga elektron xat yuborish</string>
     <string name="permlab_writeCallLog">qo‘ng‘iroq jurnaliga yozish</string>
     <string name="permlab_writeContacts">kontaktlaringizni tahrirlash</string>
@@ -1753,10 +1753,10 @@ ruxsat so‘raldi"</string>
     <string name="policydesc_limitPassword">Ekran qulfi paroli va PIN kodlari uchun qo‘yiladigan talablarni (belgilar soni va uzunligi) nazorat qiladi.</string>
     <string name="policydesc_resetPassword">Ekran qulfini almashtiradi.</string>
     <string name="policydesc_setGlobalProxy">Qoida faollashtirilgan vaqtda ishlatiladigan qurilmaning global proksi-serverini o‘rnatadi. Faqat qurilma egasi global proksi-serverini o‘rnatishi mumkin.</string>
-    <string name="policydesc_watchLogin">Ekranni qulfini ochishda parolni kiritishga urinishlarni kuzatib boradi va agar parol bir necha marta noto‘g‘ri kiritilsa, telefonni qulflaydi yoki undagi ma’lumotlarni o‘chirib tashlaydi.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Ekran qulfini ochishda kiritilgan noto‘g‘ri parollar sonini kuzatib boradi va agar parol juda ko‘p marta noto‘g‘ri kiritilsa, telefonni qulflaydi yoki undagi barcha ma’lumotlarni o‘chirib tashlaydi.</string>
-    <string name="policydesc_wipeData">Telefondagi hamma narsani tozalab tashlaydi va uning sozlamalarini asliga qaytaradi.</string>
-    <string name="policydesc_wipeData_secondaryUser">Ushbu telefondagi foydalanuvchi ma’lumotlarini ogohlantirishsiz o‘chirib tashlaydi.</string>
+    <string name="policydesc_watchLogin">Ekranni qulfini ochishda parolni kiritishga urinishlarni kuzatib boradi va agar parol bir necha marta noto‘g‘ri kiritilsa, planshetni qulflaydi yoki undagi ma’lumotlarni o‘chirib tashlaydi.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Ekran qulfini ochishda kiritilgan noto‘g‘ri parollar sonini kuzatib boradi va agar parol juda ko‘p marta noto‘g‘ri kiritilsa, planshetni qulflaydi yoki undagi barcha ma’lumotlarni o‘chirib tashlaydi.</string>
+    <string name="policydesc_wipeData">Planshetdagi hamma narsani tozalab tashlaydi va uning sozlamalarini asliga qaytaradi.</string>
+    <string name="policydesc_wipeData_secondaryUser">Ushbu planshetdagi foydalanuvchi ma’lumotlarini ogohlantirishsiz o‘chirib tashlaydi.</string>
     <string name="policylab_disableCamera">Kameralarni o‘chirish</string>
     <string name="policylab_disableKeyguardFeatures">Ayrim funksiyalarni faolsizlantirish</string>
     <string name="policylab_encryptedStorage">Xotirani kodlashni o‘rnatish</string>
@@ -1773,7 +1773,7 @@ ruxsat so‘raldi"</string>
     <string name="postalTypeHome">Uy</string>
     <string name="postalTypeOther">Boshqa</string>
     <string name="postalTypeWork">Ish</string>
-    <string name="power_dialog">Telefon sozlamalari</string>
+    <string name="power_dialog">Planshet sozlamalari</string>
     <string name="power_off">O‘chirish</string>
     <string name="prepend_shortcut_label">Menyu+</string>
     <string name="preposition_for_date">%s</string>
@@ -1945,7 +1945,7 @@ Uzoq vaqt davomida baland ovozda tinglash eshitish qobiliyatingizga salbiy ta’
     <string name="shortcut_restore_unknown_issue">Yorliq tiklanmadi</string>
     <string name="shortcut_restored_on_lower_version">Ilova versiyasi eski yoki bu yorliq bilan mos emas</string>
     <string name="show_ime">Tashqi klaviatura ulanganida ekranda chiqib turadi</string>
-    <string name="shutdown_confirm">Telefoningiz o‘chiriladi.</string>
+    <string name="shutdown_confirm">Planshetingiz o‘chiriladi.</string>
     <string name="shutdown_confirm_question">O‘chirmoqchimisiz?</string>
     <string name="shutdown_progress">O‘chirilmoqda…</string>
     <string name="silent_mode">Ovozsiz usul</string>
@@ -2115,7 +2115,7 @@ Uzoq vaqt davomida baland ovozda tinglash eshitish qobiliyatingizga salbiy ta’
     <string name="user_switched">Joriy foydalanuvchi %1$s.</string>
     <string name="user_switching_message">Bunga almashilmoqda: %1$s</string>
     <string name="validity_period">Yaroqliligi:</string>
-    <string name="vdm_camera_access_denied">%1$s qurilmasidan telefonning kamerasiga kirish imkonsiz</string>
+    <string name="vdm_camera_access_denied">%1$s qurilmasidan planshetning kamerasiga kirish imkonsiz</string>
     <string name="vdm_pip_blocked">Striming vaqtida tasvir ustida tasvir rejimida koʻrib boʻlmaydi</string>
     <string name="vdm_secure_window">Bu kontent striming vaqtida ochilmaydi. Telefon orqali urininb koʻring.</string>
     <string name="view_and_control_notification_content">%s ekraningizni koʻrishi va boshqarishi mumkin. Tekshirish uchun bosing.</string>

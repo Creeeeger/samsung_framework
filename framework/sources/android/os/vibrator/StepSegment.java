@@ -11,14 +11,15 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class StepSegment extends VibrationEffectSegment {
     public static final Parcelable.Creator<StepSegment> CREATOR = new Parcelable.Creator<StepSegment>() { // from class: android.os.vibrator.StepSegment.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StepSegment createFromParcel(Parcel in) {
             in.readInt();
             return new StepSegment(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StepSegment[] newArray(int size) {
             return new StepSegment[size];
@@ -28,7 +29,6 @@ public final class StepSegment extends VibrationEffectSegment {
     private final int mDuration;
     private final float mFrequencyHz;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public StepSegment(Parcel in) {
         this(in.readFloat(), in.readFloat(), in.readInt());
     }
@@ -131,5 +131,23 @@ public final class StepSegment extends VibrationEffectSegment {
         out.writeFloat(this.mAmplitude);
         out.writeFloat(this.mFrequencyHz);
         out.writeInt(this.mDuration);
+    }
+
+    /* renamed from: android.os.vibrator.StepSegment$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StepSegment> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StepSegment createFromParcel(Parcel in) {
+            in.readInt();
+            return new StepSegment(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StepSegment[] newArray(int size) {
+            return new StepSegment[size];
+        }
     }
 }

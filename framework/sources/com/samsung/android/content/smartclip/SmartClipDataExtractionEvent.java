@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SmartClipDataExtractionEvent implements Parcelable {
     public static final Parcelable.Creator<SmartClipDataExtractionEvent> CREATOR = new Parcelable.Creator<SmartClipDataExtractionEvent>() { // from class: com.samsung.android.content.smartclip.SmartClipDataExtractionEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmartClipDataExtractionEvent createFromParcel(Parcel in) {
             SmartClipDataExtractionEvent data = new SmartClipDataExtractionEvent();
@@ -15,7 +17,6 @@ public class SmartClipDataExtractionEvent implements Parcelable {
             return data;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartClipDataExtractionEvent[] newArray(int size) {
             return new SmartClipDataExtractionEvent[size];
@@ -70,5 +71,24 @@ public class SmartClipDataExtractionEvent implements Parcelable {
         this.mExtractionMode = in.readInt();
         this.mTargetWindowLayer = in.readInt();
         this.mCropRect = (Rect) in.readParcelable(Rect.class.getClassLoader());
+    }
+
+    /* renamed from: com.samsung.android.content.smartclip.SmartClipDataExtractionEvent$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmartClipDataExtractionEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartClipDataExtractionEvent createFromParcel(Parcel in) {
+            SmartClipDataExtractionEvent data = new SmartClipDataExtractionEvent();
+            data.readFromParcel(in);
+            return data;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartClipDataExtractionEvent[] newArray(int size) {
+            return new SmartClipDataExtractionEvent[size];
+        }
     }
 }

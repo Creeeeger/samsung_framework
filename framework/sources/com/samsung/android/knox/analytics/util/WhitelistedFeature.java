@@ -11,7 +11,6 @@ public class WhitelistedFeature {
         GET
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public WhitelistedFeature(String feature, Integer enableType) {
         this.mFeature = feature;
         this.mEnableApi = fromEnableType(enableType);

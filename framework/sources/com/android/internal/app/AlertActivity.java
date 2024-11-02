@@ -25,7 +25,6 @@ public abstract class AlertActivity extends Activity implements DialogInterface 
     private boolean mIsDeviceDefault;
     private boolean mIsDeviceDefaultDark;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +87,6 @@ public abstract class AlertActivity extends Activity implements DialogInterface 
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setupAlert() {
         this.mAlert.installContent(this.mAlertParams);
     }

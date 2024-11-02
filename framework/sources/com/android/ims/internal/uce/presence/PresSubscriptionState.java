@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class PresSubscriptionState implements Parcelable {
     public static final Parcelable.Creator<PresSubscriptionState> CREATOR = new Parcelable.Creator<PresSubscriptionState>() { // from class: com.android.ims.internal.uce.presence.PresSubscriptionState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PresSubscriptionState createFromParcel(Parcel source) {
             return new PresSubscriptionState(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresSubscriptionState[] newArray(int size) {
             return new PresSubscriptionState[size];
@@ -24,6 +25,10 @@ public class PresSubscriptionState implements Parcelable {
     public static final int UCE_PRES_SUBSCRIPTION_STATE_UNKNOWN = 3;
     private int mPresSubscriptionState;
 
+    /* synthetic */ PresSubscriptionState(Parcel parcel, PresSubscriptionStateIA presSubscriptionStateIA) {
+        this(parcel);
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -32,6 +37,23 @@ public class PresSubscriptionState implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mPresSubscriptionState);
+    }
+
+    /* renamed from: com.android.ims.internal.uce.presence.PresSubscriptionState$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PresSubscriptionState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PresSubscriptionState createFromParcel(Parcel source) {
+            return new PresSubscriptionState(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PresSubscriptionState[] newArray(int size) {
+            return new PresSubscriptionState[size];
+        }
     }
 
     private PresSubscriptionState(Parcel source) {

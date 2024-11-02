@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class ScreenshotResult implements Parcelable {
     public static final Parcelable.Creator<ScreenshotResult> CREATOR = new Parcelable.Creator<ScreenshotResult>() { // from class: com.samsung.android.view.ScreenshotResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ScreenshotResult createFromParcel(Parcel in) {
             return new ScreenshotResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScreenshotResult[] newArray(int size) {
             return new ScreenshotResult[size];
@@ -29,6 +30,14 @@ public class ScreenshotResult implements Parcelable {
     private int mFailedReason;
     private String mSecuredWindowName;
     private String mTargetWindowName;
+
+    /* synthetic */ ScreenshotResult(Bitmap bitmap, int i, String str, String str2, ScreenshotResultIA screenshotResultIA) {
+        this(bitmap, i, str, str2);
+    }
+
+    /* synthetic */ ScreenshotResult(Parcel parcel, ScreenshotResultIA screenshotResultIA) {
+        this(parcel);
+    }
 
     private ScreenshotResult(Bitmap bitmap, int failedReason, String targetWindowName, String securedWindowName) {
         this.mCapturedBitmap = bitmap;
@@ -94,6 +103,23 @@ public class ScreenshotResult implements Parcelable {
         public Builder setSecuredWindowName(String securedWindowName) {
             this.mSecuredWindowName = securedWindowName;
             return this;
+        }
+    }
+
+    /* renamed from: com.samsung.android.view.ScreenshotResult$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ScreenshotResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ScreenshotResult createFromParcel(Parcel in) {
+            return new ScreenshotResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ScreenshotResult[] newArray(int size) {
+            return new ScreenshotResult[size];
         }
     }
 

@@ -34,6 +34,10 @@ public class NightDisplayListener {
         this.mUserId = userId;
         this.mHandler = handler;
         this.mContentObserver = new ContentObserver(handler) { // from class: android.hardware.display.NightDisplayListener.1
+            AnonymousClass1(Handler handler2) {
+                super(handler2);
+            }
+
             /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange, Uri uri) {
@@ -105,6 +109,84 @@ public class NightDisplayListener {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.display.NightDisplayListener$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends ContentObserver {
+        AnonymousClass1(Handler handler2) {
+            super(handler2);
+        }
+
+        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange, Uri uri) {
+            char c;
+            super.onChange(selfChange, uri);
+            String setting = uri == null ? null : uri.getLastPathSegment();
+            if (setting != null && NightDisplayListener.this.mCallback != null) {
+                switch (setting.hashCode()) {
+                    case -2038150513:
+                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_AUTO_MODE)) {
+                            c = 1;
+                            break;
+                        }
+                        c = 65535;
+                        break;
+                    case -1761668069:
+                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_CUSTOM_END_TIME)) {
+                            c = 3;
+                            break;
+                        }
+                        c = 65535;
+                        break;
+                    case -969458956:
+                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_COLOR_TEMPERATURE)) {
+                            c = 4;
+                            break;
+                        }
+                        c = 65535;
+                        break;
+                    case 800115245:
+                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_ACTIVATED)) {
+                            c = 0;
+                            break;
+                        }
+                        c = 65535;
+                        break;
+                    case 1578271348:
+                        if (setting.equals(Settings.Secure.NIGHT_DISPLAY_CUSTOM_START_TIME)) {
+                            c = 2;
+                            break;
+                        }
+                        c = 65535;
+                        break;
+                    default:
+                        c = 65535;
+                        break;
+                }
+                switch (c) {
+                    case 0:
+                        NightDisplayListener.this.mCallback.onActivated(NightDisplayListener.this.mManager.isNightDisplayActivated());
+                        return;
+                    case 1:
+                        NightDisplayListener.this.mCallback.onAutoModeChanged(NightDisplayListener.this.mManager.getNightDisplayAutoMode());
+                        return;
+                    case 2:
+                        NightDisplayListener.this.mCallback.onCustomStartTimeChanged(NightDisplayListener.this.mManager.getNightDisplayCustomStartTime());
+                        return;
+                    case 3:
+                        NightDisplayListener.this.mCallback.onCustomEndTimeChanged(NightDisplayListener.this.mManager.getNightDisplayCustomEndTime());
+                        return;
+                    case 4:
+                        NightDisplayListener.this.mCallback.onColorTemperatureChanged(NightDisplayListener.this.mManager.getNightDisplayColorTemperature());
+                        return;
+                    default:
+                        return;
+                }
+            }
+        }
+    }
+
     public void setCallback(final Callback callback) {
         if (Looper.myLooper() != this.mHandler.getLooper()) {
             this.mHandler.post(new Runnable() { // from class: android.hardware.display.NightDisplayListener$$ExternalSyntheticLambda0
@@ -117,8 +199,7 @@ public class NightDisplayListener {
         lambda$setCallback$0(callback);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: setCallbackInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: setCallbackInternal */
     public void lambda$setCallback$0(Callback newCallback) {
         Callback oldCallback = this.mCallback;
         if (oldCallback != newCallback) {

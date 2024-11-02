@@ -17,8 +17,9 @@ public class Image extends Content {
     private int targetHeight;
     private int targetWidth;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes6.dex */
-    enum ImageStorageType {
+    public enum ImageStorageType {
         BUFFER,
         PATH
     }

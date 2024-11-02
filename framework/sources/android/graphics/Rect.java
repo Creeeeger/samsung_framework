@@ -15,7 +15,9 @@ import java.util.regex.Pattern;
 /* loaded from: classes.dex */
 public final class Rect implements Parcelable {
     public static final Parcelable.Creator<Rect> CREATOR = new Parcelable.Creator<Rect>() { // from class: android.graphics.Rect.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Rect createFromParcel(Parcel in) {
             Rect r = new Rect();
@@ -23,7 +25,6 @@ public final class Rect implements Parcelable {
             return r;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Rect[] newArray(int size) {
             return new Rect[size];
@@ -34,8 +35,9 @@ public final class Rect implements Parcelable {
     public int right;
     public int top;
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static final class UnflattenHelper {
+    public static final class UnflattenHelper {
         private static final Pattern FLATTENED_PATTERN = Pattern.compile("(-?\\d+) (-?\\d+) (-?\\d+) (-?\\d+)");
 
         private UnflattenHelper() {
@@ -485,6 +487,25 @@ public final class Rect implements Parcelable {
         out.writeInt(this.top);
         out.writeInt(this.right);
         out.writeInt(this.bottom);
+    }
+
+    /* renamed from: android.graphics.Rect$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Rect> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Rect createFromParcel(Parcel in) {
+            Rect r = new Rect();
+            r.readFromParcel(in);
+            return r;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Rect[] newArray(int size) {
+            return new Rect[size];
+        }
     }
 
     public void readFromParcel(Parcel in) {

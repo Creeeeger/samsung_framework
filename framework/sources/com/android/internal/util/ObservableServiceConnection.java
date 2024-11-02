@@ -46,8 +46,7 @@ public class ObservableServiceConnection<T> implements ServiceConnection {
         T convert(IBinder iBinder);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.util.ObservableServiceConnection$1, reason: invalid class name */
+    /* renamed from: com.android.internal.util.ObservableServiceConnection$1 */
     /* loaded from: classes5.dex */
     public class AnonymousClass1 extends CallbackRegistry.NotifierCallback<Callback<T>, ObservableServiceConnection<T>, T> {
         AnonymousClass1() {
@@ -67,7 +66,6 @@ public class ObservableServiceConnection<T> implements ServiceConnection {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onNotifyCallback$0(Object service, Callback callback, ObservableServiceConnection sender, int disconnectReason) {
             synchronized (ObservableServiceConnection.this.mLock) {
                 if (service != null) {
@@ -116,7 +114,6 @@ public class ObservableServiceConnection<T> implements ServiceConnection {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addCallback$0(Callback callback) {
         synchronized (this.mLock) {
             T t = this.mService;

@@ -24,7 +24,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public abstract class MediaBufferBase implements MediaBuffer {
     static final int DATA_HARDWARE_BUFFER = 2;
@@ -141,14 +140,13 @@ public abstract class MediaBufferBase implements MediaBuffer {
         return Arrays.stream(flagsToCheck).allMatch(new IntPredicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferBase$$ExternalSyntheticLambda3
             @Override // java.util.function.IntPredicate
             public final boolean test(int i) {
-                return MediaBufferBase.this.m8728x14a22c8(i);
+                return MediaBufferBase.this.m8720x14a22c8(i);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$containFlags$0$com-samsung-android-sume-core-buffer-MediaBufferBase, reason: not valid java name */
-    public /* synthetic */ boolean m8728x14a22c8(int it) {
+    /* renamed from: lambda$containFlags$0$com-samsung-android-sume-core-buffer-MediaBufferBase */
+    public /* synthetic */ boolean m8720x14a22c8(int it) {
         return (this.flags & it) != 0;
     }
 
@@ -187,14 +185,13 @@ public abstract class MediaBufferBase implements MediaBuffer {
         hashMap.putAll((Map) other.entrySet().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferBase$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return MediaBufferBase.this.m8727x2f0e598b((Map.Entry) obj);
+                return MediaBufferBase.this.m8719x2f0e598b((Map.Entry) obj);
             }
         }).collect(Collectors.toMap(new MediaBufferBase$$ExternalSyntheticLambda1(), new MediaBufferBase$$ExternalSyntheticLambda2())));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$addExtra$1$com-samsung-android-sume-core-buffer-MediaBufferBase, reason: not valid java name */
-    public /* synthetic */ boolean m8727x2f0e598b(Map.Entry it) {
+    /* renamed from: lambda$addExtra$1$com-samsung-android-sume-core-buffer-MediaBufferBase */
+    public /* synthetic */ boolean m8719x2f0e598b(Map.Entry it) {
         return !this.extra.containsKey(it.getKey());
     }
 
@@ -247,7 +244,6 @@ public abstract class MediaBufferBase implements MediaBuffer {
         }).orElse(false)).booleanValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$containsAnyExtra$3(HashMap e, String it) {
         Stream stream = e.keySet().stream();
         Objects.requireNonNull(it);
@@ -271,26 +267,23 @@ public abstract class MediaBufferBase implements MediaBuffer {
         }).orElse(false)).booleanValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$containsAllExtra$5(HashMap e, String it) {
         Stream stream = e.keySet().stream();
         Objects.requireNonNull(it);
         return stream.anyMatch(new OverlayManagerExt$$ExternalSyntheticLambda1(it));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$transformDataTo$7$com-samsung-android-sume-core-buffer-MediaBufferBase, reason: not valid java name */
-    public /* synthetic */ void m8729x9603d8fd(Object buffer) {
+    /* renamed from: lambda$transformDataTo$7$com-samsung-android-sume-core-buffer-MediaBufferBase */
+    public /* synthetic */ void m8721x9603d8fd(Object buffer) {
         this.internalBuffers.add(buffer);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public <T, V> V transformDataTo(T t, Class<V> cls) {
         try {
             BufferExtension.putInternalBufferHandler(new Consumer() { // from class: com.samsung.android.sume.core.buffer.MediaBufferBase$$ExternalSyntheticLambda6
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    MediaBufferBase.this.m8729x9603d8fd(obj);
+                    MediaBufferBase.this.m8721x9603d8fd(obj);
                 }
             });
             return (V) BufferExtension.transform(getFormat(), t, cls);
@@ -302,7 +295,6 @@ public abstract class MediaBufferBase implements MediaBuffer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isDataShared() {
         return ((Boolean) Optional.ofNullable(getDataClass()).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MediaBufferBase$$ExternalSyntheticLambda7
             @Override // java.util.function.Function
@@ -339,7 +331,6 @@ public abstract class MediaBufferBase implements MediaBuffer {
         this.internalBuffers.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$release$9(Object buffer) {
         if (BufferExtension.isRequiredToRelease(buffer.getClass())) {
             BufferExtension.dealloc(buffer);
@@ -361,7 +352,6 @@ public abstract class MediaBufferBase implements MediaBuffer {
         }
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.format.Copyable
     /* renamed from: deepCopy */
     public MediaBuffer deepCopy2() {

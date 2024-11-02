@@ -479,7 +479,10 @@ public final class ViewNode extends AssistStructure.ViewNode {
         return this.mLocaleList;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0057, code lost:            if ((((r42.mWidth & (-32768)) != 0) | ((r42.mHeight & (-32768)) != 0)) != false) goto L33;     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0057, code lost:
+    
+        if ((((r42.mWidth & (-32768)) != 0) | ((r42.mHeight & (-32768)) != 0)) != false) goto L188;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -877,7 +880,6 @@ public final class ViewNode extends AssistStructure.ViewNode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class ViewNodeText {
         String mHint;

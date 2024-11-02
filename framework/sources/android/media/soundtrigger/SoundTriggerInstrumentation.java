@@ -79,6 +79,10 @@ public final class SoundTriggerInstrumentation {
         private Executor mModelExecutor;
         private final SoundTrigger.Keyphrase[] mPhrases;
 
+        /* synthetic */ ModelSession(SoundTriggerInstrumentation soundTriggerInstrumentation, SoundModel soundModel, Phrase[] phraseArr, IInjectModelEvent iInjectModelEvent, ModelSessionIA modelSessionIA) {
+            this(soundModel, phraseArr, iInjectModelEvent);
+        }
+
         public void triggerUnloadModel() {
             synchronized (SoundTriggerInstrumentation.this.mLock) {
                 try {
@@ -158,7 +162,6 @@ public final class SoundTriggerInstrumentation {
             this.mInjectModelEvent = injection;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void wrap(final Consumer<ModelCallback> consumer) {
             synchronized (SoundTriggerInstrumentation.this.mLock) {
                 final ModelCallback callback = this.mModelCallback;
@@ -184,6 +187,10 @@ public final class SoundTriggerInstrumentation {
         private RecognitionCallback mRecognitionCallback;
         private final SoundTrigger.RecognitionConfig mRecognitionConfig;
         private Executor mRecognitionExecutor;
+
+        /* synthetic */ RecognitionSession(SoundTriggerInstrumentation soundTriggerInstrumentation, int i, RecognitionConfig recognitionConfig, IInjectRecognitionEvent iInjectRecognitionEvent, RecognitionSessionIA recognitionSessionIA) {
+            this(i, recognitionConfig, iInjectRecognitionEvent);
+        }
 
         public int getAudioSession() {
             return this.mAudioSession;
@@ -260,7 +267,6 @@ public final class SoundTriggerInstrumentation {
             this.mInjectRecognitionEvent = injectRecognitionEvent;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void wrap(final Consumer<RecognitionCallback> consumer) {
             synchronized (SoundTriggerInstrumentation.this.mLock) {
                 final RecognitionCallback callback = this.mRecognitionCallback;
@@ -278,9 +284,12 @@ public final class SoundTriggerInstrumentation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class Injection extends ISoundTriggerInjection.Stub {
+        /* synthetic */ Injection(SoundTriggerInstrumentation soundTriggerInstrumentation, InjectionIA injectionIA) {
+            this();
+        }
+
         private Injection() {
         }
 
@@ -308,7 +317,6 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSoundModelLoaded$0(ModelSession modelSession) {
             SoundTriggerInstrumentation.this.mClientCallback.onModelLoaded(modelSession);
         }
@@ -396,7 +404,6 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRestarted$5() {
             SoundTriggerInstrumentation.this.mClientCallback.onRestarted();
         }
@@ -416,7 +423,6 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFrameworkDetached$6() {
             SoundTriggerInstrumentation.this.mClientCallback.onFrameworkDetached();
         }
@@ -437,7 +443,6 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClientAttached$7() {
             SoundTriggerInstrumentation.this.mClientCallback.onClientAttached();
         }
@@ -458,12 +463,10 @@ public final class SoundTriggerInstrumentation {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClientDetached$8() {
             SoundTriggerInstrumentation.this.mClientCallback.onClientDetached();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPreempted$9() {
             SoundTriggerInstrumentation.this.mClientCallback.onPreempted();
         }
@@ -524,22 +527,43 @@ public final class SoundTriggerInstrumentation {
             if (current == null) {
                 throw new IllegalStateException("Injection interface not set up");
             }
-            final CountDownLatch signal = new CountDownLatch(1);
+            CountDownLatch signal = new CountDownLatch(1);
             try {
                 current.setResourceContention(isResourceContended, new IAcknowledgeEvent.Stub() { // from class: android.media.soundtrigger.SoundTriggerInstrumentation.1
+                    final /* synthetic */ CountDownLatch val$signal;
+
+                    AnonymousClass1(CountDownLatch signal2) {
+                        signal = signal2;
+                    }
+
                     @Override // android.media.soundtrigger_middleware.IAcknowledgeEvent
                     public void eventReceived() {
                         signal.countDown();
                     }
                 });
                 try {
-                    signal.await();
+                    signal2.await();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             } catch (RemoteException e2) {
                 throw e2.rethrowFromSystemServer();
             }
+        }
+    }
+
+    /* renamed from: android.media.soundtrigger.SoundTriggerInstrumentation$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends IAcknowledgeEvent.Stub {
+        final /* synthetic */ CountDownLatch val$signal;
+
+        AnonymousClass1(CountDownLatch signal2) {
+            signal = signal2;
+        }
+
+        @Override // android.media.soundtrigger_middleware.IAcknowledgeEvent
+        public void eventReceived() {
+            signal.countDown();
         }
     }
 

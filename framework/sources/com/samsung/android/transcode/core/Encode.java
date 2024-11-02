@@ -269,13 +269,11 @@ public abstract class Encode {
         return VERSION;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isHDR10() {
         int i = this.mHDRType;
         return i == 1 || i == 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isHDR10Plus() {
         return this.mHDRType == 2;
     }

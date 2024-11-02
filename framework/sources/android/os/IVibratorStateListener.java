@@ -78,8 +78,9 @@ public interface IVibratorStateListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IVibratorStateListener {
+        public static class Proxy implements IVibratorStateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

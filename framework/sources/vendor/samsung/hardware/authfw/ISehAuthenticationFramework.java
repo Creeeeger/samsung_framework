@@ -133,7 +133,6 @@ public interface ISehAuthenticationFramework extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
         public static class Proxy implements ISehAuthenticationFramework {
             private IBinder mRemote;

@@ -67,6 +67,9 @@ public class SemMotionRecognitionManager {
     private IMotionRecognitionService motionService;
     private final ArrayList<MRListenerDelegate> sListenerDelegates = new ArrayList<>();
     private final SemContextListener mySemContextMotionListener = new SemContextListener() { // from class: com.samsung.android.gesture.SemMotionRecognitionManager.1
+        AnonymousClass1() {
+        }
+
         @Override // com.samsung.android.hardware.context.SemContextListener
         public void onSemContextChanged(SemContextEvent event) {
             SemContext semContext = event.semContext;
@@ -183,11 +186,26 @@ public class SemMotionRecognitionManager {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x0058, code lost:            r8.sListenerDelegates.remove(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0061, code lost:            if (r3.getMotionEvents() == 0) goto L21;     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0063, code lost:            r8.motionService.unregisterCallback(r3);     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0069, code lost:            r4 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x006a, code lost:            android.util.Log.e(com.samsung.android.gesture.SemMotionRecognitionManager.TAG, "RemoteException in unregisterListener: ", r4);     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x0058, code lost:
+    
+        r8.sListenerDelegates.remove(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0061, code lost:
+    
+        if (r3.getMotionEvents() == 0) goto L57;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0063, code lost:
+    
+        r8.motionService.unregisterCallback(r3);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0069, code lost:
+    
+        r4 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x006a, code lost:
+    
+        android.util.Log.e(com.samsung.android.gesture.SemMotionRecognitionManager.TAG, "RemoteException in unregisterListener: ", r4);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -343,6 +361,49 @@ public class SemMotionRecognitionManager {
         return 1;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.gesture.SemMotionRecognitionManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements SemContextListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.hardware.context.SemContextListener
+        public void onSemContextChanged(SemContextEvent event) {
+            SemContext semContext = event.semContext;
+            SemMotionRecognitionEvent mrevent = new SemMotionRecognitionEvent();
+            boolean isEnabledPickUp = false;
+            switch (semContext.getType()) {
+                case 5:
+                    SemContextMovement semContextMovement = event.getMovementContext();
+                    if (semContextMovement.getAction() == 1) {
+                        try {
+                            isEnabledPickUp = SemMotionRecognitionManager.this.motionService.getPickUpMotionStatus();
+                            Log.d(SemMotionRecognitionManager.TAG, "  >> check setting smart alert enabled : " + isEnabledPickUp);
+                        } catch (RemoteException e) {
+                            Log.e(SemMotionRecognitionManager.TAG, "RemoteException in getPickUpMotionStatus: ", e);
+                        }
+                        if (isEnabledPickUp) {
+                            mrevent.setMotion(67);
+                            Log.d(SemMotionRecognitionManager.TAG, "mySemContextMotionListener : Send Smart alert event");
+                            synchronized (SemMotionRecognitionManager.this.sListenerDelegates) {
+                                int size = SemMotionRecognitionManager.this.sListenerDelegates.size();
+                                for (int i = 0; i < size; i++) {
+                                    MRListenerDelegate l = (MRListenerDelegate) SemMotionRecognitionManager.this.sListenerDelegates.get(i);
+                                    l.motionCallback(mrevent);
+                                }
+                            }
+                            return;
+                        }
+                        return;
+                    }
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     public boolean isAvailable(int type) {
         IMotionRecognitionService iMotionRecognitionService = this.motionService;
         if (iMotionRecognitionService == null) {
@@ -423,7 +484,6 @@ public class SemMotionRecognitionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class MRListenerDelegate extends IMotionRecognitionCallback.Stub {
         private final int EVENT_FROM_SERVICE = 53;
@@ -439,6 +499,14 @@ public class SemMotionRecognitionManager {
             this.mMotionEvents = motion_sensors;
             this.mListenerPackageName = ActivityThread.currentPackageName();
             this.mHandler = new Handler(looper) { // from class: com.samsung.android.gesture.SemMotionRecognitionManager.MRListenerDelegate.1
+                final /* synthetic */ SemMotionRecognitionManager val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper2, SemMotionRecognitionManager semMotionRecognitionManager) {
+                    super(looper2);
+                    r3 = semMotionRecognitionManager;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     synchronized (SemMotionRecognitionManager.this.sListenerDelegates) {
@@ -453,6 +521,33 @@ public class SemMotionRecognitionManager {
                     }
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.gesture.SemMotionRecognitionManager$MRListenerDelegate$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ SemMotionRecognitionManager val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper2, SemMotionRecognitionManager semMotionRecognitionManager) {
+                super(looper2);
+                r3 = semMotionRecognitionManager;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                synchronized (SemMotionRecognitionManager.this.sListenerDelegates) {
+                    try {
+                        if (MRListenerDelegate.this.mListener != null && msg != null && msg.what == 53) {
+                            SemMotionRecognitionEvent motionEvent = (SemMotionRecognitionEvent) msg.obj;
+                            MRListenerDelegate.this.mListener.onMotionEvent(motionEvent);
+                        }
+                    } catch (ClassCastException e) {
+                        Log.e(SemMotionRecognitionManager.TAG, "ClassCastException in handleMessage: msg.obj = " + msg.obj, e);
+                    }
+                }
+            }
         }
 
         public SemMotionEventListener getListener() {

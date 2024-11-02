@@ -94,7 +94,6 @@ public class PackageLite {
         }) == null) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$hasAnyRequiredSplitTypes$0(Set r) {
         return !CollectionUtils.isEmpty(r);
     }

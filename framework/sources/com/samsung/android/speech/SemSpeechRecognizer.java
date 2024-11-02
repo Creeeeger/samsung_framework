@@ -112,6 +112,10 @@ public class SemSpeechRecognizer {
             Log.d(str, "mState change to : " + this.mState);
             if (this.mStopHandler == null) {
                 this.mStopHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.speech.SemSpeechRecognizer.1
+                    AnonymousClass1(Looper looper) {
+                        super(looper);
+                    }
+
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         Log.e(SemSpeechRecognizer.TAG, "audio is halt without stopRecognition()");
@@ -122,6 +126,10 @@ public class SemSpeechRecognizer {
             }
             if (this.handler == null) {
                 this.handler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.speech.SemSpeechRecognizer.2
+                    AnonymousClass2(Looper looper) {
+                        super(looper);
+                    }
+
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         int result = msg.getData().getInt("commandType");
@@ -132,6 +140,35 @@ public class SemSpeechRecognizer {
                 Log.d(str, "handler create");
             }
             SendHandlerMessage(commandType);
+        }
+    }
+
+    /* renamed from: com.samsung.android.speech.SemSpeechRecognizer$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            Log.e(SemSpeechRecognizer.TAG, "audio is halt without stopRecognition()");
+            SemSpeechRecognizer.this.stopRecognition();
+        }
+    }
+
+    /* renamed from: com.samsung.android.speech.SemSpeechRecognizer$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends Handler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            int result = msg.getData().getInt("commandType");
+            SemSpeechRecognizer semSpeechRecognizer = SemSpeechRecognizer.this;
+            semSpeechRecognizer.delayedStartBargeIn(result, semSpeechRecognizer.mStopHandler);
         }
     }
 
@@ -154,7 +191,6 @@ public class SemSpeechRecognizer {
         start(commandType);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void delayedStartBargeIn(int commandType, Handler stopHandler) {
         String str = TAG;
         Log.i(str, "delayedStartBargeIn");

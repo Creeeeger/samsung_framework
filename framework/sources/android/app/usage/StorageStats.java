@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class StorageStats implements Parcelable {
     public static final Parcelable.Creator<StorageStats> CREATOR = new Parcelable.Creator<StorageStats>() { // from class: android.app.usage.StorageStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StorageStats createFromParcel(Parcel in) {
             return new StorageStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StorageStats[] newArray(int size) {
             return new StorageStats[size];
@@ -60,5 +61,22 @@ public final class StorageStats implements Parcelable {
         dest.writeLong(this.dataBytes);
         dest.writeLong(this.cacheBytes);
         dest.writeLong(this.externalCacheBytes);
+    }
+
+    /* renamed from: android.app.usage.StorageStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StorageStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StorageStats createFromParcel(Parcel in) {
+            return new StorageStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StorageStats[] newArray(int size) {
+            return new StorageStats[size];
+        }
     }
 }

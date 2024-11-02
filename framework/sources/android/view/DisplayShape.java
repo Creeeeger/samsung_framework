@@ -24,7 +24,9 @@ public final class DisplayShape implements Parcelable {
     private final float mScale;
     public static final DisplayShape NONE = new DisplayShape("", 0, 0, 0.0f, 0);
     public static final Parcelable.Creator<DisplayShape> CREATOR = new Parcelable.Creator<DisplayShape>() { // from class: android.view.DisplayShape.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DisplayShape createFromParcel(Parcel in) {
             String spec = in.readString8();
@@ -38,12 +40,19 @@ public final class DisplayShape implements Parcelable {
             return new DisplayShape(spec, displayWidth, displayHeight, ratio, rotation, offsetX, offsetY, scale);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayShape[] newArray(int size) {
             return new DisplayShape[size];
         }
     };
+
+    /* synthetic */ DisplayShape(String str, int i, int i2, float f, int i3, int i4, int i5, float f2, DisplayShapeIA displayShapeIA) {
+        this(str, i, i2, f, i3, i4, i5, f2);
+    }
+
+    /* synthetic */ DisplayShape(String str, int i, int i2, float f, int i3, DisplayShapeIA displayShapeIA) {
+        this(str, i, i2, f, i3);
+    }
 
     private DisplayShape(String displayShapeSpec, int displayWidth, int displayHeight, float physicalPixelDisplaySizeRatio, int rotation) {
         this(displayShapeSpec, displayWidth, displayHeight, physicalPixelDisplaySizeRatio, rotation, 0, 0, 1.0f);
@@ -154,7 +163,31 @@ public final class DisplayShape implements Parcelable {
         dest.writeFloat(this.mScale);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.view.DisplayShape$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DisplayShape> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayShape createFromParcel(Parcel in) {
+            String spec = in.readString8();
+            int displayWidth = in.readInt();
+            int displayHeight = in.readInt();
+            float ratio = in.readFloat();
+            int rotation = in.readInt();
+            int offsetX = in.readInt();
+            int offsetY = in.readInt();
+            float scale = in.readFloat();
+            return new DisplayShape(spec, displayWidth, displayHeight, ratio, rotation, offsetX, offsetY, scale);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayShape[] newArray(int size) {
+            return new DisplayShape[size];
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static final class Cache {
         private static final Object CACHE_LOCK = new Object();

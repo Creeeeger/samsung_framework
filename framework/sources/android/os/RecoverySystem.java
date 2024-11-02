@@ -19,6 +19,8 @@ import android.sec.enterprise.EnterpriseDeviceManager;
 import android.sec.enterprise.RestrictionPolicy;
 import android.sec.enterprise.auditlog.AuditEvents;
 import android.sec.enterprise.auditlog.AuditLog;
+import android.security.AndroidKeyStoreMaintenance;
+import android.security.KeyStoreException;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.telephony.SubscriptionInfo;
@@ -82,6 +84,7 @@ public class RecoverySystem {
     private static final long PUBLISH_PROGRESS_INTERVAL_MS = 500;
     private static final File RECOVERY_DIR;
     public static final File RECOVERY_RESCUEPARTY_FILE;
+    private static final String RECOVERY_WIPE_DATA_COMMAND = "--wipe_data";
     private static final int RESCUEPARTY_LOG_MAX_LENGTH = 524288;
 
     @SystemApi
@@ -271,14 +274,14 @@ public class RecoverySystem {
                 long soFar = 0;
                 int lastPercent = 0;
 
-                {
-                    this.val$fileLen = fileLen;
-                    this.val$commentSize = commentSize;
-                    this.val$startTimeMillis = startTimeMillis;
-                    this.val$raf = raf;
-                    this.val$listenerForInner = listener;
-                    this.toRead = (fileLen - commentSize) - 2;
-                    this.lastPublishTime = startTimeMillis;
+                AnonymousClass1(long fileLen2, int commentSize2, long startTimeMillis2, RandomAccessFile raf2, ProgressListener listener2) {
+                    this.val$fileLen = fileLen2;
+                    this.val$commentSize = commentSize2;
+                    this.val$startTimeMillis = startTimeMillis2;
+                    this.val$raf = raf2;
+                    this.val$listenerForInner = listener2;
+                    this.toRead = (fileLen2 - commentSize2) - 2;
+                    this.lastPublishTime = startTimeMillis2;
                 }
 
                 @Override // java.io.InputStream
@@ -313,8 +316,8 @@ public class RecoverySystem {
                 }
             });
             boolean interrupted = Thread.interrupted();
-            if (listener != null) {
-                listener.onProgress(100);
+            if (listener2 != null) {
+                listener2.onProgress(100);
             }
             if (interrupted) {
                 throw new SignatureException("verification was interrupted");
@@ -322,17 +325,75 @@ public class RecoverySystem {
             if (verifyResult == null) {
                 throw new SignatureException("signature digest verification failed");
             }
-            raf.close();
+            raf2.close();
             if (!readAndVerifyPackageCompatibilityEntry(packageFile)) {
                 throw new SignatureException("package compatibility verification failed");
             }
         } catch (Throwable th) {
-            raf.close();
+            raf2.close();
             throw th;
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0052, code lost:            throw new java.io.IOException("invalid entry size (" + r4 + ") in the compatibility file");     */
+    /* renamed from: android.os.RecoverySystem$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends InputStream {
+        long lastPublishTime;
+        long toRead;
+        final /* synthetic */ int val$commentSize;
+        final /* synthetic */ long val$fileLen;
+        final /* synthetic */ ProgressListener val$listenerForInner;
+        final /* synthetic */ RandomAccessFile val$raf;
+        final /* synthetic */ long val$startTimeMillis;
+        long soFar = 0;
+        int lastPercent = 0;
+
+        AnonymousClass1(long fileLen2, int commentSize2, long startTimeMillis2, RandomAccessFile raf2, ProgressListener listener2) {
+            this.val$fileLen = fileLen2;
+            this.val$commentSize = commentSize2;
+            this.val$startTimeMillis = startTimeMillis2;
+            this.val$raf = raf2;
+            this.val$listenerForInner = listener2;
+            this.toRead = (fileLen2 - commentSize2) - 2;
+            this.lastPublishTime = startTimeMillis2;
+        }
+
+        @Override // java.io.InputStream
+        public int read() throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // java.io.InputStream
+        public int read(byte[] b2, int off, int len) throws IOException {
+            if (this.soFar >= this.toRead || Thread.currentThread().isInterrupted()) {
+                return -1;
+            }
+            int size = len;
+            long j = this.soFar;
+            long j2 = size + j;
+            long j3 = this.toRead;
+            if (j2 > j3) {
+                size = (int) (j3 - j);
+            }
+            int read = this.val$raf.read(b2, off, size);
+            this.soFar += read;
+            if (this.val$listenerForInner != null) {
+                long now = System.currentTimeMillis();
+                int p = (int) ((this.soFar * 100) / this.toRead);
+                if (p > this.lastPercent && now - this.lastPublishTime > RecoverySystem.PUBLISH_PROGRESS_INTERVAL_MS) {
+                    this.lastPercent = p;
+                    this.lastPublishTime = now;
+                    this.val$listenerForInner.onProgress(p);
+                }
+            }
+            return read;
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0052, code lost:
+    
+        throw new java.io.IOException("invalid entry size (" + r4 + ") in the compatibility file");
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -459,8 +520,7 @@ public class RecoverySystem {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.os.RecoverySystem$2, reason: invalid class name */
+    /* renamed from: android.os.RecoverySystem$2 */
     /* loaded from: classes3.dex */
     public class AnonymousClass2 extends IRecoverySystemProgressListener.Stub {
         int lastProgress = 0;
@@ -473,10 +533,39 @@ public class RecoverySystem {
             this.val$listener = progressListener;
         }
 
+        /* renamed from: android.os.RecoverySystem$2$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ long val$now;
+            final /* synthetic */ int val$progress;
+
+            AnonymousClass1(int i, long j) {
+                progress = i;
+                now = j;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (progress > AnonymousClass2.this.lastProgress && now - AnonymousClass2.this.lastPublishTime > RecoverySystem.PUBLISH_PROGRESS_INTERVAL_MS) {
+                    AnonymousClass2.this.lastProgress = progress;
+                    AnonymousClass2.this.lastPublishTime = now;
+                    AnonymousClass2.this.val$listener.onProgress(progress);
+                }
+            }
+        }
+
         @Override // android.os.IRecoverySystemProgressListener
-        public void onProgress(final int progress) {
-            final long now = System.currentTimeMillis();
+        public void onProgress(int progress) {
+            long now = System.currentTimeMillis();
             this.val$progressHandler.post(new Runnable() { // from class: android.os.RecoverySystem.2.1
+                final /* synthetic */ long val$now;
+                final /* synthetic */ int val$progress;
+
+                AnonymousClass1(int progress2, long now2) {
+                    progress = progress2;
+                    now = now2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (progress > AnonymousClass2.this.lastProgress && now - AnonymousClass2.this.lastPublishTime > RecoverySystem.PUBLISH_PROGRESS_INTERVAL_MS) {
@@ -617,7 +706,7 @@ public class RecoverySystem {
                 AuditLog.log(5, 1, false, Process.myPid(), TAG, AuditEvents.AUDIT_WIPING_DATA_IS_NOT_ALLOWED_FOR_THIS_USER);
                 throw new SecurityException("Wiping data is not allowed for this user.");
             }
-            final ConditionVariable condition = new ConditionVariable();
+            ConditionVariable condition = new ConditionVariable();
             HandlerThread hthread = new HandlerThread(TAG);
             Log.i(TAG, "rebootWipeUserData: run handler " + hthread);
             hthread.start();
@@ -625,6 +714,9 @@ public class RecoverySystem {
             Intent intent = new Intent(Intent.ACTION_MASTER_CLEAR_NOTIFICATION);
             intent.addFlags(285212672);
             context.sendOrderedBroadcastAsUser(intent, UserHandle.SYSTEM, Manifest.permission.MASTER_CLEAR, new BroadcastReceiver() { // from class: android.os.RecoverySystem.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.content.BroadcastReceiver
                 public void onReceive(Context context2, Intent intent2) {
                     Log.i(RecoverySystem.TAG, "rebootWipeUserData: onReceive");
@@ -662,8 +754,8 @@ public class RecoverySystem {
             }
             try {
                 AuditLog.log(5, 1, true, Process.myPid(), TAG, AuditEvents.AUDIT_STARTING_USER_DATA_WIPE);
-                Log.d(TAG, "!@[RecoverySystem] rebootWipeUserData: wipeDataArg:[--wipe_data], extraCmdArg:[" + extraCmdArg + NavigationBarInflaterView.SIZE_MOD_END);
-                bootCommand(context, shutdownArg, "--wipe_data", extraCmdArg, timeStamp, localeArg);
+                Log.d(TAG, "!@[RecoverySystem] rebootWipeUserData: wipeDataArg:[" + RECOVERY_WIPE_DATA_COMMAND + "], extraCmdArg:[" + extraCmdArg + NavigationBarInflaterView.SIZE_MOD_END);
+                bootCommand(context, shutdownArg, RECOVERY_WIPE_DATA_COMMAND, extraCmdArg, timeStamp, localeArg);
                 return;
             } catch (IOException ioE) {
                 AuditLog.log(5, 1, false, Process.myPid(), TAG, String.format(AuditEvents.AUDIT_FAILED_TO_WIPE_USER_DATA, ioE.getMessage()));
@@ -672,6 +764,19 @@ public class RecoverySystem {
         }
         AuditLog.log(5, 1, false, Process.myPid(), TAG, AuditEvents.AUDIT_WIPING_DATA_IS_NOT_ALLOWED_FOR_THIS_USER);
         throw new SecurityException("Wiping data is not allowed due to restriction policy.");
+    }
+
+    /* renamed from: android.os.RecoverySystem$3 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass3 extends BroadcastReceiver {
+        AnonymousClass3() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent2) {
+            Log.i(RecoverySystem.TAG, "rebootWipeUserData: onReceive");
+            ConditionVariable.this.open();
+        }
     }
 
     public static boolean wipeEuiccData(Context context, String packageName) {
@@ -685,9 +790,17 @@ public class RecoverySystem {
         if (euiccManager == null || !euiccManager.isEnabled()) {
             return false;
         }
-        final CountDownLatch euiccFactoryResetLatch = new CountDownLatch(1);
-        final AtomicBoolean wipingSucceeded = new AtomicBoolean(false);
+        CountDownLatch euiccFactoryResetLatch = new CountDownLatch(1);
+        AtomicBoolean wipingSucceeded = new AtomicBoolean(false);
         BroadcastReceiver euiccWipeFinishReceiver = new BroadcastReceiver() { // from class: android.os.RecoverySystem.4
+            final /* synthetic */ CountDownLatch val$euiccFactoryResetLatch;
+            final /* synthetic */ AtomicBoolean val$wipingSucceeded;
+
+            AnonymousClass4(AtomicBoolean wipingSucceeded2, CountDownLatch euiccFactoryResetLatch2) {
+                wipingSucceeded = wipingSucceeded2;
+                euiccFactoryResetLatch = euiccFactoryResetLatch2;
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 if (RecoverySystem.ACTION_EUICC_FACTORY_RESET.equals(intent.getAction())) {
@@ -734,9 +847,9 @@ public class RecoverySystem {
         }
         try {
             try {
-                if (euiccFactoryResetLatch.await(waitingTimeMillis, TimeUnit.MILLISECONDS)) {
+                if (euiccFactoryResetLatch2.await(waitingTimeMillis, TimeUnit.MILLISECONDS)) {
                     context.getApplicationContext().unregisterReceiver(euiccWipeFinishReceiver);
-                    return wipingSucceeded.get();
+                    return wipingSucceeded2.get();
                 }
                 Log.e(TAG, "Timeout wiping eUICC data.");
                 context.getApplicationContext().unregisterReceiver(euiccWipeFinishReceiver);
@@ -752,6 +865,32 @@ public class RecoverySystem {
             Log.e(TAG, "Wiping eUICC data interrupted", e);
             context.getApplicationContext().unregisterReceiver(euiccWipeFinishReceiver);
             return false;
+        }
+    }
+
+    /* renamed from: android.os.RecoverySystem$4 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass4 extends BroadcastReceiver {
+        final /* synthetic */ CountDownLatch val$euiccFactoryResetLatch;
+        final /* synthetic */ AtomicBoolean val$wipingSucceeded;
+
+        AnonymousClass4(AtomicBoolean wipingSucceeded2, CountDownLatch euiccFactoryResetLatch2) {
+            wipingSucceeded = wipingSucceeded2;
+            euiccFactoryResetLatch = euiccFactoryResetLatch2;
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent) {
+            if (RecoverySystem.ACTION_EUICC_FACTORY_RESET.equals(intent.getAction())) {
+                if (getResultCode() != 0) {
+                    int detailedCode = intent.getIntExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_DETAILED_CODE, 0);
+                    Log.e(RecoverySystem.TAG, "Error wiping euicc data, Detailed code = " + detailedCode);
+                } else {
+                    Log.d(RecoverySystem.TAG, "Successfully wiped euicc data.");
+                    wipingSucceeded.set(true);
+                }
+                euiccFactoryResetLatch.countDown();
+            }
         }
     }
 
@@ -782,9 +921,17 @@ public class RecoverySystem {
 
     private static boolean removeEuiccInvisibleSubs(Context context, List<SubscriptionInfo> subscriptionInfos, EuiccManager euiccManager) {
         if (subscriptionInfos != null && !subscriptionInfos.isEmpty()) {
-            final CountDownLatch removeSubsLatch = new CountDownLatch(subscriptionInfos.size());
-            final AtomicInteger removedSubsCount = new AtomicInteger(0);
+            CountDownLatch removeSubsLatch = new CountDownLatch(subscriptionInfos.size());
+            AtomicInteger removedSubsCount = new AtomicInteger(0);
             BroadcastReceiver removeEuiccSubsReceiver = new BroadcastReceiver() { // from class: android.os.RecoverySystem.5
+                final /* synthetic */ CountDownLatch val$removeSubsLatch;
+                final /* synthetic */ AtomicInteger val$removedSubsCount;
+
+                AnonymousClass5(AtomicInteger removedSubsCount2, CountDownLatch removeSubsLatch2) {
+                    removedSubsCount = removedSubsCount2;
+                    removeSubsLatch = removeSubsLatch2;
+                }
+
                 @Override // android.content.BroadcastReceiver
                 public void onReceive(Context context2, Intent intent) {
                     if (RecoverySystem.ACTION_EUICC_REMOVE_INVISIBLE_SUBSCRIPTIONS.equals(intent.getAction())) {
@@ -819,13 +966,13 @@ public class RecoverySystem {
                 } else if (waitingTimeMillis > MAX_EUICC_REMOVING_INVISIBLE_PROFILES_TIMEOUT_MILLIS) {
                     waitingTimeMillis = MAX_EUICC_REMOVING_INVISIBLE_PROFILES_TIMEOUT_MILLIS;
                 }
-                if (!removeSubsLatch.await(waitingTimeMillis, TimeUnit.MILLISECONDS)) {
+                if (!removeSubsLatch2.await(waitingTimeMillis, TimeUnit.MILLISECONDS)) {
                     Log.e(TAG, "Timeout removing invisible euicc profiles.");
                     return false;
                 }
                 context.getApplicationContext().unregisterReceiver(removeEuiccSubsReceiver);
                 euiccHandlerThread.quit();
-                return removedSubsCount.get() == subscriptionInfos.size();
+                return removedSubsCount2.get() == subscriptionInfos.size();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 Log.e(TAG, "Removing invisible euicc profiles interrupted", e);
@@ -837,6 +984,32 @@ public class RecoverySystem {
         }
         Log.i(TAG, "There are no eUICC invisible profiles needed to be removed.");
         return true;
+    }
+
+    /* renamed from: android.os.RecoverySystem$5 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass5 extends BroadcastReceiver {
+        final /* synthetic */ CountDownLatch val$removeSubsLatch;
+        final /* synthetic */ AtomicInteger val$removedSubsCount;
+
+        AnonymousClass5(AtomicInteger removedSubsCount2, CountDownLatch removeSubsLatch2) {
+            removedSubsCount = removedSubsCount2;
+            removeSubsLatch = removeSubsLatch2;
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent) {
+            if (RecoverySystem.ACTION_EUICC_REMOVE_INVISIBLE_SUBSCRIPTIONS.equals(intent.getAction())) {
+                if (getResultCode() != 0) {
+                    int detailedCode = intent.getIntExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_DETAILED_CODE, 0);
+                    Log.e(RecoverySystem.TAG, "Error removing euicc opportunistic profile, Detailed code = " + detailedCode);
+                } else {
+                    Log.e(RecoverySystem.TAG, "Successfully remove euicc opportunistic profile.");
+                    removedSubsCount.incrementAndGet();
+                }
+                removeSubsLatch.countDown();
+            }
+        }
     }
 
     public static void rebootPromptAndWipeUserData(Context context, String reason) throws IOException {
@@ -950,12 +1123,14 @@ public class RecoverySystem {
     }
 
     private static void bootCommand(Context context, String... args) throws IOException {
+        FileOutputStream fos;
         synchronized (mShutdownIsInProgressLock) {
             if (mShutdownIsInProgress.booleanValue()) {
                 return;
             }
             mShutdownIsInProgress = true;
             Log.i(TAG, "!@[RecoverySystem] bootCommand: " + Arrays.toString(args));
+            boolean isForcedWipe = Arrays.toString(args) != null && Arrays.toString(args).contains(RECOVERY_WIPE_DATA_COMMAND);
             synchronized (sRequestLock) {
                 StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
                 StringBuilder sb = new StringBuilder();
@@ -1004,6 +1179,9 @@ public class RecoverySystem {
                     Log.i(TAG, "!@[RecoverySystem] bootCommand: command file absent, throw exception");
                     throw new IOException("Reboot failed (unable to create command file)");
                 }
+                if (isForcedWipe) {
+                    deleteSecrets();
+                }
                 PowerManager pm = (PowerManager) context.getSystemService("power");
                 String reason = SystemProperties.get("persist.sys.reboot.reason");
                 if ("nvrecovery".equals(reason)) {
@@ -1019,23 +1197,23 @@ public class RecoverySystem {
                     }
                     Log.d(TAG, "!@[RecoverySystem] bootCommand: [reset tracking] write to recovery_cause : " + recovery_cause);
                     try {
-                        FileOutputStream fos = new FileOutputStream("/sys/class/sec/sec_debug/recovery_cause");
-                        try {
-                            String content = "RecoverySystem " + recovery_cause;
-                            fos.write(content.getBytes(StandardCharsets.UTF_8));
-                            fos.close();
-                        } catch (Throwable th2) {
-                            try {
-                                fos.close();
-                            } catch (Throwable th3) {
-                                th2.addSuppressed(th3);
-                            }
-                            throw th2;
-                        }
+                        fos = new FileOutputStream("/sys/class/sec/sec_debug/recovery_cause");
                     } catch (IOException e) {
                         Log.e(TAG, "IOException when writing /sys/class/sec/sec_debug/recovery_cause:", e);
                     }
-                    pm.reboot("recovery");
+                    try {
+                        String content = "RecoverySystem " + recovery_cause;
+                        fos.write(content.getBytes(StandardCharsets.UTF_8));
+                        fos.close();
+                        pm.reboot("recovery");
+                    } catch (Throwable th2) {
+                        try {
+                            fos.close();
+                        } catch (Throwable th3) {
+                            th2.addSuppressed(th3);
+                        }
+                        throw th2;
+                    }
                 }
                 throw new IOException("Reboot failed (no permissions?)");
             }
@@ -1167,6 +1345,15 @@ public class RecoverySystem {
                 }
                 throw th;
             }
+        }
+    }
+
+    private static void deleteSecrets() {
+        Log.w(TAG, "deleteSecrets");
+        try {
+            AndroidKeyStoreMaintenance.deleteAllKeys();
+        } catch (KeyStoreException e) {
+            Log.wtf(TAG, "Failed to delete all keys from keystore.", e);
         }
     }
 

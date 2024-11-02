@@ -52,7 +52,7 @@ public class GeomagneticField {
             cosMLon[m] = (cosMLon[m - x] * cosMLon[x]) - (sinMLon[m - x] * sinMLon[x]);
         }
         float inverseCosLatitude = 1.0f / ((float) Math.cos(this.mGcLatitudeRad));
-        float yearsSinceBase = ((float) (timeMillis - BASE_TIME)) / 3.1536E10f;
+        float yearsSinceBase = ((float) (timeMillis - BASE_TIME)) / 3.1536001E10f;
         float gcX = 0.0f;
         float gcY = 0.0f;
         float gcZ = 0.0f;

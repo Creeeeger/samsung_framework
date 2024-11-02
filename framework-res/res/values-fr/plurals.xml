@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Votre téléphone est instable car une carte SD contenant des applications a été retirée. Votre téléphone redémarrera dans %d secondes pour revenir à un fonctionnement normal. Sauvegardez les données non enregistrées avant que le téléphone ne redémarre.</item>
+        <item quantity="other">Votre tablette est instable car une carte SD contenant des applications a été retirée. Votre tablette redémarrera dans %d secondes pour revenir à un fonctionnement normal. Sauvegardez les données non enregistrées avant que la tablette ne redémarre.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Votre téléphone est instable car une carte SD contenant des applications a été retirée. Votre téléphone redémarrera dans %d seconde pour revenir à un fonctionnement normal. Sauvegardez les données non enregistrées avant que le téléphone ne redémarre.</item>
+        <item quantity="one">Votre tablette est instable car une carte SD contenant des applications a été retirée. Votre tablette redémarrera dans %d seconde pour revenir à un fonctionnement normal. Sauvegardez les données non enregistrées avant que la tablette ne redémarre.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Votre tél. redémarrera dans %d secondes</item>
+        <item quantity="other">Votre tablette va redémarrer dans %d s</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Votre tél. redémarrera dans %d seconde</item>
+        <item quantity="one">Votre tablette va redémarrer dans %d s</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

@@ -36,11 +36,17 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
     }
 
     @Override // android.view.InsetsController.Host
-    public void addOnPreDrawRunnable(final Runnable r) {
+    public void addOnPreDrawRunnable(Runnable r) {
         if (this.mViewRoot.mView == null) {
             return;
         }
         this.mViewRoot.mView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: android.view.ViewRootInsetsControllerHost.1
+            final /* synthetic */ Runnable val$r;
+
+            AnonymousClass1(Runnable r2) {
+                r = r2;
+            }
+
             @Override // android.view.ViewTreeObserver.OnPreDrawListener
             public boolean onPreDraw() {
                 ViewRootInsetsControllerHost.this.mViewRoot.mView.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -49,6 +55,23 @@ public class ViewRootInsetsControllerHost implements InsetsController.Host {
             }
         });
         this.mViewRoot.mView.invalidate();
+    }
+
+    /* renamed from: android.view.ViewRootInsetsControllerHost$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
+        final /* synthetic */ Runnable val$r;
+
+        AnonymousClass1(Runnable r2) {
+            r = r2;
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            ViewRootInsetsControllerHost.this.mViewRoot.mView.getViewTreeObserver().removeOnPreDrawListener(this);
+            r.run();
+            return true;
+        }
     }
 
     @Override // android.view.InsetsController.Host

@@ -42,8 +42,42 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
         this.mListView.setOnItemLongClickListener(this.mItemLongClickListener);
     }
 
+    /* renamed from: com.samsung.android.animation.SemDragAndDropListAnimator$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements SemDragAndDropAnimationCore.ItemAnimationListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimationListener
+        public void onItemAnimatorEnd() {
+            if (SemDragAndDropListAnimator.this.mListItemSelectionAnimating) {
+                SemDragAndDropListAnimator.this.mListItemSelectionAnimating = false;
+                return;
+            }
+            if (SemDragAndDropListAnimator.this.mDropDonePending) {
+                SemDragAndDropListAnimator.this.mDropDonePending = false;
+                if (SemDragAndDropListAnimator.this.mDndController != null) {
+                    Log.d(SemDragAndDropListAnimator.TAG, "initListeners : onItemAnimatorEnd : mDndController.dropDone #1 , mFirstDragPos = " + SemDragAndDropListAnimator.this.mFirstDragPos + ", mDragPos = " + SemDragAndDropListAnimator.this.mDragPos);
+                    SemDragAndDropListAnimator.this.mDndController.dropDone(SemDragAndDropListAnimator.this.mFirstDragPos, SemDragAndDropListAnimator.this.mDragPos);
+                    SemDragAndDropListAnimator semDragAndDropListAnimator = SemDragAndDropListAnimator.this;
+                    semDragAndDropListAnimator.speakDragReleaseForAccessibility(semDragAndDropListAnimator.mDragPos);
+                }
+                SemDragAndDropListAnimator.this.mItemAnimator.removeAll();
+                SemDragAndDropListAnimator.this.resetDndPositionValues();
+                if (SemDragAndDropListAnimator.this.mDndListener != null) {
+                    Log.d(SemDragAndDropListAnimator.TAG, "initListeners : onItemAnimatorEnd : dndListener.onDragAndDropEnd() #1");
+                    SemDragAndDropListAnimator.this.mDndListener.onDragAndDropEnd();
+                }
+                SemDragAndDropListAnimator.this.mListView.setEnabled(true);
+            }
+        }
+    }
+
     private void initListeners() {
         this.mItemAnimationListener = new SemDragAndDropAnimationCore.ItemAnimationListener() { // from class: com.samsung.android.animation.SemDragAndDropListAnimator.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimationListener
             public void onItemAnimatorEnd() {
                 if (SemDragAndDropListAnimator.this.mListItemSelectionAnimating) {
@@ -69,11 +103,26 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
             }
         };
         this.mItemLongClickListener = new AdapterView.OnItemLongClickListener() { // from class: com.samsung.android.animation.SemDragAndDropListAnimator.2
+            AnonymousClass2() {
+            }
+
             @Override // android.widget.AdapterView.OnItemLongClickListener
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 return SemDragAndDropListAnimator.this.initDragIfNecessary(position);
             }
         };
+    }
+
+    /* renamed from: com.samsung.android.animation.SemDragAndDropListAnimator$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements AdapterView.OnItemLongClickListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.widget.AdapterView.OnItemLongClickListener
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            return SemDragAndDropListAnimator.this.initDragIfNecessary(position);
+        }
     }
 
     public void setDragAndDropController(SemAbsDragAndDropAnimator.DragAndDropController dndController) {
@@ -225,7 +274,6 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
         return this.mItemLongClickListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean initDragIfNecessary(int position) {
         if (isDraggable() && activatedByLongPress() && this.mListView.getCount() > 1) {
             if (position >= 0 && position < this.mListView.getCount() && checkStartDnd(this.mDndTouchX, this.mDndTouchY, position)) {
@@ -436,6 +484,9 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
             Log.v(TAG, "dndListener.onTouchUp() dragView == null, distance=" + distance);
             ValueAnimator va = ValueAnimator.ofInt(0, distance);
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemDragAndDropListAnimator.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animator) {
                     SemDragAndDropListAnimator.this.mDragViewBitmapTranslateY = ((Integer) animator.getAnimatedValue()).intValue();
@@ -443,6 +494,9 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
                 }
             });
             va.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemDragAndDropListAnimator.4
+                AnonymousClass4() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator anim) {
                     if (SemDragAndDropListAnimator.this.mFirstDragPos != SemDragAndDropListAnimator.this.mDragPos) {
@@ -487,14 +541,48 @@ public class SemDragAndDropListAnimator extends SemAbsDragAndDropAnimator {
         this.mListView.invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.animation.SemDragAndDropListAnimator$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animator) {
+            SemDragAndDropListAnimator.this.mDragViewBitmapTranslateY = ((Integer) animator.getAnimatedValue()).intValue();
+            SemDragAndDropListAnimator.this.mListView.invalidate();
+        }
+    }
+
+    /* renamed from: com.samsung.android.animation.SemDragAndDropListAnimator$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 extends AnimatorListenerAdapter {
+        AnonymousClass4() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator anim) {
+            if (SemDragAndDropListAnimator.this.mFirstDragPos != SemDragAndDropListAnimator.this.mDragPos) {
+                Log.d(SemDragAndDropListAnimator.TAG, "onTouchUpCancel : onAnimationEnd : mDndController.dropDone #2 , mFirstDragPos = " + SemDragAndDropListAnimator.this.mFirstDragPos + ", mDragPos = " + SemDragAndDropListAnimator.this.mDragPos);
+                SemDragAndDropListAnimator.this.mDndController.dropDone(SemDragAndDropListAnimator.this.mFirstDragPos, SemDragAndDropListAnimator.this.mDragPos);
+                SemDragAndDropListAnimator semDragAndDropListAnimator = SemDragAndDropListAnimator.this;
+                semDragAndDropListAnimator.speakDragReleaseForAccessibility(semDragAndDropListAnimator.mDragPos);
+            }
+            SemDragAndDropListAnimator.this.mItemAnimator.removeAll();
+            SemDragAndDropListAnimator.this.resetDndState();
+            if (SemDragAndDropListAnimator.this.mDndListener != null) {
+                Log.d(SemDragAndDropListAnimator.TAG, "dndListener.onDragAndDropEnd() from onAnimationEnd() #3");
+                SemDragAndDropListAnimator.this.mDndListener.onDragAndDropEnd();
+            }
+        }
+    }
+
     @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator
     public void resetDndTouchValuesAndBitmap() {
         super.resetDndTouchValuesAndBitmap();
         this.mNonMovableItems.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator
     public void resetDndPositionValues() {
         super.resetDndPositionValues();

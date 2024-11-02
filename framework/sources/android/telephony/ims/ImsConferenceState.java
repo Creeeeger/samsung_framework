@@ -14,13 +14,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class ImsConferenceState implements Parcelable {
     public static final Parcelable.Creator<ImsConferenceState> CREATOR = new Parcelable.Creator<ImsConferenceState>() { // from class: android.telephony.ims.ImsConferenceState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsConferenceState createFromParcel(Parcel in) {
             return new ImsConferenceState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsConferenceState[] newArray(int size) {
             return new ImsConferenceState[size];
@@ -45,6 +46,10 @@ public final class ImsConferenceState implements Parcelable {
     private static final String TAG = "ImsConferenceState";
     public static final String USER = "user";
     public final HashMap<String, Bundle> mParticipants;
+
+    /* synthetic */ ImsConferenceState(Parcel parcel, ImsConferenceStateIA imsConferenceStateIA) {
+        this(parcel);
+    }
 
     public ImsConferenceState() {
         this.mParticipants = new HashMap<>();
@@ -78,6 +83,23 @@ public final class ImsConferenceState implements Parcelable {
             String user = in.readString();
             Bundle state = (Bundle) in.readParcelable(null, Bundle.class);
             this.mParticipants.put(user, state);
+        }
+    }
+
+    /* renamed from: android.telephony.ims.ImsConferenceState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsConferenceState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsConferenceState createFromParcel(Parcel in) {
+            return new ImsConferenceState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsConferenceState[] newArray(int size) {
+            return new ImsConferenceState[size];
         }
     }
 

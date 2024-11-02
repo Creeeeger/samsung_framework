@@ -479,7 +479,6 @@ public interface ITaskStackListener extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements ITaskStackListener {
             private IBinder mRemote;

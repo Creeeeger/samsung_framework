@@ -12,7 +12,9 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class GnssSingleSatCorrection implements Parcelable {
     public static final Parcelable.Creator<GnssSingleSatCorrection> CREATOR = new Parcelable.Creator<GnssSingleSatCorrection>() { // from class: android.location.GnssSingleSatCorrection.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssSingleSatCorrection createFromParcel(Parcel parcel) {
             int singleSatCorrectionFlags = parcel.readInt();
@@ -27,7 +29,6 @@ public final class GnssSingleSatCorrection implements Parcelable {
             return new GnssSingleSatCorrection(singleSatCorrectionFlags, constellationType, satId, carrierFrequencyHz, probSatIsLos, combinedExcessPathLengthMeters, combinedExcessPathLengthUncertaintyMeters, combinedAttenuationDb, gnssExcessPathInfoList);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssSingleSatCorrection[] newArray(int i) {
             return new GnssSingleSatCorrection[i];
@@ -46,6 +47,10 @@ public final class GnssSingleSatCorrection implements Parcelable {
     private final float mProbSatIsLos;
     private final int mSatId;
     private final int mSingleSatCorrectionFlags;
+
+    /* synthetic */ GnssSingleSatCorrection(int i, int i2, int i3, float f, float f2, float f3, float f4, float f5, List list, GnssSingleSatCorrectionIA gnssSingleSatCorrectionIA) {
+        this(i, i2, i3, f, f2, f3, f4, f5, list);
+    }
 
     private GnssSingleSatCorrection(int singleSatCorrectionFlags, int constellationType, int satId, float carrierFrequencyHz, float probSatIsLos, float excessPathLengthMeters, float excessPathLengthUncertaintyMeters, float combinedAttenuationDb, List<GnssExcessPathInfo> gnssExcessPathInfoList) {
         this.mSingleSatCorrectionFlags = singleSatCorrectionFlags;
@@ -145,6 +150,32 @@ public final class GnssSingleSatCorrection implements Parcelable {
             parcel.writeFloat(this.mCombinedAttenuationDb);
         }
         parcel.writeTypedList(this.mGnssExcessPathInfoList);
+    }
+
+    /* renamed from: android.location.GnssSingleSatCorrection$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssSingleSatCorrection> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssSingleSatCorrection createFromParcel(Parcel parcel) {
+            int singleSatCorrectionFlags = parcel.readInt();
+            int constellationType = parcel.readInt();
+            int satId = parcel.readInt();
+            float carrierFrequencyHz = parcel.readFloat();
+            float probSatIsLos = (singleSatCorrectionFlags & 1) != 0 ? parcel.readFloat() : 0.0f;
+            float combinedExcessPathLengthMeters = (singleSatCorrectionFlags & 2) != 0 ? parcel.readFloat() : 0.0f;
+            float combinedExcessPathLengthUncertaintyMeters = (singleSatCorrectionFlags & 4) != 0 ? parcel.readFloat() : 0.0f;
+            float combinedAttenuationDb = (singleSatCorrectionFlags & 16) != 0 ? parcel.readFloat() : 0.0f;
+            List<GnssExcessPathInfo> gnssExcessPathInfoList = parcel.createTypedArrayList(GnssExcessPathInfo.CREATOR);
+            return new GnssSingleSatCorrection(singleSatCorrectionFlags, constellationType, satId, carrierFrequencyHz, probSatIsLos, combinedExcessPathLengthMeters, combinedExcessPathLengthUncertaintyMeters, combinedAttenuationDb, gnssExcessPathInfoList);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssSingleSatCorrection[] newArray(int i) {
+            return new GnssSingleSatCorrection[i];
+        }
     }
 
     public boolean equals(Object obj) {

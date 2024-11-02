@@ -20,7 +20,6 @@ import libcore.io.IoUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class OverlayConfigParser {
     private static final String CONFIG_DEFAULT_FILENAME = "config/config.xml";
@@ -68,7 +67,6 @@ public final class OverlayConfigParser {
         public final OverlayScanner.ParsedOverlayInfo parsedInfo;
         public final String policy;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ParsedConfiguration(String packageName, boolean enabled, boolean mutable, String policy, OverlayScanner.ParsedOverlayInfo parsedInfo, ParsedConfigFile parsedConfigFile) {
             this.packageName = packageName;
             this.enabled = enabled;
@@ -83,7 +81,6 @@ public final class OverlayConfigParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class OverlayPartition extends PackagePartitions.SystemPartition {
         static final String POLICY_ODM = "odm";
@@ -94,13 +91,11 @@ public final class OverlayConfigParser {
         static final String POLICY_VENDOR = "vendor";
         public final String policy;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public OverlayPartition(PackagePartitions.SystemPartition partition) {
             super(partition);
             this.policy = policyForPartition(partition);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public OverlayPartition(File folder, PackagePartitions.SystemPartition original) {
             super(folder, original);
             this.policy = policyForPartition(original);
@@ -125,7 +120,6 @@ public final class OverlayConfigParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ParsingContext {
         private final ArraySet<String> mConfiguredOverlays;
@@ -134,6 +128,10 @@ public final class OverlayConfigParser {
         private final ArrayList<ParsedConfiguration> mOrderedConfigurations;
         private final OverlayPartition mPartition;
 
+        /* synthetic */ ParsingContext(OverlayPartition overlayPartition, ParsingContextIA parsingContextIA) {
+            this(overlayPartition);
+        }
+
         private ParsingContext(OverlayPartition partition) {
             this.mOrderedConfigurations = new ArrayList<>();
             this.mConfiguredOverlays = new ArraySet<>();
@@ -141,7 +139,6 @@ public final class OverlayConfigParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ArrayList<ParsedConfiguration> getConfigurations(OverlayPartition partition, OverlayScanner scanner, Map<String, OverlayScanner.ParsedOverlayInfo> packageManagerOverlayInfos, List<String> activeApexes) {
         if (scanner != null) {
             if (partition.getOverlayFolder() != null) {

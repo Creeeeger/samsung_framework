@@ -81,7 +81,6 @@ public final class DESede {
             this.keySizeSet = false;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseKeyGenerator, javax.crypto.KeyGeneratorSpi
         public void engineInit(int keySize, SecureRandom random) {
             super.engineInit(keySize, random);
@@ -172,7 +171,6 @@ public final class DESede {
             throw new InvalidKeySpecException("Invalid KeySpec");
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
         public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
             if (keySpec instanceof DESedeKeySpec) {

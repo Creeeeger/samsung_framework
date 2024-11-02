@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import java.io.File;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class FeatureUtil {
     private static final String CARRIER_FEATURE_FILE_NAME = "customer_carrier_feature.json";
@@ -51,7 +50,6 @@ public class FeatureUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SecCarrier getCarrierFeature(int phoneId, int canonicalId, boolean checkLastSim) {
         SecCarrier systemFeature = getSecCarrierFeature(getSystemFeaturePath(phoneId, checkLastSim), getMatchedCode(phoneId, checkLastSim), canonicalId);
         SecCarrier updateFeature = getSecCarrierFeature(getUpdateFeaturePath(phoneId, checkLastSim), getMatchedCode(phoneId, checkLastSim), canonicalId);
@@ -111,7 +109,6 @@ public class FeatureUtil {
         return checkLastSim ? UPDATE_FEATURE_PATH + phoneId + "/" + LAST_CARRIER_FEATURE_FILE_NAME : UPDATE_FEATURE_PATH + phoneId + "/" + CARRIER_FEATURE_FILE_NAME;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getMatchedCode(int phoneId, boolean last) {
         if (last) {
             return SemSystemProperties.get(LAST_MATCHED_CODE + getReadablePhoneIDName(phoneId), SemSystemProperties.get(SALES_CODE, FEATURE_GROUP_VALUE_UNKNOWN));
@@ -119,22 +116,18 @@ public class FeatureUtil {
         return SemSystemProperties.get(CURRENT_MATCHED_CODE + getReadablePhoneIDName(phoneId), SemSystemProperties.get(SALES_CODE, FEATURE_GROUP_VALUE_UNKNOWN));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getCurrentCanonicalID(int phoneId) {
         return SemSystemProperties.getInt(CURRENT_SIMSLOT_PARENT_CANONICAL_ID + getReadablePhoneIDName(phoneId), -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getLastCanonicalID(int phoneId) {
         return SemSystemProperties.getInt(PERSIST_SIMSLOT_PARENT_CANONICAL_ID + getReadablePhoneIDName(phoneId), -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getDefaultCanonicalID() {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getLastFeatureVersion(int phoneId) {
         String featureInfo = SemSystemProperties.get(CURRENT_SIMSLOT_FEATURE + getReadablePhoneIDName(phoneId), "");
         if (TextUtils.isEmpty(featureInfo)) {
@@ -158,7 +151,6 @@ public class FeatureUtil {
         return String.valueOf(phoneId + 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int readSimCount() {
         return SemSystemProperties.getInt(CURRENT_SIMSLOT_COUNT, 1);
     }

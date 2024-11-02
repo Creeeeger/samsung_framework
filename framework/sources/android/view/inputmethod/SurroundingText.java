@@ -7,7 +7,9 @@ import android.text.TextUtils;
 /* loaded from: classes4.dex */
 public final class SurroundingText implements Parcelable {
     public static final Parcelable.Creator<SurroundingText> CREATOR = new Parcelable.Creator<SurroundingText>() { // from class: android.view.inputmethod.SurroundingText.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SurroundingText createFromParcel(Parcel in) {
             CharSequence text = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
@@ -17,7 +19,6 @@ public final class SurroundingText implements Parcelable {
             return new SurroundingText(text == null ? "" : text, selectionHead, selectionEnd, offset);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SurroundingText[] newArray(int size) {
             return new SurroundingText[size];
@@ -62,6 +63,27 @@ public final class SurroundingText implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.view.inputmethod.SurroundingText$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SurroundingText> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SurroundingText createFromParcel(Parcel in) {
+            CharSequence text = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
+            int selectionHead = in.readInt();
+            int selectionEnd = in.readInt();
+            int offset = in.readInt();
+            return new SurroundingText(text == null ? "" : text, selectionHead, selectionEnd, offset);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SurroundingText[] newArray(int size) {
+            return new SurroundingText[size];
+        }
     }
 
     private static CharSequence copyWithParcelableSpans(CharSequence source) {

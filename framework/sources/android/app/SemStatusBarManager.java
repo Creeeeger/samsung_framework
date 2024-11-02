@@ -35,7 +35,6 @@ public class SemStatusBarManager {
     private IStatusBarService mService;
     private IBinder mToken = new Binder();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SemStatusBarManager(Context context) {
         this.mContext = context;
     }

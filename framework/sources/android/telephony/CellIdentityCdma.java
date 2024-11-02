@@ -24,14 +24,15 @@ public final class CellIdentityCdma extends CellIdentity {
     private final int mSystemId;
     private static final String TAG = CellIdentityCdma.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityCdma> CREATOR = new Parcelable.Creator<CellIdentityCdma>() { // from class: android.telephony.CellIdentityCdma.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellIdentityCdma createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityCdma.createFromParcelBody(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityCdma[] newArray(int size) {
             return new CellIdentityCdma[size];
@@ -69,7 +70,6 @@ public final class CellIdentityCdma extends CellIdentity {
         this(cid.mNetworkId, cid.mSystemId, cid.mBasestationId, cid.mLongitude, cid.mLatitude, cid.mAlphaLong, cid.mAlphaShort);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CellIdentityCdma copy() {
         return new CellIdentityCdma(this);
     }
@@ -167,7 +167,24 @@ public final class CellIdentityCdma extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.telephony.CellIdentityCdma$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellIdentityCdma> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityCdma createFromParcel(Parcel in) {
+            in.readInt();
+            return CellIdentityCdma.createFromParcelBody(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityCdma[] newArray(int size) {
+            return new CellIdentityCdma[size];
+        }
+    }
+
     public static CellIdentityCdma createFromParcelBody(Parcel in) {
         return new CellIdentityCdma(in);
     }

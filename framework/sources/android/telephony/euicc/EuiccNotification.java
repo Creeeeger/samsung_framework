@@ -15,13 +15,14 @@ import java.util.Objects;
 public final class EuiccNotification implements Parcelable {
     public static final int ALL_EVENTS = 15;
     public static final Parcelable.Creator<EuiccNotification> CREATOR = new Parcelable.Creator<EuiccNotification>() { // from class: android.telephony.euicc.EuiccNotification.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EuiccNotification createFromParcel(Parcel source) {
             return new EuiccNotification(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EuiccNotification[] newArray(int size) {
             return new EuiccNotification[size];
@@ -39,6 +40,10 @@ public final class EuiccNotification implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface Event {
+    }
+
+    /* synthetic */ EuiccNotification(Parcel parcel, EuiccNotificationIA euiccNotificationIA) {
+        this(parcel);
     }
 
     public EuiccNotification(int seq, String targetAddr, int event, byte[] data) {
@@ -105,5 +110,22 @@ public final class EuiccNotification implements Parcelable {
         this.mTargetAddr = source.readString();
         this.mEvent = source.readInt();
         this.mData = source.createByteArray();
+    }
+
+    /* renamed from: android.telephony.euicc.EuiccNotification$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EuiccNotification> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EuiccNotification createFromParcel(Parcel source) {
+            return new EuiccNotification(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EuiccNotification[] newArray(int size) {
+            return new EuiccNotification[size];
+        }
     }
 }

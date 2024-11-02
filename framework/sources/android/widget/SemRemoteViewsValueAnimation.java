@@ -17,13 +17,14 @@ public class SemRemoteViewsValueAnimation extends SemRemoteViewsAnimation {
     private static final String ANIMATION_TYPE_LAYOUT_PARAMS_WIDTH = "width";
     public static final String ANIMATION_TYPE_PROGRESS = "progress";
     public static final Parcelable.Creator<SemRemoteViewsValueAnimation> CREATOR = new Parcelable.Creator<SemRemoteViewsValueAnimation>() { // from class: android.widget.SemRemoteViewsValueAnimation.3
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass3() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemRemoteViewsValueAnimation createFromParcel(Parcel in) {
             return new SemRemoteViewsValueAnimation(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemRemoteViewsValueAnimation[] newArray(int size) {
             return new SemRemoteViewsValueAnimation[size];
@@ -175,7 +176,6 @@ public class SemRemoteViewsValueAnimation extends SemRemoteViewsAnimation {
         this.mIsExpired = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.SemRemoteViewsAnimation
     /* renamed from: endAnimation */
     public void lambda$play$0(View root) {
@@ -273,13 +273,11 @@ public class SemRemoteViewsValueAnimation extends SemRemoteViewsAnimation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$provideAnimatorUpdateListener$0(ProgressBar progressBar, ValueAnimator animation) {
         int value = ((Integer) animation.getAnimatedValue()).intValue();
         progressBar.setProgress(value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$provideAnimatorUpdateListener$1(ViewGroup.LayoutParams layoutParams, View targetView, ValueAnimator animation) {
         if (layoutParams == null) {
             return;
@@ -315,6 +313,9 @@ public class SemRemoteViewsValueAnimation extends SemRemoteViewsAnimation {
         switch (c) {
             case 0:
                 Animator.AnimatorListener animatorListener = new AnimatorListenerAdapter() { // from class: android.widget.SemRemoteViewsValueAnimation.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                     public void onAnimationEnd(Animator animation) {
                         SemRemoteViewsValueAnimation.this.mIsExpired = true;
@@ -323,6 +324,9 @@ public class SemRemoteViewsValueAnimation extends SemRemoteViewsAnimation {
                 return animatorListener;
             case 1:
                 Animator.AnimatorListener animatorListener2 = new AnimatorListenerAdapter() { // from class: android.widget.SemRemoteViewsValueAnimation.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                     public void onAnimationEnd(Animator animation) {
                         SemRemoteViewsValueAnimation.this.mIsExpired = true;
@@ -331,6 +335,47 @@ public class SemRemoteViewsValueAnimation extends SemRemoteViewsAnimation {
                 return animatorListener2;
             default:
                 return null;
+        }
+    }
+
+    /* renamed from: android.widget.SemRemoteViewsValueAnimation$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            SemRemoteViewsValueAnimation.this.mIsExpired = true;
+        }
+    }
+
+    /* renamed from: android.widget.SemRemoteViewsValueAnimation$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            SemRemoteViewsValueAnimation.this.mIsExpired = true;
+        }
+    }
+
+    /* renamed from: android.widget.SemRemoteViewsValueAnimation$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 implements Parcelable.Creator<SemRemoteViewsValueAnimation> {
+        AnonymousClass3() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemRemoteViewsValueAnimation createFromParcel(Parcel in) {
+            return new SemRemoteViewsValueAnimation(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemRemoteViewsValueAnimation[] newArray(int size) {
+            return new SemRemoteViewsValueAnimation[size];
         }
     }
 }

@@ -205,8 +205,9 @@ public interface IWebViewUpdateService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IWebViewUpdateService {
+        public static class Proxy implements IWebViewUpdateService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -74,7 +74,6 @@ public class FieldPort extends InputPort {
         return "field " + super.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public synchronized void setFieldFrame(Frame frame, boolean isAssignment) {
         assertPortIsOpen();
         checkFrameType(frame, isAssignment);

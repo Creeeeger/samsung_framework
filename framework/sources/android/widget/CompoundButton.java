@@ -165,7 +165,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setDefaultStateDescription() {
         if (this.mCustomStateDescription == null) {
             super.setStateDescription(getButtonStateDescription());
@@ -205,7 +204,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         this.mOnCheckedChangeListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setOnCheckedChangeWidgetListener(OnCheckedChangeListener listener) {
         this.mOnCheckedChangeWidgetListener = listener;
     }
@@ -390,7 +388,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onDraw(Canvas canvas) {
         int drawableHeight;
@@ -442,7 +439,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public int[] onCreateDrawableState(int extraSpace) {
         int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
@@ -452,7 +448,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         return drawableState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -471,7 +466,6 @@ public abstract class CompoundButton extends Button implements Checkable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == this.mButtonDrawable;
@@ -486,23 +480,27 @@ public abstract class CompoundButton extends Button implements Checkable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.CompoundButton.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
         boolean checked;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -522,6 +520,23 @@ public abstract class CompoundButton extends Button implements Checkable {
         public String toString() {
             return "CompoundButton.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " checked=" + this.checked + "}";
         }
+
+        /* renamed from: android.widget.CompoundButton$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
     }
 
     @Override // android.widget.TextView, android.view.View
@@ -540,14 +555,12 @@ public abstract class CompoundButton extends Button implements Checkable {
         requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void encodeProperties(ViewHierarchyEncoder stream) {
         super.encodeProperties(stream);
         stream.addProperty("checked", isChecked());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
         super.onProvideStructure(structure, viewFor, flags);

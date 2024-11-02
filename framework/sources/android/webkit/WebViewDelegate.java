@@ -27,8 +27,29 @@ public final class WebViewDelegate {
         void onTraceEnabledChange(boolean z);
     }
 
-    public void setOnTraceEnabledChangeListener(final OnTraceEnabledChangeListener listener) {
+    /* renamed from: android.webkit.WebViewDelegate$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Runnable {
+        final /* synthetic */ OnTraceEnabledChangeListener val$listener;
+
+        AnonymousClass1(OnTraceEnabledChangeListener onTraceEnabledChangeListener) {
+            listener = onTraceEnabledChangeListener;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            listener.onTraceEnabledChange(WebViewDelegate.this.isTraceTagEnabled());
+        }
+    }
+
+    public void setOnTraceEnabledChangeListener(OnTraceEnabledChangeListener listener) {
         SystemProperties.addChangeCallback(new Runnable() { // from class: android.webkit.WebViewDelegate.1
+            final /* synthetic */ OnTraceEnabledChangeListener val$listener;
+
+            AnonymousClass1(OnTraceEnabledChangeListener listener2) {
+                listener = listener2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 listener.onTraceEnabledChange(WebViewDelegate.this.isTraceTagEnabled());

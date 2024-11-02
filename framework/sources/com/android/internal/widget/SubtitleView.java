@@ -166,7 +166,6 @@ public class SubtitleView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSpec = View.MeasureSpec.getSize(widthMeasureSpec);
@@ -223,7 +222,6 @@ public class SubtitleView extends View {
         requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas c) {
         int colorUp;

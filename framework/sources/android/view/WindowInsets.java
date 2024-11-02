@@ -66,7 +66,6 @@ public final class WindowInsets {
         this(src.mSystemWindowInsetsConsumed ? null : src.mTypeInsetsMap, src.mStableInsetsConsumed ? null : src.mTypeMaxInsetsMap, src.mTypeVisibilityMap, src.mIsRound, src.mForceConsumingTypes, src.mSuppressScrimTypes, displayCutoutCopyConstructorArgument(src), src.mRoundedCorners, src.mPrivacyIndicatorBounds, src.mDisplayShape, src.mCompatInsetsTypes, src.mCompatIgnoreVisibility);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static DisplayCutout displayCutoutCopyConstructorArgument(WindowInsets w) {
         if (w.mDisplayCutoutConsumed) {
             return null;
@@ -93,7 +92,6 @@ public final class WindowInsets {
         return result == null ? Insets.NONE : result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void setInsets(Insets[] typeInsetsMap, int typeMask, Insets insets) {
         for (int i = 1; i <= 512; i <<= 1) {
             if ((typeMask & i) != 0) {
@@ -454,7 +452,6 @@ public final class WindowInsets {
         return typeInsetsMap;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Insets insetInsets(Insets insets, int left, int top, int right, int bottom) {
         int newLeft = Math.max(0, insets.left - left);
         int newTop = Math.max(0, insets.top - top);
@@ -466,7 +463,6 @@ public final class WindowInsets {
         return Insets.of(newLeft, newTop, newRight, newBottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isSystemWindowInsetsConsumed() {
         return this.mSystemWindowInsetsConsumed;
     }
@@ -662,7 +658,6 @@ public final class WindowInsets {
         public @interface InsetsType {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static int indexOf(int type) {
             switch (type) {
                 case 1:

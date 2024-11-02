@@ -33,9 +33,35 @@ public class IAFDSocketFdServer {
         this.mContext = context;
     }
 
-    public void getDataFromClient(final String hotFixData) {
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.sec.android.iaft.IAFDSocketFdServer$1 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ String val$hotFixData;
+
+        AnonymousClass1(String str) {
+            hotFixData = str;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                IAFDSocketFdServer.this.saveFile(hotFixData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void getDataFromClient(String hotFixData) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(new Runnable() { // from class: com.sec.android.iaft.IAFDSocketFdServer.1
+            final /* synthetic */ String val$hotFixData;
+
+            AnonymousClass1(String hotFixData2) {
+                hotFixData = hotFixData2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -48,7 +74,6 @@ public class IAFDSocketFdServer {
         executor.shutdown();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void saveFile(String inData) {
         Log.i(TAG, "saveFileing...");
         IAFDFileHexUtils f2h = new IAFDFileHexUtils();

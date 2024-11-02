@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class DataConnectionRealTimeInfo implements Parcelable {
     public static final Parcelable.Creator<DataConnectionRealTimeInfo> CREATOR = new Parcelable.Creator<DataConnectionRealTimeInfo>() { // from class: android.telephony.DataConnectionRealTimeInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DataConnectionRealTimeInfo createFromParcel(Parcel in) {
             return new DataConnectionRealTimeInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataConnectionRealTimeInfo[] newArray(int size) {
             return new DataConnectionRealTimeInfo[size];
@@ -24,6 +25,10 @@ public class DataConnectionRealTimeInfo implements Parcelable {
     public static final int DC_POWER_STATE_UNKNOWN = Integer.MAX_VALUE;
     private int mDcPowerState;
     private long mTime;
+
+    /* synthetic */ DataConnectionRealTimeInfo(Parcel parcel, DataConnectionRealTimeInfoIA dataConnectionRealTimeInfoIA) {
+        this(parcel);
+    }
 
     public DataConnectionRealTimeInfo(long time, int dcPowerState) {
         this.mTime = time;
@@ -57,6 +62,23 @@ public class DataConnectionRealTimeInfo implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeLong(this.mTime);
         out.writeInt(this.mDcPowerState);
+    }
+
+    /* renamed from: android.telephony.DataConnectionRealTimeInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DataConnectionRealTimeInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataConnectionRealTimeInfo createFromParcel(Parcel in) {
+            return new DataConnectionRealTimeInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataConnectionRealTimeInfo[] newArray(int size) {
+            return new DataConnectionRealTimeInfo[size];
+        }
     }
 
     public int hashCode() {

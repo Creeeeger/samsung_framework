@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ModelParameterRange implements Parcelable {
     public static final Parcelable.Creator<ModelParameterRange> CREATOR = new Parcelable.Creator<ModelParameterRange>() { // from class: android.media.soundtrigger.ModelParameterRange.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ModelParameterRange createFromParcel(Parcel _aidl_source) {
             ModelParameterRange _aidl_out = new ModelParameterRange();
@@ -18,7 +20,6 @@ public class ModelParameterRange implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ModelParameterRange[] newArray(int _aidl_size) {
             return new ModelParameterRange[_aidl_size];
@@ -26,6 +27,25 @@ public class ModelParameterRange implements Parcelable {
     };
     public int minInclusive = 0;
     public int maxInclusive = 0;
+
+    /* renamed from: android.media.soundtrigger.ModelParameterRange$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ModelParameterRange> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ModelParameterRange createFromParcel(Parcel _aidl_source) {
+            ModelParameterRange _aidl_out = new ModelParameterRange();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ModelParameterRange[] newArray(int _aidl_size) {
+            return new ModelParameterRange[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

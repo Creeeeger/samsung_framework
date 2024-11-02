@@ -175,8 +175,9 @@ public interface IWallpaperManagerCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IWallpaperManagerCallback {
+        public static class Proxy implements IWallpaperManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

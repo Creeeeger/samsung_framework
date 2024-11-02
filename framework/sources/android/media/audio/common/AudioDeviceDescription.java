@@ -23,7 +23,9 @@ public class AudioDeviceDescription implements Parcelable {
     public static final String CONNECTION_VIRTUAL = "virtual";
     public static final String CONNECTION_WIRELESS = "wireless";
     public static final Parcelable.Creator<AudioDeviceDescription> CREATOR = new Parcelable.Creator<AudioDeviceDescription>() { // from class: android.media.audio.common.AudioDeviceDescription.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioDeviceDescription createFromParcel(Parcel _aidl_source) {
             AudioDeviceDescription _aidl_out = new AudioDeviceDescription();
@@ -31,7 +33,6 @@ public class AudioDeviceDescription implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDeviceDescription[] newArray(int _aidl_size) {
             return new AudioDeviceDescription[_aidl_size];
@@ -40,6 +41,25 @@ public class AudioDeviceDescription implements Parcelable {
     public static final String VX_SEC_CONNECTION_BUILTIN_2MIC = "2mic";
     public String connection;
     public int type = 0;
+
+    /* renamed from: android.media.audio.common.AudioDeviceDescription$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioDeviceDescription> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioDeviceDescription createFromParcel(Parcel _aidl_source) {
+            AudioDeviceDescription _aidl_out = new AudioDeviceDescription();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioDeviceDescription[] newArray(int _aidl_size) {
+            return new AudioDeviceDescription[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

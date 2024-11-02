@@ -64,8 +64,7 @@ public class SEFHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.transcode.util.SEFHelper$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.transcode.util.SEFHelper$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$transcode$util$SEFHelper$Speed;

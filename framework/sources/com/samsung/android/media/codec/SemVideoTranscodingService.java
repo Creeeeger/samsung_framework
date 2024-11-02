@@ -43,8 +43,8 @@ public class SemVideoTranscodingService {
     public static final int TRANSCODING_MODE_SLOW_MOTION_TO_NORMAL = 1;
     private IVideoTranscodingService mService;
 
-    /* renamed from: -$$Nest$smisSupportedHdrToSdr, reason: not valid java name */
-    static /* bridge */ /* synthetic */ boolean m8530$$Nest$smisSupportedHdrToSdr() {
+    /* renamed from: -$$Nest$smisSupportedHdrToSdr */
+    static /* bridge */ /* synthetic */ boolean m8522$$Nest$smisSupportedHdrToSdr() {
         return isSupportedHdrToSdr();
     }
 
@@ -92,7 +92,6 @@ public class SemVideoTranscodingService {
         private final SemVideoTranscoder mTranscoder;
         private final IVideoTranscodingService mTranscodingService;
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
         public class TranscodingThread extends Thread {
             private static final String THREAD_PREFIX = "transcoding";
@@ -178,7 +177,7 @@ public class SemVideoTranscodingService {
                         int h = Integer.parseInt(height);
                         switch (Client.this.mMode) {
                             case 0:
-                                if (SemVideoTranscodingService.m8530$$Nest$smisSupportedHdrToSdr() && hdr10bit != null && bitDepth != null) {
+                                if (SemVideoTranscodingService.m8522$$Nest$smisSupportedHdrToSdr() && hdr10bit != null && bitDepth != null) {
                                     int bit = Integer.parseInt(bitDepth);
                                     if (hdr10bit.equals("yes") && bit > 8) {
                                         isValid = true;
@@ -316,6 +315,9 @@ public class SemVideoTranscodingService {
                     return;
                 }
                 this.mCapture.setOnPreparedListener(new SemMediaCapture.OnPreparedListener() { // from class: com.samsung.android.media.codec.SemVideoTranscodingService.Client.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // com.samsung.android.media.mediacapture.SemMediaCapture.OnPreparedListener
                     public void onPrepared(SemMediaCapture semMediaCapture) {
                         Log.d("SemVideoTranscodingService", "onPrepared() " + Client.this.mID);
@@ -325,6 +327,9 @@ public class SemVideoTranscodingService {
                     }
                 });
                 this.mCapture.setOnRecordingCompletionListener(new SemMediaCapture.OnRecordingCompletionListener() { // from class: com.samsung.android.media.codec.SemVideoTranscodingService.Client.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // com.samsung.android.media.mediacapture.SemMediaCapture.OnRecordingCompletionListener
                     public void onRecordingCompletion(SemMediaCapture semMediaCapture) {
                         Log.d("SemVideoTranscodingService", "onRecordingCompletion() " + Client.this.mID);
@@ -352,6 +357,9 @@ public class SemVideoTranscodingService {
                     }
                 });
                 this.mCapture.setOnErrorListener(new SemMediaCapture.OnErrorListener() { // from class: com.samsung.android.media.codec.SemVideoTranscodingService.Client.3
+                    AnonymousClass3() {
+                    }
+
                     @Override // com.samsung.android.media.mediacapture.SemMediaCapture.OnErrorListener
                     public boolean onError(SemMediaCapture semMediaCapture, int i2, int i1) {
                         Log.d("SemVideoTranscodingService", "onError() " + Client.this.mID);
@@ -435,6 +443,92 @@ public class SemVideoTranscodingService {
                 } catch (IOException ie) {
                     ie.printStackTrace();
                 }
+            }
+        }
+
+        /* renamed from: com.samsung.android.media.codec.SemVideoTranscodingService$Client$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 implements SemMediaCapture.OnPreparedListener {
+            AnonymousClass1() {
+            }
+
+            @Override // com.samsung.android.media.mediacapture.SemMediaCapture.OnPreparedListener
+            public void onPrepared(SemMediaCapture semMediaCapture) {
+                Log.d("SemVideoTranscodingService", "onPrepared() " + Client.this.mID);
+                Client.this.mCapture.startCapture();
+                TranscodingThread transcodingThread2 = new TranscodingThread();
+                transcodingThread2.start();
+            }
+        }
+
+        /* renamed from: com.samsung.android.media.codec.SemVideoTranscodingService$Client$2 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass2 implements SemMediaCapture.OnRecordingCompletionListener {
+            AnonymousClass2() {
+            }
+
+            @Override // com.samsung.android.media.mediacapture.SemMediaCapture.OnRecordingCompletionListener
+            public void onRecordingCompletion(SemMediaCapture semMediaCapture) {
+                Log.d("SemVideoTranscodingService", "onRecordingCompletion() " + Client.this.mID);
+                try {
+                    Client.this.mIsRunning = false;
+                    Client.this.mCapture.reset();
+                    Client.this.mCapture.release();
+                    try {
+                        if (Client.this.mFis != null) {
+                            Client.this.mFis.close();
+                            Client.this.mFis = null;
+                        }
+                        if (Client.this.mFos != null) {
+                            Client.this.mFos.close();
+                            Client.this.mFos = null;
+                        }
+                    } catch (IOException ie) {
+                        ie.printStackTrace();
+                    }
+                    Client.this.mProgressCallback.onProgressChanged(100);
+                    Client.this.mProgressCallback.onCompleted();
+                } catch (RemoteException re) {
+                    re.printStackTrace();
+                }
+            }
+        }
+
+        /* renamed from: com.samsung.android.media.codec.SemVideoTranscodingService$Client$3 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass3 implements SemMediaCapture.OnErrorListener {
+            AnonymousClass3() {
+            }
+
+            @Override // com.samsung.android.media.mediacapture.SemMediaCapture.OnErrorListener
+            public boolean onError(SemMediaCapture semMediaCapture, int i2, int i1) {
+                Log.d("SemVideoTranscodingService", "onError() " + Client.this.mID);
+                Client.this.mIsRunning = false;
+                Client.this.mCapture.reset();
+                Client.this.mCapture.release();
+                try {
+                    if (Client.this.mFis != null) {
+                        Client.this.mFis.close();
+                        Client.this.mFis = null;
+                    }
+                    if (Client.this.mFos != null) {
+                        Client.this.mFos.close();
+                        Client.this.mFos = null;
+                    }
+                } catch (IOException ie) {
+                    ie.printStackTrace();
+                }
+                if (Client.this.mIgnoreError) {
+                    Log.i("SemVideoTranscodingService", "Client has stopped " + Client.this.mID + ", Ignore this error.");
+                } else {
+                    try {
+                        Client.this.mProgressCallback.onError();
+                        Client.this.mTranscodingService.stopTask(Client.this.mID);
+                    } catch (RemoteException re) {
+                        re.printStackTrace();
+                    }
+                }
+                return false;
             }
         }
     }

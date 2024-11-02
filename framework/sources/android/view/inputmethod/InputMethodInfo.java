@@ -22,13 +22,14 @@ public final class InputMethodInfo implements Parcelable {
     public static final String ACTION_STYLUS_HANDWRITING_SETTINGS = "android.view.inputmethod.action.STYLUS_HANDWRITING_SETTINGS";
     public static final int COMPONENT_NAME_MAX_LENGTH = 1000;
     public static final Parcelable.Creator<InputMethodInfo> CREATOR = new Parcelable.Creator<InputMethodInfo>() { // from class: android.view.inputmethod.InputMethodInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputMethodInfo createFromParcel(Parcel source) {
             return new InputMethodInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputMethodInfo[] newArray(int size) {
             return new InputMethodInfo[size];
@@ -89,7 +90,7 @@ public final class InputMethodInfo implements Parcelable {
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:133)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.searchAndApplyVarDebugInfo(DebugInfoApplyVisitor.java:75)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.lambda$applyDebugInfo$0(DebugInfoApplyVisitor.java:68)
-    	at java.base/java.util.ArrayList.forEach(Unknown Source)
+    	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:68)
     	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.visit(DebugInfoApplyVisitor.java:55)
      */
@@ -348,6 +349,23 @@ public final class InputMethodInfo implements Parcelable {
         parcel.writeInt(this.mHandledConfigChanges);
         parcel.writeBoolean(this.mSupportsStylusHandwriting);
         parcel.writeString8(this.mStylusHandwritingSettingsActivityAttr);
+    }
+
+    /* renamed from: android.view.inputmethod.InputMethodInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputMethodInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputMethodInfo createFromParcel(Parcel source) {
+            return new InputMethodInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputMethodInfo[] newArray(int size) {
+            return new InputMethodInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

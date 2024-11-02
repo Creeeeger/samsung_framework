@@ -10,13 +10,14 @@ import java.io.IOException;
 /* loaded from: classes3.dex */
 public class TACommandResponse implements Parcelable {
     public static final Parcelable.Creator<TACommandResponse> CREATOR = new Parcelable.Creator<TACommandResponse>() { // from class: android.spay.TACommandResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TACommandResponse createFromParcel(Parcel in) {
             return new TACommandResponse(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TACommandResponse[] newArray(int size) {
             return new TACommandResponse[size];
@@ -26,6 +27,10 @@ public class TACommandResponse implements Parcelable {
     public String mErrorMsg;
     public byte[] mResponse;
     public int mResponseCode;
+
+    /* synthetic */ TACommandResponse(Parcel parcel, TACommandResponseIA tACommandResponseIA) {
+        this(parcel);
+    }
 
     public TACommandResponse() {
         this.mResponseCode = -1;
@@ -40,6 +45,23 @@ public class TACommandResponse implements Parcelable {
         this.mResponseCode = responseId;
         this.mErrorMsg = errorMsg;
         this.mResponse = response;
+    }
+
+    /* renamed from: android.spay.TACommandResponse$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TACommandResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TACommandResponse createFromParcel(Parcel in) {
+            return new TACommandResponse(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TACommandResponse[] newArray(int size) {
+            return new TACommandResponse[size];
+        }
     }
 
     private TACommandResponse(Parcel in) {

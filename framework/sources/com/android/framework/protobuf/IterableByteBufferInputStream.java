@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class IterableByteBufferInputStream extends InputStream {
     private long currentAddress;
@@ -18,7 +17,6 @@ public class IterableByteBufferInputStream extends InputStream {
     private boolean hasArray;
     private Iterator<ByteBuffer> iterator;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IterableByteBufferInputStream(Iterable<ByteBuffer> data) {
         this.iterator = data.iterator();
         for (ByteBuffer byteBuffer : data) {

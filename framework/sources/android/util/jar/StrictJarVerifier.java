@@ -24,8 +24,9 @@ import sun.security.jca.Providers;
 import sun.security.pkcs.PKCS7;
 import sun.security.pkcs.SignerInfo;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class StrictJarVerifier {
+public class StrictJarVerifier {
     private static final String[] DIGEST_ALGORITHMS = {KeyProperties.DIGEST_SHA512, KeyProperties.DIGEST_SHA384, "SHA-256", "SHA1"};
     private static final int MAX_JAR_SIGNERS = 10;
     private static final String SF_ATTRIBUTE_ANDROID_APK_SIGNED_NAME = "X-Android-APK-Signed";
@@ -38,8 +39,9 @@ class StrictJarVerifier {
     private final Hashtable<String, Certificate[]> certificates = new Hashtable<>(5);
     private final Hashtable<String, Certificate[][]> verifiedEntries = new Hashtable<>();
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static class VerifierEntry extends OutputStream {
+    public static class VerifierEntry extends OutputStream {
         private final Certificate[][] certChains;
         private final MessageDigest digest;
         private final byte[] hash;
@@ -64,7 +66,6 @@ class StrictJarVerifier {
             this.digest.update(buf, off, nbytes);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void verify() {
             byte[] d = this.digest.digest();
             if (!StrictJarVerifier.verifyMessageDigest(d, this.hash)) {
@@ -75,7 +76,6 @@ class StrictJarVerifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static SecurityException invalidDigest(String signatureFile, String name, String jarName) {
         throw new SecurityException(signatureFile + " has invalid digest for " + name + " in " + jarName);
     }
@@ -88,7 +88,6 @@ class StrictJarVerifier {
         throw new SecurityException(jarName + " failed verification of " + signatureFile, e);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public StrictJarVerifier(String name, StrictJarManifest manifest, HashMap<String, byte[]> metaEntries, boolean signatureSchemeRollbackProtectionsEnforced) {
         this.jarName = name;
         this.manifest = manifest;
@@ -97,7 +96,6 @@ class StrictJarVerifier {
         this.signatureSchemeRollbackProtectionsEnforced = signatureSchemeRollbackProtectionsEnforced;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VerifierEntry initEntry(String name) {
         Attributes attributes;
         if (this.manifest == null || this.signatures.isEmpty() || (attributes = this.manifest.getAttributes(name)) == null) {
@@ -144,7 +142,6 @@ class StrictJarVerifier {
         this.metaEntries.put(name.toUpperCase(Locale.US), buf);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized boolean readCertificates() {
         if (this.metaEntries.isEmpty()) {
             return false;
@@ -291,7 +288,6 @@ class StrictJarVerifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isSignedJar() {
         return this.certificates.size() > 0;
     }
@@ -324,7 +320,6 @@ class StrictJarVerifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean verifyMessageDigest(byte[] expected, byte[] encodedActual) {
         try {
             byte[] actual = Base64.getDecoder().decode(encodedActual);
@@ -334,7 +329,6 @@ class StrictJarVerifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Certificate[][] getCertificateChains(String name) {
         return this.verifiedEntries.get(name);
     }

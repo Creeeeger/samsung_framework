@@ -49,7 +49,6 @@ public class AudioDevicePort extends AudioPort {
         }).mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$encapsulationModes$0(Integer mode) {
         return mode.intValue() != 2;
     }

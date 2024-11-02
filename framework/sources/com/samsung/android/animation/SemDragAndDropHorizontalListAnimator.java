@@ -39,8 +39,41 @@ public class SemDragAndDropHorizontalListAnimator extends SemAbsDragAndDropAnima
         this.mListView.setOnItemLongClickListener(this.mOnItemLongClickListener);
     }
 
+    /* renamed from: com.samsung.android.animation.SemDragAndDropHorizontalListAnimator$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements SemDragAndDropAnimationCore.ItemAnimationListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimationListener
+        public void onItemAnimatorEnd() {
+            if (SemDragAndDropHorizontalListAnimator.this.mListItemSelectionAnimating) {
+                SemDragAndDropHorizontalListAnimator.this.mListItemSelectionAnimating = false;
+                return;
+            }
+            if (SemDragAndDropHorizontalListAnimator.this.mDropDonePending) {
+                SemDragAndDropHorizontalListAnimator.this.mDropDonePending = false;
+                if (SemDragAndDropHorizontalListAnimator.this.mDndController != null) {
+                    SemDragAndDropHorizontalListAnimator.this.mDndController.dropDone(SemDragAndDropHorizontalListAnimator.this.mFirstDragPos, SemDragAndDropHorizontalListAnimator.this.mDragPos);
+                    SemDragAndDropHorizontalListAnimator semDragAndDropHorizontalListAnimator = SemDragAndDropHorizontalListAnimator.this;
+                    semDragAndDropHorizontalListAnimator.speakDragReleaseForAccessibility(semDragAndDropHorizontalListAnimator.mDragPos);
+                }
+                SemDragAndDropHorizontalListAnimator.this.mItemAnimator.removeAll();
+                SemDragAndDropHorizontalListAnimator.this.resetDndPositionValues();
+                if (SemDragAndDropHorizontalListAnimator.this.mDndListener != null) {
+                    Log.d(SemDragAndDropHorizontalListAnimator.TAG, "dndListener.onDragAndDropEnd() from onItemAnimatorEnd()");
+                    SemDragAndDropHorizontalListAnimator.this.mDndListener.onDragAndDropEnd();
+                }
+                SemDragAndDropHorizontalListAnimator.this.mListView.setEnabled(true);
+            }
+        }
+    }
+
     private void initListeners() {
         this.mItemAnimationListener = new SemDragAndDropAnimationCore.ItemAnimationListener() { // from class: com.samsung.android.animation.SemDragAndDropHorizontalListAnimator.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.animation.SemDragAndDropAnimationCore.ItemAnimationListener
             public void onItemAnimatorEnd() {
                 if (SemDragAndDropHorizontalListAnimator.this.mListItemSelectionAnimating) {
@@ -65,11 +98,26 @@ public class SemDragAndDropHorizontalListAnimator extends SemAbsDragAndDropAnima
             }
         };
         this.mOnItemLongClickListener = new AdapterView.OnItemLongClickListener() { // from class: com.samsung.android.animation.SemDragAndDropHorizontalListAnimator.2
+            AnonymousClass2() {
+            }
+
             @Override // android.widget.AdapterView.OnItemLongClickListener
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 return SemDragAndDropHorizontalListAnimator.this.initDragIfNecessary(position);
             }
         };
+    }
+
+    /* renamed from: com.samsung.android.animation.SemDragAndDropHorizontalListAnimator$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements AdapterView.OnItemLongClickListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.widget.AdapterView.OnItemLongClickListener
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            return SemDragAndDropHorizontalListAnimator.this.initDragIfNecessary(position);
+        }
     }
 
     public void setDragAndDropController(SemAbsDragAndDropAnimator.DragAndDropController dndController) {
@@ -223,7 +271,6 @@ public class SemDragAndDropHorizontalListAnimator extends SemAbsDragAndDropAnima
         return this.mOnItemLongClickListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean initDragIfNecessary(int position) {
         if (isDraggable() && activatedByLongPress() && this.mListView.getCount() > 1) {
             if (position >= 0 && position < this.mListView.getCount() && checkStartDnd(this.mDndTouchX, this.mDndTouchY, position)) {
@@ -429,6 +476,9 @@ public class SemDragAndDropHorizontalListAnimator extends SemAbsDragAndDropAnima
             Log.v(TAG, "dndListener.onTouchUp() dragView == null, distance = " + distance);
             ValueAnimator va = ValueAnimator.ofInt(0, distance);
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemDragAndDropHorizontalListAnimator.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animator) {
                     SemDragAndDropHorizontalListAnimator.this.mDragViewBitmapTranslateX = ((Integer) animator.getAnimatedValue()).intValue();
@@ -436,6 +486,9 @@ public class SemDragAndDropHorizontalListAnimator extends SemAbsDragAndDropAnima
                 }
             });
             va.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemDragAndDropHorizontalListAnimator.4
+                AnonymousClass4() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator anim) {
                     if (SemDragAndDropHorizontalListAnimator.this.mFirstDragPos != SemDragAndDropHorizontalListAnimator.this.mDragPos) {
@@ -479,14 +532,47 @@ public class SemDragAndDropHorizontalListAnimator extends SemAbsDragAndDropAnima
         this.mListView.invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.animation.SemDragAndDropHorizontalListAnimator$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animator) {
+            SemDragAndDropHorizontalListAnimator.this.mDragViewBitmapTranslateX = ((Integer) animator.getAnimatedValue()).intValue();
+            SemDragAndDropHorizontalListAnimator.this.mListView.invalidate();
+        }
+    }
+
+    /* renamed from: com.samsung.android.animation.SemDragAndDropHorizontalListAnimator$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 extends AnimatorListenerAdapter {
+        AnonymousClass4() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator anim) {
+            if (SemDragAndDropHorizontalListAnimator.this.mFirstDragPos != SemDragAndDropHorizontalListAnimator.this.mDragPos) {
+                SemDragAndDropHorizontalListAnimator.this.mDndController.dropDone(SemDragAndDropHorizontalListAnimator.this.mFirstDragPos, SemDragAndDropHorizontalListAnimator.this.mDragPos);
+                SemDragAndDropHorizontalListAnimator semDragAndDropHorizontalListAnimator = SemDragAndDropHorizontalListAnimator.this;
+                semDragAndDropHorizontalListAnimator.speakDragReleaseForAccessibility(semDragAndDropHorizontalListAnimator.mDragPos);
+            }
+            SemDragAndDropHorizontalListAnimator.this.mItemAnimator.removeAll();
+            SemDragAndDropHorizontalListAnimator.this.resetDndState();
+            if (SemDragAndDropHorizontalListAnimator.this.mDndListener != null) {
+                Log.d(SemDragAndDropHorizontalListAnimator.TAG, "dndListener.onDragAndDropEnd() from onAnimationEnd()");
+                SemDragAndDropHorizontalListAnimator.this.mDndListener.onDragAndDropEnd();
+            }
+        }
+    }
+
     @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator
     public void resetDndTouchValuesAndBitmap() {
         super.resetDndTouchValuesAndBitmap();
         this.mNonMovableItems.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator
     public void resetDndPositionValues() {
         super.resetDndPositionValues();

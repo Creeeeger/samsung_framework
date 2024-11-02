@@ -38,7 +38,6 @@ public class DialerFilter extends RelativeLayout {
         super(context, attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -71,7 +70,6 @@ public class DialerFilter extends RelativeLayout {
         setMode(1);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);

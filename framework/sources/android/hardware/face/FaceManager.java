@@ -91,8 +91,7 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         public abstract void onCompleted(boolean z, int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.face.FaceManager$1, reason: invalid class name */
+    /* renamed from: android.hardware.face.FaceManager$1 */
     /* loaded from: classes2.dex */
     public class AnonymousClass1 extends IFaceServiceReceiver.Stub {
         AnonymousClass1() {
@@ -175,7 +174,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSemAuthenticationSucceeded$0(Face face, int userId, boolean isStrongBiometric, byte[] fidoResultData) {
             if (FaceManager.this.mAuthenticationCallback != null) {
                 AuthenticationResult result = new AuthenticationResult(FaceManager.this.mCryptoObject, face, userId, isStrongBiometric);
@@ -193,7 +191,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSemAuthenticationSucceededWithBundle$1(Face face, int userId, boolean isStrongBiometric, Bundle b) {
             if (FaceManager.this.mAuthenticationCallback != null) {
                 AuthenticationResult result = new AuthenticationResult(null, face, userId, isStrongBiometric);
@@ -211,7 +208,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSemImageProcessed$2(byte[] data, int width, int height, int orientation, int imageFormat, Bundle b) {
             if (FaceManager.this.mEnrollmentCallback != null) {
                 FaceManager.this.mEnrollmentCallback.onImageProcessed(data, width, height, orientation, imageFormat, b);
@@ -230,7 +226,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onSemStatusUpdate$3() {
         }
     }
@@ -244,11 +239,27 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         this.mHandler = new MyHandler(context);
         if (context.checkCallingOrSelfPermission(Manifest.permission.USE_BIOMETRIC_INTERNAL) == 0) {
             addAuthenticatorsRegisteredCallback(new IFaceAuthenticatorsRegisteredCallback.Stub() { // from class: android.hardware.face.FaceManager.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.hardware.face.IFaceAuthenticatorsRegisteredCallback
                 public void onAllAuthenticatorsRegistered(List<FaceSensorPropertiesInternal> sensors) {
                     FaceManager.this.mProps = sensors;
                 }
             });
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.face.FaceManager$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 extends IFaceAuthenticatorsRegisteredCallback.Stub {
+        AnonymousClass2() {
+        }
+
+        @Override // android.hardware.face.IFaceAuthenticatorsRegisteredCallback
+        public void onAllAuthenticatorsRegistered(List<FaceSensorPropertiesInternal> sensors) {
+            FaceManager.this.mProps = sensors;
         }
     }
 
@@ -641,7 +652,7 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         Slog.w(TAG, "addLockoutResetCallback(): Service not connected!");
     }
 
-    /* renamed from: android.hardware.face.FaceManager$3, reason: invalid class name */
+    /* renamed from: android.hardware.face.FaceManager$3 */
     /* loaded from: classes2.dex */
     class AnonymousClass3 extends IBiometricServiceLockoutResetCallback.Stub {
         final /* synthetic */ LockoutResetCallback val$callback;
@@ -670,7 +681,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onLockoutReset$0(LockoutResetCallback callback, int sensorId, PowerManager.WakeLock wakeLock) {
             try {
                 callback.onLockoutReset(sensorId);
@@ -688,7 +698,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cancelEnrollment(long requestId) {
         IFaceService iFaceService = this.mService;
         if (iFaceService != null) {
@@ -700,7 +709,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cancelAuthentication(long requestId) {
         IFaceService iFaceService = this.mService;
         if (iFaceService != null) {
@@ -712,7 +720,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cancelFaceDetect(long requestId) {
         IFaceService iFaceService = this.mService;
         if (iFaceService == null) {
@@ -916,10 +923,13 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class OnEnrollCancelListener implements CancellationSignal.OnCancelListener {
         private final long mAuthRequestId;
+
+        /* synthetic */ OnEnrollCancelListener(FaceManager faceManager, long j, OnEnrollCancelListenerIA onEnrollCancelListenerIA) {
+            this(j);
+        }
 
         private OnEnrollCancelListener(long id) {
             this.mAuthRequestId = id;
@@ -932,7 +942,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class OnAuthenticationCancelListener implements CancellationSignal.OnCancelListener {
         private final long mAuthRequestId;
@@ -963,9 +972,16 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class MyHandler extends Handler {
+        /* synthetic */ MyHandler(FaceManager faceManager, Context context, MyHandlerIA myHandlerIA) {
+            this(context);
+        }
+
+        /* synthetic */ MyHandler(FaceManager faceManager, Looper looper, MyHandlerIA myHandlerIA) {
+            this(looper);
+        }
+
         private MyHandler(Context context) {
             super(context.getMainLooper());
         }
@@ -1027,7 +1043,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendSetFeatureCompleted(boolean success, int feature) {
         SetFeatureCallback setFeatureCallback = this.mSetFeatureCallback;
         if (setFeatureCallback == null) {
@@ -1036,7 +1051,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         setFeatureCallback.onCompleted(success, feature);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendGetFeatureCompleted(boolean success, int[] features, boolean[] featureState) {
         GetFeatureCallback getFeatureCallback = this.mGetFeatureCallback;
         if (getFeatureCallback == null) {
@@ -1045,7 +1059,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         getFeatureCallback.onCompleted(success, features, featureState);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendChallengeGenerated(int sensorId, int userId, long challenge) {
         GenerateChallengeCallback generateChallengeCallback = this.mGenerateChallengeCallback;
         if (generateChallengeCallback == null) {
@@ -1054,7 +1067,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         generateChallengeCallback.onGenerateChallengeResult(sensorId, userId, challenge);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendFaceDetected(int sensorId, int userId, boolean isStrongBiometric) {
         FaceDetectionCallback faceDetectionCallback = this.mFaceDetectionCallback;
         if (faceDetectionCallback == null) {
@@ -1064,7 +1076,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendRemovedResult(Face face, int remaining) {
         RemovalCallback removalCallback = this.mRemovalCallback;
         if (removalCallback == null) {
@@ -1073,7 +1084,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         removalCallback.onRemovalSucceeded(face, remaining);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendErrorResult(int errMsgId, int vendorCode) {
         int clientErrMsgId = errMsgId == 8 ? vendorCode : errMsgId;
         EnrollmentCallback enrollmentCallback = this.mEnrollmentCallback;
@@ -1092,7 +1102,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendEnrollResult(Face face, int remaining) {
         EnrollmentCallback enrollmentCallback = this.mEnrollmentCallback;
         if (enrollmentCallback != null) {
@@ -1100,7 +1109,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticatedSucceeded(Face face, int userId, boolean isStrongBiometric) {
         if (this.mAuthenticationCallback != null) {
             AuthenticationResult result = new AuthenticationResult(this.mCryptoObject, face, userId, isStrongBiometric);
@@ -1108,7 +1116,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticatedFailed() {
         AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
         if (authenticationCallback != null) {
@@ -1116,7 +1123,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendAcquiredResult(int acquireInfo, int vendorCode) {
         if (this.mAuthenticationCallback != null) {
             FaceAuthenticationFrame frame = new FaceAuthenticationFrame(new FaceDataFrame(acquireInfo, vendorCode));
@@ -1127,7 +1133,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticationFrame(FaceAuthenticationFrame frame) {
         if (frame == null) {
             Slog.w(TAG, "Received null authentication frame");
@@ -1145,7 +1150,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendEnrollmentFrame(FaceEnrollFrame frame) {
         if (frame == null) {
             Slog.w(TAG, "Received null enrollment frame");
@@ -1588,10 +1592,10 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public static boolean semIsSupportOnMask() {
-        if ("".contains("with_mask=true")) {
+        if ("landscape".contains("with_mask=true")) {
             return true;
         }
-        "".contains("with_mask=false");
+        "landscape".contains("with_mask=false");
         return false;
     }
 

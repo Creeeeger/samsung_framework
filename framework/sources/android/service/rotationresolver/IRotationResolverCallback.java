@@ -113,8 +113,9 @@ public interface IRotationResolverCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRotationResolverCallback {
+        public static class Proxy implements IRotationResolverCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

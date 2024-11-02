@@ -9,13 +9,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextAutoRotationAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextAutoRotationAttribute> CREATOR = new Parcelable.Creator<SemContextAutoRotationAttribute>() { // from class: com.samsung.android.hardware.context.SemContextAutoRotationAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextAutoRotationAttribute createFromParcel(Parcel in) {
             return new SemContextAutoRotationAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoRotationAttribute[] newArray(int size) {
             return new SemContextAutoRotationAttribute[size];
@@ -24,7 +25,23 @@ public class SemContextAutoRotationAttribute extends SemContextAttribute {
     private static final String TAG = "SemContextAutoRotationAttribute";
     private int mDeviceType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextAutoRotationAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextAutoRotationAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextAutoRotationAttribute createFromParcel(Parcel in) {
+            return new SemContextAutoRotationAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextAutoRotationAttribute[] newArray(int size) {
+            return new SemContextAutoRotationAttribute[size];
+        }
+    }
+
     public SemContextAutoRotationAttribute() {
         this.mDeviceType = 0;
         setAttribute();

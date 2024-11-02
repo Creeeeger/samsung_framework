@@ -15,7 +15,6 @@ class DHParametersHelper {
     DHParametersHelper() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static BigInteger[] generateSafePrimes(int size, int certainty, SecureRandom random) {
         logger.info("Generating safe primes. This may take a long time.");
         long start = System.currentTimeMillis();
@@ -37,7 +36,6 @@ class DHParametersHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static BigInteger selectGenerator(BigInteger p, BigInteger q, SecureRandom random) {
         BigInteger g;
         BigInteger h;

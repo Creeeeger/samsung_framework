@@ -35,10 +35,13 @@ public class LazyField extends LazyFieldLite {
         return getValue().toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class LazyEntry<K> implements Map.Entry<K, Object> {
         private Map.Entry<K, LazyField> entry;
+
+        /* synthetic */ LazyEntry(Map.Entry x0, AnonymousClass1 x1) {
+            this(x0);
+        }
 
         private LazyEntry(Map.Entry<K, LazyField> entry) {
             this.entry = entry;
@@ -71,7 +74,6 @@ public class LazyField extends LazyFieldLite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class LazyIterator<K> implements Iterator<Map.Entry<K, Object>> {
         private Iterator<Map.Entry<K, Object>> iterator;

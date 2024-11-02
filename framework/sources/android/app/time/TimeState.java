@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TimeState implements Parcelable {
     public static final Parcelable.Creator<TimeState> CREATOR = new Parcelable.Creator<TimeState>() { // from class: android.app.time.TimeState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TimeState createFromParcel(Parcel in) {
             return TimeState.createFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeState[] newArray(int size) {
             return new TimeState[size];
@@ -26,12 +27,28 @@ public final class TimeState implements Parcelable {
     private final UnixEpochTime mUnixEpochTime;
     private final boolean mUserShouldConfirmTime;
 
+    /* renamed from: android.app.time.TimeState$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TimeState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeState createFromParcel(Parcel in) {
+            return TimeState.createFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeState[] newArray(int size) {
+            return new TimeState[size];
+        }
+    }
+
     public TimeState(UnixEpochTime unixEpochTime, boolean userShouldConfirmTime) {
         this.mUnixEpochTime = (UnixEpochTime) Objects.requireNonNull(unixEpochTime);
         this.mUserShouldConfirmTime = userShouldConfirmTime;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static TimeState createFromParcel(Parcel in) {
         UnixEpochTime unixEpochTime = (UnixEpochTime) in.readParcelable(null, UnixEpochTime.class);
         boolean userShouldConfirmId = in.readBoolean();

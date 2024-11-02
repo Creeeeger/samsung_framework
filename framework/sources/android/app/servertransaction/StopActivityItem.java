@@ -10,13 +10,14 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class StopActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<StopActivityItem> CREATOR = new Parcelable.Creator<StopActivityItem>() { // from class: android.app.servertransaction.StopActivityItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StopActivityItem createFromParcel(Parcel in) {
             return new StopActivityItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StopActivityItem[] newArray(int size) {
             return new StopActivityItem[size];
@@ -24,6 +25,10 @@ public class StopActivityItem extends ActivityLifecycleItem {
     };
     private static final String TAG = "StopActivityItem";
     private int mConfigChanges;
+
+    /* synthetic */ StopActivityItem(Parcel parcel, StopActivityItemIA stopActivityItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
@@ -68,6 +73,23 @@ public class StopActivityItem extends ActivityLifecycleItem {
 
     private StopActivityItem(Parcel in) {
         this.mConfigChanges = in.readInt();
+    }
+
+    /* renamed from: android.app.servertransaction.StopActivityItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StopActivityItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StopActivityItem createFromParcel(Parcel in) {
+            return new StopActivityItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StopActivityItem[] newArray(int size) {
+            return new StopActivityItem[size];
+        }
     }
 
     public boolean equals(Object o) {

@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AntennaPosition implements Parcelable {
     public static final Parcelable.Creator<AntennaPosition> CREATOR = new Parcelable.Creator<AntennaPosition>() { // from class: android.telephony.satellite.AntennaPosition.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AntennaPosition createFromParcel(Parcel in) {
             return new AntennaPosition(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AntennaPosition[] newArray(int size) {
             return new AntennaPosition[size];
@@ -23,6 +24,10 @@ public final class AntennaPosition implements Parcelable {
     };
     private AntennaDirection mAntennaDirection;
     private int mSuggestedHoldPosition;
+
+    /* synthetic */ AntennaPosition(Parcel parcel, AntennaPositionIA antennaPositionIA) {
+        this(parcel);
+    }
 
     public AntennaPosition(AntennaDirection antennaDirection, int suggestedHoldPosition) {
         this.mAntennaDirection = antennaDirection;
@@ -42,6 +47,23 @@ public final class AntennaPosition implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeParcelable(this.mAntennaDirection, flags);
         out.writeInt(this.mSuggestedHoldPosition);
+    }
+
+    /* renamed from: android.telephony.satellite.AntennaPosition$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AntennaPosition> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AntennaPosition createFromParcel(Parcel in) {
+            return new AntennaPosition(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AntennaPosition[] newArray(int size) {
+            return new AntennaPosition[size];
+        }
     }
 
     public boolean equals(Object o) {

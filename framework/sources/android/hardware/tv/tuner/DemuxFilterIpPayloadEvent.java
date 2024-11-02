@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxFilterIpPayloadEvent implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterIpPayloadEvent> CREATOR = new Parcelable.Creator<DemuxFilterIpPayloadEvent>() { // from class: android.hardware.tv.tuner.DemuxFilterIpPayloadEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxFilterIpPayloadEvent createFromParcel(Parcel _aidl_source) {
             DemuxFilterIpPayloadEvent _aidl_out = new DemuxFilterIpPayloadEvent();
@@ -15,13 +17,31 @@ public class DemuxFilterIpPayloadEvent implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterIpPayloadEvent[] newArray(int _aidl_size) {
             return new DemuxFilterIpPayloadEvent[_aidl_size];
         }
     };
     public int dataLength = 0;
+
+    /* renamed from: android.hardware.tv.tuner.DemuxFilterIpPayloadEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterIpPayloadEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterIpPayloadEvent createFromParcel(Parcel _aidl_source) {
+            DemuxFilterIpPayloadEvent _aidl_out = new DemuxFilterIpPayloadEvent();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterIpPayloadEvent[] newArray(int _aidl_size) {
+            return new DemuxFilterIpPayloadEvent[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

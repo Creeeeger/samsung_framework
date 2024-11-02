@@ -76,7 +76,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         return this.mCurrentRssi;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public byte[] queryInfo() {
         int ret;
         byte[] buffer = new byte[12];
@@ -120,7 +119,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void initEndpointBes() {
         UsbInterface usbInterface;
         Log.d("FMRadioBestechnic", "interface Count - " + this.mUsbDevice.getInterfaceCount() + " End ID - " + this.mUsbDevice.getInterface(this.mUsbDevice.getInterfaceCount() - 1).getId());
@@ -154,7 +152,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void startNotifyThreadBes() {
         if (this.notifyWorkerThread == null && this.mUsbEndpoint != null) {
             NotifyWorkerThread notifyWorkerThread = new NotifyWorkerThread();
@@ -165,7 +162,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void stopNotifyThreadBes() {
         NotifyWorkerThread notifyWorkerThread = this.notifyWorkerThread;
         if (notifyWorkerThread != null) {
@@ -175,7 +171,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void releaseInterfaceBes() {
         Log.d("FMRadioBestechnic", "release()");
         if (this.mUsbDeviceConnection != null && this.mCDCInterface != null) {
@@ -184,7 +179,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class NotifyWorkerThread extends Thread {
         NotifyWorkerThread() {
@@ -292,7 +286,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean startsWith(byte[] data, byte[] param) {
         if (data == null) {
             return param == null;
@@ -311,7 +304,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void threadSleep(long ms) {
         try {
             Thread.sleep(ms);
@@ -320,7 +312,6 @@ public abstract class PlayerExternalChipsetBes extends PlayerExternalChipsetBase
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public String toHex(byte[] data) {
         StringBuffer buffer = new StringBuffer();
         for (byte b : data) {

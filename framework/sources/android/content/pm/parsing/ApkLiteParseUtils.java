@@ -333,12 +333,32 @@ public class ApkLiteParseUtils {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x035b, code lost:            if ((r75 & 128) != 0) goto L117;     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0361, code lost:            if (android.content.pm.parsing.FrameworkParsingPackageUtils.checkRequiredSystemProperties(r14, r11) != false) goto L116;     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0363, code lost:            r0 = "Skipping target and overlay pair " + r15 + " and " + r72 + ": overlay ignored due to required system property: " + r14 + " with value: " + r11;        android.util.Slog.i(android.content.pm.parsing.ApkLiteParseUtils.TAG, r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x039d, code lost:            return r71.skip(r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x03a3, code lost:            r12 = r5.first;        r6 = r5.second;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0405, code lost:            return r71.success(new android.content.pm.parsing.ApkLite(r72, r12, r6, r49, r51, r62, r50, r44, r45, r46, r8, r21, r74, r47, r56, r57, r58, r59, r61, r60, r48, r15, r63, r64, r14, r11, r55, r54, r65, r7.first, r7.second, r66, r67));     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x035b, code lost:
+    
+        if ((r75 & 128) != 0) goto L282;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0361, code lost:
+    
+        if (android.content.pm.parsing.FrameworkParsingPackageUtils.checkRequiredSystemProperties(r14, r11) != false) goto L281;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0363, code lost:
+    
+        r0 = "Skipping target and overlay pair " + r15 + " and " + r72 + ": overlay ignored due to required system property: " + r14 + " with value: " + r11;
+        android.util.Slog.i(android.content.pm.parsing.ApkLiteParseUtils.TAG, r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x039d, code lost:
+    
+        return r71.skip(r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x03a3, code lost:
+    
+        r12 = r5.first;
+        r6 = r5.second;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0405, code lost:
+    
+        return r71.success(new android.content.pm.parsing.ApkLite(r72, r12, r6, r49, r51, r62, r50, r44, r45, r46, r8, r21, r74, r47, r56, r57, r58, r59, r61, r60, r48, r15, r63, r64, r14, r11, r55, r54, r65, r7.first, r7.second, r66, r67));
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -464,6 +484,10 @@ public class ApkLiteParseUtils {
 
     /* loaded from: classes.dex */
     private static class SplitNameComparator implements Comparator<String> {
+        /* synthetic */ SplitNameComparator(SplitNameComparatorIA splitNameComparatorIA) {
+            this();
+        }
+
         private SplitNameComparator() {
         }
 

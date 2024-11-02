@@ -33,14 +33,14 @@ public class HdmiTimerRecordSources {
         return new TimerRecordSource(timerInfo, source);
     }
 
-    public static TimerRecordSource ofExternalPlug(TimerInfo timerInfo, HdmiRecordSources.ExternalPlugData externalPlugData) {
-        checkTimerRecordSourceInputs(timerInfo, externalPlugData);
-        return new TimerRecordSource(timerInfo, new ExternalSourceDecorator(externalPlugData, 4));
+    public static TimerRecordSource ofExternalPlug(TimerInfo timerInfo, HdmiRecordSources.ExternalPlugData source) {
+        checkTimerRecordSourceInputs(timerInfo, source);
+        return new TimerRecordSource(timerInfo, new ExternalSourceDecorator(source, 4));
     }
 
-    public static TimerRecordSource ofExternalPhysicalAddress(TimerInfo timerInfo, HdmiRecordSources.ExternalPhysicalAddress externalPhysicalAddress) {
-        checkTimerRecordSourceInputs(timerInfo, externalPhysicalAddress);
-        return new TimerRecordSource(timerInfo, new ExternalSourceDecorator(externalPhysicalAddress, 5));
+    public static TimerRecordSource ofExternalPhysicalAddress(TimerInfo timerInfo, HdmiRecordSources.ExternalPhysicalAddress source) {
+        checkTimerRecordSourceInputs(timerInfo, source);
+        return new TimerRecordSource(timerInfo, new ExternalSourceDecorator(source, 5));
     }
 
     private static void checkTimerRecordSourceInputs(TimerInfo timerInfo, HdmiRecordSources.RecordSource source) {
@@ -82,7 +82,6 @@ public class HdmiTimerRecordSources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class TimeUnit {
         final int mHour;
@@ -109,6 +108,10 @@ public class HdmiTimerRecordSources {
     @SystemApi
     /* loaded from: classes2.dex */
     public static final class Time extends TimeUnit {
+        /* synthetic */ Time(int i, int i2, TimeIA timeIA) {
+            this(i, i2);
+        }
+
         private Time(int hour, int minute) {
             super(hour, minute);
         }
@@ -117,6 +120,10 @@ public class HdmiTimerRecordSources {
     @SystemApi
     /* loaded from: classes2.dex */
     public static final class Duration extends TimeUnit {
+        /* synthetic */ Duration(int i, int i2, DurationIA durationIA) {
+            this(i, i2);
+        }
+
         private Duration(int hour, int minute) {
             super(hour, minute);
         }
@@ -152,6 +159,10 @@ public class HdmiTimerRecordSources {
         private final int mRecordingSequence;
         private final Time mStartTime;
 
+        /* synthetic */ TimerInfo(int i, int i2, Time time, Duration duration, int i3, TimerInfoIA timerInfoIA) {
+            this(i, i2, time, duration, i3);
+        }
+
         private TimerInfo(int dayOfMonth, int monthOfYear, Time startTime, Duration duration, int recordingSequence) {
             this.mDayOfMonth = dayOfMonth;
             this.mMonthOfYear = monthOfYear;
@@ -181,17 +192,19 @@ public class HdmiTimerRecordSources {
         private final HdmiRecordSources.RecordSource mRecordSource;
         private final TimerInfo mTimerInfo;
 
+        /* synthetic */ TimerRecordSource(TimerInfo timerInfo, HdmiRecordSources.RecordSource recordSource, TimerRecordSourceIA timerRecordSourceIA) {
+            this(timerInfo, recordSource);
+        }
+
         private TimerRecordSource(TimerInfo timerInfo, HdmiRecordSources.RecordSource recordSource) {
             this.mTimerInfo = timerInfo;
             this.mRecordSource = recordSource;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getDataSize() {
             return this.mTimerInfo.getDataSize() + this.mRecordSource.getDataSize(false);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int toByteArray(byte[] data, int index) {
             this.mRecordSource.toByteArray(false, data, index + this.mTimerInfo.toByteArray(data, index));
             return getDataSize();
@@ -202,6 +215,10 @@ public class HdmiTimerRecordSources {
     private static class ExternalSourceDecorator extends HdmiRecordSources.RecordSource {
         private final int mExternalSourceSpecifier;
         private final HdmiRecordSources.RecordSource mRecordSource;
+
+        /* synthetic */ ExternalSourceDecorator(HdmiRecordSources.RecordSource recordSource, int i, ExternalSourceDecoratorIA externalSourceDecoratorIA) {
+            this(recordSource, i);
+        }
 
         private ExternalSourceDecorator(HdmiRecordSources.RecordSource recordSource, int externalSourceSpecifier) {
             super(recordSource.mSourceType, recordSource.getDataSize(false) + 1);

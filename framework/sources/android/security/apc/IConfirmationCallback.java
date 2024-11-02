@@ -72,8 +72,9 @@ public interface IConfirmationCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IConfirmationCallback {
+        public static class Proxy implements IConfirmationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

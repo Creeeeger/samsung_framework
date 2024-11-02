@@ -170,6 +170,10 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
         public @interface DataFormat {
         }
 
+        /* synthetic */ EventPayload(boolean z, AudioFormat audioFormat, int i, int i2, byte[] bArr, HotwordDetectedResult hotwordDetectedResult, ParcelFileDescriptor parcelFileDescriptor, List list, long j, EventPayloadIA eventPayloadIA) {
+            this(z, audioFormat, i, i2, bArr, hotwordDetectedResult, parcelFileDescriptor, list, j);
+        }
+
         private EventPayload(boolean captureAvailable, AudioFormat audioFormat, int captureSession, int dataFormat, byte[] data, HotwordDetectedResult hotwordDetectedResult, ParcelFileDescriptor audioStream, List<SoundTrigger.KeyphraseRecognitionExtra> keyphraseExtras, long halEventReceivedMillis) {
             this.mCaptureAvailable = captureAvailable;
             this.mCaptureSession = captureSession;
@@ -240,7 +244,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
             public Builder() {
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public Builder(SoundTrigger.KeyphraseRecognitionEvent keyphraseRecognitionEvent) {
                 setCaptureAvailable(keyphraseRecognitionEvent.isCaptureAvailable());
                 setCaptureSession(keyphraseRecognitionEvent.getCaptureSession());
@@ -363,7 +366,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
     void initialize(PersistableBundle options, SharedMemory sharedMemory) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void initialize(PersistableBundle options, SharedMemory sharedMemory, SoundTrigger.ModuleProperties moduleProperties) {
         if (this.mSupportSandboxedDetectionService) {
             initAndVerifyDetector(options, sharedMemory, this.mInternalCallback, 1);
@@ -389,7 +391,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$initialize$0(SoundTrigger.ModuleProperties prop) {
         return !prop.getSupportedModelArch().equals("injection");
     }
@@ -618,7 +619,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
         return this.mSupportSandboxedDetectionService;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onSoundModelsChanged() {
         synchronized (this.mLock) {
             int i = this.mAvailability;
@@ -728,7 +728,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateAndNotifyStateChangedLocked(int availability) {
         updateAvailabilityLocked(availability);
         notifyStateChangedLocked();
@@ -746,7 +745,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
         message.sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendUnknownFailure(String failureMessage) {
         updateAvailabilityLocked(3);
         Message.obtain(this.mHandler, 11, failureMessage).sendToTarget();
@@ -756,7 +754,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
         Message.obtain(this.mHandler, 10, soundTriggerFailure).sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static final class SoundTriggerListener extends IHotwordRecognitionStatusCallback.Stub {
         private final Handler mHandler;
@@ -835,12 +832,10 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onDetectorRemoteException() {
         Message.obtain(this.mHandler, 9, new HotwordDetectionServiceFailure(7, "Detector remote exception occurs")).sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public class MyHandler extends Handler {
         MyHandler(Looper looper) {
@@ -864,7 +859,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleMessage$1(final Message message) throws Exception {
             AlwaysOnHotwordDetector.this.mExternalExecutor.execute(new Runnable() { // from class: android.service.voice.AlwaysOnHotwordDetector$MyHandler$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
@@ -874,7 +868,6 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleMessage$0(Message message) {
             Slog.i(AlwaysOnHotwordDetector.TAG, "handle message " + message.what);
             switch (message.what) {
@@ -919,8 +912,9 @@ public class AlwaysOnHotwordDetector extends AbstractDetector {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    class RefreshAvailabilityTask extends AsyncTask<Void, Void, Void> {
+    public class RefreshAvailabilityTask extends AsyncTask<Void, Void, Void> {
         RefreshAvailabilityTask() {
         }
 

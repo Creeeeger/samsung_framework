@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ContentRecordingSession implements Parcelable {
     public static final Parcelable.Creator<ContentRecordingSession> CREATOR = new Parcelable.Creator<ContentRecordingSession>() { // from class: android.view.ContentRecordingSession.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentRecordingSession[] newArray(int size) {
             return new ContentRecordingSession[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentRecordingSession createFromParcel(Parcel in) {
             return new ContentRecordingSession(in);
@@ -207,6 +208,23 @@ public final class ContentRecordingSession implements Parcelable {
         this.mDisplayToRecord = displayToRecord;
         this.mTokenToRecord = tokenToRecord;
         this.mWaitingForConsent = waitingForConsent;
+    }
+
+    /* renamed from: android.view.ContentRecordingSession$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentRecordingSession> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentRecordingSession[] newArray(int size) {
+            return new ContentRecordingSession[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentRecordingSession createFromParcel(Parcel in) {
+            return new ContentRecordingSession(in);
+        }
     }
 
     /* loaded from: classes4.dex */

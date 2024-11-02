@@ -37,7 +37,6 @@ public final class TouchInteractionController {
     private @interface State {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TouchInteractionController(AccessibilityService service, Object lock, int displayId) {
         this.mDisplayId = displayId;
         this.mLock = lock;
@@ -79,7 +78,6 @@ public final class TouchInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onMotionEvent(MotionEvent event) {
         if (this.mStateChangeRequested) {
             this.mQueuedMotionEvents.add(event);
@@ -110,7 +108,6 @@ public final class TouchInteractionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onStateChanged(final int state) {
         ArrayMap<Callback, Executor> entries;
         this.mState = state;

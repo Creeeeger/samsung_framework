@@ -35,7 +35,6 @@ public abstract class AutofillFieldClassificationService extends Service {
     private final Handler mHandler = new Handler(Looper.getMainLooper(), null, true);
     private AutofillFieldClassificationServiceWrapper mWrapper;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void calculateScores(RemoteCallback callback, List<AutofillValue> actualValues, String[] userDataValues, String[] categoryIds, String defaultAlgorithm, Bundle defaultArgs, Map algorithms, Map args) {
         Bundle data = new Bundle();
         float[][] scores = onCalculateScores(actualValues, Arrays.asList(userDataValues), Arrays.asList(categoryIds), defaultAlgorithm, defaultArgs, algorithms, args);
@@ -75,6 +74,10 @@ public abstract class AutofillFieldClassificationService extends Service {
 
     /* loaded from: classes3.dex */
     private final class AutofillFieldClassificationServiceWrapper extends IAutofillFieldClassificationService.Stub {
+        /* synthetic */ AutofillFieldClassificationServiceWrapper(AutofillFieldClassificationService autofillFieldClassificationService, AutofillFieldClassificationServiceWrapperIA autofillFieldClassificationServiceWrapperIA) {
+            this();
+        }
+
         private AutofillFieldClassificationServiceWrapper() {
         }
 
@@ -92,19 +95,28 @@ public abstract class AutofillFieldClassificationService extends Service {
     /* loaded from: classes3.dex */
     public static final class Scores implements Parcelable {
         public static final Parcelable.Creator<Scores> CREATOR = new Parcelable.Creator<Scores>() { // from class: android.service.autofill.AutofillFieldClassificationService.Scores.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Scores createFromParcel(Parcel parcel) {
                 return new Scores(parcel);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Scores[] newArray(int size) {
                 return new Scores[size];
             }
         };
         public final float[][] scores;
+
+        /* synthetic */ Scores(Parcel parcel, ScoresIA scoresIA) {
+            this(parcel);
+        }
+
+        /* synthetic */ Scores(float[][] fArr, ScoresIA scoresIA) {
+            this(fArr);
+        }
 
         private Scores(Parcel parcel) {
             int size1 = parcel.readInt();
@@ -148,6 +160,23 @@ public abstract class AutofillFieldClassificationService extends Service {
                 for (int j = 0; j < size2; j++) {
                     parcel.writeFloat(this.scores[i][j]);
                 }
+            }
+        }
+
+        /* renamed from: android.service.autofill.AutofillFieldClassificationService$Scores$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Scores> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Scores createFromParcel(Parcel parcel) {
+                return new Scores(parcel);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Scores[] newArray(int size) {
+                return new Scores[size];
             }
         }
     }

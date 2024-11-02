@@ -165,7 +165,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SQLiteConnection open(SQLiteConnectionPool pool, SQLiteDatabaseConfiguration configuration, int connectionId, boolean primaryConnection) {
         SQLiteConnection connection = new SQLiteConnection(pool, configuration, connectionId, primaryConnection);
         try {
@@ -180,7 +179,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SQLiteConnection openSecure(SQLiteConnectionPool pool, SQLiteDatabaseConfiguration configuration, int connectionId, boolean primaryConnection, byte[] password) {
         SQLiteConnection connection = new SQLiteConnection(pool, configuration, connectionId, primaryConnection);
         try {
@@ -195,7 +193,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void close() {
         dispose(false);
     }
@@ -641,7 +638,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCheckpointOnClose(boolean set) {
         long j = this.mConnectionPtr;
         if (j != 0) {
@@ -694,7 +690,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reconfigure(SQLiteDatabaseConfiguration configuration) {
         this.mOnlyAllowReadOnlyOperations = false;
         boolean foreignKeyModeChanged = configuration.foreignKeyConstraintsEnabled != this.mConfiguration.foreignKeyConstraintsEnabled;
@@ -744,12 +739,10 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setOnlyAllowReadOnlyOperations(boolean readOnly) {
         this.mOnlyAllowReadOnlyOperations = readOnly;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isPreparedStatementInCache(String sql) {
         return this.mPreparedStatementCache.get(sql) != null;
     }
@@ -1235,7 +1228,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         nativeExportDB(this.mConnectionPtr, attachedDB);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void printQueryPlan(String sql) {
         long result;
         if (this.mIsOpen) {
@@ -1293,7 +1285,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public String analyzeSql(String sql) {
         synchronized (this) {
             if (!this.mIsOpen) {
@@ -1371,7 +1362,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         finalizePreparedStatement(statement);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void finalizePreparedStatement(PreparedStatement statement) {
         nativeFinalizeStatement(this.mConnectionPtr, statement.mStatementPtr);
         recyclePreparedStatement(statement);
@@ -1466,7 +1456,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         dumpUnsafe(printer, verbose);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpUnsafe(Printer printer, boolean verbose) {
         printer.println("Connection #" + this.mConnectionId + ":");
         if (verbose) {
@@ -1480,12 +1469,10 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String describeCurrentOperationUnsafe() {
         return this.mRecentOperations.describeCurrentOperation();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Unreachable blocks removed: 2, instructions: 2 */
     public void collectDbStats(ArrayList<SQLiteDebug.DbStats> dbStatsList) {
         long pageCount;
@@ -1547,7 +1534,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         window.close();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void collectDbStatsUnsafe(ArrayList<SQLiteDebug.DbStats> dbStatsList) {
         dbStatsList.add(getMainDbStatsUnsafe(0, 0L, 0L));
     }
@@ -1589,12 +1575,10 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         this.mPreparedStatementPool = statement;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String trimSqlForDisplay(String sql) {
         return sql.replaceAll("[\\s]*\\n+[\\s]*", " ");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class PreparedStatement {
         public boolean mInCache;
@@ -1606,18 +1590,20 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         public long mStatementPtr;
         public int mType;
 
+        /* synthetic */ PreparedStatement(PreparedStatementIA preparedStatementIA) {
+            this();
+        }
+
         private PreparedStatement() {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class PreparedStatementCache extends LruCache<String, PreparedStatement> {
         public PreparedStatementCache(int size) {
             super(size);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.util.LruCache
         public void entryRemoved(boolean evicted, String key, PreparedStatement oldValue, PreparedStatement newValue) {
             oldValue.mInCache = false;
@@ -1645,7 +1631,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class OperationLog {
         public static final int COLLECT_OPERATION = 2;
@@ -1895,7 +1880,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             collectOperation(cookie, 0, 0);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* JADX WARN: Removed duplicated region for block: B:15:0x0053 A[EXC_TOP_SPLITTER, SYNTHETIC] */
         /* JADX WARN: Removed duplicated region for block: B:22:? A[RETURN, SYNTHETIC] */
         /*
@@ -2097,7 +2081,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             return "running";
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public String getTraceMethodName() {
             String methodName = this.mKind + " " + this.mSql;
             if (methodName.length() > 256) {
@@ -2107,7 +2090,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class SQLiteExpertModule extends Thread {
         private static final String TAG = "SQLiteIndexRecommendation";

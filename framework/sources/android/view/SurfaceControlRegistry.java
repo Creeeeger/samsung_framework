@@ -36,8 +36,13 @@ public class SurfaceControlRegistry {
         void onMaxLayersExceeded(WeakHashMap<SurfaceControl, Long> weakHashMap, int i, PrintWriter printWriter);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class DefaultReporter implements Reporter {
+    public static class DefaultReporter implements Reporter {
+        /* synthetic */ DefaultReporter(DefaultReporterIA defaultReporterIA) {
+            this();
+        }
+
         private DefaultReporter() {
         }
 
@@ -83,7 +88,6 @@ public class SurfaceControlRegistry {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ int lambda$onMaxLayersExceeded$0(Map.Entry o1, Map.Entry o2) {
             return (int) (((Long) o1.getValue()).longValue() - ((Long) o2.getValue()).longValue());
         }
@@ -139,7 +143,6 @@ public class SurfaceControlRegistry {
         return surfaceControlRegistry;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void add(SurfaceControl sc) {
         synchronized (sLock) {
             this.mSurfaceControls.put(sc, Long.valueOf(SystemClock.elapsedRealtime()));
@@ -151,7 +154,6 @@ public class SurfaceControlRegistry {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void remove(SurfaceControl sc) {
         synchronized (sLock) {
             this.mSurfaceControls.remove(sc);

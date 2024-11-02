@@ -21,18 +21,23 @@ public final class CellSignalStrengthTdscdma extends CellSignalStrength implemen
     private int mRssi;
     private static final CellSignalStrengthTdscdma sInvalid = new CellSignalStrengthTdscdma();
     public static final Parcelable.Creator<CellSignalStrengthTdscdma> CREATOR = new Parcelable.Creator<CellSignalStrengthTdscdma>() { // from class: android.telephony.CellSignalStrengthTdscdma.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthTdscdma createFromParcel(Parcel in) {
             return new CellSignalStrengthTdscdma(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthTdscdma[] newArray(int size) {
             return new CellSignalStrengthTdscdma[size];
         }
     };
+
+    /* synthetic */ CellSignalStrengthTdscdma(Parcel parcel, CellSignalStrengthTdscdmaIA cellSignalStrengthTdscdmaIA) {
+        this(parcel);
+    }
 
     public CellSignalStrengthTdscdma() {
         setDefaultValues();
@@ -169,6 +174,23 @@ public final class CellSignalStrengthTdscdma extends CellSignalStrength implemen
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.CellSignalStrengthTdscdma$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellSignalStrengthTdscdma> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellSignalStrengthTdscdma createFromParcel(Parcel in) {
+            return new CellSignalStrengthTdscdma(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellSignalStrengthTdscdma[] newArray(int size) {
+            return new CellSignalStrengthTdscdma[size];
+        }
     }
 
     private static void log(String s) {

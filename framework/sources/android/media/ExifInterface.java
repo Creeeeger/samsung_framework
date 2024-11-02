@@ -416,184 +416,28 @@ public class ExifInterface {
     }
 
     static {
-        int i = 3;
-        int i2 = 4;
-        String str = TAG_NEW_SUBFILE_TYPE;
-        ExifTag exifTag = new ExifTag(str, 254, i2);
-        String str2 = TAG_SUBFILE_TYPE;
-        ExifTag exifTag2 = new ExifTag(str2, 255, i2);
-        ExifTag exifTag3 = new ExifTag(TAG_IMAGE_WIDTH, 256, 3, 4);
-        ExifTag exifTag4 = new ExifTag(TAG_IMAGE_LENGTH, 257, 3, 4);
-        ExifTag exifTag5 = new ExifTag(TAG_BITS_PER_SAMPLE, 258, i);
-        ExifTag exifTag6 = new ExifTag(TAG_COMPRESSION, 259, i);
-        ExifTag exifTag7 = new ExifTag(TAG_PHOTOMETRIC_INTERPRETATION, 262, i);
-        int i3 = 2;
-        ExifTag exifTag8 = new ExifTag(TAG_IMAGE_DESCRIPTION, 270, i3);
-        ExifTag exifTag9 = new ExifTag(TAG_MAKE, 271, i3);
-        ExifTag exifTag10 = new ExifTag(TAG_MODEL, 272, i3);
-        ExifTag exifTag11 = new ExifTag(TAG_STRIP_OFFSETS, 273, 3, 4);
-        int i4 = 3;
-        ExifTag exifTag12 = new ExifTag(TAG_ORIENTATION, 274, i4);
-        ExifTag exifTag13 = new ExifTag(TAG_SAMPLES_PER_PIXEL, 277, i4);
-        ExifTag exifTag14 = new ExifTag(TAG_ROWS_PER_STRIP, 278, 3, 4);
-        ExifTag exifTag15 = new ExifTag(TAG_STRIP_BYTE_COUNTS, 279, 3, 4);
-        int i5 = 5;
-        ExifTag exifTag16 = new ExifTag(TAG_X_RESOLUTION, 282, i5);
-        ExifTag exifTag17 = new ExifTag(TAG_Y_RESOLUTION, 283, i5);
-        int i6 = 3;
-        ExifTag exifTag18 = new ExifTag(TAG_PLANAR_CONFIGURATION, 284, i6);
-        ExifTag exifTag19 = new ExifTag(TAG_RESOLUTION_UNIT, 296, i6);
-        ExifTag exifTag20 = new ExifTag(TAG_TRANSFER_FUNCTION, 301, i6);
-        int i7 = 2;
-        ExifTag exifTag21 = new ExifTag(TAG_SOFTWARE, 305, i7);
-        ExifTag exifTag22 = new ExifTag(TAG_DATETIME, 306, i7);
-        ExifTag exifTag23 = new ExifTag(TAG_ARTIST, 315, i7);
-        int i8 = 5;
-        ExifTag exifTag24 = new ExifTag(TAG_WHITE_POINT, 318, i8);
-        ExifTag exifTag25 = new ExifTag(TAG_PRIMARY_CHROMATICITIES, 319, i8);
-        String str3 = TAG_SUB_IFD_POINTER;
-        int i9 = 4;
-        ExifTag exifTag26 = new ExifTag(str3, 330, i9);
-        ExifTag exifTag27 = new ExifTag(TAG_JPEG_INTERCHANGE_FORMAT, 513, i9);
-        ExifTag exifTag28 = new ExifTag(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, 514, i9);
-        ExifTag exifTag29 = new ExifTag(TAG_Y_CB_CR_COEFFICIENTS, 529, 5);
-        int i10 = 3;
-        ExifTag exifTag30 = new ExifTag(TAG_Y_CB_CR_SUB_SAMPLING, 530, i10);
-        ExifTag exifTag31 = new ExifTag(TAG_Y_CB_CR_POSITIONING, 531, i10);
-        ExifTag exifTag32 = new ExifTag(TAG_REFERENCE_BLACK_WHITE, 532, 5);
-        ExifTag exifTag33 = new ExifTag(TAG_COPYRIGHT, 33432, 2);
-        String str4 = TAG_EXIF_IFD_POINTER;
-        int i11 = 4;
-        ExifTag exifTag34 = new ExifTag(str4, 34665, i11);
-        String str5 = TAG_GPS_INFO_IFD_POINTER;
-        int i12 = 1;
-        ExifTag[] exifTagArr = {exifTag, exifTag2, exifTag3, exifTag4, exifTag5, exifTag6, exifTag7, exifTag8, exifTag9, exifTag10, exifTag11, exifTag12, exifTag13, exifTag14, exifTag15, exifTag16, exifTag17, exifTag18, exifTag19, exifTag20, exifTag21, exifTag22, exifTag23, exifTag24, exifTag25, exifTag26, exifTag27, exifTag28, exifTag29, exifTag30, exifTag31, exifTag32, exifTag33, exifTag34, new ExifTag(str5, GLES30.GL_DRAW_BUFFER0, i11), new ExifTag(TAG_RW2_SENSOR_TOP_BORDER, i11, i11), new ExifTag(TAG_RW2_SENSOR_LEFT_BORDER, 5, i11), new ExifTag(TAG_RW2_SENSOR_BOTTOM_BORDER, 6, i11), new ExifTag(TAG_RW2_SENSOR_RIGHT_BORDER, 7, i11), new ExifTag(TAG_RW2_ISO, 23, 3), new ExifTag(TAG_RW2_JPG_FROM_RAW, 46, 7), new ExifTag(TAG_XMP, 700, i12)};
+        ExifTag[] exifTagArr = {new ExifTag(TAG_NEW_SUBFILE_TYPE, 254, 4), new ExifTag(TAG_SUBFILE_TYPE, 255, 4), new ExifTag(TAG_IMAGE_WIDTH, 256, 3, 4), new ExifTag(TAG_IMAGE_LENGTH, 257, 3, 4), new ExifTag(TAG_BITS_PER_SAMPLE, 258, 3), new ExifTag(TAG_COMPRESSION, 259, 3), new ExifTag(TAG_PHOTOMETRIC_INTERPRETATION, 262, 3), new ExifTag(TAG_IMAGE_DESCRIPTION, 270, 2), new ExifTag(TAG_MAKE, 271, 2), new ExifTag(TAG_MODEL, 272, 2), new ExifTag(TAG_STRIP_OFFSETS, 273, 3, 4), new ExifTag(TAG_ORIENTATION, 274, 3), new ExifTag(TAG_SAMPLES_PER_PIXEL, 277, 3), new ExifTag(TAG_ROWS_PER_STRIP, 278, 3, 4), new ExifTag(TAG_STRIP_BYTE_COUNTS, 279, 3, 4), new ExifTag(TAG_X_RESOLUTION, 282, 5), new ExifTag(TAG_Y_RESOLUTION, 283, 5), new ExifTag(TAG_PLANAR_CONFIGURATION, 284, 3), new ExifTag(TAG_RESOLUTION_UNIT, 296, 3), new ExifTag(TAG_TRANSFER_FUNCTION, 301, 3), new ExifTag(TAG_SOFTWARE, 305, 2), new ExifTag(TAG_DATETIME, 306, 2), new ExifTag(TAG_ARTIST, 315, 2), new ExifTag(TAG_WHITE_POINT, 318, 5), new ExifTag(TAG_PRIMARY_CHROMATICITIES, 319, 5), new ExifTag(TAG_SUB_IFD_POINTER, 330, 4), new ExifTag(TAG_JPEG_INTERCHANGE_FORMAT, 513, 4), new ExifTag(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, 514, 4), new ExifTag(TAG_Y_CB_CR_COEFFICIENTS, 529, 5), new ExifTag(TAG_Y_CB_CR_SUB_SAMPLING, 530, 3), new ExifTag(TAG_Y_CB_CR_POSITIONING, 531, 3), new ExifTag(TAG_REFERENCE_BLACK_WHITE, 532, 5), new ExifTag(TAG_COPYRIGHT, 33432, 2), new ExifTag(TAG_EXIF_IFD_POINTER, 34665, 4), new ExifTag(TAG_GPS_INFO_IFD_POINTER, GLES30.GL_DRAW_BUFFER0, 4), new ExifTag(TAG_RW2_SENSOR_TOP_BORDER, 4, 4), new ExifTag(TAG_RW2_SENSOR_LEFT_BORDER, 5, 4), new ExifTag(TAG_RW2_SENSOR_BOTTOM_BORDER, 6, 4), new ExifTag(TAG_RW2_SENSOR_RIGHT_BORDER, 7, 4), new ExifTag(TAG_RW2_ISO, 23, 3), new ExifTag(TAG_RW2_JPG_FROM_RAW, 46, 7), new ExifTag(TAG_XMP, 700, 1)};
         IFD_TIFF_TAGS = exifTagArr;
-        int i13 = 5;
-        ExifTag exifTag35 = new ExifTag(TAG_EXPOSURE_TIME, 33434, i13);
-        ExifTag exifTag36 = new ExifTag("FNumber", 33437, i13);
-        int i14 = 3;
-        ExifTag exifTag37 = new ExifTag(TAG_EXPOSURE_PROGRAM, 34850, i14);
-        ExifTag exifTag38 = new ExifTag(TAG_SPECTRAL_SENSITIVITY, GLES30.GL_MAX_DRAW_BUFFERS, 2);
-        ExifTag exifTag39 = new ExifTag("ISOSpeedRatings", GLES30.GL_DRAW_BUFFER2, i14);
-        ExifTag exifTag40 = new ExifTag(TAG_OECF, GLES30.GL_DRAW_BUFFER3, 7);
-        int i15 = 2;
-        ExifTag exifTag41 = new ExifTag(TAG_EXIF_VERSION, 36864, i15);
-        ExifTag exifTag42 = new ExifTag(TAG_DATETIME_ORIGINAL, 36867, i15);
-        ExifTag exifTag43 = new ExifTag(TAG_DATETIME_DIGITIZED, 36868, i15);
-        ExifTag exifTag44 = new ExifTag(TAG_OFFSET_TIME, 36880, i15);
-        ExifTag exifTag45 = new ExifTag(TAG_OFFSET_TIME_ORIGINAL, 36881, i15);
-        ExifTag exifTag46 = new ExifTag(TAG_OFFSET_TIME_DIGITIZED, 36882, i15);
-        ExifTag exifTag47 = new ExifTag(TAG_COMPONENTS_CONFIGURATION, 37121, 7);
-        int i16 = 5;
-        ExifTag exifTag48 = new ExifTag(TAG_COMPRESSED_BITS_PER_PIXEL, 37122, i16);
-        int i17 = 10;
-        ExifTag exifTag49 = new ExifTag(TAG_SHUTTER_SPEED_VALUE, 37377, i17);
-        ExifTag exifTag50 = new ExifTag(TAG_APERTURE_VALUE, 37378, i16);
-        ExifTag exifTag51 = new ExifTag(TAG_BRIGHTNESS_VALUE, 37379, i17);
-        ExifTag exifTag52 = new ExifTag(TAG_EXPOSURE_BIAS_VALUE, 37380, i17);
-        int i18 = 5;
-        ExifTag exifTag53 = new ExifTag(TAG_MAX_APERTURE_VALUE, 37381, i18);
-        ExifTag exifTag54 = new ExifTag(TAG_SUBJECT_DISTANCE, 37382, i18);
-        int i19 = 3;
-        ExifTag exifTag55 = new ExifTag(TAG_METERING_MODE, 37383, i19);
-        ExifTag exifTag56 = new ExifTag(TAG_LIGHT_SOURCE, 37384, i19);
-        ExifTag exifTag57 = new ExifTag(TAG_FLASH, 37385, i19);
-        ExifTag exifTag58 = new ExifTag(TAG_FOCAL_LENGTH, 37386, 5);
-        ExifTag exifTag59 = new ExifTag(TAG_SUBJECT_AREA, 37396, i19);
-        int i20 = 7;
-        ExifTag exifTag60 = new ExifTag(TAG_MAKER_NOTE, 37500, i20);
-        ExifTag exifTag61 = new ExifTag(TAG_USER_COMMENT, 37510, i20);
-        int i21 = 2;
-        ExifTag exifTag62 = new ExifTag(TAG_SUBSEC_TIME, 37520, i21);
-        ExifTag exifTag63 = new ExifTag("SubSecTimeOriginal", 37521, i21);
-        ExifTag exifTag64 = new ExifTag("SubSecTimeDigitized", 37522, i21);
-        ExifTag exifTag65 = new ExifTag(TAG_FLASHPIX_VERSION, UsbManager.USB_DATA_TRANSFER_RATE_40G, 7);
-        ExifTag exifTag66 = new ExifTag(TAG_COLOR_SPACE, 40961, 3);
-        ExifTag exifTag67 = new ExifTag(TAG_PIXEL_X_DIMENSION, 40962, 3, 4);
-        ExifTag exifTag68 = new ExifTag(TAG_PIXEL_Y_DIMENSION, 40963, 3, 4);
-        ExifTag exifTag69 = new ExifTag(TAG_RELATED_SOUND_FILE, 40964, 2);
-        ExifTag exifTag70 = new ExifTag(TAG_INTEROPERABILITY_IFD_POINTER, 40965, 4);
-        int i22 = 5;
-        ExifTag exifTag71 = new ExifTag(TAG_FLASH_ENERGY, 41483, i22);
-        ExifTag exifTag72 = new ExifTag(TAG_SPATIAL_FREQUENCY_RESPONSE, 41484, 7);
-        ExifTag exifTag73 = new ExifTag(TAG_FOCAL_PLANE_X_RESOLUTION, 41486, i22);
-        ExifTag exifTag74 = new ExifTag(TAG_FOCAL_PLANE_Y_RESOLUTION, 41487, i22);
-        int i23 = 3;
-        ExifTag exifTag75 = new ExifTag(TAG_FOCAL_PLANE_RESOLUTION_UNIT, 41488, i23);
-        ExifTag exifTag76 = new ExifTag(TAG_SUBJECT_LOCATION, 41492, i23);
-        ExifTag exifTag77 = new ExifTag(TAG_EXPOSURE_INDEX, 41493, 5);
-        ExifTag exifTag78 = new ExifTag(TAG_SENSING_METHOD, 41495, i23);
-        int i24 = 7;
-        ExifTag exifTag79 = new ExifTag(TAG_FILE_SOURCE, 41728, i24);
-        ExifTag exifTag80 = new ExifTag(TAG_SCENE_TYPE, 41729, i24);
-        ExifTag exifTag81 = new ExifTag(TAG_CFA_PATTERN, 41730, i24);
-        int i25 = 3;
-        ExifTag[] exifTagArr2 = {exifTag35, exifTag36, exifTag37, exifTag38, exifTag39, exifTag40, exifTag41, exifTag42, exifTag43, exifTag44, exifTag45, exifTag46, exifTag47, exifTag48, exifTag49, exifTag50, exifTag51, exifTag52, exifTag53, exifTag54, exifTag55, exifTag56, exifTag57, exifTag58, exifTag59, exifTag60, exifTag61, exifTag62, exifTag63, exifTag64, exifTag65, exifTag66, exifTag67, exifTag68, exifTag69, exifTag70, exifTag71, exifTag72, exifTag73, exifTag74, exifTag75, exifTag76, exifTag77, exifTag78, exifTag79, exifTag80, exifTag81, new ExifTag(TAG_CUSTOM_RENDERED, 41985, i25), new ExifTag(TAG_EXPOSURE_MODE, 41986, i25), new ExifTag(TAG_WHITE_BALANCE, 41987, i25), new ExifTag(TAG_DIGITAL_ZOOM_RATIO, 41988, 5), new ExifTag(TAG_FOCAL_LENGTH_IN_35MM_FILM, 41989, i25), new ExifTag(TAG_SCENE_CAPTURE_TYPE, 41990, i25), new ExifTag(TAG_GAIN_CONTROL, 41991, i25), new ExifTag(TAG_CONTRAST, 41992, i25), new ExifTag(TAG_SATURATION, 41993, i25), new ExifTag(TAG_SHARPNESS, 41994, i25), new ExifTag(TAG_DEVICE_SETTING_DESCRIPTION, 41995, 7), new ExifTag(TAG_SUBJECT_DISTANCE_RANGE, 41996, i25), new ExifTag(TAG_IMAGE_UNIQUE_ID, 42016, 2), new ExifTag(TAG_DNG_VERSION, 50706, i12), new ExifTag(TAG_DEFAULT_CROP_SIZE, 50720, 3, 4)};
+        ExifTag[] exifTagArr2 = {new ExifTag(TAG_EXPOSURE_TIME, 33434, 5), new ExifTag("FNumber", 33437, 5), new ExifTag(TAG_EXPOSURE_PROGRAM, 34850, 3), new ExifTag(TAG_SPECTRAL_SENSITIVITY, GLES30.GL_MAX_DRAW_BUFFERS, 2), new ExifTag("ISOSpeedRatings", GLES30.GL_DRAW_BUFFER2, 3), new ExifTag(TAG_OECF, GLES30.GL_DRAW_BUFFER3, 7), new ExifTag(TAG_EXIF_VERSION, 36864, 2), new ExifTag(TAG_DATETIME_ORIGINAL, 36867, 2), new ExifTag(TAG_DATETIME_DIGITIZED, 36868, 2), new ExifTag(TAG_OFFSET_TIME, 36880, 2), new ExifTag(TAG_OFFSET_TIME_ORIGINAL, 36881, 2), new ExifTag(TAG_OFFSET_TIME_DIGITIZED, 36882, 2), new ExifTag(TAG_COMPONENTS_CONFIGURATION, 37121, 7), new ExifTag(TAG_COMPRESSED_BITS_PER_PIXEL, 37122, 5), new ExifTag(TAG_SHUTTER_SPEED_VALUE, 37377, 10), new ExifTag(TAG_APERTURE_VALUE, 37378, 5), new ExifTag(TAG_BRIGHTNESS_VALUE, 37379, 10), new ExifTag(TAG_EXPOSURE_BIAS_VALUE, 37380, 10), new ExifTag(TAG_MAX_APERTURE_VALUE, 37381, 5), new ExifTag(TAG_SUBJECT_DISTANCE, 37382, 5), new ExifTag(TAG_METERING_MODE, 37383, 3), new ExifTag(TAG_LIGHT_SOURCE, 37384, 3), new ExifTag(TAG_FLASH, 37385, 3), new ExifTag(TAG_FOCAL_LENGTH, 37386, 5), new ExifTag(TAG_SUBJECT_AREA, 37396, 3), new ExifTag(TAG_MAKER_NOTE, 37500, 7), new ExifTag(TAG_USER_COMMENT, 37510, 7), new ExifTag(TAG_SUBSEC_TIME, 37520, 2), new ExifTag("SubSecTimeOriginal", 37521, 2), new ExifTag("SubSecTimeDigitized", 37522, 2), new ExifTag(TAG_FLASHPIX_VERSION, UsbManager.USB_DATA_TRANSFER_RATE_40G, 7), new ExifTag(TAG_COLOR_SPACE, 40961, 3), new ExifTag(TAG_PIXEL_X_DIMENSION, 40962, 3, 4), new ExifTag(TAG_PIXEL_Y_DIMENSION, 40963, 3, 4), new ExifTag(TAG_RELATED_SOUND_FILE, 40964, 2), new ExifTag(TAG_INTEROPERABILITY_IFD_POINTER, 40965, 4), new ExifTag(TAG_FLASH_ENERGY, 41483, 5), new ExifTag(TAG_SPATIAL_FREQUENCY_RESPONSE, 41484, 7), new ExifTag(TAG_FOCAL_PLANE_X_RESOLUTION, 41486, 5), new ExifTag(TAG_FOCAL_PLANE_Y_RESOLUTION, 41487, 5), new ExifTag(TAG_FOCAL_PLANE_RESOLUTION_UNIT, 41488, 3), new ExifTag(TAG_SUBJECT_LOCATION, 41492, 3), new ExifTag(TAG_EXPOSURE_INDEX, 41493, 5), new ExifTag(TAG_SENSING_METHOD, 41495, 3), new ExifTag(TAG_FILE_SOURCE, 41728, 7), new ExifTag(TAG_SCENE_TYPE, 41729, 7), new ExifTag(TAG_CFA_PATTERN, 41730, 7), new ExifTag(TAG_CUSTOM_RENDERED, 41985, 3), new ExifTag(TAG_EXPOSURE_MODE, 41986, 3), new ExifTag(TAG_WHITE_BALANCE, 41987, 3), new ExifTag(TAG_DIGITAL_ZOOM_RATIO, 41988, 5), new ExifTag(TAG_FOCAL_LENGTH_IN_35MM_FILM, 41989, 3), new ExifTag(TAG_SCENE_CAPTURE_TYPE, 41990, 3), new ExifTag(TAG_GAIN_CONTROL, 41991, 3), new ExifTag(TAG_CONTRAST, 41992, 3), new ExifTag(TAG_SATURATION, 41993, 3), new ExifTag(TAG_SHARPNESS, 41994, 3), new ExifTag(TAG_DEVICE_SETTING_DESCRIPTION, 41995, 7), new ExifTag(TAG_SUBJECT_DISTANCE_RANGE, 41996, 3), new ExifTag(TAG_IMAGE_UNIQUE_ID, 42016, 2), new ExifTag(TAG_DNG_VERSION, 50706, 1), new ExifTag(TAG_DEFAULT_CROP_SIZE, 50720, 3, 4)};
         IFD_EXIF_TAGS = exifTagArr2;
-        int i26 = 2;
-        int i27 = 5;
-        int i28 = 2;
-        int i29 = 2;
-        int i30 = 7;
-        ExifTag[] exifTagArr3 = {new ExifTag(TAG_GPS_VERSION_ID, 0, i12), new ExifTag(TAG_GPS_LATITUDE_REF, i12, i26), new ExifTag(TAG_GPS_LATITUDE, i26, i27), new ExifTag(TAG_GPS_LONGITUDE_REF, 3, i26), new ExifTag(TAG_GPS_LONGITUDE, 4, i27), new ExifTag(TAG_GPS_ALTITUDE_REF, i27, i12), new ExifTag(TAG_GPS_ALTITUDE, 6, i27), new ExifTag(TAG_GPS_TIMESTAMP, 7, i27), new ExifTag(TAG_GPS_SATELLITES, 8, i28), new ExifTag(TAG_GPS_STATUS, 9, i28), new ExifTag(TAG_GPS_MEASURE_MODE, 10, i28), new ExifTag(TAG_GPS_DOP, 11, 5), new ExifTag(TAG_GPS_SPEED_REF, 12, 2), new ExifTag(TAG_GPS_SPEED, 13, 5), new ExifTag(TAG_GPS_TRACK_REF, 14, 2), new ExifTag(TAG_GPS_TRACK, 15, 5), new ExifTag(TAG_GPS_IMG_DIRECTION_REF, 16, 2), new ExifTag(TAG_GPS_IMG_DIRECTION, 17, 5), new ExifTag(TAG_GPS_MAP_DATUM, 18, i29), new ExifTag(TAG_GPS_DEST_LATITUDE_REF, 19, i29), new ExifTag(TAG_GPS_DEST_LATITUDE, 20, 5), new ExifTag(TAG_GPS_DEST_LONGITUDE_REF, 21, 2), new ExifTag(TAG_GPS_DEST_LONGITUDE, 22, 5), new ExifTag(TAG_GPS_DEST_BEARING_REF, 23, 2), new ExifTag(TAG_GPS_DEST_BEARING, 24, 5), new ExifTag(TAG_GPS_DEST_DISTANCE_REF, 25, 2), new ExifTag(TAG_GPS_DEST_DISTANCE, 26, 5), new ExifTag(TAG_GPS_PROCESSING_METHOD, 27, i30), new ExifTag(TAG_GPS_AREA_INFORMATION, 28, i30), new ExifTag(TAG_GPS_DATESTAMP, 29, 2), new ExifTag(TAG_GPS_DIFFERENTIAL, 30, 3)};
+        ExifTag[] exifTagArr3 = {new ExifTag(TAG_GPS_VERSION_ID, 0, 1), new ExifTag(TAG_GPS_LATITUDE_REF, 1, 2), new ExifTag(TAG_GPS_LATITUDE, 2, 5), new ExifTag(TAG_GPS_LONGITUDE_REF, 3, 2), new ExifTag(TAG_GPS_LONGITUDE, 4, 5), new ExifTag(TAG_GPS_ALTITUDE_REF, 5, 1), new ExifTag(TAG_GPS_ALTITUDE, 6, 5), new ExifTag(TAG_GPS_TIMESTAMP, 7, 5), new ExifTag(TAG_GPS_SATELLITES, 8, 2), new ExifTag(TAG_GPS_STATUS, 9, 2), new ExifTag(TAG_GPS_MEASURE_MODE, 10, 2), new ExifTag(TAG_GPS_DOP, 11, 5), new ExifTag(TAG_GPS_SPEED_REF, 12, 2), new ExifTag(TAG_GPS_SPEED, 13, 5), new ExifTag(TAG_GPS_TRACK_REF, 14, 2), new ExifTag(TAG_GPS_TRACK, 15, 5), new ExifTag(TAG_GPS_IMG_DIRECTION_REF, 16, 2), new ExifTag(TAG_GPS_IMG_DIRECTION, 17, 5), new ExifTag(TAG_GPS_MAP_DATUM, 18, 2), new ExifTag(TAG_GPS_DEST_LATITUDE_REF, 19, 2), new ExifTag(TAG_GPS_DEST_LATITUDE, 20, 5), new ExifTag(TAG_GPS_DEST_LONGITUDE_REF, 21, 2), new ExifTag(TAG_GPS_DEST_LONGITUDE, 22, 5), new ExifTag(TAG_GPS_DEST_BEARING_REF, 23, 2), new ExifTag(TAG_GPS_DEST_BEARING, 24, 5), new ExifTag(TAG_GPS_DEST_DISTANCE_REF, 25, 2), new ExifTag(TAG_GPS_DEST_DISTANCE, 26, 5), new ExifTag(TAG_GPS_PROCESSING_METHOD, 27, 7), new ExifTag(TAG_GPS_AREA_INFORMATION, 28, 7), new ExifTag(TAG_GPS_DATESTAMP, 29, 2), new ExifTag(TAG_GPS_DIFFERENTIAL, 30, 3)};
         IFD_GPS_TAGS = exifTagArr3;
         ExifTag[] exifTagArr4 = {new ExifTag(TAG_INTEROPERABILITY_INDEX, 1, 2)};
         IFD_INTEROPERABILITY_TAGS = exifTagArr4;
-        int i31 = 4;
-        ExifTag exifTag82 = new ExifTag(str, 254, i31);
-        ExifTag exifTag83 = new ExifTag(str2, 255, i31);
-        ExifTag exifTag84 = new ExifTag(TAG_THUMBNAIL_IMAGE_WIDTH, 256, 3, 4);
-        ExifTag exifTag85 = new ExifTag(TAG_THUMBNAIL_IMAGE_LENGTH, 257, 3, 4);
-        int i32 = 3;
-        ExifTag exifTag86 = new ExifTag(TAG_BITS_PER_SAMPLE, 258, i32);
-        ExifTag exifTag87 = new ExifTag(TAG_COMPRESSION, 259, i32);
-        ExifTag exifTag88 = new ExifTag(TAG_PHOTOMETRIC_INTERPRETATION, 262, i32);
-        int i33 = 2;
-        ExifTag exifTag89 = new ExifTag(TAG_IMAGE_DESCRIPTION, 270, i33);
-        ExifTag exifTag90 = new ExifTag(TAG_MAKE, 271, i33);
-        ExifTag exifTag91 = new ExifTag(TAG_MODEL, 272, i33);
-        int i34 = 3;
-        int i35 = 4;
-        ExifTag exifTag92 = new ExifTag(TAG_STRIP_OFFSETS, 273, i34, i35);
-        int i36 = 3;
-        ExifTag exifTag93 = new ExifTag(TAG_THUMBNAIL_ORIENTATION, 274, i36);
-        ExifTag exifTag94 = new ExifTag(TAG_SAMPLES_PER_PIXEL, 277, i36);
-        ExifTag exifTag95 = new ExifTag(TAG_ROWS_PER_STRIP, 278, i34, i35);
-        ExifTag exifTag96 = new ExifTag(TAG_STRIP_BYTE_COUNTS, 279, 3, 4);
-        int i37 = 5;
-        ExifTag exifTag97 = new ExifTag(TAG_X_RESOLUTION, 282, i37);
-        ExifTag exifTag98 = new ExifTag(TAG_Y_RESOLUTION, 283, i37);
-        int i38 = 3;
-        ExifTag exifTag99 = new ExifTag(TAG_PLANAR_CONFIGURATION, 284, i38);
-        ExifTag exifTag100 = new ExifTag(TAG_RESOLUTION_UNIT, 296, i38);
-        ExifTag exifTag101 = new ExifTag(TAG_TRANSFER_FUNCTION, 301, i38);
-        int i39 = 2;
-        ExifTag exifTag102 = new ExifTag(TAG_SOFTWARE, 305, i39);
-        ExifTag exifTag103 = new ExifTag(TAG_DATETIME, 306, i39);
-        ExifTag exifTag104 = new ExifTag(TAG_ARTIST, 315, i39);
-        int i40 = 5;
-        int i41 = 4;
-        int i42 = 3;
-        int i43 = 4;
-        ExifTag[] exifTagArr5 = {exifTag82, exifTag83, exifTag84, exifTag85, exifTag86, exifTag87, exifTag88, exifTag89, exifTag90, exifTag91, exifTag92, exifTag93, exifTag94, exifTag95, exifTag96, exifTag97, exifTag98, exifTag99, exifTag100, exifTag101, exifTag102, exifTag103, exifTag104, new ExifTag(TAG_WHITE_POINT, 318, i40), new ExifTag(TAG_PRIMARY_CHROMATICITIES, 319, i40), new ExifTag(str3, 330, i41), new ExifTag(TAG_JPEG_INTERCHANGE_FORMAT, 513, i41), new ExifTag(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, 514, i41), new ExifTag(TAG_Y_CB_CR_COEFFICIENTS, 529, 5), new ExifTag(TAG_Y_CB_CR_SUB_SAMPLING, 530, i42), new ExifTag(TAG_Y_CB_CR_POSITIONING, 531, i42), new ExifTag(TAG_REFERENCE_BLACK_WHITE, 532, 5), new ExifTag(TAG_COPYRIGHT, 33432, 2), new ExifTag(str4, 34665, i43), new ExifTag(str5, GLES30.GL_DRAW_BUFFER0, i43), new ExifTag(TAG_DNG_VERSION, 50706, 1), new ExifTag(TAG_DEFAULT_CROP_SIZE, 50720, 3, 4)};
+        ExifTag[] exifTagArr5 = {new ExifTag(TAG_NEW_SUBFILE_TYPE, 254, 4), new ExifTag(TAG_SUBFILE_TYPE, 255, 4), new ExifTag(TAG_THUMBNAIL_IMAGE_WIDTH, 256, 3, 4), new ExifTag(TAG_THUMBNAIL_IMAGE_LENGTH, 257, 3, 4), new ExifTag(TAG_BITS_PER_SAMPLE, 258, 3), new ExifTag(TAG_COMPRESSION, 259, 3), new ExifTag(TAG_PHOTOMETRIC_INTERPRETATION, 262, 3), new ExifTag(TAG_IMAGE_DESCRIPTION, 270, 2), new ExifTag(TAG_MAKE, 271, 2), new ExifTag(TAG_MODEL, 272, 2), new ExifTag(TAG_STRIP_OFFSETS, 273, 3, 4), new ExifTag(TAG_THUMBNAIL_ORIENTATION, 274, 3), new ExifTag(TAG_SAMPLES_PER_PIXEL, 277, 3), new ExifTag(TAG_ROWS_PER_STRIP, 278, 3, 4), new ExifTag(TAG_STRIP_BYTE_COUNTS, 279, 3, 4), new ExifTag(TAG_X_RESOLUTION, 282, 5), new ExifTag(TAG_Y_RESOLUTION, 283, 5), new ExifTag(TAG_PLANAR_CONFIGURATION, 284, 3), new ExifTag(TAG_RESOLUTION_UNIT, 296, 3), new ExifTag(TAG_TRANSFER_FUNCTION, 301, 3), new ExifTag(TAG_SOFTWARE, 305, 2), new ExifTag(TAG_DATETIME, 306, 2), new ExifTag(TAG_ARTIST, 315, 2), new ExifTag(TAG_WHITE_POINT, 318, 5), new ExifTag(TAG_PRIMARY_CHROMATICITIES, 319, 5), new ExifTag(TAG_SUB_IFD_POINTER, 330, 4), new ExifTag(TAG_JPEG_INTERCHANGE_FORMAT, 513, 4), new ExifTag(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, 514, 4), new ExifTag(TAG_Y_CB_CR_COEFFICIENTS, 529, 5), new ExifTag(TAG_Y_CB_CR_SUB_SAMPLING, 530, 3), new ExifTag(TAG_Y_CB_CR_POSITIONING, 531, 3), new ExifTag(TAG_REFERENCE_BLACK_WHITE, 532, 5), new ExifTag(TAG_COPYRIGHT, 33432, 2), new ExifTag(TAG_EXIF_IFD_POINTER, 34665, 4), new ExifTag(TAG_GPS_INFO_IFD_POINTER, GLES30.GL_DRAW_BUFFER0, 4), new ExifTag(TAG_DNG_VERSION, 50706, 1), new ExifTag(TAG_DEFAULT_CROP_SIZE, 50720, 3, 4)};
         IFD_THUMBNAIL_TAGS = exifTagArr5;
         TAG_RAF_IMAGE_SIZE = new ExifTag(TAG_STRIP_OFFSETS, 273, 3);
-        int i44 = 4;
-        ExifTag[] exifTagArr6 = {new ExifTag(TAG_ORF_THUMBNAIL_IMAGE, 256, 7), new ExifTag(TAG_ORF_CAMERA_SETTINGS_IFD_POINTER, 8224, i44), new ExifTag(TAG_ORF_IMAGE_PROCESSING_IFD_POINTER, BluetoothHciProtoEnums.CMD_BLE_SET_PERIODIC_ADVERTISING_ENABLE, i44)};
+        ExifTag[] exifTagArr6 = {new ExifTag(TAG_ORF_THUMBNAIL_IMAGE, 256, 7), new ExifTag(TAG_ORF_CAMERA_SETTINGS_IFD_POINTER, 8224, 4), new ExifTag(TAG_ORF_IMAGE_PROCESSING_IFD_POINTER, BluetoothHciProtoEnums.CMD_BLE_SET_PERIODIC_ADVERTISING_ENABLE, 4)};
         ORF_MAKER_NOTE_TAGS = exifTagArr6;
-        ExifTag[] exifTagArr7 = {new ExifTag(TAG_ORF_PREVIEW_IMAGE_START, 257, i44), new ExifTag(TAG_ORF_PREVIEW_IMAGE_LENGTH, 258, i44)};
+        ExifTag[] exifTagArr7 = {new ExifTag(TAG_ORF_PREVIEW_IMAGE_START, 257, 4), new ExifTag(TAG_ORF_PREVIEW_IMAGE_LENGTH, 258, 4)};
         ORF_CAMERA_SETTINGS_TAGS = exifTagArr7;
-        int i45 = 3;
-        ExifTag[] exifTagArr8 = {new ExifTag(TAG_ORF_ASPECT_FRAME, SmsCbConstants.MESSAGE_ID_CMAS_ALERT_EXTREME_IMMEDIATE_OBSERVED, i45)};
+        ExifTag[] exifTagArr8 = {new ExifTag(TAG_ORF_ASPECT_FRAME, SmsCbConstants.MESSAGE_ID_CMAS_ALERT_EXTREME_IMMEDIATE_OBSERVED, 3)};
         ORF_IMAGE_PROCESSING_TAGS = exifTagArr8;
-        ExifTag[] exifTagArr9 = {new ExifTag(TAG_COLOR_SPACE, 55, i45)};
+        ExifTag[] exifTagArr9 = {new ExifTag(TAG_COLOR_SPACE, 55, 3)};
         PEF_TAGS = exifTagArr9;
         ExifTag[][] exifTagArr10 = {exifTagArr, exifTagArr2, exifTagArr3, exifTagArr4, exifTagArr5, exifTagArr, exifTagArr6, exifTagArr7, exifTagArr8, exifTagArr9};
         EXIF_TAGS = exifTagArr10;
-        int i46 = 4;
-        int i47 = 1;
-        EXIF_POINTER_TAGS = new ExifTag[]{new ExifTag(str3, 330, i46), new ExifTag(str4, 34665, i46), new ExifTag(str5, GLES30.GL_DRAW_BUFFER0, i46), new ExifTag(TAG_INTEROPERABILITY_IFD_POINTER, 40965, i46), new ExifTag(TAG_ORF_CAMERA_SETTINGS_IFD_POINTER, 8224, i47), new ExifTag(TAG_ORF_IMAGE_PROCESSING_IFD_POINTER, BluetoothHciProtoEnums.CMD_BLE_SET_PERIODIC_ADVERTISING_ENABLE, i47)};
+        EXIF_POINTER_TAGS = new ExifTag[]{new ExifTag(TAG_SUB_IFD_POINTER, 330, 4), new ExifTag(TAG_EXIF_IFD_POINTER, 34665, 4), new ExifTag(TAG_GPS_INFO_IFD_POINTER, GLES30.GL_DRAW_BUFFER0, 4), new ExifTag(TAG_INTEROPERABILITY_IFD_POINTER, 40965, 4), new ExifTag(TAG_ORF_CAMERA_SETTINGS_IFD_POINTER, 8224, 1), new ExifTag(TAG_ORF_IMAGE_PROCESSING_IFD_POINTER, BluetoothHciProtoEnums.CMD_BLE_SET_PERIODIC_ADVERTISING_ENABLE, 1)};
         sExifTagMapsForReading = new HashMap[exifTagArr10.length];
         sExifTagMapsForWriting = new HashMap[exifTagArr10.length];
         sTagSetForCompatibility = new HashSet<>(Arrays.asList("FNumber", TAG_DIGITAL_ZOOM_RATIO, TAG_EXPOSURE_TIME, TAG_SUBJECT_DISTANCE, TAG_GPS_TIMESTAMP));
@@ -635,11 +479,14 @@ public class ExifInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class Rational {
         public final long denominator;
         public final long numerator;
+
+        /* synthetic */ Rational(long j, long j2, RationalIA rationalIA) {
+            this(j, j2);
+        }
 
         private Rational(long numerator, long denominator) {
             if (denominator == 0) {
@@ -660,7 +507,6 @@ public class ExifInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class ExifAttribute {
         public static final long BYTES_OFFSET_UNKNOWN = -1;
@@ -668,6 +514,10 @@ public class ExifInterface {
         public final long bytesOffset;
         public final int format;
         public final int numberOfComponents;
+
+        /* synthetic */ ExifAttribute(int i, int i2, long j, byte[] bArr, ExifAttributeIA exifAttributeIA) {
+            this(i, i2, j, bArr);
+        }
 
         private ExifAttribute(int format, int numberOfComponents, byte[] bytes) {
             this(format, numberOfComponents, -1L, bytes);
@@ -778,7 +628,6 @@ public class ExifInterface {
             return NavigationBarInflaterView.KEY_CODE_START + ExifInterface.IFD_FORMAT_NAMES[this.format] + ", data length:" + this.bytes.length + NavigationBarInflaterView.KEY_CODE_END;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Object getValue(ByteOrder byteOrder) {
             byte b;
             int ch;
@@ -1011,13 +860,20 @@ public class ExifInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class ExifTag {
         public final String name;
         public final int number;
         public final int primaryFormat;
         public final int secondaryFormat;
+
+        /* synthetic */ ExifTag(String str, int i, int i2, int i3, ExifTagIA exifTagIA) {
+            this(str, i, i2, i3);
+        }
+
+        /* synthetic */ ExifTag(String str, int i, int i2, ExifTagIA exifTagIA) {
+            this(str, i, i2);
+        }
 
         private ExifTag(String name, int number, int format) {
             this.name = name;
@@ -2497,11 +2353,16 @@ public class ExifInterface {
         }
     }
 
-    private void getHeifAttributes(final ByteOrderedDataInputStream in) throws IOException {
+    private void getHeifAttributes(ByteOrderedDataInputStream in) throws IOException {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
             retriever.setDataSource(new MediaDataSource() { // from class: android.media.ExifInterface.1
                 long mPosition;
+                final /* synthetic */ ByteOrderedDataInputStream val$in;
+
+                AnonymousClass1(ByteOrderedDataInputStream in2) {
+                    in = in2;
+                }
 
                 @Override // java.io.Closeable, java.lang.AutoCloseable
                 public void close() throws IOException {
@@ -2586,9 +2447,9 @@ public class ExifInterface {
                 if (length <= 6) {
                     throw new IOException("Invalid exif length");
                 }
-                in.seek(offset);
+                in2.seek(offset);
                 byte[] identifier = new byte[6];
-                if (in.read(identifier) != 6) {
+                if (in2.read(identifier) != 6) {
                     throw new IOException("Can't read identifier");
                 }
                 int offset2 = offset + 6;
@@ -2597,7 +2458,7 @@ public class ExifInterface {
                     throw new IOException("Invalid identifier");
                 }
                 byte[] bytes = new byte[length2];
-                if (in.read(bytes) != length2) {
+                if (in2.read(bytes) != length2) {
                     throw new IOException("Can't read exif");
                 }
                 this.mExifOffset = offset2;
@@ -2608,9 +2469,9 @@ public class ExifInterface {
             if (xmpOffsetStr != null && xmpLengthStr != null) {
                 int offset3 = Integer.parseInt(xmpOffsetStr);
                 int length3 = Integer.parseInt(xmpLengthStr);
-                in.seek(offset3);
+                in2.seek(offset3);
                 byte[] xmpBytes = new byte[length3];
-                if (in.read(xmpBytes) != length3) {
+                if (in2.read(xmpBytes) != length3) {
                     throw new IOException("Failed to read XMP from HEIF");
                 }
                 if (getAttribute(TAG_XMP) == null) {
@@ -2622,6 +2483,57 @@ public class ExifInterface {
             }
         } finally {
             retriever.release();
+        }
+    }
+
+    /* renamed from: android.media.ExifInterface$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends MediaDataSource {
+        long mPosition;
+        final /* synthetic */ ByteOrderedDataInputStream val$in;
+
+        AnonymousClass1(ByteOrderedDataInputStream in2) {
+            in = in2;
+        }
+
+        @Override // java.io.Closeable, java.lang.AutoCloseable
+        public void close() throws IOException {
+        }
+
+        @Override // android.media.MediaDataSource
+        public int readAt(long position, byte[] buffer, int offset, int size) throws IOException {
+            if (size == 0) {
+                return 0;
+            }
+            if (position < 0) {
+                return -1;
+            }
+            try {
+                long j = this.mPosition;
+                if (j != position) {
+                    if (j >= 0 && position >= j + in.available()) {
+                        return -1;
+                    }
+                    in.seek(position);
+                    this.mPosition = position;
+                }
+                if (size > in.available()) {
+                    size = in.available();
+                }
+                int bytesRead = in.read(buffer, offset, size);
+                if (bytesRead >= 0) {
+                    this.mPosition += bytesRead;
+                    return bytesRead;
+                }
+            } catch (IOException e) {
+            }
+            this.mPosition = -1L;
+            return -1;
+        }
+
+        @Override // android.media.MediaDataSource
+        public long getSize() throws IOException {
+            return -1L;
         }
     }
 
@@ -3144,17 +3056,51 @@ public class ExifInterface {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:57:0x027d, code lost:            if (r14 == false) goto L98;     */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x027f, code lost:            android.util.Log.d(android.media.ExifInterface.TAG, java.lang.String.format("Offset: %d, tagName: %s", java.lang.Long.valueOf(r12), r10.name));     */
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x0296, code lost:            if (r12 <= 0) goto L107;     */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x02a1, code lost:            if (r12 >= r29.mLength) goto L108;     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x02ae, code lost:            if (r28.mHandledIfdOffsets.contains(java.lang.Integer.valueOf((int) r12)) != false) goto L105;     */
-    /* JADX WARN: Code restructure failed: missing block: B:65:0x02b0, code lost:            r29.seek(r12);        readImageFileDirectory(r29, r4.intValue());     */
-    /* JADX WARN: Code restructure failed: missing block: B:66:0x02fe, code lost:            r29.seek(r7);     */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x02bb, code lost:            if (r14 == false) goto L110;     */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x02bd, code lost:            android.util.Log.d(android.media.ExifInterface.TAG, "Skip jump into the IFD since it has already been read: IfdType " + r4 + " (at " + r12 + android.inputmethodservice.navigationbar.NavigationBarInflaterView.KEY_CODE_END);     */
-    /* JADX WARN: Code restructure failed: missing block: B:70:0x02e6, code lost:            if (r14 == false) goto L110;     */
-    /* JADX WARN: Code restructure failed: missing block: B:71:0x02e8, code lost:            android.util.Log.d(android.media.ExifInterface.TAG, "Skip jump into the IFD since its offset is invalid: " + r12);     */
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x027d, code lost:
+    
+        if (r14 == false) goto L265;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x027f, code lost:
+    
+        android.util.Log.d(android.media.ExifInterface.TAG, java.lang.String.format("Offset: %d, tagName: %s", java.lang.Long.valueOf(r12), r10.name));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x0296, code lost:
+    
+        if (r12 <= 0) goto L274;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x02a1, code lost:
+    
+        if (r12 >= r29.mLength) goto L275;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x02ae, code lost:
+    
+        if (r28.mHandledIfdOffsets.contains(java.lang.Integer.valueOf((int) r12)) != false) goto L272;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:65:0x02b0, code lost:
+    
+        r29.seek(r12);
+        readImageFileDirectory(r29, r4.intValue());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x02fe, code lost:
+    
+        r29.seek(r7);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:68:0x02bb, code lost:
+    
+        if (r14 == false) goto L277;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x02bd, code lost:
+    
+        android.util.Log.d(android.media.ExifInterface.TAG, "Skip jump into the IFD since it has already been read: IfdType " + r4 + " (at " + r12 + android.inputmethodservice.navigationbar.NavigationBarInflaterView.KEY_CODE_END);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:70:0x02e6, code lost:
+    
+        if (r14 == false) goto L277;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:71:0x02e8, code lost:
+    
+        android.util.Log.d(android.media.ExifInterface.TAG, "Skip jump into the IFD since its offset is invalid: " + r12);
+     */
     /* JADX WARN: Removed duplicated region for block: B:31:0x014c  */
     /* JADX WARN: Removed duplicated region for block: B:34:0x0153  */
     /*
@@ -3627,7 +3573,6 @@ public class ExifInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class ByteOrderedDataInputStream extends InputStream implements DataInput {
         private ByteOrder mByteOrder;
@@ -3889,7 +3834,6 @@ public class ExifInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class ByteOrderedDataOutputStream extends FilterOutputStream {
         private ByteOrder mByteOrder;

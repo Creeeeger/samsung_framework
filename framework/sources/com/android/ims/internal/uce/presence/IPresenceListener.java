@@ -205,8 +205,9 @@ public interface IPresenceListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IPresenceListener {
+        public static class Proxy implements IPresenceListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

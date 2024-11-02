@@ -17,7 +17,9 @@ import java.util.regex.Pattern;
 /* loaded from: classes3.dex */
 public final class TimeZoneProviderStatus implements Parcelable {
     public static final Parcelable.Creator<TimeZoneProviderStatus> CREATOR = new Parcelable.Creator<TimeZoneProviderStatus>() { // from class: android.service.timezone.TimeZoneProviderStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TimeZoneProviderStatus createFromParcel(Parcel in) {
             int locationDetectionStatus = in.readInt();
@@ -26,7 +28,6 @@ public final class TimeZoneProviderStatus implements Parcelable {
             return new TimeZoneProviderStatus(locationDetectionStatus, connectivityStatus, timeZoneResolutionStatus);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneProviderStatus[] newArray(int size) {
             return new TimeZoneProviderStatus[size];
@@ -57,6 +58,10 @@ public final class TimeZoneProviderStatus implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface OperationStatus {
+    }
+
+    /* synthetic */ TimeZoneProviderStatus(int i, int i2, int i3, TimeZoneProviderStatusIA timeZoneProviderStatusIA) {
+        this(i, i2, i3);
     }
 
     private TimeZoneProviderStatus(int locationDetectionStatus, int connectivityStatus, int timeZoneResolutionStatus) {
@@ -91,6 +96,26 @@ public final class TimeZoneProviderStatus implements Parcelable {
         int connectivityDependencyStatus = dependencyStatusFromString(matcher.group(2));
         int timeZoneResolutionOperationStatus = operationStatusFromString(matcher.group(3));
         return new TimeZoneProviderStatus(locationDependencyStatus, connectivityDependencyStatus, timeZoneResolutionOperationStatus);
+    }
+
+    /* renamed from: android.service.timezone.TimeZoneProviderStatus$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TimeZoneProviderStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeZoneProviderStatus createFromParcel(Parcel in) {
+            int locationDetectionStatus = in.readInt();
+            int connectivityStatus = in.readInt();
+            int timeZoneResolutionStatus = in.readInt();
+            return new TimeZoneProviderStatus(locationDetectionStatus, connectivityStatus, timeZoneResolutionStatus);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeZoneProviderStatus[] newArray(int size) {
+            return new TimeZoneProviderStatus[size];
+        }
     }
 
     @Override // android.os.Parcelable
@@ -170,7 +195,6 @@ public final class TimeZoneProviderStatus implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int requireValidOperationStatus(int operationStatus) {
         if (operationStatus < 0 || operationStatus > 3) {
             throw new IllegalArgumentException(Integer.toString(operationStatus));
@@ -246,7 +270,6 @@ public final class TimeZoneProviderStatus implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int requireValidDependencyStatus(int dependencyStatus) {
         if (dependencyStatus < 0 || dependencyStatus > 6) {
             throw new IllegalArgumentException(Integer.toString(dependencyStatus));

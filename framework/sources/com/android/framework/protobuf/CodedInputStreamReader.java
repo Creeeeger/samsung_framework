@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
 /* loaded from: classes4.dex */
 public final class CodedInputStreamReader implements Reader {
@@ -1207,8 +1206,7 @@ public final class CodedInputStreamReader implements Reader {
         map.put(obj, obj2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.CodedInputStreamReader$1, reason: invalid class name */
+    /* renamed from: com.android.framework.protobuf.CodedInputStreamReader$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;

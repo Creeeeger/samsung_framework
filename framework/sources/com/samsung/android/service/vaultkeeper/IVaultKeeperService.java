@@ -289,8 +289,9 @@ public interface IVaultKeeperService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IVaultKeeperService {
+        public static class Proxy implements IVaultKeeperService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

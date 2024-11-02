@@ -112,8 +112,9 @@ public interface ICallRedirectionAdapter extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ICallRedirectionAdapter {
+        public static class Proxy implements ICallRedirectionAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

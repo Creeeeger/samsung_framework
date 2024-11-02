@@ -11,17 +11,17 @@ import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
 import java.util.Date;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class ImageItemImpl extends Item implements IBundleHolder {
     public static final Parcelable.Creator<ImageItemImpl> CREATOR = new Parcelable.Creator<ImageItemImpl>() { // from class: com.samsung.android.allshare.ImageItemImpl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImageItemImpl createFromParcel(Parcel src) {
             return new ImageItemImpl(src);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImageItemImpl[] newArray(int size) {
             return new ImageItemImpl[size];
@@ -29,7 +29,10 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
     };
     private final ItemImpl mItemImpl;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ ImageItemImpl(Parcel parcel, ImageItemImplIA imageItemImplIA) {
+        this(parcel);
+    }
+
     public ImageItemImpl(Bundle bundle) {
         this.mItemImpl = new ItemImpl(bundle);
     }
@@ -141,6 +144,23 @@ public final class ImageItemImpl extends Item implements IBundleHolder {
     private ImageItemImpl(Parcel src) {
         Bundle bundle = src.readBundle(Bundle.class.getClassLoader());
         this.mItemImpl = new ItemImpl(bundle);
+    }
+
+    /* renamed from: com.samsung.android.allshare.ImageItemImpl$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImageItemImpl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImageItemImpl createFromParcel(Parcel src) {
+            return new ImageItemImpl(src);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImageItemImpl[] newArray(int size) {
+            return new ImageItemImpl[size];
+        }
     }
 
     @Override // com.samsung.android.allshare.Item

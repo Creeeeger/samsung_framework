@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Debug;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
@@ -142,6 +141,9 @@ public final class WindowManagerGlobal {
                     InputMethodManager.ensureDefaultInstanceForDefaultDisplayIfNecessary();
                     IWindowManager windowManager = getWindowManagerService();
                     sWindowSession = windowManager.openSession(new IWindowSessionCallback.Stub() { // from class: android.view.WindowManagerGlobal.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // android.view.IWindowSessionCallback
                         public void onAnimatorScaleChanged(float scale) {
                             ValueAnimator.setDurationScale(scale);
@@ -154,6 +156,18 @@ public final class WindowManagerGlobal {
             iWindowSession = sWindowSession;
         }
         return iWindowSession;
+    }
+
+    /* renamed from: android.view.WindowManagerGlobal$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends IWindowSessionCallback.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.IWindowSessionCallback
+        public void onAnimatorScaleChanged(float scale) {
+            ValueAnimator.setDurationScale(scale);
+        }
     }
 
     public static IWindowSession peekWindowSession() {
@@ -312,7 +326,10 @@ public final class WindowManagerGlobal {
         View panelParentView = null;
         synchronized (this.mLock) {
             if (this.mSystemPropertyUpdater == null) {
-                Runnable runnable = new Runnable() { // from class: android.view.WindowManagerGlobal.2
+                AnonymousClass2 anonymousClass2 = new Runnable() { // from class: android.view.WindowManagerGlobal.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         synchronized (WindowManagerGlobal.this.mLock) {
@@ -322,8 +339,8 @@ public final class WindowManagerGlobal {
                         }
                     }
                 };
-                this.mSystemPropertyUpdater = runnable;
-                SystemProperties.addChangeCallback(runnable);
+                this.mSystemPropertyUpdater = anonymousClass2;
+                SystemProperties.addChangeCallback(anonymousClass2);
             }
             int index = findViewLocked(view, false);
             if (index >= 0) {
@@ -389,6 +406,23 @@ public final class WindowManagerGlobal {
                 root.mParentDecorView = decorView;
             }
             root.setView(view, wparams, panelParentView, userId);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.WindowManagerGlobal$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (WindowManagerGlobal.this.mLock) {
+                for (int i3 = WindowManagerGlobal.this.mRoots.size() - 1; i3 >= 0; i3--) {
+                    ((ViewRootImpl) WindowManagerGlobal.this.mRoots.get(i3)).loadSystemProperties();
+                }
+            }
         }
     }
 
@@ -467,7 +501,6 @@ public final class WindowManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doRemoveView(ViewRootImpl root) {
         boolean allViewsRemoved;
         synchronized (this.mLock) {
@@ -511,59 +544,68 @@ public final class WindowManagerGlobal {
         PrintWriter pw = new FastPrintWriter(fout);
         try {
             synchronized (this.mLock) {
-                int count = this.mViews.size();
-                pw.println("Profile data in ms:");
-                int i = 0;
-                while (true) {
-                    c = 0;
-                    c2 = 1;
-                    if (i >= count) {
-                        break;
+                try {
+                    int count = this.mViews.size();
+                    pw.println("Profile data in ms:");
+                    int i = 0;
+                    while (true) {
+                        c = 0;
+                        c2 = 1;
+                        if (i >= count) {
+                            break;
+                        }
+                        ViewRootImpl root = this.mRoots.get(i);
+                        String name = getWindowName(root);
+                        pw.printf("\n\t%s (visibility=%d)", name, Integer.valueOf(root.getHostVisibility()));
+                        ThreadedRenderer renderer = root.getView().mAttachInfo.mThreadedRenderer;
+                        if (renderer != null) {
+                            try {
+                                renderer.dumpGfxInfo(pw, fd, args);
+                            } catch (Throwable th) {
+                                th = th;
+                                try {
+                                    throw th;
+                                } catch (Throwable th2) {
+                                    th = th2;
+                                    pw.flush();
+                                    throw th;
+                                }
+                            }
+                        }
+                        i++;
                     }
-                    ViewRootImpl root = this.mRoots.get(i);
-                    String name = getWindowName(root);
-                    pw.printf("\n\t%s (visibility=%d)", name, Integer.valueOf(root.getHostVisibility()));
-                    ThreadedRenderer renderer = root.getView().mAttachInfo.mThreadedRenderer;
-                    if (renderer != null) {
-                        renderer.dumpGfxInfo(pw, fd, args);
+                    pw.println("\nView hierarchy:\n");
+                    ViewRootImpl.GfxInfo totals = new ViewRootImpl.GfxInfo();
+                    int i2 = 0;
+                    while (i2 < count) {
+                        ViewRootImpl root2 = this.mRoots.get(i2);
+                        ViewRootImpl.GfxInfo info = root2.getGfxInfo();
+                        totals.add(info);
+                        String name2 = getWindowName(root2);
+                        Object[] objArr = new Object[3];
+                        objArr[c] = name2;
+                        objArr[c2] = Integer.valueOf(info.viewCount);
+                        objArr[2] = Float.valueOf(((float) info.renderNodeMemoryUsage) / 1024.0f);
+                        pw.printf("  %s\n  %d views, %.2f kB of render nodes", objArr);
+                        pw.printf("\n\n", new Object[0]);
+                        i2++;
+                        c = 0;
+                        c2 = 1;
                     }
-                    i++;
-                }
-                pw.println("\nView hierarchy:\n");
-                ViewRootImpl.GfxInfo totals = new ViewRootImpl.GfxInfo();
-                int i2 = 0;
-                while (i2 < count) {
-                    ViewRootImpl root2 = this.mRoots.get(i2);
-                    ViewRootImpl.GfxInfo info = root2.getGfxInfo();
-                    totals.add(info);
-                    String name2 = getWindowName(root2);
-                    Object[] objArr = new Object[3];
-                    objArr[c] = name2;
-                    objArr[c2] = Integer.valueOf(info.viewCount);
-                    objArr[2] = Float.valueOf(((float) info.renderNodeMemoryUsage) / 1024.0f);
-                    pw.printf("  %s\n  %d views, %.2f kB of render nodes", objArr);
-                    pw.printf("\n\n", new Object[0]);
-                    i2++;
-                    c = 0;
-                    c2 = 1;
-                }
-                pw.printf("\nTotal %-15s: %d\n", "ViewRootImpl", Integer.valueOf(count));
-                pw.printf("Total %-15s: %d\n", "attached Views", Integer.valueOf(totals.viewCount));
-                pw.printf("Total %-15s: %.2f kB (used) / %.2f kB (capacity)\n\n", "RenderNode", Float.valueOf(((float) totals.renderNodeMemoryUsage) / 1024.0f), Float.valueOf(((float) totals.renderNodeMemoryAllocated) / 1024.0f));
-                Choreographer choreographer = Looper.myLooper() != null ? Choreographer.getInstance() : null;
-                if (choreographer != null) {
-                    pw.printf("Total STB frames rendered : %d\n", Long.valueOf(choreographer.getSTBCount()));
-                    if (args.length != 0 && args[args.length - 1].equals("reset")) {
-                        choreographer.resetSTBCount();
+                    pw.printf("\nTotal %-15s: %d\n", "ViewRootImpl", Integer.valueOf(count));
+                    pw.printf("Total %-15s: %d\n", "attached Views", Integer.valueOf(totals.viewCount));
+                    pw.printf("Total %-15s: %.2f kB (used) / %.2f kB (capacity)\n\n", "RenderNode", Float.valueOf(((float) totals.renderNodeMemoryUsage) / 1024.0f), Float.valueOf(((float) totals.renderNodeMemoryAllocated) / 1024.0f));
+                    ActivityThread thread = ActivityThread.currentActivityThread();
+                    if (thread != null) {
+                        thread.dumpProcessAdjustmentInfo(pw);
                     }
-                }
-                ActivityThread thread = ActivityThread.currentActivityThread();
-                if (thread != null) {
-                    thread.dumpProcessAdjustmentInfo(pw);
+                    pw.flush();
+                } catch (Throwable th3) {
+                    th = th3;
                 }
             }
-        } finally {
-            pw.flush();
+        } catch (Throwable th4) {
+            th = th4;
         }
     }
 
@@ -689,18 +731,20 @@ public final class WindowManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ProposedRotationListenerDelegate extends IRotationWatcher.Stub {
         int mLastRotation;
         private volatile ListenerWrapper[] mListenerArray;
         private final ArrayList<ListenerWrapper> mListeners;
 
+        /* synthetic */ ProposedRotationListenerDelegate(ProposedRotationListenerDelegateIA proposedRotationListenerDelegateIA) {
+            this();
+        }
+
         private ProposedRotationListenerDelegate() {
             this.mListeners = new ArrayList<>(1);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public static class ListenerWrapper {
             final Executor mExecutor;

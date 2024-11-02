@@ -97,7 +97,6 @@ public class NativeBuffer {
         System.loadLibrary("filterfw");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void attachToFrame(Frame frame) {
         this.mAttachedFrame = frame;
     }

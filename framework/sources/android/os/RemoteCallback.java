@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class RemoteCallback implements Parcelable {
     public static final Parcelable.Creator<RemoteCallback> CREATOR = new Parcelable.Creator<RemoteCallback>() { // from class: android.os.RemoteCallback.3
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass3() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteCallback createFromParcel(Parcel parcel) {
             return new RemoteCallback(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteCallback[] newArray(int size) {
             return new RemoteCallback[size];
@@ -40,11 +41,27 @@ public final class RemoteCallback implements Parcelable {
         this.mListener = listener;
         this.mHandler = handler;
         this.mCallback = new IRemoteCallback.Stub() { // from class: android.os.RemoteCallback.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.IRemoteCallback
             public void sendResult(Bundle data) {
                 RemoteCallback.this.sendResult(data);
             }
         };
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.os.RemoteCallback$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends IRemoteCallback.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.IRemoteCallback
+        public void sendResult(Bundle data) {
+            RemoteCallback.this.sendResult(data);
+        }
     }
 
     RemoteCallback(Parcel parcel) {
@@ -53,12 +70,18 @@ public final class RemoteCallback implements Parcelable {
         this.mCallback = IRemoteCallback.Stub.asInterface(parcel.readStrongBinder());
     }
 
-    public void sendResult(final Bundle result) {
+    public void sendResult(Bundle result) {
         OnResultListener onResultListener = this.mListener;
         if (onResultListener != null) {
             Handler handler = this.mHandler;
             if (handler != null) {
                 handler.post(new Runnable() { // from class: android.os.RemoteCallback.2
+                    final /* synthetic */ Bundle val$result;
+
+                    AnonymousClass2(Bundle result2) {
+                        result = result2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         RemoteCallback.this.mListener.onResult(result);
@@ -66,13 +89,28 @@ public final class RemoteCallback implements Parcelable {
                 });
                 return;
             } else {
-                onResultListener.onResult(result);
+                onResultListener.onResult(result2);
                 return;
             }
         }
         try {
-            this.mCallback.sendResult(result);
+            this.mCallback.sendResult(result2);
         } catch (RemoteException e) {
+        }
+    }
+
+    /* renamed from: android.os.RemoteCallback$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ Bundle val$result;
+
+        AnonymousClass2(Bundle result2) {
+            result = result2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            RemoteCallback.this.mListener.onResult(result);
         }
     }
 
@@ -84,5 +122,22 @@ public final class RemoteCallback implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeStrongBinder(this.mCallback.asBinder());
+    }
+
+    /* renamed from: android.os.RemoteCallback$3 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass3 implements Parcelable.Creator<RemoteCallback> {
+        AnonymousClass3() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteCallback createFromParcel(Parcel parcel) {
+            return new RemoteCallback(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteCallback[] newArray(int size) {
+            return new RemoteCallback[size];
+        }
     }
 }

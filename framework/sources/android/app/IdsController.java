@@ -31,7 +31,6 @@ public final class IdsController {
         this.ctx = app;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void openIdsWindow(View v, Choreographer mChoreographer) {
         if (clearData) {
             Log.i(TAG, "Clearing training data of " + this.ctx);
@@ -110,8 +109,23 @@ public final class IdsController {
         }
     }
 
+    /* renamed from: android.app.IdsController$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements ViewTreeObserver.OnGlobalLayoutListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
+        public void onGlobalLayout() {
+            IdsController.this.uiUpdated(2);
+        }
+    }
+
     private void registerLayoutListener(View v, Choreographer mChoreographer) {
         v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() { // from class: android.app.IdsController.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
             public void onGlobalLayout() {
                 IdsController.this.uiUpdated(2);

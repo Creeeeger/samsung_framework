@@ -93,7 +93,6 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IInputMethodWrapper(InputMethodServiceInternal imsInternal, InputMethod inputMethod) {
         this.mTarget = new WeakReference<>(imsInternal);
         Context applicationContext = imsInternal.getContext().getApplicationContext();

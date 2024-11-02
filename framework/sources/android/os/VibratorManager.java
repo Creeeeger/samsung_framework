@@ -31,7 +31,6 @@ public abstract class VibratorManager {
         this.mPackageName = ActivityThread.currentPackageName();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public VibratorManager(Context context) {
         this.mPackageName = context.getOpPackageName();
     }

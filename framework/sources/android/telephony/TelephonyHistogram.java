@@ -10,13 +10,14 @@ import java.util.Arrays;
 public final class TelephonyHistogram implements Parcelable {
     private static final int ABSENT = 0;
     public static final Parcelable.Creator<TelephonyHistogram> CREATOR = new Parcelable.Creator<TelephonyHistogram>() { // from class: android.telephony.TelephonyHistogram.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TelephonyHistogram createFromParcel(Parcel in) {
             return new TelephonyHistogram(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyHistogram[] newArray(int size) {
             return new TelephonyHistogram[size];
@@ -213,6 +214,23 @@ public final class TelephonyHistogram implements Parcelable {
             intervals.append(" " + this.mBucketCounters[i2]);
         }
         return basic + ((Object) intervals);
+    }
+
+    /* renamed from: android.telephony.TelephonyHistogram$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TelephonyHistogram> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyHistogram createFromParcel(Parcel in) {
+            return new TelephonyHistogram(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyHistogram[] newArray(int size) {
+            return new TelephonyHistogram[size];
+        }
     }
 
     public TelephonyHistogram(Parcel in) {

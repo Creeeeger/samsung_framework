@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public class CarrierIdentifier implements Parcelable {
     public static final Parcelable.Creator<CarrierIdentifier> CREATOR = new Parcelable.Creator<CarrierIdentifier>() { // from class: android.service.carrier.CarrierIdentifier.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CarrierIdentifier createFromParcel(Parcel parcel) {
             return new CarrierIdentifier(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CarrierIdentifier[] newArray(int i) {
             return new CarrierIdentifier[i];
@@ -38,6 +39,23 @@ public class CarrierIdentifier implements Parcelable {
         public static final int GID2 = 4;
         public static final int IMSI_PREFIX = 2;
         public static final int SPN = 1;
+    }
+
+    /* renamed from: android.service.carrier.CarrierIdentifier$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CarrierIdentifier> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CarrierIdentifier createFromParcel(Parcel parcel) {
+            return new CarrierIdentifier(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CarrierIdentifier[] newArray(int i) {
+            return new CarrierIdentifier[i];
+        }
     }
 
     public CarrierIdentifier(String mcc, String mnc, String spn, String imsi, String gid1, String gid2) {

@@ -22,7 +22,6 @@ import java.security.spec.RSAPublicKeySpec;
 
 /* loaded from: classes5.dex */
 public class KeyFactorySpi extends BaseKeyFactorySpi {
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
     public KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
         if ((spec.isAssignableFrom(KeySpec.class) || spec.isAssignableFrom(RSAPublicKeySpec.class)) && (key instanceof RSAPublicKey)) {
@@ -54,7 +53,6 @@ public class KeyFactorySpi extends BaseKeyFactorySpi {
         throw new InvalidKeyException("key type unknown");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
     public PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof PKCS8EncodedKeySpec) {
@@ -77,7 +75,6 @@ public class KeyFactorySpi extends BaseKeyFactorySpi {
         throw new InvalidKeySpecException("unknown KeySpec type: " + keySpec.getClass().getName());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
     public PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof RSAPublicKeySpec) {

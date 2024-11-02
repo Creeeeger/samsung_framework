@@ -8,14 +8,19 @@ import android.util.Singleton;
 /* loaded from: classes4.dex */
 public class TransitionMetrics {
     private static final Singleton<TransitionMetrics> sTransitionMetrics = new Singleton<TransitionMetrics>() { // from class: android.window.TransitionMetrics.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.util.Singleton
         public TransitionMetrics create() {
             return new TransitionMetrics(WindowOrganizer.getTransitionMetricsReporter());
         }
     };
     private final ITransitionMetricsReporter mTransitionMetricsReporter;
+
+    /* synthetic */ TransitionMetrics(ITransitionMetricsReporter iTransitionMetricsReporter, TransitionMetricsIA transitionMetricsIA) {
+        this(iTransitionMetricsReporter);
+    }
 
     private TransitionMetrics(ITransitionMetricsReporter reporter) {
         this.mTransitionMetricsReporter = reporter;
@@ -31,5 +36,17 @@ public class TransitionMetrics {
 
     public static TransitionMetrics getInstance() {
         return sTransitionMetrics.get();
+    }
+
+    /* renamed from: android.window.TransitionMetrics$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends Singleton<TransitionMetrics> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.Singleton
+        public TransitionMetrics create() {
+            return new TransitionMetrics(WindowOrganizer.getTransitionMetricsReporter());
+        }
     }
 }

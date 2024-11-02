@@ -16,13 +16,14 @@ public final class PinResult implements Parcelable {
     private final int mResult;
     private static final PinResult sFailedResult = new PinResult(2, -1);
     public static final Parcelable.Creator<PinResult> CREATOR = new Parcelable.Creator<PinResult>() { // from class: android.telephony.PinResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PinResult createFromParcel(Parcel in) {
             return new PinResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PinResult[] newArray(int size) {
             return new PinResult[size];
@@ -31,6 +32,10 @@ public final class PinResult implements Parcelable {
 
     /* loaded from: classes3.dex */
     public @interface PinResultType {
+    }
+
+    /* synthetic */ PinResult(Parcel parcel, PinResultIA pinResultIA) {
+        this(parcel);
     }
 
     public int getResult() {
@@ -68,6 +73,23 @@ public final class PinResult implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.mResult);
         out.writeInt(this.mAttemptsRemaining);
+    }
+
+    /* renamed from: android.telephony.PinResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PinResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PinResult createFromParcel(Parcel in) {
+            return new PinResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PinResult[] newArray(int size) {
+            return new PinResult[size];
+        }
     }
 
     public int hashCode() {

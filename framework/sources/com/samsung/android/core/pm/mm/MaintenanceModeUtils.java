@@ -162,18 +162,15 @@ public class MaintenanceModeUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isTablet() {
         String deviceType = SystemProperties.get("ro.build.characteristics");
         return deviceType != null && deviceType.contains(BnRConstants.DEVICETYPE_TABLET);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isFold() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isSecureLockSet(Context context) {
         KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         if (km != null) {
@@ -183,12 +180,10 @@ public class MaintenanceModeUtils {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float getFontSize(Context context, int dimenResId) {
         return getFontSize(context, dimenResId, MAX_FONT_SCALE);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float getFontSize(Context context, int dimenResId, float maxFontScale) {
         float baseSize = context.getResources().getDimensionPixelSize(dimenResId);
         float currentFontScale = context.getResources().getConfiguration().fontScale;
@@ -199,7 +194,6 @@ public class MaintenanceModeUtils {
         return baseSize;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void configureLayout(Activity context, Resources r, Configuration config, boolean isTablet, boolean isFold, int resIdLayoutPortrait, int resIdLayoutLandscape, int resIdContainer) {
         boolean isLandscape = config.orientation == 2;
         boolean needToAdjustContainerSize = false;
@@ -248,7 +242,6 @@ public class MaintenanceModeUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void startActivityToSetSecureLock(Context activityContext) {
         Intent intent = new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
         intent.putExtra(EXTRA_SECURE_LOCK_HIDE_BIOMETRICS_MENU, true);
@@ -256,7 +249,6 @@ public class MaintenanceModeUtils {
         startActivity(activityContext, intent);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void startCloudActivity(Context context) {
         Bundle res = callCloudProvider(context, true);
         if (res == null) {
@@ -275,7 +267,6 @@ public class MaintenanceModeUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void startSmartSwitchActivity(Context context) {
         Intent intent;
         if (isPackageInstalled(context, PACKAGE_SMART_SWITCH)) {
@@ -289,7 +280,6 @@ public class MaintenanceModeUtils {
         startActivity(context, intent);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void startMyFilesActivity(Activity activity) {
         try {
             Intent intent = new Intent(ACTION_LAUNCH_MYFILES_STORAGE_ANALYSIS);
@@ -307,7 +297,6 @@ public class MaintenanceModeUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class CloudInfo {
         String introDescription;
@@ -321,7 +310,6 @@ public class MaintenanceModeUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static CloudInfo checkCloudBackupSupport(Context context) {
         if (!isPackageInstalled(context, PACKAGE_CLOUD)) {
             Log.i(TAG, "SCloud is not installed");
@@ -361,7 +349,6 @@ public class MaintenanceModeUtils {
         return introDescription;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public static String getStatusOfBackupInProgress(Context context) {
         char c;
@@ -406,7 +393,6 @@ public class MaintenanceModeUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getCloudBackupStatus(Context context) {
         Bundle res = callCloudProvider(context, true);
         if (res == null) {
@@ -467,7 +453,6 @@ public class MaintenanceModeUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void sendLoggingDataToSA(Context context, String eventId, String eventValue) {
         try {
             Bundle bundle = new Bundle();

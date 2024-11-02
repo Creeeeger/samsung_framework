@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendSettings implements Parcelable {
     public static final Parcelable.Creator<FrontendSettings> CREATOR = new Parcelable.Creator<FrontendSettings>() { // from class: android.hardware.tv.tuner.FrontendSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendSettings createFromParcel(Parcel _aidl_source) {
             return new FrontendSettings(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendSettings[] newArray(int _aidl_size) {
             return new FrontendSettings[_aidl_size];
@@ -46,6 +47,10 @@ public final class FrontendSettings implements Parcelable {
         public static final int isdbs = 6;
         public static final int isdbs3 = 7;
         public static final int isdbt = 8;
+    }
+
+    /* synthetic */ FrontendSettings(Parcel parcel, FrontendSettingsIA frontendSettingsIA) {
+        this(parcel);
     }
 
     public FrontendSettings() {
@@ -212,6 +217,23 @@ public final class FrontendSettings implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.FrontendSettings$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendSettings createFromParcel(Parcel _aidl_source) {
+            return new FrontendSettings(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendSettings[] newArray(int _aidl_size) {
+            return new FrontendSettings[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

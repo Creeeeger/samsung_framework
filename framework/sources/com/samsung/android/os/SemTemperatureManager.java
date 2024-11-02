@@ -17,8 +17,8 @@ public class SemTemperatureManager {
     private static ISamsungDeviceHealthManager mService;
     private static SparseArray<Thermistor> mThermistorList;
 
-    /* renamed from: -$$Nest$smgetService, reason: not valid java name */
-    static /* bridge */ /* synthetic */ ISamsungDeviceHealthManager m8618$$Nest$smgetService() {
+    /* renamed from: -$$Nest$smgetService */
+    static /* bridge */ /* synthetic */ ISamsungDeviceHealthManager m8610$$Nest$smgetService() {
         return getService();
     }
 
@@ -39,6 +39,10 @@ public class SemTemperatureManager {
         public static final int TYPE_WIFI = 4;
         private int mType;
 
+        /* synthetic */ Thermistor(int i, ThermistorIA thermistorIA) {
+            this(i);
+        }
+
         private Thermistor(int type) {
             this.mType = type;
         }
@@ -48,7 +52,7 @@ public class SemTemperatureManager {
         }
 
         public int getTemperature() {
-            ISamsungDeviceHealthManager svc = SemTemperatureManager.m8618$$Nest$smgetService();
+            ISamsungDeviceHealthManager svc = SemTemperatureManager.m8610$$Nest$smgetService();
             if (svc != null) {
                 try {
                     return svc.getTemperature(this.mType);
@@ -74,6 +78,9 @@ public class SemTemperatureManager {
                 if (asInterface != null) {
                     try {
                         b.linkToDeath(new IBinder.DeathRecipient() { // from class: com.samsung.android.os.SemTemperatureManager.1
+                            AnonymousClass1() {
+                            }
+
                             @Override // android.os.IBinder.DeathRecipient
                             public void binderDied() {
                                 SemTemperatureManager.mService = null;
@@ -87,6 +94,18 @@ public class SemTemperatureManager {
             iSamsungDeviceHealthManager = mService;
         }
         return iSamsungDeviceHealthManager;
+    }
+
+    /* renamed from: com.samsung.android.os.SemTemperatureManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements IBinder.DeathRecipient {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            SemTemperatureManager.mService = null;
+        }
     }
 
     private static synchronized void initThermistorList() {

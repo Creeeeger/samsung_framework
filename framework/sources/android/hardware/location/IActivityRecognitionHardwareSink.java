@@ -84,8 +84,9 @@ public interface IActivityRecognitionHardwareSink extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IActivityRecognitionHardwareSink {
+        public static class Proxy implements IActivityRecognitionHardwareSink {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

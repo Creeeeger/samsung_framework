@@ -44,7 +44,6 @@ public class XmlUtils {
         void writeUnknownObject(Object obj, String str, TypedXmlSerializer typedXmlSerializer) throws XmlPullParserException, IOException;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ForcedTypedXmlSerializer extends XmlSerializerWrapper implements TypedXmlSerializer {
         public ForcedTypedXmlSerializer(XmlSerializer wrapped) {
@@ -109,7 +108,6 @@ public class XmlUtils {
         return new ForcedTypedXmlSerializer(xml);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ForcedTypedXmlPullParser extends XmlPullParserWrapper implements TypedXmlPullParser {
         public ForcedTypedXmlPullParser(XmlPullParser wrapped) {

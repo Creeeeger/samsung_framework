@@ -106,7 +106,7 @@ public class MediaFilterTracer extends DecorateFilter {
                     this.messageHandlers.add(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterTracer$$ExternalSyntheticLambda0
                         @Override // java.util.function.Consumer
                         public final void accept(Object obj) {
-                            MediaFilterTracer.this.m8760x3bc8565(message, (Message) obj);
+                            MediaFilterTracer.this.m8752x3bc8565(message, (Message) obj);
                         }
                     });
                     break;
@@ -138,9 +138,8 @@ public class MediaFilterTracer extends DecorateFilter {
         message.post();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$makeReport$0$com-samsung-android-sume-core-filter-MediaFilterTracer, reason: not valid java name */
-    public /* synthetic */ void m8760x3bc8565(Message message, Message msg) {
+    /* renamed from: lambda$makeReport$0$com-samsung-android-sume-core-filter-MediaFilterTracer */
+    public /* synthetic */ void m8752x3bc8565(Message message, Message msg) {
         msg.put(Message.KEY_CONTENTS_ID, message.get(Message.KEY_CONTENTS_ID, Integer.valueOf(this.contentId)));
     }
 

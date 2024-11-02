@@ -90,7 +90,6 @@ public class KernelCpuThreadReader {
         return this.mFrequenciesKhz;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setNumBuckets(int numBuckets) {
         int[] iArr = this.mFrequenciesKhz;
         if (iArr != null && iArr.length == numBuckets) {
@@ -110,7 +109,6 @@ public class KernelCpuThreadReader {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setUidPredicate(Predicate<Integer> uidPredicate) {
         this.mUidPredicate = uidPredicate;
     }

@@ -387,7 +387,6 @@ public abstract class Window {
         this.mWindowManager = ((WindowManagerImpl) wm).createLocalWindowManager(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void adjustLayoutParamsForSubWindow(WindowManager.LayoutParams wp) {
         CharSequence charSequence;
         View decor;
@@ -618,7 +617,6 @@ public abstract class Window {
         dispatchWindowAttributesChanged(attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dispatchWindowAttributesChanged(WindowManager.LayoutParams attrs) {
         Callback callback = this.mCallback;
         if (callback != null) {
@@ -668,12 +666,10 @@ public abstract class Window {
         return this.mWindowAttributes;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final int getForcedWindowFlags() {
         return this.mForcedWindowFlags;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final boolean hasSoftInputMode() {
         return this.mHasSoftInputMode;
     }
@@ -717,7 +713,6 @@ public abstract class Window {
         return (i & flag) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void removeFeature(int featureId) {
         int flag = 1 << featureId;
         this.mFeatures &= ~flag;
@@ -780,7 +775,6 @@ public abstract class Window {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final int getFeatures() {
         return this.mFeatures;
     }
@@ -801,12 +795,10 @@ public abstract class Window {
         return (getFeatures() & (1 << feature)) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final int getLocalFeatures() {
         return this.mLocalFeatures;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setDefaultWindowFormat(int format) {
         this.mDefaultWindowFormat = format;
         if (!this.mHaveWindowFormat) {
@@ -816,7 +808,6 @@ public abstract class Window {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean haveDimAmount() {
         return this.mHaveDimAmount;
     }

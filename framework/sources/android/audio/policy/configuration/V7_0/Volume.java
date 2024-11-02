@@ -66,7 +66,6 @@ public class Volume {
         this.ref = ref;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Volume read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Volume _instance = new Volume();

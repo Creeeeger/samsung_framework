@@ -34,6 +34,10 @@ public final class IptvFrontendSettings extends FrontendSettings {
     public @interface Protocol {
     }
 
+    /* synthetic */ IptvFrontendSettings(byte[] bArr, byte[] bArr2, int i, int i2, IptvFrontendSettingsFec iptvFrontendSettingsFec, int i3, int i4, long j, String str, IptvFrontendSettingsIA iptvFrontendSettingsIA) {
+        this(bArr, bArr2, i, i2, iptvFrontendSettingsFec, i3, i4, j, str);
+    }
+
     private IptvFrontendSettings(byte[] srcIpAddress, byte[] dstIpAddress, int srcPort, int dstPort, IptvFrontendSettingsFec fec, int protocol, int igmp, long bitrate, String contentUrl) {
         super(0L);
         this.mSrcIpAddress = srcIpAddress;

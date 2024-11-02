@@ -142,6 +142,10 @@ public class Equalizer extends AudioEffect {
 
     /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
+        /* synthetic */ BaseParameterListener(Equalizer equalizer, BaseParameterListenerIA baseParameterListenerIA) {
+            this();
+        }
+
         private BaseParameterListener() {
         }
 

@@ -60,7 +60,10 @@ public final class SatsService extends ISatsService.Stub {
 
     public SatsService(Context context) {
         this.mEmCmdHelper = null;
-        UEventObserver uEventObserver = new UEventObserver() { // from class: com.android.server.SatsService.1
+        AnonymousClass1 anonymousClass1 = new UEventObserver() { // from class: com.android.server.SatsService.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.UEventObserver
             public void onUEvent(UEventObserver.UEvent event) {
                 synchronized (SatsService.mLockUEvent) {
@@ -94,8 +97,11 @@ public final class SatsService extends ISatsService.Stub {
                 }
             }
         };
-        this.mUEventObserver = uEventObserver;
+        this.mUEventObserver = anonymousClass1;
         this.mReceiver = new BroadcastReceiver() { // from class: com.android.server.SatsService.2
+            AnonymousClass2() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -142,12 +148,78 @@ public final class SatsService extends ISatsService.Stub {
             this.mThreadUsb = new Thread(new AtCmdHandler(1), "SATServiceData");
             this.mThreadUart.start();
             this.mThreadUsb.start();
-            uEventObserver.startObserving(JIG_STATE);
+            anonymousClass1.startObserving(JIG_STATE);
             registerForBroadcasts();
         } catch (Throwable e) {
             e.printStackTrace();
         }
         System.loadLibrary(".engmodejni.samsung");
+    }
+
+    /* renamed from: com.android.server.SatsService$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends UEventObserver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.UEventObserver
+        public void onUEvent(UEventObserver.UEvent event) {
+            synchronized (SatsService.mLockUEvent) {
+                if (event.toString().indexOf(SatsService.JIG_STATE) != -1) {
+                    try {
+                        String switchName = event.get(SatsService.JIG_STATE);
+                        if ("uart3".equalsIgnoreCase(switchName)) {
+                            String switchState = event.get("SWITCH_STATE");
+                            int state = Integer.parseInt(switchState);
+                            switch (state) {
+                                case 0:
+                                    Slog.i(SatsService.TAG, "SATServiceAt will wait.");
+                                    SatsService.this.mThreadUartGoWait = true;
+                                    break;
+                                case 1:
+                                    Slog.i(SatsService.TAG, "SATServiceAt will wake up.");
+                                    SatsService.this.mThreadUartGoWait = false;
+                                    synchronized (SatsService.this.mThreadUart) {
+                                        SatsService.this.mThreadUart.notifyAll();
+                                    }
+                                    break;
+                                default:
+                                    Slog.e(SatsService.TAG, "Unknown state[" + state + NavigationBarInflaterView.SIZE_MOD_END);
+                                    break;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    /* renamed from: com.android.server.SatsService$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 extends BroadcastReceiver {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent) {
+            String action = intent.getAction();
+            Slog.i(SatsService.TAG, "Broadcast received:" + action);
+            try {
+                if (SatsService.ACTION_EM_AT_REQUEST_RECONNECT.equals(action) || SatsService.ACTION_EM_AT_ACTIVATION_REQUEST.equals(action) || SatsService.ACTION_HMT_REQUEST_RECONNECT.equals(action) || SatsService.ACTION_FACM_REQUEST_FTCLIENT_START.equals(action)) {
+                    Slog.i(SatsService.TAG, "onReceive:" + action);
+                    Slog.i(SatsService.TAG, "SATServiceAt will wake up through received intent...");
+                    Thread.sleep(500L);
+                    SatsService.this.mThreadUartGoWait = false;
+                    synchronized (SatsService.this.mThreadUart) {
+                        SatsService.this.mThreadUart.notifyAll();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static void setContext(Context context) {
@@ -499,7 +571,6 @@ public final class SatsService extends ISatsService.Stub {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public final class EngModesCmdHelper {
         private static final int AT_CMD_EM_SEQ_NO = 3;

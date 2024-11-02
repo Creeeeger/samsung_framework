@@ -84,7 +84,6 @@ public abstract class AbstractWindowedCursor extends AbstractCursor {
         return this.mWindow.getType(this.mPos, columnIndex);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.database.AbstractCursor
     public void checkPosition() {
         super.checkPosition();
@@ -109,7 +108,6 @@ public abstract class AbstractWindowedCursor extends AbstractCursor {
         return this.mWindow != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void closeWindow() {
         CursorWindow cursorWindow = this.mWindow;
         if (cursorWindow != null) {
@@ -127,7 +125,6 @@ public abstract class AbstractWindowedCursor extends AbstractCursor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.database.AbstractCursor
     public void onDeactivateOrClose() {
         super.onDeactivateOrClose();

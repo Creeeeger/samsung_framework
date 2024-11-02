@@ -18,7 +18,6 @@ public class SemCoverService extends Service {
     private boolean mAttach = false;
     private final Object mLock = new Object();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service, android.content.ContextWrapper
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -64,6 +63,10 @@ public class SemCoverService extends Service {
 
     /* loaded from: classes5.dex */
     private class CoverServiceWrapper extends ICoverService.Stub {
+        /* synthetic */ CoverServiceWrapper(SemCoverService semCoverService, CoverServiceWrapperIA coverServiceWrapperIA) {
+            this();
+        }
+
         private CoverServiceWrapper() {
         }
 

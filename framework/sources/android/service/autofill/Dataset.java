@@ -23,7 +23,9 @@ import java.util.regex.Pattern;
 /* loaded from: classes3.dex */
 public final class Dataset implements Parcelable {
     public static final Parcelable.Creator<Dataset> CREATOR = new Parcelable.Creator<Dataset>() { // from class: android.service.autofill.Dataset.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Dataset createFromParcel(Parcel parcel) {
             int eligibleReason;
@@ -98,7 +100,6 @@ public final class Dataset implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Dataset[] newArray(int size) {
             return new Dataset[size];
@@ -130,6 +131,10 @@ public final class Dataset implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface DatasetEligibleReason {
+    }
+
+    /* synthetic */ Dataset(Builder builder, DatasetIA datasetIA) {
+        this(builder);
     }
 
     public Dataset(ArrayList<AutofillId> fieldIds, ArrayList<AutofillValue> fieldValues, ArrayList<RemoteViews> fieldPresentations, ArrayList<RemoteViews> fieldDialogPresentations, ArrayList<InlinePresentation> fieldInlinePresentations, ArrayList<InlinePresentation> fieldInlineTooltipPresentations, ArrayList<DatasetFieldFilter> fieldFilters, ArrayList<String> autofillDatatypes, ClipData fieldContent, RemoteViews presentation, RemoteViews dialogPresentation, InlinePresentation inlinePresentation, InlinePresentation inlineTooltipPresentation, String id, IntentSender authentication) {
@@ -564,7 +569,6 @@ public final class Dataset implements Parcelable {
             return this.mFieldIds.size() - 1;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void createFromParcel(AutofillId id, String datatype, AutofillValue value, RemoteViews presentation, InlinePresentation inlinePresentation, InlinePresentation tooltip, DatasetFieldFilter filter, RemoteViews dialogPresentation) {
             int existingIdx;
             if (id != null && (existingIdx = this.mFieldIds.indexOf(id)) >= 0) {
@@ -639,16 +643,103 @@ public final class Dataset implements Parcelable {
         parcel.writeInt(this.mEligibleReason);
     }
 
+    /* renamed from: android.service.autofill.Dataset$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Dataset> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Dataset createFromParcel(Parcel parcel) {
+            int eligibleReason;
+            Presentations.Builder presentationsBuilder;
+            Builder builder;
+            RemoteViews presentation = (RemoteViews) parcel.readParcelable(null, RemoteViews.class);
+            RemoteViews dialogPresentation = (RemoteViews) parcel.readParcelable(null, RemoteViews.class);
+            InlinePresentation inlinePresentation = (InlinePresentation) parcel.readParcelable(null, InlinePresentation.class);
+            InlinePresentation inlineTooltipPresentation = (InlinePresentation) parcel.readParcelable(null, InlinePresentation.class);
+            ArrayList<AutofillId> ids = parcel.createTypedArrayList(AutofillId.CREATOR);
+            ArrayList<AutofillValue> values = parcel.createTypedArrayList(AutofillValue.CREATOR);
+            ArrayList<RemoteViews> presentations = parcel.createTypedArrayList(RemoteViews.CREATOR);
+            ArrayList<RemoteViews> dialogPresentations = parcel.createTypedArrayList(RemoteViews.CREATOR);
+            ArrayList<InlinePresentation> inlinePresentations = parcel.createTypedArrayList(InlinePresentation.CREATOR);
+            ArrayList<InlinePresentation> inlineTooltipPresentations = parcel.createTypedArrayList(InlinePresentation.CREATOR);
+            ArrayList<DatasetFieldFilter> filters = parcel.createTypedArrayList(DatasetFieldFilter.CREATOR);
+            ArrayList<String> autofillDatatypes = parcel.createStringArrayList();
+            ClipData fieldContent = (ClipData) parcel.readParcelable(null, ClipData.class);
+            IntentSender authentication = (IntentSender) parcel.readParcelable(null, IntentSender.class);
+            String datasetId = parcel.readString();
+            int eligibleReason2 = parcel.readInt();
+            if (presentation != null || inlinePresentation != null || dialogPresentation != null) {
+                Presentations.Builder presentationsBuilder2 = new Presentations.Builder();
+                if (presentation == null) {
+                    eligibleReason = eligibleReason2;
+                    presentationsBuilder = presentationsBuilder2;
+                } else {
+                    eligibleReason = eligibleReason2;
+                    presentationsBuilder = presentationsBuilder2;
+                    presentationsBuilder.setMenuPresentation(presentation);
+                }
+                if (inlinePresentation != null) {
+                    presentationsBuilder.setInlinePresentation(inlinePresentation);
+                }
+                if (inlineTooltipPresentation != null) {
+                    presentationsBuilder.setInlineTooltipPresentation(inlineTooltipPresentation);
+                }
+                if (dialogPresentation != null) {
+                    presentationsBuilder.setDialogPresentation(dialogPresentation);
+                }
+                builder = new Builder(presentationsBuilder.build());
+            } else {
+                eligibleReason = eligibleReason2;
+                builder = new Builder();
+            }
+            if (fieldContent != null) {
+                builder.setContent(ids.get(0), fieldContent);
+            }
+            int inlinePresentationsSize = inlinePresentations.size();
+            int i = 0;
+            while (true) {
+                InlinePresentation inlinePresentation2 = inlinePresentation;
+                if (i < ids.size()) {
+                    AutofillId id = ids.get(i);
+                    String datatype = autofillDatatypes.get(i);
+                    AutofillValue value = values.get(i);
+                    RemoteViews fieldPresentation = presentations.get(i);
+                    RemoteViews fieldDialogPresentation = dialogPresentations.get(i);
+                    InlinePresentation fieldInlinePresentation = i < inlinePresentationsSize ? inlinePresentations.get(i) : null;
+                    InlinePresentation fieldInlineTooltipPresentation = i < inlinePresentationsSize ? inlineTooltipPresentations.get(i) : null;
+                    DatasetFieldFilter filter = filters.get(i);
+                    builder.createFromParcel(id, datatype, value, fieldPresentation, fieldInlinePresentation, fieldInlineTooltipPresentation, filter, fieldDialogPresentation);
+                    i++;
+                    inlinePresentation = inlinePresentation2;
+                } else {
+                    builder.setAuthentication(authentication);
+                    builder.setId(datasetId);
+                    Dataset dataset = builder.build();
+                    dataset.mEligibleReason = eligibleReason;
+                    return dataset;
+                }
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Dataset[] newArray(int size) {
+            return new Dataset[size];
+        }
+    }
+
     /* loaded from: classes3.dex */
     public static final class DatasetFieldFilter implements Parcelable {
         public static final Parcelable.Creator<DatasetFieldFilter> CREATOR = new Parcelable.Creator<DatasetFieldFilter>() { // from class: android.service.autofill.Dataset.DatasetFieldFilter.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public DatasetFieldFilter createFromParcel(Parcel parcel) {
                 return new DatasetFieldFilter((Pattern) parcel.readSerializable(Pattern.class.getClassLoader(), Pattern.class));
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DatasetFieldFilter[] newArray(int size) {
                 return new DatasetFieldFilter[size];
@@ -656,7 +747,6 @@ public final class Dataset implements Parcelable {
         };
         public final Pattern pattern;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public DatasetFieldFilter(Pattern pattern) {
             this.pattern = pattern;
         }
@@ -677,6 +767,23 @@ public final class Dataset implements Parcelable {
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel parcel, int flags) {
             parcel.writeSerializable(this.pattern);
+        }
+
+        /* renamed from: android.service.autofill.Dataset$DatasetFieldFilter$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<DatasetFieldFilter> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DatasetFieldFilter createFromParcel(Parcel parcel) {
+                return new DatasetFieldFilter((Pattern) parcel.readSerializable(Pattern.class.getClassLoader(), Pattern.class));
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DatasetFieldFilter[] newArray(int size) {
+                return new DatasetFieldFilter[size];
+            }
         }
     }
 }

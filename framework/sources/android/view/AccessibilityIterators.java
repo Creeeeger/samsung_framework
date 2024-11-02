@@ -24,7 +24,6 @@ public final class AccessibilityIterators {
             this.mText = text;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public int[] getRange(int start, int end) {
             if (start < 0 || end < 0 || start == end) {
                 return null;
@@ -36,12 +35,15 @@ public final class AccessibilityIterators {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class CharacterTextSegmentIterator extends AbstractTextSegmentIterator implements ViewRootImpl.ConfigChangedCallback {
         private static CharacterTextSegmentIterator sInstance;
         protected BreakIterator mImpl;
         private Locale mLocale;
+
+        /* synthetic */ CharacterTextSegmentIterator(Locale locale, CharacterTextSegmentIteratorIA characterTextSegmentIteratorIA) {
+            this(locale);
+        }
 
         public static CharacterTextSegmentIterator getInstance(Locale locale) {
             if (sInstance == null) {
@@ -122,7 +124,6 @@ public final class AccessibilityIterators {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class WordTextSegmentIterator extends CharacterTextSegmentIterator {
         private static WordTextSegmentIterator sInstance;
@@ -206,7 +207,6 @@ public final class AccessibilityIterators {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ParagraphTextSegmentIterator extends AbstractTextSegmentIterator {
         private static ParagraphTextSegmentIterator sInstance;
@@ -221,7 +221,10 @@ public final class AccessibilityIterators {
             return sInstance;
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:19:0x0028, code lost:            return null;     */
+        /* JADX WARN: Code restructure failed: missing block: B:19:0x0028, code lost:
+        
+            return null;
+         */
         @Override // android.view.AccessibilityIterators.TextSegmentIterator
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -270,7 +273,10 @@ public final class AccessibilityIterators {
             throw new UnsupportedOperationException("Method not decompiled: android.view.AccessibilityIterators.ParagraphTextSegmentIterator.following(int):int[]");
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:19:0x002a, code lost:            return null;     */
+        /* JADX WARN: Code restructure failed: missing block: B:19:0x002a, code lost:
+        
+            return null;
+         */
         @Override // android.view.AccessibilityIterators.TextSegmentIterator
         /*
             Code decompiled incorrectly, please refer to instructions dump.

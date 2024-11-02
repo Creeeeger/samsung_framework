@@ -96,7 +96,6 @@ public class MarshalQueryableEnum<T extends Enum<T>> implements MarshalQueryable
         sEnumValues.put(enumType, values);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends Enum<T>> int getEnumValue(T enumValue) {
         int[] values = sEnumValues.get(enumValue.getClass());
         int ordinal = enumValue.ordinal();
@@ -106,7 +105,6 @@ public class MarshalQueryableEnum<T extends Enum<T>> implements MarshalQueryable
         return ordinal;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends Enum<T>> T getEnumFromValue(Class<T> enumType, int value) {
         int ordinal;
         int[] registeredValues = sEnumValues.get(enumType);

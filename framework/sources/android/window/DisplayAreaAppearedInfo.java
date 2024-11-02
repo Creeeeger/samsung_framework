@@ -7,7 +7,9 @@ import android.view.SurfaceControl;
 /* loaded from: classes4.dex */
 public final class DisplayAreaAppearedInfo implements Parcelable {
     public static final Parcelable.Creator<DisplayAreaAppearedInfo> CREATOR = new Parcelable.Creator<DisplayAreaAppearedInfo>() { // from class: android.window.DisplayAreaAppearedInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DisplayAreaAppearedInfo createFromParcel(Parcel source) {
             DisplayAreaInfo displayAreaInfo = (DisplayAreaInfo) source.readTypedObject(DisplayAreaInfo.CREATOR);
@@ -15,7 +17,6 @@ public final class DisplayAreaAppearedInfo implements Parcelable {
             return new DisplayAreaAppearedInfo(displayAreaInfo, leash);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayAreaAppearedInfo[] newArray(int size) {
             return new DisplayAreaAppearedInfo[size];
@@ -23,6 +24,25 @@ public final class DisplayAreaAppearedInfo implements Parcelable {
     };
     private final DisplayAreaInfo mDisplayAreaInfo;
     private final SurfaceControl mLeash;
+
+    /* renamed from: android.window.DisplayAreaAppearedInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DisplayAreaAppearedInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayAreaAppearedInfo createFromParcel(Parcel source) {
+            DisplayAreaInfo displayAreaInfo = (DisplayAreaInfo) source.readTypedObject(DisplayAreaInfo.CREATOR);
+            SurfaceControl leash = (SurfaceControl) source.readTypedObject(SurfaceControl.CREATOR);
+            return new DisplayAreaAppearedInfo(displayAreaInfo, leash);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayAreaAppearedInfo[] newArray(int size) {
+            return new DisplayAreaAppearedInfo[size];
+        }
+    }
 
     public DisplayAreaAppearedInfo(DisplayAreaInfo displayAreaInfo, SurfaceControl leash) {
         this.mDisplayAreaInfo = displayAreaInfo;

@@ -12,7 +12,6 @@ public final class ThreadLocalWorkSource {
         }
     });
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int[] lambda$static$0() {
         return new int[]{-1};
     }

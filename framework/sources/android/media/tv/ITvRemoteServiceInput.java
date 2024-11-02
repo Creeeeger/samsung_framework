@@ -267,8 +267,9 @@ public interface ITvRemoteServiceInput extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ITvRemoteServiceInput {
+        public static class Proxy implements ITvRemoteServiceInput {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

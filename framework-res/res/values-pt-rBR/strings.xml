@@ -385,12 +385,12 @@ Recursos atuais:
     <string name="allow_settings_changes">A política de segurança impede a alteração das configurações.</string>
     <string name="alwaysUse">Usar como padrão para esta ação.</string>
     <string name="android_preparing_apk">Preparando %1$s.</string>
-    <string name="android_start_title">O smartphone está iniciando…</string>
+    <string name="android_start_title">O tablet está iniciando…</string>
     <string name="android_system_label">Sistema Android</string>
     <string name="android_upgrading_complete">Concluindo a inicialização.</string>
     <string name="android_upgrading_notification_title">Concluindo atualização do sistema…</string>
     <string name="android_upgrading_starting_apps">Iniciando apps.</string>
-    <string name="android_upgrading_title">O smartphone está sendo atualizado…</string>
+    <string name="android_upgrading_title">O tablet está sendo atualizado…</string>
     <string name="anr_activity_application">%2$s não está respondendo</string>
     <string name="anr_activity_process">%1$s não está respondendo</string>
     <string name="anr_application_process">%1$s não está respondendo</string>
@@ -424,16 +424,16 @@ Recursos atuais:
     <string name="app_restricted_message_concentration_mode">%s é bloqueado durante o Modo de concentração. Contate o administrador de TI para saber mais.</string>
     <string name="app_running_notification_text">Toque para ver mais informações ou parar o app.</string>
     <string name="app_running_notification_title">%1$s está em execução</string>
-    <string name="app_streaming_blocked_message">No momento, não é possível acessar esse app pelo %1$s. Tente pelo seu smartphone.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Esse app está solicitando segurança extra. Tente pelo smartphone.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Não é possível acessar essa configuração pelo seu %1$s. Tente pelo smartphone.</string>
+    <string name="app_streaming_blocked_message">No momento, não é possível acessar esse app pelo %1$s. Tente pelo seu tablet.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Esse app está solicitando segurança extra. Tente pelo tablet.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Não é possível acessar essa configuração pelo seu %1$s. Tente pelo tablet.</string>
     <string name="app_streaming_blocked_title">%1$s indisponível</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Câmera indisponível</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Continuar no smartphone</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Microfone indisponível</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Permissão necessária</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store indisponível</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Configurações do smartphone indisponíveis</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Configurações do tablet indisponíveis</string>
     <string name="app_suspended_default_message">O app %1$s não está disponível no momento. Isso é gerenciado pelo app %2$s.</string>
     <string name="app_suspended_more_details">Saiba mais</string>
     <string name="app_suspended_title">O app não está disponível</string>
@@ -504,7 +504,7 @@ Se mesmo assim você optar por instalar este aplicativo, certifique-se de que el
     <string name="badPuk">O PUK digitado está incorreto.</string>
     <string name="badPuk2">O PUK2 inserido está incorreto</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Não há carga suficiente no smartphone. Os recursos não estão mais restritos.</string>
+    <string name="battery_saver_charged_notification_summary">Não há carga suficiente no tablet. Os recursos não estão mais restritos.</string>
     <string name="battery_saver_description">A Economia de bateria ativa o tema escuro e limita ou desativa atividades em segundo plano, alguns efeitos visuais, recursos específicos e algumas conexões de rede.</string>
     <string name="battery_saver_description_with_learn_more">A Economia de bateria ativa o tema escuro e limita ou desativa atividades em segundo plano, alguns efeitos visuais, recursos específicos e algumas conexões de rede.</string>
     <string name="battery_saver_notification_channel_name">Economia de bateria</string>
@@ -732,7 +732,7 @@ O volume dos fones de ouvido está mais alto que o recomendado. Isso pode causar
     <string name="decline">Recusar</string>
     <string name="decline_remote_bugreport_action">RECUSAR</string>
     <string name="default_audio_route_category_name">Sistema</string>
-    <string name="default_audio_route_name">Telefone</string>
+    <string name="default_audio_route_name">Tablet</string>
     <string name="default_audio_route_name_dock_speakers">Alto-falantes na base</string>
     <string name="default_audio_route_name_external_device">Dispositivo externo</string>
     <string name="default_audio_route_name_headphones">Fones de ouvido</string>
@@ -859,7 +859,7 @@ usando %s"</string>
     <string name="emergency_call_dialog_number_for_display">Número de emergência</string>
     <string name="emergency_calls_only">Somente chamadas de emergência</string>
     <string name="enablePin">Falha. Ative o bloqueio do chip/R-UIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s quer ativar o Explorar por toque. Com ele, você pode ouvir ou ver descrições do que está sob seu dedo e interagir com o telefone por gestos.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s quer ativar o Explorar por toque. Com ele, você pode ouvir ou ver descrições do que está sob seu dedo e interagir com o tablet por gestos.</string>
     <string name="enable_explore_by_touch_warning_title">Ativar o Explorar por toque?</string>
     <string name="error_message_change_not_allowed">Esta alteração não é permitida pelo administrador</string>
     <string name="error_message_title">Erro</string>
@@ -922,7 +922,7 @@ usando %s"</string>
     <string name="ext_media_unsupported_notification_message">Este aparelho não é compatível com %s. Toque para configurar um formato compatível.</string>
     <string name="ext_media_unsupported_notification_title">%s incompatível</string>
     <string name="ext_storage_bad_removal_button">Reiniciar</string>
-    <string name="ext_storage_bad_removal_title">Reinicie seu telefone</string>
+    <string name="ext_storage_bad_removal_title">Reinicie seu tablet</string>
     <string name="extmedia_format_button_format">Formato</string>
     <string name="extmedia_format_message">Tem certeza de que quer formatar o cartão SD? Todos os dados do cartão serão perdidos.</string>
     <string name="extmedia_format_message_usbhost">Qualquer arquivo salvo no seu armazenamento USB será apagado. Não é possível desfazer essa ação.</string>
@@ -1125,7 +1125,7 @@ Toque levemente na tela durante a configuração da impressão digital."</string
     <string name="global_action_toggle_sealed_mode">Modo Confidencial</string>
     <string name="global_action_toggle_silent_mode">Modo silencioso</string>
     <string name="global_action_voice_assist">Ajuda de voz</string>
-    <string name="global_actions">Opções do telefone</string>
+    <string name="global_actions">Opções do tablet</string>
     <string name="global_actions_airplane_mode_off_status">Modo avião DESATIVADO</string>
     <string name="global_actions_airplane_mode_on_status">Modo avião ATIVADO</string>
     <string name="global_actions_toggle_airplane_mode">Modo avião</string>
@@ -1310,11 +1310,11 @@ Você quer mesmo sair desta página?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Toque para digitar a senha&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Código PIN incorreto.</string>
     <string name="kg_enter_confirm_pin_hint">Confirme o código PIN desejado</string>
-    <string name="kg_failed_attempts_almost_at_login">"Você desenhou sua sequência de desbloqueio incorretamente %1$d vezes. Se fizer mais %2$d tentativas incorretas, será solicitado que você use o login do Google para desbloquear.
+    <string name="kg_failed_attempts_almost_at_login">"Você desenhou sua sequência de desbloqueio incorretamente %1$d vezes. Se fizer mais %2$d tentativas incorretas, será solicitado que você use o login do Google para desbloquear seu tablet.
 
  Tente novamente em %3$d segundos."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Você tentou desbloquear incorretamente o telefone %1$d vezes. Após mais %2$d tentativas malsucedidas, o telefone será redefinido para o padrão de fábrica e todos os dados do usuário serão perdidos.</string>
-    <string name="kg_failed_attempts_now_wiping">Você tentou desbloquear incorretamente o telefone %d vezes. O telefone será redefinido para o padrão de fábrica.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Você tentou desbloquear incorretamente o tablet %1$d vezes. Após mais %2$d tentativas malsucedidas, o tablet será redefinido para o padrão de fábrica e todos os dados do usuário serão perdidos.</string>
+    <string name="kg_failed_attempts_now_wiping">Você tentou desbloquear incorretamente o tablet %d vezes. O tablet será redefinido para o padrão de fábrica.</string>
     <string name="kg_forgot_pattern_button_text">Esqueci o padrão</string>
     <string name="kg_invalid_confirm_pin_hint">Os códigos PIN não coincidem</string>
     <string name="kg_invalid_puk">Introduza novamente o código PUK correto. Muitas tentativas malsucedidas desativarão permanentemente o chip.</string>
@@ -1402,11 +1402,11 @@ Tente novamente em %2$d segundos."</string>
     <string name="lockscreen_carrier_default">Sem serviço</string>
     <string name="lockscreen_carrier_noservice">(Nenhum serviço)</string>
     <string name="lockscreen_emergency_call">Emergência</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Você tentou desbloquear incorretamente o telefone %1$d vezes. Após mais %2$d tentativas malsucedidas, o telefone será redefinido para o padrão de fábrica e todos os dados do usuário serão perdidos.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Você desenhou sua sequência de desbloqueio incorretamente %1$d vezes. Se fizer mais %2$d tentativas incorretas, será solicitado que você use o login do Google para desbloquear.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Você tentou desbloquear incorretamente o tablet %1$d vezes. Após mais %2$d tentativas malsucedidas, o tablet será redefinido para o padrão de fábrica e todos os dados do usuário serão perdidos.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Você desenhou sua sequência de desbloqueio incorretamente %1$d vezes. Se fizer mais %2$d tentativas incorretas, será solicitado que você use o login do Google para desbloquear seu tablet.
 
  Tente novamente em %3$d segundos."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Você tentou desbloquear incorretamente o telefone %d vezes. O telefone será redefinido para o padrão de fábrica.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Você tentou desbloquear incorretamente o tablet %d vezes. O tablet será redefinido para o padrão de fábrica.</string>
     <string name="lockscreen_forgot_pattern_button_text">Esqueceu o padrão?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Esqueceu seu nome de usuário ou senha?
 Acesse "<b>google.com.br/accounts/recovery</b>.</string>
@@ -1422,7 +1422,7 @@ Acesse "<b>google.com.br/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Pressione Menu para desbloquear ou fazer uma chamada de emergência.</string>
     <string name="lockscreen_missing_sim_instructions">Adicione um chip.</string>
     <string name="lockscreen_missing_sim_instructions_long">O chip não foi inserido ou não pode ser lido. Adicione um chip.</string>
-    <string name="lockscreen_missing_sim_message">Nenhum chip no smartphone.</string>
+    <string name="lockscreen_missing_sim_message">Nenhum chip no tablet.</string>
     <string name="lockscreen_missing_sim_message_short">Sem chip</string>
     <string name="lockscreen_network_locked_message">Rede bloqueada</string>
     <string name="lockscreen_password_wrong">Tente novamente</string>
@@ -1462,7 +1462,7 @@ Tente novamente em %2$d segundos."</string>
     <string name="low_internal_storage_view_text">Algumas funções do sistema podem não funcionar</string>
     <string name="low_internal_storage_view_text_no_boot">Não há armazenamento suficiente para o sistema. Certifique-se de ter 250 MB de espaço livre e reinicie.</string>
     <string name="low_internal_storage_view_title">Pouco espaço de armazenamento</string>
-    <string name="low_memory">O armazenamento do telefone está cheio. Exclua alguns arquivos para liberar espaço.</string>
+    <string name="low_memory">O armazenamento do tablet está cheio. Exclua alguns arquivos para liberar espaço.</string>
     <string name="ltb_kill_content_v2_phone">%s foi fechado porque estava causando o aquecimento do seu telefone. Você poderá abri-lo novamente mais tarde, depois que o telefone esfriar.</string>
     <string name="ltb_kill_content_v2_tablet">%s foi fechado automaticamente porque estava causando o aquecimento do seu tablet. Você poderá abri-lo novamente mais tarde, depois que o tablet esfriar.</string>
     <string name="ltb_warning_button">Não fechar</string>
@@ -1772,18 +1772,18 @@ Seu tablet será reiniciado em breve."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">O som está sendo reproduzido no seu aparelho de áudio Bluetooth. Toque aqui para desativá-lo</string>
     <string name="multisound_sound_via_headphone">O som de %s está sendo reproduzido pelos fones de ouvido. Toque aqui para desativá-lo.</string>
     <string name="multisound_sound_via_headphone_multiselection">O som está sendo reproduzido pelos seus fones de ouvido. Toque aqui para desativá-lo.</string>
-    <string name="multisound_sound_via_phone_speaker">O som de %s está sendo reproduzido pelo alto-falante do seu telefone. Toque aqui para desativá-lo.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">O som está sendo reproduzido pelo alto-falante do seu telefone. Toque aqui para desativá-lo.</string>
+    <string name="multisound_sound_via_phone_speaker">O som de %s está sendo reproduzido pelo alto-falante do seu tablet. Toque aqui para desativá-lo.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">O som está sendo reproduzido pelo alto-falante do seu tablet. Toque aqui para desativá-lo.</string>
     <string name="multisound_sound_via_usb_audio">O som de %s está sendo reproduzido pelo seu aparelho de áudio USB. Toque aqui para desativá-lo.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">O som está sendo reproduzido pelo seu aparelho de áudio USB. Toque aqui para desativá-lo.</string>
     <string name="multisound_title">Som do aplicativo separado</string>
     <string name="multisound_turn_off_multisound">Desativar</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s não pode ser executado no Samsung DeX. Tente executá-lo no modo de telefone.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s não pode ser executado no Samsung DeX. Ele é projetado para Telas iniciais do telefone.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Alguns jogos só funcionam em telas de toque. Se os controles do mouse não funcionarem no Samsung DeX, tente jogar no modo de telefone.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s não pode ser executado no Samsung DeX. Tente executá-lo no modo de tablet.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s não pode ser executado no Samsung DeX. Ele é projetado para as Telas iniciais de tablet.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Alguns jogos só funcionam em telas de toque. Se os controles do mouse não funcionarem no Samsung DeX, tente jogar no modo de tablet.</string>
     <string name="music_recognition_manager_service">Serviço de gerenciamento do reconhecimento de música</string>
     <string name="muted_by">%1$s está silenciando alguns sons</string>
-    <string name="my_device">Este telefone</string>
+    <string name="my_device">Este tablet</string>
     <string name="nas_upgrade_notification_content">As ações e respostas sugeridas agora são fornecidas pelas notificações avançadas. As Notificações adaptáveis do Android não estão mais disponíveis.</string>
     <string name="nas_upgrade_notification_disable_action">Desativar</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1948,23 +1948,23 @@ As notificações avançadas podem acessar o conteúdo das notificações, inclu
     <string name="permdesc_bindNotificationListenerService">Permite que o proprietário sujeite a interface de nível superior a um serviço ouvinte de notificações. Não deve ser necessário para apps comuns.</string>
     <string name="permdesc_bind_connection_service">Permite ao app interagir com os serviços de telefonia para fazer/receber chamadas.</string>
     <string name="permdesc_bind_incall_service">Permite que o app controle quando e como o usuário visualiza a chamada na tela.</string>
-    <string name="permdesc_bluetooth">Permite que o app acesse a configuração do Bluetooth no telefone, além de fazer e aceitar conexões com dispositivos pareados.</string>
-    <string name="permdesc_bluetoothAdmin">Permite que um app configure o telefone Bluetooth local, descubra e emparelhe com dispositivos remotos.</string>
+    <string name="permdesc_bluetooth">Permite que o app acesse a configuração do Bluetooth no tablet, além de fazer e aceitar conexões com dispositivos pareados.</string>
+    <string name="permdesc_bluetoothAdmin">Permite que um app configure o tablet Bluetooth local, descubra dispositivos remotos e emparelhe com eles.</string>
     <string name="permdesc_bluetooth_advertise">Permite que o app seja anunciado em dispositivos Bluetooth por perto</string>
     <string name="permdesc_bluetooth_connect">Permite que o app se conecte a dispositivos Bluetooth pareados</string>
     <string name="permdesc_bluetooth_scan">Permite que o app descubra e se pareie a dispositivos Bluetooth por perto</string>
     <string name="permdesc_bodySensors">Permite que o app acesse dados do sensor corporal, como a frequência cardíaca, a temperatura e a porcentagem de oxigênio no sangue, enquanto o app está em uso.</string>
     <string name="permdesc_bodySensors_background">Permite que o app acesse dados do sensor corporal, como a frequência cardíaca, a temperatura e a porcentagem de oxigênio no sangue, enquanto o app está em segundo plano.</string>
-    <string name="permdesc_broadcastSticky">Permite que o app envie transmissões fixas, que permanecem depois que a transmissão termina. O uso excessivo pode deixar o telefone lento ou instável, fazendo com que ele use muita memória.</string>
+    <string name="permdesc_broadcastSticky">Permite que o app envie transmissões fixas, que permaneçam depois que a transmissão terminar. O uso excessivo pode desacelerar ou desestabilizar o tablet, fazendo com que ele utilize muita memória.</string>
     <string name="permdesc_callCompanionApp">Permite que o app veja e controle chamadas em andamento no dispositivo. Isso inclui informações como número e estado das chamadas.</string>
     <string name="permdesc_callPhone">Permite que o app faça ligações para números de telefone sem a sua intervenção. Ligações ou cobranças inesperadas podem acontecer. Isso não permite que o app ligue para números de emergência. Você pode receber cobranças indesejadas de ligações feitas por apps maliciosos sem a sua confirmação. Além disso, esses apps podem discar códigos de operadora que automaticamente encaminham ligações recebidas para outro número.</string>
     <string name="permdesc_camera">Enquanto está sendo usado, este app pode tirar fotos e gravar vídeos usando a câmera.</string>
     <string name="permdesc_cameraOpenCloseListener">Esse app pode receber callbacks quando um dispositivo de câmera é aberto (por qualquer app) ou fechado.</string>
     <string name="permdesc_changeNetworkState">Permite que o app altere o estado de conectividade de rede.</string>
     <string name="permdesc_changeTetherState">Permite que o app altere o estado de conectividade de rede conectada.</string>
-    <string name="permdesc_changeWifiMulticastState">Permite que o app receba pacotes enviados para todos os dispositivos em uma rede Wi-Fi usando endereços de difusão seletiva, e não apenas o telefone. Consome mais energia do que o modo não multicast.</string>
+    <string name="permdesc_changeWifiMulticastState">Permite que o app receba pacotes enviados para todos os dispositivos em uma rede Wi-Fi usando endereços de difusão seletiva, e não apenas o tablet. Consome mais energia do que o modo não multicast.</string>
     <string name="permdesc_changeWifiState">Permite que o app conecte e desconecte dos pontos de acesso Wi-Fi e faça alterações nas configurações do dispositivo para redes Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Permite que o app conecte e desconecte o telefone de redes WiMAX.</string>
+    <string name="permdesc_changeWimaxState">Permite que o app conecte e desconecte o tablet de redes WiMAX.</string>
     <string name="permdesc_companionProfileWatch">Permite que um app complementar gerencie relógios.</string>
     <string name="permdesc_connection_manager">Permite que o app gerencie conexões de telecomunicações.</string>
     <string name="permdesc_control_incall_experience">Permite ao app fornecer uma experiência de usuário em chamada.</string>
@@ -1992,7 +1992,7 @@ As notificações avançadas podem acessar o conteúdo das notificações, inclu
     <string name="permdesc_foregroundServiceSpecialUse">Permite que o app use serviços em primeiro plano com o tipo \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Permite que o app use serviços em primeiro plano com o tipo \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">Permite que o app exiba notificações como atividades em tela cheia em um dispositivo bloqueado</string>
-    <string name="permdesc_getAccounts">Permite que o app obtenha a lista de contas conhecidas pelo telefone. Isso pode incluir todas as contas criadas pelos apps instalados.</string>
+    <string name="permdesc_getAccounts">Permite que o app obtenha a lista de contas conhecidas pelo tablet. Isso pode incluir todas as contas criadas pelos apps instalados.</string>
     <string name="permdesc_getAppList">Permite que um app leia a lista de apps instalados.</string>
     <string name="permdesc_getPackageSize">Permite que o app recupere o código, os dados e os tamanhos de cache</string>
     <string name="permdesc_getTasks">Permite que o app obtenha informações sobre tarefas em execução atuais e recentes. Pode permitir que o app descubra informações sobre os apps usados ​​no dispositivo.</string>
@@ -2091,16 +2091,16 @@ RETORNAR PARA"</string>
     <string name="permdesc_nearby_wifi_devices">Permite que o app divulgue, faça conexão e determine a posição relativa de dispositivos Wi-Fi por perto.</string>
     <string name="permdesc_nfc">Permite que o app se comunique com leitores, cartões e etiqueta NFC (comunicação a curta distância).</string>
     <string name="permdesc_observeCompanionDevicePresence">Permite que um app complementar observe a presença do dispositivo complementar quando os dispositivos estiverem próximos ou distantes.</string>
-    <string name="permdesc_persistentActivity">Permite que o app torne partes de si mesmo persistentes na memória. Pode limitar a memória disponível para outros apps, deixando o telefone mais lento.</string>
+    <string name="permdesc_persistentActivity">Permite que o app torne partes de si mesmo persistentes na memória. Pode limitar a memória disponível para outros apps, deixando o tablet mais lento.</string>
     <string name="permdesc_postNotification">Permite que o app mostre notificações</string>
     <string name="permdesc_preferredPaymentInfo">Permite que o app acesse as informações preferidas de serviço de pagamento por NFC, como auxílios registrados ou destinos de trajetos.</string>
     <string name="permdesc_processOutgoingCalls">Permite que o app veja o número discado ao realizar uma chamada, com a opção de redirecionar a chamada para outro número ou abortá-la.</string>
     <string name="permdesc_queryAllPackages">Permite que um app veja todos os pacotes instalados.</string>
     <string name="permdesc_readBasicPhoneState">Permite que o app acesse os recursos básicos de telefonia do dispositivo.</string>
-    <string name="permdesc_readCalendar">Este app pode ler todos os eventos da agenda armazenados no seu smartphone e compartilhar ou salvar os dados da sua agenda.</string>
+    <string name="permdesc_readCalendar">Este app pode ler todos os eventos da agenda armazenados no seu tablet e compartilhar ou salvar os dados da sua agenda.</string>
     <string name="permdesc_readCallLog">Este app pode ler seu histórico de ligações.</string>
     <string name="permdesc_readCellBroadcasts">Permite que o app leia mensagens de difusão celular recebidas por seu dispositivo. Alertas de difusão celular são recebidos em alguns locais para avisar você de situações de emergência. Apps maliciosos podem interferir no desempenho ou funcionamento de seu dispositivo quando uma difusão celular de emergência é recebida.</string>
-    <string name="permdesc_readContacts">Permite que o app leia dados sobre seus contatos armazenados no smartphone. Os apps também terão acesso às contas no smartphone que criaram contatos. Isso pode incluir contas criadas pelos apps que você instalou. Essa permissão autoriza os apps a salvarem os dados dos seus contatos, e apps maliciosos podem compartilhar esses dados sem seu conhecimento.</string>
+    <string name="permdesc_readContacts">Permite que o app leia dados sobre seus contatos armazenados no tablet. Os apps também terão acesso às contas no tablet que criaram contatos. Isso pode incluir contas criadas pelos apps que você instalou. Essa permissão autoriza os apps a salvarem os dados dos seus contatos, e apps maliciosos podem compartilhar esses dados sem seu conhecimento.</string>
     <string name="permdesc_readInstallSessions">Permite que um app leia sessões de instalação. Isso permite que ele veja detalhes sobre as instalações de pacote ativas.</string>
     <string name="permdesc_readMediaAudio">Permite que o app leia arquivos de áudio do armazenamento compartilhado.</string>
     <string name="permdesc_readMediaImages">Permite que o app leia arquivos de imagem do armazenamento compartilhado.</string>
@@ -2108,11 +2108,11 @@ RETORNAR PARA"</string>
     <string name="permdesc_readNetworkUsageHistory">Permite que o app leia o histórico de uso da rede para redes e apps específicos.</string>
     <string name="permdesc_readPhoneNumbers">Permite que o app acesse os número de telefone do dispositivo.</string>
     <string name="permdesc_readPhoneState">Permite que o app acesse os recursos de telefonia do dispositivo. Esta permissão autoriza o app a determinar o número de telefone e IDs de dispositivo, quando uma chamada está ativa, e o número remoto conectado a uma chamada.</string>
-    <string name="permdesc_readSms">Este app pode ler todas as mensagens SMS (de texto) armazenadas no seu smartphone.</string>
+    <string name="permdesc_readSms">Este app pode ler todas as mensagens SMS (de texto) armazenadas no seu tablet.</string>
     <string name="permdesc_readSyncSettings">Permite que o app leia as configurações de sincronização de uma conta. Por exemplo, pode determinar se o app People está sincronizado com uma conta.</string>
     <string name="permdesc_readSyncStats">Permite que um app acesse as estatísticas de sincronização de uma conta, incluindo a história dos eventos de sincronização e a quantidade de dados sincronizados.</string>
     <string name="permdesc_readVisualUserSelect">Permite que o app leia arquivos de imagem e vídeo que você selecionar no armazenamento compartilhado.</string>
-    <string name="permdesc_receiveBootCompleted">Permite que o app inicie-se logo que o sistema concluir a inicialização. Isso pode tornar a inicialização do telefone mais lenta e permitir que o app deixe o telefone mais lento por estar sempre em execução.</string>
+    <string name="permdesc_receiveBootCompleted">Permite que o app inicie-se logo que o sistema concluir a inicialização. Isso pode tornar a inicialização do tablet mais lenta e permitir que o app deixe o telefone mais lento por estar sempre em execução.</string>
     <string name="permdesc_receiveMms">Permite que o app receba e processe mensagens MMS. Isso significa que o app pode monitorar ou excluir as mensagens enviadas para o dispositivo sem mostrá-las para você.</string>
     <string name="permdesc_receiveSms">Permite que o app receba e processe mensagens SMS. Isso significa que o app pode monitorar ou excluir mensagens enviadas para o dispositivo sem mostrá-las para você.</string>
     <string name="permdesc_receiveWapPush">Permite que o app receba e processe mensagens WAP. Esta permissão inclui a capacidade de monitorar ou excluir mensagens enviadas para você sem mostrá-las para você.</string>
@@ -2134,7 +2134,7 @@ RETORNAR PARA"</string>
     <string name="permdesc_sendSms">Permite que o app envie mensagens SMS. Isso pode resultar em cobranças inesperadas. Apps maliciosos podem gerar custos através do envio de mensagens sem sua confirmação.</string>
     <string name="permdesc_setAlarm">Permite que o app defina um alarme em um app despertador instalado. Alguns apps despertador podem não implementar este recurso.</string>
     <string name="permdesc_setInputCalibration">Permite que o app modifique os parâmetros de calibragem da tela sensível ao toque. Não deve ser necessário para apps normais.</string>
-    <string name="permdesc_setTimeZone">Permite que o app altera o fuso horário do telefone.</string>
+    <string name="permdesc_setTimeZone">Permite que o app altere o fuso horário do tablet.</string>
     <string name="permdesc_setWallpaper">Permite que o app defina o plano de fundo do sistema.</string>
     <string name="permdesc_setWallpaperHints">Permite que o app defina as dicas de tamanho do plano de fundo do sistema.</string>
     <string name="permdesc_sim_communication">Permite que o app envie comandos ao chip. Muito perigoso.</string>
@@ -2148,7 +2148,7 @@ RETORNAR PARA"</string>
     <string name="permdesc_subscribedFeedsRead">Permite que o app obtenha detalhes sobre os feeds sincronizados no momento.</string>
     <string name="permdesc_systemAlertWindow">Este app pode se sobrepor visualmente a outros apps ou a outras partes da tela. Isso pode interferir no uso normal do app e alterar a forma como os outros apps são exibidos.</string>
     <string name="permdesc_systemCamera">Esse app do sistema ou com privilégios pode tirar fotos e gravar vídeos a qualquer momento usando a câmera do sistema. É necessário que o app tenha também a permissão android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Permite que o app use o transmissor infravermelho do telefone.</string>
+    <string name="permdesc_transmitIr">Permite que o app use o transmissor infravermelho do tablet.</string>
     <string name="permdesc_turnScreenOn">Permite que o app ligue a tela.</string>
     <string name="permdesc_ucsPlugin">Trabalhe com plug-ins de armazenamento de credenciais de terceiros.</string>
     <string name="permdesc_uninstall_shortcut">Permite que o app remova atalhos da tela inicial sem a intervenção do usuário.</string>
@@ -2162,10 +2162,10 @@ RETORNAR PARA"</string>
     <string name="permdesc_vibrate">Permite que o app controle a vibração.</string>
     <string name="permdesc_vibrator_state">Permite que o app acesse o estado da vibração.</string>
     <string name="permdesc_videoWrite">Permite que o app modifique sua coleção de vídeos.</string>
-    <string name="permdesc_wakeLock">Permite que o app impeça a suspensão do telefone.</string>
-    <string name="permdesc_writeCalendar">Este app pode adicionar, remover ou alterar eventos da agenda no seu smartphone. Ele também pode enviar mensagens que aparentem ser de autoria do proprietário da agenda ou alterar eventos sem notificar o proprietário.</string>
-    <string name="permdesc_writeCallLog">Permite que o app modifique o registro de chamadas de seu telefone, incluindo dados sobre chamadas recebidas e efetuadas. Apps maliciosos podem usar esta permissão para apagar ou modificar seu registro de chamadas.</string>
-    <string name="permdesc_writeContacts">Permite que o app modifique os dados sobre os contatos armazenados no smartphone. Essa permissão autoriza os apps a excluírem dados de contato.</string>
+    <string name="permdesc_wakeLock">Permite que o app impeça a suspensão do tablet.</string>
+    <string name="permdesc_writeCalendar">Este app pode adicionar, remover ou alterar eventos da agenda no seu tablet. Ele também pode enviar mensagens que aparentem ser de autoria do proprietário da agenda ou alterar eventos sem notificar o proprietário.</string>
+    <string name="permdesc_writeCallLog">Permite que o app modifique o registro de chamadas de seu tablet, incluindo dados sobre chamadas recebidas e efetuadas. Apps maliciosos podem usar esta permissão para apagar ou modificar seu registro de chamadas.</string>
+    <string name="permdesc_writeContacts">Permite que o app modifique os dados sobre os contatos armazenados no tablet. Essa permissão autoriza os apps a excluírem dados de contato.</string>
     <string name="permdesc_writeSettings">Permite que o app modifique os dados das configurações do sistema. Apps maliciosos podem corromper a configuração de seu sistema.</string>
     <string name="permdesc_writeSyncSettings">Permite que o app modifique as configurações de sincronização de uma conta. Por exemplo, pode ser usado para ativar a sincronização do app People com uma conta.</string>
     <string name="permgroupdesc_activityRecognition">acessar sua atividade física</string>
@@ -2440,7 +2440,7 @@ para a conta %s."</string>
     <string name="permlab_uwb_ranging">determinar o posicionamento relativo entre dispositivos de banda ultralarga por perto</string>
     <string name="permlab_vibrate">controlar vibração</string>
     <string name="permlab_videoWrite">modificar sua coleção de vídeos</string>
-    <string name="permlab_wakeLock">impedir modo de inatividade do telefone</string>
+    <string name="permlab_wakeLock">impedir modo de inatividade do tablet</string>
     <string name="permlab_writeCalendar">adicionar ou modificar compromissos e enviar e-mail para os convidados sem o conhecimento dos donos</string>
     <string name="permlab_writeCallLog">salvar no registo de chamadas</string>
     <string name="permlab_writeContacts">modificar seus contatos</string>
@@ -2482,7 +2482,7 @@ para a conta %s."</string>
     <string name="policydesc_allow_desktopsync">Impede o uso de sincronização de desktop.</string>
     <string name="policydesc_allow_internetsharing">Impede o uso do Roteador Wi-Fi.</string>
     <string name="policydesc_allow_irda">Impede o uso do IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Impede o uso de e-mail POP e IMAP no telefone.</string>
+    <string name="policydesc_allow_popimapemail">Impede o uso de e-mail POP e IMAP no tablet.</string>
     <string name="policydesc_allow_storagecard">Impede o uso de cartões de memória.</string>
     <string name="policydesc_allow_textmessaging">Impede o uso de texto e mensagem multimídia.</string>
     <string name="policydesc_allow_thirdParty">Este aplicativo pode impedir a execução de aplicativos de terceiros.</string>
@@ -2501,9 +2501,9 @@ para a conta %s."</string>
     <string name="policydesc_unsigned_app">Este aplicativo pode impedir a execução de aplicativos de fontes desconhecidas.</string>
     <string name="policydesc_unsigned_pkg">Este aplicativo pode impedir a instalação de aplicativos de fontes desconhecidas.</string>
     <string name="policydesc_watchLogin">Monitora quantas vezes a senha foi digitada incorretamente ao desbloquear a tela e bloqueia o telefone ou apaga todos os dados do telefone se a senha for digitada incorretamente muitas vezes.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Monitora o número de senhas incorretas digitadas ao desbloquear a tela e bloqueia o smartphone ou limpa todos os dados do usuário se muitas senhas incorretas forem digitadas.</string>
-    <string name="policydesc_wipeData">Apaga os dados sem aviso redefinindo o smartphone para a configuração original.</string>
-    <string name="policydesc_wipeData_secondaryUser">Limpa os dados do usuário neste smartphone sem aviso prévio.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Monitora o número de senhas incorretas digitadas ao desbloquear a tela e bloqueia o tablet ou limpa todos os dados do usuário se muitas senhas incorretas forem digitadas.</string>
+    <string name="policydesc_wipeData">Apague os dados do tablet sem aviso redefinindo a configuração original.</string>
+    <string name="policydesc_wipeData_secondaryUser">Limpa os dados do usuário neste tablet sem aviso prévio.</string>
     <string name="policylab_allow_bluetoothmode">Desativar Bluetooth</string>
     <string name="policylab_allow_browser">Desativar Internet</string>
     <string name="policylab_allow_camera">Desativar câmeras</string>
@@ -2537,7 +2537,7 @@ para a conta %s."</string>
     <string name="postalTypeHome">Casa</string>
     <string name="postalTypeOther">Outros</string>
     <string name="postalTypeWork">Comercial</string>
-    <string name="power_dialog">Opções do telefone</string>
+    <string name="power_dialog">Opções do tablet</string>
     <string name="power_off">Desligar</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">em %s</string>
@@ -2583,7 +2583,7 @@ para a conta %s."</string>
     <string name="recent_tasks_title">Recente</string>
     <string name="recording_fail">Não é possível usar o microfone em %1$s enquanto ele está sendo usado em %2$s.</string>
     <string name="recording_popup">%s está usando o microfone.</string>
-    <string name="recording_popup_device">Telefone</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">%s está usando o microfone Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s está usando o microfone de %2$s.</string>
     <string name="redo">Refazer</string>
@@ -2730,12 +2730,12 @@ Ouvir em volume alto por longos períodos pode danificar sua audição."</string
     <string name="screenshot_edit">Editar</string>
     <string name="sd_card_unavailable_message">Você não pode usar o cartão de memória porque ele foi inserido enquanto um perfil de usuário diferente estava em uso.</string>
     <string name="sd_card_unavailable_title">Cartão de memória indisponível</string>
-    <string name="sdcard_bad_removal_message">Um cartão de memória foi removido sem segurança. Para evitar que seu telefone seja reiniciado de forma inesperada, salve os dados não salvos e reinicie agora.</string>
+    <string name="sdcard_bad_removal_message">Um cartão de memória foi removido sem segurança. Para evitar que seu tablet seja reiniciado de forma inesperada, salve os dados não salvos e reinicie agora.</string>
     <string name="sdcard_batch_decrypt_noti_content">Decodificar cartão SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Decodificação do cartão SD</string>
     <string name="sdcard_batch_decrypt_popup_content">O cartão SD codificado deve ser decodificado antes de ser usado. A decodificação pode levar uma hora ou mais. Comece com uma bateria carregada e mantenha o dispositivo conectado na tomada até a decodificação ser concluída. Interromper o processo de decodificação pode fazer com que alguns ou todos os dados sejam perdidos.</string>
     <string name="sdcard_decrypt_err_notification">Erro de decodificação do cartão SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Alguns arquivos no seu cartão de memória foram codificados em outro aparelho e não podem ser usados neste telefone.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Alguns arquivos no seu cartão de memória foram codificados em outro aparelho e não podem ser usados neste tablet.</string>
     <string name="sdcard_decrypt_notification">Cartão SD decodificado.</string>
     <string name="sdcard_decrypt_title_notification">Decodificação do cartão SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Decod. cartão memória…</string>
@@ -2993,7 +2993,7 @@ Para reexibir os botões, deslize da parte inferior da tela para cima como mostr
     <string name="showing_touch_sensitivity_noti_action">Ativar</string>
     <string name="showing_touch_sensitivity_noti_text">Ativar Sensibilidade do toque ao usar a Película de Privacidade ou a Película NotePaper para obter uma resposta ao toque mais precisa.</string>
     <string name="showing_touch_sensitivity_noti_title">Aumentar sensibilidade do toque</string>
-    <string name="shutdown_confirm">O seu telefone será desligado.</string>
+    <string name="shutdown_confirm">Seu tablet será desligado.</string>
     <string name="shutdown_confirm_question">Quer desligar?</string>
     <string name="shutdown_progress">Encerrando…</string>
     <string name="side_key_double_press_deleted_app">O aplicativo foi desinstalado. Escolha outra opção.</string>
@@ -3218,7 +3218,7 @@ Para remover esta proteção, vá para Configurações > Segurança e privacidad
     <string name="usb_abnormal_reset_title">A conexão USB está instável</string>
     <string name="usb_abnormal_reset_toast">A conexão USB está instável. Desconecte o cabo e conecte-o novamente, ou tente um cabo diferente.</string>
     <string name="usb_accessory_notification_title">Conectado a um acessório USB</string>
-    <string name="usb_bad_removal_message">Um dispositivo de armazenamento USB foi removido sem segurança. Para evitar que seu telefone seja reiniciado de forma inesperada, salve os dados não salvos e reinicie agora.</string>
+    <string name="usb_bad_removal_message">Um dispositivo de armazenamento USB foi removido sem segurança. Para evitar que seu tablet seja reiniciado de forma inesperada, salve os dados não salvos e reinicie agora.</string>
     <string name="usb_blocked_by_emergency_mode">Algumas funções USB estão indisponíveis no Modo de emergência.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Não será possível usar as funções relacionadas ao aparelho USB conectado enquanto o Modo economia máxima estiver ativado.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Algumas funções USB estarão limitadas enquanto o Modo economia máxima estiver ativado.</string>
@@ -3228,7 +3228,7 @@ Para remover esta proteção, vá para Configurações > Segurança e privacidad
     <string name="usb_camera_disconnected_notification_title">Aparelho de mídia desconectado</string>
     <string name="usb_cd_installer_notification_title">Atualização de software</string>
     <string name="usb_charging_notification_title">Carregando este dispositivo via USB</string>
-    <string name="usb_charing_only_notification_title">Carregamento por USB</string>
+    <string name="usb_charing_only_notification_title">Conectado</string>
     <string name="usb_contaminant_detected_message">A porta USB é desativada automaticamente. Toque para saber mais.</string>
     <string name="usb_contaminant_detected_title">Líquido ou detrito na porta USB</string>
     <string name="usb_contaminant_not_detected_message">Não há mais líquidos ou detritos detectados no smartphone.</string>
@@ -3240,11 +3240,11 @@ Para remover esta proteção, vá para Configurações > Segurança e privacidad
     <string name="usb_host_cable_disconnected_notification_title">Adaptador de USB desconectado.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Impossível acessar este dispositivo. O dispositivo ligado necessita de alimentação externa.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Dispositivo USB de alta potência conectado.</string>
-    <string name="usb_host_resource_exceed_message">O controlador USB do seu telefone não tem recursos suficientes para conectar este aparelho. Tente desconectar o aparelho e conectá-lo novamente.</string>
+    <string name="usb_host_resource_exceed_message">O controlador USB do seu tablet não tem recursos suficientes para conectar este aparelho. Tente desconectar o aparelho e conectá-lo novamente.</string>
     <string name="usb_host_resource_exceed_title">Recursos insuficientes do controlador USB</string>
-    <string name="usb_hub_depth_exceed_message">Seu telefone só pode aceitar até 5 conexões de hub USB ao mesmo tempo.</string>
+    <string name="usb_hub_depth_exceed_message">Seu tablet só pode aceitar até 5 conexões de hub USB ao mesmo tempo.</string>
     <string name="usb_hub_depth_exceed_title">Máximo de conexões de hub USB</string>
-    <string name="usb_hub_power_exceed_message">Seu telefone não pode fornecer energia suficiente para este aparelho USB. Conecte o aparelho a um hub USB com energia própria antes de conectá-lo ao seu telefone.</string>
+    <string name="usb_hub_power_exceed_message">Seu tablet não pode fornecer energia suficiente para este aparelho USB. Conecte o aparelho a um hub USB com energia própria antes de conectá-lo ao seu tablet.</string>
     <string name="usb_increase_battery_usage">A conexão USB pode aumentar o uso da bateria.</string>
     <string name="usb_keyboard_connected_notification_title">Teclado conectado</string>
     <string name="usb_keyboard_disconnected_notification_title">Teclado desconectado</string>
@@ -3287,8 +3287,8 @@ Para remover esta proteção, vá para Configurações > Segurança e privacidad
     <string name="usb_ums_connected_notification_message_usbhost">Armazenamento USB removido inesperadamente.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Armazenamento em massa USB conectado</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Armazenamento USB removido seguramente.</string>
-    <string name="usb_unblock_by_screen_unlock">Desbloqueie seu telefone para usar o aparelho USB conectado.</string>
-    <string name="usb_unsupport_accessory_message">Este aparelho USB não é aceito no seu telefone.</string>
+    <string name="usb_unblock_by_screen_unlock">Desbloqueie seu tablet para usar o aparelho USB conectado.</string>
+    <string name="usb_unsupport_accessory_message">Este aparelho USB não é aceito no seu tablet.</string>
     <string name="usb_unsupport_accessory_title">Aparelho USB não aceito</string>
     <string name="usb_unsupported_audio_accessory_message">O dispositivo anexo não é compatível com esse smartphone. Toque para saber mais.</string>
     <string name="usb_unsupported_audio_accessory_title">Acessório de áudio analógico detectado</string>
@@ -3309,19 +3309,19 @@ Para remover esta proteção, vá para Configurações > Segurança e privacidad
     <string name="usb_water_dialg_method_2_desc_2">Você pode acelerar a secagem apontando um ventilador ou um secador (somente ar frio) em direção à porta.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Detectamos umidade ou material estranho na porta de carregamento/USB.
 
-Verifique se há algum material estranho na porta de carregamento/USB, como poeira ou detritos. Para evitar danos ao telefone, não conecte nenhum aparelho até a porta ser limpa e a umidade removida.
+Verifique se há algum material estranho na porta de carregamento/USB, como poeira ou detritos. Para evitar danos ao tablet, não conecte nenhum aparelho até a porta ser limpa e a umidade ser removida.
 
 Para secar a porta, agite-a para remover a umidade e aguarde até secar, o que pode levar várias horas. Você pode agilizar a secagem apontando um ventilador ou um secador (somente ar frio) para a porta."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Detectamos umidade ou material estranho na porta de carregamento/USB.
 
-Verifique se há algum material estranho na porta de carregamento/USB, como poeira ou detritos. Para evitar danos ao telefone, não conecte nenhum aparelho até a porta ser limpa e a umidade removida.
+Verifique se há algum material estranho na porta de carregamento/USB, como poeira ou detritos. Para evitar danos ao seu tablet, não conecte nada até que a porta de carregamento esteja limpa e sem umidade.
 
-Para secar a porta, agite-a para remover a umidade e aguarde até secar, o que pode levar várias horas. Você pode agilizar a secagem apontando um ventilador ou um secador (somente ar frio) para a porta.
+Para secar a porta, agite o aparelho para retirar a umidade e espere secar, o que pode levar muitas horas. Você pode agilizar a secagem usando um ventilador ou secador (somente ar frio) na porta.
 
-Enquanto isso, é possível carregar o telefone sem fio."</string>
+Enquanto isso, você pode carregar seu tablet por conexão sem fio."</string>
     <string name="usb_water_notification_content">Há umidade ou material estranho na porta de carregamento/USB. Verifique antes de carregar.</string>
-    <string name="usb_water_notification_message">Foi detectada a presença de umidade na porta do carregador/USB. Verifique se ela está seca antes de carregar seu telefone. É possível que a porta leve algum tempo para secar completamente.</string>
+    <string name="usb_water_notification_message">Foi detectada a presença de umidade na porta do carregador/USB. Verifique se ela está seca antes de carregar seu tablet. É possível que a porta leve algum tempo para secar completamente.</string>
     <string name="usb_water_notification_message_button">Detalhes</string>
     <string name="usb_water_notification_title">Verif. porta do carregador/USB</string>
     <string name="usbhostStorage_restrict">A política de segurança impede o uso de armazenamento de host USB.</string>
@@ -3339,7 +3339,7 @@ Enquanto isso, é possível carregar o telefone sem fio."</string>
     <string name="user_switched">Usuário atual %1$s.</string>
     <string name="user_switching_message">Mudando para %1$s…</string>
     <string name="validity_period">Validade:</string>
-    <string name="vdm_camera_access_denied">Não é possível acessar a câmera do smartphone pelo %1$s</string>
+    <string name="vdm_camera_access_denied">Não é possível acessar a câmera do tablet pelo %1$s</string>
     <string name="vdm_pip_blocked">Não é possível usar o modo picture-in-picture durante o streaming</string>
     <string name="vdm_secure_window">Não é possível acessar esse conteúdo durante o streaming. Tente pelo smartphone.</string>
     <string name="view_and_control_notification_content">O serviço %s pode ver e controlar sua tela. Toque para revisar.</string>

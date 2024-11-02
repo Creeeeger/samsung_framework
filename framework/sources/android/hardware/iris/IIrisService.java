@@ -100,8 +100,9 @@ public interface IIrisService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IIrisService {
+        public static class Proxy implements IIrisService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

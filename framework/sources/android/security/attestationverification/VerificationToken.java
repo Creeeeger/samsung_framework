@@ -73,13 +73,14 @@ public final class VerificationToken implements Parcelable {
             sParcellingForVerificationTime = Parcelling.Cache.put(new Parcelling.BuiltIn.ForInstant());
         }
         CREATOR = new Parcelable.Creator<VerificationToken>() { // from class: android.security.attestationverification.VerificationToken.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public VerificationToken[] newArray(int size) {
                 return new VerificationToken[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VerificationToken createFromParcel(Parcel in) {
                 return new VerificationToken(in);
@@ -124,6 +125,23 @@ public final class VerificationToken implements Parcelable {
         this.mHmac = hmac;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hmac);
         this.mUid = uid;
+    }
+
+    /* renamed from: android.security.attestationverification.VerificationToken$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VerificationToken> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerificationToken[] newArray(int size) {
+            return new VerificationToken[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerificationToken createFromParcel(Parcel in) {
+            return new VerificationToken(in);
+        }
     }
 
     /* loaded from: classes3.dex */

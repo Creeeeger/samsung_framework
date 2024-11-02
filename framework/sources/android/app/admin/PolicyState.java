@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class PolicyState<V> implements Parcelable {
     public static final Parcelable.Creator<PolicyState<?>> CREATOR = new Parcelable.Creator<PolicyState<?>>() { // from class: android.app.admin.PolicyState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PolicyState<?> createFromParcel(Parcel source) {
             return new PolicyState<>(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PolicyState<?>[] newArray(int size) {
             return new PolicyState[size];
@@ -25,6 +26,10 @@ public final class PolicyState<V> implements Parcelable {
     private PolicyValue<V> mCurrentResolvedPolicy;
     private final LinkedHashMap<EnforcingAdmin, PolicyValue<V>> mPoliciesSetByAdmins;
     private ResolutionMechanism<V> mResolutionMechanism;
+
+    /* synthetic */ PolicyState(Parcel parcel, PolicyStateIA policyStateIA) {
+        this(parcel);
+    }
 
     public PolicyState(LinkedHashMap<EnforcingAdmin, PolicyValue<V>> policiesSetByAdmins, PolicyValue<V> currentEnforcedPolicy, ResolutionMechanism<V> resolutionMechanism) {
         LinkedHashMap<EnforcingAdmin, PolicyValue<V>> linkedHashMap = new LinkedHashMap<>();
@@ -86,5 +91,22 @@ public final class PolicyState<V> implements Parcelable {
         }
         dest.writeParcelable(this.mCurrentResolvedPolicy, flags);
         dest.writeParcelable(this.mResolutionMechanism, flags);
+    }
+
+    /* renamed from: android.app.admin.PolicyState$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PolicyState<?>> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PolicyState<?> createFromParcel(Parcel source) {
+            return new PolicyState<>(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PolicyState<?>[] newArray(int size) {
+            return new PolicyState[size];
+        }
     }
 }

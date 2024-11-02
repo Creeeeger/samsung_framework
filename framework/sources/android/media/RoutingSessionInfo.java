@@ -17,13 +17,14 @@ import java.util.function.UnaryOperator;
 /* loaded from: classes2.dex */
 public final class RoutingSessionInfo implements Parcelable {
     public static final Parcelable.Creator<RoutingSessionInfo> CREATOR = new Parcelable.Creator<RoutingSessionInfo>() { // from class: android.media.RoutingSessionInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RoutingSessionInfo createFromParcel(Parcel in) {
             return new RoutingSessionInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RoutingSessionInfo[] newArray(int size) {
             return new RoutingSessionInfo[size];
@@ -46,6 +47,23 @@ public final class RoutingSessionInfo implements Parcelable {
     final int mVolume;
     final int mVolumeHandling;
     final int mVolumeMax;
+
+    /* renamed from: android.media.RoutingSessionInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RoutingSessionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RoutingSessionInfo createFromParcel(Parcel in) {
+            return new RoutingSessionInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RoutingSessionInfo[] newArray(int size) {
+            return new RoutingSessionInfo[size];
+        }
+    }
 
     RoutingSessionInfo(Builder builder) {
         Objects.requireNonNull(builder, "builder must not be null.");

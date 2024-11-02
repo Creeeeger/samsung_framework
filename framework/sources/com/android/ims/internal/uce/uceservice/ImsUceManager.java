@@ -64,9 +64,12 @@ public class ImsUceManager {
         this.mUceService = IUceService.Stub.asInterface(b);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class UceServiceDeathRecipient implements IBinder.DeathRecipient {
+        /* synthetic */ UceServiceDeathRecipient(ImsUceManager imsUceManager, UceServiceDeathRecipientIA uceServiceDeathRecipientIA) {
+            this();
+        }
+
         private UceServiceDeathRecipient() {
         }
 

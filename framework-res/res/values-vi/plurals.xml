@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Điện thoại của bạn không ổn định vì thẻ SD có cài đặt ứng dụng đã bị xóa. Điện thoại của bạn sẽ khởi động lại sau %d giây để trở lại bình thường. Lưu mọi dữ liệu chưa được lưu trước khi điện thoại khởi động lại.</item>
+        <item quantity="other">Máy tính bảng của bạn không ổn định vì thẻ SD có cài đặt ứng dụng đã bị tháo ra. Máy tính bảng sẽ khởi động lại sau %d giây để trở lại bình thường. Hãy lưu mọi dữ liệu chưa được lưu trước khi máy tính bảng khởi động lại.</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Đ.thoại sẽ khởi động lại sau %d giây</item>
+        <item quantity="other">Mt bảng sẽ khởi động lại sau %d giây</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

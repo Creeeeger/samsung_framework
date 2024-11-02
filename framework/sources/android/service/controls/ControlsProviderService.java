@@ -59,6 +59,9 @@ public abstract class ControlsProviderService extends Service {
         Bundle bundle = intent.getBundleExtra(CALLBACK_BUNDLE);
         this.mToken = bundle.getBinder(CALLBACK_TOKEN);
         return new IControlsProvider.Stub() { // from class: android.service.controls.ControlsProviderService.1
+            AnonymousClass1() {
+            }
+
             @Override // android.service.controls.IControlsProvider
             public void load(IControlsSubscriber subscriber) {
                 ControlsProviderService.this.mHandler.obtainMessage(1, subscriber).sendToTarget();
@@ -88,6 +91,40 @@ public abstract class ControlsProviderService extends Service {
         };
     }
 
+    /* renamed from: android.service.controls.ControlsProviderService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends IControlsProvider.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.service.controls.IControlsProvider
+        public void load(IControlsSubscriber subscriber) {
+            ControlsProviderService.this.mHandler.obtainMessage(1, subscriber).sendToTarget();
+        }
+
+        @Override // android.service.controls.IControlsProvider
+        public void loadSuggested(IControlsSubscriber subscriber) {
+            ControlsProviderService.this.mHandler.obtainMessage(4, subscriber).sendToTarget();
+        }
+
+        @Override // android.service.controls.IControlsProvider
+        public void subscribe(List<String> controlIds, IControlsSubscriber subscriber) {
+            SubscribeMessage msg = new SubscribeMessage(controlIds, subscriber);
+            ControlsProviderService.this.mHandler.obtainMessage(2, msg).sendToTarget();
+        }
+
+        @Override // android.service.controls.IControlsProvider
+        public void action(String controlId, ControlActionWrapper action, IControlsActionCallback cb) {
+            ActionMessage msg = new ActionMessage(controlId, action.getWrappedAction(), cb);
+            ControlsProviderService.this.mHandler.obtainMessage(3, msg).sendToTarget();
+        }
+
+        @Override // android.service.controls.IControlsProvider
+        public void loadControlsProviderInfo(IControlsProviderInfoSubscriber cb) {
+            ControlsProviderService.this.mHandler.obtainMessage(101, cb).sendToTarget();
+        }
+    }
+
     @Override // android.app.Service
     public final boolean onUnbind(Intent intent) {
         this.mHandler = null;
@@ -98,7 +135,6 @@ public abstract class ControlsProviderService extends Service {
         this.mControlsProviderInfoSupplier = supplier;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class RequestHandler extends Handler {
         private static final int MSG_ACTION = 3;
@@ -167,7 +203,6 @@ public abstract class ControlsProviderService extends Service {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$consumerFor$0(IControlsActionCallback cb, String controlId, Integer response) {
             Preconditions.checkNotNull(response);
             if (!ControlAction.isValidResponse(response.intValue())) {
@@ -182,7 +217,6 @@ public abstract class ControlsProviderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isStatelessControl(Control control) {
         return control.getStatus() == 0 && control.getControlTemplate().getTemplateType() == 0 && TextUtils.isEmpty(control.getStatusText());
     }

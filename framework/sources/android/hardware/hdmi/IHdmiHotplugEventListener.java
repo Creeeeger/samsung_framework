@@ -83,7 +83,6 @@ public interface IHdmiHotplugEventListener extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class Proxy implements IHdmiHotplugEventListener {
             private IBinder mRemote;

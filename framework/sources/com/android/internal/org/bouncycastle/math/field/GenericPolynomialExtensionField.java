@@ -3,13 +3,11 @@ package com.android.internal.org.bouncycastle.math.field;
 import com.android.internal.org.bouncycastle.util.Integers;
 import java.math.BigInteger;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class GenericPolynomialExtensionField implements PolynomialExtensionField {
     protected final Polynomial minimalPolynomial;
     protected final FiniteField subfield;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GenericPolynomialExtensionField(FiniteField subfield, Polynomial polynomial) {
         this.subfield = subfield;
         this.minimalPolynomial = polynomial;

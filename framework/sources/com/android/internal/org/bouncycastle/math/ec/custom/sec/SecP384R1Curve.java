@@ -57,13 +57,11 @@ public class SecP384R1Curve extends ECCurve.AbstractFp {
         return new SecP384R1FieldElement(x);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve
     public ECPoint createRawPoint(ECFieldElement x, ECFieldElement y) {
         return new SecP384R1Point(this, x, y);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve
     public ECPoint createRawPoint(ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
         return new SecP384R1Point(this, x, y, zs);
@@ -75,8 +73,8 @@ public class SecP384R1Curve extends ECCurve.AbstractFp {
     }
 
     @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve
-    public ECLookupTable createCacheSafeLookupTable(ECPoint[] points, int off, final int len) {
-        final int[] table = new int[len * 12 * 2];
+    public ECLookupTable createCacheSafeLookupTable(ECPoint[] points, int off, int len) {
+        int[] table = new int[len * 12 * 2];
         int pos = 0;
         for (int i = 0; i < len; i++) {
             ECPoint p = points[off + i];
@@ -86,6 +84,14 @@ public class SecP384R1Curve extends ECCurve.AbstractFp {
             pos = pos2 + 12;
         }
         return new AbstractECLookupTable() { // from class: com.android.internal.org.bouncycastle.math.ec.custom.sec.SecP384R1Curve.1
+            final /* synthetic */ int val$len;
+            final /* synthetic */ int[] val$table;
+
+            AnonymousClass1(int len2, int[] table2) {
+                len = len2;
+                table = table2;
+            }
+
             @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
             public int getSize() {
                 return len;
@@ -126,6 +132,58 @@ public class SecP384R1Curve extends ECCurve.AbstractFp {
                 return SecP384R1Curve.this.createRawPoint(new SecP384R1FieldElement(x), new SecP384R1FieldElement(y), SecP384R1Curve.SECP384R1_AFFINE_ZS);
             }
         };
+    }
+
+    /* renamed from: com.android.internal.org.bouncycastle.math.ec.custom.sec.SecP384R1Curve$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends AbstractECLookupTable {
+        final /* synthetic */ int val$len;
+        final /* synthetic */ int[] val$table;
+
+        AnonymousClass1(int len2, int[] table2) {
+            len = len2;
+            table = table2;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
+        public int getSize() {
+            return len;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.math.ec.ECLookupTable
+        public ECPoint lookup(int index) {
+            int[] x = Nat.create(12);
+            int[] y = Nat.create(12);
+            int pos3 = 0;
+            for (int i2 = 0; i2 < len; i2++) {
+                int MASK = ((i2 ^ index) - 1) >> 31;
+                for (int j = 0; j < 12; j++) {
+                    int i3 = x[j];
+                    int[] iArr = table;
+                    x[j] = i3 ^ (iArr[pos3 + j] & MASK);
+                    y[j] = y[j] ^ (iArr[(pos3 + 12) + j] & MASK);
+                }
+                pos3 += 24;
+            }
+            return createPoint(x, y);
+        }
+
+        @Override // com.android.internal.org.bouncycastle.math.ec.AbstractECLookupTable, com.android.internal.org.bouncycastle.math.ec.ECLookupTable
+        public ECPoint lookupVar(int index) {
+            int[] x = Nat.create(12);
+            int[] y = Nat.create(12);
+            int pos3 = index * 12 * 2;
+            for (int j = 0; j < 12; j++) {
+                int[] iArr = table;
+                x[j] = iArr[pos3 + j];
+                y[j] = iArr[pos3 + 12 + j];
+            }
+            return createPoint(x, y);
+        }
+
+        private ECPoint createPoint(int[] x, int[] y) {
+            return SecP384R1Curve.this.createRawPoint(new SecP384R1FieldElement(x), new SecP384R1FieldElement(y), SecP384R1Curve.SECP384R1_AFFINE_ZS);
+        }
     }
 
     @Override // com.android.internal.org.bouncycastle.math.ec.ECCurve.AbstractFp, com.android.internal.org.bouncycastle.math.ec.ECCurve

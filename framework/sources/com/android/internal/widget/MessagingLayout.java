@@ -100,7 +100,6 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         this.mToRecycle = new ArrayList<>();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -248,7 +247,6 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$removeGroups$0(MessagingGroup group) {
         this.mMessagingLinearLayout.removeTransientView(group);
         group.recycle();
@@ -495,12 +493,14 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (!this.mAddedGroups.isEmpty()) {
             getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.widget.MessagingLayout.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                 public boolean onPreDraw() {
                     Iterator it = MessagingLayout.this.mAddedGroups.iterator();
@@ -517,6 +517,29 @@ public class MessagingLayout extends FrameLayout implements ImageMessageConsumer
                     return true;
                 }
             });
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.MessagingLayout$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            Iterator it = MessagingLayout.this.mAddedGroups.iterator();
+            while (it.hasNext()) {
+                MessagingGroup group = (MessagingGroup) it.next();
+                if (group.isShown()) {
+                    MessagingPropertyAnimator.fadeIn(group.getAvatar());
+                    MessagingPropertyAnimator.fadeIn(group.getSenderView());
+                    MessagingPropertyAnimator.startLocalTranslationFrom(group, group.getHeight(), MessagingLayout.LINEAR_OUT_SLOW_IN);
+                }
+            }
+            MessagingLayout.this.mAddedGroups.clear();
+            MessagingLayout.this.getViewTreeObserver().removeOnPreDrawListener(this);
+            return true;
         }
     }
 

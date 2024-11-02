@@ -121,8 +121,13 @@ public final class MediaProjection {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class MediaProjectionCallback extends IMediaProjectionCallback.Stub {
+    public final class MediaProjectionCallback extends IMediaProjectionCallback.Stub {
+        /* synthetic */ MediaProjectionCallback(MediaProjection mediaProjection, MediaProjectionCallbackIA mediaProjectionCallbackIA) {
+            this();
+        }
+
         private MediaProjectionCallback() {
         }
 
@@ -149,7 +154,6 @@ public final class MediaProjection {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class CallbackRecord extends Callback {
         private final Callback mCallback;
@@ -160,9 +164,24 @@ public final class MediaProjection {
             this.mHandler = handler;
         }
 
+        /* renamed from: android.media.projection.MediaProjection$CallbackRecord$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                CallbackRecord.this.mCallback.onStop();
+            }
+        }
+
         @Override // android.media.projection.MediaProjection.Callback
         public void onStop() {
             this.mHandler.post(new Runnable() { // from class: android.media.projection.MediaProjection.CallbackRecord.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     CallbackRecord.this.mCallback.onStop();
@@ -170,7 +189,6 @@ public final class MediaProjection {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCapturedContentResize$0(int width, int height) {
             this.mCallback.onCapturedContentResize(width, height);
         }
@@ -185,7 +203,6 @@ public final class MediaProjection {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCapturedContentVisibilityChanged$1(boolean isVisible) {
             this.mCallback.onCapturedContentVisibilityChanged(isVisible);
         }

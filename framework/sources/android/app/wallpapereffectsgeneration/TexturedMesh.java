@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class TexturedMesh implements Parcelable {
     public static final Parcelable.Creator<TexturedMesh> CREATOR = new Parcelable.Creator<TexturedMesh>() { // from class: android.app.wallpapereffectsgeneration.TexturedMesh.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TexturedMesh createFromParcel(Parcel in) {
             return new TexturedMesh(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TexturedMesh[] newArray(int size) {
             return new TexturedMesh[size];
@@ -41,6 +42,14 @@ public final class TexturedMesh implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface VerticesLayoutType {
+    }
+
+    /* synthetic */ TexturedMesh(Bitmap bitmap, int[] iArr, float[] fArr, int i, int i2, TexturedMeshIA texturedMeshIA) {
+        this(bitmap, iArr, fArr, i, i2);
+    }
+
+    /* synthetic */ TexturedMesh(Parcel parcel, TexturedMeshIA texturedMeshIA) {
+        this(parcel);
     }
 
     private TexturedMesh(Parcel in) {
@@ -85,6 +94,23 @@ public final class TexturedMesh implements Parcelable {
 
     public int getVerticesLayoutType() {
         return this.mVerticesLayoutType;
+    }
+
+    /* renamed from: android.app.wallpapereffectsgeneration.TexturedMesh$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TexturedMesh> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TexturedMesh createFromParcel(Parcel in) {
+            return new TexturedMesh(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TexturedMesh[] newArray(int size) {
+            return new TexturedMesh[size];
+        }
     }
 
     @Override // android.os.Parcelable

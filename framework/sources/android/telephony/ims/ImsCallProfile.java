@@ -44,13 +44,14 @@ public final class ImsCallProfile implements Parcelable {
     public static final int CMC_TYPE_PD = 1;
     public static final int CMC_TYPE_SD = 2;
     public static final Parcelable.Creator<ImsCallProfile> CREATOR = new Parcelable.Creator<ImsCallProfile>() { // from class: android.telephony.ims.ImsCallProfile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsCallProfile createFromParcel(Parcel in) {
             return new ImsCallProfile(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsCallProfile[] newArray(int size) {
             return new ImsCallProfile[size];
@@ -367,9 +368,25 @@ public final class ImsCallProfile implements Parcelable {
         }).collect(Collectors.toSet());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ RtpHeaderExtensionType lambda$readFromParcel$0(Object o) {
         return (RtpHeaderExtensionType) o;
+    }
+
+    /* renamed from: android.telephony.ims.ImsCallProfile$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsCallProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsCallProfile createFromParcel(Parcel in) {
+            return new ImsCallProfile(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsCallProfile[] newArray(int size) {
+            return new ImsCallProfile[size];
+        }
     }
 
     public int getServiceType() {

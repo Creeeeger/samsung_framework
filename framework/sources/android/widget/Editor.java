@@ -299,7 +299,6 @@ public class Editor {
     private WordIterator mWordIteratorWithText;
     private boolean mhadWindowFocus;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface CursorController extends ViewTreeObserver.OnTouchModeChangeListener {
         void hide();
@@ -313,7 +312,6 @@ public class Editor {
         void show();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface EasyEditDeleteListener {
         void onDeleteClick(EasyEditSpan easyEditSpan);
@@ -339,13 +337,39 @@ public class Editor {
         public static final int TEXT_LINK = 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface TextViewPositionListener {
         void updatePosition(int i, int i2, boolean z, boolean z2);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.Editor$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Editor.this.mMagnifierAnimator.update();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.Editor$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements ViewTreeObserver.OnDrawListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnDrawListener
+        public void onDraw() {
+            if (Editor.this.mMagnifierAnimator != null) {
+                Editor.this.mTextView.post(Editor.this.mUpdateMagnifierRunnable);
+            }
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static class TextRenderNode {
         boolean isDirty = true;
@@ -361,6 +385,21 @@ public class Editor {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.Editor$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (Editor.this.mTextActionMode != null) {
+                Editor.this.mTextActionMode.hide(0L);
+            }
+        }
+    }
+
     public boolean editorShowSoftInput() {
         return this.mShowSoftInputOnFocus || this.mShowSoftInputOnFocusInternal;
     }
@@ -370,7 +409,6 @@ public class Editor {
         return imm != null && imm.isInputMethodShown();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Editor(TextView textView) {
         boolean z;
         boolean z2;
@@ -389,12 +427,18 @@ public class Editor {
         };
         this.mShowMagnifier = false;
         this.mUpdateMagnifierRunnable = new Runnable() { // from class: android.widget.Editor.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Editor.this.mMagnifierAnimator.update();
             }
         };
         this.mMagnifierOnDrawListener = new ViewTreeObserver.OnDrawListener() { // from class: android.widget.Editor.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.ViewTreeObserver.OnDrawListener
             public void onDraw() {
                 if (Editor.this.mMagnifierAnimator != null) {
@@ -413,6 +457,9 @@ public class Editor {
         this.mTouchState = new EditorTouchState();
         this.mCursorAnchorInfoNotifier = new CursorAnchorInfoNotifier();
         this.mShowFloatingToolbar = new Runnable() { // from class: android.widget.Editor.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (Editor.this.mTextActionMode != null) {
@@ -430,6 +477,9 @@ public class Editor {
         this.mToggleActionMode = false;
         this.mShowSoftInputOnFocusInternal = false;
         this.mOnContextMenuItemClickListener = new MenuItem.OnMenuItemClickListener() { // from class: android.widget.Editor.5
+            AnonymousClass5() {
+            }
+
             @Override // android.view.MenuItem.OnMenuItemClickListener
             public boolean onMenuItemClick(MenuItem item) {
                 if (Editor.this.mProcessTextIntentActionsHandler.performMenuItemAction(item)) {
@@ -449,7 +499,8 @@ public class Editor {
             z = false;
         }
         this.mFlagCursorDragFromAnywhereEnabled = z;
-        this.mCursorDragDirectionMinXYRatio = EditorTouchState.getXYRatio(AppGlobals.getIntCoreSetting(WidgetFlags.KEY_CURSOR_DRAG_MIN_ANGLE_FROM_VERTICAL, 45));
+        int cursorDragMinAngleFromVertical = AppGlobals.getIntCoreSetting(WidgetFlags.KEY_CURSOR_DRAG_MIN_ANGLE_FROM_VERTICAL, 45);
+        this.mCursorDragDirectionMinXYRatio = EditorTouchState.getXYRatio(cursorDragMinAngleFromVertical);
         if (AppGlobals.getIntCoreSetting(WidgetFlags.KEY_ENABLE_INSERTION_HANDLE_GESTURES, 0) != 0) {
             z2 = true;
         } else {
@@ -489,7 +540,6 @@ public class Editor {
         this.mFlagInsertionHandleGesturesEnabled = enabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public MagnifierMotionAnimator getMagnifierAnimator() {
         Magnifier.Builder builder;
         if (this.mMagnifierAnimator == null) {
@@ -529,7 +579,6 @@ public class Editor {
         return params.setSourceBounds(1, 0, 1, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ParcelableParcel saveInstanceState() {
         ParcelableParcel state = new ParcelableParcel(getClass().getClassLoader());
         Parcel parcel = state.getParcel();
@@ -538,7 +587,6 @@ public class Editor {
         return state;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void restoreInstanceState(ParcelableParcel state) {
         Parcel parcel = state.getParcel();
         this.mUndoManager.restoreInstanceState(parcel, state.getClassLoader());
@@ -550,26 +598,22 @@ public class Editor {
         return this.mDefaultOnReceiveContentListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void forgetUndoRedo() {
         UndoOwner[] owners = {this.mUndoOwner};
         this.mUndoManager.forgetUndos(owners, -1);
         this.mUndoManager.forgetRedos(owners, -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canUndo() {
         UndoOwner[] owners = {this.mUndoOwner};
         return this.mAllowUndo && this.mUndoManager.countUndos(owners) > 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canRedo() {
         UndoOwner[] owners = {this.mUndoOwner};
         return this.mAllowUndo && this.mUndoManager.countRedos(owners) > 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void undo() {
         if (!this.mAllowUndo) {
             return;
@@ -578,7 +622,6 @@ public class Editor {
         this.mUndoManager.undo(owners, 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void redo() {
         if (!this.mAllowUndo) {
             return;
@@ -587,7 +630,6 @@ public class Editor {
         this.mUndoManager.redo(owners, 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void replace() {
         if (this.mSuggestionsPopupWindow == null) {
             this.mSuggestionsPopupWindow = new SuggestionsPopupWindow();
@@ -598,7 +640,6 @@ public class Editor {
         TextView.semSetSelection((Spannable) this.mTextView.getText(), middle);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onAttachedToWindow() {
         if (this.mShowErrorAfterAttach) {
             showError();
@@ -625,7 +666,6 @@ public class Editor {
         resumeBlink();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onDetachedFromWindow() {
         getPositionListener().removeSubscriber(this.mCursorAnchorInfoNotifier);
         if (this.mError != null) {
@@ -808,14 +848,12 @@ public class Editor {
         return ((icontop + height) - this.mTextView.getHeight()) - ((int) ((2.0f * scale) + 0.5f));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void createInputContentTypeIfNeeded() {
         if (this.mInputContentType == null) {
             this.mInputContentType = new InputContentType();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void createInputMethodStateIfNeeded() {
         if (this.mInputMethodState == null) {
             this.mInputMethodState = new InputMethodState();
@@ -826,7 +864,6 @@ public class Editor {
         return this.mCursorVisible && this.mTextView.isTextEditable();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldRenderCursor() {
         if (!isCursorVisible() || this.mCursorMoving) {
             return false;
@@ -838,7 +875,6 @@ public class Editor {
         return showCursorDelta % 1000 < 500;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void prepareCursorControllers() {
         boolean windowSupportsHandles = false;
         ViewGroup.LayoutParams params = this.mTextView.getRootView().getLayoutParams();
@@ -875,7 +911,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void hideCursorAndSpanControllers() {
         hideCursorControllers();
         hideSpanControllers();
@@ -895,7 +930,6 @@ public class Editor {
         hideInsertionPointCursorController();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateSpellCheckSpans(int start, int end, boolean createSpellChecker) {
         this.mTextView.removeAdjacentSuggestionSpans(start);
         this.mTextView.removeAdjacentSuggestionSpans(end);
@@ -914,7 +948,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onScreenStateChanged(int screenState) {
         switch (screenState) {
             case 0:
@@ -933,7 +966,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void suspendBlink() {
         Blink blink = this.mBlink;
         if (blink != null) {
@@ -941,7 +973,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void resumeBlink() {
         Blink blink = this.mBlink;
         if (blink != null) {
@@ -950,7 +981,6 @@ public class Editor {
         makeBlink();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void adjustInputType(boolean password, boolean passwordInputType, boolean webPasswordInputType, boolean numberPasswordInputType) {
         int i = this.mInputType;
         if ((i & 15) == 1) {
@@ -981,7 +1011,6 @@ public class Editor {
         pop.setHeight(l.getHeight() + ht);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setFrame() {
         ErrorPopup errorPopup = this.mErrorPopup;
         if (errorPopup != null) {
@@ -991,7 +1020,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getWordStart(int offset) {
         int retOffset;
         int retOffset2 = getWordIteratorWithText().prevBoundary(offset);
@@ -1006,7 +1034,6 @@ public class Editor {
         return retOffset;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getWordEnd(int offset) {
         int retOffset;
         int retOffset2 = getWordIteratorWithText().nextBoundary(offset);
@@ -1031,7 +1058,6 @@ public class Editor {
         return klass == 2 || klass == 3 || klass == 4 || variation == 16 || variation == 32 || variation == 208 || variation == 176;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean selectCurrentWord() {
         int selectionStart;
         int selectionEnd;
@@ -1074,7 +1100,6 @@ public class Editor {
         return selectionEnd > selectionStart;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean selectCurrentParagraph() {
         if (!this.mTextView.canSelectText()) {
             return false;
@@ -1095,7 +1120,6 @@ public class Editor {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public long getParagraphsRange(int startOffset, int endOffset) {
         int startOffsetTransformed = this.mTextView.originalToTransformed(startOffset, 1);
         int endOffsetTransformed = this.mTextView.originalToTransformed(endOffset, 1);
@@ -1125,7 +1149,6 @@ public class Editor {
         return TextUtils.packRangeInLong(paragraphStart, paragraphEnd);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onLocaleChanged() {
         this.mWordIterator = null;
         this.mWordIteratorWithText = null;
@@ -1138,7 +1161,6 @@ public class Editor {
         return this.mWordIterator;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public WordIterator getWordIteratorWithText() {
         if (this.mWordIteratorWithText == null) {
             this.mWordIteratorWithText = new WordIterator(this.mTextView.getTextServicesLocale());
@@ -1152,7 +1174,6 @@ public class Editor {
         return this.mWordIteratorWithText;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getNextCursorOffset(int offset, boolean findAfterGivenOffset) {
         int nextCursor;
         Layout layout = this.mTextView.getLayout();
@@ -1198,7 +1219,6 @@ public class Editor {
         return minOffset >= selectionStart && maxOffset < selectionEnd;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public PositionListener getPositionListener() {
         if (this.mPositionListener == null) {
             this.mPositionListener = new PositionListener();
@@ -1206,7 +1226,6 @@ public class Editor {
         return this.mPositionListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isOffsetVisible(int offset) {
         Layout layout = this.mTextView.getLayout();
         if (layout == null) {
@@ -1219,7 +1238,6 @@ public class Editor {
         return this.mTextView.isPositionVisible(r5.viewportToContentHorizontalOffset() + primaryHorizontal, this.mTextView.viewportToContentVerticalOffset() + lineBottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isPositionOnText(float x, float y) {
         Layout layout = this.mTextView.getLayout();
         if (layout == null) {
@@ -1234,7 +1252,6 @@ public class Editor {
         return x2 >= layout.getLineLeft(line) && x2 <= layout.getLineRight(line);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void startDragAndDrop() {
         getSelectionActionModeHelper().onSelectionDrag();
         if (this.mTextView.isInExtractedMode()) {
@@ -1308,7 +1325,6 @@ public class Editor {
         return handled;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void toggleInsertionActionMode() {
         if (this.mTextActionMode != null) {
             lambda$startActionModeInternal$0();
@@ -1317,12 +1333,10 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getLastUpPositionX() {
         return this.mTouchState.getLastUpX();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getLastUpPositionY() {
         return this.mTouchState.getLastUpY();
     }
@@ -1334,7 +1348,6 @@ public class Editor {
         return TextUtils.packRangeInLong(minOffset, maxOffset);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onFocusChanged(boolean focused, int direction) {
         this.mShowCursor = SystemClock.uptimeMillis();
         ensureEndedBatchEdit();
@@ -1416,7 +1429,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void sendOnTextChanged(int start, int before, int after) {
         getSelectionActionModeHelper().onTextChanged(start, start + before);
         updateSpellCheckSpans(start, start + after, false);
@@ -1441,7 +1453,6 @@ public class Editor {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         if (hasWindowFocus) {
             resumeBlink();
@@ -1518,7 +1529,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateFloatingToolbarVisibility(MotionEvent event) {
         if (this.mTextActionMode != null) {
             switch (event.getActionMasked()) {
@@ -1535,7 +1545,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void hideFloatingToolbar(int duration) {
         if (this.mTextActionMode != null) {
             this.mTextView.removeCallbacks(this.mShowFloatingToolbar);
@@ -1551,7 +1560,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public InputMethodManager getInputMethodManager() {
         return (InputMethodManager) this.mTextView.getContext().getSystemService(InputMethodManager.class);
     }
@@ -1617,12 +1625,10 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void scheduleRestartInputForSetText() {
         this.mHasPendingRestartInputForSetText = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void maybeFireScheduledRestartInputForSetText() {
         if (this.mHasPendingRestartInputForSetText) {
             InputMethodManager imm = getInputMethodManager();
@@ -1633,7 +1639,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean extractText(ExtractedTextRequest request, ExtractedText outText) {
         return extractTextInternal(request, -1, -1, -1, outText);
     }
@@ -1706,7 +1711,6 @@ public class Editor {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean reportExtractedText() {
         InputMethodManager imm;
         InputMethodState ims = this.mInputMethodState;
@@ -1737,7 +1741,6 @@ public class Editor {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendUpdateSelection() {
         InputMethodManager imm;
         int candStart;
@@ -1760,7 +1763,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:38:0x008f  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -2124,7 +2126,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateHandlesAndActionMode() {
         SelectionModifierCursorController selectionModifierCursorController = this.mSelectionModifierCursorController;
         if (selectionModifierCursorController != null) {
@@ -2139,7 +2140,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateTextDisplayList(Layout layout, int start, int end) {
         if (this.mTextRenderNodes != null && (layout instanceof DynamicLayout)) {
             int startTransformed = this.mTextView.originalToTransformed(start, 0);
@@ -2168,7 +2168,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateTextDisplayList() {
         if (this.mTextRenderNodes != null) {
             int i = 0;
@@ -2187,7 +2186,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateCursorPosition() {
         loadCursorDrawable();
         if (this.mDrawableForCursor == null) {
@@ -2203,7 +2201,6 @@ public class Editor {
         updateCursorPosition(top, bottom, layout.getPrimaryHorizontal(transformedOffset, clamped));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void refreshTextActionMode() {
         if (extractedTextModeWillBeStarted()) {
             this.mRestartActionModeOnNextRefresh = false;
@@ -2239,7 +2236,6 @@ public class Editor {
         this.mRestartActionModeOnNextRefresh = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startInsertionActionMode() {
         Runnable runnable = this.mInsertionActionModeRunnable;
         if (runnable != null) {
@@ -2261,27 +2257,22 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TextView getTextView() {
         return this.mTextView;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ActionMode getTextActionMode() {
         return this.mTextActionMode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setRestartActionModeOnNextRefresh(boolean value) {
         this.mRestartActionModeOnNextRefresh = value;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startSelectionActionModeAsync(boolean adjustSelection) {
         getSelectionActionModeHelper().startSelectionActionModeAsync(adjustSelection);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startLinkActionModeAsync(int start, int end) {
         if (!(this.mTextView.getText() instanceof Spannable)) {
             return;
@@ -2291,12 +2282,10 @@ public class Editor {
         getSelectionActionModeHelper().startLinkActionModeAsync(start, end);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateActionModeAsync() {
         getSelectionActionModeHelper().invalidateActionModeAsync();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void invalidateActionMode() {
         ActionMode actionMode = this.mTextActionMode;
         if (actionMode != null) {
@@ -2304,7 +2293,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public SelectionActionModeHelper getSelectionActionModeHelper() {
         if (this.mSelectionActionModeHelper == null) {
             this.mSelectionActionModeHelper = new SelectionActionModeHelper(this);
@@ -2312,7 +2300,6 @@ public class Editor {
         return this.mSelectionActionModeHelper;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean selectCurrentWordAndStartDrag() {
         Runnable runnable = this.mInsertionActionModeRunnable;
         if (runnable != null) {
@@ -2343,7 +2330,6 @@ public class Editor {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean startActionModeInternal(int actionMode) {
         InputMethodManager imm;
         if (ViewRune.WIDGET_MULTIPLE_PEN_TEXT_SUPPORTED) {
@@ -2385,13 +2371,11 @@ public class Editor {
         return selectionStarted;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean extractedTextModeWillBeStarted() {
         InputMethodManager imm;
         return (this.mTextView.isInExtractedMode() || (imm = getInputMethodManager()) == null || !imm.isFullscreenMode()) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldOfferToShowSuggestions() {
         CharSequence text = this.mTextView.getText();
         if (!(text instanceof Spannable)) {
@@ -2435,7 +2419,6 @@ public class Editor {
         return hasValidSuggestions && unionOfSpansCoveringSelectionStartStart < unionOfSpansCoveringSelectionStartEnd && minSpanStart >= unionOfSpansCoveringSelectionStartStart && maxSpanEnd <= unionOfSpansCoveringSelectionStartEnd;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isCursorInsideEasyCorrectionSpan() {
         Spannable spannable = (Spannable) this.mTextView.getText();
         SuggestionSpan[] suggestionSpans = (SuggestionSpan[]) spannable.getSpans(this.mTextView.getSelectionStart(), this.mTextView.getSelectionEnd(), SuggestionSpan.class);
@@ -2447,7 +2430,6 @@ public class Editor {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onTouchUpEvent(MotionEvent event) {
         InsertionPointCursorController mInsertionController;
         if (getSelectionActionModeHelper().resetSelection(getTextView().getOffsetForPosition(event.getX(), event.getY()))) {
@@ -2533,7 +2515,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void onTextOperationUserChanged() {
         SpellChecker spellChecker = this.mSpellChecker;
         if (spellChecker != null) {
@@ -2541,8 +2522,7 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* renamed from: stopTextActionMode, reason: merged with bridge method [inline-methods] */
+    /* renamed from: stopTextActionMode */
     public void lambda$startActionModeInternal$0() {
         ActionMode actionMode = this.mTextActionMode;
         if (actionMode != null) {
@@ -2551,7 +2531,6 @@ public class Editor {
         unregisterOnBackInvokedCallback();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void stopTextActionModeWithPreservingSelection() {
         if (this.mTextActionMode != null) {
             this.mRestartActionModeOnNextRefresh = true;
@@ -2561,12 +2540,10 @@ public class Editor {
         this.mPreserveSelection = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasInsertionController() {
         return this.mInsertionControllerEnabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasSelectionController() {
         return this.mSelectionControllerEnabled;
     }
@@ -2607,7 +2584,6 @@ public class Editor {
         this.mDrawableForCursor.setBounds(left, top - this.mTempRect.top, left + scaledWidth, this.mTempRect.bottom + bottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int clampHorizontalPosition(Drawable drawable, float horizontal) {
         float horizontal2 = Math.max(0.5f, horizontal - 0.5f);
         if (this.mTempRect == null) {
@@ -2646,7 +2622,6 @@ public class Editor {
         this.mUndoInputFilter.freezeLastEdit();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onScrollChanged() {
         PositionListener positionListener = this.mPositionListener;
         if (positionListener != null) {
@@ -2658,7 +2633,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean shouldBlink() {
         int start;
         int end;
@@ -2668,7 +2642,6 @@ public class Editor {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void makeBlink() {
         if (shouldBlink()) {
             this.mShowCursor = SystemClock.uptimeMillis();
@@ -2693,10 +2666,13 @@ public class Editor {
         return !r0.mCancelled;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class Blink implements Runnable {
         private boolean mCancelled;
+
+        /* synthetic */ Blink(Editor editor, BlinkIA blinkIA) {
+            this();
+        }
 
         private Blink() {
         }
@@ -2782,7 +2758,6 @@ public class Editor {
         return new View.DragShadowBuilder(shadowView);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class DragLocalState {
         public int end;
@@ -2796,7 +2771,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onDrop(DragEvent event) {
         int offset = this.mTextView.getOffsetForPosition(event.getX(), event.getY());
         Object localState = event.getLocalState();
@@ -2860,7 +2834,6 @@ public class Editor {
         text.setSpan(this.mSpanController, 0, textLength, 18);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setContextMenuAnchor(float x, float y) {
         this.mContextMenuAnchorX = x;
         this.mContextMenuAnchorY = y;
@@ -2882,7 +2855,6 @@ public class Editor {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$setAssistContextMenuItems$1(AssistantCallbackHelper helper, MenuItem item) {
         getSelectionActionModeHelper().onSelectionAction(item.getItemId(), item.getTitle().toString());
         if (this.mProcessTextIntentActionsHandler.performMenuItemAction(item)) {
@@ -2915,19 +2887,20 @@ public class Editor {
         boolean isOnSelection2 = shouldOfferToShowSuggestions();
         if (isOnSelection2) {
             SuggestionInfo[] suggestionInfoArray = new SuggestionInfo[5];
-            int i = 0;
-            while (true) {
-                if (i >= suggestionInfoArray.length) {
-                    break;
-                }
+            for (int i = 0; i < suggestionInfoArray.length; i++) {
                 suggestionInfoArray[i] = new SuggestionInfo();
-                i++;
             }
             SubMenu subMenu = menu.addSubMenu(0, 0, 11, R.string.replace);
             int numItems = this.mSuggestionHelper.getSuggestionInfo(suggestionInfoArray, null);
             for (int i2 = 0; i2 < numItems; i2++) {
-                final SuggestionInfo info = suggestionInfoArray[i2];
+                SuggestionInfo info = suggestionInfoArray[i2];
                 subMenu.add(0, 0, i2, info.mText).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() { // from class: android.widget.Editor.4
+                    final /* synthetic */ SuggestionInfo val$info;
+
+                    AnonymousClass4(SuggestionInfo info2) {
+                        info = info2;
+                    }
+
                     @Override // android.view.MenuItem.OnMenuItemClickListener
                     public boolean onMenuItemClick(MenuItem item) {
                         Editor.this.replaceWithSuggestion(info);
@@ -2972,6 +2945,22 @@ public class Editor {
         adjustIconSpacing(menu);
     }
 
+    /* renamed from: android.widget.Editor$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements MenuItem.OnMenuItemClickListener {
+        final /* synthetic */ SuggestionInfo val$info;
+
+        AnonymousClass4(SuggestionInfo info2) {
+            info = info2;
+        }
+
+        @Override // android.view.MenuItem.OnMenuItemClickListener
+        public boolean onMenuItemClick(MenuItem item) {
+            Editor.this.replaceWithSuggestion(info);
+            return true;
+        }
+    }
+
     public void adjustIconSpacing(ContextMenu menu) {
         int width = -1;
         int height = -1;
@@ -2995,7 +2984,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public SuggestionSpan findEquivalentSuggestionSpan(SuggestionSpanInfo suggestionSpanInfo) {
         Editable editable = (Editable) this.mTextView.getText();
         if (editable.getSpanStart(suggestionSpanInfo.mSuggestionSpan) >= 0) {
@@ -3014,7 +3002,6 @@ public class Editor {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void replaceWithSuggestion(SuggestionInfo suggestionInfo) {
         int spanStart;
         String originalText;
@@ -3088,12 +3075,31 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.Editor$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements MenuItem.OnMenuItemClickListener {
+        AnonymousClass5() {
+        }
+
+        @Override // android.view.MenuItem.OnMenuItemClickListener
+        public boolean onMenuItemClick(MenuItem item) {
+            if (Editor.this.mProcessTextIntentActionsHandler.performMenuItemAction(item)) {
+                return true;
+            }
+            return Editor.this.mTextView.onTextContextMenuItem(item.getItemId());
+        }
+    }
+
     /* loaded from: classes4.dex */
     public class SpanController implements SpanWatcher {
         private static final int DISPLAY_TIMEOUT_MS = 3000;
         private Runnable mHidePopup;
         private EasyEditPopupWindow mPopupWindow;
+
+        /* synthetic */ SpanController(Editor editor, SpanControllerIA spanControllerIA) {
+            this();
+        }
 
         private SpanController() {
         }
@@ -3112,6 +3118,9 @@ public class Editor {
                 if (this.mPopupWindow == null) {
                     this.mPopupWindow = new EasyEditPopupWindow();
                     this.mHidePopup = new Runnable() { // from class: android.widget.Editor.SpanController.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             SpanController.this.hide();
@@ -3123,6 +3132,9 @@ public class Editor {
                 }
                 this.mPopupWindow.setEasyEditSpan((EasyEditSpan) span);
                 this.mPopupWindow.setOnDeleteListener(new EasyEditDeleteListener() { // from class: android.widget.Editor.SpanController.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // android.widget.Editor.EasyEditDeleteListener
                     public void onDeleteClick(EasyEditSpan span2) {
                         Editable editable = (Editable) Editor.this.mTextView.getText();
@@ -3141,6 +3153,37 @@ public class Editor {
                 this.mPopupWindow.show();
                 Editor.this.mTextView.removeCallbacks(this.mHidePopup);
                 Editor.this.mTextView.postDelayed(this.mHidePopup, TelecomManager.VERY_SHORT_CALL_TIME_MS);
+            }
+        }
+
+        /* renamed from: android.widget.Editor$SpanController$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SpanController.this.hide();
+            }
+        }
+
+        /* renamed from: android.widget.Editor$SpanController$2 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass2 implements EasyEditDeleteListener {
+            AnonymousClass2() {
+            }
+
+            @Override // android.widget.Editor.EasyEditDeleteListener
+            public void onDeleteClick(EasyEditSpan span2) {
+                Editable editable = (Editable) Editor.this.mTextView.getText();
+                int start2 = editable.getSpanStart(span2);
+                int end2 = editable.getSpanEnd(span2);
+                if (start2 >= 0 && end2 >= 0) {
+                    SpanController.this.sendEasySpanNotification(1, span2);
+                    Editor.this.mTextView.deleteText_internal(start2, end2);
+                }
+                editable.removeSpan(span2);
             }
         }
 
@@ -3175,7 +3218,6 @@ public class Editor {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void sendEasySpanNotification(int textChangedType, EasyEditSpan span) {
             try {
                 PendingIntent pendingIntent = span.getPendingIntent();
@@ -3190,13 +3232,16 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class EasyEditPopupWindow extends PinnedPopupWindow implements View.OnClickListener {
         private static final int POPUP_TEXT_LAYOUT = 17367448;
         private TextView mDeleteTextView;
         private EasyEditSpan mEasyEditSpan;
         private EasyEditDeleteListener mOnDeleteListener;
+
+        /* synthetic */ EasyEditPopupWindow(Editor editor, EasyEditPopupWindowIA easyEditPopupWindowIA) {
+            this();
+        }
 
         private EasyEditPopupWindow() {
             super();
@@ -3229,7 +3274,6 @@ public class Editor {
             this.mEasyEditSpan = easyEditSpan;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setOnDeleteListener(EasyEditDeleteListener listener) {
             this.mOnDeleteListener = listener;
         }
@@ -3271,7 +3315,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PositionListener implements ViewTreeObserver.OnPreDrawListener {
         private static final int MAXIMUM_NUMBER_OF_LISTENERS = 7;
@@ -3288,6 +3331,10 @@ public class Editor {
         final int[] mTempCoords;
         private final Runnable mUpdatePosition;
 
+        /* synthetic */ PositionListener(Editor editor, PositionListenerIA positionListenerIA) {
+            this();
+        }
+
         private PositionListener() {
             this.mPositionListeners = new TextViewPositionListener[7];
             this.mCanMove = new boolean[7];
@@ -3295,6 +3342,9 @@ public class Editor {
             this.mTempCoords = new int[2];
             this.mDelayTime = 300;
             this.mUpdatePosition = new Runnable() { // from class: android.widget.Editor.PositionListener.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     for (int i = 0; i < 7; i++) {
@@ -3426,9 +3476,30 @@ public class Editor {
         public void onScrollChanged() {
             this.mScrollHasChanged = true;
         }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.Editor$PositionListener$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                for (int i = 0; i < 7; i++) {
+                    TextViewPositionListener positionListener = PositionListener.this.mPositionListeners[i];
+                    if (positionListener != null && (positionListener instanceof HandleView)) {
+                        if ((positionListener instanceof SelectionHandleView) && Editor.this.mTextActionMode == null) {
+                            return;
+                        } else {
+                            positionListener.updatePosition(PositionListener.this.mPositionX, PositionListener.this.mPositionY, true, true);
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public abstract class PinnedPopupWindow implements TextViewPositionListener {
         int mClippingLimitLeft;
@@ -3528,7 +3599,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class SuggestionInfo {
         int mSuggestionEnd;
@@ -3536,6 +3606,10 @@ public class Editor {
         final SuggestionSpanInfo mSuggestionSpanInfo;
         int mSuggestionStart;
         final SpannableStringBuilder mText;
+
+        /* synthetic */ SuggestionInfo(SuggestionInfoIA suggestionInfoIA) {
+            this();
+        }
 
         private SuggestionInfo() {
             this.mSuggestionSpanInfo = new SuggestionSpanInfo();
@@ -3554,12 +3628,15 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class SuggestionSpanInfo {
         int mSpanEnd;
         int mSpanStart;
         SuggestionSpan mSuggestionSpan;
+
+        /* synthetic */ SuggestionSpanInfo(SuggestionSpanInfoIA suggestionSpanInfoIA) {
+            this();
+        }
 
         private SuggestionSpanInfo() {
         }
@@ -3569,19 +3646,27 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SuggestionHelper {
         private final HashMap<SuggestionSpan, Integer> mSpansLengths;
         private final Comparator<SuggestionSpan> mSuggestionSpanComparator;
+
+        /* synthetic */ SuggestionHelper(Editor editor, SuggestionHelperIA suggestionHelperIA) {
+            this();
+        }
 
         private SuggestionHelper() {
             this.mSuggestionSpanComparator = new SuggestionSpanComparator();
             this.mSpansLengths = new HashMap<>();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private class SuggestionSpanComparator implements Comparator<SuggestionSpan> {
+        public class SuggestionSpanComparator implements Comparator<SuggestionSpan> {
+            /* synthetic */ SuggestionSpanComparator(SuggestionHelper suggestionHelper, SuggestionSpanComparatorIA suggestionSpanComparatorIA) {
+                this();
+            }
+
             private SuggestionSpanComparator() {
             }
 
@@ -3712,7 +3797,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class SuggestionsPopupWindow extends PinnedPopupWindow implements AdapterView.OnItemClickListener {
         private static final int MAX_NUMBER_SUGGESTIONS = 5;
@@ -3737,6 +3821,10 @@ public class Editor {
 
         /* loaded from: classes4.dex */
         private class CustomPopupWindow extends PopupWindow {
+            /* synthetic */ CustomPopupWindow(SuggestionsPopupWindow suggestionsPopupWindow, CustomPopupWindowIA customPopupWindowIA) {
+                this();
+            }
+
             private CustomPopupWindow() {
             }
 
@@ -3792,16 +3880,15 @@ public class Editor {
 
         @Override // android.widget.Editor.PinnedPopupWindow
         protected void initContentView() {
-            LayoutInflater layoutInflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            byte b = 0;
-            this.mContentView = (ViewGroup) layoutInflater.inflate(Editor.this.mTextView.mTextEditSuggestionContainerLayout, (ViewGroup) null);
+            LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            this.mContentView = (ViewGroup) inflater.inflate(Editor.this.mTextView.mTextEditSuggestionContainerLayout, (ViewGroup) null);
             LinearLayout linearLayout = (LinearLayout) this.mContentView.findViewById(R.id.suggestionWindowContainer);
             this.mContainerView = linearLayout;
-            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) linearLayout.getLayoutParams();
-            this.mContainerMarginWidth = marginLayoutParams.leftMargin + marginLayoutParams.rightMargin;
-            this.mContainerMarginTop = marginLayoutParams.topMargin;
-            this.mClippingLimitLeft = marginLayoutParams.leftMargin;
-            this.mClippingLimitRight = marginLayoutParams.rightMargin;
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) linearLayout.getLayoutParams();
+            this.mContainerMarginWidth = lp.leftMargin + lp.rightMargin;
+            this.mContainerMarginTop = lp.topMargin;
+            this.mClippingLimitLeft = lp.leftMargin;
+            this.mClippingLimitRight = lp.rightMargin;
             this.mSuggestionListView = (ListView) this.mContentView.findViewById(R.id.suggestionContainer);
             SuggestionAdapter suggestionAdapter = new SuggestionAdapter();
             this.mSuggestionsAdapter = suggestionAdapter;
@@ -3818,7 +3905,7 @@ public class Editor {
                 i++;
             }
             if (Editor.this.mIsThemeDeviceDefault) {
-                LinearLayout linearLayout2 = (LinearLayout) layoutInflater.inflate(R.layout.tw_text_edit_suggestion_button_item, (ViewGroup) null);
+                LinearLayout linearLayout2 = (LinearLayout) inflater.inflate(R.layout.tw_text_edit_suggestion_button_item, (ViewGroup) null);
                 this.mButtonItemView = linearLayout2;
                 this.mAddToDictionaryButton = (TextView) linearLayout2.findViewById(R.id.addToDictionaryButton);
                 this.mDeleteButton = (TextView) this.mButtonItemView.findViewById(R.id.deleteButton);
@@ -3826,6 +3913,9 @@ public class Editor {
                 TextView textView = (TextView) this.mContentView.findViewById(R.id.addToDictionaryButton);
                 this.mAddToDictionaryButton = textView;
                 textView.setOnClickListener(new View.OnClickListener() { // from class: android.widget.Editor.SuggestionsPopupWindow.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.view.View.OnClickListener
                     public void onClick(View v) {
                         SuggestionSpan misspelledSpan = Editor.this.findEquivalentSuggestionSpan(SuggestionsPopupWindow.this.mMisspelledSpanInfo);
@@ -3853,6 +3943,9 @@ public class Editor {
                 TextView textView2 = (TextView) this.mContentView.findViewById(R.id.deleteButton);
                 this.mDeleteButton = textView2;
                 textView2.setOnClickListener(new View.OnClickListener() { // from class: android.widget.Editor.SuggestionsPopupWindow.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // android.view.View.OnClickListener
                     public void onClick(View v) {
                         Editable editable = (Editable) Editor.this.mTextView.getText();
@@ -3871,6 +3964,58 @@ public class Editor {
             this.mNumberOfButtons = 1;
         }
 
+        /* renamed from: android.widget.Editor$SuggestionsPopupWindow$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements View.OnClickListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.view.View.OnClickListener
+            public void onClick(View v) {
+                SuggestionSpan misspelledSpan = Editor.this.findEquivalentSuggestionSpan(SuggestionsPopupWindow.this.mMisspelledSpanInfo);
+                if (misspelledSpan == null) {
+                    return;
+                }
+                Editable editable = (Editable) Editor.this.mTextView.getText();
+                int spanStart = editable.getSpanStart(misspelledSpan);
+                int spanEnd = editable.getSpanEnd(misspelledSpan);
+                if (spanStart < 0 || spanEnd <= spanStart) {
+                    return;
+                }
+                String originalText = TextUtils.substring(editable, spanStart, spanEnd);
+                Intent intent = new Intent(Settings.ACTION_USER_DICTIONARY_INSERT);
+                intent.putExtra("word", originalText);
+                intent.putExtra("locale", Editor.this.mTextView.getTextServicesLocale().toString());
+                intent.setFlags(intent.getFlags() | 268435456);
+                Editor.this.mTextView.startActivityAsTextOperationUserIfNecessary(intent);
+                editable.removeSpan(SuggestionsPopupWindow.this.mMisspelledSpanInfo.mSuggestionSpan);
+                TextView.semSetSelection(editable, spanEnd);
+                Editor.this.updateSpellCheckSpans(spanStart, spanEnd, false);
+                SuggestionsPopupWindow.this.hideWithCleanUp();
+            }
+        }
+
+        /* renamed from: android.widget.Editor$SuggestionsPopupWindow$2 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass2 implements View.OnClickListener {
+            AnonymousClass2() {
+            }
+
+            @Override // android.view.View.OnClickListener
+            public void onClick(View v) {
+                Editable editable = (Editable) Editor.this.mTextView.getText();
+                int spanUnionStart = editable.getSpanStart(Editor.this.mSuggestionRangeSpan);
+                int spanUnionEnd = editable.getSpanEnd(Editor.this.mSuggestionRangeSpan);
+                if (spanUnionStart >= 0 && spanUnionEnd > spanUnionStart) {
+                    if (spanUnionEnd < editable.length() && Character.isSpaceChar(editable.charAt(spanUnionEnd)) && (spanUnionStart == 0 || Character.isSpaceChar(editable.charAt(spanUnionStart - 1)))) {
+                        spanUnionEnd++;
+                    }
+                    Editor.this.mTextView.deleteText_internal(spanUnionStart, spanUnionEnd);
+                }
+                SuggestionsPopupWindow.this.hideWithCleanUp();
+            }
+        }
+
         public boolean isShowingUp() {
             return this.mIsShowingUp;
         }
@@ -3879,10 +4024,13 @@ public class Editor {
             this.mIsShowingUp = false;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public class SuggestionAdapter extends BaseAdapter {
             private LayoutInflater mInflater;
+
+            /* synthetic */ SuggestionAdapter(SuggestionsPopupWindow suggestionsPopupWindow, SuggestionAdapterIA suggestionAdapterIA) {
+                this();
+            }
 
             private SuggestionAdapter() {
                 this.mInflater = (LayoutInflater) SuggestionsPopupWindow.this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -3996,7 +4144,6 @@ public class Editor {
             return Math.min(positionY, displayMetrics.heightPixels - height);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void hideWithCleanUp() {
             for (SuggestionInfo info : this.mSuggestionInfos) {
                 info.clear();
@@ -4253,7 +4400,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class TextActionModeCallback extends ActionMode.Callback2 {
         private final int mHandleHeight;
@@ -4480,11 +4626,14 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class CursorAnchorInfoNotifier implements TextViewPositionListener {
         final CursorAnchorInfo.Builder mCursorAnchorInfoBuilder;
         final Matrix mViewToScreenMatrix;
+
+        /* synthetic */ CursorAnchorInfoNotifier(Editor editor, CursorAnchorInfoNotifierIA cursorAnchorInfoNotifierIA) {
+            this();
+        }
 
         private CursorAnchorInfoNotifier() {
             this.mCursorAnchorInfoBuilder = new CursorAnchorInfo.Builder();
@@ -4503,7 +4652,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class MagnifierMotionAnimator {
         private static final long DURATION = 100;
@@ -4516,6 +4664,10 @@ public class Editor {
         private float mLastY;
         private final Magnifier mMagnifier;
         private boolean mMagnifierIsShowing;
+
+        /* synthetic */ MagnifierMotionAnimator(Magnifier magnifier, MagnifierMotionAnimatorIA magnifierMotionAnimatorIA) {
+            this(magnifier);
+        }
 
         private MagnifierMotionAnimator(Magnifier magnifier) {
             this.mMagnifier = magnifier;
@@ -4531,7 +4683,6 @@ public class Editor {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$0(ValueAnimator animation) {
             float f = this.mAnimationStartX;
             this.mAnimationCurrentX = f + ((this.mLastX - f) * animation.getAnimatedFraction());
@@ -4541,7 +4692,6 @@ public class Editor {
             this.mMagnifier.show(this.mAnimationCurrentX, animatedFraction);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void show(float x, float y) {
             boolean startNewAnimation = this.mMagnifierIsShowing && y != this.mLastY;
             if (startNewAnimation) {
@@ -4562,12 +4712,10 @@ public class Editor {
             this.mMagnifierIsShowing = true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void update() {
             this.mMagnifier.update();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void dismiss() {
             this.mMagnifier.dismiss();
             this.mAnimator.cancel();
@@ -4636,6 +4784,10 @@ public class Editor {
         protected float mVerticalOffset;
         protected int mVerticalScrolledYOffset;
 
+        /* synthetic */ HandleView(Editor editor, Drawable drawable, Drawable drawable2, int i, HandleViewIA handleViewIA) {
+            this(drawable, drawable2, i);
+        }
+
         public abstract int getCurrentCursorOffset();
 
         protected abstract int getHorizontalGravity(boolean z);
@@ -4648,21 +4800,18 @@ public class Editor {
 
         protected abstract void updateSelection(int i);
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public class CursorView extends View {
             public CursorView(Context context) {
                 super(context);
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.view.View
             public void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
                 HandleView.this.mCursor.draw(canvas);
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.view.View
             public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
                 int width = (int) Math.ceil(HandleView.this.mDrawable.getIntrinsicWidth() * 1.5f);
@@ -4691,6 +4840,9 @@ public class Editor {
             this.mNumberPreviousOffsets = 0;
             this.mIsRestoring = false;
             this.CHANGE_SIZE_EVALUATOR = new TypeEvaluator<Rect>() { // from class: android.widget.Editor.HandleView.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.animation.TypeEvaluator
                 public Rect evaluate(float fraction, Rect startRect, Rect targetRect) {
                     int startWidth = startRect.width();
@@ -4703,6 +4855,9 @@ public class Editor {
                 }
             };
             this.CURSOR_SIZE_EVALUATOR = new TypeEvaluator<Rect>() { // from class: android.widget.Editor.HandleView.8
+                AnonymousClass8() {
+                }
+
                 @Override // android.animation.TypeEvaluator
                 public Rect evaluate(float fraction, Rect startRect, Rect targetRect) {
                     int diffY = startRect.top - targetRect.top;
@@ -4875,7 +5030,6 @@ public class Editor {
             return this.mNumberPreviousOffsets > 1;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             int width = getPreferredWidth();
@@ -4936,7 +5090,6 @@ public class Editor {
             return this.mContainer.isShowing();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean shouldShow() {
             if (this.mIsDragging) {
                 return true;
@@ -5054,7 +5207,6 @@ public class Editor {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onDraw(Canvas c) {
             int drawWidth = this.mDrawable.getIntrinsicWidth();
@@ -5328,7 +5480,6 @@ public class Editor {
             dismissMagnifier();
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
@@ -5372,7 +5523,25 @@ public class Editor {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.Editor$HandleView$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements TypeEvaluator<Rect> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.TypeEvaluator
+            public Rect evaluate(float fraction, Rect startRect, Rect targetRect) {
+                int startWidth = startRect.width();
+                int startHeight = startRect.height();
+                int targetWidth = targetRect.width();
+                int targetHeight = targetRect.height();
+                int w = Math.round((targetWidth - startWidth) * fraction) + startWidth;
+                int h = Math.round((targetHeight - startHeight) * fraction) + startHeight;
+                return HandleView.this.getDrawableBounds(w, h);
+            }
+        }
+
         public Rect getDrawableBounds(int width, int height) {
             int horizontalOffset = getHorizontalOffset();
             int i = this.mContentsViewOffset;
@@ -5397,15 +5566,24 @@ public class Editor {
             return new Rect(left - (offset - hotspot), 0, (left - (offset - hotspot)) + width, height);
         }
 
-        private ObjectAnimator getChangeSizeAnimator(Rect startRect, final Rect targetRect) {
+        private ObjectAnimator getChangeSizeAnimator(Rect startRect, Rect targetRect) {
             ObjectAnimator changeSizeAnimator = ObjectAnimator.ofObject(this.mDrawable, "bounds", this.CHANGE_SIZE_EVALUATOR, startRect, targetRect);
             changeSizeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.Editor.HandleView.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     HandleView.this.invalidate();
                 }
             });
             changeSizeAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.Editor.HandleView.3
+                final /* synthetic */ Rect val$targetRect;
+
+                AnonymousClass3(Rect targetRect2) {
+                    targetRect = targetRect2;
+                }
+
                 @Override // android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation, boolean isReverse) {
                     HandleView.this.requestLayout();
@@ -5419,6 +5597,40 @@ public class Editor {
                 }
             });
             return changeSizeAnimator;
+        }
+
+        /* renamed from: android.widget.Editor$HandleView$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass2() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                HandleView.this.invalidate();
+            }
+        }
+
+        /* renamed from: android.widget.Editor$HandleView$3 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass3 extends AnimatorListenerAdapter {
+            final /* synthetic */ Rect val$targetRect;
+
+            AnonymousClass3(Rect targetRect2) {
+                targetRect = targetRect2;
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation, boolean isReverse) {
+                HandleView.this.requestLayout();
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                HandleView.this.mDrawable.setBounds(HandleView.this.getDrawableBounds(targetRect.width(), targetRect.height()));
+                HandleView.this.requestLayout();
+                HandleView.this.invalidate();
+            }
         }
 
         private void magnifySize() {
@@ -5474,6 +5686,9 @@ public class Editor {
                 restoreAnimators.playTogether(restoreSizeAnimator, restorePositionAnimator);
             }
             restoreAnimators.addListener(new AnimatorListenerAdapter() { // from class: android.widget.Editor.HandleView.4
+                AnonymousClass4() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     HandleView.this.mIsRestoring = false;
@@ -5494,6 +5709,32 @@ public class Editor {
                 }
             });
             restoreAnimators.start();
+        }
+
+        /* renamed from: android.widget.Editor$HandleView$4 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass4 extends AnimatorListenerAdapter {
+            AnonymousClass4() {
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                HandleView.this.mIsRestoring = false;
+                HandleView handleView = HandleView.this;
+                handleView.positionAtCursorOffset(handleView.getCurrentCursorOffset(), true, false);
+                if (HandleView.this.shouldShow()) {
+                    if (HandleView.this.isShowing()) {
+                        HandleView.this.requestLayout();
+                        HandleView.this.invalidate();
+                    }
+                } else if (HandleView.this.isShowing()) {
+                    HandleView.this.dismiss();
+                }
+                if (Editor.this.mTextView.getSelectionStart() > Editor.this.mTextView.getSelectionEnd()) {
+                    Selection.setSelection((Spannable) Editor.this.mTextView.getText(), Editor.this.mTextView.getSelectionEnd(), Editor.this.mTextView.getSelectionStart());
+                }
+                HandleView.this.updateDrawable(false);
+            }
         }
 
         private ObjectAnimator getRestoreSizeAnimator() {
@@ -5531,6 +5772,9 @@ public class Editor {
             restorePositionAnimator.setDuration(250L);
             restorePositionAnimator.setInterpolator(this.mPathInterpolator);
             restorePositionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.Editor.HandleView.5
+                AnonymousClass5() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int x = ((Integer) animation.getAnimatedValue("x")).intValue();
@@ -5547,15 +5791,46 @@ public class Editor {
             return restorePositionAnimator;
         }
 
-        private ObjectAnimator getCursorSizeAnimator(Rect startRect, final Rect targetRect, final boolean isHideAnim) {
+        /* renamed from: android.widget.Editor$HandleView$5 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass5 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass5() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int x = ((Integer) animation.getAnimatedValue("x")).intValue();
+                int y = ((Integer) animation.getAnimatedValue("y")).intValue();
+                if (HandleView.this.isShowing()) {
+                    HandleView.this.invalidate();
+                    HandleView.this.mContainer.update(x, y, -1, -1);
+                    if (HandleView.this.mCursorContainer != null) {
+                        HandleView.this.mCursorContainer.update(x, y - HandleView.this.mMaxCursorHeight, -1, -1);
+                    }
+                }
+            }
+        }
+
+        private ObjectAnimator getCursorSizeAnimator(Rect startRect, Rect targetRect, boolean isHideAnim) {
             ObjectAnimator cursorSizeAnimator = ObjectAnimator.ofObject(this.mCursor, "bounds", this.CURSOR_SIZE_EVALUATOR, startRect, targetRect);
             cursorSizeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.Editor.HandleView.6
+                AnonymousClass6() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     HandleView.this.invalidate();
                 }
             });
             cursorSizeAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.Editor.HandleView.7
+                final /* synthetic */ boolean val$isHideAnim;
+                final /* synthetic */ Rect val$targetRect;
+
+                AnonymousClass7(Rect targetRect2, boolean isHideAnim2) {
+                    targetRect = targetRect2;
+                    isHideAnim = isHideAnim2;
+                }
+
                 @Override // android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation, boolean isReverse) {
                     HandleView.this.requestLayout();
@@ -5579,11 +5854,77 @@ public class Editor {
             return cursorSizeAnimator;
         }
 
+        /* renamed from: android.widget.Editor$HandleView$6 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass6 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass6() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                HandleView.this.invalidate();
+            }
+        }
+
+        /* renamed from: android.widget.Editor$HandleView$7 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass7 extends AnimatorListenerAdapter {
+            final /* synthetic */ boolean val$isHideAnim;
+            final /* synthetic */ Rect val$targetRect;
+
+            AnonymousClass7(Rect targetRect2, boolean isHideAnim2) {
+                targetRect = targetRect2;
+                isHideAnim = isHideAnim2;
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation, boolean isReverse) {
+                HandleView.this.requestLayout();
+                HandleView.this.mCursorView.requestLayout();
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                HandleView.this.mCursor.setBounds(targetRect);
+                HandleView.this.requestLayout();
+                HandleView.this.mCursorView.requestLayout();
+                HandleView.this.invalidate();
+                if (isHideAnim) {
+                    Editor.this.mCursorMoving = false;
+                    Editor.this.resumeBlink();
+                    Editor.this.mTextView.invalidate();
+                    HandleView.this.mCursorView.setVisibility(4);
+                }
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.Editor$HandleView$8 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass8 implements TypeEvaluator<Rect> {
+            AnonymousClass8() {
+            }
+
+            @Override // android.animation.TypeEvaluator
+            public Rect evaluate(float fraction, Rect startRect, Rect targetRect) {
+                int diffY = startRect.top - targetRect.top;
+                Rect rect = new Rect();
+                rect.left = targetRect.left;
+                rect.right = targetRect.right;
+                rect.bottom = HandleView.this.mMaxCursorHeight;
+                rect.top = startRect.top - ((int) (diffY * fraction));
+                return rect;
+            }
+        }
+
         private ObjectAnimator getShowAnimator() {
-            final int targetWidth = this.mDrawable.getIntrinsicWidth();
-            final int targetHeight = this.mDrawable.getIntrinsicHeight();
+            int targetWidth = this.mDrawable.getIntrinsicWidth();
+            int targetHeight = this.mDrawable.getIntrinsicHeight();
             ObjectAnimator showAnimator = ObjectAnimator.ofObject(this.mDrawable, "bounds", this.CHANGE_SIZE_EVALUATOR, getDrawableBounds(0, 0), getDrawableBounds(targetWidth, targetHeight));
             showAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.Editor.HandleView.9
+                AnonymousClass9() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     if (!HandleView.this.mIsShowAnimating) {
@@ -5593,6 +5934,14 @@ public class Editor {
                 }
             });
             showAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.Editor.HandleView.10
+                final /* synthetic */ int val$targetHeight;
+                final /* synthetic */ int val$targetWidth;
+
+                AnonymousClass10(int targetWidth2, int targetHeight2) {
+                    targetWidth = targetWidth2;
+                    targetHeight = targetHeight2;
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     if (HandleView.this.mIsHideAnimating) {
@@ -5634,12 +5983,78 @@ public class Editor {
             return showAnimator;
         }
 
+        /* renamed from: android.widget.Editor$HandleView$9 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass9 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass9() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if (!HandleView.this.mIsShowAnimating) {
+                    return;
+                }
+                HandleView.this.invalidate();
+            }
+        }
+
+        /* renamed from: android.widget.Editor$HandleView$10 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass10 extends AnimatorListenerAdapter {
+            final /* synthetic */ int val$targetHeight;
+            final /* synthetic */ int val$targetWidth;
+
+            AnonymousClass10(int targetWidth2, int targetHeight2) {
+                targetWidth = targetWidth2;
+                targetHeight = targetHeight2;
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation) {
+                if (HandleView.this.mIsHideAnimating) {
+                    HandleView.this.mHideAnimator.cancel();
+                    HandleView.this.mIsHideAnimating = false;
+                }
+                HandleView handleView = HandleView.this;
+                handleView.positionAtCursorOffset(handleView.getCurrentCursorOffset(), true, false);
+                int[] pts = {HandleView.this.mPositionX + HandleView.this.mHotspotX + HandleView.this.getHorizontalOffset(), HandleView.this.mPositionY};
+                Editor.this.mTextView.transformFromViewToWindowSpace(pts);
+                pts[0] = pts[0] - (HandleView.this.mHotspotX + HandleView.this.getHorizontalOffset());
+                HandleView.this.mContainer.update(pts[0], pts[1], -1, -1);
+                if (HandleView.this.mCursorContainer != null) {
+                    HandleView.this.mCursorContainer.update(pts[0], pts[1] - HandleView.this.mMaxCursorHeight, -1, -1);
+                }
+                HandleView.this.mIsShowAnimating = true;
+                HandleView.this.setLayerType(1, null);
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                if (!HandleView.this.mIsShowAnimating) {
+                    return;
+                }
+                HandleView.this.mDrawable.setBounds(HandleView.this.getDrawableBounds(targetWidth, targetHeight));
+                HandleView.this.invalidate();
+                if (Editor.this.mTextActionMode != null) {
+                    HandleView.this.removeHiderCallback();
+                } else {
+                    HandleView.this.hideAfterDelay();
+                }
+                HandleView.this.setLayerType(0, null);
+                HandleView.this.mIsShowAnimating = false;
+                HandleView.this.mShowAnimator = null;
+            }
+        }
+
         private ObjectAnimator getHideAnimator() {
             Rect r = this.mDrawable.getBounds();
             int startWidth = r.width();
             int startHeight = r.height();
             ObjectAnimator hideAnimator = ObjectAnimator.ofObject(this.mDrawable, "bounds", this.CHANGE_SIZE_EVALUATOR, getDrawableBounds(startWidth, startHeight), new Rect(0, 0, 0, 0));
             hideAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.Editor.HandleView.11
+                AnonymousClass11() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     if (!HandleView.this.mIsHideAnimating) {
@@ -5649,6 +6064,9 @@ public class Editor {
                 }
             });
             hideAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.Editor.HandleView.12
+                AnonymousClass12() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     if (HandleView.this.mIsShowAnimating) {
@@ -5685,12 +6103,64 @@ public class Editor {
             return hideAnimator;
         }
 
+        /* renamed from: android.widget.Editor$HandleView$11 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass11 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass11() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if (!HandleView.this.mIsHideAnimating) {
+                    return;
+                }
+                HandleView.this.invalidate();
+            }
+        }
+
+        /* renamed from: android.widget.Editor$HandleView$12 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass12 extends AnimatorListenerAdapter {
+            AnonymousClass12() {
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation) {
+                if (HandleView.this.mIsShowAnimating) {
+                    HandleView.this.mShowAnimator.cancel();
+                    HandleView.this.mIsShowAnimating = false;
+                }
+                HandleView.this.mIsHideAnimating = true;
+                HandleView.this.setLayerType(1, null);
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                if (!HandleView.this.mIsHideAnimating) {
+                    return;
+                }
+                HandleView.this.setLayerType(0, null);
+                HandleView.this.mContainer.dismiss();
+                if (HandleView.this.mCursorContainer != null) {
+                    HandleView.this.mCursorContainer.dismiss();
+                }
+                HandleView.this.mIsHideAnimating = false;
+                HandleView.this.mHideAnimator = null;
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationCancel(Animator animation) {
+                HandleView.this.setLayerType(0, null);
+                HandleView.this.mIsHideAnimating = false;
+                HandleView.this.mHideAnimator = null;
+            }
+        }
+
         private boolean isValid() {
             return Editor.this.mTextView.getApplicationWindowToken() != null && Editor.this.mTextView.getWindowToken() != null && Editor.this.mTextView.getApplicationWindowToken() == Editor.this.mTextView.getWindowToken() && Editor.this.mTextView.hasFocus();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class InsertionHandleView extends HandleView {
         private final int mDeltaHeight;
@@ -5724,10 +6194,25 @@ public class Editor {
             this.mDrawableOpacity = opacity2;
         }
 
+        /* renamed from: android.widget.Editor$InsertionHandleView$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                InsertionHandleView.this.hide();
+            }
+        }
+
         @Override // android.widget.Editor.HandleView
         protected void hideAfterDelay() {
             if (this.mHider == null) {
                 this.mHider = new Runnable() { // from class: android.widget.Editor.InsertionHandleView.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         InsertionHandleView.this.hide();
@@ -5776,7 +6261,6 @@ public class Editor {
             return super.getCursorHorizontalPosition(layout, offset);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.Editor.HandleView, android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             if (Editor.this.mFlagInsertionHandleGesturesEnabled) {
@@ -6032,7 +6516,10 @@ public class Editor {
             }
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:72:0x019b, code lost:            if (r5.canScrollHorizontally(r3) != false) goto L76;     */
+        /* JADX WARN: Code restructure failed: missing block: B:72:0x019b, code lost:
+        
+            if (r5.canScrollHorizontally(r3) != false) goto L172;
+         */
         @Override // android.widget.Editor.HandleView
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -6205,7 +6692,6 @@ public class Editor {
         return prevLine;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void loadCursorDrawable() {
         if (this.mDrawableForCursor == null) {
             this.mDrawableForCursor = this.mTextView.getTextCursorDrawable();
@@ -6344,6 +6830,9 @@ public class Editor {
             if (!this.mIsDraggingCursor && !Editor.this.mTouchState.isMultiTap() && !Editor.this.isCursorInsideEasyCorrectionSpan() && durationSinceCutOrCopy < 15000 && Editor.this.mTextActionMode == null) {
                 if (Editor.this.mInsertionActionModeRunnable == null) {
                     Editor.this.mInsertionActionModeRunnable = new Runnable() { // from class: android.widget.Editor.InsertionPointCursorController.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             Editor.this.startInsertionActionMode();
@@ -6357,6 +6846,18 @@ public class Editor {
             }
             if (Editor.this.mSelectionModifierCursorController != null) {
                 Editor.this.mSelectionModifierCursorController.hide();
+            }
+        }
+
+        /* renamed from: android.widget.Editor$InsertionPointCursorController$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                Editor.this.startInsertionActionMode();
             }
         }
 
@@ -6384,7 +6885,6 @@ public class Editor {
             return this.mHandle;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void reloadHandleDrawable() {
             InsertionHandleView insertionHandleView = this.mHandle;
             if (insertionHandleView == null) {
@@ -6458,7 +6958,6 @@ public class Editor {
             initHandles();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void initHandles() {
             if (this.mStartHandle == null) {
                 Editor editor = Editor.this;
@@ -6473,7 +6972,6 @@ public class Editor {
             Editor.this.hideInsertionPointCursorController();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void reloadHandleDrawables() {
             SelectionHandleView selectionHandleView = this.mStartHandle;
             if (selectionHandleView == null) {
@@ -6818,7 +7316,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void loadHandleDrawables(boolean overwrite) {
         if (this.mSelectHandleCenter == null || overwrite) {
             this.mSelectHandleCenter = this.mTextView.getTextSelectHandle();
@@ -6835,7 +7332,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class CorrectionHighlighter {
         private static final int FADE_OUT_DURATION = 400;
@@ -6904,7 +7400,6 @@ public class Editor {
             return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void invalidate(boolean delayed) {
             if (Editor.this.mTextView.getLayout() == null) {
                 return;
@@ -6927,7 +7422,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ErrorPopup extends PopupWindow {
         private boolean mAbove;
@@ -6976,7 +7470,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class InputContentType {
         boolean enterDown;
@@ -6992,7 +7485,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class InputMethodState {
         int mBatchEditNesting;
@@ -7011,7 +7503,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidRange(CharSequence text, int start, int end) {
         return start >= 0 && start <= end && end <= text.length();
     }
@@ -7169,12 +7660,14 @@ public class Editor {
     /* loaded from: classes4.dex */
     public static class EditOperation extends UndoOperation<Editor> {
         public static final Parcelable.ClassLoaderCreator<EditOperation> CREATOR = new Parcelable.ClassLoaderCreator<EditOperation>() { // from class: android.widget.Editor.EditOperation.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public EditOperation createFromParcel(Parcel in) {
                 return new EditOperation(in, null);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.ClassLoaderCreator
             public EditOperation createFromParcel(Parcel in, ClassLoader loader) {
                 return new EditOperation(in, loader);
@@ -7264,7 +7757,6 @@ public class Editor {
             modifyText(text, this.mStart, getOldTextEnd(), this.mNewText, this.mStart, this.mNewCursorPos);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean mergeWith(EditOperation edit) {
             if (this.mFrozen) {
                 return false;
@@ -7389,9 +7881,30 @@ public class Editor {
         public String toString() {
             return "[mType=" + getTypeString() + ", mOldText=" + this.mOldText + ", mNewText=" + this.mNewText + ", mStart=" + this.mStart + ", mOldCursorPos=" + this.mOldCursorPos + ", mNewCursorPos=" + this.mNewCursorPos + ", mFrozen=" + this.mFrozen + ", mIsComposition=" + this.mIsComposition + NavigationBarInflaterView.SIZE_MOD_END;
         }
+
+        /* renamed from: android.widget.Editor$EditOperation$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.ClassLoaderCreator<EditOperation> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public EditOperation createFromParcel(Parcel in) {
+                return new EditOperation(in, null);
+            }
+
+            @Override // android.os.Parcelable.ClassLoaderCreator
+            public EditOperation createFromParcel(Parcel in, ClassLoader loader) {
+                return new EditOperation(in, loader);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public EditOperation[] newArray(int size) {
+                return new EditOperation[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class ProcessTextIntentActionsHandler {
         private final SparseArray<AccessibilityNodeInfo.AccessibilityAction> mAccessibilityActions;
@@ -7402,6 +7915,10 @@ public class Editor {
         private final String mPackageName;
         private final List<ResolveInfo> mSupportedActivities;
         private final TextView mTextView;
+
+        /* synthetic */ ProcessTextIntentActionsHandler(Editor editor, ProcessTextIntentActionsHandlerIA processTextIntentActionsHandlerIA) {
+            this(editor);
+        }
 
         private ProcessTextIntentActionsHandler(Editor editor) {
             this.mAccessibilityIntents = new SparseArray<>();
@@ -7527,24 +8044,25 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class AccessibilitySmartActions {
         private final SparseArray<Pair<AccessibilityNodeInfo.AccessibilityAction, RemoteAction>> mActions;
         private final TextView mTextView;
+
+        /* synthetic */ AccessibilitySmartActions(TextView textView, AccessibilitySmartActionsIA accessibilitySmartActionsIA) {
+            this(textView);
+        }
 
         private AccessibilitySmartActions(TextView textView) {
             this.mActions = new SparseArray<>();
             this.mTextView = (TextView) Objects.requireNonNull(textView);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addAction(RemoteAction action) {
             int actionId = this.mActions.size() + 268439552;
             this.mActions.put(actionId, new Pair<>(new AccessibilityNodeInfo.AccessibilityAction(actionId, action.getTitle()), action));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void reset() {
             this.mActions.clear();
         }
@@ -7565,7 +8083,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class InsertModeController {
         private final Paint mHighlightPaint;
@@ -7666,7 +8183,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean enterInsertMode(int offset) {
         if (this.mInsertModeController == null) {
             TextView textView = this.mTextView;
@@ -7678,7 +8194,6 @@ public class Editor {
         return this.mInsertModeController.enterInsertMode(offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void exitInsertMode() {
         InsertModeController insertModeController = this.mInsertModeController;
         if (insertModeController == null) {
@@ -7687,7 +8202,6 @@ public class Editor {
         insertModeController.exitInsertMode();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setTransformationMethod(TransformationMethod method) {
         InsertModeController insertModeController = this.mInsertModeController;
         if (insertModeController == null) {
@@ -7697,7 +8211,6 @@ public class Editor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void beforeSetText() {
         InsertModeController insertModeController = this.mInsertModeController;
         if (insertModeController == null) {
@@ -7706,12 +8219,10 @@ public class Editor {
         insertModeController.beforeSetText();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onInitializeSmartActionsAccessibilityNodeInfo(AccessibilityNodeInfo nodeInfo) {
         this.mA11ySmartActions.onInitializeAccessibilityNodeInfo(nodeInfo);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean performSmartActionsAccessibilityAction(int actionId) {
         return this.mA11ySmartActions.performAccessibilityAction(actionId);
     }
@@ -7735,7 +8246,6 @@ public class Editor {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dismissMagnifierForDrag() {
         MagnifierMotionAnimator magnifierMotionAnimator = this.mMagnifierAnimator;
         if (magnifierMotionAnimator != null) {
@@ -7768,7 +8278,6 @@ public class Editor {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateMagnifierForDrag(MotionEvent event) {
         if (getMagnifierAnimator() == null) {
             return;
@@ -7785,7 +8294,6 @@ public class Editor {
         dismissMagnifierForDrag();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isUniversalSwitchEnable() {
         return Settings.Secure.getInt(this.mTextView.getContext().getContentResolver(), SWITCH_CONTROL_ENABLED, 0) == 1;
     }
@@ -7812,7 +8320,6 @@ public class Editor {
         this.mUseCtxMenuInDesktopMode = isMouse;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Layout getActiveLayout() {
         Layout layout = this.mTextView.getLayout();
         Layout hintLayout = this.mTextView.getHintLayout();
@@ -7822,7 +8329,6 @@ public class Editor {
         return layout;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void stopTextActionModeFromIME() {
         ActionMode actionMode = this.mTextActionMode;
         if (actionMode != null) {

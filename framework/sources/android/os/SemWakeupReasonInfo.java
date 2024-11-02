@@ -5,13 +5,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class SemWakeupReasonInfo implements Cloneable, Parcelable {
     public static final Parcelable.Creator<SemWakeupReasonInfo> CREATOR = new Parcelable.Creator<SemWakeupReasonInfo>() { // from class: android.os.SemWakeupReasonInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemWakeupReasonInfo createFromParcel(Parcel in) {
             return new SemWakeupReasonInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWakeupReasonInfo[] newArray(int size) {
             return new SemWakeupReasonInfo[size];
@@ -77,6 +78,23 @@ public class SemWakeupReasonInfo implements Cloneable, Parcelable {
         this.time = in.readLong();
     }
 
+    /* renamed from: android.os.SemWakeupReasonInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemWakeupReasonInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWakeupReasonInfo createFromParcel(Parcel in) {
+            return new SemWakeupReasonInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWakeupReasonInfo[] newArray(int size) {
+            return new SemWakeupReasonInfo[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -89,8 +107,8 @@ public class SemWakeupReasonInfo implements Cloneable, Parcelable {
         parcel.writeLong(this.time);
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SemWakeupReasonInfo m3200clone() {
+    /* renamed from: clone */
+    public SemWakeupReasonInfo m3199clone() {
         try {
             return (SemWakeupReasonInfo) super.clone();
         } catch (CloneNotSupportedException e) {

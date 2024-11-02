@@ -8,13 +8,14 @@ import java.util.Arrays;
 /* loaded from: classes4.dex */
 public final class SparseRectFArray implements Parcelable {
     public static final Parcelable.Creator<SparseRectFArray> CREATOR = new Parcelable.Creator<SparseRectFArray>() { // from class: android.view.inputmethod.SparseRectFArray.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SparseRectFArray createFromParcel(Parcel source) {
             return new SparseRectFArray(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SparseRectFArray[] newArray(int size) {
             return new SparseRectFArray[size];
@@ -23,6 +24,10 @@ public final class SparseRectFArray implements Parcelable {
     private final float[] mCoordinates;
     private final int[] mFlagsArray;
     private final int[] mKeys;
+
+    /* synthetic */ SparseRectFArray(SparseRectFArrayBuilder sparseRectFArrayBuilder, SparseRectFArrayIA sparseRectFArrayIA) {
+        this(sparseRectFArrayBuilder);
+    }
 
     public SparseRectFArray(Parcel source) {
         this.mKeys = source.createIntArray();
@@ -219,6 +224,23 @@ public final class SparseRectFArray implements Parcelable {
             return valueIfKeyNotFound;
         }
         return this.mFlagsArray[arrayIndex];
+    }
+
+    /* renamed from: android.view.inputmethod.SparseRectFArray$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SparseRectFArray> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SparseRectFArray createFromParcel(Parcel source) {
+            return new SparseRectFArray(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SparseRectFArray[] newArray(int size) {
+            return new SparseRectFArray[size];
+        }
     }
 
     @Override // android.os.Parcelable

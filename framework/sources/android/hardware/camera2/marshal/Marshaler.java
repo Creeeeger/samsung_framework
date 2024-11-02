@@ -16,7 +16,6 @@ public abstract class Marshaler<T> {
 
     public abstract T unmarshal(ByteBuffer byteBuffer);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Marshaler(MarshalQueryable<T> query, TypeReference<T> typeReference, int nativeType) {
         this.mTypeReference = (TypeReference) Preconditions.checkNotNull(typeReference, "typeReference must not be null");
         this.mNativeType = MarshalHelpers.checkNativeType(nativeType);

@@ -103,7 +103,6 @@ public abstract class SamsungGlobalActionsDialogBase implements ExtendableGlobal
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$show$0(boolean keyguardShowing, boolean deviceProvisioned, boolean fromSystemServer, int sideKeyType) {
         if (this.mPresenter.onStart(keyguardShowing, deviceProvisioned, fromSystemServer, sideKeyType)) {
             showDialog();
@@ -143,7 +142,6 @@ public abstract class SamsungGlobalActionsDialogBase implements ExtendableGlobal
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$showDialog$1(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
         return this.mPresenter.createOnKeyListenerActions(keyEvent, i);
     }
@@ -229,7 +227,6 @@ public abstract class SamsungGlobalActionsDialogBase implements ExtendableGlobal
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dismiss$2() {
         setRotationSuggestionsEnabled(true);
         ContentView contentView = this.mContentView;
@@ -276,7 +273,6 @@ public abstract class SamsungGlobalActionsDialogBase implements ExtendableGlobal
         this.mContentView.notifyDataSetChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class ActionsDialog extends Dialog implements DialogInterface {
         public ActionsDialog(Context context) {

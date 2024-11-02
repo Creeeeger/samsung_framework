@@ -186,6 +186,10 @@ public class SimpleAdapter extends BaseAdapter implements Filterable, ThemedSpin
 
     /* loaded from: classes4.dex */
     private class SimpleFilter extends Filter {
+        /* synthetic */ SimpleFilter(SimpleAdapter simpleAdapter, SimpleFilterIA simpleFilterIA) {
+            this();
+        }
+
         private SimpleFilter() {
         }
 

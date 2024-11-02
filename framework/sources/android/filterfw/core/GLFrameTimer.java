@@ -1,8 +1,9 @@
 package android.filterfw.core;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: GLFrame.java */
 /* loaded from: classes.dex */
-class GLFrameTimer {
+public class GLFrameTimer {
     private static StopWatchMap mTimer = null;
 
     GLFrameTimer() {

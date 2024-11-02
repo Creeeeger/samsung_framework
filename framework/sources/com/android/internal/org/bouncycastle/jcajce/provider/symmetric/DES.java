@@ -76,7 +76,6 @@ public final class DES {
             super("DES", 64, new DESKeyGenerator());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseKeyGenerator, javax.crypto.KeyGeneratorSpi
         public void engineInit(int keySize, SecureRandom random) {
             super.engineInit(keySize, random);
@@ -120,7 +119,6 @@ public final class DES {
             throw new InvalidKeySpecException("Invalid KeySpec");
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
         public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
             if (keySpec instanceof DESKeySpec) {
@@ -148,7 +146,6 @@ public final class DES {
             this.ivSize = ivSize;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
         public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
             CipherParameters param;

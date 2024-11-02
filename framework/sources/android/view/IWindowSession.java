@@ -1041,7 +1041,6 @@ public interface IWindowSession extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IWindowSession {
             private IBinder mRemote;

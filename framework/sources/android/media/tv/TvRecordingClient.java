@@ -212,7 +212,6 @@ public class TvRecordingClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class MySessionCallback extends TvInputManager.SessionCallback {
         Uri mChannelUri;

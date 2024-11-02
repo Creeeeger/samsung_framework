@@ -8,7 +8,6 @@ public final class FieldArray implements Cloneable {
     private boolean mGarbage;
     private int mSize;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FieldArray() {
         this(10);
     }
@@ -21,7 +20,6 @@ public final class FieldArray implements Cloneable {
         this.mSize = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FieldData get(int fieldNumber) {
         FieldData fieldData;
         int i = binarySearch(fieldNumber);
@@ -31,7 +29,6 @@ public final class FieldArray implements Cloneable {
         return fieldData;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void remove(int fieldNumber) {
         int i = binarySearch(fieldNumber);
         if (i >= 0) {
@@ -65,7 +62,6 @@ public final class FieldArray implements Cloneable {
         this.mSize = o;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void put(int fieldNumber, FieldData data) {
         int i = binarySearch(fieldNumber);
         if (i >= 0) {
@@ -110,7 +106,6 @@ public final class FieldArray implements Cloneable {
         this.mSize++;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int size() {
         if (this.mGarbage) {
             gc();
@@ -122,7 +117,6 @@ public final class FieldArray implements Cloneable {
         return size() == 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FieldData dataAt(int index) {
         if (this.mGarbage) {
             gc();
@@ -203,15 +197,15 @@ public final class FieldArray implements Cloneable {
         return true;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public final FieldArray m7011clone() {
+    /* renamed from: clone */
+    public final FieldArray m7006clone() {
         int size = size();
         FieldArray clone = new FieldArray(size);
         System.arraycopy(this.mFieldNumbers, 0, clone.mFieldNumbers, 0, size);
         for (int i = 0; i < size; i++) {
             FieldData fieldData = this.mData[i];
             if (fieldData != null) {
-                clone.mData[i] = fieldData.m7012clone();
+                clone.mData[i] = fieldData.m7007clone();
             }
         }
         clone.mSize = size;

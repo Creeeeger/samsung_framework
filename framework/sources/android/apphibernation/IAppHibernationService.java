@@ -205,14 +205,14 @@ public interface IAppHibernationService extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, HibernationStats v) {
             reply.writeString(k);
             reply.writeTypedObject(v, 1);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IAppHibernationService {
+        public static class Proxy implements IAppHibernationService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -338,7 +338,6 @@ public interface IAppHibernationService extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$getHibernationStatsForUser$0(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 HibernationStats v = (HibernationStats) _reply.readTypedObject(HibernationStats.CREATOR);

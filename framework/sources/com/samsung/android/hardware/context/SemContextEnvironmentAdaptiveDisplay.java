@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextEnvironmentAdaptiveDisplay extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextEnvironmentAdaptiveDisplay> CREATOR = new Parcelable.Creator<SemContextEnvironmentAdaptiveDisplay>() { // from class: com.samsung.android.hardware.context.SemContextEnvironmentAdaptiveDisplay.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextEnvironmentAdaptiveDisplay createFromParcel(Parcel in) {
             return new SemContextEnvironmentAdaptiveDisplay(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextEnvironmentAdaptiveDisplay[] newArray(int size) {
             return new SemContextEnvironmentAdaptiveDisplay[size];
@@ -22,7 +23,23 @@ public class SemContextEnvironmentAdaptiveDisplay extends SemContextEventContext
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextEnvironmentAdaptiveDisplay$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextEnvironmentAdaptiveDisplay> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextEnvironmentAdaptiveDisplay createFromParcel(Parcel in) {
+            return new SemContextEnvironmentAdaptiveDisplay(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextEnvironmentAdaptiveDisplay[] newArray(int size) {
+            return new SemContextEnvironmentAdaptiveDisplay[size];
+        }
+    }
+
     public SemContextEnvironmentAdaptiveDisplay() {
         this.mContext = new Bundle();
     }

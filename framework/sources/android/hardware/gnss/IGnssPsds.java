@@ -134,8 +134,9 @@ public interface IGnssPsds extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGnssPsds {
+        public static class Proxy implements IGnssPsds {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

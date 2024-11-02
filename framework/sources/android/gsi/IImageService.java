@@ -302,8 +302,9 @@ public interface IImageService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IImageService {
+        public static class Proxy implements IImageService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

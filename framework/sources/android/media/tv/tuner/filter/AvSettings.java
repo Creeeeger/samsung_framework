@@ -57,6 +57,10 @@ public class AvSettings extends Settings {
     public @interface VideoStreamType {
     }
 
+    /* synthetic */ AvSettings(int i, boolean z, boolean z2, int i2, int i3, boolean z3, AvSettingsIA avSettingsIA) {
+        this(i, z, z2, i2, i3, z3);
+    }
+
     /* JADX WARN: Illegal instructions before constructor call */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -113,6 +117,10 @@ public class AvSettings extends Settings {
         private final int mMainType;
         boolean mUseSecureMemory;
         private int mVideoStreamType;
+
+        /* synthetic */ Builder(int i, boolean z, BuilderIA builderIA) {
+            this(i, z);
+        }
 
         private Builder(int mainType, boolean isAudio) {
             this.mIsPassthrough = false;

@@ -42,7 +42,6 @@ public class PluginFilterCreator implements MediaFilterCreator {
     private static final String TAG = Def.tagOf((Class<?>) PluginFilterCreator.class);
     private PluginStore pluginStore;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setPluginStore(PluginStore pluginStore) {
         this.pluginStore = pluginStore;
     }
@@ -94,7 +93,7 @@ public class PluginFilterCreator implements MediaFilterCreator {
             }).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda3
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
-                    return PluginFilterCreator.this.m8784x46ec1c58((String) obj);
+                    return PluginFilterCreator.this.m8776x46ec1c58((String) obj);
                 }
             }).filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda4
                 @Override // java.util.function.Predicate
@@ -137,14 +136,12 @@ public class PluginFilterCreator implements MediaFilterCreator {
         }).orElse(imgpFilter);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$createImgpFilter$0(ImgpPlugin.Type e) {
         return e != ImgpPlugin.Type.CUSTOM;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$createImgpFilter$3$com-samsung-android-sume-core-filter-factory-PluginFilterCreator, reason: not valid java name */
-    public /* synthetic */ Optional m8784x46ec1c58(String e) {
+    /* renamed from: lambda$createImgpFilter$3$com-samsung-android-sume-core-filter-factory-PluginFilterCreator */
+    public /* synthetic */ Optional m8776x46ec1c58(String e) {
         return Optional.ofNullable(this.pluginStore.get(new ImgpDescriptor(ImgpPlugin.Type.valueOf(e)))).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.PluginFilterCreator$$ExternalSyntheticLambda13
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
@@ -153,7 +150,6 @@ public class PluginFilterCreator implements MediaFilterCreator {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaFilter lambda$createImgpFilter$5(MediaFilter filter, ContentFilterRegister it) {
         return new ContentFilter(it, filter);
     }
@@ -222,7 +218,6 @@ public class PluginFilterCreator implements MediaFilterCreator {
         }).orElse(filter);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public static /* synthetic */ NNFileDescriptor lambda$createNNFilter$7(Context context, Pair paths, String it) {
         AssetFileDescriptor afd = null;
@@ -258,12 +253,10 @@ public class PluginFilterCreator implements MediaFilterCreator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String[] lambda$createNNFilter$8(int x$0) {
         return new String[x$0];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaFilter lambda$createNNFilter$9(MediaFilter filter, ContentFilterRegister it) {
         return new ContentFilter(it, filter);
     }

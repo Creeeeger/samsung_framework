@@ -21,7 +21,6 @@ public class CursorLoader extends AsyncTaskLoader<Cursor> {
     String mSortOrder;
     Uri mUri;
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // android.content.AsyncTaskLoader
     public Cursor loadInBackground() {
         synchronized (this) {
@@ -121,7 +120,6 @@ public class CursorLoader extends AsyncTaskLoader<Cursor> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.Loader
     public void onReset() {
         super.onReset();

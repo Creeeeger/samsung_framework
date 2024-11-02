@@ -10,13 +10,14 @@ import android.window.SplashScreenView;
 /* loaded from: classes.dex */
 public class TransferSplashScreenViewStateItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<TransferSplashScreenViewStateItem> CREATOR = new Parcelable.Creator<TransferSplashScreenViewStateItem>() { // from class: android.app.servertransaction.TransferSplashScreenViewStateItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TransferSplashScreenViewStateItem createFromParcel(Parcel in) {
             return new TransferSplashScreenViewStateItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransferSplashScreenViewStateItem[] newArray(int size) {
             return new TransferSplashScreenViewStateItem[size];
@@ -24,6 +25,10 @@ public class TransferSplashScreenViewStateItem extends ActivityTransactionItem {
     };
     private SplashScreenView.SplashScreenViewParcelable mSplashScreenViewParcelable;
     private SurfaceControl mStartingWindowLeash;
+
+    /* synthetic */ TransferSplashScreenViewStateItem(Parcel parcel, TransferSplashScreenViewStateItemIA transferSplashScreenViewStateItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
@@ -57,5 +62,22 @@ public class TransferSplashScreenViewStateItem extends ActivityTransactionItem {
         instance.mSplashScreenViewParcelable = parcelable;
         instance.mStartingWindowLeash = startingWindowLeash;
         return instance;
+    }
+
+    /* renamed from: android.app.servertransaction.TransferSplashScreenViewStateItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TransferSplashScreenViewStateItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransferSplashScreenViewStateItem createFromParcel(Parcel in) {
+            return new TransferSplashScreenViewStateItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransferSplashScreenViewStateItem[] newArray(int size) {
+            return new TransferSplashScreenViewStateItem[size];
+        }
     }
 }

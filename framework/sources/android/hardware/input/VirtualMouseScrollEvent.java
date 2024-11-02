@@ -9,13 +9,14 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes2.dex */
 public final class VirtualMouseScrollEvent implements Parcelable {
     public static final Parcelable.Creator<VirtualMouseScrollEvent> CREATOR = new Parcelable.Creator<VirtualMouseScrollEvent>() { // from class: android.hardware.input.VirtualMouseScrollEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualMouseScrollEvent createFromParcel(Parcel source) {
             return new VirtualMouseScrollEvent(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualMouseScrollEvent[] newArray(int size) {
             return new VirtualMouseScrollEvent[size];
@@ -24,6 +25,14 @@ public final class VirtualMouseScrollEvent implements Parcelable {
     private final long mEventTimeNanos;
     private final float mXAxisMovement;
     private final float mYAxisMovement;
+
+    /* synthetic */ VirtualMouseScrollEvent(float f, float f2, long j, VirtualMouseScrollEventIA virtualMouseScrollEventIA) {
+        this(f, f2, j);
+    }
+
+    /* synthetic */ VirtualMouseScrollEvent(Parcel parcel, VirtualMouseScrollEventIA virtualMouseScrollEventIA) {
+        this(parcel);
+    }
 
     private VirtualMouseScrollEvent(float xAxisMovement, float yAxisMovement, long eventTimeNanos) {
         this.mXAxisMovement = xAxisMovement;
@@ -89,6 +98,23 @@ public final class VirtualMouseScrollEvent implements Parcelable {
             }
             this.mEventTimeNanos = eventTimeNanos;
             return this;
+        }
+    }
+
+    /* renamed from: android.hardware.input.VirtualMouseScrollEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualMouseScrollEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualMouseScrollEvent createFromParcel(Parcel source) {
+            return new VirtualMouseScrollEvent(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualMouseScrollEvent[] newArray(int size) {
+            return new VirtualMouseScrollEvent[size];
         }
     }
 }

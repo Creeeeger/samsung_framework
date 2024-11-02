@@ -159,13 +159,14 @@ public class ZenModeConfig implements Parcelable {
     public static final int[] MINUTE_BUCKETS = generateMinuteBuckets();
     public static final Object ZenConfigLock = new Object();
     public static final Parcelable.Creator<ZenModeConfig> CREATOR = new Parcelable.Creator<ZenModeConfig>() { // from class: android.service.notification.ZenModeConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ZenModeConfig createFromParcel(Parcel source) {
             return new ZenModeConfig(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ZenModeConfig[] newArray(int size) {
             return new ZenModeConfig[size];
@@ -420,7 +421,6 @@ public class ZenModeConfig implements Parcelable {
         return Objects.hash(Boolean.valueOf(this.allowAlarms), Boolean.valueOf(this.allowMedia), Boolean.valueOf(this.allowSystem), Boolean.valueOf(this.allowCalls), Boolean.valueOf(this.allowRepeatCallers), Boolean.valueOf(this.allowMessages), Integer.valueOf(this.allowCallsFrom), Integer.valueOf(this.allowMessagesFrom), Boolean.valueOf(this.allowReminders), Boolean.valueOf(this.allowEvents), Integer.valueOf(this.user), this.automaticRules, this.manualRule, Integer.valueOf(this.suppressedVisualEffects), Boolean.valueOf(this.areChannelsBypassingDnd), Boolean.valueOf(this.allowConversations), Integer.valueOf(this.allowConversationsFrom), exceptionContactsString, appBypassDndListString);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String toDayList(int[] days) {
         if (days == null || days.length == 0) {
             return "";
@@ -913,6 +913,23 @@ public class ZenModeConfig implements Parcelable {
             return new ZenModeConfig(parcel);
         } finally {
             parcel.recycle();
+        }
+    }
+
+    /* renamed from: android.service.notification.ZenModeConfig$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ZenModeConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ZenModeConfig createFromParcel(Parcel source) {
+            return new ZenModeConfig(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ZenModeConfig[] newArray(int size) {
+            return new ZenModeConfig[size];
         }
     }
 
@@ -1424,7 +1441,10 @@ public class ZenModeConfig implements Parcelable {
         return tryParseEventConditionId(conditionId) != null;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x0034, code lost:            if ("event".equals(r6.getPathSegments().get(0)) != false) goto L14;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0034, code lost:
+    
+        if ("event".equals(r6.getPathSegments().get(0)) != false) goto L36;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1611,13 +1631,14 @@ public class ZenModeConfig implements Parcelable {
     /* loaded from: classes3.dex */
     public static class ZenRule implements Parcelable {
         public static final Parcelable.Creator<ZenRule> CREATOR = new Parcelable.Creator<ZenRule>() { // from class: android.service.notification.ZenModeConfig.ZenRule.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ZenRule createFromParcel(Parcel source) {
                 return new ZenRule(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ZenRule[] newArray(int size) {
                 return new ZenRule[size];
@@ -1774,6 +1795,23 @@ public class ZenModeConfig implements Parcelable {
         public boolean isTrueOrUnknown() {
             Condition condition = this.condition;
             return condition != null && (condition.state == 1 || this.condition.state == 2);
+        }
+
+        /* renamed from: android.service.notification.ZenModeConfig$ZenRule$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ZenRule> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ZenRule createFromParcel(Parcel source) {
+                return new ZenRule(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ZenRule[] newArray(int size) {
+                return new ZenRule[size];
+            }
         }
     }
 

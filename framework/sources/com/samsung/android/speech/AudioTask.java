@@ -12,7 +12,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class AudioTask implements Runnable {
     static final int DEFAULT_BLOCK_SIZE = 320;
@@ -58,6 +57,9 @@ public class AudioTask implements Runnable {
     private boolean isOEMResult = false;
     private int dualThresholdFlag = 0;
     private Handler handler = new Handler() { // from class: com.samsung.android.speech.AudioTask.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             String[] result = msg.getData().getStringArray("recognition_result");
@@ -67,7 +69,6 @@ public class AudioTask implements Runnable {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioTask(SemSpeechRecognizer.ResultListener listener, String path, int command, int language, boolean samsungOOVResult) {
     }
 
@@ -222,6 +223,22 @@ public class AudioTask implements Runnable {
         this.mStopHandler = stopHandler;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.speech.AudioTask$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            String[] result = msg.getData().getStringArray("recognition_result");
+            if (AudioTask.this.m_listener != null) {
+                AudioTask.this.m_listener.onResults(result);
+            }
+        }
+    }
+
     private void SendHandlerMessage(String[] result) {
         Message msg = this.handler.obtainMessage();
         Bundle b = new Bundle();
@@ -241,7 +258,6 @@ public class AudioTask implements Runnable {
         this.loadNameList = Config.GetSamsungNameList(domain);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public AudioRecord getAudioRecord(int source) {
         AudioRecord retAudioRecord = null;
         Log.i(this.mTAG, "getAudioRecord modified by jy");
@@ -286,7 +302,6 @@ public class AudioTask implements Runnable {
         Log.i(this.mTAG, "mEmbeddedEngineLanguage : " + this.mEmbeddedEngineLanguage);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isBargeInFile(String mFilePath) {
         if (new File(mFilePath).exists()) {
             return true;

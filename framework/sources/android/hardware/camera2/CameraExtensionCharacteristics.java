@@ -111,7 +111,6 @@ public final class CameraExtensionCharacteristics {
         return new ArrayList(supportedSizes);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class CameraExtensionManagerGlobal {
         private static final CameraExtensionManagerGlobal GLOBAL_CAMERA_MANAGER = new CameraExtensionManagerGlobal();
@@ -156,6 +155,9 @@ public final class CameraExtensionCharacteristics {
                 }
                 this.mInitFuture = new InitializerFuture();
                 this.mConnection = new ServiceConnection() { // from class: android.hardware.camera2.CameraExtensionCharacteristics.CameraExtensionManagerGlobal.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.content.ServiceConnection
                     public void onServiceDisconnected(ComponentName component) {
                         CameraExtensionManagerGlobal.this.mConnection = null;
@@ -186,11 +188,42 @@ public final class CameraExtensionCharacteristics {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: android.hardware.camera2.CameraExtensionCharacteristics$CameraExtensionManagerGlobal$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 implements ServiceConnection {
+            AnonymousClass1() {
+            }
+
+            @Override // android.content.ServiceConnection
+            public void onServiceDisconnected(ComponentName component) {
+                CameraExtensionManagerGlobal.this.mConnection = null;
+                CameraExtensionManagerGlobal.this.mProxy = null;
+            }
+
+            @Override // android.content.ServiceConnection
+            public void onServiceConnected(ComponentName component, IBinder binder) {
+                CameraExtensionManagerGlobal.this.mProxy = ICameraExtensionsProxyService.Stub.asInterface(binder);
+                if (CameraExtensionManagerGlobal.this.mProxy == null) {
+                    throw new IllegalStateException("Camera Proxy service is null");
+                }
+                try {
+                    CameraExtensionManagerGlobal cameraExtensionManagerGlobal = CameraExtensionManagerGlobal.this;
+                    cameraExtensionManagerGlobal.mSupportsAdvancedExtensions = cameraExtensionManagerGlobal.mProxy.advancedExtensionsSupported();
+                } catch (RemoteException e) {
+                    Log.e(CameraExtensionManagerGlobal.TAG, "Remote IPC failed!");
+                }
+                CameraExtensionManagerGlobal.this.mInitFuture.setStatus(true);
+            }
+        }
+
         /* loaded from: classes.dex */
         public static class InitializerFuture implements Future<Boolean> {
             ConditionVariable mCondVar;
             private volatile Boolean mStatus;
+
+            /* synthetic */ InitializerFuture(InitializerFutureIA initializerFutureIA) {
+                this();
+            }
 
             private InitializerFuture() {
                 this.mCondVar = new ConditionVariable(false);
@@ -216,14 +249,12 @@ public final class CameraExtensionCharacteristics {
                 return this.mStatus != null;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.util.concurrent.Future
             public Boolean get() {
                 this.mCondVar.block();
                 return this.mStatus;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.util.concurrent.Future
             public Boolean get(long timeout, TimeUnit unit) throws TimeoutException {
                 long timeoutMs = unit.convert(timeout, TimeUnit.MILLISECONDS);

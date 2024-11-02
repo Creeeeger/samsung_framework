@@ -161,7 +161,6 @@ public class HexEncoder implements Encoder {
         return length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] decodeStrict(String str, int off, int len) throws IOException {
         if (str == null) {
             throw new NullPointerException("'str' cannot be null");

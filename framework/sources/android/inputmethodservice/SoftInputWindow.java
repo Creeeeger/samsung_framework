@@ -13,8 +13,9 @@ import android.view.inputmethod.InputMethodManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-final class SoftInputWindow extends Dialog {
+public final class SoftInputWindow extends Dialog {
     private static final boolean DEBUG = false;
     private static final String TAG = "SoftInputWindow";
     private final Rect mBounds;
@@ -34,7 +35,6 @@ final class SoftInputWindow extends Dialog {
         public static final int TOKEN_SET = 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setToken(IBinder token) {
         switch (this.mWindowState) {
             case 0:
@@ -57,7 +57,6 @@ final class SoftInputWindow extends Dialog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SoftInputWindow(Context service, int theme, KeyEvent.DispatcherState dispatcherState) {
         super(service, theme);
         this.mBounds = new Rect();
@@ -122,7 +121,6 @@ final class SoftInputWindow extends Dialog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dismissForDestroyIfNecessary() {
         switch (this.mWindowState) {
             case 0:
@@ -170,7 +168,6 @@ final class SoftInputWindow extends Dialog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
         this.mBounds.dumpDebug(proto, 1146756268037L);

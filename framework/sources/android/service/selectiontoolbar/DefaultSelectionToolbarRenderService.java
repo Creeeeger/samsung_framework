@@ -102,7 +102,6 @@ public final class DefaultSelectionToolbarRenderService extends SelectionToolbar
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         int size = this.mToolbarCache.size();

@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class CameraExtensionSessionStats implements Parcelable {
     public static final Parcelable.Creator<CameraExtensionSessionStats> CREATOR = new Parcelable.Creator<CameraExtensionSessionStats>() { // from class: android.hardware.CameraExtensionSessionStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CameraExtensionSessionStats createFromParcel(Parcel _aidl_source) {
             CameraExtensionSessionStats _aidl_out = new CameraExtensionSessionStats();
@@ -15,7 +17,6 @@ public class CameraExtensionSessionStats implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraExtensionSessionStats[] newArray(int _aidl_size) {
             return new CameraExtensionSessionStats[_aidl_size];
@@ -35,6 +36,25 @@ public class CameraExtensionSessionStats implements Parcelable {
         public static final int EXTENSION_HDR = 3;
         public static final int EXTENSION_NIGHT = 4;
         public static final int EXTENSION_NONE = -1;
+    }
+
+    /* renamed from: android.hardware.CameraExtensionSessionStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CameraExtensionSessionStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraExtensionSessionStats createFromParcel(Parcel _aidl_source) {
+            CameraExtensionSessionStats _aidl_out = new CameraExtensionSessionStats();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraExtensionSessionStats[] newArray(int _aidl_size) {
+            return new CameraExtensionSessionStats[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

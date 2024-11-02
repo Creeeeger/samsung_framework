@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class PackageStats implements Parcelable {
     public static final Parcelable.Creator<PackageStats> CREATOR = new Parcelable.Creator<PackageStats>() { // from class: android.content.pm.PackageStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PackageStats createFromParcel(Parcel in) {
             return new PackageStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageStats[] newArray(int size) {
             return new PackageStats[size];
@@ -32,6 +33,23 @@ public class PackageStats implements Parcelable {
     public long externalObbSize;
     public String packageName;
     public int userHandle;
+
+    /* renamed from: android.content.pm.PackageStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PackageStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PackageStats createFromParcel(Parcel in) {
+            return new PackageStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PackageStats[] newArray(int size) {
+            return new PackageStats[size];
+        }
+    }
 
     public String toString() {
         StringBuilder sb = new StringBuilder("PackageStats{");

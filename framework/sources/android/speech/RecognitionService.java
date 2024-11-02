@@ -39,6 +39,9 @@ public abstract class RecognitionService extends Service {
     private final Map<IBinder, SessionState> mSessions = new HashMap();
     private final RecognitionServiceBinder mBinder = new RecognitionServiceBinder(this);
     private final Handler mHandler = new Handler() { // from class: android.speech.RecognitionService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -75,7 +78,42 @@ public abstract class RecognitionService extends Service {
 
     protected abstract void onStopListening(Callback callback);
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.speech.RecognitionService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    StartListeningArgs args = (StartListeningArgs) msg.obj;
+                    RecognitionService.this.dispatchStartListening(args.mIntent, args.mListener, args.mAttributionSource);
+                    return;
+                case 2:
+                    RecognitionService.this.dispatchStopListening((IRecognitionListener) msg.obj);
+                    return;
+                case 3:
+                    RecognitionService.this.dispatchCancel((IRecognitionListener) msg.obj);
+                    return;
+                case 4:
+                    RecognitionService.this.dispatchClearCallback((IRecognitionListener) msg.obj);
+                    return;
+                case 5:
+                    CheckRecognitionSupportArgs checkArgs = (CheckRecognitionSupportArgs) msg.obj;
+                    RecognitionService.this.dispatchCheckRecognitionSupport(checkArgs.mIntent, checkArgs.callback, checkArgs.mAttributionSource);
+                    return;
+                case 6:
+                    ModelDownloadArgs modelDownloadArgs = (ModelDownloadArgs) msg.obj;
+                    RecognitionService.this.dispatchTriggerModelDownload(modelDownloadArgs.mIntent, modelDownloadArgs.mAttributionSource, modelDownloadArgs.mListener);
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     /* JADX WARN: Removed duplicated region for block: B:16:0x003c A[Catch: RemoteException -> 0x0086, TryCatch #0 {RemoteException -> 0x0086, blocks: (B:4:0x0011, B:6:0x001d, B:9:0x0028, B:11:0x0030, B:16:0x003c, B:18:0x0057, B:22:0x005d, B:24:0x0064, B:25:0x0076, B:27:0x007c), top: B:2:0x000f }] */
     /* JADX WARN: Removed duplicated region for block: B:24:0x0064 A[Catch: RemoteException -> 0x0086, TryCatch #0 {RemoteException -> 0x0086, blocks: (B:4:0x0011, B:6:0x001d, B:9:0x0028, B:11:0x0030, B:16:0x003c, B:18:0x0057, B:22:0x005d, B:24:0x0064, B:25:0x0076, B:27:0x007c), top: B:2:0x000f }] */
     /*
@@ -162,7 +200,6 @@ public abstract class RecognitionService extends Service {
         throw new UnsupportedOperationException("Method not decompiled: android.speech.RecognitionService.dispatchStartListening(android.content.Intent, android.speech.IRecognitionListener, android.content.AttributionSource):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchStopListening(IRecognitionListener listener) {
         SessionState sessionState = this.mSessions.get(listener.asBinder());
         if (sessionState == null) {
@@ -177,7 +214,6 @@ public abstract class RecognitionService extends Service {
         onStopListening(sessionState.mCallback);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchCancel(IRecognitionListener listener) {
         SessionState sessionState = this.mSessions.get(listener.asBinder());
         if (sessionState == null) {
@@ -188,7 +224,6 @@ public abstract class RecognitionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchClearCallback(IRecognitionListener listener) {
         SessionState sessionState = this.mSessions.remove(listener.asBinder());
         if (sessionState != null) {
@@ -197,17 +232,21 @@ public abstract class RecognitionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchCheckRecognitionSupport(Intent intent, IRecognitionSupportCallback callback, AttributionSource attributionSource) {
         onCheckRecognitionSupport(intent, attributionSource, new SupportCallback(callback));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void dispatchTriggerModelDownload(Intent intent, AttributionSource attributionSource, final IModelDownloadListener listener) {
+    public void dispatchTriggerModelDownload(Intent intent, AttributionSource attributionSource, IModelDownloadListener listener) {
         if (listener == null) {
             onTriggerModelDownload(intent, attributionSource);
         } else {
             onTriggerModelDownload(intent, attributionSource, new ModelDownloadListener() { // from class: android.speech.RecognitionService.2
+                final /* synthetic */ IModelDownloadListener val$listener;
+
+                AnonymousClass2(IModelDownloadListener listener2) {
+                    listener = listener2;
+                }
+
                 @Override // android.speech.ModelDownloadListener
                 public void onProgress(int completedPercent) {
                     try {
@@ -247,6 +286,52 @@ public abstract class RecognitionService extends Service {
         }
     }
 
+    /* renamed from: android.speech.RecognitionService$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements ModelDownloadListener {
+        final /* synthetic */ IModelDownloadListener val$listener;
+
+        AnonymousClass2(IModelDownloadListener listener2) {
+            listener = listener2;
+        }
+
+        @Override // android.speech.ModelDownloadListener
+        public void onProgress(int completedPercent) {
+            try {
+                listener.onProgress(completedPercent);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.speech.ModelDownloadListener
+        public void onSuccess() {
+            try {
+                listener.onSuccess();
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.speech.ModelDownloadListener
+        public void onScheduled() {
+            try {
+                listener.onScheduled();
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.speech.ModelDownloadListener
+        public void onError(int error) {
+            try {
+                listener.onError(error);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
     /* loaded from: classes3.dex */
     private static class StartListeningArgs {
         public final AttributionSource mAttributionSource;
@@ -266,6 +351,10 @@ public abstract class RecognitionService extends Service {
         public final AttributionSource mAttributionSource;
         public final Intent mIntent;
 
+        /* synthetic */ CheckRecognitionSupportArgs(Intent intent, IRecognitionSupportCallback iRecognitionSupportCallback, AttributionSource attributionSource, CheckRecognitionSupportArgsIA checkRecognitionSupportArgsIA) {
+            this(intent, iRecognitionSupportCallback, attributionSource);
+        }
+
         private CheckRecognitionSupportArgs(Intent intent, IRecognitionSupportCallback callback, AttributionSource attributionSource) {
             this.mIntent = intent;
             this.callback = callback;
@@ -278,6 +367,10 @@ public abstract class RecognitionService extends Service {
         final AttributionSource mAttributionSource;
         final Intent mIntent;
         final IModelDownloadListener mListener;
+
+        /* synthetic */ ModelDownloadArgs(Intent intent, AttributionSource attributionSource, IModelDownloadListener iModelDownloadListener, ModelDownloadArgsIA modelDownloadArgsIA) {
+            this(intent, attributionSource, iModelDownloadListener);
+        }
 
         private ModelDownloadArgs(Intent intent, AttributionSource attributionSource, IModelDownloadListener listener) {
             this.mIntent = intent;
@@ -322,7 +415,6 @@ public abstract class RecognitionService extends Service {
         return super.createContext(contextParams);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleAttributionContextCreation(AttributionSource attributionSource) {
         for (SessionState sessionState : this.mSessions.values()) {
             Callback currentCallback = sessionState.mCallback;
@@ -358,6 +450,10 @@ public abstract class RecognitionService extends Service {
         private boolean mAttributionContextCreated;
         private final AttributionSource mCallingAttributionSource;
         private final IRecognitionListener mListener;
+
+        /* synthetic */ Callback(RecognitionService recognitionService, IRecognitionListener iRecognitionListener, AttributionSource attributionSource, CallbackIA callbackIA) {
+            this(iRecognitionListener, attributionSource);
+        }
 
         private Callback(IRecognitionListener listener, AttributionSource attributionSource) {
             this.mListener = listener;
@@ -434,6 +530,10 @@ public abstract class RecognitionService extends Service {
     /* loaded from: classes3.dex */
     public static class SupportCallback {
         private final IRecognitionSupportCallback mCallback;
+
+        /* synthetic */ SupportCallback(IRecognitionSupportCallback iRecognitionSupportCallback, SupportCallbackIA supportCallbackIA) {
+            this(iRecognitionSupportCallback);
+        }
 
         private SupportCallback(IRecognitionSupportCallback callback) {
             this.mCallback = callback;
@@ -534,7 +634,6 @@ public abstract class RecognitionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class SessionState {
         private Callback mCallback;

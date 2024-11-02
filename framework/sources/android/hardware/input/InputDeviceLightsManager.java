@@ -10,7 +10,6 @@ import com.android.internal.util.Preconditions;
 import java.lang.ref.Reference;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public class InputDeviceLightsManager extends LightsManager {
     private static final boolean DEBUG = false;
@@ -19,7 +18,6 @@ public class InputDeviceLightsManager extends LightsManager {
     private final InputManagerGlobal mGlobal = InputManagerGlobal.getInstance();
     private final String mPackageName = ActivityThread.currentPackageName();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InputDeviceLightsManager(int deviceId) {
         this.mDeviceId = deviceId;
     }
@@ -51,6 +49,10 @@ public class InputDeviceLightsManager extends LightsManager {
     public final class InputDeviceLightsSession extends LightsManager.LightsSession implements AutoCloseable {
         private final CloseGuard mCloseGuard;
         private boolean mClosed;
+
+        /* synthetic */ InputDeviceLightsSession(InputDeviceLightsManager inputDeviceLightsManager, InputDeviceLightsSessionIA inputDeviceLightsSessionIA) {
+            this();
+        }
 
         private InputDeviceLightsSession() {
             CloseGuard closeGuard = new CloseGuard();

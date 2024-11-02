@@ -95,7 +95,6 @@ class CryptoHandler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String decrypt(byte[] encText, boolean isLegacyKey) throws UnsupportedEncodingException, GeneralSecurityException {
         Log.d(TAG, "decrypt(): isLegacyKey = " + isLegacyKey);
         try {
@@ -131,13 +130,11 @@ class CryptoHandler {
         return text;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String decryptBulk(byte[] encText) throws GeneralSecurityException, UnsupportedEncodingException {
         byte[] decText = decryptBlob(encText);
         return new String(decText, "UTF-8");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] decryptBlob(byte[] encText) throws GeneralSecurityException {
         Log.d(TAG, "decryptBlob(): cipherLength: " + encText.length);
         Cipher cipherDec = Cipher.getInstance("AES/CBC/PKCS7Padding");
@@ -150,7 +147,6 @@ class CryptoHandler {
         return cipherDec.doFinal(cipherText);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] encryptBlob(byte[] text) {
         Log.d(TAG, "encryptBlob()");
         for (int tries = 0; tries < 5; tries++) {
@@ -176,7 +172,6 @@ class CryptoHandler {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] encrypt(String text) {
         Log.d(TAG, "encrypt(" + text + NavigationBarInflaterView.KEY_CODE_END);
         for (int tries = 0; tries < 5; tries++) {
@@ -216,7 +211,6 @@ class CryptoHandler {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] encryptBulk(List<String> textList) {
         Log.d(TAG, "encryptBulk()");
         for (int tries = 0; tries < 5; tries++) {
@@ -322,7 +316,6 @@ class CryptoHandler {
         keyStore.setEntry("synthetic_password_knox.analytics.service.cryptokey", new KeyStore.SecretKeyEntry(secretKey), builder.build());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean generateGCMKey() {
         Log.d(TAG, "generateGCMKey()");
         KeyStore ks = getKeyStore();
@@ -344,7 +337,6 @@ class CryptoHandler {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void generateCBCKey() {
         KeyStore ks = getKeyStore();
         if (ks != null) {
@@ -413,7 +405,6 @@ class CryptoHandler {
         return secretKeyEntry.getSecretKey();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isGCMKeyGenerated() {
         KeyStore ks = getKeyStore();
         if (ks != null) {
@@ -428,7 +419,6 @@ class CryptoHandler {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void deleteAnalyticsLegacyKey() {
         String str = TAG;
         Log.d(str, "deleteAnalyticsLegacyKey()");

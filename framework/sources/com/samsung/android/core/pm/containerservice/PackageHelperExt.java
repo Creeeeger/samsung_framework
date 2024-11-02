@@ -64,9 +64,101 @@ public class PackageHelperExt {
         int unmountSecureContainer(String str, boolean z) throws RemoteException;
     }
 
+    /* renamed from: com.samsung.android.core.pm.containerservice.PackageHelperExt$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements StorageManagerExt {
+        IStorageManager mStorageManager = PackageHelperExt.getStorageManager();
+
+        AnonymousClass1() throws RemoteException {
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int createSecureContainer(String id, int sizeMb, String fstype, String key, int ownerUid, boolean external) throws RemoteException {
+            return this.mStorageManager.createSecureContainer(id, sizeMb, fstype, key, ownerUid, external);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public String getSecureContainerPath(String id) throws RemoteException {
+            return this.mStorageManager.getSecureContainerPath(id);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int resizeSecureContainer(String id, int sizeMb, String key) throws RemoteException {
+            return this.mStorageManager.resizeSecureContainer(id, sizeMb, key);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int mountSecureContainer(String id, String key, int ownerUid, boolean readOnly) throws RemoteException {
+            return this.mStorageManager.mountSecureContainer(id, key, ownerUid, readOnly);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int renameSecureContainer(String oldId, String newId) throws RemoteException {
+            return this.mStorageManager.renameSecureContainer(oldId, newId);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public String getSecureContainerFilesystemPath(String id) throws RemoteException {
+            return this.mStorageManager.getSecureContainerFilesystemPath(id);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int finalizeSecureContainer(String id) throws RemoteException {
+            return this.mStorageManager.finalizeSecureContainer(id);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int destroySecureContainer(String id, boolean force) throws RemoteException {
+            return this.mStorageManager.destroySecureContainer(id, force);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public boolean isSecureContainerMounted(String id) throws RemoteException {
+            return this.mStorageManager.isSecureContainerMounted(id);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int unmountSecureContainer(String id, boolean force) throws RemoteException {
+            return this.mStorageManager.unmountSecureContainer(id, force);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public String[] getSecureContainerList() throws RemoteException {
+            return this.mStorageManager.getSecureContainerList();
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int fixPermissionsSecureContainer(String id, int gid, String filename) throws RemoteException {
+            return this.mStorageManager.fixPermissionsSecureContainer(id, gid, filename);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public void finishMediaUpdate() throws RemoteException {
+            this.mStorageManager.finishMediaUpdate();
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int getUsedSpaceSecureContainer(String id) throws RemoteException {
+            return this.mStorageManager.getUsedSpaceSecureContainer(id);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public int trimSecureContainer(String id, int sizeMb, String key) throws RemoteException {
+            return this.mStorageManager.trimSecureContainer(id, sizeMb, key);
+        }
+
+        @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
+        public StorageVolume[] getVolumeList(int userId, String callingPackage, int flags) throws RemoteException {
+            return this.mStorageManager.getVolumeList(userId, callingPackage, flags);
+        }
+    }
+
     public static StorageManagerExt getStorageManagerExt() throws RemoteException {
         return new StorageManagerExt() { // from class: com.samsung.android.core.pm.containerservice.PackageHelperExt.1
             IStorageManager mStorageManager = PackageHelperExt.getStorageManager();
+
+            AnonymousClass1() throws RemoteException {
+            }
 
             @Override // com.samsung.android.core.pm.containerservice.PackageHelperExt.StorageManagerExt
             public int createSecureContainer(String id, int sizeMb, String fstype, String key, int ownerUid, boolean external) throws RemoteException {

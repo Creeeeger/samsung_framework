@@ -36,6 +36,9 @@ public class MbmsStreamingSession implements AutoCloseable {
     private int mSubscriptionId;
     private AtomicReference<IMbmsStreamingService> mService = new AtomicReference<>(null);
     private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() { // from class: android.telephony.MbmsStreamingSession.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.IBinder.DeathRecipient
         public void binderDied() {
             MbmsStreamingSession.sIsInitialized.set(false);
@@ -44,6 +47,20 @@ public class MbmsStreamingSession implements AutoCloseable {
     };
     private Set<StreamingService> mKnownActiveStreamingServices = new ArraySet();
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telephony.MbmsStreamingSession$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements IBinder.DeathRecipient {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            MbmsStreamingSession.sIsInitialized.set(false);
+            MbmsStreamingSession.this.sendErrorToApp(3, "Received death notification");
+        }
+    }
+
     private MbmsStreamingSession(Context context, Executor executor, int subscriptionId, MbmsStreamingSessionCallback callback) {
         this.mSubscriptionId = -1;
         this.mContext = context;
@@ -51,15 +68,21 @@ public class MbmsStreamingSession implements AutoCloseable {
         this.mInternalCallback = new InternalStreamingSessionCallback(callback, executor);
     }
 
-    public static MbmsStreamingSession create(Context context, Executor executor, int subscriptionId, final MbmsStreamingSessionCallback callback) {
+    public static MbmsStreamingSession create(Context context, Executor executor, int subscriptionId, MbmsStreamingSessionCallback callback) {
         if (!sIsInitialized.compareAndSet(false, true)) {
             throw new IllegalStateException("Cannot create two instances of MbmsStreamingSession");
         }
         MbmsStreamingSession session = new MbmsStreamingSession(context, executor, subscriptionId, callback);
-        final int result = session.bindAndInitialize();
+        int result = session.bindAndInitialize();
         if (result != 0) {
             sIsInitialized.set(false);
             executor.execute(new Runnable() { // from class: android.telephony.MbmsStreamingSession.2
+                final /* synthetic */ int val$result;
+
+                AnonymousClass2(int result2) {
+                    result = result2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     MbmsStreamingSessionCallback.this.onError(result, null);
@@ -68,6 +91,21 @@ public class MbmsStreamingSession implements AutoCloseable {
             return null;
         }
         return session;
+    }
+
+    /* renamed from: android.telephony.MbmsStreamingSession$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ int val$result;
+
+        AnonymousClass2(int result2) {
+            result = result2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            MbmsStreamingSessionCallback.this.onError(result, null);
+        }
     }
 
     public static MbmsStreamingSession create(Context context, Executor executor, MbmsStreamingSessionCallback callback) {
@@ -160,8 +198,65 @@ public class MbmsStreamingSession implements AutoCloseable {
         this.mKnownActiveStreamingServices.remove(service);
     }
 
+    /* renamed from: android.telephony.MbmsStreamingSession$3 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass3 implements ServiceConnection {
+        AnonymousClass3() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            IMbmsStreamingService streamingService = IMbmsStreamingService.Stub.asInterface(service);
+            try {
+                int result = streamingService.initialize(MbmsStreamingSession.this.mInternalCallback, MbmsStreamingSession.this.mSubscriptionId);
+                if (result == -1) {
+                    MbmsStreamingSession.this.close();
+                    throw new IllegalStateException("Middleware must not return an unknown error code");
+                }
+                if (result != 0) {
+                    MbmsStreamingSession.this.sendErrorToApp(result, "Error returned during initialization");
+                    MbmsStreamingSession.sIsInitialized.set(false);
+                    return;
+                }
+                try {
+                    streamingService.asBinder().linkToDeath(MbmsStreamingSession.this.mDeathRecipient, 0);
+                    MbmsStreamingSession.this.mService.set(streamingService);
+                } catch (RemoteException e) {
+                    MbmsStreamingSession.this.sendErrorToApp(3, "Middleware lost during initialization");
+                    MbmsStreamingSession.sIsInitialized.set(false);
+                }
+            } catch (RemoteException e2) {
+                Log.e(MbmsStreamingSession.LOG_TAG, "Service died before initialization");
+                MbmsStreamingSession.this.sendErrorToApp(103, e2.toString());
+                MbmsStreamingSession.sIsInitialized.set(false);
+            } catch (RuntimeException e3) {
+                Log.e(MbmsStreamingSession.LOG_TAG, "Runtime exception during initialization");
+                MbmsStreamingSession.this.sendErrorToApp(103, e3.toString());
+                MbmsStreamingSession.sIsInitialized.set(false);
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            MbmsStreamingSession.sIsInitialized.set(false);
+            MbmsStreamingSession.this.mService.set(null);
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onNullBinding(ComponentName name) {
+            Log.w(MbmsStreamingSession.LOG_TAG, "bindAndInitialize: Remote service returned null");
+            MbmsStreamingSession.this.sendErrorToApp(3, "Middleware service binding returned null");
+            MbmsStreamingSession.sIsInitialized.set(false);
+            MbmsStreamingSession.this.mService.set(null);
+            MbmsStreamingSession.this.mContext.unbindService(this);
+        }
+    }
+
     private int bindAndInitialize() {
-        ServiceConnection serviceConnection = new ServiceConnection() { // from class: android.telephony.MbmsStreamingSession.3
+        AnonymousClass3 anonymousClass3 = new ServiceConnection() { // from class: android.telephony.MbmsStreamingSession.3
+            AnonymousClass3() {
+            }
+
             @Override // android.content.ServiceConnection
             public void onServiceConnected(ComponentName name, IBinder service) {
                 IMbmsStreamingService streamingService = IMbmsStreamingService.Stub.asInterface(service);
@@ -209,11 +304,10 @@ public class MbmsStreamingSession implements AutoCloseable {
                 MbmsStreamingSession.this.mContext.unbindService(this);
             }
         };
-        this.mServiceConnection = serviceConnection;
-        return MbmsUtils.startBinding(this.mContext, MBMS_STREAMING_SERVICE_ACTION, serviceConnection);
+        this.mServiceConnection = anonymousClass3;
+        return MbmsUtils.startBinding(this.mContext, MBMS_STREAMING_SERVICE_ACTION, anonymousClass3);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendErrorToApp(int errorCode, String message) {
         try {
             this.mInternalCallback.onError(errorCode, message);

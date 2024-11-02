@@ -10,7 +10,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implements AudioTrack.OnPlaybackPositionUpdateListener {
     private static final boolean DBG = false;
@@ -32,7 +31,6 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
     private int mUnconsumedBytes;
     private ConcurrentLinkedQueue<ProgressMarker> markerList;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SynthesisPlaybackQueueItem(TextToSpeechService.AudioOutputParams audioParams, int sampleRate, int audioFormat, int channelCount, TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, AbstractEventLogger logger) {
         super(dispatcher, callerIdentity);
         ReentrantLock reentrantLock = new ReentrantLock();
@@ -90,7 +88,6 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         this.mLogger.onCompleted(this.mStatusCode);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.speech.tts.PlaybackQueueItem
     public void stop(int statusCode) {
         try {
@@ -110,7 +107,6 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void done() {
         try {
             this.mListLock.lock();
@@ -122,7 +118,6 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class ProgressMarker {
         public final int end;
@@ -144,7 +139,6 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void rangeStart(int markerInFrames, int start, int end) {
         this.markerList.add(new ProgressMarker(markerInFrames, start, end));
         updateMarker();
@@ -165,7 +159,6 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
     public void onPeriodicNotification(AudioTrack track) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void put(byte[] buffer) throws InterruptedException {
         try {
             this.mListLock.lock();
@@ -204,7 +197,6 @@ public final class SynthesisPlaybackQueueItem extends PlaybackQueueItem implemen
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static final class ListEntry {
         final byte[] mBytes;

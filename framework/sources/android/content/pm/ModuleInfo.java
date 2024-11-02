@@ -7,13 +7,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class ModuleInfo implements Parcelable {
     public static final Parcelable.Creator<ModuleInfo> CREATOR = new Parcelable.Creator<ModuleInfo>() { // from class: android.content.pm.ModuleInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ModuleInfo createFromParcel(Parcel source) {
             return new ModuleInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ModuleInfo[] newArray(int size) {
             return new ModuleInfo[size];
@@ -23,6 +24,10 @@ public final class ModuleInfo implements Parcelable {
     private boolean mHidden;
     private CharSequence mName;
     private String mPackageName;
+
+    /* synthetic */ ModuleInfo(Parcel parcel, ModuleInfoIA moduleInfoIA) {
+        this(parcel);
+    }
 
     public ModuleInfo() {
     }
@@ -105,5 +110,22 @@ public final class ModuleInfo implements Parcelable {
         this.mPackageName = source.readString();
         this.mHidden = source.readBoolean();
         this.mApexModuleName = source.readString();
+    }
+
+    /* renamed from: android.content.pm.ModuleInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ModuleInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ModuleInfo createFromParcel(Parcel source) {
+            return new ModuleInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ModuleInfo[] newArray(int size) {
+            return new ModuleInfo[size];
+        }
     }
 }

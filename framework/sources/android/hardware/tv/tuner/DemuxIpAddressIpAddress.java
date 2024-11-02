@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxIpAddressIpAddress implements Parcelable {
     public static final Parcelable.Creator<DemuxIpAddressIpAddress> CREATOR = new Parcelable.Creator<DemuxIpAddressIpAddress>() { // from class: android.hardware.tv.tuner.DemuxIpAddressIpAddress.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxIpAddressIpAddress createFromParcel(Parcel _aidl_source) {
             return new DemuxIpAddressIpAddress(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxIpAddressIpAddress[] newArray(int _aidl_size) {
             return new DemuxIpAddressIpAddress[_aidl_size];
@@ -27,6 +28,10 @@ public final class DemuxIpAddressIpAddress implements Parcelable {
     public @interface Tag {
         public static final int v4 = 0;
         public static final int v6 = 1;
+    }
+
+    /* synthetic */ DemuxIpAddressIpAddress(Parcel parcel, DemuxIpAddressIpAddressIA demuxIpAddressIpAddressIA) {
+        this(parcel);
     }
 
     public DemuxIpAddressIpAddress() {
@@ -77,6 +82,23 @@ public final class DemuxIpAddressIpAddress implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.DemuxIpAddressIpAddress$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxIpAddressIpAddress> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxIpAddressIpAddress createFromParcel(Parcel _aidl_source) {
+            return new DemuxIpAddressIpAddress(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxIpAddressIpAddress[] newArray(int _aidl_size) {
+            return new DemuxIpAddressIpAddress[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

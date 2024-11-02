@@ -85,8 +85,9 @@ public interface IContentCaptureOptionsCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IContentCaptureOptionsCallback {
+        public static class Proxy implements IContentCaptureOptionsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -19,13 +19,14 @@ public class VendorConfigurationState implements Parcelable {
     public static final String CONFIGURATION_VOLTE_E911CALL = "VOLTE_911_CALL";
     public static final String CONFIGURATION_WFC_DEFAULT_SPN = "WFC_DEFAULT_SPN";
     public static final Parcelable.Creator<VendorConfigurationState> CREATOR = new Parcelable.Creator<VendorConfigurationState>() { // from class: android.telephony.VendorConfigurationState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VendorConfigurationState createFromParcel(Parcel in) {
             return new VendorConfigurationState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VendorConfigurationState[] newArray(int size) {
             return new VendorConfigurationState[size];
@@ -121,6 +122,23 @@ public class VendorConfigurationState implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.VendorConfigurationState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VendorConfigurationState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VendorConfigurationState createFromParcel(Parcel in) {
+            return new VendorConfigurationState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VendorConfigurationState[] newArray(int size) {
+            return new VendorConfigurationState[size];
+        }
     }
 
     public String toString() {

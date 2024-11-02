@@ -183,8 +183,9 @@ public interface IAGnssRil extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IAGnssRil {
+        public static class Proxy implements IAGnssRil {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -324,7 +325,9 @@ public interface IAGnssRil extends IInterface {
     /* loaded from: classes2.dex */
     public static class AGnssRefLocationCellID implements Parcelable {
         public static final Parcelable.Creator<AGnssRefLocationCellID> CREATOR = new Parcelable.Creator<AGnssRefLocationCellID>() { // from class: android.hardware.gnss.IAGnssRil.AGnssRefLocationCellID.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AGnssRefLocationCellID createFromParcel(Parcel _aidl_source) {
                 AGnssRefLocationCellID _aidl_out = new AGnssRefLocationCellID();
@@ -332,7 +335,6 @@ public interface IAGnssRil extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AGnssRefLocationCellID[] newArray(int _aidl_size) {
                 return new AGnssRefLocationCellID[_aidl_size];
@@ -346,6 +348,25 @@ public interface IAGnssRil extends IInterface {
         public int tac = 0;
         public int pcid = 0;
         public int arfcn = 0;
+
+        /* renamed from: android.hardware.gnss.IAGnssRil$AGnssRefLocationCellID$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AGnssRefLocationCellID> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AGnssRefLocationCellID createFromParcel(Parcel _aidl_source) {
+                AGnssRefLocationCellID _aidl_out = new AGnssRefLocationCellID();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AGnssRefLocationCellID[] newArray(int _aidl_size) {
+                return new AGnssRefLocationCellID[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {
@@ -463,7 +484,9 @@ public interface IAGnssRil extends IInterface {
     /* loaded from: classes2.dex */
     public static class AGnssRefLocation implements Parcelable {
         public static final Parcelable.Creator<AGnssRefLocation> CREATOR = new Parcelable.Creator<AGnssRefLocation>() { // from class: android.hardware.gnss.IAGnssRil.AGnssRefLocation.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AGnssRefLocation createFromParcel(Parcel _aidl_source) {
                 AGnssRefLocation _aidl_out = new AGnssRefLocation();
@@ -471,7 +494,6 @@ public interface IAGnssRil extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AGnssRefLocation[] newArray(int _aidl_size) {
                 return new AGnssRefLocation[_aidl_size];
@@ -479,6 +501,25 @@ public interface IAGnssRil extends IInterface {
         };
         public AGnssRefLocationCellID cellID;
         public int type;
+
+        /* renamed from: android.hardware.gnss.IAGnssRil$AGnssRefLocation$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AGnssRefLocation> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AGnssRefLocation createFromParcel(Parcel _aidl_source) {
+                AGnssRefLocation _aidl_out = new AGnssRefLocation();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AGnssRefLocation[] newArray(int _aidl_size) {
+                return new AGnssRefLocation[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {
@@ -550,7 +591,9 @@ public interface IAGnssRil extends IInterface {
     /* loaded from: classes2.dex */
     public static class NetworkAttributes implements Parcelable {
         public static final Parcelable.Creator<NetworkAttributes> CREATOR = new Parcelable.Creator<NetworkAttributes>() { // from class: android.hardware.gnss.IAGnssRil.NetworkAttributes.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public NetworkAttributes createFromParcel(Parcel _aidl_source) {
                 NetworkAttributes _aidl_out = new NetworkAttributes();
@@ -558,7 +601,6 @@ public interface IAGnssRil extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public NetworkAttributes[] newArray(int _aidl_size) {
                 return new NetworkAttributes[_aidl_size];
@@ -568,6 +610,25 @@ public interface IAGnssRil extends IInterface {
         public long networkHandle = 0;
         public boolean isConnected = false;
         public int capabilities = 0;
+
+        /* renamed from: android.hardware.gnss.IAGnssRil$NetworkAttributes$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<NetworkAttributes> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public NetworkAttributes createFromParcel(Parcel _aidl_source) {
+                NetworkAttributes _aidl_out = new NetworkAttributes();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public NetworkAttributes[] newArray(int _aidl_size) {
+                return new NetworkAttributes[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

@@ -11,13 +11,11 @@ import java.util.Map;
 @CheckReturnValue
 /* loaded from: classes4.dex */
 final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.ExtensionDescriptor> {
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public boolean hasExtensions(MessageLite prototype) {
         return prototype instanceof GeneratedMessageLite.ExtendableMessage;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public FieldSet<GeneratedMessageLite.ExtensionDescriptor> getExtensions(Object message) {
         return ((GeneratedMessageLite.ExtendableMessage) message).extensions;
@@ -28,19 +26,16 @@ final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.Ext
         ((GeneratedMessageLite.ExtendableMessage) message).extensions = extensions;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public FieldSet<GeneratedMessageLite.ExtensionDescriptor> getMutableExtensions(Object message) {
         return ((GeneratedMessageLite.ExtendableMessage) message).ensureExtensionsAreMutable();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public void makeImmutable(Object message) {
         getExtensions(message).makeImmutable();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Failed to find 'out' block for switch in B:43:0x0135. Please report as an issue. */
     /* JADX WARN: Multi-variable type inference failed */
@@ -239,7 +234,7 @@ final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.Ext
         return ub2;
     }
 
-    /* renamed from: com.android.framework.protobuf.ExtensionSchemaLite$1, reason: invalid class name */
+    /* renamed from: com.android.framework.protobuf.ExtensionSchemaLite$1 */
     /* loaded from: classes4.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
@@ -322,14 +317,12 @@ final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.Ext
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public int extensionNumber(Map.Entry<?, ?> extension) {
         GeneratedMessageLite.ExtensionDescriptor descriptor = (GeneratedMessageLite.ExtensionDescriptor) extension.getKey();
         return descriptor.getNumber();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public void serializeExtension(Writer writer, Map.Entry<?, ?> extension) throws IOException {
         GeneratedMessageLite.ExtensionDescriptor descriptor = (GeneratedMessageLite.ExtensionDescriptor) extension.getKey();
@@ -461,13 +454,11 @@ final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.Ext
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public Object findExtensionByNumber(ExtensionRegistryLite extensionRegistry, MessageLite defaultInstance, int number) {
         return extensionRegistry.findLiteExtensionByNumber(defaultInstance, number);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public void parseLengthPrefixedMessageSetItem(Reader reader, Object extensionObject, ExtensionRegistryLite extensionRegistry, FieldSet<GeneratedMessageLite.ExtensionDescriptor> extensions) throws IOException {
         GeneratedMessageLite.GeneratedExtension<?, ?> extension = (GeneratedMessageLite.GeneratedExtension) extensionObject;
@@ -475,7 +466,6 @@ final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.Ext
         extensions.setField(extension.descriptor, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ExtensionSchema
     public void parseMessageSetItem(ByteString data, Object extensionObject, ExtensionRegistryLite extensionRegistry, FieldSet<GeneratedMessageLite.ExtensionDescriptor> extensions) throws IOException {
         GeneratedMessageLite.GeneratedExtension<?, ?> extension = (GeneratedMessageLite.GeneratedExtension) extensionObject;

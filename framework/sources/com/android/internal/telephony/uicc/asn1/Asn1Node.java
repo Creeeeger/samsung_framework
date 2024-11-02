@@ -20,10 +20,18 @@ public final class Asn1Node {
     private static final byte[] TRUE_BYTES = {-1};
     private static final byte[] FALSE_BYTES = {0};
 
+    /* synthetic */ Asn1Node(int i, List list, Asn1NodeIA asn1NodeIA) {
+        this(i, list);
+    }
+
     /* loaded from: classes5.dex */
     public static final class Builder {
         private final List<Asn1Node> mChildren;
         private final int mTag;
+
+        /* synthetic */ Builder(int i, BuilderIA builderIA) {
+            this(i);
+        }
 
         private Builder(int tag) {
             if (!Asn1Node.isConstructedTag(tag)) {
@@ -117,7 +125,6 @@ public final class Asn1Node {
         return new Builder(tag);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isConstructedTag(int tag) {
         byte[] tagBytes = IccUtils.unsignedIntToBytes(tag);
         return (tagBytes[0] & 32) != 0;
@@ -131,7 +138,6 @@ public final class Asn1Node {
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Asn1Node(int tag, byte[] src, int offset, int length) {
         this.mTag = tag;
         boolean isConstructedTag = isConstructedTag(tag);

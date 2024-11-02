@@ -569,7 +569,6 @@ public interface IPackageInstallerSession extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IPackageInstallerSession {
             private IBinder mRemote;

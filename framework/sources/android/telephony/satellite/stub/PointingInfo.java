@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class PointingInfo implements Parcelable {
     public static final Parcelable.Creator<PointingInfo> CREATOR = new Parcelable.Creator<PointingInfo>() { // from class: android.telephony.satellite.stub.PointingInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PointingInfo createFromParcel(Parcel _aidl_source) {
             PointingInfo _aidl_out = new PointingInfo();
@@ -15,7 +17,6 @@ public class PointingInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PointingInfo[] newArray(int _aidl_size) {
             return new PointingInfo[_aidl_size];
@@ -23,6 +24,25 @@ public class PointingInfo implements Parcelable {
     };
     public float satelliteAzimuth = 0.0f;
     public float satelliteElevation = 0.0f;
+
+    /* renamed from: android.telephony.satellite.stub.PointingInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PointingInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PointingInfo createFromParcel(Parcel _aidl_source) {
+            PointingInfo _aidl_out = new PointingInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PointingInfo[] newArray(int _aidl_size) {
+            return new PointingInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

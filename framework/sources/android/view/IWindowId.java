@@ -115,7 +115,6 @@ public interface IWindowId extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IWindowId {
             private IBinder mRemote;

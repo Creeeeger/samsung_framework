@@ -99,8 +99,9 @@ public interface IRecognitionServiceManagerCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRecognitionServiceManagerCallback {
+        public static class Proxy implements IRecognitionServiceManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

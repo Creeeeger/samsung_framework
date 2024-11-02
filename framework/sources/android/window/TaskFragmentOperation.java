@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TaskFragmentOperation implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentOperation> CREATOR = new Parcelable.Creator<TaskFragmentOperation>() { // from class: android.window.TaskFragmentOperation.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaskFragmentOperation createFromParcel(Parcel in) {
             return new TaskFragmentOperation(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentOperation[] newArray(int size) {
             return new TaskFragmentOperation[size];
@@ -46,6 +47,14 @@ public final class TaskFragmentOperation implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes4.dex */
     public @interface OperationType {
+    }
+
+    /* synthetic */ TaskFragmentOperation(int i, TaskFragmentCreationParams taskFragmentCreationParams, IBinder iBinder, Intent intent, Bundle bundle, IBinder iBinder2, TaskFragmentAnimationParams taskFragmentAnimationParams, TaskFragmentOperationIA taskFragmentOperationIA) {
+        this(i, taskFragmentCreationParams, iBinder, intent, bundle, iBinder2, taskFragmentAnimationParams);
+    }
+
+    /* synthetic */ TaskFragmentOperation(Parcel parcel, TaskFragmentOperationIA taskFragmentOperationIA) {
+        this(parcel);
     }
 
     private TaskFragmentOperation(int opType, TaskFragmentCreationParams taskFragmentCreationParams, IBinder activityToken, Intent activityIntent, Bundle bundle, IBinder secondaryFragmentToken, TaskFragmentAnimationParams animationParams) {
@@ -77,6 +86,23 @@ public final class TaskFragmentOperation implements Parcelable {
         dest.writeBundle(this.mBundle);
         dest.writeStrongBinder(this.mSecondaryFragmentToken);
         dest.writeTypedObject(this.mAnimationParams, flags);
+    }
+
+    /* renamed from: android.window.TaskFragmentOperation$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentOperation> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentOperation createFromParcel(Parcel in) {
+            return new TaskFragmentOperation(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentOperation[] newArray(int size) {
+            return new TaskFragmentOperation[size];
+        }
     }
 
     public int getOpType() {

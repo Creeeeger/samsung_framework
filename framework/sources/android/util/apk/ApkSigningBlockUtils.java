@@ -56,7 +56,6 @@ public final class ApkSigningBlockUtils {
     private ApkSigningBlockUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SignatureInfo findSignature(RandomAccessFile apk, int blockId) throws IOException, SignatureNotFoundException {
         Pair<ByteBuffer, Long> eocdAndOffsetInFile = getEocd(apk);
         ByteBuffer eocd = eocdAndOffsetInFile.first;
@@ -72,7 +71,6 @@ public final class ApkSigningBlockUtils {
         return new SignatureInfo(apkSignatureSchemeBlock, apkSigningBlockOffset, centralDirOffset, eocdOffset, eocd);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void verifyIntegrity(Map<Integer, byte[]> expectedDigests, RandomAccessFile apk, SignatureInfo signatureInfo) throws SecurityException {
         if (expectedDigests.isEmpty()) {
             throw new SecurityException("No digests provided");
@@ -102,7 +100,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isSupportedSignatureAlgorithm(int sigAlgorithm) {
         switch (sigAlgorithm) {
             case 257:
@@ -154,7 +151,16 @@ public final class ApkSigningBlockUtils {
         return computeContentDigestsPer1MbChunk(digestAlgorithms, new DataSource[]{beforeApkSigningBlock, centralDir, eocd});
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:48:0x011a, code lost:            r10 = r10 - r2;        r18 = r18 + 1;        r8 = r21;        r6 = r22;        r9 = r9;        r21 = r3 + r2;        r3 = r19;     */
+    /* JADX WARN: Code restructure failed: missing block: B:48:0x011a, code lost:
+    
+        r10 = r10 - r2;
+        r18 = r18 + 1;
+        r8 = r21;
+        r6 = r22;
+        r9 = r9;
+        r21 = r3 + r2;
+        r3 = r19;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -167,7 +173,6 @@ public final class ApkSigningBlockUtils {
         throw new UnsupportedOperationException("Method not decompiled: android.util.apk.ApkSigningBlockUtils.computeContentDigestsPer1MbChunk(int[], android.util.apk.DataSource[]):byte[][]");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] parseVerityDigestAndVerifySourceLength(byte[] data, long fileSize, SignatureInfo signatureInfo) throws SecurityException {
         if (data.length != 32 + 8) {
             throw new SecurityException("Verity digest size is wrong: " + data.length);
@@ -186,6 +191,9 @@ public final class ApkSigningBlockUtils {
         try {
             byte[] expectedRootHash = parseVerityDigestAndVerifySourceLength(expectedDigest, apk.getChannel().size(), signatureInfo);
             VerityBuilder.VerityResult verity = VerityBuilder.generateApkVerityTree(apk, signatureInfo, new ByteBufferFactory() { // from class: android.util.apk.ApkSigningBlockUtils.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.util.apk.ByteBufferFactory
                 public ByteBuffer create(int capacity) {
                     return ByteBuffer.allocate(capacity);
@@ -196,6 +204,18 @@ public final class ApkSigningBlockUtils {
             }
         } catch (IOException | DigestException | NoSuchAlgorithmException e) {
             throw new SecurityException("Error during verification", e);
+        }
+    }
+
+    /* renamed from: android.util.apk.ApkSigningBlockUtils$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements ByteBufferFactory {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.apk.ByteBufferFactory
+        public ByteBuffer create(int capacity) {
+            return ByteBuffer.allocate(capacity);
         }
     }
 
@@ -223,7 +243,6 @@ public final class ApkSigningBlockUtils {
         return ((inputSizeBytes + 1048576) - 1) / 1048576;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int compareSignatureAlgorithm(int sigAlgorithm1, int sigAlgorithm2) {
         int digestAlgorithm1 = getSignatureAlgorithmContentDigestAlgorithm(sigAlgorithm1);
         int digestAlgorithm2 = getSignatureAlgorithmContentDigestAlgorithm(sigAlgorithm2);
@@ -268,7 +287,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getSignatureAlgorithmContentDigestAlgorithm(int sigAlgorithm) {
         switch (sigAlgorithm) {
             case 257:
@@ -289,7 +307,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getContentDigestAlgorithmJcaDigestAlgorithm(int digestAlgorithm) {
         switch (digestAlgorithm) {
             case 1:
@@ -314,7 +331,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getSignatureAlgorithmJcaKeyAlgorithm(int sigAlgorithm) {
         switch (sigAlgorithm) {
             case 257:
@@ -335,7 +351,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Pair<String, ? extends AlgorithmParameterSpec> getSignatureAlgorithmJcaSignatureAlgorithm(int sigAlgorithm) {
         switch (sigAlgorithm) {
             case 257:
@@ -408,7 +423,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ByteBuffer getLengthPrefixedSlice(ByteBuffer source) throws IOException {
         if (source.remaining() < 4) {
             throw new IOException("Remaining buffer too short to contain length of length-prefixed field. Remaining: " + source.remaining());
@@ -423,7 +437,6 @@ public final class ApkSigningBlockUtils {
         return getByteBuffer(source, len);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] readLengthPrefixedByteArray(ByteBuffer buf) throws IOException {
         int len = buf.getInt();
         if (len < 0) {
@@ -508,7 +521,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class MultipleDigestDataDigester implements DataDigester {
         private final MessageDigest[] mMds;
@@ -527,7 +539,6 @@ public final class ApkSigningBlockUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static VerifiedProofOfRotation verifyProofOfRotationStruct(ByteBuffer porBuf, CertificateFactory certFactory) throws SecurityException, IOException {
         int levelCount = 0;
         int lastSigAlgorithm = -1;

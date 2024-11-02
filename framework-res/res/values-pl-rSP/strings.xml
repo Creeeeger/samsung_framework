@@ -315,7 +315,7 @@
     <string name="ext_media_unsupported_notification_message">Ta maszina niy ôbsuguje tyj karty pamiyńci %s. Tyknij, coby narychtować w ôbsugiwanym formacie.</string>
     <string name="ext_media_unsupported_notification_title">Niyôbsugiwano karta pamiyńci %s</string>
     <string name="ext_storage_bad_removal_button">Sztartnij zajś</string>
-    <string name="ext_storage_bad_removal_title">Sztartnij jeszcze rŏz telefōn</string>
+    <string name="ext_storage_bad_removal_title">Sztartnij jeszcze rŏz tablet</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message">Czy na zicher chcesz nasztalować karta pamiyńci? Wszyjske dane na karcie bydōm stracone.</string>
     <string name="extmedia_format_message_usbhost">Wszyjske pliki zachōwane w pamiynci USB bydōm wyciepniynte. Czynności tej niy idzie ôdwrōcić.</string>
@@ -569,16 +569,16 @@ Wkrótce tablet uruchomi się ponownie."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Dźwięk jest odtwarzany na urządzeniu audio Bluetooth. Dotknij tutaj, aby go wyłączyć</string>
     <string name="multisound_sound_via_headphone">Klang aplikacyji %s je puszczany bez słuchawki. Tyknij tukej, coby go wyłōnczyć.</string>
     <string name="multisound_sound_via_headphone_multiselection">Dźwięk jest odtwarzany przez słuchawki. Dotknij tutaj, aby go wyłączyć.</string>
-    <string name="multisound_sound_via_phone_speaker">Klang aplikacyji %s je puszczany bez głośnik mobilniŏka. Tyknij tukej, coby ônego wyłōnczyć.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Dźwięk jest odtwarzany przez głośnik telefonu. Dotknij tutaj, aby go wyłączyć.</string>
+    <string name="multisound_sound_via_phone_speaker">Klang aplikacyji %s je puszczany bez głośnik tabletu. Tyknij tukej, coby go wyłōnczyć.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Dźwięk jest odtwarzany przez głośnik tabletu. Dotknij tutaj, aby go wyłączyć.</string>
     <string name="multisound_sound_via_usb_audio">Klang aplikacyji %s je puszczany bez maszina audio USB. Tyknij tukej, coby go wyłōnczyć.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Dźwięk jest odtwarzany przez urządzenie audio USB. Dotknij tutaj, aby go wyłączyć.</string>
     <string name="multisound_title">Ôsobny klang aplikacyji</string>
     <string name="multisound_turn_off_multisound">Wyłōncz</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Niy idzie sztartnōńć aplikacyji %s w trybie Samsung DeX. Wybadej sztartnōńć ôna w trybie mobilniŏka.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Niy idzie sztartnōńć aplikacyje %s w Samsung DeX. Je ôna ôd ekranōw dōmowych we telefōnach.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Niykere gry fōngujōm ino na ekranach do tykaniŏ. Jak elymynta, kere kerujōm myszōm niy fōngujōm w trybie Samsung DeX, sprōbuj grać w trybie telefōnu.</string>
-    <string name="my_device">Tyn telefōn</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Niy idzie sztartnōńć alikacyje %s w trybie Samsung DeX. Sprōbuj sztartnōńć jōm w trybie tabletu.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Niy idzie sztartnōńć alikacyje %s w trybie Samsung DeX. Je ôna przeznŏczōnŏ dlŏ ekranōw dōmowych tabletōw.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Niykere gry fōngujōm ino na ekranach do tykaniŏ. Jak elymynta co kerujōm myszōm niy fōngujōm w trybie Samsung DeX, sprōbuj grać w trybie tabletu.</string>
+    <string name="my_device">Tyn tablet</string>
     <string name="network_locked_sim_dialog_message_ais">Niykere fōnkcyje Twojij karty SIM niyma dostympne w tym telefōnie, skuli tego co niy społniŏ ôn wymŏgań ôkryślōnych we prawidłach i warōnkach subskrypcyje. Coby dowiedzieć sie wiyncyj na tyn tymat, pogŏdej z pōnktym Ôbsugi klijynta gyszeftu Samsung abo sklepym, w kerym przedany ôstōł Ci tyn produkt.</string>
     <string name="network_locked_sim_notification_text">Kej mŏsz potajlowanŏ tastatura, idzie jōm przełōnaczyć na wiyrch abo na dōł, a tastatura kero pływŏ - kaj chcesz.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -769,7 +769,7 @@ DAĆ DO"</string>
     <string name="policydesc_allow_desktopsync">Niy dozwŏlej na synchrōnizacyjŏ z kōmputrem.</string>
     <string name="policydesc_allow_internetsharing">Niy dozwŏlej na używanie Routera Wi-Fi.</string>
     <string name="policydesc_allow_irda">Niy dozwŏlej na używanie z IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Niy dozwŏlej na używanie e-maili POP i IMAP w telefōnie.</string>
+    <string name="policydesc_allow_popimapemail">Niy dozwŏlej na używanie e-maili POP i IMAP w tablecie.</string>
     <string name="policydesc_allow_storagecard">Niy dozwŏlej na używanie kart pamiyńci.</string>
     <string name="policydesc_allow_textmessaging">Niy dozwŏlej na używanie SMS i MMS.</string>
     <string name="policydesc_allow_thirdParty">Ta aplikacyjŏ poradzi niy dozwŏlić na sztartniyńcie aplikacyjōw ôd cudzych gyszeftōw.</string>
@@ -815,7 +815,7 @@ DAĆ DO"</string>
     <string name="pwd_change_enforced">Prawidła zabezpieczyń wymogajōm zmiany hasła.</string>
     <string name="recording_fail">Niy idzie używać mikrofōnu w aplikacyji %1$s, kej je używany w aplikacji %2$s.</string>
     <string name="recording_popup">%s używŏ mikrofōna.</string>
-    <string name="recording_popup_device">Mobilniŏk</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">Urządzenie %s korzysta z mikrofonu Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s korzysta z mikrofonu urządzenia %2$s.</string>
     <string name="redo">Jesz.rŏz</string>
@@ -881,12 +881,12 @@ DAĆ DO"</string>
     <string name="screencapture_restrict">Prawidła zabezpieczyń zakŏzujōm korzistaniŏ z kopije ôbrŏzkŏwyj.</string>
     <string name="sd_card_unavailable_message">Niy idzie używać karty pamiyńci, skuli tego co ôstała ôna wrażōnŏ, kej używany bōł inkszy profil używŏcza.</string>
     <string name="sd_card_unavailable_title">Karta pamiyńci niyma dostypmnŏ</string>
-    <string name="sdcard_bad_removal_message">Karta pamiyńci niy ôstała wyciōngniyntŏ bezpiecznie. Coby chrōnić przed niyspodzianym pōnownym sztartniyńciym telefōnu, zachowej niyzachowane info i sztartnij go jeszcze rŏz terŏzki.</string>
+    <string name="sdcard_bad_removal_message">Karta pamiyńci niy ôstała wyciōngniyntŏ bezpiecznie. Coby chrōnić przed niyspodzianym pōnownym sztartniyńciym tabletu, zachowej niyzachowane info i sztartnij go jeszcze rŏz terŏzki.</string>
     <string name="sdcard_batch_decrypt_noti_content">Ôdszyforwaniy karty pamiyńci</string>
     <string name="sdcard_batch_decrypt_noti_title">Ôdszyfrowaniy karty pamiyńci</string>
     <string name="sdcard_batch_decrypt_popup_content">Karta pamiynci przed użyciym trza ȏdszyfrować. Ôdszyfrowaniy trwŏ co nŏjmynij godzina. Napōcznij z nafolowanōm bateryjōm i po podłōnczyniu masziny do zasilaniŏ aż do zakōńczyniŏ ȏdszyfrowaniŏ. Kej sztopniesz proces, idzie stracić tajle abo wszyjskie dane.</string>
     <string name="sdcard_decrypt_err_notification">Feler ôdszyfrowaniŏ karty pamiyńci</string>
-    <string name="sdcard_decrypt_error_otherdevice">Niykere pliki na karcie SD bōły zaszyfrowane na inkszyj maszinie i niy idzie nich używać w tym telefōnie.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Niykere pliki na karcie SD bōły zaszyfrowane na inkszyj maszinie i niy idzie nich używać w tym tablecie.</string>
     <string name="sdcard_decrypt_notification">Karta pamiynci ôdszyfrowanŏ.</string>
     <string name="sdcard_decrypt_title_notification">Ôdszyfrowaniy karty pamiyńci</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Ôdszyfr. karty pamiyńci…</string>
@@ -1202,7 +1202,7 @@ Bez zglyndu na to, jak trzimiesz telefōn, knefle bydōm zŏwdy wele portu folow
     <string name="usb_abnormal_reset_title">Pożyniynie USB niyma sztabilne</string>
     <string name="usb_abnormal_reset_toast">Pożyniynie USB niyma sztabilne. Ôdepnij lica i podepnij jōm jeszcze rŏz abo sprōbuj użyć inkszyj lice.</string>
     <string name="usb_accessory_notification_title">Podłōnczōno do dingsa USB</string>
-    <string name="usb_bad_removal_message">Pamiyńć USB niy ôstała wyciōngniyntŏ bezpiecznie. Coby chrōnić przed niyspodzianym pōnownym sztartniyńciym telefōnu, zachowej niyzachowane info i sztartnij go jeszcze rŏz terŏzki.</string>
+    <string name="usb_bad_removal_message">Pamiyńć USB niy ôstała wyciōngniyntŏ bezpiecznie. Coby chrōnić przed niyspodzianym pōnownym sztartniyńciym tabletu, zachowej niyzachowane info i sztartnij go jeszcze rŏz terŏzki.</string>
     <string name="usb_blocked_by_emergency_mode">Niykere fōnkcyje USB niyma dostympne w Trybie awaryjnym.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Niy idzie używać fōnkcyji zwiōnzanych ze zepniyntōm maszinōm USB, kej Tryb maksymalnygo szporowaniŏ ynergie je załōnczōny.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Niykere fōnkcyje USB bydōm ôgraniczōne przi załōnczōnym Trybie maksymalnego szporowaniŏ ynergije.</string>
@@ -1211,18 +1211,18 @@ Bez zglyndu na to, jak trzimiesz telefōn, knefle bydōm zŏwdy wele portu folow
     <string name="usb_camera_connected_notification_title">Podłōnczōno maszina multimedialnŏ</string>
     <string name="usb_camera_disconnected_notification_title">Ôdłōnczōno maszina multimedialnŏ</string>
     <string name="usb_cd_installer_notification_title">Uaktualniynie ôprogramowanio</string>
-    <string name="usb_charing_only_notification_title">Folowanie bez USB</string>
+    <string name="usb_charing_only_notification_title">Pożyniōno</string>
     <string name="usb_debugging_only_notification_title">Ino debugowanie</string>
     <string name="usb_host_Unknown_device_connected_notification_title">Podłōnczono cudzŏ naszina USB</string>
     <string name="usb_host_cable_connected_notification_title">Konektor USB bōł podłōnczony</string>
     <string name="usb_host_cable_disconnected_notification_title">Konektor USB bōł ôdłōnczony</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Niy do się dostać do tyj masziny. Do podłōnczyniy masziny trza zasilaniŏ zewnyntrznego</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Podłōnczono maszina USB o wielgiyj mocy</string>
-    <string name="usb_host_resource_exceed_message">Kōntroler USB w telefōnie niy mŏ zasobów, kere styknōm do pożyniyniŏ tyj masziny. Sprōbuj ôdłōnczyć maszina i pożynić jōm jeszcze rŏz.</string>
+    <string name="usb_host_resource_exceed_message">Kōntroler USB w tablecie niy mŏ zasobów, kere styknōm do pożyniyniŏ tyj maszina. Sprōbuj ôdłōnczyć maszina i pożynić jōm jeszcze rŏz.</string>
     <string name="usb_host_resource_exceed_title">Niy ma za tela zasobōw kōntrolera USB</string>
-    <string name="usb_hub_depth_exceed_message">Telefōn ôbsuguje co nojwyżyj 5 pożyniyń huba USB we jednym czasie.</string>
+    <string name="usb_hub_depth_exceed_message">Tablet ôbsuguje co nojwyżyj 5 pożyniyń huba USB we jednym czasie.</string>
     <string name="usb_hub_depth_exceed_title">Maksym.liczba pożyniyń huba USB</string>
-    <string name="usb_hub_power_exceed_message">Telefōn je za fest rozfolowany, coby zasiylać ta maszina USB. Pożyń maszina z hubym USB z włŏsnym zasiylaniym, a potym do telefōnu.</string>
+    <string name="usb_hub_power_exceed_message">Tablet je za fest rozfolowany, coby zasiylać ta maszina USB. Pożyń maszina z hubym USB z włŏsnym zasiylaniym, a potym do tabletu.</string>
     <string name="usb_increase_battery_usage">Pożyniynie USB może zwielgszyć użycie bateryje.</string>
     <string name="usb_keyboard_connected_notification_title">Tastatura podłōnczōnŏ</string>
     <string name="usb_keyboard_disconnected_notification_title">Tastatura ôdłōnczōnŏ</string>
@@ -1250,7 +1250,7 @@ Bez zglyndu na to, jak trzimiesz telefōn, knefle bydōm zŏwdy wele portu folow
     <string name="usb_storage_stop_title">Używanŏ pamiyńć USB</string>
     <string name="usb_storage_title">Podłōnczōno USB</string>
     <string name="usb_type_c_supply_power_notification_title">Folow. pod. masz. bez USB</string>
-    <string name="usb_unsupport_accessory_message">Twōj telefōn niy ôbsuguje tyj masziny USB.</string>
+    <string name="usb_unsupport_accessory_message">Twōj tablet niy ôbsuguje tyj masziny USB.</string>
     <string name="usb_unsupport_accessory_title">Niyôbsugowanŏ maszina USB</string>
     <string name="usb_unsupported_device">Pożyniōnŏ maszina USB niyma ôbsugowanŏ.</string>
     <string name="usb_unsupported_device_title">Maszina niyôbsugowane</string>
@@ -1268,19 +1268,19 @@ Bez zglyndu na to, jak trzimiesz telefōn, knefle bydōm zŏwdy wele portu folow
     <string name="usb_water_dialg_method_2_desc_2">Coby suszynie bōło gibcij, możesz skerować propeler abo fyn (ino chłōdny luft) na port.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Wykryliśmy wilgoć lub obcy materiał w porcie ładowania/USB.
 
-Sprawdź, czy w porcie ładowania/USB nie ma obcych materiałów, takich jak kurz lub zanieczyszczenia. Aby zapobiec uszkodzeniu telefonu, nie podłączaj nic do momentu wyczyszczenia i osuszenia portu ładowania.
+Sprawdź, czy w porcie ładowania/USB nie ma obcych materiałów, takich jak kurz lub zanieczyszczenia. Aby zapobiec uszkodzeniu tabletu, nie podłączaj nic do momentu wyczyszczenia i osuszenia portu ładowania.
 
 Aby osuszyć port, wytrząśnij wilgoć, następnie poczekaj, aż wyschnie, co może potrwać kilka godzin. Możesz przyspieszyć suszenie, kierując na port wentylator lub suszarkę (tylko chłodne powietrze)."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Wykryliśmy wilgoć lub obcy materiał w porcie ładowania/USB.
 
-Sprawdź, czy w porcie ładowania/USB nie ma obcych materiałów, takich jak kurz lub zanieczyszczenia. Aby zapobiec uszkodzeniu telefonu, nie podłączaj nic do momentu wyczyszczenia i osuszenia portu ładowania.
+Sprawdź, czy w porcie ładowania/USB nie ma obcych materiałów, takich jak kurz lub zanieczyszczenia. Aby zapobiec uszkodzeniu tabletu, nie podłączaj niczego, dopóki port ładowania nie będzie czysty, a wilgoć nie zniknie.
 
-Aby osuszyć port, wytrząśnij wilgoć, następnie poczekaj, aż wyschnie, co może potrwać kilka godzin. Możesz przyspieszyć suszenie, kierując na port wentylator lub suszarkę (tylko chłodne powietrze).
+Aby osuszyć port, wytrząśnij wilgoć, a następnie poczekaj, aż wyschnie, co może potrwać kilka godzin. Możesz przyspieszyć suszenie, kierując na port wentylator lub suszarkę (tylko chłodne powietrze).
 
-W międzyczasie możesz ładować telefon bezprzewodowo."</string>
+W międzyczasie możesz ładować tablet bezprzewodowo."</string>
     <string name="usb_water_notification_content">W porcie ładowania/USB znajduje się wilgoć lub obcy materiał. Sprawdź przed rozpoczęciem ładowania.</string>
-    <string name="usb_water_notification_message">Wysznupano wilgłoś w porcie folowarki/USB. Przed sztartym folowanio mobilniŏka bydź zicher, co je ôn blank suchy. Suszynie na blank poradzi trocha zetrwać.</string>
+    <string name="usb_water_notification_message">Wysznupano wilgłoś w porcie folowarki/USB. Przed sztartym folowanio tabletu bydź zicher, co je ôn blank suchy. Suszynie na blank poradzi trocha zetrwać.</string>
     <string name="usb_water_notification_message_button">Detajle</string>
     <string name="usb_water_notification_title">Wybadej port folowanio/USB</string>
     <string name="usbhostStorage_restrict">Prawidła zabezpieczyń zakŏzujōm korzistaniŏ z pamiyńci hosta USB.</string>

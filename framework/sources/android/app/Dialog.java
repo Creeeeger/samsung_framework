@@ -102,7 +102,6 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
     final Window mWindow;
     private final WindowManager mWindowManager;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         this.mNeedToUpdate = isNeedToUpdateAttributes(v);
         alignToAnchor();
@@ -116,7 +115,6 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         this(context, themeResId, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Dialog(Context context, int themeResId, boolean createContextThemeWrapper) {
         ActivityInfo ai;
         this.mCancelable = true;
@@ -200,7 +198,6 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         this.mListenersHandler = new ListenersHandler(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$1() {
         if (this.mCancelable) {
             cancel();
@@ -341,7 +338,6 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$semSetAnchor$2() {
         this.mRootView.removeOnLayoutChangeListener(this.mOnLayoutChangeListener);
     }
@@ -500,7 +496,6 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dismissDialog() {
         if (this.mDecor == null || !this.mShowing) {
             return;
@@ -538,7 +533,6 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchOnCreate(Bundle savedInstanceState) {
         if (!this.mCreated) {
             onCreate(savedInstanceState);
@@ -546,11 +540,9 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onCreate(Bundle savedInstanceState) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onStart() {
         ActionBar actionBar = this.mActionBar;
         if (actionBar != null) {
@@ -569,7 +561,6 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onStop() {
         ActionBar actionBar = this.mActionBar;
         if (actionBar != null) {
@@ -1079,8 +1070,9 @@ public class Dialog implements DialogInterface, Window.Callback, KeyEvent.Callba
         this.mOnKeyListener = onKeyListener;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static final class ListenersHandler extends Handler {
+    public static final class ListenersHandler extends Handler {
         private final WeakReference<DialogInterface> mDialog;
 
         public ListenersHandler(Dialog dialog) {

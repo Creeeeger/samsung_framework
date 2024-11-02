@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class PlaybackStateEvent extends Event implements Parcelable {
     public static final Parcelable.Creator<PlaybackStateEvent> CREATOR = new Parcelable.Creator<PlaybackStateEvent>() { // from class: android.media.metrics.PlaybackStateEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PlaybackStateEvent[] newArray(int size) {
             return new PlaybackStateEvent[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PlaybackStateEvent createFromParcel(Parcel in) {
             return new PlaybackStateEvent(in);
@@ -43,6 +44,14 @@ public final class PlaybackStateEvent extends Event implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface State {
+    }
+
+    /* synthetic */ PlaybackStateEvent(int i, long j, Bundle bundle, PlaybackStateEventIA playbackStateEventIA) {
+        this(i, j, bundle);
+    }
+
+    /* synthetic */ PlaybackStateEvent(Parcel parcel, PlaybackStateEventIA playbackStateEventIA) {
+        this(parcel);
     }
 
     public static String stateToString(int value) {
@@ -140,6 +149,23 @@ public final class PlaybackStateEvent extends Event implements Parcelable {
         this.mState = state;
         this.mTimeSinceCreatedMillis = timeSinceCreatedMillis;
         this.mMetricsBundle = extras;
+    }
+
+    /* renamed from: android.media.metrics.PlaybackStateEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PlaybackStateEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PlaybackStateEvent[] newArray(int size) {
+            return new PlaybackStateEvent[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PlaybackStateEvent createFromParcel(Parcel in) {
+            return new PlaybackStateEvent(in);
+        }
     }
 
     /* loaded from: classes2.dex */

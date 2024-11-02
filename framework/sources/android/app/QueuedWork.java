@@ -115,7 +115,6 @@ public class QueuedWork {
         return z;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void processPendingWork() {
         LinkedList<Runnable> work;
         synchronized (sProcessingWork) {
@@ -134,7 +133,6 @@ public class QueuedWork {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class QueuedWorkHandler extends Handler {
         static final int MSG_RUN = 1;

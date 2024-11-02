@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class LazyEncodedSequence extends ASN1Sequence {
     private byte[] encoded;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LazyEncodedSequence(byte[] encoded) throws IOException {
         this.encoded = encoded;
     }
@@ -53,14 +51,12 @@ public class LazyEncodedSequence extends ASN1Sequence {
         return super.toArray();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence
     public ASN1Encodable[] toArrayInternal() {
         force();
         return super.toArrayInternal();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public synchronized int encodedLength() throws IOException {
         byte[] bArr = this.encoded;
@@ -70,7 +66,6 @@ public class LazyEncodedSequence extends ASN1Sequence {
         return super.toDLObject().encodedLength();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public synchronized void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         byte[] bArr = this.encoded;
@@ -81,14 +76,12 @@ public class LazyEncodedSequence extends ASN1Sequence {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public synchronized ASN1Primitive toDERObject() {
         force();
         return super.toDERObject();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public synchronized ASN1Primitive toDLObject() {
         force();

@@ -171,16 +171,42 @@ public final class CryptoServicesRegistrar {
         return properties.remove(property.name);
     }
 
-    private static void checkPermission(final Permission permission) {
-        final SecurityManager securityManager = System.getSecurityManager();
+    private static void checkPermission(Permission permission) {
+        SecurityManager securityManager = System.getSecurityManager();
         if (securityManager != null) {
             AccessController.doPrivileged(new PrivilegedAction<Object>() { // from class: com.android.internal.org.bouncycastle.crypto.CryptoServicesRegistrar.1
+                final /* synthetic */ Permission val$permission;
+                final /* synthetic */ SecurityManager val$securityManager;
+
+                AnonymousClass1(SecurityManager securityManager2, Permission permission2) {
+                    securityManager = securityManager2;
+                    permission = permission2;
+                }
+
                 @Override // java.security.PrivilegedAction
                 public Object run() {
                     securityManager.checkPermission(permission);
                     return null;
                 }
             });
+        }
+    }
+
+    /* renamed from: com.android.internal.org.bouncycastle.crypto.CryptoServicesRegistrar$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements PrivilegedAction<Object> {
+        final /* synthetic */ Permission val$permission;
+        final /* synthetic */ SecurityManager val$securityManager;
+
+        AnonymousClass1(SecurityManager securityManager2, Permission permission2) {
+            securityManager = securityManager2;
+            permission = permission2;
+        }
+
+        @Override // java.security.PrivilegedAction
+        public Object run() {
+            securityManager.checkPermission(permission);
+            return null;
         }
     }
 

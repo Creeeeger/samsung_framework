@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import com.android.internal.R;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class RoundScrollbarRenderer {
     private static final int DEFAULT_THUMB_COLOR = -1512723;

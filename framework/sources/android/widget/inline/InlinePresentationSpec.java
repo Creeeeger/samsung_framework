@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InlinePresentationSpec implements Parcelable {
     public static final Parcelable.Creator<InlinePresentationSpec> CREATOR = new Parcelable.Creator<InlinePresentationSpec>() { // from class: android.widget.inline.InlinePresentationSpec.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InlinePresentationSpec[] newArray(int size) {
             return new InlinePresentationSpec[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlinePresentationSpec createFromParcel(Parcel in) {
             return new InlinePresentationSpec(in);
@@ -28,8 +29,8 @@ public final class InlinePresentationSpec implements Parcelable {
     private final Size mMinSize;
     private final Bundle mStyle;
 
-    /* renamed from: -$$Nest$smdefaultStyle, reason: not valid java name */
-    static /* bridge */ /* synthetic */ Bundle m6854$$Nest$smdefaultStyle() {
+    /* renamed from: -$$Nest$smdefaultStyle */
+    static /* bridge */ /* synthetic */ Bundle m6849$$Nest$smdefaultStyle() {
         return defaultStyle();
     }
 
@@ -119,6 +120,23 @@ public final class InlinePresentationSpec implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) style);
     }
 
+    /* renamed from: android.widget.inline.InlinePresentationSpec$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InlinePresentationSpec> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlinePresentationSpec[] newArray(int size) {
+            return new InlinePresentationSpec[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlinePresentationSpec createFromParcel(Parcel in) {
+            return new InlinePresentationSpec(in);
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private long mBuilderFieldsSet = 0;
@@ -145,7 +163,7 @@ public final class InlinePresentationSpec implements Parcelable {
             long j = this.mBuilderFieldsSet | 8;
             this.mBuilderFieldsSet = j;
             if ((j & 4) == 0) {
-                this.mStyle = InlinePresentationSpec.m6854$$Nest$smdefaultStyle();
+                this.mStyle = InlinePresentationSpec.m6849$$Nest$smdefaultStyle();
             }
             InlinePresentationSpec o = new InlinePresentationSpec(this.mMinSize, this.mMaxSize, this.mStyle);
             return o;

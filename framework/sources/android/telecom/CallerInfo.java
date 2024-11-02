@@ -273,7 +273,6 @@ public class CallerInfo {
         this.contactDisplayPhotoUri = photoUri;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static CallerInfo doSecondaryLookupIfNecessary(Context context, String number, CallerInfo previousResult) {
         if (previousResult == null) {
             return null;
@@ -296,7 +295,6 @@ public class CallerInfo {
         return this.mIsVoiceMail;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CallerInfo markAsEmergency(Context context) {
         this.phoneNumber = context.getString(R.string.emergency_call_dialog_number_for_display);
         this.photoResource = R.drawable.picture_emergency;
@@ -304,7 +302,6 @@ public class CallerInfo {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CallerInfo markAsVoiceMail(Context context, int subId) {
         this.mIsVoiceMail = true;
         try {
@@ -415,7 +412,6 @@ public class CallerInfo {
         return countryIso;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static String getCurrentCountryIso(Context context) {
         return getCurrentCountryIso(context, Locale.getDefault());
     }

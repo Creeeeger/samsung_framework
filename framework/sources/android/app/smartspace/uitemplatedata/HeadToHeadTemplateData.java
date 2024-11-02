@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class HeadToHeadTemplateData extends BaseTemplateData {
     public static final Parcelable.Creator<HeadToHeadTemplateData> CREATOR = new Parcelable.Creator<HeadToHeadTemplateData>() { // from class: android.app.smartspace.uitemplatedata.HeadToHeadTemplateData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HeadToHeadTemplateData createFromParcel(Parcel in) {
             return new HeadToHeadTemplateData(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HeadToHeadTemplateData[] newArray(int size) {
             return new HeadToHeadTemplateData[size];
@@ -29,6 +30,10 @@ public final class HeadToHeadTemplateData extends BaseTemplateData {
     private final Icon mHeadToHeadSecondCompetitorIcon;
     private final Text mHeadToHeadSecondCompetitorText;
     private final Text mHeadToHeadTitle;
+
+    /* synthetic */ HeadToHeadTemplateData(int i, BaseTemplateData.SubItemInfo subItemInfo, BaseTemplateData.SubItemInfo subItemInfo2, BaseTemplateData.SubItemInfo subItemInfo3, BaseTemplateData.SubItemInfo subItemInfo4, BaseTemplateData.SubItemInfo subItemInfo5, int i2, Text text, Icon icon, Icon icon2, Text text2, Text text3, TapAction tapAction, HeadToHeadTemplateDataIA headToHeadTemplateDataIA) {
+        this(i, subItemInfo, subItemInfo2, subItemInfo3, subItemInfo4, subItemInfo5, i2, text, icon, icon2, text2, text3, tapAction);
+    }
 
     HeadToHeadTemplateData(Parcel in) {
         super(in);
@@ -72,6 +77,23 @@ public final class HeadToHeadTemplateData extends BaseTemplateData {
 
     public TapAction getHeadToHeadAction() {
         return this.mHeadToHeadAction;
+    }
+
+    /* renamed from: android.app.smartspace.uitemplatedata.HeadToHeadTemplateData$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HeadToHeadTemplateData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HeadToHeadTemplateData createFromParcel(Parcel in) {
+            return new HeadToHeadTemplateData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HeadToHeadTemplateData[] newArray(int size) {
+            return new HeadToHeadTemplateData[size];
+        }
     }
 
     @Override // android.app.smartspace.uitemplatedata.BaseTemplateData, android.os.Parcelable

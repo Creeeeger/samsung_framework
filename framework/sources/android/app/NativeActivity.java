@@ -86,7 +86,6 @@ public class NativeActivity extends Activity implements SurfaceHolder.Callback2,
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         String libname;
@@ -144,7 +143,6 @@ public class NativeActivity extends Activity implements SurfaceHolder.Callback2,
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         this.mDestroyed = true;
@@ -161,21 +159,18 @@ public class NativeActivity extends Activity implements SurfaceHolder.Callback2,
         super.onDestroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onPause() {
         super.onPause();
         onPauseNative(this.mNativeHandle);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onResume() {
         super.onResume();
         onResumeNative(this.mNativeHandle);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -185,14 +180,12 @@ public class NativeActivity extends Activity implements SurfaceHolder.Callback2,
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onStart() {
         super.onStart();
         onStartNative(this.mNativeHandle);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onStop() {
         super.onStop();

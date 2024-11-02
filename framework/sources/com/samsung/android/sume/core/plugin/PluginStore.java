@@ -98,7 +98,6 @@ public abstract class PluginStore {
         }).findFirst().orElseThrow(new SurfaceChannelImpl$$ExternalSyntheticLambda5());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getPluginName$0(Type it) {
         return it instanceof ParameterizedType;
     }
@@ -112,15 +111,14 @@ public abstract class PluginStore {
         }).forEach(new Consumer() { // from class: com.samsung.android.sume.core.plugin.PluginStore$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                PluginStore.this.m8822lambda$add$3$comsamsungandroidsumecorepluginPluginStore((Plugin) obj);
+                PluginStore.this.m8814lambda$add$3$comsamsungandroidsumecorepluginPluginStore((Plugin) obj);
             }
         });
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$add$3$com-samsung-android-sume-core-plugin-PluginStore, reason: not valid java name */
-    public /* synthetic */ void m8822lambda$add$3$comsamsungandroidsumecorepluginPluginStore(Plugin it) {
+    /* renamed from: lambda$add$3$com-samsung-android-sume-core-plugin-PluginStore */
+    public /* synthetic */ void m8814lambda$add$3$comsamsungandroidsumecorepluginPluginStore(Plugin it) {
         PluginFixture<?> fixture;
         try {
             String typeName = getPluginName(it);
@@ -205,12 +203,10 @@ public abstract class PluginStore {
         return pluginStore;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$of$5(PluginStore e) {
         return e.context != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Map lambda$of$8(Map x, Map y) {
         return (Map) Stream.concat(x.entrySet().stream(), y.entrySet().stream()).collect(Collectors.toMap(new MediaBufferBase$$ExternalSyntheticLambda1(), new Function() { // from class: com.samsung.android.sume.core.plugin.PluginStore$$ExternalSyntheticLambda5
             @Override // java.util.function.Function

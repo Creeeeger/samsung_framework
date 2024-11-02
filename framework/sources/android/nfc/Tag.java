@@ -23,7 +23,9 @@ import java.util.HashMap;
 /* loaded from: classes3.dex */
 public final class Tag implements Parcelable {
     public static final Parcelable.Creator<Tag> CREATOR = new Parcelable.Creator<Tag>() { // from class: android.nfc.Tag.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Tag createFromParcel(Parcel in) {
             INfcTag tagService;
@@ -42,7 +44,6 @@ public final class Tag implements Parcelable {
             return new Tag(id, techList, techExtras, serviceHandle, cookie, tagService);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Tag[] newArray(int size) {
             return new Tag[size];
@@ -117,7 +118,6 @@ public final class Tag implements Parcelable {
         return strings;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int[] getTechCodesFromStrings(String[] techStringList) throws IllegalArgumentException {
         if (techStringList == null) {
             throw new IllegalArgumentException("List cannot be null");
@@ -284,6 +284,36 @@ public final class Tag implements Parcelable {
         dest.writeInt(isMock);
         if (isMock == 0) {
             dest.writeStrongBinder(this.mTagService.asBinder());
+        }
+    }
+
+    /* renamed from: android.nfc.Tag$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Tag> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Tag createFromParcel(Parcel in) {
+            INfcTag tagService;
+            byte[] id = Tag.readBytesWithNull(in);
+            int[] techList = new int[in.readInt()];
+            in.readIntArray(techList);
+            Bundle[] techExtras = (Bundle[]) in.createTypedArray(Bundle.CREATOR);
+            int serviceHandle = in.readInt();
+            long cookie = in.readLong();
+            int isMock = in.readInt();
+            if (isMock == 0) {
+                tagService = INfcTag.Stub.asInterface(in.readStrongBinder());
+            } else {
+                tagService = null;
+            }
+            return new Tag(id, techList, techExtras, serviceHandle, cookie, tagService);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Tag[] newArray(int size) {
+            return new Tag[size];
         }
     }
 

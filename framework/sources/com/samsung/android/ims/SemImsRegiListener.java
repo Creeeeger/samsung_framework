@@ -99,8 +99,9 @@ public interface SemImsRegiListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements SemImsRegiListener {
+        public static class Proxy implements SemImsRegiListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

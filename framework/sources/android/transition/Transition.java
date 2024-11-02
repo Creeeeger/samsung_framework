@@ -47,6 +47,9 @@ public abstract class Transition implements Cloneable {
     ArrayList<TransitionValues> mStartValuesList;
     private static final int[] DEFAULT_MATCH_ORDER = {2, 1, 3, 4};
     private static final PathMotion STRAIGHT_PATH_MOTION = new PathMotion() { // from class: android.transition.Transition.1
+        AnonymousClass1() {
+        }
+
         @Override // android.transition.PathMotion
         public Path getPath(float startX, float startY, float endX, float endY) {
             Path path = new Path();
@@ -106,6 +109,21 @@ public abstract class Transition implements Cloneable {
     public abstract void captureEndValues(TransitionValues transitionValues);
 
     public abstract void captureStartValues(TransitionValues transitionValues);
+
+    /* renamed from: android.transition.Transition$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends PathMotion {
+        AnonymousClass1() {
+        }
+
+        @Override // android.transition.PathMotion
+        public Path getPath(float startX, float startY, float endX, float endY) {
+            Path path = new Path();
+            path.moveTo(startX, startY);
+            path.lineTo(endX, endY);
+            return path;
+        }
+    }
 
     public Transition() {
     }
@@ -338,7 +356,6 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void createAnimators(ViewGroup sceneRoot, TransitionValuesMaps startValues, TransitionValuesMaps endValues, ArrayList<TransitionValues> startValuesList, ArrayList<TransitionValues> endValuesList) {
         TransitionValues start;
         TransitionValues end;
@@ -551,7 +568,6 @@ public abstract class Transition implements Cloneable {
         return runningAnimators;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void runAnimators() {
         start();
         ArrayMap<Animator, AnimationInfo> runningAnimators = getRunningAnimators();
@@ -567,9 +583,15 @@ public abstract class Transition implements Cloneable {
         end();
     }
 
-    private void runAnimator(Animator animator, final ArrayMap<Animator, AnimationInfo> runningAnimators) {
+    private void runAnimator(Animator animator, ArrayMap<Animator, AnimationInfo> runningAnimators) {
         if (animator != null) {
             animator.addListener(new AnimatorListenerAdapter() { // from class: android.transition.Transition.2
+                final /* synthetic */ ArrayMap val$runningAnimators;
+
+                AnonymousClass2(ArrayMap runningAnimators2) {
+                    runningAnimators = runningAnimators2;
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     Transition.this.mCurrentAnimators.add(animation);
@@ -582,6 +604,27 @@ public abstract class Transition implements Cloneable {
                 }
             });
             animate(animator);
+        }
+    }
+
+    /* renamed from: android.transition.Transition$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        final /* synthetic */ ArrayMap val$runningAnimators;
+
+        AnonymousClass2(ArrayMap runningAnimators2) {
+            runningAnimators = runningAnimators2;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+            Transition.this.mCurrentAnimators.add(animation);
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            runningAnimators.remove(animation);
+            Transition.this.mCurrentAnimators.remove(animation);
         }
     }
 
@@ -715,7 +758,6 @@ public abstract class Transition implements Cloneable {
         return this.mTargetTypes;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void captureValues(ViewGroup sceneRoot, boolean start) {
         ArrayList<String> arrayList;
         ArrayList<Class> arrayList2;
@@ -815,7 +857,6 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearValues(boolean start) {
         if (start) {
             this.mStartValues.viewValues.clear();
@@ -903,7 +944,6 @@ public abstract class Transition implements Cloneable {
         return valuesMaps.viewValues.get(view);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TransitionValues getMatchedTransitionValues(View view, boolean viewInStart) {
         TransitionSet transitionSet = this.mParent;
         if (transitionSet != null) {
@@ -990,7 +1030,6 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void playTransition(ViewGroup sceneRoot) {
         AnimationInfo oldInfo;
         this.mStartValuesList = new ArrayList<>();
@@ -1075,6 +1114,9 @@ public abstract class Transition implements Cloneable {
             animator.setInterpolator(getInterpolator());
         }
         animator.addListener(new AnimatorListenerAdapter() { // from class: android.transition.Transition.3
+            AnonymousClass3() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 Transition.this.end();
@@ -1084,7 +1126,19 @@ public abstract class Transition implements Cloneable {
         animator.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.transition.Transition$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 extends AnimatorListenerAdapter {
+        AnonymousClass3() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            Transition.this.end();
+            animation.removeListener(this);
+        }
+    }
+
     public void start() {
         if (this.mNumInstances == 0) {
             ArrayList<TransitionListener> arrayList = this.mListeners;
@@ -1100,7 +1154,6 @@ public abstract class Transition implements Cloneable {
         this.mNumInstances++;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void end() {
         int i = this.mNumInstances - 1;
         this.mNumInstances = i;
@@ -1129,7 +1182,6 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void forceToEnd(ViewGroup sceneRoot) {
         ArrayMap<Animator, AnimationInfo> runningAnimators = getRunningAnimators();
         int numOldAnims = runningAnimators.size();
@@ -1148,7 +1200,6 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void cancel() {
         int numAnimators = this.mCurrentAnimators.size();
         for (int i = numAnimators - 1; i >= 0; i--) {
@@ -1221,7 +1272,6 @@ public abstract class Transition implements Cloneable {
         return this.mPropagation;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void capturePropagationValues(TransitionValues transitionValues) {
         String[] propertyNames;
         if (this.mPropagation == null || transitionValues.values.isEmpty() || (propertyNames = this.mPropagation.getPropagationProperties()) == null) {
@@ -1245,13 +1295,11 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Transition setSceneRoot(ViewGroup sceneRoot) {
         this.mSceneRoot = sceneRoot;
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCanRemoveViews(boolean canRemoveViews) {
         this.mCanRemoveViews = canRemoveViews;
     }
@@ -1274,7 +1322,7 @@ public abstract class Transition implements Cloneable {
 
     @Override // 
     /* renamed from: clone */
-    public Transition mo4917clone() {
+    public Transition mo4916clone() {
         Transition clone = null;
         try {
             clone = (Transition) super.clone();
@@ -1293,7 +1341,6 @@ public abstract class Transition implements Cloneable {
         return this.mName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String toString(String indent) {
         String result = indent + getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + ": ";
         if (this.mDuration != -1) {
@@ -1345,7 +1392,6 @@ public abstract class Transition implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ArrayListManager {
         private ArrayListManager() {

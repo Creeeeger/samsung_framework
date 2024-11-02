@@ -16,13 +16,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes4.dex */
 public class RemoteAnimationTarget implements Parcelable {
     public static final Parcelable.Creator<RemoteAnimationTarget> CREATOR = new Parcelable.Creator<RemoteAnimationTarget>() { // from class: android.view.RemoteAnimationTarget.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteAnimationTarget createFromParcel(Parcel in) {
             return new RemoteAnimationTarget(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteAnimationTarget[] newArray(int size) {
             return new RemoteAnimationTarget[size];
@@ -263,5 +264,22 @@ public class RemoteAnimationTarget implements Parcelable {
         pw.print(",");
         pw.print(p.y);
         pw.print(NavigationBarInflaterView.SIZE_MOD_END);
+    }
+
+    /* renamed from: android.view.RemoteAnimationTarget$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoteAnimationTarget> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteAnimationTarget createFromParcel(Parcel in) {
+            return new RemoteAnimationTarget(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteAnimationTarget[] newArray(int size) {
+            return new RemoteAnimationTarget[size];
+        }
     }
 }

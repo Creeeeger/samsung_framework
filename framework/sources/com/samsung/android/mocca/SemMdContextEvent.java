@@ -8,7 +8,6 @@ public class SemMdContextEvent {
     public final long timestamp;
     public final String type;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SemMdContextEvent(long timestamp, String type, byte[] data) {
         this.timestamp = timestamp;
         this.type = type;

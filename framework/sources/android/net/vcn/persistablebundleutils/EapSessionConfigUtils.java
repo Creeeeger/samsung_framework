@@ -66,10 +66,13 @@ public final class EapSessionConfigUtils {
         return builder.build();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class EapMethodConfigUtils {
         private static final String METHOD_TYPE = "METHOD_TYPE";
+
+        /* synthetic */ EapMethodConfigUtils(EapMethodConfigUtilsIA eapMethodConfigUtilsIA) {
+            this();
+        }
 
         private EapMethodConfigUtils() {
         }
@@ -81,11 +84,14 @@ public final class EapSessionConfigUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class EapUiccConfigUtils extends EapMethodConfigUtils {
         static final String APP_TYPE_KEY = "APP_TYPE_KEY";
         static final String SUB_ID_KEY = "SUB_ID_KEY";
+
+        /* synthetic */ EapUiccConfigUtils(EapUiccConfigUtilsIA eapUiccConfigUtilsIA) {
+            this();
+        }
 
         private EapUiccConfigUtils() {
             super();
@@ -99,7 +105,6 @@ public final class EapSessionConfigUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class EapSimConfigUtils extends EapUiccConfigUtils {
         private EapSimConfigUtils() {
@@ -116,9 +121,12 @@ public final class EapSessionConfigUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class EapAkaConfigUtils extends EapUiccConfigUtils {
+        /* synthetic */ EapAkaConfigUtils(EapAkaConfigUtilsIA eapAkaConfigUtilsIA) {
+            this();
+        }
+
         private EapAkaConfigUtils() {
             super();
         }
@@ -133,7 +141,6 @@ public final class EapSessionConfigUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class EapAkaPrimeConfigUtils extends EapAkaConfigUtils {
         private static final String ALL_MISMATCHED_NETWORK_KEY = "ALL_MISMATCHED_NETWORK_KEY";
@@ -156,7 +163,6 @@ public final class EapSessionConfigUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class EapMsChapV2ConfigUtils extends EapMethodConfigUtils {
         private static final String PASSWORD_KEY = "PASSWORD_KEY";
@@ -179,7 +185,6 @@ public final class EapSessionConfigUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class EapTtlsConfigUtils extends EapMethodConfigUtils {
         private static final String EAP_SESSION_CONFIG_KEY = "EAP_SESSION_CONFIG_KEY";

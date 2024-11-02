@@ -97,7 +97,6 @@ public interface IGnssMeasurementsListener extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class Proxy implements IGnssMeasurementsListener {
             private IBinder mRemote;

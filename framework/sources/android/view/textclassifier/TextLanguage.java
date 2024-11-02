@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TextLanguage implements Parcelable {
     public static final Parcelable.Creator<TextLanguage> CREATOR = new Parcelable.Creator<TextLanguage>() { // from class: android.view.textclassifier.TextLanguage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TextLanguage createFromParcel(Parcel in) {
             return TextLanguage.readFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextLanguage[] newArray(int size) {
             return new TextLanguage[size];
@@ -28,6 +29,27 @@ public final class TextLanguage implements Parcelable {
     private final Bundle mBundle;
     private final EntityConfidence mEntityConfidence;
     private final String mId;
+
+    /* synthetic */ TextLanguage(String str, EntityConfidence entityConfidence, Bundle bundle, TextLanguageIA textLanguageIA) {
+        this(str, entityConfidence, bundle);
+    }
+
+    /* renamed from: android.view.textclassifier.TextLanguage$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TextLanguage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextLanguage createFromParcel(Parcel in) {
+            return TextLanguage.readFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextLanguage[] newArray(int size) {
+            return new TextLanguage[size];
+        }
+    }
 
     private TextLanguage(String id, EntityConfidence entityConfidence, Bundle bundle) {
         this.mId = id;
@@ -71,7 +93,6 @@ public final class TextLanguage implements Parcelable {
         dest.writeBundle(this.mBundle);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static TextLanguage readFromParcel(Parcel in) {
         return new TextLanguage(in.readString(), EntityConfidence.CREATOR.createFromParcel(in), in.readBundle());
     }
@@ -111,13 +132,14 @@ public final class TextLanguage implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class Request implements Parcelable {
         public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() { // from class: android.view.textclassifier.TextLanguage.Request.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Request createFromParcel(Parcel in) {
                 return Request.readFromParcel(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request[] newArray(int size) {
                 return new Request[size];
@@ -126,6 +148,27 @@ public final class TextLanguage implements Parcelable {
         private final Bundle mExtra;
         private SystemTextClassifierMetadata mSystemTcMetadata;
         private final CharSequence mText;
+
+        /* synthetic */ Request(CharSequence charSequence, Bundle bundle, RequestIA requestIA) {
+            this(charSequence, bundle);
+        }
+
+        /* renamed from: android.view.textclassifier.TextLanguage$Request$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Request> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Request createFromParcel(Parcel in) {
+                return Request.readFromParcel(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Request[] newArray(int size) {
+                return new Request[size];
+            }
+        }
 
         private Request(CharSequence text, Bundle bundle) {
             this.mText = text;
@@ -168,7 +211,6 @@ public final class TextLanguage implements Parcelable {
             dest.writeParcelable(this.mSystemTcMetadata, flags);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static Request readFromParcel(Parcel in) {
             CharSequence text = in.readCharSequence();
             Bundle extra = in.readBundle();

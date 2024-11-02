@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class RecognitionSupport implements Parcelable {
     public static final Parcelable.Creator<RecognitionSupport> CREATOR = new Parcelable.Creator<RecognitionSupport>() { // from class: android.speech.RecognitionSupport.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RecognitionSupport[] newArray(int size) {
             return new RecognitionSupport[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionSupport createFromParcel(Parcel in) {
             return new RecognitionSupport(in);
@@ -116,6 +117,23 @@ public final class RecognitionSupport implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) supportedOnDeviceLanguages);
         this.mOnlineLanguages = onlineLanguages;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) onlineLanguages);
+    }
+
+    /* renamed from: android.speech.RecognitionSupport$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RecognitionSupport> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RecognitionSupport[] newArray(int size) {
+            return new RecognitionSupport[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RecognitionSupport createFromParcel(Parcel in) {
+            return new RecognitionSupport(in);
+        }
     }
 
     /* loaded from: classes3.dex */

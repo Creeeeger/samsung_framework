@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class EditorBoundsInfo implements Parcelable {
     public static final Parcelable.Creator<EditorBoundsInfo> CREATOR = new Parcelable.Creator<EditorBoundsInfo>() { // from class: android.view.inputmethod.EditorBoundsInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EditorBoundsInfo createFromParcel(Parcel source) {
             return new EditorBoundsInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EditorBoundsInfo[] newArray(int size) {
             return new EditorBoundsInfo[size];
@@ -23,6 +24,14 @@ public final class EditorBoundsInfo implements Parcelable {
     private final RectF mEditorBounds;
     private final RectF mHandwritingBounds;
     private final int mHashCode;
+
+    /* synthetic */ EditorBoundsInfo(Parcel parcel, EditorBoundsInfoIA editorBoundsInfoIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ EditorBoundsInfo(Builder builder, EditorBoundsInfoIA editorBoundsInfoIA) {
+        this(builder);
+    }
 
     private EditorBoundsInfo(Parcel source) {
         this.mHashCode = source.readInt();
@@ -64,6 +73,23 @@ public final class EditorBoundsInfo implements Parcelable {
         dest.writeInt(this.mHashCode);
         dest.writeTypedObject(this.mEditorBounds, flags);
         dest.writeTypedObject(this.mHandwritingBounds, flags);
+    }
+
+    /* renamed from: android.view.inputmethod.EditorBoundsInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EditorBoundsInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EditorBoundsInfo createFromParcel(Parcel source) {
+            return new EditorBoundsInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EditorBoundsInfo[] newArray(int size) {
+            return new EditorBoundsInfo[size];
+        }
     }
 
     /* loaded from: classes4.dex */

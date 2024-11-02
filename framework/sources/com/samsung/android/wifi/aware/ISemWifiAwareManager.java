@@ -146,8 +146,9 @@ public interface ISemWifiAwareManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISemWifiAwareManager {
+        public static class Proxy implements ISemWifiAwareManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

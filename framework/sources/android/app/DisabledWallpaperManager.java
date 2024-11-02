@@ -14,14 +14,12 @@ import android.os.ParcelFileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public final class DisabledWallpaperManager extends WallpaperManager {
     private static final boolean DEBUG = false;
     private static final String TAG = DisabledWallpaperManager.class.getSimpleName();
     private static DisabledWallpaperManager sInstance;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static DisabledWallpaperManager getInstance() {
         if (sInstance == null) {
             sInstance = new DisabledWallpaperManager();

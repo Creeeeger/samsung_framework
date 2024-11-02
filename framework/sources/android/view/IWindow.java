@@ -409,8 +409,9 @@ public interface IWindow extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IWindow {
+        public static class Proxy implements IWindow {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

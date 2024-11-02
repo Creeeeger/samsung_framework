@@ -147,8 +147,9 @@ public interface INetdEventCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements INetdEventCallback {
+        public static class Proxy implements INetdEventCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

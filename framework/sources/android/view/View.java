@@ -895,6 +895,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
     public static boolean sIsDisplayCutoutBackground = false;
     private static boolean sMetaDataNeedCheck = true;
     public static final Property<View, Float> ALPHA = new FloatProperty<View>("alpha") { // from class: android.view.View.3
+        AnonymousClass3(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             if (object != null) {
@@ -908,6 +912,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> TRANSLATION_X = new FloatProperty<View>("translationX") { // from class: android.view.View.4
+        AnonymousClass4(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setTranslationX(value);
@@ -919,6 +927,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> TRANSLATION_Y = new FloatProperty<View>("translationY") { // from class: android.view.View.5
+        AnonymousClass5(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setTranslationY(value);
@@ -930,6 +942,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> TRANSLATION_Z = new FloatProperty<View>("translationZ") { // from class: android.view.View.6
+        AnonymousClass6(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setTranslationZ(value);
@@ -941,6 +957,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> X = new FloatProperty<View>("x") { // from class: android.view.View.7
+        AnonymousClass7(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setX(value);
@@ -952,6 +972,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> Y = new FloatProperty<View>("y") { // from class: android.view.View.8
+        AnonymousClass8(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setY(value);
@@ -963,6 +987,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> Z = new FloatProperty<View>("z") { // from class: android.view.View.9
+        AnonymousClass9(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setZ(value);
@@ -974,6 +1002,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> ROTATION = new FloatProperty<View>(GenerateXML.ROTATION) { // from class: android.view.View.10
+        AnonymousClass10(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setRotation(value);
@@ -985,6 +1017,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> ROTATION_X = new FloatProperty<View>("rotationX") { // from class: android.view.View.11
+        AnonymousClass11(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setRotationX(value);
@@ -996,6 +1032,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> ROTATION_Y = new FloatProperty<View>("rotationY") { // from class: android.view.View.12
+        AnonymousClass12(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setRotationY(value);
@@ -1007,6 +1047,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> SCALE_X = new FloatProperty<View>("scaleX") { // from class: android.view.View.13
+        AnonymousClass13(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setScaleX(value);
@@ -1018,6 +1062,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     };
     public static final Property<View, Float> SCALE_Y = new FloatProperty<View>("scaleY") { // from class: android.view.View.14
+        AnonymousClass14(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View object, float value) {
             object.setScaleY(value);
@@ -1663,7 +1711,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return ThreadedRenderer.isHighContrastTextEnabled();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class TransformationInfo {
         private Matrix mInverseMatrix;
@@ -1677,7 +1724,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class TintInfo {
         BlendMode mBlendMode;
@@ -1689,7 +1735,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ForegroundInfo {
         private boolean mBoundsChanged;
@@ -1700,6 +1745,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         private final Rect mSelfBounds;
         private TintInfo mTintInfo;
 
+        /* synthetic */ ForegroundInfo(ForegroundInfoIA foregroundInfoIA) {
+            this();
+        }
+
         private ForegroundInfo() {
             this.mGravity = 119;
             this.mInsidePadding = true;
@@ -1709,7 +1758,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ListenerInfo {
         OnApplyWindowInsetsListener mOnApplyWindowInsetsListener;
@@ -1744,7 +1792,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class TooltipInfo {
         int mAnchorX;
@@ -1760,11 +1807,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         TooltipPopup mTooltipPopup;
         CharSequence mTooltipText;
 
+        /* synthetic */ TooltipInfo(TooltipInfoIA tooltipInfoIA) {
+            this();
+        }
+
         private TooltipInfo() {
             this.mSemIsTooltipNull = false;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean updateAnchorPos(MotionEvent event) {
             int newAnchorX = (int) event.getX();
             int newAnchorY = (int) event.getY();
@@ -1776,7 +1826,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void clearAnchorPos() {
             this.mAnchorX = Integer.MAX_VALUE;
             this.mAnchorY = Integer.MAX_VALUE;
@@ -2037,7 +2086,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this(context, attrs, defStyleAttr, 0);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:263:0x08a7, code lost:            if (r1 >= 14) goto L263;     */
+    /* JADX WARN: Code restructure failed: missing block: B:263:0x08a7, code lost:
+    
+        if (r1 >= 14) goto L651;
+     */
     /* JADX WARN: Failed to find 'out' block for switch in B:7:0x00c2. Please report as an issue. */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -2093,8 +2145,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return this.mExplicitStyle;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class DeclaredOnClickListener implements OnClickListener {
+    public static class DeclaredOnClickListener implements OnClickListener {
         private final View mHostView;
         private final String mMethodName;
         private Context mResolvedContext;
@@ -2308,7 +2361,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mAttributes = trimmed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void semEnableHorizontalScrollbar() {
         this.mViewFlags = (this.mViewFlags & (-769)) | 256;
     }
@@ -2372,7 +2424,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return out.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void appendId(StringBuilder out) {
         String pkgname;
         int id = getId();
@@ -2468,7 +2519,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getHorizontalScrollbarHeight() {
         ScrollBarDrawable scrollBar;
         ScrollabilityCache cache = this.mScrollCache;
@@ -2497,7 +2547,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void initializeScrollbarsInternal(TypedArray a) {
         initScrollCache();
         ScrollabilityCache scrollabilityCache = this.mScrollCache;
@@ -2632,7 +2681,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mScrollBarPositionPadding = paddingValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isOnScrollbar(float x, float y) {
         if (this.mScrollCache == null) {
             return false;
@@ -2658,7 +2706,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isOnScrollbarThumb(float x, float y) {
         return isOnVerticalScrollbarThumb(x, y) || isOnHorizontalScrollbarThumb(x, y);
     }
@@ -2705,7 +2752,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isDraggingScrollBar() {
         ScrollabilityCache scrollabilityCache = this.mScrollCache;
         return (scrollabilityCache == null || scrollabilityCache.mScrollBarDraggingState == 0) ? false : true;
@@ -2753,7 +2799,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return configuration.getScaledMinScrollbarTouchTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ListenerInfo getListenerInfo() {
         ListenerInfo listenerInfo = this.mListenerInfo;
         if (listenerInfo != null) {
@@ -2953,7 +2998,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean performClickInternal() {
         notifyAutofillManagerOnClick();
         return performClick();
@@ -3036,7 +3080,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return handled;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean performButtonActionOnTouchDown(MotionEvent event) {
         if (event.isFromSource(8194) && (event.getButtonState() & 2) != 0) {
             showContextMenu(event.getX(), event.getY());
@@ -3115,7 +3158,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         getListenerInfo().mOnDragListener = l;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleFocusGainInternal(int direction, Rect previouslyFocusedRect) {
         int i = this.mPrivateFlags;
         if ((i & 2) == 0) {
@@ -3189,7 +3231,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         clearFocusInternal(null, true, refocus);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearFocusInternal(View focused, boolean propagate, boolean refocus) {
         ViewParent viewParent;
         int i = this.mPrivateFlags;
@@ -3209,7 +3250,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyGlobalFocusCleared(View oldFocus) {
         AttachInfo attachInfo;
         if (oldFocus != null && (attachInfo = this.mAttachInfo) != null) {
@@ -3217,13 +3257,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean rootViewRequestFocus() {
         View root = getRootView();
         return root != null && root.requestFocus();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unFocus(View focused) {
         clearFocusInternal(focused, false, false);
     }
@@ -3257,7 +3295,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         ViewRootImpl viewRoot;
         if (gainFocus) {
@@ -3419,14 +3456,12 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendAccessibilityEventUncheckedInternal$0(AccessibilityEvent event) {
         if (AccessibilityManager.getInstance(this.mContext).isEnabled() && isShown()) {
             requestParentSendAccessibilityEvent(event);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void requestParentSendAccessibilityEvent(AccessibilityEvent event) {
         ViewParent parent = getParent();
         if (parent != null) {
@@ -3434,16 +3469,15 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    private SendAccessibilityEventThrottle getThrottleForAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        byte b = 0;
-        if (accessibilityEvent.getEventType() == 4096) {
+    private SendAccessibilityEventThrottle getThrottleForAccessibilityEvent(AccessibilityEvent event) {
+        if (event.getEventType() == 4096) {
             if (this.mSendViewScrolledAccessibilityEvent == null) {
                 this.mSendViewScrolledAccessibilityEvent = new SendViewScrolledAccessibilityEvent();
             }
             return this.mSendViewScrolledAccessibilityEvent;
         }
-        boolean z = (accessibilityEvent.getContentChangeTypes() & 64) != 0;
-        if (accessibilityEvent.getEventType() != 2048 || !z) {
+        boolean isStateContentChanged = (event.getContentChangeTypes() & 64) != 0;
+        if (event.getEventType() != 2048 || !isStateContentChanged) {
             return null;
         }
         if (this.mSendStateChangedAccessibilityEvent == null) {
@@ -3648,7 +3682,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         onProvideStructure(structure, 2, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Multi-variable type inference failed */
     public void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
         String pkg;
@@ -4069,7 +4102,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mPrivateFlags4 = i & (-33);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean getNotifiedContentCaptureAppeared() {
         return (this.mPrivateFlags4 & 16) != 0;
     }
@@ -4124,7 +4156,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return (AutofillManager) this.mContext.getSystemService(AutofillManager.class);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean isActivityDeniedForAutofillForUnimportantView() {
         AutofillManager afm = getAutofillManager();
         if (afm == null) {
@@ -4133,7 +4164,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return afm.isActivityDeniedForAutofill();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean isMatchingAutofillableHeuristics() {
         AutofillManager afm = getAutofillManager();
         if (afm == null || !afm.isTriggerFillRequestOnUnimportantViewEnabled()) {
@@ -4315,7 +4345,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchProvideContentCaptureStructure() {
         ContentCaptureSession session = getContentCaptureSession();
         if (session != null) {
@@ -4555,7 +4584,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return isVisibleToUser(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isVisibleToUser(Rect boundInView) {
         AttachInfo attachInfo = this.mAttachInfo;
         if (attachInfo == null || attachInfo.mWindowVisibility != 0) {
@@ -4719,7 +4747,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         notifyViewAccessibilityStateChangedIfNeeded(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onFocusLost() {
         resetPressedState();
     }
@@ -4984,7 +5011,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
     }
 
     private void updatePositionUpdateListener() {
-        final ListenerInfo info = getListenerInfo();
+        ListenerInfo info = getListenerInfo();
         if (getSystemGestureExclusionRects().isEmpty() && collectPreferKeepClearRects().isEmpty() && collectUnrestrictedPreferKeepClearRects().isEmpty() && (info.mHandwritingArea == null || !shouldInitiateHandwriting())) {
             if (info.mPositionUpdateListener != null) {
                 this.mRenderNode.removePositionUpdateListener(info.mPositionUpdateListener);
@@ -5002,6 +5029,12 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
                 }
             };
             info.mPositionUpdateListener = new RenderNode.PositionUpdateListener() { // from class: android.view.View.1
+                final /* synthetic */ ListenerInfo val$info;
+
+                AnonymousClass1(ListenerInfo info2) {
+                    info = info2;
+                }
+
                 @Override // android.graphics.RenderNode.PositionUpdateListener
                 public void positionChanged(long n, int l, int t, int r, int b) {
                     View.this.postUpdate(info.mPositionChangedUpdate);
@@ -5012,18 +5045,36 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
                     View.this.postUpdate(info.mPositionChangedUpdate);
                 }
             };
-            this.mRenderNode.addPositionUpdateListener(info.mPositionUpdateListener);
+            this.mRenderNode.addPositionUpdateListener(info2.mPositionUpdateListener);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$updatePositionUpdateListener$2() {
         updateSystemGestureExclusionRects();
         updateKeepClearRects();
         updateHandwritingArea();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.view.View$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements RenderNode.PositionUpdateListener {
+        final /* synthetic */ ListenerInfo val$info;
+
+        AnonymousClass1(ListenerInfo info2) {
+            info = info2;
+        }
+
+        @Override // android.graphics.RenderNode.PositionUpdateListener
+        public void positionChanged(long n, int l, int t, int r, int b) {
+            View.this.postUpdate(info.mPositionChangedUpdate);
+        }
+
+        @Override // android.graphics.RenderNode.PositionUpdateListener
+        public void positionLost(long frameNumber) {
+            View.this.postUpdate(info.mPositionChangedUpdate);
+        }
+    }
+
     public void postUpdate(Runnable r) {
         Handler h = getHandler();
         if (h != null) {
@@ -5031,7 +5082,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSystemGestureExclusionRects() {
         AttachInfo ai = this.mAttachInfo;
         if (ai != null) {
@@ -5101,7 +5151,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return Collections.emptyList();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateKeepClearRects() {
         AttachInfo ai = this.mAttachInfo;
         if (ai != null) {
@@ -5109,7 +5158,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public List<Rect> collectPreferKeepClearRects() {
         ListenerInfo info = this.mListenerInfo;
         boolean keepClearForFocus = isFocused() && ViewConfiguration.get(this.mContext).isPreferKeepClearForFocusEnabled();
@@ -5138,7 +5186,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public List<Rect> collectUnrestrictedPreferKeepClearRects() {
         ListenerInfo info = this.mListenerInfo;
         if (info != null && info.mUnrestrictedKeepClearRects != null) {
@@ -5185,7 +5232,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateHandwritingArea() {
         AttachInfo ai;
         if (shouldInitiateHandwriting() && (ai = this.mAttachInfo) != null) {
@@ -5193,7 +5239,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldInitiateHandwriting() {
         return isAutoHandwritingEnabled() || getHandwritingDelegatorCallback() != null;
     }
@@ -5519,7 +5564,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return (this.mPrivateFlags3 & 4) == 4;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isLayoutValid() {
         return isLaidOut() && (this.mPrivateFlags & 4096) == 0;
     }
@@ -5577,7 +5621,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         setFlags(contextClickable ? 8388608 : 0, 8388608);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setPressed(boolean pressed, float x, float y) {
         if (pressed) {
             drawableHotspotChanged(x, y);
@@ -5707,7 +5750,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return (this.mPrivateFlags3 & 32768) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View findKeyboardNavigationCluster() {
         Object obj = this.mParent;
         if (obj instanceof View) {
@@ -5802,7 +5844,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasDefaultFocus() {
         return isFocusedByDefault();
     }
@@ -5834,7 +5875,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return this.mDefaultFocusHighlightEnabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View findUserSetNextFocus(final View root, int direction) {
         switch (direction) {
             case 1:
@@ -5884,12 +5924,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$findUserSetNextFocus$3(View rootView, View startView, View t) {
         return findViewInsideOutShouldExist(rootView, t, t.mNextFocusForwardId) == startView;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View findUserSetNextKeyboardNavigationCluster(View root, int direction) {
         switch (direction) {
             case 1:
@@ -5914,7 +5952,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$findUserSetNextKeyboardNavigationCluster$4(int id, View t) {
         return t.mNextClusterForwardId == id;
     }
@@ -6043,7 +6080,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         source.sendAccessibilityEvent(eventType);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearAccessibilityFocusNoCallbacks(int action) {
         int i = this.mPrivateFlags2;
         if ((67108864 & i) != 0) {
@@ -6215,7 +6251,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View getSelfOrParentImportantForA11y() {
         if (isImportantForAccessibility()) {
             return this;
@@ -6252,7 +6287,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return this.mInferredAccessibilityDataSensitive == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void calculateAccessibilityDataSensitive() {
         int i = this.mExplicitAccessibilityDataSensitive;
         if (i != 0) {
@@ -6362,7 +6396,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mViewFlags = (this.mViewFlags & (-13)) | visibility;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetSubtreeAccessibilityStateChanged() {
         this.mPrivateFlags2 &= -134217729;
     }
@@ -6713,7 +6746,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return onKeyShortcut(event.getKeyCode(), event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean semIsShowingScrollbar() {
         ScrollabilityCache scrollabilityCache = this.mScrollCache;
         return (scrollabilityCache == null || scrollabilityCache.state == 0) ? false : true;
@@ -6811,12 +6843,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isAccessibilityFocusedViewOrHost() {
         return isAccessibilityFocused() || (getViewRootImpl() != null && getViewRootImpl().getAccessibilityFocusedHost() == this);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean canReceivePointerEvents() {
         return (this.mViewFlags & 12) == 0 || getAnimation() != null;
     }
@@ -6903,7 +6933,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean dispatchHoverEvent(MotionEvent event) {
         ListenerInfo li = this.mListenerInfo;
         if (li != null && li.mOnHoverListener != null && (this.mViewFlags & 32) == 0 && li.mOnHoverListener.onHover(this, event)) {
@@ -6920,12 +6949,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean dispatchGenericPointerEvent(MotionEvent event) {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean dispatchGenericFocusedEvent(MotionEvent event) {
         return false;
     }
@@ -6982,12 +7009,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return getViewRootImpl() != null && getViewRootImpl().getImeFocusController().hasImeFocus();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dispatchVisibilityChanged(View changedView, int visibility) {
         onVisibilityChanged(changedView, visibility);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onVisibilityChanged(View changedView, int visibility) {
     }
 
@@ -6995,7 +7020,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         onDisplayHint(hint);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDisplayHint(int hint) {
     }
 
@@ -7003,7 +7027,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         onWindowVisibilityChanged(visibility);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onWindowVisibilityChanged(int visibility) {
         if (visibility == 0) {
             initialAwakenScrollBars();
@@ -7014,7 +7037,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return (this.mPrivateFlags3 & 536870912) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean dispatchVisibilityAggregated(boolean isVisible) {
         boolean thisVisible = getVisibility() == 0;
         if (thisVisible || !isVisible) {
@@ -7111,11 +7133,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         onConfigurationChanged(newConfig);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onConfigurationChanged(Configuration newConfig) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchCollectViewAttributes(AttachInfo attachInfo, int visibility) {
         performCollectViewAttributes(attachInfo, visibility);
     }
@@ -7133,7 +7153,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void needGlobalAttributesUpdate(boolean force) {
         AttachInfo ai = this.mAttachInfo;
         if (ai != null && !ai.mRecomputeGlobalAttributes) {
@@ -7233,8 +7252,37 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
     public void onInputConnectionClosedInternal() {
     }
 
-    public void semSetDisplayCutoutBackgroundColor(final int color) {
+    /* renamed from: android.view.View$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Runnable {
+        final /* synthetic */ int val$color;
+
+        AnonymousClass2(int i) {
+            color = i;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewRootImpl viewRootImpl = View.this.getViewRootImpl();
+            if (viewRootImpl != null) {
+                View rootView = viewRootImpl.getView();
+                if (rootView instanceof DecorView) {
+                    DecorView decorView = (DecorView) rootView;
+                    decorView.setDisplayCutoutBackgroundColor(color);
+                    Log.d(viewRootImpl.getTag(), "DecorView.setDisplayCutoutBackgroundColor() #" + Integer.toHexString(color));
+                }
+            }
+        }
+    }
+
+    public void semSetDisplayCutoutBackgroundColor(int color) {
         post(new Runnable() { // from class: android.view.View.2
+            final /* synthetic */ int val$color;
+
+            AnonymousClass2(int color2) {
+                color = color2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ViewRootImpl viewRootImpl = View.this.getViewRootImpl();
@@ -7706,27 +7754,26 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mIsSetFingerHoveredInAppWidget = fingerHovered;
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    public boolean onTouchEvent(MotionEvent motionEvent) {
+    public boolean onTouchEvent(MotionEvent event) {
         String str;
-        int i;
-        int i2;
-        int i3;
-        int i4;
-        int i5;
-        float x = motionEvent.getX();
-        float y = motionEvent.getY();
-        int i6 = this.mViewFlags;
-        int action = motionEvent.getAction();
-        byte b = (i6 & 1073741824) == 1073741824 && (this.mSemViewFlags & 2) != 2;
-        boolean z = (i6 & 16384) == 16384 || (i6 & 2097152) == 2097152 || (i6 & 8388608) == 8388608;
+        int touchSlop;
+        int touchSlop2;
+        int motionClassification;
+        int viewFlags;
+        int touchSlop3;
+        float x = event.getX();
+        float y = event.getY();
+        int viewFlags2 = this.mViewFlags;
+        int action = event.getAction();
+        boolean isTooltipAvailable = (viewFlags2 & 1073741824) == 1073741824 && (this.mSemViewFlags & 2) != 2;
+        boolean clickable = (viewFlags2 & 16384) == 16384 || (viewFlags2 & 2097152) == 2097152 || (viewFlags2 & 8388608) == 8388608;
         if (ViewRootImpl.DEBUG_TOUCH_EVENT) {
-            Log.i(VIEW_LOG_TAG, "onTouchEvent " + motionEvent);
+            Log.i(VIEW_LOG_TAG, "onTouchEvent " + event);
         }
-        if (motionEvent.getToolType(0) == 2 && (motionEvent.getButtonState() & 32) != 0) {
-            return z || b == true;
+        if (event.getToolType(0) == 2 && (event.getButtonState() & 32) != 0) {
+            return clickable || isTooltipAvailable;
         }
-        if ((i6 & 32) == 32 && (this.mPrivateFlags4 & 4096) == 0) {
+        if ((viewFlags2 & 32) == 32 && (this.mPrivateFlags4 & 4096) == 0) {
             if (action == 1 && (this.mPrivateFlags & 16384) != 0) {
                 setPressed(false);
             }
@@ -7734,36 +7781,35 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             if (ViewRootImpl.DEBUG_TOUCH_EVENT) {
                 Log.i(VIEW_LOG_TAG, "onTouchEvent return_1");
             }
-            return z;
+            return clickable;
         }
         TouchDelegate touchDelegate = this.mTouchDelegate;
-        if (touchDelegate != null && touchDelegate.onTouchEvent(motionEvent)) {
+        if (touchDelegate != null && touchDelegate.onTouchEvent(event)) {
             if (ViewRootImpl.DEBUG_TOUCH_EVENT) {
                 Log.i(VIEW_LOG_TAG, "onTouchEvent return_2");
             }
             return true;
         }
-        if (z || b != false) {
-            byte b2 = 0;
-            byte b3 = 0;
+        if (clickable || isTooltipAvailable) {
             switch (action) {
                 case 0:
                     str = VIEW_LOG_TAG;
-                    if (motionEvent.getSource() == 4098) {
+                    if (event.getSource() == 4098) {
                         this.mPrivateFlags3 |= 131072;
                     }
                     this.mHasPerformedLongPress = false;
-                    if (!z) {
+                    if (!clickable) {
                         checkForLongClick(ViewConfiguration.getLongPressTimeout(), x, y, 3);
                         break;
-                    } else if (!performButtonActionOnTouchDown(motionEvent)) {
-                        if (isInScrollingContainer()) {
+                    } else if (!performButtonActionOnTouchDown(event)) {
+                        boolean isInScrollingContainer = isInScrollingContainer();
+                        if (isInScrollingContainer) {
                             this.mPrivateFlags = 33554432 | this.mPrivateFlags;
                             if (this.mPendingCheckForTap == null) {
                                 this.mPendingCheckForTap = new CheckForTap();
                             }
-                            this.mPendingCheckForTap.x = motionEvent.getX();
-                            this.mPendingCheckForTap.y = motionEvent.getY();
+                            this.mPendingCheckForTap.x = event.getX();
+                            this.mPendingCheckForTap.y = event.getY();
                             postDelayed(this.mPendingCheckForTap, ViewConfiguration.getTapTimeout());
                             break;
                         } else {
@@ -7776,10 +7822,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
                 case 1:
                     str = VIEW_LOG_TAG;
                     this.mPrivateFlags3 &= -131073;
-                    if (b != false) {
+                    if (isTooltipAvailable) {
                         handleTooltipUp();
                     }
-                    if (!z) {
+                    if (!clickable) {
                         removeTapCallback();
                         removeLongPressCallback();
                         this.mInContextButtonPress = false;
@@ -7787,19 +7833,19 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
                         this.mIgnoreNextUpEvent = false;
                         break;
                     } else {
-                        int i7 = this.mPrivateFlags;
-                        boolean z2 = (33554432 & i7) != 0;
-                        if ((i7 & 16384) != 0 || z2) {
-                            boolean z3 = false;
+                        int i = this.mPrivateFlags;
+                        boolean prepressed = (33554432 & i) != 0;
+                        if ((i & 16384) != 0 || prepressed) {
+                            boolean focusTaken = false;
                             if (isFocusable() && isFocusableInTouchMode() && !isFocused()) {
-                                z3 = requestFocus();
+                                focusTaken = requestFocus();
                             }
-                            if (z2) {
+                            if (prepressed) {
                                 setPressed(true, x, y);
                             }
                             if (!this.mHasPerformedLongPress && !this.mIgnoreNextUpEvent) {
                                 removeLongPressCallback();
-                                if (!z3) {
+                                if (!focusTaken) {
                                     if (this.mPerformClick == null) {
                                         this.mPerformClick = new PerformClick();
                                     }
@@ -7811,7 +7857,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
                             if (this.mUnsetPressedState == null) {
                                 this.mUnsetPressedState = new UnsetPressedState();
                             }
-                            if (!z2) {
+                            if (!prepressed) {
                                 if (!post(this.mUnsetPressedState)) {
                                     this.mUnsetPressedState.run();
                                 }
@@ -7825,61 +7871,63 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
                     }
                     break;
                 case 2:
-                    if (z) {
+                    if (clickable) {
                         drawableHotspotChanged(x, y);
                     }
-                    int classification = motionEvent.getClassification();
-                    byte b4 = classification == 1;
-                    int i8 = this.mIsDeviceDefault ? this.mExtendedTouchSlop : this.mTouchSlop;
-                    if (CoreRune.MW_SPLIT_IS_FLEX_SCROLL_WHEEL && (motionEvent.getFlags() & 1048576) != 0) {
+                    int motionClassification2 = event.getClassification();
+                    boolean ambiguousGesture = motionClassification2 == 1;
+                    int touchSlop4 = this.mIsDeviceDefault ? this.mExtendedTouchSlop : this.mTouchSlop;
+                    if (CoreRune.MW_SPLIT_IS_FLEX_SCROLL_WHEEL && (event.getFlags() & 1048576) != 0) {
                         setPressed(false);
                         removeLongPressCallback();
                         removeTapCallback();
-                        i = 0;
+                        touchSlop = 0;
                     } else {
-                        i = i8;
+                        touchSlop = touchSlop4;
                     }
-                    if (b4 != false && hasPendingLongPressCallback()) {
-                        if (pointInView(x, y, i)) {
-                            i5 = i;
-                            i3 = classification;
+                    if (ambiguousGesture && hasPendingLongPressCallback()) {
+                        if (pointInView(x, y, touchSlop)) {
+                            touchSlop3 = touchSlop;
+                            motionClassification = motionClassification2;
                             str = VIEW_LOG_TAG;
-                            i4 = 16384;
+                            viewFlags = 16384;
                         } else {
                             removeLongPressCallback();
-                            long longPressTimeout = (ViewConfiguration.getLongPressTimeout() * this.mAmbiguousGestureMultiplier) - (motionEvent.getEventTime() - motionEvent.getDownTime());
-                            i5 = i;
-                            i3 = classification;
+                            long delay = ViewConfiguration.getLongPressTimeout() * this.mAmbiguousGestureMultiplier;
+                            long delay2 = delay - (event.getEventTime() - event.getDownTime());
+                            touchSlop3 = touchSlop;
+                            motionClassification = motionClassification2;
                             str = VIEW_LOG_TAG;
-                            i4 = 16384;
-                            checkForLongClick(longPressTimeout, x, y, 3);
+                            viewFlags = 16384;
+                            checkForLongClick(delay2, x, y, 3);
                         }
-                        i2 = (int) (i5 * this.mAmbiguousGestureMultiplier);
+                        touchSlop2 = (int) (touchSlop3 * this.mAmbiguousGestureMultiplier);
                     } else {
-                        i2 = i;
-                        i3 = classification;
+                        touchSlop2 = touchSlop;
+                        motionClassification = motionClassification2;
                         str = VIEW_LOG_TAG;
-                        i4 = 16384;
+                        viewFlags = 16384;
                     }
-                    if (!pointInView(x, y, i2)) {
+                    if (!pointInView(x, y, touchSlop2)) {
                         removeTapCallback();
                         removeLongPressCallback();
-                        if ((this.mPrivateFlags & i4) != 0) {
+                        if ((this.mPrivateFlags & viewFlags) != 0) {
                             setPressed(false);
                         }
                         this.mPrivateFlags3 &= -131073;
                     }
-                    if ((i3 == 2) && hasPendingLongPressCallback()) {
+                    boolean deepPress = motionClassification == 2;
+                    if (deepPress && hasPendingLongPressCallback()) {
                         removeLongPressCallback();
                         checkForLongClick(0L, x, y, 4);
                         break;
                     }
                     break;
                 case 3:
-                    if (z) {
+                    if (clickable) {
                         setPressed(false);
                     }
-                    if (b != false) {
+                    if (isTooltipAvailable) {
                         handleTooltipUp();
                     }
                     removeTapCallback();
@@ -7999,7 +8047,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return (i & 12) == 0 && (i & 1) == 1 && (i & 32) == 0 && (sCanFocusZeroSized || !isLayoutValid() || hasSize());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setFlags(int flags, int mask) {
         AttachInfo attachInfo;
         ForegroundInfo foregroundInfo;
@@ -8181,7 +8228,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onScrollChanged(int l, int t, int oldl, int oldt) {
         notifySubtreeAccessibilityStateChangedIfNeeded();
         postSendViewScrolledAccessibilityEventCallback(l - oldl, t - oldt);
@@ -8201,11 +8247,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dispatchDraw(Canvas canvas) {
     }
 
@@ -8279,7 +8323,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return this.mRenderNode.hasIdentityMatrix();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void ensureTransformationInfo() {
         if (this.mTransformationInfo == null) {
             this.mTransformationInfo = new TransformationInfo();
@@ -8494,7 +8537,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean setAlphaNoInvalidation(float alpha) {
         ensureTransformationInfo();
         if (this.mTransformationInfo.mAlpha != alpha) {
@@ -8511,7 +8553,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAlphaInternal(float alpha) {
         float oldAlpha = this.mTransformationInfo.mAlpha;
         this.mTransformationInfo.mAlpha = alpha;
@@ -8988,7 +9029,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         outRect.set(((int) tmpRect.left) + this.mLeft, ((int) tmpRect.top) + this.mTop, ((int) tmpRect.right) + this.mLeft, ((int) tmpRect.bottom) + this.mTop);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean pointInView(float localX, float localY) {
         return pointInView(localX, localY, 0.0f);
     }
@@ -9161,7 +9201,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         scrollTo(this.mScrollX + x, this.mScrollY + y);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean awakenScrollBars() {
         ScrollabilityCache scrollabilityCache = this.mScrollCache;
         return scrollabilityCache != null && awakenScrollBars(scrollabilityCache.scrollBarDefaultDelayBeforeFade, true);
@@ -9171,12 +9210,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean awakenScrollBars(int startDelay) {
         return awakenScrollBars(startDelay, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean awakenScrollBars(int startDelay, boolean invalidate) {
         ScrollabilityCache scrollCache = this.mScrollCache;
         if (scrollCache == null || !scrollCache.fadeScrollBars) {
@@ -9295,7 +9332,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return this.mBackground != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateViewProperty(boolean invalidateParent, boolean forceRedraw) {
         if (!isHardwareAccelerated() || !this.mRenderNode.hasDisplayList() || (this.mPrivateFlags & 64) != 0) {
             if (invalidateParent) {
@@ -9317,7 +9353,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void invalidateParentCaches() {
         Object obj = this.mParent;
         if (obj instanceof View) {
@@ -9325,7 +9360,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void invalidateParentIfNeeded() {
         if (isHardwareAccelerated()) {
             Object obj = this.mParent;
@@ -9361,7 +9395,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean hasOpaqueScrollbars() {
         return (this.mPrivateFlags & 16777216) == 16777216;
     }
@@ -9551,22 +9584,18 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float getTopFadingEdgeStrength() {
         return computeVerticalScrollOffset() > 0 ? 1.0f : 0.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float getBottomFadingEdgeStrength() {
         return computeVerticalScrollOffset() + computeVerticalScrollExtent() < computeVerticalScrollRange() ? 1.0f : 0.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float getLeftFadingEdgeStrength() {
         return computeHorizontalScrollOffset() > 0 ? 1.0f : 0.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float getRightFadingEdgeStrength() {
         return computeHorizontalScrollOffset() + computeHorizontalScrollExtent() < computeHorizontalScrollRange() ? 1.0f : 0.0f;
     }
@@ -9656,32 +9685,26 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return this.mViewFlags & 50331648;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int computeHorizontalScrollRange() {
         return getWidth();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int computeHorizontalScrollOffset() {
         return this.mScrollX;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int computeHorizontalScrollExtent() {
         return getWidth();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int computeVerticalScrollRange() {
         return getHeight();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int computeVerticalScrollOffset() {
         return this.mScrollY;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int computeVerticalScrollExtent() {
         return getHeight();
     }
@@ -9722,7 +9745,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void getScrollIndicatorBounds(Rect out) {
         out.left = this.mScrollX;
         out.right = (this.mScrollX + this.mRight) - this.mLeft;
@@ -9968,17 +9990,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         scrollBar.draw(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDrawVerticalScrollBar(Canvas canvas, Drawable scrollBar, int l, int t, int r, int b) {
         scrollBar.setBounds(l, t, r, b);
         scrollBar.draw(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDraw(Canvas canvas) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void assignParent(ViewParent parent) {
         if (this.mParent == null) {
             this.mParent = parent;
@@ -9991,7 +10010,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onAttachedToWindow() {
         ViewParent viewParent = this.mParent;
         if (viewParent != null && (this.mPrivateFlags & 512) != 0) {
@@ -10046,7 +10064,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         resetResolvedDrawables();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchScreenStateChanged(int screenState) {
         onScreenStateChanged(screenState);
     }
@@ -10054,7 +10071,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
     public void onScreenStateChanged(int screenState) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchMovedToDisplay(Display display, Configuration config) {
         AttachInfo attachInfo = this.mAttachInfo;
         if (attachInfo != null) {
@@ -10151,7 +10167,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return (this.mPrivateFlags2 & 32) == 32;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isPaddingResolved() {
         return (this.mPrivateFlags2 & 536870912) == 536870912;
     }
@@ -10229,11 +10244,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mPrivateFlags2 &= -536870913;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDetachedFromWindow() {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDetachedFromWindowInternal() {
         SemHoverPopupWindow semHoverPopupWindow;
         if (this.mHoverPopupType != 0 && (semHoverPopupWindow = this.mHoverPopup) != null) {
@@ -10272,11 +10285,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateInheritedLayoutMode(int layoutModeOfRoot) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getWindowAttachCount() {
         return this.mWindowAttachCount;
     }
@@ -10342,7 +10353,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int combineVisibility(int vis1, int vis2) {
         return Math.max(vis1, vis2);
     }
@@ -10351,7 +10361,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mShouldFakeFocus = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchAttachedToWindow(AttachInfo info, int visibility) {
         this.mAttachInfo = info;
         if (this.mIsAllowedPokeDrawLock) {
@@ -10412,7 +10421,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchDetachedFromWindow() {
         AttachInfo attachInfo;
         AttachInfo info = this.mAttachInfo;
@@ -10463,7 +10471,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         dispatchCancelPendingInputEvents();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchCancelPendingInputEvents() {
         this.mPrivateFlags3 &= -17;
         onCancelPendingInputEvents();
@@ -10482,7 +10489,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         dispatchSaveInstanceState(container);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         if (this.mID != -1 && (this.mViewFlags & 65536) == 0) {
             this.mPrivateFlags &= -131073;
@@ -10496,7 +10502,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Parcelable onSaveInstanceState() {
         this.mPrivateFlags |= 131072;
         if (this.mStartActivityRequestWho != null || isAutofilled() || this.mAutofillViewId > 1073741823) {
@@ -10523,7 +10528,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         dispatchRestoreInstanceState(container);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         Parcelable state;
         int i = this.mID;
@@ -10536,7 +10540,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onRestoreInstanceState(Parcelable state) {
         this.mPrivateFlags |= 131072;
         if (state != null && !(state instanceof AbsSavedState)) {
@@ -10652,7 +10655,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void destroyHardwareResources() {
         ViewOverlay viewOverlay = this.mOverlay;
         if (viewOverlay != null) {
@@ -11164,13 +11166,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final boolean drawsWithRenderNode(Canvas canvas) {
         AttachInfo attachInfo = this.mAttachInfo;
         return attachInfo != null && attachInfo.mHardwareAccelerated && canvas.isHardwareAccelerated();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:100:0x0336  */
     /* JADX WARN: Removed duplicated region for block: B:103:0x03a1  */
     /* JADX WARN: Removed duplicated region for block: B:106:0x03a8 A[ADDED_TO_REGION] */
@@ -11199,7 +11199,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         throw new UnsupportedOperationException("Method not decompiled: android.view.View.draw(android.graphics.Canvas, android.view.ViewGroup, long):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Paint getDebugPaint() {
         if (sDebugPaint == null) {
             Paint paint = new Paint();
@@ -11209,7 +11208,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return sDebugPaint;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final int dipsToPixels(int dips) {
         float scale = getContext().getResources().getDisplayMetrics().density;
         return (int) ((dips * scale) + 0.5f);
@@ -11768,11 +11766,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean setFrame(int left, int top, int right, int bottom) {
         boolean changed = false;
         int i = this.mLeft;
@@ -11849,7 +11845,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onFinishInflate() {
     }
 
@@ -11899,7 +11894,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void resolveDrawables() {
         if (!isLayoutDirectionResolved() && getRawLayoutDirection() == 2) {
             return;
@@ -11921,7 +11915,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         onResolveDrawables(layoutDirection);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean areDrawablesResolved() {
         return (this.mPrivateFlags2 & 1073741824) == 1073741824;
     }
@@ -11929,7 +11922,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
     public void onResolveDrawables(int layoutDirection) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void resetResolvedDrawables() {
         resetResolvedDrawablesInternal();
     }
@@ -11938,13 +11930,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mPrivateFlags2 &= -1073741825;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean verifyDrawable(Drawable who) {
         ForegroundInfo foregroundInfo;
         return who == this.mBackground || ((foregroundInfo = this.mForegroundInfo) != null && foregroundInfo.mDrawable == who) || this.mDefaultFocusHighlight == who;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void drawableStateChanged() {
         Drawable scrollBar;
         int[] state = getDrawableState();
@@ -12091,7 +12081,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return onCreateDrawableState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int[] onCreateDrawableState(int extraSpace) {
         int i = this.mViewFlags;
         if ((i & 4194304) == 4194304) {
@@ -12146,7 +12135,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return new int[extraSpace];
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int[] mergeDrawableStates(int[] baseState, int[] additionalState) {
         int N = baseState.length;
         int i = N - 1;
@@ -12589,7 +12577,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         internalSetPadding(left, top, right, bottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void internalSetPadding(int left, int top, int right, int bottom) {
         this.mUserPaddingLeft = left;
         this.mUserPaddingRight = right;
@@ -12963,7 +12950,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Multi-variable type inference failed */
     public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View childToSkip) {
         if (predicate.test(this)) {
@@ -13014,7 +13000,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return (T) findViewByPredicateTraversal(predicate, null);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x001c, code lost:            return r1;     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x001c, code lost:
+    
+        return r1;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -13118,7 +13107,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         debug(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void debug(int depth) {
         String output;
         String output2 = debugIndent(depth - 1) + "+ " + this;
@@ -13151,7 +13139,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         Log.d(VIEW_LOG_TAG, ((debugIndent(depth) + "privateFlags={") + printPrivateFlags(this.mPrivateFlags)) + "}");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static String debugIndent(int depth) {
         StringBuilder spaces = new StringBuilder(((depth * 2) + 3) * 2);
         for (int i = 0; i < (depth * 2) + 3; i++) {
@@ -13253,12 +13240,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         throw new UnsupportedOperationException("Method not decompiled: android.view.View.measure(int, int):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec), getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void setMeasuredDimension(int measuredWidth, int measuredHeight) {
         boolean optical = isLayoutModeOptical(this);
         if (optical != isLayoutModeOptical(this.mParent)) {
@@ -13322,13 +13307,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getSuggestedMinimumHeight() {
         Drawable drawable = this.mBackground;
         return drawable == null ? this.mMinHeight : Math.max(this.mMinHeight, drawable.getMinimumHeight());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getSuggestedMinimumWidth() {
         Drawable drawable = this.mBackground;
         return drawable == null ? this.mMinWidth : Math.max(this.mMinWidth, drawable.getMinimumWidth());
@@ -13389,7 +13372,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         this.mPrivateFlags |= 65536;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onAnimationEnd() {
         this.mPrivateFlags &= -65537;
     }
@@ -13498,7 +13480,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean updateLocalSystemUiVisibility(int localValue, int localChanges) {
         int i = this.mSystemUiVisibility;
         int val = ((~localChanges) & i) | (localValue & localChanges);
@@ -13630,7 +13611,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         throw new UnsupportedOperationException("Method not decompiled: android.view.View.startDragAndDrop(android.content.ClipData, android.view.View$DragShadowBuilder, java.lang.Object, int, android.graphics.RectF, android.graphics.Point):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAccessibilityDragStarted(boolean started) {
         int pflags4;
         int pflags42 = this.mPrivateFlags4;
@@ -13735,7 +13715,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return remainingPayload != payload;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean dispatchDragEnterExitInPreN(DragEvent event) {
         return callDragEventHandler(event);
     }
@@ -13749,9 +13728,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return callDragEventHandler(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x006b, code lost:            return r1;     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x006b, code lost:
+    
+        return r1;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -13761,12 +13742,12 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             r4 = this;
             android.view.View$ListenerInfo r0 = r4.mListenerInfo
             if (r0 == 0) goto L1c
-            android.view.View$OnDragListener r1 = android.view.View.ListenerInfo.m5327$$Nest$fgetmOnDragListener(r0)
+            android.view.View$OnDragListener r1 = android.view.View.ListenerInfo.m5322$$Nest$fgetmOnDragListener(r0)
             if (r1 == 0) goto L1c
             int r1 = r4.mViewFlags
             r1 = r1 & 32
             if (r1 != 0) goto L1c
-            android.view.View$OnDragListener r1 = android.view.View.ListenerInfo.m5327$$Nest$fgetmOnDragListener(r0)
+            android.view.View$OnDragListener r1 = android.view.View.ListenerInfo.m5322$$Nest$fgetmOnDragListener(r0)
             boolean r1 = r1.onDrag(r4, r5)
             if (r1 == 0) goto L1c
             r1 = 1
@@ -13809,9 +13790,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         L48:
             if (r1 == 0) goto L6b
             if (r0 == 0) goto L6b
-            android.view.View$OnDragListener r2 = android.view.View.ListenerInfo.m5327$$Nest$fgetmOnDragListener(r0)
+            android.view.View$OnDragListener r2 = android.view.View.ListenerInfo.m5322$$Nest$fgetmOnDragListener(r0)
             if (r2 != 0) goto L58
-            android.view.OnReceiveContentListener r2 = android.view.View.ListenerInfo.m5332$$Nest$fgetmOnReceiveContentListener(r0)
+            android.view.OnReceiveContentListener r2 = android.view.View.ListenerInfo.m5327$$Nest$fgetmOnReceiveContentListener(r0)
             if (r2 == 0) goto L6b
         L58:
             r2 = 256(0x100, float:3.59E-43)
@@ -13820,7 +13801,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         L5e:
             if (r1 == 0) goto L6b
             if (r0 == 0) goto L6b
-            android.view.View$OnDragListener r2 = android.view.View.ListenerInfo.m5327$$Nest$fgetmOnDragListener(r0)
+            android.view.View$OnDragListener r2 = android.view.View.ListenerInfo.m5322$$Nest$fgetmOnDragListener(r0)
             if (r2 == 0) goto L6b
             r4.sendWindowContentChangedAccessibilityEvent(r3)
         L6b:
@@ -13829,12 +13810,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         throw new UnsupportedOperationException("Method not decompiled: android.view.View.callDragEventHandler(android.view.DragEvent):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canAcceptDrag() {
         return (this.mPrivateFlags2 & 1) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void sendWindowContentChangedAccessibilityEvent(int changeType) {
         if (AccessibilityManager.getInstance(this.mContext).isEnabled()) {
             AccessibilityEvent event = AccessibilityEvent.obtain();
@@ -13875,7 +13854,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         region.op(db, Region.Op.DIFFERENCE);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void checkForLongClick(long delay, float x, float y, int classification) {
         boolean isTooltipAvailable = (this.mViewFlags & 1073741824) == 1073741824 && (this.mSemViewFlags & 2) != 2;
         if (ViewRootImpl.DEBUG_TOUCH_EVENT) {
@@ -13899,7 +13877,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return factory.inflate(resource, root);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean overScrollBy(int deltaX, int deltaY, int scrollX, int scrollY, int scrollRangeX, int scrollRangeY, int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent) {
         int maxOverScrollX2;
         int maxOverScrollY2;
@@ -14089,7 +14066,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float getVerticalScrollFactor() {
         if (this.mVerticalScrollFactor == 0.0f) {
             TypedValue outValue = new TypedValue();
@@ -14105,7 +14081,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return getVerticalScrollFactor();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float getHorizontalScrollFactor() {
         return getVerticalScrollFactor();
     }
@@ -14120,7 +14095,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void requestToAllowedPokeDrawLock() {
         AttachInfo attachInfo;
         if (this.mIsAllowedPokeDrawLock && (attachInfo = this.mAttachInfo) != null) {
@@ -14513,6 +14487,224 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         getListenerInfo().mOnCapturedPointerListener = l;
     }
 
+    /* renamed from: android.view.View$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 extends FloatProperty<View> {
+        AnonymousClass3(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            if (object != null) {
+                object.setAlpha(value);
+            }
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getAlpha());
+        }
+    }
+
+    /* renamed from: android.view.View$4 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass4 extends FloatProperty<View> {
+        AnonymousClass4(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setTranslationX(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getTranslationX());
+        }
+    }
+
+    /* renamed from: android.view.View$5 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass5 extends FloatProperty<View> {
+        AnonymousClass5(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setTranslationY(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getTranslationY());
+        }
+    }
+
+    /* renamed from: android.view.View$6 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass6 extends FloatProperty<View> {
+        AnonymousClass6(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setTranslationZ(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getTranslationZ());
+        }
+    }
+
+    /* renamed from: android.view.View$7 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass7 extends FloatProperty<View> {
+        AnonymousClass7(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setX(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getX());
+        }
+    }
+
+    /* renamed from: android.view.View$8 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass8 extends FloatProperty<View> {
+        AnonymousClass8(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setY(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getY());
+        }
+    }
+
+    /* renamed from: android.view.View$9 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass9 extends FloatProperty<View> {
+        AnonymousClass9(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setZ(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getZ());
+        }
+    }
+
+    /* renamed from: android.view.View$10 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass10 extends FloatProperty<View> {
+        AnonymousClass10(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setRotation(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getRotation());
+        }
+    }
+
+    /* renamed from: android.view.View$11 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass11 extends FloatProperty<View> {
+        AnonymousClass11(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setRotationX(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getRotationX());
+        }
+    }
+
+    /* renamed from: android.view.View$12 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass12 extends FloatProperty<View> {
+        AnonymousClass12(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setRotationY(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getRotationY());
+        }
+    }
+
+    /* renamed from: android.view.View$13 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass13 extends FloatProperty<View> {
+        AnonymousClass13(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setScaleX(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getScaleX());
+        }
+    }
+
+    /* renamed from: android.view.View$14 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass14 extends FloatProperty<View> {
+        AnonymousClass14(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View object, float value) {
+            object.setScaleY(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View object) {
+            return Float.valueOf(object.getScaleY());
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static class MeasureSpec {
         public static final int AT_MOST = Integer.MIN_VALUE;
@@ -14580,7 +14772,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class CheckForLongPress implements Runnable {
         private int mClassification;
@@ -14588,6 +14779,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         private int mOriginalWindowAttachCount;
         private float mX;
         private float mY;
+
+        /* synthetic */ CheckForLongPress(View view, CheckForLongPressIA checkForLongPressIA) {
+            this();
+        }
 
         private CheckForLongPress() {
         }
@@ -14620,11 +14815,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class CheckForTap implements Runnable {
         public float x;
         public float y;
+
+        /* synthetic */ CheckForTap(View view, CheckForTapIA checkForTapIA) {
+            this();
+        }
 
         private CheckForTap() {
         }
@@ -14638,9 +14836,12 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class PerformClick implements Runnable {
+        /* synthetic */ PerformClick(View view, PerformClickIA performClickIA) {
+            this();
+        }
+
         private PerformClick() {
         }
 
@@ -14651,7 +14852,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void recordGestureClassification(int classification) {
         if (classification == 0) {
             return;
@@ -14687,9 +14887,12 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class UnsetPressedState implements Runnable {
+        /* synthetic */ UnsetPressedState(View view, UnsetPressedStateIA unsetPressedStateIA) {
+            this();
+        }
+
         private UnsetPressedState() {
         }
 
@@ -14699,11 +14902,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class VisibilityChangeForAutofillHandler extends Handler {
         private final AutofillManager mAfm;
         private final View mView;
+
+        /* synthetic */ VisibilityChangeForAutofillHandler(AutofillManager autofillManager, View view, VisibilityChangeForAutofillHandlerIA visibilityChangeForAutofillHandlerIA) {
+            this(autofillManager, view);
+        }
 
         private VisibilityChangeForAutofillHandler(AutofillManager afm, View view) {
             this.mAfm = afm;
@@ -14722,12 +14928,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
     public static class BaseSavedState extends AbsSavedState {
         static final int AUTOFILL_ID = 4;
         public static final Parcelable.Creator<BaseSavedState> CREATOR = new Parcelable.ClassLoaderCreator<BaseSavedState>() { // from class: android.view.View.BaseSavedState.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public BaseSavedState createFromParcel(Parcel in) {
                 return new BaseSavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.ClassLoaderCreator
             public BaseSavedState createFromParcel(Parcel in, ClassLoader loader) {
                 return new BaseSavedState(in, loader);
@@ -14772,9 +14980,30 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             out.writeBoolean(this.mHideHighlight);
             out.writeInt(this.mAutofillViewId);
         }
+
+        /* renamed from: android.view.View$BaseSavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.ClassLoaderCreator<BaseSavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BaseSavedState createFromParcel(Parcel in) {
+                return new BaseSavedState(in);
+            }
+
+            @Override // android.os.Parcelable.ClassLoaderCreator
+            public BaseSavedState createFromParcel(Parcel in, ClassLoader loader) {
+                return new BaseSavedState(in, loader);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BaseSavedState[] newArray(int size) {
+                return new BaseSavedState[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class AttachInfo {
         int mAccessibilityFetchFlags;
@@ -14855,7 +15084,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         boolean mDebugLayout = DisplayProperties.debug_layout().orElse(false).booleanValue();
         final Point mPoint = new Point();
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public interface Callbacks {
             boolean performHapticFeedback(int i, boolean z);
@@ -14863,7 +15091,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             void playSoundEffect(int i);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public static class InvalidateInfo {
             private static final int POOL_LIMIT = 10;
@@ -14888,7 +15115,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public AttachInfo(IWindowSession session, IWindow window, Display display, ViewRootImpl viewRootImpl, Handler handler, Callbacks effectPlayer, Context context) {
             this.mSession = session;
             this.mWindow = window;
@@ -14900,7 +15126,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             this.mTreeObserver = new ViewTreeObserver(context);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ContentCaptureManager getContentCaptureManager(Context context) {
             ContentCaptureManager contentCaptureManager = this.mContentCaptureManager;
             if (contentCaptureManager != null) {
@@ -14915,7 +15140,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             this.mContentCaptureManager = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void delayNotifyContentCaptureInsetsEvent(Insets insets) {
             ContentCaptureManager contentCaptureManager = this.mContentCaptureManager;
             if (contentCaptureManager == null) {
@@ -14925,7 +15149,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
             events.add(insets);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void delayNotifyContentCaptureEvent(ContentCaptureSession session, View view, boolean appeared) {
             ArrayList<Object> events = ensureEvents(session);
             events.add(appeared ? view : view.getAutofillId());
@@ -14966,7 +15189,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ScrollabilityCache implements Runnable {
         public static final int DRAGGING_HORIZONTAL_SCROLL_BAR = 2;
@@ -15044,11 +15266,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SendAccessibilityEventThrottle implements Runnable {
         private AccessibilityEvent mAccessibilityEvent;
         public volatile boolean mIsPending;
+
+        /* synthetic */ SendAccessibilityEventThrottle(View view, SendAccessibilityEventThrottleIA sendAccessibilityEventThrottleIA) {
+            this();
+        }
 
         private SendAccessibilityEventThrottle() {
         }
@@ -15079,11 +15304,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SendViewScrolledAccessibilityEvent extends SendAccessibilityEventThrottle {
         public int mDeltaX;
         public int mDeltaY;
+
+        /* synthetic */ SendViewScrolledAccessibilityEvent(View view, SendViewScrolledAccessibilityEventIA sendViewScrolledAccessibilityEventIA) {
+            this();
+        }
 
         private SendViewScrolledAccessibilityEvent() {
             super();
@@ -15161,10 +15389,13 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class MatchIdPredicate implements Predicate<View> {
         public int mId;
+
+        /* synthetic */ MatchIdPredicate(MatchIdPredicateIA matchIdPredicateIA) {
+            this();
+        }
 
         private MatchIdPredicate() {
         }
@@ -15175,10 +15406,13 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class MatchLabelForPredicate implements Predicate<View> {
         private int mLabeledId;
+
+        /* synthetic */ MatchLabelForPredicate(MatchLabelForPredicateIA matchLabelForPredicateIA) {
+            this();
+        }
 
         private MatchLabelForPredicate() {
         }
@@ -15290,7 +15524,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         stream.endObject();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void encodeProperties(ViewHierarchyEncoder stream) {
         Object resolveId = ViewDebug.resolveId(getContext(), this.mID);
         if (resolveId instanceof String) {
@@ -15494,7 +15727,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return this.mHoverPopup;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean setSemHoverPopupWindowSettings(int tooltype) {
         SemHoverPopupWindow semHoverPopupWindow = this.mHoverPopup;
         if (semHoverPopupWindow != null) {
@@ -15514,7 +15746,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isHoveringUIEnabled() {
         int i = sHoverUIEnableFlag;
         if ((i & 15) == 0) {
@@ -15525,7 +15756,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return (sHoverUIEnableFlag & 15) == 1 || semIsDesktopMode();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getHoverUIFeatureLevel() {
         if (sHoverUIFeatureLevel < 0 && !sIsCheckedHoverUIFeatureLevel) {
             sIsCheckedHoverUIFeatureLevel = true;
@@ -15660,7 +15890,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void hideTooltip() {
         TooltipInfo tooltipInfo = this.mTooltipInfo;
         if (tooltipInfo == null) {
@@ -15691,12 +15920,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return showTooltip(x, y, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean showHoverTooltip() {
         return showTooltip(this.mTooltipInfo.mAnchorX, this.mTooltipInfo.mAnchorY, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public boolean dispatchTooltipHoverEvent(MotionEvent event) {
         int timeout;
@@ -15739,7 +15966,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleTooltipKey(KeyEvent event) {
         switch (event.getAction()) {
             case 0:
@@ -15788,7 +16014,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return sUseDefaultFocusHighlight;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View dispatchUnhandledKeyEvent(KeyEvent evt) {
         if (onUnhandledKeyEvent(evt)) {
             return this;
@@ -15796,7 +16021,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean onUnhandledKeyEvent(KeyEvent event) {
         ListenerInfo listenerInfo = this.mListenerInfo;
         if (listenerInfo != null && listenerInfo.mUnhandledKeyListeners != null) {
@@ -15810,7 +16034,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasUnhandledKeyListener() {
         ListenerInfo listenerInfo = this.mListenerInfo;
         return (listenerInfo == null || listenerInfo.mUnhandledKeyListeners == null || this.mListenerInfo.mUnhandledKeyListeners.isEmpty()) ? false : true;
@@ -15845,7 +16068,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setDetached(boolean detached) {
         if (detached) {
             this.mPrivateFlags4 |= 8192;
@@ -15975,8 +16197,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class ViewTranslationRequestConsumer implements Consumer<ViewTranslationRequest> {
+    public class ViewTranslationRequestConsumer implements Consumer<ViewTranslationRequest> {
         private boolean mCalled;
         private final List<ViewTranslationRequest> mRequests;
 
@@ -16045,7 +16268,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$generateDisplayHash$6(Bundle result, DisplayHashResultCallback callback) {
         DisplayHash displayHash = (DisplayHash) result.getParcelable(DisplayHashResultCallback.EXTRA_DISPLAY_HASH, DisplayHash.class);
         int errorCode = result.getInt(DisplayHashResultCallback.EXTRA_DISPLAY_HASH_ERROR_CODE, -1);
@@ -16358,7 +16580,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         if (this.mBlurMode == 2 && sCanvasBlurRadius > 0) {
             if (this.mOnPreDrawListener == null && (attachInfo = this.mAttachInfo) != null) {
                 this.mViewTreeObserver = attachInfo.mTreeObserver;
-                ViewTreeObserver.OnPreDrawListener onPreDrawListener = new ViewTreeObserver.OnPreDrawListener() { // from class: android.view.View.15
+                AnonymousClass15 anonymousClass15 = new ViewTreeObserver.OnPreDrawListener() { // from class: android.view.View.15
+                    AnonymousClass15() {
+                    }
+
                     @Override // android.view.ViewTreeObserver.OnPreDrawListener
                     public boolean onPreDraw() {
                         if (View.this.mAttachInfo != null) {
@@ -16372,13 +16597,33 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
                         return true;
                     }
                 };
-                this.mOnPreDrawListener = onPreDrawListener;
-                this.mViewTreeObserver.addOnPreDrawListener(onPreDrawListener);
+                this.mOnPreDrawListener = anonymousClass15;
+                this.mViewTreeObserver.addOnPreDrawListener(anonymousClass15);
                 return;
             }
             return;
         }
         clearCanvasBlur();
+    }
+
+    /* renamed from: android.view.View$15 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass15 implements ViewTreeObserver.OnPreDrawListener {
+        AnonymousClass15() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            if (View.this.mAttachInfo != null) {
+                View.this.mAttachInfo.mViewRootImpl.mCanvasBlurEnabled = true;
+                if (View.this.mBlurColorCurve != null) {
+                    View.this.mAttachInfo.mViewRootImpl.mBlurColorCurveEnabled = true;
+                    View.this.mAttachInfo.mViewRootImpl.mBlurRadius = View.this.mBlurInfo.getBlurRadius();
+                    View.this.mAttachInfo.mViewRootImpl.mBlurColorCurve = View.this.mBlurInfo.getColorCurve();
+                }
+            }
+            return true;
+        }
     }
 
     private void clearCanvasBlur() {
@@ -16469,7 +16714,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$postRequestSendStickyDragStartedEvent$8() {
         ViewParent viewParent = this.mParent;
         if (viewParent != null) {

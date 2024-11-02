@@ -32,7 +32,6 @@ public class ImgpDecorateFilter extends DecorateFilter {
     private MediaFilter preFilter;
     private ImgpDescriptor preImgpDescriptor;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ImgpDecorateFilter(MediaFilter filter) {
         super(filter);
     }
@@ -168,24 +167,20 @@ public class ImgpDecorateFilter extends DecorateFilter {
         return obuf;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$run$1(MutableMediaBuffer output, int it) {
         return it == ((Integer) output.getExtra("force-rotate")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ DataType lambda$run$2(MutableMediaBuffer output, MutableMediaFormat it) {
         DataType dataType = it.getDataType();
         return dataType == DataType.NONE ? output.getFormat().getDataType() : dataType;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ColorFormat lambda$run$3(MutableMediaBuffer output, MutableMediaFormat it) {
         ColorFormat cf = it.getColorFormat();
         return cf == ColorFormat.NONE ? output.getFormat().getColorFormat() : cf;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$run$4(float scaleY, float scaleX, MediaBuffer e) {
         if (e.containsAllExtra("roi-on-block", "roi-on-image")) {
             Rect roiOnBlock = (Rect) e.getExtra("roi-on-block");

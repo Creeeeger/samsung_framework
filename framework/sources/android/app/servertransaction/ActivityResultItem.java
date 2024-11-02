@@ -14,19 +14,24 @@ import java.util.Objects;
 public class ActivityResultItem extends ActivityTransactionItem {
     public static final long CALL_ACTIVITY_RESULT_BEFORE_RESUME = 78294732;
     public static final Parcelable.Creator<ActivityResultItem> CREATOR = new Parcelable.Creator<ActivityResultItem>() { // from class: android.app.servertransaction.ActivityResultItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ActivityResultItem createFromParcel(Parcel in) {
             return new ActivityResultItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityResultItem[] newArray(int size) {
             return new ActivityResultItem[size];
         }
     };
     private List<ResultInfo> mResultInfoList;
+
+    /* synthetic */ ActivityResultItem(Parcel parcel, ActivityResultItemIA activityResultItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ClientTransactionItem
     public int getPostExecutionState() {
@@ -65,6 +70,23 @@ public class ActivityResultItem extends ActivityTransactionItem {
 
     private ActivityResultItem(Parcel in) {
         this.mResultInfoList = in.createTypedArrayList(ResultInfo.CREATOR);
+    }
+
+    /* renamed from: android.app.servertransaction.ActivityResultItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ActivityResultItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityResultItem createFromParcel(Parcel in) {
+            return new ActivityResultItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityResultItem[] newArray(int size) {
+            return new ActivityResultItem[size];
+        }
     }
 
     public boolean equals(Object o) {

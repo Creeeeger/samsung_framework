@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class HotwordDetectionServiceFailure implements Parcelable {
     public static final Parcelable.Creator<HotwordDetectionServiceFailure> CREATOR = new Parcelable.Creator<HotwordDetectionServiceFailure>() { // from class: android.service.voice.HotwordDetectionServiceFailure.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HotwordDetectionServiceFailure[] newArray(int size) {
             return new HotwordDetectionServiceFailure[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotwordDetectionServiceFailure createFromParcel(Parcel in) {
             return new HotwordDetectionServiceFailure(in.readInt(), in.readString8());
@@ -86,5 +87,22 @@ public final class HotwordDetectionServiceFailure implements Parcelable {
 
     public String toString() {
         return "HotwordDetectionServiceFailure { errorCode = " + this.mErrorCode + ", errorMessage = " + this.mErrorMessage + " }";
+    }
+
+    /* renamed from: android.service.voice.HotwordDetectionServiceFailure$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HotwordDetectionServiceFailure> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotwordDetectionServiceFailure[] newArray(int size) {
+            return new HotwordDetectionServiceFailure[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotwordDetectionServiceFailure createFromParcel(Parcel in) {
+            return new HotwordDetectionServiceFailure(in.readInt(), in.readString8());
+        }
     }
 }

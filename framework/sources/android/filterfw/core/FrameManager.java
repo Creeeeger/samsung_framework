@@ -41,7 +41,6 @@ public abstract class FrameManager {
     public void tearDown() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setContext(FilterContext context) {
         this.mContext = context;
     }

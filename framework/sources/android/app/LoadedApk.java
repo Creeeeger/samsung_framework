@@ -105,10 +105,8 @@ public final class LoadedApk {
     private final ArrayMap<Context, ArrayMap<ServiceConnection, ServiceDispatcher>> mUnboundServices;
     private final ArrayMap<Context, ArrayMap<BroadcastReceiver, ReceiverDispatcher>> mUnregisteredReceivers;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native void spegRestore();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Application getApplication() {
         return this.mApplication;
     }
@@ -147,7 +145,6 @@ public final class LoadedApk {
         return info;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LoadedApk(ActivityThread activityThread) {
         this.mDisplayAdjustments = new DisplayAdjustments();
         this.mReceivers = new ArrayMap<>();
@@ -184,7 +181,6 @@ public final class LoadedApk {
         this.mClassLoader = createAppFactory.instantiateClassLoader(this.mDefaultClassLoader, new ApplicationInfo(this.mApplicationInfo));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void installSystemApplicationInfo(ApplicationInfo info, ClassLoader classLoader) {
         this.mApplicationInfo = info;
         this.mDefaultClassLoader = classLoader;
@@ -316,7 +312,6 @@ public final class LoadedApk {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSdkSandboxStorage(String sdkSandboxClientAppVolumeUuid, String sdkSandboxClientAppPackage) {
         int userId = UserHandle.myUserId();
         this.mDeviceProtectedDataDirFile = Environment.getDataMiscDeSharedSdkSandboxDirectory(sdkSandboxClientAppVolumeUuid, userId, sdkSandboxClientAppPackage).getAbsoluteFile();
@@ -438,7 +433,6 @@ public final class LoadedApk {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class SplitDependencyLoaderImpl extends SplitDependencyLoader<PackageManager.NameNotFoundException> {
         private final ClassLoader[] mCachedClassLoaders;
@@ -516,7 +510,6 @@ public final class LoadedApk {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ClassLoader getSplitClassLoader(String splitName) throws PackageManager.NameNotFoundException {
         SplitDependencyLoaderImpl splitDependencyLoaderImpl = this.mSplitLoader;
         if (splitDependencyLoaderImpl == null) {
@@ -525,7 +518,6 @@ public final class LoadedApk {
         return splitDependencyLoaderImpl.getClassLoaderForSplit(splitName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String[] getSplitPaths(String splitName) throws PackageManager.NameNotFoundException {
         SplitDependencyLoaderImpl splitDependencyLoaderImpl = this.mSplitLoader;
         if (splitDependencyLoaderImpl == null) {
@@ -588,7 +580,6 @@ public final class LoadedApk {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Finally extract failed */
     /* JADX WARN: Removed duplicated region for block: B:68:0x01b7  */
     /* JADX WARN: Removed duplicated region for block: B:77:0x01fd  */
@@ -632,7 +623,6 @@ public final class LoadedApk {
         return classLoader;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isSpeg() {
         String apkFile;
         if (!CoreRune.SYSFW_APP_SPEG || (apkFile = this.mApplicationInfo.sourceDir) == null) {
@@ -680,6 +670,9 @@ public final class LoadedApk {
                 System.loadLibrary("speg");
                 if (CoreRune.SYSFW_APP_PREL) {
                     new Thread(new Runnable() { // from class: android.app.LoadedApk.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             for (int i2 = 0; LoadedApk.this.isSpeg() && i2 < 3000; i2 += 50) {
@@ -703,6 +696,28 @@ public final class LoadedApk {
         DexLoadReporter.getInstance().registerAppDataDir(this.mPackageName, this.mDataDir);
     }
 
+    /* renamed from: android.app.LoadedApk$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            for (int i2 = 0; LoadedApk.this.isSpeg() && i2 < 3000; i2 += 50) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                }
+            }
+            try {
+                LoadedApk.this.spegRestore();
+            } catch (UnsatisfiedLinkError e2) {
+                Log.e(LoadedApk.TAG_PREL, "Couldn't find spegRestore() " + e2);
+            }
+        }
+    }
+
     private void initializeJavaContextClassLoader() {
         ClassLoader contextClassLoader;
         ActivityThread.getPackageManager();
@@ -724,10 +739,13 @@ public final class LoadedApk {
         Thread.currentThread().setContextClassLoader(contextClassLoader);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class WarningContextClassLoader extends ClassLoader {
         private static boolean warned = false;
+
+        /* synthetic */ WarningContextClassLoader(WarningContextClassLoaderIA warningContextClassLoaderIA) {
+            this();
+        }
 
         private WarningContextClassLoader() {
         }
@@ -1042,7 +1060,10 @@ public final class LoadedApk {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x00b4, code lost:            throw new java.lang.IllegalStateException("Unbinding Receiver " + r10 + " from Context that is no longer in use: " + r9);     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x00b4, code lost:
+    
+        throw new java.lang.IllegalStateException("Unbinding Receiver " + r10 + " from Context that is no longer in use: " + r9);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1146,7 +1167,6 @@ public final class LoadedApk {
         throw new UnsupportedOperationException("Method not decompiled: android.app.LoadedApk.forgetReceiverDispatcher(android.content.Context, android.content.BroadcastReceiver):android.content.IIntentReceiver");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class ReceiverDispatcher {
         final Handler mActivityThread;
@@ -1160,7 +1180,6 @@ public final class LoadedApk {
         final boolean mRegistered;
         RuntimeException mUnregisterLocation;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes.dex */
         public static final class InnerReceiver extends IIntentReceiver.Stub {
             final IApplicationThread mApplicationThread;
@@ -1213,7 +1232,6 @@ public final class LoadedApk {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes.dex */
         public final class Args extends BroadcastReceiver.PendingResult {
             private Intent mCurIntent;
@@ -1236,7 +1254,6 @@ public final class LoadedApk {
                 };
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$getRunnable$0() {
                 BroadcastReceiver receiver = ReceiverDispatcher.this.mReceiver;
                 IActivityManager mgr = ActivityManager.getService();
@@ -1287,7 +1304,6 @@ public final class LoadedApk {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ReceiverDispatcher(IApplicationThread appThread, BroadcastReceiver receiver, Context context, Handler activityThread, Instrumentation instrumentation, boolean registered) {
             if (activityThread == null) {
                 throw new NullPointerException("Handler must not be null");
@@ -1321,7 +1337,6 @@ public final class LoadedApk {
             return this.mReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public IIntentReceiver getIIntentReceiver() {
             return this.mIIntentReceiver;
         }
@@ -1404,7 +1419,10 @@ public final class LoadedApk {
         return iServiceConnection;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x00bb, code lost:            throw new java.lang.IllegalStateException("Unbinding Service " + r10 + " from Context that is no longer in use: " + r9);     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x00bb, code lost:
+    
+        throw new java.lang.IllegalStateException("Unbinding Service " + r10 + " from Context that is no longer in use: " + r9);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1511,7 +1529,6 @@ public final class LoadedApk {
         throw new UnsupportedOperationException("Method not decompiled: android.app.LoadedApk.forgetServiceDispatcher(android.content.Context, android.content.ServiceConnection):android.app.IServiceConnection");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class ServiceDispatcher {
         private final ArrayMap<ComponentName, ConnectionInfo> mActiveConnections;
@@ -1525,17 +1542,19 @@ public final class LoadedApk {
         private final ServiceConnectionLeaked mLocation;
         private RuntimeException mUnbindLocation;
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class ConnectionInfo {
             IBinder binder;
             IBinder.DeathRecipient deathMonitor;
 
+            /* synthetic */ ConnectionInfo(ConnectionInfoIA connectionInfoIA) {
+                this();
+            }
+
             private ConnectionInfo() {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class InnerConnection extends IServiceConnection.Stub {
             final WeakReference<ServiceDispatcher> mDispatcher;
@@ -1716,7 +1735,6 @@ public final class LoadedApk {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public final class RunConnection implements Runnable {
             final int mCommand;
@@ -1742,7 +1760,6 @@ public final class LoadedApk {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public final class DeathMonitor implements IBinder.DeathRecipient {
             final ComponentName mName;

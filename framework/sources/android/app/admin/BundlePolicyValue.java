@@ -8,18 +8,23 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class BundlePolicyValue extends PolicyValue<Bundle> {
     public static final Parcelable.Creator<BundlePolicyValue> CREATOR = new Parcelable.Creator<BundlePolicyValue>() { // from class: android.app.admin.BundlePolicyValue.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BundlePolicyValue createFromParcel(Parcel source) {
             return new BundlePolicyValue(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BundlePolicyValue[] newArray(int size) {
             return new BundlePolicyValue[size];
         }
     };
+
+    /* synthetic */ BundlePolicyValue(Parcel parcel, BundlePolicyValueIA bundlePolicyValueIA) {
+        this(parcel);
+    }
 
     public BundlePolicyValue(Bundle value) {
         super(value);
@@ -56,5 +61,22 @@ public final class BundlePolicyValue extends PolicyValue<Bundle> {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBundle(getValue());
+    }
+
+    /* renamed from: android.app.admin.BundlePolicyValue$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BundlePolicyValue> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BundlePolicyValue createFromParcel(Parcel source) {
+            return new BundlePolicyValue(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BundlePolicyValue[] newArray(int size) {
+            return new BundlePolicyValue[size];
+        }
     }
 }

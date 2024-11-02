@@ -83,8 +83,9 @@ public interface IInjectRecognitionEvent extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IInjectRecognitionEvent {
+        public static class Proxy implements IInjectRecognitionEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

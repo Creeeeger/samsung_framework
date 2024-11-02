@@ -105,8 +105,9 @@ public interface IProtectedConfirmation extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IProtectedConfirmation {
+        public static class Proxy implements IProtectedConfirmation {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

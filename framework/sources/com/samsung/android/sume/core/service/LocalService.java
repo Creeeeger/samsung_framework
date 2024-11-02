@@ -60,7 +60,6 @@ public abstract class LocalService extends ServiceStub {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$onEvent$0(Parcelable it) {
         return (MediaBuffer) it;
     }

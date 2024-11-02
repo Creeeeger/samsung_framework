@@ -256,8 +256,9 @@ public interface IPrintServiceClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IPrintServiceClient {
+        public static class Proxy implements IPrintServiceClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

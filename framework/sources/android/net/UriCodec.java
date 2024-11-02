@@ -46,7 +46,10 @@ public final class UriCodec {
         return builder.toString();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x008a, code lost:            r1.put(r4);     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x008a, code lost:
+    
+        r1.put(r4);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

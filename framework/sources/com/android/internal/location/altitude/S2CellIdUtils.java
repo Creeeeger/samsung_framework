@@ -29,7 +29,6 @@ public final class S2CellIdUtils {
     private static final UvTransform[] UV_TRANSFORMS = createUvTransforms();
     private static final XyzTransform[] XYZ_TRANSFORMS = createXyzTransforms();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface UvTransform {
         double xyzToU(double d, double d2, double d3);
@@ -37,7 +36,6 @@ public final class S2CellIdUtils {
         double xyzToV(double d, double d2, double d3);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface XyzTransform {
         double uvToX(double d, double d2);
@@ -104,7 +102,6 @@ public final class S2CellIdUtils {
         return fromXyz(x, y, z);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getLevel(long s2CellId) {
         if (isLeaf(s2CellId)) {
             return 30;
@@ -120,17 +117,14 @@ public final class S2CellIdUtils {
         return 1 << ((30 - level) * 2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long getTraversalStart(long s2CellId, int level) {
         return (s2CellId - getLowestOnBit(s2CellId)) + getLowestOnBitForLevel(level);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long getTraversalNext(long s2CellId) {
         return (getLowestOnBit(s2CellId) << 1) + s2CellId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getToken(long s2CellId) {
         if (s2CellId == 0) {
             return GnssSignalType.CODE_TYPE_X;
@@ -326,6 +320,9 @@ public final class S2CellIdUtils {
 
     private static UvTransform[] createUvTransforms() {
         UvTransform[] uvTransforms = {new UvTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.1
+            AnonymousClass1() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
             public double xyzToU(double x, double y, double z) {
                 return y / x;
@@ -336,6 +333,9 @@ public final class S2CellIdUtils {
                 return z / x;
             }
         }, new UvTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.2
+            AnonymousClass2() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
             public double xyzToU(double x, double y, double z) {
                 return (-x) / y;
@@ -346,6 +346,9 @@ public final class S2CellIdUtils {
                 return z / y;
             }
         }, new UvTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.3
+            AnonymousClass3() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
             public double xyzToU(double x, double y, double z) {
                 return (-x) / z;
@@ -356,6 +359,9 @@ public final class S2CellIdUtils {
                 return (-y) / z;
             }
         }, new UvTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.4
+            AnonymousClass4() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
             public double xyzToU(double x, double y, double z) {
                 return z / x;
@@ -366,6 +372,9 @@ public final class S2CellIdUtils {
                 return y / x;
             }
         }, new UvTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.5
+            AnonymousClass5() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
             public double xyzToU(double x, double y, double z) {
                 return z / y;
@@ -376,6 +385,9 @@ public final class S2CellIdUtils {
                 return (-x) / y;
             }
         }, new UvTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.6
+            AnonymousClass6() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
             public double xyzToU(double x, double y, double z) {
                 return (-y) / z;
@@ -389,8 +401,113 @@ public final class S2CellIdUtils {
         return uvTransforms;
     }
 
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements UvTransform {
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToU(double x, double y, double z) {
+            return y / x;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToV(double x, double y, double z) {
+            return z / x;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements UvTransform {
+        AnonymousClass2() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToU(double x, double y, double z) {
+            return (-x) / y;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToV(double x, double y, double z) {
+            return z / y;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements UvTransform {
+        AnonymousClass3() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToU(double x, double y, double z) {
+            return (-x) / z;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToV(double x, double y, double z) {
+            return (-y) / z;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements UvTransform {
+        AnonymousClass4() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToU(double x, double y, double z) {
+            return z / x;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToV(double x, double y, double z) {
+            return y / x;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements UvTransform {
+        AnonymousClass5() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToU(double x, double y, double z) {
+            return z / y;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToV(double x, double y, double z) {
+            return (-x) / y;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$6 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass6 implements UvTransform {
+        AnonymousClass6() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToU(double x, double y, double z) {
+            return (-y) / z;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.UvTransform
+        public double xyzToV(double x, double y, double z) {
+            return (-x) / z;
+        }
+    }
+
     private static XyzTransform[] createXyzTransforms() {
         XyzTransform[] xyzTransforms = {new XyzTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.7
+            AnonymousClass7() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
             public double uvToX(double u, double v) {
                 return 1.0d;
@@ -406,6 +523,9 @@ public final class S2CellIdUtils {
                 return v;
             }
         }, new XyzTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.8
+            AnonymousClass8() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
             public double uvToX(double u, double v) {
                 return -u;
@@ -421,6 +541,9 @@ public final class S2CellIdUtils {
                 return v;
             }
         }, new XyzTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.9
+            AnonymousClass9() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
             public double uvToX(double u, double v) {
                 return -u;
@@ -436,6 +559,9 @@ public final class S2CellIdUtils {
                 return 1.0d;
             }
         }, new XyzTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.10
+            AnonymousClass10() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
             public double uvToX(double u, double v) {
                 return -1.0d;
@@ -451,6 +577,9 @@ public final class S2CellIdUtils {
                 return -u;
             }
         }, new XyzTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.11
+            AnonymousClass11() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
             public double uvToX(double u, double v) {
                 return v;
@@ -466,6 +595,9 @@ public final class S2CellIdUtils {
                 return -u;
             }
         }, new XyzTransform() { // from class: com.android.internal.location.altitude.S2CellIdUtils.12
+            AnonymousClass12() {
+            }
+
             @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
             public double uvToX(double u, double v) {
                 return v;
@@ -482,5 +614,137 @@ public final class S2CellIdUtils {
             }
         }};
         return xyzTransforms;
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$7 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass7 implements XyzTransform {
+        AnonymousClass7() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToX(double u, double v) {
+            return 1.0d;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToY(double u, double v) {
+            return u;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToZ(double u, double v) {
+            return v;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$8 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass8 implements XyzTransform {
+        AnonymousClass8() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToX(double u, double v) {
+            return -u;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToY(double u, double v) {
+            return 1.0d;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToZ(double u, double v) {
+            return v;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$9 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass9 implements XyzTransform {
+        AnonymousClass9() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToX(double u, double v) {
+            return -u;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToY(double u, double v) {
+            return -v;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToZ(double u, double v) {
+            return 1.0d;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$10 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass10 implements XyzTransform {
+        AnonymousClass10() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToX(double u, double v) {
+            return -1.0d;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToY(double u, double v) {
+            return -v;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToZ(double u, double v) {
+            return -u;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$11 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass11 implements XyzTransform {
+        AnonymousClass11() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToX(double u, double v) {
+            return v;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToY(double u, double v) {
+            return -1.0d;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToZ(double u, double v) {
+            return -u;
+        }
+    }
+
+    /* renamed from: com.android.internal.location.altitude.S2CellIdUtils$12 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass12 implements XyzTransform {
+        AnonymousClass12() {
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToX(double u, double v) {
+            return v;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToY(double u, double v) {
+            return u;
+        }
+
+        @Override // com.android.internal.location.altitude.S2CellIdUtils.XyzTransform
+        public double uvToZ(double u, double v) {
+            return -1.0d;
+        }
     }
 }

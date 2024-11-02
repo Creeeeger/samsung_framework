@@ -7,15 +7,16 @@ public class ColorFilter {
     private Runnable mCleaner;
     private long mNativeInstance;
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnativeGetFinalizer */
     static /* bridge */ /* synthetic */ long m1074$$Nest$smnativeGetFinalizer() {
         return nativeGetFinalizer();
     }
 
     private static native long nativeGetFinalizer();
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class NoImagePreloadHolder {
+    public static class NoImagePreloadHolder {
         public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(ColorFilter.class.getClassLoader(), ColorFilter.m1074$$Nest$smnativeGetFinalizer());
 
         private NoImagePreloadHolder() {
@@ -30,7 +31,6 @@ public class ColorFilter {
         return 0L;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final synchronized void discardNativeInstance() {
         if (this.mNativeInstance != 0) {
             this.mCleaner.run();

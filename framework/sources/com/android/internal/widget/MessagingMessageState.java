@@ -13,7 +13,6 @@ public class MessagingMessageState {
     private boolean mIsHistoric;
     private Notification.MessagingStyle.Message mMessage;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MessagingMessageState(View hostView) {
         this.mHostView = hostView;
     }

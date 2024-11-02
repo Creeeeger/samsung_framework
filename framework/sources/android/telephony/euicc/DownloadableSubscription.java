@@ -12,13 +12,14 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class DownloadableSubscription implements Parcelable {
     public static final Parcelable.Creator<DownloadableSubscription> CREATOR = new Parcelable.Creator<DownloadableSubscription>() { // from class: android.telephony.euicc.DownloadableSubscription.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DownloadableSubscription createFromParcel(Parcel in) {
             return new DownloadableSubscription(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DownloadableSubscription[] newArray(int size) {
             return new DownloadableSubscription[size];
@@ -30,6 +31,31 @@ public final class DownloadableSubscription implements Parcelable {
 
     @Deprecated
     public final String encodedActivationCode;
+
+    /* synthetic */ DownloadableSubscription(Parcel parcel, DownloadableSubscriptionIA downloadableSubscriptionIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ DownloadableSubscription(String str, String str2, String str3, List list, DownloadableSubscriptionIA downloadableSubscriptionIA) {
+        this(str, str2, str3, list);
+    }
+
+    /* renamed from: android.telephony.euicc.DownloadableSubscription$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DownloadableSubscription> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DownloadableSubscription createFromParcel(Parcel in) {
+            return new DownloadableSubscription(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DownloadableSubscription[] newArray(int size) {
+            return new DownloadableSubscription[size];
+        }
+    }
 
     public String getEncodedActivationCode() {
         return this.encodedActivationCode;

@@ -4,7 +4,6 @@ import com.android.internal.org.bouncycastle.math.ec.ECCurve;
 import com.android.internal.org.bouncycastle.math.ec.ECPoint;
 import java.math.BigInteger;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class Tnaf {
     private static final BigInteger MINUS_ONE;

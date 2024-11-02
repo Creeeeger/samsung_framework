@@ -269,12 +269,12 @@ Núverandi eiginleikar:
     <string name="allow">Leyfa</string>
     <string name="alwaysUse">Nota sjálfgefið fyrir þessa aðgerð.</string>
     <string name="android_preparing_apk">Undirbýr %1$s.</string>
-    <string name="android_start_title">Síminn kveikir á sér…</string>
+    <string name="android_start_title">Spjaldtölvan kveikir á sér…</string>
     <string name="android_system_label">Android kerfið</string>
     <string name="android_upgrading_complete">Lýkur ræsingu.</string>
     <string name="android_upgrading_notification_title">Lýkur við kerfisuppfærslu…</string>
     <string name="android_upgrading_starting_apps">Ræsir forrit.</string>
-    <string name="android_upgrading_title">Uppfærir síma…</string>
+    <string name="android_upgrading_title">Uppfærir spjaldtölvu…</string>
     <string name="anr_activity_application">%2$s svarar ekki</string>
     <string name="anr_activity_process">%1$s svarar ekki</string>
     <string name="anr_application_process">%1$s svarar ekki</string>
@@ -295,16 +295,16 @@ Núverandi eiginleikar:
     <string name="app_not_found">Ekkert forrit fannst til að meðhöndla þessa aðgerð</string>
     <string name="app_running_notification_text">Ýttu til að fá frekari upplýsingar eða loka forritinu.</string>
     <string name="app_running_notification_title">%1$s er opið</string>
-    <string name="app_streaming_blocked_message">Aðgangur að þessu í %1$s er ekki í boði eins og er. Prófaðu það í símanum í staðinn.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Þetta forrit biður um viðbótaröryggi. Prófaðu það í símanum í staðinn.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Ekki er hægt að opna þetta í %1$s. Prófaðu það í símanum í staðinn.</string>
+    <string name="app_streaming_blocked_message">Aðgangur að þessu í %1$s er ekki í boði eins og er. Prófaðu það í spjaldtölvunni í staðinn.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Þetta forrit biður um viðbótaröryggi. Prófaðu það í spjaldtölvunni í staðinn.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Ekki er hægt að opna þetta í %1$s. Prófaðu það í spjaldtölvunni í staðinn.</string>
     <string name="app_streaming_blocked_title">%1$s ekki í boði</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Myndavél ekki tiltæk</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Halda áfram í símanum</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Hljóðnemi ekki tiltækur</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Heimildar krafist</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store er ekki tiltæk</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Símastillingar ekki tiltækar</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Spjaldtölvustillingar ekki tiltækar</string>
     <string name="app_suspended_default_message">%1$s er ekki í boði eins og er. Þessu er stjórnað með %2$s.</string>
     <string name="app_suspended_more_details">Nánari upplýsingar</string>
     <string name="app_suspended_title">Forritið er ekki í boði</string>
@@ -344,7 +344,7 @@ Núverandi eiginleikar:
     <string name="back_button_label">Til baka</string>
     <string name="badPin">Gamla PIN-númerið sem þú slóst inn er ekki rétt.</string>
     <string name="badPuk">PUK-númerið sem þú slóst inn er ekki rétt.</string>
-    <string name="battery_saver_charged_notification_summary">Síminn er með næga hleðslu. Eiginleikar eru ekki lengur takmarkaðir.</string>
+    <string name="battery_saver_charged_notification_summary">Spjaldtölva er með næga hleðslu. Eiginleikar eru ekki lengur takmarkaðir.</string>
     <string name="battery_saver_description">Rafhlöðusparnaður kveikir á dökku þema og takmarkar eða slekkur á bakgrunnsvirkni, sumum áhrifum, tilteknum eiginleikum og sumum nettengingum.</string>
     <string name="battery_saver_description_with_learn_more">Rafhlöðusparnaður kveikir á dökku þema og takmarkar eða slekkur á bakgrunnsvirkni, sumum myndáhrifum, tilteknum eiginleikum og sumum nettengingum.</string>
     <string name="battery_saver_notification_channel_name">Rafhlöðusparnaður</string>
@@ -486,7 +486,7 @@ Hljóðstyrkur í heyrnartólum hefur verið hærri en mælt er með sem gæti v
     <string name="decline">Hafna</string>
     <string name="decline_remote_bugreport_action">HAFNA</string>
     <string name="default_audio_route_category_name">Kerfi</string>
-    <string name="default_audio_route_name">Sími</string>
+    <string name="default_audio_route_name">Spjaldtölva</string>
     <string name="default_audio_route_name_dock_speakers">Dokkuhátalarar</string>
     <string name="default_audio_route_name_external_device">Ytra tæki</string>
     <string name="default_audio_route_name_headphones">Heyrnartól</string>
@@ -563,7 +563,7 @@ með %s"</string>
     <string name="emergency_call_dialog_number_for_display">Neyðarnúmer</string>
     <string name="emergency_calls_only">Aðeins neyðarsímtöl</string>
     <string name="enablePin">Tókst ekki. Kveiktu á SIM-/RUIM-lás.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s vill kveikja á snertikönnun. Þegar kveikt er á snertikönnun geturðu heyrt eða séð lýsingu á því sem er á skjánum undir fingrinum hverju sinni eða notað bendingar til að stjórna símanum.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s vill kveikja á snertikönnun. Þegar kveikt er á snertikönnun geturðu heyrt eða séð lýsingu á því sem er á skjánum undir fingrinum hverju sinni eða notað bendingar til að stjórna spjaldtölvunni.</string>
     <string name="enable_explore_by_touch_warning_title">Kveikja á snertikönnun?</string>
     <string name="error_message_change_not_allowed">Kerfisstjórinn þinn leyfir ekki þessa breytingu</string>
     <string name="error_message_title">Villa</string>
@@ -776,7 +776,7 @@ Prófaðu að ýta laust þegar þú setur upp fingrafarið."</string>
     <string name="global_action_silent_mode_on_status">SLÖKKT er á hljóði</string>
     <string name="global_action_toggle_silent_mode">Hljóðlaus stilling</string>
     <string name="global_action_voice_assist">Raddaðstoð</string>
-    <string name="global_actions">Valkostir síma</string>
+    <string name="global_actions">Valkostir spjaldtölvu</string>
     <string name="global_actions_airplane_mode_off_status">SLÖKKT er á flugstillingu</string>
     <string name="global_actions_airplane_mode_on_status">KVEIKT er á flugstillingu</string>
     <string name="global_actions_toggle_airplane_mode">Flugstilling</string>
@@ -917,11 +917,11 @@ Ertu viss um að þú viljir fara af þessari síðu?"</string>
     <string name="keyguard_password_entry_touch_hint"><font size="17">Ýttu til að slá inn aðgangsorð</font></string>
     <string name="keyguard_password_wrong_pin_code">Rangt PIN-númer.</string>
     <string name="kg_enter_confirm_pin_hint">Staðfestu nýja PIN-númerið</string>
-    <string name="kg_failed_attempts_almost_at_login">"Þú hefur teiknað rangt opnunarmynstur %1$d sinnum. Eftir %2$d árangurslausar tilraunir í viðbót verður þú beðin(n) um að opna símann með tölvupóstreikningi.
+    <string name="kg_failed_attempts_almost_at_login">"Þú hefur teiknað rangt opnunarmynstur %1$d sinnum. Eftir %2$d árangurslausar tilraunir í viðbót verður þú beðin(n) um að opna spjaldtölvuna með tölvupóstreikningi.
 
  Reyndu aftur eftir %3$d sekúndur."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Þú hefur gert %1$d tilraunir til að opna símann. Eftir %2$d árangurslausar tilraunir í viðbót verður síminn stilltur á sjálfgefnar stillingar og öll notandagögn hans glatast.</string>
-    <string name="kg_failed_attempts_now_wiping">Þú hefur gert %d tilraunir til að opna símann án árangurs. Hann verður nú stilltur á sjálfgefnar stillingar.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Þú hefur gert %1$d tilraunir til að opna spjaldtölvuna. Eftir %2$d árangurslausar tilraunir í viðbót verður tölvan stillt á sjálfgefar stillingar og öll notandagögn hennar glatast.</string>
+    <string name="kg_failed_attempts_now_wiping">Þú hefur gert %d tilraunir til að opna spjaldtölvuna án árangurs. Hún verður nú stillt á sjálfgefnar stillingar.</string>
     <string name="kg_forgot_pattern_button_text">Man ekki mynstrið</string>
     <string name="kg_invalid_confirm_pin_hint">PIN-númerin stemma ekki</string>
     <string name="kg_invalid_puk">Prófaðu aftur að setja inn rétt PUK-númer. Endurteknar tilraunir gera SIM-kortið varanlega óvirkt.</string>
@@ -986,11 +986,11 @@ Reyndu aftur eftir %2$d sekúndur."</string>
     <string name="lockscreen_access_pattern_start">Mynstur hafið</string>
     <string name="lockscreen_carrier_default">Ekkert símasamband</string>
     <string name="lockscreen_emergency_call">Neyðarsímtal</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Þú hefur gert %1$d tilraunir til að taka símann úr lás. Eftir %2$d árangurslausar tilraunir í viðbót verður síminn stilltur á sjálfgefnar stillingar og öll notandagögn hans glatast.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Þú hefur teiknað opnunarmynstrið rangt %1$d sinnum. Eftir %2$d árangurslausar tilraunir í viðbót verður beðið um að þú notir Google innskráningu til að opna símann.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Þú hefur gert %1$d tilraunir til að taka spjaldtölvuna úr lás. Eftir %2$d árangurslausar tilraunir í viðbót verður spjaldtölvan stillt á sjálfgefnar stillingar og öll notandagögn hennar glatast.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Þú hefur teiknað opnunarmynstrið rangt %1$d sinnum. Eftir %2$d árangurslausar tilraunir í viðbót verður beðið um að þú notir Google innskráningu til að opna spjaldtölvuna.
 
  Prófaðu aftur eftir %3$d sekúndur."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Þú hefur gert %d tilraunir til að taka símann úr lás. Síminn verður nú stilltur á sjálfgefnar stillingar.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Þú hefur gert %d tilraunir til að taka spjaldtölvuna úr lás. Spjaldtölvan verður nú stillt á sjálfgefnar stillingar.</string>
     <string name="lockscreen_forgot_pattern_button_text">Gleymdirðu mynstrinu?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Gleymdirðu notandanafninu eða aðgangsorðinu?
 Farðu á "<b>google.com/accounts/recovery</b>.</string>
@@ -1006,7 +1006,7 @@ Farðu á "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Ýttu á valmyndartakkann til að taka úr lás eða hringja neyðarsímtal.</string>
     <string name="lockscreen_missing_sim_instructions">Bæta við SIM-korti.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM-kort vantar eða er ekki læsilegt. Bæta við SIM-korti.</string>
-    <string name="lockscreen_missing_sim_message">Það er ekkert SIM-kort í símanum.</string>
+    <string name="lockscreen_missing_sim_message">Það er ekkert SIM-kort í spjaldtölvunni.</string>
     <string name="lockscreen_missing_sim_message_short">Ekkert SIM-kort</string>
     <string name="lockscreen_network_locked_message">Net læst</string>
     <string name="lockscreen_password_wrong">Reyndu aftur</string>
@@ -1046,7 +1046,7 @@ Reyndu aftur eftir %2$d sekúndur."</string>
     <string name="low_internal_storage_view_text">Sumir kerfiseiginleikar kunna að vera óvirkir</string>
     <string name="low_internal_storage_view_text_no_boot">Ekki nægt geymslurými fyrir kerfið. Gakktu úr skugga um að 250 MB séu laus og endurræstu.</string>
     <string name="low_internal_storage_view_title">Geymslurýmið er senn á þrotum</string>
-    <string name="low_memory">Geymslurými símans er fullt. Eyddu einhverjum skrám til að losa um pláss.</string>
+    <string name="low_memory">Geymslurými spjaldtölvunnar er fullt. Eyddu einhverjum skrám til að losa um pláss.</string>
     <string name="managed_profile_app_label">Skipta yfir í vinnusnið %1$s</string>
     <string name="managed_profile_label">Skipta yfir í vinnusnið</string>
     <string name="managed_profile_label_badge">%1$s í vinnu</string>
@@ -1376,23 +1376,23 @@ Auknar tilkynningar hafa aðgang að efni tilkynninga, þ. á m. persónuupplýs
     <string name="permdesc_bindNotificationListenerService">Leyfir forriti að bindast efsta viðmótslagi hlustunarþjónustu tilkynninga. Ætti aldrei að vera nauðsynlegt fyrir venjuleg forrit.</string>
     <string name="permdesc_bind_connection_service">Leyfir forritinu að hafa samskipti við símafyrirtæki til að hringja/taka á móti símtölum.</string>
     <string name="permdesc_bind_incall_service">Leyfir forriti að stjórna því hvenær og hvernig notandi sér símtalsskjá.</string>
-    <string name="permdesc_bluetooth">Leyfir forriti að skoða grunnstillingu Bluetooth í símanum og koma á og samþykkja tengingar við pöruð tæki.</string>
-    <string name="permdesc_bluetoothAdmin">Leyfir forriti að stilla Bluetooth-símann og finna og parast við fjartengd tæki.</string>
+    <string name="permdesc_bluetooth">Leyfir forriti að skoða grunnstillingu Bluetooth í spjaldtölvunni og koma á og samþykkja tengingar við pöruð tæki.</string>
+    <string name="permdesc_bluetoothAdmin">Leyfir forriti að stilla Bluetooth-spjaldtölvuna og finna og parast við fjartengd tæki.</string>
     <string name="permdesc_bluetooth_advertise">Leyfir forritinu að birta nálægum Bluetooth-tækjum auglýsingar</string>
     <string name="permdesc_bluetooth_connect">Leyfir forritinu að tengjast pöruðum Bluetooth-tækjum</string>
     <string name="permdesc_bluetooth_scan">Leyfir forritinu að finna nálæg Bluetooth-tæki og parast við þau</string>
     <string name="permdesc_bodySensors">Veitir forritinu aðgang að gögnum frá líkamsskynjurum, svo sem um hjartslátt, hitastig og súrefnismettun í blóði á meðan forritið er í notkun.</string>
     <string name="permdesc_bodySensors_background">Veitir forritinu aðgang að gögnum frá líkamsskynjurum, svo sem um hjartslátt, hitastig og súrefnismettun í blóði á meðan forritið keyrir í bakgrunni.</string>
-    <string name="permdesc_broadcastSticky">Leyfir forriti að senda viðvarandi tilkynningar, sem eru áfram í gangi eftir birtingu. Of mikil notkun þeirra getur hægt á virkni símans eða gert hann óstöðugan með því að nota of mikið af minni hans.</string>
+    <string name="permdesc_broadcastSticky">Leyfir forriti að senda viðvarandi tilkynningar, sem eru áfram í gangi eftir birtingu. Of mikil notkun þeirra getur hægt á virkni spjaldtölvunnar eða gert hana óstöðuga með því að nota of mikið af minni hennar.</string>
     <string name="permdesc_callCompanionApp">Leyfir forritinu að sjá og stjórna hringdum símtölum í tækinu. Þar á meðal eru upplýsingar á borð við símanúmer í símtölum og stöður símtala.</string>
     <string name="permdesc_callPhone">Leyfir forriti að hringja í símanúmer án aðgerðar frá þér. Þetta getur haft í för með sér óvænt gjöld eða símtöl. Athugaðu að þetta heimilar forriti ekki að hringja í neyðarnúmer. Skaðleg forrit gætu kostað þig peninga með því að hringja án staðfestingar frá þér eða hringja í kóða símafyrirtækis sem verður til þess að móttekin símtöl verði framsend sjálfkrafa í annað númer.</string>
     <string name="permdesc_camera">Þetta forrit getur tekið myndir og tekið upp myndskeið með myndavélinni þegar forritið er í notkun.</string>
     <string name="permdesc_cameraOpenCloseListener">Þetta forrit getur tekið við svörum þegar verið er að opna eða loka myndavél í hvaða forriti sem er.</string>
     <string name="permdesc_changeNetworkState">Leyfir forriti að breyta stöðu nettengingar.</string>
     <string name="permdesc_changeTetherState">Leyfir forriti að breyta stöðu tjóðraðrar nettengingar.</string>
-    <string name="permdesc_changeWifiMulticastState">Leyfir forriti að taka á móti pökkum sem sendir eru til allra tækja innan þráðlauss nets með fjöldasendingum, ekki bara símans þíns. Það gengur hraðar á rafhlöðuna en stilling án fjöldasendinga.</string>
+    <string name="permdesc_changeWifiMulticastState">Leyfir forriti að taka á móti pökkum sem sendir eru til allra tækja innan þráðlauss nets með fjöldasendingum, ekki bara spjaldtölvunnar þinnar. Það gengur hraðar á rafhlöðuna en stilling án fjöldasendinga.</string>
     <string name="permdesc_changeWifiState">Leyfir forriti að tengjast og aftengjast Wi-Fi aðgangsstöðum og gera breytingar á grunnstillingu tækisins fyrir Wi-Fi net.</string>
-    <string name="permdesc_changeWimaxState">Leyfir forriti að tengja og aftengja símann við WiMAX-net.</string>
+    <string name="permdesc_changeWimaxState">Leyfir forriti að tengja og aftengja spjaldtölvuna við WiMAX-net.</string>
     <string name="permdesc_companionProfileWatch">Leyfir fylgiforriti að stjórna úrum.</string>
     <string name="permdesc_connection_manager">Leyfir forritinu að stjórna símatengingum.</string>
     <string name="permdesc_control_incall_experience">Leyfir forriti að birta notendaviðmót innan símtals.</string>
@@ -1418,7 +1418,7 @@ Auknar tilkynningar hafa aðgang að efni tilkynninga, þ. á m. persónuupplýs
     <string name="permdesc_foregroundServiceSpecialUse">Leyfir forritinu að nota forgrunnsþjónustu af gerðinni „specialUse“</string>
     <string name="permdesc_foregroundServiceSystemExempted">Leyfir forritinu að nota forgrunnsþjónustu af gerðinni „systemExempted“</string>
     <string name="permdesc_fullScreenIntent">Gerir forritinu kleift að birta tilkynningar sem aðgerðir á öllum skjánum á læstu tæki</string>
-    <string name="permdesc_getAccounts">Leyfir forriti að fá lista yfir reikninga sem síminn þekkir. Þar á meðal kunna að vera reikningar stofnaðir af forritum sem þú hefur sett upp.</string>
+    <string name="permdesc_getAccounts">Leyfir forriti að fá lista yfir reikninga sem spjaldtölvan þekkir. Þar á meðal kunna að vera reikningar stofnaðir af forritum sem þú hefur sett upp.</string>
     <string name="permdesc_getPackageSize">Leyfir forriti að sækja stærðir kóða, gagna og skyndiminnis síns.</string>
     <string name="permdesc_getTasks">Leyfir forriti að sækja upplýsingar um opin forrit og forrit sem nýlega hafa verið opin. Þetta getur gert forritinu kleift að nálgast upplýsingar um forritin sem notuð eru í tækinu.</string>
     <string name="permdesc_handoverStatus">Leyfir þessu forriti að fá upplýsingar um flutning sem fram fer með Android Beam</string>
@@ -1441,16 +1441,16 @@ Auknar tilkynningar hafa aðgang að efni tilkynninga, þ. á m. persónuupplýs
     <string name="permdesc_nearby_wifi_devices">Leyfir forritinu að auglýsa, tengja og áætla staðsetningu nálægra WiFi-tækja</string>
     <string name="permdesc_nfc">Leyfir forriti að eiga samskipti við NFC-merki, -spjöld og -lesara (nándarsamskipti).</string>
     <string name="permdesc_observeCompanionDevicePresence">Leyfir fylgiforriti að fylgjast með viðveru fylgitækis hvort sem tækin eru nálæg eða fjarri.</string>
-    <string name="permdesc_persistentActivity">Leyfir forriti að gera hluta sjálfs sín varanlega í minni. Þetta getur takmarkað það minni sem býðst öðrum forritum og þannig hægt á símanum.</string>
+    <string name="permdesc_persistentActivity">Leyfir forriti að gera hluta sjálfs sín varanlega í minni. Þetta getur takmarkað það minni sem býðst öðrum forritum og þannig hægt á spjaldtölvunni.</string>
     <string name="permdesc_postNotification">Leyfir forritinu að sýna tilkynningar</string>
     <string name="permdesc_preferredPaymentInfo">Gerir forritinu kleift að fá valda NFC-greiðsluþjónustu, svo sem skráða aðstoð og áfangastað leiðar.</string>
     <string name="permdesc_processOutgoingCalls">Leyfir forriti að sjá símanúmerið þegar símtöl eru hringd, með möguleika á að beina símtalinu áfram á annað númer eða hætta alveg við símtalið.</string>
     <string name="permdesc_queryAllPackages">Leyfir forriti að sjá alla uppsetta pakka.</string>
     <string name="permdesc_readBasicPhoneState">Leyfir forritinu að fá aðgang að grunneiginleikum símaþjónustu tækisins.</string>
-    <string name="permdesc_readCalendar">Þetta forrit getur lesið alla dagatalsviðburði sem eru vistaðir í símanum og deilt eða vistað dagatalsgögnin þín.</string>
+    <string name="permdesc_readCalendar">Þetta forrit getur lesið alla dagatalsviðburði sem eru vistaðir í spjaldtölvunni og deilt eða vistað dagatalsgögnin þín.</string>
     <string name="permdesc_readCallLog">Þetta forrit getur lesið símtalaferilinn þinn.</string>
     <string name="permdesc_readCellBroadcasts">Leyfir forriti að lesa skilaboð frá endurvarpa sem tækið móttekur. Viðvaranir frá endurvarpa berast á tilteknum stöðum til að vara þig við neyðarástandi. Spilliforrit geta truflað afköst eða virkni tækisins þegar neyðarboð berast frá endurvarpa.</string>
-    <string name="permdesc_readContacts">Leyfir forritinu að lesa gögn um tengiliði sem vistuð eru í símanum þínum. Forrit munu einnig hafa aðgang að reikningum í símanum sem hafa búið til tengiliði. Þar á meðal geta verið reikningar sem forrit sem þú hefur sett upp hafa stofnað. Þessi heimild gerir forritum kleift að vista tengiliðagögnin þín og spilliforrit kunna að deila tengiliðaupplýsingum án þinnar vitundar.</string>
+    <string name="permdesc_readContacts">Leyfir forritinu að lesa gögn um tengiliði sem vistuð eru í spjaldtölvunni þinni. Forrit munu einnig hafa aðgang að reikningum í spjaldtölvunni sem hafa búið til tengiliði. Þar á meðal geta verið reikningar sem forrit sem þú hefur sett upp hafa stofnað. Þessi heimild gerir forritum kleift að vista tengiliðagögnin þín og spilliforrit kunna að deila tengiliðaupplýsingum án þinnar vitundar.</string>
     <string name="permdesc_readInstallSessions">Leyfir forriti að lesa uppsetningarlotur. Þetta gerir því kleift að sjá upplýsingar um virkar pakkauppsetningar.</string>
     <string name="permdesc_readMediaAudio">Leyfir forritinu að lesa hljóðskrár úr samnýtta geymslurýminu þínu.</string>
     <string name="permdesc_readMediaImages">Leyfir forritinu að lesa myndskrár úr samnýtta geymslurýminu þínu.</string>
@@ -1458,11 +1458,11 @@ Auknar tilkynningar hafa aðgang að efni tilkynninga, þ. á m. persónuupplýs
     <string name="permdesc_readNetworkUsageHistory">Leyfir forriti að lesa söguleg gögn um netnotkun fyrir tiltekin net og forrit.</string>
     <string name="permdesc_readPhoneNumbers">Veitir forritinu aðgang að símanúmerum tækisins.</string>
     <string name="permdesc_readPhoneState">Leyfir forriti að fá aðgang að símaeiginleikum tækisins. Þessi heimild gerir forritinu kleift að komast að símanúmeri og auðkennum tækisins, hvort símtal er í gangi og símanúmeri viðmælanda í símtali.</string>
-    <string name="permdesc_readSms">Þetta forrit getur lesið öll SMS-skilaboð (textaskilaboð) sem eru vistuð í símanum.</string>
+    <string name="permdesc_readSms">Þetta forrit getur lesið öll SMS-skilaboð (textaskilaboð) sem eru vistuð í spjaldtölvunni.</string>
     <string name="permdesc_readSyncSettings">Leyfir forriti að lesa kosti samstillingar fyrir reikning. Þetta er til dæmis hægt að nota til að komast að því hvort forritið Fólk er samstillt við reikning.</string>
     <string name="permdesc_readSyncStats">Leyfir forriti að lesa talnagögn samstillingar fyrir reikning, þ. á m. feril samstillingaratvika og samstillt gagnamagn.</string>
     <string name="permdesc_readVisualUserSelect">Leyfir forritinu að lesa mynd- og myndskeiðaskrár sem þú velur úr samnýtta geymslurýminu þínu.</string>
-    <string name="permdesc_receiveBootCompleted">Leyfir forriti að ræsa sig um leið og kerfið hefur lokið við ræsingu. Þetta getur tafið ræsingu símans og valdið því að forritið hægir á allri virkni símans með því að vera stöðugt í gangi.</string>
+    <string name="permdesc_receiveBootCompleted">Leyfir forriti að ræsa sig um leið og kerfið hefur lokið við ræsingu. Þetta getur tafið ræsingu spjaldtölvunnar og valdið því að forritið hægir á allri virkni tölvunnar með því að vera stöðugt í gangi.</string>
     <string name="permdesc_receiveMms">Leyfir forriti að taka á móti og vinna úr MMS-skilaboðum. Þetta þýðir að forritið getur fylgst með eða eytt skilaboðum sem send eru í tækið án þess að birta þér þau.</string>
     <string name="permdesc_receiveSms">Leyfir forriti að taka á móti og vinna úr SMS-skilaboðum. Þetta þýðir að forritið getur fylgst með eða eytt skilaboðum sem send eru í tækið án þess að birta þér þau.</string>
     <string name="permdesc_receiveWapPush">Leyfir forriti að taka á móti og vinna úr WAP-skilaboðum. Þessi heimild felur í sér möguleikann á að fylgjast með eða eyða skilaboðum sem þér eru send án þess að birta þér þau.</string>
@@ -1484,7 +1484,7 @@ Auknar tilkynningar hafa aðgang að efni tilkynninga, þ. á m. persónuupplýs
     <string name="permdesc_sendSms">Leyfir forriti að senda SMS-skilaboð. Þetta getur valdið óvæntri gjaldtöku. Spilliforrit geta kostað þig peninga með því að senda skilaboð án staðfestingar frá þér.</string>
     <string name="permdesc_setAlarm">Leyfir forriti að stilla vekjara á uppsettri vekjaraklukku. Verið getur að sum vekjaraklukkuforrit séu ekki búin þessum eiginleika.</string>
     <string name="permdesc_setInputCalibration">Leyfir forriti að breyta kvörðunarbreytum snertiskjásins. Ætti aldrei að vera nauðsynlegt fyrir venjuleg forrit.</string>
-    <string name="permdesc_setTimeZone">Leyfir forriti að breyta tímabelti símans.</string>
+    <string name="permdesc_setTimeZone">Leyfir forriti að breyta tímabelti spjaldtölvunnar.</string>
     <string name="permdesc_setWallpaper">Leyfir forriti að velja veggfóður kerfisins.</string>
     <string name="permdesc_setWallpaperHints">Leyfir forriti að stilla stærðarleiðréttingu veggfóðurs í kerfinu.</string>
     <string name="permdesc_sim_communication">Leyfir forriti að senda SIM-kortinu skipanir. Þetta er mjög hættulegt.</string>
@@ -1497,7 +1497,7 @@ Auknar tilkynningar hafa aðgang að efni tilkynninga, þ. á m. persónuupplýs
     <string name="permdesc_subscribedFeedsRead">Leyfir forriti að fá upplýsingar um straumana sem samstilltir eru á hverjum tíma.</string>
     <string name="permdesc_systemAlertWindow">Þetta forrit getur birst yfir öðrum forritum eða öðrum hlutum skjásins. Þetta getur truflað venjulega notkun forrita og breytt því hvernig önnur forrit birtast.</string>
     <string name="permdesc_systemCamera">Þetta forgangs- eða kerfisforrit hefur heimild til að taka myndir og taka upp myndskeið með myndavél kerfisins hvenær sem er. Forritið þarf einnig að vera með heimildina android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Leyfir forriti að nota innrauðan sendi símans.</string>
+    <string name="permdesc_transmitIr">Leyfir forriti að nota innrauðan sendi spjaldtölvunnar.</string>
     <string name="permdesc_turnScreenOn">Leyfir forritinu að kveikja á skjánum.</string>
     <string name="permdesc_uninstall_shortcut">Leyfir forriti að fjarlægja flýtileiðir af heimaskjá án inngrips notanda.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Gerir eiganda kleift að uppfæra forritið sem hann setti upp áður án aðgerðar notanda</string>
@@ -1510,10 +1510,10 @@ Auknar tilkynningar hafa aðgang að efni tilkynninga, þ. á m. persónuupplýs
     <string name="permdesc_vibrate">Leyfir forriti að stjórna titraranum.</string>
     <string name="permdesc_vibrator_state">Veitir forritinu aðgang að stöðu titrings.</string>
     <string name="permdesc_videoWrite">Leyfir forritinu að breyta myndskeiðasafninu þínu.</string>
-    <string name="permdesc_wakeLock">Leyfir forriti að koma í veg fyrir að síminn fari í biðstöðu.</string>
-    <string name="permdesc_writeCalendar">Þetta forrit getur bætt við, fjarlægt eða breytt dagatalsviðburðum í símanum. Þetta forrit getur sent skilaboð sem geta virst koma ffrá eigendum dagatala eða breytt viðburðum án þess að láta eigendurna vita.</string>
-    <string name="permdesc_writeCallLog">Leyfir forriti að breyta símtalaskrá símans, þ. á m. gögnum um hringd og móttekin símtöl. Spilliforrit geta notað þetta til að eyða eða breyta símtalaskránni.</string>
-    <string name="permdesc_writeContacts">Leyfir forriti að breyta gögnum um tengiliði sem vistuð eru í símanum þínum. Þessi heimild gerir forritum kleift að eyða tengiliðagögnum.</string>
+    <string name="permdesc_wakeLock">Leyfir forriti að koma í veg fyrir að spjaldtölvan fari í biðstöðu.</string>
+    <string name="permdesc_writeCalendar">Þetta forrit getur bætt við, fjarlægt eða breytt dagatalsviðburðum í spjaldtölvunni. Þetta forrit getur sent skilaboð sem geta virst koma ffrá eigendum dagatala eða breytt viðburðum án þess að láta eigendurna vita.</string>
+    <string name="permdesc_writeCallLog">Leyfir forriti að breyta símtalaskrá spjaldtölvunnar, þ. á m. gögnum um hringd og móttekin símtöl. Spilliforrit geta notað þetta til að eyða eða breyta símtalaskránni.</string>
+    <string name="permdesc_writeContacts">Leyfir forriti að breyta gögnum um tengiliði sem vistuð eru í spjaldtölvunni. Þessi heimild gerir forritum kleift að eyða tengiliðagögnum.</string>
     <string name="permdesc_writeSettings">Leyfir forriti að breyta stillingagögnum kerfisins. Spilliforrit geta spillt grunnstillingu kerfisins.</string>
     <string name="permdesc_writeSyncSettings">Leyfir forriti að breyta kostum samstillingar fyrir reikning. Þetta er til dæmis hægt að nota til að kveikja á samstillingu forritsins Fólk við reikning.</string>
     <string name="permgroupdesc_activityRecognition">fá aðgang að hreyfingu þinni</string>
@@ -1710,7 +1710,7 @@ fyrir reikninginn %s."</string>
     <string name="permlab_uwb_ranging">ákvarða fjarlægð milli nálægra tækja með ofurbreiðband</string>
     <string name="permlab_vibrate">stjórna titringi</string>
     <string name="permlab_videoWrite">breyta myndskeiðasafninu þínu</string>
-    <string name="permlab_wakeLock">koma í veg fyrir að síminn fari í biðstöðu</string>
+    <string name="permlab_wakeLock">koma í veg fyrir að spjaldtölvan fari í biðstöðu</string>
     <string name="permlab_writeCalendar">bæta við eða breyta dagatalsviðburðum og senda gestum tölvupóst að eigendum forspurðum</string>
     <string name="permlab_writeCallLog">skrifa símtalaskrá</string>
     <string name="permlab_writeContacts">breyta tengiliðunum þínum</string>
@@ -1753,10 +1753,10 @@ fyrir reikninginn %s."</string>
     <string name="policydesc_limitPassword">Stjórna lengd og fjölda stafa í aðgangsorðum og PIN-númerum skjáláss.</string>
     <string name="policydesc_resetPassword">Breyta skjálásnum.</string>
     <string name="policydesc_setGlobalProxy">Velja altækan proxy-þjón tækisins sem nota á þegar stefnan er virk. Aðeins eigandi tækisins getur valið altækan proxy-þjón.</string>
-    <string name="policydesc_watchLogin">Fylgjast með fjölda rangra innskráningartilrauna með aðgangsorði þegar skjárinn er tekinn úr lás og læsa símanum eða eyða öllum gögnum hans ef rangt aðgangsorð er fært inn of oft.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Fylgjast með fjölda rangra innskráningartilrauna með aðgangsorði þegar skjárinn er tekinn úr lás og læsa símanum eða eyða öllum gögnum viðkomandi notanda ef rangt aðgangsorð er fært inn of oft.</string>
-    <string name="policydesc_wipeData">Eyða gögnum símans fyrirvaralaust með núllstillingu.</string>
-    <string name="policydesc_wipeData_secondaryUser">Eyða gögnum viðkomandi notanda í þessum síma án viðvörunar.</string>
+    <string name="policydesc_watchLogin">Fylgjast með fjölda rangra innskráningartilrauna með aðgangsorði þegar skjárinn er tekinn úr lás og læsa spjaldtölvunni eða eyða öllum gögnum hennar ef rangt aðgangsorð er fært inn of oft.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Fylgjast með fjölda rangra innskráningartilrauna með aðgangsorði þegar skjárinn er tekinn úr lás og læsa spjaldtölvunni eða eyða öllum gögnum viðkomandi notanda ef rangt aðgangsorð er fært inn of oft.</string>
+    <string name="policydesc_wipeData">Eyða gögnum spjaldtölvunnar fyrirvaralaust með núllstillingu.</string>
+    <string name="policydesc_wipeData_secondaryUser">Eyða gögnum viðkomandi notanda í þessari spjaldtölvu án viðvörunar.</string>
     <string name="policylab_disableCamera">Slökkva á myndavélum</string>
     <string name="policylab_disableKeyguardFeatures">Loka á suma eiginl. skjáláss</string>
     <string name="policylab_encryptedStorage">Velja dulkóðun geymslu</string>
@@ -1773,7 +1773,7 @@ fyrir reikninginn %s."</string>
     <string name="postalTypeHome">Heima</string>
     <string name="postalTypeOther">Annað</string>
     <string name="postalTypeWork">Vinna</string>
-    <string name="power_dialog">Valkostir síma</string>
+    <string name="power_dialog">Valkostir spjaldtölvu</string>
     <string name="power_off">Slökkva</string>
     <string name="prepend_shortcut_label">Valmynd+</string>
     <string name="preposition_for_date">%s</string>
@@ -1945,7 +1945,7 @@ Ef hlustað er á háum hljóðstyrk í langan tíma kann það að skaða heyrn
     <string name="shortcut_restore_unknown_issue">Ekki var hægt að endurheimta flýtileið</string>
     <string name="shortcut_restored_on_lower_version">Útgáfa forritsins er of gömul eða er ekki samhæf þessari flýtileið</string>
     <string name="show_ime">Halda því á skjánum meðan vélbúnaðarlyklaborðið er virkt</string>
-    <string name="shutdown_confirm">Slökkt verður á símanum.</string>
+    <string name="shutdown_confirm">Slökkt verður á spjaldtölvunni.</string>
     <string name="shutdown_confirm_question">Viltu slökkva?</string>
     <string name="shutdown_progress">Slekkur…</string>
     <string name="silent_mode">Hljóðlaus stilling</string>
@@ -2115,7 +2115,7 @@ Ef hlustað er á háum hljóðstyrk í langan tíma kann það að skaða heyrn
     <string name="user_switched">Núverandi notandi %1$s.</string>
     <string name="user_switching_message">Skiptir yfir á %1$s…</string>
     <string name="validity_period">Gildistími:</string>
-    <string name="vdm_camera_access_denied">Ekki er hægt að opna myndavél símans úr %1$s</string>
+    <string name="vdm_camera_access_denied">Ekki er hægt að opna myndavél spjaldtölvunnar úr %1$s</string>
     <string name="vdm_pip_blocked">Ekki er hægt að horfa á mynd í mynd á meðan streymi er í gangi</string>
     <string name="vdm_secure_window">Ekki er hægt að opna þetta á meðan streymi stendur yfir. Prófaðu það í símanum í staðinn.</string>
     <string name="view_and_control_notification_content">%s getur skoðað og stjórnað skjánum hjá þér. Ýttu til að skoða.</string>

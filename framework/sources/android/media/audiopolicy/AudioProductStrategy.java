@@ -24,7 +24,9 @@ public final class AudioProductStrategy implements Parcelable {
     private final String mName;
     private static final Object sLock = new Object();
     public static final Parcelable.Creator<AudioProductStrategy> CREATOR = new Parcelable.Creator<AudioProductStrategy>() { // from class: android.media.audiopolicy.AudioProductStrategy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioProductStrategy createFromParcel(Parcel in) {
             String name = in.readString();
@@ -37,13 +39,16 @@ public final class AudioProductStrategy implements Parcelable {
             return new AudioProductStrategy(name, id, aag);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioProductStrategy[] newArray(int size) {
             return new AudioProductStrategy[size];
         }
     };
     private static final AudioAttributes DEFAULT_ATTRIBUTES = new AudioAttributes.Builder().build();
+
+    /* synthetic */ AudioProductStrategy(String str, int i, AudioAttributesGroup[] audioAttributesGroupArr, AudioProductStrategyIA audioProductStrategyIA) {
+        this(str, i, audioAttributesGroupArr);
+    }
 
     private static native int native_list_audio_product_strategies(ArrayList<AudioProductStrategy> arrayList);
 
@@ -242,6 +247,30 @@ public final class AudioProductStrategy implements Parcelable {
         }
     }
 
+    /* renamed from: android.media.audiopolicy.AudioProductStrategy$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioProductStrategy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioProductStrategy createFromParcel(Parcel in) {
+            String name = in.readString();
+            int id = in.readInt();
+            int nbAttributesGroups = in.readInt();
+            AudioAttributesGroup[] aag = new AudioAttributesGroup[nbAttributesGroups];
+            for (int index = 0; index < nbAttributesGroups; index++) {
+                aag[index] = AudioAttributesGroup.CREATOR.createFromParcel(in);
+            }
+            return new AudioProductStrategy(name, id, aag);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioProductStrategy[] newArray(int size) {
+            return new AudioProductStrategy[size];
+        }
+    }
+
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append("\n Name: ");
@@ -258,7 +287,6 @@ public final class AudioProductStrategy implements Parcelable {
         return DEFAULT_ATTRIBUTES;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean attributesMatches(AudioAttributes refAttr, AudioAttributes attr) {
         Objects.requireNonNull(refAttr, "reference AudioAttributes must not be null");
         Objects.requireNonNull(attr, "requester's AudioAttributes must not be null");
@@ -279,11 +307,12 @@ public final class AudioProductStrategy implements Parcelable {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class AudioAttributesGroup implements Parcelable {
         public static final Parcelable.Creator<AudioAttributesGroup> CREATOR = new Parcelable.Creator<AudioAttributesGroup>() { // from class: android.media.audiopolicy.AudioProductStrategy.AudioAttributesGroup.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AudioAttributesGroup createFromParcel(Parcel in) {
                 int volumeGroupId = in.readInt();
@@ -296,7 +325,6 @@ public final class AudioProductStrategy implements Parcelable {
                 return new AudioAttributesGroup(volumeGroupId, streamType, aa);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AudioAttributesGroup[] newArray(int size) {
                 return new AudioAttributesGroup[size];
@@ -368,6 +396,30 @@ public final class AudioProductStrategy implements Parcelable {
             dest.writeInt(this.mAudioAttributes.length);
             for (AudioAttributes attributes : this.mAudioAttributes) {
                 attributes.writeToParcel(dest, flags | 1);
+            }
+        }
+
+        /* renamed from: android.media.audiopolicy.AudioProductStrategy$AudioAttributesGroup$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AudioAttributesGroup> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AudioAttributesGroup createFromParcel(Parcel in) {
+                int volumeGroupId = in.readInt();
+                int streamType = in.readInt();
+                int nbAttributes = in.readInt();
+                AudioAttributes[] aa = new AudioAttributes[nbAttributes];
+                for (int index = 0; index < nbAttributes; index++) {
+                    aa[index] = AudioAttributes.CREATOR.createFromParcel(in);
+                }
+                return new AudioAttributesGroup(volumeGroupId, streamType, aa);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AudioAttributesGroup[] newArray(int size) {
+                return new AudioAttributesGroup[size];
             }
         }
 

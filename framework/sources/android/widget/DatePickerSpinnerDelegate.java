@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Locale;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDelegate {
     private static final String DATE_FORMAT = "MM/dd/yyyy";
@@ -48,7 +47,6 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
     private final NumberPicker mYearSpinner;
     private final EditText mYearSpinnerInput;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DatePickerSpinnerDelegate(DatePicker delegator, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(delegator, context);
         this.mDateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -69,6 +67,9 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         View view = inflater.inflate(layoutResourceId, (ViewGroup) this.mDelegator, true);
         view.setSaveFromParentEnabled(false);
         NumberPicker.OnValueChangeListener onChangeListener = new NumberPicker.OnValueChangeListener() { // from class: android.widget.DatePickerSpinnerDelegate.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.NumberPicker.OnValueChangeListener
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 DatePickerSpinnerDelegate.this.updateInputState();
@@ -107,6 +108,9 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         CalendarView calendarView = (CalendarView) this.mDelegator.findViewById(R.id.calendar_view);
         this.mCalendarView = calendarView;
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() { // from class: android.widget.DatePickerSpinnerDelegate.2
+            AnonymousClass2() {
+            }
+
             @Override // android.widget.CalendarView.OnDateChangeListener
             public void onSelectedDayChange(CalendarView view3, int year, int month, int monthDay) {
                 DatePickerSpinnerDelegate.this.setDate(year, month, monthDay);
@@ -163,6 +167,62 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         setContentDescriptions();
         if (this.mDelegator.getImportantForAccessibility() == 0) {
             this.mDelegator.setImportantForAccessibility(1);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.DatePickerSpinnerDelegate$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements NumberPicker.OnValueChangeListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.NumberPicker.OnValueChangeListener
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            DatePickerSpinnerDelegate.this.updateInputState();
+            DatePickerSpinnerDelegate.this.mTempDate.setTimeInMillis(DatePickerSpinnerDelegate.this.mCurrentDate.getTimeInMillis());
+            if (picker == DatePickerSpinnerDelegate.this.mDaySpinner) {
+                int maxDayOfMonth = DatePickerSpinnerDelegate.this.mTempDate.getActualMaximum(5);
+                if (oldVal == maxDayOfMonth && newVal == 1) {
+                    DatePickerSpinnerDelegate.this.mTempDate.add(5, 1);
+                } else if (oldVal == 1 && newVal == maxDayOfMonth) {
+                    DatePickerSpinnerDelegate.this.mTempDate.add(5, -1);
+                } else {
+                    DatePickerSpinnerDelegate.this.mTempDate.add(5, newVal - oldVal);
+                }
+            } else if (picker == DatePickerSpinnerDelegate.this.mMonthSpinner) {
+                if (oldVal == 11 && newVal == 0) {
+                    DatePickerSpinnerDelegate.this.mTempDate.add(2, 1);
+                } else if (oldVal == 0 && newVal == 11) {
+                    DatePickerSpinnerDelegate.this.mTempDate.add(2, -1);
+                } else {
+                    DatePickerSpinnerDelegate.this.mTempDate.add(2, newVal - oldVal);
+                }
+            } else if (picker == DatePickerSpinnerDelegate.this.mYearSpinner) {
+                DatePickerSpinnerDelegate.this.mTempDate.set(1, newVal);
+            } else {
+                throw new IllegalArgumentException();
+            }
+            DatePickerSpinnerDelegate datePickerSpinnerDelegate = DatePickerSpinnerDelegate.this;
+            datePickerSpinnerDelegate.setDate(datePickerSpinnerDelegate.mTempDate.get(1), DatePickerSpinnerDelegate.this.mTempDate.get(2), DatePickerSpinnerDelegate.this.mTempDate.get(5));
+            DatePickerSpinnerDelegate.this.updateSpinners();
+            DatePickerSpinnerDelegate.this.updateCalendarView();
+            DatePickerSpinnerDelegate.this.notifyDateChanged();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.DatePickerSpinnerDelegate$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements CalendarView.OnDateChangeListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.widget.CalendarView.OnDateChangeListener
+        public void onSelectedDayChange(CalendarView view3, int year, int month, int monthDay) {
+            DatePickerSpinnerDelegate.this.setDate(year, month, monthDay);
+            DatePickerSpinnerDelegate.this.updateSpinners();
+            DatePickerSpinnerDelegate.this.notifyDateChanged();
         }
     }
 
@@ -319,7 +379,6 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.DatePicker.AbstractDatePickerDelegate
     public void setCurrentLocale(Locale locale) {
         super.setCurrentLocale(locale);
@@ -390,7 +449,6 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         return (this.mCurrentDate.get(1) == year && this.mCurrentDate.get(2) == month && this.mCurrentDate.get(5) == dayOfMonth) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setDate(int year, int month, int dayOfMonth) {
         this.mCurrentDate.set(year, month, dayOfMonth);
         resetAutofilledValue();
@@ -401,7 +459,6 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateSpinners() {
         if (this.mCurrentDate.equals(this.mMinDate)) {
             this.mDaySpinner.setMinValue(this.mCurrentDate.get(5));
@@ -441,12 +498,10 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateCalendarView() {
         this.mCalendarView.setDate(this.mCurrentDate.getTimeInMillis(), false, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyDateChanged() {
         this.mDelegator.sendAccessibilityEvent(4);
         if (this.mOnDateChangedListener != null) {
@@ -484,7 +539,6 @@ public class DatePickerSpinnerDelegate extends DatePicker.AbstractDatePickerDele
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateInputState() {
         InputMethodManager inputMethodManager = (InputMethodManager) this.mContext.getSystemService(InputMethodManager.class);
         if (inputMethodManager != null) {

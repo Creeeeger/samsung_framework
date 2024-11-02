@@ -27,7 +27,6 @@ public class ExtractEditText extends EditText {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setIME(InputMethodService ime) {
         this.mIME = ime;
     }
@@ -121,25 +120,21 @@ public class ExtractEditText extends EditText {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView
     public void deleteText_internal(int start, int end) {
         this.mIME.onExtractedDeleteText(start, end);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView
     public void replaceText_internal(int start, int end, CharSequence text) {
         this.mIME.onExtractedReplaceText(start, end, text);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView
     public void setSpan_internal(Object span, int start, int end, int flags) {
         this.mIME.onExtractedSetSpan(span, start, end, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView
     public void setCursorPosition_internal(int start, int end) {
         this.mIME.onExtractedSelectionChanged(start, end);

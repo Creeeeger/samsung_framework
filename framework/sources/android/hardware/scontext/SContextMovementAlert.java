@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextMovementAlert extends SContextEventContext {
     public static final Parcelable.Creator<SContextMovementAlert> CREATOR = new Parcelable.Creator<SContextMovementAlert>() { // from class: android.hardware.scontext.SContextMovementAlert.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextMovementAlert createFromParcel(Parcel in) {
             return new SContextMovementAlert(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextMovementAlert[] newArray(int size) {
             return new SContextMovementAlert[size];
@@ -22,7 +23,6 @@ public class SContextMovementAlert extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextMovementAlert() {
         this.mContext = new Bundle();
     }
@@ -42,5 +42,22 @@ public class SContextMovementAlert extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextMovementAlert$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextMovementAlert> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextMovementAlert createFromParcel(Parcel in) {
+            return new SContextMovementAlert(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextMovementAlert[] newArray(int size) {
+            return new SContextMovementAlert[size];
+        }
     }
 }

@@ -226,7 +226,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return ActionTitle.forAction(action).labelRes;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public enum ActionTitle {
         VIEW("android.intent.action.VIEW", R.string.whichViewApplication, R.string.whichViewApplicationNamed, R.string.whichViewApplicationLabel),
@@ -264,8 +263,35 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    protected PackageMonitor createPackageMonitor(final ResolverListAdapter listAdapter) {
+    /* renamed from: com.android.internal.app.ResolverActivity$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends PackageMonitor {
+        final /* synthetic */ ResolverListAdapter val$listAdapter;
+
+        AnonymousClass1(ResolverListAdapter resolverListAdapter) {
+            listAdapter = resolverListAdapter;
+        }
+
+        @Override // com.android.internal.content.PackageMonitor
+        public void onSomePackagesChanged() {
+            listAdapter.handlePackagesChanged();
+            ResolverActivity.this.updateProfileViewButton();
+        }
+
+        @Override // com.android.internal.content.PackageMonitor
+        public boolean onPackageChanged(String packageName, int uid, String[] components) {
+            return true;
+        }
+    }
+
+    protected PackageMonitor createPackageMonitor(ResolverListAdapter listAdapter) {
         return new PackageMonitor() { // from class: com.android.internal.app.ResolverActivity.1
+            final /* synthetic */ ResolverListAdapter val$listAdapter;
+
+            AnonymousClass1(ResolverListAdapter listAdapter2) {
+                listAdapter = listAdapter2;
+            }
+
             @Override // com.android.internal.content.PackageMonitor
             public void onSomePackagesChanged() {
                 listAdapter.handlePackagesChanged();
@@ -290,7 +316,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         super.onCreate(savedInstanceState);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         this.mContext = this;
@@ -307,7 +332,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         onCreate(savedInstanceState, intent, title, 0, initialIntents, rList, supportsAlwaysUseOption);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onCreate(Bundle savedInstanceState, Intent intent, CharSequence title, int defaultTitleRes, Intent[] initialIntents, List<ResolveInfo> rList, boolean supportsAlwaysUseOption) {
         int i;
         setTheme(appliedThemeResId());
@@ -367,6 +391,9 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
             ResolverDrawerLayout rdl = (ResolverDrawerLayout) findViewById(R.id.contentPanel);
             if (rdl != null) {
                 rdl.setOnDismissedListener(new ResolverDrawerLayout.OnDismissedListener() { // from class: com.android.internal.app.ResolverActivity.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // com.android.internal.widget.ResolverDrawerLayout.OnDismissedListener
                     public void onDismissed() {
                         ResolverActivity.this.semFinishAfterAnimation();
@@ -436,7 +463,18 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         finish();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.app.ResolverActivity$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements ResolverDrawerLayout.OnDismissedListener {
+        AnonymousClass2() {
+        }
+
+        @Override // com.android.internal.widget.ResolverDrawerLayout.OnDismissedListener
+        public void onDismissed() {
+            ResolverActivity.this.semFinishAfterAnimation();
+        }
+    }
+
     public /* synthetic */ void lambda$onCreate$0(View v) {
         SemTipPopup semTipPopup = this.mTipsDescriptionPopup;
         if (semTipPopup != null && semTipPopup.isShowing()) {
@@ -459,13 +497,11 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return new AbstractMultiProfilePagerAdapter.MyUserIdProvider();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public AbstractMultiProfilePagerAdapter.CrossProfileIntentsChecker createCrossProfileIntentsChecker() {
         return new AbstractMultiProfilePagerAdapter.CrossProfileIntentsChecker(getContentResolver());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.app.ResolverActivity$3, reason: invalid class name */
+    /* renamed from: com.android.internal.app.ResolverActivity$3 */
     /* loaded from: classes4.dex */
     public class AnonymousClass3 implements AbstractMultiProfilePagerAdapter.QuietModeManager {
         private boolean mIsWaitingToEnableWorkProfile = false;
@@ -513,6 +549,8 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         boolean shouldShowNoCrossProfileIntentsEmptyState = getUser().equals(getIntentUser());
         if (!shouldShowNoCrossProfileIntentsEmptyState) {
             return new AbstractMultiProfilePagerAdapter.EmptyStateProvider() { // from class: com.android.internal.app.ResolverActivity.4
+                AnonymousClass4() {
+                }
             };
         }
         AbstractMultiProfilePagerAdapter.EmptyState noWorkToPersonalEmptyState = new NoCrossProfileEmptyStateProvider.DevicePolicyBlockerEmptyState(this, DevicePolicyResources.Strings.Core.RESOLVER_CROSS_PROFILE_BLOCKED_TITLE, R.string.resolver_cross_profile_blocked, DevicePolicyResources.Strings.Core.RESOLVER_CANT_ACCESS_PERSONAL, R.string.resolver_cant_access_personal_apps_explanation, 158, METRICS_CATEGORY_RESOLVER);
@@ -520,7 +558,13 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return new NoCrossProfileEmptyStateProvider(getPersonalProfileUserHandle(), noWorkToPersonalEmptyState, noPersonalToWorkEmptyState, createCrossProfileIntentsChecker(), getTabOwnerUserHandleForLaunch());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: com.android.internal.app.ResolverActivity$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements AbstractMultiProfilePagerAdapter.EmptyStateProvider {
+        AnonymousClass4() {
+        }
+    }
+
     public AbstractMultiProfilePagerAdapter.EmptyStateProvider createEmptyStateProvider(UserHandle workProfileUserHandle) {
         AbstractMultiProfilePagerAdapter.EmptyStateProvider blockerEmptyStateProvider = createBlockerEmptyStateProvider();
         AbstractMultiProfilePagerAdapter.EmptyStateProvider workProfileOffEmptyStateProvider = new WorkProfilePausedEmptyStateProvider(this, workProfileUserHandle, this.mQuietModeManager, new AbstractMultiProfilePagerAdapter.OnSwitchOnWorkSelectedListener() { // from class: com.android.internal.app.ResolverActivity$$ExternalSyntheticLambda2
@@ -533,7 +577,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return new AbstractMultiProfilePagerAdapter.CompositeEmptyStateProvider(blockerEmptyStateProvider, workProfileOffEmptyStateProvider, noAppsEmptyStateProvider);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createEmptyStateProvider$1() {
         AbstractMultiProfilePagerAdapter.OnSwitchOnWorkSelectedListener onSwitchOnWorkSelectedListener = this.mOnSwitchOnWorkSelectedListener;
         if (onSwitchOnWorkSelectedListener != null) {
@@ -585,7 +628,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return R.style.Theme_DeviceDefault_Resolver;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSelectedProfileExtra() {
         int selectedProfile = -1;
         if (getIntent().hasExtra(EXTRA_SELECTED_PROFILE) && (selectedProfile = getIntent().getIntExtra(EXTRA_SELECTED_PROFILE, -1)) != 0 && selectedProfile != 1) {
@@ -598,22 +640,18 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return UserHandle.myUserId() == getPersonalProfileUserHandle().getIdentifier() ? 0 : 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public UserHandle getPersonalProfileUserHandle() {
         return this.mPersonalProfileUserHandle;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public UserHandle getWorkProfileUserHandle() {
         return this.mWorkProfileUserHandle;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public UserHandle getCloneProfileUserHandle() {
         return this.mCloneProfileUserHandle;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public UserHandle getTabOwnerUserHandleForLaunch() {
         return this.mTabOwnerUserHandleForLaunch;
     }
@@ -664,17 +702,14 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return getCloneProfileUserHandle() != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final boolean isLaunchedAsCloneProfile() {
         return hasCloneProfile() && UserHandle.myUserId() == getCloneProfileUserHandle().getIdentifier();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean shouldShowTabs() {
         return (!hasWorkProfile() || !ENABLE_TABBED_VIEW || SemPersonaManager.isDoEnabled(0) || SemDualAppManager.isDualAppId(UserHandle.myUserId()) || SemPersonaManager.isSecureFolderId(UserHandle.myUserId())) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onProfileClick(View v) {
         DisplayResolveInfo dri = this.mMultiProfilePagerAdapter.getActiveListAdapter().getOtherProfile();
         if (dri == null) {
@@ -693,7 +728,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
     protected void applyFooterView(int height) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
         Insets systemWindowInsets = insets.getSystemWindowInsets();
         this.mSystemWindowInsets = systemWindowInsets;
@@ -763,7 +797,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return new VoiceInteractor.PickOptionRequest.Option(target.getDisplayLabel(), index);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void setAdditionalTargets(Intent[] intents) {
         if (intents != null) {
             for (Intent intent : intents) {
@@ -780,7 +813,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return this.mIntents.get(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public String getReferrerPackageName() {
         Uri referrer = null;
         try {
@@ -855,7 +887,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getForwardToPersonalMsg$2() {
         return getString(R.string.forward_intent_to_owner);
     }
@@ -871,7 +902,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getForwardToWorkMsg$3() {
         return getString(R.string.forward_intent_to_work);
     }
@@ -901,7 +931,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onRestart() {
         super.onRestart();
@@ -922,7 +951,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         updateProfileViewButton();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onStart() {
         super.onStart();
@@ -934,7 +962,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isWorkProfileEnabled() {
         UserHandle workUserHandle = getWorkProfileUserHandle();
         UserManager userManager = (UserManager) getSystemService(UserManager.class);
@@ -949,7 +976,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         registerReceiverAsUser(this.mWorkProfileStateReceiver, UserHandle.ALL, filter, null, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onStop() {
         KeyguardManager km;
@@ -981,7 +1007,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         PickTargetOptionRequest pickTargetOptionRequest;
@@ -995,7 +1020,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -1005,7 +1029,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -1044,7 +1067,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setAlwaysButtonEnabled(boolean hasValidSelection, int checkedPos, boolean filtered) {
         if (!this.mMultiProfilePagerAdapter.getCurrentUserHandle().equals(getUser())) {
             this.mAlwaysButton.setEnabled(false);
@@ -1163,7 +1185,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }, launcherName);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getWorkProfileNotSupportedMsg$4(String launcherName) {
         return getString(R.string.activity_resolver_work_profiles_support, launcherName);
     }
@@ -1233,28 +1254,79 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean onTargetSelected(TargetInfo target, boolean always) {
         return onTargetSelected(target, always, false);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x00f2, code lost:            if (r1 != null) goto L61;     */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x00f8, code lost:            if (r1.hasNext() == false) goto L150;     */
-    /* JADX WARN: Code restructure failed: missing block: B:63:0x00fa, code lost:            r2 = r1.next();     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x0104, code lost:            if (r2.match(r6) < 0) goto L151;     */
-    /* JADX WARN: Code restructure failed: missing block: B:66:0x0106, code lost:            r3 = r2.getPort();        r11 = r2.getHost();     */
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x010e, code lost:            if (r3 < 0) goto L68;     */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x0110, code lost:            r10 = java.lang.Integer.toString(r3);     */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x0118, code lost:            r5.addDataAuthority(r11, r10);     */
-    /* JADX WARN: Code restructure failed: missing block: B:70:0x0117, code lost:            r10 = null;     */
-    /* JADX WARN: Code restructure failed: missing block: B:73:0x011d, code lost:            r0 = r8.filter.pathsIterator();     */
-    /* JADX WARN: Code restructure failed: missing block: B:74:0x0123, code lost:            if (r0 == null) goto L81;     */
-    /* JADX WARN: Code restructure failed: missing block: B:75:0x0125, code lost:            r2 = r6.getPath();     */
-    /* JADX WARN: Code restructure failed: missing block: B:76:0x0129, code lost:            if (r2 == null) goto L152;     */
-    /* JADX WARN: Code restructure failed: missing block: B:78:0x012f, code lost:            if (r0.hasNext() == false) goto L154;     */
-    /* JADX WARN: Code restructure failed: missing block: B:79:0x0131, code lost:            r3 = r0.next();     */
-    /* JADX WARN: Code restructure failed: missing block: B:80:0x013b, code lost:            if (r3.match(r2) == false) goto L155;     */
-    /* JADX WARN: Code restructure failed: missing block: B:82:0x013d, code lost:            r5.addDataPath(r3.getPath(), r3.getType());     */
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x00f2, code lost:
+    
+        if (r1 != null) goto L221;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x00f8, code lost:
+    
+        if (r1.hasNext() == false) goto L310;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:63:0x00fa, code lost:
+    
+        r2 = r1.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x0104, code lost:
+    
+        if (r2.match(r6) < 0) goto L311;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x0106, code lost:
+    
+        r3 = r2.getPort();
+        r11 = r2.getHost();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x010e, code lost:
+    
+        if (r3 < 0) goto L228;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:68:0x0110, code lost:
+    
+        r10 = java.lang.Integer.toString(r3);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x0118, code lost:
+    
+        r5.addDataAuthority(r11, r10);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:70:0x0117, code lost:
+    
+        r10 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:73:0x011d, code lost:
+    
+        r0 = r8.filter.pathsIterator();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:74:0x0123, code lost:
+    
+        if (r0 == null) goto L241;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x0125, code lost:
+    
+        r2 = r6.getPath();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x0129, code lost:
+    
+        if (r2 == null) goto L312;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:78:0x012f, code lost:
+    
+        if (r0.hasNext() == false) goto L314;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:79:0x0131, code lost:
+    
+        r3 = r0.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:80:0x013b, code lost:
+    
+        if (r3.match(r2) == false) goto L315;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:82:0x013d, code lost:
+    
+        r5.addDataPath(r3.getPath(), r3.getType());
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1280,7 +1352,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         safelyStartActivityAsUser(cti, user, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void safelyStartActivityAsUser(TargetInfo cti, UserHandle user, Bundle options) {
         StrictMode.disableDeathOnFileUriExposure();
         try {
@@ -1425,15 +1496,13 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
             final /* synthetic */ DisplayResolveInfo val$otherProfileResolveInfo;
 
             /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            {
-                super(otherProfileResolveInfo);
-                this.val$otherProfileResolveInfo = otherProfileResolveInfo;
-                this.val$icon = icon;
-                Objects.requireNonNull(inactiveAdapter);
+            AnonymousClass5(final ResolverListAdapter inactiveAdapter2, final DisplayResolveInfo otherProfileResolveInfo2, final DisplayResolveInfo otherProfileResolveInfo22, ImageView icon2) {
+                super(otherProfileResolveInfo22);
+                this.val$otherProfileResolveInfo = otherProfileResolveInfo22;
+                this.val$icon = icon2;
+                Objects.requireNonNull(inactiveAdapter2);
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // com.android.internal.app.ResolverListAdapter.LoadIconTask, android.os.AsyncTask
             public void onPostExecute(Drawable drawable) {
                 if (!ResolverActivity.this.isDestroyed()) {
@@ -1442,7 +1511,7 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
                 }
             }
         }.execute(new Void[0]);
-        final CharSequence targetDisplayLabel = otherProfileResolveInfo.getDisplayLabel();
+        final CharSequence targetDisplayLabel = otherProfileResolveInfo22.getDisplayLabel();
         DevicePolicyResourcesManager devicePolicyResourcesManager = ((DevicePolicyManager) getSystemService(DevicePolicyManager.class)).getResources();
         if (inWorkProfile) {
             ((TextView) findViewById(R.id.open_cross_profile)).setText(devicePolicyResourcesManager.getString("Core.MINIRESOLVER_OPEN_IN_PERSONAL", new Supplier() { // from class: com.android.internal.app.ResolverActivity$$ExternalSyntheticLambda12
@@ -1488,38 +1557,55 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         findViewById(R.id.button_open).setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.app.ResolverActivity$$ExternalSyntheticLambda17
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
-                ResolverActivity.this.lambda$configureMiniResolverContent$10(otherProfileResolveInfo, inactiveAdapter, view);
+                ResolverActivity.this.lambda$configureMiniResolverContent$10(otherProfileResolveInfo22, inactiveAdapter2, view);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.app.ResolverActivity$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 extends ResolverListAdapter.LoadIconTask {
+        final /* synthetic */ ImageView val$icon;
+        final /* synthetic */ DisplayResolveInfo val$otherProfileResolveInfo;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass5(final ResolverListAdapter inactiveAdapter2, final DisplayResolveInfo otherProfileResolveInfo22, final DisplayResolveInfo otherProfileResolveInfo222, ImageView icon2) {
+            super(otherProfileResolveInfo222);
+            this.val$otherProfileResolveInfo = otherProfileResolveInfo222;
+            this.val$icon = icon2;
+            Objects.requireNonNull(inactiveAdapter2);
+        }
+
+        @Override // com.android.internal.app.ResolverListAdapter.LoadIconTask, android.os.AsyncTask
+        public void onPostExecute(Drawable drawable) {
+            if (!ResolverActivity.this.isDestroyed()) {
+                this.val$otherProfileResolveInfo.setDisplayIcon(drawable);
+                new ResolverListAdapter.ViewHolder(this.val$icon).bindIcon(this.val$otherProfileResolveInfo);
+            }
+        }
+    }
+
     public /* synthetic */ String lambda$configureMiniResolverContent$5(CharSequence targetDisplayLabel) {
         return getString(R.string.miniresolver_open_in_personal, targetDisplayLabel);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$configureMiniResolverContent$6() {
         return getString(R.string.miniresolver_use_work_browser);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$configureMiniResolverContent$7(CharSequence targetDisplayLabel) {
         return getString(R.string.miniresolver_open_in_work, targetDisplayLabel);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$configureMiniResolverContent$8() {
         return getString(R.string.miniresolver_use_personal_browser);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$configureMiniResolverContent$9(DisplayResolveInfo sameProfileResolveInfo, View v) {
         safelyStartActivity(sameProfileResolveInfo);
         finish();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$configureMiniResolverContent$10(DisplayResolveInfo otherProfileResolveInfo, ResolverListAdapter inactiveAdapter, View v) {
         otherProfileResolveInfo.getResolvedIntent();
         safelyStartActivityAsUser(otherProfileResolveInfo, inactiveAdapter.mResolverListController.getUserHandle());
@@ -1557,7 +1643,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return postRebuildListInternal(rebuildCompleted);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean postRebuildListInternal(boolean rebuildCompleted) {
         this.mMultiProfilePagerAdapter.getActiveListAdapter().getUnfilteredCount();
         if (rebuildCompleted && maybeAutolaunchActivity()) {
@@ -1689,6 +1774,12 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         viewPager.setVisibility(0);
         tabHost.setCurrentTab(this.mMultiProfilePagerAdapter.getCurrentPage());
         this.mMultiProfilePagerAdapter.setOnProfileSelectedListener(new AbstractMultiProfilePagerAdapter.OnProfileSelectedListener() { // from class: com.android.internal.app.ResolverActivity.6
+            final /* synthetic */ TabHost val$tabHost;
+
+            AnonymousClass6(final TabHost tabHost2) {
+                tabHost = tabHost2;
+            }
+
             @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter.OnProfileSelectedListener
             public void onProfileSelected(int index) {
                 tabHost.setCurrentTab(index);
@@ -1709,7 +1800,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setupProfileTabs$11(TabHost tabHost, ViewPager viewPager, String tabId) {
         updateActiveTabStyle(tabHost);
         if ("personal".equals(tabId)) {
@@ -1723,7 +1813,28 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         DevicePolicyEventLogger.createEvent(156).setInt(viewPager.getCurrentItem()).setStrings(getMetricsCategory()).write();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.ResolverActivity$6 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass6 implements AbstractMultiProfilePagerAdapter.OnProfileSelectedListener {
+        final /* synthetic */ TabHost val$tabHost;
+
+        AnonymousClass6(final TabHost tabHost2) {
+            tabHost = tabHost2;
+        }
+
+        @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter.OnProfileSelectedListener
+        public void onProfileSelected(int index) {
+            tabHost.setCurrentTab(index);
+            ResolverActivity.this.resetButtonBar();
+            ResolverActivity.this.resetCheckedItem();
+        }
+
+        @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter.OnProfileSelectedListener
+        public void onProfilePageStateChanged(int state) {
+            ResolverActivity.this.onHorizontalSwipeStateChanged(state);
+        }
+    }
+
     public static /* synthetic */ void lambda$setupProfileTabs$12(TabHost tabHost) {
         View workTab = tabHost.getTabWidget().getChildAt(1);
         workTab.setFocusable(true);
@@ -1742,7 +1853,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getPersonalTabLabel$13() {
         return getString(R.string.resolver_personal_tab);
     }
@@ -1758,7 +1868,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getWorkTabLabel$14() {
         return getString(R.string.resolver_work_tab);
     }
@@ -1777,7 +1886,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
     protected void onProfileTabSelected() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void resetCheckedItem() {
         if (!this.mIsIntentPicker) {
             return;
@@ -1800,7 +1908,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getPersonalTabAccessibilityLabel$15() {
         return getString(R.string.resolver_personal_tab_accessibility);
     }
@@ -1816,7 +1923,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getWorkTabAccessibilityLabel$16() {
         return getString(R.string.resolver_work_tab_accessibility);
     }
@@ -1966,7 +2072,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setRetainInOnStop(boolean retainInOnStop) {
         this.mRetainInOnStop = retainInOnStop;
     }
@@ -2011,8 +2116,44 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return shouldShowTabs() && this.mMultiProfilePagerAdapter.getInactiveListAdapter().getCount() > 0;
     }
 
+    /* renamed from: com.android.internal.app.ResolverActivity$7 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass7 extends BroadcastReceiver {
+        AnonymousClass7() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (!TextUtils.equals(action, Intent.ACTION_USER_UNLOCKED) && !TextUtils.equals(action, Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE) && !TextUtils.equals(action, Intent.ACTION_MANAGED_PROFILE_AVAILABLE)) {
+                return;
+            }
+            int userId = intent.getIntExtra("android.intent.extra.user_handle", -1);
+            if (userId != ResolverActivity.this.getWorkProfileUserHandle().getIdentifier()) {
+                return;
+            }
+            if (ResolverActivity.this.isWorkProfileEnabled()) {
+                if (ResolverActivity.this.mWorkProfileHasBeenEnabled) {
+                    return;
+                }
+                ResolverActivity.this.mWorkProfileHasBeenEnabled = true;
+                ResolverActivity.this.mQuietModeManager.markWorkProfileEnabledBroadcastReceived();
+            } else {
+                ResolverActivity.this.mWorkProfileHasBeenEnabled = false;
+            }
+            if (ResolverActivity.this.mMultiProfilePagerAdapter.getCurrentUserHandle().equals(ResolverActivity.this.getWorkProfileUserHandle())) {
+                ResolverActivity.this.mMultiProfilePagerAdapter.rebuildActiveTab(true);
+            } else {
+                ResolverActivity.this.mMultiProfilePagerAdapter.clearInactiveProfileCache();
+            }
+        }
+    }
+
     private BroadcastReceiver createWorkProfileStateReceiver() {
         return new BroadcastReceiver() { // from class: com.android.internal.app.ResolverActivity.7
+            AnonymousClass7() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -2119,7 +2260,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class ItemClickListener implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
         ItemClickListener() {
@@ -2202,14 +2342,14 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static final boolean isSpecificUriMatch(int match) {
         int match2 = match & IntentFilter.MATCH_CATEGORY_MASK;
         return match2 >= 3145728 && match2 <= 5242880;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static class PickTargetOptionRequest extends VoiceInteractor.PickOptionRequest {
+    public static class PickTargetOptionRequest extends VoiceInteractor.PickOptionRequest {
         public PickTargetOptionRequest(VoiceInteractor.Prompt prompt, VoiceInteractor.PickOptionRequest.Option[] options, Bundle extras) {
             super(prompt, options, extras);
         }
@@ -2241,7 +2381,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
     protected void maybeLogProfileChange() {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final UserHandle getQueryIntentsUser(UserHandle userHandle) {
         if (!isLaunchedAsCloneProfile() || !userHandle.equals(getPersonalProfileUserHandle())) {
             return userHandle;
@@ -2280,7 +2419,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return isFinishing();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onResume() {
         super.onResume();
@@ -2419,7 +2557,7 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         }
     }
 
-    private void semSafelyStartActivtyAfterAnimation(final TargetInfo cti) {
+    private void semSafelyStartActivtyAfterAnimation(TargetInfo cti) {
         View v = findViewById(R.id.contentPanel);
         if (this.mMultiParent == null || this.mGalleryRecyclerView == null) {
             if (v == null || isInMultiWindowMode() || this.mIsDeskTopMode || this.mIsPopOver) {
@@ -2432,6 +2570,12 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         Animator createExitAnimation = createExitAnimation(v);
         this.mExitAnimator = createExitAnimation;
         createExitAnimation.addListener(new Animator.AnimatorListener() { // from class: com.android.internal.app.ResolverActivity.8
+            final /* synthetic */ TargetInfo val$cti;
+
+            AnonymousClass8(TargetInfo cti2) {
+                cti = cti2;
+            }
+
             @Override // android.animation.Animator.AnimatorListener
             public void onAnimationStart(Animator animation) {
             }
@@ -2454,6 +2598,35 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         this.mExitAnimator.start();
     }
 
+    /* renamed from: com.android.internal.app.ResolverActivity$8 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass8 implements Animator.AnimatorListener {
+        final /* synthetic */ TargetInfo val$cti;
+
+        AnonymousClass8(TargetInfo cti2) {
+            cti = cti2;
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ResolverActivity.this.mExitAnimator = null;
+            ResolverActivity.this.safelyStartActivity(cti);
+            ResolverActivity.this.finish();
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationRepeat(Animator animation) {
+        }
+    }
+
     private Animator createExitAnimation(View v) {
         int height = getResources().getDisplayMetrics().heightPixels;
         Animator aniY = ObjectAnimator.ofFloat(v, "translationY", 0.0f, height);
@@ -2463,7 +2636,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         return aniY;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void semFinishAfterAnimation() {
         View v = findViewById(R.id.contentPanel);
         if (this.mMultiParent == null || this.mGalleryRecyclerView == null) {
@@ -2481,6 +2653,9 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
         Animator createExitAnimation = createExitAnimation(v);
         this.mExitAnimator = createExitAnimation;
         createExitAnimation.addListener(new Animator.AnimatorListener() { // from class: com.android.internal.app.ResolverActivity.9
+            AnonymousClass9() {
+            }
+
             @Override // android.animation.Animator.AnimatorListener
             public void onAnimationStart(Animator animation) {
             }
@@ -2500,6 +2675,31 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
             }
         });
         this.mExitAnimator.start();
+    }
+
+    /* renamed from: com.android.internal.app.ResolverActivity$9 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass9 implements Animator.AnimatorListener {
+        AnonymousClass9() {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ResolverActivity.this.mExitAnimator = null;
+            ResolverActivity.this.finish();
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationRepeat(Animator animation) {
+        }
     }
 
     private boolean checkIfNeedFRPWorkaround() {
@@ -2580,7 +2780,6 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
             return this.secondDepthList.get(position);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.widget.RecyclerView.Adapter
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
@@ -2622,6 +2821,12 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
                 this.radioButton = (RadioButton) itemView.findViewById(R.id.sem_resolver_second_depth_item_button);
                 this.textView = (TextView) itemView.findViewById(R.id.sem_resolver_second_depth_item_text);
                 View.OnClickListener clickListener = new View.OnClickListener() { // from class: com.android.internal.app.ResolverActivity.SemSelectTaskListAdapter.ViewHolder.1
+                    final /* synthetic */ SemSelectTaskListAdapter val$this$1;
+
+                    AnonymousClass1(SemSelectTaskListAdapter semSelectTaskListAdapter) {
+                        r2 = semSelectTaskListAdapter;
+                    }
+
                     @Override // android.view.View.OnClickListener
                     public void onClick(View v) {
                         SemSelectTaskListAdapter.this.mSelectedItem = ViewHolder.this.getAdapterPosition();
@@ -2633,6 +2838,26 @@ public class ResolverActivity extends Activity implements ResolverListAdapter.Re
                 };
                 this.radioButton.setOnClickListener(clickListener);
                 itemView.setOnClickListener(clickListener);
+            }
+
+            /* JADX INFO: Access modifiers changed from: package-private */
+            /* renamed from: com.android.internal.app.ResolverActivity$SemSelectTaskListAdapter$ViewHolder$1 */
+            /* loaded from: classes4.dex */
+            public class AnonymousClass1 implements View.OnClickListener {
+                final /* synthetic */ SemSelectTaskListAdapter val$this$1;
+
+                AnonymousClass1(SemSelectTaskListAdapter semSelectTaskListAdapter) {
+                    r2 = semSelectTaskListAdapter;
+                }
+
+                @Override // android.view.View.OnClickListener
+                public void onClick(View v) {
+                    SemSelectTaskListAdapter.this.mSelectedItem = ViewHolder.this.getAdapterPosition();
+                    SemSelectTaskListAdapter.this.notifyDataSetChanged();
+                    if (ViewHolder.this.radioButton.isChecked()) {
+                        ResolverActivity.this.startSelected(ResolverActivity.this.mSemSelectTaskListAdapter.mSelectedItem, false, true);
+                    }
+                }
             }
         }
     }

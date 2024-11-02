@@ -95,8 +95,9 @@ public interface IDataLoaderStatusListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IDataLoaderStatusListener {
+        public static class Proxy implements IDataLoaderStatusListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

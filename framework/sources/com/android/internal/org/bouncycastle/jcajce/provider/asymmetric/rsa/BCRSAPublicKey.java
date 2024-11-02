@@ -29,7 +29,6 @@ public class BCRSAPublicKey implements RSAPublicKey {
         this(DEFAULT_ALGORITHM_IDENTIFIER, key);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPublicKey(AlgorithmIdentifier algId, RSAKeyParameters key) {
         this.algorithmIdentifier = algId;
         this.modulus = key.getModulus();
@@ -37,7 +36,6 @@ public class BCRSAPublicKey implements RSAPublicKey {
         this.rsaPublicKey = key;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPublicKey(RSAPublicKeySpec spec) {
         this.algorithmIdentifier = DEFAULT_ALGORITHM_IDENTIFIER;
         this.modulus = spec.getModulus();
@@ -45,7 +43,6 @@ public class BCRSAPublicKey implements RSAPublicKey {
         this.rsaPublicKey = new RSAKeyParameters(false, this.modulus, this.publicExponent);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPublicKey(RSAPublicKey key) {
         this.algorithmIdentifier = DEFAULT_ALGORITHM_IDENTIFIER;
         this.modulus = key.getModulus();
@@ -53,7 +50,6 @@ public class BCRSAPublicKey implements RSAPublicKey {
         this.rsaPublicKey = new RSAKeyParameters(false, this.modulus, this.publicExponent);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPublicKey(SubjectPublicKeyInfo info) {
         populateFromPublicKeyInfo(info);
     }
@@ -98,7 +94,6 @@ public class BCRSAPublicKey implements RSAPublicKey {
         return KeyUtil.getEncodedSubjectPublicKeyInfo(this.algorithmIdentifier, new com.android.internal.org.bouncycastle.asn1.pkcs.RSAPublicKey(getModulus(), getPublicExponent()));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RSAKeyParameters engineGetKeyParameters() {
         return this.rsaPublicKey;
     }

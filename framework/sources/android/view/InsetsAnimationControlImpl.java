@@ -325,7 +325,6 @@ public class InsetsAnimationControlImpl implements InternalInsetsAnimationContro
         proto.end(token);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SparseArray<InsetsSourceControl> getControls() {
         return this.mControls;
     }

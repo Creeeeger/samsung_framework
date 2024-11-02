@@ -27,12 +27,58 @@ public final class MidiOutputPort extends MidiSender implements Closeable {
     private AtomicInteger mTotalBytes;
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.midi.MidiOutputPort$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends Thread {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public void run() {
+            int count;
+            byte[] buffer = new byte[1024];
+            while (true) {
+                try {
+                    count = MidiOutputPort.this.mInputStream.read(buffer);
+                } catch (IOException e) {
+                } catch (Throwable th) {
+                    IoUtils.closeQuietly(MidiOutputPort.this.mInputStream);
+                    throw th;
+                }
+                if (count >= 0) {
+                    int packetType = MidiPortImpl.getPacketType(buffer, count);
+                    switch (packetType) {
+                        case 1:
+                            int offset = MidiPortImpl.getDataOffset(buffer, count);
+                            int size = MidiPortImpl.getDataSize(buffer, count);
+                            long timestamp = MidiPortImpl.getPacketTimestamp(buffer, count);
+                            MidiOutputPort.this.mDispatcher.send(buffer, offset, size, timestamp);
+                            break;
+                        case 2:
+                            MidiOutputPort.this.mDispatcher.flush();
+                            break;
+                        default:
+                            Log.e(MidiOutputPort.TAG, "Unknown packet type " + packetType);
+                            break;
+                    }
+                    MidiOutputPort.this.mTotalBytes.addAndGet(count);
+                } else {
+                    IoUtils.closeQuietly(MidiOutputPort.this.mInputStream);
+                    return;
+                }
+            }
+        }
+    }
+
     public MidiOutputPort(IMidiDeviceServer server, IBinder token, FileDescriptor fd, int portNumber) {
         this.mDispatcher = new MidiDispatcher();
         CloseGuard closeGuard = CloseGuard.get();
         this.mGuard = closeGuard;
         this.mTotalBytes = new AtomicInteger();
-        Thread thread = new Thread() { // from class: android.media.midi.MidiOutputPort.1
+        AnonymousClass1 anonymousClass1 = new Thread() { // from class: android.media.midi.MidiOutputPort.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 int count;
@@ -69,16 +115,15 @@ public final class MidiOutputPort extends MidiSender implements Closeable {
                 }
             }
         };
-        this.mThread = thread;
+        this.mThread = anonymousClass1;
         this.mDeviceServer = server;
         this.mToken = token;
         this.mPortNumber = portNumber;
         this.mInputStream = new ParcelFileDescriptor.AutoCloseInputStream(new ParcelFileDescriptor(fd));
-        thread.start();
+        anonymousClass1.start();
         closeGuard.open("close");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MidiOutputPort(FileDescriptor fd, int portNumber) {
         this(null, null, fd, portNumber);
     }

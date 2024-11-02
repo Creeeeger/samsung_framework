@@ -13,13 +13,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class AccessibilityGestureEvent implements Parcelable {
     public static final Parcelable.Creator<AccessibilityGestureEvent> CREATOR = new Parcelable.Creator<AccessibilityGestureEvent>() { // from class: android.accessibilityservice.AccessibilityGestureEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AccessibilityGestureEvent createFromParcel(Parcel parcel) {
             return new AccessibilityGestureEvent(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityGestureEvent[] newArray(int size) {
             return new AccessibilityGestureEvent[size];
@@ -32,6 +33,10 @@ public final class AccessibilityGestureEvent implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface GestureId {
+    }
+
+    /* synthetic */ AccessibilityGestureEvent(Parcel parcel, AccessibilityGestureEventIA accessibilityGestureEventIA) {
+        this(parcel);
     }
 
     public AccessibilityGestureEvent(int gestureId, int displayId, List<MotionEvent> motionEvents) {
@@ -199,5 +204,22 @@ public final class AccessibilityGestureEvent implements Parcelable {
         parcel.writeInt(this.mGestureId);
         parcel.writeInt(this.mDisplayId);
         parcel.writeParcelable(new ParceledListSlice(this.mMotionEvents), 0);
+    }
+
+    /* renamed from: android.accessibilityservice.AccessibilityGestureEvent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AccessibilityGestureEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityGestureEvent createFromParcel(Parcel parcel) {
+            return new AccessibilityGestureEvent(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityGestureEvent[] newArray(int size) {
+            return new AccessibilityGestureEvent[size];
+        }
     }
 }

@@ -30,7 +30,6 @@ public class SemExpandableListActivity extends Activity implements View.OnCreate
     public void onGroupExpand(int groupPosition) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onRestoreInstanceState(Bundle state) {
         ensureList();

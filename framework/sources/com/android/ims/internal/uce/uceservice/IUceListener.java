@@ -84,8 +84,9 @@ public interface IUceListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IUceListener {
+        public static class Proxy implements IUceListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

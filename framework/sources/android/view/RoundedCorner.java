@@ -9,13 +9,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes4.dex */
 public final class RoundedCorner implements Parcelable {
     public static final Parcelable.Creator<RoundedCorner> CREATOR = new Parcelable.Creator<RoundedCorner>() { // from class: android.view.RoundedCorner.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RoundedCorner createFromParcel(Parcel in) {
             return new RoundedCorner(in.readInt(), in.readInt(), in.readInt(), in.readInt());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RoundedCorner[] newArray(int size) {
             return new RoundedCorner[size];
@@ -46,7 +47,6 @@ public final class RoundedCorner implements Parcelable {
         this.mCenter = new Point(centerX, centerY);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RoundedCorner(RoundedCorner rc) {
         this.mPosition = rc.getPosition();
         this.mRadius = rc.getRadius();
@@ -115,5 +115,22 @@ public final class RoundedCorner implements Parcelable {
         out.writeInt(this.mRadius);
         out.writeInt(this.mCenter.x);
         out.writeInt(this.mCenter.y);
+    }
+
+    /* renamed from: android.view.RoundedCorner$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RoundedCorner> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RoundedCorner createFromParcel(Parcel in) {
+            return new RoundedCorner(in.readInt(), in.readInt(), in.readInt(), in.readInt());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RoundedCorner[] newArray(int size) {
+            return new RoundedCorner[size];
+        }
     }
 }

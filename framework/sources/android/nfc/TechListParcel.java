@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class TechListParcel implements Parcelable {
     public static final Parcelable.Creator<TechListParcel> CREATOR = new Parcelable.Creator<TechListParcel>() { // from class: android.nfc.TechListParcel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TechListParcel createFromParcel(Parcel source) {
             int count = source.readInt();
@@ -17,7 +19,6 @@ public class TechListParcel implements Parcelable {
             return new TechListParcel(techLists);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TechListParcel[] newArray(int size) {
             return new TechListParcel[size];
@@ -45,6 +46,28 @@ public class TechListParcel implements Parcelable {
         for (int i = 0; i < count; i++) {
             String[] techList = this.mTechLists[i];
             dest.writeStringArray(techList);
+        }
+    }
+
+    /* renamed from: android.nfc.TechListParcel$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TechListParcel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TechListParcel createFromParcel(Parcel source) {
+            int count = source.readInt();
+            String[][] techLists = new String[count];
+            for (int i = 0; i < count; i++) {
+                techLists[i] = source.createStringArray();
+            }
+            return new TechListParcel(techLists);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TechListParcel[] newArray(int size) {
+            return new TechListParcel[size];
         }
     }
 }

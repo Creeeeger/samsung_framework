@@ -29,13 +29,14 @@ public final class AudioRecordingConfiguration implements Parcelable {
     private final int mPatchHandle;
     private static final String TAG = new String("AudioRecordingConfiguration");
     public static final Parcelable.Creator<AudioRecordingConfiguration> CREATOR = new Parcelable.Creator<AudioRecordingConfiguration>() { // from class: android.media.AudioRecordingConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioRecordingConfiguration createFromParcel(Parcel p) {
             return new AudioRecordingConfiguration(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioRecordingConfiguration[] newArray(int size) {
             return new AudioRecordingConfiguration[size];
@@ -45,6 +46,10 @@ public final class AudioRecordingConfiguration implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface AudioSource {
+    }
+
+    /* synthetic */ AudioRecordingConfiguration(Parcel parcel, AudioRecordingConfigurationIA audioRecordingConfigurationIA) {
+        this(parcel);
     }
 
     public AudioRecordingConfiguration(int uid, int session, int source, AudioFormat clientFormat, AudioFormat devFormat, int patchHandle, String packageName, int clientPortId, boolean clientSilenced, int deviceSource, AudioEffect.Descriptor[] clientEffects, AudioEffect.Descriptor[] deviceEffects) {
@@ -159,6 +164,23 @@ public final class AudioRecordingConfiguration implements Parcelable {
 
     public List<AudioEffect.Descriptor> getEffects() {
         return new ArrayList(Arrays.asList(this.mDeviceEffects));
+    }
+
+    /* renamed from: android.media.AudioRecordingConfiguration$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioRecordingConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioRecordingConfiguration createFromParcel(Parcel p) {
+            return new AudioRecordingConfiguration(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioRecordingConfiguration[] newArray(int size) {
+            return new AudioRecordingConfiguration[size];
+        }
     }
 
     public int hashCode() {

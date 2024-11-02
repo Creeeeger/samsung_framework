@@ -5,7 +5,6 @@ import android.renderscript.Program;
 @Deprecated
 /* loaded from: classes3.dex */
 public class ProgramVertex extends Program {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ProgramVertex(long id, RenderScript rs) {
         super(id, rs);
     }

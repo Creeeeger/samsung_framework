@@ -5,13 +5,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class PowerSaveState implements Parcelable {
     public static final Parcelable.Creator<PowerSaveState> CREATOR = new Parcelable.Creator<PowerSaveState>() { // from class: android.os.PowerSaveState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PowerSaveState createFromParcel(Parcel source) {
             return new PowerSaveState(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PowerSaveState[] newArray(int size) {
             return new PowerSaveState[size];
@@ -88,6 +89,23 @@ public class PowerSaveState implements Parcelable {
 
         public PowerSaveState build() {
             return new PowerSaveState(this);
+        }
+    }
+
+    /* renamed from: android.os.PowerSaveState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PowerSaveState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PowerSaveState createFromParcel(Parcel source) {
+            return new PowerSaveState(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PowerSaveState[] newArray(int size) {
+            return new PowerSaveState[size];
         }
     }
 }

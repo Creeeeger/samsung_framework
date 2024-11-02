@@ -284,7 +284,10 @@ public class MediaMetadataRetriever implements AutoCloseable {
         return meta;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x00cb, code lost:            return null;     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x00cb, code lost:
+    
+        return null;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

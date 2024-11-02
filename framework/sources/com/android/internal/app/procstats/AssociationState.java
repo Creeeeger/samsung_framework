@@ -66,7 +66,6 @@ public final class AssociationState {
         int mProcState = -1;
         int mActiveProcState = -1;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public SourceState(ProcessStats processStats, AssociationState associationState, ProcessState targetProcess, SourceKey key) {
             this.mProcessStats = processStats;
             this.mAssociationState = associationState;
@@ -157,7 +156,6 @@ public final class AssociationState {
             return now;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void startActive(long now) {
             SourceState commonSource;
             boolean startActive = false;
@@ -204,7 +202,6 @@ public final class AssociationState {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void stopActive(long now) {
             SourceState commonSource;
             boolean stopActive = false;
@@ -238,7 +235,6 @@ public final class AssociationState {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean stopActiveIfNecessary(int curSeq, long now) {
             if (this.mProcStateSeq != curSeq || this.mProcState >= 12) {
                 stopActive(now);
@@ -257,12 +253,10 @@ public final class AssociationState {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isInUse() {
             return this.mNesting > 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void resetSafely(long now) {
             SourceState commonSource;
             if (isInUse()) {
@@ -284,7 +278,6 @@ public final class AssociationState {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void commitStateTime(long nowUptime) {
             if (this.mNesting > 0) {
                 this.mDuration += nowUptime - this.mStartUptime;
@@ -331,7 +324,6 @@ public final class AssociationState {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void add(SourceState otherSrc) {
             this.mCount += otherSrc.mCount;
             this.mDuration += otherSrc.mDuration;
@@ -399,7 +391,6 @@ public final class AssociationState {
             return 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String readFromParcel(Parcel in) {
             this.mCount = in.readInt();
             this.mDuration = in.readLong();
@@ -427,7 +418,6 @@ public final class AssociationState {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class SourceDumpContainer {
         public long mActiveTime;
@@ -451,14 +441,12 @@ public final class AssociationState {
             this.mPackage = pkg;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public SourceKey(ProcessStats stats, Parcel in, int parcelVersion) {
             this.mUid = in.readInt();
             this.mProcess = stats.readCommonString(in, parcelVersion);
             this.mPackage = stats.readCommonString(in, parcelVersion);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void writeToParcel(ProcessStats stats, Parcel out) {
             out.writeInt(this.mUid);
             stats.writeCommonString(out, this.mProcess);
@@ -677,7 +665,6 @@ public final class AssociationState {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public static /* synthetic */ int lambda$static$0(Pair o1, Pair o2) {
         int diff;
@@ -696,7 +683,6 @@ public final class AssociationState {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ArrayList<Pair<SourceKey, SourceDumpContainer>> createSortedAssociations(long now, long totalTime, ArrayMap<SourceKey, SourceState> inSources) {
         long duration;
         int numOfSources = inSources.size();
@@ -781,7 +767,6 @@ public final class AssociationState {
         dumpSources(pw, prefix, prefixInner, prefixInnerInner, sources, now, totalTime, reqPackage, dumpDetails, dumpAll);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:25:0x0155  */
     /* JADX WARN: Removed duplicated region for block: B:28:0x0174  */
     /* JADX WARN: Removed duplicated region for block: B:37:0x01a9  */
@@ -799,7 +784,6 @@ public final class AssociationState {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.app.procstats.AssociationState.dumpSources(java.io.PrintWriter, java.lang.String, java.lang.String, java.lang.String, java.util.ArrayList, long, long, java.lang.String, boolean, boolean):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void dumpActiveDurationSummary(PrintWriter pw, SourceState src, long totalTime, long now, boolean dumpAll) {
         long duration = dumpTime(null, null, src, totalTime, now, false, false);
         boolean isRunning = duration < 0;

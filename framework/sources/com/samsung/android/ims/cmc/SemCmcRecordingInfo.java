@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemCmcRecordingInfo implements Parcelable {
     public static final Parcelable.Creator<SemCmcRecordingInfo> CREATOR = new Parcelable.Creator<SemCmcRecordingInfo>() { // from class: com.samsung.android.ims.cmc.SemCmcRecordingInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemCmcRecordingInfo createFromParcel(Parcel in) {
             return new SemCmcRecordingInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemCmcRecordingInfo[] newArray(int size) {
             return new SemCmcRecordingInfo[size];
@@ -168,6 +169,23 @@ public class SemCmcRecordingInfo implements Parcelable {
         dest.writeInt(this.mDurationInterval);
         dest.writeLong(this.mFileSizeInterval);
         dest.writeString(this.mAuthor);
+    }
+
+    /* renamed from: com.samsung.android.ims.cmc.SemCmcRecordingInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemCmcRecordingInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCmcRecordingInfo createFromParcel(Parcel in) {
+            return new SemCmcRecordingInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCmcRecordingInfo[] newArray(int size) {
+            return new SemCmcRecordingInfo[size];
+        }
     }
 
     public String toString() {

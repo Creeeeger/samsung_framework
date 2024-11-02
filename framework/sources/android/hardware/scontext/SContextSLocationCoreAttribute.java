@@ -21,7 +21,6 @@ public class SContextSLocationCoreAttribute extends SContextAttribute {
     private long mTimeStamp;
     private int mTotalGpsCnt;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextSLocationCoreAttribute() {
         this.mMode = -1;
         this.mAction = -1;

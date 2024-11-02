@@ -46,6 +46,14 @@ public class ImageWriter implements AutoCloseable {
         void onImageReleased(ImageWriter imageWriter);
     }
 
+    /* synthetic */ ImageWriter(Surface surface, int i, boolean z, int i2, int i3, int i4, int i5, long j, ImageWriterIA imageWriterIA) {
+        this(surface, i, z, i2, i3, i4, i5, j);
+    }
+
+    /* synthetic */ ImageWriter(Surface surface, int i, boolean z, int i2, int i3, int i4, long j, ImageWriterIA imageWriterIA) {
+        this(surface, i, z, i2, i3, i4, j);
+    }
+
     private native synchronized void cancelImage(long j, Image image);
 
     private native synchronized int nativeAttachAndQueueGraphicBuffer(long j, GraphicBuffer graphicBuffer, int i, long j2, int i2, int i3, int i4, int i5, int i6, int i7, int i8);
@@ -291,7 +299,6 @@ public class ImageWriter implements AutoCloseable {
         image.close();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class ListenerHandler extends Handler {
         public ListenerHandler(Looper looper) {
@@ -329,7 +336,6 @@ public class ImageWriter implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void abortImage(Image image) {
         if (image == null) {
             throw new IllegalArgumentException("image shouldn't be null");
@@ -424,7 +430,6 @@ public class ImageWriter implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class WriterSurfaceImage extends Image {
         private int mDataSpace;
@@ -564,14 +569,12 @@ public class ImageWriter implements AutoCloseable {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.media.Image
         public ImageWriter getOwner() {
             throwISEIfImageIsInvalid();
             return this.mOwner;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.media.Image
         public long getNativeContext() {
             throwISEIfImageIsInvalid();
@@ -595,7 +598,6 @@ public class ImageWriter implements AutoCloseable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void clearSurfacePlanes() {
             if (this.mIsImageValid && this.mPlanes != null) {
                 int i = 0;
@@ -615,7 +617,6 @@ public class ImageWriter implements AutoCloseable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public class SurfacePlane extends Image.Plane {
             private ByteBuffer mBuffer;
@@ -647,7 +648,6 @@ public class ImageWriter implements AutoCloseable {
                 return this.mBuffer;
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public void clearBuffer() {
                 ByteBuffer byteBuffer = this.mBuffer;
                 if (byteBuffer == null) {

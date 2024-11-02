@@ -86,8 +86,9 @@ public interface IWirelessKeyboardShareChangedListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IWirelessKeyboardShareChangedListener {
+        public static class Proxy implements IWirelessKeyboardShareChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

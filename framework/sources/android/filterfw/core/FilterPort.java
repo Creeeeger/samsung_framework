@@ -86,21 +86,18 @@ public abstract class FilterPort {
         return "port '" + this.mName + "' of " + this.mFilter;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void assertPortIsOpen() {
         if (!isOpen()) {
             throw new RuntimeException("Illegal operation on closed " + this + "!");
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void checkFrameType(Frame frame, boolean forceCheck) {
         if ((this.mChecksType || forceCheck) && this.mPortFormat != null && !frame.getFormat().isCompatibleWith(this.mPortFormat)) {
             throw new RuntimeException("Frame passed to " + this + " is of incorrect type! Expected " + this.mPortFormat + " but got " + frame.getFormat());
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void checkFrameManager(Frame frame, FilterContext context) {
         if (frame.getFrameManager() != null && frame.getFrameManager() != context.getFrameManager()) {
             throw new RuntimeException("Frame " + frame + " is managed by foreign FrameManager! ");

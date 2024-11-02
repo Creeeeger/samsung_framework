@@ -102,8 +102,9 @@ public interface IProcessResultImpl extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IProcessResultImpl {
+        public static class Proxy implements IProcessResultImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

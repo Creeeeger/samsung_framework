@@ -2,6 +2,7 @@ package com.samsung.android.allshare;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.Item;
 import com.samsung.android.allshare.media.Provider;
@@ -16,7 +17,6 @@ import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class ProviderImpl extends Provider implements IBundleHolder, IHandlerHolder {
     private static final String TAG_CLASS = "ProviderImpl";
@@ -29,6 +29,10 @@ public final class ProviderImpl extends Provider implements IBundleHolder, IHand
     private Provider.IProviderEventListener mProviderEventListener = null;
     private boolean mIsSubscribed = false;
     private AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ProviderImpl.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareEventHandler
         void handleEventMessage(CVMessage cvm) {
             if (ProviderImpl.this.mProviderEventListener == null) {
@@ -51,6 +55,10 @@ public final class ProviderImpl extends Provider implements IBundleHolder, IHand
         }
     };
     private AllShareResponseHandler mAllShareRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ProviderImpl.2
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
             FolderItemImpl requestedFolderItem;
@@ -251,7 +259,6 @@ public final class ProviderImpl extends Provider implements IBundleHolder, IHand
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ProviderImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mAllShareConnector = null;
         this.mDeviceImpl = null;
@@ -275,7 +282,212 @@ public final class ProviderImpl extends Provider implements IBundleHolder, IHand
         }
     }
 
-    /* renamed from: com.samsung.android.allshare.ProviderImpl$3, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ProviderImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareEventHandler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        void handleEventMessage(CVMessage cvm) {
+            if (ProviderImpl.this.mProviderEventListener == null) {
+                return;
+            }
+            String actionID = cvm.getActionID();
+            Bundle resBundle = cvm.getBundle();
+            if (resBundle == null) {
+                return;
+            }
+            String errStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+            if (actionID.equals(AllShareEvent.EVENT_PROVIDER_CONTENTS_UPDATED)) {
+                if (errStr == null) {
+                    ProviderImpl.this.mProviderEventListener.onContentUpdated(ERROR.FAIL);
+                } else {
+                    ERROR error = ERROR.stringToEnum(errStr);
+                    ProviderImpl.this.mProviderEventListener.onContentUpdated(error);
+                }
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ProviderImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareResponseHandler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            FolderItemImpl requestedFolderItem;
+            String searchString;
+            String str;
+            String str2;
+            if (cvm == null) {
+                return;
+            }
+            String actionID = cvm.getActionID();
+            Bundle resBundle = cvm.getBundle();
+            if (actionID == null || resBundle == null) {
+                return;
+            }
+            ArrayList<Bundle> itemImpleList = resBundle.getParcelableArrayList(AllShareKey.BUNDLE_PARCELABLE_ARRAYLIST_CONTENT_BUNDLE);
+            ArrayList<Bundle> itemImpleList2 = itemImpleList == null ? new ArrayList<>() : itemImpleList;
+            int requestedStartIndex = resBundle.getInt(AllShareKey.BUNDLE_INT_STARTINDEX);
+            int reqeustedCount = resBundle.getInt(AllShareKey.BUNDLE_INT_REQUESTCOUNT);
+            boolean endOfItem = resBundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_ENDOFITEM);
+            ERROR error = ERROR.stringToEnum(resBundle.getString("BUNDLE_ENUM_ERROR"));
+            ArrayList<String> itemTypeStrList = resBundle.getStringArrayList(AllShareKey.BUNDLE_STRING_ITEM_TYPE_ARRAYLIST);
+            ArrayList<Item> itemList = new ArrayList<>();
+            Iterator<Bundle> it = itemImpleList2.iterator();
+            while (it.hasNext()) {
+                Bundle b = it.next();
+                Item.MediaType type = getItemType(b);
+                if (type != null) {
+                    switch (AnonymousClass3.$SwitchMap$com$samsung$android$allshare$Item$MediaType[type.ordinal()]) {
+                        case 1:
+                            itemList.add(new AudioItemImpl(b));
+                            break;
+                        case 2:
+                            itemList.add(new ImageItemImpl(b));
+                            break;
+                        case 3:
+                            itemList.add(new VideoItemImpl(b));
+                            break;
+                        case 4:
+                            itemList.add(new FolderItemImpl(b));
+                            break;
+                        default:
+                            return;
+                    }
+                }
+            }
+            if (actionID.equals(AllShareAction.ACTION_PROVIDER_REQUEST_SEARCH_CRITERIA_ITEMS)) {
+                String searchString2 = resBundle.getString(AllShareKey.BUNDLE_STRING_SEARCHSTRING);
+                if (ProviderImpl.this.mSearchResponseListener == null) {
+                    return;
+                }
+                try {
+                    SearchCriteria.Builder builder = new SearchCriteria.Builder().setKeyword(searchString2);
+                    if (itemTypeStrList != null) {
+                        try {
+                            Iterator<String> it2 = itemTypeStrList.iterator();
+                            while (it2.hasNext()) {
+                                String iType = it2.next();
+                                Item.MediaType t = Item.MediaType.stringToEnum(iType);
+                                ArrayList<Bundle> itemImpleList3 = itemImpleList2;
+                                try {
+                                    builder.addItemType(t);
+                                    itemImpleList2 = itemImpleList3;
+                                } catch (Error e) {
+                                    err = e;
+                                    searchString = ProviderImpl.TAG_CLASS;
+                                    str2 = "mAllShareRespHandler.handleResponseMessage Error";
+                                    DLog.w_api(searchString, str2, err);
+                                } catch (Exception e2) {
+                                    e = e2;
+                                    searchString = ProviderImpl.TAG_CLASS;
+                                    str = "mAllShareRespHandler.handleResponseMessage Exception";
+                                    DLog.w_api(searchString, str, e);
+                                }
+                            }
+                        } catch (Error e3) {
+                            err = e3;
+                            searchString = ProviderImpl.TAG_CLASS;
+                            str2 = "mAllShareRespHandler.handleResponseMessage Error";
+                        } catch (Exception e4) {
+                            e = e4;
+                            searchString = ProviderImpl.TAG_CLASS;
+                            str = "mAllShareRespHandler.handleResponseMessage Exception";
+                        }
+                    }
+                    try {
+                        SearchCriteria criteria = builder.build();
+                        Provider.IProviderSearchResponseListener iProviderSearchResponseListener = ProviderImpl.this.mSearchResponseListener;
+                        searchString = ProviderImpl.TAG_CLASS;
+                        str = "mAllShareRespHandler.handleResponseMessage Exception";
+                        str2 = "mAllShareRespHandler.handleResponseMessage Error";
+                        try {
+                            iProviderSearchResponseListener.onSearchResponseReceived(itemList, requestedStartIndex, reqeustedCount, criteria, endOfItem, error);
+                        } catch (Error e5) {
+                            err = e5;
+                            DLog.w_api(searchString, str2, err);
+                        } catch (Exception e6) {
+                            e = e6;
+                            DLog.w_api(searchString, str, e);
+                        }
+                    } catch (Error e7) {
+                        err = e7;
+                        searchString = ProviderImpl.TAG_CLASS;
+                        str2 = "mAllShareRespHandler.handleResponseMessage Error";
+                    } catch (Exception e8) {
+                        e = e8;
+                        searchString = ProviderImpl.TAG_CLASS;
+                        str = "mAllShareRespHandler.handleResponseMessage Exception";
+                    }
+                } catch (Error e9) {
+                    err = e9;
+                    searchString = ProviderImpl.TAG_CLASS;
+                    str2 = "mAllShareRespHandler.handleResponseMessage Error";
+                } catch (Exception e10) {
+                    e = e10;
+                    searchString = ProviderImpl.TAG_CLASS;
+                    str = "mAllShareRespHandler.handleResponseMessage Exception";
+                }
+            } else {
+                if (!actionID.equals(AllShareAction.ACTION_PROVIDER_REQUEST_BROWSE_ITEMS)) {
+                    return;
+                }
+                Bundle bundleFolder = (Bundle) resBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_FOLDERITEM);
+                if (bundleFolder != null) {
+                    String objID = bundleFolder.getString(AllShareKey.BUNDLE_STRING_OBJECT_ID);
+                    if (objID == null || objID.equals("0")) {
+                        FolderItemImpl requestedFolderItem2 = new RootFolderItem(bundleFolder);
+                        requestedFolderItem = requestedFolderItem2;
+                    } else {
+                        FolderItemImpl requestedFolderItem3 = new FolderItemImpl(bundleFolder);
+                        requestedFolderItem = requestedFolderItem3;
+                    }
+                } else {
+                    requestedFolderItem = null;
+                }
+                if (ProviderImpl.this.mBrowseResponseListener == null) {
+                    return;
+                }
+                try {
+                    try {
+                        ProviderImpl.this.mBrowseResponseListener.onBrowseResponseReceived(itemList, requestedStartIndex, reqeustedCount, requestedFolderItem, endOfItem, error);
+                    } catch (Error e11) {
+                        err = e11;
+                        DLog.w_api(ProviderImpl.TAG_CLASS, "mAllShareRespHandler.handleResponseMessage Error", err);
+                    } catch (Exception e12) {
+                        e = e12;
+                        DLog.w_api(ProviderImpl.TAG_CLASS, "mAllShareRespHandler.handleResponseMessage Exception", e);
+                    }
+                } catch (Error e13) {
+                    err = e13;
+                } catch (Exception e14) {
+                    e = e14;
+                }
+            }
+        }
+
+        Item.MediaType getItemType(Bundle b) {
+            if (b == null) {
+                return Item.MediaType.ITEM_UNKNOWN;
+            }
+            String typeStr = b.getString(AllShareKey.BUNDLE_STRING_ITEM_TYPE);
+            if (typeStr == null) {
+                return Item.MediaType.ITEM_UNKNOWN;
+            }
+            return Item.MediaType.stringToEnum(typeStr);
+        }
+    }
+
+    /* renamed from: com.samsung.android.allshare.ProviderImpl$3 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass3 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;

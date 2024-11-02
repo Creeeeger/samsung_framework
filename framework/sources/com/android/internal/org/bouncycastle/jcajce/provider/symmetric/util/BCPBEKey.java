@@ -85,19 +85,16 @@ public class BCPBEKey implements PBEKey, Destroyable {
         return PBEParametersGenerator.PKCS5PasswordToBytes(this.password);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getType() {
         checkDestroyed(this);
         return this.type;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getDigest() {
         checkDestroyed(this);
         return this.digest;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getKeySize() {
         checkDestroyed(this);
         return this.keySize;
@@ -144,7 +141,6 @@ public class BCPBEKey implements PBEKey, Destroyable {
         this.tryWrong = tryWrong;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldTryWrongPKCS12() {
         return this.tryWrong;
     }

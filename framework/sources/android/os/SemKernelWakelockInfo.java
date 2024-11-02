@@ -5,13 +5,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class SemKernelWakelockInfo implements Cloneable, Parcelable, Comparable<SemKernelWakelockInfo> {
     public static final Parcelable.Creator<SemKernelWakelockInfo> CREATOR = new Parcelable.Creator<SemKernelWakelockInfo>() { // from class: android.os.SemKernelWakelockInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemKernelWakelockInfo createFromParcel(Parcel in) {
             return new SemKernelWakelockInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemKernelWakelockInfo[] newArray(int size) {
             return new SemKernelWakelockInfo[size];
@@ -58,6 +59,23 @@ public class SemKernelWakelockInfo implements Cloneable, Parcelable, Comparable<
         this.time = in.readLong();
     }
 
+    /* renamed from: android.os.SemKernelWakelockInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemKernelWakelockInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemKernelWakelockInfo createFromParcel(Parcel in) {
+            return new SemKernelWakelockInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemKernelWakelockInfo[] newArray(int size) {
+            return new SemKernelWakelockInfo[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -75,8 +93,8 @@ public class SemKernelWakelockInfo implements Cloneable, Parcelable, Comparable<
         return (int) (info.getTime() - this.time);
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SemKernelWakelockInfo m3198clone() {
+    /* renamed from: clone */
+    public SemKernelWakelockInfo m3197clone() {
         try {
             return (SemKernelWakelockInfo) super.clone();
         } catch (CloneNotSupportedException e) {

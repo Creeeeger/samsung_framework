@@ -132,7 +132,9 @@ public final class BackupRestoreEventLogger {
     /* loaded from: classes.dex */
     public static final class DataTypeResult implements Parcelable {
         public static final Parcelable.Creator<DataTypeResult> CREATOR = new Parcelable.Creator<DataTypeResult>() { // from class: android.app.backup.BackupRestoreEventLogger.DataTypeResult.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public DataTypeResult createFromParcel(Parcel in) {
                 String dataType = in.readString();
@@ -152,7 +154,6 @@ public final class BackupRestoreEventLogger {
                 return result;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DataTypeResult[] newArray(int size) {
                 return new DataTypeResult[size];
@@ -204,6 +205,37 @@ public final class BackupRestoreEventLogger {
             }
             dest.writeBundle(errorsBundle);
             dest.writeByteArray(this.mMetadataHash);
+        }
+
+        /* renamed from: android.app.backup.BackupRestoreEventLogger$DataTypeResult$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<DataTypeResult> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DataTypeResult createFromParcel(Parcel in) {
+                String dataType = in.readString();
+                int successCount = in.readInt();
+                int failCount = in.readInt();
+                ArrayMap arrayMap = new ArrayMap();
+                Bundle errorsBundle = in.readBundle(getClass().getClassLoader());
+                for (String key : errorsBundle.keySet()) {
+                    arrayMap.put(key, Integer.valueOf(errorsBundle.getInt(key)));
+                }
+                byte[] metadataHash = in.createByteArray();
+                DataTypeResult result = new DataTypeResult(dataType);
+                result.mSuccessCount = successCount;
+                result.mFailCount = failCount;
+                result.mErrors.putAll(arrayMap);
+                result.mMetadataHash = metadataHash;
+                return result;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DataTypeResult[] newArray(int size) {
+                return new DataTypeResult[size];
+            }
         }
     }
 }

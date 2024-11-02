@@ -260,7 +260,6 @@ public final class BearerData {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class CodingException extends Exception {
         public CodingException(String s) {
@@ -432,11 +431,14 @@ public final class BearerData {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class Gsm7bitCodingResult {
         byte[] data;
         int septets;
+
+        /* synthetic */ Gsm7bitCodingResult(Gsm7bitCodingResultIA gsm7bitCodingResultIA) {
+            this();
+        }
 
         private Gsm7bitCodingResult() {
         }

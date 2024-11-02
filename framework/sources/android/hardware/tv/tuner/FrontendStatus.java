@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendStatus implements Parcelable {
     public static final Parcelable.Creator<FrontendStatus> CREATOR = new Parcelable.Creator<FrontendStatus>() { // from class: android.hardware.tv.tuner.FrontendStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendStatus createFromParcel(Parcel _aidl_source) {
             return new FrontendStatus(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendStatus[] newArray(int _aidl_size) {
             return new FrontendStatus[_aidl_size];
@@ -118,6 +119,10 @@ public final class FrontendStatus implements Parcelable {
         public static final int transmissionMode = 27;
         public static final int tsDataRate = 32;
         public static final int uec = 28;
+    }
+
+    /* synthetic */ FrontendStatus(Parcel parcel, FrontendStatusIA frontendStatusIA) {
+        this(parcel);
     }
 
     public FrontendStatus() {
@@ -752,6 +757,23 @@ public final class FrontendStatus implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.FrontendStatus$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendStatus createFromParcel(Parcel _aidl_source) {
+            return new FrontendStatus(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendStatus[] newArray(int _aidl_size) {
+            return new FrontendStatus[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

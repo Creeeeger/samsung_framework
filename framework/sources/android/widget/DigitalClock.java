@@ -37,7 +37,6 @@ public class DigitalClock extends TextView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onAttachedToWindow() {
         this.mTickerStopped = false;
@@ -46,7 +45,10 @@ public class DigitalClock extends TextView {
         getContext().getContentResolver().registerContentObserver(Settings.System.CONTENT_URI, true, this.mFormatChangeObserver);
         setFormat();
         this.mHandler = new Handler();
-        Runnable runnable = new Runnable() { // from class: android.widget.DigitalClock.1
+        AnonymousClass1 anonymousClass1 = new Runnable() { // from class: android.widget.DigitalClock.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (DigitalClock.this.mTickerStopped) {
@@ -61,11 +63,31 @@ public class DigitalClock extends TextView {
                 DigitalClock.this.mHandler.postAtTime(DigitalClock.this.mTicker, next);
             }
         };
-        this.mTicker = runnable;
-        runnable.run();
+        this.mTicker = anonymousClass1;
+        anonymousClass1.run();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.widget.DigitalClock$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (DigitalClock.this.mTickerStopped) {
+                return;
+            }
+            DigitalClock.this.mCalendar.setTimeInMillis(System.currentTimeMillis());
+            DigitalClock digitalClock = DigitalClock.this;
+            digitalClock.setText(DateFormat.format(digitalClock.mFormat, DigitalClock.this.mCalendar));
+            DigitalClock.this.invalidate();
+            long now = SystemClock.uptimeMillis();
+            long next = (1000 - (now % 1000)) + now;
+            DigitalClock.this.mHandler.postAtTime(DigitalClock.this.mTicker, next);
+        }
+    }
+
     @Override // android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -73,7 +95,6 @@ public class DigitalClock extends TextView {
         getContext().getContentResolver().unregisterContentObserver(this.mFormatChangeObserver);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setFormat() {
         this.mFormat = DateFormat.getTimeFormatString(getContext());
     }

@@ -13,13 +13,14 @@ public final class CallAttributes implements Parcelable {
     public static final String CALLER_UID_KEY = "CallerUid";
     public static final String CALL_CAPABILITIES_KEY = "TelecomCapabilities";
     public static final Parcelable.Creator<CallAttributes> CREATOR = new Parcelable.Creator<CallAttributes>() { // from class: android.telecom.CallAttributes.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CallAttributes createFromParcel(Parcel source) {
             return new CallAttributes((PhoneAccountHandle) source.readParcelable(getClass().getClassLoader(), PhoneAccountHandle.class), source.readCharSequence(), (Uri) source.readParcelable(getClass().getClassLoader(), Uri.class), source.readInt(), source.readInt(), source.readInt());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallAttributes[] newArray(int size) {
             return new CallAttributes[size];
@@ -49,6 +50,10 @@ public final class CallAttributes implements Parcelable {
 
     /* loaded from: classes3.dex */
     public @interface Direction {
+    }
+
+    /* synthetic */ CallAttributes(PhoneAccountHandle phoneAccountHandle, CharSequence charSequence, Uri uri, int i, int i2, int i3, CallAttributesIA callAttributesIA) {
+        this(phoneAccountHandle, charSequence, uri, i, i2, i3);
     }
 
     private CallAttributes(PhoneAccountHandle phoneAccountHandle, CharSequence displayName, Uri address, int direction, int callType, int callCapabilities) {
@@ -141,6 +146,23 @@ public final class CallAttributes implements Parcelable {
         dest.writeInt(this.mDirection);
         dest.writeInt(this.mCallType);
         dest.writeInt(this.mCallCapabilities);
+    }
+
+    /* renamed from: android.telecom.CallAttributes$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CallAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallAttributes createFromParcel(Parcel source) {
+            return new CallAttributes((PhoneAccountHandle) source.readParcelable(getClass().getClassLoader(), PhoneAccountHandle.class), source.readCharSequence(), (Uri) source.readParcelable(getClass().getClassLoader(), Uri.class), source.readInt(), source.readInt(), source.readInt());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallAttributes[] newArray(int size) {
+            return new CallAttributes[size];
+        }
     }
 
     public String toString() {

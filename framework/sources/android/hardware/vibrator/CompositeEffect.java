@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class CompositeEffect implements Parcelable {
     public static final Parcelable.Creator<CompositeEffect> CREATOR = new Parcelable.Creator<CompositeEffect>() { // from class: android.hardware.vibrator.CompositeEffect.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CompositeEffect createFromParcel(Parcel _aidl_source) {
             CompositeEffect _aidl_out = new CompositeEffect();
@@ -15,7 +17,6 @@ public class CompositeEffect implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompositeEffect[] newArray(int _aidl_size) {
             return new CompositeEffect[_aidl_size];
@@ -24,6 +25,25 @@ public class CompositeEffect implements Parcelable {
     public int delayMs = 0;
     public int primitive = 0;
     public float scale = 0.0f;
+
+    /* renamed from: android.hardware.vibrator.CompositeEffect$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CompositeEffect> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompositeEffect createFromParcel(Parcel _aidl_source) {
+            CompositeEffect _aidl_out = new CompositeEffect();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompositeEffect[] newArray(int _aidl_size) {
+            return new CompositeEffect[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

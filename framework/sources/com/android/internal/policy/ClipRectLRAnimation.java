@@ -10,7 +10,6 @@ public class ClipRectLRAnimation extends ClipRectAnimation {
         super(fromL, 0, fromR, 0, toL, 0, toR, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.ClipRectAnimation, android.view.animation.Animation
     public void applyTransformation(float it, Transformation tr) {
         Rect oldClipRect = tr.getClipRect();

@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class ResolverTarget implements Parcelable {
     public static final Parcelable.Creator<ResolverTarget> CREATOR = new Parcelable.Creator<ResolverTarget>() { // from class: android.service.resolver.ResolverTarget.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ResolverTarget createFromParcel(Parcel source) {
             return new ResolverTarget(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResolverTarget[] newArray(int size) {
             return new ResolverTarget[size];
@@ -94,5 +95,22 @@ public final class ResolverTarget implements Parcelable {
         dest.writeFloat(this.mLaunchScore);
         dest.writeFloat(this.mChooserScore);
         dest.writeFloat(this.mSelectProbability);
+    }
+
+    /* renamed from: android.service.resolver.ResolverTarget$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ResolverTarget> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResolverTarget createFromParcel(Parcel source) {
+            return new ResolverTarget(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResolverTarget[] newArray(int size) {
+            return new ResolverTarget[size];
+        }
     }
 }

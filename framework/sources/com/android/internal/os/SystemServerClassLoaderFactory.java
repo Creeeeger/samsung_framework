@@ -8,7 +8,6 @@ import dalvik.system.PathClassLoader;
 public final class SystemServerClassLoaderFactory {
     private static final ArrayMap<String, PathClassLoader> sLoadedPaths = new ArrayMap<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static PathClassLoader createClassLoader(String path, ClassLoader parent) {
         ArrayMap<String, PathClassLoader> arrayMap = sLoadedPaths;
         if (arrayMap.containsKey(path)) {

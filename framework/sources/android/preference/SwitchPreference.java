@@ -20,8 +20,13 @@ public class SwitchPreference extends TwoStatePreference {
     private CharSequence mSwitchOff;
     private CharSequence mSwitchOn;
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private class Listener implements CompoundButton.OnCheckedChangeListener {
+    public class Listener implements CompoundButton.OnCheckedChangeListener {
+        /* synthetic */ Listener(SwitchPreference switchPreference, ListenerIA listenerIA) {
+            this();
+        }
+
         private Listener() {
         }
 
@@ -35,8 +40,13 @@ public class SwitchPreference extends TwoStatePreference {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class ClickListener implements View.OnClickListener {
+    public static class ClickListener implements View.OnClickListener {
+        /* synthetic */ ClickListener(ClickListenerIA clickListenerIA) {
+            this();
+        }
+
         private ClickListener() {
         }
 
@@ -73,7 +83,6 @@ public class SwitchPreference extends TwoStatePreference {
         this(context, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onBindView(View view) {
         super.onBindView(view);

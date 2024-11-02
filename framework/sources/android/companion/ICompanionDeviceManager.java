@@ -589,7 +589,6 @@ public interface ICompanionDeviceManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements ICompanionDeviceManager {
             private IBinder mRemote;

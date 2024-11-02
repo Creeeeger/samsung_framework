@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">"El telèfon és inestable perquè s'ha eliminat una targeta SD que tenia aplicacions instal·lades. El telèfon es reiniciarà d'aquí a %d segons per tornar a l'estat normal. Desa les dades no desades abans de reiniciar el telèfon."</item>
+        <item quantity="other">"La tablet és inestable perquè s'ha eliminat una targeta SD que tenia aplicacions instal·lades. La tablet es reiniciarà d'aquí a %d segons per tornar a l'estat normal. Desa les dades no desades abans de reiniciar la tablet."</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">"El telèfon és inestable perquè s'ha eliminat una targeta SD que tenia aplicacions instal·lades. El telèfon es reiniciarà d'aquí a %d segon per tornar a l'estat normal. Desa les dades no desades abans de reiniciar el telèfon."</item>
+        <item quantity="one">"La tablet és inestable perquè s'ha eliminat una targeta SD que tenia aplicacions instal·lades. La tablet es reiniciarà d'aquí a %d segon per tornar a l'estat normal. Desa les dades no desades abans de reiniciar la tablet."</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">"Telèfon es reiniciarà d'aquí a %d segons"</item>
+        <item quantity="other">"Tablet es reiniciarà d'aquí a %d segons"</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">"Telèfon es reiniciarà d'aquí a %d segon"</item>
+        <item quantity="one">"Tablet es reiniciarà d'aquí a %d segon"</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

@@ -11,14 +11,15 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PrimitiveSegment extends VibrationEffectSegment {
     public static final Parcelable.Creator<PrimitiveSegment> CREATOR = new Parcelable.Creator<PrimitiveSegment>() { // from class: android.os.vibrator.PrimitiveSegment.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrimitiveSegment createFromParcel(Parcel in) {
             in.readInt();
             return new PrimitiveSegment(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrimitiveSegment[] newArray(int size) {
             return new PrimitiveSegment[size];
@@ -28,7 +29,6 @@ public final class PrimitiveSegment extends VibrationEffectSegment {
     private final int mPrimitiveId;
     private final float mScale;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PrimitiveSegment(Parcel in) {
         this(in.readInt(), in.readFloat(), in.readInt());
     }
@@ -126,5 +126,23 @@ public final class PrimitiveSegment extends VibrationEffectSegment {
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mPrimitiveId), Float.valueOf(this.mScale), Integer.valueOf(this.mDelay));
+    }
+
+    /* renamed from: android.os.vibrator.PrimitiveSegment$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrimitiveSegment> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrimitiveSegment createFromParcel(Parcel in) {
+            in.readInt();
+            return new PrimitiveSegment(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrimitiveSegment[] newArray(int size) {
+            return new PrimitiveSegment[size];
+        }
     }
 }

@@ -17,13 +17,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AssociationRequest implements Parcelable {
     public static final Parcelable.Creator<AssociationRequest> CREATOR = new Parcelable.Creator<AssociationRequest>() { // from class: android.companion.AssociationRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AssociationRequest[] newArray(int size) {
             return new AssociationRequest[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssociationRequest createFromParcel(Parcel in) {
             return new AssociationRequest(in);
@@ -51,6 +52,10 @@ public final class AssociationRequest implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface DeviceProfile {
+    }
+
+    /* synthetic */ AssociationRequest(boolean z, List list, String str, CharSequence charSequence, boolean z2, boolean z3, AssociationRequestIA associationRequestIA) {
+        this(z, list, str, charSequence, z2, z3);
     }
 
     private AssociationRequest(boolean singleDevice, List<DeviceFilter<?>> deviceFilters, String deviceProfile, CharSequence displayName, boolean selfManaged, boolean forceConfirmation) {
@@ -158,7 +163,6 @@ public final class AssociationRequest implements Parcelable {
             return this;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.provider.OneTimeUseBuilder
         public AssociationRequest build() {
             markUsed();
@@ -303,5 +307,22 @@ public final class AssociationRequest implements Parcelable {
         this.mDeviceProfilePrivilegesDescription = deviceProfilePrivilegesDescription;
         this.mCreationTime = creationTime;
         this.mSkipPrompt = skipPrompt;
+    }
+
+    /* renamed from: android.companion.AssociationRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AssociationRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssociationRequest[] newArray(int size) {
+            return new AssociationRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssociationRequest createFromParcel(Parcel in) {
+            return new AssociationRequest(in);
+        }
     }
 }

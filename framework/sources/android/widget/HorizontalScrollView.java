@@ -199,7 +199,6 @@ public class HorizontalScrollView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getLeftFadingEdgeStrength() {
         if (getChildCount() == 0) {
@@ -212,7 +211,6 @@ public class HorizontalScrollView extends FrameLayout {
         return 1.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getRightFadingEdgeStrength() {
         if (getChildCount() == 0) {
@@ -266,13 +264,11 @@ public class HorizontalScrollView extends FrameLayout {
         this.mHorizontalScrollFactor = configuration.getScaledHorizontalScrollFactor();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -343,7 +339,6 @@ public class HorizontalScrollView extends FrameLayout {
         this.mSmoothScrollingEnabled = smoothScrollingEnabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthPadding;
@@ -566,7 +561,6 @@ public class HorizontalScrollView extends FrameLayout {
         this.HOVERSCROLL_DELAY = hoverdelay;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     @Override // android.view.ViewGroup, android.view.View
     public boolean dispatchHoverEvent(MotionEvent ev) {
@@ -1197,7 +1191,6 @@ public class HorizontalScrollView extends FrameLayout {
         smoothScrollBy(x - this.mScrollX, y - this.mScrollY);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeHorizontalScrollRange() {
         int count = getChildCount();
@@ -1217,13 +1210,11 @@ public class HorizontalScrollView extends FrameLayout {
         return scrollRange;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeHorizontalScrollOffset() {
         return Math.max(0, super.computeHorizontalScrollOffset());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
         ViewGroup.LayoutParams lp = child.getLayoutParams();
@@ -1233,7 +1224,6 @@ public class HorizontalScrollView extends FrameLayout {
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
@@ -1360,7 +1350,6 @@ public class HorizontalScrollView extends FrameLayout {
         super.requestChildFocus(child, focused);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         View nextFocus;
@@ -1392,7 +1381,6 @@ public class HorizontalScrollView extends FrameLayout {
         super.requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int childWidth;
@@ -1440,7 +1428,6 @@ public class HorizontalScrollView extends FrameLayout {
         scrollTo(this.mScrollX, this.mScrollY);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -1641,7 +1628,6 @@ public class HorizontalScrollView extends FrameLayout {
         return n;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         if (this.mContext.getApplicationInfo().targetSdkVersion <= 18 || !(state instanceof SavedState)) {
@@ -1654,7 +1640,6 @@ public class HorizontalScrollView extends FrameLayout {
         requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         if (this.mContext.getApplicationInfo().targetSdkVersion <= 18) {
@@ -1666,24 +1651,23 @@ public class HorizontalScrollView extends FrameLayout {
         return ss;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("layout:fillViewPort", this.mFillViewport);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.HorizontalScrollView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1709,9 +1693,25 @@ public class HorizontalScrollView extends FrameLayout {
         public String toString() {
             return "HorizontalScrollView.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " scrollPosition=" + this.scrollOffsetFromStart + "}";
         }
+
+        /* renamed from: android.widget.HorizontalScrollView$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class HoverScrollHandler extends Handler {
         private final WeakReference<HorizontalScrollView> mScrollView;
@@ -1729,7 +1729,6 @@ public class HorizontalScrollView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleMessage(Message msg) {
         switch (msg.what) {
             case 1:

@@ -3,6 +3,7 @@ package com.samsung.android.allshare;
 import android.content.Context;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Bundle;
+import android.os.Looper;
 import android.sec.clipboard.data.ClipboardConstants;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.DeviceFinder;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class FileDeviceFinderImpl extends FileDeviceFinder {
     private static final String TAG_CLASS = "FileDeviceFinderImpl";
@@ -25,6 +25,10 @@ public final class FileDeviceFinderImpl extends FileDeviceFinder {
     private HashMap<String, DeviceFinder.IDeviceFinderEventListener> mDiscoveryListenerMap = new HashMap<>();
     private HashMap<String, FileReceiverImpl> mFileReceiverMap = new HashMap<>();
     private AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.FileDeviceFinderImpl.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareEventHandler
         public void handleEventMessage(CVMessage cvm) {
             String evt_id = cvm.getEventID();
@@ -96,13 +100,80 @@ public final class FileDeviceFinderImpl extends FileDeviceFinder {
         hashMap2.put(AllShareEvent.EVENT_FILERECEIVER_DISCOVERY, Device.DeviceType.DEVICE_FILERECEIVER);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FileDeviceFinderImpl(IAllShareConnector connector) {
         this.mAllShareConnector = null;
         if (connector == null) {
             DLog.w_api(TAG_CLASS, "Connection FAIL: AllShare Service Connector does not exist");
         } else {
             this.mAllShareConnector = connector;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.FileDeviceFinderImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareEventHandler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            String evt_id = cvm.getEventID();
+            DeviceFinder.IDeviceFinderEventListener listener = null;
+            try {
+                listener = (DeviceFinder.IDeviceFinderEventListener) FileDeviceFinderImpl.this.mDiscoveryListenerMap.get(evt_id);
+            } catch (Exception e) {
+                DLog.w_api(FileDeviceFinderImpl.TAG_CLASS, "mEventHandler.handleEventMessage : Exception", e);
+            }
+            Device.DeviceType deviceType = (Device.DeviceType) FileDeviceFinderImpl.mDeviceEventToDeviceTypeMap.get(evt_id);
+            Bundle msgBundle = cvm.getBundle();
+            String eventType = msgBundle.getString(AllShareKey.BUNDLE_STRING_TYPE);
+            Bundle deviceBundle = (Bundle) msgBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_DEVICE);
+            if (deviceBundle == null) {
+                DLog.w_api(FileDeviceFinderImpl.TAG_CLASS, "mEventHandler.handleEventMessage : deviceBundle is null");
+                return;
+            }
+            Device device = FileDeviceFinderImpl.this.getDeviceFromMap(deviceBundle, deviceType);
+            if (device == null) {
+                DLog.w_api(FileDeviceFinderImpl.TAG_CLASS, "mEventHandler.handleEventMessage : device is null");
+                return;
+            }
+            if (ClipboardConstants.USER_ADDED.equals(eventType)) {
+                if (listener != null) {
+                    try {
+                        listener.onDeviceAdded(deviceType, device, ERROR.SUCCESS);
+                        DLog.i_api(FileDeviceFinderImpl.TAG_CLASS, "[ADDED] " + device);
+                        return;
+                    } catch (Error err) {
+                        DLog.w_api(FileDeviceFinderImpl.TAG_CLASS, "[ADDED] Error", err);
+                        return;
+                    } catch (Exception e2) {
+                        DLog.w_api(FileDeviceFinderImpl.TAG_CLASS, "[ADDED] Exception", e2);
+                        return;
+                    }
+                }
+                return;
+            }
+            if (ClipboardConstants.USER_REMOVED.equals(eventType)) {
+                try {
+                    FileDeviceFinderImpl.this.removeDeviceFromMap(deviceBundle, deviceType);
+                    ERROR error = ERROR.stringToEnum(msgBundle.getString("BUNDLE_ENUM_ERROR"));
+                    if (listener != null) {
+                        listener.onDeviceRemoved(deviceType, device, error);
+                        DLog.i_api(FileDeviceFinderImpl.TAG_CLASS, "[REMOVED] " + device);
+                        return;
+                    }
+                    return;
+                } catch (Error err2) {
+                    DLog.w_api(FileDeviceFinderImpl.TAG_CLASS, "[REMOVED] Exception", err2);
+                    return;
+                } catch (Exception e3) {
+                    DLog.w_api(FileDeviceFinderImpl.TAG_CLASS, "[REMOVED] Exception", e3);
+                    return;
+                }
+            }
+            DLog.w_api(FileDeviceFinderImpl.TAG_CLASS, "mEventHandler.handleEventMessage : eventType=" + eventType);
         }
     }
 
@@ -209,7 +280,6 @@ public final class FileDeviceFinderImpl extends FileDeviceFinder {
         return getDeviceFromMap(req_bundle, deviceType);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeDeviceFromMap(Bundle bundle, Device.DeviceType type) {
         if (bundle == null) {
             DLog.w_api(TAG_CLASS, "removeDeviceFromMap : bundle is null");
@@ -238,8 +308,7 @@ public final class FileDeviceFinderImpl extends FileDeviceFinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.FileDeviceFinderImpl$2, reason: invalid class name */
+    /* renamed from: com.samsung.android.allshare.FileDeviceFinderImpl$2 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Device$DeviceType;
@@ -254,7 +323,6 @@ public final class FileDeviceFinderImpl extends FileDeviceFinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Failed to find 'out' block for switch in B:12:0x0028. Please report as an issue. */
     public Device getDeviceFromMap(Bundle bundle, Device.DeviceType type) {
         DeviceImpl deviceImpl;
@@ -321,10 +389,13 @@ public final class FileDeviceFinderImpl extends FileDeviceFinder {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class SyncActionInvoker {
         private CVMessage mMessage;
+
+        /* synthetic */ SyncActionInvoker(FileDeviceFinderImpl fileDeviceFinderImpl, String str, SyncActionInvokerIA syncActionInvokerIA) {
+            this(str);
+        }
 
         private SyncActionInvoker() {
             this.mMessage = new CVMessage();

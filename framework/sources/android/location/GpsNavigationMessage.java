@@ -25,7 +25,9 @@ public class GpsNavigationMessage implements Parcelable {
     private byte mType;
     private static final byte[] EMPTY_ARRAY = new byte[0];
     public static final Parcelable.Creator<GpsNavigationMessage> CREATOR = new Parcelable.Creator<GpsNavigationMessage>() { // from class: android.location.GpsNavigationMessage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GpsNavigationMessage createFromParcel(Parcel parcel) {
             GpsNavigationMessage navigationMessage = new GpsNavigationMessage();
@@ -42,7 +44,6 @@ public class GpsNavigationMessage implements Parcelable {
             return navigationMessage;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GpsNavigationMessage[] newArray(int size) {
             return new GpsNavigationMessage[size];
@@ -144,6 +145,34 @@ public class GpsNavigationMessage implements Parcelable {
                 return "ParityRebuilt";
             default:
                 return "<Invalid:" + ((int) this.mStatus) + ">";
+        }
+    }
+
+    /* renamed from: android.location.GpsNavigationMessage$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GpsNavigationMessage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsNavigationMessage createFromParcel(Parcel parcel) {
+            GpsNavigationMessage navigationMessage = new GpsNavigationMessage();
+            navigationMessage.setType(parcel.readByte());
+            navigationMessage.setPrn(parcel.readByte());
+            navigationMessage.setMessageId((short) parcel.readInt());
+            navigationMessage.setSubmessageId((short) parcel.readInt());
+            int dataLength = parcel.readInt();
+            byte[] data = new byte[dataLength];
+            parcel.readByteArray(data);
+            navigationMessage.setData(data);
+            int status = parcel.readInt();
+            navigationMessage.setStatus((short) status);
+            return navigationMessage;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsNavigationMessage[] newArray(int size) {
+            return new GpsNavigationMessage[size];
         }
     }
 

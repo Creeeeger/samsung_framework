@@ -30,7 +30,6 @@ public class DERUTF8String extends ASN1Primitive implements ASN1String {
         return new DERUTF8String(ASN1OctetString.getInstance(o).getOctets());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DERUTF8String(byte[] string) {
         this.string = string;
     }
@@ -53,7 +52,6 @@ public class DERUTF8String extends ASN1Primitive implements ASN1String {
         return Arrays.hashCode(this.string);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof DERUTF8String)) {
@@ -63,19 +61,16 @@ public class DERUTF8String extends ASN1Primitive implements ASN1String {
         return Arrays.areEqual(this.string, s.string);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         return StreamUtil.calculateBodyLength(this.string.length) + 1 + this.string.length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 12, this.string);

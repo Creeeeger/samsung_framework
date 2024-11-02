@@ -29,13 +29,14 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     private static final int ALWAYS_ON_TOP_ON = 1;
     private static final int ALWAYS_ON_TOP_UNDEFINED = 0;
     public static final Parcelable.Creator<WindowConfiguration> CREATOR = new Parcelable.Creator<WindowConfiguration>() { // from class: android.app.WindowConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WindowConfiguration createFromParcel(Parcel in) {
             return new WindowConfiguration(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowConfiguration[] newArray(int size) {
             return new WindowConfiguration[size];
@@ -161,6 +162,10 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
 
     /* loaded from: classes.dex */
     public @interface WindowingMode {
+    }
+
+    /* synthetic */ WindowConfiguration(Parcel parcel, WindowConfigurationIA windowConfigurationIA) {
+        this(parcel);
     }
 
     public void setPopOverState(int state) {
@@ -356,6 +361,23 @@ public class WindowConfiguration implements Parcelable, Comparable<WindowConfigu
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.app.WindowConfiguration$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WindowConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowConfiguration createFromParcel(Parcel in) {
+            return new WindowConfiguration(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowConfiguration[] newArray(int size) {
+            return new WindowConfiguration[size];
+        }
     }
 
     public void setBounds(Rect rect) {

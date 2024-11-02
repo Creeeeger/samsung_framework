@@ -14,13 +14,14 @@ import java.util.function.BinaryOperator;
 /* loaded from: classes3.dex */
 public class BundleMerger implements Parcelable {
     public static final Parcelable.Creator<BundleMerger> CREATOR = new Parcelable.Creator<BundleMerger>() { // from class: android.os.BundleMerger.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BundleMerger createFromParcel(Parcel in) {
             return new BundleMerger(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BundleMerger[] newArray(int size) {
             return new BundleMerger[size];
@@ -45,6 +46,10 @@ public class BundleMerger implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface Strategy {
+    }
+
+    /* synthetic */ BundleMerger(Parcel parcel, BundleMergerIA bundleMergerIA) {
+        this(parcel);
     }
 
     public BundleMerger() {
@@ -237,5 +242,22 @@ public class BundleMerger implements Parcelable {
         res.addAll(firstList);
         res.addAll(lastList);
         return res;
+    }
+
+    /* renamed from: android.os.BundleMerger$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BundleMerger> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BundleMerger createFromParcel(Parcel in) {
+            return new BundleMerger(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BundleMerger[] newArray(int size) {
+            return new BundleMerger[size];
+        }
     }
 }

@@ -208,6 +208,9 @@ public class SemSiopManager {
                 if (asInterface != null) {
                     try {
                         b.linkToDeath(new IBinder.DeathRecipient() { // from class: com.samsung.android.os.SemSiopManager.1
+                            AnonymousClass1() {
+                            }
+
                             @Override // android.os.IBinder.DeathRecipient
                             public void binderDied() {
                                 SemSiopManager.mService = null;
@@ -223,16 +226,29 @@ public class SemSiopManager {
         return iSamsungDeviceHealthManager;
     }
 
+    /* renamed from: com.samsung.android.os.SemSiopManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements IBinder.DeathRecipient {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            SemSiopManager.mService = null;
+        }
+    }
+
     /* loaded from: classes5.dex */
     public static class SemSiopLimiter implements Parcelable {
         public static final Parcelable.Creator<SemSiopLimiter> CREATOR = new Parcelable.Creator<SemSiopLimiter>() { // from class: com.samsung.android.os.SemSiopManager.SemSiopLimiter.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SemSiopLimiter createFromParcel(Parcel in) {
                 return new SemSiopLimiter(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SemSiopLimiter[] newArray(int size) {
                 return new SemSiopLimiter[size];
@@ -275,6 +291,23 @@ public class SemSiopManager {
 
         public HashMap<Integer, Integer> getLimitations() {
             return this.mLimitations;
+        }
+
+        /* renamed from: com.samsung.android.os.SemSiopManager$SemSiopLimiter$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SemSiopLimiter> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SemSiopLimiter createFromParcel(Parcel in) {
+                return new SemSiopLimiter(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SemSiopLimiter[] newArray(int size) {
+                return new SemSiopLimiter[size];
+            }
         }
 
         @Override // android.os.Parcelable

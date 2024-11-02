@@ -173,7 +173,6 @@ public class ApexInfo {
         this.provideSharedApexLibs = Boolean.valueOf(provideSharedApexLibs);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ApexInfo read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         ApexInfo _instance = new ApexInfo();
         String _raw = _parser.getAttributeValue(null, "moduleName");
@@ -221,7 +220,6 @@ public class ApexInfo {
         return _instance;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void write(XmlWriter _out, String _name) throws IOException {
         _out.print("<" + _name);
         if (hasModuleName()) {

@@ -172,7 +172,6 @@ public class WindowTokenClient extends IWindowToken.Stub {
         }, this).recycleOnUse());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onWindowTokenRemovedInner() {
         Context context = this.mContextRef.get();
         if (context != null) {

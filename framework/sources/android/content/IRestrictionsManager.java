@@ -171,7 +171,6 @@ public interface IRestrictionsManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IRestrictionsManager {
             private IBinder mRemote;

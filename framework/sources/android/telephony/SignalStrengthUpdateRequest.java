@@ -21,13 +21,14 @@ import java.util.function.ToIntFunction;
 /* loaded from: classes3.dex */
 public final class SignalStrengthUpdateRequest implements Parcelable {
     public static final Parcelable.Creator<SignalStrengthUpdateRequest> CREATOR = new Parcelable.Creator<SignalStrengthUpdateRequest>() { // from class: android.telephony.SignalStrengthUpdateRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SignalStrengthUpdateRequest createFromParcel(Parcel source) {
             return new SignalStrengthUpdateRequest(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SignalStrengthUpdateRequest[] newArray(int size) {
             return new SignalStrengthUpdateRequest[size];
@@ -37,6 +38,14 @@ public final class SignalStrengthUpdateRequest implements Parcelable {
     private final boolean mIsSystemThresholdReportingRequestedWhileIdle;
     private final IBinder mLiveToken;
     private final List<SignalThresholdInfo> mSignalThresholdInfos;
+
+    /* synthetic */ SignalStrengthUpdateRequest(Parcel parcel, SignalStrengthUpdateRequestIA signalStrengthUpdateRequestIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ SignalStrengthUpdateRequest(List list, boolean z, boolean z2, SignalStrengthUpdateRequestIA signalStrengthUpdateRequestIA) {
+        this(list, z, z2);
+    }
 
     private SignalStrengthUpdateRequest(List<SignalThresholdInfo> signalThresholdInfos, boolean isReportingRequestedWhileIdle, boolean isSystemThresholdReportingRequestedWhileIdle) {
         validate(signalThresholdInfos, isSystemThresholdReportingRequestedWhileIdle);
@@ -139,6 +148,23 @@ public final class SignalStrengthUpdateRequest implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(this.mSignalThresholdInfos, Boolean.valueOf(this.mIsReportingRequestedWhileIdle), Boolean.valueOf(this.mIsSystemThresholdReportingRequestedWhileIdle));
+    }
+
+    /* renamed from: android.telephony.SignalStrengthUpdateRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SignalStrengthUpdateRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SignalStrengthUpdateRequest createFromParcel(Parcel source) {
+            return new SignalStrengthUpdateRequest(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SignalStrengthUpdateRequest[] newArray(int size) {
+            return new SignalStrengthUpdateRequest[size];
+        }
     }
 
     public String toString() {

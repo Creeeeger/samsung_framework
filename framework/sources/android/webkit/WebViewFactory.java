@@ -116,7 +116,6 @@ public final class WebViewFactory {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static StartupTimestamps getStartupTimestamps() {
         return sTimestamps;
     }
@@ -134,7 +133,6 @@ public final class WebViewFactory {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class MissingWebViewPackageException extends Exception {
         public MissingWebViewPackageException(String message) {
@@ -153,7 +151,6 @@ public final class WebViewFactory {
         return sWebViewSupported.booleanValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void disableWebView() {
         synchronized (sProviderLock) {
             if (sProviderInstance != null) {
@@ -163,7 +160,6 @@ public final class WebViewFactory {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setDataDirectorySuffix(String suffix) {
         synchronized (sProviderLock) {
             if (sProviderInstance != null) {
@@ -177,7 +173,6 @@ public final class WebViewFactory {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getDataDirectorySuffix() {
         String str;
         synchronized (sProviderLock) {
@@ -233,7 +228,6 @@ public final class WebViewFactory {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static WebViewFactoryProvider getProvider() {
         synchronized (sProviderLock) {
             WebViewFactoryProvider webViewFactoryProvider = sProviderInstance;
@@ -447,7 +441,6 @@ public final class WebViewFactory {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static IWebViewUpdateService getUpdateServiceUnchecked() {
         return IWebViewUpdateService.Stub.asInterface(ServiceManager.getService(WEBVIEW_UPDATE_SERVICE_NAME));
     }

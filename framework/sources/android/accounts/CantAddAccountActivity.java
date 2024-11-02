@@ -29,7 +29,6 @@ public class CantAddAccountActivity extends Activity {
         view.setText(text);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$onCreate$0() {
         return getString(R.string.error_message_change_not_allowed);
     }

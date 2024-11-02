@@ -90,7 +90,10 @@ public class DevRootKeyATCmd implements IWorkOnAt {
         return AT_COMMAND_DEVROOTK;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:202:0x005d, code lost:            if (java.lang.Integer.parseInt(r6[0]) == 1) goto L16;     */
+    /* JADX WARN: Code restructure failed: missing block: B:202:0x005d, code lost:
+    
+        if (java.lang.Integer.parseInt(r6[0]) == 1) goto L227;
+     */
     /* JADX WARN: Failed to find 'out' block for switch in B:19:0x00ac. Please report as an issue. */
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r2v0, types: [java.lang.String] */
@@ -253,7 +256,6 @@ public class DevRootKeyATCmd implements IWorkOnAt {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public String[] parsingParam(String cmd) {
         try {
             String params = cmd.substring(0, cmd.length());
@@ -350,17 +352,17 @@ public class DevRootKeyATCmd implements IWorkOnAt {
         return false;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:19:0x00c5 A[Catch: IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0260, TryCatch #1 {IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0260, blocks: (B:92:0x00b1, B:19:0x00c5, B:21:0x00cb, B:22:0x00d3, B:23:0x00da, B:25:0x00df, B:27:0x00f0, B:30:0x010b, B:31:0x010f), top: B:91:0x00b1 }] */
-    /* JADX WARN: Removed duplicated region for block: B:25:0x00df A[Catch: IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0260, LOOP:0: B:23:0x00da->B:25:0x00df, LOOP_END, TryCatch #1 {IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0260, blocks: (B:92:0x00b1, B:19:0x00c5, B:21:0x00cb, B:22:0x00d3, B:23:0x00da, B:25:0x00df, B:27:0x00f0, B:30:0x010b, B:31:0x010f), top: B:91:0x00b1 }] */
-    /* JADX WARN: Removed duplicated region for block: B:26:0x00f0 A[EDGE_INSN: B:26:0x00f0->B:27:0x00f0 BREAK  A[LOOP:0: B:23:0x00da->B:25:0x00df], SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:87:0x00a8 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x00be A[Catch: IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0258, TryCatch #2 {IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0258, blocks: (B:92:0x00aa, B:19:0x00be, B:21:0x00c4, B:22:0x00cc, B:23:0x00d3, B:25:0x00d8, B:27:0x00e9, B:30:0x0104, B:31:0x0108), top: B:91:0x00aa }] */
+    /* JADX WARN: Removed duplicated region for block: B:25:0x00d8 A[Catch: IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0258, LOOP:0: B:23:0x00d3->B:25:0x00d8, LOOP_END, TryCatch #2 {IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0258, blocks: (B:92:0x00aa, B:19:0x00be, B:21:0x00c4, B:22:0x00cc, B:23:0x00d3, B:25:0x00d8, B:27:0x00e9, B:30:0x0104, B:31:0x0108), top: B:91:0x00aa }] */
+    /* JADX WARN: Removed duplicated region for block: B:26:0x00e9 A[EDGE_INSN: B:26:0x00e9->B:27:0x00e9 BREAK  A[LOOP:0: B:23:0x00d3->B:25:0x00d8], SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:87:0x00a1 A[EXC_TOP_SPLITTER, SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     protected int validateDeviceKeyFromKeystore(int r30, boolean r31) {
         /*
-            Method dump skipped, instructions count: 640
+            Method dump skipped, instructions count: 632
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.DevRootKeyATCmd.validateDeviceKeyFromKeystore(int, boolean):int");

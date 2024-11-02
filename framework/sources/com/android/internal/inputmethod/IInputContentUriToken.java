@@ -96,8 +96,9 @@ public interface IInputContentUriToken extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IInputContentUriToken {
+        public static class Proxy implements IInputContentUriToken {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

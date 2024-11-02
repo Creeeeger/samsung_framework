@@ -501,13 +501,14 @@ public class Intent implements Parcelable, Cloneable {
     private static final int COPY_MODE_FILTER = 1;
     private static final int COPY_MODE_HISTORY = 2;
     public static final Parcelable.Creator<Intent> CREATOR = new Parcelable.Creator<Intent>() { // from class: android.content.Intent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Intent createFromParcel(Parcel in) {
             return new Intent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Intent[] newArray(int size) {
             return new Intent[size];
@@ -1020,7 +1021,9 @@ public class Intent implements Parcelable, Cloneable {
     /* loaded from: classes.dex */
     public static class ShortcutIconResource implements Parcelable {
         public static final Parcelable.Creator<ShortcutIconResource> CREATOR = new Parcelable.Creator<ShortcutIconResource>() { // from class: android.content.Intent.ShortcutIconResource.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ShortcutIconResource createFromParcel(Parcel source) {
                 ShortcutIconResource icon = new ShortcutIconResource();
@@ -1029,7 +1032,6 @@ public class Intent implements Parcelable, Cloneable {
                 return icon;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ShortcutIconResource[] newArray(int size) {
                 return new ShortcutIconResource[size];
@@ -1043,6 +1045,26 @@ public class Intent implements Parcelable, Cloneable {
             icon.packageName = context.getPackageName();
             icon.resourceName = context.getResources().getResourceName(resourceId);
             return icon;
+        }
+
+        /* renamed from: android.content.Intent$ShortcutIconResource$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ShortcutIconResource> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ShortcutIconResource createFromParcel(Parcel source) {
+                ShortcutIconResource icon = new ShortcutIconResource();
+                icon.packageName = source.readString8();
+                icon.resourceName = source.readString8();
+                return icon;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ShortcutIconResource[] newArray(int size) {
+                return new ShortcutIconResource[size];
+            }
         }
 
         @Override // android.os.Parcelable
@@ -1284,120 +1306,124 @@ public class Intent implements Parcelable, Cloneable {
                         eq = i - 1;
                     }
                     int semi = uri.indexOf(59, i);
-                    String value = eq < semi ? Uri.decode(uri.substring(eq + 1, semi)) : "";
-                    if (!uri.startsWith("action=", i)) {
-                        if (!uri.startsWith("category=", i)) {
-                            if (!uri.startsWith("type=", i)) {
-                                if (!uri.startsWith("identifier=", i)) {
-                                    if (!uri.startsWith("launchFlags=", i)) {
-                                        if (!uri.startsWith("package=", i)) {
-                                            if (!uri.startsWith("component=", i)) {
-                                                if (!uri.startsWith("scheme=", i)) {
-                                                    if (uri.startsWith("sourceBounds=", i)) {
-                                                        intent3.mSourceBounds = Rect.unflattenFromString(value);
+                    if (semi >= 0) {
+                        String value = eq < semi ? Uri.decode(uri.substring(eq + 1, semi)) : "";
+                        if (!uri.startsWith("action=", i)) {
+                            if (!uri.startsWith("category=", i)) {
+                                if (!uri.startsWith("type=", i)) {
+                                    if (!uri.startsWith("identifier=", i)) {
+                                        if (!uri.startsWith("launchFlags=", i)) {
+                                            if (!uri.startsWith("package=", i)) {
+                                                if (!uri.startsWith("component=", i)) {
+                                                    if (!uri.startsWith("scheme=", i)) {
+                                                        if (uri.startsWith("sourceBounds=", i)) {
+                                                            intent3.mSourceBounds = Rect.unflattenFromString(value);
+                                                            androidApp = androidApp2;
+                                                            intent2 = intent3;
+                                                        } else if (semi != i + 3 || !uri.startsWith("SEL", i)) {
+                                                            String key = Uri.decode(uri.substring(i + 2, eq));
+                                                            if (intent3.mExtras == null) {
+                                                                intent3.mExtras = new Bundle();
+                                                            }
+                                                            Bundle b = intent3.mExtras;
+                                                            androidApp = androidApp2;
+                                                            if (uri.startsWith("S.", i)) {
+                                                                b.putString(key, value);
+                                                                intent2 = intent3;
+                                                            } else if (uri.startsWith("B.", i)) {
+                                                                b.putBoolean(key, Boolean.parseBoolean(value));
+                                                                intent2 = intent3;
+                                                            } else if (uri.startsWith("b.", i)) {
+                                                                b.putByte(key, Byte.parseByte(value));
+                                                                intent2 = intent3;
+                                                            } else if (uri.startsWith("c.", i)) {
+                                                                b.putChar(key, value.charAt(0));
+                                                                intent2 = intent3;
+                                                            } else if (uri.startsWith("d.", i)) {
+                                                                intent2 = intent3;
+                                                                b.putDouble(key, Double.parseDouble(value));
+                                                            } else {
+                                                                intent2 = intent3;
+                                                                if (uri.startsWith("f.", i)) {
+                                                                    b.putFloat(key, Float.parseFloat(value));
+                                                                } else if (uri.startsWith("i.", i)) {
+                                                                    b.putInt(key, Integer.parseInt(value));
+                                                                } else if (uri.startsWith("l.", i)) {
+                                                                    b.putLong(key, Long.parseLong(value));
+                                                                } else {
+                                                                    if (!uri.startsWith("s.", i)) {
+                                                                        throw new URISyntaxException(uri, "unknown EXTRA type", i);
+                                                                    }
+                                                                    b.putShort(key, Short.parseShort(value));
+                                                                }
+                                                            }
+                                                        } else {
+                                                            intent3 = new Intent();
+                                                            inSelector = true;
+                                                            androidApp = androidApp2;
+                                                        }
+                                                    } else if (inSelector) {
+                                                        intent3.mData = Uri.parse(value + ":");
                                                         androidApp = androidApp2;
                                                         intent2 = intent3;
-                                                    } else if (semi != i + 3 || !uri.startsWith("SEL", i)) {
-                                                        String key = Uri.decode(uri.substring(i + 2, eq));
-                                                        if (intent3.mExtras == null) {
-                                                            intent3.mExtras = new Bundle();
-                                                        }
-                                                        Bundle b = intent3.mExtras;
-                                                        androidApp = androidApp2;
-                                                        if (uri.startsWith("S.", i)) {
-                                                            b.putString(key, value);
-                                                            intent2 = intent3;
-                                                        } else if (uri.startsWith("B.", i)) {
-                                                            b.putBoolean(key, Boolean.parseBoolean(value));
-                                                            intent2 = intent3;
-                                                        } else if (uri.startsWith("b.", i)) {
-                                                            b.putByte(key, Byte.parseByte(value));
-                                                            intent2 = intent3;
-                                                        } else if (uri.startsWith("c.", i)) {
-                                                            b.putChar(key, value.charAt(0));
-                                                            intent2 = intent3;
-                                                        } else if (uri.startsWith("d.", i)) {
-                                                            intent2 = intent3;
-                                                            b.putDouble(key, Double.parseDouble(value));
-                                                        } else {
-                                                            intent2 = intent3;
-                                                            if (uri.startsWith("f.", i)) {
-                                                                b.putFloat(key, Float.parseFloat(value));
-                                                            } else if (uri.startsWith("i.", i)) {
-                                                                b.putInt(key, Integer.parseInt(value));
-                                                            } else if (uri.startsWith("l.", i)) {
-                                                                b.putLong(key, Long.parseLong(value));
-                                                            } else {
-                                                                if (!uri.startsWith("s.", i)) {
-                                                                    throw new URISyntaxException(uri, "unknown EXTRA type", i);
-                                                                }
-                                                                b.putShort(key, Short.parseShort(value));
-                                                            }
-                                                        }
                                                     } else {
-                                                        intent3 = new Intent();
-                                                        inSelector = true;
+                                                        scheme = value;
                                                         androidApp = androidApp2;
                                                     }
-                                                } else if (inSelector) {
-                                                    intent3.mData = Uri.parse(value + ":");
+                                                } else {
+                                                    intent3.mComponent = ComponentName.unflattenFromString(value);
                                                     androidApp = androidApp2;
                                                     intent2 = intent3;
-                                                } else {
-                                                    scheme = value;
-                                                    androidApp = androidApp2;
                                                 }
                                             } else {
-                                                intent3.mComponent = ComponentName.unflattenFromString(value);
+                                                intent3.mPackage = value;
                                                 androidApp = androidApp2;
                                                 intent2 = intent3;
                                             }
                                         } else {
-                                            intent3.mPackage = value;
-                                            androidApp = androidApp2;
-                                            intent2 = intent3;
+                                            int intValue = Integer.decode(value).intValue();
+                                            intent3.mFlags = intValue;
+                                            if ((flags & 4) != 0) {
+                                                androidApp = androidApp2;
+                                                intent2 = intent3;
+                                            } else {
+                                                intent3.mFlags = intValue & (-196);
+                                                androidApp = androidApp2;
+                                                intent2 = intent3;
+                                            }
                                         }
                                     } else {
-                                        int intValue = Integer.decode(value).intValue();
-                                        intent3.mFlags = intValue;
-                                        if ((flags & 4) != 0) {
-                                            androidApp = androidApp2;
-                                            intent2 = intent3;
-                                        } else {
-                                            intent3.mFlags = intValue & (-196);
-                                            androidApp = androidApp2;
-                                            intent2 = intent3;
-                                        }
+                                        intent3.mIdentifier = value;
+                                        androidApp = androidApp2;
+                                        intent2 = intent3;
                                     }
                                 } else {
-                                    intent3.mIdentifier = value;
+                                    intent3.mType = value;
                                     androidApp = androidApp2;
                                     intent2 = intent3;
                                 }
                             } else {
-                                intent3.mType = value;
+                                intent3.addCategory(value);
                                 androidApp = androidApp2;
                                 intent2 = intent3;
                             }
-                        } else {
-                            intent3.addCategory(value);
-                            androidApp = androidApp2;
-                            intent2 = intent3;
-                        }
-                        intent3 = intent2;
-                    } else {
-                        intent3.setAction(value);
-                        if (inSelector) {
-                            androidApp = androidApp2;
-                            intent2 = intent3;
                             intent3 = intent2;
                         } else {
-                            explicitAction = true;
-                            androidApp = androidApp2;
+                            intent3.setAction(value);
+                            if (inSelector) {
+                                androidApp = androidApp2;
+                                intent2 = intent3;
+                                intent3 = intent2;
+                            } else {
+                                explicitAction = true;
+                                androidApp = androidApp2;
+                            }
                         }
+                        i = semi + 1;
+                        androidApp2 = androidApp;
+                    } else {
+                        throw new URISyntaxException(uri, "uri end not found");
                     }
-                    i = semi + 1;
-                    androidApp2 = androidApp;
                 }
                 Intent intent4 = intent3;
                 if (!inSelector) {
@@ -1502,7 +1528,7 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     /*  JADX ERROR: Type inference failed
-        jadx.core.utils.exceptions.JadxOverflowException: Type update terminated with stack overflow, arg: (r3v2 ?? I:??[int, boolean, OBJECT, ARRAY, byte, short, char] A[D('intent' android.content.Intent)]), method size: 2408
+        jadx.core.utils.exceptions.JadxOverflowException: Type update terminated with stack overflow, arg: (r0v0 ?? I:??[int, boolean, OBJECT, ARRAY, byte, short, char] A[D('intent' android.content.Intent)]), method size: 2408
         	at jadx.core.utils.ErrorsCounter.addError(ErrorsCounter.java:59)
         	at jadx.core.utils.ErrorsCounter.error(ErrorsCounter.java:31)
         	at jadx.core.dex.attributes.nodes.NotificationAttrNode.addError(NotificationAttrNode.java:19)
@@ -2985,6 +3011,23 @@ public class Intent implements Parcelable, Cloneable {
         parcel.writeInt(this.mForceLaunchOverTargetTask ? 1 : 0);
     }
 
+    /* renamed from: android.content.Intent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Intent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Intent createFromParcel(Parcel in) {
+            return new Intent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Intent[] newArray(int size) {
+            return new Intent[size];
+        }
+    }
+
     protected Intent(Parcel in) {
         this.mContentUserHint = -2;
         this.mIsRemoteAppLaunch = false;
@@ -3183,7 +3226,10 @@ public class Intent implements Parcelable, Cloneable {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:90:0x013f, code lost:            if (r1.equals(android.content.Intent.ACTION_PROVIDER_CHANGED) != false) goto L100;     */
+    /* JADX WARN: Code restructure failed: missing block: B:90:0x013f, code lost:
+    
+        if (r1.equals(android.content.Intent.ACTION_PROVIDER_CHANGED) != false) goto L238;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

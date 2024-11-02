@@ -253,6 +253,9 @@ public class SQLiteDump {
             return;
         }
         Arrays.sort(dumpFiles, new Comparator<File>() { // from class: android.database.sqlite.SQLiteDump.1
+            AnonymousClass1() {
+            }
+
             @Override // java.util.Comparator
             public int compare(File f1, File f2) {
                 long diff = f1.lastModified() - f2.lastModified();
@@ -263,6 +266,22 @@ public class SQLiteDump {
             }
         });
         dumpFiles[0].delete();
+    }
+
+    /* renamed from: android.database.sqlite.SQLiteDump$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Comparator<File> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(File f1, File f2) {
+            long diff = f1.lastModified() - f2.lastModified();
+            if (diff > 0) {
+                return 1;
+            }
+            return diff == 0 ? 0 : -1;
+        }
     }
 
     private void getLogPrefix(StringBuilder msg) {

@@ -107,8 +107,9 @@ public interface IWearableSensingManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IWearableSensingManager {
+        public static class Proxy implements IWearableSensingManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

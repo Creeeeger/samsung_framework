@@ -191,8 +191,9 @@ public final class AccessNetworkConstants {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    enum GeranBandArfcnFrequency {
+    public enum GeranBandArfcnFrequency {
         GERAN_ARFCN_FREQUENCY_BAND_450(3, 450600, 259, 259, 293, 10),
         GERAN_ARFCN_FREQUENCY_BAND_480(4, 479000, 306, 306, 340, 10),
         GERAN_ARFCN_FREQUENCY_BAND_850(8, 824200, 128, 128, 251, 45),
@@ -261,8 +262,9 @@ public final class AccessNetworkConstants {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    enum UtranBandArfcnFrequency {
+    public enum UtranBandArfcnFrequency {
         UTRAN_ARFCN_FREQUENCY_BAND_1(1, 0, 10562, 10838, 0, 9612, 9888),
         UTRAN_ARFCN_FREQUENCY_BAND_2(2, 0, 9662, 9938, 0, 9262, 9538),
         UTRAN_ARFCN_FREQUENCY_BAND_3(3, 1575000, 1162, 1513, 1525000, MetricsProto.MetricsEvent.ACTION_TEXT_SELECTION_MENU_ITEM_ASSIST, MetricsProto.MetricsEvent.ROTATION_SUGGESTION_SHOWN),
@@ -380,8 +382,9 @@ public final class AccessNetworkConstants {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    enum EutranBandArfcnFrequency {
+    public enum EutranBandArfcnFrequency {
         EUTRAN_ARFCN_FREQUENCY_BAND_1(1, 2110000, 0, 599, 1920000, 18800, 18599),
         EUTRAN_ARFCN_FREQUENCY_BAND_2(2, 1930000, 600, 1199, 1850000, 18600, 19199),
         EUTRAN_ARFCN_FREQUENCY_BAND_3(3, 1805000, 1200, 1949, 1710000, 19200, 19949),
@@ -633,8 +636,9 @@ public final class AccessNetworkConstants {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    enum NgranArfcnFrequency {
+    public enum NgranArfcnFrequency {
         NGRAN_ARFCN_FREQUENCY_RANGE_1(5, 0, 0, 0, 599999),
         NGRAN_ARFCN_FREQUENCY_RANGE_2(15, 3000000, 600000, 600000, 2016666),
         NGRAN_ARFCN_FREQUENCY_RANGE_3(60, 24250080, 2016667, 2016667, 3279165);

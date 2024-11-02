@@ -61,6 +61,8 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Integer>> CONTROL_AE_TARGET_FPS_RANGE = new Key<>("android.control.aeTargetFpsRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CaptureResult.1
+        AnonymousClass1() {
+        }
     });
 
     @PublicKey
@@ -177,6 +179,8 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Pair<Float, Float>> LENS_FOCUS_RANGE = new Key<>("android.lens.focusRange", new TypeReference<Pair<Float, Float>>() { // from class: android.hardware.camera2.CaptureResult.2
+        AnonymousClass2() {
+        }
     });
 
     @PublicKey
@@ -240,6 +244,8 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Pair<Double, Double>[]> SENSOR_NOISE_PROFILE = new Key<>("android.sensor.noiseProfile", new TypeReference<Pair<Double, Double>[]>() { // from class: android.hardware.camera2.CaptureResult.3
+        AnonymousClass3() {
+        }
     });
 
     @PublicKey
@@ -467,7 +473,6 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
         return (T) this.mResults.get(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.hardware.camera2.CameraMetadata
     public <T> T getProtected(Key<?> key) {
         return (T) this.mResults.get(key);
@@ -497,5 +502,26 @@ public class CaptureResult extends CameraMetadata<Key<?>> {
 
     public int getSequenceId() {
         return this.mSequenceId;
+    }
+
+    /* renamed from: android.hardware.camera2.CaptureResult$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends TypeReference<Range<Integer>> {
+        AnonymousClass1() {
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.CaptureResult$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends TypeReference<Pair<Float, Float>> {
+        AnonymousClass2() {
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.CaptureResult$3 */
+    /* loaded from: classes.dex */
+    class AnonymousClass3 extends TypeReference<Pair<Double, Double>[]> {
+        AnonymousClass3() {
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.hardware.graphics.common.Dataspace;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -61,6 +62,9 @@ public class SemClipboardManager {
     private boolean mIsMaximumSize = false;
     private OnPasteListener mPasteListener = null;
     private final IClipboardDataPasteEvent.Stub mOnPasteServiceListener = new IClipboardDataPasteEvent.Stub() { // from class: com.samsung.android.content.clipboard.SemClipboardManager.1
+        AnonymousClass1() {
+        }
+
         @Override // android.sec.clipboard.IClipboardDataPasteEvent
         public void onPaste(SemClipData data) {
             SemClipboardManager.this.requestPaste(data);
@@ -73,8 +77,22 @@ public class SemClipboardManager {
         void onPaste(SemClipData semClipData);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.content.clipboard.SemClipboardManager$1 */
     /* loaded from: classes5.dex */
-    private static class InnerOnClipboardEventListener extends IOnClipboardEventListener.Stub {
+    public class AnonymousClass1 extends IClipboardDataPasteEvent.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.sec.clipboard.IClipboardDataPasteEvent
+        public void onPaste(SemClipData data) {
+            SemClipboardManager.this.requestPaste(data);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    /* loaded from: classes5.dex */
+    public static class InnerOnClipboardEventListener extends IOnClipboardEventListener.Stub {
         private final WeakReference<Handler> mWeakHandler;
 
         public InnerOnClipboardEventListener(Handler handler) {
@@ -163,12 +181,30 @@ public class SemClipboardManager {
     public SemClipboardManager(Context context) {
         this.mContext = context;
         this.mHandler = new Handler(this.mContext.getMainLooper()) { // from class: com.samsung.android.content.clipboard.SemClipboardManager.2
+            AnonymousClass2(Looper looper) {
+                super(looper);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 SemClipboardManager.this.notifyEvent(msg);
             }
         };
         this.mInnerOnClipboardEventServiceListener = new InnerOnClipboardEventListener(this.mHandler);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.content.clipboard.SemClipboardManager$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends Handler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            SemClipboardManager.this.notifyEvent(msg);
+        }
     }
 
     private static IClipboardService getSemService() {
@@ -304,7 +340,6 @@ public class SemClipboardManager {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void requestPaste(SemClipData data) {
         OnPasteListener onPasteListener = this.mPasteListener;
         if (onPasteListener != null) {
@@ -507,7 +542,6 @@ public class SemClipboardManager {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyEvent(Message msg) {
         switch (msg.what) {
             case 1:

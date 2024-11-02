@@ -34,7 +34,7 @@ public class RecyclerViewCaptureHelper implements ScrollCaptureViewHelper<ViewGr
         view.setVerticalScrollBarEnabled(false);
     }
 
-    /* renamed from: onScrollRequested, reason: avoid collision after fix types in other method */
+    /* renamed from: onScrollRequested */
     public void onScrollRequested2(ViewGroup recyclerView, Rect scrollBounds, Rect requestRect, CancellationSignal signal, Consumer<ScrollCaptureViewHelper.ScrollResult> resultConsumer) {
         ScrollCaptureViewHelper.ScrollResult result = new ScrollCaptureViewHelper.ScrollResult();
         result.requestedArea = new Rect(requestRect);

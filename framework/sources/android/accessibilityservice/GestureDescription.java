@@ -17,6 +17,10 @@ public final class GestureDescription {
     private final List<StrokeDescription> mStrokes;
     private final float[] mTempPos;
 
+    /* synthetic */ GestureDescription(List list, int i, GestureDescriptionIA gestureDescriptionIA) {
+        this(list, i);
+    }
+
     public static int getMaxStrokeCount() {
         return 20;
     }
@@ -53,7 +57,6 @@ public final class GestureDescription {
         return this.mDisplayId;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public long getNextKeyPointAtLeast(long offset) {
         long nextKeyPoint = Long.MAX_VALUE;
         for (int i = 0; i < this.mStrokes.size(); i++) {
@@ -72,7 +75,6 @@ public final class GestureDescription {
         return nextKeyPoint;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getPointsForTime(long time, TouchPoint[] touchPoints) {
         int numPointsFound = 0;
         for (int i = 0; i < this.mStrokes.size(); i++) {
@@ -91,7 +93,6 @@ public final class GestureDescription {
         return numPointsFound;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static long getTotalDuration(List<StrokeDescription> paths) {
         long latestEnd = Long.MIN_VALUE;
         for (int i = 0; i < paths.size(); i++) {
@@ -239,13 +240,14 @@ public final class GestureDescription {
     /* loaded from: classes.dex */
     public static class TouchPoint implements Parcelable {
         public static final Parcelable.Creator<TouchPoint> CREATOR = new Parcelable.Creator<TouchPoint>() { // from class: android.accessibilityservice.GestureDescription.TouchPoint.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public TouchPoint createFromParcel(Parcel in) {
                 return new TouchPoint(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TouchPoint[] newArray(int size) {
                 return new TouchPoint[size];
@@ -303,18 +305,36 @@ public final class GestureDescription {
             parcel.writeFloat(this.mX);
             parcel.writeFloat(this.mY);
         }
+
+        /* renamed from: android.accessibilityservice.GestureDescription$TouchPoint$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<TouchPoint> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TouchPoint createFromParcel(Parcel in) {
+                return new TouchPoint(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TouchPoint[] newArray(int size) {
+                return new TouchPoint[size];
+            }
+        }
     }
 
     /* loaded from: classes.dex */
     public static class GestureStep implements Parcelable {
         public static final Parcelable.Creator<GestureStep> CREATOR = new Parcelable.Creator<GestureStep>() { // from class: android.accessibilityservice.GestureDescription.GestureStep.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public GestureStep createFromParcel(Parcel in) {
                 return new GestureStep(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GestureStep[] newArray(int size) {
                 return new GestureStep[size];
@@ -353,6 +373,23 @@ public final class GestureDescription {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeLong(this.timeSinceGestureStart);
             dest.writeParcelableArray(this.touchPoints, flags);
+        }
+
+        /* renamed from: android.accessibilityservice.GestureDescription$GestureStep$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<GestureStep> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GestureStep createFromParcel(Parcel in) {
+                return new GestureStep(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GestureStep[] newArray(int size) {
+                return new GestureStep[size];
+            }
         }
     }
 

@@ -94,7 +94,6 @@ public class ImageFloatingTextView extends TextView {
         setImageEndMargin((int) (getResources().getDisplayMetrics().density * imageEndMarginDp));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int availableHeight = (View.MeasureSpec.getSize(heightMeasureSpec) - this.mPaddingTop) - this.mPaddingBottom;

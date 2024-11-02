@@ -83,7 +83,6 @@ public final class Scene {
         setCurrentScene(this.mSceneRoot, this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setCurrentScene(ViewGroup sceneRoot, Scene scene) {
         sceneRoot.setTagInternal(R.id.current_scene, scene);
     }
@@ -100,7 +99,6 @@ public final class Scene {
         this.mExitAction = action;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isCreatedFromLayoutResource() {
         return this.mLayoutId > 0;
     }

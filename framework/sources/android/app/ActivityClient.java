@@ -20,14 +20,19 @@ import com.android.internal.policy.IKeyguardDismissCallback;
 /* loaded from: classes.dex */
 public class ActivityClient {
     private static final Singleton<ActivityClient> sInstance = new Singleton<ActivityClient>() { // from class: android.app.ActivityClient.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.util.Singleton
         public ActivityClient create() {
             return new ActivityClient();
         }
     };
     private static final ActivityClientControllerSingleton INTERFACE_SINGLETON = new ActivityClientControllerSingleton();
+
+    /* synthetic */ ActivityClient(ActivityClientIA activityClientIA) {
+        this();
+    }
 
     private ActivityClient() {
     }
@@ -104,7 +109,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reportSizeConfigurations(IBinder token, SizeConfigurationBuckets sizeConfigurations) {
         try {
             getActivityClientController().reportSizeConfigurations(token, sizeConfigurations);
@@ -121,7 +125,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldUpRecreateTask(IBinder token, String destAffinity) {
         try {
             return getActivityClientController().shouldUpRecreateTask(token, destAffinity);
@@ -130,7 +133,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean navigateUpTo(IBinder token, Intent destIntent, String resolvedType, int resultCode, Intent resultData) {
         try {
             return getActivityClientController().navigateUpTo(token, destIntent, resolvedType, resultCode, resultData);
@@ -139,7 +141,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean releaseActivityInstance(IBinder token) {
         try {
             return getActivityClientController().releaseActivityInstance(token);
@@ -156,7 +157,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean finishActivityAffinity(IBinder token) {
         try {
             return getActivityClientController().finishActivityAffinity(token);
@@ -165,7 +165,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishSubActivity(IBinder token, String resultWho, int requestCode) {
         try {
             getActivityClientController().finishSubActivity(token, resultWho, requestCode);
@@ -174,7 +173,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setForceSendResultForMediaProjection(IBinder token) {
         try {
             getActivityClientController().setForceSendResultForMediaProjection(token);
@@ -191,7 +189,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean willActivityBeVisible(IBinder token) {
         try {
             return getActivityClientController().willActivityBeVisible(token);
@@ -232,7 +229,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ComponentName getCallingActivity(IBinder token) {
         try {
             return getActivityClientController().getCallingActivity(token);
@@ -241,7 +237,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getCallingPackage(IBinder token) {
         try {
             return getActivityClientController().getCallingPackage(token);
@@ -274,7 +269,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getRequestedOrientation(IBinder token) {
         try {
             return getActivityClientController().getRequestedOrientation(token);
@@ -283,7 +277,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean convertFromTranslucent(IBinder token) {
         try {
             return getActivityClientController().convertFromTranslucent(token);
@@ -292,7 +285,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean convertFromTranslucent(IBinder token, boolean skipSetWindowOpaque) {
         try {
             return getActivityClientController().convertFromTranslucentOp(token, skipSetWindowOpaque);
@@ -301,7 +293,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean convertToTranslucent(IBinder token, Bundle options) {
         try {
             return getActivityClientController().convertToTranslucent(token, options);
@@ -310,7 +301,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reportActivityFullyDrawn(IBinder token, boolean restoredFromBundle) {
         try {
             getActivityClientController().reportActivityFullyDrawn(token, restoredFromBundle);
@@ -319,7 +309,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isImmersive(IBinder token) {
         try {
             return getActivityClientController().isImmersive(token);
@@ -328,7 +317,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setImmersive(IBinder token, boolean immersive) {
         try {
             getActivityClientController().setImmersive(token, immersive);
@@ -337,7 +325,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean enterPictureInPictureMode(IBinder token, PictureInPictureParams params) {
         try {
             return getActivityClientController().enterPictureInPictureMode(token, params);
@@ -346,7 +333,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setPictureInPictureParams(IBinder token, PictureInPictureParams params) {
         try {
             getActivityClientController().setPictureInPictureParams(token, params);
@@ -355,7 +341,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setShouldDockBigOverlays(IBinder token, boolean shouldDockBigOverlays) {
         try {
             getActivityClientController().setShouldDockBigOverlays(token, shouldDockBigOverlays);
@@ -364,7 +349,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void toggleFreeformWindowingMode(IBinder token) {
         try {
             getActivityClientController().toggleFreeformWindowingMode(token);
@@ -373,7 +357,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestMultiwindowFullscreen(IBinder token, int request, IRemoteCallback callback) {
         try {
             getActivityClientController().requestMultiwindowFullscreen(token, request, callback);
@@ -382,7 +365,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startLockTaskModeByToken(IBinder token) {
         try {
             getActivityClientController().startLockTaskModeByToken(token);
@@ -391,7 +373,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void stopLockTaskModeByToken(IBinder token) {
         try {
             getActivityClientController().stopLockTaskModeByToken(token);
@@ -400,7 +381,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void showLockTaskEscapeMessage(IBinder token) {
         try {
             getActivityClientController().showLockTaskEscapeMessage(token);
@@ -409,7 +389,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setTaskDescription(IBinder token, ActivityManager.TaskDescription td) {
         try {
             getActivityClientController().setTaskDescription(token, td);
@@ -418,7 +397,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean showAssistFromActivity(IBinder token, Bundle args) {
         try {
             return getActivityClientController().showAssistFromActivity(token, args);
@@ -427,7 +405,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isRootVoiceInteraction(IBinder token) {
         try {
             return getActivityClientController().isRootVoiceInteraction(token);
@@ -436,7 +413,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startLocalVoiceInteraction(IBinder callingActivity, Bundle options) {
         try {
             getActivityClientController().startLocalVoiceInteraction(callingActivity, options);
@@ -445,7 +421,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void stopLocalVoiceInteraction(IBinder callingActivity) {
         try {
             getActivityClientController().stopLocalVoiceInteraction(callingActivity);
@@ -454,7 +429,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setShowWhenLocked(IBinder token, boolean showWhenLocked) {
         try {
             getActivityClientController().setShowWhenLocked(token, showWhenLocked);
@@ -463,7 +437,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setInheritShowWhenLocked(IBinder token, boolean inheritShowWhenLocked) {
         try {
             getActivityClientController().setInheritShowWhenLocked(token, inheritShowWhenLocked);
@@ -472,7 +445,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setTurnScreenOn(IBinder token, boolean turnScreenOn) {
         try {
             getActivityClientController().setTurnScreenOn(token, turnScreenOn);
@@ -481,7 +453,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAllowCrossUidActivitySwitchFromBelow(IBinder token, boolean allowed) {
         try {
             getActivityClientController().setAllowCrossUidActivitySwitchFromBelow(token, allowed);
@@ -490,7 +461,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int setVrMode(IBinder token, boolean enabled, ComponentName packageName) {
         try {
             return getActivityClientController().setVrMode(token, enabled, packageName);
@@ -499,7 +469,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void overrideActivityTransition(IBinder token, boolean open, int enterAnim, int exitAnim, int backgroundColor) {
         try {
             getActivityClientController().overrideActivityTransition(token, open, enterAnim, exitAnim, backgroundColor);
@@ -508,7 +477,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearOverrideActivityTransition(IBinder token, boolean open) {
         try {
             getActivityClientController().clearOverrideActivityTransition(token, open);
@@ -517,7 +485,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void overridePendingTransition(IBinder token, String packageName, int enterAnim, int exitAnim, int backgroundColor) {
         try {
             getActivityClientController().overridePendingTransition(token, packageName, enterAnim, exitAnim, backgroundColor);
@@ -526,7 +493,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void overridePendingTaskTransition(IBinder token, String packageName, int enterAnim, int exitAnim) {
         try {
             getActivityClientController().overridePendingTaskTransition(token, packageName, enterAnim, exitAnim);
@@ -535,7 +501,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void adjustPopOverOptions(IBinder token, int[] widthDp, int[] heightDp, Point[] marginDp, int[] position) {
         try {
             getActivityClientController().adjustPopOverOptions(token, widthDp, heightDp, marginDp, position);
@@ -544,7 +509,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setRecentsScreenshotEnabled(IBinder token, boolean enabled) {
         try {
             getActivityClientController().setRecentsScreenshotEnabled(token, enabled);
@@ -561,7 +525,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dismissKeyguard(IBinder token, IKeyguardDismissCallback callback, CharSequence message) {
         try {
             getActivityClientController().dismissKeyguard(token, callback, message);
@@ -570,7 +533,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerRemoteAnimations(IBinder token, RemoteAnimationDefinition definition) {
         try {
             getActivityClientController().registerRemoteAnimations(token, definition);
@@ -579,7 +541,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unregisterRemoteAnimations(IBinder token) {
         try {
             getActivityClientController().unregisterRemoteAnimations(token);
@@ -588,7 +549,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onBackPressed(IBinder token, IRequestFinishCallback callback) {
         try {
             getActivityClientController().onBackPressed(token, callback);
@@ -597,7 +557,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reportSplashScreenAttached(IBinder token) {
         try {
             getActivityClientController().splashScreenAttached(token);
@@ -606,7 +565,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void enableTaskLocaleOverride(IBinder token) {
         try {
             getActivityClientController().enableTaskLocaleOverride(token);
@@ -623,7 +581,6 @@ public class ActivityClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestCompatCameraControl(Resources res, IBinder token, boolean showControl, boolean transformationApplied, ICompatCameraControlCallback callback) {
         if (!res.getBoolean(R.bool.config_isCameraCompatControlForStretchedIssuesEnabled)) {
             return;
@@ -650,16 +607,29 @@ public class ActivityClient {
         return controller != null ? controller : activityClientControllerSingleton.get();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.app.ActivityClient$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends Singleton<ActivityClient> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.Singleton
+        public ActivityClient create() {
+            return new ActivityClient();
+        }
+    }
+
     /* loaded from: classes.dex */
     public static class ActivityClientControllerSingleton extends Singleton<IActivityClientController> {
         IActivityClientController mKnownInstance;
 
+        /* synthetic */ ActivityClientControllerSingleton(ActivityClientControllerSingletonIA activityClientControllerSingletonIA) {
+            this();
+        }
+
         private ActivityClientControllerSingleton() {
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.util.Singleton
         public IActivityClientController create() {
             try {

@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class AudioPolicyConfig implements Parcelable {
     public static final Parcelable.Creator<AudioPolicyConfig> CREATOR = new Parcelable.Creator<AudioPolicyConfig>() { // from class: android.media.audiopolicy.AudioPolicyConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioPolicyConfig createFromParcel(Parcel p) {
             return new AudioPolicyConfig(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPolicyConfig[] newArray(int size) {
             return new AudioPolicyConfig[size];
@@ -30,6 +31,10 @@ public class AudioPolicyConfig implements Parcelable {
     private int mMixCounter;
     protected final ArrayList<AudioMix> mMixes;
     private String mRegistrationId;
+
+    /* synthetic */ AudioPolicyConfig(Parcel parcel, AudioPolicyConfigIA audioPolicyConfigIA) {
+        this(parcel);
+    }
 
     protected AudioPolicyConfig(AudioPolicyConfig conf) {
         this.mDuckingPolicy = 0;
@@ -121,6 +126,23 @@ public class AudioPolicyConfig implements Parcelable {
         }
     }
 
+    /* renamed from: android.media.audiopolicy.AudioPolicyConfig$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioPolicyConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPolicyConfig createFromParcel(Parcel p) {
+            return new AudioPolicyConfig(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPolicyConfig[] newArray(int size) {
+            return new AudioPolicyConfig[size];
+        }
+    }
+
     public String toLogFriendlyString() {
         String textDump;
         String textDump2 = new String("android.media.audiopolicy.AudioPolicyConfig:\n");
@@ -197,12 +219,10 @@ public class AudioPolicyConfig implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void reset() {
         this.mMixCounter = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setRegistration(String regId) {
         String str = this.mRegistrationId;
         boolean currentRegNull = str == null || str.isEmpty();
@@ -237,7 +257,6 @@ public class AudioPolicyConfig implements Parcelable {
         mix.setRegistration("");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void add(ArrayList<AudioMix> mixes) {
         Iterator<AudioMix> it = mixes.iterator();
         while (it.hasNext()) {
@@ -247,7 +266,6 @@ public class AudioPolicyConfig implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void remove(ArrayList<AudioMix> mixes) {
         Iterator<AudioMix> it = mixes.iterator();
         while (it.hasNext()) {

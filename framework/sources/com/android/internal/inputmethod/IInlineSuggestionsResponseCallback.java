@@ -87,8 +87,9 @@ public interface IInlineSuggestionsResponseCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IInlineSuggestionsResponseCallback {
+        public static class Proxy implements IInlineSuggestionsResponseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

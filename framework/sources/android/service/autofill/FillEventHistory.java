@@ -23,7 +23,9 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class FillEventHistory implements Parcelable {
     public static final Parcelable.Creator<FillEventHistory> CREATOR = new Parcelable.Creator<FillEventHistory>() { // from class: android.service.autofill.FillEventHistory.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FillEventHistory createFromParcel(Parcel parcel) {
             ArrayList<ArrayList<String>> manuallyFilledDatasetIds;
@@ -65,7 +67,6 @@ public final class FillEventHistory implements Parcelable {
             return selection;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FillEventHistory[] newArray(int size) {
             return new FillEventHistory[size];
@@ -337,6 +338,59 @@ public final class FillEventHistory implements Parcelable {
                 default:
                     return "UI_TYPE_UNKNOWN";
             }
+        }
+    }
+
+    /* renamed from: android.service.autofill.FillEventHistory$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FillEventHistory> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FillEventHistory createFromParcel(Parcel parcel) {
+            ArrayList<ArrayList<String>> manuallyFilledDatasetIds;
+            Parcel parcel2 = parcel;
+            FillEventHistory selection = new FillEventHistory(0, parcel.readBundle());
+            int numEvents = parcel.readInt();
+            int i = 0;
+            while (i < numEvents) {
+                int eventType = parcel.readInt();
+                String datasetId = parcel.readString();
+                Bundle clientState = parcel.readBundle();
+                ArrayList<String> selectedDatasetIds = parcel.createStringArrayList();
+                FieldClassification[] fieldClassificationArr = null;
+                ArraySet<? extends Object> readArraySet = parcel2.readArraySet(null);
+                ArrayList<AutofillId> changedFieldIds = parcel2.createTypedArrayList(AutofillId.CREATOR);
+                ArrayList<String> changedDatasetIds = parcel.createStringArrayList();
+                ArrayList<AutofillId> manuallyFilledFieldIds = parcel2.createTypedArrayList(AutofillId.CREATOR);
+                if (manuallyFilledFieldIds != null) {
+                    int size = manuallyFilledFieldIds.size();
+                    ArrayList<ArrayList<String>> manuallyFilledDatasetIds2 = new ArrayList<>(size);
+                    for (int j = 0; j < size; j++) {
+                        manuallyFilledDatasetIds2.add(parcel.createStringArrayList());
+                    }
+                    manuallyFilledDatasetIds = manuallyFilledDatasetIds2;
+                } else {
+                    manuallyFilledDatasetIds = null;
+                }
+                AutofillId[] detectedFieldIds = (AutofillId[]) parcel2.readParcelableArray(null, AutofillId.class);
+                if (detectedFieldIds != null) {
+                    fieldClassificationArr = FieldClassification.readArrayFromParcel(parcel);
+                }
+                FieldClassification[] detectedFieldClassifications = fieldClassificationArr;
+                int saveDialogNotShowReason = parcel.readInt();
+                int uiType = parcel.readInt();
+                selection.addEvent(new Event(eventType, datasetId, clientState, selectedDatasetIds, readArraySet, changedFieldIds, changedDatasetIds, manuallyFilledFieldIds, manuallyFilledDatasetIds, detectedFieldIds, detectedFieldClassifications, saveDialogNotShowReason, uiType));
+                i++;
+                parcel2 = parcel;
+            }
+            return selection;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FillEventHistory[] newArray(int size) {
+            return new FillEventHistory[size];
         }
     }
 }

@@ -75,6 +75,10 @@ public class IsdbtFrontendSettings extends FrontendSettings {
     public @interface TimeInterleaveMode {
     }
 
+    /* synthetic */ IsdbtFrontendSettings(long j, int i, int i2, int i3, int i4, IsdbtLayerSettings[] isdbtLayerSettingsArr, int i5, IsdbtFrontendSettingsIA isdbtFrontendSettingsIA) {
+        this(j, i, i2, i3, i4, isdbtLayerSettingsArr, i5);
+    }
+
     private IsdbtFrontendSettings(long frequency, int bandwidth, int mode, int guardInterval, int serviceAreaId, IsdbtLayerSettings[] layerSettings, int partialReceptionFlag) {
         super(frequency);
         this.mBandwidth = bandwidth;
@@ -149,6 +153,10 @@ public class IsdbtFrontendSettings extends FrontendSettings {
         private int mMode;
         private int mPartialReceptionFlag;
         private int mServiceAreaId;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;
@@ -260,6 +268,10 @@ public class IsdbtFrontendSettings extends FrontendSettings {
         private final int mNumOfSegments;
         private final int mTimeInterleaveMode;
 
+        /* synthetic */ IsdbtLayerSettings(int i, int i2, int i3, int i4, IsdbtLayerSettingsIA isdbtLayerSettingsIA) {
+            this(i, i2, i3, i4);
+        }
+
         private IsdbtLayerSettings(int modulation, int timeInterleaveMode, int codeRate, int numOfSegments) {
             this.mModulation = modulation;
             this.mTimeInterleaveMode = timeInterleaveMode;
@@ -293,6 +305,10 @@ public class IsdbtFrontendSettings extends FrontendSettings {
             private int mModulation;
             private int mNumOfSegments;
             private int mTimeInterleaveMode;
+
+            /* synthetic */ Builder(BuilderIA builderIA) {
+                this();
+            }
 
             private Builder() {
                 this.mModulation = 0;

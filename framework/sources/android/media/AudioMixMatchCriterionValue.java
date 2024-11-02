@@ -10,13 +10,14 @@ import com.samsung.android.sm.iafdlib.IafdConstant;
 /* loaded from: classes2.dex */
 public final class AudioMixMatchCriterionValue implements Parcelable {
     public static final Parcelable.Creator<AudioMixMatchCriterionValue> CREATOR = new Parcelable.Creator<AudioMixMatchCriterionValue>() { // from class: android.media.AudioMixMatchCriterionValue.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioMixMatchCriterionValue createFromParcel(Parcel _aidl_source) {
             return new AudioMixMatchCriterionValue(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMixMatchCriterionValue[] newArray(int _aidl_size) {
             return new AudioMixMatchCriterionValue[_aidl_size];
@@ -41,6 +42,10 @@ public final class AudioMixMatchCriterionValue implements Parcelable {
         public static final int uid = 2;
         public static final int usage = 0;
         public static final int userId = 3;
+    }
+
+    /* synthetic */ AudioMixMatchCriterionValue(Parcel parcel, AudioMixMatchCriterionValueIA audioMixMatchCriterionValueIA) {
+        this(parcel);
     }
 
     public AudioMixMatchCriterionValue() {
@@ -150,6 +155,23 @@ public final class AudioMixMatchCriterionValue implements Parcelable {
 
     public void setAppid(int _value) {
         _set(6, Integer.valueOf(_value));
+    }
+
+    /* renamed from: android.media.AudioMixMatchCriterionValue$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioMixMatchCriterionValue> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioMixMatchCriterionValue createFromParcel(Parcel _aidl_source) {
+            return new AudioMixMatchCriterionValue(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioMixMatchCriterionValue[] newArray(int _aidl_size) {
+            return new AudioMixMatchCriterionValue[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -11,7 +11,6 @@ public final class SaveCallback {
     private final ISaveCallback mCallback;
     private boolean mCalled;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SaveCallback(ISaveCallback callback) {
         this.mCallback = callback;
     }

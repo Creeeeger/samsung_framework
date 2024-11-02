@@ -169,8 +169,9 @@ public interface ISearchUiManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISearchUiManager {
+        public static class Proxy implements ISearchUiManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

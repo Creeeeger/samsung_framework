@@ -13,13 +13,14 @@ import java.util.Set;
 /* loaded from: classes2.dex */
 public final class VirtualDisplayConfig implements Parcelable {
     public static final Parcelable.Creator<VirtualDisplayConfig> CREATOR = new Parcelable.Creator<VirtualDisplayConfig>() { // from class: android.hardware.display.VirtualDisplayConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualDisplayConfig[] newArray(int size) {
             return new VirtualDisplayConfig[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualDisplayConfig createFromParcel(Parcel in) {
             return new VirtualDisplayConfig(in);
@@ -36,6 +37,14 @@ public final class VirtualDisplayConfig implements Parcelable {
     private final String mUniqueId;
     private final int mWidth;
     private final boolean mWindowManagerMirroringEnabled;
+
+    /* synthetic */ VirtualDisplayConfig(Parcel parcel, VirtualDisplayConfigIA virtualDisplayConfigIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ VirtualDisplayConfig(String str, int i, int i2, int i3, int i4, Surface surface, String str2, int i5, boolean z, ArraySet arraySet, float f, VirtualDisplayConfigIA virtualDisplayConfigIA) {
+        this(str, i, i2, i3, i4, surface, str2, i5, z, arraySet, f);
+    }
 
     private VirtualDisplayConfig(String name, int width, int height, int densityDpi, int flags, Surface surface, String uniqueId, int displayIdToMirror, boolean windowManagerMirroringEnabled, ArraySet<String> displayCategories, float requestedRefreshRate) {
         this.mDisplayCategories = null;
@@ -149,6 +158,23 @@ public final class VirtualDisplayConfig implements Parcelable {
         this.mWindowManagerMirroringEnabled = in.readBoolean();
         this.mDisplayCategories = in.readArraySet(null);
         this.mRequestedRefreshRate = in.readFloat();
+    }
+
+    /* renamed from: android.hardware.display.VirtualDisplayConfig$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualDisplayConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualDisplayConfig[] newArray(int size) {
+            return new VirtualDisplayConfig[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualDisplayConfig createFromParcel(Parcel in) {
+            return new VirtualDisplayConfig(in);
+        }
     }
 
     /* loaded from: classes2.dex */

@@ -327,7 +327,7 @@ public class LockPatternView extends View {
         }
     }
 
-    private void startCellStateAnimationSw(final CellState cellState, final float startAlpha, final float endAlpha, final float startTranslationY, final float endTranslationY, final float startScale, final float endScale, long delay, long duration, Interpolator interpolator, final Runnable finishRunnable) {
+    private void startCellStateAnimationSw(CellState cellState, float startAlpha, float endAlpha, float startTranslationY, float endTranslationY, float startScale, float endScale, long delay, long duration, Interpolator interpolator, Runnable finishRunnable) {
         cellState.alpha = startAlpha;
         cellState.translationY = startTranslationY;
         cellState.radius = (this.mDotSize / 2) * startScale;
@@ -336,6 +336,24 @@ public class LockPatternView extends View {
         animator.setStartDelay(delay);
         animator.setInterpolator(interpolator);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.internal.widget.LockPatternView.1
+            final /* synthetic */ CellState val$cellState;
+            final /* synthetic */ float val$endAlpha;
+            final /* synthetic */ float val$endScale;
+            final /* synthetic */ float val$endTranslationY;
+            final /* synthetic */ float val$startAlpha;
+            final /* synthetic */ float val$startScale;
+            final /* synthetic */ float val$startTranslationY;
+
+            AnonymousClass1(CellState cellState2, float startAlpha2, float endAlpha2, float startTranslationY2, float endTranslationY2, float startScale2, float endScale2) {
+                cellState = cellState2;
+                startAlpha = startAlpha2;
+                endAlpha = endAlpha2;
+                startTranslationY = startTranslationY2;
+                endTranslationY = endTranslationY2;
+                startScale = startScale2;
+                endScale = endScale2;
+            }
+
             @Override // android.animation.ValueAnimator.AnimatorUpdateListener
             public void onAnimationUpdate(ValueAnimator animation) {
                 float t = ((Float) animation.getAnimatedValue()).floatValue();
@@ -346,6 +364,12 @@ public class LockPatternView extends View {
             }
         });
         animator.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.LockPatternView.2
+            final /* synthetic */ Runnable val$finishRunnable;
+
+            AnonymousClass2(Runnable finishRunnable2) {
+                finishRunnable = finishRunnable2;
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 Runnable runnable = finishRunnable;
@@ -357,7 +381,56 @@ public class LockPatternView extends View {
         animator.start();
     }
 
-    private void startCellStateAnimationHw(final CellState cellState, float startAlpha, float endAlpha, float startTranslationY, float endTranslationY, float startScale, float endScale, long delay, long duration, Interpolator interpolator, final Runnable finishRunnable) {
+    /* renamed from: com.android.internal.widget.LockPatternView$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+        final /* synthetic */ CellState val$cellState;
+        final /* synthetic */ float val$endAlpha;
+        final /* synthetic */ float val$endScale;
+        final /* synthetic */ float val$endTranslationY;
+        final /* synthetic */ float val$startAlpha;
+        final /* synthetic */ float val$startScale;
+        final /* synthetic */ float val$startTranslationY;
+
+        AnonymousClass1(CellState cellState2, float startAlpha2, float endAlpha2, float startTranslationY2, float endTranslationY2, float startScale2, float endScale2) {
+            cellState = cellState2;
+            startAlpha = startAlpha2;
+            endAlpha = endAlpha2;
+            startTranslationY = startTranslationY2;
+            endTranslationY = endTranslationY2;
+            startScale = startScale2;
+            endScale = endScale2;
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            float t = ((Float) animation.getAnimatedValue()).floatValue();
+            cellState.alpha = ((1.0f - t) * startAlpha) + (endAlpha * t);
+            cellState.translationY = ((1.0f - t) * startTranslationY) + (endTranslationY * t);
+            cellState.radius = (LockPatternView.this.mDotSize / 2) * (((1.0f - t) * startScale) + (endScale * t));
+            LockPatternView.this.invalidate();
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.LockPatternView$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        final /* synthetic */ Runnable val$finishRunnable;
+
+        AnonymousClass2(Runnable finishRunnable2) {
+            finishRunnable = finishRunnable2;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            Runnable runnable = finishRunnable;
+            if (runnable != null) {
+                runnable.run();
+            }
+        }
+    }
+
+    private void startCellStateAnimationHw(CellState cellState, float startAlpha, float endAlpha, float startTranslationY, float endTranslationY, float startScale, float endScale, long delay, long duration, Interpolator interpolator, Runnable finishRunnable) {
         cellState.alpha = endAlpha;
         cellState.translationY = endTranslationY;
         cellState.radius = (this.mDotSize / 2) * endScale;
@@ -371,6 +444,14 @@ public class LockPatternView extends View {
         startRtFloatAnimation(cellState.hwCenterY, getCenterYForRow(cellState.row) + endTranslationY, delay, duration, interpolator);
         startRtFloatAnimation(cellState.hwRadius, (this.mDotSize / 2) * endScale, delay, duration, interpolator);
         startRtAlphaAnimation(cellState, endAlpha, delay, duration, interpolator, new AnimatorListenerAdapter() { // from class: com.android.internal.widget.LockPatternView.3
+            final /* synthetic */ CellState val$cellState;
+            final /* synthetic */ Runnable val$finishRunnable;
+
+            AnonymousClass3(CellState cellState2, Runnable finishRunnable2) {
+                cellState = cellState2;
+                finishRunnable = finishRunnable2;
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 cellState.hwAnimating = false;
@@ -381,6 +462,27 @@ public class LockPatternView extends View {
             }
         });
         invalidate();
+    }
+
+    /* renamed from: com.android.internal.widget.LockPatternView$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 extends AnimatorListenerAdapter {
+        final /* synthetic */ CellState val$cellState;
+        final /* synthetic */ Runnable val$finishRunnable;
+
+        AnonymousClass3(CellState cellState2, Runnable finishRunnable2) {
+            cellState = cellState2;
+            finishRunnable = finishRunnable2;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            cellState.hwAnimating = false;
+            Runnable runnable = finishRunnable;
+            if (runnable != null) {
+                runnable.run();
+            }
+        }
     }
 
     private void startRtAlphaAnimation(CellState cellState, float endAlpha, long delay, long duration, Interpolator interpolator, Animator.AnimatorListener listener) {
@@ -438,7 +540,6 @@ public class LockPatternView extends View {
         resetPattern();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean dispatchHoverEvent(MotionEvent event) {
         boolean handled = super.dispatchHoverEvent(event);
@@ -474,7 +575,6 @@ public class LockPatternView extends View {
         this.mInputEnabled = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         int width = (w - this.mPaddingLeft) - this.mPaddingRight;
@@ -502,7 +602,6 @@ public class LockPatternView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int minimumWidth = getSuggestedMinimumWidth();
@@ -564,7 +663,7 @@ public class LockPatternView extends View {
     }
 
     private void startCellActivatedAnimation(Cell cell) {
-        final CellState cellState = this.mCellStates[cell.row][cell.column];
+        CellState cellState = this.mCellStates[cell.row][cell.column];
         if (cellState.activationAnimator != null) {
             cellState.activationAnimator.cancel();
         }
@@ -577,14 +676,36 @@ public class LockPatternView extends View {
             animatorSetBuilder.with(createDotActivationColorAnimation(cellState));
         }
         animatorSet.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.LockPatternView.4
+            final /* synthetic */ CellState val$cellState;
+
+            AnonymousClass4(CellState cellState2) {
+                cellState = cellState2;
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 cellState.activationAnimator = null;
                 LockPatternView.this.invalidate();
             }
         });
-        cellState.activationAnimator = animatorSet;
+        cellState2.activationAnimator = animatorSet;
         animatorSet.start();
+    }
+
+    /* renamed from: com.android.internal.widget.LockPatternView$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 extends AnimatorListenerAdapter {
+        final /* synthetic */ CellState val$cellState;
+
+        AnonymousClass4(CellState cellState2) {
+            cellState = cellState2;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            cellState.activationAnimator = null;
+            LockPatternView.this.invalidate();
+        }
     }
 
     private Animator createDotActivationColorAnimation(final CellState cellState) {
@@ -607,7 +728,6 @@ public class LockPatternView extends View {
         return set;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createDotActivationColorAnimation$0(CellState cellState, ValueAnimator valueAnimator) {
         cellState.activationAnimationProgress = ((Float) valueAnimator.getAnimatedValue()).floatValue();
         invalidate();
@@ -626,7 +746,6 @@ public class LockPatternView extends View {
         return valueAnimator;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createLineEndAnimation$1(CellState state, float startX, float targetX, float startY, float targetY, ValueAnimator animation) {
         float t = ((Float) animation.getAnimatedValue()).floatValue();
         state.lineEndX = ((1.0f - t) * startX) + (t * targetX);
@@ -647,7 +766,6 @@ public class LockPatternView extends View {
         return valueAnimator;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createLineDisappearingAnimation$2(ValueAnimator animation) {
         invalidate();
     }
@@ -674,7 +792,6 @@ public class LockPatternView extends View {
         return set;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createDotRadiusAnimation$3(CellState state, ValueAnimator animation) {
         state.radius = ((Float) animation.getAnimatedValue()).floatValue();
         state.alpha = 1.0f;
@@ -689,7 +806,6 @@ public class LockPatternView extends View {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Cell detectCellHit(float x, float y) {
         float f = this.mDotHitRadius;
         float hitRadiusSquared = f * f;
@@ -908,7 +1024,6 @@ public class LockPatternView extends View {
         return f + (row * f2) + (f2 / 2.0f);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         float lastX;
@@ -1114,7 +1229,6 @@ public class LockPatternView extends View {
         canvas.restore();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -1126,7 +1240,6 @@ public class LockPatternView extends View {
         return new SavedState(superState, patternString, this.mPatternDisplayMode.ordinal(), this.mInputEnabled, this.mInStealthMode);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
@@ -1137,17 +1250,17 @@ public class LockPatternView extends View {
         this.mInStealthMode = ss.isInStealthMode();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.widget.LockPatternView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1157,6 +1270,14 @@ public class LockPatternView extends View {
         private final boolean mInStealthMode;
         private final boolean mInputEnabled;
         private final String mSerializedPattern;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
+
+        /* synthetic */ SavedState(Parcelable parcelable, String str, int i, boolean z, boolean z2, SavedStateIA savedStateIA) {
+            this(parcelable, str, i, z, z2);
+        }
 
         private SavedState(Parcelable superState, String serializedPattern, int displayMode, boolean inputEnabled, boolean inStealthMode) {
             super(superState);
@@ -1198,6 +1319,23 @@ public class LockPatternView extends View {
             dest.writeValue(Boolean.valueOf(this.mInputEnabled));
             dest.writeValue(Boolean.valueOf(this.mInStealthMode));
         }
+
+        /* renamed from: com.android.internal.widget.LockPatternView$SavedState$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
     }
 
     protected void updateViewStyle(boolean whiteWp) {
@@ -1226,14 +1364,14 @@ public class LockPatternView extends View {
         this.mFadeOutGradientShader = new LinearGradient((-fadeAwayGradientWidth) / 2.0f, 0.0f, fadeAwayGradientWidth / 2.0f, 0.0f, 0, pathColor, Shader.TileMode.CLAMP);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public final class PatternExploreByTouchHelper extends ExploreByTouchHelper {
         private final SparseArray<VirtualViewContainer> mItems;
         private Rect mTempRect;
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes5.dex */
-        class VirtualViewContainer {
+        public class VirtualViewContainer {
             CharSequence description;
 
             public VirtualViewContainer(CharSequence description) {

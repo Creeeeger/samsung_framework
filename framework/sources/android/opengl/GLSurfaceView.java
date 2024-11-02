@@ -126,7 +126,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         if (this.mEGLConfigChooser == null) {
             this.mEGLConfigChooser = new SimpleEGLConfigChooser(true);
         }
-        byte b = 0;
         if (this.mEGLContextFactory == null) {
             this.mEGLContextFactory = new DefaultContextFactory();
         }
@@ -219,7 +218,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         this.mGLThread.queueEvent(r);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.SurfaceView, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -239,7 +237,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         this.mDetached = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.SurfaceView, android.view.View
     public void onDetachedFromWindow() {
         GLThread gLThread = this.mGLThread;
@@ -253,6 +250,10 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     /* loaded from: classes3.dex */
     private class DefaultContextFactory implements EGLContextFactory {
         private int EGL_CONTEXT_CLIENT_VERSION;
+
+        /* synthetic */ DefaultContextFactory(GLSurfaceView gLSurfaceView, DefaultContextFactoryIA defaultContextFactoryIA) {
+            this();
+        }
 
         private DefaultContextFactory() {
             this.EGL_CONTEXT_CLIENT_VERSION = 12440;
@@ -275,6 +276,10 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     /* loaded from: classes3.dex */
     private static class DefaultWindowSurfaceFactory implements EGLWindowSurfaceFactory {
+        /* synthetic */ DefaultWindowSurfaceFactory(DefaultWindowSurfaceFactoryIA defaultWindowSurfaceFactoryIA) {
+            this();
+        }
+
         private DefaultWindowSurfaceFactory() {
         }
 
@@ -295,8 +300,9 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private abstract class BaseConfigChooser implements EGLConfigChooser {
+    public abstract class BaseConfigChooser implements EGLConfigChooser {
         protected int[] mConfigSpec;
 
         abstract javax.microedition.khronos.egl.EGLConfig chooseConfig(EGL10 egl10, javax.microedition.khronos.egl.EGLDisplay eGLDisplay, javax.microedition.khronos.egl.EGLConfig[] eGLConfigArr);
@@ -344,8 +350,9 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private class ComponentSizeChooser extends BaseConfigChooser {
+    public class ComponentSizeChooser extends BaseConfigChooser {
         protected int mAlphaSize;
         protected int mBlueSize;
         protected int mDepthSize;
@@ -398,7 +405,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class EglHelper {
         EGL10 mEgl;
@@ -554,7 +560,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class GLThread extends Thread {
         private static final String TAG = "GLThread";
@@ -687,7 +692,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$requestRenderAndNotify$0(Runnable oldCallback, Runnable finishDrawing) {
             if (oldCallback != null) {
                 oldCallback.run();
@@ -807,7 +811,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class LogWriter extends Writer {
         private StringBuilder mBuilder = new StringBuilder();
@@ -852,10 +855,13 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class GLThreadManager {
         private static String TAG = "GLThreadManager";
+
+        /* synthetic */ GLThreadManager(GLThreadManagerIA gLThreadManagerIA) {
+            this();
+        }
 
         private GLThreadManager() {
         }

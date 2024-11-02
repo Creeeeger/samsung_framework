@@ -19,13 +19,11 @@ public class ComponentOptions {
     public @interface BackgroundActivityStartMode {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ComponentOptions() {
         this.mPendingIntentBalAllowed = null;
         this.mPendingIntentBalAllowedByPermission = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ComponentOptions(Bundle opts) {
         this.mPendingIntentBalAllowed = null;
         this.mPendingIntentBalAllowedByPermission = false;

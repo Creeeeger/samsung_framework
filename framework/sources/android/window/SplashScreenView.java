@@ -200,7 +200,7 @@ public final class SplashScreenView extends FrameLayout {
                 imageView.setLayoutParams(params);
                 Drawable drawable3 = this.mIconDrawable;
                 if (drawable3 != null) {
-                    imageView.setImageDrawable(drawable3);
+                    imageView.lambda$setImageURIAsync$2(drawable3);
                 }
                 Drawable drawable4 = this.mIconBackground;
                 if (drawable4 != null) {
@@ -234,7 +234,6 @@ public final class SplashScreenView extends FrameLayout {
             return view;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$build$0(SplashScreenView view) {
             view.mIconView = createSurfaceView(view);
         }
@@ -370,6 +369,9 @@ public final class SplashScreenView extends FrameLayout {
             }
         });
         aniDrawable.setAnimationJankMonitoring(new AnimatorListenerAdapter() { // from class: android.window.SplashScreenView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationCancel(Animator animation) {
                 InteractionJankMonitor.getInstance().cancel(38);
@@ -387,7 +389,28 @@ public final class SplashScreenView extends FrameLayout {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.window.SplashScreenView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
+            InteractionJankMonitor.getInstance().cancel(38);
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            InteractionJankMonitor.getInstance().end(38);
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+            InteractionJankMonitor.getInstance().begin(SplashScreenView.this, 38);
+        }
+    }
+
     public void animationStartCallback(long animDuration) {
         this.mIconAnimationStart = Instant.now();
         if (animDuration >= 0) {
@@ -403,7 +426,7 @@ public final class SplashScreenView extends FrameLayout {
         if (this.mParceledIconBitmap != null) {
             View view = this.mIconView;
             if (view instanceof ImageView) {
-                ((ImageView) view).setImageDrawable(null);
+                ((ImageView) view).lambda$setImageURIAsync$2(null);
             } else if (view != null) {
                 view.setBackground(null);
             }
@@ -437,14 +460,12 @@ public final class SplashScreenView extends FrameLayout {
         this.mHasRemoved = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         releaseAnimationSurfaceHost();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -530,13 +551,14 @@ public final class SplashScreenView extends FrameLayout {
     /* loaded from: classes4.dex */
     public static class SplashScreenViewParcelable implements Parcelable {
         public static final Parcelable.Creator<SplashScreenViewParcelable> CREATOR = new Parcelable.Creator<SplashScreenViewParcelable>() { // from class: android.window.SplashScreenView.SplashScreenViewParcelable.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SplashScreenViewParcelable createFromParcel(Parcel source) {
                 return new SplashScreenViewParcelable(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SplashScreenViewParcelable[] newArray(int size) {
                 return new SplashScreenViewParcelable[size];
@@ -553,6 +575,10 @@ public final class SplashScreenView extends FrameLayout {
         private Bitmap mIconBitmap;
         private int mIconSize;
         private SurfaceControlViewHost.SurfacePackage mSurfacePackage;
+
+        /* synthetic */ SplashScreenViewParcelable(Parcel parcel, SplashScreenViewParcelableIA splashScreenViewParcelableIA) {
+            this(parcel);
+        }
 
         public SplashScreenViewParcelable(SplashScreenView view) {
             this.mIconBitmap = null;
@@ -633,6 +659,23 @@ public final class SplashScreenView extends FrameLayout {
             dest.writeTypedObject(this.mIconBackground, flags);
             dest.writeTypedObject(this.mSurfacePackage, flags);
             dest.writeTypedObject(this.mClientCallback, flags);
+        }
+
+        /* renamed from: android.window.SplashScreenView$SplashScreenViewParcelable$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SplashScreenViewParcelable> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SplashScreenViewParcelable createFromParcel(Parcel source) {
+                return new SplashScreenViewParcelable(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SplashScreenViewParcelable[] newArray(int size) {
+                return new SplashScreenViewParcelable[size];
+            }
         }
 
         public void clearIfNeeded() {

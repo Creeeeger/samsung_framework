@@ -251,8 +251,9 @@ public interface ICas extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ICas {
+        public static class Proxy implements ICas {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

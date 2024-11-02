@@ -39,7 +39,7 @@ public class ScrollViewCaptureHelper implements ScrollCaptureViewHelper<ViewGrou
         }
     }
 
-    /* renamed from: onScrollRequested, reason: avoid collision after fix types in other method */
+    /* renamed from: onScrollRequested */
     public void onScrollRequested2(ViewGroup view, Rect scrollBounds, Rect requestRect, CancellationSignal signal, Consumer<ScrollCaptureViewHelper.ScrollResult> resultConsumer) {
         int scrollDelta = view.getScrollY() - this.mStartScrollY;
         ScrollCaptureViewHelper.ScrollResult result = new ScrollCaptureViewHelper.ScrollResult();

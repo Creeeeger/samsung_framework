@@ -126,8 +126,9 @@ public interface IRestoreObserver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IRestoreObserver {
+        public static class Proxy implements IRestoreObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

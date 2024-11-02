@@ -188,7 +188,6 @@ public class Camera {
 
     private final native void native_takePicture(int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final native void setHasPreviewCallback(boolean z, boolean z2);
 
     private final native void setPreviewCallbackSurface(Surface surface);
@@ -455,7 +454,6 @@ public class Camera {
         setPreviewCallbackSurface(previewSurface);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class EventHandler extends Handler {
         private final Camera mCamera;
@@ -654,7 +652,6 @@ public class Camera {
         return _enableShutterSound(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class IAppOpsCallbackWrapper extends IAppOpsCallback.Stub {
         private final WeakReference<Camera> mWeakCamera;
@@ -672,7 +669,6 @@ public class Camera {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateAppOpsPlayAudio() {
         synchronized (this.mShutterSoundLock) {
             boolean oldHasAppOpsPlayAudio = this.mHasAppOpsPlayAudio;
@@ -945,6 +941,10 @@ public class Camera {
         public static final String WHITE_BALANCE_WARM_FLUORESCENT = "warm-fluorescent";
         private final LinkedHashMap<String, String> mMap;
 
+        /* synthetic */ Parameters(Camera camera, ParametersIA parametersIA) {
+            this();
+        }
+
         private Parameters() {
             this.mMap = new LinkedHashMap<>(64);
         }
@@ -956,7 +956,6 @@ public class Camera {
             this.mMap.putAll(other.mMap);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Camera getOuter() {
             return Camera.this;
         }

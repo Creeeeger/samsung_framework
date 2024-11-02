@@ -15,13 +15,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class HotspotNetwork implements Parcelable {
     public static final Parcelable.Creator<HotspotNetwork> CREATOR = new Parcelable.Creator<HotspotNetwork>() { // from class: android.net.wifi.sharedconnectivity.app.HotspotNetwork.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HotspotNetwork createFromParcel(Parcel in) {
             return HotspotNetwork.readFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotspotNetwork[] newArray(int size) {
             return new HotspotNetwork[size];
@@ -43,6 +44,10 @@ public final class HotspotNetwork implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface NetworkType {
+    }
+
+    /* synthetic */ HotspotNetwork(long j, NetworkProviderInfo networkProviderInfo, int i, String str, String str2, String str3, ArraySet arraySet, Bundle bundle, HotspotNetworkIA hotspotNetworkIA) {
+        this(j, networkProviderInfo, i, str, str2, str3, arraySet, bundle);
     }
 
     /* loaded from: classes3.dex */
@@ -191,6 +196,23 @@ public final class HotspotNetwork implements Parcelable {
 
     public static HotspotNetwork readFromParcel(Parcel in) {
         return new HotspotNetwork(in.readLong(), NetworkProviderInfo.readFromParcel(in), in.readInt(), in.readString(), in.readString(), in.readString(), in.readArraySet(null), in.readBundle());
+    }
+
+    /* renamed from: android.net.wifi.sharedconnectivity.app.HotspotNetwork$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HotspotNetwork> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotspotNetwork createFromParcel(Parcel in) {
+            return HotspotNetwork.readFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotspotNetwork[] newArray(int size) {
+            return new HotspotNetwork[size];
+        }
     }
 
     public String toString() {

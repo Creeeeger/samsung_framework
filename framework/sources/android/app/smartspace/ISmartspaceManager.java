@@ -160,8 +160,9 @@ public interface ISmartspaceManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISmartspaceManager {
+        public static class Proxy implements ISmartspaceManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

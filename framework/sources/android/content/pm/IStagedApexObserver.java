@@ -71,8 +71,9 @@ public interface IStagedApexObserver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IStagedApexObserver {
+        public static class Proxy implements IStagedApexObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

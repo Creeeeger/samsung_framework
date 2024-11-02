@@ -1005,8 +1005,9 @@ public interface IVpnManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IVpnManager {
+        public static class Proxy implements IVpnManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

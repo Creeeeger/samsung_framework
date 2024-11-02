@@ -28,7 +28,6 @@ public final class ChangeIdStateCache extends PropertyInvalidatedCache<ChangeIdS
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IPlatformCompat getPlatformCompatService() {
         IPlatformCompat platformCompat = this.mPlatformCompat;
         if (platformCompat == null) {

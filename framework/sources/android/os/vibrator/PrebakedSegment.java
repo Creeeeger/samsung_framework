@@ -10,14 +10,15 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PrebakedSegment extends VibrationEffectSegment {
     public static final Parcelable.Creator<PrebakedSegment> CREATOR = new Parcelable.Creator<PrebakedSegment>() { // from class: android.os.vibrator.PrebakedSegment.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrebakedSegment createFromParcel(Parcel in) {
             in.readInt();
             return new PrebakedSegment(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrebakedSegment[] newArray(int size) {
             return new PrebakedSegment[size];
@@ -27,7 +28,6 @@ public final class PrebakedSegment extends VibrationEffectSegment {
     private final int mEffectStrength;
     private final boolean mFallback;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PrebakedSegment(Parcel in) {
         this.mEffectId = in.readInt();
         this.mFallback = in.readByte() != 0;
@@ -179,5 +179,23 @@ public final class PrebakedSegment extends VibrationEffectSegment {
         parcel.writeInt(this.mEffectId);
         parcel.writeByte(this.mFallback ? (byte) 1 : (byte) 0);
         parcel.writeInt(this.mEffectStrength);
+    }
+
+    /* renamed from: android.os.vibrator.PrebakedSegment$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrebakedSegment> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrebakedSegment createFromParcel(Parcel in) {
+            in.readInt();
+            return new PrebakedSegment(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrebakedSegment[] newArray(int size) {
+            return new PrebakedSegment[size];
+        }
     }
 }

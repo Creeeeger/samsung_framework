@@ -27,17 +27,19 @@ public class ProviderAccessStats {
         }
     });
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class PerThreadData {
         public int nestCount;
         public long startUptimeMillis;
 
+        /* synthetic */ PerThreadData(PerThreadDataIA perThreadDataIA) {
+            this();
+        }
+
         private PerThreadData() {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ PerThreadData lambda$new$0() {
         return new PerThreadData();
     }

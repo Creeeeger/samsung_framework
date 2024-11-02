@@ -143,8 +143,9 @@ public interface ITvInteractiveAppManagerCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ITvInteractiveAppManagerCallback {
+        public static class Proxy implements ITvInteractiveAppManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -182,7 +182,6 @@ public abstract class AutoScrollHelper implements View.OnTouchListener {
         return this.mExclusive && this.mAnimating;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean shouldAnimate() {
         ClampedScroller scroller = this.mScroller;
         int verticalDirection = scroller.getVerticalDirection();
@@ -275,7 +274,6 @@ public abstract class AutoScrollHelper implements View.OnTouchListener {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int constrain(int value, int min, int max) {
         if (value > max) {
             return max;
@@ -286,7 +284,6 @@ public abstract class AutoScrollHelper implements View.OnTouchListener {
         return value;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float constrain(float value, float min, float max) {
         if (value > max) {
             return max;
@@ -297,7 +294,6 @@ public abstract class AutoScrollHelper implements View.OnTouchListener {
         return value;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cancelTargetTouch() {
         long eventTime = SystemClock.uptimeMillis();
         MotionEvent cancel = MotionEvent.obtain(eventTime, eventTime, 3, 0.0f, 0.0f, 0);
@@ -305,9 +301,12 @@ public abstract class AutoScrollHelper implements View.OnTouchListener {
         cancel.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class ScrollAnimationRunnable implements Runnable {
+        /* synthetic */ ScrollAnimationRunnable(AutoScrollHelper autoScrollHelper, ScrollAnimationRunnableIA scrollAnimationRunnableIA) {
+            this();
+        }
+
         private ScrollAnimationRunnable() {
         }
 
@@ -337,7 +336,6 @@ public abstract class AutoScrollHelper implements View.OnTouchListener {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ClampedScroller {
         private int mEffectiveRampDown;

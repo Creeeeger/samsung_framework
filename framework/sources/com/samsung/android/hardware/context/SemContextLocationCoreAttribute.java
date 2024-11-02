@@ -10,13 +10,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextLocationCoreAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextLocationCoreAttribute> CREATOR = new Parcelable.Creator<SemContextLocationCoreAttribute>() { // from class: com.samsung.android.hardware.context.SemContextLocationCoreAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextLocationCoreAttribute createFromParcel(Parcel in) {
             return new SemContextLocationCoreAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextLocationCoreAttribute[] newArray(int size) {
             return new SemContextLocationCoreAttribute[size];
@@ -42,7 +43,27 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
     private long mTimeStamp;
     private int mTotalGpsCnt;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ SemContextLocationCoreAttribute(Parcel parcel, SemContextLocationCoreAttributeIA semContextLocationCoreAttributeIA) {
+        this(parcel);
+    }
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextLocationCoreAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextLocationCoreAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextLocationCoreAttribute createFromParcel(Parcel in) {
+            return new SemContextLocationCoreAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextLocationCoreAttribute[] newArray(int size) {
+            return new SemContextLocationCoreAttribute[size];
+        }
+    }
+
     public SemContextLocationCoreAttribute() {
         this.mMode = -1;
         this.mAction = -1;
@@ -502,7 +523,6 @@ public class SemContextLocationCoreAttribute extends SemContextAttribute {
         super.setAttribute(47, attribute);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class FusedBatchOption {
         final float distance_thrs;

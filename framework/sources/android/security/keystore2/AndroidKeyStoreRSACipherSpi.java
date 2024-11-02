@@ -17,8 +17,9 @@ import java.util.List;
 import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherSpiBase {
+public abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherSpiBase {
     private final int mKeymasterPadding;
     private int mKeymasterPaddingOverride;
     private int mModulusSizeBytes = -1;
@@ -238,7 +239,6 @@ abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherSpiBase 
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public final void addAlgorithmSpecificParametersToBegin(List<KeyParameter> parameters, Authorization[] keyCharacteristics) {
             super.addAlgorithmSpecificParametersToBegin(parameters, keyCharacteristics);
@@ -416,7 +416,6 @@ abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherSpiBase 
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     public final void resetAll() {
         this.mModulusSizeBytes = -1;
@@ -424,7 +423,6 @@ abstract class AndroidKeyStoreRSACipherSpi extends AndroidKeyStoreCipherSpiBase 
         super.resetAll();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     public final void resetWhilePreservingInitState() {
         super.resetWhilePreservingInitState();

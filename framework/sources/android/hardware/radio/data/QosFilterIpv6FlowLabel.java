@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class QosFilterIpv6FlowLabel implements Parcelable {
     public static final Parcelable.Creator<QosFilterIpv6FlowLabel> CREATOR = new Parcelable.Creator<QosFilterIpv6FlowLabel>() { // from class: android.hardware.radio.data.QosFilterIpv6FlowLabel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public QosFilterIpv6FlowLabel createFromParcel(Parcel _aidl_source) {
             return new QosFilterIpv6FlowLabel(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosFilterIpv6FlowLabel[] newArray(int _aidl_size) {
             return new QosFilterIpv6FlowLabel[_aidl_size];
@@ -28,6 +29,10 @@ public final class QosFilterIpv6FlowLabel implements Parcelable {
     public @interface Tag {
         public static final int noinit = 0;
         public static final int value = 1;
+    }
+
+    /* synthetic */ QosFilterIpv6FlowLabel(Parcel parcel, QosFilterIpv6FlowLabelIA qosFilterIpv6FlowLabelIA) {
+        this(parcel);
     }
 
     public QosFilterIpv6FlowLabel() {
@@ -77,6 +82,23 @@ public final class QosFilterIpv6FlowLabel implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.radio.data.QosFilterIpv6FlowLabel$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<QosFilterIpv6FlowLabel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public QosFilterIpv6FlowLabel createFromParcel(Parcel _aidl_source) {
+            return new QosFilterIpv6FlowLabel(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public QosFilterIpv6FlowLabel[] newArray(int _aidl_size) {
+            return new QosFilterIpv6FlowLabel[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

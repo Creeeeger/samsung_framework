@@ -9,19 +9,24 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class GnssRequest implements Parcelable {
     public static final Parcelable.Creator<GnssRequest> CREATOR = new Parcelable.Creator<GnssRequest>() { // from class: android.location.GnssRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssRequest createFromParcel(Parcel parcel) {
             return new GnssRequest(parcel.readBoolean());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssRequest[] newArray(int i) {
             return new GnssRequest[i];
         }
     };
     private final boolean mFullTracking;
+
+    /* synthetic */ GnssRequest(boolean z, GnssRequestIA gnssRequestIA) {
+        this(z);
+    }
 
     private GnssRequest(boolean fullTracking) {
         this.mFullTracking = fullTracking;
@@ -33,6 +38,23 @@ public final class GnssRequest implements Parcelable {
 
     public GnssMeasurementRequest toGnssMeasurementRequest() {
         return new GnssMeasurementRequest.Builder().setFullTracking(isFullTracking()).build();
+    }
+
+    /* renamed from: android.location.GnssRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssRequest createFromParcel(Parcel parcel) {
+            return new GnssRequest(parcel.readBoolean());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssRequest[] newArray(int i) {
+            return new GnssRequest[i];
+        }
     }
 
     public String toString() {

@@ -10,13 +10,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes2.dex */
 public final class AppLinkInfo implements Parcelable {
     public static final Parcelable.Creator<AppLinkInfo> CREATOR = new Parcelable.Creator<AppLinkInfo>() { // from class: android.media.tv.interactive.AppLinkInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AppLinkInfo[] newArray(int size) {
             return new AppLinkInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppLinkInfo createFromParcel(Parcel in) {
             return new AppLinkInfo(in);
@@ -64,5 +65,22 @@ public final class AppLinkInfo implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mComponentName.getClassName());
         String uriString = in.readString();
         this.mUri = uriString != null ? Uri.parse(uriString) : null;
+    }
+
+    /* renamed from: android.media.tv.interactive.AppLinkInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AppLinkInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppLinkInfo[] newArray(int size) {
+            return new AppLinkInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppLinkInfo createFromParcel(Parcel in) {
+            return new AppLinkInfo(in);
+        }
     }
 }

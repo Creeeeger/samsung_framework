@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import vendor.samsung.hardware.authfw.V1_0.ISehAuthenticationFramework;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class HidlHalService implements XidlHalService, IHwBinder.DeathRecipient {
     private static final String TAG = "HHS";
@@ -202,7 +201,6 @@ public final class HidlHalService implements XidlHalService, IHwBinder.DeathReci
         return this.mResultBytes;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$execute$0(boolean ret, ArrayList response) {
         AuthenticatorLog.i(TAG, "ret: " + ret + ", " + (response == null ? -1 : response.size()));
         if (response != null && response.size() > 0) {
@@ -226,8 +224,7 @@ public final class HidlHalService implements XidlHalService, IHwBinder.DeathReci
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.authenticator.HidlHalService$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.authenticator.HidlHalService$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppAssetType;

@@ -27,6 +27,10 @@ public final class LineBreakConfig {
     public @interface LineBreakWordStyle {
     }
 
+    /* synthetic */ LineBreakConfig(int i, int i2, LineBreakConfigIA lineBreakConfigIA) {
+        this(i, i2);
+    }
+
     /* loaded from: classes.dex */
     public static final class Builder {
         private int mLineBreakStyle = 0;

@@ -314,8 +314,9 @@ public interface IStorageStatsManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IStorageStatsManager {
+        public static class Proxy implements IStorageStatsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

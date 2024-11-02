@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class CMSUtils {
     private static final Set<String> des;
@@ -71,7 +70,6 @@ public class CMSUtils {
         return des.contains(name);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isEquivalent(AlgorithmIdentifier algId1, AlgorithmIdentifier algId2) {
         if (algId1 == null || algId2 == null || !algId1.getAlgorithm().equals((ASN1Primitive) algId2.getAlgorithm())) {
             return false;
@@ -90,17 +88,14 @@ public class CMSUtils {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContentInfo readContentInfo(byte[] input) throws CMSException {
         return readContentInfo(new ASN1InputStream(input));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContentInfo readContentInfo(InputStream input) throws CMSException {
         return readContentInfo(new ASN1InputStream(input));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List getCertificatesFromStore(Store certStore) throws CMSException {
         List certs = new ArrayList();
         try {
@@ -113,7 +108,6 @@ public class CMSUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List getAttributeCertificatesFromStore(Store attrStore) throws CMSException {
         List certs = new ArrayList();
         try {
@@ -126,7 +120,6 @@ public class CMSUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List getCRLsFromStore(Store crlStore) throws CMSException {
         List crls = new ArrayList();
         try {
@@ -144,7 +137,6 @@ public class CMSUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1Set createBerSetFromList(List derObjects) {
         ASN1EncodableVector v = new ASN1EncodableVector();
         Iterator it = derObjects.iterator();
@@ -205,7 +197,6 @@ public class CMSUtils {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static OutputStream attachSignersToOutputStream(Collection signers, OutputStream s) {
         OutputStream result = s;
         Iterator it = signers.iterator();
@@ -216,7 +207,6 @@ public class CMSUtils {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static OutputStream getSafeOutputStream(OutputStream s) {
         return s == null ? new NullOutputStream() : s;
     }

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 /* loaded from: classes5.dex */
 public abstract class ASN1Null extends ASN1Primitive {
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
@@ -29,7 +28,6 @@ public abstract class ASN1Null extends ASN1Primitive {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1Null)) {

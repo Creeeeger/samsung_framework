@@ -87,6 +87,10 @@ public class SemHorizontalFastScroller {
     private boolean mUpdatingLayout;
     private static final long TAP_TIMEOUT = ViewConfiguration.getTapTimeout();
     private static Property<View, Integer> LEFT = new IntProperty<View>("left") { // from class: com.samsung.android.widget.SemHorizontalFastScroller.3
+        AnonymousClass3(String name) {
+            super(name);
+        }
+
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             object.setLeft(value);
@@ -98,6 +102,10 @@ public class SemHorizontalFastScroller {
         }
     };
     private static Property<View, Integer> TOP = new IntProperty<View>(GenerateXML.TOP) { // from class: com.samsung.android.widget.SemHorizontalFastScroller.4
+        AnonymousClass4(String name) {
+            super(name);
+        }
+
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             object.setTop(value);
@@ -109,6 +117,10 @@ public class SemHorizontalFastScroller {
         }
     };
     private static Property<View, Integer> RIGHT = new IntProperty<View>("right") { // from class: com.samsung.android.widget.SemHorizontalFastScroller.5
+        AnonymousClass5(String name) {
+            super(name);
+        }
+
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             object.setRight(value);
@@ -120,6 +132,10 @@ public class SemHorizontalFastScroller {
         }
     };
     private static Property<View, Integer> BOTTOM = new IntProperty<View>(GenerateXML.BOTTOM) { // from class: com.samsung.android.widget.SemHorizontalFastScroller.6
+        AnonymousClass6(String name) {
+            super(name);
+        }
+
         @Override // android.util.IntProperty
         public void setValue(View object, int value) {
             object.setBottom(value);
@@ -138,17 +154,49 @@ public class SemHorizontalFastScroller {
     private int mScrollbarPosition = -1;
     private long mPendingDrag = -1;
     private final Runnable mDeferHide = new Runnable() { // from class: com.samsung.android.widget.SemHorizontalFastScroller.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             SemHorizontalFastScroller.this.setState(0);
         }
     };
     private final Animator.AnimatorListener mSwitchPrimaryListener = new AnimatorListenerAdapter() { // from class: com.samsung.android.widget.SemHorizontalFastScroller.2
+        AnonymousClass2() {
+        }
+
         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
         public void onAnimationEnd(Animator animation) {
             SemHorizontalFastScroller.this.mShowingPrimary = !r0.mShowingPrimary;
         }
     };
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$1 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SemHorizontalFastScroller.this.setState(0);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$2 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            SemHorizontalFastScroller.this.mShowingPrimary = !r0.mShowingPrimary;
+        }
+    }
 
     public SemHorizontalFastScroller(SemHorizontalAbsListView listView, int styleResId) {
         this.mList = listView;
@@ -561,7 +609,6 @@ public class SemHorizontalFastScroller {
         track.layout(left, top, right, bottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setState(int state) {
         this.mList.removeCallbacks(this.mDeferHide);
         if (this.mAlwaysShow && state == 0) {
@@ -686,29 +733,103 @@ public class SemHorizontalFastScroller {
         this.mListAdapter = null;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x003a, code lost:            if (r9 == r7) goto L13;     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x003c, code lost:            if (r6 <= 0) goto L55;     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x003e, code lost:            r6 = r6 - 1;        r10 = r19.mSectionIndexer.getPositionForSection(r6);     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0046, code lost:            if (r10 == r7) goto L17;     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x004b, code lost:            if (r6 != 0) goto L56;     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x004d, code lost:            r8 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0048, code lost:            r11 = r6;        r8 = r6;     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x004f, code lost:            r13 = r12 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0051, code lost:            if (r13 >= r4) goto L57;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0059, code lost:            if (r19.mSectionIndexer.getPositionForSection(r13) != r9) goto L58;     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x005b, code lost:            r13 = r13 + 1;        r12 = r12 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0060, code lost:            r14 = r11 / r4;        r15 = r12 / r4;     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0066, code lost:            if (r2 != 0) goto L27;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0068, code lost:            r1 = Float.MAX_VALUE;     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0074, code lost:            if (r11 != r5) goto L32;     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x007a, code lost:            if ((r20 - r14) >= r1) goto L32;     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x007c, code lost:            r3 = r10;     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x008b, code lost:            r3 = android.util.MathUtils.constrain(r3, 0, r2 - 1);        r7 = r19.mList;     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0098, code lost:            if ((r7 instanceof android.widget.SemHorizontalListView) == false) goto L36;     */
-    /* JADX WARN: Code restructure failed: missing block: B:36:0x009a, code lost:            ((android.widget.SemHorizontalListView) r7).setSelectionFromStart(r19.mHeaderCount + r3, 0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:52:0x00a6, code lost:            r7.setSelection(r19.mHeaderCount + r3);     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x007e, code lost:            r3 = ((int) (((r9 - r10) * (r20 - r14)) / (r15 - r14))) + r10;     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x006e, code lost:            r1 = 0.125f / r2;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x003a, code lost:
+    
+        if (r9 == r7) goto L76;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x003c, code lost:
+    
+        if (r6 <= 0) goto L118;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x003e, code lost:
+    
+        r6 = r6 - 1;
+        r10 = r19.mSectionIndexer.getPositionForSection(r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0046, code lost:
+    
+        if (r10 == r7) goto L80;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x004b, code lost:
+    
+        if (r6 != 0) goto L119;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x004d, code lost:
+    
+        r8 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x0048, code lost:
+    
+        r11 = r6;
+        r8 = r6;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x004f, code lost:
+    
+        r13 = r12 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0051, code lost:
+    
+        if (r13 >= r4) goto L120;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0059, code lost:
+    
+        if (r19.mSectionIndexer.getPositionForSection(r13) != r9) goto L121;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x005b, code lost:
+    
+        r13 = r13 + 1;
+        r12 = r12 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0060, code lost:
+    
+        r14 = r11 / r4;
+        r15 = r12 / r4;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0066, code lost:
+    
+        if (r2 != 0) goto L90;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0068, code lost:
+    
+        r1 = Float.MAX_VALUE;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0074, code lost:
+    
+        if (r11 != r5) goto L95;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x007a, code lost:
+    
+        if ((r20 - r14) >= r1) goto L95;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x007c, code lost:
+    
+        r3 = r10;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x008b, code lost:
+    
+        r3 = android.util.MathUtils.constrain(r3, 0, r2 - 1);
+        r7 = r19.mList;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x0098, code lost:
+    
+        if ((r7 instanceof android.widget.SemHorizontalListView) == false) goto L99;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x009a, code lost:
+    
+        ((android.widget.SemHorizontalListView) r7).setSelectionFromStart(r19.mHeaderCount + r3, 0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x00a6, code lost:
+    
+        r7.setSelection(r19.mHeaderCount + r3);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x007e, code lost:
+    
+        r3 = ((int) (((r9 - r10) * (r20 - r14)) / (r15 - r14))) + r10;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x006e, code lost:
+    
+        r1 = 0.125f / r2;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1051,6 +1172,78 @@ public class SemHorizontalFastScroller {
 
     private static Animator animateAlpha(View v, float alpha) {
         return ObjectAnimator.ofFloat(v, View.ALPHA, alpha);
+    }
+
+    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$3 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass3 extends IntProperty<View> {
+        AnonymousClass3(String name) {
+            super(name);
+        }
+
+        @Override // android.util.IntProperty
+        public void setValue(View object, int value) {
+            object.setLeft(value);
+        }
+
+        @Override // android.util.Property
+        public Integer get(View object) {
+            return Integer.valueOf(object.getLeft());
+        }
+    }
+
+    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$4 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass4 extends IntProperty<View> {
+        AnonymousClass4(String name) {
+            super(name);
+        }
+
+        @Override // android.util.IntProperty
+        public void setValue(View object, int value) {
+            object.setTop(value);
+        }
+
+        @Override // android.util.Property
+        public Integer get(View object) {
+            return Integer.valueOf(object.getTop());
+        }
+    }
+
+    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$5 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass5 extends IntProperty<View> {
+        AnonymousClass5(String name) {
+            super(name);
+        }
+
+        @Override // android.util.IntProperty
+        public void setValue(View object, int value) {
+            object.setRight(value);
+        }
+
+        @Override // android.util.Property
+        public Integer get(View object) {
+            return Integer.valueOf(object.getRight());
+        }
+    }
+
+    /* renamed from: com.samsung.android.widget.SemHorizontalFastScroller$6 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass6 extends IntProperty<View> {
+        AnonymousClass6(String name) {
+            super(name);
+        }
+
+        @Override // android.util.IntProperty
+        public void setValue(View object, int value) {
+            object.setBottom(value);
+        }
+
+        @Override // android.util.Property
+        public Integer get(View object) {
+            return Integer.valueOf(object.getBottom());
+        }
     }
 
     private static Animator animateBounds(View v, Rect bounds) {

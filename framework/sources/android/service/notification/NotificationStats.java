@@ -10,13 +10,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class NotificationStats implements Parcelable {
     public static final Parcelable.Creator<NotificationStats> CREATOR = new Parcelable.Creator<NotificationStats>() { // from class: android.service.notification.NotificationStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NotificationStats createFromParcel(Parcel in) {
             return new NotificationStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationStats[] newArray(int size) {
             return new NotificationStats[size];
@@ -86,6 +87,23 @@ public final class NotificationStats implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.service.notification.NotificationStats$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NotificationStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationStats createFromParcel(Parcel in) {
+            return new NotificationStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationStats[] newArray(int size) {
+            return new NotificationStats[size];
+        }
     }
 
     public boolean hasSeen() {

@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class RadioAccessSpecifierBands implements Parcelable {
     public static final Parcelable.Creator<RadioAccessSpecifierBands> CREATOR = new Parcelable.Creator<RadioAccessSpecifierBands>() { // from class: android.hardware.radio.network.RadioAccessSpecifierBands.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RadioAccessSpecifierBands createFromParcel(Parcel _aidl_source) {
             return new RadioAccessSpecifierBands(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessSpecifierBands[] newArray(int _aidl_size) {
             return new RadioAccessSpecifierBands[_aidl_size];
@@ -34,6 +35,10 @@ public final class RadioAccessSpecifierBands implements Parcelable {
         public static final int ngranBands = 4;
         public static final int noinit = 0;
         public static final int utranBands = 2;
+    }
+
+    /* synthetic */ RadioAccessSpecifierBands(Parcel parcel, RadioAccessSpecifierBandsIA radioAccessSpecifierBandsIA) {
+        this(parcel);
     }
 
     public RadioAccessSpecifierBands() {
@@ -122,6 +127,23 @@ public final class RadioAccessSpecifierBands implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.radio.network.RadioAccessSpecifierBands$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RadioAccessSpecifierBands> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioAccessSpecifierBands createFromParcel(Parcel _aidl_source) {
+            return new RadioAccessSpecifierBands(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioAccessSpecifierBands[] newArray(int _aidl_size) {
+            return new RadioAccessSpecifierBands[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

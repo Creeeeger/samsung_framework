@@ -138,8 +138,9 @@ public interface ISemDualAppManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemDualAppManager {
+        public static class Proxy implements ISemDualAppManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

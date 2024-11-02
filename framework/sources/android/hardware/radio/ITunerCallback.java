@@ -264,14 +264,12 @@ public interface ITunerCallback extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg0, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg0.put(k, v);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class Proxy implements ITunerCallback {
             private IBinder mRemote;
@@ -455,7 +453,6 @@ public interface ITunerCallback extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$onParametersUpdated$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);

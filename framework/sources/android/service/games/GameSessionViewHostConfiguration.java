@@ -7,13 +7,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class GameSessionViewHostConfiguration implements Parcelable {
     public static final Parcelable.Creator<GameSessionViewHostConfiguration> CREATOR = new Parcelable.Creator<GameSessionViewHostConfiguration>() { // from class: android.service.games.GameSessionViewHostConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GameSessionViewHostConfiguration createFromParcel(Parcel source) {
             return new GameSessionViewHostConfiguration(source.readInt(), source.readInt(), source.readInt());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GameSessionViewHostConfiguration[] newArray(int size) {
             return new GameSessionViewHostConfiguration[0];
@@ -22,6 +23,23 @@ public final class GameSessionViewHostConfiguration implements Parcelable {
     final int mDisplayId;
     final int mHeightPx;
     final int mWidthPx;
+
+    /* renamed from: android.service.games.GameSessionViewHostConfiguration$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GameSessionViewHostConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameSessionViewHostConfiguration createFromParcel(Parcel source) {
+            return new GameSessionViewHostConfiguration(source.readInt(), source.readInt(), source.readInt());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameSessionViewHostConfiguration[] newArray(int size) {
+            return new GameSessionViewHostConfiguration[0];
+        }
+    }
 
     public GameSessionViewHostConfiguration(int displayId, int widthPx, int heightPx) {
         this.mDisplayId = displayId;

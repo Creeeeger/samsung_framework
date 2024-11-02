@@ -93,7 +93,6 @@ public final class CamUtils {
         return ((red & 255) << 16) | (-16777216) | ((green & 255) << 8) | (blue & 255);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int intFromLstar(float lstar) {
         float xT;
         float zT;
@@ -143,7 +142,6 @@ public final class CamUtils {
         return (float) y;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float[] xyzFromInt(int argb) {
         float r = linearized(Color.red(argb));
         float g = linearized(Color.green(argb));

@@ -20,6 +20,10 @@ public final class IptvFrontendSettingsFec {
     public @interface FecType {
     }
 
+    /* synthetic */ IptvFrontendSettingsFec(int i, int i2, int i3, IptvFrontendSettingsFecIA iptvFrontendSettingsFecIA) {
+        this(i, i2, i3);
+    }
+
     private IptvFrontendSettingsFec(int fecType, int fecRowNum, int fecColNum) {
         this.mFecType = fecType;
         this.mFecRowNum = fecRowNum;

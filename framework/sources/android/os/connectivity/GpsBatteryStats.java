@@ -7,13 +7,14 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public final class GpsBatteryStats implements Parcelable {
     public static final Parcelable.Creator<GpsBatteryStats> CREATOR = new Parcelable.Creator<GpsBatteryStats>() { // from class: android.os.connectivity.GpsBatteryStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GpsBatteryStats createFromParcel(Parcel in) {
             return new GpsBatteryStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GpsBatteryStats[] newArray(int size) {
             return new GpsBatteryStats[size];
@@ -22,6 +23,27 @@ public final class GpsBatteryStats implements Parcelable {
     private long mEnergyConsumedMaMs;
     private long mLoggingDurationMs;
     private long[] mTimeInGpsSignalQualityLevel;
+
+    /* synthetic */ GpsBatteryStats(Parcel parcel, GpsBatteryStatsIA gpsBatteryStatsIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.os.connectivity.GpsBatteryStats$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GpsBatteryStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsBatteryStats createFromParcel(Parcel in) {
+            return new GpsBatteryStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsBatteryStats[] newArray(int size) {
+            return new GpsBatteryStats[size];
+        }
+    }
 
     public GpsBatteryStats() {
         initialize();

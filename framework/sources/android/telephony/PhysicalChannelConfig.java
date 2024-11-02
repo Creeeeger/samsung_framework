@@ -24,13 +24,14 @@ public final class PhysicalChannelConfig implements Parcelable {
     @Deprecated
     public static final int CONNECTION_UNKNOWN = -1;
     public static final Parcelable.Creator<PhysicalChannelConfig> CREATOR = new Parcelable.Creator<PhysicalChannelConfig>() { // from class: android.telephony.PhysicalChannelConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PhysicalChannelConfig createFromParcel(Parcel in) {
             return new PhysicalChannelConfig(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhysicalChannelConfig[] newArray(int size) {
             return new PhysicalChannelConfig[size];
@@ -55,6 +56,14 @@ public final class PhysicalChannelConfig implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface ConnectionStatus {
+    }
+
+    /* synthetic */ PhysicalChannelConfig(Parcel parcel, PhysicalChannelConfigIA physicalChannelConfigIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ PhysicalChannelConfig(Builder builder, PhysicalChannelConfigIA physicalChannelConfigIA) {
+        this(builder);
     }
 
     @Override // android.os.Parcelable
@@ -267,6 +276,23 @@ public final class PhysicalChannelConfig implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mCellConnectionStatus), Integer.valueOf(this.mCellBandwidthDownlinkKhz), Integer.valueOf(this.mCellBandwidthUplinkKhz), Integer.valueOf(this.mNetworkType), Integer.valueOf(this.mFrequencyRange), Integer.valueOf(this.mDownlinkChannelNumber), Integer.valueOf(this.mUplinkChannelNumber), Integer.valueOf(Arrays.hashCode(this.mContextIds)), Integer.valueOf(this.mPhysicalCellId), Integer.valueOf(this.mBand), Integer.valueOf(this.mDownlinkFrequency), Integer.valueOf(this.mUplinkFrequency));
+    }
+
+    /* renamed from: android.telephony.PhysicalChannelConfig$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PhysicalChannelConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhysicalChannelConfig createFromParcel(Parcel in) {
+            return new PhysicalChannelConfig(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhysicalChannelConfig[] newArray(int size) {
+            return new PhysicalChannelConfig[size];
+        }
     }
 
     public String toString() {

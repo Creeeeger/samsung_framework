@@ -164,7 +164,6 @@ public abstract class BaseAgreementSpi extends KeyAgreementSpi {
         return map.get(algKey).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static byte[] trimZeroes(byte[] secret) {
         if (secret[0] != 0) {
             return secret;
@@ -178,7 +177,6 @@ public abstract class BaseAgreementSpi extends KeyAgreementSpi {
         return rv;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // javax.crypto.KeyAgreementSpi
     public byte[] engineGenerateSecret() throws IllegalStateException {
         if (this.kdf != null) {
@@ -192,7 +190,6 @@ public abstract class BaseAgreementSpi extends KeyAgreementSpi {
         return calcSecret();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // javax.crypto.KeyAgreementSpi
     public int engineGenerateSecret(byte[] sharedSecret, int offset) throws IllegalStateException, ShortBufferException {
         byte[] secret = engineGenerateSecret();
@@ -203,7 +200,6 @@ public abstract class BaseAgreementSpi extends KeyAgreementSpi {
         return secret.length;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // javax.crypto.KeyAgreementSpi
     public SecretKey engineGenerateSecret(String algorithm) throws NoSuchAlgorithmException {
         String algKey = Strings.toUpperCase(algorithm);

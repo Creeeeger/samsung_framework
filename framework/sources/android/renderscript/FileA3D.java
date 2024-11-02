@@ -88,8 +88,7 @@ public class FileA3D extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.renderscript.FileA3D$1, reason: invalid class name */
+    /* renamed from: android.renderscript.FileA3D$1 */
     /* loaded from: classes3.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$renderscript$FileA3D$EntryType;

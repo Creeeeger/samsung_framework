@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class AdapterHelper implements OpReorderer.Callback {
     private static final boolean DEBUG = false;
@@ -25,7 +24,6 @@ public class AdapterHelper implements OpReorderer.Callback {
     final ArrayList<UpdateOp> mPostponedList;
     private Pools.Pool<UpdateOp> mUpdateOpPool;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public interface Callback {
         RecyclerView.ViewHolder findViewHolder(int i);
@@ -45,7 +43,6 @@ public class AdapterHelper implements OpReorderer.Callback {
         void onDispatchSecondPass(UpdateOp updateOp);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AdapterHelper(Callback callback) {
         this(callback, false);
     }
@@ -65,14 +62,12 @@ public class AdapterHelper implements OpReorderer.Callback {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reset() {
         recycleUpdateOpsAndClearList(this.mPendingUpdates);
         recycleUpdateOpsAndClearList(this.mPostponedList);
         this.mExistingUpdateTypes = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Failed to find 'out' block for switch in B:4:0x001a. Please report as an issue. */
     public void preProcess() {
         this.mOpReorderer.reorderOps(this.mPendingUpdates);
@@ -101,7 +96,6 @@ public class AdapterHelper implements OpReorderer.Callback {
         this.mPendingUpdates.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void consumePostponedUpdates() {
         int count = this.mPostponedList.size();
         for (int i = 0; i < count; i++) {
@@ -440,17 +434,14 @@ public class AdapterHelper implements OpReorderer.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasPendingUpdates() {
         return this.mPendingUpdates.size() > 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasAnyUpdateTypes(int updateTypes) {
         return (this.mExistingUpdateTypes & updateTypes) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int findPositionOffset(int position) {
         return findPositionOffset(position, 0);
     }
@@ -484,7 +475,6 @@ public class AdapterHelper implements OpReorderer.Callback {
         return position;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean onItemRangeChanged(int positionStart, int itemCount, Object payload) {
         if (itemCount < 1) {
             return false;
@@ -494,7 +484,6 @@ public class AdapterHelper implements OpReorderer.Callback {
         return this.mPendingUpdates.size() == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean onItemRangeInserted(int positionStart, int itemCount) {
         if (itemCount < 1) {
             return false;
@@ -504,7 +493,6 @@ public class AdapterHelper implements OpReorderer.Callback {
         return this.mPendingUpdates.size() == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean onItemRangeRemoved(int positionStart, int itemCount) {
         if (itemCount < 1) {
             return false;
@@ -514,7 +502,6 @@ public class AdapterHelper implements OpReorderer.Callback {
         return this.mPendingUpdates.size() == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean onItemRangeMoved(int from, int to, int itemCount) {
         if (from == to) {
             return false;
@@ -530,7 +517,6 @@ public class AdapterHelper implements OpReorderer.Callback {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Failed to find 'out' block for switch in B:4:0x0016. Please report as an issue. */
     public void consumeUpdatesInOnePass() {
         consumePostponedUpdates();
@@ -607,12 +593,10 @@ public class AdapterHelper implements OpReorderer.Callback {
         return position;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasUpdates() {
         return (this.mPostponedList.isEmpty() || this.mPendingUpdates.isEmpty()) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class UpdateOp {
         static final int ADD = 1;

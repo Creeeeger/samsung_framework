@@ -69,13 +69,11 @@ public class DrmInfoRequest {
         return this.mRequestInformation.values().iterator();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isValid() {
         String str = this.mMimeType;
         return (str == null || str.equals("") || this.mRequestInformation == null || !isValidType(this.mInfoType)) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isValidType(int infoType) {
         switch (infoType) {
             case 1:

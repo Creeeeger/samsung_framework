@@ -387,8 +387,9 @@ public interface IAODManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IAODManager {
+        public static class Proxy implements IAODManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

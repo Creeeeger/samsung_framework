@@ -234,8 +234,9 @@ public interface IPersistentDataBlockService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IPersistentDataBlockService {
+        public static class Proxy implements IPersistentDataBlockService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

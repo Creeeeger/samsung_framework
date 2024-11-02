@@ -375,8 +375,9 @@ public interface ISehRadioNetworkResponse extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISehRadioNetworkResponse {
+        public static class Proxy implements ISehRadioNetworkResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

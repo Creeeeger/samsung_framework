@@ -53,7 +53,9 @@ public final class ContentCaptureEvent implements Parcelable {
     private final int mType;
     private static final String TAG = ContentCaptureEvent.class.getSimpleName();
     public static final Parcelable.Creator<ContentCaptureEvent> CREATOR = new Parcelable.Creator<ContentCaptureEvent>() { // from class: android.view.contentcapture.ContentCaptureEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentCaptureEvent createFromParcel(Parcel parcel) {
             int sessionId = parcel.readInt();
@@ -94,7 +96,6 @@ public final class ContentCaptureEvent implements Parcelable {
             return event;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureEvent[] newArray(int size) {
             return new ContentCaptureEvent[size];
@@ -196,12 +197,10 @@ public final class ContentCaptureEvent implements Parcelable {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasSameComposingSpan(ContentCaptureEvent other) {
         return this.mComposingStart == other.mComposingStart && this.mComposingEnd == other.mComposingEnd;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasSameSelectionSpan(ContentCaptureEvent other) {
         return this.mSelectionStartIndex == other.mSelectionStartIndex && this.mSelectionEndIndex == other.mSelectionEndIndex;
     }
@@ -222,7 +221,6 @@ public final class ContentCaptureEvent implements Parcelable {
         return this.mSelectionEndIndex;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void restoreComposingSpan() {
         int i;
         int i2 = this.mComposingStart;
@@ -237,7 +235,6 @@ public final class ContentCaptureEvent implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void restoreSelectionSpans() {
         if (this.mSelectionStartIndex <= -1 || this.mSelectionEndIndex <= -1) {
             return;
@@ -465,6 +462,58 @@ public final class ContentCaptureEvent implements Parcelable {
             parcel.writeInt(this.mComposingEnd);
             parcel.writeInt(this.mSelectionStartIndex);
             parcel.writeInt(this.mSelectionEndIndex);
+        }
+    }
+
+    /* renamed from: android.view.contentcapture.ContentCaptureEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentCaptureEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentCaptureEvent createFromParcel(Parcel parcel) {
+            int sessionId = parcel.readInt();
+            int type = parcel.readInt();
+            long eventTime = parcel.readLong();
+            ContentCaptureEvent event = new ContentCaptureEvent(sessionId, type, eventTime);
+            AutofillId id = (AutofillId) parcel.readParcelable(null, AutofillId.class);
+            if (id != null) {
+                event.setAutofillId(id);
+            }
+            ArrayList<AutofillId> ids = parcel.createTypedArrayList(AutofillId.CREATOR);
+            if (ids != null) {
+                event.setAutofillIds(ids);
+            }
+            ViewNode node = ViewNode.readFromParcel(parcel);
+            if (node != null) {
+                event.setViewNode(node);
+            }
+            event.setText(parcel.readCharSequence());
+            if (type == -1 || type == -2) {
+                event.setParentSessionId(parcel.readInt());
+            }
+            if (type == -1 || type == 6) {
+                event.setClientContext((ContentCaptureContext) parcel.readParcelable(null, ContentCaptureContext.class));
+            }
+            if (type == 9) {
+                event.setInsets((Insets) parcel.readParcelable(null, Insets.class));
+            }
+            if (type == 10) {
+                event.setBounds((Rect) parcel.readParcelable(null, Rect.class));
+            }
+            if (type == 3) {
+                event.setComposingIndex(parcel.readInt(), parcel.readInt());
+                event.restoreComposingSpan();
+                event.setSelectionIndex(parcel.readInt(), parcel.readInt());
+                event.restoreSelectionSpans();
+            }
+            return event;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentCaptureEvent[] newArray(int size) {
+            return new ContentCaptureEvent[size];
         }
     }
 

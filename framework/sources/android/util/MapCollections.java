@@ -8,7 +8,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public abstract class MapCollections<K, V> {
     MapCollections<K, V>.EntrySet mEntrySet;
@@ -161,8 +160,9 @@ public abstract class MapCollections<K, V> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    final class EntrySet implements Set<Map.Entry<K, V>> {
+    public final class EntrySet implements Set<Map.Entry<K, V>> {
         EntrySet() {
         }
 
@@ -272,8 +272,9 @@ public abstract class MapCollections<K, V> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    final class KeySet implements Set<K> {
+    public final class KeySet implements Set<K> {
         KeySet() {
         }
 
@@ -367,8 +368,9 @@ public abstract class MapCollections<K, V> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    final class ValuesCollection implements Collection<V> {
+    public final class ValuesCollection implements Collection<V> {
         ValuesCollection() {
         }
 

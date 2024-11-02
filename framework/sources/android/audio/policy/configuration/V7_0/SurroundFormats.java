@@ -76,7 +76,6 @@ public class SurroundFormats {
         return this.format;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SurroundFormats read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         SurroundFormats _instance = new SurroundFormats();

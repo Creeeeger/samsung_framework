@@ -138,7 +138,10 @@ public abstract class KernelCpuUidTimeReader<T> {
             this.mUsrSysTime = new long[2];
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:37:0x0092, code lost:            r2.onUidCpuTime(r4, r13);     */
+        /* JADX WARN: Code restructure failed: missing block: B:37:0x0092, code lost:
+        
+            r2.onUidCpuTime(r4, r13);
+         */
         @Override // com.android.internal.os.KernelCpuUidTimeReader
         /*
             Code decompiled incorrectly, please refer to instructions dump.

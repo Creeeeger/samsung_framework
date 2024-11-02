@@ -384,12 +384,12 @@
     <string name="allow_settings_changes">تمنع سياسة الحماية تغيير الضبط.</string>
     <string name="alwaysUse">الاستخدام بشكل تلقائي لهذا الإجراء.</string>
     <string name="android_preparing_apk">جارٍ تحضير %1$s.</string>
-    <string name="android_start_title">جارٍ بدء تشغيل الهاتف…</string>
+    <string name="android_start_title">جارٍ بدء تشغيل الجهاز اللوحي…</string>
     <string name="android_system_label">‏نظام Android</string>
     <string name="android_upgrading_complete">جارٍ إعادة التشغيل.</string>
     <string name="android_upgrading_notification_title">جارٍ إنهاء تحديث النظام…</string>
     <string name="android_upgrading_starting_apps">بدء التطبيقات.</string>
-    <string name="android_upgrading_title">جارٍ تحديث الهاتف…</string>
+    <string name="android_upgrading_title">جارٍ تحديث الجهاز اللوحي…</string>
     <string name="anr_activity_application">%2$s لا يستجيب</string>
     <string name="anr_activity_process">%1$s لا يستجيب</string>
     <string name="anr_application_process">%1$s لا يستجيب</string>
@@ -423,16 +423,16 @@
     <string name="app_restricted_message_concentration_mode">تم حظر %s أثناء وضع التركيز. اتصل بمسؤول تقنية المعلومات لمعرفة المزيد.</string>
     <string name="app_running_notification_text">انقر للحصول على مزيد من المعلومات أو لإيقاف التطبيق.</string>
     <string name="app_running_notification_title">%1$s قيد التشغيل</string>
-    <string name="app_streaming_blocked_message">لا يمكن الوصول إلى هذا التطبيق على %1$s في الوقت الحالي. حاوِل الوصول إليه على هاتفك بدلاً من ذلك.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">يطلب هذا التطبيق الحصول على ميزات أمان إضافية. بدلاً من ذلك، جرِّب استخدام هاتفك.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">لا يمكن الوصول إلى هذه الإعدادات على %1$s. بدلاً من ذلك، جرِّب استخدام هاتفك.</string>
+    <string name="app_streaming_blocked_message">لا يمكن الوصول إلى هذا التطبيق على %1$s في الوقت الحالي. حاوِل الوصول إليه على جهازك اللوحي بدلاً من ذلك.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">يطلب هذا التطبيق الحصول على ميزات أمان إضافية. بدلاً من ذلك، جرِّب استخدام جهازك اللوحي.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">لا يمكن الوصول إلى هذه الإعدادات على %1$s. بدلاً من ذلك، جرِّب استخدام جهازك اللوحي.</string>
     <string name="app_streaming_blocked_title">تطبيق %1$s غير متاح</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">الكاميرا غير متاحة</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">الاستمرار على الهاتف</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">الميكروفون غير متاح</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">مطلوب منح الإذن</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">‏متجر Play غير متوفّر</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">إعدادات الهاتف غير متاحة</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">إعدادات الجهاز اللوحي غير متاحة</string>
     <string name="app_suspended_default_message">التطبيق %1$s غير متاح الآن، وهو مُدار بواسطة %2$s.</string>
     <string name="app_suspended_more_details">مزيد من المعلومات</string>
     <string name="app_suspended_title">التطبيق غير متاح</string>
@@ -503,7 +503,7 @@
     <string name="badPuk">‏رمز PUK الذي كتبته غير صحيح.</string>
     <string name="badPuk2">رمز PUK2 الذي أدخلته غير صحيح</string>
     <string name="batt_cooldown_mode_ok">موافق</string>
-    <string name="battery_saver_charged_notification_summary">تم شحن الهاتف بدرجة كافية وتفعيل الميزات مرة أخرى</string>
+    <string name="battery_saver_charged_notification_summary">تم شحن الجهاز اللوحي بدرجة كافية وتفعيل الميزات مرة أخرى</string>
     <string name="battery_saver_description">يؤدي استخدام ميزة \"توفير شحن البطارية\" إلى تفعيل وضع \"المظهر الداكن\" وتقييد أو إيقاف الأنشطة في الخلفية وبعض التأثيرات المرئية وميزات معيّنة وبعض اتصالات الشبكات.</string>
     <string name="battery_saver_description_with_learn_more">يؤدي استخدام ميزة \"توفير شحن البطارية\" إلى تفعيل وضع \"المظهر الداكن\" وتقييد أو إيقاف الأنشطة في الخلفية وبعض التأثيرات المرئية وميزات معيّنة وبعض اتصالات الشبكات.</string>
     <string name="battery_saver_notification_channel_name">توفير شحن البطارية</string>
@@ -733,7 +733,7 @@
     <string name="decline">رفض</string>
     <string name="decline_remote_bugreport_action">رفض</string>
     <string name="default_audio_route_category_name">النظام</string>
-    <string name="default_audio_route_name">الهاتف</string>
+    <string name="default_audio_route_name">الجهاز اللوحي</string>
     <string name="default_audio_route_name_dock_speakers">مكبرات صوت للإرساء</string>
     <string name="default_audio_route_name_external_device">جهاز خارجي</string>
     <string name="default_audio_route_name_headphones">سماعات رأس</string>
@@ -860,7 +860,7 @@
     <string name="emergency_call_dialog_number_for_display">رقم الطوارئ</string>
     <string name="emergency_calls_only">مكالمات الطوارئ فقط</string>
     <string name="enablePin">‏محاولة غير ناجحة، فعّل قفل SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">‏يريد %1$s تفعيل ميزة Explore by Touch. عند تفعيل ميزة Explore by Touch، سيكون بإمكانك سماع أو مشاهدة أوصاف لما تحت إصبعك أو إجراء إيماءات للتفاعل مع الهاتف.</string>
+    <string name="enable_explore_by_touch_warning_message">‏يريد %1$s تفعيل ميزة Explore by Touch. عند تفعيل ميزة Explore by Touch، سيكون بإمكانك سماع أو مشاهدة أوصاف لما تحت إصبعك أو إجراء إيماءات للتفاعل مع الجهاز اللوحي.</string>
     <string name="enable_explore_by_touch_warning_title">‏هل تريد تفعيل ميزة Explore by Touch؟</string>
     <string name="error_message_change_not_allowed">لا يسمح المشرف بإجراء هذا التغيير</string>
     <string name="error_message_title">خطأ</string>
@@ -924,7 +924,7 @@
     <string name="ext_media_unsupported_notification_message">لا يدعم هذا الجهاز %s هذه. انقر لإعدادها في تنسيق مدعوم.</string>
     <string name="ext_media_unsupported_notification_title">%s غير مدعومة</string>
     <string name="ext_storage_bad_removal_button">إعادة تشغيل</string>
-    <string name="ext_storage_bad_removal_title">إعادة تشغيل هاتفك</string>
+    <string name="ext_storage_bad_removal_title">إعادة تشغيل جهازك اللوحي</string>
     <string name="extmedia_format_button_format">هيئة</string>
     <string name="extmedia_format_message">ستفقد جميع البيانات على بطاقتك.</string>
     <string name="extmedia_format_message_usbhost">‏سيتم مسح جميع الملفات المخزنة على وحدة تخزين USB. لا يمكن عكس هذا الإجراء!</string>
@@ -1128,7 +1128,7 @@
     <string name="global_action_toggle_sealed_mode">Sealed mode</string>
     <string name="global_action_toggle_silent_mode">وضع صامت</string>
     <string name="global_action_voice_assist">المساعد الصوتي</string>
-    <string name="global_actions">خيارات الهاتف</string>
+    <string name="global_actions">خيارات الجهاز اللوحي</string>
     <string name="global_actions_airplane_mode_off_status">وضع الطيران متوقف</string>
     <string name="global_actions_airplane_mode_on_status">وضع الطيران قيد التفعيل</string>
     <string name="global_actions_toggle_airplane_mode">وضع الطيران</string>
@@ -1313,11 +1313,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>انقر لكتابة كلمة المرور&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">‏رمز PIN غير صحيح.</string>
     <string name="kg_enter_confirm_pin_hint">‏تأكيد رمز رمز PIN المراد</string>
-    <string name="kg_failed_attempts_almost_at_login">"لقد رسمت نقش فتح القفل بشكل غير صحيح %1$d مرة. بعد إجراء %2$d من المحاولات غير الناجحة الأخرى، ستُطالب بإلغاء تأمين الهاتف باستخدام حساب بريد إلكتروني لإلغاء تأمين الهاتف.
+    <string name="kg_failed_attempts_almost_at_login">"لقد رسمت نقش فتح القفل بشكل غير صحيح %1$d مرة. بعد إجراء %2$d من المحاولات غير الناجحة الأخرى، ستطالَب بإلغاء تأمين الجهاز اللوحي باستخدام معلومات حساب بريد إلكتروني.
 
  أعد المحاولة خلال %3$d ثانية."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">لقد حاولت فتح قفل الهاتف بشكل غير صحيح %1$d مرة. بعد إجراء %2$d من المحاولات غير الناجحة الأخرى، ستتم إعادة ضبط الهاتف على الإعدادات الأساسية وسيتم فقد جميع بيانات المستخدم.</string>
-    <string name="kg_failed_attempts_now_wiping">لقد حاولت فتح قفل الهاتف بشكل غير صحيح %d مرة. سيتم الآن إعادة ضبط الهاتف على الإعدادات الأساسية.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">لقد حاولت فتح قفل الجهاز اللوحي بشكل غير صحيح %1$d مرة. بعد إجراء %2$d من المحاولات غير الناجحة الأخرى، ستتم إعادة ضبط الجهاز اللوحي على الإعدادات الأساسية وسيتم فقد جميع بيانات المستخدم.</string>
+    <string name="kg_failed_attempts_now_wiping">لقد حاولت فتح قفل الجهاز اللوحي بشكل غير صحيح %d مرة. سيتم الآن إعادة ضبط الجهاز اللوحي على الإعدادات الأساسية.</string>
     <string name="kg_forgot_pattern_button_text">نسيت النقش</string>
     <string name="kg_invalid_confirm_pin_hint">‏لا يتطابق رمزا رمز PIN</string>
     <string name="kg_invalid_puk">‏أعد إدخال رمز PUK الصحيح. وستؤدي المحاولات المتكررة إلى إيقاف شريحة SIM نهائيًا.</string>
@@ -1405,11 +1405,11 @@
     <string name="lockscreen_carrier_default">لا خدمة</string>
     <string name="lockscreen_carrier_noservice">(لا توجد خدمة).</string>
     <string name="lockscreen_emergency_call">الطوارئ</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">لقد حاولت فتح قفل الهاتف %1$d من المرات. بعد %2$d من المحاولات غير الناجحة، ستتم إعادة ضبط الهاتف إلى الإعدادات الأساسية وسيتم فقد جميع بيانات المستخدم.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"‏لقد رسمت نقش فتح القفل بشكل غير صحيح %1$d مرة. بعد %2$d من المحاولات غير الناجحة الأخرى، ستُطالب بإلغاء تأمين الهاتف باستخدام معلومات تسجيل الدخول إلى Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">لقد حاولت فتح قفل الجهاز اللوحي %1$d من المرات. بعد %2$d من المحاولات غير الناجحة، ستتم إعادة ضبط الجهاز اللوحي إلى الإعدادات الأساسية وسيتم فقد جميع بيانات المستخدم.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"‏لقد رسمت نقش فتح القفل بشكل غير صحيح %1$d مرة. بعد %2$d من المحاولات غير الناجحة الأخرى، ستُطالب بإلغاء تأمين الجهاز اللوحي باستخدام معلومات تسجيل الدخول إلى Google.
 
  أعد المحاولة خلال %3$d ثانية."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">لقد حاولت فتح قفل الهاتف %d من المرات بشكل غير صحيح. سيتم الآن إعادة ضبط الهاتف إلى الإعدادات الأساسية.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">لقد حاولت فتح قفل الجهاز اللوحي %d من المرات بشكل غير صحيح. سيتم الآن إعادة ضبط الجهاز اللوحي إلى الإعدادات الأساسية.</string>
     <string name="lockscreen_forgot_pattern_button_text">هل نسيت النمط؟</string>
     <string name="lockscreen_glogin_account_recovery_hint">"‏هل نسيت اسم المستخدم أو كلمة المرور؟
 انتقل إلى "<b>google.com/accounts/recovery</b></string>
@@ -1425,7 +1425,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">اضغط على \"القائمة\" لإلغاء التأمين أو إجراء اتصال بالطوارئ.</string>
     <string name="lockscreen_missing_sim_instructions">‏يجب إضافة شريحة SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">‏شريحة SIM مفقودة أو غير قابلة للقراءة. يجب إضافة شريحة SIM.</string>
-    <string name="lockscreen_missing_sim_message">‏لا تتوفر شريحة SIM في الهاتف.</string>
+    <string name="lockscreen_missing_sim_message">‏لا تتوفر شريحة SIM في الجهاز اللوحي.</string>
     <string name="lockscreen_missing_sim_message_short">‏لا تتوفر شريحة SIM.</string>
     <string name="lockscreen_network_locked_message">الشبكة مؤمّنة</string>
     <string name="lockscreen_password_wrong">أعد المحاولة</string>
@@ -1465,7 +1465,7 @@
     <string name="low_internal_storage_view_text">قد لا تعمل بعض وظائف النظام</string>
     <string name="low_internal_storage_view_text_no_boot">ليست هناك مساحة تخزين كافية للنظام. تأكد من أنه لديك مساحة خالية تبلغ ٢٥٠ ميغابايت وأعد التشغيل.</string>
     <string name="low_internal_storage_view_title">مساحة التخزين منخفضة</string>
-    <string name="low_memory">مساحة تخزين الهاتف ممتلئة. احذف بعض الملفات لإخلاء مساحة.</string>
+    <string name="low_memory">مساحة تخزين الجهاز اللوحي ممتلئة! احذف بعض الملفات لإخلاء مساحة.</string>
     <string name="ltb_kill_content_v2_phone">تم إغلاق %s لأنه تسبب بارتفاع درجة حرارة هاتفك. يمكنك فتحه مجدداً في وقت لاحق بعد أن يبرد هاتفك.</string>
     <string name="ltb_kill_content_v2_tablet">تم إغلاق %s لأنه تسبب بارتفاع درجة حرارة جهازك اللوحي. يمكنك فتحه مجدداً في وقت لاحق بعد أن يبرد جهازك اللوحي.</string>
     <string name="ltb_warning_button">عدم الإغلاق</string>
@@ -1777,18 +1777,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">يتم تشغيل الصوت على جهاز صوت بتقنية البلوتوث الخاص بك. انقر هنا لإيقاف تشغيله</string>
     <string name="multisound_sound_via_headphone">يتم تشغيل صوت %s عبر سماعات الرأس. انقر هنا لإيقاف تشغيل ذلك.</string>
     <string name="multisound_sound_via_headphone_multiselection">يتم تشغيل الصوت عبر سماعات الرأس الخاصة بك. انقر هنا لإيقاف تشغيله.</string>
-    <string name="multisound_sound_via_phone_speaker">يتم تشغيل صوت %s عبر مكبر صوت الهاتف. انقر هنا لإيقاف تشغيل هذا.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">يتم تشغيل الصوت عبر مكبر صوت هاتفك. انقر هنا لإيقاف تشغيله.</string>
+    <string name="multisound_sound_via_phone_speaker">يتم تشغيل صوت %s عبر مكبر صوت الجهاز اللوحي. انقر هنا لإيقاف تشغيل ذلك.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">يتم تشغيل الصوت عبر مكبر صوت جهازك اللوحي. انقر هنا لإيقاف تشغيله.</string>
     <string name="multisound_sound_via_usb_audio">يتم تشغيل صوت %s عبر جهاز صوت USB. انقر هنا لإيقاف تشغيل ذلك.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">يتم تشغيل الصوت عبر جهاز صوت USB الخاص بك. انقر هنا لإيقاف تشغيله.</string>
     <string name="multisound_title">صوت تطبيق منفصل</string>
     <string name="multisound_turn_off_multisound">إيقاف التشغيل</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">يتعذر تشغيل %s في Samsung DeX. حاول التشغيل في وضع الهاتف.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">يتعذر تشغيل %s في Samsung DeX. تم تصميمه للشاشات الرئيسية للهواتف.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">يمكن تشغيل بعض الألعاب على شاشات اللمس فقط. إذا لم تعمل أدوات التحكم بالماوس في Samsung DeX، فحاول اللعب في وضع الهاتف بدلاً من ذلك.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">يتعذر تشغيل %s في Samsung DeX. حاول التشغيل في وضع الجهاز اللوحي.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">يتعذر تشغيل %s في Samsung DeX. تم تصميمه للشاشات الرئيسية الخاصة بالأجهزة اللوحية.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">يمكن تشغيل بعض الألعاب على شاشات اللمس فقط. إذا كانت أدوات التحكم بالماوس لا تعمل في Samsung DeX، فحاول اللعب في وضع الجهاز اللوحي بدلاً من ذلك.</string>
     <string name="music_recognition_manager_service">خدمة إدارة التعرّف على الموسيقى</string>
     <string name="muted_by">يعمل %1$s على كتم بعض الأصوات.</string>
-    <string name="my_device">هذا الهاتف</string>
+    <string name="my_device">هذا الجهاز اللوحي</string>
     <string name="nas_upgrade_notification_content">‏يتم الآن توفير الإجراءات والردود المقترحة من خلال الإشعارات المحسّنة. ولم تعد الإشعارات التكيُّفية لنظام التشغيل Android متاحة.</string>
     <string name="nas_upgrade_notification_disable_action">إيقاف</string>
     <string name="nas_upgrade_notification_enable_action">حسنًا</string>
@@ -1953,23 +1953,23 @@
     <string name="permdesc_bindNotificationListenerService">يتيح للمالك الربط بواجهة المستوى العلوي لخدمة تلقّي الإشعارات الصوتية. ولن تكون هناك حاجة إليه مطلقًا مع التطبيقات العادية.</string>
     <string name="permdesc_bind_connection_service">للسماح للتطبيق بالتفاعل مع الخدمات الهاتفية لإجراء/تلقي المكالمات.</string>
     <string name="permdesc_bind_incall_service">للسماح للتطبيق بالتحكم في وقت وكيفية مشاهدة المستخدم للشاشة أثناء الاتصال.</string>
-    <string name="permdesc_bluetooth">للسماح للتطبيق بعرض إعداد البلوتوث على الهاتف وإجراء اتصالات وقبولها مع الأجهزة المقترنة.</string>
-    <string name="permdesc_bluetoothAdmin">للسماح للتطبيق بإعداد هاتف البلوتوث المحلي، واكتشاف أجهزة التحكم عن بعد والاقتران بها.</string>
+    <string name="permdesc_bluetooth">للسماح للتطبيق بعرض إعداد البلوتوث على الجهاز اللوحي وإجراء اتصالات وقبولها مع الأجهزة المقترنة.</string>
+    <string name="permdesc_bluetoothAdmin">للسماح للتطبيق بإعداد لوحة البلوتوث المحلي، واكتشاف أجهزة التحكم عن بعد والاقتران بها.</string>
     <string name="permdesc_bluetooth_advertise">للسماح للتطبيق بعرض إعلانات على الأجهزة القريبة التي تتضمّن بلوتوث.</string>
     <string name="permdesc_bluetooth_connect">يسمح هذا الإذن للتطبيق بالارتباط بالأجهزة المقترنة التي تتضمّن بلوتوث.</string>
     <string name="permdesc_bluetooth_scan">يسمح هذا الإذن للتطبيق باكتشاف الأجهزة القريبة التي تتضمّن بلوتوث والاقتران بها.</string>
     <string name="permdesc_bodySensors">يتيح هذا الإذن للتطبيق بالوصول إلى بيانات أجهزة استشعار الجسم، مثل معدّل نبضات القلب ودرجة الحرارة ونسبة الأكسجين في الدم، وذلك عندما يكون التطبيق قيد الاستخدام.</string>
     <string name="permdesc_bodySensors_background">يتيح هذا الإذن للتطبيق الوصول إلى بيانات أجهزة استشعار الجسم، مثل معدّل نبضات القلب ودرجة الحرارة ونسبة الأكسجين في الدم، وذلك عند استخدام التطبيق في الخلفية.</string>
-    <string name="permdesc_broadcastSticky">للسماح للتطبيق بإرسال مجموعات بث مستمرة، والتي تظل بعد انتهاء البث. قد يؤدي الاستخدام بكثرة إلى حدوث بطء أو عدم استقرار في الهاتف من خلال التسبب في استخدام الهاتف لمساحة كبيرة للغاية من الذاكرة.</string>
+    <string name="permdesc_broadcastSticky">للسماح للتطبيق بإرسال مجموعات بث مستمرة، والتي تظل بعد انتهاء البث. قد يؤدي الاستخدام بكثرة إلى حدوث بطء أو عدم استقرار في الجهاز اللوحي من خلال التسبب في استخدام الجهاز اللوحي لمساحة كبيرة للغاية من الذاكرة.</string>
     <string name="permdesc_callCompanionApp">يستطيع التطبيق رؤية المكالمات الجارية على الجهاز والتحكّم فيها. ويشمل ذلك معلومات مثل الأرقام وحالة المكالمات.</string>
     <string name="permdesc_callPhone">يسمح هذا الإذن للتطبيق بالاتصال بأرقام الهواتف بدون تدخل منك. وقد يؤدي ذلك إلى تحصيل رسوم غير متوقّعة أو إجراء مكالمات غير متوقّعة. يُرجى العلم أنّ هذا الإذن لا يسمح للتطبيق بالاتصال بأرقام الطوارئ. قد يؤدي منح الإذن للتطبيقات الضارة إلى تحصيل رسوم منك عن طريق إجراء مكالمات بدون الحصول على موافقتك أو الاتصال برموز مشغّل شبكة الجوال والتي تتسبّب في إعادة توجيه المكالمات الواردة تلقائيًا إلى رقم آخر.</string>
     <string name="permdesc_camera">يمكن لهذا التطبيق التقاط صور وتسجيل فيديوهات باستخدام الكاميرا عندما يكون التطبيق قيد الاستخدام.</string>
     <string name="permdesc_cameraOpenCloseListener">يمكن أن يتلقّى هذا التطبيق استدعاءات عندما تكون هناك كاميرا مفتوحة (بواسطة هذا التطبيق) أو مغلقة.</string>
     <string name="permdesc_changeNetworkState">للسماح للتطبيق بتغيير حالة اتصال الشبكة.</string>
     <string name="permdesc_changeTetherState">للسماح للتطبيق بتغيير حالة اتصال الشبكة المربوطة.</string>
-    <string name="permdesc_changeWifiMulticastState">‏للسماح للتطبيق بتلقي الحزم التي يتم إرسالها إلى جميع الأجهزة على شبكة Wi-Fi باستخدام عناوين بث متعدد، وليس باستخدام هاتفك فقط. ويؤدي ذلك إلى استخدام قدر أكبر من الطاقة يفوق وضع البث غير المتعدد.</string>
+    <string name="permdesc_changeWifiMulticastState">‏للسماح للتطبيق بتلقي الحزم التي يتم إرسالها إلى جميع الأجهزة على شبكة Wi-Fi باستخدام عناوين بث متعدد، وليس باستخدام جهازك اللوحي فقط. ويؤدي ذلك إلى استخدام قدر أكبر من الطاقة يفوق وضع البث غير المتعدد.</string>
     <string name="permdesc_changeWifiState">‏للسماح للتطبيق بالاتصال بنقاط الوصول إلى Wi-Fi وقطع الاتصال بها، وإجراء تغييرات على إعداد الجهاز لشبكات Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">‏للسماح للتطبيق بتوصيل الهاتف بشبكات WiMAX وقطع اتصاله بها.</string>
+    <string name="permdesc_changeWimaxState">‏للسماح للتطبيق بتوصيل الجهاز اللوحي بشبكات WiMAX وقطع اتصاله بها.</string>
     <string name="permdesc_companionProfileWatch">يسمح هذا الإذن للتطبيق المصاحب بإدارة الساعات.</string>
     <string name="permdesc_connection_manager">للسماح للتطبيق بإدارة الاتصالات اللاسلكية.</string>
     <string name="permdesc_control_incall_experience">للسماح للتطبيق بتوفير تجربة للمستخدم أثناء الاتصال.</string>
@@ -1997,7 +1997,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">‏يسمح هذا الإذن للتطبيق بالاستفادة من الخدمات التي تعمل في المقدّمة ذات النوع \"specialUse\".</string>
     <string name="permdesc_foregroundServiceSystemExempted">‏يسمح هذا الإذن للتطبيق بالاستفادة من الخدمات التي تعمل في المقدّمة ذات النوع \"systemExempted\".</string>
     <string name="permdesc_fullScreenIntent">السماح للتطبيق بعرض الإشعارات كأنشطة بملء الشاشة على الأجهزة المُقفَلة</string>
-    <string name="permdesc_getAccounts">للسماح للتطبيق بالحصول على قائمة بالحسابات التي يعرفها الهاتف. وقد يتضمن ذلك أي حسابات تم إنشاؤها بواسطة التطبيقات التي ثبتها.</string>
+    <string name="permdesc_getAccounts">للسماح للتطبيق بالحصول على قائمة بالحسابات التي يعرفها الجهاز اللوحي. وقد يتضمن ذلك أي حسابات تم إنشاؤها بواسطة التطبيقات التي ثبتها.</string>
     <string name="permdesc_getAppList">يتيح لتطبيق قراءة قائمة التطبيقات المثبتة.</string>
     <string name="permdesc_getPackageSize">للسماح للتطبيق باسترداد شفرته وبياناته وأحجام ذاكرات التخزين المؤقت</string>
     <string name="permdesc_getTasks">للسماح للتطبيق باسترداد معلومات حول المهام التي يجري تشغيلها حاليًا والتي تم تشغيلها مؤخرًا. وقد يسمح هذا للتطبيق باكتشاف معلومات حول التطبيقات المستخدمة على الجهاز.</string>
@@ -2096,16 +2096,16 @@
     <string name="permdesc_nearby_wifi_devices">‏للسماح للتطبيق بعرض الإعلانات والاتصال بالأجهزة الأخرى وتحديد الموقع النسبي لأجهزة Wi-Fi المجاورة.</string>
     <string name="permdesc_nfc">‏للسماح للتطبيق بالاتصال بعلامات الاتصال قريب المدى (NFC)، والبطاقات وبرامج القراءة.</string>
     <string name="permdesc_observeCompanionDevicePresence">يسمح هذا الإذن للتطبيق المصاحب بملاحظة توفّر الأجهزة المرتبطة عندما تكون قريبة أو بعيدة.</string>
-    <string name="permdesc_persistentActivity">للسماح للتطبيق بجعل أجزاء منه ثابتة في الذاكرة. وقد يؤدي هذا إلى تقييد الذاكرة المتاحة للتطبيقات الأخرى مما يؤدي إلى حدوث بطء في الهاتف.</string>
+    <string name="permdesc_persistentActivity">للسماح للتطبيق بجعل أجزاء منه ثابتة في الذاكرة. وقد يؤدي هذا إلى تقييد الذاكرة المتاحة للتطبيقات الأخرى مما يؤدي إلى حدوث بطء في الجهاز اللوحي.</string>
     <string name="permdesc_postNotification">السماح للتطبيق بعرض إشعارات</string>
     <string name="permdesc_preferredPaymentInfo">‏يسمح هذا الإذن للتطبيق بالحصول على معلومات الخدمات المدفوعة باستخدام الاتصال قصير المدى NFC المفضّل، مثلاً المساعدات المسجّلة ووجهة المسار.</string>
     <string name="permdesc_processOutgoingCalls">للسماح للتطبيق بالاطلاع على الرقم الذي يتم الاتصال به عند إجراء مكالمة صادرة مع وجود الخيار لإعادة توجيه المكالمة إلى رقم آخر أو إنهاء المكالمة تمامًا.</string>
     <string name="permdesc_queryAllPackages">يسمح هذا الإذن للتطبيق بعرض كل الحِزم المثبّتة.</string>
     <string name="permdesc_readBasicPhoneState">يسمح هذا الإذن للتطبيق بالوصول إلى ميزات الاتصال الهاتفي الأساسية للجهاز.</string>
-    <string name="permdesc_readCalendar">يمكن لهذا التطبيق قراءة جميع أحداث التقويم المخزَّنة على الهاتف ومشاركة بيانات التقويم أو حفظها.</string>
+    <string name="permdesc_readCalendar">يمكن لهذا التطبيق قراءة جميع أحداث التقويم المخزَّنة على الجهاز اللوحي ومشاركة بيانات التقويم أو حفظها.</string>
     <string name="permdesc_readCallLog">يمكن لهذا التطبيق قراءة سجل المكالمات.</string>
     <string name="permdesc_readCellBroadcasts">السماح للتطبيق بقراءة رسائل بث الخلية التي يتلقاها هذا الجهاز. يتم تسليم اشعارات بث الخلية في بعض المواقع لتحذيرك من حالات طارئة. يمكن أن تتداخل التطبيقات الضارة مع أداء أو تشغيل الجهاز عندما يتم تلقي بث خلية طارئ.</string>
-    <string name="permdesc_readContacts">يسمح هذا الإذن للتطبيق بقراءة بيانات حول جهات الاتصال المخزّنة على هاتفك. ويمكن للتطبيقات أيضًا الوصول إلى الحسابات التي تم إنشاء جهات الاتصال من خلالها على هاتفك. ويمكن أن يشمل ذلك الحسابات التي أنشأتها التطبيقات التي ثبتّها. ويتيح هذا الإذن للتطبيقات حفظ بيانات جهة الاتصال، وقد تشارك التطبيقات الضارة بيانات جهة الاتصال بدون علمك.</string>
+    <string name="permdesc_readContacts">يسمح هذا الإذن للتطبيق بقراءة بيانات حول جهات الاتصال المخزّنة على جهازك اللوحي. ويمكن للتطبيقات أيضًا الوصول إلى الحسابات التي تم إنشاء جهات الاتصال من خلالها على جهازك اللوحي. ويمكن أن يشمل ذلك الحسابات التي أنشأتها التطبيقات التي ثبتّها. ويتيح هذا الإذن للتطبيقات حفظ بيانات جهة الاتصال، وقد تشارك التطبيقات الضارة بيانات جهة الاتصال بدون علمك.</string>
     <string name="permdesc_readInstallSessions">للسماح لأحد التطبيقات بقراءة جلسات التثبيت. ويسمح لك هذا بالاطلاع على تفاصيل بشأن عمليات تثبيت الحزم النشطة.</string>
     <string name="permdesc_readMediaAudio">يسمح للتطبيق بقراءة الملفات الصوتية من مساحة التخزين المشتركة.</string>
     <string name="permdesc_readMediaImages">يسمح هذا الإذن للتطبيق بقراءة ملفات الصور من مساحة التخزين المشتركة.</string>
@@ -2113,11 +2113,11 @@
     <string name="permdesc_readNetworkUsageHistory">للسماح للتطبيق بقراءة معلومات سابقة عن استخدام الشبكة لشبكات وتطبيقات محددة.</string>
     <string name="permdesc_readPhoneNumbers">للسماح للتطبيق بالوصول إلى أرقام الهواتف على هذا الجهاز.</string>
     <string name="permdesc_readPhoneState">للسماح للتطبيق بالدخول إلى ميزات الهاتف في الجهاز. ويتيح هذا الإذن للتطبيق تحديد رقم الهاتف ومعرّفات الجهاز، وما إذا كانت هناك مكالمة نشطة والرقم البعيد الذي تم الاتصال به في المكالمة.</string>
-    <string name="permdesc_readSms">‏يمكن لهذا التطبيق قراءة جميع الرسائل النصية القصيرة (SMS) المخزّنة على الهاتف.</string>
+    <string name="permdesc_readSms">‏يمكن لهذا التطبيق قراءة جميع الرسائل النصية القصيرة (SMS) المخزّنة على الجهاز اللوحي.</string>
     <string name="permdesc_readSyncSettings">للسماح للتطبيق بقراءة الإعدادات المتزامنة لحساب ما. على سبيل المثال، يمكن أن يؤدي هذا إلى تحديد ما إذا تمت مزامنة تطبيق \"الأشخاص\" مع حساب ما.</string>
     <string name="permdesc_readSyncStats">للسماح للتطبيق بقراءة إحصاءات المزامنة لحساب ما، بما في ذلك سجل الأحداث المتزامنة ومقدار البيانات التي تمت مزامنتها.</string>
     <string name="permdesc_readVisualUserSelect">يسمح هذا الإذن للتطبيق بقراءة ملفات الفيديو والصور التي تختارها من مساحة التخزين المشتركة.</string>
-    <string name="permdesc_receiveBootCompleted">للسماح للتطبيق ببدء تشغيل نفسه عقب انتهاء النظام من التشغيل. قد يؤدي ذلك إلى استغراق المزيد من الوقت عن بدء الهاتف والسماح للتطبيق بإبطاء الأداء الإجمالي للهاتف حيث يتم تشغيله دائمًا.</string>
+    <string name="permdesc_receiveBootCompleted">للسماح للتطبيق ببدء تشغيل نفسه عقب انتهاء النظام من التشغيل. قد يؤدي ذلك إلى استغراق المزيد من الوقت عند بدء الجهاز اللوحي والسماح للتطبيق بإبطاء الأداء الإجمالي للجهاز اللوحي من خلال تشغيله دائمًا.</string>
     <string name="permdesc_receiveMms">للسماح للتطبيق بتلقي ومعالجة رسائل الوسائط المتعددة. وهذا يعني أنه يمكن للتطبيق مراقبة الرسائل التي يتم إرسالها لجهازك أو حذفها بدون عرضها لك.</string>
     <string name="permdesc_receiveSms">‏للسماح للتطبيق بتلقي ومعالجة الرسائل القصيرة SMS. وهذا يعني أنه يمكن للتطبيق مراقبة الرسائل التي يتم إرسالها إلى جهازك أو حذفها بدون عرضها لك.</string>
     <string name="permdesc_receiveWapPush">‏للسماح للتطبيق بتلقي رسائل WAP ومعالجتها. ويتضمن هذا الإذن إمكانية مراقبة الرسائل التي يتم إرسالها إليك أو حذفها بدون عرضها لك.</string>
@@ -2139,7 +2139,7 @@
     <string name="permdesc_sendSms">‏للسماح للتطبيق بإرسال رسائل قصيرة SMS. وقد يؤدي هذا إلى تحمل رسوم غير متوقعة. وقد تكلفك التطبيقات الضارة أموالاً من خلال إرسال رسائل بدون موافقة منك.</string>
     <string name="permdesc_setAlarm">للسماح للتطبيق بضبط المنبّه في تطبيق المنبّه المثبّت. ربما لا تنفذ بعض تطبيقات المنبّه هذه الميزة.</string>
     <string name="permdesc_setInputCalibration">يتيح للتطبيق إمكانية تعديل معلمات المعايرة في شاشة اللمس. يجب عدم اللجوء إليه مع التطبيقات العادية.</string>
-    <string name="permdesc_setTimeZone">للسماح للتطبيق بتغيير المنطقة الزمنية للهاتف.</string>
+    <string name="permdesc_setTimeZone">للسماح للتطبيق بتغيير المنطقة الزمنية للجهاز اللوحي.</string>
     <string name="permdesc_setWallpaper">للسماح للتطبيق بتعيين خلفية النظام.</string>
     <string name="permdesc_setWallpaperHints">للسماح للتطبيق بتعيين تلميحات حجم خلفية النظام.</string>
     <string name="permdesc_sim_communication">‏السماح للتطبيق بإرسال أوامر إلى شريحة SIM. وهذا أمر بالغ الخطورة.</string>
@@ -2153,7 +2153,7 @@
     <string name="permdesc_subscribedFeedsRead">للسماح للتطبيق بالحصول على تفاصيل حول الخلاصات المتزامنة في الوقت الحالي.</string>
     <string name="permdesc_systemAlertWindow">يمكن لهذا التطبيق الظهور في مقدمة التطبيقات أو أجزاء الشاشة الأخرى. وقد يتداخل هذا مع الاستخدام العادي للتطبيقات أو يؤدي إلى تغيير طريقة ظهور التطبيقات الأخرى.</string>
     <string name="permdesc_systemCamera">‏إنّ تطبيق النظام هذا، أو التطبيق المزوّد بأذونات مميّزة، يمكنه التقاط صور وتسجيل فيديوهات باستخدام كاميرا النظام في أي وقت. ويجب أن يحصل التطبيق أيضًا على الإذن android.permission.CAMERA.</string>
-    <string name="permdesc_transmitIr">للسماح للتطبيق باستخدام مرسل الأشعة تحت الحمراء الخاص بالهاتف.</string>
+    <string name="permdesc_transmitIr">للسماح للتطبيق باستخدام مرسل الأشعة تحت الحمراء الخاص بالجهاز اللوحي.</string>
     <string name="permdesc_turnScreenOn">يسمح هذا الإذن للتطبيق بتفعيل الشاشة.</string>
     <string name="permdesc_ucsPlugin">العمل مع المكونات الإضافية لتخزين بيانات اعتماد الجهات الخارجية.</string>
     <string name="permdesc_uninstall_shortcut">للسماح للتطبيق بإزالة اختصارات من الشاشة الرئيسية بدون تدخل المستخدم.</string>
@@ -2167,10 +2167,10 @@
     <string name="permdesc_vibrate">للسماح للتطبيق بالتحكم في الهزّاز.</string>
     <string name="permdesc_vibrator_state">يسمح هذا الإذن للتطبيق بالوصول إلى حالة الهزّاز.</string>
     <string name="permdesc_videoWrite">يسمح للتطبيق بتعديل مجموعة الفيديوهات التابعة لك.</string>
-    <string name="permdesc_wakeLock">للسماح للتطبيق بمنع الهاتف من الانتقال إلى وضع السكون.</string>
-    <string name="permdesc_writeCalendar">يمكن لهذا التطبيق إضافة أحداث تقويم أو إزالتها أو تغييرها على الهاتف. كما يمكنه إرسال رسائل يبدو أنها واردة من مالكي التقويم، ويمكنه كذلك تغيير الأحداث بدون إشعار مالكيها.</string>
-    <string name="permdesc_writeCallLog">للسماح للتطبيق بتعديل سجل مكالمات الهاتف، بما في ذلك البيانات عن المكالمات الواردة والصادرة. وربما تستخدم التطبيقات الضارة هذا لمحو سجل المكالمات أو تعديله.</string>
-    <string name="permdesc_writeContacts">يسمح هذا الإذن للتطبيق بتعديل البيانات حول جهات الاتصال المخزّنة على هاتفك. ويسمح هذا الإذن للتطبيقات بحذف بيانات جهات الاتصال.</string>
+    <string name="permdesc_wakeLock">للسماح للتطبيق بمنع الجهاز اللوحي من الانتقال إلى وضع السكون.</string>
+    <string name="permdesc_writeCalendar">يمكن لهذا التطبيق إضافة أحداث تقويم أو إزالتها أو تغييرها على الجهاز اللوحي. كما يمكنه إرسال رسائل يبدو أنها واردة من مالكي التقويم، ويمكنه كذلك تغيير الأحداث بدون إشعار مالكيها.</string>
+    <string name="permdesc_writeCallLog">للسماح للتطبيق بتعديل سجل مكالمات الجهاز اللوحي، بما في ذلك البيانات عن المكالمات الواردة والصادرة. وربما تستخدم التطبيقات الضارة هذا لمسح سجل المكالمات أو تعديله.</string>
+    <string name="permdesc_writeContacts">يسمح هذا الإذن للتطبيق بتعديل البيانات حول جهات الاتصال المخزّنة على جهازك اللوحي. ويسمح هذا الإذن للتطبيقات بحذف بيانات جهات الاتصال.</string>
     <string name="permdesc_writeSettings">للسماح للتطبيق بتعديل بيانات إعدادات النظام. يمكن أن تتلف التطبيقات الضارة إعداد نظامك.</string>
     <string name="permdesc_writeSyncSettings">للسماح للتطبيق بتعديل إعدادات المزامنة لحساب ما. على سبيل المثال، يمكن استخدام ذلك لتفعيل مزامنة تطبيق \"الأشخاص\" مع حساب ما.</string>
     <string name="permgroupdesc_activityRecognition">الوصول إلى بيانات نشاطك البدني</string>
@@ -2445,7 +2445,7 @@
     <string name="permlab_uwb_ranging">تحديد الموضع النسبي بين الأجهزة المجاورة التي تستخدم النطاق الواسع جدًا</string>
     <string name="permlab_vibrate">التحكم في الاهتزاز</string>
     <string name="permlab_videoWrite">تعديل مجموعة الفيديو التابعة لك</string>
-    <string name="permlab_wakeLock">منع الهاتف من الدخول في وضع السكون</string>
+    <string name="permlab_wakeLock">منع الجهاز اللوحي من الدخول في وضع السكون</string>
     <string name="permlab_writeCalendar">إضافة أو تعديل أحداث التقويم وإرسال رسالة إلكترونية إلى المدعوين بدون معرفة المالكين</string>
     <string name="permlab_writeCallLog">كتابة سجل المكالمات</string>
     <string name="permlab_writeContacts">تعديل جهات الاتصال</string>
@@ -2487,7 +2487,7 @@
     <string name="policydesc_allow_desktopsync">منع استخدام مزامنة سطح المكتب.</string>
     <string name="policydesc_allow_internetsharing">منع استخدام نقطة اتصال الهواتف المحمولة.</string>
     <string name="policydesc_allow_irda">منع استخدام IrDA.</string>
-    <string name="policydesc_allow_popimapemail">منع استخدام بريد POP وIMAP الإلكتروني على الهاتف.</string>
+    <string name="policydesc_allow_popimapemail">منع استخدام بريد POP وIMAP الإلكتروني على الجهاز اللوحي.</string>
     <string name="policydesc_allow_storagecard">منع استخدام بطاقات SD.</string>
     <string name="policydesc_allow_textmessaging">منع استخدام الرسائل النصية ورسائل الوسائط المتعددة.</string>
     <string name="policydesc_allow_thirdParty">يمكن لهذا التطبيق منع تشغيل تطبيقات الجهات الخارجية.</string>
@@ -2505,10 +2505,10 @@
     <string name="policydesc_setGlobalProxy">لضبط الخادم الوكيل العام في الجهاز على الاستخدام أثناء تفعيل السياسة. ولن يمكن لأحد سوى مالك الجهاز ضبط الخادم الوكيل العام.</string>
     <string name="policydesc_unsigned_app">يمكن لهذا التطبيق منع تشغيل التطبيقات من مصادر غير معروفة.</string>
     <string name="policydesc_unsigned_pkg">يمكن لهذا التطبيق منع تثبيت التطبيقات من مصادر غير معروفة.</string>
-    <string name="policydesc_watchLogin">مراقبة عدد كلمات المرور غير الصحيحة التي تمت كتابتها عند فتح قفل الشاشة، وتأمين الهاتف ومحو جميع بياناته إذا تمت كتابة عدد أكبر من اللازم من كلمات المرور غير الصحيحة.</string>
-    <string name="policydesc_watchLogin_secondaryUser">يمكنك مراقبة عدد كلمات المرور غير الصحيحة التي تمت كتابتها عند فتح قفل الشاشة، وتأمين الهاتف ومحو جميع بيانات هذا المستخدم إذا تمت كتابة عدد أكبر من اللازم من كلمات المرور غير الصحيحة.</string>
-    <string name="policydesc_wipeData">محو بيانات الهاتف بدون تحذير، وذلك من خلال إعادة ضبط البيانات على الإعدادات الأصلية</string>
-    <string name="policydesc_wipeData_secondaryUser">لمحو بيانات هذا المستخدم على هذا الهاتف بدون تحذير.</string>
+    <string name="policydesc_watchLogin">لمراقبة عدد مرات كتابة كلمات المرور غير الصحيحة عند فتح قفل الشاشة وتأمين الجهاز اللوحي أو مسح جميع بياناته في حالة كتابة الكثير من كلمات المرور غير الصحيحة.</string>
+    <string name="policydesc_watchLogin_secondaryUser">يمكنك مراقبة عدد كلمات المرور غير الصحيحة التي تمت كتابتها عند فتح قفل الشاشة، وتأمين الجهاز اللوحي ومحو جميع بيانات هذا المستخدم إذا تمت كتابة عدد أكبر من اللازم من كلمات المرور غير الصحيحة.</string>
+    <string name="policydesc_wipeData">يمكنك محو بيانات الجهاز اللوحي بدون تحذير، وذلك عبر إجراء إعادة الضبط على الإعدادات الأصلية.</string>
+    <string name="policydesc_wipeData_secondaryUser">لمحو بيانات هذا المستخدم على هذا الجهاز اللوحي بدون تحذير.</string>
     <string name="policylab_allow_bluetoothmode">إلغاء تفعيل البلوتوث</string>
     <string name="policylab_allow_browser">إلغاء تفعيل الإنترنت</string>
     <string name="policylab_allow_camera">إلغاء تفعيل الكاميرات</string>
@@ -2542,7 +2542,7 @@
     <string name="postalTypeHome">المنزل</string>
     <string name="postalTypeOther">آخر</string>
     <string name="postalTypeWork">عمل</string>
-    <string name="power_dialog">خيارات الهاتف</string>
+    <string name="power_dialog">خيارات الجهاز اللوحي</string>
     <string name="power_off">إطفاء</string>
     <string name="prepend_shortcut_label">القائمة+</string>
     <string name="preposition_for_date">في %s</string>
@@ -2588,7 +2588,7 @@
     <string name="recent_tasks_title">حديثة</string>
     <string name="recording_fail">يتعذر استخدام الميكروفون في %1$s أثناء استخدامه في %2$s.</string>
     <string name="recording_popup">يستخدم تطبيق %s الميكروفون.</string>
-    <string name="recording_popup_device">الهاتف</string>
+    <string name="recording_popup_device">الجهاز اللوحي</string>
     <string name="recording_popup_with_bluetooth">يستخدم %s ميكروفون بتقنية البلوتوث.</string>
     <string name="recording_popup_with_device">يستخدم %1$s ميكروفون %2$s.</string>
     <string name="redo">إعادة</string>
@@ -2735,12 +2735,12 @@
     <string name="screenshot_edit">تعديل</string>
     <string name="sd_card_unavailable_message">لا يمكنك استخدام بطاقة SD لأنه قد تم إدخالها أثناء استخدام ملف تعريف مستخدم مختلف.</string>
     <string name="sd_card_unavailable_title">بطاقة SD غير متوفرة</string>
-    <string name="sdcard_bad_removal_message">تمت إزالة بطاقة SD بغير أمان. لمنع إعادة تشغيل هاتفك بشكل غير متوقع، قم بحفظ البيانات التي لم يتم حفظها وأعد التشغيل الآن.</string>
+    <string name="sdcard_bad_removal_message">تمت إزالة بطاقة SD بغير أمان. لمنع إعادة تشغيل جهازك اللوحي بشكل غير متوقع، قم بحفظ البيانات التي لم يتم حفظها وأعد التشغيل الآن.</string>
     <string name="sdcard_batch_decrypt_noti_content">فك تشفير بطاقة SD</string>
     <string name="sdcard_batch_decrypt_noti_title">فك تشفير بطاقة SD</string>
     <string name="sdcard_batch_decrypt_popup_content">يلزم فك تشفير بطاقة SD قبل بدء الاستخدام.‬ تستغرق عملية فك التشفير ساعة واحدة أو أكثر. ابدأ هذه العملية باستخدام بطارية مشحونة واترك الجهاز متصلا حتى يكتمل فك التشفير. قد تؤدي مقاطعة عملية فك التشفير إلى فقد بعض البيانات أو كلها‬.</string>
     <string name="sdcard_decrypt_err_notification">حدث خطأ أثناء فك تشفير بطاقة SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">تم تشفير بعض الملفات على بطاقة SD على جهاز آخر ولا يمكن استخدامها على هذا الهاتف.</string>
+    <string name="sdcard_decrypt_error_otherdevice">تم تشفير بعض الملفات على بطاقة SD على جهاز آخر ولا يمكن استخدامها على هذا الجهاز اللوحي.</string>
     <string name="sdcard_decrypt_notification">تم فك تشفير بطاقة SD.</string>
     <string name="sdcard_decrypt_title_notification">فك تشفير بطاقة SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">جارٍ إلغاء تشفير بطاقة SD…</string>
@@ -2998,7 +2998,7 @@
     <string name="showing_touch_sensitivity_noti_action">تشغيل</string>
     <string name="showing_touch_sensitivity_noti_text">قم بتشغيل حساسية اللمس أثناء استخدام Privacy Screen أو Notepaper Screen للحصول على استجابة أكثر دقة للمس.</string>
     <string name="showing_touch_sensitivity_noti_title">زيادة حساسية اللمس</string>
-    <string name="shutdown_confirm">سيتم إيقاف هاتفك.</string>
+    <string name="shutdown_confirm">سيتم إيقاف الجهاز اللوحي.</string>
     <string name="shutdown_confirm_question">هل تريد إيقاف التشغيل؟</string>
     <string name="shutdown_progress">جارٍ إيقاف التشغيل...</string>
     <string name="side_key_double_press_deleted_app">تم إلغاء تثبيت التطبيق. اختر تطبيقاً آخر.</string>
@@ -3225,7 +3225,7 @@
     <string name="usb_abnormal_reset_title">اتصال USB غير مستقر</string>
     <string name="usb_abnormal_reset_toast">اتصال USB غير مستقر. افصل الكابل وأعد توصيله مجدداً، أو حاول استخدام كابل آخر.</string>
     <string name="usb_accessory_notification_title">متصل كملحق USB</string>
-    <string name="usb_bad_removal_message">تمت إزالة وحدة تخزين USB‬ بغير أمان. لمنع إعادة تشغيل هاتفك بشكل غير متوقع، قم بحفظ البيانات التي لم يتم حفظها وأعد التشغيل الآن.</string>
+    <string name="usb_bad_removal_message">تمت إزالة وحدة تخزين USB‬ بغير أمان. لمنع إعادة تشغيل جهازك اللوحي بشكل غير متوقع، قم بحفظ البيانات التي لم يتم حفظها وأعد التشغيل الآن.</string>
     <string name="usb_blocked_by_emergency_mode">لا تتوفر بعض وظائف USB في وضع الطوارئ.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">يتعذر استخدام وظائف ذات صلة بجهاز USB المتصل عند تفعيل وضع الحد الأقصى لتوفير الطاقة.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">سيتم حد وظائف USB عندما يكون وضع الحد الأقصى لتوفير الطاقة قيد التشغيل.</string>
@@ -3235,7 +3235,7 @@
     <string name="usb_camera_disconnected_notification_title">تم قطع اتصال جهاز الوسائط</string>
     <string name="usb_cd_installer_notification_title">تحديث البرنامج</string>
     <string name="usb_charging_notification_title">‏جارٍ شحن هذا الجهاز عبر منفذ USB</string>
-    <string name="usb_charing_only_notification_title">شحن عبر USB</string>
+    <string name="usb_charing_only_notification_title">تم الاتصال</string>
     <string name="usb_contaminant_detected_message">‏تمّ إيقاف منفذ USB تلقائيًا. انقُر لمعرفة المزيد من المعلومات.</string>
     <string name="usb_contaminant_detected_title">‏السوائل أو الشوائب في منفذ USB</string>
     <string name="usb_contaminant_not_detected_message">لم يَعُد الهاتف يكتشف سوائل أو شوائب.</string>
@@ -3247,11 +3247,11 @@
     <string name="usb_host_cable_disconnected_notification_title">تم فصل موصل USB.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">يتعذر الوصول إلى هذا الجهاز. يلزم توفر مصدر طاقة خارجي للجهاز المتصل.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">تم توصيل جهاز USB عالي الطاقة.</string>
-    <string name="usb_host_resource_exceed_message">لا تحتوي وحدة تحكم USB في هاتفك على موارد كافية لتوصيل هذا الجهاز. حاول قطع اتصال الجهاز وتوصيله مرة أخرى.</string>
+    <string name="usb_host_resource_exceed_message">لا تحتوي وحدة تحكم USB الخاصة بالجهاز اللوحي على موارد كافية لتوصيل هذا الجهاز. حاول قطع اتصال الجهاز وتوصيله مرة أخرى.</string>
     <string name="usb_host_resource_exceed_title">ما من موارد كافية لوحدة تحكم USB</string>
-    <string name="usb_hub_depth_exceed_message">يمكن أن يدعم هاتفك ما يصل إلى ٥ اتصالات موزع USB فقط في الوقت نفسه.</string>
+    <string name="usb_hub_depth_exceed_message">يمكن أن يدعم جهازك اللوحي ما يصل إلى ٥ اتصالات موزع USB فقط في الوقت نفسه.</string>
     <string name="usb_hub_depth_exceed_title">الحد الأقصى لاتصالات موزع USB</string>
-    <string name="usb_hub_power_exceed_message">لا يمكن أن يوفر هاتفك طاقة كافية لجهاز USB هذا. قم بتوصيل الجهاز بموزع USB ذاتي الطاقة قبل توصيله بهاتفك.</string>
+    <string name="usb_hub_power_exceed_message">لا يمكن أن يوفر جهازك اللوحي طاقة كافية لجهاز USB هذا. قم بتوصيل الجهاز بموزع USB ذاتي الطاقة قبل توصيله بجهازك اللوحي.</string>
     <string name="usb_increase_battery_usage">قد يؤدي الاتصال عبر USB إلى زيادة استخدام البطارية.</string>
     <string name="usb_keyboard_connected_notification_title">تم توصيل لوحة المفاتيح</string>
     <string name="usb_keyboard_disconnected_notification_title">تم فصل لوحة المفاتيح</string>
@@ -3294,8 +3294,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">تمت إزالة وحدة تخزين USB كبيرة السعة بشكل غير متوقع.</string>
     <string name="usb_ums_connected_notification_title_usbhost">تم توصيل وحدة تخزين USB كبيرة السعة‬</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">تمت إزالة وحدة تخزين USB كبيرة السعة بأمان.</string>
-    <string name="usb_unblock_by_screen_unlock">قم بإلغاء قفل هاتفك لاستخدام جهاز USB المتصل.</string>
-    <string name="usb_unsupport_accessory_message">لا يدعم هاتفك جهاز USB هذا.</string>
+    <string name="usb_unblock_by_screen_unlock">قم بإلغاء قفل جهازك اللوحي لاستخدام جهاز USB المتصل.</string>
+    <string name="usb_unsupport_accessory_message">لا يدعم جهازك اللوحي جهاز USB هذا.</string>
     <string name="usb_unsupport_accessory_title">جهاز USB غير مدعوم</string>
     <string name="usb_unsupported_audio_accessory_message">الجهاز الذي تم توصيله بالهاتف غير متوافق معه. انقر للحصول على المزيد من المعلومات.</string>
     <string name="usb_unsupported_audio_accessory_title">تم اكتشاف ملحق صوتي تناظري</string>
@@ -3316,19 +3316,19 @@
     <string name="usb_water_dialg_method_2_desc_2">يمكنك تسريع التجفيف عبر توجيه مروحة أو مجفف (هواء بارد فحسب) نحو المنفذ.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"لقد اكتشفنا وجود رطوبة أو مادة غريبة في منفذ الشحن/USB الخاص بك.
 
-تحقق من منفذ الشحن/USB الخاص بك للتأكد من عدم وجود مواد غريبة مثل الأتربة أو القاذورات. لمنع تعرض هاتفك للتلف، لا تقم بتوصيل أي شيء إلا بعد أن يصبح منفذ الشحن نظيفاً وخالياً من الرطوبة.
+تحقق من منفذ الشحن/USB الخاص بك للتأكد من عدم وجود مواد غريبة مثل الأتربة أو القاذورات. لمنع تعرض جهازك اللوحي للتلف، لا تقم بتوصيل أي شيء إلا بعد أن يصبح منفذ الشحن نظيفاً وخالياً من الرطوبة.
 
 لتجفيف المنفذ، قم بهزه لإخراج الرطوبة، ثم انتظر حتى يجف، وقد يستغرق هذا الأمر عدة ساعات. يمكنك التسريع من عملية التجفيف باستخدام مروحة أو مجفف (على الهواء البارد فقط) عند المنفذ."</string>
     <string name="usb_water_dialg_positive_button">نعم</string>
     <string name="usb_water_dialg_support_wireless_charging">"لقد اكتشفنا وجود رطوبة أو مادة غريبة في منفذ الشحن/USB الخاص بك.
 
-تحقق من منفذ الشحن/USB الخاص بك للتأكد من عدم وجود مواد غريبة مثل الأتربة أو القاذورات. لمنع تعرض هاتفك للتلف، لا تقم بتوصيل أي شيء إلا بعد أن يصبح منفذ الشحن نظيفاً وخالياً من الرطوبة.
+تحقق من منفذ الشحن/USB الخاص بك للتأكد من عدم وجود مواد غريبة مثل الأتربة أو القاذورات. لمنع تعرض جهازك اللوحي للتلف، لا تقم بتوصيل أي شيء إلا بعد أن يصبح منفذ الشحن نظيفاً وخالياً من الرطوبة.
 
 لتجفيف المنفذ، قم بهزه لإخراج الرطوبة، ثم انتظر حتى يجف، وقد يستغرق هذا الأمر عدة ساعات. يمكنك التسريع من عملية التجفيف باستخدام مروحة أو مجفف (على الهواء البارد فقط) عند المنفذ.
 
-وفي الوقت الحالي، يمكنك شحن هاتفك لاسلكياً."</string>
+وفي الوقت الحالي، يمكنك شحن جهازك اللوحي لاسلكياً."</string>
     <string name="usb_water_notification_content">توجد رطوبة أو مادة غريبة في منفذ الشحن/USB. تحقق قبل الشحن.</string>
-    <string name="usb_water_notification_message">تم اكتشاف رطوبة في منفذ الشاحن/USB لديك. تأكد من أنه جاف قبل شحن هاتفك. قد يستغرق بعض الوقت كي يجف تماماً.</string>
+    <string name="usb_water_notification_message">تم اكتشاف رطوبة في منفذ الشاحن/USB لديك. تأكد من أنه جاف قبل شحن جهازك اللوحي. قد يستغرق بعض الوقت كي يجف تماماً.</string>
     <string name="usb_water_notification_message_button">التفاصيل</string>
     <string name="usb_water_notification_title">فحص الشاحن/منفذ USB</string>
     <string name="usbhostStorage_restrict">تمنع سياسة الحماية استخدام مكان تخزين مضيف USB.</string>
@@ -3346,7 +3346,7 @@
     <string name="user_switched">المستخدم الحالي %1$s.</string>
     <string name="user_switching_message">جارٍ التبديل إلى %1$s…</string>
     <string name="validity_period">الصلاحية:</string>
-    <string name="vdm_camera_access_denied">يتعذّر الوصول إلى كاميرا الهاتف من على جهاز %1$s.</string>
+    <string name="vdm_camera_access_denied">يتعذّر الوصول إلى كاميرا الجهاز اللوحي من على جهاز %1$s.</string>
     <string name="vdm_pip_blocked">لا يمكن عرض نافذة ضمن النافذة أثناء البث.</string>
     <string name="vdm_secure_window">لا يمكن الوصول إلى هذا المحتوى أثناء البث. بدلاً من ذلك، جرِّب استخدام هاتفك.</string>
     <string name="view_and_control_notification_content">يمكن لخدمة %s الاطّلاع على شاشتك والتحكّم فيها. انقر لمراجعة الإعدادات.</string>

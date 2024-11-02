@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioConfigBase implements Parcelable {
     public static final Parcelable.Creator<AudioConfigBase> CREATOR = new Parcelable.Creator<AudioConfigBase>() { // from class: android.media.audio.common.AudioConfigBase.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioConfigBase createFromParcel(Parcel _aidl_source) {
             AudioConfigBase _aidl_out = new AudioConfigBase();
@@ -18,7 +20,6 @@ public class AudioConfigBase implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioConfigBase[] newArray(int _aidl_size) {
             return new AudioConfigBase[_aidl_size];
@@ -27,6 +28,25 @@ public class AudioConfigBase implements Parcelable {
     public AudioChannelLayout channelMask;
     public AudioFormatDescription format;
     public int sampleRate = 0;
+
+    /* renamed from: android.media.audio.common.AudioConfigBase$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioConfigBase> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioConfigBase createFromParcel(Parcel _aidl_source) {
+            AudioConfigBase _aidl_out = new AudioConfigBase();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioConfigBase[] newArray(int _aidl_size) {
+            return new AudioConfigBase[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

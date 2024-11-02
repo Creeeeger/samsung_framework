@@ -62,6 +62,14 @@ public final class RadioMetadata implements Parcelable {
     private final Bundle mBundle;
     private Integer mHashCode;
 
+    /* synthetic */ RadioMetadata(Bundle bundle, RadioMetadataIA radioMetadataIA) {
+        this(bundle);
+    }
+
+    /* synthetic */ RadioMetadata(Parcel parcel, RadioMetadataIA radioMetadataIA) {
+        this(parcel);
+    }
+
     static {
         ArrayMap<String, Integer> arrayMap = new ArrayMap<>();
         METADATA_KEYS_TYPE = arrayMap;
@@ -99,13 +107,14 @@ public final class RadioMetadata implements Parcelable {
         sparseArray.put(10, METADATA_KEY_ART);
         sparseArray.put(11, METADATA_KEY_CLOCK);
         CREATOR = new Parcelable.Creator<RadioMetadata>() { // from class: android.hardware.radio.RadioMetadata.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RadioMetadata createFromParcel(Parcel in) {
                 return new RadioMetadata(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RadioMetadata[] newArray(int size) {
                 return new RadioMetadata[size];
@@ -117,13 +126,14 @@ public final class RadioMetadata implements Parcelable {
     /* loaded from: classes2.dex */
     public static final class Clock implements Parcelable {
         public static final Parcelable.Creator<Clock> CREATOR = new Parcelable.Creator<Clock>() { // from class: android.hardware.radio.RadioMetadata.Clock.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Clock createFromParcel(Parcel in) {
                 return new Clock(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Clock[] newArray(int size) {
                 return new Clock[size];
@@ -131,6 +141,10 @@ public final class RadioMetadata implements Parcelable {
         };
         private final int mTimezoneOffsetMinutes;
         private final long mUtcEpochSeconds;
+
+        /* synthetic */ Clock(Parcel parcel, ClockIA clockIA) {
+            this(parcel);
+        }
 
         @Override // android.os.Parcelable
         public int describeContents() {
@@ -141,6 +155,23 @@ public final class RadioMetadata implements Parcelable {
         public void writeToParcel(Parcel out, int flags) {
             out.writeLong(this.mUtcEpochSeconds);
             out.writeInt(this.mTimezoneOffsetMinutes);
+        }
+
+        /* renamed from: android.hardware.radio.RadioMetadata$Clock$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Clock> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Clock createFromParcel(Parcel in) {
+                return new Clock(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Clock[] newArray(int size) {
+                return new Clock[size];
+            }
         }
 
         public Clock(long utcEpochSeconds, int timezoneOffsetMinutes) {
@@ -237,7 +268,6 @@ public final class RadioMetadata implements Parcelable {
         return this.mBundle.getString(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void putInt(Bundle bundle, String key, int value) {
         int type = METADATA_KEYS_TYPE.getOrDefault(key, -1).intValue();
         if (type != 0 && type != 2) {
@@ -298,6 +328,23 @@ public final class RadioMetadata implements Parcelable {
 
     public static String getKeyFromNativeKey(int nativeKey) {
         return NATIVE_KEY_MAPPING.get(nativeKey, null);
+    }
+
+    /* renamed from: android.hardware.radio.RadioMetadata$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RadioMetadata> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioMetadata createFromParcel(Parcel in) {
+            return new RadioMetadata(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioMetadata[] newArray(int size) {
+            return new RadioMetadata[size];
+        }
     }
 
     /* loaded from: classes2.dex */

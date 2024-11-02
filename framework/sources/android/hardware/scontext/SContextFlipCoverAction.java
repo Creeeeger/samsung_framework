@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextFlipCoverAction extends SContextEventContext {
     public static final Parcelable.Creator<SContextFlipCoverAction> CREATOR = new Parcelable.Creator<SContextFlipCoverAction>() { // from class: android.hardware.scontext.SContextFlipCoverAction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextFlipCoverAction createFromParcel(Parcel in) {
             return new SContextFlipCoverAction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextFlipCoverAction[] newArray(int size) {
             return new SContextFlipCoverAction[size];
@@ -22,7 +23,6 @@ public class SContextFlipCoverAction extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextFlipCoverAction() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextFlipCoverAction extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextFlipCoverAction$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextFlipCoverAction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextFlipCoverAction createFromParcel(Parcel in) {
+            return new SContextFlipCoverAction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextFlipCoverAction[] newArray(int size) {
+            return new SContextFlipCoverAction[size];
+        }
     }
 }

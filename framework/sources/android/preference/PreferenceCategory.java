@@ -24,7 +24,6 @@ public class PreferenceCategory extends PreferenceGroup {
         this(context, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.PreferenceGroup
     public boolean onPrepareAddPreference(Preference preference) {
         if (preference instanceof PreferenceCategory) {

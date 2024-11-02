@@ -28,8 +28,7 @@ public abstract class ResumeOnRebootService extends Service {
 
     public abstract byte[] onWrap(byte[] bArr, long j) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.resumeonreboot.ResumeOnRebootService$1, reason: invalid class name */
+    /* renamed from: android.service.resumeonreboot.ResumeOnRebootService$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IResumeOnRebootService.Stub {
         AnonymousClass1() {
@@ -45,7 +44,6 @@ public abstract class ResumeOnRebootService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$wrapSecret$0(byte[] unwrappedBlob, long lifeTimeInMillis, RemoteCallback resultCallback) {
             try {
                 byte[] wrappedBlob = ResumeOnRebootService.this.onWrap(unwrappedBlob, lifeTimeInMillis);
@@ -69,7 +67,6 @@ public abstract class ResumeOnRebootService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$unwrap$1(byte[] wrappedBlob, RemoteCallback resultCallback) {
             try {
                 byte[] unwrappedBlob = ResumeOnRebootService.this.onUnwrap(wrappedBlob);

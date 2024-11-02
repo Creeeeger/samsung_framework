@@ -416,30 +416,109 @@ public class DatabaseUtils {
         return 3;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x002b, code lost:            r3 = r6.getType(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x002f, code lost:            switch(r3) {            case 0: goto L25;            case 1: goto L24;            case 2: goto L23;            case 3: goto L15;            case 4: goto L18;            default: goto L15;        };     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0032, code lost:            r4 = r6.getString(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0036, code lost:            if (r4 == null) goto L26;     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0038, code lost:            r5 = r8.putString(r4, r7, r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x006b, code lost:            if (r5 != false) goto L30;     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0071, code lost:            r2 = r2 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x006d, code lost:            r8.freeLastRow();     */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0065, code lost:            r5 = r8.putNull(r7, r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x003d, code lost:            r4 = r6.getBlob(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0041, code lost:            if (r4 == null) goto L21;     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0043, code lost:            r5 = r8.putBlob(r4, r7, r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0048, code lost:            r5 = r8.putNull(r7, r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x004e, code lost:            r5 = r8.putDouble(r6.getDouble(r2), r7, r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0057, code lost:            r5 = r8.putLong(r6.getLong(r2), r7, r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:            r5 = r8.putNull(r7, r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0074, code lost:            r7 = r7 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x007a, code lost:            if (r6.moveToNext() != false) goto L39;     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x007c, code lost:            r6.moveToPosition(r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x007f, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:5:0x001f, code lost:            if (r6.moveToPosition(r7) != false) goto L8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0025, code lost:            if (r8.allocRow() != false) goto L11;     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x0028, code lost:            r2 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x0029, code lost:            if (r2 >= r1) goto L40;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x002b, code lost:
+    
+        r3 = r6.getType(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x002f, code lost:
+    
+        switch(r3) {
+            case 0: goto L67;
+            case 1: goto L66;
+            case 2: goto L65;
+            case 3: goto L57;
+            case 4: goto L60;
+            default: goto L57;
+        };
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0032, code lost:
+    
+        r4 = r6.getString(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0036, code lost:
+    
+        if (r4 == null) goto L68;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0038, code lost:
+    
+        r5 = r8.putString(r4, r7, r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x006b, code lost:
+    
+        if (r5 != false) goto L72;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x0071, code lost:
+    
+        r2 = r2 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x006d, code lost:
+    
+        r8.freeLastRow();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x0065, code lost:
+    
+        r5 = r8.putNull(r7, r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x003d, code lost:
+    
+        r4 = r6.getBlob(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0041, code lost:
+    
+        if (r4 == null) goto L63;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0043, code lost:
+    
+        r5 = r8.putBlob(r4, r7, r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0048, code lost:
+    
+        r5 = r8.putNull(r7, r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x004e, code lost:
+    
+        r5 = r8.putDouble(r6.getDouble(r2), r7, r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0057, code lost:
+    
+        r5 = r8.putLong(r6.getLong(r2), r7, r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:
+    
+        r5 = r8.putNull(r7, r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0074, code lost:
+    
+        r7 = r7 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x007a, code lost:
+    
+        if (r6.moveToNext() != false) goto L81;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x007c, code lost:
+    
+        r6.moveToPosition(r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x007f, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:5:0x001f, code lost:
+    
+        if (r6.moveToPosition(r7) != false) goto L50;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x0025, code lost:
+    
+        if (r8.allocRow() != false) goto L53;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x0028, code lost:
+    
+        r2 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0029, code lost:
+    
+        if (r2 >= r1) goto L82;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

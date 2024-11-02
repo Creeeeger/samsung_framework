@@ -124,8 +124,9 @@ public interface IPrintSpoolerClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IPrintSpoolerClient {
+        public static class Proxy implements IPrintSpoolerClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

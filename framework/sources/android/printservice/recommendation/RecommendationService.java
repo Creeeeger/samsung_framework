@@ -25,7 +25,6 @@ public abstract class RecommendationService extends Service {
 
     public abstract void onDisconnected();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service, android.content.ContextWrapper
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -36,9 +35,28 @@ public abstract class RecommendationService extends Service {
         this.mHandler.obtainMessage(3, recommendations).sendToTarget();
     }
 
+    /* renamed from: android.printservice.recommendation.RecommendationService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends IRecommendationService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.printservice.recommendation.IRecommendationService
+        public void registerCallbacks(IRecommendationServiceCallbacks callbacks) {
+            if (callbacks != null) {
+                RecommendationService.this.mHandler.obtainMessage(1, callbacks).sendToTarget();
+            } else {
+                RecommendationService.this.mHandler.obtainMessage(2).sendToTarget();
+            }
+        }
+    }
+
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         return new IRecommendationService.Stub() { // from class: android.printservice.recommendation.RecommendationService.1
+            AnonymousClass1() {
+            }
+
             @Override // android.printservice.recommendation.IRecommendationService
             public void registerCallbacks(IRecommendationServiceCallbacks callbacks) {
                 if (callbacks != null) {

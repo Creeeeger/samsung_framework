@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class AudioRoute implements Parcelable {
     public static final Parcelable.Creator<AudioRoute> CREATOR = new Parcelable.Creator<AudioRoute>() { // from class: android.media.AudioRoute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioRoute createFromParcel(Parcel _aidl_source) {
             AudioRoute _aidl_out = new AudioRoute();
@@ -15,7 +17,6 @@ public class AudioRoute implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioRoute[] newArray(int _aidl_size) {
             return new AudioRoute[_aidl_size];
@@ -24,6 +25,25 @@ public class AudioRoute implements Parcelable {
     public int[] sourcePortIds;
     public int sinkPortId = 0;
     public boolean isExclusive = false;
+
+    /* renamed from: android.media.AudioRoute$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioRoute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioRoute createFromParcel(Parcel _aidl_source) {
+            AudioRoute _aidl_out = new AudioRoute();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioRoute[] newArray(int _aidl_size) {
+            return new AudioRoute[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

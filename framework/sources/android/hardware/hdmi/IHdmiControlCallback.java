@@ -83,8 +83,9 @@ public interface IHdmiControlCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IHdmiControlCallback {
+        public static class Proxy implements IHdmiControlCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

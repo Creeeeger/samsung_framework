@@ -17,7 +17,6 @@ public abstract class SQLiteTraceExporter implements AutoCloseable {
         open(configuration);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeOperations(List<SQLiteTrace.TraceOperation> operations) throws IOException {
         for (SQLiteTrace.TraceOperation operation : operations) {
             writeOperation(operation);

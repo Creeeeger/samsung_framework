@@ -285,8 +285,6 @@ import com.samsung.android.location.SemLocationManager;
 import com.samsung.android.media.AudioTag;
 import com.samsung.android.media.codec.SemVideoTranscodingService;
 import com.samsung.android.media.fmradio.SemFmPlayer;
-import com.samsung.android.mocca.IMoccaService;
-import com.samsung.android.mocca.SemMdContextManager;
 import com.samsung.android.multicontrol.IMultiControlManager;
 import com.samsung.android.multicontrol.SemMultiControlManager;
 import com.samsung.android.net.ExtendedEthernetManager;
@@ -335,7 +333,6 @@ public final class SystemServiceRegistry {
         TServiceClass createService(Context context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public interface ServiceFetcher<T> {
         T getService(ContextImpl contextImpl);
@@ -359,21 +356,27 @@ public final class SystemServiceRegistry {
         SYSTEM_SERVICE_FETCHERS = new ArrayMap();
         SYSTEM_SERVICE_CLASS_NAMES = new ArrayMap();
         registerService(Context.ACCESSIBILITY_SERVICE, AccessibilityManager.class, new CachedServiceFetcher<AccessibilityManager>() { // from class: android.app.SystemServiceRegistry.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AccessibilityManager createService(ContextImpl ctx) {
                 return AccessibilityManager.getInstance(ctx);
             }
         });
         registerService(Context.CAPTIONING_SERVICE, CaptioningManager.class, new CachedServiceFetcher<CaptioningManager>() { // from class: android.app.SystemServiceRegistry.2
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass2() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public CaptioningManager createService(ContextImpl ctx) {
                 return new CaptioningManager(ctx);
             }
         });
         registerService("account", AccountManager.class, new CachedServiceFetcher<AccountManager>() { // from class: android.app.SystemServiceRegistry.3
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass3() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AccountManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("account");
@@ -382,28 +385,36 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("activity", ActivityManager.class, new CachedServiceFetcher<ActivityManager>() { // from class: android.app.SystemServiceRegistry.4
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass4() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ActivityManager createService(ContextImpl ctx) {
                 return new ActivityManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
             }
         });
         registerService(Context.ACTIVITY_TASK_SERVICE, ActivityTaskManager.class, new CachedServiceFetcher<ActivityTaskManager>() { // from class: android.app.SystemServiceRegistry.5
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass5() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ActivityTaskManager createService(ContextImpl ctx) {
                 return ActivityTaskManager.getInstance();
             }
         });
         registerService(Context.URI_GRANTS_SERVICE, UriGrantsManager.class, new CachedServiceFetcher<UriGrantsManager>() { // from class: android.app.SystemServiceRegistry.6
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass6() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public UriGrantsManager createService(ContextImpl ctx) {
                 return new UriGrantsManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
             }
         });
         registerService("alarm", AlarmManager.class, new CachedServiceFetcher<AlarmManager>() { // from class: android.app.SystemServiceRegistry.7
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass7() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AlarmManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("alarm");
@@ -412,28 +423,36 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("audio", AudioManager.class, new CachedServiceFetcher<AudioManager>() { // from class: android.app.SystemServiceRegistry.8
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass8() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AudioManager createService(ContextImpl ctx) {
                 return new AudioManager(ctx);
             }
         });
         registerService(Context.AUDIO_DEVICE_VOLUME_SERVICE, AudioDeviceVolumeManager.class, new CachedServiceFetcher<AudioDeviceVolumeManager>() { // from class: android.app.SystemServiceRegistry.9
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass9() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AudioDeviceVolumeManager createService(ContextImpl ctx) {
                 return new AudioDeviceVolumeManager(ctx);
             }
         });
         registerService(Context.MEDIA_ROUTER_SERVICE, MediaRouter.class, new CachedServiceFetcher<MediaRouter>() { // from class: android.app.SystemServiceRegistry.10
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass10() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public MediaRouter createService(ContextImpl ctx) {
                 return new MediaRouter(ctx);
             }
         });
         registerService(Context.CFMS_SERVICE, CustomFrequencyManager.class, new CachedServiceFetcher<CustomFrequencyManager>() { // from class: android.app.SystemServiceRegistry.11
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass11() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public CustomFrequencyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.CFMS_SERVICE);
@@ -445,7 +464,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.ICCC_SERVICE, IntegrityControlCheckCenter.class, new CachedServiceFetcher<IntegrityControlCheckCenter>() { // from class: android.app.SystemServiceRegistry.12
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass12() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public IntegrityControlCheckCenter createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.ICCC_SERVICE);
@@ -453,7 +474,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.HDMI_CONTROL_SERVICE, HdmiControlManager.class, new StaticServiceFetcher<HdmiControlManager>() { // from class: android.app.SystemServiceRegistry.14
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass14() {
+            }
+
             @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
             public HdmiControlManager createService() throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.HDMI_CONTROL_SERVICE);
@@ -461,14 +484,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.TEXT_CLASSIFICATION_SERVICE, TextClassificationManager.class, new CachedServiceFetcher<TextClassificationManager>() { // from class: android.app.SystemServiceRegistry.15
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass15() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TextClassificationManager createService(ContextImpl ctx) {
                 return new TextClassificationManager(ctx);
             }
         });
         registerService(Context.SELECTION_TOOLBAR_SERVICE, SelectionToolbarManager.class, new CachedServiceFetcher<SelectionToolbarManager>() { // from class: android.app.SystemServiceRegistry.16
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass16() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SelectionToolbarManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.SELECTION_TOOLBAR_SERVICE);
@@ -476,7 +503,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.FONT_SERVICE, FontManager.class, new CachedServiceFetcher<FontManager>() { // from class: android.app.SystemServiceRegistry.17
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass17() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public FontManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.FONT_SERVICE);
@@ -484,7 +513,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("clipboard", ClipboardManager.class, new CachedServiceFetcher<ClipboardManager>() { // from class: android.app.SystemServiceRegistry.18
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass18() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ClipboardManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new ClipboardManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
@@ -492,14 +523,18 @@ public final class SystemServiceRegistry {
         });
         arrayMap.put(android.text.ClipboardManager.class, "clipboard");
         registerService(Context.SEM_CLIPBOARD_SERVICE, SemClipboardManager.class, new CachedServiceFetcher<SemClipboardManager>() { // from class: android.app.SystemServiceRegistry.19
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass19() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemClipboardManager createService(ContextImpl ctx) {
                 return new SemClipboardManager(ctx.getOuterContext());
             }
         });
         registerService(Context.PAC_PROXY_SERVICE, PacProxyManager.class, new CachedServiceFetcher<PacProxyManager>() { // from class: android.app.SystemServiceRegistry.20
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass20() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PacProxyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.PAC_PROXY_SERVICE);
@@ -508,7 +543,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.NETD_SERVICE, IBinder.class, new StaticServiceFetcher<IBinder>() { // from class: android.app.SystemServiceRegistry.21
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass21() {
+            }
+
             @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
             public IBinder createService() throws ServiceManager.ServiceNotFoundException {
                 return ServiceManager.getServiceOrThrow(Context.NETD_SERVICE);
@@ -516,7 +553,9 @@ public final class SystemServiceRegistry {
         });
         registerService(Context.TETHERING_SERVICE, TetheringManager.class, new AnonymousClass22());
         registerService(Context.VPN_MANAGEMENT_SERVICE, VpnManager.class, new CachedServiceFetcher<VpnManager>() { // from class: android.app.SystemServiceRegistry.23
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass23() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public VpnManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.VPN_MANAGEMENT_SERVICE);
@@ -525,7 +564,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.VCN_MANAGEMENT_SERVICE, VcnManager.class, new CachedServiceFetcher<VcnManager>() { // from class: android.app.SystemServiceRegistry.24
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass24() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public VcnManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.VCN_MANAGEMENT_SERVICE);
@@ -534,7 +575,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.COUNTRY_DETECTOR, CountryDetector.class, new StaticServiceFetcher<CountryDetector>() { // from class: android.app.SystemServiceRegistry.25
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass25() {
+            }
+
             @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
             public CountryDetector createService() throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.COUNTRY_DETECTOR);
@@ -542,7 +585,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.DEVICE_POLICY_SERVICE, DevicePolicyManager.class, new CachedServiceFetcher<DevicePolicyManager>() { // from class: android.app.SystemServiceRegistry.26
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass26() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DevicePolicyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.DEVICE_POLICY_SERVICE);
@@ -550,14 +595,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.DOWNLOAD_SERVICE, DownloadManager.class, new CachedServiceFetcher<DownloadManager>() { // from class: android.app.SystemServiceRegistry.27
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass27() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DownloadManager createService(ContextImpl ctx) {
                 return new DownloadManager(ctx);
             }
         });
         registerService(Context.HQM_SERVICE, SemHqmManager.class, new CachedServiceFetcher<SemHqmManager>() { // from class: android.app.SystemServiceRegistry.28
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass28() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemHqmManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.HQM_SERVICE);
@@ -571,7 +620,9 @@ public final class SystemServiceRegistry {
         });
         if (!"0".equals(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_SYSTEM_CONFIG_HCM_AI_POWER_SAVING_LEVEL"))) {
             registerService(Context.HCM_SERVICE, SemHcmManager.class, new CachedServiceFetcher<SemHcmManager>() { // from class: android.app.SystemServiceRegistry.29
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass29() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public SemHcmManager createService(ContextImpl ctx) {
                     IBinder b = ServiceManager.getService(Context.HCM_SERVICE);
@@ -585,7 +636,9 @@ public final class SystemServiceRegistry {
             });
         }
         registerService(Context.BATTERY_SERVICE, BatteryManager.class, new CachedServiceFetcher<BatteryManager>() { // from class: android.app.SystemServiceRegistry.30
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass30() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public BatteryManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBatteryStats stats = IBatteryStats.Stub.asInterface(ServiceManager.getServiceOrThrow("batterystats"));
@@ -594,7 +647,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.DROPBOX_SERVICE, DropBoxManager.class, new CachedServiceFetcher<DropBoxManager>() { // from class: android.app.SystemServiceRegistry.31
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass31() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DropBoxManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.DROPBOX_SERVICE);
@@ -603,7 +658,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("transparency", BinaryTransparencyManager.class, new CachedServiceFetcher<BinaryTransparencyManager>() { // from class: android.app.SystemServiceRegistry.32
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass32() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public BinaryTransparencyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("transparency");
@@ -612,56 +669,72 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("input", InputManager.class, new CachedServiceFetcher<InputManager>() { // from class: android.app.SystemServiceRegistry.33
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass33() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public InputManager createService(ContextImpl ctx) {
                 return new InputManager(ctx.getOuterContext());
             }
         });
         registerService(Context.DISPLAY_SERVICE, DisplayManager.class, new CachedServiceFetcher<DisplayManager>() { // from class: android.app.SystemServiceRegistry.34
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass34() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DisplayManager createService(ContextImpl ctx) {
                 return new DisplayManager(ctx.getOuterContext());
             }
         });
         registerService(Context.COLOR_DISPLAY_SERVICE, ColorDisplayManager.class, new CachedServiceFetcher<ColorDisplayManager>() { // from class: android.app.SystemServiceRegistry.35
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass35() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ColorDisplayManager createService(ContextImpl ctx) {
                 return new ColorDisplayManager();
             }
         });
         registerService(Context.INPUT_METHOD_SERVICE, InputMethodManager.class, new ServiceFetcher<InputMethodManager>() { // from class: android.app.SystemServiceRegistry.36
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass36() {
+            }
+
             @Override // android.app.SystemServiceRegistry.ServiceFetcher
             public InputMethodManager getService(ContextImpl ctx) {
                 return InputMethodManager.forContext(ctx.getOuterContext());
             }
         });
         registerService(Context.TEXT_SERVICES_MANAGER_SERVICE, TextServicesManager.class, new CachedServiceFetcher<TextServicesManager>() { // from class: android.app.SystemServiceRegistry.37
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass37() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TextServicesManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return TextServicesManager.createInstance(ctx);
             }
         });
         registerService(Context.KEYGUARD_SERVICE, KeyguardManager.class, new CachedServiceFetcher<KeyguardManager>() { // from class: android.app.SystemServiceRegistry.38
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass38() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public KeyguardManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new KeyguardManager(ctx);
             }
         });
         registerService(Context.LAYOUT_INFLATER_SERVICE, LayoutInflater.class, new CachedServiceFetcher<LayoutInflater>() { // from class: android.app.SystemServiceRegistry.39
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass39() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public LayoutInflater createService(ContextImpl ctx) {
                 return new PhoneLayoutInflater(ctx.getOuterContext());
             }
         });
         registerService("location", LocationManager.class, new CachedServiceFetcher<LocationManager>() { // from class: android.app.SystemServiceRegistry.40
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass40() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public LocationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("location");
@@ -669,7 +742,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SEM_LOCATION_SERVICE, SemLocationManager.class, new CachedServiceFetcher<SemLocationManager>() { // from class: android.app.SystemServiceRegistry.41
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass41() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemLocationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 Log.e(SystemServiceRegistry.TAG, "create SemLocationManager service");
@@ -678,14 +753,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.NETWORK_POLICY_SERVICE, NetworkPolicyManager.class, new CachedServiceFetcher<NetworkPolicyManager>() { // from class: android.app.SystemServiceRegistry.42
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass42() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public NetworkPolicyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new NetworkPolicyManager(ctx, INetworkPolicyManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.NETWORK_POLICY_SERVICE)));
             }
         });
         registerService("notification", NotificationManager.class, new CachedServiceFetcher<NotificationManager>() { // from class: android.app.SystemServiceRegistry.43
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass43() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public NotificationManager createService(ContextImpl ctx) {
                 Context outerContext = ctx.getOuterContext();
@@ -693,14 +772,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.PEOPLE_SERVICE, PeopleManager.class, new CachedServiceFetcher<PeopleManager>() { // from class: android.app.SystemServiceRegistry.44
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass44() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PeopleManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new PeopleManager(ctx);
             }
         });
         registerService("power", PowerManager.class, new CachedServiceFetcher<PowerManager>() { // from class: android.app.SystemServiceRegistry.45
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass45() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PowerManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder powerBinder = ServiceManager.getServiceOrThrow("power");
@@ -711,14 +794,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.PERFORMANCE_HINT_SERVICE, PerformanceHintManager.class, new CachedServiceFetcher<PerformanceHintManager>() { // from class: android.app.SystemServiceRegistry.47
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass47() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PerformanceHintManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return PerformanceHintManager.create();
             }
         });
         registerService("recovery", RecoverySystem.class, new CachedServiceFetcher<RecoverySystem>() { // from class: android.app.SystemServiceRegistry.48
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass48() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public RecoverySystem createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("recovery");
@@ -727,42 +814,54 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("search", SearchManager.class, new CachedServiceFetcher<SearchManager>() { // from class: android.app.SystemServiceRegistry.49
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass49() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SearchManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new SearchManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
             }
         });
         registerService(Context.SENSOR_SERVICE, SensorManager.class, new CachedServiceFetcher<SensorManager>() { // from class: android.app.SystemServiceRegistry.50
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass50() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SensorManager createService(ContextImpl ctx) {
                 return new SystemSensorManager(ctx.getOuterContext(), ctx.mMainThread.getHandler().getLooper());
             }
         });
         registerService(Context.SENSOR_PRIVACY_SERVICE, SensorPrivacyManager.class, new CachedServiceFetcher<SensorPrivacyManager>() { // from class: android.app.SystemServiceRegistry.51
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass51() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SensorPrivacyManager createService(ContextImpl ctx) {
                 return SensorPrivacyManager.getInstance(ctx);
             }
         });
         registerService(Context.STATUS_BAR_SERVICE, StatusBarManager.class, new CachedServiceFetcher<StatusBarManager>() { // from class: android.app.SystemServiceRegistry.52
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass52() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public StatusBarManager createService(ContextImpl ctx) {
                 return new StatusBarManager(ctx.getOuterContext());
             }
         });
         registerService(Context.SEM_STATUS_BAR_SERVICE, SemStatusBarManager.class, new CachedServiceFetcher<SemStatusBarManager>() { // from class: android.app.SystemServiceRegistry.53
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass53() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemStatusBarManager createService(ContextImpl ctx) {
                 return new SemStatusBarManager(ctx.getOuterContext());
             }
         });
         registerService(Context.SEM_EDGE_SERVICE, SemEdgeManager.class, new CachedServiceFetcher<SemEdgeManager>() { // from class: android.app.SystemServiceRegistry.54
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass54() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemEdgeManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService("notification");
@@ -770,14 +869,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.STORAGE_SERVICE, StorageManager.class, new CachedServiceFetcher<StorageManager>() { // from class: android.app.SystemServiceRegistry.55
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass55() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public StorageManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new StorageManager(ctx, ctx.mMainThread.getHandler().getLooper());
             }
         });
         registerService(Context.STORAGE_STATS_SERVICE, StorageStatsManager.class, new CachedServiceFetcher<StorageStatsManager>() { // from class: android.app.SystemServiceRegistry.56
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass56() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public StorageStatsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IStorageStatsManager service = IStorageStatsManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.STORAGE_STATS_SERVICE));
@@ -785,7 +888,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SYSTEM_UPDATE_SERVICE, SystemUpdateManager.class, new CachedServiceFetcher<SystemUpdateManager>() { // from class: android.app.SystemServiceRegistry.57
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass57() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SystemUpdateManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.SYSTEM_UPDATE_SERVICE);
@@ -794,21 +899,27 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SYSTEM_CONFIG_SERVICE, SystemConfigManager.class, new CachedServiceFetcher<SystemConfigManager>() { // from class: android.app.SystemServiceRegistry.58
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass58() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SystemConfigManager createService(ContextImpl ctx) {
                 return new SystemConfigManager();
             }
         });
         registerService(Context.TELEPHONY_REGISTRY_SERVICE, TelephonyRegistryManager.class, new CachedServiceFetcher<TelephonyRegistryManager>() { // from class: android.app.SystemServiceRegistry.59
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass59() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TelephonyRegistryManager createService(ContextImpl ctx) {
                 return new TelephonyRegistryManager(ctx);
             }
         });
         registerService(Context.TELECOM_SERVICE, TelecomManager.class, new CachedServiceFetcher<TelecomManager>() { // from class: android.app.SystemServiceRegistry.60
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass60() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TelecomManager createService(ContextImpl ctx) {
                 return new TelecomManager(ctx.getOuterContext());
@@ -816,7 +927,9 @@ public final class SystemServiceRegistry {
         });
         if (SemTelecomManager.hasSamsungTelecomSystemFeature()) {
             registerService(Context.SEM_TELECOM_SERVICE, SemTelecomManager.class, new CachedServiceFetcher<SemTelecomManager>() { // from class: android.app.SystemServiceRegistry.61
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass61() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public SemTelecomManager createService(ContextImpl ctx) {
                     return new SemTelecomManager(ctx.getOuterContext());
@@ -824,21 +937,27 @@ public final class SystemServiceRegistry {
             });
         }
         registerService("mms", MmsManager.class, new CachedServiceFetcher<MmsManager>() { // from class: android.app.SystemServiceRegistry.62
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass62() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public MmsManager createService(ContextImpl ctx) {
                 return new MmsManager(ctx.getOuterContext());
             }
         });
         registerService(Context.UI_MODE_SERVICE, UiModeManager.class, new CachedServiceFetcher<UiModeManager>() { // from class: android.app.SystemServiceRegistry.63
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass63() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public UiModeManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new UiModeManager(ctx.getOuterContext());
             }
         });
         registerService("usb", UsbManager.class, new CachedServiceFetcher<UsbManager>() { // from class: android.app.SystemServiceRegistry.64
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass64() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public UsbManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("usb");
@@ -846,7 +965,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("adb", AdbManager.class, new CachedServiceFetcher<AdbManager>() { // from class: android.app.SystemServiceRegistry.65
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass65() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AdbManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("adb");
@@ -854,7 +975,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SERIAL_SERVICE, SerialManager.class, new CachedServiceFetcher<SerialManager>() { // from class: android.app.SystemServiceRegistry.66
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass66() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SerialManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.SERIAL_SERVICE);
@@ -862,21 +985,27 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.VIBRATOR_MANAGER_SERVICE, VibratorManager.class, new CachedServiceFetcher<VibratorManager>() { // from class: android.app.SystemServiceRegistry.67
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass67() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public VibratorManager createService(ContextImpl ctx) {
                 return new SystemVibratorManager(ctx);
             }
         });
         registerService(Context.VIBRATOR_SERVICE, Vibrator.class, new CachedServiceFetcher<Vibrator>() { // from class: android.app.SystemServiceRegistry.68
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass68() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public Vibrator createService(ContextImpl ctx) {
                 return new SystemVibrator(ctx);
             }
         });
         registerService("wallpaper", WallpaperManager.class, new CachedServiceFetcher<WallpaperManager>() { // from class: android.app.SystemServiceRegistry.69
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass69() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public WallpaperManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService("wallpaper");
@@ -896,14 +1025,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.WIFI_NL80211_SERVICE, WifiNl80211Manager.class, new CachedServiceFetcher<WifiNl80211Manager>() { // from class: android.app.SystemServiceRegistry.70
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass70() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public WifiNl80211Manager createService(ContextImpl ctx) {
                 return new WifiNl80211Manager(ctx.getOuterContext());
             }
         });
         registerService(Context.Power_Solution_FrameWork_Service, powerSolutionManager.class, new CachedServiceFetcher<powerSolutionManager>() { // from class: android.app.SystemServiceRegistry.71
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass71() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public powerSolutionManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.Power_Solution_FrameWork_Service);
@@ -912,21 +1045,27 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CameraServiceWorker_manager, CameraServiceWorkerManager.class, new CachedServiceFetcher<CameraServiceWorkerManager>() { // from class: android.app.SystemServiceRegistry.72
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass72() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public CameraServiceWorkerManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new CameraServiceWorkerManager(ServiceManager.getService(Context.CameraServiceWorker));
             }
         });
         registerService(Context.WINDOW_SERVICE, WindowManager.class, new CachedServiceFetcher<WindowManager>() { // from class: android.app.SystemServiceRegistry.73
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass73() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public WindowManager createService(ContextImpl ctx) {
                 return new WindowManagerImpl(ctx);
             }
         });
         registerService("user", UserManager.class, new CachedServiceFetcher<UserManager>() { // from class: android.app.SystemServiceRegistry.74
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass74() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public UserManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("user");
@@ -935,7 +1074,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.APP_OPS_SERVICE, AppOpsManager.class, new CachedServiceFetcher<AppOpsManager>() { // from class: android.app.SystemServiceRegistry.75
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass75() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AppOpsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.APP_OPS_SERVICE);
@@ -944,21 +1085,27 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CAMERA_SERVICE, CameraManager.class, new CachedServiceFetcher<CameraManager>() { // from class: android.app.SystemServiceRegistry.76
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass76() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public CameraManager createService(ContextImpl ctx) {
                 return new CameraManager(ctx);
             }
         });
         registerService(Context.LAUNCHER_APPS_SERVICE, LauncherApps.class, new CachedServiceFetcher<LauncherApps>() { // from class: android.app.SystemServiceRegistry.77
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass77() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public LauncherApps createService(ContextImpl ctx) {
                 return new LauncherApps(ctx);
             }
         });
         registerService(Context.RESTRICTIONS_SERVICE, RestrictionsManager.class, new CachedServiceFetcher<RestrictionsManager>() { // from class: android.app.SystemServiceRegistry.78
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass78() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public RestrictionsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.RESTRICTIONS_SERVICE);
@@ -967,7 +1114,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.PRINT_SERVICE, PrintManager.class, new CachedServiceFetcher<PrintManager>() { // from class: android.app.SystemServiceRegistry.79
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass79() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PrintManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IPrintManager service = null;
@@ -980,7 +1129,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.COMPANION_DEVICE_SERVICE, CompanionDeviceManager.class, new CachedServiceFetcher<CompanionDeviceManager>() { // from class: android.app.SystemServiceRegistry.80
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass80() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public CompanionDeviceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 ICompanionDeviceManager service = null;
@@ -991,7 +1142,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.VIRTUAL_DEVICE_SERVICE, VirtualDeviceManager.class, new CachedServiceFetcher<VirtualDeviceManager>() { // from class: android.app.SystemServiceRegistry.81
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass81() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public VirtualDeviceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 if (!ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_COMPANION_DEVICE_SETUP)) {
@@ -1002,14 +1155,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CONSUMER_IR_SERVICE, ConsumerIrManager.class, new CachedServiceFetcher<ConsumerIrManager>() { // from class: android.app.SystemServiceRegistry.82
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass82() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ConsumerIrManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new ConsumerIrManager(ctx);
             }
         });
         registerService(Context.TRUST_SERVICE, TrustManager.class, new StaticServiceFetcher<TrustManager>() { // from class: android.app.SystemServiceRegistry.83
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass83() {
+            }
+
             @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
             public TrustManager createService() throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.TRUST_SERVICE);
@@ -1017,7 +1174,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.FINGERPRINT_SERVICE, FingerprintManager.class, new CachedServiceFetcher<FingerprintManager>() { // from class: android.app.SystemServiceRegistry.84
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass84() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public FingerprintManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder binder;
@@ -1031,7 +1190,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.FACE_SERVICE, FaceManager.class, new CachedServiceFetcher<FaceManager>() { // from class: android.app.SystemServiceRegistry.85
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass85() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public FaceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder binder;
@@ -1045,7 +1206,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.IRIS_SERVICE, IrisManager.class, new CachedServiceFetcher<IrisManager>() { // from class: android.app.SystemServiceRegistry.86
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass86() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public IrisManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder binder = ServiceManager.getServiceOrThrow(Context.IRIS_SERVICE);
@@ -1054,7 +1217,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.BIOMETRIC_SERVICE, BiometricManager.class, new CachedServiceFetcher<BiometricManager>() { // from class: android.app.SystemServiceRegistry.87
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass87() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public BiometricManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder binder = ServiceManager.getServiceOrThrow(Context.AUTH_SERVICE);
@@ -1063,7 +1228,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.TV_INTERACTIVE_APP_SERVICE, TvInteractiveAppManager.class, new CachedServiceFetcher<TvInteractiveAppManager>() { // from class: android.app.SystemServiceRegistry.88
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass88() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TvInteractiveAppManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder iBinder = ServiceManager.getServiceOrThrow(Context.TV_INTERACTIVE_APP_SERVICE);
@@ -1072,7 +1239,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.TV_INPUT_SERVICE, TvInputManager.class, new CachedServiceFetcher<TvInputManager>() { // from class: android.app.SystemServiceRegistry.89
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass89() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TvInputManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder iBinder = ServiceManager.getServiceOrThrow(Context.TV_INPUT_SERVICE);
@@ -1081,7 +1250,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.TV_TUNER_RESOURCE_MGR_SERVICE, TunerResourceManager.class, new CachedServiceFetcher<TunerResourceManager>() { // from class: android.app.SystemServiceRegistry.90
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass90() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TunerResourceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder iBinder = ServiceManager.getServiceOrThrow(Context.TV_TUNER_RESOURCE_MGR_SERVICE);
@@ -1090,14 +1261,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.NETWORK_SCORE_SERVICE, NetworkScoreManager.class, new CachedServiceFetcher<NetworkScoreManager>() { // from class: android.app.SystemServiceRegistry.91
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass91() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public NetworkScoreManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new NetworkScoreManager(ctx);
             }
         });
         registerService(Context.USAGE_STATS_SERVICE, UsageStatsManager.class, new CachedServiceFetcher<UsageStatsManager>() { // from class: android.app.SystemServiceRegistry.92
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass92() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public UsageStatsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder iBinder = ServiceManager.getServiceOrThrow(Context.USAGE_STATS_SERVICE);
@@ -1106,7 +1281,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.PERSISTENT_DATA_BLOCK_SERVICE, PersistentDataBlockManager.class, new StaticServiceFetcher<PersistentDataBlockManager>() { // from class: android.app.SystemServiceRegistry.93
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass93() {
+            }
+
             @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
             public PersistentDataBlockManager createService() throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.PERSISTENT_DATA_BLOCK_SERVICE);
@@ -1118,7 +1295,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.OEM_LOCK_SERVICE, OemLockManager.class, new StaticServiceFetcher<OemLockManager>() { // from class: android.app.SystemServiceRegistry.94
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass94() {
+            }
+
             @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
             public OemLockManager createService() throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.OEM_LOCK_SERVICE);
@@ -1130,14 +1309,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.MEDIA_PROJECTION_SERVICE, MediaProjectionManager.class, new CachedServiceFetcher<MediaProjectionManager>() { // from class: android.app.SystemServiceRegistry.95
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass95() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public MediaProjectionManager createService(ContextImpl ctx) {
                 return new MediaProjectionManager(ctx);
             }
         });
         registerService(Context.APPWIDGET_SERVICE, AppWidgetManager.class, new CachedServiceFetcher<AppWidgetManager>() { // from class: android.app.SystemServiceRegistry.96
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass96() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AppWidgetManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.APPWIDGET_SERVICE);
@@ -1148,7 +1331,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("midi", MidiManager.class, new CachedServiceFetcher<MidiManager>() { // from class: android.app.SystemServiceRegistry.97
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass97() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public MidiManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("midi");
@@ -1156,14 +1341,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.RADIO_SERVICE, RadioManager.class, new CachedServiceFetcher<RadioManager>() { // from class: android.app.SystemServiceRegistry.98
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass98() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public RadioManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new RadioManager(ctx);
             }
         });
         registerService(Context.HARDWARE_PROPERTIES_SERVICE, HardwarePropertiesManager.class, new CachedServiceFetcher<HardwarePropertiesManager>() { // from class: android.app.SystemServiceRegistry.99
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass99() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public HardwarePropertiesManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.HARDWARE_PROPERTIES_SERVICE);
@@ -1172,7 +1361,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SOUND_TRIGGER_SERVICE, SoundTriggerManager.class, new CachedServiceFetcher<SoundTriggerManager>() { // from class: android.app.SystemServiceRegistry.100
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass100() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SoundTriggerManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.SOUND_TRIGGER_SERVICE);
@@ -1180,7 +1371,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("shortcut", ShortcutManager.class, new CachedServiceFetcher<ShortcutManager>() { // from class: android.app.SystemServiceRegistry.101
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass101() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ShortcutManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("shortcut");
@@ -1188,7 +1381,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("overlay", OverlayManager.class, new CachedServiceFetcher<OverlayManager>() { // from class: android.app.SystemServiceRegistry.102
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass102() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public OverlayManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b;
@@ -1201,7 +1396,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.NETWORK_WATCHLIST_SERVICE, NetworkWatchlistManager.class, new CachedServiceFetcher<NetworkWatchlistManager>() { // from class: android.app.SystemServiceRegistry.103
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass103() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public NetworkWatchlistManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.NETWORK_WATCHLIST_SERVICE);
@@ -1209,7 +1406,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SYSTEM_HEALTH_SERVICE, SystemHealthManager.class, new CachedServiceFetcher<SystemHealthManager>() { // from class: android.app.SystemServiceRegistry.104
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass104() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SystemHealthManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("batterystats");
@@ -1217,21 +1416,27 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CONTEXTHUB_SERVICE, ContextHubManager.class, new CachedServiceFetcher<ContextHubManager>() { // from class: android.app.SystemServiceRegistry.105
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass105() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ContextHubManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new ContextHubManager(ctx.getOuterContext(), ctx.mMainThread.getHandler().getLooper());
             }
         });
         registerService(Context.INCIDENT_SERVICE, IncidentManager.class, new CachedServiceFetcher<IncidentManager>() { // from class: android.app.SystemServiceRegistry.106
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass106() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public IncidentManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new IncidentManager(ctx);
             }
         });
         registerService(Context.BUGREPORT_SERVICE, BugreportManager.class, new CachedServiceFetcher<BugreportManager>() { // from class: android.app.SystemServiceRegistry.107
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass107() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public BugreportManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.BUGREPORT_SERVICE);
@@ -1239,7 +1444,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.AUTOFILL_MANAGER_SERVICE, AutofillManager.class, new CachedServiceFetcher<AutofillManager>() { // from class: android.app.SystemServiceRegistry.108
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass108() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AutofillManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.AUTOFILL_MANAGER_SERVICE);
@@ -1248,7 +1455,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CREDENTIAL_SERVICE, CredentialManager.class, new CachedServiceFetcher<CredentialManager>() { // from class: android.app.SystemServiceRegistry.109
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass109() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public CredentialManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.CREDENTIAL_SERVICE);
@@ -1260,7 +1469,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.MUSIC_RECOGNITION_SERVICE, MusicRecognitionManager.class, new CachedServiceFetcher<MusicRecognitionManager>() { // from class: android.app.SystemServiceRegistry.110
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass110() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public MusicRecognitionManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.MUSIC_RECOGNITION_SERVICE);
@@ -1268,7 +1479,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CONTENT_CAPTURE_MANAGER_SERVICE, ContentCaptureManager.class, new CachedServiceFetcher<ContentCaptureManager>() { // from class: android.app.SystemServiceRegistry.111
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass111() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ContentCaptureManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 Context outerContext = ctx.getOuterContext();
@@ -1288,7 +1501,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.TRANSLATION_MANAGER_SERVICE, TranslationManager.class, new CachedServiceFetcher<TranslationManager>() { // from class: android.app.SystemServiceRegistry.112
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass112() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TranslationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.TRANSLATION_MANAGER_SERVICE);
@@ -1300,7 +1515,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.UI_TRANSLATION_SERVICE, UiTranslationManager.class, new CachedServiceFetcher<UiTranslationManager>() { // from class: android.app.SystemServiceRegistry.113
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass113() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public UiTranslationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.TRANSLATION_MANAGER_SERVICE);
@@ -1312,7 +1529,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SEARCH_UI_SERVICE, SearchUiManager.class, new CachedServiceFetcher<SearchUiManager>() { // from class: android.app.SystemServiceRegistry.114
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass114() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SearchUiManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.SEARCH_UI_SERVICE);
@@ -1323,7 +1542,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SMARTSPACE_SERVICE, SmartspaceManager.class, new CachedServiceFetcher<SmartspaceManager>() { // from class: android.app.SystemServiceRegistry.115
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass115() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SmartspaceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.SMARTSPACE_SERVICE);
@@ -1334,7 +1555,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.APP_PREDICTION_SERVICE, AppPredictionManager.class, new CachedServiceFetcher<AppPredictionManager>() { // from class: android.app.SystemServiceRegistry.116
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass116() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AppPredictionManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.APP_PREDICTION_SERVICE);
@@ -1345,7 +1568,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CONTENT_SUGGESTIONS_SERVICE, ContentSuggestionsManager.class, new CachedServiceFetcher<ContentSuggestionsManager>() { // from class: android.app.SystemServiceRegistry.117
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass117() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ContentSuggestionsManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.CONTENT_SUGGESTIONS_SERVICE);
@@ -1354,7 +1579,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.WALLPAPER_EFFECTS_GENERATION_SERVICE, WallpaperEffectsGenerationManager.class, new CachedServiceFetcher<WallpaperEffectsGenerationManager>() { // from class: android.app.SystemServiceRegistry.118
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass118() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public WallpaperEffectsGenerationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getService(Context.WALLPAPER_EFFECTS_GENERATION_SERVICE);
@@ -1365,7 +1592,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.VR_SERVICE, VrManager.class, new CachedServiceFetcher<VrManager>() { // from class: android.app.SystemServiceRegistry.119
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass119() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public VrManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.VR_SERVICE);
@@ -1373,7 +1602,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CROSS_PROFILE_APPS_SERVICE, CrossProfileApps.class, new CachedServiceFetcher<CrossProfileApps>() { // from class: android.app.SystemServiceRegistry.120
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass120() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public CrossProfileApps createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.CROSS_PROFILE_APPS_SERVICE);
@@ -1381,14 +1612,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("slice", SliceManager.class, new CachedServiceFetcher<SliceManager>() { // from class: android.app.SystemServiceRegistry.121
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass121() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SliceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new SliceManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
             }
         });
         registerService(Context.SEM_WIFI_SERVICE, SemWifiManager.class, new CachedServiceFetcher<SemWifiManager>() { // from class: android.app.SystemServiceRegistry.122
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass122() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemWifiManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 ISemWifiManager service = ISemWifiManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.SEM_WIFI_SERVICE));
@@ -1396,7 +1631,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SEM_WIFI_P2P_SERVICE, SemWifiP2pManager.class, new CachedServiceFetcher<SemWifiP2pManager>() { // from class: android.app.SystemServiceRegistry.123
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass123() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemWifiP2pManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 ISemWifiP2pManager service = ISemWifiP2pManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.SEM_WIFI_P2P_SERVICE));
@@ -1404,7 +1641,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SEM_WIFI_AWARE_SERVICE, SemWifiAwareManager.class, new CachedServiceFetcher<SemWifiAwareManager>() { // from class: android.app.SystemServiceRegistry.124
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass124() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemWifiAwareManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 ISemWifiAwareManager service = ISemWifiAwareManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.SEM_WIFI_AWARE_SERVICE));
@@ -1413,7 +1652,9 @@ public final class SystemServiceRegistry {
         });
         if (SemFloatingFeature.getInstance().getInt("SEC_FLOATING_FEATURE_MCF_SUPPORT_CONTINUITY") > 0) {
             registerService(Context.SEM_CONTINUITY_SERVICE, SemContinuityManager.class, new CachedServiceFetcher<SemContinuityManager>() { // from class: android.app.SystemServiceRegistry.125
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass125() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public SemContinuityManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                     IBinder binder = ServiceManager.getServiceOrThrow(Context.SEM_CONTINUITY_SERVICE);
@@ -1424,7 +1665,9 @@ public final class SystemServiceRegistry {
         }
         if (!"".equals(AudioTag.TAG_CAMERA)) {
             registerService(Context.SEM_HWRS_SERVICE, SemHwrsManager.class, new CachedServiceFetcher<SemHwrsManager>() { // from class: android.app.SystemServiceRegistry.126
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass126() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public SemHwrsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                     IBinder binder = ServiceManager.getServiceOrThrow(Context.SEM_HWRS_SERVICE);
@@ -1436,7 +1679,9 @@ public final class SystemServiceRegistry {
         String fmradioChipVendor = SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FMRADIO_CONFIG_CHIP_VENDOR");
         if (fmradioChipVendor.length() > 0 && Integer.parseInt(fmradioChipVendor) > 0) {
             registerService(Context.SEM_FM_RADIO_SERVICE, SemFmPlayer.class, new CachedServiceFetcher<SemFmPlayer>() { // from class: android.app.SystemServiceRegistry.127
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass127() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public SemFmPlayer createService(ContextImpl ctx) {
                     return new SemFmPlayer(ctx);
@@ -1444,77 +1689,99 @@ public final class SystemServiceRegistry {
             });
         }
         registerService(Context.SEM_MOTION_RECOGNITION_SERVICE, SemMotionRecognitionManager.class, new CachedServiceFetcher<SemMotionRecognitionManager>() { // from class: android.app.SystemServiceRegistry.128
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass128() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemMotionRecognitionManager createService(ContextImpl ctx) {
                 return new SemMotionRecognitionManager(ctx.mMainThread.getHandler().getLooper());
             }
         });
         registerService("scontext", SContextManager.class, new CachedServiceFetcher<SContextManager>() { // from class: android.app.SystemServiceRegistry.129
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass129() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SContextManager createService(ContextImpl ctx) {
                 return new SContextManager(ctx, ctx.mMainThread.getHandler().getLooper());
             }
         });
         registerService("time_detector", TimeDetector.class, new CachedServiceFetcher<TimeDetector>() { // from class: android.app.SystemServiceRegistry.130
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass130() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TimeDetector createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new TimeDetectorImpl();
             }
         });
         registerService("time_zone_detector", TimeZoneDetector.class, new CachedServiceFetcher<TimeZoneDetector>() { // from class: android.app.SystemServiceRegistry.131
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass131() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TimeZoneDetector createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new TimeZoneDetectorImpl();
             }
         });
         registerService(Context.TIME_MANAGER_SERVICE, TimeManager.class, new CachedServiceFetcher<TimeManager>() { // from class: android.app.SystemServiceRegistry.132
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass132() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TimeManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new TimeManager();
             }
         });
         registerService("permission", PermissionManager.class, new CachedServiceFetcher<PermissionManager>() { // from class: android.app.SystemServiceRegistry.133
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass133() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PermissionManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new PermissionManager(ctx.getOuterContext());
             }
         });
         registerService(Context.LEGACY_PERMISSION_SERVICE, LegacyPermissionManager.class, new CachedServiceFetcher<LegacyPermissionManager>() { // from class: android.app.SystemServiceRegistry.134
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass134() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public LegacyPermissionManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new LegacyPermissionManager();
             }
         });
         registerService(Context.PERMISSION_CONTROLLER_SERVICE, PermissionControllerManager.class, new CachedServiceFetcher<PermissionControllerManager>() { // from class: android.app.SystemServiceRegistry.135
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass135() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PermissionControllerManager createService(ContextImpl ctx) {
                 return new PermissionControllerManager(ctx.getOuterContext(), ctx.getMainThreadHandler());
             }
         });
         registerService(Context.PERMISSION_CHECKER_SERVICE, PermissionCheckerManager.class, new CachedServiceFetcher<PermissionCheckerManager>() { // from class: android.app.SystemServiceRegistry.136
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass136() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PermissionCheckerManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new PermissionCheckerManager(ctx.getOuterContext());
             }
         });
         registerService(Context.PERMISSION_ENFORCER_SERVICE, PermissionEnforcer.class, new CachedServiceFetcher<PermissionEnforcer>() { // from class: android.app.SystemServiceRegistry.137
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass137() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public PermissionEnforcer createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new PermissionEnforcer(ctx.getOuterContext());
             }
         });
         registerService(Context.DYNAMIC_SYSTEM_SERVICE, DynamicSystemManager.class, new CachedServiceFetcher<DynamicSystemManager>() { // from class: android.app.SystemServiceRegistry.138
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass138() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DynamicSystemManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.DYNAMIC_SYSTEM_SERVICE);
@@ -1522,7 +1789,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("batterystats", BatteryStatsManager.class, new CachedServiceFetcher<BatteryStatsManager>() { // from class: android.app.SystemServiceRegistry.139
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass139() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public BatteryStatsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow("batterystats");
@@ -1530,7 +1799,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.DATA_LOADER_MANAGER_SERVICE, DataLoaderManager.class, new CachedServiceFetcher<DataLoaderManager>() { // from class: android.app.SystemServiceRegistry.140
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass140() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DataLoaderManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.DATA_LOADER_MANAGER_SERVICE);
@@ -1538,21 +1809,27 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.LIGHTS_SERVICE, LightsManager.class, new CachedServiceFetcher<LightsManager>() { // from class: android.app.SystemServiceRegistry.141
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass141() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public LightsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new SystemLightsManager(ctx);
             }
         });
         registerService("locale", LocaleManager.class, new CachedServiceFetcher<LocaleManager>() { // from class: android.app.SystemServiceRegistry.142
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass142() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public LocaleManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new LocaleManager(ctx, ILocaleManager.Stub.asInterface(ServiceManager.getServiceOrThrow("locale")));
             }
         });
         registerService(Context.INCREMENTAL_SERVICE, IncrementalManager.class, new CachedServiceFetcher<IncrementalManager>() { // from class: android.app.SystemServiceRegistry.143
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass143() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public IncrementalManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.INCREMENTAL_SERVICE);
@@ -1563,7 +1840,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.FILE_INTEGRITY_SERVICE, FileIntegrityManager.class, new CachedServiceFetcher<FileIntegrityManager>() { // from class: android.app.SystemServiceRegistry.144
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass144() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public FileIntegrityManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.FILE_INTEGRITY_SERVICE);
@@ -1571,7 +1850,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.ATTESTATION_VERIFICATION_SERVICE, AttestationVerificationManager.class, new CachedServiceFetcher<AttestationVerificationManager>() { // from class: android.app.SystemServiceRegistry.145
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass145() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AttestationVerificationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.ATTESTATION_VERIFICATION_SERVICE);
@@ -1579,7 +1860,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.APP_INTEGRITY_SERVICE, AppIntegrityManager.class, new CachedServiceFetcher<AppIntegrityManager>() { // from class: android.app.SystemServiceRegistry.146
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass146() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AppIntegrityManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.APP_INTEGRITY_SERVICE);
@@ -1587,7 +1870,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.APP_HIBERNATION_SERVICE, AppHibernationManager.class, new CachedServiceFetcher<AppHibernationManager>() { // from class: android.app.SystemServiceRegistry.147
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass147() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AppHibernationManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.APP_HIBERNATION_SERVICE);
@@ -1598,21 +1883,27 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("dream", DreamManager.class, new CachedServiceFetcher<DreamManager>() { // from class: android.app.SystemServiceRegistry.148
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass148() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DreamManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new DreamManager(ctx);
             }
         });
         registerService(Context.DEVICE_STATE_SERVICE, DeviceStateManager.class, new CachedServiceFetcher<DeviceStateManager>() { // from class: android.app.SystemServiceRegistry.149
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass149() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DeviceStateManager createService(ContextImpl ctx) {
                 return new DeviceStateManager();
             }
         });
         registerService(Context.COCKTAIL_BAR_SERVICE, CocktailBarManager.class, new CachedServiceFetcher<CocktailBarManager>() { // from class: android.app.SystemServiceRegistry.150
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass150() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public CocktailBarManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.COCKTAIL_BAR_SERVICE);
@@ -1620,7 +1911,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.MEDIA_METRICS_SERVICE, MediaMetricsManager.class, new CachedServiceFetcher<MediaMetricsManager>() { // from class: android.app.SystemServiceRegistry.151
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass151() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public MediaMetricsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder iBinder = ServiceManager.getServiceOrThrow(Context.MEDIA_METRICS_SERVICE);
@@ -1629,14 +1922,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.GAME_SERVICE, GameManager.class, new CachedServiceFetcher<GameManager>() { // from class: android.app.SystemServiceRegistry.152
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass152() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public GameManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new GameManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
             }
         });
         registerService(Context.DOMAIN_VERIFICATION_SERVICE, DomainVerificationManager.class, new CachedServiceFetcher<DomainVerificationManager>() { // from class: android.app.SystemServiceRegistry.153
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass153() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DomainVerificationManager createService(ContextImpl context) throws ServiceManager.ServiceNotFoundException {
                 IBinder binder = ServiceManager.getServiceOrThrow(Context.DOMAIN_VERIFICATION_SERVICE);
@@ -1645,7 +1942,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.DISPLAY_HASH_SERVICE, DisplayHashManager.class, new CachedServiceFetcher<DisplayHashManager>() { // from class: android.app.SystemServiceRegistry.154
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass154() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public DisplayHashManager createService(ContextImpl ctx) {
                 return new DisplayHashManager();
@@ -1659,7 +1958,9 @@ public final class SystemServiceRegistry {
         }
         if (isExynosDisplaySolutionService) {
             registerService(Context.EXYNOS_DISPLAY_SOLUTION_SERVICE, ExynosDisplaySolutionManager.class, new CachedServiceFetcher<ExynosDisplaySolutionManager>() { // from class: android.app.SystemServiceRegistry.155
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass155() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public ExynosDisplaySolutionManager createService(ContextImpl ctx) {
                     IBinder b = ServiceManager.getService(Context.EXYNOS_DISPLAY_SOLUTION_SERVICE);
@@ -1673,7 +1974,9 @@ public final class SystemServiceRegistry {
             });
         }
         registerService(Context.AMBIENT_CONTEXT_SERVICE, AmbientContextManager.class, new CachedServiceFetcher<AmbientContextManager>() { // from class: android.app.SystemServiceRegistry.156
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass156() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public AmbientContextManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder iBinder = ServiceManager.getServiceOrThrow(Context.AMBIENT_CONTEXT_SERVICE);
@@ -1682,7 +1985,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.WEARABLE_SENSING_SERVICE, WearableSensingManager.class, new CachedServiceFetcher<WearableSensingManager>() { // from class: android.app.SystemServiceRegistry.157
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass157() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public WearableSensingManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IBinder iBinder = ServiceManager.getServiceOrThrow(Context.WEARABLE_SENSING_SERVICE);
@@ -1691,21 +1996,27 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.GRAMMATICAL_INFLECTION_SERVICE, GrammaticalInflectionManager.class, new CachedServiceFetcher<GrammaticalInflectionManager>() { // from class: android.app.SystemServiceRegistry.158
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass158() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public GrammaticalInflectionManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 return new GrammaticalInflectionManager(ctx, IGrammaticalInflectionManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.GRAMMATICAL_INFLECTION_SERVICE)));
             }
         });
         registerService(Context.SHARED_CONNECTIVITY_SERVICE, SharedConnectivityManager.class, new CachedServiceFetcher<SharedConnectivityManager>() { // from class: android.app.SystemServiceRegistry.159
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass159() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SharedConnectivityManager createService(ContextImpl ctx) {
                 return SharedConnectivityManager.create(ctx);
             }
         });
         registerService(Context.SEM_MULTI_CONTROL_SERVICE, SemMultiControlManager.class, new CachedServiceFetcher<SemMultiControlManager>() { // from class: android.app.SystemServiceRegistry.160
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass160() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemMultiControlManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.SEM_MULTI_CONTROL_SERVICE);
@@ -1718,7 +2029,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("persona", SemPersonaManager.class, new CachedServiceFetcher<SemPersonaManager>() { // from class: android.app.SystemServiceRegistry.161
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass161() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemPersonaManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService("persona");
@@ -1727,7 +2040,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService("rcp", SemRemoteContentManager.class, new CachedServiceFetcher<SemRemoteContentManager>() { // from class: android.app.SystemServiceRegistry.162
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass162() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemRemoteContentManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService("rcp");
@@ -1735,14 +2050,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.ISRB_MANAGER_SERVICE, IsrbManager.class, new CachedServiceFetcher<IsrbManager>() { // from class: android.app.SystemServiceRegistry.163
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass163() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public IsrbManager createService(ContextImpl ctx) {
                 return new IsrbManager(ctx);
             }
         });
         registerService(Context.SEM_REMOTE_APP_MODE_SERVICE, SemRemoteAppModeManager.class, new CachedServiceFetcher<SemRemoteAppModeManager>() { // from class: android.app.SystemServiceRegistry.164
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass164() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemRemoteAppModeManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.SEM_REMOTE_APP_MODE_SERVICE);
@@ -1755,7 +2074,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SEM_MDNIE_SERVICE, SemMdnieManager.class, new CachedServiceFetcher<SemMdnieManager>() { // from class: android.app.SystemServiceRegistry.165
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass165() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemMdnieManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.SEM_MDNIE_SERVICE);
@@ -1764,7 +2085,9 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SEM_DISPLAY_SOLUTION_SERVICE, SemDisplaySolutionManager.class, new CachedServiceFetcher<SemDisplaySolutionManager>() { // from class: android.app.SystemServiceRegistry.166
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass166() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemDisplaySolutionManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.SEM_DISPLAY_SOLUTION_SERVICE);
@@ -1775,7 +2098,9 @@ public final class SystemServiceRegistry {
         Log.e(TAG, "SemDisplayQualityFeature.ENABLED:" + SemDisplayQualityFeature.ENABLED + ",PLATFORM:" + SemDisplayQualityFeature.PLATFORM);
         if (SemDisplayQualityFeature.ENABLED) {
             registerService(Context.SEM_DISPLAY_QUALITY_SERVICE, SemDisplayQualityManager.class, new CachedServiceFetcher<SemDisplayQualityManager>() { // from class: android.app.SystemServiceRegistry.167
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass167() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public SemDisplayQualityManager createService(ContextImpl ctx) {
                     IBinder b = ServiceManager.getService(Context.SEM_DISPLAY_QUALITY_SERVICE);
@@ -1785,7 +2110,9 @@ public final class SystemServiceRegistry {
             });
         }
         registerService(Context.SEM_INPUT_DEVICE_SERVICE, SemInputDeviceManager.class, new CachedServiceFetcher<SemInputDeviceManager>() { // from class: android.app.SystemServiceRegistry.168
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass168() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemInputDeviceManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.SEM_INPUT_DEVICE_SERVICE);
@@ -1795,7 +2122,9 @@ public final class SystemServiceRegistry {
         });
         if (UnionUtils.FEATURE_ENABLED) {
             registerService(Context.SEP_UNION_SERVICE, SemUnionManager.class, new CachedServiceFetcher<SemUnionManager>() { // from class: android.app.SystemServiceRegistry.169
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass169() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public SemUnionManager createService(ContextImpl ctx) {
                     IBinder b = ServiceManager.getService(Context.SEP_UNION_SERVICE);
@@ -1804,14 +2133,18 @@ public final class SystemServiceRegistry {
             });
         }
         registerService(Context.SEM_VIDEO_TRANSCODING_SERVICE, SemVideoTranscodingService.class, new CachedServiceFetcher<SemVideoTranscodingService>() { // from class: android.app.SystemServiceRegistry.170
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass170() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemVideoTranscodingService createService(ContextImpl ctx) {
                 return new SemVideoTranscodingService();
             }
         });
         registerService(Context.SEM_DESKTOP_MODE_SERVICE, SemDesktopModeManager.class, new CachedServiceFetcher<SemDesktopModeManager>() { // from class: android.app.SystemServiceRegistry.171
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass171() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemDesktopModeManager createService(ContextImpl ctx) {
                 IBinder b = ServiceManager.getService(Context.SEM_DESKTOP_MODE_SERVICE);
@@ -1824,13 +2157,18 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.CODEC_SOLUTION_SERVICE, SemCodecSolutionService.class, new CachedServiceFetcher<SemCodecSolutionService>() { // from class: android.app.SystemServiceRegistry.172
+            AnonymousClass172() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SemCodecSolutionService createService(ContextImpl ctx) {
                 return new SemCodecSolutionService();
             }
         });
         registerService(Context.EXTENDED_ETHERNET_SERVICE, ExtendedEthernetManager.class, new CachedServiceFetcher<ExtendedEthernetManager>() { // from class: android.app.SystemServiceRegistry.173
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass173() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public ExtendedEthernetManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                 IExtendedEthernetManager service = IExtendedEthernetManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.EXTENDED_ETHERNET_SERVICE));
@@ -1838,28 +2176,19 @@ public final class SystemServiceRegistry {
             }
         });
         registerService(Context.SEM_SPEN_GESTURE_SERVICE, SpenGestureManager.class, new CachedServiceFetcher<SpenGestureManager>() { // from class: android.app.SystemServiceRegistry.174
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass174() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public SpenGestureManager createService(ContextImpl ctx) {
                 return new SpenGestureManager(ctx);
             }
         });
-        registerService(Context.SEM_MDCONTEXT_SERVICE, SemMdContextManager.class, new CachedServiceFetcher<SemMdContextManager>() { // from class: android.app.SystemServiceRegistry.175
-            /* JADX WARN: Can't rename method to resolve collision */
-            @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
-            public SemMdContextManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
-                Log.i(SystemServiceRegistry.TAG, "create SemMdContextManager service");
-                IBinder b = ServiceManager.getService(Context.SEM_MDCONTEXT_SERVICE);
-                if (b == null) {
-                    Log.e(SystemServiceRegistry.TAG, "MOCCA is not supported on this device");
-                    return null;
-                }
-                return new SemMdContextManager(IMoccaService.Stub.asInterface(b));
-            }
-        });
         if (CoreRune.SYSFW_APP_PREL) {
             registerService(Context.PRELAUNCHER_SERVICE, AppPrelaunchManager.class, new CachedServiceFetcher<AppPrelaunchManager>() { // from class: android.app.SystemServiceRegistry.176
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass176() {
+                }
+
                 @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
                 public AppPrelaunchManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
                     IBinder iBinder = ServiceManager.getServiceOrThrow(Context.PRELAUNCHER_SERVICE);
@@ -1904,13 +2233,267 @@ public final class SystemServiceRegistry {
     private SystemServiceRegistry() {
     }
 
-    /* renamed from: android.app.SystemServiceRegistry$22, reason: invalid class name */
+    /* renamed from: android.app.SystemServiceRegistry$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends CachedServiceFetcher<AccessibilityManager> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AccessibilityManager createService(ContextImpl ctx) {
+            return AccessibilityManager.getInstance(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends CachedServiceFetcher<CaptioningManager> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public CaptioningManager createService(ContextImpl ctx) {
+            return new CaptioningManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$3 */
+    /* loaded from: classes.dex */
+    class AnonymousClass3 extends CachedServiceFetcher<AccountManager> {
+        AnonymousClass3() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AccountManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("account");
+            IAccountManager service = IAccountManager.Stub.asInterface(b);
+            return new AccountManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$4 */
+    /* loaded from: classes.dex */
+    class AnonymousClass4 extends CachedServiceFetcher<ActivityManager> {
+        AnonymousClass4() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ActivityManager createService(ContextImpl ctx) {
+            return new ActivityManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$5 */
+    /* loaded from: classes.dex */
+    class AnonymousClass5 extends CachedServiceFetcher<ActivityTaskManager> {
+        AnonymousClass5() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ActivityTaskManager createService(ContextImpl ctx) {
+            return ActivityTaskManager.getInstance();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$6 */
+    /* loaded from: classes.dex */
+    class AnonymousClass6 extends CachedServiceFetcher<UriGrantsManager> {
+        AnonymousClass6() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public UriGrantsManager createService(ContextImpl ctx) {
+            return new UriGrantsManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$7 */
+    /* loaded from: classes.dex */
+    class AnonymousClass7 extends CachedServiceFetcher<AlarmManager> {
+        AnonymousClass7() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AlarmManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("alarm");
+            IAlarmManager service = IAlarmManager.Stub.asInterface(b);
+            return new AlarmManager(service, ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$8 */
+    /* loaded from: classes.dex */
+    class AnonymousClass8 extends CachedServiceFetcher<AudioManager> {
+        AnonymousClass8() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AudioManager createService(ContextImpl ctx) {
+            return new AudioManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$9 */
+    /* loaded from: classes.dex */
+    class AnonymousClass9 extends CachedServiceFetcher<AudioDeviceVolumeManager> {
+        AnonymousClass9() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AudioDeviceVolumeManager createService(ContextImpl ctx) {
+            return new AudioDeviceVolumeManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$10 */
+    /* loaded from: classes.dex */
+    class AnonymousClass10 extends CachedServiceFetcher<MediaRouter> {
+        AnonymousClass10() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public MediaRouter createService(ContextImpl ctx) {
+            return new MediaRouter(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$11 */
+    /* loaded from: classes.dex */
+    class AnonymousClass11 extends CachedServiceFetcher<CustomFrequencyManager> {
+        AnonymousClass11() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public CustomFrequencyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.CFMS_SERVICE);
+            ICustomFrequencyManager service = ICustomFrequencyManager.Stub.asInterface(b);
+            if (service == null) {
+                Log.wtf(SystemServiceRegistry.TAG, "Failed to get custom frequency manager service.");
+            }
+            return new CustomFrequencyManager(service, ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$12 */
+    /* loaded from: classes.dex */
+    class AnonymousClass12 extends CachedServiceFetcher<IntegrityControlCheckCenter> {
+        AnonymousClass12() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public IntegrityControlCheckCenter createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.ICCC_SERVICE);
+            return new IntegrityControlCheckCenter(IIntegrityControlCheckCenter.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$14 */
+    /* loaded from: classes.dex */
+    class AnonymousClass14 extends StaticServiceFetcher<HdmiControlManager> {
+        AnonymousClass14() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
+        public HdmiControlManager createService() throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.HDMI_CONTROL_SERVICE);
+            return new HdmiControlManager(IHdmiControlService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$15 */
+    /* loaded from: classes.dex */
+    class AnonymousClass15 extends CachedServiceFetcher<TextClassificationManager> {
+        AnonymousClass15() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TextClassificationManager createService(ContextImpl ctx) {
+            return new TextClassificationManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$16 */
+    /* loaded from: classes.dex */
+    class AnonymousClass16 extends CachedServiceFetcher<SelectionToolbarManager> {
+        AnonymousClass16() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SelectionToolbarManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SELECTION_TOOLBAR_SERVICE);
+            return new SelectionToolbarManager(ctx.getOuterContext(), ISelectionToolbarManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$17 */
+    /* loaded from: classes.dex */
+    class AnonymousClass17 extends CachedServiceFetcher<FontManager> {
+        AnonymousClass17() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public FontManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.FONT_SERVICE);
+            return FontManager.create(IFontManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$18 */
+    /* loaded from: classes.dex */
+    class AnonymousClass18 extends CachedServiceFetcher<ClipboardManager> {
+        AnonymousClass18() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ClipboardManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new ClipboardManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$19 */
+    /* loaded from: classes.dex */
+    class AnonymousClass19 extends CachedServiceFetcher<SemClipboardManager> {
+        AnonymousClass19() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemClipboardManager createService(ContextImpl ctx) {
+            return new SemClipboardManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$20 */
+    /* loaded from: classes.dex */
+    class AnonymousClass20 extends CachedServiceFetcher<PacProxyManager> {
+        AnonymousClass20() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PacProxyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.PAC_PROXY_SERVICE);
+            IPacProxyManager service = IPacProxyManager.Stub.asInterface(b);
+            return new PacProxyManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$21 */
+    /* loaded from: classes.dex */
+    class AnonymousClass21 extends StaticServiceFetcher<IBinder> {
+        AnonymousClass21() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
+        public IBinder createService() throws ServiceManager.ServiceNotFoundException {
+            return ServiceManager.getServiceOrThrow(Context.NETD_SERVICE);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$22 */
     /* loaded from: classes.dex */
     class AnonymousClass22 extends CachedServiceFetcher<TetheringManager> {
         AnonymousClass22() {
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
         public TetheringManager createService(ContextImpl ctx) {
             return new TetheringManager(ctx, new Supplier() { // from class: android.app.SystemServiceRegistry$22$$ExternalSyntheticLambda0
@@ -1921,6 +2504,2081 @@ public final class SystemServiceRegistry {
                     return service;
                 }
             });
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$23 */
+    /* loaded from: classes.dex */
+    class AnonymousClass23 extends CachedServiceFetcher<VpnManager> {
+        AnonymousClass23() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public VpnManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.VPN_MANAGEMENT_SERVICE);
+            IVpnManager service = IVpnManager.Stub.asInterface(b);
+            return new VpnManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$24 */
+    /* loaded from: classes.dex */
+    class AnonymousClass24 extends CachedServiceFetcher<VcnManager> {
+        AnonymousClass24() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public VcnManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.VCN_MANAGEMENT_SERVICE);
+            IVcnManagementService service = IVcnManagementService.Stub.asInterface(b);
+            return new VcnManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$25 */
+    /* loaded from: classes.dex */
+    class AnonymousClass25 extends StaticServiceFetcher<CountryDetector> {
+        AnonymousClass25() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
+        public CountryDetector createService() throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.COUNTRY_DETECTOR);
+            return new CountryDetector(ICountryDetector.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$26 */
+    /* loaded from: classes.dex */
+    class AnonymousClass26 extends CachedServiceFetcher<DevicePolicyManager> {
+        AnonymousClass26() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DevicePolicyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.DEVICE_POLICY_SERVICE);
+            return new DevicePolicyManager(ctx, IDevicePolicyManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$27 */
+    /* loaded from: classes.dex */
+    class AnonymousClass27 extends CachedServiceFetcher<DownloadManager> {
+        AnonymousClass27() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DownloadManager createService(ContextImpl ctx) {
+            return new DownloadManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$28 */
+    /* loaded from: classes.dex */
+    class AnonymousClass28 extends CachedServiceFetcher<SemHqmManager> {
+        AnonymousClass28() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemHqmManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.HQM_SERVICE);
+            ISemHqmManager service = ISemHqmManager.Stub.asInterface(b);
+            if (service == null) {
+                Log.e(SystemServiceRegistry.TAG, "Failed to get Hqm manager service.");
+                return null;
+            }
+            return new SemHqmManager(service, ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$29 */
+    /* loaded from: classes.dex */
+    class AnonymousClass29 extends CachedServiceFetcher<SemHcmManager> {
+        AnonymousClass29() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemHcmManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.HCM_SERVICE);
+            ISemHcmManager service = ISemHcmManager.Stub.asInterface(b);
+            if (service == null) {
+                Log.e(SystemServiceRegistry.TAG, "Failed to get Hcm manager service.");
+                return null;
+            }
+            return new SemHcmManager(service, ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$30 */
+    /* loaded from: classes.dex */
+    class AnonymousClass30 extends CachedServiceFetcher<BatteryManager> {
+        AnonymousClass30() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public BatteryManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBatteryStats stats = IBatteryStats.Stub.asInterface(ServiceManager.getServiceOrThrow("batterystats"));
+            IBatteryPropertiesRegistrar registrar = IBatteryPropertiesRegistrar.Stub.asInterface(ServiceManager.getServiceOrThrow("batteryproperties"));
+            return new BatteryManager(ctx, stats, registrar);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$31 */
+    /* loaded from: classes.dex */
+    class AnonymousClass31 extends CachedServiceFetcher<DropBoxManager> {
+        AnonymousClass31() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DropBoxManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.DROPBOX_SERVICE);
+            IDropBoxManagerService service = IDropBoxManagerService.Stub.asInterface(b);
+            return new DropBoxManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$32 */
+    /* loaded from: classes.dex */
+    class AnonymousClass32 extends CachedServiceFetcher<BinaryTransparencyManager> {
+        AnonymousClass32() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public BinaryTransparencyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("transparency");
+            IBinaryTransparencyService service = IBinaryTransparencyService.Stub.asInterface(b);
+            return new BinaryTransparencyManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$33 */
+    /* loaded from: classes.dex */
+    class AnonymousClass33 extends CachedServiceFetcher<InputManager> {
+        AnonymousClass33() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public InputManager createService(ContextImpl ctx) {
+            return new InputManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$34 */
+    /* loaded from: classes.dex */
+    class AnonymousClass34 extends CachedServiceFetcher<DisplayManager> {
+        AnonymousClass34() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DisplayManager createService(ContextImpl ctx) {
+            return new DisplayManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$35 */
+    /* loaded from: classes.dex */
+    class AnonymousClass35 extends CachedServiceFetcher<ColorDisplayManager> {
+        AnonymousClass35() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ColorDisplayManager createService(ContextImpl ctx) {
+            return new ColorDisplayManager();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$36 */
+    /* loaded from: classes.dex */
+    class AnonymousClass36 implements ServiceFetcher<InputMethodManager> {
+        AnonymousClass36() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.ServiceFetcher
+        public InputMethodManager getService(ContextImpl ctx) {
+            return InputMethodManager.forContext(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$37 */
+    /* loaded from: classes.dex */
+    class AnonymousClass37 extends CachedServiceFetcher<TextServicesManager> {
+        AnonymousClass37() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TextServicesManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return TextServicesManager.createInstance(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$38 */
+    /* loaded from: classes.dex */
+    class AnonymousClass38 extends CachedServiceFetcher<KeyguardManager> {
+        AnonymousClass38() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public KeyguardManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new KeyguardManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$39 */
+    /* loaded from: classes.dex */
+    class AnonymousClass39 extends CachedServiceFetcher<LayoutInflater> {
+        AnonymousClass39() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public LayoutInflater createService(ContextImpl ctx) {
+            return new PhoneLayoutInflater(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$40 */
+    /* loaded from: classes.dex */
+    class AnonymousClass40 extends CachedServiceFetcher<LocationManager> {
+        AnonymousClass40() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public LocationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("location");
+            return new LocationManager(ctx, ILocationManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$41 */
+    /* loaded from: classes.dex */
+    class AnonymousClass41 extends CachedServiceFetcher<SemLocationManager> {
+        AnonymousClass41() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemLocationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            Log.e(SystemServiceRegistry.TAG, "create SemLocationManager service");
+            IBinder b = ServiceManager.getService(Context.SEM_LOCATION_SERVICE);
+            return new SemLocationManager(ctx, ISLocationManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$42 */
+    /* loaded from: classes.dex */
+    class AnonymousClass42 extends CachedServiceFetcher<NetworkPolicyManager> {
+        AnonymousClass42() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public NetworkPolicyManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new NetworkPolicyManager(ctx, INetworkPolicyManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.NETWORK_POLICY_SERVICE)));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$43 */
+    /* loaded from: classes.dex */
+    class AnonymousClass43 extends CachedServiceFetcher<NotificationManager> {
+        AnonymousClass43() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public NotificationManager createService(ContextImpl ctx) {
+            Context outerContext = ctx.getOuterContext();
+            return new NotificationManager(new ContextThemeWrapper(outerContext, Resources.selectSystemTheme(0, outerContext.getApplicationInfo().targetSdkVersion, 16973835, 16973935, 16974126, 16974130)), ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$44 */
+    /* loaded from: classes.dex */
+    class AnonymousClass44 extends CachedServiceFetcher<PeopleManager> {
+        AnonymousClass44() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PeopleManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new PeopleManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$45 */
+    /* loaded from: classes.dex */
+    class AnonymousClass45 extends CachedServiceFetcher<PowerManager> {
+        AnonymousClass45() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PowerManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder powerBinder = ServiceManager.getServiceOrThrow("power");
+            IPowerManager powerService = IPowerManager.Stub.asInterface(powerBinder);
+            IBinder thermalBinder = ServiceManager.getServiceOrThrow(Context.THERMAL_SERVICE);
+            IThermalService thermalService = IThermalService.Stub.asInterface(thermalBinder);
+            return new PowerManager(ctx.getOuterContext(), powerService, thermalService, ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$47 */
+    /* loaded from: classes.dex */
+    class AnonymousClass47 extends CachedServiceFetcher<PerformanceHintManager> {
+        AnonymousClass47() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PerformanceHintManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return PerformanceHintManager.create();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$48 */
+    /* loaded from: classes.dex */
+    class AnonymousClass48 extends CachedServiceFetcher<RecoverySystem> {
+        AnonymousClass48() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public RecoverySystem createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("recovery");
+            IRecoverySystem service = IRecoverySystem.Stub.asInterface(b);
+            return new RecoverySystem(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$49 */
+    /* loaded from: classes.dex */
+    class AnonymousClass49 extends CachedServiceFetcher<SearchManager> {
+        AnonymousClass49() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SearchManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new SearchManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$50 */
+    /* loaded from: classes.dex */
+    class AnonymousClass50 extends CachedServiceFetcher<SensorManager> {
+        AnonymousClass50() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SensorManager createService(ContextImpl ctx) {
+            return new SystemSensorManager(ctx.getOuterContext(), ctx.mMainThread.getHandler().getLooper());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$51 */
+    /* loaded from: classes.dex */
+    class AnonymousClass51 extends CachedServiceFetcher<SensorPrivacyManager> {
+        AnonymousClass51() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SensorPrivacyManager createService(ContextImpl ctx) {
+            return SensorPrivacyManager.getInstance(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$52 */
+    /* loaded from: classes.dex */
+    class AnonymousClass52 extends CachedServiceFetcher<StatusBarManager> {
+        AnonymousClass52() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public StatusBarManager createService(ContextImpl ctx) {
+            return new StatusBarManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$53 */
+    /* loaded from: classes.dex */
+    class AnonymousClass53 extends CachedServiceFetcher<SemStatusBarManager> {
+        AnonymousClass53() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemStatusBarManager createService(ContextImpl ctx) {
+            return new SemStatusBarManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$54 */
+    /* loaded from: classes.dex */
+    class AnonymousClass54 extends CachedServiceFetcher<SemEdgeManager> {
+        AnonymousClass54() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemEdgeManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService("notification");
+            return new SemEdgeManager(ctx, INotificationManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$55 */
+    /* loaded from: classes.dex */
+    class AnonymousClass55 extends CachedServiceFetcher<StorageManager> {
+        AnonymousClass55() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public StorageManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new StorageManager(ctx, ctx.mMainThread.getHandler().getLooper());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$56 */
+    /* loaded from: classes.dex */
+    class AnonymousClass56 extends CachedServiceFetcher<StorageStatsManager> {
+        AnonymousClass56() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public StorageStatsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IStorageStatsManager service = IStorageStatsManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.STORAGE_STATS_SERVICE));
+            return new StorageStatsManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$57 */
+    /* loaded from: classes.dex */
+    class AnonymousClass57 extends CachedServiceFetcher<SystemUpdateManager> {
+        AnonymousClass57() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SystemUpdateManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.SYSTEM_UPDATE_SERVICE);
+            ISystemUpdateManager service = ISystemUpdateManager.Stub.asInterface(b);
+            return new SystemUpdateManager(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$58 */
+    /* loaded from: classes.dex */
+    class AnonymousClass58 extends CachedServiceFetcher<SystemConfigManager> {
+        AnonymousClass58() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SystemConfigManager createService(ContextImpl ctx) {
+            return new SystemConfigManager();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$59 */
+    /* loaded from: classes.dex */
+    class AnonymousClass59 extends CachedServiceFetcher<TelephonyRegistryManager> {
+        AnonymousClass59() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TelephonyRegistryManager createService(ContextImpl ctx) {
+            return new TelephonyRegistryManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$60 */
+    /* loaded from: classes.dex */
+    class AnonymousClass60 extends CachedServiceFetcher<TelecomManager> {
+        AnonymousClass60() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TelecomManager createService(ContextImpl ctx) {
+            return new TelecomManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$61 */
+    /* loaded from: classes.dex */
+    class AnonymousClass61 extends CachedServiceFetcher<SemTelecomManager> {
+        AnonymousClass61() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemTelecomManager createService(ContextImpl ctx) {
+            return new SemTelecomManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$62 */
+    /* loaded from: classes.dex */
+    class AnonymousClass62 extends CachedServiceFetcher<MmsManager> {
+        AnonymousClass62() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public MmsManager createService(ContextImpl ctx) {
+            return new MmsManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$63 */
+    /* loaded from: classes.dex */
+    class AnonymousClass63 extends CachedServiceFetcher<UiModeManager> {
+        AnonymousClass63() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public UiModeManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new UiModeManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$64 */
+    /* loaded from: classes.dex */
+    class AnonymousClass64 extends CachedServiceFetcher<UsbManager> {
+        AnonymousClass64() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public UsbManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("usb");
+            return new UsbManager(ctx, IUsbManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$65 */
+    /* loaded from: classes.dex */
+    class AnonymousClass65 extends CachedServiceFetcher<AdbManager> {
+        AnonymousClass65() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AdbManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("adb");
+            return new AdbManager(ctx, IAdbManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$66 */
+    /* loaded from: classes.dex */
+    class AnonymousClass66 extends CachedServiceFetcher<SerialManager> {
+        AnonymousClass66() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SerialManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.SERIAL_SERVICE);
+            return new SerialManager(ctx, ISerialManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$67 */
+    /* loaded from: classes.dex */
+    class AnonymousClass67 extends CachedServiceFetcher<VibratorManager> {
+        AnonymousClass67() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public VibratorManager createService(ContextImpl ctx) {
+            return new SystemVibratorManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$68 */
+    /* loaded from: classes.dex */
+    class AnonymousClass68 extends CachedServiceFetcher<Vibrator> {
+        AnonymousClass68() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public Vibrator createService(ContextImpl ctx) {
+            return new SystemVibrator(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$69 */
+    /* loaded from: classes.dex */
+    class AnonymousClass69 extends CachedServiceFetcher<WallpaperManager> {
+        AnonymousClass69() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public WallpaperManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService("wallpaper");
+            if (b == null) {
+                ApplicationInfo appInfo = ctx.getApplicationInfo();
+                if (appInfo.targetSdkVersion >= 28 && appInfo.isInstantApp()) {
+                    throw new ServiceManager.ServiceNotFoundException("wallpaper");
+                }
+                boolean enabled = Resources.getSystem().getBoolean(R.bool.config_enableWallpaperService);
+                if (!enabled) {
+                    return DisabledWallpaperManager.getInstance();
+                }
+                Log.e(SystemServiceRegistry.TAG, "No wallpaper service");
+            }
+            IWallpaperManager service = IWallpaperManager.Stub.asInterface(b);
+            return new WallpaperManager(service, ctx.getOuterContext(), ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$70 */
+    /* loaded from: classes.dex */
+    class AnonymousClass70 extends CachedServiceFetcher<WifiNl80211Manager> {
+        AnonymousClass70() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public WifiNl80211Manager createService(ContextImpl ctx) {
+            return new WifiNl80211Manager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$71 */
+    /* loaded from: classes.dex */
+    class AnonymousClass71 extends CachedServiceFetcher<powerSolutionManager> {
+        AnonymousClass71() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public powerSolutionManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.Power_Solution_FrameWork_Service);
+            IpowerSolution service = IpowerSolution.Stub.asInterface(b);
+            return new powerSolutionManager(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$72 */
+    /* loaded from: classes.dex */
+    class AnonymousClass72 extends CachedServiceFetcher<CameraServiceWorkerManager> {
+        AnonymousClass72() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public CameraServiceWorkerManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new CameraServiceWorkerManager(ServiceManager.getService(Context.CameraServiceWorker));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$73 */
+    /* loaded from: classes.dex */
+    class AnonymousClass73 extends CachedServiceFetcher<WindowManager> {
+        AnonymousClass73() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public WindowManager createService(ContextImpl ctx) {
+            return new WindowManagerImpl(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$74 */
+    /* loaded from: classes.dex */
+    class AnonymousClass74 extends CachedServiceFetcher<UserManager> {
+        AnonymousClass74() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public UserManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("user");
+            IUserManager service = IUserManager.Stub.asInterface(b);
+            return new UserManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$75 */
+    /* loaded from: classes.dex */
+    class AnonymousClass75 extends CachedServiceFetcher<AppOpsManager> {
+        AnonymousClass75() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AppOpsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.APP_OPS_SERVICE);
+            IAppOpsService service = IAppOpsService.Stub.asInterface(b);
+            return new AppOpsManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$76 */
+    /* loaded from: classes.dex */
+    class AnonymousClass76 extends CachedServiceFetcher<CameraManager> {
+        AnonymousClass76() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public CameraManager createService(ContextImpl ctx) {
+            return new CameraManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$77 */
+    /* loaded from: classes.dex */
+    class AnonymousClass77 extends CachedServiceFetcher<LauncherApps> {
+        AnonymousClass77() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public LauncherApps createService(ContextImpl ctx) {
+            return new LauncherApps(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$78 */
+    /* loaded from: classes.dex */
+    class AnonymousClass78 extends CachedServiceFetcher<RestrictionsManager> {
+        AnonymousClass78() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public RestrictionsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.RESTRICTIONS_SERVICE);
+            IRestrictionsManager service = IRestrictionsManager.Stub.asInterface(b);
+            return new RestrictionsManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$79 */
+    /* loaded from: classes.dex */
+    class AnonymousClass79 extends CachedServiceFetcher<PrintManager> {
+        AnonymousClass79() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PrintManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IPrintManager service = null;
+            if (ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PRINTING)) {
+                service = IPrintManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.PRINT_SERVICE));
+            }
+            int userId = ctx.getUserId();
+            int appId = UserHandle.getAppId(ctx.getApplicationInfo().uid);
+            return new PrintManager(ctx.getOuterContext(), service, userId, appId);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$80 */
+    /* loaded from: classes.dex */
+    class AnonymousClass80 extends CachedServiceFetcher<CompanionDeviceManager> {
+        AnonymousClass80() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public CompanionDeviceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            ICompanionDeviceManager service = null;
+            if (ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_COMPANION_DEVICE_SETUP)) {
+                service = ICompanionDeviceManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.COMPANION_DEVICE_SERVICE));
+            }
+            return new CompanionDeviceManager(service, ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$81 */
+    /* loaded from: classes.dex */
+    class AnonymousClass81 extends CachedServiceFetcher<VirtualDeviceManager> {
+        AnonymousClass81() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public VirtualDeviceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            if (!ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_COMPANION_DEVICE_SETUP)) {
+                return null;
+            }
+            IVirtualDeviceManager service = IVirtualDeviceManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.VIRTUAL_DEVICE_SERVICE));
+            return new VirtualDeviceManager(service, ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$82 */
+    /* loaded from: classes.dex */
+    class AnonymousClass82 extends CachedServiceFetcher<ConsumerIrManager> {
+        AnonymousClass82() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ConsumerIrManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new ConsumerIrManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$83 */
+    /* loaded from: classes.dex */
+    class AnonymousClass83 extends StaticServiceFetcher<TrustManager> {
+        AnonymousClass83() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
+        public TrustManager createService() throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.TRUST_SERVICE);
+            return new TrustManager(b);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$84 */
+    /* loaded from: classes.dex */
+    class AnonymousClass84 extends CachedServiceFetcher<FingerprintManager> {
+        AnonymousClass84() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public FingerprintManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder binder;
+            if (ctx.getApplicationInfo().targetSdkVersion >= 26) {
+                binder = ServiceManager.getServiceOrThrow(Context.FINGERPRINT_SERVICE);
+            } else {
+                binder = ServiceManager.getService(Context.FINGERPRINT_SERVICE);
+            }
+            IFingerprintService service = IFingerprintService.Stub.asInterface(binder);
+            return new FingerprintManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$85 */
+    /* loaded from: classes.dex */
+    class AnonymousClass85 extends CachedServiceFetcher<FaceManager> {
+        AnonymousClass85() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public FaceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder binder;
+            if (ctx.getApplicationInfo().targetSdkVersion >= 26) {
+                binder = ServiceManager.getServiceOrThrow(Context.FACE_SERVICE);
+            } else {
+                binder = ServiceManager.getService(Context.FACE_SERVICE);
+            }
+            IFaceService service = IFaceService.Stub.asInterface(binder);
+            return new FaceManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$86 */
+    /* loaded from: classes.dex */
+    class AnonymousClass86 extends CachedServiceFetcher<IrisManager> {
+        AnonymousClass86() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public IrisManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder binder = ServiceManager.getServiceOrThrow(Context.IRIS_SERVICE);
+            IIrisService service = IIrisService.Stub.asInterface(binder);
+            return new IrisManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$87 */
+    /* loaded from: classes.dex */
+    class AnonymousClass87 extends CachedServiceFetcher<BiometricManager> {
+        AnonymousClass87() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public BiometricManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder binder = ServiceManager.getServiceOrThrow(Context.AUTH_SERVICE);
+            IAuthService service = IAuthService.Stub.asInterface(binder);
+            return new BiometricManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$88 */
+    /* loaded from: classes.dex */
+    class AnonymousClass88 extends CachedServiceFetcher<TvInteractiveAppManager> {
+        AnonymousClass88() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TvInteractiveAppManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder iBinder = ServiceManager.getServiceOrThrow(Context.TV_INTERACTIVE_APP_SERVICE);
+            ITvInteractiveAppManager service = ITvInteractiveAppManager.Stub.asInterface(iBinder);
+            return new TvInteractiveAppManager(service, ctx.getUserId());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$89 */
+    /* loaded from: classes.dex */
+    class AnonymousClass89 extends CachedServiceFetcher<TvInputManager> {
+        AnonymousClass89() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TvInputManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder iBinder = ServiceManager.getServiceOrThrow(Context.TV_INPUT_SERVICE);
+            ITvInputManager service = ITvInputManager.Stub.asInterface(iBinder);
+            return new TvInputManager(service, ctx.getUserId());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$90 */
+    /* loaded from: classes.dex */
+    class AnonymousClass90 extends CachedServiceFetcher<TunerResourceManager> {
+        AnonymousClass90() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TunerResourceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder iBinder = ServiceManager.getServiceOrThrow(Context.TV_TUNER_RESOURCE_MGR_SERVICE);
+            ITunerResourceManager service = ITunerResourceManager.Stub.asInterface(iBinder);
+            return new TunerResourceManager(service, ctx.getUserId());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$91 */
+    /* loaded from: classes.dex */
+    class AnonymousClass91 extends CachedServiceFetcher<NetworkScoreManager> {
+        AnonymousClass91() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public NetworkScoreManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new NetworkScoreManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$92 */
+    /* loaded from: classes.dex */
+    class AnonymousClass92 extends CachedServiceFetcher<UsageStatsManager> {
+        AnonymousClass92() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public UsageStatsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder iBinder = ServiceManager.getServiceOrThrow(Context.USAGE_STATS_SERVICE);
+            IUsageStatsManager service = IUsageStatsManager.Stub.asInterface(iBinder);
+            return new UsageStatsManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$93 */
+    /* loaded from: classes.dex */
+    class AnonymousClass93 extends StaticServiceFetcher<PersistentDataBlockManager> {
+        AnonymousClass93() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
+        public PersistentDataBlockManager createService() throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.PERSISTENT_DATA_BLOCK_SERVICE);
+            IPersistentDataBlockService persistentDataBlockService = IPersistentDataBlockService.Stub.asInterface(b);
+            if (persistentDataBlockService != null) {
+                return new PersistentDataBlockManager(persistentDataBlockService);
+            }
+            return null;
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$94 */
+    /* loaded from: classes.dex */
+    class AnonymousClass94 extends StaticServiceFetcher<OemLockManager> {
+        AnonymousClass94() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
+        public OemLockManager createService() throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.OEM_LOCK_SERVICE);
+            IOemLockService oemLockService = IOemLockService.Stub.asInterface(b);
+            if (oemLockService != null) {
+                return new OemLockManager(oemLockService);
+            }
+            return null;
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$95 */
+    /* loaded from: classes.dex */
+    class AnonymousClass95 extends CachedServiceFetcher<MediaProjectionManager> {
+        AnonymousClass95() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public MediaProjectionManager createService(ContextImpl ctx) {
+            return new MediaProjectionManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$96 */
+    /* loaded from: classes.dex */
+    class AnonymousClass96 extends CachedServiceFetcher<AppWidgetManager> {
+        AnonymousClass96() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AppWidgetManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.APPWIDGET_SERVICE);
+            if (b == null) {
+                return null;
+            }
+            return new AppWidgetManager(ctx, IAppWidgetService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$97 */
+    /* loaded from: classes.dex */
+    class AnonymousClass97 extends CachedServiceFetcher<MidiManager> {
+        AnonymousClass97() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public MidiManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("midi");
+            return new MidiManager(IMidiManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$98 */
+    /* loaded from: classes.dex */
+    class AnonymousClass98 extends CachedServiceFetcher<RadioManager> {
+        AnonymousClass98() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public RadioManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new RadioManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$99 */
+    /* loaded from: classes.dex */
+    class AnonymousClass99 extends CachedServiceFetcher<HardwarePropertiesManager> {
+        AnonymousClass99() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public HardwarePropertiesManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.HARDWARE_PROPERTIES_SERVICE);
+            IHardwarePropertiesManager service = IHardwarePropertiesManager.Stub.asInterface(b);
+            return new HardwarePropertiesManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$100 */
+    /* loaded from: classes.dex */
+    class AnonymousClass100 extends CachedServiceFetcher<SoundTriggerManager> {
+        AnonymousClass100() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SoundTriggerManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.SOUND_TRIGGER_SERVICE);
+            return new SoundTriggerManager(ctx, ISoundTriggerService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$101 */
+    /* loaded from: classes.dex */
+    class AnonymousClass101 extends CachedServiceFetcher<ShortcutManager> {
+        AnonymousClass101() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ShortcutManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("shortcut");
+            return new ShortcutManager(ctx, IShortcutService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$102 */
+    /* loaded from: classes.dex */
+    class AnonymousClass102 extends CachedServiceFetcher<OverlayManager> {
+        AnonymousClass102() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public OverlayManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b;
+            if (Compatibility.isChangeEnabled(OverlayManager.SELF_TARGETING_OVERLAY)) {
+                b = ServiceManager.getService("overlay");
+            } else {
+                b = ServiceManager.getServiceOrThrow("overlay");
+            }
+            return new OverlayManager(ctx, IOverlayManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$103 */
+    /* loaded from: classes.dex */
+    class AnonymousClass103 extends CachedServiceFetcher<NetworkWatchlistManager> {
+        AnonymousClass103() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public NetworkWatchlistManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.NETWORK_WATCHLIST_SERVICE);
+            return new NetworkWatchlistManager(ctx, INetworkWatchlistManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$104 */
+    /* loaded from: classes.dex */
+    class AnonymousClass104 extends CachedServiceFetcher<SystemHealthManager> {
+        AnonymousClass104() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SystemHealthManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("batterystats");
+            return new SystemHealthManager(IBatteryStats.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$105 */
+    /* loaded from: classes.dex */
+    class AnonymousClass105 extends CachedServiceFetcher<ContextHubManager> {
+        AnonymousClass105() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ContextHubManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new ContextHubManager(ctx.getOuterContext(), ctx.mMainThread.getHandler().getLooper());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$106 */
+    /* loaded from: classes.dex */
+    class AnonymousClass106 extends CachedServiceFetcher<IncidentManager> {
+        AnonymousClass106() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public IncidentManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new IncidentManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$107 */
+    /* loaded from: classes.dex */
+    class AnonymousClass107 extends CachedServiceFetcher<BugreportManager> {
+        AnonymousClass107() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public BugreportManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.BUGREPORT_SERVICE);
+            return new BugreportManager(ctx.getOuterContext(), IDumpstate.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$108 */
+    /* loaded from: classes.dex */
+    class AnonymousClass108 extends CachedServiceFetcher<AutofillManager> {
+        AnonymousClass108() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AutofillManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.AUTOFILL_MANAGER_SERVICE);
+            IAutoFillManager service = IAutoFillManager.Stub.asInterface(b);
+            return new AutofillManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$109 */
+    /* loaded from: classes.dex */
+    class AnonymousClass109 extends CachedServiceFetcher<CredentialManager> {
+        AnonymousClass109() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public CredentialManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.CREDENTIAL_SERVICE);
+            ICredentialManager service = ICredentialManager.Stub.asInterface(b);
+            if (service != null) {
+                return new CredentialManager(ctx.getOuterContext(), service);
+            }
+            return null;
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$110 */
+    /* loaded from: classes.dex */
+    class AnonymousClass110 extends CachedServiceFetcher<MusicRecognitionManager> {
+        AnonymousClass110() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public MusicRecognitionManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.MUSIC_RECOGNITION_SERVICE);
+            return new MusicRecognitionManager(IMusicRecognitionManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$111 */
+    /* loaded from: classes.dex */
+    class AnonymousClass111 extends CachedServiceFetcher<ContentCaptureManager> {
+        AnonymousClass111() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ContentCaptureManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            Context outerContext = ctx.getOuterContext();
+            ContentCaptureOptions options = outerContext.getContentCaptureOptions();
+            if (options == null) {
+                return null;
+            }
+            if (options.lite || options.isWhitelisted(outerContext)) {
+                IBinder b = ServiceManager.getService(Context.CONTENT_CAPTURE_MANAGER_SERVICE);
+                IContentCaptureManager service = IContentCaptureManager.Stub.asInterface(b);
+                if (service != null) {
+                    return new ContentCaptureManager(outerContext, service, options);
+                }
+                return null;
+            }
+            return null;
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$112 */
+    /* loaded from: classes.dex */
+    class AnonymousClass112 extends CachedServiceFetcher<TranslationManager> {
+        AnonymousClass112() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TranslationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.TRANSLATION_MANAGER_SERVICE);
+            ITranslationManager service = ITranslationManager.Stub.asInterface(b);
+            if (service != null) {
+                return new TranslationManager(ctx.getOuterContext(), service);
+            }
+            return null;
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$113 */
+    /* loaded from: classes.dex */
+    class AnonymousClass113 extends CachedServiceFetcher<UiTranslationManager> {
+        AnonymousClass113() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public UiTranslationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.TRANSLATION_MANAGER_SERVICE);
+            ITranslationManager service = ITranslationManager.Stub.asInterface(b);
+            if (service != null) {
+                return new UiTranslationManager(ctx.getOuterContext(), service);
+            }
+            return null;
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$114 */
+    /* loaded from: classes.dex */
+    class AnonymousClass114 extends CachedServiceFetcher<SearchUiManager> {
+        AnonymousClass114() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SearchUiManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.SEARCH_UI_SERVICE);
+            if (b == null) {
+                return null;
+            }
+            return new SearchUiManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$115 */
+    /* loaded from: classes.dex */
+    class AnonymousClass115 extends CachedServiceFetcher<SmartspaceManager> {
+        AnonymousClass115() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SmartspaceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.SMARTSPACE_SERVICE);
+            if (b == null) {
+                return null;
+            }
+            return new SmartspaceManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$116 */
+    /* loaded from: classes.dex */
+    class AnonymousClass116 extends CachedServiceFetcher<AppPredictionManager> {
+        AnonymousClass116() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AppPredictionManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.APP_PREDICTION_SERVICE);
+            if (b == null) {
+                return null;
+            }
+            return new AppPredictionManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$117 */
+    /* loaded from: classes.dex */
+    class AnonymousClass117 extends CachedServiceFetcher<ContentSuggestionsManager> {
+        AnonymousClass117() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ContentSuggestionsManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.CONTENT_SUGGESTIONS_SERVICE);
+            IContentSuggestionsManager service = IContentSuggestionsManager.Stub.asInterface(b);
+            return new ContentSuggestionsManager(ctx.getUserId(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$118 */
+    /* loaded from: classes.dex */
+    class AnonymousClass118 extends CachedServiceFetcher<WallpaperEffectsGenerationManager> {
+        AnonymousClass118() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public WallpaperEffectsGenerationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getService(Context.WALLPAPER_EFFECTS_GENERATION_SERVICE);
+            if (b == null) {
+                return null;
+            }
+            return new WallpaperEffectsGenerationManager(IWallpaperEffectsGenerationManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$119 */
+    /* loaded from: classes.dex */
+    class AnonymousClass119 extends CachedServiceFetcher<VrManager> {
+        AnonymousClass119() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public VrManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.VR_SERVICE);
+            return new VrManager(IVrManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$120 */
+    /* loaded from: classes.dex */
+    class AnonymousClass120 extends CachedServiceFetcher<CrossProfileApps> {
+        AnonymousClass120() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public CrossProfileApps createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.CROSS_PROFILE_APPS_SERVICE);
+            return new CrossProfileApps(ctx.getOuterContext(), ICrossProfileApps.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$121 */
+    /* loaded from: classes.dex */
+    class AnonymousClass121 extends CachedServiceFetcher<SliceManager> {
+        AnonymousClass121() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SliceManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new SliceManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$122 */
+    /* loaded from: classes.dex */
+    class AnonymousClass122 extends CachedServiceFetcher<SemWifiManager> {
+        AnonymousClass122() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemWifiManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            ISemWifiManager service = ISemWifiManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.SEM_WIFI_SERVICE));
+            return new SemWifiManager(ctx.getOuterContext(), service, ctx.mMainThread.getHandler().getLooper());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$123 */
+    /* loaded from: classes.dex */
+    class AnonymousClass123 extends CachedServiceFetcher<SemWifiP2pManager> {
+        AnonymousClass123() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemWifiP2pManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            ISemWifiP2pManager service = ISemWifiP2pManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.SEM_WIFI_P2P_SERVICE));
+            return new SemWifiP2pManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$124 */
+    /* loaded from: classes.dex */
+    class AnonymousClass124 extends CachedServiceFetcher<SemWifiAwareManager> {
+        AnonymousClass124() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemWifiAwareManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            ISemWifiAwareManager service = ISemWifiAwareManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.SEM_WIFI_AWARE_SERVICE));
+            return new SemWifiAwareManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$125 */
+    /* loaded from: classes.dex */
+    class AnonymousClass125 extends CachedServiceFetcher<SemContinuityManager> {
+        AnonymousClass125() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemContinuityManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder binder = ServiceManager.getServiceOrThrow(Context.SEM_CONTINUITY_SERVICE);
+            ISemContinuityManager service = ISemContinuityManager.Stub.asInterface(binder);
+            return new SemContinuityManager(ctx.getOuterContext(), service, ctx.getUserId());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$126 */
+    /* loaded from: classes.dex */
+    class AnonymousClass126 extends CachedServiceFetcher<SemHwrsManager> {
+        AnonymousClass126() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemHwrsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder binder = ServiceManager.getServiceOrThrow(Context.SEM_HWRS_SERVICE);
+            ISemHwrsManager service = ISemHwrsManager.Stub.asInterface(binder);
+            return new SemHwrsManager(ctx.getOuterContext(), service, ctx.getUserId());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$127 */
+    /* loaded from: classes.dex */
+    class AnonymousClass127 extends CachedServiceFetcher<SemFmPlayer> {
+        AnonymousClass127() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemFmPlayer createService(ContextImpl ctx) {
+            return new SemFmPlayer(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$128 */
+    /* loaded from: classes.dex */
+    class AnonymousClass128 extends CachedServiceFetcher<SemMotionRecognitionManager> {
+        AnonymousClass128() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemMotionRecognitionManager createService(ContextImpl ctx) {
+            return new SemMotionRecognitionManager(ctx.mMainThread.getHandler().getLooper());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$129 */
+    /* loaded from: classes.dex */
+    class AnonymousClass129 extends CachedServiceFetcher<SContextManager> {
+        AnonymousClass129() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SContextManager createService(ContextImpl ctx) {
+            return new SContextManager(ctx, ctx.mMainThread.getHandler().getLooper());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$130 */
+    /* loaded from: classes.dex */
+    class AnonymousClass130 extends CachedServiceFetcher<TimeDetector> {
+        AnonymousClass130() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TimeDetector createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new TimeDetectorImpl();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$131 */
+    /* loaded from: classes.dex */
+    class AnonymousClass131 extends CachedServiceFetcher<TimeZoneDetector> {
+        AnonymousClass131() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TimeZoneDetector createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new TimeZoneDetectorImpl();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$132 */
+    /* loaded from: classes.dex */
+    class AnonymousClass132 extends CachedServiceFetcher<TimeManager> {
+        AnonymousClass132() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TimeManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new TimeManager();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$133 */
+    /* loaded from: classes.dex */
+    class AnonymousClass133 extends CachedServiceFetcher<PermissionManager> {
+        AnonymousClass133() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PermissionManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new PermissionManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$134 */
+    /* loaded from: classes.dex */
+    class AnonymousClass134 extends CachedServiceFetcher<LegacyPermissionManager> {
+        AnonymousClass134() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public LegacyPermissionManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new LegacyPermissionManager();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$135 */
+    /* loaded from: classes.dex */
+    class AnonymousClass135 extends CachedServiceFetcher<PermissionControllerManager> {
+        AnonymousClass135() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PermissionControllerManager createService(ContextImpl ctx) {
+            return new PermissionControllerManager(ctx.getOuterContext(), ctx.getMainThreadHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$136 */
+    /* loaded from: classes.dex */
+    class AnonymousClass136 extends CachedServiceFetcher<PermissionCheckerManager> {
+        AnonymousClass136() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PermissionCheckerManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new PermissionCheckerManager(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$137 */
+    /* loaded from: classes.dex */
+    class AnonymousClass137 extends CachedServiceFetcher<PermissionEnforcer> {
+        AnonymousClass137() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public PermissionEnforcer createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new PermissionEnforcer(ctx.getOuterContext());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$138 */
+    /* loaded from: classes.dex */
+    class AnonymousClass138 extends CachedServiceFetcher<DynamicSystemManager> {
+        AnonymousClass138() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DynamicSystemManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.DYNAMIC_SYSTEM_SERVICE);
+            return new DynamicSystemManager(IDynamicSystemService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$139 */
+    /* loaded from: classes.dex */
+    class AnonymousClass139 extends CachedServiceFetcher<BatteryStatsManager> {
+        AnonymousClass139() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public BatteryStatsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow("batterystats");
+            return new BatteryStatsManager(IBatteryStats.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$140 */
+    /* loaded from: classes.dex */
+    class AnonymousClass140 extends CachedServiceFetcher<DataLoaderManager> {
+        AnonymousClass140() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DataLoaderManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.DATA_LOADER_MANAGER_SERVICE);
+            return new DataLoaderManager(IDataLoaderManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$141 */
+    /* loaded from: classes.dex */
+    class AnonymousClass141 extends CachedServiceFetcher<LightsManager> {
+        AnonymousClass141() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public LightsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new SystemLightsManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$142 */
+    /* loaded from: classes.dex */
+    class AnonymousClass142 extends CachedServiceFetcher<LocaleManager> {
+        AnonymousClass142() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public LocaleManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new LocaleManager(ctx, ILocaleManager.Stub.asInterface(ServiceManager.getServiceOrThrow("locale")));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$143 */
+    /* loaded from: classes.dex */
+    class AnonymousClass143 extends CachedServiceFetcher<IncrementalManager> {
+        AnonymousClass143() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public IncrementalManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.INCREMENTAL_SERVICE);
+            if (b == null) {
+                return null;
+            }
+            return new IncrementalManager(IIncrementalService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$144 */
+    /* loaded from: classes.dex */
+    class AnonymousClass144 extends CachedServiceFetcher<FileIntegrityManager> {
+        AnonymousClass144() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public FileIntegrityManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.FILE_INTEGRITY_SERVICE);
+            return new FileIntegrityManager(ctx.getOuterContext(), IFileIntegrityService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$145 */
+    /* loaded from: classes.dex */
+    class AnonymousClass145 extends CachedServiceFetcher<AttestationVerificationManager> {
+        AnonymousClass145() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AttestationVerificationManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.ATTESTATION_VERIFICATION_SERVICE);
+            return new AttestationVerificationManager(ctx.getOuterContext(), IAttestationVerificationManagerService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$146 */
+    /* loaded from: classes.dex */
+    class AnonymousClass146 extends CachedServiceFetcher<AppIntegrityManager> {
+        AnonymousClass146() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AppIntegrityManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder b = ServiceManager.getServiceOrThrow(Context.APP_INTEGRITY_SERVICE);
+            return new AppIntegrityManager(IAppIntegrityManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$147 */
+    /* loaded from: classes.dex */
+    class AnonymousClass147 extends CachedServiceFetcher<AppHibernationManager> {
+        AnonymousClass147() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AppHibernationManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.APP_HIBERNATION_SERVICE);
+            if (b == null) {
+                return null;
+            }
+            return new AppHibernationManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$148 */
+    /* loaded from: classes.dex */
+    class AnonymousClass148 extends CachedServiceFetcher<DreamManager> {
+        AnonymousClass148() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DreamManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new DreamManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$149 */
+    /* loaded from: classes.dex */
+    class AnonymousClass149 extends CachedServiceFetcher<DeviceStateManager> {
+        AnonymousClass149() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DeviceStateManager createService(ContextImpl ctx) {
+            return new DeviceStateManager();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$150 */
+    /* loaded from: classes.dex */
+    class AnonymousClass150 extends CachedServiceFetcher<CocktailBarManager> {
+        AnonymousClass150() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public CocktailBarManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.COCKTAIL_BAR_SERVICE);
+            return new CocktailBarManager(ctx, ICocktailBarService.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$151 */
+    /* loaded from: classes.dex */
+    class AnonymousClass151 extends CachedServiceFetcher<MediaMetricsManager> {
+        AnonymousClass151() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public MediaMetricsManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder iBinder = ServiceManager.getServiceOrThrow(Context.MEDIA_METRICS_SERVICE);
+            IMediaMetricsManager service = IMediaMetricsManager.Stub.asInterface(iBinder);
+            return new MediaMetricsManager(service, ctx.getUserId());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$152 */
+    /* loaded from: classes.dex */
+    class AnonymousClass152 extends CachedServiceFetcher<GameManager> {
+        AnonymousClass152() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public GameManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new GameManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$153 */
+    /* loaded from: classes.dex */
+    class AnonymousClass153 extends CachedServiceFetcher<DomainVerificationManager> {
+        AnonymousClass153() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DomainVerificationManager createService(ContextImpl context) throws ServiceManager.ServiceNotFoundException {
+            IBinder binder = ServiceManager.getServiceOrThrow(Context.DOMAIN_VERIFICATION_SERVICE);
+            IDomainVerificationManager service = IDomainVerificationManager.Stub.asInterface(binder);
+            return new DomainVerificationManager(context, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$154 */
+    /* loaded from: classes.dex */
+    class AnonymousClass154 extends CachedServiceFetcher<DisplayHashManager> {
+        AnonymousClass154() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public DisplayHashManager createService(ContextImpl ctx) {
+            return new DisplayHashManager();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$155 */
+    /* loaded from: classes.dex */
+    class AnonymousClass155 extends CachedServiceFetcher<ExynosDisplaySolutionManager> {
+        AnonymousClass155() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ExynosDisplaySolutionManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.EXYNOS_DISPLAY_SOLUTION_SERVICE);
+            IExynosDisplaySolutionManager service = IExynosDisplaySolutionManager.Stub.asInterface(b);
+            if (service == null) {
+                Log.e(SystemServiceRegistry.TAG, "Failed to get ExynosDisplaySolution Manager Service.");
+                return null;
+            }
+            return new ExynosDisplaySolutionManager(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$156 */
+    /* loaded from: classes.dex */
+    class AnonymousClass156 extends CachedServiceFetcher<AmbientContextManager> {
+        AnonymousClass156() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AmbientContextManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder iBinder = ServiceManager.getServiceOrThrow(Context.AMBIENT_CONTEXT_SERVICE);
+            IAmbientContextManager manager = IAmbientContextManager.Stub.asInterface(iBinder);
+            return new AmbientContextManager(ctx.getOuterContext(), manager);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$157 */
+    /* loaded from: classes.dex */
+    class AnonymousClass157 extends CachedServiceFetcher<WearableSensingManager> {
+        AnonymousClass157() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public WearableSensingManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder iBinder = ServiceManager.getServiceOrThrow(Context.WEARABLE_SENSING_SERVICE);
+            IWearableSensingManager manager = IWearableSensingManager.Stub.asInterface(iBinder);
+            return new WearableSensingManager(ctx.getOuterContext(), manager);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$158 */
+    /* loaded from: classes.dex */
+    class AnonymousClass158 extends CachedServiceFetcher<GrammaticalInflectionManager> {
+        AnonymousClass158() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public GrammaticalInflectionManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            return new GrammaticalInflectionManager(ctx, IGrammaticalInflectionManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.GRAMMATICAL_INFLECTION_SERVICE)));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$159 */
+    /* loaded from: classes.dex */
+    class AnonymousClass159 extends CachedServiceFetcher<SharedConnectivityManager> {
+        AnonymousClass159() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SharedConnectivityManager createService(ContextImpl ctx) {
+            return SharedConnectivityManager.create(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$160 */
+    /* loaded from: classes.dex */
+    class AnonymousClass160 extends CachedServiceFetcher<SemMultiControlManager> {
+        AnonymousClass160() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemMultiControlManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SEM_MULTI_CONTROL_SERVICE);
+            IMultiControlManager service = IMultiControlManager.Stub.asInterface(b);
+            if (service == null) {
+                Log.e(SystemServiceRegistry.TAG, "SemMultiControlManager is not supported");
+                return null;
+            }
+            return new SemMultiControlManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$161 */
+    /* loaded from: classes.dex */
+    class AnonymousClass161 extends CachedServiceFetcher<SemPersonaManager> {
+        AnonymousClass161() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemPersonaManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService("persona");
+            ISemPersonaManager service = ISemPersonaManager.Stub.asInterface(b);
+            return new SemPersonaManager(ctx, service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$162 */
+    /* loaded from: classes.dex */
+    class AnonymousClass162 extends CachedServiceFetcher<SemRemoteContentManager> {
+        AnonymousClass162() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemRemoteContentManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService("rcp");
+            return new SemRemoteContentManager(ISemRemoteContentManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$163 */
+    /* loaded from: classes.dex */
+    class AnonymousClass163 extends CachedServiceFetcher<IsrbManager> {
+        AnonymousClass163() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public IsrbManager createService(ContextImpl ctx) {
+            return new IsrbManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$164 */
+    /* loaded from: classes.dex */
+    class AnonymousClass164 extends CachedServiceFetcher<SemRemoteAppModeManager> {
+        AnonymousClass164() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemRemoteAppModeManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SEM_REMOTE_APP_MODE_SERVICE);
+            IRemoteAppMode service = IRemoteAppMode.Stub.asInterface(b);
+            if (service == null) {
+                Log.e(SystemServiceRegistry.TAG, "SemRemoteAppModeManager is not supported");
+                return null;
+            }
+            return new SemRemoteAppModeManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$165 */
+    /* loaded from: classes.dex */
+    class AnonymousClass165 extends CachedServiceFetcher<SemMdnieManager> {
+        AnonymousClass165() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemMdnieManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SEM_MDNIE_SERVICE);
+            ISemMdnieManager service = ISemMdnieManager.Stub.asInterface(b);
+            return new SemMdnieManager(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$166 */
+    /* loaded from: classes.dex */
+    class AnonymousClass166 extends CachedServiceFetcher<SemDisplaySolutionManager> {
+        AnonymousClass166() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemDisplaySolutionManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SEM_DISPLAY_SOLUTION_SERVICE);
+            ISemDisplaySolutionManager service = ISemDisplaySolutionManager.Stub.asInterface(b);
+            return new SemDisplaySolutionManager(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$167 */
+    /* loaded from: classes.dex */
+    class AnonymousClass167 extends CachedServiceFetcher<SemDisplayQualityManager> {
+        AnonymousClass167() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemDisplayQualityManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SEM_DISPLAY_QUALITY_SERVICE);
+            ISemDisplayQualityManager service = ISemDisplayQualityManager.Stub.asInterface(b);
+            return new SemDisplayQualityManager(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$168 */
+    /* loaded from: classes.dex */
+    class AnonymousClass168 extends CachedServiceFetcher<SemInputDeviceManager> {
+        AnonymousClass168() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemInputDeviceManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SEM_INPUT_DEVICE_SERVICE);
+            ISemInputDeviceManager service = ISemInputDeviceManager.Stub.asInterface(b);
+            return new SemInputDeviceManager(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$169 */
+    /* loaded from: classes.dex */
+    class AnonymousClass169 extends CachedServiceFetcher<SemUnionManager> {
+        AnonymousClass169() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemUnionManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SEP_UNION_SERVICE);
+            return new SemUnionManager(ctx, IUnionManager.Stub.asInterface(b));
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$170 */
+    /* loaded from: classes.dex */
+    class AnonymousClass170 extends CachedServiceFetcher<SemVideoTranscodingService> {
+        AnonymousClass170() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemVideoTranscodingService createService(ContextImpl ctx) {
+            return new SemVideoTranscodingService();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$171 */
+    /* loaded from: classes.dex */
+    class AnonymousClass171 extends CachedServiceFetcher<SemDesktopModeManager> {
+        AnonymousClass171() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemDesktopModeManager createService(ContextImpl ctx) {
+            IBinder b = ServiceManager.getService(Context.SEM_DESKTOP_MODE_SERVICE);
+            IDesktopMode service = IDesktopMode.Stub.asInterface(b);
+            if (service == null) {
+                Log.e(SystemServiceRegistry.TAG, "SemDesktopModeManager is not supported");
+                return null;
+            }
+            return new SemDesktopModeManager(ctx.getOuterContext(), service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$172 */
+    /* loaded from: classes.dex */
+    class AnonymousClass172 extends CachedServiceFetcher<SemCodecSolutionService> {
+        AnonymousClass172() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SemCodecSolutionService createService(ContextImpl ctx) {
+            return new SemCodecSolutionService();
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$173 */
+    /* loaded from: classes.dex */
+    class AnonymousClass173 extends CachedServiceFetcher<ExtendedEthernetManager> {
+        AnonymousClass173() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public ExtendedEthernetManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IExtendedEthernetManager service = IExtendedEthernetManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.EXTENDED_ETHERNET_SERVICE));
+            return new ExtendedEthernetManager(service);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$174 */
+    /* loaded from: classes.dex */
+    class AnonymousClass174 extends CachedServiceFetcher<SpenGestureManager> {
+        AnonymousClass174() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public SpenGestureManager createService(ContextImpl ctx) {
+            return new SpenGestureManager(ctx);
+        }
+    }
+
+    /* renamed from: android.app.SystemServiceRegistry$176 */
+    /* loaded from: classes.dex */
+    class AnonymousClass176 extends CachedServiceFetcher<AppPrelaunchManager> {
+        AnonymousClass176() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public AppPrelaunchManager createService(ContextImpl ctx) throws ServiceManager.ServiceNotFoundException {
+            IBinder iBinder = ServiceManager.getServiceOrThrow(Context.PRELAUNCHER_SERVICE);
+            IAppPrelaunchService service = IAppPrelaunchService.Stub.asInterface(iBinder);
+            return new AppPrelaunchManager(service);
         }
     }
 
@@ -2040,12 +4698,18 @@ public final class SystemServiceRegistry {
     }
 
     @SystemApi
-    public static <TServiceClass> void registerStaticService(final String serviceName, Class<TServiceClass> serviceWrapperClass, final StaticServiceProducerWithBinder<TServiceClass> serviceProducer) {
+    public static <TServiceClass> void registerStaticService(String serviceName, Class<TServiceClass> serviceWrapperClass, StaticServiceProducerWithBinder<TServiceClass> serviceProducer) {
         ensureInitializing("registerStaticService");
         Preconditions.checkStringNotEmpty(serviceName);
         Objects.requireNonNull(serviceWrapperClass);
         Objects.requireNonNull(serviceProducer);
         registerService(serviceName, serviceWrapperClass, new StaticServiceFetcher<TServiceClass>() { // from class: android.app.SystemServiceRegistry.177
+            final /* synthetic */ String val$serviceName;
+
+            AnonymousClass177(String serviceName2) {
+                serviceName = serviceName2;
+            }
+
             @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
             public TServiceClass createService() throws ServiceManager.ServiceNotFoundException {
                 return (TServiceClass) StaticServiceProducerWithBinder.this.createService(ServiceManager.getServiceOrThrow(serviceName));
@@ -2053,13 +4717,32 @@ public final class SystemServiceRegistry {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.SystemServiceRegistry$177 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass177<TServiceClass> extends StaticServiceFetcher<TServiceClass> {
+        final /* synthetic */ String val$serviceName;
+
+        AnonymousClass177(String serviceName2) {
+            serviceName = serviceName2;
+        }
+
+        @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
+        public TServiceClass createService() throws ServiceManager.ServiceNotFoundException {
+            return (TServiceClass) StaticServiceProducerWithBinder.this.createService(ServiceManager.getServiceOrThrow(serviceName));
+        }
+    }
+
     @SystemApi
-    public static <TServiceClass> void registerStaticService(String serviceName, Class<TServiceClass> serviceWrapperClass, final StaticServiceProducerWithoutBinder<TServiceClass> serviceProducer) {
+    public static <TServiceClass> void registerStaticService(String serviceName, Class<TServiceClass> serviceWrapperClass, StaticServiceProducerWithoutBinder<TServiceClass> serviceProducer) {
         ensureInitializing("registerStaticService");
         Preconditions.checkStringNotEmpty(serviceName);
         Objects.requireNonNull(serviceWrapperClass);
         Objects.requireNonNull(serviceProducer);
         registerService(serviceName, serviceWrapperClass, new StaticServiceFetcher<TServiceClass>() { // from class: android.app.SystemServiceRegistry.178
+            AnonymousClass178() {
+            }
+
             @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
             public TServiceClass createService() {
                 return (TServiceClass) StaticServiceProducerWithoutBinder.this.createService();
@@ -2067,13 +4750,31 @@ public final class SystemServiceRegistry {
         });
     }
 
+    /* renamed from: android.app.SystemServiceRegistry$178 */
+    /* loaded from: classes.dex */
+    class AnonymousClass178<TServiceClass> extends StaticServiceFetcher<TServiceClass> {
+        AnonymousClass178() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.StaticServiceFetcher
+        public TServiceClass createService() {
+            return (TServiceClass) StaticServiceProducerWithoutBinder.this.createService();
+        }
+    }
+
     @SystemApi
-    public static <TServiceClass> void registerContextAwareService(final String serviceName, Class<TServiceClass> serviceWrapperClass, final ContextAwareServiceProducerWithBinder<TServiceClass> serviceProducer) {
+    public static <TServiceClass> void registerContextAwareService(String serviceName, Class<TServiceClass> serviceWrapperClass, ContextAwareServiceProducerWithBinder<TServiceClass> serviceProducer) {
         ensureInitializing("registerContextAwareService");
         Preconditions.checkStringNotEmpty(serviceName);
         Objects.requireNonNull(serviceWrapperClass);
         Objects.requireNonNull(serviceProducer);
         registerService(serviceName, serviceWrapperClass, new CachedServiceFetcher<TServiceClass>() { // from class: android.app.SystemServiceRegistry.179
+            final /* synthetic */ String val$serviceName;
+
+            AnonymousClass179(String serviceName2) {
+                serviceName = serviceName2;
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TServiceClass createService(ContextImpl contextImpl) throws ServiceManager.ServiceNotFoundException {
                 return (TServiceClass) ContextAwareServiceProducerWithBinder.this.createService(contextImpl.getOuterContext(), ServiceManager.getServiceOrThrow(serviceName));
@@ -2081,13 +4782,32 @@ public final class SystemServiceRegistry {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.SystemServiceRegistry$179 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass179<TServiceClass> extends CachedServiceFetcher<TServiceClass> {
+        final /* synthetic */ String val$serviceName;
+
+        AnonymousClass179(String serviceName2) {
+            serviceName = serviceName2;
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TServiceClass createService(ContextImpl contextImpl) throws ServiceManager.ServiceNotFoundException {
+            return (TServiceClass) ContextAwareServiceProducerWithBinder.this.createService(contextImpl.getOuterContext(), ServiceManager.getServiceOrThrow(serviceName));
+        }
+    }
+
     @SystemApi
-    public static <TServiceClass> void registerContextAwareService(String serviceName, Class<TServiceClass> serviceWrapperClass, final ContextAwareServiceProducerWithoutBinder<TServiceClass> serviceProducer) {
+    public static <TServiceClass> void registerContextAwareService(String serviceName, Class<TServiceClass> serviceWrapperClass, ContextAwareServiceProducerWithoutBinder<TServiceClass> serviceProducer) {
         ensureInitializing("registerContextAwareService");
         Preconditions.checkStringNotEmpty(serviceName);
         Objects.requireNonNull(serviceWrapperClass);
         Objects.requireNonNull(serviceProducer);
         registerService(serviceName, serviceWrapperClass, new CachedServiceFetcher<TServiceClass>() { // from class: android.app.SystemServiceRegistry.180
+            AnonymousClass180() {
+            }
+
             @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
             public TServiceClass createService(ContextImpl contextImpl) {
                 return (TServiceClass) ContextAwareServiceProducerWithoutBinder.this.createService(contextImpl.getOuterContext());
@@ -2095,8 +4815,21 @@ public final class SystemServiceRegistry {
         });
     }
 
+    /* renamed from: android.app.SystemServiceRegistry$180 */
     /* loaded from: classes.dex */
-    static abstract class CachedServiceFetcher<T> implements ServiceFetcher<T> {
+    public class AnonymousClass180<TServiceClass> extends CachedServiceFetcher<TServiceClass> {
+        AnonymousClass180() {
+        }
+
+        @Override // android.app.SystemServiceRegistry.CachedServiceFetcher
+        public TServiceClass createService(ContextImpl contextImpl) {
+            return (TServiceClass) ContextAwareServiceProducerWithoutBinder.this.createService(contextImpl.getOuterContext());
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* loaded from: classes.dex */
+    public static abstract class CachedServiceFetcher<T> implements ServiceFetcher<T> {
         private final int mCacheIndex;
 
         public abstract T createService(ContextImpl contextImpl) throws ServiceManager.ServiceNotFoundException;
@@ -2107,7 +4840,10 @@ public final class SystemServiceRegistry {
             this.mCacheIndex = i;
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:78:0x000e, code lost:            r3 = r6;     */
+        /* JADX WARN: Code restructure failed: missing block: B:78:0x000e, code lost:
+        
+            r3 = r6;
+         */
         /* JADX WARN: Multi-variable type inference failed */
         /* JADX WARN: Type inference failed for: r0v0, types: [java.lang.Object[], java.lang.Object] */
         /* JADX WARN: Type inference failed for: r6v0 */
@@ -2239,8 +4975,9 @@ public final class SystemServiceRegistry {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    static abstract class StaticServiceFetcher<T> implements ServiceFetcher<T> {
+    public static abstract class StaticServiceFetcher<T> implements ServiceFetcher<T> {
         private T mCachedInstance;
 
         public abstract T createService() throws ServiceManager.ServiceNotFoundException;

@@ -34,34 +34,32 @@ public class LineBreaker {
     public @interface JustificationMode {
     }
 
-    /* renamed from: -$$Nest$smnGetReleaseResultFunc, reason: not valid java name */
+    /* renamed from: -$$Nest$smnGetReleaseResultFunc */
     static /* bridge */ /* synthetic */ long m1315$$Nest$smnGetReleaseResultFunc() {
         return nGetReleaseResultFunc();
     }
 
+    /* synthetic */ LineBreaker(int i, int i2, int i3, int[] iArr, LineBreakerIA lineBreakerIA) {
+        this(i, i2, i3, iArr);
+    }
+
     private static native long nComputeLineBreaks(long j, char[] cArr, long j2, int i, float f, int i2, float f2, float[] fArr, float f3, int i3);
 
-    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native float nGetLineAscent(long j, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native int nGetLineBreakOffset(long j, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native int nGetLineCount(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native float nGetLineDescent(long j, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native int nGetLineFlag(long j, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
     public static native float nGetLineWidth(long j, int i);
 
@@ -158,6 +156,10 @@ public class LineBreaker {
         private static final int TAB_MASK = 536870912;
         private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Result.class.getClassLoader(), LineBreaker.m1315$$Nest$smnGetReleaseResultFunc());
         private final long mPtr;
+
+        /* synthetic */ Result(long j, ResultIA resultIA) {
+            this(j);
+        }
 
         private Result(long ptr) {
             this.mPtr = ptr;

@@ -195,7 +195,6 @@ public interface Parcelling<T> {
                 }
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // com.android.internal.util.Parcelling
             public ArraySet<String> unparcel(Parcel source) {
                 int size = source.readInt();
@@ -223,7 +222,6 @@ public interface Parcelling<T> {
                 }
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // com.android.internal.util.Parcelling
             public Boolean unparcel(Parcel source) {
                 switch (source.readInt()) {

@@ -20,7 +20,6 @@ final class AuthenticatorService {
         return sService;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getVersion() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -70,7 +69,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean setChallenge(byte[] challenge) {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -83,7 +81,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] getWrappedObject(byte[] challenge) {
         byte[] result = new byte[0];
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
@@ -97,7 +94,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean initializeDrk() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -110,7 +106,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean terminateDrk() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -123,7 +118,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] getDrkKeyHandle() {
         byte[] result = new byte[0];
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
@@ -137,7 +131,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean writeFile(byte[] data, String path) {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -150,7 +143,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean deleteFile(String path) {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -176,7 +168,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean initializeWithPreloadedTa() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -189,7 +180,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean terminateWithPreloadedTa() {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -202,7 +192,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] processWithPreloadedTa(byte[] command, String appId) {
         byte[] result = new byte[0];
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
@@ -216,7 +205,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String readFile(String path) {
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());
         try {
@@ -229,7 +217,6 @@ final class AuthenticatorService {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List<String> getMatchedFilePaths(String path, String filter) {
         List<String> result = Collections.emptyList();
         ISemAuthnrService service = (ISemAuthnrService) checkNotNullState(getService());

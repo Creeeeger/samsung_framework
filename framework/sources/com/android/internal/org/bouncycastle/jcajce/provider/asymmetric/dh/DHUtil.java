@@ -12,7 +12,6 @@ class DHUtil {
     DHUtil() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String privateKeyToString(String algorithm, BigInteger x, DHParameters dhParams) {
         StringBuffer buf = new StringBuffer();
         String nl = Strings.lineSeparator();
@@ -23,7 +22,6 @@ class DHUtil {
         return buf.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String publicKeyToString(String algorithm, BigInteger y, DHParameters dhParams) {
         StringBuffer buf = new StringBuffer();
         String nl = Strings.lineSeparator();

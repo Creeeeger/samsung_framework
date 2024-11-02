@@ -30,7 +30,6 @@ public class DialerKeyListener extends NumberKeyListener {
         return 3;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.NumberKeyListener
     public int lookup(KeyEvent event, Spannable content) {
         int meta = getMetaState(content, event);

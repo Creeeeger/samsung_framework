@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class TunerDescramblerRequest implements Parcelable {
     public static final Parcelable.Creator<TunerDescramblerRequest> CREATOR = new Parcelable.Creator<TunerDescramblerRequest>() { // from class: android.media.tv.tunerresourcemanager.TunerDescramblerRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TunerDescramblerRequest createFromParcel(Parcel _aidl_source) {
             TunerDescramblerRequest _aidl_out = new TunerDescramblerRequest();
@@ -15,13 +17,31 @@ public class TunerDescramblerRequest implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunerDescramblerRequest[] newArray(int _aidl_size) {
             return new TunerDescramblerRequest[_aidl_size];
         }
     };
     public int clientId = 0;
+
+    /* renamed from: android.media.tv.tunerresourcemanager.TunerDescramblerRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TunerDescramblerRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TunerDescramblerRequest createFromParcel(Parcel _aidl_source) {
+            TunerDescramblerRequest _aidl_out = new TunerDescramblerRequest();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TunerDescramblerRequest[] newArray(int _aidl_size) {
+            return new TunerDescramblerRequest[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SessionInfo implements Parcelable {
     public static final Parcelable.Creator<SessionInfo> CREATOR = new Parcelable.Creator<SessionInfo>() { // from class: android.hardware.radio.sim.SessionInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SessionInfo createFromParcel(Parcel _aidl_source) {
             SessionInfo _aidl_out = new SessionInfo();
@@ -16,7 +18,6 @@ public class SessionInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SessionInfo[] newArray(int _aidl_size) {
             return new SessionInfo[_aidl_size];
@@ -24,6 +25,25 @@ public class SessionInfo implements Parcelable {
     };
     public int sessionId = 0;
     public boolean isEs10 = false;
+
+    /* renamed from: android.hardware.radio.sim.SessionInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SessionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SessionInfo createFromParcel(Parcel _aidl_source) {
+            SessionInfo _aidl_out = new SessionInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SessionInfo[] newArray(int _aidl_size) {
+            return new SessionInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -7,19 +7,16 @@ import com.android.internal.inputmethod.IAccessibilityInputMethodSession;
 import com.android.internal.inputmethod.IRemoteAccessibilityInputConnection;
 import java.util.concurrent.atomic.AtomicReference;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public final class AccessibilityInputMethodSessionWrapper extends IAccessibilityInputMethodSession.Stub {
     private final Handler mHandler;
     private final AtomicReference<AccessibilityInputMethodSession> mSessionRef;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AccessibilityInputMethodSessionWrapper(Looper looper, AccessibilityInputMethodSession session) {
         this.mSessionRef = new AtomicReference<>(session);
         this.mHandler = Handler.createAsync(looper);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AccessibilityInputMethodSession getSession() {
         return this.mSessionRef.get();
     }
@@ -38,8 +35,7 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: doUpdateSelection, reason: merged with bridge method [inline-methods] */
+    /* renamed from: doUpdateSelection */
     public void lambda$updateSelection$0(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
         AccessibilityInputMethodSession session = this.mSessionRef.get();
         if (session != null) {
@@ -61,7 +57,6 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doFinishInput() {
         AccessibilityInputMethodSession session = this.mSessionRef.get();
         if (session != null) {
@@ -83,7 +78,6 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doFinishSession() {
         this.mSessionRef.set(null);
     }
@@ -102,8 +96,7 @@ public final class AccessibilityInputMethodSessionWrapper extends IAccessibility
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: doInvalidateInput, reason: merged with bridge method [inline-methods] */
+    /* renamed from: doInvalidateInput */
     public void lambda$invalidateInput$1(EditorInfo editorInfo, IRemoteAccessibilityInputConnection connection, int sessionId) {
         AccessibilityInputMethodSession session = this.mSessionRef.get();
         if (session != null) {

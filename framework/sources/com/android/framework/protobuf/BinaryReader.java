@@ -8,9 +8,10 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
 /* loaded from: classes4.dex */
-abstract class BinaryReader implements Reader {
+public abstract class BinaryReader implements Reader {
     private static final int FIXED32_MULTIPLE_MASK = 3;
     private static final int FIXED64_MULTIPLE_MASK = 7;
 
@@ -1595,8 +1596,7 @@ abstract class BinaryReader implements Reader {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.BinaryReader$1, reason: invalid class name */
+    /* renamed from: com.android.framework.protobuf.BinaryReader$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;

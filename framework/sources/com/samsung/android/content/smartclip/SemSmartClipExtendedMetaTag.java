@@ -7,7 +7,9 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemSmartClipExtendedMetaTag extends SemSmartClipMetaTag implements Parcelable {
     public static final Parcelable.Creator<SemSmartClipExtendedMetaTag> CREATOR = new Parcelable.Creator<SemSmartClipExtendedMetaTag>() { // from class: com.samsung.android.content.smartclip.SemSmartClipExtendedMetaTag.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemSmartClipExtendedMetaTag createFromParcel(Parcel in) {
             Log.d(SemSmartClipExtendedMetaTag.TAG, "SemSmartClipExtendedMetaTag.createFromParcel called");
@@ -16,7 +18,6 @@ public class SemSmartClipExtendedMetaTag extends SemSmartClipMetaTag implements 
             return data;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemSmartClipExtendedMetaTag[] newArray(int size) {
             return new SemSmartClipExtendedMetaTag[size];
@@ -89,6 +90,26 @@ public class SemSmartClipExtendedMetaTag extends SemSmartClipMetaTag implements 
             this.mParcelableData = in.readParcelable(null);
         } else {
             this.mParcelableData = null;
+        }
+    }
+
+    /* renamed from: com.samsung.android.content.smartclip.SemSmartClipExtendedMetaTag$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemSmartClipExtendedMetaTag> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSmartClipExtendedMetaTag createFromParcel(Parcel in) {
+            Log.d(SemSmartClipExtendedMetaTag.TAG, "SemSmartClipExtendedMetaTag.createFromParcel called");
+            SemSmartClipExtendedMetaTag data = new SemSmartClipExtendedMetaTag(null, null);
+            data.readFromParcel(in);
+            return data;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSmartClipExtendedMetaTag[] newArray(int size) {
+            return new SemSmartClipExtendedMetaTag[size];
         }
     }
 }

@@ -15,7 +15,9 @@ import org.xmlpull.v1.XmlSerializer;
 /* loaded from: classes3.dex */
 public final class AidGroup implements Parcelable {
     public static final Parcelable.Creator<AidGroup> CREATOR = new Parcelable.Creator<AidGroup>() { // from class: android.nfc.cardemulation.AidGroup.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AidGroup createFromParcel(Parcel source) {
             String category = source.readString();
@@ -27,7 +29,6 @@ public final class AidGroup implements Parcelable {
             return new AidGroup(aidList, category);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AidGroup[] newArray(int size) {
             return new AidGroup[size];
@@ -64,7 +65,6 @@ public final class AidGroup implements Parcelable {
         this.description = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AidGroup(String category, String description) {
         this.aids = new ArrayList();
         this.category = category;
@@ -110,6 +110,29 @@ public final class AidGroup implements Parcelable {
         dest.writeInt(this.aids.size());
         if (this.aids.size() > 0) {
             dest.writeStringList(this.aids);
+        }
+    }
+
+    /* renamed from: android.nfc.cardemulation.AidGroup$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AidGroup> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AidGroup createFromParcel(Parcel source) {
+            String category = source.readString();
+            int listSize = source.readInt();
+            ArrayList<String> aidList = new ArrayList<>();
+            if (listSize > 0) {
+                source.readStringList(aidList);
+            }
+            return new AidGroup(aidList, category);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AidGroup[] newArray(int size) {
+            return new AidGroup[size];
         }
     }
 

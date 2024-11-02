@@ -13,13 +13,14 @@ import java.util.Set;
 /* loaded from: classes5.dex */
 public class SemImsRegistration implements Parcelable {
     public static final Parcelable.Creator<SemImsRegistration> CREATOR = new Parcelable.Creator<SemImsRegistration>() { // from class: com.samsung.android.ims.SemImsRegistration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemImsRegistration createFromParcel(Parcel in) {
             return new SemImsRegistration(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsRegistration[] newArray(int size) {
             return new SemImsRegistration[size];
@@ -53,6 +54,10 @@ public class SemImsRegistration implements Parcelable {
     private final String mRegisteredPublicUserId;
     private final Set<String> mServices;
     private final int mSubscriptionId;
+
+    /* synthetic */ SemImsRegistration(Parcel parcel, SemImsRegistrationIA semImsRegistrationIA) {
+        this(parcel);
+    }
 
     public int getHandle() {
         return this.mHandle;
@@ -226,6 +231,23 @@ public class SemImsRegistration implements Parcelable {
         parcel.writeParcelable(this.mNetwork, i);
         parcel.writeString(this.mPAssociatedUri2nd);
         parcel.writeString(this.mOwnNumber);
+    }
+
+    /* renamed from: com.samsung.android.ims.SemImsRegistration$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemImsRegistration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemImsRegistration createFromParcel(Parcel in) {
+            return new SemImsRegistration(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemImsRegistration[] newArray(int size) {
+            return new SemImsRegistration[size];
+        }
     }
 
     private SemImsRegistration(Parcel in) {

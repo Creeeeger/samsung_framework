@@ -7,13 +7,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class OverlayIdentifier implements Parcelable {
     public static final Parcelable.Creator<OverlayIdentifier> CREATOR = new Parcelable.Creator<OverlayIdentifier>() { // from class: android.content.om.OverlayIdentifier.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public OverlayIdentifier[] newArray(int size) {
             return new OverlayIdentifier[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverlayIdentifier createFromParcel(Parcel in) {
             return new OverlayIdentifier(in);
@@ -99,6 +100,23 @@ public final class OverlayIdentifier implements Parcelable {
         String overlayName = (flg & 2) != 0 ? in.readString() : null;
         this.mPackageName = packageName;
         this.mOverlayName = overlayName;
+    }
+
+    /* renamed from: android.content.om.OverlayIdentifier$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<OverlayIdentifier> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OverlayIdentifier[] newArray(int size) {
+            return new OverlayIdentifier[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OverlayIdentifier createFromParcel(Parcel in) {
+            return new OverlayIdentifier(in);
+        }
     }
 
     @Deprecated

@@ -7,13 +7,14 @@ import android.view.RemoteAnimationTarget;
 /* loaded from: classes4.dex */
 public final class BackMotionEvent implements Parcelable {
     public static final Parcelable.Creator<BackMotionEvent> CREATOR = new Parcelable.Creator<BackMotionEvent>() { // from class: android.window.BackMotionEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BackMotionEvent createFromParcel(Parcel in) {
             return new BackMotionEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackMotionEvent[] newArray(int size) {
             return new BackMotionEvent[size];
@@ -26,6 +27,10 @@ public final class BackMotionEvent implements Parcelable {
     private final float mTouchY;
     private final float mVelocityX;
     private final float mVelocityY;
+
+    /* synthetic */ BackMotionEvent(Parcel parcel, BackMotionEventIA backMotionEventIA) {
+        this(parcel);
+    }
 
     public BackMotionEvent(float touchX, float touchY, float progress, float velocityX, float velocityY, int swipeEdge, RemoteAnimationTarget departingAnimationTarget) {
         this.mTouchX = touchX;
@@ -45,6 +50,23 @@ public final class BackMotionEvent implements Parcelable {
         this.mVelocityY = in.readFloat();
         this.mSwipeEdge = in.readInt();
         this.mDepartingAnimationTarget = (RemoteAnimationTarget) in.readTypedObject(RemoteAnimationTarget.CREATOR);
+    }
+
+    /* renamed from: android.window.BackMotionEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BackMotionEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BackMotionEvent createFromParcel(Parcel in) {
+            return new BackMotionEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BackMotionEvent[] newArray(int size) {
+            return new BackMotionEvent[size];
+        }
     }
 
     @Override // android.os.Parcelable

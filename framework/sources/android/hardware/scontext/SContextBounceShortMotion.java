@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextBounceShortMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextBounceShortMotion> CREATOR = new Parcelable.Creator<SContextBounceShortMotion>() { // from class: android.hardware.scontext.SContextBounceShortMotion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextBounceShortMotion createFromParcel(Parcel in) {
             return new SContextBounceShortMotion(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextBounceShortMotion[] newArray(int size) {
             return new SContextBounceShortMotion[size];
@@ -22,7 +23,6 @@ public class SContextBounceShortMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextBounceShortMotion() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextBounceShortMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextBounceShortMotion$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextBounceShortMotion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextBounceShortMotion createFromParcel(Parcel in) {
+            return new SContextBounceShortMotion(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextBounceShortMotion[] newArray(int size) {
+            return new SContextBounceShortMotion[size];
+        }
     }
 }

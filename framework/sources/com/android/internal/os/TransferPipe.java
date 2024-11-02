@@ -29,7 +29,6 @@ public class TransferPipe implements Runnable, Closeable {
     FileDescriptor mOutFd;
     final Thread mThread;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public interface Caller {
         void go(IInterface iInterface, FileDescriptor fileDescriptor, String str, String[] strArr) throws RemoteException;
@@ -43,7 +42,6 @@ public class TransferPipe implements Runnable, Closeable {
         this(bufferPrefix, TAG);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public TransferPipe(String bufferPrefix, String threadName) throws IOException {
         this.mThread = new Thread(this, threadName);
         this.mFds = ParcelFileDescriptor.createPipe();

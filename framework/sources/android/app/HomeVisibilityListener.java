@@ -22,7 +22,6 @@ public abstract class HomeVisibilityListener {
 
     public abstract void onHomeVisibilityChanged(boolean z);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void init(Context context, Executor executor) {
         this.mActivityTaskManager = ActivityTaskManager.getInstance();
         this.mExecutor = executor;
@@ -30,8 +29,7 @@ public abstract class HomeVisibilityListener {
         this.mIsHomeActivityVisible = isHomeActivityVisible();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.HomeVisibilityListener$1, reason: invalid class name */
+    /* renamed from: android.app.HomeVisibilityListener$1 */
     /* loaded from: classes.dex */
     public class AnonymousClass1 extends IProcessObserver.Stub {
         AnonymousClass1() {
@@ -64,7 +62,6 @@ public abstract class HomeVisibilityListener {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$refreshHomeVisibility$1() throws Exception {
             HomeVisibilityListener.this.mExecutor.execute(new Runnable() { // from class: android.app.HomeVisibilityListener$1$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -74,14 +71,12 @@ public abstract class HomeVisibilityListener {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$refreshHomeVisibility$0() {
             HomeVisibilityListener homeVisibilityListener = HomeVisibilityListener.this;
             homeVisibilityListener.onHomeVisibilityChanged(homeVisibilityListener.mIsHomeActivityVisible);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isHomeActivityVisible() {
         List<ActivityManager.RunningTaskInfo> tasksTopToBottom = this.mActivityTaskManager.getTasks(this.mMaxScanTasksForHomeVisibility, true, false, 0);
         if (tasksTopToBottom == null || tasksTopToBottom.isEmpty()) {

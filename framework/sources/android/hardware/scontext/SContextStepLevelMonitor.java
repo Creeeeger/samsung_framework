@@ -14,20 +14,20 @@ public class SContextStepLevelMonitor extends SContextEventContext {
     private static final double[] NO_DOUBLES = new double[0];
     private static final long[] NO_LONGS = new long[0];
     public static final Parcelable.Creator<SContextStepLevelMonitor> CREATOR = new Parcelable.Creator<SContextStepLevelMonitor>() { // from class: android.hardware.scontext.SContextStepLevelMonitor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextStepLevelMonitor createFromParcel(Parcel in) {
             return new SContextStepLevelMonitor(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextStepLevelMonitor[] newArray(int size) {
             return new SContextStepLevelMonitor[size];
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextStepLevelMonitor() {
         this.mContext = new Bundle();
         this.mInfo = new Bundle();
@@ -132,5 +132,22 @@ public class SContextStepLevelMonitor extends SContextEventContext {
         this.mContext = src.readBundle();
         this.mInfo = src.readBundle();
         this.mMode = src.readInt();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextStepLevelMonitor$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextStepLevelMonitor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextStepLevelMonitor createFromParcel(Parcel in) {
+            return new SContextStepLevelMonitor(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextStepLevelMonitor[] newArray(int size) {
+            return new SContextStepLevelMonitor[size];
+        }
     }
 }

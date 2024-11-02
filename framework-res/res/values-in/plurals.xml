@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Ponsel Anda tidak stabil karena kartu SD dengan aplikasi terinstal di dalamnya telah dilepaskan. Ponsel Anda akan dimulai ulang dalam %d detik agar kembali normal. Simpan data yang belum disimpan sebelum ponsel dimulai ulang.</item>
+        <item quantity="other">Tablet Anda tidak stabil karena kartu SD dengan aplikasi terinstal di dalamnya telah dicabut. Tablet Anda akan dimulai ulang dalam %d detik agar kembali normal. Simpan data yang belum disimpan sebelum tablet dimulai ulang.</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Ponsel akan dimulai ulang dlm %d dtk</item>
+        <item quantity="other">Tablet akan dimulai ulang dlm %d detik</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

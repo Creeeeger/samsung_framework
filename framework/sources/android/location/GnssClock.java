@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class GnssClock implements Parcelable {
     public static final Parcelable.Creator<GnssClock> CREATOR = new Parcelable.Creator<GnssClock>() { // from class: android.location.GnssClock.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssClock createFromParcel(Parcel parcel) {
             GnssClock gpsClock = new GnssClock();
@@ -28,7 +30,6 @@ public final class GnssClock implements Parcelable {
             return gpsClock;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssClock[] newArray(int size) {
             return new GnssClock[size];
@@ -312,6 +313,39 @@ public final class GnssClock implements Parcelable {
 
     public void setHardwareClockDiscontinuityCount(int value) {
         this.mHardwareClockDiscontinuityCount = value;
+    }
+
+    /* renamed from: android.location.GnssClock$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssClock> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssClock createFromParcel(Parcel parcel) {
+            GnssClock gpsClock = new GnssClock();
+            gpsClock.mFlags = parcel.readInt();
+            gpsClock.mLeapSecond = parcel.readInt();
+            gpsClock.mTimeNanos = parcel.readLong();
+            gpsClock.mTimeUncertaintyNanos = parcel.readDouble();
+            gpsClock.mFullBiasNanos = parcel.readLong();
+            gpsClock.mBiasNanos = parcel.readDouble();
+            gpsClock.mBiasUncertaintyNanos = parcel.readDouble();
+            gpsClock.mDriftNanosPerSecond = parcel.readDouble();
+            gpsClock.mDriftUncertaintyNanosPerSecond = parcel.readDouble();
+            gpsClock.mHardwareClockDiscontinuityCount = parcel.readInt();
+            gpsClock.mElapsedRealtimeNanos = parcel.readLong();
+            gpsClock.mElapsedRealtimeUncertaintyNanos = parcel.readDouble();
+            gpsClock.mReferenceConstellationTypeForIsb = parcel.readInt();
+            gpsClock.mReferenceCarrierFrequencyHzForIsb = parcel.readDouble();
+            gpsClock.mReferenceCodeTypeForIsb = parcel.readString();
+            return gpsClock;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssClock[] newArray(int size) {
+            return new GnssClock[size];
+        }
     }
 
     @Override // android.os.Parcelable

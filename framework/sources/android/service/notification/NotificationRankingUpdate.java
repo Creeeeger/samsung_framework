@@ -7,13 +7,14 @@ import android.service.notification.NotificationListenerService;
 /* loaded from: classes3.dex */
 public class NotificationRankingUpdate implements Parcelable {
     public static final Parcelable.Creator<NotificationRankingUpdate> CREATOR = new Parcelable.Creator<NotificationRankingUpdate>() { // from class: android.service.notification.NotificationRankingUpdate.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NotificationRankingUpdate createFromParcel(Parcel parcel) {
             return new NotificationRankingUpdate(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationRankingUpdate[] newArray(int size) {
             return new NotificationRankingUpdate[size];
@@ -52,5 +53,22 @@ public class NotificationRankingUpdate implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeParcelable(this.mRankingMap, flags);
+    }
+
+    /* renamed from: android.service.notification.NotificationRankingUpdate$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NotificationRankingUpdate> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationRankingUpdate createFromParcel(Parcel parcel) {
+            return new NotificationRankingUpdate(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationRankingUpdate[] newArray(int size) {
+            return new NotificationRankingUpdate[size];
+        }
     }
 }

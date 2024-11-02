@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class AidlCasPluginDescriptor implements Parcelable {
     public static final Parcelable.Creator<AidlCasPluginDescriptor> CREATOR = new Parcelable.Creator<AidlCasPluginDescriptor>() { // from class: android.hardware.cas.AidlCasPluginDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AidlCasPluginDescriptor createFromParcel(Parcel _aidl_source) {
             AidlCasPluginDescriptor _aidl_out = new AidlCasPluginDescriptor();
@@ -15,7 +17,6 @@ public class AidlCasPluginDescriptor implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AidlCasPluginDescriptor[] newArray(int _aidl_size) {
             return new AidlCasPluginDescriptor[_aidl_size];
@@ -23,6 +24,25 @@ public class AidlCasPluginDescriptor implements Parcelable {
     };
     public int caSystemId = 0;
     public String name;
+
+    /* renamed from: android.hardware.cas.AidlCasPluginDescriptor$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AidlCasPluginDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AidlCasPluginDescriptor createFromParcel(Parcel _aidl_source) {
+            AidlCasPluginDescriptor _aidl_out = new AidlCasPluginDescriptor();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AidlCasPluginDescriptor[] newArray(int _aidl_size) {
+            return new AidlCasPluginDescriptor[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

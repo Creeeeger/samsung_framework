@@ -32,6 +32,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
     float mValue;
     float mVelocity;
     public static final ViewProperty TRANSLATION_X = new ViewProperty("translationX") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.1
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setTranslationX(value);
@@ -43,6 +47,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty TRANSLATION_Y = new ViewProperty("translationY") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.2
+        AnonymousClass2(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setTranslationY(value);
@@ -54,6 +62,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty TRANSLATION_Z = new ViewProperty("translationZ") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.3
+        AnonymousClass3(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setTranslationZ(value);
@@ -65,6 +77,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty SCALE_X = new ViewProperty("scaleX") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.4
+        AnonymousClass4(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setScaleX(value);
@@ -76,6 +92,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty SCALE_Y = new ViewProperty("scaleY") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.5
+        AnonymousClass5(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setScaleY(value);
@@ -87,6 +107,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty ROTATION = new ViewProperty(GenerateXML.ROTATION) { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.6
+        AnonymousClass6(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setRotation(value);
@@ -98,6 +122,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty ROTATION_X = new ViewProperty("rotationX") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.7
+        AnonymousClass7(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setRotationX(value);
@@ -109,6 +137,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty ROTATION_Y = new ViewProperty("rotationY") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.8
+        AnonymousClass8(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setRotationY(value);
@@ -120,6 +152,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty X = new ViewProperty("x") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.9
+        AnonymousClass9(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setX(value);
@@ -131,6 +167,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty Y = new ViewProperty("y") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.10
+        AnonymousClass10(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setY(value);
@@ -142,6 +182,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty Z = new ViewProperty("z") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.11
+        AnonymousClass11(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setZ(value);
@@ -153,6 +197,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty ALPHA = new ViewProperty("alpha") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.12
+        AnonymousClass12(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setAlpha(value);
@@ -164,6 +212,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty SCROLL_X = new ViewProperty("scrollX") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.13
+        AnonymousClass13(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setScrollX((int) value);
@@ -175,6 +227,10 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     };
     public static final ViewProperty SCROLL_Y = new ViewProperty("scrollY") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.14
+        AnonymousClass14(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(View view, float value) {
             view.setScrollY((int) value);
@@ -212,13 +268,268 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
 
     /* loaded from: classes4.dex */
     public static abstract class ViewProperty extends FloatProperty<View> {
+        /* synthetic */ ViewProperty(String str, ViewPropertyIA viewPropertyIA) {
+            this(str);
+        }
+
         private ViewProperty(String name) {
             super(name);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public DynamicAnimation(final FloatValueHolder floatValueHolder) {
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends ViewProperty {
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setTranslationX(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getTranslationX());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 extends ViewProperty {
+        AnonymousClass2(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setTranslationY(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getTranslationY());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 extends ViewProperty {
+        AnonymousClass3(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setTranslationZ(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getTranslationZ());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$4 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass4 extends ViewProperty {
+        AnonymousClass4(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setScaleX(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getScaleX());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$5 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass5 extends ViewProperty {
+        AnonymousClass5(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setScaleY(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getScaleY());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$6 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass6 extends ViewProperty {
+        AnonymousClass6(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setRotation(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getRotation());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$7 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass7 extends ViewProperty {
+        AnonymousClass7(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setRotationX(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getRotationX());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$8 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass8 extends ViewProperty {
+        AnonymousClass8(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setRotationY(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getRotationY());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$9 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass9 extends ViewProperty {
+        AnonymousClass9(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setX(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getX());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$10 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass10 extends ViewProperty {
+        AnonymousClass10(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setY(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getY());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$11 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass11 extends ViewProperty {
+        AnonymousClass11(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setZ(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getZ());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$12 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass12 extends ViewProperty {
+        AnonymousClass12(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setAlpha(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getAlpha());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$13 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass13 extends ViewProperty {
+        AnonymousClass13(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setScrollX((int) value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getScrollX());
+        }
+    }
+
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$14 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass14 extends ViewProperty {
+        AnonymousClass14(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(View view, float value) {
+            view.setScrollY((int) value);
+        }
+
+        @Override // android.util.Property
+        public Float get(View view) {
+            return Float.valueOf(view.getScrollY());
+        }
+    }
+
+    public DynamicAnimation(FloatValueHolder floatValueHolder) {
         this.mVelocity = 0.0f;
         this.mValue = Float.MAX_VALUE;
         this.mStartValueIsSet = false;
@@ -230,7 +541,14 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         this.mUpdateListeners = new ArrayList<>();
         this.mTarget = null;
         this.mProperty = new FloatProperty("FloatValueHolder") { // from class: com.android.internal.dynamicanimation.animation.DynamicAnimation.15
-            /* JADX WARN: Can't rename method to resolve collision */
+            final /* synthetic */ FloatValueHolder val$floatValueHolder;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass15(String name, FloatValueHolder floatValueHolder2) {
+                super(name);
+                floatValueHolder = floatValueHolder2;
+            }
+
             @Override // android.util.Property
             public Float get(Object object) {
                 return Float.valueOf(floatValueHolder.getValue());
@@ -245,6 +563,28 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.dynamicanimation.animation.DynamicAnimation$15 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass15 extends FloatProperty {
+        final /* synthetic */ FloatValueHolder val$floatValueHolder;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass15(String name, FloatValueHolder floatValueHolder2) {
+            super(name);
+            floatValueHolder = floatValueHolder2;
+        }
+
+        @Override // android.util.Property
+        public Float get(Object object) {
+            return Float.valueOf(floatValueHolder.getValue());
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(Object object, float value) {
+            floatValueHolder.setValue(value);
+        }
+    }
+
     public <K> DynamicAnimation(K object, FloatProperty<K> property) {
         this.mVelocity = 0.0f;
         this.mValue = Float.MAX_VALUE;
@@ -353,7 +693,6 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isCurrentThread() {
         return Thread.currentThread() == Looper.myLooper().getThread();
     }
@@ -436,7 +775,6 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>> implements
         removeNullEntries(this.mUpdateListeners);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getValueThreshold() {
         return this.mMinVisibleChange * 0.75f;
     }

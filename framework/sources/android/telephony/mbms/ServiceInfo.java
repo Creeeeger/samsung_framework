@@ -43,7 +43,6 @@ public class ServiceInfo {
         this.sessionEndTime = (Date) end.clone();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ServiceInfo(Parcel in) {
         int mapCount = in.readInt();
         if (mapCount > 1000 || mapCount < 0) {

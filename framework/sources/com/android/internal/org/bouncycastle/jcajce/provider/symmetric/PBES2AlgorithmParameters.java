@@ -41,6 +41,10 @@ public class PBES2AlgorithmParameters {
         private final int keySize;
         private PBES2Parameters params;
 
+        /* synthetic */ BasePBEWithHmacAlgorithmParameters(ASN1ObjectIdentifier aSN1ObjectIdentifier, String str, int i, ASN1ObjectIdentifier aSN1ObjectIdentifier2, String str2, BasePBEWithHmacAlgorithmParametersIA basePBEWithHmacAlgorithmParametersIA) {
+            this(aSN1ObjectIdentifier, str, i, aSN1ObjectIdentifier2, str2);
+        }
+
         private BasePBEWithHmacAlgorithmParameters(ASN1ObjectIdentifier kdf, String kdfShortName, int keySize, ASN1ObjectIdentifier cipherAlgorithm, String cipherAlgorithmShortName) {
             this.kdf = new AlgorithmIdentifier(kdf, DERNull.INSTANCE);
             this.kdfShortName = kdfShortName;
@@ -203,7 +207,6 @@ public class PBES2AlgorithmParameters {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static PBEParameterSpec createPBEParameterSpec(byte[] salt, int iterationCount, byte[] iv) {
         try {
             return (PBEParameterSpec) PBES2AlgorithmParameters.class.getClassLoader().loadClass("javax.crypto.spec.PBEParameterSpec").getConstructor(byte[].class, Integer.TYPE, AlgorithmParameterSpec.class).newInstance(salt, Integer.valueOf(iterationCount), new IvParameterSpec(iv));

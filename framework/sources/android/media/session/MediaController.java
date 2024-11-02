@@ -343,7 +343,6 @@ public final class MediaController {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void postMessage(int what, Object obj, Bundle data) {
         synchronized (this.mLock) {
             for (int i = this.mCallbacks.size() - 1; i >= 0; i--) {
@@ -382,6 +381,10 @@ public final class MediaController {
     /* loaded from: classes2.dex */
     public final class TransportControls {
         private static final String TAG = "TransportController";
+
+        /* synthetic */ TransportControls(MediaController mediaController, TransportControlsIA transportControlsIA) {
+            this();
+        }
 
         private TransportControls() {
         }
@@ -573,13 +576,14 @@ public final class MediaController {
     /* loaded from: classes2.dex */
     public static final class PlaybackInfo implements Parcelable {
         public static final Parcelable.Creator<PlaybackInfo> CREATOR = new Parcelable.Creator<PlaybackInfo>() { // from class: android.media.session.MediaController.PlaybackInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PlaybackInfo createFromParcel(Parcel in) {
                 return new PlaybackInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PlaybackInfo[] newArray(int size) {
                 return new PlaybackInfo[size];
@@ -660,9 +664,25 @@ public final class MediaController {
             dest.writeParcelable(this.mAudioAttrs, flags);
             dest.writeString(this.mVolumeControlId);
         }
+
+        /* renamed from: android.media.session.MediaController$PlaybackInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PlaybackInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PlaybackInfo createFromParcel(Parcel in) {
+                return new PlaybackInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PlaybackInfo[] newArray(int size) {
+                return new PlaybackInfo[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class CallbackStub extends ISessionControllerCallback.Stub {
         private final WeakReference<MediaController> mController;
@@ -736,7 +756,6 @@ public final class MediaController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class MessageHandler extends Handler {
         private final Callback mCallback;

@@ -12,13 +12,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class PackageRollbackInfo implements Parcelable {
     public static final Parcelable.Creator<PackageRollbackInfo> CREATOR = new Parcelable.Creator<PackageRollbackInfo>() { // from class: android.content.rollback.PackageRollbackInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PackageRollbackInfo createFromParcel(Parcel in) {
             return new PackageRollbackInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageRollbackInfo[] newArray(int size) {
             return new PackageRollbackInfo[size];
@@ -32,6 +33,10 @@ public final class PackageRollbackInfo implements Parcelable {
     private final List<Integer> mSnapshottedUsers;
     private final VersionedPackage mVersionRolledBackFrom;
     private final VersionedPackage mVersionRolledBackTo;
+
+    /* synthetic */ PackageRollbackInfo(Parcel parcel, PackageRollbackInfoIA packageRollbackInfoIA) {
+        this(parcel);
+    }
 
     /* loaded from: classes.dex */
     public static class RestoreInfo {
@@ -146,5 +151,22 @@ public final class PackageRollbackInfo implements Parcelable {
         this.mVersionRolledBackTo.writeToParcel(out, flags);
         out.writeBoolean(this.mIsApex);
         out.writeBoolean(this.mIsApkInApex);
+    }
+
+    /* renamed from: android.content.rollback.PackageRollbackInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PackageRollbackInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PackageRollbackInfo createFromParcel(Parcel in) {
+            return new PackageRollbackInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PackageRollbackInfo[] newArray(int size) {
+            return new PackageRollbackInfo[size];
+        }
     }
 }

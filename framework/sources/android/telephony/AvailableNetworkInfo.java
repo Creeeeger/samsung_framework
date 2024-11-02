@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AvailableNetworkInfo implements Parcelable {
     public static final Parcelable.Creator<AvailableNetworkInfo> CREATOR = new Parcelable.Creator<AvailableNetworkInfo>() { // from class: android.telephony.AvailableNetworkInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AvailableNetworkInfo createFromParcel(Parcel in) {
             return new AvailableNetworkInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AvailableNetworkInfo[] newArray(int size) {
             return new AvailableNetworkInfo[size];
@@ -38,6 +39,14 @@ public final class AvailableNetworkInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface AvailableNetworkInfoPriority {
+    }
+
+    /* synthetic */ AvailableNetworkInfo(int i, int i2, List list, List list2, List list3, AvailableNetworkInfoIA availableNetworkInfoIA) {
+        this(i, i2, list, list2, list3);
+    }
+
+    /* synthetic */ AvailableNetworkInfo(Parcel parcel, AvailableNetworkInfoIA availableNetworkInfoIA) {
+        this(parcel);
     }
 
     public int getSubId() {
@@ -112,6 +121,23 @@ public final class AvailableNetworkInfo implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mSubId), Integer.valueOf(this.mPriority), this.mMccMncs, this.mBands, this.mRadioAccessSpecifiers);
+    }
+
+    /* renamed from: android.telephony.AvailableNetworkInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AvailableNetworkInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AvailableNetworkInfo createFromParcel(Parcel in) {
+            return new AvailableNetworkInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AvailableNetworkInfo[] newArray(int size) {
+            return new AvailableNetworkInfo[size];
+        }
     }
 
     public String toString() {

@@ -13,13 +13,14 @@ import org.xmlpull.v1.XmlPullParserFactory;
 /* loaded from: classes5.dex */
 public class Caption implements Parcelable {
     public static final Parcelable.Creator<Caption> CREATOR = new Parcelable.Creator<Caption>() { // from class: com.samsung.android.allshare.Caption.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Caption[] newArray(int size) {
             return new Caption[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Caption createFromParcel(Parcel source) {
             return new Caption(source);
@@ -32,6 +33,10 @@ public class Caption implements Parcelable {
     private String mLanguage;
     private String mName;
     private String mResourceUri;
+
+    /* synthetic */ Caption(Parcel parcel, CaptionIA captionIA) {
+        this(parcel);
+    }
 
     /* loaded from: classes5.dex */
     public enum CaptionOperation {
@@ -352,6 +357,23 @@ public class Caption implements Parcelable {
         this.mCaptionType = src.readString();
         this.mLanguage = src.readString();
         this.mEncoding = src.readString();
+    }
+
+    /* renamed from: com.samsung.android.allshare.Caption$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Caption> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Caption[] newArray(int size) {
+            return new Caption[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Caption createFromParcel(Parcel source) {
+            return new Caption(source);
+        }
     }
 
     private Caption(Parcel src) {

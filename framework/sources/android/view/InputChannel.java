@@ -12,7 +12,9 @@ public final class InputChannel implements Parcelable {
     private long mPtr;
     private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(InputChannel.class.getClassLoader(), nativeGetFinalizer());
     public static final Parcelable.Creator<InputChannel> CREATOR = new Parcelable.Creator<InputChannel>() { // from class: android.view.InputChannel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputChannel createFromParcel(Parcel source) {
             InputChannel result = new InputChannel();
@@ -20,7 +22,6 @@ public final class InputChannel implements Parcelable {
             return result;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputChannel[] newArray(int size) {
             return new InputChannel[size];
@@ -42,6 +43,25 @@ public final class InputChannel implements Parcelable {
     private native long nativeReadFromParcel(Parcel parcel);
 
     private native void nativeWriteToParcel(Parcel parcel, long j);
+
+    /* renamed from: android.view.InputChannel$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputChannel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputChannel createFromParcel(Parcel source) {
+            InputChannel result = new InputChannel();
+            result.readFromParcel(source);
+            return result;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputChannel[] newArray(int size) {
+            return new InputChannel[size];
+        }
+    }
 
     private void setNativeInputChannel(long nativeChannel) {
         if (nativeChannel == 0) {

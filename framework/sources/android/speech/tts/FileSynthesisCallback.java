@@ -26,7 +26,6 @@ class FileSynthesisCallback extends AbstractSynthesisCallback {
     private final Object mStateLock;
     protected int mStatusCode;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FileSynthesisCallback(FileChannel fileChannel, TextToSpeechService.UtteranceProgressDispatcher dispatcher, boolean clientIsUsingV2) {
         super(clientIsUsingV2);
         this.mStateLock = new Object();
@@ -37,7 +36,6 @@ class FileSynthesisCallback extends AbstractSynthesisCallback {
         this.mStatusCode = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.speech.tts.AbstractSynthesisCallback
     public void stop() {
         synchronized (this.mStateLock) {

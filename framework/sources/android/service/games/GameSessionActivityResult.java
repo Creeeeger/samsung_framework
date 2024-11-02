@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class GameSessionActivityResult implements Parcelable {
     public static final Parcelable.Creator<GameSessionActivityResult> CREATOR = new Parcelable.Creator<GameSessionActivityResult>() { // from class: android.service.games.GameSessionActivityResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GameSessionActivityResult createFromParcel(Parcel in) {
             int resultCode = in.readInt();
@@ -15,7 +17,6 @@ public final class GameSessionActivityResult implements Parcelable {
             return new GameSessionActivityResult(resultCode, data);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GameSessionActivityResult[] newArray(int size) {
             return new GameSessionActivityResult[size];
@@ -23,6 +24,25 @@ public final class GameSessionActivityResult implements Parcelable {
     };
     private final Intent mData;
     private final int mResultCode;
+
+    /* renamed from: android.service.games.GameSessionActivityResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GameSessionActivityResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameSessionActivityResult createFromParcel(Parcel in) {
+            int resultCode = in.readInt();
+            Intent data = (Intent) in.readParcelable(Intent.class.getClassLoader(), Intent.class);
+            return new GameSessionActivityResult(resultCode, data);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameSessionActivityResult[] newArray(int size) {
+            return new GameSessionActivityResult[size];
+        }
+    }
 
     public GameSessionActivityResult(int resultCode, Intent data) {
         this.mResultCode = resultCode;

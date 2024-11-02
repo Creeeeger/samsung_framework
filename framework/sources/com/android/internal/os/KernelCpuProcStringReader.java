@@ -37,22 +37,18 @@ public class KernelCpuProcStringReader {
     private static final String PROC_UID_USER_SYS_TIME = "/proc/uid_cputime/show_uid_stat";
     private static final KernelCpuProcStringReader USER_SYS_TIME_READER = new KernelCpuProcStringReader(PROC_UID_USER_SYS_TIME);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KernelCpuProcStringReader getFreqTimeReaderInstance() {
         return FREQ_TIME_READER;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KernelCpuProcStringReader getActiveTimeReaderInstance() {
         return ACTIVE_TIME_READER;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KernelCpuProcStringReader getClusterTimeReaderInstance() {
         return CLUSTER_TIME_READER;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KernelCpuProcStringReader getUserSysTimeReaderInstance() {
         return USER_SYS_TIME_READER;
     }

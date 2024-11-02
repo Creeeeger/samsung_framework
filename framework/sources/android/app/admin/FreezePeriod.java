@@ -57,18 +57,15 @@ public class FreezePeriod {
         return this.mEndDay + 365;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean contains(LocalDate localDate) {
         int daysOfYear = dayOfYearDisregardLeapYear(localDate);
         return !isWrapped() ? this.mStartDay <= daysOfYear && daysOfYear <= this.mEndDay : this.mStartDay <= daysOfYear || daysOfYear <= this.mEndDay;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean after(LocalDate localDate) {
         return this.mStartDay > dayOfYearDisregardLeapYear(localDate);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r2v0 */
     /* JADX WARN: Type inference failed for: r2v2, types: [int] */
@@ -115,7 +112,6 @@ public class FreezePeriod {
         return (dayOfYearDisregardLeapYear(first) - dayOfYearDisregardLeapYear(second)) + ((first.getYear() - second.getYear()) * 365);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List<FreezePeriod> canonicalizePeriods(List<FreezePeriod> intervals) {
         boolean[] taken = new boolean[365];
         for (FreezePeriod interval : intervals) {
@@ -145,7 +141,6 @@ public class FreezePeriod {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void validatePeriods(List<FreezePeriod> periods) {
         int separation;
         List<FreezePeriod> allPeriods = canonicalizePeriods(periods);
@@ -174,7 +169,6 @@ public class FreezePeriod {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void validateAgainstPreviousFreezePeriod(List<FreezePeriod> periods, LocalDate prevPeriodStart, LocalDate prevPeriodEnd, LocalDate now) {
         if (periods.size() == 0 || prevPeriodStart == null || prevPeriodEnd == null) {
             return;

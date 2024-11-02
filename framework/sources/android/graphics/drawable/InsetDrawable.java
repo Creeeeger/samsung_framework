@@ -20,7 +20,10 @@ public class InsetDrawable extends DrawableWrapper {
     private final Rect mTmpInsetRect;
     private final Rect mTmpRect;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ InsetDrawable(InsetState insetState, Resources resources, InsetDrawableIA insetDrawableIA) {
+        this(insetState, resources);
+    }
+
     public InsetDrawable() {
         this(new InsetState(null, null), (Resources) null);
     }
@@ -162,8 +165,9 @@ public class InsetDrawable extends DrawableWrapper {
         return opacity;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
-    protected void onBoundsChange(Rect bounds) {
+    public void onBoundsChange(Rect bounds) {
         Rect r = this.mTmpRect;
         r.set(bounds);
         r.left += this.mState.mInsetLeft.getDimension(bounds.width());
@@ -205,7 +209,6 @@ public class InsetDrawable extends DrawableWrapper {
         return insetState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class InsetState extends DrawableWrapper.DrawableWrapperState {
         InsetValue mInsetBottom;
@@ -233,8 +236,9 @@ public class InsetDrawable extends DrawableWrapper {
             this.mInsetBottom = new InsetValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.graphics.drawable.DrawableWrapper.DrawableWrapperState
-        void onDensityChanged(int sourceDensity, int targetDensity) {
+        public void onDensityChanged(int sourceDensity, int targetDensity) {
             super.onDensityChanged(sourceDensity, targetDensity);
             applyDensityScaling(sourceDensity, targetDensity);
         }
@@ -264,7 +268,6 @@ public class InsetDrawable extends DrawableWrapper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class InsetValue implements Cloneable {
         int mDimension;
@@ -290,7 +293,7 @@ public class InsetDrawable extends DrawableWrapper {
             }
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        /* renamed from: clone */
         public InsetValue m1202clone() {
             return new InsetValue(this.mFraction, this.mDimension);
         }

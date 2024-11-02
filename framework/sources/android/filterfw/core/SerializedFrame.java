@@ -16,7 +16,6 @@ public class SerializedFrame extends Frame {
     private DirectByteOutputStream mByteOutputStream;
     private ObjectOutputStream mObjectOut;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class DirectByteOutputStream extends OutputStream {
         private byte[] mBuffer;
@@ -82,7 +81,6 @@ public class SerializedFrame extends Frame {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class DirectByteInputStream extends InputStream {
         private byte[] mBuffer;
@@ -141,7 +139,6 @@ public class SerializedFrame extends Frame {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SerializedFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         setReusable(false);
@@ -161,13 +158,11 @@ public class SerializedFrame extends Frame {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public boolean hasNativeAllocation() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public void releaseNativeAllocation() {
     }

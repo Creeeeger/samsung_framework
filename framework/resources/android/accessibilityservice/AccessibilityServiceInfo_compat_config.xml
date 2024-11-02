@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="For accessibility services targeting APIs greater than {@link Build.VERSION_CODES#Q API 29}, {@link #FLAG_REQUEST_ACCESSIBILITY_BUTTON} must be specified in the accessibility service metadata file. Otherwise, it will be ignored." enableAfterTargetSdk="29" id="136293963" name="REQUEST_ACCESSIBILITY_BUTTON_CHANGE"><meta-data definedIn="android.accessibilityservice.AccessibilityServiceInfo" sourcePosition="frameworks/base/core/java/android/accessibilityservice/AccessibilityServiceInfo.java:601"/></compat-change></config>
+Error decode xml
+java.util.zip.ZipException: invalid END header (bad central directory offset)
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
+

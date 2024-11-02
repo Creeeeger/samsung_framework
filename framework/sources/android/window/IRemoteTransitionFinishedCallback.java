@@ -87,8 +87,9 @@ public interface IRemoteTransitionFinishedCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IRemoteTransitionFinishedCallback {
+        public static class Proxy implements IRemoteTransitionFinishedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

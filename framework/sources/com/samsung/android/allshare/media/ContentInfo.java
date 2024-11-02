@@ -6,19 +6,28 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class ContentInfo implements Parcelable {
     public static final Parcelable.Creator<ContentInfo> CREATOR = new Parcelable.Creator<ContentInfo>() { // from class: com.samsung.android.allshare.media.ContentInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentInfo createFromParcel(Parcel src) {
             return new ContentInfo(src);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentInfo[] newArray(int size) {
             return new ContentInfo[size];
         }
     };
     private long mStartingPosition;
+
+    /* synthetic */ ContentInfo(Parcel parcel, ContentInfoIA contentInfoIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ ContentInfo(Builder builder, ContentInfoIA contentInfoIA) {
+        this(builder);
+    }
 
     private ContentInfo() {
     }
@@ -64,5 +73,22 @@ public class ContentInfo implements Parcelable {
 
     private ContentInfo(Parcel src) {
         readFromParcel(src);
+    }
+
+    /* renamed from: com.samsung.android.allshare.media.ContentInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentInfo createFromParcel(Parcel src) {
+            return new ContentInfo(src);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentInfo[] newArray(int size) {
+            return new ContentInfo[size];
+        }
     }
 }

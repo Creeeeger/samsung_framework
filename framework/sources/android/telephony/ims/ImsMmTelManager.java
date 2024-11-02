@@ -71,7 +71,6 @@ public class ImsMmTelManager implements RegistrationManager {
     public static class CapabilityCallback {
         private final CapabilityBinder mBinder = new CapabilityBinder(this);
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class CapabilityBinder extends IImsCapabilityCallback.Stub {
             private Executor mExecutor;
@@ -100,7 +99,6 @@ public class ImsMmTelManager implements RegistrationManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onCapabilitiesStatusChanged$0(int config) {
                 this.mLocalCallback.onCapabilitiesStatusChanged(new MmTelFeature.MmTelCapabilities(config));
             }
@@ -113,7 +111,6 @@ public class ImsMmTelManager implements RegistrationManager {
             public void onChangeCapabilityConfigurationError(int capability, int radioTech, int reason) {
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }
@@ -257,7 +254,7 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsMmTelManager$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.ImsMmTelManager$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -311,7 +308,7 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsMmTelManager$2, reason: invalid class name */
+    /* renamed from: android.telephony.ims.ImsMmTelManager$2 */
     /* loaded from: classes3.dex */
     class AnonymousClass2 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -461,7 +458,7 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsMmTelManager$3, reason: invalid class name */
+    /* renamed from: android.telephony.ims.ImsMmTelManager$3 */
     /* loaded from: classes3.dex */
     class AnonymousClass3 extends IIntegerConsumer.Stub {
         final /* synthetic */ Consumer val$callback;
@@ -772,7 +769,7 @@ public class ImsMmTelManager implements RegistrationManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsMmTelManager$4, reason: invalid class name */
+    /* renamed from: android.telephony.ims.ImsMmTelManager$4 */
     /* loaded from: classes3.dex */
     class AnonymousClass4 extends IIntegerConsumer.Stub {
         final /* synthetic */ Consumer val$callback;
@@ -843,7 +840,6 @@ public class ImsMmTelManager implements RegistrationManager {
         return this.mBinderCache.getBinder();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ITelephony getITelephonyInterface() {
         ITelephony binder = ITelephony.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getTelephonyServiceRegisterer().get());
         return binder;

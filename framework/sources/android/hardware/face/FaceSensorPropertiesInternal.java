@@ -9,13 +9,14 @@ import java.util.List;
 /* loaded from: classes2.dex */
 public class FaceSensorPropertiesInternal extends SensorPropertiesInternal {
     public static final Parcelable.Creator<FaceSensorPropertiesInternal> CREATOR = new Parcelable.Creator<FaceSensorPropertiesInternal>() { // from class: android.hardware.face.FaceSensorPropertiesInternal.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FaceSensorPropertiesInternal createFromParcel(Parcel in) {
             return new FaceSensorPropertiesInternal(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceSensorPropertiesInternal[] newArray(int size) {
             return new FaceSensorPropertiesInternal[size];
@@ -37,6 +38,23 @@ public class FaceSensorPropertiesInternal extends SensorPropertiesInternal {
         this.sensorType = in.readInt();
         this.supportsFaceDetection = in.readBoolean();
         this.supportsSelfIllumination = in.readBoolean();
+    }
+
+    /* renamed from: android.hardware.face.FaceSensorPropertiesInternal$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FaceSensorPropertiesInternal> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FaceSensorPropertiesInternal createFromParcel(Parcel in) {
+            return new FaceSensorPropertiesInternal(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FaceSensorPropertiesInternal[] newArray(int size) {
+            return new FaceSensorPropertiesInternal[size];
+        }
     }
 
     @Override // android.hardware.biometrics.SensorPropertiesInternal, android.os.Parcelable

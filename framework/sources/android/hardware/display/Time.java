@@ -7,13 +7,14 @@ import java.time.LocalTime;
 /* loaded from: classes2.dex */
 public final class Time implements Parcelable {
     public static final Parcelable.Creator<Time> CREATOR = new Parcelable.Creator<Time>() { // from class: android.hardware.display.Time.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Time createFromParcel(Parcel source) {
             return new Time(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Time[] newArray(int size) {
             return new Time[size];
@@ -53,5 +54,22 @@ public final class Time implements Parcelable {
 
     public LocalTime getLocalTime() {
         return LocalTime.of(this.mHour, this.mMinute, this.mSecond, this.mNano);
+    }
+
+    /* renamed from: android.hardware.display.Time$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Time> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Time createFromParcel(Parcel source) {
+            return new Time(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Time[] newArray(int size) {
+            return new Time[size];
+        }
     }
 }

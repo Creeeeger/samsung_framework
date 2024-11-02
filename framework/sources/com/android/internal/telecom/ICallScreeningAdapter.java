@@ -87,8 +87,9 @@ public interface ICallScreeningAdapter extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ICallScreeningAdapter {
+        public static class Proxy implements ICallScreeningAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

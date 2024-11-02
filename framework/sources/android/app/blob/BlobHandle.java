@@ -25,18 +25,23 @@ public final class BlobHandle implements Parcelable {
     public final String tag;
     private static final String[] SUPPORTED_ALGOS = {"SHA-256"};
     public static final Parcelable.Creator<BlobHandle> CREATOR = new Parcelable.Creator<BlobHandle>() { // from class: android.app.blob.BlobHandle.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BlobHandle createFromParcel(Parcel source) {
             return new BlobHandle(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BlobHandle[] newArray(int size) {
             return new BlobHandle[size];
         }
     };
+
+    /* synthetic */ BlobHandle(Parcel parcel, BlobHandleIA blobHandleIA) {
+        this(parcel);
+    }
 
     private BlobHandle(String algorithm, byte[] digest, CharSequence label, long expiryTimeMillis, String tag) {
         this.algorithm = algorithm;
@@ -152,6 +157,23 @@ public final class BlobHandle implements Parcelable {
     public boolean isExpired() {
         long j = this.expiryTimeMillis;
         return j != 0 && j < System.currentTimeMillis();
+    }
+
+    /* renamed from: android.app.blob.BlobHandle$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BlobHandle> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BlobHandle createFromParcel(Parcel source) {
+            return new BlobHandle(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BlobHandle[] newArray(int size) {
+            return new BlobHandle[size];
+        }
     }
 
     public void writeToXml(XmlSerializer out) throws IOException {

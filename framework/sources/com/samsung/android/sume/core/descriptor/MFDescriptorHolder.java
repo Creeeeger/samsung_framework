@@ -42,7 +42,7 @@ public final class MFDescriptorHolder<T extends MFDescriptor> extends MFDescript
         T t = (T) Optional.ofNullable(this.descriptor).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.descriptor.MFDescriptorHolder$$ExternalSyntheticLambda0
             @Override // java.util.function.Supplier
             public final Object get() {
-                return MFDescriptorHolder.this.m8749xea657ff5();
+                return MFDescriptorHolder.this.m8741xea657ff5();
             }
         });
         this.vararg = null;
@@ -54,20 +54,18 @@ public final class MFDescriptorHolder<T extends MFDescriptor> extends MFDescript
         return t;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$reset$1$com-samsung-android-sume-core-descriptor-MFDescriptorHolder, reason: not valid java name */
-    public /* synthetic */ MFDescriptor m8749xea657ff5() {
+    /* renamed from: lambda$reset$1$com-samsung-android-sume-core-descriptor-MFDescriptorHolder */
+    public /* synthetic */ MFDescriptor m8741xea657ff5() {
         return (MFDescriptor) Optional.ofNullable(this.mfDescriptorProvider).map(new Function() { // from class: com.samsung.android.sume.core.descriptor.MFDescriptorHolder$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return MFDescriptorHolder.this.m8748x2fefdf74((Function) obj);
+                return MFDescriptorHolder.this.m8740x2fefdf74((Function) obj);
             }
         }).orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$reset$0$com-samsung-android-sume-core-descriptor-MFDescriptorHolder, reason: not valid java name */
-    public /* synthetic */ MFDescriptor m8748x2fefdf74(Function it) {
+    /* renamed from: lambda$reset$0$com-samsung-android-sume-core-descriptor-MFDescriptorHolder */
+    public /* synthetic */ MFDescriptor m8740x2fefdf74(Function it) {
         return (MFDescriptor) it.apply(this.vararg);
     }
 

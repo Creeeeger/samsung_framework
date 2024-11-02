@@ -117,14 +117,12 @@ public class PKIXCertPath extends CertPath {
         return retList;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PKIXCertPath(List certificates) {
         super("X.509");
         this.helper = new BCJcaJceHelper();
         this.certificates = sortCerts(new ArrayList(certificates));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PKIXCertPath(InputStream inStream, String encoding) throws CertificateException {
         super("X.509");
         BCJcaJceHelper bCJcaJceHelper = new BCJcaJceHelper();

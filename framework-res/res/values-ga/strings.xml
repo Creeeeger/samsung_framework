@@ -337,7 +337,7 @@ Má roghnaíonn tú an feidhmchlár seo a shuiteáil ar aon nós, cinntigh go dt
     <string name="ext_media_unsupported_notification_message">Níl tacú sa ghléas seo don %s seo. Tapáil lena shocrú i bhformáid a bhfuil tacú ann di.</string>
     <string name="ext_media_unsupported_notification_title">%s nach bhfuil tacú ann dó</string>
     <string name="ext_storage_bad_removal_button">Atosaigh</string>
-    <string name="ext_storage_bad_removal_title">"Atosaigh d'fhón"</string>
+    <string name="ext_storage_bad_removal_title">Atosaigh do tháibléad</string>
     <string name="extmedia_format_button_format">Formáid</string>
     <string name="extmedia_format_message">An bhfuil tú cinnte gur mian leat an cárta SD a fhormáidiú? Caillfear gach sonra ar do chárta</string>
     <string name="extmedia_format_message_usbhost">Léirscriosfar gach comhad atá sábháilte i do stóras USB. Ní féidir an gníomh seo a aisiompú.</string>
@@ -598,16 +598,16 @@ Atosófar do tháibléad go luath."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Tá fuaim á seinm ar do ghléas fuaime Bluetooth. Tapáil anseo leis sin a chasadh as</string>
     <string name="multisound_sound_via_headphone">Tá fuaim %s á seinm trí do chluasáin. Tapáil anseo leis seo a chasadh as.</string>
     <string name="multisound_sound_via_headphone_multiselection">Tá fuaim á seinm trí do chluasáin. Tapáil anseo leis sin a chasadh as.</string>
-    <string name="multisound_sound_via_phone_speaker">"Tá fuaim %s á seinm trí challaire d'fhóin. Tapáil anseo leis seo a chasadh as."</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">"Tá fuaim á seinm trí challaire d'fhóin. Tapáil anseo leis sin a chasadh as."</string>
+    <string name="multisound_sound_via_phone_speaker">Tá fuaim %s á seinm trí challaire do tháibléid. Tapáil anseo leis seo a chasadh as.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Tá fuaim á seinm trí challaire do tháibléid. Tapáil anseo leis sin a chasadh as.</string>
     <string name="multisound_sound_via_usb_audio">Tá fuaim %s á seinm trí ghléas fuaime USB. Tapáil anseo leis seo a chasadh as.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Tá fuaim á seinm trí do ghléas fuaime USB. Tapáil anseo leis sin a chasadh as.</string>
     <string name="multisound_title">Fuaim feidhmchláir ar leith</string>
     <string name="multisound_turn_off_multisound">Cas as</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ní féidir %s a rith in Samsung DeX. Triail é a rith i Mód fóin.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ní féidir %s a rith in Samsung DeX. Tá sé ceaptha don Scáileán baile ar fhón.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Ní oibríonn roinnt cluichí ach ar scáileáin tadhaill amháin. Mura n-oibríonn rialuithe luiche in Samsung DeX, triail an cluiche a imirt i Mód fóin ina ionad sin.</string>
-    <string name="my_device">An fón seo</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ní féidir %s a rith in Samsung DeX. Triail é a rith i Mód táibléid.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ní féidir %s a rith in Samsung DeX. Tá sé ceaptha don Scáileán baile ar tháibléad.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Ní oibríonn roinnt cluichí ach ar scáileáin tadhaill amháin. Mura n-oibríonn rialuithe luiche in Samsung DeX, triail an cluiche a imirt i Mód táibléid ina ionad sin.</string>
+    <string name="my_device">An táibléad seo</string>
     <string name="network_locked_sim_dialog_message_ais">Ní oibríonn do chárta SIM go hiomlán leis an bhfón seo mar nach bhfuil sé ag teacht le téarmaí agus coinníollacha do shíntiúis. Má tá aon cheisteanna agat nó má tá tuilleadh faisnéise uait ar an ábhar seo, déan teagmháil leis an ionad Seirbhíse do Chustaiméirí Samsung nó leis an siopa a dhíol na táirgí seo leat.</string>
     <string name="network_locked_sim_notification_text">Cárta SIM ionsáite a dhéanann an líonra a ghlasáil.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -800,7 +800,7 @@ CUIR AR AIS CHUIG"</string>
     <string name="policydesc_allow_desktopsync">Cuir cosc ar shioncronú deisce a úsáid.</string>
     <string name="policydesc_allow_internetsharing">Cuir cosc ar Bhall Te Móibíleach a úsáid.</string>
     <string name="policydesc_allow_irda">Cuir cosc ar IrDA a úsáid.</string>
-    <string name="policydesc_allow_popimapemail">Cuir cosc ar r-phost POP agus IMAP a úsáid ar an bhfón.</string>
+    <string name="policydesc_allow_popimapemail">Cuir cosc ar r-phost POP agus IMAP a úsáid ar an táibléad.</string>
     <string name="policydesc_allow_storagecard">Cuir cosc ar chártaí SD a úsáíd.</string>
     <string name="policydesc_allow_textmessaging">Cuir cosc ar chur teachtaireachtaí téacs agus ilmheán a úsáid.</string>
     <string name="policydesc_allow_thirdParty">Is féidir leis an bhfeidhmchlár seo cosc a chur ar rith feidhmchlár tríú páirtí.</string>
@@ -846,7 +846,7 @@ CUIR AR AIS CHUIG"</string>
     <string name="pwd_change_enforced">Éilíonn an beartas slándála ort do phasfhocal a athrú</string>
     <string name="recording_fail">Ní féidir an micreafón a úsáid in %1$s agus é á úsáid in %2$s.</string>
     <string name="recording_popup">Tá %s ag úsáid an mhicreafóin.</string>
-    <string name="recording_popup_device">Fón</string>
+    <string name="recording_popup_device">Táibléad</string>
     <string name="recording_popup_with_bluetooth">Tá an micreafón Bluetooth á úsáid ag %s.</string>
     <string name="recording_popup_with_device">Tá micreafón %2$s á úsáid ag %1$s.</string>
     <string name="redo">Athdhéan</string>
@@ -912,12 +912,12 @@ CUIR AR AIS CHUIG"</string>
     <string name="screencapture_restrict">Cuireann an beartas slándála cosc ar Gabh scáileán a úsáid.</string>
     <string name="sd_card_unavailable_message">Ní féidir leat an cárta SD a úsáid mar gur ionsádh é nuair a bhí próifíl úsáideora eile in úsáid.</string>
     <string name="sd_card_unavailable_title">Níl cárta SD ar fáil</string>
-    <string name="sdcard_bad_removal_message">"Baineadh cárta SD ar bhealach neamhshábháilte. Le nach n-atosófar d'fhón gan choinne, sábháil sonraí neamhshábháilte agus atosaigh anois é."</string>
+    <string name="sdcard_bad_removal_message">Baineadh cárta SD ar bhealach neamhshábháilte. Le nach n-atosófar do tháibléad gan choinne, sábháil sonraí neamhshábháilte agus atosaigh anois é.</string>
     <string name="sdcard_batch_decrypt_noti_content">Díchriptigh an cárta SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Díchriptiú an chárta SD</string>
     <string name="sdcard_batch_decrypt_popup_content">"Ní mór an cárta criptithe SD a dhíchriptiú roimh úsáid. D'fhéadfadh sé go dtógfadh sé uair an chloig nó níos mó an díchriptiú a dhéanamh. Tosaigh le ceallra luchtaithe agus fág an gléas plugáilte isteach go mbeidh an díchriptiú curtha i gcrích. D'fhéadfaí roinnt sonraí, nó na sonraí uile, a chailleadh dá gcuirfí isteach ar an bpróiseas díchriptithe."</string>
     <string name="sdcard_decrypt_err_notification">Tharla earráid díchriptithe an chárta SD</string>
-    <string name="sdcard_decrypt_error_otherdevice">Criptíodh roinnt comhad ar do chárta SD ar ghléas eile agus ní féidir iad a úsáid ar an bhfón seo.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Criptíodh roinnt comhad ar do chárta SD ar ghléas eile agus ní féidir iad a úsáid ar an táibléad seo.</string>
     <string name="sdcard_decrypt_notification">Cárta SD díchriptithe.</string>
     <string name="sdcard_decrypt_title_notification">Díchriptiú an chárta SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Cárta SD á dhíchriptiú…</string>
@@ -1247,7 +1247,7 @@ Leis an gcosaint sin a bhaint, gabh chuig Socruithe > Slándáil agus príobhái
     <string name="usb_abnormal_reset_title">Níl an ceangal USB cobhsaí</string>
     <string name="usb_abnormal_reset_toast">Níl an ceangal USB cobhsaí. Déan an cábla a dhíphlugáil agus a phlugáil isteach arís, nó triail cábla difriúil.</string>
     <string name="usb_accessory_notification_title">Nasctha le hoiriúint USB</string>
-    <string name="usb_bad_removal_message">"Baineadh gléas stórála USB ar bhealach neamhshábháilte. Le nach n-atosófar d'fhón gan choinne, sábháil sonraí neamhshábháilte agus atosaigh anois é."</string>
+    <string name="usb_bad_removal_message">Baineadh gléas stórála USB ar bhealach neamhshábháilte. Le nach n-atosófar do tháibléad gan choinne, sábháil sonraí neamhshábháilte agus atosaigh anois é.</string>
     <string name="usb_blocked_by_emergency_mode">Níl roinnt feidhmeanna USB ar fáil i Mód éigeandála.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ní féidir feidhmeanna a bhaineann leis an ngléas USB atá ceangailte a úsáid agus Uasmhód coigilte cumhachta cumasaithe.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Cuirfear teorainn le roinnt feidhmeanna USB agus Uasmhód coigilte cumhachta casta air.</string>
@@ -1256,18 +1256,18 @@ Leis an gcosaint sin a bhaint, gabh chuig Socruithe > Slándáil agus príobhái
     <string name="usb_camera_connected_notification_title">Gléas meán nasctha</string>
     <string name="usb_camera_disconnected_notification_title">Gléas meán dínasctha</string>
     <string name="usb_cd_installer_notification_title">Nuashonrú bogearraí</string>
-    <string name="usb_charing_only_notification_title">Luchtú USB</string>
+    <string name="usb_charing_only_notification_title">Ceangailte</string>
     <string name="usb_debugging_only_notification_title">Dífhabhtú amháin</string>
     <string name="usb_host_Unknown_device_connected_notification_title">Gléas USB anaithnid nasctha.</string>
     <string name="usb_host_cable_connected_notification_title">Nascóir USB nasctha.</string>
     <string name="usb_host_cable_disconnected_notification_title">Nascóir USB dínasctha.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Ní féidir an gléas seo a rochtain. Tá soláthar seachtrach cumhachta de dhíth ar an ngléas ceangailte.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Gléas USB ardchumhachta nasctha.</string>
-    <string name="usb_host_resource_exceed_message">"Ní go leor acmhainní ag rialaitheoir USB d'fhóin le ceangal leis an ngléas seo. Triail an gléas a dhícheangal agus a cheangal arís."</string>
+    <string name="usb_host_resource_exceed_message">Ní go leor acmhainní ag rialaitheoir USB do tháibléid le ceangal leis an ngléas seo. Triail an gléas a dhícheangal agus a cheangal arís.</string>
     <string name="usb_host_resource_exceed_title">Níl go leor acmhainní rialaitheora USB ann</string>
-    <string name="usb_hub_depth_exceed_message">"Níl tacú i d'fhón ach do suas le 5 nasc moil USB ag an am céanna."</string>
+    <string name="usb_hub_depth_exceed_message">Níl tacú i do tháibléad ach do suas le 5 nasc moil USB ag an am céanna.</string>
     <string name="usb_hub_depth_exceed_title">Uaslíon na nasc moil USB</string>
-    <string name="usb_hub_power_exceed_message">"Ní féidir le d'fhón go leor cumhachta a chur ar fáil don ghléas USB seo. Ceangail an gléas le mol USB féinchumhachtaithe roimh é a cheangal le d'fhón."</string>
+    <string name="usb_hub_power_exceed_message">Ní féidir le do tháibléad go leor cumhachta a chur ar fáil don ghléas USB seo. Ceangail an gléas le mol USB féinchumhachtaithe roimh é a cheangal le do tháibléad.</string>
     <string name="usb_increase_battery_usage">Is féidir go gcuirfidh an nasc USB le húsáid an cheallra.</string>
     <string name="usb_keyboard_connected_notification_title">Eochairchlár ceangailte</string>
     <string name="usb_keyboard_disconnected_notification_title">Eochairchlár ceangailte</string>
@@ -1300,8 +1300,8 @@ Leis an gcosaint sin a bhaint, gabh chuig Socruithe > Slándáil agus príobhái
     <string name="usb_ums_connected_notification_message_usbhost">Ollstóras USB bainte gan choinne.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Ollstóráil USB ceangailte</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Ollstóras USB bainte go sábháilte.</string>
-    <string name="usb_unblock_by_screen_unlock">"Díghlasáil d'fhón leis an ngléas USB nasctha a úsáid."</string>
-    <string name="usb_unsupport_accessory_message">"Níl tacú i d'fhón don ghléas USB seo."</string>
+    <string name="usb_unblock_by_screen_unlock">Díghlasáil do tháibléad leis an ngléas USB nasctha a úsáid.</string>
+    <string name="usb_unsupport_accessory_message">Níl tacú i do tháibléad don ghléas USB seo.</string>
     <string name="usb_unsupport_accessory_title">Níl tacú ann don ghléas USB</string>
     <string name="usb_unsupported_device">Níl tacú ann don ghléas USB atá ceangailte.</string>
     <string name="usb_unsupported_device_title">Níl tacú ann don ghléas</string>
@@ -1319,19 +1319,19 @@ Leis an gcosaint sin a bhaint, gabh chuig Socruithe > Slándáil agus príobhái
     <string name="usb_water_dialg_method_2_desc_2">Is féidir leat é a thriomú níos tapa trí fhean nó triomadóir (aer fionnuar amháin) a dhíriú ar an bport.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Tá taise nó ábhar coimhthíoch braite againn i do phort luchtaithe/USB.
 
-Seiceáil do phort luchtaithe/USB le haghaidh aon ábhair choimhthíoch amhail deannach nó smionagar. Le damáiste do d'fhón a chosc, ná plugáil aon rud isteach go dtí go mbeidh an port luchtaithe glan agus go mbeidh an taise imithe.
+Seiceáil do phort luchtaithe/USB le haghaidh aon ábhair choimhthíoch amhail deannach nó smionagar. Le damáiste do do tháibléad a chosc, ná plugáil aon rud isteach go dtí go mbeidh an port luchtaithe glan agus go mbeidh an taise imithe.
 
 Leis an bport a thriomú, croith amach aon taise, ansin fan go mbeidh sé tirim, rud a bhféadfadh roinnt uaireanta an chloig a bheith i gceist leis. Is féidir leat luas a chur faoin triomú trí fhean nó triomadóir (aer fionnuar amháin) a dhíriú ar an bport."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
-    <string name="usb_water_dialg_support_wireless_charging">"Tá taise nó ábhar coimhthíoch braite againn i do phort luchtaithe/USB.
+    <string name="usb_water_dialg_support_wireless_charging">"Tá taise nó ábhar coimhthíoch braite i do phort luchtaithe/USB.
 
-Seiceáil do phort luchtaithe/USB le haghaidh aon ábhair choimhthíoch amhail deannach nó smionagar. Le damáiste do d'fhón a chosc, ná plugáil aon rud isteach go dtí go mbeidh an port luchtaithe glan agus go mbeidh an taise imithe.
+Seiceáil do phort luchtaithe/USB le haghaidh aon ábhair choimhthíoch amhail deannach nó smionagar. Le damáiste do do tháibléad a chosc, ná plugáil aon rud isteach go dtí go mbeidh an port luchtaithe glan agus an taise imithe.
 
 Leis an bport a thriomú, croith amach aon taise, ansin fan go mbeidh sé tirim, rud a bhféadfadh roinnt uaireanta an chloig a bheith i gceist leis. Is féidir leat luas a chur faoin triomú trí fhean nó triomadóir (aer fionnuar amháin) a dhíriú ar an bport.
 
-Idir an dá linn, is féidir leat d'fhón a luchtú gan sreang."</string>
+Idir an dá linn, is féidir leat do tháibléad a luchtú gan sreang."</string>
     <string name="usb_water_notification_content">Tá taise nó ábhar coimhthíoch i do phort luchtaithe/USB. Seiceáil roimh luchtú.</string>
-    <string name="usb_water_notification_message">"Tá taise braite i do phort luchtaire/USB. Cinntigh go bhfuil sé tirim roimh d'fhón a luchtú. Is féidir go dtógfaidh sé tamall le triomú go hiomlán."</string>
+    <string name="usb_water_notification_message">Tá taise braite i do phort luchtaire/USB. Cinntigh go bhfuil sé tirim roimh do tháibléad a luchtú. Is féidir go dtógfaidh sé tamall le triomú go hiomlán.</string>
     <string name="usb_water_notification_message_button">Sonraí</string>
     <string name="usb_water_notification_title">Seiceáil an port luchtaire/USB</string>
     <string name="usbhostStorage_restrict">Cuireann an beartas slándála cosc ar óst-stóras USB a úsáid.</string>

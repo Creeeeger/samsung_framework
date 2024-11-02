@@ -1632,7 +1632,7 @@ public final class R {
         public static final int valueType = 0x010102e0;
         public static final int variablePadding = 0x01010195;
 
-        /* renamed from: vendor, reason: collision with root package name */
+        /* renamed from: vendor */
         public static final int f0vendor = 0x010103e7;
         public static final int version = 0x01010519;
         public static final int versionCode = 0x0101021b;

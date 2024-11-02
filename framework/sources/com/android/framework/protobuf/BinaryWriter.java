@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
 /* loaded from: classes4.dex */
 public abstract class BinaryWriter extends ByteOutput implements Writer {
@@ -632,8 +631,7 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.BinaryWriter$1, reason: invalid class name */
+    /* renamed from: com.android.framework.protobuf.BinaryWriter$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
@@ -872,7 +870,6 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         return this.alloc.allocateDirectBuffer(Math.max(capacity, this.chunkSize));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static byte computeUInt64SizeNoTag(long value) {
         if (((-128) & value) == 0) {
             return (byte) 1;
@@ -895,7 +892,6 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         return n;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class SafeHeapWriter extends BinaryWriter {
         private AllocatedBuffer allocatedBuffer;
@@ -1622,7 +1618,6 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class UnsafeHeapWriter extends BinaryWriter {
         private AllocatedBuffer allocatedBuffer;
@@ -2437,7 +2432,6 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class SafeDirectWriter extends BinaryWriter {
         private ByteBuffer buffer;
@@ -2972,7 +2966,6 @@ public abstract class BinaryWriter extends ByteOutput implements Writer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class UnsafeDirectWriter extends BinaryWriter {
         private ByteBuffer buffer;

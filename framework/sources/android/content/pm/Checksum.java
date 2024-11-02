@@ -14,13 +14,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class Checksum implements Parcelable {
     public static final Parcelable.Creator<Checksum> CREATOR = new Parcelable.Creator<Checksum>() { // from class: android.content.pm.Checksum.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Checksum[] newArray(int size) {
             return new Checksum[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Checksum createFromParcel(Parcel in) {
             return new Checksum(in);
@@ -101,6 +102,23 @@ public final class Checksum implements Parcelable {
         AnnotationValidations.validate((Class<? extends Annotation>) Type.class, (Annotation) null, type);
         this.mValue = value;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) value);
+    }
+
+    /* renamed from: android.content.pm.Checksum$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Checksum> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Checksum[] newArray(int size) {
+            return new Checksum[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Checksum createFromParcel(Parcel in) {
+            return new Checksum(in);
+        }
     }
 
     @Deprecated

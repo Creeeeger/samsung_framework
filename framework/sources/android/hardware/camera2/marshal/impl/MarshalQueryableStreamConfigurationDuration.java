@@ -25,7 +25,6 @@ public class MarshalQueryableStreamConfigurationDuration implements MarshalQuery
             buffer.putLong(value.getDuration());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public StreamConfigurationDuration unmarshal(ByteBuffer buffer) {
             int format = (int) buffer.getLong();

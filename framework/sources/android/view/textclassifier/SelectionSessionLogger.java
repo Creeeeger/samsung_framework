@@ -6,7 +6,6 @@ import android.util.NtpTrustedTime;
 public final class SelectionSessionLogger {
     private static final String CLASSIFIER_ID = "androidtc";
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isPlatformLocalTextClassifierSmartSelection(String signature) {
         return "androidtc".equals(SignatureParser.getClassifierId(signature));
     }

@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
 /* loaded from: classes4.dex */
 public final class SchemaUtil {
@@ -266,7 +265,6 @@ public final class SchemaUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeInt64ListNoTag(List<Long> list) {
         int length = list.size();
         if (length == 0) {
@@ -286,7 +284,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeInt64List(int fieldNumber, List<Long> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -299,7 +296,6 @@ public final class SchemaUtil {
         return (list.size() * CodedOutputStream.computeTagSize(fieldNumber)) + size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeUInt64ListNoTag(List<Long> list) {
         int length = list.size();
         if (length == 0) {
@@ -319,7 +315,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeUInt64List(int fieldNumber, List<Long> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -332,7 +327,6 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeSInt64ListNoTag(List<Long> list) {
         int length = list.size();
         if (length == 0) {
@@ -352,7 +346,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeSInt64List(int fieldNumber, List<Long> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -365,7 +358,6 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeEnumListNoTag(List<Integer> list) {
         int length = list.size();
         if (length == 0) {
@@ -385,7 +377,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeEnumList(int fieldNumber, List<Integer> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -398,7 +389,6 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeInt32ListNoTag(List<Integer> list) {
         int length = list.size();
         if (length == 0) {
@@ -418,7 +408,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeInt32List(int fieldNumber, List<Integer> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -431,7 +420,6 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeUInt32ListNoTag(List<Integer> list) {
         int length = list.size();
         if (length == 0) {
@@ -451,7 +439,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeUInt32List(int fieldNumber, List<Integer> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -464,7 +451,6 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeSInt32ListNoTag(List<Integer> list) {
         int length = list.size();
         if (length == 0) {
@@ -484,7 +470,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeSInt32List(int fieldNumber, List<Integer> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -497,12 +482,10 @@ public final class SchemaUtil {
         return (CodedOutputStream.computeTagSize(fieldNumber) * length) + size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeFixed32ListNoTag(List<?> list) {
         return list.size() * 4;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeFixed32List(int fieldNumber, List<?> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -516,12 +499,10 @@ public final class SchemaUtil {
         return dataSize2 * length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeFixed64ListNoTag(List<?> list) {
         return list.size() * 8;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeFixed64List(int fieldNumber, List<?> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -534,12 +515,10 @@ public final class SchemaUtil {
         return CodedOutputStream.computeFixed64Size(fieldNumber, 0L) * length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeBoolListNoTag(List<?> list) {
         return list.size();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeBoolList(int fieldNumber, List<?> list, boolean packed) {
         int length = list.size();
         if (length == 0) {
@@ -551,7 +530,6 @@ public final class SchemaUtil {
         return CodedOutputStream.computeBoolSize(fieldNumber, true) * length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeStringList(int fieldNumber, List<?> list) {
         int computeStringSizeNoTag;
         int computeStringSizeNoTag2;
@@ -585,7 +563,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeMessage(int fieldNumber, Object value, Schema schema) {
         if (value instanceof LazyFieldLite) {
             return CodedOutputStream.computeLazyFieldSize(fieldNumber, (LazyFieldLite) value);
@@ -612,7 +589,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeMessageList(int fieldNumber, List<?> list, Schema schema) {
         int computeMessageSizeNoTag;
         int length = list.size();
@@ -632,7 +608,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeByteStringList(int fieldNumber, List<ByteString> list) {
         int length = list.size();
         if (length == 0) {
@@ -657,7 +632,6 @@ public final class SchemaUtil {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeSizeGroupList(int fieldNumber, List<MessageLite> list, Schema schema) {
         int length = list.size();
         if (length == 0) {
@@ -770,18 +744,15 @@ public final class SchemaUtil {
         return sb.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean safeEquals(Object a, Object b) {
         return a == b || (a != null && a.equals(b));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> void mergeMap(MapFieldSchema mapFieldSchema, T message, T o, long offset) {
         Object merged = mapFieldSchema.mergeFrom(UnsafeUtil.getObject(message, offset), UnsafeUtil.getObject(o, offset));
         UnsafeUtil.putObject(message, offset, merged);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T, FT extends FieldSet.FieldDescriptorLite<FT>> void mergeExtensions(ExtensionSchema<FT> schema, T message, T other) {
         FieldSet<FT> otherExtensions = schema.getExtensions(other);
         if (!otherExtensions.isEmpty()) {
@@ -790,7 +761,6 @@ public final class SchemaUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T, UT, UB> void mergeUnknownFields(UnknownFieldSchema<UT, UB> schema, T message, T other) {
         UT messageUnknowns = schema.getFromMessage(message);
         UT otherUnknowns = schema.getFromMessage(other);
@@ -798,7 +768,6 @@ public final class SchemaUtil {
         schema.setToMessage(message, merged);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <UT, UB> UB filterUnknownEnumList(Object obj, int i, List<Integer> list, Internal.EnumLiteMap<?> enumLiteMap, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
         if (enumLiteMap == null) {
             return ub;
@@ -833,7 +802,6 @@ public final class SchemaUtil {
         return ub;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <UT, UB> UB filterUnknownEnumList(Object obj, int i, List<Integer> list, Internal.EnumVerifier enumVerifier, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
         if (enumVerifier == null) {
             return ub;
@@ -868,7 +836,6 @@ public final class SchemaUtil {
         return ub;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <UT, UB> UB storeUnknownEnum(Object obj, int i, int i2, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) {
         if (ub == null) {
             ub = unknownFieldSchema.getBuilderFromMessage(obj);

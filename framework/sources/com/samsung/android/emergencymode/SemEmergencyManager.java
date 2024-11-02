@@ -34,6 +34,9 @@ public class SemEmergencyManager {
     private Context mContext;
     private final Handler mHandler;
     private BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.samsung.android.emergencymode.SemEmergencyManager.1
+        AnonymousClass1() {
+        }
+
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -169,6 +172,47 @@ public class SemEmergencyManager {
             loadFloatingFeatures();
         }
         return EMERGENCY_FEATURES_SUPPORTED;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.emergencymode.SemEmergencyManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action == null) {
+                return;
+            }
+            Elog.d(SemEmergencyManager.TAG, "onReceive : " + intent);
+            if (action.equals(SemEmergencyConstants.EMERGENCY_START_SERVICE_BY_ORDER) || action.equals(SemEmergencyConstants.EMERGENCY_START_SERVICE_BY_ORDER_OLD)) {
+                boolean enabled = intent.getBooleanExtra("enabled", false);
+                int flag = intent.getIntExtra(SemEmergencyConstants.EXTRA_EMERGENCY_START_SERVICE_FLAG, -1);
+                boolean skipdialog = intent.getBooleanExtra(SemEmergencyConstants.EXTRA_EMERGENCY_START_SERVICE_SKIPDIALOG, false);
+                if (flag != -1) {
+                    if ((flag == 2048 && !SemEmergencyManager.mSupport_BCM) || ((flag == 512 || flag == 1024) && !SemEmergencyManager.mSupport_UPSM)) {
+                        Elog.d(SemEmergencyManager.TAG, "onReceive : trying to ON BCM|UPSM while BCM|UPMS not supported in this model. Flag = " + flag);
+                        return;
+                    } else {
+                        SemEmergencyManager.this.triggerEmergencyMode(enabled, flag, skipdialog, intent);
+                        return;
+                    }
+                }
+                return;
+            }
+            if (action.equals("com.nttdocomo.android.epsmodecontrol.action.CHANGE_MODE")) {
+                boolean enabled2 = (SemEmergencyManager.isEmergencyMode(SemEmergencyManager.this.mContext) || SemEmergencyManager.isMinimalBatteryUseMode(SemEmergencyManager.this.mContext)) ? false : true;
+                int flag2 = 16;
+                int mode = SemEmergencyManager.this.getModeType();
+                if (mode == 3 || mode == 1) {
+                    flag2 = 512;
+                }
+                SemEmergencyManager.this.triggerEmergencyMode(enabled2, flag2, false, intent);
+            }
+        }
     }
 
     public void readyEmergencyMode() {
@@ -543,7 +587,6 @@ public class SemEmergencyManager {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void triggerEmergencyMode(boolean enabled, int flag, boolean skipdialog, Intent forwardedIntent) {
         ensureServiceConnected();
         startService(SemEmergencyConstants.EMERGENCY_START_SERVICE_BY_ORDER, enabled, flag, skipdialog, forwardedIntent);

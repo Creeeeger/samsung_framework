@@ -82,7 +82,6 @@ public class MultiTapKeyListener extends BaseKeyListener implements SpanWatcher 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class Timeout extends Handler implements Runnable {
         private Editable mBuffer;

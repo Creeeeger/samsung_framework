@@ -14,7 +14,9 @@ import java.util.regex.Pattern;
 /* loaded from: classes6.dex */
 public class SemWifiP2pDevice implements Parcelable {
     public static final Parcelable.Creator<SemWifiP2pDevice> CREATOR = new Parcelable.Creator<SemWifiP2pDevice>() { // from class: com.samsung.android.wifi.p2p.SemWifiP2pDevice.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemWifiP2pDevice createFromParcel(Parcel in) {
             SemWifiP2pDevice device = new SemWifiP2pDevice();
@@ -29,7 +31,6 @@ public class SemWifiP2pDevice implements Parcelable {
             return device;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiP2pDevice[] newArray(int size) {
             return new SemWifiP2pDevice[size];
@@ -78,6 +79,10 @@ public class SemWifiP2pDevice implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes6.dex */
     public @interface DeviceType {
+    }
+
+    /* synthetic */ SemWifiP2pDevice(SemWifiP2pDeviceIA semWifiP2pDeviceIA) {
+        this();
     }
 
     private SemWifiP2pDevice() {
@@ -226,6 +231,32 @@ public class SemWifiP2pDevice implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.samsung.android.wifi.p2p.SemWifiP2pDevice$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemWifiP2pDevice> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiP2pDevice createFromParcel(Parcel in) {
+            SemWifiP2pDevice device = new SemWifiP2pDevice();
+            device.mDeviceName = in.readString();
+            device.mDeviceAddress = in.readString();
+            device.mScreenSharingInfo = in.readInt();
+            device.mScreenSharingDi = in.readString();
+            device.mDeviceIconAttr = in.readInt();
+            device.mServiceData = in.readString();
+            device.mSupportFwInvite = in.readInt() != 0;
+            device.mStatus = in.readInt();
+            return device;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiP2pDevice[] newArray(int size) {
+            return new SemWifiP2pDevice[size];
+        }
     }
 
     private int parseHex(String hexString) {

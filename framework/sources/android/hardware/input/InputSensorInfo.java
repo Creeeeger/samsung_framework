@@ -8,13 +8,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes2.dex */
 public class InputSensorInfo implements Parcelable {
     public static final Parcelable.Creator<InputSensorInfo> CREATOR = new Parcelable.Creator<InputSensorInfo>() { // from class: android.hardware.input.InputSensorInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputSensorInfo[] newArray(int size) {
             return new InputSensorInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputSensorInfo createFromParcel(Parcel in) {
             return new InputSensorInfo(in);
@@ -190,6 +191,23 @@ public class InputSensorInfo implements Parcelable {
         this.mMaxDelay = maxDelay;
         this.mFlags = flags;
         this.mId = id;
+    }
+
+    /* renamed from: android.hardware.input.InputSensorInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputSensorInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputSensorInfo[] newArray(int size) {
+            return new InputSensorInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputSensorInfo createFromParcel(Parcel in) {
+            return new InputSensorInfo(in);
+        }
     }
 
     @Deprecated

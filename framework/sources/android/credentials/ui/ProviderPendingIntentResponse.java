@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class ProviderPendingIntentResponse implements Parcelable {
     public static final Parcelable.Creator<ProviderPendingIntentResponse> CREATOR = new Parcelable.Creator<ProviderPendingIntentResponse>() { // from class: android.credentials.ui.ProviderPendingIntentResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProviderPendingIntentResponse createFromParcel(Parcel in) {
             return new ProviderPendingIntentResponse(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProviderPendingIntentResponse[] newArray(int size) {
             return new ProviderPendingIntentResponse[size];
@@ -30,6 +31,23 @@ public final class ProviderPendingIntentResponse implements Parcelable {
     protected ProviderPendingIntentResponse(Parcel in) {
         this.mResultCode = in.readInt();
         this.mResultData = (Intent) in.readTypedObject(Intent.CREATOR);
+    }
+
+    /* renamed from: android.credentials.ui.ProviderPendingIntentResponse$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProviderPendingIntentResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderPendingIntentResponse createFromParcel(Parcel in) {
+            return new ProviderPendingIntentResponse(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderPendingIntentResponse[] newArray(int size) {
+            return new ProviderPendingIntentResponse[size];
+        }
     }
 
     @Override // android.os.Parcelable

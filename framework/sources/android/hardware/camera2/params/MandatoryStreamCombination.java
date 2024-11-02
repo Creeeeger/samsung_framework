@@ -54,7 +54,6 @@ public final class MandatoryStreamCombination {
     private static StreamCombinationTemplate[] sCroppedRawStreamUseCaseCombinations = {new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Cropped RAW still image capture without preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Cropped RAW still image capture with preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "In-app image processing with cropped RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(35, SizeThreshold.MAXIMUM, 2), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Preview with YUV and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(35, SizeThreshold.MAXIMUM, 2), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "In-app image processing with YUV and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(256, SizeThreshold.MAXIMUM, 2), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Preview with JPEG and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(256, SizeThreshold.MAXIMUM, 2), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "In-app image processing with JPEG and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(34, SizeThreshold.PREVIEW, 3), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Preview with video recording and RAW snapshot"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.PREVIEW, 1), new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Preview with in-app image processing and RAW still image capture"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(35, SizeThreshold.PREVIEW, 1), new StreamTemplate(32, SizeThreshold.MAXIMUM, 6)}, "Two input in-app processing and RAW still image capture")};
     private static StreamCombinationTemplate[] sPreviewStabilizedStreamCombinations = {new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.s1440p)}, "Stabilized preview, GPU video processing, or no-preview stabilized recording"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.s1440p)}, "Stabilized preview, GPU video processing, or no-preview stabilized recording"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(256, SizeThreshold.MAXIMUM), new StreamTemplate(34, SizeThreshold.s1440p)}, "Standard JPEG still imaging with stabilized preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.MAXIMUM), new StreamTemplate(34, SizeThreshold.s1440p)}, "Standard YUV still imaging with stabilized preview"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.MAXIMUM), new StreamTemplate(35, SizeThreshold.s1440p)}, "Standard YUV still imaging with stabilized in-app image processing stream"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(256, SizeThreshold.MAXIMUM), new StreamTemplate(35, SizeThreshold.s1440p)}, "Standard JPEG still imaging with stabilized in-app image processing stream"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.s1440p), new StreamTemplate(34, SizeThreshold.PREVIEW)}, "High-resolution video recording with preview both streams stabilized"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(34, SizeThreshold.s1440p), new StreamTemplate(35, SizeThreshold.PREVIEW)}, "High-resolution video recording with preview both streams stabilized"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.s1440p), new StreamTemplate(35, SizeThreshold.PREVIEW)}, "High-resolution video recording with preview both streams stabilized"), new StreamCombinationTemplate(new StreamTemplate[]{new StreamTemplate(35, SizeThreshold.s1440p), new StreamTemplate(34, SizeThreshold.PREVIEW)}, "High-resolution video recording with preview both streams stabilized")};
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public enum ReprocessType {
         NONE,
@@ -63,7 +62,6 @@ public final class MandatoryStreamCombination {
         REMOSAIC
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public enum SizeThreshold {
         VGA,
@@ -220,7 +218,6 @@ public final class MandatoryStreamCombination {
         return HashCodeHelpers.hashCode(Boolean.hashCode(this.mIsReprocessable), this.mDescription.hashCode(), this.mStreamsInformation.hashCode());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class StreamTemplate {
         public int mFormat;
@@ -238,7 +235,6 @@ public final class MandatoryStreamCombination {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class StreamCombinationTemplate {
         public String mDescription;
@@ -1059,8 +1055,7 @@ public final class MandatoryStreamCombination {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.params.MandatoryStreamCombination$1, reason: invalid class name */
+    /* renamed from: android.hardware.camera2.params.MandatoryStreamCombination$1 */
     /* loaded from: classes.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$hardware$camera2$params$MandatoryStreamCombination$SizeThreshold;

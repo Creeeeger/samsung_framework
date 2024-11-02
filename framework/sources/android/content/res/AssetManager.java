@@ -53,6 +53,10 @@ public final class AssetManager implements AutoCloseable {
     private static ApkAssets[] sSystemApkAssets = new ApkAssets[0];
     private static CustomizedTextParser sCTxtParser = null;
 
+    /* synthetic */ AssetManager(boolean z, AssetManagerIA assetManagerIA) {
+        this(z);
+    }
+
     public static native String getAssetAllocations();
 
     public static native int getGlobalAssetCount();
@@ -61,22 +65,16 @@ public final class AssetManager implements AutoCloseable {
 
     private static native void nativeApplyStyle(long j, long j2, int i, int i2, long j3, int[] iArr, long j4, long j5);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeAssetDestroy(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeAssetGetLength(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeAssetGetRemainingLength(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native int nativeAssetRead(long j, byte[] bArr, int i, int i2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native int nativeAssetReadChar(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeAssetSeek(long j, long j2, int i);
 
     private static native int[] nativeAttributeResolutionStack(long j, long j2, int i, int i2, int i3);
@@ -149,7 +147,6 @@ public final class AssetManager implements AutoCloseable {
 
     private static native boolean nativeRetrieveAttributes(long j, long j2, int[] iArr, int[] iArr2, int[] iArr3);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetApkAssets(long j, ApkAssets[] apkAssetsArr, boolean z);
 
     private static native void nativeSetConfiguration(long j, int i, int i2, String str, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15, int i16, int i17, int i18);
@@ -166,7 +163,6 @@ public final class AssetManager implements AutoCloseable {
 
     private static native int nativeThemeGetAttributeValue(long j, long j2, int i, TypedValue typedValue, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static native int nativeThemeGetChangingConfigurations(long j);
 
     private static native void nativeThemeRebase(long j, long j2, int[] iArr, boolean[] zArr, int i);
@@ -187,38 +183,38 @@ public final class AssetManager implements AutoCloseable {
         }
 
         public AssetManager build() {
-            boolean z;
-            ApkAssets[] apkAssets = AssetManager.getSystem().getApkAssets();
-            ArrayList arrayList = new ArrayList();
-            ArraySet arraySet = new ArraySet();
-            int size = this.mLoaders.size();
+            ApkAssets[] systemApkAssets = AssetManager.getSystem().getApkAssets();
+            ArrayList<ApkAssets> loaderApkAssets = new ArrayList<>();
+            ArraySet<ApkAssets> uniqueLoaderApkAssets = new ArraySet<>();
+            int i = this.mLoaders.size();
             while (true) {
-                size--;
-                z = false;
-                if (size < 0) {
+                i--;
+                if (i < 0) {
                     break;
                 }
-                List<ApkAssets> apkAssets2 = this.mLoaders.get(size).getApkAssets();
-                for (int size2 = apkAssets2.size() - 1; size2 >= 0; size2--) {
-                    ApkAssets apkAssets3 = apkAssets2.get(size2);
-                    if (arraySet.add(apkAssets3)) {
-                        arrayList.add(0, apkAssets3);
+                List<ApkAssets> currentLoaderApkAssets = this.mLoaders.get(i).getApkAssets();
+                for (int j = currentLoaderApkAssets.size() - 1; j >= 0; j--) {
+                    ApkAssets apkAssets = currentLoaderApkAssets.get(j);
+                    if (uniqueLoaderApkAssets.add(apkAssets)) {
+                        loaderApkAssets.add(0, apkAssets);
                     }
                 }
             }
-            ApkAssets[] apkAssetsArr = new ApkAssets[apkAssets.length + this.mUserApkAssets.size() + arrayList.size()];
-            System.arraycopy(apkAssets, 0, apkAssetsArr, 0, apkAssets.length);
-            int size3 = this.mUserApkAssets.size();
-            for (int i = 0; i < size3; i++) {
-                apkAssetsArr[apkAssets.length + i] = this.mUserApkAssets.get(i);
+            int i2 = systemApkAssets.length;
+            int totalApkAssetCount = i2 + this.mUserApkAssets.size() + loaderApkAssets.size();
+            ApkAssets[] apkAssets2 = new ApkAssets[totalApkAssetCount];
+            System.arraycopy(systemApkAssets, 0, apkAssets2, 0, systemApkAssets.length);
+            int n = this.mUserApkAssets.size();
+            for (int i3 = 0; i3 < n; i3++) {
+                apkAssets2[systemApkAssets.length + i3] = this.mUserApkAssets.get(i3);
             }
-            int size4 = arrayList.size();
-            for (int i2 = 0; i2 < size4; i2++) {
-                apkAssetsArr[apkAssets.length + i2 + this.mUserApkAssets.size()] = (ApkAssets) arrayList.get(i2);
+            int n2 = loaderApkAssets.size();
+            for (int i4 = 0; i4 < n2; i4++) {
+                apkAssets2[systemApkAssets.length + i4 + this.mUserApkAssets.size()] = loaderApkAssets.get(i4);
             }
-            AssetManager assetManager = new AssetManager(z);
-            assetManager.mApkAssets = apkAssetsArr;
-            AssetManager.nativeSetApkAssets(assetManager.mObject, apkAssetsArr, false);
+            AssetManager assetManager = new AssetManager(false);
+            assetManager.mApkAssets = apkAssets2;
+            AssetManager.nativeSetApkAssets(assetManager.mObject, apkAssets2, false);
             assetManager.mLoaders = this.mLoaders.isEmpty() ? null : (ResourcesLoader[]) this.mLoaders.toArray(new ResourcesLoader[0]);
             assetManager.updateSamsungThemeOverlays();
             return assetManager;
@@ -319,7 +315,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateSamsungThemeOverlays() {
         synchronized (this) {
             if (this.mSamsungThemeOverlays.size() > 0) {
@@ -334,7 +329,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setLoaders(List<ResourcesLoader> newLoaders) {
         Objects.requireNonNull(newLoaders, "newLoaders");
         ArrayList<ApkAssets> apkAssets = new ArrayList<>();
@@ -483,7 +477,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean getResourceValue(int resId, int densityDpi, TypedValue outValue, boolean resolveRefs) {
         Objects.requireNonNull(outValue, "outValue");
         synchronized (this) {
@@ -504,7 +497,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getResourceText(int resId) {
         synchronized (this) {
             TypedValue outValue = this.mValue;
@@ -515,7 +507,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getResourceBagText(int resId, int bagEntryId) {
         synchronized (this) {
             ensureValidLocked();
@@ -532,7 +523,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getResourceArraySize(int resId) {
         int nativeGetResourceArraySize;
         synchronized (this) {
@@ -542,7 +532,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceArraySize;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getResourceArray(int resId, int[] outData) {
         int nativeGetResourceArray;
         Objects.requireNonNull(outData, "outData");
@@ -553,7 +542,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceArray;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String[] getResourceStringArray(int resId) {
         String[] nativeGetResourceStringArray;
         synchronized (this) {
@@ -563,7 +551,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceStringArray;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence[] getResourceTextArray(int resId) {
         CharSequence charSequence;
         synchronized (this) {
@@ -593,7 +580,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int[] getResourceIntArray(int resId) {
         int[] nativeGetResourceIntArray;
         synchronized (this) {
@@ -603,7 +589,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceIntArray;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int[] getStyleAttributes(int resId) {
         int[] nativeGetStyleAttributes;
         synchronized (this) {
@@ -613,7 +598,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetStyleAttributes;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean getThemeValue(long theme, int resId, TypedValue outValue, boolean resolveRefs) {
         Objects.requireNonNull(outValue, "outValue");
         synchronized (this) {
@@ -634,7 +618,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpTheme(long theme, int priority, String tag, String prefix) {
         synchronized (this) {
             ensureValidLocked();
@@ -642,7 +625,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResourceName(int resId) {
         String nativeGetResourceName;
         synchronized (this) {
@@ -652,7 +634,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResourcePackageName(int resId) {
         String nativeGetResourcePackageName;
         synchronized (this) {
@@ -662,7 +643,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourcePackageName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResourceTypeName(int resId) {
         String nativeGetResourceTypeName;
         synchronized (this) {
@@ -672,7 +652,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceTypeName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResourceEntryName(int resId) {
         String nativeGetResourceEntryName;
         synchronized (this) {
@@ -682,7 +661,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceEntryName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getResourceIdentifier(String name, String defType, String defPackage) {
         int nativeGetResourceIdentifier;
         synchronized (this) {
@@ -692,7 +670,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceIdentifier;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getParentThemeIdentifier(int resId) {
         int nativeGetParentThemeIdentifier;
         synchronized (this) {
@@ -727,7 +704,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeContainsAllocatedTable;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getPooledStringForCookie(int cookie, int id) {
         ApkAssets[] apkAssets = getApkAssets();
         if (apkAssets != null && cookie <= apkAssets.length) {
@@ -857,7 +833,6 @@ public final class AssetManager implements AutoCloseable {
         return openXmlBlockAsset(0, fileName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public XmlBlock openXmlBlockAsset(int cookie, String fileName) throws IOException {
         XmlBlock block;
         Objects.requireNonNull(fileName, "fileName");
@@ -873,14 +848,12 @@ public final class AssetManager implements AutoCloseable {
         return block;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void xmlBlockGone(int id) {
         synchronized (this) {
             decRefsLocked(id);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void applyStyle(long themePtr, int defStyleAttr, int defStyleRes, XmlBlock.Parser parser, int[] inAttrs, long outValuesAddress, long outIndicesAddress) {
         Objects.requireNonNull(inAttrs, "inAttrs");
         synchronized (this) {
@@ -889,7 +862,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int[] getAttributeResolutionStack(long themePtr, int defStyleAttr, int defStyleRes, int xmlStyle) {
         int[] nativeAttributeResolutionStack;
         synchronized (this) {
@@ -899,7 +871,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeAttributeResolutionStack;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean resolveAttrs(long themePtr, int defStyleAttr, int defStyleRes, int[] inValues, int[] inAttrs, int[] outValues, int[] outIndices) {
         boolean nativeResolveAttrs;
         Objects.requireNonNull(inAttrs, "inAttrs");
@@ -912,7 +883,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeResolveAttrs;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean retrieveAttributes(XmlBlock.Parser parser, int[] inAttrs, int[] outValues, int[] outIndices) {
         boolean nativeRetrieveAttributes;
         Objects.requireNonNull(parser, "parser");
@@ -926,7 +896,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeRetrieveAttributes;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long createTheme() {
         long themePtr;
         synchronized (this) {
@@ -937,19 +906,16 @@ public final class AssetManager implements AutoCloseable {
         return themePtr;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void releaseTheme(long themePtr) {
         synchronized (this) {
             decRefsLocked(themePtr);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long getThemeFreeFunction() {
         return nativeGetThemeFreeFunction();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void applyStyleToTheme(long themePtr, int resId, boolean force) {
         synchronized (this) {
             ensureValidLocked();
@@ -957,7 +923,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AssetManager rebaseTheme(long themePtr, AssetManager newAssetManager, int[] styleIds, boolean[] force, int count) {
         if (this != newAssetManager) {
             synchronized (this) {
@@ -980,7 +945,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setThemeTo(long dstThemePtr, AssetManager srcAssetManager, long srcThemePtr) {
         synchronized (this) {
             ensureValidLocked();
@@ -1006,6 +970,10 @@ public final class AssetManager implements AutoCloseable {
         private long mAssetNativePtr;
         private long mLength;
         private long mMarkPos;
+
+        /* synthetic */ AssetInputStream(AssetManager assetManager, long j, AssetInputStreamIA assetInputStreamIA) {
+            this(j);
+        }
 
         public final int getAssetInt() {
             throw new UnsupportedOperationException();
@@ -1144,7 +1112,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetLocales;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration[] getSizeConfigurations() {
         Configuration[] nativeGetSizeConfigurations;
         synchronized (this) {
@@ -1154,7 +1121,6 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetSizeConfigurations;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration[] getSizeAndUiModeConfigurations() {
         Configuration[] nativeGetSizeAndUiModeConfigurations;
         synchronized (this) {
@@ -1206,7 +1172,6 @@ public final class AssetManager implements AutoCloseable {
         this.mNumRefs++;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void decRefsLocked(long id) {
         int i = this.mNumRefs - 1;
         this.mNumRefs = i;
@@ -1220,7 +1185,6 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void dump(PrintWriter pw, String prefix) {
         pw.println(prefix + "class=" + getClass());
         pw.println(prefix + "apkAssets=");

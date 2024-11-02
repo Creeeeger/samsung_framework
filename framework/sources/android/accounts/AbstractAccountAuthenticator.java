@@ -39,8 +39,13 @@ public abstract class AbstractAccountAuthenticator {
         this.mContext = context;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class Transport extends IAccountAuthenticator.Stub {
+    public class Transport extends IAccountAuthenticator.Stub {
+        /* synthetic */ Transport(AbstractAccountAuthenticator abstractAccountAuthenticator, TransportIA transportIA) {
+            this();
+        }
+
         private Transport() {
         }
 
@@ -298,7 +303,6 @@ public abstract class AbstractAccountAuthenticator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleException(IAccountAuthenticatorResponse response, String method, String data, Exception e) throws RemoteException {
         if (e instanceof NetworkErrorException) {
             if (Log.isLoggable(TAG, 2)) {
@@ -331,8 +335,31 @@ public abstract class AbstractAccountAuthenticator {
         return result;
     }
 
-    public Bundle getAccountCredentialsForCloning(final AccountAuthenticatorResponse response, Account account) throws NetworkErrorException {
+    /* renamed from: android.accounts.AbstractAccountAuthenticator$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ AccountAuthenticatorResponse val$response;
+
+        AnonymousClass1(AccountAuthenticatorResponse accountAuthenticatorResponse) {
+            response = accountAuthenticatorResponse;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Bundle result = new Bundle();
+            result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false);
+            response.onResult(result);
+        }
+    }
+
+    public Bundle getAccountCredentialsForCloning(AccountAuthenticatorResponse response, Account account) throws NetworkErrorException {
         new Thread(new Runnable() { // from class: android.accounts.AbstractAccountAuthenticator.1
+            final /* synthetic */ AccountAuthenticatorResponse val$response;
+
+            AnonymousClass1(AccountAuthenticatorResponse response2) {
+                response = response2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Bundle result = new Bundle();
@@ -343,8 +370,31 @@ public abstract class AbstractAccountAuthenticator {
         return null;
     }
 
-    public Bundle addAccountFromCredentials(final AccountAuthenticatorResponse response, Account account, Bundle accountCredentials) throws NetworkErrorException {
+    /* renamed from: android.accounts.AbstractAccountAuthenticator$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ AccountAuthenticatorResponse val$response;
+
+        AnonymousClass2(AccountAuthenticatorResponse accountAuthenticatorResponse) {
+            response = accountAuthenticatorResponse;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Bundle result = new Bundle();
+            result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false);
+            response.onResult(result);
+        }
+    }
+
+    public Bundle addAccountFromCredentials(AccountAuthenticatorResponse response, Account account, Bundle accountCredentials) throws NetworkErrorException {
         new Thread(new Runnable() { // from class: android.accounts.AbstractAccountAuthenticator.2
+            final /* synthetic */ AccountAuthenticatorResponse val$response;
+
+            AnonymousClass2(AccountAuthenticatorResponse response2) {
+                response = response2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Bundle result = new Bundle();
@@ -355,8 +405,47 @@ public abstract class AbstractAccountAuthenticator {
         return null;
     }
 
-    public Bundle startAddAccountSession(final AccountAuthenticatorResponse response, String accountType, final String authTokenType, final String[] requiredFeatures, final Bundle options) throws NetworkErrorException {
+    /* renamed from: android.accounts.AbstractAccountAuthenticator$3 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass3 implements Runnable {
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ Bundle val$options;
+        final /* synthetic */ String[] val$requiredFeatures;
+        final /* synthetic */ AccountAuthenticatorResponse val$response;
+
+        AnonymousClass3(String str, String[] strArr, Bundle bundle, AccountAuthenticatorResponse accountAuthenticatorResponse) {
+            authTokenType = str;
+            requiredFeatures = strArr;
+            options = bundle;
+            response = accountAuthenticatorResponse;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Bundle sessionBundle = new Bundle();
+            sessionBundle.putString(AbstractAccountAuthenticator.KEY_AUTH_TOKEN_TYPE, authTokenType);
+            sessionBundle.putStringArray(AbstractAccountAuthenticator.KEY_REQUIRED_FEATURES, requiredFeatures);
+            sessionBundle.putBundle(AbstractAccountAuthenticator.KEY_OPTIONS, options);
+            Bundle result = new Bundle();
+            result.putBundle(AccountManager.KEY_ACCOUNT_SESSION_BUNDLE, sessionBundle);
+            response.onResult(result);
+        }
+    }
+
+    public Bundle startAddAccountSession(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
         new Thread(new Runnable() { // from class: android.accounts.AbstractAccountAuthenticator.3
+            final /* synthetic */ String val$authTokenType;
+            final /* synthetic */ Bundle val$options;
+            final /* synthetic */ String[] val$requiredFeatures;
+            final /* synthetic */ AccountAuthenticatorResponse val$response;
+
+            AnonymousClass3(String authTokenType2, String[] requiredFeatures2, Bundle options2, AccountAuthenticatorResponse response2) {
+                authTokenType = authTokenType2;
+                requiredFeatures = requiredFeatures2;
+                options = options2;
+                response = response2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Bundle sessionBundle = new Bundle();
@@ -371,8 +460,47 @@ public abstract class AbstractAccountAuthenticator {
         return null;
     }
 
-    public Bundle startUpdateCredentialsSession(final AccountAuthenticatorResponse response, final Account account, final String authTokenType, final Bundle options) throws NetworkErrorException {
+    /* renamed from: android.accounts.AbstractAccountAuthenticator$4 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass4 implements Runnable {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ Bundle val$options;
+        final /* synthetic */ AccountAuthenticatorResponse val$response;
+
+        AnonymousClass4(String str, Account account, Bundle bundle, AccountAuthenticatorResponse accountAuthenticatorResponse) {
+            authTokenType = str;
+            account = account;
+            options = bundle;
+            response = accountAuthenticatorResponse;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Bundle sessionBundle = new Bundle();
+            sessionBundle.putString(AbstractAccountAuthenticator.KEY_AUTH_TOKEN_TYPE, authTokenType);
+            sessionBundle.putParcelable(AbstractAccountAuthenticator.KEY_ACCOUNT, account);
+            sessionBundle.putBundle(AbstractAccountAuthenticator.KEY_OPTIONS, options);
+            Bundle result = new Bundle();
+            result.putBundle(AccountManager.KEY_ACCOUNT_SESSION_BUNDLE, sessionBundle);
+            response.onResult(result);
+        }
+    }
+
+    public Bundle startUpdateCredentialsSession(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
         new Thread(new Runnable() { // from class: android.accounts.AbstractAccountAuthenticator.4
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ String val$authTokenType;
+            final /* synthetic */ Bundle val$options;
+            final /* synthetic */ AccountAuthenticatorResponse val$response;
+
+            AnonymousClass4(String authTokenType2, Account account2, Bundle options2, AccountAuthenticatorResponse response2) {
+                authTokenType = authTokenType2;
+                account = account2;
+                options = options2;
+                response = response2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Bundle sessionBundle = new Bundle();

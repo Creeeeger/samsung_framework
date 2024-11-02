@@ -59,6 +59,9 @@ public abstract class OrientationEventListener {
                     this.mNotSupportReversePortrait = true;
                 }
                 this.mDeviceInfoListener = new SensorEventListener() { // from class: android.view.OrientationEventListener.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.hardware.SensorEventListener
                     public void onSensorChanged(SensorEvent event) {
                         if (event.values[0] == 3.0f) {
@@ -84,6 +87,32 @@ public abstract class OrientationEventListener {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.OrientationEventListener$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements SensorEventListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.hardware.SensorEventListener
+        public void onSensorChanged(SensorEvent event) {
+            if (event.values[0] == 3.0f) {
+                if (event.values[1] != 1.0f) {
+                    if (event.values[1] == 0.0f) {
+                        OrientationEventListener.this.mTableMode = false;
+                    }
+                } else if (OrientationEventListener.this.mNotSupportReversePortrait && !OrientationEventListener.this.mTableMode) {
+                    Log.d(OrientationEventListener.TAG, "onOrientationChanged 0");
+                    OrientationEventListener.this.onOrientationChanged(0);
+                    OrientationEventListener.this.mTableMode = true;
+                }
+            }
+        }
+
+        @Override // android.hardware.SensorEventListener
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    }
+
     public void registerListener(OrientationListener lis) {
         this.mOldListener = lis;
     }
@@ -120,8 +149,9 @@ public abstract class OrientationEventListener {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    class SensorEventListenerImpl implements SensorEventListener {
+    public class SensorEventListenerImpl implements SensorEventListener {
         private static final int _DATA_X = 0;
         private static final int _DATA_Y = 1;
         private static final int _DATA_Z = 2;
@@ -172,7 +202,6 @@ public abstract class OrientationEventListener {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isInAppCastingDisplay() {
         Display display;
         Context context = this.mContext;

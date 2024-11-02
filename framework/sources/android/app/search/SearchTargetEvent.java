@@ -22,13 +22,14 @@ public final class SearchTargetEvent implements Parcelable {
     public static final int ACTION_SURFACE_VISIBLE = 1;
     public static final int ACTION_TAP = 3;
     public static final Parcelable.Creator<SearchTargetEvent> CREATOR = new Parcelable.Creator<SearchTargetEvent>() { // from class: android.app.search.SearchTargetEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchTargetEvent createFromParcel(Parcel parcel) {
             return new SearchTargetEvent(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchTargetEvent[] newArray(int size) {
             return new SearchTargetEvent[size];
@@ -48,6 +49,14 @@ public final class SearchTargetEvent implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface FlagType {
+    }
+
+    /* synthetic */ SearchTargetEvent(Parcel parcel, SearchTargetEventIA searchTargetEventIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ SearchTargetEvent(List list, String str, int i, int i2, SearchTargetEventIA searchTargetEventIA) {
+        this(list, str, i, i2);
     }
 
     private SearchTargetEvent(List<String> targetIds, String location, int actionType, int flags) {
@@ -109,6 +118,23 @@ public final class SearchTargetEvent implements Parcelable {
         dest.writeString(this.mLocation);
         dest.writeInt(this.mAction);
         dest.writeInt(this.mFlags);
+    }
+
+    /* renamed from: android.app.search.SearchTargetEvent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchTargetEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchTargetEvent createFromParcel(Parcel parcel) {
+            return new SearchTargetEvent(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchTargetEvent[] newArray(int size) {
+            return new SearchTargetEvent[size];
+        }
     }
 
     @SystemApi

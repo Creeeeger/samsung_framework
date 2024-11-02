@@ -334,7 +334,7 @@
     <string name="ext_media_unsupported_notification_message">Бул түзмөк бул%s колдоого албайт. Тандалган форматта орнотуу үчүн басыңыз.</string>
     <string name="ext_media_unsupported_notification_title">%s колдоого алынбайт</string>
     <string name="ext_storage_bad_removal_button">Кайра иштетүү</string>
-    <string name="ext_storage_bad_removal_title">Телефонуңузду өчүрүп күйгүзүңүз</string>
+    <string name="ext_storage_bad_removal_title">Планшетиңизди өчүрүп күйгүзүңүз</string>
     <string name="extmedia_format_button_format">Форматтоо</string>
     <string name="extmedia_format_message_usbhost">USB сактагычыңызда сакталган бардык файлдар тазаланып салынат. Бул аракетти артка кайтаруу мүмкүн эмес!</string>
     <string name="extmedia_format_title_usbhost">USB сактагычы форматталсынбы?</string>
@@ -590,16 +590,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Үн Bluetooth аудио түзмөгүңүздө ойноп жатат. Муну өчүрүү үчүн, бул жерди басыңыз</string>
     <string name="multisound_sound_via_headphone">%s үнү кулакаспаптарыңыз аркылуу ойнотулууда. Муну өчүрүү үчүн, бул жерди басыңыз.</string>
     <string name="multisound_sound_via_headphone_multiselection">Үн кулакаспаптарыңыз аркылуу ойнотулууда. Муну өчүрүү үчүн, бул жерди басыңыз.</string>
-    <string name="multisound_sound_via_phone_speaker">%s үн телефонуңуздун катуу сүйлөгүчү аркылуу ойнотуулуда. Буну өчүрүүгө бул жерди басыңыз.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Үн телефон динамигиңиз аркылуу ойнотулууда. Муну өчүрүү үчүн, бул жерди басыңыз.</string>
+    <string name="multisound_sound_via_phone_speaker">%s үнү планшетиңиздин катуу сүйлөгүчү аркылуу ойнотулууда. Муну өчүрүү үчүн, бул жерди басыңыз.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Үн планшет динамигиңиз аркылуу ойнотулууда. Муну өчүрүү үчүн, бул жерди басыңыз.</string>
     <string name="multisound_sound_via_usb_audio">%s үнү USB аудио түзмөгүңүздөн ойнотулууда. Муну өчүрүү үчүн, бул жерди басыңыз.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Үн USB аудио түзмөгүңүз аркылуу ойнотулууда. Муну өчүрүү үчүн, бул жерди басыңыз.</string>
     <string name="multisound_title">Башка колдонмонун үнү</string>
     <string name="multisound_turn_off_multisound">Өчүрүү</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX кызматында иштебейт. Телефон режиминде иштетип көрүңүз.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX кызматында иштебейт. Ал телефондук Башкы экрандары үчүн түзүлгөн.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Айрым оюндар сенсордук экранда гана иштейт. Эгер чычкан көзөмөлдөрү Samsung DeX кызматында иштебесе, телефон режиминде ойноп көрүңүз.</string>
-    <string name="my_device">Бул телефон</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX кызматында иштетилбейт. Планшет режиминде иштетип көрүңүз.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX кызматында иштетилбейт. Бул планшеттердин Башкы экрандары үчүн арналган.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Айрым оюндар сенсордук экранда гана иштейт. Эгер чычкан көзөмөлдөрү Samsung DeX кызматында иштебесе, планшет режиминде ойноп көрүңүз.</string>
+    <string name="my_device">Бул планшет</string>
     <string name="network_locked_sim_dialog_message_ais">SIM картаңыз бул телефондо толугу менен иштебейт, себеби ал жазылуу шарттарыңыз жана жагдайларыңызга дал келбейт. Эгер ушул нерсе тууралуу суроолоруңуз болуп же кошумча маалымат керек болсо, Samsung Кардарлар Кызматынын жайгашкан жерине же ушул продукттарды сатып алган дүкөнгө кайрылыңыз.</string>
     <string name="network_locked_sim_notification_text">Тармак кулпулаган SIM карта салынды</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -790,7 +790,7 @@
     <string name="policydesc_allow_desktopsync">Иш такта синхронизациясынын колдонулушун алдын алыңыз.</string>
     <string name="policydesc_allow_internetsharing">Мобилдик Кошулуу чекитинин колдонулушун алдын алыңыз.</string>
     <string name="policydesc_allow_irda">"IrDA'дин колдонулушун алдын алыңыз."</string>
-    <string name="policydesc_allow_popimapemail">"POP жана IMAP email'деринин телефондо колдонулушун алдын алыңыз."</string>
+    <string name="policydesc_allow_popimapemail">"POP жана IMAP email'деринин планшетте колдонулушун алдын алыңыз."</string>
     <string name="policydesc_allow_storagecard">SD картасынын колдонулушун алдын алыңыз.</string>
     <string name="policydesc_allow_textmessaging">Текст жана мультимедиа билдирүү алмашуусунун колдонулушун алдын алыңыз.</string>
     <string name="policydesc_allow_thirdParty">Бул колдонмо үчүнчү жактар колдонмолорун аткаруудан алдын алат.</string>
@@ -836,7 +836,7 @@
     <string name="pwd_change_enforced">Коопсуздук саясаты, сырсөзүңүздү өзгөртүүнү талап кылат.</string>
     <string name="recording_fail">Микрофон %2$s дегенде колдонулуп жатканда %1$s дегенде колдоно албайсыз.</string>
     <string name="recording_popup">%s микрофонду колдонуп жатат.</string>
-    <string name="recording_popup_device">Телефон</string>
+    <string name="recording_popup_device">Планшет</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth микрофонун колдонууда.</string>
     <string name="recording_popup_with_device">%1$s %2$s микрофонун колдонууда.</string>
     <string name="redo">Кайталоо</string>
@@ -901,12 +901,12 @@
     <string name="screencapture_restrict">Коопсуздук саясаты, экранды кармап тартуунун колдонулушун болтурбайт.</string>
     <string name="sd_card_unavailable_message">SD картаны колдоно албайсыз, анткени ал башка колдонуучунун профили колдонулуп жатканда киргизилген.</string>
     <string name="sd_card_unavailable_title">SD картасы жеткиликтүү эмес</string>
-    <string name="sdcard_bad_removal_message">SD карта кооптуу түрдө алынып салынды. Телефонуңуз күтүүсүздөн өчүп күйүп калбоосу үчүн, сакталбаган дайындарды сактап, азыр кайра күйгүзүңүз.</string>
+    <string name="sdcard_bad_removal_message">SD карта кооптуу түрдө алынып салынды. Планшетиңиз күтүүсүздөн өчүп күйүп калбоосу үчүн, сакталбаган дайындарды сактап, азыр кайра күйгүзүңүз.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD картаны дешифрлөө</string>
     <string name="sdcard_batch_decrypt_noti_title">SD картанын шифрин чечүү</string>
     <string name="sdcard_batch_decrypt_popup_content">Колдонуудан мурун, шифрленген SD картасын дешифрлөө керек. Шифр чечүүсү бир саат же көбүрөөк убакыт алышы мүмкүн. Толук батарейка менен баштаңыз жана дешифрлөө бүткүчө түзмөктү розеткада туташкан бойдон калтырыңыз. Дешифрлөө процессин үзүү, кээ бир же бардык айтымдардын жоголушуна алып келиши мүмкүн.</string>
     <string name="sdcard_decrypt_err_notification">SD картанын шифрин чечүү катасы пайда болду</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD картаңыздагы айрым файлдар башка түзмөктө шифрленип, ушул телефондо колдоно албайт.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD картаңыздагы айрым файлдар башка түзмөктө шифрленип, ушул планшетте колдоно албайт.</string>
     <string name="sdcard_decrypt_notification">SD картанын шифри чечилди</string>
     <string name="sdcard_decrypt_title_notification">SD картанын шифрин чечүү</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD карт. дешифрлөөдө…</string>
@@ -1232,7 +1232,7 @@
     <string name="usb_abnormal_reset_title">USB туташуусу туруктуу эмес</string>
     <string name="usb_abnormal_reset_toast">USB туташуусу туруктуу эмес. Кабелди сууруп, кайра туташтырыңыз же башка кабелди колдонуп көрүңүз.</string>
     <string name="usb_accessory_notification_title">USB жабдуусуна туташты</string>
-    <string name="usb_bad_removal_message">USB сактагыч түзмөгү кооптуу түрдө алынып салынды. Телефонуңуз күтүүсүздөн өчүп күйүп калбоосу үчүн, сакталбаган дайындарды сактап, азыр кайра күйгүзүңүз.</string>
+    <string name="usb_bad_removal_message">USB сактагыч түзмөгү кооптуу түрдө алынып салынды. Планшетиңиз күтүүсүздөн өчүп күйүп калбоосу үчүн, сакталбаган дайындарды сактап, азыр кайра күйгүзүңүз.</string>
     <string name="usb_blocked_by_emergency_mode">Айрым USB функциялары Шашылыш кырдаал режиминде жеткиликсиз.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Максималдык кубат үнөмдөө режими иштетилген учурда, туташылган USB түзмөгүнө байланышы бар функцияларды колдонуу мүмкүн эмес.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Максималдык кубат үнөмдөө режими күйүк болгон учурда айрым USB функциялары чектелиши мүмкүн.</string>
@@ -1241,13 +1241,13 @@
     <string name="usb_camera_connected_notification_title">Медиа түзмөгү туташтырылган</string>
     <string name="usb_camera_disconnected_notification_title">Медиа түзмөк ажыратылды</string>
     <string name="usb_cd_installer_notification_title">Программдык жаңылоо</string>
-    <string name="usb_charing_only_notification_title">USB заряддоосу</string>
+    <string name="usb_charing_only_notification_title">Туташылды</string>
     <string name="usb_debugging_only_notification_title">Мүчүлүштүктөрдү оңдоо гана</string>
-    <string name="usb_host_resource_exceed_message">Бул түзмөккө туташуу үчүн телефонуңуздун USB көзөмөлдөгүчүнүн жетиштүү булагы жок. Түзмөктү ажыратып, ага кайра туташып көрүңүз.</string>
+    <string name="usb_host_resource_exceed_message">Бул түзмөккө туташуу үчүн планшетиңиздин USB көзөмөлдөгүчүнүн жетиштүү булагы жок. Түзмөктү ажыратып, ага кайра туташып көрүңүз.</string>
     <string name="usb_host_resource_exceed_title">USB көзөмөлдөгүч булактары жетишсиз</string>
-    <string name="usb_hub_depth_exceed_message">Телефонуңуз бир убакта 5 чейин USB тараткыч туташууларын колдоого ала алат.</string>
+    <string name="usb_hub_depth_exceed_message">Планшетиңиз бир убакта 5 чейин USB тараткыч туташууларын колдоого ала алат.</string>
     <string name="usb_hub_depth_exceed_title">Макс. USB тараткыч туташуулары</string>
-    <string name="usb_hub_power_exceed_message">Бул USB түзмөк үчүн телефонуңуздун жетиштүү кубаты жок. Телефонуңузга туташуудан мурун түзмөгүңүздү батареясыз USB тараткычка туташтырыңыз.</string>
+    <string name="usb_hub_power_exceed_message">Бул USB түзмөк үчүн планшетиңиздин жетиштүү кубаты жок. Планшетиңизге туташуудан мурун түзмөгүңүздү батареясыз USB тараткычка туташтырыңыз.</string>
     <string name="usb_increase_battery_usage">USB туташуусу батарея керектөөсүн көбөйтүүсү мүмкүн.</string>
     <string name="usb_mass_storage_restrict">Коопсуздук саясаты, USB сактагычтын колдонулушун болтурбайт.</string>
     <string name="usb_midi_notification_title">MIDI үчүн USB</string>
@@ -1273,8 +1273,8 @@
     <string name="usb_storage_stop_title">USB сактагыч колдонууда.</string>
     <string name="usb_storage_title">USB туташты</string>
     <string name="usb_type_c_supply_power_notification_title">USB заряддоосуна туташ-н түзмөк</string>
-    <string name="usb_unblock_by_screen_unlock">Туташтырылган USB түзмөгүн колдонуу үчүн телефонуңуздун кулпусун ачыңыз.</string>
-    <string name="usb_unsupport_accessory_message">Бул USB түзмөгүн телефонуңуз колдоого албайт.</string>
+    <string name="usb_unblock_by_screen_unlock">Туташтырылган USB түзмөгүн колдонуу үчүн планшетиңиздин кулпусун ачыңыз.</string>
+    <string name="usb_unsupport_accessory_message">Бул USB түзмөгүн планшетиңиз колдоого албайт.</string>
     <string name="usb_unsupport_accessory_title">USB түзмөгү колдоого алынбайт</string>
     <string name="usb_unsupported_device">Туташылган USB түзмөгү колдоого алынбайт.</string>
     <string name="usb_unsupported_device_title">Түзмөк колдоого алынбайт</string>
@@ -1292,19 +1292,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Сиз фен же кургаткычты (муздак абасын гана) оюкча тарабына карай каратып, тездете аласыз.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Заряддоо/USB оюкчаңызда нымдуулук же бөтөн зат бар экенин аныктадык.
 
-Заряддоо/USB оюкчаңызда чаң же таштанды сыяктуу бөтөн материалдарды текшериңиз. Телефонуңузга зыян келтирбөө үчүн, заряддоо оюкчасы таза болуп, ным жок болмоюнча эч нерсени сайбаңыз.
+Заряддоо/USB оюкчаңызда чаң же таштанды сыяктуу бөтөн материалдарды текшериңиз. Планшетиңизге зыян келтирбөө үчүн, заряддоо оюкчасы таза болуп, ным жок болмоюнча эч нерсени сайбаңыз.
 
 Оюкчаны кургатуу үчүн, нымдуулукту силкип, кургаганча күтө туруңуз, бул бир нече саатка созулушу мүмкүн. Оюкчага желдеткичти же кургаткычты (муздак аба гана) көрсөтүү менен кургатуу процессин тездете аласыз."</string>
     <string name="usb_water_dialg_positive_button">ОК</string>
-    <string name="usb_water_dialg_support_wireless_charging">"Заряддоо/USB оюкчаңызда нымдуулук же бөтөн зат бар экенин аныктадык.
+    <string name="usb_water_dialg_support_wireless_charging">"Заряддоо/USB портуңузда ным же бөтөн нерселер бар окшойт.
 
-Заряддоо/USB оюкчаңызда чаң же таштанды сыяктуу бөтөн материалдарды текшериңиз. Телефонуңузга зыян келтирбөө үчүн, заряддоо оюкчасы таза болуп, ным жок болмоюнча эч нерсени сайбаңыз.
+Заряддоо/USB портуңузда чаң же таштанды сыяктуулар жок экенин текшериңиз. Планшетиңизге зыян келтирбөө үчүн заряддоо порту таза болуп, ным кургамайынча аны сайбаңыз.
 
-Оюкчаны кургатуу үчүн, нымдуулукту силкип, кургаганча күтө туруңуз, бул бир нече саатка созулушу мүмкүн. Оюкчага желдеткичти же кургаткычты (муздак аба гана) көрсөтүү менен кургатуу процессин тездете аласыз.
+Портту кургатуу үчүн нымдуулукту аарчып, андан соң кургагыча күтө туруңуз, ал бир нече саатка созулушу мүмкүн. Портту желдеткич же кургаткыч (муздак абада гана) менен кургатсаңыз болот.
 
-Ал ортодо телефонуңузду зымсыз кубаттай аласыз."</string>
+Азырынча, планшетиңизди зымсыз заряддаңыз."</string>
     <string name="usb_water_notification_content">Заряддоо/USB портуңузда ным же бөтөн нерселер бар. Заряддоодон мурун текшериңиз.</string>
-    <string name="usb_water_notification_message">Заряддагычыңызда/USB уячасында нымдуулук аныкталды. Телефонуңузду заряддоодон мурда, анын кургак экендигин ырастаңыз. Анын толугу менен кургатылуусу бир аз убакыт алышы мүмкүн.</string>
+    <string name="usb_water_notification_message">Заряддагычыңызда/USB уячасында нымдуулук аныкталды. Планшетиңизди заряддоодон мурда, анын кургак экендигин ырастаңыз. Анын толугу менен кургатылуусу бир аз убакыт алышы мүмкүн.</string>
     <string name="usb_water_notification_message_button">Маалыматтар</string>
     <string name="usb_water_notification_title">Заряддагыч./USB порт. текшер.</string>
     <string name="usbhostStorage_restrict">Коопсуздук саясаты, USB хост сактагычтын колдонулушун болтурбайт.</string>

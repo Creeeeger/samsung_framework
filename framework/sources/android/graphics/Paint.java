@@ -120,7 +120,7 @@ public class Paint {
     public @interface StartHyphenEdit {
     }
 
-    /* renamed from: -$$Nest$smnGetNativeFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnGetNativeFinalizer */
     static /* bridge */ /* synthetic */ long m1144$$Nest$smnGetNativeFinalizer() {
         return nGetNativeFinalizer();
     }
@@ -363,8 +363,9 @@ public class Paint {
     @CriticalNative
     private static native void nSetXfermode(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class NoImagePreloadHolder {
+    public static class NoImagePreloadHolder {
         public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Paint.class.getClassLoader(), Paint.m1144$$Nest$smnGetNativeFinalizer());
 
         private NoImagePreloadHolder() {

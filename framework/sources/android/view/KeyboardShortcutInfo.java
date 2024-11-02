@@ -8,13 +8,14 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes4.dex */
 public final class KeyboardShortcutInfo implements Parcelable {
     public static final Parcelable.Creator<KeyboardShortcutInfo> CREATOR = new Parcelable.Creator<KeyboardShortcutInfo>() { // from class: android.view.KeyboardShortcutInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeyboardShortcutInfo createFromParcel(Parcel source) {
             return new KeyboardShortcutInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyboardShortcutInfo[] newArray(int size) {
             return new KeyboardShortcutInfo[size];
@@ -25,6 +26,10 @@ public final class KeyboardShortcutInfo implements Parcelable {
     private final int mKeycode;
     private final CharSequence mLabel;
     private final int mModifiers;
+
+    /* synthetic */ KeyboardShortcutInfo(Parcel parcel, KeyboardShortcutInfoIA keyboardShortcutInfoIA) {
+        this(parcel);
+    }
 
     public KeyboardShortcutInfo(CharSequence label, Icon icon, int keycode, int modifiers) {
         this.mLabel = label;
@@ -92,5 +97,22 @@ public final class KeyboardShortcutInfo implements Parcelable {
         dest.writeInt(this.mBaseCharacter);
         dest.writeInt(this.mKeycode);
         dest.writeInt(this.mModifiers);
+    }
+
+    /* renamed from: android.view.KeyboardShortcutInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyboardShortcutInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyboardShortcutInfo createFromParcel(Parcel source) {
+            return new KeyboardShortcutInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyboardShortcutInfo[] newArray(int size) {
+            return new KeyboardShortcutInfo[size];
+        }
     }
 }

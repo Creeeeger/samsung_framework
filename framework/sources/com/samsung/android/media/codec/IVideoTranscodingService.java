@@ -119,8 +119,9 @@ public interface IVideoTranscodingService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IVideoTranscodingService {
+        public static class Proxy implements IVideoTranscodingService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

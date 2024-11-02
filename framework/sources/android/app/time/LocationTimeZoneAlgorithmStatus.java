@@ -28,7 +28,9 @@ public final class LocationTimeZoneAlgorithmStatus implements Parcelable {
     public static final LocationTimeZoneAlgorithmStatus RUNNING_NOT_REPORTED = new LocationTimeZoneAlgorithmStatus(2, 2, null, 2, null);
     public static final LocationTimeZoneAlgorithmStatus NOT_RUNNING = new LocationTimeZoneAlgorithmStatus(2, 2, null, 2, null);
     public static final Parcelable.Creator<LocationTimeZoneAlgorithmStatus> CREATOR = new Parcelable.Creator<LocationTimeZoneAlgorithmStatus>() { // from class: android.app.time.LocationTimeZoneAlgorithmStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LocationTimeZoneAlgorithmStatus createFromParcel(Parcel in) {
             int algorithmStatus = in.readInt();
@@ -39,7 +41,6 @@ public final class LocationTimeZoneAlgorithmStatus implements Parcelable {
             return new LocationTimeZoneAlgorithmStatus(algorithmStatus, primaryProviderStatus, primaryProviderReportedStatus, secondaryProviderStatus, secondaryProviderReportedStatus);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocationTimeZoneAlgorithmStatus[] newArray(int size) {
             return new LocationTimeZoneAlgorithmStatus[size];
@@ -119,6 +120,28 @@ public final class LocationTimeZoneAlgorithmStatus implements Parcelable {
         }
         TimeZoneProviderStatus providerReportedStatus = TimeZoneProviderStatus.parseProviderStatus(providerReportedStatusString);
         return providerReportedStatus;
+    }
+
+    /* renamed from: android.app.time.LocationTimeZoneAlgorithmStatus$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LocationTimeZoneAlgorithmStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocationTimeZoneAlgorithmStatus createFromParcel(Parcel in) {
+            int algorithmStatus = in.readInt();
+            int primaryProviderStatus = in.readInt();
+            TimeZoneProviderStatus primaryProviderReportedStatus = (TimeZoneProviderStatus) in.readParcelable(getClass().getClassLoader(), TimeZoneProviderStatus.class);
+            int secondaryProviderStatus = in.readInt();
+            TimeZoneProviderStatus secondaryProviderReportedStatus = (TimeZoneProviderStatus) in.readParcelable(getClass().getClassLoader(), TimeZoneProviderStatus.class);
+            return new LocationTimeZoneAlgorithmStatus(algorithmStatus, primaryProviderStatus, primaryProviderReportedStatus, secondaryProviderStatus, secondaryProviderReportedStatus);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocationTimeZoneAlgorithmStatus[] newArray(int size) {
+            return new LocationTimeZoneAlgorithmStatus[size];
+        }
     }
 
     @Override // android.os.Parcelable

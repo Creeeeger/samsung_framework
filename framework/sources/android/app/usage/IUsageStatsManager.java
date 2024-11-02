@@ -784,8 +784,9 @@ public interface IUsageStatsManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IUsageStatsManager {
+        public static class Proxy implements IUsageStatsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

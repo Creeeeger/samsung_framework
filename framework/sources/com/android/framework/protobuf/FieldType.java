@@ -106,9 +106,10 @@ public enum FieldType {
         this.primitiveScalar = primitiveScalar;
     }
 
-    /* renamed from: com.android.framework.protobuf.FieldType$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.framework.protobuf.FieldType$1 */
     /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$FieldType$Collection;
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$JavaType;
 
@@ -296,8 +297,9 @@ public enum FieldType {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    enum Collection {
+    public enum Collection {
         SCALAR(false),
         VECTOR(true),
         PACKED_VECTOR(true),

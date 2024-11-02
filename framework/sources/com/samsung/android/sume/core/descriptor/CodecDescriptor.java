@@ -42,7 +42,7 @@ public class CodecDescriptor extends MFDescriptorBase {
         this.data.put(key, value);
     }
 
-    /* renamed from: com.samsung.android.sume.core.descriptor.CodecDescriptor$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.sume.core.descriptor.CodecDescriptor$1 */
     /* loaded from: classes4.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$MediaType;

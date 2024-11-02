@@ -169,7 +169,6 @@ public class KeyStoreException extends Exception {
         return GENERAL_KEYMINT_ERROR;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class PublicErrorInformation {
         public final int errorCode;

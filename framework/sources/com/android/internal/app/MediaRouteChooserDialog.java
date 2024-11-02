@@ -68,7 +68,6 @@ public class MediaRouteChooserDialog extends AlertDialog {
         return !route.isDefault() && route.isEnabled() && route.matchesTypes(this.mRouteTypes);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.AlertDialog, android.app.Dialog
     public void onCreate(Bundle savedInstanceState) {
         int i;
@@ -127,13 +126,11 @@ public class MediaRouteChooserDialog extends AlertDialog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isLightTheme(Context context) {
         TypedValue value = new TypedValue();
         return context.getTheme().resolveAttribute(16844176, value, true) && value.data != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class RouteAdapter extends ArrayAdapter<MediaRouter.RouteInfo> implements AdapterView.OnItemClickListener {
         private final LayoutInflater mInflater;
@@ -198,9 +195,12 @@ public class MediaRouteChooserDialog extends AlertDialog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class MediaRouterCallback extends MediaRouter.SimpleCallback {
+        /* synthetic */ MediaRouterCallback(MediaRouteChooserDialog mediaRouteChooserDialog, MediaRouterCallbackIA mediaRouterCallbackIA) {
+            this();
+        }
+
         private MediaRouterCallback() {
         }
 
@@ -225,7 +225,6 @@ public class MediaRouteChooserDialog extends AlertDialog {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class RouteComparator implements Comparator<MediaRouter.RouteInfo> {
         public static final RouteComparator sInstance = new RouteComparator();

@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class ColorCutQuantizer implements Quantizer {
     static final int COMPONENT_BLUE = -1;
@@ -21,6 +20,9 @@ public final class ColorCutQuantizer implements Quantizer {
     private static final int QUANTIZE_WORD_MASK = 31;
     private static final int QUANTIZE_WORD_WIDTH = 5;
     private static final Comparator<Vbox> VBOX_COMPARATOR_VOLUME = new Comparator<Vbox>() { // from class: com.android.internal.graphics.palette.ColorCutQuantizer.1
+        AnonymousClass1() {
+        }
+
         @Override // java.util.Comparator
         public int compare(Vbox lhs, Vbox rhs) {
             return rhs.getVolume() - lhs.getVolume();
@@ -96,7 +98,6 @@ public final class ColorCutQuantizer implements Quantizer {
         return colors;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class Vbox {
         private final int mLowerIndex;
@@ -260,6 +261,18 @@ public final class ColorCutQuantizer implements Quantizer {
                     a[i2] = (quantizedBlue(color2) << 10) | (quantizedGreen(color2) << 5) | quantizedRed(color2);
                 }
                 return;
+        }
+    }
+
+    /* renamed from: com.android.internal.graphics.palette.ColorCutQuantizer$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Comparator<Vbox> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(Vbox lhs, Vbox rhs) {
+            return rhs.getVolume() - lhs.getVolume();
         }
     }
 

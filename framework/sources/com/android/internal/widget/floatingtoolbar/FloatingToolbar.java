@@ -34,6 +34,9 @@ public final class FloatingToolbar {
         private final Rect mNewRect = new Rect();
         private final Rect mOldRect = new Rect();
 
+        AnonymousClass1() {
+        }
+
         @Override // android.view.View.OnLayoutChangeListener
         public void onLayoutChange(View view, int newLeft, int newRight, int newTop, int newBottom, int oldLeft, int oldRight, int oldTop, int oldBottom) {
             int orientation = view.getContext().getResources().getConfiguration().orientation;
@@ -56,12 +59,36 @@ public final class FloatingToolbar {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$static$0(MenuItem item) {
         return false;
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.widget.floatingtoolbar.FloatingToolbar$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements View.OnLayoutChangeListener {
+        private final Rect mNewRect = new Rect();
+        private final Rect mOldRect = new Rect();
+
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnLayoutChangeListener
+        public void onLayoutChange(View view, int newLeft, int newRight, int newTop, int newBottom, int oldLeft, int oldRight, int oldTop, int oldBottom) {
+            int orientation = view.getContext().getResources().getConfiguration().orientation;
+            if (FloatingToolbar.this.mOrientation != orientation) {
+                FloatingToolbar.this.mPopup.setIsMovingStarted(false);
+            }
+            FloatingToolbar.this.mOrientation = orientation;
+            this.mNewRect.set(newLeft, newRight, newTop, newBottom);
+            this.mOldRect.set(oldLeft, oldRight, oldTop, oldBottom);
+            if (!FloatingToolbar.this.mPopup.isDismissed() && !this.mNewRect.equals(this.mOldRect)) {
+                FloatingToolbar.this.mPopup.setWidthChanged(true);
+                FloatingToolbar.this.updateLayout();
+            }
+        }
+    }
+
     public static /* synthetic */ int lambda$new$1(MenuItem menuItem, MenuItem menuItem2) {
         if (menuItem.getItemId() == 16908353) {
             return menuItem2.getItemId() == 16908353 ? 0 : -1;

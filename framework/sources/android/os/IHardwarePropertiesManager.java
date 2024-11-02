@@ -116,8 +116,9 @@ public interface IHardwarePropertiesManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IHardwarePropertiesManager {
+        public static class Proxy implements IHardwarePropertiesManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

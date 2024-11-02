@@ -28,17 +28,14 @@ public class ApplicationLoaders {
         return gApplicationLoaders;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ClassLoader getClassLoader(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName) {
         return getClassLoaderWithSharedLibraries(zip, targetSdkVersion, isBundled, librarySearchPath, libraryPermittedPath, parent, classLoaderName, null, null, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ClassLoader getClassLoaderWithSharedLibraries(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName, List<ClassLoader> sharedLibraries, List<String> nativeSharedLibraries, List<ClassLoader> sharedLibrariesLoadedAfterApp) {
         return getClassLoader(zip, targetSdkVersion, isBundled, librarySearchPath, libraryPermittedPath, parent, zip, classLoaderName, sharedLibraries, nativeSharedLibraries, sharedLibrariesLoadedAfterApp);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ClassLoader getSharedLibraryClassLoaderWithSharedLibraries(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName, List<ClassLoader> sharedLibraries, List<ClassLoader> sharedLibrariesAfter) {
         ClassLoader loader = getCachedNonBootclasspathSystemLib(zip, parent, classLoaderName, sharedLibraries);
         if (loader != null) {
@@ -163,7 +160,6 @@ public class ApplicationLoaders {
         return getClassLoader(packagePath, Build.VERSION.SDK_INT, false, libsPath, null, null, cacheKey, null, null, null, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addPath(ClassLoader classLoader, String dexPath) {
         if (!(classLoader instanceof PathClassLoader)) {
             throw new IllegalStateException("class loader is not a PathClassLoader");
@@ -172,7 +168,6 @@ public class ApplicationLoaders {
         baseDexClassLoader.addDexPath(dexPath);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addNative(ClassLoader classLoader, Collection<String> libPaths) {
         if (!(classLoader instanceof PathClassLoader)) {
             throw new IllegalStateException("class loader is not a PathClassLoader");
@@ -181,11 +176,14 @@ public class ApplicationLoaders {
         baseDexClassLoader.addNativePath(libPaths);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class CachedClassLoader {
         ClassLoader loader;
         List<ClassLoader> sharedLibraries;
+
+        /* synthetic */ CachedClassLoader(CachedClassLoaderIA cachedClassLoaderIA) {
+            this();
+        }
 
         private CachedClassLoader() {
         }

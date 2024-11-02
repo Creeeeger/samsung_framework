@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ApexInfo implements Parcelable {
     public static final Parcelable.Creator<ApexInfo> CREATOR = new Parcelable.Creator<ApexInfo>() { // from class: android.apex.ApexInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ApexInfo createFromParcel(Parcel _aidl_source) {
             ApexInfo _aidl_out = new ApexInfo();
@@ -15,7 +17,6 @@ public class ApexInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApexInfo[] newArray(int _aidl_size) {
             return new ApexInfo[_aidl_size];
@@ -30,6 +31,25 @@ public class ApexInfo implements Parcelable {
     public boolean isActive = false;
     public boolean hasClassPathJars = false;
     public boolean activeApexChanged = false;
+
+    /* renamed from: android.apex.ApexInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ApexInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApexInfo createFromParcel(Parcel _aidl_source) {
+            ApexInfo _aidl_out = new ApexInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApexInfo[] newArray(int _aidl_size) {
+            return new ApexInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel parcel, int i) {

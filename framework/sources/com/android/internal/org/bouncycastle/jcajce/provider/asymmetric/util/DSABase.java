@@ -16,7 +16,6 @@ public abstract class DSABase extends SignatureSpi implements PKCSObjectIdentifi
     protected DSAEncoding encoding;
     protected DSAExt signer;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public DSABase(Digest digest, DSAExt signer, DSAEncoding encoding) {
         this.digest = digest;
         this.signer = signer;

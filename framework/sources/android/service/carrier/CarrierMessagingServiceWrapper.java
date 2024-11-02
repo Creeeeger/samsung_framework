@@ -51,7 +51,6 @@ public final class CarrierMessagingServiceWrapper implements AutoCloseable {
         this.mServiceReadyCallbackExecutor = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onServiceReady(ICarrierMessagingService carrierMessagingService) {
         this.mICarrierMessagingService = carrierMessagingService;
         if (this.mOnServiceReadyCallback != null && this.mServiceReadyCallbackExecutor != null) {
@@ -130,9 +129,12 @@ public final class CarrierMessagingServiceWrapper implements AutoCloseable {
         disconnect();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public final class CarrierMessagingServiceConnection implements ServiceConnection {
+        /* synthetic */ CarrierMessagingServiceConnection(CarrierMessagingServiceWrapper carrierMessagingServiceWrapper, CarrierMessagingServiceConnectionIA carrierMessagingServiceConnectionIA) {
+            this();
+        }
+
         private CarrierMessagingServiceConnection() {
         }
 
@@ -165,7 +167,6 @@ public final class CarrierMessagingServiceWrapper implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public final class CarrierMessagingCallbackInternal extends ICarrierMessagingCallback.Stub {
         final CarrierMessagingCallback mCarrierMessagingCallback;
@@ -176,7 +177,6 @@ public final class CarrierMessagingServiceWrapper implements AutoCloseable {
             this.mExecutor = executor;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFilterComplete$0(int result) {
             this.mCarrierMessagingCallback.onReceiveSmsComplete(result);
         }
@@ -191,7 +191,6 @@ public final class CarrierMessagingServiceWrapper implements AutoCloseable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSendSmsComplete$1(int result, int messageRef) {
             this.mCarrierMessagingCallback.onSendSmsComplete(result, messageRef);
         }
@@ -206,7 +205,6 @@ public final class CarrierMessagingServiceWrapper implements AutoCloseable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSendMultipartSmsComplete$2(int result, int[] messageRefs) {
             this.mCarrierMessagingCallback.onSendMultipartSmsComplete(result, messageRefs);
         }
@@ -221,7 +219,6 @@ public final class CarrierMessagingServiceWrapper implements AutoCloseable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSendMmsComplete$3(int result, byte[] sendConfPdu) {
             this.mCarrierMessagingCallback.onSendMmsComplete(result, sendConfPdu);
         }
@@ -236,7 +233,6 @@ public final class CarrierMessagingServiceWrapper implements AutoCloseable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDownloadMmsComplete$4(int result) {
             this.mCarrierMessagingCallback.onDownloadMmsComplete(result);
         }

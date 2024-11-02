@@ -8,6 +8,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
+import android.app.SharedElementCallback;
 import android.app.admin.DevicePolicyResources;
 import android.app.prediction.AppPredictionContext;
 import android.app.prediction.AppPredictionManager;
@@ -98,6 +99,7 @@ import com.android.internal.logging.nano.MetricsProto;
 import com.android.internal.widget.GridLayoutManager;
 import com.android.internal.widget.MessagingMessage;
 import com.android.internal.widget.RecyclerView;
+import com.android.internal.widget.ResolverDrawerLayout;
 import com.android.internal.widget.ViewPager;
 import com.google.android.collect.Lists;
 import java.io.File;
@@ -211,7 +213,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
     public @interface ShareTargetType {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ContentPreviewCoordinator {
         private static final int IMAGE_FADE_IN_MILLIS = 150;
@@ -219,6 +220,9 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         private static final int IMAGE_LOAD_TIMEOUT = 1;
         private boolean mAtLeastOneLoaded = false;
         private final Handler mHandler = new Handler() { // from class: com.android.internal.app.ChooserActivity.ContentPreviewCoordinator.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -258,7 +262,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         private final int mImageLoadTimeoutMillis;
         private final View mParentView;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public class LoadUriTask {
             public final Bitmap mBmp;
@@ -274,9 +277,77 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public void setupPreDrawForSharedElementTransition(final View v) {
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.android.internal.app.ChooserActivity$ContentPreviewCoordinator$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 extends Handler {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        ContentPreviewCoordinator.this.maybeHideContentPreview();
+                        return;
+                    case 2:
+                        if (!ChooserActivity.this.isFinishing()) {
+                            LoadUriTask task = (LoadUriTask) msg.obj;
+                            RoundedRectImageView imageView = (RoundedRectImageView) ContentPreviewCoordinator.this.mParentView.findViewById(task.mImageResourceId);
+                            if (task.mBmp == null) {
+                                imageView.setVisibility(8);
+                                ContentPreviewCoordinator.this.maybeHideContentPreview();
+                                return;
+                            }
+                            ContentPreviewCoordinator.this.mAtLeastOneLoaded = true;
+                            imageView.setVisibility(0);
+                            imageView.setAlpha(0.0f);
+                            imageView.setImageBitmap(task.mBmp);
+                            ValueAnimator fadeAnim = ObjectAnimator.ofFloat(imageView, "alpha", 0.0f, 1.0f);
+                            fadeAnim.setInterpolator(new DecelerateInterpolator(1.0f));
+                            fadeAnim.setDuration(150L);
+                            fadeAnim.start();
+                            if (task.mExtraCount > 0) {
+                                imageView.setExtraImageCount(task.mExtraCount);
+                            }
+                            ContentPreviewCoordinator.this.setupPreDrawForSharedElementTransition(imageView);
+                            return;
+                        }
+                        return;
+                    default:
+                        return;
+                }
+            }
+        }
+
+        /* renamed from: com.android.internal.app.ChooserActivity$ContentPreviewCoordinator$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements ViewTreeObserver.OnPreDrawListener {
+            final /* synthetic */ View val$v;
+
+            AnonymousClass2(View view) {
+                v = view;
+            }
+
+            @Override // android.view.ViewTreeObserver.OnPreDrawListener
+            public boolean onPreDraw() {
+                v.getViewTreeObserver().removeOnPreDrawListener(this);
+                if (!ChooserActivity.this.mRemoveSharedElements && ChooserActivity.this.isActivityTransitionRunning()) {
+                    ChooserActivity.this.getWindow().setWindowAnimations(0);
+                }
+                ChooserActivity.this.mEnterTransitionAnimationDelegate.markImagePreviewReady();
+                return true;
+            }
+        }
+
+        public void setupPreDrawForSharedElementTransition(View v) {
             v.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.app.ChooserActivity.ContentPreviewCoordinator.2
+                final /* synthetic */ View val$v;
+
+                AnonymousClass2(View v2) {
+                    v = v2;
+                }
+
                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                 public boolean onPreDraw() {
                     v.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -295,7 +366,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             this.mHideParentOnFail = hideParentOnFail;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void loadUriIntoView(final int imageResourceId, final Uri uri, final int extraImages) {
             this.mHandler.sendEmptyMessageDelayed(1, this.mImageLoadTimeoutMillis);
             AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() { // from class: com.android.internal.app.ChooserActivity$ContentPreviewCoordinator$$ExternalSyntheticLambda0
@@ -306,7 +376,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$loadUriIntoView$0(Uri uri, int imageResourceId, int extraImages) {
             int size = ChooserActivity.this.getResources().getDimensionPixelSize(R.dimen.chooser_preview_image_max_dimen);
             Bitmap bmp = ChooserActivity.this.loadThumbnail(uri, new Size(size, size));
@@ -316,13 +385,11 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             this.mHandler.sendMessage(msg);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void cancelLoads() {
             this.mHandler.removeMessages(2);
             this.mHandler.removeMessages(1);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void maybeHideContentPreview() {
             if (!this.mAtLeastOneLoaded) {
                 if (this.mHideParentOnFail) {
@@ -351,16 +418,18 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ChooserHandler extends Handler {
         private static final int LIST_VIEW_UPDATE_MESSAGE = 6;
         private static final int SHORTCUT_MANAGER_ALL_SHARE_TARGET_RESULTS = 7;
 
+        /* synthetic */ ChooserHandler(ChooserActivity chooserActivity, ChooserHandlerIA chooserHandlerIA) {
+            this();
+        }
+
         private ChooserHandler() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void removeAllMessages() {
             removeMessages(6);
             removeMessages(7);
@@ -398,7 +467,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Removed duplicated region for block: B:102:0x0305  */
     /* JADX WARN: Removed duplicated region for block: B:105:0x0310  */
     /* JADX WARN: Removed duplicated region for block: B:108:0x0308  */
@@ -428,6 +496,41 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.app.ChooserActivity.onCreate(android.os.Bundle):void");
     }
 
+    /* renamed from: com.android.internal.app.ChooserActivity$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements ResolverDrawerLayout.OnCollapsedChangedListener {
+        private boolean mWrittenOnce = false;
+
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.widget.ResolverDrawerLayout.OnCollapsedChangedListener
+        public void onCollapsedChanged(boolean isCollapsed) {
+            if (!isCollapsed && !this.mWrittenOnce) {
+                ChooserActivity.this.incrementNumSheetExpansions();
+                this.mWrittenOnce = true;
+            }
+            ChooserActivity.this.getChooserActivityLogger().logSharesheetExpansionChanged(isCollapsed);
+        }
+    }
+
+    /* renamed from: com.android.internal.app.ChooserActivity$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 extends SharedElementCallback {
+        AnonymousClass2() {
+        }
+
+        @Override // android.app.SharedElementCallback
+        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+            if (ChooserActivity.this.mRemoveSharedElements) {
+                names.remove("screenshot_preview_image");
+                sharedElements.remove("screenshot_preview_image");
+            }
+            super.onMapSharedElements(names, sharedElements);
+            ChooserActivity.this.mRemoveSharedElements = false;
+        }
+    }
+
     @Override // com.android.internal.app.ResolverActivity
     protected int appliedThemeResId() {
         return R.style.Theme_DeviceDefault_Chooser;
@@ -452,7 +555,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createAppPredictorCallback$0(ChooserListAdapter chooserListAdapter, List resultList) {
         if (isFinishing() || isDestroyed() || chooserListAdapter.getCount() == 0) {
             return;
@@ -476,7 +578,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         sendShareShortcutInfoList(shareShortcutInfos, chooserListAdapter, shortcutResults, chooserListAdapter.getUserHandle());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SharedPreferences getPinnedSharedPrefs(Context context) {
         File prefsFile = new File(new File(Environment.getDataUserCePackageDirectory(StorageManager.UUID_PRIVATE_INTERNAL, context.getUserId(), context.getPackageName()), "shared_prefs"), "chooser_pin_settings.xml");
         return context.getSharedPreferences(prefsFile, 0);
@@ -537,9 +638,30 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return ((UserManager) getSystemService(UserManager.class)).getUserInfo(UserHandle.myUserId()).isManagedProfile();
     }
 
+    /* renamed from: com.android.internal.app.ChooserActivity$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 extends PackageMonitor {
+        final /* synthetic */ ResolverListAdapter val$listAdapter;
+
+        AnonymousClass3(ResolverListAdapter resolverListAdapter) {
+            listAdapter = resolverListAdapter;
+        }
+
+        @Override // com.android.internal.content.PackageMonitor
+        public void onSomePackagesChanged() {
+            ChooserActivity.this.handlePackagesChanged(listAdapter);
+        }
+    }
+
     @Override // com.android.internal.app.ResolverActivity
-    protected PackageMonitor createPackageMonitor(final ResolverListAdapter listAdapter) {
+    protected PackageMonitor createPackageMonitor(ResolverListAdapter listAdapter) {
         return new PackageMonitor() { // from class: com.android.internal.app.ChooserActivity.3
+            final /* synthetic */ ResolverListAdapter val$listAdapter;
+
+            AnonymousClass3(ResolverListAdapter listAdapter2) {
+                listAdapter = listAdapter2;
+            }
+
             @Override // com.android.internal.content.PackageMonitor
             public void onSomePackagesChanged() {
                 ChooserActivity.this.handlePackagesChanged(listAdapter);
@@ -551,7 +673,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         handlePackagesChanged(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handlePackagesChanged(ResolverListAdapter listAdapter) {
         this.mPinnedSharedPrefs = getPinnedSharedPrefs(this);
         if (listAdapter == null) {
@@ -565,7 +686,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         updateProfileViewButton();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onCopyButtonClicked(View v) {
         ClipData clipData;
         Intent targetIntent = getTargetIntent();
@@ -604,7 +724,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         finish();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.ResolverActivity, android.app.Activity
     public void onResume() {
         super.onResume();
@@ -792,7 +911,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return b;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createNearbyButton$1(TargetInfo ti, View unused) {
         getChooserActivityLogger().logShareTargetSelected(5, "", -1, false);
         safelyStartActivityAsUser(ti, getPersonalProfileUserHandle());
@@ -814,7 +932,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return b;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createEditButton$2(TargetInfo ti, View unused) {
         getChooserActivityLogger().logShareTargetSelected(6, "", -1, false);
         View firstImgView = getFirstVisibleImgPreviewView();
@@ -953,7 +1070,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return contentPreviewLayout;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class FileInfo {
         public final boolean hasThumbnail;
@@ -1085,7 +1201,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean validForContentPreview(Uri uri) throws SecurityException {
         if (uri == null) {
             return false;
@@ -1128,17 +1243,14 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getNumSheetExpansions() {
         return getPreferences(0).getInt(PREF_NUM_SHEET_EXPANSIONS, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void incrementNumSheetExpansions() {
         getPreferences(0).edit().putInt(PREF_NUM_SHEET_EXPANSIONS, getNumSheetExpansions() + 1).apply();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.ResolverActivity, android.app.Activity
     public void onStop() {
         super.onStop();
@@ -1147,7 +1259,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.ResolverActivity, android.app.Activity
     public void onDestroy() {
         super.onDestroy();
@@ -1228,7 +1339,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return getIntent().getBooleanExtra(Intent.EXTRA_AUTO_LAUNCH_SINGLE_CHOICE, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void showTargetDetails(TargetInfo targetInfo) {
         ArrayList<DisplayResolveInfo> targetList;
         if (targetInfo == null) {
@@ -1269,7 +1379,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.ResolverActivity
     public boolean onTargetSelected(TargetInfo target, boolean alwaysCheck) {
         if (this.mRefinementIntentSender != null) {
@@ -1457,7 +1566,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$queryDirectShareTargets$3(UserHandle userHandle, IntentFilter filter, ChooserListAdapter adapter) {
         Context selectedProfileContext = createContextAsUser(userHandle, 0);
         ShortcutManager sm = (ShortcutManager) selectedProfileContext.getSystemService("shortcut");
@@ -1575,12 +1683,10 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return chooserTargetList;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$convertToChooserTarget$4(ChooserTarget a, ChooserTarget b) {
         return -Float.compare(a.getScore(), b.getScore());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void logDirectShareTargetReceived(int logCategory) {
         int apiLatency = (int) (System.currentTimeMillis() - this.mQueriedSharingShortcutsTimeMs);
         getMetricsLogger().write(new LogMaker(logCategory).setSubtype(apiLatency));
@@ -1738,11 +1844,11 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static class AzInfoComparator implements Comparator<DisplayResolveInfo> {
+    public static class AzInfoComparator implements Comparator<DisplayResolveInfo> {
         Comparator<DisplayResolveInfo> mComparator;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public AzInfoComparator(Context context) {
             Collator collator = Collator.getInstance(context.getResources().getConfiguration().locale);
             this.mComparator = Comparator.comparing(new Function() { // from class: com.android.internal.app.ChooserActivity$AzInfoComparator$$ExternalSyntheticLambda0
@@ -1854,7 +1960,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class PlaceHolderTargetInfo extends NotSelectableTargetInfo {
         @Override // com.android.internal.app.chooser.TargetInfo
@@ -1865,7 +1970,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes4.dex */
     public static final class EmptyTargetInfo extends NotSelectableTargetInfo {
         @Override // com.android.internal.app.chooser.TargetInfo
@@ -1874,14 +1978,12 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleScroll(View view, int x, int y, int oldx, int oldy) {
         if (this.mChooserMultiProfilePagerAdapter.getCurrentRootAdapter() != null) {
             this.mChooserMultiProfilePagerAdapter.getCurrentRootAdapter().handleScroll(view, y, oldy);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleLayoutChange(View v, int left, final int top, int right, final int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         ChooserMultiProfilePagerAdapter chooserMultiProfilePagerAdapter = this.mChooserMultiProfilePagerAdapter;
         if (chooserMultiProfilePagerAdapter == null) {
@@ -1920,7 +2022,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleLayoutChange$5(ChooserGridAdapter gridAdapter, int top, int bottom, RecyclerView recyclerView) {
         if (this.mResolverDrawerLayout == null || gridAdapter == null) {
             return;
@@ -2011,7 +2112,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return this.mChooserMultiProfilePagerAdapter.getItem(currentPage).getEmptyStateView();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class BaseChooserTargetComparator implements Comparator<ChooserTarget> {
         @Override // java.util.Comparator
@@ -2099,10 +2199,20 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             return;
         }
         int elevatedViewResId = shouldShowTabs() ? 16908307 : R.id.chooser_header;
-        final View elevatedView = this.mResolverDrawerLayout.findViewById(elevatedViewResId);
-        final float defaultElevation = elevatedView.getElevation();
-        final float chooserHeaderScrollElevation = getResources().getDimensionPixelSize(R.dimen.chooser_header_scroll_elevation);
+        View elevatedView = this.mResolverDrawerLayout.findViewById(elevatedViewResId);
+        float defaultElevation = elevatedView.getElevation();
+        float chooserHeaderScrollElevation = getResources().getDimensionPixelSize(R.dimen.chooser_header_scroll_elevation);
         this.mChooserMultiProfilePagerAdapter.getActiveAdapterView().addOnScrollListener(new RecyclerView.OnScrollListener() { // from class: com.android.internal.app.ChooserActivity.4
+            final /* synthetic */ float val$chooserHeaderScrollElevation;
+            final /* synthetic */ float val$defaultElevation;
+            final /* synthetic */ View val$elevatedView;
+
+            AnonymousClass4(View elevatedView2, float chooserHeaderScrollElevation2, float defaultElevation2) {
+                elevatedView = elevatedView2;
+                chooserHeaderScrollElevation = chooserHeaderScrollElevation2;
+                defaultElevation = defaultElevation2;
+            }
+
             @Override // com.android.internal.widget.RecyclerView.OnScrollListener
             public void onScrollStateChanged(RecyclerView view, int scrollState) {
                 if (scrollState == 0) {
@@ -2131,12 +2241,58 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         });
     }
 
+    /* renamed from: com.android.internal.app.ChooserActivity$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 extends RecyclerView.OnScrollListener {
+        final /* synthetic */ float val$chooserHeaderScrollElevation;
+        final /* synthetic */ float val$defaultElevation;
+        final /* synthetic */ View val$elevatedView;
+
+        AnonymousClass4(View elevatedView2, float chooserHeaderScrollElevation2, float defaultElevation2) {
+            elevatedView = elevatedView2;
+            chooserHeaderScrollElevation = chooserHeaderScrollElevation2;
+            defaultElevation = defaultElevation2;
+        }
+
+        @Override // com.android.internal.widget.RecyclerView.OnScrollListener
+        public void onScrollStateChanged(RecyclerView view, int scrollState) {
+            if (scrollState == 0) {
+                if (ChooserActivity.this.mScrollStatus == 1) {
+                    ChooserActivity.this.mScrollStatus = 0;
+                    ChooserActivity.this.setHorizontalScrollingEnabled(true);
+                    return;
+                }
+                return;
+            }
+            if (scrollState == 1 && ChooserActivity.this.mScrollStatus == 0) {
+                ChooserActivity.this.mScrollStatus = 1;
+                ChooserActivity.this.setHorizontalScrollingEnabled(false);
+            }
+        }
+
+        @Override // com.android.internal.widget.RecyclerView.OnScrollListener
+        public void onScrolled(RecyclerView view, int dx, int dy) {
+            View child;
+            if (view.getChildCount() > 0 && ((child = view.getLayoutManager().findViewByPosition(0)) == null || child.getTop() < 0)) {
+                elevatedView.setElevation(chooserHeaderScrollElevation);
+            } else {
+                elevatedView.setElevation(defaultElevation);
+            }
+        }
+    }
+
     private void maybeSetupGlobalLayoutListener() {
         if (shouldShowTabs()) {
             return;
         }
-        final View recyclerView = this.mChooserMultiProfilePagerAdapter.getActiveAdapterView();
+        View recyclerView = this.mChooserMultiProfilePagerAdapter.getActiveAdapterView();
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.android.internal.app.ChooserActivity.5
+            final /* synthetic */ View val$recyclerView;
+
+            AnonymousClass5(View recyclerView2) {
+                recyclerView = recyclerView2;
+            }
+
             @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
             public void onGlobalLayout() {
                 recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -2149,6 +2305,28 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
                 }
             }
         });
+    }
+
+    /* renamed from: com.android.internal.app.ChooserActivity$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements ViewTreeObserver.OnGlobalLayoutListener {
+        final /* synthetic */ View val$recyclerView;
+
+        AnonymousClass5(View recyclerView2) {
+            recyclerView = recyclerView2;
+        }
+
+        @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
+        public void onGlobalLayout() {
+            recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            TextView titleView = (TextView) ChooserActivity.this.findViewById(16908310);
+            if (titleView != null) {
+                titleView.setFocusable(true);
+                titleView.setFocusableInTouchMode(true);
+                titleView.requestFocus();
+                titleView.requestAccessibilityFocus();
+            }
+        }
     }
 
     @Override // com.android.internal.app.ChooserListAdapter.ChooserListCommunicator
@@ -2207,7 +2385,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return contentPreviewContainer.getVisibility() == 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void hideStickyContentPreview() {
         if (!isStickyContentPreviewShowing()) {
             return;
@@ -2248,8 +2425,9 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return this.mContentView;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static abstract class ViewHolderBase extends RecyclerView.ViewHolder {
+    public static abstract class ViewHolderBase extends RecyclerView.ViewHolder {
         private int mViewType;
 
         ViewHolderBase(View itemView, int viewType) {
@@ -2262,7 +2440,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class ItemViewHolder extends ViewHolderBase {
         int mListPosition;
@@ -2290,12 +2467,10 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$0(View v) {
             ChooserActivity.this.startSelected(this.mListPosition, false, true);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$new$1(View v) {
             TargetInfo ti = ChooserActivity.this.mChooserMultiProfilePagerAdapter.getActiveListAdapter().targetInfoForPosition(this.mListPosition, true);
             if ((ti instanceof DisplayResolveInfo) && ChooserActivity.this.shouldShowTargetDetails(ti)) {
@@ -2305,7 +2480,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean shouldShowTargetDetails(TargetInfo ti) {
         ComponentName nearbyShare = getNearbySharingComponent();
         boolean isNearbyShare = nearbyShare != null && nearbyShare.equals(ti.getResolvedComponentName()) && shouldNearbyShareBeFirstInRankedRow();
@@ -2345,7 +2519,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.ResolverActivity
     public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
         if (shouldShowTabs()) {
@@ -2359,7 +2532,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setHorizontalScrollingEnabled(boolean enabled) {
         ResolverViewPager viewPager = (ResolverViewPager) findViewById(R.id.profile_pager);
         viewPager.setSwipingEnabled(enabled);
@@ -2409,6 +2581,12 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             this.mLayoutInflater = LayoutInflater.from(ChooserActivity.this);
             this.mShowAzLabelIfPoss = ChooserActivity.this.getNumSheetExpansions() < 20;
             wrappedAdapter.registerDataSetObserver(new DataSetObserver() { // from class: com.android.internal.app.ChooserActivity.ChooserGridAdapter.1
+                final /* synthetic */ ChooserActivity val$this$0;
+
+                AnonymousClass1(ChooserActivity chooserActivity) {
+                    r2 = chooserActivity;
+                }
+
                 @Override // android.database.DataSetObserver
                 public void onChanged() {
                     super.onChanged();
@@ -2421,6 +2599,29 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
                     ChooserGridAdapter.this.notifyDataSetChanged();
                 }
             });
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.android.internal.app.ChooserActivity$ChooserGridAdapter$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 extends DataSetObserver {
+            final /* synthetic */ ChooserActivity val$this$0;
+
+            AnonymousClass1(ChooserActivity chooserActivity) {
+                r2 = chooserActivity;
+            }
+
+            @Override // android.database.DataSetObserver
+            public void onChanged() {
+                super.onChanged();
+                ChooserGridAdapter.this.notifyDataSetChanged();
+            }
+
+            @Override // android.database.DataSetObserver
+            public void onInvalidated() {
+                super.onInvalidated();
+                ChooserGridAdapter.this.notifyDataSetChanged();
+            }
         }
 
         public void setFooterHeight(int height) {
@@ -2589,6 +2790,14 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
                 View v = this.mChooserListAdapter.createView(holder.getRowByIndex(i));
                 final int column = i;
                 v.setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.app.ChooserActivity.ChooserGridAdapter.2
+                    final /* synthetic */ int val$column;
+                    final /* synthetic */ ItemGroupViewHolder val$holder;
+
+                    AnonymousClass2(final ItemGroupViewHolder holder2, final int column2) {
+                        holder = holder2;
+                        column = column2;
+                    }
+
                     @Override // android.view.View.OnClickListener
                     public void onClick(View v2) {
                         ChooserActivity.this.startSelected(holder.getItemIndex(column), false, true);
@@ -2598,11 +2807,11 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
                     @Override // android.view.View.OnLongClickListener
                     public final boolean onLongClick(View view) {
                         boolean lambda$loadViewsIntoGroup$0;
-                        lambda$loadViewsIntoGroup$0 = ChooserActivity.ChooserGridAdapter.this.lambda$loadViewsIntoGroup$0(holder, column, view);
+                        lambda$loadViewsIntoGroup$0 = ChooserActivity.ChooserGridAdapter.this.lambda$loadViewsIntoGroup$0(holder2, column2, view);
                         return lambda$loadViewsIntoGroup$0;
                     }
                 });
-                holder.addView(i, v);
+                holder2.addView(i, v);
                 if (isDirectShare) {
                     ResolverListAdapter.ViewHolder vh = (ResolverListAdapter.ViewHolder) v.getTag();
                     vh.text.setLines(2);
@@ -2612,19 +2821,35 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
                 v.measure(exactSpec, spec);
                 setViewBounds(v, v.getMeasuredWidth(), v.getMeasuredHeight());
             }
-            ViewGroup viewGroup = holder.getViewGroup();
-            holder.measure();
-            setViewBounds(viewGroup, -1, holder.getMeasuredRowHeight());
+            ViewGroup viewGroup = holder2.getViewGroup();
+            holder2.measure();
+            setViewBounds(viewGroup, -1, holder2.getMeasuredRowHeight());
             if (isDirectShare) {
-                DirectShareViewHolder dsvh = (DirectShareViewHolder) holder;
+                DirectShareViewHolder dsvh = (DirectShareViewHolder) holder2;
                 setViewBounds(dsvh.getRow(0), -1, dsvh.getMinRowHeight());
                 setViewBounds(dsvh.getRow(1), -1, dsvh.getMinRowHeight());
             }
-            viewGroup.setTag(holder);
-            return holder;
+            viewGroup.setTag(holder2);
+            return holder2;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: com.android.internal.app.ChooserActivity$ChooserGridAdapter$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements View.OnClickListener {
+            final /* synthetic */ int val$column;
+            final /* synthetic */ ItemGroupViewHolder val$holder;
+
+            AnonymousClass2(final ItemGroupViewHolder holder2, final int column2) {
+                holder = holder2;
+                column = column2;
+            }
+
+            @Override // android.view.View.OnClickListener
+            public void onClick(View v2) {
+                ChooserActivity.this.startSelected(holder.getItemIndex(column), false, true);
+            }
+        }
+
         public /* synthetic */ boolean lambda$loadViewsIntoGroup$0(ItemGroupViewHolder holder, int column, View v1) {
             TargetInfo ti = this.mChooserListAdapter.targetInfoForPosition(holder.getItemIndex(column), true);
             if (ChooserActivity.this.shouldShowTargetDetails(ti)) {
@@ -2760,7 +2985,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             return this.mChooserListAdapter;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean shouldCellSpan(int position) {
             return getItemViewType(position) == 1;
         }
@@ -2778,7 +3002,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static abstract class ItemGroupViewHolder extends ViewHolderBase {
         protected final View[] mCells;
@@ -2830,7 +3053,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SingleRowViewHolder extends ItemGroupViewHolder {
         private final ViewGroup mRow;
@@ -2871,7 +3093,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class DirectShareViewHolder extends ItemGroupViewHolder {
         private int mCellCountPerRow;
@@ -2948,7 +3169,7 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
 
         @Override // com.android.internal.app.ChooserActivity.ItemGroupViewHolder
         public void setViewVisibility(int i, int visibility) {
-            final View v = getView(i);
+            View v = getView(i);
             if (visibility == 0) {
                 this.mCellVisibility[i] = true;
                 v.setVisibility(visibility);
@@ -2961,6 +3182,12 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
                     fadeAnim.setDuration(200L);
                     fadeAnim.setInterpolator(new AccelerateInterpolator(1.0f));
                     fadeAnim.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.app.ChooserActivity.DirectShareViewHolder.1
+                        final /* synthetic */ View val$v;
+
+                        AnonymousClass1(View v2) {
+                            v = v2;
+                        }
+
                         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                         public void onAnimationEnd(Animator animation) {
                             v.setVisibility(4);
@@ -2968,6 +3195,21 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
                     });
                     fadeAnim.start();
                 }
+            }
+        }
+
+        /* renamed from: com.android.internal.app.ChooserActivity$DirectShareViewHolder$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 extends AnimatorListenerAdapter {
+            final /* synthetic */ View val$v;
+
+            AnonymousClass1(View v2) {
+                v = v2;
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                v.setVisibility(4);
             }
         }
 
@@ -3049,7 +3291,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class RefinementResultReceiver extends ResultReceiver {
         private ChooserActivity mChooserActivity;
@@ -3061,7 +3302,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             this.mSelectedTarget = target;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(int resultCode, Bundle resultData) {
             ChooserActivity chooserActivity = this.mChooserActivity;
@@ -3165,14 +3405,12 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
             super.onSizeChanged(width, height, oldWidth, oldHeight);
             updatePath(width, height);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.ImageView, android.view.View
         public void onDraw(Canvas canvas) {
             if (this.mRadius != 0) {
@@ -3194,11 +3432,14 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class EnterTransitionAnimationDelegate implements View.OnLayoutChangeListener {
         private boolean mOffsetCalculated;
         private boolean mPreviewReady;
+
+        /* synthetic */ EnterTransitionAnimationDelegate(ChooserActivity chooserActivity, EnterTransitionAnimationDelegateIA enterTransitionAnimationDelegateIA) {
+            this();
+        }
 
         private EnterTransitionAnimationDelegate() {
             this.mPreviewReady = false;
@@ -3241,7 +3482,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class FinishAnimation extends AlphaAnimation implements Animation.AnimationListener {
         private Activity mActivity;
@@ -3303,7 +3543,6 @@ public class ChooserActivity extends ResolverActivity implements ChooserListAdap
         getChooserActivityLogger().logShareheetProfileChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean shouldNearbyShareBeFirstInRankedRow() {
         return ActivityManager.isLowRamDeviceStatic() && this.mIsNearbyShareFirstTargetInRankedApp;
     }

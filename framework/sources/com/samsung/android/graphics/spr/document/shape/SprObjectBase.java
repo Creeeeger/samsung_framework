@@ -56,12 +56,10 @@ public abstract class SprObjectBase implements Cloneable {
 
     public abstract int getTotalSegmentCount();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SprObjectBase(byte type) {
         this.mType = type;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void finalize() throws Throwable {
         super.finalize();
         this.mAttributeList.clear();
@@ -335,7 +333,6 @@ public abstract class SprObjectBase implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setShadowLayer() {
         SprAttributeShadow sprAttributeShadow = this.shadow;
         if (sprAttributeShadow == null) {
@@ -356,7 +353,6 @@ public abstract class SprObjectBase implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void clearShadowLayer() {
         if (this.shadow == null) {
             return;
@@ -366,14 +362,14 @@ public abstract class SprObjectBase implements Cloneable {
     }
 
     @Override // 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SprObjectBase mo8423clone() throws CloneNotSupportedException {
+    /* renamed from: clone */
+    public SprObjectBase mo8415clone() throws CloneNotSupportedException {
         SprObjectBase object = (SprObjectBase) super.clone();
         object.mAttributeList = new ArrayList<>();
         Iterator<SprAttributeBase> it = this.mAttributeList.iterator();
         while (it.hasNext()) {
             SprAttributeBase attribute = it.next();
-            object.mAttributeList.add(attribute.mo8420clone());
+            object.mAttributeList.add(attribute.mo8412clone());
         }
         if (this.strokePaint != null) {
             object.strokePaint = new Paint(this.strokePaint);

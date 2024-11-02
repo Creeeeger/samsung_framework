@@ -13,8 +13,9 @@ public abstract class SemBackgroundMusic {
     private static final String TAG = "SemBackgroundMusic";
     protected ArrayList<BGMInfo> mBGMInfos = new ArrayList<>();
 
+    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes5.dex */
-    protected static class BGMInfo {
+    public static class BGMInfo {
         int durationMs;
         int endTimeMs;
         FileDescriptor fd;
@@ -54,7 +55,6 @@ public abstract class SemBackgroundMusic {
         return p;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BGMInfo addInfo(BGMInfo bgmInfo, FileDescriptor fd, int startTime, int endTime) {
         bgmInfo.fd = fd;
         bgmInfo.offset = 0L;
@@ -65,7 +65,6 @@ public abstract class SemBackgroundMusic {
         return bgmInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BGMInfo addInfo(BGMInfo bgmInfo, AssetFileDescriptor afd, int startTime, int endTime) {
         bgmInfo.fd = afd.getFileDescriptor();
         bgmInfo.offset = afd.getStartOffset();

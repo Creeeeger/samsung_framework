@@ -319,7 +319,10 @@ public class LockPatternUtils {
     }
 
     public LockPatternUtils(Context context) {
-        PropertyInvalidatedCache.QueryHandler<Integer, Integer> queryHandler = new PropertyInvalidatedCache.QueryHandler<Integer, Integer>() { // from class: com.android.internal.widget.LockPatternUtils.1
+        AnonymousClass1 anonymousClass1 = new PropertyInvalidatedCache.QueryHandler<Integer, Integer>() { // from class: com.android.internal.widget.LockPatternUtils.1
+            AnonymousClass1() {
+            }
+
             @Override // android.app.PropertyInvalidatedCache.QueryHandler
             public Integer apply(Integer userHandle) {
                 try {
@@ -335,8 +338,8 @@ public class LockPatternUtils {
                 return userHandle.intValue() == -9999;
             }
         };
-        this.mCredentialTypeQuery = queryHandler;
-        this.mCredentialTypeCache = new PropertyInvalidatedCache<>(4, "system_server", CREDENTIAL_TYPE_API, CREDENTIAL_TYPE_API, queryHandler);
+        this.mCredentialTypeQuery = anonymousClass1;
+        this.mCredentialTypeCache = new PropertyInvalidatedCache<>(4, "system_server", CREDENTIAL_TYPE_API, CREDENTIAL_TYPE_API, anonymousClass1);
         this.mContext = context;
         this.mContentResolver = context.getContentResolver();
         Looper looper = Looper.myLooper();
@@ -958,6 +961,29 @@ public class LockPatternUtils {
         return Long.toHexString(salt);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.widget.LockPatternUtils$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends PropertyInvalidatedCache.QueryHandler<Integer, Integer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.app.PropertyInvalidatedCache.QueryHandler
+        public Integer apply(Integer userHandle) {
+            try {
+                return Integer.valueOf(LockPatternUtils.this.getLockSettings().getCredentialType(userHandle.intValue()));
+            } catch (RemoteException re) {
+                Log.e(LockPatternUtils.TAG, "failed to get credential type", re);
+                return -1;
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache.QueryHandler
+        public boolean shouldBypassCache(Integer userHandle) {
+            return userHandle.intValue() == -9999;
+        }
+    }
+
     public static final void invalidateCredentialTypeCache() {
         PropertyInvalidatedCache.invalidateCache("system_server", CREDENTIAL_TYPE_API);
     }
@@ -1258,7 +1284,6 @@ public class LockPatternUtils {
         return (getStrongAuthForUser(userId) & 32) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class WrappedCallback extends ICheckCredentialProgressCallback.Stub {
         private CheckCredentialProgressCallback mCallback;
@@ -1283,7 +1308,6 @@ public class LockPatternUtils {
             this.mHandler = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCredentialVerified$0() {
             this.mCallback.onEarlyMatched();
             this.mCallback = null;
@@ -1409,6 +1433,9 @@ public class LockPatternUtils {
             this.mIsNonStrongBiometricAllowedForUser = new SparseBooleanArray();
             this.mDefaultIsNonStrongBiometricAllowed = true;
             this.mStub = new IStrongAuthTracker.Stub() { // from class: com.android.internal.widget.LockPatternUtils.StrongAuthTracker.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.app.trust.IStrongAuthTracker
                 public void onStrongAuthRequiredChanged(int strongAuthFlags, int userId) {
                     StrongAuthTracker.this.mHandler.obtainMessage(1, strongAuthFlags, userId).sendToTarget();
@@ -1477,12 +1504,31 @@ public class LockPatternUtils {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.android.internal.widget.LockPatternUtils$StrongAuthTracker$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 extends IStrongAuthTracker.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.app.trust.IStrongAuthTracker
+            public void onStrongAuthRequiredChanged(int strongAuthFlags, int userId) {
+                StrongAuthTracker.this.mHandler.obtainMessage(1, strongAuthFlags, userId).sendToTarget();
+            }
+
+            @Override // android.app.trust.IStrongAuthTracker
+            public void onIsNonStrongBiometricAllowedChanged(boolean z, int i) {
+                StrongAuthTracker.this.mHandler.obtainMessage(2, z ? 1 : 0, i).sendToTarget();
+            }
+        }
+
         public IStrongAuthTracker.Stub getStub() {
             return this.mStub;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private class H extends Handler {
+        public class H extends Handler {
             static final int MSG_ON_IS_NON_STRONG_BIOMETRIC_ALLOWED_CHANGED = 2;
             static final int MSG_ON_STRONG_AUTH_REQUIRED_CHANGED = 1;
 
@@ -2046,7 +2092,6 @@ public class LockPatternUtils {
         return getLong(SDP_MDFPPMODE_ENABLED_FOR_SYSTEM_KEY, 0L, 0) == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class WrappedCallbackForDualDar extends IDualDarAuthProgressCallback.Stub {
         private DualDarAuthProgressCallback mCallback;
@@ -2071,7 +2116,6 @@ public class LockPatternUtils {
             this.mHandler = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onInnerLayerUnlocked$0() {
             this.mCallback.onInnerLayerUnlocked();
             this.mCallback = null;
@@ -2107,6 +2151,10 @@ public class LockPatternUtils {
         private final Context mContext;
         private DualDarAuthUtils mDualDarAuthUtils;
 
+        /* synthetic */ LockPatternUtilForDualDarDo(LockPatternUtils lockPatternUtils, Context context, LockPatternUtilForDualDarDoIA lockPatternUtilForDualDarDoIA) {
+            this(context);
+        }
+
         private LockPatternUtilForDualDarDo(Context context) {
             this.mContext = context;
         }
@@ -2126,7 +2174,6 @@ public class LockPatternUtils {
             return getAuthUtils().isInnerAuthUserForDo(userId);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public boolean checkCredential(LockscreenCredential credential, int userId, int option, DualDarAuthProgressCallback progressCallback) throws RequestThrottledException {
             return LockPatternUtils.this.checkCredentialForDualDarDo(credential, userId, option, progressCallback);
         }
@@ -2136,7 +2183,6 @@ public class LockPatternUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkCredentialForDualDarDo(LockscreenCredential credential, int userId, int option, DualDarAuthProgressCallback progressCallback) throws RequestThrottledException {
         throwIfCalledOnMainThread();
         try {

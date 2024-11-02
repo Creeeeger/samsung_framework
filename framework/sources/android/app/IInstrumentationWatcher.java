@@ -105,7 +105,6 @@ public interface IInstrumentationWatcher extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IInstrumentationWatcher {
             private IBinder mRemote;

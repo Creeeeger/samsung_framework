@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class AudioPortExtSys implements Parcelable {
     public static final Parcelable.Creator<AudioPortExtSys> CREATOR = new Parcelable.Creator<AudioPortExtSys>() { // from class: android.media.AudioPortExtSys.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioPortExtSys createFromParcel(Parcel _aidl_source) {
             return new AudioPortExtSys(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPortExtSys[] newArray(int _aidl_size) {
             return new AudioPortExtSys[_aidl_size];
@@ -31,6 +32,10 @@ public final class AudioPortExtSys implements Parcelable {
         public static final int mix = 2;
         public static final int session = 3;
         public static final int unspecified = 0;
+    }
+
+    /* synthetic */ AudioPortExtSys(Parcel parcel, AudioPortExtSysIA audioPortExtSysIA) {
+        this(parcel);
     }
 
     public AudioPortExtSys() {
@@ -101,6 +106,23 @@ public final class AudioPortExtSys implements Parcelable {
 
     public void setSession(int _value) {
         _set(3, Integer.valueOf(_value));
+    }
+
+    /* renamed from: android.media.AudioPortExtSys$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioPortExtSys> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPortExtSys createFromParcel(Parcel _aidl_source) {
+            return new AudioPortExtSys(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPortExtSys[] newArray(int _aidl_size) {
+            return new AudioPortExtSys[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

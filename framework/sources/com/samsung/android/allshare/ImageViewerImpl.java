@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.Item;
 import com.samsung.android.allshare.media.ContentInfo;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class ImageViewerImpl extends ImageViewer implements IBundleHolder, IHandlerHolder {
     private static final String TAG_CLASS = "ImageViewerImpl";
@@ -43,7 +43,8 @@ public final class ImageViewerImpl extends ImageViewer implements IBundleHolder,
     AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ImageViewerImpl.1
         private HashMap<String, ImageViewer.ImageViewerState> mStateMap;
 
-        {
+        AnonymousClass1(Looper looper) {
+            super(looper);
             HashMap<String, ImageViewer.ImageViewerState> hashMap = new HashMap<>();
             this.mStateMap = hashMap;
             hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, ImageViewer.ImageViewerState.BUFFERING);
@@ -141,6 +142,10 @@ public final class ImageViewerImpl extends ImageViewer implements IBundleHolder,
         }
     };
     AllShareResponseHandler mResponseHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ImageViewerImpl.2
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
         /* JADX WARN: Multi-variable type inference failed */
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
@@ -222,7 +227,6 @@ public final class ImageViewerImpl extends ImageViewer implements IBundleHolder,
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ImageViewerImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mAllShareConnector = null;
         this.mDeviceImpl = null;
@@ -246,6 +250,200 @@ public final class ImageViewerImpl extends ImageViewer implements IBundleHolder,
             this.mPlaylistPlayer = new PlaylistPlayerImpl(connector, deviceImpl);
         } else {
             this.mPlaylistPlayer = null;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ImageViewerImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareEventHandler {
+        private HashMap<String, ImageViewer.ImageViewerState> mStateMap;
+
+        AnonymousClass1(Looper looper) {
+            super(looper);
+            HashMap<String, ImageViewer.ImageViewerState> hashMap = new HashMap<>();
+            this.mStateMap = hashMap;
+            hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, ImageViewer.ImageViewerState.BUFFERING);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_NOMEDIA, ImageViewer.ImageViewerState.STOPPED);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PAUSED, ImageViewer.ImageViewerState.SHOWING);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_STOPPED, ImageViewer.ImageViewerState.STOPPED);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PLAYING, ImageViewer.ImageViewerState.SHOWING);
+            this.mStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_CONTENT_CHANGED, ImageViewer.ImageViewerState.CONTENT_CHANGED);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            try {
+                ERROR error = ERROR.FAIL;
+                Bundle resBundle = cvm.getBundle();
+                ImageViewer.ImageViewerState state = this.mStateMap.get(cvm.getActionID());
+                String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+                ERROR error2 = ERROR.stringToEnum(errorStr);
+                if (state == null) {
+                    state = ImageViewer.ImageViewerState.UNKNOWN;
+                }
+                if (state.equals(ImageViewer.ImageViewerState.CONTENT_CHANGED)) {
+                    String currentTrackUri = resBundle.getString(AllShareKey.BUNDLE_STRING_APP_ITEM_ID);
+                    if (currentTrackUri != null && !currentTrackUri.isEmpty()) {
+                        if (ImageViewerImpl.this.mContentChangedNotified) {
+                            DLog.d_api(ImageViewerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event yet");
+                            ImageViewerImpl.this.mCurrentDMRUri = currentTrackUri;
+                            return;
+                        }
+                        if (ImageViewerImpl.this.mCurrentDMRUri == null || !currentTrackUri.equalsIgnoreCase(ImageViewerImpl.this.mCurrentDMRUri)) {
+                            DLog.d_api(ImageViewerImpl.TAG_CLASS, "CONTENT_CHANGED, mCurrentDMRUri : " + ImageViewerImpl.this.mCurrentDMRUri + "  currentTrackUri : " + currentTrackUri);
+                            if (ImageViewerImpl.this.mCurrentDMRUri == null) {
+                                DLog.d_api(ImageViewerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mCurrentDMRUri is null");
+                                ImageViewerImpl.this.mCurrentDMRUri = currentTrackUri;
+                                return;
+                            }
+                            ImageViewerImpl.this.mCurrentDMRUri = currentTrackUri;
+                            if (ImageViewerImpl.this.mPlayingContentUris != null && !ImageViewerImpl.this.mPlayingContentUris.isEmpty()) {
+                                if (isContains(currentTrackUri)) {
+                                    DLog.d_api(ImageViewerImpl.TAG_CLASS, "handleEventMessage: this is playing content.");
+                                    DLog.i_api(ImageViewerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, this is my=" + currentTrackUri);
+                                    return;
+                                } else {
+                                    ImageViewerImpl.this.mContentChangedNotified = true;
+                                    DLog.w_api(ImageViewerImpl.TAG_CLASS, "Notify CONTENT_CHANGED event, mPlayingContentUris[" + ImageViewerImpl.this.mPlayingContentUris + "] vs currentTrackUri[" + currentTrackUri + NavigationBarInflaterView.SIZE_MOD_END);
+                                }
+                            }
+                            DLog.d_api(ImageViewerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mPlayingContentUris is null");
+                            return;
+                        }
+                        DLog.d_api(ImageViewerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mCurrentDMRUri is same as currentTrackUri " + currentTrackUri);
+                        return;
+                    }
+                    DLog.d_api(ImageViewerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, currentTrackUri is null");
+                    return;
+                }
+                notifyEvent(state, error2);
+            } catch (Error err) {
+                DLog.w_api(ImageViewerImpl.TAG_CLASS, "mEventHandler.handleEventMessage Error", err);
+            } catch (Exception e) {
+                DLog.w_api(ImageViewerImpl.TAG_CLASS, "mEventHandler.handleEventMessage Fail to notify event");
+            }
+        }
+
+        private void notifyEvent(ImageViewer.ImageViewerState state, ERROR error) {
+            if (ImageViewerImpl.this.mEventListener != null) {
+                try {
+                    DLog.v_api(ImageViewerImpl.TAG_CLASS, "mEventHandler.notifyEvent to " + ImageViewerImpl.this.mEventListener + " state[" + state.enumToString() + "] error[" + error.enumToString() + NavigationBarInflaterView.SIZE_MOD_END);
+                    ImageViewerImpl.this.mEventListener.onDeviceChanged(state, error);
+                } catch (Error err) {
+                    DLog.w_api(ImageViewerImpl.TAG_CLASS, "mEventHandler.notifyEvent Error", err);
+                } catch (Exception e) {
+                    DLog.w_api(ImageViewerImpl.TAG_CLASS, "mEventHandler.notifyEvent Exception", e);
+                }
+            }
+        }
+
+        private boolean isContains(String currentTrackUri) {
+            if (ImageViewerImpl.this.mPlayingContentUris == null || currentTrackUri == null) {
+                return false;
+            }
+            Iterator it = ImageViewerImpl.this.mPlayingContentUris.iterator();
+            while (it.hasNext()) {
+                ArrayList<String> uris = (ArrayList) it.next();
+                Iterator<String> it2 = uris.iterator();
+                while (it2.hasNext()) {
+                    String uri = it2.next();
+                    if (currentTrackUri.endsWith(uri)) {
+                        ImageViewerImpl.this.mPlayingContentUris.remove(uris);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ImageViewerImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareResponseHandler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            String actionID = cvm.getActionID();
+            Bundle resBundle = cvm.getBundle();
+            if (actionID == null || resBundle == null) {
+                DLog.w_api(ImageViewerImpl.TAG_CLASS, "handleResponseMessage : actionID == null || resBundle == null");
+                return;
+            }
+            ERROR error = ERROR.FAIL;
+            String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+            if (errorStr != null) {
+                error = ERROR.stringToEnum(errorStr);
+            }
+            long contentInfoStartingPosition = resBundle.getLong(AllShareKey.BUNDLE_LONG_CONTENT_INFO_STARTINGPOSITION);
+            ContentInfo.Builder cb = new ContentInfo.Builder();
+            ContentInfo info = cb.setStartingPosition(contentInfoStartingPosition).build();
+            Bundle itemBundle = (Bundle) resBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_ITEM);
+            Item fromBundle = ItemCreator.fromBundle(itemBundle);
+            if (actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_LOCAL_CONTENT) || actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_LOCAL_CONTENT_URI) || actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_URI) || actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW)) {
+                if (error.equals(ERROR.SUCCESS)) {
+                    ImageViewerImpl.this.mContentChangedNotified = false;
+                } else if (fromBundle != 0) {
+                    if (actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_URI) || actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW)) {
+                        removeUri(fromBundle.getURI().toString());
+                    } else if (actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_LOCAL_CONTENT)) {
+                        Bundle bundle = new Bundle();
+                        if (fromBundle instanceof IBundleHolder) {
+                            bundle = ((IBundleHolder) fromBundle).getBundle();
+                        }
+                        String filePath = bundle.getString(AllShareKey.BUNDLE_STRING_FILEPATH);
+                        removeUri(filePath);
+                    } else if (actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_LOCAL_CONTENT_URI)) {
+                        String filePath2 = ImageViewerImpl.this.parseUriFilePath(fromBundle.getURI());
+                        removeUri(filePath2);
+                    }
+                }
+            }
+            if (ImageViewerImpl.this.mResponseListener == null) {
+                DLog.w_api(ImageViewerImpl.TAG_CLASS, "handleResponseMessage : mResponseListener == null");
+                return;
+            }
+            if (actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW) || actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_LOCAL_CONTENT) || actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_LOCAL_CONTENT_URI) || actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_SHOW_URI)) {
+                if (fromBundle == 0) {
+                    ImageViewerImpl.this.mResponseListener.onShowResponseReceived(fromBundle, info, ERROR.ITEM_NOT_EXIST);
+                    return;
+                } else {
+                    ImageViewerImpl.this.mResponseListener.onShowResponseReceived(fromBundle, info, error);
+                    return;
+                }
+            }
+            if (actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_STOP)) {
+                ImageViewerImpl.this.mResponseListener.onStopResponseReceived(error);
+            } else if (actionID.equals(AllShareAction.ACTION_IMAGE_VIEWER_REQUEST_GET_VIEWER_STATE)) {
+                String state = resBundle.getString(AllShareKey.BUNDLE_STRING_IMAGE_VIEWEW_STATE);
+                ImageViewer.ImageViewerState viewerState = ImageViewer.ImageViewerState.stringToEnum(state);
+                ImageViewerImpl.this.mResponseListener.onGetStateResponseReceived(viewerState, error);
+            }
+        }
+
+        private void removeUri(String currentTrackUri) {
+            if (ImageViewerImpl.this.mPlayingContentUris == null || currentTrackUri == null) {
+                return;
+            }
+            Iterator it = ImageViewerImpl.this.mPlayingContentUris.iterator();
+            while (it.hasNext()) {
+                ArrayList<String> uris = (ArrayList) it.next();
+                if (uris != null) {
+                    Iterator<String> it2 = uris.iterator();
+                    while (it2.hasNext()) {
+                        String uri = it2.next();
+                        if (uri != null && currentTrackUri.endsWith(uri)) {
+                            ImageViewerImpl.this.mPlayingContentUris.remove(uris);
+                            return;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -454,7 +652,7 @@ public final class ImageViewerImpl extends ImageViewer implements IBundleHolder,
         }
     }
 
-    /* renamed from: com.samsung.android.allshare.ImageViewerImpl$3, reason: invalid class name */
+    /* renamed from: com.samsung.android.allshare.ImageViewerImpl$3 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass3 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;
@@ -469,7 +667,6 @@ public final class ImageViewerImpl extends ImageViewer implements IBundleHolder,
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public String parseUriFilePath(Uri uri) {
         Context scContext;
         ContentResolver cr;

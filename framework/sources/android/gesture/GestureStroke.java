@@ -134,7 +134,6 @@ public class GestureStroke {
         return path;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void serialize(DataOutputStream out) throws IOException {
         float[] pts = this.points;
         long[] times = this.timestamps;
@@ -147,7 +146,6 @@ public class GestureStroke {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static GestureStroke deserialize(DataInputStream in) throws IOException {
         int count = in.readInt();
         ArrayList<GesturePoint> points = new ArrayList<>(count);

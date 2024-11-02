@@ -14,13 +14,14 @@ import java.security.InvalidParameterException;
 /* loaded from: classes4.dex */
 public final class InputContentInfo implements Parcelable {
     public static final Parcelable.Creator<InputContentInfo> CREATOR = new Parcelable.Creator<InputContentInfo>() { // from class: android.view.inputmethod.InputContentInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputContentInfo createFromParcel(Parcel source) {
             return new InputContentInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputContentInfo[] newArray(int size) {
             return new InputContentInfo[size];
@@ -31,6 +32,10 @@ public final class InputContentInfo implements Parcelable {
     private final ClipDescription mDescription;
     private final Uri mLinkUri;
     private IInputContentUriToken mUriToken;
+
+    /* synthetic */ InputContentInfo(Parcel parcel, InputContentInfoIA inputContentInfoIA) {
+        this(parcel);
+    }
 
     public InputContentInfo(Uri contentUri, ClipDescription description) {
         this(contentUri, description, null);
@@ -150,6 +155,23 @@ public final class InputContentInfo implements Parcelable {
             this.mUriToken = IInputContentUriToken.Stub.asInterface(source.readStrongBinder());
         } else {
             this.mUriToken = null;
+        }
+    }
+
+    /* renamed from: android.view.inputmethod.InputContentInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputContentInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputContentInfo createFromParcel(Parcel source) {
+            return new InputContentInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputContentInfo[] newArray(int size) {
+            return new InputContentInfo[size];
         }
     }
 

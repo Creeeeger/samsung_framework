@@ -32,7 +32,6 @@ public class MessagingLinearLayout extends ViewGroup {
         a.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Multi-variable type inference failed */
     @Override // android.view.View
     public void onMeasure(int i, int i2) {
@@ -150,7 +149,6 @@ public class MessagingLinearLayout extends ViewGroup {
         setMeasuredDimension(resolveSize(Math.max(getSuggestedMinimumWidth(), i13), i), Math.max(getSuggestedMinimumHeight(), i14));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Multi-variable type inference failed */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -210,7 +208,6 @@ public class MessagingLinearLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Multi-variable type inference failed */
     @Override // android.view.ViewGroup
     public boolean drawChild(Canvas canvas, View view, long drawingTime) {
@@ -236,13 +233,11 @@ public class MessagingLinearLayout extends ViewGroup {
         return new LayoutParams(this.mContext, attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-1, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
         LayoutParams copy = new LayoutParams(lp.width, lp.height);

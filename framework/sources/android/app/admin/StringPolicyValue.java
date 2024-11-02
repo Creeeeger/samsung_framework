@@ -7,18 +7,23 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class StringPolicyValue extends PolicyValue<String> {
     public static final Parcelable.Creator<StringPolicyValue> CREATOR = new Parcelable.Creator<StringPolicyValue>() { // from class: android.app.admin.StringPolicyValue.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StringPolicyValue createFromParcel(Parcel source) {
             return new StringPolicyValue(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StringPolicyValue[] newArray(int size) {
             return new StringPolicyValue[size];
         }
     };
+
+    /* synthetic */ StringPolicyValue(Parcel parcel, StringPolicyValueIA stringPolicyValueIA) {
+        this(parcel);
+    }
 
     public StringPolicyValue(String value) {
         super(value);
@@ -55,5 +60,22 @@ public final class StringPolicyValue extends PolicyValue<String> {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getValue());
+    }
+
+    /* renamed from: android.app.admin.StringPolicyValue$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StringPolicyValue> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StringPolicyValue createFromParcel(Parcel source) {
+            return new StringPolicyValue(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StringPolicyValue[] newArray(int size) {
+            return new StringPolicyValue[size];
+        }
     }
 }

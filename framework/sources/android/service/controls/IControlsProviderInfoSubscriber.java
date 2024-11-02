@@ -85,8 +85,9 @@ public interface IControlsProviderInfoSubscriber extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IControlsProviderInfoSubscriber {
+        public static class Proxy implements IControlsProviderInfoSubscriber {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

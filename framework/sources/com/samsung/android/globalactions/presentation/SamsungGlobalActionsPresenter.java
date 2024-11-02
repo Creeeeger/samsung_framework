@@ -330,12 +330,10 @@ public class SamsungGlobalActionsPresenter implements SamsungGlobalActions {
         hideQuickPanel();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onShowDialog$1() {
         this.mView.dismiss();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onShowDialog$2() {
         this.mView.dismissWithAnimation();
     }
@@ -403,7 +401,6 @@ public class SamsungGlobalActionsPresenter implements SamsungGlobalActions {
         this.mContentObserverWrapper.registerObserver(uri, runnable);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$static$4(ActionViewModel p1, ActionViewModel p2) {
         return p1.getActionInfo().getViewType().getValue() < p2.getActionInfo().getViewType().getValue() ? -1 : 1;
     }

@@ -80,8 +80,7 @@ public class IconDrawableFactory {
         return this.mUm.isManagedProfile(userId) ? DevicePolicyResources.Drawables.WORK_PROFILE_ICON_BADGE : DevicePolicyResources.UNDEFINED;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: getDefaultUserIconBadge, reason: merged with bridge method [inline-methods] */
+    /* renamed from: getDefaultUserIconBadge */
     public Drawable lambda$getBadgedIcon$0(int userId) {
         return this.mContext.getResources().getDrawable(this.mUm.getUserIconBadgeResId(userId));
     }

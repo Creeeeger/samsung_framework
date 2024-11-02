@@ -92,7 +92,6 @@ public class TaskDrainer<T> {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$postDrained$0() {
         this.mListener.onDrained();
     }

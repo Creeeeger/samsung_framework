@@ -12,17 +12,16 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-class CallbackUtil {
+public class CallbackUtil {
     private static final String TAG = "CallbackUtil";
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public interface CallbackMethod<T> {
         void callbackMethod(T t);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public interface DispatcherStub {
         void register(boolean z);
@@ -31,13 +30,11 @@ class CallbackUtil {
     CallbackUtil() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class ListenerInfo<T> {
         final Executor mExecutor;
         final T mListener;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ListenerInfo(T listener, Executor exe) {
             this.mListener = listener;
             this.mExecutor = exe;
@@ -71,7 +68,6 @@ class CallbackUtil {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T, S> Pair<ArrayList<ListenerInfo<T>>, S> addListener(String methodName, Executor executor, T listener, ArrayList<ListenerInfo<T>> listeners, S dispatchStub, Supplier<S> newStub, Consumer<S> registerStub) {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(listener);
@@ -96,7 +92,6 @@ class CallbackUtil {
         return new Pair<>(listeners, dispatchStub);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T, S> Pair<ArrayList<ListenerInfo<T>>, S> removeListener(String methodName, T listener, ArrayList<ListenerInfo<T>> listeners, S dispatchStub, Consumer<S> unregisterStub) {
         Objects.requireNonNull(listener);
         if (!removeListener(listener, listeners)) {
@@ -109,7 +104,6 @@ class CallbackUtil {
         return new Pair<>(listeners, dispatchStub);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> void callListeners(ArrayList<ListenerInfo<T>> listeners, Object listenerLock, final CallbackMethod<T> callback) {
         Objects.requireNonNull(listenerLock);
         synchronized (listenerLock) {
@@ -146,14 +140,12 @@ class CallbackUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class LazyListenerManager<T> {
         private DispatcherStub mDispatcherStub;
         private final Object mListenerLock = new Object();
         private ArrayList<ListenerInfo<T>> mListeners;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* JADX WARN: Multi-variable type inference failed */
         public void addListener(Executor executor, T t, String str, Supplier<DispatcherStub> supplier) {
             synchronized (this.mListenerLock) {
@@ -168,7 +160,6 @@ class CallbackUtil {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* JADX WARN: Multi-variable type inference failed */
         public void removeListener(T t, String str) {
             synchronized (this.mListenerLock) {
@@ -183,7 +174,6 @@ class CallbackUtil {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void callListeners(CallbackMethod<T> callback) {
             CallbackUtil.callListeners(this.mListeners, this.mListenerLock, callback);
         }

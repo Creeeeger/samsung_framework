@@ -96,8 +96,9 @@ public interface IExternalVibrationController extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IExternalVibrationController {
+        public static class Proxy implements IExternalVibrationController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

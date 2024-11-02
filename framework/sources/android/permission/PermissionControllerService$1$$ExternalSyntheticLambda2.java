@@ -8,6 +8,10 @@ import java.util.function.IntConsumer;
 public final /* synthetic */ class PermissionControllerService$1$$ExternalSyntheticLambda2 implements IntConsumer {
     public final /* synthetic */ AndroidFuture f$0;
 
+    public /* synthetic */ PermissionControllerService$1$$ExternalSyntheticLambda2(AndroidFuture androidFuture) {
+        this.f$0 = androidFuture;
+    }
+
     @Override // java.util.function.IntConsumer
     public final void accept(int i) {
         this.f$0.complete(Integer.valueOf(i));

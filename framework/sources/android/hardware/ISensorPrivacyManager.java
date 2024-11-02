@@ -316,8 +316,9 @@ public interface ISensorPrivacyManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISensorPrivacyManager {
+        public static class Proxy implements ISensorPrivacyManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

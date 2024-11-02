@@ -34,7 +34,9 @@ public class AccessibilityServiceInfo implements Parcelable {
     public static final int CAPABILITY_CAN_RETRIEVE_WINDOW_CONTENT = 1;
     public static final int CAPABILITY_CAN_TAKE_SCREENSHOT = 128;
     public static final Parcelable.Creator<AccessibilityServiceInfo> CREATOR = new Parcelable.Creator<AccessibilityServiceInfo>() { // from class: android.accessibilityservice.AccessibilityServiceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AccessibilityServiceInfo createFromParcel(Parcel parcel) {
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
@@ -42,7 +44,6 @@ public class AccessibilityServiceInfo implements Parcelable {
             return info;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityServiceInfo[] newArray(int size) {
             return new AccessibilityServiceInfo[size];
@@ -338,7 +339,6 @@ public class AccessibilityServiceInfo implements Parcelable {
         parcel.writeInt(this.mMotionEventSources);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void initFromParcel(Parcel parcel) {
         this.eventTypes = parcel.readInt();
         this.packageNames = parcel.readStringArray();
@@ -681,6 +681,25 @@ public class AccessibilityServiceInfo implements Parcelable {
         public SemCapabilityInfo(String title, String description) {
             this.title = title;
             this.description = description;
+        }
+    }
+
+    /* renamed from: android.accessibilityservice.AccessibilityServiceInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AccessibilityServiceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityServiceInfo createFromParcel(Parcel parcel) {
+            AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+            info.initFromParcel(parcel);
+            return info;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityServiceInfo[] newArray(int size) {
+            return new AccessibilityServiceInfo[size];
         }
     }
 }

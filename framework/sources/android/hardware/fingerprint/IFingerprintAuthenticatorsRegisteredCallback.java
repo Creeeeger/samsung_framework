@@ -85,8 +85,9 @@ public interface IFingerprintAuthenticatorsRegisteredCallback extends IInterface
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IFingerprintAuthenticatorsRegisteredCallback {
+        public static class Proxy implements IFingerprintAuthenticatorsRegisteredCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

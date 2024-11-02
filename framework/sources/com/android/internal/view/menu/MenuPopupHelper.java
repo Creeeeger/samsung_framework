@@ -43,6 +43,9 @@ public class MenuPopupHelper implements MenuHelper {
     public MenuPopupHelper(Context context, MenuBuilder menu, View anchorView, boolean overflowOnly, int popupStyleAttr, int popupStyleRes) {
         this.mDropDownGravity = Gravity.START;
         this.mInternalOnDismissListener = new PopupWindow.OnDismissListener() { // from class: com.android.internal.view.menu.MenuPopupHelper.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.PopupWindow.OnDismissListener
             public void onDismiss() {
                 MenuPopupHelper.this.onDismiss();
@@ -176,7 +179,6 @@ public class MenuPopupHelper implements MenuHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDismiss() {
         this.mPopup = null;
         PopupWindow.OnDismissListener onDismissListener = this.mOnDismissListener;
@@ -199,7 +201,19 @@ public class MenuPopupHelper implements MenuHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.view.menu.MenuPopupHelper$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements PopupWindow.OnDismissListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.PopupWindow.OnDismissListener
+        public void onDismiss() {
+            MenuPopupHelper.this.onDismiss();
+        }
+    }
+
     public void setIsContextMenuPopup(boolean isContextMenu) {
         this.mIsContextMenu = isContextMenu;
     }

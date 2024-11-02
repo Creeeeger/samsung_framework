@@ -5,13 +5,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class StatsBootstrapAtomValue implements Parcelable {
     public static final Parcelable.Creator<StatsBootstrapAtomValue> CREATOR = new Parcelable.Creator<StatsBootstrapAtomValue>() { // from class: android.os.StatsBootstrapAtomValue.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StatsBootstrapAtomValue createFromParcel(Parcel _aidl_source) {
             return new StatsBootstrapAtomValue(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StatsBootstrapAtomValue[] newArray(int _aidl_size) {
             return new StatsBootstrapAtomValue[_aidl_size];
@@ -34,6 +35,10 @@ public final class StatsBootstrapAtomValue implements Parcelable {
         public static final int intValue = 1;
         public static final int longValue = 2;
         public static final int stringValue = 4;
+    }
+
+    /* synthetic */ StatsBootstrapAtomValue(Parcel parcel, StatsBootstrapAtomValueIA statsBootstrapAtomValueIA) {
+        this(parcel);
     }
 
     public StatsBootstrapAtomValue() {
@@ -130,6 +135,23 @@ public final class StatsBootstrapAtomValue implements Parcelable {
 
     public void setBytesValue(byte[] _value) {
         _set(5, _value);
+    }
+
+    /* renamed from: android.os.StatsBootstrapAtomValue$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StatsBootstrapAtomValue> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StatsBootstrapAtomValue createFromParcel(Parcel _aidl_source) {
+            return new StatsBootstrapAtomValue(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StatsBootstrapAtomValue[] newArray(int _aidl_size) {
+            return new StatsBootstrapAtomValue[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

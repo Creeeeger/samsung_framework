@@ -76,11 +76,14 @@ public class VEController extends Element {
         this.controllerStatusListener = new VEControllerStatusListener() { // from class: com.samsung.vekit.Control.VEController$$ExternalSyntheticLambda0
             @Override // com.samsung.vekit.Listener.VEControllerStatusListener
             public final void onEvent(EventType eventType) {
-                VEController.this.m8992lambda$new$0$comsamsungvekitControlVEController(eventType);
+                VEController.this.m8984lambda$new$0$comsamsungvekitControlVEController(eventType);
             }
         };
         this.exportstatuslistener = null;
         this.animationStatusListener = new AnimationStatusListener() { // from class: com.samsung.vekit.Control.VEController.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.vekit.Listener.AnimationStatusListener
             public void onAnimationStarted(Object interpolatedValue) {
                 Log.i(VEController.this.TAG, "onAnimationStarted : UI Animations");
@@ -108,10 +111,41 @@ public class VEController extends Element {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$0$com-samsung-vekit-Control-VEController, reason: not valid java name */
-    public /* synthetic */ void m8992lambda$new$0$comsamsungvekitControlVEController(EventType eventType) {
+    /* renamed from: lambda$new$0$com-samsung-vekit-Control-VEController */
+    public /* synthetic */ void m8984lambda$new$0$comsamsungvekitControlVEController(EventType eventType) {
         Log.d(this.TAG, "onEvent : EventType : " + eventType.name());
+    }
+
+    /* renamed from: com.samsung.vekit.Control.VEController$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements AnimationStatusListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.vekit.Listener.AnimationStatusListener
+        public void onAnimationStarted(Object interpolatedValue) {
+            Log.i(VEController.this.TAG, "onAnimationStarted : UI Animations");
+            VEController.this.isAnimating = true;
+        }
+
+        @Override // com.samsung.vekit.Listener.AnimationStatusListener
+        public void onAnimationUpdated(Object interpolatedValue) {
+            Log.i(VEController.this.TAG, "onAnimationUpdated : UI Animations");
+        }
+
+        @Override // com.samsung.vekit.Listener.AnimationStatusListener
+        public void onAnimationFinished(Object interpolatedValue) {
+            Log.i(VEController.this.TAG, "onAnimationFinished : UI Animations");
+            VEController.this.cancelAnimation();
+            VEController.this.isAnimating = false;
+        }
+
+        @Override // com.samsung.vekit.Listener.AnimationStatusListener
+        public void onAnimationCanceled(Object interpolatedValue) {
+            Log.i(VEController.this.TAG, "onAnimationCanceled : UI Animations");
+            VEController.this.clearAnimations();
+            VEController.this.isAnimating = false;
+        }
     }
 
     /* loaded from: classes6.dex */
@@ -174,7 +208,6 @@ public class VEController extends Element {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleError(int errorType, Object extension) {
         Log.e(this.TAG, "handleExecuteError with errorType : " + errorType + ", extension : " + extension);
         ErrorType type = ErrorType.values()[errorType];
@@ -190,7 +223,6 @@ public class VEController extends Element {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleItemError(int errorType, int elementType, int elementId) {
         ElementType type = ElementType.values()[elementType];
         switch (AnonymousClass2.$SwitchMap$com$samsung$vekit$Common$Type$ElementType[type.ordinal()]) {
@@ -259,8 +291,7 @@ public class VEController extends Element {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.vekit.Control.VEController$2, reason: invalid class name */
+    /* renamed from: com.samsung.vekit.Control.VEController$2 */
     /* loaded from: classes6.dex */
     public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Animation$Animation$AnimationStatus;

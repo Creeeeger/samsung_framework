@@ -42,6 +42,10 @@ public final class AutofillServiceInfo {
     private final ServiceInfo mServiceInfo;
     private final String mSettingsActivity;
 
+    /* synthetic */ AutofillServiceInfo(String str, AutofillServiceInfoIA autofillServiceInfoIA) {
+        this(str);
+    }
+
     private static ServiceInfo getServiceInfoOrThrow(ComponentName comp, int userHandle) throws PackageManager.NameNotFoundException {
         try {
             ServiceInfo si = AppGlobals.getPackageManager().getServiceInfo(comp, 128L, userHandle);

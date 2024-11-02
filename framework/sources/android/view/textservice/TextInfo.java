@@ -9,13 +9,14 @@ import android.text.style.SpellCheckSpan;
 /* loaded from: classes4.dex */
 public final class TextInfo implements Parcelable {
     public static final Parcelable.Creator<TextInfo> CREATOR = new Parcelable.Creator<TextInfo>() { // from class: android.view.textservice.TextInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TextInfo createFromParcel(Parcel source) {
             return new TextInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextInfo[] newArray(int size) {
             return new TextInfo[size];
@@ -87,6 +88,23 @@ public final class TextInfo implements Parcelable {
 
     public int getSequence() {
         return this.mSequenceNumber;
+    }
+
+    /* renamed from: android.view.textservice.TextInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TextInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextInfo createFromParcel(Parcel source) {
+            return new TextInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextInfo[] newArray(int size) {
+            return new TextInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

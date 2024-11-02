@@ -16,6 +16,9 @@ import java.util.logging.Logger;
 /* loaded from: classes4.dex */
 public class AndroidHandler extends Handler {
     private static final Formatter THE_FORMATTER = new Formatter() { // from class: com.android.internal.logging.AndroidHandler.1
+        AnonymousClass1() {
+        }
+
         @Override // java.util.logging.Formatter
         public String format(LogRecord r) {
             Throwable thrown = r.getThrown();
@@ -31,6 +34,28 @@ public class AndroidHandler extends Handler {
             return r.getMessage();
         }
     };
+
+    /* renamed from: com.android.internal.logging.AndroidHandler$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends Formatter {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.logging.Formatter
+        public String format(LogRecord r) {
+            Throwable thrown = r.getThrown();
+            if (thrown != null) {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new FastPrintWriter((Writer) sw, false, 256);
+                sw.write(r.getMessage());
+                sw.write("\n");
+                thrown.printStackTrace(pw);
+                pw.flush();
+                return sw.toString();
+            }
+            return r.getMessage();
+        }
+    }
 
     public AndroidHandler() {
         setFormatter(THE_FORMATTER);

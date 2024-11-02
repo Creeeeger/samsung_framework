@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RadioResponseInfo implements Parcelable {
     public static final Parcelable.Creator<RadioResponseInfo> CREATOR = new Parcelable.Creator<RadioResponseInfo>() { // from class: android.hardware.radio.RadioResponseInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RadioResponseInfo createFromParcel(Parcel _aidl_source) {
             RadioResponseInfo _aidl_out = new RadioResponseInfo();
@@ -16,7 +18,6 @@ public class RadioResponseInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioResponseInfo[] newArray(int _aidl_size) {
             return new RadioResponseInfo[_aidl_size];
@@ -25,6 +26,25 @@ public class RadioResponseInfo implements Parcelable {
     public int error;
     public int serial = 0;
     public int type;
+
+    /* renamed from: android.hardware.radio.RadioResponseInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RadioResponseInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioResponseInfo createFromParcel(Parcel _aidl_source) {
+            RadioResponseInfo _aidl_out = new RadioResponseInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioResponseInfo[] newArray(int _aidl_size) {
+            return new RadioResponseInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

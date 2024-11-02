@@ -38,7 +38,6 @@ public class DSAUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static DSAParameters toDSAParameters(DSAParams spec) {
         if (spec != null) {
             return new DSAParameters(spec.getP(), spec.getQ(), spec.getG());
@@ -70,7 +69,6 @@ public class DSAUtil {
         throw new InvalidKeyException("can't identify DSA private key.");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String generateKeyFingerprint(BigInteger y, DSAParams params) {
         return new Fingerprint(Arrays.concatenate(y.toByteArray(), params.getP().toByteArray(), params.getQ().toByteArray(), params.getG().toByteArray())).toString();
     }

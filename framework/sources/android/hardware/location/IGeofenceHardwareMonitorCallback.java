@@ -83,8 +83,9 @@ public interface IGeofenceHardwareMonitorCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGeofenceHardwareMonitorCallback {
+        public static class Proxy implements IGeofenceHardwareMonitorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

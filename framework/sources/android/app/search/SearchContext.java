@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SearchContext implements Parcelable {
     public static final Parcelable.Creator<SearchContext> CREATOR = new Parcelable.Creator<SearchContext>() { // from class: android.app.search.SearchContext.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchContext createFromParcel(Parcel parcel) {
             return new SearchContext(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchContext[] newArray(int size) {
             return new SearchContext[size];
@@ -26,6 +27,10 @@ public final class SearchContext implements Parcelable {
     private String mPackageName;
     private final int mResultTypes;
     private final int mTimeoutMillis;
+
+    /* synthetic */ SearchContext(Parcel parcel, SearchContextIA searchContextIA) {
+        this(parcel);
+    }
 
     public SearchContext(int resultTypes, int timeoutMillis) {
         this(resultTypes, timeoutMillis, new Bundle());
@@ -48,7 +53,6 @@ public final class SearchContext implements Parcelable {
         return this.mPackageName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setPackageName(String packageName) {
         this.mPackageName = packageName;
     }
@@ -76,5 +80,22 @@ public final class SearchContext implements Parcelable {
         dest.writeInt(this.mTimeoutMillis);
         dest.writeString(this.mPackageName);
         dest.writeBundle(this.mExtras);
+    }
+
+    /* renamed from: android.app.search.SearchContext$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchContext> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchContext createFromParcel(Parcel parcel) {
+            return new SearchContext(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchContext[] newArray(int size) {
+            return new SearchContext[size];
+        }
     }
 }

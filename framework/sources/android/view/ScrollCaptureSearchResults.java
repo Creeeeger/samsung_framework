@@ -48,7 +48,6 @@ public final class ScrollCaptureSearchResults {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addTarget$0(ScrollCaptureCallback callback, Consumer consumer) {
         callback.onScrollCaptureSearch(this.mCancel, consumer);
     }
@@ -76,7 +75,6 @@ public final class ScrollCaptureSearchResults {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void signalComplete() {
         this.mComplete = true;
         this.mTargets.sort(PRIORITY_ORDER);
@@ -99,7 +97,6 @@ public final class ScrollCaptureSearchResults {
         return target;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SearchRequest implements Consumer<Rect> {
         private ScrollCaptureTarget mTarget;
@@ -121,8 +118,7 @@ public final class ScrollCaptureSearchResults {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* renamed from: consume, reason: merged with bridge method [inline-methods] */
+        /* renamed from: consume */
         public void lambda$accept$0(Rect scrollBounds) {
             if (this.mTarget == null || ScrollCaptureSearchResults.this.mCancel.isCanceled()) {
                 return;
@@ -139,7 +135,6 @@ public final class ScrollCaptureSearchResults {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$static$1(ScrollCaptureTarget a, ScrollCaptureTarget b) {
         if (a == null && b == null) {
             return 0;
@@ -177,7 +172,6 @@ public final class ScrollCaptureSearchResults {
         return r.width() * r.height();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean nullOrEmpty(Rect r) {
         return r == null || r.isEmpty();
     }
@@ -197,7 +191,6 @@ public final class ScrollCaptureSearchResults {
         return otherParent == view;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(IndentingPrintWriter writer) {
         writer.println("results:");
         writer.increaseIndent();

@@ -18,13 +18,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class SliceItem implements Parcelable {
     public static final Parcelable.Creator<SliceItem> CREATOR = new Parcelable.Creator<SliceItem>() { // from class: android.app.slice.SliceItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SliceItem createFromParcel(Parcel in) {
             return new SliceItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SliceItem[] newArray(int size) {
             return new SliceItem[size];
@@ -357,6 +358,23 @@ public final class SliceItem implements Parcelable {
                 return Bundle.CREATOR.createFromParcel(in);
             default:
                 throw new RuntimeException("Unsupported type " + type);
+        }
+    }
+
+    /* renamed from: android.app.slice.SliceItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SliceItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SliceItem createFromParcel(Parcel in) {
+            return new SliceItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SliceItem[] newArray(int size) {
+            return new SliceItem[size];
         }
     }
 }

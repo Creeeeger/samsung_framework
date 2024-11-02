@@ -55,12 +55,10 @@ public class MediaHTTPService extends IMediaHTTPService.Stub {
         return new MediaHTTPConnection();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static IBinder createHttpServiceBinderIfNecessary(String path) {
         return createHttpServiceBinderIfNecessary(path, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static IBinder createHttpServiceBinderIfNecessary(String path, List<HttpCookie> cookies) {
         if (path.startsWith("http://") || path.startsWith("https://")) {
             return new MediaHTTPService(cookies).asBinder();

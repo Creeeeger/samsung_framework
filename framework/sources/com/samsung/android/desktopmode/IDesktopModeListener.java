@@ -84,8 +84,9 @@ public interface IDesktopModeListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDesktopModeListener {
+        public static class Proxy implements IDesktopModeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

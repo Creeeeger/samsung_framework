@@ -8,7 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class NativeHandle implements Parcelable {
     public static final Parcelable.Creator<NativeHandle> CREATOR = new Parcelable.Creator<NativeHandle>() { // from class: android.hardware.common.NativeHandle.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NativeHandle createFromParcel(Parcel _aidl_source) {
             NativeHandle _aidl_out = new NativeHandle();
@@ -16,7 +18,6 @@ public class NativeHandle implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NativeHandle[] newArray(int _aidl_size) {
             return new NativeHandle[_aidl_size];
@@ -24,6 +25,25 @@ public class NativeHandle implements Parcelable {
     };
     public ParcelFileDescriptor[] fds;
     public int[] ints;
+
+    /* renamed from: android.hardware.common.NativeHandle$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NativeHandle> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NativeHandle createFromParcel(Parcel _aidl_source) {
+            NativeHandle _aidl_out = new NativeHandle();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NativeHandle[] newArray(int _aidl_size) {
+            return new NativeHandle[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

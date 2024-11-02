@@ -62,7 +62,6 @@ public final class SQLiteConnectionPool implements Closeable {
     private final AtomicLong mTotalStatementsCount = new AtomicLong(0);
     private final WeakHashMap<SQLiteConnection, AcquiredConnectionStatus> mAcquiredConnections = new WeakHashMap<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public enum AcquiredConnectionStatus {
         NORMAL,
@@ -206,7 +205,6 @@ public final class SQLiteConnectionPool implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] getConnectionKey() {
         SecureData secureData;
         if (this.mConfiguration.sharedConfig.isSecureDb && (secureData = this.mConnectionKey) != null) {
@@ -259,7 +257,10 @@ public final class SQLiteConnectionPool implements Closeable {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x0084, code lost:            closeAvailableConnectionsAndLogExceptionsLocked();     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x0084, code lost:
+    
+        closeAvailableConnectionsAndLogExceptionsLocked();
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -404,13 +405,11 @@ public final class SQLiteConnectionPool implements Closeable {
         return connection;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onConnectionLeaked() {
         Log.w(TAG, "A SQLiteConnection object for database '" + this.mConfiguration.label + "' was leaked!  Please fix your application to end transactions in progress properly and to close the database when it is no longer needed.");
         this.mConnectionLeaked.set(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onStatementExecuted(long executionTimeMs) {
         this.mTotalStatementsTime.addAndGet(executionTimeMs);
         this.mTotalStatementsCount.incrementAndGet();
@@ -425,7 +424,6 @@ public final class SQLiteConnectionPool implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean closeAvailableConnectionLocked(int connectionId) {
         int count = this.mAvailableNonPrimaryConnections.size();
         for (int i = count - 1; i >= 0; i--) {
@@ -453,7 +451,6 @@ public final class SQLiteConnectionPool implements Closeable {
         this.mAvailableNonPrimaryConnections.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void closeAvailableNonPrimaryConnectionsAndLogExceptions() {
         synchronized (this.mLock) {
             closeAvailableNonPrimaryConnectionsAndLogExceptionsLocked();
@@ -554,7 +551,27 @@ public final class SQLiteConnectionPool implements Closeable {
         throw new UnsupportedOperationException("Method not decompiled: android.database.sqlite.SQLiteConnectionPool.waitForConnection(java.lang.String, int, android.os.CancellationSignal):android.database.sqlite.SQLiteConnection");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.database.sqlite.SQLiteConnectionPool$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements CancellationSignal.OnCancelListener {
+        final /* synthetic */ int val$nonce;
+        final /* synthetic */ ConnectionWaiter val$waiter;
+
+        AnonymousClass1(ConnectionWaiter connectionWaiter, int i) {
+            r2 = connectionWaiter;
+            r3 = i;
+        }
+
+        @Override // android.os.CancellationSignal.OnCancelListener
+        public void onCancel() {
+            synchronized (SQLiteConnectionPool.this.mLock) {
+                if (r2.mNonce == r3) {
+                    SQLiteConnectionPool.this.cancelConnectionWaiterLocked(r2);
+                }
+            }
+        }
+    }
+
     public void cancelConnectionWaiterLocked(ConnectionWaiter waiter) {
         if (waiter.mAssignedConnection != null || waiter.mException != null) {
             return;
@@ -833,7 +850,6 @@ public final class SQLiteConnectionPool implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void disableIdleConnectionHandler() {
         synchronized (this.mLock) {
             this.mIdleConnectionHandler = null;
@@ -901,7 +917,6 @@ public final class SQLiteConnectionPool implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean releaseAvailableConnectionMemoryLocked(int connectionId) {
         int count = this.mAvailableNonPrimaryConnections.size();
         for (int i = count - 1; i >= 0; i--) {
@@ -919,7 +934,6 @@ public final class SQLiteConnectionPool implements Closeable {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SQLiteDatabase getDatabase() {
         return this.mDatabase;
     }
@@ -1077,7 +1091,6 @@ public final class SQLiteConnectionPool implements Closeable {
         return this.mConfiguration.path;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class ConnectionWaiter {
         public SQLiteConnection mAssignedConnection;
@@ -1091,11 +1104,14 @@ public final class SQLiteConnectionPool implements Closeable {
         public Thread mThread;
         public boolean mWantPrimaryConnection;
 
+        /* synthetic */ ConnectionWaiter(ConnectionWaiterIA connectionWaiterIA) {
+            this();
+        }
+
         private ConnectionWaiter() {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class IdleConnectionHandler extends Handler {
         private final Runnable mOnAllConnectionsIdle;
@@ -1136,7 +1152,6 @@ public final class SQLiteConnectionPool implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class IdleConnectionShrinkHandler extends IdleConnectionHandler {
         IdleConnectionShrinkHandler(Looper looper, long timeout, Runnable onAllConnectionsIdle) {
@@ -1156,7 +1171,6 @@ public final class SQLiteConnectionPool implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class SecureData {
         private static final int DEFAULT_ITER_COUNT = 1000;

@@ -46,7 +46,7 @@ public abstract class AppPredictionService extends Service {
 
     public abstract void onSortAppTargets(AppPredictionSessionId appPredictionSessionId, List<AppTarget> list, CancellationSignal cancellationSignal, Consumer<List<AppTarget>> consumer);
 
-    /* renamed from: android.service.appprediction.AppPredictionService$1, reason: invalid class name */
+    /* renamed from: android.service.appprediction.AppPredictionService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IPredictionService.Stub {
         AnonymousClass1() {
@@ -148,7 +148,6 @@ public abstract class AppPredictionService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doCreatePredictionSession(AppPredictionContext context, AppPredictionSessionId sessionId) {
         this.mSessionCallbacks.put(sessionId, new ArrayList<>());
         onCreatePredictionSession(context, sessionId);
@@ -157,7 +156,6 @@ public abstract class AppPredictionService extends Service {
     public void onCreatePredictionSession(AppPredictionContext context, AppPredictionSessionId sessionId) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doRegisterPredictionUpdates(AppPredictionSessionId sessionId, IPredictionCallback callback) {
         final ArrayList<CallbackWrapper> callbacks = this.mSessionCallbacks.get(sessionId);
         if (callbacks == null) {
@@ -178,7 +176,6 @@ public abstract class AppPredictionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$doRegisterPredictionUpdates$1(final ArrayList callbacks, final CallbackWrapper callbackWrapper) {
         this.mHandler.post(new Runnable() { // from class: android.service.appprediction.AppPredictionService$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
@@ -191,7 +188,6 @@ public abstract class AppPredictionService extends Service {
     public void onStartPredictionUpdates() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doUnregisterPredictionUpdates(AppPredictionSessionId sessionId, IPredictionCallback callback) {
         ArrayList<CallbackWrapper> callbacks = this.mSessionCallbacks.get(sessionId);
         if (callbacks == null) {
@@ -202,8 +198,7 @@ public abstract class AppPredictionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: removeCallbackWrapper, reason: merged with bridge method [inline-methods] */
+    /* renamed from: removeCallbackWrapper */
     public void lambda$doRegisterPredictionUpdates$0(ArrayList<CallbackWrapper> callbacks, CallbackWrapper wrapper) {
         if (callbacks == null || wrapper == null) {
             return;
@@ -218,7 +213,6 @@ public abstract class AppPredictionService extends Service {
     public void onStopPredictionUpdates() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doRequestPredictionUpdate(AppPredictionSessionId sessionId) {
         ArrayList<CallbackWrapper> callbacks = this.mSessionCallbacks.get(sessionId);
         if (callbacks != null && !callbacks.isEmpty()) {
@@ -226,7 +220,6 @@ public abstract class AppPredictionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doDestroyPredictionSession(AppPredictionSessionId sessionId) {
         ArrayList<CallbackWrapper> callbacks = this.mSessionCallbacks.remove(sessionId);
         if (callbacks != null) {
@@ -261,7 +254,6 @@ public abstract class AppPredictionService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class CallbackWrapper implements Consumer<List<AppTarget>>, IBinder.DeathRecipient {
         private IPredictionCallback mCallback;

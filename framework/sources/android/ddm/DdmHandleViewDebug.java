@@ -224,8 +224,33 @@ public class DdmHandleViewDebug extends DdmHandle {
         }
     }
 
-    private Chunk dumpDisplayLists(final View rootView, final View targetView) {
+    /* renamed from: android.ddm.DdmHandleViewDebug$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ View val$rootView;
+        final /* synthetic */ View val$targetView;
+
+        AnonymousClass1(View view, View view2) {
+            rootView = view;
+            targetView = view2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewDebug.outputDisplayList(rootView, targetView);
+        }
+    }
+
+    private Chunk dumpDisplayLists(View rootView, View targetView) {
         rootView.post(new Runnable() { // from class: android.ddm.DdmHandleViewDebug.1
+            final /* synthetic */ View val$rootView;
+            final /* synthetic */ View val$targetView;
+
+            AnonymousClass1(View rootView2, View targetView2) {
+                rootView = rootView2;
+                targetView = targetView2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ViewDebug.outputDisplayList(rootView, targetView);

@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class Person implements Parcelable {
     public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() { // from class: android.app.Person.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Person createFromParcel(Parcel in) {
             return new Person(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Person[] newArray(int size) {
             return new Person[size];
@@ -27,6 +28,14 @@ public final class Person implements Parcelable {
     private String mKey;
     private CharSequence mName;
     private String mUri;
+
+    /* synthetic */ Person(Builder builder, PersonIA personIA) {
+        this(builder);
+    }
+
+    /* synthetic */ Person(Parcel parcel, PersonIA personIA) {
+        this(parcel);
+    }
 
     private Person(Parcel in) {
         this.mName = in.readCharSequence();
@@ -151,6 +160,10 @@ public final class Person implements Parcelable {
         private CharSequence mName;
         private String mUri;
 
+        /* synthetic */ Builder(Person person, BuilderIA builderIA) {
+            this(person);
+        }
+
         public Builder() {
         }
 
@@ -195,6 +208,23 @@ public final class Person implements Parcelable {
 
         public Person build() {
             return new Person(this);
+        }
+    }
+
+    /* renamed from: android.app.Person$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Person> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Person createFromParcel(Parcel in) {
+            return new Person(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Person[] newArray(int size) {
+            return new Person[size];
         }
     }
 }

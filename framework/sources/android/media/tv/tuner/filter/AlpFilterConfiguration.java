@@ -23,6 +23,10 @@ public final class AlpFilterConfiguration extends FilterConfiguration {
     public @interface LengthType {
     }
 
+    /* synthetic */ AlpFilterConfiguration(Settings settings, int i, int i2, AlpFilterConfigurationIA alpFilterConfigurationIA) {
+        this(settings, i, i2);
+    }
+
     private AlpFilterConfiguration(Settings settings, int packetType, int lengthType) {
         super(settings);
         this.mPacketType = packetType;
@@ -51,6 +55,10 @@ public final class AlpFilterConfiguration extends FilterConfiguration {
         private int mLengthType;
         private int mPacketType;
         private Settings mSettings;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mPacketType = 0;

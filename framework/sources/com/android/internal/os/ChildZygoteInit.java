@@ -42,7 +42,6 @@ public class ChildZygoteInit {
         return value;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void runZygoteServer(ZygoteServer server, String[] args) {
         String socketName = parseSocketNameFromArgs(args);
         if (socketName == null) {

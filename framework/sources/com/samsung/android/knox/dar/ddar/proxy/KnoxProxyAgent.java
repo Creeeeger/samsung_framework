@@ -27,6 +27,10 @@ public class KnoxProxyAgent extends Service {
 
     /* loaded from: classes5.dex */
     private final class ServiceImpl extends IProxyAgent.Stub {
+        /* synthetic */ ServiceImpl(KnoxProxyAgent knoxProxyAgent, ServiceImplIA serviceImplIA) {
+            this();
+        }
+
         private ServiceImpl() {
         }
 

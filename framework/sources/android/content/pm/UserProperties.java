@@ -65,13 +65,14 @@ public final class UserProperties implements Parcelable {
     private boolean mUseParentsContacts;
     private static final String LOG_TAG = UserProperties.class.getSimpleName();
     public static final Parcelable.Creator<UserProperties> CREATOR = new Parcelable.Creator<UserProperties>() { // from class: android.content.pm.UserProperties.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UserProperties createFromParcel(Parcel source) {
             return new UserProperties(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UserProperties[] newArray(int size) {
             return new UserProperties[size];
@@ -106,6 +107,14 @@ public final class UserProperties implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface ShowInSettings {
+    }
+
+    /* synthetic */ UserProperties(int i, boolean z, int i2, int i3, boolean z2, boolean z3, int i4, int i5, boolean z4, boolean z5, boolean z6, UserPropertiesIA userPropertiesIA) {
+        this(i, z, i2, i3, z2, z3, i4, i5, z4, z5, z6);
+    }
+
+    /* synthetic */ UserProperties(Parcel parcel, UserPropertiesIA userPropertiesIA) {
+        this(parcel);
     }
 
     public UserProperties(UserProperties defaultProperties) {
@@ -537,6 +546,23 @@ public final class UserProperties implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.content.pm.UserProperties$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UserProperties> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserProperties createFromParcel(Parcel source) {
+            return new UserProperties(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserProperties[] newArray(int size) {
+            return new UserProperties[size];
+        }
     }
 
     /* loaded from: classes.dex */

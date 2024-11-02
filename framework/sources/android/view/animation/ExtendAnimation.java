@@ -96,7 +96,6 @@ public class ExtendAnimation extends Animation {
         this(Insets.of(-fromL, -fromT, -fromR, -fromB), Insets.of(-toL, -toT, -toR, -toB));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.Animation
     public void applyTransformation(float it, Transformation tr) {
         int l = this.mFromInsets.left + ((int) ((this.mToInsets.left - this.mFromInsets.left) * it));

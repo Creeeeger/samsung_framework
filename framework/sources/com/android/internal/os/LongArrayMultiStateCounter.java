@@ -18,18 +18,23 @@ public final class LongArrayMultiStateCounter implements Parcelable {
     private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(LongArrayMultiStateCounter.class.getClassLoader(), native_getReleaseFunc());
     private static final AtomicReference<LongArrayContainer> sTmpArrayContainer = new AtomicReference<>();
     public static final Parcelable.Creator<LongArrayMultiStateCounter> CREATOR = new Parcelable.Creator<LongArrayMultiStateCounter>() { // from class: com.android.internal.os.LongArrayMultiStateCounter.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LongArrayMultiStateCounter createFromParcel(Parcel in) {
             return new LongArrayMultiStateCounter(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LongArrayMultiStateCounter[] newArray(int size) {
             return new LongArrayMultiStateCounter[size];
         }
     };
+
+    /* synthetic */ LongArrayMultiStateCounter(Parcel parcel, LongArrayMultiStateCounterIA longArrayMultiStateCounterIA) {
+        this(parcel);
+    }
 
     @CriticalNative
     private static native void native_addCounts(long j, long j2);
@@ -210,5 +215,22 @@ public final class LongArrayMultiStateCounter implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.android.internal.os.LongArrayMultiStateCounter$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LongArrayMultiStateCounter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LongArrayMultiStateCounter createFromParcel(Parcel in) {
+            return new LongArrayMultiStateCounter(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LongArrayMultiStateCounter[] newArray(int size) {
+            return new LongArrayMultiStateCounter[size];
+        }
     }
 }

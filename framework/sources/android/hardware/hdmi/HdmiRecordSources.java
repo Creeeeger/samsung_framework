@@ -41,7 +41,6 @@ public final class HdmiRecordSources {
     private static final int RECORD_SOURCE_TYPE_OWN_SOURCE = 1;
     private static final String TAG = "HdmiRecordSources";
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public interface DigitalServiceIdentification {
         int toByteArray(byte[] bArr, int i);
@@ -58,19 +57,16 @@ public final class HdmiRecordSources {
 
         abstract int extraParamToByteArray(byte[] bArr, int i);
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public RecordSource(int sourceType, int extraDataSize) {
             this.mSourceType = sourceType;
             this.mExtraDataSize = extraDataSize;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public final int getDataSize(boolean includeType) {
             int i = this.mExtraDataSize;
             return includeType ? i + 1 : i;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public final int toByteArray(boolean includeType, byte[] data, int index) {
             if (includeType) {
                 data[index] = (byte) this.mSourceType;
@@ -89,6 +85,10 @@ public final class HdmiRecordSources {
     /* loaded from: classes2.dex */
     public static final class OwnSource extends RecordSource {
         private static final int EXTRA_DATA_SIZE = 0;
+
+        /* synthetic */ OwnSource(OwnSourceIA ownSourceIA) {
+            this();
+        }
 
         private OwnSource() {
             super(1, 0);
@@ -152,11 +152,16 @@ public final class HdmiRecordSources {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static final class ChannelIdentifier {
+    public static final class ChannelIdentifier {
         private final int mChannelNumberFormat;
         private final int mMajorChannelNumber;
         private final int mMinorChannelNumber;
+
+        /* synthetic */ ChannelIdentifier(int i, int i2, int i3, ChannelIdentifierIA channelIdentifierIA) {
+            this(i, i2, i3);
+        }
 
         private ChannelIdentifier(int format, int majorNumber, int minorNumer) {
             this.mChannelNumberFormat = format;
@@ -164,7 +169,6 @@ public final class HdmiRecordSources {
             this.mMinorChannelNumber = minorNumer;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public int toByteArray(byte[] data, int index) {
             int i = this.mChannelNumberFormat << 2;
             int i2 = this.mMajorChannelNumber;
@@ -284,6 +288,10 @@ public final class HdmiRecordSources {
         private final DigitalServiceIdentification mIdentification;
         private final int mIdentificationMethod;
 
+        /* synthetic */ DigitalServiceSource(int i, int i2, DigitalServiceIdentification digitalServiceIdentification, DigitalServiceSourceIA digitalServiceSourceIA) {
+            this(i, i2, digitalServiceIdentification);
+        }
+
         private DigitalServiceSource(int identificatinoMethod, int broadcastSystem, DigitalServiceIdentification identification) {
             super(2, 7);
             this.mIdentificationMethod = identificatinoMethod;
@@ -323,6 +331,10 @@ public final class HdmiRecordSources {
         private final int mBroadcastType;
         private final int mFrequency;
 
+        /* synthetic */ AnalogueServiceSource(int i, int i2, int i3, AnalogueServiceSourceIA analogueServiceSourceIA) {
+            this(i, i2, i3);
+        }
+
         private AnalogueServiceSource(int broadcastType, int frequency, int broadcastSystem) {
             super(3, 4);
             this.mBroadcastType = broadcastType;
@@ -353,6 +365,10 @@ public final class HdmiRecordSources {
         static final int EXTRA_DATA_SIZE = 1;
         private final int mPlugNumber;
 
+        /* synthetic */ ExternalPlugData(int i, ExternalPlugDataIA externalPlugDataIA) {
+            this(i);
+        }
+
         private ExternalPlugData(int plugNumber) {
             super(4, 1);
             this.mPlugNumber = plugNumber;
@@ -379,6 +395,10 @@ public final class HdmiRecordSources {
         static final int EXTRA_DATA_SIZE = 2;
         private final int mPhysicalAddress;
 
+        /* synthetic */ ExternalPhysicalAddress(int i, ExternalPhysicalAddressIA externalPhysicalAddressIA) {
+            this(i);
+        }
+
         private ExternalPhysicalAddress(int physicalAddress) {
             super(5, 2);
             this.mPhysicalAddress = physicalAddress;
@@ -391,7 +411,6 @@ public final class HdmiRecordSources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int threeFieldsToSixBytes(int first, int second, int third, byte[] data, int index) {
         shortToByteArray((short) first, data, index);
         shortToByteArray((short) second, data, index + 2);
@@ -399,7 +418,6 @@ public final class HdmiRecordSources {
         return 6;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int shortToByteArray(short value, byte[] byteArray, int index) {
         byteArray[index] = (byte) ((value >>> 8) & 255);
         byteArray[index + 1] = (byte) (value & 255);

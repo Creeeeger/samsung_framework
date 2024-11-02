@@ -48,23 +48,23 @@ public abstract class Filter {
         filter(constraint, null);
     }
 
-    public final void filter(CharSequence charSequence, FilterListener filterListener) {
+    public final void filter(CharSequence constraint, FilterListener listener) {
         synchronized (this.mLock) {
             if (this.mThreadHandler == null) {
-                HandlerThread handlerThread = new HandlerThread("Filter", 10);
-                handlerThread.start();
-                this.mThreadHandler = new RequestHandler(handlerThread.getLooper());
+                HandlerThread thread = new HandlerThread("Filter", 10);
+                thread.start();
+                this.mThreadHandler = new RequestHandler(thread.getLooper());
             }
             Delayer delayer = this.mDelayer;
-            long postingDelay = delayer == null ? 0L : delayer.getPostingDelay(charSequence);
-            Message obtainMessage = this.mThreadHandler.obtainMessage(FILTER_TOKEN);
-            RequestArguments requestArguments = new RequestArguments();
-            requestArguments.constraint = charSequence != null ? charSequence.toString() : null;
-            requestArguments.listener = filterListener;
-            obtainMessage.obj = requestArguments;
+            long delay = delayer == null ? 0L : delayer.getPostingDelay(constraint);
+            Message message = this.mThreadHandler.obtainMessage(FILTER_TOKEN);
+            RequestArguments args = new RequestArguments();
+            args.constraint = constraint != null ? constraint.toString() : null;
+            args.listener = listener;
+            message.obj = args;
             this.mThreadHandler.removeMessages(FILTER_TOKEN);
             this.mThreadHandler.removeMessages(FINISH_TOKEN);
-            this.mThreadHandler.sendMessageDelayed(obtainMessage, postingDelay);
+            this.mThreadHandler.sendMessageDelayed(message, delay);
         }
     }
 
@@ -72,7 +72,6 @@ public abstract class Filter {
         return resultValue == null ? "" : resultValue.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class RequestHandler extends Handler {
         public RequestHandler(Looper looper) {
@@ -118,8 +117,13 @@ public abstract class Filter {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class ResultsHandler extends Handler {
+    public class ResultsHandler extends Handler {
+        /* synthetic */ ResultsHandler(Filter filter, ResultsHandlerIA resultsHandlerIA) {
+            this();
+        }
+
         private ResultsHandler() {
         }
 
@@ -134,12 +138,15 @@ public abstract class Filter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class RequestArguments {
         CharSequence constraint;
         FilterListener listener;
         FilterResults results;
+
+        /* synthetic */ RequestArguments(RequestArgumentsIA requestArgumentsIA) {
+            this();
+        }
 
         private RequestArguments() {
         }

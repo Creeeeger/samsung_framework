@@ -157,8 +157,9 @@ public interface ILocaleManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ILocaleManager {
+        public static class Proxy implements ILocaleManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

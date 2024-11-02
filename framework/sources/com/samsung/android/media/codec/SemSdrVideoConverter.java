@@ -56,9 +56,39 @@ public class SemSdrVideoConverter {
         return mConvertVideo.stop();
     }
 
+    /* renamed from: com.samsung.android.media.codec.SemSdrVideoConverter$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Convert.ConvertEventListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.media.convert.core.Convert.ConvertEventListener
+        public void onStarted() {
+            SemSdrVideoConverter.this.mProgressEventListener.onStarted();
+        }
+
+        @Override // com.samsung.android.media.convert.core.Convert.ConvertEventListener
+        public void onCompleted() {
+            SemSdrVideoConverter.this.mProgressEventListener.onCompleted();
+        }
+
+        @Override // com.samsung.android.media.convert.core.Convert.ConvertEventListener
+        public void onFailed() {
+            SemSdrVideoConverter.this.mProgressEventListener.onFailed();
+        }
+
+        @Override // com.samsung.android.media.convert.core.Convert.ConvertEventListener
+        public void onCancelled() {
+            SemSdrVideoConverter.this.mProgressEventListener.onCancelled();
+        }
+    }
+
     public void setProgressEventListener(ProgressEventListener listner) {
         this.mProgressEventListener = listner;
         mConvertVideo.setProgressUpdateListener(new Convert.ConvertEventListener() { // from class: com.samsung.android.media.codec.SemSdrVideoConverter.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.media.convert.core.Convert.ConvertEventListener
             public void onStarted() {
                 SemSdrVideoConverter.this.mProgressEventListener.onStarted();

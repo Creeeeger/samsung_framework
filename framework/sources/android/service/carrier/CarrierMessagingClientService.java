@@ -16,6 +16,10 @@ public class CarrierMessagingClientService extends Service {
 
     /* loaded from: classes3.dex */
     private class ICarrierMessagingClientServiceImpl extends ICarrierMessagingClientService.Stub {
+        /* synthetic */ ICarrierMessagingClientServiceImpl(CarrierMessagingClientService carrierMessagingClientService, ICarrierMessagingClientServiceImplIA iCarrierMessagingClientServiceImplIA) {
+            this();
+        }
+
         private ICarrierMessagingClientServiceImpl() {
         }
     }

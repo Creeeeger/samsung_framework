@@ -54,11 +54,9 @@ public class BaseProtoLogImpl {
         WTF
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$static$0() {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void addLogGroupEnum(IProtoLogGroup[] config) {
         for (IProtoLogGroup group : config) {
             LOG_GROUPS.put(group.name(), group);
@@ -100,8 +98,7 @@ public class BaseProtoLogImpl {
         passToLogcat(tag, level, message);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.protolog.BaseProtoLogImpl$1, reason: invalid class name */
+    /* renamed from: com.android.internal.protolog.BaseProtoLogImpl$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$android$internal$protolog$BaseProtoLogImpl$LogLevel;
@@ -461,12 +458,10 @@ public class BaseProtoLogImpl {
         }).collect(Collectors.joining(" "))).append("\nLogging definitions loaded: ").append(this.mViewerConfig.knownViewerStringsNumber()).toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getStatus$3(IProtoLogGroup it) {
         return it.isEnabled() && it.isLogToProto();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getStatus$4(IProtoLogGroup it) {
         return it.isEnabled() && it.isLogToLogcat();
     }

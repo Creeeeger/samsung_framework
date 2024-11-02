@@ -4,7 +4,6 @@ package com.android.internal.org.bouncycastle.crypto.params;
 public class ECKeyParameters extends AsymmetricKeyParameter {
     private final ECDomainParameters parameters;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ECKeyParameters(boolean isPrivate, ECDomainParameters parameters) {
         super(isPrivate);
         if (parameters == null) {

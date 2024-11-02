@@ -8,7 +8,6 @@ import java.security.DigestException;
 class ByteBufferDataSource implements DataSource {
     private final ByteBuffer mBuf;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ByteBufferDataSource(ByteBuffer buf) {
         this.mBuf = buf.slice();
     }

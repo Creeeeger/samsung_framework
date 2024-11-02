@@ -6,14 +6,15 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class TsResponse extends BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<TsResponse> CREATOR = new Parcelable.Creator<TsResponse>() { // from class: android.media.tv.TsResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TsResponse createFromParcel(Parcel source) {
             source.readInt();
             return TsResponse.createFromParcelBody(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TsResponse[] newArray(int size) {
             return new TsResponse[size];
@@ -22,7 +23,24 @@ public final class TsResponse extends BroadcastInfoResponse implements Parcelabl
     private static final int RESPONSE_TYPE = 1;
     private final String mSharedFilterToken;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.TsResponse$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TsResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TsResponse createFromParcel(Parcel source) {
+            source.readInt();
+            return TsResponse.createFromParcelBody(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TsResponse[] newArray(int size) {
+            return new TsResponse[size];
+        }
+    }
+
     public static TsResponse createFromParcelBody(Parcel in) {
         return new TsResponse(in);
     }

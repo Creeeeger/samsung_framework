@@ -23,7 +23,6 @@ public class DialogViewAnimator extends ViewAnimator {
         this.mMatchParentChildren = new ArrayList<>(1);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int maxHeight;

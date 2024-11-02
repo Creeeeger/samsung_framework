@@ -52,6 +52,9 @@ public class PlatLogoActivity extends Activity {
     private ObjectAnimator mWarpAnim;
     private boolean mAnimationsEnabled = true;
     private final View.OnTouchListener mTouchListener = new View.OnTouchListener() { // from class: com.android.internal.app.PlatLogoActivity.1
+        AnonymousClass1() {
+        }
+
         @Override // android.view.View.OnTouchListener
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getActionMasked()) {
@@ -76,6 +79,9 @@ public class PlatLogoActivity extends Activity {
         }
     };
     private final TimeAnimator.TimeListener mTimeListener = new TimeAnimator.TimeListener() { // from class: com.android.internal.app.PlatLogoActivity.2
+        AnonymousClass2() {
+        }
+
         @Override // android.animation.TimeAnimator.TimeListener
         public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
             PlatLogoActivity.this.mStarfield.update(deltaTime);
@@ -93,10 +99,54 @@ public class PlatLogoActivity extends Activity {
     double mPressureMin = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
     double mPressureMax = -1.0d;
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.app.PlatLogoActivity$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements View.OnTouchListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnTouchListener
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getActionMasked()) {
+                case 0:
+                    PlatLogoActivity.this.measureTouchPressure(event);
+                    PlatLogoActivity.this.startWarp();
+                    return true;
+                case 1:
+                case 3:
+                    PlatLogoActivity.this.stopWarp();
+                    return true;
+                case 2:
+                default:
+                    return true;
+            }
+        }
+    }
+
     public /* synthetic */ void lambda$new$0() {
         stopWarp();
         launchNextStage(false);
+    }
+
+    /* renamed from: com.android.internal.app.PlatLogoActivity$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements TimeAnimator.TimeListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.TimeAnimator.TimeListener
+        public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
+            PlatLogoActivity.this.mStarfield.update(deltaTime);
+            float warpFrac = (PlatLogoActivity.this.mStarfield.getWarp() - 1.0f) / 9.0f;
+            if (PlatLogoActivity.this.mAnimationsEnabled) {
+                PlatLogoActivity.this.mLogo.setTranslationX(PlatLogoActivity.this.mRandom.nextFloat() * warpFrac * 5.0f * PlatLogoActivity.this.mDp);
+                PlatLogoActivity.this.mLogo.setTranslationY(PlatLogoActivity.this.mRandom.nextFloat() * warpFrac * 5.0f * PlatLogoActivity.this.mDp);
+            }
+            if (warpFrac > 0.0f) {
+                PlatLogoActivity.this.mRumble.rumble(warpFrac);
+            }
+            PlatLogoActivity.this.mLayout.postInvalidate();
+        }
     }
 
     /* loaded from: classes4.dex */
@@ -141,7 +191,6 @@ public class PlatLogoActivity extends Activity {
             this.mVibeThread.quit();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void rumble(float warpFrac) {
             if (this.mVibeThread.isAlive()) {
                 Message msg = Message.obtain();
@@ -153,14 +202,12 @@ public class PlatLogoActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         this.mRumble.destroy();
         super.onDestroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -234,7 +281,6 @@ public class PlatLogoActivity extends Activity {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void startWarp() {
         stopWarp();
         ObjectAnimator duration = ObjectAnimator.ofFloat(this.mStarfield, "warp", 1.0f, MAX_WARP).setDuration(5000L);
@@ -243,7 +289,6 @@ public class PlatLogoActivity extends Activity {
         this.mLogo.postDelayed(this.mLaunchNextStage, 6000L);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void stopWarp() {
         ObjectAnimator objectAnimator = this.mWarpAnim;
         if (objectAnimator != null) {
@@ -292,7 +337,6 @@ public class PlatLogoActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void measureTouchPressure(MotionEvent event) {
         float pressure = event.getPressure();
         switch (event.getActionMasked()) {
@@ -353,7 +397,6 @@ public class PlatLogoActivity extends Activity {
         super.onStop();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class Starfield extends Drawable {
         private static final int NUM_PLANES = 2;

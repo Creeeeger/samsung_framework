@@ -85,8 +85,9 @@ public interface IImsExternalCallStateListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IImsExternalCallStateListener {
+        public static class Proxy implements IImsExternalCallStateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

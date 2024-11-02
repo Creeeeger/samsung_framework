@@ -149,7 +149,7 @@ public abstract class SemAbsDragAndDropAnimator {
             return;
         }
         if (this.mDndMode != dndMode) {
-            final boolean fadeOut = this.mDndMode;
+            boolean fadeOut = this.mDndMode;
             if (!fadeOut) {
                 setDndModeInternal(true);
                 this.mDragHandleAlpha = 0;
@@ -157,6 +157,12 @@ public abstract class SemAbsDragAndDropAnimator {
             ValueAnimator va = ValueAnimator.ofFloat(0.0f, 1.0f);
             va.setDuration(200L);
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemAbsDragAndDropAnimator.1
+                final /* synthetic */ boolean val$fadeOut;
+
+                AnonymousClass1(boolean fadeOut2) {
+                    fadeOut = fadeOut2;
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animator) {
                     float fraction = animator.getAnimatedFraction();
@@ -169,6 +175,12 @@ public abstract class SemAbsDragAndDropAnimator {
                 }
             });
             va.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemAbsDragAndDropAnimator.2
+                final /* synthetic */ boolean val$fadeOut;
+
+                AnonymousClass2(boolean fadeOut2) {
+                    fadeOut = fadeOut2;
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     SemAbsDragAndDropAnimator.this.mView.setEnabled(false);
@@ -183,12 +195,56 @@ public abstract class SemAbsDragAndDropAnimator {
                     SemAbsDragAndDropAnimator.this.mView.setEnabled(true);
                 }
             });
-            va.setInterpolator(fadeOut ? FADE_OUT_INTERPOLATOR : FADE_IN_INTERPOLATOR);
+            va.setInterpolator(fadeOut2 ? FADE_OUT_INTERPOLATOR : FADE_IN_INTERPOLATOR);
             va.start();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.samsung.android.animation.SemAbsDragAndDropAnimator$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+        final /* synthetic */ boolean val$fadeOut;
+
+        AnonymousClass1(boolean fadeOut2) {
+            fadeOut = fadeOut2;
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animator) {
+            float fraction = animator.getAnimatedFraction();
+            if (fadeOut) {
+                SemAbsDragAndDropAnimator.this.mDragHandleAlpha = (int) ((1.0f - fraction) * 255.0f);
+            } else {
+                SemAbsDragAndDropAnimator.this.mDragHandleAlpha = (int) (255.0f * fraction);
+            }
+            SemAbsDragAndDropAnimator.this.mView.invalidate();
+        }
+    }
+
+    /* renamed from: com.samsung.android.animation.SemAbsDragAndDropAnimator$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 extends AnimatorListenerAdapter {
+        final /* synthetic */ boolean val$fadeOut;
+
+        AnonymousClass2(boolean fadeOut2) {
+            fadeOut = fadeOut2;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+            SemAbsDragAndDropAnimator.this.mView.setEnabled(false);
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            if (fadeOut) {
+                SemAbsDragAndDropAnimator.this.setDndModeInternal(false);
+            }
+            SemAbsDragAndDropAnimator.this.mDragHandleAlpha = 255;
+            SemAbsDragAndDropAnimator.this.mView.setEnabled(true);
+        }
+    }
+
     public void setDndModeInternal(boolean dndMode) {
         this.mDndMode = dndMode;
         if (!dndMode) {
@@ -282,13 +338,11 @@ public abstract class SemAbsDragAndDropAnimator {
         return Integer.MIN_VALUE;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetDndState() {
         resetDndTouchValuesAndBitmap();
         resetDndPositionValues();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetDndTouchValuesAndBitmap() {
         this.mDndTouchMode = 0;
         this.mDndTouchX = Integer.MIN_VALUE;
@@ -307,16 +361,18 @@ public abstract class SemAbsDragAndDropAnimator {
         this.mView.removeCallbacks(this.mAutoScrollRunnable);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetDndPositionValues() {
         this.mFirstDragPos = -1;
         this.mDragPos = -1;
         this.mRetainFirstDragViewPos = -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class AutoScrollRunnable implements Runnable {
+        /* synthetic */ AutoScrollRunnable(SemAbsDragAndDropAnimator semAbsDragAndDropAnimator, AutoScrollRunnableIA autoScrollRunnableIA) {
+            this();
+        }
+
         private AutoScrollRunnable() {
         }
 
@@ -356,7 +412,6 @@ public abstract class SemAbsDragAndDropAnimator {
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean activatedByLongPress() {
         return this.mDragGrabHandleDrawable == null || SemAnimatorUtils.isTalkBackEnabled(this.mContext);
     }
@@ -368,15 +423,12 @@ public abstract class SemAbsDragAndDropAnimator {
         isDraggable();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void speakDragReleaseForAccessibility(int itemPosition) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void speakNotDraggableForAccessibility(int itemPosition) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void speakDragStartForAccessibility(int itemPosition) {
         this.mView.clearAccessibilityFocus();
     }

@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextPhoneStatusMonitor extends SContextEventContext {
     public static final Parcelable.Creator<SContextPhoneStatusMonitor> CREATOR = new Parcelable.Creator<SContextPhoneStatusMonitor>() { // from class: android.hardware.scontext.SContextPhoneStatusMonitor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextPhoneStatusMonitor createFromParcel(Parcel in) {
             return new SContextPhoneStatusMonitor(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextPhoneStatusMonitor[] newArray(int size) {
             return new SContextPhoneStatusMonitor[size];
@@ -22,7 +23,6 @@ public class SContextPhoneStatusMonitor extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextPhoneStatusMonitor() {
         this.mContext = new Bundle();
     }
@@ -59,5 +59,22 @@ public class SContextPhoneStatusMonitor extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextPhoneStatusMonitor$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextPhoneStatusMonitor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextPhoneStatusMonitor createFromParcel(Parcel in) {
+            return new SContextPhoneStatusMonitor(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextPhoneStatusMonitor[] newArray(int size) {
+            return new SContextPhoneStatusMonitor[size];
+        }
     }
 }

@@ -82,13 +82,14 @@ public final class OutputConfiguration implements Parcelable {
     private ArrayList<Surface> mSurfaces;
     private int mTimestampBase;
     public static final Parcelable.Creator<OutputConfiguration> CREATOR = new Parcelable.Creator<OutputConfiguration>() { // from class: android.hardware.camera2.params.OutputConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public OutputConfiguration createFromParcel(Parcel source) {
             return new OutputConfiguration(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OutputConfiguration[] newArray(int size) {
             return new OutputConfiguration[size];
@@ -114,6 +115,10 @@ public final class OutputConfiguration implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface TimestampBase {
+    }
+
+    /* synthetic */ OutputConfiguration(Parcel parcel, OutputConfigurationIA outputConfigurationIA) {
+        this(parcel);
     }
 
     public OutputConfiguration(Surface surface) {
@@ -513,6 +518,23 @@ public final class OutputConfiguration implements Parcelable {
 
     public String getPhysicalCameraId() {
         return this.mPhysicalCameraId;
+    }
+
+    /* renamed from: android.hardware.camera2.params.OutputConfiguration$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<OutputConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OutputConfiguration createFromParcel(Parcel source) {
+            return new OutputConfiguration(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OutputConfiguration[] newArray(int size) {
+            return new OutputConfiguration[size];
+        }
     }
 
     @Override // android.os.Parcelable

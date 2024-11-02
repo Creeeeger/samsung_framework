@@ -46,18 +46,23 @@ public class NetworkPolicy implements Parcelable, Comparable<NetworkPolicy> {
     public long warningBytes;
     private static final String TAG = NetworkPolicy.class.getSimpleName();
     public static final Parcelable.Creator<NetworkPolicy> CREATOR = new Parcelable.Creator<NetworkPolicy>() { // from class: android.net.NetworkPolicy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NetworkPolicy createFromParcel(Parcel in) {
             return new NetworkPolicy(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkPolicy[] newArray(int size) {
             return new NetworkPolicy[size];
         }
     };
+
+    /* synthetic */ NetworkPolicy(Parcel parcel, NetworkPolicyIA networkPolicyIA) {
+        this(parcel);
+    }
 
     public static RecurrenceRule buildRule(int cycleDay, ZoneId cycleTimezone) {
         if (cycleDay != -1) {
@@ -198,6 +203,23 @@ public class NetworkPolicy implements Parcelable, Comparable<NetworkPolicy> {
 
     public String toString() {
         return "NetworkPolicy{template=" + this.template + " cycleRule=" + this.cycleRule + " warningBytes=" + this.warningBytes + " limitBytes=" + this.limitBytes + " lastWarningSnooze=" + this.lastWarningSnooze + " lastLimitSnooze=" + this.lastLimitSnooze + " lastRapidSnooze=" + this.lastRapidSnooze + " metered=" + this.metered + " inferred=" + this.inferred + "}";
+    }
+
+    /* renamed from: android.net.NetworkPolicy$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NetworkPolicy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkPolicy createFromParcel(Parcel in) {
+            return new NetworkPolicy(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkPolicy[] newArray(int size) {
+            return new NetworkPolicy[size];
+        }
     }
 
     public byte[] getBytesForBackup() throws IOException {

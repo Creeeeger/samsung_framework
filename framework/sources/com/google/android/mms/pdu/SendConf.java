@@ -8,7 +8,6 @@ public class SendConf extends GenericPdu {
         setMessageType(129);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SendConf(PduHeaders headers) {
         super(headers);
     }

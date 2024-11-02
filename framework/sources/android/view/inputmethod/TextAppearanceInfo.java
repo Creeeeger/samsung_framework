@@ -14,13 +14,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TextAppearanceInfo implements Parcelable {
     public static final Parcelable.Creator<TextAppearanceInfo> CREATOR = new Parcelable.Creator<TextAppearanceInfo>() { // from class: android.view.inputmethod.TextAppearanceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TextAppearanceInfo createFromParcel(Parcel in) {
             return new TextAppearanceInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextAppearanceInfo[] newArray(int size) {
             return new TextAppearanceInfo[size];
@@ -48,6 +49,10 @@ public final class TextAppearanceInfo implements Parcelable {
     private final float mTextScaleX;
     private final float mTextSize;
     private final int mTextStyle;
+
+    /* synthetic */ TextAppearanceInfo(Builder builder, TextAppearanceInfoIA textAppearanceInfoIA) {
+        this(builder);
+    }
 
     private TextAppearanceInfo(Builder builder) {
         this.mTextSize = builder.mTextSize;
@@ -159,6 +164,23 @@ public final class TextAppearanceInfo implements Parcelable {
         this.mTextColor = in.readInt();
         this.mHintTextColor = in.readInt();
         this.mLinkTextColor = in.readInt();
+    }
+
+    /* renamed from: android.view.inputmethod.TextAppearanceInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TextAppearanceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextAppearanceInfo createFromParcel(Parcel in) {
+            return new TextAppearanceInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextAppearanceInfo[] newArray(int size) {
+            return new TextAppearanceInfo[size];
+        }
     }
 
     public float getTextSize() {

@@ -9,13 +9,14 @@ public class SemContextDeviceActivityDetector extends SemContextEventContext {
     public static final int ACTIVITY_MOVING = 2;
     public static final int ACTIVITY_STATIONARY = 1;
     public static final Parcelable.Creator<SemContextDeviceActivityDetector> CREATOR = new Parcelable.Creator<SemContextDeviceActivityDetector>() { // from class: com.samsung.android.hardware.context.SemContextDeviceActivityDetector.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextDeviceActivityDetector createFromParcel(Parcel in) {
             return new SemContextDeviceActivityDetector(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextDeviceActivityDetector[] newArray(int size) {
             return new SemContextDeviceActivityDetector[size];
@@ -30,7 +31,23 @@ public class SemContextDeviceActivityDetector extends SemContextEventContext {
     public static final int POSTURE_PORTRAIT = 512;
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextDeviceActivityDetector$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextDeviceActivityDetector> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextDeviceActivityDetector createFromParcel(Parcel in) {
+            return new SemContextDeviceActivityDetector(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextDeviceActivityDetector[] newArray(int size) {
+            return new SemContextDeviceActivityDetector[size];
+        }
+    }
+
     public SemContextDeviceActivityDetector() {
         this.mContext = new Bundle();
     }

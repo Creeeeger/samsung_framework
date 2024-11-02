@@ -104,6 +104,10 @@ public class Switch extends CompoundButton {
     private VelocityTracker mVelocityTracker;
     private static final int[] CHECKED_STATE_SET = {16842912};
     private static final FloatProperty<Switch> THUMB_POS = new FloatProperty<Switch>("thumbPos") { // from class: android.widget.Switch.1
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
         @Override // android.util.Property
         public Float get(Switch object) {
             return Float.valueOf(object.mThumbPosition);
@@ -871,7 +875,6 @@ public class Switch extends CompoundButton {
         return this.mThumbPosition > 0.5f;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setThumbPosition(float position) {
         this.mThumbPosition = position;
         invalidate();
@@ -908,7 +911,6 @@ public class Switch extends CompoundButton {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int switchRight;
@@ -1022,7 +1024,6 @@ public class Switch extends CompoundButton {
         super.draw(c);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.CompoundButton, android.widget.TextView, android.view.View
     public void onDraw(Canvas canvas) {
         int cX;
@@ -1149,7 +1150,6 @@ public class Switch extends CompoundButton {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.CompoundButton, android.widget.TextView, android.view.View
     public int[] onCreateDrawableState(int extraSpace) {
         int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
@@ -1159,7 +1159,6 @@ public class Switch extends CompoundButton {
         return drawableState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.CompoundButton, android.widget.TextView, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -1191,7 +1190,6 @@ public class Switch extends CompoundButton {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.CompoundButton, android.widget.TextView, android.view.View
     public boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == this.mThumbDrawable || who == this.mTrackDrawable;
@@ -1220,7 +1218,6 @@ public class Switch extends CompoundButton {
         return Switch.class.getName();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.CompoundButton, android.widget.TextView, android.view.View
     public void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
         super.onProvideStructure(structure, viewFor, flags);
@@ -1234,6 +1231,24 @@ public class Switch extends CompoundButton {
             StringBuilder newText = new StringBuilder();
             newText.append(oldText).append(' ').append(switchText);
             structure.setText(newText);
+        }
+    }
+
+    /* renamed from: android.widget.Switch$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends FloatProperty<Switch> {
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
+        @Override // android.util.Property
+        public Float get(Switch object) {
+            return Float.valueOf(object.mThumbPosition);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(Switch object, float value) {
+            object.setThumbPosition(value);
         }
     }
 

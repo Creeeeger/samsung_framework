@@ -84,8 +84,9 @@ public interface SemImsFtListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements SemImsFtListener {
+        public static class Proxy implements SemImsFtListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

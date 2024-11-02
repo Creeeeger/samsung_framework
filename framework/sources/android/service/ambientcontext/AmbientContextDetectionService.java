@@ -25,7 +25,7 @@ public abstract class AmbientContextDetectionService extends Service {
 
     public abstract void onStopDetection(String str);
 
-    /* renamed from: android.service.ambientcontext.AmbientContextDetectionService$1, reason: invalid class name */
+    /* renamed from: android.service.ambientcontext.AmbientContextDetectionService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IAmbientContextDetectionService.Stub {
         AnonymousClass1() {
@@ -53,14 +53,12 @@ public abstract class AmbientContextDetectionService extends Service {
             Slog.d(AmbientContextDetectionService.TAG, "startDetection " + request);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$startDetection$0(RemoteCallback detectionResultCallback, AmbientContextDetectionResult result) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AmbientContextDetectionResult.RESULT_RESPONSE_BUNDLE_KEY, result);
             detectionResultCallback.sendResult(bundle);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$startDetection$1(RemoteCallback statusCallback, AmbientContextDetectionServiceStatus status) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AmbientContextDetectionServiceStatus.STATUS_RESPONSE_BUNDLE_KEY, status);
@@ -87,7 +85,6 @@ public abstract class AmbientContextDetectionService extends Service {
             AmbientContextDetectionService.this.onQueryServiceStatus(eventTypes, packageName, consumer);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$queryServiceStatus$2(RemoteCallback callback, AmbientContextDetectionServiceStatus response) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AmbientContextDetectionServiceStatus.STATUS_RESPONSE_BUNDLE_KEY, response);

@@ -12,13 +12,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public class CustomControl implements Parcelable {
     public static final Parcelable.Creator<CustomControl> CREATOR = new Parcelable.Creator<CustomControl>() { // from class: android.service.controls.CustomControl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CustomControl createFromParcel(Parcel source) {
             return new CustomControl(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CustomControl[] newArray(int size) {
             return new CustomControl[size];
@@ -68,7 +69,6 @@ public class CustomControl implements Parcelable {
     public @interface StatusIconType {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CustomControl() {
         this.mCustomIconAnimationJson = "";
         this.mCustomIconAnimationJsonCache = "";
@@ -241,6 +241,23 @@ public class CustomControl implements Parcelable {
             this.mOverlayCustomIcon.writeToParcel(dest, flags);
         } else {
             dest.writeByte((byte) 0);
+        }
+    }
+
+    /* renamed from: android.service.controls.CustomControl$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CustomControl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CustomControl createFromParcel(Parcel source) {
+            return new CustomControl(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CustomControl[] newArray(int size) {
+            return new CustomControl[size];
         }
     }
 

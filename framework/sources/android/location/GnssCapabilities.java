@@ -18,13 +18,14 @@ public final class GnssCapabilities implements Parcelable {
     public static final int CAPABILITY_UNKNOWN = 0;
     public static final int CAPABILITY_UNSUPPORTED = 2;
     public static final Parcelable.Creator<GnssCapabilities> CREATOR = new Parcelable.Creator<GnssCapabilities>() { // from class: android.location.GnssCapabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssCapabilities createFromParcel(Parcel in) {
             return new GnssCapabilities(in.readInt(), in.readBoolean(), in.readInt(), in.readInt(), in.createTypedArrayList(GnssSignalType.CREATOR));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssCapabilities[] newArray(int size) {
             return new GnssCapabilities[size];
@@ -79,6 +80,10 @@ public final class GnssCapabilities implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface TopHalCapabilityFlags {
+    }
+
+    /* synthetic */ GnssCapabilities(int i, boolean z, int i2, int i3, List list, GnssCapabilitiesIA gnssCapabilitiesIA) {
+        this(i, z, i2, i3, list);
     }
 
     public static GnssCapabilities empty() {
@@ -268,6 +273,23 @@ public final class GnssCapabilities implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mTopFlags), Boolean.valueOf(this.mIsAdrCapabilityKnown), Integer.valueOf(this.mMeasurementCorrectionsFlags), Integer.valueOf(this.mPowerFlags), this.mGnssSignalTypes);
+    }
+
+    /* renamed from: android.location.GnssCapabilities$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssCapabilities createFromParcel(Parcel in) {
+            return new GnssCapabilities(in.readInt(), in.readBoolean(), in.readInt(), in.readInt(), in.createTypedArrayList(GnssSignalType.CREATOR));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssCapabilities[] newArray(int size) {
+            return new GnssCapabilities[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -58,7 +58,6 @@ public class SemSweepTranslationFilter extends SemAbsSweepAnimationFilter {
         return super.isAnimationBack();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SemSweepTranslationFilter(ListView listView, Context context) {
         int parseColor = Color.parseColor("#6ebd52");
         this.leftColor = parseColor;

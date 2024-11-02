@@ -41,7 +41,6 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
     private SpellParser[] mSpellParsers = new SpellParser[0];
     private int mSpanSequenceCounter = 0;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public enum RemoveReason {
         REPLACE,
@@ -57,7 +56,6 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
         this.mCookie = hashCode();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetSession() {
         closeSession();
         TextServicesManager textServicesManagerForUser = this.mTextView.getTextServicesManagerForUser();
@@ -123,7 +121,6 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void addSpellCheckSpan(Editable editable, int start, int end) {
         int index = nextSpellCheckSpanIndex();
         SpellCheckSpan spellCheckSpan = this.mSpellCheckSpans[index];
@@ -148,7 +145,6 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
         spellCheck();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onPerformSpellCheck() {
         int end = this.mTextView.length();
         spellCheck(0, end, true);
@@ -196,7 +192,6 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
         spellCheck(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void spellCheck(boolean forceCheckWhenEditingWord) {
         boolean isNotEditing;
         if (this.mSpellCheckerSession == null) {
@@ -349,10 +344,32 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
         scheduleNewSpellCheck();
     }
 
+    /* renamed from: android.widget.SpellChecker$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            int length = SpellChecker.this.mSpellParsers.length;
+            for (int i = 0; i < length; i++) {
+                SpellParser spellParser = SpellChecker.this.mSpellParsers[i];
+                if (!spellParser.isFinished()) {
+                    spellParser.parse();
+                    return;
+                }
+            }
+        }
+    }
+
     private void scheduleNewSpellCheck() {
         Runnable runnable = this.mSpellRunnable;
         if (runnable == null) {
             this.mSpellRunnable = new Runnable() { // from class: android.widget.SpellChecker.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     int length = SpellChecker.this.mSpellParsers.length;
@@ -417,7 +434,6 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class SentenceIteratorWrapper {
         private int mEndOffset;
@@ -461,11 +477,14 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SpellParser {
         private boolean mForceCheckWhenEditingWord;
         private Object mRange;
+
+        /* synthetic */ SpellParser(SpellChecker spellChecker, SpellParserIA spellParserIA) {
+            this();
+        }
 
         private SpellParser() {
             this.mRange = new Object();
@@ -571,7 +590,6 @@ public class SpellChecker implements SpellCheckerSession.SpellCheckerSessionList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Range<Integer> detectSentenceBoundary(CharSequence sequence, int textChangeStart, int textChangeEnd) {
         int iteratorWindowStart = findSeparator(sequence, Math.max(0, textChangeStart - 350), Math.max(0, textChangeStart - 700));
         int iteratorWindowEnd = findSeparator(sequence, Math.min(textChangeStart + 700, textChangeEnd), Math.min(textChangeStart + 1050, sequence.length()));

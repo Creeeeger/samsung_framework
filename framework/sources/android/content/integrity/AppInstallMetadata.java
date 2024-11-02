@@ -21,6 +21,10 @@ public final class AppInstallMetadata {
     private final String mStampCertificateHash;
     private final long mVersionCode;
 
+    /* synthetic */ AppInstallMetadata(Builder builder, AppInstallMetadataIA appInstallMetadataIA) {
+        this(builder);
+    }
+
     private AppInstallMetadata(Builder builder) {
         this.mPackageName = builder.mPackageName;
         this.mAppCertificates = builder.mAppCertificates;

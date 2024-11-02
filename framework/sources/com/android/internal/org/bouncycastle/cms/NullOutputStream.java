@@ -3,8 +3,9 @@ package com.android.internal.org.bouncycastle.cms;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class NullOutputStream extends OutputStream {
+public class NullOutputStream extends OutputStream {
     @Override // java.io.OutputStream
     public void write(byte[] buf) throws IOException {
     }

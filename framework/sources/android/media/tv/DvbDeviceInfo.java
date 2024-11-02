@@ -9,7 +9,9 @@ import android.util.Log;
 /* loaded from: classes2.dex */
 public final class DvbDeviceInfo implements Parcelable {
     public static final Parcelable.Creator<DvbDeviceInfo> CREATOR = new Parcelable.Creator<DvbDeviceInfo>() { // from class: android.media.tv.DvbDeviceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DvbDeviceInfo createFromParcel(Parcel source) {
             try {
@@ -20,7 +22,6 @@ public final class DvbDeviceInfo implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DvbDeviceInfo[] newArray(int size) {
             return new DvbDeviceInfo[size];
@@ -29,6 +30,32 @@ public final class DvbDeviceInfo implements Parcelable {
     static final String TAG = "DvbDeviceInfo";
     private final int mAdapterId;
     private final int mDeviceId;
+
+    /* synthetic */ DvbDeviceInfo(Parcel parcel, DvbDeviceInfoIA dvbDeviceInfoIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.media.tv.DvbDeviceInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DvbDeviceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DvbDeviceInfo createFromParcel(Parcel source) {
+            try {
+                return new DvbDeviceInfo(source);
+            } catch (Exception e) {
+                Log.e(DvbDeviceInfo.TAG, "Exception creating DvbDeviceInfo from parcel", e);
+                return null;
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DvbDeviceInfo[] newArray(int size) {
+            return new DvbDeviceInfo[size];
+        }
+    }
 
     private DvbDeviceInfo(Parcel source) {
         this.mAdapterId = source.readInt();

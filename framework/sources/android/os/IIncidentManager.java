@@ -225,8 +225,9 @@ public interface IIncidentManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IIncidentManager {
+        public static class Proxy implements IIncidentManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

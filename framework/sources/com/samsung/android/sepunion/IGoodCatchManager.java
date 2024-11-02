@@ -120,8 +120,9 @@ public interface IGoodCatchManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGoodCatchManager {
+        public static class Proxy implements IGoodCatchManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

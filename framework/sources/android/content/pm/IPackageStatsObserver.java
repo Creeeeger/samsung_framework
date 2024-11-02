@@ -84,7 +84,6 @@ public interface IPackageStatsObserver extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IPackageStatsObserver {
             private IBinder mRemote;

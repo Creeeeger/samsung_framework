@@ -142,7 +142,6 @@ public class RenderScript {
 
     native int nContextPeekMessage(long j, int[] iArr);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public native long nDeviceCreate();
 
     native void nDeviceDestroy(long j);
@@ -431,7 +430,6 @@ public class RenderScript {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nContextCreateGL(long dev, int ver, int sdkVer, int colorMin, int colorPref, int alphaMin, int alphaPref, int depthMin, int depthPref, int stencilMin, int stencilPref, int samplesMin, int samplesPref, float samplesQ, int dpi) {
         return rsnContextCreateGL(dev, ver, sdkVer, colorMin, colorPref, alphaMin, alphaPref, depthMin, depthPref, stencilMin, stencilPref, samplesMin, samplesPref, samplesQ, dpi);
     }
@@ -450,7 +448,6 @@ public class RenderScript {
         rsnContextDestroy(curCon);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nContextSetSurface(int w, int h, Surface sur) {
         validate();
         rsnContextSetSurface(this.mContext, w, h, sur);
@@ -486,7 +483,6 @@ public class RenderScript {
         rsnContextSendMessage(this.mContext, id, data);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nContextBindRootScript(long script) {
         validate();
         rsnContextBindRootScript(this.mContext, script);
@@ -497,43 +493,36 @@ public class RenderScript {
         rsnContextBindSampler(this.mContext, sampler, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nContextBindProgramStore(long pfs) {
         validate();
         rsnContextBindProgramStore(this.mContext, pfs);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nContextBindProgramFragment(long pf) {
         validate();
         rsnContextBindProgramFragment(this.mContext, pf);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nContextBindProgramVertex(long pv) {
         validate();
         rsnContextBindProgramVertex(this.mContext, pv);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nContextBindProgramRaster(long pr) {
         validate();
         rsnContextBindProgramRaster(this.mContext, pr);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nContextPause() {
         validate();
         rsnContextPause(this.mContext);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nContextResume() {
         validate();
         rsnContextResume(this.mContext);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nClosureCreate(long kernelID, long returnValue, long[] fieldIDs, long[] values, int[] sizes, long[] depClosures, long[] depFieldIDs) {
         long c;
         validate();
@@ -544,7 +533,6 @@ public class RenderScript {
         return c;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nInvokeClosureCreate(long invokeID, byte[] params, long[] fieldIDs, long[] values, int[] sizes) {
         long c;
         validate();
@@ -555,19 +543,16 @@ public class RenderScript {
         return c;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nClosureSetArg(long closureID, int index, long value, int size) {
         validate();
         rsnClosureSetArg(this.mContext, closureID, index, value, size);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nClosureSetGlobal(long closureID, long fieldID, long value, int size) {
         validate();
         rsnClosureSetGlobal(this.mContext, closureID, fieldID, value, size);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nScriptGroup2Create(String name, String cachePath, long[] closures) {
         long g;
         validate();
@@ -578,25 +563,21 @@ public class RenderScript {
         return g;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptGroup2Execute(long groupID) {
         validate();
         rsnScriptGroup2Execute(this.mContext, groupID);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAssignName(long obj, byte[] name) {
         validate();
         rsnAssignName(this.mContext, obj, name);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized String nGetName(long obj) {
         validate();
         return rsnGetName(this.mContext, obj);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void nObjDestroy(long id) {
         long j = this.mContext;
         if (j != 0) {
@@ -604,547 +585,456 @@ public class RenderScript {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nElementCreate(long type, int kind, boolean norm, int vecSize) {
         validate();
         return rsnElementCreate(this.mContext, type, kind, norm, vecSize);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nElementCreate2(long[] elements, String[] names, int[] arraySizes) {
         validate();
         return rsnElementCreate2(this.mContext, elements, names, arraySizes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nElementGetNativeData(long id, int[] elementData) {
         validate();
         rsnElementGetNativeData(this.mContext, id, elementData);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nElementGetSubElements(long id, long[] IDs, String[] names, int[] arraySizes) {
         validate();
         rsnElementGetSubElements(this.mContext, id, IDs, names, arraySizes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nTypeCreate(long eid, int x, int y, int z, boolean mips, boolean faces, int yuv) {
         validate();
         return rsnTypeCreate(this.mContext, eid, x, y, z, mips, faces, yuv);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nTypeGetNativeData(long id, long[] typeData) {
         validate();
         rsnTypeGetNativeData(this.mContext, id, typeData);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nAllocationCreateTyped(long type, int mip, int usage, long pointer) {
         validate();
         return rsnAllocationCreateTyped(this.mContext, type, mip, usage, pointer);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nAllocationCreateFromBitmap(long type, int mip, Bitmap bmp, int usage) {
         validate();
         return rsnAllocationCreateFromBitmap(this.mContext, type, mip, bmp, usage);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nAllocationCreateBitmapBackedAllocation(long type, int mip, Bitmap bmp, int usage) {
         validate();
         return rsnAllocationCreateBitmapBackedAllocation(this.mContext, type, mip, bmp, usage);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nAllocationCubeCreateFromBitmap(long type, int mip, Bitmap bmp, int usage) {
         validate();
         return rsnAllocationCubeCreateFromBitmap(this.mContext, type, mip, bmp, usage);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationCopyToBitmap(long alloc, Bitmap bmp) {
         validate();
         rsnAllocationCopyToBitmap(this.mContext, alloc, bmp);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationSyncAll(long alloc, int src) {
         validate();
         rsnAllocationSyncAll(this.mContext, alloc, src);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized ByteBuffer nAllocationGetByteBuffer(long alloc, long[] stride, int xBytesSize, int dimY, int dimZ) {
         validate();
         return rsnAllocationGetByteBuffer(this.mContext, alloc, stride, xBytesSize, dimY, dimZ);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationSetupBufferQueue(long alloc, int numAlloc) {
         validate();
         rsnAllocationSetupBufferQueue(this.mContext, alloc, numAlloc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationShareBufferQueue(long alloc1, long alloc2) {
         validate();
         rsnAllocationShareBufferQueue(this.mContext, alloc1, alloc2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized Surface nAllocationGetSurface(long alloc) {
         validate();
         return rsnAllocationGetSurface(this.mContext, alloc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationSetSurface(long alloc, Surface sur) {
         validate();
         rsnAllocationSetSurface(this.mContext, alloc, sur);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationIoSend(long alloc) {
         validate();
         rsnAllocationIoSend(this.mContext, alloc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nAllocationIoReceive(long alloc) {
         validate();
         return rsnAllocationIoReceive(this.mContext, alloc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationGenerateMipmaps(long alloc) {
         validate();
         rsnAllocationGenerateMipmaps(this.mContext, alloc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationCopyFromBitmap(long alloc, Bitmap bmp) {
         validate();
         rsnAllocationCopyFromBitmap(this.mContext, alloc, bmp);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationData1D(long id, int off, int mip, int count, Object d, int sizeBytes, Element.DataType dt, int mSize, boolean usePadding) {
         validate();
         rsnAllocationData1D(this.mContext, id, off, mip, count, d, sizeBytes, dt.mID, mSize, usePadding);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationElementData(long id, int xoff, int yoff, int zoff, int mip, int compIdx, byte[] d, int sizeBytes) {
         validate();
         rsnAllocationElementData(this.mContext, id, xoff, yoff, zoff, mip, compIdx, d, sizeBytes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationData2D(long dstAlloc, int dstXoff, int dstYoff, int dstMip, int dstFace, int width, int height, long srcAlloc, int srcXoff, int srcYoff, int srcMip, int srcFace) {
         validate();
         rsnAllocationData2D(this.mContext, dstAlloc, dstXoff, dstYoff, dstMip, dstFace, width, height, srcAlloc, srcXoff, srcYoff, srcMip, srcFace);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationData2D(long id, int xoff, int yoff, int mip, int face, int w, int h, Object d, int sizeBytes, Element.DataType dt, int mSize, boolean usePadding) {
         validate();
         rsnAllocationData2D(this.mContext, id, xoff, yoff, mip, face, w, h, d, sizeBytes, dt.mID, mSize, usePadding);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationData2D(long id, int xoff, int yoff, int mip, int face, Bitmap b) {
         validate();
         rsnAllocationData2D(this.mContext, id, xoff, yoff, mip, face, b);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationData3D(long dstAlloc, int dstXoff, int dstYoff, int dstZoff, int dstMip, int width, int height, int depth, long srcAlloc, int srcXoff, int srcYoff, int srcZoff, int srcMip) {
         validate();
         rsnAllocationData3D(this.mContext, dstAlloc, dstXoff, dstYoff, dstZoff, dstMip, width, height, depth, srcAlloc, srcXoff, srcYoff, srcZoff, srcMip);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationData3D(long id, int xoff, int yoff, int zoff, int mip, int w, int h, int depth, Object d, int sizeBytes, Element.DataType dt, int mSize, boolean usePadding) {
         validate();
         rsnAllocationData3D(this.mContext, id, xoff, yoff, zoff, mip, w, h, depth, d, sizeBytes, dt.mID, mSize, usePadding);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationRead(long id, Object d, Element.DataType dt, int mSize, boolean usePadding) {
         validate();
         rsnAllocationRead(this.mContext, id, d, dt.mID, mSize, usePadding);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationRead1D(long id, int off, int mip, int count, Object d, int sizeBytes, Element.DataType dt, int mSize, boolean usePadding) {
         validate();
         rsnAllocationRead1D(this.mContext, id, off, mip, count, d, sizeBytes, dt.mID, mSize, usePadding);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationElementRead(long id, int xoff, int yoff, int zoff, int mip, int compIdx, byte[] d, int sizeBytes) {
         validate();
         rsnAllocationElementRead(this.mContext, id, xoff, yoff, zoff, mip, compIdx, d, sizeBytes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationRead2D(long id, int xoff, int yoff, int mip, int face, int w, int h, Object d, int sizeBytes, Element.DataType dt, int mSize, boolean usePadding) {
         validate();
         rsnAllocationRead2D(this.mContext, id, xoff, yoff, mip, face, w, h, d, sizeBytes, dt.mID, mSize, usePadding);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationRead3D(long id, int xoff, int yoff, int zoff, int mip, int w, int h, int depth, Object d, int sizeBytes, Element.DataType dt, int mSize, boolean usePadding) {
         validate();
         rsnAllocationRead3D(this.mContext, id, xoff, yoff, zoff, mip, w, h, depth, d, sizeBytes, dt.mID, mSize, usePadding);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nAllocationGetType(long id) {
         validate();
         return rsnAllocationGetType(this.mContext, id);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationResize1D(long id, int dimX) {
         validate();
         rsnAllocationResize1D(this.mContext, id, dimX);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nAllocationAdapterCreate(long allocId, long typeId) {
         validate();
         return rsnAllocationAdapterCreate(this.mContext, allocId, typeId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nAllocationAdapterOffset(long id, int x, int y, int z, int mip, int face, int a1, int a2, int a3, int a4) {
         validate();
         rsnAllocationAdapterOffset(this.mContext, id, x, y, z, mip, face, a1, a2, a3, a4);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nFileA3DCreateFromAssetStream(long assetStream) {
         validate();
         return rsnFileA3DCreateFromAssetStream(this.mContext, assetStream);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nFileA3DCreateFromFile(String path) {
         validate();
         return rsnFileA3DCreateFromFile(this.mContext, path);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nFileA3DCreateFromAsset(AssetManager mgr, String path) {
         validate();
         return rsnFileA3DCreateFromAsset(this.mContext, mgr, path);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized int nFileA3DGetNumIndexEntries(long fileA3D) {
         validate();
         return rsnFileA3DGetNumIndexEntries(this.mContext, fileA3D);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nFileA3DGetIndexEntries(long fileA3D, int numEntries, int[] IDs, String[] names) {
         validate();
         rsnFileA3DGetIndexEntries(this.mContext, fileA3D, numEntries, IDs, names);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nFileA3DGetEntryByIndex(long fileA3D, int index) {
         validate();
         return rsnFileA3DGetEntryByIndex(this.mContext, fileA3D, index);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nFontCreateFromFile(String fileName, float size, int dpi) {
         validate();
         return rsnFontCreateFromFile(this.mContext, fileName, size, dpi);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nFontCreateFromAssetStream(String name, float size, int dpi, long assetStream) {
         validate();
         return rsnFontCreateFromAssetStream(this.mContext, name, size, dpi, assetStream);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nFontCreateFromAsset(AssetManager mgr, String path, float size, int dpi) {
         validate();
         return rsnFontCreateFromAsset(this.mContext, mgr, path, size, dpi);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptBindAllocation(long script, long alloc, int slot) {
         validate();
         rsnScriptBindAllocation(this.mContext, script, alloc, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptSetTimeZone(long script, byte[] timeZone) {
         validate();
         rsnScriptSetTimeZone(this.mContext, script, timeZone);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptInvoke(long id, int slot) {
         validate();
         rsnScriptInvoke(this.mContext, id, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptForEach(long id, int slot, long[] ains, long aout, byte[] params, int[] limits) {
         validate();
         rsnScriptForEach(this.mContext, id, slot, ains, aout, params, limits);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptReduce(long id, int slot, long[] ains, long aout, int[] limits) {
         validate();
         rsnScriptReduce(this.mContext, id, slot, ains, aout, limits);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptInvokeV(long id, int slot, byte[] params) {
         validate();
         rsnScriptInvokeV(this.mContext, id, slot, params);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptSetVarI(long id, int slot, int val) {
         validate();
         rsnScriptSetVarI(this.mContext, id, slot, val);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized int nScriptGetVarI(long id, int slot) {
         validate();
         return rsnScriptGetVarI(this.mContext, id, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptSetVarJ(long id, int slot, long val) {
         validate();
         rsnScriptSetVarJ(this.mContext, id, slot, val);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nScriptGetVarJ(long id, int slot) {
         validate();
         return rsnScriptGetVarJ(this.mContext, id, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptSetVarF(long id, int slot, float val) {
         validate();
         rsnScriptSetVarF(this.mContext, id, slot, val);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized float nScriptGetVarF(long id, int slot) {
         validate();
         return rsnScriptGetVarF(this.mContext, id, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptSetVarD(long id, int slot, double val) {
         validate();
         rsnScriptSetVarD(this.mContext, id, slot, val);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized double nScriptGetVarD(long id, int slot) {
         validate();
         return rsnScriptGetVarD(this.mContext, id, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptSetVarV(long id, int slot, byte[] val) {
         validate();
         rsnScriptSetVarV(this.mContext, id, slot, val);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptGetVarV(long id, int slot, byte[] val) {
         validate();
         rsnScriptGetVarV(this.mContext, id, slot, val);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptSetVarVE(long id, int slot, byte[] val, long e, int[] dims) {
         validate();
         rsnScriptSetVarVE(this.mContext, id, slot, val, e, dims);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptSetVarObj(long id, int slot, long val) {
         validate();
         rsnScriptSetVarObj(this.mContext, id, slot, val);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nScriptCCreate(String resName, String cacheDir, byte[] script, int length) {
         validate();
         return rsnScriptCCreate(this.mContext, resName, cacheDir, script, length);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nScriptIntrinsicCreate(int id, long eid) {
         validate();
         return rsnScriptIntrinsicCreate(this.mContext, id, eid);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nScriptKernelIDCreate(long sid, int slot, int sig) {
         validate();
         return rsnScriptKernelIDCreate(this.mContext, sid, slot, sig);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nScriptInvokeIDCreate(long sid, int slot) {
         validate();
         return rsnScriptInvokeIDCreate(this.mContext, sid, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nScriptFieldIDCreate(long sid, int slot) {
         validate();
         return rsnScriptFieldIDCreate(this.mContext, sid, slot);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nScriptGroupCreate(long[] kernels, long[] src, long[] dstk, long[] dstf, long[] types) {
         validate();
         return rsnScriptGroupCreate(this.mContext, kernels, src, dstk, dstf, types);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptGroupSetInput(long group, long kernel, long alloc) {
         validate();
         rsnScriptGroupSetInput(this.mContext, group, kernel, alloc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptGroupSetOutput(long group, long kernel, long alloc) {
         validate();
         rsnScriptGroupSetOutput(this.mContext, group, kernel, alloc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptGroupExecute(long group) {
         validate();
         rsnScriptGroupExecute(this.mContext, group);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nSamplerCreate(int magFilter, int minFilter, int wrapS, int wrapT, int wrapR, float aniso) {
         validate();
         return rsnSamplerCreate(this.mContext, magFilter, minFilter, wrapS, wrapT, wrapR, aniso);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nProgramStoreCreate(boolean r, boolean g, boolean b, boolean a, boolean depthMask, boolean dither, int srcMode, int dstMode, int depthFunc) {
         validate();
         return rsnProgramStoreCreate(this.mContext, r, g, b, a, depthMask, dither, srcMode, dstMode, depthFunc);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nProgramRasterCreate(boolean pointSprite, int cullMode) {
         validate();
         return rsnProgramRasterCreate(this.mContext, pointSprite, cullMode);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nProgramBindConstants(long pv, int slot, long mID) {
         validate();
         rsnProgramBindConstants(this.mContext, pv, slot, mID);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nProgramBindTexture(long vpf, int slot, long a) {
         validate();
         rsnProgramBindTexture(this.mContext, vpf, slot, a);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nProgramBindSampler(long vpf, int slot, long s) {
         validate();
         rsnProgramBindSampler(this.mContext, vpf, slot, s);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nProgramFragmentCreate(String shader, String[] texNames, long[] params) {
         validate();
         return rsnProgramFragmentCreate(this.mContext, shader, texNames, params);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nProgramVertexCreate(String shader, String[] texNames, long[] params) {
         validate();
         return rsnProgramVertexCreate(this.mContext, shader, texNames, params);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long nMeshCreate(long[] vtx, long[] idx, int[] prim) {
         validate();
         return rsnMeshCreate(this.mContext, vtx, idx, prim);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized int nMeshGetVertexBufferCount(long id) {
         validate();
         return rsnMeshGetVertexBufferCount(this.mContext, id);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized int nMeshGetIndexCount(long id) {
         validate();
         return rsnMeshGetIndexCount(this.mContext, id);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nMeshGetVertices(long id, long[] vtxIds, int vtxIdCount) {
         validate();
         rsnMeshGetVertices(this.mContext, id, vtxIds, vtxIdCount);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nMeshGetIndices(long id, long[] idxIds, int[] primitives, int vtxIdCount) {
         validate();
         rsnMeshGetIndices(this.mContext, id, idxIds, primitives, vtxIdCount);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptIntrinsicBLAS_Single(long id, int func, int TransA, int TransB, int Side, int Uplo, int Diag, int M, int N, int K, float alpha, long A, long B, float beta, long C, int incX, int incY, int KL, int KU) {
         validate();
         rsnScriptIntrinsicBLAS_Single(this.mContext, id, func, TransA, TransB, Side, Uplo, Diag, M, N, K, alpha, A, B, beta, C, incX, incY, KL, KU);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptIntrinsicBLAS_Double(long id, int func, int TransA, int TransB, int Side, int Uplo, int Diag, int M, int N, int K, double alpha, long A, long B, double beta, long C, int incX, int incY, int KL, int KU) {
         validate();
         rsnScriptIntrinsicBLAS_Double(this.mContext, id, func, TransA, TransB, Side, Uplo, Diag, M, N, K, alpha, A, B, beta, C, incX, incY, KL, KU);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptIntrinsicBLAS_Complex(long id, int func, int TransA, int TransB, int Side, int Uplo, int Diag, int M, int N, int K, float alphaX, float alphaY, long A, long B, float betaX, float betaY, long C, int incX, int incY, int KL, int KU) {
         validate();
         rsnScriptIntrinsicBLAS_Complex(this.mContext, id, func, TransA, TransB, Side, Uplo, Diag, M, N, K, alphaX, alphaY, A, B, betaX, betaY, C, incX, incY, KL, KU);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptIntrinsicBLAS_Z(long id, int func, int TransA, int TransB, int Side, int Uplo, int Diag, int M, int N, int K, double alphaX, double alphaY, long A, long B, double betaX, double betaY, long C, int incX, int incY, int KL, int KU) {
         validate();
         rsnScriptIntrinsicBLAS_Z(this.mContext, id, func, TransA, TransB, Side, Uplo, Diag, M, N, K, alphaX, alphaY, A, B, betaX, betaY, C, incX, incY, KL, KU);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void nScriptIntrinsicBLAS_BNNM(long id, int M, int N, int K, long A, int a_offset, long B, int b_offset, long C, int c_offset, int c_mult_int) {
         validate();
         rsnScriptIntrinsicBLAS_BNNM(this.mContext, id, M, N, K, A, a_offset, B, b_offset, C, c_offset, c_mult_int);
@@ -1203,14 +1093,12 @@ public class RenderScript {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void validateObject(BaseObj o) {
         if (o != null && o.mRS != this) {
             throw new RSIllegalArgumentException("Attempting to use an object across contexts.");
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void validate() {
         if (this.mContext == 0) {
             throw new RSInvalidStateException("Calling RS with no Context active.");
@@ -1222,7 +1110,6 @@ public class RenderScript {
         nContextSetPriority(p.mID);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class MessageThread extends Thread {
         static final int RS_ERROR_FATAL_DEBUG = 2048;
@@ -1237,7 +1124,6 @@ public class RenderScript {
         RenderScript mRS;
         boolean mRun;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public MessageThread(RenderScript rs) {
             super("RSMessageThread");
             this.mRun = true;
@@ -1304,7 +1190,6 @@ public class RenderScript {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RenderScript(Context ctx) {
         if (ctx != null) {
             this.mApplicationContext = ctx.getApplicationContext();
@@ -1316,7 +1201,6 @@ public class RenderScript {
         return this.mApplicationContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static synchronized String getCachePath() {
         String CACHE_PATH;
         synchronized (RenderScript.class) {
@@ -1466,12 +1350,10 @@ public class RenderScript {
         helpDestroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isAlive() {
         return this.mContext != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long safeID(BaseObj o) {
         if (o != null) {
             return o.getID(this);

@@ -19,7 +19,6 @@ public class BaseKeyGenerator extends KeyGeneratorSpi {
     protected int keySize;
     protected boolean uninitialised = true;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseKeyGenerator(String algName, int defaultKeySize, CipherKeyGenerator engine) {
         this.algName = algName;
         this.defaultKeySize = defaultKeySize;
@@ -40,7 +39,6 @@ public class BaseKeyGenerator extends KeyGeneratorSpi {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // javax.crypto.KeyGeneratorSpi
     public void engineInit(int keySize, SecureRandom random) {
         if (random == null) {

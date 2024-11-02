@@ -283,8 +283,9 @@ public interface IGnssCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGnssCallback {
+        public static class Proxy implements IGnssCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -530,7 +531,9 @@ public interface IGnssCallback extends IInterface {
     /* loaded from: classes2.dex */
     public static class GnssSvInfo implements Parcelable {
         public static final Parcelable.Creator<GnssSvInfo> CREATOR = new Parcelable.Creator<GnssSvInfo>() { // from class: android.hardware.gnss.IGnssCallback.GnssSvInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public GnssSvInfo createFromParcel(Parcel _aidl_source) {
                 GnssSvInfo _aidl_out = new GnssSvInfo();
@@ -538,7 +541,6 @@ public interface IGnssCallback extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssSvInfo[] newArray(int _aidl_size) {
                 return new GnssSvInfo[_aidl_size];
@@ -552,6 +554,25 @@ public interface IGnssCallback extends IInterface {
         public float azimuthDegrees = 0.0f;
         public long carrierFrequencyHz = 0;
         public int svFlag = 0;
+
+        /* renamed from: android.hardware.gnss.IGnssCallback$GnssSvInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<GnssSvInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GnssSvInfo createFromParcel(Parcel _aidl_source) {
+                GnssSvInfo _aidl_out = new GnssSvInfo();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GnssSvInfo[] newArray(int _aidl_size) {
+                return new GnssSvInfo[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {
@@ -669,7 +690,9 @@ public interface IGnssCallback extends IInterface {
     /* loaded from: classes2.dex */
     public static class GnssSystemInfo implements Parcelable {
         public static final Parcelable.Creator<GnssSystemInfo> CREATOR = new Parcelable.Creator<GnssSystemInfo>() { // from class: android.hardware.gnss.IGnssCallback.GnssSystemInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public GnssSystemInfo createFromParcel(Parcel _aidl_source) {
                 GnssSystemInfo _aidl_out = new GnssSystemInfo();
@@ -677,7 +700,6 @@ public interface IGnssCallback extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssSystemInfo[] newArray(int _aidl_size) {
                 return new GnssSystemInfo[_aidl_size];
@@ -685,6 +707,25 @@ public interface IGnssCallback extends IInterface {
         };
         public String name;
         public int yearOfHw = 0;
+
+        /* renamed from: android.hardware.gnss.IGnssCallback$GnssSystemInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<GnssSystemInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GnssSystemInfo createFromParcel(Parcel _aidl_source) {
+                GnssSystemInfo _aidl_out = new GnssSystemInfo();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GnssSystemInfo[] newArray(int _aidl_size) {
+                return new GnssSystemInfo[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

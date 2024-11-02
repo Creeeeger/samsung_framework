@@ -16,7 +16,6 @@ public final class TextClassificationManager {
     private TextClassificationSessionFactory mSessionFactory;
     private TextClassificationConstants mSettings;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextClassifier lambda$new$0(TextClassificationContext classificationContext) {
         return new TextClassificationSession(classificationContext, getTextClassifier());
     }

@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import com.samsung.android.allshare.media.Playlist;
 import com.samsung.android.allshare.media.PlaylistPlayer;
 import com.sec.android.allshare.iface.CVMessage;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class PlaylistPlayerImpl extends PlaylistPlayer {
     private static final int MIN_TRACK_NUMBER = 1;
@@ -35,7 +35,8 @@ public final class PlaylistPlayerImpl extends PlaylistPlayer {
     AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.PlaylistPlayerImpl.1
         private HashMap<String, PlaylistPlayer.PlayerState> mPlaylistStateMap;
 
-        {
+        AnonymousClass1(Looper looper) {
+            super(looper);
             HashMap<String, PlaylistPlayer.PlayerState> hashMap = new HashMap<>();
             this.mPlaylistStateMap = hashMap;
             hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, PlaylistPlayer.PlayerState.BUFFERING);
@@ -100,6 +101,10 @@ public final class PlaylistPlayerImpl extends PlaylistPlayer {
         }
     };
     AllShareResponseHandler mAllShareRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.PlaylistPlayerImpl.2
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
             Item item;
@@ -196,7 +201,6 @@ public final class PlaylistPlayerImpl extends PlaylistPlayer {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PlaylistPlayerImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mAllShareConnector = null;
         this.mDeviceImpl = null;
@@ -223,9 +227,184 @@ public final class PlaylistPlayerImpl extends PlaylistPlayer {
         return this.mFilePath;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCurrentFilePath(String strFilePath) {
         this.mFilePath = strFilePath;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.PlaylistPlayerImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareEventHandler {
+        private HashMap<String, PlaylistPlayer.PlayerState> mPlaylistStateMap;
+
+        AnonymousClass1(Looper looper) {
+            super(looper);
+            HashMap<String, PlaylistPlayer.PlayerState> hashMap = new HashMap<>();
+            this.mPlaylistStateMap = hashMap;
+            hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, PlaylistPlayer.PlayerState.BUFFERING);
+            this.mPlaylistStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PAUSED, PlaylistPlayer.PlayerState.PAUSED);
+            this.mPlaylistStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_STOPPED, PlaylistPlayer.PlayerState.STOPPED);
+            this.mPlaylistStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PLAYING, PlaylistPlayer.PlayerState.PLAYING);
+            this.mPlaylistStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_CONTENT_CHANGED, PlaylistPlayer.PlayerState.CONTENT_CHANGED);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            Bundle resBundle;
+            ERROR error;
+            PlaylistPlayer.PlayerState state = null;
+            try {
+                state = this.mPlaylistStateMap.get(cvm.getActionID());
+            } catch (Exception e) {
+                DLog.w_api(PlaylistPlayerImpl.TAG_CLASS, "mEventHandler.handleEventMessage Exception ", e);
+            }
+            if (state == null || (resBundle = cvm.getBundle()) == null) {
+                return;
+            }
+            String errStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+            if (errStr == null) {
+                error = ERROR.FAIL;
+            } else {
+                error = ERROR.stringToEnum(errStr);
+            }
+            if (state.equals(PlaylistPlayer.PlayerState.CONTENT_CHANGED)) {
+                if (PlaylistPlayerImpl.this.mCurrentPlayingContentUriStrList != null && !isContains(resBundle.getString(AllShareKey.BUNDLE_STRING_APP_ITEM_ID))) {
+                    PlaylistPlayerImpl.this.mCurrentPlayingContentUriStrList = null;
+                    notifyEvent(state, error);
+                    return;
+                }
+                return;
+            }
+            notifyEvent(state, error);
+        }
+
+        private void notifyEvent(PlaylistPlayer.PlayerState state, ERROR error) {
+            if (PlaylistPlayerImpl.this.mPlaylistPlayerEventListener != null) {
+                try {
+                    PlaylistPlayerImpl.this.mPlaylistPlayerEventListener.onPlaylistPlayerStateChanged(state, error);
+                } catch (Exception e) {
+                    DLog.w_api(PlaylistPlayerImpl.TAG_CLASS, "mEventHandler.notifyEvent Exception", e);
+                }
+            }
+        }
+
+        private boolean isContains(String fullUri) {
+            if (fullUri == null) {
+                return false;
+            }
+            Iterator<String> it = PlaylistPlayerImpl.this.mCurrentPlayingContentUriStrList.iterator();
+            while (it.hasNext()) {
+                String uri = it.next();
+                if (fullUri.endsWith(uri)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.PlaylistPlayerImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareResponseHandler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            Item item;
+            Item item2;
+            Item item3;
+            String actionID = cvm.getActionID();
+            Bundle resBundle = cvm.getBundle();
+            if (actionID == null || resBundle == null) {
+                return;
+            }
+            if (actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_PLAY)) {
+                PlaylistPlayerImpl.this.mCurrentPlayingContentUriStrList = resBundle.getStringArrayList(AllShareKey.BUNDLE_STRING_SERVER_URI_LIST);
+            }
+            if (PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener == null) {
+                return;
+            }
+            ERROR error = ERROR.stringToEnum(resBundle.getString("BUNDLE_ENUM_ERROR"));
+            if (!actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_PLAY)) {
+                if (actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_SEEK)) {
+                    int trackNum = resBundle.getInt(AllShareKey.BUNDLE_INT_TRACKNUM);
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onSeekResponseReceived(trackNum, error);
+                    return;
+                }
+                if (actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_NEXT)) {
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onNextResponseReceived(error);
+                    return;
+                }
+                if (actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_PERVIOUS)) {
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onPreviousResponseReceived(error);
+                    return;
+                }
+                if (actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_STOP)) {
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onStopResponseReceived(error);
+                    return;
+                }
+                if (actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_PAUSE)) {
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onPauseResponseReceived(error);
+                    return;
+                }
+                if (actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_RESUME)) {
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onResumeResponseReceived(error);
+                    return;
+                } else {
+                    if (actionID.equals(AllShareAction.ACTION_PLAYLIST_PLAYER_REQUEST_PLAY_POSITION)) {
+                        int trackNum2 = resBundle.getInt(AllShareKey.BUNDLE_INT_TRACKNUM);
+                        PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onGetPlayPositionResponseReceived(trackNum2, error);
+                        return;
+                    }
+                    return;
+                }
+            }
+            ArrayList<Bundle> playlist = resBundle.getParcelableArrayList(AllShareKey.BUNDLE_PARCELABLE_ARRAYLIST_CONTENT_URI);
+            String mimeType = resBundle.getString(AllShareKey.BUNDLE_STRING_MIME_TYPE);
+            if (mimeType != null) {
+                if (mimeType.contains("audio")) {
+                    Playlist.AudioListBuilder playlistBuilder = new Playlist.AudioListBuilder();
+                    Iterator<Bundle> it = playlist.iterator();
+                    while (it.hasNext()) {
+                        Bundle itemBundle = it.next();
+                        if (itemBundle != null && (item3 = ItemCreator.fromBundle(itemBundle)) != null) {
+                            playlistBuilder.addItem(item3);
+                        }
+                    }
+                    int trackNum3 = resBundle.getInt(AllShareKey.BUNDLE_INT_PLAYLIST_TRACKNUMBER, 0);
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onPlayResponseReceived(playlistBuilder.build(), trackNum3, error);
+                    return;
+                }
+                if (mimeType.contains("video")) {
+                    Playlist.VideoListBuilder playlistBuilder2 = new Playlist.VideoListBuilder();
+                    Iterator<Bundle> it2 = playlist.iterator();
+                    while (it2.hasNext()) {
+                        Bundle itemBundle2 = it2.next();
+                        if (itemBundle2 != null && (item2 = ItemCreator.fromBundle(itemBundle2)) != null) {
+                            playlistBuilder2.addItem(item2);
+                        }
+                    }
+                    int trackNum4 = resBundle.getInt(AllShareKey.BUNDLE_INT_PLAYLIST_TRACKNUMBER, 0);
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onPlayResponseReceived(playlistBuilder2.build(), trackNum4, error);
+                    return;
+                }
+                if (mimeType.contains("image")) {
+                    Playlist.ImageListBuilder playlistBuilder3 = new Playlist.ImageListBuilder();
+                    Iterator<Bundle> it3 = playlist.iterator();
+                    while (it3.hasNext()) {
+                        Bundle itemBundle3 = it3.next();
+                        if (itemBundle3 != null && (item = ItemCreator.fromBundle(itemBundle3)) != null) {
+                            playlistBuilder3.addItem(item);
+                        }
+                    }
+                    int trackNum5 = resBundle.getInt(AllShareKey.BUNDLE_INT_PLAYLIST_TRACKNUMBER, 0);
+                    PlaylistPlayerImpl.this.mPlaylistPlayerResponseListener.onPlayResponseReceived(playlistBuilder3.build(), trackNum5, error);
+                }
+            }
+        }
     }
 
     /* JADX WARN: Multi-variable type inference failed */

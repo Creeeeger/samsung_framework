@@ -9,7 +9,6 @@ import com.android.internal.accessibility.util.ShortcutUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ToggleAccessibilityServiceTarget extends AccessibilityServiceTarget {
     private Context mContext;
@@ -21,7 +20,6 @@ public class ToggleAccessibilityServiceTarget extends AccessibilityServiceTarget
         public static final float OPAQUE = 1.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ToggleAccessibilityServiceTarget(Context context, int shortcutType, AccessibilityServiceInfo serviceInfo) {
         super(context, shortcutType, 2, serviceInfo);
         int statusResId;

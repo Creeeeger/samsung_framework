@@ -16,7 +16,6 @@ class X509CRLObject extends X509CRLImpl {
     private volatile boolean hashValueSet;
     private X509CRLInternal internalCRLValue;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public X509CRLObject(JcaJceHelper bcHelper, CertificateList c) throws CRLException {
         super(bcHelper, c, createSigAlgName(c), createSigAlgParams(c), isIndirectCRL(c));
         this.cacheLock = new Object();

@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 public class RadioConst implements Parcelable {
     public static final int CARD_MAX_APPS = 8;
     public static final Parcelable.Creator<RadioConst> CREATOR = new Parcelable.Creator<RadioConst>() { // from class: android.hardware.radio.RadioConst.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RadioConst createFromParcel(Parcel _aidl_source) {
             RadioConst _aidl_out = new RadioConst();
@@ -17,7 +19,6 @@ public class RadioConst implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioConst[] newArray(int _aidl_size) {
             return new RadioConst[_aidl_size];
@@ -26,6 +27,25 @@ public class RadioConst implements Parcelable {
     public static final int MAX_RILDS = 3;
     public static final int MAX_UUID_LENGTH = 64;
     public static final int P2_CONSTANT_NO_P2 = -1;
+
+    /* renamed from: android.hardware.radio.RadioConst$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RadioConst> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioConst createFromParcel(Parcel _aidl_source) {
+            RadioConst _aidl_out = new RadioConst();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioConst[] newArray(int _aidl_size) {
+            return new RadioConst[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

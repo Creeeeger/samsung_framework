@@ -127,8 +127,9 @@ public interface IQuickAccessWalletServiceCallbacks extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IQuickAccessWalletServiceCallbacks {
+        public static class Proxy implements IQuickAccessWalletServiceCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

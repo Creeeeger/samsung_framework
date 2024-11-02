@@ -10,13 +10,14 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public class KeyCharacteristics implements Parcelable {
     public static final Parcelable.Creator<KeyCharacteristics> CREATOR = new Parcelable.Creator<KeyCharacteristics>() { // from class: android.security.keymaster.KeyCharacteristics.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeyCharacteristics createFromParcel(Parcel in) {
             return new KeyCharacteristics(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyCharacteristics[] newArray(int length) {
             return new KeyCharacteristics[length];
@@ -24,6 +25,23 @@ public class KeyCharacteristics implements Parcelable {
     };
     public KeymasterArguments hwEnforced;
     public KeymasterArguments swEnforced;
+
+    /* renamed from: android.security.keymaster.KeyCharacteristics$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyCharacteristics> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyCharacteristics createFromParcel(Parcel in) {
+            return new KeyCharacteristics(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyCharacteristics[] newArray(int length) {
+            return new KeyCharacteristics[length];
+        }
+    }
 
     public KeyCharacteristics() {
     }

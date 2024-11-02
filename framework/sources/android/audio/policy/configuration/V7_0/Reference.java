@@ -34,7 +34,6 @@ public class Reference {
         this.name = name;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Reference read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Reference _instance = new Reference();

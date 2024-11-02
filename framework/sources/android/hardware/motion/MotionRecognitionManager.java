@@ -92,10 +92,12 @@ public class MotionRecognitionManager extends SemMotionRecognitionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class ListenerDelegate {
         private final SemMotionEventListener mListener = new SemMotionEventListener() { // from class: android.hardware.motion.MotionRecognitionManager.ListenerDelegate.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.gesture.SemMotionEventListener
             public void onMotionEvent(SemMotionRecognitionEvent motionEvent) {
                 MREvent event = new MREvent();
@@ -111,6 +113,27 @@ public class MotionRecognitionManager extends SemMotionRecognitionManager {
             }
         };
         private final MRListener moldListener;
+
+        /* renamed from: android.hardware.motion.MotionRecognitionManager$ListenerDelegate$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements SemMotionEventListener {
+            AnonymousClass1() {
+            }
+
+            @Override // com.samsung.android.gesture.SemMotionEventListener
+            public void onMotionEvent(SemMotionRecognitionEvent motionEvent) {
+                MREvent event = new MREvent();
+                event.setMotion(motionEvent.getMotion());
+                event.setTilt(motionEvent.getTilt());
+                event.setPanningDx(motionEvent.getPanningDx());
+                event.setPanningDy(motionEvent.getPanningDy());
+                event.setPanningDz(motionEvent.getPanningDz());
+                event.setPanningDxImage(motionEvent.getPanningDxImage());
+                event.setPanningDyImage(motionEvent.getPanningDyImage());
+                event.setPanningDzImage(motionEvent.getPanningDzImage());
+                ListenerDelegate.this.moldListener.onMotionListener(event);
+            }
+        }
 
         private ListenerDelegate(MRListener listener) {
             this.moldListener = listener;

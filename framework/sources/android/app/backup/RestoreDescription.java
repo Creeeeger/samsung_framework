@@ -14,7 +14,9 @@ public class RestoreDescription implements Parcelable {
     private static final String NO_MORE_PACKAGES_SENTINEL = "NO_MORE_PACKAGES";
     public static final RestoreDescription NO_MORE_PACKAGES = new RestoreDescription(NO_MORE_PACKAGES_SENTINEL, 0);
     public static final Parcelable.Creator<RestoreDescription> CREATOR = new Parcelable.Creator<RestoreDescription>() { // from class: android.app.backup.RestoreDescription.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RestoreDescription createFromParcel(Parcel in) {
             RestoreDescription unparceled = new RestoreDescription(in);
@@ -24,12 +26,15 @@ public class RestoreDescription implements Parcelable {
             return unparceled;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RestoreDescription[] newArray(int size) {
             return new RestoreDescription[size];
         }
     };
+
+    /* synthetic */ RestoreDescription(Parcel parcel, RestoreDescriptionIA restoreDescriptionIA) {
+        this(parcel);
+    }
 
     public String toString() {
         return "RestoreDescription{" + this.mPackageName + " : " + (this.mDataType == 1 ? "KEY_VALUE" : "STREAM") + '}';
@@ -57,6 +62,27 @@ public class RestoreDescription implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(this.mPackageName);
         out.writeInt(this.mDataType);
+    }
+
+    /* renamed from: android.app.backup.RestoreDescription$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RestoreDescription> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RestoreDescription createFromParcel(Parcel in) {
+            RestoreDescription unparceled = new RestoreDescription(in);
+            if (RestoreDescription.NO_MORE_PACKAGES_SENTINEL.equals(unparceled.mPackageName)) {
+                return RestoreDescription.NO_MORE_PACKAGES;
+            }
+            return unparceled;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RestoreDescription[] newArray(int size) {
+            return new RestoreDescription[size];
+        }
     }
 
     private RestoreDescription(Parcel in) {

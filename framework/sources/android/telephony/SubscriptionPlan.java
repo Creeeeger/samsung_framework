@@ -19,13 +19,14 @@ public final class SubscriptionPlan implements Parcelable {
     public static final long BYTES_UNKNOWN = -1;
     public static final long BYTES_UNLIMITED = Long.MAX_VALUE;
     public static final Parcelable.Creator<SubscriptionPlan> CREATOR = new Parcelable.Creator<SubscriptionPlan>() { // from class: android.telephony.SubscriptionPlan.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SubscriptionPlan createFromParcel(Parcel source) {
             return new SubscriptionPlan(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubscriptionPlan[] newArray(int size) {
             return new SubscriptionPlan[size];
@@ -48,6 +49,14 @@ public final class SubscriptionPlan implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface LimitBehavior {
+    }
+
+    /* synthetic */ SubscriptionPlan(Parcel parcel, SubscriptionPlanIA subscriptionPlanIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ SubscriptionPlan(RecurrenceRule recurrenceRule, SubscriptionPlanIA subscriptionPlanIA) {
+        this(recurrenceRule);
     }
 
     private SubscriptionPlan(RecurrenceRule cycleRule) {
@@ -105,6 +114,23 @@ public final class SubscriptionPlan implements Parcelable {
         }
         SubscriptionPlan other = (SubscriptionPlan) obj;
         return Objects.equals(this.cycleRule, other.cycleRule) && Objects.equals(this.title, other.title) && Objects.equals(this.summary, other.summary) && this.dataLimitBytes == other.dataLimitBytes && this.dataLimitBehavior == other.dataLimitBehavior && this.dataUsageBytes == other.dataUsageBytes && this.dataUsageTime == other.dataUsageTime && Arrays.equals(this.networkTypes, other.networkTypes);
+    }
+
+    /* renamed from: android.telephony.SubscriptionPlan$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SubscriptionPlan> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SubscriptionPlan createFromParcel(Parcel source) {
+            return new SubscriptionPlan(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SubscriptionPlan[] newArray(int size) {
+            return new SubscriptionPlan[size];
+        }
     }
 
     public RecurrenceRule getCycleRule() {

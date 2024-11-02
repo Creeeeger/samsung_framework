@@ -18,6 +18,10 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
     private AnimationScaleListState mAnimationScaleListState;
     private boolean mMutated;
 
+    /* synthetic */ AnimationScaleListDrawable(AnimationScaleListState animationScaleListState, Resources resources, AnimationScaleListDrawableIA animationScaleListDrawableIA) {
+        this(animationScaleListState, resources);
+    }
+
     public AnimationScaleListDrawable() {
         this(null, null);
     }
@@ -28,7 +32,6 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
         onStateChange(getState());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         boolean changed = super.onStateChange(stateSet);
@@ -45,13 +48,34 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
         onStateChange(getState());
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x003a, code lost:            if (r7 == null) goto L18;     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x003c, code lost:            r8 = r12.next();     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0042, code lost:            if (r8 != 4) goto L38;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0045, code lost:            if (r8 != 2) goto L32;     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0047, code lost:            r7 = android.graphics.drawable.Drawable.createFromXmlInner(r11, r12, r13, r14);     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0068, code lost:            throw new org.xmlpull.v1.XmlPullParserException(r12.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0069, code lost:            r0.addDrawable(r7);     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x003a, code lost:
+    
+        if (r7 == null) goto L59;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x003c, code lost:
+    
+        r8 = r12.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0042, code lost:
+    
+        if (r8 != 4) goto L79;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0045, code lost:
+    
+        if (r8 != 2) goto L73;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0047, code lost:
+    
+        r7 = android.graphics.drawable.Drawable.createFromXmlInner(r11, r12, r13, r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0068, code lost:
+    
+        throw new org.xmlpull.v1.XmlPullParserException(r12.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0069, code lost:
+    
+        r0.addDrawable(r7);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -161,7 +185,6 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class AnimationScaleListState extends DrawableContainer.DrawableContainerState {
         int mAnimatableDrawableIndex;
@@ -224,7 +247,6 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
         onStateChange(getState());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableContainer
     public void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);

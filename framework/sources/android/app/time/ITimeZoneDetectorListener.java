@@ -82,8 +82,9 @@ public interface ITimeZoneDetectorListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ITimeZoneDetectorListener {
+        public static class Proxy implements ITimeZoneDetectorListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

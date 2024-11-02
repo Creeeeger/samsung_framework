@@ -23,7 +23,6 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
     private byte[] xBuf;
     private int xBufOff;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public LongDigest() {
         this.xBuf = new byte[8];
         this.W = new long[80];
@@ -31,14 +30,12 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         reset();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public LongDigest(LongDigest t) {
         this.xBuf = new byte[8];
         this.W = new long[80];
         copyIn(t);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void copyIn(LongDigest t) {
         byte[] bArr = t.xBuf;
         System.arraycopy(bArr, 0, this.xBuf, 0, bArr.length);
@@ -58,7 +55,6 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         this.wOff = t.wOff;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void populateState(byte[] state) {
         System.arraycopy(this.xBuf, 0, state, 0, this.xBufOff);
         Pack.intToBigEndian(this.xBufOff, state, 8);
@@ -78,7 +74,6 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void restoreState(byte[] encodedState) {
         int bigEndianToInt = Pack.bigEndianToInt(encodedState, 8);
         this.xBufOff = bigEndianToInt;
@@ -99,7 +94,6 @@ public abstract class LongDigest implements ExtendedDigest, Memoable, EncodableD
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getEncodedStateSize() {
         return (this.wOff * 8) + 96;
     }

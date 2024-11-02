@@ -50,12 +50,14 @@ public class SemCmcMediaRecorder {
     private SemCmcMediaRecorder() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SemCmcMediaRecorder(SemImsService imsService, int phoneId) {
         this.mImsService = imsService;
         this.mPhoneId = phoneId;
         try {
             imsService.registerSemCmcRecordingListener(new ISemCmcRecordingListener.Stub() { // from class: com.samsung.android.ims.SemCmcMediaRecorder.1
+                AnonymousClass1() {
+                }
+
                 @Override // com.samsung.android.ims.cmc.ISemCmcRecordingListener
                 public void onInfo(int what, int extra) {
                     Log.d(SemCmcMediaRecorder.LOG_TAG, "ISemCmcRecordingListener onInfo : " + what + " " + extra);
@@ -76,6 +78,31 @@ public class SemCmcMediaRecorder {
             this.mState = 1;
         } catch (RemoteException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.ims.SemCmcMediaRecorder$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends ISemCmcRecordingListener.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.ims.cmc.ISemCmcRecordingListener
+        public void onInfo(int what, int extra) {
+            Log.d(SemCmcMediaRecorder.LOG_TAG, "ISemCmcRecordingListener onInfo : " + what + " " + extra);
+            if (SemCmcMediaRecorder.this.mOnInfoListener != null) {
+                SemCmcMediaRecorder.this.mOnInfoListener.onInfo(SemCmcMediaRecorder.this, what, extra);
+            }
+        }
+
+        @Override // com.samsung.android.ims.cmc.ISemCmcRecordingListener
+        public void onError(int what, int extra) {
+            Log.d(SemCmcMediaRecorder.LOG_TAG, "ISemCmcRecordingListener onError : " + what + " " + extra);
+            SemCmcMediaRecorder.this.mState = 7;
+            if (SemCmcMediaRecorder.this.mOnErrorListener != null) {
+                SemCmcMediaRecorder.this.mOnErrorListener.onError(SemCmcMediaRecorder.this, what, extra);
+            }
         }
     }
 

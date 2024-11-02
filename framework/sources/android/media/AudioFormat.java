@@ -155,13 +155,14 @@ public final class AudioFormat implements Parcelable {
     public static final int SAMPLE_RATE_HZ_MIN = AudioSystem.SAMPLE_RATE_HZ_MIN;
     public static final int SAMPLE_RATE_HZ_MAX = AudioSystem.SAMPLE_RATE_HZ_MAX;
     public static final Parcelable.Creator<AudioFormat> CREATOR = new Parcelable.Creator<AudioFormat>() { // from class: android.media.AudioFormat.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioFormat createFromParcel(Parcel p) {
             return new AudioFormat(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioFormat[] newArray(int size) {
             return new AudioFormat[size];
@@ -182,6 +183,14 @@ public final class AudioFormat implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface SurroundSoundEncoding {
+    }
+
+    /* synthetic */ AudioFormat(int i, int i2, int i3, int i4, int i5, AudioFormatIA audioFormatIA) {
+        this(i, i2, i3, i4, i5);
+    }
+
+    /* synthetic */ AudioFormat(Parcel parcel, AudioFormatIA audioFormatIA) {
+        this(parcel);
     }
 
     public static String toLogFriendlyEncoding(int enc) {
@@ -706,6 +715,23 @@ public final class AudioFormat implements Parcelable {
 
     private AudioFormat(Parcel in) {
         this(in.readInt(), in.readInt(), in.readInt(), in.readInt(), in.readInt());
+    }
+
+    /* renamed from: android.media.AudioFormat$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioFormat> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioFormat createFromParcel(Parcel p) {
+            return new AudioFormat(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioFormat[] newArray(int size) {
+            return new AudioFormat[size];
+        }
     }
 
     public String toString() {

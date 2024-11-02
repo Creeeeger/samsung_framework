@@ -1342,9 +1342,9 @@ public class AppOpsManager {
             this.mOp = other.mOp;
             this.mRunning = other.mRunning;
             LongSparseArray<NoteOpEvent> longSparseArray = other.mAccessEvents;
-            this.mAccessEvents = longSparseArray == null ? null : longSparseArray.m4936clone();
+            this.mAccessEvents = longSparseArray == null ? null : longSparseArray.m4935clone();
             LongSparseArray<NoteOpEvent> longSparseArray2 = other.mRejectEvents;
-            this.mRejectEvents = longSparseArray2 != null ? longSparseArray2.m4936clone() : null;
+            this.mRejectEvents = longSparseArray2 != null ? longSparseArray2.m4935clone() : null;
         }
 
         public ArraySet<Long> collectKeys() {
@@ -3108,15 +3108,15 @@ public class AppOpsManager {
             this.mOp = other.mOp;
             LongSparseLongArray longSparseLongArray = other.mAccessCount;
             if (longSparseLongArray != null) {
-                this.mAccessCount = longSparseLongArray.m4943clone();
+                this.mAccessCount = longSparseLongArray.m4942clone();
             }
             LongSparseLongArray longSparseLongArray2 = other.mRejectCount;
             if (longSparseLongArray2 != null) {
-                this.mRejectCount = longSparseLongArray2.m4943clone();
+                this.mRejectCount = longSparseLongArray2.m4942clone();
             }
             LongSparseLongArray longSparseLongArray3 = other.mAccessDuration;
             if (longSparseLongArray3 != null) {
-                this.mAccessDuration = longSparseLongArray3.m4943clone();
+                this.mAccessDuration = longSparseLongArray3.m4942clone();
             }
             int historicalOpCount = other.getDiscreteAccessCount();
             for (int i = 0; i < historicalOpCount; i++) {
@@ -4022,7 +4022,6 @@ public class AppOpsManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* renamed from: android.app.AppOpsManager$4 */
     /* loaded from: classes.dex */
     public class AnonymousClass4 extends IAppOpsStartedCallback.Stub {

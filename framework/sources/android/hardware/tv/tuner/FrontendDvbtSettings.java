@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendDvbtSettings implements Parcelable {
     public static final Parcelable.Creator<FrontendDvbtSettings> CREATOR = new Parcelable.Creator<FrontendDvbtSettings>() { // from class: android.hardware.tv.tuner.FrontendDvbtSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendDvbtSettings createFromParcel(Parcel _aidl_source) {
             FrontendDvbtSettings _aidl_out = new FrontendDvbtSettings();
@@ -15,7 +17,6 @@ public class FrontendDvbtSettings implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendDvbtSettings[] newArray(int _aidl_size) {
             return new FrontendDvbtSettings[_aidl_size];
@@ -37,6 +38,25 @@ public class FrontendDvbtSettings implements Parcelable {
     public int plpMode = 0;
     public int plpId = 0;
     public int plpGroupId = 0;
+
+    /* renamed from: android.hardware.tv.tuner.FrontendDvbtSettings$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendDvbtSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendDvbtSettings createFromParcel(Parcel _aidl_source) {
+            FrontendDvbtSettings _aidl_out = new FrontendDvbtSettings();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendDvbtSettings[] newArray(int _aidl_size) {
+            return new FrontendDvbtSettings[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

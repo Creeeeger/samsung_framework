@@ -60,6 +60,9 @@ public class SurfaceTextureSource extends Filter {
         this.mCloseOnTimeout = false;
         this.mRenderShader = "#extension GL_OES_EGL_image_external : require\nprecision mediump float;\nuniform samplerExternalOES tex_sampler_0;\nvarying vec2 v_texcoord;\nvoid main() {\n  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n}\n";
         this.onFrameAvailableListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.filterpacks.videosrc.SurfaceTextureSource.1
+            AnonymousClass1() {
+            }
+
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public void onFrameAvailable(SurfaceTexture surfaceTexture) {
                 if (SurfaceTextureSource.mLogVerbose) {
@@ -165,6 +168,21 @@ public class SurfaceTextureSource extends Filter {
     public void fieldPortValueUpdated(String name, FilterContext context) {
         if (name.equals("width") || name.equals("height")) {
             this.mOutputFormat.setDimensions(this.mWidth, this.mHeight);
+        }
+    }
+
+    /* renamed from: android.filterpacks.videosrc.SurfaceTextureSource$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements SurfaceTexture.OnFrameAvailableListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
+        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+            if (SurfaceTextureSource.mLogVerbose) {
+                Log.v(SurfaceTextureSource.TAG, "New frame from SurfaceTexture");
+            }
+            SurfaceTextureSource.this.mNewFrameAvailable.open();
         }
     }
 }

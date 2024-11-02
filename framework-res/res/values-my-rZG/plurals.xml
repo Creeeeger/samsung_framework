@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">အက္ပ္မ်ား ထည့္သြင္းထားသည့္ SD ကတ္ကို ဖယ္ရွားလိုက္သည့္အတြက္ သင့္ဖုန္းက တည္ၿငိမ္မႈ မရွိပါ။ %d စကၠန္႔ၾကာၿပီးေနာက္ သင့္ဖုန္းက ျပန္လည္စတင္ၿပီး ပံုမွန္အတိုင္း ျပန္ျဖစ္သြားပါမည္။ ဖုန္း ျပန္လည္ မစတင္မီ သိမ္းမထားသည့္ ေဒတာမွန္သမွ်ကို သိမ္းပါ။</item>
+        <item quantity="other">သင့္တက္ဘလက္တြင္ ထည့္သြင္းထားသည့္ အက္ပ္မ်ားပါရွိေသာ SD ကတ္ကို ဖယ္ရွားခဲ့ေသာေၾကာင့္ သင့္တက္ဘလက္က တည္ၿငိမ္မႈမရွိပါ။ သင့္တက္ဘလက္ ပုံမွန္ျပန္ျဖစ္ရန္အတြက္ %d စကၠန႔္အၾကာမွာ ျပန္စတင္ပါမည္။ တက္ဘလက္ ျပန္မစတင္မီ သိမ္းဆည္းမထားသည့္ ေဒတာမွန္သမွ်ကို သိမ္းဆည္းပါ။</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">သင့္ဖုန္းသည္ %d စကၠန္႔အၾကာမွာ ျပန္စတင္ပါမည္</item>
+        <item quantity="other">ဤတက္ဘလက္သည္ %d စကၠန္႔အၾကာမွာ ျပန္စတင္ပါမည</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

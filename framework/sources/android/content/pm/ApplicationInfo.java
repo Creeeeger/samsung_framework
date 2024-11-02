@@ -274,6 +274,10 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
     public @interface RawExternalStorage {
     }
 
+    /* synthetic */ ApplicationInfo(Parcel parcel, ApplicationInfoIA applicationInfoIA) {
+        this(parcel);
+    }
+
     public static CharSequence getCategoryTitle(Context context, int category) {
         switch (category) {
             case 0:
@@ -780,10 +784,10 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         sForStringSet.parcel(this.mKnownActivityEmbeddingCerts, parcel, this.flags);
     }
 
-    /* renamed from: android.content.pm.ApplicationInfo$1, reason: invalid class name */
+    /* renamed from: android.content.pm.ApplicationInfo$1 */
     /* loaded from: classes.dex */
     class AnonymousClass1 implements Parcelable.Creator<ApplicationInfo> {
-        /* renamed from: $r8$lambda$PfZYudEWwKf_A2QDLQ4dHD9-bOs, reason: not valid java name */
+        /* renamed from: $r8$lambda$PfZYudEWwKf_A2QDLQ4dHD9-bOs */
         public static /* synthetic */ ApplicationInfo m847$r8$lambda$PfZYudEWwKf_A2QDLQ4dHD9bOs(Parcel parcel) {
             return new ApplicationInfo(parcel);
         }
@@ -791,7 +795,6 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         AnonymousClass1() {
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationInfo createFromParcel(Parcel source) {
             return (ApplicationInfo) source.readSquashed(new Parcel.SquashReadHelper() { // from class: android.content.pm.ApplicationInfo$1$$ExternalSyntheticLambda0
@@ -802,7 +805,6 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
             });
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationInfo[] newArray(int size) {
             return new ApplicationInfo[size];

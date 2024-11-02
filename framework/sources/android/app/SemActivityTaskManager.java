@@ -90,8 +90,13 @@ public class SemActivityTaskManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class TaskChangeController extends TaskStackListener {
+    public class TaskChangeController extends TaskStackListener {
+        /* synthetic */ TaskChangeController(SemActivityTaskManager semActivityTaskManager, TaskChangeControllerIA taskChangeControllerIA) {
+            this();
+        }
+
         private TaskChangeController() {
         }
 

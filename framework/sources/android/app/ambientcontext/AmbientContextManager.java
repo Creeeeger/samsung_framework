@@ -60,7 +60,6 @@ public final class AmbientContextManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$queryAmbientContextServiceStatus$1(Executor executor, final Consumer consumer, Bundle result) {
         final int status = result.getInt(STATUS_RESPONSE_BUNDLE_KEY);
         long identity = Binder.clearCallingIdentity();
@@ -109,7 +108,6 @@ public final class AmbientContextManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$registerObserver$3(Executor executor, final Consumer statusConsumer, Bundle result) {
         final int statusCode = result.getInt(STATUS_RESPONSE_BUNDLE_KEY);
         long identity = Binder.clearCallingIdentity();
@@ -125,7 +123,7 @@ public final class AmbientContextManager {
         }
     }
 
-    /* renamed from: android.app.ambientcontext.AmbientContextManager$1, reason: invalid class name */
+    /* renamed from: android.app.ambientcontext.AmbientContextManager$1 */
     /* loaded from: classes.dex */
     class AnonymousClass1 extends IAmbientContextObserver.Stub {
         final /* synthetic */ AmbientContextCallback val$ambientContextCallback;

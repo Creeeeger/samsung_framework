@@ -100,7 +100,6 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
@@ -116,7 +115,6 @@ public class ScrollBarDrawable extends Drawable implements Drawable.Callback {
         return (drawable4 != null && drawable4.isStateful()) || ((drawable = this.mVerticalThumb) != null && drawable.isStateful()) || (((drawable2 = this.mHorizontalTrack) != null && drawable2.isStateful()) || (((drawable3 = this.mHorizontalThumb) != null && drawable3.isStateful()) || super.isStateful()));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] state) {
         boolean changed = super.onStateChange(state);

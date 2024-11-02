@@ -66,13 +66,14 @@ public class JobParameters implements Parcelable {
     private final Bundle transientExtras;
     public static final int[] JOB_STOP_REASON_CODES = {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
     public static final Parcelable.Creator<JobParameters> CREATOR = new Parcelable.Creator<JobParameters>() { // from class: android.app.job.JobParameters.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public JobParameters createFromParcel(Parcel in) {
             return new JobParameters(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JobParameters[] newArray(int size) {
             return new JobParameters[size];
@@ -82,6 +83,10 @@ public class JobParameters implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface StopReason {
+    }
+
+    /* synthetic */ JobParameters(Parcel parcel, JobParametersIA jobParametersIA) {
+        this(parcel);
     }
 
     public static String getInternalReasonCodeDescription(int reasonCode) {
@@ -294,5 +299,22 @@ public class JobParameters implements Parcelable {
         parcel.writeInt(this.mStopReason);
         parcel.writeInt(this.mInternalStopReason);
         parcel.writeString(this.debugStopReason);
+    }
+
+    /* renamed from: android.app.job.JobParameters$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<JobParameters> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public JobParameters createFromParcel(Parcel in) {
+            return new JobParameters(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public JobParameters[] newArray(int size) {
+            return new JobParameters[size];
+        }
     }
 }

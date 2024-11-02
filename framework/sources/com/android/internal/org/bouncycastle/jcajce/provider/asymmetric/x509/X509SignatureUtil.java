@@ -28,8 +28,9 @@ import java.security.spec.PSSParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class X509SignatureUtil {
+public class X509SignatureUtil {
     private static final Map<ASN1ObjectIdentifier, String> algNames;
     private static final ASN1Null derNull;
 
@@ -44,12 +45,10 @@ class X509SignatureUtil {
         derNull = DERNull.INSTANCE;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isCompositeAlgorithm(AlgorithmIdentifier algorithmIdentifier) {
         return MiscObjectIdentifiers.id_alg_composite.equals((ASN1Primitive) algorithmIdentifier.getAlgorithm());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setSignatureParameters(Signature signature, ASN1Encodable params) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         if (params != null && !derNull.equals(params)) {
             AlgorithmParameters sigParams = AlgorithmParameters.getInstance(signature.getAlgorithm(), signature.getProvider());
@@ -68,7 +67,6 @@ class X509SignatureUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getSignatureName(AlgorithmIdentifier sigAlgId) {
         ASN1Encodable params = sigAlgId.getParameters();
         if (params != null && !derNull.equals(params)) {
@@ -125,7 +123,6 @@ class X509SignatureUtil {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void prettyPrintSignature(byte[] sig, StringBuffer buf, String nl) {
         if (sig.length > 20) {
             buf.append("            Signature: ").append(Hex.toHexString(sig, 0, 20)).append(nl);

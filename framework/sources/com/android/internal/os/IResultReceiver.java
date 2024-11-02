@@ -85,8 +85,9 @@ public interface IResultReceiver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IResultReceiver {
+        public static class Proxy implements IResultReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

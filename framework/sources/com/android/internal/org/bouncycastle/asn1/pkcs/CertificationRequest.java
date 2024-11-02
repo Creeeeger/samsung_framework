@@ -24,7 +24,6 @@ public class CertificationRequest extends ASN1Object {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public CertificationRequest() {
         this.reqInfo = null;
         this.sigAlgId = null;

@@ -17,7 +17,6 @@ public class BootProgressDialog extends ProgressDialog {
         super(context, 16973834);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.ProgressDialog, android.app.AlertDialog, android.app.Dialog
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SearchSessionId implements Parcelable {
     public static final Parcelable.Creator<SearchSessionId> CREATOR = new Parcelable.Creator<SearchSessionId>() { // from class: android.app.search.SearchSessionId.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchSessionId createFromParcel(Parcel parcel) {
             return new SearchSessionId(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchSessionId[] newArray(int size) {
             return new SearchSessionId[size];
@@ -23,6 +24,10 @@ public final class SearchSessionId implements Parcelable {
     };
     private final String mId;
     private final int mUserId;
+
+    /* synthetic */ SearchSessionId(Parcel parcel, SearchSessionIdIA searchSessionIdIA) {
+        this(parcel);
+    }
 
     public SearchSessionId(String id, int userId) {
         this.mId = id;
@@ -63,5 +68,22 @@ public final class SearchSessionId implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mId);
         dest.writeInt(this.mUserId);
+    }
+
+    /* renamed from: android.app.search.SearchSessionId$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchSessionId> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchSessionId createFromParcel(Parcel parcel) {
+            return new SearchSessionId(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchSessionId[] newArray(int size) {
+            return new SearchSessionId[size];
+        }
     }
 }

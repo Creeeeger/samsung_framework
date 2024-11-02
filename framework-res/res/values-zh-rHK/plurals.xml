@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">您的手機不穩定，因為安裝了應用程式的 SD 卡已移除。您的手機將於 %d 秒後重新啟動以回到正常狀態。請在手機重新啟動之前儲存任何未儲存的數據。</item>
+        <item quantity="other">您的平板電腦不穩定，因為安裝了應用程式的 SD 卡已移除。您的平板電腦將於 %d 秒後重新啟動以回到正常狀態。請在平板電腦重新啟動之前儲存任何未儲存的數據。</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">您的手機將於 %d 秒後重新啟動</item>
+        <item quantity="other">您的平板電腦將於 %d 秒後重新啟動</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

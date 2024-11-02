@@ -54,12 +54,10 @@ public class OverlayScanner {
         return this.mParsedOverlayInfos.get(packageName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Collection<ParsedOverlayInfo> getAllParsedInfos() {
         return this.mParsedOverlayInfos.values();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean isExcludedOverlayPackage(String packageName, OverlayConfigParser.OverlayPartition overlayPartition) {
         for (int i = 0; i < this.mExcludedOverlayPackages.size(); i++) {
             Pair<String, File> pair = this.mExcludedOverlayPackages.get(i);

@@ -234,7 +234,6 @@ public final class WSMeansQuantizer implements Quantizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class Distance {
         private final float mDistance;
@@ -244,7 +243,8 @@ public final class WSMeansQuantizer implements Quantizer {
             return this.mIndex;
         }
 
-        float getDistance() {
+        /* JADX INFO: Access modifiers changed from: package-private */
+        public float getDistance() {
             return this.mDistance;
         }
 

@@ -24,7 +24,6 @@ public final class WireFormatNano {
     private WireFormatNano() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getTagWireType(int tag) {
         return tag & 7;
     }
@@ -33,7 +32,6 @@ public final class WireFormatNano {
         return tag >>> 3;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int makeTag(int fieldNumber, int wireType) {
         return (fieldNumber << 3) | wireType;
     }

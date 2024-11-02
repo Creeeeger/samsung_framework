@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public final class EyeInfo implements Parcelable {
     public static final Parcelable.Creator<EyeInfo> CREATOR = new Parcelable.Creator<EyeInfo>() { // from class: com.samsung.android.camera.iris.EyeInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EyeInfo createFromParcel(Parcel in) {
             return new EyeInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EyeInfo[] newArray(int size) {
             return new EyeInfo[size];
@@ -77,6 +78,10 @@ public final class EyeInfo implements Parcelable {
     public static class ReflectionInfo {
         public Rect mRect = null;
         public int mMsgId = -1;
+    }
+
+    /* synthetic */ EyeInfo(Parcel parcel, EyeInfoIA eyeInfoIA) {
+        this(parcel);
     }
 
     public EyeInfo(PupilInfo[] pupilInfo, ReflectionInfo[] reflectionInfo, int acquireInfo, int reflectionNum) {
@@ -149,5 +154,22 @@ public final class EyeInfo implements Parcelable {
         }
         int i3 = this.mAcquireInfo;
         out.writeInt(i3);
+    }
+
+    /* renamed from: com.samsung.android.camera.iris.EyeInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EyeInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EyeInfo createFromParcel(Parcel in) {
+            return new EyeInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EyeInfo[] newArray(int size) {
+            return new EyeInfo[size];
+        }
     }
 }

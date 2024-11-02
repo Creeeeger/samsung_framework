@@ -272,7 +272,6 @@ public class Gains {
         return this.gain;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Gains read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Gains _instance = new Gains();

@@ -388,7 +388,6 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements I
         this.mAnchorInfo.reset();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onAnchorReady(RecyclerView.Recycler recycler, RecyclerView.State state, AnchorInfo anchorInfo, int firstLayoutItemDirection) {
     }
 
@@ -611,12 +610,10 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements I
         this.mLayoutState.mScrollingOffset = Integer.MIN_VALUE;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isLayoutRTL() {
         return getLayoutDirection() == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void ensureLayoutState() {
         if (this.mLayoutState == null) {
             this.mLayoutState = createLayoutState();
@@ -1291,7 +1288,6 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements I
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class LayoutState {
         static final int INVALID_LAYOUT = Integer.MIN_VALUE;
@@ -1317,13 +1313,11 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements I
         LayoutState() {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean hasMore(RecyclerView.State state) {
             int i = this.mCurrentPosition;
             return i >= 0 && i < state.getItemCount();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public View next(RecyclerView.Recycler recycler) {
             if (this.mScrapList != null) {
                 return nextViewFromScrapList();
@@ -1386,13 +1380,14 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements I
     /* loaded from: classes5.dex */
     public static class SavedState implements Parcelable {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.widget.LinearLayoutManager.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1436,9 +1431,25 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements I
             parcel.writeInt(this.mAnchorOffset);
             parcel.writeInt(this.mAnchorLayoutFromEnd ? 1 : 0);
         }
+
+        /* renamed from: com.android.internal.widget.LinearLayoutManager$SavedState$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class AnchorInfo {
         int mCoordinate;
@@ -1527,7 +1538,6 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements I
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes5.dex */
     public static class LayoutChunkResult {
         public int mConsumed;

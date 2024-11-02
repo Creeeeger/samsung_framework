@@ -31,7 +31,6 @@ public class SyncAdaptersCache extends RegisteredServicesCache<SyncAdapterType> 
         this.mAuthorityToSyncAdapters = new SparseArray<>();
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // android.content.pm.RegisteredServicesCache
     public SyncAdapterType parseServiceAttributes(Resources res, String packageName, AttributeSet attrs) {
         TypedArray sa = res.obtainAttributes(attrs, R.styleable.SyncAdapter);
@@ -53,7 +52,6 @@ public class SyncAdaptersCache extends RegisteredServicesCache<SyncAdapterType> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.pm.RegisteredServicesCache
     public void onServicesChangedLocked(int userId) {
         synchronized (this.mServicesLock) {
@@ -89,7 +87,6 @@ public class SyncAdaptersCache extends RegisteredServicesCache<SyncAdapterType> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.pm.RegisteredServicesCache
     public void onUserRemoved(int userId) {
         synchronized (this.mServicesLock) {
@@ -109,7 +106,6 @@ public class SyncAdaptersCache extends RegisteredServicesCache<SyncAdapterType> 
             out.attribute(null, "accountType", item.accountType);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.content.pm.XmlSerializerAndParser
         public SyncAdapterType createFromXml(TypedXmlPullParser parser) throws IOException, XmlPullParserException {
             String authority = parser.getAttributeValue(null, ContactsContract.Directory.DIRECTORY_AUTHORITY);

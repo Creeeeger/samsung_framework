@@ -10,7 +10,6 @@ public class SContextActivityCalibrationAttribute extends SContextAttribute {
     private int mData;
     private int mStatus;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextActivityCalibrationAttribute() {
         this.mStatus = 0;
         this.mData = 0;

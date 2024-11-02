@@ -22,7 +22,9 @@ public final class AudioVolumeGroup implements Parcelable {
     private final String mName;
     private static final Object sLock = new Object();
     public static final Parcelable.Creator<AudioVolumeGroup> CREATOR = new Parcelable.Creator<AudioVolumeGroup>() { // from class: android.media.audiopolicy.AudioVolumeGroup.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioVolumeGroup createFromParcel(Parcel in) {
             Preconditions.checkNotNull(in, "in Parcel must not be null");
@@ -41,7 +43,6 @@ public final class AudioVolumeGroup implements Parcelable {
             return new AudioVolumeGroup(name, id, audioAttributes, streamTypes);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioVolumeGroup[] newArray(int size) {
             return new AudioVolumeGroup[size];
@@ -126,6 +127,36 @@ public final class AudioVolumeGroup implements Parcelable {
         dest.writeInt(this.mLegacyStreamTypes.length);
         for (int streamType : this.mLegacyStreamTypes) {
             dest.writeInt(streamType);
+        }
+    }
+
+    /* renamed from: android.media.audiopolicy.AudioVolumeGroup$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioVolumeGroup> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioVolumeGroup createFromParcel(Parcel in) {
+            Preconditions.checkNotNull(in, "in Parcel must not be null");
+            String name = in.readString();
+            int id = in.readInt();
+            int nbAttributes = in.readInt();
+            AudioAttributes[] audioAttributes = new AudioAttributes[nbAttributes];
+            for (int index = 0; index < nbAttributes; index++) {
+                audioAttributes[index] = AudioAttributes.CREATOR.createFromParcel(in);
+            }
+            int nbStreamTypes = in.readInt();
+            int[] streamTypes = new int[nbStreamTypes];
+            for (int index2 = 0; index2 < nbStreamTypes; index2++) {
+                streamTypes[index2] = in.readInt();
+            }
+            return new AudioVolumeGroup(name, id, audioAttributes, streamTypes);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioVolumeGroup[] newArray(int size) {
+            return new AudioVolumeGroup[size];
         }
     }
 

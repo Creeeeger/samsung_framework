@@ -846,8 +846,9 @@ public interface IFMPlayer extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IFMPlayer {
+        public static class Proxy implements IFMPlayer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

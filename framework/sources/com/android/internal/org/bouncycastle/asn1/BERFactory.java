@@ -1,6 +1,5 @@
 package com.android.internal.org.bouncycastle.asn1;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class BERFactory {
     static final BERSequence EMPTY_SEQUENCE = new BERSequence();
@@ -9,7 +8,6 @@ public class BERFactory {
     BERFactory() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static BERSequence createSequence(ASN1EncodableVector v) {
         if (v.size() < 1) {
             return EMPTY_SEQUENCE;

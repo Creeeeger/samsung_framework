@@ -11,13 +11,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes4.dex */
 public class RemoteTransition implements Parcelable {
     public static final Parcelable.Creator<RemoteTransition> CREATOR = new Parcelable.Creator<RemoteTransition>() { // from class: android.window.RemoteTransition.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteTransition[] newArray(int size) {
             return new RemoteTransition[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteTransition createFromParcel(Parcel in) {
             return new RemoteTransition(in);
@@ -110,6 +111,23 @@ public class RemoteTransition implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) remoteTransition);
         this.mAppThread = appThread;
         this.mDebugName = debugName;
+    }
+
+    /* renamed from: android.window.RemoteTransition$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoteTransition> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteTransition[] newArray(int size) {
+            return new RemoteTransition[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteTransition createFromParcel(Parcel in) {
+            return new RemoteTransition(in);
+        }
     }
 
     @Deprecated

@@ -327,7 +327,6 @@ public abstract class CameraMetadata<TKey> {
 
     protected abstract <T> T getProtected(TKey tkey);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setNativeInstance(CameraMetadataNative nativeInstance) {
         this.mNativeInstance = nativeInstance;
     }
@@ -348,7 +347,6 @@ public abstract class CameraMetadata<TKey> {
         return Collections.unmodifiableList(getKeys(getClass(), getKeyClass(), this, null, true));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public <TKey> ArrayList<TKey> getKeys(Class<?> cls, Class<TKey> cls2, CameraMetadata<TKey> cameraMetadata, int[] iArr, boolean z) {
         String name;

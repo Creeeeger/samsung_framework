@@ -18,6 +18,9 @@ public class SortCursor extends AbstractCursor {
     private int[] mCursorCache = new int[64];
     private int mLastCacheHit = -1;
     private DataSetObserver mObserver = new DataSetObserver() { // from class: com.android.internal.database.SortCursor.1
+        AnonymousClass1() {
+        }
+
         @Override // android.database.DataSetObserver
         public void onChanged() {
             SortCursor.this.mPos = -1;
@@ -28,6 +31,24 @@ public class SortCursor extends AbstractCursor {
             SortCursor.this.mPos = -1;
         }
     };
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.database.SortCursor$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends DataSetObserver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.database.DataSetObserver
+        public void onChanged() {
+            SortCursor.this.mPos = -1;
+        }
+
+        @Override // android.database.DataSetObserver
+        public void onInvalidated() {
+            SortCursor.this.mPos = -1;
+        }
+    }
 
     public SortCursor(Cursor[] cursors, String sortcolumn) {
         this.mCursors = cursors;

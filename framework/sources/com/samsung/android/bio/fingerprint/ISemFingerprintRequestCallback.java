@@ -84,8 +84,9 @@ public interface ISemFingerprintRequestCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemFingerprintRequestCallback {
+        public static class Proxy implements ISemFingerprintRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

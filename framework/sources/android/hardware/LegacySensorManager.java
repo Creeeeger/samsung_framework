@@ -8,7 +8,6 @@ import android.view.IWindowManager;
 import java.util.HashMap;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public final class LegacySensorManager {
     private static boolean sInitialized;
@@ -26,6 +25,9 @@ public final class LegacySensorManager {
                 if (asInterface != null) {
                     try {
                         sRotation = asInterface.watchRotation(new IRotationWatcher.Stub() { // from class: android.hardware.LegacySensorManager.1
+                            AnonymousClass1() {
+                            }
+
                             @Override // android.view.IRotationWatcher
                             public void onRotationChanged(int rotation) {
                                 LegacySensorManager.onRotationChanged(rotation);
@@ -35,6 +37,19 @@ public final class LegacySensorManager {
                     }
                 }
             }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.LegacySensorManager$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends IRotationWatcher.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.IRotationWatcher
+        public void onRotationChanged(int rotation) {
+            LegacySensorManager.onRotationChanged(rotation);
         }
     }
 
@@ -128,7 +143,6 @@ public final class LegacySensorManager {
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class LegacyListener implements SensorEventListener {
         private SensorListener mTarget;
@@ -281,8 +295,9 @@ public final class LegacySensorManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static final class LmsFilter {
+    public static final class LmsFilter {
         private static final int COUNT = 12;
         private static final float PREDICTION_RATIO = 0.33333334f;
         private static final float PREDICTION_TIME = 0.08f;

@@ -19,7 +19,6 @@ public class AttachedDevices {
         return this.item;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AttachedDevices read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         AttachedDevices _instance = new AttachedDevices();

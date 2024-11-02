@@ -10,8 +10,9 @@ import com.samsung.android.sume.core.types.MediaType;
 import com.samsung.android.sume.core.types.SplitType;
 import java.util.List;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class StapleMediaFormat implements MediaFormat {
+public class StapleMediaFormat implements MediaFormat {
     MutableMediaFormat impl;
 
     public StapleMediaFormat(MutableMediaFormat mutableMediaFormat) {

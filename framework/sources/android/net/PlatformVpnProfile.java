@@ -23,7 +23,6 @@ public abstract class PlatformVpnProfile {
 
     public abstract VpnProfile toVpnProfile() throws IOException, GeneralSecurityException;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PlatformVpnProfile(int type, boolean excludeLocalRoutes, boolean requiresValidation) {
         this.mType = type;
         this.mExcludeLocalRoutes = excludeLocalRoutes;

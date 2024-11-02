@@ -988,8 +988,9 @@ public interface IHdmiControlService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IHdmiControlService {
+        public static class Proxy implements IHdmiControlService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

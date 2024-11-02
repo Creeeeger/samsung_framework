@@ -122,7 +122,6 @@ public abstract class MetaKeyKeyListener {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void resetLockedMeta(Spannable content) {
         resetLock(content, CAP);
         resetLock(content, ALT);

@@ -43,13 +43,14 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes2.dex */
 public final class TvInputInfo implements Parcelable {
     public static final Parcelable.Creator<TvInputInfo> CREATOR = new Parcelable.Creator<TvInputInfo>() { // from class: android.media.tv.TvInputInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TvInputInfo createFromParcel(Parcel in) {
             return new TvInputInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInputInfo[] newArray(int size) {
             return new TvInputInfo[size];
@@ -91,6 +92,14 @@ public final class TvInputInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface Type {
+    }
+
+    /* synthetic */ TvInputInfo(ResolveInfo resolveInfo, String str, int i, boolean z, CharSequence charSequence, int i2, Icon icon, Icon icon2, Icon icon3, String str2, boolean z2, boolean z3, int i3, HdmiDeviceInfo hdmiDeviceInfo, boolean z4, int i4, String str3, Bundle bundle, TvInputInfoIA tvInputInfoIA) {
+        this(resolveInfo, str, i, z, charSequence, i2, icon, icon2, icon3, str2, z2, z3, i3, hdmiDeviceInfo, z4, i4, str3, bundle);
+    }
+
+    /* synthetic */ TvInputInfo(Parcel parcel, TvInputInfoIA tvInputInfoIA) {
+        this(parcel);
     }
 
     @SystemApi
@@ -339,6 +348,23 @@ public final class TvInputInfo implements Parcelable {
             return null;
         }
         return this.mService.serviceInfo.loadIcon(context.getPackageManager());
+    }
+
+    /* renamed from: android.media.tv.TvInputInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TvInputInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvInputInfo createFromParcel(Parcel in) {
+            return new TvInputInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvInputInfo[] newArray(int size) {
+            return new TvInputInfo[size];
+        }
     }
 
     private TvInputInfo(Parcel in) {
@@ -641,12 +667,10 @@ public final class TvInputInfo implements Parcelable {
         private TvInputSettings() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static boolean isHidden(Context context, String inputId, int userId) {
             return getHiddenTvInputIds(context, userId).contains(inputId);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static String getCustomLabel(Context context, String inputId, int userId) {
             return getCustomLabels(context, userId).get(inputId);
         }

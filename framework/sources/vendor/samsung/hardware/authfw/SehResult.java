@@ -7,6 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehResult implements Parcelable {
     public static final Parcelable.Creator<SehResult> CREATOR = new Parcelable.Creator<SehResult>() { // from class: vendor.samsung.hardware.authfw.SehResult.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehResult createFromParcel(Parcel _aidl_source) {
             SehResult _aidl_out = new SehResult();
@@ -21,6 +24,25 @@ public class SehResult implements Parcelable {
     };
     public byte[] data;
     public boolean status = false;
+
+    /* renamed from: vendor.samsung.hardware.authfw.SehResult$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehResult createFromParcel(Parcel _aidl_source) {
+            SehResult _aidl_out = new SehResult();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehResult[] newArray(int _aidl_size) {
+            return new SehResult[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

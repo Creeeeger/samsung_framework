@@ -103,7 +103,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public class Transport extends ContentProviderNative {
         volatile ContentInterface mInterface;
@@ -643,7 +642,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int checkPermission(String permission, AttributionSource attributionSource) {
         if (Binder.getCallingPid() == Process.myPid()) {
             return 0;
@@ -660,7 +658,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return enforceReadPermissionInner(uri, attributionSource);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int enforceReadPermissionInner(Uri uri, AttributionSource attributionSource) throws SecurityException {
         String suffix;
         String missingPerm;
@@ -733,7 +730,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return enforceWritePermissionInner(uri, attributionSource);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int enforceWritePermissionInner(Uri uri, AttributionSource attributionSource) throws SecurityException {
         String failReason;
         String missingPerm;
@@ -805,7 +801,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return ctx;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public AttributionSource setCallingAttributionSource(AttributionSource attributionSource) {
         AttributionSource original = this.mCallingAttributionSource.get();
         this.mCallingAttributionSource.set(attributionSource);
@@ -1053,7 +1048,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return openAssetFile(uri, mode);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final ParcelFileDescriptor openFileHelper(Uri uri, String mode) throws FileNotFoundException {
         Cursor c = query(uri, new String[]{"_data"}, null, null, null);
         int count = c != null ? c.getCount() : 0;
@@ -1098,10 +1092,26 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return openTypedAssetFile(uri, mimeTypeFilter, opts);
     }
 
-    public <T> ParcelFileDescriptor openPipeHelper(final Uri uri, final String mimeType, final Bundle opts, final T args, final PipeDataWriter<T> func) throws FileNotFoundException {
+    public <T> ParcelFileDescriptor openPipeHelper(Uri uri, String mimeType, Bundle opts, T args, PipeDataWriter<T> func) throws FileNotFoundException {
         try {
-            final ParcelFileDescriptor[] fds = ParcelFileDescriptor.createPipe();
+            ParcelFileDescriptor[] fds = ParcelFileDescriptor.createPipe();
             AsyncTask<Object, Object, Object> task = new AsyncTask<Object, Object, Object>() { // from class: android.content.ContentProvider.1
+                final /* synthetic */ Object val$args;
+                final /* synthetic */ ParcelFileDescriptor[] val$fds;
+                final /* synthetic */ PipeDataWriter val$func;
+                final /* synthetic */ String val$mimeType;
+                final /* synthetic */ Bundle val$opts;
+                final /* synthetic */ Uri val$uri;
+
+                AnonymousClass1(PipeDataWriter func2, ParcelFileDescriptor[] fds2, Uri uri2, String mimeType2, Bundle opts2, Object args2) {
+                    func = func2;
+                    fds = fds2;
+                    uri = uri2;
+                    mimeType = mimeType2;
+                    opts = opts2;
+                    args = args2;
+                }
+
                 @Override // android.os.AsyncTask
                 protected Object doInBackground(Object... params) {
                     func.writeDataToPipe(fds[1], uri, mimeType, opts, args);
@@ -1115,9 +1125,41 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
                 }
             };
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-            return fds[0];
+            return fds2[0];
         } catch (IOException e) {
             throw new FileNotFoundException("failure making pipe");
+        }
+    }
+
+    /* renamed from: android.content.ContentProvider$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends AsyncTask<Object, Object, Object> {
+        final /* synthetic */ Object val$args;
+        final /* synthetic */ ParcelFileDescriptor[] val$fds;
+        final /* synthetic */ PipeDataWriter val$func;
+        final /* synthetic */ String val$mimeType;
+        final /* synthetic */ Bundle val$opts;
+        final /* synthetic */ Uri val$uri;
+
+        AnonymousClass1(PipeDataWriter func2, ParcelFileDescriptor[] fds2, Uri uri2, String mimeType2, Bundle opts2, Object args2) {
+            func = func2;
+            fds = fds2;
+            uri = uri2;
+            mimeType = mimeType2;
+            opts = opts2;
+            args = args2;
+        }
+
+        @Override // android.os.AsyncTask
+        protected Object doInBackground(Object... params) {
+            func.writeDataToPipe(fds[1], uri, mimeType, opts, args);
+            try {
+                fds[1].close();
+                return null;
+            } catch (IOException e) {
+                Log.w(ContentProvider.TAG, "Failure closing pipe", e);
+                return null;
+            }
         }
     }
 
@@ -1193,7 +1235,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         writer.println("nothing to dump");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void validateIncomingAuthority(String authority) throws SecurityException {
         String message;
         if (!matchesOurAuthorities(getAuthorityWithoutUserId(authority))) {
@@ -1223,7 +1264,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return uri;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Uri maybeGetUriWithoutUserId(Uri uri) {
         if (this.mSingleUser) {
             return uri;
@@ -1314,7 +1354,6 @@ public abstract class ContentProvider implements ContentInterface, ComponentCall
         return uri;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void traceBegin(long traceTag, String methodName, String subInfo) {
         if (Trace.isTagEnabled(traceTag)) {
             Trace.traceBegin(traceTag, methodName + subInfo);

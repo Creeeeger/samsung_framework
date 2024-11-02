@@ -24,13 +24,14 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes2.dex */
 public final class TvInteractiveAppServiceInfo implements Parcelable {
     public static final Parcelable.Creator<TvInteractiveAppServiceInfo> CREATOR = new Parcelable.Creator<TvInteractiveAppServiceInfo>() { // from class: android.media.tv.interactive.TvInteractiveAppServiceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TvInteractiveAppServiceInfo createFromParcel(Parcel in) {
             return new TvInteractiveAppServiceInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInteractiveAppServiceInfo[] newArray(int size) {
             return new TvInteractiveAppServiceInfo[size];
@@ -52,6 +53,10 @@ public final class TvInteractiveAppServiceInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface InteractiveAppType {
+    }
+
+    /* synthetic */ TvInteractiveAppServiceInfo(Parcel parcel, TvInteractiveAppServiceInfoIA tvInteractiveAppServiceInfoIA) {
+        this(parcel);
     }
 
     public TvInteractiveAppServiceInfo(Context context, ComponentName component) {
@@ -89,6 +94,23 @@ public final class TvInteractiveAppServiceInfo implements Parcelable {
         this.mId = in.readString();
         this.mTypes = in.readInt();
         in.readStringList(arrayList);
+    }
+
+    /* renamed from: android.media.tv.interactive.TvInteractiveAppServiceInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TvInteractiveAppServiceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvInteractiveAppServiceInfo createFromParcel(Parcel in) {
+            return new TvInteractiveAppServiceInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvInteractiveAppServiceInfo[] newArray(int size) {
+            return new TvInteractiveAppServiceInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

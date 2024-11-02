@@ -30,12 +30,28 @@ public class DsmsService extends IDsmsService.Stub {
         }
         DsmsInfoCache.getInstance().setContext(context);
         this.mTimerApkTimeout.schedule(new TimerTask() { // from class: com.samsung.android.jdsms.DsmsService.1
+            AnonymousClass1() {
+            }
+
             @Override // java.util.TimerTask, java.lang.Runnable
             public void run() {
                 DsmsInfoCache.getInstance().updateCommercializedDeviceCache();
                 DsmsThreadPoolExecutor.getInstance().resume();
             }
         }, APK_TIMEOUT);
+    }
+
+    /* renamed from: com.samsung.android.jdsms.DsmsService$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends TimerTask {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.TimerTask, java.lang.Runnable
+        public void run() {
+            DsmsInfoCache.getInstance().updateCommercializedDeviceCache();
+            DsmsThreadPoolExecutor.getInstance().resume();
+        }
     }
 
     @Override // com.samsung.android.dsms.aidl.IDsmsService

@@ -89,13 +89,14 @@ public class RadioManager {
     /* loaded from: classes2.dex */
     public static class ModuleProperties implements Parcelable {
         public static final Parcelable.Creator<ModuleProperties> CREATOR = new Parcelable.Creator<ModuleProperties>() { // from class: android.hardware.radio.RadioManager.ModuleProperties.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ModuleProperties createFromParcel(Parcel in) {
                 return new ModuleProperties(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ModuleProperties[] newArray(int size) {
                 return new ModuleProperties[size];
@@ -118,6 +119,10 @@ public class RadioManager {
         private final Set<Integer> mSupportedProgramTypes;
         private final Map<String, String> mVendorInfo;
         private final String mVersion;
+
+        /* synthetic */ ModuleProperties(Parcel parcel, ModulePropertiesIA modulePropertiesIA) {
+            this(parcel);
+        }
 
         public ModuleProperties(int id, String serviceName, int classId, String implementor, String product, String version, String serial, int numTuners, int numAudioSources, boolean isInitializationRequired, boolean isCaptureSupported, BandDescriptor[] bands, boolean isBgScanSupported, int[] supportedProgramTypes, int[] supportedIdentifierTypes, Map<String, Integer> dabFrequencyTable, Map<String, String> vendorInfo) {
             this.mId = id;
@@ -248,6 +253,23 @@ public class RadioManager {
             this.mVendorInfo = Utils.readStringMap(in);
         }
 
+        /* renamed from: android.hardware.radio.RadioManager$ModuleProperties$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ModuleProperties> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ModuleProperties createFromParcel(Parcel in) {
+                return new ModuleProperties(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ModuleProperties[] newArray(int size) {
+                return new ModuleProperties[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeInt(this.mId);
@@ -297,24 +319,24 @@ public class RadioManager {
     /* loaded from: classes2.dex */
     public static class BandDescriptor implements Parcelable {
         public static final Parcelable.Creator<BandDescriptor> CREATOR = new Parcelable.Creator<BandDescriptor>() { // from class: android.hardware.radio.RadioManager.BandDescriptor.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
-            public BandDescriptor createFromParcel(Parcel parcel) {
-                int lookupTypeFromParcel = BandDescriptor.lookupTypeFromParcel(parcel);
-                byte b = 0;
-                switch (lookupTypeFromParcel) {
+            public BandDescriptor createFromParcel(Parcel in) {
+                int type = BandDescriptor.lookupTypeFromParcel(in);
+                switch (type) {
                     case 0:
                     case 3:
-                        return new AmBandDescriptor(parcel);
+                        return new AmBandDescriptor(in);
                     case 1:
                     case 2:
-                        return new FmBandDescriptor(parcel);
+                        return new FmBandDescriptor(in);
                     default:
-                        throw new IllegalArgumentException("Unsupported band: " + lookupTypeFromParcel);
+                        throw new IllegalArgumentException("Unsupported band: " + type);
                 }
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BandDescriptor[] newArray(int size) {
                 return new BandDescriptor[size];
@@ -325,6 +347,10 @@ public class RadioManager {
         private final int mSpacing;
         private final int mType;
         private final int mUpperLimit;
+
+        /* synthetic */ BandDescriptor(Parcel parcel, BandDescriptorIA bandDescriptorIA) {
+            this(parcel);
+        }
 
         BandDescriptor(int region, int type, int lowerLimit, int upperLimit, int spacing) {
             if (type != 0 && type != 1 && type != 2 && type != 3) {
@@ -375,13 +401,39 @@ public class RadioManager {
             this.mSpacing = in.readInt();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static int lookupTypeFromParcel(Parcel in) {
             int pos = in.dataPosition();
             in.readInt();
             int type = in.readInt();
             in.setDataPosition(pos);
             return type;
+        }
+
+        /* renamed from: android.hardware.radio.RadioManager$BandDescriptor$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<BandDescriptor> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BandDescriptor createFromParcel(Parcel in) {
+                int type = BandDescriptor.lookupTypeFromParcel(in);
+                switch (type) {
+                    case 0:
+                    case 3:
+                        return new AmBandDescriptor(in);
+                    case 1:
+                    case 2:
+                        return new FmBandDescriptor(in);
+                    default:
+                        throw new IllegalArgumentException("Unsupported band: " + type);
+                }
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BandDescriptor[] newArray(int size) {
+                return new BandDescriptor[size];
+            }
         }
 
         @Override // android.os.Parcelable
@@ -422,13 +474,14 @@ public class RadioManager {
     /* loaded from: classes2.dex */
     public static class FmBandDescriptor extends BandDescriptor {
         public static final Parcelable.Creator<FmBandDescriptor> CREATOR = new Parcelable.Creator<FmBandDescriptor>() { // from class: android.hardware.radio.RadioManager.FmBandDescriptor.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public FmBandDescriptor createFromParcel(Parcel in) {
                 return new FmBandDescriptor(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public FmBandDescriptor[] newArray(int size) {
                 return new FmBandDescriptor[size];
@@ -439,6 +492,10 @@ public class RadioManager {
         private final boolean mRds;
         private final boolean mStereo;
         private final boolean mTa;
+
+        /* synthetic */ FmBandDescriptor(Parcel parcel, FmBandDescriptorIA fmBandDescriptorIA) {
+            this(parcel);
+        }
 
         public FmBandDescriptor(int region, int type, int lowerLimit, int upperLimit, int spacing, boolean stereo, boolean rds, boolean ta, boolean af, boolean ea) {
             super(region, type, lowerLimit, upperLimit, spacing);
@@ -476,6 +533,23 @@ public class RadioManager {
             this.mTa = in.readByte() == 1;
             this.mAf = in.readByte() == 1;
             this.mEa = in.readByte() == 1;
+        }
+
+        /* renamed from: android.hardware.radio.RadioManager$FmBandDescriptor$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<FmBandDescriptor> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public FmBandDescriptor createFromParcel(Parcel in) {
+                return new FmBandDescriptor(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public FmBandDescriptor[] newArray(int size) {
+                return new FmBandDescriptor[size];
+            }
         }
 
         @Override // android.hardware.radio.RadioManager.BandDescriptor, android.os.Parcelable
@@ -519,19 +593,24 @@ public class RadioManager {
     /* loaded from: classes2.dex */
     public static class AmBandDescriptor extends BandDescriptor {
         public static final Parcelable.Creator<AmBandDescriptor> CREATOR = new Parcelable.Creator<AmBandDescriptor>() { // from class: android.hardware.radio.RadioManager.AmBandDescriptor.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AmBandDescriptor createFromParcel(Parcel in) {
                 return new AmBandDescriptor(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AmBandDescriptor[] newArray(int size) {
                 return new AmBandDescriptor[size];
             }
         };
         private final boolean mStereo;
+
+        /* synthetic */ AmBandDescriptor(Parcel parcel, AmBandDescriptorIA amBandDescriptorIA) {
+            this(parcel);
+        }
 
         public AmBandDescriptor(int region, int type, int lowerLimit, int upperLimit, int spacing, boolean stereo) {
             super(region, type, lowerLimit, upperLimit, spacing);
@@ -545,6 +624,23 @@ public class RadioManager {
         private AmBandDescriptor(Parcel in) {
             super(in);
             this.mStereo = in.readByte() == 1;
+        }
+
+        /* renamed from: android.hardware.radio.RadioManager$AmBandDescriptor$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AmBandDescriptor> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AmBandDescriptor createFromParcel(Parcel in) {
+                return new AmBandDescriptor(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AmBandDescriptor[] newArray(int size) {
+                return new AmBandDescriptor[size];
+            }
         }
 
         @Override // android.hardware.radio.RadioManager.BandDescriptor, android.os.Parcelable
@@ -584,30 +680,34 @@ public class RadioManager {
     /* loaded from: classes2.dex */
     public static class BandConfig implements Parcelable {
         public static final Parcelable.Creator<BandConfig> CREATOR = new Parcelable.Creator<BandConfig>() { // from class: android.hardware.radio.RadioManager.BandConfig.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
-            public BandConfig createFromParcel(Parcel parcel) {
-                int lookupTypeFromParcel = BandDescriptor.lookupTypeFromParcel(parcel);
-                byte b = 0;
-                switch (lookupTypeFromParcel) {
+            public BandConfig createFromParcel(Parcel in) {
+                int type = BandDescriptor.lookupTypeFromParcel(in);
+                switch (type) {
                     case 0:
                     case 3:
-                        return new AmBandConfig(parcel);
+                        return new AmBandConfig(in);
                     case 1:
                     case 2:
-                        return new FmBandConfig(parcel);
+                        return new FmBandConfig(in);
                     default:
-                        throw new IllegalArgumentException("Unsupported band: " + lookupTypeFromParcel);
+                        throw new IllegalArgumentException("Unsupported band: " + type);
                 }
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BandConfig[] newArray(int size) {
                 return new BandConfig[size];
             }
         };
         final BandDescriptor mDescriptor;
+
+        /* synthetic */ BandConfig(Parcel parcel, BandConfigIA bandConfigIA) {
+            this(parcel);
+        }
 
         BandConfig(BandDescriptor descriptor) {
             Objects.requireNonNull(descriptor, "Descriptor cannot be null");
@@ -644,6 +744,33 @@ public class RadioManager {
 
         public int getSpacing() {
             return this.mDescriptor.getSpacing();
+        }
+
+        /* renamed from: android.hardware.radio.RadioManager$BandConfig$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<BandConfig> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BandConfig createFromParcel(Parcel in) {
+                int type = BandDescriptor.lookupTypeFromParcel(in);
+                switch (type) {
+                    case 0:
+                    case 3:
+                        return new AmBandConfig(in);
+                    case 1:
+                    case 2:
+                        return new FmBandConfig(in);
+                    default:
+                        throw new IllegalArgumentException("Unsupported band: " + type);
+                }
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BandConfig[] newArray(int size) {
+                return new BandConfig[size];
+            }
         }
 
         @Override // android.os.Parcelable
@@ -685,13 +812,14 @@ public class RadioManager {
     /* loaded from: classes2.dex */
     public static class FmBandConfig extends BandConfig {
         public static final Parcelable.Creator<FmBandConfig> CREATOR = new Parcelable.Creator<FmBandConfig>() { // from class: android.hardware.radio.RadioManager.FmBandConfig.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public FmBandConfig createFromParcel(Parcel in) {
                 return new FmBandConfig(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public FmBandConfig[] newArray(int size) {
                 return new FmBandConfig[size];
@@ -702,6 +830,10 @@ public class RadioManager {
         private final boolean mRds;
         private final boolean mStereo;
         private final boolean mTa;
+
+        /* synthetic */ FmBandConfig(Parcel parcel, FmBandConfigIA fmBandConfigIA) {
+            this(parcel);
+        }
 
         public FmBandConfig(FmBandDescriptor descriptor) {
             super(descriptor);
@@ -748,6 +880,23 @@ public class RadioManager {
             this.mTa = in.readByte() == 1;
             this.mAf = in.readByte() == 1;
             this.mEa = in.readByte() == 1;
+        }
+
+        /* renamed from: android.hardware.radio.RadioManager$FmBandConfig$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<FmBandConfig> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public FmBandConfig createFromParcel(Parcel in) {
+                return new FmBandConfig(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public FmBandConfig[] newArray(int size) {
+                return new FmBandConfig[size];
+            }
         }
 
         @Override // android.hardware.radio.RadioManager.BandConfig, android.os.Parcelable
@@ -849,19 +998,24 @@ public class RadioManager {
     /* loaded from: classes2.dex */
     public static class AmBandConfig extends BandConfig {
         public static final Parcelable.Creator<AmBandConfig> CREATOR = new Parcelable.Creator<AmBandConfig>() { // from class: android.hardware.radio.RadioManager.AmBandConfig.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AmBandConfig createFromParcel(Parcel in) {
                 return new AmBandConfig(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AmBandConfig[] newArray(int size) {
                 return new AmBandConfig[size];
             }
         };
         private final boolean mStereo;
+
+        /* synthetic */ AmBandConfig(Parcel parcel, AmBandConfigIA amBandConfigIA) {
+            this(parcel);
+        }
 
         public AmBandConfig(AmBandDescriptor descriptor) {
             super(descriptor);
@@ -880,6 +1034,23 @@ public class RadioManager {
         private AmBandConfig(Parcel in) {
             super(in);
             this.mStereo = in.readByte() == 1;
+        }
+
+        /* renamed from: android.hardware.radio.RadioManager$AmBandConfig$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AmBandConfig> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AmBandConfig createFromParcel(Parcel in) {
+                return new AmBandConfig(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AmBandConfig[] newArray(int size) {
+                return new AmBandConfig[size];
+            }
         }
 
         @Override // android.hardware.radio.RadioManager.BandConfig, android.os.Parcelable
@@ -945,13 +1116,14 @@ public class RadioManager {
     /* loaded from: classes2.dex */
     public static class ProgramInfo implements Parcelable {
         public static final Parcelable.Creator<ProgramInfo> CREATOR = new Parcelable.Creator<ProgramInfo>() { // from class: android.hardware.radio.RadioManager.ProgramInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ProgramInfo createFromParcel(Parcel in) {
                 return new ProgramInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ProgramInfo[] newArray(int size) {
                 return new ProgramInfo[size];
@@ -971,6 +1143,10 @@ public class RadioManager {
         private final ProgramSelector mSelector;
         private final int mSignalQuality;
         private final Map<String, String> mVendorInfo;
+
+        /* synthetic */ ProgramInfo(Parcel parcel, ProgramInfoIA programInfoIA) {
+            this(parcel);
+        }
 
         public ProgramInfo(ProgramSelector selector, ProgramSelector.Identifier logicallyTunedTo, ProgramSelector.Identifier physicallyTunedTo, Collection<ProgramSelector.Identifier> relatedContent, int infoFlags, int signalQuality, RadioMetadata metadata, Map<String, String> vendorInfo) {
             this.mSelector = (ProgramSelector) Objects.requireNonNull(selector);
@@ -1080,6 +1256,23 @@ public class RadioManager {
             this.mVendorInfo = Utils.readStringMap(in);
         }
 
+        /* renamed from: android.hardware.radio.RadioManager$ProgramInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ProgramInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ProgramInfo createFromParcel(Parcel in) {
+                return new ProgramInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ProgramInfo[] newArray(int size) {
+                return new ProgramInfo[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeTypedObject(this.mSelector, flags);
@@ -1185,8 +1378,7 @@ public class RadioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.radio.RadioManager$1, reason: invalid class name */
+    /* renamed from: android.hardware.radio.RadioManager$1 */
     /* loaded from: classes2.dex */
     public class AnonymousClass1 extends IAnnouncementListener.Stub {
         final /* synthetic */ Executor val$executor;

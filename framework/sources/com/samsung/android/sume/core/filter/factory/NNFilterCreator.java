@@ -62,7 +62,6 @@ public class NNFilterCreator implements MediaFilterCreator {
         return filter2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MFDescriptorHolder lambda$newFilter$0(NNDescriptor desc, NNFWProfile e) {
         return new MFDescriptorHolder(new NNFWDescriptor(e.getFw(), e.getHw()), desc);
     }

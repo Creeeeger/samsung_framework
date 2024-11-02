@@ -362,7 +362,6 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onVirtualViewTranslationCompleted$3(View view, boolean isLoggable) {
         if (view.getViewTranslationCallback() == null) {
             if (isLoggable) {
@@ -452,7 +451,6 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onTranslationCompleted$4(View view, ViewTranslationResponse response, boolean isLoggable, AutofillId autofillId, int currentState) {
         ViewTranslationCallback callback = view.getViewTranslationCallback();
         if (view.getViewTranslationResponse() != null && view.getViewTranslationResponse().equals(response) && (callback instanceof TextViewTranslationCallback)) {
@@ -488,7 +486,6 @@ public class UiTranslationController implements Dumpable {
         callback.onShowTranslation(view);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void createTranslatorAndStart(TranslationSpec sourceSpec, TranslationSpec targetSpec, List<AutofillId> views) {
         Translator translator = createTranslatorIfNeeded(sourceSpec, targetSpec);
         if (translator == null) {
@@ -498,7 +495,6 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendTranslationRequest(Translator translator, List<ViewTranslationRequest> requests) {
         if (requests.size() == 0) {
             Log.w("UiTranslationController", "No ViewTranslationRequest was collected.");
@@ -567,7 +563,6 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onUiTranslationStarted$6(ArrayList roots, Map viewIds, int[] supportedFormats, TranslationCapability capability, ArrayList requests, Translator translator) {
         for (int rootNum = 0; rootNum < roots.size(); rootNum++) {
             View rootView = ((ViewRootImpl) roots.get(rootNum)).getView();
@@ -654,8 +649,10 @@ public class UiTranslationController implements Dumpable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x004a, code lost:            android.util.Log.d("UiTranslationController", "View was gone or ViewTranslationCallback for autofillId = " + r6.keyAt(r2));     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x004a, code lost:
+    
+        android.util.Log.d("UiTranslationController", "View was gone or ViewTranslationCallback for autofillId = " + r6.keyAt(r2));
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -10,13 +10,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class VirtualTouchscreenConfig extends VirtualInputDeviceConfig implements Parcelable {
     public static final Parcelable.Creator<VirtualTouchscreenConfig> CREATOR = new Parcelable.Creator<VirtualTouchscreenConfig>() { // from class: android.hardware.input.VirtualTouchscreenConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualTouchscreenConfig createFromParcel(Parcel in) {
             return new VirtualTouchscreenConfig(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualTouchscreenConfig[] newArray(int size) {
             return new VirtualTouchscreenConfig[size];
@@ -24,6 +25,14 @@ public final class VirtualTouchscreenConfig extends VirtualInputDeviceConfig imp
     };
     private final int mHeight;
     private final int mWidth;
+
+    /* synthetic */ VirtualTouchscreenConfig(Builder builder, VirtualTouchscreenConfigIA virtualTouchscreenConfigIA) {
+        this(builder);
+    }
+
+    /* synthetic */ VirtualTouchscreenConfig(Parcel parcel, VirtualTouchscreenConfigIA virtualTouchscreenConfigIA) {
+        this(parcel);
+    }
 
     private VirtualTouchscreenConfig(Builder builder) {
         super(builder);
@@ -55,6 +64,23 @@ public final class VirtualTouchscreenConfig extends VirtualInputDeviceConfig imp
         super.writeToParcel(dest, flags);
         dest.writeInt(this.mWidth);
         dest.writeInt(this.mHeight);
+    }
+
+    /* renamed from: android.hardware.input.VirtualTouchscreenConfig$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualTouchscreenConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualTouchscreenConfig createFromParcel(Parcel in) {
+            return new VirtualTouchscreenConfig(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualTouchscreenConfig[] newArray(int size) {
+            return new VirtualTouchscreenConfig[size];
+        }
     }
 
     /* loaded from: classes2.dex */

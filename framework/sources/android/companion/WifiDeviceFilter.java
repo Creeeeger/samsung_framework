@@ -78,13 +78,14 @@ public final class WifiDeviceFilter implements DeviceFilter<ScanResult> {
             sParcellingForNamePattern = Parcelling.Cache.put(new Parcelling.BuiltIn.ForPattern());
         }
         CREATOR = new Parcelable.Creator<WifiDeviceFilter>() { // from class: android.companion.WifiDeviceFilter.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public WifiDeviceFilter[] newArray(int size) {
                 return new WifiDeviceFilter[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public WifiDeviceFilter createFromParcel(Parcel in) {
                 return new WifiDeviceFilter(in);
@@ -121,6 +122,23 @@ public final class WifiDeviceFilter implements DeviceFilter<ScanResult> {
         this.mBssid = bssid;
         this.mBssidMask = bssidMask;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) bssidMask);
+    }
+
+    /* renamed from: android.companion.WifiDeviceFilter$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WifiDeviceFilter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiDeviceFilter[] newArray(int size) {
+            return new WifiDeviceFilter[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiDeviceFilter createFromParcel(Parcel in) {
+            return new WifiDeviceFilter(in);
+        }
     }
 
     /* loaded from: classes.dex */

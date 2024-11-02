@@ -471,7 +471,6 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$takeScreenshotOfWindow$2(int interactionId) {
         synchronized (this.mInstanceLock) {
             if (this.mTakeScreenshotOfWindowCallbacks.contains(interactionId)) {
@@ -830,8 +829,7 @@ public final class AccessibilityInteractionClient extends IAccessibilityInteract
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: sendWindowScreenshotSuccess, reason: merged with bridge method [inline-methods] */
+    /* renamed from: sendWindowScreenshotSuccess */
     public void lambda$takeScreenshotOfWindow$1(ScreenCapture.ScreenshotHardwareBuffer screenshot, int interactionId) {
         if (screenshot == null) {
             sendTakeScreenshotOfWindowError(1, interactionId);

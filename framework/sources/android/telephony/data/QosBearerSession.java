@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class QosBearerSession implements Parcelable {
     public static final Parcelable.Creator<QosBearerSession> CREATOR = new Parcelable.Creator<QosBearerSession>() { // from class: android.telephony.data.QosBearerSession.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public QosBearerSession createFromParcel(Parcel source) {
             return new QosBearerSession(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosBearerSession[] newArray(int size) {
             return new QosBearerSession[size];
@@ -24,6 +25,10 @@ public final class QosBearerSession implements Parcelable {
     final Qos qos;
     final List<QosBearerFilter> qosBearerFilterList;
     final int qosBearerSessionId;
+
+    /* synthetic */ QosBearerSession(Parcel parcel, QosBearerSessionIA qosBearerSessionIA) {
+        this(parcel);
+    }
 
     public QosBearerSession(int qosBearerSessionId, Qos qos, List<QosBearerFilter> qosBearerFilterList) {
         this.qosBearerSessionId = qosBearerSessionId;
@@ -89,5 +94,22 @@ public final class QosBearerSession implements Parcelable {
             return true;
         }
         return false;
+    }
+
+    /* renamed from: android.telephony.data.QosBearerSession$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<QosBearerSession> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public QosBearerSession createFromParcel(Parcel source) {
+            return new QosBearerSession(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public QosBearerSession[] newArray(int size) {
+            return new QosBearerSession[size];
+        }
     }
 }

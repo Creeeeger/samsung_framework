@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendIsdbs3Capabilities implements Parcelable {
     public static final Parcelable.Creator<FrontendIsdbs3Capabilities> CREATOR = new Parcelable.Creator<FrontendIsdbs3Capabilities>() { // from class: android.hardware.tv.tuner.FrontendIsdbs3Capabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendIsdbs3Capabilities createFromParcel(Parcel _aidl_source) {
             FrontendIsdbs3Capabilities _aidl_out = new FrontendIsdbs3Capabilities();
@@ -15,7 +17,6 @@ public class FrontendIsdbs3Capabilities implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendIsdbs3Capabilities[] newArray(int _aidl_size) {
             return new FrontendIsdbs3Capabilities[_aidl_size];
@@ -23,6 +24,25 @@ public class FrontendIsdbs3Capabilities implements Parcelable {
     };
     public int modulationCap = 0;
     public int coderateCap = 0;
+
+    /* renamed from: android.hardware.tv.tuner.FrontendIsdbs3Capabilities$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendIsdbs3Capabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendIsdbs3Capabilities createFromParcel(Parcel _aidl_source) {
+            FrontendIsdbs3Capabilities _aidl_out = new FrontendIsdbs3Capabilities();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendIsdbs3Capabilities[] newArray(int _aidl_size) {
+            return new FrontendIsdbs3Capabilities[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

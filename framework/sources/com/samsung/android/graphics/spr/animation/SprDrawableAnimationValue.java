@@ -19,7 +19,6 @@ import java.util.Iterator;
 public class SprDrawableAnimationValue extends SprDrawableAnimation {
     private final ArrayList<AnimatorData> mAnimatingList;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class AnimatorData {
         public AnimatorSet animatorSet;
@@ -32,6 +31,10 @@ public class SprDrawableAnimationValue extends SprDrawableAnimation {
         public long startTime;
         public SprAttributeStroke strokePaint;
         public SprAnimatorBase.UpdateParameter updateParameter;
+
+        /* synthetic */ AnimatorData(AnimatorDataIA animatorDataIA) {
+            this();
+        }
 
         private AnimatorData() {
             this.updateParameter = new SprAnimatorBase.UpdateParameter();
@@ -87,7 +90,7 @@ public class SprDrawableAnimationValue extends SprDrawableAnimation {
                     }
                     object.getIntrinsic().appendAttribute(fill);
                     try {
-                        fill2 = (SprAttributeFill) fill.mo8420clone();
+                        fill2 = (SprAttributeFill) fill.mo8412clone();
                         object.appendAttribute(fill2);
                     } catch (CloneNotSupportedException e) {
                         throw new RuntimeException(e);
@@ -101,7 +104,7 @@ public class SprDrawableAnimationValue extends SprDrawableAnimation {
                     }
                     object.getIntrinsic().appendAttribute(stroke);
                     try {
-                        stroke2 = (SprAttributeStroke) stroke.mo8420clone();
+                        stroke2 = (SprAttributeStroke) stroke.mo8412clone();
                         object.appendAttribute(stroke2);
                     } catch (CloneNotSupportedException e2) {
                         throw new RuntimeException(e2);
@@ -111,7 +114,7 @@ public class SprDrawableAnimationValue extends SprDrawableAnimation {
                     SprAttributeMatrix matrix2 = new SprAttributeMatrix();
                     object.getIntrinsic().appendAttribute(matrix2);
                     try {
-                        matrix = matrix2.mo8420clone();
+                        matrix = matrix2.mo8412clone();
                         object.appendAttribute(matrix);
                     } catch (CloneNotSupportedException e3) {
                         throw new RuntimeException(e3);

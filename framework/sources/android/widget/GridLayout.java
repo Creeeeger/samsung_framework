@@ -82,11 +82,17 @@ public class GridLayout extends ViewGroup {
     final Axis mVerticalAxis;
     static final Printer LOG_PRINTER = new LogPrinter(3, GridLayout.class.getName());
     static final Printer NO_PRINTER = new Printer() { // from class: android.widget.GridLayout.1
+        AnonymousClass1() {
+        }
+
         @Override // android.util.Printer
         public void println(String x) {
         }
     };
     static final Alignment UNDEFINED_ALIGNMENT = new Alignment() { // from class: android.widget.GridLayout.2
+        AnonymousClass2() {
+        }
+
         @Override // android.widget.GridLayout.Alignment
         int getGravityOffset(View view, int cellDelta) {
             return Integer.MIN_VALUE;
@@ -154,8 +160,22 @@ public class GridLayout extends ViewGroup {
         }
     }
 
+    /* renamed from: android.widget.GridLayout$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Printer {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.Printer
+        public void println(String x) {
+        }
+    }
+
     static {
-        Alignment alignment = new Alignment() { // from class: android.widget.GridLayout.3
+        AnonymousClass3 anonymousClass3 = new Alignment() { // from class: android.widget.GridLayout.3
+            AnonymousClass3() {
+            }
+
             @Override // android.widget.GridLayout.Alignment
             int getGravityOffset(View view, int cellDelta) {
                 return 0;
@@ -166,8 +186,11 @@ public class GridLayout extends ViewGroup {
                 return 0;
             }
         };
-        LEADING = alignment;
-        Alignment alignment2 = new Alignment() { // from class: android.widget.GridLayout.4
+        LEADING = anonymousClass3;
+        AnonymousClass4 anonymousClass4 = new Alignment() { // from class: android.widget.GridLayout.4
+            AnonymousClass4() {
+            }
+
             @Override // android.widget.GridLayout.Alignment
             int getGravityOffset(View view, int cellDelta) {
                 return cellDelta;
@@ -178,14 +201,17 @@ public class GridLayout extends ViewGroup {
                 return viewSize;
             }
         };
-        TRAILING = alignment2;
-        TOP = alignment;
-        BOTTOM = alignment2;
-        START = alignment;
-        END = alignment2;
-        LEFT = createSwitchingAlignment(alignment, alignment2);
-        RIGHT = createSwitchingAlignment(alignment2, alignment);
+        TRAILING = anonymousClass4;
+        TOP = anonymousClass3;
+        BOTTOM = anonymousClass4;
+        START = anonymousClass3;
+        END = anonymousClass4;
+        LEFT = createSwitchingAlignment(anonymousClass3, anonymousClass4);
+        RIGHT = createSwitchingAlignment(anonymousClass4, anonymousClass3);
         CENTER = new Alignment() { // from class: android.widget.GridLayout.6
+            AnonymousClass6() {
+            }
+
             @Override // android.widget.GridLayout.Alignment
             int getGravityOffset(View view, int cellDelta) {
                 return cellDelta >> 1;
@@ -197,6 +223,9 @@ public class GridLayout extends ViewGroup {
             }
         };
         BASELINE = new Alignment() { // from class: android.widget.GridLayout.7
+            AnonymousClass7() {
+            }
+
             @Override // android.widget.GridLayout.Alignment
             int getGravityOffset(View view, int cellDelta) {
                 return 0;
@@ -214,10 +243,44 @@ public class GridLayout extends ViewGroup {
                 return baseline;
             }
 
+            /* renamed from: android.widget.GridLayout$7$1 */
+            /* loaded from: classes4.dex */
+            class AnonymousClass1 extends Bounds {
+                private int size;
+
+                AnonymousClass1() {
+                }
+
+                @Override // android.widget.GridLayout.Bounds
+                protected void reset() {
+                    super.reset();
+                    this.size = Integer.MIN_VALUE;
+                }
+
+                @Override // android.widget.GridLayout.Bounds
+                protected void include(int before, int after) {
+                    super.include(before, after);
+                    this.size = Math.max(this.size, before + after);
+                }
+
+                @Override // android.widget.GridLayout.Bounds
+                protected int size(boolean min) {
+                    return Math.max(super.size(min), this.size);
+                }
+
+                @Override // android.widget.GridLayout.Bounds
+                protected int getOffset(GridLayout gl, View c, Alignment a, int size, boolean hrz) {
+                    return Math.max(0, super.getOffset(gl, c, a, size, hrz));
+                }
+            }
+
             @Override // android.widget.GridLayout.Alignment
             public Bounds getBounds() {
                 return new Bounds() { // from class: android.widget.GridLayout.7.1
                     private int size;
+
+                    AnonymousClass1() {
+                    }
 
                     @Override // android.widget.GridLayout.Bounds
                     protected void reset() {
@@ -244,6 +307,9 @@ public class GridLayout extends ViewGroup {
             }
         };
         FILL = new Alignment() { // from class: android.widget.GridLayout.8
+            AnonymousClass8() {
+            }
+
             @Override // android.widget.GridLayout.Alignment
             int getGravityOffset(View view, int cellDelta) {
                 return 0;
@@ -589,7 +655,6 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public void onSetLayoutParams(View child, ViewGroup.LayoutParams layoutParams) {
         super.onSetLayoutParams(child, layoutParams);
@@ -603,7 +668,6 @@ public class GridLayout extends ViewGroup {
         return (LayoutParams) c.getLayoutParams();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void handleInvalidParams(String msg) {
         throw new IllegalArgumentException(msg + ". ");
     }
@@ -627,7 +691,6 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         if (!(p instanceof LayoutParams)) {
@@ -639,7 +702,6 @@ public class GridLayout extends ViewGroup {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams();
@@ -650,7 +712,6 @@ public class GridLayout extends ViewGroup {
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
         if (sPreserveMarginParamsInLayoutParamConversion) {
@@ -683,7 +744,6 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public void onDebugDraw(Canvas canvas) {
         Paint paint = new Paint();
@@ -725,7 +785,6 @@ public class GridLayout extends ViewGroup {
         invalidateStructure();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public void onChildVisibilityChanged(View child, int oldVisibility, int newVisibility) {
         super.onChildVisibilityChanged(child, oldVisibility, newVisibility);
@@ -797,7 +856,6 @@ public class GridLayout extends ViewGroup {
         return View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(measureSpec + delta), View.MeasureSpec.getMode(measureSpec));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthSpec, int heightSpec) {
         int heightSansPadding;
@@ -840,7 +898,6 @@ public class GridLayout extends ViewGroup {
         invalidateValues();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int targetHeight;
@@ -928,7 +985,6 @@ public class GridLayout extends ViewGroup {
         return GridLayout.class.getName();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class Axis {
         static final /* synthetic */ boolean $assertionsDisabled = false;
@@ -958,6 +1014,10 @@ public class GridLayout extends ViewGroup {
         private MutableInt parentMin;
         public int[] trailingMargins;
         public boolean trailingMarginsValid;
+
+        /* synthetic */ Axis(GridLayout gridLayout, boolean z, AxisIA axisIA) {
+            this(z);
+        }
 
         private Axis(boolean horizontal) {
             this.definedCount = Integer.MIN_VALUE;
@@ -1145,7 +1205,53 @@ public class GridLayout extends ViewGroup {
             return result;
         }
 
-        /* JADX WARN: Type inference failed for: r0v0, types: [android.widget.GridLayout$Axis$1] */
+        /* renamed from: android.widget.GridLayout$Axis$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 {
+            static final /* synthetic */ boolean $assertionsDisabled = false;
+            Arc[][] arcsByVertex;
+            int cursor;
+            Arc[] result;
+            final /* synthetic */ Arc[] val$arcs;
+            int[] visited;
+
+            AnonymousClass1(Arc[] arcArr) {
+                this.val$arcs = arcArr;
+                this.result = new Arc[arcArr.length];
+                this.cursor = r0.length - 1;
+                this.arcsByVertex = Axis.this.groupArcsByFirstVertex(arcArr);
+                this.visited = new int[Axis.this.getCount() + 1];
+            }
+
+            void walk(int loc) {
+                int[] iArr = this.visited;
+                switch (iArr[loc]) {
+                    case 0:
+                        iArr[loc] = 1;
+                        for (Arc arc : this.arcsByVertex[loc]) {
+                            walk(arc.span.max);
+                            Arc[] arcArr = this.result;
+                            int i = this.cursor;
+                            this.cursor = i - 1;
+                            arcArr[i] = arc;
+                        }
+                        this.visited[loc] = 2;
+                        return;
+                    case 1:
+                    default:
+                        return;
+                }
+            }
+
+            Arc[] sort() {
+                int N = this.arcsByVertex.length;
+                for (int loc = 0; loc < N; loc++) {
+                    walk(loc);
+                }
+                return this.result;
+            }
+        }
+
         private Arc[] topologicalSort(Arc[] arcs) {
             return new Object(arcs) { // from class: android.widget.GridLayout.Axis.1
                 static final /* synthetic */ boolean $assertionsDisabled = false;
@@ -1155,11 +1261,11 @@ public class GridLayout extends ViewGroup {
                 final /* synthetic */ Arc[] val$arcs;
                 int[] visited;
 
-                {
-                    this.val$arcs = arcs;
-                    this.result = new Arc[arcs.length];
+                AnonymousClass1(Arc[] arcs2) {
+                    this.val$arcs = arcs2;
+                    this.result = new Arc[arcs2.length];
                     this.cursor = r0.length - 1;
-                    this.arcsByVertex = Axis.this.groupArcsByFirstVertex(arcs);
+                    this.arcsByVertex = Axis.this.groupArcsByFirstVertex(arcs2);
                     this.visited = new int[Axis.this.getCount() + 1];
                 }
 
@@ -1710,7 +1816,6 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class Arc {
         public final Interval span;
@@ -1727,7 +1832,6 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class MutableInt {
         public int value;
@@ -1749,7 +1853,6 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class Assoc<K, V> extends ArrayList<Pair<K, V>> {
         private final Class<K> keyType;
@@ -1780,12 +1883,15 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class PackedMap<K, V> {
         public final int[] index;
         public final K[] keys;
         public final V[] values;
+
+        /* synthetic */ PackedMap(Object[] objArr, Object[] objArr2, PackedMapIA packedMapIA) {
+            this(objArr, objArr2);
+        }
 
         private PackedMap(K[] kArr, V[] vArr) {
             int[] createIndex = createIndex(kArr);
@@ -1824,12 +1930,15 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class Bounds {
         public int after;
         public int before;
         public int flexibility;
+
+        /* synthetic */ Bounds(BoundsIA boundsIA) {
+            this();
+        }
 
         private Bounds() {
             reset();
@@ -1870,7 +1979,6 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class Interval {
         public final int max;
@@ -1922,6 +2030,10 @@ public class GridLayout extends ViewGroup {
         final boolean startDefined;
         final float weight;
 
+        /* synthetic */ Spec(boolean z, int i, int i2, Alignment alignment, float f, SpecIA specIA) {
+            this(z, i, i2, alignment, f);
+        }
+
         private Spec(boolean startDefined, Interval span, Alignment alignment, float weight) {
             this.startDefined = startDefined;
             this.span = span;
@@ -1933,7 +2045,6 @@ public class GridLayout extends ViewGroup {
             this(startDefined, new Interval(start, start + size), alignment, weight);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Alignment getAbsoluteAlignment(boolean horizontal) {
             if (this.alignment != GridLayout.UNDEFINED_ALIGNMENT) {
                 return this.alignment;
@@ -2026,8 +2137,85 @@ public class GridLayout extends ViewGroup {
         }
     }
 
-    private static Alignment createSwitchingAlignment(final Alignment ltr, final Alignment rtl) {
+    /* renamed from: android.widget.GridLayout$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 extends Alignment {
+        AnonymousClass2() {
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        int getGravityOffset(View view, int cellDelta) {
+            return Integer.MIN_VALUE;
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public int getAlignmentValue(View view, int viewSize, int mode) {
+            return Integer.MIN_VALUE;
+        }
+    }
+
+    /* renamed from: android.widget.GridLayout$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 extends Alignment {
+        AnonymousClass3() {
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        int getGravityOffset(View view, int cellDelta) {
+            return 0;
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public int getAlignmentValue(View view, int viewSize, int mode) {
+            return 0;
+        }
+    }
+
+    /* renamed from: android.widget.GridLayout$4 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass4 extends Alignment {
+        AnonymousClass4() {
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        int getGravityOffset(View view, int cellDelta) {
+            return cellDelta;
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public int getAlignmentValue(View view, int viewSize, int mode) {
+            return viewSize;
+        }
+    }
+
+    /* renamed from: android.widget.GridLayout$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 extends Alignment {
+        final /* synthetic */ Alignment val$rtl;
+
+        AnonymousClass5(Alignment alignment) {
+            rtl = alignment;
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        int getGravityOffset(View view, int cellDelta) {
+            return (!view.isLayoutRtl() ? Alignment.this : rtl).getGravityOffset(view, cellDelta);
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public int getAlignmentValue(View view, int viewSize, int mode) {
+            return (!view.isLayoutRtl() ? Alignment.this : rtl).getAlignmentValue(view, viewSize, mode);
+        }
+    }
+
+    private static Alignment createSwitchingAlignment(Alignment ltr, Alignment rtl) {
         return new Alignment() { // from class: android.widget.GridLayout.5
+            final /* synthetic */ Alignment val$rtl;
+
+            AnonymousClass5(Alignment rtl2) {
+                rtl = rtl2;
+            }
+
             @Override // android.widget.GridLayout.Alignment
             int getGravityOffset(View view, int cellDelta) {
                 return (!view.isLayoutRtl() ? Alignment.this : rtl).getGravityOffset(view, cellDelta);
@@ -2038,6 +2226,133 @@ public class GridLayout extends ViewGroup {
                 return (!view.isLayoutRtl() ? Alignment.this : rtl).getAlignmentValue(view, viewSize, mode);
             }
         };
+    }
+
+    /* renamed from: android.widget.GridLayout$6 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass6 extends Alignment {
+        AnonymousClass6() {
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        int getGravityOffset(View view, int cellDelta) {
+            return cellDelta >> 1;
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public int getAlignmentValue(View view, int viewSize, int mode) {
+            return viewSize >> 1;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.GridLayout$7 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass7 extends Alignment {
+        AnonymousClass7() {
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        int getGravityOffset(View view, int cellDelta) {
+            return 0;
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public int getAlignmentValue(View view, int viewSize, int mode) {
+            if (view.getVisibility() == 8) {
+                return 0;
+            }
+            int baseline = view.getBaseline();
+            if (baseline == -1) {
+                return Integer.MIN_VALUE;
+            }
+            return baseline;
+        }
+
+        /* renamed from: android.widget.GridLayout$7$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 extends Bounds {
+            private int size;
+
+            AnonymousClass1() {
+            }
+
+            @Override // android.widget.GridLayout.Bounds
+            protected void reset() {
+                super.reset();
+                this.size = Integer.MIN_VALUE;
+            }
+
+            @Override // android.widget.GridLayout.Bounds
+            protected void include(int before, int after) {
+                super.include(before, after);
+                this.size = Math.max(this.size, before + after);
+            }
+
+            @Override // android.widget.GridLayout.Bounds
+            protected int size(boolean min) {
+                return Math.max(super.size(min), this.size);
+            }
+
+            @Override // android.widget.GridLayout.Bounds
+            protected int getOffset(GridLayout gl, View c, Alignment a, int size, boolean hrz) {
+                return Math.max(0, super.getOffset(gl, c, a, size, hrz));
+            }
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public Bounds getBounds() {
+            return new Bounds() { // from class: android.widget.GridLayout.7.1
+                private int size;
+
+                AnonymousClass1() {
+                }
+
+                @Override // android.widget.GridLayout.Bounds
+                protected void reset() {
+                    super.reset();
+                    this.size = Integer.MIN_VALUE;
+                }
+
+                @Override // android.widget.GridLayout.Bounds
+                protected void include(int before, int after) {
+                    super.include(before, after);
+                    this.size = Math.max(this.size, before + after);
+                }
+
+                @Override // android.widget.GridLayout.Bounds
+                protected int size(boolean min) {
+                    return Math.max(super.size(min), this.size);
+                }
+
+                @Override // android.widget.GridLayout.Bounds
+                protected int getOffset(GridLayout gl, View c, Alignment a, int size, boolean hrz) {
+                    return Math.max(0, super.getOffset(gl, c, a, size, hrz));
+                }
+            };
+        }
+    }
+
+    /* renamed from: android.widget.GridLayout$8 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass8 extends Alignment {
+        AnonymousClass8() {
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        int getGravityOffset(View view, int cellDelta) {
+            return 0;
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public int getAlignmentValue(View view, int viewSize, int mode) {
+            return Integer.MIN_VALUE;
+        }
+
+        @Override // android.widget.GridLayout.Alignment
+        public int getSizeInCell(View view, int viewSize, int cellSize) {
+            return cellSize;
+        }
     }
 
     static boolean canStretch(int flexibility) {

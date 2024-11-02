@@ -86,7 +86,6 @@ public abstract class DisplayEventReceiver {
                 this.deadline = deadline;
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public void copyFrom(FrameTimeline other) {
                 this.vsyncId = other.vsyncId;
                 this.expectedPresentationTime = other.expectedPresentationTime;
@@ -94,7 +93,6 @@ public abstract class DisplayEventReceiver {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public VsyncEventData() {
             this.frameInterval = -1L;
             this.preferredFrameTimelineIndex = 0;
@@ -122,7 +120,6 @@ public abstract class DisplayEventReceiver {
             this.frameInterval = frameInterval;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void copyFrom(VsyncEventData other) {
             this.preferredFrameTimelineIndex = other.preferredFrameTimelineIndex;
             this.frameTimelinesLength = other.frameTimelinesLength;
@@ -180,7 +177,6 @@ public abstract class DisplayEventReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VsyncEventData getLatestVsyncEventData() {
         return nativeGetLatestVsyncEventData(this.mReceiverPtr);
     }

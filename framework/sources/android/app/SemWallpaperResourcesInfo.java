@@ -47,12 +47,15 @@ public class SemWallpaperResourcesInfo {
     private final HashMap<Integer, String> mDefaultMultipackStyle = new HashMap<>();
     private final HashSet<String> mKnownColorCode = new HashSet<>();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class TypeParams {
         public Bundle mExtras;
         public String mServiceClassName;
         public String mServicePkgName;
+
+        /* synthetic */ TypeParams(TypeParamsIA typeParamsIA) {
+            this();
+        }
 
         private TypeParams() {
             this.mExtras = new Bundle();
@@ -165,8 +168,14 @@ public class SemWallpaperResourcesInfo {
         return resourceName;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x006b, code lost:            android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultItem by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x009d, code lost:            r0 = r7;     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x006b, code lost:
+    
+        android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultItem by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x009d, code lost:
+    
+        r0 = r7;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -245,8 +254,14 @@ public class SemWallpaperResourcesInfo {
         return isKnown;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x006e, code lost:            android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultLiveWallpaperResource by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x00a0, code lost:            r0 = r7;     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x006e, code lost:
+    
+        android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultLiveWallpaperResource by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x00a0, code lost:
+    
+        r0 = r7;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -265,8 +280,14 @@ public class SemWallpaperResourcesInfo {
         return item.which == targetItemWhich && item.screen == targetItemScreen;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x006b, code lost:            android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultItem by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x009d, code lost:            r0 = r7;     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x006b, code lost:
+    
+        android.util.Log.i(android.app.SemWallpaperResourcesInfo.TAG, "getDefaultItem by color code: " + r7.fileName + ", " + r7.index + " , " + r7.cmfInfo);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x009d, code lost:
+    
+        r0 = r7;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -624,7 +645,6 @@ public class SemWallpaperResourcesInfo {
         return getDefaultWallpaperType(which) == 3;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class Ascending implements Comparator<Item>, Serializable {
         Ascending() {
@@ -636,7 +656,6 @@ public class SemWallpaperResourcesInfo {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class Item {
         private Integer index = -1;

@@ -10,13 +10,14 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class StartActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<StartActivityItem> CREATOR = new Parcelable.Creator<StartActivityItem>() { // from class: android.app.servertransaction.StartActivityItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StartActivityItem createFromParcel(Parcel in) {
             return new StartActivityItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StartActivityItem[] newArray(int size) {
             return new StartActivityItem[size];
@@ -24,6 +25,10 @@ public class StartActivityItem extends ActivityLifecycleItem {
     };
     private static final String TAG = "StartActivityItem";
     private ActivityOptions mActivityOptions;
+
+    /* synthetic */ StartActivityItem(Parcel parcel, StartActivityItemIA startActivityItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
@@ -64,6 +69,23 @@ public class StartActivityItem extends ActivityLifecycleItem {
 
     private StartActivityItem(Parcel in) {
         this.mActivityOptions = ActivityOptions.fromBundle(in.readBundle());
+    }
+
+    /* renamed from: android.app.servertransaction.StartActivityItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StartActivityItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StartActivityItem createFromParcel(Parcel in) {
+            return new StartActivityItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StartActivityItem[] newArray(int size) {
+            return new StartActivityItem[size];
+        }
     }
 
     public boolean equals(Object o) {

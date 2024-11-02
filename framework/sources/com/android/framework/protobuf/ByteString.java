@@ -34,7 +34,6 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
     private static final ByteArrayCopier byteArrayCopier;
     private int hash = 0;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface ByteArrayCopier {
         byte[] copyFrom(byte[] bArr, int i, int i2);
@@ -53,18 +52,14 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
 
     public abstract void copyTo(ByteBuffer byteBuffer);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract void copyToInternal(byte[] bArr, int i, int i2, int i3);
 
     public abstract boolean equals(Object obj);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract int getTreeDepth();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract byte internalByteAt(int i);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract boolean isBalanced();
 
     public abstract boolean isValidUtf8();
@@ -73,10 +68,8 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
 
     public abstract InputStream newInput();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract int partialHash(int i, int i2, int i3);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract int partialIsValidUtf8(int i, int i2, int i3);
 
     public abstract int size();
@@ -85,20 +78,20 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
 
     protected abstract String toStringInternal(Charset charset);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract void writeTo(ByteOutput byteOutput) throws IOException;
 
     public abstract void writeTo(OutputStream outputStream) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract void writeToInternal(OutputStream outputStream, int i, int i2) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract void writeToReverse(ByteOutput byteOutput) throws IOException;
 
     static {
         byteArrayCopier = Android.isOnAndroidDevice() ? new SystemByteArrayCopier() : new ArraysByteArrayCopier();
         UNSIGNED_LEXICOGRAPHICAL_COMPARATOR = new Comparator<ByteString>() { // from class: com.android.framework.protobuf.ByteString.2
+            AnonymousClass2() {
+            }
+
             /* JADX WARN: Type inference failed for: r0v0, types: [com.android.framework.protobuf.ByteString$ByteIterator] */
             /* JADX WARN: Type inference failed for: r1v0, types: [com.android.framework.protobuf.ByteString$ByteIterator] */
             @Override // java.util.Comparator
@@ -121,6 +114,10 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         private SystemByteArrayCopier() {
         }
 
+        /* synthetic */ SystemByteArrayCopier(AnonymousClass1 x0) {
+            this();
+        }
+
         @Override // com.android.framework.protobuf.ByteString.ByteArrayCopier
         public byte[] copyFrom(byte[] bytes, int offset, int size) {
             byte[] copy = new byte[size];
@@ -134,20 +131,50 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         private ArraysByteArrayCopier() {
         }
 
+        /* synthetic */ ArraysByteArrayCopier(AnonymousClass1 x0) {
+            this();
+        }
+
         @Override // com.android.framework.protobuf.ByteString.ByteArrayCopier
         public byte[] copyFrom(byte[] bytes, int offset, int size) {
             return Arrays.copyOfRange(bytes, offset, offset + size);
         }
     }
 
+    /* renamed from: com.android.framework.protobuf.ByteString$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends AbstractByteIterator {
+        private final int limit;
+        private int position = 0;
+
+        AnonymousClass1() {
+            this.limit = ByteString.this.size();
+        }
+
+        @Override // java.util.Iterator
+        public boolean hasNext() {
+            return this.position < this.limit;
+        }
+
+        @Override // com.android.framework.protobuf.ByteString.ByteIterator
+        public byte nextByte() {
+            int currentPos = this.position;
+            if (currentPos >= this.limit) {
+                throw new NoSuchElementException();
+            }
+            this.position = currentPos + 1;
+            return ByteString.this.internalByteAt(currentPos);
+        }
+    }
+
     @Override // java.lang.Iterable
-    /* renamed from: iterator, reason: merged with bridge method [inline-methods] */
+    /* renamed from: iterator */
     public Iterator<Byte> iterator2() {
         return new AbstractByteIterator() { // from class: com.android.framework.protobuf.ByteString.1
             private final int limit;
             private int position = 0;
 
-            {
+            AnonymousClass1() {
                 this.limit = ByteString.this.size();
             }
 
@@ -168,9 +195,9 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static abstract class AbstractByteIterator implements ByteIterator {
-        /* JADX WARN: Can't rename method to resolve collision */
+    public static abstract class AbstractByteIterator implements ByteIterator {
         @Override // java.util.Iterator
         public final Byte next() {
             return Byte.valueOf(nextByte());
@@ -190,7 +217,6 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         return EMPTY;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int toInt(byte value) {
         return value & 255;
     }
@@ -214,6 +240,28 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
             throw new NumberFormatException("Invalid hexString " + hexString + " must only contain [0-9a-fA-F] but contained " + hexString.charAt(index) + " at index " + index);
         }
         return digit;
+    }
+
+    /* renamed from: com.android.framework.protobuf.ByteString$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Comparator<ByteString> {
+        AnonymousClass2() {
+        }
+
+        /* JADX WARN: Type inference failed for: r0v0, types: [com.android.framework.protobuf.ByteString$ByteIterator] */
+        /* JADX WARN: Type inference failed for: r1v0, types: [com.android.framework.protobuf.ByteString$ByteIterator] */
+        @Override // java.util.Comparator
+        public int compare(ByteString former, ByteString latter) {
+            ?? iterator2 = former.iterator2();
+            ?? iterator22 = latter.iterator2();
+            while (iterator2.hasNext() && iterator22.hasNext()) {
+                int result = Integer.valueOf(ByteString.toInt(iterator2.nextByte())).compareTo(Integer.valueOf(ByteString.toInt(iterator22.nextByte())));
+                if (result != 0) {
+                    return result;
+                }
+            }
+            return Integer.valueOf(former.size()).compareTo(Integer.valueOf(latter.size()));
+        }
     }
 
     public static Comparator<ByteString> unsignedLexicographicalComparator() {
@@ -254,7 +302,6 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         return copyFrom(bytes, 0, bytes.length);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ByteString wrap(ByteBuffer buffer) {
         if (buffer.hasArray()) {
             int offset = buffer.arrayOffset();
@@ -263,12 +310,10 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         return new NioByteString(buffer);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ByteString wrap(byte[] bytes) {
         return new LiteralByteString(bytes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ByteString wrap(byte[] bytes, int offset, int length) {
         return new BoundedByteString(bytes, offset, length);
     }
@@ -422,23 +467,26 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         return toString(Internal.UTF_8);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static abstract class LeafByteString extends ByteString {
-        /* JADX INFO: Access modifiers changed from: package-private */
+    public static abstract class LeafByteString extends ByteString {
         public abstract boolean equalsRange(ByteString byteString, int i, int i2);
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.framework.protobuf.ByteString
-        protected final int getTreeDepth() {
+        public final int getTreeDepth() {
             return 0;
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.framework.protobuf.ByteString
-        protected final boolean isBalanced() {
+        public final boolean isBalanced() {
             return true;
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ByteString
-        void writeToReverse(ByteOutput byteOutput) throws IOException {
+        public void writeToReverse(ByteOutput byteOutput) throws IOException {
             writeTo(byteOutput);
         }
     }
@@ -578,15 +626,19 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static CodedBuilder newCodedBuilder(int size) {
         return new CodedBuilder(size);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static final class CodedBuilder {
+    public static final class CodedBuilder {
         private final byte[] buffer;
         private final CodedOutputStream output;
+
+        /* synthetic */ CodedBuilder(int x0, AnonymousClass1 x1) {
+            this(x0);
+        }
 
         private CodedBuilder(int size) {
             byte[] bArr = new byte[size];
@@ -604,12 +656,10 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final int peekCachedHashCode() {
         return this.hash;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void checkIndex(int index, int size) {
         if (((size - (index + 1)) | index) < 0) {
             if (index < 0) {
@@ -619,7 +669,6 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int checkRange(int startIndex, int endIndex, int size) {
         int length = endIndex - startIndex;
         if ((startIndex | endIndex | length | (size - endIndex)) < 0) {
@@ -642,7 +691,6 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         return size() <= 50 ? TextFormatEscaper.escapeBytes(this) : TextFormatEscaper.escapeBytes(substring(0, 47)) + Session.TRUNCATE_STRING;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class LiteralByteString extends LeafByteString {
         private static final long serialVersionUID = 1;
@@ -660,8 +708,9 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
             return this.bytes[index];
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ByteString
-        byte internalByteAt(int index) {
+        public byte internalByteAt(int index) {
             return this.bytes[index];
         }
 
@@ -679,8 +728,9 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
             return new BoundedByteString(this.bytes, getOffsetIntoBytes() + beginIndex, length);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.framework.protobuf.ByteString
-        protected void copyToInternal(byte[] target, int sourceOffset, int targetOffset, int numberToCopy) {
+        public void copyToInternal(byte[] target, int sourceOffset, int targetOffset, int numberToCopy) {
             System.arraycopy(this.bytes, sourceOffset, target, targetOffset, numberToCopy);
         }
 
@@ -704,13 +754,15 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
             outputStream.write(toByteArray());
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ByteString
-        final void writeToInternal(OutputStream outputStream, int sourceOffset, int numberToWrite) throws IOException {
+        public final void writeToInternal(OutputStream outputStream, int sourceOffset, int numberToWrite) throws IOException {
             outputStream.write(this.bytes, getOffsetIntoBytes() + sourceOffset, numberToWrite);
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ByteString
-        final void writeTo(ByteOutput output) throws IOException {
+        public final void writeTo(ByteOutput output) throws IOException {
             output.writeLazy(this.bytes, getOffsetIntoBytes(), size());
         }
 
@@ -725,8 +777,9 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
             return Utf8.isValidUtf8(this.bytes, offset, size() + offset);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.framework.protobuf.ByteString
-        protected final int partialIsValidUtf8(int state, int offset, int length) {
+        public final int partialIsValidUtf8(int state, int offset, int length) {
             int index = getOffsetIntoBytes() + offset;
             return Utf8.partialIsValidUtf8(state, this.bytes, index, index + length);
         }
@@ -754,7 +807,6 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
             return other.equals(this);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.android.framework.protobuf.ByteString.LeafByteString
         public final boolean equalsRange(ByteString other, int offset, int length) {
             if (length > other.size()) {
@@ -782,8 +834,9 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
             return other.substring(offset, offset + length).equals(substring(0, length));
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.framework.protobuf.ByteString
-        protected final int partialHash(int h, int offset, int length) {
+        public final int partialHash(int h, int offset, int length) {
             return Internal.partialHash(h, this.bytes, getOffsetIntoBytes() + offset, length);
         }
 
@@ -802,7 +855,6 @@ public abstract class ByteString implements Iterable<Byte>, Serializable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class BoundedByteString extends LiteralByteString {
         private static final long serialVersionUID = 1;

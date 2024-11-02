@@ -136,7 +136,6 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         return NullKeyListener.getInstance();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class NullKeyListener implements KeyListener {
         private static NullKeyListener sInstance;
@@ -204,7 +203,6 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         this.mPrefsInited = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class SettingsObserver extends ContentObserver {
         public SettingsObserver() {
@@ -227,7 +225,6 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updatePrefs(ContentResolver resolver) {
         boolean cap = Settings.System.getInt(resolver, Settings.System.TEXT_AUTO_CAPS, 1) > 0;
         boolean text = Settings.System.getInt(resolver, Settings.System.TEXT_AUTO_REPLACE, 1) > 0;
@@ -236,7 +233,6 @@ public class TextKeyListener extends BaseKeyListener implements SpanWatcher {
         this.mPrefs = (cap ? 1 : 0) | (text ? 2 : 0) | (period ? 4 : 0) | (pw ? 8 : 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getPrefs(Context context) {
         synchronized (this) {
             if (!this.mPrefsInited || this.mResolver.refersTo(null)) {

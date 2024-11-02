@@ -35,7 +35,6 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
     private List<TabSpec> mTabSpecs;
     private TabWidget mTabWidget;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface ContentStrategy {
         View getContentView();
@@ -43,7 +42,6 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
         void tabClosed();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface IndicatorStrategy {
         View createIndicatorView();
@@ -113,6 +111,9 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
             throw new RuntimeException("Your TabHost must have a TabWidget whose id attribute is 'android.R.id.tabs'");
         }
         this.mTabKeyListener = new View.OnKeyListener() { // from class: android.widget.TabHost.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.View.OnKeyListener
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (KeyEvent.isModifierKey(keyCode)) {
@@ -135,6 +136,9 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
             }
         };
         this.mTabWidget.setTabSelectionListener(new TabWidget.OnTabSelectionChanged() { // from class: android.widget.TabHost.2
+            AnonymousClass2() {
+            }
+
             @Override // android.widget.TabWidget.OnTabSelectionChanged
             public void onTabSelectionChanged(int tabIndex, boolean clicked) {
                 TabHost.this.setCurrentTab(tabIndex);
@@ -147,6 +151,49 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
         this.mTabContent = frameLayout;
         if (frameLayout == null) {
             throw new RuntimeException("Your TabHost must have a FrameLayout whose id attribute is 'android.R.id.tabcontent'");
+        }
+    }
+
+    /* renamed from: android.widget.TabHost$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements View.OnKeyListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnKeyListener
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (KeyEvent.isModifierKey(keyCode)) {
+                return false;
+            }
+            switch (keyCode) {
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                case 23:
+                case 61:
+                case 62:
+                case 66:
+                    return false;
+                default:
+                    TabHost.this.mTabContent.requestFocus(2);
+                    return TabHost.this.mTabContent.dispatchKeyEvent(event);
+            }
+        }
+    }
+
+    /* renamed from: android.widget.TabHost$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements TabWidget.OnTabSelectionChanged {
+        AnonymousClass2() {
+        }
+
+        @Override // android.widget.TabWidget.OnTabSelectionChanged
+        public void onTabSelectionChanged(int tabIndex, boolean clicked) {
+            TabHost.this.setCurrentTab(tabIndex);
+            if (clicked) {
+                TabHost.this.mTabContent.requestFocus(2);
+            }
         }
     }
 
@@ -336,6 +383,10 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
         private IndicatorStrategy mIndicatorStrategy;
         private final String mTag;
 
+        /* synthetic */ TabSpec(TabHost tabHost, String str, TabSpecIA tabSpecIA) {
+            this(str);
+        }
+
         private TabSpec(String tag) {
             this.mTag = tag;
         }
@@ -379,6 +430,10 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
     private class LabelIndicatorStrategy implements IndicatorStrategy {
         private final CharSequence mLabel;
 
+        /* synthetic */ LabelIndicatorStrategy(TabHost tabHost, CharSequence charSequence, LabelIndicatorStrategyIA labelIndicatorStrategyIA) {
+            this(charSequence);
+        }
+
         private LabelIndicatorStrategy(CharSequence label) {
             this.mLabel = label;
         }
@@ -402,6 +457,10 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
     private class LabelAndIconIndicatorStrategy implements IndicatorStrategy {
         private final Drawable mIcon;
         private final CharSequence mLabel;
+
+        /* synthetic */ LabelAndIconIndicatorStrategy(TabHost tabHost, CharSequence charSequence, Drawable drawable, LabelAndIconIndicatorStrategyIA labelAndIconIndicatorStrategyIA) {
+            this(charSequence, drawable);
+        }
 
         private LabelAndIconIndicatorStrategy(CharSequence label, Drawable icon) {
             this.mLabel = label;
@@ -435,10 +494,13 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ViewIndicatorStrategy implements IndicatorStrategy {
         private final View mView;
+
+        /* synthetic */ ViewIndicatorStrategy(TabHost tabHost, View view, ViewIndicatorStrategyIA viewIndicatorStrategyIA) {
+            this(view);
+        }
 
         private ViewIndicatorStrategy(View view) {
             this.mView = view;
@@ -450,10 +512,13 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ViewIdContentStrategy implements ContentStrategy {
         private final View mView;
+
+        /* synthetic */ ViewIdContentStrategy(TabHost tabHost, int i, ViewIdContentStrategyIA viewIdContentStrategyIA) {
+            this(i);
+        }
 
         private ViewIdContentStrategy(int viewId) {
             View findViewById = TabHost.this.mTabContent.findViewById(viewId);
@@ -508,6 +573,10 @@ public class TabHost extends FrameLayout implements ViewTreeObserver.OnTouchMode
         private final Intent mIntent;
         private View mLaunchedView;
         private final String mTag;
+
+        /* synthetic */ IntentContentStrategy(TabHost tabHost, String str, Intent intent, IntentContentStrategyIA intentContentStrategyIA) {
+            this(str, intent);
+        }
 
         private IntentContentStrategy(String tag, Intent intent) {
             this.mTag = tag;

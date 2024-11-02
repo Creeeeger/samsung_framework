@@ -425,8 +425,9 @@ public interface IRCPInterface extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IRCPInterface {
+        public static class Proxy implements IRCPInterface {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

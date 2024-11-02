@@ -3,7 +3,6 @@ package android.speech.tts;
 import android.speech.tts.TextToSpeechService;
 import android.util.Log;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
     private static final boolean DBG = false;
@@ -19,7 +18,6 @@ public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
     private final Object mStateLock;
     protected int mStatusCode;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PlaybackSynthesisCallback(TextToSpeechService.AudioOutputParams audioParams, AudioPlaybackHandler audioTrackHandler, TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, AbstractEventLogger logger, boolean clientIsUsingV2) {
         super(clientIsUsingV2);
         this.mStateLock = new Object();
@@ -33,7 +31,6 @@ public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
         this.mStatusCode = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.speech.tts.AbstractSynthesisCallback
     public void stop() {
         synchronized (this.mStateLock) {

@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class CameraStatus implements Parcelable {
     public static final Parcelable.Creator<CameraStatus> CREATOR = new Parcelable.Creator<CameraStatus>() { // from class: android.hardware.CameraStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CameraStatus createFromParcel(Parcel in) {
             CameraStatus status = new CameraStatus();
@@ -14,7 +16,6 @@ public class CameraStatus implements Parcelable {
             return status;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraStatus[] newArray(int size) {
             return new CameraStatus[size];
@@ -43,5 +44,24 @@ public class CameraStatus implements Parcelable {
         this.status = in.readInt();
         this.unavailablePhysicalCameras = in.readStringArray();
         this.clientPackage = in.readString();
+    }
+
+    /* renamed from: android.hardware.CameraStatus$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CameraStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraStatus createFromParcel(Parcel in) {
+            CameraStatus status = new CameraStatus();
+            status.readFromParcel(in);
+            return status;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraStatus[] newArray(int size) {
+            return new CameraStatus[size];
+        }
     }
 }

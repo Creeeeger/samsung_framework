@@ -17,13 +17,14 @@ import libcore.util.HexEncoding;
 /* loaded from: classes5.dex */
 public class LockscreenCredential implements Parcelable, AutoCloseable {
     public static final Parcelable.Creator<LockscreenCredential> CREATOR = new Parcelable.Creator<LockscreenCredential>() { // from class: com.android.internal.widget.LockscreenCredential.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LockscreenCredential createFromParcel(Parcel source) {
             return new LockscreenCredential(source.readInt(), source.createByteArray());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LockscreenCredential[] newArray(int size) {
             return new LockscreenCredential[size];
@@ -31,6 +32,10 @@ public class LockscreenCredential implements Parcelable, AutoCloseable {
     };
     private byte[] mCredential;
     private final int mType;
+
+    /* synthetic */ LockscreenCredential(int i, byte[] bArr, LockscreenCredentialIA lockscreenCredentialIA) {
+        this(i, bArr);
+    }
 
     private LockscreenCredential(int type, byte[] credential) {
         Objects.requireNonNull(credential);
@@ -187,6 +192,23 @@ public class LockscreenCredential implements Parcelable, AutoCloseable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mType);
         dest.writeByteArray(this.mCredential);
+    }
+
+    /* renamed from: com.android.internal.widget.LockscreenCredential$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LockscreenCredential> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LockscreenCredential createFromParcel(Parcel source) {
+            return new LockscreenCredential(source.readInt(), source.createByteArray());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LockscreenCredential[] newArray(int size) {
+            return new LockscreenCredential[size];
+        }
     }
 
     @Override // android.os.Parcelable

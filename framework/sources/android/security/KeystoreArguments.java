@@ -6,19 +6,41 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class KeystoreArguments implements Parcelable {
     public static final Parcelable.Creator<KeystoreArguments> CREATOR = new Parcelable.Creator<KeystoreArguments>() { // from class: android.security.KeystoreArguments.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeystoreArguments createFromParcel(Parcel in) {
             return new KeystoreArguments(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeystoreArguments[] newArray(int size) {
             return new KeystoreArguments[size];
         }
     };
     public byte[][] args;
+
+    /* synthetic */ KeystoreArguments(Parcel parcel, KeystoreArgumentsIA keystoreArgumentsIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.security.KeystoreArguments$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeystoreArguments> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeystoreArguments createFromParcel(Parcel in) {
+            return new KeystoreArguments(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeystoreArguments[] newArray(int size) {
+            return new KeystoreArguments[size];
+        }
+    }
 
     public KeystoreArguments() {
         this.args = null;

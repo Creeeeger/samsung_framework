@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemExtractedInfo implements Parcelable {
     public static final Parcelable.Creator<SemExtractedInfo> CREATOR = new Parcelable.Creator<SemExtractedInfo>() { // from class: com.samsung.android.infoextraction.SemExtractedInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemExtractedInfo createFromParcel(Parcel in) {
             SemExtractedInfo data = new SemExtractedInfo();
@@ -14,7 +16,6 @@ public class SemExtractedInfo implements Parcelable {
             return data;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemExtractedInfo[] newArray(int size) {
             return new SemExtractedInfo[size];
@@ -126,5 +127,24 @@ public class SemExtractedInfo implements Parcelable {
         this.mAccuracy = in.readFloat();
         this.mUIState = in.readInt();
         this.mUsingData = in.readInt();
+    }
+
+    /* renamed from: com.samsung.android.infoextraction.SemExtractedInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemExtractedInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemExtractedInfo createFromParcel(Parcel in) {
+            SemExtractedInfo data = new SemExtractedInfo();
+            data.readFromParcel(in);
+            return data;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemExtractedInfo[] newArray(int size) {
+            return new SemExtractedInfo[size];
+        }
     }
 }

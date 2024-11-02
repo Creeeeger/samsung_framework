@@ -276,7 +276,6 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         this.mParent.post(runnable);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onShow(final WidgetInfo info) {
         runOnUiThread(new Runnable() { // from class: com.android.internal.widget.floatingtoolbar.RemoteFloatingToolbarPopup$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable
@@ -286,7 +285,6 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onShow$0(WidgetInfo info) {
         this.mFloatingToolbarToken = info.getWidgetToken();
         this.mState = 1;
@@ -298,7 +296,6 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         this.mPopupWindow.showAtLocation(this.mParent, 0, coords.x, coords.y);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onWidgetUpdated(final WidgetInfo info) {
         runOnUiThread(new Runnable() { // from class: com.android.internal.widget.floatingtoolbar.RemoteFloatingToolbarPopup$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
@@ -308,7 +305,6 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onWidgetUpdated$1(WidgetInfo info) {
         if (!isShowing()) {
             Log.w(FloatingToolbar.FLOATING_TOOLBAR_TAG, "onWidgetUpdated(): The widget isn't showing.");
@@ -323,7 +319,6 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         this.mPopupWindow.update(coords.x, coords.y, contentRect.width(), contentRect.height());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onToolbarShowTimeout() {
         runOnUiThread(new Runnable() { // from class: com.android.internal.widget.floatingtoolbar.RemoteFloatingToolbarPopup$$ExternalSyntheticLambda3
             @Override // java.lang.Runnable
@@ -333,7 +328,6 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onToolbarShowTimeout$2() {
         if (this.mState == 3) {
             return;
@@ -341,7 +335,6 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         doDismissPopupWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onMenuItemClicked(final ToolbarMenuItem toolbarMenuItem) {
         runOnUiThread(new Runnable() { // from class: com.android.internal.widget.floatingtoolbar.RemoteFloatingToolbarPopup$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
@@ -351,7 +344,6 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onMenuItemClicked$3(ToolbarMenuItem toolbarMenuItem) {
         if (this.mMenuItems == null || this.mMenuItemClickListener == null) {
             return;
@@ -367,8 +359,9 @@ public final class RemoteFloatingToolbarPopup implements FloatingToolbarPopup {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class SelectionToolbarCallbackImpl extends ISelectionToolbarCallback.Stub {
+    public static class SelectionToolbarCallbackImpl extends ISelectionToolbarCallback.Stub {
         private final WeakReference<RemoteFloatingToolbarPopup> mRemotePopup;
 
         SelectionToolbarCallbackImpl(RemoteFloatingToolbarPopup popup) {

@@ -8,7 +8,6 @@ public abstract class BaseInterpolator implements Interpolator {
         return this.mChangingConfiguration;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setChangingConfiguration(int changingConfiguration) {
         this.mChangingConfiguration = changingConfiguration;
     }

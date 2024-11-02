@@ -11,7 +11,6 @@ import java.io.InputStream;
 public abstract class ASN1OctetString extends ASN1Primitive implements ASN1OctetStringParser {
     byte[] string;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
@@ -92,7 +91,6 @@ public abstract class ASN1OctetString extends ASN1Primitive implements ASN1Octet
         return Arrays.hashCode(getOctets());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1OctetString)) {
@@ -107,13 +105,11 @@ public abstract class ASN1OctetString extends ASN1Primitive implements ASN1Octet
         return toASN1Primitive();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         return new DEROctetString(this.string);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return new DEROctetString(this.string);

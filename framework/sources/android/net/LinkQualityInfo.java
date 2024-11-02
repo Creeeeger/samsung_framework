@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class LinkQualityInfo implements Parcelable {
     public static final Parcelable.Creator<LinkQualityInfo> CREATOR = new Parcelable.Creator<LinkQualityInfo>() { // from class: android.net.LinkQualityInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LinkQualityInfo createFromParcel(Parcel in) {
             int objectType = in.readInt();
@@ -24,7 +26,6 @@ public class LinkQualityInfo implements Parcelable {
             return null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LinkQualityInfo[] newArray(int size) {
             return new LinkQualityInfo[size];
@@ -71,7 +72,35 @@ public class LinkQualityInfo implements Parcelable {
         dest.writeInt(this.mDataSampleDuration);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.net.LinkQualityInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LinkQualityInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LinkQualityInfo createFromParcel(Parcel in) {
+            int objectType = in.readInt();
+            if (objectType == 1) {
+                LinkQualityInfo li = new LinkQualityInfo();
+                li.initializeFromParcel(in);
+                return li;
+            }
+            if (objectType == 2) {
+                return WifiLinkQualityInfo.createFromParcelBody(in);
+            }
+            if (objectType == 3) {
+                return MobileLinkQualityInfo.createFromParcelBody(in);
+            }
+            return null;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LinkQualityInfo[] newArray(int size) {
+            return new LinkQualityInfo[size];
+        }
+    }
+
     public void initializeFromParcel(Parcel in) {
         this.mNetworkType = in.readInt();
         this.mNormalizedSignalStrength = in.readInt();

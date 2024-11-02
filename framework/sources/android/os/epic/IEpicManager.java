@@ -105,8 +105,9 @@ public interface IEpicManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IEpicManager {
+        public static class Proxy implements IEpicManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

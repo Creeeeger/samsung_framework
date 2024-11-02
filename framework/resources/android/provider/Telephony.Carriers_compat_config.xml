@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="Compat framework change ID for the APN db read permission change. In API level 30 and beyond, accessing the APN database will require the {@link android.Manifest.permission#WRITE_APN_SETTINGS} permission. This change ID tracks apps that are affected because they don't hold this permission." enableAfterTargetSdk="29" id="124107808" name="APN_READING_PERMISSION_CHANGE_ID"><meta-data definedIn="android.provider.Telephony.Carriers" sourcePosition="frameworks/base/core/java/android/provider/Telephony.java:3720"/></compat-change></config>
+Error decode xml
+java.util.zip.ZipException: invalid END header (bad central directory offset)
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
+

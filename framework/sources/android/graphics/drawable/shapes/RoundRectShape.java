@@ -57,7 +57,6 @@ public class RoundRectShape extends RectShape {
         outline.setRoundRect((int) Math.ceil(rect.left), (int) Math.ceil(rect.top), (int) Math.floor(rect.right), (int) Math.floor(rect.bottom), radius);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.shapes.RectShape, android.graphics.drawable.shapes.Shape
     public void onResize(float w, float h) {
         super.onResize(w, h);

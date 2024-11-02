@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextEnvironmentAdaptiveDisplayAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextEnvironmentAdaptiveDisplayAttribute> CREATOR = new Parcelable.Creator<SemContextEnvironmentAdaptiveDisplayAttribute>() { // from class: com.samsung.android.hardware.context.SemContextEnvironmentAdaptiveDisplayAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextEnvironmentAdaptiveDisplayAttribute createFromParcel(Parcel in) {
             return new SemContextEnvironmentAdaptiveDisplayAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextEnvironmentAdaptiveDisplayAttribute[] newArray(int size) {
             return new SemContextEnvironmentAdaptiveDisplayAttribute[size];
@@ -23,6 +24,23 @@ public class SemContextEnvironmentAdaptiveDisplayAttribute extends SemContextAtt
     private static final String TAG = "SemContextEnvironmentAdaptiveDisplayAttribute";
     private float mColorThreshold;
     private int mDuration;
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextEnvironmentAdaptiveDisplayAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextEnvironmentAdaptiveDisplayAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextEnvironmentAdaptiveDisplayAttribute createFromParcel(Parcel in) {
+            return new SemContextEnvironmentAdaptiveDisplayAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextEnvironmentAdaptiveDisplayAttribute[] newArray(int size) {
+            return new SemContextEnvironmentAdaptiveDisplayAttribute[size];
+        }
+    }
 
     SemContextEnvironmentAdaptiveDisplayAttribute() {
         this.mColorThreshold = 0.07f;

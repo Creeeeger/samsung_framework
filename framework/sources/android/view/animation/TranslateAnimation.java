@@ -87,8 +87,9 @@ public class TranslateAnimation extends Animation {
         this.mToYType = toYType;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.Animation
-    protected void applyTransformation(float interpolatedTime, Transformation t) {
+    public void applyTransformation(float interpolatedTime, Transformation t) {
         float dx = this.mFromXDelta;
         float dy = this.mFromYDelta;
         float f = this.mFromXDelta;

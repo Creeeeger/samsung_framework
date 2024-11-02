@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class SyncRequest implements Parcelable {
     public static final Parcelable.Creator<SyncRequest> CREATOR = new Parcelable.Creator<SyncRequest>() { // from class: android.content.SyncRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SyncRequest createFromParcel(Parcel in) {
             return new SyncRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncRequest[] newArray(int size) {
             return new SyncRequest[size];
@@ -31,6 +32,10 @@ public class SyncRequest implements Parcelable {
     private final boolean mIsScheduledAsExpeditedJob;
     private final long mSyncFlexTimeSecs;
     private final long mSyncRunTimeSecs;
+
+    /* synthetic */ SyncRequest(Parcel parcel, SyncRequestIA syncRequestIA) {
+        this(parcel);
+    }
 
     public boolean isPeriodic() {
         return this.mIsPeriodic;
@@ -62,6 +67,23 @@ public class SyncRequest implements Parcelable {
 
     public long getSyncRunTime() {
         return this.mSyncRunTimeSecs;
+    }
+
+    /* renamed from: android.content.SyncRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SyncRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncRequest createFromParcel(Parcel in) {
+            return new SyncRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncRequest[] newArray(int size) {
+            return new SyncRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

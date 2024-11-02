@@ -59,6 +59,9 @@ public abstract class RemoteService extends ServiceStub implements ServiceContro
             Timer timer = new Timer("Self-stop SumeNNService");
             this.exitTimer.set(timer);
             timer.schedule(new TimerTask() { // from class: com.samsung.android.sume.core.service.RemoteService.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.util.TimerTask, java.lang.Runnable
                 public void run() {
                     RemoteService.this.stopSelf();
@@ -66,6 +69,18 @@ public abstract class RemoteService extends ServiceStub implements ServiceContro
             }, delay.second.toMillis(delay.first.intValue()));
         }
         return super.onUnbind(intent);
+    }
+
+    /* renamed from: com.samsung.android.sume.core.service.RemoteService$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends TimerTask {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.TimerTask, java.lang.Runnable
+        public void run() {
+            RemoteService.this.stopSelf();
+        }
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */

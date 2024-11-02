@@ -138,8 +138,9 @@ public interface SemIRCPCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements SemIRCPCallback {
+        public static class Proxy implements SemIRCPCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

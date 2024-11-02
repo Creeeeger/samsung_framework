@@ -16,7 +16,7 @@ public interface MessageLite extends MessageLiteOrBuilder {
         Builder clear();
 
         /* renamed from: clone */
-        Builder mo7008clone();
+        Builder mo7003clone();
 
         boolean mergeDelimitedFrom(InputStream inputStream) throws IOException;
 

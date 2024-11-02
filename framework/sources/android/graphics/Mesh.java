@@ -16,7 +16,7 @@ public class Mesh {
     private @interface Mode {
     }
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnativeGetFinalizer */
     static /* bridge */ /* synthetic */ long m1142$$Nest$smnativeGetFinalizer() {
         return nativeGetFinalizer();
     }
@@ -35,7 +35,6 @@ public class Mesh {
 
     private static native void nativeUpdateUniforms(long j, String str, int[] iArr);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class MeshHolder {
         public static final NativeAllocationRegistry MESH_SPECIFICATION_REGISTRY = NativeAllocationRegistry.createMalloced(MeshSpecification.class.getClassLoader(), Mesh.m1142$$Nest$smnativeGetFinalizer());
@@ -146,7 +145,6 @@ public class Mesh {
         nativeUpdateUniforms(this.mNativeMeshWrapper, uniformName, values);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getNativeWrapperInstance() {
         return this.mNativeMeshWrapper;
     }

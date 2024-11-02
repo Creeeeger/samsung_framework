@@ -144,8 +144,14 @@ public final class SemFloatingFeature implements IFloatingFeature {
     }
 
     /* JADX WARN: Can't wrap try/catch for region: R(8:11|(2:44|45)(2:13|(2:15|(2:18|(6:20|21|23|24|25|26)(2:30|31))))|35|36|38|39|40|26) */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x0086, code lost:            r8 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x0087, code lost:            loge(r8.toString());     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x0086, code lost:
+    
+        r8 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x0087, code lost:
+    
+        loge(r8.toString());
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

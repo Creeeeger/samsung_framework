@@ -13,7 +13,6 @@ public class SContextExerciseAttribute extends SContextAttribute {
     private static int REQUIRED_DATA_BAROMETER = 2;
     private static int REQUIRED_DATA_PEDOMETER = 4;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextExerciseAttribute() {
         this.mRequiredDataType = new int[]{1};
         setAttribute();

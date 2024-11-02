@@ -13,13 +13,14 @@ import java.util.function.Consumer;
 /* loaded from: classes4.dex */
 public class InsetsSourceControl implements Parcelable {
     public static final Parcelable.Creator<InsetsSourceControl> CREATOR = new Parcelable.Creator<InsetsSourceControl>() { // from class: android.view.InsetsSourceControl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InsetsSourceControl createFromParcel(Parcel in) {
             return new InsetsSourceControl(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InsetsSourceControl[] newArray(int size) {
             return new InsetsSourceControl[size];
@@ -216,6 +217,23 @@ public class InsetsSourceControl implements Parcelable {
         pw.println();
     }
 
+    /* renamed from: android.view.InsetsSourceControl$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InsetsSourceControl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsetsSourceControl createFromParcel(Parcel in) {
+            return new InsetsSourceControl(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsetsSourceControl[] newArray(int size) {
+            return new InsetsSourceControl[size];
+        }
+    }
+
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
         proto.write(1138166333441L, WindowInsets.Type.toString(this.mType));
@@ -233,13 +251,14 @@ public class InsetsSourceControl implements Parcelable {
     /* loaded from: classes4.dex */
     public static class Array implements Parcelable {
         public static final Parcelable.Creator<Array> CREATOR = new Parcelable.Creator<Array>() { // from class: android.view.InsetsSourceControl.Array.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Array createFromParcel(Parcel in) {
                 return new Array(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Array[] newArray(int size) {
                 return new Array[size];
@@ -274,6 +293,23 @@ public class InsetsSourceControl implements Parcelable {
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel out, int flags) {
             out.writeTypedArray(this.mControls, flags);
+        }
+
+        /* renamed from: android.view.InsetsSourceControl$Array$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Array> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Array createFromParcel(Parcel in) {
+                return new Array(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Array[] newArray(int size) {
+                return new Array[size];
+            }
         }
     }
 }

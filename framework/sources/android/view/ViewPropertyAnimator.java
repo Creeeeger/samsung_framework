@@ -46,6 +46,9 @@ public class ViewPropertyAnimator {
     private AnimatorEventListener mAnimatorEventListener = new AnimatorEventListener();
     ArrayList<NameValuesHolder> mPendingAnimations = new ArrayList<>();
     private Runnable mAnimationStarter = new Runnable() { // from class: android.view.ViewPropertyAnimator.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             ViewPropertyAnimator.this.startAnimation();
@@ -53,7 +56,19 @@ public class ViewPropertyAnimator {
     };
     private HashMap<Animator, PropertyBundle> mAnimatorMap = new HashMap<>();
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewPropertyAnimator$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewPropertyAnimator.this.startAnimation();
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static class PropertyBundle {
         ArrayList<NameValuesHolder> mNameValuesHolder;
@@ -82,7 +97,6 @@ public class ViewPropertyAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class NameValuesHolder {
         float mDeltaValue;
@@ -96,7 +110,6 @@ public class ViewPropertyAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewPropertyAnimator(View view) {
         this.mView = view;
         view.ensureTransformationInfo();
@@ -312,8 +325,27 @@ public class ViewPropertyAnimator {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewPropertyAnimator$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewPropertyAnimator.this.mView.setLayerType(2, null);
+            if (ViewPropertyAnimator.this.mView.isAttachedToWindow()) {
+                ViewPropertyAnimator.this.mView.buildLayer();
+            }
+        }
+    }
+
     public ViewPropertyAnimator withLayer() {
         this.mPendingSetupAction = new Runnable() { // from class: android.view.ViewPropertyAnimator.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ViewPropertyAnimator.this.mView.setLayerType(2, null);
@@ -322,8 +354,14 @@ public class ViewPropertyAnimator {
                 }
             }
         };
-        final int currentLayerType = this.mView.getLayerType();
+        int currentLayerType = this.mView.getLayerType();
         this.mPendingCleanupAction = new Runnable() { // from class: android.view.ViewPropertyAnimator.3
+            final /* synthetic */ int val$currentLayerType;
+
+            AnonymousClass3(int currentLayerType2) {
+                currentLayerType = currentLayerType2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ViewPropertyAnimator.this.mView.setLayerType(currentLayerType, null);
@@ -336,6 +374,22 @@ public class ViewPropertyAnimator {
             this.mAnimatorCleanupMap = new HashMap<>();
         }
         return this;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewPropertyAnimator$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        final /* synthetic */ int val$currentLayerType;
+
+        AnonymousClass3(int currentLayerType2) {
+            currentLayerType = currentLayerType2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewPropertyAnimator.this.mView.setLayerType(currentLayerType, null);
+        }
     }
 
     public ViewPropertyAnimator withStartAction(Runnable runnable) {
@@ -358,7 +412,6 @@ public class ViewPropertyAnimator {
         return (this.mPendingSetupAction == null && this.mPendingCleanupAction == null && this.mPendingOnStartAction == null && this.mPendingOnEndAction == null) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void startAnimation() {
         this.mView.setHasTransientState(true);
         ValueAnimator animator = ValueAnimator.ofFloat(1.0f);
@@ -442,7 +495,6 @@ public class ViewPropertyAnimator {
         this.mView.postOnAnimation(this.mAnimationStarter);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setValue(int propertyConstant, float value) {
         RenderNode renderNode = this.mView.mRenderNode;
         switch (propertyConstant) {
@@ -520,9 +572,12 @@ public class ViewPropertyAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class AnimatorEventListener implements Animator.AnimatorListener, ValueAnimator.AnimatorUpdateListener {
+        /* synthetic */ AnimatorEventListener(ViewPropertyAnimator viewPropertyAnimator, AnimatorEventListenerIA animatorEventListenerIA) {
+            this();
+        }
+
         private AnimatorEventListener() {
         }
 

@@ -26,14 +26,15 @@ public final class CellIdentityTdscdma extends CellIdentity {
     private final int mUarfcn;
     private static final String TAG = CellIdentityTdscdma.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityTdscdma> CREATOR = new Parcelable.Creator<CellIdentityTdscdma>() { // from class: android.telephony.CellIdentityTdscdma.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellIdentityTdscdma createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityTdscdma.createFromParcelBody(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityTdscdma[] newArray(int size) {
             return new CellIdentityTdscdma[size];
@@ -76,7 +77,6 @@ public final class CellIdentityTdscdma extends CellIdentity {
         return new CellIdentityTdscdma(this.mMccStr, this.mMncStr, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, this.mAlphaLong, this.mAlphaShort, this.mAdditionalPlmns, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CellIdentityTdscdma copy() {
         return new CellIdentityTdscdma(this);
     }
@@ -202,7 +202,24 @@ public final class CellIdentityTdscdma extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.telephony.CellIdentityTdscdma$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellIdentityTdscdma> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityTdscdma createFromParcel(Parcel in) {
+            in.readInt();
+            return CellIdentityTdscdma.createFromParcelBody(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityTdscdma[] newArray(int size) {
+            return new CellIdentityTdscdma[size];
+        }
+    }
+
     public static CellIdentityTdscdma createFromParcelBody(Parcel in) {
         return new CellIdentityTdscdma(in);
     }

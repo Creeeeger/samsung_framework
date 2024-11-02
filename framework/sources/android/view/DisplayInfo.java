@@ -25,13 +25,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class DisplayInfo implements Parcelable {
     public static final Parcelable.Creator<DisplayInfo> CREATOR = new Parcelable.Creator<DisplayInfo>() { // from class: android.view.DisplayInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DisplayInfo createFromParcel(Parcel source) {
             return new DisplayInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayInfo[] newArray(int size) {
             return new DisplayInfo[size];
@@ -87,6 +88,27 @@ public final class DisplayInfo implements Parcelable {
     public int type;
     public String uniqueId;
     public int[] userDisabledHdrTypes;
+
+    /* synthetic */ DisplayInfo(Parcel parcel, DisplayInfoIA displayInfoIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.view.DisplayInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DisplayInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayInfo createFromParcel(Parcel source) {
+            return new DisplayInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayInfo[] newArray(int size) {
+            return new DisplayInfo[size];
+        }
+    }
 
     public DisplayInfo() {
         this.refreshRateMode = 0;

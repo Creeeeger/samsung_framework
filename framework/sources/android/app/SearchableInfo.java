@@ -24,13 +24,14 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public final class SearchableInfo implements Parcelable {
     public static final Parcelable.Creator<SearchableInfo> CREATOR = new Parcelable.Creator<SearchableInfo>() { // from class: android.app.SearchableInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchableInfo createFromParcel(Parcel in) {
             return new SearchableInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchableInfo[] newArray(int size) {
             return new SearchableInfo[size];
@@ -228,13 +229,14 @@ public final class SearchableInfo implements Parcelable {
     /* loaded from: classes.dex */
     public static class ActionKeyInfo implements Parcelable {
         public static final Parcelable.Creator<ActionKeyInfo> CREATOR = new Parcelable.Creator<ActionKeyInfo>() { // from class: android.app.SearchableInfo.ActionKeyInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ActionKeyInfo createFromParcel(Parcel in) {
                 return new ActionKeyInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ActionKeyInfo[] newArray(int size) {
                 return new ActionKeyInfo[size];
@@ -244,6 +246,27 @@ public final class SearchableInfo implements Parcelable {
         private final String mQueryActionMsg;
         private final String mSuggestActionMsg;
         private final String mSuggestActionMsgColumn;
+
+        /* synthetic */ ActionKeyInfo(Parcel parcel, ActionKeyInfoIA actionKeyInfoIA) {
+            this(parcel);
+        }
+
+        /* renamed from: android.app.SearchableInfo$ActionKeyInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ActionKeyInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ActionKeyInfo createFromParcel(Parcel in) {
+                return new ActionKeyInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ActionKeyInfo[] newArray(int size) {
+                return new ActionKeyInfo[size];
+            }
+        }
 
         ActionKeyInfo(Context activityContext, AttributeSet attr) {
             TypedArray a = activityContext.obtainStyledAttributes(attr, R.styleable.SearchableActionKey);
@@ -487,6 +510,23 @@ public final class SearchableInfo implements Parcelable {
 
     public String semGetCategoryFilters() {
         return this.mCategoryFilters;
+    }
+
+    /* renamed from: android.app.SearchableInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchableInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchableInfo createFromParcel(Parcel in) {
+            return new SearchableInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchableInfo[] newArray(int size) {
+            return new SearchableInfo[size];
+        }
     }
 
     SearchableInfo(Parcel in) {

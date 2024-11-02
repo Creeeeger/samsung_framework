@@ -24,8 +24,9 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class X509CRLEntryObject extends X509CRLEntry {
+public class X509CRLEntryObject extends X509CRLEntry {
     private TBSCertList.CRLEntry c;
     private X500Name certificateIssuer;
     private volatile int hashValue;
@@ -36,7 +37,6 @@ class X509CRLEntryObject extends X509CRLEntry {
         this.certificateIssuer = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public X509CRLEntryObject(TBSCertList.CRLEntry c, boolean isIndirect, X500Name previousCertificateIssuer) {
         this.c = c;
         this.certificateIssuer = loadCertificateIssuer(isIndirect, previousCertificateIssuer);

@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class PictureInPictureParams implements Parcelable {
     public static final Parcelable.Creator<PictureInPictureParams> CREATOR = new Parcelable.Creator<PictureInPictureParams>() { // from class: android.app.PictureInPictureParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PictureInPictureParams createFromParcel(Parcel in) {
             return new PictureInPictureParams(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureParams[] newArray(int size) {
             return new PictureInPictureParams[size];
@@ -117,7 +118,6 @@ public final class PictureInPictureParams implements Parcelable {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder setIsLaunchIntoPip(boolean isLaunchIntoPip) {
             this.mIsLaunchIntoPip = Boolean.valueOf(isLaunchIntoPip);
             return this;
@@ -412,5 +412,22 @@ public final class PictureInPictureParams implements Parcelable {
 
     public String toString() {
         return "PictureInPictureParams( aspectRatio=" + getAspectRatio() + " expandedAspectRatio=" + this.mExpandedAspectRatio + " sourceRectHint=" + getSourceRectHint() + " hasSetActions=" + hasSetActions() + " hasSetCloseAction=" + hasSetCloseAction() + " isAutoPipEnabled=" + isAutoEnterEnabled() + " isSeamlessResizeEnabled=" + isSeamlessResizeEnabled() + " title=" + ((Object) getTitle()) + " subtitle=" + ((Object) getSubtitle()) + " isLaunchIntoPip=" + isLaunchIntoPip() + NavigationBarInflaterView.KEY_CODE_END;
+    }
+
+    /* renamed from: android.app.PictureInPictureParams$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PictureInPictureParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PictureInPictureParams createFromParcel(Parcel in) {
+            return new PictureInPictureParams(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PictureInPictureParams[] newArray(int size) {
+            return new PictureInPictureParams[size];
+        }
     }
 }

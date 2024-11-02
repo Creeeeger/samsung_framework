@@ -48,8 +48,9 @@ public class MarshalRegistry {
         return marshaler;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class MarshalToken<T> {
+    public static class MarshalToken<T> {
         private final int hash;
         final int nativeType;
         final TypeReference<T> typeReference;

@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class DirectAction implements Parcelable {
     public static final Parcelable.Creator<DirectAction> CREATOR = new Parcelable.Creator<DirectAction>() { // from class: android.app.DirectAction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DirectAction createFromParcel(Parcel in) {
             return new DirectAction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DirectAction[] newArray(int size) {
             return new DirectAction[size];
@@ -29,6 +30,10 @@ public final class DirectAction implements Parcelable {
     private final String mID;
     private final LocusId mLocusId;
     private int mTaskId;
+
+    /* synthetic */ DirectAction(Parcel parcel, DirectActionIA directActionIA) {
+        this(parcel);
+    }
 
     public DirectAction(String id, Bundle extras, LocusId locusId) {
         this.mID = (String) Preconditions.checkStringNotEmpty(id);
@@ -132,6 +137,23 @@ public final class DirectAction implements Parcelable {
 
         public DirectAction build() {
             return new DirectAction(this.mId, this.mExtras, this.mLocusId);
+        }
+    }
+
+    /* renamed from: android.app.DirectAction$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DirectAction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DirectAction createFromParcel(Parcel in) {
+            return new DirectAction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DirectAction[] newArray(int size) {
+            return new DirectAction[size];
         }
     }
 }

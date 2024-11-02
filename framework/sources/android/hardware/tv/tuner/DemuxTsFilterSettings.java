@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxTsFilterSettings implements Parcelable {
     public static final Parcelable.Creator<DemuxTsFilterSettings> CREATOR = new Parcelable.Creator<DemuxTsFilterSettings>() { // from class: android.hardware.tv.tuner.DemuxTsFilterSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxTsFilterSettings createFromParcel(Parcel _aidl_source) {
             DemuxTsFilterSettings _aidl_out = new DemuxTsFilterSettings();
@@ -15,7 +17,6 @@ public class DemuxTsFilterSettings implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxTsFilterSettings[] newArray(int _aidl_size) {
             return new DemuxTsFilterSettings[_aidl_size];
@@ -23,6 +24,25 @@ public class DemuxTsFilterSettings implements Parcelable {
     };
     public DemuxTsFilterSettingsFilterSettings filterSettings;
     public int tpid = 0;
+
+    /* renamed from: android.hardware.tv.tuner.DemuxTsFilterSettings$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxTsFilterSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxTsFilterSettings createFromParcel(Parcel _aidl_source) {
+            DemuxTsFilterSettings _aidl_out = new DemuxTsFilterSettings();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxTsFilterSettings[] newArray(int _aidl_size) {
+            return new DemuxTsFilterSettings[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

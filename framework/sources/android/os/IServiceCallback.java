@@ -79,8 +79,9 @@ public interface IServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IServiceCallback {
+        public static class Proxy implements IServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

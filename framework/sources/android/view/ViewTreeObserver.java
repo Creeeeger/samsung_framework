@@ -117,7 +117,6 @@ public final class ViewTreeObserver {
             this.mTouchableInsets = val;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void reset() {
             this.contentInsets.setEmpty();
             this.visibleInsets.setEmpty();
@@ -125,7 +124,6 @@ public final class ViewTreeObserver {
             this.mTouchableInsets = 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isEmpty() {
             return this.contentInsets.isEmpty() && this.visibleInsets.isEmpty() && this.touchableRegion.isEmpty() && this.mTouchableInsets == 0;
         }
@@ -149,7 +147,6 @@ public final class ViewTreeObserver {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void set(InternalInsetsInfo other) {
             this.contentInsets.set(other.contentInsets);
             this.visibleInsets.set(other.visibleInsets);
@@ -158,12 +155,10 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewTreeObserver(Context context) {
         sIllegalOnDrawModificationIsFatal = context.getApplicationInfo().targetSdkVersion >= 26;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void merge(ViewTreeObserver observer) {
         CopyOnWriteArrayList<OnWindowAttachListener> copyOnWriteArrayList = observer.mOnWindowAttachListeners;
         if (copyOnWriteArrayList != null) {
@@ -458,7 +453,6 @@ public final class ViewTreeObserver {
         this.mOnFrameCommitListeners.add(callback);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayList<Runnable> captureFrameCommitCallbacks() {
         ArrayList<Runnable> ret = this.mOnFrameCommitListeners;
         this.mOnFrameCommitListeners = null;
@@ -573,7 +567,6 @@ public final class ViewTreeObserver {
         this.mAlive = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void dispatchOnWindowAttachedChange(boolean attached) {
         CopyOnWriteArrayList<OnWindowAttachListener> listeners = this.mOnWindowAttachListeners;
         if (listeners != null && listeners.size() > 0) {
@@ -589,7 +582,6 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void dispatchOnWindowFocusChange(boolean hasFocus) {
         CopyOnWriteArrayList<OnWindowFocusChangeListener> listeners = this.mOnWindowFocusListeners;
         if (listeners != null && listeners.size() > 0) {
@@ -601,7 +593,6 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchOnWindowVisibilityChange(int visibility) {
         CopyOnWriteArrayList<OnWindowVisibilityChangeListener> listeners = this.mOnWindowVisibilityListeners;
         if (listeners != null && listeners.size() > 0) {
@@ -613,7 +604,6 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void dispatchOnGlobalFocusChange(View oldFocus, View newFocus) {
         CopyOnWriteArrayList<OnGlobalFocusChangeListener> listeners = this.mOnGlobalFocusListeners;
         if (listeners != null && listeners.size() > 0) {
@@ -672,7 +662,6 @@ public final class ViewTreeObserver {
         return cancelDraw;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final String getLastDispatchOnPreDrawCanceledReason() {
         return this.mLastDispatchOnPreDrawCanceledReason;
     }
@@ -705,7 +694,6 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void dispatchOnTouchModeChanged(boolean inTouchMode) {
         CopyOnWriteArrayList<OnTouchModeChangeListener> listeners = this.mOnTouchModeChangeListeners;
         if (listeners != null && listeners.size() > 0) {
@@ -717,7 +705,6 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void dispatchOnScrollChanged() {
         CopyOnWriteArray<OnScrollChangedListener> listeners = this.mOnScrollChangedListeners;
         if (listeners != null && listeners.size() > 0) {
@@ -733,13 +720,11 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean hasComputeInternalInsetsListeners() {
         CopyOnWriteArray<OnComputeInternalInsetsListener> listeners = this.mOnComputeInternalInsetsListeners;
         return listeners != null && listeners.size() > 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void dispatchOnComputeInternalInsets(InternalInsetsInfo inoutInfo) {
         CopyOnWriteArray<OnComputeInternalInsetsListener> listeners = this.mOnComputeInternalInsetsListeners;
         if (listeners != null && listeners.size() > 0) {
@@ -766,7 +751,6 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchOnSystemGestureExclusionRectsChanged(List<Rect> rects) {
         CopyOnWriteArray<Consumer<List<Rect>>> listeners = this.mGestureExclusionListeners;
         if (listeners != null && listeners.size() > 0) {
@@ -782,7 +766,6 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class CopyOnWriteArray<T> {
         private ArrayList<T> mDataCopy;
@@ -790,7 +773,6 @@ public final class ViewTreeObserver {
         private ArrayList<T> mData = new ArrayList<>();
         private final Access<T> mAccess = new Access<>();
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public static class Access<T> {
             private ArrayList<T> mData;

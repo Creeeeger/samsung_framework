@@ -544,7 +544,6 @@ public final class SemMediaCapture {
             return bgmInfo;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         /* loaded from: classes5.dex */
         public class BGMInfo {
             int durationMs;
@@ -703,8 +702,9 @@ public final class SemMediaCapture {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class EventHandler extends Handler {
+    public class EventHandler extends Handler {
         private SemMediaCapture mMediaCapture;
 
         public EventHandler(SemMediaCapture mc, Looper looper) {

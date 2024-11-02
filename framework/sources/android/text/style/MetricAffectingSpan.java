@@ -15,7 +15,6 @@ public abstract class MetricAffectingSpan extends CharacterStyle implements Upda
     static class Passthrough extends MetricAffectingSpan {
         private MetricAffectingSpan mStyle;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Passthrough(MetricAffectingSpan cs) {
             this.mStyle = cs;
         }

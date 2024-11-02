@@ -329,7 +329,6 @@ public class Keyboard {
         this.rows.add(row);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void resize(int newWidth, int newHeight) {
         int numRows = this.rows.size();
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {

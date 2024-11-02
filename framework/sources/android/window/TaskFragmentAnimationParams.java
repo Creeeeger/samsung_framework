@@ -9,18 +9,27 @@ public final class TaskFragmentAnimationParams implements Parcelable {
     private final int mAnimationBackgroundColor;
     public static final TaskFragmentAnimationParams DEFAULT = new Builder().build();
     public static final Parcelable.Creator<TaskFragmentAnimationParams> CREATOR = new Parcelable.Creator<TaskFragmentAnimationParams>() { // from class: android.window.TaskFragmentAnimationParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaskFragmentAnimationParams createFromParcel(Parcel in) {
             return new TaskFragmentAnimationParams(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentAnimationParams[] newArray(int size) {
             return new TaskFragmentAnimationParams[size];
         }
     };
+
+    /* synthetic */ TaskFragmentAnimationParams(int i, TaskFragmentAnimationParamsIA taskFragmentAnimationParamsIA) {
+        this(i);
+    }
+
+    /* synthetic */ TaskFragmentAnimationParams(Parcel parcel, TaskFragmentAnimationParamsIA taskFragmentAnimationParamsIA) {
+        this(parcel);
+    }
 
     private TaskFragmentAnimationParams(int animationBackgroundColor) {
         this.mAnimationBackgroundColor = animationBackgroundColor;
@@ -37,6 +46,23 @@ public final class TaskFragmentAnimationParams implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mAnimationBackgroundColor);
+    }
+
+    /* renamed from: android.window.TaskFragmentAnimationParams$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentAnimationParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentAnimationParams createFromParcel(Parcel in) {
+            return new TaskFragmentAnimationParams(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentAnimationParams[] newArray(int size) {
+            return new TaskFragmentAnimationParams[size];
+        }
     }
 
     public String toString() {

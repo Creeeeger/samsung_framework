@@ -637,8 +637,8 @@ public class CarrierConfigManager {
         public static final String PROTOCOL_IPV4V6 = "IPV4V6";
         public static final String PROTOCOL_IPV6 = "IPV6";
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4321$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4320$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -672,8 +672,8 @@ public class CarrierConfigManager {
         public static final String KEY_EXIT_THRESHOLD_SS_RSRQ_DOUBLE_BUNDLE = "opportunistic.exit_threshold_ss_rsrq_double_bundle";
         public static final String PREFIX = "opportunistic.";
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4334$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4333$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -706,8 +706,8 @@ public class CarrierConfigManager {
         public static final String KEY_PREFIX = "imsserviceentitlement.";
         public static final String KEY_SHOW_VOWIFI_WEBVIEW_BOOL = "imsserviceentitlement.show_vowifi_webview_bool";
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4327$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4326$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -745,8 +745,8 @@ public class CarrierConfigManager {
         public static final int SUPL_EMERGENCY_MODE_TYPE_CP_ONLY = 0;
         public static final int SUPL_EMERGENCY_MODE_TYPE_DP_ONLY = 2;
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4323$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4322$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -888,8 +888,8 @@ public class CarrierConfigManager {
         public @interface RequestUriFormatType {
         }
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4324$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4323$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1078,8 +1078,8 @@ public class CarrierConfigManager {
         public @interface SrvccType {
         }
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4330$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4329$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1162,8 +1162,8 @@ public class CarrierConfigManager {
         public @interface SmsFormat {
         }
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4328$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4327$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1199,8 +1199,8 @@ public class CarrierConfigManager {
         public static final String KEY_TEXT_RR_BANDWIDTH_BPS_INT = "imsrtt.text_rr_bandwidth_bps_int";
         public static final String KEY_TEXT_RS_BANDWIDTH_BPS_INT = "imsrtt.text_rs_bandwidth_bps_int";
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4326$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4325$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1274,8 +1274,8 @@ public class CarrierConfigManager {
         public @interface VoWiFiRequires {
         }
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4325$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4324$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1333,8 +1333,8 @@ public class CarrierConfigManager {
         public static final String KEY_VIDEO_RTP_DSCP_INT = "imsvt.video_rtp_dscp_int";
         public static final String KEY_VIDEO_RTP_INACTIVITY_TIMER_MILLIS_INT = "imsvt.video_rtp_inactivity_timer_millis_int";
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4331$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4330$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1371,8 +1371,8 @@ public class CarrierConfigManager {
         public static final String KEY_PIDF_SHORT_CODE_STRING_ARRAY = "imswfc.pidf_short_code_string_array";
         public static final String KEY_PREFIX = "imswfc.";
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4332$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4331$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1442,8 +1442,8 @@ public class CarrierConfigManager {
         public @interface SsType {
         }
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4329$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4328$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1478,8 +1478,8 @@ public class CarrierConfigManager {
         public static final String KEY_BSF_TRANSPORT_TYPE_INT = "bsf.bsf_transport_type_int";
         public static final String KEY_PREFIX = "bsf.";
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4322$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4321$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1568,8 +1568,8 @@ public class CarrierConfigManager {
         public @interface IkeIdType {
         }
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4333$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4332$$Nest$smgetDefaults() {
             return getDefaults();
         }
 
@@ -1746,7 +1746,7 @@ public class CarrierConfigManager {
         persistableBundle.putStringArray(KEY_READ_ONLY_APN_TYPES_STRING_ARRAY, new String[]{"dun"});
         persistableBundle.putStringArray(KEY_READ_ONLY_APN_FIELDS_STRING_ARRAY, null);
         persistableBundle.putStringArray(KEY_APN_SETTINGS_DEFAULT_APN_TYPES_STRING_ARRAY, null);
-        persistableBundle.putAll(Apn.m4321$$Nest$smgetDefaults());
+        persistableBundle.putAll(Apn.m4320$$Nest$smgetDefaults());
         persistableBundle.putBoolean(KEY_BROADCAST_EMERGENCY_CALL_STATE_CHANGES_BOOL, false);
         persistableBundle.putBoolean(KEY_ALWAYS_SHOW_EMERGENCY_ALERT_ONOFF_BOOL, false);
         persistableBundle.putInt(KEY_DEFAULT_MTU_INT, 1500);
@@ -2033,7 +2033,7 @@ public class CarrierConfigManager {
         persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_ENTRY_OR_EXIT_HYSTERESIS_TIME_LONG, JobInfo.MIN_BACKOFF_MILLIS);
         persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_DATA_SWITCH_HYSTERESIS_TIME_LONG, JobInfo.MIN_BACKOFF_MILLIS);
         persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_DATA_SWITCH_EXIT_HYSTERESIS_TIME_LONG, TelecomManager.VERY_SHORT_CALL_TIME_MS);
-        persistableBundle.putAll(OpportunisticNetwork.m4334$$Nest$smgetDefaults());
+        persistableBundle.putAll(OpportunisticNetwork.m4333$$Nest$smgetDefaults());
         persistableBundle.putBoolean(KEY_PING_TEST_BEFORE_DATA_SWITCH_BOOL, true);
         persistableBundle.putBoolean(KEY_SWITCH_DATA_TO_PRIMARY_IF_PRIMARY_IS_OOS_BOOL, true);
         persistableBundle.putLong(KEY_OPPORTUNISTIC_NETWORK_PING_PONG_TIME_LONG, 60000L);
@@ -2042,8 +2042,8 @@ public class CarrierConfigManager {
         persistableBundle.putBoolean(KEY_ENABLE_4G_OPPORTUNISTIC_NETWORK_SCAN_BOOL, true);
         persistableBundle.putLong(KEY_TIME_TO_SWITCH_BACK_TO_PRIMARY_IF_OPPORTUNISTIC_OOS_LONG, 60000L);
         persistableBundle.putLong(KEY_OPPORTUNISTIC_TIME_TO_SCAN_AFTER_CAPABILITY_SWITCH_TO_PRIMARY_LONG, TelecomManager.MEDIUM_CALL_TIME_MS);
-        persistableBundle.putAll(ImsServiceEntitlement.m4327$$Nest$smgetDefaults());
-        persistableBundle.putAll(Gps.m4323$$Nest$smgetDefaults());
+        persistableBundle.putAll(ImsServiceEntitlement.m4326$$Nest$smgetDefaults());
+        persistableBundle.putAll(Gps.m4322$$Nest$smgetDefaults());
         persistableBundle.putIntArray(KEY_CDMA_ENHANCED_ROAMING_INDICATOR_FOR_HOME_NETWORK_INT_ARRAY, new int[]{1});
         persistableBundle.putStringArray(KEY_EMERGENCY_NUMBER_PREFIX_STRING_ARRAY, new String[0]);
         persistableBundle.putBoolean(KEY_CARRIER_SUPPORTS_CALLER_ID_VERTICAL_SERVICE_CODES_BOOL, false);
@@ -2056,16 +2056,16 @@ public class CarrierConfigManager {
         persistableBundle.putBoolean(KEY_IS_OPPORTUNISTIC_SUBSCRIPTION_BOOL, false);
         persistableBundle.putIntArray(KEY_GSM_RSSI_THRESHOLDS_INT_ARRAY, new int[]{-107, -103, -97, -89});
         persistableBundle.putBoolean(KEY_SUPPORT_WPS_OVER_IMS_BOOL, true);
-        persistableBundle.putAll(Ims.m4324$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsVoice.m4330$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsSms.m4328$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsRtt.m4326$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsEmergency.m4325$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsVt.m4331$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsWfc.m4332$$Nest$smgetDefaults());
-        persistableBundle.putAll(ImsSs.m4329$$Nest$smgetDefaults());
-        persistableBundle.putAll(Bsf.m4322$$Nest$smgetDefaults());
-        persistableBundle.putAll(Iwlan.m4333$$Nest$smgetDefaults());
+        persistableBundle.putAll(Ims.m4323$$Nest$smgetDefaults());
+        persistableBundle.putAll(ImsVoice.m4329$$Nest$smgetDefaults());
+        persistableBundle.putAll(ImsSms.m4327$$Nest$smgetDefaults());
+        persistableBundle.putAll(ImsRtt.m4325$$Nest$smgetDefaults());
+        persistableBundle.putAll(ImsEmergency.m4324$$Nest$smgetDefaults());
+        persistableBundle.putAll(ImsVt.m4330$$Nest$smgetDefaults());
+        persistableBundle.putAll(ImsWfc.m4331$$Nest$smgetDefaults());
+        persistableBundle.putAll(ImsSs.m4328$$Nest$smgetDefaults());
+        persistableBundle.putAll(Bsf.m4321$$Nest$smgetDefaults());
+        persistableBundle.putAll(Iwlan.m4332$$Nest$smgetDefaults());
         persistableBundle.putStringArray(KEY_CARRIER_CERTIFICATE_STRING_ARRAY, new String[0]);
         persistableBundle.putBoolean(KEY_FORMAT_INCOMING_NUMBER_TO_NATIONAL_FOR_JP_BOOL, false);
         persistableBundle.putIntArray(KEY_DISCONNECT_CAUSE_PLAY_BUSYTONE_INT_ARRAY, new int[]{4});
@@ -2075,7 +2075,7 @@ public class CarrierConfigManager {
         persistableBundle.putInt(KEY_PARAMETERS_USED_FOR_LTE_SIGNAL_BAR_INT, 1);
         persistableBundle.putInt(KEY_MIN_UDP_PORT_4500_NAT_TIMEOUT_SEC_INT, 300);
         persistableBundle.putInt(KEY_PREFERRED_IKE_PROTOCOL_INT, -1);
-        persistableBundle.putAll(Wifi.m4335$$Nest$smgetDefaults());
+        persistableBundle.putAll(Wifi.m4334$$Nest$smgetDefaults());
         persistableBundle.putBoolean(ENABLE_EAP_METHOD_PREFIX_BOOL, false);
         persistableBundle.putInt(KEY_GBA_MODE_INT, 1);
         persistableBundle.putInt(KEY_GBA_UA_SECURITY_ORGANIZATION_INT, 1);
@@ -2177,8 +2177,8 @@ public class CarrierConfigManager {
         public static final String KEY_PREFIX = "wifi.";
         public static final String KEY_SUGGESTION_SSID_LIST_WITH_MAC_RANDOMIZATION_DISABLED = "wifi.suggestion_ssid_list_with_mac_randomization_disabled";
 
-        /* renamed from: -$$Nest$smgetDefaults, reason: not valid java name */
-        static /* bridge */ /* synthetic */ PersistableBundle m4335$$Nest$smgetDefaults() {
+        /* renamed from: -$$Nest$smgetDefaults */
+        static /* bridge */ /* synthetic */ PersistableBundle m4334$$Nest$smgetDefaults() {
             return getDefaults();
         }
 

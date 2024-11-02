@@ -38,6 +38,10 @@ public class SemPhotoRemaster {
         void onUpdateProgress(double d, int i, int i2);
     }
 
+    /* synthetic */ SemPhotoRemaster(Builder builder, SemPhotoRemasterIA semPhotoRemasterIA) {
+        this(builder);
+    }
+
     /* loaded from: classes5.dex */
     public static class Builder {
         public static final int ID_AMOUNT_REMASTER_IMAGES = 1006;
@@ -142,7 +146,6 @@ public class SemPhotoRemaster {
             this.mInputPathName = pathName;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void updateInputPath(Context context) {
             if (this.mInputUri == null) {
                 return;
@@ -205,7 +208,7 @@ public class SemPhotoRemaster {
             this.mServiceClient.setProgressUpdateListener(new IDirector.ProgressUpdateListener() { // from class: com.samsung.android.media.photoremaster.SemPhotoRemaster.1
                 private final ProgressUpdateListener mListener;
 
-                {
+                AnonymousClass1() {
                     this.mListener = SemPhotoRemaster.this.mBuilder.mListener;
                 }
 
@@ -222,7 +225,26 @@ public class SemPhotoRemaster {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.samsung.android.media.photoremaster.SemPhotoRemaster$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements IDirector.ProgressUpdateListener {
+        private final ProgressUpdateListener mListener;
+
+        AnonymousClass1() {
+            this.mListener = SemPhotoRemaster.this.mBuilder.mListener;
+        }
+
+        @Override // com.samsung.android.photoremaster.IDirector.ProgressUpdateListener
+        public void onUpdateProgress(double percent, int currentImageIndex, int totalImageCount) {
+            this.mListener.onUpdateProgress(percent, currentImageIndex, totalImageCount);
+        }
+
+        @Override // com.samsung.android.photoremaster.IDirector.ProgressUpdateListener
+        public void onUpdateMetadata(String metadata) {
+            this.mListener.onUpdateMetadata(metadata);
+        }
+    }
+
     /* loaded from: classes5.dex */
     public enum ResultParam {
         PATH_INPUT(1002, ParamDataType.STRING, false),
@@ -243,7 +265,6 @@ public class SemPhotoRemaster {
         public final int ID;
         private final boolean ONDEMAND;
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
         public enum ParamDataType {
             STRING,
@@ -278,6 +299,10 @@ public class SemPhotoRemaster {
         public @interface getParameterIds {
         }
 
+        /* synthetic */ Result(Bitmap bitmap, ResultIA resultIA) {
+            this(bitmap);
+        }
+
         private Result(Bitmap remasteredBitmap) {
             this.mResultJson = new JSONObject();
             this.mRemasteredBitmap = remasteredBitmap;
@@ -292,7 +317,6 @@ public class SemPhotoRemaster {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setParameter(int id, String val) {
             try {
                 this.mResultJson.put(String.valueOf(id), val);
@@ -349,34 +373,28 @@ public class SemPhotoRemaster {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getParameters$0(ResultParam param) {
         return param.DATA_TYPE == ResultParam.ParamDataType.STRING;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getParameters$1(ResultParam param) {
         return !param.ONDEMAND;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getParameters$2(Result result, ResultParam param) {
         String paramData = this.mServiceClient.getStringParam(param.ID);
         LogUtil.d(TAG, "getStringParam(" + param.ID + ") : " + paramData);
         result.setParameter(param.ID, paramData);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getParameters$3(ResultParam param) {
         return param.DATA_TYPE == ResultParam.ParamDataType.LONG;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getParameters$4(ResultParam param) {
         return !param.ONDEMAND;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getParameters$5(Result result, ResultParam param) {
         String paramData = String.valueOf(this.mServiceClient.getLongParam(param.ID));
         LogUtil.d(TAG, "getLongParam(" + param.ID + ") : " + paramData);

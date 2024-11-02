@@ -59,22 +59,18 @@ public abstract class KernelCpuUidBpfMapReader {
         this.mWriteLock = reentrantReadWriteLock.writeLock();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KernelCpuUidBpfMapReader getFreqTimeReaderInstance() {
         return FREQ_TIME_READER;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KernelCpuUidBpfMapReader getFullTimeReaderInstance() {
         return FULL_TIME_READER;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KernelCpuUidBpfMapReader getActiveTimeReaderInstance() {
         return ACTIVE_TIME_READER;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KernelCpuUidBpfMapReader getClusterTimeReaderInstance() {
         return CLUSTER_TIME_READER;
     }

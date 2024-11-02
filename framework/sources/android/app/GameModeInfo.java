@@ -11,13 +11,14 @@ import java.util.Map;
 /* loaded from: classes.dex */
 public final class GameModeInfo implements Parcelable {
     public static final Parcelable.Creator<GameModeInfo> CREATOR = new Parcelable.Creator<GameModeInfo>() { // from class: android.app.GameModeInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GameModeInfo createFromParcel(Parcel in) {
             return new GameModeInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GameModeInfo[] newArray(int size) {
             return new GameModeInfo[size];
@@ -29,6 +30,27 @@ public final class GameModeInfo implements Parcelable {
     private final boolean mIsDownscalingAllowed;
     private final boolean mIsFpsOverrideAllowed;
     private final int[] mOverriddenGameModes;
+
+    /* synthetic */ GameModeInfo(int i, int[] iArr, int[] iArr2, boolean z, boolean z2, Map map, GameModeInfoIA gameModeInfoIA) {
+        this(i, iArr, iArr2, z, z2, map);
+    }
+
+    /* renamed from: android.app.GameModeInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GameModeInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameModeInfo createFromParcel(Parcel in) {
+            return new GameModeInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameModeInfo[] newArray(int size) {
+            return new GameModeInfo[size];
+        }
+    }
 
     @SystemApi
     /* loaded from: classes.dex */

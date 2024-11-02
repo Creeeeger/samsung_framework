@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextMovementForPositioning extends SContextEventContext {
     public static final Parcelable.Creator<SContextMovementForPositioning> CREATOR = new Parcelable.Creator<SContextMovementForPositioning>() { // from class: android.hardware.scontext.SContextMovementForPositioning.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextMovementForPositioning createFromParcel(Parcel in) {
             return new SContextMovementForPositioning(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextMovementForPositioning[] newArray(int size) {
             return new SContextMovementForPositioning[size];
@@ -22,7 +23,6 @@ public class SContextMovementForPositioning extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextMovementForPositioning() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextMovementForPositioning extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextMovementForPositioning$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextMovementForPositioning> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextMovementForPositioning createFromParcel(Parcel in) {
+            return new SContextMovementForPositioning(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextMovementForPositioning[] newArray(int size) {
+            return new SContextMovementForPositioning[size];
+        }
     }
 }

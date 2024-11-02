@@ -259,7 +259,6 @@ public final class TvInputManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class SessionCallbackRecord {
         private final Handler mHandler;
@@ -271,9 +270,30 @@ public final class TvInputManager {
             this.mHandler = handler;
         }
 
-        void postSessionCreated(final Session session) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ Session val$session;
+
+            AnonymousClass1(Session session) {
+                session = session;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onSessionCreated(session);
+            }
+        }
+
+        void postSessionCreated(Session session) {
             this.mSession = session;
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.1
+                final /* synthetic */ Session val$session;
+
+                AnonymousClass1(Session session2) {
+                    session = session2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onSessionCreated(session);
@@ -281,8 +301,23 @@ public final class TvInputManager {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$2 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass2 implements Runnable {
+            AnonymousClass2() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onSessionReleased(SessionCallbackRecord.this.mSession);
+            }
+        }
+
         void postSessionReleased() {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.2
+                AnonymousClass2() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onSessionReleased(SessionCallbackRecord.this.mSession);
@@ -290,8 +325,29 @@ public final class TvInputManager {
             });
         }
 
-        void postChannelRetuned(final Uri channelUri) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$3 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass3 implements Runnable {
+            final /* synthetic */ Uri val$channelUri;
+
+            AnonymousClass3(Uri uri) {
+                channelUri = uri;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onChannelRetuned(SessionCallbackRecord.this.mSession, channelUri);
+            }
+        }
+
+        void postChannelRetuned(Uri channelUri) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.3
+                final /* synthetic */ Uri val$channelUri;
+
+                AnonymousClass3(Uri channelUri2) {
+                    channelUri = channelUri2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onChannelRetuned(SessionCallbackRecord.this.mSession, channelUri);
@@ -299,8 +355,29 @@ public final class TvInputManager {
             });
         }
 
-        void postAudioPresentationsChanged(final List<AudioPresentation> audioPresentations) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$4 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass4 implements Runnable {
+            final /* synthetic */ List val$audioPresentations;
+
+            AnonymousClass4(List list) {
+                audioPresentations = list;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onAudioPresentationsChanged(SessionCallbackRecord.this.mSession, audioPresentations);
+            }
+        }
+
+        void postAudioPresentationsChanged(List<AudioPresentation> audioPresentations) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.4
+                final /* synthetic */ List val$audioPresentations;
+
+                AnonymousClass4(List audioPresentations2) {
+                    audioPresentations = audioPresentations2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onAudioPresentationsChanged(SessionCallbackRecord.this.mSession, audioPresentations);
@@ -308,8 +385,33 @@ public final class TvInputManager {
             });
         }
 
-        void postAudioPresentationSelected(final int presentationId, final int programId) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$5 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass5 implements Runnable {
+            final /* synthetic */ int val$presentationId;
+            final /* synthetic */ int val$programId;
+
+            AnonymousClass5(int i, int i2) {
+                presentationId = i;
+                programId = i2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onAudioPresentationSelected(SessionCallbackRecord.this.mSession, presentationId, programId);
+            }
+        }
+
+        void postAudioPresentationSelected(int presentationId, int programId) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.5
+                final /* synthetic */ int val$presentationId;
+                final /* synthetic */ int val$programId;
+
+                AnonymousClass5(int presentationId2, int programId2) {
+                    presentationId = presentationId2;
+                    programId = programId2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onAudioPresentationSelected(SessionCallbackRecord.this.mSession, presentationId, programId);
@@ -317,8 +419,32 @@ public final class TvInputManager {
             });
         }
 
-        void postTracksChanged(final List<TvTrackInfo> tracks) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$6 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass6 implements Runnable {
+            final /* synthetic */ List val$tracks;
+
+            AnonymousClass6(List list) {
+                tracks = list;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onTracksChanged(SessionCallbackRecord.this.mSession, tracks);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyTracksChanged(tracks);
+                }
+            }
+        }
+
+        void postTracksChanged(List<TvTrackInfo> tracks) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.6
+                final /* synthetic */ List val$tracks;
+
+                AnonymousClass6(List tracks2) {
+                    tracks = tracks2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onTracksChanged(SessionCallbackRecord.this.mSession, tracks);
@@ -329,8 +455,36 @@ public final class TvInputManager {
             });
         }
 
-        void postTrackSelected(final int type, final String trackId) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$7 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass7 implements Runnable {
+            final /* synthetic */ String val$trackId;
+            final /* synthetic */ int val$type;
+
+            AnonymousClass7(int i, String str) {
+                type = i;
+                trackId = str;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onTrackSelected(SessionCallbackRecord.this.mSession, type, trackId);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyTrackSelected(type, trackId);
+                }
+            }
+        }
+
+        void postTrackSelected(int type, String trackId) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.7
+                final /* synthetic */ String val$trackId;
+                final /* synthetic */ int val$type;
+
+                AnonymousClass7(int type2, String trackId2) {
+                    type = type2;
+                    trackId = trackId2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onTrackSelected(SessionCallbackRecord.this.mSession, type, trackId);
@@ -341,8 +495,33 @@ public final class TvInputManager {
             });
         }
 
-        void postVideoSizeChanged(final int width, final int height) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$8 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass8 implements Runnable {
+            final /* synthetic */ int val$height;
+            final /* synthetic */ int val$width;
+
+            AnonymousClass8(int i, int i2) {
+                width = i;
+                height = i2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onVideoSizeChanged(SessionCallbackRecord.this.mSession, width, height);
+            }
+        }
+
+        void postVideoSizeChanged(int width, int height) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.8
+                final /* synthetic */ int val$height;
+                final /* synthetic */ int val$width;
+
+                AnonymousClass8(int width2, int height2) {
+                    width = width2;
+                    height = height2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onVideoSizeChanged(SessionCallbackRecord.this.mSession, width, height);
@@ -350,8 +529,26 @@ public final class TvInputManager {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$9 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass9 implements Runnable {
+            AnonymousClass9() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onVideoAvailable(SessionCallbackRecord.this.mSession);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyVideoAvailable();
+                }
+            }
+        }
+
         void postVideoAvailable() {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.9
+                AnonymousClass9() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onVideoAvailable(SessionCallbackRecord.this.mSession);
@@ -362,8 +559,32 @@ public final class TvInputManager {
             });
         }
 
-        void postVideoUnavailable(final int reason) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$10 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass10 implements Runnable {
+            final /* synthetic */ int val$reason;
+
+            AnonymousClass10(int i) {
+                reason = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onVideoUnavailable(SessionCallbackRecord.this.mSession, reason);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyVideoUnavailable(reason);
+                }
+            }
+        }
+
+        void postVideoUnavailable(int reason) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.10
+                final /* synthetic */ int val$reason;
+
+                AnonymousClass10(int reason2) {
+                    reason = reason2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onVideoUnavailable(SessionCallbackRecord.this.mSession, reason);
@@ -374,8 +595,26 @@ public final class TvInputManager {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$11 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass11 implements Runnable {
+            AnonymousClass11() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onContentAllowed(SessionCallbackRecord.this.mSession);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyContentAllowed();
+                }
+            }
+        }
+
         void postContentAllowed() {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.11
+                AnonymousClass11() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onContentAllowed(SessionCallbackRecord.this.mSession);
@@ -386,8 +625,32 @@ public final class TvInputManager {
             });
         }
 
-        void postContentBlocked(final TvContentRating rating) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$12 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass12 implements Runnable {
+            final /* synthetic */ TvContentRating val$rating;
+
+            AnonymousClass12(TvContentRating tvContentRating) {
+                rating = tvContentRating;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onContentBlocked(SessionCallbackRecord.this.mSession, rating);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyContentBlocked(rating);
+                }
+            }
+        }
+
+        void postContentBlocked(TvContentRating rating) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.12
+                final /* synthetic */ TvContentRating val$rating;
+
+                AnonymousClass12(TvContentRating rating2) {
+                    rating = rating2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onContentBlocked(SessionCallbackRecord.this.mSession, rating);
@@ -398,8 +661,41 @@ public final class TvInputManager {
             });
         }
 
-        void postLayoutSurface(final int left, final int top, final int right, final int bottom) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$13 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass13 implements Runnable {
+            final /* synthetic */ int val$bottom;
+            final /* synthetic */ int val$left;
+            final /* synthetic */ int val$right;
+            final /* synthetic */ int val$top;
+
+            AnonymousClass13(int i, int i2, int i3, int i4) {
+                left = i;
+                top = i2;
+                right = i3;
+                bottom = i4;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onLayoutSurface(SessionCallbackRecord.this.mSession, left, top, right, bottom);
+            }
+        }
+
+        void postLayoutSurface(int left, int top, int right, int bottom) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.13
+                final /* synthetic */ int val$bottom;
+                final /* synthetic */ int val$left;
+                final /* synthetic */ int val$right;
+                final /* synthetic */ int val$top;
+
+                AnonymousClass13(int left2, int top2, int right2, int bottom2) {
+                    left = left2;
+                    top = top2;
+                    right = right2;
+                    bottom = bottom2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onLayoutSurface(SessionCallbackRecord.this.mSession, left, top, right, bottom);
@@ -407,8 +703,33 @@ public final class TvInputManager {
             });
         }
 
-        void postSessionEvent(final String eventType, final Bundle eventArgs) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$14 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass14 implements Runnable {
+            final /* synthetic */ Bundle val$eventArgs;
+            final /* synthetic */ String val$eventType;
+
+            AnonymousClass14(String str, Bundle bundle) {
+                eventType = str;
+                eventArgs = bundle;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onSessionEvent(SessionCallbackRecord.this.mSession, eventType, eventArgs);
+            }
+        }
+
+        void postSessionEvent(String eventType, Bundle eventArgs) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.14
+                final /* synthetic */ Bundle val$eventArgs;
+                final /* synthetic */ String val$eventType;
+
+                AnonymousClass14(String eventType2, Bundle eventArgs2) {
+                    eventType = eventType2;
+                    eventArgs = eventArgs2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onSessionEvent(SessionCallbackRecord.this.mSession, eventType, eventArgs);
@@ -416,8 +737,29 @@ public final class TvInputManager {
             });
         }
 
-        void postTimeShiftStatusChanged(final int status) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$15 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass15 implements Runnable {
+            final /* synthetic */ int val$status;
+
+            AnonymousClass15(int i) {
+                status = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onTimeShiftStatusChanged(SessionCallbackRecord.this.mSession, status);
+            }
+        }
+
+        void postTimeShiftStatusChanged(int status) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.15
+                final /* synthetic */ int val$status;
+
+                AnonymousClass15(int status2) {
+                    status = status2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onTimeShiftStatusChanged(SessionCallbackRecord.this.mSession, status);
@@ -425,8 +767,29 @@ public final class TvInputManager {
             });
         }
 
-        void postTimeShiftStartPositionChanged(final long timeMs) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$16 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass16 implements Runnable {
+            final /* synthetic */ long val$timeMs;
+
+            AnonymousClass16(long j) {
+                timeMs = j;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onTimeShiftStartPositionChanged(SessionCallbackRecord.this.mSession, timeMs);
+            }
+        }
+
+        void postTimeShiftStartPositionChanged(long timeMs) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.16
+                final /* synthetic */ long val$timeMs;
+
+                AnonymousClass16(long timeMs2) {
+                    timeMs = timeMs2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onTimeShiftStartPositionChanged(SessionCallbackRecord.this.mSession, timeMs);
@@ -434,8 +797,29 @@ public final class TvInputManager {
             });
         }
 
-        void postTimeShiftCurrentPositionChanged(final long timeMs) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$17 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass17 implements Runnable {
+            final /* synthetic */ long val$timeMs;
+
+            AnonymousClass17(long j) {
+                timeMs = j;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onTimeShiftCurrentPositionChanged(SessionCallbackRecord.this.mSession, timeMs);
+            }
+        }
+
+        void postTimeShiftCurrentPositionChanged(long timeMs) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.17
+                final /* synthetic */ long val$timeMs;
+
+                AnonymousClass17(long timeMs2) {
+                    timeMs = timeMs2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onTimeShiftCurrentPositionChanged(SessionCallbackRecord.this.mSession, timeMs);
@@ -443,8 +827,29 @@ public final class TvInputManager {
             });
         }
 
-        void postAitInfoUpdated(final AitInfo aitInfo) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$18 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass18 implements Runnable {
+            final /* synthetic */ AitInfo val$aitInfo;
+
+            AnonymousClass18(AitInfo aitInfo) {
+                aitInfo = aitInfo;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onAitInfoUpdated(SessionCallbackRecord.this.mSession, aitInfo);
+            }
+        }
+
+        void postAitInfoUpdated(AitInfo aitInfo) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.18
+                final /* synthetic */ AitInfo val$aitInfo;
+
+                AnonymousClass18(AitInfo aitInfo2) {
+                    aitInfo = aitInfo2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onAitInfoUpdated(SessionCallbackRecord.this.mSession, aitInfo);
@@ -452,8 +857,32 @@ public final class TvInputManager {
             });
         }
 
-        void postSignalStrength(final int strength) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$19 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass19 implements Runnable {
+            final /* synthetic */ int val$strength;
+
+            AnonymousClass19(int i) {
+                strength = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onSignalStrengthUpdated(SessionCallbackRecord.this.mSession, strength);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifySignalStrength(strength);
+                }
+            }
+        }
+
+        void postSignalStrength(int strength) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.19
+                final /* synthetic */ int val$strength;
+
+                AnonymousClass19(int strength2) {
+                    strength = strength2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onSignalStrengthUpdated(SessionCallbackRecord.this.mSession, strength);
@@ -464,8 +893,29 @@ public final class TvInputManager {
             });
         }
 
-        void postCueingMessageAvailability(final boolean available) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$20 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass20 implements Runnable {
+            final /* synthetic */ boolean val$available;
+
+            AnonymousClass20(boolean z) {
+                available = z;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onCueingMessageAvailability(SessionCallbackRecord.this.mSession, available);
+            }
+        }
+
+        void postCueingMessageAvailability(boolean available) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.20
+                final /* synthetic */ boolean val$available;
+
+                AnonymousClass20(boolean available2) {
+                    available = available2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onCueingMessageAvailability(SessionCallbackRecord.this.mSession, available);
@@ -473,8 +923,29 @@ public final class TvInputManager {
             });
         }
 
-        void postTimeShiftMode(final int mode) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$21 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass21 implements Runnable {
+            final /* synthetic */ int val$mode;
+
+            AnonymousClass21(int i) {
+                mode = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onTimeShiftMode(SessionCallbackRecord.this.mSession, mode);
+            }
+        }
+
+        void postTimeShiftMode(int mode) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.21
+                final /* synthetic */ int val$mode;
+
+                AnonymousClass21(int mode2) {
+                    mode = mode2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onTimeShiftMode(SessionCallbackRecord.this.mSession, mode);
@@ -482,8 +953,29 @@ public final class TvInputManager {
             });
         }
 
-        void postAvailableSpeeds(final float[] speeds) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$22 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass22 implements Runnable {
+            final /* synthetic */ float[] val$speeds;
+
+            AnonymousClass22(float[] fArr) {
+                speeds = fArr;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onAvailableSpeeds(SessionCallbackRecord.this.mSession, speeds);
+            }
+        }
+
+        void postAvailableSpeeds(float[] speeds) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.22
+                final /* synthetic */ float[] val$speeds;
+
+                AnonymousClass22(float[] speeds2) {
+                    speeds = speeds2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onAvailableSpeeds(SessionCallbackRecord.this.mSession, speeds);
@@ -491,8 +983,32 @@ public final class TvInputManager {
             });
         }
 
-        void postTuned(final Uri channelUri) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$23 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass23 implements Runnable {
+            final /* synthetic */ Uri val$channelUri;
+
+            AnonymousClass23(Uri uri) {
+                channelUri = uri;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onTuned(SessionCallbackRecord.this.mSession, channelUri);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyTuned(channelUri);
+                }
+            }
+        }
+
+        void postTuned(Uri channelUri) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.23
+                final /* synthetic */ Uri val$channelUri;
+
+                AnonymousClass23(Uri channelUri2) {
+                    channelUri = channelUri2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onTuned(SessionCallbackRecord.this.mSession, channelUri);
@@ -503,8 +1019,36 @@ public final class TvInputManager {
             });
         }
 
-        void postTvMessage(final int type, final Bundle data) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$24 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass24 implements Runnable {
+            final /* synthetic */ Bundle val$data;
+            final /* synthetic */ int val$type;
+
+            AnonymousClass24(int i, Bundle bundle) {
+                type = i;
+                data = bundle;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onTvMessage(SessionCallbackRecord.this.mSession, type, data);
+                if (SessionCallbackRecord.this.mSession.mIAppNotificationEnabled && SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyTvMessage(type, data);
+                }
+            }
+        }
+
+        void postTvMessage(int type, Bundle data) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.24
+                final /* synthetic */ Bundle val$data;
+                final /* synthetic */ int val$type;
+
+                AnonymousClass24(int type2, Bundle data2) {
+                    type = type2;
+                    data = data2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onTvMessage(SessionCallbackRecord.this.mSession, type, data);
@@ -515,8 +1059,29 @@ public final class TvInputManager {
             });
         }
 
-        void postRecordingStopped(final Uri recordedProgramUri) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$25 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass25 implements Runnable {
+            final /* synthetic */ Uri val$recordedProgramUri;
+
+            AnonymousClass25(Uri uri) {
+                recordedProgramUri = uri;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onRecordingStopped(SessionCallbackRecord.this.mSession, recordedProgramUri);
+            }
+        }
+
+        void postRecordingStopped(Uri recordedProgramUri) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.25
+                final /* synthetic */ Uri val$recordedProgramUri;
+
+                AnonymousClass25(Uri recordedProgramUri2) {
+                    recordedProgramUri = recordedProgramUri2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onRecordingStopped(SessionCallbackRecord.this.mSession, recordedProgramUri);
@@ -524,8 +1089,29 @@ public final class TvInputManager {
             });
         }
 
-        void postError(final int error) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$26 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass26 implements Runnable {
+            final /* synthetic */ int val$error;
+
+            AnonymousClass26(int i) {
+                error = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SessionCallbackRecord.this.mSessionCallback.onError(SessionCallbackRecord.this.mSession, error);
+            }
+        }
+
+        void postError(int error) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.26
+                final /* synthetic */ int val$error;
+
+                AnonymousClass26(int error2) {
+                    error = error2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SessionCallbackRecord.this.mSessionCallback.onError(SessionCallbackRecord.this.mSession, error);
@@ -533,9 +1119,32 @@ public final class TvInputManager {
             });
         }
 
-        void postBroadcastInfoResponse(final BroadcastInfoResponse response) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$27 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass27 implements Runnable {
+            final /* synthetic */ BroadcastInfoResponse val$response;
+
+            AnonymousClass27(BroadcastInfoResponse broadcastInfoResponse) {
+                response = broadcastInfoResponse;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyBroadcastInfoResponse(response);
+                }
+            }
+        }
+
+        void postBroadcastInfoResponse(BroadcastInfoResponse response) {
             if (this.mSession.mIAppNotificationEnabled) {
                 this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.27
+                    final /* synthetic */ BroadcastInfoResponse val$response;
+
+                    AnonymousClass27(BroadcastInfoResponse response2) {
+                        response = response2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
@@ -546,9 +1155,32 @@ public final class TvInputManager {
             }
         }
 
-        void postAdResponse(final AdResponse response) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$28 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass28 implements Runnable {
+            final /* synthetic */ AdResponse val$response;
+
+            AnonymousClass28(AdResponse adResponse) {
+                response = adResponse;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyAdResponse(response);
+                }
+            }
+        }
+
+        void postAdResponse(AdResponse response) {
             if (this.mSession.mIAppNotificationEnabled) {
                 this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.28
+                    final /* synthetic */ AdResponse val$response;
+
+                    AnonymousClass28(AdResponse response2) {
+                        response = response2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
@@ -559,9 +1191,32 @@ public final class TvInputManager {
             }
         }
 
-        void postAdBufferConsumed(final AdBuffer buffer) {
+        /* renamed from: android.media.tv.TvInputManager$SessionCallbackRecord$29 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass29 implements Runnable {
+            final /* synthetic */ AdBuffer val$buffer;
+
+            AnonymousClass29(AdBuffer adBuffer) {
+                buffer = adBuffer;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
+                    SessionCallbackRecord.this.mSession.getInteractiveAppSession().notifyAdBufferConsumed(buffer);
+                }
+            }
+        }
+
+        void postAdBufferConsumed(AdBuffer buffer) {
             if (this.mSession.mIAppNotificationEnabled) {
                 this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.SessionCallbackRecord.29
+                    final /* synthetic */ AdBuffer val$buffer;
+
+                    AnonymousClass29(AdBuffer buffer2) {
+                        buffer = buffer2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (SessionCallbackRecord.this.mSession.getInteractiveAppSession() != null) {
@@ -595,8 +1250,9 @@ public final class TvInputManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static final class TvInputCallbackRecord {
+    public static final class TvInputCallbackRecord {
         private final TvInputCallback mCallback;
         private final Handler mHandler;
 
@@ -609,8 +1265,29 @@ public final class TvInputManager {
             return this.mCallback;
         }
 
-        public void postInputAdded(final String inputId) {
+        /* renamed from: android.media.tv.TvInputManager$TvInputCallbackRecord$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ String val$inputId;
+
+            AnonymousClass1(String str) {
+                inputId = str;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                TvInputCallbackRecord.this.mCallback.onInputAdded(inputId);
+            }
+        }
+
+        public void postInputAdded(String inputId) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.TvInputCallbackRecord.1
+                final /* synthetic */ String val$inputId;
+
+                AnonymousClass1(String inputId2) {
+                    inputId = inputId2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     TvInputCallbackRecord.this.mCallback.onInputAdded(inputId);
@@ -618,8 +1295,29 @@ public final class TvInputManager {
             });
         }
 
-        public void postInputRemoved(final String inputId) {
+        /* renamed from: android.media.tv.TvInputManager$TvInputCallbackRecord$2 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass2 implements Runnable {
+            final /* synthetic */ String val$inputId;
+
+            AnonymousClass2(String str) {
+                inputId = str;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                TvInputCallbackRecord.this.mCallback.onInputRemoved(inputId);
+            }
+        }
+
+        public void postInputRemoved(String inputId) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.TvInputCallbackRecord.2
+                final /* synthetic */ String val$inputId;
+
+                AnonymousClass2(String inputId2) {
+                    inputId = inputId2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     TvInputCallbackRecord.this.mCallback.onInputRemoved(inputId);
@@ -627,8 +1325,29 @@ public final class TvInputManager {
             });
         }
 
-        public void postInputUpdated(final String inputId) {
+        /* renamed from: android.media.tv.TvInputManager$TvInputCallbackRecord$3 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass3 implements Runnable {
+            final /* synthetic */ String val$inputId;
+
+            AnonymousClass3(String str) {
+                inputId = str;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                TvInputCallbackRecord.this.mCallback.onInputUpdated(inputId);
+            }
+        }
+
+        public void postInputUpdated(String inputId) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.TvInputCallbackRecord.3
+                final /* synthetic */ String val$inputId;
+
+                AnonymousClass3(String inputId2) {
+                    inputId = inputId2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     TvInputCallbackRecord.this.mCallback.onInputUpdated(inputId);
@@ -636,8 +1355,33 @@ public final class TvInputManager {
             });
         }
 
-        public void postInputStateChanged(final String inputId, final int state) {
+        /* renamed from: android.media.tv.TvInputManager$TvInputCallbackRecord$4 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass4 implements Runnable {
+            final /* synthetic */ String val$inputId;
+            final /* synthetic */ int val$state;
+
+            AnonymousClass4(String str, int i) {
+                inputId = str;
+                state = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                TvInputCallbackRecord.this.mCallback.onInputStateChanged(inputId, state);
+            }
+        }
+
+        public void postInputStateChanged(String inputId, int state) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.TvInputCallbackRecord.4
+                final /* synthetic */ String val$inputId;
+                final /* synthetic */ int val$state;
+
+                AnonymousClass4(String inputId2, int state2) {
+                    inputId = inputId2;
+                    state = state2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     TvInputCallbackRecord.this.mCallback.onInputStateChanged(inputId, state);
@@ -645,8 +1389,29 @@ public final class TvInputManager {
             });
         }
 
-        public void postTvInputInfoUpdated(final TvInputInfo inputInfo) {
+        /* renamed from: android.media.tv.TvInputManager$TvInputCallbackRecord$5 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass5 implements Runnable {
+            final /* synthetic */ TvInputInfo val$inputInfo;
+
+            AnonymousClass5(TvInputInfo tvInputInfo) {
+                inputInfo = tvInputInfo;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                TvInputCallbackRecord.this.mCallback.onTvInputInfoUpdated(inputInfo);
+            }
+        }
+
+        public void postTvInputInfoUpdated(TvInputInfo inputInfo) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.TvInputCallbackRecord.5
+                final /* synthetic */ TvInputInfo val$inputInfo;
+
+                AnonymousClass5(TvInputInfo inputInfo2) {
+                    inputInfo = inputInfo2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     TvInputCallbackRecord.this.mCallback.onTvInputInfoUpdated(inputInfo);
@@ -654,8 +1419,29 @@ public final class TvInputManager {
             });
         }
 
-        public void postCurrentTunedInfosUpdated(final List<TunedInfo> currentTunedInfos) {
+        /* renamed from: android.media.tv.TvInputManager$TvInputCallbackRecord$6 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass6 implements Runnable {
+            final /* synthetic */ List val$currentTunedInfos;
+
+            AnonymousClass6(List list) {
+                currentTunedInfos = list;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                TvInputCallbackRecord.this.mCallback.onCurrentTunedInfosUpdated(currentTunedInfos);
+            }
+        }
+
+        public void postCurrentTunedInfosUpdated(List<TunedInfo> currentTunedInfos) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputManager.TvInputCallbackRecord.6
+                final /* synthetic */ List val$currentTunedInfos;
+
+                AnonymousClass6(List currentTunedInfos2) {
+                    currentTunedInfos = currentTunedInfos2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     TvInputCallbackRecord.this.mCallback.onCurrentTunedInfosUpdated(currentTunedInfos);
@@ -673,6 +1459,9 @@ public final class TvInputManager {
         this.mService = service;
         this.mUserId = userId;
         this.mClient = new ITvInputClient.Stub() { // from class: android.media.tv.TvInputManager.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.tv.ITvInputClient
             public void onSessionCreated(String inputId, IBinder token, InputChannel channel, int seq) {
                 synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
@@ -1035,6 +1824,9 @@ public final class TvInputManager {
             }
         };
         ITvInputManagerCallback managerCallback = new ITvInputManagerCallback.Stub() { // from class: android.media.tv.TvInputManager.2
+            AnonymousClass2() {
+            }
+
             @Override // android.media.tv.ITvInputManagerCallback
             public void onInputAdded(String inputId) {
                 synchronized (TvInputManager.this.mLock) {
@@ -1104,6 +1896,440 @@ public final class TvInputManager {
                 }
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.TvInputManager$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends ITvInputClient.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onSessionCreated(String inputId, IBinder token, InputChannel channel, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for " + token);
+                    return;
+                }
+                Session session = null;
+                if (token != null) {
+                    session = new Session(token, channel, TvInputManager.this.mService, TvInputManager.this.mUserId, seq, TvInputManager.this.mSessionCallbackRecordMap);
+                } else {
+                    TvInputManager.this.mSessionCallbackRecordMap.delete(seq);
+                }
+                record.postSessionCreated(session);
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onSessionReleased(int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                TvInputManager.this.mSessionCallbackRecordMap.delete(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq:" + seq);
+                } else {
+                    record.mSession.releaseInternal();
+                    record.postSessionReleased();
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onChannelRetuned(Uri channelUri, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postChannelRetuned(channelUri);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onAudioPresentationsChanged(List<AudioPresentation> audioPresentations, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    if (record.mSession.updateAudioPresentations(audioPresentations)) {
+                        record.postAudioPresentationsChanged(audioPresentations);
+                    }
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onAudioPresentationSelected(int presentationId, int programId, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    if (record.mSession.updateAudioPresentationSelection(presentationId, programId)) {
+                        record.postAudioPresentationSelected(presentationId, programId);
+                    }
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onTracksChanged(List<TvTrackInfo> tracks, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                    return;
+                }
+                if (record.mSession.updateTracks(tracks)) {
+                    record.postTracksChanged(tracks);
+                    postVideoSizeChangedIfNeededLocked(record);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onTrackSelected(int type, String trackId, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                    return;
+                }
+                if (record.mSession.updateTrackSelection(type, trackId)) {
+                    record.postTrackSelected(type, trackId);
+                    postVideoSizeChangedIfNeededLocked(record);
+                }
+            }
+        }
+
+        private void postVideoSizeChangedIfNeededLocked(SessionCallbackRecord record) {
+            TvTrackInfo track = record.mSession.getVideoTrackToNotify();
+            if (track != null) {
+                record.postVideoSizeChanged(track.getVideoWidth(), track.getVideoHeight());
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onVideoAvailable(int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postVideoAvailable();
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onVideoUnavailable(int reason, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postVideoUnavailable(reason);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onContentAllowed(int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postContentAllowed();
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onContentBlocked(String rating, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postContentBlocked(TvContentRating.unflattenFromString(rating));
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onLayoutSurface(int left, int top, int right, int bottom, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postLayoutSurface(left, top, right, bottom);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onSessionEvent(String eventType, Bundle eventArgs, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postSessionEvent(eventType, eventArgs);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onTimeShiftStatusChanged(int status, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postTimeShiftStatusChanged(status);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onTimeShiftStartPositionChanged(long timeMs, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postTimeShiftStartPositionChanged(timeMs);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onTimeShiftCurrentPositionChanged(long timeMs, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postTimeShiftCurrentPositionChanged(timeMs);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onAitInfoUpdated(AitInfo aitInfo, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postAitInfoUpdated(aitInfo);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onSignalStrength(int strength, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postSignalStrength(strength);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onCueingMessageAvailability(boolean available, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postCueingMessageAvailability(available);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onTimeShiftMode(int mode, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postTimeShiftMode(mode);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onAvailableSpeeds(float[] speeds, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postAvailableSpeeds(speeds);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onTuned(Uri channelUri, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postTuned(channelUri);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onTvMessage(int type, Bundle data, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postTvMessage(type, data);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onRecordingStopped(Uri recordedProgramUri, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postRecordingStopped(recordedProgramUri);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onError(int error, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postError(error);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onBroadcastInfoResponse(BroadcastInfoResponse response, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postBroadcastInfoResponse(response);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onAdResponse(AdResponse response, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postAdResponse(response);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputClient
+        public void onAdBufferConsumed(AdBuffer buffer, int seq) {
+            synchronized (TvInputManager.this.mSessionCallbackRecordMap) {
+                SessionCallbackRecord record = (SessionCallbackRecord) TvInputManager.this.mSessionCallbackRecordMap.get(seq);
+                if (record == null) {
+                    Log.e(TvInputManager.TAG, "Callback not found for seq " + seq);
+                } else {
+                    record.postAdBufferConsumed(buffer);
+                }
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.TvInputManager$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 extends ITvInputManagerCallback.Stub {
+        AnonymousClass2() {
+        }
+
+        @Override // android.media.tv.ITvInputManagerCallback
+        public void onInputAdded(String inputId) {
+            synchronized (TvInputManager.this.mLock) {
+                TvInputManager.this.mStateMap.put(inputId, 0);
+                for (TvInputCallbackRecord record : TvInputManager.this.mCallbackRecords) {
+                    record.postInputAdded(inputId);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputManagerCallback
+        public void onInputRemoved(String inputId) {
+            synchronized (TvInputManager.this.mLock) {
+                TvInputManager.this.mStateMap.remove(inputId);
+                for (TvInputCallbackRecord record : TvInputManager.this.mCallbackRecords) {
+                    record.postInputRemoved(inputId);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputManagerCallback
+        public void onInputUpdated(String inputId) {
+            synchronized (TvInputManager.this.mLock) {
+                for (TvInputCallbackRecord record : TvInputManager.this.mCallbackRecords) {
+                    record.postInputUpdated(inputId);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputManagerCallback
+        public void onInputStateChanged(String inputId, int state) {
+            synchronized (TvInputManager.this.mLock) {
+                TvInputManager.this.mStateMap.put(inputId, Integer.valueOf(state));
+                for (TvInputCallbackRecord record : TvInputManager.this.mCallbackRecords) {
+                    record.postInputStateChanged(inputId, state);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputManagerCallback
+        public void onTvInputInfoUpdated(TvInputInfo inputInfo) {
+            synchronized (TvInputManager.this.mLock) {
+                for (TvInputCallbackRecord record : TvInputManager.this.mCallbackRecords) {
+                    record.postTvInputInfoUpdated(inputInfo);
+                }
+            }
+        }
+
+        @Override // android.media.tv.ITvInputManagerCallback
+        public void onCurrentTunedInfosUpdated(List<TunedInfo> currentTunedInfos) {
+            synchronized (TvInputManager.this.mLock) {
+                for (TvInputCallbackRecord record : TvInputManager.this.mCallbackRecords) {
+                    record.postCurrentTunedInfosUpdated(currentTunedInfos);
+                }
             }
         }
     }
@@ -1414,11 +2640,26 @@ public final class TvInputManager {
         Preconditions.checkNotNull(info);
         Preconditions.checkNotNull(callback);
         return acquireTvInputHardwareInternal(deviceId, info, null, 400, new Executor() { // from class: android.media.tv.TvInputManager.3
+            AnonymousClass3() {
+            }
+
             @Override // java.util.concurrent.Executor
             public void execute(Runnable r) {
                 r.run();
             }
         }, callback);
+    }
+
+    /* renamed from: android.media.tv.TvInputManager$3 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass3 implements Executor {
+        AnonymousClass3() {
+        }
+
+        @Override // java.util.concurrent.Executor
+        public void execute(Runnable r) {
+            r.run();
+        }
     }
 
     @SystemApi
@@ -1444,8 +2685,7 @@ public final class TvInputManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.tv.TvInputManager$4, reason: invalid class name */
+    /* renamed from: android.media.tv.TvInputManager$4 */
     /* loaded from: classes2.dex */
     public class AnonymousClass4 extends ITvInputHardwareCallback.Stub {
         final /* synthetic */ HardwareCallback val$callback;
@@ -1586,6 +2826,10 @@ public final class TvInputManager {
             void onFinishedInputEvent(Object obj, boolean z);
         }
 
+        /* synthetic */ Session(IBinder iBinder, InputChannel inputChannel, ITvInputManager iTvInputManager, int i, int i2, SparseArray sparseArray, SessionIA sessionIA) {
+            this(iBinder, inputChannel, iTvInputManager, i, i2, sparseArray);
+        }
+
         private Session(IBinder token, InputChannel channel, ITvInputManager service, int userId, int seq, SparseArray<SessionCallbackRecord> sessionCallbackRecordMap) {
             this.mHandler = new InputEventHandler(Looper.getMainLooper());
             this.mPendingEventPool = new Pools.SimplePool(20);
@@ -1628,7 +2872,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setMain() {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -1981,7 +3224,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftPlay(Uri recordedProgramUri) {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -1995,7 +3237,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftPause() {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2009,7 +3250,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftResume() {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2023,7 +3263,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftSeekTo(long timeMs) {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2037,7 +3276,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftSetPlaybackParams(PlaybackParams params) {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2051,7 +3289,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftSetMode(int mode) {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2065,7 +3302,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftEnablePositionTracking(boolean enable) {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2099,7 +3335,6 @@ public final class TvInputManager {
             startRecording(programUri, null);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void startRecording(Uri programUri, Bundle params) {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2113,7 +3348,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void stopRecording() {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2127,7 +3361,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void pauseRecording(Bundle params) {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2141,7 +3374,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void resumeRecording(Bundle params) {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2168,7 +3400,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void createOverlayView(View view, Rect frame) {
             Preconditions.checkNotNull(view);
             Preconditions.checkNotNull(frame);
@@ -2187,7 +3418,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void relayoutOverlayView(Rect frame) {
             Preconditions.checkNotNull(frame);
             IBinder iBinder = this.mToken;
@@ -2202,7 +3432,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void removeOverlayView() {
             IBinder iBinder = this.mToken;
             if (iBinder == null) {
@@ -2216,7 +3445,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void unblockContent(TvContentRating unblockedRating) {
             Preconditions.checkNotNull(unblockedRating);
             IBinder iBinder = this.mToken;
@@ -2250,7 +3478,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void sendInputEventAndReportResultOnMainLooper(PendingEvent p) {
             synchronized (this.mHandler) {
                 int result = sendInputEventOnMainLooperLocked(p);
@@ -2333,18 +3560,15 @@ public final class TvInputManager {
             return p;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void recyclePendingEventLocked(PendingEvent p) {
             p.recycle();
             this.mPendingEventPool.release(p);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public IBinder getToken() {
             return this.mToken;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void releaseInternal() {
             this.mToken = null;
             synchronized (this.mHandler) {
@@ -2421,7 +3645,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public final class InputEventHandler extends Handler {
             public static final int MSG_FLUSH_INPUT_EVENT = 3;
@@ -2450,7 +3673,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public final class TvInputEventSender extends InputEventSender {
             public TvInputEventSender(InputChannel inputChannel, Looper looper) {
@@ -2463,7 +3685,6 @@ public final class TvInputManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public final class PendingEvent implements Runnable {
             public FinishedInputEventCallback mCallback;
@@ -2471,6 +3692,10 @@ public final class TvInputManager {
             public Handler mEventHandler;
             public Object mEventToken;
             public boolean mHandled;
+
+            /* synthetic */ PendingEvent(Session session, PendingEventIA pendingEventIA) {
+                this();
+            }
 
             private PendingEvent() {
             }
@@ -2498,11 +3723,14 @@ public final class TvInputManager {
     public static final class Hardware {
         private final ITvInputHardware mInterface;
 
+        /* synthetic */ Hardware(ITvInputHardware iTvInputHardware, HardwareIA hardwareIA) {
+            this(iTvInputHardware);
+        }
+
         private Hardware(ITvInputHardware hardwareInterface) {
             this.mInterface = hardwareInterface;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public ITvInputHardware getInterface() {
             return this.mInterface;
         }

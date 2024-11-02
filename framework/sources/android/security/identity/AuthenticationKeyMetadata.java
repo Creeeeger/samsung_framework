@@ -7,7 +7,6 @@ public final class AuthenticationKeyMetadata {
     private Instant mExpirationDate;
     private int mUsageCount;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AuthenticationKeyMetadata(int usageCount, Instant expirationDate) {
         this.mUsageCount = usageCount;
         this.mExpirationDate = expirationDate;

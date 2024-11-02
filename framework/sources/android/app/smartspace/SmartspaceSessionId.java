@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SmartspaceSessionId implements Parcelable {
     public static final Parcelable.Creator<SmartspaceSessionId> CREATOR = new Parcelable.Creator<SmartspaceSessionId>() { // from class: android.app.smartspace.SmartspaceSessionId.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmartspaceSessionId createFromParcel(Parcel parcel) {
             return new SmartspaceSessionId(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartspaceSessionId[] newArray(int size) {
             return new SmartspaceSessionId[size];
@@ -25,6 +26,10 @@ public final class SmartspaceSessionId implements Parcelable {
     };
     private final String mId;
     private final UserHandle mUserHandle;
+
+    /* synthetic */ SmartspaceSessionId(Parcel parcel, SmartspaceSessionIdIA smartspaceSessionIdIA) {
+        this(parcel);
+    }
 
     public SmartspaceSessionId(String id, UserHandle userHandle) {
         this.mId = id;
@@ -69,5 +74,22 @@ public final class SmartspaceSessionId implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mId);
         dest.writeTypedObject(this.mUserHandle, flags);
+    }
+
+    /* renamed from: android.app.smartspace.SmartspaceSessionId$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmartspaceSessionId> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartspaceSessionId createFromParcel(Parcel parcel) {
+            return new SmartspaceSessionId(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartspaceSessionId[] newArray(int size) {
+            return new SmartspaceSessionId[size];
+        }
     }
 }

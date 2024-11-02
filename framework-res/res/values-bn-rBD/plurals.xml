@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">আপনার ফোন অস্থিতিশীল কারণ একটি SD কার্ডে অ্যাপ ইনস্টল করা ছিল যেটি সরিয়ে ফেলা হয়েছে৷ স্বাভাবিক অবস্থায় ফিরে যেতে %d সেকেন্ড পর আপনার ফোন পুনরায় চালু হবে। ফোন পুনরায় চালু হওয়ার আগে অসংরক্ষিত যেকোনো ডাটা সংরক্ষণ করুন৷</item>
+        <item quantity="other">আপনার ট্যাবলেট অস্থিতিশীল কারণ একটি SD কার্ডে অ্যাপ ইনস্টল করা ছিল যেটি সরিয়ে ফেলা হয়েছে৷ স্বাভাবিক অবস্থায় ফিরে যেতে %d সেকেন্ড পর আপনার ট্যাবলেট পুনরায় চালু হবে। ট্যাবলেট পুনরায় চালু হওয়ার আগে অসংরক্ষিত যেকোনো ডাটা সংরক্ষণ করুন৷</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">আপনার ফোন অস্থিতিশীল কারণ একটি SD কার্ডে অ্যাপ ইনস্টল করা ছিল যেটি সরিয়ে ফেলা হয়েছে৷ স্বাভাবিক অবস্থায় ফিরে যেতে %d সেকেন্ড পর আপনার ফোন পুনরায় চালু হবে। ফোন পুনরায় চালু হওয়ার আগে অসংরক্ষিত যেকোনো ডাটা সংরক্ষণ করুন৷</item>
+        <item quantity="one">আপনার ট্যাবলেট অস্থিতিশীল কারণ একটি SD কার্ডে অ্যাপ ইনস্টল করা ছিল যেটি সরিয়ে ফেলা হয়েছে৷ স্বাভাবিক অবস্থায় ফিরে যেতে %d সেকেন্ড পর আপনার ট্যাবলেট পুনরায় চালু হবে। ট্যাবলেট পুনরায় চালু হওয়ার আগে অসংরক্ষিত যেকোনো ডাটা সংরক্ষণ করুন৷</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">%d সেকেন্ড পর আপনার ফোন পুনরায় চালু হবে</item>
+        <item quantity="other">%d সেকেন্ড পর আপনার ট্যাবলেট পুনরায় চালু হবে</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">%d সেকেন্ড পর আপনার ফোন পুনরায় চালু হবে</item>
+        <item quantity="one">%d সেকেন্ড পর আপনার ট্যাবলেট পুনরায় চালু হবে</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

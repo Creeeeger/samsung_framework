@@ -29,7 +29,6 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
     protected BigInteger privateExponent;
     protected transient RSAKeyParameters rsaPrivateKey;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateKey(RSAKeyParameters key) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
@@ -39,7 +38,6 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         this.rsaPrivateKey = key;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateKey(AlgorithmIdentifier algID, RSAKeyParameters key) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
@@ -51,7 +49,6 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         this.rsaPrivateKey = key;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateKey(RSAPrivateKeySpec spec) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
@@ -61,7 +58,6 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         this.rsaPrivateKey = new RSAKeyParameters(true, this.modulus, this.privateExponent);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateKey(RSAPrivateKey key) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
@@ -71,7 +67,6 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         this.rsaPrivateKey = new RSAKeyParameters(true, this.modulus, this.privateExponent);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateKey(AlgorithmIdentifier algID, com.android.internal.org.bouncycastle.asn1.pkcs.RSAPrivateKey key) {
         this.algorithmIdentifierEnc = getEncoding(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER);
         this.algorithmIdentifier = BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER;
@@ -106,7 +101,6 @@ public class BCRSAPrivateKey implements RSAPrivateKey, PKCS12BagAttributeCarrier
         return "PKCS#8";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RSAKeyParameters engineGetKeyParameters() {
         return this.rsaPrivateKey;
     }

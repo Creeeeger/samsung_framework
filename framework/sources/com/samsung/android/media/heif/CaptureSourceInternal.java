@@ -6,8 +6,9 @@ import com.samsung.android.sume.core.message.Message;
 import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-final class CaptureSourceInternal {
+public final class CaptureSourceInternal {
     public static final String KEY_CAMERA_INFO = "camera-info";
     public static final String KEY_CAMERA_INFO_SIZE = "camera-info-size";
     private AMessageJNI msg = new AMessageJNI();
@@ -114,7 +115,6 @@ final class CaptureSourceInternal {
         Parser() {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static CaptureSourceInternal makeInternalSource(SemInputImage in) {
             CaptureSourceInternal source = new CaptureSourceInternal();
             source.setWidth(in.getWidth());

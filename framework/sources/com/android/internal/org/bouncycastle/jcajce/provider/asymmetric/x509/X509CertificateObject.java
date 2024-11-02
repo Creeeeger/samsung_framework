@@ -21,8 +21,9 @@ import java.util.Date;
 import java.util.Enumeration;
 import javax.security.auth.x500.X500Principal;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class X509CertificateObject extends X509CertificateImpl implements PKCS12BagAttributeCarrier {
+public class X509CertificateObject extends X509CertificateImpl implements PKCS12BagAttributeCarrier {
     private PKCS12BagAttributeCarrier attrCarrier;
     private final Object cacheLock;
     private byte[] encoded;
@@ -34,7 +35,6 @@ class X509CertificateObject extends X509CertificateImpl implements PKCS12BagAttr
     private X500Principal subjectValue;
     private long[] validityValues;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public X509CertificateObject(JcaJceHelper bcHelper, Certificate c) throws CertificateParsingException {
         super(bcHelper, c, createBasicConstraints(c), createKeyUsage(c), createSigAlgName(c), createSigAlgParams(c));
         this.cacheLock = new Object();

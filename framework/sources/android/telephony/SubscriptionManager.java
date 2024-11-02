@@ -225,7 +225,6 @@ public class SubscriptionManager {
     private static final Map<Pair<Context, Integer>, Resources> sResourcesCache;
     private final Context mContext;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public interface CallISubMethodHelper {
         int callMethod(ISub iSub) throws RemoteException;
@@ -329,7 +328,6 @@ public class SubscriptionManager {
         sResourcesCache = new ConcurrentHashMap();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class VoidPropertyInvalidatedCache<T> extends PropertyInvalidatedCache<Void, T> {
         private final String mCacheKeyProperty;
@@ -367,7 +365,6 @@ public class SubscriptionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class IntegerPropertyInvalidatedCache<T> extends PropertyInvalidatedCache<Integer, T> {
         private final String mCacheKeyProperty;
@@ -1204,7 +1201,7 @@ public class SubscriptionManager {
         }
     }
 
-    /* renamed from: android.telephony.SubscriptionManager$1, reason: invalid class name */
+    /* renamed from: android.telephony.SubscriptionManager$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends ISetOpportunisticDataCallback.Stub {
         final /* synthetic */ Consumer val$callback;
@@ -1290,7 +1287,6 @@ public class SubscriptionManager {
         }) == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ int lambda$setOpportunistic$6(boolean opportunistic, int subId, ISub iSub) throws RemoteException {
         return iSub.setOpportunistic(opportunistic, subId, this.mContext.getOpPackageName());
     }
@@ -1407,7 +1403,7 @@ public class SubscriptionManager {
         return result;
     }
 
-    /* renamed from: isSubscriptionVisible, reason: merged with bridge method [inline-methods] */
+    /* renamed from: isSubscriptionVisible */
     public boolean lambda$getActiveSubscriptionInfoList$1(SubscriptionInfo info) {
         if (info == null) {
             return false;
@@ -1697,7 +1693,6 @@ public class SubscriptionManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ int lambda$setUsageSetting$12(int usageSetting, int subscriptionId, ISub iSub) throws RemoteException {
         return iSub.setUsageSetting(usageSetting, subscriptionId, this.mContext.getOpPackageName());
     }

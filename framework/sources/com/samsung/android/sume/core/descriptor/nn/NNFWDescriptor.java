@@ -49,7 +49,6 @@ public class NNFWDescriptor extends MFDescriptorBase implements Cloneable {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ LoadType lambda$new$0(LoadType loadType) {
         return loadType;
     }
@@ -137,8 +136,8 @@ public class NNFWDescriptor extends MFDescriptorBase implements Cloneable {
         }).orElse(null);
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public NNFWDescriptor m8752clone() {
+    /* renamed from: clone */
+    public NNFWDescriptor m8744clone() {
         try {
             NNFWDescriptor clone = (NNFWDescriptor) super.clone();
             return clone;

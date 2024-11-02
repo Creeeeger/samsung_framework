@@ -22,8 +22,9 @@ import java.io.IOException;
 import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-class QuickAccessWalletServiceInfo {
+public class QuickAccessWalletServiceInfo {
     private static final String TAG = "QAWalletSInfo";
     private static final String TAG_WALLET_SERVICE = "quickaccesswallet-service";
     private final ServiceInfo mServiceInfo;
@@ -36,7 +37,6 @@ class QuickAccessWalletServiceInfo {
         this.mTileServiceMetadata = tileServiceMetadata;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static QuickAccessWalletServiceInfo tryCreate(Context context) {
         ServiceInfo serviceInfo;
         ComponentName defaultPaymentApp = getDefaultPaymentApp(context);
@@ -71,9 +71,14 @@ class QuickAccessWalletServiceInfo {
         return resolveInfos.get(0).serviceInfo;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class TileServiceMetadata {
+    public static class TileServiceMetadata {
         private final Drawable mTileIcon;
+
+        /* synthetic */ TileServiceMetadata(Drawable drawable, TileServiceMetadataIA tileServiceMetadataIA) {
+            this(drawable);
+        }
 
         private TileServiceMetadata(Drawable tileIcon) {
             this.mTileIcon = tileIcon;
@@ -94,7 +99,6 @@ class QuickAccessWalletServiceInfo {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class ServiceMetadata {
         private final String mSettingsActivity;
@@ -102,9 +106,13 @@ class QuickAccessWalletServiceInfo {
         private final CharSequence mShortcutShortLabel;
         private final String mTargetActivity;
 
-        /* renamed from: -$$Nest$smempty, reason: not valid java name */
-        static /* bridge */ /* synthetic */ ServiceMetadata m3841$$Nest$smempty() {
+        /* renamed from: -$$Nest$smempty */
+        static /* bridge */ /* synthetic */ ServiceMetadata m3840$$Nest$smempty() {
             return empty();
+        }
+
+        /* synthetic */ ServiceMetadata(String str, String str2, CharSequence charSequence, CharSequence charSequence2, ServiceMetadataIA serviceMetadataIA) {
+            this(str, str2, charSequence, charSequence2);
         }
 
         private static ServiceMetadata empty() {
@@ -124,7 +132,7 @@ class QuickAccessWalletServiceInfo {
         PackageManager pm = context.getPackageManager();
         XmlResourceParser parser = serviceInfo.loadXmlMetaData(pm, QuickAccessWalletService.SERVICE_META_DATA);
         if (parser == null) {
-            return ServiceMetadata.m3841$$Nest$smempty();
+            return ServiceMetadata.m3840$$Nest$smempty();
         }
         try {
             resources = pm.getResourcesForApplication(serviceInfo.applicationInfo);
@@ -150,25 +158,21 @@ class QuickAccessWalletServiceInfo {
             }
         }
         Log.e(TAG, "Meta-data does not start with quickaccesswallet-service tag");
-        return ServiceMetadata.m3841$$Nest$smempty();
+        return ServiceMetadata.m3840$$Nest$smempty();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ComponentName getComponentName() {
         return this.mServiceInfo.getComponentName();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getWalletActivity() {
         return this.mServiceMetadata.mTargetActivity;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getSettingsActivity() {
         return this.mServiceMetadata.mSettingsActivity;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Drawable getWalletLogo(Context context) {
         Drawable drawable = this.mServiceInfo.loadLogo(context.getPackageManager());
         if (drawable != null) {
@@ -177,12 +181,10 @@ class QuickAccessWalletServiceInfo {
         return this.mServiceInfo.loadIcon(context.getPackageManager());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Drawable getTileIcon() {
         return this.mTileServiceMetadata.mTileIcon;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getShortcutShortLabel(Context context) {
         if (!TextUtils.isEmpty(this.mServiceMetadata.mShortcutShortLabel)) {
             return this.mServiceMetadata.mShortcutShortLabel;
@@ -190,7 +192,6 @@ class QuickAccessWalletServiceInfo {
         return this.mServiceInfo.loadLabel(context.getPackageManager());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getShortcutLongLabel(Context context) {
         if (!TextUtils.isEmpty(this.mServiceMetadata.mShortcutLongLabel)) {
             return this.mServiceMetadata.mShortcutLongLabel;
@@ -198,7 +199,6 @@ class QuickAccessWalletServiceInfo {
         return this.mServiceInfo.loadLabel(context.getPackageManager());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getServiceLabel(Context context) {
         return this.mServiceInfo.loadLabel(context.getPackageManager());
     }

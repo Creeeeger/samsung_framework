@@ -66,9 +66,102 @@ public abstract class TvInputService extends Service {
 
     public abstract Session onCreateSession(String str);
 
+    /* renamed from: android.media.tv.TvInputService$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends ITvInputService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void registerCallback(ITvInputServiceCallback cb) {
+            if (cb != null) {
+                TvInputService.this.mCallbacks.register(cb);
+            }
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void unregisterCallback(ITvInputServiceCallback cb) {
+            if (cb != null) {
+                TvInputService.this.mCallbacks.unregister(cb);
+            }
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void createSession(InputChannel channel, ITvInputSessionCallback cb, String inputId, String sessionId, AttributionSource tvAppAttributionSource) {
+            if (channel == null) {
+                Log.w(TvInputService.TAG, "Creating session without input channel");
+            }
+            if (cb == null) {
+                return;
+            }
+            SomeArgs args = SomeArgs.obtain();
+            args.arg1 = channel;
+            args.arg2 = cb;
+            args.arg3 = inputId;
+            args.arg4 = sessionId;
+            args.arg5 = tvAppAttributionSource;
+            TvInputService.this.mServiceHandler.obtainMessage(1, args).sendToTarget();
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void createRecordingSession(ITvInputSessionCallback cb, String inputId, String sessionId) {
+            if (cb == null) {
+                return;
+            }
+            SomeArgs args = SomeArgs.obtain();
+            args.arg1 = cb;
+            args.arg2 = inputId;
+            args.arg3 = sessionId;
+            TvInputService.this.mServiceHandler.obtainMessage(3, args).sendToTarget();
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public List<String> getAvailableExtensionInterfaceNames() {
+            return TvInputService.this.getAvailableExtensionInterfaceNames();
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public IBinder getExtensionInterface(String name) {
+            return TvInputService.this.getExtensionInterface(name);
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public String getExtensionInterfacePermission(String name) {
+            return TvInputService.this.getExtensionInterfacePermission(name);
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void notifyHardwareAdded(TvInputHardwareInfo hardwareInfo) {
+            TvInputService.this.mServiceHandler.obtainMessage(4, hardwareInfo).sendToTarget();
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void notifyHardwareRemoved(TvInputHardwareInfo hardwareInfo) {
+            TvInputService.this.mServiceHandler.obtainMessage(5, hardwareInfo).sendToTarget();
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void notifyHdmiDeviceAdded(HdmiDeviceInfo deviceInfo) {
+            TvInputService.this.mServiceHandler.obtainMessage(6, deviceInfo).sendToTarget();
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void notifyHdmiDeviceRemoved(HdmiDeviceInfo deviceInfo) {
+            TvInputService.this.mServiceHandler.obtainMessage(7, deviceInfo).sendToTarget();
+        }
+
+        @Override // android.media.tv.ITvInputService
+        public void notifyHdmiDeviceUpdated(HdmiDeviceInfo deviceInfo) {
+            TvInputService.this.mServiceHandler.obtainMessage(8, deviceInfo).sendToTarget();
+        }
+    }
+
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         ITvInputService.Stub tvInputServiceBinder = new ITvInputService.Stub() { // from class: android.media.tv.TvInputService.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.tv.ITvInputService
             public void registerCallback(ITvInputServiceCallback cb) {
                 if (cb != null) {
@@ -219,7 +312,6 @@ public abstract class TvInputService extends Service {
     public void onHdmiDeviceUpdated(HdmiDeviceInfo deviceInfo) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isPassthroughInput(String inputId) {
         if (this.mTvInputManager == null) {
             this.mTvInputManager = (TvInputManager) getSystemService(Context.TV_INPUT_SERVICE);
@@ -266,8 +358,41 @@ public abstract class TvInputService extends Service {
             this.mHandler = new Handler(context.getMainLooper());
         }
 
-        public void setOverlayViewEnabled(final boolean enable) {
+        /* renamed from: android.media.tv.TvInputService$Session$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ boolean val$enable;
+
+            AnonymousClass1(boolean z) {
+                enable = z;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (enable == Session.this.mOverlayViewEnabled) {
+                    return;
+                }
+                Session.this.mOverlayViewEnabled = enable;
+                if (enable) {
+                    if (Session.this.mWindowToken != null) {
+                        Session session = Session.this;
+                        session.createOverlayView(session.mWindowToken, Session.this.mOverlayFrame);
+                        return;
+                    }
+                    return;
+                }
+                Session.this.removeOverlayView(false);
+            }
+        }
+
+        public void setOverlayViewEnabled(boolean enable) {
             this.mHandler.post(new Runnable() { // from class: android.media.tv.TvInputService.Session.1
+                final /* synthetic */ boolean val$enable;
+
+                AnonymousClass1(boolean enable2) {
+                    enable = enable2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (enable == Session.this.mOverlayViewEnabled) {
@@ -287,10 +412,41 @@ public abstract class TvInputService extends Service {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputService$Session$2 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ Bundle val$eventArgs;
+            final /* synthetic */ String val$eventType;
+
+            AnonymousClass2(String str, Bundle bundle) {
+                eventType = str;
+                eventArgs = bundle;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onSessionEvent(eventType, eventArgs);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in sending event (event=" + eventType + NavigationBarInflaterView.KEY_CODE_END, e);
+                }
+            }
+        }
+
         @SystemApi
-        public void notifySessionEvent(final String eventType, final Bundle eventArgs) {
+        public void notifySessionEvent(String eventType, Bundle eventArgs) {
             Preconditions.checkNotNull(eventType);
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.2
+                final /* synthetic */ Bundle val$eventArgs;
+                final /* synthetic */ String val$eventType;
+
+                AnonymousClass2(String eventType2, Bundle eventArgs2) {
+                    eventType = eventType2;
+                    eventArgs = eventArgs2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -304,8 +460,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyChannelRetuned(final Uri channelUri) {
+        /* renamed from: android.media.tv.TvInputService$Session$3 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass3 implements Runnable {
+            final /* synthetic */ Uri val$channelUri;
+
+            AnonymousClass3(Uri uri) {
+                channelUri = uri;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onChannelRetuned(channelUri);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyChannelRetuned", e);
+                }
+            }
+        }
+
+        public void notifyChannelRetuned(Uri channelUri) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.3
+                final /* synthetic */ Uri val$channelUri;
+
+                AnonymousClass3(Uri channelUri2) {
+                    channelUri = channelUri2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -319,8 +502,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyTuned(final Uri channelUri) {
+        /* renamed from: android.media.tv.TvInputService$Session$4 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass4 implements Runnable {
+            final /* synthetic */ Uri val$channelUri;
+
+            AnonymousClass4(Uri uri) {
+                channelUri = uri;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onTuned(channelUri);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTuned", e);
+                }
+            }
+        }
+
+        public void notifyTuned(Uri channelUri) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.4
+                final /* synthetic */ Uri val$channelUri;
+
+                AnonymousClass4(Uri channelUri2) {
+                    channelUri = channelUri2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -334,9 +544,36 @@ public abstract class TvInputService extends Service {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputService$Session$5 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass5 implements Runnable {
+            final /* synthetic */ List val$tracksCopy;
+
+            AnonymousClass5(List list) {
+                tracksCopy = list;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onTracksChanged(tracksCopy);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTracksChanged", e);
+                }
+            }
+        }
+
         public void notifyTracksChanged(List<TvTrackInfo> tracks) {
-            final List<TvTrackInfo> tracksCopy = new ArrayList<>(tracks);
+            List<TvTrackInfo> tracksCopy = new ArrayList<>(tracks);
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.5
+                final /* synthetic */ List val$tracksCopy;
+
+                AnonymousClass5(List tracksCopy2) {
+                    tracksCopy = tracksCopy2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -350,8 +587,39 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyTrackSelected(final int type, final String trackId) {
+        /* renamed from: android.media.tv.TvInputService$Session$6 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass6 implements Runnable {
+            final /* synthetic */ String val$trackId;
+            final /* synthetic */ int val$type;
+
+            AnonymousClass6(int i, String str) {
+                type = i;
+                trackId = str;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onTrackSelected(type, trackId);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTrackSelected", e);
+                }
+            }
+        }
+
+        public void notifyTrackSelected(int type, String trackId) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.6
+                final /* synthetic */ String val$trackId;
+                final /* synthetic */ int val$type;
+
+                AnonymousClass6(int type2, String trackId2) {
+                    type = type2;
+                    trackId = trackId2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -365,8 +633,29 @@ public abstract class TvInputService extends Service {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputService$Session$7 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass7 implements Runnable {
+            AnonymousClass7() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onVideoAvailable();
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyVideoAvailable", e);
+                }
+            }
+        }
+
         public void notifyVideoAvailable() {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.7
+                AnonymousClass7() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -380,11 +669,17 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyVideoUnavailable(final int reason) {
+        public void notifyVideoUnavailable(int reason) {
             if (reason < 0 || reason > 18) {
                 Log.e(TvInputService.TAG, "notifyVideoUnavailable - unknown reason: " + reason);
             }
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.8
+                final /* synthetic */ int val$reason;
+
+                AnonymousClass8(int reason2) {
+                    reason = reason2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -398,9 +693,57 @@ public abstract class TvInputService extends Service {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputService$Session$8 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass8 implements Runnable {
+            final /* synthetic */ int val$reason;
+
+            AnonymousClass8(int reason2) {
+                reason = reason2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onVideoUnavailable(reason);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyVideoUnavailable", e);
+                }
+            }
+        }
+
+        /* renamed from: android.media.tv.TvInputService$Session$9 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass9 implements Runnable {
+            final /* synthetic */ List val$ap;
+
+            AnonymousClass9(List list) {
+                ap = list;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onAudioPresentationsChanged(ap);
+                    }
+                } catch (RemoteException e) {
+                    Log.e(TvInputService.TAG, "error in notifyAudioPresentationsChanged", e);
+                }
+            }
+        }
+
         public void notifyAudioPresentationChanged(List<AudioPresentation> audioPresentations) {
-            final List<AudioPresentation> ap = new ArrayList<>(audioPresentations);
+            List<AudioPresentation> ap = new ArrayList<>(audioPresentations);
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.9
+                final /* synthetic */ List val$ap;
+
+                AnonymousClass9(List ap2) {
+                    ap = ap2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -414,8 +757,39 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyAudioPresentationSelected(final int presentationId, final int programId) {
+        /* renamed from: android.media.tv.TvInputService$Session$10 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass10 implements Runnable {
+            final /* synthetic */ int val$presentationId;
+            final /* synthetic */ int val$programId;
+
+            AnonymousClass10(int i, int i2) {
+                presentationId = i;
+                programId = i2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onAudioPresentationSelected(presentationId, programId);
+                    }
+                } catch (RemoteException e) {
+                    Log.e(TvInputService.TAG, "error in notifyAudioPresentationSelected", e);
+                }
+            }
+        }
+
+        public void notifyAudioPresentationSelected(int presentationId, int programId) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.10
+                final /* synthetic */ int val$presentationId;
+                final /* synthetic */ int val$programId;
+
+                AnonymousClass10(int presentationId2, int programId2) {
+                    presentationId = presentationId2;
+                    programId = programId2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -429,8 +803,29 @@ public abstract class TvInputService extends Service {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputService$Session$11 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass11 implements Runnable {
+            AnonymousClass11() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onContentAllowed();
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyContentAllowed", e);
+                }
+            }
+        }
+
         public void notifyContentAllowed() {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.11
+                AnonymousClass11() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -444,9 +839,36 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyContentBlocked(final TvContentRating rating) {
+        /* renamed from: android.media.tv.TvInputService$Session$12 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass12 implements Runnable {
+            final /* synthetic */ TvContentRating val$rating;
+
+            AnonymousClass12(TvContentRating tvContentRating) {
+                rating = tvContentRating;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onContentBlocked(rating.flattenToString());
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyContentBlocked", e);
+                }
+            }
+        }
+
+        public void notifyContentBlocked(TvContentRating rating) {
             Preconditions.checkNotNull(rating);
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.12
+                final /* synthetic */ TvContentRating val$rating;
+
+                AnonymousClass12(TvContentRating rating2) {
+                    rating = rating2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -460,8 +882,36 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyTimeShiftStatusChanged(final int status) {
+        /* renamed from: android.media.tv.TvInputService$Session$13 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass13 implements Runnable {
+            final /* synthetic */ int val$status;
+
+            AnonymousClass13(int i) {
+                status = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                Session.this.timeShiftEnablePositionTracking(status == 3);
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onTimeShiftStatusChanged(status);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTimeShiftStatusChanged", e);
+                }
+            }
+        }
+
+        public void notifyTimeShiftStatusChanged(int status) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.13
+                final /* synthetic */ int val$status;
+
+                AnonymousClass13(int status2) {
+                    status = status2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     Session.this.timeShiftEnablePositionTracking(status == 3);
@@ -476,8 +926,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyBroadcastInfoResponse(final BroadcastInfoResponse response) {
+        /* renamed from: android.media.tv.TvInputService$Session$14 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass14 implements Runnable {
+            final /* synthetic */ BroadcastInfoResponse val$response;
+
+            AnonymousClass14(BroadcastInfoResponse broadcastInfoResponse) {
+                response = broadcastInfoResponse;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onBroadcastInfoResponse(response);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyBroadcastInfoResponse", e);
+                }
+            }
+        }
+
+        public void notifyBroadcastInfoResponse(BroadcastInfoResponse response) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.14
+                final /* synthetic */ BroadcastInfoResponse val$response;
+
+                AnonymousClass14(BroadcastInfoResponse response2) {
+                    response = response2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -491,8 +968,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyAdResponse(final AdResponse response) {
+        /* renamed from: android.media.tv.TvInputService$Session$15 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass15 implements Runnable {
+            final /* synthetic */ AdResponse val$response;
+
+            AnonymousClass15(AdResponse adResponse) {
+                response = adResponse;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onAdResponse(response);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyAdResponse", e);
+                }
+            }
+        }
+
+        public void notifyAdResponse(AdResponse response) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.15
+                final /* synthetic */ AdResponse val$response;
+
+                AnonymousClass15(AdResponse response2) {
+                    response = response2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -508,8 +1012,14 @@ public abstract class TvInputService extends Service {
 
         public void notifyAdBufferConsumed(AdBuffer buffer) {
             try {
-                final AdBuffer dupBuffer = AdBuffer.dupAdBuffer(buffer);
+                AdBuffer dupBuffer = AdBuffer.dupAdBuffer(buffer);
                 executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.16
+                    final /* synthetic */ AdBuffer val$dupBuffer;
+
+                    AnonymousClass16(AdBuffer dupBuffer2) {
+                        dupBuffer = dupBuffer2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         AdBuffer adBuffer;
@@ -544,8 +1054,78 @@ public abstract class TvInputService extends Service {
             }
         }
 
-        public void notifyTvMessage(final int type, final Bundle data) {
+        /* renamed from: android.media.tv.TvInputService$Session$16 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass16 implements Runnable {
+            final /* synthetic */ AdBuffer val$dupBuffer;
+
+            AnonymousClass16(AdBuffer dupBuffer2) {
+                dupBuffer = dupBuffer2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                AdBuffer adBuffer;
+                try {
+                    try {
+                        if (Session.this.mSessionCallback != null) {
+                            Session.this.mSessionCallback.onAdBufferConsumed(dupBuffer);
+                        }
+                        adBuffer = dupBuffer;
+                        if (adBuffer == null) {
+                            return;
+                        }
+                    } catch (RemoteException e) {
+                        Log.w(TvInputService.TAG, "error in notifyAdBufferConsumed", e);
+                        adBuffer = dupBuffer;
+                        if (adBuffer == null) {
+                            return;
+                        }
+                    }
+                    adBuffer.getSharedMemory().close();
+                } catch (Throwable th) {
+                    AdBuffer adBuffer2 = dupBuffer;
+                    if (adBuffer2 != null) {
+                        adBuffer2.getSharedMemory().close();
+                    }
+                    throw th;
+                }
+            }
+        }
+
+        /* renamed from: android.media.tv.TvInputService$Session$17 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass17 implements Runnable {
+            final /* synthetic */ Bundle val$data;
+            final /* synthetic */ int val$type;
+
+            AnonymousClass17(int i, Bundle bundle) {
+                type = i;
+                data = bundle;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onTvMessage(type, data);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTvMessage", e);
+                }
+            }
+        }
+
+        public void notifyTvMessage(int type, Bundle data) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.17
+                final /* synthetic */ Bundle val$data;
+                final /* synthetic */ int val$type;
+
+                AnonymousClass17(int type2, Bundle data2) {
+                    type = type2;
+                    data = data2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -559,9 +1139,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public void notifyTimeShiftStartPositionChanged(final long timeMs) {
+        /* renamed from: android.media.tv.TvInputService$Session$18 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass18 implements Runnable {
+            final /* synthetic */ long val$timeMs;
+
+            AnonymousClass18(long j) {
+                timeMs = j;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onTimeShiftStartPositionChanged(timeMs);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTimeShiftStartPositionChanged", e);
+                }
+            }
+        }
+
+        public void notifyTimeShiftStartPositionChanged(long timeMs) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.18
+                final /* synthetic */ long val$timeMs;
+
+                AnonymousClass18(long timeMs2) {
+                    timeMs = timeMs2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -575,9 +1181,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public void notifyTimeShiftCurrentPositionChanged(final long timeMs) {
+        /* renamed from: android.media.tv.TvInputService$Session$19 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass19 implements Runnable {
+            final /* synthetic */ long val$timeMs;
+
+            AnonymousClass19(long j) {
+                timeMs = j;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onTimeShiftCurrentPositionChanged(timeMs);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTimeShiftCurrentPositionChanged", e);
+                }
+            }
+        }
+
+        public void notifyTimeShiftCurrentPositionChanged(long timeMs) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.19
+                final /* synthetic */ long val$timeMs;
+
+                AnonymousClass19(long timeMs2) {
+                    timeMs = timeMs2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -591,8 +1223,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyAitInfoUpdated(final AitInfo aitInfo) {
+        /* renamed from: android.media.tv.TvInputService$Session$20 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass20 implements Runnable {
+            final /* synthetic */ AitInfo val$aitInfo;
+
+            AnonymousClass20(AitInfo aitInfo) {
+                aitInfo = aitInfo;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onAitInfoUpdated(aitInfo);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyAitInfoUpdated", e);
+                }
+            }
+        }
+
+        public void notifyAitInfoUpdated(AitInfo aitInfo) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.20
+                final /* synthetic */ AitInfo val$aitInfo;
+
+                AnonymousClass20(AitInfo aitInfo2) {
+                    aitInfo = aitInfo2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -606,8 +1265,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyTimeShiftMode(final int mode) {
+        /* renamed from: android.media.tv.TvInputService$Session$21 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass21 implements Runnable {
+            final /* synthetic */ int val$mode;
+
+            AnonymousClass21(int i) {
+                mode = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onTimeShiftMode(mode);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTimeShiftMode", e);
+                }
+            }
+        }
+
+        public void notifyTimeShiftMode(int mode) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.21
+                final /* synthetic */ int val$mode;
+
+                AnonymousClass21(int mode2) {
+                    mode = mode2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -621,8 +1307,36 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyAvailableSpeeds(final float[] speeds) {
+        /* renamed from: android.media.tv.TvInputService$Session$22 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass22 implements Runnable {
+            final /* synthetic */ float[] val$speeds;
+
+            AnonymousClass22(float[] fArr) {
+                speeds = fArr;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Arrays.sort(speeds);
+                        Session.this.mSessionCallback.onAvailableSpeeds(speeds);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyAvailableSpeeds", e);
+                }
+            }
+        }
+
+        public void notifyAvailableSpeeds(float[] speeds) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.22
+                final /* synthetic */ float[] val$speeds;
+
+                AnonymousClass22(float[] speeds2) {
+                    speeds = speeds2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -637,8 +1351,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifySignalStrength(final int strength) {
+        /* renamed from: android.media.tv.TvInputService$Session$23 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass23 implements Runnable {
+            final /* synthetic */ int val$strength;
+
+            AnonymousClass23(int i) {
+                strength = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onSignalStrength(strength);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifySignalStrength", e);
+                }
+            }
+        }
+
+        public void notifySignalStrength(int strength) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.23
+                final /* synthetic */ int val$strength;
+
+                AnonymousClass23(int strength2) {
+                    strength = strength2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -652,8 +1393,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyCueingMessageAvailability(final boolean available) {
+        /* renamed from: android.media.tv.TvInputService$Session$24 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass24 implements Runnable {
+            final /* synthetic */ boolean val$available;
+
+            AnonymousClass24(boolean z) {
+                available = z;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onCueingMessageAvailability(available);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyCueingMessageAvailability", e);
+                }
+            }
+        }
+
+        public void notifyCueingMessageAvailability(boolean available) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.24
+                final /* synthetic */ boolean val$available;
+
+                AnonymousClass24(boolean available2) {
+                    available = available2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -667,11 +1435,23 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void layoutSurface(final int left, final int top, final int right, final int bottom) {
+        public void layoutSurface(int left, int top, int right, int bottom) {
             if (left > right || top > bottom) {
                 throw new IllegalArgumentException("Invalid parameter");
             }
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.Session.25
+                final /* synthetic */ int val$bottom;
+                final /* synthetic */ int val$left;
+                final /* synthetic */ int val$right;
+                final /* synthetic */ int val$top;
+
+                AnonymousClass25(int left2, int top2, int right2, int bottom2) {
+                    left = left2;
+                    top = top2;
+                    right = right2;
+                    bottom = bottom2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -683,6 +1463,33 @@ public abstract class TvInputService extends Service {
                     }
                 }
             });
+        }
+
+        /* renamed from: android.media.tv.TvInputService$Session$25 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass25 implements Runnable {
+            final /* synthetic */ int val$bottom;
+            final /* synthetic */ int val$left;
+            final /* synthetic */ int val$right;
+            final /* synthetic */ int val$top;
+
+            AnonymousClass25(int left2, int top2, int right2, int bottom2) {
+                left = left2;
+                top = top2;
+                right = right2;
+                bottom = bottom2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (Session.this.mSessionCallback != null) {
+                        Session.this.mSessionCallback.onLayoutSurface(left, top, right, bottom);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in layoutSurface", e);
+                }
+            }
         }
 
         @SystemApi
@@ -796,7 +1603,6 @@ public abstract class TvInputService extends Service {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void release() {
             onRelease();
             Surface surface = this.mSurface;
@@ -812,12 +1618,10 @@ public abstract class TvInputService extends Service {
             this.mHandler.removeCallbacks(this.mTimeShiftPositionTrackingRunnable);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setMain(boolean isMain) {
             onSetMain(isMain);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setSurface(Surface surface) {
             onSetSurface(surface);
             Surface surface2 = this.mSurface;
@@ -827,58 +1631,47 @@ public abstract class TvInputService extends Service {
             this.mSurface = surface;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void dispatchSurfaceChanged(int format, int width, int height) {
             onSurfaceChanged(format, width, height);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setStreamVolume(float volume) {
             onSetStreamVolume(volume);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void tune(Uri channelUri, Bundle params) {
             this.mCurrentPositionMs = Long.MIN_VALUE;
             onTune(channelUri, params);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setCaptionEnabled(boolean enabled) {
             onSetCaptionEnabled(enabled);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void selectAudioPresentation(int presentationId, int programId) {
             onSelectAudioPresentation(presentationId, programId);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void selectTrack(int type, String trackId) {
             onSelectTrack(type, trackId);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void unblockContent(String unblockedRating) {
             onUnblockContent(TvContentRating.unflattenFromString(unblockedRating));
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setInteractiveAppNotificationEnabled(boolean enabled) {
             onSetInteractiveAppNotificationEnabled(enabled);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setTvMessageEnabled(int type, boolean enabled) {
             onSetTvMessageEnabled(type, enabled);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void appPrivateCommand(String action, Bundle data) {
             onAppPrivateCommand(action, data);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void createOverlayView(IBinder windowToken, Rect frame) {
             if (this.mOverlayViewContainer != null) {
                 removeOverlayView(false);
@@ -911,7 +1704,6 @@ public abstract class TvInputService extends Service {
             this.mWindowManager.addView(this.mOverlayViewContainer, this.mWindowParams);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void relayoutOverlayView(Rect frame) {
             Rect rect = this.mOverlayFrame;
             if (rect == null || rect.width() != frame.width() || this.mOverlayFrame.height() != frame.height()) {
@@ -928,7 +1720,6 @@ public abstract class TvInputService extends Service {
             this.mWindowManager.updateViewLayout(this.mOverlayViewContainer, this.mWindowParams);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void removeOverlayView(boolean clearWindowToken) {
             if (clearWindowToken) {
                 this.mWindowToken = null;
@@ -944,38 +1735,31 @@ public abstract class TvInputService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftPlay(Uri recordedProgramUri) {
             this.mCurrentPositionMs = 0L;
             onTimeShiftPlay(recordedProgramUri);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftPause() {
             onTimeShiftPause();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftResume() {
             onTimeShiftResume();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftSeekTo(long timeMs) {
             onTimeShiftSeekTo(timeMs);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftSetPlaybackParams(PlaybackParams params) {
             onTimeShiftSetPlaybackParams(params);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftSetMode(int mode) {
             onTimeShiftSetMode(mode);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void timeShiftEnablePositionTracking(boolean enable) {
             if (enable) {
                 this.mHandler.post(this.mTimeShiftPositionTrackingRunnable);
@@ -986,7 +1770,6 @@ public abstract class TvInputService extends Service {
             this.mCurrentPositionMs = Long.MIN_VALUE;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void scheduleOverlayViewCleanup() {
             View overlayViewParent = this.mOverlayViewContainer;
             if (overlayViewParent != null) {
@@ -996,32 +1779,26 @@ public abstract class TvInputService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void requestBroadcastInfo(BroadcastInfoRequest request) {
             onRequestBroadcastInfo(request);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void removeBroadcastInfo(int requestId) {
             onRemoveBroadcastInfo(requestId);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void requestAd(AdRequest request) {
             onRequestAd(request);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void notifyAdBufferReady(AdBuffer buffer) {
             onAdBufferReady(buffer);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void onTvMessageReceived(int type, Bundle data) {
             onTvMessage(type, data);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int dispatchInputEvent(InputEvent event, InputEventReceiver receiver) {
             boolean isNavigationKey = false;
             boolean skipDispatchToOverlayView = false;
@@ -1063,7 +1840,6 @@ public abstract class TvInputService extends Service {
             return -1;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void initialize(ITvInputSessionCallback callback) {
             synchronized (this.mLock) {
                 this.mSessionCallback = callback;
@@ -1086,9 +1862,12 @@ public abstract class TvInputService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public final class TimeShiftPositionTrackingRunnable implements Runnable {
+            /* synthetic */ TimeShiftPositionTrackingRunnable(Session session, TimeShiftPositionTrackingRunnableIA timeShiftPositionTrackingRunnableIA) {
+                this();
+            }
+
             private TimeShiftPositionTrackingRunnable() {
             }
 
@@ -1114,13 +1893,15 @@ public abstract class TvInputService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class OverlayViewCleanUpTask extends AsyncTask<View, Void, Void> {
+        /* synthetic */ OverlayViewCleanUpTask(OverlayViewCleanUpTaskIA overlayViewCleanUpTaskIA) {
+            this();
+        }
+
         private OverlayViewCleanUpTask() {
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public Void doInBackground(View... views) {
             View overlayViewParent = views[0];
@@ -1156,8 +1937,35 @@ public abstract class TvInputService extends Service {
             this.mHandler = new Handler(context.getMainLooper());
         }
 
-        public void notifyTuned(final Uri channelUri) {
+        /* renamed from: android.media.tv.TvInputService$RecordingSession$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ Uri val$channelUri;
+
+            AnonymousClass1(Uri uri) {
+                channelUri = uri;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (RecordingSession.this.mSessionCallback != null) {
+                        RecordingSession.this.mSessionCallback.onTuned(channelUri);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyTuned", e);
+                }
+            }
+        }
+
+        public void notifyTuned(Uri channelUri) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.RecordingSession.1
+                final /* synthetic */ Uri val$channelUri;
+
+                AnonymousClass1(Uri channelUri2) {
+                    channelUri = channelUri2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -1171,8 +1979,35 @@ public abstract class TvInputService extends Service {
             });
         }
 
-        public void notifyRecordingStopped(final Uri recordedProgramUri) {
+        /* renamed from: android.media.tv.TvInputService$RecordingSession$2 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ Uri val$recordedProgramUri;
+
+            AnonymousClass2(Uri uri) {
+                recordedProgramUri = uri;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (RecordingSession.this.mSessionCallback != null) {
+                        RecordingSession.this.mSessionCallback.onRecordingStopped(recordedProgramUri);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyRecordingStopped", e);
+                }
+            }
+        }
+
+        public void notifyRecordingStopped(Uri recordedProgramUri) {
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.RecordingSession.2
+                final /* synthetic */ Uri val$recordedProgramUri;
+
+                AnonymousClass2(Uri recordedProgramUri2) {
+                    recordedProgramUri = recordedProgramUri2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -1191,8 +2026,14 @@ public abstract class TvInputService extends Service {
                 Log.w(TvInputService.TAG, "notifyError - invalid error code (" + error + ") is changed to RECORDING_ERROR_UNKNOWN.");
                 error = 0;
             }
-            final int validError = error;
+            int validError = error;
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.RecordingSession.3
+                final /* synthetic */ int val$validError;
+
+                AnonymousClass3(int validError2) {
+                    validError = validError2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -1206,10 +2047,62 @@ public abstract class TvInputService extends Service {
             });
         }
 
+        /* renamed from: android.media.tv.TvInputService$RecordingSession$3 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass3 implements Runnable {
+            final /* synthetic */ int val$validError;
+
+            AnonymousClass3(int validError2) {
+                validError = validError2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (RecordingSession.this.mSessionCallback != null) {
+                        RecordingSession.this.mSessionCallback.onError(validError);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in notifyError", e);
+                }
+            }
+        }
+
+        /* renamed from: android.media.tv.TvInputService$RecordingSession$4 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass4 implements Runnable {
+            final /* synthetic */ Bundle val$eventArgs;
+            final /* synthetic */ String val$eventType;
+
+            AnonymousClass4(String str, Bundle bundle) {
+                eventType = str;
+                eventArgs = bundle;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    if (RecordingSession.this.mSessionCallback != null) {
+                        RecordingSession.this.mSessionCallback.onSessionEvent(eventType, eventArgs);
+                    }
+                } catch (RemoteException e) {
+                    Log.w(TvInputService.TAG, "error in sending event (event=" + eventType + NavigationBarInflaterView.KEY_CODE_END, e);
+                }
+            }
+        }
+
         @SystemApi
-        public void notifySessionEvent(final String eventType, final Bundle eventArgs) {
+        public void notifySessionEvent(String eventType, Bundle eventArgs) {
             Preconditions.checkNotNull(eventType);
             executeOrPostRunnableOnMainThread(new Runnable() { // from class: android.media.tv.TvInputService.RecordingSession.4
+                final /* synthetic */ Bundle val$eventArgs;
+                final /* synthetic */ String val$eventType;
+
+                AnonymousClass4(String eventType2, Bundle eventArgs2) {
+                    eventType = eventType2;
+                    eventArgs = eventArgs2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -1240,42 +2133,34 @@ public abstract class TvInputService extends Service {
         public void onAppPrivateCommand(String action, Bundle data) {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void tune(Uri channelUri, Bundle params) {
             onTune(channelUri, params);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void release() {
             onRelease();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void startRecording(Uri programUri, Bundle params) {
             onStartRecording(programUri, params);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void stopRecording() {
             onStopRecording();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void pauseRecording(Bundle params) {
             onPauseRecording(params);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void resumeRecording(Bundle params) {
             onResumeRecording(params);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void appPrivateCommand(String action, Bundle data) {
             onAppPrivateCommand(action, data);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void initialize(ITvInputSessionCallback callback) {
             synchronized (this.mLock) {
                 this.mSessionCallback = callback;
@@ -1312,6 +2197,9 @@ public abstract class TvInputService extends Service {
         public HardwareSession(Context context) {
             super(context);
             this.mHardwareSessionCallback = new TvInputManager.SessionCallback() { // from class: android.media.tv.TvInputService.HardwareSession.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.media.tv.TvInputManager.SessionCallback
                 public void onSessionCreated(TvInputManager.Session session) {
                     HardwareSession.this.mHardwareSession = session;
@@ -1348,6 +2236,47 @@ public abstract class TvInputService extends Service {
             };
         }
 
+        /* renamed from: android.media.tv.TvInputService$HardwareSession$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 extends TvInputManager.SessionCallback {
+            AnonymousClass1() {
+            }
+
+            @Override // android.media.tv.TvInputManager.SessionCallback
+            public void onSessionCreated(TvInputManager.Session session) {
+                HardwareSession.this.mHardwareSession = session;
+                SomeArgs args = SomeArgs.obtain();
+                if (session != null) {
+                    args.arg1 = HardwareSession.this;
+                    args.arg2 = HardwareSession.this.mProxySession;
+                    args.arg3 = HardwareSession.this.mProxySessionCallback;
+                    args.arg4 = session.getToken();
+                    session.tune(TvContract.buildChannelUriForPassthroughInput(HardwareSession.this.getHardwareInputId()));
+                } else {
+                    args.arg1 = null;
+                    args.arg2 = null;
+                    args.arg3 = HardwareSession.this.mProxySessionCallback;
+                    args.arg4 = null;
+                    HardwareSession.this.onRelease();
+                }
+                HardwareSession.this.mServiceHandler.obtainMessage(2, args).sendToTarget();
+            }
+
+            @Override // android.media.tv.TvInputManager.SessionCallback
+            public void onVideoAvailable(TvInputManager.Session session) {
+                if (HardwareSession.this.mHardwareSession == session) {
+                    HardwareSession.this.onHardwareVideoAvailable();
+                }
+            }
+
+            @Override // android.media.tv.TvInputManager.SessionCallback
+            public void onVideoUnavailable(TvInputManager.Session session, int reason) {
+                if (HardwareSession.this.mHardwareSession == session) {
+                    HardwareSession.this.onHardwareVideoUnavailable(reason);
+                }
+            }
+        }
+
         @Override // android.media.tv.TvInputService.Session
         public final boolean onSetSurface(Surface surface) {
             Log.e(TvInputService.TAG, "onSetSurface() should not be called in HardwareProxySession.");
@@ -1360,8 +2289,9 @@ public abstract class TvInputService extends Service {
         public void onHardwareVideoUnavailable(int reason) {
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.media.tv.TvInputService.Session
-        void release() {
+        public void release() {
             TvInputManager.Session session = this.mHardwareSession;
             if (session != null) {
                 session.release();
@@ -1401,6 +2331,10 @@ public abstract class TvInputService extends Service {
         private static final int DO_REMOVE_HARDWARE_INPUT = 5;
         private static final int DO_REMOVE_HDMI_INPUT = 7;
         private static final int DO_UPDATE_HDMI_INPUT = 8;
+
+        /* synthetic */ ServiceHandler(TvInputService tvInputService, ServiceHandlerIA serviceHandlerIA) {
+            this();
+        }
 
         private ServiceHandler() {
         }

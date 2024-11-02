@@ -14,6 +14,9 @@ public abstract class MidiDeviceService extends Service {
     public static final String SERVICE_INTERFACE = "android.media.midi.MidiDeviceService";
     private static final String TAG = "MidiDeviceService";
     private final MidiDeviceServer.Callback mCallback = new MidiDeviceServer.Callback() { // from class: android.media.midi.MidiDeviceService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.media.midi.MidiDeviceServer.Callback
         public void onDeviceStatusChanged(MidiDeviceServer server, MidiDeviceStatus status) {
             MidiDeviceService.this.onDeviceStatusChanged(status);
@@ -29,6 +32,23 @@ public abstract class MidiDeviceService extends Service {
     private MidiDeviceServer mServer;
 
     public abstract MidiReceiver[] onGetInputPortReceivers();
+
+    /* renamed from: android.media.midi.MidiDeviceService$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements MidiDeviceServer.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.midi.MidiDeviceServer.Callback
+        public void onDeviceStatusChanged(MidiDeviceServer server, MidiDeviceStatus status) {
+            MidiDeviceService.this.onDeviceStatusChanged(status);
+        }
+
+        @Override // android.media.midi.MidiDeviceServer.Callback
+        public void onClose() {
+            MidiDeviceService.this.onClose();
+        }
+    }
 
     @Override // android.app.Service
     public void onCreate() {

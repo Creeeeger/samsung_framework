@@ -174,7 +174,6 @@ public class MediaBufferFileWriter {
         return success;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ BiFunction lambda$writeSingle$1() {
         return new BiFunction() { // from class: com.samsung.android.sume.core.buffer.MediaBufferFileWriter$$ExternalSyntheticLambda3
             @Override // java.util.function.BiFunction
@@ -184,14 +183,12 @@ public class MediaBufferFileWriter {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Boolean lambda$writeSingle$0(MediaBuffer buf, String name) {
         Log.w(TAG, "not implement internal compress image writer yet, plz should set explicitly");
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.sume.core.buffer.MediaBufferFileWriter$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.sume.core.buffer.MediaBufferFileWriter$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$ColorFormat;
@@ -210,7 +207,6 @@ public class MediaBufferFileWriter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$writeSingle$2(ColorFormat e) {
         switch (AnonymousClass1.$SwitchMap$com$samsung$android$sume$core$types$ColorFormat[e.ordinal()]) {
             case 1:
@@ -253,7 +249,6 @@ public class MediaBufferFileWriter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$writeRawImageSingle$3(DataType dataType, DataType e) {
         return e == dataType.depth();
     }
@@ -262,14 +257,13 @@ public class MediaBufferFileWriter {
         buffer.asList().forEach(new Consumer() { // from class: com.samsung.android.sume.core.buffer.MediaBufferFileWriter$$ExternalSyntheticLambda5
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MediaBufferFileWriter.this.m8732xaf869f87((MediaBuffer) obj);
+                MediaBufferFileWriter.this.m8724xaf869f87((MediaBuffer) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$extractMetaBuffers$5$com-samsung-android-sume-core-buffer-MediaBufferFileWriter, reason: not valid java name */
-    public /* synthetic */ void m8732xaf869f87(final MediaBuffer it) {
+    /* renamed from: lambda$extractMetaBuffers$5$com-samsung-android-sume-core-buffer-MediaBufferFileWriter */
+    public /* synthetic */ void m8724xaf869f87(final MediaBuffer it) {
         if (it.getFormat().getMediaType() == MediaType.META) {
             if (it.getFormat().contains("exif")) {
                 if (it.getData() instanceof UniExifInterface) {
@@ -301,7 +295,6 @@ public class MediaBufferFileWriter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ExifInterface lambda$extractMetaBuffers$4(MediaBuffer it) {
         return (ExifInterface) it.getTypedData(ExifInterface.class);
     }

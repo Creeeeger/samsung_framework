@@ -19,6 +19,10 @@ public class SemCapabilityListener {
     private final int EVT_CAP_CHANGED = 3;
     private final int EVT_CAP_PUBLISHED = 4;
     private Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.ims.options.SemCapabilityListener.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -50,20 +54,21 @@ public class SemCapabilityListener {
     public void onCapabilityAndAvailabilityPublished(int errorCode) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public String getToken() {
         return this.callback.mToken;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setToken(String token) {
         this.callback.mToken = token;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class SemCapabilityServiceEventListenerDelegate extends SemCapabilityServiceEventListener.Stub {
         String mToken;
+
+        /* synthetic */ SemCapabilityServiceEventListenerDelegate(SemCapabilityListener semCapabilityListener, SemCapabilityServiceEventListenerDelegateIA semCapabilityServiceEventListenerDelegateIA) {
+            this();
+        }
 
         private SemCapabilityServiceEventListenerDelegate() {
         }
@@ -86,6 +91,34 @@ public class SemCapabilityListener {
         @Override // com.samsung.android.ims.options.SemCapabilityServiceEventListener
         public void onCapabilityAndAvailabilityPublished(int errorCode) throws RemoteException {
             Message.obtain(SemCapabilityListener.this.mHandler, 4, errorCode, -1).sendToTarget();
+        }
+    }
+
+    /* renamed from: com.samsung.android.ims.options.SemCapabilityListener$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    Log.d(SemCapabilityListener.LOG_TAG, "onOwnCapabilitiesChanged: listener = " + SemCapabilityListener.this);
+                    SemCapabilityListener.this.onOwnCapabilitiesChanged();
+                    return;
+                case 2:
+                default:
+                    return;
+                case 3:
+                    Pair<SemImsUri, SemCapabilities> p = (Pair) msg.obj;
+                    SemCapabilityListener.this.onCapabilitiesChanged(p.first, p.second);
+                    return;
+                case 4:
+                    SemCapabilityListener.this.onCapabilityAndAvailabilityPublished(msg.arg1);
+                    return;
+            }
         }
     }
 }

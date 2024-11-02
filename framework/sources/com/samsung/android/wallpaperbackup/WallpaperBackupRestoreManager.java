@@ -47,7 +47,6 @@ public class WallpaperBackupRestoreManager {
     private static final String TAG = WallpaperBackupRestoreManager.class.getSimpleName();
     private static boolean DEBUG = true;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public enum ResultCode {
         INVALID_VALUE(-1),
@@ -353,7 +352,6 @@ public class WallpaperBackupRestoreManager {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void response(ArrayList<WallpaperBNRHelper> helpers) {
         BnRFileHelper.ErrorCode errorCode = BnRFileHelper.ErrorCode.ERROR_NONE;
         int successCount = 0;
@@ -416,7 +414,6 @@ public class WallpaperBackupRestoreManager {
         Slog.d(str, "sendBroadcast. " + which);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class WallpaperBNRHelper {
         private static final String TAG = WallpaperBNRHelper.class.getSimpleName();
@@ -645,7 +642,6 @@ public class WallpaperBackupRestoreManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void convertToImageWallpaperForSCloud() {
             addErrorDescription("convertImageWallpaperForSCloud: Backup with Samsung cloud, change layered type to image");
             this.mWallpaperType = 0;
@@ -1005,7 +1001,6 @@ public class WallpaperBackupRestoreManager {
             return this.mWallpaperManager;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         @Deprecated
         public String getOriginalFilePath() {
             int i = this.mMode;
@@ -1029,7 +1024,6 @@ public class WallpaperBackupRestoreManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         @Deprecated
         public String getOriginalXmlFilePath() {
             switch (this.mMode) {
@@ -1045,7 +1039,6 @@ public class WallpaperBackupRestoreManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public String getXmlFilePath() {
             switch (this.mMode) {
                 case 4:
@@ -1288,13 +1281,11 @@ public class WallpaperBackupRestoreManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class WallpaperBackupAsyncTask extends AsyncTask<ArrayList, WallpaperBNRHelper, ArrayList<WallpaperBNRHelper>> {
         WallpaperBackupAsyncTask() {
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public ArrayList doInBackground(ArrayList... helpers) {
             ArrayList arrayList = helpers[0];
@@ -1320,7 +1311,6 @@ public class WallpaperBackupRestoreManager {
             return arrayList;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onProgressUpdate(WallpaperBNRHelper... helpers) {
             try {
@@ -1332,7 +1322,6 @@ public class WallpaperBackupRestoreManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onPostExecute(ArrayList<WallpaperBNRHelper> helpers) {
             WallpaperBackupRestoreManager.response(helpers);
@@ -1436,13 +1425,11 @@ public class WallpaperBackupRestoreManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class WallpaperRestoreAsyncTask extends AsyncTask<ArrayList, WallpaperBNRHelper, ArrayList<WallpaperBNRHelper>> {
         WallpaperRestoreAsyncTask() {
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public ArrayList doInBackground(ArrayList... helpers) {
             ArrayList arrayList = helpers[0];
@@ -1476,7 +1463,6 @@ public class WallpaperBackupRestoreManager {
             return arrayList;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onProgressUpdate(WallpaperBNRHelper... helpers) {
             try {
@@ -1487,7 +1473,6 @@ public class WallpaperBackupRestoreManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onPostExecute(ArrayList<WallpaperBNRHelper> helpers) {
             WallpaperBackupRestoreManager.response(helpers);

@@ -247,7 +247,6 @@ public class RFC4519Style extends AbstractX500NameStyle {
     protected RFC4519Style() {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.asn1.x500.style.AbstractX500NameStyle
     public ASN1Encodable encodeStringValue(ASN1ObjectIdentifier oid, String value) {
         if (oid.equals((ASN1Primitive) dc)) {

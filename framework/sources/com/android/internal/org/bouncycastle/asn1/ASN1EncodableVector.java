@@ -70,7 +70,6 @@ public class ASN1EncodableVector {
         return this.elementCount;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Encodable[] copyElements() {
         int i = this.elementCount;
         if (i == 0) {
@@ -81,7 +80,6 @@ public class ASN1EncodableVector {
         return copy;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Encodable[] takeElements() {
         int i = this.elementCount;
         if (i == 0) {
@@ -106,7 +104,6 @@ public class ASN1EncodableVector {
         this.copyOnWrite = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1Encodable[] cloneElements(ASN1Encodable[] elements) {
         return elements.length < 1 ? EMPTY_ELEMENTS : (ASN1Encodable[]) elements.clone();
     }

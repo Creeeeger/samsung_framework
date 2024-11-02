@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class CorrelationVector implements Parcelable {
     public static final Parcelable.Creator<CorrelationVector> CREATOR = new Parcelable.Creator<CorrelationVector>() { // from class: android.location.CorrelationVector.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CorrelationVector createFromParcel(Parcel parcel) {
             return new CorrelationVector(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CorrelationVector[] newArray(int size) {
             return new CorrelationVector[size];
@@ -28,6 +29,14 @@ public final class CorrelationVector implements Parcelable {
     private final int[] mMagnitude;
     private final double mSamplingStartMeters;
     private final double mSamplingWidthMeters;
+
+    /* synthetic */ CorrelationVector(Builder builder, CorrelationVectorIA correlationVectorIA) {
+        this(builder);
+    }
+
+    /* synthetic */ CorrelationVector(Parcel parcel, CorrelationVectorIA correlationVectorIA) {
+        this(parcel);
+    }
 
     public double getSamplingWidthMeters() {
         return this.mSamplingWidthMeters;
@@ -63,6 +72,23 @@ public final class CorrelationVector implements Parcelable {
         int[] iArr = new int[in.readInt()];
         this.mMagnitude = iArr;
         in.readIntArray(iArr);
+    }
+
+    /* renamed from: android.location.CorrelationVector$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CorrelationVector> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CorrelationVector createFromParcel(Parcel parcel) {
+            return new CorrelationVector(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CorrelationVector[] newArray(int size) {
+            return new CorrelationVector[size];
+        }
     }
 
     @Override // android.os.Parcelable

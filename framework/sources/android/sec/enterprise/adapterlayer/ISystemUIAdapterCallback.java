@@ -480,8 +480,9 @@ public interface ISystemUIAdapterCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISystemUIAdapterCallback {
+        public static class Proxy implements ISystemUIAdapterCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -19,8 +19,11 @@ public class DragAndDropHelper {
     private IDragAndDropControllerProxy mServerProxy;
     private IDragAndDropClient mStub;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.multiwindow.DragAndDropHelper$1, reason: invalid class name */
+    /* synthetic */ DragAndDropHelper(boolean z, Rect rect, DragAndDropHelperIA dragAndDropHelperIA) {
+        this(z, rect);
+    }
+
+    /* renamed from: com.samsung.android.multiwindow.DragAndDropHelper$1 */
     /* loaded from: classes5.dex */
     public class AnonymousClass1 extends IDragAndDropClient.Stub {
         AnonymousClass1() {
@@ -41,7 +44,6 @@ public class DragAndDropHelper {
             DragAndDropHelper.this.mDisplayId = displayId;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConnected$0() {
             if (DragAndDropHelper.DEBUG) {
                 Slog.d(DragAndDropHelper.TAG, "binderDied");
@@ -91,7 +93,6 @@ public class DragAndDropHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dismiss() {
         this.mServerProxy = null;
     }

@@ -50,8 +50,9 @@ public class PrintFileDocumentAdapter extends PrintDocumentAdapter {
         writeFileAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class WriteFileAsyncTask extends AsyncTask<Void, Void, Void> {
+    public final class WriteFileAsyncTask extends AsyncTask<Void, Void, Void> {
         private final CancellationSignal mCancellationSignal;
         private final ParcelFileDescriptor mDestination;
         private final PrintDocumentAdapter.WriteResultCallback mResultCallback;
@@ -61,6 +62,12 @@ public class PrintFileDocumentAdapter extends PrintDocumentAdapter {
             this.mResultCallback = callback;
             this.mCancellationSignal = cancellationSignal;
             cancellationSignal.setOnCancelListener(new CancellationSignal.OnCancelListener() { // from class: android.print.PrintFileDocumentAdapter.WriteFileAsyncTask.1
+                final /* synthetic */ PrintFileDocumentAdapter val$this$0;
+
+                AnonymousClass1(PrintFileDocumentAdapter printFileDocumentAdapter) {
+                    r2 = printFileDocumentAdapter;
+                }
+
                 @Override // android.os.CancellationSignal.OnCancelListener
                 public void onCancel() {
                     WriteFileAsyncTask.this.cancel(true);
@@ -68,7 +75,22 @@ public class PrintFileDocumentAdapter extends PrintDocumentAdapter {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.print.PrintFileDocumentAdapter$WriteFileAsyncTask$1 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass1 implements CancellationSignal.OnCancelListener {
+            final /* synthetic */ PrintFileDocumentAdapter val$this$0;
+
+            AnonymousClass1(PrintFileDocumentAdapter printFileDocumentAdapter) {
+                r2 = printFileDocumentAdapter;
+            }
+
+            @Override // android.os.CancellationSignal.OnCancelListener
+            public void onCancel() {
+                WriteFileAsyncTask.this.cancel(true);
+            }
+        }
+
         @Override // android.os.AsyncTask
         public Void doInBackground(Void... params) {
             InputStream in;
@@ -92,13 +114,11 @@ public class PrintFileDocumentAdapter extends PrintDocumentAdapter {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onPostExecute(Void result) {
             this.mResultCallback.onWriteFinished(new PageRange[]{PageRange.ALL_PAGES});
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onCancelled(Void result) {
             this.mResultCallback.onWriteFailed(PrintFileDocumentAdapter.this.mContext.getString(R.string.write_fail_reason_cancelled));

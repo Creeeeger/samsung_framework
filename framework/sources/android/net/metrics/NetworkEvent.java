@@ -14,13 +14,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class NetworkEvent implements IpConnectivityLog.Event {
     public static final Parcelable.Creator<NetworkEvent> CREATOR = new Parcelable.Creator<NetworkEvent>() { // from class: android.net.metrics.NetworkEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NetworkEvent createFromParcel(Parcel in) {
             return new NetworkEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkEvent[] newArray(int size) {
             return new NetworkEvent[size];
@@ -47,6 +48,10 @@ public final class NetworkEvent implements IpConnectivityLog.Event {
     public @interface EventType {
     }
 
+    /* synthetic */ NetworkEvent(Parcel parcel, NetworkEventIA networkEventIA) {
+        this(parcel);
+    }
+
     public NetworkEvent(int eventType, long durationMs) {
         this.eventType = eventType;
         this.durationMs = durationMs;
@@ -70,6 +75,23 @@ public final class NetworkEvent implements IpConnectivityLog.Event {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.net.metrics.NetworkEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NetworkEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkEvent createFromParcel(Parcel in) {
+            return new NetworkEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkEvent[] newArray(int size) {
+            return new NetworkEvent[size];
+        }
     }
 
     public String toString() {

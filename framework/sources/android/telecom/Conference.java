@@ -51,7 +51,6 @@ public abstract class Conference extends Conferenceable {
     private final List<Connection> mUnmodifiableChildConnections;
     private final List<Connection> mUnmodifiableConferenceableConnections;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static abstract class Listener {
         public void onStateChanged(Conference conference, int oldState, int newState) {
@@ -112,6 +111,21 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telecom.Conference$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends Connection.Listener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.telecom.Connection.Listener
+        public void onDestroyed(Connection c) {
+            if (Conference.this.mConferenceableConnections.remove(c)) {
+                Conference.this.fireOnConferenceableConnectionsChanged();
+            }
+        }
+    }
+
     public Conference(PhoneAccountHandle phoneAccount) {
         CopyOnWriteArrayList copyOnWriteArrayList = new CopyOnWriteArrayList();
         this.mChildConnections = copyOnWriteArrayList;
@@ -126,6 +140,9 @@ public abstract class Conference extends Conferenceable {
         this.mRingbackRequested = false;
         this.mIsMultiparty = true;
         this.mConnectionDeathListener = new Connection.Listener() { // from class: android.telecom.Conference.1
+            AnonymousClass1() {
+            }
+
             @Override // android.telecom.Connection.Listener
             public void onDestroyed(Connection c) {
                 if (Conference.this.mConferenceableConnections.remove(c)) {
@@ -357,7 +374,6 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final void fireOnConferenceableConnectionsChanged() {
         for (Listener l : this.mListeners) {
             l.onConferenceableConnectionsChanged(this, getConferenceableConnections());
@@ -383,14 +399,12 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Conference addListener(Listener listener) {
         Rlog.d(LOG_TAG, "addListener - listener: " + listener);
         this.mListeners.add(listener);
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Conference removeListener(Listener listener) {
         Rlog.d(LOG_TAG, "removeListener - listener: " + listener);
         this.mListeners.remove(listener);
@@ -439,7 +453,6 @@ public abstract class Conference extends Conferenceable {
         return this.mConnectionStartElapsedRealTime;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setCallAudioState(CallAudioState state) {
         Log.d(this, "setCallAudioState %s", state);
         this.mCallAudioState = state;
@@ -447,20 +460,17 @@ public abstract class Conference extends Conferenceable {
         onCallAudioStateChanged(state);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setCallEndpoint(CallEndpoint endpoint) {
         Log.d(this, "setCallEndpoint %s", endpoint);
         this.mCallEndpoint = endpoint;
         onCallEndpointChanged(endpoint);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setAvailableCallEndpoints(List<CallEndpoint> availableEndpoints) {
         Log.d(this, "setAvailableCallEndpoints", new Object[0]);
         onAvailableCallEndpointsChanged(availableEndpoints);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setMuteState(boolean isMuted) {
         Log.d(this, "setMuteState %s", Boolean.valueOf(isMuted));
         onMuteStateChanged(isMuted);
@@ -476,8 +486,9 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class FailureSignalingConference extends Conference {
+    public static class FailureSignalingConference extends Conference {
         private boolean mImmutable;
 
         public FailureSignalingConference(DisconnectCause disconnectCause, PhoneAccountHandle phoneAccount) {
@@ -674,7 +685,6 @@ public abstract class Conference extends Conferenceable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void handleExtrasChanged(Bundle extras) {
         Bundle b = null;
         synchronized (this.mExtrasLock) {

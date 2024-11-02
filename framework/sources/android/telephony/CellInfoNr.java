@@ -7,14 +7,15 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CellInfoNr extends CellInfo {
     public static final Parcelable.Creator<CellInfoNr> CREATOR = new Parcelable.Creator<CellInfoNr>() { // from class: android.telephony.CellInfoNr.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellInfoNr createFromParcel(Parcel in) {
             in.readInt();
             return new CellInfoNr(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoNr[] newArray(int size) {
             return new CellInfoNr[size];
@@ -23,6 +24,10 @@ public final class CellInfoNr extends CellInfo {
     private static final String TAG = "CellInfoNr";
     private CellIdentityNr mCellIdentity;
     private final CellSignalStrengthNr mCellSignalStrength;
+
+    /* synthetic */ CellInfoNr(Parcel parcel, CellInfoNrIA cellInfoNrIA) {
+        this(parcel);
+    }
 
     @Override // android.telephony.CellInfo
     public /* bridge */ /* synthetic */ CellIdentityNr getCellIdentity() {
@@ -102,7 +107,24 @@ public final class CellInfoNr extends CellInfo {
         this.mCellSignalStrength.writeToParcel(dest, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.telephony.CellInfoNr$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellInfoNr> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellInfoNr createFromParcel(Parcel in) {
+            in.readInt();
+            return new CellInfoNr(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellInfoNr[] newArray(int size) {
+            return new CellInfoNr[size];
+        }
+    }
+
     public static CellInfoNr createFromParcelBody(Parcel in) {
         return new CellInfoNr(in);
     }

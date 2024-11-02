@@ -115,7 +115,6 @@ public class CallLog {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$storeCallComposerPicture$0(InputStream input, OutcomeReceiver callback, Context context) {
         UserManager userManager;
         Context context2 = context;
@@ -262,6 +261,10 @@ public class CallLog {
         private String mSubject;
         private UserHandle mUserToBeInsertedTo;
         private String mViaNumber;
+
+        /* synthetic */ AddCallParams(CallerInfo callerInfo, String str, String str2, String str3, int i, int i2, int i3, PhoneAccountHandle phoneAccountHandle, long j, int i4, long j2, boolean z, UserHandle userHandle, boolean z2, int i5, CharSequence charSequence, String str4, long j3, int i6, String str5, double d, double d2, Uri uri, int i7, AddCallParamsIA addCallParamsIA) {
+            this(callerInfo, str, str2, str3, i, i2, i3, phoneAccountHandle, j, i4, j2, z, userHandle, z2, i5, charSequence, str4, j3, i6, str5, d, d2, uri, i7);
+        }
 
         /* loaded from: classes3.dex */
         public static final class AddCallParametersBuilder {

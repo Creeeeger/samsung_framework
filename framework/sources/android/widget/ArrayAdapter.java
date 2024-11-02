@@ -306,6 +306,10 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     /* loaded from: classes4.dex */
     private class ArrayFilter extends Filter {
+        /* synthetic */ ArrayFilter(ArrayAdapter arrayAdapter, ArrayFilterIA arrayFilterIA) {
+            this();
+        }
+
         private ArrayFilter() {
         }
 

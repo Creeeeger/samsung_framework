@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SmsWriteArgs implements Parcelable {
     public static final Parcelable.Creator<SmsWriteArgs> CREATOR = new Parcelable.Creator<SmsWriteArgs>() { // from class: android.hardware.radio.messaging.SmsWriteArgs.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmsWriteArgs createFromParcel(Parcel _aidl_source) {
             SmsWriteArgs _aidl_out = new SmsWriteArgs();
@@ -17,7 +19,6 @@ public class SmsWriteArgs implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsWriteArgs[] newArray(int _aidl_size) {
             return new SmsWriteArgs[_aidl_size];
@@ -30,6 +31,25 @@ public class SmsWriteArgs implements Parcelable {
     public String pdu;
     public String smsc;
     public int status = 0;
+
+    /* renamed from: android.hardware.radio.messaging.SmsWriteArgs$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmsWriteArgs> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsWriteArgs createFromParcel(Parcel _aidl_source) {
+            SmsWriteArgs _aidl_out = new SmsWriteArgs();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsWriteArgs[] newArray(int _aidl_size) {
+            return new SmsWriteArgs[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

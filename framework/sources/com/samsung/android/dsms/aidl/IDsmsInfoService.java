@@ -85,8 +85,9 @@ public interface IDsmsInfoService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDsmsInfoService {
+        public static class Proxy implements IDsmsInfoService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

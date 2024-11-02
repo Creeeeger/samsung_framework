@@ -168,7 +168,6 @@ public class RcsUceAdapter {
     public static class PublishStateCallbackAdapter {
         private final PublishStateBinder mBinder;
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class PublishStateBinder extends IRcsUcePublishStateCallback.Stub {
             private final Executor mExecutor;
@@ -197,7 +196,6 @@ public class RcsUceAdapter {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onPublishUpdated$0(PublishAttributes attributes) {
                 this.mPublishStateChangeListener.onPublishStateChange(attributes);
             }
@@ -232,7 +230,6 @@ public class RcsUceAdapter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RcsUceAdapter(Context context, int subId) {
         this.mContext = context;
         this.mSubId = subId;
@@ -265,7 +262,7 @@ public class RcsUceAdapter {
         }
     }
 
-    /* renamed from: android.telephony.ims.RcsUceAdapter$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.RcsUceAdapter$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IRcsUceControllerCallback.Stub {
         final /* synthetic */ CapabilitiesCallback val$c;
@@ -355,7 +352,7 @@ public class RcsUceAdapter {
         }
     }
 
-    /* renamed from: android.telephony.ims.RcsUceAdapter$2, reason: invalid class name */
+    /* renamed from: android.telephony.ims.RcsUceAdapter$2 */
     /* loaded from: classes3.dex */
     class AnonymousClass2 extends IRcsUceControllerCallback.Stub {
         final /* synthetic */ CapabilitiesCallback val$c;

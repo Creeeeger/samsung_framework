@@ -22,13 +22,14 @@ import java.util.stream.Stream;
 /* loaded from: classes4.dex */
 public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHolder<MediaBuffer> {
     public static final Parcelable.Creator<MutableMediaBuffer> CREATOR = new Parcelable.Creator<MutableMediaBuffer>() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MutableMediaBuffer createFromParcel(Parcel in) {
             return new MutableMediaBuffer(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MutableMediaBuffer[] newArray(int size) {
             return new MutableMediaBuffer[size];
@@ -122,17 +123,14 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         return super.setStride(i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MutableMediaBuffer() {
         super(MediaFormat.of(MediaType.NONE, new Object[0]));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MutableMediaBuffer(MediaFormat format) {
         super(format);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MutableMediaBuffer(MediaBuffer buffer) {
         super(buffer.getFormat());
         this.buffer = buffer;
@@ -161,7 +159,6 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         this.buffer = instance;
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.functional.PlaceHolder
     public MediaBuffer reset() {
         MediaBuffer ret = this.buffer;
@@ -207,9 +204,8 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).orElse(super.getFormat());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$stream$0$com-samsung-android-sume-core-buffer-MutableMediaBuffer, reason: not valid java name */
-    public /* synthetic */ Stream m8734x681fd1b8() {
+    /* renamed from: lambda$stream$0$com-samsung-android-sume-core-buffer-MutableMediaBuffer */
+    public /* synthetic */ Stream m8726x681fd1b8() {
         return Stream.of(this);
     }
 
@@ -223,7 +219,7 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda1
             @Override // java.util.function.Supplier
             public final Object get() {
-                return MutableMediaBuffer.this.m8734x681fd1b8();
+                return MutableMediaBuffer.this.m8726x681fd1b8();
             }
         });
     }
@@ -286,7 +282,6 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).collect(Collectors.toList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getMetaDataBuffers$4(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META;
     }
@@ -301,7 +296,6 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).findAny().orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getExifBuffer$5(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META && it.getFormat().contains("exif");
     }
@@ -316,7 +310,6 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         }).findAny().orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getIccBuffer$6(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META && it.getFormat().contains("icc");
     }
@@ -348,7 +341,6 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         return setMetaDataBuffer(newMediaBuffers);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$setExifBuffer$7(MediaBuffer it) {
         return !it.getFormat().contains("exif");
     }
@@ -364,7 +356,6 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         return setMetaDataBuffer(newMediaBuffers);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$setIccBuffer$8(MediaBuffer it) {
         return !it.getFormat().contains("icc");
     }
@@ -473,6 +464,23 @@ public final class MutableMediaBuffer extends MediaBufferBase implements PlaceHo
         super(in);
         if (in.readInt() != 0) {
             this.buffer = (MediaBuffer) in.readParcelable(MediaBuffer.class.getClassLoader());
+        }
+    }
+
+    /* renamed from: com.samsung.android.sume.core.buffer.MutableMediaBuffer$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MutableMediaBuffer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MutableMediaBuffer createFromParcel(Parcel in) {
+            return new MutableMediaBuffer(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MutableMediaBuffer[] newArray(int size) {
+            return new MutableMediaBuffer[size];
         }
     }
 

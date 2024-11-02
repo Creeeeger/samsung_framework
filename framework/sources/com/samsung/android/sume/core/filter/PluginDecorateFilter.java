@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 public abstract class PluginDecorateFilter<T extends PluginFixture<?>> extends DecorateFilter {
     protected T plugin;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PluginDecorateFilter(T plugin, MediaFilter filter) {
         super(filter);
         final ExecuteDelegator delegator;
@@ -30,7 +29,6 @@ public abstract class PluginDecorateFilter<T extends PluginFixture<?>> extends D
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$new$0(ExecuteDelegator delegator, MediaFilter mediaFilter) {
         if (mediaFilter instanceof NNFWFilter) {
             ((NNFWFilter) mediaFilter).setExecuteDelegator(delegator);

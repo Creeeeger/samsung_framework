@@ -84,8 +84,9 @@ public interface IDisableProfileCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDisableProfileCallback {
+        public static class Proxy implements IDisableProfileCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

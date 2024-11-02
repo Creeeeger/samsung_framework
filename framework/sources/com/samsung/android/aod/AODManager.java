@@ -300,7 +300,6 @@ public class AODManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class AODCallbackDelegate extends IAODCallback.Stub {
         private Handler mHandler;
@@ -321,7 +320,6 @@ public class AODManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onScreenTurningOn$0() {
             AODListener aODListener = this.mListener;
             if (aODListener != null) {
@@ -469,8 +467,9 @@ public class AODManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class AODDozeCallbackDelegate extends IAODDozeCallback.Stub {
+    public class AODDozeCallbackDelegate extends IAODDozeCallback.Stub {
         private WeakReference<AODDozeCallback> mCallback;
         private Handler mHandler;
 
@@ -479,9 +478,27 @@ public class AODManager {
             this.mCallback = new WeakReference<>(callback);
         }
 
+        /* renamed from: com.samsung.android.aod.AODManager$AODDozeCallbackDelegate$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
+                if (callback != null) {
+                    callback.onDozeAcquired();
+                }
+            }
+        }
+
         @Override // com.samsung.android.aod.IAODDozeCallback
         public void onDozeAcquired() throws RemoteException {
             this.mHandler.post(new Runnable() { // from class: com.samsung.android.aod.AODManager.AODDozeCallbackDelegate.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
@@ -492,9 +509,27 @@ public class AODManager {
             });
         }
 
+        /* renamed from: com.samsung.android.aod.AODManager$AODDozeCallbackDelegate$2 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass2 implements Runnable {
+            AnonymousClass2() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
+                if (callback != null) {
+                    callback.onDozeReleased();
+                }
+            }
+        }
+
         @Override // com.samsung.android.aod.IAODDozeCallback
         public void onDozeReleased() throws RemoteException {
             this.mHandler.post(new Runnable() { // from class: com.samsung.android.aod.AODManager.AODDozeCallbackDelegate.2
+                AnonymousClass2() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
@@ -505,9 +540,33 @@ public class AODManager {
             });
         }
 
+        /* renamed from: com.samsung.android.aod.AODManager$AODDozeCallbackDelegate$3 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass3 implements Runnable {
+            final /* synthetic */ AODToast val$toast;
+
+            AnonymousClass3(AODToast aODToast) {
+                toast = aODToast;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();
+                if (callback != null) {
+                    callback.onAODToastRequested(toast);
+                }
+            }
+        }
+
         @Override // com.samsung.android.aod.IAODDozeCallback
-        public void onAODToastRequested(final AODToast toast) throws RemoteException {
+        public void onAODToastRequested(AODToast toast) throws RemoteException {
             this.mHandler.post(new Runnable() { // from class: com.samsung.android.aod.AODManager.AODDozeCallbackDelegate.3
+                final /* synthetic */ AODToast val$toast;
+
+                AnonymousClass3(AODToast toast2) {
+                    toast = toast2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     AODDozeCallback callback = (AODDozeCallback) AODDozeCallbackDelegate.this.mCallback.get();

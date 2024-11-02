@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CallForwardingInfo implements Parcelable {
     public static final Parcelable.Creator<CallForwardingInfo> CREATOR = new Parcelable.Creator<CallForwardingInfo>() { // from class: android.telephony.CallForwardingInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CallForwardingInfo createFromParcel(Parcel in) {
             return new CallForwardingInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallForwardingInfo[] newArray(int size) {
             return new CallForwardingInfo[size];
@@ -39,6 +40,10 @@ public final class CallForwardingInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface CallForwardingReason {
+    }
+
+    /* synthetic */ CallForwardingInfo(Parcel parcel, CallForwardingInfoIA callForwardingInfoIA) {
+        this(parcel);
     }
 
     public CallForwardingInfo(boolean enabled, int reason, String number, int timeSeconds) {
@@ -97,6 +102,23 @@ public final class CallForwardingInfo implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(Boolean.valueOf(this.mEnabled), this.mNumber, Integer.valueOf(this.mReason), Integer.valueOf(this.mTimeSeconds));
+    }
+
+    /* renamed from: android.telephony.CallForwardingInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CallForwardingInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallForwardingInfo createFromParcel(Parcel in) {
+            return new CallForwardingInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallForwardingInfo[] newArray(int size) {
+            return new CallForwardingInfo[size];
+        }
     }
 
     public String toString() {

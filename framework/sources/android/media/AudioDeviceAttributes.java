@@ -14,13 +14,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioDeviceAttributes implements Parcelable {
     public static final Parcelable.Creator<AudioDeviceAttributes> CREATOR = new Parcelable.Creator<AudioDeviceAttributes>() { // from class: android.media.AudioDeviceAttributes.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioDeviceAttributes createFromParcel(Parcel p) {
             return new AudioDeviceAttributes(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDeviceAttributes[] newArray(int size) {
             return new AudioDeviceAttributes[size];
@@ -39,6 +40,10 @@ public final class AudioDeviceAttributes implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface Role {
+    }
+
+    /* synthetic */ AudioDeviceAttributes(Parcel parcel, AudioDeviceAttributesIA audioDeviceAttributesIA) {
+        this(parcel);
     }
 
     @SystemApi
@@ -197,5 +202,22 @@ public final class AudioDeviceAttributes implements Parcelable {
         this.mAudioProfiles = new ArrayList(Arrays.asList(audioProfilesArray));
         AudioDescriptor[] audioDescriptorsArray = (AudioDescriptor[]) in.readParcelableArray(AudioDescriptor.class.getClassLoader(), AudioDescriptor.class);
         this.mAudioDescriptors = new ArrayList(Arrays.asList(audioDescriptorsArray));
+    }
+
+    /* renamed from: android.media.AudioDeviceAttributes$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioDeviceAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioDeviceAttributes createFromParcel(Parcel p) {
+            return new AudioDeviceAttributes(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioDeviceAttributes[] newArray(int size) {
+            return new AudioDeviceAttributes[size];
+        }
     }
 }

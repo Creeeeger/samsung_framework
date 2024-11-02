@@ -113,7 +113,6 @@ public class SearchManager implements DialogInterface.OnDismissListener, DialogI
         void onDismiss();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SearchManager(Context context, Handler handler) throws ServiceManager.ServiceNotFoundException {
         this.mContext = context;
         this.mHandler = handler;

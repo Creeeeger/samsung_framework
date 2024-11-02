@@ -27,8 +27,7 @@ public class ClipboardManager extends android.text.ClipboardManager {
         void onPrimaryClipChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.content.ClipboardManager$1, reason: invalid class name */
+    /* renamed from: android.content.ClipboardManager$1 */
     /* loaded from: classes.dex */
     public class AnonymousClass1 extends IOnPrimaryClipChangedListener.Stub {
         AnonymousClass1() {
@@ -44,7 +43,6 @@ public class ClipboardManager extends android.text.ClipboardManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchPrimaryClipChanged$0() {
             ClipboardManager.this.reportPrimaryClipChanged();
         }

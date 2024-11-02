@@ -11,6 +11,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class LinkCapacityEstimate implements Parcelable {
     public static final Parcelable.Creator<LinkCapacityEstimate> CREATOR = new Parcelable.Creator() { // from class: android.telephony.LinkCapacityEstimate.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LinkCapacityEstimate createFromParcel(Parcel in) {
             return new LinkCapacityEstimate(in);
@@ -90,5 +93,22 @@ public final class LinkCapacityEstimate implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mDownlinkCapacityKbps), Integer.valueOf(this.mUplinkCapacityKbps), Integer.valueOf(this.mType));
+    }
+
+    /* renamed from: android.telephony.LinkCapacityEstimate$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LinkCapacityEstimate createFromParcel(Parcel in) {
+            return new LinkCapacityEstimate(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LinkCapacityEstimate[] newArray(int size) {
+            return new LinkCapacityEstimate[size];
+        }
     }
 }

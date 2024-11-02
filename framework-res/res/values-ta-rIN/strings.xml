@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">இந்த %s-ஐ இந்தச் சாதனம் ஆதரிக்கவில்லை. ஆதரிக்கப்படும் வடிவமைப்பில் உள்ள அமைவை டேப் செய்யவும்.</string>
     <string name="ext_media_unsupported_notification_title">ஆதரிக்கப்படாத %s</string>
     <string name="ext_storage_bad_removal_button">மீண்டும் துவங்கவும்</string>
-    <string name="ext_storage_bad_removal_title">ஃபோனை மீண்டும் துவங்குக</string>
+    <string name="ext_storage_bad_removal_title">டேப்லெட்டை மீண்டும் துவங்குக</string>
     <string name="extmedia_format_button_format">வடிவம்</string>
     <string name="extmedia_format_message_usbhost">USB சேமிப்பகத்தில் சேமித்த எல்லா கோப்புகளும் அழிக்கப்படும். இந்தச் செயலைச் செயல்தவிர்க்க முடியாது.</string>
     <string name="extmedia_format_title_usbhost">USB சேமிப்பகத்தில் உள்ளவற்றை அழிக்கவா?</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ஒலியானது உங்கள் ப்ளூடூத் கேட்பொலி சாதனத்தில் இயங்குகிறது. இதை ஆஃப் செய்ய, இங்கே டேப் செய்யவும்</string>
     <string name="multisound_sound_via_headphone">%s ஒலியானது உங்கள் ஹெட்ஃபோன்கள் வழியே இயக்கப்படுகிறது. இதை அணைக்க இங்கு டேப் செய்க.</string>
     <string name="multisound_sound_via_headphone_multiselection">ஒலியானது உங்கள் ஹெட்ஃபோன்கள் வழியே இயக்கப்படுகிறது. இதை ஆஃப் செய்ய, இங்கே டேப் செய்யவும்.</string>
-    <string name="multisound_sound_via_phone_speaker">%s ஒலியானது உங்கள் ஃபோன் ஸ்பீக்கர் வழியே இயக்கப்படுகிறது. இதை அணைக்க இங்கு டேப் செய்க.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ஒலியானது உங்கள் ஃபோன் ஸ்பீக்கர் வழியே இயக்கப்படுகிறது. இதை ஆஃப் செய்ய, இங்கே டேப் செய்யவும்.</string>
+    <string name="multisound_sound_via_phone_speaker">%s ஒலியானது உங்கள் டேப்லெட் ஸ்பீக்கர் வழியே இயக்கப்படுகிறது. இதை அணைக்க இங்கு டேப் செய்க.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ஒலியானது உங்கள் டேப்லெட் ஸ்பீக்கர் வழியே இயக்கப்படுகிறது. இதை ஆஃப் செய்ய, இங்கே டேப் செய்யவும்.</string>
     <string name="multisound_sound_via_usb_audio">%s ஒலியானது உங்கள் USB கேட்பொலி சாதனத்தில் இயங்குகிறது. இதை அணைக்க இங்கு டேப் செய்க.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ஒலியானது உங்கள் USB கேட்பொலி சாதனத்தில் இயங்குகிறது. இதை ஆஃப் செய்ய, இங்கே டேப் செய்யவும்.</string>
     <string name="multisound_title">தனி பயன்பாட்டு ஒலி</string>
     <string name="multisound_turn_off_multisound">ஆஃப் செய்யவும்</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s-ஐ Samsung DeX-இல் இயக்க இயலாது. ஃபோன் முறையில் இயக்க முயலவும்.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s-ஐ Samsung DeX-இல் இயக்க இயலாது. இது ஃபோனின் முகப்புத் திரைகளுக்காக வடிவமைக்கப்பட்டுள்ளது.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">சில விளையாட்டுகள் தொடு திரைகளில் மட்டுமே வேலை செய்யும். Samsung DeX-இல் மவுஸ் கட்டுப்பாடுகள் வேலை செய்யவில்லை எனில், அதற்குப் பதிலாக ஃபோன் முறையில் விளையாட முயற்சிக்கவும்.</string>
-    <string name="my_device">இந்த ஃபோன்</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s-ஐ Samsung DeX-இல் இயக்க இயலாது. டேப்லெட் முறையில் இயக்க முயலவும்.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s-ஐ Samsung DeX-இல் இயக்க இயலாது. இது டேப்லெட்டின் முகப்புத் திரைகளுக்காக வடிவமைக்கப்பட்டுள்ளது.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">சில விளையாட்டுகள் தொடு திரைகளில் மட்டுமே வேலை செய்யும். Samsung DeX-இல் மவுஸ் கட்டுப்பாடுகள் வேலை செய்யவில்லை எனில், அதற்குப் பதிலாக டேப்லெட் முறையில் விளையாட முயற்சிக்கவும்.</string>
+    <string name="my_device">இந்த டேப்லெட்</string>
     <string name="network_locked_sim_dialog_message_ais">உங்கள் SIM அட்டை இந்த ஃபோனில் முழுவதுமாகச் செயல்படாது, ஏனெனில் இது உங்கள் சந்தா விதிகள் மற்றும் நிபந்தனைகளுடன் இணக்கமாக இல்லை. இது குறித்து உங்களுக்கு ஏதேனும் கேள்விகள் இருப்பின் அல்லது மேலும் விவரம் தேவைப்பட்டால், சாம்சங் வாடிக்கையாளர் சேவை மையம் அல்லது உங்களிடம் இந்தத் தயாரிப்புகளை விற்ற ஸ்டோரைத் தொடர்புகொள்ளவும்.</string>
     <string name="network_locked_sim_notification_text">நெட்வொர்க் பூட்டப்பட்ட SIM அட்டை நுழைக்கப்பட்டுள்ளது.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">டெஸ்க்டாப் ஒத்திசைவைப் பயன்படுத்துவதைத் தடுக்கவும்.</string>
     <string name="policydesc_allow_internetsharing">மொபைல் ஹாட்ஸ்பாட் பயன்படுத்துவதைத் தடுக்கவும்.</string>
     <string name="policydesc_allow_irda">IrDA பயன்படுத்துவதைத் தடுக்கவும்.</string>
-    <string name="policydesc_allow_popimapemail">ஃபோனில் POP மற்றும் IMAP மின்னஞ்சலைப் பயன்படுத்துவதைத் தடுக்கவும்.</string>
+    <string name="policydesc_allow_popimapemail">டேப்லெட்டில் POP மற்றும் IMAP மின்னஞ்சலைப் பயன்படுத்துவதைத் தடுக்கவும்.</string>
     <string name="policydesc_allow_storagecard">SD அட்டைகளைப் பயன்படுத்துவதைத் தடுக்கவும்.</string>
     <string name="policydesc_allow_textmessaging">உரை மற்றும் பல்லூடக மெசேஜிங்கைப் பயன்படுத்துவதைத் தடுக்கவும்.</string>
     <string name="policydesc_allow_thirdParty">இந்தப் பயன்பாட்டால், மூன்றாம் தரப்பு பயன்பாடுகள் இயங்குவதைத் தடுக்க முடியும்.</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">பாதுகாப்புக் கொள்கைக்கென நீங்கள் உங்கள் கடவுச்சொல்லை மாற்ற வேண்டும்.</string>
     <string name="recording_fail">%2$s-இல் மைக்கைப் பயன்படுத்தப்படும் போது, %1$s-இல் அதைப் பயன்படுத்த இயலாது.</string>
     <string name="recording_popup">%s, மைக்ரோஃபோனைப் பயன்படுத்துகிறது.</string>
-    <string name="recording_popup_device">ஃபோன்</string>
+    <string name="recording_popup_device">டேப்லெட்</string>
     <string name="recording_popup_with_bluetooth">%s, ப்ளூடூத் மைக்ரோஃபோனைப் பயன்படுத்துகிறது.</string>
     <string name="recording_popup_with_device">%1$s, %2$s-இன் மைக்ரோஃபோனைப் பயன்படுத்துகிறது.</string>
     <string name="redo">மீ. செய்க</string>
@@ -903,12 +903,12 @@
     <string name="screencapture_restrict">பாதுகாப்புக் கொள்கையானது திரைப் பதிவைப் பயன்படுத்துவதைத் தடுக்கிறது.</string>
     <string name="sd_card_unavailable_message">நீங்கள் SD அட்டையைப் பயன்படுத்த இயலாது, ஏனெனில் இது வேறு பயனர் ப்ரொஃபைல் பயன்பாட்டில் இருக்கும்போது நுழைக்கப்பட்டுள்ளது.</string>
     <string name="sd_card_unavailable_title">SD அட்டை கிடைக்கவில்லை</string>
-    <string name="sdcard_bad_removal_message">SD அட்டை பாதுகாப்பற்ற முறையில் அகற்றப்பட்டது. உங்கள் ஃபோன் எதிர்பாராத விதமாக மீண்டும் துவங்குவதை தடைசெய்ய, சேமிக்கப்படாத தரவைச் சேமித்து இப்போது மீண்டும் துவங்கவும்.</string>
+    <string name="sdcard_bad_removal_message">SD அட்டை பாதுகாப்பற்ற முறையில் அகற்றப்பட்டது. உங்கள் டேப்லெட் எதிர்பாராத விதமாக மீண்டும் துவங்குவதை தடை செய்ய, சேமிக்கப்படாத தரவைச் சேமித்து இப்போது மீண்டும் துவங்கவும்.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD அட்டையை மறைகுறிநீக்குக</string>
     <string name="sdcard_batch_decrypt_noti_title">SD அட்டை மறைகுறிநீக்கம்</string>
     <string name="sdcard_batch_decrypt_popup_content">மறைகுறியாக்கப்பட்ட SD அட்டை பயன்படுத்துவதற்கு முன் மறைகுறிநீக்கப்பட வேண்டும். மறைகுறிநீக்கத்திற்கு ஒரு மணிநேரம் அல்லது அதற்கு மேல் எடுக்ககூடும். சார்ஜ் செய்யப்பட்ட மின்கலத்துடன் மறைகுறிநீக்கம் துவக்கி சாதனத்தை மறைகுறிநீக்கம் முடியும் வரை ப்ளக் இன் செய்து வைத்திருக்கவும். மறைகுறிநீக்கத்திற்கு தடங்கல் ஏற்படும் பட்சத்தில் சில அல்லது அனைத்து தரவையையும் இழக்க நேரிடும்.</string>
     <string name="sdcard_decrypt_err_notification">SD அட்டை மறைகுறிநீக்கம் பிழை ஏற்பட்டுள்ளது.</string>
-    <string name="sdcard_decrypt_error_otherdevice">உங்கள் SD அட்டையில் உள்ள சில கோப்புகள் மற்றொரு சாதனத்தில் மறைகுறியாக்கப்பட்டுள்ளது, மேலும் இந்த ஃபோனில் அவற்றை பயன்படுத்த இயலாது.</string>
+    <string name="sdcard_decrypt_error_otherdevice">உங்கள் SD அட்டையில் உள்ள சில கோப்புகள் மற்றொரு சாதனத்தில் மறைகுறியாக்கப்பட்டுள்ளது, மேலும் இந்த டேப்லெட்டில் அவற்றை பயன்படுத்த இயலாது.</string>
     <string name="sdcard_decrypt_notification">SD அட்டை மறைகுறிநீக்கப்பட்டது.</string>
     <string name="sdcard_decrypt_title_notification">SD அட்டை மறைகுறிநீக்கம்</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD அட்டையை மறைகுறிநீக்குகிறது…</string>
@@ -1234,7 +1234,7 @@
     <string name="usb_abnormal_reset_title">USB இணைப்பு நிலையாக இல்லை</string>
     <string name="usb_abnormal_reset_toast">USB இணைப்பு, நிலையாக இல்லை. கேபிளை ப்ளக் நீக்கி மீண்டும் ப்ளக் செய்யவும் அல்லது வேறொரு கேபிளை இணைக்க முயலவும்.</string>
     <string name="usb_accessory_notification_title">ஒரு USB துணைப்பொருளுக்கு இணைக்கப்பட்டது</string>
-    <string name="usb_bad_removal_message">USB சேமிப்பக சாதனம் பாதுகாப்பற்ற முறையில் அகற்றப்பட்டது. உங்கள் ஃபோன் எதிர்பாராத விதமாக மீண்டும் துவங்குவதை தடைசெய்ய, சேமிக்கப்படாத தரவைச் சேமித்து இப்போது மீண்டும் துவங்கவும்.</string>
+    <string name="usb_bad_removal_message">USB சேமிப்பக சாதனம் பாதுகாப்பற்ற முறையில் அகற்றப்பட்டது. உங்கள் டேப்லெட் எதிர்பாராத விதமாக மீண்டும் துவங்குவதை தடை செய்ய, சேமிக்கப்படாத தரவைச் சேமித்து இப்போது மீண்டும் துவங்கவும்.</string>
     <string name="usb_blocked_by_emergency_mode">அவசரநிலை முறையில் சில USB செயல்பாடுகள் கிடைக்கவில்லை.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">அதிகபட்ச பவர் சேமிப்பு முறை செயல்படுத்தப்படும் போது இணைக்கப்பட்ட USB சாதனம் தொடர்பான செயல்பாடுகளை பயன்படுத்த இயலாது.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">அதிகபட்ச பவர் சேமிப்பு ஆனில் உள்ளபோது சில USB செயல்பாடுகள் வரம்பிடப்படும்.</string>
@@ -1243,13 +1243,13 @@
     <string name="usb_camera_connected_notification_title">ஊடகம் சாதனம் இணைக்கப்பட்டது</string>
     <string name="usb_camera_disconnected_notification_title">ஊடகம் சாதனம் துண்டிக்கப்பட்டது</string>
     <string name="usb_cd_installer_notification_title">மென்பொருள் புதுப்பிப்பு</string>
-    <string name="usb_charing_only_notification_title">USB சார்ஜிங்</string>
+    <string name="usb_charing_only_notification_title">இணைக்கபட்டது</string>
     <string name="usb_debugging_only_notification_title">பிழைத் திருத்தம் மட்டும்</string>
-    <string name="usb_host_resource_exceed_message">உங்கள் ஃபோனின் USB கட்டுப்பாட்டாளர் இந்த சாதனத்தை இணைப்பதற்கான போதுமான வளங்களைக் கொண்டிருக்கவில்லை. சாதனத்தை துண்டித்து, பின்னர் அதனை மீண்டும் இணைக்க முயலவும்.</string>
+    <string name="usb_host_resource_exceed_message">உங்கள் டேப்லெட்டின் USB கட்டுப்பாட்டாளர் இந்த சாதனத்தை இணைப்பதற்கான போதுமான வளங்களைக் கொண்டிருக்கவில்லை. சாதனத்தை துண்டித்து, பின்னர் அதனை மீண்டும் இணைக்க முயலவும்.</string>
     <string name="usb_host_resource_exceed_title">போதுமான USB கட்டுப்படுத்தி வளங்கள் இல்லை</string>
-    <string name="usb_hub_depth_exceed_message">உங்கள் ஃபோனால் ஒரே நேரத்தில் 5 USB வரையிலான ஹப் இணைப்புகளை மட்டுமே ஆதரிக்க இயலும்.</string>
+    <string name="usb_hub_depth_exceed_message">உங்கள் டேப்லெட்டால் ஒரே நேரத்தில் 5 USB வரையிலான ஹப் இணைப்புகளை மட்டுமே ஆதரிக்க இயலும்.</string>
     <string name="usb_hub_depth_exceed_title">அதிகபட்ச USB ஹப் இணைப்புகள்</string>
-    <string name="usb_hub_power_exceed_message">உங்கள் ஃபோன் இந்த USB சாதனத்திற்கு தேவையான போதுமான ஆற்றலைக் கொண்டிருக்கவில்லை. சாதனத்தை உங்கள் ஃபோனுடன் இணைப்பதற்கு முன்பு அதை தானாக ஆற்றல் வழங்கும் USB ஹப்புடன் இணைக்கவும்.</string>
+    <string name="usb_hub_power_exceed_message">உங்கள் டேப்லெட் இந்த USB சாதனத்திற்கு தேவையான போதுமான ஆற்றலைக் கொண்டிருக்கவில்லை. சாதனத்தை உங்கள் டேப்லெட்டுடன் இணைப்பதற்கு முன்பு அதை தானாக ஆற்றல் வழங்கும் USB ஹப்புடன் இணைக்கவும்.</string>
     <string name="usb_increase_battery_usage">USB இணைப்பு, மின்கல பயன்பாட்டை அதிகரிக்கலாம்.</string>
     <string name="usb_mass_storage_restrict">பாதுகாப்புக் கொள்கையானது USB திரள் சேமிப்பகத்தைப் பயன்படுத்துவதைத் தடுக்கிறது.</string>
     <string name="usb_midi_notification_title">MIDI-க்கான USB</string>
@@ -1275,8 +1275,8 @@
     <string name="usb_storage_stop_title">USB சேமிப்பகம் பயனில்.</string>
     <string name="usb_storage_title">USB இணைக்கப்பட்டது.</string>
     <string name="usb_type_c_supply_power_notification_title">USB சார்ஜிங் இணைக்கப்பட்ட சாதனம்</string>
-    <string name="usb_unblock_by_screen_unlock">உங்கள் ஃபோனை இணைக்கப்பட்ட USB சாதனத்தைப் பயன்படுத்துவதற்கு பூட்டுநீக்கவும்.</string>
-    <string name="usb_unsupport_accessory_message">இந்த USB சாதனம் உங்கள் ஃபோனால் ஆதரிக்கப்படவில்லை.</string>
+    <string name="usb_unblock_by_screen_unlock">உங்கள் டேப்லெட்டை இணைக்கப்பட்ட USB சாதனத்தைப் பயன்படுத்துவதற்கு பூட்டுநீக்கவும்.</string>
+    <string name="usb_unsupport_accessory_message">இந்த USB சாதனம் உங்கள் டேப்லெட்டால் ஆதரிக்கப்படவில்லை.</string>
     <string name="usb_unsupport_accessory_title">USB சாதனம் ஆதரிக்கப்படவில்லை</string>
     <string name="usb_unsupported_device">இணைக்கப்பட்டுள்ள USB சாதனம் ஆதரிக்கப்படவில்லை.</string>
     <string name="usb_unsupported_device_title">சாதனம் ஆதரிக்கப்படவில்லை</string>
@@ -1294,19 +1294,19 @@
     <string name="usb_water_dialg_method_2_desc_2">போர்ட்டினை நோக்கி, விசிறி அல்லது உலர்த்தியை (குளிர்ந்த காற்று மட்டும்) வைப்பதன் மூலம் ஈரப்பதத்தை வேகமாக அகற்றலாம்.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"உங்கள் சார்ஜிங்/USB போர்ட்டில் ஈரப்பதம் அல்லது வெளி பொருட்கள் உள்ளது போல் தோன்றுகிறது.
 
-தூசி அல்லது குப்பைகள் போன்ற ஏதேனும் வெளி பொருட்கள் உள்ளனவா என உங்கள் சார்ஜிங்/USB போர்ட்டில் சரிபார்க்கவும். உங்கள் ஃபோனில் சேதம் ஏற்படுவதைத் தடுக்க, சார்ஜிங் போர்ட் சுத்தமாக இருக்கும் வரை, ஈரப்பதம் இல்லாமல் போகும் வரை, மற்றும் அறிவிப்பு அழிக்கப்படும் வரை எதையும் செருக வேண்டாம்.
+தூசி அல்லது குப்பைகள் போன்ற ஏதேனும் வெளி பொருட்கள் உள்ளனவா என உங்கள் சார்ஜிங்/USB போர்ட்டில் சரிபார்க்கவும். உங்கள் டேப்லெட்டில் சேதம் ஏற்படுவதைத் தடுக்க, சார்ஜிங் போர்ட் சுத்தமாக இருக்கும் வரை, ஈரப்பதம் இல்லாமல் போகும் வரை, மற்றும் அறிவிப்பு அழிக்கப்படும் வரை எதையும் செருக வேண்டாம்.
 
-போர்ட்டை உலரச் செய்ய, ஈரப்பதத்தை அகற்ற ஃபோனை அசைத்து, பின்னர் அது உலரும் வரை காத்திருக்கவும், இதற்கு பல மணிநேரம் ஆகலாம். போர்டினை நோக்கியவாறு விசிறி அல்லது உலர்த்தியை (குளிர்ந்த காற்று மட்டும்) பயன்படுத்தி விரைவாக உலரச் செய்யலாம்."</string>
+போர்ட்டை உலரச் செய்ய, ஈரப்பதத்தை அகற்ற டேப்லெட்டை அசைத்து, பின்னர் அது உலரும் வரை காத்திருக்கவும், இதற்கு பல மணிநேரம் ஆகலாம். போர்டினை நோக்கியவாறு விசிறி அல்லது உலர்த்தியை (குளிர்ந்த காற்று மட்டும்) பயன்படுத்தி விரைவாக உலரச் செய்யலாம்."</string>
     <string name="usb_water_dialg_positive_button">சரி</string>
     <string name="usb_water_dialg_support_wireless_charging">"உங்கள் சார்ஜிங்/USB போர்ட்டில் ஈரப்பதம் அல்லது வெளி பொருட்கள் உள்ளது போல் தோன்றுகிறது.
 
-தூசி அல்லது குப்பைகள் போன்ற ஏதேனும் வெளி பொருட்கள் உள்ளனவா என உங்கள் சார்ஜிங்/USB போர்ட்டில் சரிபார்க்கவும். உங்கள் ஃபோனில் சேதம் ஏற்படுவதைத் தடுக்க, சார்ஜிங் போர்ட் சுத்தமாக இருக்கும் வரை, ஈரப்பதம் இல்லாமல் போகும் வரை, மற்றும் அறிவிப்பு அழிக்கப்படும் வரை எதையும் செருக வேண்டாம்.
+தூசி அல்லது குப்பைகள் போன்ற ஏதேனும் வெளி பொருட்கள் உள்ளனவா என உங்கள் சார்ஜிங்/USB போர்ட்டில் சரிபார்க்கவும். உங்கள் டேப்லெட்டில் சேதம் ஏற்படுவதைத் தடுக்க, சார்ஜிங் போர்ட் சுத்தமாகும் வரை, ஈரப்பதம் இல்லாமல் போகும் வரை எதையும் செருக வேண்டாம்.
 
-போர்ட்டை உலரச் செய்ய, ஈரப்பதத்தை அகற்ற ஃபோனை அசைத்து, பின்னர் அது உலரும் வரை காத்திருக்கவும், இதற்கு பல மணிநேரம் ஆகலாம். போர்டினை நோக்கியவாறு விசிறி அல்லது உலர்த்தியை (குளிர்ந்த காற்று மட்டும்) பயன்படுத்தி விரைவாக உலரச் செய்யலாம்.
+போர்ட்டை உலரச் செய்ய, ஈரப்பதத்தை அகற்ற டேப்லெட்டை அசைத்து, பின்னர் அது உலரும் வரை காத்திருக்கவும், இதற்கு பல மணிநேரம் ஆகலாம். போர்டினை நோக்கி விசிறி அல்லது உலர்த்தியை (குளிர்ந்த காற்று மட்டும்) பயன்படுத்தி விரைவாக உலரச் செய்யலாம்.
 
-இந்தச் சமயத்தில், உங்கள் ஃபோனை வயர்லெஸ் முறையில் சார்ஜ் செய்யலாம்."</string>
+அதே நேரத்தில், உங்கள் டேப்லெட்டை வயர்லெஸ் முறையில் சார்ஜ் செய்யலாம்."</string>
     <string name="usb_water_notification_content">உங்கள் சார்ஜிங்/USB போர்ட்டில் ஈரப்பதம் அல்லது வெளி பொருட்கள் உள்ளது. சார்ஜிங் செய்வதற்கு முன்பு சரிபார்க்கவும்.</string>
-    <string name="usb_water_notification_message">உங்கள் சார்ஜர்/USB போர்ட் ஈரப்பதமாக உள்ளது. உங்கள் ஃபோனை சார்ஜ் செய்யும் முன்னர் அது முழுமையாக உலர்ந்துவிட்டதா என உறுதிசெய்து கொள்ளவும். இது உலர்வதற்கு சிறிது நேரம் ஆகலாம்.</string>
+    <string name="usb_water_notification_message">உங்கள் சார்ஜர்/USB போர்ட் ஈரப்பதமாக உள்ளது. உங்கள் டேப்லெட்டை சார்ஜ் செய்யும் முன்னர் அது முழுமையாக உலர்ந்துவிட்டதா என உறுதிசெய்து கொள்ளவும். இது உலர்வதற்கு சிறிது நேரம் ஆகலாம்.</string>
     <string name="usb_water_notification_message_button">விவரங்கள்</string>
     <string name="usb_water_notification_title">சார்ஜர்/USB போர்ட்டைச் சரிபார்க்கவும்</string>
     <string name="usbhostStorage_restrict">பாதுகாப்புக் கொள்கையானது USB ஹோஸ்ட் சேமிப்பகத்தைப் பயன்படுத்துவதைத் தடுக்கிறது.</string>

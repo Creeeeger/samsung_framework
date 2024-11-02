@@ -88,8 +88,9 @@ public interface IExtendedEthernetManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IExtendedEthernetManager {
+        public static class Proxy implements IExtendedEthernetManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

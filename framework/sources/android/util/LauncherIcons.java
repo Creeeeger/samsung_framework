@@ -87,8 +87,9 @@ public final class LauncherIcons {
         return new LayerDrawable(drawables);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class ShadowDrawable extends DrawableWrapper {
+    public static class ShadowDrawable extends DrawableWrapper {
         final MyConstantState mState;
 
         public ShadowDrawable(Bitmap shadow, Drawable dr) {
@@ -117,8 +118,9 @@ public final class LauncherIcons {
             canvas.restore();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class MyConstantState extends Drawable.ConstantState {
+        public static class MyConstantState extends Drawable.ConstantState {
             final Drawable.ConstantState mChildState;
             final Paint mPaint = new Paint(2);
             final Bitmap mShadow;

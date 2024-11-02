@@ -9,7 +9,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class GeofenceHardwareMonitorEvent implements Parcelable {
     public static final Parcelable.Creator<GeofenceHardwareMonitorEvent> CREATOR = new Parcelable.Creator<GeofenceHardwareMonitorEvent>() { // from class: android.hardware.location.GeofenceHardwareMonitorEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GeofenceHardwareMonitorEvent createFromParcel(Parcel source) {
             ClassLoader classLoader = GeofenceHardwareMonitorEvent.class.getClassLoader();
@@ -20,7 +22,6 @@ public class GeofenceHardwareMonitorEvent implements Parcelable {
             return new GeofenceHardwareMonitorEvent(monitoringType, monitoringStatus, sourceTechnologies, location);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GeofenceHardwareMonitorEvent[] newArray(int size) {
             return new GeofenceHardwareMonitorEvent[size];
@@ -52,6 +53,28 @@ public class GeofenceHardwareMonitorEvent implements Parcelable {
 
     public Location getLocation() {
         return this.mLocation;
+    }
+
+    /* renamed from: android.hardware.location.GeofenceHardwareMonitorEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GeofenceHardwareMonitorEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GeofenceHardwareMonitorEvent createFromParcel(Parcel source) {
+            ClassLoader classLoader = GeofenceHardwareMonitorEvent.class.getClassLoader();
+            int monitoringType = source.readInt();
+            int monitoringStatus = source.readInt();
+            int sourceTechnologies = source.readInt();
+            Location location = (Location) source.readParcelable(classLoader, Location.class);
+            return new GeofenceHardwareMonitorEvent(monitoringType, monitoringStatus, sourceTechnologies, location);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GeofenceHardwareMonitorEvent[] newArray(int size) {
+            return new GeofenceHardwareMonitorEvent[size];
+        }
     }
 
     @Override // android.os.Parcelable

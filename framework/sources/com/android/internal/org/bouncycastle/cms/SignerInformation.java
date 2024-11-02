@@ -49,7 +49,6 @@ public class SignerInformation {
     protected final ASN1Set unsignedAttributeSet;
     private AttributeTable unsignedAttributeValues;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SignerInformation(SignerInfo info, ASN1ObjectIdentifier contentType, CMSProcessable content, byte[] resultDigest) {
         this.info = info;
         this.contentType = contentType;

@@ -109,22 +109,18 @@ public class InsetsSourceConsumer {
         return this.mSourceControl;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isRequestedVisibleAwaitingControl() {
         return (this.mController.getRequestedVisibleTypes() & this.mType) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getId() {
         return this.mId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setId(int id) {
         this.mId = id;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getType() {
         return this.mType;
     }
@@ -166,7 +162,6 @@ public class InsetsSourceConsumer {
         return insetsChanged;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isShowRequested() {
         return (this.mController.getRequestedVisibleTypes() & getType()) != 0;
     }
@@ -180,7 +175,6 @@ public class InsetsSourceConsumer {
         this.mHasWindowFocus = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasViewFocusWhenWindowFocusGain() {
         return this.mHasViewFocusWhenWindowFocusGain;
     }
@@ -202,7 +196,6 @@ public class InsetsSourceConsumer {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestHide(boolean fromController, ImeTracker.Token statsToken) {
     }
 
@@ -216,7 +209,6 @@ public class InsetsSourceConsumer {
         updateSource(newSource, animationType, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSource(InsetsSource newSource, int animationType, boolean displayFrameChanged) {
         InsetsSource source = this.mState.peekSource(this.mId);
         Rect rect = null;
@@ -269,7 +261,6 @@ public class InsetsSourceConsumer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
         proto.write(1138166333441L, WindowInsets.Type.toString(this.mType));

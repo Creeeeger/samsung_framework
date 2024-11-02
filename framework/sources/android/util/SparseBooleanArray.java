@@ -26,8 +26,8 @@ public class SparseBooleanArray implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SparseBooleanArray m4952clone() {
+    /* renamed from: clone */
+    public SparseBooleanArray m4951clone() {
         SparseBooleanArray clone = null;
         try {
             clone = (SparseBooleanArray) super.clone();

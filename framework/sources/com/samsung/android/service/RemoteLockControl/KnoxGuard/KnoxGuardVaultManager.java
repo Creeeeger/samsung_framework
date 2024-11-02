@@ -80,6 +80,9 @@ public final class KnoxGuardVaultManager {
     private static VaultKeeperManager mVkm;
     private static VaultKeeperManager mVkm2;
     IRemoteLockMonitorCallback mRemoteLockMonitorCallback = new IRemoteLockMonitorCallback.Stub() { // from class: com.samsung.android.service.RemoteLockControl.KnoxGuard.KnoxGuardVaultManager.1
+        AnonymousClass1() {
+        }
+
         @Override // com.android.internal.widget.IRemoteLockMonitorCallback
         public void changeRemoteLockState(RemoteLockInfo data) throws RemoteException {
             Log.d(KnoxGuardVaultManager.TAG, "changeRemoteLockState data = " + data.lockType);
@@ -175,7 +178,6 @@ public final class KnoxGuardVaultManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void throwException(int kgvErrorCode, String msg) throws KnoxGuardVaultException {
         Log.e(TAG, NavigationBarInflaterView.SIZE_MOD_START + kgvErrorCode + NavigationBarInflaterView.SIZE_MOD_END + msg);
         throw new KnoxGuardVaultException(kgvErrorCode, msg);
@@ -1026,7 +1028,58 @@ public final class KnoxGuardVaultManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.samsung.android.service.RemoteLockControl.KnoxGuard.KnoxGuardVaultManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends IRemoteLockMonitorCallback.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.widget.IRemoteLockMonitorCallback
+        public void changeRemoteLockState(RemoteLockInfo data) throws RemoteException {
+            Log.d(KnoxGuardVaultManager.TAG, "changeRemoteLockState data = " + data.lockType);
+        }
+
+        @Override // com.android.internal.widget.IRemoteLockMonitorCallback
+        public int checkRemoteLockPassword(byte[] pass) {
+            Log.i(KnoxGuardVaultManager.TAG, "checkRemoteLockPassword");
+            String password = new String(pass, StandardCharsets.UTF_8);
+            int failureCount = 0;
+            try {
+                if (KnoxGuardVaultManager.mIsSupportKg2) {
+                    failureCount = KnoxGuardVaultManager.this.completeUnlocking(password);
+                } else {
+                    int failureCount2 = KnoxGuardVaultManager.this.getFailureCount();
+                    failureCount = failureCount2 + 1;
+                    if (KnoxGuardVaultManager.this.verifyteHOTPPasscode(password)) {
+                        Log.i(KnoxGuardVaultManager.TAG, "[HOTP] passcode is correct!");
+                        failureCount = KnoxGuardVaultManager.this.completeUnlocking(null);
+                    } else {
+                        Log.e(KnoxGuardVaultManager.TAG, "[HOTP] passcode is wrong!!! current failure count (" + failureCount + NavigationBarInflaterView.KEY_CODE_END);
+                    }
+                    if (!KnoxGuardVaultManager.this.setFailureCount(failureCount)) {
+                        Log.e(KnoxGuardVaultManager.TAG, "Failed setFailureCount");
+                    }
+                }
+                Log.d(KnoxGuardVaultManager.TAG, "KGvK failureCount : " + failureCount);
+                if (failureCount == 0) {
+                    if (KnoxGuardVaultManager.mKnoxGuardVaultListener != null) {
+                        KnoxGuardVaultManager.mKnoxGuardVaultListener.onUnlockedByPasscode();
+                    } else {
+                        Log.e(KnoxGuardVaultManager.TAG, "KnoxGuardVaultListener is null, can't call onUnlockedByPasscode()");
+                    }
+                } else {
+                    KnoxGuardVaultManager.this.setRemoteLockToLockscreen();
+                }
+            } catch (KnoxGuardVaultException e) {
+                e.printStackTrace();
+                if (!KnoxGuardVaultManager.mCompleteUnlockingDone) {
+                    throw new RuntimeException("Error in KGV Manager internally");
+                }
+            }
+            return failureCount;
+        }
+    }
+
     public void setRemoteLockToLockscreen() throws KnoxGuardVaultException {
         Log.i(TAG, "setRemoteLockToLockscreen");
         long kgvDelayTime = 0;
@@ -1691,7 +1744,6 @@ public final class KnoxGuardVaultManager {
         mCompleteUnlockingDone = completeUnlockingDone;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class KGVaultData implements Serializable {
         static final long serialVersionUID = 1986081920160627777L;
@@ -1825,7 +1877,6 @@ public final class KnoxGuardVaultManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class CryptoManager {
         CryptoManager() {

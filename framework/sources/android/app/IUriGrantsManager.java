@@ -182,8 +182,9 @@ public interface IUriGrantsManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IUriGrantsManager {
+        public static class Proxy implements IUriGrantsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

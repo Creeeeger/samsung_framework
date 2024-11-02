@@ -21,13 +21,14 @@ import java.util.stream.Collectors;
 /* loaded from: classes3.dex */
 public final class NetworkRegistrationInfo implements Parcelable {
     public static final Parcelable.Creator<NetworkRegistrationInfo> CREATOR = new Parcelable.Creator<NetworkRegistrationInfo>() { // from class: android.telephony.NetworkRegistrationInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NetworkRegistrationInfo createFromParcel(Parcel source) {
             return new NetworkRegistrationInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkRegistrationInfo[] newArray(int size) {
             return new NetworkRegistrationInfo[size];
@@ -107,6 +108,14 @@ public final class NetworkRegistrationInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface ServiceType {
+    }
+
+    /* synthetic */ NetworkRegistrationInfo(int i, int i2, int i3, int i4, int i5, boolean z, List list, CellIdentity cellIdentity, String str, VoiceSpecificRegistrationInfo voiceSpecificRegistrationInfo, DataSpecificRegistrationInfo dataSpecificRegistrationInfo, boolean z2, NetworkRegistrationInfoIA networkRegistrationInfoIA) {
+        this(i, i2, i3, i4, i5, z, list, cellIdentity, str, voiceSpecificRegistrationInfo, dataSpecificRegistrationInfo, z2);
+    }
+
+    /* synthetic */ NetworkRegistrationInfo(Parcel parcel, NetworkRegistrationInfoIA networkRegistrationInfoIA) {
+        this(parcel);
     }
 
     private NetworkRegistrationInfo(int domain, int transportType, int registrationState, int accessNetworkTechnology, int rejectCause, boolean emergencyOnly, List<Integer> availableServices, CellIdentity cellIdentity, String rplmn, VoiceSpecificRegistrationInfo voiceSpecificInfo, DataSpecificRegistrationInfo dataSpecificInfo, boolean isNonTerrestrialNetwork) {
@@ -393,7 +402,6 @@ public final class NetworkRegistrationInfo implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String domainToString(int domain) {
         switch (domain) {
             case 1:
@@ -470,6 +478,23 @@ public final class NetworkRegistrationInfo implements Parcelable {
             } else {
                 this.mNrState = 1;
             }
+        }
+    }
+
+    /* renamed from: android.telephony.NetworkRegistrationInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NetworkRegistrationInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkRegistrationInfo createFromParcel(Parcel source) {
+            return new NetworkRegistrationInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkRegistrationInfo[] newArray(int size) {
+            return new NetworkRegistrationInfo[size];
         }
     }
 

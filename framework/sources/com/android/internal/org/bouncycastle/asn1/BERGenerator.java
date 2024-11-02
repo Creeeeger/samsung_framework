@@ -9,13 +9,11 @@ public class BERGenerator extends ASN1Generator {
     private int _tagNo;
     private boolean _tagged;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BERGenerator(OutputStream out) {
         super(out);
         this._tagged = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BERGenerator(OutputStream out, int tagNo, boolean isExplicit) {
         super(out);
         this._tagged = false;
@@ -34,7 +32,6 @@ public class BERGenerator extends ASN1Generator {
         this._out.write(128);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void writeBERHeader(int tag) throws IOException {
         if (this._tagged) {
             int tagNum = this._tagNo | 128;
@@ -53,7 +50,6 @@ public class BERGenerator extends ASN1Generator {
         writeHdr(tag);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void writeBEREnd() throws IOException {
         this._out.write(0);
         this._out.write(0);

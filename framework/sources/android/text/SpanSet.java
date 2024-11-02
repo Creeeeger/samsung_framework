@@ -12,7 +12,6 @@ public class SpanSet<E> {
     int[] spanStarts;
     E[] spans;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SpanSet(Class<? extends E> type) {
         this.classType = type;
     }
@@ -58,7 +57,6 @@ public class SpanSet<E> {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getNextTransition(int start, int limit) {
         for (int i = 0; i < this.numberOfSpans; i++) {
             int spanStart = this.spanStarts[i];

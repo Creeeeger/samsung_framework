@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class OptionsSipResponse implements Parcelable {
     public static final Parcelable.Creator<OptionsSipResponse> CREATOR = new Parcelable.Creator<OptionsSipResponse>() { // from class: com.android.ims.internal.uce.options.OptionsSipResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public OptionsSipResponse createFromParcel(Parcel source) {
             return new OptionsSipResponse(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OptionsSipResponse[] newArray(int size) {
             return new OptionsSipResponse[size];
@@ -24,6 +25,10 @@ public class OptionsSipResponse implements Parcelable {
     private int mRequestId;
     private int mRetryAfter;
     private int mSipResponseCode;
+
+    /* synthetic */ OptionsSipResponse(Parcel parcel, OptionsSipResponseIA optionsSipResponseIA) {
+        this(parcel);
+    }
 
     public OptionsCmdId getCmdId() {
         return this.mCmdId;
@@ -95,6 +100,23 @@ public class OptionsSipResponse implements Parcelable {
         dest.writeParcelable(this.mCmdId, flags);
         dest.writeInt(this.mRetryAfter);
         dest.writeString(this.mReasonHeader);
+    }
+
+    /* renamed from: com.android.ims.internal.uce.options.OptionsSipResponse$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<OptionsSipResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OptionsSipResponse createFromParcel(Parcel source) {
+            return new OptionsSipResponse(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OptionsSipResponse[] newArray(int size) {
+            return new OptionsSipResponse[size];
+        }
     }
 
     private OptionsSipResponse(Parcel source) {

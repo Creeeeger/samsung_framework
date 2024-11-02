@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxFilterTemiEvent implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterTemiEvent> CREATOR = new Parcelable.Creator<DemuxFilterTemiEvent>() { // from class: android.hardware.tv.tuner.DemuxFilterTemiEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxFilterTemiEvent createFromParcel(Parcel _aidl_source) {
             DemuxFilterTemiEvent _aidl_out = new DemuxFilterTemiEvent();
@@ -15,7 +17,6 @@ public class DemuxFilterTemiEvent implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterTemiEvent[] newArray(int _aidl_size) {
             return new DemuxFilterTemiEvent[_aidl_size];
@@ -24,6 +25,25 @@ public class DemuxFilterTemiEvent implements Parcelable {
     public byte[] descrData;
     public long pts = 0;
     public byte descrTag = 0;
+
+    /* renamed from: android.hardware.tv.tuner.DemuxFilterTemiEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterTemiEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterTemiEvent createFromParcel(Parcel _aidl_source) {
+            DemuxFilterTemiEvent _aidl_out = new DemuxFilterTemiEvent();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterTemiEvent[] newArray(int _aidl_size) {
+            return new DemuxFilterTemiEvent[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

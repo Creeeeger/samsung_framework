@@ -7,6 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehRadioResponseInfo implements Parcelable {
     public static final Parcelable.Creator<SehRadioResponseInfo> CREATOR = new Parcelable.Creator<SehRadioResponseInfo>() { // from class: vendor.samsung.hardware.radio.SehRadioResponseInfo.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehRadioResponseInfo createFromParcel(Parcel _aidl_source) {
             SehRadioResponseInfo _aidl_out = new SehRadioResponseInfo();
@@ -22,6 +25,25 @@ public class SehRadioResponseInfo implements Parcelable {
     public int error;
     public int serial = 0;
     public int type;
+
+    /* renamed from: vendor.samsung.hardware.radio.SehRadioResponseInfo$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehRadioResponseInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehRadioResponseInfo createFromParcel(Parcel _aidl_source) {
+            SehRadioResponseInfo _aidl_out = new SehRadioResponseInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehRadioResponseInfo[] newArray(int _aidl_size) {
+            return new SehRadioResponseInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

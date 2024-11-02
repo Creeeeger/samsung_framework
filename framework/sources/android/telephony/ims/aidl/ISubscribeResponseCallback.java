@@ -144,8 +144,9 @@ public interface ISubscribeResponseCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISubscribeResponseCallback {
+        public static class Proxy implements ISubscribeResponseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -336,7 +336,7 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="ext_media_unsupported_notification_message">Þetta tæki styður ekki þetta %s. Pikka skal til að setja það upp á studdu sniði.</string>
     <string name="ext_media_unsupported_notification_title">Óstutt %s</string>
     <string name="ext_storage_bad_removal_button">Endurræsa</string>
-    <string name="ext_storage_bad_removal_title">Endurræstu símann</string>
+    <string name="ext_storage_bad_removal_title">Endurræstu spjaldtölvuna</string>
     <string name="extmedia_format_button_format">Snið</string>
     <string name="extmedia_format_message_usbhost">Öllum skrám í USB-geymslunni verður eytt. Ekki er hægt að afturkalla þessa aðgerð!</string>
     <string name="extmedia_format_title_usbhost">Sníða USB-geymslu?</string>
@@ -593,16 +593,16 @@ Spjaldtölvan verður endurræst fljótlega."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Hljóð er spilað í Bluetooth-hljóðtækinu þínu. Pikkaðu hér til að slökkva á þessu</string>
     <string name="multisound_sound_via_headphone">Hljóð úr „%s“ er spilað í heyrnartólunum. Pikkað er hér til að slökkva á þessu.</string>
     <string name="multisound_sound_via_headphone_multiselection">Hljóð er spilað í heyrnartólunum þínum. Pikkaðu hér til að slökkva á þessu.</string>
-    <string name="multisound_sound_via_phone_speaker">Hljóð úr „%s“ er spilað í hátalara símans. Pikkað er hér til að slökkva á þessu.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Hljóð er spilað í hátalara símans. Pikkaðu hér til að slökkva á þessu.</string>
+    <string name="multisound_sound_via_phone_speaker">Hljóð úr „%s“ er spilað í hátalara spjaldtölvunnar. Pikkað er hér til að slökkva á þessu.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Hljóð er spilað í hátalara spjaldtölvunnar. Pikkaðu hér til að slökkva á þessu.</string>
     <string name="multisound_sound_via_usb_audio">Hljóð úr „%s“ er spilað í USB-hljóðtækinu. Pikkað er hér til að slökkva á þessu.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Hljóð er spilað í USB-hljóðtækinu. Pikkaðu hér til að slökkva á þessu.</string>
     <string name="multisound_title">Aðskilja hljóð forrits</string>
     <string name="multisound_turn_off_multisound">Slökkva</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ekki er hægt að keyra „%s“ í Samsung DeX. Prófaðu að keyra það í símastillingu.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ekki er hægt að keyra %s í Samsung DeX. Það er hannað fyrir heimaskjái síma.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sumir leikir virka aðeins á snertiskjáum. Ef músarstýringar virka ekki í Samsung DeX skaltu reyna að spila leikinn í símastillingu í staðinn.</string>
-    <string name="my_device">Þessi sími</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ekki er hægt að keyra „%s“ í Samsung DeX. Prófaðu að keyra það í spjaldtölvustillingu.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ekki er hægt að keyra „%s“ í Samsung DeX. Það er hannað fyrir heimaskjái spjaldtölva.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sumir leikir virka aðeins á snertiskjáum. Ef músarstýringar virka ekki í Samsung DeX skaltu reyna að spila leikinn í spjaldtölvustillingu í staðinn.</string>
+    <string name="my_device">Þessi spjaldtölva</string>
     <string name="network_locked_sim_dialog_message_ais">SIM-kortið virkar ekki að fullu með þessum síma vegna þess að það samræmist ekki áskriftarskilmálunum. Ef þú hefur einhverjar spurningar eða vilt fá frekari upplýsingar um þetta skaltu kíkja í þjónustuver Samsung eða verslunina þar sem þú keyptir vörurnar.</string>
     <string name="network_locked_sim_notification_text">SIM-kort með læstu símkerfi í tæki.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -793,7 +793,7 @@ SKILIST TIL"</string>
     <string name="policydesc_allow_desktopsync">Hindra notkun skjáborðssamstillingar.</string>
     <string name="policydesc_allow_internetsharing">Hindra notkun á farsímaaðgangsstað.</string>
     <string name="policydesc_allow_irda">Hindra notkun á IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Hindra notkun POP- og IMAP-tölvupósts í símanum.</string>
+    <string name="policydesc_allow_popimapemail">Hindra notkun POP- og IMAP-tölvupósts í spjaldtölvunni.</string>
     <string name="policydesc_allow_storagecard">Hindra notkun á SD-kortum.</string>
     <string name="policydesc_allow_textmessaging">Hindra notkun á SMS- og margmiðlunarskilaboðum.</string>
     <string name="policydesc_allow_thirdParty">Þetta forrit getur komið í veg fyrir keyrslu forrita frá þriðju aðilum.</string>
@@ -839,7 +839,7 @@ SKILIST TIL"</string>
     <string name="pwd_change_enforced">Öryggisstefnan krefst þess að þú breytir lykilorðinu þínu.</string>
     <string name="recording_fail">Ekki er hægt að nota hljóðnemann í %1$s á meðan hann er notaður í %2$s.</string>
     <string name="recording_popup">%s er að nota hljóðnemann.</string>
-    <string name="recording_popup_device">Sími</string>
+    <string name="recording_popup_device">Spjaldtölva</string>
     <string name="recording_popup_with_bluetooth">%s er að nota Bluetooth-hljóðnemann.</string>
     <string name="recording_popup_with_device">%1$s er að nota hljóðnema %2$s.</string>
     <string name="redo">Endurgera</string>
@@ -904,12 +904,12 @@ SKILIST TIL"</string>
     <string name="screencapture_restrict">Öryggisstefnan kemur í veg fyrir skjámyndatöku.</string>
     <string name="sd_card_unavailable_message">Þú getur ekki notað SD-kortið vegna þess að annar notandaprófíll var í notkun þegar kortið var sett í.</string>
     <string name="sd_card_unavailable_title">SD-kort ekki tiltækt</string>
-    <string name="sdcard_bad_removal_message">SD-kortið var fjarlægt á óöruggan máta. Vistaðu óvistuð gögn og endurræstu símann til að koma í veg fyrir að hann endurræsi sig óvænt.</string>
+    <string name="sdcard_bad_removal_message">SD-kortið var fjarlægt á óöruggan máta. Vistaðu óvistuð gögn og endurræstu spjaldtölvuna til að koma í veg fyrir að hún endurræsi sig óvænt.</string>
     <string name="sdcard_batch_decrypt_noti_content">Afkóða SD-kort</string>
     <string name="sdcard_batch_decrypt_noti_title">Afkóðun SD-korts</string>
     <string name="sdcard_batch_decrypt_popup_content">Afkóða verður dulkóðaða SD-kortið áður en það er notað. Afkóðun getur tekið klukkustund eða meira. Byrjaðu með fullhlaðna rafhlöðu og hafðu tækið í sambandi uns afkóðun er lokið. Ef afkóðunarferlið er rofið geta einhver eða öll gögn glatast.</string>
     <string name="sdcard_decrypt_err_notification">Villa kom upp við afkóðun á SD-korti.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Sumar skrár á SD-kortinu þínu voru dulkóðaðar í öðru tæki og ekki er hægt að nota þær í þessum síma.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Sumar skrár á SD-kortinu þínu voru dulkóðaðar í öðru tæki og ekki er hægt að nota þær í þessari spjaldtölvu.</string>
     <string name="sdcard_decrypt_notification">SD-kort afkóðað.</string>
     <string name="sdcard_decrypt_title_notification">Afkóðun SD-korts</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Afkóðar SD-kort…</string>
@@ -1235,7 +1235,7 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="usb_abnormal_reset_title">USB-tenging er ekki stöðug</string>
     <string name="usb_abnormal_reset_toast">USB-tenging er ekki stöðug. Taktu snúruna úr sambandi og stingdu henni aftur í samband eða prófaðu aðra snúru.</string>
     <string name="usb_accessory_notification_title">Tengt við USB-aðgang</string>
-    <string name="usb_bad_removal_message">USB-geymslutæki var fjarlægt á óöruggan máta. Vistaðu óvistuð gögn og endurræstu símann til að koma í veg fyrir að hann endurræsi sig óvænt.</string>
+    <string name="usb_bad_removal_message">USB-geymslutæki var fjarlægt á óöruggan máta. Vistaðu óvistuð gögn og endurræstu spjaldtölvuna til að koma í veg fyrir að hún endurræsi sig óvænt.</string>
     <string name="usb_blocked_by_emergency_mode">Sumir eiginleikar USB eru ekki í boði í neyðarstillingu.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ekki er hægt að nota eiginleika fyrir tengt USB-tæki þegar kveikt er á hámarksorkusparnaðarstillingu.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Sumir USB-eiginleikar verða takmarkaðir á meðan kveikt er á hámarksorkusparnaðarstillingu.</string>
@@ -1244,13 +1244,13 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="usb_camera_connected_notification_title">Margmiðlunartæki tengt</string>
     <string name="usb_camera_disconnected_notification_title">Margmiðlunartæki aftengt</string>
     <string name="usb_cd_installer_notification_title">Hugbúnaðaruppfærsla</string>
-    <string name="usb_charing_only_notification_title">Hleður um USB</string>
+    <string name="usb_charing_only_notification_title">Tengt</string>
     <string name="usb_debugging_only_notification_title">Aðeins kembing</string>
-    <string name="usb_host_resource_exceed_message">USB-stýring símans er ekki með næg tilföng til að tengja þetta tæki. Prófaðu að aftengja tækið og tengja það aftur.</string>
+    <string name="usb_host_resource_exceed_message">USB-stýring spjaldtölvunnar er ekki með næg tilföng til að tengja þetta tæki. Prófaðu að aftengja tækið og tengja það aftur.</string>
     <string name="usb_host_resource_exceed_title">Ekki næg tilföng fyrir USB-stýringu</string>
-    <string name="usb_hub_depth_exceed_message">Síminn getur aðeins stutt allt að 5 USB-miðstöðvartengingar á sama tíma.</string>
+    <string name="usb_hub_depth_exceed_message">Spjaldtölvan getur aðeins stutt allt að 5 USB-miðstöðvartengingar á sama tíma.</string>
     <string name="usb_hub_depth_exceed_title">Hámarkstengingar USB-miðstöðvar</string>
-    <string name="usb_hub_power_exceed_message">Síminn getur ekki veitt þessu USB-tæki nóg afl. Tengdu tækið við sjálfknúna USB-miðstöð áður en þú tengir það við símann.</string>
+    <string name="usb_hub_power_exceed_message">Spjaldtölvan getur ekki veitt þessu USB-tæki nóg afl. Tengdu tækið við sjálfknúna USB-miðstöð áður en þú tengir það við spjaldtölvuna.</string>
     <string name="usb_increase_battery_usage">USB-tenging kann að auka rafhlöðunotkun.</string>
     <string name="usb_mass_storage_restrict">Öryggisstefnan kemur í veg fyrir notkun USB-gagnageymslu.</string>
     <string name="usb_midi_notification_title">USB fyrir MIDI</string>
@@ -1276,8 +1276,8 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="usb_storage_stop_title">USB-geymsla í notkun.</string>
     <string name="usb_storage_title">USB er tengt.</string>
     <string name="usb_type_c_supply_power_notification_title">Hleður tengt tæki um USB</string>
-    <string name="usb_unblock_by_screen_unlock">Taktu símann úr lás til að nota tengda USB-tækið.</string>
-    <string name="usb_unsupport_accessory_message">Síminn þinn styður ekki þetta USB-tæki.</string>
+    <string name="usb_unblock_by_screen_unlock">Taktu spjaldtölvuna úr lás til að nota tengda USB-tækið.</string>
+    <string name="usb_unsupport_accessory_message">Spjaldtölvan þín styður ekki þetta USB-tæki.</string>
     <string name="usb_unsupport_accessory_title">Óstutt USB-tæki</string>
     <string name="usb_unsupported_device">Tengda USB-tækið er ekki stutt.</string>
     <string name="usb_unsupported_device_title">Tækið er ekki stutt</string>
@@ -1295,19 +1295,19 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="usb_water_dialg_method_2_desc_2">Hægt er að flýta fyrir þurrkun með því að beina viftu eða hárþurrku (aðeins kalt loft) að tenginu.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Við greindum raka eða aðskotaefni í hleðslu-/USB-tenginu.
 
-Athugaðu hvort eitthvert aðskotaefni, t.d. ryk eða óhreinindi, er í hleðslu-/USB-tenginu. Til að koma í veg fyrir skemmdir á símanum skaltu ekki stinga neinu í samband fyrr en hleðslutengið er hreint og rakinn er horfinn.
+Athugaðu hvort eitthvert aðskotaefni, t.d. ryk eða óhreinindi, er í hleðslu-/USB-tenginu. Til að koma í veg fyrir skemmdir á spjaldtölvunni skaltu ekki stinga neinu í samband fyrr en hleðslutengið er hreint og rakinn er horfinn.
 
 Til að þurrka tengið skaltu hrista út allan raka og bíða síðan eftir að hann þorni, sem gæti tekið nokkrar klukkustundir. Hægt er að flýta fyrir þurrkuninni með því að beina viftu eða hárþurrku (aðeins kalt loft) að tenginu."</string>
     <string name="usb_water_dialg_positive_button">Í lagi</string>
     <string name="usb_water_dialg_support_wireless_charging">"Við greindum raka eða aðskotaefni í hleðslu-/USB-tenginu.
 
-Athugaðu hvort eitthvert aðskotaefni, t.d. ryk eða óhreinindi, er í hleðslu-/USB-tenginu. Til að koma í veg fyrir skemmdir á símanum skaltu ekki stinga neinu í samband fyrr en hleðslutengið er hreint og rakinn er horfinn.
+Athugaðu hvort eitthvert aðskotaefni, t.d. ryk eða óhreinindi, er í hleðslu-/USB-tenginu. Til að koma í veg fyrir skemmdir á spjaldtölvunni skaltu ekki stinga neinu í samband fyrr en hleðslutengið er hreint og rakinn er horfinn.
 
-Til að þurrka tengið skaltu hrista út allan raka og bíða síðan eftir að hann þorni, sem gæti tekið nokkrar klukkustundir. Hægt er að flýta fyrir þurrkuninni með því að beina viftu eða hárþurrku (aðeins kalt loft) að tenginu.
+Til að þurrka tengið skaltu hrista út allan raka og bíða síðan eftir að það þorni, sem gæti tekið nokkrar klukkustundir. Hægt er að flýta fyrir þurrkuninni með því að beina viftu eða hárþurrku (aðeins kalt loft) að tenginu.
 
-Í millitíðinni geturðu hlaðið símann þráðlaust."</string>
+Í millitíðinni geturðu hlaðið spjaldtölvuna þráðlaust."</string>
     <string name="usb_water_notification_content">Það er raki eða aðskotaefni í hleðslu-/USB-tenginu. Athugaðu það áður en þú hleður.</string>
-    <string name="usb_water_notification_message">Raki greindist í hleðslu-/USB-tenginu. Gakktu úr skugga um að það sé alveg þurrt áður en þú hleður símann. Tengið getur verið dálitla stund að þorna.</string>
+    <string name="usb_water_notification_message">Raki greindist í hleðslu-/USB-tenginu. Gakktu úr skugga um að það sé alveg þurrt áður en þú hleður spjaldtölvuna. Tengið getur verið dálitla stund að þorna.</string>
     <string name="usb_water_notification_message_button">Upplýsingar</string>
     <string name="usb_water_notification_title">Athugaðu hleðslu-/USB-tengið</string>
     <string name="usbhostStorage_restrict">Öryggisstefnan kemur í veg fyrir notkun USB-hýsigeymslu.</string>

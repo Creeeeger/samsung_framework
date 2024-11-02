@@ -362,7 +362,7 @@ public class SmsMessage {
         return this.mWrappedSmsMessage.getMessageBody();
     }
 
-    /* renamed from: android.telephony.SmsMessage$1, reason: invalid class name */
+    /* renamed from: android.telephony.SmsMessage$1 */
     /* loaded from: classes3.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$android$internal$telephony$SmsConstants$MessageClass;
@@ -568,7 +568,6 @@ public class SmsMessage {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class NoEmsSupportConfig {
         String mGid1;

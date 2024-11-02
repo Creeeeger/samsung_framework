@@ -12,7 +12,6 @@ public abstract class DecorateFilter implements MediaFilter {
     private static final String TAG = Def.tagOf((Class<?>) DecorateFilter.class);
     protected MediaFilter successor;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DecorateFilter(MediaFilter successor) {
         this.successor = successor;
     }

@@ -66,7 +66,7 @@ public final class Sender {
         return sendToDsms(new DsmsMessage(featureCode, detail, Long.valueOf(value)));
     }
 
-    private int sendToDsms(final DsmsMessage message) {
+    private int sendToDsms(DsmsMessage message) {
         if (this.DSMS_DISABLED) {
             DsmsLog.e(SUBTAG, "DSMS not supported");
             return -19;
@@ -77,6 +77,12 @@ public final class Sender {
             return -1;
         }
         DsmsThreadPoolExecutor.getInstance().execute(new Runnable() { // from class: com.samsung.android.jdsms.Sender.1
+            final /* synthetic */ DsmsMessage val$message;
+
+            AnonymousClass1(DsmsMessage message2) {
+                message = message2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Sender.this.sendMessage(message);
@@ -85,7 +91,21 @@ public final class Sender {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.samsung.android.jdsms.Sender$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ DsmsMessage val$message;
+
+        AnonymousClass1(DsmsMessage message2) {
+            message = message2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Sender.this.sendMessage(message);
+        }
+    }
+
     public void sendMessage(DsmsMessage message) {
         Bundle bundle = new Bundle();
         bundle.putString("tracking_id", TRACKING_ID);

@@ -16,7 +16,9 @@ public class Criteria implements Parcelable {
     public static final int ACCURACY_LOW = 1;
     public static final int ACCURACY_MEDIUM = 2;
     public static final Parcelable.Creator<Criteria> CREATOR = new Parcelable.Creator<Criteria>() { // from class: android.location.Criteria.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Criteria createFromParcel(Parcel in) {
             Criteria c = new Criteria();
@@ -32,7 +34,6 @@ public class Criteria implements Parcelable {
             return c;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Criteria[] newArray(int size) {
             return new Criteria[size];
@@ -194,6 +195,33 @@ public class Criteria implements Parcelable {
 
     public boolean isBearingRequired() {
         return this.mBearingRequired;
+    }
+
+    /* renamed from: android.location.Criteria$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Criteria> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Criteria createFromParcel(Parcel in) {
+            Criteria c = new Criteria();
+            c.mHorizontalAccuracy = in.readInt();
+            c.mVerticalAccuracy = in.readInt();
+            c.mSpeedAccuracy = in.readInt();
+            c.mBearingAccuracy = in.readInt();
+            c.mPowerRequirement = in.readInt();
+            c.mAltitudeRequired = in.readInt() != 0;
+            c.mBearingRequired = in.readInt() != 0;
+            c.mSpeedRequired = in.readInt() != 0;
+            c.mCostAllowed = in.readInt() != 0;
+            return c;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Criteria[] newArray(int size) {
+            return new Criteria[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -20,13 +20,14 @@ import java.util.List;
 /* loaded from: classes4.dex */
 public final class InputDevice implements Parcelable {
     public static final Parcelable.Creator<InputDevice> CREATOR = new Parcelable.Creator<InputDevice>() { // from class: android.view.InputDevice.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputDevice createFromParcel(Parcel in) {
             return new InputDevice(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputDevice[] newArray(int size) {
             return new InputDevice[size];
@@ -121,6 +122,31 @@ public final class InputDevice implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes4.dex */
     @interface InputSourceClass {
+    }
+
+    /* synthetic */ InputDevice(int i, int i2, int i3, String str, int i4, int i5, String str2, boolean z, int i6, int i7, KeyCharacterMap keyCharacterMap, String str3, String str4, boolean z2, boolean z3, boolean z4, boolean z5, boolean z6, int i8, int i9, int i10, InputDeviceIA inputDeviceIA) {
+        this(i, i2, i3, str, i4, i5, str2, z, i6, i7, keyCharacterMap, str3, str4, z2, z3, z4, z5, z6, i8, i9, i10);
+    }
+
+    /* synthetic */ InputDevice(Parcel parcel, InputDeviceIA inputDeviceIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.view.InputDevice$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputDevice> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputDevice createFromParcel(Parcel in) {
+            return new InputDevice(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputDevice[] newArray(int size) {
+            return new InputDevice[size];
+        }
     }
 
     private InputDevice(int id, int generation, int controllerNumber, String name, int vendorId, int productId, String descriptor, boolean isExternal, int sources, int keyboardType, KeyCharacterMap keyCharacterMap, String keyboardLanguageTag, String keyboardLayoutType, boolean hasVibrator, boolean hasMicrophone, boolean hasButtonUnderPad, boolean hasSensor, boolean hasBattery, int usiVersionMajor, int usiVersionMinor, int associatedDisplayId) {
@@ -437,7 +463,6 @@ public final class InputDevice implements Parcelable {
         return this.mMotionRanges;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void addMotionRange(int axis, int source, float min, float max, float flat, float fuzz, float resolution) {
         this.mMotionRanges.add(new MotionRange(axis, source, min, max, flat, fuzz, resolution));
     }
@@ -557,6 +582,10 @@ public final class InputDevice implements Parcelable {
         private float mMin;
         private float mResolution;
         private int mSource;
+
+        /* synthetic */ MotionRange(int i, int i2, float f, float f2, float f3, float f4, float f5, MotionRangeIA motionRangeIA) {
+            this(i, i2, f, f2, f3, f4, f5);
+        }
 
         private MotionRange(int axis, int source, float min, float max, float flat, float fuzz, float resolution) {
             this.mAxis = axis;

@@ -83,8 +83,9 @@ public interface IInvalidationCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IInvalidationCallback {
+        public static class Proxy implements IInvalidationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -22,7 +22,6 @@ import java.util.List;
 import javax.crypto.spec.GCMParameterSpec;
 import libcore.util.EmptyArray;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKeyStoreCipherSpiBase {
     private static final int BLOCK_SIZE_BYTES = 16;
@@ -49,13 +48,13 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
             return MdfUtils.MDF_CIPHER_MODE;
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.security.keystore2.AndroidKeyStoreAuthenticatedAESCipherSpi, android.security.keystore2.AndroidKeyStoreCipherSpiBase
-        protected final void resetAll() {
+        public final void resetAll() {
             this.mTagLengthBits = 128;
             super.resetAll();
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
         public final void resetWhilePreservingInitState() {
             super.resetWhilePreservingInitState();
@@ -208,7 +207,6 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
         this.mKeymasterPadding = keymasterPadding;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreCipherSpiBase
     public void resetAll() {
         this.mIv = null;
@@ -293,6 +291,10 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
         private final KeyStoreCryptoOperationStreamer mDelegate;
         private long mProducedOutputSizeBytes;
 
+        /* synthetic */ BufferAllOutputUntilDoFinalStreamer(KeyStoreCryptoOperationStreamer keyStoreCryptoOperationStreamer, BufferAllOutputUntilDoFinalStreamerIA bufferAllOutputUntilDoFinalStreamerIA) {
+            this(keyStoreCryptoOperationStreamer);
+        }
+
         private BufferAllOutputUntilDoFinalStreamer(KeyStoreCryptoOperationStreamer delegate) {
             this.mBufferedOutput = new ByteArrayOutputStream();
             this.mDelegate = delegate;
@@ -341,6 +343,10 @@ public abstract class AndroidKeyStoreAuthenticatedAESCipherSpi extends AndroidKe
     /* loaded from: classes3.dex */
     private static class AdditionalAuthenticationDataStream implements KeyStoreCryptoOperationChunkedStreamer.Stream {
         private final KeyStoreOperation mOperation;
+
+        /* synthetic */ AdditionalAuthenticationDataStream(KeyStoreOperation keyStoreOperation, AdditionalAuthenticationDataStreamIA additionalAuthenticationDataStreamIA) {
+            this(keyStoreOperation);
+        }
 
         private AdditionalAuthenticationDataStream(KeyStoreOperation operation) {
             this.mOperation = operation;

@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.WeakHashMap;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickListener {
     private static final boolean DBG = false;
@@ -74,6 +73,9 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
         getFilter().setDelayer(new Filter.Delayer() { // from class: android.widget.SuggestionsAdapter.1
             private int mPreviousLength = 0;
 
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.Filter.Delayer
             public long getPostingDelay(CharSequence constraint) {
                 if (constraint == null) {
@@ -84,6 +86,26 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
                 return delay;
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.SuggestionsAdapter$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Filter.Delayer {
+        private int mPreviousLength = 0;
+
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.Filter.Delayer
+        public long getPostingDelay(CharSequence constraint) {
+            if (constraint == null) {
+                return 0L;
+            }
+            long delay = constraint.length() < this.mPreviousLength ? SuggestionsAdapter.DELETE_KEY_POST_DELAY : 0L;
+            this.mPreviousLength = constraint.length();
+            return delay;
+        }
     }
 
     public void setQueryRefinement(int refineWhat) {
@@ -175,7 +197,6 @@ public class SuggestionsAdapter extends ResourceCursorAdapter implements View.On
         return v;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class ChildViewCache {
         public final ImageView mIcon1;

@@ -97,13 +97,14 @@ public class JobInfo implements Parcelable {
     private final TriggerContentUri[] triggerContentUris;
     private static String TAG = "JobInfo";
     public static final Parcelable.Creator<JobInfo> CREATOR = new Parcelable.Creator<JobInfo>() { // from class: android.app.job.JobInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public JobInfo createFromParcel(Parcel in) {
             return new JobInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JobInfo[] newArray(int size) {
             return new JobInfo[size];
@@ -123,6 +124,14 @@ public class JobInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Priority {
+    }
+
+    /* synthetic */ JobInfo(Builder builder, JobInfoIA jobInfoIA) {
+        this(builder);
+    }
+
+    /* synthetic */ JobInfo(Parcel parcel, JobInfoIA jobInfoIA) {
+        this(parcel);
     }
 
     public static final long getMinPeriodMillis() {
@@ -480,6 +489,23 @@ public class JobInfo implements Parcelable {
         parcel.writeInt(this.flags);
     }
 
+    /* renamed from: android.app.job.JobInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<JobInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public JobInfo createFromParcel(Parcel in) {
+            return new JobInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public JobInfo[] newArray(int size) {
+            return new JobInfo[size];
+        }
+    }
+
     public String toString() {
         return "(job:" + this.jobId + "/" + this.service.flattenToShortString() + NavigationBarInflaterView.KEY_CODE_END;
     }
@@ -487,13 +513,14 @@ public class JobInfo implements Parcelable {
     /* loaded from: classes.dex */
     public static final class TriggerContentUri implements Parcelable {
         public static final Parcelable.Creator<TriggerContentUri> CREATOR = new Parcelable.Creator<TriggerContentUri>() { // from class: android.app.job.JobInfo.TriggerContentUri.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public TriggerContentUri createFromParcel(Parcel in) {
                 return new TriggerContentUri(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TriggerContentUri[] newArray(int size) {
                 return new TriggerContentUri[size];
@@ -506,6 +533,10 @@ public class JobInfo implements Parcelable {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes.dex */
         public @interface Flags {
+        }
+
+        /* synthetic */ TriggerContentUri(Parcel parcel, TriggerContentUriIA triggerContentUriIA) {
+            this(parcel);
         }
 
         public TriggerContentUri(Uri uri, int flags) {
@@ -548,6 +579,23 @@ public class JobInfo implements Parcelable {
         public void writeToParcel(Parcel out, int flags) {
             this.mUri.writeToParcel(out, flags);
             out.writeInt(this.mFlags);
+        }
+
+        /* renamed from: android.app.job.JobInfo$TriggerContentUri$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<TriggerContentUri> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TriggerContentUri createFromParcel(Parcel in) {
+                return new TriggerContentUri(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TriggerContentUri[] newArray(int size) {
+                return new TriggerContentUri[size];
+            }
         }
     }
 

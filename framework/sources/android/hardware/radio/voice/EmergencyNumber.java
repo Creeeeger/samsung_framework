@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class EmergencyNumber implements Parcelable {
     public static final Parcelable.Creator<EmergencyNumber> CREATOR = new Parcelable.Creator<EmergencyNumber>() { // from class: android.hardware.radio.voice.EmergencyNumber.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EmergencyNumber createFromParcel(Parcel _aidl_source) {
             EmergencyNumber _aidl_out = new EmergencyNumber();
@@ -18,7 +20,6 @@ public class EmergencyNumber implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EmergencyNumber[] newArray(int _aidl_size) {
             return new EmergencyNumber[_aidl_size];
@@ -34,6 +35,25 @@ public class EmergencyNumber implements Parcelable {
     public String[] urns;
     public int categories = 0;
     public int sources = 0;
+
+    /* renamed from: android.hardware.radio.voice.EmergencyNumber$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EmergencyNumber> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EmergencyNumber createFromParcel(Parcel _aidl_source) {
+            EmergencyNumber _aidl_out = new EmergencyNumber();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EmergencyNumber[] newArray(int _aidl_size) {
+            return new EmergencyNumber[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

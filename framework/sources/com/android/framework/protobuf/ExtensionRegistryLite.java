@@ -91,7 +91,6 @@ public class ExtensionRegistryLite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ExtensionRegistryLite() {
         this.extensionsByNumber = new HashMap();
     }
@@ -108,7 +107,6 @@ public class ExtensionRegistryLite {
         this.extensionsByNumber = Collections.emptyMap();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class ObjectIntPair {
         private final int number;

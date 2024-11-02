@@ -9,7 +9,7 @@ public class RuntimeShader extends Shader {
     private long mNativeInstanceRuntimeShaderBuilder;
     private ArrayMap<String, Shader> mShaderUniforms;
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnativeGetFinalizer */
     static /* bridge */ /* synthetic */ long m1148$$Nest$smnativeGetFinalizer() {
         return nativeGetFinalizer();
     }
@@ -30,8 +30,9 @@ public class RuntimeShader extends Shader {
 
     private static native void nativeUpdateUniforms(long j, String str, int[] iArr);
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class NoImagePreloadHolder {
+    public static class NoImagePreloadHolder {
         public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(RuntimeShader.class.getClassLoader(), RuntimeShader.m1148$$Nest$smnativeGetFinalizer());
 
         private NoImagePreloadHolder() {
@@ -168,7 +169,6 @@ public class RuntimeShader extends Shader {
         return nativeCreateShader(this.mNativeInstanceRuntimeShaderBuilder, nativeMatrix);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public long getNativeShaderBuilder() {
         return this.mNativeInstanceRuntimeShaderBuilder;
     }

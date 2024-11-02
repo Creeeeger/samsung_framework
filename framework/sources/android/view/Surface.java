@@ -26,7 +26,9 @@ public class Surface implements Parcelable {
     public static final int CHANGE_FRAME_RATE_ALWAYS = 1;
     public static final int CHANGE_FRAME_RATE_ONLY_IF_SEAMLESS = 0;
     public static final Parcelable.Creator<Surface> CREATOR = new Parcelable.Creator<Surface>() { // from class: android.view.Surface.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Surface createFromParcel(Parcel source) {
             try {
@@ -39,7 +41,6 @@ public class Surface implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Surface[] newArray(int size) {
             return new Surface[size];
@@ -135,6 +136,30 @@ public class Surface implements Parcelable {
     private static native void nativeUnlockCanvasAndPost(long j, Canvas canvas);
 
     private static native void nativeWriteToParcel(long j, Parcel parcel);
+
+    /* renamed from: android.view.Surface$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Surface> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Surface createFromParcel(Parcel source) {
+            try {
+                Surface s = new Surface();
+                s.readFromParcel(source);
+                return s;
+            } catch (Exception e) {
+                Log.e(Surface.TAG, "Exception creating surface from parcel", e);
+                return null;
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Surface[] newArray(int size) {
+            return new Surface[size];
+        }
+    }
 
     public Surface() {
         this.mCloseGuard = CloseGuard.get();
@@ -342,7 +367,6 @@ public class Surface implements Parcelable {
         throw new UnsupportedOperationException();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCompatibilityTranslator(CompatibilityInfo.Translator translator) {
         if (translator != null) {
             float appScale = translator.applicationScale;
@@ -507,7 +531,6 @@ public class Surface implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void forceScopedDisconnect() {
         synchronized (this.mLock) {
             checkNotReleasedLocked();
@@ -615,9 +638,14 @@ public class Surface implements Parcelable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private final class CompatibleCanvas extends Canvas {
+    public final class CompatibleCanvas extends Canvas {
         private Matrix mOrigMatrix;
+
+        /* synthetic */ CompatibleCanvas(Surface surface, CompatibleCanvasIA compatibleCanvasIA) {
+            this();
+        }
 
         private CompatibleCanvas() {
             this.mOrigMatrix = null;
@@ -645,7 +673,6 @@ public class Surface implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class HwuiContext {
         private RecordingCanvas mCanvas;

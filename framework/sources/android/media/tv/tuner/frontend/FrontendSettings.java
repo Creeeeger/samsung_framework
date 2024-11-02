@@ -81,7 +81,6 @@ public abstract class FrontendSettings {
 
     public abstract int getType();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FrontendSettings(long frequency) {
         this.mFrequency = frequency;
     }

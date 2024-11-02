@@ -2,8 +2,9 @@ package com.android.internal.org.bouncycastle.jce.provider;
 
 import java.util.Date;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class CertStatus {
+public class CertStatus {
     public static final int UNDETERMINED = 12;
     public static final int UNREVOKED = 11;
     int certStatus = 11;

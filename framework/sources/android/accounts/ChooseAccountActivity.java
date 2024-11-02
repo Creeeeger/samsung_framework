@@ -66,6 +66,9 @@ public class ChooseAccountActivity extends Activity {
                 list.setChoiceMode(1);
                 list.setTextFilterEnabled(true);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: android.accounts.ChooseAccountActivity.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.widget.AdapterView.OnItemClickListener
                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                         ChooseAccountActivity.this.onListItemClick((ListView) parent, v, position, id);
@@ -73,6 +76,18 @@ public class ChooseAccountActivity extends Activity {
                 });
                 return;
             }
+        }
+    }
+
+    /* renamed from: android.accounts.ChooseAccountActivity$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements AdapterView.OnItemClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.AdapterView.OnItemClickListener
+        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            ChooseAccountActivity.this.onListItemClick((ListView) parent, v, position, id);
         }
     }
 
@@ -135,8 +150,9 @@ public class ChooseAccountActivity extends Activity {
         super.finish();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class AccountInfo {
+    public static class AccountInfo {
         final Drawable drawable;
         final String name;
 
@@ -150,6 +166,10 @@ public class ChooseAccountActivity extends Activity {
     private static class ViewHolder {
         ImageView icon;
         TextView text;
+
+        /* synthetic */ ViewHolder(ViewHolderIA viewHolderIA) {
+            this();
+        }
 
         private ViewHolder() {
         }

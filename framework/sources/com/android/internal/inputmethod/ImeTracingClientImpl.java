@@ -6,10 +6,8 @@ import android.view.inputmethod.InputMethodManagerGlobal;
 import com.android.internal.inputmethod.ImeTracing;
 import java.io.PrintWriter;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ImeTracingClientImpl extends ImeTracing {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ImeTracingClientImpl() {
         sEnabled = InputMethodManagerGlobal.isImeTraceEnabled();
     }

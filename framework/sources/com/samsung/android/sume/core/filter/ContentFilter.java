@@ -24,11 +24,46 @@ public class ContentFilter extends DecorateFilter {
     private final Map<Integer, Object> filterMap;
     private final PlaceHolder<String> message;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.sume.core.filter.ContentFilter$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements PlaceHolder<String> {
+        private String buf;
+
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.sume.core.functional.PlaceHolder
+        public void put(String instance) {
+            this.buf = instance;
+        }
+
+        @Override // com.samsung.android.sume.core.functional.PlaceHolder
+        public String reset() {
+            String ret = this.buf;
+            this.buf = null;
+            return ret;
+        }
+
+        @Override // com.samsung.android.sume.core.functional.PlaceHolder
+        public boolean isEmpty() {
+            return this.buf == null;
+        }
+
+        @Override // com.samsung.android.sume.core.functional.PlaceHolder
+        public boolean isNotEmpty() {
+            return this.buf != null;
+        }
+    }
+
     public ContentFilter(ContentFilterRegister contentFilterRegister, MediaFilter successor) {
         super(successor);
         this.filterMap = new HashMap();
         this.message = new PlaceHolder<String>() { // from class: com.samsung.android.sume.core.filter.ContentFilter.1
             private String buf;
+
+            AnonymousClass1() {
+            }
 
             @Override // com.samsung.android.sume.core.functional.PlaceHolder
             public void put(String instance) {
@@ -53,6 +88,9 @@ public class ContentFilter extends DecorateFilter {
             }
         };
         contentFilterRegister.registerFilter(new ContentFilterRegistry() { // from class: com.samsung.android.sume.core.filter.ContentFilter.2
+            AnonymousClass2() {
+            }
+
             @Override // com.samsung.android.sume.core.filter.ContentFilterRegistry
             public void addFilter(int filterType, Object data) {
                 ContentFilter.this.filterMap.put(Integer.valueOf(filterType), data);
@@ -63,6 +101,24 @@ public class ContentFilter extends DecorateFilter {
                 return (R) ContentFilter.this.filterMap.get(Integer.valueOf(i));
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.sume.core.filter.ContentFilter$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements ContentFilterRegistry {
+        AnonymousClass2() {
+        }
+
+        @Override // com.samsung.android.sume.core.filter.ContentFilterRegistry
+        public void addFilter(int filterType, Object data) {
+            ContentFilter.this.filterMap.put(Integer.valueOf(filterType), data);
+        }
+
+        @Override // com.samsung.android.sume.core.filter.ContentFilterRegistry
+        public <R> R getFilter(int i) {
+            return (R) ContentFilter.this.filterMap.get(Integer.valueOf(i));
+        }
     }
 
     @Override // com.samsung.android.sume.core.filter.DecorateFilter, com.samsung.android.sume.core.functional.Operator
@@ -76,7 +132,7 @@ public class ContentFilter extends DecorateFilter {
         boolean isFiltered = this.filterMap.entrySet().stream().anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.filter.ContentFilter$$ExternalSyntheticLambda3
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return ContentFilter.this.m8755x2ca42333(mediaFormat, (Map.Entry) obj);
+                return ContentFilter.this.m8747x2ca42333(mediaFormat, (Map.Entry) obj);
             }
         });
         if (isFiltered) {
@@ -84,9 +140,8 @@ public class ContentFilter extends DecorateFilter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$filterOut$0$com-samsung-android-sume-core-filter-ContentFilter, reason: not valid java name */
-    public /* synthetic */ boolean m8755x2ca42333(MediaFormat mediaFormat, Map.Entry it) {
+    /* renamed from: lambda$filterOut$0$com-samsung-android-sume-core-filter-ContentFilter */
+    public /* synthetic */ boolean m8747x2ca42333(MediaFormat mediaFormat, Map.Entry it) {
         switch (((Integer) it.getKey()).intValue()) {
             case 1:
                 return evaluateDimension(it.getValue(), mediaFormat.getShape(), this.message);
@@ -159,12 +214,10 @@ public class ContentFilter extends DecorateFilter {
         return isFiltered;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$evaluateDataType$1(DataType dataType, DataType it) {
         return it == dataType;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$evaluateDataType$2(DataType dataType, DataType it) {
         return it == dataType;
     }

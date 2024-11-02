@@ -20,7 +20,6 @@ class CredstoreWritableIdentityCredential extends WritableIdentityCredential {
     private String mCredentialName;
     private String mDocType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CredstoreWritableIdentityCredential(Context context, String credentialName, String docType, IWritableCredential binder) {
         this.mContext = context;
         this.mDocType = docType;
@@ -56,7 +55,6 @@ class CredstoreWritableIdentityCredential extends WritableIdentityCredential {
         return personalize(this.mBinder, personalizationData);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Incorrect condition in loop: B:3:0x0018 */
     /*
         Code decompiled incorrectly, please refer to instructions dump.

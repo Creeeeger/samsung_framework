@@ -90,8 +90,8 @@ public class LongArray implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public LongArray m4929clone() {
+    /* renamed from: clone */
+    public LongArray m4928clone() {
         LongArray clone = null;
         try {
             clone = (LongArray) super.clone();

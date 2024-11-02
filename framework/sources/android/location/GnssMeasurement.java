@@ -19,7 +19,9 @@ public final class GnssMeasurement implements Parcelable {
     public static final int ADR_STATE_UNKNOWN = 0;
     public static final int ADR_STATE_VALID = 1;
     public static final Parcelable.Creator<GnssMeasurement> CREATOR = new Parcelable.Creator<GnssMeasurement>() { // from class: android.location.GnssMeasurement.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssMeasurement createFromParcel(Parcel parcel) {
             GnssMeasurement gnssMeasurement = new GnssMeasurement();
@@ -62,7 +64,6 @@ public final class GnssMeasurement implements Parcelable {
             return gnssMeasurement;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssMeasurement[] newArray(int i) {
             return new GnssMeasurement[i];
@@ -658,6 +659,60 @@ public final class GnssMeasurement implements Parcelable {
     public void resetCorrelationVectors() {
         resetFlag(2097152);
         this.mReadOnlyCorrelationVectors = null;
+    }
+
+    /* renamed from: android.location.GnssMeasurement$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssMeasurement> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssMeasurement createFromParcel(Parcel parcel) {
+            GnssMeasurement gnssMeasurement = new GnssMeasurement();
+            gnssMeasurement.mFlags = parcel.readInt();
+            gnssMeasurement.mSvid = parcel.readInt();
+            gnssMeasurement.mConstellationType = parcel.readInt();
+            gnssMeasurement.mTimeOffsetNanos = parcel.readDouble();
+            gnssMeasurement.mState = parcel.readInt();
+            gnssMeasurement.mReceivedSvTimeNanos = parcel.readLong();
+            gnssMeasurement.mReceivedSvTimeUncertaintyNanos = parcel.readLong();
+            gnssMeasurement.mCn0DbHz = parcel.readDouble();
+            gnssMeasurement.mPseudorangeRateMetersPerSecond = parcel.readDouble();
+            gnssMeasurement.mPseudorangeRateUncertaintyMetersPerSecond = parcel.readDouble();
+            gnssMeasurement.mAccumulatedDeltaRangeState = parcel.readInt();
+            gnssMeasurement.mAccumulatedDeltaRangeMeters = parcel.readDouble();
+            gnssMeasurement.mAccumulatedDeltaRangeUncertaintyMeters = parcel.readDouble();
+            gnssMeasurement.mCarrierFrequencyHz = parcel.readFloat();
+            gnssMeasurement.mCarrierCycles = parcel.readLong();
+            gnssMeasurement.mCarrierPhase = parcel.readDouble();
+            gnssMeasurement.mCarrierPhaseUncertainty = parcel.readDouble();
+            gnssMeasurement.mMultipathIndicator = parcel.readInt();
+            gnssMeasurement.mSnrInDb = parcel.readDouble();
+            gnssMeasurement.mAutomaticGainControlLevelInDb = parcel.readDouble();
+            gnssMeasurement.mCodeType = parcel.readString();
+            gnssMeasurement.mBasebandCn0DbHz = parcel.readDouble();
+            gnssMeasurement.mFullInterSignalBiasNanos = parcel.readDouble();
+            gnssMeasurement.mFullInterSignalBiasUncertaintyNanos = parcel.readDouble();
+            gnssMeasurement.mSatelliteInterSignalBiasNanos = parcel.readDouble();
+            gnssMeasurement.mSatelliteInterSignalBiasUncertaintyNanos = parcel.readDouble();
+            if (gnssMeasurement.hasSatellitePvt()) {
+                ClassLoader classLoader = getClass().getClassLoader();
+                gnssMeasurement.mSatellitePvt = (SatellitePvt) parcel.readParcelable(classLoader, SatellitePvt.class);
+            }
+            if (gnssMeasurement.hasCorrelationVectors()) {
+                CorrelationVector[] correlationVectorsArray = new CorrelationVector[parcel.readInt()];
+                parcel.readTypedArray(correlationVectorsArray, CorrelationVector.CREATOR);
+                Collection<CorrelationVector> corrVecCollection = Arrays.asList(correlationVectorsArray);
+                gnssMeasurement.mReadOnlyCorrelationVectors = Collections.unmodifiableCollection(corrVecCollection);
+            }
+            return gnssMeasurement;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssMeasurement[] newArray(int i) {
+            return new GnssMeasurement[i];
+        }
     }
 
     @Override // android.os.Parcelable

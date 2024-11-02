@@ -87,8 +87,9 @@ public interface ICarrierConfigChangeListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ICarrierConfigChangeListener {
+        public static class Proxy implements ICarrierConfigChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

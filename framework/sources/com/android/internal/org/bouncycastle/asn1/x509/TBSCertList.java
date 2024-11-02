@@ -71,8 +71,9 @@ public class TBSCertList extends ASN1Object {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class RevokedCertificatesEnumeration implements Enumeration {
+    public class RevokedCertificatesEnumeration implements Enumeration {
         private final Enumeration en;
 
         RevokedCertificatesEnumeration(Enumeration en) {
@@ -90,8 +91,13 @@ public class TBSCertList extends ASN1Object {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class EmptyEnumeration implements Enumeration {
+    public class EmptyEnumeration implements Enumeration {
+        /* synthetic */ EmptyEnumeration(TBSCertList tBSCertList, EmptyEnumerationIA emptyEnumerationIA) {
+            this();
+        }
+
         private EmptyEnumeration() {
         }
 

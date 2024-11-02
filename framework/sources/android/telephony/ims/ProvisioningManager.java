@@ -140,11 +140,14 @@ public class ProvisioningManager {
     public static class Callback {
         private final CallbackBinder mBinder = new CallbackBinder();
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class CallbackBinder extends IImsConfigCallback.Stub {
             private Executor mExecutor;
             private final Callback mLocalConfigurationCallback;
+
+            /* synthetic */ CallbackBinder(Callback callback, CallbackBinderIA callbackBinderIA) {
+                this(callback);
+            }
 
             private CallbackBinder(Callback localConfigurationCallback) {
                 this.mLocalConfigurationCallback = localConfigurationCallback;
@@ -165,7 +168,6 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onIntConfigChanged$0(int item, int value) {
                 this.mLocalConfigurationCallback.onProvisioningIntChanged(item, value);
             }
@@ -185,12 +187,10 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onStringConfigChanged$1(int item, String value) {
                 this.mLocalConfigurationCallback.onProvisioningStringChanged(item, value);
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }
@@ -219,11 +219,14 @@ public class ProvisioningManager {
 
         public abstract void onRcsFeatureProvisioningChanged(int i, int i2, boolean z);
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class CallbackBinder extends IFeatureProvisioningCallback.Stub {
             private Executor mExecutor;
             private final FeatureProvisioningCallback mFeatureProvisioningCallback;
+
+            /* synthetic */ CallbackBinder(FeatureProvisioningCallback featureProvisioningCallback, CallbackBinderIA callbackBinderIA) {
+                this(featureProvisioningCallback);
+            }
 
             private CallbackBinder(FeatureProvisioningCallback featureProvisioningCallback) {
                 this.mFeatureProvisioningCallback = featureProvisioningCallback;
@@ -244,7 +247,6 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onFeatureProvisioningChanged$0(int capability, int tech, boolean isProvisioned) {
                 this.mFeatureProvisioningCallback.onFeatureProvisioningChanged(capability, tech, isProvisioned);
             }
@@ -264,12 +266,10 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRcsFeatureProvisioningChanged$1(int capability, int tech, boolean isProvisioned) {
                 this.mFeatureProvisioningCallback.onRcsFeatureProvisioningChanged(capability, tech, isProvisioned);
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }
@@ -289,11 +289,14 @@ public class ProvisioningManager {
     public static class RcsProvisioningCallback {
         private final CallbackBinder mBinder = new CallbackBinder();
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class CallbackBinder extends IRcsConfigCallback.Stub {
             private Executor mExecutor;
             private final RcsProvisioningCallback mLocalCallback;
+
+            /* synthetic */ CallbackBinder(RcsProvisioningCallback rcsProvisioningCallback, CallbackBinderIA callbackBinderIA) {
+                this(rcsProvisioningCallback);
+            }
 
             private CallbackBinder(RcsProvisioningCallback localCallback) {
                 this.mLocalCallback = localCallback;
@@ -314,7 +317,6 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onConfigurationChanged$0(byte[] configXml) {
                 this.mLocalCallback.onConfigurationChanged(configXml);
             }
@@ -334,7 +336,6 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onAutoConfigurationErrorReceived$1(int errorCode, String errorString) {
                 this.mLocalCallback.onAutoConfigurationErrorReceived(errorCode, errorString);
             }
@@ -354,7 +355,6 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onConfigurationReset$2() {
                 this.mLocalCallback.onConfigurationReset();
             }
@@ -374,7 +374,6 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRemoved$3() {
                 this.mLocalCallback.onRemoved();
             }
@@ -394,12 +393,10 @@ public class ProvisioningManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onPreProvisioningReceived$4(byte[] configXml) {
                 this.mLocalCallback.onPreProvisioningReceived(configXml);
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }

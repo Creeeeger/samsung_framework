@@ -34,15 +34,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class CertUtils {
+public class CertUtils {
     private static Set EMPTY_SET = Collections.unmodifiableSet(new HashSet());
     private static List EMPTY_LIST = Collections.unmodifiableList(new ArrayList());
 
     CertUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1Primitive parseNonEmptyASN1(byte[] encoding) throws IOException {
         ASN1Primitive p = ASN1Primitive.fromByteArray(encoding);
         if (p == null) {
@@ -106,7 +106,6 @@ class CertUtils {
         return CertificateList.getInstance(new DERSequence(v));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Set getCriticalExtensionOIDs(Extensions extensions) {
         if (extensions == null) {
             return EMPTY_SET;
@@ -114,7 +113,6 @@ class CertUtils {
         return Collections.unmodifiableSet(new HashSet(Arrays.asList(extensions.getCriticalExtensionOIDs())));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Set getNonCriticalExtensionOIDs(Extensions extensions) {
         if (extensions == null) {
             return EMPTY_SET;
@@ -122,7 +120,6 @@ class CertUtils {
         return Collections.unmodifiableSet(new HashSet(Arrays.asList(extensions.getNonCriticalExtensionOIDs())));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List getExtensionOIDs(Extensions extensions) {
         if (extensions == null) {
             return EMPTY_LIST;
@@ -152,7 +149,6 @@ class CertUtils {
         return new DERBitString(bytes, 8 - pad);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean[] bitStringToBoolean(DERBitString bitString) {
         if (bitString != null) {
             byte[] bytes = bitString.getBytes();
@@ -165,7 +161,6 @@ class CertUtils {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Date recoverDate(ASN1GeneralizedTime time) {
         try {
             return time.getDate();
@@ -174,7 +169,6 @@ class CertUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isAlgIdEqual(AlgorithmIdentifier id1, AlgorithmIdentifier id2) {
         if (!id1.getAlgorithm().equals((ASN1Primitive) id2.getAlgorithm())) {
             return false;
@@ -196,7 +190,6 @@ class CertUtils {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ExtensionsGenerator doReplaceExtension(ExtensionsGenerator extGenerator, Extension ext) {
         boolean isReplaced = false;
         Extensions exts = extGenerator.generate();
@@ -217,7 +210,6 @@ class CertUtils {
         throw new IllegalArgumentException("replace - original extension (OID = " + ext.getExtnId() + ") not found");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ExtensionsGenerator doRemoveExtension(ExtensionsGenerator extGenerator, ASN1ObjectIdentifier oid) {
         boolean isRemoved = false;
         Extensions exts = extGenerator.generate();

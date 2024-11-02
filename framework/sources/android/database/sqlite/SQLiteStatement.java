@@ -4,7 +4,6 @@ import android.os.ParcelFileDescriptor;
 
 /* loaded from: classes.dex */
 public final class SQLiteStatement extends SQLiteProgram {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SQLiteStatement(SQLiteDatabase db, String sql, Object[] bindArgs) {
         super(db, sql, bindArgs, null);
     }

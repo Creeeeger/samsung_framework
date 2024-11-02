@@ -746,7 +746,10 @@ public class AccessNetworkUtils {
         return ((nrArfcn - arfcnOffset) * globalKhz) + rangeOffset;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x005c, code lost:            return convertEarfcnToFrequency(r0, r8, r1);     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x005c, code lost:
+    
+        return convertEarfcnToFrequency(r0, r8, r1);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -48,7 +48,6 @@ public class WearableSensingManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$provideDataStream$1(Executor executor, final Consumer statusConsumer, Bundle result) {
         final int status = result.getInt("android.app.wearable.WearableSensingStatusBundleKey");
         long identity = Binder.clearCallingIdentity();
@@ -78,7 +77,6 @@ public class WearableSensingManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$provideData$3(Executor executor, final Consumer statusConsumer, Bundle result) {
         final int status = result.getInt("android.app.wearable.WearableSensingStatusBundleKey");
         long identity = Binder.clearCallingIdentity();

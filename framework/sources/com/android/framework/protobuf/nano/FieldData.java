@@ -5,26 +5,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class FieldData implements Cloneable {
     private Extension<?, ?> cachedExtension;
     private List<UnknownFieldData> unknownFieldData;
     private Object value;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public <T> FieldData(Extension<?, T> extension, T newValue) {
         this.cachedExtension = extension;
         this.value = newValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FieldData() {
         this.unknownFieldData = new ArrayList();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addUnknownField(UnknownFieldData unknownField) {
         this.unknownFieldData.add(unknownField);
     }
@@ -45,7 +41,6 @@ public class FieldData implements Cloneable {
         return list.size();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public <T> T getValue(Extension<?, T> extension) {
         if (this.value != null) {
@@ -60,7 +55,6 @@ public class FieldData implements Cloneable {
         return (T) this.value;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public <T> void setValue(Extension<?, T> extension, T newValue) {
         this.cachedExtension = extension;
@@ -68,7 +62,6 @@ public class FieldData implements Cloneable {
         this.unknownFieldData = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int computeSerializedSize() {
         int size = 0;
         Object obj = this.value;
@@ -82,7 +75,6 @@ public class FieldData implements Cloneable {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeTo(CodedOutputByteBufferNano output) throws IOException {
         Object obj = this.value;
         if (obj != null) {
@@ -159,8 +151,8 @@ public class FieldData implements Cloneable {
         return result;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public final FieldData m7012clone() {
+    /* renamed from: clone */
+    public final FieldData m7007clone() {
         FieldData clone = new FieldData();
         try {
             clone.cachedExtension = this.cachedExtension;
@@ -173,7 +165,7 @@ public class FieldData implements Cloneable {
             Object obj = this.value;
             if (obj != null) {
                 if (obj instanceof MessageNano) {
-                    clone.value = ((MessageNano) obj).mo7010clone();
+                    clone.value = ((MessageNano) obj).mo7005clone();
                 } else if (obj instanceof byte[]) {
                     clone.value = ((byte[]) obj).clone();
                 } else if (obj instanceof byte[][]) {
@@ -198,7 +190,7 @@ public class FieldData implements Cloneable {
                     MessageNano[] cloneArray2 = new MessageNano[valueArray2.length];
                     clone.value = cloneArray2;
                     for (int i2 = 0; i2 < valueArray2.length; i2++) {
-                        cloneArray2[i2] = valueArray2[i2].mo7010clone();
+                        cloneArray2[i2] = valueArray2[i2].mo7005clone();
                     }
                 }
             }

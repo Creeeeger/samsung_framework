@@ -12,7 +12,6 @@ public final class GpsSatellite {
     boolean mUsedInFix;
     boolean mValid;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GpsSatellite(int prn) {
         this.mPrn = prn;
     }

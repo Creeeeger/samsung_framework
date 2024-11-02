@@ -37,7 +37,6 @@ public class BaseBundle {
         sShouldDefuse = shouldDefuse;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static final class NoImagePreloadHolder {
         public static final Parcel EMPTY_PARCEL = Parcel.obtain();
@@ -56,13 +55,11 @@ public class BaseBundle {
         this.mClassLoader = loader == null ? getClass().getClassLoader() : loader;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
     public BaseBundle() {
         this((ClassLoader) null, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BaseBundle(Parcel parcelledData) {
         this.mMap = null;
         this.mParcelledData = null;
@@ -72,7 +69,6 @@ public class BaseBundle {
         readFromParcelInner(parcelledData);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BaseBundle(Parcel parcelledData, int length) {
         this.mMap = null;
         this.mParcelledData = null;
@@ -82,23 +78,19 @@ public class BaseBundle {
         readFromParcelInner(parcelledData, length);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BaseBundle(ClassLoader loader) {
         this(loader, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
     public BaseBundle(int capacity) {
         this((ClassLoader) null, capacity);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BaseBundle(BaseBundle b) {
         this(b, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BaseBundle(BaseBundle from, boolean deep) {
         Parcel parcelledData;
         this.mMap = null;
@@ -159,17 +151,14 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setClassLoader(ClassLoader loader) {
         this.mClassLoader = loader;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ClassLoader getClassLoader() {
         return this.mClassLoader;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void unparcel() {
         unparcel(false);
     }
@@ -190,7 +179,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Deprecated
     public final Object getValue(String key) {
         return getValue(key, null);
@@ -200,7 +188,6 @@ public class BaseBundle {
         return (T) getValue(str, cls, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final <T> T getValue(String str, Class<T> cls, Class<?>... clsArr) {
         int indexOfKey = this.mMap.indexOfKey(str);
         if (indexOfKey >= 0) {
@@ -336,7 +323,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayMap<String, Object> getItemwiseMap() {
         unparcel(true);
         return this.mMap;
@@ -453,7 +439,6 @@ public class BaseBundle {
         return getValue(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public <T> T get(String str, Class<T> cls) {
         unparcel();
         try {
@@ -475,7 +460,6 @@ public class BaseBundle {
         this.mMap.putAll((ArrayMap<? extends String, ? extends Object>) bundle.mMap);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putAll(ArrayMap map) {
         unparcel();
         this.mMap.putAll((ArrayMap<? extends String, ? extends Object>) map);
@@ -537,19 +521,16 @@ public class BaseBundle {
         this.mMap.put(key, Boolean.valueOf(value));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putByte(String key, byte value) {
         unparcel();
         this.mMap.put(key, Byte.valueOf(value));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putChar(String key, char value) {
         unparcel();
         this.mMap.put(key, Character.valueOf(value));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putShort(String key, short value) {
         unparcel();
         this.mMap.put(key, Short.valueOf(value));
@@ -565,7 +546,6 @@ public class BaseBundle {
         this.mMap.put(key, Long.valueOf(value));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putFloat(String key, float value) {
         unparcel();
         this.mMap.put(key, Float.valueOf(value));
@@ -581,31 +561,26 @@ public class BaseBundle {
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putCharSequence(String key, CharSequence value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putIntegerArrayList(String key, ArrayList<Integer> value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putStringArrayList(String key, ArrayList<String> value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putCharSequenceArrayList(String key, ArrayList<CharSequence> value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putSerializable(String key, Serializable value) {
         unparcel();
         this.mMap.put(key, value);
@@ -616,19 +591,16 @@ public class BaseBundle {
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putByteArray(String key, byte[] value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putShortArray(String key, short[] value) {
         unparcel();
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putCharArray(String key, char[] value) {
         unparcel();
         this.mMap.put(key, value);
@@ -644,7 +616,6 @@ public class BaseBundle {
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putFloatArray(String key, float[] value) {
         unparcel();
         this.mMap.put(key, value);
@@ -660,7 +631,6 @@ public class BaseBundle {
         this.mMap.put(key, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putCharSequenceArray(String key, CharSequence[] value) {
         unparcel();
         this.mMap.put(key, value);
@@ -690,12 +660,10 @@ public class BaseBundle {
         Log.w(TAG, "Attempt to cast generated internal exception:", e);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void typeWarning(String key, Object value, String className, RuntimeException e) {
         typeWarning(key, value, className, "<null>", e);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void typeWarning(String key, String className, RuntimeException e) {
         typeWarning(key, null, className, "<null>", e);
     }
@@ -714,13 +682,11 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte getByte(String key) {
         unparcel();
         return getByte(key, (byte) 0).byteValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Byte getByte(String key, byte defaultValue) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -735,13 +701,11 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public char getChar(String key) {
         unparcel();
         return getChar(key, (char) 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public char getChar(String key, char defaultValue) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -756,13 +720,11 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public short getShort(String key) {
         unparcel();
         return getShort(key, (short) 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public short getShort(String key, short defaultValue) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -815,13 +777,11 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getFloat(String key) {
         unparcel();
         return getFloat(key, 0.0f);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getFloat(String key, float defaultValue) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -871,7 +831,6 @@ public class BaseBundle {
         return s == null ? defaultValue : s;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getCharSequence(String key) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -883,13 +842,11 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getCharSequence(String key, CharSequence defaultValue) {
         CharSequence cs = getCharSequence(key);
         return cs == null ? defaultValue : cs;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Deprecated
     public Serializable getSerializable(String key) {
         unparcel();
@@ -905,12 +862,10 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public <T extends Serializable> T getSerializable(String key, Class<T> clazz) {
         return (T) get(key, clazz);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public <T> ArrayList<T> getArrayList(String key, Class<? extends T> clazz) {
         unparcel();
         try {
@@ -921,17 +876,14 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayList<Integer> getIntegerArrayList(String key) {
         return getArrayList(key, Integer.class);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayList<String> getStringArrayList(String key) {
         return getArrayList(key, String.class);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayList<CharSequence> getCharSequenceArrayList(String key) {
         return getArrayList(key, CharSequence.class);
     }
@@ -950,7 +902,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] getByteArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -965,7 +916,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public short[] getShortArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -980,7 +930,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public char[] getCharArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -1023,7 +972,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float[] getFloatArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -1066,7 +1014,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence[] getCharSequenceArray(String key) {
         unparcel();
         Object o = this.mMap.get(key);
@@ -1081,7 +1028,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToParcelInner(Parcel parcel, int flags) {
         if (parcel.hasReadWriteHelper()) {
             unparcel(true);
@@ -1120,7 +1066,6 @@ public class BaseBundle {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void readFromParcelInner(Parcel parcel) {
         int length = parcel.readInt();
         readFromParcelInner(parcel, length);

@@ -17,7 +17,6 @@ import com.samsung.android.rune.CoreRune;
 import java.util.ArrayList;
 import java.util.Locale;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public class ConfigurationController {
     private static final String TAG = "ConfigurationController";
@@ -27,12 +26,10 @@ public class ConfigurationController {
     private Configuration mPendingConfiguration;
     private final ResourcesManager mResourcesManager = ResourcesManager.getInstance();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ConfigurationController(ActivityThreadInternal activityThread) {
         this.mActivityThread = activityThread;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration updatePendingConfiguration(Configuration config) {
         synchronized (this.mResourcesManager) {
             Configuration configuration = this.mPendingConfiguration;
@@ -44,7 +41,6 @@ public class ConfigurationController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration getPendingConfiguration(boolean clearPending) {
         Configuration outConfig = null;
         synchronized (this.mResourcesManager) {
@@ -59,17 +55,14 @@ public class ConfigurationController {
         return outConfig;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCompatConfiguration(Configuration config) {
         this.mCompatConfiguration = new Configuration(config);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration getCompatConfiguration() {
         return this.mCompatConfiguration;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Configuration applyCompatConfiguration() {
         Configuration config = this.mConfiguration;
         int displayDensity = config.densityDpi;
@@ -83,30 +76,25 @@ public class ConfigurationController {
         return config;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setConfiguration(Configuration config) {
         this.mConfiguration = new Configuration(config);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration getConfiguration() {
         return this.mConfiguration;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleConfigurationChanged(Configuration config) {
         Trace.traceBegin(64L, "configChanged");
         handleConfigurationChanged(config, null);
         Trace.traceEnd(64L);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleConfigurationChanged(CompatibilityInfo compat) {
         handleConfigurationChanged(this.mConfiguration, compat);
         WindowManagerGlobal.getInstance().reportNewConfiguration(this.mConfiguration);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleConfigurationChanged(Configuration config, CompatibilityInfo compat) {
         Resources.Theme systemTheme = this.mActivityThread.getSystemContext().getTheme();
         ContextImpl systemUiContext = this.mActivityThread.getSystemUiContextNoCreate();
@@ -168,7 +156,6 @@ public class ConfigurationController {
         componentCallbacks2.onConfigurationChanged(configToReport);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateDefaultDensity(int densityDpi) {
         if (!this.mActivityThread.isInDensityCompatMode() && densityDpi != 0 && densityDpi != DisplayMetrics.DENSITY_DEVICE) {
             DisplayMetrics.DENSITY_DEVICE = densityDpi;
@@ -176,12 +163,10 @@ public class ConfigurationController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getCurDefaultDisplayDpi() {
         return this.mConfiguration.densityDpi;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateLocaleListFromAppContext(Context context) {
         Locale bestLocale = context.getResources().getConfiguration().getLocales().get(0);
         LocaleList newLocaleList = this.mResourcesManager.getConfiguration().getLocales();
@@ -195,7 +180,6 @@ public class ConfigurationController {
         LocaleList.setDefault(new LocaleList(bestLocale, newLocaleList));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Configuration createNewConfigAndUpdateIfNotNull(Configuration base, Configuration override) {
         int compatSandboxFlags;
         if (override == null) {

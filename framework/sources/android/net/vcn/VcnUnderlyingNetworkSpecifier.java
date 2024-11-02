@@ -12,14 +12,15 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class VcnUnderlyingNetworkSpecifier extends NetworkSpecifier implements Parcelable {
     public static final Parcelable.Creator<VcnUnderlyingNetworkSpecifier> CREATOR = new Parcelable.Creator<VcnUnderlyingNetworkSpecifier>() { // from class: android.net.vcn.VcnUnderlyingNetworkSpecifier.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VcnUnderlyingNetworkSpecifier createFromParcel(Parcel in) {
             int[] subIds = in.createIntArray();
             return new VcnUnderlyingNetworkSpecifier(subIds);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VcnUnderlyingNetworkSpecifier[] newArray(int size) {
             return new VcnUnderlyingNetworkSpecifier[size];
@@ -33,6 +34,24 @@ public final class VcnUnderlyingNetworkSpecifier extends NetworkSpecifier implem
 
     public int[] getSubIds() {
         return this.mSubIds;
+    }
+
+    /* renamed from: android.net.vcn.VcnUnderlyingNetworkSpecifier$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VcnUnderlyingNetworkSpecifier> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VcnUnderlyingNetworkSpecifier createFromParcel(Parcel in) {
+            int[] subIds = in.createIntArray();
+            return new VcnUnderlyingNetworkSpecifier(subIds);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VcnUnderlyingNetworkSpecifier[] newArray(int size) {
+            return new VcnUnderlyingNetworkSpecifier[size];
+        }
     }
 
     @Override // android.os.Parcelable

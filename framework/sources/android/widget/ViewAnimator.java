@@ -117,7 +117,6 @@ public class ViewAnimator extends FrameLayout {
         setDisplayedChild(this.mWhichChild - 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void showOnly(int childIndex, boolean animate) {
         Animation animation;
         int count = getChildCount();

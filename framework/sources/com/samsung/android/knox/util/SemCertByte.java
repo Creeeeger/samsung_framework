@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemCertByte implements Parcelable {
     public static final Parcelable.Creator<SemCertByte> CREATOR = new Parcelable.Creator<SemCertByte>() { // from class: com.samsung.android.knox.util.SemCertByte.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemCertByte createFromParcel(Parcel source) {
             return new SemCertByte(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemCertByte[] newArray(int size) {
             return null;
@@ -59,5 +60,22 @@ public class SemCertByte implements Parcelable {
             return;
         }
         throw new RuntimeException("bad array lengths");
+    }
+
+    /* renamed from: com.samsung.android.knox.util.SemCertByte$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemCertByte> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCertByte createFromParcel(Parcel source) {
+            return new SemCertByte(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCertByte[] newArray(int size) {
+            return null;
+        }
     }
 }

@@ -94,14 +94,12 @@ public class ImsCallSessionImplBase implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.stub.ImsCallSessionImplBase$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.stub.ImsCallSessionImplBase$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IImsCallSession.Stub {
         AnonymousClass1() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$close$0() {
             ImsCallSessionImplBase.this.close();
         }
@@ -116,7 +114,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "close");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ String lambda$getCallId$1() {
             return ImsCallSessionImplBase.this.getCallId();
         }
@@ -133,7 +130,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "getCallId");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ ImsCallProfile lambda$getCallProfile$2() {
             return ImsCallSessionImplBase.this.getCallProfile();
         }
@@ -150,7 +146,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "getCallProfile");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ ImsCallProfile lambda$getLocalCallProfile$3() {
             return ImsCallSessionImplBase.this.getLocalCallProfile();
         }
@@ -167,7 +162,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "getLocalCallProfile");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ ImsCallProfile lambda$getRemoteCallProfile$4() {
             return ImsCallSessionImplBase.this.getRemoteCallProfile();
         }
@@ -184,7 +178,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "getRemoteCallProfile");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ String lambda$getProperty$5(String name) {
             return ImsCallSessionImplBase.this.getProperty(name);
         }
@@ -201,7 +194,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "getProperty");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$getState$6() {
             return Integer.valueOf(ImsCallSessionImplBase.this.getState());
         }
@@ -218,7 +210,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "getState")).intValue();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Boolean lambda$isInCall$7() {
             return Boolean.valueOf(ImsCallSessionImplBase.this.isInCall());
         }
@@ -247,12 +238,10 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "setListener");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$8(ImsCallSessionListener iCSL) {
             ImsCallSessionImplBase.this.setListener(iCSL);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setMute$9(boolean muted) {
             ImsCallSessionImplBase.this.setMute(muted);
         }
@@ -267,7 +256,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "setMute");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$start$10(String callee, ImsCallProfile profile) {
             ImsCallSessionImplBase.this.start(callee, profile);
         }
@@ -282,7 +270,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "start");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$startConference$11(String[] participants, ImsCallProfile profile) {
             ImsCallSessionImplBase.this.startConference(participants, profile);
         }
@@ -297,7 +284,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "startConference");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$accept$12(int callType, ImsStreamMediaProfile profile) {
             ImsCallSessionImplBase.this.accept(callType, profile);
         }
@@ -312,7 +298,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "accept");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$deflect$13(String deflectNumber) {
             ImsCallSessionImplBase.this.deflect(deflectNumber);
         }
@@ -327,7 +312,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "deflect");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$reject$14(int reason) {
             ImsCallSessionImplBase.this.reject(reason);
         }
@@ -342,7 +326,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, SemRILConstants.CmcCall.CMC_CALL_SD_REJECT);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$transfer$15(String number, boolean isConfirmationRequired) {
             ImsCallSessionImplBase.this.transfer(number, isConfirmationRequired);
         }
@@ -367,14 +350,12 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "consultativeTransfer");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$consultativeTransfer$16(IImsCallSession transferToSession) {
             ImsCallSessionImplBase otherSession = new ImsCallSessionImplBase();
             otherSession.setServiceImpl(transferToSession);
             ImsCallSessionImplBase.this.transfer(otherSession);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$terminate$17(int reason) {
             ImsCallSessionImplBase.this.terminate(reason);
         }
@@ -389,7 +370,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "terminate");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$hold$18(ImsStreamMediaProfile profile) {
             ImsCallSessionImplBase.this.hold(profile);
         }
@@ -404,7 +384,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, SemRILConstants.CmcCall.CMC_CALL_SD_HOLD);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$resume$19(ImsStreamMediaProfile profile) {
             ImsCallSessionImplBase.this.resume(profile);
         }
@@ -419,7 +398,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "resume");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$merge$20() {
             ImsCallSessionImplBase.this.merge();
         }
@@ -434,7 +412,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "merge");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$update$21(int callType, ImsStreamMediaProfile profile) {
             ImsCallSessionImplBase.this.update(callType, profile);
         }
@@ -449,7 +426,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "update");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$extendToConference$22(String[] participants) {
             ImsCallSessionImplBase.this.extendToConference(participants);
         }
@@ -464,7 +440,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "extendToConference");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$inviteParticipants$23(String[] participants) {
             ImsCallSessionImplBase.this.inviteParticipants(participants);
         }
@@ -479,7 +454,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "inviteParticipants");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$removeParticipants$24(String[] participants) {
             ImsCallSessionImplBase.this.removeParticipants(participants);
         }
@@ -494,7 +468,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "removeParticipants");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendDtmf$25(char c, Message result) {
             ImsCallSessionImplBase.this.sendDtmf(c, result);
         }
@@ -509,7 +482,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "sendDtmf");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$startDtmf$26(char c) {
             ImsCallSessionImplBase.this.startDtmf(c);
         }
@@ -524,7 +496,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "startDtmf");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$stopDtmf$27() {
             ImsCallSessionImplBase.this.stopDtmf();
         }
@@ -539,7 +510,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "stopDtmf");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendUssd$28(String ussdMessage) {
             ImsCallSessionImplBase.this.sendUssd(ussdMessage);
         }
@@ -554,7 +524,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "sendUssd");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsVideoCallProvider lambda$getVideoCallProvider$29() {
             return ImsCallSessionImplBase.this.getVideoCallProvider();
         }
@@ -571,7 +540,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "getVideoCallProvider");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Boolean lambda$isMultiparty$30() {
             return Boolean.valueOf(ImsCallSessionImplBase.this.isMultiparty());
         }
@@ -588,7 +556,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "isMultiparty")).booleanValue();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendRttModifyRequest$31(ImsCallProfile toProfile) {
             ImsCallSessionImplBase.this.sendRttModifyRequest(toProfile);
         }
@@ -603,7 +570,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "sendRttModifyRequest");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendRttModifyResponse$32(boolean status) {
             ImsCallSessionImplBase.this.sendRttModifyResponse(status);
         }
@@ -618,7 +584,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "sendRttModifyResponse");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendRttMessage$33(String rttMessage) {
             ImsCallSessionImplBase.this.sendRttMessage(rttMessage);
         }
@@ -648,7 +613,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             ImsCallSessionImplBase.this.notifyReadyToHandleImsCallbacks();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendRtpHeaderExtensions$34(List extensions) {
             ImsCallSessionImplBase.this.sendRtpHeaderExtensions(new ArraySet(extensions));
         }
@@ -663,7 +627,6 @@ public class ImsCallSessionImplBase implements AutoCloseable {
             }, "sendRtpHeaderExtensions");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionNotifyAnbr$35(int mediaType, int direction, int bitsPerSecond) {
             ImsCallSessionImplBase.this.callSessionNotifyAnbr(mediaType, direction, bitsPerSecond);
         }

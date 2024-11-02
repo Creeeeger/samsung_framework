@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextShakeMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextShakeMotion> CREATOR = new Parcelable.Creator<SContextShakeMotion>() { // from class: android.hardware.scontext.SContextShakeMotion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextShakeMotion createFromParcel(Parcel in) {
             return new SContextShakeMotion(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextShakeMotion[] newArray(int size) {
             return new SContextShakeMotion[size];
@@ -22,7 +23,6 @@ public class SContextShakeMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextShakeMotion() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextShakeMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextShakeMotion$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextShakeMotion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextShakeMotion createFromParcel(Parcel in) {
+            return new SContextShakeMotion(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextShakeMotion[] newArray(int size) {
+            return new SContextShakeMotion[size];
+        }
     }
 }

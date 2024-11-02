@@ -10,7 +10,9 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class GeocoderParams implements Parcelable {
     public static final Parcelable.Creator<GeocoderParams> CREATOR = new Parcelable.Creator<GeocoderParams>() { // from class: android.location.GeocoderParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GeocoderParams createFromParcel(Parcel in) {
             int uid = in.readInt();
@@ -22,7 +24,6 @@ public class GeocoderParams implements Parcelable {
             return new GeocoderParams(uid, packageName, attributionTag, new Locale(language, country, variant));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GeocoderParams[] newArray(int size) {
             return new GeocoderParams[size];
@@ -32,6 +33,10 @@ public class GeocoderParams implements Parcelable {
     private final Locale mLocale;
     private final String mPackageName;
     private final int mUid;
+
+    /* synthetic */ GeocoderParams(int i, String str, String str2, Locale locale, GeocoderParamsIA geocoderParamsIA) {
+        this(i, str, str2, locale);
+    }
 
     public GeocoderParams(Context context) {
         this(context, Locale.getDefault());
@@ -62,6 +67,29 @@ public class GeocoderParams implements Parcelable {
 
     public Locale getLocale() {
         return this.mLocale;
+    }
+
+    /* renamed from: android.location.GeocoderParams$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GeocoderParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GeocoderParams createFromParcel(Parcel in) {
+            int uid = in.readInt();
+            String packageName = in.readString8();
+            String attributionTag = in.readString8();
+            String language = in.readString8();
+            String country = in.readString8();
+            String variant = in.readString8();
+            return new GeocoderParams(uid, packageName, attributionTag, new Locale(language, country, variant));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GeocoderParams[] newArray(int size) {
+            return new GeocoderParams[size];
+        }
     }
 
     @Override // android.os.Parcelable

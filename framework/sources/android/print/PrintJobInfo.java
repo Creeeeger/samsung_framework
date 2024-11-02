@@ -13,13 +13,14 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public final class PrintJobInfo implements Parcelable {
     public static final Parcelable.Creator<PrintJobInfo> CREATOR = new Parcelable.Creator<PrintJobInfo>() { // from class: android.print.PrintJobInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrintJobInfo createFromParcel(Parcel parcel) {
             return new PrintJobInfo(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintJobInfo[] newArray(int size) {
             return new PrintJobInfo[size];
@@ -58,6 +59,10 @@ public final class PrintJobInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface State {
+    }
+
+    /* synthetic */ PrintJobInfo(Parcel parcel, PrintJobInfoIA printJobInfoIA) {
+        this(parcel);
     }
 
     public PrintJobInfo() {
@@ -425,6 +430,23 @@ public final class PrintJobInfo implements Parcelable {
 
         public PrintJobInfo build() {
             return this.mPrototype;
+        }
+    }
+
+    /* renamed from: android.print.PrintJobInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrintJobInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrintJobInfo createFromParcel(Parcel parcel) {
+            return new PrintJobInfo(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrintJobInfo[] newArray(int size) {
+            return new PrintJobInfo[size];
         }
     }
 }

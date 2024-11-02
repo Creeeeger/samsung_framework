@@ -115,8 +115,9 @@ public interface ISerialManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISerialManager {
+        public static class Proxy implements ISerialManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

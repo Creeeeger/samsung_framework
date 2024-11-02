@@ -86,8 +86,9 @@ public interface IOnProjectionStateChangedListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IOnProjectionStateChangedListener {
+        public static class Proxy implements IOnProjectionStateChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

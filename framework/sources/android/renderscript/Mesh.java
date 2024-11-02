@@ -27,7 +27,6 @@ public class Mesh extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Mesh(long id, RenderScript rs) {
         super(id, rs);
         this.guard.open("destroy");
@@ -61,7 +60,6 @@ public class Mesh extends BaseObj {
         return this.mPrimitives[slot];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.renderscript.BaseObj
     public void updateFromNative() {
         super.updateFromNative();
@@ -98,7 +96,6 @@ public class Mesh extends BaseObj {
         Entry[] mVertexTypes = new Entry[16];
         Vector mIndexTypes = new Vector();
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes3.dex */
         public class Entry {
             Element e;

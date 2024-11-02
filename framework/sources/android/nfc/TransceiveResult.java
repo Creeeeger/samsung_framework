@@ -7,7 +7,9 @@ import java.io.IOException;
 /* loaded from: classes3.dex */
 public final class TransceiveResult implements Parcelable {
     public static final Parcelable.Creator<TransceiveResult> CREATOR = new Parcelable.Creator<TransceiveResult>() { // from class: android.nfc.TransceiveResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TransceiveResult createFromParcel(Parcel in) {
             byte[] responseData;
@@ -22,7 +24,6 @@ public final class TransceiveResult implements Parcelable {
             return new TransceiveResult(result, responseData);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransceiveResult[] newArray(int size) {
             return new TransceiveResult[size];
@@ -65,6 +66,32 @@ public final class TransceiveResult implements Parcelable {
         if (this.mResult == 0) {
             dest.writeInt(this.mResponseData.length);
             dest.writeByteArray(this.mResponseData);
+        }
+    }
+
+    /* renamed from: android.nfc.TransceiveResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TransceiveResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransceiveResult createFromParcel(Parcel in) {
+            byte[] responseData;
+            int result = in.readInt();
+            if (result == 0) {
+                int responseLength = in.readInt();
+                responseData = new byte[responseLength];
+                in.readByteArray(responseData);
+            } else {
+                responseData = null;
+            }
+            return new TransceiveResult(result, responseData);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransceiveResult[] newArray(int size) {
+            return new TransceiveResult[size];
         }
     }
 }

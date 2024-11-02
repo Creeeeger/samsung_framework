@@ -46,7 +46,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         void onProfileSelected(int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public interface OnSwitchOnWorkSelectedListener {
         void onSwitchOnWorkSelected();
@@ -67,7 +66,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         void requestQuietModeEnabled(boolean z, UserHandle userHandle);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract ViewGroup getActiveAdapterView();
 
     public abstract ResolverListAdapter getActiveListAdapter();
@@ -76,17 +74,14 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
 
     abstract Object getCurrentRootAdapter();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract ViewGroup getInactiveAdapterView();
 
     public abstract ResolverListAdapter getInactiveListAdapter();
 
     abstract ProfileDescriptor getItem(int i);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract int getItemCount();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract ResolverListAdapter getListAdapterForUserHandle(UserHandle userHandle);
 
     public abstract ResolverListAdapter getPersonalListAdapter();
@@ -95,7 +90,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
 
     abstract void setupListAdapter(int i);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AbstractMultiProfilePagerAdapter(Context context, int currentPage, EmptyStateProvider emptyStateProvider, QuietModeManager quietModeManager, UserHandle workProfileUserHandle, UserHandle cloneUserHandle) {
         this.mContext = (Context) Objects.requireNonNull(context);
         this.mCurrentPage = currentPage;
@@ -109,19 +103,46 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         return this.mQuietModeManager.isQuietModeEnabled(workProfileUserHandle);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setOnProfileSelectedListener(OnProfileSelectedListener listener) {
         this.mOnProfileSelectedListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Context getContext() {
         return this.mContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.AbstractMultiProfilePagerAdapter$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends ViewPager.SimpleOnPageChangeListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.widget.ViewPager.SimpleOnPageChangeListener, com.android.internal.widget.ViewPager.OnPageChangeListener
+        public void onPageSelected(int position) {
+            AbstractMultiProfilePagerAdapter.this.semSetNeedSortingInRebuildList(true);
+            AbstractMultiProfilePagerAdapter.this.mCurrentPage = position;
+            if (!AbstractMultiProfilePagerAdapter.this.mLoadedPages.contains(Integer.valueOf(position))) {
+                AbstractMultiProfilePagerAdapter.this.rebuildActiveTab(true);
+                AbstractMultiProfilePagerAdapter.this.mLoadedPages.add(Integer.valueOf(position));
+            }
+            if (AbstractMultiProfilePagerAdapter.this.mOnProfileSelectedListener != null) {
+                AbstractMultiProfilePagerAdapter.this.mOnProfileSelectedListener.onProfileSelected(position);
+            }
+        }
+
+        @Override // com.android.internal.widget.ViewPager.SimpleOnPageChangeListener, com.android.internal.widget.ViewPager.OnPageChangeListener
+        public void onPageScrollStateChanged(int state) {
+            if (AbstractMultiProfilePagerAdapter.this.mOnProfileSelectedListener != null) {
+                AbstractMultiProfilePagerAdapter.this.mOnProfileSelectedListener.onProfilePageStateChanged(state);
+            }
+        }
+    }
+
     public void setupViewPager(ViewPager viewPager) {
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() { // from class: com.android.internal.app.AbstractMultiProfilePagerAdapter.1
+            AnonymousClass1() {
+            }
+
             @Override // com.android.internal.widget.ViewPager.SimpleOnPageChangeListener, com.android.internal.widget.ViewPager.OnPageChangeListener
             public void onPageSelected(int position) {
                 AbstractMultiProfilePagerAdapter.this.semSetNeedSortingInRebuildList(true);
@@ -147,7 +168,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         this.mLoadedPages.add(Integer.valueOf(this.mCurrentPage));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearInactiveProfileCache() {
         if (this.mLoadedPages.size() == 1) {
             return;
@@ -172,7 +192,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         return getItemCount();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getCurrentPage() {
         return this.mCurrentPage;
     }
@@ -195,7 +214,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         return this.mCloneUserHandle;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean rebuildActiveTab(boolean doPostProcessing) {
         Trace.beginSection("MultiProfilePagerAdapter#rebuildActiveTab");
         boolean result = rebuildTab(getActiveListAdapter(), doPostProcessing);
@@ -203,7 +221,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean rebuildInactiveTab(boolean doPostProcessing) {
         Trace.beginSection("MultiProfilePagerAdapter#rebuildInactiveTab");
         if (getItemCount() == 1) {
@@ -235,7 +252,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         return emptyState != null && emptyState.shouldSkipDataRebuild();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void showEmptyResolverListEmptyState(final ResolverListAdapter listAdapter) {
         final EmptyState emptyState = this.mEmptyStateProvider.getEmptyState(listAdapter);
         if (emptyState == null) {
@@ -254,7 +270,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         showEmptyState(listAdapter, emptyState, clickListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$showEmptyResolverListEmptyState$1(EmptyState emptyState, final ResolverListAdapter listAdapter, View v) {
         emptyState.getButtonClickListener().onClick(new EmptyState.TabControl() { // from class: com.android.internal.app.AbstractMultiProfilePagerAdapter$$ExternalSyntheticLambda1
             @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter.EmptyState.TabControl
@@ -264,7 +279,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$showEmptyResolverListEmptyState$0(ResolverListAdapter listAdapter) {
         ProfileDescriptor descriptor = getItem(userHandleToPageIndex(listAdapter.getUserHandle()));
         showSpinner(descriptor.getEmptyStateView());
@@ -297,7 +311,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$hasCrossProfileIntents$0(int source, int target, IPackageManager packageManager, Intent intent) {
             return IntentForwarderActivity.canForward(intent, source, target, packageManager, this.mContentResolver) != null;
         }
@@ -353,7 +366,6 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         emptyStateView.findViewById(16908292).setVisibility(8);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void showListView(ResolverListAdapter activeListAdapter) {
         ProfileDescriptor descriptor = getItem(userHandleToPageIndex(activeListAdapter.getUserHandle()));
         if (descriptor.rootView.findViewById(R.id.resolver_list) != null) {
@@ -382,26 +394,22 @@ public abstract class AbstractMultiProfilePagerAdapter extends PagerAdapter {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldShowEmptyStateScreen(ResolverListAdapter listAdapter) {
         int count = listAdapter.getUnfilteredCount();
         return (count == 0 && listAdapter.getPlaceholderCount() == 0) || (listAdapter.getUserHandle().equals(this.mWorkProfileUserHandle) && isQuietModeEnabled(this.mWorkProfileUserHandle));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes4.dex */
     public class ProfileDescriptor {
         private ViewGroup mEmptyStateView;
         final ViewGroup rootView;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ProfileDescriptor(ViewGroup rootView) {
             this.mEmptyStateView = null;
             this.rootView = rootView;
             this.mEmptyStateView = (ViewGroup) rootView.findViewById(R.id.resolver_empty_state);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public ViewGroup getEmptyStateView() {
             return this.mEmptyStateView;
         }

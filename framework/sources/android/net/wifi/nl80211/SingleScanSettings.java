@@ -10,7 +10,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public class SingleScanSettings implements Parcelable {
     public static final Parcelable.Creator<SingleScanSettings> CREATOR = new Parcelable.Creator<SingleScanSettings>() { // from class: android.net.wifi.nl80211.SingleScanSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SingleScanSettings createFromParcel(Parcel in) {
             SingleScanSettings result = new SingleScanSettings();
@@ -33,7 +35,6 @@ public class SingleScanSettings implements Parcelable {
             return result;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SingleScanSettings[] newArray(int size) {
             return new SingleScanSettings[size];
@@ -66,7 +67,6 @@ public class SingleScanSettings implements Parcelable {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidScanType(int scanType) {
         return scanType == 0 || scanType == 1 || scanType == 2;
     }
@@ -85,6 +85,40 @@ public class SingleScanSettings implements Parcelable {
             out.writeByteArray(new byte[0]);
         } else {
             out.writeByteArray(bArr);
+        }
+    }
+
+    /* renamed from: android.net.wifi.nl80211.SingleScanSettings$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SingleScanSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SingleScanSettings createFromParcel(Parcel in) {
+            SingleScanSettings result = new SingleScanSettings();
+            result.scanType = in.readInt();
+            if (!SingleScanSettings.isValidScanType(result.scanType)) {
+                Log.wtf(SingleScanSettings.TAG, "Invalid scan type " + result.scanType);
+            }
+            result.enable6GhzRnr = in.readBoolean();
+            result.channelSettings = new ArrayList<>();
+            in.readTypedList(result.channelSettings, ChannelSettings.CREATOR);
+            result.hiddenNetworks = new ArrayList<>();
+            in.readTypedList(result.hiddenNetworks, HiddenNetwork.CREATOR);
+            result.vendorIes = in.createByteArray();
+            if (result.vendorIes == null) {
+                result.vendorIes = new byte[0];
+            }
+            if (in.dataAvail() != 0) {
+                Log.e(SingleScanSettings.TAG, "Found trailing data after parcel parsing.");
+            }
+            return result;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SingleScanSettings[] newArray(int size) {
+            return new SingleScanSettings[size];
         }
     }
 }

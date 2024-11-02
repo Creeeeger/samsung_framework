@@ -207,6 +207,10 @@ public class ApnSetting implements Parcelable {
     public @interface Skip464XlatStatus {
     }
 
+    /* synthetic */ ApnSetting(Builder builder, ApnSettingIA apnSettingIA) {
+        this(builder);
+    }
+
     static {
         ArrayMap arrayMap = new ArrayMap();
         APN_TYPE_STRING_MAP = arrayMap;
@@ -276,13 +280,14 @@ public class ApnSetting implements Parcelable {
         arrayMap6.put(2, "gid");
         arrayMap6.put(3, "iccid");
         CREATOR = new Parcelable.Creator<ApnSetting>() { // from class: android.telephony.data.ApnSetting.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ApnSetting createFromParcel(Parcel in) {
                 return ApnSetting.readFromParcel(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ApnSetting[] newArray(int size) {
                 return new ApnSetting[size];
@@ -724,7 +729,6 @@ public class ApnSetting implements Parcelable {
         }).mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getApnTypesFromBitmask$0(int apnTypeBitmask, Integer type) {
         return (type.intValue() & apnTypeBitmask) == type.intValue();
     }
@@ -905,9 +909,25 @@ public class ApnSetting implements Parcelable {
         dest.writeInt(this.mInfrastructureBitmask);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ApnSetting readFromParcel(Parcel in) {
         return new Builder().setId(in.readInt()).setOperatorNumeric(in.readString()).setEntryName(in.readString()).setApnName(in.readString()).setProxyAddress(in.readString()).setProxyPort(in.readInt()).setMmsc((Uri) in.readParcelable(Uri.class.getClassLoader(), Uri.class)).setMmsProxyAddress(in.readString()).setMmsProxyPort(in.readInt()).setUser(in.readString()).setPassword(in.readString()).setAuthType(in.readInt()).setApnTypeBitmask(in.readInt()).setProtocol(in.readInt()).setRoamingProtocol(in.readInt()).setCarrierEnabled(in.readBoolean()).setNetworkTypeBitmask(in.readInt()).setLingeringNetworkTypeBitmask(in.readLong()).setProfileId(in.readInt()).setModemCognitive(in.readBoolean()).setMaxConns(in.readInt()).setWaitTime(in.readInt()).setMaxConnsTime(in.readInt()).setMtuV4(in.readInt()).setMtuV6(in.readInt()).setMvnoType(in.readInt()).setMvnoMatchData(in.readString()).setApnSetId(in.readInt()).setCarrierId(in.readInt()).setSkip464Xlat(in.readInt()).setAlwaysOn(in.readBoolean()).setInfrastructureBitmask(in.readInt()).buildWithoutCheck();
+    }
+
+    /* renamed from: android.telephony.data.ApnSetting$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ApnSetting> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApnSetting createFromParcel(Parcel in) {
+            return ApnSetting.readFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApnSetting[] newArray(int size) {
+            return new ApnSetting[size];
+        }
     }
 
     /* loaded from: classes3.dex */

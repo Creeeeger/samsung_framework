@@ -90,7 +90,10 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
     public @interface SemPrivilegedFlag {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* synthetic */ BiometricPrompt(Context context, PromptInfo promptInfo, ButtonInfo buttonInfo, IAuthService iAuthService, BiometricPromptIA biometricPromptIA) {
+        this(context, promptInfo, buttonInfo, iAuthService);
+    }
+
     /* loaded from: classes.dex */
     public static class ButtonInfo {
         Executor executor;
@@ -258,7 +261,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class OnAuthenticationCancelListener implements CancellationSignal.OnCancelListener {
         private final long mAuthRequestId;
@@ -278,8 +280,7 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.biometrics.BiometricPrompt$1, reason: invalid class name */
+    /* renamed from: android.hardware.biometrics.BiometricPrompt$1 */
     /* loaded from: classes.dex */
     public class AnonymousClass1 extends IBiometricServiceReceiver.Stub {
         AnonymousClass1() {
@@ -296,7 +297,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAuthenticationSucceeded$0(int authenticationType) {
             AuthenticationResult result = new AuthenticationResult(BiometricPrompt.this.mCryptoObject, authenticationType);
             BiometricPrompt.this.mAuthenticationCallback.onAuthenticationSucceeded(result);
@@ -314,7 +314,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAuthenticationFailed$1() {
             BiometricPrompt.this.mAuthenticationCallback.onAuthenticationFailed();
         }
@@ -360,7 +359,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$2(int error, String stringToSend) {
             BiometricPrompt.this.mAuthenticationCallback.onAuthenticationError(error, stringToSend);
             BiometricPrompt.this.mIsPromptShowing = false;
@@ -376,7 +374,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAcquired$3(int acquireInfo, String message) {
             BiometricPrompt.this.mAuthenticationCallback.onAuthenticationHelp(acquireInfo, message);
         }
@@ -397,7 +394,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDialogDismissed$4() {
             BiometricPrompt.this.mNegativeButtonInfo.listener.onClick(null, -2);
             BiometricPrompt.this.mIsPromptShowing = false;
@@ -414,7 +410,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSystemEvent$5(int event) {
             BiometricPrompt.this.mAuthenticationCallback.onSystemEvent(event);
         }
@@ -430,7 +425,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSemAuthenticationSucceeded$6(int authenticationType, byte[] challengeToken, int id) {
             AuthenticationResult result = new AuthenticationResult(BiometricPrompt.this.mCryptoObject, authenticationType);
             if (challengeToken != null) {
@@ -671,7 +665,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
         authenticateInternal((CryptoObject) null, cancel, executor, callback, this.mContext.getUserId());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cancelAuthentication(long requestId) {
         IAuthService iAuthService = this.mService;
         if (iAuthService != null) {
@@ -752,17 +745,14 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$authenticateInternal$0(String stringToSend) {
         this.mAuthenticationCallback.onAuthenticationError(5, stringToSend);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$authenticateInternal$1(AuthenticationCallback callback) {
         callback.onAuthenticationError(1, this.mContext.getString(R.string.biometric_error_hw_unavailable));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isCredentialAllowed(int allowedAuthenticators) {
         return (32768 & allowedAuthenticators) != 0;
     }

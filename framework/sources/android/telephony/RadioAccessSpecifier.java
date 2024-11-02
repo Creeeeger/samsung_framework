@@ -9,13 +9,14 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public final class RadioAccessSpecifier implements Parcelable {
     public static final Parcelable.Creator<RadioAccessSpecifier> CREATOR = new Parcelable.Creator<RadioAccessSpecifier>() { // from class: android.telephony.RadioAccessSpecifier.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RadioAccessSpecifier createFromParcel(Parcel in) {
             return new RadioAccessSpecifier(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessSpecifier[] newArray(int size) {
             return new RadioAccessSpecifier[size];
@@ -24,6 +25,10 @@ public final class RadioAccessSpecifier implements Parcelable {
     private int[] mBands;
     private int[] mChannels;
     private int mRadioAccessNetwork;
+
+    /* synthetic */ RadioAccessSpecifier(Parcel parcel, RadioAccessSpecifierIA radioAccessSpecifierIA) {
+        this(parcel);
+    }
 
     public RadioAccessSpecifier(int ran, int[] bands, int[] channels) {
         this.mRadioAccessNetwork = ran;
@@ -57,6 +62,23 @@ public final class RadioAccessSpecifier implements Parcelable {
             return null;
         }
         return (int[]) iArr.clone();
+    }
+
+    /* renamed from: android.telephony.RadioAccessSpecifier$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RadioAccessSpecifier> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioAccessSpecifier createFromParcel(Parcel in) {
+            return new RadioAccessSpecifier(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioAccessSpecifier[] newArray(int size) {
+            return new RadioAccessSpecifier[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -45,6 +45,20 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
     private boolean mSuppressSelectionChanged;
     private float mUnselectedAlpha;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.Gallery$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Gallery.this.mSuppressSelectionChanged = false;
+            Gallery.this.selectionChanged();
+        }
+    }
+
     public Gallery(Context context) {
         this(context, null);
     }
@@ -63,6 +77,9 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         this.mAnimationDuration = 400;
         this.mFlingRunnable = new FlingRunnable();
         this.mDisableSuppressSelectionChangedRunnable = new Runnable() { // from class: android.widget.Gallery.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 Gallery.this.mSuppressSelectionChanged = false;
@@ -91,7 +108,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         this.mGroupFlags |= 2048;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -122,7 +138,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         this.mUnselectedAlpha = unselectedAlpha;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean getChildStaticTransformation(View child, Transformation t) {
         t.clear();
@@ -130,25 +145,21 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeHorizontalScrollExtent() {
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeHorizontalScrollOffset() {
         return this.mSelectedPosition;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeHorizontalScrollRange() {
         return this.mItemCount;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
@@ -164,13 +175,11 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsSpinner, android.view.ViewGroup
     public ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-2, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -292,7 +301,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void scrollIntoSlots() {
         View view;
         if (getChildCount() == 0 || (view = this.mSelectedChild) == null) {
@@ -317,7 +325,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AdapterView
     public void selectionChanged() {
         if (!this.mSuppressSelectionChanged) {
@@ -667,7 +674,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         setPressed(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchUnpress() {
         int i = getChildCount();
         while (true) {
@@ -792,6 +798,9 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
             if (this.mReceivedInvokeKeyDown && this.mItemCount > 0) {
                 dispatchPress(this.mSelectedChild);
                 postDelayed(new Runnable() { // from class: android.widget.Gallery.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         Gallery.this.dispatchUnpress();
@@ -804,6 +813,18 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    /* renamed from: android.widget.Gallery$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Gallery.this.dispatchUnpress();
+        }
     }
 
     boolean moveDirection(int direction) {
@@ -825,7 +846,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AdapterView
     public void setSelectedPositionInt(int position) {
         super.setSelectedPositionInt(position);
@@ -857,7 +877,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public int getChildDrawingOrder(int childCount, int i) {
         int selectedIndex = this.mSelectedPosition - this.mFirstPosition;
@@ -873,7 +892,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         View view;
@@ -926,7 +944,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class FlingRunnable implements Runnable {
         private int mLastFlingX;
@@ -966,7 +983,6 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
             endFling(scrollIntoSlots);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void endFling(boolean scrollIntoSlots) {
             this.mScroller.forceFinished(true);
             if (scrollIntoSlots) {

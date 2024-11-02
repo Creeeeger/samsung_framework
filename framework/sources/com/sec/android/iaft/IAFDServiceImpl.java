@@ -21,7 +21,6 @@ import com.samsung.android.sm.iafdlib.IafdSmAPIManager;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes6.dex */
 public class IAFDServiceImpl {
     private static final String TAG = "IAFDServiceImpl";
@@ -32,7 +31,6 @@ public class IAFDServiceImpl {
     private IAFDRepair mIAFDRepair;
     private Looper mLooper;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IAFDServiceImpl(Context context, IAFDDiagnosis miafd) {
         this.mContext = context;
         init();
@@ -48,7 +46,6 @@ public class IAFDServiceImpl {
         this.mIAFDGetHotfixDataService = new IAFDSocketFdServer(this.mContext);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void IAFDServiceHandlerMessage(Message msg) {
         this.mHandler.handleMessage(msg);
     }
@@ -82,7 +79,6 @@ public class IAFDServiceImpl {
         return dualuserid;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
     public final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
@@ -146,7 +142,6 @@ public class IAFDServiceImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean IAFDstartApp(Bundle bundle, boolean hasGetUpdateResult) {
         boolean hasUpdated = false;
         if (hasGetUpdateResult) {
@@ -191,10 +186,18 @@ public class IAFDServiceImpl {
         return true;
     }
 
-    private void showSystemAppDiaglog(final Bundle bundle, final String trigApp) {
+    private void showSystemAppDiaglog(Bundle bundle, String trigApp) {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
             builder.setTitle("System hint").setMessage("Happened exception in the running application, you can try to resolve it with the button of [Try to resolve]").setCancelable(true).setPositiveButton("Try to resolve", new DialogInterface.OnClickListener() { // from class: com.sec.android.iaft.IAFDServiceImpl.2
+                final /* synthetic */ Bundle val$bundle;
+                final /* synthetic */ String val$trigApp;
+
+                AnonymousClass2(String trigApp2, Bundle bundle2) {
+                    trigApp = trigApp2;
+                    bundle = bundle2;
+                }
+
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int which) {
                     if (trigApp.equals("SmartMApp")) {
@@ -210,6 +213,9 @@ public class IAFDServiceImpl {
                     IAFDServiceImpl.this.mHandler.sendMessage(msg);
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() { // from class: com.sec.android.iaft.IAFDServiceImpl.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -232,10 +238,73 @@ public class IAFDServiceImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void checkUpdate(final Bundle bundle) {
+    /* renamed from: com.sec.android.iaft.IAFDServiceImpl$2 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass2 implements DialogInterface.OnClickListener {
+        final /* synthetic */ Bundle val$bundle;
+        final /* synthetic */ String val$trigApp;
+
+        AnonymousClass2(String trigApp2, Bundle bundle2) {
+            trigApp = trigApp2;
+            bundle = bundle2;
+        }
+
+        @Override // android.content.DialogInterface.OnClickListener
+        public void onClick(DialogInterface dialog, int which) {
+            if (trigApp.equals("SmartMApp")) {
+                Intent intent = new Intent("com.samsung.android.sm.ACTION_START_THIRD_APP_ERROR_DIALOG");
+                intent.setPackage("com.samsung.android.sm_cn");
+                intent.putExtras(bundle);
+                IAFDServiceImpl.this.mContext.startService(intent);
+                return;
+            }
+            Message msg = new Message();
+            msg.setData(bundle);
+            msg.what = 2;
+            IAFDServiceImpl.this.mHandler.sendMessage(msg);
+        }
+    }
+
+    /* renamed from: com.sec.android.iaft.IAFDServiceImpl$1 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass1 implements DialogInterface.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.DialogInterface.OnClickListener
+        public void onClick(DialogInterface dialog, int which) {
+            dialog.cancel();
+        }
+    }
+
+    /* renamed from: com.sec.android.iaft.IAFDServiceImpl$3 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass3 implements CheckUpdateCallback {
+        final /* synthetic */ Bundle val$bundle;
+
+        AnonymousClass3(Bundle bundle) {
+            bundle = bundle;
+        }
+
+        @Override // com.samsung.android.sm.iafdlib.CheckUpdateCallback
+        public void onResult(int resultCode, long versionCode, String versionName, String pkgName) {
+            Message msg = new Message();
+            bundle.putBoolean("hasUpdate", resultCode == 2);
+            msg.setData(bundle);
+            msg.what = 6;
+            IAFDServiceImpl.this.mHandler.sendMessage(msg);
+        }
+    }
+
+    public void checkUpdate(Bundle bundle) {
         try {
             this.apiSMManager.checkUpdate(bundle.getString(IafdConstant.KEY_PACKAGE_NAME), bundle.getLong(IafdConstant.KEY_VERSION_CODE), new CheckUpdateCallback() { // from class: com.sec.android.iaft.IAFDServiceImpl.3
+                final /* synthetic */ Bundle val$bundle;
+
+                AnonymousClass3(Bundle bundle2) {
+                    bundle = bundle2;
+                }
+
                 @Override // com.samsung.android.sm.iafdlib.CheckUpdateCallback
                 public void onResult(int resultCode, long versionCode, String versionName, String pkgName) {
                     Message msg = new Message();
@@ -247,8 +316,8 @@ public class IAFDServiceImpl {
             });
         } catch (Exception e) {
             Message msg = new Message();
-            bundle.putBoolean("hasUpdate", false);
-            msg.setData(bundle);
+            bundle2.putBoolean("hasUpdate", false);
+            msg.setData(bundle2);
             msg.what = 6;
             this.mHandler.sendMessage(msg);
         }

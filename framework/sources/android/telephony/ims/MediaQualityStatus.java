@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class MediaQualityStatus implements Parcelable {
     public static final Parcelable.Creator<MediaQualityStatus> CREATOR = new Parcelable.Creator<MediaQualityStatus>() { // from class: android.telephony.ims.MediaQualityStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MediaQualityStatus createFromParcel(Parcel in) {
             return new MediaQualityStatus(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaQualityStatus[] newArray(int size) {
             return new MediaQualityStatus[size];
@@ -32,6 +33,10 @@ public final class MediaQualityStatus implements Parcelable {
 
     /* loaded from: classes3.dex */
     public @interface MediaSessionType {
+    }
+
+    /* synthetic */ MediaQualityStatus(Parcel parcel, MediaQualityStatusIA mediaQualityStatusIA) {
+        this(parcel);
     }
 
     public MediaQualityStatus(String imsCallSessionId, int mediaSessionType, int transportType, int rtpPacketLossRate, int rtpJitterMillis, long rptInactivityTimeMillis) {
@@ -84,6 +89,23 @@ public final class MediaQualityStatus implements Parcelable {
         dest.writeInt(this.mRtpPacketLossRate);
         dest.writeInt(this.mRtpJitterMillis);
         dest.writeLong(this.mRtpInactivityTimeMillis);
+    }
+
+    /* renamed from: android.telephony.ims.MediaQualityStatus$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MediaQualityStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaQualityStatus createFromParcel(Parcel in) {
+            return new MediaQualityStatus(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaQualityStatus[] newArray(int size) {
+            return new MediaQualityStatus[size];
+        }
     }
 
     @Override // android.os.Parcelable

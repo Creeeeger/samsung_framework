@@ -8,7 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class MicrophoneInfoFw implements Parcelable {
     public static final Parcelable.Creator<MicrophoneInfoFw> CREATOR = new Parcelable.Creator<MicrophoneInfoFw>() { // from class: android.media.MicrophoneInfoFw.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MicrophoneInfoFw createFromParcel(Parcel _aidl_source) {
             MicrophoneInfoFw _aidl_out = new MicrophoneInfoFw();
@@ -16,7 +18,6 @@ public class MicrophoneInfoFw implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MicrophoneInfoFw[] newArray(int _aidl_size) {
             return new MicrophoneInfoFw[_aidl_size];
@@ -25,6 +26,25 @@ public class MicrophoneInfoFw implements Parcelable {
     public MicrophoneDynamicInfo dynamic;
     public android.media.audio.common.MicrophoneInfo info;
     public int portId = 0;
+
+    /* renamed from: android.media.MicrophoneInfoFw$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MicrophoneInfoFw> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MicrophoneInfoFw createFromParcel(Parcel _aidl_source) {
+            MicrophoneInfoFw _aidl_out = new MicrophoneInfoFw();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MicrophoneInfoFw[] newArray(int _aidl_size) {
+            return new MicrophoneInfoFw[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

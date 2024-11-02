@@ -90,16 +90,16 @@ public class MediaParserFilter implements MediaFilter, MediaOutputStreamFilter {
                 final /* synthetic */ MutableMediaBuffer val$obuf;
                 final /* synthetic */ FileDescriptor val$outputFd;
 
-                {
-                    this.val$contentId = contentId;
-                    this.val$outputFd = outputFd;
-                    this.val$obuf = obuf;
-                    this.val$ibuf = ibuf;
-                    put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId));
+                AnonymousClass1(final int contentId2, FileDescriptor outputFd2, MutableMediaBuffer obuf2, MediaBuffer ibuf2) {
+                    this.val$contentId = contentId2;
+                    this.val$outputFd = outputFd2;
+                    this.val$obuf = obuf2;
+                    this.val$ibuf = ibuf2;
+                    put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId2));
                     put("track-count", Integer.valueOf(MediaParserFilter.this.descriptor.countToParse()));
-                    put(Message.KEY_OUT_FILE, outputFd);
-                    if (!obuf.containsExtra(Message.KEY_CACHE_ID) && ibuf.containsExtra(Message.KEY_CACHE_ID)) {
-                        put(Message.KEY_CACHE_ID, ibuf.getExtra(Message.KEY_CACHE_ID));
+                    put(Message.KEY_OUT_FILE, outputFd2);
+                    if (!obuf2.containsExtra(Message.KEY_CACHE_ID) && ibuf2.containsExtra(Message.KEY_CACHE_ID)) {
+                        put(Message.KEY_CACHE_ID, ibuf2.getExtra(Message.KEY_CACHE_ID));
                     }
                 }
             }).post();
@@ -117,21 +117,21 @@ public class MediaParserFilter implements MediaFilter, MediaOutputStreamFilter {
             extractor = extractor2;
         }
         try {
-            this.messageProducer.newMessage(2, (Map<String, Object>) new HashMap<String, Object>(contentId, frameCount, startTimeUs, endTimeUs) { // from class: com.samsung.android.sume.core.filter.MediaParserFilter.2
+            this.messageProducer.newMessage(2, (Map<String, Object>) new HashMap<String, Object>(contentId2, frameCount, startTimeUs, endTimeUs) { // from class: com.samsung.android.sume.core.filter.MediaParserFilter.2
                 final /* synthetic */ int val$contentId;
                 final /* synthetic */ long val$endTimeUs;
                 final /* synthetic */ int val$frameCount;
                 final /* synthetic */ long val$startTimeUs;
 
-                {
-                    this.val$contentId = contentId;
-                    this.val$frameCount = frameCount;
-                    this.val$startTimeUs = startTimeUs;
-                    this.val$endTimeUs = endTimeUs;
-                    put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId));
-                    put(Message.KEY_WHOLE_FRAMES, Integer.valueOf(frameCount));
-                    put(Message.KEY_START_TIME_US, Long.valueOf(startTimeUs));
-                    put(Message.KEY_END_TIME_US, Long.valueOf(endTimeUs));
+                AnonymousClass2(final int contentId2, int frameCount2, long startTimeUs2, final long endTimeUs2) {
+                    this.val$contentId = contentId2;
+                    this.val$frameCount = frameCount2;
+                    this.val$startTimeUs = startTimeUs2;
+                    this.val$endTimeUs = endTimeUs2;
+                    put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId2));
+                    put(Message.KEY_WHOLE_FRAMES, Integer.valueOf(frameCount2));
+                    put(Message.KEY_START_TIME_US, Long.valueOf(startTimeUs2));
+                    put(Message.KEY_END_TIME_US, Long.valueOf(endTimeUs2));
                 }
             }).post();
         } catch (IOException e2) {
@@ -143,24 +143,24 @@ public class MediaParserFilter implements MediaFilter, MediaOutputStreamFilter {
         }
         try {
             try {
-                this.messageProducer.newMessage(7, (Map<String, Object>) new HashMap<String, Object>(contentId, frameCount, ibuf, obuf) { // from class: com.samsung.android.sume.core.filter.MediaParserFilter.3
+                this.messageProducer.newMessage(7, (Map<String, Object>) new HashMap<String, Object>(contentId2, frameCount2, ibuf2, obuf2) { // from class: com.samsung.android.sume.core.filter.MediaParserFilter.3
                     final /* synthetic */ int val$contentId;
                     final /* synthetic */ int val$frameCount;
                     final /* synthetic */ MediaBuffer val$ibuf;
                     final /* synthetic */ MutableMediaBuffer val$obuf;
 
-                    {
-                        this.val$contentId = contentId;
-                        this.val$frameCount = frameCount;
-                        this.val$ibuf = ibuf;
-                        this.val$obuf = obuf;
-                        put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId));
-                        put(Message.KEY_WHOLE_FRAMES, Integer.valueOf(frameCount));
-                        if (ibuf.containsExtra(Message.KEY_IN_FILE)) {
-                            put(Message.KEY_IN_FILE, ibuf.getExtra(Message.KEY_IN_FILE));
+                    AnonymousClass3(final int contentId2, int frameCount2, MediaBuffer ibuf2, MutableMediaBuffer obuf2) {
+                        this.val$contentId = contentId2;
+                        this.val$frameCount = frameCount2;
+                        this.val$ibuf = ibuf2;
+                        this.val$obuf = obuf2;
+                        put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId2));
+                        put(Message.KEY_WHOLE_FRAMES, Integer.valueOf(frameCount2));
+                        if (ibuf2.containsExtra(Message.KEY_IN_FILE)) {
+                            put(Message.KEY_IN_FILE, ibuf2.getExtra(Message.KEY_IN_FILE));
                         }
-                        if (obuf.containsExtra(Message.KEY_OUT_FILE)) {
-                            put(Message.KEY_OUT_FILE, obuf.getExtra(Message.KEY_OUT_FILE));
+                        if (obuf2.containsExtra(Message.KEY_OUT_FILE)) {
+                            put(Message.KEY_OUT_FILE, obuf2.getExtra(Message.KEY_OUT_FILE));
                         }
                     }
                 }).post();
@@ -169,13 +169,13 @@ public class MediaParserFilter implements MediaFilter, MediaOutputStreamFilter {
                 IntStream.range(0, extractor.getTrackCount()).forEach(new IntConsumer() { // from class: com.samsung.android.sume.core.filter.MediaParserFilter$$ExternalSyntheticLambda3
                     @Override // java.util.function.IntConsumer
                     public final void accept(int i) {
-                        MediaParserFilter.this.m8765xbef1d985(extractor, inputFd, contentId, tracks, i);
+                        MediaParserFilter.this.m8757xbef1d985(extractor, inputFd, contentId2, tracks, i);
                     }
                 });
                 IntStream.range(0, extractor.getTrackCount()).forEach(new IntConsumer() { // from class: com.samsung.android.sume.core.filter.MediaParserFilter$$ExternalSyntheticLambda4
                     @Override // java.util.function.IntConsumer
                     public final void accept(int i) {
-                        MediaParserFilter.this.m8766xc0282c64(extractor, endTimeUs, i);
+                        MediaParserFilter.this.m8758xc0282c64(extractor, endTimeUs2, i);
                     }
                 });
             } catch (Throwable th3) {
@@ -187,13 +187,12 @@ public class MediaParserFilter implements MediaFilter, MediaOutputStreamFilter {
             e = e3;
             e.printStackTrace();
             extractor.release();
-            return obuf;
+            return obuf2;
         }
         extractor.release();
-        return obuf;
+        return obuf2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Object lambda$run$0(Object it) {
         if (it instanceof ParcelFileDescriptor) {
             return ((ParcelFileDescriptor) it).getFileDescriptor();
@@ -204,7 +203,6 @@ public class MediaParserFilter implements MediaFilter, MediaOutputStreamFilter {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Object lambda$run$2(Object it) {
         if (it instanceof ParcelFileDescriptor) {
             return ((ParcelFileDescriptor) it).getFileDescriptor();
@@ -215,9 +213,74 @@ public class MediaParserFilter implements MediaFilter, MediaOutputStreamFilter {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$run$3$com-samsung-android-sume-core-filter-MediaParserFilter, reason: not valid java name */
-    public /* synthetic */ void m8765xbef1d985(MediaExtractor extractor, FileDescriptor inputFd, int contentId, List tracks, int idx) {
+    /* renamed from: com.samsung.android.sume.core.filter.MediaParserFilter$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends HashMap<String, Object> {
+        final /* synthetic */ int val$contentId;
+        final /* synthetic */ MediaBuffer val$ibuf;
+        final /* synthetic */ MutableMediaBuffer val$obuf;
+        final /* synthetic */ FileDescriptor val$outputFd;
+
+        AnonymousClass1(final int contentId2, FileDescriptor outputFd2, MutableMediaBuffer obuf2, MediaBuffer ibuf2) {
+            this.val$contentId = contentId2;
+            this.val$outputFd = outputFd2;
+            this.val$obuf = obuf2;
+            this.val$ibuf = ibuf2;
+            put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId2));
+            put("track-count", Integer.valueOf(MediaParserFilter.this.descriptor.countToParse()));
+            put(Message.KEY_OUT_FILE, outputFd2);
+            if (!obuf2.containsExtra(Message.KEY_CACHE_ID) && ibuf2.containsExtra(Message.KEY_CACHE_ID)) {
+                put(Message.KEY_CACHE_ID, ibuf2.getExtra(Message.KEY_CACHE_ID));
+            }
+        }
+    }
+
+    /* renamed from: com.samsung.android.sume.core.filter.MediaParserFilter$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 extends HashMap<String, Object> {
+        final /* synthetic */ int val$contentId;
+        final /* synthetic */ long val$endTimeUs;
+        final /* synthetic */ int val$frameCount;
+        final /* synthetic */ long val$startTimeUs;
+
+        AnonymousClass2(final int contentId2, int frameCount2, long startTimeUs2, final long endTimeUs2) {
+            this.val$contentId = contentId2;
+            this.val$frameCount = frameCount2;
+            this.val$startTimeUs = startTimeUs2;
+            this.val$endTimeUs = endTimeUs2;
+            put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId2));
+            put(Message.KEY_WHOLE_FRAMES, Integer.valueOf(frameCount2));
+            put(Message.KEY_START_TIME_US, Long.valueOf(startTimeUs2));
+            put(Message.KEY_END_TIME_US, Long.valueOf(endTimeUs2));
+        }
+    }
+
+    /* renamed from: com.samsung.android.sume.core.filter.MediaParserFilter$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 extends HashMap<String, Object> {
+        final /* synthetic */ int val$contentId;
+        final /* synthetic */ int val$frameCount;
+        final /* synthetic */ MediaBuffer val$ibuf;
+        final /* synthetic */ MutableMediaBuffer val$obuf;
+
+        AnonymousClass3(final int contentId2, int frameCount2, MediaBuffer ibuf2, MutableMediaBuffer obuf2) {
+            this.val$contentId = contentId2;
+            this.val$frameCount = frameCount2;
+            this.val$ibuf = ibuf2;
+            this.val$obuf = obuf2;
+            put(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId2));
+            put(Message.KEY_WHOLE_FRAMES, Integer.valueOf(frameCount2));
+            if (ibuf2.containsExtra(Message.KEY_IN_FILE)) {
+                put(Message.KEY_IN_FILE, ibuf2.getExtra(Message.KEY_IN_FILE));
+            }
+            if (obuf2.containsExtra(Message.KEY_OUT_FILE)) {
+                put(Message.KEY_OUT_FILE, obuf2.getExtra(Message.KEY_OUT_FILE));
+            }
+        }
+    }
+
+    /* renamed from: lambda$run$3$com-samsung-android-sume-core-filter-MediaParserFilter */
+    public /* synthetic */ void m8757xbef1d985(MediaExtractor extractor, FileDescriptor inputFd, int contentId, List tracks, int idx) {
         String mimeType = extractor.getTrackFormat(idx).getString(MediaFormat.KEY_MIME);
         MediaType mediaType = mimeType.startsWith("video") ? MediaType.COMPRESSED_VIDEO : MediaType.COMPRESSED_AUDIO;
         if (!this.descriptor.needToParse(mediaType)) {
@@ -269,9 +332,8 @@ public class MediaParserFilter implements MediaFilter, MediaOutputStreamFilter {
         tracks.add(new Pair(Integer.valueOf(idx), mediaType));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$run$4$com-samsung-android-sume-core-filter-MediaParserFilter, reason: not valid java name */
-    public /* synthetic */ void m8766xc0282c64(MediaExtractor extractor, long endTimeUs, int idx) {
+    /* renamed from: lambda$run$4$com-samsung-android-sume-core-filter-MediaParserFilter */
+    public /* synthetic */ void m8758xc0282c64(MediaExtractor extractor, long endTimeUs, int idx) {
         MediaBuffer mediaBuffer;
         String mimeType = extractor.getTrackFormat(idx).getString(MediaFormat.KEY_MIME);
         MediaType mediaType = mimeType.startsWith("video") ? MediaType.COMPRESSED_VIDEO : MediaType.COMPRESSED_AUDIO;

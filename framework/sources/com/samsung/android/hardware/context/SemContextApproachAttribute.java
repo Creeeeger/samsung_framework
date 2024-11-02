@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextApproachAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextApproachAttribute> CREATOR = new Parcelable.Creator<SemContextApproachAttribute>() { // from class: com.samsung.android.hardware.context.SemContextApproachAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextApproachAttribute createFromParcel(Parcel in) {
             return new SemContextApproachAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextApproachAttribute[] newArray(int size) {
             return new SemContextApproachAttribute[size];
@@ -21,7 +22,23 @@ public class SemContextApproachAttribute extends SemContextAttribute {
     };
     private int mUserID;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextApproachAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextApproachAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextApproachAttribute createFromParcel(Parcel in) {
+            return new SemContextApproachAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextApproachAttribute[] newArray(int size) {
+            return new SemContextApproachAttribute[size];
+        }
+    }
+
     public SemContextApproachAttribute() {
         this.mUserID = -1;
         setAttribute();

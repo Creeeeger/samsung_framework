@@ -61,7 +61,7 @@ public class ItemManager extends Manager<Item> {
         }
     }
 
-    /* renamed from: com.samsung.vekit.Manager.ItemManager$1, reason: invalid class name */
+    /* renamed from: com.samsung.vekit.Manager.ItemManager$1 */
     /* loaded from: classes6.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$ItemType;

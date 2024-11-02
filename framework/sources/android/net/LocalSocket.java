@@ -54,7 +54,6 @@ public class LocalSocket implements Closeable {
         checkConnected();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static LocalSocket createLocalSocketForAccept(LocalSocketImpl impl) {
         LocalSocket socket = new LocalSocket(impl, 0);
         socket.checkConnected();

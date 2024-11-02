@@ -223,8 +223,9 @@ public class WallpaperUser {
         return buffer.toString();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    static class WallpaperData {
+    public static class WallpaperData {
         int left = 0;
         int top = 0;
         int right = 0;

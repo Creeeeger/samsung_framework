@@ -39,13 +39,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class AssistStructure implements Parcelable {
     public static final Parcelable.Creator<AssistStructure> CREATOR = new Parcelable.Creator<AssistStructure>() { // from class: android.app.assist.AssistStructure.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AssistStructure createFromParcel(Parcel in) {
             return new AssistStructure(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssistStructure[] newArray(int size) {
             return new AssistStructure[size];
@@ -102,7 +103,6 @@ public class AssistStructure implements Parcelable {
         return this.mAcquisitionEndTime;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class SendChannel extends Binder {
         volatile AssistStructure mAssistStructure;
@@ -111,7 +111,6 @@ public class AssistStructure implements Parcelable {
             this.mAssistStructure = as;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
             if (code == 2) {
@@ -138,7 +137,6 @@ public class AssistStructure implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class ViewStackEntry {
         int curChild;
@@ -271,7 +269,6 @@ public class AssistStructure implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public final class ParcelTransferReader {
         private final IBinder mChannel;
@@ -349,7 +346,6 @@ public class AssistStructure implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class ViewNodeText {
         String mHint;
@@ -747,7 +743,10 @@ public class AssistStructure implements Parcelable {
             }
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:15:0x0038, code lost:            if ((((r25.mWidth & (-32768)) != 0) | ((r25.mHeight & (-32768)) != 0)) != false) goto L19;     */
+        /* JADX WARN: Code restructure failed: missing block: B:15:0x0038, code lost:
+        
+            if ((((r25.mWidth & (-32768)) != 0) | ((r25.mHeight & (-32768)) != 0)) != false) goto L242;
+         */
         /* JADX WARN: Multi-variable type inference failed */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -1080,13 +1079,14 @@ public class AssistStructure implements Parcelable {
     /* loaded from: classes.dex */
     public static final class ViewNodeParcelable implements Parcelable {
         public static final Parcelable.Creator<ViewNodeParcelable> CREATOR = new Parcelable.Creator<ViewNodeParcelable>() { // from class: android.app.assist.AssistStructure.ViewNodeParcelable.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ViewNodeParcelable createFromParcel(Parcel in) {
                 return new ViewNodeParcelable(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ViewNodeParcelable[] newArray(int size) {
                 return new ViewNodeParcelable[size];
@@ -1114,6 +1114,23 @@ public class AssistStructure implements Parcelable {
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel parcel, int flags) {
             this.mViewNode.writeSelfToParcel(parcel, null, false, null, false);
+        }
+
+        /* renamed from: android.app.assist.AssistStructure$ViewNodeParcelable$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ViewNodeParcelable> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ViewNodeParcelable createFromParcel(Parcel in) {
+                return new ViewNodeParcelable(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ViewNodeParcelable[] newArray(int size) {
+                return new ViewNodeParcelable[size];
+            }
         }
     }
 
@@ -1532,11 +1549,12 @@ public class AssistStructure implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class HtmlInfoNode extends ViewStructure.HtmlInfo implements Parcelable {
         public static final Parcelable.Creator<HtmlInfoNode> CREATOR = new Parcelable.Creator<HtmlInfoNode>() { // from class: android.app.assist.AssistStructure.HtmlInfoNode.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public HtmlInfoNode createFromParcel(Parcel parcel) {
                 String tag = parcel.readString();
@@ -1555,7 +1573,6 @@ public class AssistStructure implements Parcelable {
                 return builder.build();
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HtmlInfoNode[] newArray(int size) {
                 return new HtmlInfoNode[size];
@@ -1565,6 +1582,10 @@ public class AssistStructure implements Parcelable {
         private final String[] mNames;
         private final String mTag;
         private final String[] mValues;
+
+        /* synthetic */ HtmlInfoNode(HtmlInfoNodeBuilder htmlInfoNodeBuilder, HtmlInfoNodeIA htmlInfoNodeIA) {
+            this(htmlInfoNodeBuilder);
+        }
 
         private HtmlInfoNode(HtmlInfoNodeBuilder builder) {
             this.mTag = builder.mTag;
@@ -1615,9 +1636,38 @@ public class AssistStructure implements Parcelable {
             parcel.writeStringArray(this.mNames);
             parcel.writeStringArray(this.mValues);
         }
+
+        /* renamed from: android.app.assist.AssistStructure$HtmlInfoNode$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<HtmlInfoNode> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public HtmlInfoNode createFromParcel(Parcel parcel) {
+                String tag = parcel.readString();
+                HtmlInfoNodeBuilder builder = new HtmlInfoNodeBuilder(tag);
+                String[] names = parcel.readStringArray();
+                String[] values = parcel.readStringArray();
+                if (names != null && values != null) {
+                    if (names.length != values.length) {
+                        Log.w(AssistStructure.TAG, "HtmlInfo attributes mismatch: names=" + names.length + ", values=" + values.length);
+                    } else {
+                        for (int i = 0; i < names.length; i++) {
+                            builder.addAttribute(names[i], values[i]);
+                        }
+                    }
+                }
+                return builder.build();
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public HtmlInfoNode[] newArray(int size) {
+                return new HtmlInfoNode[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class HtmlInfoNodeBuilder extends ViewStructure.HtmlInfo.Builder {
         private ArrayList<String> mNames;
@@ -1920,5 +1970,22 @@ public class AssistStructure implements Parcelable {
             return;
         }
         parcel.writeStrongBinder(this.mReceiveChannel);
+    }
+
+    /* renamed from: android.app.assist.AssistStructure$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AssistStructure> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssistStructure createFromParcel(Parcel in) {
+            return new AssistStructure(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssistStructure[] newArray(int size) {
+            return new AssistStructure[size];
+        }
     }
 }

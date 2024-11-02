@@ -5,7 +5,6 @@ import android.renderscript.Program;
 @Deprecated
 /* loaded from: classes3.dex */
 public class ProgramFragment extends Program {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ProgramFragment(long id, RenderScript rs) {
         super(id, rs);
     }

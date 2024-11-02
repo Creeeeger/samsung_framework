@@ -86,8 +86,9 @@ public interface IWindowlessStartingSurfaceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IWindowlessStartingSurfaceCallback {
+        public static class Proxy implements IWindowlessStartingSurfaceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

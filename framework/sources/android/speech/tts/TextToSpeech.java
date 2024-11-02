@@ -77,7 +77,6 @@ public class TextToSpeech {
     private volatile UtteranceProgressListener mUtteranceProgressListener;
     private final Map<CharSequence, Uri> mUtterances;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public interface Action<R> {
         R run(ITextToSpeechService iTextToSpeechService) throws RemoteException;
@@ -238,7 +237,6 @@ public class TextToSpeech {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int initTts() {
         String str = this.mRequestedEngine;
         if (str != null) {
@@ -274,24 +272,23 @@ public class TextToSpeech {
         return -1;
     }
 
-    private boolean connectToEngine(String str) {
-        Connection directConnection;
-        byte b = 0;
+    private boolean connectToEngine(String engine) {
+        Connection connection;
         if (this.mIsSystem) {
-            directConnection = new SystemConnection();
+            connection = new SystemConnection();
         } else {
-            directConnection = new DirectConnection();
+            connection = new DirectConnection();
         }
-        if (!directConnection.connect(str)) {
-            Log.e(TAG, "Failed to bind to " + str);
+        boolean bound = connection.connect(engine);
+        if (!bound) {
+            Log.e(TAG, "Failed to bind to " + engine);
             return false;
         }
-        Log.i(TAG, "Sucessfully bound to " + str);
-        this.mConnectingServiceConnection = directConnection;
+        Log.i(TAG, "Sucessfully bound to " + engine);
+        this.mConnectingServiceConnection = connection;
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchOnInit(final int result) {
         Runnable onInitCommand = new Runnable() { // from class: android.speech.tts.TextToSpeech$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
@@ -307,7 +304,6 @@ public class TextToSpeech {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dispatchOnInit$0(int result) {
         synchronized (this.mStartLock) {
             OnInitListener onInitListener = this.mInitListener;
@@ -341,7 +337,6 @@ public class TextToSpeech {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$shutdown$1(ITextToSpeechService service) throws RemoteException {
         service.setCallback(getCallerIdentity(), null);
         service.stop(getCallerIdentity());
@@ -409,7 +404,6 @@ public class TextToSpeech {
         }, -1, "speak")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Integer lambda$speak$2(CharSequence text, int queueMode, Bundle params, String utteranceId, ITextToSpeechService service) throws RemoteException {
         Uri utteranceUri = this.mUtterances.get(text);
         if (utteranceUri != null) {
@@ -434,7 +428,6 @@ public class TextToSpeech {
         }, -1, "playEarcon")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Integer lambda$playEarcon$3(String earcon, int queueMode, Bundle params, String utteranceId, ITextToSpeechService service) throws RemoteException {
         Uri earconUri = this.mEarcons.get(earcon);
         if (earconUri == null) {
@@ -459,7 +452,6 @@ public class TextToSpeech {
         }, -1, "playSilentUtterance")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Integer lambda$playSilentUtterance$4(long durationInMs, int queueMode, String utteranceId, ITextToSpeechService service) throws RemoteException {
         return Integer.valueOf(service.playSilence(getCallerIdentity(), durationInMs, queueMode, utteranceId));
     }
@@ -479,7 +471,6 @@ public class TextToSpeech {
         }, null, "getFeatures");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Set lambda$getFeatures$5(Locale locale, ITextToSpeechService service) throws RemoteException {
         try {
             String[] features = service.getFeaturesForLanguage(locale.getISO3Language(), locale.getISO3Country(), locale.getVariant());
@@ -517,7 +508,6 @@ public class TextToSpeech {
         }, -1, "stop")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Integer lambda$stop$7(ITextToSpeechService service) throws RemoteException {
         return Integer.valueOf(service.stop(getCallerIdentity()));
     }
@@ -568,7 +558,6 @@ public class TextToSpeech {
         }, null, "getDefaultLanguage");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Locale lambda$getDefaultLanguage$8(ITextToSpeechService service) throws RemoteException {
         String[] defaultLanguage = service.getClientDefaultLanguage();
         return new Locale(defaultLanguage[0], defaultLanguage[1], defaultLanguage[2]);
@@ -585,7 +574,6 @@ public class TextToSpeech {
         }, -2, "setLanguage")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Integer lambda$setLanguage$9(Locale loc, ITextToSpeechService service) throws RemoteException {
         if (loc == null) {
             return -2;
@@ -651,7 +639,6 @@ public class TextToSpeech {
         }, null, "getLanguage");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Locale lambda$getLanguage$10(ITextToSpeechService service) throws RemoteException {
         String lang = this.mParams.getString("language", "");
         String country = this.mParams.getString(Engine.KEY_PARAM_COUNTRY, "");
@@ -668,7 +655,6 @@ public class TextToSpeech {
         }, null, "getAvailableLanguages");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ HashSet lambda$getAvailableLanguages$11(ITextToSpeechService service) throws RemoteException {
         List<Voice> voices = service.getVoices();
         if (voices == null) {
@@ -690,7 +676,6 @@ public class TextToSpeech {
         }, null, "getVoices");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ HashSet lambda$getVoices$12(ITextToSpeechService service) throws RemoteException {
         List<Voice> voices = service.getVoices();
         return voices != null ? new HashSet(voices) : new HashSet();
@@ -707,7 +692,6 @@ public class TextToSpeech {
         }, -2, "setVoice")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Integer lambda$setVoice$13(Voice voice, ITextToSpeechService service) throws RemoteException {
         int result = service.loadVoice(getCallerIdentity(), voice.getName());
         if (result == 0) {
@@ -742,7 +726,6 @@ public class TextToSpeech {
         }, null, "getVoice");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Voice lambda$getVoice$14(ITextToSpeechService service) throws RemoteException {
         String voiceName = this.mParams.getString(Engine.KEY_PARAM_VOICE_NAME, "");
         if (TextUtils.isEmpty(voiceName)) {
@@ -775,7 +758,6 @@ public class TextToSpeech {
         }, null, "getDefaultVoice");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Voice lambda$getDefaultVoice$15(ITextToSpeechService service) throws RemoteException {
         List<Voice> voices;
         String[] defaultLanguage = service.getClientDefaultLanguage();
@@ -811,7 +793,6 @@ public class TextToSpeech {
         }, -2, "isLanguageAvailable")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$isLanguageAvailable$16(Locale loc, ITextToSpeechService service) throws RemoteException {
         try {
             String language = loc.getISO3Language();
@@ -839,7 +820,6 @@ public class TextToSpeech {
         }, -1, "synthesizeToFile")).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Integer lambda$synthesizeToFile$17(CharSequence text, ParcelFileDescriptor fileDescriptor, Bundle params, String utteranceId, ITextToSpeechService service) throws RemoteException {
         return Integer.valueOf(service.synthesizeToFileDescriptor(getCallerIdentity(), text, fileDescriptor, getParams(params), utteranceId));
     }
@@ -1012,7 +992,6 @@ public class TextToSpeech {
         return this.mEnginesHelper.getEngines();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public abstract class Connection implements ServiceConnection {
         private final ITextToSpeechCallback.Stub mCallback;
@@ -1020,12 +999,19 @@ public class TextToSpeech {
         private SetupConnectionAsyncTask mOnSetupConnectionAsyncTask;
         private ITextToSpeechService mService;
 
+        /* synthetic */ Connection(TextToSpeech textToSpeech, ConnectionIA connectionIA) {
+            this();
+        }
+
         abstract boolean connect(String str);
 
         abstract void disconnect();
 
         private Connection() {
             this.mCallback = new ITextToSpeechCallback.Stub() { // from class: android.speech.tts.TextToSpeech.Connection.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.speech.tts.ITextToSpeechCallback
                 public void onStop(String utteranceId, boolean isStarted) throws RemoteException {
                     UtteranceProgressListener listener = TextToSpeech.this.mUtteranceProgressListener;
@@ -1084,13 +1070,79 @@ public class TextToSpeech {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.speech.tts.TextToSpeech$Connection$1 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass1 extends ITextToSpeechCallback.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.speech.tts.ITextToSpeechCallback
+            public void onStop(String utteranceId, boolean isStarted) throws RemoteException {
+                UtteranceProgressListener listener = TextToSpeech.this.mUtteranceProgressListener;
+                if (listener != null) {
+                    listener.onStop(utteranceId, isStarted);
+                }
+            }
+
+            @Override // android.speech.tts.ITextToSpeechCallback
+            public void onSuccess(String utteranceId) {
+                UtteranceProgressListener listener = TextToSpeech.this.mUtteranceProgressListener;
+                if (listener != null) {
+                    listener.onDone(utteranceId);
+                }
+            }
+
+            @Override // android.speech.tts.ITextToSpeechCallback
+            public void onError(String utteranceId, int errorCode) {
+                UtteranceProgressListener listener = TextToSpeech.this.mUtteranceProgressListener;
+                if (listener != null) {
+                    listener.onError(utteranceId, errorCode);
+                }
+            }
+
+            @Override // android.speech.tts.ITextToSpeechCallback
+            public void onStart(String utteranceId) {
+                UtteranceProgressListener listener = TextToSpeech.this.mUtteranceProgressListener;
+                if (listener != null) {
+                    listener.onStart(utteranceId);
+                }
+            }
+
+            @Override // android.speech.tts.ITextToSpeechCallback
+            public void onBeginSynthesis(String utteranceId, int sampleRateInHz, int audioFormat, int channelCount) {
+                UtteranceProgressListener listener = TextToSpeech.this.mUtteranceProgressListener;
+                if (listener != null) {
+                    listener.onBeginSynthesis(utteranceId, sampleRateInHz, audioFormat, channelCount);
+                }
+            }
+
+            @Override // android.speech.tts.ITextToSpeechCallback
+            public void onAudioAvailable(String utteranceId, byte[] audio) {
+                UtteranceProgressListener listener = TextToSpeech.this.mUtteranceProgressListener;
+                if (listener != null) {
+                    listener.onAudioAvailable(utteranceId, audio);
+                }
+            }
+
+            @Override // android.speech.tts.ITextToSpeechCallback
+            public void onRangeStart(String utteranceId, int start, int end, int frame) {
+                UtteranceProgressListener listener = TextToSpeech.this.mUtteranceProgressListener;
+                if (listener != null) {
+                    listener.onRangeStart(utteranceId, start, end, frame);
+                }
+            }
+        }
+
         /* loaded from: classes3.dex */
         public class SetupConnectionAsyncTask extends AsyncTask<Void, Void, Integer> {
+            /* synthetic */ SetupConnectionAsyncTask(Connection connection, SetupConnectionAsyncTaskIA setupConnectionAsyncTaskIA) {
+                this();
+            }
+
             private SetupConnectionAsyncTask() {
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.os.AsyncTask
             public Integer doInBackground(Void... params) {
                 synchronized (TextToSpeech.this.mStartLock) {
@@ -1116,7 +1168,6 @@ public class TextToSpeech {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.os.AsyncTask
             public void onPostExecute(Integer result) {
                 synchronized (TextToSpeech.this.mStartLock) {
@@ -1208,9 +1259,12 @@ public class TextToSpeech {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class DirectConnection extends Connection {
+        /* synthetic */ DirectConnection(TextToSpeech textToSpeech, DirectConnectionIA directConnectionIA) {
+            this();
+        }
+
         private DirectConnection() {
             super();
         }
@@ -1229,10 +1283,13 @@ public class TextToSpeech {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class SystemConnection extends Connection {
         private volatile ITextToSpeechSession mSession;
+
+        /* synthetic */ SystemConnection(TextToSpeech textToSpeech, SystemConnectionIA systemConnectionIA) {
+            this();
+        }
 
         private SystemConnection() {
             super();
@@ -1248,6 +1305,9 @@ public class TextToSpeech {
             }
             try {
                 manager.createSession(engine, new ITextToSpeechSessionCallback.Stub() { // from class: android.speech.tts.TextToSpeech.SystemConnection.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.speech.tts.ITextToSpeechSessionCallback
                     public void onConnected(ITextToSpeechSession session, IBinder serviceBinder) {
                         SystemConnection.this.mSession = session;
@@ -1270,6 +1330,31 @@ public class TextToSpeech {
             } catch (RemoteException ex) {
                 Log.e(TextToSpeech.TAG, "Error communicating with the System Server: ", ex);
                 throw ex.rethrowFromSystemServer();
+            }
+        }
+
+        /* renamed from: android.speech.tts.TextToSpeech$SystemConnection$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 extends ITextToSpeechSessionCallback.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.speech.tts.ITextToSpeechSessionCallback
+            public void onConnected(ITextToSpeechSession session, IBinder serviceBinder) {
+                SystemConnection.this.mSession = session;
+                SystemConnection.this.onServiceConnected(null, serviceBinder);
+            }
+
+            @Override // android.speech.tts.ITextToSpeechSessionCallback
+            public void onDisconnected() {
+                SystemConnection.this.onServiceDisconnected(null);
+                SystemConnection.this.mSession = null;
+            }
+
+            @Override // android.speech.tts.ITextToSpeechSessionCallback
+            public void onError(String errorInfo) {
+                Log.w(TextToSpeech.TAG, "System TTS connection error: " + errorInfo);
+                TextToSpeech.this.dispatchOnInit(-1);
             }
         }
 

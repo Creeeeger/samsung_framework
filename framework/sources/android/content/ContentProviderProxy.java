@@ -18,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: ContentProviderNative.java */
 /* loaded from: classes.dex */
 public final class ContentProviderProxy implements IContentProvider {

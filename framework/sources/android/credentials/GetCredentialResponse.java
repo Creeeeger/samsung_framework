@@ -9,19 +9,24 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class GetCredentialResponse implements Parcelable {
     public static final Parcelable.Creator<GetCredentialResponse> CREATOR = new Parcelable.Creator<GetCredentialResponse>() { // from class: android.credentials.GetCredentialResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GetCredentialResponse[] newArray(int size) {
             return new GetCredentialResponse[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetCredentialResponse createFromParcel(Parcel in) {
             return new GetCredentialResponse(in);
         }
     };
     private final Credential mCredential;
+
+    /* synthetic */ GetCredentialResponse(Parcel parcel, GetCredentialResponseIA getCredentialResponseIA) {
+        this(parcel);
+    }
 
     public Credential getCredential() {
         return this.mCredential;
@@ -49,5 +54,22 @@ public final class GetCredentialResponse implements Parcelable {
         Credential credential = (Credential) in.readTypedObject(Credential.CREATOR);
         this.mCredential = credential;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) credential);
+    }
+
+    /* renamed from: android.credentials.GetCredentialResponse$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GetCredentialResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GetCredentialResponse[] newArray(int size) {
+            return new GetCredentialResponse[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GetCredentialResponse createFromParcel(Parcel in) {
+            return new GetCredentialResponse(in);
+        }
     }
 }

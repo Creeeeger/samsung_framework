@@ -4,21 +4,8 @@ import android.graphics.Bitmap;
 import android.security.keystore.KeyProperties;
 import com.samsung.android.sume.core.Def;
 
-/* JADX WARN: Enum visitor error
-jadx.core.utils.exceptions.JadxRuntimeException: Init of enum field 'BT601_LR' uses external variables
-	at jadx.core.dex.visitors.EnumVisitor.createEnumFieldByConstructor(EnumVisitor.java:451)
-	at jadx.core.dex.visitors.EnumVisitor.processEnumFieldByField(EnumVisitor.java:372)
-	at jadx.core.dex.visitors.EnumVisitor.processEnumFieldByWrappedInsn(EnumVisitor.java:337)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromFilledArray(EnumVisitor.java:322)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInsn(EnumVisitor.java:262)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInvoke(EnumVisitor.java:293)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInsn(EnumVisitor.java:266)
-	at jadx.core.dex.visitors.EnumVisitor.convertToEnum(EnumVisitor.java:151)
-	at jadx.core.dex.visitors.EnumVisitor.visit(EnumVisitor.java:100)
- */
-/* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
 /* loaded from: classes4.dex */
-public final class ColorSpace implements NumericEnum {
+public final class ColorSpace extends Enum<ColorSpace> implements NumericEnum {
     private static final /* synthetic */ ColorSpace[] $VALUES;
     public static final ColorSpace BT2020;
     public static final ColorSpace BT2020_FR;
@@ -68,6 +55,7 @@ public final class ColorSpace implements NumericEnum {
     }
 
     private ColorSpace(String str, int i, int value) {
+        super(str, i);
         this.value = value;
     }
 

@@ -1,6 +1,7 @@
 package com.samsung.android.allshare;
 
 import android.os.Bundle;
+import android.os.Looper;
 import com.samsung.android.allshare.Item;
 import com.samsung.android.allshare.media.Receiver;
 import com.sec.android.allshare.iface.CVMessage;
@@ -9,7 +10,6 @@ import com.sec.android.allshare.iface.message.AllShareAction;
 import com.sec.android.allshare.iface.message.AllShareEvent;
 import com.sec.android.allshare.iface.message.AllShareKey;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class ReceiverImpl extends Receiver {
     private static final String TAG_CLASS = "ReceiverImpl";
@@ -19,6 +19,10 @@ public class ReceiverImpl extends Receiver {
     private Receiver.IReceiverResponseListener mReceiverResponseListener = null;
     private boolean mIsSubscribed = false;
     AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ReceiverImpl.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareEventHandler
         public void handleEventMessage(CVMessage cvm) {
             ERROR error;
@@ -79,6 +83,10 @@ public class ReceiverImpl extends Receiver {
         }
     };
     AllShareResponseHandler mResponseHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ReceiverImpl.2
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
             Bundle bundle = cvm.getBundle();
@@ -116,7 +124,6 @@ public class ReceiverImpl extends Receiver {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ReceiverImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mAllShareConnector = null;
         this.mDeviceImpl = null;
@@ -125,6 +132,119 @@ public class ReceiverImpl extends Receiver {
         } else {
             this.mDeviceImpl = deviceImpl;
             this.mAllShareConnector = connector;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ReceiverImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareEventHandler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            ERROR error;
+            String actionID = cvm.getActionID();
+            Bundle bundle = cvm.getBundle();
+            if (bundle == null) {
+                DLog.w_api(ReceiverImpl.TAG_CLASS, "mEventHandler bundle is NULL!");
+                return;
+            }
+            if (ReceiverImpl.this.mProgressUpdateListener == null) {
+                return;
+            }
+            String errStr = bundle.getString("BUNDLE_ENUM_ERROR");
+            ERROR error2 = ERROR.FAIL;
+            if (errStr == null) {
+                ERROR error3 = ERROR.SUCCESS;
+                error = error3;
+            } else {
+                ERROR error4 = ERROR.stringToEnum(errStr);
+                error = error4;
+            }
+            if (!actionID.equals(AllShareEvent.EVENT_RECEIVER_PROGRESS_UPDATE_BY_ITEM)) {
+                if (actionID.equals(AllShareEvent.EVENT_RECEIVER_COMPLETED_BY_ITEM)) {
+                    Bundle itemBundle = bundle.getBundle(AllShareKey.BUNDLE_PARCELABLE_ITEM);
+                    Item item = ReceiverImpl.this.getItem(itemBundle);
+                    try {
+                        ReceiverImpl.this.mProgressUpdateListener.onCompleted(item, error);
+                        return;
+                    } catch (Error err) {
+                        DLog.w_api(ReceiverImpl.TAG_CLASS, "mEventHandler(EVENT_RECEIVER_COMPLETED_BY_ITEM) Error ", err);
+                        return;
+                    } catch (Exception e) {
+                        DLog.w_api(ReceiverImpl.TAG_CLASS, "mEventHandler(EVENT_RECEIVER_COMPLETED_BY_ITEM) Exception ", e);
+                        return;
+                    }
+                }
+                return;
+            }
+            long receivedSize = bundle.getLong("BUNDLE_LONG_PROGRESS");
+            long totalSize = bundle.getLong(AllShareKey.BUNDLE_LONG_TOTAL_SIZE);
+            Bundle itemBundle2 = bundle.getBundle(AllShareKey.BUNDLE_PARCELABLE_ITEM);
+            Item item2 = ReceiverImpl.this.getItem(itemBundle2);
+            try {
+            } catch (Error e2) {
+                err = e2;
+            } catch (Exception e3) {
+                e = e3;
+            }
+            try {
+                ReceiverImpl.this.mProgressUpdateListener.onProgressUpdated(receivedSize, totalSize, item2, error);
+            } catch (Error e4) {
+                err = e4;
+                DLog.w_api(ReceiverImpl.TAG_CLASS, "mEventHandler(EVENT_RECEIVER_PROGRESS_UPDATE_BY_ITEM) Error ", err);
+            } catch (Exception e5) {
+                e = e5;
+                DLog.w_api(ReceiverImpl.TAG_CLASS, "mEventHandler(EVENT_RECEIVER_PROGRESS_UPDATE_BY_ITEM) Exception ", e);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ReceiverImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareResponseHandler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            Bundle bundle = cvm.getBundle();
+            if (bundle == null) {
+                DLog.w_api(ReceiverImpl.TAG_CLASS, "mResponseHandler bundle is NULL!");
+                return;
+            }
+            String actionID = cvm.getActionID();
+            ERROR err = ERROR.stringToEnum(bundle.getString("BUNDLE_ENUM_ERROR"));
+            if (actionID.equals(AllShareAction.ACTION_RECEIVER_RECEIVE_BY_ITEM)) {
+                Bundle itemBundle = bundle.getBundle(AllShareKey.BUNDLE_PARCELABLE_ITEM);
+                Item item = ReceiverImpl.this.getItem(itemBundle);
+                try {
+                    ReceiverImpl.this.mReceiverResponseListener.onReceiveResponseReceived(item, err);
+                    return;
+                } catch (Error e) {
+                    DLog.w_api(ReceiverImpl.TAG_CLASS, "mResponseHandler ACTION_RECEIVER_RECEIVE_BY_ITEM Error", e);
+                    return;
+                } catch (Exception e2) {
+                    DLog.w_api(ReceiverImpl.TAG_CLASS, "mResponseHandler ACTION_RECEIVER_RECEIVE_BY_ITEM Exception", e2);
+                    return;
+                }
+            }
+            if (actionID.equals(AllShareAction.ACTION_RECEIVER_CANCEL_BY_ITEM)) {
+                Bundle itemBundle2 = bundle.getBundle(AllShareKey.BUNDLE_PARCELABLE_ITEM);
+                Item item2 = ReceiverImpl.this.getItem(itemBundle2);
+                try {
+                    ReceiverImpl.this.mReceiverResponseListener.onCancelResponseReceived(item2, err);
+                } catch (Error e3) {
+                    DLog.w_api(ReceiverImpl.TAG_CLASS, "mResponseHandler ACTION_RECEIVER_CANCEL_BY_ITEM Error", e3);
+                } catch (Exception e4) {
+                    DLog.w_api(ReceiverImpl.TAG_CLASS, "mResponseHandler ACTION_RECEIVER_CANCEL_BY_ITEM Exception", e4);
+                }
+            }
         }
     }
 
@@ -146,8 +266,7 @@ public class ReceiverImpl extends Receiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.ReceiverImpl$3, reason: invalid class name */
+    /* renamed from: com.samsung.android.allshare.ReceiverImpl$3 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass3 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;

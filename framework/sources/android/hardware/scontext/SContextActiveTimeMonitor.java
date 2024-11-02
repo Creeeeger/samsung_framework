@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextActiveTimeMonitor extends SContextEventContext {
     public static final Parcelable.Creator<SContextActiveTimeMonitor> CREATOR = new Parcelable.Creator<SContextActiveTimeMonitor>() { // from class: android.hardware.scontext.SContextActiveTimeMonitor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextActiveTimeMonitor createFromParcel(Parcel in) {
             return new SContextActiveTimeMonitor(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActiveTimeMonitor[] newArray(int size) {
             return new SContextActiveTimeMonitor[size];
@@ -22,7 +23,6 @@ public class SContextActiveTimeMonitor extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextActiveTimeMonitor() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextActiveTimeMonitor extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextActiveTimeMonitor$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextActiveTimeMonitor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextActiveTimeMonitor createFromParcel(Parcel in) {
+            return new SContextActiveTimeMonitor(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextActiveTimeMonitor[] newArray(int size) {
+            return new SContextActiveTimeMonitor[size];
+        }
     }
 }

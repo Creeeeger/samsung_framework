@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class GameScreenshotResult implements Parcelable {
     public static final Parcelable.Creator<GameScreenshotResult> CREATOR = new Parcelable.Creator<GameScreenshotResult>() { // from class: android.service.games.GameScreenshotResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GameScreenshotResult createFromParcel(Parcel source) {
             return new GameScreenshotResult(source.readInt());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GameScreenshotResult[] newArray(int size) {
             return new GameScreenshotResult[0];
@@ -28,6 +29,27 @@ public final class GameScreenshotResult implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface GameScreenshotStatus {
+    }
+
+    /* synthetic */ GameScreenshotResult(int i, GameScreenshotResultIA gameScreenshotResultIA) {
+        this(i);
+    }
+
+    /* renamed from: android.service.games.GameScreenshotResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GameScreenshotResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameScreenshotResult createFromParcel(Parcel source) {
+            return new GameScreenshotResult(source.readInt());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GameScreenshotResult[] newArray(int size) {
+            return new GameScreenshotResult[0];
+        }
     }
 
     public static GameScreenshotResult createSuccessResult() {

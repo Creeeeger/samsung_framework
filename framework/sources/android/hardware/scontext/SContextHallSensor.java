@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextHallSensor extends SContextEventContext {
     public static final Parcelable.Creator<SContextHallSensor> CREATOR = new Parcelable.Creator<SContextHallSensor>() { // from class: android.hardware.scontext.SContextHallSensor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextHallSensor createFromParcel(Parcel in) {
             return new SContextHallSensor(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextHallSensor[] newArray(int size) {
             return new SContextHallSensor[size];
@@ -54,5 +55,22 @@ public class SContextHallSensor extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextHallSensor$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextHallSensor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextHallSensor createFromParcel(Parcel in) {
+            return new SContextHallSensor(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextHallSensor[] newArray(int size) {
+            return new SContextHallSensor[size];
+        }
     }
 }

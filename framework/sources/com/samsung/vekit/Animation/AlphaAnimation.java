@@ -56,13 +56,11 @@ public class AlphaAnimation extends Animation<Integer> {
         super.onAnimationCanceled(interpolatedValue);
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.vekit.Animation.Animation
     public AlphaAnimation setKeyFrameList(ArrayList<KeyFrame<Integer>> keyFrameList) {
         return (AlphaAnimation) super.setKeyFrameList((ArrayList) keyFrameList);
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.vekit.Animation.Animation
     public AlphaAnimation setKeyFrame(KeyFrame<Integer> keyFrame) {
         return (AlphaAnimation) super.setKeyFrame((KeyFrame) keyFrame);

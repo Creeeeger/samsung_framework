@@ -187,8 +187,9 @@ public final class DeviceRootKeyServiceManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private final class TlvEx {
+    public final class TlvEx {
         private static final int LENGTH_FIELD_SIZE = 2;
         private static final int TAGLENGTH_FIELD_SIZE = 3;
         private static final int TAG_FIELD_SIZE = 1;

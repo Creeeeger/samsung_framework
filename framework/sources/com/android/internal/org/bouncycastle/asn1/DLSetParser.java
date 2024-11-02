@@ -6,7 +6,6 @@ import java.io.IOException;
 public class DLSetParser implements ASN1SetParser {
     private ASN1StreamParser _parser;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DLSetParser(ASN1StreamParser parser) {
         this._parser = parser;
     }

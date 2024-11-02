@@ -28,7 +28,6 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public abstract class OmniFunction<A, B, C, D, E, F, G, H, I, J, K, R> implements BiFunction<A, B, R>, TriFunction<A, B, C, R>, QuadFunction<A, B, C, D, R>, QuintFunction<A, B, C, D, E, R>, HexFunction<A, B, C, D, E, F, R>, HeptFunction<A, B, C, D, E, F, G, R>, OctFunction<A, B, C, D, E, F, G, H, R>, NonaFunction<A, B, C, D, E, F, G, H, I, R>, DecFunction<A, B, C, D, E, F, G, H, I, J, R>, UndecFunction<A, B, C, D, E, F, G, H, I, J, K, R>, BiConsumer<A, B>, TriConsumer<A, B, C>, QuadConsumer<A, B, C, D>, QuintConsumer<A, B, C, D, E>, HexConsumer<A, B, C, D, E, F>, HeptConsumer<A, B, C, D, E, F, G>, OctConsumer<A, B, C, D, E, F, G, H>, NonaConsumer<A, B, C, D, E, F, G, H, I>, DecConsumer<A, B, C, D, E, F, G, H, I, J>, UndecConsumer<A, B, C, D, E, F, G, H, I, J, K>, PooledPredicate<A>, BiPredicate<A, B>, TriPredicate<A, B, C>, QuadPredicate<A, B, C, D>, QuintPredicate<A, B, C, D, E>, PooledSupplier<R>, PooledRunnable, FunctionalUtils.ThrowingRunnable, FunctionalUtils.ThrowingSupplier<R>, PooledSupplier.OfInt, PooledSupplier.OfLong, PooledSupplier.OfDouble {
     @Override // java.util.function.BiFunction

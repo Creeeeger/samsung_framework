@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
@@ -118,6 +119,9 @@ public final class Parcel {
     private static int sOwnedPoolSize = 0;
     private static int sHolderPoolSize = 0;
     public static final Parcelable.Creator<String> STRING_CREATOR = new Parcelable.Creator<String>() { // from class: android.os.Parcel.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public String createFromParcel(Parcel source) {
             return source.readString();
@@ -278,6 +282,23 @@ public final class Parcel {
 
     @FastNative
     private static native void nativeWriteStrongBinder(long j, IBinder iBinder);
+
+    /* renamed from: android.os.Parcel$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<String> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public String createFromParcel(Parcel source) {
+            return source.readString();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public String[] newArray(int size) {
+            return new String[size];
+        }
+    }
 
     /* loaded from: classes3.dex */
     public static class ReadWriteHelper {
@@ -725,7 +746,6 @@ public final class Parcel {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeArrayMapInternal(ArrayMap<String, Object> val) {
         if (val == null) {
             writeInt(-1);
@@ -2643,7 +2663,6 @@ public final class Parcel {
         throw new BadParcelableException("Unknown type for fixed-size array: " + componentType);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ IInterface[] lambda$createFixedArray$0(Class componentType, int n) {
         return (IInterface[]) Array.newInstance((Class<?>) componentType, n);
     }
@@ -2696,7 +2715,6 @@ public final class Parcel {
         return readValue(loader, (Class) null, new Class[0]);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public <T> T readValue(ClassLoader classLoader, Class<T> cls, Class<?>... clsArr) {
         int readInt = readInt();
         if (isLengthPrefixed(readInt)) {
@@ -2729,7 +2747,6 @@ public final class Parcel {
         return readValue(type, loader, (Class) null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class LazyValue implements BiFunction<Class<?>, Class<?>[], Object> {
         private final int mLength;
@@ -3133,7 +3150,7 @@ public final class Parcel {
         return (T) readSerializableInternal(classLoader == null ? getClass().getClassLoader() : classLoader, cls);
     }
 
-    private <T> T readSerializableInternal(final ClassLoader classLoader, Class<T> cls) {
+    private <T> T readSerializableInternal(ClassLoader classLoader, Class<T> cls) {
         String readString = readString();
         if (readString == null) {
             return null;
@@ -3151,6 +3168,14 @@ public final class Parcel {
             }
         }
         T t = (T) new ObjectInputStream(new ByteArrayInputStream(createByteArray())) { // from class: android.os.Parcel.2
+            final /* synthetic */ ClassLoader val$loader;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass2(InputStream in, ClassLoader classLoader2) throws IOException {
+                super(in);
+                classLoader = classLoader2;
+            }
+
             @Override // java.io.ObjectInputStream
             protected Class<?> resolveClass(ObjectStreamClass osClass) throws IOException, ClassNotFoundException {
                 if (classLoader != null) {
@@ -3161,17 +3186,38 @@ public final class Parcel {
                 return c2;
             }
         }.readObject();
-        if (cls != null && classLoader == null && !cls.isAssignableFrom(t.getClass())) {
+        if (cls != null && classLoader2 == null && !cls.isAssignableFrom(t.getClass())) {
             throw new BadTypeParcelableException("Serializable object " + t.getClass().getName() + " is not a subclass of required class " + cls.getName() + " provided in the parameter");
         }
         return t;
+    }
+
+    /* renamed from: android.os.Parcel$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 extends ObjectInputStream {
+        final /* synthetic */ ClassLoader val$loader;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass2(InputStream in, ClassLoader classLoader2) throws IOException {
+            super(in);
+            classLoader = classLoader2;
+        }
+
+        @Override // java.io.ObjectInputStream
+        protected Class<?> resolveClass(ObjectStreamClass osClass) throws IOException, ClassNotFoundException {
+            if (classLoader != null) {
+                Class<?> c = Class.forName(osClass.getName(), false, classLoader);
+                return (Class) Objects.requireNonNull(c);
+            }
+            Class<?> c2 = super.resolveClass(osClass);
+            return c2;
+        }
     }
 
     protected static final Parcel obtain(int obj) {
         throw new UnsupportedOperationException();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final Parcel obtain(long obj) {
         Parcel res = null;
         synchronized (sPoolSync) {
@@ -3260,7 +3306,6 @@ public final class Parcel {
         readArrayMap(outVal, size, true, false, loader);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int readArrayMap(ArrayMap<? super String, Object> map, int size, boolean sorted, boolean lazy, ClassLoader loader) {
         int lazyValues = 0;
         while (size > 0) {
@@ -3392,7 +3437,6 @@ public final class Parcel {
         return nativeGetOpenAshmemSize(this.mNativePtr);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String valueTypeToString(int type) {
         switch (type) {
             case -1:

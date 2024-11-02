@@ -68,7 +68,6 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
         onAttachedToActivity();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onClick() {
         if (getIntent() != null || getFragment() != null || getPreferenceCount() == 0) {
@@ -137,12 +136,12 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.PreferenceGroup
-    protected boolean isOnSameScreenAsChildren() {
+    public boolean isOnSameScreenAsChildren() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -156,7 +155,6 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
         return myState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
@@ -170,17 +168,17 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.PreferenceScreen.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -204,6 +202,23 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
 
         public SavedState(Parcelable superState) {
             super(superState);
+        }
+
+        /* renamed from: android.preference.PreferenceScreen$SavedState$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 

@@ -43,7 +43,9 @@ public final class NdefRecord implements Parcelable {
     private static final String[] URI_PREFIX_MAP = {"", "http://www.", "https://www.", "http://", "https://", WebView.SCHEME_TEL, "mailto:", "ftp://anonymous:anonymous@", "ftp://ftp.", "ftps://", "sftp://", "smb://", "nfs://", "ftp://", "dav://", "news:", "telnet://", "imap:", "rtsp://", "urn:", "pop:", "sip:", "sips:", "tftp:", "btspp://", "btl2cap://", "btgoep://", "tcpobex://", "irdaobex://", "file://", "urn:epc:id:", "urn:epc:tag:", "urn:epc:pat:", "urn:epc:raw:", "urn:epc:", "urn:nfc:"};
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     public static final Parcelable.Creator<NdefRecord> CREATOR = new Parcelable.Creator<NdefRecord>() { // from class: android.nfc.NdefRecord.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NdefRecord createFromParcel(Parcel in) {
             short tnf = (short) in.readInt();
@@ -59,7 +61,6 @@ public final class NdefRecord implements Parcelable {
             return new NdefRecord(tnf, type, id, payload);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NdefRecord[] newArray(int size) {
             return new NdefRecord[size];
@@ -294,11 +295,22 @@ public final class NdefRecord implements Parcelable {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x0073, code lost:            if (r11 != false) goto L138;     */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x007e, code lost:            throw new android.nfc.FormatException("unexpected IL flag in non-leading chunk");     */
-    /* JADX WARN: Code restructure failed: missing block: B:57:0x009d, code lost:            if (r15 == 6) goto L141;     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00a8, code lost:            throw new android.nfc.FormatException("unexpected TNF_UNCHANGED in first chunk or unchunked record");     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x0073, code lost:
+    
+        if (r11 != false) goto L290;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x007e, code lost:
+    
+        throw new android.nfc.FormatException("unexpected IL flag in non-leading chunk");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x009d, code lost:
+    
+        if (r15 == 6) goto L293;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00a8, code lost:
+    
+        throw new android.nfc.FormatException("unexpected TNF_UNCHANGED in first chunk or unchunked record");
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -342,7 +354,6 @@ public final class NdefRecord implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToByteBuffer(ByteBuffer buffer, boolean mb, boolean me) {
         boolean il = true;
         boolean sr = this.mPayload.length < 256;
@@ -366,7 +377,6 @@ public final class NdefRecord implements Parcelable {
         buffer.put(this.mPayload);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getByteLength() {
         int length = this.mType.length + 3;
         byte[] bArr = this.mId;
@@ -395,6 +405,33 @@ public final class NdefRecord implements Parcelable {
         dest.writeByteArray(this.mId);
         dest.writeInt(this.mPayload.length);
         dest.writeByteArray(this.mPayload);
+    }
+
+    /* renamed from: android.nfc.NdefRecord$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NdefRecord> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NdefRecord createFromParcel(Parcel in) {
+            short tnf = (short) in.readInt();
+            int typeLength = in.readInt();
+            byte[] type = new byte[typeLength];
+            in.readByteArray(type);
+            int idLength = in.readInt();
+            byte[] id = new byte[idLength];
+            in.readByteArray(id);
+            int payloadLength = in.readInt();
+            byte[] payload = new byte[payloadLength];
+            in.readByteArray(payload);
+            return new NdefRecord(tnf, type, id, payload);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NdefRecord[] newArray(int size) {
+            return new NdefRecord[size];
+        }
     }
 
     public int hashCode() {

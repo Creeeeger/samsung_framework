@@ -36,7 +36,6 @@ public final class SmartspaceSession implements AutoCloseable {
         void onTargetsAvailable(List<SmartspaceTarget> list);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SmartspaceSession(Context context, SmartspaceConfig smartspaceConfig) {
         IBinder b = ServiceManager.getService(Context.SMARTSPACE_SERVICE);
         ISmartspaceManager asInterface = ISmartspaceManager.Stub.asInterface(b);
@@ -165,7 +164,6 @@ public final class SmartspaceSession implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class CallbackWrapper extends ISmartspaceCallback.Stub {
         private final Consumer<List<SmartspaceTarget>> mCallback;
@@ -191,13 +189,11 @@ public final class SmartspaceSession implements AutoCloseable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResult$0(ParceledListSlice result) {
             this.mCallback.accept(result.getList());
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class Token {
         static final IBinder sBinder = new Binder(SmartspaceSession.TAG);

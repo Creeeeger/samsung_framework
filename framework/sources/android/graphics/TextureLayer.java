@@ -46,7 +46,6 @@ public final class TextureLayer implements AutoCloseable {
         this.mFinalizer = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getDeferredLayerUpdater() {
         return this.mFinalizer.get();
     }
@@ -68,7 +67,6 @@ public final class TextureLayer implements AutoCloseable {
         this.mRenderer.detachSurfaceTexture(this.mFinalizer.get());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getLayerHandle() {
         return this.mFinalizer.get();
     }
@@ -83,7 +81,6 @@ public final class TextureLayer implements AutoCloseable {
         this.mRenderer.pushLayerUpdate(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static TextureLayer adoptTextureLayer(HardwareRenderer renderer, long layer) {
         return new TextureLayer(renderer, layer);
     }

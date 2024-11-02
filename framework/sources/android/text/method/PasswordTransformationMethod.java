@@ -187,7 +187,6 @@ public class PasswordTransformationMethod implements TransformationMethod, TextW
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class Visible extends Handler implements UpdateLayout, Runnable {
         private Spannable mText;

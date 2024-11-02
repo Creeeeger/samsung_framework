@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class SignalThresholdInfo implements Parcelable {
     public static final Parcelable.Creator<SignalThresholdInfo> CREATOR = new Parcelable.Creator<SignalThresholdInfo>() { // from class: android.telephony.SignalThresholdInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SignalThresholdInfo createFromParcel(Parcel in) {
             return new SignalThresholdInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SignalThresholdInfo[] newArray(int size) {
             return new SignalThresholdInfo[size];
@@ -65,6 +66,14 @@ public final class SignalThresholdInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface SignalMeasurementType {
+    }
+
+    /* synthetic */ SignalThresholdInfo(int i, int i2, int i3, int i4, int[] iArr, boolean z, SignalThresholdInfoIA signalThresholdInfoIA) {
+        this(i, i2, i3, i4, iArr, z);
+    }
+
+    /* synthetic */ SignalThresholdInfo(Parcel parcel, SignalThresholdInfoIA signalThresholdInfoIA) {
+        this(parcel);
     }
 
     private SignalThresholdInfo(int ran, int signalMeasurementType, int hysteresisMs, int hysteresisDb, int[] thresholds, boolean isEnabled) {
@@ -205,6 +214,23 @@ public final class SignalThresholdInfo implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.mRan), Integer.valueOf(this.mSignalMeasurementType), Integer.valueOf(this.mHysteresisMs), Integer.valueOf(this.mHysteresisDb), Integer.valueOf(Arrays.hashCode(this.mThresholds)), Boolean.valueOf(this.mIsEnabled));
+    }
+
+    /* renamed from: android.telephony.SignalThresholdInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SignalThresholdInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SignalThresholdInfo createFromParcel(Parcel in) {
+            return new SignalThresholdInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SignalThresholdInfo[] newArray(int size) {
+            return new SignalThresholdInfo[size];
+        }
     }
 
     public String toString() {

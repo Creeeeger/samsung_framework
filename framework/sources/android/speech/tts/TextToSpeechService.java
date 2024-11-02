@@ -46,6 +46,9 @@ public abstract class TextToSpeechService extends Service {
     private ArrayList<Integer> mTTSList = new ArrayList<>();
     private final Object mVoicesInfoLock = new Object();
     private final ITextToSpeechService.Stub mBinder = new ITextToSpeechService.Stub() { // from class: android.speech.tts.TextToSpeechService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.speech.tts.ITextToSpeechService
         public int speak(IBinder caller, CharSequence text, int queueMode, Bundle params, String utteranceId) {
             if (!checkNonNull(caller, text, params)) {
@@ -194,7 +197,6 @@ public abstract class TextToSpeechService extends Service {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public interface UtteranceProgressDispatcher {
         void dispatchOnAudioAvailable(byte[] bArr);
@@ -349,17 +351,14 @@ public abstract class TextToSpeechService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getDefaultSpeechRate() {
         return getSecureSettingInt(Settings.Secure.TTS_DEFAULT_RATE, 100);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getDefaultPitch() {
         return getSecureSettingInt(Settings.Secure.TTS_DEFAULT_PITCH, 100);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public String[] getSettingsLocale() {
         Locale locale = this.mEngineHelper.getLocalePrefForEngine(this.mPackageName);
         return TtsEngines.toOldLocaleStringFormat(locale);
@@ -399,7 +398,6 @@ public abstract class TextToSpeechService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class SynthHandler extends Handler {
         private SpeechItem mCurrentSpeechItem;
@@ -423,7 +421,6 @@ public abstract class TextToSpeechService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void endFlushingSpeechItems(Object callerIdentity) {
             synchronized (this.mFlushedObjects) {
                 if (callerIdentity == null) {
@@ -446,7 +443,6 @@ public abstract class TextToSpeechService extends Service {
             return this.mCurrentSpeechItem;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public synchronized boolean setCurrentSpeechItem(SpeechItem speechItem) {
             if (speechItem != null) {
                 if (isFlushed(speechItem)) {
@@ -457,7 +453,6 @@ public abstract class TextToSpeechService extends Service {
             return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public synchronized SpeechItem removeCurrentSpeechItem() {
             SpeechItem current;
             current = this.mCurrentSpeechItem;
@@ -488,7 +483,7 @@ public abstract class TextToSpeechService extends Service {
         }
 
         /* JADX WARN: Multi-variable type inference failed */
-        public int enqueueSpeechItem(int queueMode, final SpeechItem speechItem) {
+        public int enqueueSpeechItem(int queueMode, SpeechItem speechItem) {
             UtteranceProgressDispatcher utterenceProgress = null;
             if (speechItem instanceof UtteranceProgressDispatcher) {
                 utterenceProgress = (UtteranceProgressDispatcher) speechItem;
@@ -505,6 +500,12 @@ public abstract class TextToSpeechService extends Service {
                 stopAll();
             }
             Runnable runnable = new Runnable() { // from class: android.speech.tts.TextToSpeechService.SynthHandler.1
+                final /* synthetic */ SpeechItem val$speechItem;
+
+                AnonymousClass1(SpeechItem speechItem2) {
+                    speechItem = speechItem2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (SynthHandler.this.setCurrentSpeechItem(speechItem)) {
@@ -516,10 +517,10 @@ public abstract class TextToSpeechService extends Service {
                 }
             };
             Message msg = Message.obtain(this, runnable);
-            msg.obj = speechItem.getCallerIdentity();
+            msg.obj = speechItem2.getCallerIdentity();
             if (sendMessage(msg)) {
                 try {
-                    int uid = speechItem.getCallerUid();
+                    int uid = speechItem2.getCallerUid();
                     if (!TextToSpeechService.this.mTTSList.contains(Integer.valueOf(uid))) {
                         TextToSpeechService.this.mTTSList.add(Integer.valueOf(uid));
                         TextToSpeechService.this.mIActivityManager.setTTSPkgInfo(uid);
@@ -538,7 +539,27 @@ public abstract class TextToSpeechService extends Service {
             return -1;
         }
 
-        public int stopForApp(final Object callerIdentity) {
+        /* renamed from: android.speech.tts.TextToSpeechService$SynthHandler$1 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ SpeechItem val$speechItem;
+
+            AnonymousClass1(SpeechItem speechItem2) {
+                speechItem = speechItem2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (SynthHandler.this.setCurrentSpeechItem(speechItem)) {
+                    speechItem.play();
+                    SynthHandler.this.removeCurrentSpeechItem();
+                } else {
+                    speechItem.stop();
+                }
+            }
+        }
+
+        public int stopForApp(Object callerIdentity) {
             if (callerIdentity == null) {
                 return -1;
             }
@@ -549,6 +570,12 @@ public abstract class TextToSpeechService extends Service {
             }
             TextToSpeechService.this.mAudioPlaybackHandler.stopForApp(callerIdentity);
             Runnable runnable = new Runnable() { // from class: android.speech.tts.TextToSpeechService.SynthHandler.2
+                final /* synthetic */ Object val$callerIdentity;
+
+                AnonymousClass2(Object callerIdentity2) {
+                    callerIdentity = callerIdentity2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SynthHandler.this.endFlushingSpeechItems(callerIdentity);
@@ -556,6 +583,21 @@ public abstract class TextToSpeechService extends Service {
             };
             sendMessage(Message.obtain(this, runnable));
             return 0;
+        }
+
+        /* renamed from: android.speech.tts.TextToSpeechService$SynthHandler$2 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass2 implements Runnable {
+            final /* synthetic */ Object val$callerIdentity;
+
+            AnonymousClass2(Object callerIdentity2) {
+                callerIdentity = callerIdentity2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SynthHandler.this.endFlushingSpeechItems(callerIdentity);
+            }
         }
 
         public int stopAll() {
@@ -566,6 +608,9 @@ public abstract class TextToSpeechService extends Service {
             }
             TextToSpeechService.this.mAudioPlaybackHandler.stop();
             Runnable runnable = new Runnable() { // from class: android.speech.tts.TextToSpeechService.SynthHandler.3
+                AnonymousClass3() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SynthHandler.this.endFlushingSpeechItems(null);
@@ -574,9 +619,20 @@ public abstract class TextToSpeechService extends Service {
             sendMessage(Message.obtain(this, runnable));
             return 0;
         }
+
+        /* renamed from: android.speech.tts.TextToSpeechService$SynthHandler$3 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass3 implements Runnable {
+            AnonymousClass3() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SynthHandler.this.endFlushingSpeechItems(null);
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class AudioOutputParams {
         public final AudioAttributes mAudioAttributes;
@@ -618,7 +674,6 @@ public abstract class TextToSpeechService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public abstract class SpeechItem {
         private final Object mCallerIdentity;
@@ -680,7 +735,6 @@ public abstract class TextToSpeechService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public abstract class UtteranceSpeechItem extends SpeechItem implements UtteranceProgressDispatcher {
         public abstract String getUtteranceId();
@@ -758,7 +812,6 @@ public abstract class TextToSpeechService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public abstract class UtteranceSpeechItemWithParams extends UtteranceSpeechItem {
         protected final Bundle mParams;
@@ -792,8 +845,9 @@ public abstract class TextToSpeechService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    class SynthesisSpeechItem extends UtteranceSpeechItemWithParams {
+    public class SynthesisSpeechItem extends UtteranceSpeechItemWithParams {
         private final int mCallerUid;
         private final String[] mDefaultLocale;
         private final EventLogger mEventLogger;
@@ -1043,10 +1097,167 @@ public abstract class TextToSpeechService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.speech.tts.TextToSpeechService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends ITextToSpeechService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public int speak(IBinder caller, CharSequence text, int queueMode, Bundle params, String utteranceId) {
+            if (!checkNonNull(caller, text, params)) {
+                return -1;
+            }
+            SpeechItem item = new SynthesisSpeechItem(caller, Binder.getCallingUid(), Binder.getCallingPid(), params, utteranceId, text);
+            return TextToSpeechService.this.mSynthHandler.enqueueSpeechItem(queueMode, item);
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public int synthesizeToFileDescriptor(IBinder caller, CharSequence text, ParcelFileDescriptor fileDescriptor, Bundle params, String utteranceId) {
+            if (!checkNonNull(caller, text, fileDescriptor, params)) {
+                return -1;
+            }
+            ParcelFileDescriptor sameFileDescriptor = ParcelFileDescriptor.adoptFd(fileDescriptor.detachFd());
+            SpeechItem item = new SynthesisToFileOutputStreamSpeechItem(caller, Binder.getCallingUid(), Binder.getCallingPid(), params, utteranceId, text, new ParcelFileDescriptor.AutoCloseOutputStream(sameFileDescriptor));
+            return TextToSpeechService.this.mSynthHandler.enqueueSpeechItem(1, item);
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public int playAudio(IBinder caller, Uri audioUri, int queueMode, Bundle params, String utteranceId) {
+            if (!checkNonNull(caller, audioUri, params)) {
+                return -1;
+            }
+            SpeechItem item = new AudioSpeechItem(caller, Binder.getCallingUid(), Binder.getCallingPid(), params, utteranceId, audioUri);
+            return TextToSpeechService.this.mSynthHandler.enqueueSpeechItem(queueMode, item);
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public int playSilence(IBinder caller, long duration, int queueMode, String utteranceId) {
+            if (!checkNonNull(caller)) {
+                return -1;
+            }
+            SpeechItem item = new SilenceSpeechItem(caller, Binder.getCallingUid(), Binder.getCallingPid(), utteranceId, duration);
+            return TextToSpeechService.this.mSynthHandler.enqueueSpeechItem(queueMode, item);
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public boolean isSpeaking() {
+            return TextToSpeechService.this.mSynthHandler.isSpeaking() || TextToSpeechService.this.mAudioPlaybackHandler.isSpeaking();
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public int stop(IBinder caller) {
+            if (!checkNonNull(caller)) {
+                return -1;
+            }
+            return TextToSpeechService.this.mSynthHandler.stopForApp(caller);
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public String[] getLanguage() {
+            return TextToSpeechService.this.onGetLanguage();
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public String[] getClientDefaultLanguage() {
+            return TextToSpeechService.this.getSettingsLocale();
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public int isLanguageAvailable(String lang, String country, String variant) {
+            if (!checkNonNull(lang)) {
+                return -1;
+            }
+            return TextToSpeechService.this.onIsLanguageAvailable(lang, country, variant);
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public String[] getFeaturesForLanguage(String lang, String country, String variant) {
+            Set<String> features = TextToSpeechService.this.onGetFeaturesForLanguage(lang, country, variant);
+            if (features != null) {
+                String[] featuresArray = new String[features.size()];
+                features.toArray(featuresArray);
+                return featuresArray;
+            }
+            return new String[0];
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public int loadLanguage(IBinder caller, String lang, String country, String variant) {
+            if (!checkNonNull(lang)) {
+                return -1;
+            }
+            int retVal = TextToSpeechService.this.onIsLanguageAvailable(lang, country, variant);
+            if (retVal == 0 || retVal == 1 || retVal == 2) {
+                SpeechItem item = new LoadLanguageItem(caller, Binder.getCallingUid(), Binder.getCallingPid(), lang, country, variant);
+                if (TextToSpeechService.this.mSynthHandler.enqueueSpeechItem(1, item) != 0) {
+                    return -1;
+                }
+            }
+            return retVal;
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public List<Voice> getVoices() {
+            return TextToSpeechService.this.onGetVoices();
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public int loadVoice(IBinder caller, String voiceName) {
+            if (!checkNonNull(voiceName)) {
+                return -1;
+            }
+            int retVal = TextToSpeechService.this.onIsValidVoiceName(voiceName);
+            if (retVal == 0) {
+                SpeechItem item = new LoadVoiceItem(caller, Binder.getCallingUid(), Binder.getCallingPid(), voiceName);
+                if (TextToSpeechService.this.mSynthHandler.enqueueSpeechItem(1, item) != 0) {
+                    return -1;
+                }
+            }
+            return retVal;
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public String getDefaultVoiceNameFor(String lang, String country, String variant) {
+            if (!checkNonNull(lang)) {
+                return null;
+            }
+            int retVal = TextToSpeechService.this.onIsLanguageAvailable(lang, country, variant);
+            if (retVal == 0 || retVal == 1 || retVal == 2) {
+                return TextToSpeechService.this.onGetDefaultVoiceNameFor(lang, country, variant);
+            }
+            return null;
+        }
+
+        @Override // android.speech.tts.ITextToSpeechService
+        public void setCallback(IBinder caller, ITextToSpeechCallback cb) {
+            if (!checkNonNull(caller)) {
+                return;
+            }
+            TextToSpeechService.this.mCallbacks.setCallback(caller, cb);
+        }
+
+        private String intern(String in) {
+            return in.intern();
+        }
+
+        private boolean checkNonNull(Object... args) {
+            for (Object o : args) {
+                if (o == null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     /* loaded from: classes3.dex */
     public class CallbackMap extends RemoteCallbackList<ITextToSpeechCallback> {
         private final HashMap<IBinder, ITextToSpeechCallback> mCallerToCallback;
+
+        /* synthetic */ CallbackMap(TextToSpeechService textToSpeechService, CallbackMapIA callbackMapIA) {
+            this();
+        }
 
         private CallbackMap() {
             this.mCallerToCallback = new HashMap<>();

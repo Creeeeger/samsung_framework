@@ -27,6 +27,9 @@ public abstract class AttentionService extends Service {
     public static final double PROXIMITY_UNKNOWN = -1.0d;
     public static final String SERVICE_INTERFACE = "android.service.attention.AttentionService";
     private final IAttentionService.Stub mBinder = new IAttentionService.Stub() { // from class: android.service.attention.AttentionService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.service.attention.IAttentionService
         public void checkAttention(IAttentionCallback callback) {
             Preconditions.checkNotNull(callback);
@@ -65,6 +68,36 @@ public abstract class AttentionService extends Service {
 
     public abstract void onCheckAttention(AttentionCallback attentionCallback);
 
+    /* renamed from: android.service.attention.AttentionService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends IAttentionService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.service.attention.IAttentionService
+        public void checkAttention(IAttentionCallback callback) {
+            Preconditions.checkNotNull(callback);
+            AttentionService.this.onCheckAttention(new AttentionCallback(callback));
+        }
+
+        @Override // android.service.attention.IAttentionService
+        public void cancelAttentionCheck(IAttentionCallback callback) {
+            Preconditions.checkNotNull(callback);
+            AttentionService.this.onCancelAttentionCheck(new AttentionCallback(callback));
+        }
+
+        @Override // android.service.attention.IAttentionService
+        public void onStartProximityUpdates(IProximityUpdateCallback callback) {
+            Objects.requireNonNull(callback);
+            AttentionService.this.onStartProximityUpdates(new ProximityUpdateCallback(callback));
+        }
+
+        @Override // android.service.attention.IAttentionService
+        public void onStopProximityUpdates() {
+            AttentionService.this.onStopProximityUpdates();
+        }
+    }
+
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         if (SERVICE_INTERFACE.equals(intent.getAction())) {
@@ -84,6 +117,10 @@ public abstract class AttentionService extends Service {
     /* loaded from: classes3.dex */
     public static final class AttentionCallback {
         private final IAttentionCallback mCallback;
+
+        /* synthetic */ AttentionCallback(IAttentionCallback iAttentionCallback, AttentionCallbackIA attentionCallbackIA) {
+            this(iAttentionCallback);
+        }
 
         private AttentionCallback(IAttentionCallback callback) {
             this.mCallback = callback;
@@ -109,6 +146,10 @@ public abstract class AttentionService extends Service {
     /* loaded from: classes3.dex */
     public static final class ProximityUpdateCallback {
         private final WeakReference<IProximityUpdateCallback> mCallback;
+
+        /* synthetic */ ProximityUpdateCallback(IProximityUpdateCallback iProximityUpdateCallback, ProximityUpdateCallbackIA proximityUpdateCallbackIA) {
+            this(iProximityUpdateCallback);
+        }
 
         private ProximityUpdateCallback(IProximityUpdateCallback callback) {
             this.mCallback = new WeakReference<>(callback);

@@ -23,7 +23,6 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
     private boolean mMutated;
     private DrawableWrapperState mState;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DrawableWrapper(DrawableWrapperState state, Resources res) {
         this.mState = state;
         updateLocalState(res);
@@ -293,7 +292,6 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
         return drawable != null && drawable.hasFocusStateSpecified();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] state) {
         Drawable drawable = this.mDrawable;
@@ -315,14 +313,12 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onLevelChange(int level) {
         Drawable drawable = this.mDrawable;
         return drawable != null && drawable.setLevel(level);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         Drawable drawable = this.mDrawable;
@@ -417,7 +413,6 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static abstract class DrawableWrapperState extends Drawable.ConstantState {
         int mChangingConfigurations;
@@ -429,7 +424,6 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
         @Override // android.graphics.drawable.Drawable.ConstantState
         public abstract Drawable newDrawable(Resources resources);
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public DrawableWrapperState(DrawableWrapperState orig, Resources res) {
             int density;
             this.mDensity = 160;
@@ -458,7 +452,6 @@ public abstract class DrawableWrapper extends Drawable implements Drawable.Callb
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void onDensityChanged(int sourceDensity, int targetDensity) {
         }
 

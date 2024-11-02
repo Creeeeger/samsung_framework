@@ -493,8 +493,42 @@ public class SemDualAppManager {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.app.SemDualAppManager.addResolveInfoFromOtherUser(android.content.pm.PackageManager, java.util.List, android.content.pm.ActivityInfo, android.content.Intent):void");
     }
 
-    public static void drawDualAppBadge(final Context context, final AppWidgetHostView view, UserHandle user) {
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.app.SemDualAppManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ AppWidgetHostView val$view;
+
+        AnonymousClass1(AppWidgetHostView appWidgetHostView) {
+            view = appWidgetHostView;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                ImageView dualAppBadge = new ImageView(Context.this);
+                int density = Context.this.getResources().getDisplayMetrics().densityDpi;
+                Drawable badgeicon = Resources.getSystem().getDrawableForDensity(R.drawable.ic_dualapp_widget_badge, density);
+                if (badgeicon != null) {
+                    dualAppBadge.lambda$setImageURIAsync$2(badgeicon);
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(badgeicon.getIntrinsicWidth(), badgeicon.getIntrinsicHeight());
+                    params.gravity = 85;
+                    view.addView(dualAppBadge, params);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void drawDualAppBadge(Context context, AppWidgetHostView view, UserHandle user) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { // from class: com.samsung.android.app.SemDualAppManager.1
+            final /* synthetic */ AppWidgetHostView val$view;
+
+            AnonymousClass1(AppWidgetHostView view2) {
+                view = view2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -502,7 +536,7 @@ public class SemDualAppManager {
                     int density = Context.this.getResources().getDisplayMetrics().densityDpi;
                     Drawable badgeicon = Resources.getSystem().getDrawableForDensity(R.drawable.ic_dualapp_widget_badge, density);
                     if (badgeicon != null) {
-                        dualAppBadge.setImageDrawable(badgeicon);
+                        dualAppBadge.lambda$setImageURIAsync$2(badgeicon);
                         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(badgeicon.getIntrinsicWidth(), badgeicon.getIntrinsicHeight());
                         params.gravity = 85;
                         view.addView(dualAppBadge, params);

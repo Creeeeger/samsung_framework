@@ -570,7 +570,7 @@ public interface ICas extends android.hardware.cas.V1_1.ICas {
         }
 
         @Override // android.os.HwBinder
-        public void onTransact(int _hidl_code, HwParcel _hidl_request, final HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
+        public void onTransact(int _hidl_code, HwParcel _hidl_request, HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
             switch (_hidl_code) {
                 case 1:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
@@ -583,6 +583,12 @@ public interface ICas extends android.hardware.cas.V1_1.ICas {
                 case 2:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
                     openSession(new ICas.openSessionCallback() { // from class: android.hardware.cas.V1_2.ICas.Stub.1
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass1(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // android.hardware.cas.V1_0.ICas.openSessionCallback
                         public void onValues(int status, ArrayList<Byte> sessionId) {
                             _hidl_reply.writeStatus(0);
@@ -596,35 +602,35 @@ public interface ICas extends android.hardware.cas.V1_1.ICas {
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
                     ArrayList<Byte> sessionId = _hidl_request.readInt8Vector();
                     int _hidl_out_status2 = closeSession(sessionId);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status2);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status2);
+                    _hidl_reply2.send();
                     return;
                 case 4:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
                     ArrayList<Byte> sessionId2 = _hidl_request.readInt8Vector();
                     ArrayList<Byte> pvtData2 = _hidl_request.readInt8Vector();
                     int _hidl_out_status3 = setSessionPrivateData(sessionId2, pvtData2);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status3);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status3);
+                    _hidl_reply2.send();
                     return;
                 case 5:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
                     ArrayList<Byte> sessionId3 = _hidl_request.readInt8Vector();
                     ArrayList<Byte> ecm = _hidl_request.readInt8Vector();
                     int _hidl_out_status4 = processEcm(sessionId3, ecm);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status4);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status4);
+                    _hidl_reply2.send();
                     return;
                 case 6:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
                     ArrayList<Byte> emm = _hidl_request.readInt8Vector();
                     int _hidl_out_status5 = processEmm(emm);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status5);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status5);
+                    _hidl_reply2.send();
                     return;
                 case 7:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
@@ -632,33 +638,33 @@ public interface ICas extends android.hardware.cas.V1_1.ICas {
                     int arg = _hidl_request.readInt32();
                     ArrayList<Byte> eventData = _hidl_request.readInt8Vector();
                     int _hidl_out_status6 = sendEvent(event, arg, eventData);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status6);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status6);
+                    _hidl_reply2.send();
                     return;
                 case 8:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
                     String provisionString = _hidl_request.readString();
                     int _hidl_out_status7 = provision(provisionString);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status7);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status7);
+                    _hidl_reply2.send();
                     return;
                 case 9:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
                     int refreshType = _hidl_request.readInt32();
                     ArrayList<Byte> refreshData = _hidl_request.readInt8Vector();
                     int _hidl_out_status8 = refreshEntitlements(refreshType, refreshData);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status8);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status8);
+                    _hidl_reply2.send();
                     return;
                 case 10:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_0.ICas.kInterfaceName);
                     int _hidl_out_status9 = release();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status9);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status9);
+                    _hidl_reply2.send();
                     return;
                 case 11:
                     _hidl_request.enforceInterface(android.hardware.cas.V1_1.ICas.kInterfaceName);
@@ -667,15 +673,21 @@ public interface ICas extends android.hardware.cas.V1_1.ICas {
                     int arg2 = _hidl_request.readInt32();
                     ArrayList<Byte> eventData2 = _hidl_request.readInt8Vector();
                     int _hidl_out_status10 = sendSessionEvent(sessionId4, event2, arg2, eventData2);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeInt32(_hidl_out_status10);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeInt32(_hidl_out_status10);
+                    _hidl_reply2.send();
                     return;
                 case 12:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     int intent = _hidl_request.readInt32();
                     int mode = _hidl_request.readInt32();
                     openSession_1_2(intent, mode, new openSession_1_2Callback() { // from class: android.hardware.cas.V1_2.ICas.Stub.2
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass2(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // android.hardware.cas.V1_2.ICas.openSession_1_2Callback
                         public void onValues(int status, ArrayList<Byte> sessionId5) {
                             _hidl_reply.writeStatus(0);
@@ -688,29 +700,29 @@ public interface ICas extends android.hardware.cas.V1_1.ICas {
                 case 256067662:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<String> _hidl_out_descriptors = interfaceChain();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeStringVector(_hidl_out_descriptors);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeStringVector(_hidl_out_descriptors);
+                    _hidl_reply2.send();
                     return;
                 case 256131655:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     NativeHandle fd = _hidl_request.readNativeHandle();
                     ArrayList<String> options = _hidl_request.readStringVector();
                     debug(fd, options);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 256136003:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     String _hidl_out_descriptor = interfaceDescriptor();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeString(_hidl_out_descriptor);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeString(_hidl_out_descriptor);
+                    _hidl_reply2.send();
                     return;
                 case 256398152:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<byte[]> _hidl_out_hashchain = getHashChain();
-                    _hidl_reply.writeStatus(0);
+                    _hidl_reply2.writeStatus(0);
                     HwBlob _hidl_blob = new HwBlob(16);
                     int _hidl_vec_size = _hidl_out_hashchain.size();
                     _hidl_blob.putInt32(8L, _hidl_vec_size);
@@ -725,8 +737,8 @@ public interface ICas extends android.hardware.cas.V1_1.ICas {
                         childBlob.putInt8Array(_hidl_array_offset_1, _hidl_array_item_1);
                     }
                     _hidl_blob.putBlob(0L, childBlob);
-                    _hidl_reply.writeBuffer(_hidl_blob);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeBuffer(_hidl_blob);
+                    _hidl_reply2.send();
                     return;
                 case 256462420:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
@@ -738,20 +750,56 @@ public interface ICas extends android.hardware.cas.V1_1.ICas {
                 case 256921159:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ping();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 257049926:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     DebugInfo _hidl_out_info = getDebugInfo();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_out_info.writeToParcel(_hidl_reply);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_out_info.writeToParcel(_hidl_reply2);
+                    _hidl_reply2.send();
                     return;
                 case 257120595:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     notifySyspropsChanged();
                     return;
+            }
+        }
+
+        /* renamed from: android.hardware.cas.V1_2.ICas$Stub$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements ICas.openSessionCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass1(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // android.hardware.cas.V1_0.ICas.openSessionCallback
+            public void onValues(int status, ArrayList<Byte> sessionId) {
+                _hidl_reply.writeStatus(0);
+                _hidl_reply.writeInt32(status);
+                _hidl_reply.writeInt8Vector(sessionId);
+                _hidl_reply.send();
+            }
+        }
+
+        /* renamed from: android.hardware.cas.V1_2.ICas$Stub$2 */
+        /* loaded from: classes.dex */
+        class AnonymousClass2 implements openSession_1_2Callback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass2(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // android.hardware.cas.V1_2.ICas.openSession_1_2Callback
+            public void onValues(int status, ArrayList<Byte> sessionId5) {
+                _hidl_reply.writeStatus(0);
+                _hidl_reply.writeInt32(status);
+                _hidl_reply.writeInt8Vector(sessionId5);
+                _hidl_reply.send();
             }
         }
     }

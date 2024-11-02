@@ -117,8 +117,7 @@ public final class JsonReader implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.util.JsonReader$1, reason: invalid class name */
+    /* renamed from: android.util.JsonReader$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$util$JsonScope;
@@ -606,9 +605,18 @@ public final class JsonReader implements Closeable {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0050, code lost:            if (r0 != null) goto L25;     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0052, code lost:            r0 = new java.lang.StringBuilder();     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0058, code lost:            r0.append(r7.buffer, r1, r7.pos - r1);     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0050, code lost:
+    
+        if (r0 != null) goto L63;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0052, code lost:
+    
+        r0 = new java.lang.StringBuilder();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0058, code lost:
+    
+        r0.append(r7.buffer, r1, r7.pos - r1);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

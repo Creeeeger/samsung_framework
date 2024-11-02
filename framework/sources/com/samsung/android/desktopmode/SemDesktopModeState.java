@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes5.dex */
 public class SemDesktopModeState implements Parcelable {
     public static final Parcelable.Creator<SemDesktopModeState> CREATOR = new Parcelable.Creator<SemDesktopModeState>() { // from class: com.samsung.android.desktopmode.SemDesktopModeState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemDesktopModeState createFromParcel(Parcel parcel) {
             return new SemDesktopModeState(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemDesktopModeState[] newArray(int size) {
             return new SemDesktopModeState[size];
@@ -181,6 +182,23 @@ public class SemDesktopModeState implements Parcelable {
 
     public String toString() {
         return "SemDesktopModeState(" + enabledToString(this.enabled) + ", " + stateToString(this.state) + ", " + displayTypeToString(this.displayType) + NavigationBarInflaterView.KEY_CODE_END;
+    }
+
+    /* renamed from: com.samsung.android.desktopmode.SemDesktopModeState$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemDesktopModeState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemDesktopModeState createFromParcel(Parcel parcel) {
+            return new SemDesktopModeState(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemDesktopModeState[] newArray(int size) {
+            return new SemDesktopModeState[size];
+        }
     }
 
     public SemDesktopModeState(Parcel src) {

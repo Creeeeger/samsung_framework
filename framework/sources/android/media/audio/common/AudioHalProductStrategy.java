@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioHalProductStrategy implements Parcelable {
     public static final Parcelable.Creator<AudioHalProductStrategy> CREATOR = new Parcelable.Creator<AudioHalProductStrategy>() { // from class: android.media.audio.common.AudioHalProductStrategy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioHalProductStrategy createFromParcel(Parcel _aidl_source) {
             AudioHalProductStrategy _aidl_out = new AudioHalProductStrategy();
@@ -18,7 +20,6 @@ public class AudioHalProductStrategy implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalProductStrategy[] newArray(int _aidl_size) {
             return new AudioHalProductStrategy[_aidl_size];
@@ -27,6 +28,25 @@ public class AudioHalProductStrategy implements Parcelable {
     public static final int VENDOR_STRATEGY_ID_START = 1000;
     public AudioHalAttributesGroup[] attributesGroups;
     public int id = -1;
+
+    /* renamed from: android.media.audio.common.AudioHalProductStrategy$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioHalProductStrategy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalProductStrategy createFromParcel(Parcel _aidl_source) {
+            AudioHalProductStrategy _aidl_out = new AudioHalProductStrategy();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalProductStrategy[] newArray(int _aidl_size) {
+            return new AudioHalProductStrategy[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

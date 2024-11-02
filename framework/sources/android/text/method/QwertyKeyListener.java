@@ -107,7 +107,10 @@ public class QwertyKeyListener extends BaseKeyListener {
         return makeTextContentType(this.mAutoCap, this.mAutoText);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:163:0x02aa, code lost:            if (r25.hasModifiers(2) != false) goto L175;     */
+    /* JADX WARN: Code restructure failed: missing block: B:163:0x02aa, code lost:
+    
+        if (r25.hasModifiers(2) != false) goto L395;
+     */
     @Override // android.text.method.BaseKeyListener, android.text.method.MetaKeyKeyListener, android.text.method.KeyListener
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -183,8 +186,9 @@ public class QwertyKeyListener extends BaseKeyListener {
         return Character.toUpperCase(src.charAt(0)) + src.substring(1);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    static class Replaced implements NoCopySpan {
+    public static class Replaced implements NoCopySpan {
         private char[] mText;
 
         public Replaced(char[] text) {

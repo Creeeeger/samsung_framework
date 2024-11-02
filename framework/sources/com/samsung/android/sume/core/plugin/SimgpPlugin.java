@@ -31,9 +31,8 @@ public class SimgpPlugin implements Plugin<ImgpPlugin> {
         System.loadLibrary("sume_mediabuffer_jni.media.samsung");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: resize, reason: merged with bridge method [inline-methods] */
-    public MutableMediaBuffer m8823xd2768214(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
+    /* renamed from: resize */
+    public MutableMediaBuffer m8815xd2768214(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
         Log.d(TAG, "try to simgp resize: " + ibuf);
         if (obuf.isEmpty()) {
             MutableMediaFormat outputFormat = ibuf.getFormat().toMutableFormat().copy();
@@ -61,9 +60,8 @@ public class SimgpPlugin implements Plugin<ImgpPlugin> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: cvtColor, reason: merged with bridge method [inline-methods] */
-    public MutableMediaBuffer m8825xb5c9ce52(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
+    /* renamed from: cvtColor */
+    public MutableMediaBuffer m8817xb5c9ce52(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
         Log.d(TAG, "try to simgp cvtColor: " + ibuf + " => " + obuf.getFormat());
         if (obuf.isEmpty()) {
             MutableMediaFormat outputFormat = ibuf.getFormat().toMutableFormat().copy();
@@ -84,14 +82,12 @@ public class SimgpPlugin implements Plugin<ImgpPlugin> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: rotate, reason: merged with bridge method [inline-methods] */
-    public MutableMediaBuffer m8824xc4202833(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
+    /* renamed from: rotate */
+    public MutableMediaBuffer m8816xc4202833(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
         Log.d(TAG, "try to simgp rotate: " + ibuf);
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MFDescriptor lambda$bindToFixture$0() {
         return new ImgpDescriptor(ImgpPlugin.Type.SIMGP);
     }
@@ -107,19 +103,19 @@ public class SimgpPlugin implements Plugin<ImgpPlugin> {
         fixture.setImgProcessor(ImgpType.RESIZE, new Operator() { // from class: com.samsung.android.sume.core.plugin.SimgpPlugin$$ExternalSyntheticLambda1
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
-                return SimgpPlugin.this.m8823xd2768214(mediaBuffer, mutableMediaBuffer);
+                return SimgpPlugin.this.m8815xd2768214(mediaBuffer, mutableMediaBuffer);
             }
         });
         fixture.setImgProcessor(ImgpType.ROTATE, new Operator() { // from class: com.samsung.android.sume.core.plugin.SimgpPlugin$$ExternalSyntheticLambda2
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
-                return SimgpPlugin.this.m8824xc4202833(mediaBuffer, mutableMediaBuffer);
+                return SimgpPlugin.this.m8816xc4202833(mediaBuffer, mutableMediaBuffer);
             }
         });
         fixture.setImgProcessor(ImgpType.CVT_COLOR, new Operator() { // from class: com.samsung.android.sume.core.plugin.SimgpPlugin$$ExternalSyntheticLambda3
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
-                return SimgpPlugin.this.m8825xb5c9ce52(mediaBuffer, mutableMediaBuffer);
+                return SimgpPlugin.this.m8817xb5c9ce52(mediaBuffer, mutableMediaBuffer);
             }
         });
     }

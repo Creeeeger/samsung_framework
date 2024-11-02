@@ -188,12 +188,10 @@ public abstract class Layout {
         return need;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Layout(CharSequence text, TextPaint paint, int width, Alignment align, float spacingMult, float spacingAdd) {
         this(text, paint, width, align, TextDirectionHeuristics.FIRSTSTRONG_LTR, spacingMult, spacingAdd);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Layout(CharSequence text, TextPaint paint, int width, Alignment align, TextDirectionHeuristic textDir, float spacingMult, float spacingAdd) {
         this.mWorkPaint = new TextPaint();
         this.mAlignment = Alignment.ALIGN_NORMAL;
@@ -214,12 +212,10 @@ public abstract class Layout {
         this.mTextDir = textDir;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setJustificationMode(int justificationMode) {
         this.mJustificationMode = justificationMode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void replaceWith(CharSequence text, TextPaint paint, int width, Alignment align, float spacingmult, float spacingadd) {
         if (width < 0) {
             throw new IllegalArgumentException("Layout: " + width + " < 0");
@@ -780,7 +776,6 @@ public abstract class Layout {
         return getHorizontal(offset, !trailing, clamped);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public float getHorizontal(int offset, boolean primary) {
         return primary ? getPrimaryHorizontal(offset) : getSecondaryHorizontal(offset);
     }
@@ -866,7 +861,6 @@ public abstract class Layout {
         throw new UnsupportedOperationException("Method not decompiled: android.text.Layout.getHorizontal(int, boolean, int, boolean):float");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Removed duplicated region for block: B:10:0x006b  */
     /* JADX WARN: Removed duplicated region for block: B:17:0x0082  */
     /* JADX WARN: Removed duplicated region for block: B:30:0x00ad A[LOOP:2: B:28:0x00aa->B:30:0x00ad, LOOP_END] */
@@ -1410,7 +1404,6 @@ public abstract class Layout {
         return best;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class HorizontalMeasurementProvider {
         private float[] mHorizontals;
@@ -1481,7 +1474,10 @@ public abstract class Layout {
         return new int[]{segmentFinder.previousStartBoundary(start + 1), segmentFinder.nextEndBoundary(end - 1)};
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x00fb, code lost:            return -1;     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x00fb, code lost:
+    
+        return -1;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1494,8 +1490,14 @@ public abstract class Layout {
         throw new UnsupportedOperationException("Method not decompiled: android.text.Layout.getStartOrEndOffsetForAreaWithinLine(int, android.graphics.RectF, android.text.SegmentFinder, android.text.Layout$TextInclusionStrategy, boolean):int");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x009e, code lost:            return -1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:44:0x00d8, code lost:            return -1;     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x009e, code lost:
+    
+        return -1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x00d8, code lost:
+    
+        return -1;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1508,7 +1510,10 @@ public abstract class Layout {
         throw new UnsupportedOperationException("Method not decompiled: android.text.Layout.getStartOffsetForAreaWithinRun(android.graphics.RectF, int, int, int, int, float[], int, int, float, float, boolean, android.text.SegmentFinder, android.text.Layout$TextInclusionStrategy):int");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:44:0x00d9, code lost:            return -1;     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x00d9, code lost:
+    
+        return -1;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1864,12 +1869,34 @@ public abstract class Layout {
         return margin;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x006a, code lost:            if ((r25 instanceof android.text.Spanned) == false) goto L26;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x006c, code lost:            r4 = (android.text.Spanned) r25;        r5 = r4.nextSpanTransition(r26, r27, android.text.style.TabStopSpan.class);        r0 = (android.text.style.TabStopSpan[]) getParagraphSpans(r4, r26, r5, android.text.style.TabStopSpan.class);        r17 = true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x0082, code lost:            if (r0.length <= 0) goto L24;     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x008d, code lost:            r3 = new android.text.Layout.TabStops(android.text.Layout.TAB_INCREMENT, r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0091, code lost:            r18 = r3;     */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x0094, code lost:            r17 = true;        r18 = null;     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x006a, code lost:
+    
+        if ((r25 instanceof android.text.Spanned) == false) goto L82;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x006c, code lost:
+    
+        r4 = (android.text.Spanned) r25;
+        r5 = r4.nextSpanTransition(r26, r27, android.text.style.TabStopSpan.class);
+        r0 = (android.text.style.TabStopSpan[]) getParagraphSpans(r4, r26, r5, android.text.style.TabStopSpan.class);
+        r17 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x0082, code lost:
+    
+        if (r0.length <= 0) goto L80;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x008d, code lost:
+    
+        r3 = new android.text.Layout.TabStops(android.text.Layout.TAB_INCREMENT, r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0091, code lost:
+    
+        r18 = r3;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x0094, code lost:
+    
+        r17 = true;
+        r18 = null;
+     */
     /* JADX WARN: Removed duplicated region for block: B:35:0x00f1  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -1923,7 +1950,6 @@ public abstract class Layout {
             this.mNumStops = ns;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public float nextTab(float h) {
             int ns = this.mNumStops;
             if (ns > 0) {
@@ -1970,7 +1996,6 @@ public abstract class Layout {
         return this.mSpannedText;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> T[] getParagraphSpans(Spanned spanned, int i, int i2, Class<T> cls) {
         if (i == i2 && i > 0) {
             return (T[]) ArrayUtils.emptyArray(cls);
@@ -1981,7 +2006,6 @@ public abstract class Layout {
         return (T[]) spanned.getSpans(i, i2, cls);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void ellipsize(int start, int end, int line, char[] dest, int destoff, TextUtils.TruncateAt method) {
         char c;
         int ellipsisCount = getEllipsisCount(line);
@@ -2035,8 +2059,9 @@ public abstract class Layout {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    static class Ellipsizer implements CharSequence, GetChars {
+    public static class Ellipsizer implements CharSequence, GetChars {
         Layout mLayout;
         TextUtils.TruncateAt mMethod;
         CharSequence mText;

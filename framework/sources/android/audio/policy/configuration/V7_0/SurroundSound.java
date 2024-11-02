@@ -24,7 +24,6 @@ public class SurroundSound {
         this.formats = formats;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SurroundSound read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         SurroundSound _instance = new SurroundSound();

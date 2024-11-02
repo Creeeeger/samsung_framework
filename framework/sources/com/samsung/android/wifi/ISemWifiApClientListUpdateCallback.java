@@ -100,8 +100,9 @@ public interface ISemWifiApClientListUpdateCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISemWifiApClientListUpdateCallback {
+        public static class Proxy implements ISemWifiApClientListUpdateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

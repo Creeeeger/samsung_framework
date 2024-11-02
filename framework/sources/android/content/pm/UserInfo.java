@@ -25,13 +25,14 @@ public class UserInfo implements Parcelable {
     public static final int ATTR_SUPER_LOCKED = 12;
     public static final int ATTR_TRUST_AGENT_UI_ENABLED = 256;
     public static final Parcelable.Creator<UserInfo> CREATOR = new Parcelable.Creator<UserInfo>() { // from class: android.content.pm.UserInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UserInfo createFromParcel(Parcel source) {
             return new UserInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UserInfo[] newArray(int size) {
             return new UserInfo[size];
@@ -101,6 +102,10 @@ public class UserInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface UserInfoFlag {
+    }
+
+    /* synthetic */ UserInfo(Parcel parcel, UserInfoIA userInfoIA) {
+        this(parcel);
     }
 
     public UserInfo(int id, String name, int flags) {
@@ -356,6 +361,23 @@ public class UserInfo implements Parcelable {
         dest.writeInt(this.profileBadge);
         dest.writeInt(this.attributes);
         dest.writeInt(this.volatiles);
+    }
+
+    /* renamed from: android.content.pm.UserInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UserInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserInfo createFromParcel(Parcel source) {
+            return new UserInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
     }
 
     private UserInfo(Parcel source) {

@@ -30,7 +30,6 @@ public class ExpandableListActivity extends Activity implements View.OnCreateCon
     public void onGroupExpand(int groupPosition) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onRestoreInstanceState(Bundle state) {
         ensureList();

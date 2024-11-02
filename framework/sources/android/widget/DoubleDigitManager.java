@@ -2,8 +2,9 @@ package android.widget;
 
 import android.os.Handler;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class DoubleDigitManager {
+public class DoubleDigitManager {
     private Integer intermediateDigit;
     private final CallBack mCallBack;
     private final long timeoutInMillis;
@@ -27,6 +28,9 @@ class DoubleDigitManager {
         if (num == null) {
             this.intermediateDigit = Integer.valueOf(digit);
             new Handler().postDelayed(new Runnable() { // from class: android.widget.DoubleDigitManager.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (DoubleDigitManager.this.intermediateDigit != null) {
@@ -44,6 +48,21 @@ class DoubleDigitManager {
         }
         if (this.mCallBack.twoDigitsFinal(num.intValue(), digit)) {
             this.intermediateDigit = null;
+        }
+    }
+
+    /* renamed from: android.widget.DoubleDigitManager$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (DoubleDigitManager.this.intermediateDigit != null) {
+                DoubleDigitManager.this.mCallBack.singleDigitFinal(DoubleDigitManager.this.intermediateDigit.intValue());
+                DoubleDigitManager.this.intermediateDigit = null;
+            }
         }
     }
 }

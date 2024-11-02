@@ -48,8 +48,7 @@ public class SearchRecentSuggestions {
         this.mSuggestionsUri = Uri.parse(SecContentProviderURI.CONTENT + str + "/suggestions");
     }
 
-    /* JADX WARN: Type inference failed for: r0v2, types: [android.provider.SearchRecentSuggestions$1] */
-    public void saveRecentQuery(final String queryString, final String line2) {
+    public void saveRecentQuery(String queryString, String line2) {
         if (TextUtils.isEmpty(queryString)) {
             return;
         }
@@ -57,12 +56,42 @@ public class SearchRecentSuggestions {
             throw new IllegalArgumentException();
         }
         new Thread("saveRecentQuery") { // from class: android.provider.SearchRecentSuggestions.1
+            final /* synthetic */ String val$line2;
+            final /* synthetic */ String val$queryString;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(String name, String queryString2, String line22) {
+                super(name);
+                queryString = queryString2;
+                line2 = line22;
+            }
+
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 SearchRecentSuggestions.this.saveRecentQueryBlocking(queryString, line2);
                 SearchRecentSuggestions.sWritesInProgress.release();
             }
         }.start();
+    }
+
+    /* renamed from: android.provider.SearchRecentSuggestions$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Thread {
+        final /* synthetic */ String val$line2;
+        final /* synthetic */ String val$queryString;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(String name, String queryString2, String line22) {
+            super(name);
+            queryString = queryString2;
+            line2 = line22;
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public void run() {
+            SearchRecentSuggestions.this.saveRecentQueryBlocking(queryString, line2);
+            SearchRecentSuggestions.sWritesInProgress.release();
+        }
     }
 
     void waitForSave() {
@@ -73,7 +102,6 @@ public class SearchRecentSuggestions {
         } while (semaphore.availablePermits() > 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void saveRecentQueryBlocking(String queryString, String line2) {
         ContentResolver cr = this.mContext.getContentResolver();
         long now = System.currentTimeMillis();

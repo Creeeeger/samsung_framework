@@ -6,9 +6,9 @@ import android.content.Context;
 import com.android.internal.accessibility.util.AccessibilityUtils;
 import com.android.internal.accessibility.util.ShortcutUtils;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class InvisibleToggleAccessibilityServiceTarget extends AccessibilityServiceTarget {
-    /* JADX INFO: Access modifiers changed from: package-private */
+public class InvisibleToggleAccessibilityServiceTarget extends AccessibilityServiceTarget {
     public InvisibleToggleAccessibilityServiceTarget(Context context, int shortcutType, AccessibilityServiceInfo serviceInfo) {
         super(context, shortcutType, 1, serviceInfo);
     }

@@ -29,6 +29,9 @@ public abstract class AutofillService extends Service {
     private static final String TAG = "AutofillService";
     private Handler mHandler;
     private final IAutoFillService mInterface = new IAutoFillService.Stub() { // from class: android.service.autofill.AutofillService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.service.autofill.IAutoFillService
         public void onConnectedStateChanged(boolean connected) {
             AutofillService.this.mHandler.sendMessage(PooledLambda.obtainMessage(connected ? new Consumer() { // from class: android.service.autofill.AutofillService$1$$ExternalSyntheticLambda1
@@ -84,6 +87,64 @@ public abstract class AutofillService extends Service {
     public abstract void onFillRequest(FillRequest fillRequest, CancellationSignal cancellationSignal, FillCallback fillCallback);
 
     public abstract void onSaveRequest(SaveRequest saveRequest, SaveCallback saveCallback);
+
+    /* renamed from: android.service.autofill.AutofillService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends IAutoFillService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.service.autofill.IAutoFillService
+        public void onConnectedStateChanged(boolean connected) {
+            AutofillService.this.mHandler.sendMessage(PooledLambda.obtainMessage(connected ? new Consumer() { // from class: android.service.autofill.AutofillService$1$$ExternalSyntheticLambda1
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    ((AutofillService) obj).onConnected();
+                }
+            } : new Consumer() { // from class: android.service.autofill.AutofillService$1$$ExternalSyntheticLambda2
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    ((AutofillService) obj).onDisconnected();
+                }
+            }, AutofillService.this));
+        }
+
+        @Override // android.service.autofill.IAutoFillService
+        public void onFillRequest(FillRequest request, IFillCallback callback) {
+            ICancellationSignal transport = CancellationSignal.createTransport();
+            try {
+                callback.onCancellable(transport);
+            } catch (RemoteException e) {
+                e.rethrowFromSystemServer();
+            }
+            AutofillService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.autofill.AutofillService$1$$ExternalSyntheticLambda4
+                @Override // com.android.internal.util.function.QuadConsumer
+                public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
+                    ((AutofillService) obj).onFillRequest((FillRequest) obj2, (CancellationSignal) obj3, (FillCallback) obj4);
+                }
+            }, AutofillService.this, request, CancellationSignal.fromTransport(transport), new FillCallback(callback, request.getId())));
+        }
+
+        @Override // android.service.autofill.IAutoFillService
+        public void onSaveRequest(SaveRequest request, ISaveCallback callback) {
+            AutofillService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.autofill.AutofillService$1$$ExternalSyntheticLambda3
+                @Override // com.android.internal.util.function.TriConsumer
+                public final void accept(Object obj, Object obj2, Object obj3) {
+                    ((AutofillService) obj).onSaveRequest((SaveRequest) obj2, (SaveCallback) obj3);
+                }
+            }, AutofillService.this, request, new SaveCallback(callback)));
+        }
+
+        @Override // android.service.autofill.IAutoFillService
+        public void onSavedPasswordCountRequest(IResultReceiver receiver) {
+            AutofillService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.autofill.AutofillService$1$$ExternalSyntheticLambda0
+                @Override // java.util.function.BiConsumer
+                public final void accept(Object obj, Object obj2) {
+                    ((AutofillService) obj).onSavedDatasetsInfoRequest((SavedDatasetsInfoCallbackImpl) obj2);
+                }
+            }, AutofillService.this, new SavedDatasetsInfoCallbackImpl(receiver, "passwords")));
+        }
+    }
 
     @Override // android.app.Service
     public void onCreate() {

@@ -100,7 +100,6 @@ public final class Zygote {
     @CriticalNative
     private static native void nativeAddUsapTableEntry(int i, int i2);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static native void nativeAllowFileAcrossFork(String str);
 
     private static native void nativeAllowFilesOpenedByPreload();
@@ -127,7 +126,6 @@ public final class Zygote {
 
     protected static native void nativeInitNativeState(boolean z);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static native void nativeInstallSeccompUidGidFilter(int i, int i2);
 
     private static native void nativeMarkOpenedFilesBeforePreload();
@@ -135,7 +133,6 @@ public final class Zygote {
     @FastNative
     public static native int nativeParseSigChld(byte[] bArr, int i, int[] iArr);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static native void nativePreApplicationInit();
 
     @CriticalNative
@@ -161,7 +158,6 @@ public final class Zygote {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int forkAndSpecialize(int uid, int gid, int[] gids, int runtimeFlags, int[][] rlimits, int mountExternal, String seInfo, String niceName, int[] fdsToClose, int[] fdsToIgnore, boolean startChildZygote, String instructionSet, String appDataDir, boolean isTopApp, String[] pkgDataInfoList, String[] allowlistedDataInfoList, boolean bindMountAppDataDirs, boolean bindMountAppStorageDirs) {
         ZygoteHooks.preFork();
         int pid = nativeForkAndSpecialize(uid, gid, gids, runtimeFlags, rlimits, mountExternal, seInfo, niceName, fdsToClose, fdsToIgnore, startChildZygote, instructionSet, appDataDir, isTopApp, pkgDataInfoList, allowlistedDataInfoList, bindMountAppDataDirs, bindMountAppStorageDirs);
@@ -186,7 +182,6 @@ public final class Zygote {
         ZygoteHooks.postForkCommon();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int forkSystemServer(int uid, int gid, int[] gids, int runtimeFlags, int[][] rlimits, long permittedCapabilities, long effectiveCapabilities) {
         long start = System.currentTimeMillis();
         Trace.traceBegin(16384L, "preFork");
@@ -200,24 +195,20 @@ public final class Zygote {
         return pid;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void allowAppFilesAcrossFork(ApplicationInfo appInfo) {
         for (String path : appInfo.getAllApkPaths()) {
             nativeAllowFileAcrossFork(path);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void markOpenedFilesBeforePreload() {
         nativeMarkOpenedFilesBeforePreload();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void allowFilesOpenedByPreload() {
         nativeAllowFilesOpenedByPreload();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void initNativeState(boolean isPrimary) {
         nativeInitNativeState(isPrimary);
     }
@@ -226,7 +217,6 @@ public final class Zygote {
         return SystemProperties.get(String.join(MediaMetrics.SEPARATOR, ZygoteConfig.PROPERTY_PREFIX_DEVICE_CONFIG, "runtime_native", propertyName), defaultValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void emptyUsapPool() {
         nativeEmptyUsapPool();
     }
@@ -235,19 +225,16 @@ public final class Zygote {
         return SystemProperties.getBoolean(String.join(MediaMetrics.SEPARATOR, ZygoteConfig.PROPERTY_PREFIX_DEVICE_CONFIG, "runtime_native", propertyName), defaultValue.booleanValue());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getUsapPoolCount() {
         return nativeGetUsapPoolCount();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static FileDescriptor getUsapPoolEventFD() {
         FileDescriptor fd = new FileDescriptor();
         fd.setInt$(nativeGetUsapPoolEventFD());
         return fd;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Runnable forkUsap(LocalServerSocket usapPoolSocket, int[] sessionSocketRawFDs, boolean isPriorityFork) {
         try {
             FileDescriptor[] pipeFDs = Os.pipe2(OsConstants.O_CLOEXEC);
@@ -269,7 +256,6 @@ public final class Zygote {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Runnable forkSimpleApps(ZygoteCommandBuffer argBuffer, FileDescriptor zygoteSocket, int expectedUid, int minUid, String firstNiceName) {
         boolean in_child = argBuffer.forkRepeatedly(zygoteSocket, expectedUid, minUid, firstNiceName);
         if (!in_child) {
@@ -413,7 +399,6 @@ public final class Zygote {
         nativeBoostUsapPriority();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setAppProcessName(ZygoteArguments args, String loggingTag) {
         if (args.mNiceName != null) {
             Process.setArgV0(args.mNiceName);
@@ -460,22 +445,18 @@ public final class Zygote {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int[] getUsapPipeFDs() {
         return nativeGetUsapPipeFDs();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean removeUsapTableEntry(int usapPID) {
         return nativeRemoveUsapTableEntry(usapPID);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int minChildUid(Credentials peer) {
         return (peer.getUid() == 1000 && FactoryTest.getMode() == 0) ? 1000 : 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void applyUidSecurityPolicy(ZygoteArguments args, Credentials peer) throws ZygoteSecurityException {
         if (args.mUidSpecified && args.mUid < minChildUid(peer)) {
             throw new ZygoteSecurityException("System UID may not launch process with UID < 1000");
@@ -490,14 +471,12 @@ public final class Zygote {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void applyDebuggerSystemProperty(ZygoteArguments args) {
         if (Build.IS_ENG || ENABLE_JDWP) {
             args.mRuntimeFlags |= 1;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void applyInvokeWithSecurityPolicy(ZygoteArguments args, Credentials peer) throws ZygoteSecurityException {
         int peerUid = peer.getUid();
         if (args.mInvokeWith != null && peerUid != 0 && (args.mRuntimeFlags & 1) == 0) {
@@ -513,14 +492,12 @@ public final class Zygote {
         return propertyValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void applyInvokeWithSystemProperty(ZygoteArguments args) {
         if (args.mInvokeWith == null) {
             args.mInvokeWith = getWrapProperty(args.mNiceName);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static LocalServerSocket createManagedSocketFromInitSocket(String socketName) {
         String fullSocketName = ANDROID_SOCKET_PREFIX + socketName;
         try {
@@ -546,7 +523,6 @@ public final class Zygote {
         ZygoteHooks.postForkChild(runtimeFlags, isSystemServer, isZygote, instructionSet);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void execShell(String command) {
         String[] args = {"/system/bin/sh", "-c", command};
         try {
@@ -556,7 +532,6 @@ public final class Zygote {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void appendQuotedShellArgs(StringBuilder command, String[] args) {
         for (String arg : args) {
             command.append(" '").append(arg.replace("'", "'\\''")).append("'");

@@ -43,7 +43,6 @@ public class Def {
         return "<<" + tag + "@" + object.hashCode() + ">>";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$taglnOf$0(Object it) {
         return tagOf(it) + "\n";
     }
@@ -86,7 +85,6 @@ public class Def {
         }).collect(Collectors.joining(", "));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$contentToString$1(String it) {
         return !it.isEmpty();
     }
@@ -107,7 +105,6 @@ public class Def {
         }).collect(Collectors.joining("\n"));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$contentToStringln$2(String it) {
         return !it.isEmpty();
     }

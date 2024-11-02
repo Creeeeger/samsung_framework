@@ -693,7 +693,6 @@ public class SemSoundAssistantManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class FastTrackPlayerRunnable implements Runnable {
         final int mPlayTimeMs;
@@ -739,7 +738,6 @@ public class SemSoundAssistantManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void sleep(long millis) {
         try {
             Thread.sleep(millis);
@@ -747,7 +745,6 @@ public class SemSoundAssistantManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$static$0(String packageName, MediaSession.Token sessionToken) {
         synchronized (mLock) {
             for (OnMediaKeyEventSessionChangedListener callback : sMediaKeySessionChangedCallbacks) {

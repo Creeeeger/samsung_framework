@@ -315,8 +315,14 @@ public class SemCscFeature {
     }
 
     /* JADX WARN: Can't wrap try/catch for region: R(20:1|(1:3)(1:261)|(1:5)(1:260)|6|(7:7|(2:245|246)|(1:10)(1:244)|11|12|13|14)|(13:(1:20)|21|22|(5:176|177|178|179|180)(3:24|25|26)|27|28|(2:29|(8:31|(2:(4:34|35|36|(1:38))(1:106)|(2:40|41)(1:96))(3:107|(1:(6:112|113|114|(2:116|117)|118|(1:140)(4:122|123|124|125))(1:110))(2:150|(1:155))|111)|42|43|45|46|47|48)(1:156))|157|158|159|(2:161|162)|164|65)|200|(6:206|(2:208|(1:210))(1:235)|(3:212|213|214)|(2:233|234)|(2:226|227)|232)(1:205)|22|(0)(0)|27|28|(3:29|(0)(0)|48)|157|158|159|(0)|164|65|(2:(0)|(1:131))) */
-    /* JADX WARN: Code restructure failed: missing block: B:165:0x029c, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:166:0x029d, code lost:            android.util.Log.w(com.samsung.android.feature.SemCscFeature.TAG, r0.toString());     */
+    /* JADX WARN: Code restructure failed: missing block: B:165:0x029c, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:166:0x029d, code lost:
+    
+        android.util.Log.w(com.samsung.android.feature.SemCscFeature.TAG, r0.toString());
+     */
     /* JADX WARN: Removed duplicated region for block: B:156:0x0289 A[EDGE_INSN: B:156:0x0289->B:157:0x0289 BREAK  A[LOOP:0: B:29:0x016f->B:48:0x016f], SYNTHETIC] */
     /* JADX WARN: Removed duplicated region for block: B:161:0x0294 A[Catch: IOException -> 0x029c, TRY_LEAVE, TryCatch #46 {IOException -> 0x029c, blocks: (B:159:0x028e, B:161:0x0294), top: B:158:0x028e }] */
     /* JADX WARN: Removed duplicated region for block: B:176:0x00f3 A[EXC_TOP_SPLITTER, SYNTHETIC] */

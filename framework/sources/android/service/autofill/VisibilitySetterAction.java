@@ -13,7 +13,9 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class VisibilitySetterAction extends InternalOnClickAction implements OnClickAction, Parcelable {
     public static final Parcelable.Creator<VisibilitySetterAction> CREATOR = new Parcelable.Creator<VisibilitySetterAction>() { // from class: android.service.autofill.VisibilitySetterAction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VisibilitySetterAction createFromParcel(Parcel parcel) {
             SparseIntArray visibilities = parcel.readSparseIntArray();
@@ -33,7 +35,6 @@ public final class VisibilitySetterAction extends InternalOnClickAction implemen
             return builder.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VisibilitySetterAction[] newArray(int size) {
             return new VisibilitySetterAction[size];
@@ -41,6 +42,10 @@ public final class VisibilitySetterAction extends InternalOnClickAction implemen
     };
     private static final String TAG = "VisibilitySetterAction";
     private final SparseIntArray mVisibilities;
+
+    /* synthetic */ VisibilitySetterAction(Builder builder, VisibilitySetterActionIA visibilitySetterActionIA) {
+        this(builder);
+    }
 
     private VisibilitySetterAction(Builder builder) {
         this.mVisibilities = builder.mVisibilities;
@@ -108,5 +113,36 @@ public final class VisibilitySetterAction extends InternalOnClickAction implemen
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeSparseIntArray(this.mVisibilities);
+    }
+
+    /* renamed from: android.service.autofill.VisibilitySetterAction$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VisibilitySetterAction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VisibilitySetterAction createFromParcel(Parcel parcel) {
+            SparseIntArray visibilities = parcel.readSparseIntArray();
+            Builder builder = null;
+            for (int i = 0; i < visibilities.size(); i++) {
+                int id = visibilities.keyAt(i);
+                int visibility = visibilities.valueAt(i);
+                if (builder == null) {
+                    builder = new Builder(id, visibility);
+                } else {
+                    builder.setVisibility(id, visibility);
+                }
+            }
+            if (builder == null) {
+                return null;
+            }
+            return builder.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VisibilitySetterAction[] newArray(int size) {
+            return new VisibilitySetterAction[size];
+        }
     }
 }

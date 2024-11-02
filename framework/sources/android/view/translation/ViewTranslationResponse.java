@@ -15,13 +15,14 @@ import java.util.Set;
 /* loaded from: classes4.dex */
 public final class ViewTranslationResponse implements Parcelable {
     public static final Parcelable.Creator<ViewTranslationResponse> CREATOR = new Parcelable.Creator<ViewTranslationResponse>() { // from class: android.view.translation.ViewTranslationResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ViewTranslationResponse[] newArray(int size) {
             return new ViewTranslationResponse[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ViewTranslationResponse createFromParcel(Parcel in) {
             return new ViewTranslationResponse(in);
@@ -30,8 +31,8 @@ public final class ViewTranslationResponse implements Parcelable {
     private final AutofillId mAutofillId;
     private final Map<String, TranslationResponseValue> mTranslationResponseValues;
 
-    /* renamed from: -$$Nest$smdefaultTranslationResponseValues, reason: not valid java name */
-    static /* bridge */ /* synthetic */ Map m5867$$Nest$smdefaultTranslationResponseValues() {
+    /* renamed from: -$$Nest$smdefaultTranslationResponseValues */
+    static /* bridge */ /* synthetic */ Map m5862$$Nest$smdefaultTranslationResponseValues() {
         return defaultTranslationResponseValues();
     }
 
@@ -123,6 +124,23 @@ public final class ViewTranslationResponse implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) translationResponseValues);
     }
 
+    /* renamed from: android.view.translation.ViewTranslationResponse$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ViewTranslationResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ViewTranslationResponse[] newArray(int size) {
+            return new ViewTranslationResponse[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ViewTranslationResponse createFromParcel(Parcel in) {
+            return new ViewTranslationResponse(in);
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private AutofillId mAutofillId;
@@ -152,7 +170,7 @@ public final class ViewTranslationResponse implements Parcelable {
             long j = this.mBuilderFieldsSet | 4;
             this.mBuilderFieldsSet = j;
             if ((j & 2) == 0) {
-                this.mTranslationResponseValues = ViewTranslationResponse.m5867$$Nest$smdefaultTranslationResponseValues();
+                this.mTranslationResponseValues = ViewTranslationResponse.m5862$$Nest$smdefaultTranslationResponseValues();
             }
             ViewTranslationResponse o = new ViewTranslationResponse(this.mAutofillId, this.mTranslationResponseValues);
             return o;

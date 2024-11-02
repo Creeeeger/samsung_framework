@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class IInputMethodManagerGlobalInvoker {
     private static volatile IInputMethodManager sServiceCache = null;
@@ -27,12 +26,10 @@ public final class IInputMethodManagerGlobalInvoker {
     IInputMethodManagerGlobalInvoker() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isAvailable() {
         return getService() != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static IInputMethodManager getService() {
         IInputMethodManager service = sServiceCache;
         if (service == null) {
@@ -52,7 +49,6 @@ public final class IInputMethodManagerGlobalInvoker {
         throw e.rethrowFromSystemServer();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void startProtoDump(byte[] protoDump, int source, String where, Consumer<RemoteException> exceptionHandler) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -65,7 +61,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void startImeTrace(Consumer<RemoteException> exceptionHandler) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -78,7 +73,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void stopImeTrace(Consumer<RemoteException> exceptionHandler) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -91,7 +85,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isImeTraceEnabled() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -104,7 +97,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void removeImeSurface(Consumer<RemoteException> exceptionHandler) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -117,7 +109,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void addClient(IInputMethodClient client, IRemoteInputConnection fallbackInputConnection, int untrustedDisplayId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -130,7 +121,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static InputMethodInfo getCurrentInputMethodInfoAsUser(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -143,7 +133,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List<InputMethodInfo> getInputMethodList(int userId, int directBootAwareness) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -156,7 +145,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List<InputMethodInfo> getEnabledInputMethodList(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -169,7 +157,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List<InputMethodSubtype> getEnabledInputMethodSubtypeList(String imiId, boolean allowsImplicitlyEnabledSubtypes, int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -182,7 +169,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static InputMethodSubtype getLastInputMethodSubtype(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -195,7 +181,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean showSoftInput(IInputMethodClient client, IBinder windowToken, ImeTracker.Token statsToken, int flags, int lastClickToolType, ResultReceiver resultReceiver, int reason) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -208,7 +193,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean hideSoftInput(IInputMethodClient client, IBinder windowToken, ImeTracker.Token statsToken, int flags, ResultReceiver resultReceiver, int reason) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -221,7 +205,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static InputBindResult startInputOrWindowGainedFocus(int startInputReason, IInputMethodClient client, IBinder windowToken, int startInputFlags, int softInputMode, int windowFlags, EditorInfo editorInfo, IRemoteInputConnection remoteInputConnection, IRemoteAccessibilityInputConnection remoteAccessibilityInputConnection, int unverifiedTargetSdkVersion, int userId, ImeOnBackInvokedDispatcher imeDispatcher) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -234,7 +217,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void showInputMethodPickerFromClient(IInputMethodClient client, int auxiliarySubtypeMode) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -247,7 +229,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void showInputMethodPickerFromSystem(int auxiliarySubtypeMode, int displayId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -260,7 +241,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isInputMethodPickerShownForTest() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -273,7 +253,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static InputMethodSubtype getCurrentInputMethodSubtype(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -286,7 +265,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setAdditionalInputMethodSubtypes(String imeId, InputMethodSubtype[] subtypes, int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -299,7 +277,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setExplicitlyEnabledInputMethodSubtypes(String imeId, int[] subtypeHashCodes, int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -312,7 +289,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getInputMethodWindowVisibleHeight(IInputMethodClient client) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -325,7 +301,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void reportVirtualDisplayGeometryAsync(IInputMethodClient client, int childDisplayId, float[] matrixValues) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -338,7 +313,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void reportPerceptibleAsync(IBinder windowToken, boolean perceptible) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -351,7 +325,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void removeImeSurfaceFromWindowAsync(IBinder windowToken) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -364,7 +337,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void startStylusHandwriting(IInputMethodClient client) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -377,7 +349,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void prepareStylusHandwritingDelegation(IInputMethodClient client, int userId, String delegatePackageName, String delegatorPackageName) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -390,7 +361,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean acceptStylusHandwritingDelegation(IInputMethodClient client, int userId, String delegatePackageName, String delegatorPackageName) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -403,7 +373,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isStylusHandwritingAvailableAsUser(int userId) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -416,7 +385,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void addVirtualStylusIdForTestSession(IInputMethodClient client) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -429,7 +397,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setStylusWindowIdleTimeoutForTest(IInputMethodClient client, long timeout) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -442,7 +409,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ImeTracker.Token onRequestShow(String tag, int uid, int origin, int reason) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
@@ -455,7 +421,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ImeTracker.Token onRequestHide(String tag, int uid, int origin, int reason) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
@@ -468,7 +433,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void onProgress(IBinder binder, int phase) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
@@ -481,7 +445,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void onFailed(ImeTracker.Token statsToken, int phase) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
@@ -494,7 +457,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void onCancelled(ImeTracker.Token statsToken, int phase) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
@@ -507,7 +469,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void onShown(ImeTracker.Token statsToken) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
@@ -520,7 +481,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void onHidden(ImeTracker.Token statsToken) {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
@@ -533,7 +493,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean hasPendingImeVisibilityRequests() {
         IImeTracker service = getImeTrackerService();
         if (service == null) {
@@ -566,7 +525,6 @@ public final class IInputMethodManagerGlobalInvoker {
         return trackerService;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean minimizeSoftInput(IInputMethodClient client, int height) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -579,7 +537,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void undoMinimizeSoftInput() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -592,7 +549,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int isAccessoryKeyboard() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -605,7 +561,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean getWACOMPen() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -618,7 +573,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isInputMethodShown() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -631,7 +585,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isCurrentInputMethodAsSamsungKeyboard() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -644,7 +597,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean getDexSettingsValue(String key, String defaultKey) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -657,7 +609,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setInputMethodSwitchDisable(IInputMethodClient client, boolean disable) {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -670,7 +621,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void dismissAndShowAgainInputMethodPicker() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -683,7 +633,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getCurrentFocusDisplayID() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -696,7 +645,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getCurTokenDisplayId() {
         IInputMethodManager service = getService();
         if (service == null) {
@@ -709,7 +657,6 @@ public final class IInputMethodManagerGlobalInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void handleVoiceHWKey() {
         IInputMethodManager service = getService();
         if (service == null) {

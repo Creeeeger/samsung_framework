@@ -14,6 +14,10 @@ public final class TlvFilterConfiguration extends FilterConfiguration {
     private final int mPacketType;
     private final boolean mPassthrough;
 
+    /* synthetic */ TlvFilterConfiguration(Settings settings, int i, boolean z, boolean z2, TlvFilterConfigurationIA tlvFilterConfigurationIA) {
+        this(settings, i, z, z2);
+    }
+
     private TlvFilterConfiguration(Settings settings, int packetType, boolean isCompressed, boolean passthrough) {
         super(settings);
         this.mPacketType = packetType;
@@ -48,6 +52,10 @@ public final class TlvFilterConfiguration extends FilterConfiguration {
         private int mPacketType;
         private boolean mPassthrough;
         private Settings mSettings;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mPacketType = 255;

@@ -12,7 +12,6 @@ public class Element {
     protected int id;
     protected String name;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Element(VEContext context, ElementType type, int id, String name) {
         this.context = context;
         this.elementType = type;

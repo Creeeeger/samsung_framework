@@ -11,13 +11,14 @@ import java.lang.annotation.Annotation;
 /* loaded from: classes4.dex */
 public final class TransitionRequestInfo implements Parcelable {
     public static final Parcelable.Creator<TransitionRequestInfo> CREATOR = new Parcelable.Creator<TransitionRequestInfo>() { // from class: android.window.TransitionRequestInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TransitionRequestInfo[] newArray(int size) {
             return new TransitionRequestInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransitionRequestInfo createFromParcel(Parcel in) {
             return new TransitionRequestInfo(in);
@@ -35,13 +36,14 @@ public final class TransitionRequestInfo implements Parcelable {
     /* loaded from: classes4.dex */
     public static class DisplayChange implements Parcelable {
         public static final Parcelable.Creator<DisplayChange> CREATOR = new Parcelable.Creator<DisplayChange>() { // from class: android.window.TransitionRequestInfo.DisplayChange.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public DisplayChange[] newArray(int size) {
                 return new DisplayChange[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DisplayChange createFromParcel(Parcel in) {
                 return new DisplayChange(in);
@@ -194,6 +196,23 @@ public final class TransitionRequestInfo implements Parcelable {
             this.mUiModeChanged = uiModeChanged;
         }
 
+        /* renamed from: android.window.TransitionRequestInfo$DisplayChange$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<DisplayChange> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DisplayChange[] newArray(int size) {
+                return new DisplayChange[size];
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DisplayChange createFromParcel(Parcel in) {
+                return new DisplayChange(in);
+            }
+        }
+
         @Deprecated
         private void __metadata() {
         }
@@ -283,6 +302,23 @@ public final class TransitionRequestInfo implements Parcelable {
         this.mTriggerTask = triggerTask;
         this.mRemoteTransition = remoteTransition;
         this.mDisplayChange = displayChange;
+    }
+
+    /* renamed from: android.window.TransitionRequestInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TransitionRequestInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransitionRequestInfo[] newArray(int size) {
+            return new TransitionRequestInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransitionRequestInfo createFromParcel(Parcel in) {
+            return new TransitionRequestInfo(in);
+        }
     }
 
     @Deprecated

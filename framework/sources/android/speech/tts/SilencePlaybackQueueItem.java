@@ -8,7 +8,6 @@ class SilencePlaybackQueueItem extends PlaybackQueueItem {
     private final ConditionVariable mCondVar;
     private final long mSilenceDurationMs;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SilencePlaybackQueueItem(TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, long silenceDurationMs) {
         super(dispatcher, callerIdentity);
         this.mCondVar = new ConditionVariable();
@@ -30,7 +29,6 @@ class SilencePlaybackQueueItem extends PlaybackQueueItem {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.speech.tts.PlaybackQueueItem
     public void stop(int errorCode) {
         this.mCondVar.open();

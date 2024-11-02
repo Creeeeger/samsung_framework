@@ -8,7 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class Temperature implements Parcelable {
     public static final Parcelable.Creator<Temperature> CREATOR = new Parcelable.Creator<Temperature>() { // from class: android.os.Temperature.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Temperature createFromParcel(Parcel p) {
             float value = p.readFloat();
@@ -18,7 +20,6 @@ public final class Temperature implements Parcelable {
             return new Temperature(value, type, name, status);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Temperature[] newArray(int size) {
             return new Temperature[size];
@@ -117,6 +118,27 @@ public final class Temperature implements Parcelable {
         p.writeInt(this.mType);
         p.writeString(this.mName);
         p.writeInt(this.mStatus);
+    }
+
+    /* renamed from: android.os.Temperature$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Temperature> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Temperature createFromParcel(Parcel p) {
+            float value = p.readFloat();
+            int type = p.readInt();
+            String name = p.readString();
+            int status = p.readInt();
+            return new Temperature(value, type, name, status);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Temperature[] newArray(int size) {
+            return new Temperature[size];
+        }
     }
 
     @Override // android.os.Parcelable

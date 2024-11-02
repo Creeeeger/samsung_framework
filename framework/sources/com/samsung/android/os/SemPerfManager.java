@@ -46,6 +46,10 @@ public class SemPerfManager {
     static String BOARD_PLATFORM = SystemProperties.get("ro.board.platform");
     static final String DEVICE_TYPE = SystemProperties.get("ro.build.characteristics");
     private static Handler mCommandHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.os.SemPerfManager.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
@@ -56,6 +60,22 @@ public class SemPerfManager {
     };
     static volatile ICustomFrequencyManager sCfmsService = null;
     static volatile ISamsungDeviceHealthManager sdhmservice = null;
+
+    /* renamed from: com.samsung.android.os.SemPerfManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            String type = bundle.getString("type");
+            String value = bundle.getString("value");
+            SemPerfManager.sendCommand(type, value);
+        }
+    }
 
     protected SemPerfManager() {
     }
@@ -81,7 +101,6 @@ public class SemPerfManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void sendCommand(String type, String value) {
         try {
             if (sCfmsService == null || sdhmservice == null) {

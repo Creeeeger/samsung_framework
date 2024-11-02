@@ -166,11 +166,14 @@ public class LegibilityColorByHSV {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class SimilarColorResult {
         int color;
         LegibilityDefinition.ColorType colorType;
+
+        /* synthetic */ SimilarColorResult(SimilarColorResultIA similarColorResultIA) {
+            this();
+        }
 
         private SimilarColorResult() {
         }

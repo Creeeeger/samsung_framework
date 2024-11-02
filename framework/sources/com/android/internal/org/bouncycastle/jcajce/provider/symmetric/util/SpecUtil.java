@@ -8,7 +8,6 @@ class SpecUtil {
     SpecUtil() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AlgorithmParameterSpec extractSpec(AlgorithmParameters params, Class[] availableSpecs) {
         try {
             return params.getParameterSpec(AlgorithmParameterSpec.class);

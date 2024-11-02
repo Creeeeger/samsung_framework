@@ -22,6 +22,10 @@ public class DvrSettings {
     public @interface DataFormat {
     }
 
+    /* synthetic */ DvrSettings(int i, long j, long j2, long j3, int i2, DvrSettingsIA dvrSettingsIA) {
+        this(i, j, j2, j3, i2);
+    }
+
     private DvrSettings(int statusMask, long lowThreshold, long highThreshold, long packetSize, int dataFormat) {
         this.mStatusMask = statusMask;
         this.mLowThreshold = lowThreshold;

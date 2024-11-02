@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class SoundTriggerFailure implements Parcelable {
     public static final Parcelable.Creator<SoundTriggerFailure> CREATOR = new Parcelable.Creator<SoundTriggerFailure>() { // from class: android.service.voice.SoundTriggerFailure.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SoundTriggerFailure[] newArray(int size) {
             return new SoundTriggerFailure[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SoundTriggerFailure createFromParcel(Parcel in) {
             return new SoundTriggerFailure(in.readInt(), in.readString8());
@@ -99,5 +100,22 @@ public final class SoundTriggerFailure implements Parcelable {
 
     public String toString() {
         return "SoundTriggerFailure { errorCode = " + this.mErrorCode + ", errorMessage = " + this.mErrorMessage + ", suggestedNextAction = " + this.mSuggestedAction + " }";
+    }
+
+    /* renamed from: android.service.voice.SoundTriggerFailure$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SoundTriggerFailure> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SoundTriggerFailure[] newArray(int size) {
+            return new SoundTriggerFailure[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SoundTriggerFailure createFromParcel(Parcel in) {
+            return new SoundTriggerFailure(in.readInt(), in.readString8());
+        }
     }
 }

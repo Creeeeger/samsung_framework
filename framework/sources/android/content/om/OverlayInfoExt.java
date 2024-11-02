@@ -12,19 +12,37 @@ public final class OverlayInfoExt implements Parcelable {
     public final int configFlags;
     public final OverlayInfo info;
     public static final Parcelable.Creator<OverlayInfoExt> CREATOR = new Parcelable.Creator<OverlayInfoExt>() { // from class: android.content.om.OverlayInfoExt.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public OverlayInfoExt createFromParcel(Parcel in) {
             return new OverlayInfoExt(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverlayInfoExt[] newArray(int size) {
             return new OverlayInfoExt[size];
         }
     };
     private static final String TAG = OverlayInfo.class.getSimpleName();
+
+    /* renamed from: android.content.om.OverlayInfoExt$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<OverlayInfoExt> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OverlayInfoExt createFromParcel(Parcel in) {
+            return new OverlayInfoExt(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OverlayInfoExt[] newArray(int size) {
+            return new OverlayInfoExt[size];
+        }
+    }
 
     public OverlayInfoExt(int category, int configFlags, OverlayInfo info) {
         this.category = category;

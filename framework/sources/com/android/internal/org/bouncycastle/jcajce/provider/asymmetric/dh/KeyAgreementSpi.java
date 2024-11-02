@@ -95,7 +95,6 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
         throw new InvalidKeyException("Invalid DH PublicKey");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseAgreementSpi, javax.crypto.KeyAgreementSpi
     public byte[] engineGenerateSecret() throws IllegalStateException {
         if (this.x == null) {
@@ -104,7 +103,6 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
         return super.engineGenerateSecret();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseAgreementSpi, javax.crypto.KeyAgreementSpi
     public int engineGenerateSecret(byte[] sharedSecret, int offset) throws IllegalStateException, ShortBufferException {
         if (this.x == null) {
@@ -113,7 +111,6 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
         return super.engineGenerateSecret(sharedSecret, offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseAgreementSpi, javax.crypto.KeyAgreementSpi
     public SecretKey engineGenerateSecret(String algorithm) throws NoSuchAlgorithmException {
         if (this.x == null) {

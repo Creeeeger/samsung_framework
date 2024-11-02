@@ -12,19 +12,24 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class DelegateRequest implements Parcelable {
     public static final Parcelable.Creator<DelegateRequest> CREATOR = new Parcelable.Creator<DelegateRequest>() { // from class: android.telephony.ims.DelegateRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DelegateRequest createFromParcel(Parcel source) {
             return new DelegateRequest(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DelegateRequest[] newArray(int size) {
             return new DelegateRequest[size];
         }
     };
     private final ArrayList<String> mFeatureTags;
+
+    /* synthetic */ DelegateRequest(Parcel parcel, DelegateRequestIA delegateRequestIA) {
+        this(parcel);
+    }
 
     public DelegateRequest(Set<String> featureTags) {
         if (featureTags == null) {
@@ -51,6 +56,23 @@ public final class DelegateRequest implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeList(this.mFeatureTags);
+    }
+
+    /* renamed from: android.telephony.ims.DelegateRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DelegateRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DelegateRequest createFromParcel(Parcel source) {
+            return new DelegateRequest(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DelegateRequest[] newArray(int size) {
+            return new DelegateRequest[size];
+        }
     }
 
     public boolean equals(Object o) {

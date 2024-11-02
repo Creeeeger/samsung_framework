@@ -236,8 +236,9 @@ public interface ISemMobileWipsPacketSender extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISemMobileWipsPacketSender {
+        public static class Proxy implements ISemMobileWipsPacketSender {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

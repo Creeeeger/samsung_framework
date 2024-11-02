@@ -7,13 +7,14 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public class SemUidPowerInfo implements Parcelable {
     public static final Parcelable.Creator<SemUidPowerInfo> CREATOR = new Parcelable.Creator<SemUidPowerInfo>() { // from class: android.os.SemUidPowerInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemUidPowerInfo createFromParcel(Parcel in) {
             return new SemUidPowerInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemUidPowerInfo[] newArray(int size) {
             return new SemUidPowerInfo[size];
@@ -230,6 +231,23 @@ public class SemUidPowerInfo implements Parcelable {
             } else {
                 return;
             }
+        }
+    }
+
+    /* renamed from: android.os.SemUidPowerInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemUidPowerInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemUidPowerInfo createFromParcel(Parcel in) {
+            return new SemUidPowerInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemUidPowerInfo[] newArray(int size) {
+            return new SemUidPowerInfo[size];
         }
     }
 

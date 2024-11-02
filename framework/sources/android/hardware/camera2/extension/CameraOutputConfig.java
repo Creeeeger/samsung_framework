@@ -10,7 +10,9 @@ import java.util.List;
 /* loaded from: classes.dex */
 public class CameraOutputConfig implements Parcelable {
     public static final Parcelable.Creator<CameraOutputConfig> CREATOR = new Parcelable.Creator<CameraOutputConfig>() { // from class: android.hardware.camera2.extension.CameraOutputConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CameraOutputConfig createFromParcel(Parcel _aidl_source) {
             CameraOutputConfig _aidl_out = new CameraOutputConfig();
@@ -18,7 +20,6 @@ public class CameraOutputConfig implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraOutputConfig[] newArray(int _aidl_size) {
             return new CameraOutputConfig[_aidl_size];
@@ -37,6 +38,25 @@ public class CameraOutputConfig implements Parcelable {
     public int type = 0;
     public int surfaceGroupId = 0;
     public boolean isMultiResolutionOutput = false;
+
+    /* renamed from: android.hardware.camera2.extension.CameraOutputConfig$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CameraOutputConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraOutputConfig createFromParcel(Parcel _aidl_source) {
+            CameraOutputConfig _aidl_out = new CameraOutputConfig();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraOutputConfig[] newArray(int _aidl_size) {
+            return new CameraOutputConfig[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

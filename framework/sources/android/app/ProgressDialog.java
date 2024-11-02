@@ -97,7 +97,6 @@ public class ProgressDialog extends AlertDialog {
         return dialog;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.AlertDialog, android.app.Dialog
     public void onCreate(Bundle savedInstanceState) {
         View view;
@@ -107,6 +106,9 @@ public class ProgressDialog extends AlertDialog {
         int i2 = this.mProgressStyle;
         if (i2 == 1) {
             this.mViewUpdateHandler = new Handler() { // from class: android.app.ProgressDialog.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message message) {
                     super.handleMessage(message);
@@ -205,13 +207,44 @@ public class ProgressDialog extends AlertDialog {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.ProgressDialog$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message message) {
+            super.handleMessage(message);
+            int progress = ProgressDialog.this.mProgress.getProgress();
+            int max = ProgressDialog.this.mProgress.getMax();
+            if (ProgressDialog.this.mProgressNumberFormat != null) {
+                String str = ProgressDialog.this.mProgressNumberFormat;
+                if (ProgressDialog.this.mProgressNumber.isLayoutRtl()) {
+                    ProgressDialog.this.mProgressNumber.setText(String.format(str, Integer.valueOf(max), Integer.valueOf(progress)));
+                } else {
+                    ProgressDialog.this.mProgressNumber.setText(String.format(str, Integer.valueOf(progress), Integer.valueOf(max)));
+                }
+            } else {
+                ProgressDialog.this.mProgressNumber.setText("");
+            }
+            if (ProgressDialog.this.mProgressPercentFormat != null) {
+                SpannableString spannableString = new SpannableString(ProgressDialog.this.mProgressPercentFormat.format(progress / max));
+                spannableString.setSpan(new StyleSpan(!ProgressDialog.this.mThemeIsDeviceDefault ? 1 : 0), 0, spannableString.length(), 33);
+                ProgressDialog.this.mProgressPercent.setText(spannableString);
+                return;
+            }
+            ProgressDialog.this.mProgressPercent.setText("");
+        }
+    }
+
     @Override // android.app.Dialog
     public void onStart() {
         super.onStart();
         this.mHasStarted = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Dialog
     public void onStop() {
         super.onStop();

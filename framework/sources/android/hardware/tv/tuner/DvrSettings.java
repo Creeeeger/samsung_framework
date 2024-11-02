@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DvrSettings implements Parcelable {
     public static final Parcelable.Creator<DvrSettings> CREATOR = new Parcelable.Creator<DvrSettings>() { // from class: android.hardware.tv.tuner.DvrSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DvrSettings createFromParcel(Parcel _aidl_source) {
             return new DvrSettings(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DvrSettings[] newArray(int _aidl_size) {
             return new DvrSettings[_aidl_size];
@@ -27,6 +28,10 @@ public final class DvrSettings implements Parcelable {
     public @interface Tag {
         public static final int playback = 1;
         public static final int record = 0;
+    }
+
+    /* synthetic */ DvrSettings(Parcel parcel, DvrSettingsIA dvrSettingsIA) {
+        this(parcel);
     }
 
     public DvrSettings() {
@@ -76,6 +81,23 @@ public final class DvrSettings implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.DvrSettings$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DvrSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DvrSettings createFromParcel(Parcel _aidl_source) {
+            return new DvrSettings(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DvrSettings[] newArray(int _aidl_size) {
+            return new DvrSettings[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

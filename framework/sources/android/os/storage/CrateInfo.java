@@ -9,7 +9,9 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class CrateInfo implements Parcelable {
     public static final Parcelable.Creator<CrateInfo> CREATOR = new Parcelable.Creator<CrateInfo>() { // from class: android.os.storage.CrateInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CrateInfo createFromParcel(Parcel in) {
             CrateInfo crateInfo = new CrateInfo();
@@ -17,7 +19,6 @@ public final class CrateInfo implements Parcelable {
             return crateInfo;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CrateInfo[] newArray(int size) {
             return new CrateInfo[size];
@@ -29,6 +30,10 @@ public final class CrateInfo implements Parcelable {
     private CharSequence mLabel;
     private String mPackageName;
     private int mUid;
+
+    /* synthetic */ CrateInfo(CrateInfoIA crateInfoIA) {
+        this();
+    }
 
     private CrateInfo() {
         this.mExpiration = 0L;
@@ -104,6 +109,25 @@ public final class CrateInfo implements Parcelable {
         this.mUid = in.readInt();
         this.mPackageName = in.readString();
         this.mId = in.readString();
+    }
+
+    /* renamed from: android.os.storage.CrateInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CrateInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CrateInfo createFromParcel(Parcel in) {
+            CrateInfo crateInfo = new CrateInfo();
+            crateInfo.readFromParcel(in);
+            return crateInfo;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CrateInfo[] newArray(int size) {
+            return new CrateInfo[size];
+        }
     }
 
     public static CrateInfo copyFrom(int uid, String packageName, String id) {

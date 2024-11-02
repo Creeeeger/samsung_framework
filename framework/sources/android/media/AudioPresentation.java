@@ -22,13 +22,14 @@ public final class AudioPresentation implements Parcelable {
     public static final int CONTENT_VISUALLY_IMPAIRED = 2;
     public static final int CONTENT_VOICEOVER = 7;
     public static final Parcelable.Creator<AudioPresentation> CREATOR = new Parcelable.Creator<AudioPresentation>() { // from class: android.media.AudioPresentation.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioPresentation createFromParcel(Parcel in) {
             return new AudioPresentation(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPresentation[] newArray(int size) {
             return new AudioPresentation[size];
@@ -58,6 +59,14 @@ public final class AudioPresentation implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface MasteringIndicationType {
+    }
+
+    /* synthetic */ AudioPresentation(int i, int i2, ULocale uLocale, int i3, boolean z, boolean z2, boolean z3, Map map, AudioPresentationIA audioPresentationIA) {
+        this(i, i2, uLocale, i3, z, z2, z3, map);
+    }
+
+    /* synthetic */ AudioPresentation(Parcel parcel, AudioPresentationIA audioPresentationIA) {
+        this(parcel);
     }
 
     private AudioPresentation(int presentationId, int programId, ULocale language, int masteringIndication, boolean audioDescriptionAvailable, boolean spokenSubtitlesAvailable, boolean dialogueEnhancementAvailable, Map<ULocale, String> labels) {
@@ -232,5 +241,22 @@ public final class AudioPresentation implements Parcelable {
         dest.writeBoolean(hasSpokenSubtitles());
         dest.writeBoolean(hasDialogueEnhancement());
         dest.writeSerializable(this.mLabels);
+    }
+
+    /* renamed from: android.media.AudioPresentation$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioPresentation> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPresentation createFromParcel(Parcel in) {
+            return new AudioPresentation(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPresentation[] newArray(int size) {
+            return new AudioPresentation[size];
+        }
     }
 }

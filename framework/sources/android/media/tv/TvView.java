@@ -90,6 +90,58 @@ public class TvView extends ViewGroup {
         sMainTvView = weakReference;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.TvView$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 implements SurfaceHolder.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            TvView.this.mSurfaceFormat = format;
+            TvView.this.mSurfaceWidth = width;
+            TvView.this.mSurfaceHeight = height;
+            TvView.this.mSurfaceChanged = true;
+            TvView tvView = TvView.this;
+            tvView.dispatchSurfaceChanged(tvView.mSurfaceFormat, TvView.this.mSurfaceWidth, TvView.this.mSurfaceHeight);
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceCreated(SurfaceHolder holder) {
+            TvView.this.mSurface = holder.getSurface();
+            TvView tvView = TvView.this;
+            tvView.setSessionSurface(tvView.mSurface);
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            TvView.this.mSurface = null;
+            TvView.this.mSurfaceChanged = false;
+            TvView.this.setSessionSurface(null);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.TvView$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 implements TvInputManager.Session.FinishedInputEventCallback {
+        AnonymousClass2() {
+        }
+
+        @Override // android.media.tv.TvInputManager.Session.FinishedInputEventCallback
+        public void onFinishedInputEvent(Object token, boolean handled) {
+            ViewRootImpl viewRootImpl;
+            if (handled) {
+                return;
+            }
+            InputEvent event = (InputEvent) token;
+            if (!TvView.this.dispatchUnhandledInputEvent(event) && (viewRootImpl = TvView.this.getViewRootImpl()) != null) {
+                viewRootImpl.dispatchUnhandledInputEvent(event);
+            }
+        }
+    }
+
     public TvView(Context context) {
         this(context, null, 0);
     }
@@ -103,6 +155,9 @@ public class TvView extends ViewGroup {
         this.mHandler = new Handler();
         this.mPendingAppPrivateCommands = new ArrayDeque();
         this.mSurfaceHolderCallback = new SurfaceHolder.Callback() { // from class: android.media.tv.TvView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.SurfaceHolder.Callback
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 TvView.this.mSurfaceFormat = format;
@@ -128,6 +183,9 @@ public class TvView extends ViewGroup {
             }
         };
         this.mFinishedInputEventCallback = new TvInputManager.Session.FinishedInputEventCallback() { // from class: android.media.tv.TvView.2
+            AnonymousClass2() {
+            }
+
             @Override // android.media.tv.TvInputManager.Session.FinishedInputEventCallback
             public void onFinishedInputEvent(Object token, boolean handled) {
                 ViewRootImpl viewRootImpl;
@@ -418,7 +476,6 @@ public class TvView extends ViewGroup {
         ensurePositionTracking();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void ensurePositionTracking() {
         TvInputManager.Session session = this.mSession;
         if (session == null) {
@@ -527,21 +584,18 @@ public class TvView extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         createSessionOverlayView();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         removeSessionOverlayView();
         super.onDetachedFromWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (this.mUseRequestedSurfaceLayout) {
@@ -551,7 +605,6 @@ public class TvView extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         this.mSurfaceView.measure(widthMeasureSpec, heightMeasureSpec);
@@ -585,7 +638,6 @@ public class TvView extends ViewGroup {
         super.draw(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         if (this.mWindowZOrder != 2) {
@@ -594,7 +646,6 @@ public class TvView extends ViewGroup {
         super.dispatchDraw(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
@@ -613,16 +664,19 @@ public class TvView extends ViewGroup {
             removeView(this.mSurfaceView);
         }
         this.mSurface = null;
-        SurfaceView surfaceView2 = new SurfaceView(getContext(), this.mAttrs, this.mDefStyleAttr) { // from class: android.media.tv.TvView.3
-            /* JADX INFO: Access modifiers changed from: protected */
+        AnonymousClass3 anonymousClass3 = new SurfaceView(getContext(), this.mAttrs, this.mDefStyleAttr) { // from class: android.media.tv.TvView.3
+            AnonymousClass3(Context context, AttributeSet attrs, int defStyleAttr) {
+                super(context, attrs, defStyleAttr);
+            }
+
             @Override // android.view.SurfaceView
             public void updateSurface() {
                 super.updateSurface();
                 TvView.this.relayoutSessionOverlayView();
             }
         };
-        this.mSurfaceView = surfaceView2;
-        surfaceView2.setSecure(true);
+        this.mSurfaceView = anonymousClass3;
+        anonymousClass3.setSecure(true);
         this.mSurfaceView.getHolder().addCallback(this.mSurfaceHolderCallback);
         int i = this.mWindowZOrder;
         if (i == 1) {
@@ -633,7 +687,20 @@ public class TvView extends ViewGroup {
         addView(this.mSurfaceView);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.media.tv.TvView$3 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass3 extends SurfaceView {
+        AnonymousClass3(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+        }
+
+        @Override // android.view.SurfaceView
+        public void updateSurface() {
+            super.updateSurface();
+            TvView.this.relayoutSessionOverlayView();
+        }
+    }
+
     public void setSessionSurface(Surface surface) {
         TvInputManager.Session session = this.mSession;
         if (session == null) {
@@ -642,7 +709,6 @@ public class TvView extends ViewGroup {
         session.setSurface(surface);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchSurfaceChanged(int format, int width, int height) {
         TvInputManager.Session session = this.mSession;
         if (session == null) {
@@ -651,7 +717,6 @@ public class TvView extends ViewGroup {
         session.dispatchSurfaceChanged(format, width, height);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void createSessionOverlayView() {
         if (this.mSession == null || !isAttachedToWindow() || this.mOverlayViewCreated || this.mWindowZOrder != 0) {
             return;
@@ -672,7 +737,6 @@ public class TvView extends ViewGroup {
         this.mOverlayViewFrame = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void relayoutSessionOverlayView() {
         if (this.mSession == null || !isAttachedToWindow() || !this.mOverlayViewCreated || this.mWindowZOrder != 0) {
             return;
@@ -694,7 +758,6 @@ public class TvView extends ViewGroup {
         return frame;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkChangeHdmiCecActiveSourcePermission() {
         return getContext().checkSelfPermission(Manifest.permission.CHANGE_HDMI_CEC_ACTIVE_SOURCE) == 0;
     }
@@ -775,7 +838,6 @@ public class TvView extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class MySessionCallback extends TvInputManager.SessionCallback {
         Uri mChannelUri;

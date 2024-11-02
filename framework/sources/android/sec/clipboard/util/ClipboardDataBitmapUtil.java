@@ -170,9 +170,18 @@ public class ClipboardDataBitmapUtil {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0048, code lost:            if (r2 == null) goto L34;     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x004a, code lost:            r2.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0054, code lost:            if (r2 == null) goto L34;     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0048, code lost:
+    
+        if (r2 == null) goto L86;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x004a, code lost:
+    
+        r2.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0054, code lost:
+    
+        if (r2 == null) goto L86;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -120,8 +120,9 @@ public interface IMeasurementCorrectionsCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMeasurementCorrectionsCallback {
+        public static class Proxy implements IMeasurementCorrectionsCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

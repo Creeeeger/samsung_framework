@@ -176,7 +176,6 @@ public class PackageItemInfo {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dumpFront(Printer pw, String prefix) {
         if (this.name != null) {
             pw.println(prefix + "name=" + this.name);
@@ -187,7 +186,6 @@ public class PackageItemInfo {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dumpBack(Printer pw, String prefix) {
     }
 
@@ -220,7 +218,6 @@ public class PackageItemInfo {
         proto.end(token);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public PackageItemInfo(Parcel source) {
         this.name = source.readString8();
         this.packageName = source.readString8();

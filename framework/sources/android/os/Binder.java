@@ -60,8 +60,8 @@ public class Binder implements IBinder {
         }
     };
 
-    /* renamed from: -$$Nest$smgetNativeFinalizer, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m3132$$Nest$smgetNativeFinalizer() {
+    /* renamed from: -$$Nest$smgetNativeFinalizer */
+    static /* bridge */ /* synthetic */ long m3131$$Nest$smgetNativeFinalizer() {
         return getNativeFinalizer();
     }
 
@@ -119,9 +119,10 @@ public class Binder implements IBinder {
 
     public final native void setExtension(IBinder iBinder);
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class NoImagePreloadHolder {
-        public static final NativeAllocationRegistry sRegistry = new NativeAllocationRegistry(Binder.class.getClassLoader(), Binder.m3132$$Nest$smgetNativeFinalizer(), 500);
+    public static class NoImagePreloadHolder {
+        public static final NativeAllocationRegistry sRegistry = new NativeAllocationRegistry(Binder.class.getClassLoader(), Binder.m3131$$Nest$smgetNativeFinalizer(), 500);
 
         private NoImagePreloadHolder() {
         }
@@ -333,7 +334,6 @@ public class Binder implements IBinder {
         BinderProxy.setTransactListener(listener);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
         FileDescriptor fileDescriptor;
         if (code != 1598968902) {
@@ -471,7 +471,6 @@ public class Binder implements IBinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doDump(FileDescriptor fd, PrintWriter pw, String[] args) {
         String disabled = sDumpDisabled;
         if (disabled == null) {
@@ -492,10 +491,22 @@ public class Binder implements IBinder {
     }
 
     @Override // android.os.IBinder
-    public void dumpAsync(final FileDescriptor fd, final String[] args) {
+    public void dumpAsync(FileDescriptor fd, String[] args) {
         FileOutputStream fout = new FileOutputStream(fd);
-        final PrintWriter pw = new FastPrintWriter(fout);
+        PrintWriter pw = new FastPrintWriter(fout);
         Thread thr = new Thread("Binder.dumpAsync") { // from class: android.os.Binder.1
+            final /* synthetic */ String[] val$args;
+            final /* synthetic */ FileDescriptor val$fd;
+            final /* synthetic */ PrintWriter val$pw;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(String name, FileDescriptor fd2, PrintWriter pw2, String[] args2) {
+                super(name);
+                fd = fd2;
+                pw = pw2;
+                args = args2;
+            }
+
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 try {
@@ -506,6 +517,31 @@ public class Binder implements IBinder {
             }
         };
         thr.start();
+    }
+
+    /* renamed from: android.os.Binder$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Thread {
+        final /* synthetic */ String[] val$args;
+        final /* synthetic */ FileDescriptor val$fd;
+        final /* synthetic */ PrintWriter val$pw;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(String name, FileDescriptor fd2, PrintWriter pw2, String[] args2) {
+            super(name);
+            fd = fd2;
+            pw = pw2;
+            args = args2;
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public void run() {
+            try {
+                Binder.this.dump(fd, pw, args);
+            } finally {
+                pw.flush();
+            }
+        }
     }
 
     protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
@@ -617,7 +653,6 @@ public class Binder implements IBinder {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void checkParcel(IBinder obj, int code, Parcel parcel, String msg) {
     }
 
@@ -645,12 +680,31 @@ public class Binder implements IBinder {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0076, code lost:            if (r6 != null) goto L41;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0078, code lost:            r8 = android.os.Binder.sWorkSourceProvider.resolveWorkSourceUid(r18.readCallingWorkSourceUid());        r6.callEnded(r7, r18.dataSize(), r19.dataSize(), r8);     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x008d, code lost:            checkParcel(r16, r17, r19, "Unreasonably large binder reply buffer");     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x00cc, code lost:            android.os.StrictMode.clearGatheredViolations();     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x00cf, code lost:            return r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00c9, code lost:            if (r6 != null) goto L41;     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0076, code lost:
+    
+        if (r6 != null) goto L116;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0078, code lost:
+    
+        r8 = android.os.Binder.sWorkSourceProvider.resolveWorkSourceUid(r18.readCallingWorkSourceUid());
+        r6.callEnded(r7, r18.dataSize(), r19.dataSize(), r8);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x008d, code lost:
+    
+        checkParcel(r16, r17, r19, "Unreasonably large binder reply buffer");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x00cc, code lost:
+    
+        android.os.StrictMode.clearGatheredViolations();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x00cf, code lost:
+    
+        return r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00c9, code lost:
+    
+        if (r6 != null) goto L116;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -55,7 +55,6 @@ public final class SensorDirectChannel implements Channel {
         return this.mManager.configureDirectChannelImpl(this, sensor, rateLevel);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SensorDirectChannel(SensorManager manager, int id, int type, long size) {
         CloseGuard closeGuard = CloseGuard.get();
         this.mCloseGuard = closeGuard;
@@ -66,7 +65,6 @@ public final class SensorDirectChannel implements Channel {
         closeGuard.open("SensorDirectChannel");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getNativeHandle() {
         return this.mNativeHandle;
     }

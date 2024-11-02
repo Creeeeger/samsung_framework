@@ -47,7 +47,6 @@ public class MessagingTextMessage extends ImageFloatingTextView implements Messa
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static MessagingMessage createMessage(IMessagingLayout layout, Notification.MessagingStyle.Message m) {
         MessagingLinearLayout messagingLinearLayout = layout.getMessagingLinearLayout();
         MessagingTextMessage createdMessage = sInstancePool.acquire();

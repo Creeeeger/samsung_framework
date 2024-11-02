@@ -98,8 +98,9 @@ public interface IDspHotwordDetectionCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDspHotwordDetectionCallback {
+        public static class Proxy implements IDspHotwordDetectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

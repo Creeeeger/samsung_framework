@@ -9,13 +9,14 @@ import java.util.ArrayList;
 /* loaded from: classes5.dex */
 public class SemContextActivityNotificationAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextActivityNotificationAttribute> CREATOR = new Parcelable.Creator<SemContextActivityNotificationAttribute>() { // from class: com.samsung.android.hardware.context.SemContextActivityNotificationAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationAttribute createFromParcel(Parcel in) {
             return new SemContextActivityNotificationAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationAttribute[] newArray(int size) {
             return new SemContextActivityNotificationAttribute[size];
@@ -25,7 +26,23 @@ public class SemContextActivityNotificationAttribute extends SemContextAttribute
     private static final String TAG = "SemContextActivityNotificationAttribute";
     private int[] mActivityFilter;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextActivityNotificationAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityNotificationAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityNotificationAttribute createFromParcel(Parcel in) {
+            return new SemContextActivityNotificationAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityNotificationAttribute[] newArray(int size) {
+            return new SemContextActivityNotificationAttribute[size];
+        }
+    }
+
     public SemContextActivityNotificationAttribute() {
         this.mActivityFilter = null;
         this.mActivityFilter = new int[]{4};

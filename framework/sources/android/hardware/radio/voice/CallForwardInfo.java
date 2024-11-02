@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CallForwardInfo implements Parcelable {
     public static final Parcelable.Creator<CallForwardInfo> CREATOR = new Parcelable.Creator<CallForwardInfo>() { // from class: android.hardware.radio.voice.CallForwardInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CallForwardInfo createFromParcel(Parcel _aidl_source) {
             CallForwardInfo _aidl_out = new CallForwardInfo();
@@ -17,7 +19,6 @@ public class CallForwardInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallForwardInfo[] newArray(int _aidl_size) {
             return new CallForwardInfo[_aidl_size];
@@ -34,6 +35,25 @@ public class CallForwardInfo implements Parcelable {
     public int serviceClass = 0;
     public int toa = 0;
     public int timeSeconds = 0;
+
+    /* renamed from: android.hardware.radio.voice.CallForwardInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CallForwardInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallForwardInfo createFromParcel(Parcel _aidl_source) {
+            CallForwardInfo _aidl_out = new CallForwardInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallForwardInfo[] newArray(int _aidl_size) {
+            return new CallForwardInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

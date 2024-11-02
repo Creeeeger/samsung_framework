@@ -16,23 +16,45 @@ public class KeymasterArguments implements Parcelable {
     private static final BigInteger UINT64_RANGE;
     private List<KeymasterArgument> mArguments;
 
+    /* synthetic */ KeymasterArguments(Parcel parcel, KeymasterArgumentsIA keymasterArgumentsIA) {
+        this(parcel);
+    }
+
     static {
         BigInteger shiftLeft = BigInteger.ONE.shiftLeft(64);
         UINT64_RANGE = shiftLeft;
         UINT64_MAX_VALUE = shiftLeft.subtract(BigInteger.ONE);
         CREATOR = new Parcelable.Creator<KeymasterArguments>() { // from class: android.security.keymaster.KeymasterArguments.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public KeymasterArguments createFromParcel(Parcel in) {
                 return new KeymasterArguments(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public KeymasterArguments[] newArray(int size) {
                 return new KeymasterArguments[size];
             }
         };
+    }
+
+    /* renamed from: android.security.keymaster.KeymasterArguments$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeymasterArguments> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeymasterArguments createFromParcel(Parcel in) {
+            return new KeymasterArguments(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeymasterArguments[] newArray(int size) {
+            return new KeymasterArguments[size];
+        }
     }
 
     public KeymasterArguments() {

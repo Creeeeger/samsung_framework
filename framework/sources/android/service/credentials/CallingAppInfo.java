@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CallingAppInfo implements Parcelable {
     public static final Parcelable.Creator<CallingAppInfo> CREATOR = new Parcelable.Creator<CallingAppInfo>() { // from class: android.service.credentials.CallingAppInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CallingAppInfo createFromParcel(Parcel in) {
             return new CallingAppInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallingAppInfo[] newArray(int size) {
             return new CallingAppInfo[size];
@@ -24,6 +25,10 @@ public final class CallingAppInfo implements Parcelable {
     private final String mOrigin;
     private final String mPackageName;
     private final SigningInfo mSigningInfo;
+
+    /* synthetic */ CallingAppInfo(Parcel parcel, CallingAppInfoIA callingAppInfoIA) {
+        this(parcel);
+    }
 
     public CallingAppInfo(String packageName, SigningInfo signingInfo) {
         this(packageName, signingInfo, null);
@@ -39,6 +44,23 @@ public final class CallingAppInfo implements Parcelable {
         this.mPackageName = in.readString8();
         this.mSigningInfo = (SigningInfo) in.readTypedObject(SigningInfo.CREATOR);
         this.mOrigin = in.readString8();
+    }
+
+    /* renamed from: android.service.credentials.CallingAppInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CallingAppInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallingAppInfo createFromParcel(Parcel in) {
+            return new CallingAppInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallingAppInfo[] newArray(int size) {
+            return new CallingAppInfo[size];
+        }
     }
 
     public String getPackageName() {

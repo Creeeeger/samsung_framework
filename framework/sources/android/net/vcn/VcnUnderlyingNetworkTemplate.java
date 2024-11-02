@@ -49,7 +49,6 @@ public abstract class VcnUnderlyingNetworkTemplate {
         sparseArray.put(2, "MATCH_FORBIDDEN");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VcnUnderlyingNetworkTemplate(int networkPriorityType, int meteredMatchCriteria, int minEntryUpstreamBandwidthKbps, int minExitUpstreamBandwidthKbps, int minEntryDownstreamBandwidthKbps, int minExitDownstreamBandwidthKbps) {
         this.mNetworkPriorityType = networkPriorityType;
         this.mMeteredMatchCriteria = meteredMatchCriteria;
@@ -59,19 +58,16 @@ public abstract class VcnUnderlyingNetworkTemplate {
         this.mMinExitDownstreamBandwidthKbps = minExitDownstreamBandwidthKbps;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void validateMatchCriteria(int matchCriteria, String matchingCapability) {
         Preconditions.checkArgument(MATCH_CRITERIA_TO_STRING_MAP.contains(matchCriteria), "Invalid matching criteria: " + matchCriteria + " for " + matchingCapability);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void validateMinBandwidthKbps(int minEntryBandwidth, int minExitBandwidth) {
         Preconditions.checkArgument(minEntryBandwidth >= 0, "Invalid minEntryBandwidth, must be >= 0");
         Preconditions.checkArgument(minExitBandwidth >= 0, "Invalid minExitBandwidth, must be >= 0");
         Preconditions.checkArgument(minEntryBandwidth >= minExitBandwidth, "Minimum entry bandwidth must be >= exit bandwidth");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void validate() {
         validateMatchCriteria(this.mMeteredMatchCriteria, METERED_MATCH_KEY);
         validateMinBandwidthKbps(this.mMinEntryUpstreamBandwidthKbps, this.mMinExitUpstreamBandwidthKbps);
@@ -91,7 +87,6 @@ public abstract class VcnUnderlyingNetworkTemplate {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PersistableBundle toPersistableBundle() {
         PersistableBundle result = new PersistableBundle();
         result.putInt(NETWORK_PRIORITY_TYPE_KEY, this.mNetworkPriorityType);
@@ -119,7 +114,6 @@ public abstract class VcnUnderlyingNetworkTemplate {
         return toStringMap.get(key, "Invalid value " + key);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getMatchCriteriaString(int matchCriteria) {
         return getNameString(MATCH_CRITERIA_TO_STRING_MAP, matchCriteria);
     }

@@ -14,7 +14,9 @@ public final class TvInputHardwareInfo implements Parcelable {
     public static final int CABLE_CONNECTION_STATUS_DISCONNECTED = 2;
     public static final int CABLE_CONNECTION_STATUS_UNKNOWN = 0;
     public static final Parcelable.Creator<TvInputHardwareInfo> CREATOR = new Parcelable.Creator<TvInputHardwareInfo>() { // from class: android.media.tv.TvInputHardwareInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TvInputHardwareInfo createFromParcel(Parcel source) {
             try {
@@ -27,7 +29,6 @@ public final class TvInputHardwareInfo implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInputHardwareInfo[] newArray(int size) {
             return new TvInputHardwareInfo[size];
@@ -54,6 +55,34 @@ public final class TvInputHardwareInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface CableConnectionStatus {
+    }
+
+    /* synthetic */ TvInputHardwareInfo(TvInputHardwareInfoIA tvInputHardwareInfoIA) {
+        this();
+    }
+
+    /* renamed from: android.media.tv.TvInputHardwareInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TvInputHardwareInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvInputHardwareInfo createFromParcel(Parcel source) {
+            try {
+                TvInputHardwareInfo info = new TvInputHardwareInfo();
+                info.readFromParcel(source);
+                return info;
+            } catch (Exception e) {
+                Log.e(TvInputHardwareInfo.TAG, "Exception creating TvInputHardwareInfo from parcel", e);
+                return null;
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvInputHardwareInfo[] newArray(int size) {
+            return new TvInputHardwareInfo[size];
+        }
     }
 
     private TvInputHardwareInfo() {

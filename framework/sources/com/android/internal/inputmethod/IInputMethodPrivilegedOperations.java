@@ -310,8 +310,9 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IInputMethodPrivilegedOperations {
+        public static class Proxy implements IInputMethodPrivilegedOperations {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

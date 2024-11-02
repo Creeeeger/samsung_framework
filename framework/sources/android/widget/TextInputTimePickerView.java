@@ -33,7 +33,6 @@ public class TextInputTimePickerView extends RelativeLayout {
     private final TextView mMinuteLabel;
     private boolean mTimeSet;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public interface OnValueTypedListener {
         void onValueChanged(int i, int i2);
@@ -51,7 +50,7 @@ public class TextInputTimePickerView extends RelativeLayout {
         this(context, attrs, defStyle, 0);
     }
 
-    public TextInputTimePickerView(final Context context, AttributeSet attrs, int defStyle, int defStyleRes) {
+    public TextInputTimePickerView(Context context, AttributeSet attrs, int defStyle, int defStyleRes) {
         super(context, attrs, defStyle, defStyleRes);
         inflate(context, R.layout.time_picker_text_input_material, this);
         EditText editText = (EditText) findViewById(R.id.input_hour);
@@ -63,6 +62,12 @@ public class TextInputTimePickerView extends RelativeLayout {
         this.mHourLabel = (TextView) findViewById(R.id.label_hour);
         this.mMinuteLabel = (TextView) findViewById(R.id.label_minute);
         editText.addTextChangedListener(new TextWatcher() { // from class: android.widget.TextInputTimePickerView.1
+            final /* synthetic */ Context val$context;
+
+            AnonymousClass1(Context context2) {
+                context = context2;
+            }
+
             @Override // android.text.TextWatcher
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -82,6 +87,9 @@ public class TextInputTimePickerView extends RelativeLayout {
             }
         });
         editText2.addTextChangedListener(new TextWatcher() { // from class: android.widget.TextInputTimePickerView.2
+            AnonymousClass2() {
+            }
+
             @Override // android.text.TextWatcher
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -97,12 +105,15 @@ public class TextInputTimePickerView extends RelativeLayout {
         });
         Spinner spinner = (Spinner) findViewById(R.id.am_pm_spinner);
         this.mAmPmSpinner = spinner;
-        String[] amPmStrings = TimePicker.getAmPmStrings(context);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(context, 17367049);
+        String[] amPmStrings = TimePicker.getAmPmStrings(context2);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(context2, 17367049);
         adapter.add(TimePickerClockDelegate.obtainVerbatim(amPmStrings[0]));
         adapter.add(TimePickerClockDelegate.obtainVerbatim(amPmStrings[1]));
         spinner.setAdapter((SpinnerAdapter) adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { // from class: android.widget.TextInputTimePickerView.3
+            AnonymousClass3() {
+            }
+
             @Override // android.widget.AdapterView.OnItemSelectedListener
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 if (position == 0) {
@@ -119,11 +130,80 @@ public class TextInputTimePickerView extends RelativeLayout {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TextInputTimePickerView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements TextWatcher {
+        final /* synthetic */ Context val$context;
+
+        AnonymousClass1(Context context2) {
+            context = context2;
+        }
+
+        @Override // android.text.TextWatcher
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override // android.text.TextWatcher
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override // android.text.TextWatcher
+        public void afterTextChanged(Editable editable) {
+            if (TextInputTimePickerView.this.parseAndSetHourInternal(editable.toString()) && editable.length() > 1) {
+                AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+                if (!am.isEnabled()) {
+                    TextInputTimePickerView.this.mMinuteEditText.requestFocus();
+                }
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TextInputTimePickerView$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements TextWatcher {
+        AnonymousClass2() {
+        }
+
+        @Override // android.text.TextWatcher
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override // android.text.TextWatcher
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override // android.text.TextWatcher
+        public void afterTextChanged(Editable editable) {
+            TextInputTimePickerView.this.parseAndSetMinuteInternal(editable.toString());
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TextInputTimePickerView$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements AdapterView.OnItemSelectedListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.widget.AdapterView.OnItemSelectedListener
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            if (position == 0) {
+                TextInputTimePickerView.this.mListener.onValueChanged(2, 0);
+            } else {
+                TextInputTimePickerView.this.mListener.onValueChanged(2, 1);
+            }
+        }
+
+        @Override // android.widget.AdapterView.OnItemSelectedListener
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
+    }
+
     public void setListener(OnValueTypedListener listener) {
         this.mListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setHourFormat(int maxCharLength) {
         this.mHourEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxCharLength)});
         this.mMinuteEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxCharLength)});
@@ -132,7 +212,6 @@ public class TextInputTimePickerView extends RelativeLayout {
         this.mMinuteEditText.setImeHintLocales(locales);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean validateInput() {
         String hourText;
         String minuteText;
@@ -151,7 +230,6 @@ public class TextInputTimePickerView extends RelativeLayout {
         return inputValid;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSeparator(String separatorText) {
         this.mInputSeparatorView.setText(separatorText);
     }
@@ -171,7 +249,6 @@ public class TextInputTimePickerView extends RelativeLayout {
         return this.mTimeSet;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateTextInputValues(int localizedHour, int minute, int amOrPm, boolean is24Hour, boolean hourFormatStartsAtZero) {
         this.mIs24Hour = is24Hour;
         this.mHourFormatStartsAtZero = hourFormatStartsAtZero;
@@ -193,7 +270,6 @@ public class TextInputTimePickerView extends RelativeLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean parseAndSetHourInternal(String input) {
         try {
             int hour = Integer.parseInt(input);
@@ -211,7 +287,6 @@ public class TextInputTimePickerView extends RelativeLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean parseAndSetMinuteInternal(String input) {
         try {
             int minutes = Integer.parseInt(input);

@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TaskFragmentInfo implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentInfo> CREATOR = new Parcelable.Creator<TaskFragmentInfo>() { // from class: android.window.TaskFragmentInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaskFragmentInfo createFromParcel(Parcel in) {
             return new TaskFragmentInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentInfo[] newArray(int size) {
             return new TaskFragmentInfo[size];
@@ -36,6 +37,10 @@ public final class TaskFragmentInfo implements Parcelable {
     private final Point mPositionInParent;
     private final int mRunningActivityCount;
     private final WindowContainerToken mToken;
+
+    /* synthetic */ TaskFragmentInfo(Parcel parcel, TaskFragmentInfoIA taskFragmentInfoIA) {
+        this(parcel);
+    }
 
     public TaskFragmentInfo(IBinder fragmentToken, WindowContainerToken token, Configuration configuration, int runningActivityCount, boolean isVisible, List<IBinder> activities, List<IBinder> inRequestedTaskFragmentActivities, Point positionInParent, boolean isTaskClearedForReuse, boolean isTaskFragmentClearedForPip, boolean isClearedForReorderActivityToFront, Point minimumDimensions) {
         Configuration configuration2 = new Configuration();
@@ -169,6 +174,23 @@ public final class TaskFragmentInfo implements Parcelable {
         dest.writeBoolean(this.mIsTaskFragmentClearedForPip);
         dest.writeBoolean(this.mIsClearedForReorderActivityToFront);
         this.mMinimumDimensions.writeToParcel(dest, flags);
+    }
+
+    /* renamed from: android.window.TaskFragmentInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentInfo createFromParcel(Parcel in) {
+            return new TaskFragmentInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentInfo[] newArray(int size) {
+            return new TaskFragmentInfo[size];
+        }
     }
 
     public String toString() {

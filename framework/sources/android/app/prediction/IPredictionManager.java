@@ -201,8 +201,9 @@ public interface IPredictionManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IPredictionManager {
+        public static class Proxy implements IPredictionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

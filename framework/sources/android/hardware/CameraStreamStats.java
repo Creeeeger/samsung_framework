@@ -7,7 +7,9 @@ import android.util.Log;
 /* loaded from: classes.dex */
 public class CameraStreamStats implements Parcelable {
     public static final Parcelable.Creator<CameraStreamStats> CREATOR = new Parcelable.Creator<CameraStreamStats>() { // from class: android.hardware.CameraStreamStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CameraStreamStats createFromParcel(Parcel in) {
             try {
@@ -19,7 +21,6 @@ public class CameraStreamStats implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraStreamStats[] newArray(int size) {
             return new CameraStreamStats[size];
@@ -45,6 +46,10 @@ public class CameraStreamStats implements Parcelable {
     private long mStreamUseCase;
     private long mUsage;
     private int mWidth;
+
+    /* synthetic */ CameraStreamStats(Parcel parcel, CameraStreamStatsIA cameraStreamStatsIA) {
+        this(parcel);
+    }
 
     public CameraStreamStats() {
         this.mWidth = 0;
@@ -80,6 +85,29 @@ public class CameraStreamStats implements Parcelable {
         this.mDynamicRangeProfile = dynamicRangeProfile;
         this.mStreamUseCase = streamUseCase;
         this.mColorSpace = colorSpace;
+    }
+
+    /* renamed from: android.hardware.CameraStreamStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CameraStreamStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraStreamStats createFromParcel(Parcel in) {
+            try {
+                CameraStreamStats streamStats = new CameraStreamStats(in);
+                return streamStats;
+            } catch (Exception e) {
+                Log.e(CameraStreamStats.TAG, "Exception creating CameraStreamStats from parcel", e);
+                return null;
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraStreamStats[] newArray(int size) {
+            return new CameraStreamStats[size];
+        }
     }
 
     private CameraStreamStats(Parcel in) {

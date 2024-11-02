@@ -9,18 +9,21 @@ public class DEROutputStream extends ASN1OutputStream {
         super(os);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1OutputStream
-    void writePrimitive(ASN1Primitive primitive, boolean withTag) throws IOException {
+    public void writePrimitive(ASN1Primitive primitive, boolean withTag) throws IOException {
         primitive.toDERObject().encode(this, withTag);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1OutputStream
-    DEROutputStream getDERSubStream() {
+    public DEROutputStream getDERSubStream() {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1OutputStream
-    ASN1OutputStream getDLSubStream() {
+    public ASN1OutputStream getDLSubStream() {
         return this;
     }
 }

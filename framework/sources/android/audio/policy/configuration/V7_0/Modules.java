@@ -179,7 +179,6 @@ public class Modules {
         return this.module;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Modules read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Modules _instance = new Modules();

@@ -14,7 +14,9 @@ public class GpsNavigationMessageEvent implements Parcelable {
     public static int STATUS_READY = 1;
     public static int STATUS_GPS_LOCATION_DISABLED = 2;
     public static final Parcelable.Creator<GpsNavigationMessageEvent> CREATOR = new Parcelable.Creator<GpsNavigationMessageEvent>() { // from class: android.location.GpsNavigationMessageEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GpsNavigationMessageEvent createFromParcel(Parcel in) {
             ClassLoader classLoader = getClass().getClassLoader();
@@ -22,7 +24,6 @@ public class GpsNavigationMessageEvent implements Parcelable {
             return new GpsNavigationMessageEvent(navigationMessage);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GpsNavigationMessageEvent[] newArray(int size) {
             return new GpsNavigationMessageEvent[size];
@@ -46,6 +47,25 @@ public class GpsNavigationMessageEvent implements Parcelable {
 
     public GpsNavigationMessage getNavigationMessage() {
         return this.mNavigationMessage;
+    }
+
+    /* renamed from: android.location.GpsNavigationMessageEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GpsNavigationMessageEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsNavigationMessageEvent createFromParcel(Parcel in) {
+            ClassLoader classLoader = getClass().getClassLoader();
+            GpsNavigationMessage navigationMessage = (GpsNavigationMessage) in.readParcelable(classLoader, GpsNavigationMessage.class);
+            return new GpsNavigationMessageEvent(navigationMessage);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsNavigationMessageEvent[] newArray(int size) {
+            return new GpsNavigationMessageEvent[size];
+        }
     }
 
     @Override // android.os.Parcelable

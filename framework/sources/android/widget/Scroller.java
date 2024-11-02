@@ -336,7 +336,6 @@ public class Scroller {
         return !this.mFinished && Math.signum(xvel) == Math.signum((float) (this.mFinalX - this.mStartX)) && Math.signum(yvel) == Math.signum((float) (this.mFinalY - this.mStartY));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ViscousFluidInterpolator implements Interpolator {
         private static final float VISCOUS_FLUID_NORMALIZE;

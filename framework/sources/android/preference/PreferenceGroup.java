@@ -124,7 +124,6 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
         notifyHierarchyChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean onPrepareAddPreference(Preference preference) {
         preference.onParentChanged(this, shouldDisableDependents());
         return true;
@@ -149,12 +148,10 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isOnSameScreenAsChildren() {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onAttachedToActivity() {
         super.onAttachedToActivity();
@@ -165,7 +162,6 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onPrepareForRemoval() {
         super.onPrepareForRemoval();
@@ -181,14 +177,12 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void sortPreferences() {
         synchronized (this) {
             Collections.sort(this.mPreferenceList);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void dispatchSaveInstanceState(Bundle container) {
         super.dispatchSaveInstanceState(container);
@@ -198,7 +192,6 @@ public abstract class PreferenceGroup extends Preference implements GenericInfla
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void dispatchRestoreInstanceState(Bundle container) {
         super.dispatchRestoreInstanceState(container);

@@ -28,7 +28,6 @@ public class ContextThemeWrapper extends ContextWrapper {
         this.mTheme = theme;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.ContextWrapper
     public void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
@@ -110,7 +109,6 @@ public class ContextThemeWrapper extends ContextWrapper {
         return getBaseContext().getSystemService(name);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onApplyThemeResource(Resources.Theme theme, int resId, boolean first) {
         theme.applyStyle(resId, true);
     }

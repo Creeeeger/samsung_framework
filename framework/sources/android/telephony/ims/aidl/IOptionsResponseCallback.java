@@ -101,8 +101,9 @@ public interface IOptionsResponseCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IOptionsResponseCallback {
+        public static class Proxy implements IOptionsResponseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

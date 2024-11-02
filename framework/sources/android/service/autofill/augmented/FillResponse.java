@@ -13,18 +13,18 @@ public final class FillResponse {
     private FillWindow mFillWindow;
     private List<Dataset> mInlineSuggestions;
 
-    /* renamed from: -$$Nest$smdefaultClientState, reason: not valid java name */
-    static /* bridge */ /* synthetic */ Bundle m3637$$Nest$smdefaultClientState() {
+    /* renamed from: -$$Nest$smdefaultClientState */
+    static /* bridge */ /* synthetic */ Bundle m3636$$Nest$smdefaultClientState() {
         return defaultClientState();
     }
 
-    /* renamed from: -$$Nest$smdefaultFillWindow, reason: not valid java name */
-    static /* bridge */ /* synthetic */ FillWindow m3638$$Nest$smdefaultFillWindow() {
+    /* renamed from: -$$Nest$smdefaultFillWindow */
+    static /* bridge */ /* synthetic */ FillWindow m3637$$Nest$smdefaultFillWindow() {
         return defaultFillWindow();
     }
 
-    /* renamed from: -$$Nest$smdefaultInlineSuggestions, reason: not valid java name */
-    static /* bridge */ /* synthetic */ List m3639$$Nest$smdefaultInlineSuggestions() {
+    /* renamed from: -$$Nest$smdefaultInlineSuggestions */
+    static /* bridge */ /* synthetic */ List m3638$$Nest$smdefaultInlineSuggestions() {
         return defaultInlineSuggestions();
     }
 
@@ -108,13 +108,13 @@ public final class FillResponse {
             long j = this.mBuilderFieldsSet | 8;
             this.mBuilderFieldsSet = j;
             if ((j & 1) == 0) {
-                this.mFillWindow = FillResponse.m3638$$Nest$smdefaultFillWindow();
+                this.mFillWindow = FillResponse.m3637$$Nest$smdefaultFillWindow();
             }
             if ((this.mBuilderFieldsSet & 2) == 0) {
-                this.mInlineSuggestions = FillResponse.m3639$$Nest$smdefaultInlineSuggestions();
+                this.mInlineSuggestions = FillResponse.m3638$$Nest$smdefaultInlineSuggestions();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mClientState = FillResponse.m3637$$Nest$smdefaultClientState();
+                this.mClientState = FillResponse.m3636$$Nest$smdefaultClientState();
             }
             FillResponse o = new FillResponse(this.mFillWindow, this.mInlineSuggestions, this.mClientState);
             return o;

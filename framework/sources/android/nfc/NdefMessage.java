@@ -9,7 +9,9 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public final class NdefMessage implements Parcelable {
     public static final Parcelable.Creator<NdefMessage> CREATOR = new Parcelable.Creator<NdefMessage>() { // from class: android.nfc.NdefMessage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NdefMessage createFromParcel(Parcel in) {
             int recordsLength = in.readInt();
@@ -18,7 +20,6 @@ public final class NdefMessage implements Parcelable {
             return new NdefMessage(records);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NdefMessage[] newArray(int size) {
             return new NdefMessage[size];
@@ -105,6 +106,26 @@ public final class NdefMessage implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mRecords.length);
         dest.writeTypedArray(this.mRecords, flags);
+    }
+
+    /* renamed from: android.nfc.NdefMessage$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NdefMessage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NdefMessage createFromParcel(Parcel in) {
+            int recordsLength = in.readInt();
+            NdefRecord[] records = new NdefRecord[recordsLength];
+            in.readTypedArray(records, NdefRecord.CREATOR);
+            return new NdefMessage(records);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NdefMessage[] newArray(int size) {
+            return new NdefMessage[size];
+        }
     }
 
     public int hashCode() {

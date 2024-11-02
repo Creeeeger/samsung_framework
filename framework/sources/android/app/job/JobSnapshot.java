@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class JobSnapshot implements Parcelable {
     public static final Parcelable.Creator<JobSnapshot> CREATOR = new Parcelable.Creator<JobSnapshot>() { // from class: android.app.job.JobSnapshot.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public JobSnapshot createFromParcel(Parcel in) {
             return new JobSnapshot(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JobSnapshot[] newArray(int size) {
             return new JobSnapshot[size];
@@ -72,5 +73,22 @@ public class JobSnapshot implements Parcelable {
         this.mJob.writeToParcel(out, flags);
         out.writeInt(this.mSatisfiedConstraints);
         out.writeBoolean(this.mIsRunnable);
+    }
+
+    /* renamed from: android.app.job.JobSnapshot$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<JobSnapshot> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public JobSnapshot createFromParcel(Parcel in) {
+            return new JobSnapshot(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public JobSnapshot[] newArray(int size) {
+            return new JobSnapshot[size];
+        }
     }
 }

@@ -77,13 +77,11 @@ public abstract class Vibrator {
         this.mResources = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Vibrator(Context context) {
         this.mPackageName = context.getOpPackageName();
         this.mResources = context.getResources();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public VibratorInfo getInfo() {
         return VibratorInfo.EMPTY_VIBRATOR_INFO;
     }
@@ -187,13 +185,13 @@ public abstract class Vibrator {
     }
 
     public void vibrate(VibrationEffect vibe, AudioAttributes attributes) {
-        VibrationAttributes attr;
+        VibrationAttributes build;
         if (attributes == null) {
-            attr = new VibrationAttributes.Builder().build();
+            build = new VibrationAttributes.Builder().build();
         } else {
-            attr = new VibrationAttributes.Builder(attributes).build();
+            build = new VibrationAttributes.Builder(attributes).build();
         }
-        vibrate(vibe, attr);
+        vibrate(vibe, build);
     }
 
     public void vibrate(VibrationEffect vibe, VibrationAttributes attributes) {

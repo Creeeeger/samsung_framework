@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class PowerComponents {
     private final BatteryConsumer.BatteryConsumerData mData;
@@ -19,7 +18,6 @@ public class PowerComponents {
         this.mData = builder.mData;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PowerComponents(BatteryConsumer.BatteryConsumerData data) {
         this.mData = data;
     }
@@ -69,7 +67,6 @@ public class PowerComponents {
         throw new IllegalArgumentException("Unsupported custom power component ID: " + componentId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getPowerModel(BatteryConsumer.Key key) {
         if (key.mPowerModelColumnIndex == -1) {
             throw new IllegalStateException("Power model IDs were not requested in the BatteryUsageStatsQuery");
@@ -141,7 +138,6 @@ public class PowerComponents {
         return writeStatsProtoImpl(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeStatsProto(ProtoOutputStream proto) {
         writeStatsProtoImpl(proto);
     }
@@ -230,7 +226,6 @@ public class PowerComponents {
         proto.end(token);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToXml(TypedXmlSerializer serializer) throws IOException {
         BatteryConsumer.Key[] keys;
         int i;
@@ -310,7 +305,6 @@ public class PowerComponents {
         serializer.endTag(null, str5);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void parseXml(TypedXmlPullParser parser, Builder builder) throws XmlPullParserException, IOException {
         char c;
         int eventType;
@@ -469,13 +463,11 @@ public class PowerComponents {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static final class Builder {
         private static final byte POWER_MODEL_UNINITIALIZED = -1;
         private final BatteryConsumer.BatteryConsumerData mData;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder(BatteryConsumer.BatteryConsumerData data) {
             this.mData = data;
             for (BatteryConsumer.Key[] keys : data.layout.keys) {

@@ -43,7 +43,6 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class PermissionManager {
     public static final String ACTION_REVIEW_PERMISSION_DECISIONS = "android.permission.action.REVIEW_PERMISSION_DECISIONS";
-    public static final String CACHE_KEY_PACKAGE_INFO = "cache_key.package_info";
     public static final long CANNOT_INSTALL_WITH_BAD_PERMISSION_GROUPS = 146211400;
     public static final boolean DEBUG_TRACE_GRANTS = false;
     public static final boolean DEBUG_TRACE_PERMISSION_UPDATES = false;
@@ -61,18 +60,42 @@ public final class PermissionManager {
     public static final int PERMISSION_HARD_DENIED = 2;
     public static final int PERMISSION_SOFT_DENIED = 1;
     private static final String SYSTEM_PKG = "android";
-    private static PropertyInvalidatedCache<PackageNamePermissionQuery, Integer> sPackageNamePermissionCache;
-    private static final PropertyInvalidatedCache<PermissionQuery, Integer> sPermissionCache;
     private final Context mContext;
     private final LegacyPermissionManager mLegacyPermissionManager;
     private List<SplitPermissionInfo> mSplitPermissionInfos;
     private PermissionUsageHelper mUsageHelper;
-    private static final String LOG_TAG = PermissionManager.class.getName();
-    private static long sLastIndicatorUpdateTime = -1;
-    private static volatile boolean sShouldWarnMissingActivityManager = true;
     private final ArrayMap<PackageManager.OnPermissionsChangedListener, IOnPermissionsChangeListener> mPermissionListeners = new ArrayMap<>();
     private final IPackageManager mPackageManager = AppGlobals.getPackageManager();
     private final IPermissionManager mPermissionManager = IPermissionManager.Stub.asInterface(ServiceManager.getServiceOrThrow("permissionmgr"));
+    private static final String LOG_TAG = PermissionManager.class.getName();
+    private static long sLastIndicatorUpdateTime = -1;
+    private static volatile boolean sShouldWarnMissingActivityManager = true;
+    public static final String CACHE_KEY_PACKAGE_INFO = "cache_key.package_info";
+    private static final PropertyInvalidatedCache<PermissionQuery, Integer> sPermissionCache = new PropertyInvalidatedCache<PermissionQuery, Integer>(2048, CACHE_KEY_PACKAGE_INFO, "checkPermission") { // from class: android.permission.PermissionManager.1
+        AnonymousClass1(int maxEntries, String propertyName, String cacheName) {
+            super(maxEntries, propertyName, cacheName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Integer recompute(PermissionQuery query) {
+            return Integer.valueOf(PermissionManager.checkPermissionUncached(query.permission, query.pid, query.uid));
+        }
+    };
+    private static PropertyInvalidatedCache<PackageNamePermissionQuery, Integer> sPackageNamePermissionCache = new PropertyInvalidatedCache<PackageNamePermissionQuery, Integer>(16, CACHE_KEY_PACKAGE_INFO, "checkPackageNamePermission") { // from class: android.permission.PermissionManager.2
+        AnonymousClass2(int maxEntries, String propertyName, String cacheName) {
+            super(maxEntries, propertyName, cacheName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Integer recompute(PackageNamePermissionQuery query) {
+            return Integer.valueOf(PermissionManager.checkPackageNamePermissionUncached(query.permName, query.pkgName, query.userId));
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(PackageNamePermissionQuery query) {
+            return query.userId < 0;
+        }
+    };
 
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
@@ -83,24 +106,6 @@ public final class PermissionManager {
         int[] iArr = {17039411, 17039410, 17039412, 17039413, 17039414, 17039415};
         EXEMPTED_ROLES = iArr;
         INDICATOR_EXEMPTED_PACKAGES = new String[iArr.length];
-        String str = CACHE_KEY_PACKAGE_INFO;
-        sPermissionCache = new PropertyInvalidatedCache<PermissionQuery, Integer>(2048, str, "checkPermission") { // from class: android.permission.PermissionManager.1
-            @Override // android.app.PropertyInvalidatedCache
-            public Integer recompute(PermissionQuery query) {
-                return Integer.valueOf(PermissionManager.checkPermissionUncached(query.permission, query.pid, query.uid));
-            }
-        };
-        sPackageNamePermissionCache = new PropertyInvalidatedCache<PackageNamePermissionQuery, Integer>(16, str, "checkPackageNamePermission") { // from class: android.permission.PermissionManager.2
-            @Override // android.app.PropertyInvalidatedCache
-            public Integer recompute(PackageNamePermissionQuery query) {
-                return Integer.valueOf(PermissionManager.checkPackageNamePermissionUncached(query.permName, query.pkgName, query.userId));
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean bypass(PackageNamePermissionQuery query) {
-                return query.userId < 0;
-            }
-        };
     }
 
     public PermissionManager(Context context) throws ServiceManager.ServiceNotFoundException {
@@ -451,6 +456,10 @@ public final class PermissionManager {
     public static final class SplitPermissionInfo {
         private final SplitPermissionInfoParcelable mSplitPermissionInfoParcelable;
 
+        /* synthetic */ SplitPermissionInfo(SplitPermissionInfoParcelable splitPermissionInfoParcelable, SplitPermissionInfoIA splitPermissionInfoIA) {
+            this(splitPermissionInfoParcelable);
+        }
+
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -543,7 +552,6 @@ public final class PermissionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int checkPermissionUncached(String permission, int pid, int uid) {
         IActivityManager am = ActivityManager.getService();
         if (am == null) {
@@ -566,7 +574,6 @@ public final class PermissionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class PermissionQuery {
         final String permission;
@@ -601,6 +608,19 @@ public final class PermissionManager {
         }
     }
 
+    /* renamed from: android.permission.PermissionManager$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends PropertyInvalidatedCache<PermissionQuery, Integer> {
+        AnonymousClass1(int maxEntries, String propertyName, String cacheName) {
+            super(maxEntries, propertyName, cacheName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Integer recompute(PermissionQuery query) {
+            return Integer.valueOf(PermissionManager.checkPermissionUncached(query.permission, query.pid, query.uid));
+        }
+    }
+
     public static int checkPermission(String permission, int pid, int uid) {
         return sPermissionCache.query(new PermissionQuery(permission, pid, uid)).intValue();
     }
@@ -609,7 +629,6 @@ public final class PermissionManager {
         sPermissionCache.disableLocal();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class PackageNamePermissionQuery {
         final String permName;
@@ -643,12 +662,29 @@ public final class PermissionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int checkPackageNamePermissionUncached(String permName, String pkgName, int userId) {
         try {
             return ActivityThread.getPackageManager().checkPermission(permName, pkgName, userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /* renamed from: android.permission.PermissionManager$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 extends PropertyInvalidatedCache<PackageNamePermissionQuery, Integer> {
+        AnonymousClass2(int maxEntries, String propertyName, String cacheName) {
+            super(maxEntries, propertyName, cacheName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Integer recompute(PackageNamePermissionQuery query) {
+            return Integer.valueOf(PermissionManager.checkPackageNamePermissionUncached(query.permName, query.pkgName, query.userId));
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(PackageNamePermissionQuery query) {
+            return query.userId < 0;
         }
     }
 
@@ -660,8 +696,9 @@ public final class PermissionManager {
         sPackageNamePermissionCache.disableLocal();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class OnPermissionsChangeListenerDelegate extends IOnPermissionsChangeListener.Stub implements Handler.Callback {
+    public final class OnPermissionsChangeListenerDelegate extends IOnPermissionsChangeListener.Stub implements Handler.Callback {
         private static final int MSG_PERMISSIONS_CHANGED = 1;
         private final Handler mHandler;
         private final PackageManager.OnPermissionsChangedListener mListener;

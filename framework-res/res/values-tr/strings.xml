@@ -384,12 +384,12 @@ Bu kısayolu, Ayarlar > Erişilebilirlik'te başka bir özellikle değiştirebil
     <string name="allow_settings_changes">Güvenlik ilkesi ayarların değiştirilmesini engelliyor.</string>
     <string name="alwaysUse">Varsayılan olarak bu işlem için kullan.</string>
     <string name="android_preparing_apk">%1$s hazırlanıyor.</string>
-    <string name="android_start_title">Telefon başlatılıyor…</string>
+    <string name="android_start_title">Tablet başlatılıyor…</string>
     <string name="android_system_label">Android Sistemi</string>
     <string name="android_upgrading_complete">Açılış tamamlanıyor.</string>
     <string name="android_upgrading_notification_title">Sistem güncellemesi tamamlanıyor…</string>
     <string name="android_upgrading_starting_apps">Uygulamalar başlatılıyor</string>
-    <string name="android_upgrading_title">Telefon güncelleniyor…</string>
+    <string name="android_upgrading_title">Tablet güncelleniyor…</string>
     <string name="anr_activity_application">%2$s yanıt vermiyor</string>
     <string name="anr_activity_process">%1$s yanıt vermiyor</string>
     <string name="anr_application_process">%1$s yanıt vermiyor</string>
@@ -423,16 +423,16 @@ Bu kısayolu, Ayarlar > Erişilebilirlik'te başka bir özellikle değiştirebil
     <string name="app_restricted_message_concentration_mode">%s Odaklanma modunda engellendi. Daha fazla bilgi edinmek için BT yöneticinizle iletişime geçin.</string>
     <string name="app_running_notification_text">Daha fazla bilgi edinmek veya uygulamayı durdurmak için dokunun.</string>
     <string name="app_running_notification_title">%1$s çalışıyor</string>
-    <string name="app_streaming_blocked_message">Bu uygulamaya şu anda %1$s cihazınızdan erişilemiyor. Bunun yerine telefonunuzu kullanmayı deneyin.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Bu uygulama daha fazla güvenlik istiyor. Bunun yerine telefonunuzu kullanmayı deneyin.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Bu uygulamaya %1$s cihazınızdan erişilemiyor. Bunun yerine telefonunuzu kullanmayı deneyin.</string>
+    <string name="app_streaming_blocked_message">Bu uygulamaya şu anda %1$s cihazınızdan erişilemiyor. Bunun yerine tabletinizi kullanmayı deneyin.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Bu uygulama daha fazla güvenlik istiyor. Bunun yerine tabletinizi kullanmayı deneyin.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Bu uygulamaya %1$s cihazınızdan erişilemiyor. Bunun yerine tabletinizi kullanmayı deneyin.</string>
     <string name="app_streaming_blocked_title">%1$s kullanılamıyor</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera kullanılamıyor</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">İşleme telefonda devam edin</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofon kullanılamıyor</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">İzin gerekli</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store kullanılamıyor</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Telefon ayarları kullanılamıyor</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Tablet ayarları kullanılamıyor</string>
     <string name="app_suspended_default_message">%1$s uygulaması şu anda kullanılamıyor. Uygulamanın kullanım durumu %2$s tarafından yönetiliyor.</string>
     <string name="app_suspended_more_details">Daha fazla bilgi</string>
     <string name="app_suspended_title">Uygulama kullanılamıyor</string>
@@ -503,7 +503,7 @@ Yine de uygulamayı yüklemeyi seçerseniz güvendiğiniz bir kaynaktan geldiği
     <string name="badPuk">Yazdığınız PUK doğru değil.</string>
     <string name="badPuk2">Girdiğiniz PUK2 yanlış</string>
     <string name="batt_cooldown_mode_ok">Tamam</string>
-    <string name="battery_saver_charged_notification_summary">Telefon yeterince şarj oldu. Özellikler artık kısıtlanmış değil.</string>
+    <string name="battery_saver_charged_notification_summary">Tablet yeterince şarj oldu. Özellikler artık kısıtlanmış değil.</string>
     <string name="battery_saver_description">Pil Tasarrufu, Koyu temayı açıp arka plan etkinliğini, bazı görsel efektleri, belirli özellikleri ve bazı ağ bağlantılarını sınırlandırır veya kapatır.</string>
     <string name="battery_saver_description_with_learn_more">Pil Tasarrufu, Koyu temayı açıp arka plan etkinliğini, bazı görsel efektleri, belirli özellikleri ve bazı ağ bağlantılarını sınırlandırır veya kapatır.</string>
     <string name="battery_saver_notification_channel_name">Pil Tasarrufu</string>
@@ -733,7 +733,7 @@ Kulaklığın ses düzeyi önerilenden yüksek. Bu durum işitme kaybına neden 
     <string name="decline">Reddet</string>
     <string name="decline_remote_bugreport_action">REDDET</string>
     <string name="default_audio_route_category_name">Sistem</string>
-    <string name="default_audio_route_name">Telefon</string>
+    <string name="default_audio_route_name">Tablet</string>
     <string name="default_audio_route_name_dock_speakers">Yuva hoparlörleri</string>
     <string name="default_audio_route_name_external_device">Harici Cihaz</string>
     <string name="default_audio_route_name_headphones">Kulaklıklar</string>
@@ -860,7 +860,7 @@ Kulaklığın ses düzeyi önerilenden yüksek. Bu durum işitme kaybına neden 
     <string name="emergency_call_dialog_number_for_display">Acil durum numarası</string>
     <string name="emergency_calls_only">Sadece acil durum aramaları</string>
     <string name="enablePin">Başarısız. SIM/RUIM Kilidini etkinleştirin.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s, Dokunarak Keşfet özelliğini etkinleştirmek istiyor. Dokunarak Keşfet açık olduğunda parmağınızın altındaki öğelere ait açıklamaları duyabilir veya görebilir ya da telefonla etkileşimde bulunmak için birtakım hareketler yapabilirsiniz.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s Dokunarak Keşfet özelliğini etkinleştirmek istiyor. Dokunarak Keşfet açık olduğunda, parmağınızın altındaki öğelere ait açıklamaları duyabilir veya görebilir ya da tabletle etkileşimde bulunmak için birtakım hareketler yapabilirsiniz.</string>
     <string name="enable_explore_by_touch_warning_title">Dokunarak Keşfet etkinleştirilsin mi?</string>
     <string name="error_message_change_not_allowed">Yöneticiniz bu değişikliğe izin vermiyor</string>
     <string name="error_message_title">Hata</string>
@@ -924,7 +924,7 @@ Kulaklığın ses düzeyi önerilenden yüksek. Bu durum işitme kaybına neden 
     <string name="ext_media_unsupported_notification_message">Bu cihaz, bu %s ögesini desteklemiyor. Desteklenen biçimde ayarlamak için dokunun.</string>
     <string name="ext_media_unsupported_notification_title">Desteklnmyn %s</string>
     <string name="ext_storage_bad_removal_button">Yeniden başlat</string>
-    <string name="ext_storage_bad_removal_title">Telefonunuzu yeniden başlatın</string>
+    <string name="ext_storage_bad_removal_title">Tabletinizi yeniden başlatın</string>
     <string name="extmedia_format_button_format">Biçim</string>
     <string name="extmedia_format_message">Kartınızdaki tüm veriler kaybolacak.</string>
     <string name="extmedia_format_message_usbhost">USB belleğinizdeki tüm dosyalar silinecek. Bu işlem geri alınamaz!</string>
@@ -1128,7 +1128,7 @@ Parmak izinizi tanımlarken hafifçe dokunmayı deneyin."</string>
     <string name="global_action_toggle_sealed_mode">Sealed modu</string>
     <string name="global_action_toggle_silent_mode">Sessiz mod</string>
     <string name="global_action_voice_assist">Sesli Yardım</string>
-    <string name="global_actions">Telefon seçenekleri</string>
+    <string name="global_actions">Tablet seçenekleri</string>
     <string name="global_actions_airplane_mode_off_status">Uçak modu KAPALI</string>
     <string name="global_actions_airplane_mode_on_status">Uçak modu AÇIK</string>
     <string name="global_actions_toggle_airplane_mode">Uçak modu</string>
@@ -1313,11 +1313,11 @@ Bu sayfadan ayrılmak istediğinizden emin misiniz?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Şifre yazmak için dokunun&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Yanlış PIN kodu.</string>
     <string name="kg_enter_confirm_pin_hint">İstenen PIN kodunu onaylayın</string>
-    <string name="kg_failed_attempts_almost_at_login">"Kilit açma deseninizi %1$d kez yanlış çizdiniz. %2$d başarısız denemeden sonra telefonunuzu bir e-posta hesabı kullanarak açmanız istenir.
+    <string name="kg_failed_attempts_almost_at_login">"Kilit açma deseninizi %1$d kez yanlış çizdiniz. %2$d başarısız denemeden sonra, tabletinizi bir e-posta hesabı kullanarak açmanız istenir.
 
  %3$d saniye içinde tekrar deneyin."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Telefonun kilidini %1$d defa yanlış bir şekilde açmaya çalıştınız. %2$d defa daha başarısız deneme yapılırsa, telefon fabrika varsayılan değerine sıfırlanır ve tüm kullanıcı verileri kaybedilir.</string>
-    <string name="kg_failed_attempts_now_wiping">Telefon kilidini %d defa yanlış bir şekilde açmaya çalıştınız. Telefon şimdi fabrika varsayılanına sıfırlanacak.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Tablet kilidini %1$d defa yanlış bir şekilde açmaya çalıştınız. %2$d defa daha başarısız deneme yapılırsa, tablet fabrika varsayılan değerine sıfırlanır ve tüm kullanıcı verileri kaybedilir.</string>
+    <string name="kg_failed_attempts_now_wiping">Tablet kilidini %d defa yanlış bir şekilde açmaya çalıştınız. Tablet şimdi fabrika varsayılanına sıfırlanacak.</string>
     <string name="kg_forgot_pattern_button_text">Deseni Unuttunuz mu?</string>
     <string name="kg_invalid_confirm_pin_hint">PIN kodları eşleşmiyor</string>
     <string name="kg_invalid_puk">Doğru PUK kodunu tekrar girin. Çok sayıda deneme yapılırsa SIM kart kalıcı olarak devre dışı bırakılır.</string>
@@ -1405,11 +1405,11 @@ Bu sayfadan ayrılmak istediğinizden emin misiniz?"</string>
     <string name="lockscreen_carrier_default">Servis yok</string>
     <string name="lockscreen_carrier_noservice">(Servis yok.)</string>
     <string name="lockscreen_emergency_call">Acil durum araması</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Telefonun kilidini %1$d defa yanlış bir şekilde açmaya çalıştınız. %2$d defa daha başarısız deneme yapılırsa, telefon fabrika varsayılanına sıfırlanır ve tüm kullanıcı verileri kaybedilir.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Kilit açma deseninizi %1$d kez yanlış çizdiniz. %2$d başarısız denemeden sonra telefonunuzu Google oturum açma bilgilerinizi kullanarak açmanız istenir.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Tablet kilidini %1$d defa yanlış bir şekilde açmaya çalıştınız. %2$d defa daha başarısız deneme yapılırsa, tablet fabrika varsayılanına sıfırlanır ve tüm kullanıcı verileri kaybedilir.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Kilit açma deseninizi %1$d kez yanlış çizdiniz. %2$d başarısız denemeden sonra, tabletinizi, Google oturum açma bilgilerinizi kullanarak açmanız istenir.
 
- Lütfen %3$d saniye içinde tekrar deneyin."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Telefon kilidini %d defa yanlış bir şekilde açmaya çalıştınız. Telefon şimdi fabrika varsayılanına sıfırlanacak.</string>
+%3$d saniye içinde tekrar deneyin."</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Tablet kilidini %d defa yanlış bir şekilde açmaya çalıştınız. Tablet şimdi fabrika varsayılanına sıfırlanacak.</string>
     <string name="lockscreen_forgot_pattern_button_text">Deseni unuttunuz mu?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Kullanıcı adınızı veya şifrenizi mi unuttunuz?
 "<b>google.com/accounts/recovery</b> adresini ziyaret edin.</string>
@@ -1425,7 +1425,7 @@ Bu sayfadan ayrılmak istediğinizden emin misiniz?"</string>
     <string name="lockscreen_instructions_when_pattern_enabled">"Kilidi açmak veya acil çağrı yapmak için Menü'ye basın."</string>
     <string name="lockscreen_missing_sim_instructions">SIM ekleyin.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM yok veya okunamıyor. SIM ekleyin.</string>
-    <string name="lockscreen_missing_sim_message">Telefonda SIM yok.</string>
+    <string name="lockscreen_missing_sim_message">Tablette SIM yok.</string>
     <string name="lockscreen_missing_sim_message_short">SIM yok</string>
     <string name="lockscreen_network_locked_message">Ağ kilitli</string>
     <string name="lockscreen_password_wrong">Tekrar deneyin</string>
@@ -1465,7 +1465,7 @@ Bu sayfadan ayrılmak istediğinizden emin misiniz?"</string>
     <string name="low_internal_storage_view_text">Bazı sistem işlevleri çalışmayabilir</string>
     <string name="low_internal_storage_view_text_no_boot">Sistem için yeterli depolama alanı yok. 250 MB boş alanınızın bulunduğundan emin olun ve yeniden başlatın.</string>
     <string name="low_internal_storage_view_title">Depolama alanı bitiyor</string>
-    <string name="low_memory">Telefonun depolama alanı dolu! Yer açmak için bazı dosyaları silin.</string>
+    <string name="low_memory">Tabletin depolama alanı dolu! Yer açmak için bazı dosyaları silin.</string>
     <string name="ltb_kill_content_v2_phone">%s telefonunuzun aşırı ısınmasına neden olduğu için kapatıldı. Telefonunuz soğuduktan sonra tekrar açabilirsiniz.</string>
     <string name="ltb_kill_content_v2_tablet">%s tabletinizin aşırı ısınmasına neden olduğu için kapatıldı. Tabletiniz soğuduktan sonra tekrar açabilirsiniz.</string>
     <string name="ltb_warning_button">Kapatma</string>
@@ -1777,18 +1777,18 @@ Tabletiniz yakında yeniden başlatılacak."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Ses, Bluetooth ses cihazında oynatılıyor. Kapatmak için buraya dokunun</string>
     <string name="multisound_sound_via_headphone">%s sesi, kulaklıklarınız yoluyla oynatılıyor. Kapatmak için buraya dokunun.</string>
     <string name="multisound_sound_via_headphone_multiselection">Ses, kulaklıklarınızdan oynatılıyor. Kapatmak için buraya dokunun.</string>
-    <string name="multisound_sound_via_phone_speaker">%s sesi, telefon hoparlörünüz yoluyla oynatılıyor. Kapatmak için buraya dokunun.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Ses, telefon hoparlörünüzden oynatılıyor. Kapatmak için buraya dokunun.</string>
+    <string name="multisound_sound_via_phone_speaker">%s sesi, tabletinizin hoparlörü yoluyla oynatılıyor. Kapatmak için buraya dokunun.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Ses, tabletinizin hoparlöründen oynatılıyor. Kapatmak için buraya dokunun.</string>
     <string name="multisound_sound_via_usb_audio">%s sesi, USB ses cihazınız yoluyla oynatılıyor. Kapatmak için buraya dokunun.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Ses, USB ses cihazınızdan oynatılıyor. Kapatmak için buraya dokunun.</string>
     <string name="multisound_title">Ayrı uygulama sesi</string>
     <string name="multisound_turn_off_multisound">Kapat</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">"%s, Samsung DeX'te çalıştırılamaz. Telefon modunda çalıştırmayı deneyin."</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">"%s, Samsung DeX'te çalıştırılamaz. Telefon Ana ekranları için tasarlanmıştır."</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">"Bazı oyunlar sadece dokunmatik ekranlarda çalışır. Fare kontrolleri Samsung DeX'te çalışmazsa bunun yerine telefon modunda oynamayı deneyin."</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">"%s, Samsung DeX'te çalıştırılamaz. Tablet modunda çalıştırmayı deneyin."</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">"%s, Samsung DeX'te çalıştırılamaz. Tablet Ana ekranları için tasarlanmıştır."</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">"Bazı oyunlar sadece dokunmatik ekranlarda çalışır. Fare kontrolleri Samsung DeX'te çalışmazsa bunun yerine tablet modunda oynamayı deneyin."</string>
     <string name="music_recognition_manager_service">Müzik Tanıma Yöneticisi Hizmeti</string>
     <string name="muted_by">%1$s bazı sesleri kapatıyor</string>
-    <string name="my_device">Bu telefon</string>
+    <string name="my_device">Bu tablet</string>
     <string name="nas_upgrade_notification_content">Önerilen işlemler ve yanıtlar artık gelişmiş bildirimler tarafından sağlanıyor. Android Uyarlanabilir Bildirimler artık desteklenmiyor.</string>
     <string name="nas_upgrade_notification_disable_action">Kapat</string>
     <string name="nas_upgrade_notification_enable_action">Tamam</string>
@@ -1953,23 +1953,23 @@ Gelişmiş bildirimler, kişiler ve mesajlar gibi kişisel bilgiler dahil olmak 
     <string name="permdesc_bindNotificationListenerService">İzin sahibine bir bildirim dinleyici hizmetinin en üst düzey arayüzüne bağlanma izni verir. Normal uygulamalarda hiçbir zaman gerek duyulmaz.</string>
     <string name="permdesc_bind_connection_service">Uygulamanın çağrı yapmak/almak için telefon hizmetleriyle etkileşimde bulunmasına izin verir.</string>
     <string name="permdesc_bind_incall_service">Uygulamaya, kullanıcının çağrı ekranını ne zaman ve nasıl göreceğini denetleme izni verir.</string>
-    <string name="permdesc_bluetooth">Uygulamaya, telefondaki Bluetooth yapılandırmasını görüntüleme, eşlenmiş cihazlarla bağlantı yapma ve bu tür bağlantıları kabul etme izni verir.</string>
-    <string name="permdesc_bluetoothAdmin">Uygulamaya, yerel Bluetooth telefonunu yapılandırma ve uzak cihazları keşfedip bunlarla eşleşme izni verir.</string>
+    <string name="permdesc_bluetooth">Uygulamaya, tabletteki Bluetooth yapılandırmasını görüntüleme, eşlenmiş cihazlarla bağlantı yapma ve bu tür bağlantıları kabul etme izni verir.</string>
+    <string name="permdesc_bluetoothAdmin">Uygulamaya, yerel Bluetooth tabletini yapılandırma ve uzak cihazları keşfedip bunlarla eşleşme izni verir.</string>
     <string name="permdesc_bluetooth_advertise">Uygulamaya, yakındaki Bluetooth cihazlara reklam yayınlama izni verir</string>
     <string name="permdesc_bluetooth_connect">Uygulamaya, eşlenen Bluetooth cihazlara bağlanma izni verir</string>
     <string name="permdesc_bluetooth_scan">Uygulamaya, yakındaki Bluetooth cihazları keşfedip eşleme izni verir</string>
     <string name="permdesc_bodySensors">Kullanımdaki uygulamanın nabız, vücut ısısı, kandaki oksijen yüzdesi gibi vücut sensörü verilerine erişmesine izin verir.</string>
     <string name="permdesc_bodySensors_background">Arka plandaki uygulamanın nabız, vücut ısısı, kandaki oksijen yüzdesi gibi vücut sensörü verilerine erişmesine izin verir.</string>
-    <string name="permdesc_broadcastSticky">Uygulamaya, yayın bittikten sonra da kalan sabit yayınlar gönderme izni verir. Aşırı kullanılması çok fazla bellek harcanmasına neden olarak telefonunu yavaşlatabilir veya dengesiz hale getirebilir.</string>
+    <string name="permdesc_broadcastSticky">Uygulamaya, yayın bittikten sonra da kalan sabit yayınlar gönderme izni verir. Aşırı kullanılması çok fazla bellek harcanmasına neden olarak tableti yavaşlatabilir veya dengesiz hale getirebilir.</string>
     <string name="permdesc_callCompanionApp">Uygulamanın cihazda devam eden aramaları görmesini ve denetlemesini sağlar. Bu bilgiler arasında aramaların yapıldığı numaralar ve aramaların durumu gibi bilgiler yer alır.</string>
     <string name="permdesc_callPhone">Uygulamaya, sizin müdahaleniz olmadan telefon numaralarını arama izni verir. Bunun sonucunda beklenmedik ücretlerle veya aramalarla karşılaşabilirsiniz. Bunun, uygulamaya acil durum numaralarını arama izni vermediğini unutmayın. Kötü amaçlı uygulamalar sizin onayınızı almadan arama yaparak veya gelen aramaların otomatik olarak başka bir numaraya yönlendirilmesine neden olan operatör kodlarını arayarak faturanızı kabartabilir.</string>
     <string name="permdesc_camera">Bu uygulama, kullanıldığı sırada kamerayı kullanarak fotoğraf ve video çekebilir.</string>
     <string name="permdesc_cameraOpenCloseListener">Bu uygulama, herhangi bir kamera cihazı açıldığında (kamerayı açan uygulama tarafından) veya kapatıldığında geri çağırmalar alabilir.</string>
     <string name="permdesc_changeNetworkState">Uygulamaya, ağ bağlantısının durumunu değiştirme izni verir.</string>
     <string name="permdesc_changeTetherState">Uygulamaya, tethering kullanan ağ bağlantısının durumunu değiştirme izni verir.</string>
-    <string name="permdesc_changeWifiMulticastState">Uygulamaya, çoklu yayın adreslerini kullanarak yalnızca telefona değil Kablosuz ağ üzerindeki tüm cihazlara gönderilen paketleri alma izni verir. Çoklu olmayan yayın moduna göre daha fazla güç tüketir.</string>
+    <string name="permdesc_changeWifiMulticastState">Uygulamaya, çoklu yayın adreslerini kullanarak yalnızca tablete değil Kablosuz ağ üzerindeki tüm cihazlara gönderilen paketleri alma izni verir. Çoklu olmayan yayın moduna göre daha fazla güç tüketir.</string>
     <string name="permdesc_changeWifiState">Uygulamaya, kablosuz erişim noktalarına bağlanıp bunlarla bağlantısını kesme ve Kablosuz ağlar için cihaz yapılandırmasında değişiklikler yapma izni verir.</string>
-    <string name="permdesc_changeWimaxState">Uygulamaya, telefonu WiMAX ağlarına bağlanma veya bağlantıyı kesme izni verir.</string>
+    <string name="permdesc_changeWimaxState">Uygulamaya, tableti WiMAX ağlarına bağlanma veya bağlantıyı kesme izni verir.</string>
     <string name="permdesc_companionProfileWatch">Kol saatlerinin tamamlayıcı uygulama tarafından yönetilmesine izin verir.</string>
     <string name="permdesc_connection_manager">Uygulamanın telekomünikasyon bağlantılarını yönetmesine izin verir.</string>
     <string name="permdesc_control_incall_experience">Uygulamaya, çağrı içi kullanım deneyimi sağlama izin verir.</string>
@@ -1997,7 +1997,7 @@ Gelişmiş bildirimler, kişiler ve mesajlar gibi kişisel bilgiler dahil olmak 
     <string name="permdesc_foregroundServiceSpecialUse">Uygulamanın \"specialUse\" türüyle ön plan hizmetlerini kullanmasına izin verir</string>
     <string name="permdesc_foregroundServiceSystemExempted">Uygulamanın \"systemExempted\" türüyle ön plan hizmetlerini kullanmasına izin verir</string>
     <string name="permdesc_fullScreenIntent">Uygulamanın kilitli cihazda tam ekran etkinlik biçiminde bildirim göstermesine izin verilir</string>
-    <string name="permdesc_getAccounts">Uygulamaya telefon tarafından bilinen hesapların listesini alma izni verir. Bu liste, yüklediğiniz uygulamalar tarafından oluşturulan tüm hesapları içerebilir.</string>
+    <string name="permdesc_getAccounts">Uygulamaya tablet tarafından bilinen hesapların listesini alma izni verir. Bu liste, yüklediğiniz uygulamalar tarafından oluşturulan tüm hesapları içerebilir.</string>
     <string name="permdesc_getAppList">Uygulamanın yüklü uygulamalar listesini okuyabilmesini sağlar.</string>
     <string name="permdesc_getPackageSize">Uygulamaya kodunu, verilerini ve önbellek boyutlarını alma izni verir</string>
     <string name="permdesc_getTasks">Uygulamaya o anda ve son çalışan görevler hakkında bilgi alma izni verir. Bu izin, uygulamanın cihaz tarafından kullanılan uygulamalar hakkında bilgi elde etmesine olanak sağlayabilir.</string>
@@ -2096,16 +2096,16 @@ Gelişmiş bildirimler, kişiler ve mesajlar gibi kişisel bilgiler dahil olmak 
     <string name="permdesc_nearby_wifi_devices">Uygulamanın reklam sunmasına, bağlanmasına ve yakındaki kablosuz cihazların göreli konumunu belirlemesine izin verir</string>
     <string name="permdesc_nfc">Uygulamaya, Near Field Communication (NFC) etiketleri, kartlar ve okuyucular ile iletişim kurma izni verir.</string>
     <string name="permdesc_observeCompanionDevicePresence">Cihazların arasındaki mesafe az veya çok olduğunda tamamlayıcı cihaz varlığının tamamlayıcı uygulama tarafından gözlemlenmesine izin verir.</string>
-    <string name="permdesc_persistentActivity">Uygulamaya kendisinin bir bölümünü bellekte kalıcı yapma izni verir. Bu izin, diğer uygulamaların kullanabileceği belleği sınırlandırarak telefonun yavaş çalışmasına neden olabilir.</string>
+    <string name="permdesc_persistentActivity">Uygulamaya kendisinin bir bölümünü bellekte kalıcı yapma izni verir. Bu izin, diğer uygulamaların kullanabileceği belleği sınırlandırarak tabletin yavaş çalışmasına neden olabilir.</string>
     <string name="permdesc_postNotification">Uygulamanın bildirimleri göstermesine izin verir</string>
     <string name="permdesc_preferredPaymentInfo">Uygulamaya, kayıtlı yardımlar ve rota hedefi gibi tercih edilen NFC ödeme hizmeti bilgilerini alma izni verir.</string>
     <string name="permdesc_processOutgoingCalls">Uygulamaya, giden bir çağrının numarası çevrilirken çağrıyı farklı bir numaraya yönlendirme ya da tamamen kapatma seçeneğiyle birlikte numarayı görme izni verir.</string>
     <string name="permdesc_queryAllPackages">Uygulamaya tüm yüklü paketleri görme izni verir.</string>
     <string name="permdesc_readBasicPhoneState">Uygulamanın, cihazdaki temel telefon özelliklerine erişmesine izin verir.</string>
-    <string name="permdesc_readCalendar">Bu uygulama, telefonunuzda kayıtlı tüm takvim etkinliklerini okuyabilir ve takvim verilerinizi paylaşabilir ya da kaydedebilir.</string>
+    <string name="permdesc_readCalendar">Bu uygulama, tabletinizde kayıtlı tüm takvim etkinliklerini okuyabilir ve takvim verilerinizi paylaşabilir ya da kaydedebilir.</string>
     <string name="permdesc_readCallLog">Bu uygulama, çağrı geçmişinizi okuyabilir.</string>
     <string name="permdesc_readCellBroadcasts">Uygulamaya, cihazınız tarafından alınan hücre yayını mesajlarını okuma izni verir. Hücre yayını uyarıları bazı yerlerde acil durumlar konusunda sizi uyarmak için gönderilir. Kötü amaçlı uygulamalar acil hücre yayını alındığında cihazınızın performansına ya da çalışmasına engel olabilir.</string>
-    <string name="permdesc_readContacts">Uygulamaya telefonunuzda depolanan kişilerinizle ilgili verileri okuma izni verir. Uygulamalar ayrıca telefonunuzda kişi oluşturan hesaplara da erişebilir. Bu, yüklediğiniz uygulamalar tarafından oluşturulan hesapları içerebilir. Bu izin, uygulamanın kişi verilerinizi kaydetmesine olanak sağlar ve kötü amaçlı uygulamalar kişi verilerini sizden habersiz paylaşabilir.</string>
+    <string name="permdesc_readContacts">Uygulamaya tabletinizde kayıtlı kişileriniz ile ilgili verileri okuma izni verir. Uygulamalar ayrıca tabletinizde kişi oluşturan hesaplara da erişebilir. Bu, yüklediğiniz uygulamalar tarafından oluşturulan hesapları içerebilir. Bu izin, uygulamanın kişi verilerinizi kaydetmesine olanak sağlar ve kötü amaçlı uygulamalar kişi verilerini sizden habersiz paylaşabilir.</string>
     <string name="permdesc_readInstallSessions">Bir uygulamanın yükleme oturumlarını okumasına izin verir. Bu, etkin paket yüklemeleriyle ilgili ayrıntıların görülmesine olanak tanır.</string>
     <string name="permdesc_readMediaAudio">Uygulamaya, paylaşılan depolama alanınızdaki ses dosyalarını okuma izni verir.</string>
     <string name="permdesc_readMediaImages">Uygulamaya, paylaşılan depolama alanınızdaki resim dosyalarını okuma izni verir.</string>
@@ -2113,11 +2113,11 @@ Gelişmiş bildirimler, kişiler ve mesajlar gibi kişisel bilgiler dahil olmak 
     <string name="permdesc_readNetworkUsageHistory">Uygulamaya, özel ağlar ve uygulamalar için ağ kullanım geçmişini okuma izni verir.</string>
     <string name="permdesc_readPhoneNumbers">Uygulamaya, cihazınızın telefon numaralarına erişme izni verir.</string>
     <string name="permdesc_readPhoneState">Uygulamaya cihazdaki telefon özelliklerine erişme izni verir. Bu izin, uygulamanın telefon numarasını ve cihaz kimliğini, etkin bir çağrı olup olmadığını ve çağrıda bağlanılan karşı tarafın numarasını öğrenmesine olanak sağlar.</string>
-    <string name="permdesc_readSms">Bu uygulama, telefonunuzda kayıtlı tüm SMS mesajlarını (kısa mesajları) okuyabilir.</string>
+    <string name="permdesc_readSms">Bu uygulama, tabletinizde kayıtlı tüm SMS mesajlarını (kısa mesajları) okuyabilir.</string>
     <string name="permdesc_readSyncSettings">Uygulamaya bir hesaba ait senkronizasyon ayarlarını okuma izni verir. Örneğin, bu izne sahip bir uygulama Kişiler uygulamasının bir hesapla senkronize olup olmadığını belirleyebilir.</string>
     <string name="permdesc_readSyncStats">Uygulamaya bir hesaba ait senkronizasyon istatistiklerini okuma izni verir. Buna senkronizasyon etkinlikleri geçmişi ve senkronize edilen veri miktarı bilgileri de dahildir.</string>
     <string name="permdesc_readVisualUserSelect">Uygulamaya, paylaşılan depolama alanınızdan seçtiğiniz resim ve video dosyalarını okuma izni verir.</string>
-    <string name="permdesc_receiveBootCompleted">Uygulamaya, kendisini sistem açılışı bittikten hemen sonra başlatma izni verir. Bu izin, telefonun başlatılması için daha uzun bir süre geçmesine ve uygulamanın her zaman çalışarak telefonu yavaşlatmasına neden olur.</string>
+    <string name="permdesc_receiveBootCompleted">Uygulamaya, kendisini sistem açılışı bittikten hemen sonra başlatma izni verir. Bu izin, tabletin başlaması için daha uzun süre geçmesine ve uygulamanın her zaman çalışarak tableti yavaşlatmasına neden olabilir.</string>
     <string name="permdesc_receiveMms">Uygulamaya MMS iletilerini alma ve işleme izni verir. Bu izin, uygulamanın cihazınıza gönderilen iletileri takip edip size göstermeden silebileceği anlamına gelir.</string>
     <string name="permdesc_receiveSms">Uygulamaya SMS iletilerini alma ve işleme izni verir. Bu izin, uygulamanın cihazınıza gönderilen iletileri takip edip size göstermeden silebileceği anlamına gelir.</string>
     <string name="permdesc_receiveWapPush">Uygulamaya WAP mesajlarını alma ve işleme izni verir. Buna, size gönderilen mesajları takip edip size göstermeden silebilme izni de dahildir.</string>
@@ -2139,7 +2139,7 @@ Gelişmiş bildirimler, kişiler ve mesajlar gibi kişisel bilgiler dahil olmak 
     <string name="permdesc_sendSms">Uygulamaya SMS iletisi gönderme izni verir. Bu durum beklenmeyen ödemelere neden olabilir. Kötü amaçlı uygulamalar onayınız olmadan iletiler göndererek sizi zarara uğratabilir.</string>
     <string name="permdesc_setAlarm">Uygulamaya, çalar saat uygulamasının alarmını ayarlama izni verir. Bazı çalar saat uygulamaları bu özelliği uygulayamayabilir.</string>
     <string name="permdesc_setInputCalibration">Uygulamaya, dokunmatik ekranın kalibrasyon parametrelerini değiştirme izni verir. Normal uygulamalar için hiçbir zaman gerekmez.</string>
-    <string name="permdesc_setTimeZone">Uygulamaya, telefonun saat dilimini değiştirme izni verir.</string>
+    <string name="permdesc_setTimeZone">Uygulamaya, tabletin saat dilimini değiştirme izni verir.</string>
     <string name="permdesc_setWallpaper">Uygulamaya, sistem duvar kağıdını ayarlama izni verir.</string>
     <string name="permdesc_setWallpaperHints">Uygulamaya, sistem duvar kağıdı için boyut ipuçlarını ayarlama izni verir.</string>
     <string name="permdesc_sim_communication">Uygulamanın SIM karta komut göndermesine izin verir. Bu izin çok tehlikelidir.</string>
@@ -2153,7 +2153,7 @@ Gelişmiş bildirimler, kişiler ve mesajlar gibi kişisel bilgiler dahil olmak 
     <string name="permdesc_subscribedFeedsRead">Uygulamaya, o anda senkronize olan özet akışları ile ilgili bilgi alma izni verir.</string>
     <string name="permdesc_systemAlertWindow">Bu uygulama, uygulamaların üzerinde veya ekranın diğer kısımlarında görünebilir. Bu durum, normal uygulama kullanımını etkileyebilir ve diğer uygulamaların görünümünü değiştirebilir.</string>
     <string name="permdesc_systemCamera">Ayrıcalık tanınmış bu veya sistem uygulaması herhangi bir zamanda sistem kamerası kullanarak fotoğraf çekebilir ve video kaydedebilir. Uygulamanın da bu ayrıcalığa sahip olması için android.permission.CAMERA izni gerektirir</string>
-    <string name="permdesc_transmitIr">Uygulamaya, telefonunun kızıl ötesi vericisini kullanma izni verir.</string>
+    <string name="permdesc_transmitIr">Uygulamaya, tabletin kızıl ötesi vericisini kullanma izni verir.</string>
     <string name="permdesc_turnScreenOn">Uygulamaya ekranı açma izni verir.</string>
     <string name="permdesc_ucsPlugin">Üçüncü taraf kimlik bilgisi depolama eklentileriyle çalışın.</string>
     <string name="permdesc_uninstall_shortcut">Uygulamaya, kullanıcının müdahalesi olmadan kısayolları Ana Ekrandan kaldırma izni verir.</string>
@@ -2167,10 +2167,10 @@ Gelişmiş bildirimler, kişiler ve mesajlar gibi kişisel bilgiler dahil olmak 
     <string name="permdesc_vibrate">Uygulamaya, titreşimi denetleme izni verir.</string>
     <string name="permdesc_vibrator_state">Uygulamanın titreşim durumuna erişimesine izni verir.</string>
     <string name="permdesc_videoWrite">Uygulamanın video koleksiyonunuzu değiştirmesine izin verir.</string>
-    <string name="permdesc_wakeLock">Uygulamaya, telefonun uykuya geçmesini önleme izni verir.</string>
-    <string name="permdesc_writeCalendar">Bu uygulama, telefonunuza takvim etkinlikleri ekleyebilir, mevcut etkinlikleri kaldırabilir ve değiştirebilir. Bu uygulama, takvim sahiplerinden gelmiş gibi görünen iletiler gönderebilir veya takvim sahiplerinin bilgisi olmadan etkinlikleri değiştirebilir.</string>
-    <string name="permdesc_writeCallLog">Uygulamaya telefonunuzun arama günlüğünde (gelen ve giden aramalarla ilgili veriler dahil olmak üzere) değişiklik yapma izni verir. Kötü amaçlı uygulamalar bu izni kullanarak arama günlüğünüzü silebilir veya değiştirebilir.</string>
-    <string name="permdesc_writeContacts">Uygulamaya telefonunuzda kayıtlı kişileriniz ile ilgili verileri değiştirme izni verir. Bu izin, uygulamanın kişi verilerinizi silmesine olanak sağlar.</string>
+    <string name="permdesc_wakeLock">Uygulamaya, tabletin uykuya geçmesini önleme izni verir.</string>
+    <string name="permdesc_writeCalendar">Bu uygulama, tabletinize takvim etkinlikleri ekleyebilir, mevcut etkinlikleri kaldırabilir ve değiştirebilir. Bu uygulama, takvim sahiplerinden gelmiş gibi görünen iletiler gönderebilir veya takvim sahiplerinin bilgisi olmadan etkinlikleri değiştirebilir.</string>
+    <string name="permdesc_writeCallLog">Uygulamaya tabletinizin çağrı günlüğünde (gelen ve giden çağrılarla ilgili veriler dahil olmak üzere) değişiklik yapma izni verir. Kötü amaçlı uygulamalar bu izni kullanarak çağrı günlüğünüzü silebilir veya değiştirebilir.</string>
+    <string name="permdesc_writeContacts">Uygulamaya tabletinizde kayıtlı kişileriniz ile ilgili verileri değiştirme izni verir. Bu izin, uygulamanın kişi verilerinizi silmesine olanak sağlar.</string>
     <string name="permdesc_writeSettings">Uygulamaya, sistem ayarı verilerini değiştirme izni verir. Kötü amaçlı uygulamalar sistem yapılandırmanızı bozabilir.</string>
     <string name="permdesc_writeSyncSettings">Uygulamaya bir hesaba ait senkronizasyon ayarlarını değiştirme izni verir. Örneğin, bu izne sahip bir uygulama Kişiler uygulamasının bir hesapla senkronize edilmesini etkinleştirebilir.</string>
     <string name="permgroupdesc_activityRecognition">fiziksel aktivitenize erişin</string>
@@ -2445,7 +2445,7 @@ izin isteğinde bulunuldu."</string>
     <string name="permlab_uwb_ranging">yakındaki Ultra Geniş Bant cihazların birbirine göre konumunu bul</string>
     <string name="permlab_vibrate">titreşimi denetleme</string>
     <string name="permlab_videoWrite">video koleksiyonunuzu değiştirme</string>
-    <string name="permlab_wakeLock">telefonun uykuya geçmesini önleme</string>
+    <string name="permlab_wakeLock">tabletin uykuya geçmesini önle</string>
     <string name="permlab_writeCalendar">sahibin bilgisi olmadan takvim etkinlikleri ekle veya mevcut etkinlikleri değiştir ve misafirlere e-posta gönder</string>
     <string name="permlab_writeCallLog">çağrı günlüğüne yaz</string>
     <string name="permlab_writeContacts">kişilerinizi değiştirme</string>
@@ -2487,7 +2487,7 @@ izin isteğinde bulunuldu."</string>
     <string name="policydesc_allow_desktopsync">Masaüstü eşitleme kullanımını engelleyin.</string>
     <string name="policydesc_allow_internetsharing">Mobil Erişim Noktası kullanımını engelleyin.</string>
     <string name="policydesc_allow_irda">IrDA kullanımını engelleyin.</string>
-    <string name="policydesc_allow_popimapemail">Telefonda POP ve IMAP e-posta kullanımını engelleyin.</string>
+    <string name="policydesc_allow_popimapemail">Tablette POP ve IMAP e-posta kullanımını engelleyin.</string>
     <string name="policydesc_allow_storagecard">SD kartların kullanımını engelleyin.</string>
     <string name="policydesc_allow_textmessaging">Metin ve multimedya mesajlaşma kullanımını engelleyin.</string>
     <string name="policydesc_allow_thirdParty">Bu uygulama, üçüncü taraf uygulamaların çalışmasını engelleyebilir.</string>
@@ -2505,10 +2505,10 @@ izin isteğinde bulunuldu."</string>
     <string name="policydesc_setGlobalProxy">"Politika etkin olduğunda kullanılacak cihaz genelinde geçerli proxy'yi ayarlar. Genel proxy'yi yalnızca cihaz sahibi ayarlayabilir."</string>
     <string name="policydesc_unsigned_app">Bu uygulama, bilinmeyen kaynaklardan uygulamaların çalışmasını engelleyebilir.</string>
     <string name="policydesc_unsigned_pkg">Bu uygulama, bilinmeyen kaynaklardan uygulamaların yüklenmesini engelleyebilir.</string>
-    <string name="policydesc_watchLogin">Ekran kilidini açarken yapılan yanlış şifre girişi denemelerini izler ve çok sayıda yanlış şifre girişi denemesi yapılmışsa telefonu kilitler veya telefonun tüm verilerini siler.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Ekran kilidi açılırken girilen hatalı şifre sayısını takip edin ve çok fazla sayıda hatalı şifre girildiğinde telefonu kilitleyin veya söz konusu kullanıcının tüm verilerini silin.</string>
-    <string name="policydesc_wipeData">Fabrika verilerine sıfırlama işlemi gerçekleştirerek telefondaki verileri uyarıda bulunmadan siler.</string>
-    <string name="policydesc_wipeData_secondaryUser">Uyarı yapmadan bu kullanıcının bu telefondaki verilerini siler.</string>
+    <string name="policydesc_watchLogin">Ekran kilidini açarken yapılan yanlış şifre girme denemelerini izler ve çok fazla sayıda yanlış şifre girme denemesi yapılmışsa tableti kilitler veya tabletteki tüm verileri siler.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Ekran kilidi açılırken girilen hatalı şifre sayısını takip edin ve çok fazla sayıda hatalı şifre girildiğinde tableti kilitleyin veya söz konusu kullanıcının tüm verilerini silin.</string>
+    <string name="policydesc_wipeData">Fabrika verilerine sıfırlama işlemi gerçekleştirerek tabletteki verileri uyarıda bulunmadan siler.</string>
+    <string name="policydesc_wipeData_secondaryUser">Uyarı yapmadan bu kullanıcının bu tabletteki verilerini silin.</string>
     <string name="policylab_allow_bluetoothmode">"Bluetooth'u devre dışı bırak"</string>
     <string name="policylab_allow_browser">"İnternet'i devre dışı bırak"</string>
     <string name="policylab_allow_camera">Kameraları devre dışı bırak</string>
@@ -2542,7 +2542,7 @@ izin isteğinde bulunuldu."</string>
     <string name="postalTypeHome">Ev</string>
     <string name="postalTypeOther">Diğer</string>
     <string name="postalTypeWork">İş</string>
-    <string name="power_dialog">Telefon seçenekleri</string>
+    <string name="power_dialog">Tablet seçenekleri</string>
     <string name="power_off">Kapat</string>
     <string name="prepend_shortcut_label">Menü+</string>
     <string name="preposition_for_date">%s</string>
@@ -2588,7 +2588,7 @@ izin isteğinde bulunuldu."</string>
     <string name="recent_tasks_title">En Son Görevler</string>
     <string name="recording_fail">Mikrofon %1$s uygulamasında, şu anda %2$s uygulamasında kullanıldığı için kullanılamaz.</string>
     <string name="recording_popup">%s mikrofonu kullanıyor.</string>
-    <string name="recording_popup_device">Telefon</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">%s, Bluetooth mikrofonu kullanıyor.</string>
     <string name="recording_popup_with_device">%1$s, %2$s cihazının mikrofonunu kullanıyor.</string>
     <string name="redo">Yinele</string>
@@ -2735,12 +2735,12 @@ Uzun süre yüksek ses seviyesinde dinlemek işitme duyunuza zarar verebilir."</
     <string name="screenshot_edit">Düzenle</string>
     <string name="sd_card_unavailable_message">Farklı bir kullanıcı profili kullanımdayken takıldığı için bu SD kartı kullanamazsınız.</string>
     <string name="sd_card_unavailable_title">SD kart kullanılamıyor</string>
-    <string name="sdcard_bad_removal_message">Bir SD kart güvenli olmayan şekilde çıkarıldı. Telefonunuzun beklenmedik şekilde yeniden başlatılmasını önlemek için kaydedilmemiş verileri kaydedin ve şimdi yeniden başlatın.</string>
+    <string name="sdcard_bad_removal_message">Bir SD kart güvenli olmayan şekilde çıkarıldı. Tabletinizin beklenmedik şekilde yeniden başlatılmasını önlemek için kaydedilmemiş verileri kaydedin ve şimdi yeniden başlatın.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD kart şifresini çöz</string>
     <string name="sdcard_batch_decrypt_noti_title">SD kart şifre çözme</string>
     <string name="sdcard_batch_decrypt_popup_content">Şifreli SD kart kullanılmadan önce şifresinin çözülmesi gerekir. Şifre çözme bir saat veya daha fazla sürebilir. Dolu bir pil ile başlayın ve şifre çözme tamamlanana kadar cihazınızı fişe takılı halde tutun. Şifre çözme işlemini kesintiye uğratmak, verilerinizin bir kısmının veya tamamının kaybolmasına neden olabilir.</string>
     <string name="sdcard_decrypt_err_notification">SD kart şifre çözmede hata oluştu.</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD kartınızdaki bazı dosyalar başka bir cihazda şifrelendiğinden bu telefonda kullanılamıyor.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD kartınızdaki bazı dosyalar başka bir cihazda şifrelendiğinden bu tablette kullanılamıyor.</string>
     <string name="sdcard_decrypt_notification">SD kart şifresi çözüldü.</string>
     <string name="sdcard_decrypt_title_notification">SD kart şifre çözme</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD kart şifrsi çözülyr…</string>
@@ -2998,7 +2998,7 @@ Tuşların yeniden görünmesini sağlamak için okla gösterildiği gibi ekran�
     <string name="showing_touch_sensitivity_noti_action">Aç</string>
     <string name="showing_touch_sensitivity_noti_text">"Daha doğru dokunma yanıtı için Privacy Screen veya Notepaper Screen'i kullanırken Dokunma hassasiyetini açın."</string>
     <string name="showing_touch_sensitivity_noti_title">Dokunma hassasiyetini artır</string>
-    <string name="shutdown_confirm">Telefonunuz kapanacak.</string>
+    <string name="shutdown_confirm">Tabletiniz kapanacak.</string>
     <string name="shutdown_confirm_question">Kapatmak istiyor musunuz?</string>
     <string name="shutdown_progress">Kapanıyor…</string>
     <string name="side_key_double_press_deleted_app">Uygulama kaldırıldı. Başka bir şey seçin.</string>
@@ -3225,7 +3225,7 @@ Bu korumayı kaldırmak için Ayarlar > Güvenlik ve gizlilik > Otomatik Engelle
     <string name="usb_abnormal_reset_title">USB bağlantısı sabit değil</string>
     <string name="usb_abnormal_reset_toast">USB bağlantısı sabit değil. Kabloyu çıkarın ve tekrar takın veya farklı bir kablo kullanın.</string>
     <string name="usb_accessory_notification_title">Bir USB aksesuarına bağlandı</string>
-    <string name="usb_bad_removal_message">Bir USB depolama cihazı güvenli olmayan şekilde çıkarıldı. Telefonunuzun beklenmedik şekilde yeniden başlatılmasını önlemek için kaydedilmemiş verileri kaydedin ve şimdi yeniden başlatın.</string>
+    <string name="usb_bad_removal_message">Bir USB depolama cihazı güvenli olmayan şekilde çıkarıldı. Tabletinizin beklenmedik şekilde yeniden başlatılmasını önlemek için kaydedilmemiş verileri kaydedin ve şimdi yeniden başlatın.</string>
     <string name="usb_blocked_by_emergency_mode">Acil durum modunda bazı USB işlevleri kullanılamaz.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Maksimum güç tasarrufu modu etkinken bağlı USB cihazıyla ilgili işlevler kullanılamaz.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Maksimum güç tasarrufu modu açıkken bazı USB işlevleri kısıtlanır.</string>
@@ -3235,7 +3235,7 @@ Bu korumayı kaldırmak için Ayarlar > Güvenlik ve gizlilik > Otomatik Engelle
     <string name="usb_camera_disconnected_notification_title">Medya cihazının bağlantısı kesildi</string>
     <string name="usb_cd_installer_notification_title">Yazılım güncellemesi</string>
     <string name="usb_charging_notification_title">"Bu cihaz USB'den şarj oluyor"</string>
-    <string name="usb_charing_only_notification_title">USB şarjı</string>
+    <string name="usb_charing_only_notification_title">Bağlandı</string>
     <string name="usb_contaminant_detected_message">USB bağlantı noktası otomatik olarak devre dışı bırakıldı. Daha fazla bilgi için dokunun.</string>
     <string name="usb_contaminant_detected_title">USB bağlantı noktasında sıvı veya toz var</string>
     <string name="usb_contaminant_not_detected_message">Telefon artık sıvıları veya tozları algılamıyor.</string>
@@ -3247,11 +3247,11 @@ Bu korumayı kaldırmak için Ayarlar > Güvenlik ve gizlilik > Otomatik Engelle
     <string name="usb_host_cable_disconnected_notification_title">USB bağlayıcı çıkartıldı.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Bu cihaza erişilemiyor. Takılan cihaz harici güç beslemesi istiyor.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Yüksek-güçlü USB cihazı takıldı.</string>
-    <string name="usb_host_resource_exceed_message">Telefonunuzun USB kontrol cihazının bu cihaza bağlanmak için yeterli kaynağı yok. Cihazın bağlantısını kesip tekrar bağlamayı deneyin.</string>
+    <string name="usb_host_resource_exceed_message">Tabletinizin USB kontrol cihazının bu cihaza bağlanmak için yeterli kaynağı yok. Cihazın bağlantısını kesip tekrar bağlamayı deneyin.</string>
     <string name="usb_host_resource_exceed_title">Yeterli USB kontrol cihazı kaynağı yok</string>
-    <string name="usb_hub_depth_exceed_message">Telefonunuz aynı anda sadece en fazla 5 USB hub bağlantısını destekler.</string>
+    <string name="usb_hub_depth_exceed_message">Tabletiniz aynı anda sadece en fazla 5 USB hub bağlantısını destekler.</string>
     <string name="usb_hub_depth_exceed_title">Maksimum USB hub bağlantısı</string>
-    <string name="usb_hub_power_exceed_message">"Telefonunuz bu USB cihazı için yeterli güç sağlayamıyor. Cihazı telefonunuza bağlamadan önce kendi güç kaynağına sahip bir USB hub'a bağlayın."</string>
+    <string name="usb_hub_power_exceed_message">"Tabletiniz bu USB cihazı için yeterli güç sağlayamıyor. Cihazı tabletinize bağlamadan önce kendi güç kaynağına sahip bir USB hub'a bağlayın."</string>
     <string name="usb_increase_battery_usage">USB bağlantısı pil kullanımını artırabilir.</string>
     <string name="usb_keyboard_connected_notification_title">Klavye bağlandı</string>
     <string name="usb_keyboard_disconnected_notification_title">Klavye bağlı değil</string>
@@ -3294,8 +3294,8 @@ Bu korumayı kaldırmak için Ayarlar > Güvenlik ve gizlilik > Otomatik Engelle
     <string name="usb_ums_connected_notification_message_usbhost">USB yığın depolama beklenmedik şekilde çıkarıldı.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB yığın depolama bağlı</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB yığın depolama güvenli şekilde çıkarıldı.</string>
-    <string name="usb_unblock_by_screen_unlock">Bağlı USB cihazını kullanmak için telefonunuzun kilidini açın.</string>
-    <string name="usb_unsupport_accessory_message">Bu USB cihazı, telefonunuz tarafından desteklenmiyor.</string>
+    <string name="usb_unblock_by_screen_unlock">Bağlı USB cihazını kullanmak için tabletinizin kilidini açın.</string>
+    <string name="usb_unsupport_accessory_message">Bu USB cihazı, tabletiniz tarafından desteklenmiyor.</string>
     <string name="usb_unsupport_accessory_title">USB cihazı desteklenmiyor</string>
     <string name="usb_unsupported_audio_accessory_message">Takılan cihaz bu telefonla uyumlu değil. Daha fazla bilgi edinmek için dokunun.</string>
     <string name="usb_unsupported_audio_accessory_title">Analog ses aksesuarı algılandı</string>
@@ -3316,19 +3316,19 @@ Bu korumayı kaldırmak için Ayarlar > Güvenlik ve gizlilik > Otomatik Engelle
     <string name="usb_water_dialg_method_2_desc_2">Bağlantı noktasına fan veya kurutucu (sadece soğuk hava) doğrultarak kurumayı hızlandırabilirsiniz.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Şarj/USB bağlantı noktanızda nem veya yabancı madde algıladık.
 
-Şarj/USB bağlantı noktanızda toz veya kir gibi yabancı maddelerin olup olmadığını kontrol edin. Telefonunuzun zarar görmesini önlemek için şarj bağlantı noktası temizleninceye ve nem giderilinceye kadar hiçbir şey takmayın.
+Şarj/USB bağlantı noktanızda toz veya kir gibi yabancı maddelerin olup olmadığını kontrol edin. Tabletinizin zarar görmesini önlemek için şarj bağlantı noktası temizleninceye ve nem giderilinceye kadar hiçbir şey takmayın.
 
-Bağlantı noktasını kurutmak için telefonu sallayarak nemi giderin, ardından kurumasını bekleyin. Kuruması birkaç saat sürebilir. Bağlantı noktasına bir fan veya kurutma makinesi (sadece serin hava) doğrultarak kuruma sürecini hızlandırabilirsiniz."</string>
+Bağlantı noktasını kurutmak için tableti sallayarak nemi giderin, ardından kurumasını bekleyin. Kuruması birkaç saat sürebilir. Bağlantı noktasına bir fan veya kurutma makinesi (sadece serin hava) doğrultarak kuruma sürecini hızlandırabilirsiniz."</string>
     <string name="usb_water_dialg_positive_button">Tamam</string>
     <string name="usb_water_dialg_support_wireless_charging">"Şarj/USB bağlantı noktanızda nem veya yabancı madde algıladık.
 
-Şarj/USB bağlantı noktanızda toz veya kir gibi yabancı maddelerin olup olmadığını kontrol edin. Telefonunuzun zarar görmesini önlemek için şarj bağlantı noktası temizleninceye ve nem giderilinceye kadar hiçbir şey takmayın.
+Şarj/USB bağlantı noktanızda toz veya kir gibi yabancı maddelerin olup olmadığını kontrol edin. Tabletinizin zarar görmesini önlemek için şarj bağlantı noktası temizleninceye ve nem giderilinceye kadar hiçbir şey takmayın.
 
-Bağlantı noktasını kurutmak için telefonu sallayarak nemi giderin, ardından kurumasını bekleyin. Kuruması birkaç saat sürebilir. Bağlantı noktasına bir fan veya kurutma makinesi (sadece serin hava) doğrultarak kuruma sürecini hızlandırabilirsiniz.
+Bağlantı noktasını kurutmak için tableti sallayarak nemi giderin, ardından kurumasını bekleyin. Bu birkaç saat sürebilir. Bağlantı noktasına fan veya kurutucu (sadece soğuk hava) doğrultarak kurumayı hızlandırabilirsiniz.
 
-Bu sırada telefonunuzu kablosuz şarj edebilirsiniz."</string>
+Bu süre içerisinde tabletinizi kablosuz olarak şarj edebilirsiniz."</string>
     <string name="usb_water_notification_content">Şarj/USB bağlantı noktanızda nem veya yabancı madde var. Şarj etmeden önce kontrol edin.</string>
-    <string name="usb_water_notification_message">Şarj cihazınızda/USB bağlantı noktanızda nem algılandı. Telefonunuzu şarj etmeden önce kuru olduğundan emin olun. Tamamen kuruması biraz zaman alabilir.</string>
+    <string name="usb_water_notification_message">Şarj cihazınızda/USB bağlantı noktanızda nem algılandı. Tabletinizi şarj etmeden önce kuru olduğundan emin olun. Tamamen kuruması biraz zaman alabilir.</string>
     <string name="usb_water_notification_message_button">Ayrıntılar</string>
     <string name="usb_water_notification_title">Şrj chzı/USB bğ. nkts kntrl edn</string>
     <string name="usbhostStorage_restrict">Güvenlik ilkesi USB ana depolamasının kullanımını engelliyor.</string>
@@ -3346,7 +3346,7 @@ Bu sırada telefonunuzu kablosuz şarj edebilirsiniz."</string>
     <string name="user_switched">Geçerli kullanıcı: %1$s.</string>
     <string name="user_switching_message">%1$s adlı kullanıcıya geçiliyor…</string>
     <string name="validity_period">Geçerlilik:</string>
-    <string name="vdm_camera_access_denied">%1$s cihazınızdan telefonun kamerasına erişilemiyor</string>
+    <string name="vdm_camera_access_denied">%1$s cihazınızdan tabletin kamerasına erişilemiyor</string>
     <string name="vdm_pip_blocked">Yayın sırasında pencere içinde pencere görüntülenemez</string>
     <string name="vdm_secure_window">Canlı oynatılırken bu içeriğe erişilemez. Bunun yerine telefonunuzu kullanmayı deneyin.</string>
     <string name="view_and_control_notification_content">%s, ekranınızı görüntüleyip kontrol edebilir. İncelemek için dokunun.</string>

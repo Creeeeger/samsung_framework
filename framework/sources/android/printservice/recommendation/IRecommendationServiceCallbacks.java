@@ -84,8 +84,9 @@ public interface IRecommendationServiceCallbacks extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRecommendationServiceCallbacks {
+        public static class Proxy implements IRecommendationServiceCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

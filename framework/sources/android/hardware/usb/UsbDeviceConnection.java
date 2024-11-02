@@ -49,7 +49,6 @@ public class UsbDeviceConnection {
         this.mDevice = device;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean open(String name, ParcelFileDescriptor pfd, Context context) {
         boolean wasOpened;
         this.mContext = context.getApplicationContext();
@@ -62,7 +61,6 @@ public class UsbDeviceConnection {
         return wasOpened;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isOpen() {
         return this.mNativeContext != 0;
     }
@@ -71,7 +69,6 @@ public class UsbDeviceConnection {
         return this.mContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean cancelRequest(UsbRequest request) {
         synchronized (this.mLock) {
             if (!isOpen()) {
@@ -81,7 +78,6 @@ public class UsbDeviceConnection {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean queueRequest(UsbRequest request, ByteBuffer buffer, int length) {
         synchronized (this.mLock) {
             if (!isOpen()) {
@@ -91,7 +87,6 @@ public class UsbDeviceConnection {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean queueRequest(UsbRequest request, ByteBuffer buffer) {
         synchronized (this.mLock) {
             if (!isOpen()) {

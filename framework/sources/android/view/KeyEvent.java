@@ -474,14 +474,15 @@ public class KeyEvent extends InputEvent implements Parcelable {
     private static final String[] META_SYMBOLIC_NAMES = {"META_SHIFT_ON", "META_ALT_ON", "META_SYM_ON", "META_FUNCTION_ON", "META_ALT_LEFT_ON", "META_ALT_RIGHT_ON", "META_SHIFT_LEFT_ON", "META_SHIFT_RIGHT_ON", "META_CAP_LOCKED", "META_ALT_LOCKED", "META_SYM_LOCKED", "0x00000800", "META_CTRL_ON", "META_CTRL_LEFT_ON", "META_CTRL_RIGHT_ON", "0x00008000", "META_META_ON", "META_META_LEFT_ON", "META_META_RIGHT_ON", "0x00080000", "META_CAPS_LOCK_ON", "META_NUM_LOCK_ON", "META_SCROLL_LOCK_ON", "0x00800000", "0x01000000", "0x02000000", "0x04000000", "0x08000000", "0x10000000", "0x20000000", "0x40000000", "0x80000000"};
     private static final Object gRecyclerLock = new Object();
     public static final Parcelable.Creator<KeyEvent> CREATOR = new Parcelable.Creator<KeyEvent>() { // from class: android.view.KeyEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeyEvent createFromParcel(Parcel in) {
             in.readInt();
             return KeyEvent.createFromParcelBody(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyEvent[] newArray(int size) {
             return new KeyEvent[size];
@@ -1415,6 +1416,24 @@ public class KeyEvent extends InputEvent implements Parcelable {
             i++;
         }
         return result.toString();
+    }
+
+    /* renamed from: android.view.KeyEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyEvent createFromParcel(Parcel in) {
+            in.readInt();
+            return KeyEvent.createFromParcelBody(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyEvent[] newArray(int size) {
+            return new KeyEvent[size];
+        }
     }
 
     public static KeyEvent createFromParcelBody(Parcel in) {

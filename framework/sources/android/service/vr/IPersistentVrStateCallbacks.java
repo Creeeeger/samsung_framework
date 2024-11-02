@@ -83,8 +83,9 @@ public interface IPersistentVrStateCallbacks extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IPersistentVrStateCallbacks {
+        public static class Proxy implements IPersistentVrStateCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

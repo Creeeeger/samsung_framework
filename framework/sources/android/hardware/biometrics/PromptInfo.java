@@ -9,13 +9,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public class PromptInfo implements Parcelable {
     public static final Parcelable.Creator<PromptInfo> CREATOR = new Parcelable.Creator<PromptInfo>() { // from class: android.hardware.biometrics.PromptInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PromptInfo createFromParcel(Parcel in) {
             return new PromptInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PromptInfo[] newArray(int size) {
             return new PromptInfo[size];
@@ -51,7 +52,6 @@ public class PromptInfo implements Parcelable {
         this.mIsForLegacyFingerprintManager = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PromptInfo(Parcel in) {
         this.mConfirmationRequested = true;
         this.mAllowedSensorIds = new ArrayList();
@@ -86,6 +86,23 @@ public class PromptInfo implements Parcelable {
             return;
         }
         this.mSemChallengeData = null;
+    }
+
+    /* renamed from: android.hardware.biometrics.PromptInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PromptInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PromptInfo createFromParcel(Parcel in) {
+            return new PromptInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PromptInfo[] newArray(int size) {
+            return new PromptInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

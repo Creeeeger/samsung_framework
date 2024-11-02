@@ -133,8 +133,9 @@ public interface ISemBiometricSysUiCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemBiometricSysUiCallback {
+        public static class Proxy implements ISemBiometricSysUiCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

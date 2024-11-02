@@ -43,7 +43,6 @@ public class TooltipPopup {
     private int mX;
     private int mY;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         int orientation = v.getResources().getConfiguration().orientation;
         if (this.mLastOrientation != orientation && this.mContentView != null && isShowing()) {

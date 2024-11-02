@@ -88,7 +88,6 @@ public final class SurfaceSyncGroup {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$new$0(SurfaceControl.Transaction transaction) {
         if (transaction != null) {
             transaction.apply();
@@ -121,7 +120,6 @@ public final class SurfaceSyncGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$1(Consumer transactionReadyConsumer, SurfaceControl.Transaction transaction) {
         if (Trace.isTagEnabled(8L)) {
             Trace.instantForTrack(8L, this.mTrackName, "Final TransactionCallback with " + transaction);
@@ -135,7 +133,6 @@ public final class SurfaceSyncGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void invokeSyncCompleteCallbacks() {
         this.mSyncCompleteCallbacks.forEach(new Consumer() { // from class: android.window.SurfaceSyncGroup$$ExternalSyntheticLambda5
             @Override // java.util.function.Consumer
@@ -190,7 +187,6 @@ public final class SurfaceSyncGroup {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$add$3(SurfaceSyncGroup surfaceSyncGroup, SurfaceControl.Transaction transaction) {
         surfaceSyncGroup.addTransaction(transaction);
         surfaceSyncGroup.markSyncReady();
@@ -246,7 +242,10 @@ public final class SurfaceSyncGroup {
             }
             synchronized (this.mLock) {
                 if (!this.mHasWMSync) {
-                    ISurfaceSyncGroupCompletedListener.Stub stub = new ISurfaceSyncGroupCompletedListener.Stub() { // from class: android.window.SurfaceSyncGroup.1
+                    AnonymousClass1 anonymousClass1 = new ISurfaceSyncGroupCompletedListener.Stub() { // from class: android.window.SurfaceSyncGroup.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // android.window.ISurfaceSyncGroupCompletedListener
                         public void onSurfaceSyncGroupComplete() {
                             synchronized (SurfaceSyncGroup.this.mLock) {
@@ -254,8 +253,8 @@ public final class SurfaceSyncGroup {
                             }
                         }
                     };
-                    this.mSurfaceSyncGroupCompletedListener = stub;
-                    if (!addSyncToWm(this.mToken, false, stub)) {
+                    this.mSurfaceSyncGroupCompletedListener = anonymousClass1;
+                    if (!addSyncToWm(this.mToken, false, anonymousClass1)) {
                         this.mSurfaceSyncGroupCompletedListener = null;
                         if (Trace.isTagEnabled(8L)) {
                             Trace.asyncTraceForTrackEnd(8L, this.mTrackName, hashCode());
@@ -280,6 +279,20 @@ public final class SurfaceSyncGroup {
         }
     }
 
+    /* renamed from: android.window.SurfaceSyncGroup$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends ISurfaceSyncGroupCompletedListener.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.window.ISurfaceSyncGroupCompletedListener
+        public void onSurfaceSyncGroupComplete() {
+            synchronized (SurfaceSyncGroup.this.mLock) {
+                SurfaceSyncGroup.this.invokeSyncCompleteCallbacks();
+            }
+        }
+    }
+
     public void addTransaction(SurfaceControl.Transaction transaction) {
         synchronized (this.mLock) {
             if (this.mFinished) {
@@ -297,7 +310,6 @@ public final class SurfaceSyncGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean addSyncToWm(IBinder token, boolean parentSyncGroupMerge, ISurfaceSyncGroupCompletedListener surfaceSyncGroupCompletedListener) {
         try {
             if (Trace.isTagEnabled(8L)) {
@@ -388,7 +400,6 @@ public final class SurfaceSyncGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setTransactionCallbackFromParent$5(ITransactionReadyCallback transactionReadyCallback, Consumer lastCallback, SurfaceControl.Transaction transaction) {
         if (Trace.isTagEnabled(8L)) {
             Trace.asyncTraceForTrackBegin(8L, this.mTrackName, "Invoke transactionReadyCallback=" + transactionReadyCallback.hashCode(), hashCode());
@@ -408,7 +419,6 @@ public final class SurfaceSyncGroup {
         return this.mName;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void checkIfSyncIsComplete() {
         boolean showDebug = this.mTimeoutOccurred || !TextUtils.isEmpty(this.mTransaction.mDebugName);
         if (this.mTimeoutOccurred) {
@@ -442,8 +452,43 @@ public final class SurfaceSyncGroup {
         }
     }
 
-    public ITransactionReadyCallback createTransactionReadyCallback(final boolean parentSyncGroupMerge) {
+    /* renamed from: android.window.SurfaceSyncGroup$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends ITransactionReadyCallback.Stub {
+        final /* synthetic */ boolean val$parentSyncGroupMerge;
+
+        AnonymousClass2(boolean z) {
+            parentSyncGroupMerge = z;
+        }
+
+        @Override // android.window.ITransactionReadyCallback
+        public void onTransactionReady(SurfaceControl.Transaction t) {
+            synchronized (SurfaceSyncGroup.this.mLock) {
+                if (t != null) {
+                    t.sanitize(Binder.getCallingPid(), Binder.getCallingUid());
+                    if (parentSyncGroupMerge) {
+                        t.merge(SurfaceSyncGroup.this.mTransaction);
+                    }
+                    SurfaceSyncGroup.this.mTransaction.merge(t);
+                }
+                SurfaceSyncGroup.this.mPendingSyncs.remove(this);
+                if (Trace.isTagEnabled(8L)) {
+                    Trace.instantForTrack(8L, SurfaceSyncGroup.this.mTrackName, "onTransactionReady callback=" + hashCode());
+                }
+                Slog.i(SurfaceSyncGroup.TAG, "onTransactionReady mName=" + SurfaceSyncGroup.this.mName + " callback=" + hashCode());
+                SurfaceSyncGroup.this.checkIfSyncIsComplete();
+            }
+        }
+    }
+
+    public ITransactionReadyCallback createTransactionReadyCallback(boolean parentSyncGroupMerge) {
         ITransactionReadyCallback transactionReadyCallback = new ITransactionReadyCallback.Stub() { // from class: android.window.SurfaceSyncGroup.2
+            final /* synthetic */ boolean val$parentSyncGroupMerge;
+
+            AnonymousClass2(boolean parentSyncGroupMerge2) {
+                parentSyncGroupMerge = parentSyncGroupMerge2;
+            }
+
             @Override // android.window.ITransactionReadyCallback
             public void onTransactionReady(SurfaceControl.Transaction t) {
                 synchronized (SurfaceSyncGroup.this.mLock) {
@@ -477,9 +522,12 @@ public final class SurfaceSyncGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ISurfaceSyncGroupImpl extends ISurfaceSyncGroup.Stub {
+        /* synthetic */ ISurfaceSyncGroupImpl(SurfaceSyncGroup surfaceSyncGroup, ISurfaceSyncGroupImplIA iSurfaceSyncGroupImplIA) {
+            this();
+        }
+
         private ISurfaceSyncGroupImpl() {
         }
 
@@ -545,7 +593,6 @@ public final class SurfaceSyncGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addTimeout$6() {
         Log.e(TAG, "Failed to receive transaction ready in " + TRANSACTION_READY_TIMEOUT + "ms. Marking SurfaceSyncGroup(" + this.mName + ") as ready");
         synchronized (this.mLock) {

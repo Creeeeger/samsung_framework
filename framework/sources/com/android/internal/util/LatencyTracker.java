@@ -69,7 +69,6 @@ public class LatencyTracker {
     public @interface Action {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static final class SLatencyTrackerHolder {
         private static final LatencyTracker sLatencyTracker;
@@ -88,7 +87,6 @@ public class LatencyTracker {
         return SLatencyTrackerHolder.sLatencyTracker;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateProperties(DeviceConfig.Properties properties) {
         synchronized (this.mLock) {
             int samplingInterval = properties.getInt("sampling_interval", 5);
@@ -115,7 +113,6 @@ public class LatencyTracker {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startListeningForLatencyTrackerConfigChanges$0(Context context) {
         try {
             updateProperties(DeviceConfig.getProperties("latency_tracker", new String[0]));
@@ -184,7 +181,6 @@ public class LatencyTracker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String getTraceNameOfAction(int action, String tag) {
         if (TextUtils.isEmpty(tag)) {
             return "L<" + getNameOfAction(STATSD_ACTION[action]) + ">";
@@ -260,7 +256,7 @@ public class LatencyTracker {
         }
     }
 
-    /* renamed from: onActionCancel, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onActionCancel */
     public void lambda$onActionStart$1(int action) {
         synchronized (this.mLock) {
             Session session = this.mSessions.get(action);
@@ -303,7 +299,6 @@ public class LatencyTracker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class Session {
         private final int mAction;
@@ -345,7 +340,6 @@ public class LatencyTracker {
             BackgroundThread.getHandler().postDelayed(this.mTimeoutRunnable, TimeUnit.SECONDS.toMillis(15L));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$begin$0(Runnable timeoutAction) {
             Trace.instantForTrack(4096L, traceName(), GpsNetInitiatedHandler.NI_INTENT_KEY_TIMEOUT);
             timeoutAction.run();
@@ -446,6 +440,10 @@ public class LatencyTracker {
         public final int durationMillis;
         public final int logCode;
         public final int statsdAction;
+
+        /* synthetic */ FrameworkStatsLogEvent(int i, int i2, int i3, int i4, FrameworkStatsLogEventIA frameworkStatsLogEventIA) {
+            this(i, i2, i3, i4);
+        }
 
         private FrameworkStatsLogEvent(int action, int logCode, int statsdAction, int durationMillis) {
             this.action = action;

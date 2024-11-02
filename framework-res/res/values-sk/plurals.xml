@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Telefón je nestabilný, pretože bola odstránená karta SD s nainštalovanými aplikáciami. Telefón sa za %d sekúnd reštartuje a vráti sa do normálneho stavu. Pred reštartovaním telefónu uložte všetky neuložené údaje.</item>
+        <item quantity="other">Tablet je nestabilný, pretože bola odstránená karta SD s nainštalovanými aplikáciami. Tablet sa za %d sekúnd reštartuje a vráti sa do normálneho stavu. Pred reštartovaním tabletu uložte všetky neuložené údaje.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefón je nestabilný, pretože bola odstránená karta SD s nainštalovanými aplikáciami. Telefón sa za %d sekundu reštartuje a vráti sa do normálneho stavu. Pred reštartovaním telefónu uložte všetky neuložené údaje.</item>
+        <item quantity="one">Tablet je nestabilný, pretože bola odstránená karta SD s nainštalovanými aplikáciami. Tablet sa za %d sekundu reštartuje a vráti sa do normálneho stavu. Pred reštartovaním tabletu uložte všetky neuložené údaje.</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefón je nestabilný, pretože bola odstránená karta SD s nainštalovanými aplikáciami. Telefón sa za %d sekundy reštartuje a vráti sa do normálneho stavu. Pred reštartovaním telefónu uložte všetky neuložené údaje.</item>
-        <item quantity="many">Telefón je nestabilný, pretože bola odstránená karta SD s nainštalovanými aplikáciami. Telefón sa za %d sekundy reštartuje a vráti sa do normálneho stavu. Pred reštartovaním telefónu uložte všetky neuložené údaje.</item>
+        <item quantity="few">Tablet je nestabilný, pretože bola odstránená karta SD s nainštalovanými aplikáciami. Tablet sa za %d sekundy reštartuje a vráti sa do normálneho stavu. Pred reštartovaním tabletu uložte všetky neuložené údaje.</item>
+        <item quantity="many">Tablet je nestabilný, pretože bola odstránená karta SD s nainštalovanými aplikáciami. Tablet sa za %d sekundy reštartuje a vráti sa do normálneho stavu. Pred reštartovaním tabletu uložte všetky neuložené údaje.</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefón sa reštartuje za %d sekúnd</item>
+        <item quantity="other">Tablet sa za %d sekúnd reštartuje</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefón sa reštartuje za %d sekundu</item>
+        <item quantity="one">Tablet sa za %d sekundu reštartuje</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefón sa reštartuje za %d sekundy</item>
-        <item quantity="many">Telefón sa reštartuje za %d sekundy</item>
+        <item quantity="few">Tablet sa za %d sekundy reštartuje</item>
+        <item quantity="many">Tablet sa za %d sekundy reštartuje</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">
         <item quantity="other">%d aplikácií bolo automaticky zavretých, pretože spôsobovali prehrievanie telefónu. Môžete ich znova otvoriť neskôr, keď telefón vychladne.</item>

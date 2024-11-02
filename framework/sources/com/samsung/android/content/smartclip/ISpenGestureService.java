@@ -798,8 +798,9 @@ public interface ISpenGestureService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISpenGestureService {
+        public static class Proxy implements ISpenGestureService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

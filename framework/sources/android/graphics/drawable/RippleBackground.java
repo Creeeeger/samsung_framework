@@ -8,11 +8,14 @@ import android.graphics.Rect;
 import android.util.FloatProperty;
 import android.view.animation.LinearInterpolator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public class RippleBackground extends RippleComponent {
     private static final TimeInterpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
     private static final BackgroundProperty OPACITY = new BackgroundProperty("opacity") { // from class: android.graphics.drawable.RippleBackground.1
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(RippleBackground object, float value) {
             object.mOpacity = value;
@@ -91,11 +94,29 @@ public class RippleBackground extends RippleComponent {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static abstract class BackgroundProperty extends FloatProperty<RippleBackground> {
         public BackgroundProperty(String name) {
             super(name);
+        }
+    }
+
+    /* renamed from: android.graphics.drawable.RippleBackground$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends BackgroundProperty {
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(RippleBackground object, float value) {
+            object.mOpacity = value;
+            object.invalidateSelf();
+        }
+
+        @Override // android.util.Property
+        public Float get(RippleBackground object) {
+            return Float.valueOf(object.mOpacity);
         }
     }
 }

@@ -84,8 +84,9 @@ public interface IUiModeManagerCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IUiModeManagerCallback {
+        public static class Proxy implements IUiModeManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

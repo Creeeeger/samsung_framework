@@ -86,8 +86,9 @@ public interface ISwitchToProfileCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISwitchToProfileCallback {
+        public static class Proxy implements ISwitchToProfileCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

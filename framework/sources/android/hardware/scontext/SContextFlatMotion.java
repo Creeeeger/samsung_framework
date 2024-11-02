@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextFlatMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextFlatMotion> CREATOR = new Parcelable.Creator<SContextFlatMotion>() { // from class: android.hardware.scontext.SContextFlatMotion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextFlatMotion createFromParcel(Parcel in) {
             return new SContextFlatMotion(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextFlatMotion[] newArray(int size) {
             return new SContextFlatMotion[size];
@@ -22,7 +23,6 @@ public class SContextFlatMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextFlatMotion() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextFlatMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextFlatMotion$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextFlatMotion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextFlatMotion createFromParcel(Parcel in) {
+            return new SContextFlatMotion(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextFlatMotion[] newArray(int size) {
+            return new SContextFlatMotion[size];
+        }
     }
 }

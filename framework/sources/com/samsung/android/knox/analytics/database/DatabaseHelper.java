@@ -266,7 +266,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Cursor getCompressedEventChunk(Integer limit) {
         String sLimit;
         String str = TAG;
@@ -544,7 +543,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return db.delete("feature_blocklist", null, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSyntheticRowId() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query("synthetic_key", new String[]{"row_id"}, null, null, null, null, null);
@@ -613,7 +611,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long deleteCompressedEventChunk(long size) {
         String str = TAG;
         Log.d(str, "deleteCompressedEventChunk(" + size + NavigationBarInflaterView.KEY_CODE_END);
@@ -625,7 +622,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return db.delete("compressed_events", COMPRESSED_EVENTS_DELETE, new String[]{String.valueOf(size)});
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean performCompressedEventsTransaction(ContentValues values) {
         boolean result;
         String str = TAG;

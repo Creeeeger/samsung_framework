@@ -35,8 +35,9 @@ public abstract class NetworkRecommendationProvider {
         return this.mService;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class ServiceWrapper extends INetworkRecommendationProvider.Stub {
+    public final class ServiceWrapper extends INetworkRecommendationProvider.Stub {
         private final Context mContext;
         private final Executor mExecutor;
         private final Handler mHandler = null;
@@ -47,15 +48,36 @@ public abstract class NetworkRecommendationProvider {
         }
 
         @Override // android.net.INetworkRecommendationProvider
-        public void requestScores(final NetworkKey[] networks) throws RemoteException {
+        public void requestScores(NetworkKey[] networks) throws RemoteException {
             enforceCallingPermission();
             if (networks != null && networks.length > 0) {
                 execute(new Runnable() { // from class: android.net.NetworkRecommendationProvider.ServiceWrapper.1
+                    final /* synthetic */ NetworkKey[] val$networks;
+
+                    AnonymousClass1(NetworkKey[] networks2) {
+                        networks = networks2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         NetworkRecommendationProvider.this.onRequestScores(networks);
                     }
                 });
+            }
+        }
+
+        /* renamed from: android.net.NetworkRecommendationProvider$ServiceWrapper$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ NetworkKey[] val$networks;
+
+            AnonymousClass1(NetworkKey[] networks2) {
+                networks = networks2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                NetworkRecommendationProvider.this.onRequestScores(networks);
             }
         }
 

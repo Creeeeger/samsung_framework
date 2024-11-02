@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.ToLongFunction;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-class MtpPropertyList {
+public class MtpPropertyList {
     private int mCode;
     private List<Integer> mObjectHandles = new ArrayList();
     private List<Integer> mPropertyCodes = new ArrayList();

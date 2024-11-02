@@ -13,13 +13,14 @@ public final class ProviderProperties implements Parcelable {
     public static final int ACCURACY_COARSE = 2;
     public static final int ACCURACY_FINE = 1;
     public static final Parcelable.Creator<ProviderProperties> CREATOR = new Parcelable.Creator<ProviderProperties>() { // from class: android.location.provider.ProviderProperties.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProviderProperties createFromParcel(Parcel in) {
             return new ProviderProperties(in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readInt(), in.readInt());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProviderProperties[] newArray(int size) {
             return new ProviderProperties[size];
@@ -46,6 +47,10 @@ public final class ProviderProperties implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface PowerUsage {
+    }
+
+    /* synthetic */ ProviderProperties(boolean z, boolean z2, boolean z3, boolean z4, boolean z5, boolean z6, boolean z7, int i, int i2, ProviderPropertiesIA providerPropertiesIA) {
+        this(z, z2, z3, z4, z5, z6, z7, i, i2);
     }
 
     private ProviderProperties(boolean hasNetworkRequirement, boolean hasSatelliteRequirement, boolean hasCellRequirement, boolean hasMonetaryCost, boolean hasAltitudeSupport, boolean hasSpeedSupport, boolean hasBearingSupport, int powerUsage, int accuracy) {
@@ -94,6 +99,23 @@ public final class ProviderProperties implements Parcelable {
 
     public int getAccuracy() {
         return this.mAccuracy;
+    }
+
+    /* renamed from: android.location.provider.ProviderProperties$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProviderProperties> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderProperties createFromParcel(Parcel in) {
+            return new ProviderProperties(in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readInt(), in.readInt());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderProperties[] newArray(int size) {
+            return new ProviderProperties[size];
+        }
     }
 
     @Override // android.os.Parcelable

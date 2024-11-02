@@ -365,7 +365,7 @@ public final class InternalNano {
 
     public static void cloneUnknownFieldData(ExtendableMessageNano original, ExtendableMessageNano cloned) {
         if (original.unknownFieldData != null) {
-            cloned.unknownFieldData = original.unknownFieldData.m7011clone();
+            cloned.unknownFieldData = original.unknownFieldData.m7006clone();
         }
     }
 }

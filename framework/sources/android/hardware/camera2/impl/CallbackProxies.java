@@ -35,7 +35,6 @@ public class CallbackProxies {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConfigured$0(CameraCaptureSession session) {
             this.mCallback.onConfigured(session);
         }
@@ -55,7 +54,6 @@ public class CallbackProxies {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConfigureFailed$1(CameraCaptureSession session) {
             this.mCallback.onConfigureFailed(session);
         }
@@ -75,7 +73,6 @@ public class CallbackProxies {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReady$2(CameraCaptureSession session) {
             this.mCallback.onReady(session);
         }
@@ -95,7 +92,6 @@ public class CallbackProxies {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onActive$3(CameraCaptureSession session) {
             this.mCallback.onActive(session);
         }
@@ -115,7 +111,6 @@ public class CallbackProxies {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCaptureQueueEmpty$4(CameraCaptureSession session) {
             this.mCallback.onCaptureQueueEmpty(session);
         }
@@ -135,7 +130,6 @@ public class CallbackProxies {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClosed$5(CameraCaptureSession session) {
             this.mCallback.onClosed(session);
         }
@@ -155,7 +149,6 @@ public class CallbackProxies {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSurfacePrepared$6(CameraCaptureSession session, Surface surface) {
             this.mCallback.onSurfacePrepared(session, surface);
         }

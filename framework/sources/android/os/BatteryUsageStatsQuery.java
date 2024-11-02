@@ -21,13 +21,14 @@ public final class BatteryUsageStatsQuery implements Parcelable {
     private final int[] mUserIds;
     public static final BatteryUsageStatsQuery DEFAULT = new Builder().build();
     public static final Parcelable.Creator<BatteryUsageStatsQuery> CREATOR = new Parcelable.Creator<BatteryUsageStatsQuery>() { // from class: android.os.BatteryUsageStatsQuery.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BatteryUsageStatsQuery createFromParcel(Parcel in) {
             return new BatteryUsageStatsQuery(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BatteryUsageStatsQuery[] newArray(int size) {
             return new BatteryUsageStatsQuery[size];
@@ -37,6 +38,14 @@ public final class BatteryUsageStatsQuery implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface BatteryUsageStatsFlags {
+    }
+
+    /* synthetic */ BatteryUsageStatsQuery(Builder builder, BatteryUsageStatsQueryIA batteryUsageStatsQueryIA) {
+        this(builder);
+    }
+
+    /* synthetic */ BatteryUsageStatsQuery(Parcel parcel, BatteryUsageStatsQueryIA batteryUsageStatsQueryIA) {
+        this(parcel);
     }
 
     private BatteryUsageStatsQuery(Builder builder) {
@@ -105,6 +114,23 @@ public final class BatteryUsageStatsQuery implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.os.BatteryUsageStatsQuery$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BatteryUsageStatsQuery> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BatteryUsageStatsQuery createFromParcel(Parcel in) {
+            return new BatteryUsageStatsQuery(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BatteryUsageStatsQuery[] newArray(int size) {
+            return new BatteryUsageStatsQuery[size];
+        }
     }
 
     /* loaded from: classes3.dex */

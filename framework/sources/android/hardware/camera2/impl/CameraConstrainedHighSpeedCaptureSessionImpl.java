@@ -32,7 +32,6 @@ public class CameraConstrainedHighSpeedCaptureSessionImpl extends CameraConstrai
     private final ConditionVariable mInitialized;
     private final CameraCaptureSessionImpl mSessionImpl;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CameraConstrainedHighSpeedCaptureSessionImpl(int id, CameraCaptureSession.StateCallback callback, Executor stateExecutor, CameraDeviceImpl deviceImpl, Executor deviceStateExecutor, boolean configureSuccess, CameraCharacteristics characteristics) {
         ConditionVariable conditionVariable = new ConditionVariable();
         this.mInitialized = conditionVariable;
@@ -263,8 +262,9 @@ public class CameraConstrainedHighSpeedCaptureSessionImpl extends CameraConstrai
         this.mSessionImpl.finalizeOutputConfigurations(deferredOutputConfigs);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class WrapperCallback extends CameraCaptureSession.StateCallback {
+    public class WrapperCallback extends CameraCaptureSession.StateCallback {
         private final CameraCaptureSession.StateCallback mCallback;
 
         public WrapperCallback(CameraCaptureSession.StateCallback callback) {

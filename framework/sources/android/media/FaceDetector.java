@@ -39,6 +39,10 @@ public class FaceDetector {
         private float mPoseEulerY;
         private float mPoseEulerZ;
 
+        /* synthetic */ Face(FaceDetector faceDetector, FaceIA faceIA) {
+            this();
+        }
+
         public float confidence() {
             return this.mConfidence;
         }

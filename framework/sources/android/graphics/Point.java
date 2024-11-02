@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class Point implements Parcelable {
     public static final Parcelable.Creator<Point> CREATOR = new Parcelable.Creator<Point>() { // from class: android.graphics.Point.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Point createFromParcel(Parcel in) {
             Point r = new Point();
@@ -15,7 +17,6 @@ public class Point implements Parcelable {
             return r;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Point[] newArray(int size) {
             return new Point[size];
@@ -101,6 +102,25 @@ public class Point implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.x);
         out.writeInt(this.y);
+    }
+
+    /* renamed from: android.graphics.Point$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Point> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Point createFromParcel(Parcel in) {
+            Point r = new Point();
+            r.readFromParcel(in);
+            return r;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Point[] newArray(int size) {
+            return new Point[size];
+        }
     }
 
     public void readFromParcel(Parcel in) {

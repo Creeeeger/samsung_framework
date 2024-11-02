@@ -10,13 +10,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes4.dex */
 public final class StartingWindowRemovalInfo implements Parcelable {
     public static final Parcelable.Creator<StartingWindowRemovalInfo> CREATOR = new Parcelable.Creator<StartingWindowRemovalInfo>() { // from class: android.window.StartingWindowRemovalInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StartingWindowRemovalInfo createFromParcel(Parcel source) {
             return new StartingWindowRemovalInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StartingWindowRemovalInfo[] newArray(int size) {
             return new StartingWindowRemovalInfo[size];
@@ -38,6 +39,10 @@ public final class StartingWindowRemovalInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes4.dex */
     public @interface DeferMode {
+    }
+
+    /* synthetic */ StartingWindowRemovalInfo(Parcel parcel, StartingWindowRemovalInfoIA startingWindowRemovalInfoIA) {
+        this(parcel);
     }
 
     public StartingWindowRemovalInfo() {
@@ -79,5 +84,22 @@ public final class StartingWindowRemovalInfo implements Parcelable {
 
     public String toString() {
         return "StartingWindowRemovalInfo{taskId=" + this.taskId + " frame=" + this.mainFrame + " playRevealAnimation=" + this.playRevealAnimation + " roundedCornerRadius=" + this.roundedCornerRadius + " deferRemoveForImeMode=" + this.deferRemoveForImeMode + " windowlessSurface=" + this.windowlessSurface + " removeImmediately=" + this.removeImmediately + "}";
+    }
+
+    /* renamed from: android.window.StartingWindowRemovalInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StartingWindowRemovalInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StartingWindowRemovalInfo createFromParcel(Parcel source) {
+            return new StartingWindowRemovalInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StartingWindowRemovalInfo[] newArray(int size) {
+            return new StartingWindowRemovalInfo[size];
+        }
     }
 }

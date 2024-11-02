@@ -19,8 +19,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.provider.Settings;
-import android.sec.clipboard.data.ClipboardConstants;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -36,7 +34,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.IAccessibilityEmbeddedConnection;
 import android.window.SurfaceSyncGroup;
 import com.android.internal.view.SurfaceCallbackHelper;
-import com.samsung.android.desktopmode.SemDesktopModeManager;
 import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -135,7 +132,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
     public @interface SurfaceLifecycleStrategy {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$new$0() {
         this.mHaveFrame = getWidth() > 0 && getHeight() > 0;
         this.mUpdateSurfaceCalledBy = 8;
@@ -251,7 +247,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         updateSurface();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -269,7 +264,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
@@ -317,7 +311,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void performDrawFinished() {
         this.mDrawFinished = true;
         if (this.mAttachedToWindow) {
@@ -326,7 +319,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindow() {
         ViewRootImpl viewRoot = getViewRootImpl();
@@ -352,7 +344,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         super.onDetachedFromWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width;
@@ -372,7 +363,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         setMeasuredDimension(width, height);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int left, int top, int right, int bottom) {
         boolean result = super.setFrame(left, top, right, bottom);
@@ -418,7 +408,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         super.draw(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void dispatchDraw(Canvas canvas) {
         if (this.mDrawFinished && !isAboveParent() && (this.mPrivateFlags & 128) == 128) {
@@ -531,20 +520,10 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
 
     public void setSecure(boolean isSecure) {
         if (isSecure) {
-            Context context = getContext();
-            boolean z = false;
-            if (context.getResources().getConfiguration().semDesktopModeEnabled == 1 && Settings.System.getInt(context.getContentResolver(), ClipboardConstants.DOP_CONNECTION_STATE, 0) == 3) {
-                z = true;
-            }
-            boolean isDexForPcEnabled = z;
-            if (isDexForPcEnabled) {
-                SemDesktopModeManager dm = (SemDesktopModeManager) context.getSystemService(SemDesktopModeManager.class);
-                dm.onSecuredAppLaunched(context.getActivityToken(), context.getPackageName());
-            }
             this.mSurfaceFlags |= 128;
-            return;
+        } else {
+            this.mSurfaceFlags &= PackageManager.INSTALL_FAILED_PRE_APPROVAL_NOT_AVAILABLE;
         }
-        this.mSurfaceFlags &= PackageManager.INSTALL_FAILED_PRE_APPROVAL_NOT_AVAILABLE;
     }
 
     public void setSurfaceLifecycle(int lifecycleStrategy) {
@@ -731,14 +710,29 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         return !respectVisibility && this.mAttachedToWindow;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Can't wrap try/catch for region: R(35:89|(5:91|(1:93)(1:337)|94|(1:96)(1:336)|97)(1:338)|(10:98|99|(5:322|323|324|325|326)(1:101)|102|103|104|105|106|107|(2:315|316)(2:109|(1:111)))|(31:122|123|(2:127|(26:129|130|(9:291|292|293|294|295|296|297|298|299)(1:132)|133|134|135|136|137|138|(1:140)(1:283)|141|(1:143)(1:282)|144|(1:281)(1:147)|148|(2:(2:(2:157|158)|(2:153|(1:(0))))|168)|170|171|172|(1:277)(5:176|177|(1:275)(1:(11:253|254|255|(2:268|269)(1:257)|258|259|260|261|(2:263|264)|265|266)(1:182))|(12:213|214|(7:216|217|218|219|220|221|222)(1:249)|(2:224|225)(1:240)|226|227|228|229|230|(1:232)|233|234)(1:190)|(4:192|(1:194)|(1:196)(1:200)|(1:198)(1:199)))|201|202|(1:206)|207|208|(2:210|211)(1:212)))|312|130|(0)(0)|133|134|135|136|137|138|(0)(0)|141|(0)(0)|144|(0)|281|148|(0)|170|171|172|(1:174)|277|201|202|(2:204|206)|207|208|(0)(0))|313|123|(3:125|127|(0))|312|130|(0)(0)|133|134|135|136|137|138|(0)(0)|141|(0)(0)|144|(0)|281|148|(0)|170|171|172|(0)|277|201|202|(0)|207|208|(0)(0)) */
     /* JADX WARN: Can't wrap try/catch for region: R(44:89|(5:91|(1:93)(1:337)|94|(1:96)(1:336)|97)(1:338)|98|99|(5:322|323|324|325|326)(1:101)|102|103|104|105|106|107|(2:315|316)(2:109|(1:111))|(31:122|123|(2:127|(26:129|130|(9:291|292|293|294|295|296|297|298|299)(1:132)|133|134|135|136|137|138|(1:140)(1:283)|141|(1:143)(1:282)|144|(1:281)(1:147)|148|(2:(2:(2:157|158)|(2:153|(1:(0))))|168)|170|171|172|(1:277)(5:176|177|(1:275)(1:(11:253|254|255|(2:268|269)(1:257)|258|259|260|261|(2:263|264)|265|266)(1:182))|(12:213|214|(7:216|217|218|219|220|221|222)(1:249)|(2:224|225)(1:240)|226|227|228|229|230|(1:232)|233|234)(1:190)|(4:192|(1:194)|(1:196)(1:200)|(1:198)(1:199)))|201|202|(1:206)|207|208|(2:210|211)(1:212)))|312|130|(0)(0)|133|134|135|136|137|138|(0)(0)|141|(0)(0)|144|(0)|281|148|(0)|170|171|172|(1:174)|277|201|202|(2:204|206)|207|208|(0)(0))|313|123|(3:125|127|(0))|312|130|(0)(0)|133|134|135|136|137|138|(0)(0)|141|(0)(0)|144|(0)|281|148|(0)|170|171|172|(0)|277|201|202|(0)|207|208|(0)(0)) */
-    /* JADX WARN: Code restructure failed: missing block: B:156:0x0402, code lost:            if (r6 != false) goto L198;     */
-    /* JADX WARN: Code restructure failed: missing block: B:159:0x03f8, code lost:            if (r42.mAttachedToWindow != false) goto L193;     */
-    /* JADX WARN: Code restructure failed: missing block: B:284:0x068d, code lost:            r0 = e;     */
-    /* JADX WARN: Code restructure failed: missing block: B:289:0x0690, code lost:            r0 = e;     */
-    /* JADX WARN: Code restructure failed: missing block: B:290:0x0691, code lost:            r6 = " h=";        r3 = " w=";     */
+    /* JADX WARN: Code restructure failed: missing block: B:156:0x0402, code lost:
+    
+        if (r6 != false) goto L565;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:159:0x03f8, code lost:
+    
+        if (r42.mAttachedToWindow != false) goto L560;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:284:0x068d, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:289:0x0690, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:290:0x0691, code lost:
+    
+        r6 = " h=";
+        r3 = " w=";
+     */
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Removed duplicated region for block: B:129:0x0328  */
     /* JADX WARN: Removed duplicated region for block: B:132:0x039f  */
@@ -807,7 +801,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleSyncBufferCallback$1(SyncBufferTransactionCallback syncBufferTransactionCallback, SurfaceSyncGroup surfaceSyncGroup) {
         SurfaceControl.Transaction t = null;
         BLASTBufferQueue bLASTBufferQueue = this.mBlastBufferQueue;
@@ -833,7 +826,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleSyncNoBuffer$2(SurfaceSyncGroup surfaceSyncGroup) {
         synchronized (this.mSyncGroups) {
             this.mSyncGroups.remove(surfaceSyncGroup);
@@ -862,11 +854,14 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class SyncBufferTransactionCallback {
         private final CountDownLatch mCountDownLatch;
         private SurfaceControl.Transaction mTransaction;
+
+        /* synthetic */ SyncBufferTransactionCallback(SyncBufferTransactionCallbackIA syncBufferTransactionCallbackIA) {
+            this();
+        }
 
         private SyncBufferTransactionCallback() {
             this.mCountDownLatch = new CountDownLatch(1);
@@ -880,7 +875,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
             return this.mTransaction;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void onTransactionReady(SurfaceControl.Transaction t) {
             this.mTransaction = t;
             this.mCountDownLatch.countDown();
@@ -943,7 +937,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onSetSurfacePositionAndScale(SurfaceControl.Transaction transaction, SurfaceControl surface, int positionLeft, int positionTop, float postScaleX, float postScaleY) {
         Log.i(this.mTag, "onSSPAndSRT: pl = " + positionLeft + " pt = " + positionTop + " sx = " + postScaleX + " sy = " + postScaleY);
         transaction.setPosition(surface, positionLeft, positionTop);
@@ -965,7 +958,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         return this.mRTLastReportedPosition;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void applyOrMergeTransaction(SurfaceControl.Transaction t, long frameNumber) {
         ViewRootImpl viewRoot = getViewRootImpl();
         if (viewRoot != null) {
@@ -980,7 +972,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
     public void semResetRenderNodePosition() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SurfaceViewPositionUpdateListener implements RenderNode.PositionUpdateListener {
         private final SurfaceControl.Transaction mPositionChangedTransaction = new SurfaceControl.Transaction();
@@ -1072,7 +1063,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         return callbacks;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void runOnUiThread(Runnable runnable) {
         Handler handler = getHandler();
         if (handler != null && handler.getLooper() != Looper.myLooper()) {
@@ -1105,8 +1095,7 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         updateBackgroundColor(t);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.SurfaceView$1, reason: invalid class name */
+    /* renamed from: android.view.SurfaceView$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 implements SurfaceHolder {
         private static final String LOG_TAG = "SurfaceHolder";
@@ -1177,7 +1166,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         public void setType(int type) {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setKeepScreenOn$0(boolean screenOn) {
             SurfaceView.this.setKeepScreenOn(screenOn);
         }
@@ -1389,7 +1377,6 @@ public class SurfaceView extends View implements ViewRootImpl.SurfaceChangedCall
         this.mRemoteAccessibilityController.setWindowMatrix(this.mTmpMatrix, force);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);

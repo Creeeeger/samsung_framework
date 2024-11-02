@@ -280,7 +280,7 @@ public class SemWindowManager {
             Log.e(TAG, "displayDeviceType is wrong");
             return;
         }
-        final int callingPid = Binder.getCallingPid();
+        int callingPid = Binder.getCallingPid();
         DeviceStateRequest deviceStateRequest = null;
         if (displayDeviceType == 0) {
             Log.d(TAG, "setForcedDefaultDisplayDevice main, callingPid=" + callingPid);
@@ -297,11 +297,32 @@ public class SemWindowManager {
         if (deviceStateRequest != null) {
             Log.d(TAG, "setForcedDefaultDisplayDevice " + displayDeviceType + ", callingPid=" + callingPid);
             this.mDeviceStateManagerGlobal.requestState(deviceStateRequest, new PendingIntent$$ExternalSyntheticLambda1(), new DeviceStateRequest.Callback() { // from class: com.samsung.android.view.SemWindowManager.1
+                final /* synthetic */ int val$callingPid;
+
+                AnonymousClass1(int callingPid2) {
+                    callingPid = callingPid2;
+                }
+
                 @Override // android.hardware.devicestate.DeviceStateRequest.Callback
                 public void onRequestCanceled(DeviceStateRequest request) {
                     Log.d(SemWindowManager.TAG, "onRequestCanceled,  pid=" + callingPid + " Callers=" + Debug.getCallers(5));
                 }
             });
+        }
+    }
+
+    /* renamed from: com.samsung.android.view.SemWindowManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements DeviceStateRequest.Callback {
+        final /* synthetic */ int val$callingPid;
+
+        AnonymousClass1(int callingPid2) {
+            callingPid = callingPid2;
+        }
+
+        @Override // android.hardware.devicestate.DeviceStateRequest.Callback
+        public void onRequestCanceled(DeviceStateRequest request) {
+            Log.d(SemWindowManager.TAG, "onRequestCanceled,  pid=" + callingPid + " Callers=" + Debug.getCallers(5));
         }
     }
 
@@ -360,13 +381,14 @@ public class SemWindowManager {
     /* loaded from: classes5.dex */
     public static class VisibleWindowInfo implements Parcelable {
         public static final Parcelable.Creator<VisibleWindowInfo> CREATOR = new Parcelable.Creator<VisibleWindowInfo>() { // from class: com.samsung.android.view.SemWindowManager.VisibleWindowInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public VisibleWindowInfo createFromParcel(Parcel source) {
                 return new VisibleWindowInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VisibleWindowInfo[] newArray(int size) {
                 return new VisibleWindowInfo[size];
@@ -377,6 +399,10 @@ public class SemWindowManager {
         public String name;
         public String packageName;
         public int type;
+
+        /* synthetic */ VisibleWindowInfo(Parcel parcel, VisibleWindowInfoIA visibleWindowInfoIA) {
+            this(parcel);
+        }
 
         public VisibleWindowInfo() {
         }
@@ -401,6 +427,23 @@ public class SemWindowManager {
             this.type = source.readInt();
             this.focused = source.readInt() != 0;
             this.lastFocused = source.readInt() != 0;
+        }
+
+        /* renamed from: com.samsung.android.view.SemWindowManager$VisibleWindowInfo$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<VisibleWindowInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public VisibleWindowInfo createFromParcel(Parcel source) {
+                return new VisibleWindowInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public VisibleWindowInfo[] newArray(int size) {
+                return new VisibleWindowInfo[size];
+            }
         }
 
         private VisibleWindowInfo(Parcel source) {
@@ -463,13 +506,14 @@ public class SemWindowManager {
     /* loaded from: classes5.dex */
     public static final class KeyCustomizationInfo implements Parcelable {
         public static final Parcelable.Creator<KeyCustomizationInfo> CREATOR = new Parcelable.Creator<KeyCustomizationInfo>() { // from class: com.samsung.android.view.SemWindowManager.KeyCustomizationInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public KeyCustomizationInfo createFromParcel(Parcel source) {
                 return new KeyCustomizationInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public KeyCustomizationInfo[] newArray(int size) {
                 return new KeyCustomizationInfo[size];
@@ -485,6 +529,14 @@ public class SemWindowManager {
         public String ownerPackage;
         public int press;
         public int userId;
+
+        /* synthetic */ KeyCustomizationInfo(Parcel parcel, KeyCustomizationInfoIA keyCustomizationInfoIA) {
+            this(parcel);
+        }
+
+        /* synthetic */ KeyCustomizationInfo(Builder builder, KeyCustomizationInfoIA keyCustomizationInfoIA) {
+            this(builder);
+        }
 
         public KeyCustomizationInfo() {
             this.press = -1;
@@ -671,6 +723,23 @@ public class SemWindowManager {
             this.longPressTimeout = source.readLong();
             this.multiPressTimeout = source.readLong();
             this.ownerPackage = source.readString();
+        }
+
+        /* renamed from: com.samsung.android.view.SemWindowManager$KeyCustomizationInfo$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<KeyCustomizationInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public KeyCustomizationInfo createFromParcel(Parcel source) {
+                return new KeyCustomizationInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public KeyCustomizationInfo[] newArray(int size) {
+                return new KeyCustomizationInfo[size];
+            }
         }
 
         private KeyCustomizationInfo(Parcel source) {

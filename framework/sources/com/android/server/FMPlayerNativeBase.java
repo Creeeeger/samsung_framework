@@ -7,7 +7,6 @@ public class FMPlayerNativeBase {
     public FMPlayerNativeBase(FMRadioService service) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class RDSData {
         public String mChannelName;
@@ -47,7 +46,6 @@ public class FMPlayerNativeBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class RTPlusData {
         public int mAdditionalLen1;
@@ -67,7 +65,6 @@ public class FMPlayerNativeBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class PIECCData {
         public int mECC;

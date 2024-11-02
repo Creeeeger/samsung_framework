@@ -528,72 +528,58 @@ public interface IAccountAuthenticator extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void addAccount_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void confirmCredentials_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void getAuthToken_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void getAuthTokenLabel_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void updateCredentials_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void editProperties_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void hasFeatures_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void getAccountRemovalAllowed_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void getAccountCredentialsForCloning_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void addAccountFromCredentials_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void startAddAccountSession_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void startUpdateCredentialsSession_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void finishSession_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void isCredentialsUpdateSuggested_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.ACCOUNT_MANAGER, getCallingPid(), getCallingUid());
         }

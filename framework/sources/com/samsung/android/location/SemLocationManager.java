@@ -61,7 +61,6 @@ public class SemLocationManager {
     public @interface SemLocationManagerModule {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class LocListenerTransport extends ISLocationListener.Stub {
         public static final int TYPE_LOCATION_AVAILABLE = 1;
@@ -72,11 +71,33 @@ public class SemLocationManager {
         LocListenerTransport(SemLocationListener listener) {
             this.mListener = listener;
             this.mListenerHandler = new Handler() { // from class: com.samsung.android.location.SemLocationManager.LocListenerTransport.1
+                final /* synthetic */ SemLocationManager val$this$0;
+
+                AnonymousClass1(SemLocationManager semLocationManager) {
+                    r2 = semLocationManager;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     LocListenerTransport.this._handleMessage(msg);
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.location.SemLocationManager$LocListenerTransport$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ SemLocationManager val$this$0;
+
+            AnonymousClass1(SemLocationManager semLocationManager) {
+                r2 = semLocationManager;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                LocListenerTransport.this._handleMessage(msg);
+            }
         }
 
         @Override // com.samsung.android.location.ISLocationListener
@@ -106,7 +127,6 @@ public class SemLocationManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void _handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:

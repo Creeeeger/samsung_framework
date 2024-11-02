@@ -23,7 +23,6 @@ public class GhostView extends View {
         parent.invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         if (canvas instanceof RecordingCanvas) {
@@ -51,7 +50,6 @@ public class GhostView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();

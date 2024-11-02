@@ -143,8 +143,9 @@ public interface IMediaRoute2ProviderServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMediaRoute2ProviderServiceCallback {
+        public static class Proxy implements IMediaRoute2ProviderServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

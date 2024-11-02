@@ -151,8 +151,9 @@ public interface ILightsManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ILightsManager {
+        public static class Proxy implements ILightsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

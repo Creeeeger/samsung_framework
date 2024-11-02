@@ -116,8 +116,9 @@ public interface IThermalChangedCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IThermalChangedCallback {
+        public static class Proxy implements IThermalChangedCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

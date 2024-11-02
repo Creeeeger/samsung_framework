@@ -24,7 +24,6 @@ public class VZWAVSLibrary {
     private static final List<String> STANDALONE_CERTS;
     private static final String URI_TEMPLATE = "content://%s/apis";
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public enum AvsResult {
         GRANTED,
@@ -61,8 +60,7 @@ public class VZWAVSLibrary {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.telephony.vzwavslibrary.VZWAVSLibrary$1, reason: invalid class name */
+    /* renamed from: com.android.internal.telephony.vzwavslibrary.VZWAVSLibrary$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$android$internal$telephony$vzwavslibrary$VZWAVSLibrary$AvsResult;
@@ -160,7 +158,6 @@ public class VZWAVSLibrary {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class AvsInstance {
         final String authority;

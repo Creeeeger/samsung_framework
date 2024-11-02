@@ -79,13 +79,11 @@ class TtmlRenderingWidget extends LinearLayout implements SubtitleTrack.Renderin
         super.onDetachedFromWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -130,9 +128,10 @@ class TtmlRenderingWidget extends LinearLayout implements SubtitleTrack.Renderin
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: TtmlRenderer.java */
     /* loaded from: classes2.dex */
-    private static class CustomTextView extends TextView {
+    public static class CustomTextView extends TextView {
         public CustomTextView(Context context) {
             super(context);
         }

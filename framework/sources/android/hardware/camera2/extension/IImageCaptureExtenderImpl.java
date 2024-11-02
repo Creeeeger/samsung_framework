@@ -368,8 +368,9 @@ public interface IImageCaptureExtenderImpl extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IImageCaptureExtenderImpl {
+        public static class Proxy implements IImageCaptureExtenderImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

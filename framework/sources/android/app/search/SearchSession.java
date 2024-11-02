@@ -39,7 +39,6 @@ public final class SearchSession implements AutoCloseable {
         void onTargetsAvailable(List<SearchTarget> list);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SearchSession(Context context, SearchContext searchContext) {
         Binder binder = new Binder();
         this.mToken = binder;
@@ -174,7 +173,6 @@ public final class SearchSession implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class CallbackWrapper extends ISearchCallback.Stub {
         private final Consumer<List<SearchTarget>> mCallback;
@@ -205,7 +203,6 @@ public final class SearchSession implements AutoCloseable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResult$0(List list) {
             this.mCallback.accept(list);
         }

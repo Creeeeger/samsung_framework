@@ -24,8 +24,7 @@ public class InsetsAnimationThreadControlRunner implements InsetsAnimationContro
     private final Handler mMainThreadHandler;
     private final InsetsAnimationControlCallbacks mOuterCallbacks;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.InsetsAnimationThreadControlRunner$1, reason: invalid class name */
+    /* renamed from: android.view.InsetsAnimationThreadControlRunner$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 implements InsetsAnimationControlCallbacks {
         private final float[] mTmpFloat9 = new float[9];
@@ -57,7 +56,6 @@ public class InsetsAnimationThreadControlRunner implements InsetsAnimationContro
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyFinished$0(boolean shown) {
             InsetsAnimationThreadControlRunner.this.mOuterCallbacks.notifyFinished(InsetsAnimationThreadControlRunner.this, shown);
         }
@@ -79,7 +77,6 @@ public class InsetsAnimationThreadControlRunner implements InsetsAnimationContro
             sc.release();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$reportPerceptible$1(int types, boolean perceptible) {
             InsetsAnimationThreadControlRunner.this.mOuterCallbacks.reportPerceptible(types, perceptible);
         }
@@ -109,7 +106,6 @@ public class InsetsAnimationThreadControlRunner implements InsetsAnimationContro
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(int types, WindowInsetsAnimationControlListener listener) {
         if (this.mControl.isCancelled()) {
             return;
@@ -118,7 +114,6 @@ public class InsetsAnimationThreadControlRunner implements InsetsAnimationContro
         listener.onReady(this.mControl, types);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void releaseControls(SparseArray<InsetsSourceControl> controls) {
         for (int i = controls.size() - 1; i >= 0; i--) {
             controls.valueAt(i).release(new InsetsAnimationThreadControlRunner$$ExternalSyntheticLambda0());

@@ -412,14 +412,15 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         gRecyclerLock = new Object();
         gSharedTempLock = new Object();
         CREATOR = new Parcelable.Creator<MotionEvent>() { // from class: android.view.MotionEvent.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public MotionEvent createFromParcel(Parcel in) {
                 in.readInt();
                 return MotionEvent.createFromParcelBody(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MotionEvent[] newArray(int size) {
                 return new MotionEvent[size];
@@ -1299,7 +1300,10 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         return idBits;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:75:0x0064, code lost:            r28 = 2;     */
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x0064, code lost:
+    
+        r28 = 2;
+     */
     /* JADX WARN: Removed duplicated region for block: B:33:0x008b  */
     /* JADX WARN: Removed duplicated region for block: B:63:0x016e A[Catch: all -> 0x0186, TRY_LEAVE, TryCatch #3 {all -> 0x0186, blocks: (B:61:0x016a, B:63:0x016e), top: B:60:0x016a }] */
     /*
@@ -1491,6 +1495,24 @@ public final class MotionEvent extends InputEvent implements Parcelable {
         Matrix toOrient = new Matrix();
         toOrient.setValues(values);
         return toOrient;
+    }
+
+    /* renamed from: android.view.MotionEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MotionEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MotionEvent createFromParcel(Parcel in) {
+            in.readInt();
+            return MotionEvent.createFromParcelBody(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MotionEvent[] newArray(int size) {
+            return new MotionEvent[size];
+        }
     }
 
     public static MotionEvent createFromParcelBody(Parcel in) {
@@ -1764,7 +1786,6 @@ public final class MotionEvent extends InputEvent implements Parcelable {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean equals(PointerProperties other) {
             return other != null && this.id == other.id && this.toolType == other.toolType;
         }

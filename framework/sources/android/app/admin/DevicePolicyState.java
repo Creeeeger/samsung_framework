@@ -12,19 +12,24 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class DevicePolicyState implements Parcelable {
     public static final Parcelable.Creator<DevicePolicyState> CREATOR = new Parcelable.Creator<DevicePolicyState>() { // from class: android.app.admin.DevicePolicyState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DevicePolicyState createFromParcel(Parcel source) {
             return new DevicePolicyState(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DevicePolicyState[] newArray(int size) {
             return new DevicePolicyState[size];
         }
     };
     private final Map<UserHandle, Map<PolicyKey, PolicyState<?>>> mPolicies;
+
+    /* synthetic */ DevicePolicyState(Parcel parcel, DevicePolicyStateIA devicePolicyStateIA) {
+        this(parcel);
+    }
 
     public DevicePolicyState(Map<UserHandle, Map<PolicyKey, PolicyState<?>>> policies) {
         this.mPolicies = (Map) Objects.requireNonNull(policies);
@@ -72,6 +77,23 @@ public final class DevicePolicyState implements Parcelable {
                 dest.writeParcelable(key, flags);
                 dest.writeParcelable(this.mPolicies.get(user).get(key), flags);
             }
+        }
+    }
+
+    /* renamed from: android.app.admin.DevicePolicyState$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DevicePolicyState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DevicePolicyState createFromParcel(Parcel source) {
+            return new DevicePolicyState(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DevicePolicyState[] newArray(int size) {
+            return new DevicePolicyState[size];
         }
     }
 }

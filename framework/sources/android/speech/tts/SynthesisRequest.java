@@ -65,29 +65,24 @@ public final class SynthesisRequest {
         return this.mCallerUid;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setLanguage(String language, String country, String variant) {
         this.mLanguage = language;
         this.mCountry = country;
         this.mVariant = variant;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setVoiceName(String voiceName) {
         this.mVoiceName = voiceName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSpeechRate(int speechRate) {
         this.mSpeechRate = speechRate;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setPitch(int pitch) {
         this.mPitch = pitch;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCallerUid(int uid) {
         this.mCallerUid = uid;
     }

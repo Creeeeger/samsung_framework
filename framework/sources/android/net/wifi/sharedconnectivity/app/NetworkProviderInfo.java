@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class NetworkProviderInfo implements Parcelable {
     public static final Parcelable.Creator<NetworkProviderInfo> CREATOR = new Parcelable.Creator<NetworkProviderInfo>() { // from class: android.net.wifi.sharedconnectivity.app.NetworkProviderInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NetworkProviderInfo createFromParcel(Parcel in) {
             return NetworkProviderInfo.readFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkProviderInfo[] newArray(int size) {
             return new NetworkProviderInfo[size];
@@ -42,6 +43,10 @@ public final class NetworkProviderInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface DeviceType {
+    }
+
+    /* synthetic */ NetworkProviderInfo(int i, String str, String str2, int i2, int i3, Bundle bundle, NetworkProviderInfoIA networkProviderInfoIA) {
+        this(i, str, str2, i2, i3, bundle);
     }
 
     /* loaded from: classes3.dex */
@@ -173,6 +178,23 @@ public final class NetworkProviderInfo implements Parcelable {
 
     public static NetworkProviderInfo readFromParcel(Parcel in) {
         return new NetworkProviderInfo(in.readInt(), in.readString(), in.readString(), in.readInt(), in.readInt(), in.readBundle());
+    }
+
+    /* renamed from: android.net.wifi.sharedconnectivity.app.NetworkProviderInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NetworkProviderInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkProviderInfo createFromParcel(Parcel in) {
+            return NetworkProviderInfo.readFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkProviderInfo[] newArray(int size) {
+            return new NetworkProviderInfo[size];
+        }
     }
 
     public String toString() {

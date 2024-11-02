@@ -112,7 +112,10 @@ public abstract class Convert {
             Log.d(Constants.TAG, "convert preparation done.");
             return false;
         }
-        Thread thread = new Thread() { // from class: com.samsung.android.media.convert.core.Convert.1
+        AnonymousClass1 anonymousClass1 = new Thread() { // from class: com.samsung.android.media.convert.core.Convert.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 try {
@@ -150,9 +153,54 @@ public abstract class Convert {
                 }
             }
         };
-        this.mThread = thread;
-        thread.start();
+        this.mThread = anonymousClass1;
+        anonymousClass1.start();
         return true;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.media.convert.core.Convert$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends Thread {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public void run() {
+            try {
+                try {
+                    Convert.this.mMuxer = new MediaMuxer(Convert.this.mOutputFilePath, Convert.this.mOutputFormat);
+                    Convert.this.mMuxerStarted = false;
+                    Convert.this.mVideoTrackIndex = -1;
+                    Convert.this.mAudioTrackIndex = -1;
+                    if (Convert.this.mConvertEventListener != null) {
+                        Convert.this.mConvertEventListener.onStarted();
+                    }
+                    Convert.this.startConverting();
+                    Log.d(Constants.TAG, "encoding finished.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Convert.this.mError = true;
+                }
+                Convert.this.release();
+                if (Convert.this.mConvertEventListener != null) {
+                    if (Convert.this.mError) {
+                        Log.d(Constants.TAG, "Stopped by error");
+                        Convert.this.mConvertEventListener.onFailed();
+                    } else if (!Convert.this.mUserStop) {
+                        Log.d(Constants.TAG, "calling onCompleted");
+                        Convert.this.mConvertEventListener.onCompleted();
+                    } else {
+                        Log.d(Constants.TAG, "user stopped. Not calling onCompleted");
+                        Convert.this.mConvertEventListener.onCancelled();
+                    }
+                    Convert.this.mConvertEventListener = null;
+                }
+            } catch (Throwable th) {
+                Convert.this.release();
+                throw th;
+            }
+        }
     }
 
     public void setProgressUpdateListener(ConvertEventListener updateListner) {

@@ -75,6 +75,9 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         this.mTouchY = OUT_OF_BOUNDARY;
         this.mStartTouchDown = 0L;
         this.mPreviewDelayRunnable = new Runnable() { // from class: com.samsung.android.widget.SemIndexScrollView.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (SemIndexScrollView.this.mIndexScrollPreview != null) {
@@ -100,6 +103,9 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         this.mTouchY = OUT_OF_BOUNDARY;
         this.mStartTouchDown = 0L;
         this.mPreviewDelayRunnable = new Runnable() { // from class: com.samsung.android.widget.SemIndexScrollView.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (SemIndexScrollView.this.mIndexScrollPreview != null) {
@@ -124,7 +130,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         this.mIndexScroll = new IndexScroll(this.mContext, getHeight(), getWidth(), gravity);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         IndexScrollPreview indexScrollPreview;
@@ -194,7 +199,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -213,7 +217,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     @Deprecated
     public void onAttachedToWindow() {
@@ -412,7 +415,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -430,11 +432,15 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         this.mOnIndexBarEventListener = iOnIndexBarEventListener;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes6.dex */
-    class IndexerObserver extends DataSetObserver {
+    public class IndexerObserver extends DataSetObserver {
         private final long INDEX_UPDATE_DELAY = 200;
         boolean mDataInvalid = false;
         Runnable mUpdateIndex = new Runnable() { // from class: com.samsung.android.widget.SemIndexScrollView.IndexerObserver.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 IndexerObserver.this.mDataInvalid = false;
@@ -465,9 +471,21 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             SemIndexScrollView.this.removeCallbacks(this.mUpdateIndex);
             SemIndexScrollView.this.postDelayed(this.mUpdateIndex, 200L);
         }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.widget.SemIndexScrollView$IndexerObserver$1 */
+        /* loaded from: classes6.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                IndexerObserver.this.mDataInvalid = false;
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes6.dex */
     public class IndexScroll {
         public static final int FIRST_LETTER_NOT_RELEVANT_NOT_MULTI_LANGUAGE = -1;
@@ -526,7 +544,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         private int mWidth;
         private int mWidthShift;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes6.dex */
         public class LangAttributeValues {
             String[] alphabetArray;
@@ -696,7 +713,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             setBgRectParams();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public int getColorWithAlpha(int color, float ratio) {
             int alpha = Math.round(Color.alpha(color) * ratio);
             int r = Color.red(color);
@@ -1231,7 +1247,20 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.widget.SemIndexScrollView$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (SemIndexScrollView.this.mIndexScrollPreview != null) {
+                SemIndexScrollView.this.mIndexScrollPreview.fadeOutAnimation();
+            }
+        }
+    }
+
     /* loaded from: classes6.dex */
     public class IndexScrollPreview extends View {
         private static final int FASTSCROLL_VIBRATE_INDEX = 26;
@@ -1320,7 +1349,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void fadeOutAnimation() {
             if (this.mIsOpen) {
                 startAnimation();
@@ -1341,7 +1369,6 @@ public class SemIndexScrollView extends FrameLayout implements AbsListView.OnScr
             set.start();
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onDraw(Canvas canvas) {
             super.onDraw(canvas);

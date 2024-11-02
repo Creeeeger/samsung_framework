@@ -117,8 +117,9 @@ public interface IRegistration extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRegistration {
+        public static class Proxy implements IRegistration {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

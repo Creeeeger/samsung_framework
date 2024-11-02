@@ -161,7 +161,6 @@ public class TableLayout extends LinearLayout {
         return this.mShrinkAllColumns || this.mShrinkableColumns.get(columnIndex);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void trackCollapsedColumns(View child) {
         if (child instanceof TableRow) {
             TableRow row = (TableRow) child;
@@ -201,19 +200,16 @@ public class TableLayout extends LinearLayout {
         requestRowsLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         measureVertical(widthMeasureSpec, heightMeasureSpec);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         layoutVertical(l, t, r, b);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.LinearLayout
     public void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
         if (child instanceof TableRow) {
@@ -222,7 +218,6 @@ public class TableLayout extends LinearLayout {
         super.measureChildBeforeLayout(child, childIndex, widthMeasureSpec, totalWidth, heightMeasureSpec, totalHeight);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.LinearLayout
     public void measureVertical(int widthMeasureSpec, int heightMeasureSpec) {
         findLargestCells(widthMeasureSpec, heightMeasureSpec);
@@ -347,19 +342,16 @@ public class TableLayout extends LinearLayout {
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
@@ -412,10 +404,13 @@ public class TableLayout extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PassThroughHierarchyChangeListener implements ViewGroup.OnHierarchyChangeListener {
         private ViewGroup.OnHierarchyChangeListener mOnHierarchyChangeListener;
+
+        /* synthetic */ PassThroughHierarchyChangeListener(TableLayout tableLayout, PassThroughHierarchyChangeListenerIA passThroughHierarchyChangeListenerIA) {
+            this();
+        }
 
         private PassThroughHierarchyChangeListener() {
         }

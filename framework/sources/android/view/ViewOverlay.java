@@ -11,12 +11,10 @@ import java.util.Iterator;
 public class ViewOverlay {
     OverlayViewGroup mOverlayViewGroup;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewOverlay(Context context, View hostView) {
         this.mOverlayViewGroup = new OverlayViewGroup(context, hostView);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewGroup getOverlayView() {
         return this.mOverlayViewGroup;
     }
@@ -33,12 +31,10 @@ public class ViewOverlay {
         this.mOverlayViewGroup.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isEmpty() {
         return this.mOverlayViewGroup.isEmpty();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class OverlayViewGroup extends ViewGroup {
         ArrayList<Drawable> mDrawables;
@@ -80,7 +76,6 @@ public class ViewOverlay {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public boolean verifyDrawable(Drawable who) {
             ArrayList<Drawable> arrayList;
@@ -148,7 +143,6 @@ public class ViewOverlay {
             invalidate(drawable.getBounds());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup, android.view.View
         public void dispatchDraw(Canvas canvas) {
             canvas.enableZ();
@@ -161,7 +155,6 @@ public class ViewOverlay {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup, android.view.View
         public void onLayout(boolean changed, int l, int t, int r, int b) {
         }
@@ -202,7 +195,6 @@ public class ViewOverlay {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.view.View
         public void invalidateViewProperty(boolean invalidateParent, boolean forceRedraw) {
             super.invalidateViewProperty(invalidateParent, forceRedraw);
@@ -212,7 +204,6 @@ public class ViewOverlay {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void invalidateParentCaches() {
             super.invalidateParentCaches();
@@ -222,7 +213,6 @@ public class ViewOverlay {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void invalidateParentIfNeeded() {
             super.invalidateParentIfNeeded();

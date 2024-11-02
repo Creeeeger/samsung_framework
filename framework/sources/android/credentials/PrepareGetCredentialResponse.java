@@ -15,7 +15,6 @@ public final class PrepareGetCredentialResponse {
     private final PendingGetCredentialHandle mPendingGetCredentialHandle;
     private final PrepareGetCredentialResponseInternal mResponseInternal;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes.dex */
     public interface GetPendingCredentialInternalCallback {
         void onError(String str, String str2);
@@ -35,7 +34,6 @@ public final class PrepareGetCredentialResponse {
             this.mPendingIntent = pendingIntent;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void show(Context context, CancellationSignal cancellationSignal, Executor executor, final OutcomeReceiver<GetCredentialResponse, GetCredentialException> callback) {
             if (this.mPendingIntent == null) {
                 executor.execute(new Runnable() { // from class: android.credentials.PrepareGetCredentialResponse$PendingGetCredentialHandle$$ExternalSyntheticLambda0
@@ -60,9 +58,10 @@ public final class PrepareGetCredentialResponse {
             }
         }
 
-        /* renamed from: android.credentials.PrepareGetCredentialResponse$PendingGetCredentialHandle$1, reason: invalid class name */
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.credentials.PrepareGetCredentialResponse$PendingGetCredentialHandle$1 */
         /* loaded from: classes.dex */
-        class AnonymousClass1 implements GetPendingCredentialInternalCallback {
+        public class AnonymousClass1 implements GetPendingCredentialInternalCallback {
             final /* synthetic */ OutcomeReceiver val$callback;
             final /* synthetic */ Context val$context;
             final /* synthetic */ Executor val$executor;
@@ -132,7 +131,6 @@ public final class PrepareGetCredentialResponse {
         return this.mPendingGetCredentialHandle;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public PrepareGetCredentialResponse(PrepareGetCredentialResponseInternal responseInternal, CredentialManager.GetCredentialTransportPendingUseCase getCredentialTransport) {
         this.mResponseInternal = responseInternal;
         this.mPendingGetCredentialHandle = new PendingGetCredentialHandle(getCredentialTransport, responseInternal.getPendingIntent());

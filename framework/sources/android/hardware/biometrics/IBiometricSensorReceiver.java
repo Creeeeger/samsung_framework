@@ -149,8 +149,9 @@ public interface IBiometricSensorReceiver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IBiometricSensorReceiver {
+        public static class Proxy implements IBiometricSensorReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

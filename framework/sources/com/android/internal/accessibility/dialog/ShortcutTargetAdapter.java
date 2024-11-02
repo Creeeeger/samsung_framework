@@ -16,13 +16,11 @@ import com.android.internal.accessibility.dialog.TargetAdapter;
 import com.android.internal.accessibility.util.AccessibilityUtils;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ShortcutTargetAdapter extends TargetAdapter {
     private int mShortcutMenuMode = 0;
     private final List<AccessibilityTarget> mTargets;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ShortcutTargetAdapter(List<AccessibilityTarget> targets) {
         this.mTargets = targets;
     }
@@ -166,12 +164,10 @@ public class ShortcutTargetAdapter extends TargetAdapter {
         return convertView2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setShortcutMenuMode(int shortcutMenuMode) {
         this.mShortcutMenuMode = shortcutMenuMode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getShortcutMenuMode() {
         return this.mShortcutMenuMode;
     }

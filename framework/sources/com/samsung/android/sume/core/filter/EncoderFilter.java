@@ -108,7 +108,6 @@ public class EncoderFilter extends MediaCodecFilter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Pair lambda$configCodec$0(Message configData) {
         return new Pair((Integer) configData.get("width"), (Integer) configData.get("height"));
     }

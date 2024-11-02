@@ -10,13 +10,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes4.dex */
 public final class InputMonitor implements Parcelable {
     public static final Parcelable.Creator<InputMonitor> CREATOR = new Parcelable.Creator<InputMonitor>() { // from class: android.view.InputMonitor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputMonitor[] newArray(int size) {
             return new InputMonitor[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputMonitor createFromParcel(Parcel in) {
             return new InputMonitor(in);
@@ -93,6 +94,23 @@ public final class InputMonitor implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) host);
         this.mSurface = surface;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) surface);
+    }
+
+    /* renamed from: android.view.InputMonitor$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputMonitor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputMonitor[] newArray(int size) {
+            return new InputMonitor[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputMonitor createFromParcel(Parcel in) {
+            return new InputMonitor(in);
+        }
     }
 
     @Deprecated

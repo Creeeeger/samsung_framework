@@ -6,14 +6,15 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class SectionRequest extends BroadcastInfoRequest implements Parcelable {
     public static final Parcelable.Creator<SectionRequest> CREATOR = new Parcelable.Creator<SectionRequest>() { // from class: android.media.tv.SectionRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SectionRequest createFromParcel(Parcel source) {
             source.readInt();
             return SectionRequest.createFromParcelBody(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SectionRequest[] newArray(int size) {
             return new SectionRequest[size];
@@ -24,7 +25,24 @@ public final class SectionRequest extends BroadcastInfoRequest implements Parcel
     private final int mTsPid;
     private final int mVersion;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.SectionRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SectionRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SectionRequest createFromParcel(Parcel source) {
+            source.readInt();
+            return SectionRequest.createFromParcelBody(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SectionRequest[] newArray(int size) {
+            return new SectionRequest[size];
+        }
+    }
+
     public static SectionRequest createFromParcelBody(Parcel in) {
         return new SectionRequest(in);
     }

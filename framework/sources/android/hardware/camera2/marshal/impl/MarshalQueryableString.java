@@ -12,7 +12,6 @@ public class MarshalQueryableString implements MarshalQueryable<String> {
     private static final byte NUL = 0;
     private static final String TAG = MarshalQueryableString.class.getSimpleName();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class PreloadHolder {
         public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");

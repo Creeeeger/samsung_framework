@@ -45,7 +45,6 @@ public class DERBMPString extends ASN1Primitive implements ASN1String {
         this.string = cs;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DERBMPString(char[] string) {
         if (string == null) {
             throw new NullPointerException("'string' cannot be null");
@@ -74,7 +73,6 @@ public class DERBMPString extends ASN1Primitive implements ASN1String {
         return Arrays.hashCode(this.string);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof DERBMPString)) {
@@ -84,19 +82,16 @@ public class DERBMPString extends ASN1Primitive implements ASN1String {
         return Arrays.areEqual(this.string, s.string);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() {
         return StreamUtil.calculateBodyLength(this.string.length * 2) + 1 + (this.string.length * 2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         int count = this.string.length;

@@ -237,8 +237,9 @@ public interface ITestSession extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ITestSession {
+        public static class Proxy implements ITestSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

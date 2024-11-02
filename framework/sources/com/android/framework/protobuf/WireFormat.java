@@ -37,7 +37,6 @@ public final class WireFormat {
         return tag >>> 3;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int makeTag(int fieldNumber, int wireType) {
         return (fieldNumber << 3) | wireType;
     }
@@ -65,34 +64,8 @@ public final class WireFormat {
         }
     }
 
-    /* JADX WARN: Enum visitor error
-    jadx.core.utils.exceptions.JadxRuntimeException: Init of enum field 'STRING' uses external variables
-    	at jadx.core.dex.visitors.EnumVisitor.createEnumFieldByConstructor(EnumVisitor.java:451)
-    	at jadx.core.dex.visitors.EnumVisitor.processEnumFieldByField(EnumVisitor.java:372)
-    	at jadx.core.dex.visitors.EnumVisitor.processEnumFieldByWrappedInsn(EnumVisitor.java:337)
-    	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromFilledArray(EnumVisitor.java:322)
-    	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInsn(EnumVisitor.java:262)
-    	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInvoke(EnumVisitor.java:293)
-    	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInsn(EnumVisitor.java:266)
-    	at jadx.core.dex.visitors.EnumVisitor.convertToEnum(EnumVisitor.java:151)
-    	at jadx.core.dex.visitors.EnumVisitor.visit(EnumVisitor.java:100)
-     */
-    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
     /* loaded from: classes4.dex */
-    public static class FieldType {
-        public static final FieldType BYTES;
-        public static final FieldType GROUP = new FieldType("GROUP", 9, JavaType.MESSAGE, 3) { // from class: com.android.framework.protobuf.WireFormat.FieldType.2
-            {
-                AnonymousClass1 anonymousClass1 = null;
-            }
-
-            @Override // com.android.framework.protobuf.WireFormat.FieldType
-            public boolean isPackable() {
-                return false;
-            }
-        };
-        public static final FieldType MESSAGE;
-        public static final FieldType STRING;
+    public static class FieldType extends Enum<FieldType> {
         private final JavaType javaType;
         private final int wireType;
         public static final FieldType DOUBLE = new FieldType("DOUBLE", 0, JavaType.DOUBLE, 1);
@@ -103,6 +76,46 @@ public final class WireFormat {
         public static final FieldType FIXED64 = new FieldType("FIXED64", 5, JavaType.LONG, 1);
         public static final FieldType FIXED32 = new FieldType("FIXED32", 6, JavaType.INT, 5);
         public static final FieldType BOOL = new FieldType("BOOL", 7, JavaType.BOOLEAN, 0);
+        public static final FieldType STRING = new FieldType("STRING", 8, JavaType.STRING, 2) { // from class: com.android.framework.protobuf.WireFormat.FieldType.1
+            AnonymousClass1(String str, int i, JavaType javaType, int wireType) {
+                super(str, i, javaType, wireType, null);
+            }
+
+            @Override // com.android.framework.protobuf.WireFormat.FieldType
+            public boolean isPackable() {
+                return false;
+            }
+        };
+        public static final FieldType GROUP = new FieldType("GROUP", 9, JavaType.MESSAGE, 3) { // from class: com.android.framework.protobuf.WireFormat.FieldType.2
+            AnonymousClass2(String str, int i, JavaType javaType, int wireType) {
+                super(str, i, javaType, wireType, null);
+            }
+
+            @Override // com.android.framework.protobuf.WireFormat.FieldType
+            public boolean isPackable() {
+                return false;
+            }
+        };
+        public static final FieldType MESSAGE = new FieldType("MESSAGE", 10, JavaType.MESSAGE, 2) { // from class: com.android.framework.protobuf.WireFormat.FieldType.3
+            AnonymousClass3(String str, int i, JavaType javaType, int wireType) {
+                super(str, i, javaType, wireType, null);
+            }
+
+            @Override // com.android.framework.protobuf.WireFormat.FieldType
+            public boolean isPackable() {
+                return false;
+            }
+        };
+        public static final FieldType BYTES = new FieldType("BYTES", 11, JavaType.BYTE_STRING, 2) { // from class: com.android.framework.protobuf.WireFormat.FieldType.4
+            AnonymousClass4(String str, int i, JavaType javaType, int wireType) {
+                super(str, i, javaType, wireType, null);
+            }
+
+            @Override // com.android.framework.protobuf.WireFormat.FieldType
+            public boolean isPackable() {
+                return false;
+            }
+        };
         public static final FieldType UINT32 = new FieldType("UINT32", 12, JavaType.INT, 0);
         public static final FieldType ENUM = new FieldType("ENUM", 13, JavaType.ENUM, 0);
         public static final FieldType SFIXED32 = new FieldType("SFIXED32", 14, JavaType.INT, 5);
@@ -127,41 +140,60 @@ public final class WireFormat {
             return (FieldType[]) $VALUES.clone();
         }
 
-        static {
-            int i = 2;
-            STRING = new FieldType("STRING", 8, JavaType.STRING, i) { // from class: com.android.framework.protobuf.WireFormat.FieldType.1
-                {
-                    AnonymousClass1 anonymousClass1 = null;
-                }
+        /* renamed from: com.android.framework.protobuf.WireFormat$FieldType$1 */
+        /* loaded from: classes4.dex */
+        enum AnonymousClass1 extends FieldType {
+            AnonymousClass1(String str, int i, JavaType javaType, int wireType) {
+                super(str, i, javaType, wireType, null);
+            }
 
-                @Override // com.android.framework.protobuf.WireFormat.FieldType
-                public boolean isPackable() {
-                    return false;
-                }
-            };
-            MESSAGE = new FieldType("MESSAGE", 10, JavaType.MESSAGE, i) { // from class: com.android.framework.protobuf.WireFormat.FieldType.3
-                {
-                    AnonymousClass1 anonymousClass1 = null;
-                }
+            @Override // com.android.framework.protobuf.WireFormat.FieldType
+            public boolean isPackable() {
+                return false;
+            }
+        }
 
-                @Override // com.android.framework.protobuf.WireFormat.FieldType
-                public boolean isPackable() {
-                    return false;
-                }
-            };
-            BYTES = new FieldType("BYTES", 11, JavaType.BYTE_STRING, i) { // from class: com.android.framework.protobuf.WireFormat.FieldType.4
-                {
-                    AnonymousClass1 anonymousClass1 = null;
-                }
+        /* renamed from: com.android.framework.protobuf.WireFormat$FieldType$2 */
+        /* loaded from: classes4.dex */
+        enum AnonymousClass2 extends FieldType {
+            AnonymousClass2(String str, int i, JavaType javaType, int wireType) {
+                super(str, i, javaType, wireType, null);
+            }
 
-                @Override // com.android.framework.protobuf.WireFormat.FieldType
-                public boolean isPackable() {
-                    return false;
-                }
-            };
+            @Override // com.android.framework.protobuf.WireFormat.FieldType
+            public boolean isPackable() {
+                return false;
+            }
+        }
+
+        /* renamed from: com.android.framework.protobuf.WireFormat$FieldType$3 */
+        /* loaded from: classes4.dex */
+        enum AnonymousClass3 extends FieldType {
+            AnonymousClass3(String str, int i, JavaType javaType, int wireType) {
+                super(str, i, javaType, wireType, null);
+            }
+
+            @Override // com.android.framework.protobuf.WireFormat.FieldType
+            public boolean isPackable() {
+                return false;
+            }
+        }
+
+        /* renamed from: com.android.framework.protobuf.WireFormat$FieldType$4 */
+        /* loaded from: classes4.dex */
+        enum AnonymousClass4 extends FieldType {
+            AnonymousClass4(String str, int i, JavaType javaType, int wireType) {
+                super(str, i, javaType, wireType, null);
+            }
+
+            @Override // com.android.framework.protobuf.WireFormat.FieldType
+            public boolean isPackable() {
+                return false;
+            }
         }
 
         private FieldType(String str, int i, JavaType javaType, int wireType) {
+            super(str, i);
             this.javaType = javaType;
             this.wireType = wireType;
         }
@@ -179,7 +211,6 @@ public final class WireFormat {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public enum Utf8Validation {
         LOOSE { // from class: com.android.framework.protobuf.WireFormat.Utf8Validation.1
@@ -206,11 +237,39 @@ public final class WireFormat {
         /* synthetic */ Utf8Validation(AnonymousClass1 x2) {
             this();
         }
+
+        /* renamed from: com.android.framework.protobuf.WireFormat$Utf8Validation$1 */
+        /* loaded from: classes4.dex */
+        enum AnonymousClass1 extends Utf8Validation {
+            @Override // com.android.framework.protobuf.WireFormat.Utf8Validation
+            Object readString(CodedInputStream input) throws IOException {
+                return input.readString();
+            }
+        }
+
+        /* renamed from: com.android.framework.protobuf.WireFormat$Utf8Validation$2 */
+        /* loaded from: classes4.dex */
+        enum AnonymousClass2 extends Utf8Validation {
+            @Override // com.android.framework.protobuf.WireFormat.Utf8Validation
+            Object readString(CodedInputStream input) throws IOException {
+                return input.readStringRequireUtf8();
+            }
+        }
+
+        /* renamed from: com.android.framework.protobuf.WireFormat$Utf8Validation$3 */
+        /* loaded from: classes4.dex */
+        enum AnonymousClass3 extends Utf8Validation {
+            @Override // com.android.framework.protobuf.WireFormat.Utf8Validation
+            Object readString(CodedInputStream input) throws IOException {
+                return input.readBytes();
+            }
+        }
     }
 
-    /* renamed from: com.android.framework.protobuf.WireFormat$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.framework.protobuf.WireFormat$1 */
     /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
 
         static {
@@ -291,7 +350,6 @@ public final class WireFormat {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Object readPrimitiveField(CodedInputStream input, FieldType type, Utf8Validation utf8Validation) throws IOException {
         switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$FieldType[type.ordinal()]) {
             case 1:

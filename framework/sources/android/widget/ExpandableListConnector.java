@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class ExpandableListConnector extends BaseAdapter implements Filterable {
+public class ExpandableListConnector extends BaseAdapter implements Filterable {
     private ExpandableListAdapter mExpandableListAdapter;
     private int mTotalExpChildrenCount;
     private int mMaxExpGroupCount = Integer.MAX_VALUE;
@@ -30,7 +31,6 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         expandableListAdapter.registerDataSetObserver(this.mDataSetObserver);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PositionMetadata getUnflattenedPos(int flPos) {
         int insertPosition;
         int groupPos;
@@ -77,7 +77,6 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         return PositionMetadata.obtain(flPos, 2, groupPos, -1, null, insertPosition);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PositionMetadata getFlattenedPos(ExpandableListPosition pos) {
         ArrayList<GroupMetadata> egml = this.mExpGroupMetadataList;
         int numExpGroups = egml.size();
@@ -234,7 +233,6 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         return this.mExpandableListAdapter.hasStableIds();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void refreshExpGroupMetadataList(boolean forceChildrenCountRefresh, boolean syncGroupPositions) {
         int gChildrenCount;
         ArrayList<GroupMetadata> egml = this.mExpGroupMetadataList;
@@ -278,7 +276,6 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean collapseGroup(int groupPos) {
         ExpandableListPosition elGroupPos = ExpandableListPosition.obtain(2, groupPos, -1, -1);
         PositionMetadata pm = getFlattenedPos(elGroupPos);
@@ -291,7 +288,6 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         return retValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean collapseGroup(PositionMetadata posMetadata) {
         if (posMetadata.groupMetadata == null) {
             return false;
@@ -312,7 +308,6 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         return retValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean expandGroup(PositionMetadata posMetadata) {
         if (posMetadata.position.groupPos < 0) {
             throw new RuntimeException("Need group");
@@ -350,7 +345,6 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         this.mMaxExpGroupCount = maxExpGroupCount;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ExpandableListAdapter getAdapter() {
         return this.mExpandableListAdapter;
     }
@@ -364,12 +358,10 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayList<GroupMetadata> getExpandedGroupMetadataList() {
         return this.mExpGroupMetadataList;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setExpandedGroupMetadataList(ArrayList<GroupMetadata> expandedGroupMetadataList) {
         ExpandableListAdapter expandableListAdapter;
         if (expandedGroupMetadataList == null || (expandableListAdapter = this.mExpandableListAdapter) == null) {
@@ -431,8 +423,9 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         return -1;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes4.dex */
-    protected class MyDataSetObserver extends DataSetObserver {
+    public class MyDataSetObserver extends DataSetObserver {
         protected MyDataSetObserver() {
         }
 
@@ -449,18 +442,18 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class GroupMetadata implements Parcelable, Comparable<GroupMetadata> {
         public static final Parcelable.Creator<GroupMetadata> CREATOR = new Parcelable.Creator<GroupMetadata>() { // from class: android.widget.ExpandableListConnector.GroupMetadata.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public GroupMetadata createFromParcel(Parcel in) {
                 GroupMetadata gm = GroupMetadata.obtain(in.readInt(), in.readInt(), in.readInt(), in.readLong());
                 return gm;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GroupMetadata[] newArray(int size) {
                 return new GroupMetadata[size];
@@ -503,6 +496,24 @@ class ExpandableListConnector extends BaseAdapter implements Filterable {
             dest.writeInt(this.lastChildFlPos);
             dest.writeInt(this.gPos);
             dest.writeLong(this.gId);
+        }
+
+        /* renamed from: android.widget.ExpandableListConnector$GroupMetadata$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<GroupMetadata> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GroupMetadata createFromParcel(Parcel in) {
+                GroupMetadata gm = GroupMetadata.obtain(in.readInt(), in.readInt(), in.readInt(), in.readLong());
+                return gm;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GroupMetadata[] newArray(int size) {
+                return new GroupMetadata[size];
+            }
         }
     }
 

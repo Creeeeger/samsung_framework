@@ -35,7 +35,6 @@ public final class ResourceTimer {
 
     private static native int nativeGetTimers(Timer[] timerArr, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class Config {
         int maxBuckets;
@@ -43,11 +42,14 @@ public final class ResourceTimer {
         int maxTimer;
         String[] timers;
 
+        /* synthetic */ Config(ConfigIA configIA) {
+            this();
+        }
+
         private Config() {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class Timer {
         int count;
@@ -56,6 +58,10 @@ public final class ResourceTimer {
         int mintime;
         int[] percentile;
         long total;
+
+        /* synthetic */ Timer(TimerIA timerIA) {
+            this();
+        }
 
         private Timer() {
         }
@@ -79,12 +85,15 @@ public final class ResourceTimer {
                     throw new RuntimeException("ResourceTimer started too early");
                 }
                 mHandler = new Handler(Looper.getMainLooper()) { // from class: android.content.res.ResourceTimer.1
+                    AnonymousClass1(Looper looper) {
+                        super(looper);
+                    }
+
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         ResourceTimer.handleMessage(msg);
                     }
                 };
-                byte b = 0;
                 Config config = new Config();
                 sConfig = config;
                 nativeEnableTimers(config);
@@ -116,7 +125,19 @@ public final class ResourceTimer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.content.res.ResourceTimer$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            ResourceTimer.handleMessage(msg);
+        }
+    }
+
     public static void handleMessage(Message msg) {
         synchronized (sLock) {
             publish();

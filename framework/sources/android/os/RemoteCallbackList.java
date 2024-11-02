@@ -18,7 +18,6 @@ public class RemoteCallbackList<E extends IInterface> {
     private int mBroadcastCount = -1;
     private boolean mKilled = false;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public final class Callback implements IBinder.DeathRecipient {
         final E mCallback;

@@ -14,7 +14,6 @@ public class PenSelectionController {
     private static final String TAG = "PenSelectController";
     private static PenSelectionController sInstance;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class PenSelectionContents {
         public String mContentStr;

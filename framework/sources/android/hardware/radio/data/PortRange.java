@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PortRange implements Parcelable {
     public static final Parcelable.Creator<PortRange> CREATOR = new Parcelable.Creator<PortRange>() { // from class: android.hardware.radio.data.PortRange.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PortRange createFromParcel(Parcel _aidl_source) {
             PortRange _aidl_out = new PortRange();
@@ -16,7 +18,6 @@ public class PortRange implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PortRange[] newArray(int _aidl_size) {
             return new PortRange[_aidl_size];
@@ -26,6 +27,25 @@ public class PortRange implements Parcelable {
     public static final int PORT_RANGE_MIN = 20;
     public int start = 0;
     public int end = 0;
+
+    /* renamed from: android.hardware.radio.data.PortRange$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PortRange> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PortRange createFromParcel(Parcel _aidl_source) {
+            PortRange _aidl_out = new PortRange();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PortRange[] newArray(int _aidl_size) {
+            return new PortRange[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

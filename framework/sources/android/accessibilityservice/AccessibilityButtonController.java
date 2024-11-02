@@ -14,7 +14,6 @@ public final class AccessibilityButtonController {
     private final Object mLock = new Object();
     private final IAccessibilityServiceConnection mServiceConnection;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AccessibilityButtonController(IAccessibilityServiceConnection serviceConnection) {
         this.mServiceConnection = serviceConnection;
     }
@@ -63,7 +62,6 @@ public final class AccessibilityButtonController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchAccessibilityButtonClicked() {
         synchronized (this.mLock) {
             ArrayMap<AccessibilityButtonCallback, Handler> arrayMap = this.mCallbacks;
@@ -86,12 +84,10 @@ public final class AccessibilityButtonController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dispatchAccessibilityButtonClicked$0(AccessibilityButtonCallback callback) {
         callback.onClicked(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchAccessibilityButtonAvailabilityChanged(final boolean available) {
         synchronized (this.mLock) {
             ArrayMap<AccessibilityButtonCallback, Handler> arrayMap = this.mCallbacks;
@@ -114,7 +110,6 @@ public final class AccessibilityButtonController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dispatchAccessibilityButtonAvailabilityChanged$1(AccessibilityButtonCallback callback, boolean available) {
         callback.onAvailabilityChanged(this, available);
     }

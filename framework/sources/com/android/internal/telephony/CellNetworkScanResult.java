@@ -8,13 +8,14 @@ import java.util.List;
 /* loaded from: classes5.dex */
 public class CellNetworkScanResult implements Parcelable {
     public static final Parcelable.Creator<CellNetworkScanResult> CREATOR = new Parcelable.Creator<CellNetworkScanResult>() { // from class: com.android.internal.telephony.CellNetworkScanResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellNetworkScanResult createFromParcel(Parcel in) {
             return new CellNetworkScanResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellNetworkScanResult[] newArray(int size) {
             return new CellNetworkScanResult[size];
@@ -26,6 +27,10 @@ public class CellNetworkScanResult implements Parcelable {
     public static final int STATUS_UNKNOWN_ERROR = 4;
     private final List<OperatorInfo> mOperators;
     private final int mStatus;
+
+    /* synthetic */ CellNetworkScanResult(Parcel parcel, CellNetworkScanResultIA cellNetworkScanResultIA) {
+        this(parcel);
+    }
 
     public CellNetworkScanResult(int status, List<OperatorInfo> operators) {
         this.mStatus = status;
@@ -84,5 +89,22 @@ public class CellNetworkScanResult implements Parcelable {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    /* renamed from: com.android.internal.telephony.CellNetworkScanResult$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellNetworkScanResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellNetworkScanResult createFromParcel(Parcel in) {
+            return new CellNetworkScanResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellNetworkScanResult[] newArray(int size) {
+            return new CellNetworkScanResult[size];
+        }
     }
 }

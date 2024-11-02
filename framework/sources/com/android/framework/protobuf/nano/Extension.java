@@ -31,6 +31,10 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
     public final int tag;
     protected final int type;
 
+    /* synthetic */ Extension(int x0, Class x1, int x2, boolean x3, AnonymousClass1 x4) {
+        this(x0, x1, x2, x3);
+    }
+
     @Deprecated
     public static <M extends ExtendableMessageNano<M>, T extends MessageNano> Extension<M, T> createMessageTyped(int type, Class<T> clazz, int tag) {
         return new Extension<>(type, clazz, tag, false);
@@ -59,7 +63,6 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
         this.repeated = repeated;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final T getValueFrom(List<UnknownFieldData> unknownFields) {
         if (unknownFields == null) {
             return null;
@@ -123,7 +126,6 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
         resultList.add(readData(CodedInputByteBufferNano.newInstance(data.bytes)));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeTo(Object value, CodedOutputByteBufferNano output) throws IOException {
         if (this.repeated) {
             writeRepeatedData(value, output);
@@ -164,7 +166,6 @@ public class Extension<M extends ExtendableMessageNano<M>, T> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int computeSerializedSize(Object value) {
         if (this.repeated) {
             return computeRepeatedSerializedSize(value);

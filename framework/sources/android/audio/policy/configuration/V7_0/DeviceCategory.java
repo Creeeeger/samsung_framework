@@ -18,7 +18,6 @@ public enum DeviceCategory {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static DeviceCategory fromString(String rawString) {
         for (DeviceCategory _f : values()) {
             if (_f.getRawName().equals(rawString)) {

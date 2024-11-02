@@ -46,8 +46,8 @@ public class SprAttributeMatrix extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     /* renamed from: clone */
-    public SprAttributeMatrix mo8420clone() throws CloneNotSupportedException {
-        SprAttributeMatrix attribute = (SprAttributeMatrix) super.mo8420clone();
+    public SprAttributeMatrix mo8412clone() throws CloneNotSupportedException {
+        SprAttributeMatrix attribute = (SprAttributeMatrix) super.mo8412clone();
         attribute.matrix = new Matrix(this.matrix);
         return attribute;
     }

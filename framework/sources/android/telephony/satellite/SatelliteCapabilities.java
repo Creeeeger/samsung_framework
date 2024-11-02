@@ -14,13 +14,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class SatelliteCapabilities implements Parcelable {
     public static final Parcelable.Creator<SatelliteCapabilities> CREATOR = new Parcelable.Creator<SatelliteCapabilities>() { // from class: android.telephony.satellite.SatelliteCapabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SatelliteCapabilities createFromParcel(Parcel in) {
             return new SatelliteCapabilities(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SatelliteCapabilities[] newArray(int size) {
             return new SatelliteCapabilities[size];
@@ -30,6 +31,10 @@ public final class SatelliteCapabilities implements Parcelable {
     private boolean mIsPointingRequired;
     private int mMaxBytesPerOutgoingDatagram;
     private Set<Integer> mSupportedRadioTechnologies;
+
+    /* synthetic */ SatelliteCapabilities(Parcel parcel, SatelliteCapabilitiesIA satelliteCapabilitiesIA) {
+        this(parcel);
+    }
 
     public SatelliteCapabilities(Set<Integer> supportedRadioTechnologies, boolean isPointingRequired, int maxBytesPerOutgoingDatagram, Map<Integer, AntennaPosition> antennaPositionMap) {
         this.mSupportedRadioTechnologies = supportedRadioTechnologies == null ? new HashSet<>() : supportedRadioTechnologies;
@@ -73,6 +78,23 @@ public final class SatelliteCapabilities implements Parcelable {
             return;
         }
         out.writeInt(0);
+    }
+
+    /* renamed from: android.telephony.satellite.SatelliteCapabilities$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SatelliteCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SatelliteCapabilities createFromParcel(Parcel in) {
+            return new SatelliteCapabilities(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SatelliteCapabilities[] newArray(int size) {
+            return new SatelliteCapabilities[size];
+        }
     }
 
     public String toString() {

@@ -122,9 +122,18 @@ public final class SemMultiControlManager {
         }
     }
 
+    /* renamed from: com.samsung.android.multicontrol.SemMultiControlManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements MultiControlDeathChecker {
+        AnonymousClass1() {
+        }
+    }
+
     public void startDeathChecker() {
         try {
             this.mService.startDeathChecker(new MultiControlDeathCheckerDelegate(new MultiControlDeathChecker() { // from class: com.samsung.android.multicontrol.SemMultiControlManager.1
+                AnonymousClass1() {
+                }
             }));
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();

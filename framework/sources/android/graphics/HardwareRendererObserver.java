@@ -33,7 +33,6 @@ public final class HardwareRendererObserver {
         this.mNativePtr = new VirtualRefBasePtr(nCreateObserver(new WeakReference(this), waitForPresentTime));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getNativeInstance() {
         return this.mNativePtr.get();
     }
@@ -47,7 +46,6 @@ public final class HardwareRendererObserver {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyDataAvailable$0() {
         boolean hasMoreData = true;
         while (hasMoreData) {

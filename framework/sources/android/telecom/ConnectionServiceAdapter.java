@@ -22,13 +22,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
     private static final String LOG_TAG = "Telecom-ConnectionServiceAdapter";
     private final Set<IConnectionServiceAdapter> mAdapters = Collections.newSetFromMap(new ConcurrentHashMap(8, 0.9f, 1));
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addAdapter(IConnectionServiceAdapter adapter) {
         for (IConnectionServiceAdapter it : this.mAdapters) {
             if (it.asBinder() == adapter.asBinder()) {
@@ -46,7 +44,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeAdapter(IConnectionServiceAdapter adapter) {
         if (adapter != null) {
             for (IConnectionServiceAdapter it : this.mAdapters) {
@@ -71,7 +68,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleCreateConnectionComplete(String id, ConnectionRequest request, ParcelableConnection connection) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -81,7 +77,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleCreateConferenceComplete(String id, ConnectionRequest request, ParcelableConference conference) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -91,7 +86,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setActive(String callId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -101,7 +95,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setRinging(String callId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -111,7 +104,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDialing(String callId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -121,7 +113,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setPulling(String callId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -131,7 +122,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDisconnected(String callId, DisconnectCause disconnectCause) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -141,7 +131,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setOnHold(String callId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -151,7 +140,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setRingbackRequested(String callId, boolean ringback) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -161,7 +149,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setConnectionCapabilities(String callId, int capabilities) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -171,7 +158,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setConnectionProperties(String callId, int properties) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -181,7 +167,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setIsConferenced(String callId, String conferenceCallId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -192,7 +177,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onConferenceMergeFailed(String callId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -203,7 +187,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetConnectionTime(String callId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -213,7 +196,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeCall(String callId) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -223,7 +205,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onPostDialWait(String callId, String remaining) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -233,7 +214,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onPostDialChar(String callId, char nextChar) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -243,7 +223,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addConferenceCall(String callId, ParcelableConference parcelableConference) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -253,7 +232,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void queryRemoteConnectionServices(RemoteServiceCallback callback, String callingPackage) {
         if (this.mAdapters.size() == 1) {
             try {
@@ -271,7 +249,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setVideoProvider(String callId, Connection.VideoProvider videoProvider) {
         IVideoProvider iVideoProvider;
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -287,7 +264,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setIsVoipAudioMode(String callId, boolean isVoip) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -297,7 +273,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setStatusHints(String callId, StatusHints statusHints) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -307,7 +282,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAddress(String callId, Uri address, int presentation) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -317,7 +291,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCallerDisplayName(String callId, String callerDisplayName, int presentation) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -327,7 +300,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setVideoState(String callId, int videoState) {
         Log.v(this, "setVideoState: %d", Integer.valueOf(videoState));
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -338,7 +310,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setConferenceableConnections(String callId, List<String> conferenceableCallIds) {
         Rlog.d(LOG_TAG, "setConferenceableConnections - callId: " + callId + ", conferenceableCallIds: " + conferenceableCallIds);
         Log.v(this, "setConferenceableConnections: %s, %s", callId, conferenceableCallIds);
@@ -350,7 +321,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addExistingConnection(String callId, ParcelableConnection connection) {
         Log.v(this, "addExistingConnection: %s", callId);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -361,7 +331,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void putExtras(String callId, Bundle extras) {
         Log.v(this, "putExtras: %s", callId);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -408,7 +377,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeExtras(String callId, List<String> keys) {
         Log.v(this, "removeExtras: %s %s", callId, keys);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -419,7 +387,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAudioRoute(String callId, int audioRoute, String bluetoothAddress) {
         Log.v(this, "setAudioRoute: %s %s %s", callId, CallAudioState.audioRouteToString(audioRoute), bluetoothAddress);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -430,7 +397,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestCallEndpointChange(String callId, CallEndpoint endpoint, Executor executor, OutcomeReceiver<Void, CallEndpointException> callback) {
         Log.v(this, "requestCallEndpointChange", new Object[0]);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -442,8 +408,7 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telecom.ConnectionServiceAdapter$1, reason: invalid class name */
+    /* renamed from: android.telecom.ConnectionServiceAdapter$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -456,7 +421,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(int resultCode, final Bundle result) {
             super.onReceiveResult(resultCode, result);
@@ -487,7 +451,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onConnectionEvent(String callId, String event, Bundle extras) {
         Log.v(this, "onConnectionEvent: %s", event);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -498,7 +461,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onRttInitiationSuccess(String callId) {
         Log.v(this, "onRttInitiationSuccess: %s", callId);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -509,7 +471,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onRttInitiationFailure(String callId, int reason) {
         Log.v(this, "onRttInitiationFailure: %s", callId);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -520,7 +481,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onRttSessionRemotelyTerminated(String callId) {
         Log.v(this, "onRttSessionRemotelyTerminated: %s", callId);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -531,7 +491,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onRemoteRttRequest(String callId) {
         Log.v(this, "onRemoteRttRequest: %s", callId);
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -542,7 +501,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onPhoneAccountChanged(String callId, PhoneAccountHandle pHandle) {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -553,7 +511,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onConnectionServiceFocusReleased() {
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
             try {
@@ -564,7 +521,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setConferenceState(String callId, boolean isConference) {
         Log.v(this, "setConferenceState: %s %b", callId, Boolean.valueOf(isConference));
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -575,7 +531,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCallDirection(String callId, int direction) {
         for (IConnectionServiceAdapter a : this.mAdapters) {
             try {
@@ -585,7 +540,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void queryLocation(String callId, long timeoutMillis, String provider, Executor executor, final OutcomeReceiver<Location, QueryLocationException> callback) {
         Log.v(this, "queryLocation: %s %d", callId, Long.valueOf(timeoutMillis));
         for (IConnectionServiceAdapter adapter : this.mAdapters) {
@@ -603,8 +557,7 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telecom.ConnectionServiceAdapter$2, reason: invalid class name */
+    /* renamed from: android.telecom.ConnectionServiceAdapter$2 */
     /* loaded from: classes3.dex */
     public class AnonymousClass2 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -617,7 +570,6 @@ public final class ConnectionServiceAdapter implements IBinder.DeathRecipient {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(int resultCode, final Bundle result) {
             super.onReceiveResult(resultCode, result);

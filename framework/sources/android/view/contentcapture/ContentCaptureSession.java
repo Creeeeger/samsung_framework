@@ -62,10 +62,8 @@ public abstract class ContentCaptureSession implements AutoCloseable {
     public @interface FlushReason {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract void flush(int i);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract MainContentCaptureSession getMainCaptureSession();
 
     abstract void internalNotifySessionPaused();
@@ -88,7 +86,6 @@ public abstract class ContentCaptureSession implements AutoCloseable {
 
     abstract void updateContentCaptureContext(ContentCaptureContext contentCaptureContext);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ContentCaptureSession() {
         this(getRandomSessionId());
     }
@@ -100,7 +97,6 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         this.mId = id;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ContentCaptureSession(ContentCaptureContext initialContext) {
         this();
         this.mClientContext = (ContentCaptureContext) Objects.requireNonNull(initialContext);
@@ -268,7 +264,6 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         return new ViewNode.ViewStructureImpl(parentId, virtualId, this.mId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isContentCaptureEnabled() {
         boolean z;
         synchronized (this.mLock) {
@@ -277,7 +272,6 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         return z;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(String prefix, PrintWriter pw) {
         pw.print(prefix);
         pw.print("id: ");
@@ -313,7 +307,6 @@ public abstract class ContentCaptureSession implements AutoCloseable {
         return Integer.toString(this.mId);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static String getStateAsString(int state) {
         return state + " (" + (state == 0 ? "UNKNOWN" : DebugUtils.flagsToString(ContentCaptureSession.class, "STATE_", state)) + NavigationBarInflaterView.KEY_CODE_END;
     }

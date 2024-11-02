@@ -47,7 +47,6 @@ public class LocalePickerWithRegion extends ListFragment implements SearchView.O
     private int mPreviousSecSuggestionCount = 0;
     private int mChangeDisplayName = 0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public interface LocaleCollectorBase {
         HashSet<String> getIgnoredLocaleList(boolean z);

@@ -84,8 +84,9 @@ public interface ITimeZoneProviderManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ITimeZoneProviderManager {
+        public static class Proxy implements ITimeZoneProviderManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

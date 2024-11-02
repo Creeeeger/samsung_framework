@@ -83,8 +83,9 @@ public interface IInputDevicesChangedListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IInputDevicesChangedListener {
+        public static class Proxy implements IInputDevicesChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -47,8 +47,7 @@ public final class CursorJoiner implements Iterator<Result>, Iterable<Result> {
         return columns;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.database.CursorJoiner$1, reason: invalid class name */
+    /* renamed from: android.database.CursorJoiner$1 */
     /* loaded from: classes.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$database$CursorJoiner$Result;
@@ -88,7 +87,6 @@ public final class CursorJoiner implements Iterator<Result>, Iterable<Result> {
         }
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.util.Iterator
     public Result next() {
         if (!hasNext()) {

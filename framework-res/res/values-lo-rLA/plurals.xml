@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">ໂທລະສັບຂອງທ່ານບໍ່ສະຖຽນ ເພາະວ່າແຜ່ນ SD ທີ່ຕິດຕັ້ງແອັບໃສ່ມັນຖືກເອົາອອກໄປແລ້ວ. ໂທລະສັບຂອງທ່ານຈະປິດເປີດຄືນໃໝ່ໃນ %d ວິນາທີເພື່ອກັບຄືນສູ່ປົກກະຕິ. ບັນທຶກຂໍ້ມູນທີ່ບໍ່ໄດ້ບັນທຶກກ່ອນທີ່ໂທລະສັບຈະປິດເປີດຄືນໃໝ່.</item>
+        <item quantity="other">ແທັບເລັດຂອງທ່ານບໍ່ສະຖຽນເພາະວ່າແຜ່ນ SD ທີ່ຕິດຕັ້ງແອັບໃນມັນຖືກເອົາອອກແລ້ວ. ແທັບເລັດຂອງທ່ານຈະປິດເປີດຄືນໃໜໃນ %d ວິນາທີເພື່ອກັບຄືນສູ່ປົກກະຕິ. ບັນທຶກຂໍ້ມູນທີ່ບໍ່ໄດ້ບັນທຶກກ່ອນທີ່ແທັບເລັດຈະປິດເປີດຄືນໃໝ່.</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">ໂທລະສັບຂອງທ່ານຈະປິດເປີດຄືນໃໝ່ໃນ %d ວິນາທີ</item>
+        <item quantity="other">ແທັບເລັດຂອງທ່ານຈະປິດເປີດຄືນໃໝ່ໃນ %d ວິນາທີ</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

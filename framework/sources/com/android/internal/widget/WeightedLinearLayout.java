@@ -29,7 +29,6 @@ public class WeightedLinearLayout extends LinearLayout {
         a.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();

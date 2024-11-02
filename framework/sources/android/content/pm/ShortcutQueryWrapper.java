@@ -13,13 +13,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class ShortcutQueryWrapper extends LauncherApps.ShortcutQuery implements Parcelable {
     public static final Parcelable.Creator<ShortcutQueryWrapper> CREATOR = new Parcelable.Creator<ShortcutQueryWrapper>() { // from class: android.content.pm.ShortcutQueryWrapper.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ShortcutQueryWrapper[] newArray(int size) {
             return new ShortcutQueryWrapper[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ShortcutQueryWrapper createFromParcel(Parcel in) {
             return new ShortcutQueryWrapper(in);
@@ -124,6 +125,23 @@ public final class ShortcutQueryWrapper extends LauncherApps.ShortcutQuery imple
         this.mActivity = activity;
         this.mQueryFlags = queryFlags;
         AnnotationValidations.validate((Class<? extends Annotation>) LauncherApps.ShortcutQuery.QueryFlags.class, (Annotation) null, this.mQueryFlags);
+    }
+
+    /* renamed from: android.content.pm.ShortcutQueryWrapper$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ShortcutQueryWrapper> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ShortcutQueryWrapper[] newArray(int size) {
+            return new ShortcutQueryWrapper[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ShortcutQueryWrapper createFromParcel(Parcel in) {
+            return new ShortcutQueryWrapper(in);
+        }
     }
 
     @Deprecated

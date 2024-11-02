@@ -40,7 +40,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: FragmentManager.java */
 /* loaded from: classes.dex */
 public final class FragmentManagerImpl extends FragmentManager implements LayoutInflater.Factory2 {
@@ -80,20 +79,21 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
     Bundle mStateBundle = null;
     SparseArray<Parcelable> mStateArray = null;
     Runnable mExecCommit = new Runnable() { // from class: android.app.FragmentManagerImpl.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             FragmentManagerImpl.this.execPendingActions();
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: FragmentManager.java */
     /* loaded from: classes.dex */
     public interface OpGenerator {
         boolean generateOps(ArrayList<BackStackRecord> arrayList, ArrayList<Boolean> arrayList2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: FragmentManager.java */
     /* loaded from: classes.dex */
     public static class AnimateOnHWLayerIfNeededListener implements Animator.AnimatorListener {
@@ -131,6 +131,20 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
 
         @Override // android.animation.Animator.AnimatorListener
         public void onAnimationRepeat(Animator animation) {
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* compiled from: FragmentManager.java */
+    /* renamed from: android.app.FragmentManagerImpl$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            FragmentManagerImpl.this.execPendingActions();
         }
     }
 
@@ -531,12 +545,10 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isStateAtLeast(int state) {
         return this.mCurState >= state;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Failed to find 'out' block for switch in B:34:0x0064. Please report as an issue. */
     /* JADX WARN: Removed duplicated region for block: B:121:0x02a0  */
@@ -552,12 +564,41 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void moveToState(final android.app.Fragment r20, int r21, int r22, int r23, boolean r24) {
+    public void moveToState(android.app.Fragment r20, int r21, int r22, int r23, boolean r24) {
         /*
             Method dump skipped, instructions count: 1242
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.app.FragmentManagerImpl.moveToState(android.app.Fragment, int, int, int, boolean):void");
+    }
+
+    /* compiled from: FragmentManager.java */
+    /* renamed from: android.app.FragmentManagerImpl$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        final /* synthetic */ ViewGroup val$container;
+        final /* synthetic */ Fragment val$f;
+        final /* synthetic */ Fragment val$fragment;
+        final /* synthetic */ View val$view;
+
+        AnonymousClass2(ViewGroup viewGroup, View view, Fragment fragment, Fragment fragment2) {
+            r2 = viewGroup;
+            r3 = view;
+            r4 = fragment;
+            r5 = fragment2;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator anim) {
+            r2.endViewTransition(r3);
+            Animator animator = r4.getAnimatingAway();
+            r4.setAnimatingAway(null);
+            if (r2.indexOfChild(r3) == -1 && animator != null) {
+                FragmentManagerImpl fragmentManagerImpl = FragmentManagerImpl.this;
+                Fragment fragment = r5;
+                fragmentManagerImpl.moveToState(fragment, fragment.getStateAfterAnimating(), 0, 0, false);
+            }
+        }
     }
 
     void moveToState(Fragment f) {
@@ -588,12 +629,20 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
                     if (fragment.isHideReplaced()) {
                         fragment.setHideReplaced(false);
                     } else {
-                        final ViewGroup container = fragment.mContainer;
-                        final View animatingView = fragment.mView;
+                        ViewGroup container = fragment.mContainer;
+                        View animatingView = fragment.mView;
                         if (container != null) {
                             container.startViewTransition(animatingView);
                         }
                         anim.addListener(new AnimatorListenerAdapter() { // from class: android.app.FragmentManagerImpl.3
+                            final /* synthetic */ View val$animatingView;
+                            final /* synthetic */ ViewGroup val$container;
+
+                            AnonymousClass3(ViewGroup container2, View animatingView2) {
+                                container = container2;
+                                animatingView = animatingView2;
+                            }
+
                             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                             public void onAnimationEnd(Animator animation) {
                                 ViewGroup viewGroup = container;
@@ -629,7 +678,29 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         fragment.onHiddenChanged(fragment.mHidden);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* compiled from: FragmentManager.java */
+    /* renamed from: android.app.FragmentManagerImpl$3 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass3 extends AnimatorListenerAdapter {
+        final /* synthetic */ View val$animatingView;
+        final /* synthetic */ ViewGroup val$container;
+
+        AnonymousClass3(ViewGroup container2, View animatingView2) {
+            container = container2;
+            animatingView = animatingView2;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ViewGroup viewGroup = container;
+            if (viewGroup != null) {
+                viewGroup.endViewTransition(animatingView);
+            }
+            animation.removeListener(this);
+            animatingView.setVisibility(8);
+        }
+    }
+
     public void moveFragmentToExpectedState(Fragment f) {
         if (f == null) {
             return;
@@ -671,7 +742,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void moveToState(int newState, boolean always) {
         FragmentHostCallback<?> fragmentHostCallback;
         if (this.mHost == null && newState != 0) {
@@ -711,7 +781,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startPendingDeferredFragments() {
         if (this.mActive == null) {
             return;
@@ -724,7 +793,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void makeActive(Fragment f) {
         if (f.mIndex >= 0) {
             return;
@@ -934,7 +1002,10 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         return this.mStateSaved;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0027, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x0027, code lost:
+    
+        return;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -980,7 +1051,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         throw new UnsupportedOperationException("Method not decompiled: android.app.FragmentManagerImpl.enqueueAction(android.app.FragmentManagerImpl$OpGenerator, boolean):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void scheduleCommit() {
         synchronized (this) {
             ArrayList<StartEnterTransitionListener> arrayList = this.mPostponedTransactions;
@@ -1287,7 +1357,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         return postponeIndex;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void completeExecute(BackStackRecord record, boolean isPop, boolean runTransitions, boolean moveToState) {
         if (isPop) {
             record.executePopOps(moveToState);
@@ -1427,7 +1496,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addBackStackState(BackStackRecord state) {
         if (this.mBackStack == null) {
             this.mBackStack = new ArrayList<>();
@@ -1483,7 +1551,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FragmentManagerNonConfig retainNonConfig() {
         setRetaining(this.mSavedNonConfig);
         return this.mSavedNonConfig;
@@ -1596,7 +1663,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Parcelable saveAllState() {
         int N;
         forcePostponedTransactions();
@@ -1686,7 +1752,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         return fms;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void restoreAllState(Parcelable state, FragmentManagerNonConfig nonConfig) {
         if (state == null) {
             return;
@@ -1822,7 +1887,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         this.mAllowOldReentrantBehavior = getTargetSdk() <= 25;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getTargetSdk() {
         Context context;
         ApplicationInfo info;
@@ -2452,7 +2516,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LayoutInflater.Factory2 getLayoutInflaterFactory() {
         return this;
     }
@@ -2480,7 +2543,6 @@ public final class FragmentManagerImpl extends FragmentManager implements Layout
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: FragmentManager.java */
     /* loaded from: classes.dex */
     public static class StartEnterTransitionListener implements Fragment.OnStartEnterTransitionListener {

@@ -176,7 +176,6 @@ public abstract class SmsMessageBase {
         return this.mIndexOnIcc;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void parseMessageBody() {
         SmsAddress smsAddress = this.mOriginatingAddress;
         if (smsAddress != null && smsAddress.couldBeEmailGateway()) {
@@ -233,7 +232,10 @@ public abstract class SmsMessageBase {
         this.mIsEmail = isEmailAddress(this.mEmailFrom);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:18:?, code lost:            return r3;     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:?, code lost:
+    
+        return r3;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -358,12 +360,10 @@ public abstract class SmsMessageBase {
         return this.mReceivedEncodingType;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setSubId(int subId) {
         mSubId = subId;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int getSubId() {
         return mSubId;
     }
@@ -459,7 +459,6 @@ public abstract class SmsMessageBase {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void parseSpecificTid(int tid) {
         switch (tid) {
             case 4097:
@@ -553,7 +552,6 @@ public abstract class SmsMessageBase {
         this.mMessageBody = destBody;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int getSubId(int phoneId) {
         int[] subIds = SubscriptionManager.getSubId(phoneId);
         if (subIds != null && subIds.length > 0) {

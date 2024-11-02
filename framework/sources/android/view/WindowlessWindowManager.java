@@ -48,7 +48,6 @@ public class WindowlessWindowManager implements IWindowSession {
         void finished(SurfaceControl.Transaction transaction);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class State {
         Rect mAttachedFrame;
@@ -102,7 +101,6 @@ public class WindowlessWindowManager implements IWindowSession {
         this.mConfiguration.setTo(configuration);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IBinder getFocusGrantToken(IBinder window) {
         synchronized (this) {
             if (this.mStateForWindow.isEmpty()) {
@@ -117,7 +115,6 @@ public class WindowlessWindowManager implements IWindowSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCompletionCallback(IBinder window, ResizeCompleteCallback callback) {
         if (this.mResizeCompletionForWindow.get(window) != null) {
             Log.w(TAG, "Unsupported overlapping resizes");

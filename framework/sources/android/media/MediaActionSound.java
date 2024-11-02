@@ -23,6 +23,9 @@ public class MediaActionSound {
     public static final int STOP_VIDEO_RECORDING = 3;
     private static final String TAG = "MediaActionSound";
     private SoundPool.OnLoadCompleteListener mLoadCompleteListener = new SoundPool.OnLoadCompleteListener() { // from class: android.media.MediaActionSound.1
+        AnonymousClass1() {
+        }
+
         @Override // android.media.SoundPool.OnLoadCompleteListener
         public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
             for (SoundState sound : MediaActionSound.this.mSounds) {
@@ -72,7 +75,6 @@ public class MediaActionSound {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class SoundState {
         public final int name;
@@ -157,6 +159,47 @@ public class MediaActionSound {
                 case 3:
                     this.mSoundPool.play(sound.id, 1.0f, 1.0f, 0, 0, 1.0f);
                     break;
+            }
+        }
+    }
+
+    /* renamed from: android.media.MediaActionSound$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements SoundPool.OnLoadCompleteListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.SoundPool.OnLoadCompleteListener
+        public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+            for (SoundState sound : MediaActionSound.this.mSounds) {
+                if (sound.id == sampleId) {
+                    int playSoundId = 0;
+                    synchronized (sound) {
+                        if (status != 0) {
+                            sound.state = 0;
+                            sound.id = 0;
+                            Log.e(MediaActionSound.TAG, "OnLoadCompleteListener() error: " + status + " loading sound: " + sound.name);
+                            return;
+                        }
+                        switch (sound.state) {
+                            case 1:
+                                sound.state = 3;
+                                break;
+                            case 2:
+                                playSoundId = sound.id;
+                                sound.state = 3;
+                                break;
+                            default:
+                                Log.e(MediaActionSound.TAG, "OnLoadCompleteListener() called in wrong state: " + sound.state + " for sound: " + sound.name);
+                                break;
+                        }
+                        if (playSoundId != 0) {
+                            soundPool.play(playSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                            return;
+                        }
+                        return;
+                    }
+                }
             }
         }
     }

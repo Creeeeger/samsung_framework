@@ -166,7 +166,10 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
         return InetAddresses.parseNumericAddress(host).isLoopbackAddress();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:101:0x01f7, code lost:            r16.mURL = r8;     */
+    /* JADX WARN: Code restructure failed: missing block: B:101:0x01f7, code lost:
+    
+        r16.mURL = r8;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

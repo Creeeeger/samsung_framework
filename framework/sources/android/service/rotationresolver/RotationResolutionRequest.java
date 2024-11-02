@@ -13,13 +13,14 @@ import java.lang.annotation.Annotation;
 /* loaded from: classes3.dex */
 public final class RotationResolutionRequest implements Parcelable {
     public static final Parcelable.Creator<RotationResolutionRequest> CREATOR = new Parcelable.Creator<RotationResolutionRequest>() { // from class: android.service.rotationresolver.RotationResolutionRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RotationResolutionRequest[] newArray(int size) {
             return new RotationResolutionRequest[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RotationResolutionRequest createFromParcel(Parcel in) {
             return new RotationResolutionRequest(in);
@@ -98,6 +99,23 @@ public final class RotationResolutionRequest implements Parcelable {
         this.mShouldUseCamera = shouldUseCamera;
         this.mTimeoutMillis = timeoutMillis;
         AnnotationValidations.validate((Class<? extends Annotation>) DurationMillisLong.class, (Annotation) null, timeoutMillis);
+    }
+
+    /* renamed from: android.service.rotationresolver.RotationResolutionRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RotationResolutionRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RotationResolutionRequest[] newArray(int size) {
+            return new RotationResolutionRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RotationResolutionRequest createFromParcel(Parcel in) {
+            return new RotationResolutionRequest(in);
+        }
     }
 
     @Deprecated

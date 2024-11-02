@@ -9,7 +9,6 @@ public class SContextStepCountAlertAttribute extends SContextAttribute {
     private static final String TAG = "SContextStepCountAlertAttribute";
     private int mStepCount;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextStepCountAlertAttribute() {
         this.mStepCount = 10;
         setAttribute();

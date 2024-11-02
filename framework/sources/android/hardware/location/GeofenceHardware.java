@@ -111,7 +111,6 @@ public final class GeofenceHardware {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeCallback(GeofenceHardwareCallback callback) {
         synchronized (this.mCallbacks) {
             this.mCallbacks.remove(callback);
@@ -148,7 +147,6 @@ public final class GeofenceHardware {
         return wrapper;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public class GeofenceHardwareMonitorCallbackWrapper extends IGeofenceHardwareMonitorCallback.Stub {
         private WeakReference<GeofenceHardwareMonitorCallback> mCallback;
@@ -168,7 +166,6 @@ public final class GeofenceHardware {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public class GeofenceHardwareCallbackWrapper extends IGeofenceHardwareCallback.Stub {
         private WeakReference<GeofenceHardwareCallback> mCallback;

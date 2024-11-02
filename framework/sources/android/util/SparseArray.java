@@ -30,8 +30,8 @@ public class SparseArray<E> implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SparseArray<E> m4951clone() {
+    /* renamed from: clone */
+    public SparseArray<E> m4950clone() {
         SparseArray<E> clone = null;
         try {
             clone = (SparseArray) super.clone();

@@ -5,13 +5,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class DynamicEffect extends VibrationEffect implements Parcelable {
     public static final Parcelable.Creator<DynamicEffect> CREATOR = new Parcelable.Creator<DynamicEffect>() { // from class: android.os.DynamicEffect.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DynamicEffect createFromParcel(Parcel in) {
             return new DynamicEffect(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DynamicEffect[] newArray(int size) {
             return new DynamicEffect[size];
@@ -85,5 +86,22 @@ public final class DynamicEffect extends VibrationEffect implements Parcelable {
     @Override // android.os.VibrationEffect
     public boolean areVibrationFeaturesSupported(Vibrator vibrator) {
         return true;
+    }
+
+    /* renamed from: android.os.DynamicEffect$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DynamicEffect> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DynamicEffect createFromParcel(Parcel in) {
+            return new DynamicEffect(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DynamicEffect[] newArray(int size) {
+            return new DynamicEffect[size];
+        }
     }
 }

@@ -78,6 +78,9 @@ public class CameraLightSensorManager {
         if (this.mCameraLightSensorConnection == null) {
             Log.d("CameraLightSensor_Manager", "Creating new connection for service.");
             this.mCameraLightSensorConnection = new ServiceConnection() { // from class: android.hardware.CameraLightSensorManager.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.content.ServiceConnection
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     Log.d("CameraLightSensor_Manager", " Service is connected, cmp name = " + name + " service = " + service);
@@ -119,6 +122,41 @@ public class CameraLightSensorManager {
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("CameraLightSensor_Manager", "Exception while starting service.");
+            }
+        }
+    }
+
+    /* renamed from: android.hardware.CameraLightSensorManager$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements ServiceConnection {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d("CameraLightSensor_Manager", " Service is connected, cmp name = " + name + " service = " + service);
+            synchronized (CameraLightSensorManager.this.mLockIPC) {
+                CameraLightSensorManager.this.mSystemIPC = new Messenger(service);
+                if (CameraLightSensorManager.this.mSystemHandler != null && CameraLightSensorManager.this.mEnabledService && CameraLightSensorManager.this.mConnectionFailed) {
+                    CameraLightSensorManager.this.mSystemHandler.removeMessages(1);
+                    CameraLightSensorManager.this.mSystemHandler.sendEmptyMessage(1);
+                    CameraLightSensorManager.this.mConnectionFailed = false;
+                }
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d("CameraLightSensor_Manager", " Service is disconnected, cmp name = " + name);
+            synchronized (CameraLightSensorManager.this.mLockIPC) {
+                CameraLightSensorManager.this.mProcessBinded = false;
+                CameraLightSensorManager.this.mSystemIPC = null;
+                if (CameraLightSensorManager.this.mCameraLightSensorConnection != null) {
+                    Log.d("CameraLightSensor_Manager", "Unbinding and removing connection for service.");
+                    CameraLightSensorManager.this.mContext.unbindService(CameraLightSensorManager.this.mCameraLightSensorConnection);
+                    CameraLightSensorManager.this.mCameraLightSensorConnection = null;
+                    CameraLightSensorManager.this.mSystemHandler = null;
+                }
             }
         }
     }
@@ -258,7 +296,6 @@ public class CameraLightSensorManager {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public class ResponseHandler extends Handler {
         public float[] camera_ev_bv;

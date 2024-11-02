@@ -141,7 +141,6 @@ public class MultiCheckPreference extends DialogPreference {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
     public void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
@@ -151,6 +150,9 @@ public class MultiCheckPreference extends DialogPreference {
         boolean[] zArr = this.mSetValues;
         this.mOrigValues = Arrays.copyOf(zArr, zArr.length);
         builder.setMultiChoiceItems(this.mEntries, this.mSetValues, new DialogInterface.OnMultiChoiceClickListener() { // from class: android.preference.MultiCheckPreference.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.DialogInterface.OnMultiChoiceClickListener
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 MultiCheckPreference.this.mSetValues[which] = isChecked;
@@ -158,7 +160,18 @@ public class MultiCheckPreference extends DialogPreference {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.preference.MultiCheckPreference$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements DialogInterface.OnMultiChoiceClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.DialogInterface.OnMultiChoiceClickListener
+        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+            MultiCheckPreference.this.mSetValues[which] = isChecked;
+        }
+    }
+
     @Override // android.preference.DialogPreference
     public void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
@@ -179,7 +192,6 @@ public class MultiCheckPreference extends DialogPreference {
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference, android.preference.Preference
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -191,7 +203,6 @@ public class MultiCheckPreference extends DialogPreference {
         return myState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference, android.preference.Preference
     public void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
@@ -203,17 +214,17 @@ public class MultiCheckPreference extends DialogPreference {
         setValues(myState.values);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.MultiCheckPreference.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -234,6 +245,23 @@ public class MultiCheckPreference extends DialogPreference {
 
         public SavedState(Parcelable superState) {
             super(superState);
+        }
+
+        /* renamed from: android.preference.MultiCheckPreference$SavedState$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 }

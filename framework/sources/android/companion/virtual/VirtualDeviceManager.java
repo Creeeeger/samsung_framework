@@ -178,6 +178,10 @@ public final class VirtualDeviceManager {
     public static class VirtualDevice implements AutoCloseable {
         private final VirtualDeviceInternal mVirtualDeviceInternal;
 
+        /* synthetic */ VirtualDevice(IVirtualDeviceManager iVirtualDeviceManager, Context context, int i, VirtualDeviceParams virtualDeviceParams, VirtualDeviceIA virtualDeviceIA) {
+            this(iVirtualDeviceManager, context, i, virtualDeviceParams);
+        }
+
         private VirtualDevice(IVirtualDeviceManager service, Context context, int associationId, VirtualDeviceParams params) throws RemoteException {
             this.mVirtualDeviceInternal = new VirtualDeviceInternal(service, context, associationId, params);
         }

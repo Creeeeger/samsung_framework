@@ -4,7 +4,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class IndefiniteLengthInputStream extends LimitedInputStream {
     private int _b1;
@@ -12,7 +11,6 @@ public class IndefiniteLengthInputStream extends LimitedInputStream {
     private boolean _eofOn00;
     private boolean _eofReached;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IndefiniteLengthInputStream(InputStream in, int limit) throws IOException {
         super(in, limit);
         this._eofReached = false;
@@ -26,7 +24,6 @@ public class IndefiniteLengthInputStream extends LimitedInputStream {
         checkForEof();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setEofOn00(boolean eofOn00) {
         this._eofOn00 = eofOn00;
         checkForEof();

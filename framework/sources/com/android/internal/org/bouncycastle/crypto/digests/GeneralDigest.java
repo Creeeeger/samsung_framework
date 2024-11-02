@@ -17,19 +17,16 @@ public abstract class GeneralDigest implements ExtendedDigest, Memoable {
 
     protected abstract void processWord(byte[] bArr, int i);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public GeneralDigest() {
         this.xBuf = new byte[4];
         this.xBufOff = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public GeneralDigest(GeneralDigest t) {
         this.xBuf = new byte[4];
         copyIn(t);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public GeneralDigest(byte[] encodedState) {
         byte[] bArr = new byte[4];
         this.xBuf = bArr;
@@ -38,7 +35,6 @@ public abstract class GeneralDigest implements ExtendedDigest, Memoable {
         this.byteCount = Pack.bigEndianToLong(encodedState, 8);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void copyIn(GeneralDigest t) {
         byte[] bArr = t.xBuf;
         System.arraycopy(bArr, 0, this.xBuf, 0, bArr.length);
@@ -126,7 +122,6 @@ public abstract class GeneralDigest implements ExtendedDigest, Memoable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void populateState(byte[] state) {
         System.arraycopy(this.xBuf, 0, state, 0, this.xBufOff);
         Pack.intToBigEndian(this.xBufOff, state, 4);

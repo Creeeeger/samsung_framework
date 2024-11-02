@@ -3,8 +3,9 @@ package com.samsung.android.authenticator;
 import android.os.ParcelFileDescriptor;
 import com.samsung.android.authenticator.SemTrustedApplicationExecutor;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-final class DownloadedTrustedApplication implements TrustedApplication {
+public final class DownloadedTrustedApplication implements TrustedApplication {
     private static final String TAG = "DATA";
     private final int mHandle;
     private final long mLen;
@@ -12,7 +13,6 @@ final class DownloadedTrustedApplication implements TrustedApplication {
     private final ParcelFileDescriptor mPfd;
     private final SemTrustedApplicationExecutor.TrustedAppAssetType mType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DownloadedTrustedApplication(int handle, SemTrustedApplicationExecutor.TrustedAppAssetType type, ParcelFileDescriptor pfd, long offset, long len) {
         this.mHandle = handle;
         this.mType = type;

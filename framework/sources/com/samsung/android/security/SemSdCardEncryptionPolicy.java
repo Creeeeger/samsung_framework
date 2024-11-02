@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public final class SemSdCardEncryptionPolicy implements Parcelable, Cloneable, Comparable<SemSdCardEncryptionPolicy> {
     public static final Parcelable.Creator<SemSdCardEncryptionPolicy> CREATOR = new Parcelable.Creator<SemSdCardEncryptionPolicy>() { // from class: com.samsung.android.security.SemSdCardEncryptionPolicy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemSdCardEncryptionPolicy createFromParcel(Parcel in) {
             return new SemSdCardEncryptionPolicy(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemSdCardEncryptionPolicy[] newArray(int size) {
             return new SemSdCardEncryptionPolicy[size];
@@ -39,8 +40,8 @@ public final class SemSdCardEncryptionPolicy implements Parcelable, Cloneable, C
         this.mCurrentUUID = uuid;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SemSdCardEncryptionPolicy m8691clone() {
+    /* renamed from: clone */
+    public SemSdCardEncryptionPolicy m8683clone() {
         return new SemSdCardEncryptionPolicy(this.mIsPolicy, this.mEncryptState, this.mCurrentUUID);
     }
 
@@ -121,6 +122,23 @@ public final class SemSdCardEncryptionPolicy implements Parcelable, Cloneable, C
 
     public static SemSdCardEncryptionPolicy readFromParcel(Parcel in) {
         return new SemSdCardEncryptionPolicy(in);
+    }
+
+    /* renamed from: com.samsung.android.security.SemSdCardEncryptionPolicy$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemSdCardEncryptionPolicy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSdCardEncryptionPolicy createFromParcel(Parcel in) {
+            return new SemSdCardEncryptionPolicy(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSdCardEncryptionPolicy[] newArray(int size) {
+            return new SemSdCardEncryptionPolicy[size];
+        }
     }
 
     public SemSdCardEncryptionPolicy(Parcel in) {

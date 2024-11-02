@@ -78,25 +78,21 @@ public class ASN1Enumerated extends ASN1Primitive {
         return ASN1Integer.intValue(bArr, i, -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() {
         return StreamUtil.calculateBodyLength(this.bytes.length) + 1 + this.bytes.length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 10, this.bytes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1Enumerated)) {
@@ -111,7 +107,6 @@ public class ASN1Enumerated extends ASN1Primitive {
         return Arrays.hashCode(this.bytes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1Enumerated fromOctetString(byte[] enc) {
         if (enc.length > 1) {
             return new ASN1Enumerated(enc);

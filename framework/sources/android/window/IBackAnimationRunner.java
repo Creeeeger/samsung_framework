@@ -101,8 +101,9 @@ public interface IBackAnimationRunner extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IBackAnimationRunner {
+        public static class Proxy implements IBackAnimationRunner {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

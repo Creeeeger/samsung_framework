@@ -57,7 +57,6 @@ public class DefaultDialerManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$setDefaultDialerApplication$0(CompletableFuture future, Boolean successful) {
         if (successful.booleanValue()) {
             future.complete(null);

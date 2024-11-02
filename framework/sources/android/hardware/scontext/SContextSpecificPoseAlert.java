@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextSpecificPoseAlert extends SContextEventContext {
     public static final Parcelable.Creator<SContextSpecificPoseAlert> CREATOR = new Parcelable.Creator<SContextSpecificPoseAlert>() { // from class: android.hardware.scontext.SContextSpecificPoseAlert.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextSpecificPoseAlert createFromParcel(Parcel in) {
             return new SContextSpecificPoseAlert(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextSpecificPoseAlert[] newArray(int size) {
             return new SContextSpecificPoseAlert[size];
@@ -22,7 +23,6 @@ public class SContextSpecificPoseAlert extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextSpecificPoseAlert() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextSpecificPoseAlert extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextSpecificPoseAlert$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextSpecificPoseAlert> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextSpecificPoseAlert createFromParcel(Parcel in) {
+            return new SContextSpecificPoseAlert(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextSpecificPoseAlert[] newArray(int size) {
+            return new SContextSpecificPoseAlert[size];
+        }
     }
 }

@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class KeepaliveRequest implements Parcelable {
     public static final Parcelable.Creator<KeepaliveRequest> CREATOR = new Parcelable.Creator<KeepaliveRequest>() { // from class: android.hardware.radio.data.KeepaliveRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeepaliveRequest createFromParcel(Parcel _aidl_source) {
             KeepaliveRequest _aidl_out = new KeepaliveRequest();
@@ -17,7 +19,6 @@ public class KeepaliveRequest implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeepaliveRequest[] newArray(int _aidl_size) {
             return new KeepaliveRequest[_aidl_size];
@@ -32,6 +33,25 @@ public class KeepaliveRequest implements Parcelable {
     public int destinationPort = 0;
     public int maxKeepaliveIntervalMillis = 0;
     public int cid = 0;
+
+    /* renamed from: android.hardware.radio.data.KeepaliveRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeepaliveRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeepaliveRequest createFromParcel(Parcel _aidl_source) {
+            KeepaliveRequest _aidl_out = new KeepaliveRequest();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeepaliveRequest[] newArray(int _aidl_size) {
+            return new KeepaliveRequest[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

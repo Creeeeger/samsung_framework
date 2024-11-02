@@ -43,12 +43,10 @@ public class TimeAnimator extends ValueAnimator {
         this.mListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.ValueAnimator
     public void animateValue(float fraction) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.ValueAnimator
     public void initAnimation() {
     }

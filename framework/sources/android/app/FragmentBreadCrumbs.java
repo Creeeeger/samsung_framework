@@ -52,6 +52,9 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mMaxVisible = -1;
         this.mOnClickListener = new View.OnClickListener() { // from class: android.app.FragmentBreadCrumbs.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 if (v.getTag() instanceof FragmentManager.BackStackEntry) {
@@ -127,7 +130,6 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
         updateCrumbs();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int childLeft;
@@ -166,7 +168,6 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
         child.layout(childLeft, childTop, childRight, childBottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int count = getChildCount();
@@ -255,6 +256,38 @@ public class FragmentBreadCrumbs extends ViewGroup implements FragmentManager.On
                 leftIcon.setVisibility((i3 <= numViews2 - this.mMaxVisible || i3 == 0) ? 8 : 0);
             }
             i3++;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.FragmentBreadCrumbs$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements View.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            if (v.getTag() instanceof FragmentManager.BackStackEntry) {
+                FragmentManager.BackStackEntry bse = (FragmentManager.BackStackEntry) v.getTag();
+                if (bse == FragmentBreadCrumbs.this.mParentEntry) {
+                    if (FragmentBreadCrumbs.this.mParentClickListener != null) {
+                        FragmentBreadCrumbs.this.mParentClickListener.onClick(v);
+                        return;
+                    }
+                    return;
+                }
+                if (FragmentBreadCrumbs.this.mOnBreadCrumbClickListener != null) {
+                    if (FragmentBreadCrumbs.this.mOnBreadCrumbClickListener.onBreadCrumbClick(bse == FragmentBreadCrumbs.this.mTopEntry ? null : bse, 0)) {
+                        return;
+                    }
+                }
+                if (bse == FragmentBreadCrumbs.this.mTopEntry) {
+                    FragmentBreadCrumbs.this.mActivity.getFragmentManager().popBackStack();
+                } else {
+                    FragmentBreadCrumbs.this.mActivity.getFragmentManager().popBackStack(bse.getId(), 0);
+                }
+            }
         }
     }
 }

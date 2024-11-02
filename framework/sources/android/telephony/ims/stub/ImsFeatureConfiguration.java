@@ -11,13 +11,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class ImsFeatureConfiguration implements Parcelable {
     public static final Parcelable.Creator<ImsFeatureConfiguration> CREATOR = new Parcelable.Creator<ImsFeatureConfiguration>() { // from class: android.telephony.ims.stub.ImsFeatureConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsFeatureConfiguration createFromParcel(Parcel in) {
             return new ImsFeatureConfiguration(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsFeatureConfiguration[] newArray(int size) {
             return new ImsFeatureConfiguration[size];
@@ -98,6 +99,23 @@ public final class ImsFeatureConfiguration implements Parcelable {
         this.mFeatures = new ArraySet(featurePairLength);
         for (int i = 0; i < featurePairLength; i++) {
             this.mFeatures.add(new FeatureSlotPair(in.readInt(), in.readInt()));
+        }
+    }
+
+    /* renamed from: android.telephony.ims.stub.ImsFeatureConfiguration$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsFeatureConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsFeatureConfiguration createFromParcel(Parcel in) {
+            return new ImsFeatureConfiguration(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsFeatureConfiguration[] newArray(int size) {
+            return new ImsFeatureConfiguration[size];
         }
     }
 

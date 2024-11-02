@@ -6,14 +6,15 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class PesRequest extends BroadcastInfoRequest implements Parcelable {
     public static final Parcelable.Creator<PesRequest> CREATOR = new Parcelable.Creator<PesRequest>() { // from class: android.media.tv.PesRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PesRequest createFromParcel(Parcel source) {
             source.readInt();
             return PesRequest.createFromParcelBody(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PesRequest[] newArray(int size) {
             return new PesRequest[size];
@@ -23,7 +24,24 @@ public final class PesRequest extends BroadcastInfoRequest implements Parcelable
     private final int mStreamId;
     private final int mTsPid;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.PesRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PesRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PesRequest createFromParcel(Parcel source) {
+            source.readInt();
+            return PesRequest.createFromParcelBody(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PesRequest[] newArray(int size) {
+            return new PesRequest[size];
+        }
+    }
+
     public static PesRequest createFromParcelBody(Parcel in) {
         return new PesRequest(in);
     }

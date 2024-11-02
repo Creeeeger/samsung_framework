@@ -18,7 +18,9 @@ import android.util.AndroidException;
 /* loaded from: classes.dex */
 public class IntentSender implements Parcelable {
     public static final Parcelable.Creator<IntentSender> CREATOR = new Parcelable.Creator<IntentSender>() { // from class: android.content.IntentSender.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public IntentSender createFromParcel(Parcel in) {
             IBinder target = in.readStrongBinder();
@@ -28,7 +30,6 @@ public class IntentSender implements Parcelable {
             return null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IntentSender[] newArray(int size) {
             return new IntentSender[size];
@@ -57,7 +58,6 @@ public class IntentSender implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class FinishedDispatcher extends IIntentReceiver.Stub implements Runnable {
         private final Handler mHandler;
@@ -184,6 +184,27 @@ public class IntentSender implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeStrongBinder(this.mTarget.asBinder());
+    }
+
+    /* renamed from: android.content.IntentSender$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<IntentSender> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IntentSender createFromParcel(Parcel in) {
+            IBinder target = in.readStrongBinder();
+            if (target != null) {
+                return new IntentSender(target);
+            }
+            return null;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IntentSender[] newArray(int size) {
+            return new IntentSender[size];
+        }
     }
 
     public static void writeIntentSenderOrNullToParcel(IntentSender sender, Parcel out) {

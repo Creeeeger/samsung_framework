@@ -15,8 +15,9 @@ import com.samsung.android.media.AudioParameter;
 import com.sec.android.iaft.IIAFTManagerService;
 import com.sec.android.iaft.callback.IIAFTCallback;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes6.dex */
-class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
+public class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
     private static final int MSG_START_ATRACE = 2;
     private static final int MSG_START_ATRACE_ANALYZE = 3;
     private static final int MSG_START_PERFETTO = 1;
@@ -33,13 +34,11 @@ class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
     private static CountDownTimer mTraceTimer = null;
     private static int mTraceMaxTime = MetricsProto.MetricsEvent.ACTION_PERMISSION_DENIED_ACCESS_FINE_LOCATION;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IAFTManagerServiceImpl(Context context) {
         this.mContext = context;
         init();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
     public final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
@@ -59,6 +58,10 @@ class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
                     intent.setPackage("com.android.traceur");
                     IAFTManagerServiceImpl.this.mContext.sendBroadcast(intent);
                     IAFTManagerServiceImpl.mTraceTimer = new CountDownTimer(IAFTManagerServiceImpl.mTraceMaxTime * 1000, IAFTManagerServiceImpl.mTraceMaxTime * 1000) { // from class: com.sec.android.iaft.IAFTManagerServiceImpl.ServiceHandler.1
+                        AnonymousClass1(long millisInFuture, long countDownInterval) {
+                            super(millisInFuture, countDownInterval);
+                        }
+
                         @Override // android.os.CountDownTimer
                         public void onTick(long duration) {
                         }
@@ -91,6 +94,26 @@ class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
                     return;
                 default:
                     return;
+            }
+        }
+
+        /* renamed from: com.sec.android.iaft.IAFTManagerServiceImpl$ServiceHandler$1 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass1 extends CountDownTimer {
+            AnonymousClass1(long millisInFuture, long countDownInterval) {
+                super(millisInFuture, countDownInterval);
+            }
+
+            @Override // android.os.CountDownTimer
+            public void onTick(long duration) {
+            }
+
+            @Override // android.os.CountDownTimer
+            public void onFinish() {
+                Log.d(IAFTManagerServiceImpl.TAG, "traceTimer onfinish");
+                if (IAFTManagerServiceImpl.this.mSystemReady) {
+                    IAFTManagerServiceImpl.this.mHandler.obtainMessage(4).sendToTarget();
+                }
             }
         }
     }

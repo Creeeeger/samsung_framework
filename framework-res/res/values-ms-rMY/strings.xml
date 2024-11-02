@@ -335,7 +335,7 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="ext_media_unsupported_notification_message">Peranti ini tidak menyokong %s ini. Ketik untuk menyediakan dalam format yang disokong.</string>
     <string name="ext_media_unsupported_notification_title">%s tidak disokong</string>
     <string name="ext_storage_bad_removal_button">Mulakan semula</string>
-    <string name="ext_storage_bad_removal_title">Mulakan semula telefon anda</string>
+    <string name="ext_storage_bad_removal_title">Mulakan semula tablet anda</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message_usbhost">Semua fail yang disimpan dalam storan USB anda akan dipadamkan. Tindakan ini tidak boleh diterbalikkan!</string>
     <string name="extmedia_format_title_usbhost">Format storan USB?</string>
@@ -592,16 +592,16 @@ Tablet anda akan dimulakan semula tidak lama lagi."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Bunyi sedang dimainkan pada peranti audio Bluetooth anda. Ketik di sini untuk mematikannya</string>
     <string name="multisound_sound_via_headphone">Bunyi %s dimainkan melalui fon kepala anda. Ketik di sini untuk mematikannya.</string>
     <string name="multisound_sound_via_headphone_multiselection">Bunyi sedang dimainkan melalui fon kepala anda. Ketik di sini untuk mematikannya.</string>
-    <string name="multisound_sound_via_phone_speaker">Bunyi %s dimainkan melalui pembesar suara anda. Ketik di sini untuk mematikannya.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Bunyi sedang dimainkan melalui pembesar suara telefon anda. Ketik di sini untuk mematikannya.</string>
+    <string name="multisound_sound_via_phone_speaker">Bunyi %s dimainkan melalui pembesar suara tablet anda. Ketik di sini untuk mematikannya.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Bunyi sedang dimainkan melalui pembesar suara tablet anda. Ketik di sini untuk mematikannya.</string>
     <string name="multisound_sound_via_usb_audio">%s bunyi sedang dimainkan menerusi peranti audio USB anda. Ketik di sini untuk mematikannya.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Bunyi sedang dimainkan menerusi peranti audio USB anda. Ketik di sini untuk mematikannya.</string>
     <string name="multisound_title">Asingkan bunyi aplikasi</string>
     <string name="multisound_turn_off_multisound">Matikan</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s tidak dapat dijalankan dalam Samsung DeX. Cuba jalankan dalam mod telefon.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s tidak dapat dijalankan dalam Samsung DeX. Aplikasi direka bentuk untuk Skrin utama telefon.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sesetengah permainan hanya berfungsi dengan skrin sentuh. Jika kawalan tetikus tidak berfungsi dalam Samsung DeX, cuba mainnya dalam mod telefon.</string>
-    <string name="my_device">Telefon ini</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s tidak dapat dijalankan dalam Samsung DeX. Cuba jalankan dalam mod tablet.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s tidak dapat dijalankan dalam Samsung DeX. Aplikasi ini direka bentuk untuk Skrin utama tablet.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sesetengah permainan hanya berfungsi dengan skrin sentuh. Jika kawalan tetikus tidak berfungsi dalam Samsung DeX, cuba mainnya dalam mod tablet.</string>
+    <string name="my_device">Tablet ini</string>
     <string name="network_locked_sim_dialog_message_ais">SIM anda tidak berfungsi sepenuhnya dengan telefon ini kerana SIM tidak mematuhi terma dan syarat langganan anda. Jika anda mempunyai sebarang pertanyaan atau memerlukan maklumat lanjut tentang perkara ini, sila hubungi lokasi Perkhidmatan Pelanggan Samsung atau kedai yang menjual produk ini kepada anda.</string>
     <string name="network_locked_sim_notification_text">Kad SIM yg dkunci rngkaian dimsukkn.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@ PULANGKAN KE"</string>
     <string name="policydesc_allow_desktopsync">Halang penggunaan penyelarasan desktop.</string>
     <string name="policydesc_allow_internetsharing">Halang penggunaan Mobile Hotspot.</string>
     <string name="policydesc_allow_irda">Halang penggunaan IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Halang penggunaan e-mel POP dan IMAP pada telefon.</string>
+    <string name="policydesc_allow_popimapemail">Halang penggunaan e-mel POP dan IMAP pada tablet.</string>
     <string name="policydesc_allow_storagecard">Halang penggunaan kad SD.</string>
     <string name="policydesc_allow_textmessaging">Halang penggunaan mesej teks dan multimedia.</string>
     <string name="policydesc_allow_thirdParty">Aplikasi ini boleh menghalang aplikasi pihak ketiga dari berjalan.</string>
@@ -838,7 +838,7 @@ PULANGKAN KE"</string>
     <string name="pwd_change_enforced">Dasar keselamatan memerlukan anda menukar kata laluan anda.</string>
     <string name="recording_fail">Tidak dapat menggunakan mikrofon dalam %1$s semasa mikrofon sedang digunakan dalam %2$s.</string>
     <string name="recording_popup">%s sedang menggunakan mikrofon.</string>
-    <string name="recording_popup_device">Telefon</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">%s sedang menggunakan mikrofon Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s sedang menggunakan mikrofon %2$s.</string>
     <string name="redo">Buat semula</string>
@@ -903,12 +903,12 @@ PULANGKAN KE"</string>
     <string name="screencapture_restrict">Dasar keselamatan menghalang penggunaan tangkapan skrin.</string>
     <string name="sd_card_unavailable_message">Anda tidak boleh menggunakan kad SD kerana kad SD dimasukkan semasa profil pengguna berlainan sedang digunakan.</string>
     <string name="sd_card_unavailable_title">Kad SD tidak tersedia</string>
-    <string name="sdcard_bad_removal_message">Kad SD telah dialih keluar secara tidak selamat. Untuk mengelakkan telefon anda daripada dimulakan semula secara tidak dijangka, simpan data yang tidak disimpan dan mulakan semula sekarang.</string>
+    <string name="sdcard_bad_removal_message">Kad SD telah dialih keluar secara tidak selamat. Untuk mengelakkan tablet anda daripada dimulakan semula secara tidak dijangka, simpan data yang tidak disimpan dan mulakan semula sekarang.</string>
     <string name="sdcard_batch_decrypt_noti_content">Nyahsulitkan kad SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Penyahsulitan kad SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Kad SD disulitkan mesti dinyahsulitkan sebelum digunakan. Penyahsulitan boleh mengambil masa satu jam atau lebih. Mulakan dengan bateri yang bercas dan biarkan peranti dipalamkan sehingga penyahsulitan selesai. Penggangguan proses penyahsulitan mungkin menyebabkan kehilangan beberapa atau semua data.</string>
     <string name="sdcard_decrypt_err_notification">Ralat penyahsulitan kad SD berlaku.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Sesetengah fail pada kad SD anda disulitkan pada peranti lain dan tidak dapat digunakan pada telefon ini.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Sesetengah fail pada kad SD anda telah disulitkan pada peranti lain dan tidak dapat digunakan pada tablet ini.</string>
     <string name="sdcard_decrypt_notification">Kad SD dinyahsulit.</string>
     <string name="sdcard_decrypt_title_notification">Penyahsulitan kad SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Menyahsulitkan kad SD…</string>
@@ -1234,7 +1234,7 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="usb_abnormal_reset_title">Sambungan USB tidak stabil</string>
     <string name="usb_abnormal_reset_toast">Sambungan USB tidak stabil. Cabutkan kabel dan pasangkannya semula, atau cuba kabel berlainan.</string>
     <string name="usb_accessory_notification_title">Disambungkan ke aksesori USB</string>
-    <string name="usb_bad_removal_message">Peranti storan USB telah dialih keluar secara tidak selamat. Untuk mengelakkan telefon anda daripada dimulakan semula secara tidak dijangka, simpan data yang tidak disimpan dan mulakan semula sekarang.</string>
+    <string name="usb_bad_removal_message">Peranti storan USB telah dialih keluar secara tidak selamat. Untuk mengelakkan tablet anda daripada dimulakan semula secara tidak dijangka, simpan data yang tidak disimpan dan mulakan semula sekarang.</string>
     <string name="usb_blocked_by_emergency_mode">Sesetengah fungsi USB tidak tersedia dalam Mod kecemasan.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Tidak dapat menggunakan fungsi berkaitan dengan peranti USB yang disambungkan semasa Mod penjimatan kuasa maksimum diaktifkan.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Sesetengah fungsi USB akan terhad apabila Mod penjimatan kuasa maksimum dihidupkan.</string>
@@ -1243,13 +1243,13 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="usb_camera_connected_notification_title">Peranti media disambungkan</string>
     <string name="usb_camera_disconnected_notification_title">Peranti media dinyahsambungkan</string>
     <string name="usb_cd_installer_notification_title">Kemas kini perisian</string>
-    <string name="usb_charing_only_notification_title">Pengecasan USB</string>
+    <string name="usb_charing_only_notification_title">Disambungkan</string>
     <string name="usb_debugging_only_notification_title">Penyahpepijatan sahaja</string>
-    <string name="usb_host_resource_exceed_message">Pengawal USB telefon anda tidak mempunyai sumber yang mencukupi untuk menyambungkan peranti ini. Cuba nyahsambungkan peranti dan sambungkannya sekali lagi.</string>
+    <string name="usb_host_resource_exceed_message">Pengawal USB tablet anda tidak mempunyai sumber yang mencukupi untuk menyambungkan peranti ini. Cuba nyahsambungkan peranti dan sambungkannya sekali lagi.</string>
     <string name="usb_host_resource_exceed_title">Sumber pengawal USB Tidak Mencukupi</string>
-    <string name="usb_hub_depth_exceed_message">Telefon anda hanya boleh menyokong sehingga 5 sambungan hab USB pada masa yang sama.</string>
+    <string name="usb_hub_depth_exceed_message">Tablet anda hanya boleh menyokong sehingga 5 sambungan hab USB pada masa yang sama.</string>
     <string name="usb_hub_depth_exceed_title">Sambungan hab USB maksimum</string>
-    <string name="usb_hub_power_exceed_message">Telefon anda tidak dapat menyediakan kuasa yang mencukupi untuk peranti USB ini. Sambungkan peranti kepada hab USB dikuasakan sendiri sebelum menyambungkannya kepada telefon anda.</string>
+    <string name="usb_hub_power_exceed_message">Tablet anda tidak dapat menyediakan kuasa yang mencukupi untuk peranti USB ini. Sambungkan peranti kepada hab USB kuasa sendiri sebelum menyambungkannya kepada tablet anda.</string>
     <string name="usb_increase_battery_usage">Sambungan USB mungkin meningkatkan penggunaan bateri.</string>
     <string name="usb_mass_storage_restrict">Dasar keselamatan menghalang penggunaan storan massa USB.</string>
     <string name="usb_midi_notification_title">USB untuk MIDI</string>
@@ -1275,8 +1275,8 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="usb_storage_stop_title">Storan USB sedang diguna.</string>
     <string name="usb_storage_title">USB disambung.</string>
     <string name="usb_type_c_supply_power_notification_title">Mengecas peranti yg disambungkan dgn USB</string>
-    <string name="usb_unblock_by_screen_unlock">Buka kunci telefon anda untuk menggunakan peranti USB yang disambungkan.</string>
-    <string name="usb_unsupport_accessory_message">Peranti USB ini tidak disokong oleh telefon anda.</string>
+    <string name="usb_unblock_by_screen_unlock">Buka kunci tablet anda untuk menggunakan peranti USB yang disambungkan.</string>
+    <string name="usb_unsupport_accessory_message">Peranti USB ini tidak disokong oleh tablet anda.</string>
     <string name="usb_unsupport_accessory_title">Peranti USB tidak disokong</string>
     <string name="usb_unsupported_device">Peranti USB yang disambungkan tidak disokong.</string>
     <string name="usb_unsupported_device_title">Peranti tidak disokong</string>
@@ -1294,19 +1294,19 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="usb_water_dialg_method_2_desc_2">Anda boleh meningkatkan kelajuan dengan menudingkan kipas atau pengering (udara dingin sahaja) ke arah port.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Kami telah mengesan kelembapan atau bendasing pada port pengecasan/USB anda.
 
-Semak port pengecasan/USB anda untuk sebarang bendasing seperti debu atau serpihan. Untuk mengelakkan kerosakan pada telefon anda, jangan palam masuk apa-apa sehingga port pengecasan adalah bersih dan kelembapan telah hilang.
+Semak port pengecasan/USB anda untuk sebarang bendasing seperti debu atau serpihan. Untuk mengelakkan kerosakan pada tablet anda, jangan palam masuk apa-apa sehingga port pengecasan adalah bersih dan kelembapan telah hilang.
 
 Untuk mengeringkan port, goncang keluar sebarang kelembapan, kemudian tunggu sehingga kering, yang mungkin mengambil masa beberapa jam. Anda boleh mempercepat pengeringan dengan menghalakan kipas atau pengering (udara dingin sahaja) pada port."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Kami telah mengesan kelembapan atau bendasing pada port pengecasan/USB anda.
 
-Semak port pengecasan/USB anda untuk sebarang bendasing seperti debu atau serpihan. Untuk mengelakkan kerosakan pada telefon anda, jangan palam masuk apa-apa sehingga port pengecasan adalah bersih dan kelembapan telah hilang.
+Semak port pengecasan/USB anda untuk sebarang bendasing seperti debu atau serpihan. Untuk mengelakkan kerosakan pada tablet anda, jangan palam masuk apa-apa sehingga port pengecasan bersih dan kelembapan hilang.
 
-Untuk mengeringkan port, goncang keluar sebarang kelembapan, kemudian tunggu sehingga kering, yang mungkin mengambil masa beberapa jam. Anda boleh mempercepat pengeringan dengan menghalakan kipas atau pengering (udara dingin sahaja) pada port.
+Untuk mengeringkan port, goncang keluar sebarang kelembapan, kemudian tunggu sehingga kering, yang mungkin mengambil masa beberapa jam. Anda boleh mempercepat pengeringan dengan menudingkan kipas atau pengering (udara dingin sahaja) pada port.
 
-Sementara itu, anda boleh mengecas telefon anda secara wayarles."</string>
+Sementara itu, anda boleh mengecas tablet anda secara wayarles."</string>
     <string name="usb_water_notification_content">Terdapat kelembapan atau bendasing dalam port pengecasan/USB anda. Semak sebelum mengecas.</string>
-    <string name="usb_water_notification_message">Kelembapan telah dikesan dalam pengecas/port USB anda. Pastikan ia benar-benar kering sebelum mengecas telefon anda. Ia mungkin mengambil sedikit masa untuk kering sepenuhnya.</string>
+    <string name="usb_water_notification_message">Kelembapan telah dikesan dalam pengecas/port USB anda. Pastikan ia benar-benar kering sebelum mengecas tablet anda. Ia mungkin mengambil sedikit masa untuk kering sepenuhnya.</string>
     <string name="usb_water_notification_message_button">Butiran</string>
     <string name="usb_water_notification_title">Semak port pengecas/USB</string>
     <string name="usbhostStorage_restrict">Dasar keselamatan menghalang penggunaan storan hos USB.</string>

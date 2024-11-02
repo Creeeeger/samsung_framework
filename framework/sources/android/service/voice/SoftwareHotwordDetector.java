@@ -24,7 +24,6 @@ import com.android.internal.util.FunctionalUtils;
 import java.io.PrintWriter;
 import java.util.concurrent.Executor;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class SoftwareHotwordDetector extends AbstractDetector {
     private static final boolean DEBUG = false;
@@ -34,7 +33,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
     private final Executor mExecutor;
     private final IVoiceInteractionManagerService mManagerService;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SoftwareHotwordDetector(IVoiceInteractionManagerService managerService, AudioFormat audioFormat, Executor executor, HotwordDetector.Callback callback) {
         super(managerService, executor, callback);
         this.mManagerService = managerService;
@@ -43,13 +41,11 @@ public class SoftwareHotwordDetector extends AbstractDetector {
         this.mExecutor = executor != null ? executor : new HandlerExecutor(new Handler(Looper.getMainLooper()));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.voice.AbstractDetector
     public void initialize(PersistableBundle options, SharedMemory sharedMemory) {
         initAndVerifyDetector(options, sharedMemory, new InitializationStateListener(this.mExecutor, this.mCallback), 2);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDetectorRemoteException$1() throws Exception {
         this.mExecutor.execute(new Runnable() { // from class: android.service.voice.SoftwareHotwordDetector$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
@@ -59,7 +55,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onDetectorRemoteException() {
         Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.service.voice.SoftwareHotwordDetector$$ExternalSyntheticLambda0
             @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
@@ -69,7 +64,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDetectorRemoteException$0() {
         this.mCallback.onFailure(new HotwordDetectionServiceFailure(7, "Detector remote exception occurs"));
     }
@@ -121,7 +115,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
     private void maybeCloseExistingSession() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class BinderCallback extends IMicrophoneHotwordDetectionVoiceInteractionCallback.Stub {
         private final HotwordDetector.Callback mCallback;
@@ -132,7 +125,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             this.mExecutor = executor;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDetected$1(final AudioFormat audioFormat, final ParcelFileDescriptor audioStream, final HotwordDetectedResult hotwordDetectedResult) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.SoftwareHotwordDetector$BinderCallback$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -152,7 +144,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDetected$0(AudioFormat audioFormat, ParcelFileDescriptor audioStream, HotwordDetectedResult hotwordDetectedResult) {
             this.mCallback.onDetected(new AlwaysOnHotwordDetector.EventPayload.Builder().setCaptureAudioFormat(audioFormat).setAudioStream(audioStream).setHotwordDetectedResult(hotwordDetectedResult).build());
         }
@@ -168,7 +159,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onHotwordDetectionServiceFailure$3(final HotwordDetectionServiceFailure hotwordDetectionServiceFailure) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.SoftwareHotwordDetector$BinderCallback$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
@@ -178,7 +168,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onHotwordDetectionServiceFailure$2(HotwordDetectionServiceFailure hotwordDetectionServiceFailure) {
             if (hotwordDetectionServiceFailure != null) {
                 this.mCallback.onFailure(hotwordDetectionServiceFailure);
@@ -187,7 +176,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRejected$5(final HotwordRejectedResult result) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.SoftwareHotwordDetector$BinderCallback$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
@@ -207,13 +195,11 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRejected$4(HotwordRejectedResult result) {
             this.mCallback.onRejected(result != null ? result : new HotwordRejectedResult.Builder().build());
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class InitializationStateListener extends IHotwordRecognitionStatusCallback.Stub {
         private final HotwordDetector.Callback mCallback;
@@ -247,7 +233,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onHotwordDetectionServiceFailure$1(final HotwordDetectionServiceFailure hotwordDetectionServiceFailure) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.SoftwareHotwordDetector$InitializationStateListener$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -257,7 +242,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onHotwordDetectionServiceFailure$0(HotwordDetectionServiceFailure hotwordDetectionServiceFailure) {
             if (hotwordDetectionServiceFailure != null) {
                 this.mCallback.onFailure(hotwordDetectionServiceFailure);
@@ -287,7 +271,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUnknownFailure$3(final String errorMessage) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.SoftwareHotwordDetector$InitializationStateListener$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
@@ -297,7 +280,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUnknownFailure$2(String errorMessage) {
             this.mCallback.onUnknownFailure(!TextUtils.isEmpty(errorMessage) ? errorMessage : "Error data is null");
         }
@@ -321,7 +303,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onStatusReported$5(final int status) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.SoftwareHotwordDetector$InitializationStateListener$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
@@ -331,7 +312,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onStatusReported$4(int status) {
             this.mCallback.onHotwordDetectionServiceInitialized(status);
         }
@@ -347,7 +327,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onProcessRestarted$7() throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.SoftwareHotwordDetector$InitializationStateListener$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
@@ -357,7 +336,6 @@ public class SoftwareHotwordDetector extends AbstractDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onProcessRestarted$6() {
             this.mCallback.onHotwordDetectionServiceRestarted();
         }

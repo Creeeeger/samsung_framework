@@ -36,6 +36,9 @@ public class LowLatencyModeManager {
     private Messenger mServiceMessenger = null;
     private Messenger mServiceMessenger2 = null;
     private Handler mReceiverHandler = new Handler() { // from class: android.net.LowLatencyModeManager.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             if (msg == null) {
@@ -71,6 +74,9 @@ public class LowLatencyModeManager {
     };
     private Messenger mSvcModeMessenger = new Messenger(this.mReceiverHandler);
     private ServiceConnection mSecPhoneServiceConnection = new ServiceConnection() { // from class: android.net.LowLatencyModeManager.2
+        AnonymousClass2() {
+        }
+
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName className, IBinder service) {
             LowLatencyModeManager.this.log("onServiceConnected(), classname:" + className.getClassName());
@@ -84,6 +90,9 @@ public class LowLatencyModeManager {
         }
     };
     private ServiceConnection mSecPhoneServiceConnection2 = new ServiceConnection() { // from class: android.net.LowLatencyModeManager.3
+        AnonymousClass3() {
+        }
+
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName className, IBinder service) {
             LowLatencyModeManager.this.log("onServiceConnected(), classname:" + className.getClassName());
@@ -96,6 +105,84 @@ public class LowLatencyModeManager {
             LowLatencyModeManager.this.mServiceMessenger2 = null;
         }
     };
+
+    /* renamed from: android.net.LowLatencyModeManager$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            if (msg == null) {
+                return;
+            }
+            int error = msg.getData().getInt("error");
+            switch (msg.what) {
+                case 1:
+                    LowLatencyModeManager.this.log("set latency done, error:" + error);
+                    LowLatencyModeManager.this.unbindRilService(msg.getData().getInt("slotId"));
+                    return;
+                case 2:
+                    LowLatencyModeManager.this.log("get latency done, error:" + error);
+                    if (error == 0) {
+                        byte[] buf = msg.getData().getByteArray("response");
+                        if (buf == null || buf.length != 4) {
+                            LowLatencyModeManager.this.log("get latency wrong result format");
+                            return;
+                        }
+                        LowLatencyModeManager.this.log("get latency settings from modem, ul:" + ((int) buf[0]) + ",dl:" + ((int) buf[1]) + ",prio:" + ((int) buf[2]) + ",ets:" + ((int) buf[3]));
+                        LatencyResult result = new LatencyResult(buf[0], buf[1], buf[2] == 1, buf[3] == 1);
+                        if (LowLatencyModeManager.this.mCallback != null) {
+                            LowLatencyModeManager.this.mCallback.onGetLatencyDone(result);
+                            LowLatencyModeManager.this.mCallback = null;
+                        }
+                    }
+                    LowLatencyModeManager.this.unbindRilService(msg.getData().getInt("slotId"));
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /* renamed from: android.net.LowLatencyModeManager$2 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass2 implements ServiceConnection {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            LowLatencyModeManager.this.log("onServiceConnected(), classname:" + className.getClassName());
+            LowLatencyModeManager.this.mServiceMessenger = new Messenger(service);
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName className) {
+            LowLatencyModeManager.this.log("onServiceDisconnected(), classname:" + className.getClassName());
+            LowLatencyModeManager.this.mServiceMessenger = null;
+        }
+    }
+
+    /* renamed from: android.net.LowLatencyModeManager$3 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass3 implements ServiceConnection {
+        AnonymousClass3() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            LowLatencyModeManager.this.log("onServiceConnected(), classname:" + className.getClassName());
+            LowLatencyModeManager.this.mServiceMessenger2 = new Messenger(service);
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName className) {
+            LowLatencyModeManager.this.log("onServiceDisconnected(), classname:" + className.getClassName());
+            LowLatencyModeManager.this.mServiceMessenger2 = null;
+        }
+    }
 
     /* loaded from: classes2.dex */
     public static class LatencyResult {
@@ -295,7 +382,6 @@ public class LowLatencyModeManager {
         this.mContext.bindService(intent, this.mSecPhoneServiceConnection2, 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void unbindRilService(int slotId) {
         if (slotId == 0) {
             if (this.mServiceMessenger != null && this.mSecPhoneServiceConnection != null) {
@@ -321,7 +407,6 @@ public class LowLatencyModeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void log(String info) {
         Log.d(TAG, info);
     }

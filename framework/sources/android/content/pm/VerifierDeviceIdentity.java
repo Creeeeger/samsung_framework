@@ -17,18 +17,23 @@ public class VerifierDeviceIdentity implements Parcelable {
     private final String mIdentityString;
     private static final char[] ENCODE = {DateFormat.CAPITAL_AM_PM, 'B', 'C', 'D', DateFormat.DAY, 'F', 'G', 'H', 'I', 'J', 'K', DateFormat.STANDALONE_MONTH, DateFormat.MONTH, PhoneNumberUtils.WILD, 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'};
     public static final Parcelable.Creator<VerifierDeviceIdentity> CREATOR = new Parcelable.Creator<VerifierDeviceIdentity>() { // from class: android.content.pm.VerifierDeviceIdentity.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VerifierDeviceIdentity createFromParcel(Parcel source) {
             return new VerifierDeviceIdentity(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifierDeviceIdentity[] newArray(int size) {
             return new VerifierDeviceIdentity[size];
         }
     };
+
+    /* synthetic */ VerifierDeviceIdentity(Parcel parcel, VerifierDeviceIdentityIA verifierDeviceIdentityIA) {
+        this(parcel);
+    }
 
     public VerifierDeviceIdentity(long identity) {
         this.mIdentity = identity;
@@ -137,5 +142,22 @@ public class VerifierDeviceIdentity implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.mIdentity);
+    }
+
+    /* renamed from: android.content.pm.VerifierDeviceIdentity$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VerifierDeviceIdentity> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifierDeviceIdentity createFromParcel(Parcel source) {
+            return new VerifierDeviceIdentity(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifierDeviceIdentity[] newArray(int size) {
+            return new VerifierDeviceIdentity[size];
+        }
     }
 }

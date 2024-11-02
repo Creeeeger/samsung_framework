@@ -637,7 +637,6 @@ public interface ICustomFrequencyManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class Proxy implements ICustomFrequencyManager {
             private IBinder mRemote;

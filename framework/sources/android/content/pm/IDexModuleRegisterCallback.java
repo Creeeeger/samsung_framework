@@ -85,7 +85,6 @@ public interface IDexModuleRegisterCallback extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IDexModuleRegisterCallback {
             private IBinder mRemote;

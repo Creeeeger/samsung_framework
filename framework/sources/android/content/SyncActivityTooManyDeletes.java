@@ -21,7 +21,6 @@ public class SyncActivityTooManyDeletes extends Activity implements AdapterView.
     private long mNumDeletes;
     private String mProvider;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

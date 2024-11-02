@@ -9,12 +9,10 @@ final class MapFieldSchemas {
     MapFieldSchemas() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static MapFieldSchema full() {
         return FULL_SCHEMA;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static MapFieldSchema lite() {
         return LITE_SCHEMA;
     }

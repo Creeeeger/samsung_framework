@@ -82,8 +82,9 @@ public interface ICloseHandle extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ICloseHandle {
+        public static class Proxy implements ICloseHandle {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

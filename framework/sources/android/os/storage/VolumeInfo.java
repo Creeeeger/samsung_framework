@@ -73,6 +73,9 @@ public class VolumeInfo implements Parcelable {
     private static ArrayMap<String, String> sEnvironmentToBroadcast = new ArrayMap<>();
     private static SparseIntArray sStateToDescrip = new SparseIntArray();
     private static final Comparator<VolumeInfo> sDescriptionComparator = new Comparator<VolumeInfo>() { // from class: android.os.storage.VolumeInfo.1
+        AnonymousClass1() {
+        }
+
         @Override // java.util.Comparator
         public int compare(VolumeInfo lhs, VolumeInfo rhs) {
             if (VolumeInfo.ID_PRIVATE_INTERNAL.equals(lhs.getId())) {
@@ -120,18 +123,40 @@ public class VolumeInfo implements Parcelable {
         sStateToDescrip.put(7, R.string.ext_media_status_removed);
         sStateToDescrip.put(8, R.string.ext_media_status_bad_removal);
         CREATOR = new Parcelable.Creator<VolumeInfo>() { // from class: android.os.storage.VolumeInfo.2
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass2() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public VolumeInfo createFromParcel(Parcel in) {
                 return new VolumeInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VolumeInfo[] newArray(int size) {
                 return new VolumeInfo[size];
             }
         };
+    }
+
+    /* renamed from: android.os.storage.VolumeInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Comparator<VolumeInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(VolumeInfo lhs, VolumeInfo rhs) {
+            if (VolumeInfo.ID_PRIVATE_INTERNAL.equals(lhs.getId())) {
+                return -1;
+            }
+            if (lhs.getDescription() == null) {
+                return 1;
+            }
+            if (rhs.getDescription() == null) {
+                return -1;
+            }
+            return lhs.getDescription().compareTo(rhs.getDescription());
+        }
     }
 
     public VolumeInfo(String id, int type, DiskInfo disk, String partGuid) {
@@ -531,8 +556,8 @@ public class VolumeInfo implements Parcelable {
         pw.println();
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public VolumeInfo m3282clone() {
+    /* renamed from: clone */
+    public VolumeInfo m3281clone() {
         Parcel temp = Parcel.obtain();
         try {
             writeToParcel(temp, 0);
@@ -552,6 +577,23 @@ public class VolumeInfo implements Parcelable {
 
     public int hashCode() {
         return this.id.hashCode();
+    }
+
+    /* renamed from: android.os.storage.VolumeInfo$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 implements Parcelable.Creator<VolumeInfo> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VolumeInfo createFromParcel(Parcel in) {
+            return new VolumeInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VolumeInfo[] newArray(int size) {
+            return new VolumeInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -15,13 +15,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class RequestInfo implements Parcelable {
     public static final Parcelable.Creator<RequestInfo> CREATOR = new Parcelable.Creator<RequestInfo>() { // from class: android.credentials.ui.RequestInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RequestInfo createFromParcel(Parcel in) {
             return new RequestInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RequestInfo[] newArray(int size) {
             return new RequestInfo[size];
@@ -43,6 +44,10 @@ public final class RequestInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface RequestType {
+    }
+
+    /* synthetic */ RequestInfo(Parcel parcel, RequestInfoIA requestInfoIA) {
+        this(parcel);
     }
 
     public static RequestInfo newCreateRequestInfo(IBinder token, CreateCredentialRequest createCredentialRequest, String appPackageName) {
@@ -135,5 +140,22 @@ public final class RequestInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.credentials.ui.RequestInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RequestInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RequestInfo createFromParcel(Parcel in) {
+            return new RequestInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RequestInfo[] newArray(int size) {
+            return new RequestInfo[size];
+        }
     }
 }

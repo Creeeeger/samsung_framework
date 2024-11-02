@@ -93,6 +93,9 @@ public class SlidingDrawer extends ViewGroup {
         this.mFrame = new Rect();
         this.mInvalidate = new Rect();
         this.mSlidingRunnable = new Runnable() { // from class: android.widget.SlidingDrawer.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 SlidingDrawer.this.doAnimation();
@@ -131,7 +134,6 @@ public class SlidingDrawer extends ViewGroup {
         throw new IllegalArgumentException("The handle attribute is required and must refer to a valid child.");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         View findViewById = findViewById(this.mHandleId);
@@ -148,7 +150,6 @@ public class SlidingDrawer extends ViewGroup {
         findViewById2.setVisibility(8);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSpecMode = View.MeasureSpec.getMode(widthMeasureSpec);
@@ -170,7 +171,6 @@ public class SlidingDrawer extends ViewGroup {
         setMeasuredDimension(widthSpecSize, heightSpecSize);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         long drawingTime = getDrawingTime();
@@ -199,7 +199,6 @@ public class SlidingDrawer extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int childLeft;
@@ -348,7 +347,10 @@ public class SlidingDrawer extends ViewGroup {
         performFling(position, -this.mMaximumAcceleration, true, notifyScrollListener);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x0061, code lost:            if (r8 > (-r6.mMaximumMajorVelocity)) goto L33;     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x0061, code lost:
+    
+        if (r8 > (-r6.mMaximumMajorVelocity)) goto L74;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -587,7 +589,6 @@ public class SlidingDrawer extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doAnimation() {
         if (this.mAnimating) {
             incrementAnimation();
@@ -745,6 +746,10 @@ public class SlidingDrawer extends ViewGroup {
 
     /* loaded from: classes4.dex */
     private class DrawerToggler implements View.OnClickListener {
+        /* synthetic */ DrawerToggler(SlidingDrawer slidingDrawer, DrawerTogglerIA drawerTogglerIA) {
+            this();
+        }
+
         private DrawerToggler() {
         }
 
@@ -758,6 +763,19 @@ public class SlidingDrawer extends ViewGroup {
             } else {
                 SlidingDrawer.this.toggle();
             }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.SlidingDrawer$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SlidingDrawer.this.doAnimation();
         }
     }
 }

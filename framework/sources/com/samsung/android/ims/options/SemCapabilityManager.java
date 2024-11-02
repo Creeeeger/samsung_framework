@@ -50,6 +50,9 @@ public class SemCapabilityManager {
     private void init() {
         this.LOG_TAG = "semCapabilityManager[" + this.mPhoneId + "] this: " + this;
         this.mRestartReceiver = new BroadcastReceiver() { // from class: com.samsung.android.ims.options.SemCapabilityManager.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context, Intent intent) {
                 Log.i(SemCapabilityManager.this.LOG_TAG, "onReceive " + intent.getAction());
@@ -64,6 +67,21 @@ public class SemCapabilityManager {
         connect();
     }
 
+    /* renamed from: com.samsung.android.ims.options.SemCapabilityManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            Log.i(SemCapabilityManager.this.LOG_TAG, "onReceive " + intent.getAction());
+            if (TextUtils.equals(intent.getAction(), SemCapabilityManager.INTENT_ACTION_IMSSERVICE_RESTART)) {
+                Log.i(SemCapabilityManager.this.LOG_TAG, "IMS service restarted.");
+            }
+        }
+    }
+
     public void connect() {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             Log.e(this.LOG_TAG, "Not recommended in main thread.");
@@ -74,6 +92,9 @@ public class SemCapabilityManager {
         }
         Log.i(this.LOG_TAG, "Connecting to SemCapabilityDiscoveryService...");
         this.mConnection = new ServiceConnection() { // from class: com.samsung.android.ims.options.SemCapabilityManager.2
+            AnonymousClass2() {
+            }
+
             @Override // android.content.ServiceConnection
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Log.i(SemCapabilityManager.this.LOG_TAG, "Connected to SemCapabilityDiscoveryService.");
@@ -106,6 +127,42 @@ public class SemCapabilityManager {
         Intent intent = new Intent();
         intent.setClassName("com.sec.imsservice", "com.sec.internal.ims.imsservice.SemCapabilityService");
         SemContextExt.bindServiceAsUser(this.mContext, intent, this.mConnection, 1, SemContextExt.CURRENT_OR_SELF);
+    }
+
+    /* renamed from: com.samsung.android.ims.options.SemCapabilityManager$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements ServiceConnection {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i(SemCapabilityManager.this.LOG_TAG, "Connected to SemCapabilityDiscoveryService.");
+            SemCapabilityManager.this.mImsCapabilityService = SemImsCapabilityService.Stub.asInterface(service);
+            if (SemCapabilityManager.this.mListener != null) {
+                SemCapabilityManager.this.mListener.onConnected();
+            }
+            if (!SemCapabilityManager.this.mQueuedCapabilityListener.isEmpty()) {
+                try {
+                    for (SemCapabilityListener listener : SemCapabilityManager.this.mQueuedCapabilityListener) {
+                        SemCapabilityManager.this.registerListener(listener);
+                    }
+                    SemCapabilityManager.this.mQueuedCapabilityListener.clear();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    Log.e(SemCapabilityManager.this.LOG_TAG, "registerListener failed. RemoteException: " + e);
+                }
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i(SemCapabilityManager.this.LOG_TAG, "Disconnected to SemCapabilityDiscoveryService.");
+            if (SemCapabilityManager.this.mListener != null) {
+                SemCapabilityManager.this.mListener.onDisconnected();
+            }
+            SemCapabilityManager.this.mImsCapabilityService = null;
+        }
     }
 
     public void disconnect() {

@@ -14,12 +14,10 @@ public abstract class OptionBase implements Parcelable, Serializable {
     private static final String TAG = Def.tagOf((Class<?>) OptionBase.class);
     private final Map<Integer, Object> data;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public OptionBase() {
         this.data = new HashMap();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public OptionBase(Parcel in) {
         HashMap hashMap = new HashMap();
         this.data = hashMap;
@@ -69,7 +67,6 @@ public abstract class OptionBase implements Parcelable, Serializable {
         other.data.putAll(this.data);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Map<Integer, Object> getAll() {
         return this.data;
     }

@@ -30,7 +30,6 @@ public class GrantCredentialsPermissionActivity extends Activity implements View
     private Bundle mResultBundle = null;
     private int mUid;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         String packageLabel;
@@ -64,15 +63,27 @@ public class GrantCredentialsPermissionActivity extends Activity implements View
         }
         try {
             String accountTypeLabel = getAccountLabel(this.mAccount);
-            final TextView authTokenTypeView = (TextView) findViewById(R.id.authtoken_type);
+            TextView authTokenTypeView = (TextView) findViewById(R.id.authtoken_type);
             authTokenTypeView.setVisibility(8);
             AccountManagerCallback<String> callback = new AccountManagerCallback<String>() { // from class: android.accounts.GrantCredentialsPermissionActivity.1
+                final /* synthetic */ TextView val$authTokenTypeView;
+
+                AnonymousClass1(TextView authTokenTypeView2) {
+                    authTokenTypeView = authTokenTypeView2;
+                }
+
                 @Override // android.accounts.AccountManagerCallback
                 public void run(AccountManagerFuture<String> future) {
                     try {
-                        final String authTokenLabel = future.getResult();
+                        String authTokenLabel = future.getResult();
                         if (!TextUtils.isEmpty(authTokenLabel)) {
                             GrantCredentialsPermissionActivity.this.runOnUiThread(new Runnable() { // from class: android.accounts.GrantCredentialsPermissionActivity.1.1
+                                final /* synthetic */ String val$authTokenLabel;
+
+                                RunnableC00001(String authTokenLabel2) {
+                                    authTokenLabel = authTokenLabel2;
+                                }
+
                                 @Override // java.lang.Runnable
                                 public void run() {
                                     if (!GrantCredentialsPermissionActivity.this.isFinishing()) {
@@ -85,6 +96,24 @@ public class GrantCredentialsPermissionActivity extends Activity implements View
                     } catch (AuthenticatorException e) {
                     } catch (OperationCanceledException e2) {
                     } catch (IOException e3) {
+                    }
+                }
+
+                /* renamed from: android.accounts.GrantCredentialsPermissionActivity$1$1 */
+                /* loaded from: classes.dex */
+                class RunnableC00001 implements Runnable {
+                    final /* synthetic */ String val$authTokenLabel;
+
+                    RunnableC00001(String authTokenLabel2) {
+                        authTokenLabel = authTokenLabel2;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        if (!GrantCredentialsPermissionActivity.this.isFinishing()) {
+                            authTokenTypeView.setText(authTokenLabel);
+                            authTokenTypeView.setVisibility(0);
+                        }
                     }
                 }
             };
@@ -107,6 +136,62 @@ public class GrantCredentialsPermissionActivity extends Activity implements View
         } catch (IllegalArgumentException e2) {
             setResult(0);
             finish();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.accounts.GrantCredentialsPermissionActivity$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements AccountManagerCallback<String> {
+        final /* synthetic */ TextView val$authTokenTypeView;
+
+        AnonymousClass1(TextView authTokenTypeView2) {
+            authTokenTypeView = authTokenTypeView2;
+        }
+
+        @Override // android.accounts.AccountManagerCallback
+        public void run(AccountManagerFuture<String> future) {
+            try {
+                String authTokenLabel2 = future.getResult();
+                if (!TextUtils.isEmpty(authTokenLabel2)) {
+                    GrantCredentialsPermissionActivity.this.runOnUiThread(new Runnable() { // from class: android.accounts.GrantCredentialsPermissionActivity.1.1
+                        final /* synthetic */ String val$authTokenLabel;
+
+                        RunnableC00001(String authTokenLabel22) {
+                            authTokenLabel = authTokenLabel22;
+                        }
+
+                        @Override // java.lang.Runnable
+                        public void run() {
+                            if (!GrantCredentialsPermissionActivity.this.isFinishing()) {
+                                authTokenTypeView.setText(authTokenLabel);
+                                authTokenTypeView.setVisibility(0);
+                            }
+                        }
+                    });
+                }
+            } catch (AuthenticatorException e) {
+            } catch (OperationCanceledException e2) {
+            } catch (IOException e3) {
+            }
+        }
+
+        /* renamed from: android.accounts.GrantCredentialsPermissionActivity$1$1 */
+        /* loaded from: classes.dex */
+        class RunnableC00001 implements Runnable {
+            final /* synthetic */ String val$authTokenLabel;
+
+            RunnableC00001(String authTokenLabel22) {
+                authTokenLabel = authTokenLabel22;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (!GrantCredentialsPermissionActivity.this.isFinishing()) {
+                    authTokenTypeView.setText(authTokenLabel);
+                    authTokenTypeView.setVisibility(0);
+                }
+            }
         }
     }
 

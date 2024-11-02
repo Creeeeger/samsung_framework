@@ -8,6 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class VoLteServiceState implements Parcelable {
     public static final Parcelable.Creator<VoLteServiceState> CREATOR = new Parcelable.Creator() { // from class: android.telephony.VoLteServiceState.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VoLteServiceState createFromParcel(Parcel in) {
             return new VoLteServiceState(in);
@@ -68,6 +71,23 @@ public final class VoLteServiceState implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.VoLteServiceState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VoLteServiceState createFromParcel(Parcel in) {
+            return new VoLteServiceState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VoLteServiceState[] newArray(int size) {
+            return new VoLteServiceState[size];
+        }
     }
 
     public void validateInput() {

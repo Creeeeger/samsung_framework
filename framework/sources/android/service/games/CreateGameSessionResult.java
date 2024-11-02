@@ -8,13 +8,14 @@ import android.view.SurfaceControlViewHost;
 /* loaded from: classes3.dex */
 public final class CreateGameSessionResult implements Parcelable {
     public static final Parcelable.Creator<CreateGameSessionResult> CREATOR = new Parcelable.Creator<CreateGameSessionResult>() { // from class: android.service.games.CreateGameSessionResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CreateGameSessionResult createFromParcel(Parcel source) {
             return new CreateGameSessionResult(IGameSession.Stub.asInterface(source.readStrongBinder()), (SurfaceControlViewHost.SurfacePackage) source.readParcelable(SurfaceControlViewHost.SurfacePackage.class.getClassLoader(), SurfaceControlViewHost.SurfacePackage.class));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CreateGameSessionResult[] newArray(int size) {
             return new CreateGameSessionResult[0];
@@ -22,6 +23,23 @@ public final class CreateGameSessionResult implements Parcelable {
     };
     private final IGameSession mGameSession;
     private final SurfaceControlViewHost.SurfacePackage mSurfacePackage;
+
+    /* renamed from: android.service.games.CreateGameSessionResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CreateGameSessionResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CreateGameSessionResult createFromParcel(Parcel source) {
+            return new CreateGameSessionResult(IGameSession.Stub.asInterface(source.readStrongBinder()), (SurfaceControlViewHost.SurfacePackage) source.readParcelable(SurfaceControlViewHost.SurfacePackage.class.getClassLoader(), SurfaceControlViewHost.SurfacePackage.class));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CreateGameSessionResult[] newArray(int size) {
+            return new CreateGameSessionResult[0];
+        }
+    }
 
     public CreateGameSessionResult(IGameSession gameSession, SurfaceControlViewHost.SurfacePackage surfacePackage) {
         this.mGameSession = gameSession;

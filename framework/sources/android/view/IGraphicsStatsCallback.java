@@ -81,8 +81,9 @@ public interface IGraphicsStatsCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IGraphicsStatsCallback {
+        public static class Proxy implements IGraphicsStatsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

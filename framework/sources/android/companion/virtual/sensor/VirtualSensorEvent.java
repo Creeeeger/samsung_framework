@@ -9,13 +9,14 @@ import android.os.SystemClock;
 /* loaded from: classes.dex */
 public final class VirtualSensorEvent implements Parcelable {
     public static final Parcelable.Creator<VirtualSensorEvent> CREATOR = new Parcelable.Creator<VirtualSensorEvent>() { // from class: android.companion.virtual.sensor.VirtualSensorEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualSensorEvent createFromParcel(Parcel source) {
             return new VirtualSensorEvent(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualSensorEvent[] newArray(int size) {
             return new VirtualSensorEvent[size];
@@ -23,6 +24,14 @@ public final class VirtualSensorEvent implements Parcelable {
     };
     private long mTimestampNanos;
     private float[] mValues;
+
+    /* synthetic */ VirtualSensorEvent(Parcel parcel, VirtualSensorEventIA virtualSensorEventIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ VirtualSensorEvent(float[] fArr, long j, VirtualSensorEventIA virtualSensorEventIA) {
+        this(fArr, j);
+    }
 
     private VirtualSensorEvent(float[] values, long timestampNanos) {
         this.mValues = values;
@@ -80,6 +89,23 @@ public final class VirtualSensorEvent implements Parcelable {
         public Builder setTimestampNanos(long timestampNanos) {
             this.mTimestampNanos = timestampNanos;
             return this;
+        }
+    }
+
+    /* renamed from: android.companion.virtual.sensor.VirtualSensorEvent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualSensorEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualSensorEvent createFromParcel(Parcel source) {
+            return new VirtualSensorEvent(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualSensorEvent[] newArray(int size) {
+            return new VirtualSensorEvent[size];
         }
     }
 }

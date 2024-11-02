@@ -2,7 +2,6 @@ package android.security.keymaster;
 
 import android.os.Parcel;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class KeymasterLongArgument extends KeymasterArgument {
     public final long value;

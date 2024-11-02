@@ -12,13 +12,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public class BaseDialogResult implements Parcelable {
     public static final Parcelable.Creator<BaseDialogResult> CREATOR = new Parcelable.Creator<BaseDialogResult>() { // from class: android.credentials.ui.BaseDialogResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BaseDialogResult createFromParcel(Parcel in) {
             return new BaseDialogResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BaseDialogResult[] newArray(int size) {
             return new BaseDialogResult[size];
@@ -52,7 +53,6 @@ public class BaseDialogResult implements Parcelable {
         return this.mRequestToken;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseDialogResult(Parcel in) {
         IBinder requestToken = in.readStrongBinder();
         this.mRequestToken = requestToken;
@@ -67,5 +67,22 @@ public class BaseDialogResult implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.credentials.ui.BaseDialogResult$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BaseDialogResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BaseDialogResult createFromParcel(Parcel in) {
+            return new BaseDialogResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BaseDialogResult[] newArray(int size) {
+            return new BaseDialogResult[size];
+        }
     }
 }

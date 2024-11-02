@@ -29,7 +29,6 @@ public class RecoverySession implements AutoCloseable {
         this.mSessionId = sessionId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static RecoverySession newInstance(RecoveryController recoveryController) {
         return new RecoverySession(recoveryController, newSessionId());
     }

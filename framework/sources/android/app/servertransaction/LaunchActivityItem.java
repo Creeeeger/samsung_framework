@@ -26,13 +26,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class LaunchActivityItem extends ClientTransactionItem {
     public static final Parcelable.Creator<LaunchActivityItem> CREATOR = new Parcelable.Creator<LaunchActivityItem>() { // from class: android.app.servertransaction.LaunchActivityItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LaunchActivityItem createFromParcel(Parcel in) {
             return new LaunchActivityItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LaunchActivityItem[] newArray(int size) {
             return new LaunchActivityItem[size];
@@ -59,6 +60,10 @@ public class LaunchActivityItem extends ClientTransactionItem {
     private Bundle mState;
     private IBinder mTaskFragmentToken;
     private IVoiceInteractor mVoiceInteractor;
+
+    /* synthetic */ LaunchActivityItem(Parcel parcel, LaunchActivityItemIA launchActivityItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.BaseClientRequest
     public void preExecute(ClientTransactionHandler client, IBinder token) {
@@ -132,6 +137,23 @@ public class LaunchActivityItem extends ClientTransactionItem {
 
     private LaunchActivityItem(Parcel in) {
         setValues(this, (Intent) in.readTypedObject(Intent.CREATOR), in.readInt(), (ActivityInfo) in.readTypedObject(ActivityInfo.CREATOR), (Configuration) in.readTypedObject(Configuration.CREATOR), (Configuration) in.readTypedObject(Configuration.CREATOR), in.readInt(), in.readString(), IVoiceInteractor.Stub.asInterface(in.readStrongBinder()), in.readInt(), in.readBundle(getClass().getClassLoader()), in.readPersistableBundle(getClass().getClassLoader()), in.createTypedArrayList(ResultInfo.CREATOR), in.createTypedArrayList(ReferrerIntent.CREATOR), ActivityOptions.fromBundle(in.readBundle()), in.readBoolean(), (ProfilerInfo) in.readTypedObject(ProfilerInfo.CREATOR), in.readStrongBinder(), IActivityClientController.Stub.asInterface(in.readStrongBinder()), in.readStrongBinder(), in.readBoolean(), in.readStrongBinder());
+    }
+
+    /* renamed from: android.app.servertransaction.LaunchActivityItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LaunchActivityItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LaunchActivityItem createFromParcel(Parcel in) {
+            return new LaunchActivityItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LaunchActivityItem[] newArray(int size) {
+            return new LaunchActivityItem[size];
+        }
     }
 
     public boolean equals(Object o) {

@@ -9,7 +9,9 @@ import java.util.function.IntPredicate;
 /* loaded from: classes3.dex */
 public final class ActivityStatsTechSpecificInfo implements Parcelable {
     public static final Parcelable.Creator<ActivityStatsTechSpecificInfo> CREATOR = new Parcelable.Creator<ActivityStatsTechSpecificInfo>() { // from class: android.telephony.ActivityStatsTechSpecificInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ActivityStatsTechSpecificInfo createFromParcel(Parcel in) {
             int rat = in.readInt();
@@ -20,7 +22,6 @@ public final class ActivityStatsTechSpecificInfo implements Parcelable {
             return new ActivityStatsTechSpecificInfo(rat, frequencyRange, txTimeMs, rxTimeMs);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityStatsTechSpecificInfo[] newArray(int size) {
             return new ActivityStatsTechSpecificInfo[size];
@@ -83,7 +84,6 @@ public final class ActivityStatsTechSpecificInfo implements Parcelable {
         this.mTxTimeMs = Arrays.copyOf(txTimeMs, 5);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$isTxPowerValid$0(int i) {
         return i >= 0;
     }
@@ -111,7 +111,6 @@ public final class ActivityStatsTechSpecificInfo implements Parcelable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$isTxPowerEmpty$1(int i) {
         return i == 0;
     }
@@ -164,6 +163,28 @@ public final class ActivityStatsTechSpecificInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.ActivityStatsTechSpecificInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ActivityStatsTechSpecificInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityStatsTechSpecificInfo createFromParcel(Parcel in) {
+            int rat = in.readInt();
+            int frequencyRange = in.readInt();
+            int[] txTimeMs = new int[5];
+            in.readIntArray(txTimeMs);
+            int rxTimeMs = in.readInt();
+            return new ActivityStatsTechSpecificInfo(rat, frequencyRange, txTimeMs, rxTimeMs);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityStatsTechSpecificInfo[] newArray(int size) {
+            return new ActivityStatsTechSpecificInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

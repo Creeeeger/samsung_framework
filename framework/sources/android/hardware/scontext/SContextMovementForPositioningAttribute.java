@@ -12,7 +12,6 @@ public class SContextMovementForPositioningAttribute extends SContextAttribute {
     private int mMoveMinDurationThrs;
     private int mNomoveDurationThrs;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextMovementForPositioningAttribute() {
         this.mNomoveDurationThrs = 60;
         this.mMoveDurationThrs = 60;

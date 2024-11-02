@@ -84,12 +84,10 @@ public class PreferenceManager {
         setSharedPreferencesName(getDefaultSharedPreferencesName(context));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setFragment(PreferenceFragment fragment) {
         this.mFragment = fragment;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PreferenceFragment getFragment() {
         return this.mFragment;
     }
@@ -106,7 +104,6 @@ public class PreferenceManager {
         return this.mContext.getPackageManager().queryIntentActivities(queryIntent, 128);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PreferenceScreen inflateFromIntent(Intent queryIntent, PreferenceScreen rootPreferences) {
         List<ResolveInfo> activities = queryIntentActivities(queryIntent);
         HashSet<String> inflatedRes = new HashSet<>();
@@ -148,7 +145,6 @@ public class PreferenceManager {
         return preferenceScreen;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getNextId() {
         long j;
         synchronized (this) {
@@ -241,12 +237,10 @@ public class PreferenceManager {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PreferenceScreen getPreferenceScreen() {
         return this.mPreferenceScreen;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean setPreferences(PreferenceScreen preferenceScreen) {
         if (preferenceScreen != this.mPreferenceScreen) {
             this.mPreferenceScreen = preferenceScreen;
@@ -283,7 +277,6 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SharedPreferences.Editor getEditor() {
         if (this.mPreferenceDataStore != null) {
             return null;
@@ -297,7 +290,6 @@ public class PreferenceManager {
         return getSharedPreferences().edit();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldCommit() {
         return !this.mNoCommit;
     }
@@ -314,7 +306,6 @@ public class PreferenceManager {
         this.mNoCommit = noCommit;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Activity getActivity() {
         return this.mActivity;
     }
@@ -323,7 +314,6 @@ public class PreferenceManager {
         return this.mContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerOnActivityResultListener(OnActivityResultListener listener) {
         synchronized (this) {
             if (this.mActivityResultListeners == null) {
@@ -344,7 +334,6 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityResult(int requestCode, int resultCode, Intent data) {
         synchronized (this) {
             if (this.mActivityResultListeners == null) {
@@ -377,7 +366,6 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityStop() {
         synchronized (this) {
             if (this.mActivityStopListeners == null) {
@@ -391,7 +379,6 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerOnActivityDestroyListener(OnActivityDestroyListener listener) {
         synchronized (this) {
             if (this.mActivityDestroyListeners == null) {
@@ -403,7 +390,6 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unregisterOnActivityDestroyListener(OnActivityDestroyListener listener) {
         synchronized (this) {
             List<OnActivityDestroyListener> list = this.mActivityDestroyListeners;
@@ -413,7 +399,6 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityDestroy() {
         List<OnActivityDestroyListener> list = null;
         synchronized (this) {
@@ -430,7 +415,6 @@ public class PreferenceManager {
         dismissAllScreens();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getNextRequestCode() {
         int i;
         synchronized (this) {
@@ -440,7 +424,6 @@ public class PreferenceManager {
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addPreferencesScreen(DialogInterface screen) {
         synchronized (this) {
             if (this.mPreferencesScreens == null) {
@@ -450,7 +433,6 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removePreferencesScreen(DialogInterface screen) {
         synchronized (this) {
             List<DialogInterface> list = this.mPreferencesScreens;
@@ -461,7 +443,6 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchNewIntent(Intent intent) {
         dismissAllScreens();
     }
@@ -479,12 +460,10 @@ public class PreferenceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setOnPreferenceTreeClickListener(OnPreferenceTreeClickListener listener) {
         this.mOnPreferenceTreeClickListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public OnPreferenceTreeClickListener getOnPreferenceTreeClickListener() {
         return this.mOnPreferenceTreeClickListener;
     }

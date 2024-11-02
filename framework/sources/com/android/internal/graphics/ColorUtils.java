@@ -15,7 +15,6 @@ public final class ColorUtils {
     private static final double XYZ_WHITE_REFERENCE_Y = 100.0d;
     private static final double XYZ_WHITE_REFERENCE_Z = 108.883d;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface ContrastCalculator {
         double calculateContrast(int i, int i2, int i3);
@@ -74,7 +73,6 @@ public final class ColorUtils {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ double lambda$calculateMinimumBackgroundAlpha$0(int leastContrastyColor, int fg, int bg, int alpha) {
         int testBackground = blendARGB(leastContrastyColor, bg, alpha / 255.0f);
         return calculateContrast(fg, setAlphaComponent(testBackground, 255));
@@ -97,7 +95,6 @@ public final class ColorUtils {
         return binaryAlphaSearch(setAlphaComponent(foreground, 255), background, minContrastRatio, contrastCalculator);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ double lambda$calculateMinimumAlpha$1(int fg, int bg, int alpha) {
         int testForeground = setAlphaComponent(fg, alpha);
         return calculateContrast(testForeground, bg);

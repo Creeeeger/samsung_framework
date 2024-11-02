@@ -11,13 +11,14 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
     public static final Parcelable.Creator<LockTaskPolicy> CREATOR = new Parcelable.Creator<LockTaskPolicy>() { // from class: android.app.admin.LockTaskPolicy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LockTaskPolicy createFromParcel(Parcel source) {
             return new LockTaskPolicy(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LockTaskPolicy[] newArray(int size) {
             return new LockTaskPolicy[size];
@@ -27,6 +28,10 @@ public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
     private int mFlags;
     private Set<String> mPackages;
 
+    /* synthetic */ LockTaskPolicy(Parcel parcel, LockTaskPolicyIA lockTaskPolicyIA) {
+        this(parcel);
+    }
+
     public Set<String> getPackages() {
         return this.mPackages;
     }
@@ -35,7 +40,6 @@ public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
         return this.mFlags;
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // android.app.admin.PolicyValue
     public LockTaskPolicy getValue() {
         return this;
@@ -133,5 +137,22 @@ public final class LockTaskPolicy extends PolicyValue<LockTaskPolicy> {
             dest.writeString(p);
         }
         dest.writeInt(this.mFlags);
+    }
+
+    /* renamed from: android.app.admin.LockTaskPolicy$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LockTaskPolicy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LockTaskPolicy createFromParcel(Parcel source) {
+            return new LockTaskPolicy(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LockTaskPolicy[] newArray(int size) {
+            return new LockTaskPolicy[size];
+        }
     }
 }

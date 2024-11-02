@@ -19,7 +19,6 @@ public abstract class ProviderData implements Parcelable {
         return this.mProviderFlattenedComponentName;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ProviderData(Parcel in) {
         String providerFlattenedComponentName = in.readString8();
         this.mProviderFlattenedComponentName = providerFlattenedComponentName;

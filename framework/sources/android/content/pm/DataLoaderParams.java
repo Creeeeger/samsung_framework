@@ -26,7 +26,6 @@ public class DataLoaderParams {
         this.mData = data;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DataLoaderParams(DataLoaderParamsParcel data) {
         this.mData = data;
     }

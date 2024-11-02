@@ -35,7 +35,6 @@ public final class AppPredictor {
         void onTargetsAvailable(List<AppTarget> list);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AppPredictor(Context context, AppPredictionContext predictionContext) {
         IBinder b = ServiceManager.getService(Context.APP_PREDICTION_SERVICE);
         IPredictionManager asInterface = IPredictionManager.Stub.asInterface(b);
@@ -189,7 +188,6 @@ public final class AppPredictor {
         return this.mSessionId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class CallbackWrapper extends IPredictionCallback.Stub {
         private final Consumer<List<AppTarget>> mCallback;
@@ -215,13 +213,11 @@ public final class AppPredictor {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResult$0(ParceledListSlice result) {
             this.mCallback.accept(result.getList());
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class Token {
         static final IBinder sBinder = new Binder(AppPredictor.TAG);

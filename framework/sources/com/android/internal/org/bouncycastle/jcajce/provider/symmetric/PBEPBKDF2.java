@@ -107,6 +107,14 @@ public class PBEPBKDF2 {
         private int keySizeInBits;
         private int scheme;
 
+        /* synthetic */ BasePBKDF2(String str, int i, int i2, int i3, int i4, BasePBKDF2IA basePBKDF2IA) {
+            this(str, i, i2, i3, i4);
+        }
+
+        /* synthetic */ BasePBKDF2(String str, int i, int i2, BasePBKDF2IA basePBKDF2IA) {
+            this(str, i, i2);
+        }
+
         public BasePBKDF2(String name, int scheme) {
             this(name, scheme, 1);
         }
@@ -123,7 +131,6 @@ public class PBEPBKDF2 {
             this(name, scheme, digest, 0, 0);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
         public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
             if (keySpec instanceof PBEKeySpec) {

@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class NewIntentItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<NewIntentItem> CREATOR = new Parcelable.Creator<NewIntentItem>() { // from class: android.app.servertransaction.NewIntentItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NewIntentItem createFromParcel(Parcel in) {
             return new NewIntentItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NewIntentItem[] newArray(int size) {
             return new NewIntentItem[size];
@@ -26,6 +27,10 @@ public class NewIntentItem extends ActivityTransactionItem {
     };
     private List<ReferrerIntent> mIntents;
     private boolean mResume;
+
+    /* synthetic */ NewIntentItem(Parcel parcel, NewIntentItemIA newIntentItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ClientTransactionItem
     public int getPostExecutionState() {
@@ -68,6 +73,23 @@ public class NewIntentItem extends ActivityTransactionItem {
     private NewIntentItem(Parcel in) {
         this.mResume = in.readBoolean();
         this.mIntents = in.createTypedArrayList(ReferrerIntent.CREATOR);
+    }
+
+    /* renamed from: android.app.servertransaction.NewIntentItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NewIntentItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NewIntentItem createFromParcel(Parcel in) {
+            return new NewIntentItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NewIntentItem[] newArray(int size) {
+            return new NewIntentItem[size];
+        }
     }
 
     public boolean equals(Object o) {

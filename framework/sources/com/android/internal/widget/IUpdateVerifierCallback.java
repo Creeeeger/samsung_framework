@@ -85,8 +85,9 @@ public interface IUpdateVerifierCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IUpdateVerifierCallback {
+        public static class Proxy implements IUpdateVerifierCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

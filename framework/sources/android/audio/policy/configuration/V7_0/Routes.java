@@ -89,7 +89,6 @@ public class Routes {
         return this.route;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Routes read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Routes _instance = new Routes();

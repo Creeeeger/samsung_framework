@@ -5,19 +5,15 @@ import java.io.OutputStream;
 
 /* loaded from: classes5.dex */
 public abstract class ASN1Primitive extends ASN1Object {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract boolean asn1Equals(ASN1Primitive aSN1Primitive);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract int encodedLength() throws IOException;
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object
     public abstract int hashCode();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract boolean isConstructed();
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object
@@ -64,12 +60,10 @@ public abstract class ASN1Primitive extends ASN1Object {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Primitive toDERObject() {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Primitive toDLObject() {
         return this;
     }

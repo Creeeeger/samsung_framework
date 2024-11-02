@@ -146,8 +146,9 @@ public interface ISharedConnectivityCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISharedConnectivityCallback {
+        public static class Proxy implements ISharedConnectivityCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

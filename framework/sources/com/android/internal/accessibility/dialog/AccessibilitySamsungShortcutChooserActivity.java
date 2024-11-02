@@ -36,6 +36,9 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
     private int mCurrentDisplayId = 0;
     private final List<AccessibilityTarget> mTargets = new ArrayList();
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity.1
+        AnonymousClass1() {
+        }
+
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction()) && AccessibilitySamsungShortcutChooserActivity.this.mMenuDialog != null) {
@@ -44,7 +47,20 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: com.android.internal.accessibility.dialog.AccessibilitySamsungShortcutChooserActivity$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction()) && AccessibilitySamsungShortcutChooserActivity.this.mMenuDialog != null) {
+                AccessibilitySamsungShortcutChooserActivity.this.mMenuDialog.dismiss();
+            }
+        }
+    }
+
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +99,6 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         this.mAccessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onCreate$0(DialogInterface dialog) {
         updateDialogListeners();
     }
@@ -106,7 +121,6 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         overridePendingTransition(0, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         unregisterReceiver(this.mReceiver);
@@ -128,7 +142,6 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onTargetSelected(AdapterView<?> parent, View view, int position, long id) {
         AccessibilityTarget target = this.mTargets.get(position);
         String targetName = target.getId();
@@ -147,7 +160,6 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         this.mMenuDialog.dismiss();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$updateDialogListeners$1(View view) {
         onEditShortcutClicked();
     }
@@ -211,7 +223,6 @@ public class AccessibilitySamsungShortcutChooserActivity extends Activity {
         return builder.create();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createMenuDialog$2(DialogInterface dialog) {
         finish();
     }

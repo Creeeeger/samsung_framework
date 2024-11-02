@@ -12,7 +12,6 @@ public class SContextActivityNotificationExAttribute extends SContextAttribute {
     private int[] mActivityFilter;
     private int mDuration;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextActivityNotificationExAttribute() {
         this.mActivityFilter = new int[]{4};
         this.mDuration = 30;

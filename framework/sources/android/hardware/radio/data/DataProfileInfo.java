@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class DataProfileInfo implements Parcelable {
     public static final Parcelable.Creator<DataProfileInfo> CREATOR = new Parcelable.Creator<DataProfileInfo>() { // from class: android.hardware.radio.data.DataProfileInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DataProfileInfo createFromParcel(Parcel _aidl_source) {
             DataProfileInfo _aidl_out = new DataProfileInfo();
@@ -17,7 +19,6 @@ public class DataProfileInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataProfileInfo[] newArray(int _aidl_size) {
             return new DataProfileInfo[_aidl_size];
@@ -53,6 +54,25 @@ public class DataProfileInfo implements Parcelable {
     public boolean preferred = false;
     public boolean persistent = false;
     public boolean alwaysOn = false;
+
+    /* renamed from: android.hardware.radio.data.DataProfileInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DataProfileInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataProfileInfo createFromParcel(Parcel _aidl_source) {
+            DataProfileInfo _aidl_out = new DataProfileInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataProfileInfo[] newArray(int _aidl_size) {
+            return new DataProfileInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

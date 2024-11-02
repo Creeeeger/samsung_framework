@@ -494,6 +494,9 @@ public class GraphicsEnvironment {
             String anglePkg = getAnglePackageName(context.getPackageManager());
             intent.setPackage(anglePkg);
             context.sendOrderedBroadcast(intent, null, new BroadcastReceiver() { // from class: android.os.GraphicsEnvironment.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.content.BroadcastReceiver
                 public void onReceive(Context context2, Intent intent2) {
                     Bundle results = getResultExtras(true);
@@ -502,6 +505,21 @@ public class GraphicsEnvironment {
                     toast.show();
                 }
             }, null, -1, null, null);
+        }
+    }
+
+    /* renamed from: android.os.GraphicsEnvironment$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent2) {
+            Bundle results = getResultExtras(true);
+            String toastMsg = results.getString(GraphicsEnvironment.INTENT_KEY_A4A_TOAST_MESSAGE);
+            Toast toast = Toast.makeText(context2, toastMsg, 1);
+            toast.show();
         }
     }
 

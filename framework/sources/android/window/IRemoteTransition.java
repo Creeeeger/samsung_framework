@@ -107,8 +107,9 @@ public interface IRemoteTransition extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IRemoteTransition {
+        public static class Proxy implements IRemoteTransition {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

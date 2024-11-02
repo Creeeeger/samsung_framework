@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextHallSensorAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextHallSensorAttribute> CREATOR = new Parcelable.Creator<SemContextHallSensorAttribute>() { // from class: com.samsung.android.hardware.context.SemContextHallSensorAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextHallSensorAttribute createFromParcel(Parcel in) {
             return new SemContextHallSensorAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextHallSensorAttribute[] newArray(int size) {
             return new SemContextHallSensorAttribute[size];
@@ -22,6 +23,23 @@ public class SemContextHallSensorAttribute extends SemContextAttribute {
     };
     private static final String TAG = "SemContextHallSensorAttribute";
     private int mDisplayStatus;
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextHallSensorAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextHallSensorAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextHallSensorAttribute createFromParcel(Parcel in) {
+            return new SemContextHallSensorAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextHallSensorAttribute[] newArray(int size) {
+            return new SemContextHallSensorAttribute[size];
+        }
+    }
 
     SemContextHallSensorAttribute() {
         this.mDisplayStatus = 0;

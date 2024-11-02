@@ -66,8 +66,7 @@ public abstract class TextClassifierService extends Service {
 
     public abstract void onSuggestSelection(TextClassificationSessionId textClassificationSessionId, TextSelection.Request request, CancellationSignal cancellationSignal, Callback<TextSelection> callback);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.textclassifier.TextClassifierService$1, reason: invalid class name */
+    /* renamed from: android.service.textclassifier.TextClassifierService$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends ITextClassifierService.Stub {
         private final CancellationSignal mCancellationSignal = new CancellationSignal();
@@ -87,7 +86,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSuggestSelection$0(TextClassificationSessionId sessionId, TextSelection.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onSuggestSelection(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -104,7 +102,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClassifyText$1(TextClassificationSessionId sessionId, TextClassification.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onClassifyText(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -121,7 +118,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onGenerateLinks$2(TextClassificationSessionId sessionId, TextLinks.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onGenerateLinks(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -137,7 +133,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSelectionEvent$3(TextClassificationSessionId sessionId, SelectionEvent event) {
             TextClassifierService.this.onSelectionEvent(sessionId, event);
         }
@@ -153,7 +148,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTextClassifierEvent$4(TextClassificationSessionId sessionId, TextClassifierEvent event) {
             TextClassifierService.this.onTextClassifierEvent(sessionId, event);
         }
@@ -170,7 +164,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDetectLanguage$5(TextClassificationSessionId sessionId, TextLanguage.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onDetectLanguage(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -187,7 +180,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSuggestConversationActions$6(TextClassificationSessionId sessionId, ConversationActions.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onSuggestConversationActions(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -204,7 +196,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCreateTextClassificationSession$7(TextClassificationContext context, TextClassificationSessionId sessionId) {
             TextClassifierService.this.onCreateTextClassificationSession(context, sessionId);
         }
@@ -219,7 +210,6 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDestroyTextClassificationSession$8(TextClassificationSessionId sessionId) {
             TextClassifierService.this.onDestroyTextClassificationSession(sessionId);
         }
@@ -278,7 +268,6 @@ public abstract class TextClassifierService extends Service {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDetectLanguage$0(Callback callback, TextLanguage.Request request) {
         callback.onSuccess(getLocalTextClassifier().detectLanguage(request));
     }
@@ -292,7 +281,6 @@ public abstract class TextClassifierService extends Service {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSuggestConversationActions$1(Callback callback, ConversationActions.Request request) {
         callback.onSuccess(getLocalTextClassifier().suggestConversationActions(request));
     }
@@ -351,10 +339,13 @@ public abstract class TextClassifierService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class ProxyCallback<T extends Parcelable> implements Callback<T> {
         private ITextClassifierCallback mTextClassifierCallback;
+
+        /* synthetic */ ProxyCallback(ITextClassifierCallback iTextClassifierCallback, ProxyCallbackIA proxyCallbackIA) {
+            this(iTextClassifierCallback);
+        }
 
         private ProxyCallback(ITextClassifierCallback textClassifierCallback) {
             this.mTextClassifierCallback = (ITextClassifierCallback) Objects.requireNonNull(textClassifierCallback);

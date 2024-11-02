@@ -17,7 +17,6 @@ public class VrManager {
     private Map<VrStateCallback, CallbackEntry> mCallbackMap = new ArrayMap();
     private final IVrManager mService;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class CallbackEntry {
         final VrStateCallback mCallback;
@@ -25,14 +24,12 @@ public class VrManager {
         final IVrStateCallbacks mStateCallback = new AnonymousClass1();
         final IPersistentVrStateCallbacks mPersistentStateCallback = new AnonymousClass2();
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.app.VrManager$CallbackEntry$1, reason: invalid class name */
+        /* renamed from: android.app.VrManager$CallbackEntry$1 */
         /* loaded from: classes.dex */
         public class AnonymousClass1 extends IVrStateCallbacks.Stub {
             AnonymousClass1() {
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onVrStateChanged$0(boolean enabled) {
                 CallbackEntry.this.mCallback.onVrStateChanged(enabled);
             }
@@ -48,14 +45,12 @@ public class VrManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.app.VrManager$CallbackEntry$2, reason: invalid class name */
+        /* renamed from: android.app.VrManager$CallbackEntry$2 */
         /* loaded from: classes.dex */
         public class AnonymousClass2 extends IPersistentVrStateCallbacks.Stub {
             AnonymousClass2() {
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onPersistentVrStateChanged$0(boolean enabled) {
                 CallbackEntry.this.mCallback.onPersistentVrStateChanged(enabled);
             }

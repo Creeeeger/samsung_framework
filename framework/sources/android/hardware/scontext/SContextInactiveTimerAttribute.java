@@ -14,7 +14,6 @@ public class SContextInactiveTimerAttribute extends SContextAttribute {
     private int mEndTime;
     private int mStartTime;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextInactiveTimerAttribute() {
         this.mDeviceType = 1;
         this.mDuration = 3600;

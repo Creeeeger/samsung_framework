@@ -86,8 +86,9 @@ public interface IGetRulesAuthTableCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGetRulesAuthTableCallback {
+        public static class Proxy implements IGetRulesAuthTableCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -10,13 +10,14 @@ import com.samsung.android.view.IRemoteAnimationMergeCallback;
 /* loaded from: classes4.dex */
 public class RemoteAnimationAdapter implements Parcelable {
     public static final Parcelable.Creator<RemoteAnimationAdapter> CREATOR = new Parcelable.Creator<RemoteAnimationAdapter>() { // from class: android.view.RemoteAnimationAdapter.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteAnimationAdapter createFromParcel(Parcel in) {
             return new RemoteAnimationAdapter(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteAnimationAdapter[] newArray(int size) {
             return new RemoteAnimationAdapter[size];
@@ -128,6 +129,23 @@ public class RemoteAnimationAdapter implements Parcelable {
         if (CoreRune.FW_MERGE_REMOTE_ANIMATION) {
             dest.writeStrongInterface(this.mMergeCallback);
             dest.writeLong(this.mMergeDurationHint);
+        }
+    }
+
+    /* renamed from: android.view.RemoteAnimationAdapter$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoteAnimationAdapter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteAnimationAdapter createFromParcel(Parcel in) {
+            return new RemoteAnimationAdapter(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteAnimationAdapter[] newArray(int size) {
+            return new RemoteAnimationAdapter[size];
         }
     }
 }

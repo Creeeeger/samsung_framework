@@ -90,7 +90,6 @@ public class TextViewTranslationCallback implements ViewTranslationCallback {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onShowTranslation$0(WeakReference textViewRef, TransformationMethod transformation) {
         this.mIsShowingTranslation = true;
         this.mAnimationRunning = false;
@@ -139,7 +138,6 @@ public class TextViewTranslationCallback implements ViewTranslationCallback {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onHideTranslation$1(WeakReference textViewRef, TransformationMethod transformation) {
         this.mIsShowingTranslation = false;
         this.mAnimationRunning = false;
@@ -187,12 +185,10 @@ public class TextViewTranslationCallback implements ViewTranslationCallback {
         this.mIsTextPaddingEnabled = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isTextPaddingEnabled() {
         return this.mIsTextPaddingEnabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getPaddedText(CharSequence text, CharSequence translatedText) {
         if (text == null) {
             return null;
@@ -224,7 +220,7 @@ public class TextViewTranslationCallback implements ViewTranslationCallback {
         this.mAnimationDurationMillis = durationMillis;
     }
 
-    private void runChangeTextWithAnimationIfNeeded(final TextView view, final Runnable changeTextRunnable) {
+    private void runChangeTextWithAnimationIfNeeded(final TextView view, Runnable changeTextRunnable) {
         boolean areAnimatorsEnabled = ValueAnimator.areAnimatorsEnabled();
         if (!areAnimatorsEnabled) {
             changeTextRunnable.run();
@@ -247,9 +243,19 @@ public class TextViewTranslationCallback implements ViewTranslationCallback {
         this.mAnimator.setRepeatMode(2);
         this.mAnimator.setRepeatCount(1);
         this.mAnimator.setDuration(this.mAnimationDurationMillis);
-        final ColorStateList originalColors = view.getTextColors();
-        final WeakReference<TextView> viewRef = new WeakReference<>(view);
+        ColorStateList originalColors = view.getTextColors();
+        WeakReference<TextView> viewRef = new WeakReference<>(view);
         this.mAnimator.addListener(new Animator.AnimatorListener() { // from class: android.widget.TextViewTranslationCallback.1
+            final /* synthetic */ Runnable val$changeTextRunnable;
+            final /* synthetic */ ColorStateList val$originalColors;
+            final /* synthetic */ WeakReference val$viewRef;
+
+            AnonymousClass1(WeakReference viewRef2, ColorStateList originalColors2, Runnable changeTextRunnable2) {
+                viewRef = viewRef2;
+                originalColors = originalColors2;
+                changeTextRunnable = changeTextRunnable2;
+            }
+
             @Override // android.animation.Animator.AnimatorListener
             public void onAnimationStart(Animator animation) {
             }
@@ -273,6 +279,42 @@ public class TextViewTranslationCallback implements ViewTranslationCallback {
             }
         });
         this.mAnimator.start();
+    }
+
+    /* renamed from: android.widget.TextViewTranslationCallback$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Animator.AnimatorListener {
+        final /* synthetic */ Runnable val$changeTextRunnable;
+        final /* synthetic */ ColorStateList val$originalColors;
+        final /* synthetic */ WeakReference val$viewRef;
+
+        AnonymousClass1(WeakReference viewRef2, ColorStateList originalColors2, Runnable changeTextRunnable2) {
+            viewRef = viewRef2;
+            originalColors = originalColors2;
+            changeTextRunnable = changeTextRunnable2;
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            TextView view2 = (TextView) viewRef.get();
+            if (view2 != null) {
+                view2.setTextColor(originalColors);
+            }
+            TextViewTranslationCallback.this.mAnimator = null;
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationRepeat(Animator animation) {
+            changeTextRunnable.run();
+        }
     }
 
     private static int colorWithAlpha(int color, int newAlpha) {

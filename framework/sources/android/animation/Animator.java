@@ -198,12 +198,10 @@ public abstract class Animator implements Cloneable {
         throw new IllegalStateException("Reverse is not supported");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean pulseAnimationFrame(long frameTime) {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startWithoutPulsing(boolean inReverse) {
         if (inReverse) {
             reverse();
@@ -212,24 +210,19 @@ public abstract class Animator implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void skipToEndValue(boolean inReverse) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isInitialized() {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void animateValuesInRange(long currentPlayTime, long lastPlayTime) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void animateSkipToEnds(long currentPlayTime, long lastPlayTime) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void getStartAndEndTimes(LongArray times, long offset) {
         long startTime = getStartDelay() + offset;
         if (times.indexOf(startTime) < 0) {
@@ -244,7 +237,6 @@ public abstract class Animator implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyListeners(AnimatorCaller<AnimatorListener, Animator> notification, boolean isReverse) {
         callOnList(this.mListeners, notification, this, isReverse);
     }
@@ -253,7 +245,6 @@ public abstract class Animator implements Cloneable {
         callOnList(this.mPauseListeners, notification, this, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyStartListeners(boolean isReversing) {
         boolean startListenersCalled = this.mStartListenersCalled;
         this.mStartListenersCalled = true;
@@ -262,7 +253,6 @@ public abstract class Animator implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyEndListeners(boolean isReversing) {
         boolean startListenersCalled = this.mStartListenersCalled;
         this.mStartListenersCalled = false;
@@ -271,7 +261,6 @@ public abstract class Animator implements Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public <T, A> void callOnList(ArrayList<T> list, AnimatorCaller<T, A> animatorCaller, A animator, boolean isReverse) {
         Object[] array;
@@ -315,8 +304,9 @@ public abstract class Animator implements Cloneable {
     public void setAllowRunningAsynchronously(boolean mayRunAsync) {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class AnimatorConstantState extends ConstantState<Animator> {
+    public static class AnimatorConstantState extends ConstantState<Animator> {
         final Animator mAnimator;
         int mChangingConf;
 
@@ -331,16 +321,15 @@ public abstract class Animator implements Cloneable {
             return this.mChangingConf;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.content.res.ConstantState
-        public Animator newInstance() {
+        /* renamed from: newInstance */
+        public Animator newInstance2() {
             Animator clone = this.mAnimator.mo57clone();
             clone.mConstantState = this;
             return clone;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public interface AnimatorCaller<T, A> {
         public static final AnimatorCaller<AnimatorListener, Animator> ON_START = new AnimatorCaller() { // from class: android.animation.Animator$AnimatorCaller$$ExternalSyntheticLambda0

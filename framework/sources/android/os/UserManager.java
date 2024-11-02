@@ -240,13 +240,86 @@ public class UserManager {
     public static final String USER_TYPE_SYSTEM_HEADLESS = "android.os.usertype.system.HEADLESS";
     private static Boolean sIsHeadlessSystemUser = null;
     private final Context mContext;
-    private final PropertyInvalidatedCache<Integer, Boolean> mIsUserUnlockedCache;
-    private final PropertyInvalidatedCache<Integer, Boolean> mIsUserUnlockingOrUnlockedCache;
-    private final PropertyInvalidatedCache<Integer, String> mProfileTypeCache;
-    private String mProfileTypeOfProcessUser = null;
     private final IUserManager mService;
     private final int mUserId;
-    private final PropertyInvalidatedCache<Integer, UserProperties> mUserPropertiesCache;
+    private String mProfileTypeOfProcessUser = null;
+    private final PropertyInvalidatedCache<Integer, Boolean> mIsUserUnlockedCache = new PropertyInvalidatedCache<Integer, Boolean>(32, CACHE_KEY_IS_USER_UNLOCKED_PROPERTY) { // from class: android.os.UserManager.1
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(Integer query) {
+            try {
+                return Boolean.valueOf(UserManager.this.mService.isUserUnlocked(query.intValue()));
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(Integer query) {
+            return query.intValue() < 0;
+        }
+    };
+    private final PropertyInvalidatedCache<Integer, Boolean> mIsUserUnlockingOrUnlockedCache = new PropertyInvalidatedCache<Integer, Boolean>(32, CACHE_KEY_IS_USER_UNLOCKED_PROPERTY) { // from class: android.os.UserManager.2
+        AnonymousClass2(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(Integer query) {
+            try {
+                return Boolean.valueOf(UserManager.this.mService.isUserUnlockingOrUnlocked(query.intValue()));
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(Integer query) {
+            return query.intValue() < 0;
+        }
+    };
+    private final PropertyInvalidatedCache<Integer, String> mProfileTypeCache = new PropertyInvalidatedCache<Integer, String>(32, CACHE_KEY_STATIC_USER_PROPERTIES) { // from class: android.os.UserManager.3
+        AnonymousClass3(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public String recompute(Integer query) {
+            try {
+                String profileType = UserManager.this.mService.getProfileType(query.intValue());
+                return profileType != null ? profileType.intern() : profileType;
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(Integer query) {
+            return query.intValue() < 0;
+        }
+    };
+    private final PropertyInvalidatedCache<Integer, UserProperties> mUserPropertiesCache = new PropertyInvalidatedCache<Integer, UserProperties>(16, CACHE_KEY_USER_PROPERTIES) { // from class: android.os.UserManager.4
+        AnonymousClass4(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public UserProperties recompute(Integer userId) {
+            try {
+                return UserManager.this.mService.getUserPropertiesCopy(userId.intValue());
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(Integer query) {
+            return query.intValue() < 0;
+        }
+    };
 
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
@@ -338,69 +411,6 @@ public class UserManager {
     }
 
     public UserManager(Context context, IUserManager service) {
-        int i = 32;
-        String str = CACHE_KEY_IS_USER_UNLOCKED_PROPERTY;
-        this.mIsUserUnlockedCache = new PropertyInvalidatedCache<Integer, Boolean>(i, str) { // from class: android.os.UserManager.1
-            @Override // android.app.PropertyInvalidatedCache
-            public Boolean recompute(Integer query) {
-                try {
-                    return Boolean.valueOf(UserManager.this.mService.isUserUnlocked(query.intValue()));
-                } catch (RemoteException re) {
-                    throw re.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean bypass(Integer query) {
-                return query.intValue() < 0;
-            }
-        };
-        this.mIsUserUnlockingOrUnlockedCache = new PropertyInvalidatedCache<Integer, Boolean>(i, str) { // from class: android.os.UserManager.2
-            @Override // android.app.PropertyInvalidatedCache
-            public Boolean recompute(Integer query) {
-                try {
-                    return Boolean.valueOf(UserManager.this.mService.isUserUnlockingOrUnlocked(query.intValue()));
-                } catch (RemoteException re) {
-                    throw re.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean bypass(Integer query) {
-                return query.intValue() < 0;
-            }
-        };
-        this.mProfileTypeCache = new PropertyInvalidatedCache<Integer, String>(i, CACHE_KEY_STATIC_USER_PROPERTIES) { // from class: android.os.UserManager.3
-            @Override // android.app.PropertyInvalidatedCache
-            public String recompute(Integer query) {
-                try {
-                    String profileType = UserManager.this.mService.getProfileType(query.intValue());
-                    return profileType != null ? profileType.intern() : profileType;
-                } catch (RemoteException re) {
-                    throw re.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean bypass(Integer query) {
-                return query.intValue() < 0;
-            }
-        };
-        this.mUserPropertiesCache = new PropertyInvalidatedCache<Integer, UserProperties>(16, CACHE_KEY_USER_PROPERTIES) { // from class: android.os.UserManager.4
-            @Override // android.app.PropertyInvalidatedCache
-            public UserProperties recompute(Integer userId) {
-                try {
-                    return UserManager.this.mService.getUserPropertiesCopy(userId.intValue());
-                } catch (RemoteException re) {
-                    throw re.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean bypass(Integer query) {
-                return query.intValue() < 0;
-            }
-        };
         this.mService = service;
         Context appContext = context.getApplicationContext();
         this.mContext = appContext == null ? context : appContext;
@@ -798,6 +808,52 @@ public class UserManager {
 
     public boolean isUserUnlocked(UserHandle user) {
         return isUserUnlocked(user.getIdentifier());
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.os.UserManager$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends PropertyInvalidatedCache<Integer, Boolean> {
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(Integer query) {
+            try {
+                return Boolean.valueOf(UserManager.this.mService.isUserUnlocked(query.intValue()));
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(Integer query) {
+            return query.intValue() < 0;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.os.UserManager$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 extends PropertyInvalidatedCache<Integer, Boolean> {
+        AnonymousClass2(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(Integer query) {
+            try {
+                return Boolean.valueOf(UserManager.this.mService.isUserUnlockingOrUnlocked(query.intValue()));
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(Integer query) {
+            return query.intValue() < 0;
+        }
     }
 
     public boolean isUserUnlocked(int userId) {
@@ -1605,8 +1661,7 @@ public class UserManager {
         return isManagedProfile(userId) ? DevicePolicyResources.Strings.Core.WORK_PROFILE_BADGED_LABEL : DevicePolicyResources.UNDEFINED;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: getDefaultUserBadgedLabel, reason: merged with bridge method [inline-methods] */
+    /* renamed from: getDefaultUserBadgedLabel */
     public String lambda$getBadgedLabelForUser$0(CharSequence label, int userId) {
         try {
             int resourceId = this.mService.getUserBadgeLabelResId(userId);
@@ -1862,8 +1917,55 @@ public class UserManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.os.UserManager$3 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass3 extends PropertyInvalidatedCache<Integer, String> {
+        AnonymousClass3(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public String recompute(Integer query) {
+            try {
+                String profileType = UserManager.this.mService.getProfileType(query.intValue());
+                return profileType != null ? profileType.intern() : profileType;
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(Integer query) {
+            return query.intValue() < 0;
+        }
+    }
+
     public static final void invalidateStaticUserProperties() {
         PropertyInvalidatedCache.invalidateCache(CACHE_KEY_STATIC_USER_PROPERTIES);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.os.UserManager$4 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass4 extends PropertyInvalidatedCache<Integer, UserProperties> {
+        AnonymousClass4(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public UserProperties recompute(Integer userId) {
+            try {
+                return UserManager.this.mService.getUserPropertiesCopy(userId.intValue());
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(Integer query) {
+            return query.intValue() < 0;
+        }
     }
 
     public static final void invalidateUserPropertiesCache() {
@@ -1874,13 +1976,14 @@ public class UserManager {
     /* loaded from: classes3.dex */
     public static final class EnforcingUser implements Parcelable {
         public static final Parcelable.Creator<EnforcingUser> CREATOR = new Parcelable.Creator<EnforcingUser>() { // from class: android.os.UserManager.EnforcingUser.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public EnforcingUser createFromParcel(Parcel in) {
                 return new EnforcingUser(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EnforcingUser[] newArray(int size) {
                 return new EnforcingUser[size];
@@ -1888,6 +1991,10 @@ public class UserManager {
         };
         private final int userId;
         private final int userRestrictionSource;
+
+        /* synthetic */ EnforcingUser(Parcel parcel, EnforcingUserIA enforcingUserIA) {
+            this(parcel);
+        }
 
         public EnforcingUser(int userId, int userRestrictionSource) {
             this.userId = userId;
@@ -1897,6 +2004,23 @@ public class UserManager {
         private EnforcingUser(Parcel in) {
             this.userId = in.readInt();
             this.userRestrictionSource = in.readInt();
+        }
+
+        /* renamed from: android.os.UserManager$EnforcingUser$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<EnforcingUser> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public EnforcingUser createFromParcel(Parcel in) {
+                return new EnforcingUser(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public EnforcingUser[] newArray(int size) {
+                return new EnforcingUser[size];
+            }
         }
 
         @Override // android.os.Parcelable

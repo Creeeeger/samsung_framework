@@ -231,8 +231,9 @@ public interface IImsMmTelListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IImsMmTelListener {
+        public static class Proxy implements IImsMmTelListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

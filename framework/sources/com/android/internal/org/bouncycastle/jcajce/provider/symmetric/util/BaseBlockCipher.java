@@ -78,7 +78,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
     private PBEParameterSpec pbeSpec;
     private int scheme;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public interface GenericBlockCipher {
         int doFinal(byte[] bArr, int i) throws IllegalStateException, BadPaddingException;
@@ -102,7 +101,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         boolean wrapOnNoPadding();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseBlockCipher(BlockCipher engine) {
         this.availableSpecs = new Class[]{gcmSpecClass, IvParameterSpec.class, PBEParameterSpec.class};
         this.scheme = -1;
@@ -115,7 +113,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.cipher = new BufferedGenericBlockCipher(engine);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseBlockCipher(BlockCipher engine, int scheme, int digest, int keySizeInBits, int ivLength) {
         this.availableSpecs = new Class[]{gcmSpecClass, IvParameterSpec.class, PBEParameterSpec.class};
         this.scheme = -1;
@@ -132,7 +129,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.cipher = new BufferedGenericBlockCipher(engine);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseBlockCipher(BlockCipherProvider provider) {
         this.availableSpecs = new Class[]{gcmSpecClass, IvParameterSpec.class, PBEParameterSpec.class};
         this.scheme = -1;
@@ -146,7 +142,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.cipher = new BufferedGenericBlockCipher(provider.get());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseBlockCipher(AEADBlockCipher engine) {
         this.availableSpecs = new Class[]{gcmSpecClass, IvParameterSpec.class, PBEParameterSpec.class};
         this.scheme = -1;
@@ -189,7 +184,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.cipher = new AEADGenericBlockCipher(engine);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseBlockCipher(BlockCipher engine, int ivLength) {
         this(engine, true, ivLength);
     }
@@ -208,7 +202,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.ivLength = ivLength / 8;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseBlockCipher(BufferedBlockCipher engine, int ivLength) {
         this(engine, true, ivLength);
     }
@@ -301,7 +294,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         return this.engineParams;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher, javax.crypto.CipherSpi
     public void engineSetMode(String mode) throws NoSuchAlgorithmException {
         if (this.baseEngine == null) {
@@ -363,7 +355,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher, javax.crypto.CipherSpi
     public void engineSetPadding(String padding) throws NoSuchPaddingException {
         if (this.baseEngine == null) {
@@ -751,8 +742,9 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         return "CCM".equals(modeName) || "GCM".equals(modeName);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class BufferedGenericBlockCipher implements GenericBlockCipher {
+    public static class BufferedGenericBlockCipher implements GenericBlockCipher {
         private BufferedBlockCipher cipher;
 
         BufferedGenericBlockCipher(BufferedBlockCipher cipher) {
@@ -822,7 +814,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class AEADGenericBlockCipher implements GenericBlockCipher {
         private static final Constructor aeadBadTagConstructor;

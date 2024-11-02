@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class FeatureGroupInfo implements Parcelable {
     public static final Parcelable.Creator<FeatureGroupInfo> CREATOR = new Parcelable.Creator<FeatureGroupInfo>() { // from class: android.content.pm.FeatureGroupInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FeatureGroupInfo createFromParcel(Parcel source) {
             FeatureGroupInfo group = new FeatureGroupInfo();
@@ -14,7 +16,6 @@ public final class FeatureGroupInfo implements Parcelable {
             return group;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FeatureGroupInfo[] newArray(int size) {
             return new FeatureGroupInfo[size];
@@ -37,5 +38,24 @@ public final class FeatureGroupInfo implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedArray(this.features, flags);
+    }
+
+    /* renamed from: android.content.pm.FeatureGroupInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FeatureGroupInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FeatureGroupInfo createFromParcel(Parcel source) {
+            FeatureGroupInfo group = new FeatureGroupInfo();
+            group.features = (FeatureInfo[]) source.createTypedArray(FeatureInfo.CREATOR);
+            return group;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FeatureGroupInfo[] newArray(int size) {
+            return new FeatureGroupInfo[size];
+        }
     }
 }

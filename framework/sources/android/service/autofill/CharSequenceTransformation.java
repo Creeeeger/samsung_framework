@@ -19,7 +19,9 @@ import java.util.regex.Pattern;
 /* loaded from: classes3.dex */
 public final class CharSequenceTransformation extends InternalTransformation implements Transformation, Parcelable {
     public static final Parcelable.Creator<CharSequenceTransformation> CREATOR = new Parcelable.Creator<CharSequenceTransformation>() { // from class: android.service.autofill.CharSequenceTransformation.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CharSequenceTransformation createFromParcel(Parcel parcel) {
             AutofillId[] ids = (AutofillId[]) parcel.readParcelableArray(null, AutofillId.class);
@@ -33,7 +35,6 @@ public final class CharSequenceTransformation extends InternalTransformation imp
             return builder.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CharSequenceTransformation[] newArray(int size) {
             return new CharSequenceTransformation[size];
@@ -41,6 +42,10 @@ public final class CharSequenceTransformation extends InternalTransformation imp
     };
     private static final String TAG = "CharSequenceTransformation";
     private final LinkedHashMap<AutofillId, Pair<Pattern, String>> mFields;
+
+    /* synthetic */ CharSequenceTransformation(Builder builder, CharSequenceTransformationIA charSequenceTransformationIA) {
+        this(builder);
+    }
 
     private CharSequenceTransformation(Builder builder) {
         this.mFields = builder.mFields;
@@ -138,5 +143,30 @@ public final class CharSequenceTransformation extends InternalTransformation imp
         parcel.writeParcelableArray(ids, flags);
         parcel.writeSerializable(r2);
         parcel.writeStringArray(substs);
+    }
+
+    /* renamed from: android.service.autofill.CharSequenceTransformation$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CharSequenceTransformation> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CharSequenceTransformation createFromParcel(Parcel parcel) {
+            AutofillId[] ids = (AutofillId[]) parcel.readParcelableArray(null, AutofillId.class);
+            Pattern[] regexs = (Pattern[]) parcel.readSerializable();
+            String[] substs = parcel.createStringArray();
+            Builder builder = new Builder(ids[0], regexs[0], substs[0]);
+            int size = ids.length;
+            for (int i = 1; i < size; i++) {
+                builder.addField(ids[i], regexs[i], substs[i]);
+            }
+            return builder.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CharSequenceTransformation[] newArray(int size) {
+            return new CharSequenceTransformation[size];
+        }
     }
 }

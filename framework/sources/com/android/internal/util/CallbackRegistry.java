@@ -183,8 +183,8 @@ public class CallbackRegistry<C, T, A> implements Cloneable {
         }
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public synchronized CallbackRegistry<C, T, A> m7561clone() {
+    /* renamed from: clone */
+    public synchronized CallbackRegistry<C, T, A> m7556clone() {
         CallbackRegistry<C, T, A> callbackRegistry;
         callbackRegistry = null;
         try {

@@ -86,8 +86,9 @@ public interface IClassificationsCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IClassificationsCallback {
+        public static class Proxy implements IClassificationsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

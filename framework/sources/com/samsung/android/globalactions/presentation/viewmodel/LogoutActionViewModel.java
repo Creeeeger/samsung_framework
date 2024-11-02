@@ -41,7 +41,6 @@ public class LogoutActionViewModel implements ActionViewModel {
         this.mGlobalActions.dismissDialog(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onPress$0() {
         try {
             int currentUserID = ActivityManager.getService().getCurrentUser().id;

@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class HardwareConfig implements Parcelable {
     public static final Parcelable.Creator<HardwareConfig> CREATOR = new Parcelable.Creator<HardwareConfig>() { // from class: android.hardware.radio.modem.HardwareConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HardwareConfig createFromParcel(Parcel _aidl_source) {
             HardwareConfig _aidl_out = new HardwareConfig();
@@ -18,7 +20,6 @@ public class HardwareConfig implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HardwareConfig[] newArray(int _aidl_size) {
             return new HardwareConfig[_aidl_size];
@@ -34,6 +35,25 @@ public class HardwareConfig implements Parcelable {
     public String uuid;
     public int type = 0;
     public int state = 0;
+
+    /* renamed from: android.hardware.radio.modem.HardwareConfig$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HardwareConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HardwareConfig createFromParcel(Parcel _aidl_source) {
+            HardwareConfig _aidl_out = new HardwareConfig();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HardwareConfig[] newArray(int _aidl_size) {
+            return new HardwareConfig[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

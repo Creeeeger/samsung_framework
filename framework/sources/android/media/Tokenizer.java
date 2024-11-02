@@ -2,7 +2,6 @@ package android.media;
 
 import android.util.Log;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: WebVttRenderer.java */
 /* loaded from: classes2.dex */
 public class Tokenizer {
@@ -14,7 +13,6 @@ public class Tokenizer {
     private TokenizerPhase mDataTokenizer = new DataTokenizer();
     private TokenizerPhase mTagTokenizer = new TagTokenizer();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: WebVttRenderer.java */
     /* loaded from: classes2.dex */
     public interface OnTokenListener {
@@ -29,7 +27,6 @@ public class Tokenizer {
         void onTimeStamp(long j);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: WebVttRenderer.java */
     /* loaded from: classes2.dex */
     public interface TokenizerPhase {
@@ -38,9 +35,10 @@ public class Tokenizer {
         void tokenize();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: WebVttRenderer.java */
     /* loaded from: classes2.dex */
-    class DataTokenizer implements TokenizerPhase {
+    public class DataTokenizer implements TokenizerPhase {
         private StringBuilder mData;
 
         DataTokenizer() {
@@ -91,9 +89,10 @@ public class Tokenizer {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: WebVttRenderer.java */
     /* loaded from: classes2.dex */
-    class TagTokenizer implements TokenizerPhase {
+    public class TagTokenizer implements TokenizerPhase {
         private String mAnnotation;
         private boolean mAtAnnotation;
         private String mName;
@@ -172,18 +171,15 @@ public class Tokenizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Tokenizer(OnTokenListener listener) {
         reset();
         this.mListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reset() {
         this.mPhase = this.mDataTokenizer.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void tokenize(String s) {
         this.mHandledLen = 0;
         this.mLine = s;

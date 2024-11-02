@@ -26,8 +26,14 @@ public class MultiSelection {
         return -1;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x00d1, code lost:            if (r4 == r2) goto L88;     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:?, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x00d1, code lost:
+    
+        if (r4 == r2) goto L179;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:?, code lost:
+    
+        return;
+     */
     /* JADX WARN: Removed duplicated region for block: B:31:0x008f  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -50,14 +56,14 @@ public class MultiSelection {
         setSelection(text, 0, text.length());
     }
 
-    public static final void addMultiSelection(Spannable spannable, int i, int i2) {
-        if (i < 0 || i2 < 0) {
+    public static final void addMultiSelection(Spannable text, int start, int stop) {
+        if (start < 0 || stop < 0) {
             return;
         }
-        START start = new START();
-        END end = new END();
-        spannable.setSpan(start, i, i, 546);
-        spannable.setSpan(end, i2, i2, 34);
+        Object penStart = new START();
+        Object penEnd = new END();
+        text.setSpan(penStart, start, start, 546);
+        text.setSpan(penEnd, stop, stop, 34);
     }
 
     public static final boolean removeMultiSelection(Spannable text, int start, int stop) {
@@ -141,16 +147,22 @@ public class MultiSelection {
         return mNeedToScroll;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class START implements NoCopySpan {
+        /* synthetic */ START(STARTIA startia) {
+            this();
+        }
+
         private START() {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class END implements NoCopySpan {
+        /* synthetic */ END(ENDIA endia) {
+            this();
+        }
+
         private END() {
         }
     }

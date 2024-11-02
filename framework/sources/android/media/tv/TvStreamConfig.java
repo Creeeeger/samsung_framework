@@ -17,7 +17,9 @@ public class TvStreamConfig implements Parcelable {
     private int mType;
     static final String TAG = TvStreamConfig.class.getSimpleName();
     public static final Parcelable.Creator<TvStreamConfig> CREATOR = new Parcelable.Creator<TvStreamConfig>() { // from class: android.media.tv.TvStreamConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TvStreamConfig createFromParcel(Parcel source) {
             try {
@@ -28,12 +30,37 @@ public class TvStreamConfig implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvStreamConfig[] newArray(int size) {
             return new TvStreamConfig[size];
         }
     };
+
+    /* synthetic */ TvStreamConfig(TvStreamConfigIA tvStreamConfigIA) {
+        this();
+    }
+
+    /* renamed from: android.media.tv.TvStreamConfig$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TvStreamConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvStreamConfig createFromParcel(Parcel source) {
+            try {
+                return new Builder().streamId(source.readInt()).type(source.readInt()).maxWidth(source.readInt()).maxHeight(source.readInt()).generation(source.readInt()).build();
+            } catch (Exception e) {
+                Log.e(TvStreamConfig.TAG, "Exception creating TvStreamConfig from parcel", e);
+                return null;
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvStreamConfig[] newArray(int size) {
+            return new TvStreamConfig[size];
+        }
+    }
 
     private TvStreamConfig() {
     }

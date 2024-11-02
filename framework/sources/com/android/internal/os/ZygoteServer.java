@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.ToIntFunction;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class ZygoteServer {
     static final /* synthetic */ boolean $assertionsDisabled = false;
@@ -41,7 +40,6 @@ public class ZygoteServer {
     private final boolean mUsapPoolSupported;
     private LocalServerSocket mZygoteSocket;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public enum UsapPoolRefillAction {
         DELAYED,
@@ -49,7 +47,6 @@ public class ZygoteServer {
         NONE
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ZygoteServer() {
         this.mUsapPoolEnabled = false;
         this.mUsapPoolSizeMax = 0;
@@ -64,7 +61,6 @@ public class ZygoteServer {
         this.mUsapPoolSupported = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ZygoteServer(boolean isPrimaryZygote) {
         this.mUsapPoolEnabled = false;
         this.mUsapPoolSizeMax = 0;
@@ -85,7 +81,6 @@ public class ZygoteServer {
         fetchUsapPoolPolicyProps();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setForkChild() {
         this.mIsForkChild = true;
     }
@@ -94,7 +89,6 @@ public class ZygoteServer {
         return this.mUsapPoolEnabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerServerSocketAtAbstractName(String socketName) {
         if (this.mZygoteSocket == null) {
             try {
@@ -118,7 +112,6 @@ public class ZygoteServer {
         return new ZygoteConnection(socket, abiList);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void closeServerSocket() {
         try {
             LocalServerSocket localServerSocket = this.mZygoteSocket;
@@ -137,7 +130,6 @@ public class ZygoteServer {
         this.mZygoteSocket = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FileDescriptor getZygoteSocketFileDescriptor() {
         return this.mZygoteSocket.getFileDescriptor();
     }
@@ -173,7 +165,6 @@ public class ZygoteServer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Runnable fillUsapPool(int[] sessionSocketRawFDs, boolean isPriorityRefill) {
         int numUsapsToSpawn;
         Runnable caller;
@@ -202,7 +193,6 @@ public class ZygoteServer {
         return caller;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Runnable setUsapPoolStatus(boolean newStatus, LocalSocket sessionSocket) {
         if (!this.mUsapPoolSupported) {
             Log.w(TAG, "Attempting to enable a USAP pool for a Zygote that doesn't support it.");
@@ -225,7 +215,6 @@ public class ZygoteServer {
         this.mUsapPoolRefillTriggerTimestamp = -1L;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Runnable runSelectLoop(String abiList) {
         StructPollfd[] pollFDs;
         int[] usapPipeFDs;

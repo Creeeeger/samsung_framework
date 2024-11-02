@@ -39,13 +39,14 @@ public class SemBlurInfo implements Parcelable {
     public static final float[] COLOR_CURVE_PRESET_DIM_BACKGROUND_DARK = {300.0f, 0.0f, 14.0f, 0.0f, 255.0f, 2.4f, 94.2f};
     public static final float[] COLOR_CURVE_PRESET_ULTRA_BACKGROUND_DARK = {348.0f, 0.0f, 8.0f, 0.0f, 255.0f, 41.0f, 167.0f};
     public static final Parcelable.Creator<SemBlurInfo> CREATOR = new Parcelable.Creator<SemBlurInfo>() { // from class: android.view.SemBlurInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemBlurInfo createFromParcel(Parcel in) {
             return new SemBlurInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemBlurInfo[] newArray(int size) {
             return new SemBlurInfo[size];
@@ -94,6 +95,23 @@ public class SemBlurInfo implements Parcelable {
             this.mCapturedBitmap = Bitmap.CREATOR.createFromParcel(in);
         } else {
             this.mCapturedBitmap = null;
+        }
+    }
+
+    /* renamed from: android.view.SemBlurInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemBlurInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemBlurInfo createFromParcel(Parcel in) {
+            return new SemBlurInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemBlurInfo[] newArray(int size) {
+            return new SemBlurInfo[size];
         }
     }
 

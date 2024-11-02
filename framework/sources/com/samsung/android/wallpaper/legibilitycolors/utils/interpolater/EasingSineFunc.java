@@ -36,7 +36,7 @@ public class EasingSineFunc implements IEasing {
         return t < d / 2.0f ? ((c / 2.0f) * ((float) Math.sin(((2.0f * t) / d) * 1.5707963267948966d))) + b : ((-(c / 2.0f)) * ((float) Math.cos((((t * 2.0f) - d) / d) * 1.5707963267948966d))) + (c / 2.0f) + (c / 2.0f) + b;
     }
 
-    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.interpolater.EasingSineFunc$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.interpolater.EasingSineFunc$1 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$interpolater$IEasing$EEasing;

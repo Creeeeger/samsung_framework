@@ -44,7 +44,10 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
 
     private DatePickerDialog(Context context, int themeResId, OnDateSetListener listener, Calendar calendar, int year, int monthOfYear, int dayOfMonth) {
         super(context, resolveDialogTheme(context, themeResId));
-        DatePicker.ValidationCallback validationCallback = new DatePicker.ValidationCallback() { // from class: android.app.DatePickerDialog.1
+        AnonymousClass1 anonymousClass1 = new DatePicker.ValidationCallback() { // from class: android.app.DatePickerDialog.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.DatePicker.ValidationCallback
             public void onValidationChanged(boolean valid) {
                 Button positive = DatePickerDialog.this.getButton(-1);
@@ -53,7 +56,7 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
                 }
             }
         };
-        this.mValidationCallback = validationCallback;
+        this.mValidationCallback = anonymousClass1;
         Context themeContext = getContext();
         LayoutInflater inflater = LayoutInflater.from(themeContext);
         View view = inflater.inflate(R.layout.date_picker_dialog, (ViewGroup) null);
@@ -69,7 +72,7 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
         DatePicker datePicker = (DatePicker) view.findViewById(R.id.datePicker);
         this.mDatePicker = datePicker;
         datePicker.init(year, monthOfYear, dayOfMonth, this);
-        datePicker.setValidationCallback(validationCallback);
+        datePicker.setValidationCallback(anonymousClass1);
         this.mDateSetListener = listener;
     }
 
@@ -135,5 +138,21 @@ public class DatePickerDialog extends AlertDialog implements DialogInterface.OnC
         int month = savedInstanceState.getInt("month");
         int day = savedInstanceState.getInt("day");
         this.mDatePicker.init(year, month, day, this);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.DatePickerDialog$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements DatePicker.ValidationCallback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.DatePicker.ValidationCallback
+        public void onValidationChanged(boolean valid) {
+            Button positive = DatePickerDialog.this.getButton(-1);
+            if (positive != null) {
+                positive.setEnabled(valid);
+            }
+        }
     }
 }

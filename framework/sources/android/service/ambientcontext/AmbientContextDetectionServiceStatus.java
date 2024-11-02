@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AmbientContextDetectionServiceStatus implements Parcelable {
     public static final Parcelable.Creator<AmbientContextDetectionServiceStatus> CREATOR = new Parcelable.Creator<AmbientContextDetectionServiceStatus>() { // from class: android.service.ambientcontext.AmbientContextDetectionServiceStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AmbientContextDetectionServiceStatus[] newArray(int size) {
             return new AmbientContextDetectionServiceStatus[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientContextDetectionServiceStatus createFromParcel(Parcel in) {
             return new AmbientContextDetectionServiceStatus(in);
@@ -67,6 +68,23 @@ public final class AmbientContextDetectionServiceStatus implements Parcelable {
         AnnotationValidations.validate((Class<? extends Annotation>) AmbientContextManager.StatusCode.class, (Annotation) null, statusCode);
         this.mPackageName = packageName;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+    }
+
+    /* renamed from: android.service.ambientcontext.AmbientContextDetectionServiceStatus$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AmbientContextDetectionServiceStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AmbientContextDetectionServiceStatus[] newArray(int size) {
+            return new AmbientContextDetectionServiceStatus[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AmbientContextDetectionServiceStatus createFromParcel(Parcel in) {
+            return new AmbientContextDetectionServiceStatus(in);
+        }
     }
 
     /* loaded from: classes3.dex */

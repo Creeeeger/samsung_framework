@@ -9,7 +9,6 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback {
     private static final String TAG = "QAWalletCallback";
@@ -19,7 +18,6 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
     private final Handler mHandler;
     private final GetWalletCardsRequest mRequest;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GetWalletCardsCallbackImpl(GetWalletCardsRequest request, IQuickAccessWalletServiceCallbacks callback, Handler handler, Context context) {
         this.mRequest = request;
         this.mCallback = callback;
@@ -50,7 +48,6 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSuccess$1() {
         lambda$onFailure$2(new GetWalletCardsError(null, null));
     }
@@ -65,8 +62,7 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: onSuccessInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onSuccessInternal */
     public void lambda$onSuccess$0(GetWalletCardsResponse response) {
         if (this.mCalled) {
             Log.w(TAG, "already called");
@@ -80,8 +76,7 @@ public final class GetWalletCardsCallbackImpl implements GetWalletCardsCallback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: onFailureInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onFailureInternal */
     public void lambda$onFailure$2(GetWalletCardsError error) {
         if (this.mCalled) {
             Log.w(TAG, "already called");

@@ -283,7 +283,6 @@ public interface INfcAdapterExtras extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class Proxy implements INfcAdapterExtras {
             private IBinder mRemote;

@@ -16,7 +16,6 @@ class CoverStateListenerDelegate extends ICoverStateListenerCallback.Stub {
     private ListenerDelegateHandler mHandler;
     private final CoverManager.CoverStateListener mListener;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CoverStateListenerDelegate(CoverManager.CoverStateListener listener, Handler handler, Context context) {
         this.mListener = listener;
         Looper looper = handler == null ? context.getMainLooper() : handler.getLooper();
@@ -42,8 +41,9 @@ class CoverStateListenerDelegate extends ICoverStateListenerCallback.Stub {
         return this.mListener.toString();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class ListenerDelegateHandler extends Handler {
+    public static class ListenerDelegateHandler extends Handler {
         private final CoverManager.CoverStateListener mListener;
 
         ListenerDelegateHandler(Looper looper, CoverManager.CoverStateListener listener) {

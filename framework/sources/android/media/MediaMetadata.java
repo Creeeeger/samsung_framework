@@ -82,6 +82,14 @@ public final class MediaMetadata implements Parcelable {
     public @interface TextKey {
     }
 
+    /* synthetic */ MediaMetadata(Bundle bundle, int i, MediaMetadataIA mediaMetadataIA) {
+        this(bundle, i);
+    }
+
+    /* synthetic */ MediaMetadata(Parcel parcel, MediaMetadataIA mediaMetadataIA) {
+        this(parcel);
+    }
+
     static {
         ArrayMap<String, Integer> arrayMap = new ArrayMap<>();
         METADATA_KEYS_TYPE = arrayMap;
@@ -135,13 +143,14 @@ public final class MediaMetadata implements Parcelable {
         sparseArray.put(11, METADATA_KEY_WRITER);
         sparseArray.put(8, METADATA_KEY_YEAR);
         CREATOR = new Parcelable.Creator<MediaMetadata>() { // from class: android.media.MediaMetadata.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public MediaMetadata createFromParcel(Parcel in) {
                 return new MediaMetadata(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MediaMetadata[] newArray(int size) {
                 return new MediaMetadata[size];
@@ -309,6 +318,23 @@ public final class MediaMetadata implements Parcelable {
 
     public static String getKeyFromMetadataEditorKey(int editorKey) {
         return EDITOR_KEY_MAPPING.get(editorKey, null);
+    }
+
+    /* renamed from: android.media.MediaMetadata$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MediaMetadata> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaMetadata createFromParcel(Parcel in) {
+            return new MediaMetadata(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaMetadata[] newArray(int size) {
+            return new MediaMetadata[size];
+        }
     }
 
     public boolean equals(Object o) {

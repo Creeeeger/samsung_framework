@@ -21,8 +21,8 @@ public class ScreenCapture {
     private static final int SCREENSHOT_WAIT_TIME_S = 1;
     private static final String TAG = "ScreenCapture";
 
-    /* renamed from: -$$Nest$smgetNativeListenerFinalizer, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m6869$$Nest$smgetNativeListenerFinalizer() {
+    /* renamed from: -$$Nest$smgetNativeListenerFinalizer */
+    static /* bridge */ /* synthetic */ long m6864$$Nest$smgetNativeListenerFinalizer() {
         return getNativeListenerFinalizer();
     }
 
@@ -32,13 +32,10 @@ public class ScreenCapture {
 
     private static native int nativeCaptureLayers(LayerCaptureArgs layerCaptureArgs, long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeCreateScreenCaptureListener(Consumer<ScreenshotHardwareBuffer> consumer);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeReadListenerFromParcel(Parcel parcel);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeWriteListenerToParcel(long j, Parcel parcel);
 
     public static int captureDisplay(DisplayCaptureArgs captureArgs, ScreenCaptureListener captureListener) {
@@ -151,13 +148,14 @@ public class ScreenCapture {
     /* loaded from: classes4.dex */
     public static class CaptureArgs implements Parcelable {
         public static final Parcelable.Creator<CaptureArgs> CREATOR = new Parcelable.Creator<CaptureArgs>() { // from class: android.window.ScreenCapture.CaptureArgs.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public CaptureArgs createFromParcel(Parcel in) {
                 return new CaptureArgs(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CaptureArgs[] newArray(int size) {
                 return new CaptureArgs[size];
@@ -174,6 +172,14 @@ public class ScreenCapture {
         public final int mPixelFormat;
         public final Rect mSourceCrop;
         public final long mUid;
+
+        /* synthetic */ CaptureArgs(Parcel parcel, CaptureArgsIA captureArgsIA) {
+            this(parcel);
+        }
+
+        /* synthetic */ CaptureArgs(Builder builder, CaptureArgsIA captureArgsIA) {
+            this((Builder<? extends Builder<?>>) builder);
+        }
 
         private CaptureArgs(Builder<? extends Builder<?>> builder) {
             Rect rect = new Rect();
@@ -357,6 +363,23 @@ public class ScreenCapture {
             dest.writeBoolean(this.mHintForSeamlessTransition);
             dest.writeBoolean(this.mIsScreenShotBySystem);
         }
+
+        /* renamed from: android.window.ScreenCapture$CaptureArgs$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<CaptureArgs> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CaptureArgs createFromParcel(Parcel in) {
+                return new CaptureArgs(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CaptureArgs[] newArray(int size) {
+                return new CaptureArgs[size];
+            }
+        }
     }
 
     /* loaded from: classes4.dex */
@@ -366,6 +389,10 @@ public class ScreenCapture {
         private final long mNativeLayer;
         private final boolean mUseIdentityTransform;
         private final int mWidth;
+
+        /* synthetic */ DisplayCaptureArgs(Builder builder, DisplayCaptureArgsIA displayCaptureArgsIA) {
+            this(builder);
+        }
 
         private DisplayCaptureArgs(Builder builder) {
             super(builder);
@@ -421,7 +448,6 @@ public class ScreenCapture {
                 return this;
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             @Override // android.window.ScreenCapture.CaptureArgs.Builder
             public Builder getThis() {
                 return this;
@@ -433,6 +459,10 @@ public class ScreenCapture {
     public static class LayerCaptureArgs extends CaptureArgs {
         private final boolean mChildrenOnly;
         private final long mNativeLayer;
+
+        /* synthetic */ LayerCaptureArgs(Builder builder, LayerCaptureArgsIA layerCaptureArgsIA) {
+            this(builder);
+        }
 
         private LayerCaptureArgs(Builder builder) {
             super(builder);
@@ -480,7 +510,6 @@ public class ScreenCapture {
                 return this;
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             @Override // android.window.ScreenCapture.CaptureArgs.Builder
             public Builder getThis() {
                 return this;
@@ -491,20 +520,25 @@ public class ScreenCapture {
     /* loaded from: classes4.dex */
     public static class ScreenCaptureListener implements Parcelable {
         private final long mNativeObject;
-        private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(ScreenCaptureListener.class.getClassLoader(), ScreenCapture.m6869$$Nest$smgetNativeListenerFinalizer());
+        private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(ScreenCaptureListener.class.getClassLoader(), ScreenCapture.m6864$$Nest$smgetNativeListenerFinalizer());
         public static final Parcelable.Creator<ScreenCaptureListener> CREATOR = new Parcelable.Creator<ScreenCaptureListener>() { // from class: android.window.ScreenCapture.ScreenCaptureListener.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ScreenCaptureListener createFromParcel(Parcel in) {
                 return new ScreenCaptureListener(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ScreenCaptureListener[] newArray(int size) {
                 return new ScreenCaptureListener[0];
             }
         };
+
+        /* synthetic */ ScreenCaptureListener(Parcel parcel, ScreenCaptureListenerIA screenCaptureListenerIA) {
+            this(parcel);
+        }
 
         public ScreenCaptureListener(Consumer<ScreenshotHardwareBuffer> consumer) {
             long nativeCreateScreenCaptureListener = ScreenCapture.nativeCreateScreenCaptureListener(consumer);
@@ -536,6 +570,23 @@ public class ScreenCapture {
                 ScreenCapture.nativeWriteListenerToParcel(this.mNativeObject, dest);
             }
         }
+
+        /* renamed from: android.window.ScreenCapture$ScreenCaptureListener$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ScreenCaptureListener> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ScreenCaptureListener createFromParcel(Parcel in) {
+                return new ScreenCaptureListener(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ScreenCaptureListener[] newArray(int size) {
+                return new ScreenCaptureListener[0];
+            }
+        }
     }
 
     public static SynchronousScreenCaptureListener createSyncCaptureListener() {
@@ -553,11 +604,13 @@ public class ScreenCapture {
             final /* synthetic */ Consumer val$consumer;
             final /* synthetic */ CountDownLatch val$latch;
 
-            {
-                this.val$consumer = consumer;
-                this.val$latch = latch;
-                this.val$bufferRef = bufferRef;
-                this.mConsumer = consumer;
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Consumer consumer2, Consumer consumer22, final CountDownLatch latch2, final ScreenshotHardwareBuffer[] bufferRef2) {
+                super(consumer22);
+                this.val$consumer = consumer22;
+                this.val$latch = latch2;
+                this.val$bufferRef = bufferRef2;
+                this.mConsumer = consumer22;
             }
 
             @Override // android.window.ScreenCapture.SynchronousScreenCaptureListener
@@ -573,10 +626,38 @@ public class ScreenCapture {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$createSyncCaptureListener$0(ScreenshotHardwareBuffer[] bufferRef, CountDownLatch latch, ScreenshotHardwareBuffer buffer) {
         bufferRef[0] = buffer;
         latch.countDown();
+    }
+
+    /* renamed from: android.window.ScreenCapture$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends SynchronousScreenCaptureListener {
+        private Consumer<ScreenshotHardwareBuffer> mConsumer;
+        final /* synthetic */ ScreenshotHardwareBuffer[] val$bufferRef;
+        final /* synthetic */ Consumer val$consumer;
+        final /* synthetic */ CountDownLatch val$latch;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(Consumer consumer22, Consumer consumer222, final CountDownLatch latch2, final ScreenshotHardwareBuffer[] bufferRef2) {
+            super(consumer222);
+            this.val$consumer = consumer222;
+            this.val$latch = latch2;
+            this.val$bufferRef = bufferRef2;
+            this.mConsumer = consumer222;
+        }
+
+        @Override // android.window.ScreenCapture.SynchronousScreenCaptureListener
+        public ScreenshotHardwareBuffer getBuffer() {
+            try {
+                this.val$latch.await(1L, TimeUnit.SECONDS);
+                return this.val$bufferRef[0];
+            } catch (Exception e) {
+                Log.e(ScreenCapture.TAG, "Failed to wait for screen capture result", e);
+                return null;
+            }
+        }
     }
 
     /* loaded from: classes4.dex */

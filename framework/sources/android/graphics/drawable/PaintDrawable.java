@@ -38,8 +38,9 @@ public class PaintDrawable extends ShapeDrawable {
         invalidateSelf();
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.ShapeDrawable
-    protected boolean inflateTag(String name, Resources r, XmlPullParser parser, AttributeSet attrs) {
+    public boolean inflateTag(String name, Resources r, XmlPullParser parser, AttributeSet attrs) {
         if (!name.equals("corners")) {
             return super.inflateTag(name, r, parser, attrs);
         }

@@ -11,13 +11,11 @@ public class GenericPdu {
         this.mPduHeaders = new PduHeaders();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GenericPdu(PduHeaders headers) {
         this.mPduHeaders = null;
         this.mPduHeaders = headers;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PduHeaders getPduHeaders() {
         return this.mPduHeaders;
     }

@@ -15,8 +15,9 @@ import java.util.List;
 /* loaded from: classes4.dex */
 public class FocusFinder {
     private static final ThreadLocal<FocusFinder> tlFocusFinder = new ThreadLocal<FocusFinder>() { // from class: android.view.FocusFinder.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.ThreadLocal
         public FocusFinder initialValue() {
             return new FocusFinder();
@@ -30,11 +31,26 @@ public class FocusFinder {
     private final UserSpecifiedFocusComparator mUserSpecifiedClusterComparator;
     private final UserSpecifiedFocusComparator mUserSpecifiedFocusComparator;
 
+    /* synthetic */ FocusFinder(FocusFinderIA focusFinderIA) {
+        this();
+    }
+
+    /* renamed from: android.view.FocusFinder$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends ThreadLocal<FocusFinder> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.ThreadLocal
+        public FocusFinder initialValue() {
+            return new FocusFinder();
+        }
+    }
+
     public static FocusFinder getInstance() {
         return tlFocusFinder.get();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ View lambda$new$0(View r, View v) {
         if (isValidId(v.getNextFocusForwardId())) {
             return v.findUserSetNextFocus(r, 2);
@@ -42,7 +58,6 @@ public class FocusFinder {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ View lambda$new$1(View r, View v) {
         if (isValidId(v.getNextClusterForwardId())) {
             return v.findUserSetNextKeyboardNavigationCluster(r, 2);
@@ -349,7 +364,6 @@ public class FocusFinder {
         return root;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isBetterCandidate(int direction, Rect source, Rect rect1, Rect rect2) {
         if (!isCandidate(source, rect1, direction)) {
             return false;
@@ -360,7 +374,6 @@ public class FocusFinder {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean beamBeats(int direction, Rect source, Rect rect1, Rect rect2) {
         boolean rect1InSrcBeam = beamsOverlap(direction, source, rect1);
         boolean rect2InSrcBeam = beamsOverlap(direction, source, rect2);
@@ -374,7 +387,6 @@ public class FocusFinder {
         return (13 * majorAxisDistance * majorAxisDistance) + (minorAxisDistance * minorAxisDistance);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isCandidate(Rect srcRect, Rect destRect, int direction) {
         switch (direction) {
             case 17:
@@ -390,7 +402,6 @@ public class FocusFinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean beamsOverlap(int direction, Rect rect1, Rect rect2) {
         switch (direction) {
             case 17:
@@ -419,7 +430,6 @@ public class FocusFinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int majorAxisDistance(int direction, Rect source, Rect dest) {
         return Math.max(0, majorAxisDistanceRaw(direction, source, dest));
     }
@@ -439,7 +449,6 @@ public class FocusFinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int majorAxisDistanceToFarEdge(int direction, Rect source, Rect dest) {
         return Math.max(1, majorAxisDistanceToFarEdgeRaw(direction, source, dest));
     }
@@ -550,7 +559,6 @@ public class FocusFinder {
         return (id == 0 || id == -1) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class FocusSorter {
         private int mLastPoolRect;
@@ -577,7 +585,6 @@ public class FocusFinder {
         FocusSorter() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ int lambda$new$0(View first, View second) {
             if (first == second) {
                 return 0;
@@ -591,7 +598,6 @@ public class FocusFinder {
             return result;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ int lambda$new$1(View first, View second) {
             if (first == second) {
                 return 0;
@@ -655,7 +661,6 @@ public class FocusFinder {
         getInstance().mFocusSorter.sort(views, start, end, root, isRtl);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class UserSpecifiedFocusComparator implements Comparator<View> {
         private final NextFocusGetter mNextFocusGetter;

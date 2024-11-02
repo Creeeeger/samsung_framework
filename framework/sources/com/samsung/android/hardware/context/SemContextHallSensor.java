@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextHallSensor extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextHallSensor> CREATOR = new Parcelable.Creator<SemContextHallSensor>() { // from class: com.samsung.android.hardware.context.SemContextHallSensor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextHallSensor createFromParcel(Parcel in) {
             return new SemContextHallSensor(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextHallSensor[] newArray(int size) {
             return new SemContextHallSensor[size];
@@ -25,6 +26,23 @@ public class SemContextHallSensor extends SemContextEventContext {
     public static final int MODE_TABLE = 1;
     public static final int MODE_TABLET = 2;
     private Bundle mContext;
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextHallSensor$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextHallSensor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextHallSensor createFromParcel(Parcel in) {
+            return new SemContextHallSensor(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextHallSensor[] newArray(int size) {
+            return new SemContextHallSensor[size];
+        }
+    }
 
     public SemContextHallSensor() {
         this.mContext = new Bundle();

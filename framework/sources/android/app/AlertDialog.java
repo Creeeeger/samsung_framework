@@ -40,7 +40,6 @@ public class AlertDialog extends Dialog implements DialogInterface {
     public static final int THEME_TRADITIONAL = 1;
     private AlertController mAlert;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public AlertDialog(Context context) {
         this(context, 0);
     }
@@ -51,7 +50,6 @@ public class AlertDialog extends Dialog implements DialogInterface {
         setOnCancelListener(cancelListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public AlertDialog(Context context, int themeResId) {
         this(context, themeResId, true);
     }
@@ -128,7 +126,6 @@ public class AlertDialog extends Dialog implements DialogInterface {
         this.mAlert.setView(view, viewSpacingLeft, viewSpacingTop, viewSpacingRight, viewSpacingBottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setButtonPanelLayoutHint(int layoutHint) {
         this.mAlert.setButtonPanelLayoutHint(layoutHint);
     }
@@ -189,7 +186,6 @@ public class AlertDialog extends Dialog implements DialogInterface {
         this.mAlert.setInverseBackgroundForced(forceInverseBackground);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Dialog
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

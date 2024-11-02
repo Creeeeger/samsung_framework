@@ -58,8 +58,29 @@ public abstract class CarrierMessagingService extends Service {
         }
     }
 
-    public void onReceiveTextSms(MessagePdu pdu, String format, int destPort, int subId, final ResultCallback<Integer> callback) {
+    /* renamed from: android.service.carrier.CarrierMessagingService$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements ResultCallback<Boolean> {
+        final /* synthetic */ ResultCallback val$callback;
+
+        AnonymousClass1(ResultCallback resultCallback) {
+            callback = resultCallback;
+        }
+
+        @Override // android.service.carrier.CarrierMessagingService.ResultCallback
+        public void onReceiveResult(Boolean result) throws RemoteException {
+            callback.onReceiveResult(Integer.valueOf(result.booleanValue() ? 0 : 3));
+        }
+    }
+
+    public void onReceiveTextSms(MessagePdu pdu, String format, int destPort, int subId, ResultCallback<Integer> callback) {
         onFilterSms(pdu, format, destPort, subId, new ResultCallback<Boolean>() { // from class: android.service.carrier.CarrierMessagingService.1
+            final /* synthetic */ ResultCallback val$callback;
+
+            AnonymousClass1(ResultCallback callback2) {
+                callback = callback2;
+            }
+
             @Override // android.service.carrier.CarrierMessagingService.ResultCallback
             public void onReceiveResult(Boolean result) throws RemoteException {
                 callback.onReceiveResult(Integer.valueOf(result.booleanValue() ? 0 : 3));
@@ -182,14 +203,40 @@ public abstract class CarrierMessagingService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private class ICarrierMessagingWrapper extends ICarrierMessagingService.Stub {
+    public class ICarrierMessagingWrapper extends ICarrierMessagingService.Stub {
+        /* synthetic */ ICarrierMessagingWrapper(CarrierMessagingService carrierMessagingService, ICarrierMessagingWrapperIA iCarrierMessagingWrapperIA) {
+            this();
+        }
+
         private ICarrierMessagingWrapper() {
         }
 
+        /* renamed from: android.service.carrier.CarrierMessagingService$ICarrierMessagingWrapper$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements ResultCallback<Integer> {
+            final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+            AnonymousClass1(ICarrierMessagingCallback iCarrierMessagingCallback) {
+                callback = iCarrierMessagingCallback;
+            }
+
+            @Override // android.service.carrier.CarrierMessagingService.ResultCallback
+            public void onReceiveResult(Integer options) throws RemoteException {
+                callback.onFilterComplete(options.intValue());
+            }
+        }
+
         @Override // android.service.carrier.ICarrierMessagingService
-        public void filterSms(MessagePdu pdu, String format, int destPort, int subId, final ICarrierMessagingCallback callback) {
+        public void filterSms(MessagePdu pdu, String format, int destPort, int subId, ICarrierMessagingCallback callback) {
             CarrierMessagingService.this.onReceiveTextSms(pdu, format, destPort, subId, new ResultCallback<Integer>() { // from class: android.service.carrier.CarrierMessagingService.ICarrierMessagingWrapper.1
+                final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+                AnonymousClass1(ICarrierMessagingCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.service.carrier.CarrierMessagingService.ResultCallback
                 public void onReceiveResult(Integer options) throws RemoteException {
                     callback.onFilterComplete(options.intValue());
@@ -197,9 +244,30 @@ public abstract class CarrierMessagingService extends Service {
             });
         }
 
+        /* renamed from: android.service.carrier.CarrierMessagingService$ICarrierMessagingWrapper$2 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass2 implements ResultCallback<SendSmsResult> {
+            final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+            AnonymousClass2(ICarrierMessagingCallback iCarrierMessagingCallback) {
+                callback = iCarrierMessagingCallback;
+            }
+
+            @Override // android.service.carrier.CarrierMessagingService.ResultCallback
+            public void onReceiveResult(SendSmsResult result) throws RemoteException {
+                callback.onSendSmsComplete(result.getSendStatus(), result.getMessageRef());
+            }
+        }
+
         @Override // android.service.carrier.ICarrierMessagingService
-        public void sendTextSms(String text, int subId, String destAddress, int sendSmsFlag, final ICarrierMessagingCallback callback) {
+        public void sendTextSms(String text, int subId, String destAddress, int sendSmsFlag, ICarrierMessagingCallback callback) {
             CarrierMessagingService.this.onSendTextSms(text, subId, destAddress, sendSmsFlag, new ResultCallback<SendSmsResult>() { // from class: android.service.carrier.CarrierMessagingService.ICarrierMessagingWrapper.2
+                final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+                AnonymousClass2(ICarrierMessagingCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.service.carrier.CarrierMessagingService.ResultCallback
                 public void onReceiveResult(SendSmsResult result) throws RemoteException {
                     callback.onSendSmsComplete(result.getSendStatus(), result.getMessageRef());
@@ -207,9 +275,30 @@ public abstract class CarrierMessagingService extends Service {
             });
         }
 
+        /* renamed from: android.service.carrier.CarrierMessagingService$ICarrierMessagingWrapper$3 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass3 implements ResultCallback<SendSmsResult> {
+            final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+            AnonymousClass3(ICarrierMessagingCallback iCarrierMessagingCallback) {
+                callback = iCarrierMessagingCallback;
+            }
+
+            @Override // android.service.carrier.CarrierMessagingService.ResultCallback
+            public void onReceiveResult(SendSmsResult result) throws RemoteException {
+                callback.onSendSmsComplete(result.getSendStatus(), result.getMessageRef());
+            }
+        }
+
         @Override // android.service.carrier.ICarrierMessagingService
-        public void sendDataSms(byte[] data, int subId, String destAddress, int destPort, int sendSmsFlag, final ICarrierMessagingCallback callback) {
+        public void sendDataSms(byte[] data, int subId, String destAddress, int destPort, int sendSmsFlag, ICarrierMessagingCallback callback) {
             CarrierMessagingService.this.onSendDataSms(data, subId, destAddress, destPort, sendSmsFlag, new ResultCallback<SendSmsResult>() { // from class: android.service.carrier.CarrierMessagingService.ICarrierMessagingWrapper.3
+                final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+                AnonymousClass3(ICarrierMessagingCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.service.carrier.CarrierMessagingService.ResultCallback
                 public void onReceiveResult(SendSmsResult result) throws RemoteException {
                     callback.onSendSmsComplete(result.getSendStatus(), result.getMessageRef());
@@ -217,9 +306,30 @@ public abstract class CarrierMessagingService extends Service {
             });
         }
 
+        /* renamed from: android.service.carrier.CarrierMessagingService$ICarrierMessagingWrapper$4 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass4 implements ResultCallback<SendMultipartSmsResult> {
+            final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+            AnonymousClass4(ICarrierMessagingCallback iCarrierMessagingCallback) {
+                callback = iCarrierMessagingCallback;
+            }
+
+            @Override // android.service.carrier.CarrierMessagingService.ResultCallback
+            public void onReceiveResult(SendMultipartSmsResult result) throws RemoteException {
+                callback.onSendMultipartSmsComplete(result.getSendStatus(), result.getMessageRefs());
+            }
+        }
+
         @Override // android.service.carrier.ICarrierMessagingService
-        public void sendMultipartTextSms(List<String> parts, int subId, String destAddress, int sendSmsFlag, final ICarrierMessagingCallback callback) {
+        public void sendMultipartTextSms(List<String> parts, int subId, String destAddress, int sendSmsFlag, ICarrierMessagingCallback callback) {
             CarrierMessagingService.this.onSendMultipartTextSms(parts, subId, destAddress, sendSmsFlag, new ResultCallback<SendMultipartSmsResult>() { // from class: android.service.carrier.CarrierMessagingService.ICarrierMessagingWrapper.4
+                final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+                AnonymousClass4(ICarrierMessagingCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.service.carrier.CarrierMessagingService.ResultCallback
                 public void onReceiveResult(SendMultipartSmsResult result) throws RemoteException {
                     callback.onSendMultipartSmsComplete(result.getSendStatus(), result.getMessageRefs());
@@ -227,9 +337,30 @@ public abstract class CarrierMessagingService extends Service {
             });
         }
 
+        /* renamed from: android.service.carrier.CarrierMessagingService$ICarrierMessagingWrapper$5 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass5 implements ResultCallback<SendMmsResult> {
+            final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+            AnonymousClass5(ICarrierMessagingCallback iCarrierMessagingCallback) {
+                callback = iCarrierMessagingCallback;
+            }
+
+            @Override // android.service.carrier.CarrierMessagingService.ResultCallback
+            public void onReceiveResult(SendMmsResult result) throws RemoteException {
+                callback.onSendMmsComplete(result.getSendStatus(), result.getSendConfPdu());
+            }
+        }
+
         @Override // android.service.carrier.ICarrierMessagingService
-        public void sendMms(Uri pduUri, int subId, Uri location, final ICarrierMessagingCallback callback) {
+        public void sendMms(Uri pduUri, int subId, Uri location, ICarrierMessagingCallback callback) {
             CarrierMessagingService.this.onSendMms(pduUri, subId, location, new ResultCallback<SendMmsResult>() { // from class: android.service.carrier.CarrierMessagingService.ICarrierMessagingWrapper.5
+                final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+                AnonymousClass5(ICarrierMessagingCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.service.carrier.CarrierMessagingService.ResultCallback
                 public void onReceiveResult(SendMmsResult result) throws RemoteException {
                     callback.onSendMmsComplete(result.getSendStatus(), result.getSendConfPdu());
@@ -237,9 +368,30 @@ public abstract class CarrierMessagingService extends Service {
             });
         }
 
+        /* renamed from: android.service.carrier.CarrierMessagingService$ICarrierMessagingWrapper$6 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass6 implements ResultCallback<Integer> {
+            final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+            AnonymousClass6(ICarrierMessagingCallback iCarrierMessagingCallback) {
+                callback = iCarrierMessagingCallback;
+            }
+
+            @Override // android.service.carrier.CarrierMessagingService.ResultCallback
+            public void onReceiveResult(Integer result) throws RemoteException {
+                callback.onDownloadMmsComplete(result.intValue());
+            }
+        }
+
         @Override // android.service.carrier.ICarrierMessagingService
-        public void downloadMms(Uri pduUri, int subId, Uri location, final ICarrierMessagingCallback callback) {
+        public void downloadMms(Uri pduUri, int subId, Uri location, ICarrierMessagingCallback callback) {
             CarrierMessagingService.this.onDownloadMms(pduUri, subId, location, new ResultCallback<Integer>() { // from class: android.service.carrier.CarrierMessagingService.ICarrierMessagingWrapper.6
+                final /* synthetic */ ICarrierMessagingCallback val$callback;
+
+                AnonymousClass6(ICarrierMessagingCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.service.carrier.CarrierMessagingService.ResultCallback
                 public void onReceiveResult(Integer result) throws RemoteException {
                     callback.onDownloadMmsComplete(result.intValue());

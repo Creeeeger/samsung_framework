@@ -17,6 +17,9 @@ public final class CallQuality implements Parcelable {
     public static final int CALL_QUALITY_NOT_AVAILABLE = 5;
     public static final int CALL_QUALITY_POOR = 3;
     public static final Parcelable.Creator<CallQuality> CREATOR = new Parcelable.Creator() { // from class: android.telephony.CallQuality.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CallQuality createFromParcel(Parcel in) {
             return new CallQuality(in);
@@ -236,6 +239,23 @@ public final class CallQuality implements Parcelable {
         dest.writeLong(this.mMaxPlayoutDelayMillis);
         dest.writeInt(this.mNumRtpSidPacketsReceived);
         dest.writeInt(this.mNumRtpDuplicatePackets);
+    }
+
+    /* renamed from: android.telephony.CallQuality$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallQuality createFromParcel(Parcel in) {
+            return new CallQuality(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallQuality[] newArray(int size) {
+            return new CallQuality[size];
+        }
     }
 
     /* loaded from: classes3.dex */

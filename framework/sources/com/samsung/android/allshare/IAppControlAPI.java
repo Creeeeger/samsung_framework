@@ -4,7 +4,6 @@ import android.os.Message;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class IAppControlAPI {
     private static final int DTVSERVER_PORT = 55000;
@@ -63,7 +62,7 @@ public class IAppControlAPI {
         }
     }
 
-    public void startControl(final NetworkSocketInfo netinfo, String devicdid) {
+    public void startControl(NetworkSocketInfo netinfo, String devicdid) {
         setIpaddress(netinfo.mIpAddress, netinfo.mPort);
         initControl(devicdid);
         TVMessageSender tVMessageSender = this.mTvMsgSender;
@@ -72,6 +71,12 @@ public class IAppControlAPI {
                 initControlReceiver(tVMessageSender);
             }
             this.mExcutor.execute(new Runnable() { // from class: com.samsung.android.allshare.IAppControlAPI.1
+                final /* synthetic */ NetworkSocketInfo val$netinfo;
+
+                AnonymousClass1(NetworkSocketInfo netinfo2) {
+                    netinfo = netinfo2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     IAppControlAPI.this.mTvMsgSender.initSender(netinfo);
@@ -81,9 +86,25 @@ public class IAppControlAPI {
         }
     }
 
+    /* renamed from: com.samsung.android.allshare.IAppControlAPI$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Runnable {
+        final /* synthetic */ NetworkSocketInfo val$netinfo;
+
+        AnonymousClass1(NetworkSocketInfo netinfo2) {
+            netinfo = netinfo2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            IAppControlAPI.this.mTvMsgSender.initSender(netinfo);
+            IAppControlAPI.this.sendMouseCreate();
+        }
+    }
+
     public boolean startControl(String mac, String ipaddress, String deviceid) {
         this.bIsRunningConnection = true;
-        final NetworkSocketInfo inet = new NetworkSocketInfo();
+        NetworkSocketInfo inet = new NetworkSocketInfo();
         setIpaddress(ipaddress, DTVSERVER_PORT);
         inet.mMacAddr = mac;
         inet.mIpAddress = ipaddress;
@@ -92,6 +113,12 @@ public class IAppControlAPI {
         initControl(deviceid);
         if (this.mTvMsgSender != null) {
             this.mExcutor.execute(new Runnable() { // from class: com.samsung.android.allshare.IAppControlAPI.2
+                final /* synthetic */ NetworkSocketInfo val$inet;
+
+                AnonymousClass2(NetworkSocketInfo inet2) {
+                    inet = inet2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     synchronized (IAppControlAPI.this.mLock) {
@@ -109,7 +136,29 @@ public class IAppControlAPI {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.IAppControlAPI$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ NetworkSocketInfo val$inet;
+
+        AnonymousClass2(NetworkSocketInfo inet2) {
+            inet = inet2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (IAppControlAPI.this.mLock) {
+                if (IAppControlAPI.this.mTvMsgSender != null) {
+                    IAppControlAPI.this.mTvMsgSender.initSender(inet);
+                    IAppControlAPI.this.createControlReceiver();
+                    IAppControlAPI.this.sendAuthentication();
+                }
+                IAppControlAPI.this.bIsRunningConnection = false;
+            }
+        }
+    }
+
     public void createControlReceiver() {
         TVMessageSender tVMessageSender;
         if (this.mTvMsgListener == null && (tVMessageSender = this.mTvMsgSender) != null) {
@@ -152,10 +201,16 @@ public class IAppControlAPI {
         this.mSetIpaddress = 0;
     }
 
-    public int startControlClient(final NetworkSocketInfo netinfo) {
+    public int startControlClient(NetworkSocketInfo netinfo) {
         setIpaddress(netinfo.mIpAddress, netinfo.mPort);
         if (netinfo.mProtocol == 1 && this.mDeviceId.equals("D0000000001") && this.mTvMsgSender != null) {
             this.mExcutor.execute(new Runnable() { // from class: com.samsung.android.allshare.IAppControlAPI.3
+                final /* synthetic */ NetworkSocketInfo val$netinfo;
+
+                AnonymousClass3(NetworkSocketInfo netinfo2) {
+                    netinfo = netinfo2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     IAppControlAPI.this.mTvMsgSender.initSender(netinfo);
@@ -166,6 +221,23 @@ public class IAppControlAPI {
             return 1;
         }
         return 0;
+    }
+
+    /* renamed from: com.samsung.android.allshare.IAppControlAPI$3 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass3 implements Runnable {
+        final /* synthetic */ NetworkSocketInfo val$netinfo;
+
+        AnonymousClass3(NetworkSocketInfo netinfo2) {
+            netinfo = netinfo2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            IAppControlAPI.this.mTvMsgSender.initSender(netinfo);
+            IAppControlAPI.this.mTvMsgListener.setOnEventListener(IAppControlAPI.this.mEventListener);
+            IAppControlAPI.this.mTvMsgListener.start();
+        }
     }
 
     public void setTouchGestureTouchMode(int mode) {

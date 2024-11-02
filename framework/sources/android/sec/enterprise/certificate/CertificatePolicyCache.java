@@ -41,6 +41,9 @@ public class CertificatePolicyCache {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_CERTIFICATE_POLICY_CHANGED_INTERNAL);
         context.registerReceiver(new BroadcastReceiver() { // from class: android.sec.enterprise.certificate.CertificatePolicyCache.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -60,7 +63,29 @@ public class CertificatePolicyCache {
         readVariables(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.sec.enterprise.certificate.CertificatePolicyCache$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent) {
+            String action = intent.getAction();
+            if (CertificatePolicyCache.ACTION_CERTIFICATE_POLICY_CHANGED_INTERNAL.equals(action)) {
+                Log.d(CertificatePolicyCache.TAG, "Intent received to refresh cache");
+                Bundle extras = intent.getExtras();
+                if (extras != null) {
+                    String type = extras.getString(CertificatePolicyCache.EXTRA_CERTIFICATE_POLICY_TYPE_CHANGED_INTERNAL);
+                    CertificatePolicyCache.this.readVariables(type);
+                } else {
+                    CertificatePolicyCache.this.readVariables(null);
+                }
+            }
+        }
+    }
+
     public synchronized void readVariables(String type) {
         int userId = UserHandle.myUserId();
         Log.d(TAG, "readVariables type: " + type + " userId: " + userId);

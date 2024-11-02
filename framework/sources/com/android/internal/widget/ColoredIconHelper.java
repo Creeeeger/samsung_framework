@@ -13,7 +13,6 @@ final class ColoredIconHelper {
     private ColoredIconHelper() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void applyGrayTint(Context ctx, Drawable drawable, boolean apply, int originalColor) {
         if (originalColor == 1) {
             return;

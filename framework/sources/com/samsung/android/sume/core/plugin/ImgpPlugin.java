@@ -59,14 +59,13 @@ public class ImgpPlugin extends PluginFixture<ImgpPlugin> {
         }).findFirst().map(new Function() { // from class: com.samsung.android.sume.core.plugin.ImgpPlugin$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return ImgpPlugin.this.m8817x24c2933((Enum) obj);
+                return ImgpPlugin.this.m8809x24c2933((Enum) obj);
             }
         }).orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$getImgProcessor$1$com-samsung-android-sume-core-plugin-ImgpPlugin, reason: not valid java name */
-    public /* synthetic */ Operator m8817x24c2933(Enum it) {
+    /* renamed from: lambda$getImgProcessor$1$com-samsung-android-sume-core-plugin-ImgpPlugin */
+    public /* synthetic */ Operator m8809x24c2933(Enum it) {
         return OperatorWrapper.of(it, this.processorMap.get(it));
     }
 
@@ -87,8 +86,9 @@ public class ImgpPlugin extends PluginFixture<ImgpPlugin> {
         return new ImgpPlugin(new ImgpPluginGroup(plugins));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class ImgpPluginGroup implements Plugin<ImgpPlugin> {
+    public static class ImgpPluginGroup implements Plugin<ImgpPlugin> {
         private final Map<Enum<?>, Operator> processorMap;
 
         ImgpPluginGroup(ImgpPlugin... plugins) {
@@ -107,7 +107,6 @@ public class ImgpPlugin extends PluginFixture<ImgpPlugin> {
             }, new MediaBufferBase$$ExternalSyntheticLambda5()));
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ Operator lambda$new$1(Operator xva$0, Operator xva$1) {
             return new OperatorChain(xva$0, xva$1);
         }

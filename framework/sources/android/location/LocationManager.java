@@ -115,7 +115,6 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssLazyLoader {
         static final GnssStatusTransportManager sGnssStatusListeners = new GnssStatusTransportManager();
@@ -1048,60 +1047,51 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssStatusTransportManager extends ListenerTransportManager<GnssStatusTransport> {
         GnssStatusTransportManager() {
             super(false);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void registerTransport(GnssStatusTransport transport) throws RemoteException {
             LocationManager.getService().registerGnssStatusCallback(transport, transport.getPackage(), transport.getAttributionTag(), AppOpsManager.toReceiverId(transport.getListener()));
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void unregisterTransport(GnssStatusTransport transport) throws RemoteException {
             LocationManager.getService().unregisterGnssStatusCallback(transport);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssNmeaTransportManager extends ListenerTransportManager<GnssNmeaTransport> {
         GnssNmeaTransportManager() {
             super(false);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void registerTransport(GnssNmeaTransport transport) throws RemoteException {
             LocationManager.getService().registerGnssNmeaCallback(transport, transport.getPackage(), transport.getAttributionTag(), AppOpsManager.toReceiverId(transport.getListener()));
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void unregisterTransport(GnssNmeaTransport transport) throws RemoteException {
             LocationManager.getService().unregisterGnssNmeaCallback(transport);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssMeasurementsTransportManager extends ListenerTransportManager<GnssMeasurementsTransport> {
         GnssMeasurementsTransportManager() {
             super(false);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void registerTransport(GnssMeasurementsTransport transport) throws RemoteException {
             LocationManager.getService().addGnssMeasurementsListener(transport.getRequest(), transport, transport.getPackage(), transport.getAttributionTag(), AppOpsManager.toReceiverId(transport.getListener()));
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void unregisterTransport(GnssMeasurementsTransport transport) throws RemoteException {
             LocationManager.getService().removeGnssMeasurementsListener(transport);
@@ -1114,33 +1104,28 @@ public class LocationManager {
             super(false);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void registerTransport(GnssAntennaInfoTransport transport) throws RemoteException {
             LocationManager.getService().addGnssAntennaInfoListener(transport, transport.getPackage(), transport.getAttributionTag(), AppOpsManager.toReceiverId(transport.getListener()));
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void unregisterTransport(GnssAntennaInfoTransport transport) throws RemoteException {
             LocationManager.getService().removeGnssAntennaInfoListener(transport);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssNavigationTransportManager extends ListenerTransportManager<GnssNavigationTransport> {
         GnssNavigationTransportManager() {
             super(false);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void registerTransport(GnssNavigationTransport transport) throws RemoteException {
             LocationManager.getService().addGnssNavigationMessageListener(transport, transport.getPackage(), transport.getAttributionTag(), AppOpsManager.toReceiverId(transport.getListener()));
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void unregisterTransport(GnssNavigationTransport transport) throws RemoteException {
             LocationManager.getService().removeGnssNavigationMessageListener(transport);
@@ -1153,20 +1138,17 @@ public class LocationManager {
             super(false);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void registerTransport(ProviderRequestTransport transport) throws RemoteException {
             LocationManager.getService().addProviderRequestListener(transport);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.android.internal.listeners.ListenerTransportManager
         public void unregisterTransport(ProviderRequestTransport transport) throws RemoteException {
             LocationManager.getService().removeProviderRequestListener(transport);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GetCurrentLocationTransport extends ILocationCallback.Stub implements ListenerExecutor, CancellationSignal.OnCancelListener {
         volatile Consumer<Location> mConsumer;
@@ -1187,13 +1169,32 @@ public class LocationManager {
             this.mConsumer = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: android.location.LocationManager$GetCurrentLocationTransport$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements ListenerExecutor.ListenerOperation<Consumer<Location>> {
+            final /* synthetic */ Location val$location;
+
+            AnonymousClass1(Location location) {
+                location = location;
+            }
+
+            @Override // com.android.internal.listeners.ListenerExecutor.ListenerOperation
+            public void operate(Consumer<Location> consumer) {
+                consumer.accept(location);
+            }
+
+            @Override // com.android.internal.listeners.ListenerExecutor.ListenerOperation
+            public void onPostExecute(boolean success) {
+                GetCurrentLocationTransport.this.mConsumer = null;
+            }
+        }
+
         public /* synthetic */ Consumer lambda$onLocation$0() {
             return this.mConsumer;
         }
 
         @Override // android.location.ILocationCallback
-        public void onLocation(final Location location) {
+        public void onLocation(Location location) {
             executeSafely(this.mExecutor, new Supplier() { // from class: android.location.LocationManager$GetCurrentLocationTransport$$ExternalSyntheticLambda0
                 @Override // java.util.function.Supplier
                 public final Object get() {
@@ -1202,6 +1203,12 @@ public class LocationManager {
                     return lambda$onLocation$0;
                 }
             }, new ListenerExecutor.ListenerOperation<Consumer<Location>>() { // from class: android.location.LocationManager.GetCurrentLocationTransport.1
+                final /* synthetic */ Location val$location;
+
+                AnonymousClass1(Location location2) {
+                    location = location2;
+                }
+
                 @Override // com.android.internal.listeners.ListenerExecutor.ListenerOperation
                 public void operate(Consumer<Location> consumer) {
                     consumer.accept(location);
@@ -1215,7 +1222,6 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class LocationListenerTransport extends ILocationListener.Stub implements ListenerExecutor {
         private Executor mExecutor;
@@ -1240,13 +1246,41 @@ public class LocationManager {
             this.mListener = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: android.location.LocationManager$LocationListenerTransport$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements ListenerExecutor.ListenerOperation<LocationListener> {
+            final /* synthetic */ List val$locations;
+            final /* synthetic */ IRemoteCallback val$onCompleteCallback;
+
+            AnonymousClass1(List list, IRemoteCallback iRemoteCallback) {
+                locations = list;
+                onCompleteCallback = iRemoteCallback;
+            }
+
+            @Override // com.android.internal.listeners.ListenerExecutor.ListenerOperation
+            public void operate(LocationListener listener) {
+                listener.onLocationChanged(locations);
+            }
+
+            @Override // com.android.internal.listeners.ListenerExecutor.ListenerOperation
+            public void onComplete(boolean success) {
+                IRemoteCallback iRemoteCallback = onCompleteCallback;
+                if (iRemoteCallback != null) {
+                    try {
+                        iRemoteCallback.sendResult(null);
+                    } catch (RemoteException e) {
+                        throw e.rethrowFromSystemServer();
+                    }
+                }
+            }
+        }
+
         public /* synthetic */ LocationListener lambda$onLocationChanged$0() {
             return this.mListener;
         }
 
         @Override // android.location.ILocationListener
-        public void onLocationChanged(final List<Location> locations, final IRemoteCallback onCompleteCallback) {
+        public void onLocationChanged(List<Location> locations, IRemoteCallback onCompleteCallback) {
             executeSafely(this.mExecutor, new Supplier() { // from class: android.location.LocationManager$LocationListenerTransport$$ExternalSyntheticLambda2
                 @Override // java.util.function.Supplier
                 public final Object get() {
@@ -1255,6 +1289,14 @@ public class LocationManager {
                     return lambda$onLocationChanged$0;
                 }
             }, new ListenerExecutor.ListenerOperation<LocationListener>() { // from class: android.location.LocationManager.LocationListenerTransport.1
+                final /* synthetic */ List val$locations;
+                final /* synthetic */ IRemoteCallback val$onCompleteCallback;
+
+                AnonymousClass1(List locations2, IRemoteCallback onCompleteCallback2) {
+                    locations = locations2;
+                    onCompleteCallback = onCompleteCallback2;
+                }
+
                 @Override // com.android.internal.listeners.ListenerExecutor.ListenerOperation
                 public void operate(LocationListener listener) {
                     listener.onLocationChanged(locations);
@@ -1274,7 +1316,6 @@ public class LocationManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ LocationListener lambda$onFlushComplete$1() {
             return this.mListener;
         }
@@ -1296,7 +1337,6 @@ public class LocationManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ LocationListener lambda$onProviderEnabledChanged$3() {
             return this.mListener;
         }
@@ -1318,7 +1358,6 @@ public class LocationManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onProviderEnabledChanged$4(boolean enabled, String provider, LocationListener listener) throws Exception {
             if (enabled) {
                 listener.onProviderEnabled(provider);
@@ -1328,9 +1367,10 @@ public class LocationManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     @Deprecated
     /* loaded from: classes2.dex */
-    private static class GpsAdapter extends GnssStatus.Callback {
+    public static class GpsAdapter extends GnssStatus.Callback {
         private final GpsStatus.Listener mGpsListener;
 
         GpsAdapter(GpsStatus.Listener gpsListener) {
@@ -1358,7 +1398,6 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssStatusTransport extends IGnssStatusListener.Stub implements ListenerTransport<GnssStatus.Callback> {
         private final String mAttributionTag;
@@ -1388,7 +1427,6 @@ public class LocationManager {
             this.mListener = null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.listeners.ListenerTransport
         public GnssStatus.Callback getListener() {
             return this.mListener;
@@ -1458,7 +1496,6 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssNmeaTransport extends IGnssNmeaListener.Stub implements ListenerTransport<OnNmeaMessageListener> {
         private final String mAttributionTag;
@@ -1488,7 +1525,6 @@ public class LocationManager {
             this.mListener = null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.listeners.ListenerTransport
         public OnNmeaMessageListener getListener() {
             return this.mListener;
@@ -1505,7 +1541,6 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssMeasurementsTransport extends IGnssMeasurementsListener.Stub implements ListenerTransport<GnssMeasurementsEvent.Callback> {
         private final String mAttributionTag;
@@ -1542,7 +1577,6 @@ public class LocationManager {
             this.mListener = null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.listeners.ListenerTransport
         public GnssMeasurementsEvent.Callback getListener() {
             return this.mListener;
@@ -1569,7 +1603,6 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssAntennaInfoTransport extends IGnssAntennaInfoListener.Stub implements ListenerTransport<GnssAntennaInfo.Listener> {
         private final String mAttributionTag;
@@ -1599,7 +1632,6 @@ public class LocationManager {
             this.mListener = null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.listeners.ListenerTransport
         public GnssAntennaInfo.Listener getListener() {
             return this.mListener;
@@ -1616,7 +1648,6 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GnssNavigationTransport extends IGnssNavigationMessageListener.Stub implements ListenerTransport<GnssNavigationMessage.Callback> {
         private final String mAttributionTag;
@@ -1646,7 +1677,6 @@ public class LocationManager {
             this.mListener = null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.listeners.ListenerTransport
         public GnssNavigationMessage.Callback getListener() {
             return this.mListener;
@@ -1690,7 +1720,6 @@ public class LocationManager {
             this.mListener = null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.listeners.ListenerTransport
         public ProviderRequest.ChangedListener getListener() {
             return this.mListener;
@@ -1707,9 +1736,10 @@ public class LocationManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     @Deprecated
     /* loaded from: classes2.dex */
-    private static class BatchedLocationCallbackWrapper implements LocationListener {
+    public static class BatchedLocationCallbackWrapper implements LocationListener {
         private final BatchedLocationCallback mCallback;
 
         BatchedLocationCallbackWrapper(BatchedLocationCallback callback) {
@@ -1735,7 +1765,6 @@ public class LocationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class LocationEnabledCache extends PropertyInvalidatedCache<Integer, Boolean> {
         private ILocationManager mManager;

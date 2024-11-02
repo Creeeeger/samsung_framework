@@ -9,13 +9,14 @@ import java.util.Arrays;
 /* loaded from: classes4.dex */
 public final class SizeConfigurationBuckets implements Parcelable {
     public static final Parcelable.Creator<SizeConfigurationBuckets> CREATOR = new Parcelable.Creator<SizeConfigurationBuckets>() { // from class: android.window.SizeConfigurationBuckets.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SizeConfigurationBuckets[] newArray(int size) {
             return new SizeConfigurationBuckets[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SizeConfigurationBuckets createFromParcel(Parcel in) {
             return new SizeConfigurationBuckets(in);
@@ -220,6 +221,23 @@ public final class SizeConfigurationBuckets implements Parcelable {
         this.mSmallest = smallest;
         this.mScreenLayoutSize = screenLayoutSize;
         this.mScreenLayoutLongSet = screenLayoutLongSet;
+    }
+
+    /* renamed from: android.window.SizeConfigurationBuckets$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SizeConfigurationBuckets> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SizeConfigurationBuckets[] newArray(int size) {
+            return new SizeConfigurationBuckets[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SizeConfigurationBuckets createFromParcel(Parcel in) {
+            return new SizeConfigurationBuckets(in);
+        }
     }
 
     @Deprecated

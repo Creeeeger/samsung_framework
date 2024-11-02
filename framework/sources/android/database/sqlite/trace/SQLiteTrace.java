@@ -65,7 +65,6 @@ public class SQLiteTrace {
         private ArrayList<TraceOperation> mOperations = new ArrayList<>();
         private AtomicBoolean mIsAlive = new AtomicBoolean(true);
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void start(final String dbPath) {
             Thread session = new Thread(new Runnable() { // from class: android.database.sqlite.trace.SQLiteTrace$SQLiteTraceSession$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -76,7 +75,6 @@ public class SQLiteTrace {
             session.start();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$start$0(String dbPath) {
             try {
                 try {

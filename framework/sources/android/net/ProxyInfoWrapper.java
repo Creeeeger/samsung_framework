@@ -6,19 +6,24 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class ProxyInfoWrapper implements Parcelable {
     public static final Parcelable.Creator<ProxyInfoWrapper> CREATOR = new Parcelable.Creator<ProxyInfoWrapper>() { // from class: android.net.ProxyInfoWrapper.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProxyInfoWrapper createFromParcel(Parcel in) {
             return new ProxyInfoWrapper(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProxyInfoWrapper[] newArray(int size) {
             return new ProxyInfoWrapper[size];
         }
     };
     private ProxyInfo mProxyInfo;
+
+    /* synthetic */ ProxyInfoWrapper(Parcel parcel, ProxyInfoWrapperIA proxyInfoWrapperIA) {
+        this(parcel);
+    }
 
     public ProxyInfoWrapper(ProxyInfo proxyInfo) {
         this.mProxyInfo = proxyInfo;
@@ -33,6 +38,23 @@ public class ProxyInfoWrapper implements Parcelable {
             this.mProxyInfo = (ProxyInfo) ProxyInfo.CREATOR.createFromParcel(in);
         } else {
             this.mProxyInfo = null;
+        }
+    }
+
+    /* renamed from: android.net.ProxyInfoWrapper$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProxyInfoWrapper> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProxyInfoWrapper createFromParcel(Parcel in) {
+            return new ProxyInfoWrapper(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProxyInfoWrapper[] newArray(int size) {
+            return new ProxyInfoWrapper[size];
         }
     }
 

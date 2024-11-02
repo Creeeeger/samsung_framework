@@ -87,7 +87,6 @@ public interface IForegroundServiceObserver extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IForegroundServiceObserver {
             private IBinder mRemote;

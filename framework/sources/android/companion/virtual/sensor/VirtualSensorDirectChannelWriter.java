@@ -91,7 +91,6 @@ public final class VirtualSensorDirectChannelWriter implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class SharedMemoryWrapper {
         private static final int MAXIMUM_NUMBER_OF_SENSOR_VALUES = 16;

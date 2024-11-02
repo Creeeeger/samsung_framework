@@ -17,13 +17,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class PrinterInfo implements Parcelable {
     public static final Parcelable.Creator<PrinterInfo> CREATOR = new Parcelable.Creator<PrinterInfo>() { // from class: android.print.PrinterInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrinterInfo createFromParcel(Parcel parcel) {
             return new PrinterInfo(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrinterInfo[] newArray(int size) {
             return new PrinterInfo[size];
@@ -45,6 +46,14 @@ public final class PrinterInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface Status {
+    }
+
+    /* synthetic */ PrinterInfo(Parcel parcel, PrinterInfoIA printerInfoIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ PrinterInfo(PrinterId printerId, String str, int i, int i2, boolean z, String str2, PendingIntent pendingIntent, PrinterCapabilitiesInfo printerCapabilitiesInfo, int i3, PrinterInfoIA printerInfoIA) {
+        this(printerId, str, i, i2, z, str2, pendingIntent, printerCapabilitiesInfo, i3);
     }
 
     private PrinterInfo(PrinterId printerId, String name, int status, int iconResourceId, boolean hasCustomPrinterIcon, String description, PendingIntent infoIntent, PrinterCapabilitiesInfo capabilities, int customPrinterIconGen) {
@@ -117,12 +126,10 @@ public final class PrinterInfo implements Parcelable {
         return this.mCapabilities;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static PrinterId checkPrinterId(PrinterId printerId) {
         return (PrinterId) Preconditions.checkNotNull(printerId, "printerId cannot be null.");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int checkStatus(int status) {
         if (status != 1 && status != 2 && status != 3) {
             throw new IllegalArgumentException("status is invalid.");
@@ -130,7 +137,6 @@ public final class PrinterInfo implements Parcelable {
         return status;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String checkName(String name) {
         return (String) Preconditions.checkStringNotEmpty(name, "name cannot be empty.");
     }
@@ -296,6 +302,23 @@ public final class PrinterInfo implements Parcelable {
         public Builder incCustomPrinterIconGen() {
             this.mCustomPrinterIconGen++;
             return this;
+        }
+    }
+
+    /* renamed from: android.print.PrinterInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrinterInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrinterInfo createFromParcel(Parcel parcel) {
+            return new PrinterInfo(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrinterInfo[] newArray(int size) {
+            return new PrinterInfo[size];
         }
     }
 }

@@ -28,6 +28,10 @@ import com.android.internal.view.menu.MenuPresenter;
 /* loaded from: classes5.dex */
 public class ActionBarOverlayLayout extends ViewGroup implements DecorContentParent {
     public static final Property<ActionBarOverlayLayout, Integer> ACTION_BAR_HIDE_OFFSET = new IntProperty<ActionBarOverlayLayout>("actionBarHideOffset") { // from class: com.android.internal.widget.ActionBarOverlayLayout.5
+        AnonymousClass5(String name) {
+            super(name);
+        }
+
         @Override // android.util.IntProperty
         public void setValue(ActionBarOverlayLayout object, int value) {
             object.setActionBarHideOffset(value);
@@ -86,6 +90,98 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         void showForSystem();
     }
 
+    /* renamed from: com.android.internal.widget.ActionBarOverlayLayout$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = null;
+            ActionBarOverlayLayout.this.mAnimatingForFling = false;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
+            ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = null;
+            ActionBarOverlayLayout.this.mAnimatingForFling = false;
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ActionBarOverlayLayout$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 extends AnimatorListenerAdapter {
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = null;
+            ActionBarOverlayLayout.this.mAnimatingForFling = false;
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
+            ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = null;
+            ActionBarOverlayLayout.this.mAnimatingForFling = false;
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ActionBarOverlayLayout$3 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
+            ActionBarOverlayLayout actionBarOverlayLayout = ActionBarOverlayLayout.this;
+            actionBarOverlayLayout.mCurrentActionBarTopAnimator = actionBarOverlayLayout.mActionBarTop.animate().translationY(0.0f).setListener(ActionBarOverlayLayout.this.mTopAnimatorListener);
+            if (ActionBarOverlayLayout.this.mActionBarBottom != null && ActionBarOverlayLayout.this.mActionBarBottom.getVisibility() != 8) {
+                ActionBarOverlayLayout actionBarOverlayLayout2 = ActionBarOverlayLayout.this;
+                actionBarOverlayLayout2.mCurrentActionBarBottomAnimator = actionBarOverlayLayout2.mActionBarBottom.animate().translationY(0.0f).setListener(ActionBarOverlayLayout.this.mBottomAnimatorListener);
+            }
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ActionBarOverlayLayout$4 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass4 implements Runnable {
+        AnonymousClass4() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
+            ActionBarOverlayLayout actionBarOverlayLayout = ActionBarOverlayLayout.this;
+            actionBarOverlayLayout.mCurrentActionBarTopAnimator = actionBarOverlayLayout.mActionBarTop.animate().translationY(-ActionBarOverlayLayout.this.mActionBarTop.getHeight()).setListener(ActionBarOverlayLayout.this.mTopAnimatorListener);
+            if (ActionBarOverlayLayout.this.mActionBarBottom != null && ActionBarOverlayLayout.this.mActionBarBottom.getVisibility() != 8) {
+                ActionBarOverlayLayout actionBarOverlayLayout2 = ActionBarOverlayLayout.this;
+                actionBarOverlayLayout2.mCurrentActionBarBottomAnimator = actionBarOverlayLayout2.mActionBarBottom.animate().translationY(ActionBarOverlayLayout.this.mActionBarBottom.getHeight()).setListener(ActionBarOverlayLayout.this.mBottomAnimatorListener);
+            }
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ActionBarOverlayLayout$5 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass5 extends IntProperty<ActionBarOverlayLayout> {
+        AnonymousClass5(String name) {
+            super(name);
+        }
+
+        @Override // android.util.IntProperty
+        public void setValue(ActionBarOverlayLayout object, int value) {
+            object.setActionBarHideOffset(value);
+        }
+
+        @Override // android.util.Property
+        public Integer get(ActionBarOverlayLayout object) {
+            return Integer.valueOf(object.getActionBarHideOffset());
+        }
+    }
+
     public ActionBarOverlayLayout(Context context) {
         super(context);
         this.mWindowVisibility = 0;
@@ -98,6 +194,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         this.mLastInnerInsets = WindowInsets.CONSUMED;
         this.ACTION_BAR_ANIMATE_DELAY = 600;
         this.mTopAnimatorListener = new AnimatorListenerAdapter() { // from class: com.android.internal.widget.ActionBarOverlayLayout.1
+            AnonymousClass1() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = null;
@@ -111,6 +210,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
             }
         };
         this.mBottomAnimatorListener = new AnimatorListenerAdapter() { // from class: com.android.internal.widget.ActionBarOverlayLayout.2
+            AnonymousClass2() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = null;
@@ -124,6 +226,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
             }
         };
         this.mRemoveActionBarHideOffset = new Runnable() { // from class: com.android.internal.widget.ActionBarOverlayLayout.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
@@ -136,6 +241,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
             }
         };
         this.mAddActionBarHideOffset = new Runnable() { // from class: com.android.internal.widget.ActionBarOverlayLayout.4
+            AnonymousClass4() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
@@ -162,6 +270,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         this.mLastInnerInsets = WindowInsets.CONSUMED;
         this.ACTION_BAR_ANIMATE_DELAY = 600;
         this.mTopAnimatorListener = new AnimatorListenerAdapter() { // from class: com.android.internal.widget.ActionBarOverlayLayout.1
+            AnonymousClass1() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 ActionBarOverlayLayout.this.mCurrentActionBarTopAnimator = null;
@@ -175,6 +286,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
             }
         };
         this.mBottomAnimatorListener = new AnimatorListenerAdapter() { // from class: com.android.internal.widget.ActionBarOverlayLayout.2
+            AnonymousClass2() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 ActionBarOverlayLayout.this.mCurrentActionBarBottomAnimator = null;
@@ -188,6 +302,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
             }
         };
         this.mRemoveActionBarHideOffset = new Runnable() { // from class: com.android.internal.widget.ActionBarOverlayLayout.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
@@ -200,6 +317,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
             }
         };
         this.mAddActionBarHideOffset = new Runnable() { // from class: com.android.internal.widget.ActionBarOverlayLayout.4
+            AnonymousClass4() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ActionBarOverlayLayout.this.haltActionBarHideOffsetAnimations();
@@ -235,7 +355,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         this.mFlingEstimator = new OverScroller(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -278,7 +397,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         setDisabledSystemUiVisibility(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -308,7 +426,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
@@ -368,7 +485,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         return WindowInsets.CONSUMED;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-1, -1);
@@ -384,13 +500,11 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         return new LayoutParams(p);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int childState;
@@ -459,7 +573,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         setMeasuredDimension(resolveSizeAndState(Math.max(maxWidth4 + getPaddingLeft() + getPaddingRight(), getSuggestedMinimumWidth()), widthMeasureSpec, childState4), resolveSizeAndState(Math.max(maxHeight3 + getPaddingTop() + getPaddingBottom(), getSuggestedMinimumHeight()), heightMeasureSpec, childState4 << 16));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int childTop;
@@ -613,7 +726,6 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void haltActionBarHideOffsetAnimations() {
         removeCallbacks(this.mRemoveActionBarHideOffset);
         removeCallbacks(this.mAddActionBarHideOffset);

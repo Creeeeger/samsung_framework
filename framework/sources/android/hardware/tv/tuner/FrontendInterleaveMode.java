@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendInterleaveMode implements Parcelable {
     public static final Parcelable.Creator<FrontendInterleaveMode> CREATOR = new Parcelable.Creator<FrontendInterleaveMode>() { // from class: android.hardware.tv.tuner.FrontendInterleaveMode.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendInterleaveMode createFromParcel(Parcel _aidl_source) {
             return new FrontendInterleaveMode(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendInterleaveMode[] newArray(int _aidl_size) {
             return new FrontendInterleaveMode[_aidl_size];
@@ -31,6 +32,10 @@ public final class FrontendInterleaveMode implements Parcelable {
         public static final int dtmb = 2;
         public static final int dvbc = 1;
         public static final int isdbt = 3;
+    }
+
+    /* synthetic */ FrontendInterleaveMode(Parcel parcel, FrontendInterleaveModeIA frontendInterleaveModeIA) {
+        this(parcel);
     }
 
     public FrontendInterleaveMode() {
@@ -106,6 +111,23 @@ public final class FrontendInterleaveMode implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.FrontendInterleaveMode$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendInterleaveMode> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendInterleaveMode createFromParcel(Parcel _aidl_source) {
+            return new FrontendInterleaveMode(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendInterleaveMode[] newArray(int _aidl_size) {
+            return new FrontendInterleaveMode[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

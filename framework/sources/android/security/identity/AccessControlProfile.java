@@ -9,6 +9,10 @@ public class AccessControlProfile {
     private boolean mUserAuthenticationRequired;
     private long mUserAuthenticationTimeout;
 
+    /* synthetic */ AccessControlProfile(AccessControlProfileIA accessControlProfileIA) {
+        this();
+    }
+
     private AccessControlProfile() {
         this.mAccessControlProfileId = new AccessControlProfileId(0);
         this.mReaderCertificate = null;
@@ -16,22 +20,18 @@ public class AccessControlProfile {
         this.mUserAuthenticationTimeout = 0L;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AccessControlProfileId getAccessControlProfileId() {
         return this.mAccessControlProfileId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getUserAuthenticationTimeout() {
         return this.mUserAuthenticationTimeout;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isUserAuthenticationRequired() {
         return this.mUserAuthenticationRequired;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public X509Certificate getReaderCertificate() {
         return this.mReaderCertificate;
     }

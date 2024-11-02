@@ -221,7 +221,6 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
         return this.mGroupCursorHelper.getCursor();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class MyCursorHelper {
         private MyContentObserver mContentObserver;
@@ -305,7 +304,6 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
             return this.mDataValid && this.mCursor != null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public class MyContentObserver extends ContentObserver {
             public MyContentObserver() {
@@ -326,9 +324,12 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public class MyDataSetObserver extends DataSetObserver {
+            /* synthetic */ MyDataSetObserver(MyCursorHelper myCursorHelper, MyDataSetObserverIA myDataSetObserverIA) {
+                this();
+            }
+
             private MyDataSetObserver() {
             }
 

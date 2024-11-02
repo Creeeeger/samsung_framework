@@ -9,13 +9,14 @@ import java.io.PrintWriter;
 /* loaded from: classes.dex */
 public final class LocusId implements Parcelable {
     public static final Parcelable.Creator<LocusId> CREATOR = new Parcelable.Creator<LocusId>() { // from class: android.content.LocusId.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LocusId createFromParcel(Parcel parcel) {
             return new LocusId(parcel.readString());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocusId[] newArray(int size) {
             return new LocusId[size];
@@ -79,5 +80,22 @@ public final class LocusId implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(this.mId);
+    }
+
+    /* renamed from: android.content.LocusId$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LocusId> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocusId createFromParcel(Parcel parcel) {
+            return new LocusId(parcel.readString());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocusId[] newArray(int size) {
+            return new LocusId[size];
+        }
     }
 }

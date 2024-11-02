@@ -33,7 +33,6 @@ public class FrameFormat {
     protected int mSize;
     protected int mTarget;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public FrameFormat() {
         this.mBaseType = 0;
         this.mBytesPerSample = 1;
@@ -392,7 +391,6 @@ public class FrameFormat {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isReplaceableBy(FrameFormat format) {
         return this.mTarget == format.mTarget && getSize() == format.getSize() && Arrays.equals(format.mDimensions, this.mDimensions);
     }

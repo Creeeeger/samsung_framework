@@ -34,9 +34,25 @@ public abstract class DialogPreference extends Preference implements DialogInter
     private CharSequence mPositiveButtonText;
     private int mWhichButtonClicked;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.preference.DialogPreference$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            DialogPreference.this.mDialog.dismiss();
+        }
+    }
+
     public DialogPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mDismissRunnable = new Runnable() { // from class: android.preference.DialogPreference.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 DialogPreference.this.mDialog.dismiss();
@@ -136,11 +152,9 @@ public abstract class DialogPreference extends Preference implements DialogInter
         return this.mDialogLayoutResId;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onPrepareDialogBuilder(AlertDialog.Builder builder) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onClick() {
         Dialog dialog = this.mDialog;
@@ -149,7 +163,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void showDialog(Bundle state) {
         Context context = getContext();
         this.mWhichButtonClicked = -2;
@@ -169,6 +182,9 @@ public abstract class DialogPreference extends Preference implements DialogInter
             dialog.onRestoreInstanceState(state);
         }
         dialog.setOnShowListener(new DialogInterface.OnShowListener() { // from class: android.preference.DialogPreference.2
+            AnonymousClass2() {
+            }
+
             @Override // android.content.DialogInterface.OnShowListener
             public void onShow(DialogInterface dialog2) {
                 DialogPreference.this.removeDismissCallbacks();
@@ -182,6 +198,18 @@ public abstract class DialogPreference extends Preference implements DialogInter
         }
     }
 
+    /* renamed from: android.preference.DialogPreference$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements DialogInterface.OnShowListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.DialogInterface.OnShowListener
+        public void onShow(DialogInterface dialog2) {
+            DialogPreference.this.removeDismissCallbacks();
+        }
+    }
+
     private View getDecorView() {
         Dialog dialog = this.mDialog;
         if (dialog != null && dialog.getWindow() != null) {
@@ -190,7 +218,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void postDismiss() {
         removeDismissCallbacks();
         View decorView = getDecorView();
@@ -199,7 +226,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeDismissCallbacks() {
         View decorView = getDecorView();
         if (decorView != null) {
@@ -215,7 +241,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
         return inflater.inflate(this.mDialogLayoutResId, (ViewGroup) null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onBindDialogView(View view) {
         View dialogMessageView = view.findViewById(16908299);
         if (dialogMessageView != null) {
@@ -246,7 +271,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
         onDialogClosed(this.mWhichButtonClicked == -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDialogClosed(boolean positiveResult) {
     }
 
@@ -263,7 +287,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
         this.mDialog.dismiss();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -277,7 +300,6 @@ public abstract class DialogPreference extends Preference implements DialogInter
         return myState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
@@ -291,17 +313,17 @@ public abstract class DialogPreference extends Preference implements DialogInter
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.DialogPreference.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -325,6 +347,23 @@ public abstract class DialogPreference extends Preference implements DialogInter
 
         public SavedState(Parcelable superState) {
             super(superState);
+        }
+
+        /* renamed from: android.preference.DialogPreference$SavedState$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 }

@@ -24,7 +24,6 @@ public final class MediaDescrambler implements AutoCloseable {
     private boolean mIsAidlHal;
     private long mNativeContext;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public interface DescramblerWrapper {
         IHwBinder asBinder();
@@ -38,15 +37,12 @@ public final class MediaDescrambler implements AutoCloseable {
         void setMediaCasSession(byte[] bArr) throws RemoteException;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final native int native_descramble(byte b, byte b2, int i, int[] iArr, int[] iArr2, ByteBuffer byteBuffer, int i2, int i3, ByteBuffer byteBuffer2, int i4, int i5) throws RemoteException;
 
     private static final native void native_init();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final native void native_release();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final native void native_setup(IHwBinder iHwBinder);
 
     /* loaded from: classes2.dex */
@@ -149,7 +145,6 @@ public final class MediaDescrambler implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final void cleanupAndRethrowIllegalState() {
         this.mIDescrambler = null;
         throw new IllegalStateException();
@@ -187,7 +182,6 @@ public final class MediaDescrambler implements AutoCloseable {
         return this.mIsAidlHal;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IHwBinder getBinder() {
         validateInternalStates();
         return this.mIDescrambler.asBinder();

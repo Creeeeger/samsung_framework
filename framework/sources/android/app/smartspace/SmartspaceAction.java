@@ -16,13 +16,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SmartspaceAction implements Parcelable {
     public static final Parcelable.Creator<SmartspaceAction> CREATOR = new Parcelable.Creator<SmartspaceAction>() { // from class: android.app.smartspace.SmartspaceAction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmartspaceAction createFromParcel(Parcel in) {
             return new SmartspaceAction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartspaceAction[] newArray(int size) {
             return new SmartspaceAction[size];
@@ -38,6 +39,10 @@ public final class SmartspaceAction implements Parcelable {
     private final CharSequence mSubtitle;
     private final CharSequence mTitle;
     private final UserHandle mUserHandle;
+
+    /* synthetic */ SmartspaceAction(String str, Icon icon, CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3, PendingIntent pendingIntent, Intent intent, UserHandle userHandle, Bundle bundle, SmartspaceActionIA smartspaceActionIA) {
+        this(str, icon, charSequence, charSequence2, charSequence3, pendingIntent, intent, userHandle, bundle);
+    }
 
     SmartspaceAction(Parcel in) {
         this.mId = in.readString();
@@ -134,6 +139,23 @@ public final class SmartspaceAction implements Parcelable {
 
     public String toString() {
         return "SmartspaceAction{mId='" + this.mId + DateFormat.QUOTE + ", mIcon=" + this.mIcon + ", mTitle=" + ((Object) this.mTitle) + ", mSubtitle=" + ((Object) this.mSubtitle) + ", mContentDescription=" + ((Object) this.mContentDescription) + ", mPendingIntent=" + this.mPendingIntent + ", mIntent=" + this.mIntent + ", mUserHandle=" + this.mUserHandle + ", mExtras=" + this.mExtras + '}';
+    }
+
+    /* renamed from: android.app.smartspace.SmartspaceAction$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmartspaceAction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartspaceAction createFromParcel(Parcel in) {
+            return new SmartspaceAction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartspaceAction[] newArray(int size) {
+            return new SmartspaceAction[size];
+        }
     }
 
     @SystemApi

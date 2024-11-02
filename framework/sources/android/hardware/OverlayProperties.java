@@ -10,7 +10,9 @@ public final class OverlayProperties implements Parcelable {
     private long mNativeObject;
     private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(OverlayProperties.class.getClassLoader(), nGetDestructor());
     public static final Parcelable.Creator<OverlayProperties> CREATOR = new Parcelable.Creator<OverlayProperties>() { // from class: android.hardware.OverlayProperties.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public OverlayProperties createFromParcel(Parcel in) {
             if (in.readInt() != 0) {
@@ -19,7 +21,6 @@ public final class OverlayProperties implements Parcelable {
             return null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverlayProperties[] newArray(int size) {
             return new OverlayProperties[size];
@@ -28,7 +29,6 @@ public final class OverlayProperties implements Parcelable {
 
     private static native long nGetDestructor();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nReadOverlayPropertiesFromParcel(Parcel parcel);
 
     private static native boolean nSupportFp16ForHdr(long j);
@@ -79,6 +79,26 @@ public final class OverlayProperties implements Parcelable {
         } else {
             dest.writeInt(1);
             nWriteOverlayPropertiesToParcel(this.mNativeObject, dest);
+        }
+    }
+
+    /* renamed from: android.hardware.OverlayProperties$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<OverlayProperties> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OverlayProperties createFromParcel(Parcel in) {
+            if (in.readInt() != 0) {
+                return new OverlayProperties(OverlayProperties.nReadOverlayPropertiesFromParcel(in));
+            }
+            return null;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OverlayProperties[] newArray(int size) {
+            return new OverlayProperties[size];
         }
     }
 }

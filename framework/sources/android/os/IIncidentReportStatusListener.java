@@ -117,8 +117,9 @@ public interface IIncidentReportStatusListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IIncidentReportStatusListener {
+        public static class Proxy implements IIncidentReportStatusListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

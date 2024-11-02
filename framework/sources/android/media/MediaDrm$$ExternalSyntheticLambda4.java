@@ -1,6 +1,7 @@
 package android.media;
 
 import android.media.MediaDrm;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /* compiled from: D8$$SyntheticClass */
@@ -14,6 +15,8 @@ public final /* synthetic */ class MediaDrm$$ExternalSyntheticLambda4 implements
 
     @Override // java.util.function.Function
     public final Object apply(Object obj) {
-        return MediaDrm.$r8$lambda$3BhN8npFACaQpuDKoUvFvJhpZ28(this.f$0, (MediaDrm.OnSessionLostStateListener) obj);
+        Consumer createOnSessionLostStateListener;
+        createOnSessionLostStateListener = this.f$0.createOnSessionLostStateListener((MediaDrm.OnSessionLostStateListener) obj);
+        return createOnSessionLostStateListener;
     }
 }

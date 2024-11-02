@@ -10,7 +10,6 @@ public class SContextShakeMotionAttribute extends SContextAttribute {
     private int mDuration;
     private int mStrength;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextShakeMotionAttribute() {
         this.mStrength = 2;
         this.mDuration = 800;

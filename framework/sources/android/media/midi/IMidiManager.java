@@ -295,8 +295,9 @@ public interface IMidiManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMidiManager {
+        public static class Proxy implements IMidiManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

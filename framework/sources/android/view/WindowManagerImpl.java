@@ -119,9 +119,31 @@ public final class WindowManagerImpl implements WindowManager {
         this.mGlobal.removeView(view, true);
     }
 
+    /* renamed from: android.view.WindowManagerImpl$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends IResultReceiver.Stub {
+        final /* synthetic */ WindowManager.KeyboardShortcutsReceiver val$receiver;
+
+        AnonymousClass1(WindowManager.KeyboardShortcutsReceiver keyboardShortcutsReceiver) {
+            receiver = keyboardShortcutsReceiver;
+        }
+
+        @Override // com.android.internal.os.IResultReceiver
+        public void send(int resultCode, Bundle resultData) throws RemoteException {
+            List<KeyboardShortcutGroup> result = resultData.getParcelableArrayList(WindowManager.PARCEL_KEY_SHORTCUTS_ARRAY, KeyboardShortcutGroup.class);
+            receiver.onKeyboardShortcutsReceived(result);
+        }
+    }
+
     @Override // android.view.WindowManager
-    public void requestAppKeyboardShortcuts(final WindowManager.KeyboardShortcutsReceiver receiver, int deviceId) {
+    public void requestAppKeyboardShortcuts(WindowManager.KeyboardShortcutsReceiver receiver, int deviceId) {
         IResultReceiver resultReceiver = new IResultReceiver.Stub() { // from class: android.view.WindowManagerImpl.1
+            final /* synthetic */ WindowManager.KeyboardShortcutsReceiver val$receiver;
+
+            AnonymousClass1(WindowManager.KeyboardShortcutsReceiver receiver2) {
+                receiver = receiver2;
+            }
+
             @Override // com.android.internal.os.IResultReceiver
             public void send(int resultCode, Bundle resultData) throws RemoteException {
                 List<KeyboardShortcutGroup> result = resultData.getParcelableArrayList(WindowManager.PARCEL_KEY_SHORTCUTS_ARRAY, KeyboardShortcutGroup.class);
@@ -299,11 +321,14 @@ public final class WindowManagerImpl implements WindowManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class OnFpsCallbackListenerProxy extends ITaskFpsCallback.Stub {
         private final TaskFpsCallback mCallback;
         private final Executor mExecutor;
+
+        /* synthetic */ OnFpsCallbackListenerProxy(Executor executor, TaskFpsCallback taskFpsCallback, OnFpsCallbackListenerProxyIA onFpsCallbackListenerProxyIA) {
+            this(executor, taskFpsCallback);
+        }
 
         private OnFpsCallbackListenerProxy(Executor executor, TaskFpsCallback callback) {
             this.mExecutor = executor;
@@ -320,7 +345,6 @@ public final class WindowManagerImpl implements WindowManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFpsReported$0(float fps) {
             this.mCallback.onFpsReported(fps);
         }
@@ -336,7 +360,6 @@ public final class WindowManagerImpl implements WindowManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IBinder getDefaultToken() {
         return this.mDefaultToken;
     }

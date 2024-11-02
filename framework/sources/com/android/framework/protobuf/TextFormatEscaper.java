@@ -1,10 +1,8 @@
 package com.android.framework.protobuf;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class TextFormatEscaper {
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface ByteSequence {
         byte byteAt(int i);
@@ -66,9 +64,28 @@ public final class TextFormatEscaper {
         return builder.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public static String escapeBytes(final ByteString input) {
+    /* renamed from: com.android.framework.protobuf.TextFormatEscaper$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements ByteSequence {
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.framework.protobuf.TextFormatEscaper.ByteSequence
+        public int size() {
+            return ByteString.this.size();
+        }
+
+        @Override // com.android.framework.protobuf.TextFormatEscaper.ByteSequence
+        public byte byteAt(int offset) {
+            return ByteString.this.byteAt(offset);
+        }
+    }
+
+    public static String escapeBytes(ByteString input) {
         return escapeBytes(new ByteSequence() { // from class: com.android.framework.protobuf.TextFormatEscaper.1
+            AnonymousClass1() {
+            }
+
             @Override // com.android.framework.protobuf.TextFormatEscaper.ByteSequence
             public int size() {
                 return ByteString.this.size();
@@ -81,8 +98,34 @@ public final class TextFormatEscaper {
         });
     }
 
-    static String escapeBytes(final byte[] input) {
+    /* renamed from: com.android.framework.protobuf.TextFormatEscaper$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements ByteSequence {
+        final /* synthetic */ byte[] val$input;
+
+        AnonymousClass2(byte[] bArr) {
+            input = bArr;
+        }
+
+        @Override // com.android.framework.protobuf.TextFormatEscaper.ByteSequence
+        public int size() {
+            return input.length;
+        }
+
+        @Override // com.android.framework.protobuf.TextFormatEscaper.ByteSequence
+        public byte byteAt(int offset) {
+            return input[offset];
+        }
+    }
+
+    static String escapeBytes(byte[] input) {
         return escapeBytes(new ByteSequence() { // from class: com.android.framework.protobuf.TextFormatEscaper.2
+            final /* synthetic */ byte[] val$input;
+
+            AnonymousClass2(byte[] input2) {
+                input = input2;
+            }
+
             @Override // com.android.framework.protobuf.TextFormatEscaper.ByteSequence
             public int size() {
                 return input.length;
@@ -95,7 +138,6 @@ public final class TextFormatEscaper {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String escapeText(String input) {
         return escapeBytes(ByteString.copyFromUtf8(input));
     }

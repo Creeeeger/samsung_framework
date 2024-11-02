@@ -48,7 +48,6 @@ public class RequestLastFrameNumbersHolder {
         this.mInflightCompleted = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RequestLastFrameNumbersHolder(int requestId, long lastFrameNumber, int[] repeatingRequestTypes) {
         long lastRegularFrameNumber = -1;
         long lastZslStillFrameNumber = -1;

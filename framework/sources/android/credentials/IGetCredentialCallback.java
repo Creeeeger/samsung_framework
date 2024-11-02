@@ -114,8 +114,9 @@ public interface IGetCredentialCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IGetCredentialCallback {
+        public static class Proxy implements IGetCredentialCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

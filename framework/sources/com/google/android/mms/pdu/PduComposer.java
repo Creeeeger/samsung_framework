@@ -721,12 +721,15 @@ public class PduComposer {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class LengthRecordNode {
         ByteArrayOutputStream currentMessage;
         public int currentPosition;
         public LengthRecordNode next;
+
+        /* synthetic */ LengthRecordNode(LengthRecordNodeIA lengthRecordNodeIA) {
+            this();
+        }
 
         private LengthRecordNode() {
             this.currentMessage = null;
@@ -735,11 +738,14 @@ public class PduComposer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class PositionMarker {
         private int c_pos;
         private int currentStackSize;
+
+        /* synthetic */ PositionMarker(PduComposer pduComposer, PositionMarkerIA positionMarkerIA) {
+            this();
+        }
 
         private PositionMarker() {
         }
@@ -752,12 +758,15 @@ public class PduComposer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class BufferStack {
         private LengthRecordNode stack;
         int stackSize;
         private LengthRecordNode toCopy;
+
+        /* synthetic */ BufferStack(PduComposer pduComposer, BufferStackIA bufferStackIA) {
+            this();
+        }
 
         private BufferStack() {
             this.stack = null;

@@ -21,6 +21,10 @@ public class AnimatedRotateDrawable extends DrawableWrapper implements Animatabl
     private boolean mRunning;
     private AnimatedRotateState mState;
 
+    /* synthetic */ AnimatedRotateDrawable(AnimatedRotateState animatedRotateState, Resources resources, AnimatedRotateDrawableIA animatedRotateDrawableIA) {
+        this(animatedRotateState, resources);
+    }
+
     public AnimatedRotateDrawable() {
         this(new AnimatedRotateState(null, null), null);
     }
@@ -59,7 +63,6 @@ public class AnimatedRotateDrawable extends DrawableWrapper implements Animatabl
         return this.mRunning;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void nextFrame() {
         unscheduleSelf(this.mNextFrame);
         scheduleSelf(this.mNextFrame, SystemClock.uptimeMillis() + this.mState.mFrameDuration);
@@ -157,7 +160,6 @@ public class AnimatedRotateDrawable extends DrawableWrapper implements Animatabl
         return animatedRotateState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class AnimatedRotateState extends DrawableWrapper.DrawableWrapperState {
         int mFrameDuration;
@@ -195,6 +197,9 @@ public class AnimatedRotateDrawable extends DrawableWrapper implements Animatabl
     private AnimatedRotateDrawable(AnimatedRotateState state, Resources res) {
         super(state, res);
         this.mNextFrame = new Runnable() { // from class: android.graphics.drawable.AnimatedRotateDrawable.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AnimatedRotateDrawable.this.mCurrentDegrees += AnimatedRotateDrawable.this.mIncrement;
@@ -218,6 +223,24 @@ public class AnimatedRotateDrawable extends DrawableWrapper implements Animatabl
             if (drawable instanceof BitmapDrawable) {
                 ((BitmapDrawable) drawable).setAntiAlias(true);
             }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.graphics.drawable.AnimatedRotateDrawable$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AnimatedRotateDrawable.this.mCurrentDegrees += AnimatedRotateDrawable.this.mIncrement;
+            if (AnimatedRotateDrawable.this.mCurrentDegrees > 360.0f - AnimatedRotateDrawable.this.mIncrement) {
+                AnimatedRotateDrawable.this.mCurrentDegrees = 0.0f;
+            }
+            AnimatedRotateDrawable.this.invalidateSelf();
+            AnimatedRotateDrawable.this.nextFrame();
         }
     }
 }

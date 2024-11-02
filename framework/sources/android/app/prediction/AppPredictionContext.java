@@ -10,13 +10,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class AppPredictionContext implements Parcelable {
     public static final Parcelable.Creator<AppPredictionContext> CREATOR = new Parcelable.Creator<AppPredictionContext>() { // from class: android.app.prediction.AppPredictionContext.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AppPredictionContext createFromParcel(Parcel parcel) {
             return new AppPredictionContext(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppPredictionContext[] newArray(int size) {
             return new AppPredictionContext[size];
@@ -26,6 +27,14 @@ public final class AppPredictionContext implements Parcelable {
     private final String mPackageName;
     private final int mPredictedTargetCount;
     private final String mUiSurface;
+
+    /* synthetic */ AppPredictionContext(Parcel parcel, AppPredictionContextIA appPredictionContextIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ AppPredictionContext(String str, int i, String str2, Bundle bundle, AppPredictionContextIA appPredictionContextIA) {
+        this(str, i, str2, bundle);
+    }
 
     private AppPredictionContext(String uiSurface, int numPredictedTargets, String packageName, Bundle extras) {
         this.mUiSurface = uiSurface;
@@ -79,6 +88,23 @@ public final class AppPredictionContext implements Parcelable {
         dest.writeInt(this.mPredictedTargetCount);
         dest.writeString(this.mPackageName);
         dest.writeBundle(this.mExtras);
+    }
+
+    /* renamed from: android.app.prediction.AppPredictionContext$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AppPredictionContext> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppPredictionContext createFromParcel(Parcel parcel) {
+            return new AppPredictionContext(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppPredictionContext[] newArray(int size) {
+            return new AppPredictionContext[size];
+        }
     }
 
     @SystemApi

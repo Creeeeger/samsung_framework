@@ -44,6 +44,9 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
     private boolean mIsMetaDataInActivity = View.sIsSamsungBasicInteraction;
     private int mLayoutResId = R.layout.preference_list_fragment;
     private Handler mHandler = new Handler() { // from class: android.preference.PreferenceFragment.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -56,12 +59,18 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
         }
     };
     private final Runnable mRequestFocus = new Runnable() { // from class: android.preference.PreferenceFragment.2
+        AnonymousClass2() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             PreferenceFragment.this.mList.focusableViewAvailable(PreferenceFragment.this.mList);
         }
     };
     private View.OnKeyListener mListOnKeyListener = new View.OnKeyListener() { // from class: android.preference.PreferenceFragment.3
+        AnonymousClass3() {
+        }
+
         @Override // android.view.View.OnKeyListener
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             Object selectedItem = PreferenceFragment.this.mList.getSelectedItem();
@@ -77,6 +86,36 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
     /* loaded from: classes3.dex */
     public interface OnPreferenceStartFragmentCallback {
         boolean onPreferenceStartFragment(PreferenceFragment preferenceFragment, Preference preference);
+    }
+
+    /* renamed from: android.preference.PreferenceFragment$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    PreferenceFragment.this.bindPreferences();
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /* renamed from: android.preference.PreferenceFragment$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            PreferenceFragment.this.mList.focusableViewAvailable(PreferenceFragment.this.mList);
+        }
     }
 
     @Override // android.app.Fragment, android.content.ComponentCallbacks
@@ -270,7 +309,6 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
         this.mHandler.obtainMessage(1).sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void bindPreferences() {
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         if (preferenceScreen != null) {
@@ -343,6 +381,23 @@ public abstract class PreferenceFragment extends Fragment implements PreferenceM
         }
         listView.setOnKeyListener(this.mListOnKeyListener);
         this.mHandler.post(this.mRequestFocus);
+    }
+
+    /* renamed from: android.preference.PreferenceFragment$3 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass3 implements View.OnKeyListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.view.View.OnKeyListener
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            Object selectedItem = PreferenceFragment.this.mList.getSelectedItem();
+            if (selectedItem instanceof Preference) {
+                View selectedView = PreferenceFragment.this.mList.getSelectedView();
+                return ((Preference) selectedItem).onKey(selectedView, keyCode, event);
+            }
+            return false;
+        }
     }
 
     private Activity getActivityContext(Context context) {

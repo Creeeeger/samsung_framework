@@ -13,6 +13,10 @@ import java.util.Collection;
 public class PKIXCertStoreSelector<T extends Certificate> implements Selector<T> {
     private final CertSelector baseSelector;
 
+    /* synthetic */ PKIXCertStoreSelector(CertSelector certSelector, PKIXCertStoreSelectorIA pKIXCertStoreSelectorIA) {
+        this(certSelector);
+    }
+
     /* loaded from: classes5.dex */
     public static class Builder {
         private final CertSelector baseSelector;
@@ -52,8 +56,9 @@ public class PKIXCertStoreSelector<T extends Certificate> implements Selector<T>
         return certStore.getCertificates(new SelectorClone(selector));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class SelectorClone extends X509CertSelector {
+    public static class SelectorClone extends X509CertSelector {
         private final PKIXCertStoreSelector selector;
 
         SelectorClone(PKIXCertStoreSelector selector) {

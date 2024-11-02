@@ -52,7 +52,7 @@ public final class SamsungThemeConstants {
     public static final String THEME_OVERLAY_DIR = "/data/overlays/style";
     public static final HashSet<String> changeableApps = new HashSet<>(Arrays.asList(SemDesktopModeManager.LAUNCHER_PACKAGE, "com.sec.android.app.eventnotification", "com.samsung.tmowfc.wfcpref", CoreSaConstant.PACKAGE_NAME_RECENTS, "com.sec.android.app.FlashBarService", "com.android.nfc", "com.samsung.felicalock", "com.android.apps.tag", "com.samsung.app.newtrim", "com.adnroid.dreams.phototable", "com.policydm", "com.samsung.android.securitylogagent", "com.sec.android.app.SecSetupWizard", "com.samsung.safetyinformation", "com.sec.app.samsungprinterservice", "com.samsung.spg", "com.sec.android.app.capabilitymanager", "com.sec.android.app.wallpaperchooser", "com.bst.airmessage", "com.sec.android.app.simsettingmgr", "com.sec.android.app.simcardmanagement", "com.sec.android.widgetapp.dualsimwidget", "com.sec.android.app.irsettings", "com.samsung.android.app.shareaccessibilitysettings", "com.google.android.marvin.talkback", "com.samsung.android.SettingsReceiver", "com.sec.android.app.popupuireceiver", "com.sec.android.wallpapercropper2", "com.samsung.android.MtpApplication", AsPackageName.SOUNDALIVE_FOR_KARAOKE, "com.samsung.android.app.galaxylabs", "com.sec.android.mimage.gear360editor", AsPackageName.RINGTONE_PICKER, "com.samsung.android.slinkcloud", SemEmergencyConstants.EMERGENCY_LAUNCHER, "com.sec.android.app.firewall", "com.bst.spamcall", "com.sec.app.screenrecorder", "com.samsung.android.bixbytouch", "com.samsung.android.mateagent", "com.samsung.android.dynamiclock", AsPackageName.BLUETOOTH, "com.samsung.android.app.telephonyui.netsettings", "com.samsung.theme", "com.sec.winset", "com.sec.sesl.tester", "com.sec.soul.tester", "com.samsung.advancedcalling", "com.android.certinstaller", KeyChain.ACCOUNT_TYPE, "com.sec.android.app.quicktool", "com.sec.unifiedwfc", "com.samsung.advancedcalling", SemPersonaManager.SECUREFOLDER_PACKAGE, "com.samsung.android.app.smartcapture", "com.samsung.android.app.clipboardedge", "com.android.certinstaller", KeyChain.ACCOUNT_TYPE, "com.samsung.android.fmm", "com.sec.android.widgetapp.easymodecontactswidget", "com.samsung.android.vdc", "com.samsung.android.app.dofviewer"));
     public static HashMap<String, String> overlayTargetMap = new HashMap<String, String>() { // from class: android.content.om.SamsungThemeConstants.1
-        {
+        AnonymousClass1() {
             put("fwk", "android");
             put(AsPackageName.VOICENOTE, null);
             put("com.sec.android.app.music", null);
@@ -87,6 +87,31 @@ public final class SamsungThemeConstants {
     public static final String THEME_OVERLAY_SYSTEMUI_POSTFIX = ".systemui.apk";
     public static final String THEME_OVERLAY_LOCK_POSTFIX = ".lock.apk";
     public static ArrayList<String> allowSystemUIForCover = new ArrayList<>(Arrays.asList(THEME_OVERLAY_SYSTEMUI_POSTFIX, THEME_OVERLAY_LOCK_POSTFIX));
+
+    /* renamed from: android.content.om.SamsungThemeConstants$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends HashMap<String, String> {
+        AnonymousClass1() {
+            put("fwk", "android");
+            put(AsPackageName.VOICENOTE, null);
+            put("com.sec.android.app.music", null);
+            put("com.samsung.android.video", null);
+            put("com.sec.android.app.vepreload", null);
+            put("com.samsung.app.highlightplayer", null);
+            put("com.sec.android.app.clipvideo", null);
+            put("com.samsung.android.scloud.backup", "com.samsung.android.scloud");
+            put("com.sec.android.widgetapp.ap.hero.accuweather", "com.sec.android.daemonapp");
+            put("com.samsung.android.qconnect", null);
+            put("com.samsung.android.app.omcagent", null);
+            put("com.samsung.android.app.dtv.dmb", null);
+            put(AsPackageName.DMB, null);
+            put("com.samsung.android.smartmirroring", null);
+            put("com.samsung.android.samsungpass", null);
+            put("com.samsung.android.app.dofviewer", null);
+            put(CoreSaConstant.PACKAGE_NAME_APPS_EDGE, CoreSaConstant.PACKAGE_NAME_RECENTS);
+            put(CoreSaConstant.PACKAGE_NAME_EDGE_SERVICE, CoreSaConstant.PACKAGE_NAME_RECENTS);
+        }
+    }
 
     public static boolean localeDirsChanged(String[] overlayDir, String[] resDir) {
         Collection<? extends String> set1 = Arrays.asList(overlayDir == null ? new String[0] : overlayDir);

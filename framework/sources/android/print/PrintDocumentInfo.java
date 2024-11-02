@@ -13,13 +13,14 @@ public final class PrintDocumentInfo implements Parcelable {
     public static final int CONTENT_TYPE_PHOTO = 1;
     public static final int CONTENT_TYPE_UNKNOWN = -1;
     public static final Parcelable.Creator<PrintDocumentInfo> CREATOR = new Parcelable.Creator<PrintDocumentInfo>() { // from class: android.print.PrintDocumentInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrintDocumentInfo createFromParcel(Parcel parcel) {
             return new PrintDocumentInfo(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintDocumentInfo[] newArray(int size) {
             return new PrintDocumentInfo[size];
@@ -34,6 +35,18 @@ public final class PrintDocumentInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface ContentType {
+    }
+
+    /* synthetic */ PrintDocumentInfo(Parcel parcel, PrintDocumentInfoIA printDocumentInfoIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ PrintDocumentInfo(PrintDocumentInfoIA printDocumentInfoIA) {
+        this();
+    }
+
+    /* synthetic */ PrintDocumentInfo(PrintDocumentInfo printDocumentInfo, PrintDocumentInfoIA printDocumentInfoIA) {
+        this(printDocumentInfo);
     }
 
     private PrintDocumentInfo() {
@@ -164,6 +177,23 @@ public final class PrintDocumentInfo implements Parcelable {
                 this.mPrototype.mPageCount = -1;
             }
             return new PrintDocumentInfo();
+        }
+    }
+
+    /* renamed from: android.print.PrintDocumentInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrintDocumentInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrintDocumentInfo createFromParcel(Parcel parcel) {
+            return new PrintDocumentInfo(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrintDocumentInfo[] newArray(int size) {
+            return new PrintDocumentInfo[size];
         }
     }
 }

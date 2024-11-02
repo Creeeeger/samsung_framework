@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class BroadcastResponseStats implements Parcelable {
     public static final Parcelable.Creator<BroadcastResponseStats> CREATOR = new Parcelable.Creator<BroadcastResponseStats>() { // from class: android.app.usage.BroadcastResponseStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BroadcastResponseStats createFromParcel(Parcel source) {
             return new BroadcastResponseStats(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BroadcastResponseStats[] newArray(int size) {
             return new BroadcastResponseStats[size];
@@ -27,6 +28,10 @@ public final class BroadcastResponseStats implements Parcelable {
     private int mNotificationsPostedCount;
     private int mNotificationsUpdatedCount;
     private final String mPackageName;
+
+    /* synthetic */ BroadcastResponseStats(Parcel parcel, BroadcastResponseStatsIA broadcastResponseStatsIA) {
+        this(parcel);
+    }
 
     public BroadcastResponseStats(String packageName, long id) {
         this.mPackageName = packageName;
@@ -124,5 +129,22 @@ public final class BroadcastResponseStats implements Parcelable {
         dest.writeInt(this.mNotificationsPostedCount);
         dest.writeInt(this.mNotificationsUpdatedCount);
         dest.writeInt(this.mNotificationsCancelledCount);
+    }
+
+    /* renamed from: android.app.usage.BroadcastResponseStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BroadcastResponseStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BroadcastResponseStats createFromParcel(Parcel source) {
+            return new BroadcastResponseStats(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BroadcastResponseStats[] newArray(int size) {
+            return new BroadcastResponseStats[size];
+        }
     }
 }

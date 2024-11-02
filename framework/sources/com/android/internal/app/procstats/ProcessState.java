@@ -58,6 +58,9 @@ public final class ProcessState {
     public int tmpNumInUse;
     static final int[] PROCESS_STATE_TO_STATE = {0, 0, 1, 2, 3, 4, 5, 6, 6, 7, 8, 10, 1, 11, 12, 13, 14, 14, 14, 14};
     public static final Comparator<ProcessState> COMPARATOR = new Comparator<ProcessState>() { // from class: com.android.internal.app.procstats.ProcessState.1
+        AnonymousClass1() {
+        }
+
         @Override // java.util.Comparator
         public int compare(ProcessState lhs, ProcessState rhs) {
             if (lhs.mTmpTotalTime < rhs.mTmpTotalTime) {
@@ -70,8 +73,27 @@ public final class ProcessState {
         }
     };
 
+    /* renamed from: com.android.internal.app.procstats.ProcessState$1 */
     /* loaded from: classes4.dex */
-    static class PssAggr {
+    class AnonymousClass1 implements Comparator<ProcessState> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(ProcessState lhs, ProcessState rhs) {
+            if (lhs.mTmpTotalTime < rhs.mTmpTotalTime) {
+                return -1;
+            }
+            if (lhs.mTmpTotalTime > rhs.mTmpTotalTime) {
+                return 1;
+            }
+            return 0;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* loaded from: classes4.dex */
+    public static class PssAggr {
         long pss = 0;
         long samples = 0;
 
@@ -264,7 +286,6 @@ public final class ProcessState {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean readFromParcel(Parcel in, int version, boolean fully) {
         boolean multiPackage = in.readInt() != 0;
         if (fully) {
@@ -616,7 +637,6 @@ public final class ProcessState {
         return this.mPssTable.getValueForId((byte) state, 9);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AssociationState.SourceState getOrCreateSourceState(AssociationState.SourceKey key) {
         if (this.mCommonSources == null) {
             this.mCommonSources = new ArrayMap<>();
@@ -990,7 +1010,6 @@ public final class ProcessState {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpInternalLocked(PrintWriter pw, String prefix, String reqPackage, long totalTime, long now, boolean dumpAll) {
         if (dumpAll) {
             pw.print(prefix);
@@ -1467,7 +1486,6 @@ public final class ProcessState {
         proto.end(token);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void writeCompressedProcessName(ProtoOutputStream proto, long fieldId, String procName, String packageName, boolean sharedUid) {
         if (sharedUid) {
             proto.write(fieldId, procName);

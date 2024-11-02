@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class RcsContactTerminatedReason implements Parcelable {
     public static final Parcelable.Creator<RcsContactTerminatedReason> CREATOR = new Parcelable.Creator<RcsContactTerminatedReason>() { // from class: android.telephony.ims.RcsContactTerminatedReason.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RcsContactTerminatedReason createFromParcel(Parcel in) {
             return new RcsContactTerminatedReason(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsContactTerminatedReason[] newArray(int size) {
             return new RcsContactTerminatedReason[size];
@@ -21,6 +22,10 @@ public final class RcsContactTerminatedReason implements Parcelable {
     };
     private final Uri mContactUri;
     private final String mReason;
+
+    /* synthetic */ RcsContactTerminatedReason(Parcel parcel, RcsContactTerminatedReasonIA rcsContactTerminatedReasonIA) {
+        this(parcel);
+    }
 
     public RcsContactTerminatedReason(Uri contact, String reason) {
         this.mContactUri = contact;
@@ -41,6 +46,23 @@ public final class RcsContactTerminatedReason implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.ims.RcsContactTerminatedReason$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RcsContactTerminatedReason> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RcsContactTerminatedReason createFromParcel(Parcel in) {
+            return new RcsContactTerminatedReason(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RcsContactTerminatedReason[] newArray(int size) {
+            return new RcsContactTerminatedReason[size];
+        }
     }
 
     public Uri getContactUri() {

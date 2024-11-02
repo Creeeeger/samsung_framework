@@ -99,8 +99,9 @@ public interface IQualifiedNetworksServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IQualifiedNetworksServiceCallback {
+        public static class Proxy implements IQualifiedNetworksServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

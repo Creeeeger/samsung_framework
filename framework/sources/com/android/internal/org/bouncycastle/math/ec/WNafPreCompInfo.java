@@ -9,7 +9,6 @@ public class WNafPreCompInfo implements PreCompInfo {
     protected ECPoint twice = null;
     protected int width = -1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int decrementPromotionCountdown() {
         int t = this.promotionCountdown;
         if (t > 0) {
@@ -20,12 +19,10 @@ public class WNafPreCompInfo implements PreCompInfo {
         return t;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getPromotionCountdown() {
         return this.promotionCountdown;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setPromotionCountdown(int promotionCountdown) {
         this.promotionCountdown = promotionCountdown;
     }

@@ -26,7 +26,10 @@ public class AndroidKeyStoreECPublicKey extends AndroidKeyStorePublicKey impleme
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x0025, code lost:            r0 = android.security.keystore2.KeymasterUtils.getCurveSpec(android.security.keystore2.KeymasterUtils.getEcCurveFromKeymaster(r4.keyParameter.value.getEcCurve()));     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0025, code lost:
+    
+        r0 = android.security.keystore2.KeymasterUtils.getCurveSpec(android.security.keystore2.KeymasterUtils.getEcCurveFromKeymaster(r4.keyParameter.value.getEcCurve()));
+     */
     @Override // android.security.keystore2.AndroidKeyStorePublicKey
     /*
         Code decompiled incorrectly, please refer to instructions dump.

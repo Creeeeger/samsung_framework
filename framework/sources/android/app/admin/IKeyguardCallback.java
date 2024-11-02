@@ -97,8 +97,9 @@ public interface IKeyguardCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IKeyguardCallback {
+        public static class Proxy implements IKeyguardCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

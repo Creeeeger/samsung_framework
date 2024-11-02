@@ -258,7 +258,6 @@ public class SmartFaceManager {
         return ret;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$checkForSmartStay$0(FaceInfo data, int service_type) {
         Log.e(TAG, "checkForSmartStay onInfo: " + Integer.toBinaryString(service_type) + ": " + data.needToStay);
         if ((service_type & 4) != 0) {
@@ -291,7 +290,6 @@ public class SmartFaceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class SmartFaceClient extends ISmartFaceClient.Stub {
         SmartFaceClient() {
@@ -327,7 +325,6 @@ public class SmartFaceManager {
         return ret;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class EventHandler extends Handler {
         private SmartFaceManager mManager;

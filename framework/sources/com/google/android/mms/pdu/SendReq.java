@@ -38,7 +38,6 @@ public class SendReq extends MultimediaMessagePdu {
         super(headers);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SendReq(PduHeaders headers, PduBody body) {
         super(headers, body);
     }

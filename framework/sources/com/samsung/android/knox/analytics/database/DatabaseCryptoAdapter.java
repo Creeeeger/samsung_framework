@@ -154,7 +154,10 @@ class DatabaseCryptoAdapter {
         return createCursorWithEventsSizeSpecified(numberOfPlainEvents, compressedChunkLimit);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0014, code lost:            r3 = r1.getInt(0);     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0014, code lost:
+    
+        r3 = r1.getInt(0);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

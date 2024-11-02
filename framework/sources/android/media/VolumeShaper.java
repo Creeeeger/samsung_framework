@@ -15,7 +15,6 @@ public final class VolumeShaper implements AutoCloseable {
     private int mId;
     private final WeakReference<PlayerBase> mWeakPlayerBase;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VolumeShaper(Configuration configuration, PlayerBase playerBase) {
         this.mWeakPlayerBase = new WeakReference<>(playerBase);
         this.mId = applyPlayer(configuration, new Operation.Builder().defer().build());
@@ -128,6 +127,10 @@ public final class VolumeShaper implements AutoCloseable {
         public @interface Type {
         }
 
+        /* synthetic */ Configuration(int i, int i2, int i3, double d, int i4, float[] fArr, float[] fArr2, ConfigurationIA configurationIA) {
+            this(i, i2, i3, d, i4, fArr, fArr2);
+        }
+
         public static int getMaximumCurvePoints() {
             return 16;
         }
@@ -145,13 +148,14 @@ public final class VolumeShaper implements AutoCloseable {
             SINE_RAMP = new Builder().setInterpolatorType(2).setCurve(times, sines).setDuration(1000L).build();
             SCURVE_RAMP = new Builder().setInterpolatorType(2).setCurve(times, scurve).setDuration(1000L).build();
             CREATOR = new Parcelable.Creator<Configuration>() { // from class: android.media.VolumeShaper.Configuration.1
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Parcelable.Creator
                 public Configuration createFromParcel(Parcel p) {
                     return Configuration.fromParcelable(VolumeShaperConfiguration.CREATOR.createFromParcel(p));
                 }
 
-                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public Configuration[] newArray(int size) {
                     return new Configuration[size];
@@ -242,6 +246,23 @@ public final class VolumeShaper implements AutoCloseable {
                 volumes[i] = parcelable.interpolatorConfig.xy[(i * 2) + 1];
             }
             return new Configuration(type, id, optionFlags, durationMs, interpolatorType, times, volumes);
+        }
+
+        /* renamed from: android.media.VolumeShaper$Configuration$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Configuration> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Configuration createFromParcel(Parcel p) {
+                return Configuration.fromParcelable(VolumeShaperConfiguration.CREATOR.createFromParcel(p));
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Configuration[] newArray(int size) {
+                return new Configuration[size];
+            }
         }
 
         private static int interpolatorTypeFromAidl(int aidl) {
@@ -416,7 +437,6 @@ public final class VolumeShaper implements AutoCloseable {
             return null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void checkCurveForErrorsAndThrowException(float[] times, float[] volumes, boolean log, boolean ise) {
             String error = checkCurveForErrors(times, volumes, log);
             if (error != null) {
@@ -427,7 +447,6 @@ public final class VolumeShaper implements AutoCloseable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void checkValidVolumeAndThrowException(float volume, boolean log) {
             if (log) {
                 if (volume > 0.0f) {
@@ -438,7 +457,6 @@ public final class VolumeShaper implements AutoCloseable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void clampVolume(float[] volumes, boolean log) {
             if (log) {
                 for (int i = 0; i < volumes.length; i++) {
@@ -688,13 +706,14 @@ public final class VolumeShaper implements AutoCloseable {
         public static final Operation PLAY = new Builder().build();
         public static final Operation REVERSE = new Builder().reverse().build();
         public static final Parcelable.Creator<Operation> CREATOR = new Parcelable.Creator<Operation>() { // from class: android.media.VolumeShaper.Operation.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Operation createFromParcel(Parcel p) {
                 return Operation.fromParcelable(VolumeShaperOperation.CREATOR.createFromParcel(p));
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Operation[] newArray(int size) {
                 return new Operation[size];
@@ -704,6 +723,10 @@ public final class VolumeShaper implements AutoCloseable {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes2.dex */
         public @interface Flag {
+        }
+
+        /* synthetic */ Operation(int i, int i2, float f, OperationIA operationIA) {
+            this(i, i2, f);
         }
 
         public String toString() {
@@ -745,6 +768,23 @@ public final class VolumeShaper implements AutoCloseable {
 
         public static Operation fromParcelable(VolumeShaperOperation parcelable) {
             return new Operation(flagsFromAidl(parcelable.flags), parcelable.replaceId, parcelable.xOffset);
+        }
+
+        /* renamed from: android.media.VolumeShaper$Operation$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Operation> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Operation createFromParcel(Parcel p) {
+                return Operation.fromParcelable(VolumeShaperOperation.CREATOR.createFromParcel(p));
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Operation[] newArray(int size) {
+                return new Operation[size];
+            }
         }
 
         private static int flagsFromAidl(int aidl) {
@@ -869,13 +909,14 @@ public final class VolumeShaper implements AutoCloseable {
     /* loaded from: classes2.dex */
     public static final class State implements Parcelable {
         public static final Parcelable.Creator<State> CREATOR = new Parcelable.Creator<State>() { // from class: android.media.VolumeShaper.State.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public State createFromParcel(Parcel p) {
                 return State.fromParcelable(VolumeShaperState.CREATOR.createFromParcel(p));
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public State[] newArray(int size) {
                 return new State[size];
@@ -924,7 +965,23 @@ public final class VolumeShaper implements AutoCloseable {
             return new State(p.volume, p.xOffset);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.media.VolumeShaper$State$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<State> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public State createFromParcel(Parcel p) {
+                return State.fromParcelable(VolumeShaperState.CREATOR.createFromParcel(p));
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public State[] newArray(int size) {
+                return new State[size];
+            }
+        }
+
         public State(float volume, float xOffset) {
             this.mVolume = volume;
             this.mXOffset = xOffset;

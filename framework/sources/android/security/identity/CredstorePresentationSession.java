@@ -19,7 +19,6 @@ import java.security.cert.CertificateException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class CredstorePresentationSession extends PresentationSession {
     private static final String TAG = "CredstorePresentationSession";
@@ -34,7 +33,6 @@ public class CredstorePresentationSession extends PresentationSession {
     private boolean mOperationHandleSet = false;
     private long mOperationHandle = 0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CredstorePresentationSession(Context context, int cipherSuite, CredstoreIdentityCredentialStore store, ISession binder, int featureVersion) {
         this.mFeatureVersion = 0;
         this.mContext = context;

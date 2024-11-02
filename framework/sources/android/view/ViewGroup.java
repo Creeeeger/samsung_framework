@@ -215,6 +215,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     private static final int[] DESCENDANT_FOCUSABILITY_FLAGS = {131072, 262144, 393216};
     public static int LAYOUT_MODE_DEFAULT = 0;
     private static final ActionMode SENTINEL_ACTION_MODE = new ActionMode() { // from class: android.view.ViewGroup.1
+        AnonymousClass1() {
+        }
+
         @Override // android.view.ActionMode
         public void setTitle(CharSequence title) {
         }
@@ -276,7 +279,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         void onChildViewRemoved(View view, View view2);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public abstract void onLayout(boolean z, int i, int i2, int i3, int i4);
 
@@ -342,7 +344,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             this.height = source.height;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public LayoutParams() {
         }
 
@@ -361,7 +362,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         public void onDebugDraw(View view, Canvas canvas, Paint paint) {
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public static String sizeToString(int size) {
             if (size == -2) {
                 return "wrap-content";
@@ -372,14 +372,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             return String.valueOf(size);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void encode(ViewHierarchyEncoder encoder) {
             encoder.beginObject(this);
             encodeProperties(encoder);
             encoder.endObject();
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void encodeProperties(ViewHierarchyEncoder encoder) {
             encoder.addProperty("width", this.width);
             encoder.addProperty("height", this.height);
@@ -699,7 +697,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             ViewGroup.fillDifference(canvas, view.getLeft() + oi.left, view.getTop() + oi.top, view.getRight() - oi.right, view.getBottom() - oi.bottom, this.leftMargin, this.topMargin, this.rightMargin, this.bottomMargin, paint);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup.LayoutParams
         public void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
@@ -780,6 +777,66 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
+    /* renamed from: android.view.ViewGroup$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends ActionMode {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ActionMode
+        public void setTitle(CharSequence title) {
+        }
+
+        @Override // android.view.ActionMode
+        public void setTitle(int resId) {
+        }
+
+        @Override // android.view.ActionMode
+        public void setSubtitle(CharSequence subtitle) {
+        }
+
+        @Override // android.view.ActionMode
+        public void setSubtitle(int resId) {
+        }
+
+        @Override // android.view.ActionMode
+        public void setCustomView(View view) {
+        }
+
+        @Override // android.view.ActionMode
+        public void invalidate() {
+        }
+
+        @Override // android.view.ActionMode
+        public void finish() {
+        }
+
+        @Override // android.view.ActionMode
+        public Menu getMenu() {
+            return null;
+        }
+
+        @Override // android.view.ActionMode
+        public CharSequence getTitle() {
+            return null;
+        }
+
+        @Override // android.view.ActionMode
+        public CharSequence getSubtitle() {
+            return null;
+        }
+
+        @Override // android.view.ActionMode
+        public View getCustomView() {
+            return null;
+        }
+
+        @Override // android.view.ActionMode
+        public MenuInflater getMenuInflater() {
+            return null;
+        }
+    }
+
     public ViewGroup(Context context) {
         this(context, null);
     }
@@ -806,6 +863,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         this.mSemHorizontalScrollbarRectRelativePosX = 0;
         this.mSemVerticalScrollbarRectRelativePosY = 0;
         this.mLayoutTransitionListener = new LayoutTransition.TransitionListener() { // from class: android.view.ViewGroup.4
+            AnonymousClass4() {
+            }
+
             @Override // android.animation.LayoutTransition.TransitionListener
             public void startTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
                 if (transitionType == 3) {
@@ -833,6 +893,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         this.mExpandAction = new ReleaseRunnable(0);
         this.EXPAND_INTERPOLATOR = new PathInterpolator(0.22f, 0.25f, 0.0f, 1.0f);
         this.mOnScrollListener = new AbsListView.OnScrollOffsetListener() { // from class: android.view.ViewGroup.5
+            AnonymousClass5() {
+            }
+
             @Override // android.widget.AbsListView.OnScrollOffsetListener
             public void onScrollOffsetChanged(AbsListView view, int offset) {
                 int distanceByTop;
@@ -989,7 +1052,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void handleFocusGainInternal(int direction, Rect previouslyFocusedRect) {
         View view = this.mFocused;
@@ -1019,7 +1081,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDefaultFocus(View child) {
         View view = this.mDefaultFocus;
         if (view != null && view.isFocusedByDefault()) {
@@ -1031,7 +1092,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearDefaultFocus(View child) {
         View view = this.mDefaultFocus;
         if (view != child && view != null && view.isFocusedByDefault()) {
@@ -1053,13 +1113,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public boolean hasDefaultFocus() {
         return this.mDefaultFocus != null || super.hasDefaultFocus();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearFocusedInCluster(View child) {
         if (this.mFocusedInCluster != child) {
             return;
@@ -1067,7 +1125,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         clearFocusedInCluster();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearFocusedInCluster() {
         View top = findKeyboardNavigationCluster();
         ViewParent parent = this;
@@ -1257,7 +1314,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         focused.clearFocus();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void unFocus(View focused) {
         View view = this.mFocused;
@@ -1437,7 +1493,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return (this.mGroupFlags & 67108864) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldBlockFocusForTouchscreen() {
         return getTouchscreenBlocksFocus() && this.mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN) && (!isKeyboardNavigationCluster() || (!hasFocus() && findKeyboardNavigationCluster() == this));
     }
@@ -1547,7 +1602,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onChildVisibilityChanged(View child, int oldVisibility, int newVisibility) {
         LayoutTransition layoutTransition = this.mTransition;
         if (layoutTransition != null) {
@@ -1574,7 +1628,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void dispatchVisibilityChanged(View changedView, int visibility) {
         super.dispatchVisibilityChanged(changedView, visibility);
@@ -1595,7 +1648,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public boolean dispatchVisibilityAggregated(boolean isVisible) {
         boolean isVisible2 = super.dispatchVisibilityAggregated(isVisible);
@@ -1632,7 +1684,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         parent.recomputeViewAttributes(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void dispatchCollectViewAttributes(View.AttachInfo attachInfo, int visibility) {
         if ((visibility & 12) == 0) {
@@ -1665,7 +1716,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mLocalPoint;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public boolean dispatchDragEnterExitInPreN(DragEvent event) {
         View view;
@@ -1850,7 +1900,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public boolean updateLocalSystemUiVisibility(int localValue, int localChanges) {
         boolean changed = super.updateLocalSystemUiVisibility(localValue, localChanges);
@@ -2007,7 +2056,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean dispatchHoverEvent(MotionEvent event) {
         HoverTarget firstOldHoverTarget;
@@ -2212,7 +2260,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public boolean dispatchTooltipHoverEvent(MotionEvent event) {
         return semDispatchTooltipHoverEvent(event);
@@ -2363,7 +2410,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return MotionEvent.obtainNoHistory(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean dispatchGenericPointerEvent(MotionEvent event) {
         int childrenCount = this.mChildrenCount;
@@ -2393,7 +2439,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return super.dispatchGenericPointerEvent(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean dispatchGenericFocusedEvent(MotionEvent event) {
         if ((this.mPrivateFlags & 18) == 18) {
@@ -2971,7 +3016,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mTempPoint;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isTransformedTouchPointInView(float x, float y, View child, PointF outLocalPoint) {
         float[] point = getTempLocationF();
         point[0] = x;
@@ -3120,7 +3164,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return took;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         int index;
         int increment;
@@ -3221,7 +3264,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void dispatchAttachedToWindow(View.AttachInfo info, int visibility) {
         this.mGroupFlags |= 4194304;
@@ -3241,7 +3283,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void dispatchScreenStateChanged(int screenState) {
         super.dispatchScreenStateChanged(screenState);
@@ -3252,7 +3293,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void dispatchMovedToDisplay(Display display, Configuration config) {
         super.dispatchMovedToDisplay(display, config);
@@ -3550,7 +3590,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         super.notifySubtreeAccessibilityStateChangedIfNeeded();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void resetSubtreeAccessibilityStateChanged() {
         super.resetSubtreeAccessibilityStateChanged();
@@ -3563,7 +3602,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getNumChildrenForAccessibility() {
         int numChildrenForAccessibility = 0;
         for (int i = 0; i < getChildCount(); i++) {
@@ -3582,7 +3620,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void calculateAccessibilityDataSensitive() {
         super.calculateAccessibilityDataSensitive();
@@ -3591,7 +3628,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void dispatchDetachedFromWindow() {
         cancelAndClearTouchTargets(null);
@@ -3619,7 +3655,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         super.dispatchDetachedFromWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void internalSetPadding(int left, int top, int right, int bottom) {
         super.internalSetPadding(left, top, right, bottom);
@@ -3630,7 +3665,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         super.dispatchSaveInstanceState(container);
@@ -3644,12 +3678,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dispatchFreezeSelfOnly(SparseArray<Parcelable> container) {
         super.dispatchSaveInstanceState(container);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         super.dispatchRestoreInstanceState(container);
@@ -3663,12 +3695,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dispatchThawSelfOnly(SparseArray<Parcelable> container) {
         super.dispatchRestoreInstanceState(container);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Deprecated
     public void setChildrenDrawingCacheEnabled(boolean enabled) {
         if (enabled || (this.mPersistentDrawingCache & 3) != 3) {
@@ -3706,7 +3736,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isLayoutModeOptical() {
         return this.mLayoutMode == 1;
     }
@@ -3763,7 +3792,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         drawCorner(canvas, paint, x2, y2, -lineLength, -lineLength, lineWidth);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void fillDifference(Canvas canvas, int x2, int y2, int x3, int y3, int dx1, int dy1, int dx2, int dy2, Paint paint) {
         int x1 = x2 - dx1;
         int y1 = y2 - dy1;
@@ -3782,7 +3810,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDebugDraw(Canvas canvas) {
         Paint paint = getDebugPaint();
         paint.setColor(-65536);
@@ -3809,7 +3836,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void dispatchDraw(Canvas canvas) {
         int childrenCount;
@@ -3925,12 +3951,27 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if ((flags4 & 16) == 0 && (flags4 & 512) == 0 && this.mLayoutAnimationController.isDone() && !more) {
             this.mGroupFlags |= 512;
             Runnable end = new Runnable() { // from class: android.view.ViewGroup.2
+                AnonymousClass2() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     ViewGroup.this.notifyAnimationListener();
                 }
             };
             post(end);
+        }
+    }
+
+    /* renamed from: android.view.ViewGroup$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewGroup.this.notifyAnimationListener();
         }
     }
 
@@ -3942,7 +3983,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return (ViewGroupOverlay) this.mOverlay;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getChildDrawingOrder(int childCount, int drawingPosition) {
         return drawingPosition;
     }
@@ -3960,7 +4000,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayList<View> buildOrderedChildList() {
         int childrenCount = this.mChildrenCount;
         if (childrenCount <= 1 || !hasChildWithZ()) {
@@ -3987,13 +4026,15 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mPreSortedChildren;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyAnimationListener() {
         int i = this.mGroupFlags & (-513);
         this.mGroupFlags = i;
         this.mGroupFlags = i | 16;
         if (this.mAnimationListener != null) {
             Runnable end = new Runnable() { // from class: android.view.ViewGroup.3
+                AnonymousClass3() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     ViewGroup.this.mAnimationListener.onAnimationEnd(ViewGroup.this.mLayoutAnimationController.getAnimation());
@@ -4002,6 +4043,18 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             post(end);
         }
         invalidate(true);
+    }
+
+    /* renamed from: android.view.ViewGroup$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewGroup.this.mAnimationListener.onAnimationEnd(ViewGroup.this.mLayoutAnimationController.getAnimation());
+        }
     }
 
     @Override // android.view.View
@@ -4041,12 +4094,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         child.mRecreateDisplayList = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean drawChild(Canvas canvas, View child, long drawingTime) {
         return child.draw(canvas, this, drawingTime);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void getScrollIndicatorBounds(Rect out) {
         super.getScrollIndicatorBounds(out);
@@ -4141,7 +4192,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void dispatchCancelPendingInputEvents() {
         super.dispatchCancelPendingInputEvents();
@@ -4152,17 +4202,14 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setStaticTransformationsEnabled(boolean enabled) {
         setBooleanFlag(2048, enabled);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean getChildStaticTransformation(View child, Transformation t) {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Transformation getChildTransformation() {
         if (this.mChildTransformation == null) {
             this.mChildTransformation = new Transformation();
@@ -4170,7 +4217,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mChildTransformation;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public <T extends View> T findViewTraversal(int i) {
         T t;
@@ -4188,7 +4234,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public <T extends View> T findViewWithTagTraversal(Object obj) {
         T t;
@@ -4206,7 +4251,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
         T t;
@@ -4344,7 +4388,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         view.setLayoutParams(params);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean checkLayoutParams(LayoutParams p) {
         return p != null;
     }
@@ -4387,7 +4430,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -4415,7 +4457,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -4429,7 +4470,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void destroyHardwareResources() {
         super.destroyHardwareResources();
@@ -4439,12 +4479,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean addViewInLayout(View child, int index, LayoutParams params) {
         return addViewInLayout(child, index, params, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean addViewInLayout(View child, int index, LayoutParams params, boolean preventRequestLayout) {
         if (child == null) {
             throw new IllegalArgumentException("Cannot add a null child view to a ViewGroup");
@@ -4455,7 +4493,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void cleanupLayoutState(View child) {
         child.mPrivateFlags &= -4097;
     }
@@ -4875,7 +4912,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void removeDetachedView(View child, boolean animate) {
         ArrayList<View> arrayList;
         LayoutTransition layoutTransition = this.mTransition;
@@ -4905,7 +4941,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         dispatchViewRemoved(child);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void attachViewToParent(View child, int index, LayoutParams params) {
         child.mLayoutParams = params;
         if (index < 0) {
@@ -4927,13 +4962,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         notifySubtreeAccessibilityStateChangedIfNeeded();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void detachViewFromParent(View child) {
         child.setDetached(true);
         removeFromArray(indexOfChild(child));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void detachViewFromParent(int index) {
         if (index >= 0 && index < this.mChildrenCount) {
             this.mChildren[index].setDetached(true);
@@ -4941,7 +4974,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         removeFromArray(index);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void detachViewsFromParent(int start, int count) {
         int start2 = Math.max(0, start);
         int end = Math.min(this.mChildrenCount, start2 + count);
@@ -4951,7 +4983,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         removeFromArray(start2, count);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void detachAllViewsFromParent() {
         int count = this.mChildrenCount;
         if (count <= 0) {
@@ -5110,12 +5141,26 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         offsetRectBetweenParentAndChild(descendant, rect, false, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0064, code lost:            if (r10 == false) goto L27;     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0066, code lost:            r9.offset(r8.mLeft - r8.mScrollX, r8.mTop - r8.mScrollY);     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:?, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x0074, code lost:            r9.offset(r8.mScrollX - r8.mLeft, r8.mScrollY - r8.mTop);     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x0081, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0064, code lost:
+    
+        if (r10 == false) goto L66;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0066, code lost:
+    
+        r9.offset(r8.mLeft - r8.mScrollX, r8.mTop - r8.mScrollY);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x0074, code lost:
+    
+        r9.offset(r8.mScrollX - r8.mLeft, r8.mScrollY - r8.mTop);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x0081, code lost:
+    
+        return;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -5393,7 +5438,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         this.mLayoutCalledWhileSuppressed = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean canAnimate() {
         return this.mLayoutAnimationController != null;
     }
@@ -5445,19 +5489,16 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return (this.mGroupFlags & 32768) == 32768;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Deprecated
     public void setChildrenDrawnWithCacheEnabled(boolean enabled) {
         setBooleanFlag(32768, enabled);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @ViewDebug.ExportedProperty(category = "drawing")
     public boolean isChildrenDrawingOrderEnabled() {
         return (this.mGroupFlags & 1024) == 1024;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setChildrenDrawingOrderEnabled(boolean enabled) {
         setBooleanFlag(1024, enabled);
     }
@@ -5490,7 +5531,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         setBooleanFlag(8388608, explicitly);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public void invalidateInheritedLayoutMode(int layoutModeOfRoot) {
         int i = this.mLayoutMode;
@@ -5533,7 +5573,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return new LayoutParams(-2, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void debug(int depth) {
         super.debug(depth);
@@ -5590,7 +5629,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mChildren[index];
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void measureChildren(int widthMeasureSpec, int heightMeasureSpec) {
         int size = this.mChildrenCount;
         View[] children = this.mChildren;
@@ -5602,7 +5640,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
         LayoutParams lp = child.getLayoutParams();
         int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec, this.mPaddingLeft + this.mPaddingRight, lp.width);
@@ -5610,7 +5647,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
         MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
         int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec, this.mPaddingLeft + this.mPaddingRight + lp.leftMargin + lp.rightMargin + widthUsed, lp.width);
@@ -5700,7 +5736,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         disappearingChildren.add(v);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishAnimatingView(View view, Animation animation) {
         ArrayList<View> disappearingChildren = this.mDisappearingChildren;
         if (disappearingChildren != null && disappearingChildren.contains(view)) {
@@ -5721,7 +5756,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isViewTransitioning(View view) {
         ArrayList<View> arrayList = this.mTransitioningViews;
         return arrayList != null && arrayList.contains(view);
@@ -5755,6 +5789,32 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     }
                 }
                 invalidate();
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewGroup$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements LayoutTransition.TransitionListener {
+        AnonymousClass4() {
+        }
+
+        @Override // android.animation.LayoutTransition.TransitionListener
+        public void startTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
+            if (transitionType == 3) {
+                ViewGroup.this.startViewTransition(view);
+            }
+        }
+
+        @Override // android.animation.LayoutTransition.TransitionListener
+        public void endTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
+            if (ViewGroup.this.mLayoutCalledWhileSuppressed && !transition.isChangingLayout()) {
+                ViewGroup.this.requestLayout();
+                ViewGroup.this.mLayoutCalledWhileSuppressed = false;
+            }
+            if (transitionType == 3 && ViewGroup.this.mTransitioningViews != null) {
+                ViewGroup.this.endViewTransition(view);
             }
         }
     }
@@ -6104,7 +6164,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mAnimationListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -6134,7 +6193,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int[] onCreateDrawableState(int extraSpace) {
         if ((this.mGroupFlags & 8192) == 0) {
@@ -6262,7 +6320,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void resolveDrawables() {
         super.resolveDrawables();
@@ -6333,7 +6390,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void resetResolvedDrawables() {
         super.resetResolvedDrawables();
@@ -6390,7 +6446,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mNestedScrollAxes;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onSetLayoutParams(View child, LayoutParams layoutParams) {
         requestLayout();
     }
@@ -6424,13 +6479,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public boolean hasUnhandledKeyListener() {
         return this.mChildUnhandledKeyListeners > 0 || super.hasUnhandledKeyListener();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void incrementChildUnhandledKeyListeners() {
         int i = this.mChildUnhandledKeyListeners + 1;
         this.mChildUnhandledKeyListeners = i;
@@ -6439,7 +6492,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void decrementChildUnhandledKeyListeners() {
         int i = this.mChildUnhandledKeyListeners - 1;
         this.mChildUnhandledKeyListeners = i;
@@ -6448,7 +6500,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.View
     public View dispatchUnhandledKeyEvent(KeyEvent evt) {
         if (!hasUnhandledKeyListener()) {
@@ -6482,7 +6533,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class TouchTarget {
         public static final int ALL_POINTER_IDS = -1;
@@ -6535,7 +6585,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class HoverTarget {
         private static final int MAX_RECYCLED = 32;
@@ -6585,7 +6634,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ChildListForAutoFillOrContentCapture extends ArrayList<View> {
         private static final int MAX_POOL_SIZE = 32;
@@ -6608,7 +6656,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ChildListForAccessibility {
         private static final int MAX_POOL_SIZE = 32;
@@ -6679,7 +6726,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ViewLocationHolder implements Comparable<ViewLocationHolder> {
         public static final int COMPARISON_STRATEGY_LOCATION = 2;
@@ -6785,13 +6831,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             return child2 != null ? -1 : 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$compareBoundsOfTree$0(Rect tempRect, Rect view1Bounds, View view) {
             view.getBoundsOnScreen(tempRect, true);
             return true ^ tempRect.equals(view1Bounds);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$compareBoundsOfTree$1(Rect tempRect, Rect view2Bounds, View view) {
             view.getBoundsOnScreen(tempRect, true);
             return true ^ tempRect.equals(view2Bounds);
@@ -6837,7 +6881,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         canvas.drawLines(fArr, paint);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
@@ -6968,9 +7011,69 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewGroup$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements AbsListView.OnScrollOffsetListener {
+        AnonymousClass5() {
+        }
+
+        @Override // android.widget.AbsListView.OnScrollOffsetListener
+        public void onScrollOffsetChanged(AbsListView view, int offset) {
+            int distanceByTop;
+            int offsetAdjusted;
+            MarginLayoutParams params;
+            int offsetAdjusted2;
+            MarginLayoutParams params2;
+            if (ViewGroup.this.mAppWidgetToolBarHeight == 0) {
+                ViewGroup viewGroup = ViewGroup.this;
+                viewGroup.mAppWidgetToolBarHeight = viewGroup.mAppWidgetToolBar.getHeight();
+            }
+            if (offset < 0) {
+                int distanceByTop2 = ViewGroup.this.mAppWidgetToolBar.getBottom() * (-1);
+                if (distanceByTop2 < 0 && (offsetAdjusted2 = Math.max(distanceByTop2, offset)) < 0 && (params2 = (MarginLayoutParams) ViewGroup.this.mAppWidgetToolBar.getLayoutParams()) != null) {
+                    params2.topMargin += offsetAdjusted2;
+                    params2.bottomMargin += offsetAdjusted2;
+                    ViewGroup.this.mAppWidgetToolBar.setLayoutParams(params2);
+                    return;
+                }
+                return;
+            }
+            if (offset > 0 && (distanceByTop = ViewGroup.this.mAppWidgetToolBar.getTop() * (-1)) > 0 && (offsetAdjusted = Math.min(distanceByTop, offset)) > 0 && (params = (MarginLayoutParams) ViewGroup.this.mAppWidgetToolBar.getLayoutParams()) != null) {
+                params.topMargin += offsetAdjusted;
+                params.bottomMargin += offsetAdjusted;
+                if (params.topMargin > 0) {
+                    params.topMargin = 0;
+                    params.bottomMargin = ViewGroup.this.mAppWidgetToolBarHeight;
+                }
+                ViewGroup.this.mAppWidgetToolBar.setLayoutParams(params);
+            }
+        }
+
+        @Override // android.widget.AbsListView.OnScrollOffsetListener
+        public void onScrollMotionDone(AbsListView view) {
+            int distanceByTop = ViewGroup.this.mAppWidgetToolBar.getBottom();
+            if (distanceByTop <= 0) {
+                ViewGroup.this.mExpandAction.setDistance(view, ViewGroup.this.mAppWidgetToolBar.getHeight() * (-1));
+                view.postDelayed(ViewGroup.this.mExpandAction, 1500L);
+                return;
+            }
+            boolean needToCollapse = distanceByTop < ViewGroup.this.mAppWidgetToolBar.getHeight() / 2;
+            int distanceToScroll = needToCollapse ? distanceByTop : distanceByTop - ViewGroup.this.mAppWidgetToolBar.getHeight();
+            if (distanceToScroll != 0) {
+                ViewGroup.this.mReleaseAction.setDistance(view, distanceToScroll);
+                view.removeCallbacks(ViewGroup.this.mReleaseAction);
+                view.postDelayed(ViewGroup.this.mReleaseAction, 50L);
+            }
+        }
+    }
+
     public void registerOnScrollOffsetChangedListener(ListView view) {
         view.setOnScrollOffsetListener(this.mOnScrollListener);
         view.setOnScrollListener(new AbsListView.OnScrollListener() { // from class: android.view.ViewGroup.6
+            AnonymousClass6() {
+            }
+
             @Override // android.widget.AbsListView.OnScrollListener
             public void onScrollStateChanged(AbsListView view2, int scrollState) {
                 if (ViewGroup.this.mAppWidgetScrollState != scrollState) {
@@ -6987,7 +7090,27 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.view.ViewGroup$6 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass6 implements AbsListView.OnScrollListener {
+        AnonymousClass6() {
+        }
+
+        @Override // android.widget.AbsListView.OnScrollListener
+        public void onScrollStateChanged(AbsListView view2, int scrollState) {
+            if (ViewGroup.this.mAppWidgetScrollState != scrollState) {
+                ViewGroup.this.mAppWidgetScrollState = scrollState;
+                if (ViewGroup.this.mAppWidgetScrollState != 0) {
+                    ViewGroup.this.mAppWidgetListView.removeCallbacks(ViewGroup.this.mExpandAction);
+                }
+            }
+        }
+
+        @Override // android.widget.AbsListView.OnScrollListener
+        public void onScroll(AbsListView view2, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        }
+    }
+
     /* loaded from: classes4.dex */
     public class ReleaseRunnable implements Runnable {
         private static final int EXPAND_ACTION = 0;
@@ -7022,6 +7145,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     ViewGroup.this.mExpandOffsetAnimator.setDuration(400L);
                     ViewGroup.this.mExpandOffsetAnimator.setIntValues(0, this.mDistance * (-1));
                     ViewGroup.this.mExpandOffsetAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.view.ViewGroup.ReleaseRunnable.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                         public void onAnimationUpdate(ValueAnimator animation) {
                             int value = ((Integer) animation.getAnimatedValue()).intValue();
@@ -7031,6 +7157,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                         }
                     });
                     ViewGroup.this.mExpandOffsetAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.view.ViewGroup.ReleaseRunnable.2
+                        AnonymousClass2() {
+                        }
+
                         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                         public void onAnimationStart(Animator animator) {
                             if ((animator instanceof ValueAnimator) && ((ValueAnimator) animator).getAnimatedValue() != null) {
@@ -7051,6 +7180,46 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     });
                     ViewGroup.this.mExpandOffsetAnimator.start();
                 }
+            }
+        }
+
+        /* renamed from: android.view.ViewGroup$ReleaseRunnable$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = ((Integer) animation.getAnimatedValue()).intValue();
+                int distance = value - ReleaseRunnable.this.mLastOffset;
+                ReleaseRunnable.this.mLastOffset = value;
+                ViewGroup.this.mOnScrollListener.onScrollOffsetChanged(ReleaseRunnable.this.mView, distance);
+            }
+        }
+
+        /* renamed from: android.view.ViewGroup$ReleaseRunnable$2 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass2 extends AnimatorListenerAdapter {
+            AnonymousClass2() {
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animator) {
+                if ((animator instanceof ValueAnimator) && ((ValueAnimator) animator).getAnimatedValue() != null) {
+                    ReleaseRunnable.this.mLastOffset = ((Integer) ((ValueAnimator) animator).getAnimatedValue()).intValue();
+                }
+                ReleaseRunnable.this.mView.semShowGoToTOP();
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                ReleaseRunnable.this.mLastOffset = 0;
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationCancel(Animator animation) {
+                ReleaseRunnable.this.mLastOffset = 0;
             }
         }
     }

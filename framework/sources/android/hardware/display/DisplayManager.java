@@ -83,7 +83,7 @@ public final class DisplayManager {
     public static final String SEM_WIFI_DISPLAY_VOLUME_SUPPORT_CHANGED = "com.samsung.intent.action.WIFI_DISPLAY_VOLUME_SUPPORT_CHANGED";
     public static final String SPEG_DISPLAY_NAME = "SpegVirtualDisplay";
     public static final int SPEG_VIRTUAL_DISPLAY_FLAGS = 16777672;
-    public static final boolean SUPPORT_SCREEN_SHARING_READY = false;
+    public static final boolean SUPPORT_SCREEN_SHARING_READY = true;
     public static final boolean SUPPORT_WFD_SERVICE = true;
     public static final int SWITCHING_TYPE_ACROSS_AND_WITHIN_GROUPS = 2;
     public static final int SWITCHING_TYPE_NONE = 0;
@@ -329,7 +329,6 @@ public final class DisplayManager {
         return (Display[]) tmpDisplays.toArray(new Display[tmpDisplays.size()]);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isPresentationDisplay(Display display) {
         if (display == null || display.getDisplayId() == 0 || (display.getFlags() & 8) == 0 || isExtraDisplay(display) || isViewCoverDisplay(display)) {
             return false;
@@ -346,12 +345,10 @@ public final class DisplayManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isRearDisplay(Display display) {
         return (display == null || display.getDisplayId() == 0 || display.getType() != 1 || (display.getFlags() & 8192) == 0) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isBuiltInDisplay(Display display) {
         return display != null && display.getType() == 1;
     }
@@ -360,7 +357,6 @@ public final class DisplayManager {
         return display != null && display.getDisplayId() == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean checkNonNullIncludingBuiltIn(Display display) {
         if (display == null) {
             return false;
@@ -368,32 +364,26 @@ public final class DisplayManager {
         return isExtraDisplay(display) || checkNonNullAndOtherPolicy(display);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isHiddenSpaceDisplay(Display display) {
         return (display == null || display.getType() != 5 || (display.getFlags() & 16384) == 0) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isDexDisplay(Display display) {
         return display != null && display.getType() == 5 && display.getDisplayId() == 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isRemoteAppDisplay(Display display) {
         return (display == null || display.getType() != 5 || (display.getFlags() & 33554432) == 0) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isViewCoverDisplay(Display display) {
         return (display == null || display.getType() != 5 || (display.getFlags() & 524288) == 0) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isCarLifeDisplay(Display display) {
         return (display == null || display.getType() != 5 || (display.getFlags() & 1048576) == 0) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean checkNonNullAndOtherPolicy(Display display) {
         if (display == null || display.getDisplayId() == 2 || (display.getFlags() & 33554432) != 0 || isExtraDisplay(display) || isViewCoverDisplay(display)) {
             return false;
@@ -704,10 +694,13 @@ public final class DisplayManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class WeakDisplayCache {
         private final SparseArray<WeakReference<Display>> mDisplayCache;
+
+        /* synthetic */ WeakDisplayCache(WeakDisplayCacheIA weakDisplayCacheIA) {
+            this();
+        }
 
         private WeakDisplayCache() {
             this.mDisplayCache = new SparseArray<>();

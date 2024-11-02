@@ -10,7 +10,6 @@ public class BackupDataInputStream extends InputStream {
     BackupDataInput mData;
     byte[] mOneByte;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BackupDataInputStream(BackupDataInput data) {
         this.mData = data;
     }

@@ -5,7 +5,6 @@ import android.media.AudioTrack;
 import android.speech.tts.TextToSpeechService;
 import android.util.Log;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class BlockingAudioTrack {
     private static final boolean DBG = false;
@@ -27,7 +26,6 @@ public class BlockingAudioTrack {
     private AudioTrack mAudioTrack = null;
     private volatile boolean mStopped = false;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BlockingAudioTrack(TextToSpeechService.AudioOutputParams audioParams, int sampleRate, int audioFormat, int channelCount) {
         this.mBytesWritten = 0;
         this.mAudioParams = audioParams;
@@ -93,7 +91,6 @@ public class BlockingAudioTrack {
         track.release();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getChannelConfig(int channelCount) {
         if (channelCount == 1) {
             return 4;
@@ -104,7 +101,6 @@ public class BlockingAudioTrack {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getAudioLengthMs(int numBytes) {
         int unconsumedFrames = numBytes / this.mBytesPerFrame;
         long estimatedTimeMs = (unconsumedFrames * 1000) / this.mSampleRateInHz;

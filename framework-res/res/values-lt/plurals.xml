@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Telefonas veikia nestabiliai, nes išimta SD kortelė, kurioje buvo įdiegtos programos. Kad vėl veiktų normaliai, telefonas bus paleistas iš naujo po %d sek. Prieš paleidžiant telefoną iš naujo išsaugokite visus neišsaugotus duomenis.</item>
+        <item quantity="other">Jūsų planšetinis kompiuteris veikia nestabiliai, nes išimta SD kortelė su įdiegtomis programomis. Jūsų planšetinis kompiuteris bus paleistas iš naujo po %d sek., kad vėl veiktų normaliai. Prieš paleidžiant planšetinį kompiuterį iš naujo išsaugokite visus neišsaugotus duomenis.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefonas veikia nestabiliai, nes išimta SD kortelė, kurioje buvo įdiegtos programos. Kad vėl veiktų normaliai, telefonas bus paleistas iš naujo po %d sek. Prieš paleidžiant telefoną iš naujo išsaugokite visus neišsaugotus duomenis.</item>
+        <item quantity="one">Jūsų planšetinis kompiuteris veikia nestabiliai, nes išimta SD kortelė su įdiegtomis programomis. Jūsų planšetinis kompiuteris bus paleistas iš naujo po %d sek., kad vėl veiktų normaliai. Prieš paleidžiant planšetinį kompiuterį iš naujo išsaugokite visus neišsaugotus duomenis.</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefonas veikia nestabiliai, nes išimta SD kortelė, kurioje buvo įdiegtos programos. Kad vėl veiktų normaliai, telefonas bus paleistas iš naujo po %d sek. Prieš paleidžiant telefoną iš naujo išsaugokite visus neišsaugotus duomenis.</item>
-        <item quantity="many">Telefonas veikia nestabiliai, nes išimta SD kortelė, kurioje buvo įdiegtos programos. Kad vėl veiktų normaliai, telefonas bus paleistas iš naujo po %d sek. Prieš paleidžiant telefoną iš naujo išsaugokite visus neišsaugotus duomenis.</item>
+        <item quantity="few">Jūsų planšetinis kompiuteris veikia nestabiliai, nes išimta SD kortelė su įdiegtomis programomis. Jūsų planšetinis kompiuteris bus paleistas iš naujo po %d sek., kad vėl veiktų normaliai. Prieš paleidžiant planšetinį kompiuterį iš naujo išsaugokite visus neišsaugotus duomenis.</item>
+        <item quantity="many">Jūsų planšetinis kompiuteris veikia nestabiliai, nes išimta SD kortelė su įdiegtomis programomis. Jūsų planšetinis kompiuteris bus paleistas iš naujo po %d sek., kad vėl veiktų normaliai. Prieš paleidžiant planšetinį kompiuterį iš naujo išsaugokite visus neišsaugotus duomenis.</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Tel. bus paleist. iš naujo po %d sek.</item>
+        <item quantity="other">Planšetė bus paleista iš naujo po %d s</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tel. bus paleist. iš naujo po %d sek.</item>
+        <item quantity="one">Planšetė bus paleista iš naujo po %d s</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Tel. bus paleist. iš naujo po %d sek.</item>
-        <item quantity="many">Tel. bus paleist. iš naujo po %d sek.</item>
+        <item quantity="few">Planšetė bus paleista iš naujo po %d s</item>
+        <item quantity="many">Planšetė bus paleista iš naujo po %d s</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">
         <item quantity="other">%d programų buvo uždaryta automatiškai, nes dėl jų telefonas kaista. Jas galėsite atidaryti vėliau, kai telefonas atvės.</item>

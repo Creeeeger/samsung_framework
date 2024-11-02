@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextWristUpMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextWristUpMotion> CREATOR = new Parcelable.Creator<SContextWristUpMotion>() { // from class: android.hardware.scontext.SContextWristUpMotion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextWristUpMotion createFromParcel(Parcel in) {
             return new SContextWristUpMotion(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextWristUpMotion[] newArray(int size) {
             return new SContextWristUpMotion[size];
@@ -22,7 +23,6 @@ public class SContextWristUpMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextWristUpMotion() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextWristUpMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextWristUpMotion$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextWristUpMotion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextWristUpMotion createFromParcel(Parcel in) {
+            return new SContextWristUpMotion(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextWristUpMotion[] newArray(int size) {
+            return new SContextWristUpMotion[size];
+        }
     }
 }

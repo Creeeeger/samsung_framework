@@ -85,7 +85,6 @@ public class AbsoluteLayout extends ViewGroup {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int count = getChildCount();
@@ -111,7 +110,6 @@ public class AbsoluteLayout extends ViewGroup {
         return new LayoutParams(-2, -2, 0, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
@@ -131,7 +129,6 @@ public class AbsoluteLayout extends ViewGroup {
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;

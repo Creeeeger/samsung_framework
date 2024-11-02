@@ -169,7 +169,6 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
         this.mDrawableContainerState.mExitFadeDuration = ms;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         Drawable drawable = this.mLastDrawable;
@@ -278,7 +277,6 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] state) {
         Drawable drawable = this.mLastDrawable;
@@ -292,7 +290,6 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onLevelChange(int level) {
         Drawable drawable = this.mLastDrawable;
@@ -459,6 +456,9 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
             Runnable runnable = this.mAnimationRunnable;
             if (runnable == null) {
                 this.mAnimationRunnable = new Runnable() { // from class: android.graphics.drawable.DrawableContainer.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         DrawableContainer.this.animate(true);
@@ -472,6 +472,19 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
         }
         invalidateSelf();
         return true;
+    }
+
+    /* renamed from: android.graphics.drawable.DrawableContainer$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            DrawableContainer.this.animate(true);
+            DrawableContainer.this.invalidateSelf();
+        }
     }
 
     private void initializeDrawableForDisplay(Drawable d) {
@@ -557,7 +570,6 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
         return this.mCurrDrawable;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void updateDensity(Resources res) {
         this.mDrawableContainerState.updateDensity(res);
     }
@@ -641,7 +653,6 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
         ColorStateList mTintList;
         boolean mVariablePadding;
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public DrawableContainerState(DrawableContainerState orig, DrawableContainer owner, Resources res) {
             this.mDensity = 160;
             this.mVariablePadding = false;
@@ -698,7 +709,7 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
                 this.mNumChildren = orig.mNumChildren;
                 SparseArray<Drawable.ConstantState> origDf = orig.mDrawableFutures;
                 if (origDf != null) {
-                    this.mDrawableFutures = origDf.m4951clone();
+                    this.mDrawableFutures = origDf.m4950clone();
                 } else {
                     this.mDrawableFutures = new SparseArray<>(this.mNumChildren);
                 }
@@ -748,7 +759,6 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
             this.mCheckedStateful = false;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public final int getCapacity() {
             return this.mDrawables.length;
         }
@@ -866,7 +876,6 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void mutate() {
             int N = this.mNumChildren;
             Drawable[] drawables = this.mDrawables;
@@ -1078,7 +1087,6 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setConstantState(DrawableContainerState state) {
         this.mDrawableContainerState = state;
         int i = this.mCurIndex;
@@ -1093,10 +1101,13 @@ public class DrawableContainer extends Drawable implements Drawable.Callback {
         this.mLastDrawable = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class BlockInvalidateCallback implements Drawable.Callback {
         private Drawable.Callback mCallback;
+
+        /* synthetic */ BlockInvalidateCallback(BlockInvalidateCallbackIA blockInvalidateCallbackIA) {
+            this();
+        }
 
         private BlockInvalidateCallback() {
         }

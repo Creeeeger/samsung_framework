@@ -103,7 +103,6 @@ public final class Geocoder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class GeocoderImpl extends IGeocodeListener.Stub {
         private GeocodeListener mListener;
@@ -130,7 +129,6 @@ public final class Geocoder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class SynchronousGeocoder implements GeocodeListener {
         private final CountDownLatch mLatch = new CountDownLatch(1);

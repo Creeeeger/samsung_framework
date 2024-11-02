@@ -13,7 +13,6 @@ import android.util.SparseIntArray;
 import android.view.WindowCallbacks;
 import com.android.internal.jank.FrameTracker;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class InteractionMonitorDebugOverlay implements WindowCallbacks {
     private static final int REASON_STILL_RUNNING = -1000;
@@ -28,7 +27,6 @@ public class InteractionMonitorDebugOverlay implements WindowCallbacks {
     private Handler mHandler = null;
     private FrameTracker.ViewRootWrapper mViewRoot = null;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InteractionMonitorDebugOverlay(Object lock, int bgColor, double yOffset) {
         this.mLock = lock;
         this.mBgColor = bgColor;
@@ -41,7 +39,6 @@ public class InteractionMonitorDebugOverlay implements WindowCallbacks {
         this.mPackageName = context.getPackageName();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispose() {
         Handler handler;
         if (this.mViewRoot != null && (handler = this.mHandler) != null) {
@@ -58,7 +55,6 @@ public class InteractionMonitorDebugOverlay implements WindowCallbacks {
         Trace.asyncTraceForTrackEnd(4096L, TRACK_NAME, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dispose$0() {
         this.mViewRoot.removeWindowCallbacks(this);
     }
@@ -82,7 +78,6 @@ public class InteractionMonitorDebugOverlay implements WindowCallbacks {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$attachViewRootIfNeeded$1(FrameTracker.ViewRootWrapper viewRoot) {
         viewRoot.addWindowCallbacks(this);
     }
@@ -126,13 +121,11 @@ public class InteractionMonitorDebugOverlay implements WindowCallbacks {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$forceRedraw$2() {
         this.mViewRoot.requestInvalidateRootRenderNode();
         this.mViewRoot.getView().invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onTrackerRemoved(int removedCuj, int reason, SparseArray<FrameTracker> runningTrackers) {
         synchronized (this.mLock) {
             this.mRunningCujs.put(removedCuj, reason);
@@ -166,7 +159,6 @@ public class InteractionMonitorDebugOverlay implements WindowCallbacks {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onTrackerAdded(int addedCuj, FrameTracker tracker) {
         synchronized (this.mLock) {
             this.mRunningCujs.put(addedCuj, -1000);

@@ -86,8 +86,9 @@ public interface IOnMediaKeyListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IOnMediaKeyListener {
+        public static class Proxy implements IOnMediaKeyListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

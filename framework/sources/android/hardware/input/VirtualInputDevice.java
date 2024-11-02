@@ -10,7 +10,6 @@ abstract class VirtualInputDevice implements Closeable {
     protected final IBinder mToken;
     protected final IVirtualDevice mVirtualDevice;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualInputDevice(IVirtualDevice virtualDevice, IBinder token) {
         this.mVirtualDevice = virtualDevice;
         this.mToken = token;

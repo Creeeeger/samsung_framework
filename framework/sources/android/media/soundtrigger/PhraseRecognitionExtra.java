@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PhraseRecognitionExtra implements Parcelable {
     public static final Parcelable.Creator<PhraseRecognitionExtra> CREATOR = new Parcelable.Creator<PhraseRecognitionExtra>() { // from class: android.media.soundtrigger.PhraseRecognitionExtra.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PhraseRecognitionExtra createFromParcel(Parcel _aidl_source) {
             PhraseRecognitionExtra _aidl_out = new PhraseRecognitionExtra();
@@ -18,7 +20,6 @@ public class PhraseRecognitionExtra implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhraseRecognitionExtra[] newArray(int _aidl_size) {
             return new PhraseRecognitionExtra[_aidl_size];
@@ -28,6 +29,25 @@ public class PhraseRecognitionExtra implements Parcelable {
     public int id = 0;
     public int recognitionModes = 0;
     public int confidenceLevel = 0;
+
+    /* renamed from: android.media.soundtrigger.PhraseRecognitionExtra$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PhraseRecognitionExtra> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhraseRecognitionExtra createFromParcel(Parcel _aidl_source) {
+            PhraseRecognitionExtra _aidl_out = new PhraseRecognitionExtra();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhraseRecognitionExtra[] newArray(int _aidl_size) {
+            return new PhraseRecognitionExtra[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

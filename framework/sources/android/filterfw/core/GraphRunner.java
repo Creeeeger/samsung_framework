@@ -39,7 +39,6 @@ public abstract class GraphRunner {
         return this.mFilterContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean activateGlContext() {
         GLEnvironment glEnv = this.mFilterContext.getGLEnvironment();
         if (glEnv != null && !glEnv.isActive()) {
@@ -49,7 +48,6 @@ public abstract class GraphRunner {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void deactivateGlContext() {
         GLEnvironment glEnv = this.mFilterContext.getGLEnvironment();
         if (glEnv != null) {

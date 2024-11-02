@@ -86,8 +86,9 @@ public interface ISensorPrivacyListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISensorPrivacyListener {
+        public static class Proxy implements ISensorPrivacyListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

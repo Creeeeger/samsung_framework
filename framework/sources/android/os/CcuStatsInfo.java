@@ -5,13 +5,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class CcuStatsInfo implements Parcelable {
     public static final Parcelable.Creator<CcuStatsInfo> CREATOR = new Parcelable.Creator<CcuStatsInfo>() { // from class: android.os.CcuStatsInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CcuStatsInfo createFromParcel(Parcel in) {
             return new CcuStatsInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CcuStatsInfo[] newArray(int size) {
             return new CcuStatsInfo[size];
@@ -37,5 +38,22 @@ public class CcuStatsInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.os.CcuStatsInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CcuStatsInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CcuStatsInfo createFromParcel(Parcel in) {
+            return new CcuStatsInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CcuStatsInfo[] newArray(int size) {
+            return new CcuStatsInfo[size];
+        }
     }
 }

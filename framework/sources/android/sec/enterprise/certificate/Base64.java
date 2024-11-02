@@ -136,9 +136,12 @@ public final class Base64 {
         return checkNoTrailingAndReturn(output, in, pos[0], inLength);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class InvalidBase64ByteException extends Exception {
+        /* synthetic */ InvalidBase64ByteException(InvalidBase64ByteExceptionIA invalidBase64ByteExceptionIA) {
+            this();
+        }
+
         private InvalidBase64ByteException() {
         }
     }

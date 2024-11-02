@@ -42,12 +42,10 @@ public class SemInputImage {
         this.mBuffer = buffer;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FileDescriptor getFileDescriptor() {
         return this.mFd;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ByteBuffer getBuffer() {
         return this.mBuffer;
     }
@@ -60,12 +58,10 @@ public class SemInputImage {
         return this.mHeight;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getStride() {
         return this.mStride;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSliceHeight() {
         return this.mSliceHeight;
     }

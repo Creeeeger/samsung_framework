@@ -8,7 +8,9 @@ import android.text.TextUtils;
 /* loaded from: classes3.dex */
 public class GatewayInfo implements Parcelable {
     public static final Parcelable.Creator<GatewayInfo> CREATOR = new Parcelable.Creator<GatewayInfo>() { // from class: android.telecom.GatewayInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GatewayInfo createFromParcel(Parcel source) {
             String gatewayPackageName = source.readString();
@@ -17,7 +19,6 @@ public class GatewayInfo implements Parcelable {
             return new GatewayInfo(gatewayPackageName, gatewayUri, originalAddress);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GatewayInfo[] newArray(int size) {
             return new GatewayInfo[size];
@@ -47,6 +48,26 @@ public class GatewayInfo implements Parcelable {
 
     public boolean isEmpty() {
         return TextUtils.isEmpty(this.mGatewayProviderPackageName) || this.mGatewayAddress == null;
+    }
+
+    /* renamed from: android.telecom.GatewayInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GatewayInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GatewayInfo createFromParcel(Parcel source) {
+            String gatewayPackageName = source.readString();
+            Uri gatewayUri = Uri.CREATOR.createFromParcel(source);
+            Uri originalAddress = Uri.CREATOR.createFromParcel(source);
+            return new GatewayInfo(gatewayPackageName, gatewayUri, originalAddress);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GatewayInfo[] newArray(int size) {
+            return new GatewayInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

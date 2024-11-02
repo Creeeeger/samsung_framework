@@ -81,7 +81,6 @@ public abstract class BackupAgent extends ContextWrapper {
         return this.mHandler;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public class SharedPrefsSynchronizer implements Runnable {
         public final CountDownLatch mLatch = new CountDownLatch(1);
@@ -96,7 +95,6 @@ public abstract class BackupAgent extends ContextWrapper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void waitForSharedPrefs() {
         Handler h = getHandler();
         SharedPrefsSynchronizer s = new SharedPrefsSynchronizer();
@@ -275,7 +273,6 @@ public abstract class BackupAgent extends ContextWrapper {
     public void onQuotaExceeded(long backupDataBytes, long quotaBytes) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getBackupUserId() {
         UserHandle userHandle = this.mUser;
         return userHandle == null ? super.getUserId() : userHandle.getIdentifier();
@@ -526,9 +523,14 @@ public abstract class BackupAgent extends ContextWrapper {
         attachBaseContext(context);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class BackupServiceBinder extends IBackupAgent.Stub {
+    public class BackupServiceBinder extends IBackupAgent.Stub {
         private static final String TAG = "BackupServiceBinder";
+
+        /* synthetic */ BackupServiceBinder(BackupAgent backupAgent, BackupServiceBinderIA backupServiceBinderIA) {
+            this();
+        }
 
         private BackupServiceBinder() {
         }
@@ -888,12 +890,10 @@ public abstract class BackupAgent extends ContextWrapper {
             return new IncludeExcludeRules(Collections.emptyMap(), new ArraySet());
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Map<String, Set<FullBackup.BackupScheme.PathWithRequiredFlags>> getIncludeMap() {
             return this.mManifestIncludeMap;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Set<FullBackup.BackupScheme.PathWithRequiredFlags> getExcludeSet() {
             return this.mManifestExcludeSet;
         }

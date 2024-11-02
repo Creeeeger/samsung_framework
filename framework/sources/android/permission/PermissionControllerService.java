@@ -117,7 +117,7 @@ public abstract class PermissionControllerService extends Service {
         throw new AbstractMethodError("Must be overridden in implementing class");
     }
 
-    /* renamed from: android.permission.PermissionControllerService$1, reason: invalid class name */
+    /* renamed from: android.permission.PermissionControllerService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IPermissionController.Stub {
         AnonymousClass1() {
@@ -150,7 +150,6 @@ public abstract class PermissionControllerService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$revokeRuntimePermissions$1(AndroidFuture callback, Map revoked) {
             CollectionUtils.forEach(revoked, new BiConsumer() { // from class: android.permission.PermissionControllerService$1$$ExternalSyntheticLambda3
                 @Override // java.util.function.BiConsumer
@@ -161,7 +160,6 @@ public abstract class PermissionControllerService extends Service {
             callback.complete(revoked);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$revokeRuntimePermissions$0(String pkg, List perms) {
             Preconditions.checkNotNull(pkg);
             Preconditions.checkCollectionElementsNotNull(perms, "permissions");

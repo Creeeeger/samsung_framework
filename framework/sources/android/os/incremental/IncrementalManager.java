@@ -126,10 +126,22 @@ public final class IncrementalManager {
         }
     }
 
-    private void linkFiles(final IncrementalStorage sourceStorage, File sourceAbsolutePath, String sourceRelativePath, final IncrementalStorage targetStorage, String targetRelativePath) throws IOException {
-        final Path sourceBase = sourceAbsolutePath.toPath().resolve(sourceRelativePath);
-        final Path targetRelative = Paths.get(targetRelativePath, new String[0]);
+    private void linkFiles(IncrementalStorage sourceStorage, File sourceAbsolutePath, String sourceRelativePath, IncrementalStorage targetStorage, String targetRelativePath) throws IOException {
+        Path sourceBase = sourceAbsolutePath.toPath().resolve(sourceRelativePath);
+        Path targetRelative = Paths.get(targetRelativePath, new String[0]);
         Files.walkFileTree(sourceAbsolutePath.toPath(), new SimpleFileVisitor<Path>() { // from class: android.os.incremental.IncrementalManager.1
+            final /* synthetic */ Path val$sourceBase;
+            final /* synthetic */ IncrementalStorage val$sourceStorage;
+            final /* synthetic */ Path val$targetRelative;
+            final /* synthetic */ IncrementalStorage val$targetStorage;
+
+            AnonymousClass1(Path sourceBase2, IncrementalStorage targetStorage2, Path targetRelative2, IncrementalStorage sourceStorage2) {
+                sourceBase = sourceBase2;
+                targetStorage = targetStorage2;
+                targetRelative = targetRelative2;
+                sourceStorage = sourceStorage2;
+            }
+
             @Override // java.nio.file.SimpleFileVisitor, java.nio.file.FileVisitor
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                 Path relativeDir = sourceBase.relativize(dir);
@@ -144,6 +156,36 @@ public final class IncrementalManager {
                 return FileVisitResult.CONTINUE;
             }
         });
+    }
+
+    /* renamed from: android.os.incremental.IncrementalManager$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends SimpleFileVisitor<Path> {
+        final /* synthetic */ Path val$sourceBase;
+        final /* synthetic */ IncrementalStorage val$sourceStorage;
+        final /* synthetic */ Path val$targetRelative;
+        final /* synthetic */ IncrementalStorage val$targetStorage;
+
+        AnonymousClass1(Path sourceBase2, IncrementalStorage targetStorage2, Path targetRelative2, IncrementalStorage sourceStorage2) {
+            sourceBase = sourceBase2;
+            targetStorage = targetStorage2;
+            targetRelative = targetRelative2;
+            sourceStorage = sourceStorage2;
+        }
+
+        @Override // java.nio.file.SimpleFileVisitor, java.nio.file.FileVisitor
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            Path relativeDir = sourceBase.relativize(dir);
+            targetStorage.makeDirectory(targetRelative.resolve(relativeDir).toString());
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override // java.nio.file.SimpleFileVisitor, java.nio.file.FileVisitor
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            Path relativeFile = sourceBase.relativize(file);
+            sourceStorage.makeLink(file.toAbsolutePath().toString(), targetStorage, targetRelative.resolve(relativeFile).toString());
+            return FileVisitResult.CONTINUE;
+        }
     }
 
     public static boolean isFeatureEnabled() {
@@ -203,9 +245,14 @@ public final class IncrementalManager {
         this.mLoadingProgressCallbacks.cleanUpCallbacks(storage);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class LoadingProgressCallbacks extends IStorageLoadingProgressListener.Stub {
+    public static class LoadingProgressCallbacks extends IStorageLoadingProgressListener.Stub {
         private final SparseArray<RemoteCallbackList<IPackageLoadingProgressCallback>> mCallbacks;
+
+        /* synthetic */ LoadingProgressCallbacks(LoadingProgressCallbacksIA loadingProgressCallbacksIA) {
+            this();
+        }
 
         private LoadingProgressCallbacks() {
             this.mCallbacks = new SparseArray<>();

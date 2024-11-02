@@ -25,13 +25,14 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class NotificationHistory implements Parcelable {
     public static final Parcelable.Creator<NotificationHistory> CREATOR = new Parcelable.Creator<NotificationHistory>() { // from class: android.app.NotificationHistory.2
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NotificationHistory createFromParcel(Parcel source) {
             return new NotificationHistory(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationHistory[] newArray(int size) {
             return new NotificationHistory[size];
@@ -43,6 +44,10 @@ public final class NotificationHistory implements Parcelable {
     private Parcel mParcel;
     private String[] mStringPool;
     private Set<String> mStringsToWrite;
+
+    /* synthetic */ NotificationHistory(Parcel parcel, NotificationHistoryIA notificationHistoryIA) {
+        this(parcel);
+    }
 
     /* loaded from: classes.dex */
     public static final class HistoricalNotification {
@@ -61,6 +66,10 @@ public final class NotificationHistory implements Parcelable {
         private Uri mUri;
         private int mUserId;
         private long mWhen;
+
+        /* synthetic */ HistoricalNotification(HistoricalNotificationIA historicalNotificationIA) {
+            this();
+        }
 
         private HistoricalNotification() {
         }
@@ -362,7 +371,6 @@ public final class NotificationHistory implements Parcelable {
         poolStringsFromNotifications();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$addNotificationsToWrite$0(HistoricalNotification o1, HistoricalNotification o2) {
         return Long.compare(o1.getPostedTimeMs(), o2.getPostedTimeMs()) * (-1);
     }
@@ -375,7 +383,7 @@ public final class NotificationHistory implements Parcelable {
                 break;
             }
             boolean sameUri = false;
-            final HistoricalNotification hn = this.mNotificationsToWrite.get(i);
+            HistoricalNotification hn = this.mNotificationsToWrite.get(i);
             if (uri != null && hn.getUri() != null && uri.equals(hn.getUri())) {
                 sameUri = true;
             }
@@ -386,6 +394,12 @@ public final class NotificationHistory implements Parcelable {
                 this.mNotificationsToWrite.remove(i);
                 if (hn.getUri() != null) {
                     BackgroundThread.getHandler().postDelayed(new Runnable() { // from class: android.app.NotificationHistory.1
+                        final /* synthetic */ HistoricalNotification val$hn;
+
+                        AnonymousClass1(HistoricalNotification hn2) {
+                            hn = hn2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             NotificationHistoryImageProvider.getInstance().deleteRows(hn.getUri().toString());
@@ -398,6 +412,21 @@ public final class NotificationHistory implements Parcelable {
             poolStringsFromNotifications();
         }
         return removed;
+    }
+
+    /* renamed from: android.app.NotificationHistory$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Runnable {
+        final /* synthetic */ HistoricalNotification val$hn;
+
+        AnonymousClass1(HistoricalNotification hn2) {
+            hn = hn2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            NotificationHistoryImageProvider.getInstance().deleteRows(hn.getUri().toString());
+        }
     }
 
     public void addNotificationsForDump(NotificationHistory notificationHistory, String packageName, int maxNotifications) {
@@ -415,7 +444,6 @@ public final class NotificationHistory implements Parcelable {
         poolStringsFromNotifications();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$addNotificationsForDump$1(HistoricalNotification o1, HistoricalNotification o2) {
         return Long.compare(o1.getPostedTimeMs(), o2.getPostedTimeMs()) * (-1);
     }
@@ -466,7 +494,6 @@ public final class NotificationHistory implements Parcelable {
         poolStringsFromNotifications();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$addNotificationsToWrite$2(HistoricalNotification o1, HistoricalNotification o2) {
         return Long.compare(o1.getPostedTimeMs(), o2.getPostedTimeMs()) * (-1);
     }
@@ -679,5 +706,22 @@ public final class NotificationHistory implements Parcelable {
             }
         }
         dest.writeBlob(p.marshall());
+    }
+
+    /* renamed from: android.app.NotificationHistory$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 implements Parcelable.Creator<NotificationHistory> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationHistory createFromParcel(Parcel source) {
+            return new NotificationHistory(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationHistory[] newArray(int size) {
+            return new NotificationHistory[size];
+        }
     }
 }

@@ -7,7 +7,6 @@ public final class PrintJob {
     private PrintJobInfo mCachedInfo;
     private final PrintManager mPrintManager;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PrintJob(PrintJobInfo info, PrintManager printManager) {
         this.mCachedInfo = info;
         this.mPrintManager = printManager;

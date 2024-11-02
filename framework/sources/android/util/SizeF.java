@@ -7,7 +7,9 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes4.dex */
 public final class SizeF implements Parcelable {
     public static final Parcelable.Creator<SizeF> CREATOR = new Parcelable.Creator<SizeF>() { // from class: android.util.SizeF.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SizeF createFromParcel(Parcel in) {
             float width = in.readFloat();
@@ -15,7 +17,6 @@ public final class SizeF implements Parcelable {
             return new SizeF(width, height);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SizeF[] newArray(int size) {
             return new SizeF[size];
@@ -94,5 +95,24 @@ public final class SizeF implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeFloat(this.mWidth);
         out.writeFloat(this.mHeight);
+    }
+
+    /* renamed from: android.util.SizeF$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SizeF> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SizeF createFromParcel(Parcel in) {
+            float width = in.readFloat();
+            float height = in.readFloat();
+            return new SizeF(width, height);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SizeF[] newArray(int size) {
+            return new SizeF[size];
+        }
     }
 }

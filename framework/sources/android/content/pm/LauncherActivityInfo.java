@@ -20,7 +20,6 @@ public class LauncherActivityInfo {
     private final LauncherActivityInfoInternal mInternal;
     private final PackageManager mPm;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LauncherActivityInfo(Context context, LauncherActivityInfoInternal internal) {
         this.mPm = context.getPackageManager();
         this.mInternal = internal;

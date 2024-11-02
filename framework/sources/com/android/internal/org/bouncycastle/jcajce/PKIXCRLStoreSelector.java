@@ -24,6 +24,10 @@ public class PKIXCRLStoreSelector<T extends CRL> implements Selector<T> {
     private final boolean issuingDistributionPointEnabled;
     private final BigInteger maxBaseCRLNumber;
 
+    /* synthetic */ PKIXCRLStoreSelector(Builder builder, PKIXCRLStoreSelectorIA pKIXCRLStoreSelectorIA) {
+        this(builder);
+    }
+
     /* loaded from: classes5.dex */
     public static class Builder {
         private final CRLSelector baseSelector;
@@ -148,8 +152,9 @@ public class PKIXCRLStoreSelector<T extends CRL> implements Selector<T> {
         return certStore.getCRLs(new SelectorClone(selector));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class SelectorClone extends X509CRLSelector {
+    public static class SelectorClone extends X509CRLSelector {
         private final PKIXCRLStoreSelector selector;
 
         SelectorClone(PKIXCRLStoreSelector selector) {

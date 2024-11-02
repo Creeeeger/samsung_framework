@@ -83,7 +83,6 @@ public interface IShortcutService extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
         public static class Proxy implements IShortcutService {
             private IBinder mRemote;

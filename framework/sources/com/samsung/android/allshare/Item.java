@@ -226,7 +226,6 @@ public abstract class Item implements Parcelable {
         @Deprecated
         public abstract Uri getURI();
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public Resource() {
         }
     }
@@ -286,7 +285,6 @@ public abstract class Item implements Parcelable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public static boolean checkFilePathValid(String filePath) {
             String absoluteFilePath;
             if (filePath == null || filePath.length() == 0) {
@@ -309,17 +307,17 @@ public abstract class Item implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class BuilderGeneratedItem extends Item implements IBundleHolder {
         public static final Parcelable.Creator<BuilderGeneratedItem> CREATOR = new Parcelable.Creator<BuilderGeneratedItem>() { // from class: com.samsung.android.allshare.Item.BuilderGeneratedItem.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public BuilderGeneratedItem createFromParcel(Parcel source) {
                 return new BuilderGeneratedItem(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BuilderGeneratedItem[] newArray(int size) {
                 return new BuilderGeneratedItem[size];
@@ -338,6 +336,18 @@ public abstract class Item implements Parcelable {
         private String mItemMimetype;
         private String mItemTitle;
         private String mSubtitlePath;
+
+        /* synthetic */ BuilderGeneratedItem(Parcel parcel, BuilderGeneratedItemIA builderGeneratedItemIA) {
+            this(parcel);
+        }
+
+        /* synthetic */ BuilderGeneratedItem(ItemCreator.ConstructorType constructorType, Uri uri, String str, String str2, String str3, ArrayList arrayList, ContentAttributeType contentAttributeType, WebContentBuilder.DeliveryMode deliveryMode, String str4, String str5, String str6, Date date, long j, BuilderGeneratedItemIA builderGeneratedItemIA) {
+            this(constructorType, uri, str, str2, str3, arrayList, contentAttributeType, deliveryMode, str4, str5, str6, date, j);
+        }
+
+        /* synthetic */ BuilderGeneratedItem(ItemCreator.ConstructorType constructorType, String str, String str2, String str3, ArrayList arrayList, ContentAttributeType contentAttributeType, String str4, BuilderGeneratedItemIA builderGeneratedItemIA) {
+            this(constructorType, str, str2, str3, arrayList, contentAttributeType, str4);
+        }
 
         private BuilderGeneratedItem(ItemCreator.ConstructorType conType, String filepath, String title, String subtitlePath, ArrayList<Caption> captionList, ContentAttributeType contentAttr, String mimeType) {
             this.mConType = ItemCreator.ConstructorType.UNKNOWN;
@@ -588,6 +598,23 @@ public abstract class Item implements Parcelable {
             this.mDeliveryMode = WebContentBuilder.DeliveryMode.stringToEnum(deliveryMode);
         }
 
+        /* renamed from: com.samsung.android.allshare.Item$BuilderGeneratedItem$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<BuilderGeneratedItem> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BuilderGeneratedItem createFromParcel(Parcel source) {
+                return new BuilderGeneratedItem(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BuilderGeneratedItem[] newArray(int size) {
+                return new BuilderGeneratedItem[size];
+            }
+        }
+
         private BuilderGeneratedItem(Parcel src) {
             this.mConType = ItemCreator.ConstructorType.UNKNOWN;
             this.mDeliveryMode = WebContentBuilder.DeliveryMode.UNKNOWN;
@@ -684,9 +711,10 @@ public abstract class Item implements Parcelable {
         }
     }
 
-    /* renamed from: com.samsung.android.allshare.Item$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.Item$1 */
     /* loaded from: classes5.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType;
 
@@ -921,7 +949,6 @@ public abstract class Item implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static MediaType convertItemTypeFromMimeType(String type) {
         if (type == null) {
             return MediaType.ITEM_UNKNOWN;

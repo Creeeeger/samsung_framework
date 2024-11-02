@@ -40,7 +40,6 @@ public class CallerInfoAsyncQuery {
         void onQueryComplete(int i, Object obj, CallerInfo callerInfo);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class CookieWrapper {
         public Object cookie;
@@ -49,6 +48,10 @@ public class CallerInfoAsyncQuery {
         public OnQueryCompleteListener listener;
         public String number;
         public int subId;
+
+        /* synthetic */ CookieWrapper(CookieWrapperIA cookieWrapperIA) {
+            this();
+        }
 
         private CookieWrapper() {
         }
@@ -61,7 +64,6 @@ public class CallerInfoAsyncQuery {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContentResolver getCurrentProfileContentResolver(Context context) {
         int currentUser = ActivityManager.getCurrentUser();
         int myUser = UserManager.get(context).getProcessUserId();
@@ -76,13 +78,16 @@ public class CallerInfoAsyncQuery {
         return context.getContentResolver();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class CallerInfoAsyncQueryHandler extends AsyncQueryHandler {
         private CallerInfo mCallerInfo;
         private Context mContext;
         private List<Runnable> mPendingListenerCallbacks;
         private Uri mQueryUri;
+
+        /* synthetic */ CallerInfoAsyncQueryHandler(CallerInfoAsyncQuery callerInfoAsyncQuery, Context context, CallerInfoAsyncQueryHandlerIA callerInfoAsyncQueryHandlerIA) {
+            this(context);
+        }
 
         /* loaded from: classes3.dex */
         protected class CallerInfoWorkerHandler extends AsyncQueryHandler.WorkerHandler {
@@ -148,11 +153,11 @@ public class CallerInfoAsyncQuery {
         }
 
         @Override // android.content.AsyncQueryHandler
-        protected void onQueryComplete(final int token, Object cookie, Cursor cursor) {
+        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
             int i;
             CookieWrapperIA cookieWrapperIA;
             Log.d(CallerInfoAsyncQuery.LOG_TAG, "##### onQueryComplete() #####   query complete for token: " + token, new Object[0]);
-            final CookieWrapper cw = (CookieWrapper) cookie;
+            CookieWrapper cw = (CookieWrapper) cookie;
             if (cw == null) {
                 Log.i(CallerInfoAsyncQuery.LOG_TAG, "Cookie is null, ignoring onQueryComplete() request.", new Object[0]);
                 if (cursor != null) {
@@ -221,6 +226,14 @@ public class CallerInfoAsyncQuery {
                 }
                 if (cw.listener != null) {
                     this.mPendingListenerCallbacks.add(new Runnable() { // from class: android.telecom.CallerInfoAsyncQuery.CallerInfoAsyncQueryHandler.1
+                        final /* synthetic */ CookieWrapper val$cw;
+                        final /* synthetic */ int val$token;
+
+                        AnonymousClass1(CookieWrapper cw2, int token2) {
+                            cw = cw2;
+                            token = token2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             cw.listener.onQueryComplete(token, cw.cookie, CallerInfoAsyncQueryHandler.this.mCallerInfo);
@@ -236,6 +249,23 @@ public class CallerInfoAsyncQuery {
                 if (cursor != null) {
                     cursor.close();
                 }
+            }
+        }
+
+        /* renamed from: android.telecom.CallerInfoAsyncQuery$CallerInfoAsyncQueryHandler$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ CookieWrapper val$cw;
+            final /* synthetic */ int val$token;
+
+            AnonymousClass1(CookieWrapper cw2, int token2) {
+                cw = cw2;
+                token = token2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                cw.listener.onQueryComplete(token, cw.cookie, CallerInfoAsyncQueryHandler.this.mCallerInfo);
             }
         }
     }
@@ -338,7 +368,6 @@ public class CallerInfoAsyncQuery {
         callerInfoAsyncQueryHandler.mQueryUri = contactRef;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void release() {
         this.mHandler.mContext = null;
         this.mHandler.mQueryUri = null;
@@ -346,7 +375,6 @@ public class CallerInfoAsyncQuery {
         this.mHandler = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String sanitizeUriToString(Uri uri) {
         if (uri != null) {
             String uriString = uri.toString();

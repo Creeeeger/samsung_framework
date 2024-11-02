@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
@@ -37,6 +38,9 @@ public class ProgressUpdateClient {
     private CompletableFuture<Bundle> mServiceReturnValue = new CompletableFuture<>();
     private final List<ProgressObserver> mProgressObservers = new ArrayList();
     private final ServiceConnection mConnection = new ServiceConnection() { // from class: com.samsung.android.photoremasterservice.ProgressUpdateClient.2
+        AnonymousClass2() {
+        }
+
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName className, IBinder service) {
             ProgressUpdateClient.this.mServiceMessenger = new Messenger(service);
@@ -60,6 +64,10 @@ public class ProgressUpdateClient {
         this.mHandlerThread = handlerThread;
         handlerThread.start();
         this.mIncomingMessenger = new Messenger(new Handler(this.mHandlerThread.getLooper()) { // from class: com.samsung.android.photoremasterservice.ProgressUpdateClient.1
+            AnonymousClass1(Looper arg0) {
+                super(arg0);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 if (ProgressUpdateClient.this.mProgressUpdateListener == null) {
@@ -101,6 +109,56 @@ public class ProgressUpdateClient {
                 }
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.photoremasterservice.ProgressUpdateClient$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper arg0) {
+            super(arg0);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            if (ProgressUpdateClient.this.mProgressUpdateListener == null) {
+                LogUtil.d(ProgressUpdateClient.TAG, "progressUpdate is received. But listener is unregistered. So received data is ignored.");
+                return;
+            }
+            Bundle bundle = msg.getData();
+            switch (msg.what) {
+                case -1:
+                    ProgressUpdateClient.this.mServiceReturnValue.complete(msg.getData());
+                    LogUtil.e(ProgressUpdateClient.TAG, "Received exception : " + msg.what);
+                    return;
+                case 0:
+                    ProgressUpdateClient.this.mServiceReturnValue.complete(msg.getData());
+                    LogUtil.d(ProgressUpdateClient.TAG, "Received MSG_RET");
+                    return;
+                case 15:
+                    String metadata = bundle.getString("String");
+                    ProgressUpdateClient.this.mProgressUpdateListener.onUpdateMetadata(metadata);
+                    LogUtil.d(ProgressUpdateClient.TAG, "Received OnUpdateMetaData");
+                    return;
+                case 16:
+                    double percent = bundle.getDouble(ServiceReturnKey.DOUBLE);
+                    int currentImageIndex = bundle.getIntArray(ServiceReturnKey.INT_ARRAY)[0];
+                    int totalImageCount = bundle.getIntArray(ServiceReturnKey.INT_ARRAY)[1];
+                    ProgressUpdateClient.this.mProgressUpdateListener.onUpdateProgress(percent, currentImageIndex, totalImageCount);
+                    ProgressUpdateClient.this.mProgressObservers.forEach(new Consumer() { // from class: com.samsung.android.photoremasterservice.ProgressUpdateClient$1$$ExternalSyntheticLambda0
+                        @Override // java.util.function.Consumer
+                        public final void accept(Object obj) {
+                            ((ProgressObserver) obj).update();
+                        }
+                    });
+                    LogUtil.d(ProgressUpdateClient.TAG, "Received OnUpdateProgress: " + percent + ", " + currentImageIndex + ", " + totalImageCount);
+                    return;
+                default:
+                    LogUtil.e(ProgressUpdateClient.TAG, "Wrong message is received.: " + msg.what);
+                    super.handleMessage(msg);
+                    return;
+            }
+        }
     }
 
     public synchronized void deinit() {
@@ -201,6 +259,9 @@ public class ProgressUpdateClient {
         }
         LogUtil.d(TAG, "ServiceCallRunnable started!");
         new Thread(new Runnable() { // from class: com.samsung.android.photoremasterservice.ProgressUpdateClient.1ServiceCallRunnable
+            C1ServiceCallRunnable() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -221,5 +282,47 @@ public class ProgressUpdateClient {
             throw new RuntimeException("Service return bundle is null!");
         }
         LogUtil.d(TAG, "Service ack is received.");
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.photoremasterservice.ProgressUpdateClient$1ServiceCallRunnable */
+    /* loaded from: classes5.dex */
+    public class C1ServiceCallRunnable implements Runnable {
+        C1ServiceCallRunnable() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                LogUtil.d(ProgressUpdateClient.TAG, "Send message to service...");
+                Message msg = Message.obtain((Handler) null, 14);
+                msg.setData(null);
+                msg.replyTo = ProgressUpdateClient.this.mIncomingMessenger;
+                ProgressUpdateClient.this.mServiceMessenger.send(msg);
+            } catch (RemoteException e) {
+                LogUtil.e(ProgressUpdateClient.TAG, "Exception at sending message. - " + e);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.photoremasterservice.ProgressUpdateClient$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements ServiceConnection {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            ProgressUpdateClient.this.mServiceMessenger = new Messenger(service);
+            ProgressUpdateClient.this.mServiceReturnValue.complete(null);
+            LogUtil.i(ProgressUpdateClient.TAG, "Service is connected(attached).");
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName className) {
+            LogUtil.i(ProgressUpdateClient.TAG, "Service is disconnected.");
+            ProgressUpdateClient.this.mServiceMessenger = null;
+        }
     }
 }

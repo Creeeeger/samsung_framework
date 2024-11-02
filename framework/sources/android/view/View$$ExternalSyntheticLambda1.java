@@ -5,6 +5,10 @@ package android.view;
 public final /* synthetic */ class View$$ExternalSyntheticLambda1 implements Runnable {
     public final /* synthetic */ View f$0;
 
+    public /* synthetic */ View$$ExternalSyntheticLambda1(View view) {
+        this.f$0 = view;
+    }
+
     @Override // java.lang.Runnable
     public final void run() {
         this.f$0.updateKeepClearRects();

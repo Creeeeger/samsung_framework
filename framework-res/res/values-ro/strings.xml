@@ -384,12 +384,12 @@ Poți alege altă funcție pentru această comandă în Setări > Accesibilitate
     <string name="allow_settings_changes">Politica de securitate nu permite schimbarea setărilor.</string>
     <string name="alwaysUse">Se utilizează în mod prestabilit pentru această acțiune.</string>
     <string name="android_preparing_apk">Se pregătește %1$s.</string>
-    <string name="android_start_title">Pornește telefonul…</string>
+    <string name="android_start_title">Pornește tableta…</string>
     <string name="android_system_label">Sistemul Android</string>
     <string name="android_upgrading_complete">Se finalizează pornirea.</string>
     <string name="android_upgrading_notification_title">Se finalizează actualizarea sistemului…</string>
     <string name="android_upgrading_starting_apps">Se pornesc aplicațiile.</string>
-    <string name="android_upgrading_title">Se actualizează telefonul.…</string>
+    <string name="android_upgrading_title">Se actualizează tableta…</string>
     <string name="anr_activity_application">%2$s nu răspunde</string>
     <string name="anr_activity_process">%1$s nu răspunde</string>
     <string name="anr_application_process">%1$s nu răspunde</string>
@@ -423,16 +423,16 @@ Poți alege altă funcție pentru această comandă în Setări > Accesibilitate
     <string name="app_restricted_message_concentration_mode">%s este blocată în timpul modului Concentrare. Contactați administratorul IT pentru a afla mai multe.</string>
     <string name="app_running_notification_text">Atinge pentru mai multe informații sau pentru a opri aplicația.</string>
     <string name="app_running_notification_title">%1$s rulează acum</string>
-    <string name="app_streaming_blocked_message">Aplicația nu poate fi accesată pe %1$s momentan. Încearcă pe telefon.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Aplicația necesită securitate suplimentară. Încearcă pe telefon.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Nu se poate accesa pe %1$s. Încearcă pe telefon.</string>
+    <string name="app_streaming_blocked_message">Aplicația nu poate fi accesată pe %1$s momentan. Încearcă pe tabletă.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Aplicația necesită securitate suplimentară. Încearcă pe tabletă.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Nu se poate accesa pe %1$s. Încearcă pe tabletă.</string>
     <string name="app_streaming_blocked_title">%1$s nu este disponibilă</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Camera video nu este disponibilă</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Continuă pe telefon</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Microfon indisponibil</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Necesită permisiune</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Aplicația Magazin Play nu este disponibilă</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Setările pentru telefon sunt indisponibile</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Setările pentru tabletă sunt indisponibile</string>
     <string name="app_suspended_default_message">Momentan, aplicația %1$s nu este disponibilă. Aceasta este gestionată de %2$s.</string>
     <string name="app_suspended_more_details">Află mai multe</string>
     <string name="app_suspended_title">Aplicația nu este disponibilă</string>
@@ -503,7 +503,7 @@ Dacă alegeți să instalați această aplicație, asigurați-vă că provine de
     <string name="badPuk">Codul PUK introdus nu este corect.</string>
     <string name="badPuk2">Codul PUK2 introdus este greșit</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Telefonul este încărcat suficient. Funcțiile nu mai sunt limitate.</string>
+    <string name="battery_saver_charged_notification_summary">Tableta este încărcată suficient. Funcțiile nu mai sunt limitate.</string>
     <string name="battery_saver_description">Economisirea bateriei activează tema întunecată și restricționează sau dezactivează activitatea în fundal, unele efecte vizuale, alte funcții și câteva conexiuni la rețea.</string>
     <string name="battery_saver_description_with_learn_more">Economisirea bateriei activează tema întunecată și restricționează sau dezactivează activitatea în fundal, unele efecte vizuale, alte funcții și câteva conexiuni la rețea.</string>
     <string name="battery_saver_notification_channel_name">Economisirea bateriei</string>
@@ -733,7 +733,7 @@ Volumul căștilor a fost mai ridicat decât este recomandat, iar acest lucru î
     <string name="decline">Refuz</string>
     <string name="decline_remote_bugreport_action">REFUZ</string>
     <string name="default_audio_route_category_name">Sistem</string>
-    <string name="default_audio_route_name">Telefon</string>
+    <string name="default_audio_route_name">Tabletă</string>
     <string name="default_audio_route_name_dock_speakers">Difuz. dispozit. andocare</string>
     <string name="default_audio_route_name_external_device">Dispozitiv extern</string>
     <string name="default_audio_route_name_headphones">Căști</string>
@@ -860,7 +860,7 @@ folosind %s"</string>
     <string name="emergency_call_dialog_number_for_display">Număr de urgență</string>
     <string name="emergency_calls_only">Doar apeluri de urgență</string>
     <string name="enablePin">Operațiunea nu a reușit. Activează blocarea cardului SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s dorește să activeze funcția Explorează prin atingere. Când aceasta e activată, poți auzi sau vedea descrieri pentru ceea ce se află sub degetul tău sau poți face gesturi pentru a interacționa cu telefonul.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s vrea să activeze funcția Explorează prin atingere. Când e activată, poți auzi sau vedea descrieri pentru ceea ce se află sub degetul tău sau poți face gesturi pentru a interacționa cu tableta.</string>
     <string name="enable_explore_by_touch_warning_title">Activezi Explorează prin atingere?</string>
     <string name="error_message_change_not_allowed">Această modificare nu este permisă de administrator</string>
     <string name="error_message_title">Eroare</string>
@@ -924,7 +924,7 @@ folosind %s"</string>
     <string name="ext_media_unsupported_notification_message">Dispozitivul nu acceptă acest %s. Atingeți pentru a-l configura într-un format acceptat.</string>
     <string name="ext_media_unsupported_notification_title">%s neacceptat</string>
     <string name="ext_storage_bad_removal_button">Repornire</string>
-    <string name="ext_storage_bad_removal_title">Reporniți telefonul</string>
+    <string name="ext_storage_bad_removal_title">Reporniți tableta</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message">Toate datele de pe cardul dvs. se vor pierde.</string>
     <string name="extmedia_format_message_usbhost">Toate fişierele stocate în stocarea USB vor fi şterse. Această acţiune nu poate fi anulată!</string>
@@ -1128,7 +1128,7 @@ Atinge ușor când îți configurezi amprenta."</string>
     <string name="global_action_toggle_sealed_mode">Modul Sigilat</string>
     <string name="global_action_toggle_silent_mode">Mod Silențios</string>
     <string name="global_action_voice_assist">Asistent vocal</string>
-    <string name="global_actions">Opțiuni telefon</string>
+    <string name="global_actions">Opțiuni tablet PC</string>
     <string name="global_actions_airplane_mode_off_status">Modul avion este DEZACTIVAT</string>
     <string name="global_actions_airplane_mode_on_status">Modul Avion este ACTIVAT</string>
     <string name="global_actions_toggle_airplane_mode">Mod Avion</string>
@@ -1313,11 +1313,11 @@ Sigur părăsești această pagină?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Atinge ca să introduci parola&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Cod PIN incorect.</string>
     <string name="kg_enter_confirm_pin_hint">Confirmă codul PIN dorit</string>
-    <string name="kg_failed_attempts_almost_at_login">"Ai desenat incorect modelul pentru deblocare de %1$d ori. După încă %2$d încercări nereușite, ți se va solicita să deblochezi telefonul cu ajutorul unui cont de e-mail.
+    <string name="kg_failed_attempts_almost_at_login">"Ai desenat incorect modelul pentru deblocare de %1$d ori. După încă %2$d încercări nereușite, ți se va solicita să deblochezi tableta cu ajutorul unui cont de e-mail.
 
  Încearcă din nou peste %3$d secunde."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Ai făcut %1$d încercări incorecte de deblocare a telefonului. După încă %2$d încercări nereușite, acesta va reveni la setările din fabrică, iar toate datele de utilizator se vor pierde.</string>
-    <string name="kg_failed_attempts_now_wiping">Ai făcut %d încercări incorecte de deblocare a telefonului. Telefonul va reveni acum la setările din fabrică.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Ai făcut %1$d încercări incorecte de deblocare a tabletei. După încă %2$d încercări nereușite, aceasta va reveni la setările din fabrică, iar toate datele de utilizator se vor pierde.</string>
+    <string name="kg_failed_attempts_now_wiping">Ai făcut %d încercări incorecte de deblocare a tabletei. Tableta va reveni acum la setările din fabrică.</string>
     <string name="kg_forgot_pattern_button_text">Model uitat</string>
     <string name="kg_invalid_confirm_pin_hint">Codurile PIN nu coincid</string>
     <string name="kg_invalid_puk">Reintrodu codul PUK corect. Încercările repetate vor dezactiva definitiv cardul SIM.</string>
@@ -1405,11 +1405,11 @@ Accesează "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_carrier_default">Fără semnal</string>
     <string name="lockscreen_carrier_noservice">(Fără acoperire)</string>
     <string name="lockscreen_emergency_call">Urgență</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Ai făcut %1$d încercări incorecte de deblocare a telefonului. După încă %2$d încercări nereușite, acesta va reveni la setările din fabrică, iar toate datele de utilizator se vor pierde.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Ai desenat incorect modelul pentru deblocare de %1$d ori. După încă %2$d încercări nereușite, ți se va solicita să deblochezi telefonul cu ajutorul datelor de conectare la Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Ai făcut %1$d încercări incorecte de deblocare a tabletei. După încă %2$d încercări nereușite, aceasta va reveni la setările din fabrică, iar toate datele de utilizator se vor pierde.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Ai desenat incorect modelul pentru deblocare de %1$d ori. După încă %2$d încercări nereușite, ți se va solicita să deblochezi tableta cu ajutorul datelor de conectare la Google.
 
- Încearcă din nou peste %3$d   secunde."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Ai făcut %d încercări incorecte de deblocare a telefonului. Acesta va reveni acum la setările din fabrică.</string>
+ Încearcă din nou peste %3$d secunde."</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Ai făcut %d încercări incorecte de deblocare a tabletei. Tableta va reveni acum la setările din fabrică.</string>
     <string name="lockscreen_forgot_pattern_button_text">Ai uitat modelul?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Ai uitat numele de utilizator sau parola?
 Accesează "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1425,7 @@ Accesează "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Apasă Meniu pentru a debloca sau pentru a efectua apeluri de urgență.</string>
     <string name="lockscreen_missing_sim_instructions">Adaugă un card SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">Cardul SIM lipsește sau nu poate fi citit. Adaugă un card SIM.</string>
-    <string name="lockscreen_missing_sim_message">Nu există card SIM în telefon.</string>
+    <string name="lockscreen_missing_sim_message">Nu există card SIM în tabletă.</string>
     <string name="lockscreen_missing_sim_message_short">Niciun card SIM</string>
     <string name="lockscreen_network_locked_message">Rețea blocată</string>
     <string name="lockscreen_password_wrong">Încearcă din nou</string>
@@ -1465,7 +1465,7 @@ Accesează "<b>google.com/accounts/recovery</b>.</string>
     <string name="low_internal_storage_view_text">Este posibil ca unele funcții de sistem să nu funcționeze</string>
     <string name="low_internal_storage_view_text_no_boot">Spațiu de stocare insuficient pentru sistem. Asigură-te că ai 250 MB de spațiu liber și repornește.</string>
     <string name="low_internal_storage_view_title">Spațiul de stocare aproape ocupat</string>
-    <string name="low_memory">Stocarea pe telefon este plină. Șterge câteva fișiere pentru a elibera spațiu.</string>
+    <string name="low_memory">Stocarea pe tabletă este plină. Șterge câteva fișiere pentru a elibera spațiu.</string>
     <string name="ltb_kill_content_v2_phone">Aplicația %s a fost închisă, deoarece provoca supraîncălzirea telefonului. O puteți deschide din nou mai târziu, după ce telefonul se răcește.</string>
     <string name="ltb_kill_content_v2_tablet">Aplicația %s a fost închisă, deoarece provoca supraîncălzirea tabletei. O puteți deschide din nou mai târziu, după ce tableta se răcește.</string>
     <string name="ltb_warning_button">Nu închideți</string>
@@ -1777,18 +1777,18 @@ Tableta va reporni în curând."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Sunetul este redat pe dispozitivul audio Bluetooth. Atingeți aici pentru a închide</string>
     <string name="multisound_sound_via_headphone">Sunetul %s este redat prin intermediul căștilor. Atingeți aici pentru a închide.</string>
     <string name="multisound_sound_via_headphone_multiselection">Sunetul este redat prin intermediul căștilor. Atingeți aici pentru a închide.</string>
-    <string name="multisound_sound_via_phone_speaker">Sunetul %s este redat prin intermediul difuzorului telefonului. Atingeți aici pentru a închide.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Sunetul este redat prin intermediul difuzorului telefonului. Atingeți aici pentru a închide.</string>
+    <string name="multisound_sound_via_phone_speaker">Sunetul %s este redat prin intermediul difuzorului tabletei. Atingeți aici pentru a-l închide.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Sunetul este redat prin intermediul difuzorului tabletei. Atingeți aici pentru a închide.</string>
     <string name="multisound_sound_via_usb_audio">Sunetul %s este redat prin intermediul dispozitivului audio USB. Atingeți aici pentru a închide.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Sunetul este redat prin intermediul dispozitivului audio USB. Atingeți aici pentru a închide.</string>
     <string name="multisound_title">Sunet aplicație separată</string>
     <string name="multisound_turn_off_multisound">Oprire</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s nu poate rula în Samsung DeX. Încercați să o rulați în modul telefon.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s nu poate rula în Samsung DeX. Este concepută pentru ecranele Acasă ale telefoanelor.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Unele jocuri funcționează doar pe ecranele tactile. În cazul în care comenzile pentru mouse nu funcționează în Samsung DeX, încercați să jucați în schimb în modul telefon.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s nu poate rula în Samsung DeX. Încercați să o rulați în modul tabletă.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s nu poate rula în Samsung DeX. Este concepută pentru ecranele Acasă ale tabletelor.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Unele jocuri funcționează doar pe ecranele tactile. În cazul în care comenzile pentru mouse nu funcționează în Samsung DeX, încercați să jucați în schimb în modul tabletă.</string>
     <string name="music_recognition_manager_service">Serviciu de gestionare a recunoașterii de melodii</string>
     <string name="muted_by">%1$s dezactivează anumite sunete</string>
-    <string name="my_device">Acest telefon</string>
+    <string name="my_device">Această tabletă</string>
     <string name="nas_upgrade_notification_content">Acțiunile și răspunsurile sugerate sunt acum trimise prin notificări optimizate. Notificările adaptive Android nu mai sunt acceptate.</string>
     <string name="nas_upgrade_notification_disable_action">Dezactivează</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1953,23 +1953,23 @@ Notificările optimizate pot accesa conținutul notificărilor, inclusiv informa
     <string name="permdesc_bindNotificationListenerService">Permite proprietarului să se conecteze la interfața de nivel superior a unui serviciu de citire a notificărilor. În mod normal aplicațiile nu ar trebui să aibă nevoie de această permisiune.</string>
     <string name="permdesc_bind_connection_service">Permite aplicației să interacționeze cu servicii de telefonie pentru a face / a primi apeluri.</string>
     <string name="permdesc_bind_incall_service">Permite aplicației să controleze când și cum vede utilizatorul ecranul în timpul unui apel.</string>
-    <string name="permdesc_bluetooth">Permite aplicației să vadă configurația telefonului Bluetooth, să stabilească și să accepte conexiuni cu dispozitive asociate.</string>
-    <string name="permdesc_bluetoothAdmin">Permite aplicației să configureze telefonul Bluetooth local, să descopere și să se asocieze cu dispozitive la distanță.</string>
+    <string name="permdesc_bluetooth">Permite aplicației să vadă configurația tabletei Bluetooth, să facă și să accepte conexiuni cu dispozitive asociate.</string>
+    <string name="permdesc_bluetoothAdmin">Permite aplicației să configureze tableta Bluetooth locală, să descopere și să se asocieze cu dispozitive la distanță.</string>
     <string name="permdesc_bluetooth_advertise">Permite aplicației să difuzeze anunțuri pe dispozitive Bluetooth din apropiere</string>
     <string name="permdesc_bluetooth_connect">Permite aplicației să se conecteze la dispozitive Bluetooth asociate</string>
     <string name="permdesc_bluetooth_scan">Permite aplicației să descopere și să asocieze dispozitive Bluetooth din apropiere</string>
     <string name="permdesc_bodySensors">Permite aplicației să acceseze date de la senzorii corporali, cum ar fi pulsul, temperatura și procentul de oxigen din sânge, în timpul folosirii aplicației.</string>
     <string name="permdesc_bodySensors_background">Permite aplicației să acceseze date de la senzorii corporali, cum ar fi pulsul, temperatura și procentul de oxigen din sânge, în timp ce aplicația rulează în fundal.</string>
-    <string name="permdesc_broadcastSticky">Permite aplicației să trimită mesaje difuzate persistente, care se păstrează după terminarea difuzării mesajului. Utilizarea excesivă a acestei funcții poate să încetinească sau să destabilizeze telefonul, determinându-l să utilizeze prea multă memorie.</string>
+    <string name="permdesc_broadcastSticky">Permite aplicației să trimită mesaje difuzate persistente, care se păstrează după terminarea difuzării mesajului. Utilizarea excesivă a acestei funcții poate să încetinească sau să destabilizeze tableta, determinând-o să utilizeze prea multă memorie.</string>
     <string name="permdesc_callCompanionApp">Permite aplicației să vadă și să controleze apelurile în desfășurare pe dispozitiv. Aceasta include informații ca numerele pentru apeluri și starea apelurilor.</string>
     <string name="permdesc_callPhone">Permite aplicației să apeleze numere de telefon fără intervenția ta. Acest lucru poate duce la taxe sau apeluri neașteptate. Aplicația nu poate apela și numere de urgență. Aplicațiile rău intenționate pot să te coste, deoarece fac apeluri fără confirmare sau formează coduri de la operator care redirecționează automat apelurile primite la alt număr.</string>
     <string name="permdesc_camera">Această aplicație poate să fotografieze și să înregistreze videoclipuri folosind camera foto când este în uz.</string>
     <string name="permdesc_cameraOpenCloseListener">Această aplicație poate primi apeluri inverse atunci când este deschis (de aplicație) sau închis orice dispozitiv cu cameră.</string>
     <string name="permdesc_changeNetworkState">Permite aplicației să modifice starea de conectivitate la rețea.</string>
     <string name="permdesc_changeTetherState">Permite aplicației să modifice starea de conectivitate prin tethering la rețea.</string>
-    <string name="permdesc_changeWifiMulticastState">Permite aplicației să primească pachetele trimise către toate dispozitivele dintr-o rețea Wi-Fi, folosind adrese cu difuzare multiplă, nu doar telefonul tău. Această funcție folosește mai multă energie decât modul fără difuzare multiplă.</string>
+    <string name="permdesc_changeWifiMulticastState">Permite aplicației să primească pachetele trimise către toate dispozitivele dintr-o rețea Wi-Fi, folosind adrese cu difuzare multiplă, nu doar tableta ta. Această funcție folosește mai multă energie decât modul fără difuzare multiplă.</string>
     <string name="permdesc_changeWifiState">Permite aplicației să se conecteze și să se deconecteze de la punctele de acces Wi-Fi, precum și să efectueze modificări în configurația dispozitivului pentru rețelele Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Permite aplicației să conecteze și să deconecteze telefonul la și de la rețelele WiMAX.</string>
+    <string name="permdesc_changeWimaxState">Permite aplicației să conecteze și să deconecteze tableta la și de la rețelele WiMAX.</string>
     <string name="permdesc_companionProfileWatch">Permite unei aplicații partenere să gestioneze ceasuri.</string>
     <string name="permdesc_connection_manager">Permite aplicației să gestioneze conexiuni de telecomunicații.</string>
     <string name="permdesc_control_incall_experience">Permite aplicației să ofere o experiență de utilizare în timpul unui apel.</string>
@@ -1997,7 +1997,7 @@ Notificările optimizate pot accesa conținutul notificărilor, inclusiv informa
     <string name="permdesc_foregroundServiceSpecialUse">Permite aplicației să folosească serviciile în prim-plan cu tipul „specialUse”</string>
     <string name="permdesc_foregroundServiceSystemExempted">Permite aplicației să folosească serviciile în prim-plan cu tipul „systemExempted”</string>
     <string name="permdesc_fullScreenIntent">Permite aplicației să afișeze notificări ca activități pe ecran complet pe un dispozitiv blocat</string>
-    <string name="permdesc_getAccounts">Permite aplicației să obțină lista de conturi cunoscute de telefon. Aceasta poate include conturile create de aplicațiile pe care le-ai instalat.</string>
+    <string name="permdesc_getAccounts">Permite aplicației să obțină lista de conturi cunoscute de tabletă. Aceasta poate include conturile create de aplicațiile pe care le-ai instalat.</string>
     <string name="permdesc_getAppList">Permite unei aplicații să citească lista de aplicații instalate.</string>
     <string name="permdesc_getPackageSize">Permite aplicației să preia dimensiunile codului, ale datelor și ale memoriei cache</string>
     <string name="permdesc_getTasks">Permite aplicației să preia informațiile despre activitățile care rulează în prezent și care au rulat recent. În acest fel, aplicația poate descoperi informații despre aplicațiile care sunt utilizate pe dispozitiv.</string>
@@ -2096,16 +2096,16 @@ RETURNAȚI-L LA"</string>
     <string name="permdesc_nearby_wifi_devices">Permite aplicației să se conecteze la dispozitive Wi-Fi din apropiere, să transmită anunțuri și să stabilească poziția relativă a acestora</string>
     <string name="permdesc_nfc">Permite aplicației să comunice cu etichetele, cardurile și cititoarele NFC (Near Field Communication).</string>
     <string name="permdesc_observeCompanionDevicePresence">Permite unei aplicații partenere să observe prezența dispozitivelor însoțitoare când acestea sunt în apropiere sau la distanță.</string>
-    <string name="permdesc_persistentActivity">Permite aplicației să declare persistente în memorie anumite părți ale sale. Acest lucru poate limita memoria disponibilă pentru alte aplicații și poate încetini funcționarea telefonului.</string>
+    <string name="permdesc_persistentActivity">Permite aplicației să declare persistente în memorie anumite părți ale sale. Acest lucru poate limita memoria disponibilă pentru alte aplicații și poate încetini funcționarea tabletei.</string>
     <string name="permdesc_postNotification">Permite aplicației să afișeze notificări</string>
     <string name="permdesc_preferredPaymentInfo">Permite aplicației să obțină informații despre serviciul de plăți NFC preferat, de exemplu, identificatorii de aplicație înregistrați și destinația traseului.</string>
     <string name="permdesc_processOutgoingCalls">Permite aplicației să vadă numărul format în timpul unui apel de ieșire, cu opțiunea de a redirecționa apelul către un alt număr sau de a întrerupe apelul.</string>
     <string name="permdesc_queryAllPackages">Permite unei aplicații să vadă toate pachetele instalate.</string>
     <string name="permdesc_readBasicPhoneState">Permite ca aplicația să acceseze funcțiile de telefonie de bază ale dispozitivului.</string>
-    <string name="permdesc_readCalendar">Această aplicație poate să citească toate evenimentele din calendar stocate pe telefon și să trimită sau să salveze datele din calendar.</string>
+    <string name="permdesc_readCalendar">Această aplicație poate să citească toate evenimentele din calendar stocate pe tabletă și să trimită sau să salveze datele din calendar.</string>
     <string name="permdesc_readCallLog">Această aplicație poate citi istoricul apelurilor.</string>
     <string name="permdesc_readCellBroadcasts">Permite aplicației să citească mesajele primite prin transmisie celulară de dispozitiv. Alertele cu transmisie celulară sunt difuzate în unele locații pentru a te avertiza cu privire la situațiile de urgență. Aplicațiile rău intenționate pot afecta performanța sau funcționarea dispozitivului când e primită o transmisie celulară de urgență.</string>
-    <string name="permdesc_readContacts">Permite aplicației să citească datele despre persoanele de contact salvate pe telefon. Aplicațiile vor avea și acces la conturile de pe telefon care au creat agenda. Aici pot fi incluse conturile create de aplicațiile pe care le-ai instalat. Cu această permisiune, aplicațiile pot salva datele de contact, iar aplicațiile rău intenționate pot permite accesul la datele de contact fără cunoștința ta.</string>
+    <string name="permdesc_readContacts">Permite aplicației să citească datele despre persoanele din agenda stocată pe tabletă. Aplicațiile vor avea și acces la conturile de pe tabletă care au creat agenda. Aici pot fi incluse conturile create de aplicațiile pe care le-ai instalat. Cu această permisiune, aplicațiile pot salva datele de contact, iar aplicațiile rău intenționate pot permite accesul la datele de contact fără cunoștința ta.</string>
     <string name="permdesc_readInstallSessions">Permite unei aplicații accesul la citirea sesiunilor de instalare. Aceasta poate vedea detalii despre instalările de pachete active.</string>
     <string name="permdesc_readMediaAudio">Permite aplicației să citească fișiere audio din spațiul de stocare comun.</string>
     <string name="permdesc_readMediaImages">Permite aplicației să citească fișiere imagine din spațiul de stocare comun.</string>
@@ -2113,11 +2113,11 @@ RETURNAȚI-L LA"</string>
     <string name="permdesc_readNetworkUsageHistory">Permite aplicației să citească utilizarea statistică a rețelei pentru anumite rețele și aplicații.</string>
     <string name="permdesc_readPhoneNumbers">Permite aplicației să acceseze numerele de telefon ale dispozitivului.</string>
     <string name="permdesc_readPhoneState">Permite aplicației să acceseze funcțiile de telefon ale dispozitivului. Cu această permisiune aplicația stabilește numărul de telefon și ID-urile de dispozitiv, dacă un apel este activ, precum și numărul de la distanță conectat printr-un apel.</string>
-    <string name="permdesc_readSms">Această aplicație poate citi toate mesajele SMS stocate pe telefon.</string>
+    <string name="permdesc_readSms">Această aplicație poate citi toate mesajele SMS stocate pe tabletă.</string>
     <string name="permdesc_readSyncSettings">Permite aplicației să citească setările de sincronizare ale unui cont. De exemplu, cu această permisiune aplicația poate determina dacă aplicația Persoane este sincronizată cu un anumit cont.</string>
     <string name="permdesc_readSyncStats">Permite unei aplicații să citească statisticile de sincronizare ale unui cont, inclusiv istoricul evenimentelor de sincronizare și volumul datelor sincronizate.</string>
     <string name="permdesc_readVisualUserSelect">Permite aplicației să citească fișierele imagine și video pe care le selectezi din spațiul de stocare comun.</string>
-    <string name="permdesc_receiveBootCompleted">Permite aplicației să pornească imediat ce s-a terminat încărcarea sistemului. Din acest motiv, pornirea telefonului poate dura mai mult timp, iar rularea continuă a aplicației poate încetini dispozitivul.</string>
+    <string name="permdesc_receiveBootCompleted">Permite aplicației să pornească imediat ce s-a terminat încărcarea sistemului. Din acest motiv, pornirea tabletei poate dura mai mult timp, iar rularea continuă a aplicației poate încetini dispozitivul.</string>
     <string name="permdesc_receiveMms">Permite aplicației să primească și să proceseze mesaje MMS. Acest lucru înseamnă că aplicația ar putea monitoriza sau șterge mesajele trimise pe dispozitiv fără a ți le arăta.</string>
     <string name="permdesc_receiveSms">Permite aplicației să primească și să proceseze mesaje SMS. Acest lucru înseamnă că aplicația ar putea monitoriza sau șterge mesajele trimise pe dispozitiv fără a ți le arăta.</string>
     <string name="permdesc_receiveWapPush">Permite aplicației să primească și să proceseze mesaje WAP. Această permisiune include capacitatea de a monitoriza sau șterge mesajele care ți-au fost trimise fără a ți le arăta.</string>
@@ -2139,7 +2139,7 @@ RETURNAȚI-L LA"</string>
     <string name="permdesc_sendSms">Permite aplicației să trimită mesaje SMS, ceea ce ar putea duce la costuri neașteptate. Aplicațiile rău intenționate pot acumula costuri prin trimiterea mesajelor fără confirmarea ta.</string>
     <string name="permdesc_setAlarm">Permite aplicației să seteze o alarmă într-o aplicație de ceas cu alarmă instalată. Este posibil ca unele aplicații de ceas cu alarmă să nu implementeze această funcție.</string>
     <string name="permdesc_setInputCalibration">Permite aplicației să modifice parametrii de calibrare a ecranului tactil. Nu ar trebui să fie necesară pentru aplicațiile obișnuite.</string>
-    <string name="permdesc_setTimeZone">Permite aplicației să schimbe fusul orar al telefonului.</string>
+    <string name="permdesc_setTimeZone">Permite aplicației să schimbe fusul orar al tabletei.</string>
     <string name="permdesc_setWallpaper">Permite aplicației să seteze imaginea de fundal a sistemului.</string>
     <string name="permdesc_setWallpaperHints">Permite aplicației să seteze sugestiile privind dimensiunile imaginii de fundal a sistemului.</string>
     <string name="permdesc_sim_communication">Permite aplicației să trimită comenzi pe cardul SIM. Această permisiune este foarte periculoasă.</string>
@@ -2153,7 +2153,7 @@ RETURNAȚI-L LA"</string>
     <string name="permdesc_subscribedFeedsRead">Permite aplicației să obțină detalii despre feedurile sincronizate în prezent.</string>
     <string name="permdesc_systemAlertWindow">Această aplicație poate apărea deasupra altor aplicații sau a altor părți ale ecranului. Acest lucru poate să afecteze utilizarea normală a aplicației și să schimbe modul în care se afișează alte aplicații.</string>
     <string name="permdesc_systemCamera">Această aplicație de sistem privilegiată poate să fotografieze și să înregistreze videoclipuri folosind o cameră de sistem în orice moment. Necesită și permisiunea android.permission.CAMERA pentru aplicație</string>
-    <string name="permdesc_transmitIr">Permite aplicației să utilizeze transmițătorul prin infraroșii al telefonului.</string>
+    <string name="permdesc_transmitIr">Permite aplicației să utilizeze transmițătorul prin infraroșii al tabletei.</string>
     <string name="permdesc_turnScreenOn">Permite aplicației să activeze ecranul.</string>
     <string name="permdesc_ucsPlugin">Lucrați cu pluginuri de stocare terță parte a datelor de autentificare.</string>
     <string name="permdesc_uninstall_shortcut">Permite aplicației să elimine comenzi rapide de pe ecranul de pornire, fără intervenția utilizatorului.</string>
@@ -2167,10 +2167,10 @@ RETURNAȚI-L LA"</string>
     <string name="permdesc_vibrate">Permite aplicației să controleze mecanismul de vibrare.</string>
     <string name="permdesc_vibrator_state">Permite aplicației să acceseze modul de vibrații.</string>
     <string name="permdesc_videoWrite">Permite aplicației să-ți modifice colecția de videoclipuri.</string>
-    <string name="permdesc_wakeLock">Permite aplicației să împiedice intrarea telefonului în stare de repaus.</string>
-    <string name="permdesc_writeCalendar">Această aplicație poate să adauge, să elimine sau să modifice evenimente din calendarul de pe telefon. Această aplicație poate să trimită mesaje care par trimise de proprietarii calendarului sau să modifice evenimentele fără notificarea acestora.</string>
-    <string name="permdesc_writeCallLog">Permite aplicației să modifice jurnalul de apeluri al telefonului, inclusiv datele despre apelurile primite sau făcute. Aplicațiile rău intenționate pot folosi această permisiune pentru a șterge sau a modifica jurnalul de apeluri.</string>
-    <string name="permdesc_writeContacts">Permite aplicației să modifice datele despre persoanele din agenda stocată pe telefon. Cu această permisiune, aplicația poate șterge datele de contact.</string>
+    <string name="permdesc_wakeLock">Permite aplicației să împiedice intrarea tabletei în stare de repaus.</string>
+    <string name="permdesc_writeCalendar">Această aplicație poate să adauge, să elimine sau să modifice evenimente din calendarul de pe tabletă. Această aplicație poate să trimită mesaje care par trimise de proprietarii calendarului sau să modifice evenimentele fără notificarea acestora.</string>
+    <string name="permdesc_writeCallLog">Permite aplicației să modifice jurnalul de apeluri al tabletei, inclusiv datele despre apelurile primite sau făcute. Aplicațiile rău intenționate pot folosi această permisiune pentru a șterge sau a modifica jurnalul de apeluri.</string>
+    <string name="permdesc_writeContacts">Permite aplicației să modifice datele despre persoanele din agenda stocată pe tabletă. Cu această permisiune, aplicația poate șterge datele de contact.</string>
     <string name="permdesc_writeSettings">Permite aplicației să modifice datele din setările sistemului. Aplicațiile rău intenționate pot corupe configurația sistemului.</string>
     <string name="permdesc_writeSyncSettings">Permite unei aplicații să modifice setările de sincronizare ale unui cont. De exemplu, cu această permisiune aplicația poate activa sincronizarea aplicației Persoane cu un anumit cont.</string>
     <string name="permgroupdesc_activityRecognition">să acceseze activitatea fizică</string>
@@ -2445,7 +2445,7 @@ pentru contul %s."</string>
     <string name="permlab_uwb_ranging">să stabilească poziția relativă dintre dispozitivele Ultra-Wideband din apropiere</string>
     <string name="permlab_vibrate">controlează vibrarea</string>
     <string name="permlab_videoWrite">să modifice colecția de videoclipuri</string>
-    <string name="permlab_wakeLock">împiedicare intrare telefon în repaus</string>
+    <string name="permlab_wakeLock">împiedicarea computerului tablet PC să intre în repaus</string>
     <string name="permlab_writeCalendar">adăugarea sau modificarea evenimentelor din calendar și trimiterea de e-mailuri invitaților fără știrea proprietarului</string>
     <string name="permlab_writeCallLog">scrie jurnalul de apeluri</string>
     <string name="permlab_writeContacts">modifică agenda</string>
@@ -2487,7 +2487,7 @@ pentru contul %s."</string>
     <string name="policydesc_allow_desktopsync">Împiedicați utilizarea sincronizării desktopului.</string>
     <string name="policydesc_allow_internetsharing">Împiedicați utilizarea funcției Hotspot mobil.</string>
     <string name="policydesc_allow_irda">Împiedicați utilizarea IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Împiedicați utilizarea e-mailurilor POP și IMAP pe telefon.</string>
+    <string name="policydesc_allow_popimapemail">Împiedicați utilizarea e-mailurilor POP și IMAP pe tabletă.</string>
     <string name="policydesc_allow_storagecard">Împiedicați utilizarea cardurilor SD.</string>
     <string name="policydesc_allow_textmessaging">Împiedicați utilizarea mesageriei de text și multimedia.</string>
     <string name="policydesc_allow_thirdParty">Această aplicație poate împiedica executarea aplicațiilor terță parte.</string>
@@ -2505,10 +2505,10 @@ pentru contul %s."</string>
     <string name="policydesc_setGlobalProxy">Setează serverul proxy global pentru dispozitiv, care să fie utilizat cât timp politica este activă. Numai proprietarul dispozitivului poate seta serverul proxy global.</string>
     <string name="policydesc_unsigned_app">Această aplicație poate împiedica executarea aplicațiilor din surse necunoscute.</string>
     <string name="policydesc_unsigned_pkg">Această aplicație poate împiedica instalarea aplicațiilor din surse necunoscute.</string>
-    <string name="policydesc_watchLogin">Monitorizează numărul de parole incorecte introduse la deblocarea ecranului și blochează telefonul sau șterge toate datele acestuia dacă sunt introduse prea multe parole incorecte.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Monitorizează numărul de parole incorecte introduse la deblocarea ecranului și blochează telefonul sau șterge toate datele acestui utilizator dacă se introduc prea multe parole incorecte.</string>
-    <string name="policydesc_wipeData">Șterge datele din telefon fără avertisment, revenind la setările din fabrică.</string>
-    <string name="policydesc_wipeData_secondaryUser">Șterge datele acestui utilizator de pe acest telefon fără avertisment.</string>
+    <string name="policydesc_watchLogin">Monitorizează numărul de parole incorecte introduse la deblocarea ecranului și blochează tableta sau șterge datele acesteia dacă sunt introduse prea multe parole incorecte.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Monitorizează numărul de parole incorecte introduse la deblocarea ecranului și blochează tableta sau șterge toate datele acestui utilizator dacă se introduc prea multe parole incorecte.</string>
+    <string name="policydesc_wipeData">Șterge datele de pe tabletă fără avertisment, efectuând resetarea configurării din fabrică.</string>
+    <string name="policydesc_wipeData_secondaryUser">Șterge datele acestui utilizator de pe această tabletă fără avertisment.</string>
     <string name="policylab_allow_bluetoothmode">Dezactivare Bluetooth</string>
     <string name="policylab_allow_browser">Dezactivare Internet</string>
     <string name="policylab_allow_camera">Dezactivare camere foto</string>
@@ -2542,7 +2542,7 @@ pentru contul %s."</string>
     <string name="postalTypeHome">Domiciliu</string>
     <string name="postalTypeOther">Altele</string>
     <string name="postalTypeWork">Serviciu</string>
-    <string name="power_dialog">Opțiuni telefon</string>
+    <string name="power_dialog">Opțiuni tablet PC</string>
     <string name="power_off">Oprește</string>
     <string name="prepend_shortcut_label">Meniu+</string>
     <string name="preposition_for_date">pe %s</string>
@@ -2588,7 +2588,7 @@ pentru contul %s."</string>
     <string name="recent_tasks_title">Recente</string>
     <string name="recording_fail">Nu se poate utiliza microfonul în %1$s în timp ce este utilizat în %2$s.</string>
     <string name="recording_popup">%s utilizează microfonul.</string>
-    <string name="recording_popup_device">Telefon</string>
+    <string name="recording_popup_device">Tabletă</string>
     <string name="recording_popup_with_bluetooth">%s utilizează microfonul Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s utilizează microfonul %2$s.</string>
     <string name="redo">Refacere</string>
@@ -2735,12 +2735,12 @@ Dacă asculți perioade lungi la volum ridicat, auzul poate fi afectat."</string
     <string name="screenshot_edit">Editează</string>
     <string name="sd_card_unavailable_message">Nu puteți utiliza cardul SD, deoarece a fost introdus în timp ce era utilizat profilul altui utilizator.</string>
     <string name="sd_card_unavailable_title">Cardul SD nu este disponibil</string>
-    <string name="sdcard_bad_removal_message">Un card SD a fost scos în mod nesigur. Pentru a împiedica repornirea neașteptată a telefonului, salvați datele nesalvate și reporniți acum.</string>
+    <string name="sdcard_bad_removal_message">Un card SD a fost scos în mod nesigur. Pentru a împiedica repornirea neașteptată a tabletei, salvați datele nesalvate și reporniți acum.</string>
     <string name="sdcard_batch_decrypt_noti_content">Decriptare cartelă SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Decriptare cartelă SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Cartela SD criptată trebuie decriptată înainte de utilizare. Decriptarea durează cel puțin o oră. Începeți având bateria încărcată și mențineți dispozitivul conectat până la finalizarea decriptării. Întreruperea procesului de decriptare poate duce la pierderea parțială sau totală a datelor.</string>
     <string name="sdcard_decrypt_err_notification">A apărut o eroare la decriptarea cartelei SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Unele fișiere de pe cardul SD au fost criptate pe un alt dispozitiv și nu pot fi utilizate pe acest telefon.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Unele fișiere de pe cardul SD au fost criptate pe un alt dispozitiv și nu pot fi utilizate pe această tabletă.</string>
     <string name="sdcard_decrypt_notification">Cartelă SD decriptată</string>
     <string name="sdcard_decrypt_title_notification">Decriptare cartelă SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Se decript. cardul SD…</string>
@@ -2998,7 +2998,7 @@ Dacă doriți ca butoanele să reapară, glisați în sus din partea de jos a ec
     <string name="showing_touch_sensitivity_noti_action">Pornire</string>
     <string name="showing_touch_sensitivity_noti_text">Pentru un răspuns tactil mai precis, porniți opțiunea Sensibilitate atingere când utilizați Privacy Screen sau Notepaper Screen.</string>
     <string name="showing_touch_sensitivity_noti_title">Creșteți sensibilitate atingere</string>
-    <string name="shutdown_confirm">Telefonul se va închide.</string>
+    <string name="shutdown_confirm">Tableta se va închide.</string>
     <string name="shutdown_confirm_question">Vrei să închizi?</string>
     <string name="shutdown_progress">Se închide...</string>
     <string name="side_key_double_press_deleted_app">Aplicație dezinstalată. Alegeți altceva.</string>
@@ -3225,7 +3225,7 @@ Pentru a elimina această protecție, accesați Setări > Securitate și confide
     <string name="usb_abnormal_reset_title">Conexiunea USB nu este stabilă</string>
     <string name="usb_abnormal_reset_toast">Conexiunea USB nu este stabilă. Deconectați și conectați din nou cablul sau încercați un cablu diferit.</string>
     <string name="usb_accessory_notification_title">Conectat la un accesoriu USB</string>
-    <string name="usb_bad_removal_message">Un dispozitiv de stocare USB a fost scos în mod nesigur. Pentru a împiedica repornirea neașteptată a telefonului, salvați datele nesalvate și reporniți acum.</string>
+    <string name="usb_bad_removal_message">Un dispozitiv de stocare USB a fost scos în mod nesigur. Pentru a împiedica repornirea neașteptată a tabletei, salvați datele nesalvate și reporniți acum.</string>
     <string name="usb_blocked_by_emergency_mode">Unele funcții USB sunt indisponibile în Modul Urgență.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Nu se pot utiliza funcțiile asociate cu dispozitivul USB conectat în timp ce modul Economisire maximă a energiei este activat.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Unele funcții USB vor fi limitate atunci când este pornit Modul Economisire maximă energie.</string>
@@ -3235,7 +3235,7 @@ Pentru a elimina această protecție, accesați Setări > Securitate și confide
     <string name="usb_camera_disconnected_notification_title">Dispozitiv media deconectat</string>
     <string name="usb_cd_installer_notification_title">Actualizare software</string>
     <string name="usb_charging_notification_title">Se încarcă dispozitivul prin USB</string>
-    <string name="usb_charing_only_notification_title">Încărcare prin USB</string>
+    <string name="usb_charing_only_notification_title">Conectat</string>
     <string name="usb_contaminant_detected_message">Portul USB este dezactivat automat. Atinge ca să afli mai multe.</string>
     <string name="usb_contaminant_detected_title">Lichide sau reziduuri în portul USB</string>
     <string name="usb_contaminant_not_detected_message">Telefonul nu mai detectează lichide sau reziduuri.</string>
@@ -3247,11 +3247,11 @@ Pentru a elimina această protecție, accesați Setări > Securitate și confide
     <string name="usb_host_cable_disconnected_notification_title">Conector USB deconectat</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Imposibil de accesat acest dispozitiv. Dispozitivul conectat necesită sursă externă de alimentare.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Dispozitiv USB de mare putere conectat</string>
-    <string name="usb_host_resource_exceed_message">Controlerul USB al telefonului nu are suficiente resurse pentru a conecta acest dispozitiv. Încercați să deconectați dispozitivul și să-l conectați din nou.</string>
+    <string name="usb_host_resource_exceed_message">Controlerul USB al tabletei nu are suficiente resurse pentru a conecta acest dispozitiv. Încercați să deconectați dispozitivul și să-l conectați din nou.</string>
     <string name="usb_host_resource_exceed_title">Resurse insuficiente controler USB</string>
-    <string name="usb_hub_depth_exceed_message">Telefonul dvs. poate accepta maximum 5 conexiuni USB la hub simultan.</string>
+    <string name="usb_hub_depth_exceed_message">Tableta dvs. poate accepta maximum 5 conexiuni USB la hub simultan.</string>
     <string name="usb_hub_depth_exceed_title">Număr maxim conexiuni USB la hub</string>
-    <string name="usb_hub_power_exceed_message">Telefonul nu poate furniza suficientă energie pentru acest dispozitiv USB. Conectați dispozitivul la un hub USB cu alimentare proprie înainte de a-l conecta la telefon.</string>
+    <string name="usb_hub_power_exceed_message">Tableta nu poate furniza suficientă energie pentru acest dispozitiv USB. Conectați dispozitivul la un hub USB cu alimentare proprie înainte de a-l conecta la tabletă.</string>
     <string name="usb_increase_battery_usage">Conexiunea USB poate crește consumul bateriei.</string>
     <string name="usb_keyboard_connected_notification_title">Tastatură conectată</string>
     <string name="usb_keyboard_disconnected_notification_title">Tastatură deconectată</string>
@@ -3294,8 +3294,8 @@ Pentru a elimina această protecție, accesați Setări > Securitate și confide
     <string name="usb_ums_connected_notification_message_usbhost">Spațiul de stocare în masă USB a fost eliminat în mod neașteptat.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Spaţiu de stocare în masă USB conectat</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Spațiul de stocare în masă USB a fost eliminat în siguranță.</string>
-    <string name="usb_unblock_by_screen_unlock">Deblocați telefonul pentru a utiliza dispozitivul USB conectat.</string>
-    <string name="usb_unsupport_accessory_message">Acest dispozitiv USB nu este acceptat de telefonul dvs.</string>
+    <string name="usb_unblock_by_screen_unlock">Deblocați tableta pentru a utiliza dispozitivul USB conectat.</string>
+    <string name="usb_unsupport_accessory_message">Acest dispozitivul USB nu este acceptat de tableta dvs.</string>
     <string name="usb_unsupport_accessory_title">Dispozitiv USB neacceptat</string>
     <string name="usb_unsupported_audio_accessory_message">Dispozitivul atașat nu este compatibil cu acest telefon. Atinge pentru a afla mai multe.</string>
     <string name="usb_unsupported_audio_accessory_title">S-a detectat un accesoriu audio analogic</string>
@@ -3316,19 +3316,19 @@ Pentru a elimina această protecție, accesați Setări > Securitate și confide
     <string name="usb_water_dialg_method_2_desc_2">Puteți accelera uscarea, îndreptând un ventilator sau un uscător (doar cu aer rece) către port.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Am detectat umiditate sau materiale străine în portul de încărcare/USB.
 
-Asigurați-vă că portul de încărcare/USB nu conține niciun material străin, cum ar fi praf sau reziduuri. Pentru a preveni deteriorarea telefonului, nu introduceți nimic în port înainte de a-l curăța și a elimina umezeala.
+Asigurați-vă că portul de încărcare/USB nu conține niciun material străin, cum ar fi praf sau reziduuri. Pentru a preveni deteriorarea tabletei, nu introduceți nimic în port înainte de a-l curăța și a elimina umezeala.
 
 Pentru a usca portul, scuturați umezeala, apoi așteptați să se usuce, proces care ar putea dura câteva ore. Puteți accelera procesul de uscare îndreptând un ventilator sau un uscător (doar cu aer rece) către port."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Am detectat umiditate sau materiale străine în portul de încărcare/USB.
 
-Asigurați-vă că portul de încărcare/USB nu conține niciun material străin, cum ar fi praf sau reziduuri. Pentru a preveni deteriorarea telefonului, nu introduceți nimic în port înainte de a-l curăța și a elimina umezeala.
+Asigurați-vă că portul de încărcare/USB nu conține niciun material străin, cum ar fi praf sau reziduuri. Pentru a împiedica deteriorarea tabletei, nu conectați nimic până când portul de încărcare nu este curat și nu mai există umiditate.
 
-Pentru a usca portul, scuturați umezeala, apoi așteptați să se usuce, proces care ar putea dura câteva ore. Puteți accelera procesul de uscare îndreptând un ventilator sau un uscător (doar cu aer rece) către port.
+Pentru a usca portul, eliminați umiditatea prin scuturare, apoi așteptați să se usuce; acest lucru poate dura câteva ore. Puteți accelera procesul de uscare îndreptând un ventilator sau un uscător (doar cu aer rece) către port.
 
-Între timp, puteți încărca telefonul wireless."</string>
+Între timp, puteți încărca tableta wireless."</string>
     <string name="usb_water_notification_content">În portul dumneavoastră de încărcare/USB se află umezeală sau obiecte străine. Verificați înainte de a încărca.</string>
-    <string name="usb_water_notification_message">A fost detectată umiditate în portul încărcător/USB. Înainte de a încărca telefonul, asigurați-vă că este uscat. Uscarea completă a portului poate necesita un anumit timp.</string>
+    <string name="usb_water_notification_message">A fost detectată umiditate în portul încărcător/USB. Înainte de a încărca tableta, asigurați-vă că este uscat. Uscarea completă a portului poate necesita un anumit timp.</string>
     <string name="usb_water_notification_message_button">Detalii</string>
     <string name="usb_water_notification_title">Verificare port încărcare/USB</string>
     <string name="usbhostStorage_restrict">Politica de securitate nu permite utilizarea dispozitivelor de stocare USB gazdă.</string>
@@ -3346,7 +3346,7 @@ Pentru a usca portul, scuturați umezeala, apoi așteptați să se usuce, proces
     <string name="user_switched">Utilizator curent: %1$s.</string>
     <string name="user_switching_message">Se comută la %1$s…</string>
     <string name="validity_period">Validitate:</string>
-    <string name="vdm_camera_access_denied">Nu se poate accesa camera foto a telefonului de pe %1$s</string>
+    <string name="vdm_camera_access_denied">Nu se poate accesa camera foto a tabletei de pe %1$s</string>
     <string name="vdm_pip_blocked">Nu se poate viziona picture-in-picture în timpul streamingului</string>
     <string name="vdm_secure_window">Nu se poate accesa în timpul streamingului. Încearcă pe telefon.</string>
     <string name="view_and_control_notification_content">%s poate să vadă și să controleze ecranul. Atinge pentru a verifica.</string>

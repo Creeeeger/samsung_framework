@@ -7,13 +7,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TranslationRequestValue implements Parcelable {
     public static final Parcelable.Creator<TranslationRequestValue> CREATOR = new Parcelable.Creator<TranslationRequestValue>() { // from class: android.view.translation.TranslationRequestValue.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TranslationRequestValue[] newArray(int size) {
             return new TranslationRequestValue[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationRequestValue createFromParcel(Parcel in) {
             return new TranslationRequestValue(in);
@@ -73,6 +74,23 @@ public final class TranslationRequestValue implements Parcelable {
         byte flg = in.readByte();
         CharSequence text = (flg & 1) == 0 ? null : in.readCharSequence();
         this.mText = text;
+    }
+
+    /* renamed from: android.view.translation.TranslationRequestValue$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TranslationRequestValue> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TranslationRequestValue[] newArray(int size) {
+            return new TranslationRequestValue[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TranslationRequestValue createFromParcel(Parcel in) {
+            return new TranslationRequestValue(in);
+        }
     }
 
     @Deprecated

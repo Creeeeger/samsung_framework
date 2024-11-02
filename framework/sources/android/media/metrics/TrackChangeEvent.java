@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class TrackChangeEvent extends Event implements Parcelable {
     public static final Parcelable.Creator<TrackChangeEvent> CREATOR = new Parcelable.Creator<TrackChangeEvent>() { // from class: android.media.metrics.TrackChangeEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TrackChangeEvent[] newArray(int size) {
             return new TrackChangeEvent[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TrackChangeEvent createFromParcel(Parcel in) {
             return new TrackChangeEvent(in);
@@ -61,6 +62,14 @@ public final class TrackChangeEvent extends Event implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface TrackType {
+    }
+
+    /* synthetic */ TrackChangeEvent(int i, int i2, String str, String str2, String str3, int i3, long j, int i4, String str4, String str5, int i5, int i6, int i7, int i8, float f, Bundle bundle, TrackChangeEventIA trackChangeEventIA) {
+        this(i, i2, str, str2, str3, i3, j, i4, str4, str5, i5, i6, i7, i8, f, bundle);
+    }
+
+    /* synthetic */ TrackChangeEvent(Parcel parcel, TrackChangeEventIA trackChangeEventIA) {
+        this(parcel);
     }
 
     private TrackChangeEvent(int state, int reason, String containerMimeType, String sampleMimeType, String codecName, int bitrate, long timeSinceCreatedMillis, int type, String language, String languageRegion, int channelCount, int sampleRate, int width, int height, float videoFrameRate, Bundle extras) {
@@ -236,6 +245,23 @@ public final class TrackChangeEvent extends Event implements Parcelable {
         this.mHeight = height;
         this.mVideoFrameRate = videoFrameRate;
         this.mMetricsBundle = extras;
+    }
+
+    /* renamed from: android.media.metrics.TrackChangeEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TrackChangeEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TrackChangeEvent[] newArray(int size) {
+            return new TrackChangeEvent[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TrackChangeEvent createFromParcel(Parcel in) {
+            return new TrackChangeEvent(in);
+        }
     }
 
     public String toString() {

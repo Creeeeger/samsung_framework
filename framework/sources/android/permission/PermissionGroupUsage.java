@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PermissionGroupUsage implements Parcelable {
     public static final Parcelable.Creator<PermissionGroupUsage> CREATOR = new Parcelable.Creator<PermissionGroupUsage>() { // from class: android.permission.PermissionGroupUsage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PermissionGroupUsage[] newArray(int size) {
             return new PermissionGroupUsage[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionGroupUsage createFromParcel(Parcel in) {
             return new PermissionGroupUsage(in);
@@ -167,6 +168,23 @@ public final class PermissionGroupUsage implements Parcelable {
         this.mAttributionTag = attributionTag;
         this.mAttributionLabel = attributionLabel;
         this.mProxyLabel = proxyLabel;
+    }
+
+    /* renamed from: android.permission.PermissionGroupUsage$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PermissionGroupUsage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PermissionGroupUsage[] newArray(int size) {
+            return new PermissionGroupUsage[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PermissionGroupUsage createFromParcel(Parcel in) {
+            return new PermissionGroupUsage(in);
+        }
     }
 
     @Deprecated

@@ -106,6 +106,10 @@ public class GpsNetInitiatedHandler {
 
     /* loaded from: classes4.dex */
     private class EmergencyCallListener extends TelephonyCallback implements TelephonyCallback.OutgoingEmergencyCallListener, TelephonyCallback.CallStateListener, TelephonyCallback.PreciseCallStateListener {
+        /* synthetic */ EmergencyCallListener(GpsNetInitiatedHandler gpsNetInitiatedHandler, EmergencyCallListenerIA emergencyCallListenerIA) {
+            this();
+        }
+
         private EmergencyCallListener() {
         }
 
@@ -192,13 +196,87 @@ public class GpsNetInitiatedHandler {
         }
     }
 
+    /* renamed from: com.android.internal.location.GpsNetInitiatedHandler$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action == null) {
+                return;
+            }
+            if (action.equals("android.intent.action.EMERGENCY_CALLBACK_MODE_CHANGED")) {
+                if (intent.getBooleanExtra(TelephonyManager.EXTRA_PHONE_IN_ECM_STATE, false)) {
+                    if (!GpsNetInitiatedHandler.this.mIsInEmergencyCall && GpsNetInitiatedHandler.this.mEmergencyCallState != 3) {
+                        Log.d(GpsNetInitiatedHandler.TAG, "emergency mode is on because ECBM is on.");
+                        GpsNetInitiatedHandler.this.setEmergencyState(true);
+                    }
+                    GpsNetInitiatedHandler.this.mEmergencyCallState = 3;
+                    return;
+                }
+                if (GpsNetInitiatedHandler.this.mEmergencyCallState == 3) {
+                    Log.d(GpsNetInitiatedHandler.TAG, "emergency mode is off because ECBM is off");
+                    GpsNetInitiatedHandler.this.setEmergencyState(false);
+                    GpsNetInitiatedHandler.this.mEmergencyCallState = 0;
+                    return;
+                }
+                return;
+            }
+            if (action.equals(GpsNetInitiatedHandler.INTENT_CALL_STATE)) {
+                String phoneNumber = intent.getStringExtra("EXTRA_TEL_NUMBER");
+                try {
+                    if (GpsNetInitiatedHandler.this.mTelephonyManager.isEmergencyNumber(phoneNumber)) {
+                        int callState = intent.getIntExtra("EXTRA_CALL_EVENT", 1);
+                        if (callState == 1) {
+                            if (GpsNetInitiatedHandler.this.mNumOfEmergencyCalls > 0) {
+                                GpsNetInitiatedHandler.this.mNumOfEmergencyCalls--;
+                            }
+                            if (GpsNetInitiatedHandler.this.mIsInEmergencyCall && GpsNetInitiatedHandler.this.mNumOfEmergencyCalls == 0) {
+                                if (GpsNetInitiatedHandler.DEBUG) {
+                                    Log.d(GpsNetInitiatedHandler.TAG, "emergency call is disconnected");
+                                }
+                                GpsNetInitiatedHandler.this.mCallEndElapsedRealtimeMillis = SystemClock.elapsedRealtime();
+                                GpsNetInitiatedHandler.this.mIsInEmergencyCall = false;
+                                if (!GpsNetInitiatedHandler.this.mTelephonyManager.getEmergencyCallbackMode() && GpsNetInitiatedHandler.this.mEmergencyCallState != 3) {
+                                    Log.d(GpsNetInitiatedHandler.TAG, "emergency mode is off.");
+                                    GpsNetInitiatedHandler.this.setEmergencyState(false);
+                                    GpsNetInitiatedHandler.this.mEmergencyCallState = 0;
+                                } else {
+                                    GpsNetInitiatedHandler.this.mEmergencyCallState = 3;
+                                }
+                                GpsNetInitiatedHandler.this.mEmergencyCallCallback.onEmergencyCallEnd();
+                                return;
+                            }
+                            if (GpsNetInitiatedHandler.this.mNumOfEmergencyCalls <= 0 || !GpsNetInitiatedHandler.DEBUG) {
+                                return;
+                            }
+                            Log.d(GpsNetInitiatedHandler.TAG, "additional emergency call is disconnected, the number of remaining call is " + GpsNetInitiatedHandler.this.mNumOfEmergencyCalls);
+                            return;
+                        }
+                        if (callState == 2) {
+                            GpsNetInitiatedHandler.this.mNumOfEmergencyCalls++;
+                        }
+                    }
+                } catch (IllegalStateException e) {
+                    Log.e("SystemEmergencyHelper", "isEmergencyNumber throws IllegalStateException:", e);
+                }
+            }
+        }
+    }
+
     public GpsNetInitiatedHandler(Context context, INetInitiatedListener netInitiatedListener, EmergencyCallCallback emergencyCallCallback, boolean isSuplEsEnabled) {
         boolean equals = "qcom".equals(Build.HARDWARE);
         this.mIzatServiceEnabled = equals;
         this.mNumOfEmergencyCalls = 0;
         this.mEmergencyCallState = 0;
         this.mEmergencySubId = 0;
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.internal.location.GpsNetInitiatedHandler.1
+        AnonymousClass1 anonymousClass1 = new BroadcastReceiver() { // from class: com.android.internal.location.GpsNetInitiatedHandler.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -263,7 +341,7 @@ public class GpsNetInitiatedHandler {
                 }
             }
         };
-        this.mBroadcastReciever = broadcastReceiver;
+        this.mBroadcastReciever = anonymousClass1;
         EmergencyCallListener emergencyCallListener = new EmergencyCallListener();
         this.mEmergencyCallListener = emergencyCallListener;
         this.mContext = context;
@@ -278,7 +356,10 @@ public class GpsNetInitiatedHandler {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService("phone");
         this.mTelephonyManager = telephonyManager;
         telephonyManager.registerTelephonyCallback(context.getMainExecutor(), emergencyCallListener);
-        BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() { // from class: com.android.internal.location.GpsNetInitiatedHandler.2
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.internal.location.GpsNetInitiatedHandler.2
+            AnonymousClass2() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -290,12 +371,30 @@ public class GpsNetInitiatedHandler {
                 }
             }
         };
-        context.registerReceiver(broadcastReceiver2, new IntentFilter(LocationManager.MODE_CHANGED_ACTION));
+        context.registerReceiver(broadcastReceiver, new IntentFilter(LocationManager.MODE_CHANGED_ACTION));
         if (!equals) {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(INTENT_CALL_STATE);
             intentFilter.addAction("android.intent.action.EMERGENCY_CALLBACK_MODE_CHANGED");
-            context.registerReceiver(broadcastReceiver, intentFilter);
+            context.registerReceiver(anonymousClass1, intentFilter);
+        }
+    }
+
+    /* renamed from: com.android.internal.location.GpsNetInitiatedHandler$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 extends BroadcastReceiver {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(LocationManager.MODE_CHANGED_ACTION)) {
+                GpsNetInitiatedHandler.this.updateLocationMode();
+                if (GpsNetInitiatedHandler.DEBUG) {
+                    Log.d(GpsNetInitiatedHandler.TAG, "location enabled :" + GpsNetInitiatedHandler.this.getLocationEnabled());
+                }
+            }
         }
     }
 
@@ -432,12 +531,10 @@ public class GpsNetInitiatedHandler {
         return intent;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isEmergencyCallActive(int callState) {
         return this.mEmergencyCallState == 1 && (callState == 3 || callState == 4);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setEmergencyState(boolean eState) {
         Bundle extras = new Bundle();
         if (eState) {

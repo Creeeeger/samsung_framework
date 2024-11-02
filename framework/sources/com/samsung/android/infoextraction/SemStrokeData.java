@@ -9,7 +9,9 @@ import java.util.List;
 /* loaded from: classes5.dex */
 public class SemStrokeData implements Parcelable {
     public static final Parcelable.Creator<SemStrokeData> CREATOR = new Parcelable.Creator<SemStrokeData>() { // from class: com.samsung.android.infoextraction.SemStrokeData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemStrokeData createFromParcel(Parcel in) {
             SemStrokeData semStrokeData = new SemStrokeData();
@@ -17,7 +19,6 @@ public class SemStrokeData implements Parcelable {
             return semStrokeData;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemStrokeData[] newArray(int size) {
             return new SemStrokeData[size];
@@ -61,5 +62,24 @@ public class SemStrokeData implements Parcelable {
             this.mStroke = new ArrayList();
         }
         in.readTypedList(this.mStroke, PointF.CREATOR);
+    }
+
+    /* renamed from: com.samsung.android.infoextraction.SemStrokeData$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemStrokeData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemStrokeData createFromParcel(Parcel in) {
+            SemStrokeData semStrokeData = new SemStrokeData();
+            semStrokeData.readFromParcel(in);
+            return semStrokeData;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemStrokeData[] newArray(int size) {
+            return new SemStrokeData[size];
+        }
     }
 }

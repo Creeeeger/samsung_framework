@@ -45,7 +45,6 @@ import java.util.Map;
 import javax.crypto.Cipher;
 import javax.crypto.KeyAgreement;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class OperatorHelper {
     private static final Map asymmetricWrapperAlgNames;
@@ -115,7 +114,6 @@ public class OperatorHelper {
         hashMap4.put(PKCSObjectIdentifiers.RC2_CBC, "RC2");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public OperatorHelper(JcaJceHelper helper) {
         this.helper = helper;
     }
@@ -225,7 +223,6 @@ public class OperatorHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MessageDigest createDigest(AlgorithmIdentifier digAlgId) throws GeneralSecurityException {
         MessageDigest dig;
         try {
@@ -246,7 +243,6 @@ public class OperatorHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Signature createSignature(AlgorithmIdentifier sigAlgId) throws GeneralSecurityException {
         Signature sig;
         String sigName = getSignatureName(sigAlgId);
@@ -348,8 +344,9 @@ public class OperatorHelper {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class OpCertificateException extends CertificateException {
+    public static class OpCertificateException extends CertificateException {
         private Throwable cause;
 
         public OpCertificateException(String msg, Throwable cause) {

@@ -8,13 +8,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes4.dex */
 public abstract class VerifiedInputEvent implements Parcelable {
     public static final Parcelable.Creator<VerifiedInputEvent> CREATOR = new Parcelable.Creator<VerifiedInputEvent>() { // from class: android.view.VerifiedInputEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VerifiedInputEvent[] newArray(int size) {
             return new VerifiedInputEvent[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifiedInputEvent createFromParcel(Parcel in) {
             int type = VerifiedInputEvent.peekInt(in);
@@ -41,7 +42,6 @@ public abstract class VerifiedInputEvent implements Parcelable {
     public @interface VerifiedInputEventType {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public VerifiedInputEvent(int type, int deviceId, long eventTimeNanos, int source, int displayId) {
         this.mType = type;
         this.mDeviceId = deviceId;
@@ -50,7 +50,6 @@ public abstract class VerifiedInputEvent implements Parcelable {
         this.mDisplayId = displayId;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public VerifiedInputEvent(Parcel in, int expectedType) {
         int readInt = in.readInt();
         this.mType = readInt;
@@ -93,12 +92,35 @@ public abstract class VerifiedInputEvent implements Parcelable {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int peekInt(Parcel parcel) {
         int initialDataPosition = parcel.dataPosition();
         int data = parcel.readInt();
         parcel.setDataPosition(initialDataPosition);
         return data;
+    }
+
+    /* renamed from: android.view.VerifiedInputEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VerifiedInputEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifiedInputEvent[] newArray(int size) {
+            return new VerifiedInputEvent[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifiedInputEvent createFromParcel(Parcel in) {
+            int type = VerifiedInputEvent.peekInt(in);
+            if (type == 1) {
+                return VerifiedKeyEvent.CREATOR.createFromParcel(in);
+            }
+            if (type == 2) {
+                return VerifiedMotionEvent.CREATOR.createFromParcel(in);
+            }
+            throw new IllegalArgumentException("Unexpected input event type in parcel.");
+        }
     }
 
     public boolean equals(Object o) {

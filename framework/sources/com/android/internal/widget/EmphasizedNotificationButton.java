@@ -71,8 +71,7 @@ public class EmphasizedNotificationButton extends Button {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: setImageDrawable, reason: merged with bridge method [inline-methods] */
+    /* renamed from: setImageDrawable */
     public void lambda$setImageIconAsync$0(Drawable drawable) {
         if (drawable != null) {
             drawable.mutate();

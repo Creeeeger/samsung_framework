@@ -26,8 +26,30 @@ import java.util.concurrent.Executor;
 public class Utils {
     private static final String TAG = "Utils";
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.Utils$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1<T> implements Comparator<Range<T>> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(Range<T> range, Range<T> range2) {
+            if (range.getUpper().compareTo(range2.getLower()) < 0) {
+                return -1;
+            }
+            if (range.getLower().compareTo(range2.getUpper()) > 0) {
+                return 1;
+            }
+            throw new IllegalArgumentException("sample rate ranges must be distinct (" + range + " and " + range2 + NavigationBarInflaterView.KEY_CODE_END);
+        }
+    }
+
     public static <T extends Comparable<? super T>> void sortDistinctRanges(Range<T>[] ranges) {
         Arrays.sort(ranges, new Comparator<Range<T>>() { // from class: android.media.Utils.1
+            AnonymousClass1() {
+            }
+
             @Override // java.util.Comparator
             public int compare(Range<T> range, Range<T> range2) {
                 if (range.getUpper().compareTo(range2.getLower()) < 0) {
@@ -62,8 +84,30 @@ public class Utils {
         return (Range[]) result.toArray(new Range[result.size()]);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.Utils$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2<T> implements Comparator<Range<T>> {
+        AnonymousClass2() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(Range<T> range, Range<T> range2) {
+            if (range.getUpper().compareTo(range2.getLower()) < 0) {
+                return -1;
+            }
+            if (range.getLower().compareTo(range2.getUpper()) > 0) {
+                return 1;
+            }
+            return 0;
+        }
+    }
+
     public static <T extends Comparable<? super T>> int binarySearchDistinctRanges(Range<T>[] ranges, T value) {
         return Arrays.binarySearch(ranges, Range.create(value, value), new Comparator<Range<T>>() { // from class: android.media.Utils.2
+            AnonymousClass2() {
+            }
+
             @Override // java.util.Comparator
             public int compare(Range<T> range, Range<T> range2) {
                 if (range.getUpper().compareTo(range2.getLower()) < 0) {
@@ -95,7 +139,6 @@ public class Utils {
         return b;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Integer> factorRange(Range<Integer> range, int factor) {
         if (factor == 1) {
             return range;
@@ -103,7 +146,6 @@ public class Utils {
         return Range.create(Integer.valueOf(divUp(range.getLower().intValue(), factor)), Integer.valueOf(range.getUpper().intValue() / factor));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Long> factorRange(Range<Long> range, long factor) {
         if (factor == 1) {
             return range;
@@ -116,7 +158,6 @@ public class Utils {
         return new Rational((int) (ratio.getNumerator() * (num / common)), (int) (ratio.getDenominator() * (den / common)));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Rational> scaleRange(Range<Rational> range, int num, int den) {
         if (num == den) {
             return range;
@@ -124,17 +165,14 @@ public class Utils {
         return Range.create(scaleRatio(range.getLower(), num, den), scaleRatio(range.getUpper(), num, den));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Integer> alignRange(Range<Integer> range, int align) {
         return range.intersect(Integer.valueOf(divUp(range.getLower().intValue(), align) * align), Integer.valueOf((range.getUpper().intValue() / align) * align));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int divUp(int num, int den) {
         return ((num + den) - 1) / den;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long divUp(long num, long den) {
         return ((num + den) - 1) / den;
     }
@@ -146,17 +184,14 @@ public class Utils {
         return (a * b) / gcd(a, b);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Integer> intRangeFor(double v) {
         return Range.create(Integer.valueOf((int) v), Integer.valueOf((int) Math.ceil(v)));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Long> longRangeFor(double v) {
         return Range.create(Long.valueOf((long) v), Long.valueOf((long) Math.ceil(v)));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Size parseSize(Object o, Size fallback) {
         if (o == null) {
             return fallback;
@@ -169,7 +204,6 @@ public class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int parseIntSafely(Object o, int fallback) {
         if (o == null) {
             return fallback;
@@ -183,7 +217,6 @@ public class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Integer> parseIntRange(Object o, Range<Integer> fallback) {
         if (o == null) {
             return fallback;
@@ -202,7 +235,6 @@ public class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Long> parseLongRange(Object o, Range<Long> fallback) {
         if (o == null) {
             return fallback;
@@ -221,7 +253,6 @@ public class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Range<Rational> parseRationalRange(Object o, Range<Rational> fallback) {
         if (o == null) {
             return fallback;
@@ -240,7 +271,6 @@ public class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Pair<Size, Size> parseSizeRange(Object o) {
         if (o == null) {
             return null;
@@ -271,7 +301,6 @@ public class Utils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getFileDisplayNameFromUri(Context context, Uri uri) {
         String scheme = uri.getScheme();
         if ("file".equals(scheme)) {
@@ -320,8 +349,9 @@ public class Utils {
             void onEvent(int i, V v);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private interface ListenerWithCancellation<V> extends Listener<V> {
+        public interface ListenerWithCancellation<V> extends Listener<V> {
             void cancel();
         }
 
@@ -346,8 +376,7 @@ public class Utils {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.media.Utils$ListenerList$1, reason: invalid class name */
+        /* renamed from: android.media.Utils$ListenerList$1 */
         /* loaded from: classes2.dex */
         public class AnonymousClass1 implements ListenerWithCancellation<V> {
             final /* synthetic */ Executor val$executor;
@@ -372,7 +401,6 @@ public class Utils {
                 });
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onEvent$0(Listener listener, int eventCode, Object info) {
                 if (ListenerList.this.mRestrictSingleCallerOnEvent || ListenerList.this.mForceRemoveConsistency) {
                     synchronized (this.mLock) {

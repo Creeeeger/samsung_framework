@@ -7,7 +7,6 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.view.accessibility.IAccessibilityManager;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class DirectAccessibilityConnection extends IAccessibilityServiceConnection.Default {
     private static final int FETCH_FLAGS = 384;
@@ -16,7 +15,6 @@ public class DirectAccessibilityConnection extends IAccessibilityServiceConnecti
     private final AccessibilityManager mAccessibilityManager;
     private final int mMyProcessId = Process.myPid();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DirectAccessibilityConnection(IAccessibilityInteractionConnection accessibilityInteractionConnection, AccessibilityManager accessibilityManager) {
         this.mAccessibilityInteractionConnection = accessibilityInteractionConnection;
         this.mAccessibilityManager = accessibilityManager;

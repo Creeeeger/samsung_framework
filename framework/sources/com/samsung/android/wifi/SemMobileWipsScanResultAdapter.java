@@ -25,7 +25,9 @@ public final class SemMobileWipsScanResultAdapter implements Parcelable {
     public static final int CIPHER_SMS4 = 5;
     public static final int CIPHER_TKIP = 2;
     public static final Parcelable.Creator<SemMobileWipsScanResultAdapter> CREATOR = new Parcelable.Creator<SemMobileWipsScanResultAdapter>() { // from class: com.samsung.android.wifi.SemMobileWipsScanResultAdapter.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemMobileWipsScanResultAdapter createFromParcel(Parcel in) {
             SemMobileWipsWifiSsid wifiSsid = null;
@@ -77,7 +79,6 @@ public final class SemMobileWipsScanResultAdapter implements Parcelable {
             return sr;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemMobileWipsScanResultAdapter[] newArray(int size) {
             return new SemMobileWipsScanResultAdapter[size];
@@ -144,6 +145,69 @@ public final class SemMobileWipsScanResultAdapter implements Parcelable {
     public boolean untrusted;
     public CharSequence venueName;
     public SemMobileWipsWifiSsid wifiSsid;
+
+    /* renamed from: com.samsung.android.wifi.SemMobileWipsScanResultAdapter$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemMobileWipsScanResultAdapter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemMobileWipsScanResultAdapter createFromParcel(Parcel in) {
+            SemMobileWipsWifiSsid wifiSsid = null;
+            if (in.readInt() == 1) {
+                SemMobileWipsWifiSsid wifiSsid2 = SemMobileWipsWifiSsid.CREATOR.createFromParcel(in);
+                wifiSsid = wifiSsid2;
+            }
+            SemMobileWipsScanResultAdapter sr = new SemMobileWipsScanResultAdapter(wifiSsid, in.readString(), in.readString(), in.readLong(), in.readInt(), in.readString(), in.readInt(), in.readInt(), in.readLong(), in.readInt(), in.readInt(), in.readInt(), in.readInt(), in.readInt(), false);
+            sr.mWifiStandard = in.readInt();
+            sr.seen = in.readLong();
+            sr.untrusted = in.readInt() != 0;
+            sr.numUsage = in.readInt();
+            sr.venueName = in.readString();
+            sr.operatorFriendlyName = in.readString();
+            sr.flags = in.readLong();
+            sr.informationElements = (InformationElement[]) in.createTypedArray(InformationElement.CREATOR);
+            int n = in.readInt();
+            if (n != 0) {
+                sr.anqpLines = new ArrayList();
+                for (int i = 0; i < n; i++) {
+                    sr.anqpLines.add(in.readString());
+                }
+            }
+            int n2 = in.readInt();
+            if (n2 != 0) {
+                sr.anqpElements = new AnqpInformationElement[n2];
+                for (int i2 = 0; i2 < n2; i2++) {
+                    int vendorId = in.readInt();
+                    int elementId = in.readInt();
+                    int len = in.readInt();
+                    byte[] payload = new byte[len];
+                    in.readByteArray(payload);
+                    sr.anqpElements[i2] = new AnqpInformationElement(vendorId, elementId, payload);
+                }
+            }
+            int n3 = in.readInt();
+            if (n3 != 0) {
+                sr.radioChainInfos = new RadioChainInfo[n3];
+                for (int i3 = 0; i3 < n3; i3++) {
+                    sr.radioChainInfos[i3] = new RadioChainInfo();
+                    sr.radioChainInfos[i3].id = in.readInt();
+                    sr.radioChainInfos[i3].level = in.readInt();
+                }
+            }
+            sr.ifaceName = in.readString();
+            sr.mApMldMacAddress = (MacAddress) in.readParcelable(MacAddress.class.getClassLoader());
+            sr.mApMloLinkId = in.readInt();
+            sr.mAffiliatedMloLinks = in.createTypedArrayList(MloLink.CREATOR);
+            return sr;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemMobileWipsScanResultAdapter[] newArray(int size) {
+            return new SemMobileWipsScanResultAdapter[size];
+        }
+    }
 
     public SemMobileWipsScanResultAdapter(SemMobileWipsWifiSsid wifiSsid, String BSSID, long hessid, int anqpDomainId, byte[] osuProviders, String caps, int level, int frequency, long tsf) {
         this.mApMloLinkId = -1;
@@ -536,7 +600,9 @@ public final class SemMobileWipsScanResultAdapter implements Parcelable {
     /* loaded from: classes6.dex */
     public static class InformationElement implements Parcelable {
         public static final Parcelable.Creator<InformationElement> CREATOR = new Parcelable.Creator<InformationElement>() { // from class: com.samsung.android.wifi.SemMobileWipsScanResultAdapter.InformationElement.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public InformationElement createFromParcel(Parcel in) {
                 InformationElement informationElement = new InformationElement();
@@ -546,7 +612,6 @@ public final class SemMobileWipsScanResultAdapter implements Parcelable {
                 return informationElement;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InformationElement[] newArray(int size) {
                 return new InformationElement[size];
@@ -605,6 +670,27 @@ public final class SemMobileWipsScanResultAdapter implements Parcelable {
             dest.writeInt(this.id);
             dest.writeInt(this.idExt);
             dest.writeByteArray(this.bytes);
+        }
+
+        /* renamed from: com.samsung.android.wifi.SemMobileWipsScanResultAdapter$InformationElement$1 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass1 implements Parcelable.Creator<InformationElement> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InformationElement createFromParcel(Parcel in) {
+                InformationElement informationElement = new InformationElement();
+                informationElement.id = in.readInt();
+                informationElement.idExt = in.readInt();
+                informationElement.bytes = in.createByteArray();
+                return informationElement;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InformationElement[] newArray(int size) {
+                return new InformationElement[size];
+            }
         }
 
         public boolean equals(Object that) {

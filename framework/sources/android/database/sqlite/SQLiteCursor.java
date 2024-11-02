@@ -172,7 +172,6 @@ public class SQLiteCursor extends AbstractWindowedCursor {
         this.mFillWindowForwardOnly = fillWindowForwardOnly;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.database.AbstractCursor
     public void finalize() {
         try {

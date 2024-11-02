@@ -7,7 +7,6 @@ class Utils {
     Utils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] octetStringFixed(byte[] octets, int n) {
         if (octets.length != n) {
             throw new IllegalArgumentException("octet string out of range");
@@ -15,7 +14,6 @@ class Utils {
         return octets;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] octetStringFixed(byte[] octets) {
         if (octets.length < 1 || octets.length > 32) {
             throw new IllegalArgumentException("octet string out of range");

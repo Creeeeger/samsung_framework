@@ -9,7 +9,9 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public class VideoProfile implements Parcelable {
     public static final Parcelable.Creator<VideoProfile> CREATOR = new Parcelable.Creator<VideoProfile>() { // from class: android.telecom.VideoProfile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VideoProfile createFromParcel(Parcel source) {
             int state = source.readInt();
@@ -18,7 +20,6 @@ public class VideoProfile implements Parcelable {
             return new VideoProfile(state, quality);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VideoProfile[] newArray(int size) {
             return new VideoProfile[size];
@@ -62,6 +63,26 @@ public class VideoProfile implements Parcelable {
 
     public int getQuality() {
         return this.mQuality;
+    }
+
+    /* renamed from: android.telecom.VideoProfile$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VideoProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VideoProfile createFromParcel(Parcel source) {
+            int state = source.readInt();
+            int quality = source.readInt();
+            VideoProfile.class.getClassLoader();
+            return new VideoProfile(state, quality);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VideoProfile[] newArray(int size) {
+            return new VideoProfile[size];
+        }
     }
 
     @Override // android.os.Parcelable
@@ -129,7 +150,9 @@ public class VideoProfile implements Parcelable {
     /* loaded from: classes3.dex */
     public static final class CameraCapabilities implements Parcelable {
         public static final Parcelable.Creator<CameraCapabilities> CREATOR = new Parcelable.Creator<CameraCapabilities>() { // from class: android.telecom.VideoProfile.CameraCapabilities.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public CameraCapabilities createFromParcel(Parcel source) {
                 int width = source.readInt();
@@ -139,7 +162,6 @@ public class VideoProfile implements Parcelable {
                 return new CameraCapabilities(width, height, supportsZoom, maxZoom);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CameraCapabilities[] newArray(int size) {
                 return new CameraCapabilities[size];
@@ -159,6 +181,27 @@ public class VideoProfile implements Parcelable {
             this.mHeight = height;
             this.mZoomSupported = zoomSupported;
             this.mMaxZoom = maxZoom;
+        }
+
+        /* renamed from: android.telecom.VideoProfile$CameraCapabilities$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<CameraCapabilities> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CameraCapabilities createFromParcel(Parcel source) {
+                int width = source.readInt();
+                int height = source.readInt();
+                boolean supportsZoom = source.readByte() != 0;
+                float maxZoom = source.readFloat();
+                return new CameraCapabilities(width, height, supportsZoom, maxZoom);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CameraCapabilities[] newArray(int size) {
+                return new CameraCapabilities[size];
+            }
         }
 
         @Override // android.os.Parcelable

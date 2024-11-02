@@ -7,6 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehCbConfigArgs implements Parcelable {
     public static final Parcelable.Creator<SehCbConfigArgs> CREATOR = new Parcelable.Creator<SehCbConfigArgs>() { // from class: vendor.samsung.hardware.radio.messaging.SehCbConfigArgs.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehCbConfigArgs createFromParcel(Parcel _aidl_source) {
             SehCbConfigArgs _aidl_out = new SehCbConfigArgs();
@@ -24,6 +27,25 @@ public class SehCbConfigArgs implements Parcelable {
     public int selectedId = 0;
     public int msgIdMaxCount = 0;
     public int msgIdCount = 0;
+
+    /* renamed from: vendor.samsung.hardware.radio.messaging.SehCbConfigArgs$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehCbConfigArgs> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehCbConfigArgs createFromParcel(Parcel _aidl_source) {
+            SehCbConfigArgs _aidl_out = new SehCbConfigArgs();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehCbConfigArgs[] newArray(int _aidl_size) {
+            return new SehCbConfigArgs[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

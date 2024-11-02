@@ -851,12 +851,40 @@ public abstract class PackageManager {
     public static final int VERIFICATION_ALLOW_WITHOUT_SUFFICIENT = 2;
     public static final int VERIFICATION_REJECT = -1;
     public static final int VERSION_CODE_HIGHEST = -1;
-    private static final PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo> sApplicationInfoCache;
-    private static final PropertyInvalidatedCache.AutoCorker sCacheAutoCorker;
-    private static final PropertyInvalidatedCache<PackageInfoQuery, PackageInfo> sPackageInfoCache;
     public static final String APP_DETAILS_ACTIVITY_CLASS_NAME = AppDetailsActivity.class.getName();
     public static final List<Certificate> TRUST_ALL = Collections.singletonList(null);
     public static final List<Certificate> TRUST_NONE = Collections.singletonList(null);
+    private static final PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo> sApplicationInfoCache = new PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo>(32, PermissionManager.CACHE_KEY_PACKAGE_INFO, "getApplicationInfo") { // from class: android.content.pm.PackageManager.1
+        AnonymousClass1(int maxEntries, String propertyName, String cacheName) {
+            super(maxEntries, propertyName, cacheName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public ApplicationInfo recompute(ApplicationInfoQuery query) {
+            return PackageManager.getApplicationInfoAsUserUncached(query.packageName, query.flags, query.userId);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean resultEquals(ApplicationInfo cached, ApplicationInfo fetched) {
+            return true;
+        }
+    };
+    private static final PropertyInvalidatedCache.AutoCorker sCacheAutoCorker = new PropertyInvalidatedCache.AutoCorker(PermissionManager.CACHE_KEY_PACKAGE_INFO);
+    private static final PropertyInvalidatedCache<PackageInfoQuery, PackageInfo> sPackageInfoCache = new PropertyInvalidatedCache<PackageInfoQuery, PackageInfo>(64, PermissionManager.CACHE_KEY_PACKAGE_INFO, "getPackageInfo") { // from class: android.content.pm.PackageManager.2
+        AnonymousClass2(int maxEntries, String propertyName, String cacheName) {
+            super(maxEntries, propertyName, cacheName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public PackageInfo recompute(PackageInfoQuery query) {
+            return PackageManager.getPackageInfoAsUserUncached(query.packageName, query.flags, query.userId);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean resultEquals(PackageInfo cached, PackageInfo fetched) {
+            return true;
+        }
+    };
 
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
@@ -1427,7 +1455,9 @@ public abstract class PackageManager {
     /* loaded from: classes.dex */
     public static final class Property implements Parcelable {
         public static final Parcelable.Creator<Property> CREATOR = new Parcelable.Creator<Property>() { // from class: android.content.pm.PackageManager.Property.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Property createFromParcel(Parcel source) {
                 String name = source.readString();
@@ -1452,7 +1482,6 @@ public abstract class PackageManager {
                 return null;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Property[] newArray(int size) {
                 return new Property[size];
@@ -1609,18 +1638,55 @@ public abstract class PackageManager {
                 dest.writeString(this.mStringValue);
             }
         }
+
+        /* renamed from: android.content.pm.PackageManager$Property$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Property> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Property createFromParcel(Parcel source) {
+                String name = source.readString();
+                int type = source.readInt();
+                String packageName = source.readString();
+                String className = source.readString();
+                if (type == 1) {
+                    return new Property(name, source.readBoolean(), packageName, className);
+                }
+                if (type == 2) {
+                    return new Property(name, source.readFloat(), packageName, className);
+                }
+                if (type == 3) {
+                    return new Property(name, source.readInt(), false, packageName, className);
+                }
+                if (type == 4) {
+                    return new Property(name, source.readInt(), true, packageName, className);
+                }
+                if (type == 5) {
+                    return new Property(name, source.readString(), packageName, className);
+                }
+                return null;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Property[] newArray(int size) {
+                return new Property[size];
+            }
+        }
     }
 
     /* loaded from: classes.dex */
     public static final class ComponentEnabledSetting implements Parcelable {
         public static final Parcelable.Creator<ComponentEnabledSetting> CREATOR = new Parcelable.Creator<ComponentEnabledSetting>() { // from class: android.content.pm.PackageManager.ComponentEnabledSetting.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ComponentEnabledSetting[] newArray(int size) {
                 return new ComponentEnabledSetting[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ComponentEnabledSetting createFromParcel(Parcel in) {
                 return new ComponentEnabledSetting(in);
@@ -1713,36 +1779,26 @@ public abstract class PackageManager {
             AnnotationValidations.validate((Class<? extends Annotation>) EnabledFlags.class, (Annotation) null, enabledFlags);
         }
 
+        /* renamed from: android.content.pm.PackageManager$ComponentEnabledSetting$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ComponentEnabledSetting> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ComponentEnabledSetting[] newArray(int size) {
+                return new ComponentEnabledSetting[size];
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ComponentEnabledSetting createFromParcel(Parcel in) {
+                return new ComponentEnabledSetting(in);
+            }
+        }
+
         @Deprecated
         private void __metadata() {
         }
-    }
-
-    static {
-        String str = PermissionManager.CACHE_KEY_PACKAGE_INFO;
-        sApplicationInfoCache = new PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo>(32, str, "getApplicationInfo") { // from class: android.content.pm.PackageManager.1
-            @Override // android.app.PropertyInvalidatedCache
-            public ApplicationInfo recompute(ApplicationInfoQuery query) {
-                return PackageManager.getApplicationInfoAsUserUncached(query.packageName, query.flags, query.userId);
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean resultEquals(ApplicationInfo cached, ApplicationInfo fetched) {
-                return true;
-            }
-        };
-        sCacheAutoCorker = new PropertyInvalidatedCache.AutoCorker(PermissionManager.CACHE_KEY_PACKAGE_INFO);
-        sPackageInfoCache = new PropertyInvalidatedCache<PackageInfoQuery, PackageInfo>(64, str, "getPackageInfo") { // from class: android.content.pm.PackageManager.2
-            @Override // android.app.PropertyInvalidatedCache
-            public PackageInfo recompute(PackageInfoQuery query) {
-                return PackageManager.getPackageInfoAsUserUncached(query.packageName, query.flags, query.userId);
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean resultEquals(PackageInfo cached, PackageInfo fetched) {
-                return true;
-            }
-        };
     }
 
     /* loaded from: classes.dex */
@@ -2626,13 +2682,14 @@ public abstract class PackageManager {
     /* loaded from: classes.dex */
     public static final class UninstallCompleteCallback implements Parcelable {
         public static final Parcelable.Creator<UninstallCompleteCallback> CREATOR = new Parcelable.Creator<UninstallCompleteCallback>() { // from class: android.content.pm.PackageManager.UninstallCompleteCallback.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public UninstallCompleteCallback createFromParcel(Parcel source) {
                 return new UninstallCompleteCallback(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public UninstallCompleteCallback[] newArray(int size) {
                 return new UninstallCompleteCallback[size];
@@ -2645,12 +2702,33 @@ public abstract class PackageManager {
         public @interface DeleteStatus {
         }
 
+        /* synthetic */ UninstallCompleteCallback(Parcel parcel, UninstallCompleteCallbackIA uninstallCompleteCallbackIA) {
+            this(parcel);
+        }
+
         public UninstallCompleteCallback(IBinder binder) {
             this.mBinder = IPackageDeleteObserver2.Stub.asInterface(binder);
         }
 
         private UninstallCompleteCallback(Parcel in) {
             this.mBinder = IPackageDeleteObserver2.Stub.asInterface(in.readStrongBinder());
+        }
+
+        /* renamed from: android.content.pm.PackageManager$UninstallCompleteCallback$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<UninstallCompleteCallback> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public UninstallCompleteCallback createFromParcel(Parcel source) {
+                return new UninstallCompleteCallback(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public UninstallCompleteCallback[] newArray(int size) {
+                return new UninstallCompleteCallback[size];
+            }
         }
 
         @SystemApi
@@ -2832,7 +2910,6 @@ public abstract class PackageManager {
         throw new UnsupportedOperationException("makeUidVisible not implemented in subclass");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class ApplicationInfoQuery {
         final long flags;
@@ -2867,12 +2944,29 @@ public abstract class PackageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ApplicationInfo getApplicationInfoAsUserUncached(String packageName, long flags, int userId) {
         try {
             return ActivityThread.getPackageManager().getApplicationInfo(packageName, flags, userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /* renamed from: android.content.pm.PackageManager$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends PropertyInvalidatedCache<ApplicationInfoQuery, ApplicationInfo> {
+        AnonymousClass1(int maxEntries, String propertyName, String cacheName) {
+            super(maxEntries, propertyName, cacheName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public ApplicationInfo recompute(ApplicationInfoQuery query) {
+            return PackageManager.getApplicationInfoAsUserUncached(query.packageName, query.flags, query.userId);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean resultEquals(ApplicationInfo cached, ApplicationInfo fetched) {
+            return true;
         }
     }
 
@@ -2888,7 +2982,6 @@ public abstract class PackageManager {
         sCacheAutoCorker.autoCork();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class PackageInfoQuery {
         final long flags;
@@ -2923,12 +3016,29 @@ public abstract class PackageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static PackageInfo getPackageInfoAsUserUncached(String packageName, long flags, int userId) {
         try {
             return ActivityThread.getPackageManager().getPackageInfo(packageName, flags, userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /* renamed from: android.content.pm.PackageManager$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends PropertyInvalidatedCache<PackageInfoQuery, PackageInfo> {
+        AnonymousClass2(int maxEntries, String propertyName, String cacheName) {
+            super(maxEntries, propertyName, cacheName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public PackageInfo recompute(PackageInfoQuery query) {
+            return PackageManager.getPackageInfoAsUserUncached(query.packageName, query.flags, query.userId);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean resultEquals(PackageInfo cached, PackageInfo fetched) {
+            return true;
         }
     }
 

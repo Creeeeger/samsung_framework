@@ -219,7 +219,6 @@ public class WallpaperManager implements SemWallpaperManager {
     public @interface SetWallpaperFlags {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class FastBitmapDrawable extends Drawable {
         private final Bitmap mBitmap;
@@ -228,6 +227,10 @@ public class WallpaperManager implements SemWallpaperManager {
         private final int mHeight;
         private final Paint mPaint;
         private final int mWidth;
+
+        /* synthetic */ FastBitmapDrawable(Bitmap bitmap, FastBitmapDrawableIA fastBitmapDrawableIA) {
+            this(bitmap);
+        }
 
         private FastBitmapDrawable(Bitmap bitmap) {
             this.mBitmap = bitmap;
@@ -298,7 +301,6 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class CachedWallpaper {
         final Bitmap mCachedWallpaper;
@@ -316,7 +318,6 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class Globals extends IWallpaperManagerCallback.Stub {
         private CachedWallpaper mCachedWallpaper;
@@ -329,6 +330,9 @@ public class WallpaperManager implements SemWallpaperManager {
         private final ArrayList<Pair<OnColorsChangedListener, Handler>> mColorListeners = new ArrayList<>();
         private ArrayMap<LocalWallpaperColorConsumer, ArraySet<RectF>> mLocalColorCallbackAreas = new ArrayMap<>();
         private ILocalWallpaperColorConsumer mLocalColorCallback = new ILocalWallpaperColorConsumer.Stub() { // from class: android.app.WallpaperManager.Globals.1
+            AnonymousClass1() {
+            }
+
             @Override // android.app.ILocalWallpaperColorConsumer
             public void onColorsChanged(RectF area, WallpaperColors colors) {
                 for (LocalWallpaperColorConsumer callback : Globals.this.mLocalColorCallbackAreas.keySet()) {
@@ -340,6 +344,24 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         };
         private final ArrayList<Pair<OnSemColorsChangedListener, Handler>> mSemColorListeners = new ArrayList<>();
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.app.WallpaperManager$Globals$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 extends ILocalWallpaperColorConsumer.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.app.ILocalWallpaperColorConsumer
+            public void onColorsChanged(RectF area, WallpaperColors colors) {
+                for (LocalWallpaperColorConsumer callback : Globals.this.mLocalColorCallbackAreas.keySet()) {
+                    ArraySet<RectF> areas = (ArraySet) Globals.this.mLocalColorCallbackAreas.get(callback);
+                    if (areas != null && areas.contains(area)) {
+                        callback.onColorsChanged(area, colors);
+                    }
+                }
+            }
+        }
 
         Globals(IWallpaperManager service, Looper looper) {
             this.mService = service;
@@ -432,7 +454,6 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$removeOnColorsChangedListener$0(OnColorsChangedListener callback, Pair pair) {
             return pair.first == callback;
         }
@@ -461,7 +482,6 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onWallpaperColorsChanged$1(Pair listener, WallpaperColors colors, int which, int userId) {
             boolean stillExists;
             synchronized (WallpaperManager.sGlobals) {
@@ -715,7 +735,6 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Bitmap getCurrentWallpaperLocked(Context context, int which, int userId, final boolean hardware, final ColorManagementProxy cmProxy) {
             InputStream fis;
             if (this.mService == null) {
@@ -818,13 +837,11 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ AssetFileDescriptor lambda$getCurrentWallpaperLocked$2(ParcelFileDescriptor pfd) throws Exception {
             AssetFileDescriptor afd = new AssetFileDescriptor(pfd, 0L, -1L);
             return afd;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$getCurrentWallpaperLocked$3(boolean hardware, ColorManagementProxy cmProxy, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
             decoder.setMutableRequired(!hardware);
             if (cmProxy != null) {
@@ -976,7 +993,6 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$removeOnSemColorsChangedListener$4(OnSemColorsChangedListener callback, Pair pair) {
             return pair.first == callback;
         }
@@ -1002,7 +1018,6 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSemWallpaperColorsChanged$5(Pair listener, SemWallpaperColors colors, int which) {
             boolean stillExists;
             synchronized (this) {
@@ -1030,7 +1045,6 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public WallpaperManager(IWallpaperManager service, Context context, Handler handler) {
         this.mWallpaperXStep = -1.0f;
         this.mWallpaperYStep = -1.0f;
@@ -1045,7 +1059,6 @@ public class WallpaperManager implements SemWallpaperManager {
         this.mCmProxy = new ColorManagementProxy(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public WallpaperManager() {
         this.mWallpaperXStep = -1.0f;
         this.mWallpaperYStep = -1.0f;
@@ -2832,7 +2845,6 @@ public class WallpaperManager implements SemWallpaperManager {
         return this.mCmProxy;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void checkExactlyOneWallpaperFlagSet(int which) {
         if (WhichChecker.isSingleType(which)) {
         } else {
@@ -2975,7 +2987,6 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class WallpaperSetCompletion extends IWallpaperManagerCallback.Stub {
         final CountDownLatch mLatch = new CountDownLatch(1);
@@ -3238,7 +3249,10 @@ public class WallpaperManager implements SemWallpaperManager {
     }
 
     /* JADX WARN: Can't wrap try/catch for region: R(8:(6:(3:11|12|(2:14|(26:16|17|18|19|(1:21)|22|23|24|25|26|(4:28|29|30|31)(1:76)|32|33|(1:35)(1:69)|36|37|(1:39)(1:65)|(2:60|61)|41|42|43|44|45|(1:47)|48|(2:50|51)(1:53))))|44|45|(0)|48|(0)(0))|36|37|(0)(0)|(0)|41|42|43) */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x012b, code lost:            r0 = e;     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x012b, code lost:
+    
+        r0 = e;
+     */
     /* JADX WARN: Removed duplicated region for block: B:28:0x00a9  */
     /* JADX WARN: Removed duplicated region for block: B:35:0x00cb  */
     /* JADX WARN: Removed duplicated region for block: B:39:0x00d7  */

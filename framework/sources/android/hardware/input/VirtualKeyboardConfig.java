@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class VirtualKeyboardConfig extends VirtualInputDeviceConfig implements Parcelable {
     public static final Parcelable.Creator<VirtualKeyboardConfig> CREATOR = new Parcelable.Creator<VirtualKeyboardConfig>() { // from class: android.hardware.input.VirtualKeyboardConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualKeyboardConfig createFromParcel(Parcel in) {
             return new VirtualKeyboardConfig(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualKeyboardConfig[] newArray(int size) {
             return new VirtualKeyboardConfig[size];
@@ -27,6 +28,31 @@ public final class VirtualKeyboardConfig extends VirtualInputDeviceConfig implem
     public static final String DEFAULT_LAYOUT_TYPE = "qwerty";
     private final String mLanguageTag;
     private final String mLayoutType;
+
+    /* synthetic */ VirtualKeyboardConfig(Builder builder, VirtualKeyboardConfigIA virtualKeyboardConfigIA) {
+        this(builder);
+    }
+
+    /* synthetic */ VirtualKeyboardConfig(Parcel parcel, VirtualKeyboardConfigIA virtualKeyboardConfigIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.hardware.input.VirtualKeyboardConfig$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualKeyboardConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualKeyboardConfig createFromParcel(Parcel in) {
+            return new VirtualKeyboardConfig(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualKeyboardConfig[] newArray(int size) {
+            return new VirtualKeyboardConfig[size];
+        }
+    }
 
     private VirtualKeyboardConfig(Builder builder) {
         super(builder);

@@ -27,6 +27,10 @@ public class ColorDrawable extends Drawable {
     private boolean mMutated;
     private final Paint mPaint;
 
+    /* synthetic */ ColorDrawable(ColorState colorState, Resources resources, ColorDrawableIA colorDrawableIA) {
+        this(colorState, resources);
+    }
+
     public ColorDrawable() {
         this.mPaint = new Paint(1);
         this.mColorState = new ColorState();
@@ -124,7 +128,6 @@ public class ColorDrawable extends Drawable {
         invalidateSelf();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         ColorState state = this.mColorState;
@@ -221,7 +224,6 @@ public class ColorDrawable extends Drawable {
         return this.mColorState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class ColorState extends Drawable.ConstantState {
         int mBaseColor;

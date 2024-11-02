@@ -27,7 +27,6 @@ public final class ExpandedMenuView extends ListView implements MenuBuilder.Item
         this.mMenu = menu;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ListView, android.widget.AbsListView, android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();

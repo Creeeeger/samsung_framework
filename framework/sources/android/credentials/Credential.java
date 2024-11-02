@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class Credential implements Parcelable {
     public static final Parcelable.Creator<Credential> CREATOR = new Parcelable.Creator<Credential>() { // from class: android.credentials.Credential.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Credential[] newArray(int size) {
             return new Credential[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Credential createFromParcel(Parcel in) {
             return new Credential(in);
@@ -26,6 +27,10 @@ public final class Credential implements Parcelable {
     public static final String TYPE_PASSWORD_CREDENTIAL = "android.credentials.TYPE_PASSWORD_CREDENTIAL";
     private final Bundle mData;
     private final String mType;
+
+    /* synthetic */ Credential(Parcel parcel, CredentialIA credentialIA) {
+        this(parcel);
+    }
 
     public String getType() {
         return this.mType;
@@ -62,5 +67,22 @@ public final class Credential implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) type);
         this.mData = data;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) data);
+    }
+
+    /* renamed from: android.credentials.Credential$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Credential> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Credential[] newArray(int size) {
+            return new Credential[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Credential createFromParcel(Parcel in) {
+            return new Credential(in);
+        }
     }
 }

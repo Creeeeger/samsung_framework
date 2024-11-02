@@ -13,7 +13,6 @@ public class SprCacheManager {
     private String mHashCode;
     private String mName;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class SprCache {
         public final Bitmap bitmap;

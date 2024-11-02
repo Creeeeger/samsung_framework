@@ -50,9 +50,10 @@ public enum BlendMode {
         return mode.getXfermode().porterDuffMode;
     }
 
-    /* renamed from: android.graphics.BlendMode$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.graphics.BlendMode$1 */
     /* loaded from: classes.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$graphics$BlendMode;
 
         static {

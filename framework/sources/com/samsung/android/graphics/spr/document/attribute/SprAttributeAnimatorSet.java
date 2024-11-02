@@ -105,8 +105,8 @@ public class SprAttributeAnimatorSet extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     /* renamed from: clone */
-    public SprAttributeAnimatorSet mo8420clone() throws CloneNotSupportedException {
-        SprAttributeAnimatorSet attribute = (SprAttributeAnimatorSet) super.mo8420clone();
+    public SprAttributeAnimatorSet mo8412clone() throws CloneNotSupportedException {
+        SprAttributeAnimatorSet attribute = (SprAttributeAnimatorSet) super.mo8412clone();
         attribute.mAnimators = new ArrayList<>();
         Iterator<Animator> it = this.mAnimators.iterator();
         while (it.hasNext()) {

@@ -85,7 +85,6 @@ public abstract class ClientTransactionHandler {
 
     public abstract void updateProcessState(int i, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void scheduleTransaction(ClientTransaction transaction) {
         transaction.preExecute(this);
         sendMessage(159, transaction);

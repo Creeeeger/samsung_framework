@@ -16,6 +16,10 @@ public class SemLocalePicker {
         String label;
         Locale locale;
 
+        /* synthetic */ LocaleInfo(LocalePicker.LocaleInfo localeInfo, LocaleInfoIA localeInfoIA) {
+            this(localeInfo);
+        }
+
         private LocaleInfo(LocalePicker.LocaleInfo info) {
             if (info != null) {
                 this.label = info.getLabel();

@@ -10,7 +10,6 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class RemoteCollectionItemsAdapter extends BaseAdapter {
     private RemoteViews.ColorResources mColorResources;
@@ -19,7 +18,6 @@ public class RemoteCollectionItemsAdapter extends BaseAdapter {
     private SparseIntArray mLayoutIdToViewType;
     private final int mViewTypeCount;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RemoteCollectionItemsAdapter(RemoteViews.RemoteCollectionItems items, RemoteViews.InteractionHandler interactionHandler, RemoteViews.ColorResources colorResources) {
         this.mViewTypeCount = items.getViewTypeCount();
         this.mItems = items;
@@ -28,7 +26,6 @@ public class RemoteCollectionItemsAdapter extends BaseAdapter {
         initLayoutIdToViewType();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setData(RemoteViews.RemoteCollectionItems items, RemoteViews.InteractionHandler interactionHandler, RemoteViews.ColorResources colorResources) {
         if (this.mViewTypeCount < items.getViewTypeCount()) {
             throw new IllegalArgumentException("RemoteCollectionItemsAdapter cannot increase view type count after creation");
@@ -92,17 +89,14 @@ public class RemoteCollectionItemsAdapter extends BaseAdapter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ int lambda$initLayoutIdToViewType$0(int position) {
         return this.mItems.getItemView(position).getLayoutId();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$initLayoutIdToViewType$1(boolean[] assignedViewTypes, int type) {
         return !assignedViewTypes[type];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ IllegalStateException lambda$initLayoutIdToViewType$2() {
         return new IllegalStateException("RemoteCollectionItems has more distinct layout ids than its view type count");
     }

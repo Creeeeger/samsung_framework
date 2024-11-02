@@ -53,7 +53,6 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Phone(InCallAdapter adapter, String callingPackage, int targetSdkVersion) {
         CopyOnWriteArrayList copyOnWriteArrayList = new CopyOnWriteArrayList();
         this.mCalls = copyOnWriteArrayList;
@@ -66,7 +65,6 @@ public final class Phone {
         this.mTargetSdkVersion = targetSdkVersion;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalAddCall(ParcelableCall parcelableCall) {
         if (this.mTargetSdkVersion < 30 && parcelableCall.getState() == 12) {
             Log.i(this, "Skipping adding audio processing call for sdk compatibility", new Object[0]);
@@ -89,7 +87,6 @@ public final class Phone {
         call.internalUpdate(parcelableCall, this.mCallByTelecomCallId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalRemoveCall(Call call) {
         synchronized (this.mLock) {
             this.mCallByTelecomCallId.remove(call.internalGetCallId());
@@ -102,7 +99,6 @@ public final class Phone {
         fireCallRemoved(call);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalUpdateCall(ParcelableCall parcelableCall) {
         if (this.mTargetSdkVersion < 30 && parcelableCall.getState() == 12) {
             Log.i(this, "removing audio processing call during update for sdk compatibility", new Object[0]);
@@ -133,7 +129,6 @@ public final class Phone {
         return call;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalSetPostDialWait(String telecomId, String remaining) {
         Call call = getCallById(telecomId);
         if (call != null) {
@@ -141,7 +136,6 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalCallAudioStateChanged(CallAudioState callAudioState) {
         if (!Objects.equals(this.mCallAudioState, callAudioState)) {
             this.mCallAudioState = callAudioState;
@@ -149,17 +143,14 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Call internalGetCallByTelecomId(String telecomId) {
         return getCallById(telecomId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalBringToForeground(boolean showDialpad) {
         fireBringToForeground(showDialpad);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalSetCanAddCall(boolean canAddCall) {
         if (this.mCanAddCall != canAddCall) {
             this.mCanAddCall = canAddCall;
@@ -167,12 +158,10 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalSilenceRinger() {
         fireSilenceRinger();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalOnConnectionEvent(String telecomId, String event, Bundle extras) {
         Call call = getCallById(telecomId);
         if (call != null) {
@@ -180,7 +169,6 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalOnRttUpgradeRequest(String callId, int requestId) {
         Call call = getCallById(callId);
         if (call != null) {
@@ -188,7 +176,6 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalOnRttInitiationFailure(String callId, int reason) {
         Call call = getCallById(callId);
         if (call != null) {
@@ -196,7 +183,6 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalOnHandoverFailed(String callId, int error) {
         Call call = getCallById(callId);
         if (call != null) {
@@ -204,7 +190,6 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void internalOnHandoverComplete(String callId) {
         Call call = getCallById(callId);
         if (call != null) {
@@ -212,7 +197,6 @@ public final class Phone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void destroy() {
         for (Call call : this.mCalls) {
             InCallService.VideoCall videoCall = call.getVideoCall();

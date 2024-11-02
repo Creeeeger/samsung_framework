@@ -261,8 +261,9 @@ public interface ICallEventCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ICallEventCallback {
+        public static class Proxy implements ICallEventCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

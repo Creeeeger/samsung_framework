@@ -4,6 +4,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
@@ -97,7 +98,6 @@ public class SpellCheckerSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleOnGetSuggestionsMultiple$0(SuggestionsInfo[] suggestionsInfos) {
         this.mSpellCheckerSessionListener.onGetSuggestions(suggestionsInfos);
     }
@@ -120,12 +120,10 @@ public class SpellCheckerSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleOnGetSentenceSuggestionsMultiple$1(SentenceSuggestionsInfo[] suggestionsInfos) {
         this.mSpellCheckerSessionListener.onGetSentenceSuggestions(suggestionsInfos);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class SpellCheckerSessionListenerImpl extends ISpellCheckerSessionListener.Stub {
         private static final int STATE_CLOSED_AFTER_CONNECTION = 2;
@@ -177,7 +175,6 @@ public class SpellCheckerSession {
             this.mSpellCheckerSession = spellCheckerSession;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class SpellCheckerParams {
             public final boolean mSequentialWords;
@@ -194,7 +191,6 @@ public class SpellCheckerSession {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void processTask(ISpellCheckerSession session, SpellCheckerParams scp, boolean async) {
             if (async || this.mAsyncHandler == null) {
                 switch (scp.mWhat) {
@@ -280,6 +276,10 @@ public class SpellCheckerSession {
                             this.mThread = handlerThread;
                             handlerThread.start();
                             this.mAsyncHandler = new Handler(this.mThread.getLooper()) { // from class: android.view.textservice.SpellCheckerSession.SpellCheckerSessionListenerImpl.1
+                                AnonymousClass1(Looper looper) {
+                                    super(looper);
+                                }
+
                                 @Override // android.os.Handler
                                 public void handleMessage(Message msg) {
                                     SpellCheckerParams scp = (SpellCheckerParams) msg.obj;
@@ -298,6 +298,20 @@ public class SpellCheckerSession {
                         Log.e(SpellCheckerSession.TAG, "ignoring onServiceConnected due to unexpected mState=" + stateToString(this.mState));
                         return;
                 }
+            }
+        }
+
+        /* renamed from: android.view.textservice.SpellCheckerSession$SpellCheckerSessionListenerImpl$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 extends Handler {
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                SpellCheckerParams scp = (SpellCheckerParams) msg.obj;
+                SpellCheckerSessionListenerImpl.this.processTask(scp.mSession, scp, true);
             }
         }
 
@@ -396,6 +410,10 @@ public class SpellCheckerSession {
         private final boolean mShouldReferToSpellCheckerLanguageSettings;
         private final int mSupportedAttributes;
 
+        /* synthetic */ SpellCheckerSessionParams(Locale locale, boolean z, int i, Bundle bundle, SpellCheckerSessionParamsIA spellCheckerSessionParamsIA) {
+            this(locale, z, i, bundle);
+        }
+
         private SpellCheckerSessionParams(Locale locale, boolean referToSpellCheckerLanguageSettings, int supportedAttributes, Bundle extras) {
             this.mLocale = locale;
             this.mShouldReferToSpellCheckerLanguageSettings = referToSpellCheckerLanguageSettings;
@@ -456,8 +474,9 @@ public class SpellCheckerSession {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static final class InternalListener extends ITextServicesSessionListener.Stub {
+    public static final class InternalListener extends ITextServicesSessionListener.Stub {
         private final SpellCheckerSessionListenerImpl mParentSpellCheckerSessionListenerImpl;
 
         public InternalListener(SpellCheckerSessionListenerImpl spellCheckerSessionListenerImpl) {

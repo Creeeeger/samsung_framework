@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class CVMessage implements Parcelable {
     public static final Parcelable.Creator<CVMessage> CREATOR = new Parcelable.Creator<CVMessage>() { // from class: com.sec.android.allshare.iface.CVMessage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CVMessage createFromParcel(Parcel src) {
             return new CVMessage(src);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CVMessage[] newArray(int size) {
             return new CVMessage[size];
@@ -32,6 +33,10 @@ public class CVMessage implements Parcelable {
     private Messenger mReplyMessenger;
     private int mType;
     private long mVersion;
+
+    /* synthetic */ CVMessage(Parcel parcel, CVMessageIA cVMessageIA) {
+        this(parcel);
+    }
 
     public CVMessage() {
         this(1, "", null);
@@ -137,5 +142,22 @@ public class CVMessage implements Parcelable {
     private CVMessage(Parcel src) {
         this.mVersion = 1L;
         readFromParcel(src);
+    }
+
+    /* renamed from: com.sec.android.allshare.iface.CVMessage$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CVMessage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CVMessage createFromParcel(Parcel src) {
+            return new CVMessage(src);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CVMessage[] newArray(int size) {
+            return new CVMessage[size];
+        }
     }
 }

@@ -39,13 +39,14 @@ public final class AudioChannelLayout implements Parcelable {
     public static final int CHANNEL_VOICE_DNLINK = 32768;
     public static final int CHANNEL_VOICE_UPLINK = 16384;
     public static final Parcelable.Creator<AudioChannelLayout> CREATOR = new Parcelable.Creator<AudioChannelLayout>() { // from class: android.media.audio.common.AudioChannelLayout.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioChannelLayout createFromParcel(Parcel _aidl_source) {
             return new AudioChannelLayout(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioChannelLayout[] newArray(int _aidl_size) {
             return new AudioChannelLayout[_aidl_size];
@@ -127,6 +128,10 @@ public final class AudioChannelLayout implements Parcelable {
         public static final int layoutMask = 3;
         public static final int none = 0;
         public static final int voiceMask = 4;
+    }
+
+    /* synthetic */ AudioChannelLayout(Parcel parcel, AudioChannelLayoutIA audioChannelLayoutIA) {
+        this(parcel);
     }
 
     public AudioChannelLayout() {
@@ -215,6 +220,23 @@ public final class AudioChannelLayout implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.media.audio.common.AudioChannelLayout$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioChannelLayout> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioChannelLayout createFromParcel(Parcel _aidl_source) {
+            return new AudioChannelLayout(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioChannelLayout[] newArray(int _aidl_size) {
+            return new AudioChannelLayout[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

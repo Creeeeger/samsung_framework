@@ -90,12 +90,10 @@ public class MediaRouteActionProvider extends ActionProvider {
         return this.mRouter.isRouteAvailable(this.mRouteTypes, 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void refreshRoute() {
         refreshVisibility();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class MediaRouterCallback extends MediaRouter.SimpleCallback {
         private final WeakReference<MediaRouteActionProvider> mProviderWeak;

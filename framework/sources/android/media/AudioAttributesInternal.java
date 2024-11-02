@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class AudioAttributesInternal implements Parcelable {
     public static final Parcelable.Creator<AudioAttributesInternal> CREATOR = new Parcelable.Creator<AudioAttributesInternal>() { // from class: android.media.AudioAttributesInternal.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioAttributesInternal createFromParcel(Parcel _aidl_source) {
             AudioAttributesInternal _aidl_out = new AudioAttributesInternal();
@@ -15,7 +17,6 @@ public class AudioAttributesInternal implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioAttributesInternal[] newArray(int _aidl_size) {
             return new AudioAttributesInternal[_aidl_size];
@@ -26,6 +27,25 @@ public class AudioAttributesInternal implements Parcelable {
     public int source;
     public String tags;
     public int usage;
+
+    /* renamed from: android.media.AudioAttributesInternal$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioAttributesInternal> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioAttributesInternal createFromParcel(Parcel _aidl_source) {
+            AudioAttributesInternal _aidl_out = new AudioAttributesInternal();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioAttributesInternal[] newArray(int _aidl_size) {
+            return new AudioAttributesInternal[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

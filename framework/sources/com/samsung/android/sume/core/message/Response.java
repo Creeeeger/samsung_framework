@@ -46,7 +46,6 @@ public final class Response extends Message {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$new$0(Parcelable it) {
         return (MediaBuffer) it;
     }
@@ -84,21 +83,19 @@ public final class Response extends Message {
         return (MediaBuffer) Optional.ofNullable(this.bufferList).map(new Function() { // from class: com.samsung.android.sume.core.message.Response$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return Response.this.m8815xed6285dd((List) obj);
+                return Response.this.m8807xed6285dd((List) obj);
             }
         }).orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$getBuffer$1$com-samsung-android-sume-core-message-Response, reason: not valid java name */
-    public /* synthetic */ MediaBuffer m8815xed6285dd(List it) {
+    /* renamed from: lambda$getBuffer$1$com-samsung-android-sume-core-message-Response */
+    public /* synthetic */ MediaBuffer m8807xed6285dd(List it) {
         if (it.isEmpty()) {
             return null;
         }
         return it.size() == 1 ? this.bufferList.get(0) : MediaBuffer.groupOf((List<MediaBuffer>) it);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public List<MediaBuffer> getBufferList() {
         return this.bufferList;
     }
@@ -182,19 +179,17 @@ public final class Response extends Message {
         return contentToString(this, new Supplier() { // from class: com.samsung.android.sume.core.message.Response$$ExternalSyntheticLambda2
             @Override // java.util.function.Supplier
             public final Object get() {
-                return Response.this.m8816lambda$toString$3$comsamsungandroidsumecoremessageResponse();
+                return Response.this.m8808lambda$toString$3$comsamsungandroidsumecoremessageResponse();
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$toString$2(List it) {
         return "buffer-list=" + Arrays.toString(it.toArray());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$toString$3$com-samsung-android-sume-core-message-Response, reason: not valid java name */
-    public /* synthetic */ String m8816lambda$toString$3$comsamsungandroidsumecoremessageResponse() {
+    /* renamed from: lambda$toString$3$com-samsung-android-sume-core-message-Response */
+    public /* synthetic */ String m8808lambda$toString$3$comsamsungandroidsumecoremessageResponse() {
         return (String) Optional.ofNullable(this.bufferList).map(new Function() { // from class: com.samsung.android.sume.core.message.Response$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
@@ -227,7 +222,6 @@ public final class Response extends Message {
         return new Response(msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class ListenerManager {
         private static volatile ListenerManager sInstance;
@@ -247,7 +241,6 @@ public final class Response extends Message {
         private ListenerManager() {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int register(Consumer<Message> consumer) {
             int id = consumer.hashCode();
             this.consumerMap.put(Integer.valueOf(id), consumer);

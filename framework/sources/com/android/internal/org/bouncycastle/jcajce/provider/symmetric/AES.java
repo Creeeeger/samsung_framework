@@ -46,8 +46,24 @@ public final class AES {
 
     /* loaded from: classes5.dex */
     public static class ECB extends BaseBlockCipher {
+
+        /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.symmetric.AES$ECB$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements BlockCipherProvider {
+            AnonymousClass1() {
+            }
+
+            @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BlockCipherProvider
+            public BlockCipher get() {
+                return new AESEngine();
+            }
+        }
+
         public ECB() {
             super(new BlockCipherProvider() { // from class: com.android.internal.org.bouncycastle.jcajce.provider.symmetric.AES.ECB.1
+                AnonymousClass1() {
+                }
+
                 @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BlockCipherProvider
                 public BlockCipher get() {
                     return new AESEngine();

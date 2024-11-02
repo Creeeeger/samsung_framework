@@ -71,8 +71,9 @@ public class FullBackup {
 
     public static native int backupToTar(String str, String str2, String str3, String str4, String str5, FullBackupDataOutput fullBackupDataOutput);
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class BackupSchemeId {
+    public static class BackupSchemeId {
         final int mBackupDestination;
         final String mPackageName;
 
@@ -100,7 +101,6 @@ public class FullBackup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static synchronized BackupScheme getBackupScheme(Context context, int backupDestination) {
         BackupScheme backupSchemeForPackage;
         synchronized (FullBackup.class) {
@@ -212,7 +212,6 @@ public class FullBackup {
         private StorageVolume[] mVolumes = null;
         private boolean mDisableDataExtractionRules = false;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String tokenToDirectoryPath(String domainToken) {
             try {
                 if (domainToken.equals(FullBackup.FILES_TREE_TOKEN)) {
@@ -347,7 +346,6 @@ public class FullBackup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isFullBackupEnabled(int transportFlags) {
             try {
                 if (isUsingNewScheme()) {
@@ -361,7 +359,6 @@ public class FullBackup {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isFullRestoreEnabled() {
             try {
                 if (isUsingNewScheme()) {
@@ -392,7 +389,6 @@ public class FullBackup {
             return this.mIncludes;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void disableDataExtractionRule(boolean disable) {
             Log.d(FullBackup.TAG, "disableDataExtractionRule in FullBackup.java, disable = " + disable);
             this.mDisableDataExtractionRules = disable;

@@ -176,8 +176,9 @@ public interface ITextToSpeechCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ITextToSpeechCallback {
+        public static class Proxy implements ITextToSpeechCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -102,9 +102,48 @@ public class FileRotator {
         rewriteSingle(rewriter, activeName);
     }
 
+    /* renamed from: com.android.internal.util.FileRotator$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Rewriter {
+        final /* synthetic */ Reader val$reader;
+        final /* synthetic */ Writer val$writer;
+
+        AnonymousClass1(Reader reader, Writer writer) {
+            reader = reader;
+            writer = writer;
+        }
+
+        @Override // com.android.internal.util.FileRotator.Rewriter
+        public void reset() {
+        }
+
+        @Override // com.android.internal.util.FileRotator.Reader
+        public void read(InputStream in) throws IOException {
+            reader.read(in);
+        }
+
+        @Override // com.android.internal.util.FileRotator.Rewriter
+        public boolean shouldWrite() {
+            return true;
+        }
+
+        @Override // com.android.internal.util.FileRotator.Writer
+        public void write(OutputStream out) throws IOException {
+            writer.write(out);
+        }
+    }
+
     @Deprecated
-    public void combineActive(final Reader reader, final Writer writer, long currentTimeMillis) throws IOException {
+    public void combineActive(Reader reader, Writer writer, long currentTimeMillis) throws IOException {
         rewriteActive(new Rewriter() { // from class: com.android.internal.util.FileRotator.1
+            final /* synthetic */ Reader val$reader;
+            final /* synthetic */ Writer val$writer;
+
+            AnonymousClass1(Reader reader2, Writer writer2) {
+                reader = reader2;
+                writer = writer2;
+            }
+
             @Override // com.android.internal.util.FileRotator.Rewriter
             public void reset() {
             }
@@ -259,7 +298,6 @@ public class FileRotator {
         throw new IOException(t.getMessage(), t);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class FileInfo {
         public long endMillis;

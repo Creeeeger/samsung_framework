@@ -26,7 +26,6 @@ public class ParcelableListBinder<T extends Parcelable> extends Binder {
         this.mConsumer = consumer;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.os.Binder
     public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
         List<T> list;

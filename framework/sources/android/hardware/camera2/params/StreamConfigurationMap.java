@@ -517,7 +517,6 @@ public final class StreamConfigurationMap {
         throw new IllegalArgumentException(String.format("format %x is not supported by this stream configuration map", Integer.valueOf(format)));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int checkArgumentFormatInternal(int format) {
         switch (format) {
             case 33:
@@ -533,7 +532,6 @@ public final class StreamConfigurationMap {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int checkArgumentFormat(int format) {
         if (!ImageFormat.isPublicFormat(format) && !PixelFormat.isPublicFormat(format)) {
             throw new IllegalArgumentException(String.format("format 0x%x was not defined in either ImageFormat or PixelFormat", Integer.valueOf(format)));
@@ -571,7 +569,6 @@ public final class StreamConfigurationMap {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int[] imageFormatToPublic(int[] formats) {
         if (formats == null) {
             return null;
@@ -582,7 +579,6 @@ public final class StreamConfigurationMap {
         return formats;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int imageFormatToInternal(int format) {
         switch (format) {
             case 256:
@@ -602,7 +598,6 @@ public final class StreamConfigurationMap {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int imageFormatToDataspace(int format) {
         switch (format) {
             case 256:

@@ -19,7 +19,6 @@ public final class GeoidHeightMap {
     private static MapParamsProto sParams;
     private final LruCache<Long, S2TileProto> mCacheTiles = new LruCache<>(4);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface TileFunction {
         S2TileProto getTile(long j);
@@ -236,7 +235,6 @@ public final class GeoidHeightMap {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ S2TileProto lambda$loadFromCacheAndDisk$0(long[] cacheKeys, S2TileProto[] loadedTiles, long cacheKey) {
         for (int i = 0; i < cacheKeys.length; i++) {
             if (cacheKeys[i] == cacheKey) {
@@ -282,7 +280,6 @@ public final class GeoidHeightMap {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ S2TileProto lambda$mergeFromDiskTile$1(S2TileProto diskTile, long cacheKey) {
         return diskTile;
     }

@@ -1487,8 +1487,13 @@ public final class DynamicsProcessing extends AudioEffect {
         this.mChannelCount = getChannelCount();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
+    public class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
+        /* synthetic */ BaseParameterListener(DynamicsProcessing dynamicsProcessing, BaseParameterListenerIA baseParameterListenerIA) {
+            this();
+        }
+
         private BaseParameterListener() {
         }
 

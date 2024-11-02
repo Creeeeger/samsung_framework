@@ -23,6 +23,9 @@ public class GestureNavigationSettingsObserver extends ContentObserver {
     public GestureNavigationSettingsObserver(Handler handler, Context context, Runnable onChangeRunnable) {
         super(handler);
         this.mOnPropertiesChangedListener = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.internal.policy.GestureNavigationSettingsObserver.1
+            AnonymousClass1() {
+            }
+
             public void onPropertiesChanged(DeviceConfig.Properties properties) {
                 if ("systemui".equals(properties.getNamespace()) && GestureNavigationSettingsObserver.this.mOnChangeRunnable != null) {
                     GestureNavigationSettingsObserver.this.mOnChangeRunnable.run();
@@ -32,6 +35,19 @@ public class GestureNavigationSettingsObserver extends ContentObserver {
         this.mMainHandler = handler;
         this.mContext = context;
         this.mOnChangeRunnable = onChangeRunnable;
+    }
+
+    /* renamed from: com.android.internal.policy.GestureNavigationSettingsObserver$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements DeviceConfig.OnPropertiesChangedListener {
+        AnonymousClass1() {
+        }
+
+        public void onPropertiesChanged(DeviceConfig.Properties properties) {
+            if ("systemui".equals(properties.getNamespace()) && GestureNavigationSettingsObserver.this.mOnChangeRunnable != null) {
+                GestureNavigationSettingsObserver.this.mOnChangeRunnable.run();
+            }
+        }
     }
 
     public void register() {
@@ -49,7 +65,6 @@ public class GestureNavigationSettingsObserver extends ContentObserver {
         }, this.mOnPropertiesChangedListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$register$0(Runnable runnable) {
         this.mMainHandler.post(runnable);
     }
@@ -67,7 +82,6 @@ public class GestureNavigationSettingsObserver extends ContentObserver {
         }, this.mOnPropertiesChangedListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$registerForCallingUser$1(Runnable runnable) {
         this.mMainHandler.post(runnable);
     }

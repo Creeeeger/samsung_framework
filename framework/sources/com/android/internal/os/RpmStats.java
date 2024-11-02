@@ -34,6 +34,10 @@ public final class RpmStats {
         public int mCount;
         public long mTimeMs;
 
+        /* synthetic */ PowerStateElement(long j, int i, PowerStateElementIA powerStateElementIA) {
+            this(j, i);
+        }
+
         private PowerStateElement(long timeMs, int count) {
             this.mTimeMs = timeMs;
             this.mCount = count;

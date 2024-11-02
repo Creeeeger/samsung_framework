@@ -31,6 +31,10 @@ public class ItemExtractor {
         private Uri mSubtitle;
         private String mTitle;
 
+        /* synthetic */ Seed(SeedIA seedIA) {
+            this();
+        }
+
         private Seed() {
             this.mObjectId = "";
             this.mProviderId = "";
@@ -269,7 +273,7 @@ public class ItemExtractor {
         }
     }
 
-    /* renamed from: com.samsung.android.allshare.extension.ItemExtractor$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.allshare.extension.ItemExtractor$1 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;

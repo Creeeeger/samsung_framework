@@ -15,13 +15,11 @@ public class ResolverMultiProfilePagerAdapter extends AbstractMultiProfilePagerA
     private final ResolverProfileDescriptor[] mItems;
     private boolean mUseLayoutWithDefault;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ResolverMultiProfilePagerAdapter(Context context, ResolverListAdapter adapter, AbstractMultiProfilePagerAdapter.EmptyStateProvider emptyStateProvider, AbstractMultiProfilePagerAdapter.QuietModeManager quietModeManager, UserHandle workProfileUserHandle, UserHandle cloneUserHandle) {
         super(context, 0, emptyStateProvider, quietModeManager, workProfileUserHandle, cloneUserHandle);
         this.mItems = new ResolverProfileDescriptor[]{createProfileDescriptor(adapter)};
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ResolverMultiProfilePagerAdapter(Context context, ResolverListAdapter personalAdapter, ResolverListAdapter workAdapter, AbstractMultiProfilePagerAdapter.EmptyStateProvider emptyStateProvider, AbstractMultiProfilePagerAdapter.QuietModeManager quietModeManager, int defaultProfile, UserHandle workProfileUserHandle, UserHandle cloneUserHandle) {
         super(context, defaultProfile, emptyStateProvider, quietModeManager, workProfileUserHandle, cloneUserHandle);
         this.mItems = new ResolverProfileDescriptor[]{createProfileDescriptor(personalAdapter), createProfileDescriptor(workAdapter)};
@@ -37,13 +35,11 @@ public class ResolverMultiProfilePagerAdapter extends AbstractMultiProfilePagerA
         return getItem(index).listView;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public ResolverProfileDescriptor getItem(int pageIndex) {
         return this.mItems[pageIndex];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public int getItemCount() {
         return this.mItems.length;
@@ -66,7 +62,6 @@ public class ResolverMultiProfilePagerAdapter extends AbstractMultiProfilePagerA
         return super.instantiateItem(container, position);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public ResolverListAdapter getListAdapterForUserHandle(UserHandle userHandle) {
         if (getPersonalListAdapter().getUserHandle().equals(userHandle) || userHandle.equals(getCloneUserHandle())) {
@@ -104,19 +99,16 @@ public class ResolverMultiProfilePagerAdapter extends AbstractMultiProfilePagerA
         return getAdapterForIndex(1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public ResolverListAdapter getCurrentRootAdapter() {
         return getActiveListAdapter();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public AbsListView getActiveAdapterView() {
         return getListViewForIndex(getCurrentPage());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractMultiProfilePagerAdapter
     public ViewGroup getInactiveAdapterView() {
         if (getCount() == 1) {
@@ -125,7 +117,6 @@ public class ResolverMultiProfilePagerAdapter extends AbstractMultiProfilePagerA
         return getListViewForIndex(1 - getCurrentPage());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setUseLayoutWithDefault(boolean useLayoutWithDefault) {
         this.mUseLayoutWithDefault = useLayoutWithDefault;
     }
@@ -136,7 +127,6 @@ public class ResolverMultiProfilePagerAdapter extends AbstractMultiProfilePagerA
         container.setPadding(container.getPaddingLeft(), container.getPaddingTop(), container.getPaddingRight(), bottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class ResolverProfileDescriptor extends AbstractMultiProfilePagerAdapter.ProfileDescriptor {
         final AbsListView listView;

@@ -13,19 +13,24 @@ import java.util.function.Predicate;
 /* loaded from: classes2.dex */
 public final class LocationResult implements Parcelable {
     public static final Parcelable.Creator<LocationResult> CREATOR = new Parcelable.Creator<LocationResult>() { // from class: android.location.LocationResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LocationResult createFromParcel(Parcel in) {
             return new LocationResult((ArrayList) Objects.requireNonNull(in.createTypedArrayList(Location.CREATOR)));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocationResult[] newArray(int size) {
             return new LocationResult[size];
         }
     };
     private final ArrayList<Location> mLocations;
+
+    /* synthetic */ LocationResult(ArrayList arrayList, LocationResultIA locationResultIA) {
+        this(arrayList);
+    }
 
     public static LocationResult create(List<Location> locations) {
         Preconditions.checkArgument(!locations.isEmpty());
@@ -159,6 +164,23 @@ public final class LocationResult implements Parcelable {
             return this;
         }
         return new LocationResult(mapped);
+    }
+
+    /* renamed from: android.location.LocationResult$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LocationResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocationResult createFromParcel(Parcel in) {
+            return new LocationResult((ArrayList) Objects.requireNonNull(in.createTypedArrayList(Location.CREATOR)));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocationResult[] newArray(int size) {
+            return new LocationResult[size];
+        }
     }
 
     @Override // android.os.Parcelable

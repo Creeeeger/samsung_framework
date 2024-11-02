@@ -173,7 +173,6 @@ public class GradientColor extends ComplexColor {
         return createFromXmlInner(r, parser, attrs, theme);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static GradientColor createFromXmlInner(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
         String name = parser.getName();
         if (!name.equals("gradient")) {
@@ -194,13 +193,40 @@ public class GradientColor extends ComplexColor {
         onColorsChange();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x00e4, code lost:            if (r6 <= 0) goto L47;     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x00e6, code lost:            if (r7 == false) goto L33;     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x00e8, code lost:            r1 = new int[r6];        r20.mItemsThemeAttrs = r1;        java.lang.System.arraycopy(r5, 0, r1, 0, r6);     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x00f3, code lost:            r1 = new int[r6];        r20.mItemColors = r1;        r20.mItemOffsets = new float[r6];        java.lang.System.arraycopy(r4, 0, r1, 0, r6);        java.lang.System.arraycopy(r3, 0, r20.mItemOffsets, 0, r6);     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0103, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x00f0, code lost:            r20.mItemsThemeAttrs = null;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:?, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x00e4, code lost:
+    
+        if (r6 <= 0) goto L95;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x00e6, code lost:
+    
+        if (r7 == false) goto L81;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x00e8, code lost:
+    
+        r1 = new int[r6];
+        r20.mItemsThemeAttrs = r1;
+        java.lang.System.arraycopy(r5, 0, r1, 0, r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x00f3, code lost:
+    
+        r1 = new int[r6];
+        r20.mItemColors = r1;
+        r20.mItemOffsets = new float[r6];
+        java.lang.System.arraycopy(r4, 0, r1, 0, r6);
+        java.lang.System.arraycopy(r3, 0, r20.mItemOffsets, 0, r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0103, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x00f0, code lost:
+    
+        r20.mItemsThemeAttrs = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:?, code lost:
+    
+        return;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

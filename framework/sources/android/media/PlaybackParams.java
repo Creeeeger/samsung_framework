@@ -13,13 +13,14 @@ public final class PlaybackParams implements Parcelable {
     public static final int AUDIO_STRETCH_MODE_DEFAULT = 0;
     public static final int AUDIO_STRETCH_MODE_VOICE = 1;
     public static final Parcelable.Creator<PlaybackParams> CREATOR = new Parcelable.Creator<PlaybackParams>() { // from class: android.media.PlaybackParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PlaybackParams createFromParcel(Parcel in) {
             return new PlaybackParams(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PlaybackParams[] newArray(int size) {
             return new PlaybackParams[size];
@@ -43,6 +44,10 @@ public final class PlaybackParams implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface AudioStretchMode {
+    }
+
+    /* synthetic */ PlaybackParams(Parcel parcel, PlaybackParamsIA playbackParamsIA) {
+        this(parcel);
     }
 
     public PlaybackParams() {
@@ -128,6 +133,23 @@ public final class PlaybackParams implements Parcelable {
             throw new IllegalStateException("speed not set");
         }
         return this.mSpeed;
+    }
+
+    /* renamed from: android.media.PlaybackParams$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PlaybackParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PlaybackParams createFromParcel(Parcel in) {
+            return new PlaybackParams(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PlaybackParams[] newArray(int size) {
+            return new PlaybackParams[size];
+        }
     }
 
     @Override // android.os.Parcelable

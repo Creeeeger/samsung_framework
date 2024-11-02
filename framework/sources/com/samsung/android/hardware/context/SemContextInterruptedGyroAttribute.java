@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextInterruptedGyroAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextInterruptedGyroAttribute> CREATOR = new Parcelable.Creator<SemContextInterruptedGyroAttribute>() { // from class: com.samsung.android.hardware.context.SemContextInterruptedGyroAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextInterruptedGyroAttribute createFromParcel(Parcel in) {
             return new SemContextInterruptedGyroAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextInterruptedGyroAttribute[] newArray(int size) {
             return new SemContextInterruptedGyroAttribute[size];
@@ -25,7 +26,23 @@ public class SemContextInterruptedGyroAttribute extends SemContextAttribute {
     private static final String TAG = "SemContextInterruptedGyroAttribute";
     private int mEnabled;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextInterruptedGyroAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextInterruptedGyroAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextInterruptedGyroAttribute createFromParcel(Parcel in) {
+            return new SemContextInterruptedGyroAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextInterruptedGyroAttribute[] newArray(int size) {
+            return new SemContextInterruptedGyroAttribute[size];
+        }
+    }
+
     public SemContextInterruptedGyroAttribute() {
         this.mEnabled = 0;
         setAttribute();

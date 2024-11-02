@@ -71,6 +71,10 @@ public class KeyCharacterMap implements Parcelable {
         public char number;
     }
 
+    /* synthetic */ KeyCharacterMap(Parcel parcel, KeyCharacterMapIA keyCharacterMapIA) {
+        this(parcel);
+    }
+
     private static native void nativeDispose(long j);
 
     private static native boolean nativeEquals(long j, long j2);
@@ -150,13 +154,14 @@ public class KeyCharacterMap implements Parcelable {
         addDeadKey(45, 111, 248);
         addDeadKey(45, 116, 359);
         CREATOR = new Parcelable.Creator<KeyCharacterMap>() { // from class: android.view.KeyCharacterMap.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public KeyCharacterMap createFromParcel(Parcel in) {
                 return new KeyCharacterMap(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public KeyCharacterMap[] newArray(int size) {
                 return new KeyCharacterMap[size];
@@ -176,6 +181,23 @@ public class KeyCharacterMap implements Parcelable {
         }
         int combination = (combining << 16) | c;
         sDeadKeyCache.put(combination, result);
+    }
+
+    /* renamed from: android.view.KeyCharacterMap$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyCharacterMap> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyCharacterMap createFromParcel(Parcel in) {
+            return new KeyCharacterMap(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyCharacterMap[] newArray(int size) {
+            return new KeyCharacterMap[size];
+        }
     }
 
     private KeyCharacterMap(Parcel in) {

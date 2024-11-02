@@ -31,7 +31,7 @@ public class WebViewCaptureHelper implements ScrollCaptureViewHelper<WebView> {
         this.mOriginScrollY = view.getScrollY();
     }
 
-    /* renamed from: onScrollRequested, reason: avoid collision after fix types in other method */
+    /* renamed from: onScrollRequested */
     public void onScrollRequested2(WebView view, Rect scrollBounds, Rect requestRect, CancellationSignal cancellationSignal, Consumer<ScrollCaptureViewHelper.ScrollResult> resultConsumer) {
         int scrollDelta = view.getScrollY() - this.mOriginScrollY;
         ScrollCaptureViewHelper.ScrollResult result = new ScrollCaptureViewHelper.ScrollResult();

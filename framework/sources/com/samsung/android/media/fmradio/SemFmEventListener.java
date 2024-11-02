@@ -25,6 +25,9 @@ public class SemFmEventListener {
     private static final int EVENT_TUNE = 7;
     private static final int EVENT_VOLUME_LOCK = 15;
     IFMEventListener callback = new IFMEventListener.Stub() { // from class: com.samsung.android.media.fmradio.SemFmEventListener.1
+        AnonymousClass1() {
+        }
+
         @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
         public void onChannelFound(long freq) {
             Message.obtain(SemFmEventListener.this.mHandler, 1, 0, 0, Long.valueOf(freq)).sendToTarget();
@@ -118,6 +121,9 @@ public class SemFmEventListener {
         }
     };
     Handler mHandler = new Handler() { // from class: com.samsung.android.media.fmradio.SemFmEventListener.2
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -243,5 +249,183 @@ public class SemFmEventListener {
     }
 
     public void onRecordingFinished() {
+    }
+
+    /* renamed from: com.samsung.android.media.fmradio.SemFmEventListener$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends IFMEventListener.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onChannelFound(long freq) {
+            Message.obtain(SemFmEventListener.this.mHandler, 1, 0, 0, Long.valueOf(freq)).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onScanStarted() {
+            Message.obtain(SemFmEventListener.this.mHandler, 2, 0, 0, null).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onScanStopped(long[] freqArry) {
+            Message.obtain(SemFmEventListener.this.mHandler, 4, 0, 0, freqArry).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onScanFinished(long[] freqArry) {
+            Message.obtain(SemFmEventListener.this.mHandler, 3, 0, 0, freqArry).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onRadioEnabled() {
+            Message.obtain(SemFmEventListener.this.mHandler, 5, 0, 0, null).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onRadioDisabled(int reasonCode) {
+            Message.obtain(SemFmEventListener.this.mHandler, 6, 0, 0, Integer.valueOf(reasonCode)).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onTuned(long freq) {
+            Message.obtain(SemFmEventListener.this.mHandler, 7, 0, 0, Long.valueOf(freq)).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onHeadsetConnected() {
+            Message.obtain(SemFmEventListener.this.mHandler, 8, 0, 0, null).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onHeadsetDisconnected() {
+            Message.obtain(SemFmEventListener.this.mHandler, 9, 0, 0, null).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onRadioDataSystemReceived(long freq, String channelName, String radioText) {
+            Message.obtain(SemFmEventListener.this.mHandler, 10, 0, 0, new Object[]{Long.valueOf(freq), channelName, radioText}).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onRadioTextPlusReceived(int contentType1, int startPos1, int additionalLen1, int contentType2, int startPos2, int additionalLen2) {
+            Message.obtain(SemFmEventListener.this.mHandler, 16, 0, 0, new Object[]{Integer.valueOf(contentType1), Integer.valueOf(startPos1), Integer.valueOf(additionalLen1), Integer.valueOf(contentType2), Integer.valueOf(startPos2), Integer.valueOf(additionalLen2)}).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onProgrammeIdentificationExtendedCountryCodesReceived(int pi, int ecc) {
+            Message.obtain(SemFmEventListener.this.mHandler, 18, 0, 0, new Object[]{Integer.valueOf(pi), Integer.valueOf(ecc)}).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onRadioDataSystemEnabled() {
+            Message.obtain(SemFmEventListener.this.mHandler, 11, 0, 0, null).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onRadioDataSystemDisabled() {
+            Message.obtain(SemFmEventListener.this.mHandler, 12, 0, 0, null).sendToTarget();
+            SemFmEventListener.this.mHandler.removeMessages(10);
+            SemFmEventListener.this.mHandler.removeMessages(16);
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onAlternateFrequencyStarted() {
+            Message.obtain(SemFmEventListener.this.mHandler, 13, 0, 0, null).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onAlternateFrequencyReceived(long freq) {
+            Message.obtain(SemFmEventListener.this.mHandler, 14, 0, 0, Long.valueOf(freq)).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onVolumeLocked() {
+            Message.obtain(SemFmEventListener.this.mHandler, 15, 0, 0, null).sendToTarget();
+        }
+
+        @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
+        public void onRecordingFinished() {
+            Message.obtain(SemFmEventListener.this.mHandler, 17, 0, 0, null).sendToTarget();
+        }
+    }
+
+    /* renamed from: com.samsung.android.media.fmradio.SemFmEventListener$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 extends Handler {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    Long freq = (Long) msg.obj;
+                    SemFmEventListener.this.onChannelFound(freq.longValue());
+                    return;
+                case 2:
+                    SemFmEventListener.this.onScanStarted();
+                    return;
+                case 3:
+                    long[] freqArry = (long[]) msg.obj;
+                    SemFmEventListener.this.onScanFinished(freqArry);
+                    return;
+                case 4:
+                    long[] freqArry2 = (long[]) msg.obj;
+                    SemFmEventListener.this.onScanStopped(freqArry2);
+                    return;
+                case 5:
+                    SemFmEventListener.this.onRadioEnabled();
+                    return;
+                case 6:
+                    int reasonCode = ((Integer) msg.obj).intValue();
+                    SemFmEventListener.this.onRadioDisabled(reasonCode);
+                    return;
+                case 7:
+                    Long freq2 = (Long) msg.obj;
+                    SemFmEventListener.this.onTuned(freq2.longValue());
+                    return;
+                case 8:
+                    SemFmEventListener.this.onHeadsetConnected();
+                    return;
+                case 9:
+                    SemFmEventListener.this.onHeadsetDisconnected();
+                    return;
+                case 10:
+                    Object[] obArry = (Object[]) msg.obj;
+                    SemFmEventListener.this.onRadioDataSystemReceived(((Long) obArry[0]).longValue(), (String) obArry[1], (String) obArry[2]);
+                    return;
+                case 11:
+                    SemFmEventListener.this.onRadioDataSystemEnabled();
+                    return;
+                case 12:
+                    SemFmEventListener.this.onRadioDataSystemDisabled();
+                    return;
+                case 13:
+                    SemFmEventListener.this.onAlternateFrequencyStarted();
+                    return;
+                case 14:
+                    Long freq3 = (Long) msg.obj;
+                    SemFmEventListener.this.onAlternateFrequencyReceived(freq3.longValue());
+                    SemFmEventListener.this.onTuned(freq3.longValue());
+                    return;
+                case 15:
+                    SemFmEventListener.this.onVolumeLocked();
+                    return;
+                case 16:
+                    Object[] rtpArry = (Object[]) msg.obj;
+                    SemFmEventListener.this.onRadioTextPlusReceived(((Integer) rtpArry[0]).intValue(), ((Integer) rtpArry[1]).intValue(), ((Integer) rtpArry[2]).intValue(), ((Integer) rtpArry[3]).intValue(), ((Integer) rtpArry[4]).intValue(), ((Integer) rtpArry[5]).intValue());
+                    return;
+                case 17:
+                    SemFmEventListener.this.onRecordingFinished();
+                    return;
+                case 18:
+                    Object[] pieccArry = (Object[]) msg.obj;
+                    SemFmEventListener.this.onProgrammeIdentificationExtendedCountryCodesReceived(((Integer) pieccArry[0]).intValue(), ((Integer) pieccArry[1]).intValue());
+                    return;
+                default:
+                    return;
+            }
+        }
     }
 }

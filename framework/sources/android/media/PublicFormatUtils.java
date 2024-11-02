@@ -1,7 +1,8 @@
 package android.media;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-class PublicFormatUtils {
+public class PublicFormatUtils {
     private static native int nativeGetHalDataspace(int i);
 
     private static native int nativeGetHalFormat(int i);

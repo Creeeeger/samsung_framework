@@ -32,6 +32,10 @@ public class IafdSmAPIManager {
         }
         if (this.mContentObserver == null) {
             this.mContentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.samsung.android.sm.iafdlib.IafdSmAPIManager.1
+                AnonymousClass1(Handler arg0) {
+                    super(arg0);
+                }
+
                 @Override // android.database.ContentObserver
                 public void onChange(boolean selfChange, Uri uri) {
                     Log.i(IafdSmAPIManager.TAG, "update check done, content uri " + uri.toString());
@@ -76,6 +80,36 @@ public class IafdSmAPIManager {
         this.mContext.getContentResolver().call(IafdConstant.DC_API_AUTHORITY, IafdConstant.METHOD_CHECK_UPDATE, (String) null, bundle);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.sm.iafdlib.IafdSmAPIManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends ContentObserver {
+        AnonymousClass1(Handler arg0) {
+            super(arg0);
+        }
+
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange, Uri uri) {
+            Log.i(IafdSmAPIManager.TAG, "update check done, content uri " + uri.toString());
+            String pkgName2 = uri.getQueryParameter(IafdConstant.KEY_PACKAGE_NAME);
+            long versionCode2 = Long.valueOf(uri.getQueryParameter(IafdConstant.KEY_VERSION_CODE)).longValue();
+            int resultCode = Integer.valueOf(uri.getQueryParameter("resultCode")).intValue();
+            String versionName = uri.getQueryParameter("versionName");
+            Result result = new Result();
+            result.resultCode = resultCode;
+            result.versionCode = versionCode2;
+            result.versionName = versionName;
+            result.pkgName = pkgName2;
+            IafdSmAPIManager.this.mCache.put(pkgName2, result);
+            CheckUpdateCallback updateCallback = (CheckUpdateCallback) IafdSmAPIManager.this.mUpdateCallbackMap.get(pkgName2);
+            Log.i(IafdSmAPIManager.TAG, "updateCallback is null = " + (updateCallback == null));
+            if (updateCallback != null) {
+                updateCallback.onResult(resultCode, versionCode2, versionName, pkgName2);
+                IafdSmAPIManager.this.mUpdateCallbackMap.remove(pkgName2);
+            }
+        }
+    }
+
     public void reportErrorDataToServer(String pkgName, int userId, int errorType, String errorStack, String errorComponent, long versionCode, String appName, String versionName) {
         Bundle bundle = new Bundle();
         bundle.putString(IafdConstant.KEY_PACKAGE_NAME, pkgName);
@@ -101,14 +135,19 @@ public class IafdSmAPIManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class Result {
+    public static class Result {
         public String pkgName;
         public int resultCode;
         public long versionCode;
         public String versionName;
 
         private Result() {
+        }
+
+        /* synthetic */ Result(AnonymousClass1 x0) {
+            this();
         }
     }
 }

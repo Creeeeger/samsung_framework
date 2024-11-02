@@ -65,7 +65,6 @@ public class SnapshotDrawerUtils {
             this.mSystemBarBackgroundPainter.setInsets(systemBarInsets);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void drawSnapshot(boolean releaseAfterDraw) {
             Log.v(SnapshotDrawerUtils.TAG, "Drawing snapshot surface sizeMismatch=" + this.mSizeMismatch);
             if (this.mSizeMismatch) {
@@ -183,7 +182,6 @@ public class SnapshotDrawerUtils {
         return Math.abs((((float) buffer.getWidth()) / ((float) buffer.getHeight())) - (((float) frame.width()) / ((float) frame.height()))) <= 0.01f;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isAspectRatioMatch(Rect frame1, Rect frame2) {
         return (frame1.isEmpty() || frame2.isEmpty() || Math.abs((((float) frame2.width()) / ((float) frame2.height())) - (((float) frame1.width()) / ((float) frame1.height()))) > 0.01f) ? false : true;
     }

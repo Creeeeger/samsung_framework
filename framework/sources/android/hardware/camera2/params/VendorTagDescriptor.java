@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class VendorTagDescriptor implements Parcelable {
     public static final Parcelable.Creator<VendorTagDescriptor> CREATOR = new Parcelable.Creator<VendorTagDescriptor>() { // from class: android.hardware.camera2.params.VendorTagDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VendorTagDescriptor createFromParcel(Parcel source) {
             return new VendorTagDescriptor(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VendorTagDescriptor[] newArray(int size) {
             return new VendorTagDescriptor[size];
@@ -20,7 +21,28 @@ public final class VendorTagDescriptor implements Parcelable {
     };
     private static final String TAG = "VendorTagDescriptor";
 
+    /* synthetic */ VendorTagDescriptor(Parcel parcel, VendorTagDescriptorIA vendorTagDescriptorIA) {
+        this(parcel);
+    }
+
     private VendorTagDescriptor(Parcel source) {
+    }
+
+    /* renamed from: android.hardware.camera2.params.VendorTagDescriptor$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VendorTagDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VendorTagDescriptor createFromParcel(Parcel source) {
+            return new VendorTagDescriptor(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VendorTagDescriptor[] newArray(int size) {
+            return new VendorTagDescriptor[size];
+        }
     }
 
     @Override // android.os.Parcelable

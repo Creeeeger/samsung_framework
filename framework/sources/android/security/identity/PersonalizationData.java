@@ -10,30 +10,36 @@ public class PersonalizationData {
     private LinkedHashMap<String, NamespaceData> mNamespaces;
     private ArrayList<AccessControlProfile> mProfiles;
 
+    /* synthetic */ PersonalizationData(PersonalizationDataIA personalizationDataIA) {
+        this();
+    }
+
     private PersonalizationData() {
         this.mProfiles = new ArrayList<>();
         this.mNamespaces = new LinkedHashMap<>();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Collection<AccessControlProfile> getAccessControlProfiles() {
         return Collections.unmodifiableCollection(this.mProfiles);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Collection<String> getNamespaces() {
         return Collections.unmodifiableCollection(this.mNamespaces.keySet());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public NamespaceData getNamespaceData(String namespace) {
         return this.mNamespaces.get(namespace);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    static class NamespaceData {
+    public static class NamespaceData {
         private LinkedHashMap<String, EntryData> mEntries;
         private String mNamespace;
+
+        /* synthetic */ NamespaceData(String str, NamespaceDataIA namespaceDataIA) {
+            this(str);
+        }
 
         private NamespaceData(String namespace) {
             this.mEntries = new LinkedHashMap<>();
@@ -44,12 +50,10 @@ public class PersonalizationData {
             return this.mNamespace;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Collection<String> getEntryNames() {
             return Collections.unmodifiableCollection(this.mEntries.keySet());
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Collection<AccessControlProfileId> getAccessControlProfileIds(String name) {
             EntryData value = this.mEntries.get(name);
             if (value != null) {
@@ -58,7 +62,6 @@ public class PersonalizationData {
             return null;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public byte[] getEntryValue(String name) {
             EntryData value = this.mEntries.get(name);
             if (value != null) {
@@ -68,8 +71,9 @@ public class PersonalizationData {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class EntryData {
+    public static class EntryData {
         Collection<AccessControlProfileId> mAccessControlProfileIds;
         byte[] mValue;
 

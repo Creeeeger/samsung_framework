@@ -132,8 +132,9 @@ public interface IGameSDKListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGameSDKListener {
+        public static class Proxy implements IGameSDKListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -127,6 +127,10 @@ public class DvbtFrontendSettings extends FrontendSettings {
     public @interface TransmissionMode {
     }
 
+    /* synthetic */ DvbtFrontendSettings(long j, int i, int i2, int i3, int i4, int i5, int i6, int i7, boolean z, int i8, boolean z2, int i9, int i10, int i11, DvbtFrontendSettingsIA dvbtFrontendSettingsIA) {
+        this(j, i, i2, i3, i4, i5, i6, i7, z, i8, z2, i9, i10, i11);
+    }
+
     private DvbtFrontendSettings(long frequency, int transmissionMode, int bandwidth, int constellation, int hierarchy, int hpCodeRate, int lpCodeRate, int guardInterval, boolean isHighPriority, int standard, boolean isMiso, int plpMode, int plpId, int plpGroupId) {
         super(frequency);
         this.mTransmissionMode = transmissionMode;
@@ -196,12 +200,10 @@ public class DvbtFrontendSettings extends FrontendSettings {
         return this.mPlpGroupId;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isExtendedTransmissionMode(int transmissionMode) {
         return transmissionMode == 128 || transmissionMode == 256 || transmissionMode == 512;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isExtendedConstellation(int constellation) {
         return constellation == 32 || constellation == 64 || constellation == 128 || constellation == 256;
     }
@@ -226,6 +228,10 @@ public class DvbtFrontendSettings extends FrontendSettings {
         private int mPlpMode;
         private int mStandard;
         private int mTransmissionMode;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;

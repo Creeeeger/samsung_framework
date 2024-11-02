@@ -11,6 +11,10 @@ public class Atsc3PlpSettings {
     private final int mModulation;
     private final int mPlpId;
 
+    /* synthetic */ Atsc3PlpSettings(int i, int i2, int i3, int i4, int i5, Atsc3PlpSettingsIA atsc3PlpSettingsIA) {
+        this(i, i2, i3, i4, i5);
+    }
+
     private Atsc3PlpSettings(int plpId, int modulation, int interleaveMode, int codeRate, int fec) {
         this.mPlpId = plpId;
         this.mModulation = modulation;
@@ -50,6 +54,10 @@ public class Atsc3PlpSettings {
         private int mInterleaveMode;
         private int mModulation;
         private int mPlpId;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
         }

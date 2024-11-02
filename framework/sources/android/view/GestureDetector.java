@@ -140,8 +140,9 @@ public class GestureDetector {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class GestureHandler extends Handler {
+    public class GestureHandler extends Handler {
         GestureHandler() {
         }
 
@@ -374,7 +375,6 @@ public class GestureDetector {
         return (deltaX * deltaX) + (deltaY * deltaY) < slopSquare;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchLongPress() {
         this.mHandler.removeMessages(3);
         this.mDeferConfirmSingleTap = false;
@@ -382,7 +382,6 @@ public class GestureDetector {
         this.mListener.onLongPress(this.mCurrentDownEvent);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void recordGestureClassification(int classification) {
         if (this.mHasRecordedClassification || classification == 0) {
             return;

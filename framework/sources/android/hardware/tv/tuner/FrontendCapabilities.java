@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendCapabilities implements Parcelable {
     public static final Parcelable.Creator<FrontendCapabilities> CREATOR = new Parcelable.Creator<FrontendCapabilities>() { // from class: android.hardware.tv.tuner.FrontendCapabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendCapabilities createFromParcel(Parcel _aidl_source) {
             return new FrontendCapabilities(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendCapabilities[] newArray(int _aidl_size) {
             return new FrontendCapabilities[_aidl_size];
@@ -45,6 +46,10 @@ public final class FrontendCapabilities implements Parcelable {
         public static final int isdbs3Caps = 8;
         public static final int isdbsCaps = 7;
         public static final int isdbtCaps = 9;
+    }
+
+    /* synthetic */ FrontendCapabilities(Parcel parcel, FrontendCapabilitiesIA frontendCapabilitiesIA) {
+        this(parcel);
     }
 
     public FrontendCapabilities() {
@@ -211,6 +216,23 @@ public final class FrontendCapabilities implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.FrontendCapabilities$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendCapabilities createFromParcel(Parcel _aidl_source) {
+            return new FrontendCapabilities(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendCapabilities[] newArray(int _aidl_size) {
+            return new FrontendCapabilities[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

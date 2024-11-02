@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class MoveToDisplayItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<MoveToDisplayItem> CREATOR = new Parcelable.Creator<MoveToDisplayItem>() { // from class: android.app.servertransaction.MoveToDisplayItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MoveToDisplayItem createFromParcel(Parcel in) {
             return new MoveToDisplayItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MoveToDisplayItem[] newArray(int size) {
             return new MoveToDisplayItem[size];
@@ -27,6 +28,10 @@ public class MoveToDisplayItem extends ActivityTransactionItem {
     };
     private Configuration mConfiguration;
     private int mTargetDisplayId;
+
+    /* synthetic */ MoveToDisplayItem(Parcel parcel, MoveToDisplayItemIA moveToDisplayItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.BaseClientRequest
     public void preExecute(ClientTransactionHandler client, IBinder token) {
@@ -73,6 +78,23 @@ public class MoveToDisplayItem extends ActivityTransactionItem {
     private MoveToDisplayItem(Parcel in) {
         this.mTargetDisplayId = in.readInt();
         this.mConfiguration = (Configuration) in.readTypedObject(Configuration.CREATOR);
+    }
+
+    /* renamed from: android.app.servertransaction.MoveToDisplayItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MoveToDisplayItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MoveToDisplayItem createFromParcel(Parcel in) {
+            return new MoveToDisplayItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MoveToDisplayItem[] newArray(int size) {
+            return new MoveToDisplayItem[size];
+        }
     }
 
     public boolean equals(Object o) {

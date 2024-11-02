@@ -240,7 +240,6 @@ public abstract class CellBroadcastService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public SmsCbHeader createSmsCbHeader(byte[] bytes) {
         try {
             return new SmsCbHeader(bytes);
@@ -250,7 +249,6 @@ public abstract class CellBroadcastService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void convertGsmToUmts(byte[] pdu, byte[] wac, int pduLength, int wacLength, int slotIndex) {
         byte[] umtsPdu = new byte[wacLength + 90];
         int offset = 0 + 1;
@@ -279,7 +277,6 @@ public abstract class CellBroadcastService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void convertGsmToUmtsForMultiPage(int pageCount, byte[][] pdus, byte[] wac, int wacLength, int slotIndex) {
         byte[] umtsPdu = new byte[(pageCount * 83) + 7 + wacLength];
         int offset = 0 + 1;
@@ -343,7 +340,6 @@ public abstract class CellBroadcastService extends Service {
             return this.mHeader.getSerialNumber() == other.mHeader.getSerialNumber() && this.mReceivedTime < other.mReceivedTime + ParcelableCallAnalytics.MILLIS_IN_5_MINUTES;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean overTime() {
             return this.mReceivedTime < System.currentTimeMillis() - ParcelableCallAnalytics.MILLIS_IN_5_MINUTES;
         }

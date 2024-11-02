@@ -64,6 +64,9 @@ public class ViewFlipper extends ViewAnimator {
         this.mVisible = false;
         this.mUserPresent = true;
         this.mReceiver = new BroadcastReceiver() { // from class: android.widget.ViewFlipper.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -77,6 +80,9 @@ public class ViewFlipper extends ViewAnimator {
             }
         };
         this.mFlipRunnable = new Runnable() { // from class: android.widget.ViewFlipper.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (ViewFlipper.this.mRunning) {
@@ -97,6 +103,9 @@ public class ViewFlipper extends ViewAnimator {
         this.mVisible = false;
         this.mUserPresent = true;
         this.mReceiver = new BroadcastReceiver() { // from class: android.widget.ViewFlipper.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -110,6 +119,9 @@ public class ViewFlipper extends ViewAnimator {
             }
         };
         this.mFlipRunnable = new Runnable() { // from class: android.widget.ViewFlipper.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (ViewFlipper.this.mRunning) {
@@ -125,7 +137,25 @@ public class ViewFlipper extends ViewAnimator {
         a.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.widget.ViewFlipper$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent) {
+            String action = intent.getAction();
+            if (Intent.ACTION_SCREEN_OFF.equals(action)) {
+                ViewFlipper.this.mUserPresent = false;
+                ViewFlipper.this.updateRunning();
+            } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
+                ViewFlipper.this.mUserPresent = true;
+                ViewFlipper.this.updateRunning(false);
+            }
+        }
+    }
+
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -138,7 +168,6 @@ public class ViewFlipper extends ViewAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -147,7 +176,6 @@ public class ViewFlipper extends ViewAnimator {
         updateRunning();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
@@ -179,12 +207,10 @@ public class ViewFlipper extends ViewAnimator {
         return ViewFlipper.class.getName();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateRunning() {
         updateRunning(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateRunning(boolean flipNow) {
         boolean running = this.mVisible && this.mStarted && this.mUserPresent;
         if (running != this.mRunning) {
@@ -208,5 +234,21 @@ public class ViewFlipper extends ViewAnimator {
 
     public boolean isAutoStart() {
         return this.mAutoStart;
+    }
+
+    /* renamed from: android.widget.ViewFlipper$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (ViewFlipper.this.mRunning) {
+                ViewFlipper.this.showNext();
+                ViewFlipper viewFlipper = ViewFlipper.this;
+                viewFlipper.postDelayed(viewFlipper.mFlipRunnable, ViewFlipper.this.mFlipInterval);
+            }
+        }
     }
 }

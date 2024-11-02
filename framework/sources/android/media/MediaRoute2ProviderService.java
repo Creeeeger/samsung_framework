@@ -194,7 +194,6 @@ public abstract class MediaRoute2ProviderService extends Service {
         schedulePublishState();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCallback(IMediaRoute2ProviderServiceCallback callback) {
         this.mRemoteCallback = callback;
         schedulePublishState();
@@ -212,7 +211,6 @@ public abstract class MediaRoute2ProviderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void publishState() {
         IMediaRoute2ProviderServiceCallback iMediaRoute2ProviderServiceCallback;
         if (!this.mStatePublishScheduled.compareAndSet(true, false) || (iMediaRoute2ProviderServiceCallback = this.mRemoteCallback) == null) {
@@ -236,7 +234,6 @@ public abstract class MediaRoute2ProviderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateSessions() {
         List<RoutingSessionInfo> sessions;
         if (!this.mSessionUpdateScheduled.compareAndSet(true, false) || this.mRemoteCallback == null) {
@@ -252,7 +249,6 @@ public abstract class MediaRoute2ProviderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void addRequestId(long requestId) {
         synchronized (this.mRequestIdsLock) {
             if (this.mRequestIds.size() >= 500) {

@@ -14,13 +14,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AmbientContextDetectionResult implements Parcelable {
     public static final Parcelable.Creator<AmbientContextDetectionResult> CREATOR = new Parcelable.Creator<AmbientContextDetectionResult>() { // from class: android.service.ambientcontext.AmbientContextDetectionResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AmbientContextDetectionResult[] newArray(int size) {
             return new AmbientContextDetectionResult[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientContextDetectionResult createFromParcel(Parcel in) {
             return new AmbientContextDetectionResult(in);
@@ -70,6 +71,23 @@ public final class AmbientContextDetectionResult implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) events);
         this.mPackageName = packageName;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+    }
+
+    /* renamed from: android.service.ambientcontext.AmbientContextDetectionResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AmbientContextDetectionResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AmbientContextDetectionResult[] newArray(int size) {
+            return new AmbientContextDetectionResult[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AmbientContextDetectionResult createFromParcel(Parcel in) {
+            return new AmbientContextDetectionResult(in);
+        }
     }
 
     /* loaded from: classes3.dex */

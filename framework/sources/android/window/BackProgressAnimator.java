@@ -8,6 +8,10 @@ import com.android.internal.dynamicanimation.animation.SpringForce;
 /* loaded from: classes4.dex */
 public class BackProgressAnimator {
     private static final FloatProperty<BackProgressAnimator> PROGRESS_PROP = new FloatProperty<BackProgressAnimator>("progress") { // from class: android.window.BackProgressAnimator.1
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
         @Override // android.util.FloatProperty
         public void setValue(BackProgressAnimator animator, float value) {
             animator.setProgress(value);
@@ -31,14 +35,31 @@ public class BackProgressAnimator {
         void onProgressUpdate(BackEvent backEvent);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setProgress(float progress) {
         this.mProgress = progress;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public float getProgress() {
         return this.mProgress;
+    }
+
+    /* renamed from: android.window.BackProgressAnimator$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends FloatProperty<BackProgressAnimator> {
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(BackProgressAnimator animator, float value) {
+            animator.setProgress(value);
+            animator.updateProgressValue(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(BackProgressAnimator object) {
+            return Float.valueOf(object.getProgress());
+        }
     }
 
     public BackProgressAnimator() {
@@ -79,8 +100,32 @@ public class BackProgressAnimator {
         this.mProgress = 0.0f;
     }
 
-    public void onBackCancelled(final Runnable finishCallback) {
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.window.BackProgressAnimator$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements DynamicAnimation.OnAnimationEndListener {
+        final /* synthetic */ Runnable val$finishCallback;
+
+        AnonymousClass2(Runnable runnable) {
+            finishCallback = runnable;
+        }
+
+        @Override // com.android.internal.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener
+        public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
+            BackProgressAnimator.this.mSpring.removeEndListener(this);
+            finishCallback.run();
+            BackProgressAnimator.this.reset();
+        }
+    }
+
+    public void onBackCancelled(Runnable finishCallback) {
         DynamicAnimation.OnAnimationEndListener listener = new DynamicAnimation.OnAnimationEndListener() { // from class: android.window.BackProgressAnimator.2
+            final /* synthetic */ Runnable val$finishCallback;
+
+            AnonymousClass2(Runnable finishCallback2) {
+                finishCallback = finishCallback2;
+            }
+
             @Override // com.android.internal.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener
             public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                 BackProgressAnimator.this.mSpring.removeEndListener(this);
@@ -92,12 +137,10 @@ public class BackProgressAnimator {
         this.mSpring.animateToFinalPosition(0.0f);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isBackAnimationInProgress() {
         return this.mBackAnimationInProgress;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateProgressValue(float progress) {
         ProgressCallback progressCallback;
         BackMotionEvent backMotionEvent = this.mLastBackEvent;

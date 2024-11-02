@@ -58,7 +58,6 @@ public class SubMenuBuilder extends MenuBuilder implements SubMenu {
         return this.mParentMenu.getRootMenu();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.view.menu.MenuBuilder
     public boolean dispatchMenuItemSelected(MenuBuilder menu, MenuItem item) {
         return super.dispatchMenuItemSelected(menu, item) || this.mParentMenu.dispatchMenuItemSelected(menu, item);

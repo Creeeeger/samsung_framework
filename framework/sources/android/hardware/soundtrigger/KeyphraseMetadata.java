@@ -12,13 +12,14 @@ import java.util.Set;
 /* loaded from: classes2.dex */
 public final class KeyphraseMetadata implements Parcelable {
     public static final Parcelable.Creator<KeyphraseMetadata> CREATOR = new Parcelable.Creator<KeyphraseMetadata>() { // from class: android.hardware.soundtrigger.KeyphraseMetadata.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeyphraseMetadata[] newArray(int size) {
             return new KeyphraseMetadata[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyphraseMetadata createFromParcel(Parcel in) {
             return new KeyphraseMetadata(in);
@@ -107,6 +108,23 @@ public final class KeyphraseMetadata implements Parcelable {
         this.mSupportedLocales = readArraySet;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) readArraySet);
         this.mRecognitionModeFlags = recognitionModeFlags;
+    }
+
+    /* renamed from: android.hardware.soundtrigger.KeyphraseMetadata$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyphraseMetadata> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyphraseMetadata[] newArray(int size) {
+            return new KeyphraseMetadata[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyphraseMetadata createFromParcel(Parcel in) {
+            return new KeyphraseMetadata(in);
+        }
     }
 
     @Deprecated

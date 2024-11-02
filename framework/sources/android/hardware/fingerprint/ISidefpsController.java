@@ -100,8 +100,9 @@ public interface ISidefpsController extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ISidefpsController {
+        public static class Proxy implements ISidefpsController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

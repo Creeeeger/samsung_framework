@@ -104,7 +104,6 @@ public class TaskInfo {
     public @interface CameraCompatControlState {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TaskInfo() {
     }
 
@@ -254,7 +253,6 @@ public class TaskInfo {
         return i == 6 || i == 5 || i == 7;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void readFromParcel(Parcel source) {
         this.userId = source.readInt();
         this.taskId = source.readInt();
@@ -343,7 +341,6 @@ public class TaskInfo {
         this.isMinimized = source.readBoolean();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.userId);
         dest.writeInt(this.taskId);

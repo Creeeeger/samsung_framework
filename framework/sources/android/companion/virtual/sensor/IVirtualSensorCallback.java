@@ -134,8 +134,9 @@ public interface IVirtualSensorCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IVirtualSensorCallback {
+        public static class Proxy implements IVirtualSensorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

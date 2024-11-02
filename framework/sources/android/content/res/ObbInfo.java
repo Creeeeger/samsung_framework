@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ObbInfo implements Parcelable {
     public static final Parcelable.Creator<ObbInfo> CREATOR = new Parcelable.Creator<ObbInfo>() { // from class: android.content.res.ObbInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ObbInfo createFromParcel(Parcel source) {
             return new ObbInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ObbInfo[] newArray(int size) {
             return new ObbInfo[size];
@@ -25,7 +26,10 @@ public class ObbInfo implements Parcelable {
     public byte[] salt;
     public int version;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ ObbInfo(Parcel parcel, ObbInfoIA obbInfoIA) {
+        this(parcel);
+    }
+
     public ObbInfo() {
     }
 
@@ -45,6 +49,23 @@ public class ObbInfo implements Parcelable {
         dest.writeInt(this.version);
         dest.writeInt(this.flags);
         dest.writeByteArray(this.salt);
+    }
+
+    /* renamed from: android.content.res.ObbInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ObbInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ObbInfo createFromParcel(Parcel source) {
+            return new ObbInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ObbInfo[] newArray(int size) {
+            return new ObbInfo[size];
+        }
     }
 
     private ObbInfo(Parcel source) {

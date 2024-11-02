@@ -69,8 +69,13 @@ public final class DsmsThreadPoolExecutor extends ThreadPoolExecutor {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static final class RejectedThread implements RejectedExecutionHandler {
+    public static final class RejectedThread implements RejectedExecutionHandler {
+        /* synthetic */ RejectedThread(RejectedThreadIA rejectedThreadIA) {
+            this();
+        }
+
         private RejectedThread() {
         }
 

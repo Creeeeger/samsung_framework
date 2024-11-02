@@ -10,7 +10,6 @@ public final class VirtualDisplay {
     private Surface mSurface;
     private IVirtualDisplayCallback mToken;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VirtualDisplay(DisplayManagerGlobal global, Display display, IVirtualDisplayCallback token, Surface surface) {
         this.mGlobal = global;
         this.mDisplay = display;

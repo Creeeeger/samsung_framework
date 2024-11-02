@@ -7,13 +7,14 @@ import android.telecom.ParcelableCallAnalytics;
 /* loaded from: classes5.dex */
 public class SemLocationBatchingRequest implements Parcelable {
     public static final Parcelable.Creator<SemLocationBatchingRequest> CREATOR = new Parcelable.Creator<SemLocationBatchingRequest>() { // from class: com.samsung.android.location.SemLocationBatchingRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemLocationBatchingRequest createFromParcel(Parcel in) {
             return new SemLocationBatchingRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemLocationBatchingRequest[] newArray(int size) {
             return new SemLocationBatchingRequest[size];
@@ -24,6 +25,10 @@ public class SemLocationBatchingRequest implements Parcelable {
     private long maxWaitTime;
     private float minDisplacement;
     private long minInterval;
+
+    /* synthetic */ SemLocationBatchingRequest(Parcel parcel, SemLocationBatchingRequestIA semLocationBatchingRequestIA) {
+        this(parcel);
+    }
 
     public SemLocationBatchingRequest() {
         this.minInterval = ParcelableCallAnalytics.MILLIS_IN_5_MINUTES;
@@ -76,6 +81,23 @@ public class SemLocationBatchingRequest implements Parcelable {
     public SemLocationBatchingRequest setMinDisplacement(float displacement) {
         this.minDisplacement = displacement;
         return this;
+    }
+
+    /* renamed from: com.samsung.android.location.SemLocationBatchingRequest$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemLocationBatchingRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemLocationBatchingRequest createFromParcel(Parcel in) {
+            return new SemLocationBatchingRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemLocationBatchingRequest[] newArray(int size) {
+            return new SemLocationBatchingRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

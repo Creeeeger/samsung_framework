@@ -116,8 +116,9 @@ public class PropertyInvalidatedCache<Query, Result> {
         return n >= 0 && n <= 3;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class DefaultComputer<Query, Result> extends QueryHandler<Query, Result> {
+    public static class DefaultComputer<Query, Result> extends QueryHandler<Query, Result> {
         final PropertyInvalidatedCache<Query, Result> mCache;
 
         DefaultComputer(PropertyInvalidatedCache<Query, Result> cache) {
@@ -172,6 +173,10 @@ public class PropertyInvalidatedCache<Query, Result> {
 
     private LinkedHashMap<Query, Result> createMap() {
         return new LinkedHashMap<Query, Result>(2, 0.75f, true) { // from class: android.app.PropertyInvalidatedCache.1
+            AnonymousClass1(int initialCapacity, float loadFactor, boolean accessOrder) {
+                super(initialCapacity, loadFactor, accessOrder);
+            }
+
             @Override // java.util.LinkedHashMap
             protected boolean removeEldestEntry(Map.Entry eldest) {
                 int size = size();
@@ -185,6 +190,27 @@ public class PropertyInvalidatedCache<Query, Result> {
                 return false;
             }
         };
+    }
+
+    /* renamed from: android.app.PropertyInvalidatedCache$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends LinkedHashMap<Query, Result> {
+        AnonymousClass1(int initialCapacity, float loadFactor, boolean accessOrder) {
+            super(initialCapacity, loadFactor, accessOrder);
+        }
+
+        @Override // java.util.LinkedHashMap
+        protected boolean removeEldestEntry(Map.Entry eldest) {
+            int size = size();
+            if (size > PropertyInvalidatedCache.this.mHighWaterMark) {
+                PropertyInvalidatedCache.this.mHighWaterMark = size;
+            }
+            if (size > PropertyInvalidatedCache.this.mMaxEntries) {
+                PropertyInvalidatedCache.this.mMissOverflow++;
+                return true;
+            }
+            return false;
+        }
     }
 
     private void registerCache() {
@@ -412,7 +438,6 @@ public class PropertyInvalidatedCache<Query, Result> {
         return recompute(query);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class NoPreloadHolder {
         private static final AtomicLong sNextNonce = new AtomicLong(new Random().nextLong());
@@ -555,7 +580,6 @@ public class PropertyInvalidatedCache<Query, Result> {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void handleMessage(Message msg) {
             synchronized (this.mLock) {
                 if (this.mUncorkDeadlineMs < 0) {
@@ -572,9 +596,26 @@ public class PropertyInvalidatedCache<Query, Result> {
             }
         }
 
+        /* renamed from: android.app.PropertyInvalidatedCache$AutoCorker$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 extends Handler {
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                AutoCorker.this.handleMessage(msg);
+            }
+        }
+
         private Handler getHandlerLocked() {
             if (this.mHandler == null) {
                 this.mHandler = new Handler(Looper.getMainLooper()) { // from class: android.app.PropertyInvalidatedCache.AutoCorker.1
+                    AnonymousClass1(Looper looper) {
+                        super(looper);
+                    }
+
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         AutoCorker.this.handleMessage(msg);

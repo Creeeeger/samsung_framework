@@ -1,6 +1,7 @@
 package android.app;
 
 import android.app.AppOpsManager;
+import android.util.LongSparseLongArray;
 import java.util.function.Supplier;
 
 /* compiled from: D8$$SyntheticClass */
@@ -14,6 +15,8 @@ public final /* synthetic */ class AppOpsManager$HistoricalOp$$ExternalSynthetic
 
     @Override // java.util.function.Supplier
     public final Object get() {
-        return AppOpsManager.HistoricalOp.$r8$lambda$fCoAOzsMakJSMqyzB23PXZTsbXE(this.f$0);
+        LongSparseLongArray orCreateRejectCount;
+        orCreateRejectCount = this.f$0.getOrCreateRejectCount();
+        return orCreateRejectCount;
     }
 }

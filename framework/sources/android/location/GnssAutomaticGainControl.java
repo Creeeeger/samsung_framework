@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class GnssAutomaticGainControl implements Parcelable {
     public static final Parcelable.Creator<GnssAutomaticGainControl> CREATOR = new Parcelable.Creator<GnssAutomaticGainControl>() { // from class: android.location.GnssAutomaticGainControl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssAutomaticGainControl createFromParcel(Parcel parcel) {
             return new GnssAutomaticGainControl(parcel.readDouble(), parcel.readInt(), parcel.readLong());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssAutomaticGainControl[] newArray(int i) {
             return new GnssAutomaticGainControl[i];
@@ -23,6 +24,10 @@ public final class GnssAutomaticGainControl implements Parcelable {
     private final long mCarrierFrequencyHz;
     private final int mConstellationType;
     private final double mLevelDb;
+
+    /* synthetic */ GnssAutomaticGainControl(double d, int i, long j, GnssAutomaticGainControlIA gnssAutomaticGainControlIA) {
+        this(d, i, j);
+    }
 
     private GnssAutomaticGainControl(double levelDb, int constellationType, long carrierFrequencyHz) {
         this.mLevelDb = levelDb;
@@ -52,6 +57,23 @@ public final class GnssAutomaticGainControl implements Parcelable {
         parcel.writeDouble(this.mLevelDb);
         parcel.writeInt(this.mConstellationType);
         parcel.writeLong(this.mCarrierFrequencyHz);
+    }
+
+    /* renamed from: android.location.GnssAutomaticGainControl$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssAutomaticGainControl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssAutomaticGainControl createFromParcel(Parcel parcel) {
+            return new GnssAutomaticGainControl(parcel.readDouble(), parcel.readInt(), parcel.readLong());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssAutomaticGainControl[] newArray(int i) {
+            return new GnssAutomaticGainControl[i];
+        }
     }
 
     public String toString() {

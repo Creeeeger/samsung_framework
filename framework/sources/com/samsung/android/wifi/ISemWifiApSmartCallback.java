@@ -85,8 +85,9 @@ public interface ISemWifiApSmartCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISemWifiApSmartCallback {
+        public static class Proxy implements ISemWifiApSmartCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -16,13 +16,14 @@ import java.util.concurrent.Executor;
 /* loaded from: classes.dex */
 public final class SessionConfiguration implements Parcelable {
     public static final Parcelable.Creator<SessionConfiguration> CREATOR = new Parcelable.Creator<SessionConfiguration>() { // from class: android.hardware.camera2.params.SessionConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SessionConfiguration createFromParcel(Parcel source) {
             return new SessionConfiguration(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SessionConfiguration[] newArray(int size) {
             return new SessionConfiguration[size];
@@ -43,6 +44,10 @@ public final class SessionConfiguration implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface SessionMode {
+    }
+
+    /* synthetic */ SessionConfiguration(Parcel parcel, SessionConfigurationIA sessionConfigurationIA) {
+        this(parcel);
     }
 
     public SessionConfiguration(int sessionType, List<OutputConfiguration> outputs, Executor executor, CameraCaptureSession.StateCallback cb) {
@@ -71,6 +76,23 @@ public final class SessionConfiguration implements Parcelable {
         }
         this.mSessionType = sessionType;
         this.mOutputConfigurations = outConfigs;
+    }
+
+    /* renamed from: android.hardware.camera2.params.SessionConfiguration$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SessionConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SessionConfiguration createFromParcel(Parcel source) {
+            return new SessionConfiguration(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SessionConfiguration[] newArray(int size) {
+            return new SessionConfiguration[size];
+        }
     }
 
     @Override // android.os.Parcelable

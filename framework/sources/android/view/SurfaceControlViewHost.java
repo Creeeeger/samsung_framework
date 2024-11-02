@@ -37,9 +37,12 @@ public class SurfaceControlViewHost {
     private ViewRootImpl mViewRoot;
     private WindowlessWindowManager mWm;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class ISurfaceControlViewHostImpl extends ISurfaceControlViewHost.Stub {
+        /* synthetic */ ISurfaceControlViewHostImpl(SurfaceControlViewHost surfaceControlViewHost, ISurfaceControlViewHostImplIA iSurfaceControlViewHostImplIA) {
+            this();
+        }
+
         private ISurfaceControlViewHostImpl() {
         }
 
@@ -56,7 +59,6 @@ public class SurfaceControlViewHost {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConfigurationChanged$0(Configuration configuration) {
             if (SurfaceControlViewHost.this.mWm != null) {
                 SurfaceControlViewHost.this.mWm.setConfiguration(configuration);
@@ -79,7 +81,6 @@ public class SurfaceControlViewHost {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDispatchDetachedFromWindow$1() {
             SurfaceControlViewHost.this.release();
         }
@@ -97,7 +98,6 @@ public class SurfaceControlViewHost {
             SurfaceControlViewHost.this.mWm.setInsetsState(state);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onInsetsChanged$2(Rect frame) {
             SurfaceControlViewHost.this.mViewRoot.setOverrideInsetsFrame(frame);
         }
@@ -122,7 +122,6 @@ public class SurfaceControlViewHost {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$getSurfaceSyncGroup$3(CompletableFuture surfaceSyncGroup) {
             surfaceSyncGroup.complete(SurfaceControlViewHost.this.mViewRoot.getOrCreateSurfaceSyncGroup().mISurfaceSyncGroup);
         }
@@ -131,13 +130,14 @@ public class SurfaceControlViewHost {
     /* loaded from: classes4.dex */
     public static final class SurfacePackage implements Parcelable {
         public static final Parcelable.Creator<SurfacePackage> CREATOR = new Parcelable.Creator<SurfacePackage>() { // from class: android.view.SurfaceControlViewHost.SurfacePackage.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SurfacePackage createFromParcel(Parcel in) {
                 return new SurfacePackage(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SurfacePackage[] newArray(int size) {
                 return new SurfacePackage[size];
@@ -147,6 +147,10 @@ public class SurfaceControlViewHost {
         private final IBinder mInputToken;
         private final ISurfaceControlViewHost mRemoteInterface;
         private SurfaceControl mSurfaceControl;
+
+        /* synthetic */ SurfacePackage(Parcel parcel, SurfacePackageIA surfacePackageIA) {
+            this(parcel);
+        }
 
         SurfacePackage(SurfaceControl sc, IAccessibilityEmbeddedConnection connection, IBinder inputToken, ISurfaceControlViewHost ri) {
             this.mSurfaceControl = sc;
@@ -227,6 +231,23 @@ public class SurfaceControlViewHost {
         public IBinder getInputToken() {
             return this.mInputToken;
         }
+
+        /* renamed from: android.view.SurfaceControlViewHost$SurfacePackage$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SurfacePackage> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SurfacePackage createFromParcel(Parcel in) {
+                return new SurfacePackage(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SurfacePackage[] newArray(int size) {
+                return new SurfacePackage[size];
+            }
+        }
     }
 
     public SurfaceControlViewHost(Context c, Display d, WindowlessWindowManager wwm, String callsite) {
@@ -273,7 +294,6 @@ public class SurfaceControlViewHost {
         ViewRootImpl.addConfigCallback(configChangedCallback);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$setConfigCallback$0(IBinder token, Display d, Configuration conf) {
         if (token instanceof WindowTokenClient) {
             WindowTokenClient w = (WindowTokenClient) token;

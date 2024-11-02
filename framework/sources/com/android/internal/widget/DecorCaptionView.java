@@ -78,7 +78,6 @@ public class DecorCaptionView extends ViewGroup implements View.OnTouchListener,
         setContentDescription(context.getString(R.string.accessibility_freeform_caption, context.getPackageManager().getApplicationLabel(context.getApplicationInfo())));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -189,7 +188,6 @@ public class DecorCaptionView extends ViewGroup implements View.OnTouchListener,
         this.mContent = child;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int captionHeight;
@@ -210,7 +208,6 @@ public class DecorCaptionView extends ViewGroup implements View.OnTouchListener,
         setMeasuredDimension(View.MeasureSpec.getSize(widthMeasureSpec), View.MeasureSpec.getSize(heightMeasureSpec));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int captionHeight;
@@ -288,7 +285,6 @@ public class DecorCaptionView extends ViewGroup implements View.OnTouchListener,
         return new ViewGroup.MarginLayoutParams(p);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof ViewGroup.MarginLayoutParams;

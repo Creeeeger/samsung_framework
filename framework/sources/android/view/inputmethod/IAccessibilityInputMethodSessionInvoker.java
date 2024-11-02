@@ -8,7 +8,6 @@ import android.util.Log;
 import com.android.internal.inputmethod.IAccessibilityInputMethodSession;
 import com.android.internal.inputmethod.IRemoteAccessibilityInputConnection;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class IAccessibilityInputMethodSessionInvoker {
     private static final String TAG = "IAccessibilityInputMethodSessionInvoker";
@@ -42,7 +41,6 @@ public final class IAccessibilityInputMethodSessionInvoker {
         return new IAccessibilityInputMethodSessionInvoker(session, customHandler);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishInput() {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -57,7 +55,6 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void finishInputInternal() {
         try {
             this.mSession.finishInput();
@@ -66,7 +63,6 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSelection(final int oldSelStart, final int oldSelEnd, final int selStart, final int selEnd, final int candidatesStart, final int candidatesEnd) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -81,8 +77,7 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: updateSelectionInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: updateSelectionInternal */
     public void lambda$updateSelection$0(int oldSelStart, int oldSelEnd, int selStart, int selEnd, int candidatesStart, int candidatesEnd) {
         try {
             this.mSession.updateSelection(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
@@ -91,7 +86,6 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateInput(final EditorInfo editorInfo, final IRemoteAccessibilityInputConnection connection, final int sessionId) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -106,8 +100,7 @@ public final class IAccessibilityInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: invalidateInputInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: invalidateInputInternal */
     public void lambda$invalidateInput$1(EditorInfo editorInfo, IRemoteAccessibilityInputConnection connection, int sessionId) {
         try {
             this.mSession.invalidateInput(editorInfo, connection, sessionId);

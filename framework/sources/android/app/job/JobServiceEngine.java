@@ -32,8 +32,9 @@ public abstract class JobServiceEngine {
 
     public abstract boolean onStopJob(JobParameters jobParameters);
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    static final class JobInterface extends IJobService.Stub {
+    public static final class JobInterface extends IJobService.Stub {
         final WeakReference<JobServiceEngine> mService;
 
         JobInterface(JobServiceEngine service) {
@@ -90,8 +91,9 @@ public abstract class JobServiceEngine {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    class JobHandler extends Handler {
+    public class JobHandler extends Handler {
         JobHandler(Looper looper) {
             super(looper);
         }

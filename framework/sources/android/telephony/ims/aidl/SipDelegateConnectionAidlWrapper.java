@@ -32,8 +32,7 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
     private final ISipDelegateMessageCallback.Stub mMessageBinder = new AnonymousClass2();
     private final AtomicReference<ISipDelegate> mDelegateBinder = new AtomicReference<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.aidl.SipDelegateConnectionAidlWrapper$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.aidl.SipDelegateConnectionAidlWrapper$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends ISipDelegateConnectionStateCallback.Stub {
         AnonymousClass1() {
@@ -55,7 +54,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCreated$0() {
             SipDelegateConnectionAidlWrapper.this.mStateCallback.onCreated(SipDelegateConnectionAidlWrapper.this);
         }
@@ -75,7 +73,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFeatureTagStatusChanged$1(DelegateRegistrationState registrationState, List deniedFeatureTags) {
             SipDelegateConnectionAidlWrapper.this.mStateCallback.onFeatureTagStatusChanged(registrationState, new ArraySet(deniedFeatureTags));
         }
@@ -95,7 +92,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onImsConfigurationChanged$2(SipDelegateImsConfiguration registeredSipConfig) {
             SipDelegateConnectionAidlWrapper.this.mStateCallback.onImsConfigurationChanged(registeredSipConfig);
         }
@@ -115,7 +111,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConfigurationChanged$3(SipDelegateConfiguration registeredSipConfig) {
             SipDelegateConnectionAidlWrapper.this.mStateCallback.onConfigurationChanged(registeredSipConfig);
         }
@@ -136,14 +131,12 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDestroyed$4(int reason) {
             SipDelegateConnectionAidlWrapper.this.mStateCallback.onDestroyed(reason);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.aidl.SipDelegateConnectionAidlWrapper$2, reason: invalid class name */
+    /* renamed from: android.telephony.ims.aidl.SipDelegateConnectionAidlWrapper$2 */
     /* loaded from: classes3.dex */
     public class AnonymousClass2 extends ISipDelegateMessageCallback.Stub {
         AnonymousClass2() {
@@ -164,7 +157,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onMessageReceived$0(SipMessage message) {
             SipDelegateConnectionAidlWrapper.this.mMessageCallback.onMessageReceived(message);
         }
@@ -184,7 +176,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onMessageSent$1(String viaTransactionId) {
             SipDelegateConnectionAidlWrapper.this.mMessageCallback.onMessageSent(viaTransactionId);
         }
@@ -204,7 +195,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onMessageSendFailure$2(String viaTransactionId, int reason) {
             SipDelegateConnectionAidlWrapper.this.mMessageCallback.onMessageSendFailure(viaTransactionId, reason);
         }
@@ -277,7 +267,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$binderDied$0() {
         this.mStateCallback.onDestroyed(1);
     }
@@ -294,7 +283,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
         return this.mDelegateBinder.get();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void associateSipDelegate(ISipDelegate c) {
         if (c != null) {
             try {
@@ -306,7 +294,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
         this.mDelegateBinder.set(c);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void invalidateSipDelegateBinder() {
         ISipDelegate oldVal = this.mDelegateBinder.getAndUpdate(new UnaryOperator() { // from class: android.telephony.ims.aidl.SipDelegateConnectionAidlWrapper$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
@@ -323,7 +310,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ISipDelegate lambda$invalidateSipDelegateBinder$1(ISipDelegate unused) {
         return null;
     }
@@ -338,7 +324,6 @@ public class SipDelegateConnectionAidlWrapper implements SipDelegateConnection, 
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyLocalMessageFailedToSend$2(String transactionId, int reason) {
         this.mMessageCallback.onMessageSendFailure(transactionId, reason);
     }

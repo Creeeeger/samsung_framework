@@ -81,7 +81,7 @@ public abstract class ForegroundServiceTypePolicy {
     public @interface ForegroundServicePolicyCheckCode {
     }
 
-    /* renamed from: -$$Nest$smisFgsTypeFgPermissionEnforcementEnabled, reason: not valid java name */
+    /* renamed from: -$$Nest$smisFgsTypeFgPermissionEnforcementEnabled */
     static /* bridge */ /* synthetic */ boolean m290$$Nest$smisFgsTypeFgPermissionEnforcementEnabled() {
         return isFgsTypeFgPermissionEnforcementEnabled();
     }
@@ -172,7 +172,6 @@ public abstract class ForegroundServiceTypePolicy {
             return sb;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void updatePermissionEnforcementFlagIfNecessary(String flagName) {
             String str = this.mPermissionEnforcementFlag;
             if (str == null || !TextUtils.equals(flagName, str)) {

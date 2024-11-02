@@ -16,13 +16,14 @@ public final class HotwordRejectedResult implements Parcelable {
     public static final int CONFIDENCE_LEVEL_MEDIUM = 2;
     public static final int CONFIDENCE_LEVEL_NONE = 0;
     public static final Parcelable.Creator<HotwordRejectedResult> CREATOR = new Parcelable.Creator<HotwordRejectedResult>() { // from class: android.service.voice.HotwordRejectedResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HotwordRejectedResult[] newArray(int size) {
             return new HotwordRejectedResult[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotwordRejectedResult createFromParcel(Parcel in) {
             return new HotwordRejectedResult(in);
@@ -35,12 +36,13 @@ public final class HotwordRejectedResult implements Parcelable {
     public @interface ConfidenceLevel {
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    @interface HotwordConfidenceLevelValue {
+    public @interface HotwordConfidenceLevelValue {
     }
 
-    /* renamed from: -$$Nest$smdefaultConfidenceLevel, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m3985$$Nest$smdefaultConfidenceLevel() {
+    /* renamed from: -$$Nest$smdefaultConfidenceLevel */
+    static /* bridge */ /* synthetic */ int m3984$$Nest$smdefaultConfidenceLevel() {
         return defaultConfidenceLevel();
     }
 
@@ -111,6 +113,23 @@ public final class HotwordRejectedResult implements Parcelable {
         AnnotationValidations.validate((Class<? extends Annotation>) HotwordConfidenceLevelValue.class, (Annotation) null, confidenceLevel);
     }
 
+    /* renamed from: android.service.voice.HotwordRejectedResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HotwordRejectedResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotwordRejectedResult[] newArray(int size) {
+            return new HotwordRejectedResult[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotwordRejectedResult createFromParcel(Parcel in) {
+            return new HotwordRejectedResult(in);
+        }
+    }
+
     /* loaded from: classes3.dex */
     public static final class Builder {
         private long mBuilderFieldsSet = 0;
@@ -128,7 +147,7 @@ public final class HotwordRejectedResult implements Parcelable {
             long j = this.mBuilderFieldsSet | 2;
             this.mBuilderFieldsSet = j;
             if ((j & 1) == 0) {
-                this.mConfidenceLevel = HotwordRejectedResult.m3985$$Nest$smdefaultConfidenceLevel();
+                this.mConfidenceLevel = HotwordRejectedResult.m3984$$Nest$smdefaultConfidenceLevel();
             }
             HotwordRejectedResult o = new HotwordRejectedResult(this.mConfidenceLevel);
             return o;

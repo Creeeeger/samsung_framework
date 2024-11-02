@@ -71,13 +71,11 @@ public final class UpdatableDriverProto {
             return this.versionCode_;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setVersionCode(long value) {
             this.bitField0_ |= 1;
             this.versionCode_ = value;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void clearVersionCode() {
             this.bitField0_ &= -2;
             this.versionCode_ = 0L;
@@ -110,32 +108,27 @@ public final class UpdatableDriverProto {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setPackageNames(int index, String value) {
             value.getClass();
             ensurePackageNamesIsMutable();
             this.packageNames_.set(index, value);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addPackageNames(String value) {
             value.getClass();
             ensurePackageNamesIsMutable();
             this.packageNames_.add(value);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addAllPackageNames(Iterable<String> values) {
             ensurePackageNamesIsMutable();
             AbstractMessageLite.addAll((Iterable) values, (List) this.packageNames_);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void clearPackageNames() {
             this.packageNames_ = GeneratedMessageLite.emptyProtobufList();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addPackageNamesBytes(ByteString value) {
             ensurePackageNamesIsMutable();
             this.packageNames_.add(value.toStringUtf8());
@@ -282,12 +275,11 @@ public final class UpdatableDriverProto {
 
         @Override // com.android.framework.protobuf.GeneratedMessageLite
         protected final Object dynamicMethod(GeneratedMessageLite.MethodToInvoke method, Object arg0, Object arg1) {
-            AnonymousClass1 anonymousClass1 = null;
             switch (AnonymousClass1.$SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[method.ordinal()]) {
                 case 1:
                     return new Denylist();
                 case 2:
-                    return new Builder(anonymousClass1);
+                    return new Builder(null);
                 case 3:
                     Object[] objects = {"bitField0_", "versionCode_", "packageNames_"};
                     return newMessageInfo(DEFAULT_INSTANCE, "\u0001\u0002\u0000\u0001\u0001\u0002\u0002\u0000\u0001\u0000\u0001ဂ\u0000\u0002\u001a", objects);
@@ -329,7 +321,7 @@ public final class UpdatableDriverProto {
         }
     }
 
-    /* renamed from: android.updatabledriver.UpdatableDriverProto$1, reason: invalid class name */
+    /* renamed from: android.updatabledriver.UpdatableDriverProto$1 */
     /* loaded from: classes4.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke;
@@ -408,39 +400,33 @@ public final class UpdatableDriverProto {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setDenylists(int index, Denylist value) {
             value.getClass();
             ensureDenylistsIsMutable();
             this.denylists_.set(index, value);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addDenylists(Denylist value) {
             value.getClass();
             ensureDenylistsIsMutable();
             this.denylists_.add(value);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addDenylists(int index, Denylist value) {
             value.getClass();
             ensureDenylistsIsMutable();
             this.denylists_.add(index, value);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addAllDenylists(Iterable<? extends Denylist> values) {
             ensureDenylistsIsMutable();
             AbstractMessageLite.addAll((Iterable) values, (List) this.denylists_);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void clearDenylists() {
             this.denylists_ = emptyProtobufList();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void removeDenylists(int index) {
             ensureDenylistsIsMutable();
             this.denylists_.remove(index);
@@ -584,12 +570,11 @@ public final class UpdatableDriverProto {
 
         @Override // com.android.framework.protobuf.GeneratedMessageLite
         protected final Object dynamicMethod(GeneratedMessageLite.MethodToInvoke method, Object arg0, Object arg1) {
-            AnonymousClass1 anonymousClass1 = null;
             switch (AnonymousClass1.$SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[method.ordinal()]) {
                 case 1:
                     return new Denylists();
                 case 2:
-                    return new Builder(anonymousClass1);
+                    return new Builder(null);
                 case 3:
                     Object[] objects = {"denylists_", Denylist.class};
                     return newMessageInfo(DEFAULT_INSTANCE, "\u0001\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0001\u0000\u0001\u001b", objects);

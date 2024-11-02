@@ -17,13 +17,14 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class SmsCbMessage implements Parcelable {
     public static final Parcelable.Creator<SmsCbMessage> CREATOR = new Parcelable.Creator<SmsCbMessage>() { // from class: android.telephony.SmsCbMessage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmsCbMessage createFromParcel(Parcel in) {
             return new SmsCbMessage(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsCbMessage[] newArray(int size) {
             return new SmsCbMessage[size];
@@ -156,6 +157,23 @@ public final class SmsCbMessage implements Parcelable {
         dest.writeInt(this.mMaximumWaitTimeSec);
         dest.writeInt(this.mSlotIndex);
         dest.writeInt(this.mSubId);
+    }
+
+    /* renamed from: android.telephony.SmsCbMessage$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmsCbMessage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsCbMessage createFromParcel(Parcel in) {
+            return new SmsCbMessage(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsCbMessage[] newArray(int size) {
+            return new SmsCbMessage[size];
+        }
     }
 
     public int getGeographicalScope() {

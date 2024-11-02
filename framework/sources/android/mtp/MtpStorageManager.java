@@ -59,7 +59,6 @@ public class MtpStorageManager {
         public abstract void sendObjectRemoved(int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public enum MtpObjectState {
         NORMAL,
@@ -70,7 +69,6 @@ public class MtpStorageManager {
         FROZEN_ONESHOT_DEL
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public enum MtpOperation {
         NONE,
@@ -80,7 +78,6 @@ public class MtpStorageManager {
         DELETE
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class MtpObjectObserver extends FileObserver {
         MtpObject mObject;
@@ -90,8 +87,14 @@ public class MtpStorageManager {
             this.mObject = object;
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:29:0x0082, code lost:            r5.this$0.sDebugLog("Object was null in event", r7);     */
-        /* JADX WARN: Code restructure failed: missing block: B:31:0x008a, code lost:            return;     */
+        /* JADX WARN: Code restructure failed: missing block: B:29:0x0082, code lost:
+        
+            android.mtp.MtpStorageManager.this.sDebugLog("Object was null in event", r7);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:31:0x008a, code lost:
+        
+            return;
+         */
         @Override // android.os.FileObserver
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -110,7 +113,7 @@ public class MtpStorageManager {
             L10:
                 android.mtp.MtpStorageManager$MtpObject r1 = r5.mObject     // Catch: java.lang.Throwable -> Lb0
                 android.mtp.MtpStorageManager$MtpObject r1 = android.mtp.MtpStorageManager.MtpObject.m2931$$Nest$mgetChild(r1, r7)     // Catch: java.lang.Throwable -> Lb0
-                r2 = r6 & 128(0x80, float:1.8E-43)
+                r2 = r6 & 128(0x80, float:1.794E-43)
                 if (r2 != 0) goto L98
                 r2 = r6 & 256(0x100, float:3.59E-43)
                 if (r2 == 0) goto L20
@@ -118,7 +121,7 @@ public class MtpStorageManager {
             L20:
                 r2 = r6 & 64
                 if (r2 != 0) goto L80
-                r2 = r6 & 512(0x200, float:7.17E-43)
+                r2 = r6 & 512(0x200, float:7.175E-43)
                 if (r2 == 0) goto L29
                 goto L80
             L29:
@@ -308,22 +311,18 @@ public class MtpStorageManager {
             return getPath().toString().startsWith("/storage/emulated/0/SmartSwitch/tmp") || getPath().toString().startsWith("/storage/emulated/0/Android/");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setName(String name) {
             this.mName = name;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setId(int id) {
             this.mId = id;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean isVisited() {
             return this.mVisited;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setParent(MtpObject parent) {
             if (getStorageId() != parent.getStorageId()) {
                 this.mStorage = (MtpStorage) Preconditions.checkNotNull(parent.getStorage());
@@ -335,7 +334,6 @@ public class MtpStorageManager {
             return this.mStorage;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setDir(boolean dir) {
             if (dir != this.mIsDir) {
                 this.mIsDir = dir;
@@ -343,17 +341,14 @@ public class MtpStorageManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setVisited(boolean visited) {
             this.mVisited = visited;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public MtpObjectState getState() {
             return this.mState;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setState(MtpObjectState state) {
             this.mState = state;
             if (state == MtpObjectState.NORMAL) {
@@ -361,47 +356,38 @@ public class MtpStorageManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public MtpOperation getOperation() {
             return this.mOp;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setOperation(MtpOperation op) {
             this.mOp = op;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public FileObserver getObserver() {
             return this.mObserver;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setObserver(FileObserver observer) {
             this.mObserver = observer;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addChild(MtpObject child) {
             this.mChildren.put(child.getName(), child);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public MtpObject getChild(String name) {
             return this.mChildren.get(name);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Collection<MtpObject> getChildren() {
             return this.mChildren.values();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean exists() {
             return getPath().toFile().exists();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public MtpObject copy(boolean recursive) {
             MtpObject copy = new MtpObject(this.mName, this.mId, this.mStorage, this.mParent, this.mIsDir);
             copy.mIsDir = this.mIsDir;
@@ -427,7 +413,6 @@ public class MtpStorageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0() {
         while (this.mCheckConsistency) {
             try {
@@ -837,7 +822,6 @@ public class MtpStorageManager {
         throw new UnsupportedOperationException("Method not decompiled: android.mtp.MtpStorageManager.removeObjectFromCache(android.mtp.MtpStorageManager$MtpObject, boolean, boolean):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void handleAddedObject(MtpObject parent, String path, boolean isDir) {
         MtpOperation op = MtpOperation.NONE;
         MtpObject obj = parent.getChild(path);
@@ -919,8 +903,7 @@ public class MtpStorageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.mtp.MtpStorageManager$1, reason: invalid class name */
+    /* renamed from: android.mtp.MtpStorageManager$1 */
     /* loaded from: classes2.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$mtp$MtpStorageManager$MtpObjectState;
@@ -955,7 +938,6 @@ public class MtpStorageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void handleRemovedObject(MtpObject obj) {
         MtpObjectState state = obj.getState();
         MtpOperation op = obj.getOperation();
@@ -988,7 +970,6 @@ public class MtpStorageManager {
         Log.i(TAG, state + " transitioned to " + obj.getState() + " in op " + op);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void handleChangedObject(MtpObject parent, String path) {
         MtpOperation mtpOperation = MtpOperation.NONE;
         MtpObject obj = parent.getChild(path);
@@ -1438,7 +1419,6 @@ public class MtpStorageManager {
         return ret;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sDebugLog(String str, String path) {
         try {
             Log.i(TAG, str + " : " + Base64.encodeToString(path.getBytes("UTF-8"), 2));
@@ -1446,7 +1426,6 @@ public class MtpStorageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sDebugLog(String str, Path path) {
         try {
             Log.i(TAG, str + " : " + Base64.encodeToString(path.toString().getBytes("UTF-8"), 2));

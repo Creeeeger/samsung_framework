@@ -158,7 +158,6 @@ public class RatingBar extends AbsSeekBar {
         return new RectShape();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar, android.widget.ProgressBar
     public void onProgressRefresh(float scale, boolean fromUser, int progress) {
         super.onProgressRefresh(scale, fromUser, progress);
@@ -177,7 +176,6 @@ public class RatingBar extends AbsSeekBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsSeekBar, android.widget.ProgressBar, android.view.View
     public synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -187,14 +185,12 @@ public class RatingBar extends AbsSeekBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public void onStartTrackingTouch() {
         this.mProgressOnStartTracking = getProgress();
         super.onStartTrackingTouch();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public void onStopTrackingTouch() {
         super.onStopTrackingTouch();
@@ -203,7 +199,6 @@ public class RatingBar extends AbsSeekBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public void onKeyChange() {
         super.onKeyChange();
@@ -243,7 +238,6 @@ public class RatingBar extends AbsSeekBar {
         info.setStateDescription(PluralsMessageFormatter.format(getContext().getResources(), params, R.string.rating_label));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsSeekBar
     public boolean canUserSetProgress() {
         return super.canUserSetProgress() && !isIndicator();

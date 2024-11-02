@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class StorageHealthCheckParams implements Parcelable {
     public static final Parcelable.Creator<StorageHealthCheckParams> CREATOR = new Parcelable.Creator<StorageHealthCheckParams>() { // from class: android.os.incremental.StorageHealthCheckParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StorageHealthCheckParams createFromParcel(Parcel _aidl_source) {
             StorageHealthCheckParams _aidl_out = new StorageHealthCheckParams();
@@ -15,7 +17,6 @@ public class StorageHealthCheckParams implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StorageHealthCheckParams[] newArray(int _aidl_size) {
             return new StorageHealthCheckParams[_aidl_size];
@@ -24,6 +25,25 @@ public class StorageHealthCheckParams implements Parcelable {
     public int blockedTimeoutMs = 0;
     public int unhealthyTimeoutMs = 0;
     public int unhealthyMonitoringMs = 0;
+
+    /* renamed from: android.os.incremental.StorageHealthCheckParams$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StorageHealthCheckParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StorageHealthCheckParams createFromParcel(Parcel _aidl_source) {
+            StorageHealthCheckParams _aidl_out = new StorageHealthCheckParams();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StorageHealthCheckParams[] newArray(int _aidl_size) {
+            return new StorageHealthCheckParams[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

@@ -177,7 +177,6 @@ public class ScaleAnimation extends Animation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.Animation
     public void applyTransformation(float interpolatedTime, Transformation t) {
         float sx = 1.0f;

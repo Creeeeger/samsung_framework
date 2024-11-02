@@ -242,9 +242,10 @@ public class Matrix4 {
         return this;
     }
 
-    /* renamed from: com.samsung.vekit.Common.Object.Matrix4$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.vekit.Common.Object.Matrix4$1 */
     /* loaded from: classes6.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$AxisType;
 
         static {

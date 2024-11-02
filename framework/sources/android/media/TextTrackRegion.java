@@ -1,8 +1,9 @@
 package android.media;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: WebVttRenderer.java */
 /* loaded from: classes2.dex */
-class TextTrackRegion {
+public class TextTrackRegion {
     static final int SCROLL_VALUE_NONE = 300;
     static final int SCROLL_VALUE_SCROLL_UP = 301;
     String mId = "";

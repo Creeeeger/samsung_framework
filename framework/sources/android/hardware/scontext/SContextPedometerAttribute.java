@@ -15,7 +15,6 @@ public class SContextPedometerAttribute extends SContextAttribute {
     private static int MODE_USER_INFO = 0;
     private static int MODE_EXERCISE = 1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextPedometerAttribute() {
         this.mGender = 1;
         this.mHeight = 170.0d;

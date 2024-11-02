@@ -144,8 +144,9 @@ public interface ITransportSelectorCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ITransportSelectorCallback {
+        public static class Proxy implements ITransportSelectorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

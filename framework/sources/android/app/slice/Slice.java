@@ -18,13 +18,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class Slice implements Parcelable {
     public static final Parcelable.Creator<Slice> CREATOR = new Parcelable.Creator<Slice>() { // from class: android.app.slice.Slice.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Slice createFromParcel(Parcel in) {
             return new Slice(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Slice[] newArray(int size) {
             return new Slice[size];
@@ -245,6 +246,23 @@ public final class Slice implements Parcelable {
             ArrayList<SliceItem> arrayList = this.mItems;
             ArrayList<String> arrayList2 = this.mHints;
             return new Slice(arrayList, (String[]) arrayList2.toArray(new String[arrayList2.size()]), this.mUri, this.mSpec);
+        }
+    }
+
+    /* renamed from: android.app.slice.Slice$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Slice> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Slice createFromParcel(Parcel in) {
+            return new Slice(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Slice[] newArray(int size) {
+            return new Slice[size];
         }
     }
 

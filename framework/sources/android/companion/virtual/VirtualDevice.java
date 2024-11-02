@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class VirtualDevice implements Parcelable {
     public static final Parcelable.Creator<VirtualDevice> CREATOR = new Parcelable.Creator<VirtualDevice>() { // from class: android.companion.virtual.VirtualDevice.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualDevice createFromParcel(Parcel in) {
             return new VirtualDevice(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualDevice[] newArray(int size) {
             return new VirtualDevice[size];
@@ -22,6 +23,10 @@ public final class VirtualDevice implements Parcelable {
     };
     private final int mId;
     private final String mName;
+
+    /* synthetic */ VirtualDevice(Parcel parcel, VirtualDeviceIA virtualDeviceIA) {
+        this(parcel);
+    }
 
     public VirtualDevice(int id, String name) {
         if (id <= 0) {
@@ -72,5 +77,22 @@ public final class VirtualDevice implements Parcelable {
 
     public String toString() {
         return "VirtualDevice( mId=" + this.mId + " mName=" + this.mName + NavigationBarInflaterView.KEY_CODE_END;
+    }
+
+    /* renamed from: android.companion.virtual.VirtualDevice$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualDevice> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualDevice createFromParcel(Parcel in) {
+            return new VirtualDevice(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualDevice[] newArray(int size) {
+            return new VirtualDevice[size];
+        }
     }
 }

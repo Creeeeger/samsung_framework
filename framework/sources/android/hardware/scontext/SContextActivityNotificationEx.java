@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextActivityNotificationEx extends SContextEventContext {
     public static final Parcelable.Creator<SContextActivityNotificationEx> CREATOR = new Parcelable.Creator<SContextActivityNotificationEx>() { // from class: android.hardware.scontext.SContextActivityNotificationEx.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextActivityNotificationEx createFromParcel(Parcel in) {
             return new SContextActivityNotificationEx(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityNotificationEx[] newArray(int size) {
             return new SContextActivityNotificationEx[size];
@@ -22,7 +23,6 @@ public class SContextActivityNotificationEx extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextActivityNotificationEx() {
         this.mContext = new Bundle();
     }
@@ -55,5 +55,22 @@ public class SContextActivityNotificationEx extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextActivityNotificationEx$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextActivityNotificationEx> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextActivityNotificationEx createFromParcel(Parcel in) {
+            return new SContextActivityNotificationEx(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextActivityNotificationEx[] newArray(int size) {
+            return new SContextActivityNotificationEx[size];
+        }
     }
 }

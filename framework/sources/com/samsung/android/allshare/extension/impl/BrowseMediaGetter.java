@@ -17,7 +17,6 @@ public class BrowseMediaGetter implements IMediaGetter, Provider.IProviderBrowse
     private static final String TAG_CLASS = "BrowseMediaGetter";
     private ArrayList<FlatProviderConnectionInfo> mConns = new ArrayList<>();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class FlatProviderConnectionInfo implements FlatProvider.IFlatProviderConnection {
         private FlatProvider.IFlatProviderConnection mConn;

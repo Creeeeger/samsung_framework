@@ -50,10 +50,22 @@ public abstract class BasicShellCommandHandler {
         this.mInputStream = null;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0029, code lost:            if (r2 != null) goto L14;     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x002b, code lost:            r2.flush();     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0064, code lost:            return r1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0061, code lost:            if (r2 == null) goto L23;     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0029, code lost:
+    
+        if (r2 != null) goto L50;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x002b, code lost:
+    
+        r2.flush();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0064, code lost:
+    
+        return r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0061, code lost:
+    
+        if (r2 == null) goto L59;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

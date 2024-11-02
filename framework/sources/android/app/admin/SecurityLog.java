@@ -102,13 +102,14 @@ public class SecurityLog {
     /* loaded from: classes.dex */
     public static final class SecurityEvent implements Parcelable {
         public static final Parcelable.Creator<SecurityEvent> CREATOR = new Parcelable.Creator<SecurityEvent>() { // from class: android.app.admin.SecurityLog.SecurityEvent.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SecurityEvent createFromParcel(Parcel source) {
                 return new SecurityEvent(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SecurityEvent[] newArray(int size) {
                 return new SecurityEvent[size];
@@ -288,6 +289,23 @@ public class SecurityLog {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeLong(this.mId);
             dest.writeByteArray(this.mEvent.getBytes());
+        }
+
+        /* renamed from: android.app.admin.SecurityLog$SecurityEvent$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SecurityEvent> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SecurityEvent createFromParcel(Parcel source) {
+                return new SecurityEvent(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SecurityEvent[] newArray(int size) {
+                return new SecurityEvent[size];
+            }
         }
 
         public boolean equals(Object o) {

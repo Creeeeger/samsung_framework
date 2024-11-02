@@ -9,7 +9,9 @@ import android.window.ITransactionReadyCallback;
 /* loaded from: classes4.dex */
 public class AddToSurfaceSyncGroupResult implements Parcelable {
     public static final Parcelable.Creator<AddToSurfaceSyncGroupResult> CREATOR = new Parcelable.Creator<AddToSurfaceSyncGroupResult>() { // from class: android.window.AddToSurfaceSyncGroupResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AddToSurfaceSyncGroupResult createFromParcel(Parcel _aidl_source) {
             AddToSurfaceSyncGroupResult _aidl_out = new AddToSurfaceSyncGroupResult();
@@ -17,7 +19,6 @@ public class AddToSurfaceSyncGroupResult implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AddToSurfaceSyncGroupResult[] newArray(int _aidl_size) {
             return new AddToSurfaceSyncGroupResult[_aidl_size];
@@ -25,6 +26,25 @@ public class AddToSurfaceSyncGroupResult implements Parcelable {
     };
     public ISurfaceSyncGroup mParentSyncGroup;
     public ITransactionReadyCallback mTransactionReadyCallback;
+
+    /* renamed from: android.window.AddToSurfaceSyncGroupResult$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AddToSurfaceSyncGroupResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AddToSurfaceSyncGroupResult createFromParcel(Parcel _aidl_source) {
+            AddToSurfaceSyncGroupResult _aidl_out = new AddToSurfaceSyncGroupResult();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AddToSurfaceSyncGroupResult[] newArray(int _aidl_size) {
+            return new AddToSurfaceSyncGroupResult[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

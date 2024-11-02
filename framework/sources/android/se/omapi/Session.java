@@ -14,7 +14,6 @@ public final class Session {
     private final SEService mService;
     private final ISecureElementSession mSession;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Session(SEService service, ISecureElementSession session, Reader reader) {
         if (service == null || reader == null || session == null) {
             throw new IllegalArgumentException("Parameters cannot be null");

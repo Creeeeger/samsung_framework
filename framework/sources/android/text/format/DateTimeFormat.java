@@ -11,8 +11,9 @@ import android.util.LruCache;
 class DateTimeFormat {
     private static final FormatterCache CACHED_FORMATTERS = new FormatterCache();
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    static class FormatterCache extends LruCache<String, android.icu.text.DateFormat> {
+    public static class FormatterCache extends LruCache<String, android.icu.text.DateFormat> {
         FormatterCache() {
             super(8);
         }

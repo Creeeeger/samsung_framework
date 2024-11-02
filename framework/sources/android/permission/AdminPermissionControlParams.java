@@ -9,7 +9,9 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class AdminPermissionControlParams implements Parcelable {
     public static final Parcelable.Creator<AdminPermissionControlParams> CREATOR = new Parcelable.Creator<AdminPermissionControlParams>() { // from class: android.permission.AdminPermissionControlParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AdminPermissionControlParams createFromParcel(Parcel in) {
             String granteePackageName = in.readString();
@@ -19,7 +21,6 @@ public final class AdminPermissionControlParams implements Parcelable {
             return new AdminPermissionControlParams(granteePackageName, permission, grantState, mayAdminGrantSensorPermissions);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AdminPermissionControlParams[] newArray(int size) {
             return new AdminPermissionControlParams[size];
@@ -42,6 +43,27 @@ public final class AdminPermissionControlParams implements Parcelable {
         this.mPermission = permission;
         this.mGrantState = grantState;
         this.mCanAdminGrantSensorsPermissions = canAdminGrantSensorsPermissions;
+    }
+
+    /* renamed from: android.permission.AdminPermissionControlParams$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AdminPermissionControlParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AdminPermissionControlParams createFromParcel(Parcel in) {
+            String granteePackageName = in.readString();
+            String permission = in.readString();
+            int grantState = in.readInt();
+            boolean mayAdminGrantSensorPermissions = in.readBoolean();
+            return new AdminPermissionControlParams(granteePackageName, permission, grantState, mayAdminGrantSensorPermissions);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AdminPermissionControlParams[] newArray(int size) {
+            return new AdminPermissionControlParams[size];
+        }
     }
 
     @Override // android.os.Parcelable

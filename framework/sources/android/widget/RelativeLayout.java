@@ -217,7 +217,6 @@ public class RelativeLayout extends ViewGroup {
         graph.getSortedViews(this.mSortedHorizontalChildren, RULES_HORIZONTAL);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int i;
@@ -817,7 +816,6 @@ public class RelativeLayout extends ViewGroup {
         params.mBottom = top + childHeight;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
@@ -840,7 +838,6 @@ public class RelativeLayout extends ViewGroup {
         return new LayoutParams(-2, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
@@ -885,6 +882,10 @@ public class RelativeLayout extends ViewGroup {
 
     /* loaded from: classes4.dex */
     private class TopToBottomLeftToRightComparator implements Comparator<View> {
+        /* synthetic */ TopToBottomLeftToRightComparator(RelativeLayout relativeLayout, TopToBottomLeftToRightComparatorIA topToBottomLeftToRightComparatorIA) {
+            this();
+        }
+
         private TopToBottomLeftToRightComparator() {
         }
 
@@ -1214,7 +1215,6 @@ public class RelativeLayout extends ViewGroup {
             return (this.mNeedsLayoutResolution || hasRelativeRules()) && (this.mRulesChanged || layoutDirection != getLayoutDirection());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup.MarginLayoutParams, android.view.ViewGroup.LayoutParams
         public void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
@@ -1309,12 +1309,15 @@ public class RelativeLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class DependencyGraph {
         private SparseArray<Node> mKeyNodes;
         private ArrayList<Node> mNodes;
         private ArrayDeque<Node> mRoots;
+
+        /* synthetic */ DependencyGraph(DependencyGraphIA dependencyGraphIA) {
+            this();
+        }
 
         private DependencyGraph() {
             this.mNodes = new ArrayList<>();
@@ -1404,7 +1407,6 @@ public class RelativeLayout extends ViewGroup {
             return roots;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public static class Node {
             private static final int POOL_LIMIT = 100;

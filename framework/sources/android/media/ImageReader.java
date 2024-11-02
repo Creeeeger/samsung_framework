@@ -56,6 +56,14 @@ public class ImageReader implements AutoCloseable {
         void onImageAvailable(ImageReader imageReader);
     }
 
+    /* synthetic */ ImageReader(int i, int i2, int i3, int i4, long j, MultiResolutionImageReader multiResolutionImageReader, ImageReaderIA imageReaderIA) {
+        this(i, i2, i3, i4, j, multiResolutionImageReader);
+    }
+
+    /* synthetic */ ImageReader(int i, int i2, int i3, long j, MultiResolutionImageReader multiResolutionImageReader, int i4, int i5, ImageReaderIA imageReaderIA) {
+        this(i, i2, i3, j, multiResolutionImageReader, i4, i5);
+    }
+
     private static native void nativeClassInit();
 
     private native synchronized void nativeClose();
@@ -251,7 +259,6 @@ public class ImageReader implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void releaseImage(Image i) {
         if (!(i instanceof SurfaceImage)) {
             throw new IllegalArgumentException("This image was not produced by an ImageReader");
@@ -363,10 +370,10 @@ public class ImageReader implements AutoCloseable {
 
     private static void postEventFromNative(Object selfRef) {
         Executor executor;
-        final OnImageAvailableListener listener;
+        OnImageAvailableListener listener;
         boolean isReaderValid;
         WeakReference<ImageReader> weakSelf = (WeakReference) selfRef;
-        final ImageReader ir = weakSelf.get();
+        ImageReader ir = weakSelf.get();
         if (ir == null) {
             return;
         }
@@ -379,11 +386,32 @@ public class ImageReader implements AutoCloseable {
         }
         if (executor != null && listener != null && isReaderValid) {
             executor.execute(new Runnable() { // from class: android.media.ImageReader.1
+                final /* synthetic */ ImageReader val$ir;
+
+                AnonymousClass1(ImageReader ir2) {
+                    ir = ir2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     OnImageAvailableListener.this.onImageAvailable(ir);
                 }
             });
+        }
+    }
+
+    /* renamed from: android.media.ImageReader$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Runnable {
+        final /* synthetic */ ImageReader val$ir;
+
+        AnonymousClass1(ImageReader ir2) {
+            ir = ir2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            OnImageAvailableListener.this.onImageAvailable(ir);
         }
     }
 
@@ -443,7 +471,6 @@ public class ImageReader implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class ListenerHandler extends Handler {
         public ListenerHandler(Looper looper) {
@@ -451,7 +478,6 @@ public class ImageReader implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class HandlerExecutor implements Executor {
         private final Handler mHandler;
@@ -466,7 +492,6 @@ public class ImageReader implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class SurfaceImage extends Image {
         private int mDataSpace;
@@ -632,27 +657,23 @@ public class ImageReader implements AutoCloseable {
             return this.mIsDetached.get();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.media.Image
         public ImageReader getOwner() {
             throwISEIfImageIsInvalid();
             return ImageReader.this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.media.Image
         public long getNativeContext() {
             throwISEIfImageIsInvalid();
             return this.mNativeBuffer;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setDetached(boolean detached) {
             throwISEIfImageIsInvalid();
             this.mIsDetached.getAndSet(detached);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void clearSurfacePlanes() {
             if (this.mIsImageValid && this.mPlanes != null) {
                 int i = 0;
@@ -672,7 +693,6 @@ public class ImageReader implements AutoCloseable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public class SurfacePlane extends Image.Plane {
             private ByteBuffer mBuffer;
@@ -710,7 +730,6 @@ public class ImageReader implements AutoCloseable {
                 return this.mRowStride;
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public void clearBuffer() {
                 ByteBuffer byteBuffer = this.mBuffer;
                 if (byteBuffer == null) {

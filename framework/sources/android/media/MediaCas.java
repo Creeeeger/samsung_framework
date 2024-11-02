@@ -61,8 +61,9 @@ public final class MediaCas implements AutoCloseable {
     public static final int SESSION_USAGE_TIMESHIFT = 3;
     private static final String TAG = "MediaCas";
     private static final Singleton<IMediaCasService> sService = new Singleton<IMediaCasService>() { // from class: android.media.MediaCas.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.util.Singleton
         public IMediaCasService create() {
             try {
@@ -79,8 +80,9 @@ public final class MediaCas implements AutoCloseable {
         }
     };
     private static final Singleton<android.hardware.cas.V1_0.IMediaCasService> sServiceHidl = new Singleton<android.hardware.cas.V1_0.IMediaCasService>() { // from class: android.media.MediaCas.2
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.util.Singleton
         public android.hardware.cas.V1_0.IMediaCasService create() {
             try {
@@ -125,6 +127,9 @@ public final class MediaCas implements AutoCloseable {
     private TunerResourceManager mTunerResourceManager = null;
     private final Map<Session, Integer> mSessionMap = new HashMap();
     private final ICasListener.Stub mBinder = new ICasListener.Stub() { // from class: android.media.MediaCas.3
+        AnonymousClass3() {
+        }
+
         @Override // android.hardware.cas.ICasListener
         public void onEvent(int event, int arg, byte[] data) throws RemoteException {
             if (MediaCas.this.mEventHandler != null) {
@@ -165,6 +170,9 @@ public final class MediaCas implements AutoCloseable {
         }
     };
     private final ICasListener.Stub mBinderHidl = new ICasListener.Stub() { // from class: android.media.MediaCas.4
+        AnonymousClass4() {
+        }
+
         @Override // android.hardware.cas.V1_0.ICasListener
         public void onEvent(int event, int arg, ArrayList<Byte> data) throws RemoteException {
             if (MediaCas.this.mEventHandler != null) {
@@ -195,6 +203,9 @@ public final class MediaCas implements AutoCloseable {
         }
     };
     private final TunerResourceManager.ResourcesReclaimListener mResourceListener = new TunerResourceManager.ResourcesReclaimListener() { // from class: android.media.MediaCas.5
+        AnonymousClass5() {
+        }
+
         @Override // android.media.tv.tunerresourcemanager.TunerResourceManager.ResourcesReclaimListener
         public void onReclaimResources() {
             synchronized (MediaCas.this.mSessionMap) {
@@ -222,12 +233,68 @@ public final class MediaCas implements AutoCloseable {
     public @interface SessionUsage {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.MediaCas$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends Singleton<IMediaCasService> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.Singleton
+        public IMediaCasService create() {
+            try {
+                Log.d(MediaCas.TAG, "Trying to get AIDL service");
+                IMediaCasService serviceAidl = IMediaCasService.Stub.asInterface(ServiceManager.waitForDeclaredService(IMediaCasService.DESCRIPTOR + "/default"));
+                if (serviceAidl != null) {
+                    return serviceAidl;
+                }
+                return null;
+            } catch (Exception e) {
+                Log.d(MediaCas.TAG, "Failed to get cas AIDL service");
+                return null;
+            }
+        }
+    }
+
+    /* renamed from: android.media.MediaCas$2 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass2 extends Singleton<android.hardware.cas.V1_0.IMediaCasService> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.util.Singleton
+        public android.hardware.cas.V1_0.IMediaCasService create() {
+            try {
+                Log.d(MediaCas.TAG, "Trying to get cas@1.2 service");
+                android.hardware.cas.V1_2.IMediaCasService serviceV12 = android.hardware.cas.V1_2.IMediaCasService.getService(true);
+                if (serviceV12 != null) {
+                    return serviceV12;
+                }
+            } catch (Exception e) {
+                Log.d(MediaCas.TAG, "Failed to get cas@1.2 service");
+            }
+            try {
+                Log.d(MediaCas.TAG, "Trying to get cas@1.1 service");
+                android.hardware.cas.V1_1.IMediaCasService serviceV11 = android.hardware.cas.V1_1.IMediaCasService.getService(true);
+                if (serviceV11 != null) {
+                    return serviceV11;
+                }
+            } catch (Exception e2) {
+                Log.d(MediaCas.TAG, "Failed to get cas@1.1 service");
+            }
+            try {
+                Log.d(MediaCas.TAG, "Trying to get cas@1.0 service");
+                return android.hardware.cas.V1_0.IMediaCasService.getService(true);
+            } catch (Exception e3) {
+                Log.d(MediaCas.TAG, "Failed to get cas@1.0 service");
+                return null;
+            }
+        }
+    }
+
     public static IMediaCasService getService() {
         return sService.get();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static android.hardware.cas.V1_0.IMediaCasService getServiceHidl() {
         return sServiceHidl.get();
     }
@@ -238,7 +305,6 @@ public final class MediaCas implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cleanupAndRethrowIllegalState() {
         this.mICas = null;
         this.mICasHidl = null;
@@ -247,7 +313,6 @@ public final class MediaCas implements AutoCloseable {
         throw new IllegalStateException();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class EventHandler extends Handler {
         private static final String DATA_KEY = "data";
@@ -290,6 +355,106 @@ public final class MediaCas implements AutoCloseable {
         }
     }
 
+    /* renamed from: android.media.MediaCas$3 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass3 extends ICasListener.Stub {
+        AnonymousClass3() {
+        }
+
+        @Override // android.hardware.cas.ICasListener
+        public void onEvent(int event, int arg, byte[] data) throws RemoteException {
+            if (MediaCas.this.mEventHandler != null) {
+                MediaCas.this.mEventHandler.sendMessage(MediaCas.this.mEventHandler.obtainMessage(0, event, arg, data));
+            }
+        }
+
+        @Override // android.hardware.cas.ICasListener
+        public void onSessionEvent(byte[] sessionId, int event, int arg, byte[] data) throws RemoteException {
+            if (MediaCas.this.mEventHandler != null) {
+                Message msg = MediaCas.this.mEventHandler.obtainMessage();
+                msg.what = 1;
+                msg.arg1 = event;
+                msg.arg2 = arg;
+                Bundle bundle = new Bundle();
+                bundle.putByteArray("sessionId", sessionId);
+                bundle.putByteArray("data", data);
+                msg.setData(bundle);
+                MediaCas.this.mEventHandler.sendMessage(msg);
+            }
+        }
+
+        @Override // android.hardware.cas.ICasListener
+        public void onStatusUpdate(byte status, int arg) throws RemoteException {
+            if (MediaCas.this.mEventHandler != null) {
+                MediaCas.this.mEventHandler.sendMessage(MediaCas.this.mEventHandler.obtainMessage(2, status, arg));
+            }
+        }
+
+        @Override // android.hardware.cas.ICasListener
+        public synchronized String getInterfaceHash() throws RemoteException {
+            return "bc51d8d70a55ec4723d3f73d0acf7003306bf69f";
+        }
+
+        @Override // android.hardware.cas.ICasListener
+        public int getInterfaceVersion() throws RemoteException {
+            return 1;
+        }
+    }
+
+    /* renamed from: android.media.MediaCas$4 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass4 extends ICasListener.Stub {
+        AnonymousClass4() {
+        }
+
+        @Override // android.hardware.cas.V1_0.ICasListener
+        public void onEvent(int event, int arg, ArrayList<Byte> data) throws RemoteException {
+            if (MediaCas.this.mEventHandler != null) {
+                MediaCas.this.mEventHandler.sendMessage(MediaCas.this.mEventHandler.obtainMessage(0, event, arg, MediaCas.this.toBytes(data)));
+            }
+        }
+
+        @Override // android.hardware.cas.V1_1.ICasListener
+        public void onSessionEvent(ArrayList<Byte> sessionId, int event, int arg, ArrayList<Byte> data) throws RemoteException {
+            if (MediaCas.this.mEventHandler != null) {
+                Message msg = MediaCas.this.mEventHandler.obtainMessage();
+                msg.what = 1;
+                msg.arg1 = event;
+                msg.arg2 = arg;
+                Bundle bundle = new Bundle();
+                bundle.putByteArray("sessionId", MediaCas.this.toBytes(sessionId));
+                bundle.putByteArray("data", MediaCas.this.toBytes(data));
+                msg.setData(bundle);
+                MediaCas.this.mEventHandler.sendMessage(msg);
+            }
+        }
+
+        @Override // android.hardware.cas.V1_2.ICasListener
+        public void onStatusUpdate(byte status, int arg) throws RemoteException {
+            if (MediaCas.this.mEventHandler != null) {
+                MediaCas.this.mEventHandler.sendMessage(MediaCas.this.mEventHandler.obtainMessage(2, status, arg));
+            }
+        }
+    }
+
+    /* renamed from: android.media.MediaCas$5 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass5 extends TunerResourceManager.ResourcesReclaimListener {
+        AnonymousClass5() {
+        }
+
+        @Override // android.media.tv.tunerresourcemanager.TunerResourceManager.ResourcesReclaimListener
+        public void onReclaimResources() {
+            synchronized (MediaCas.this.mSessionMap) {
+                List<Session> sessionList = new ArrayList<>(MediaCas.this.mSessionMap.keySet());
+                for (Session casSession : sessionList) {
+                    casSession.close();
+                }
+            }
+            MediaCas.this.mEventHandler.sendMessage(MediaCas.this.mEventHandler.obtainMessage(3));
+        }
+    }
+
     /* loaded from: classes2.dex */
     public static class PluginDescriptor {
         private final int mCASystemId;
@@ -323,7 +488,6 @@ public final class MediaCas implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ArrayList<Byte> toByteArray(byte[] data, int offset, int length) {
         ArrayList<Byte> byteArray = new ArrayList<>(length);
         for (int i = 0; i < length; i++) {
@@ -332,7 +496,6 @@ public final class MediaCas implements AutoCloseable {
         return byteArray;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ArrayList<Byte> toByteArray(byte[] data) {
         if (data == null) {
             return new ArrayList<>();
@@ -340,7 +503,6 @@ public final class MediaCas implements AutoCloseable {
         return toByteArray(data, 0, data.length);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public byte[] toBytes(ArrayList<Byte> byteArray) {
         byte[] data = null;
         if (byteArray != null) {
@@ -462,7 +624,6 @@ public final class MediaCas implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Session createFromSessionId(byte[] sessionId) {
         if (sessionId == null || sessionId.length == 0) {
             return null;
@@ -601,7 +762,6 @@ public final class MediaCas implements AutoCloseable {
         registerClient(context, tvInputServiceSessionId, priorityHint);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IHwBinder getBinder() {
         if (this.mICas != null) {
             return null;
@@ -681,6 +841,10 @@ public final class MediaCas implements AutoCloseable {
         public Session mSession;
         public int mStatus;
 
+        /* synthetic */ OpenSessionCallback(MediaCas mediaCas, OpenSessionCallbackIA openSessionCallbackIA) {
+            this();
+        }
+
         private OpenSessionCallback() {
         }
 
@@ -696,6 +860,10 @@ public final class MediaCas implements AutoCloseable {
     private class OpenSession_1_2_Callback implements ICas.openSession_1_2Callback {
         public Session mSession;
         public int mStatus;
+
+        /* synthetic */ OpenSession_1_2_Callback(MediaCas mediaCas, OpenSession_1_2_CallbackIA openSession_1_2_CallbackIA) {
+            this();
+        }
 
         private OpenSession_1_2_Callback() {
         }
@@ -730,7 +898,6 @@ public final class MediaCas implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeSessionFromResourceMap(Session session) {
         synchronized (this.mSessionMap) {
             if (this.mSessionMap.get(session) != null) {

@@ -15,13 +15,14 @@ public final class AppTargetEvent implements Parcelable {
     public static final int ACTION_UNDISMISS = 5;
     public static final int ACTION_UNPIN = 4;
     public static final Parcelable.Creator<AppTargetEvent> CREATOR = new Parcelable.Creator<AppTargetEvent>() { // from class: android.app.prediction.AppTargetEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AppTargetEvent createFromParcel(Parcel parcel) {
             return new AppTargetEvent(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppTargetEvent[] newArray(int size) {
             return new AppTargetEvent[size];
@@ -34,6 +35,14 @@ public final class AppTargetEvent implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface ActionType {
+    }
+
+    /* synthetic */ AppTargetEvent(AppTarget appTarget, String str, int i, AppTargetEventIA appTargetEventIA) {
+        this(appTarget, str, i);
+    }
+
+    /* synthetic */ AppTargetEvent(Parcel parcel, AppTargetEventIA appTargetEventIA) {
+        this(parcel);
     }
 
     private AppTargetEvent(AppTarget target, String location, int actionType) {
@@ -78,6 +87,23 @@ public final class AppTargetEvent implements Parcelable {
         dest.writeParcelable(this.mTarget, 0);
         dest.writeString(this.mLocation);
         dest.writeInt(this.mAction);
+    }
+
+    /* renamed from: android.app.prediction.AppTargetEvent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AppTargetEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppTargetEvent createFromParcel(Parcel parcel) {
+            return new AppTargetEvent(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppTargetEvent[] newArray(int size) {
+            return new AppTargetEvent[size];
+        }
     }
 
     @SystemApi

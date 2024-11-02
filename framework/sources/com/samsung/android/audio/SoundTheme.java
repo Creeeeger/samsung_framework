@@ -28,7 +28,7 @@ public final class SoundTheme {
     private static final String SAMSUNG_BRAND_OVER_THE_HORIZON_BY_BTS = "Over the Horizon by SUGA of BTS";
     private static final String SAMSUNG_BRAND_SPACELINE = "Spaceline";
     private static final String SAMSUNG_BRAND_THE_VOYAGE = "The Voyage";
-    private static String brandSoundVersion = "3.1.1";
+    private static String brandSoundVersion = "";
     public static final String[] SOUND_THEME_MEDIA_COLUMNS = {"_id", "title", "volume_name", "bucket_display_name", "_display_name"};
 
     public static String getCurrentThemeTitle(Context context, String category) {
@@ -58,7 +58,7 @@ public final class SoundTheme {
         String bucketDisplayName = cursor.getString(indexBucketDisplayName);
         String titleName = cursor.getString(1);
         if (TextUtils.isEmpty(brandSoundVersion) && !isSepLiteDevice(context)) {
-            brandSoundVersion = "3.1.1";
+            brandSoundVersion = BRAND_SOUND_VERSION_DEFAULT;
         }
         if (isBrandSound(titleName)) {
             bucketDisplayName = BrandSound;
@@ -74,7 +74,7 @@ public final class SoundTheme {
     }
 
     private static boolean isBrandSound(String title) {
-        if (!TextUtils.isEmpty(brandSoundVersion) && !TextUtils.isEmpty(title) && "3.1.1".equals(brandSoundVersion)) {
+        if (!TextUtils.isEmpty(brandSoundVersion) && !TextUtils.isEmpty(title) && BRAND_SOUND_VERSION_DEFAULT.equals(brandSoundVersion)) {
             if (title.startsWith(SAMSUNG_BRAND_OVER_THE_HORIZON) || TextUtils.equals(title, SAMSUNG_BRAND_THE_VOYAGE) || TextUtils.equals(title, SAMSUNG_BRAND_GALAXY_BELLS) || TextUtils.equals(title, SAMSUNG_BRAND_SPACELINE)) {
                 return true;
             }

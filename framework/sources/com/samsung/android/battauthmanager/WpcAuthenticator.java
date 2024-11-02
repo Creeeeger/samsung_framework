@@ -64,6 +64,9 @@ public class WpcAuthenticator {
         this.mWpcAuthHandler = new WpcAuthHandler(looper);
         IntentFilter batteryEventFilter = new IntentFilter(BatteryManager.ACTION_SEC_BATTERY_EVENT);
         BroadcastReceiver mBatteryEventReceiver = new BroadcastReceiver() { // from class: com.samsung.android.battauthmanager.WpcAuthenticator.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 if (BatteryManager.ACTION_SEC_BATTERY_EVENT.equals(intent.getAction())) {
@@ -118,7 +121,61 @@ public class WpcAuthenticator {
         newWakeLock.setReferenceCounted(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.battauthmanager.WpcAuthenticator$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent) {
+            if (BatteryManager.ACTION_SEC_BATTERY_EVENT.equals(intent.getAction())) {
+                int extra = intent.getIntExtra(BatteryManager.EXTRA_MISC_EVENT, 0);
+                int plug_type = intent.getIntExtra(BatteryManager.EXTRA_SEC_PLUG_TYPE_SUMMARY, 0);
+                boolean det_level = (intent.getIntExtra(BatteryManager.EXTRA_MISC_EVENT, 0) & 64) == 64;
+                Log.i(WpcAuthenticator.TAG, "onReceive: " + intent.getAction() + ", misc_event: " + extra + ", plug event: " + plug_type);
+                if ((intent.getIntExtra(BatteryManager.EXTRA_MISC_EVENT, 0) & 512) == 512) {
+                    Log.i(WpcAuthenticator.TAG, "onReceive: attached auth pad");
+                    int authMode = 0;
+                    try {
+                        authMode = Integer.parseInt(WpcAuthenticator.readString("/sys/class/power_supply/battery/wpc_auth_mode"));
+                    } catch (NumberFormatException e) {
+                        Log.i(WpcAuthenticator.TAG, "onReceive: fail to read auth mode");
+                        e.printStackTrace();
+                    }
+                    if (authMode == 3 || authMode == 4) {
+                        Log.i(WpcAuthenticator.TAG, "onReceive: wpc_auth_mode : " + authMode);
+                        WpcAuthenticator.this.mIsAttachedAuthPad = true;
+                        WpcAuthenticator.this.mWpcAuthHandler.sendEmptyMessage(1);
+                        return;
+                    }
+                    return;
+                }
+                if (!det_level && WpcAuthenticator.this.mIsAttachedAuthPad) {
+                    WpcAuthenticator.this.mIsAttachedAuthPad = false;
+                    Log.i(WpcAuthenticator.TAG, "onReceive: detached auth pad");
+                    WpcAuthenticator.this.mWpcAuthHandler.sendEmptyMessage(0);
+                } else if (WpcAuthenticator.this.mIsAttachedAuthPad && (intent.getIntExtra(BatteryManager.EXTRA_MISC_EVENT, 0) & 1024) == 1024) {
+                    switch (WpcAuthenticator.this.currentStatus) {
+                        case 1:
+                            WpcAuthenticator.this.mWpcAuthHandler.sendEmptyMessage(3);
+                            return;
+                        case 2:
+                            WpcAuthenticator.this.mWpcAuthHandler.sendEmptyMessage(5);
+                            return;
+                        case 3:
+                            WpcAuthenticator.this.mWpcAuthHandler.sendEmptyMessage(8);
+                            return;
+                        default:
+                            WpcAuthenticator.this.currentStatus = 0;
+                            return;
+                    }
+                }
+            }
+        }
+    }
+
     public boolean requestDigests() {
         byte[] reqMsg = this.mBattAuthHelper.makeGetDigestsReq((byte) 1, 1);
         String str = TAG;
@@ -131,21 +188,22 @@ public class WpcAuthenticator {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0128, code lost:            return r0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0120, code lost:
+    
+        return r0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public boolean getAndCheckDigests() {
         /*
-            Method dump skipped, instructions count: 297
+            Method dump skipped, instructions count: 289
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.battauthmanager.WpcAuthenticator.getAndCheckDigests():boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean requestCertChain() {
         byte[] reqMsg = this.mBattAuthHelper.makeGetCertReq(0, 1, 0, 0, 0, 0);
         String str = TAG;
@@ -158,7 +216,6 @@ public class WpcAuthenticator {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean getAndVerifyCertChain() {
         byte[] certChain = this.mBattAuthHelper.ioctl_longDataRead_batt();
         if (certChain == null || certChain.length < 2) {
@@ -178,7 +235,6 @@ public class WpcAuthenticator {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean getAndVerifyChallenge() {
         byte[] challengeAuth = this.mBattAuthHelper.ioctl_longDataRead_batt();
         if (challengeAuth == null) {
@@ -196,7 +252,6 @@ public class WpcAuthenticator {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean requestChallengeAuth() {
         this.requestChallenge = this.mBattAuthHelper.makeChallengeReq(0, 1);
         String str = TAG;
@@ -209,7 +264,6 @@ public class WpcAuthenticator {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean setAuthPass(boolean isPass) {
         int ret;
         byte[] success = {1};
@@ -378,7 +432,6 @@ public class WpcAuthenticator {
         return data;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String readString(String path) {
         StringBuilder sb = new StringBuilder();
         BufferedReader in = null;
@@ -439,8 +492,9 @@ public class WpcAuthenticator {
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private final class WpcAuthHandler extends Handler {
+    public final class WpcAuthHandler extends Handler {
         public WpcAuthHandler(Looper looper) {
             super(looper, null, true);
         }

@@ -23,7 +23,6 @@ public class SemInputMethodManagerUtils {
     private static final String PROP_ENABLE_DEBUG_CALL_STACK = "persist.sys.ime.enable_debug_call_stack";
     static final boolean DEBUG_CALL_STACK = SystemProperties.getBoolean(PROP_ENABLE_DEBUG_CALL_STACK, false);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putInfoInExtra(View view, EditorInfo editorInfo) {
         int maxLength;
         if (InputMethodManager.DEBUG_SEP) {

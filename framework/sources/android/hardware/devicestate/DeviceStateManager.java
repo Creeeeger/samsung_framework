@@ -79,7 +79,6 @@ public final class DeviceStateManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$new$0(Boolean folded) {
         }
 

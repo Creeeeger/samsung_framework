@@ -1,8 +1,9 @@
 package com.samsung.android.wallpaper.colortheme.monet;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: ColorScheme.java */
 /* loaded from: classes5.dex */
-final class CoreSpec {
+public final class CoreSpec {
     private final TonalSpec a1;
     private final TonalSpec a2;
     private final TonalSpec a3;

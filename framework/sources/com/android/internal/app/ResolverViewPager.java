@@ -30,7 +30,6 @@ public class ResolverViewPager extends ViewPager {
         this.mSwipingEnabled = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.widget.ViewPager, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -53,7 +52,6 @@ public class ResolverViewPager extends ViewPager {
         super.onMeasure(widthMeasureSpec2, View.MeasureSpec.makeMeasureSpec(height, 1073741824));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSwipingEnabled(boolean swipingEnabled) {
         this.mSwipingEnabled = swipingEnabled;
     }

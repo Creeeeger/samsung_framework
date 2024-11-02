@@ -15,7 +15,6 @@ class DHKeyGeneratorHelper {
     private DHKeyGeneratorHelper() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BigInteger calculatePrivate(DHParameters dhParams, SecureRandom random) {
         BigInteger x;
         BigInteger x2;
@@ -44,7 +43,6 @@ class DHKeyGeneratorHelper {
         return x;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BigInteger calculatePublic(DHParameters dhParams, BigInteger x) {
         return dhParams.getG().modPow(x, dhParams.getP());
     }

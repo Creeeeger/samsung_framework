@@ -47,13 +47,14 @@ public class CoverState implements Parcelable {
     public static final boolean COVER_ATTACHED = true;
     public static final boolean COVER_DETACHED = false;
     public static final Parcelable.Creator<CoverState> CREATOR = new Parcelable.Creator<CoverState>() { // from class: com.samsung.android.cover.CoverState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CoverState createFromParcel(Parcel parcel) {
             return new CoverState(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CoverState[] newArray(int size) {
             return new CoverState[size];
@@ -253,6 +254,23 @@ public class CoverState implements Parcelable {
         this.fotaMode = src.readInt();
         this.friendsType = src.readInt();
         this.mVisibleRect = (Rect) src.readParcelable(Rect.class.getClassLoader());
+    }
+
+    /* renamed from: com.samsung.android.cover.CoverState$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CoverState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CoverState createFromParcel(Parcel parcel) {
+            return new CoverState(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CoverState[] newArray(int size) {
+            return new CoverState[size];
+        }
     }
 
     public String toString() {

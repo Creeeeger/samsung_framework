@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class RestrictionEntry implements Parcelable {
     public static final Parcelable.Creator<RestrictionEntry> CREATOR = new Parcelable.Creator<RestrictionEntry>() { // from class: android.content.RestrictionEntry.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RestrictionEntry createFromParcel(Parcel source) {
             return new RestrictionEntry(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RestrictionEntry[] newArray(int size) {
             return new RestrictionEntry[size];
@@ -264,6 +265,23 @@ public class RestrictionEntry implements Parcelable {
         dest.writeString(this.mCurrentValue);
         dest.writeStringArray(this.mCurrentValues);
         dest.writeParcelableArray(this.mRestrictions, 0);
+    }
+
+    /* renamed from: android.content.RestrictionEntry$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RestrictionEntry> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RestrictionEntry createFromParcel(Parcel source) {
+            return new RestrictionEntry(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RestrictionEntry[] newArray(int size) {
+            return new RestrictionEntry[size];
+        }
     }
 
     public String toString() {

@@ -269,12 +269,12 @@
     <string name="allow">Зөвшөөрөх</string>
     <string name="alwaysUse">Энэ ажиллагааг үндсэн болгох.</string>
     <string name="android_preparing_apk">Бэлдэж байна %1$s.</string>
-    <string name="android_start_title">Утсыг эхлүүлж байна…</string>
+    <string name="android_start_title">Таблетыг эхлүүлж байна…</string>
     <string name="android_system_label">Андройд систем</string>
     <string name="android_upgrading_complete">Эхлэлийг дуусгаж байна.</string>
     <string name="android_upgrading_notification_title">Системийн шинэчлэлтийг дуусгаж байна…</string>
     <string name="android_upgrading_starting_apps">Апп-г эхлүүлж байна.</string>
-    <string name="android_upgrading_title">Утсыг шинэчилж байна…</string>
+    <string name="android_upgrading_title">Таблетыг шинэчилж байна…</string>
     <string name="anr_activity_application">%2$s хариу өгөхгүй байна</string>
     <string name="anr_activity_process">%1$s хариу өгөхгүй байна</string>
     <string name="anr_application_process">%1$s хариу өгөхгүй байна</string>
@@ -295,16 +295,16 @@
     <string name="app_not_found">Энэ ажиллагааг зохицуулах аппликейшн олдсонгүй.</string>
     <string name="app_running_notification_text">Илүү мэдээлэл авах эсвэл апп-г зогсоохын тулд товшино уу.</string>
     <string name="app_running_notification_title">%1$s ажиллаж байна</string>
-    <string name="app_streaming_blocked_message">Одоогоор үүнд таны %1$s дээрээс хандах боломжгүй. Оронд нь утсан дээрээ туршиж үзнэ үү.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Энэ апп нэмэлт аюулгүй байдал хүсэж байна. Оронд нь утсан дээрээ туршиж үзнэ үү.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Үүнд таны %1$s-с хандах боломжгүй. Оронд нь утсан дээрээ туршиж үзнэ үү.</string>
+    <string name="app_streaming_blocked_message">Одоогоор үүнд таны %1$s дээрээс хандах боломжгүй. Оронд нь таблет дээрээ туршиж үзнэ үү.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Энэ апп нэмэлт аюулгүй байдал хүсэж байна. Оронд нь таблет дээрээ туршиж үзнэ үү.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Үүнд таны %1$s-с хандах боломжгүй. Оронд нь таблет дээрээ туршиж үзнэ үү.</string>
     <string name="app_streaming_blocked_title">%1$s боломжгүй байна</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Камер боломжгүй байна</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Утсан дээр үргэлжлүүлэх</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Микрофон боломжгүй байна</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Зөвшөөрөл шаардлагатай</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store боломжгүй</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Утасны тохиргоо боломжгүй байна</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Таблетын тохиргоо боломжгүй байна</string>
     <string name="app_suspended_default_message">%1$s одоогоор боломжгүй байна. Үүнийг %2$s-р удирддаг.</string>
     <string name="app_suspended_more_details">Дэлгэрэнгүй үзэх</string>
     <string name="app_suspended_title">Апп боломжгүй байна</string>
@@ -344,7 +344,7 @@
     <string name="back_button_label">Буцах</string>
     <string name="badPin">Таны бичсэн хуучин ПИН буруу байна.</string>
     <string name="badPuk">Таны бичсэн PUК буруу байна.</string>
-    <string name="battery_saver_charged_notification_summary">Утас хангалттай цэнэгтэй боллоо. Онцлогуудыг цаашид хязгаарлахгүй.</string>
+    <string name="battery_saver_charged_notification_summary">Таблет хангалттай цэнэгтэй боллоо. Онцлогуудыг цаашид хязгаарлахгүй.</string>
     <string name="battery_saver_description">Батарей хэмнэгч нь Бараан загварыг асааж, дэвсгэрийн үйл ажиллагаа, зарим визуал эффект, тодорхой онцлогууд болон зарим сүлжээний холболтыг хязгаарлах эсвэл унтраана.</string>
     <string name="battery_saver_description_with_learn_more">Батарей хэмнэгч нь Бараан загварыг асааж, дэвсгэрийн үйл ажиллагаа, зарим визуал эффект, тодорхой онцлогууд болон зарим сүлжээний холболтыг хязгаарлах эсвэл унтраана.</string>
     <string name="battery_saver_notification_channel_name">Батарей хэмнэгч</string>
@@ -486,7 +486,7 @@
     <string name="decline">Татгалзах</string>
     <string name="decline_remote_bugreport_action">ТАТГАЛЗАХ</string>
     <string name="default_audio_route_category_name">Систем</string>
-    <string name="default_audio_route_name">Утас</string>
+    <string name="default_audio_route_name">Таблет</string>
     <string name="default_audio_route_name_dock_speakers">Чанга яригчийг суулгах</string>
     <string name="default_audio_route_name_external_device">Гадаад төхөөрөмж</string>
     <string name="default_audio_route_name_headphones">Чихэвч</string>
@@ -564,7 +564,7 @@
     <string name="emergency_call_dialog_number_for_display">Яаралтай тусламжийн дугаар</string>
     <string name="emergency_calls_only">Зөвхөн яаралтай дуудлага</string>
     <string name="enablePin">Амжилтгүй боллоо, SIM/РҮИМ түгжээг идэвхжүүлнэ үү.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s нь Хүрэлтээр сонсохыг идэвхжүүлэхийг шаардаж байна. Хүрэлтээр сонсох идэвхжсэн тохиолдолд та хуруун доороо юу байгааг сонсох, тайлбарыг харах боломжтой ба утастайгаа дохиогоор харилцах боломжтой.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s нь Хүрэлтээр сонсохыг идэвхжүүлэхийг шаардаж байна. Хүрэлтээр сонсох идэвхжсэн үед та хуруун доороо юу байгааг сонсох, тайлбарыг харах боломжтой ба таблеттайгаа дохиогоор харилцах боломжтой.</string>
     <string name="enable_explore_by_touch_warning_title">Хүрэлтээр сонсохыг идэвхжүүлэх үү?</string>
     <string name="error_message_change_not_allowed">Энэ өөрчлөлтийг админ зөвшөөрөөгүй байна</string>
     <string name="error_message_title">Алдаа</string>
@@ -779,7 +779,7 @@
     <string name="global_action_silent_mode_on_status">Дуу хаагдсан</string>
     <string name="global_action_toggle_silent_mode">Дуугүй горим</string>
     <string name="global_action_voice_assist">Дуут туслах</string>
-    <string name="global_actions">Утасны сонголтууд</string>
+    <string name="global_actions">Таблет сонголт</string>
     <string name="global_actions_airplane_mode_off_status">Нислэгийн горим унтарсан</string>
     <string name="global_actions_airplane_mode_on_status">Нислэгийн горим асав</string>
     <string name="global_actions_toggle_airplane_mode">Нислэгийн горим</string>
@@ -920,11 +920,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">Нууц үг шивэх бол товшино уу</font></string>
     <string name="keyguard_password_wrong_pin_code">Буруу ПИН код.</string>
     <string name="kg_enter_confirm_pin_hint">Хүссэн ПИН кодоо дахин оруулна уу</string>
-    <string name="kg_failed_attempts_almost_at_login">"Та тайлах хээг %1$d удаа буруу зурлаа. %2$d удаа дахин буруу оруулбал, та утсаа тайлахын тулд имэйл бүртгэлээ ашиглах шаардлагатай болно.
+    <string name="kg_failed_attempts_almost_at_login">"Та тайлах хээг %1$d удаа буруу зурлаа. %2$d удаа дахин буруу оруулбал, та таблетаа тайлахын тулд имэйл бүртгэл шаардлагатай болно.
 
  %3$d секундын дараа дахин оролдоно уу."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Та утсыг тайлах гэж %1$d удаа буруу оролдлоо. %2$d удаа дахин буруу оролдвол утас үйлдвэрийн үндсэн утгаараа тохируулагдах ба хэрэглэгчийн дата бүхэлдээ устана.</string>
-    <string name="kg_failed_attempts_now_wiping">Та утсыг тайлах гэж %d удаа буруу оролдлоо. Утас одоо үйлдвэрийн үндсэн утгаараа тохируулагдах болно.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Та таблетыг тайлах гэж %1$d удаа буруу оролдлоо. %2$d удаа дахин буруу оролдвол таблет үйлдвэрийн үндсэн утгаараа тохируулагдах ба хэрэглэгчийн дата бүхэлдээ устана.</string>
+    <string name="kg_failed_attempts_now_wiping">Та таблетыг тайлах гэж %d удаа буруу оролдлоо. Таблет одоо үйлдвэрийн үндсэн утгаараа тохируулагдах болно.</string>
     <string name="kg_forgot_pattern_button_text">Хээг мартсан</string>
     <string name="kg_invalid_confirm_pin_hint">ПИН кодууд таарахгүй байна</string>
     <string name="kg_invalid_puk">Зөв PUK кодыг дахин оруулна уу. Давтан оролдвол SIM нь бүрмөсөн идэвхгүй болгоно.</string>
@@ -989,11 +989,11 @@
     <string name="lockscreen_access_pattern_start">Хээ эхэлж байна</string>
     <string name="lockscreen_carrier_default">Үйлчилгээ байхгүй</string>
     <string name="lockscreen_emergency_call">Яаралтай тусламж</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Та утсыг тайлах гэж %1$d удаа буруу оролдлоо. %2$d удаа дахин буруу оролдвол утас үйлдвэрийн үндсэн утгаараа тохируулагдах ба хэрэглэгчийн дата бүхэлдээ устана.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Та тайлах хээг %1$d удаа буруу зурлаа. %2$d удаа дахин буруу оролдвол, та таблетаа тайлахын тулд Google нэвтрэлтээ ашиглах шаардлагатай болно.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Та таблетыг тайлах гэж %1$d удаа буруу оролдлоо. %2$d удаа дахин буруу оролдвол таблет үйлдвэрийн үндсэн утгаараа тохируулагдах ба хэрэглэгчийн дата бүхэлдээ устана.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Та тайлах хээг %1$d удаа буруу зурлаа. %2$d удаа дахин буруу оруулбал, та таблетаа тайлахын тулд Google нэвтрэлтээ ашиглах шаардлагатай болно.
 
  %3$d секундын дараа дахин оролдоно уу."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Та утсыг тайлах гэж %d удаа буруу оролдлоо. Утас одоо үйлдвэрийн үндсэн утгаараа тохируулагдах болно.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Та таблетыг %d удаа тайлах гэж буруу оролдлоо. Таблет одоо үйлдвэрийн үндсэн утгаараа тохируулагдах болно.</string>
     <string name="lockscreen_forgot_pattern_button_text">Хээг мартсан уу?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Хэрэглэгчийн нэр нууц үгээ мартсан уу?
 "<b>google.com/accounts/recovery</b>-д зочилно уу.</string>
@@ -1009,7 +1009,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Яаралтай дуудлага хийх буюу эсвэл түгжээг тайлах бол цэсийг дарна уу.</string>
     <string name="lockscreen_missing_sim_instructions">SIM нэмнэ үү.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM дутуу эсвэл үүнийг унших боломжгүй байна. SIM нэмнэ үү.</string>
-    <string name="lockscreen_missing_sim_message">Утсанд SIM байхгүй байна.</string>
+    <string name="lockscreen_missing_sim_message">Таблетад SIM байхгүй байна.</string>
     <string name="lockscreen_missing_sim_message_short">SIM байхгүй</string>
     <string name="lockscreen_network_locked_message">Сүлжээ түгжигдсэн</string>
     <string name="lockscreen_password_wrong">Дахин оролдох</string>
@@ -1049,7 +1049,7 @@
     <string name="low_internal_storage_view_text">Зарим систем функц ажиллахгүй байна</string>
     <string name="low_internal_storage_view_text_no_boot">Системд хангалттай сан байхгүй байна. 250MБ чөлөөтэй зай байгаа эсэхийг шалгаад дахин эхлүүлнэ үү.</string>
     <string name="low_internal_storage_view_title">Сангийн хэмжээ дутагдаж байна</string>
-    <string name="low_memory">Утасны сан дүүрсэн. Зай чөлөөлөх бол зарим файлыг устгана уу.</string>
+    <string name="low_memory">Таблетийн сан дүүрсэн. Зай чөлөөлөх бол зарим файлыг устгана уу.</string>
     <string name="managed_profile_app_label">Ажлын %1$s руу сэлгэх</string>
     <string name="managed_profile_label">Ажлын профайл руу сэлгэх</string>
     <string name="managed_profile_label_badge">Ажлын %1$s</string>
@@ -1380,14 +1380,14 @@
     <string name="permdesc_bindNotificationListenerService">Эзэмшигч нь мэдэгдэл сонсох үйлчилгээний дээд-төвшиний интерфейстэй холбох боломжтой. Энгийн апп-д шаардлагагүй.</string>
     <string name="permdesc_bind_connection_service">Апп-д телефон үйлчилгээтэй харилцаж дуудлага хийх/авахыг зөвшөөрнө.</string>
     <string name="permdesc_bind_incall_service">Апп-д дуудлагын дэлгэцийг хэрэглэгчид хэзээ хэрхэн харуулахыг удирдахыг зөвшөөрнө.</string>
-    <string name="permdesc_bluetooth">Апп нь утсан дээрх Bluetooth тохиргоог харах боломжтой ба хос болох төхөөрөмжтэй холболтыг зөвшөөрөх болон хийх боломжтой.</string>
-    <string name="permdesc_bluetoothAdmin">Апп нь утасны дотоод блютүүтыг тохируулах боломжтой ба гадаад төхөөрөмжийг олох болон хос үүсгэх боломжтой.</string>
+    <string name="permdesc_bluetooth">Апп нь таблет дээрх блютүүт тохиргоог харах боломжтой ба хос болох төхөөрөмжтэй холболтыг зөвшөөрөх болон хийх боломжтой.</string>
+    <string name="permdesc_bluetoothAdmin">Апп нь дотоод блютүүт таблетын тохиргоог харах боломжтой ба хос болох төхөөрөмжтэй холболтыг зөвшөөрөх болон хийх боломжтой</string>
     <string name="permdesc_bluetooth_advertise">Аппад ойролцоох Bluetooth төхөөрөмжүүдэд сурталчлахыг зөвшөөрнө</string>
     <string name="permdesc_bluetooth_connect">Аппыг хослуулсан Bluetooth төхөөрөмжүүдэд холбогдохыг зөвшөөрдөг</string>
     <string name="permdesc_bluetooth_scan">Aппыг ойролцоох Bluetooth төхөөрөмжүүдийг илрүүлж, хослуулахыг зөвшөөрдөг</string>
     <string name="permdesc_bodySensors">Аппыг ашиглаж байх үедээ зүрхний хэм, температур болон цусны хүчилтөрөгчийн хувь зэрэг биеийн мэдрэгчийн өгөгдөлд хандах боломжтой.</string>
     <string name="permdesc_bodySensors_background">Апп ард нь байх үед зүрхний хэм, температур, цусны хүчилтөрөгчийн хувь зэрэг биеийн мэдрэгчийн өгөгдөлд хандах боломжтой.</string>
-    <string name="permdesc_broadcastSticky">Апп нь өргөн дамжуулал дууссаны дараа үлдсэн өргөн дамжуулалыг илгээх боломжтой. Ихээр ашиглах нь хэт их санах ой ашиглан утсыг удаашруулах болон тогтворгүй болгох боломжтой.</string>
+    <string name="permdesc_broadcastSticky">Апп нь өргөн дамжуулал дууссаны дараа үлдсэн өргөн дамжуулалыг илгээх боломжтой. Ихээр ашиглах нь хэт их санах ой ашиглан таблетыг удаашруулах болон тогтворгүй болгох боломжтой.</string>
     <string name="permdesc_callCompanionApp">Аппад төхөөрөмж дээр хийж буй дуудлагыг харах болон хянахыг зөвшөөрдөг. Үүнд дуудлагын дугаар болон дуудлагын төлөв зэрэг мэдээллийг агуулдаг.</string>
     <string name="permdesc_callPhone">Аппад таны оролцоогүйгээр утасны дугаарууд руу дуудлага хийхийг зөвшөөрнө. Энэ нь гэнэтийн төлбөрийн нэхэмжлэх эсвэл дуудлага хүлээн авахад хүргэж магадгүй. Энэ нь аппад яаралтай тусламжийн утасны дугаарууд руу дуудлага хийхийг зөвшөөрөхгүйг анхаарна уу. Хортой аппууд таны баталгаажуулалтгүйгээр дуудлага хийх эсвэл ирсэн дуудлагыг автоматаар өөр дугаар луу шилжүүлэхэд хүргэх оператор компанийн код руу залгаснаар танаас төлбөр гаргаж магадгүй.</string>
     <string name="permdesc_camera">Энэ аппыг ашиглаж байх үед энэ нь камер ашиглан зураг авж, видео бичих боломжтой.</string>
@@ -1396,7 +1396,7 @@
     <string name="permdesc_changeTetherState">Апп нь холбогдсон сүлжээний холболтын статусыг солих боломжтой.</string>
     <string name="permdesc_changeWifiMulticastState">Апп нь олон дамжуулал ашиглан Wi-Fi сүлжээн дэх бүх төхөөрөмжрүү пакет илгээх болон хүлээн авах боломжтой. Энэ нь олон дамжуулал ашиглахгүй горимоос илүү их тэжээл зарцуулна.</string>
     <string name="permdesc_changeWifiState">Апп нь Wi-Fi холболтын цэгтэй холбогдох буюу салах боломжтой ба тохируулсан Wi-Fi сүлжээнд өөрчлөлт хийх боломжтой.</string>
-    <string name="permdesc_changeWimaxState">Апп нь WiMAX сүлжээнд утсыг холбох болон салгах боломжтой.</string>
+    <string name="permdesc_changeWimaxState">Апп нь WiMAX сүлжээнд таблетыг холбох болон салгах боломжтой.</string>
     <string name="permdesc_companionProfileWatch">Дэмжигч аппад цагийг удирдахыг зөвшөөрнө.</string>
     <string name="permdesc_connection_manager">Апп-д телеком холболтуудыг удирдахыг зөвшөөрнө.</string>
     <string name="permdesc_control_incall_experience">Апп-д дуудлага хийж байгаа хэрэглэгчтэй харьцахыг зөвшөөрнө.</string>
@@ -1422,7 +1422,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">Аппад \"specialUse\" төрөлтэй нүүрэн талын үйлчилгээнүүдийг ашиглахыг зөвшөөрнө</string>
     <string name="permdesc_foregroundServiceSystemExempted">Аппад \"systemExempted\" төрөлтэй нүүрэн талын үйлчилгээнүүдийг ашиглахыг зөвшөөрнө</string>
     <string name="permdesc_fullScreenIntent">Аппад мэдэгдлийг түгжигдсэн төхөөрөмж дээр бүтэн дэлгэцийн үйл ажиллагаа байдлаар үзүүлэхийг зөвшөөрдөг</string>
-    <string name="permdesc_getAccounts">Апп нь утсанд мэдэгдэж байгаа бүртгэлийн жагсаалтыг авах боломжтой. Энд таны суулгасан аппликейшнүүдийг үүсгэсэн бүх акаунтууд хамрагдана.</string>
+    <string name="permdesc_getAccounts">Апп нь таблетэд мэдэгдэж байгаа бүртгэлийн жагсаалтыг авах боломжтой. Энд таны суулгасан аппликейшнүүдийг үүсгэсэн бүх акаунтууд хамрагдана.</string>
     <string name="permdesc_getPackageSize">Апп нь өөрийн код, дата болон кеш хэмжээг унших боломжтой</string>
     <string name="permdesc_getTasks">Апп нь одоо ажиллаж байгаа болон сүүлд ажилласан даалгаврын талаарх мэдээллийг авах боломжтой. Ингэснээр апп нь төхөөмж дээрх ямар аппликешнүүд ашиглагдсан талаарх мэдээлийг олох боломжтой.</string>
     <string name="permdesc_handoverStatus">Одоогийн Андройд Бийм дамжуулалтын мэдээллийг хүлээн авахыг аппликейшнд зөвшөөрөх</string>
@@ -1445,16 +1445,16 @@
     <string name="permdesc_nearby_wifi_devices">Аппад ойролцоох Wi-Fi төхөөрөмжүүдтэй холбоотой байрлалыг мэдэгдэх, холбох, тодорхойлохыг зөвшөөрнө</string>
     <string name="permdesc_nfc">Апп нь Ойролцоо Талбарын Холболт(NFC) таг, карт, болон уншигчтай холбогдох боломжтой.</string>
     <string name="permdesc_observeCompanionDevicePresence">Дэмжигч аппад төхөөрөмжүүдийг ойролцоо эсвэл хол байгаа үед дэмжигч төхөөрөмжийг ажиглахыг зөвшөөрнө.</string>
-    <string name="permdesc_persistentActivity">Апп нь өөрийн хэсгийг санах ойд байнга байлгах боломжтой. Энэ нь бусад апп-уудын ашиглах санах ойг хязгаарлан утсыг удаашруулах болно.</string>
+    <string name="permdesc_persistentActivity">Апп нь өөрийн хэсгийн санах ойд байнга байлгах боломжтой. Энэ нь бусад апп-уудын ашиглах санах ойг хязгаарлан таблетыг удаашруулах болно.</string>
     <string name="permdesc_postNotification">Аппад мэдэгдэл харуулахыг зөвшөөрнө</string>
     <string name="permdesc_preferredPaymentInfo">Бүртгүүлсэн төхөөрөмж болон маршрутын хүрэх цэг зэрэг сонгосон nfc төлбөрийн үйлчилгээний мэдээллийг авахыг аппад зөвшөөрдөг.</string>
     <string name="permdesc_processOutgoingCalls">Гадагш дуудлага хийх үед залгасан дугаарыг харах, дуудлагыг өөр дугаар руу шилжүүлэх, таслах боломжтой болгоно.</string>
     <string name="permdesc_queryAllPackages">Аппап бүх суулгасан багцыг харахыг зөвшөөрнө.</string>
     <string name="permdesc_readBasicPhoneState">Аппад төхөөрөмжийн утасны үндсэн онцлогт хандах боломжийг олгоно.</string>
-    <string name="permdesc_readCalendar">Энэ апп таны утсанд хадгалсан календарийн бүх арга хэмжээг унших, календарийн өгөгдлийг хуваалцах, хадгалах боломжтой.</string>
+    <string name="permdesc_readCalendar">Энэ апп таны таблетад хадгалсан календарийн бүх арга хэмжээг унших, календарийн өгөгдлийг хуваалцах, хадгалах боломжтой.</string>
     <string name="permdesc_readCallLog">Энэ апп таны дуудлагын түүхийг унших боломжтой.</string>
     <string name="permdesc_readCellBroadcasts">Апп нь таны төхөөрөмжийн хүлээн авсан үүрэн өргөн дамжуулах мессежийг унших боломжтой. Үүрэн өргөн дамжууллын мэдэгдэл нь яаралтай нөхцөл байдлыг анхааруулах зорилгоор зарим байршлуудад хүрдэг. Хортой апп нь яаралтай үүрэн өргөн дамжууллыг хүлээн авсан үед таны төхөөрөмжийн ажиллагаа болон чадамжид нөлөөлөх боломжтой.</string>
-    <string name="permdesc_readContacts">Аппaд таны утсан дээр хадгалагдсан харилцагчдын өгөгдлийг уншихыг зөвшөөрнө. Мөн аппууд нь таны утсан дээрх харилцагч үүсгэсэн бүртгэлд хандах боломжтой байна. Үүнд таны суулгасан аппуудын үүсгэсэн бүртгэлийг оролцуулж болзошгүй. Энэ зөвшөөрөл нь аппуудад таны харилцагчийн өгөгдлийг хадгалахыг зөвшөөрөх бөгөөд хортой аппууд нь танд мэдэгдэлгүйгээр харилцагчийн өгөгдлийг хуваалцаж болзошгүй.</string>
+    <string name="permdesc_readContacts">Аппaд таны таблет дээр хадгалагдсан харилцагчдын өгөгдлийг уншихыг зөвшөөрнө. Мөн аппууд нь таны таблет дээрх харилцагч үүсгэсэн бүртгэлд хандах боломжтой байна. Үүнд таны суулгасан аппуудын үүсгэсэн бүртгэлийг оролцуулж болзошгүй. Энэ зөвшөөрөл нь аппуудад таны харилцагчийн өгөгдлийг хадгалахыг зөвшөөрөх бөгөөд хортой аппууд нь танд мэдэгдэлгүйгээр харилцагчийн өгөгдлийг хуваалцаж болзошгүй.</string>
     <string name="permdesc_readInstallSessions">Аппликейшн-д суулгах сешн уншихыг зөвшөөрнө. Энэ нь идэвхтэй багцуудыг суулгалтын талаар дэлгэрэнгүй мэдээллийг үзэх боломж олгоно.</string>
     <string name="permdesc_readMediaAudio">Аппад таны дундын хадгалах сангаас аудио файлыг унших боломжийг олгодог.</string>
     <string name="permdesc_readMediaImages">Аппад таны дундын хадгалах сангаас зургийн файлыг унших зөвшөөрөл олгодог.</string>
@@ -1462,11 +1462,11 @@
     <string name="permdesc_readNetworkUsageHistory">Апп нь тусгай сүлжээ болон апп-н сүлжээ ашиглалтын түүхийг унших боломжтой.</string>
     <string name="permdesc_readPhoneNumbers">Төхөөрөмжийн утасны дугаарт хандах зөвшөөрлийг апп-д олгоно.</string>
     <string name="permdesc_readPhoneState">Апп нь төхөөрөмжийн утасны функцд хандах боломжтой. Энэ зөвшөөрөл нь апп-д утасны дугаар болон төхөөрөмжийн ID-г, дуудлага идэвхтэй эсэх, холын дугаар дуудлагаар холбогдсон байгаа эсэхийг тогтоох боломжийг олгоно,</string>
-    <string name="permdesc_readSms">Энэ апп таны утсанд хадгалсан бүх SMS (текст) мессежийг унших боломжтой.</string>
+    <string name="permdesc_readSms">Энэ апп таны таблетад хадгалсан бүх SMS (текст) мессежийг унших боломжтой.</string>
     <string name="permdesc_readSyncSettings">Апп нь бүртгэлийн синк тохиргоог унших боломжтой. Жишээ нь энэ нь Хүмүүс апп бүртгэлтэй синк хийгдсэн эсэхийг тодорхойлох боломжтой.</string>
     <string name="permdesc_readSyncStats">Апп нь синк үйлдэлийн түүх болон хэр их дата синк хийгдсэн зэрэг бүртгэлийн синк статусыг унших боломжтой.</string>
     <string name="permdesc_readVisualUserSelect">Аппад таны дундын хадгалах сангаас сонгосон зураг болон видео файлуудыг унших боломж олгодог.</string>
-    <string name="permdesc_receiveBootCompleted">Апп нь систем асаж дуусахад шууд өөрийгөө асаах боломжтой. Ингэснээр утсыг асахад их хугацаа орох болон байнга ажилладаг апп нь утсыг бүхэлд нь удаашруулах боломжтой.</string>
+    <string name="permdesc_receiveBootCompleted">Апп нь систем асаж дуусахад шууд өөрийгөө асаах боломжтой. Ингэснээр таблетыг асахад их хугацаа орох болон байнга ажилладаг апп нь таблетийг бүхэлд нь удаашруулах боломжтой.</string>
     <string name="permdesc_receiveMms">Апп нь MMS мессежийг хүлээн авах болон гүйцэтгэх боломжтой. Ингэснээр апп нь таны төхөөрөмжрүү илгээсэн мессежийг танд үзүүлэхгүйгээр хянах болон устгаж чадна.</string>
     <string name="permdesc_receiveSms">Апп нь SMS мессежийг хүлээн авах болон гүйцэтгэх боломжтой. Ингэснээр апп нь таны төхөөрөмжрүү илгээсэн мессежийг танд үзүүлэхгүйгээр хянах болон устгаж чадна.</string>
     <string name="permdesc_receiveWapPush">Апп нь WAP мессежийг хүлээн авах болон биелүүлэх боломжтой. Энэ зөвшөөрөл нь танд илгээсэн мессежийг танд харуулалгүйгээр хянах эсвэл устгах боломжийг агуулна.</string>
@@ -1488,7 +1488,7 @@
     <string name="permdesc_sendSms">Апп нь SMS мессеж илгээх боломжтой. Энэ нь санаандгүй төлбөрт оруулж болзошгүй. Хортой апп нь таны зөвшөөрөлгүйгээр мессеж илгээн таныг төлбөрт оруулж болзошгүй.</string>
     <string name="permdesc_setAlarm">Апп нь суулгагдсан сэрүүлэгний апп дээр сэрүүлэг тохируулах боломжтой. Зарим сэрүүлэгний апп нь энэ функцийг дэмжихгүй байж болзошгүй.</string>
     <string name="permdesc_setInputCalibration">Мэдрэгчтэй дэлгэцний калибрешн параметрийг өөрчлөхийг апп-д зөвшөөрнө. Энгийн апп-д шаардлагагүй.</string>
-    <string name="permdesc_setTimeZone">Апп нь утасны цагийн бүсийг өөрчлөх боломжтой.</string>
+    <string name="permdesc_setTimeZone">Апп нь таблетын цагийн бүсийг солих боломжтой.</string>
     <string name="permdesc_setWallpaper">Апп нь системийн дэлгэцийн зургийг тохируулах боломжтой.</string>
     <string name="permdesc_setWallpaperHints">Апп нь системийн дэлгэцийн зургийн хэмжээний саналыг тохируулах боломжтой</string>
     <string name="permdesc_sim_communication">Апп-д SIM рүү комманд илгээхийг зөвшөөрнө. Энэ маш аюултай.</string>
@@ -1501,7 +1501,7 @@
     <string name="permdesc_subscribedFeedsRead">Апп нь одоогийн синк хийгдсэн хангамжийн талаарх мэдээллийг авах боломжтой.</string>
     <string name="permdesc_systemAlertWindow">Энэ апп бусад аппын дээр эсвэл дэлгэцийн өөр хэсэгт харагдана. Энэ нь энгийн апп хэрэглээ болон бусад аппын харагдах байдлыг өөрчилж болзошгүй.</string>
     <string name="permdesc_systemCamera">Энэ хамгаалагдсан эсвэл системийн апп нь системийн камер ашиглан ямар ч үед зураг авч, видео бичих боломжтой. Мөн түүнчлэн, апп нь android.permission.CAMERA-н зөвшөөрөлтэй байх шаардлагатай</string>
-    <string name="permdesc_transmitIr">Апп-д утасны хэт улаан дамжуулагчийг ашиглахыг зөвшөөрнө.</string>
+    <string name="permdesc_transmitIr">Апп-д таблетын хэт улаан дамжуулагчийг ашиглахыг зөвшөөрнө.</string>
     <string name="permdesc_turnScreenOn">Аппад дэлгэцийг асаахыг зөвшөөрнө.</string>
     <string name="permdesc_uninstall_shortcut">Аппликейшн нь хэрэглэгчийн оролцоогүйгээр Нүүр дэлгэцний товчлолыг устгаж чадна.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Эзэмшигчид өмнө нь суулгасан аппыг хэрэглэгчийн үйлдэлгүйгээр шинэчлэхийг зөвшөөрнө</string>
@@ -1514,10 +1514,10 @@
     <string name="permdesc_vibrate">Апп нь чичиргээг удирдах боломжтой.</string>
     <string name="permdesc_vibrator_state">Аппыг чичиргээний төлөвт хандахыг зөвшөөрдөг.</string>
     <string name="permdesc_videoWrite">Таны видео цуглуулгыг тохируулах зөвшөөрлийг аппад олгодог.</string>
-    <string name="permdesc_wakeLock">Апп нь утсыг унтахаас сэргийлэх боломжтой</string>
-    <string name="permdesc_writeCalendar">Энэ апп таны утсанд календарийн арга хэмжээг нэмэх, устгах, эсвэл өөрчлөх боломжтой. Энэ апп нь календарь эзэмшигчээс мессеж илгээсэн мэт харагдах, эсвэл эзэмшигчид мэдэгдэлгүйгээр арга хэмжээг өөрчлөх боломжтой.</string>
-    <string name="permdesc_writeCallLog">Апп нь таны утасны ирсэн гарсан дуудлага зэргийг агуулсан дуудлагын логыг өөрчлөх боломжтой. Хортой апп нь энийг ашиглан таны дуудлагын логыг өөрчлөх болон арилгах боломжтой.</string>
-    <string name="permdesc_writeContacts">Аппад таны утсан дээр хадгалагдсан харилцагчдын өгөгдлийг өөрчлөхийг зөвшөөрнө. Энэ зөвшөөрөл нь харилцагчийн өгөгдлийг устгахыг аппуудад зөвшөөрнө.</string>
+    <string name="permdesc_wakeLock">Апп нь таблетыг унтахаас сэргийлэх боломжтой</string>
+    <string name="permdesc_writeCalendar">Энэ апп таны таблет дээр календарийн арга хэмжээг нэмэх, устгах, эсвэл өөрчлөх боломжтой. Энэ апп нь календарь эзэмшигчээс мессеж илгээсэн мэт харагдах, эсвэл эзэмшигчид мэдэгдэлгүйгээр арга хэмжээг өөрчлөх боломжтой.</string>
+    <string name="permdesc_writeCallLog">Апп нь таны таблетын ирсэн гарсан дуудлага зэргийг агуулсан дуудлагын логыг унших боломжтой. Хортой апп нь энийг ашиглан таны дуудлагын логыг өөрчлөх болон арилгах боломжтой.</string>
+    <string name="permdesc_writeContacts">Аппад таны таблет дээр хадгалагдсан харилцагчдын өгөгдлийг өөрчлөхийг зөвшөөрнө. Энэ зөвшөөрөл нь харилцагчийн өгөгдлийг устгахыг аппуудад зөвшөөрнө.</string>
     <string name="permdesc_writeSettings">Апп нь системийн тохиргооны датаг өөрчлөх боломжтой. Хортой апп нь таны системийн тохиргоог сүйтгэх боломжтой.</string>
     <string name="permdesc_writeSyncSettings">Апп нь бүртгэлийн синк тохиргоог өөрчлөх боломжтой. Жишээ нь энэ нь Хүмүүс апп бүртгэлтэй синк хийхийг идэвхжүүлэх боломжтой.</string>
     <string name="permgroupdesc_activityRecognition">таны биеийн дасгал хөдөлгөөнд хандах</string>
@@ -1714,7 +1714,7 @@
     <string name="permlab_uwb_ranging">ойролцоох ультра өргөн зурвасын төхөөрөмжүүдийн хоорондох холбоотой байрлалыг тодорхойлох</string>
     <string name="permlab_vibrate">чичиргээг удирдах</string>
     <string name="permlab_videoWrite">видео цуглуулгаа тохируулах</string>
-    <string name="permlab_wakeLock">утсыг унтуулахгүй байлгах</string>
+    <string name="permlab_wakeLock">таблетыг унтуулахгүй байлгах</string>
     <string name="permlab_writeCalendar">календарын хуваарийг нэмэх эсвэл өөрчлөх болон эзэмшигчид мэдэгдэлгүйгээр зочидруу имэйл илгээх</string>
     <string name="permlab_writeCallLog">дуудлагын логруу бичих</string>
     <string name="permlab_writeContacts">таны харилцагчдыг өөрчлөх</string>
@@ -1757,10 +1757,10 @@
     <string name="policydesc_limitPassword">Дэлгэц түгжих нууц үг болон ПИН кодны урт болон нийт тэмдэгтийн уртыг хянах.</string>
     <string name="policydesc_resetPassword">Дэлгэцийн түгжээг өөрчлөх.</string>
     <string name="policydesc_setGlobalProxy">Бодлогыг ашиглах боломжтой үед төхөөрөмжийн олон улсын эрхийг тохируулах. Зөвхөн төхөөрөмж эзэмшигч нь олон улсын эрхийг тохируулах боломжтой.</string>
-    <string name="policydesc_watchLogin">Дэлгэц түгжигдсэн үед нууц үг буруу оруулалтын тоог хянах, ба хэрэв хэт олон удаа нууц үгийг буруу оруулбал утсыг түгжих болон утасны бүх датаг арилгана</string>
-    <string name="policydesc_watchLogin_secondaryUser">Дэлгэцийн түгжээг тайлахад оруулсан буруу нууц үгийн давтамжийг хянаж гар утсыг түгжих эсвэл буруу нууц үгийг хэт олон удаа оруулсан тохиолдолд энэ хэрэглэгчийн мэдээллийг устгах.</string>
-    <string name="policydesc_wipeData">Сануулахгүйгээр утасны бүх мэдээллийг устгаж, үйлдвэрийн өгөгдмөл байдалд шилжүүлнэ</string>
-    <string name="policydesc_wipeData_secondaryUser">Анхааруулга өгөхгүйгээр энэ хэрэглэгчийн энэ гар утсан дээрх мэдээллийг устгах.</string>
+    <string name="policydesc_watchLogin">Дэлгэц түгжигдсэн үед нууц үг буруу оруулалтын тоог хянах ба хэрэв хэт олон удаа нууц үгийг буруу оруулбал таблетыг түгжих болон таблетын бүх датаг арилгана</string>
+    <string name="policydesc_watchLogin_secondaryUser">Дэлгэцийн түгжээг тайлахад оруулсан буруу нууц үгийн давтамжийг хянаж таблетыг түгжих эсвэл буруу нууц үгийг хэт олон удаа оруулсан тохиолдолд энэ хэрэглэгчийн мэдээллийг устгах.</string>
+    <string name="policydesc_wipeData">Үйлдвэрийн дата утгыг өгсөнөөр таблетын дата шууд арилгагдана.</string>
+    <string name="policydesc_wipeData_secondaryUser">Анхааруулга өгөхгүйгээр энэ хэрэглэгчийн энэ таблет дээрх мэдээллийг устгах.</string>
     <string name="policylab_disableCamera">Камер идэвхгүй болгох</string>
     <string name="policylab_disableKeyguardFeatures">Дэлгэцийн зарим түгжээний онцлогийг идэвхгүй болгох</string>
     <string name="policylab_encryptedStorage">Сангийн шифрлэхийг тохируулах</string>
@@ -1777,7 +1777,7 @@
     <string name="postalTypeHome">Гэрийн</string>
     <string name="postalTypeOther">Бусад</string>
     <string name="postalTypeWork">Ажлын</string>
-    <string name="power_dialog">Утасны сонголт</string>
+    <string name="power_dialog">Таблетын сонголтууд</string>
     <string name="power_off">Унтраах</string>
     <string name="prepend_shortcut_label">Цэс+</string>
     <string name="preposition_for_date">%s</string>
@@ -1949,7 +1949,7 @@
     <string name="shortcut_restore_unknown_issue">Товчлолыг сэргээж чадсангүй</string>
     <string name="shortcut_restored_on_lower_version">Аппын хувилбарыг бууруулсан эсвэл энэ товчлолтой тохирохгүй байна</string>
     <string name="show_ime">Биет гар идэвхтэй үед үүнийг дэлгэцэд харуулна уу</string>
-    <string name="shutdown_confirm">Таны утас унтрах болно.</string>
+    <string name="shutdown_confirm">Таны таблет унтрах болно.</string>
     <string name="shutdown_confirm_question">Та унтраах уу?</string>
     <string name="shutdown_progress">Унтрааж байна…</string>
     <string name="silent_mode">Дуугүй горим</string>
@@ -2121,7 +2121,7 @@
     <string name="user_switched">Одоогийн хэрэглэгч %1$s.</string>
     <string name="user_switching_message">%1$s руу сэлгэж байна…</string>
     <string name="validity_period">Хүчинтэй байх:</string>
-    <string name="vdm_camera_access_denied">Таны %1$s-с утасны камерт хандах боломжгүй</string>
+    <string name="vdm_camera_access_denied">Таны %1$s-с таблетын камерт хандах боломжгүй</string>
     <string name="vdm_pip_blocked">Дамжуулах явцад дэлгэц доторх дэлгэцийг үзэх боломжгүй</string>
     <string name="vdm_secure_window">Стримингийн үед үүнд хандах боломжгүй. Оронд нь утас дээрээ туршиж үзнэ үү.</string>
     <string name="view_and_control_notification_content">%s таны дэлгэцийг харах болон хянах боломжтой. Хянахын тулд товшино уу.</string>

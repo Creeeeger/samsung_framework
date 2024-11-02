@@ -41,9 +41,41 @@ public final class DumpUtils {
     private DumpUtils() {
     }
 
-    public static void dumpAsync(Handler handler, final Dump dump, PrintWriter pw, final String prefix, long timeout) {
-        final StringWriter sw = new StringWriter();
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.util.DumpUtils$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ Dump val$dump;
+        final /* synthetic */ String val$prefix;
+        final /* synthetic */ StringWriter val$sw;
+
+        AnonymousClass1(StringWriter stringWriter, Dump dump, String str) {
+            sw = stringWriter;
+            dump = dump;
+            prefix = str;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            PrintWriter lpw = new FastPrintWriter(sw);
+            dump.dump(lpw, prefix);
+            lpw.close();
+        }
+    }
+
+    public static void dumpAsync(Handler handler, Dump dump, PrintWriter pw, String prefix, long timeout) {
+        StringWriter sw = new StringWriter();
         if (handler.runWithScissors(new Runnable() { // from class: com.android.internal.util.DumpUtils.1
+            final /* synthetic */ Dump val$dump;
+            final /* synthetic */ String val$prefix;
+            final /* synthetic */ StringWriter val$sw;
+
+            AnonymousClass1(StringWriter sw2, Dump dump2, String prefix2) {
+                sw = sw2;
+                dump = dump2;
+                prefix = prefix2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 PrintWriter lpw = new FastPrintWriter(sw);
@@ -51,7 +83,7 @@ public final class DumpUtils {
                 lpw.close();
             }
         }, timeout)) {
-            pw.print(sw.toString());
+            pw.print(sw2.toString());
         } else {
             pw.println("... timed out");
         }
@@ -124,7 +156,6 @@ public final class DumpUtils {
         return cname != null && isSecMediaPackage(cname.getPackageName());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isSecMediaPackage(ComponentName.WithComponentName wcn) {
         return wcn != null && isSecMediaPackage(wcn.getComponentName());
     }
@@ -137,7 +168,6 @@ public final class DumpUtils {
         return cname != null && isRoutinePackage(cname.getPackageName());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isRoutinePackage(ComponentName.WithComponentName wcn) {
         return wcn != null && isRoutinePackage(wcn.getComponentName());
     }
@@ -267,17 +297,14 @@ public final class DumpUtils {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$filterRecord$0(ComponentName.WithComponentName rec) {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$filterRecord$1(ComponentName filterCname, ComponentName.WithComponentName rec) {
         return rec != null && filterCname.equals(rec.getComponentName());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$filterRecord$2(int id, String filterString, ComponentName.WithComponentName rec) {
         ComponentName cn = rec.getComponentName();
         return (id != -1 && System.identityHashCode(rec) == id) || cn.flattenToString().toLowerCase().contains(filterString.toLowerCase());

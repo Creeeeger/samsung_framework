@@ -129,9 +129,10 @@ public class Quaternion {
         this.w = cosVal;
     }
 
-    /* renamed from: com.samsung.vekit.Common.Object.Quaternion$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.vekit.Common.Object.Quaternion$1 */
     /* loaded from: classes6.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$AxisType;
 
         static {

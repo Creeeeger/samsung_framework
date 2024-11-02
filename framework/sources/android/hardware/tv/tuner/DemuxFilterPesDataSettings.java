@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxFilterPesDataSettings implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterPesDataSettings> CREATOR = new Parcelable.Creator<DemuxFilterPesDataSettings>() { // from class: android.hardware.tv.tuner.DemuxFilterPesDataSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxFilterPesDataSettings createFromParcel(Parcel _aidl_source) {
             DemuxFilterPesDataSettings _aidl_out = new DemuxFilterPesDataSettings();
@@ -15,7 +17,6 @@ public class DemuxFilterPesDataSettings implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterPesDataSettings[] newArray(int _aidl_size) {
             return new DemuxFilterPesDataSettings[_aidl_size];
@@ -23,6 +24,25 @@ public class DemuxFilterPesDataSettings implements Parcelable {
     };
     public int streamId = 0;
     public boolean isRaw = false;
+
+    /* renamed from: android.hardware.tv.tuner.DemuxFilterPesDataSettings$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterPesDataSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterPesDataSettings createFromParcel(Parcel _aidl_source) {
+            DemuxFilterPesDataSettings _aidl_out = new DemuxFilterPesDataSettings();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterPesDataSettings[] newArray(int _aidl_size) {
+            return new DemuxFilterPesDataSettings[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

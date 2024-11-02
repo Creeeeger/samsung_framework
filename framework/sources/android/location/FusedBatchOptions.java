@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FusedBatchOptions implements Parcelable {
     public static final Parcelable.Creator<FusedBatchOptions> CREATOR = new Parcelable.Creator<FusedBatchOptions>() { // from class: android.location.FusedBatchOptions.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FusedBatchOptions createFromParcel(Parcel parcel) {
             FusedBatchOptions options = new FusedBatchOptions();
@@ -19,7 +21,6 @@ public class FusedBatchOptions implements Parcelable {
             return options;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FusedBatchOptions[] newArray(int size) {
             return new FusedBatchOptions[size];
@@ -100,6 +101,29 @@ public class FusedBatchOptions implements Parcelable {
 
     public int getFlags() {
         return this.mFlags;
+    }
+
+    /* renamed from: android.location.FusedBatchOptions$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FusedBatchOptions> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FusedBatchOptions createFromParcel(Parcel parcel) {
+            FusedBatchOptions options = new FusedBatchOptions();
+            options.setMaxPowerAllocationInMW(parcel.readDouble());
+            options.setPeriodInNS(parcel.readLong());
+            options.setSourceToUse(parcel.readInt());
+            options.setFlag(parcel.readInt());
+            options.setSmallestDisplacementMeters(parcel.readFloat());
+            return options;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FusedBatchOptions[] newArray(int size) {
+            return new FusedBatchOptions[size];
+        }
     }
 
     @Override // android.os.Parcelable

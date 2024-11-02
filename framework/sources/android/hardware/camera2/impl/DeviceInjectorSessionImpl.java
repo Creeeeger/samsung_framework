@@ -58,9 +58,12 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
     private String mLastTargetId = "";
     private String mLastSourceId = "";
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class StopDrainListener implements TaskDrainer.DrainListener {
+        /* synthetic */ StopDrainListener(DeviceInjectorSessionImpl deviceInjectorSessionImpl, StopDrainListenerIA stopDrainListenerIA) {
+            this();
+        }
+
         private StopDrainListener() {
         }
 
@@ -77,14 +80,18 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDrained$0() {
             DeviceInjectorSessionImpl.this.mStatusCallback.onClose();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class PendingDrainListener implements TaskDrainer.DrainListener {
+    public class PendingDrainListener implements TaskDrainer.DrainListener {
+        /* synthetic */ PendingDrainListener(DeviceInjectorSessionImpl deviceInjectorSessionImpl, PendingDrainListenerIA pendingDrainListenerIA) {
+            this();
+        }
+
         private PendingDrainListener() {
         }
 
@@ -96,8 +103,8 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    public DeviceInjectorSessionImpl(DeviceInjectorSession.StatusCallback statusCallback, Executor executor) {
-        this.mStatusCallback = statusCallback;
+    public DeviceInjectorSessionImpl(DeviceInjectorSession.StatusCallback callback, Executor executor) {
+        this.mStatusCallback = callback;
         this.mExecutor = executor;
         this.mStopDrainer = new TaskSingleDrainer(executor, new StopDrainListener(), "stop");
         this.mPendingDrainer = new TaskSingleDrainer(executor, new PendingDrainListener(), ImsConferenceState.STATUS_PENDING);
@@ -175,7 +182,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$binderDied$0() {
         synchronized (this.mInterfaceLock) {
             this.mStatusCallback.onError(1);
@@ -200,7 +206,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         return new DeviceInjectorRemoteDevice(device);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setRemoteInjectorSession(IDeviceInjectorSession injectorSession) {
         synchronized (this.mInterfaceLock) {
             if (injectorSession == null) {
@@ -232,12 +237,10 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setRemoteInjectorSession$1() {
         this.mStatusCallback.onSessionCreated(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionStarted(final String packageName, final String targetId, final String sourceId) {
         synchronized (this.mInterfaceLock) {
             if (this.mInjectorSession == null) {
@@ -262,12 +265,10 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInjectionStarted$2(String packageName, String targetId, String sourceId) {
         this.mStatusCallback.onInjectionStarted(packageName, targetId, sourceId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionStopped(final String packageName, final String targetId, final String sourceId) {
         synchronized (this.mInterfaceLock) {
             if (this.mInjectorSession == null) {
@@ -291,12 +292,10 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInjectionStopped$3(String packageName, String targetId, String sourceId) {
         this.mStatusCallback.onInjectionStopped(packageName, targetId, sourceId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionPendingStarted(final String packageName, final String targetId) {
         synchronized (this.mInterfaceLock) {
             if (this.mInjectorSession == null) {
@@ -321,12 +320,10 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInjectionPendingStarted$4(String packageName, String targetId) {
         this.mStatusCallback.onInjectionPendingStarted(packageName, targetId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionPendingStopped(final String packageName, final String targetId) {
         synchronized (this.mInterfaceLock) {
             if (this.mInjectorSession == null) {
@@ -350,12 +347,10 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInjectionPendingStopped$5(String packageName, String targetId) {
         this.mStatusCallback.onInjectionPendingStopped(packageName, targetId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onInjectionError(int errorCode) {
         Log.i(TAG, String.format("injector session error received, code %d", Integer.valueOf(errorCode)));
         synchronized (this.mInterfaceLock) {
@@ -391,7 +386,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyError(int errorCode) {
         if (this.mInjectorSession != null) {
             this.mStatusCallback.onError(errorCode);
@@ -469,7 +463,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$executeWithCleanIdentity$0(CompletableFuture task, Callable callable) {
             try {
                 task.complete(callable.call());
@@ -483,7 +476,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ String lambda$open$1(String targetId, int targetLensFacing) throws Exception {
             return this.mRemoteDevice.open(targetId, targetLensFacing);
         }
@@ -524,7 +516,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ CameraMetadataNative lambda$getCameraCharacteristic$2(DeviceInjectorSession.CharacteristicBuilder builder) throws Exception {
             return this.mRemoteDevice.getCameraCharacteristic(builder).getNativeMetadata();
         }
@@ -542,7 +533,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             })).intValue();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$createStream$3(Surface surface) throws Exception {
             return Integer.valueOf(this.mRemoteDevice.createStream(surface, SurfaceUtils.getSurfaceSize(surface)));
         }
@@ -559,7 +549,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Object lambda$deleteStream$4(int streamId) throws Exception {
             this.mRemoteDevice.deleteStream(streamId);
             return null;
@@ -588,7 +577,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ CameraMetadataNative lambda$createDefaultRequest$5(CaptureRequest.Builder builder) throws Exception {
             return this.mRemoteDevice.createDefaultRequest(builder).getNativeMetadata();
         }
@@ -606,7 +594,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Object lambda$submitRequest$6(CaptureRequest.Builder builder, int[] outputStreams, boolean streaming) throws Exception {
             this.mRemoteDevice.submitRequest(builder.build(), outputStreams, streaming);
             return null;
@@ -624,10 +611,48 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Object lambda$clearRequest$7() throws Exception {
             this.mRemoteDevice.clearRequest();
             return null;
+        }
+
+        /* renamed from: android.hardware.camera2.impl.DeviceInjectorSessionImpl$DeviceInjectorRemoteDevice$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 extends DeviceInjectorSession.RemoteDeviceCallback {
+            final /* synthetic */ IRemoteDeviceCallback val$callback;
+
+            AnonymousClass1(IRemoteDeviceCallback iRemoteDeviceCallback) {
+                callback = iRemoteDeviceCallback;
+            }
+
+            @Override // android.hardware.camera2.DeviceInjectorSession.RemoteDeviceCallback
+            public void onCaptureResult(Map<CaptureResult.Key, Object> result) throws RemoteException {
+                Objects.requireNonNull(result);
+                CameraMetadataNative metadata = new CameraMetadataNative();
+                for (Map.Entry<CaptureResult.Key, Object> entry : result.entrySet()) {
+                    metadata.set((CaptureResult.Key<CaptureResult.Key>) entry.getKey(), (CaptureResult.Key) entry.getValue());
+                }
+                callback.onCaptureResult(metadata);
+            }
+
+            @Override // android.hardware.camera2.DeviceInjectorSession.RemoteDeviceCallback
+            public void onError(int errorCode) throws RemoteException {
+                callback.onError(errorCode);
+            }
+
+            @Override // android.hardware.camera2.DeviceInjectorSession.RemoteDeviceCallback
+            public void onOrientationChanged(int orientation) throws RemoteException {
+                switch (orientation) {
+                    case 0:
+                    case 90:
+                    case 180:
+                    case 270:
+                        callback.onOrientationChanged(orientation);
+                        return;
+                    default:
+                        throw new IllegalArgumentException("orientation must be 0, 90, 180 or 270.");
+                }
+            }
         }
 
         @Override // android.hardware.IRemoteDevice
@@ -642,9 +667,14 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ Object lambda$setCallback$8(final IRemoteDeviceCallback callback) throws Exception {
+        public /* synthetic */ Object lambda$setCallback$8(IRemoteDeviceCallback callback) throws Exception {
             this.mRemoteDevice.setCallback(new DeviceInjectorSession.RemoteDeviceCallback() { // from class: android.hardware.camera2.impl.DeviceInjectorSessionImpl.DeviceInjectorRemoteDevice.1
+                final /* synthetic */ IRemoteDeviceCallback val$callback;
+
+                AnonymousClass1(IRemoteDeviceCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.hardware.camera2.DeviceInjectorSession.RemoteDeviceCallback
                 public void onCaptureResult(Map<CaptureResult.Key, Object> result) throws RemoteException {
                     Objects.requireNonNull(result);
@@ -689,7 +719,6 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Object lambda$close$9() throws Exception {
             this.mRemoteDevice.close();
             return null;
@@ -712,6 +741,10 @@ public class DeviceInjectorSessionImpl extends DeviceInjectorSession implements 
         private Set<Integer> mSceneModes;
         private int mSensorOrientation;
         private Set<Size> mStreamingSizes;
+
+        /* synthetic */ CharacteristicBuilderImpl(DeviceInjectorSessionImpl deviceInjectorSessionImpl, CharacteristicBuilderImplIA characteristicBuilderImplIA) {
+            this();
+        }
 
         private CharacteristicBuilderImpl() {
             this.mSensorOrientation = 0;

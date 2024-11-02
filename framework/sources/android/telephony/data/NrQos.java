@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class NrQos extends Qos implements Parcelable {
     public static final Parcelable.Creator<NrQos> CREATOR = new Parcelable.Creator<NrQos>() { // from class: android.telephony.data.NrQos.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NrQos createFromParcel(Parcel source) {
             return new NrQos(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrQos[] newArray(int size) {
             return new NrQos[size];
@@ -23,6 +24,10 @@ public final class NrQos extends Qos implements Parcelable {
     int averagingWindowMs;
     int fiveQi;
     int qosFlowId;
+
+    /* synthetic */ NrQos(Parcel parcel, NrQosIA nrQosIA) {
+        this(parcel);
+    }
 
     public NrQos(Qos.QosBandwidth downlink, Qos.QosBandwidth uplink, int qosFlowId, int fiveQi, int averagingWindowMs) {
         super(2, downlink, uplink);
@@ -92,5 +97,22 @@ public final class NrQos extends Qos implements Parcelable {
 
     public String toString() {
         return "NrQos { fiveQi=" + this.fiveQi + " downlink=" + this.downlink + " uplink=" + this.uplink + " qosFlowId=" + this.qosFlowId + " averagingWindowMs=" + this.averagingWindowMs + "}";
+    }
+
+    /* renamed from: android.telephony.data.NrQos$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NrQos> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrQos createFromParcel(Parcel source) {
+            return new NrQos(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrQos[] newArray(int size) {
+            return new NrQos[size];
+        }
     }
 }

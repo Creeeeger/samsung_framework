@@ -59,6 +59,21 @@ public class SearchDialog extends Dialog {
     private final Intent mVoiceWebSearchIntent;
     private Drawable mWorkingSpinner;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.SearchDialog$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_CONFIGURATION_CHANGED)) {
+                SearchDialog.this.onConfigurationChanged();
+            }
+        }
+    }
+
     static int resolveDialogTheme(Context context) {
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(R.attr.searchDialogTheme, outValue, true);
@@ -68,6 +83,9 @@ public class SearchDialog extends Dialog {
     public SearchDialog(Context context, SearchManager searchManager) {
         super(context, resolveDialogTheme(context));
         this.mConfChangeListener = new BroadcastReceiver() { // from class: android.app.SearchDialog.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 if (intent.getAction().equals(Intent.ACTION_CONFIGURATION_CHANGED)) {
@@ -76,12 +94,18 @@ public class SearchDialog extends Dialog {
             }
         };
         this.mOnCloseListener = new SearchView.OnCloseListener() { // from class: android.app.SearchDialog.3
+            AnonymousClass3() {
+            }
+
             @Override // android.widget.SearchView.OnCloseListener
             public boolean onClose() {
                 return SearchDialog.this.onClosePressed();
             }
         };
         this.mOnQueryChangeListener = new SearchView.OnQueryTextListener() { // from class: android.app.SearchDialog.4
+            AnonymousClass4() {
+            }
+
             @Override // android.widget.SearchView.OnQueryTextListener
             public boolean onQueryTextSubmit(String query) {
                 SearchDialog.this.dismiss();
@@ -94,6 +118,9 @@ public class SearchDialog extends Dialog {
             }
         };
         this.mOnSuggestionSelectionListener = new SearchView.OnSuggestionListener() { // from class: android.app.SearchDialog.5
+            AnonymousClass5() {
+            }
+
             @Override // android.widget.SearchView.OnSuggestionListener
             public boolean onSuggestionSelect(int position) {
                 return false;
@@ -114,7 +141,6 @@ public class SearchDialog extends Dialog {
         intent2.addFlags(268435456);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Dialog
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +166,9 @@ public class SearchDialog extends Dialog {
         View findViewById = findViewById(16908327);
         this.mCloseSearch = findViewById;
         findViewById.setOnClickListener(new View.OnClickListener() { // from class: android.app.SearchDialog.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 SearchDialog.this.dismiss();
@@ -153,6 +182,18 @@ public class SearchDialog extends Dialog {
         setWorking(false);
         this.mBadgeLabel.setVisibility(8);
         this.mSearchAutoCompleteImeOptions = this.mSearchAutoComplete.getImeOptions();
+    }
+
+    /* renamed from: android.app.SearchDialog$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 implements View.OnClickListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            SearchDialog.this.dismiss();
+        }
     }
 
     public boolean show(String initialQuery, boolean selectInitialQuery, ComponentName componentName, Bundle appSearchData) {
@@ -441,13 +482,63 @@ public class SearchDialog extends Dialog {
         cancel();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean onClosePressed() {
         if (isEmpty(this.mSearchAutoComplete)) {
             dismiss();
             return true;
         }
         return false;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.SearchDialog$3 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass3 implements SearchView.OnCloseListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.widget.SearchView.OnCloseListener
+        public boolean onClose() {
+            return SearchDialog.this.onClosePressed();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.SearchDialog$4 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass4 implements SearchView.OnQueryTextListener {
+        AnonymousClass4() {
+        }
+
+        @Override // android.widget.SearchView.OnQueryTextListener
+        public boolean onQueryTextSubmit(String query) {
+            SearchDialog.this.dismiss();
+            return false;
+        }
+
+        @Override // android.widget.SearchView.OnQueryTextListener
+        public boolean onQueryTextChange(String newText) {
+            return false;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.SearchDialog$5 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass5 implements SearchView.OnSuggestionListener {
+        AnonymousClass5() {
+        }
+
+        @Override // android.widget.SearchView.OnSuggestionListener
+        public boolean onSuggestionSelect(int position) {
+            return false;
+        }
+
+        @Override // android.widget.SearchView.OnSuggestionListener
+        public boolean onSuggestionClick(int position) {
+            SearchDialog.this.dismiss();
+            return false;
+        }
     }
 
     private void setUserQuery(String query) {

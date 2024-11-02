@@ -86,8 +86,9 @@ public interface IBiometricServiceLockoutResetCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IBiometricServiceLockoutResetCallback {
+        public static class Proxy implements IBiometricServiceLockoutResetCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

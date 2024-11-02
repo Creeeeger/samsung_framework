@@ -207,6 +207,32 @@ public class MtpDatabase implements AutoCloseable {
         return null;
     }
 
+    /* renamed from: android.mtp.MtpDatabase$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
+                MtpDatabase.this.mBatteryScale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 0);
+                int newLevel = intent.getIntExtra("level", 0);
+                if (newLevel != MtpDatabase.this.mBatteryLevel) {
+                    MtpDatabase.this.mBatteryLevel = newLevel;
+                    try {
+                        if (MtpDatabase.this.mServer != null) {
+                            MtpDatabase.this.mServer.sendDevicePropertyChanged(MtpConstants.DEVICE_PROPERTY_BATTERY_LEVEL);
+                        }
+                    } catch (NullPointerException ex) {
+                        Log.e(MtpDatabase.TAG, ex.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
     public MtpDatabase(Context context, String[] subDirectories) {
         CloseGuard closeGuard = CloseGuard.get();
         this.mCloseGuard = closeGuard;
@@ -216,6 +242,9 @@ public class MtpDatabase implements AutoCloseable {
         this.mSkipThumbForHost = false;
         this.mHostIsWindows = false;
         this.mBatteryReceiver = new BroadcastReceiver() { // from class: android.mtp.MtpDatabase.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -246,6 +275,9 @@ public class MtpDatabase implements AutoCloseable {
         this.mContext = (Context) Objects.requireNonNull(context);
         this.mMediaProvider = context.getContentResolver().acquireContentProviderClient("media");
         this.mManager = new MtpStorageManager(new MtpStorageManager.MtpNotifier() { // from class: android.mtp.MtpDatabase.2
+            AnonymousClass2() {
+            }
+
             @Override // android.mtp.MtpStorageManager.MtpNotifier
             public void sendObjectAdded(int id) {
                 if (MtpDatabase.this.mServer != null) {
@@ -273,6 +305,34 @@ public class MtpDatabase implements AutoCloseable {
             this.mDeviceType = 5;
         }
         closeGuard.open("close");
+    }
+
+    /* renamed from: android.mtp.MtpDatabase$2 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass2 extends MtpStorageManager.MtpNotifier {
+        AnonymousClass2() {
+        }
+
+        @Override // android.mtp.MtpStorageManager.MtpNotifier
+        public void sendObjectAdded(int id) {
+            if (MtpDatabase.this.mServer != null) {
+                MtpDatabase.this.mServer.sendObjectAdded(id);
+            }
+        }
+
+        @Override // android.mtp.MtpStorageManager.MtpNotifier
+        public void sendObjectRemoved(int id) {
+            if (MtpDatabase.this.mServer != null) {
+                MtpDatabase.this.mServer.sendObjectRemoved(id);
+            }
+        }
+
+        @Override // android.mtp.MtpStorageManager.MtpNotifier
+        public void sendObjectInfoChanged(int id) {
+            if (MtpDatabase.this.mServer != null) {
+                MtpDatabase.this.mServer.sendObjectInfoChanged(id);
+            }
+        }
     }
 
     public void setServer(MtpServer server) {
@@ -315,7 +375,6 @@ public class MtpDatabase implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Boolean lambda$addStorage$0() {
         return Boolean.valueOf(this.mHostIsWindows);
     }
@@ -351,8 +410,14 @@ public class MtpDatabase implements AutoCloseable {
         this.mStorageMap.remove(storage.getPath());
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x0086, code lost:            r19.deleteDatabase("device-properties");     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x0083, code lost:            if (r7 != null) goto L17;     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0086, code lost:
+    
+        r19.deleteDatabase("device-properties");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x0083, code lost:
+    
+        if (r7 != null) goto L54;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -890,11 +955,26 @@ public class MtpDatabase implements AutoCloseable {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0098, code lost:            if (r4 != null) goto L23;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x009a, code lost:            r4.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x00bf, code lost:            return getThumbnailProcess(r3, android.media.ThumbnailUtils.createImageThumbnail(new java.io.File(r3), new android.util.Size(256, 256), r5));     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x00c1, code lost:            android.util.Log.e(android.mtp.MtpDatabase.TAG, "cannot create thumbnail.");     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x00a9, code lost:            if (r4 == null) goto L50;     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0098, code lost:
+    
+        if (r4 != null) goto L78;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x009a, code lost:
+    
+        r4.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x00bf, code lost:
+    
+        return getThumbnailProcess(r3, android.media.ThumbnailUtils.createImageThumbnail(new java.io.File(r3), new android.util.Size(256, 256), r5));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x00c1, code lost:
+    
+        android.util.Log.e(android.mtp.MtpDatabase.TAG, "cannot create thumbnail.");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x00a9, code lost:
+    
+        if (r4 == null) goto L105;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1004,6 +1084,9 @@ public class MtpDatabase implements AutoCloseable {
         this.serviceComponent[0] = new ComponentName(AGENT_PACKAGE_NAME, AGENT_SERVICE_NAME);
         this.serviceComponent[1] = new ComponentName(SSM_PACKAGE_NAME, SSM_SERVICE_NAME);
         this.conn[0] = new ServiceConnection() { // from class: android.mtp.MtpDatabase.3
+            AnonymousClass3() {
+            }
+
             @Override // android.content.ServiceConnection
             public void onServiceDisconnected(ComponentName name) {
                 Log.d(MtpDatabase.TAG, "onServiceDisconnected()");
@@ -1025,6 +1108,9 @@ public class MtpDatabase implements AutoCloseable {
             }
         };
         this.conn[1] = new ServiceConnection() { // from class: android.mtp.MtpDatabase.4
+            AnonymousClass4() {
+            }
+
             @Override // android.content.ServiceConnection
             public void onServiceDisconnected(ComponentName name) {
                 Log.d(MtpDatabase.TAG, "onServiceDisconnected()");
@@ -1045,6 +1131,60 @@ public class MtpDatabase implements AutoCloseable {
                 }
             }
         };
+    }
+
+    /* renamed from: android.mtp.MtpDatabase$3 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass3 implements ServiceConnection {
+        AnonymousClass3() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(MtpDatabase.TAG, "onServiceDisconnected()");
+            MtpDatabase.this.mService[0] = null;
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MtpDatabase.this.mService[0] = new Messenger(service);
+            Log.d(MtpDatabase.TAG, "onServiceConnected()");
+            try {
+                Message msg = Message.obtain((Handler) null, 1);
+                msg.replyTo = MtpDatabase.this.mMessenger;
+                MtpDatabase.this.mService[0].send(msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d(MtpDatabase.TAG, "say hello exception");
+            }
+        }
+    }
+
+    /* renamed from: android.mtp.MtpDatabase$4 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass4 implements ServiceConnection {
+        AnonymousClass4() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(MtpDatabase.TAG, "onServiceDisconnected()");
+            MtpDatabase.this.mService[1] = null;
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MtpDatabase.this.mService[1] = new Messenger(service);
+            Log.d(MtpDatabase.TAG, "onServiceConnected()");
+            try {
+                Message msg = Message.obtain((Handler) null, 1);
+                msg.replyTo = MtpDatabase.this.mMessenger;
+                MtpDatabase.this.mService[1].send(msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d(MtpDatabase.TAG, "say hello exception");
+            }
+        }
     }
 
     public static final byte[] intToByteArray(int value) {

@@ -8,13 +8,14 @@ import android.util.proto.ProtoOutputStream;
 /* loaded from: classes.dex */
 public class FeatureInfo implements Parcelable {
     public static final Parcelable.Creator<FeatureInfo> CREATOR = new Parcelable.Creator<FeatureInfo>() { // from class: android.content.pm.FeatureInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FeatureInfo createFromParcel(Parcel source) {
             return new FeatureInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FeatureInfo[] newArray(int size) {
             return new FeatureInfo[size];
@@ -26,6 +27,10 @@ public class FeatureInfo implements Parcelable {
     public String name;
     public int reqGlEsVersion;
     public int version;
+
+    /* synthetic */ FeatureInfo(Parcel parcel, FeatureInfoIA featureInfoIA) {
+        this(parcel);
+    }
 
     public FeatureInfo() {
     }
@@ -67,6 +72,23 @@ public class FeatureInfo implements Parcelable {
         proto.write(1138166333443L, getGlEsVersion());
         proto.write(1120986464260L, this.flags);
         proto.end(token);
+    }
+
+    /* renamed from: android.content.pm.FeatureInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FeatureInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FeatureInfo createFromParcel(Parcel source) {
+            return new FeatureInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FeatureInfo[] newArray(int size) {
+            return new FeatureInfo[size];
+        }
     }
 
     private FeatureInfo(Parcel source) {

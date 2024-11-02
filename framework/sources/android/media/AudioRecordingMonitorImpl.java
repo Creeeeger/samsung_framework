@@ -30,6 +30,9 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
     private final Object mRecordCallbackLock = new Object();
     private LinkedList<AudioRecordingCallbackInfo> mRecordCallbackList = new LinkedList<>();
     private final IRecordingConfigDispatcher mRecordingCallback = new IRecordingConfigDispatcher.Stub() { // from class: android.media.AudioRecordingMonitorImpl.1
+        AnonymousClass1() {
+        }
+
         @Override // android.media.IRecordingConfigDispatcher
         public void dispatchRecordingConfigChange(List<AudioRecordingConfiguration> configs) {
             AudioRecordingConfiguration config = AudioRecordingMonitorImpl.this.getMyConfig(configs);
@@ -44,7 +47,6 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioRecordingMonitorImpl(AudioRecordingMonitorClient client) {
         this.mClient = client;
     }
@@ -101,7 +103,6 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class AudioRecordingCallbackInfo {
         final AudioManager.AudioRecordingCallback mCb;
@@ -110,6 +111,27 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
         AudioRecordingCallbackInfo(Executor e, AudioManager.AudioRecordingCallback cb) {
             this.mExecutor = e;
             this.mCb = cb;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.AudioRecordingMonitorImpl$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends IRecordingConfigDispatcher.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.IRecordingConfigDispatcher
+        public void dispatchRecordingConfigChange(List<AudioRecordingConfiguration> configs) {
+            AudioRecordingConfiguration config = AudioRecordingMonitorImpl.this.getMyConfig(configs);
+            if (config != null) {
+                synchronized (AudioRecordingMonitorImpl.this.mRecordCallbackLock) {
+                    if (AudioRecordingMonitorImpl.this.mRecordingCallbackHandler != null) {
+                        Message m = AudioRecordingMonitorImpl.this.mRecordingCallbackHandler.obtainMessage(1, config);
+                        AudioRecordingMonitorImpl.this.mRecordingCallbackHandler.sendMessage(m);
+                    }
+                }
+            }
         }
     }
 
@@ -131,8 +153,7 @@ public class AudioRecordingMonitorImpl implements AudioRecordingMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.AudioRecordingMonitorImpl$2, reason: invalid class name */
+    /* renamed from: android.media.AudioRecordingMonitorImpl$2 */
     /* loaded from: classes2.dex */
     public class AnonymousClass2 extends Handler {
         AnonymousClass2(Looper looper) {

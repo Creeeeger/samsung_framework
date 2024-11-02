@@ -13,7 +13,6 @@ public class BaseObj {
     private String mName;
     RenderScript mRS;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BaseObj(long id, RenderScript rs) {
         rs.validate();
         this.mRS = rs;
@@ -21,7 +20,6 @@ public class BaseObj {
         this.mDestroyed = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setID(long id) {
         if (this.mID != 0) {
             throw new RSRuntimeException("Internal Error, reset of object ID.");
@@ -29,7 +27,6 @@ public class BaseObj {
         this.mID = id;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getID(RenderScript rs) {
         this.mRS.validate();
         if (this.mDestroyed) {
@@ -45,7 +42,6 @@ public class BaseObj {
         return j;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void checkValid() {
         if (this.mID == 0) {
             throw new RSIllegalArgumentException("Invalid object.");
@@ -99,7 +95,6 @@ public class BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void finalize() throws Throwable {
         try {
             CloseGuard closeGuard = this.guard;
@@ -119,7 +114,6 @@ public class BaseObj {
         helpDestroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateFromNative() {
         this.mRS.validate();
         RenderScript renderScript = this.mRS;

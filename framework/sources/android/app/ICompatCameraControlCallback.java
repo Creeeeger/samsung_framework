@@ -94,8 +94,9 @@ public interface ICompatCameraControlCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ICompatCameraControlCallback {
+        public static class Proxy implements ICompatCameraControlCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

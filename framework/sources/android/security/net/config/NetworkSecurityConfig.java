@@ -25,6 +25,10 @@ public final class NetworkSecurityConfig {
     private NetworkSecurityTrustManager mTrustManager;
     private final Object mTrustManagerLock;
 
+    /* synthetic */ NetworkSecurityConfig(boolean z, boolean z2, PinSet pinSet, List list, NetworkSecurityConfigIA networkSecurityConfigIA) {
+        this(z, z2, pinSet, list);
+    }
+
     private NetworkSecurityConfig(boolean cleartextTrafficPermitted, boolean hstsEnforced, PinSet pins, List<CertificatesEntryRef> certificatesEntryRefs) {
         this.mAnchorsLock = new Object();
         this.mTrustManagerLock = new Object();
@@ -33,11 +37,27 @@ public final class NetworkSecurityConfig {
         this.mPins = pins;
         this.mCertificatesEntryRefs = certificatesEntryRefs;
         Collections.sort(certificatesEntryRefs, new Comparator<CertificatesEntryRef>() { // from class: android.security.net.config.NetworkSecurityConfig.1
+            AnonymousClass1() {
+            }
+
             @Override // java.util.Comparator
             public int compare(CertificatesEntryRef certificatesEntryRef, CertificatesEntryRef certificatesEntryRef2) {
                 return certificatesEntryRef.overridesPins() ? certificatesEntryRef2.overridesPins() ? 0 : -1 : certificatesEntryRef2.overridesPins() ? 1 : 0;
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.security.net.config.NetworkSecurityConfig$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements Comparator<CertificatesEntryRef> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(CertificatesEntryRef certificatesEntryRef, CertificatesEntryRef certificatesEntryRef2) {
+            return certificatesEntryRef.overridesPins() ? certificatesEntryRef2.overridesPins() ? 0 : -1 : certificatesEntryRef2.overridesPins() ? 1 : 0;
+        }
     }
 
     public Set<TrustAnchor> getTrustAnchors() {
@@ -240,7 +260,6 @@ public final class NetworkSecurityConfig {
             return this.mCertificatesEntryRefs != null;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public List<CertificatesEntryRef> getCertificatesEntryRefs() {
             return this.mCertificatesEntryRefs;
         }

@@ -34,7 +34,6 @@ public class ParseTypeImpl implements ParseInput, ParseResult<Object> {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$forParsingWithoutPlatformCompat$0(long changeId, String packageName, int targetSdkVersion) {
         int gateSdkVersion = ParseInput.DeferredError.getTargetSdkForChange(changeId);
         return gateSdkVersion != -1 && targetSdkVersion > gateSdkVersion;
@@ -50,7 +49,6 @@ public class ParseTypeImpl implements ParseInput, ParseResult<Object> {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$forDefaultParsing$1(IPlatformCompat platformCompat, long changeId, String packageName, int targetSdkVersion) {
         ApplicationInfo appInfo = new ApplicationInfo();
         appInfo.packageName = packageName;

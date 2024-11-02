@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">ទូរសព្ទ​របស់​អ្នក​អស្ថិរភាព ដោយសារ​កាត SD ដែល​បាន​ដំឡើង​កម្មវិធី​លើ​នោះ ត្រូវ​បាន​ដោះ​ចេញ។ ទូរសព្ទ​របស់​អ្នក​នឹង​ចាប់ផ្ដើម​ឡើងវិញ​ក្នុង​ពេល %d វិនាទី ដើម្បី​ត្រឡប់​ទៅ​ធម្មតា​វិញ។ រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក​នានា មុនពេល​ទូរសព្ទ​ចាប់ផ្ដើម​ឡើងវិញ។</item>
+        <item quantity="other">ថេប្លិត​របស់​អ្នក​អស្ថិរភាព ដោយសារ​កាត SD ដែល​បាន​ដំឡើង​កម្មវិធី​លើ​នោះ ត្រូវ​បាន​ដោះ​ចេញ។ ថេប្លិត​របស់​អ្នក​នឹង​ចាប់ផ្ដើម​ឡើងវិញ​ក្នុង​ពេល %d វិនាទី​ទៀត ដើម្បី​ត្រឡប់​ទៅ​ធម្មតា​វិញ។ រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក​នានា មុនពេល​ថេប្លិត​ចាប់ផ្ដើម​ឡើងវិញ។</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">ទូរសព្ទ​របស់​អ្នក​នឹង​ចាប់ផ្ដើម​ឡើងវិញ​ក្នុង​ពេល %d វិនាទី​ទៀត</item>
+        <item quantity="other">ថេប្លិត​របស់​អ្នក​នឹង​ចាប់ផ្ដើម​ឡើងវិញ​ក្នុង​ពេល %d វិនាទី​ទៀត</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

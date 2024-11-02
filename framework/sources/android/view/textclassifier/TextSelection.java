@@ -15,13 +15,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TextSelection implements Parcelable {
     public static final Parcelable.Creator<TextSelection> CREATOR = new Parcelable.Creator<TextSelection>() { // from class: android.view.textclassifier.TextSelection.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TextSelection createFromParcel(Parcel in) {
             return new TextSelection(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextSelection[] newArray(int size) {
             return new TextSelection[size];
@@ -33,6 +34,14 @@ public final class TextSelection implements Parcelable {
     private final String mId;
     private final int mStartIndex;
     private final TextClassification mTextClassification;
+
+    /* synthetic */ TextSelection(int i, int i2, Map map, String str, TextClassification textClassification, Bundle bundle, TextSelectionIA textSelectionIA) {
+        this(i, i2, map, str, textClassification, bundle);
+    }
+
+    /* synthetic */ TextSelection(Parcel parcel, TextSelectionIA textSelectionIA) {
+        this(parcel);
+    }
 
     private TextSelection(int startIndex, int endIndex, Map<String, Float> entityConfidence, String id, TextClassification textClassification, Bundle extras) {
         this.mStartIndex = startIndex;
@@ -143,13 +152,14 @@ public final class TextSelection implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class Request implements Parcelable {
         public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() { // from class: android.view.textclassifier.TextSelection.Request.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Request createFromParcel(Parcel in) {
                 return Request.readFromParcel(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request[] newArray(int size) {
                 return new Request[size];
@@ -163,6 +173,10 @@ public final class TextSelection implements Parcelable {
         private final int mStartIndex;
         private SystemTextClassifierMetadata mSystemTcMetadata;
         private final CharSequence mText;
+
+        /* synthetic */ Request(CharSequence charSequence, int i, int i2, LocaleList localeList, boolean z, boolean z2, Bundle bundle, RequestIA requestIA) {
+            this(charSequence, i, i2, localeList, z, z2, bundle);
+        }
 
         private Request(CharSequence text, int startIndex, int endIndex, LocaleList defaultLocales, boolean darkLaunchAllowed, boolean includeTextClassification, Bundle extras) {
             this.mText = text;
@@ -286,7 +300,6 @@ public final class TextSelection implements Parcelable {
             dest.writeBoolean(this.mIncludeTextClassification);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static Request readFromParcel(Parcel in) {
             CharSequence text = in.readCharSequence();
             int startIndex = in.readInt();
@@ -298,6 +311,23 @@ public final class TextSelection implements Parcelable {
             Request request = new Request(text, startIndex, endIndex, defaultLocales, false, includeTextClassification, extras);
             request.setSystemTextClassifierMetadata(systemTcMetadata);
             return request;
+        }
+
+        /* renamed from: android.view.textclassifier.TextSelection$Request$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Request> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Request createFromParcel(Parcel in) {
+                return Request.readFromParcel(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Request[] newArray(int size) {
+                return new Request[size];
+            }
         }
     }
 
@@ -314,6 +344,23 @@ public final class TextSelection implements Parcelable {
         dest.writeString(this.mId);
         dest.writeBundle(this.mExtras);
         dest.writeParcelable(this.mTextClassification, flags);
+    }
+
+    /* renamed from: android.view.textclassifier.TextSelection$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TextSelection> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextSelection createFromParcel(Parcel in) {
+            return new TextSelection(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextSelection[] newArray(int size) {
+            return new TextSelection[size];
+        }
     }
 
     private TextSelection(Parcel in) {

@@ -337,7 +337,7 @@
     <string name="ext_media_unsupported_notification_message">Ин дастгоҳ ин %s-ро дастгирӣ намекунад. Барои бо формати дастгирӣ мешуда танзим кардан, зарба занед.</string>
     <string name="ext_media_unsupported_notification_title">%s дастгирӣ карда намешавад</string>
     <string name="ext_storage_bad_removal_button">Аз нав оғоз кардан</string>
-    <string name="ext_storage_bad_removal_title">Телефонро аз нав ба кор дароред</string>
+    <string name="ext_storage_bad_removal_title">Планшетро аз нав ба кор дароред</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message">Шумо ҳақиқатан мехоҳед корти SD­ро формат кунед? Ҳамаи иттилооти дохили корт нест карда мешавад.</string>
     <string name="extmedia_format_message_usbhost">Ҳамаи файлҳои дар захирагоҳи USB захирашуда кӯр карда мешаванд. Ин амал бебозгашт аст.</string>
@@ -598,16 +598,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Садо дар дастгоҳи аудиоии Bluetooth пахш карда мешавад. Барои инро хомӯш кардан, инҷо зарба занед</string>
     <string name="multisound_sound_via_headphone">Садои %s тавассути гӯшмонакҳо пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
     <string name="multisound_sound_via_headphone_multiselection">Садо тавассути гӯшмонакҳо пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
-    <string name="multisound_sound_via_phone_speaker">Садои %s тавассути баландгӯяки телефон пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Садо тавассути баландгӯяки телефон пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
+    <string name="multisound_sound_via_phone_speaker">Садои %s тавассути баландгӯяки планшет пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Садо тавассути баландгӯяки планшет пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
     <string name="multisound_sound_via_usb_audio">Садои %s тавассути дастгоҳи аудиоии USB пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Садо тавассути дастгоҳи аудиоии USB пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
     <string name="multisound_title">Ҷудокунии садои барномаҳо</string>
     <string name="multisound_turn_off_multisound">Хомӯш кардан</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s дар Samsung DeX иҷро намешавад. Кӯшиш кунед, ки дар реҷаи телефон иҷро кунед.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Иҷрои %s дар Samsung DeX ғайриимкон аст. Он барои экранҳои Асосии телефонҳо пешбинӣ нашудааст.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Баъзе бозиҳо танҳо дар экранҳои ламсӣ кор мекунанд. Агар ҷузъҳои идоракунии муш дар Samsung DeX кор накунанд, ба ҷои онҳо дар реҷаи телефон бозӣ кунед.</string>
-    <string name="my_device">Ин телефон</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Иҷрои %s дар Samsung DeX ғайриимкон аст. Онро дар реҷаи планшет ба кор дароред.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Иҷрои %s дар Samsung DeX ғайриимкон аст. Он барои экранҳои Асосии планшетҳо пешбинӣ нашудааст.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Баъзе бозиҳо танҳо дар экранҳои ламсӣ кор мекунанд. Агар ҷузъҳои идоракунии муш дар Samsung DeX кор накунанд, ба ҷои онҳо дар реҷаи планшет бозӣ кунед.</string>
+    <string name="my_device">Ин планшет</string>
     <string name="network_locked_sim_dialog_message_ais">SIM-корти шумо бо ин телефон ба таври пурра кор намекунад, зеро ки он ба шарту шароитҳои обунаи шумо мувофиқат намекунад. Агар шумо оид ба ин масъала ягон савол ё ниёз барои маълумоти бештар дошта бошед, ба Маркази хизматрасонии муштариёни Samsung ё ба дуконе, ки ин маҳсулотро ба шумо фурӯхт, муроҷиат кунед.</string>
     <string name="network_locked_sim_notification_text">SIM‑корти беэътибор дарҷ карда шудааст.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -800,7 +800,7 @@
     <string name="policydesc_allow_desktopsync">Пешгирӣ кардани истифодаи ҳамоҳангсозӣ бо компютер.</string>
     <string name="policydesc_allow_internetsharing">Пешгирӣ кардани истифодаи Нуқтаи дастрасии мобилӣ.</string>
     <string name="policydesc_allow_irda">Пешгирӣ кардани истифодаи IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Пешгирӣ кардани истифодаи почтаи POP ва IMAP дар телефон.</string>
+    <string name="policydesc_allow_popimapemail">Пешгирӣ кардани истифодаи почтаи POP ва IMAP дар планшет.</string>
     <string name="policydesc_allow_storagecard">Пешгирӣ кардани истифодаи кортҳои SD.</string>
     <string name="policydesc_allow_textmessaging">Пешгирӣ кардани истифодаи паёмнависии матнӣ ва мултимедиявӣ.</string>
     <string name="policydesc_allow_thirdParty">Ин барнома метавонад ба иҷро шудани барномаҳои аслӣ имкон надиҳад.</string>
@@ -846,7 +846,7 @@
     <string name="pwd_change_enforced">Сиёсати амният талаб мекунад, ки пароли худро тағйир диҳед.</string>
     <string name="recording_fail">Истифодаи микрофон дар %1$s ҳангоми дар %2$s истифода шуданаш ғайриимкон аст.</string>
     <string name="recording_popup">%s микрофонро истифода мебарад.</string>
-    <string name="recording_popup_device">Телефон</string>
+    <string name="recording_popup_device">Планшет</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth-микрофонро истифода бурда истодааст.</string>
     <string name="recording_popup_with_device">%1$s микрофони %2$s-ро истифода бурда истодааст.</string>
     <string name="redo">Такрор к</string>
@@ -912,12 +912,12 @@
     <string name="screencapture_restrict">Сиёсати амният гирифтани аксҳои экранро пешгирӣ мекунад.</string>
     <string name="sd_card_unavailable_message">Шумо корти SD-ро истифода бурда наметавонед, зеро ҳангоми андохта шуданаш профили корбари дигаре истифода шуда истода буд.</string>
     <string name="sd_card_unavailable_title">Корти SD дастнорас аст</string>
-    <string name="sdcard_bad_removal_message">Корти SD ба таври эмин ҷудо карда нашуд. Барои он, ки телефон ногаҳон аз нав ба кор надарояд, иттилооти захира нашударо захира карда, онро ҳозир аз нав ба кор дароред.</string>
+    <string name="sdcard_bad_removal_message">Корти SD ба таври эмин ҷудо карда нашуд. Барои он, ки планшет ногаҳон аз нав ба кор надарояд, иттилооти захира нашударо захира карда, онро ҳозир аз нав ба кор дароред.</string>
     <string name="sdcard_batch_decrypt_noti_content">Аз рамзбандӣ озод кардани корти SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Рамзбандии корти SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Корти SD­и рамзбанд бояд пеш аз истифода аз рамзбандӣ озод карда шавад. Ин метавонад зиёда аз як соат гирад. Батареяро барқ диҳед ва барқдиҳакро то ба охир расидани озодкунӣ аз рамзбандӣ ҷудо накунед. Қатъ кардани раванди озодкунӣ метавонад сабаби аз даст додани ҳамаи иттилоот ё қисми он шавад.</string>
     <string name="sdcard_decrypt_err_notification">Ҳангоми озод кардани корти SD аз рамзбандӣ хатогие ба миён омад.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Баъзе файлҳои дохили корти SD дар дастгоҳи дигар рамзбандӣ карда шудаанд ва наметавонанд дар ин телефон истифода бурда шаванд.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Баъзе файлҳои дохили корти SD дар дастгоҳи дигар рамзбандӣ карда шудаанд ва наметавонанд дар ин планшет истифода бурда шаванд.</string>
     <string name="sdcard_decrypt_notification">Корти SD аз рамзбандӣ озод карда шуд.</string>
     <string name="sdcard_decrypt_title_notification">Рамзбандии корти SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Рамзкушоии корти SD…</string>
@@ -1247,7 +1247,7 @@
     <string name="usb_abnormal_reset_title">Пайвасти USB ноустувор аст</string>
     <string name="usb_abnormal_reset_toast">Пайвасти USB ноустувор аст. Симро канда, аз нав васл кунед, ё сими дигареро истифода баред.</string>
     <string name="usb_accessory_notification_title">Таҷҳизоти USB пайваст карда шуд.</string>
-    <string name="usb_bad_removal_message">Захирагоҳи USB ба таври эмин ҷудо карда нашуд. Барои он, ки телефон ногаҳон аз нав ба кор надарояд, иттилооти захира нашударо захира карда, онро ҳозир аз нав ба кор дароред.</string>
+    <string name="usb_bad_removal_message">Захирагоҳи USB ба таври эмин ҷудо карда нашуд. Барои он, ки планшет ногаҳон аз нав ба кор надарояд, иттилооти захира нашударо захира карда, онро ҳозир аз нав ба кор дароред.</string>
     <string name="usb_blocked_by_emergency_mode">Баъзе функсияҳои USB дар реҷаи Фавқулода дастнорасанд.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ҳангоми фаъол будани реҷаи Сарфаи ҳадди аксари барқ истифодаи функсияҳои марбут ба дастгоҳи пайвастшудаи USB ғайриимкон аст.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Ҳангоми фурӯзон будани реҷаи Сарфаи ҳадди аксари барқ баъзе функсияҳои USB метавонанд маҳдуд карда шаванд.</string>
@@ -1256,18 +1256,18 @@
     <string name="usb_camera_connected_notification_title">Дастгоҳи медиа пайваст карда шуд</string>
     <string name="usb_camera_disconnected_notification_title">Дастгоҳи медиа ҷудо карда шуд</string>
     <string name="usb_cd_installer_notification_title">Навсозии нармафзор</string>
-    <string name="usb_charing_only_notification_title">Барқдиҳӣ тавассути USB</string>
+    <string name="usb_charing_only_notification_title">Пайвастшуда</string>
     <string name="usb_debugging_only_notification_title">Танҳо ислоҳи носозиҳо</string>
     <string name="usb_host_Unknown_device_connected_notification_title">Дастгоҳи номаълуми USB пайваст шуд.</string>
     <string name="usb_host_cable_connected_notification_title">Пайвасткунаки USB пайваст карда шуд.</string>
     <string name="usb_host_cable_disconnected_notification_title">Пайвасткунаки USB ҷудо карда шуд.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Дастрас кардани ин дастгоҳ ғайриимкон аст. Дастгоҳи пайвастшуда манбаъи берунии барқро талаб мекунад.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Дастгоҳи USB-и пурқувват пайваст шуд.</string>
-    <string name="usb_host_resource_exceed_message">Захираҳои USB-контроллери телефони шумо барои пайваст кардани ин дастгоҳ намерасанд. Дастгоҳро ҷудо карда, кӯшиши пайваст кардани онро такрор кунед.</string>
+    <string name="usb_host_resource_exceed_message">Захираҳои USB-контроллери планшети шумо барои пайваст кардани ин дастгоҳ намерасанд. Дастгоҳро ҷудо карда, кӯшиши пайваст кардани онро такрор кунед.</string>
     <string name="usb_host_resource_exceed_title">Захираҳои USB-контроллер намерасанд</string>
-    <string name="usb_hub_depth_exceed_message">Ин телефон танҳо то 5 пайвасти якбораи USB-консентраторро дастгирӣ мекунад.</string>
+    <string name="usb_hub_depth_exceed_message">Ин планшет танҳо то 5 пайвасти якбораи USB-консентраторро дастгирӣ мекунад.</string>
     <string name="usb_hub_depth_exceed_title">Пйвстҳ ҳадди аксар USB-кнснтртр</string>
-    <string name="usb_hub_power_exceed_message">Телефони шумо барои ин дастгоҳи USB барқӣ кофӣ таъмин карда наметавонад. Қабл аз ин дастгоҳро ба телефон пайваст кардан, онро ба USB-консентратор пайваст кунед.</string>
+    <string name="usb_hub_power_exceed_message">Планшети шумо барои ин дастгоҳи USB барқӣ кофӣ таъмин карда наметавонад. Қабл аз ин дастгоҳро ба планшет пайваст кардан, онро ба USB-консентратор пайваст кунед.</string>
     <string name="usb_increase_battery_usage">Пайвасти USB метавонад истеъмоли барқи батареяро бештар кунад.</string>
     <string name="usb_keyboard_connected_notification_title">Клавиатура пайваст карда шуд</string>
     <string name="usb_keyboard_disconnected_notification_title">Клавиатура ҷудо карда шуд</string>
@@ -1300,8 +1300,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">Захирагагоҳи оммавии USB ғайричашмдошт ҷудо карда шуд.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Захирагоҳи оммавии USB пайваст шуд</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Захирагоҳи оммавии USB бехатар ҷудо карда шуд.</string>
-    <string name="usb_unblock_by_screen_unlock">Барои дастгоҳи USB-и пайвастшударо истифода бурдан, телефонро озод кунед.</string>
-    <string name="usb_unsupport_accessory_message">Телефони шумо ин дастгоҳи USB-ро дастгирӣ намекунад.</string>
+    <string name="usb_unblock_by_screen_unlock">Барои дастгоҳи USB-и пайвастшударо истифода бурдан, планшетро озод кунед.</string>
+    <string name="usb_unsupport_accessory_message">Планшети шумо ин дастгоҳи USB-ро дастгирӣ намекунад.</string>
     <string name="usb_unsupport_accessory_title">Дастгоҳи USB дастгирӣ намешавад</string>
     <string name="usb_unsupported_device">Дастгоҳи пайвастшудаи USB дастгирӣ карда намешавад.</string>
     <string name="usb_unsupported_device_title">Дастгоҳ дастгирӣ намешавад</string>
@@ -1319,19 +1319,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Шумо метавонед бо истифодаи бодкаш ё фен (танҳо ҳавои хунук) портро зудтар хушк кунед.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Дар порти барқдиҳӣ/USB намӣ ё ашёи бегона зоҳир карда шуд.
 
-Порти барқдиҳӣ/USB-ро аз ашёҳои бегона, ба мисли чанг ё чирк, озод кунед. Барои ба телефон зарар нарасонидан, то тоза шудани порти барқдиҳӣ ва нест шудани намӣ ба он ягон чӣ наандозед.
+Порти барқдиҳӣ/USB-ро аз ашёҳои бегона, ба мисли чанг ё чирк, озод кунед. Барои ба планшет зарар нарасонидан, то тоза шудани порти барқдиҳӣ ва нест шудани намӣ ба он ягон чӣ наандозед.
 
 Барои портро хушк кардан, телефонро таконда, хушк шуданашро интизор шавед, ки метавонад якчанд соат гирад. Шумо метавонед бо истифодаи бодкаш ё фен (танҳо ҳавои хунук) портро зудтар хушк кунед."</string>
     <string name="usb_water_dialg_positive_button">ОК</string>
     <string name="usb_water_dialg_support_wireless_charging">"Дар порти барқдиҳӣ/USB намӣ ё ашёи бегона зоҳир карда шуд.
 
-Порти барқдиҳӣ/USB-ро аз ашёҳои бегона, ба мисли чанг ё чирк, озод кунед. Барои ба телефон зарар нарасонидан, то тоза шудани порти барқдиҳӣ ва нест шудани намӣ ба он ягон чӣ наандозед.
+Порти барқдиҳӣ/USB-ро аз ашёҳои бегона, ба мисли чанг ё чирк, озод кунед. Барои ба планшет зарар нарасонидан, то тоза шудани порти барқдиҳӣ ва нест шудани намӣ ба он ягон чӣ наандозед.
 
-Барои портро хушк кардан, телефонро таконда, хушк шуданашро интизор шавед, ки метавонад якчанд соат гирад. Шумо метавонед портро бо истифодаи бодкаш ё фен (танҳо ҳавои хунук) зудтар хушк кунед.
+Барои портро хушк кардан, планшетро таконда, хушк шуданашро интизор шавед, ки метавонад якчанд соат гирад. Шумо метавонед портро бо истифодаи бодкаш ё фен (танҳо ҳавои хунук) зудтар хушк кунед.
 
-Бо вуҷуди ин, телефонро ба таври бесим барқ додан мумкин аст."</string>
+Бо вуҷуди ин, планшетро ба таври бесим барқ додан мумкин аст."</string>
     <string name="usb_water_notification_content">Дар порти барқдиҳӣ/USB намӣ ё ашёи бегона қарор дорад. Пеш аз барқдиҳӣ тафтиш кунед.</string>
-    <string name="usb_water_notification_message">Дар барқдиҳанда/порти USB-и шумо намӣ ошкор шуд. Қабл аз телефонро барқ додан, мутмаин шавед, ки он хушк мебошад. Пурра хушк шуданаш метавонад андак вақт гирад.</string>
+    <string name="usb_water_notification_message">Дар барқдиҳанда/порти USB-и шумо намӣ ошкор шуд. Қабл аз планшетро барқ додан, мутмаин шавед, ки он хушк мебошад. Пурра хушк шуданаш метавонад андак вақт гирад.</string>
     <string name="usb_water_notification_message_button">Тафсилот</string>
     <string name="usb_water_notification_title">Порти барқдиҳак/USB-ро тафтиш к</string>
     <string name="usbhostStorage_restrict">Сиёсати амният истифодаи захирагоҳи ҳости USB­ро пешгирӣ мекунад.</string>

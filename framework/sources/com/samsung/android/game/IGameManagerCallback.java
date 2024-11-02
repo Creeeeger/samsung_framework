@@ -98,8 +98,9 @@ public interface IGameManagerCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGameManagerCallback {
+        public static class Proxy implements IGameManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

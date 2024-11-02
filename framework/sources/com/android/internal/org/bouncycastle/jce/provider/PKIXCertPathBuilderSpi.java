@@ -27,7 +27,6 @@ public class PKIXCertPathBuilderSpi extends CertPathBuilderSpi {
         this(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PKIXCertPathBuilderSpi(boolean isForCRLCheck) {
         this.isForCRLCheck = isForCRLCheck;
     }

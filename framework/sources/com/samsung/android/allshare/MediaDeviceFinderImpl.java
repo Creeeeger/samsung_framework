@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class MediaDeviceFinderImpl extends MediaDeviceFinder {
     private static final String TAG_CLASS = "MediaDeviceFinderImpl";
@@ -51,7 +50,6 @@ public final class MediaDeviceFinderImpl extends MediaDeviceFinder {
         mDeviceEventToDeviceTypeMap.put(AllShareEvent.EVENT_DMR_DISCOVERY, Device.DeviceType.UNKNOWN);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MediaDeviceFinderImpl(IAllShareConnector connector) {
         this.mAllShareConnector = null;
         if (connector == null) {
@@ -62,8 +60,9 @@ public final class MediaDeviceFinderImpl extends MediaDeviceFinder {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    static class AllShareEventHandlerForMediaDevice extends AllShareEventHandler {
+    public static class AllShareEventHandlerForMediaDevice extends AllShareEventHandler {
         private WeakReference<MediaDeviceFinderImpl> mWeakRef;
 
         public AllShareEventHandlerForMediaDevice(Looper looper, MediaDeviceFinderImpl mdfi) {
@@ -236,7 +235,6 @@ public final class MediaDeviceFinderImpl extends MediaDeviceFinder {
         return getDeviceFromMap(req_bundle, deviceType);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeDeviceFromMap(Bundle bundle, Device.DeviceType type) {
         if (bundle == null) {
             DLog.w_api(TAG_CLASS, "removeDeviceFromMap : bundle is null");
@@ -309,8 +307,7 @@ public final class MediaDeviceFinderImpl extends MediaDeviceFinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.MediaDeviceFinderImpl$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.allshare.MediaDeviceFinderImpl$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Device$DeviceType;
@@ -341,7 +338,6 @@ public final class MediaDeviceFinderImpl extends MediaDeviceFinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Device getDeviceFromMap(Bundle bundle, Device.DeviceType type) {
         DeviceImpl deviceImpl;
         if (bundle == null) {
@@ -438,10 +434,13 @@ public final class MediaDeviceFinderImpl extends MediaDeviceFinder {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class SyncActionInvoker {
         private CVMessage mMessage;
+
+        /* synthetic */ SyncActionInvoker(MediaDeviceFinderImpl mediaDeviceFinderImpl, String str, SyncActionInvokerIA syncActionInvokerIA) {
+            this(str);
+        }
 
         private SyncActionInvoker() {
             this.mMessage = new CVMessage();

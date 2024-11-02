@@ -6,7 +6,6 @@ import java.security.spec.KeySpec;
 public class ECKeySpec implements KeySpec {
     private ECParameterSpec spec;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ECKeySpec(ECParameterSpec spec) {
         this.spec = spec;
     }

@@ -12,13 +12,14 @@ import java.lang.annotation.Annotation;
 /* loaded from: classes4.dex */
 public final class VerifiedDisplayHash implements Parcelable {
     public static final Parcelable.Creator<VerifiedDisplayHash> CREATOR = new Parcelable.Creator<VerifiedDisplayHash>() { // from class: android.view.displayhash.VerifiedDisplayHash.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VerifiedDisplayHash[] newArray(int size) {
             return new VerifiedDisplayHash[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifiedDisplayHash createFromParcel(Parcel in) {
             return new VerifiedDisplayHash(in);
@@ -112,6 +113,23 @@ public final class VerifiedDisplayHash implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hashAlgorithm);
         this.mImageHash = imageHash;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) imageHash);
+    }
+
+    /* renamed from: android.view.displayhash.VerifiedDisplayHash$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VerifiedDisplayHash> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifiedDisplayHash[] newArray(int size) {
+            return new VerifiedDisplayHash[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifiedDisplayHash createFromParcel(Parcel in) {
+            return new VerifiedDisplayHash(in);
+        }
     }
 
     @Deprecated

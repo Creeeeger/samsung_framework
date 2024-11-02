@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioGain implements Parcelable {
     public static final Parcelable.Creator<AudioGain> CREATOR = new Parcelable.Creator<AudioGain>() { // from class: android.media.audio.common.AudioGain.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioGain createFromParcel(Parcel _aidl_source) {
             AudioGain _aidl_out = new AudioGain();
@@ -18,7 +20,6 @@ public class AudioGain implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioGain[] newArray(int _aidl_size) {
             return new AudioGain[_aidl_size];
@@ -33,6 +34,25 @@ public class AudioGain implements Parcelable {
     public int minRampMs = 0;
     public int maxRampMs = 0;
     public boolean useForVolume = false;
+
+    /* renamed from: android.media.audio.common.AudioGain$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioGain> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioGain createFromParcel(Parcel _aidl_source) {
+            AudioGain _aidl_out = new AudioGain();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioGain[] newArray(int _aidl_size) {
+            return new AudioGain[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

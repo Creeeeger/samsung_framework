@@ -179,7 +179,6 @@ public class CachingIconView extends ImageView {
         super.setImageBitmap(bm);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

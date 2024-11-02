@@ -183,9 +183,12 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class InputDevicesChangedListener extends IInputDevicesChangedListener.Stub {
+        /* synthetic */ InputDevicesChangedListener(InputManagerGlobal inputManagerGlobal, InputDevicesChangedListenerIA inputDevicesChangedListenerIA) {
+            this();
+        }
+
         private InputDevicesChangedListener() {
         }
 
@@ -195,7 +198,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onInputDevicesChanged(int[] deviceIdAndGeneration) {
         if (DEBUG) {
             Log.d(TAG, "Received input devices changed.");
@@ -242,7 +244,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class InputDeviceListenerDelegate extends Handler {
         static final int MSG_DEVICE_ADDED = 1;
@@ -412,7 +413,6 @@ public final class InputManagerGlobal {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onSwitchEventChanged(int switchValues, int switchMask, int extraValues, int extraMask) {
         if (DEBUG) {
             Log.d(TAG, "switch event change");
@@ -426,9 +426,12 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class SwitchEventChangedListener extends ISwitchEventChangedListener.Stub {
+        /* synthetic */ SwitchEventChangedListener(InputManagerGlobal inputManagerGlobal, SwitchEventChangedListenerIA switchEventChangedListenerIA) {
+            this();
+        }
+
         private SwitchEventChangedListener() {
         }
 
@@ -438,7 +441,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class OnSwitchEventChangedListenerDelegate extends Handler {
         private static final int MSG_SWITCH_EVENT_CHANGED = 0;
@@ -496,7 +498,6 @@ public final class InputManagerGlobal {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onMultiFingerGesture(int behavior, int reserved) {
         if (DEBUG) {
             Log.d(TAG, "multi finger gesture.");
@@ -510,9 +511,12 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class MultiFingerGestureListener extends IMultiFingerGestureListener.Stub {
+        /* synthetic */ MultiFingerGestureListener(InputManagerGlobal inputManagerGlobal, MultiFingerGestureListenerIA multiFingerGestureListenerIA) {
+            this();
+        }
+
         private MultiFingerGestureListener() {
         }
 
@@ -522,7 +526,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class OnMultiFingerGestureListenerDelegate extends Handler {
         public final InputManager.SemOnMultiFingerGestureListener mListener;
@@ -659,7 +662,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InputDevice getInputDeviceByDescriptor(String descriptor) {
         Objects.requireNonNull(descriptor, "descriptor must not be null.");
         synchronized (this.mInputDeviceListeners) {
@@ -688,7 +690,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public HostUsiVersion getHostUsiVersion(Display display) {
         Objects.requireNonNull(display, "display should not be null");
         synchronized (this.mInputDeviceListeners) {
@@ -707,7 +708,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onTabletModeChanged(long whenNanos, boolean inTabletMode) {
         if (DEBUG) {
             Log.d(TAG, "Received tablet mode changed: whenNanos=" + whenNanos + ", inTabletMode=" + inTabletMode);
@@ -721,9 +721,12 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class TabletModeChangedListener extends ITabletModeChangedListener.Stub {
+        /* synthetic */ TabletModeChangedListener(InputManagerGlobal inputManagerGlobal, TabletModeChangedListenerIA tabletModeChangedListenerIA) {
+            this();
+        }
+
         private TabletModeChangedListener() {
         }
 
@@ -733,7 +736,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class OnTabletModeChangedListenerDelegate extends Handler {
         private static final int MSG_TABLET_MODE_CHANGED = 0;
@@ -763,7 +765,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerOnTabletModeChangedListener(InputManager.OnTabletModeChangedListener listener, Handler handler) {
         Objects.requireNonNull(listener, "listener must not be null");
         synchronized (this.mOnTabletModeChangedListeners) {
@@ -778,7 +779,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unregisterOnTabletModeChangedListener(InputManager.OnTabletModeChangedListener listener) {
         Objects.requireNonNull(listener, "listener must not be null");
         synchronized (this.mOnTabletModeChangedListeners) {
@@ -809,17 +809,21 @@ public final class InputManagerGlobal {
         return -1;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static final class RegisteredBatteryListeners {
+    public static final class RegisteredBatteryListeners {
         final List<InputDeviceBatteryListenerDelegate> mDelegates;
         IInputDeviceBatteryState mInputDeviceBatteryState;
+
+        /* synthetic */ RegisteredBatteryListeners(RegisteredBatteryListenersIA registeredBatteryListenersIA) {
+            this();
+        }
 
         private RegisteredBatteryListeners() {
             this.mDelegates = new ArrayList();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class InputDeviceBatteryListenerDelegate {
         final Executor mExecutor;
@@ -839,47 +843,45 @@ public final class InputManagerGlobal {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyBatteryStateChanged$0(IInputDeviceBatteryState state) {
             this.mListener.onBatteryStateChanged(state.deviceId, state.updateTime, new LocalBatteryState(state.isPresent, state.status, state.capacity));
         }
     }
 
-    public void addInputDeviceBatteryListener(int i, Executor executor, InputManager.InputDeviceBatteryListener inputDeviceBatteryListener) {
+    public void addInputDeviceBatteryListener(int deviceId, Executor executor, InputManager.InputDeviceBatteryListener listener) {
         Objects.requireNonNull(executor, "executor should not be null");
-        Objects.requireNonNull(inputDeviceBatteryListener, "listener should not be null");
+        Objects.requireNonNull(listener, "listener should not be null");
         synchronized (this.mBatteryListenersLock) {
-            byte b = 0;
             if (this.mBatteryListeners == null) {
                 this.mBatteryListeners = new SparseArray<>();
                 this.mInputDeviceBatteryListener = new LocalInputDeviceBatteryListener();
             }
-            RegisteredBatteryListeners registeredBatteryListeners = this.mBatteryListeners.get(i);
-            if (registeredBatteryListeners == null) {
-                registeredBatteryListeners = new RegisteredBatteryListeners();
-                this.mBatteryListeners.put(i, registeredBatteryListeners);
+            RegisteredBatteryListeners listenersForDevice = this.mBatteryListeners.get(deviceId);
+            if (listenersForDevice == null) {
+                listenersForDevice = new RegisteredBatteryListeners();
+                this.mBatteryListeners.put(deviceId, listenersForDevice);
                 try {
-                    this.mIm.registerBatteryListener(i, this.mInputDeviceBatteryListener);
+                    this.mIm.registerBatteryListener(deviceId, this.mInputDeviceBatteryListener);
                 } catch (RemoteException e) {
                     throw e.rethrowFromSystemServer();
                 }
             } else {
-                int size = registeredBatteryListeners.mDelegates.size();
-                for (int i2 = 0; i2 < size; i2++) {
-                    if (Objects.equals(inputDeviceBatteryListener, registeredBatteryListeners.mDelegates.get(i2).mListener)) {
-                        throw new IllegalArgumentException("Attempting to register an InputDeviceBatteryListener that has already been registered for deviceId: " + i);
+                int numDelegates = listenersForDevice.mDelegates.size();
+                for (int i = 0; i < numDelegates; i++) {
+                    InputManager.InputDeviceBatteryListener registeredListener = listenersForDevice.mDelegates.get(i).mListener;
+                    if (Objects.equals(listener, registeredListener)) {
+                        throw new IllegalArgumentException("Attempting to register an InputDeviceBatteryListener that has already been registered for deviceId: " + deviceId);
                     }
                 }
             }
-            InputDeviceBatteryListenerDelegate inputDeviceBatteryListenerDelegate = new InputDeviceBatteryListenerDelegate(inputDeviceBatteryListener, executor);
-            registeredBatteryListeners.mDelegates.add(inputDeviceBatteryListenerDelegate);
-            if (registeredBatteryListeners.mInputDeviceBatteryState != null) {
-                inputDeviceBatteryListenerDelegate.notifyBatteryStateChanged(registeredBatteryListeners.mInputDeviceBatteryState);
+            InputDeviceBatteryListenerDelegate delegate = new InputDeviceBatteryListenerDelegate(listener, executor);
+            listenersForDevice.mDelegates.add(delegate);
+            if (listenersForDevice.mInputDeviceBatteryState != null) {
+                delegate.notifyBatteryStateChanged(listenersForDevice.mInputDeviceBatteryState);
             }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeInputDeviceBatteryListener(int deviceId, InputManager.InputDeviceBatteryListener listener) {
         Objects.requireNonNull(listener, "listener should not be null");
         synchronized (this.mBatteryListenersLock) {
@@ -915,8 +917,13 @@ public final class InputManagerGlobal {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class LocalInputDeviceBatteryListener extends IInputDeviceBatteryListener.Stub {
+    public class LocalInputDeviceBatteryListener extends IInputDeviceBatteryListener.Stub {
+        /* synthetic */ LocalInputDeviceBatteryListener(InputManagerGlobal inputManagerGlobal, LocalInputDeviceBatteryListenerIA localInputDeviceBatteryListenerIA) {
+            this();
+        }
+
         private LocalInputDeviceBatteryListener() {
         }
 
@@ -951,7 +958,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class LocalBatteryState extends BatteryState {
         private final float mCapacity;
@@ -984,7 +990,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class KeyboardBacklightListenerDelegate {
         final Executor mExecutor;
@@ -1004,14 +1009,18 @@ public final class InputManagerGlobal {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyKeyboardBacklightChange$0(int deviceId, IKeyboardBacklightState state, boolean isTriggeredByKeyPress) {
             this.mListener.onKeyboardBacklightChanged(deviceId, new LocalKeyboardBacklightState(state.brightnessLevel, state.maxBrightnessLevel), isTriggeredByKeyPress);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class LocalKeyboardBacklightListener extends IKeyboardBacklightListener.Stub {
+    public class LocalKeyboardBacklightListener extends IKeyboardBacklightListener.Stub {
+        /* synthetic */ LocalKeyboardBacklightListener(InputManagerGlobal inputManagerGlobal, LocalKeyboardBacklightListenerIA localKeyboardBacklightListenerIA) {
+            this();
+        }
+
         private LocalKeyboardBacklightListener() {
         }
 
@@ -1029,7 +1038,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class LocalKeyboardBacklightState extends KeyboardBacklightState {
         private final int mBrightnessLevel;
@@ -1051,7 +1059,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerKeyboardBacklightListener(Executor executor, InputManager.KeyboardBacklightListener listener) throws IllegalArgumentException {
         Objects.requireNonNull(executor, "executor should not be null");
         Objects.requireNonNull(listener, "listener should not be null");
@@ -1077,7 +1084,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unregisterKeyboardBacklightListener(final InputManager.KeyboardBacklightListener listener) {
         Objects.requireNonNull(listener, "listener should not be null");
         synchronized (this.mKeyboardBacklightListenerLock) {
@@ -1103,7 +1109,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$unregisterKeyboardBacklightListener$0(InputManager.KeyboardBacklightListener listener, KeyboardBacklightListenerDelegate delegate) {
         return delegate.mListener == listener;
     }
@@ -1133,7 +1138,6 @@ public final class InputManagerGlobal {
         return this.mInputDeviceSensorManager.getSensorManager(deviceId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InputSensorInfo[] getSensorList(int deviceId) {
         try {
             return this.mIm.getSensorList(deviceId);
@@ -1142,7 +1146,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean enableSensor(int deviceId, int sensorType, int samplingPeriodUs, int maxBatchReportLatencyUs) {
         try {
             return this.mIm.enableSensor(deviceId, sensorType, samplingPeriodUs, maxBatchReportLatencyUs);
@@ -1151,7 +1154,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void disableSensor(int deviceId, int sensorType) {
         try {
             this.mIm.disableSensor(deviceId, sensorType);
@@ -1160,7 +1162,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean flushSensor(int deviceId, int sensorType) {
         try {
             return this.mIm.flushSensor(deviceId, sensorType);
@@ -1169,7 +1170,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean registerSensorListener(IInputSensorEventListener listener) {
         try {
             return this.mIm.registerSensorListener(listener);
@@ -1178,7 +1178,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unregisterSensorListener(IInputSensorEventListener listener) {
         try {
             this.mIm.unregisterSensorListener(listener);
@@ -1191,7 +1190,6 @@ public final class InputManagerGlobal {
         return new InputDeviceLightsManager(deviceId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public List<Light> getLights(int deviceId) {
         try {
             return this.mIm.getLights(deviceId);
@@ -1200,7 +1198,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LightState getLightState(int deviceId, Light light) {
         try {
             return this.mIm.getLightState(deviceId, light.getId());
@@ -1209,7 +1206,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestLights(int deviceId, LightsRequest request, IBinder token) {
         try {
             List<Integer> lightIdList = request.getLights();
@@ -1224,7 +1220,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void openLightSession(int deviceId, String opPkg, IBinder token) {
         try {
             this.mIm.openLightSession(deviceId, opPkg, token);
@@ -1233,7 +1228,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void closeLightSession(int deviceId, IBinder token) {
         try {
             this.mIm.closeLightSession(deviceId, token);
@@ -1250,7 +1244,6 @@ public final class InputManagerGlobal {
         return new InputDeviceVibratorManager(deviceId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int[] getVibratorIds(int deviceId) {
         try {
             return this.mIm.getVibratorIds(deviceId);
@@ -1259,7 +1252,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void vibrate(int deviceId, VibrationEffect effect, IBinder token) {
         try {
             this.mIm.vibrate(deviceId, effect, token);
@@ -1268,7 +1260,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void vibrate(int deviceId, CombinedVibration effect, IBinder token) {
         try {
             this.mIm.vibrateCombined(deviceId, effect, token);
@@ -1277,7 +1268,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void cancelVibrate(int deviceId, IBinder token) {
         try {
             this.mIm.cancelVibrate(deviceId, token);
@@ -1286,7 +1276,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isVibrating(int deviceId) {
         try {
             return this.mIm.isVibrating(deviceId);
@@ -1295,7 +1284,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean registerVibratorStateListener(int deviceId, IVibratorStateListener listener) {
         try {
             return this.mIm.registerVibratorStateListener(deviceId, listener);
@@ -1304,7 +1292,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean unregisterVibratorStateListener(int deviceId, IVibratorStateListener listener) {
         try {
             return this.mIm.unregisterVibratorStateListener(deviceId, listener);
@@ -1497,7 +1484,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final int findOnPointerIconChangedListenerLocked(InputManager.SemOnPointerIconChangedListener listener) {
         int N = this.mOnPointerIconChangedListeners.size();
         for (int i = 0; i < N; i++) {
@@ -1508,9 +1494,12 @@ public final class InputManagerGlobal {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class PointerIconChangedListener extends IPointerIconChangedListener.Stub {
+        /* synthetic */ PointerIconChangedListener(InputManagerGlobal inputManagerGlobal, PointerIconChangedListenerIA pointerIconChangedListenerIA) {
+            this();
+        }
+
         private PointerIconChangedListener() {
         }
 
@@ -1520,7 +1509,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class OnPointerIconChangedListenerDelegate extends Handler {
         public final InputManager.SemOnPointerIconChangedListener mListener;
@@ -1597,7 +1585,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onPointerIconChanged(int type, PointerIcon icon) {
         if (DEBUG) {
             Log.d(TAG, "Received pointer icon changed.");
@@ -1638,7 +1625,6 @@ public final class InputManagerGlobal {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onLidStateChanged(long whenNanos, boolean lidOpen) {
         if (DEBUG) {
             Log.d(TAG, "Received lid state changed: whenNanos=" + whenNanos + ", lidOpen=" + lidOpen);
@@ -1652,9 +1638,12 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class LidStateChangedListener extends ISemLidStateChangedListener.Stub {
+        /* synthetic */ LidStateChangedListener(InputManagerGlobal inputManagerGlobal, LidStateChangedListenerIA lidStateChangedListenerIA) {
+            this();
+        }
+
         private LidStateChangedListener() {
         }
 
@@ -1664,7 +1653,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class SemOnLidStateChangedListenerDelegate extends Handler {
         private static final int MSG_LID_STATE_CHANGED = 0;
@@ -1744,7 +1732,6 @@ public final class InputManagerGlobal {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onWirelessKeyboardShareChanged(long whenNanos, int index, String contents) {
         if (DEBUG) {
             Log.d(TAG, "Received wireless keyboard share changed: whenNanos=" + whenNanos + ", index = " + index + " " + contents);
@@ -1758,9 +1745,12 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class WirelessKeyboardShareChangedListener extends IWirelessKeyboardShareChangedListener.Stub {
+        /* synthetic */ WirelessKeyboardShareChangedListener(InputManagerGlobal inputManagerGlobal, WirelessKeyboardShareChangedListenerIA wirelessKeyboardShareChangedListenerIA) {
+            this();
+        }
+
         private WirelessKeyboardShareChangedListener() {
         }
 
@@ -1770,7 +1760,6 @@ public final class InputManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class OnWirelessKeyboardShareChangedListenerDelegate extends Handler {
         private static final int MSG_WIRELESS_KEYBOARD_SHARE_CHANGED = 0;

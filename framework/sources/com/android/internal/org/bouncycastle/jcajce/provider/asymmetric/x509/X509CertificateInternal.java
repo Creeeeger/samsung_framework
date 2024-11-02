@@ -5,11 +5,11 @@ import com.android.internal.org.bouncycastle.asn1.x509.Certificate;
 import com.android.internal.org.bouncycastle.jcajce.util.JcaJceHelper;
 import java.security.cert.CertificateEncodingException;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class X509CertificateInternal extends X509CertificateImpl {
+public class X509CertificateInternal extends X509CertificateImpl {
     private final byte[] encoding;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public X509CertificateInternal(JcaJceHelper bcHelper, Certificate c, BasicConstraints basicConstraints, boolean[] keyUsage, String sigAlgName, byte[] sigAlgParams, byte[] encoding) {
         super(bcHelper, c, basicConstraints, keyUsage, sigAlgName, sigAlgParams);
         this.encoding = encoding;

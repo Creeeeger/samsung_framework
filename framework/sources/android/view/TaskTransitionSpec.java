@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class TaskTransitionSpec implements Parcelable {
     public static final Parcelable.Creator<TaskTransitionSpec> CREATOR = new Parcelable.Creator<TaskTransitionSpec>() { // from class: android.view.TaskTransitionSpec.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaskTransitionSpec createFromParcel(Parcel in) {
             return new TaskTransitionSpec(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskTransitionSpec[] newArray(int size) {
             return new TaskTransitionSpec[size];
@@ -36,5 +37,22 @@ public class TaskTransitionSpec implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.backgroundColor);
+    }
+
+    /* renamed from: android.view.TaskTransitionSpec$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaskTransitionSpec> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskTransitionSpec createFromParcel(Parcel in) {
+            return new TaskTransitionSpec(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskTransitionSpec[] newArray(int size) {
+            return new TaskTransitionSpec[size];
+        }
     }
 }

@@ -23,31 +23,32 @@ public final class HotwordAudioStream implements Parcelable {
     private final AudioTimestamp mTimestamp;
     private static final byte[] DEFAULT_INITIAL_EMPTY_AUDIO = new byte[0];
     public static final Parcelable.Creator<HotwordAudioStream> CREATOR = new Parcelable.Creator<HotwordAudioStream>() { // from class: android.service.voice.HotwordAudioStream.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HotwordAudioStream[] newArray(int size) {
             return new HotwordAudioStream[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotwordAudioStream createFromParcel(Parcel in) {
             return new HotwordAudioStream(in);
         }
     };
 
-    /* renamed from: -$$Nest$smdefaultInitialAudio, reason: not valid java name */
-    static /* bridge */ /* synthetic */ byte[] m3966$$Nest$smdefaultInitialAudio() {
+    /* renamed from: -$$Nest$smdefaultInitialAudio */
+    static /* bridge */ /* synthetic */ byte[] m3965$$Nest$smdefaultInitialAudio() {
         return defaultInitialAudio();
     }
 
-    /* renamed from: -$$Nest$smdefaultMetadata, reason: not valid java name */
-    static /* bridge */ /* synthetic */ PersistableBundle m3967$$Nest$smdefaultMetadata() {
+    /* renamed from: -$$Nest$smdefaultMetadata */
+    static /* bridge */ /* synthetic */ PersistableBundle m3966$$Nest$smdefaultMetadata() {
         return defaultMetadata();
     }
 
-    /* renamed from: -$$Nest$smdefaultTimestamp, reason: not valid java name */
-    static /* bridge */ /* synthetic */ AudioTimestamp m3968$$Nest$smdefaultTimestamp() {
+    /* renamed from: -$$Nest$smdefaultTimestamp */
+    static /* bridge */ /* synthetic */ AudioTimestamp m3967$$Nest$smdefaultTimestamp() {
         return defaultTimestamp();
     }
 
@@ -71,7 +72,6 @@ public final class HotwordAudioStream implements Parcelable {
         return new Builder(this.mAudioFormat, this.mAudioStreamParcelFileDescriptor).setTimestamp(this.mTimestamp).setMetadata(this.mMetadata).setInitialAudio(this.mInitialAudio);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static abstract class BaseBuilder {
         BaseBuilder() {
@@ -178,6 +178,23 @@ public final class HotwordAudioStream implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) initialAudio);
     }
 
+    /* renamed from: android.service.voice.HotwordAudioStream$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HotwordAudioStream> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotwordAudioStream[] newArray(int size) {
+            return new HotwordAudioStream[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotwordAudioStream createFromParcel(Parcel in) {
+            return new HotwordAudioStream(in);
+        }
+    }
+
     /* loaded from: classes3.dex */
     public static final class Builder extends BaseBuilder {
         private AudioFormat mAudioFormat;
@@ -232,13 +249,13 @@ public final class HotwordAudioStream implements Parcelable {
             long j = this.mBuilderFieldsSet | 32;
             this.mBuilderFieldsSet = j;
             if ((j & 4) == 0) {
-                this.mTimestamp = HotwordAudioStream.m3968$$Nest$smdefaultTimestamp();
+                this.mTimestamp = HotwordAudioStream.m3967$$Nest$smdefaultTimestamp();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mMetadata = HotwordAudioStream.m3967$$Nest$smdefaultMetadata();
+                this.mMetadata = HotwordAudioStream.m3966$$Nest$smdefaultMetadata();
             }
             if ((this.mBuilderFieldsSet & 16) == 0) {
-                this.mInitialAudio = HotwordAudioStream.m3966$$Nest$smdefaultInitialAudio();
+                this.mInitialAudio = HotwordAudioStream.m3965$$Nest$smdefaultInitialAudio();
             }
             HotwordAudioStream o = new HotwordAudioStream(this.mAudioFormat, this.mAudioStreamParcelFileDescriptor, this.mTimestamp, this.mMetadata, this.mInitialAudio);
             return o;

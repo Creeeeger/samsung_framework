@@ -410,7 +410,6 @@ public final class CodedInputByteBufferNano {
         throw InvalidProtocolBufferNanoException.truncatedMessage();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Object readPrimitiveField(int type) throws IOException {
         switch (type) {
             case 1:

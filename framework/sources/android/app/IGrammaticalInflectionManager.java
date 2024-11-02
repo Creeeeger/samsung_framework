@@ -87,8 +87,9 @@ public interface IGrammaticalInflectionManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IGrammaticalInflectionManager {
+        public static class Proxy implements IGrammaticalInflectionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

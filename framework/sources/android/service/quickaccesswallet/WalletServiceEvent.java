@@ -8,14 +8,15 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class WalletServiceEvent implements Parcelable {
     public static final Parcelable.Creator<WalletServiceEvent> CREATOR = new Parcelable.Creator<WalletServiceEvent>() { // from class: android.service.quickaccesswallet.WalletServiceEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WalletServiceEvent createFromParcel(Parcel source) {
             int eventType = source.readInt();
             return new WalletServiceEvent(eventType);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WalletServiceEvent[] newArray(int size) {
             return new WalletServiceEvent[size];
@@ -42,6 +43,24 @@ public final class WalletServiceEvent implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mEventType);
+    }
+
+    /* renamed from: android.service.quickaccesswallet.WalletServiceEvent$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WalletServiceEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WalletServiceEvent createFromParcel(Parcel source) {
+            int eventType = source.readInt();
+            return new WalletServiceEvent(eventType);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WalletServiceEvent[] newArray(int size) {
+            return new WalletServiceEvent[size];
+        }
     }
 
     public int getEventType() {

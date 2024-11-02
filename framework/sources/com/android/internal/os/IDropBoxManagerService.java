@@ -161,8 +161,9 @@ public interface IDropBoxManagerService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDropBoxManagerService {
+        public static class Proxy implements IDropBoxManagerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

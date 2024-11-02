@@ -11,7 +11,7 @@ public enum Event {
     DDAR_WORKSPACE_AUTH_SUCCESS,
     DDAR_WORKSPACE_REMOVED;
 
-    /* renamed from: com.samsung.android.knox.dar.ddar.fsm.Event$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.knox.dar.ddar.fsm.Event$1 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$knox$dar$ddar$fsm$Event;

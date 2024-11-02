@@ -477,7 +477,6 @@ public class SmsMessage extends SmsMessageBase {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class PduParser {
         byte[] mPdu;
@@ -911,9 +910,18 @@ public class SmsMessage extends SmsMessageBase {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0250, code lost:            if ((r14 & 240) != 224) goto L107;     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0259, code lost:            r19.mMwiDontStore = true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x0257, code lost:            if ((r14 & 3) != 0) goto L107;     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0250, code lost:
+    
+        if ((r14 & 240) != 224) goto L349;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x0259, code lost:
+    
+        r19.mMwiDontStore = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x0257, code lost:
+    
+        if ((r14 & 3) != 0) goto L349;
+     */
     /* JADX WARN: Removed duplicated region for block: B:185:0x00a1  */
     /* JADX WARN: Removed duplicated region for block: B:187:0x00a3  */
     /*

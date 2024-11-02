@@ -55,6 +55,10 @@ public class SemContainerState {
 
     /* loaded from: classes5.dex */
     private class StateReceiver extends ContainerStateReceiver {
+        /* synthetic */ StateReceiver(SemContainerState semContainerState, StateReceiverIA stateReceiverIA) {
+            this();
+        }
+
         private StateReceiver() {
         }
 

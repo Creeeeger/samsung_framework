@@ -123,7 +123,6 @@ public class AndroidKeyStoreProvider extends Provider {
         return ((KeyStoreCryptoOperation) spi).getOperationHandle();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AndroidKeyStorePublicKey makeAndroidKeyStorePublicKeyFromKeyEntryResponse(KeyDescriptor descriptor, KeyMetadata metadata, KeyStoreSecurityLevel iSecurityLevel, int algorithm) throws UnrecoverableKeyException {
         if (metadata.certificate == null) {
             throw new UnrecoverableKeyException("Failed to obtain X.509 form of public key. Keystore has no public certificate stored.");

@@ -29,7 +29,6 @@ public class ActivityRecognitionHardware extends IActivityRecognitionHardware.St
 
     private static native void nativeClassInit();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native int nativeDisableActivityEvent(int i, int i2);
 
     private native int nativeEnableActivityEvent(int i, int i2, long j);
@@ -210,8 +209,13 @@ public class ActivityRecognitionHardware extends IActivityRecognitionHardware.St
         return new String[0];
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class SinkList extends RemoteCallbackList<IActivityRecognitionHardwareSink> {
+    public class SinkList extends RemoteCallbackList<IActivityRecognitionHardwareSink> {
+        /* synthetic */ SinkList(ActivityRecognitionHardware activityRecognitionHardware, SinkListIA sinkListIA) {
+            this();
+        }
+
         private SinkList() {
         }
 

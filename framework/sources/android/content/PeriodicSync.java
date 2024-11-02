@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class PeriodicSync implements Parcelable {
     public static final Parcelable.Creator<PeriodicSync> CREATOR = new Parcelable.Creator<PeriodicSync>() { // from class: android.content.PeriodicSync.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PeriodicSync createFromParcel(Parcel source) {
             return new PeriodicSync(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PeriodicSync[] newArray(int size) {
             return new PeriodicSync[size];
@@ -26,6 +27,10 @@ public class PeriodicSync implements Parcelable {
     public final Bundle extras;
     public final long flexTime;
     public final long period;
+
+    /* synthetic */ PeriodicSync(Parcel parcel, PeriodicSyncIA periodicSyncIA) {
+        this(parcel);
+    }
 
     public PeriodicSync(Account account, String authority, Bundle extras, long periodInSeconds) {
         this.account = account;
@@ -75,6 +80,23 @@ public class PeriodicSync implements Parcelable {
         dest.writeBundle(this.extras);
         dest.writeLong(this.period);
         dest.writeLong(this.flexTime);
+    }
+
+    /* renamed from: android.content.PeriodicSync$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PeriodicSync> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PeriodicSync createFromParcel(Parcel source) {
+            return new PeriodicSync(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PeriodicSync[] newArray(int size) {
+            return new PeriodicSync[size];
+        }
     }
 
     public boolean equals(Object o) {

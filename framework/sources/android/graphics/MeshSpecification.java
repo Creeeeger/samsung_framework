@@ -28,7 +28,7 @@ public class MeshSpecification {
     private @interface Type {
     }
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnativeGetFinalizer */
     static /* bridge */ /* synthetic */ long m1143$$Nest$smnativeGetFinalizer() {
         return nativeGetFinalizer();
     }
@@ -93,8 +93,9 @@ public class MeshSpecification {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class MeshSpecificationHolder {
+    public static class MeshSpecificationHolder {
         public static final NativeAllocationRegistry MESH_SPECIFICATION_REGISTRY = NativeAllocationRegistry.createMalloced(MeshSpecification.class.getClassLoader(), MeshSpecification.m1143$$Nest$smnativeGetFinalizer());
 
         private MeshSpecificationHolder() {

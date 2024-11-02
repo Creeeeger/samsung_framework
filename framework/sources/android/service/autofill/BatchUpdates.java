@@ -13,7 +13,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class BatchUpdates implements Parcelable {
     public static final Parcelable.Creator<BatchUpdates> CREATOR = new Parcelable.Creator<BatchUpdates>() { // from class: android.service.autofill.BatchUpdates.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BatchUpdates createFromParcel(Parcel parcel) {
             Builder builder = new Builder();
@@ -32,7 +34,6 @@ public final class BatchUpdates implements Parcelable {
             return builder.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BatchUpdates[] newArray(int size) {
             return new BatchUpdates[size];
@@ -40,6 +41,10 @@ public final class BatchUpdates implements Parcelable {
     };
     private final ArrayList<Pair<Integer, InternalTransformation>> mTransformations;
     private final RemoteViews mUpdates;
+
+    /* synthetic */ BatchUpdates(Builder builder, BatchUpdatesIA batchUpdatesIA) {
+        this(builder);
+    }
 
     private BatchUpdates(Builder builder) {
         this.mTransformations = builder.mTransformations;
@@ -122,5 +127,35 @@ public final class BatchUpdates implements Parcelable {
             dest.writeParcelableArray(values, flags);
         }
         dest.writeParcelable(this.mUpdates, flags);
+    }
+
+    /* renamed from: android.service.autofill.BatchUpdates$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BatchUpdates> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BatchUpdates createFromParcel(Parcel parcel) {
+            Builder builder = new Builder();
+            int[] ids = parcel.createIntArray();
+            if (ids != null) {
+                InternalTransformation[] values = (InternalTransformation[]) parcel.readParcelableArray(null, InternalTransformation.class);
+                int size = ids.length;
+                for (int i = 0; i < size; i++) {
+                    builder.transformChild(ids[i], values[i]);
+                }
+            }
+            RemoteViews updates = (RemoteViews) parcel.readParcelable(null, RemoteViews.class);
+            if (updates != null) {
+                builder.updateTemplate(updates);
+            }
+            return builder.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BatchUpdates[] newArray(int size) {
+            return new BatchUpdates[size];
+        }
     }
 }

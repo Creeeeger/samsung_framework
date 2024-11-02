@@ -9,6 +9,10 @@ import com.android.internal.location.altitude.nano.S2TileProto;
 public final /* synthetic */ class GeoidHeightMap$$ExternalSyntheticLambda0 implements GeoidHeightMap.TileFunction {
     public final /* synthetic */ LruCache f$0;
 
+    public /* synthetic */ GeoidHeightMap$$ExternalSyntheticLambda0(LruCache lruCache) {
+        this.f$0 = lruCache;
+    }
+
     @Override // com.android.internal.location.altitude.GeoidHeightMap.TileFunction
     public final S2TileProto getTile(long j) {
         return (S2TileProto) this.f$0.get(Long.valueOf(j));

@@ -91,7 +91,6 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public class Slot {
             EnvMode env;
@@ -219,8 +218,7 @@ public class ProgramFragmentFixedFunction extends ProgramFragment {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.renderscript.ProgramFragmentFixedFunction$1, reason: invalid class name */
+    /* renamed from: android.renderscript.ProgramFragmentFixedFunction$1 */
     /* loaded from: classes3.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$renderscript$ProgramFragmentFixedFunction$Builder$EnvMode;

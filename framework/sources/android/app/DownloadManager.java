@@ -1091,7 +1091,6 @@ public class DownloadManager {
         return args;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class CursorTranslator extends CursorWrapper {
         static final /* synthetic */ boolean $assertionsDisabled = false;
@@ -1257,7 +1256,6 @@ public class DownloadManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class SecCursorTranslator extends CursorWrapper {
         static final /* synthetic */ boolean $assertionsDisabled = false;

@@ -97,8 +97,9 @@ public interface ITextClassifierCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ITextClassifierCallback {
+        public static class Proxy implements ITextClassifierCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

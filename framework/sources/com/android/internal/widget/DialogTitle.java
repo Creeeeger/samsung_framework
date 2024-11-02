@@ -26,7 +26,6 @@ public class DialogTitle extends TextView {
         super(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int lineCount;

@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Looper;
 import com.samsung.android.allshare.media.ViewController2;
 import com.sec.android.allshare.iface.CVMessage;
 import com.sec.android.allshare.iface.IBundleHolder;
@@ -18,7 +19,6 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class ViewController2Impl extends ViewController2 implements IBundleHolder {
     private static final String TAG = "ViewController2Impl";
@@ -36,6 +36,10 @@ public final class ViewController2Impl extends ViewController2 implements IBundl
     private ExecutorService mExcutor = Executors.newCachedThreadPool();
     private boolean mConnectResult = true;
     AllShareResponseHandler mResponseHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ViewController2Impl.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
             String actionID = cvm.getActionID();
@@ -67,13 +71,16 @@ public final class ViewController2Impl extends ViewController2 implements IBundl
         }
     };
     private AllShareEventHandler mAllShareEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ViewController2Impl.2
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareEventHandler
         public void handleEventMessage(CVMessage cvm) {
             cvm.getBundle();
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewController2Impl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         String str;
         this.mAllShareConnector = null;
@@ -135,6 +142,45 @@ public final class ViewController2Impl extends ViewController2 implements IBundl
         this.mAllShareConnector.requestCVMAsync(cvm, this.mResponseHandler);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ViewController2Impl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareResponseHandler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            String actionID = cvm.getActionID();
+            Bundle resBundle = cvm.getBundle();
+            if (actionID == null || resBundle == null || ViewController2Impl.this.mResponseListener == null) {
+                return;
+            }
+            ERROR error = ERROR.FAIL;
+            String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+            if (errorStr != null) {
+                error = ERROR.stringToEnum(errorStr);
+            }
+            int portNum = 0;
+            if (actionID.equals(AllShareAction.ACTION_VIEWCONTROLLER_REQUEST_GET_ZOOM_PORT)) {
+                if (error.equals(ERROR.SUCCESS)) {
+                    portNum = resBundle.getInt(AllShareKey.BUNDLE_INT_ZOOM_PORT_NUMBER);
+                    DLog.i_api(ViewController2Impl.TAG, "ZoomPort : " + portNum);
+                } else {
+                    ViewController2Impl.this.mResponseListener.onConnectResponseReceived(ViewController2Impl.this, error);
+                    return;
+                }
+            }
+            ViewController2Impl viewController2Impl = ViewController2Impl.this;
+            if (viewController2Impl.connect(viewController2Impl.mIPAddress, portNum)) {
+                ViewController2Impl.this.mResponseListener.onConnectResponseReceived(ViewController2Impl.this, ERROR.SUCCESS);
+            } else {
+                ViewController2Impl.this.mResponseListener.onConnectResponseReceived(ViewController2Impl.this, ERROR.FAIL);
+            }
+        }
+    }
+
     @Override // com.samsung.android.allshare.media.ViewController2
     public void disconnect() {
         this.mIsConnected = false;
@@ -190,6 +236,20 @@ public final class ViewController2Impl extends ViewController2 implements IBundl
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ViewController2Impl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareEventHandler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            cvm.getBundle();
+        }
+    }
+
     @Override // com.samsung.android.allshare.media.ViewController2
     public void zoom(int posX, int posY, float zoomRatio) {
         if (this.mSocket == null) {
@@ -239,10 +299,17 @@ public final class ViewController2Impl extends ViewController2 implements IBundl
         this.mResponseListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public boolean connect(final String serverIp, final int port) {
+    public boolean connect(String serverIp, int port) {
         this.mSocket = null;
         this.mExcutor.execute(new Runnable() { // from class: com.samsung.android.allshare.ViewController2Impl.3
+            final /* synthetic */ int val$port;
+            final /* synthetic */ String val$serverIp;
+
+            AnonymousClass3(String serverIp2, int port2) {
+                serverIp = serverIp2;
+                port = port2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -259,6 +326,31 @@ public final class ViewController2Impl extends ViewController2 implements IBundl
         boolean z = this.mConnectResult;
         this.mIsConnected = z;
         return z;
+    }
+
+    /* renamed from: com.samsung.android.allshare.ViewController2Impl$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 implements Runnable {
+        final /* synthetic */ int val$port;
+        final /* synthetic */ String val$serverIp;
+
+        AnonymousClass3(String serverIp2, int port2) {
+            serverIp = serverIp2;
+            port = port2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                ViewController2Impl.this.mSocket = new Socket(serverIp, port);
+            } catch (UnknownHostException e) {
+                ViewController2Impl.this.mConnectResult = false;
+                e.printStackTrace();
+            } catch (IOException e2) {
+                ViewController2Impl.this.mConnectResult = false;
+                e2.printStackTrace();
+            }
+        }
     }
 
     private byte[] int2bytes(int i) {

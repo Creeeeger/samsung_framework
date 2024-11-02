@@ -63,7 +63,6 @@ public abstract class LauncherActivity extends ListActivity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class ActivityAdapter extends BaseAdapter implements Filterable {
         private final Object lock = new Object();
@@ -154,6 +153,10 @@ public abstract class LauncherActivity extends ListActivity {
 
         /* loaded from: classes.dex */
         private class ArrayFilter extends Filter {
+            /* synthetic */ ArrayFilter(ActivityAdapter activityAdapter, ArrayFilterIA arrayFilterIA) {
+                this();
+            }
+
             private ArrayFilter() {
             }
 
@@ -283,7 +286,6 @@ public abstract class LauncherActivity extends ListActivity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -319,11 +321,26 @@ public abstract class LauncherActivity extends ListActivity {
         Button cancelButton = (Button) findViewById(16908313);
         if (cancelButton != null) {
             cancelButton.setOnClickListener(new View.OnClickListener() { // from class: android.app.LauncherActivity.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.view.View.OnClickListener
                 public void onClick(View v) {
                     LauncherActivity.this.finish();
                 }
             });
+        }
+    }
+
+    /* renamed from: android.app.LauncherActivity$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements View.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            LauncherActivity.this.finish();
         }
     }
 
@@ -343,7 +360,6 @@ public abstract class LauncherActivity extends ListActivity {
         setContentView(R.layout.activity_list);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.ListActivity
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent intent = intentForPosition(position);

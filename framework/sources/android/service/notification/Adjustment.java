@@ -12,13 +12,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class Adjustment implements Parcelable {
     public static final Parcelable.Creator<Adjustment> CREATOR = new Parcelable.Creator<Adjustment>() { // from class: android.service.notification.Adjustment.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Adjustment createFromParcel(Parcel in) {
             return new Adjustment(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Adjustment[] newArray(int size) {
             return new Adjustment[size];
@@ -88,6 +89,23 @@ public final class Adjustment implements Parcelable {
         this.mSignals = in.readBundle();
         this.mUser = in.readInt();
         this.mIssuer = in.readString();
+    }
+
+    /* renamed from: android.service.notification.Adjustment$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Adjustment> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Adjustment createFromParcel(Parcel in) {
+            return new Adjustment(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Adjustment[] newArray(int size) {
+            return new Adjustment[size];
+        }
     }
 
     public String getPackage() {

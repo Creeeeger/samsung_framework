@@ -292,7 +292,6 @@ public final class ObjectAnimator extends ValueAnimator {
         super.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldAutoCancel(AnimationHandler.AnimationFrameCallback anim) {
         if (anim != null && (anim instanceof ObjectAnimator)) {
             ObjectAnimator objAnim = (ObjectAnimator) anim;
@@ -303,7 +302,6 @@ public final class ObjectAnimator extends ValueAnimator {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.ValueAnimator
     public void initAnimation() {
         if (!this.mInitialized) {
@@ -368,7 +366,6 @@ public final class ObjectAnimator extends ValueAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.ValueAnimator
     public void animateValue(float fraction) {
         Object target = getTarget();
@@ -383,8 +380,9 @@ public final class ObjectAnimator extends ValueAnimator {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.ValueAnimator, android.animation.Animator
-    boolean isInitialized() {
+    public boolean isInitialized() {
         return this.mInitialized;
     }
 

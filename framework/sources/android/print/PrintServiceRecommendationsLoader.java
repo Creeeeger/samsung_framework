@@ -21,29 +21,42 @@ public class PrintServiceRecommendationsLoader extends Loader<List<Recommendatio
         this.mPrintManager = (PrintManager) Preconditions.checkNotNull(printManager);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.Loader
     public void onForceLoad() {
         queueNewResult();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void queueNewResult() {
         Message m = this.mHandler.obtainMessage(0);
         m.obj = this.mPrintManager.getPrintServiceRecommendations();
         this.mHandler.sendMessage(m);
     }
 
+    /* renamed from: android.print.PrintServiceRecommendationsLoader$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements PrintManager.PrintServiceRecommendationsChangeListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.print.PrintManager.PrintServiceRecommendationsChangeListener
+        public void onPrintServiceRecommendationsChanged() {
+            PrintServiceRecommendationsLoader.this.queueNewResult();
+        }
+    }
+
     @Override // android.content.Loader
     protected void onStartLoading() {
-        PrintManager.PrintServiceRecommendationsChangeListener printServiceRecommendationsChangeListener = new PrintManager.PrintServiceRecommendationsChangeListener() { // from class: android.print.PrintServiceRecommendationsLoader.1
+        AnonymousClass1 anonymousClass1 = new PrintManager.PrintServiceRecommendationsChangeListener() { // from class: android.print.PrintServiceRecommendationsLoader.1
+            AnonymousClass1() {
+            }
+
             @Override // android.print.PrintManager.PrintServiceRecommendationsChangeListener
             public void onPrintServiceRecommendationsChanged() {
                 PrintServiceRecommendationsLoader.this.queueNewResult();
             }
         };
-        this.mListener = printServiceRecommendationsChangeListener;
-        this.mPrintManager.addPrintServiceRecommendationsChangeListener(printServiceRecommendationsChangeListener, null);
+        this.mListener = anonymousClass1;
+        this.mPrintManager.addPrintServiceRecommendationsChangeListener(anonymousClass1, null);
         deliverResult(this.mPrintManager.getPrintServiceRecommendations());
     }
 
@@ -57,7 +70,6 @@ public class PrintServiceRecommendationsLoader extends Loader<List<Recommendatio
         this.mHandler.removeMessages(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.Loader
     public void onReset() {
         onStopLoading();

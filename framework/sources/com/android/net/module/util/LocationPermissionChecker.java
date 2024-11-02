@@ -37,7 +37,10 @@ public class LocationPermissionChecker {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:5:0x002d, code lost:            return r0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:5:0x002d, code lost:
+    
+        return r0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -23,7 +23,6 @@ public class AlphaAnimation extends Animation {
         this.mToAlpha = toAlpha;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.Animation
     public void applyTransformation(float interpolatedTime, Transformation t) {
         float alpha = this.mFromAlpha;

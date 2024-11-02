@@ -117,8 +117,9 @@ public interface ITransitionPlayer extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements ITransitionPlayer {
+        public static class Proxy implements ITransitionPlayer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

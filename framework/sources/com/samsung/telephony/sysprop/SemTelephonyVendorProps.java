@@ -106,7 +106,6 @@ public final class SemTelephonyVendorProps {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String tryParseString(String str) {
         if ("".equals(str)) {
             return null;

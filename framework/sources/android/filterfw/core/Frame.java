@@ -27,10 +27,8 @@ public abstract class Frame {
 
     public abstract Object getObjectValue();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract boolean hasNativeAllocation();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract void releaseNativeAllocation();
 
     public abstract void setBitmap(Bitmap bitmap);
@@ -41,7 +39,6 @@ public abstract class Frame {
 
     public abstract void setInts(int[] iArr);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Frame(FrameFormat format, FrameManager frameManager) {
         this.mReadOnly = false;
         this.mReusable = false;
@@ -53,7 +50,6 @@ public abstract class Frame {
         this.mFrameManager = frameManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Frame(FrameFormat format, FrameManager frameManager, int bindingType, long bindingId) {
         this.mReadOnly = false;
         this.mReusable = false;
@@ -154,19 +150,16 @@ public abstract class Frame {
         return this.mFrameManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void assertFrameMutable() {
         if (isReadOnly()) {
             throw new RuntimeException("Attempting to modify read-only frame!");
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setReusable(boolean reusable) {
         this.mReusable = reusable;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setFormat(FrameFormat format) {
         this.mFormat = format.mutableCopy();
     }
@@ -175,7 +168,6 @@ public abstract class Frame {
         throw new RuntimeException("Cannot set object value of unsupported type: " + value.getClass());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static Bitmap convertBitmapToRGBA(Bitmap bitmap) {
         if (bitmap.getConfig() == Bitmap.Config.ARGB_8888) {
             return bitmap;
@@ -190,41 +182,34 @@ public abstract class Frame {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void reset(FrameFormat newFormat) {
         this.mFormat = newFormat.mutableCopy();
         this.mReadOnly = false;
         this.mRefCount = 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onFrameStore() {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onFrameFetch() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final int incRefCount() {
         int i = this.mRefCount + 1;
         this.mRefCount = i;
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final int decRefCount() {
         int i = this.mRefCount - 1;
         this.mRefCount = i;
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean isReusable() {
         return this.mReusable;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void markReadOnly() {
         this.mReadOnly = true;
     }

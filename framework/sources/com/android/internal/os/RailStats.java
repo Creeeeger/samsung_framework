@@ -88,6 +88,10 @@ public final class RailStats {
         public String subSystemName;
         public long timestampSinceBootMs;
 
+        /* synthetic */ RailInfoData(long j, String str, String str2, long j2, long j3, RailInfoDataIA railInfoDataIA) {
+            this(j, str, str2, j2, j3);
+        }
+
         private RailInfoData(long index, String railName, String subSystemName, long timestampSinceBootMs, long energyUsedSinceBoot) {
             this.index = index;
             this.railName = railName;

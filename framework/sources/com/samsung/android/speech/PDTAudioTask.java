@@ -15,7 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class PDTAudioTask extends AudioTask implements Runnable {
     static final int DEFAULT_BLOCK_SIZE = 320;
@@ -52,7 +51,6 @@ public class PDTAudioTask extends AudioTask implements Runnable {
     public short[] speech;
     private int totalReadCount;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PDTAudioTask(SemSpeechRecognizer.ResultListener listener, String path, int command, int language, boolean samsungOOVResult) {
         super(listener, path, command, language, samsungOOVResult);
         this.TAG = PDTAudioTask.class.getSimpleName();
@@ -86,6 +84,9 @@ public class PDTAudioTask extends AudioTask implements Runnable {
         this.mStopHandler = null;
         this.dualThresholdFlag = 0;
         this.handler = new Handler() { // from class: com.samsung.android.speech.PDTAudioTask.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 String[] result = msg.getData().getStringArray("recognition_result");
@@ -326,6 +327,22 @@ public class PDTAudioTask extends AudioTask implements Runnable {
             }
         }
         return false;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.speech.PDTAudioTask$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            String[] result = msg.getData().getStringArray("recognition_result");
+            if (PDTAudioTask.this.m_listener != null) {
+                PDTAudioTask.this.m_listener.onResults(result);
+            }
+        }
     }
 
     private void SendHandlerMessage(String[] result) {

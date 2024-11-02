@@ -111,8 +111,9 @@ public interface IInlineContentCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IInlineContentCallback {
+        public static class Proxy implements IInlineContentCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

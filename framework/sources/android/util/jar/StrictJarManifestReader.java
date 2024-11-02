@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.Attributes;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class StrictJarManifestReader {
     private final byte[] buf;
@@ -101,8 +100,15 @@ public class StrictJarManifestReader {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0051, code lost:            r8.valueBuffer.write(r4, r1, r2 - r1);        r8.value = r8.valueBuffer.toString(java.nio.charset.StandardCharsets.UTF_8.name());     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0066, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0051, code lost:
+    
+        r8.valueBuffer.write(r4, r1, r2 - r1);
+        r8.value = r8.valueBuffer.toString(java.nio.charset.StandardCharsets.UTF_8.name());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0066, code lost:
+    
+        return;
+     */
     /* JADX WARN: Failed to find 'out' block for switch in B:5:0x0018. Please report as an issue. */
     /* JADX WARN: Removed duplicated region for block: B:25:0x004e  */
     /* JADX WARN: Removed duplicated region for block: B:27:0x004a A[SYNTHETIC] */

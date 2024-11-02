@@ -30,7 +30,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
             return "NONEwithECDSA";
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
         public KeyStoreCryptoOperationStreamer createMainDataStreamer(KeyStoreOperation operation) {
             return new TruncateToFieldSizeMessageStreamer(super.createMainDataStreamer(operation), getGroupSizeBits());
@@ -42,6 +41,10 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
             private final KeyStoreCryptoOperationStreamer mDelegate;
             private final int mGroupSizeBits;
             private final ByteArrayOutputStream mInputBuffer;
+
+            /* synthetic */ TruncateToFieldSizeMessageStreamer(KeyStoreCryptoOperationStreamer keyStoreCryptoOperationStreamer, int i, TruncateToFieldSizeMessageStreamerIA truncateToFieldSizeMessageStreamerIA) {
+                this(keyStoreCryptoOperationStreamer, i);
+            }
 
             private TruncateToFieldSizeMessageStreamer(KeyStoreCryptoOperationStreamer delegate, int groupSizeBits) {
                 this.mInputBuffer = new ByteArrayOutputStream();
@@ -157,7 +160,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         this.mKeymasterDigest = keymasterDigest;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
     public final void initKey(AndroidKeyStoreKey key) throws InvalidKeyException {
         Set<String> set = ACCEPTED_SIGNING_SCHEMES;
@@ -193,14 +195,12 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         super.initKey(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
     public final void resetAll() {
         this.mGroupSizeBits = -1;
         super.resetAll();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
     public final void resetWhilePreservingInitState() {
         super.resetWhilePreservingInitState();

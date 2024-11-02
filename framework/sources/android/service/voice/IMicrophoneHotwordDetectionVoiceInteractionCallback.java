@@ -116,8 +116,9 @@ public interface IMicrophoneHotwordDetectionVoiceInteractionCallback extends IIn
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IMicrophoneHotwordDetectionVoiceInteractionCallback {
+        public static class Proxy implements IMicrophoneHotwordDetectionVoiceInteractionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

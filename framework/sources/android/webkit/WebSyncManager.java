@@ -12,7 +12,6 @@ abstract class WebSyncManager implements Runnable {
 
     abstract void syncFromRamToFlash();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public WebSyncManager(Context context, String name) {
     }
 

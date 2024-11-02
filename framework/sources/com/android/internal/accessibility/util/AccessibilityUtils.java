@@ -190,7 +190,6 @@ public final class AccessibilityUtils {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getAccessibilityMenuComponentToMigrate$0(ComponentName name) {
         return !name.equals(ACCESSIBILITY_MENU_IN_SYSTEM);
     }

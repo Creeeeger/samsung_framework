@@ -56,7 +56,6 @@ public class CancellationSignalBeamer {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$beamScopeIfNeeded$0() {
             ThreadLocal<Pair<Sender, ArrayList<CloseableToken>>> threadLocal = sScope;
             ArrayList<CloseableToken> tokens = threadLocal.get().second;
@@ -78,11 +77,14 @@ public class CancellationSignalBeamer {
             return null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class Token extends Binder implements CloseableToken, Runnable {
             private Preparer mPreparer;
             private final Sender mSender;
+
+            /* synthetic */ Token(Sender sender, CancellationSignal cancellationSignal, TokenIA tokenIA) {
+                this(sender, cancellationSignal);
+            }
 
             private Token(Sender sender, CancellationSignal signal) {
                 this.mSender = sender;
@@ -103,11 +105,16 @@ public class CancellationSignalBeamer {
                 this.mSender.onForget(this);
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             /* loaded from: classes3.dex */
-            private static class Preparer implements CancellationSignal.OnCancelListener {
+            public static class Preparer implements CancellationSignal.OnCancelListener {
                 private final Sender mSender;
                 private final CancellationSignal mSignal;
                 private final Token mToken;
+
+                /* synthetic */ Preparer(Sender sender, CancellationSignal cancellationSignal, Token token, PreparerIA preparerIA) {
+                    this(sender, cancellationSignal, token);
+                }
 
                 private Preparer(Sender sender, CancellationSignal signal, Token token) {
                     this.mSender = sender;

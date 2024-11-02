@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class ClearCredentialStateRequest implements Parcelable {
     public static final Parcelable.Creator<ClearCredentialStateRequest> CREATOR = new Parcelable.Creator<ClearCredentialStateRequest>() { // from class: android.service.credentials.ClearCredentialStateRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ClearCredentialStateRequest[] newArray(int size) {
             return new ClearCredentialStateRequest[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClearCredentialStateRequest createFromParcel(Parcel in) {
             return new ClearCredentialStateRequest(in);
@@ -24,6 +25,10 @@ public final class ClearCredentialStateRequest implements Parcelable {
     };
     private final CallingAppInfo mCallingAppInfo;
     private final Bundle mData;
+
+    /* synthetic */ ClearCredentialStateRequest(Parcel parcel, ClearCredentialStateRequestIA clearCredentialStateRequestIA) {
+        this(parcel);
+    }
 
     public Bundle getData() {
         return this.mData;
@@ -58,5 +63,22 @@ public final class ClearCredentialStateRequest implements Parcelable {
         Bundle data = in.readBundle();
         this.mData = data;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) data);
+    }
+
+    /* renamed from: android.service.credentials.ClearCredentialStateRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ClearCredentialStateRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClearCredentialStateRequest[] newArray(int size) {
+            return new ClearCredentialStateRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClearCredentialStateRequest createFromParcel(Parcel in) {
+            return new ClearCredentialStateRequest(in);
+        }
     }
 }

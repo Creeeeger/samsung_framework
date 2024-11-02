@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class RestoreSet implements Parcelable {
     public static final Parcelable.Creator<RestoreSet> CREATOR = new Parcelable.Creator<RestoreSet>() { // from class: android.app.backup.RestoreSet.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RestoreSet createFromParcel(Parcel in) {
             return new RestoreSet(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RestoreSet[] newArray(int size) {
             return new RestoreSet[size];
@@ -24,6 +25,10 @@ public class RestoreSet implements Parcelable {
     public String device;
     public String name;
     public long token;
+
+    /* synthetic */ RestoreSet(Parcel parcel, RestoreSetIA restoreSetIA) {
+        this(parcel);
+    }
 
     public RestoreSet() {
         this.backupTransportFlags = 0;
@@ -51,6 +56,23 @@ public class RestoreSet implements Parcelable {
         out.writeString(this.device);
         out.writeLong(this.token);
         out.writeInt(this.backupTransportFlags);
+    }
+
+    /* renamed from: android.app.backup.RestoreSet$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RestoreSet> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RestoreSet createFromParcel(Parcel in) {
+            return new RestoreSet(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RestoreSet[] newArray(int size) {
+            return new RestoreSet[size];
+        }
     }
 
     private RestoreSet(Parcel in) {

@@ -35,7 +35,6 @@ public class NfcFrameworkInitializer {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ NfcManager lambda$registerServiceWrappers$0(Context context) {
         return new NfcManager(context);
     }

@@ -116,7 +116,6 @@ public interface IImsCapabilityCallback extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class Proxy implements IImsCapabilityCallback {
             private IBinder mRemote;

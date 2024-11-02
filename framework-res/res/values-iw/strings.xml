@@ -384,12 +384,12 @@
     <string name="allow_settings_changes">מדיניות האבטחה מונעת שינויים בהגדרות.</string>
     <string name="alwaysUse">שימוש כברירת מחדל עבור הפעולה הזו.</string>
     <string name="android_preparing_apk">המערכת מכינה את %1$s.</string>
-    <string name="android_start_title">הפעלת הטלפון מתחילה…</string>
+    <string name="android_start_title">הטאבלט בתהליך הפעלה…</string>
     <string name="android_system_label">‏מערכת Android</string>
     <string name="android_upgrading_complete">תהליך האתחול בשלבי סיום.</string>
     <string name="android_upgrading_notification_title">עדכון המערכת לקראת סיום…</string>
     <string name="android_upgrading_starting_apps">מתבצעת הפעלה של אפליקציות.</string>
-    <string name="android_upgrading_title">הטלפון מתעדכן…</string>
+    <string name="android_upgrading_title">הטאבלט מתעדכן…</string>
     <string name="anr_activity_application">האפליקציה %2$s לא מגיבה</string>
     <string name="anr_activity_process">האפליקציה %1$s אינה מגיבה</string>
     <string name="anr_application_process">האפליקציה %1$s לא מגיבה</string>
@@ -423,16 +423,16 @@
     <string name="app_restricted_message_concentration_mode">%s נחסם במצב ריכוז. פנה למנהל ה-IT לקבלת פרטים נוספים.</string>
     <string name="app_running_notification_text">יש להקיש לקבלת מידע נוסף או כדי לעצור את האפליקציה.</string>
     <string name="app_running_notification_title">אפליקציית %1$s פועלת</string>
-    <string name="app_streaming_blocked_message">אי אפשר לגשת לאפליקציה הזו במכשיר %1$s כרגע. במקום זאת, אפשר לנסות בטלפון.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">האפליקציה הזו מבקשת אמצעי אבטחה נוסף. במקום זאת, יש לנסות בטלפון.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">אי אפשר לגשת להגדרה הזו במכשיר %1$s. במקום זאת, אפשר לנסות בטלפון.</string>
+    <string name="app_streaming_blocked_message">אי אפשר לגשת לאפליקציה הזו במכשיר %1$s כרגע. במקום זאת, יש לנסות בטאבלט.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">האפליקציה הזו מבקשת אמצעי אבטחה נוסף. במקום זאת, יש לנסות בטאבלט.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">אי אפשר לגשת להגדרה הזו במכשיר %1$s. במקום זאת, יש לנסות בטאבלט.</string>
     <string name="app_streaming_blocked_title">%1$s לא זמינה</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">המצלמה לא זמינה</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">יש להמשיך בטלפון</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">המיקרופון לא זמין</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">דרושה הרשאה</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">‏חנות Play לא זמינה</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">ההגדרות של הטלפון לא זמינות</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">ההגדרות של הטאבלט לא זמינות</string>
     <string name="app_suspended_default_message">האפליקציה %1$s לא זמינה כרגע. אפשר לנהל זאת באפליקציה %2$s.</string>
     <string name="app_suspended_more_details">מידע נוסף</string>
     <string name="app_suspended_title">האפליקציה לא זמינה</string>
@@ -503,7 +503,7 @@
     <string name="badPuk">‏ה-PUK שהקלדת שגוי.</string>
     <string name="badPuk2">הוזן קוד PUK2 שגוי</string>
     <string name="batt_cooldown_mode_ok">אישור</string>
-    <string name="battery_saver_charged_notification_summary">הטלפון טעון מספיק. התכונות כבר לא מוגבלות.</string>
+    <string name="battery_saver_charged_notification_summary">הטאבלט טעון מספיק. התכונות כבר לא מוגבלות.</string>
     <string name="battery_saver_description">"התכונה 'חיסכון בסוללה' מפעילה עיצוב כהה ומגבילה או מכבה פעילות ברקע, חלק מהאפקטים החזותיים, תכונות מסוימות וחלק מהחיבורים לרשתות."</string>
     <string name="battery_saver_description_with_learn_more">"התכונה 'חיסכון בסוללה' מפעילה עיצוב כהה ומגבילה או מכבה פעילות ברקע, חלק מהאפקטים החזותיים, תכונות מסוימות וחלק מהחיבורים לרשתות."</string>
     <string name="battery_saver_notification_channel_name">חיסכון בסוללה</string>
@@ -733,7 +733,7 @@
     <string name="decline">דחייה</string>
     <string name="decline_remote_bugreport_action">עדיף שלא</string>
     <string name="default_audio_route_category_name">מערכת</string>
-    <string name="default_audio_route_name">טלפון</string>
+    <string name="default_audio_route_name">טאבלט</string>
     <string name="default_audio_route_name_dock_speakers">רמקולים באביזר עגינה</string>
     <string name="default_audio_route_name_external_device">מכשיר חיצוני</string>
     <string name="default_audio_route_name_headphones">אוזניות</string>
@@ -860,7 +860,7 @@
     <string name="emergency_call_dialog_number_for_display">מספר חירום</string>
     <string name="emergency_calls_only">שיחות חירום בלבד</string>
     <string name="enablePin">‏לא הצלחת. יש להפעיל נעילת SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">"השירות %1$s רוצה להפעיל את התכונה 'גילוי באמצעות מגע'. כשהתכונה 'גילוי באמצעות מגע' מופעלת, אפשר לשמוע או לראות תיאורים של הפריטים שעליהם האצבע מונחת או לקיים אינטראקציה עם הטלפון באמצעות תנועות אצבע."</string>
+    <string name="enable_explore_by_touch_warning_message">"%1$s רוצה להפעיל את התכונה 'גילוי באמצעות מגע'. כאשר התכונה הזו מופעלת, אפשר לשמוע או לראות תיאורים של הפריטים שעליהם הנחת את האצבע או לקיים אינטראקציה עם הטאבלט באמצעות תנועות."</string>
     <string name="enable_explore_by_touch_warning_title">"האם להפעיל את התכונה 'גילוי באמצעות מגע'?"</string>
     <string name="error_message_change_not_allowed">מנהל המערכת שלך לא מאפשר את השינוי הזה</string>
     <string name="error_message_title">שגיאה</string>
@@ -924,7 +924,7 @@
     <string name="ext_media_unsupported_notification_message">המכשיר אינו תומך ב-%s זה. הקש כדי להגדיר בתבנית נתמכת.</string>
     <string name="ext_media_unsupported_notification_title">%s לא נתמך</string>
     <string name="ext_storage_bad_removal_button">הפעל מחדש</string>
-    <string name="ext_storage_bad_removal_title">הפעל את הטלפון מחדש</string>
+    <string name="ext_storage_bad_removal_title">הפעל את הטאבלט מחדש</string>
     <string name="extmedia_format_button_format">פורמט</string>
     <string name="extmedia_format_message">כל הנתונים שמאוחסנים בכרטיס יאבדו.</string>
     <string name="extmedia_format_message_usbhost">‏כל הקבצים ששמורים באמצעי האחסון מסוג USB שלך יימחקו. פעולה זו היא בלתי הפיכה!</string>
@@ -1128,7 +1128,7 @@
     <string name="global_action_toggle_sealed_mode">"מצב 'חתום'"</string>
     <string name="global_action_toggle_silent_mode">מצב שקט</string>
     <string name="global_action_voice_assist">האסיסטנט</string>
-    <string name="global_actions">אפשרויות טלפון</string>
+    <string name="global_actions">אפשרויות טאבלט</string>
     <string name="global_actions_airplane_mode_off_status">מצב הטיסה כבוי</string>
     <string name="global_actions_airplane_mode_on_status">מצב טיסה מופעל</string>
     <string name="global_actions_toggle_airplane_mode">מצב טיסה</string>
@@ -1313,11 +1313,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>יש להקיש כדי להקליד את הסיסמה&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">קוד אימות שגוי</string>
     <string name="kg_enter_confirm_pin_hint">יש לאשר את קוד האימות הרצוי</string>
-    <string name="kg_failed_attempts_almost_at_login">"שרטטת את קו ביטול הנעילה באופן שגוי %1$d פעמים. לאחר %2$d ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטלפון באמצעות חשבון אימייל‏.
+    <string name="kg_failed_attempts_almost_at_login">"שרטטת את קו ביטול הנעילה באופן שגוי %1$d פעמים. לאחר %2$d ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטאבלט באמצעות חשבון אימייל‏.
 
- אפשר לנסות שוב בעוד %3$d שניות."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">ביצעת %1$d ניסיונות שגויים לביטול נעילת הטלפון. לאחר %2$d ניסיונות כושלים נוספים, הטלפון יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו.</string>
-    <string name="kg_failed_attempts_now_wiping">ביצעת %d ניסיונות שגויים לביטול נעילת הטלפון. הטלפון יעבור עכשיו איפוס לברירת המחדל של היצרן.</string>
+יש לנסות שוב בעוד %3$d שניות."</string>
+    <string name="kg_failed_attempts_almost_at_wipe">ביצעת %1$d ניסיונות שגויים לביטול נעילת הטלפון. לאחר %2$d ניסיונות כושלים נוספים, הטאבלט יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו.</string>
+    <string name="kg_failed_attempts_now_wiping">ביצעת %d ניסיונות שגויים לביטול נעילת הטאבלט. הטאבלט יעבור כעת איפוס לברירת המחדל של היצרן.</string>
     <string name="kg_forgot_pattern_button_text">שכחת את קו ביטול הנעילה?</string>
     <string name="kg_invalid_confirm_pin_hint">קודי האימות לא תואמים</string>
     <string name="kg_invalid_puk">‏יש להזין שוב את קוד ה-PUK הנכון. ניסיונות חוזרים ישביתו את כרטיס ה-SIM באופן סופי.</string>
@@ -1405,11 +1405,11 @@
     <string name="lockscreen_carrier_default">אין שירות</string>
     <string name="lockscreen_carrier_noservice">(אין שירות).</string>
     <string name="lockscreen_emergency_call">חירום</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">ביצעת %1$d ניסיונות שגויים לביטול נעילת הטלפון. לאחר %2$d ניסיונות כושלים נוספים, הטלפון יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"‏שרטטת את קו ביטול הנעילה באופן שגוי %1$d פעמים. בעוד %2$d ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטלפון באמצעות פרטי הכניסה שלך ל-Google‏.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">ביצעת %1$d ניסיונות שגויים לביטול נעילת הטאבלט. לאחר %2$d ניסיונות כושלים נוספים, הטאבלט יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"‏שרטטת את קו ביטול הנעילה באופן שגוי %1$d פעמים. לאחר %2$d ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטאבלט באמצעות פרטי הכניסה שלך ל-Google.
 
- יש לנסות שוב בעוד %3$d שניות."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">ביצעת %d ניסיונות שגויים לביטול נעילת הטלפון. הטלפון יעבור כעת איפוס לברירת המחדל של היצרן.</string>
+יש לנסות שוב בעוד %3$d שניות."</string>
+    <string name="lockscreen_failed_attempts_now_wiping">ביצעת %d ניסיונות שגויים לביטול נעילת הטאבלט. הטאבלט יעבור כעת איפוס לברירת המחדל של היצרן.</string>
     <string name="lockscreen_forgot_pattern_button_text">שכחת את קו ביטול הנעילה?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"‏שכחת את שם המשתמש או הסיסמה?
 אפשר להיכנס לכתובת "<b>google.com/accounts/recovery</b></string>
@@ -1425,7 +1425,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">"יש ללחוץ על 'תפריט' כדי לבטל את הנעילה או כדי לבצע שיחת חירום."</string>
     <string name="lockscreen_missing_sim_instructions">‏הוספת כרטיס SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">‏כרטיס ה-SIM חסר או שלא ניתן לקרוא אותו. הוספת כרטיס SIM.</string>
-    <string name="lockscreen_missing_sim_message">‏אין כרטיס SIM בטלפון.</string>
+    <string name="lockscreen_missing_sim_message">‏אין כרטיס SIM בטאבלט.</string>
     <string name="lockscreen_missing_sim_message_short">‏אין כרטיס SIM</string>
     <string name="lockscreen_network_locked_message">רשת נעולה</string>
     <string name="lockscreen_password_wrong">כדאי לנסות שוב</string>
@@ -1465,7 +1465,7 @@
     <string name="low_internal_storage_view_text">ייתכן שפונקציות מערכת מסוימות לא יפעלו</string>
     <string name="low_internal_storage_view_text_no_boot">‏אין מספיק מקום אחסון עבור המערכת. עליך לוודא שיש לך מקום פנוי בנפח של 250MB ולהתחיל שוב.</string>
     <string name="low_internal_storage_view_title">מקום האחסון עומד להיגמר</string>
-    <string name="low_memory">מקום האחסון של הטלפון מלא. אפשר למחוק חלק מהקבצים כדי לפנות מקום.</string>
+    <string name="low_memory">נפח האחסון של הטאבלט מלא. צריך למחוק קבצים כדי לפנות מקום.</string>
     <string name="ltb_kill_content_v2_phone">%s נסגר בגלל התחממות יתר בטלפון. תוכל לפתוח אותו מחדש לאחר שהטלפון יתקרר.</string>
     <string name="ltb_kill_content_v2_tablet">%s נסגר בגלל התחממות יתר בטאבלט. תוכל לפתוח אותו מחדש לאחר שהטאבלט יתקרר.</string>
     <string name="ltb_warning_button">אל תסגור</string>
@@ -1777,18 +1777,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">הצליל מושמע באמצעות התקן שמע Bluetooth שלך. הקש כאן כדי לכבות</string>
     <string name="multisound_sound_via_headphone">צלילי %s מושמעים באמצעות האוזניות. הקש כאן כדי לכבות פריט זה.</string>
     <string name="multisound_sound_via_headphone_multiselection">הצליל מושמע באמצעות האוזניות שלך. הקש כאן כדי לכבות.</string>
-    <string name="multisound_sound_via_phone_speaker">צלילי %s מושמעים באמצעות רמקול הטלפון. הקש כאן כדי לכבות פריט זה.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">הצליל מושמע באמצעות רמקול הטלפון שלך. הקש כאן כדי לכבות.</string>
+    <string name="multisound_sound_via_phone_speaker">צלילי %s מושמעים באמצעות רמקול הטאבלט. הקש כאן כדי לכבות פריט זה.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">הצליל מושמע באמצעות רמקול הטאבלט שלך. הקש כאן כדי לכבות.</string>
     <string name="multisound_sound_via_usb_audio">צלילי %s מושמעים באמצעות התקן שמע USB. הקש כאן כדי לכבות פריט זה.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">הצליל מושמע באמצעות התקן שמע USB שלך. הקש כאן כדי לכבות.</string>
     <string name="multisound_title">הפרדת צלילים מיישום</string>
     <string name="multisound_turn_off_multisound">כבה</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">לא ניתן להפעיל את %s ב-Samsung DeX. נסה להפעיל במצב טלפון.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">לא ניתן להפעיל את %s ב-Samsung DeX. פריט זה תוכנן למסכי בית בטלפונים.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">"משחקים מסוימים מתאימים למסכי מגע בלבד. אם פקדי העכבר לא פועלים ב-Samsung DeX, נסה לשחק במצב 'טלפון'."</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">לא ניתן להפעיל את %s ב-Samsung DeX. נסה להפעיל במצב טאבלט.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">לא ניתן להפעיל את %s ב-Samsung DeX. פריט זה תוכנן למסכי בית בטאבלטים.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">"משחקים מסוימים מתאימים למסכי מגע בלבד. אם פקדי העכבר לא פועלים ב-Samsung DeX, נסה לשחק במצב 'טאבלט'."</string>
     <string name="music_recognition_manager_service">השירות של מנהל זיהוי המוזיקה</string>
     <string name="muted_by">חלק מהצלילים מושתקים על ידי %1$s</string>
-    <string name="my_device">טלפון זה</string>
+    <string name="my_device">טאבלט זה</string>
     <string name="nas_upgrade_notification_content">‏ההתראות המשופרות מספקות מעכשיו הצעות לפעולות ולתשובות. אין יותר תמיכה בהתראות מותאמות ל-Android.</string>
     <string name="nas_upgrade_notification_disable_action">השבתה</string>
     <string name="nas_upgrade_notification_enable_action">אישור</string>
@@ -1953,23 +1953,23 @@
     <string name="permdesc_bindNotificationListenerService">מאפשרת למשתמש לבצע איגוד לממשק הרמה העליונה של שירות האזנה להתראות. ההרשאה הזו אינה נחוצה לאפליקציות רגילות.</string>
     <string name="permdesc_bind_connection_service">מאפשרת לאפליקציה ליצור אינטראקציה עם שירותי טלפוניה כדי לבצע ולקבל שיחות.</string>
     <string name="permdesc_bind_incall_service">מאפשרת לאפליקציה לקבוע מתי ואיך המשתמש יראה את מסך השיחה הנכנסת.</string>
-    <string name="permdesc_bluetooth">‏מאפשרת לאפליקציה להציג את תצורת ה-Bluetooth בטלפון, וכן ליצור ולקבל חיבורים עם מכשירים מותאמים.</string>
-    <string name="permdesc_bluetoothAdmin">‏מאפשרת לאפליקציה להגדיר את התצורה של הטלפון המקומי מסוג Bluetooth וכן לגלות מכשירים מרוחקים ולבצע התאמה איתם.</string>
+    <string name="permdesc_bluetooth">‏מאפשר לאפליקציה להציג את תצורת ה-Bluetooth בטאבלט, וכן ליצור ולקבל חיבורים עם מכשירים מותאמים.</string>
+    <string name="permdesc_bluetoothAdmin">‏מאפשרת לאפליקציה להגדיר את התצורה של הטאבלט המקומי מסוג Bluetooth וכן לגלות מכשירים מרוחקים ולבצע התאמה איתם.</string>
     <string name="permdesc_bluetooth_advertise">‏האפליקציה תוכל לפרסם במכשירי Bluetooth בקרבת מקום</string>
     <string name="permdesc_bluetooth_connect">‏מאפשרת לאפליקציה להתחבר למכשירי Bluetooth מותאמים</string>
     <string name="permdesc_bluetooth_scan">‏מאפשרת לאפליקציה לגלות מכשירי Bluetooth בקרבת מקום ולבצע התאמה איתם</string>
     <string name="permdesc_bodySensors">ההרשאה מאפשרת לאפליקציה לגשת לנתונים של חיישני גוף, כמו דופק, חום גוף ושיעור החמצן בדם, כשנעשה שימוש באפליקציה.</string>
     <string name="permdesc_bodySensors_background">ההרשאה מאפשרת לאפליקציה לגשת לנתונים של חיישני גוף, כמו דופק, חום גוף ושיעור החמצן בדם, כשהאפליקציה פועלת ברקע.</string>
-    <string name="permdesc_broadcastSticky">מאפשרת לאפליקציה לשלוח שידורים במיקום קבוע, אשר נותרים לאחר סיום השידור. אפליקציות זדוניות עלולות להאט את פעילות הטלפון או להפוך אותה לבלתי יציבה על ידי אילוץ המכשיר להשתמש ביותר מדי זיכרון.</string>
+    <string name="permdesc_broadcastSticky">מאפשרת לאפליקציה לשלוח שידורים במיקום קבוע, אשר נותרים לאחר סיום השידור. אפליקציות זדוניות עלולות להאט את פעילות הטאבלט או להפוך אותה לבלתי יציבה על ידי אילוץ המכשיר להשתמש ביותר מדי זיכרון.</string>
     <string name="permdesc_callCompanionApp">מאפשרת לאפליקציה להציג שיחות נוכחיות ולשלוט בהן במכשיר – כולל פרטים כמו מספרי שיחה של שיחות ומצב השיחה.</string>
     <string name="permdesc_callPhone">ההרשאה הזו מאפשרת לאפליקציה להתקשר לכל מספר טלפון שהוא ללא התערבותך. הפעולה עשויה להוביל לשיחות או לחיובים לא צפויים. לתשומך ליבך, ההרשאה הזו לא מאפשרת לאפליקציה להתקשר למספרי חירום. אפליקציות זדוניות עלולות לגרום לחיובים נוספים בגלל התקשרות לשיחות ללא אישורך, או לחייג לקודי ספק שיגרמו לכך שהשיחות הנכנסות יופנו אוטומטית למספר אחר.</string>
     <string name="permdesc_camera">האפליקציה הזו יכולה להשתמש במצלמה כדי לצלם תמונות וסרטונים כאשר היא בשימוש.</string>
     <string name="permdesc_cameraOpenCloseListener">‏האפליקציה הזו יכולה לקבל קריאות חוזרות (callback) כשמכשיר מצלמה כלשהו נפתח (באמצעות אפליקציה) או נסגר.</string>
     <string name="permdesc_changeNetworkState">מאפשרת לאפליקציה לשנות את מצב הקישוריות של הרשת.</string>
     <string name="permdesc_changeTetherState">מאפשרת לאפליקציה לשנות את מצב הקישוריות של רשת משותפת.</string>
-    <string name="permdesc_changeWifiMulticastState">‏מאפשרת לאפליקציה לקבל חבילות שנשלחו לכל המכשירים ברשת Wi-Fi באמצעות כתובות שידור לקבוצה, ולא רק בטלפון שלך. צריכת החשמל גבוהה יותר מאשר במצב שאינו שידור לקבוצה.</string>
+    <string name="permdesc_changeWifiMulticastState">‏מאפשרת לאפליקציה לקבל חבילות שנשלחו לכל המכשירים ברשת Wi-Fi באמצעות כתובות שידור לקבוצה, ולא רק בטאבלט שלך. צריכת הסוללה גבוהה יותר מאשר במצב שאינו שידור לקבוצה.</string>
     <string name="permdesc_changeWifiState">‏מאפשרת לאפליקציה להתחבר לנקודות גישת Wi-Fi ולהתנתק מהן, וכן לבצע שינויים בתצורת המכשיר עבור רשתות Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">‏מאפשרת לאפליקציה לחבר את הטלפון לרשתות WiMAX ולהתנתק מהן.</string>
+    <string name="permdesc_changeWimaxState">‏מאפשרת לאפליקציה לחבר את הטאבלט לרשתות WiMAX ולהתנתק מהן.</string>
     <string name="permdesc_companionProfileWatch">ההרשאה הזו מאפשרת לאפליקציה נלווית לנהל שעונים.</string>
     <string name="permdesc_connection_manager">מאפשרת לאפליקציה לנהל חיבורי תקשורת.</string>
     <string name="permdesc_control_incall_experience">מאפשרת לאפליקציה לספק חוויית שימוש של שיחה נכנסת.</string>
@@ -1997,7 +1997,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">‏ההרשאה הזו מאפשרת לאפליקציה להשתמש בשירותים שפועלים בחזית מסוג \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">‏ההרשאה הזו מאפשרת לאפליקציה להשתמש בשירותים שפועלים בחזית מסוג \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">מאפשרת לאפליקציה להציג התראות כפעילויות במסך מלא במכשיר נעול</string>
-    <string name="permdesc_getAccounts">מאפשרת לאפליקציה לקבל רשימה של חשבונות המוכרים לטלפון. הדבר עשוי לכלול חשבונות שנוצרו על ידי אפליקציות שהתקנת.</string>
+    <string name="permdesc_getAccounts">מאפשרת לאפליקציה לקבל רשימה של חשבונות המוכרים לטאבלט. הדבר עשוי לכלול חשבונות שנוצרו על ידי אפליקציות שהתקנת.</string>
     <string name="permdesc_getAppList">מאפשר ליישום לקרוא את רשימת היישומים שהותקנו.</string>
     <string name="permdesc_getPackageSize">מאפשרת לאפליקציה לאחזר את הקוד, הנתונים, ואת גודל קובצי המטמון שלה</string>
     <string name="permdesc_getTasks">מאפשרת לאפליקציה לאחזר מידע לגבי משימות הפועלות כרגע וכאלו שפעלו לאחרונה. ייתכן שההרשאה הזו תתיר לאפליקציה לגלות מידע לגבי האפליקציות שבהן נעשה שימוש במכשיר.</string>
@@ -2096,16 +2096,16 @@
     <string name="permdesc_nearby_wifi_devices">‏האפליקציה תוכל לפרסם במכשירי Wi-Fi בקרבת מקום, להתחבר אליהם ולהעריך את המיקום היחסי שלהם</string>
     <string name="permdesc_nfc">"‏מאפשרת לאפליקציה נהל תקשורת עם תגים, כרטיסים וקוראים מסוג 'תקשורת מטווח קצר' (NFC)."</string>
     <string name="permdesc_observeCompanionDevicePresence">ההרשאה הזו מאפשרת לאפליקציה נלווית לגלות שיש מכשירים נלווים בקרבת מקום או במרחק רב.</string>
-    <string name="permdesc_persistentActivity">מאפשרת לאפליקציה להפוך חלקים ממנה לקבועים בזיכרון. הפעולה הזו עשויה להגביל את הזיכרון הזמין לאפליקציות אחרות ולהאט את פעולת הטלפון.</string>
+    <string name="permdesc_persistentActivity">מאפשרת לאפליקציה להפוך חלקים ממנה לקבועים בזיכרון. הפעולה הזו עשויה להגביל את הזיכרון הזמין לאפליקציות אחרות ולהאט את פעולת הטאבלט.</string>
     <string name="permdesc_postNotification">מאפשרת לאפליקציה להציג התראות</string>
     <string name="permdesc_preferredPaymentInfo">‏מאפשרת לאפליקציה לקבל פרטים על שירות תשלום מועדף ב-NFC, כמו עזרים רשומים ויעד של נתיב.</string>
     <string name="permdesc_processOutgoingCalls">מאפשרת לאפליקציה לראות את המספר המחויג במהלך ביצוע שיחה יוצאת, עם האפשרות להפנות את השיחה למספר אחר או לבטל את השיחה לחלוטין.</string>
     <string name="permdesc_queryAllPackages">מאפשרת לאפליקציה לראות את כל החבילות המותקנות.</string>
     <string name="permdesc_readBasicPhoneState">ההרשאה מאפשרת לאפליקציה לגשת לתכונות הטלפוניות הבסיסיות של המכשיר.</string>
-    <string name="permdesc_readCalendar">האפליקציה הזו יכולה לקרוא את כל אירועי היומן המאוחסנים בטלפון, ולשתף או לשמור את נתוני היומן.</string>
+    <string name="permdesc_readCalendar">האפליקציה הזו יכולה לקרוא את כל אירועי היומן המאוחסנים בטאבלט, ולשתף או לשמור את נתוני היומן.</string>
     <string name="permdesc_readCallLog">האפליקציה הזו יכולה לקרוא את היסטוריית השיחות שלך.</string>
     <string name="permdesc_readCellBroadcasts">מאפשרת לאפליקציה לקרוא הודעות שידור סלולרי שהתקבלו במכשיר שלך. התראות שידור סלולרי נשלחות במקומות מסוימים כדי להזהיר אותך מפני מצבי חירום. אפליקציות זדוניות עשויות להפריע לביצועים או לפעולה של המכשיר שלך כאשר מתקבל שידור חירום סלולרי.</string>
-    <string name="permdesc_readContacts">מאפשרת לאפליקציה לקרוא נתונים על אנשי הקשר השמורים בטלפון שלך. לאפליקציות תהיה גם גישה לחשבונות בטלפון שדרכם נוצרו אנשי קשר. הפעולה הזו עשויה לכלול חשבונות שנוצרו על ידי אפליקציות שהתקנת. ההרשאה הזו מאפשרת לאפליקציות לשמור נתונים של אנשי הקשר שלך, ואפליקציות זדוניות עלולות לשתף נתונים של אנשי קשר ללא ידיעתך.</string>
+    <string name="permdesc_readContacts">מאפשרת לאפליקציה לקרוא נתונים על אנשי הקשר השמורים בטאבלט שלך. לאפליקציות תהיה גם גישה לחשבונות בטאבלט שיצרו אנשי קשר, כולל חשבונות שנוצרו על ידי אפליקציות שהתקנת. ההרשאה הזו מאפשרת לאפליקציות לשמור נתונים של אנשי הקשר שלך, ואפליקציות זדוניות עלולות לשתף נתונים של אנשי קשר ללא ידיעתך.</string>
     <string name="permdesc_readInstallSessions">מאפשרת לאפליקציה לקרוא פעילויות התקנה. ההרשאה הזו מאפשרת לה לראות פרטים על התקנות פעילות של חבילות.</string>
     <string name="permdesc_readMediaAudio">מאפשרת לאפליקציה לקרוא קובצי אודיו מתוך האחסון המשותף.</string>
     <string name="permdesc_readMediaImages">מאפשרת לאפליקציה לקרוא קובצי תמונה מתוך האחסון המשותף.</string>
@@ -2113,11 +2113,11 @@
     <string name="permdesc_readNetworkUsageHistory">מאפשרת לאפליקציה לקרוא נתוני שימוש היסטוריים ברשת עבור רשתות ואפליקציות ספציפיות.</string>
     <string name="permdesc_readPhoneNumbers">מתירה לאפליקציה גישה למספרי הטלפון במכשיר.</string>
     <string name="permdesc_readPhoneState">מאפשרת לאפליקציה לגשת לתכונות הטלפון של המכשיר. ההרשאה הזו מתירה לאפליקציה לגלות את מספר הטלפון ואת מזהי המכשיר, אם השיחה פעילה ואת המספר המרוחק המחובר באמצעות שיחה.</string>
-    <string name="permdesc_readSms">‏האפליקציה הזו יכולה לקרוא את כל הודעות הטקסט (SMS) המאוחסנות בטלפון.</string>
+    <string name="permdesc_readSms">‏האפליקציה הזו יכולה לקרוא את כל הודעות הטקסט (SMS) המאוחסנות בטאבלט.</string>
     <string name="permdesc_readSyncSettings">"מאפשרת לאפליקציה לקרוא את הגדרות הסנכרון של חשבון. לדוגמה, כך אפשר לדעת אם האפליקציה 'אנשים' מסונכרנת עם חשבון כלשהו."</string>
     <string name="permdesc_readSyncStats">מאפשרת לאפליקציה לקרוא את סטטיסטיקת הסנכרון של חשבון, כולל היסטוריית אירועי הסנכרון וכמות הנתונים שסונכרנה.</string>
     <string name="permdesc_readVisualUserSelect">ההרשאה מאפשרת לאפליקציה לקרוא קובצי וידאו ותמונה שבחרת מתוך נפח האחסון המשותף.</string>
-    <string name="permdesc_receiveBootCompleted">מאפשרת לאפליקציה להפעיל את עצמה מיד עם השלמת תהליך האתחול של המערכת. כתוצאה מכך, הפעלת הטלפון עשויה לארוך יותר זמן והאפליקציה עלולה להאט את הפעילות הכללית של הטלפון כי היא פועלת תמיד.</string>
+    <string name="permdesc_receiveBootCompleted">מאפשרת לאפליקציה להפעיל את עצמה מיד עם סיום תהליך ההפעלה של המערכת. כתוצאה מכך, הפעלת הטאבלט עשויה לארוך יותר זמן והאפליקציה עלולה להאט את הפעילות הכללית של הטאבלט כי היא פועלת כל הזמן.</string>
     <string name="permdesc_receiveMms">‏מאפשרת לאפליקציה לקבל ולעבד הודעות MMS. משמעות הדבר היא שהאפליקציה יכולה לעקוב אחר הודעות שנשלחו למכשיר או למחוק אותן מבלי להציג לך אותן.</string>
     <string name="permdesc_receiveSms">‏מאפשרת לאפליקציה לקבל ולעבד הודעות SMS. משמעות הדבר היא שהאפליקציה יכולה לעקוב אחר הודעות שנשלחו למכשיר או למחוק אותן מבלי להציג לך אותן.</string>
     <string name="permdesc_receiveWapPush">‏מאפשרת לאפליקציה לקבל ולעבד הודעות WAP. ההרשאה הזו כוללת את היכולת לעקוב אחר הודעות שנשלחו אליך ולמחוק אותן מבלי להציג לך אותן.</string>
@@ -2139,7 +2139,7 @@
     <string name="permdesc_sendSms">‏מאפשר לאפליקציה לשלוח הודעות SMS. הדבר עשוי לגרום לחיובים בלתי צפויים. אפליקציות זדוניות עלולות לגרום לעלויות על ידי שליחת הודעות ללא אישורך.</string>
     <string name="permdesc_setAlarm">מאפשרת לאפליקציה להגדיר התראה באפליקציה מותקנת של שעון מעורר. אפליקציות מסוימות של שעון מעורר אינן מיישמות את התכונה הזו.</string>
     <string name="permdesc_setInputCalibration">מאפשרת לאפליקציה לשנות את פרמטרי הכיול של מסך המגע. לעולם לא אמורה להיות נחוצה לאפליקציות רגילות.</string>
-    <string name="permdesc_setTimeZone">מאפשר, לאפליקציה לשנות את אזור הזמן של הטלפון.</string>
+    <string name="permdesc_setTimeZone">מאפשרת לאפליקציה לשנות את אזור הזמן של הטאבלט.</string>
     <string name="permdesc_setWallpaper">מאפשרת לאפליקציה להגדיר את טפט המערכת.</string>
     <string name="permdesc_setWallpaperHints">מאפשרת לאפליקציה להגדיר את סמני הגודל של טפט המערכת.</string>
     <string name="permdesc_sim_communication">‏מאפשרת לאפליקציה לשלוח פקודות ל-SIM. זוהי הרשאה מסוכנת מאוד.</string>
@@ -2153,7 +2153,7 @@
     <string name="permdesc_subscribedFeedsRead">מאפשרת לאפליקציה לקבל פרטים על הפידים שמסונכרנים כרגע.</string>
     <string name="permdesc_systemAlertWindow">האפליקציה הזו יכולה להופיע מעל אפליקציות אחרות או בחלקים אחרים של המסך. ייתכן שהדבר יפריע לך להשתמש באפליקציות וישנה את האופן שבו הן מופיעות.</string>
     <string name="permdesc_systemCamera">‏האפליקציה הזו בעלת ההרשאות, או אפליקציית המערכת הזו, יכולה לצלם תמונות ולהקליט סרטונים באמצעות מצלמת מערכת בכל זמן. בנוסף, לאפליקציה נדרשת ההרשאה android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">מאפשרת לאפליקציה להשתמש במשדר האינפרא-אדום של הטלפון.</string>
+    <string name="permdesc_transmitIr">מאפשרת לאפליקציה להשתמש במשדר האינפרה-אדום של הטאבלט.</string>
     <string name="permdesc_turnScreenOn">ההרשאה מאפשרת לאפליקציה להפעיל את המסך.</string>
     <string name="permdesc_ucsPlugin">עבוד עם תוספי צד שלישי לאחסון אישורים.</string>
     <string name="permdesc_uninstall_shortcut">מאפשרת לאפליקציה להסיר קיצורי דרך במסך דף הבית ללא התערבות המשתמש.</string>
@@ -2167,10 +2167,10 @@
     <string name="permdesc_vibrate">מאפשרת לאפליקציה לשלוט ברטט.</string>
     <string name="permdesc_vibrator_state">מאפשרת לאפליקציה לקבל גישה למצב רטט.</string>
     <string name="permdesc_videoWrite">מאפשרת לאפליקציה לשנות את אוסף הסרטונים שלך.</string>
-    <string name="permdesc_wakeLock">מאפשרת לאפליקציה למנוע מהטלפון לעבור למצב שינה.</string>
-    <string name="permdesc_writeCalendar">אפליקציה זו יכולה להוסיף, להסיר ולשנות אירועי יומן בטלפון. האפליקציה יכולה לשנות אירועים בלי להודיע לבעליהם ולשלוח הודעות שעשויות להיראות כאילו נשלחו מבעלי יומנים.</string>
-    <string name="permdesc_writeCallLog">מאפשרת לאפליקציה לשנות את יומן השיחות של הטלפון, כולל נתונים על שיחות נכנסות ויוצאות. אפליקציות זדוניות עלולות לעשות בכך שימוש כדי למחוק או לשנות את יומן השיחות שלך.</string>
-    <string name="permdesc_writeContacts">מאפשרת לאפליקציה לשנות את הנתונים לגבי אנשי הקשר המאוחסנים בטלפון שלך. ההרשאה הזו מאפשרת לאפליקציות למחוק נתונים של אנשי קשר.</string>
+    <string name="permdesc_wakeLock">מאפשרת לאפליקציה למנוע מהטאבלט לעבור למצב שינה.</string>
+    <string name="permdesc_writeCalendar">האפליקציה הזו יכולה להוסיף, להסיר ולשנות אירועי יומן בטאבלט. האפליקציה יכולה לשנות אירועים בלי להודיע לבעלים ולשלוח הודעות שעשויות להיראות כאילו נשלחו מבעלי יומנים.</string>
+    <string name="permdesc_writeCallLog">מאפשרת לאפליקציה לשנות את יומן השיחות של הטאבלט, כולל נתונים על שיחות נכנסות ויוצאות. אפליקציות זדוניות עלולות לעשות בכך שימוש כדי למחוק או לשנות את יומן השיחות שלך.</string>
+    <string name="permdesc_writeContacts">מאפשרת לאפליקציה לשנות את הנתונים לגבי אנשי הקשר המאוחסנים בטאבלט שלך. ההרשאה הזו מאפשרת לאפליקציות למחוק נתונים של אנשי קשר.</string>
     <string name="permdesc_writeSettings">מאפשרת לאפליקציה לשנות את נתוני הגדרות המערכת. אפליקציות זדוניות עלולות לשבש את תצורת המערכת שלך.</string>
     <string name="permdesc_writeSyncSettings">"מאפשרת לאפליקציה לשנות את הגדרות הסנכרון של חשבונות. לדוגמה, אפשר להשתמש בהרשאה הזו כדי להפעיל סנכרון של האפליקציה 'אנשים' עם חשבון כלשהו."</string>
     <string name="permgroupdesc_activityRecognition">גישה לפעילות הגופנית שלך</string>
@@ -2445,7 +2445,7 @@
     <string name="permlab_uwb_ranging">"זיהוי מיקום יחסי בין מכשירי 'תחום רחב סרט' קרובים"</string>
     <string name="permlab_vibrate">שליטה ברטט</string>
     <string name="permlab_videoWrite">לשנות את אוסף הסרטונים שלך</string>
-    <string name="permlab_wakeLock">מניעה מהטלפון לעבור למצב שינה</string>
+    <string name="permlab_wakeLock">מניעה מהטאבלט לעבור למצב שינה</string>
     <string name="permlab_writeCalendar">הוספה ושינוי של אירועי יומן ושליחת אימייל לאורחים ללא ידיעת הבעלים</string>
     <string name="permlab_writeCallLog">כתיבת יומן שיחות</string>
     <string name="permlab_writeContacts">שינוי אנשי הקשר שלך</string>
@@ -2487,7 +2487,7 @@
     <string name="policydesc_allow_desktopsync">מנע את השימוש בסינכרון שולחן העבודה.</string>
     <string name="policydesc_allow_internetsharing">"מנע שימוש ב'נתב אלחוטי נייד'."</string>
     <string name="policydesc_allow_irda">מנע שימוש ב-IrDA.</string>
-    <string name="policydesc_allow_popimapemail">מנע את השימוש בדוא״ל מסוג POP ו-IMAP בטלפון.</string>
+    <string name="policydesc_allow_popimapemail">מנע את השימוש בדוא״ל מסוג POP ו-IMAP בטאבלט.</string>
     <string name="policydesc_allow_storagecard">מנע שימוש בכרטיסי SD.</string>
     <string name="policydesc_allow_textmessaging">מנע שימוש בהודעות טקסט ומולטימדיה.</string>
     <string name="policydesc_allow_thirdParty">יישום זה מורשה למנוע הפעלה של יישומים צד שלישי.</string>
@@ -2505,10 +2505,10 @@
     <string name="policydesc_setGlobalProxy">‏הגדרה של שרת ה-proxy הגלובלי שבו ייעשה שימוש כשהמדיניות פועלת. רק לבעלים של המכשיר יש אפשרות להגדיר את שרת ה-proxy הגלובלי.</string>
     <string name="policydesc_unsigned_app">יישום זה מורשה למנוע הפעלה של יישומים ממקורות לא מוכרים.</string>
     <string name="policydesc_unsigned_pkg">יישום זה מורשה למנוע התקנה של יישומים ממקורות לא מוכרים.</string>
-    <string name="policydesc_watchLogin">מעקב אחר מספר הסיסמאות השגויות שהוקלדו במהלך ביטול נעילת המסך, וביצוע נעילה של הטלפון או מחיקה של כל נתוני הטלפון אם הוקלדו יותר מדי סיסמאות שגויות.</string>
-    <string name="policydesc_watchLogin_secondaryUser">מעקב אחר מספר הסיסמאות השגויות שהוזנו בעת ביטול נעילת המסך, כמו גם נעילת הטלפון או מחיקה של כל נתוני המשתמש הזה אם הוזנו יותר מדי סיסמאות שגויות.</string>
-    <string name="policydesc_wipeData">מחיקה של נתוני הטלפון, ללא אזהרה, על ידי ביצוע איפוס לנתוני היצרן.</string>
-    <string name="policydesc_wipeData_secondaryUser">מחיקה של נתוני המשתמש הזה בטלפון, ללא אזהרה.</string>
+    <string name="policydesc_watchLogin">ניהול מעקב אחר מספר הסיסמאות השגויות שמוקלדות במהלך ביטול נעילת המסך, וביצוע נעילה של הטאבלט, או מחיקה של כל נתוני הטאבלט, אם מוקלדות יותר מדי סיסמאות שגויות.</string>
+    <string name="policydesc_watchLogin_secondaryUser">מעקב אחר מספר הסיסמאות השגויות שהוזנו בעת ביטול נעילת המסך, כמו גם נעילת הטאבלט או מחיקה של כל נתוני המשתמש הזה אם הוזנו יותר מדי סיסמאות שגויות.</string>
+    <string name="policydesc_wipeData">מחיקה של נתוני הטאבלט ללא אזהרה, באמצעות איפוס לנתוני היצרן.</string>
+    <string name="policydesc_wipeData_secondaryUser">מחיקה של נתוני המשתמש הזה בטאבלט, ללא אזהרה.</string>
     <string name="policylab_allow_bluetoothmode">השבת Bluetooth</string>
     <string name="policylab_allow_browser">השבת אינטרנט</string>
     <string name="policylab_allow_camera">השבתת מצלמות</string>
@@ -2542,7 +2542,7 @@
     <string name="postalTypeHome">בית</string>
     <string name="postalTypeOther">אחר</string>
     <string name="postalTypeWork">עבודה</string>
-    <string name="power_dialog">אפשרויות טלפון</string>
+    <string name="power_dialog">אפשרויות טאבלט</string>
     <string name="power_off">כיבוי</string>
     <string name="prepend_shortcut_label">תפריט+</string>
     <string name="preposition_for_date">בתאריך %s</string>
@@ -2588,7 +2588,7 @@
     <string name="recent_tasks_title">נוצרו לאחרונה</string>
     <string name="recording_fail">לא ניתן להשתמש במיקרופון ב%1$s כאשר הוא בשימוש ב%2$s.</string>
     <string name="recording_popup">%s משתמש במיקרופון.</string>
-    <string name="recording_popup_device">טלפון</string>
+    <string name="recording_popup_device">טאבלט</string>
     <string name="recording_popup_with_bluetooth">%s משתמש במיקרופון Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s משתמש במיקרופון של %2$s.</string>
     <string name="redo">בצע שוב</string>
@@ -2735,12 +2735,12 @@
     <string name="screenshot_edit">עריכה</string>
     <string name="sd_card_unavailable_message">לא ניתן להשתמש בכרטיס ה-SD מאחר שהוא הוכנס בזמן שפרופיל משתמש אחר היה בשימוש.</string>
     <string name="sd_card_unavailable_title">כרטיס SD לא זמין</string>
-    <string name="sdcard_bad_removal_message">כרטיס SD הוסר בצורה לא בטוחה. כדי למנוע הפעלה מחדש של הטלפון שלך באופן בלתי צפוי, שמור את הנתונים שלא נשמרו ובצע הפעלה מחדש עכשיו.</string>
+    <string name="sdcard_bad_removal_message">כרטיס SD הוסר בצורה לא בטוחה. כדי למנוע הפעלה מחדש של הטאבלט שלך באופן בלתי צפוי, שמור את הנתונים שלא נשמרו ובצע הפעלה מחדש עכשיו.</string>
     <string name="sdcard_batch_decrypt_noti_content">פענח כרטיס SD</string>
     <string name="sdcard_batch_decrypt_noti_title">פענוח כרטיס SD</string>
     <string name="sdcard_batch_decrypt_popup_content">יש לפענח את כרטיס ה-SD המוצפן לפני השימוש בו. פענוח אורך שעה או יותר. התחל עם סוללה טעונה והשאר את המכשיר מחובר לחשמל עד להשלמת הפענוח. הפרעה לתהליך הפענוח עלולה לגרום לאיבוד כל הנתונים או חלקם‬.</string>
     <string name="sdcard_decrypt_err_notification">אירעה שגיאה במהלך פענוח כרטיס ה-SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">חלק מהקבצים בכרטיס ה-SD הוצפנו באמצעות מכשיר אחר, לכן לא ניתן להשתמש בהם בטלפון זה.</string>
+    <string name="sdcard_decrypt_error_otherdevice">חלק מהקבצים בכרטיס ה-SD הוצפנו באמצעות מכשיר אחר, לכן לא ניתן להשתמש בהם בטאבלט זה.</string>
     <string name="sdcard_decrypt_notification">כרטיס ה-SD פוענח.</string>
     <string name="sdcard_decrypt_title_notification">פענוח כרטיס SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">מפענח כרטיס SD…</string>
@@ -2998,7 +2998,7 @@
     <string name="showing_touch_sensitivity_noti_action">הפעל</string>
     <string name="showing_touch_sensitivity_noti_text">הפעל את רגישות המגע בעת שימוש ב-Privacy Screen או ב-Notepaper Screen לקבלת תגובתיות מדויקת יותר במגע.</string>
     <string name="showing_touch_sensitivity_noti_title">הגדל את רגישות המגע</string>
-    <string name="shutdown_confirm">הטלפון שלך ייכבה.</string>
+    <string name="shutdown_confirm">הטאבלט שלך ייכבה.</string>
     <string name="shutdown_confirm_question">לכבות את הטלפון?</string>
     <string name="shutdown_progress">בתהליך כיבוי...</string>
     <string name="side_key_double_press_deleted_app">היישום הוסר. בחר פריט אחר.</string>
@@ -3225,7 +3225,7 @@
     <string name="usb_abnormal_reset_title">חיבור ה-USB לא יציב</string>
     <string name="usb_abnormal_reset_toast">חיבור ה-USB לא יציב. נתק את הכבל וחבר אותו מחדש או נסה כבל אחר.</string>
     <string name="usb_accessory_notification_title">מחובר לאביזר USB</string>
-    <string name="usb_bad_removal_message">התקן אחסון מסוג USB‬ הוסר בצורה לא בטוחה. כדי למנוע הפעלה מחדש של הטלפון שלך באופן בלתי צפוי, שמור את הנתונים שלא נשמרו ובצע הפעלה מחדש עכשיו.</string>
+    <string name="usb_bad_removal_message">התקן אחסון מסוג USB‬ הוסר בצורה לא בטוחה. כדי למנוע הפעלה מחדש של הטאבלט שלך באופן בלתי צפוי, שמור את הנתונים שלא נשמרו ובצע הפעלה מחדש עכשיו.</string>
     <string name="usb_blocked_by_emergency_mode">"במצב 'חירום', חלק מתכונות ה-USB אינן זמינות."</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">לא ניתן להשתמש ביישומים הקשורים בהתקן ה-USB המחובר כאשר מצב חיסכון מרבי בחשמל מופעל.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">"ייתכנו מגבלות שימוש בחלק מתכונות ה-USB כל עוד מצב 'חיסכון מרבי בחשמל' מופעל."</string>
@@ -3235,7 +3235,7 @@
     <string name="usb_camera_disconnected_notification_title">מכשיר המדיה מנותק</string>
     <string name="usb_cd_installer_notification_title">עדכון תוכנה</string>
     <string name="usb_charging_notification_title">‏המכשיר בטעינה דרך USB</string>
-    <string name="usb_charing_only_notification_title">‏USB טוען</string>
+    <string name="usb_charing_only_notification_title">מחובר</string>
     <string name="usb_contaminant_detected_message">‏יציאת ה-USB הושבתה באופן אוטומטי. יש להקיש לקבלת מידע נוסף.</string>
     <string name="usb_contaminant_detected_title">‏יש נוזלים או חלקיקים ביציאת ה-USB</string>
     <string name="usb_contaminant_not_detected_message">הטלפון לא מזהה יותר נוזלים וחלקיקים.</string>
@@ -3247,11 +3247,11 @@
     <string name="usb_host_cable_disconnected_notification_title">מתאם USB מנותק.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">לא ניתן לגשת למכשיר זה. המכשיר המחובר זקוק לאספקת מתח חיצונית.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">מכשיר USB בעל מתח גבוה מחובר.</string>
-    <string name="usb_host_resource_exceed_message">אין בבקר ה-USB של הטלפון די משאבים כדי להתחבר אל התקן זה. נסה לנתק את המכשיר ואז לחבר אותו מחדש.</string>
+    <string name="usb_host_resource_exceed_message">אין בבקר ה-USB של הטאבלט די משאבים כדי להתחבר אל התקן זה. נסה לנתק את המכשיר ואז לחבר אותו מחדש.</string>
     <string name="usb_host_resource_exceed_title">אין מספיק משאבים בבקר ה-USB</string>
-    <string name="usb_hub_depth_exceed_message">הטלפון יכול לתמוך במקביל לכל היותר ב-5 חיבורים לרכזות USB.</string>
+    <string name="usb_hub_depth_exceed_message">הטאבלט יכול לתמוך במקביל לכל היותר ב-5 חיבורים לרכזות USB.</string>
     <string name="usb_hub_depth_exceed_title">מספר מרבי של חיבורים לרכזת USB</string>
-    <string name="usb_hub_power_exceed_message">הטלפון לא יכול לספק להתקן USB זה מספיק חשמל. חבר את ההתקן לרכזת USB עם מקור מתח עצמאי ואז נסה שוב לחבר אותו לטלפון שלך.</string>
+    <string name="usb_hub_power_exceed_message">הטאבלט לא יכול לספק להתקן USB זה מספיק חשמל. חבר את ההתקן לרכזת USB עם מקור מתח עצמאי ואז נסה שוב לחבר אותו לטאבלט שלך.</string>
     <string name="usb_increase_battery_usage">חיבור USB עשוי להגדיל את צריכת המתח מהסוללה.</string>
     <string name="usb_keyboard_connected_notification_title">מקלדת מחוברת</string>
     <string name="usb_keyboard_disconnected_notification_title">מקלדת מנותקת</string>
@@ -3294,8 +3294,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">אמצעי אחסון מסוג USB הוסר באופן מפתיע.</string>
     <string name="usb_ums_connected_notification_title_usbhost">אמצעי אחסון מסוג USB מחובר</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">אמצעי אחסון מסוג USB הוסר בבטחה.</string>
-    <string name="usb_unblock_by_screen_unlock">בטל את נעילת הטלפון כדי להשתמש במכשיר ה-USB המחובר.</string>
-    <string name="usb_unsupport_accessory_message">הטלפון שלך לא תומך בהתקן USB זה.</string>
+    <string name="usb_unblock_by_screen_unlock">בטל את נעילת הטאבלט כדי להשתמש במכשיר ה-USB המחובר.</string>
+    <string name="usb_unsupport_accessory_message">הטאבלט שלך לא תומך בהתקן USB זה.</string>
     <string name="usb_unsupport_accessory_title">אין תמיכה בהתקן ה-USB</string>
     <string name="usb_unsupported_audio_accessory_message">ההתקן שחיברת לא תואם לטלפון הזה. יש להקיש לקבלת מידע נוסף.</string>
     <string name="usb_unsupported_audio_accessory_title">המכשיר זיהה התקן אודיו אנלוגי</string>
@@ -3316,19 +3316,19 @@
     <string name="usb_water_dialg_method_2_desc_2">ניתן להאיץ את הייבוש על ידי הפניית זרם האוויר של מאוורר או מייבש שיער (אוויר קר בלבד) אל השקע.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"זיהינו לחות או חומר זר ביציאת הטעינה/ה-USB.
 
-בדוק את יציאת הטעינה/ה-USB לאיתור חומר זר כמו אבק או שאריות. כדי למנוע נזק לטלפון, אל תחבר שום דבר עד לניקוי יציאת הטעינה ועד שהלחות תתנדף.
+בדוק את יציאת הטעינה/ה-USB לאיתור חומר זר כמו אבק או שאריות. כדי למנוע נזק לטאבלט, אל תחבר שום דבר עד לניקוי יציאת הטעינה ועד שהלחות תתנדף.
 
 כדי לייבש את היציאה, נער את הלחות ואז המתן עד שהיא תתייבש, תהליך שעשוי להימשך כמה שעות. ניתן להאיץ את הייבוש באמצעות מאוורר או מפזר חום (אוויר קר בלבד) המופנה לעבר היציאה."</string>
     <string name="usb_water_dialg_positive_button">אישור</string>
     <string name="usb_water_dialg_support_wireless_charging">"זיהינו לחות או חומר זר ביציאת הטעינה/ה-USB.
 
-בדוק את יציאת הטעינה/ה-USB לאיתור חומר זר כמו אבק או שאריות. כדי למנוע נזק לטלפון, אל תחבר שום דבר עד לניקוי יציאת הטעינה ועד שהלחות תתנדף.
+בדוק את יציאת הטעינה/ה-USB לאיתור חומר זר כמו אבק או שאריות. כדי למנוע נזק לטאבלט, אל תחבר שום דבר עד לניקוי יציאת הטעינה ועד שהלחות תתנדף.
 
 כדי לייבש את היציאה, נער את הלחות ואז המתן עד שהיא תתייבש, תהליך שעשוי להימשך כמה שעות. ניתן להאיץ את הייבוש באמצעות מאוורר או מפזר חום (אוויר קר בלבד) המופנה לעבר היציאה.
 
-בינתיים, ניתן לטעון את הטלפון באופן אלחוטי."</string>
+בינתיים, ניתן לטעון את הטאבלט באופן אלחוטי."</string>
     <string name="usb_water_notification_content">יש רטיבות או חומר זר ביציאת הטעינה/USB. בדוק לפני הטעינה.</string>
-    <string name="usb_water_notification_message">זוהתה לחות ביציאת המטען/USB במכשיר. ודא שהפתח יבש לגמרי לפני שאתה טוען את הטלפון. ייבוש מלא עשוי להימשך זמן-מה.</string>
+    <string name="usb_water_notification_message">זוהתה לחות ביציאת המטען/USB במכשיר. ודא שהפתח יבש לגמרי לפני שאתה טוען את הטאבלט. ייבוש מלא עשוי להימשך זמן-מה.</string>
     <string name="usb_water_notification_message_button">פרטים</string>
     <string name="usb_water_notification_title">בדוק מטען/יציאת USB</string>
     <string name="usbhostStorage_restrict">מדיניות האבטחה מונעת את השימוש באחסון של מארח USB.</string>
@@ -3346,7 +3346,7 @@
     <string name="user_switched">המשתמש הנוכחי %1$s.</string>
     <string name="user_switching_message">מעבר אל %1$s…</string>
     <string name="validity_period">חוקיות:</string>
-    <string name="vdm_camera_access_denied">לא ניתן לגשת למצלמה של הטלפון מה‑%1$s</string>
+    <string name="vdm_camera_access_denied">לא ניתן לגשת למצלמה של הטאבלט מה‑%1$s</string>
     <string name="vdm_pip_blocked">אי אפשר להציג תמונה בתוך תמונה בזמן סטרימינג</string>
     <string name="vdm_secure_window">אי אפשר לגשת לתוכן המאובטח הזה בזמן סטרימינג. במקום זאת, אפשר לנסות בטלפון.</string>
     <string name="view_and_control_notification_content">לשירות %s יש הרשאה להצגת המסך ושליטה בו. אפשר להקיש כדי לבדוק.</string>

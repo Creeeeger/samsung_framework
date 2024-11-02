@@ -40,7 +40,6 @@ public abstract class PrintService extends Service {
 
     protected abstract void onRequestCancelPrintJob(PrintJob printJob);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service, android.content.ContextWrapper
     public final void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -83,16 +82,80 @@ public abstract class PrintService extends Service {
         return new PrinterId(new ComponentName(getPackageName(), getClass().getName()), (String) Preconditions.checkNotNull(localId, "localId cannot be null"));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void throwIfNotCalledOnMainThread() {
         if (!Looper.getMainLooper().isCurrentThread()) {
             throw new IllegalAccessError("must be called from the main thread");
         }
     }
 
+    /* renamed from: android.printservice.PrintService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends IPrintService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.printservice.IPrintService
+        public void createPrinterDiscoverySession() {
+            PrintService.this.mHandler.sendEmptyMessage(1);
+        }
+
+        @Override // android.printservice.IPrintService
+        public void destroyPrinterDiscoverySession() {
+            PrintService.this.mHandler.sendEmptyMessage(2);
+        }
+
+        @Override // android.printservice.IPrintService
+        public void startPrinterDiscovery(List<PrinterId> priorityList) {
+            PrintService.this.mHandler.obtainMessage(3, priorityList).sendToTarget();
+        }
+
+        @Override // android.printservice.IPrintService
+        public void stopPrinterDiscovery() {
+            PrintService.this.mHandler.sendEmptyMessage(4);
+        }
+
+        @Override // android.printservice.IPrintService
+        public void validatePrinters(List<PrinterId> printerIds) {
+            PrintService.this.mHandler.obtainMessage(5, printerIds).sendToTarget();
+        }
+
+        @Override // android.printservice.IPrintService
+        public void startPrinterStateTracking(PrinterId printerId) {
+            PrintService.this.mHandler.obtainMessage(6, printerId).sendToTarget();
+        }
+
+        @Override // android.printservice.IPrintService
+        public void requestCustomPrinterIcon(PrinterId printerId) {
+            PrintService.this.mHandler.obtainMessage(7, printerId).sendToTarget();
+        }
+
+        @Override // android.printservice.IPrintService
+        public void stopPrinterStateTracking(PrinterId printerId) {
+            PrintService.this.mHandler.obtainMessage(8, printerId).sendToTarget();
+        }
+
+        @Override // android.printservice.IPrintService
+        public void setClient(IPrintServiceClient client) {
+            PrintService.this.mHandler.obtainMessage(11, client).sendToTarget();
+        }
+
+        @Override // android.printservice.IPrintService
+        public void requestCancelPrintJob(PrintJobInfo printJobInfo) {
+            PrintService.this.mHandler.obtainMessage(10, printJobInfo).sendToTarget();
+        }
+
+        @Override // android.printservice.IPrintService
+        public void onPrintJobQueued(PrintJobInfo printJobInfo) {
+            PrintService.this.mHandler.obtainMessage(9, printJobInfo).sendToTarget();
+        }
+    }
+
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         return new IPrintService.Stub() { // from class: android.printservice.PrintService.1
+            AnonymousClass1() {
+            }
+
             @Override // android.printservice.IPrintService
             public void createPrinterDiscoverySession() {
                 PrintService.this.mHandler.sendEmptyMessage(1);

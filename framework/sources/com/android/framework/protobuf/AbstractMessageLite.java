@@ -71,7 +71,6 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
         throw new UnsupportedOperationException();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSerializedSize(Schema schema) {
         int memoizedSerializedSize = getMemoizedSerializedSize();
         if (memoizedSerializedSize == -1) {
@@ -82,7 +81,6 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
         return memoizedSerializedSize;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UninitializedMessageException newUninitializedMessageException() {
         return new UninitializedMessageException(this);
     }
@@ -102,7 +100,6 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
         Builder.addAll((Iterable) values, (List) list);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static <T> void addAll(Iterable<T> values, List<? super T> list) {
         Builder.addAll((Iterable) values, (List) list);
     }
@@ -111,7 +108,7 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
     public static abstract class Builder<MessageType extends AbstractMessageLite<MessageType, BuilderType>, BuilderType extends Builder<MessageType, BuilderType>> implements MessageLite.Builder {
         @Override // 
         /* renamed from: clone */
-        public abstract BuilderType mo7008clone();
+        public abstract BuilderType mo7003clone();
 
         protected abstract BuilderType internalMergeFrom(MessageType messagetype);
 
@@ -205,12 +202,10 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public static final class LimitedInputStream extends FilterInputStream {
             private int limit;
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public LimitedInputStream(InputStream in, int limit) {
                 super(in);
                 this.limit = limit;
@@ -303,7 +298,6 @@ public abstract class AbstractMessageLite<MessageType extends AbstractMessageLit
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public static UninitializedMessageException newUninitializedMessageException(MessageLite message) {
             return new UninitializedMessageException(message);
         }

@@ -273,8 +273,9 @@ public class ActivityManager {
     private static volatile boolean sSystemReady = false;
     private static final boolean DEVELOPMENT_FORCE_LOW_RAM = SystemProperties.getBoolean("debug.force_low_ram", false);
     private static final Singleton<IActivityManager> IActivityManagerSingleton = new Singleton<IActivityManager>() { // from class: android.app.ActivityManager.3
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass3() {
+        }
+
         @Override // android.util.Singleton
         public IActivityManager create() {
             IBinder b = ServiceManager.getService("activity");
@@ -380,13 +381,14 @@ public class ActivityManager {
         void onUidFrozenStateChanged(int[] iArr, int[] iArr2);
     }
 
-    /* renamed from: -$$Nest$smgetTaskService, reason: not valid java name */
+    /* renamed from: -$$Nest$smgetTaskService */
     static /* bridge */ /* synthetic */ IActivityTaskManager m122$$Nest$smgetTaskService() {
         return getTaskService();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    static final class MyUidObserver extends UidObserver {
+    public static final class MyUidObserver extends UidObserver {
         final Context mContext;
         final OnUidImportanceListener mListener;
 
@@ -406,9 +408,10 @@ public class ActivityManager {
         }
     }
 
-    /* renamed from: android.app.ActivityManager$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.ActivityManager$1 */
     /* loaded from: classes.dex */
-    class AnonymousClass1 extends IUidFrozenStateChangedCallback.Stub {
+    public class AnonymousClass1 extends IUidFrozenStateChangedCallback.Stub {
         AnonymousClass1() {
         }
 
@@ -571,8 +574,13 @@ public class ActivityManager {
         return procState == 4;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class ProcessObserver extends IProcessObserver.Stub {
+    public class ProcessObserver extends IProcessObserver.Stub {
+        /* synthetic */ ProcessObserver(ActivityManager activityManager, ProcessObserverIA processObserverIA) {
+            this();
+        }
+
         private ProcessObserver() {
         }
 
@@ -603,7 +611,6 @@ public class ActivityManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ActivityManager(Context context, Handler handler) {
         this.mContext = context;
     }
@@ -746,13 +753,14 @@ public class ActivityManager {
         private static final String ATTR_TASKDESCRIPTIONLABEL = "task_description_label";
         public static final String ATTR_TASKDESCRIPTION_PREFIX = "task_description_";
         public static final Parcelable.Creator<TaskDescription> CREATOR = new Parcelable.Creator<TaskDescription>() { // from class: android.app.ActivityManager.TaskDescription.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public TaskDescription createFromParcel(Parcel source) {
                 return new TaskDescription(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TaskDescription[] newArray(int size) {
                 return new TaskDescription[size];
@@ -772,6 +780,10 @@ public class ActivityManager {
         private int mNavigationBarColor;
         private int mResizeMode;
         private int mStatusBarColor;
+
+        /* synthetic */ TaskDescription(Parcel parcel, TaskDescriptionIA taskDescriptionIA) {
+            this(parcel);
+        }
 
         /* loaded from: classes.dex */
         public static final class Builder {
@@ -1214,6 +1226,23 @@ public class ActivityManager {
             this.mColorBackgroundFloating = source.readInt();
         }
 
+        /* renamed from: android.app.ActivityManager$TaskDescription$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<TaskDescription> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TaskDescription createFromParcel(Parcel source) {
+                return new TaskDescription(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TaskDescription[] newArray(int size) {
+                return new TaskDescription[size];
+            }
+        }
+
         public String toString() {
             return "TaskDescription Label: " + this.mLabel + " Icon: " + this.mIcon + " IconFilename: " + this.mIconFilename + " colorPrimary: " + this.mColorPrimary + " colorBackground: " + this.mColorBackground + " statusBarColor: " + this.mStatusBarColor + (this.mEnsureStatusBarContrastWhenTransparent ? " (contrast when transparent)" : "") + " navigationBarColor: " + this.mNavigationBarColor + (this.mEnsureNavigationBarContrastWhenTransparent ? " (contrast when transparent)" : "") + " resizeMode: " + ActivityInfo.resizeModeToString(this.mResizeMode) + " minWidth: " + this.mMinWidth + " minHeight: " + this.mMinHeight + " colorBackgrounFloating: " + this.mColorBackgroundFloating;
         }
@@ -1252,13 +1281,14 @@ public class ActivityManager {
     /* loaded from: classes.dex */
     public static class RecentTaskInfo extends TaskInfo implements Parcelable {
         public static final Parcelable.Creator<RecentTaskInfo> CREATOR = new Parcelable.Creator<RecentTaskInfo>() { // from class: android.app.ActivityManager.RecentTaskInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RecentTaskInfo createFromParcel(Parcel source) {
                 return new RecentTaskInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RecentTaskInfo[] newArray(int size) {
                 return new RecentTaskInfo[size];
@@ -1278,6 +1308,10 @@ public class ActivityManager {
 
         @Deprecated
         public int persistentId;
+
+        /* synthetic */ RecentTaskInfo(Parcel parcel, RecentTaskInfoIA recentTaskInfoIA) {
+            this(parcel);
+        }
 
         /* loaded from: classes.dex */
         public static class PersistedTaskSnapshotData {
@@ -1345,6 +1379,23 @@ public class ActivityManager {
             dest.writeTypedObject(this.lastSnapshotData.contentInsets, flags);
             dest.writeTypedObject(this.lastSnapshotData.bufferSize, flags);
             super.writeToParcel(dest, flags);
+        }
+
+        /* renamed from: android.app.ActivityManager$RecentTaskInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RecentTaskInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RecentTaskInfo createFromParcel(Parcel source) {
+                return new RecentTaskInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RecentTaskInfo[] newArray(int size) {
+                return new RecentTaskInfo[size];
+            }
         }
 
         public void dump(PrintWriter pw, String indent) {
@@ -1436,13 +1487,14 @@ public class ActivityManager {
     /* loaded from: classes.dex */
     public static class RunningTaskInfo extends TaskInfo implements Parcelable {
         public static final Parcelable.Creator<RunningTaskInfo> CREATOR = new Parcelable.Creator<RunningTaskInfo>() { // from class: android.app.ActivityManager.RunningTaskInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RunningTaskInfo createFromParcel(Parcel source) {
                 return new RunningTaskInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningTaskInfo[] newArray(int size) {
                 return new RunningTaskInfo[size];
@@ -1460,6 +1512,10 @@ public class ActivityManager {
 
         @Deprecated
         public Bitmap thumbnail;
+
+        /* synthetic */ RunningTaskInfo(Parcel parcel, RunningTaskInfoIA runningTaskInfoIA) {
+            this(parcel);
+        }
 
         public RunningTaskInfo() {
         }
@@ -1487,6 +1543,23 @@ public class ActivityManager {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
             super.writeToParcel(dest, flags);
+        }
+
+        /* renamed from: android.app.ActivityManager$RunningTaskInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RunningTaskInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RunningTaskInfo createFromParcel(Parcel source) {
+                return new RunningTaskInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RunningTaskInfo[] newArray(int size) {
+                return new RunningTaskInfo[size];
+            }
         }
     }
 
@@ -1600,13 +1673,14 @@ public class ActivityManager {
     /* loaded from: classes.dex */
     public static class RunningServiceInfo implements Parcelable {
         public static final Parcelable.Creator<RunningServiceInfo> CREATOR = new Parcelable.Creator<RunningServiceInfo>() { // from class: android.app.ActivityManager.RunningServiceInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RunningServiceInfo createFromParcel(Parcel source) {
                 return new RunningServiceInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningServiceInfo[] newArray(int size) {
                 return new RunningServiceInfo[size];
@@ -1630,6 +1704,10 @@ public class ActivityManager {
         public ComponentName service;
         public boolean started;
         public int uid;
+
+        /* synthetic */ RunningServiceInfo(Parcel parcel, RunningServiceInfoIA runningServiceInfoIA) {
+            this(parcel);
+        }
 
         public RunningServiceInfo() {
         }
@@ -1674,6 +1752,23 @@ public class ActivityManager {
             this.clientLabel = source.readInt();
         }
 
+        /* renamed from: android.app.ActivityManager$RunningServiceInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RunningServiceInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RunningServiceInfo createFromParcel(Parcel source) {
+                return new RunningServiceInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RunningServiceInfo[] newArray(int size) {
+                return new RunningServiceInfo[size];
+            }
+        }
+
         private RunningServiceInfo(Parcel source) {
             readFromParcel(source);
         }
@@ -1699,13 +1794,14 @@ public class ActivityManager {
     /* loaded from: classes.dex */
     public static class MemoryInfo implements Parcelable {
         public static final Parcelable.Creator<MemoryInfo> CREATOR = new Parcelable.Creator<MemoryInfo>() { // from class: android.app.ActivityManager.MemoryInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public MemoryInfo createFromParcel(Parcel source) {
                 return new MemoryInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MemoryInfo[] newArray(int size) {
                 return new MemoryInfo[size];
@@ -1720,6 +1816,10 @@ public class ActivityManager {
         public long threshold;
         public long totalMem;
         public long visibleAppThreshold;
+
+        /* synthetic */ MemoryInfo(Parcel parcel, MemoryInfoIA memoryInfoIA) {
+            this(parcel);
+        }
 
         public MemoryInfo() {
         }
@@ -1752,6 +1852,23 @@ public class ActivityManager {
             this.secondaryServerThreshold = source.readLong();
             this.visibleAppThreshold = source.readLong();
             this.foregroundAppThreshold = source.readLong();
+        }
+
+        /* renamed from: android.app.ActivityManager$MemoryInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<MemoryInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public MemoryInfo createFromParcel(Parcel source) {
+                return new MemoryInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public MemoryInfo[] newArray(int size) {
+                return new MemoryInfo[size];
+            }
         }
 
         private MemoryInfo(Parcel source) {
@@ -1793,13 +1910,14 @@ public class ActivityManager {
     public static class ProcessErrorStateInfo implements Parcelable {
         public static final int CRASHED = 1;
         public static final Parcelable.Creator<ProcessErrorStateInfo> CREATOR = new Parcelable.Creator<ProcessErrorStateInfo>() { // from class: android.app.ActivityManager.ProcessErrorStateInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ProcessErrorStateInfo createFromParcel(Parcel source) {
                 return new ProcessErrorStateInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ProcessErrorStateInfo[] newArray(int size) {
                 return new ProcessErrorStateInfo[size];
@@ -1816,6 +1934,10 @@ public class ActivityManager {
         public String stackTrace;
         public String tag;
         public int uid;
+
+        /* synthetic */ ProcessErrorStateInfo(Parcel parcel, ProcessErrorStateInfoIA processErrorStateInfoIA) {
+            this(parcel);
+        }
 
         public ProcessErrorStateInfo() {
             this.crashData = null;
@@ -1849,6 +1971,23 @@ public class ActivityManager {
             this.stackTrace = source.readString();
         }
 
+        /* renamed from: android.app.ActivityManager$ProcessErrorStateInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ProcessErrorStateInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ProcessErrorStateInfo createFromParcel(Parcel source) {
+                return new ProcessErrorStateInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ProcessErrorStateInfo[] newArray(int size) {
+                return new ProcessErrorStateInfo[size];
+            }
+        }
+
         private ProcessErrorStateInfo(Parcel source) {
             this.crashData = null;
             readFromParcel(source);
@@ -1866,13 +2005,14 @@ public class ActivityManager {
     /* loaded from: classes.dex */
     public static class RunningAppProcessInfo implements Parcelable {
         public static final Parcelable.Creator<RunningAppProcessInfo> CREATOR = new Parcelable.Creator<RunningAppProcessInfo>() { // from class: android.app.ActivityManager.RunningAppProcessInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RunningAppProcessInfo createFromParcel(Parcel source) {
                 return new RunningAppProcessInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RunningAppProcessInfo[] newArray(int size) {
                 return new RunningAppProcessInfo[size];
@@ -1930,6 +2070,10 @@ public class ActivityManager {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes.dex */
         public @interface Importance {
+        }
+
+        /* synthetic */ RunningAppProcessInfo(Parcel parcel, RunningAppProcessInfoIA runningAppProcessInfoIA) {
+            this(parcel);
         }
 
         public static int procStateToImportance(int procState) {
@@ -2075,6 +2219,23 @@ public class ActivityManager {
             this.lastActivityTime = source.readLong();
         }
 
+        /* renamed from: android.app.ActivityManager$RunningAppProcessInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RunningAppProcessInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RunningAppProcessInfo createFromParcel(Parcel source) {
+                return new RunningAppProcessInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RunningAppProcessInfo[] newArray(int size) {
+                return new RunningAppProcessInfo[size];
+            }
+        }
+
         private RunningAppProcessInfo(Parcel source) {
             readFromParcel(source);
         }
@@ -2181,7 +2342,7 @@ public class ActivityManager {
         }
     }
 
-    /* renamed from: android.app.ActivityManager$2, reason: invalid class name */
+    /* renamed from: android.app.ActivityManager$2 */
     /* loaded from: classes.dex */
     class AnonymousClass2 extends IApplicationStartInfoCompleteListener.Stub {
         final /* synthetic */ Executor val$executor;
@@ -2419,7 +2580,6 @@ public class ActivityManager {
         return getLauncherLargeIconSizeInner(this.mContext);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getLauncherLargeIconSizeInner(Context context) {
         Resources res = context.getResources();
         int size = res.getDimensionPixelSize(17104896);
@@ -2727,6 +2887,20 @@ public class ActivityManager {
 
     private static IActivityTaskManager getTaskService() {
         return ActivityTaskManager.getService();
+    }
+
+    /* renamed from: android.app.ActivityManager$3 */
+    /* loaded from: classes.dex */
+    class AnonymousClass3 extends Singleton<IActivityManager> {
+        AnonymousClass3() {
+        }
+
+        @Override // android.util.Singleton
+        public IActivityManager create() {
+            IBinder b = ServiceManager.getService("activity");
+            IActivityManager am = IActivityManager.Stub.asInterface(b);
+            return am;
+        }
     }
 
     private static void dumpService(PrintWriter pw, FileDescriptor fd, String name, String[] args) {
@@ -3044,6 +3218,10 @@ public class ActivityManager {
 
     /* loaded from: classes.dex */
     private class ActivityController extends IActivityController.Stub {
+        /* synthetic */ ActivityController(ActivityManager activityManager, ActivityControllerIA activityControllerIA) {
+            this();
+        }
+
         private ActivityController() {
         }
 
@@ -3261,13 +3439,14 @@ public class ActivityManager {
     /* loaded from: classes.dex */
     public static final class PendingIntentInfo implements Parcelable {
         public static final Parcelable.Creator<PendingIntentInfo> CREATOR = new Parcelable.Creator<PendingIntentInfo>() { // from class: android.app.ActivityManager.PendingIntentInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PendingIntentInfo createFromParcel(Parcel in) {
                 return new PendingIntentInfo(in.readString(), in.readInt(), in.readBoolean(), in.readInt());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PendingIntentInfo[] newArray(int size) {
                 return new PendingIntentInfo[size];
@@ -3312,6 +3491,23 @@ public class ActivityManager {
             parcel.writeInt(this.mCreatorUid);
             parcel.writeBoolean(this.mImmutable);
             parcel.writeInt(this.mIntentSenderType);
+        }
+
+        /* renamed from: android.app.ActivityManager$PendingIntentInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PendingIntentInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PendingIntentInfo createFromParcel(Parcel in) {
+                return new PendingIntentInfo(in.readString(), in.readInt(), in.readBoolean(), in.readInt());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PendingIntentInfo[] newArray(int size) {
+                return new PendingIntentInfo[size];
+            }
         }
     }
 

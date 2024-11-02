@@ -26,7 +26,6 @@ import java.util.List;
 public class AccessibilityButtonChooserActivity extends Activity {
     private final List<AccessibilityTarget> mTargets = new ArrayList();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         int i;
@@ -97,7 +96,6 @@ public class AccessibilityButtonChooserActivity extends Activity {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onCreate$0(AdapterView parent, View view, int position, long id) {
         String name = this.mTargets.get(position).getId();
         if (name.equals("com.android.server.accessibility.MagnificationController")) {

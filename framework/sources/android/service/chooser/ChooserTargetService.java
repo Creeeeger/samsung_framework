@@ -34,6 +34,10 @@ public abstract class ChooserTargetService extends Service {
 
     /* loaded from: classes3.dex */
     private class IChooserTargetServiceWrapper extends IChooserTargetService.Stub {
+        /* synthetic */ IChooserTargetServiceWrapper(ChooserTargetService chooserTargetService, IChooserTargetServiceWrapperIA iChooserTargetServiceWrapperIA) {
+            this();
+        }
+
         private IChooserTargetServiceWrapper() {
         }
 

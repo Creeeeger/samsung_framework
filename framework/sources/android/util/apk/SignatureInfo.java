@@ -10,7 +10,6 @@ public class SignatureInfo {
     public final long eocdOffset;
     public final ByteBuffer signatureBlock;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SignatureInfo(ByteBuffer signatureBlock, long apkSigningBlockOffset, long centralDirOffset, long eocdOffset, ByteBuffer eocd) {
         this.signatureBlock = signatureBlock;
         this.apkSigningBlockOffset = apkSigningBlockOffset;

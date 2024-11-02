@@ -76,6 +76,10 @@ public final class DtmbFrontendSettings extends FrontendSettings {
     public @interface TransmissionMode {
     }
 
+    /* synthetic */ DtmbFrontendSettings(long j, int i, int i2, int i3, int i4, int i5, int i6, DtmbFrontendSettingsIA dtmbFrontendSettingsIA) {
+        this(j, i, i2, i3, i4, i5, i6);
+    }
+
     private DtmbFrontendSettings(long frequency, int modulation, int codeRate, int transmissionMode, int guardInterval, int timeInterleaveMode, int bandwidth) {
         super(frequency);
         this.mModulation = modulation;
@@ -123,6 +127,10 @@ public final class DtmbFrontendSettings extends FrontendSettings {
         private int mModulation;
         private int mTimeInterleaveMode;
         private int mTransmissionMode;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;

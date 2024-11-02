@@ -27,6 +27,10 @@ public class TraceReportService extends Service {
         private final ParcelFileDescriptor mFd;
         private final UUID mUuid;
 
+        /* synthetic */ TraceParams(TraceReportParams traceReportParams, TraceParamsIA traceParamsIA) {
+            this(traceReportParams);
+        }
+
         private TraceParams(TraceReportParams params) {
             this.mFd = params.fd;
             this.mUuid = new UUID(params.uuidMsb, params.uuidLsb);
@@ -44,7 +48,6 @@ public class TraceReportService extends Service {
     public void onReportTrace(TraceParams args) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean onMessage(Message msg) {
         if (msg.what != 1) {
             return false;

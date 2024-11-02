@@ -11,7 +11,6 @@ class ItemCreator {
     ItemCreator() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public enum ConstructorType {
         MEDIA_SERVER("MEDIA_SERVER"),
@@ -49,7 +48,6 @@ class ItemCreator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Item fromBundle(Bundle itemBundle) {
         String itemConstructor;
         Item.WebContentBuilder.DeliveryMode deliverymode;
@@ -111,8 +109,7 @@ class ItemCreator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.ItemCreator$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.allshare.ItemCreator$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;

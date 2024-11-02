@@ -88,7 +88,6 @@ public final class CountryTimeZones {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CountryTimeZones(com.android.i18n.timezone.CountryTimeZones delegate) {
         this.mDelegate = delegate;
     }

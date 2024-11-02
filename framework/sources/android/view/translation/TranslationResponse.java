@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TranslationResponse implements Parcelable {
     public static final Parcelable.Creator<TranslationResponse> CREATOR = new Parcelable.Creator<TranslationResponse>() { // from class: android.view.translation.TranslationResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TranslationResponse[] newArray(int size) {
             return new TranslationResponse[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationResponse createFromParcel(Parcel in) {
             return new TranslationResponse(in);
@@ -38,18 +39,18 @@ public final class TranslationResponse implements Parcelable {
     public @interface TranslationStatus {
     }
 
-    /* renamed from: -$$Nest$smdefaultFinalResponse, reason: not valid java name */
-    static /* bridge */ /* synthetic */ boolean m5854$$Nest$smdefaultFinalResponse() {
+    /* renamed from: -$$Nest$smdefaultFinalResponse */
+    static /* bridge */ /* synthetic */ boolean m5849$$Nest$smdefaultFinalResponse() {
         return defaultFinalResponse();
     }
 
-    /* renamed from: -$$Nest$smdefaultTranslationResponseValues, reason: not valid java name */
-    static /* bridge */ /* synthetic */ SparseArray m5855$$Nest$smdefaultTranslationResponseValues() {
+    /* renamed from: -$$Nest$smdefaultTranslationResponseValues */
+    static /* bridge */ /* synthetic */ SparseArray m5850$$Nest$smdefaultTranslationResponseValues() {
         return defaultTranslationResponseValues();
     }
 
-    /* renamed from: -$$Nest$smdefaultViewTranslationResponses, reason: not valid java name */
-    static /* bridge */ /* synthetic */ SparseArray m5856$$Nest$smdefaultViewTranslationResponses() {
+    /* renamed from: -$$Nest$smdefaultViewTranslationResponses */
+    static /* bridge */ /* synthetic */ SparseArray m5851$$Nest$smdefaultViewTranslationResponses() {
         return defaultViewTranslationResponses();
     }
 
@@ -170,6 +171,23 @@ public final class TranslationResponse implements Parcelable {
         this.mFinalResponse = finalResponse;
     }
 
+    /* renamed from: android.view.translation.TranslationResponse$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TranslationResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TranslationResponse[] newArray(int size) {
+            return new TranslationResponse[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TranslationResponse createFromParcel(Parcel in) {
+            return new TranslationResponse(in);
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private long mBuilderFieldsSet = 0;
@@ -230,13 +248,13 @@ public final class TranslationResponse implements Parcelable {
             long j = this.mBuilderFieldsSet | 16;
             this.mBuilderFieldsSet = j;
             if ((j & 2) == 0) {
-                this.mTranslationResponseValues = TranslationResponse.m5855$$Nest$smdefaultTranslationResponseValues();
+                this.mTranslationResponseValues = TranslationResponse.m5850$$Nest$smdefaultTranslationResponseValues();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mViewTranslationResponses = TranslationResponse.m5856$$Nest$smdefaultViewTranslationResponses();
+                this.mViewTranslationResponses = TranslationResponse.m5851$$Nest$smdefaultViewTranslationResponses();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mFinalResponse = TranslationResponse.m5854$$Nest$smdefaultFinalResponse();
+                this.mFinalResponse = TranslationResponse.m5849$$Nest$smdefaultFinalResponse();
             }
             TranslationResponse o = new TranslationResponse(this.mTranslationStatus, this.mTranslationResponseValues, this.mViewTranslationResponses, this.mFinalResponse);
             return o;

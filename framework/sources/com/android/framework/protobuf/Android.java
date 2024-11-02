@@ -13,12 +13,10 @@ final class Android {
         IS_ROBOLECTRIC = (ASSUME_ANDROID || getClassForName("org.robolectric.Robolectric") == null) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isOnAndroidDevice() {
         return ASSUME_ANDROID || !(MEMORY_CLASS == null || IS_ROBOLECTRIC);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Class<?> getMemoryClass() {
         return MEMORY_CLASS;
     }

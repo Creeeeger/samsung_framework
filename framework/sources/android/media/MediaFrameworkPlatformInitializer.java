@@ -31,7 +31,6 @@ public class MediaFrameworkPlatformInitializer {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaSessionManager lambda$registerServiceWrappers$0(Context context) {
         return new MediaSessionManager(context);
     }

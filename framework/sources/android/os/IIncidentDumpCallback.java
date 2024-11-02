@@ -78,8 +78,9 @@ public interface IIncidentDumpCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IIncidentDumpCallback {
+        public static class Proxy implements IIncidentDumpCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

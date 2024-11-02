@@ -85,8 +85,9 @@ public interface StartInstallingUpdateCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements StartInstallingUpdateCallback {
+        public static class Proxy implements StartInstallingUpdateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

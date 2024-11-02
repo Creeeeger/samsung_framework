@@ -17,11 +17,31 @@ public abstract class RemoteStream<RES, IOSTREAM extends Closeable> extends Andr
     private final FunctionalUtils.ThrowingFunction<IOSTREAM, RES> mHandleStream;
     private volatile ParcelFileDescriptor mLocalPipe;
 
+    /* synthetic */ RemoteStream(FunctionalUtils.ThrowingConsumer throwingConsumer, FunctionalUtils.ThrowingFunction throwingFunction, Executor executor, boolean z, RemoteStreamIA remoteStreamIA) {
+        this(throwingConsumer, throwingFunction, executor, z);
+    }
+
     protected abstract IOSTREAM createStream(ParcelFileDescriptor parcelFileDescriptor);
+
+    /* renamed from: com.android.internal.infra.RemoteStream$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1<R> extends RemoteStream<R, InputStream> {
+        AnonymousClass1(FunctionalUtils.ThrowingConsumer throwingConsumer, FunctionalUtils.ThrowingFunction throwingFunction, Executor backgroundExecutor, boolean read) {
+            super(throwingConsumer, throwingFunction, backgroundExecutor, read);
+        }
+
+        @Override // com.android.internal.infra.RemoteStream
+        public InputStream createStream(ParcelFileDescriptor fd) {
+            return new ParcelFileDescriptor.AutoCloseInputStream(fd);
+        }
+    }
 
     public static <R> AndroidFuture<R> receiveBytes(FunctionalUtils.ThrowingConsumer<ParcelFileDescriptor> ipc, FunctionalUtils.ThrowingFunction<InputStream, R> read) {
         return new RemoteStream<R, InputStream>(ipc, read, AsyncTask.THREAD_POOL_EXECUTOR, true) { // from class: com.android.internal.infra.RemoteStream.1
-            /* JADX INFO: Access modifiers changed from: protected */
+            AnonymousClass1(FunctionalUtils.ThrowingConsumer ipc2, FunctionalUtils.ThrowingFunction read2, Executor backgroundExecutor, boolean read3) {
+                super(ipc2, read2, backgroundExecutor, read3);
+            }
+
             @Override // com.android.internal.infra.RemoteStream
             public InputStream createStream(ParcelFileDescriptor fd) {
                 return new ParcelFileDescriptor.AutoCloseInputStream(fd);
@@ -51,9 +71,25 @@ public abstract class RemoteStream<RES, IOSTREAM extends Closeable> extends Andr
         }
     }
 
+    /* renamed from: com.android.internal.infra.RemoteStream$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2<R> extends RemoteStream<R, OutputStream> {
+        AnonymousClass2(FunctionalUtils.ThrowingConsumer throwingConsumer, FunctionalUtils.ThrowingFunction throwingFunction, Executor backgroundExecutor, boolean read) {
+            super(throwingConsumer, throwingFunction, backgroundExecutor, read);
+        }
+
+        @Override // com.android.internal.infra.RemoteStream
+        public OutputStream createStream(ParcelFileDescriptor fd) {
+            return new ParcelFileDescriptor.AutoCloseOutputStream(fd);
+        }
+    }
+
     public static <R> AndroidFuture<R> sendBytes(FunctionalUtils.ThrowingConsumer<ParcelFileDescriptor> ipc, FunctionalUtils.ThrowingFunction<OutputStream, R> write) {
         return new RemoteStream<R, OutputStream>(ipc, write, AsyncTask.THREAD_POOL_EXECUTOR, false) { // from class: com.android.internal.infra.RemoteStream.2
-            /* JADX INFO: Access modifiers changed from: protected */
+            AnonymousClass2(FunctionalUtils.ThrowingConsumer ipc2, FunctionalUtils.ThrowingFunction write2, Executor backgroundExecutor, boolean read) {
+                super(ipc2, write2, backgroundExecutor, read);
+            }
+
             @Override // com.android.internal.infra.RemoteStream
             public OutputStream createStream(ParcelFileDescriptor fd) {
                 return new ParcelFileDescriptor.AutoCloseOutputStream(fd);
@@ -70,7 +106,6 @@ public abstract class RemoteStream<RES, IOSTREAM extends Closeable> extends Andr
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Void lambda$sendBytes$0(FunctionalUtils.ThrowingConsumer write, OutputStream os) throws Exception {
         write.acceptOrThrow(os);
         return null;
@@ -85,7 +120,6 @@ public abstract class RemoteStream<RES, IOSTREAM extends Closeable> extends Andr
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Void lambda$sendBytes$1(byte[] data, OutputStream os) throws Exception {
         os.write(data);
         return null;
@@ -127,7 +161,6 @@ public abstract class RemoteStream<RES, IOSTREAM extends Closeable> extends Andr
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.infra.AndroidFuture
     public void onCompleted(RES res, Throwable err) {
         super.onCompleted(res, err);

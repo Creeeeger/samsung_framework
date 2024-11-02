@@ -160,13 +160,14 @@ public final class Debug {
     /* loaded from: classes3.dex */
     public static class MemoryInfo implements Parcelable {
         public static final Parcelable.Creator<MemoryInfo> CREATOR = new Parcelable.Creator<MemoryInfo>() { // from class: android.os.Debug.MemoryInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public MemoryInfo createFromParcel(Parcel source) {
                 return new MemoryInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MemoryInfo[] newArray(int size) {
                 return new MemoryInfo[size];
@@ -256,6 +257,10 @@ public final class Debug {
         public int otherSwappablePss;
         public int otherSwappedOut;
         public int otherSwappedOutPss;
+
+        /* synthetic */ MemoryInfo(Parcel parcel, MemoryInfoIA memoryInfoIA) {
+            this(parcel);
+        }
 
         public MemoryInfo() {
             this.otherStats = new int[288];
@@ -691,6 +696,23 @@ public final class Debug {
             this.hasSwappedOutPss = source.readInt() != 0;
             this.otherSwappedOutPss = source.readInt();
             this.otherStats = source.createIntArray();
+        }
+
+        /* renamed from: android.os.Debug$MemoryInfo$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<MemoryInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public MemoryInfo createFromParcel(Parcel source) {
+                return new MemoryInfo(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public MemoryInfo[] newArray(int size) {
+                return new MemoryInfo[size];
+            }
         }
 
         private MemoryInfo(Parcel source) {

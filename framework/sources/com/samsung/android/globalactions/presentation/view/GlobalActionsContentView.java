@@ -154,7 +154,6 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$initLayouts$0(View view) {
         this.mPopupView.setVisibility(8);
     }
@@ -245,17 +244,32 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
     @Override // com.samsung.android.globalactions.presentation.view.ContentView
     public void registerRotationWatcher() {
         this.mIWindowManager = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
-        IRotationWatcher.Stub stub = new IRotationWatcher.Stub() { // from class: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView.1
+        AnonymousClass1 anonymousClass1 = new IRotationWatcher.Stub() { // from class: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.IRotationWatcher
             public void onRotationChanged(int rotation) {
                 GlobalActionsContentView.this.forceRequestLayout();
             }
         };
-        this.mRotationWatcher = stub;
+        this.mRotationWatcher = anonymousClass1;
         try {
-            this.mIWindowManager.watchRotation(stub, this.mContext.getDisplay().getDisplayId());
+            this.mIWindowManager.watchRotation(anonymousClass1, this.mContext.getDisplay().getDisplayId());
         } catch (RemoteException e) {
             e.printStackTrace();
+        }
+    }
+
+    /* renamed from: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends IRotationWatcher.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.IRotationWatcher
+        public void onRotationChanged(int rotation) {
+            GlobalActionsContentView.this.forceRequestLayout();
         }
     }
 
@@ -332,7 +346,6 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
             return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
         public void onLayout(boolean changed, int left, int top, int right, int bottom) {
             super.onLayout(changed, left, top, right, bottom);
@@ -351,7 +364,6 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup, android.view.View
         public void onAttachedToWindow() {
             super.onAttachedToWindow();
@@ -362,14 +374,12 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
             GlobalActionsContentView.this.mAnimatorFSM.handleAnimationEvent(SamsungGlobalActionsAnimatorFSM.Event.SHOW);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup, android.view.View
         public void onDetachedFromWindow() {
             GlobalActionsContentView.this.mAnimatorFSM = null;
             GlobalActionsContentView.this.mAnimator = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onConfigurationChanged(Configuration newConfig) {
             super.onConfigurationChanged(newConfig);
@@ -688,8 +698,7 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$2, reason: invalid class name */
+    /* renamed from: com.samsung.android.globalactions.presentation.view.GlobalActionsContentView$2 */
     /* loaded from: classes5.dex */
     public class AnonymousClass2 implements SamsungGlobalActionsAnimator.ViewUpdateCallback {
         AnonymousClass2() {
@@ -762,7 +771,6 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
             return GlobalActionsContentView.this.mSelectedViewModel.getActionInfo().getName().equals(DefaultActionNames.ACTION_SAFE_MODE);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$getDismissRunnable$0() {
             GlobalActionsContentView.this.mParentView.dismiss();
         }
@@ -802,7 +810,7 @@ public class GlobalActionsContentView implements ContentView, ViewStateControlle
             ImageView powerOffIconView = (ImageView) powerOffItemView.findViewById(GlobalActionsContentView.this.mResourceFactory.get(ResourceType.ID_ICON));
             TextView powerOffLabelView = (TextView) powerOffItemView.findViewById(GlobalActionsContentView.this.mResourceFactory.get(ResourceType.ID_LABEL));
             powerOffLabelView.setText(GlobalActionsContentView.this.mContext.getResources().getText(R.string.samsung_global_action_power_off));
-            powerOffIconView.setImageDrawable(GlobalActionsContentView.this.mContext.getResources().getDrawable(GlobalActionsContentView.this.mResourceFactory.get(ResourceType.DRAWABLE_POWEROFF), null));
+            powerOffIconView.lambda$setImageURIAsync$2(GlobalActionsContentView.this.mContext.getResources().getDrawable(GlobalActionsContentView.this.mResourceFactory.get(ResourceType.DRAWABLE_POWEROFF), null));
             ViewGroup powerOffView = getConfirmIconLabelView(powerOffItemView);
             ((ViewGroup) powerOffView.getParent()).removeAllViews();
             GlobalActionsContentView.this.mConfirmationView.addView(powerOffView);

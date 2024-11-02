@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">Энэ төхөөрөмж энэ %s-д тохирно. Товшоод тохирох форматаар тохируул.</string>
     <string name="ext_media_unsupported_notification_title">Үл тохирох %s</string>
     <string name="ext_storage_bad_removal_button">Дахин эхлүүл</string>
-    <string name="ext_storage_bad_removal_title">Утсаа дахин эхлүүл</string>
+    <string name="ext_storage_bad_removal_title">Таблетаа дахин эхлүүл</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message_usbhost">Таны USB санд хадгалагдсан бүх файл арилгагдана. Энэ үйлдлийг буцаах боломжгүй!</string>
     <string name="extmedia_format_title_usbhost">USB санг форматлах уу?</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Таны Bluetooth аудио төхөөрөмжид дуу тоглуулж байна. Энд товшиж үүнийг унтраах</string>
     <string name="multisound_sound_via_headphone">%s-н дууг таны чихэвчээр тоглуулж байна. Үүнийг унтраахын тулд энд товш.</string>
     <string name="multisound_sound_via_headphone_multiselection">Таны чихэвчээр дамжуулан дуу тоглуулж байна. Энд товшиж үүнийг унтраах.</string>
-    <string name="multisound_sound_via_phone_speaker">%s-н дуу таны утасны чанга яригчаар дамжин тоглож байна. Үүнийг унтраахын тулд энд товш.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Таны утасны чанга яригчаар дамжуулан дуу тоглуулж байна. Энд товшиж үүнийг унтраах.</string>
+    <string name="multisound_sound_via_phone_speaker">%s-н дуу таны таблетны чанга яригчаар дамжин тоглож байна. Үүнийг унтраахдаа энд товш.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Таны таблетын чанга яригчаар дамжуулан дуу тоглуулж байна. Энд товшиж үүнийг унтраах.</string>
     <string name="multisound_sound_via_usb_audio">%s-н дууг таны USB аудио төхөөрөмжөөр тоглуулж байна. Үүнийг унтраахын тулд энд товш.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Таны USB аудио төхөөрөмжөөр дамжуулан дуу тоглуулж байна. Энд товшиж үүнийг унтраах.</string>
     <string name="multisound_title">Хэрэглүүрийн дууг тусад нь гаргах</string>
     <string name="multisound_turn_off_multisound">Унтраах</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX дээр %s-г ажиллуулах боломжгүй. Утасны горим дээр ажиллуулж үзнэ үү.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s-г Samsung DeX дотор ажиллуулах боломжгүй. Энэ нь утасны Эх дэлгэцэд зориулагдсан.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Зарим тоглоомууд зөвхөн мэдрэгчтэй дэлгэц дээр ажиллана. Хэрэв Samsung DeX дээр хулганын удирдлагууд ажиллахгүй бол оронд нь утасны горим дээр тоглож үзнэ үү.</string>
-    <string name="my_device">Энэ утас</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX дээр %s-г ажиллуулах боломжгүй. Таблетын горим дээр ажиллуулж үзнэ үү.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX дээр %s-г ажиллуулах боломжгүй. Энэ нь таблетын Эх дэлгэцэд зориулагдсан.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Зарим тоглоомууд зөвхөн мэдрэгчтэй дэлгэц дээр ажиллана. Хэрэв Samsung DeX дээр хулганын удирдлагууд ажиллахгүй бол оронд нь таблетын горим дээр тоглож үзнэ үү.</string>
+    <string name="my_device">Энэ таблет</string>
     <string name="network_locked_sim_dialog_message_ais">Таны утсанд захиалсан ашиглах нөхцөл тохирохгүй байгаа тул таны SIM картыг энэ утсан дээр бүрэн ажиллуулах боломжгүй. Хэрэв танд аливаа асуулт байвал эсвэл үүний талаар илүү мэдээлэл хэрэгтэй бол, Samsung Хэрэглэгчийн үйлчилгээний байршил эсвэл энэ бүтээгдэхүүнийг борлуулсан дэлгүүртэй холбогдоно уу.</string>
     <string name="network_locked_sim_notification_text">Сүлжээний түгжээтэй SIM карт хийсэн.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">Компьютер синхрончлол ашиглахыг хориглох.</string>
     <string name="policydesc_allow_internetsharing">Мобайл Хотспот ашиглахыг хориглох.</string>
     <string name="policydesc_allow_irda">IrDA ашиглахыг хориглох.</string>
-    <string name="policydesc_allow_popimapemail">Утсан дээрээ POP, IMAP э-шуудан ашиглахыг хориглох.</string>
+    <string name="policydesc_allow_popimapemail">Таблет дээрээ POP, IMAP э-шуудан ашиглахыг хориглох.</string>
     <string name="policydesc_allow_storagecard">SD карт ашиглахыг хориглох.</string>
     <string name="policydesc_allow_textmessaging">Бичвэр болон мультимедиа зурвас ашиглахыг хориглох.</string>
     <string name="policydesc_allow_thirdParty">Энэ аппликейшн гадны аппликэйшнуудыг ажиллуулахаас сэргийлнэ.</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">Хамгаалалтын бодлого нь танаас нууц үгээ өөрчлөхийг шаардана</string>
     <string name="recording_fail">Микрофон %2$s-д ашиглагдах үеэр %1$s дээр ашиглах боломжгүй.</string>
     <string name="recording_popup">%s микрофон ашиглаж байна.</string>
-    <string name="recording_popup_device">Утас</string>
+    <string name="recording_popup_device">Таблет</string>
     <string name="recording_popup_with_bluetooth">%s нь Bluetooth микрофон ашиглаж байна.</string>
     <string name="recording_popup_with_device">%1$s нь %2$s-н микрофоныг ашиглаж байна.</string>
     <string name="redo">Дахн хийх</string>
@@ -903,12 +903,12 @@
     <string name="screencapture_restrict">Хамгаалалтын бодлого дэлгэцийн зураг авах функцын ашиглалтаас сэргийлнэ.</string>
     <string name="sd_card_unavailable_message">Та SD картыг ашиглах боломжгүй учир нь үүнийг өөр хэрэглэгчийн профилийг ашиглаж байхад оруулсан.</string>
     <string name="sd_card_unavailable_title">SD карт боломжгүй</string>
-    <string name="sdcard_bad_removal_message">SD картыг аюулгүй бусаар салгасан. Утсаа санаандгүй дахин эхлэхээс сэргийлэхийн тулд хадгалаагүй өгөгдлийг хадгалж одоо дахин эхлүүлнэ үү.</string>
+    <string name="sdcard_bad_removal_message">SD картыг аюулгүй бусаар салгасан. Таблетаа санаандгүй дахин эхлэхээс сэргийлэхийн тулд хадгалаагүй өгөгдлийг хадгалж одоо дахин эхлүүлнэ үү.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD картын шифр тайлах</string>
     <string name="sdcard_batch_decrypt_noti_title">SD картны код тайлалт</string>
     <string name="sdcard_batch_decrypt_popup_content">Шифрлэсэн SD картыг ашиглахаас өмнө шифрийг нь тайлах ёстой. Шифр тайлахад нэг цаг буюу түүнээс урт хугацаа орж болно. Цэнэглэсэн зайтай эхлүүлж, төхөөрөмжийн шифр тайлж дуусах хүртэл залгаатай хэвээр байлга. Шифр тайлалтыг тасалдуулбал та хэсэг буюу бүх өгөгдлөө алдахад хүрч болно.</string>
     <string name="sdcard_decrypt_err_notification">SD картны код тайлахад алдаа гарав</string>
-    <string name="sdcard_decrypt_error_otherdevice">Таны SD карт дээрх зарим файлууд өөр төхөөрөмж дээр шифрлэгдсэн бөгөөд энэ утас дээр ашиглах боломжгүй.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Таны SD карт дээрх зарим файлууд өөр төхөөрөмж дээр шифрлэгдсэн бөгөөд энэ таблет дээр ашиглах боломжгүй.</string>
     <string name="sdcard_decrypt_notification">SD картны код тайлсан.</string>
     <string name="sdcard_decrypt_title_notification">SD картны код тайлалт</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD картын шифр тайлж байна…</string>
@@ -1234,7 +1234,7 @@
     <string name="usb_abnormal_reset_title">USB холболт тогтворгүй</string>
     <string name="usb_abnormal_reset_toast">USB холболт тогтвортой биш байна. Кабелыг салгаж, дахин залга эсвэл өөр кабелаар оролдож үзнэ үү.</string>
     <string name="usb_accessory_notification_title">USB нэмэлт төхөөрөмжид холбогдсон</string>
-    <string name="usb_bad_removal_message">USB санах ойн төхөөрөмжийг аюулгүй бусаар салгасан. Утсаа санаандгүй дахин эхлэхээс сэргийлэхийн тулд хадгалаагүй өгөгдлийг хадгалж одоо дахин эхлүүлнэ үү.</string>
+    <string name="usb_bad_removal_message">USB санах ойн төхөөрөмжийг аюулгүй бусаар салгасан. Таблетаа санаандгүй дахин эхлэхээс сэргийлэхийн тулд хадгалаагүй өгөгдлийг хадгалж одоо дахин эхлүүлнэ үү.</string>
     <string name="usb_blocked_by_emergency_mode">Яаралтай тусламжийн горим дээр зарим USB функцүүд боломжгүй.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Тэжээлийг дээд зэргээр хэмнэх горимд холбогдсон USB төхөөрөмжид хамаатай функцүүдийг ашиглах боломжгүй.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Тэжээлийг дээд зэргээр хэмнэх горим ассан байхад зарим USB функцүүд хязгаарлагдмал байж болно.</string>
@@ -1243,13 +1243,13 @@
     <string name="usb_camera_connected_notification_title">Медиа төхөөрөмжийг холбосон</string>
     <string name="usb_camera_disconnected_notification_title">Медиа төхөөрөмж салсан</string>
     <string name="usb_cd_installer_notification_title">Програм хангамжийн шинэчлэл</string>
-    <string name="usb_charing_only_notification_title">USB цэнэглэх</string>
+    <string name="usb_charing_only_notification_title">Холбогдлоо</string>
     <string name="usb_debugging_only_notification_title">Зөвхөн алдаа илрүүлж байна</string>
-    <string name="usb_host_resource_exceed_message">Таны утсын USB хянагчид энэ төхөөрөмжид холбогдох хангалттай нөөц байхгүй. Энэ төхөөрөмжийг салгахыг оролдож үүнийг дахин холбоно уу.</string>
+    <string name="usb_host_resource_exceed_message">Энэ төхөөрөмжийг холбоход таны таблетын USB хянагчид хангалттай зай байхгүй. Энэ төхөөрөмжийг салгахыг оролдож үүнийг дахин холбоно уу.</string>
     <string name="usb_host_resource_exceed_title">Хангалттай USB тохируулагч.н нөөц алга</string>
-    <string name="usb_hub_depth_exceed_message">Таны утас нэг дор зөвхөн 5 хүртэлх USB төв холболтуудыг дэмжинэ.</string>
+    <string name="usb_hub_depth_exceed_message">Таны таблет нэг дор зөвхөн 5 хүртэлх USB төв холболтуудыг дэмжинэ.</string>
     <string name="usb_hub_depth_exceed_title">Хамгийн их USB төв холболтууд</string>
-    <string name="usb_hub_power_exceed_message">Таны утас энэ USB төхөөрөмжийг хангалттай тэжээлээр хангах боломжгүй. Үүнийг утастайгаа холбохоос өмнө төхөөрөмжийг өөрөө-тэжээл авах USB төвд холбоно уу.</string>
+    <string name="usb_hub_power_exceed_message">Таны таблет энэ USB төхөөрөмжийг хангалттай тэжээлээр хангах боломжгүй. Үүнийг таблетдаа холбохоос өмнө төхөөрөмжийг өөрөө-тэжээл өгөх USB төвд холбоно уу.</string>
     <string name="usb_increase_battery_usage">USB холболт зайн хэрэглээг нэмэгдүүлж болно.</string>
     <string name="usb_mass_storage_restrict">Хамгаалалтын бодлого USB өгөгдөл хадгалалтын ашиглалтаас сэргийлнэ.</string>
     <string name="usb_midi_notification_title">MIDI холбох USB</string>
@@ -1275,8 +1275,8 @@
     <string name="usb_storage_stop_title">USB хадгалалтыг ашиглаж байна</string>
     <string name="usb_storage_title">USB холбогдсон.</string>
     <string name="usb_type_c_supply_power_notification_title">Холбогдсон төх.г USB-р цэнэглэх</string>
-    <string name="usb_unblock_by_screen_unlock">Холбогдсон USB төхөөрөмжийг ашиглахын тулд утасныхаа түгжээг тайлна уу.</string>
-    <string name="usb_unsupport_accessory_message">Энэ USB төхөөрөмж таны утсаар дэмжигдээгүй.</string>
+    <string name="usb_unblock_by_screen_unlock">Холбогдсон USB төхөөрөмжийг ашиглахын тулд таблетынхаа түгжээг тайлна уу.</string>
+    <string name="usb_unsupport_accessory_message">Энэ USB төхөөрөмж таны таблетаар дэмжигдээгүй.</string>
     <string name="usb_unsupport_accessory_title">USB төхөөрөмж дэмжигдээгүй</string>
     <string name="usb_unsupported_device">Холбогдсон USB төхөөрөмж дэмжигдээгүй.</string>
     <string name="usb_unsupported_device_title">Төхөөрөмж дэмжигдээгүй</string>
@@ -1294,19 +1294,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Та сэнс эсвэл хатаагчийг зааж (зөвхөн хүйтэн агаартай) хатаах хурдыг нэмэгдүүлэх боломжтой.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Бид таны цэнэглэгч/USB портод чийгшил эсвэл гаднын биет байгааг илрүүллээ.
 
-Цэнэглэгч/USB портод шороо, хог хаягдал зэрэг гаднын биет байгаа эсэхийг шалгана уу. Утсаа гэмтээхээс урьдчилан сэргийлэхийн тулд цэнэглэх порт цэвэрхэн, чийг алга болтол юу ч битгий залгаарай.
+Цэнэглэгч/USB портод шороо, хог хаягдал зэрэг гаднын биет байгаа эсэхийг шалгана уу. Таблетаа гэмтээхээс урьдчилан сэргийлэхийн тулд цэнэглэх порт цэвэрхэн, чийг алга болтол юу ч битгий залгаарай.
 
 Портыг хатаахын тулд чийгийг сэгсэрч гаргаад, хатах хүртэл хэдэн цаг хүлээнэ үү. Та сэнс эсвэл хатаагчийг (зөвхөн сэрүүн агаар) портод чиглүүлж хатаалтыг хурдасгах боломжтой."</string>
     <string name="usb_water_dialg_positive_button">ОК</string>
-    <string name="usb_water_dialg_support_wireless_charging">"Бид таны цэнэглэгч/USB портод чийгшил эсвэл гаднын биет байгааг илрүүллээ.
+    <string name="usb_water_dialg_support_wireless_charging">"Бид таны цэнэглэгч/USB портод чийгшил эсвэл гаднын зүйл илрүүлсэн.
 
-Цэнэглэгч/USB портод шороо, хог хаягдал зэрэг гаднын биет байгаа эсэхийг шалгана уу. Утсаа гэмтээхээс урьдчилан сэргийлэхийн тулд цэнэглэх порт цэвэрхэн, чийг алга болтол юу ч битгий залгаарай.
+Цэнэглэгч/USB портод шороо, хог хаягдал зэрэг гаднын зүйлс байгаа эсэхийг шалгана уу. Таблетаа гэмтээхээс урьдчилан сэргийлэхийн тулд цэнэглэх портыг цэвэрлэж, чийг алга болох хүртэл юу ч битгий залгаарай.
 
-Портыг хатаахын тулд чийгийг сэгсэрч гаргаад, хатах хүртэл хэдэн цаг хүлээнэ үү. Та сэнс эсвэл хатаагчийг (зөвхөн сэрүүн агаар) портод чиглүүлж хатаалтыг хурдасгах боломжтой.
+Портыг хатаахын тулд чийгийг сэгсэрч гаргаад, хатах хүртэл хэдэн цаг хүлээнэ үү. Та сэнс эсвэл хатаагчийг (зөвхөн сэрүүн агаар) портод чиглүүлж хатаахыг хурдасгах боломжтой.
 
-Энэ үеэр та утсаа утасгүйгээр цэнэглэх боломжтой."</string>
+Энэ үеэр та таблетаа утасгүйгээр цэнэглэх боломжгүй."</string>
     <string name="usb_water_notification_content">Таны цэнэглэх/USB портод чийг эсвэл гадны материал байна. Цэнэглэхийн өмнө шалгана уу.</string>
-    <string name="usb_water_notification_message">Таны цэнэглэгч/USB портонд чийг илэрлээ. Утсаа цэнэглэхээсээ өмнө сайтар хатаана уу. Хатахад хэсэг хугацаа зарцуулагдаж болно.</string>
+    <string name="usb_water_notification_message">Таны цэнэглэгч/USB портонд чийг илэрлээ. Таблетаа цэнэглэхээсээ өмнө сайтар хатаана уу. Хатахад хэсэг хугацаа зарцуулагдаж болно.</string>
     <string name="usb_water_notification_message_button">Дэлгэрэнгүй</string>
     <string name="usb_water_notification_title">Цэнэглэгч/USB портыг шалга</string>
     <string name="usbhostStorage_restrict">Хамгаалалтын бодлого USB хост хадгалалтын ашиглалтаас сэргийлнэ.</string>

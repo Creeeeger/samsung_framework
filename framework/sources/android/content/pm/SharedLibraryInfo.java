@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SharedLibraryInfo implements Parcelable {
     public static final Parcelable.Creator<SharedLibraryInfo> CREATOR = new Parcelable.Creator<SharedLibraryInfo>() { // from class: android.content.pm.SharedLibraryInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SharedLibraryInfo createFromParcel(Parcel source) {
             return new SharedLibraryInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SharedLibraryInfo[] newArray(int size) {
             return new SharedLibraryInfo[size];
@@ -44,6 +45,10 @@ public final class SharedLibraryInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Type {
+    }
+
+    /* synthetic */ SharedLibraryInfo(Parcel parcel, SharedLibraryInfoIA sharedLibraryInfoIA) {
+        this(parcel);
     }
 
     public SharedLibraryInfo(String path, String packageName, List<String> codePaths, String name, long version, int type, VersionedPackage declaringPackage, List<VersionedPackage> dependentPackages, List<SharedLibraryInfo> dependencies, boolean isNative) {
@@ -205,6 +210,23 @@ public final class SharedLibraryInfo implements Parcelable {
                 return "sdk";
             default:
                 return "unknown";
+        }
+    }
+
+    /* renamed from: android.content.pm.SharedLibraryInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SharedLibraryInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SharedLibraryInfo createFromParcel(Parcel source) {
+            return new SharedLibraryInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SharedLibraryInfo[] newArray(int size) {
+            return new SharedLibraryInfo[size];
         }
     }
 }

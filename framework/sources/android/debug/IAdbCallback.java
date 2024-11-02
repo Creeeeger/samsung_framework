@@ -85,8 +85,9 @@ public interface IAdbCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IAdbCallback {
+        public static class Proxy implements IAdbCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

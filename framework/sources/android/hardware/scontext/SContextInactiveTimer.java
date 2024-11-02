@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextInactiveTimer extends SContextEventContext {
     public static final Parcelable.Creator<SContextInactiveTimer> CREATOR = new Parcelable.Creator<SContextInactiveTimer>() { // from class: android.hardware.scontext.SContextInactiveTimer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextInactiveTimer createFromParcel(Parcel in) {
             return new SContextInactiveTimer(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextInactiveTimer[] newArray(int size) {
             return new SContextInactiveTimer[size];
@@ -22,7 +23,6 @@ public class SContextInactiveTimer extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextInactiveTimer() {
         this.mContext = new Bundle();
     }
@@ -55,5 +55,22 @@ public class SContextInactiveTimer extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextInactiveTimer$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextInactiveTimer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextInactiveTimer createFromParcel(Parcel in) {
+            return new SContextInactiveTimer(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextInactiveTimer[] newArray(int size) {
+            return new SContextInactiveTimer[size];
+        }
     }
 }

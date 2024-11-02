@@ -13,13 +13,14 @@ import org.json.JSONObject;
 /* loaded from: classes5.dex */
 public class KnoxAnalyticsData implements Parcelable {
     public static final Parcelable.Creator<KnoxAnalyticsData> CREATOR = new Parcelable.Creator<KnoxAnalyticsData>() { // from class: com.samsung.android.knox.knoxanalyticsproxy.KnoxAnalyticsData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KnoxAnalyticsData createFromParcel(Parcel in) {
             return new KnoxAnalyticsData(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KnoxAnalyticsData[] newArray(int size) {
             return new KnoxAnalyticsData[size];
@@ -132,6 +133,23 @@ public class KnoxAnalyticsData implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.samsung.android.knox.knoxanalyticsproxy.KnoxAnalyticsData$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KnoxAnalyticsData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KnoxAnalyticsData createFromParcel(Parcel in) {
+            return new KnoxAnalyticsData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KnoxAnalyticsData[] newArray(int size) {
+            return new KnoxAnalyticsData[size];
+        }
     }
 
     public String toString() {

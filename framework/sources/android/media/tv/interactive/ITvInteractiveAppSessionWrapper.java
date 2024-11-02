@@ -576,8 +576,9 @@ public class ITvInteractiveAppSessionWrapper extends ITvInteractiveAppSession.St
         handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(29));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class TvInteractiveAppEventReceiver extends InputEventReceiver {
+    public final class TvInteractiveAppEventReceiver extends InputEventReceiver {
         TvInteractiveAppEventReceiver(InputChannel inputChannel, Looper looper) {
             super(inputChannel, looper);
         }

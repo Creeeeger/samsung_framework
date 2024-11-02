@@ -8,7 +8,6 @@ import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @Deprecated
 /* loaded from: classes3.dex */
 public class PreferenceInflater extends GenericInflater<Preference, PreferenceGroup> {
@@ -37,7 +36,6 @@ public class PreferenceInflater extends GenericInflater<Preference, PreferenceGr
         setDefaultPackage("android.preference.");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.GenericInflater
     public boolean onCreateCustomFromTag(XmlPullParser parser, Preference parentPreference, AttributeSet attrs) throws XmlPullParserException {
         String tag = parser.getName();
@@ -68,7 +66,6 @@ public class PreferenceInflater extends GenericInflater<Preference, PreferenceGr
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.GenericInflater
     public PreferenceGroup onMergeRoots(PreferenceGroup givenRoot, boolean attachToGivenRoot, PreferenceGroup xmlRoot) {
         if (givenRoot == null) {

@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ExtraAudioDescriptor implements Parcelable {
     public static final Parcelable.Creator<ExtraAudioDescriptor> CREATOR = new Parcelable.Creator<ExtraAudioDescriptor>() { // from class: android.media.audio.common.ExtraAudioDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ExtraAudioDescriptor createFromParcel(Parcel _aidl_source) {
             ExtraAudioDescriptor _aidl_out = new ExtraAudioDescriptor();
@@ -18,7 +20,6 @@ public class ExtraAudioDescriptor implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExtraAudioDescriptor[] newArray(int _aidl_size) {
             return new ExtraAudioDescriptor[_aidl_size];
@@ -27,6 +28,25 @@ public class ExtraAudioDescriptor implements Parcelable {
     public byte[] audioDescriptor;
     public int standard = 0;
     public int encapsulationType = 0;
+
+    /* renamed from: android.media.audio.common.ExtraAudioDescriptor$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ExtraAudioDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ExtraAudioDescriptor createFromParcel(Parcel _aidl_source) {
+            ExtraAudioDescriptor _aidl_out = new ExtraAudioDescriptor();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ExtraAudioDescriptor[] newArray(int _aidl_size) {
+            return new ExtraAudioDescriptor[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -111,7 +111,6 @@ public class ComponentInfo extends PackageItemInfo {
         return new ComponentName(this.packageName, this.name);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.pm.PackageItemInfo
     public void dumpFront(Printer pw, String prefix) {
         super.dumpFront(pw, prefix);
@@ -137,13 +136,11 @@ public class ComponentInfo extends PackageItemInfo {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.pm.PackageItemInfo
     public void dumpBack(Printer pw, String prefix) {
         dumpBack(pw, prefix, 3);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpBack(Printer pw, String prefix, int dumpFlags) {
         if ((dumpFlags & 2) != 0) {
             if (this.applicationInfo != null) {
@@ -169,7 +166,6 @@ public class ComponentInfo extends PackageItemInfo {
         parcel.writeInt(this.directBootAware ? 1 : 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ComponentInfo(Parcel source) {
         super(source);
         boolean z;

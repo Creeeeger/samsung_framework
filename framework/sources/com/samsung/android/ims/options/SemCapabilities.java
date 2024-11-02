@@ -140,6 +140,10 @@ public class SemCapabilities implements Parcelable, Cloneable {
         public static final int FETCH_TYPE_POLL = 1;
     }
 
+    /* synthetic */ SemCapabilities(Parcel parcel, SemCapabilitiesIA semCapabilitiesIA) {
+        this(parcel);
+    }
+
     static {
         HashMap hashMap = new HashMap();
         sFeatures = hashMap;
@@ -187,13 +191,14 @@ public class SemCapabilities implements Parcelable, Cloneable {
         sFeatures.put(Long.valueOf(FEATURE_PLUG_IN), UnionConstants.SERVICE_PLUGIN);
         sFeatures.put(Long.valueOf(FEATURE_PUBLIC_MSG), "publicmsg");
         CREATOR = new Parcelable.Creator<SemCapabilities>() { // from class: com.samsung.android.ims.options.SemCapabilities.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SemCapabilities createFromParcel(Parcel in) {
                 return new SemCapabilities(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SemCapabilities[] newArray(int size) {
                 return new SemCapabilities[size];
@@ -314,6 +319,23 @@ public class SemCapabilities implements Parcelable, Cloneable {
         parcel.writeStringList(this.mExtFeatures);
     }
 
+    /* renamed from: com.samsung.android.ims.options.SemCapabilities$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCapabilities createFromParcel(Parcel in) {
+            return new SemCapabilities(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCapabilities[] newArray(int size) {
+            return new SemCapabilities[size];
+        }
+    }
+
     private SemCapabilities(Parcel in) {
         this.mIsAvailable = false;
         this.mFeatures = 0L;
@@ -333,8 +355,8 @@ public class SemCapabilities implements Parcelable, Cloneable {
         in.readStringList(arrayList);
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SemCapabilities m8455clone() throws CloneNotSupportedException {
+    /* renamed from: clone */
+    public SemCapabilities m8447clone() throws CloneNotSupportedException {
         return (SemCapabilities) super.clone();
     }
 

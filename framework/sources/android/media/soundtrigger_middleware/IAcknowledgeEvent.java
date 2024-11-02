@@ -69,8 +69,9 @@ public interface IAcknowledgeEvent extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IAcknowledgeEvent {
+        public static class Proxy implements IAcknowledgeEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -84,7 +84,6 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
     @FastNative
     private static native boolean nStop(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class State {
         private final AssetFileDescriptor mAssetFd;
@@ -208,7 +207,6 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$updateStateFromTypedArray$0(ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
         if (!info.isAnimated()) {
             throw new IllegalArgumentException("image is not animated");
@@ -415,7 +413,6 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$postOnAnimationStart$1() {
         Iterator<Animatable2.AnimationCallback> it = this.mAnimationCallbacks.iterator();
         while (it.hasNext()) {
@@ -436,7 +433,6 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$postOnAnimationEnd$2() {
         Iterator<Animatable2.AnimationCallback> it = this.mAnimationCallbacks.iterator();
         while (it.hasNext()) {
@@ -470,7 +466,6 @@ public class AnimatedImageDrawable extends Drawable implements Animatable2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         if (this.mState.mNativePtr != 0) {

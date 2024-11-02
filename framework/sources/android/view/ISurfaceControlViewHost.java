@@ -129,7 +129,6 @@ public interface ISurfaceControlViewHost extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements ISurfaceControlViewHost {
             private IBinder mRemote;

@@ -384,12 +384,12 @@
     <string name="allow_settings_changes">ସେଟିଂସ୍ ପରିବର୍ତ୍ତନ ସୁରକ୍ଷା ନୀତି ପ୍ରତିରୋଧ କରୁଛି।</string>
     <string name="alwaysUse">ଏହି କାର୍ଯ୍ୟ ପାଇଁ ଡିଫଲ୍ଟ ଭାବେ ବ୍ୟବହାର କରନ୍ତୁ।</string>
     <string name="android_preparing_apk">%1$s ପ୍ରସ୍ତୁତ କରାଯାଉଛି।</string>
-    <string name="android_start_title">ଫୋନ୍ ଆରମ୍ଭ ହେଉଛି…</string>
+    <string name="android_start_title">ଟାବଲେଟ୍ ଆରମ୍ଭ ହେଉଛି…</string>
     <string name="android_system_label">Android ସିଷ୍ଟମ</string>
     <string name="android_upgrading_complete">ବୁଟ୍‍ ସମାପ୍ତ କରୁଛି।</string>
     <string name="android_upgrading_notification_title">ସିଷ୍ଟମ୍ ଅପଡେଟ୍ ସମାପ୍ତ ହେଉଛି…</string>
     <string name="android_upgrading_starting_apps">ଆପ୍‍ ଆରମ୍ଭ କରାଯାଉଛି।</string>
-    <string name="android_upgrading_title">ଫୋନ୍ ଅପଡେଟ୍ ହେଉଛି…</string>
+    <string name="android_upgrading_title">ଟାବଲେଟ୍ ଅପଡେଟ୍ ହେଉଛି…</string>
     <string name="anr_activity_application">%2$s କାମ କରୁନାହିଁ</string>
     <string name="anr_activity_process">%1$s କାମ କରୁନାହିଁ</string>
     <string name="anr_application_process">%1$s କାମ କରୁନାହିଁ</string>
@@ -423,16 +423,16 @@
     <string name="app_restricted_message_concentration_mode">%s ସାନ୍ଦ୍ରତା ମୋଡରେ ବ୍ଲକ୍ ହୋଇଛି। ଅଧିକ ଜାଣିବାକୁ ଆପଣଙ୍କ IT ବ୍ୟବସ୍ଥାପକଙ୍କ ସହ ସମ୍ପର୍କ କରନ୍ତୁ।</string>
     <string name="app_running_notification_text">ଅଧିକ ସୂଚନା ପାଇଁ କିମ୍ବା ଆପ୍‍ ବନ୍ଦ କରିବାକୁ ଟାପ୍‍ କରନ୍ତୁ।</string>
     <string name="app_running_notification_title">%1$s ଚାଲୁଛି</string>
-    <string name="app_streaming_blocked_message">ବର୍ତ୍ତମାନ ଏହାକୁ ଆପଣଙ୍କ %1$sରେ ଆକ୍ସେସ କରାଯାଇପାରିବ ନାହିଁ। ଏହା ପରିବର୍ତ୍ତେ ଆପଣଙ୍କ ଫୋନରେ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">ଏହି ଆପ ଅତିରିକ୍ତ ସୁରକ୍ଷା ପାଇଁ ଅନୁରୋଧ କରୁଛି। ଏହା ପରିବର୍ତ୍ତେ ଆପଣଙ୍କ ଫୋନରେ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">ଏହାକୁ ଆପଣଙ୍କ %1$sରେ ଆକ୍ସେସ କରାଯାଇପାରିବ ନାହିଁ। ଏହା ପରିବର୍ତ୍ତେ ଆପଣଙ୍କ ଫୋନରେ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
+    <string name="app_streaming_blocked_message">ବର୍ତ୍ତମାନ ଏହାକୁ ଆପଣଙ୍କ %1$sରେ ଆକ୍ସେସ କରାଯାଇପାରିବ ନାହିଁ। ଏହା ପରିବର୍ତ୍ତେ ଆପଣଙ୍କ ଟାବଲେଟରେ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">ଏହି ଆପ ଅତିରିକ୍ତ ସୁରକ୍ଷା ପାଇଁ ଅନୁରୋଧ କରୁଛି। ଏହା ପରିବର୍ତ୍ତେ ଆପଣଙ୍କ ଟାବଲେଟରେ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">ଏହାକୁ ଆପଣଙ୍କ %1$sରେ ଆକ୍ସେସ କରାଯାଇପାରିବ ନାହିଁ। ଏହା ପରିବର୍ତ୍ତେ ଆପଣଙ୍କ ଟାବଲେଟରେ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
     <string name="app_streaming_blocked_title">%1$s ଉପଲବ୍ଧ ନାହିଁ</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">କ୍ୟାମେରା ଉପଲବ୍ଧ ନାହିଁ</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">ଫୋନରେ ଜାରି ରଖନ୍ତୁ</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">ମାଇକ୍ରୋଫୋନ ଉପଲବ୍ଧ ନାହିଁ</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">ଅନୁମତି ଆବଶ୍ୟକ</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store ଉପଲବ୍ଧ ନାହିଁ</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">ଫୋନ ସେଟିଂସ ଉପଲବ୍ଧ ନାହିଁ</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">ଟାବଲେଟ ସେଟିଂସ ଉପଲବ୍ଧ ନାହିଁ</string>
     <string name="app_suspended_default_message">ବର୍ତ୍ତମାନ %1$s ଉପଲବ୍ଧ ନାହିଁ। ଏହା %2$s ଦ୍ଵାରା ପରିଚାଳିତ ହେଉଛି।</string>
     <string name="app_suspended_more_details">ଅଧିକ ଜାଣନ୍ତୁ</string>
     <string name="app_suspended_title">ଆପ୍‌ ଉପଲବ୍ଧ ନାହିଁ</string>
@@ -503,7 +503,7 @@
     <string name="badPuk">ଆପଣ ଟାଇପ୍‍ କରିଥିବା PUK ଭୁଲ ଅଟେ।</string>
     <string name="badPuk2">ଆପଣ ପ୍ରବେଶ କରିଥିବା PUK2 ଭୁଲ୍ ଅଟେ।</string>
     <string name="batt_cooldown_mode_ok">ଓକେ</string>
-    <string name="battery_saver_charged_notification_summary">ଫୋନରେ ଯଥେଷ୍ଟ ଚାର୍ଜ ଅଛି। ଫିଚରଗୁଡ଼ିକ ଆଉ ପ୍ରତିବନ୍ଧିତ ନୁହେଁ।</string>
+    <string name="battery_saver_charged_notification_summary">ଟାବଲେଟରେ ଯଥେଷ୍ଟ ଚାର୍ଜ ଅଛି। ଫିଚରଗୁଡ଼ିକ ଆଉ ପ୍ରତିବନ୍ଧିତ ନୁହେଁ।</string>
     <string name="battery_saver_description">ବ୍ୟାଟେରୀ ସେଭର୍ ଗାଢ଼ା ଥିମକୁ ଚାଲୁ କରେ ଏବଂ ପୃଷ୍ଠପଟ କାର୍ଯ୍ୟକଳାପ, କିଛି ଭିଜୁଆଲ୍ ଇଫେକ୍ଟ, କିଛି ଫିଚର୍ ଏବଂ କିଛି ନେଟୱାର୍କ ସଂଯୋଗକୁ ସୀମିତ କିମ୍ବା ବନ୍ଦ କରେ।</string>
     <string name="battery_saver_description_with_learn_more">ବେଟେରୀ ସେଭର ଗାଢ଼ା ଥିମକୁ ଚାଲୁ କରେ ଏବଂ ପୃଷ୍ଠପଟ କାର୍ଯ୍ୟକଳାପ, କିଛି ଭିଜୁଆଲ ଇଫେକ୍ଟ, କିଛି ଫିଚର ଏବଂ କିଛି ନେଟୱାର୍କ ସଂଯୋଗକୁ ସୀମିତ କିମ୍ବା ବନ୍ଦ କରେ।</string>
     <string name="battery_saver_notification_channel_name">ବ୍ୟାଟେରୀ ସେଭର୍</string>
@@ -731,7 +731,7 @@
     <string name="decline">ଅଗ୍ରାହ୍ୟ କରନ୍ତୁ</string>
     <string name="decline_remote_bugreport_action">ଅଗ୍ରାହ୍ୟ କରନ୍ତୁ</string>
     <string name="default_audio_route_category_name">ସିଷ୍ଟମ</string>
-    <string name="default_audio_route_name">ଫୋନ</string>
+    <string name="default_audio_route_name">ଟାବଲେଟ୍‌</string>
     <string name="default_audio_route_name_dock_speakers">ଡକ ସ୍ପିକର</string>
     <string name="default_audio_route_name_external_device">ଏକ୍ସଟର୍ନଲ ଡିଭାଇସ</string>
     <string name="default_audio_route_name_headphones">ହେଡଫୋନ୍‍</string>
@@ -857,7 +857,7 @@
     <string name="emergency_call_dialog_number_for_display">ଜରୁରୀକାଳୀନ ନମ୍ବର୍‌</string>
     <string name="emergency_calls_only">କେବଳ ଜରୁରୀକାଳୀନ କଲ୍</string>
     <string name="enablePin">ସଫଳ ହେଲାନାହିଁ, SIM/RUIM ଲକ୍‍ କରନ୍ତୁ।</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s ’ସ୍ପର୍ଶ କରି ଏକ୍ସପ୍ଲୋର୍ କରନ୍ତୁ’ ସକ୍ଷମ କରିବାକୁ ଚାହେଁ। ’ସ୍ପର୍ଶ କରି ଏକ୍ସପ୍ଲୋର୍ କରନ୍ତୁ’ ଅନ୍‌ ଥିବାବେଳେ, ଆପଣଙ୍କ ଆଙ୍ଗୁଠି ତଳେ କ’ଣ ଅଛି, ତାହାର ବ୍ୟାଖ୍ୟା ଦେଖିପାରିବେ କିମ୍ବା ଫୋନ୍‍ ସହ କଥାବାର୍ତ୍ତା କରିବାକୁ ଜେଶ୍ଚର୍‌ କରିପାରିବେ।</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s ’ସ୍ପର୍ଶ କରି ଏକ୍ସପ୍ଲୋର୍ କରନ୍ତୁ’ ସକ୍ଷମ କରିବାକୁ ଚାହେଁ। ’ସ୍ପର୍ଶ କରି ଏକ୍ସପ୍ଲୋର୍ କରନ୍ତୁ’ ଅନ୍‌ ଥିବାବେଳେ, ଆପଣଙ୍କ ଆଙ୍ଗୁଠି ତଳେ କ’ଣ ଅଛି, ତାହାର ବ୍ୟାଖ୍ୟା ଦେଖିପାରିବେ କିମ୍ବା ଟାବ୍‍ଲେଟ୍‍ ସହ କଥାବାର୍ତ୍ତା କରିବାକୁ ଜେଶ୍ଚର୍‌ କରିପାରିବେ।</string>
     <string name="enable_explore_by_touch_warning_title">’ସ୍ପର୍ଶ କରି ଏକ୍ସପ୍ଲୋର୍‍ କରନ୍ତୁ’ ସକ୍ଷମ କରିବେ?</string>
     <string name="error_message_change_not_allowed">ଏହି ପରିବର୍ତ୍ତନ ପାଇଁ ଆପଣଙ୍କ ଆଡମିନ୍‌ ଅନୁମତି ଦେଇନାହାଁନ୍ତି</string>
     <string name="error_message_title">ତ୍ରୁଟି</string>
@@ -920,7 +920,7 @@
     <string name="ext_media_unsupported_notification_message">ଏହି ଡିଭାଇସ୍ ଏହା ସମର୍ଥନ କରେ ନାହିଁ %s। ଏକ ସମର୍ଥିତ ଫର୍ମାଟରେ ସେଟ୍‌ ଅପ୍ କରିବାକୁ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
     <string name="ext_media_unsupported_notification_title">%s ଅସମର୍ଥିତ</string>
     <string name="ext_storage_bad_removal_button">ପୁନଃଆରମ୍ଭ</string>
-    <string name="ext_storage_bad_removal_title">ଆପଣଙ୍କ ଫୋନ୍ ପୁନଃଆରମ୍ଭ କରନ୍ତୁ</string>
+    <string name="ext_storage_bad_removal_title">ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ପୁନଃଆରମ୍ଭ</string>
     <string name="extmedia_format_button_format">ଫର୍ମାଟ୍</string>
     <string name="extmedia_format_message">ଆପଣ SD କାର୍ଡ୍ ଫର୍ମାଟ୍ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି? ଆପଣଙ୍କ କାର୍ଡ୍‌ର ସମସ୍ତ ଡାଟା ନଷ୍ଟ ହୋଇଯିବ।</string>
     <string name="extmedia_format_message_usbhost">ଆପଣଙ୍କର USB ଷ୍ଟୋରେଜର୍ ସମସ୍ତ ସଂରକ୍ଷିତ ଫାଇଲ୍ ବିଲୋପ ହେବ। ଏହି କ୍ରିୟା ପ୍ରତ୍ୟାବର୍ତ୍ତ ହୋଇପାରିବ ନାହିଁ।</string>
@@ -1123,7 +1123,7 @@
     <string name="global_action_toggle_sealed_mode">ସିଲ୍ ମୋଡ୍</string>
     <string name="global_action_toggle_silent_mode">ସାଇଲେଣ୍ଟ ମୋଡ୍</string>
     <string name="global_action_voice_assist">ଭଏସ୍‌ ସହାୟକ</string>
-    <string name="global_actions">ଫୋନ ବିକଳ୍ପ</string>
+    <string name="global_actions">ଟାବଲେଟ ବିକଳ୍ପ</string>
     <string name="global_actions_airplane_mode_off_status">ଏରୋପ୍ଲେନ୍‍ ମୋଡ୍ ଅଫ୍ ଅଛି</string>
     <string name="global_actions_airplane_mode_on_status">ଏୟାରପ୍ଲେନ୍ ମୋଡ୍ ଚାଲୁ ଅଛି</string>
     <string name="global_actions_toggle_airplane_mode">ଏୟାରପ୍ଲେନ ମୋଡ</string>
@@ -1308,11 +1308,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>ପାସ୍‌ୱର୍ଡ ଟାଇପ୍‍ କରିବା ପାଇଁ ଟାପ୍‍ କରନ୍ତୁ&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">ଭୁଲ PIN କୋଡ୍।</string>
     <string name="kg_enter_confirm_pin_hint">ନିଜ ଇଚ୍ଛାର PIN କୋଡ୍‍ ନିଶ୍ଚିତ କରନ୍ତୁ</string>
-    <string name="kg_failed_attempts_almost_at_login">"ଆପଣଙ୍କ ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ %1$d ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। ଆଉ %2$dଟି ଭୁଲ ପ୍ରୟାସ ପରେ ଏକ ଇମେଲ୍‍ ଆକାଉଣ୍ଟ ବ୍ୟବହାର କରି ନିଜ ଫୋନ୍‌କୁ ଅନଲକ୍‌ କରିବା ପାଇଁ କୁହାଯିବ।
+    <string name="kg_failed_attempts_almost_at_login">"ଆପଣଙ୍କ ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ %1$d ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। ଆଉ %2$dଟି ଭୁଲ ପ୍ରୟାସ ପରେ ଏକ ଇମେଲ୍‍ ଆକାଉଣ୍ଟ ବ୍ୟବହାର କରି ନିଜ ଟାବଲେଟ୍‌କୁ ଅନଲକ୍‌ କରିବା ପାଇଁ କୁହାଯିବ।
 
 %3$d ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
-    <string name="kg_failed_attempts_almost_at_wipe">ଫୋନ୍‌ ଅନଲକ୍‍ କରିବାକୁ ଆପଣ %1$d ଥର ଭୁଲ ପ୍ରୟାସ କଲେ। ଆଉ %2$dଟି ଭୁଲ ପ୍ରୟାସ ପରେ, ଫୋନ୍‌ଟି ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ ଏବଂ ସମସ୍ତ ୟୁଜର୍‍ ଡାଟା ବାହାରିଯିବ।</string>
-    <string name="kg_failed_attempts_now_wiping">ଫୋନ୍‌ ଅନଲକ୍‍ କରିବାକୁ ଆପଣ %d ଥର ଭୁଲ ପ୍ରୟାସ କଲେ। ଫୋନ୍‌ଟି ବର୍ତ୍ତମାନ ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ।</string>
+    <string name="kg_failed_attempts_almost_at_wipe">ଟାବଲେଟ୍‌ ଅନଲକ୍‍ କରିବାକୁ ଆପଣ %1$d ଥର ଭୁଲ ପ୍ରୟାସ କଲେ। ଆଉ %2$dଟି ଭୁଲ ପ୍ରୟାସ ପରେ, ଟାବଲେଟ୍‌ଟି ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ ଏବଂ ସମସ୍ତ ୟୁଜର୍‍ ଡାଟା ବାହାରିଯିବ।</string>
+    <string name="kg_failed_attempts_now_wiping">ଟାବଲେଟ୍‌ ଅନଲକ୍‍ କରିବାକୁ ଆପଣ %d ଥର ଭୁଲ ପ୍ରୟାସ କଲେ। ଟାବଲେଟ୍‌ଟି ବର୍ତ୍ତମାନ ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ।</string>
     <string name="kg_forgot_pattern_button_text">ପାଟର୍ନ ଭୁଲି ଯାଇଛନ୍ତି</string>
     <string name="kg_invalid_confirm_pin_hint">PIN କୋଡ୍‍ ମେଳ ଖାଉନାହିଁ</string>
     <string name="kg_invalid_puk">ଠିକ୍‍ PUK କୋଡ୍‍ ପୁଣି ଲେଖନ୍ତୁ। ବାରମ୍ବାର ପ୍ରୟାସ କଲେ SIM କାର୍ଡ ସ୍ଥାୟୀ ରୂପେ ଅକ୍ଷମ ହୋଇଯିବ।</string>
@@ -1400,11 +1400,11 @@
     <string name="lockscreen_carrier_default">କୌଣସି ସେବା ନାହିଁ</string>
     <string name="lockscreen_carrier_noservice">(କୌଣସି ସେବା ନାହଁ)</string>
     <string name="lockscreen_emergency_call">ଜରୁରୀକାଳୀନ</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">ଫୋନ୍‍ ଅନଲକ୍‍ କରିବାକୁ ଆପଣ %1$d ଥର ଭୁଲ ପ୍ରୟାସ କଲେ। ଆଉ %2$dଟି ଭୁଲ ପ୍ରୟାସ ପରେ, ଫୋନ୍‍ଟି ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ ଏବଂ ଆପଣ ସମସ୍ତ ୟୁଜର୍‍ ଡାଟା ହରାଇବେ।</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ %1$d ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। ଆଉ %2$dଟି ଭୁଲ ପ୍ରୟାସ ପରେ, Google ସାଇନ୍‌-ଇନ୍‍ ବ୍ୟବହାର କରି ଆପଣଙ୍କୁ ନିଜ ଫୋନ୍‍କୁ ଅନଲକ୍‍ କରିବାକୁ କୁହାଯିବ।
+    <string name="lockscreen_failed_attempts_almost_at_wipe">ଟାବଲେଟ୍‍କୁ ଅନ୍‌ଲକ୍‌ କରିବା ପାଇଁ %1$d ଥର ଭୁଲ ପ୍ରୟାସ କରିଛନ୍ତି। ଆଉ %2$dଟି ଭୁଲ ପ୍ରୟାସ ପରେ, ଟାବଲେଟ୍‍ଟି ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ ଏବଂ ଆପଣ ସମସ୍ତ ୟୁଜର୍‍ ଡାଟା ହରାଇବେ।</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ %1$d ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। ଆଉ %2$dଟି ଭୁଲ ପ୍ରୟାସ ପରେ, Google ସାଇନ୍‌-ଇନ୍‍ ବ୍ୟବହାର କରି ଆପଣଙ୍କୁ ନିଜ ଟାବଲେଟ୍‍କୁ ଅନଲକ୍‍ କରିବାକୁ କୁହାଯିବ।
 
  %3$d ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
-    <string name="lockscreen_failed_attempts_now_wiping">ଫୋନ୍‍ ଅନଲକ୍‍ କରିବାକୁ ଆପଣ %d ଥର ଭୁଲ ପ୍ରୟାସ କଲେ। ଫୋନ୍‍ଟି ବର୍ତ୍ତମାନ ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ।</string>
+    <string name="lockscreen_failed_attempts_now_wiping">ଟାବଲେଟ୍‍ ଅନଲକ୍‍ କରିବାକୁ ଆପଣ %d ଥର ଭୁଲ ପ୍ରୟାସ କଲେ। ଟାବଲେଟ୍‍ଟି ବର୍ତ୍ତମାନ ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ।</string>
     <string name="lockscreen_forgot_pattern_button_text">ପାଟର୍ନ ଭୁଲି ଯାଇଛନ୍ତି କି?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"ଆପଣଙ୍କର ଯୁଜରନେମ୍‌ କିମ୍ୱା ପାସୱାର୍ଡ ଭୁଲି ଯାଇଛନ୍ତି କି?
 "<b>google.com/accounts/recovery</b> ଭିଜିଟ୍‍ କରନ୍ତୁ।</string>
@@ -1420,7 +1420,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">ଅନଲକ୍‌ କରିବା ପାଇଁ ମେନୁକୁ ଦବାନ୍ତୁ କିମ୍ବା ଜରୁରୀକାଳୀନ କଲ୍‌ କରନ୍ତୁ।</string>
     <string name="lockscreen_missing_sim_instructions">ଏକ SIM ଯୋଗ କରନ୍ତୁ।</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM ଉପଲବ୍ଧ ନାହିଁ କିମ୍ବା ପଢ଼ିପାରିବା ଯୋଗ୍ୟ ନୁହେଁ। ଏକ SIM ଯୋଗ କରନ୍ତୁ।</string>
-    <string name="lockscreen_missing_sim_message">ଫୋନରେ କୌଣସି SIM ନାହିଁ।</string>
+    <string name="lockscreen_missing_sim_message">ଟାବଲେଟରେ କୌଣସି SIM ନାହିଁ।</string>
     <string name="lockscreen_missing_sim_message_short">କୌଣସି SIM ନାହିଁ</string>
     <string name="lockscreen_network_locked_message">ନେଟ୍‌ୱର୍କକୁ ଲକ୍‌ କରାଯାଇଛି</string>
     <string name="lockscreen_password_wrong">ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ</string>
@@ -1460,7 +1460,7 @@
     <string name="low_internal_storage_view_text">କିଛି ସିଷ୍ଟମ ପ୍ରକାର୍ଯ୍ୟ କାମ କରିନପାରେ</string>
     <string name="low_internal_storage_view_text_no_boot">ସିଷ୍ଟମ୍ ପାଇଁ ପ୍ରର୍ଯ୍ୟାପ୍ତ ଷ୍ଟୋରେଜ୍‌ ନାହିଁ। ସୁନିଶ୍ଚିତ କରନ୍ତୁ ଯେ, ଆପଣଙ୍କ ପାଖରେ 250MB ଖାଲି ଜାଗା ଅଛି ଏବଂ ପୁନଃ ଆରମ୍ଭ କରନ୍ତୁ।</string>
     <string name="low_internal_storage_view_title">ଷ୍ଟୋରେଜ୍‌ ସ୍ପେସ୍‌ ଶେଷ ହେବାରେ ଲାଗିଛି</string>
-    <string name="low_memory">ଫୋନ୍‍ ଷ୍ଟୋରେଜ୍‍ ପୂର୍ଣ୍ଣ ହୋଇଯାଇଛି। ସ୍ଥାନ ଖାଲି କରିବା ପାଇଁ କିଛି ଫାଇଲ୍‍ ଡିଲିଟ୍‍ କରନ୍ତୁ।</string>
+    <string name="low_memory">ଟାବଲେଟ୍‍ ଷ୍ଟୋରେଜ୍‍ ପୂର୍ଣ୍ଣ ହୋଇଯାଇଛି। ସ୍ଥାନ ଖାଲି କରିବା ପାଇଁ କିଛି ଫାଇଲ୍‍ ଡିଲିଟ୍‍ କରନ୍ତୁ।</string>
     <string name="ltb_kill_content_v2_phone">%s ବନ୍ଦ ହୋଇଛି କାରଣ ଏହା ଆପଣଙ୍କ ଫୋନ୍ ଅଧିକ ଉତ୍ତପ୍ତ ହେବାର କାରଣ ହେଉଛି। ଆପଣଙ୍କ ଫୋନ୍ ଥଣ୍ତା ହେବା ପରେ ଆପଣ ଏହାକୁ ପରେ ପୁନଃ ଖୋଲିପାରିବେ।</string>
     <string name="ltb_kill_content_v2_tablet">%s ବନ୍ଦ ହୋଇଛି କାରଣ ଏହା ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ଅଧିକ ଉତ୍ତପ୍ତ ହେବାର କାରଣ ହେଉଛି। ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ଥଣ୍ତା ହେବା ପରେ ଆପଣ ଏହାକୁ ପରେ ପୁନଃ ଖୋଲିପାରିବେ।</string>
     <string name="ltb_warning_button">ବନ୍ଦ କରନ୍ତୁ ନାହିଁ</string>
@@ -1770,18 +1770,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ଆପଣଙ୍କ ବ୍ଲୁଟୁଥ୍ ଅଡିଓ ଡିଭାଇସରେ ସାଉଣ୍ତ ଚାଳନ ହେଉଛି। ଏହା ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ</string>
     <string name="multisound_sound_via_headphone">ଆପଣଙ୍କ ହେଡଫୋନ୍ ମାଧ୍ୟମରେ %s ସାଉଣ୍ଡ ଚାଳନ ହେଉଛି। ଏହା ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
     <string name="multisound_sound_via_headphone_multiselection">ଆପଣଙ୍କ ହେଡଫୋନ୍ ମାଧ୍ୟମରେ ସାଉଣ୍ତ ଚାଳନ ହେଉଛି। ଏହା ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
-    <string name="multisound_sound_via_phone_speaker">ଆପଣଙ୍କ ଫୋନ୍ ସ୍ପିକର୍ ମାଧ୍ୟମରେ %s ସାଉଣ୍ଡ ଚାଳନ ହେଉଛି। ଏହାକୁ ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ଆପଣଙ୍କ ଫୋନ୍ ସ୍ପିକର୍ ମାଧ୍ୟମରେ ସାଉଣ୍ତ ଚାଳନ ହେଉଛି। ଏହା ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
+    <string name="multisound_sound_via_phone_speaker">ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ସ୍ପିକର୍ ମାଧ୍ୟମରେ %s ସାଉଣ୍ଡ ଚାଳନ ହେଉଛି। ଏହା ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ସ୍ପିକର୍ ମାଧ୍ୟମରେ ସାଉଣ୍ତ ଚାଳନ ହେଉଛି। ଏହା ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
     <string name="multisound_sound_via_usb_audio">ଆପଣଙ୍କ USB ଅଡିଓ ଡିଭାଇସ୍ ମାଧ୍ୟମରେ %s ସାଉଣ୍ଡ ଚାଳନ ହେଉଛି। ଏହା ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ଆପଣଙ୍କ USB ଅଡିଓ ଡିଭାଇସ୍ ମାଧ୍ୟମରେ ସାଉଣ୍ତ ଚାଳନ ହେଉଛି। ଏହା ଟର୍ନ୍ ଅଫ୍ କରିବାକୁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।</string>
     <string name="multisound_title">ପୃଥକ ଆପ୍ଲିକେସନ୍‌ ସାଉଣ୍ତ</string>
     <string name="multisound_turn_off_multisound">ଟର୍ନ୍ ଅଫ୍</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXରେ %s ଚାଳନ କରିପାରିବେ ନାହିଁ। ଫୋନ୍ ମୋଡରେ ଚାଳନ କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeXରେ %s ଚାଳନ କରିପାରିବେ ନାହିଁ। ଏହା ଫୋନ୍ ହୋମ୍ ସ୍କ୍ରିନ୍ ପାଇଁ ଡିଜାଇନ୍ ହୋଇଛି।</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">କିଛି ଖେଳ କେବଳ ସ୍ପର୍ଶ ସ୍କ୍ରିନରେ କାର୍ଯ୍ୟ କରିଥାଏ। ଯଦି Samsung DeXରେ ମାଉସ୍ ନିୟନ୍ତ୍ରଣ କାର୍ଯ୍ୟ ନକରେ, ବଦଳରେ ଫୋନ୍ ମୋଡରେ ଚାଳନ କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXରେ %s ଚାଳନ କରିପାରିବେ ନାହିଁ। ଟ୍ୟାବଲେଟ୍ ମୋଡରେ ଚାଳନ କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeXରେ %s ଚାଳନ କରିପାରିବେ ନାହିଁ। ଏହା ଟ୍ୟାବଲେଟ୍ ହୋମ୍ ସ୍କ୍ରିନ୍ ପାଇଁ ଡିଜାଇନ୍ ହୋଇଛି।</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">କିଛି ଖେଳ କେବଳ ସ୍ପର୍ଶ ସ୍କ୍ରିନରେ କାର୍ଯ୍ୟ କରିଥାଏ। ଯଦି Samsung DeXରେ ମାଉସ୍ ନିୟନ୍ତ୍ରଣ କାର୍ଯ୍ୟ ନକରେ, ବଦଳରେ ଟ୍ୟାବଲେଟ୍ ମୋଡରେ ଚାଳନ କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
     <string name="music_recognition_manager_service">ମ୍ୟୁଜିକ୍ ଚିହ୍ନଟକରଣ ପରିଚାଳକ ସେବା</string>
     <string name="muted_by">%1$s କିଛି ସାଉଣ୍ଡକୁ ମ୍ୟୁଟ୍ କରୁଛି</string>
-    <string name="my_device">ଏହି ଫୋନ୍</string>
+    <string name="my_device">ଏହି ଟ୍ୟାବଲେଟ୍</string>
     <string name="nas_upgrade_notification_content">ପ୍ରସ୍ତାବିତ କାର୍ଯ୍ୟ ଏବଂ ପ୍ରତ୍ୟୁତ୍ତରଗୁଡ଼ିକ ବର୍ତ୍ତମାନ ଉନ୍ନତ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ମାଧ୍ୟମରେ ପ୍ରଦାନ କରାଯାଉଛି। Android ଆଡେପ୍ଟିଭ୍ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ଆଉ ସମର୍ଥିତ ନୁହେଁ।</string>
     <string name="nas_upgrade_notification_disable_action">ବନ୍ଦ କରନ୍ତୁ</string>
     <string name="nas_upgrade_notification_enable_action">ଠିକ ଅଛି</string>
@@ -1946,23 +1946,23 @@
     <string name="permdesc_bindNotificationListenerService">ଶ୍ରୋତା ସେବାର ଶୀର୍ଷ-ସ୍ତର ଇଣ୍ଟରଫେସ୍‍କୁ ବାନ୍ଧିରଖିବା ପଇଁ ଧାରକକୁ ଅନୁମତି ଦିଏ। ସାମାନ୍ୟ ଆପ୍‍ ପାଇଁ କଦାପି ଆବଶ୍ୟକ ହେବ ନାହିଁ।</string>
     <string name="permdesc_bind_connection_service">ଆପ୍‌କୁ କଲ୍ କରିବା ଏବଂ ପ୍ରାପ୍ତ କରିବା ପାଇଁ ଟେଲିଫୋନୀ ସେବା ସହିତ ସଂଯୋଗ କରିବା ପାଇଁ ଅନୁମତି ଦିଅନ୍ତୁ।</string>
     <string name="permdesc_bind_incall_service">ୟୁଜର୍‍ କଲ୍ ଇନ୍ ସ୍କ୍ରୀନ୍‍‌ କେବେ ଓ କିପରି ଦେଖୁଛି, ତାହାକୁ ନିୟନ୍ତ୍ରିତ କରିବା ପାଇଁ ଆପ୍‌କୁ ଅନୁମତି ଦିଅନ୍ତୁ।</string>
-    <string name="permdesc_bluetooth">ଫୋନ୍‌ରେ ଥିବା ବ୍ଲୁ-ଟୁଥ୍‌ର କନଫିଗରେଶନ୍‍ ଦେଖିବାକୁ ଏବଂ ପେୟାର୍‍ କରାଯାଇଥିବା ଡିଭାଇସ୍‌ ସହିତ ସଂଯୋଗ ସ୍ୱୀକାର କରିବା ପାଇଁ ଆପ୍‌କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
-    <string name="permdesc_bluetoothAdmin">ସ୍ଥାନୀୟ ବ୍ଲୁ-ଟୁଥ, ଫୋନ୍‍କୁ କନଫିଗର୍ କରିବାକୁ ଏବଂ ରିମୋର୍ଟ ଡିଭାଇସ୍‌କୁ ଚିହ୍ନାଇବା ତଥା ସେଗୁଡ଼ିକୁ ପେୟାର୍‍ କରିବା ପାଇଁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
+    <string name="permdesc_bluetooth">ଟାବଲେଟ୍‌ରେ ଥିବା ବ୍ଲୁ-ଟୁଥ୍‌ର କନଫିଗରେଶନ୍‍ ଦେଖିବାକୁ ଏବଂ ପେୟାର୍‍ କରାଯାଇଥିବା ଡିଭାଇସ୍‌ ସହିତ ସଂଯୋଗ ସ୍ୱୀକାର କରିବା ପାଇଁ ଆପ୍‌କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
+    <string name="permdesc_bluetoothAdmin">ସ୍ଥାନୀୟ ବ୍ଲୁ-ଟୁଥ, ଟାବଲେଟ୍‍କୁ କନଫିଗର୍ କରିବାକୁ ଏବଂ ରିମୋର୍ଟ ଡିଭାଇସ୍‌କୁ ଚିହ୍ନାଇବା ତଥା ସେଗୁଡ଼ିକୁ ପେୟାର୍‍ କରିବା ପାଇଁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_bluetooth_advertise">ଆଖପାଖର ବ୍ଲୁଟୁଥ୍ ଡିଭାଇସଗୁଡ଼ିକରେ ବିଜ୍ଞାପନ ଦେବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ</string>
     <string name="permdesc_bluetooth_connect">ପେୟାର୍ କରାଯାଇଥିବା ବ୍ଲୁଟୁଥ୍ ଡିଭାଇସଗୁଡ଼ିକ ସହ ସଂଯୋଗ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ</string>
     <string name="permdesc_bluetooth_scan">ଆଖପାଖର ବ୍ଲୁଟୁଥ୍ ଡିଭାଇସଗୁଡ଼ିକୁ ଖୋଜି ପେୟାର୍ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ</string>
     <string name="permdesc_bodySensors">ଏହି ଆପଟି ବ୍ୟବହାରରେ ଥିବା ସମୟରେ, ହାର୍ଟ ରେଟ ଏବଂ ତାପମାତ୍ରା, ରକ୍ତରେ ଅମ୍ଳଜାନ ଶତକଡ଼ା ପରି ବଡି ସେନ୍ସର ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
     <string name="permdesc_bodySensors_background">ଏହି ଆପଟି ପୃଷ୍ଠପଟରେ ଥିବା ସମୟରେ, ହାର୍ଟ ରେଟ, ତାପମାତ୍ରା ଏବଂ ରକ୍ତରେ ଅମ୍ଳଜାନ ଶତକଡ଼ା ପରି ବଡି ସେନ୍ସର ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
-    <string name="permdesc_broadcastSticky">ଷ୍ଟିକୀ ବ୍ରଡ୍‌କାଷ୍ଟ ପଠାଇବାକୁ ଆପ୍‍କୁ ଅନୁମତି ଦିଏ, ଯାହା ବ୍ରଡ୍‌କାଷ୍ଟ ଶେଷ ହେବାପରେ ରହିଥାଏ। ଅତିରିକ୍ତ ବ୍ୟବହାର ଦ୍ୱାରା ଅଧିକ ମେମୋରୀ ବ୍ୟବହାର ହୋଇ ଫୋନ୍‌କୁ ମନ୍ଥର କିମ୍ବା ଅସ୍ଥିର କରିପାରେ।</string>
+    <string name="permdesc_broadcastSticky">ଆପ୍‌କୁ ଷ୍ଟିକୀ ବ୍ରଡ୍‍କାଷ୍ଟ ପଠାଇବାକୁ ଅନୁମତି ଦେଇଥାଏ, ଯାହା ବ୍ରଡ୍‍କାଷ୍ଟ ସମାପ୍ତ ହେବାପରେ ବି ରହିଥାଏ। ଅତ୍ୟଧିକ ଉପଯୋଗ ଦ୍ୱାରା ଟାବଲେଟ୍‍ ମନ୍ଥର ହୋଇପାରେ କିମ୍ବା ଅଧିକ ମେମୋରୀର ବ୍ୟବହାର କରିବା କାରଣରୁ ଏହା ଅସ୍ଥିର ହୋଇପାରେ।</string>
     <string name="permdesc_callCompanionApp">ଆପ୍‍କୁ ଡିଭାଇସ୍‍‍ରେ ଚାଲୁଥିବା କଲ୍‍ଗୁଡ଼ିକୁ ଦେଖିବାକୁ ଏବଂ ନିୟନ୍ତ୍ରଣ କରିବାକୁ ଅନୁମତି ଦେଇଥାଏ। ଏଥିରେ କଲ୍‍ଗୁଡ଼ିକ ପାଇଁ କଲ୍‍ ନମ୍ବର୍‍ ଏବଂ କଲ୍‍ଗୁଡ଼ିକର ସ୍ଥିତି ପରି ସୂଚନା ଅନ୍ତର୍ଭୁକ୍ତ ଅଛି।</string>
     <string name="permdesc_callPhone">ଆପଣଙ୍କ ହସ୍ତକ୍ଷେପ ବିନା ଫୋନ ନମ୍ଵରକୁ କଲ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ। ଏହା ଫଳରେ ଅପ୍ରତ୍ୟାଶିତ ଚାର୍ଜ ଲାଗୁ ହୋଇପାରେ କିମ୍ବା କଲ ହୋଇପାରେ। ଧ୍ୟାନ ଦିଅନ୍ତୁ ଯେ ଏହା ଜରୁରୀକାଳୀନ ନମ୍ବରଗୁଡ଼ିକୁ କଲ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ ନାହିଁ। କ୍ଷତିକାରକ ଆପ୍ସ ଆପଣଙ୍କ ସୁନିଶ୍ଚିତକରଣ ବିନା କଲ କରି ଆପଣଙ୍କ ଟଙ୍କା ଖର୍ଚ୍ଚ କରିପାରେ କିମ୍ବା ଅନ୍ୟ ଏକ ନମ୍ବରକୁ ଇନକମିଂ କଲ ସ୍ୱତଃ ଫରୱାର୍ଡ କରୁଥିବା କେରିଅର କୋଡଗୁଡ଼ିକୁ ଡାଏଲ କରିପାରେ।</string>
     <string name="permdesc_camera">ଆପକୁ ବ୍ୟବହାର କରାଯାଉଥିବା ସମୟରେ ଏହା କ୍ୟାମେରାକୁ ବ୍ୟବହାର କରି ଛବି ନେଇପାରିବ ଏବଂ ଭିଡିଓ ରେକର୍ଡ କରିପାରିବ।</string>
     <string name="permdesc_cameraOpenCloseListener">ଯେ କୌଣସି କ୍ୟାମେରା ଡିଭାଇସ୍ ଖୋଲାଗଲେ (କେଉଁ ଆପ୍ଲିକେସନ୍ ଦ୍ୱାରା) କିମ୍ବା ବନ୍ଦ କରାଗଲେ ଏହି ଆପ୍ କଲବ୍ୟାକ୍ ପାଇପାରିବ।</string>
     <string name="permdesc_changeNetworkState">ନେଟୱର୍କ ସଂଯୋଗର ସ୍ଥିତି ବଦଳାଇବାକୁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_changeTetherState">ଟିଥର୍ ହୋଇଥିବା ନେଟୱର୍କ ସଂଯୋଗର ସ୍ଥିତି ବଦଳାଇବାକୁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
-    <string name="permdesc_changeWifiMulticastState">କେବଳ ଆପଣଙ୍କ ଫୋନ୍‍ ନୁହେଁ, ବରଂ ମଲ୍ଟିକାଷ୍ଟ ଠିକଣାଗୁଡ଼ିକ ବ୍ୟବହାର କରି ଏକ ୱାଇ-ଫାଇ ନେଟ୍‍ୱର୍କରେ ଥିବା ସମସ୍ତ ଡିଭାଇସ୍‌‍କୁ ପଠାଯିବା ପ୍ୟାକେଟ୍‍ଗୁଡ଼ିକ ପ୍ରାପ୍ତ କରିବାକୁ ଆପ୍‍ଟି ଅନୁମତି ଦେଇଥାଏ। ଅଣ-ମଲ୍ଟିକାଷ୍ଟ ମୋଡ୍‍ ତୁଳନାରେ ଏହା ଅଧିକ ପାୱାର୍‍ ବ୍ୟବହାର କରେ।</string>
+    <string name="permdesc_changeWifiMulticastState">କେବଳ ଆପଣଙ୍କ ଟାବ୍‍ଲେଟ୍‍ ନୁହେଁ, ବରଂ ମଲ୍ଟିକାଷ୍ଟ ଠିକଣାଗୁଡ଼ିକ ବ୍ୟବହାର କରି ଏକ ୱାଇ-ଫାଇ ନେଟ୍‍ୱର୍କରେ ଥିବା ସମସ୍ତ ଡିଭାଇସ୍‌‍କୁ ପଠାଯିବା ପ୍ୟାକେଟ୍‍ଗୁଡ଼ିକ ପ୍ରାପ୍ତ କରିବାକୁ ଆପ୍‍ଟି ଅନୁମତି ଦେଇଥାଏ। ଅଣ-ମଲ୍ଟିକାଷ୍ଟ ମୋଡ୍‍ ତୁଳନାରେ ଏହା ଅଧିକ ପାୱାର୍‍ ବ୍ୟବହାର କରେ।</string>
     <string name="permdesc_changeWifiState">ଆପ୍‌କୁ ୱାଇ-ଫାଇ ଆକ୍ସେସ୍‍ ପଏଣ୍ଟ ସହିତ ସଂଯୋଗ ଓ ବିଚ୍ଛିନ୍ନ କରିବାକୁ ତଥା ୱାଇ-ଫାଇ ନେଟ୍‌ୱର୍କ ପାଇଁ ଡିଭାଇସ୍‌ କନଫିଗରେଶନ୍‍ରେ ପରିବର୍ତ୍ତନ କରିବାକୁ ଅନୁମତି ଦେଇଥାଏ।</string>
-    <string name="permdesc_changeWimaxState">WiMAX ନେଟ୍‌ୱର୍କରୁ ଫୋନ୍ ସଂଯୋଗ କରିବାକୁ ଏବଂ ବିଚ୍ଛିନ୍ନ କରିବା ପାଇଁ ଆପ୍‌କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
+    <string name="permdesc_changeWimaxState">WiMAX ନେଟ୍‌ୱର୍କରୁ ଟାବଲେଟ୍‌ ସଂଯୋଗ କରିବାକୁ ଏବଂ ବିଚ୍ଛିନ୍ନ କରିବା ପାଇଁ ଆପ୍‌କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_companionProfileWatch">ୱାଚଗୁଡ଼ିକୁ ପରିଚାଳନା କରିବା ପାଇଁ ଏକ ସହଯୋଗୀ ଆପକୁ ଅନୁମତି ଦିଅନ୍ତୁ।</string>
     <string name="permdesc_connection_manager">ଦୁରସଂଚାର ସଂଯୋଗ ପ୍ରବନ୍ଧିତ କରିବାକୁ ଆପ୍‌କୁ ଅନୁମତି ଦିଅନ୍ତୁ।</string>
     <string name="permdesc_control_incall_experience">ଆପ୍‌କୁ ଇନ୍‌-କ୍ଲଲ୍‌ ୟୁଜର୍‍ ଅନୁଭବ ନେବାକୁ ଦେଇଥାଏ।</string>
@@ -1990,7 +1990,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">\"specialUse\" ପ୍ରକାର ସହ ଫୋରଗ୍ରାଉଣ୍ଡ ସେବାଗୁଡ଼ିକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ</string>
     <string name="permdesc_foregroundServiceSystemExempted">\"systemExempted\" ପ୍ରକାର ସହ ଫୋରଗ୍ରାଉଣ୍ଡ ସେବାଗୁଡ଼ିକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ</string>
     <string name="permdesc_fullScreenIntent">ଏକ ଲକ୍ ହୋଇଥିବା ଡିଭାଇସରେ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକୁ ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନ୍ କାର୍ଯ୍ୟକଳାପ ଭାବେ ଦେଖାଇବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ</string>
-    <string name="permdesc_getAccounts">ଫୋନ୍‌ ଦ୍ୱାରା ପରିଚିତ ଆକାଉଣ୍ଟର ତାଲିକା ପ୍ରାପ୍ତ କରିବାକୁ ଆପ୍‌କୁ ଅନୁମତି ଦେଇଥାଏ। ଆପଣ ଇନଷ୍ଟଲ୍‍ କରିଥିବା ଆପ୍ଲିକେଶନ୍‍ ଦ୍ୱାରା ତିଆରି କରାଯାଇଥିବା କୌଣସି ଆକାଉଣ୍ଟ ବି ଏଥିରେ ସାମିଲ୍ ହୋଇପାରେ।</string>
+    <string name="permdesc_getAccounts">ଟାବଲେଟ୍‌ ଦ୍ୱାରା ପରିଚିତ ଆକାଉଣ୍ଟର ତାଲିକା ପ୍ରାପ୍ତ କରିବାକୁ ଆପ୍‌କୁ ଅନୁମତି ଦେଇଥାଏ। ଆପଣ ଇନଷ୍ଟଲ୍‍ କରିଥିବା ଆପ୍ଲିକେଶନ୍‍ ଦ୍ୱାରା ତିଆରି କରାଯାଇଥିବା କୌଣସି ଆକାଉଣ୍ଟ ବି ଏଥିରେ ସାମିଲ୍ ହୋଇପାରେ।</string>
     <string name="permdesc_getAppList">ଇନଷ୍ଟଲ୍ ହୋଇଥିବା ଆପସର ତାଲିକା ପଢିବାକୁ ଏକ ଆପ୍ଲିକେସନ୍ ଅନୁମତି କରେ।</string>
     <string name="permdesc_getPackageSize">ଆପ୍‍ର କୋଡ୍‍, ଡାଟା ଓ କ୍ୟାଶ୍‌ ଆକାର ହାସଲ କରିବା ପାଇଁ ଏହାକୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_getTasks">ବର୍ତ୍ତମାନ ତଥା ନିକଟରେ ଚାଲୁଥିବା କାର୍ଯ୍ୟ ବିଷୟରେ ସୂଚନାକୁ ହାସଲ କରିବା ପାଇଁ ଆପ୍‌କୁ ଅନୁମତି ଦେଇଥାଏ। ଏହାଦ୍ୱାରା ଆପଟି ଡିଭାଇସ୍‌ର କେଉଁ ଆପ୍ଲିକେଶନ୍‍ରେ ଉପଯୋଗ କରାଯାଇଥିଲା, ତାହାର ସୂଚନାକୁ ଜାଣିପାରେ।</string>
@@ -2089,16 +2089,16 @@
     <string name="permdesc_nearby_wifi_devices">ଆଖପାଖର ୱାଇ-ଫାଇ ଡିଭାଇସରେ ବିଜ୍ଞାପନ ଦେବା, ତା ସହ ସଂଯୋଗ କରିବା ଓ ତା’ର ଆପେକ୍ଷିକ ଅବସ୍ଥିତି ନିର୍ଦ୍ଧାରଣ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ</string>
     <string name="permdesc_nfc">ନିଅର୍‍ ଫିଲ୍ଡ କମ୍ୟୁନିକେସନ୍‍ନ (NFC) ଟାଗ୍‍, କାର୍ଡ ଓ ରିଡରଗୁଡ଼ିକ ସହ ଯୋଗାଯୋଗ କରିବା ପାଇଁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_observeCompanionDevicePresence">ଯେତେବେଳେ ଡିଭାଇସଗୁଡ଼ିକ ଆଖପାଖରେ କିମ୍ବା ଦୂରରେ ଥାଏ, ସେତେବେଳେ ସହଯୋଗୀ ଡିଭାଇସର ଉପସ୍ଥିତି ଦେଖିବା ପାଇଁ ଏକ ସହଯୋଗୀ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
-    <string name="permdesc_persistentActivity">ଆପ୍‍ଟି ନିଜକୁ ମେମୋରୀରେ ଭାଗ କରିବାକୁ ଦେଇଥାଏ। ଏହାଦ୍ୱାରା ଅନ୍ୟ ଆପ୍‍ଗୁଡ଼ିକ ପାଇଁ ମେମୋରୀ ଉପଲବ୍ଧକୁ କମ୍‌ କରିବା ସହ ଫୋନ୍‍ଟିକୁ ମନ୍ଥର କରିବ।</string>
+    <string name="permdesc_persistentActivity">ଆପ୍‍ଟି ନିଜକୁ ମେମୋରୀରେ ଭାଗ କରିବାକୁ ଦେଇଥାଏ। ଏହାଦ୍ୱାରା ଅନ୍ୟ ଆପ୍‍ଗୁଡ଼ିକ ପାଇଁ ମେମୋରୀ ଉପଲବ୍ଧକୁ କମ୍‌ କରିବା ସହ ଟାବ୍‍ଲେଟ୍‍ଟିକୁ ମନ୍ଥର କରିବ।</string>
     <string name="permdesc_postNotification">ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ଦେଖାଇବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ</string>
     <string name="permdesc_preferredPaymentInfo">ପଞ୍ଜିକୃତ ଯନ୍ତ୍ର ଏବଂ ମାର୍ଗ ଲକ୍ଷସ୍ଥଳ ପରି ପସନ୍ଦର nfc ପେମେଣ୍ଟ ସେବା ସୂଚନା ପାଇବାକୁ ଆପ୍ ଅନୁମତି କରିଥାଏ।</string>
     <string name="permdesc_processOutgoingCalls">ଭିନ୍ନ ନମ୍ବରକୁ କଲ୍‍ ରିଡାଇରେକ୍ଟ କରିବା କିମ୍ବା ଏକାଠି କଲ୍‍ ଖାରଜ କରିବା ବିକଳ୍ପ ସହ ଆଉଟ୍‍ଗୋଇଙ୍ଗ କଲ୍‍ କରିବାବେଳେ ଡାୟଲ୍‍ କରାଯାଉଥିବା ନମ୍ବର ଦେଖିବା ପାଇଁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_queryAllPackages">ଇନଷ୍ଟଲ୍ କରାଯାଇଥିବା ସମସ୍ତ ପ୍ୟାକେଜକୁ ଦେଖିବା ପାଇଁ ଏକ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
     <string name="permdesc_readBasicPhoneState">ଡିଭାଇସର ବେସିକ ଟେଲିଫୋନି ଫିଚରଗୁଡ଼ିକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଏହା ଆପକୁ ଅନୁମତି ଦିଏ।</string>
-    <string name="permdesc_readCalendar">ଆପଣଙ୍କ ଫୋନ୍‌ରେ ଷ୍ଟୋର୍‍ କରାଯାଇଥିବା ସମସ୍ତ କ୍ୟାଲେଣ୍ଡର ଇଭେଣ୍ଟ ଏହି ଆପ୍‍ ପଢ଼ିପାରେ ଏବଂ ଆପଣଙ୍କ କ୍ୟାଲେଣ୍ଡର ଡାଟା ସେୟାର୍‍ କରିପାରେ କିମ୍ବା ସେଭ୍‍ କରିପାରେ।</string>
+    <string name="permdesc_readCalendar">ଆପଣଙ୍କ ଟାବଲେଟ୍‌ରେ ଷ୍ଟୋର୍‍ କରାଯାଇଥିବା ସମସ୍ତ କ୍ୟାଲେଣ୍ଡର ଇଭେଣ୍ଟ ଏହି ଆପ୍‍ ପଢ଼ିପାରେ ଏବଂ ଆପଣଙ୍କ କ୍ୟାଲେଣ୍ଡର ଡାଟା ସେୟାର୍‍ କରିପାରେ କିମ୍ବା ସେଭ୍‍ କରିପାରେ।</string>
     <string name="permdesc_readCallLog">ଏହି ଆପ୍‍ ଆପଣଙ୍କ କଲ୍‍ ହିଷ୍ଟୋରୀ ପଢ଼ିପାରେ।</string>
     <string name="permdesc_readCellBroadcasts">ଆପଣଙ୍କ ଡିଭାଇସ୍‍ରେ ପ୍ରାପ୍ତ ହୋଇଥିବା ସେଲ୍‍ ବ୍ରଡ୍‍କାଷ୍ଟ ମେସେଜ୍‍ ପଢିବାକୁ ଆପ୍‍କୁ ଅନୁମତି ଦିଏ। ଜରୁରୀକାଳୀନ ଅବସ୍ଥା ବିଷୟରେ ଆପଣଙ୍କୁ ସତର୍କ କରାଇବାକୁ କିଛି ଲୋକେଶନ୍‍ରେ ସେଲ୍‍ ବ୍ରଡ୍‍କାଷ୍ଟ ସତର୍କ ଡେଲିଭର୍ କରାଯାଇଥାଏ। ଏକ ଜରୁରୀକାଳୀନ ସେଲ୍‍ ବ୍ରଡ୍‍କାଷ୍ଟ ପ୍ରାପ୍ତ ହେବାପରେ ହାନୀକାରକ ଆପ୍‍ ଆପଣଙ୍କ ଡିଭାଇସ୍‍ର କାର୍ଯ୍ୟକ୍ଷମତା କିମ୍ବା ସଞ୍ଚାଳନାରେ ବାଧା ପହଞ୍ଚାଇପାରନ୍ତି।</string>
-    <string name="permdesc_readContacts">ଏହା ଆପଣଙ୍କ ଫୋନରେ ଷ୍ଟୋର କରାଯାଇଥିବା କଣ୍ଟାକ୍ଟଗୁଡ଼ିକ ବିଷୟରେ ଡାଟା ପଢ଼ିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦେଇଥାଏ। ଆପଣଙ୍କର ଫୋନରେ ଥିବା ଆକାଉଣ୍ଟଗୁଡ଼ିକ ଯେଉଁଥିରେ କଣ୍ଟାକ୍ଟଗୁଡ଼ିକ ତିଆରି ହୋଇଛି, ସେଗୁଡ଼ିକୁ ଆପ୍ସର ଆକ୍ସେସ ରହିବ। ଆପଣ ଇନଷ୍ଟଲ କରିଥିବା ଆପ୍ସ ମାଧ୍ୟମରେ ତିଆରି କରାଯାଇଥିବା ଆକାଉଣ୍ଟଗୁଡ଼ିକୁ ଏହା ସାମିଲ କରିପାରେ। ଏହି ଅନୁମତି ଆପ୍ସକୁ ଆପଣଙ୍କର କଣ୍ଟାକ୍ଟ ଡାଟା ସେଭ କରିବାକୁ ଦିଏ ଏବଂ ହାନୀକାରକ ଆପ ଆପଣଙ୍କ ଅଜାଣତରେ କଣ୍ଟାକ୍ଟ ଡାଟା ସେୟାର କରିପାରେ।</string>
+    <string name="permdesc_readContacts">ଏହା ଆପଣଙ୍କ ଟାବଲେଟରେ ଷ୍ଟୋର କରାଯାଇଥିବା କଣ୍ଟାକ୍ଟଗୁଡ଼ିକ ବିଷୟରେ ଡାଟା ପଢ଼ିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦେଇଥାଏ। ଆପଣଙ୍କର ଟାବଲେଟରେ ଥିବା ଆକାଉଣ୍ଟଗୁଡ଼ିକ ଯେଉଁଥିରେ କଣ୍ଟାକ୍ଟଗୁଡ଼ିକ ତିଆରି ହୋଇଛି, ସେଗୁଡ଼ିକୁ ଆପ୍ସର ଆକ୍ସେସ ରହିବ। ଆପଣ ଇନଷ୍ଟଲ କରିଥିବା ଆପ୍ସ ମାଧ୍ୟମରେ ତିଆରି କରାଯାଇଥିବା ଆକାଉଣ୍ଟଗୁଡ଼ିକୁ ଏହା ସାମିଲ କରିପାରେ। ଏହି ଅନୁମତି ଆପ୍ସକୁ ଆପଣଙ୍କର କଣ୍ଟାକ୍ଟ ଡାଟା ସେଭ କରିବାକୁ ଦିଏ ଏବଂ ହାନୀକରକ ଆପ ଆପଣଙ୍କ ଅଜାଣତରେ କଣ୍ଟାକ୍ଟ ଡାଟା ସେୟାର କରିପାରେ।</string>
     <string name="permdesc_readInstallSessions">ଅନୁପ୍ରୟୋଗର ଇନଷ୍ଟଲ୍‍ ଅବଧିକୁ ପଢିବାକୁ ଅନୁମତି ଦେଇଥାଏ। ଏହି ସକ୍ରିୟ ପ୍ୟାକେଜ୍‌କୁ ଇନଷ୍ଟଲ୍‍ ବିଷୟରେ ବିବରଣୀ ଦେଖିବାକୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_readMediaAudio">ଆପଣଙ୍କ ସେୟାର କରାଯାଇଥିବା ଷ୍ଟୋରେଜରୁ ଅଡିଓ ଫାଇଲଗୁଡ଼ିକୁ ପଢ଼ିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
     <string name="permdesc_readMediaImages">ଆପଣଙ୍କ ସେୟାର କରାଯାଇଥିବା ଷ୍ଟୋରେଜରୁ ଇମେଜ ଫାଇଲଗୁଡ଼ିକୁ ପଢ଼ିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
@@ -2106,11 +2106,11 @@
     <string name="permdesc_readNetworkUsageHistory">ନିର୍ଦ୍ଦିଷ୍ଟ ନେଟୱର୍କ ତଥା ଆପ୍‍ଗୁଡ଼ିକ ପାଇଁ ବିଗତ ଦିନର ନେଟୱର୍କ ବ୍ୟବହାର ପଢ଼ିବାକୁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_readPhoneNumbers">ଏହି ଡିଭାଇସର ଫୋନ୍‍ ନମ୍ବର ଆକ୍ସେସ୍‍ କରିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
     <string name="permdesc_readPhoneState">ଆପ୍‌କୁ ଡିଭାଇସ୍‌ର ଫୋନ୍‌ ବୈଶିଷ୍ଟ୍ୟ ଆକ୍ସେସ୍‍ କରିବାକୁ ଅନୁମତି ଦେଇଥାଏ। ଏହି ଅନୁମତି ଆପ୍‌କୁ ଫୋନ୍‌ ନମ୍ବର୍ ଓ ଡିଭାଇସ୍‌ IDଗୁଡ଼ିକୁ ନିର୍ଦ୍ଧାରଣ କରିବାକୁ ଅନୁମତି ଦେଇଥାଏ, କଲ୍ ସକ୍ରିୟ ଥିଲେ ବି ଏବଂ କଲ୍ ଦ୍ୱାରା ସଂଯୋଗ ଥିବା ରିମୋଟ୍‌ ନମ୍ବର୍‌କୁ ମଧ୍ୟ।</string>
-    <string name="permdesc_readSms">ଆପଣଙ୍କ ଫୋନ୍‌ରେ ଷ୍ଟୋର୍‍ କରାଯାଇଥିବା ସମସ୍ତ SMS (ଟେକ୍ସଟ୍‍) ମେସେଜ୍‍ ଏହି ଆପ୍‍ ପଢ଼ିପାରେ।</string>
+    <string name="permdesc_readSms">ଆପଣଙ୍କ ଟାବଲେଟ୍‌ରେ ଷ୍ଟୋର୍‍ କରାଯାଇଥିବା ସମସ୍ତ SMS (ଟେକ୍ସଟ୍‍) ମେସେଜ୍‍ ଏହି ଆପ୍‍ ପଢ଼ିପାରେ।</string>
     <string name="permdesc_readSyncSettings">ଏକ ଆକାଉଣ୍ଟ ପାଇଁ ସିଙ୍କ ସେଟିଙ୍ଗ ପଢ଼ିବାକୁ ଆପ୍‍ଟିକୁ ଅନୁମତି ଦିଏ। ଉଦାହରଣସ୍ୱରୂପ, ଲୋକଙ୍କ ଆପ୍‍ ଏକ ଆକାଉଣ୍ଟରେ ସିଙ୍କ ହୋଇଛି କି ନାହିଁ ଏହା ଜାଣିପାରେ।</string>
     <string name="permdesc_readSyncStats">ସିଙ୍କ କାର୍ଯ୍ୟର ହିଷ୍ଟୋରୀ ତଥା କେତେ ଡାଟା ସିଙ୍କ କରାଯାଇଛି, ସେଗୁଡ଼ିକ ଅନ୍ତର୍ଭୁକ୍ତ କରି, ଏକ ଆକାଉଣ୍ଟର ସିଙ୍କ ଅବସ୍ଥା ପଢ଼ିବା ପାଇଁ ଗୋଟିଏ ଆପ୍‍କୁ ଅନୁମତି ଦିଏ।</string>
     <string name="permdesc_readVisualUserSelect">ଆପଣ ଆପଣଙ୍କ ସେୟାର କରାଯାଇଥିବା ଷ୍ଟୋରେଜରୁ ଚୟନ କରିଥିବା ଇମେଜ ଏବଂ ଭିଡିଓ ଫାଇଲଗୁଡ଼ିକୁ ପଢ଼ିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
-    <string name="permdesc_receiveBootCompleted">ସିଷ୍ଟମ୍‍ ବୁଟ୍ ଶେଷ ହେବା କ୍ଷଣି ଆପ୍‍ଟିକୁ ସ୍ୱତଃ ଆରମ୍ଭ ହେବାକୁ ଦେଇଥାଏ। ଏହା କାରଣରୁ ଫୋନ୍‍ଟି ଚାଲୁ ହେବାରେ ଅଧିକ ସମୟ ଲାଗିପାରେ ଏବଂ ଆପ୍‌ଟି ଲଗାତାର ଚାଲିବା ଦ୍ୱାରା ସମଗ୍ର ଫୋନ୍‌ ମନ୍ଥର ହୋଇଯାଇପାରେ।</string>
+    <string name="permdesc_receiveBootCompleted">ସିଷ୍ଟମ୍‍ ବୁଟ୍ ଶେଷ ହେବା କ୍ଷଣି ଆପ୍‍ଟିକୁ ସ୍ୱତଃ ଆରମ୍ଭ ହେବାକୁ ଦେଇଥାଏ। ଏହା କାରଣରୁ ଟାବଲେଟଟ୍‌ଟି ଚାଲୁ ହେବାରେ ଅଧିକ ସମୟ ଲାଗିପାରେ ଏବଂ ଆପ୍‌ଟି ଲଗାତାର ଚାଲିବା ଦ୍ୱାରା ସମଗ୍ର ଟାବଲେଟଟ୍‌ ମନ୍ଥର ହୋଇଯାଇପାରେ।</string>
     <string name="permdesc_receiveMms">MMS ମେସେଜ୍‌ ପ୍ରାପ୍ତ କରିବାକୁ ତଥା ପ୍ରକ୍ରିୟା କରାଇବାକୁ ଆପ୍‍ଟିକୁ ଅନୁମତି ଦିଏ। ଏହାର ଅର୍ଥ, ଆପଣଙ୍କ ଡିଭାଇସ୍‍କୁ ପଠାଯାଇଥିବା ମେସେଜ୍‍ ଆପଣଙ୍କୁ ନଦେଖାଇ ଆପ୍‍ଟି ମନିଟର୍‍ କିମ୍ବା ଡିଲିଟ୍‍ କରିପାରେ।</string>
     <string name="permdesc_receiveSms">SMS ମେସେଜ୍‌ ପ୍ରାପ୍ତ କରିବାକୁ ତଥା ପ୍ରକ୍ରିୟା କରାଇବାକୁ ଆପ୍‍ଟିକୁ ଅନୁମତି ଦିଏ। ଏହାର ଅର୍ଥ ହେଉଛି, ଆପଣଙ୍କ ଡିଭାଇସ୍‍କୁ ପଠାଯାଇଥିବା ମେସେଜ୍‍ ଆପଣଙ୍କୁ ନଦେଖାଇ ଆପ୍‍ଟି ମନିଟର୍‍ କିମ୍ବା ଡିଲିଟ୍‍ କରିପାରେ।</string>
     <string name="permdesc_receiveWapPush">ଆପ୍‌କୁ WAP ମେସେଜିଙ୍ଗକୁ ପ୍ରାପ୍ତ ଓ ବିକାଶ କରିବାକୁ ଦେଇଥାଏ। ଏହି ଅନୁମତିରେ ଆପଣ ସେମାନଙ୍କୁ ଦେଖାଯାଇଥିବା ମେସେଜ୍ ଉପରେ ନଜର ରଖିବା ଏବଂ ଡିଲିଟ୍‍ କରିବାର କ୍ଷମତା ସାମିଲ୍ ଅଛି।</string>
@@ -2132,7 +2132,7 @@
     <string name="permdesc_sendSms">ଆପ୍‌କୁ SMS ମେସେଜ୍ ପଠେଇବାକୁ ଅନୁମତି ଦେଇଥାଏ। ଏହାଦ୍ୱାରା ଅପ୍ରତ୍ୟାଶିତ ଶୁଳ୍କ ଲାଗୁ ହୋଇପାରେ। ହାନୀକାରକ ଆପ୍‌ ଆପଣଙ୍କ ବିନା ସ୍ୱୀକୃତିରେ ମେସେଜ୍‍ ପଠାଇ, ଆପଣଙ୍କ ପଇସା ଖର୍ଚ୍ଚ କରାଇପାରେ।</string>
     <string name="permdesc_setAlarm">ଆପ୍‍କୁ, ଇନଷ୍ଟଲ୍‍ ହୋଇଥିବା ଆଲାର୍ମ କ୍ଲକ୍‍ ଆପ୍‍ରେ ଏକ ଆଲାର୍ମ ସେଟ୍‍ କରିବାକୁ ଦେଇଥାଏ। କିଛି ଆଲର୍ମ କ୍ଲକ୍ ଆପ୍‍ ଏହି ବୈଶିଷ୍ଟ୍ୟ ଲାଗୁ କରିନପାରନ୍ତି।</string>
     <string name="permdesc_setInputCalibration">ଟଚ୍‍ ସ୍କ୍ରୀନ୍‍ର କାଲିବରେଶନ୍‍ ପାରାମିଟର୍‌ ସଂଶୋଧନ କରିବା ପାଇଁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ। ସାମାନ୍ୟ ଆପ୍‍ ପାଇଁ କଦାପି ଆବଶ୍ୟକ ହେବନାହିଁ।</string>
-    <string name="permdesc_setTimeZone">ଆପ୍‍କୁ, ଫୋନ୍‍ର ଟାଇମ୍‍ ଜୋନ୍‍ ବଦଳାଇବାକୁ ଦେଇଥାଏ।</string>
+    <string name="permdesc_setTimeZone">ଆପ୍‍କୁ, ଟାବଲେଟ୍‌ର ଟାଇମ୍‍ ଜୋନ୍‍ ବଦଳାଇବାକୁ ଦେଇଥାଏ।</string>
     <string name="permdesc_setWallpaper">ଆପ୍‍କୁ, ସିଷ୍ଟମ୍‍ ୱାଲପେପର୍‍ ସେଟ୍‍ କରିବାକୁ ଦେଇଥାଏ।</string>
     <string name="permdesc_setWallpaperHints">ଆପ୍‍କୁ, ସିଷ୍ଟମ୍‍ ୱାଲପେପର୍‍ ଆକାରର ସୂଚନା ସେଟ୍‍ କରିବାକୁ ଦେଇଥାଏ।</string>
     <string name="permdesc_sim_communication">SIMକୁ କମାଣ୍ଡ ପଠାଇବା ପାଇଁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ। ଏହା ବହୁତ ବିପଦପୂର୍ଣ୍ଣ।</string>
@@ -2146,7 +2146,7 @@
     <string name="permdesc_subscribedFeedsRead">ଆପ୍‍କୁ, କିଛି ସମୟ ପୂର୍ବରୁ ସିଙ୍କ ହୋଇଥିବା ଫୀଡ୍‍ ବିଷୟରେ ବିବରଣୀ ପ୍ରାପ୍ତ କରିବାକୁ ଦେଇଥାଏ।</string>
     <string name="permdesc_systemAlertWindow">ଏହି ଆପ୍‍ ଅନ୍ୟ ଆପ୍‌ର ଶୀର୍ଷରେ କିମ୍ବା ସ୍କ୍ରୀନର ଅନ୍ୟ ଅଂଶରେ ଦେଖାଯାଇପାରେ। ଏହା ସାମାନ୍ୟ ଆପ୍‍ ବ୍ୟବହାରରେ ବାଧା ପହଞ୍ଚାଇପାରେ ଏବଂ ଅନ୍ୟ ଆପ୍‌କୁ ଅଲଗା ରୂପେ ଦେଖାଇପାରେ।</string>
     <string name="permdesc_systemCamera">ବିଶେଷ ଅଧିକାର ଥିବା ଏହି ଆପ୍ କିମ୍ବା ସିଷ୍ଟମ୍ ଆପ୍ ଯେ କୌଣସି ସମୟରେ ଏକ ସିଷ୍ଟମ୍ କ୍ୟାମେରା ବ୍ୟବହାର କରି ଛବି ଉଠାଇପାରିବ ଏବଂ ଭିଡିଓ ରେକର୍ଡ କରିପାରିବ। ଆପରେ ମଧ୍ୟ android.permission.CAMERA ଅନୁମତି ଆବଶ୍ୟକ</string>
-    <string name="permdesc_transmitIr">ଫୋନ୍‍ର ଇନଫ୍ରାରେଡ୍‍ ଟ୍ରାନ୍ସମିଟର୍‍ ବ୍ୟବହାର କରିବାକୁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
+    <string name="permdesc_transmitIr">ଟାବଲେଟ୍‍ର ଇନଫ୍ରାରେଡ୍‍ ଟ୍ରାନ୍ସମିଟର୍‍ ବ୍ୟବହାର କରିବାକୁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
     <string name="permdesc_turnScreenOn">ସ୍କ୍ରିନ ଚାଲୁ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
     <string name="permdesc_ucsPlugin">ତୃତୀୟ-ପକ୍ଷ କ୍ରେଡେନସିଆଲ୍ ଷ୍ଟୋରେଜ୍ ପ୍ଲଗ୍‌-ଇନସ୍‌ ସହ କାର୍ଯ୍ୟ କରନ୍ତୁ।</string>
     <string name="permdesc_uninstall_shortcut">ୟୁଜର୍‌ଙ୍କ ବିନା ବାଧାରେ ହୋମ୍‍ସ୍କ୍ରୀନ୍‍‍ର ଶର୍ଟକଟ୍‍ ବାହାର କରିବା ପାଇଁ ଗୋଟିଏ ଆପ୍ଲିକେଶନ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
@@ -2160,10 +2160,10 @@
     <string name="permdesc_vibrate">ଆପ୍‍କୁ, ଭାଇବ୍ରେଟର୍‍ ନିୟନ୍ତ୍ରଣ କରିବାକୁ ଦେଇଥାଏ।</string>
     <string name="permdesc_vibrator_state">ଭାଇବ୍ରେଟର୍ ସ୍ଥିତି ଆକ୍ସେସ୍ କରିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।</string>
     <string name="permdesc_videoWrite">ଆପଣଙ୍କ ଭିଡିଓ ସଂଗ୍ରହ ପରିବର୍ତ୍ତନ କରିବାକୁ ଆପ୍‍କୁ ଅନୁମତି ଦେଇଥାଏ।</string>
-    <string name="permdesc_wakeLock">ଆପ୍‍କୁ, ଫୋନ୍‌ଟିକୁ ସ୍ଲୀପ୍‍ ମୋଡ୍‍କୁ ଯିବାରେ ପ୍ରତିରୋଧ କରିବାକୁ ଦେଇଥାଏ।</string>
-    <string name="permdesc_writeCalendar">ଏହି ଆପ୍‍, ଆପଣଙ୍କ ଫୋନ୍‌ରେ କ୍ୟାଲେଣ୍ଡର୍‌ ଇଭେଣ୍ଟଗୁଡ଼ିକୁ ଯୋଡ଼ିପାରେ, ବାହାର କରିପାରେ କିମ୍ବା ବଦଳାଇପାରେ। କ୍ୟାଲେଣ୍ଡର୍‌ ମାଲିକଙ୍କ ପାଖରୁ ଆସିଥିବା ପରି ଜଣା‍ପଡ଼ିବା ମେସେଜ୍‍କୁ ଏହି ଆପ୍‍ ପଠାଇପାରେ କିମ୍ବା ମାଲିକଙ୍କୁ ନଜଣାଇ ଇଭେଣ୍ଟ ବଦଳାଇପାରେ।</string>
-    <string name="permdesc_writeCallLog">ଇନ୍‍କମିଙ୍ଗ ତଥା ଆଉଟ୍‍ଗୋଇଙ୍ଗ କଲ୍‌ ଡାଟା ସହ ଆପଣଙ୍କ ଫୋନ୍‍ର କଲ୍‍ ଲଗ୍‍ ବଦଳାଇବା ପାଇଁ ଆପ୍‍କୁ ଅନୁମତି ଦିଏ। ହାନୀକାରକ ଆପ୍‍ ଆପଣଙ୍କ କଲ୍‍ ଲଗ୍‍ ଲିଭାଇବାକୁ କିମ୍ବା ବଦଳାଇବାକୁ ଏହା ବ୍ୟବହାର କରିପାରନ୍ତି।</string>
-    <string name="permdesc_writeContacts">ଏହା ଆପଣଙ୍କ ଫୋନରେ ଷ୍ଟୋର କରାଯାଇଥିବା କଣ୍ଟାକ୍ଟ ବିଷୟରେ ଡାଟା ପରିବର୍ତ୍ତନ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦେଇଥାଏ। ଏହି ଅନୁମତି ଆପ୍ସକୁ ଆପଣଙ୍କର କଣ୍ଟାକ୍ଟ ଡାଟା ଡିଲିଟ କରିବାକୁ ଦିଏ।</string>
+    <string name="permdesc_wakeLock">ଆପ୍‍କୁ, ଟାବଲେଟ୍‍ଟିକୁ ସ୍ଲୀପ୍‍ ମୋଡ୍‍କୁ ଯିବାରେ ପ୍ରତିରୋଧ କରିବାକୁ ଦେଇଥାଏ।</string>
+    <string name="permdesc_writeCalendar">ଏହି ଆପ୍‍ ଆପଣଙ୍କ ଟାବଲେଟ୍‌ରେ କ୍ୟାଲେଣ୍ଡର ଇଭେଣ୍ଟ ଯୋଡ଼ିପାରେ, ବାହାର କରିପାରେ କିମ୍ବା ବଦଳାଇପାରେ। ଏହି ଆପ୍‍ ଏପରି ମେସେଜ୍‍ ପଠାଇପାରେ, ଯାହା କ୍ୟାଲେଣ୍ଡର ମାଲିକଙ୍କଠାରୁ ଆସିଥିବା ପରି ଜଣାପଡ଼େ କିମ୍ବା ମାଲିକଙ୍କୁ ନଜଣାଇ ଇଭେଣ୍ଟରେ ପରିବର୍ତ୍ତନ କରିପାରେ।</string>
+    <string name="permdesc_writeCallLog">ଇନ୍‍କମିଙ୍ଗ ତଥା ଆଉଟ୍‍ଗୋଇଙ୍ଗ କଲ୍‌ ଡାଟା ସହ ଆପଣଙ୍କ ଟାବ୍‍ଲେଟ୍‍ର କଲ୍‍ ଲଗ୍‍ ବଦଳାଇବା ପାଇଁ ଆପ୍‍କୁ ଅନୁମତି ଦିଏ। ହାନୀକାରକ ଆପ୍‍ ଆପଣଙ୍କ କଲ୍‍ ଲଗ୍‍ ଲିଭାଇବାକୁ କିମ୍ବା ବଦଳାଇବାକୁ ଏହା ବ୍ୟବହାର କରିପାରନ୍ତି।</string>
+    <string name="permdesc_writeContacts">ଏହା ଆପଣଙ୍କ ଟାବଲେଟରେ ଷ୍ଟୋର କରାଯାଇଥିବା କଣ୍ଟାକ୍ଟ ବିଷୟରେ ଡାଟା ସଂଶୋଧନ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦେଇଥାଏ। ଏହି ଅନୁମତି ଆପ୍ସକୁ ଆପଣଙ୍କର କଣ୍ଟାକ୍ଟ ଡାଟା ଡିଲିଟ କରିବାକୁ ଦିଏ।</string>
     <string name="permdesc_writeSettings">ଆପ୍‍କୁ, ସିଷ୍ଟମର ସେଟିଙ୍ଗ ଡାଟା ବଦଳାଇବାକୁ ଦେଇଥାଏ। ହାନୀକାରକ ଆପ୍‍ ଦ୍ୱାରା ଆପଣଙ୍କ ସିଷ୍ଟମର କନଫିଗରେସନ୍‍ ଖରାପ ହୋଇପାରେ।</string>
     <string name="permdesc_writeSyncSettings">ଆପ୍‌କୁ ଏକ ଆକାଉଣ୍ଟ ପାଇଁ ସିଙ୍କ ସେଟିଙ୍ଗ ସଂଶୋଧନ କରିବାକୁ ଅନୁମତି ଦେଇଥାଏ। ଉଦାହରଣସ୍ୱରୂପ, ଏହାର ବ୍ୟବହାର କୌଣସି ଆକାଉଣ୍ଟରେ ଥିବା ଲୋକଙ୍କ ଆପ୍‌ ସହିତ ସିଙ୍କ କରିବାକୁ ସକ୍ଷମ ହୋଇଥାଏ।</string>
     <string name="permgroupdesc_activityRecognition">ଆପଣଙ୍କ ଶାରୀରିକ କାର୍ଯ୍ୟକଳାପ ଆକ୍ସେସ୍ କରନ୍ତୁ</string>
@@ -2438,7 +2438,7 @@
     <string name="permlab_uwb_ranging">ଆଖପାଖର ଅଲଟ୍ରା-ୱାଇଡବ୍ୟାଣ୍ଡ ଡିଭାଇସଗୁଡ଼ିକ ମଧ୍ୟରେ ଆପେକ୍ଷିକ ଅବସ୍ଥିତିକୁ ନିର୍ଦ୍ଧାରଣ କର</string>
     <string name="permlab_vibrate">କମ୍ପନ ନିୟନ୍ତ୍ରଣ କରନ୍ତୁ</string>
     <string name="permlab_videoWrite">ଆପଣଙ୍କ ଭିଡିଓ ସଂଗ୍ରହ ସଂଶୋଧନ କରନ୍ତୁ</string>
-    <string name="permlab_wakeLock">ଫୋନକୁ ସ୍ଲୀପିଙ୍ଗ ମୋଡ୍‌କୁ ଯିବାକୁ ରୋକନ୍ତୁ</string>
+    <string name="permlab_wakeLock">ଟାବଲେଟ୍‌କୁ ସ୍ଲୀପିଙ୍ଗ ମୋଡ୍‌କୁ ଯିବାକୁ ରୋକନ୍ତୁ</string>
     <string name="permlab_writeCalendar">କ୍ୟାଲେଣ୍ଡର ଇଭେଣ୍ଟରେ ଯୋଡ଼ନ୍ତୁ କିମ୍ବା ସଂଶୋଧନ କରନ୍ତୁ ଏବଂ ମାଲିକଙ୍କ ଅଜାଣତରେ ଅତିଥିମାନଙ୍କୁ ଇମେଲ୍ ପଠାନ୍ତୁ।</string>
     <string name="permlab_writeCallLog">କଲ୍‍ ଲଗ୍‍ ଲେଖନ୍ତୁ</string>
     <string name="permlab_writeContacts">ନିଜ ଯୋଗାଯୋଗ ସଂଶୋଧନ କରନ୍ତୁ</string>
@@ -2480,7 +2480,7 @@
     <string name="policydesc_allow_desktopsync">ଡେସ୍କଟପ୍ ସିଙ୍କ୍ ବ୍ୟବହାର ପ୍ରତିରୋଧ କରନ୍ତୁ।</string>
     <string name="policydesc_allow_internetsharing">ମୋବାଇଲ୍ ହଟସ୍ପଟ୍ ବ୍ୟବହାର ପ୍ରତିରୋଧ କରନ୍ତୁ।</string>
     <string name="policydesc_allow_irda">IrDAର ବ୍ୟବହାର ପ୍ରତିରୋଧ କରନ୍ତୁ।</string>
-    <string name="policydesc_allow_popimapemail">ଫୋନରେ POP ଏବଂ IMAP ଇମେଲ୍ ବ୍ୟବହାର କରିବା ପ୍ରତିରୋଧ କରନ୍ତୁ।</string>
+    <string name="policydesc_allow_popimapemail">ଟ୍ୟାବଲେଟରେ POP ଏବଂ IMAP ଇମେଲ୍ ବ୍ୟବହାର କରିବା ପ୍ରତିରୋଧ କରନ୍ତୁ।</string>
     <string name="policydesc_allow_storagecard">SD କାର୍ଡଗୁଡିକର ବ୍ୟବହାର ପ୍ରତିରୋଧ କରନ୍ତୁ।</string>
     <string name="policydesc_allow_textmessaging">ଟେକ୍ସଟ୍ ଏବଂ ମଲ୍ଟିମିଡିଆ ମେସେଜିଂ ବ୍ୟବହାର ପ୍ରତିରୋଧ କରନ୍ତୁ।</string>
     <string name="policydesc_allow_thirdParty">ଏହି ଆପ୍ଲିକେସନ୍‌ ଚାଲୁଥିବା ତୃତୀୟ-ପକ୍ଷ ଆପ୍ଲିକେସନଗୁଡିକ ପ୍ରତିରୋଧ କରିପାରେ।</string>
@@ -2498,10 +2498,10 @@
     <string name="policydesc_setGlobalProxy">ପଲିସୀ ସକ୍ଷମ କରାଯାଇଥିବାବେଳେ ବ୍ୟବହାର କରିବା ପାଇଁ ଗ୍ଲୋବାଲ୍‍ ପ୍ରକ୍ସୀ ସେଟ୍‍ କରନ୍ତୁ। କେବଳ ଡିଭାଇସ୍‍ ମାଲିକ ଗ୍ଲୋବାଲ୍‍ ପ୍ରକ୍ସୀ ସେଟ୍‍ କରିପାରିବେ।</string>
     <string name="policydesc_unsigned_app">ଏହି ଆପ୍ଲିକେସନ୍‌ ଚାଲୁଥିବା ଅଜ୍ଞାତ ଉତ୍ସର ଆପ୍ଲିକେସନଗୁଡିକରୁ ପ୍ରତିରୋଧ କରିପାରେ।</string>
     <string name="policydesc_unsigned_pkg">ଏହି ଆପ୍ଲିକେସନ୍‌ ଅଜ୍ଞାତ ଉତ୍ସର ଆପ୍ଲିକେସନଗୁଡିକ ସଂସ୍ଥାପିତ ହେବାରୁ ପ୍ରତିରୋଧ କରିପାରେ।</string>
-    <string name="policydesc_watchLogin">ସ୍କ୍ରୀନ୍‍ ଅନଲକ୍‍ କରିବାବେଳେ ଟାଇପ୍‍ କରିଥିବା ଭୁଲ ପାସୱର୍ଡର ସଂଖ୍ୟାକୁ ନୀରିକ୍ଷଣ କରେ ଏବଂ ଫୋନ୍‍କୁ ଲକ୍‍ କରିଦିଏ କିମ୍ବା ଯଦି ଅନେକ ଭୁଲ ପାସୱର୍ଡ ଟାଇପ୍‍ କରାଯାଇଥାଏ, ତେବେ ଫୋନ୍‍ର ସମସ୍ତ ଡାଟା ଲିଭାଇଦିଏ।</string>
-    <string name="policydesc_watchLogin_secondaryUser">ସ୍କ୍ରୀନ୍‍ ଅନଲକ୍‍ କରିବାବେଳେ ଟାଇପ୍‍ କରାଯାଇଥିବା ଭୁଲ ପାସ୍‌ୱର୍ଡର ସଂଖ୍ୟାକୁ ନୀରିକ୍ଷଣ କରେ ଏବଂ ଫୋନ୍‍କୁ ଲକ୍‍ କରିଦିଏ କିମ୍ବା ଯଦି ଅନେକ ଭୁଲ ପାସ୍‌ୱର୍ଡ ଟାଇପ୍‍ କରାଯାଇଥାଏ, ତେବେ ସମସ୍ତ ଡାଟା ଲିଭାଇଦିଏ।</string>
-    <string name="policydesc_wipeData">ବିନା ଚେତାବନୀରେ ଫ୍ୟାକ୍ଟୋରୀ ଡାଟା ରିସେଟ୍ କରି ଫୋନ୍‍ର ଡାଟା ଲିଭାଇଥାଏ।</string>
-    <string name="policydesc_wipeData_secondaryUser">ବିନା ଚେତାବନୀରେ ଏହି ଫୋନରେ ଥିବା ଏହି ୟୁଜରଙ୍କ ଡାଟା ଲିଭାଇ ଦିଅନ୍ତୁ।</string>
+    <string name="policydesc_watchLogin">ସ୍କ୍ରୀନ୍‍ ଅନଲକ୍‍ କରିବାବେଳେ ଟାଇପ୍‍ କରିଥିବା ଭୁଲ ପାସୱର୍ଡର ସଂଖ୍ୟାକୁ ନୀରିକ୍ଷଣ କରେ ଏବଂ ଟାବଲେଟ୍‍କୁ ଲକ୍‍ କରିଦିଏ କିମ୍ବା ଯଦି ଅନେକ ଭୁଲ ପାସୱର୍ଡ ଟାଇପ୍‍ କରାଯାଇଥାଏ, ତେବେ ଟାବଲେଟ୍‍ର ସମସ୍ତ ଡାଟା ଲିଭାଇଦିଏ।</string>
+    <string name="policydesc_watchLogin_secondaryUser">ସ୍କ୍ରୀନ୍‍ ଅନଲକ୍‍ କରିବାବେଳେ ଟାଇପ୍‍ କରାଯାଇଥିବା ଭୁଲ ପାସ୍‌ୱର୍ଡର ସଂଖ୍ୟାକୁ ନୀରିକ୍ଷଣ କରେ ଏବଂ ଟାବଲେଟ୍‍କୁ ଲକ୍‍ କରିଦିଏ କିମ୍ବା ଯଦି ଅନେକ ଭୁଲ ପାସ୍‌ୱର୍ଡ ଟାଇପ୍‍ କରାଯାଇଥାଏ, ତେବେ ସମସ୍ତ ଡାଟା ଲିଭାଇଦିଏ।</string>
+    <string name="policydesc_wipeData">ବିନା ଚେତାବନୀରେ ଫ୍ୟାକ୍ଟୋରୀ ସେଟିଙ୍ଗ କରାଇ ଟାବ୍‍ଲେଟ୍‍ର ଡାଟା ଲିଭାଇଥାଏ।</string>
+    <string name="policydesc_wipeData_secondaryUser">ବିନା ଚେତାବନୀରେ ଏହି ଟାବଲେଟରେ ଥିବା ଏହି ୟୁଜରଙ୍କ ଡାଟା ଲିଭାଇ ଦିଅନ୍ତୁ।</string>
     <string name="policylab_allow_bluetoothmode">ବ୍ଲୁଟୁଥ୍ ଅକ୍ଷମ</string>
     <string name="policylab_allow_browser">ଇଣ୍ଟର୍ନେଟ୍ ଅକ୍ଷମ</string>
     <string name="policylab_allow_camera">କ୍ୟାମେରାଗୁଡିକ ଅକ୍ଷମ କରନ୍ତୁ</string>
@@ -2535,7 +2535,7 @@
     <string name="postalTypeHome">ହୋମ</string>
     <string name="postalTypeOther">ଅନ୍ୟ</string>
     <string name="postalTypeWork">ୱାର୍କ</string>
-    <string name="power_dialog">ଫୋନ୍‌ ବିକଳ୍ପ</string>
+    <string name="power_dialog">ଟାବଲେଟ୍‌ର ବିକଳ୍ପ</string>
     <string name="power_off">ପାୱାର ବନ୍ଦ ଅଛି</string>
     <string name="prepend_shortcut_label">ମେନୁ</string>
     <string name="preposition_for_date">%sରେ</string>
@@ -2581,7 +2581,7 @@
     <string name="recent_tasks_title">ବର୍ତ୍ତମାନର</string>
     <string name="recording_fail">ଏହା %2$sରେ ବ୍ୟବହୃତ ହେଉଥିବା ସମୟରେ %1$sରେ ମାଇକ୍ ବ୍ୟବହାର କରିପାରିବେ ନାହିଁ।</string>
     <string name="recording_popup">%s ମାଇକ୍ରୋଫୋନଗୁଡିକ ବ୍ୟବହାର କରୁଛି।</string>
-    <string name="recording_popup_device">ଫୋନ୍</string>
+    <string name="recording_popup_device">ଟ୍ୟାବଲେଟ୍</string>
     <string name="recording_popup_with_bluetooth">%s ବ୍ଲୁଟୁଥ୍ ମାଇକ୍ରୋଫୋନ୍ ବ୍ୟବହାର କରୁଛି।</string>
     <string name="recording_popup_with_device">%1$s %2$sର ମାଇକ୍ରୋଫୋନ୍ ବ୍ୟବହାର କରୁଛି।</string>
     <string name="redo">ପୁନଃବତ୍</string>
@@ -2728,12 +2728,12 @@
     <string name="screenshot_edit">ଏଡିଟ କରନ୍ତୁ</string>
     <string name="sd_card_unavailable_message">ଆପଣ ଏକ SD କାର୍ଡ ବ୍ୟବହାର କରିପାରିବେ ନାହିଁ କାରଣ ଏକ ଭିନ୍ନ ଉପଭୋକ୍ତା ପ୍ରୋଫାଇଲ୍ ବ୍ୟବହାର ସମୟରେ ଏହା ସନ୍ନିବେଶ କରାଯାଇଥିଲା।</string>
     <string name="sd_card_unavailable_title">SD କାର୍ଡ ଅନୁପଲବ୍ଧ</string>
-    <string name="sdcard_bad_removal_message">ଏକ SD କାର୍ଡ ଅସୁରକ୍ଷିତ ଭାବେ ଅପସାରଣ ହୋଇଥିଲା। ଅପ୍ରତ୍ୟାଶିତ ଭାବେ ଆପଣଙ୍କ ଫୋନକୁ ପୁନଃଆରମ୍ଭ କରିବା ପ୍ରତିରୋଧ କରିବାକୁ, ଅସଞ୍ଚିତ ଡାଟା ସଞ୍ଚୟ କରି ବର୍ତ୍ତମାନ ପୁନଃଆରମ୍ଭ କରନ୍ତୁ।</string>
+    <string name="sdcard_bad_removal_message">ଏକ SD କାର୍ଡ ଅସୁରକ୍ଷିତ ଭାବେ ଅପସାରଣ ହୋଇଥିଲା। ଅପ୍ରତ୍ୟାଶିତ ଭାବେ ଆପଣଙ୍କ ଟ୍ୟାବଲେଟକୁ ପୁନଃଆରମ୍ଭ କରିବା ପ୍ରତିରୋଧ କରିବାକୁ, ଅସଞ୍ଚିତ ଡାଟା ସଞ୍ଚୟ କରି ବର୍ତ୍ତମାନ ପୁନଃଆରମ୍ଭ କରନ୍ତୁ।</string>
     <string name="sdcard_batch_decrypt_noti_content">SD କାର୍ଡ୍ ଡିକ୍ରିପ୍ଟ କରନ୍ତୁ</string>
     <string name="sdcard_batch_decrypt_noti_title">SD କାର୍ଡ୍ ଡିକ୍ରିପସନ୍</string>
     <string name="sdcard_batch_decrypt_popup_content">ଏନକ୍ରିପ୍ଟ ହୋଇଥିବା SD କାର୍ଡ୍ ନିଶ୍ଚିତ ଭାବେ ବ୍ୟବହୃତ ହେବା ପୂର୍ବରୁ ଡିକ୍ରିପ୍ଟିଟେଡ୍ ହୋଇପାରେ। ଡିକ୍ରିପସନ୍ ଏକ ଘଣ୍ଟା କିମ୍ବା ଅଧିକ ସମୟ ନେଇପାରେ। ଏକ ଚାର୍ଜ ହୋଇଥିବା ବ୍ୟାଟେରୀ ସହ ଆରମ୍ଭ କରି ଡିକ୍ରିପସନ୍ ସମ୍ପୂର୍ଣ୍ଣ ହେବା ପର୍ଯ୍ୟନ୍ତ ଏହାକୁ ପ୍ଲଗ୍ ଇନ୍ କରି ରଖନ୍ତୁ। ବାଧିକ ଡିକ୍ରିପସନ୍ ପ୍ରକ୍ରିୟା ହେଉଛି କିଛି କିମ୍ୱା ସମସ୍ତ ଡାଟା ହରାଇବେ।</string>
     <string name="sdcard_decrypt_err_notification">SD କାର୍ଡ୍ ଡିକ୍ରିପସନ୍ ତ୍ରୁଟି ଘଟିଛି।</string>
-    <string name="sdcard_decrypt_error_otherdevice">ଆପଣଙ୍କ SD କାର୍ଡରେ କିଛି ଫାଇଲ୍ ଅନ୍ୟ ଡିଭାଇସରେ ଏନକ୍ରିପ୍ଟ ହୋଇଛି ଏବଂ ଏହି ଫୋନରେ ବ୍ୟବହାର ହୋଇପାରିବ ନାହିଁ।</string>
+    <string name="sdcard_decrypt_error_otherdevice">ଆପଣଙ୍କ SD କାର୍ଡରେ କିଛି ଫାଇଲ୍ ଅନ୍ୟ ଡିଭାଇସରେ ଏନକ୍ରିପ୍ଟ ହୋଇଛି ଏବଂ ଏହି ଟ୍ୟାବଲେଟରେ ବ୍ୟବହାର ହୋଇପାରିବ ନାହିଁ।</string>
     <string name="sdcard_decrypt_notification">SD କାର୍ଡ୍ ଡିକ୍ରିପ୍ଟ ହୋଇଛି।</string>
     <string name="sdcard_decrypt_title_notification">SD କାର୍ଡ୍ ଡିକ୍ରିପସନ୍</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD କାର୍ଡ୍ ଡିକ୍ରି. ହେଉଛି…</string>
@@ -2991,7 +2991,7 @@
     <string name="showing_touch_sensitivity_noti_action">ଟର୍ନ୍ ଅନ୍</string>
     <string name="showing_touch_sensitivity_noti_text">ଅଧିକ ସଠିକ୍ ଟଚ୍ ପ୍ରତିକ୍ରିୟା ପାଇଁ Privacy Screen କିମ୍ୱା Notepaper Screen ବ୍ୟବହାର କରିବା ସମୟରେ ଟଚ୍ ସେନସିଟିଭିଟି ଟର୍ନ୍ ଅନ୍ କରନ୍ତୁ।</string>
     <string name="showing_touch_sensitivity_noti_title">ଟଚ୍ ସେନସିଟିଭିଟି ବଢାନ୍ତୁ</string>
-    <string name="shutdown_confirm">ଆପଣଙ୍କ ଫୋନ୍ ବନ୍ଦ ହୋଇଯିବ।</string>
+    <string name="shutdown_confirm">ଆପଣଙ୍କ ଟାବଲେଟ୍ ବନ୍ଦ ହୋଇଯିବ।</string>
     <string name="shutdown_confirm_question">ଆପଣ ବନ୍ଦ କରିବାକୁ ଚାହାନ୍ତି?</string>
     <string name="shutdown_progress">ବନ୍ଦ କରାଯାଉଛି…</string>
     <string name="side_key_double_press_deleted_app">ଆପ୍ଲିକେସନ୍‌ ଅଣସଂସ୍ଥାପନ ହୋଇଛି। ଅନ୍ୟ କିଛି ବାଛନ୍ତୁ।</string>
@@ -3217,7 +3217,7 @@
     <string name="usb_abnormal_reset_title">USB ସଂଯୋଜନା ସ୍ଥିର ନୁହେଁ</string>
     <string name="usb_abnormal_reset_toast">USB ସଂଯୋଜନା ସ୍ଥିର ନୁହେଁ। କେବଲ୍ ଅନପ୍ଲଗ୍ କରି ଏହାକୁ ପୁନଃ ପ୍ଲଗ୍ କରନ୍ତୁ, କିମ୍ୱା ଏକ ଭିନ୍ନ କେବଲ୍ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
     <string name="usb_accessory_notification_title">ଏକ USB ଆସୋସେରିଜରେ ସଂଯୋଜିତ</string>
-    <string name="usb_bad_removal_message">ଏକ USB ଷ୍ଟୋରେଜ୍ ଡିଭାଇସ୍ ଅସୁରକ୍ଷିତ ଭାବେ ଅପସାରଣ ହୋଇଛି। ଅପ୍ରତ୍ୟାଶିତ ଭାବେ ଆପଣଙ୍କ ଫୋନକୁ ପୁନଃଆରମ୍ଭ କରିବା ପ୍ରତିରୋଧ କରିବାକୁ, ଅସଞ୍ଚିତ ଡାଟା ସଞ୍ଚୟ କରି ବର୍ତ୍ତମାନ ପୁନଃଆରମ୍ଭ କରନ୍ତୁ।</string>
+    <string name="usb_bad_removal_message">ଏକ USB ଷ୍ଟୋରେଜ୍ ଡିଭାଇସ୍ ଅସୁରକ୍ଷିତ ଭାବେ ଅପସାରଣ ହୋଇଛି। ଅପ୍ରତ୍ୟାଶିତ ଭାବେ ଆପଣଙ୍କ ଟ୍ୟାବଲେଟକୁ ପୁନଃଆରମ୍ଭ କରିବା ପ୍ରତିରୋଧ କରିବାକୁ, ଅସଞ୍ଚିତ ଡାଟା ସଞ୍ଚୟ କରି ବର୍ତ୍ତମାନ ପୁନଃଆରମ୍ଭ କରନ୍ତୁ।</string>
     <string name="usb_blocked_by_emergency_mode">ଜରୁରୀକାଳୀନ ମୋଡରେ କିଛି USB ପ୍ରକାର୍ଯ୍ୟ ଅନୁପଲବ୍ଧ ଅଟେ।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">ସର୍ବାଧିକ ପାୱାର୍ ସଞ୍ଚୟ ମୋଡ୍ ସକ୍ଷମ ହୋଇଥିବା ସମୟରେ ସଂଯୋଜିତ USB ଡିଭାଇସକୁ ସମ୍ବନ୍ଧୀୟ ପ୍ରକାର୍ଯ୍ୟ ବ୍ୟବହାର କରିବାକୁ ଅସମର୍ଥ।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ସର୍ବାଧିକ ପାୱାର୍ ସଞ୍ଚୟ ମୋଡ୍ ଅନ୍ ଥିବା ସମୟରେ କିଛି USB ପ୍ରକାର୍ଯ୍ୟ ସୀମିତ ହୋଇପାରେ।</string>
@@ -3227,7 +3227,7 @@
     <string name="usb_camera_disconnected_notification_title">ମିଡିଆ ଡିଭାଇସ୍ ବିଚ୍ଛିନ୍ନ ହୋଇଛି</string>
     <string name="usb_cd_installer_notification_title">ସଫ୍ଟୱେୟାର୍ ଅପଡେଟ୍</string>
     <string name="usb_charging_notification_title">USB ମାଧ୍ୟମରେ ଏହି ଡିଭାଇସ୍‌ ଚାର୍ଜ ହେଉଛି</string>
-    <string name="usb_charing_only_notification_title">USB ଚାର୍ଜିଂ</string>
+    <string name="usb_charing_only_notification_title">ସଂଯୋଜିତ</string>
     <string name="usb_contaminant_detected_message">USB ପୋର୍ଟ ସ୍ୱଚାଳିତ ଭାବେ ଅକ୍ଷମ ହୋଇଛି। ଅଧିକ ଜାଣିବା ପାଇଁ ଟାପ୍ କରନ୍ତୁ।</string>
     <string name="usb_contaminant_detected_title">USB ପୋର୍ଟରେ ତରଳ ପଦାର୍ଥ ବା ଧୂଳି</string>
     <string name="usb_contaminant_not_detected_message">ଫୋନ୍ ଆଉ ତରଳ ପଦାର୍ଥ କିମ୍ବା ଧୂଳିର ଚିହ୍ନଟ କରୁନାହିଁ।</string>
@@ -3239,11 +3239,11 @@
     <string name="usb_host_cable_disconnected_notification_title">USB କନେକ୍ଟର୍ ବିଚ୍ଛିନ୍ନ ହୋଇଛି।</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">ଏହି ଡିଭାଇସ୍‌ ପ୍ରବେଶ କରିବାକୁ ଅସମର୍ଥ। ସଂଯୋଜିତ ଡିଭାଇସ୍‌ ବାହ୍ୟ ପାୱାର୍ ଆବଶ୍ୟକ କରେ।</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">ଉଚ୍ଚ-ପାୱାର୍ USB ଡିଭାଇସ୍ ସଂଯୋଜିତ।</string>
-    <string name="usb_host_resource_exceed_message">ଆପଣଙ୍କ ଫୋନର USB କଣ୍ଟ୍ରୋଲରରେ ଏହି ଡିଭାଇସକୁ ସଂଯୋଗ କରିବାକୁ ପର୍ଯ୍ୟାପ୍ତ ଉତ୍ସ ନାହିଁ। ଡିଭାଇସ୍ ବିଚ୍ଛିନ୍ନ କରିବାକୁ ଚେଷ୍ଟା କରି ଏହା ପୁନଃ ଯୋଡିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
+    <string name="usb_host_resource_exceed_message">ଆପଣଙ୍କ ଟ୍ୟାବଲେଟର USB କଣ୍ଟ୍ରୋଲରରେ ଏହି ଡିଭାଇସକୁ ସଂଯୋଗ କରିବାକୁ ପର୍ଯ୍ୟାପ୍ତ ଉତ୍ସ ନାହିଁ। ଡିଭାଇସ୍ ବିଚ୍ଛିନ୍ନ କରିବାକୁ ଚେଷ୍ଟା କରି ଏହା ପୁନଃ ଯୋଡିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
     <string name="usb_host_resource_exceed_title">ପର୍ଯ୍ୟାପ୍ତ USB କଣ୍ଟ୍ରୋଲର୍ ଉତ୍ସ ନାହିଁ</string>
-    <string name="usb_hub_depth_exceed_message">ଆପଣଙ୍କ ଫୋନ୍ ସମାନ ସମୟରେ 5 USB ହବ୍ ପର୍ଯ୍ୟନ୍ତ କନେକ୍ସନ୍ ସମର୍ଥନ କରିପାରିବ।</string>
+    <string name="usb_hub_depth_exceed_message">ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ସମାନ ସମୟରେ 5 USB ହବ୍ ପର୍ଯ୍ୟନ୍ତ କନେକ୍ସନ୍ ସମର୍ଥନ କରିପାରିବ।</string>
     <string name="usb_hub_depth_exceed_title">ସର୍ବାଧିକ USB ହବ୍ କନେକ୍ସନ୍</string>
-    <string name="usb_hub_power_exceed_message">ଆପଣଙ୍କ ଫୋନ୍ ଏହି USB ଡିଭାଇସ୍ ପାଇଁ ପର୍ଯ୍ୟାପ୍ତ ପାୱାର୍ ପ୍ରଦାନ କରିବ ନାହିଁ। ଡିଭାଇସକୁ ଆପଣଙ୍କ ଫୋନକୁ ସଂଯୋଗ କରିବା ପୂର୍ବରୁ ଏହାକୁ ଏକ ସ୍ୱତଃ-ସଞ୍ଚାଳିତ USB ହବକୁ ସଂଯୋଗ କରନ୍ତୁ।</string>
+    <string name="usb_hub_power_exceed_message">ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ଏହି USB ଡିଭାଇସ୍ ପାଇଁ ପର୍ଯ୍ୟାପ୍ତ ପାୱାର୍ ପ୍ରଦାନ କରିବ ନାହିଁ। ଡିଭାଇସକୁ ଆପଣଙ୍କ ଟ୍ୟାବଲେଟକୁ ସଂଯୋଗ କରିବା ପୂର୍ବରୁ ଏହାକୁ ଏକ ସ୍ୱତଃ-ସଞ୍ଚାଳିତ USB ହବକୁ ସଂଯୋଗ କରନ୍ତୁ।</string>
     <string name="usb_increase_battery_usage">USB କନେକ୍ସନ୍ ବ୍ୟାଟେରୀ ବ୍ୟବହାର ବୃଦ୍ଧିର କାରଣ ହୋଇପାରେ।</string>
     <string name="usb_keyboard_connected_notification_title">କୀବୋର୍ଡ୍ ସଂଯୋଗ ହୋଇଛି</string>
     <string name="usb_keyboard_disconnected_notification_title">କୀବୋର୍ଡ୍ ବିଚ୍ଛିନ୍ନ ହୋଇଛି</string>
@@ -3284,8 +3284,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB ଷ୍ଟୋରେଜ୍ ସୁରକ୍ଷିତ ଭାବେ ଅପସାରିତ।</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB ମାସ୍ ଷ୍ଟୋରେଜ୍ ସଂଯୋଗ ହୋଇଛି</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB ମାସ୍ ଷ୍ଟୋରେଜ୍ ସଫଳତା ପୂର୍ବକ ଅପସାରଣ ହୋଇଛି।</string>
-    <string name="usb_unblock_by_screen_unlock">କନେକ୍ଟ ହୋଇଥିବା USB ଡିଭାଇସ୍ ବ୍ୟବହାର କରିବାକୁ ଆପଣଙ୍କ ଫୋନ୍ ଅନଲକ୍ କରନ୍ତୁ।</string>
-    <string name="usb_unsupport_accessory_message">ଆପଣଙ୍କ ଫୋନ୍ ଦ୍ୱାରା ଏହି USB ଡିଭାଇସ୍ ସମର୍ଥିତ ନୁହେଁ।</string>
+    <string name="usb_unblock_by_screen_unlock">କନେକ୍ଟ ହୋଇଥିବା USB ଡିଭାଇସ୍ ବ୍ୟବହାର କରିବାକୁ ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ଅନଲକ୍ କରନ୍ତୁ।</string>
+    <string name="usb_unsupport_accessory_message">ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ଦ୍ୱାରା ଏହି USB ଡିଭାଇସ୍ ସମର୍ଥିତ ନୁହେଁ।</string>
     <string name="usb_unsupport_accessory_title">USB ଡିଭାଇସ୍ ସମର୍ଥିତ ନୁହେଁ</string>
     <string name="usb_unsupported_audio_accessory_message">ଏହି ଫୋନ୍‌ରେ କନେକ୍ଟ ଥିବା ଡିଭାଇସ୍‍ କମ୍ପାଟିବଲ୍‍ ନୁହେଁ। ଅଧିକ ଜାଣିବା ପାଇଁ ଟାପ୍‌ କରନ୍ତୁ।</string>
     <string name="usb_unsupported_audio_accessory_title">ଆନାଲଗ୍‍ ଅଡିଓ ଆକ୍ସେସରୀ ଚିହ୍ନଟ ହେଲା</string>
@@ -3306,19 +3306,19 @@
     <string name="usb_water_dialg_method_2_desc_2">ଏକ ଫ୍ୟାନ୍ କିମ୍ୱା ଡ୍ରାୟର୍ (କେବଳ ଥଣ୍ତା ପବନ)କୁ ପୋର୍ଟ ଆଡକୁ ପଏଣ୍ଟ କରିବା ଦ୍ୱାରା ଆପଣ ଡ୍ରାୟର୍ ଗତି ବଢାଇପାରିବେ।</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ଆମେ ଆପଣଙ୍କ ଚାର୍ଜିଂ/USB ପୋର୍ଟରେ ଆର୍ଦ୍ରତା କିମ୍ବା ବାହ୍ୟ ମେଟେରିଆଲ୍ ଚିହ୍ନଟ କରିଛୁ।
 
-ଧୂଳି କିମ୍ବା ଆବର୍ଜନା ପରି କୌଣସି ବାହ୍ୟ ମେଟେରିଆଲ୍ ପାଇଁ ଆପଣଙ୍କ ଚାର୍ଜିଂ/USB ପୋର୍ଟ୍ ଯାଞ୍ଚ କରନ୍ତୁ। ଆପଣଙ୍କ ଫୋନ୍ ହାନୀ ନହେବା ପାଇଁ ପ୍ରତିରୋଧ କରିବାକୁ, ଚାର୍ଜିଂ ପୋର୍ଟ୍ ସଫା ନହେବା ଏବଂ ଆର୍ଦ୍ରତା ଦୂର ନହେବା ପର୍ଯ୍ୟନ୍ତ କିଛି ପ୍ଲଗ୍ କରନ୍ତୁ ନାହିଁ।
+ଧୂଳି କିମ୍ବା ଆବର୍ଜନା ପରି କୌଣସି ବାହ୍ୟ ମେଟେରିଆଲ୍ ପାଇଁ ଆପଣଙ୍କ ଚାର୍ଜିଂ/USB ପୋର୍ଟ୍ ଯାଞ୍ଚ କରନ୍ତୁ। ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ହାନୀ ନହେବା ପାଇଁ ପ୍ରତିରୋଧ କରିବାକୁ, ଚାର୍ଜିଂ ପୋର୍ଟ୍ ସଫା ନହେବା ଏବଂ ଆର୍ଦ୍ରତା ଦୂର ନହେବା ପର୍ଯ୍ୟନ୍ତ କିଛି ପ୍ଲଗ୍ କରନ୍ତୁ ନାହିଁ।
 
 ପୋର୍ଟ୍ ଶୁଖାଇବାକୁ, ଯେକୌଣସି ଆର୍ଦ୍ରତାକୁ ଛାଡି ଦେଇ, ଏହା ଶୁଖିବାକୁ ଅପେକ୍ଷା କରନ୍ତୁ, ଯାହାକି ଅନେକ ଘଣ୍ଟା ନେଇପାରେ। ଏକ ଫ୍ୟାନ୍ କିମ୍ୱା ଡ୍ରାୟର୍ (କେବଳ ଥଣ୍ତା ପବନ)କୁ ପୋର୍ଟ ଆଡକୁ ପଏଣ୍ଟ କରିବା ଦ୍ୱାରା ଆପଣ ଡ୍ରାଇଙ୍ଗ ଗତି ବଢାଇପାରିବେ।"</string>
     <string name="usb_water_dialg_positive_button">ଓକେ</string>
     <string name="usb_water_dialg_support_wireless_charging">"ଆମେ ଆପଣଙ୍କ ଚାର୍ଜିଂ/USB ପୋର୍ଟରେ ଆର୍ଦ୍ରତା କିମ୍ବା ବାହ୍ୟ ମେଟେରିଆଲ୍ ଚିହ୍ନଟ କରିଛୁ।
 
-ଧୂଳି କିମ୍ବା ଆବର୍ଜନା ପରି କୌଣସି ବାହ୍ୟ ମେଟେରିଆଲ୍ ପାଇଁ ଆପଣଙ୍କ ଚାର୍ଜିଂ/USB ପୋର୍ଟ୍ ଯାଞ୍ଚ କରନ୍ତୁ। ଆପଣଙ୍କ ଫୋନ୍ ହାନୀ ନହେବା ପାଇଁ ପ୍ରତିରୋଧ କରିବାକୁ, ଚାର୍ଜିଂ ପୋର୍ଟ୍ ସଫା ନହେବା ଏବଂ ଆର୍ଦ୍ରତା ଦୂର ନହେବା ପର୍ଯ୍ୟନ୍ତ କିଛି ପ୍ଲଗ୍ କରନ୍ତୁ ନାହିଁ।
+ଧୂଳି କିମ୍ବା ଆବର୍ଜନା ପରି କୌଣସି ବାହ୍ୟ ମେଟେରିଆଲ୍ ପାଇଁ ଆପଣଙ୍କ ଚାର୍ଜିଂ/USB ପୋର୍ଟ୍ ଯାଞ୍ଚ କରନ୍ତୁ। ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ହାନୀ ନହେବା ପାଇଁ ପ୍ରତିରୋଧ କରିବାକୁ, ଚାର୍ଜିଂ ପୋର୍ଟ୍ ସଫା ନହେବା ପର୍ଯ୍ୟନ୍ତ, ଆର୍ଦ୍ରତା ଦୂର ନହେବା ପର୍ଯ୍ୟନ୍ତ କୌଣସି ପ୍ଲଗ୍ କରନ୍ତୁ ନାହିଁ।
 
-ପୋର୍ଟ୍ ଶୁଖାଇବାକୁ, ଯେକୌଣସି ଆର୍ଦ୍ରତାକୁ ଛାଡି ଦେଇ, ଏହା ଶୁଖିବାକୁ ଅପେକ୍ଷା କରନ୍ତୁ, ଯାହାକି ଅନେକ ଘଣ୍ଟା ନେଇପାରେ। ଏକ ଫ୍ୟାନ୍ କିମ୍ୱା ଡ୍ରାୟର୍ (କେବଳ ଥଣ୍ତା ପବନ)କୁ ପୋର୍ଟ ଆଡକୁ ପଏଣ୍ଟ କରିବା ଦ୍ୱାରା ଆପଣ ଡ୍ରାଇଙ୍ଗ ଗତି ବଢାଇପାରିବେ।
+ପୋର୍ଟ୍ ଶୁଖାଇବାକୁ, ଯେକୌଣସି ଆର୍ଦ୍ରତାକୁ ଛାଡି ଦେଇ, ଏହା ଶୁଖିବାକୁ ଅପେକ୍ଷା କରନ୍ତୁ, ଯାହାକି ଅନେକ ଘଣ୍ଟା ନେଇପାରେ। ଆପଣ ପୋର୍ଟରେ ଏକ ଫ୍ୟାନ୍ କିମ୍ବା ଡ୍ରାୟର୍ ପଏଣ୍ଟ କରିବା ଦ୍ୱାରା (କେବଳ ଥଣ୍ଡା ପବନ) ଡ୍ରାଇଙ୍ଗ ଗତି ବଢାଇପାରିବେ।
 
-ଏହି ସମୟରେ, ଆପଣ ଆପଣଙ୍କ ଫୋନ୍ ୱେୟାରଲେସ୍ ଚାର୍ଜ କରିପାରିବେ।"</string>
+ଏହି ସମୟରେ, ଆପଣ ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ୱେୟାରଲେସ୍ ଚାର୍ଜ କରିପାରିବେ।"</string>
     <string name="usb_water_notification_content">ଆପଣଙ୍କ ଚାର୍ଜିଂ/USB ପୋର୍ଟରେ ଆଦ୍ରତା କିମ୍ବା ବିଦେଶୀ ମେଟେରିଆଲ୍ ଅଛି। ଚାର୍ଜିଂ କରିବା ପୂର୍ବରୁ ଯାଞ୍ଚ କରନ୍ତୁ।</string>
-    <string name="usb_water_notification_message">ଆପଣଙ୍କ ଚାର୍ଜର୍/USB ପୋର୍ଟରେ ଆର୍ଦ୍ରତା ଚିହ୍ନଟ ହୋଇଛି। ଆପଣଙ୍କ ଫୋନ୍ ଚାର୍ଜ କରିବା ପୂର୍ବରୁ ଏହା ସମ୍ପୂର୍ଣ୍ଣ ଭାବେ ଶୁଖିଲା ଅଛି ନିଶ୍ଚିତ କରନ୍ତୁ। ସମ୍ପୂର୍ଣ୍ଣ ଶୁଖିଲା କରିବାକୁ ଏହା କିଛି ସମୟ ନେଇପାରେ।</string>
+    <string name="usb_water_notification_message">ଆପଣଙ୍କ ଚାର୍ଜର୍/USB ପୋର୍ଟରେ ଆର୍ଦ୍ରତା ଚିହ୍ନଟ ହୋଇଛି। ଆପଣଙ୍କ ଟ୍ୟାବଲେଟ୍ ଚାର୍ଜ କରିବା ପୂର୍ବରୁ ଏହା ସମ୍ପୂର୍ଣ୍ଣ ଭାବେ ଶୁଖିଲା ଅଛି ନିଶ୍ଚିତ କରନ୍ତୁ। ସମ୍ପୂର୍ଣ୍ଣ ଶୁଖିଲା କରିବାକୁ ଏହା କିଛି ସମୟ ନେଇପାରେ।</string>
     <string name="usb_water_notification_message_button">ବିବରଣୀ</string>
     <string name="usb_water_notification_title">ଚାର୍ଜର୍/USB ପୋର୍ଟ୍ ଯାଞ୍ଚ</string>
     <string name="usbhostStorage_restrict">USB ହୋଷ୍ଟ ଷ୍ଟୋରେଜ୍‌ ବ୍ୟବହାରକୁ ସୁରକ୍ଷା ନୀତି ପ୍ରତିରୋଧ କରୁଛି।</string>
@@ -3336,7 +3336,7 @@
     <string name="user_switched">ବର୍ତ୍ତମାନର ୟୁଜର୍‌ ହେଉଛନ୍ତି %1$s।</string>
     <string name="user_switching_message">%1$sରେ ସ୍ୱିଚ କରନ୍ତୁ…</string>
     <string name="validity_period">ବୈଧତା:</string>
-    <string name="vdm_camera_access_denied">ଆପଣଙ୍କ %1$sରୁ ଫୋନର କ୍ୟାମେରାକୁ ଆକ୍ସେସ କରାଯାଇପାରିବ ନାହିଁ</string>
+    <string name="vdm_camera_access_denied">ଆପଣଙ୍କ %1$sରୁ ଟାବଲେଟର କ୍ୟାମେରାକୁ ଆକ୍ସେସ କରାଯାଇପାରିବ ନାହିଁ</string>
     <string name="vdm_pip_blocked">ଷ୍ଟ୍ରିମ କରିବା ସମୟରେ ପିକଚର-ଇନ-ପିକଚର ଦେଖାଯାଇପାରିବ ନାହିଁ</string>
     <string name="vdm_secure_window">ଷ୍ଟ୍ରିମ କରିବା ସମୟରେ ଏହାକୁ ଆକ୍ସେସ କରାଯାଇପାରିବ ନାହିଁ। ଏହା ପରିବର୍ତ୍ତେ ଆପଣଙ୍କ ଫୋନରେ ଚେଷ୍ଟା କରନ୍ତୁ।</string>
     <string name="view_and_control_notification_content">%s ଆପଣଙ୍କ ସ୍କ୍ରିନକୁ ଦେଖିପାରିବ ଏବଂ ନିୟନ୍ତ୍ରଣ କରିପାରିବ। ସମୀକ୍ଷା କରିବାକୁ ଟାପ୍ କରନ୍ତୁ।</string>

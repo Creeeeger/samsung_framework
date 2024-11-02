@@ -9,8 +9,8 @@ public final class MotionPredictor {
     private final boolean mIsPredictionEnabled;
     private final long mPtr;
 
-    /* renamed from: -$$Nest$smnativeGetNativeMotionPredictorFinalizer, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m5141$$Nest$smnativeGetNativeMotionPredictorFinalizer() {
+    /* renamed from: -$$Nest$smnativeGetNativeMotionPredictorFinalizer */
+    static /* bridge */ /* synthetic */ long m5136$$Nest$smnativeGetNativeMotionPredictorFinalizer() {
         return nativeGetNativeMotionPredictorFinalizer();
     }
 
@@ -26,7 +26,7 @@ public final class MotionPredictor {
 
     /* loaded from: classes4.dex */
     private static class RegistryHolder {
-        public static final NativeAllocationRegistry REGISTRY = NativeAllocationRegistry.createMalloced(MotionPredictor.class.getClassLoader(), MotionPredictor.m5141$$Nest$smnativeGetNativeMotionPredictorFinalizer());
+        public static final NativeAllocationRegistry REGISTRY = NativeAllocationRegistry.createMalloced(MotionPredictor.class.getClassLoader(), MotionPredictor.m5136$$Nest$smnativeGetNativeMotionPredictorFinalizer());
 
         private RegistryHolder() {
         }

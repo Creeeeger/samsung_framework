@@ -135,7 +135,6 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         this.mIsInConversation = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -234,7 +233,6 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         this.mAvatarName = "";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static MessagingGroup createGroup(MessagingLinearLayout layout) {
         MessagingGroup createdGroup = sInstancePool.acquire();
         if (createdGroup == null) {
@@ -266,7 +264,6 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$removeMessage$0(ViewGroup messageParent, View view, MessagingMessage messagingMessage) {
         messageParent.removeTransientView(view);
         messagingMessage.recycle();
@@ -312,7 +309,6 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$removeGroupAnimated$1(Runnable endAction) {
         setAlpha(1.0f);
         MessagingPropertyAnimator.setToLaidOutPosition(this);
@@ -400,7 +396,6 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$hideAnimated$2() {
         setIsHidingAnimated(false);
     }
@@ -552,13 +547,18 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (!this.mAddedMessages.isEmpty()) {
-            final boolean firstLayout = this.mFirstLayout;
+            boolean firstLayout = this.mFirstLayout;
             getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.widget.MessagingGroup.1
+                final /* synthetic */ boolean val$firstLayout;
+
+                AnonymousClass1(boolean firstLayout2) {
+                    firstLayout = firstLayout2;
+                }
+
                 @Override // android.view.ViewTreeObserver.OnPreDrawListener
                 public boolean onPreDraw() {
                     Iterator it = MessagingGroup.this.mAddedMessages.iterator();
@@ -579,6 +579,33 @@ public class MessagingGroup extends LinearLayout implements MessagingLinearLayou
         }
         this.mFirstLayout = false;
         updateClipRect();
+    }
+
+    /* renamed from: com.android.internal.widget.MessagingGroup$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements ViewTreeObserver.OnPreDrawListener {
+        final /* synthetic */ boolean val$firstLayout;
+
+        AnonymousClass1(boolean firstLayout2) {
+            firstLayout = firstLayout2;
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            Iterator it = MessagingGroup.this.mAddedMessages.iterator();
+            while (it.hasNext()) {
+                MessagingMessage message = (MessagingMessage) it.next();
+                if (message.getView().isShown()) {
+                    MessagingPropertyAnimator.fadeIn(message.getView());
+                    if (!firstLayout) {
+                        MessagingPropertyAnimator.startLocalTranslationFrom(message.getView(), message.getView().getHeight(), MessagingLayout.LINEAR_OUT_SLOW_IN);
+                    }
+                }
+            }
+            MessagingGroup.this.mAddedMessages.clear();
+            MessagingGroup.this.getViewTreeObserver().removeOnPreDrawListener(this);
+            return true;
+        }
     }
 
     public int calculateGroupCompatibility(MessagingGroup otherGroup) {

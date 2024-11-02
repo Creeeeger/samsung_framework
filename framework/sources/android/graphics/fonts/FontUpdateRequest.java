@@ -19,13 +19,14 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public final class FontUpdateRequest implements Parcelable {
     public static final Parcelable.Creator<FontUpdateRequest> CREATOR = new Parcelable.Creator<FontUpdateRequest>() { // from class: android.graphics.fonts.FontUpdateRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FontUpdateRequest createFromParcel(Parcel in) {
             return new FontUpdateRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FontUpdateRequest[] newArray(int size) {
             return new FontUpdateRequest[size];
@@ -51,7 +52,9 @@ public final class FontUpdateRequest implements Parcelable {
         private static final String ATTR_SLANT = "slant";
         private static final String ATTR_WEIGHT = "weight";
         public static final Parcelable.Creator<Font> CREATOR = new Parcelable.Creator<Font>() { // from class: android.graphics.fonts.FontUpdateRequest.Font.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Font createFromParcel(Parcel source) {
                 String fontName = source.readString8();
@@ -62,7 +65,6 @@ public final class FontUpdateRequest implements Parcelable {
                 return new Font(fontName, new FontStyle(weight, slant), index, varSettings);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Font[] newArray(int size) {
                 return new Font[size];
@@ -92,6 +94,28 @@ public final class FontUpdateRequest implements Parcelable {
             dest.writeInt(this.mFontStyle.getSlant());
             dest.writeInt(this.mIndex);
             dest.writeString8(this.mFontVariationSettings);
+        }
+
+        /* renamed from: android.graphics.fonts.FontUpdateRequest$Font$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Font> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Font createFromParcel(Parcel source) {
+                String fontName = source.readString8();
+                int weight = source.readInt();
+                int slant = source.readInt();
+                int index = source.readInt();
+                String varSettings = source.readString8();
+                return new Font(fontName, new FontStyle(weight, slant), index, varSettings);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Font[] newArray(int size) {
+                return new Font[size];
+            }
         }
 
         public static void writeToXml(TypedXmlSerializer out, Font font) throws IOException {
@@ -160,7 +184,9 @@ public final class FontUpdateRequest implements Parcelable {
     public static final class Family implements Parcelable {
         private static final String ATTR_NAME = "name";
         public static final Parcelable.Creator<Family> CREATOR = new Parcelable.Creator<Family>() { // from class: android.graphics.fonts.FontUpdateRequest.Family.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Family createFromParcel(Parcel source) {
                 String familyName = source.readString8();
@@ -168,7 +194,6 @@ public final class FontUpdateRequest implements Parcelable {
                 return new Family(familyName, fonts);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Family[] newArray(int size) {
                 return new Family[size];
@@ -193,6 +218,25 @@ public final class FontUpdateRequest implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString8(this.mName);
             dest.writeParcelableList(this.mFonts, flags);
+        }
+
+        /* renamed from: android.graphics.fonts.FontUpdateRequest$Family$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Family> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Family createFromParcel(Parcel source) {
+                String familyName = source.readString8();
+                List<Font> fonts = source.readParcelableList(new ArrayList(), Font.class.getClassLoader(), Font.class);
+                return new Family(familyName, fonts);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Family[] newArray(int size) {
+                return new Family[size];
+            }
         }
 
         public static void writeFamilyToXml(TypedXmlSerializer out, Family family) throws IOException {
@@ -257,6 +301,23 @@ public final class FontUpdateRequest implements Parcelable {
 
         public String toString() {
             return "Family{mName='" + this.mName + DateFormat.QUOTE + ", mFonts=" + this.mFonts + '}';
+        }
+    }
+
+    /* renamed from: android.graphics.fonts.FontUpdateRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FontUpdateRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FontUpdateRequest createFromParcel(Parcel in) {
+            return new FontUpdateRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FontUpdateRequest[] newArray(int size) {
+            return new FontUpdateRequest[size];
         }
     }
 
@@ -326,7 +387,6 @@ public final class FontUpdateRequest implements Parcelable {
         dest.writeParcelable(this.mFontFamily, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int getAttributeValueInt(XmlPullParser parser, String name, int defaultValue) {
         try {
             String value = parser.getAttributeValue(null, name);

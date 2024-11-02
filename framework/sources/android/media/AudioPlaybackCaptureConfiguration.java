@@ -14,6 +14,10 @@ public final class AudioPlaybackCaptureConfiguration {
     private final AudioMixingRule mAudioMixingRule;
     private final MediaProjection mProjection;
 
+    /* synthetic */ AudioPlaybackCaptureConfiguration(AudioMixingRule audioMixingRule, MediaProjection mediaProjection, AudioPlaybackCaptureConfigurationIA audioPlaybackCaptureConfigurationIA) {
+        this(audioMixingRule, mediaProjection);
+    }
+
     private AudioPlaybackCaptureConfiguration(AudioMixingRule audioMixingRule, MediaProjection projection) {
         this.mAudioMixingRule = audioMixingRule;
         this.mProjection = projection;
@@ -76,12 +80,10 @@ public final class AudioPlaybackCaptureConfiguration {
         }).mapToInt(getPredicate).toArray();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getIntPredicates$4(int rule, AudioMixingRule.AudioMixMatchCriterion criterion) {
         return criterion.getRule() == rule;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public android.media.audiopolicy.AudioMix createAudioMix(AudioFormat audioFormat) {
         return new AudioMix.Builder(this.mAudioMixingRule).setFormat(audioFormat).setRouteFlags(3).build();
     }

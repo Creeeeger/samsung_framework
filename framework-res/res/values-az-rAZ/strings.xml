@@ -335,7 +335,7 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="ext_media_unsupported_notification_message">Bu cihaz bu %s dəstəkləmir. Dəstəklənən formatda qurmaq üçün vur.</string>
     <string name="ext_media_unsupported_notification_title">Dəstəklənməyən %s</string>
     <string name="ext_storage_bad_removal_button">Söndür yandır</string>
-    <string name="ext_storage_bad_removal_title">Telefonu yenidən başlat</string>
+    <string name="ext_storage_bad_removal_title">Tableti yenidən başlat</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message_usbhost">USB yaddaşınızda yerləşdirilmiş bütün fayllar silinəcək. Bu addım geri dönülməzdir.</string>
     <string name="extmedia_format_title_usbhost">USB yaddaşına format atılsın?</string>
@@ -592,16 +592,16 @@ Tabletiniz tezliklə yenidən başladılacaq."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Səs Bluetooth audio cihazınızda səsləndirilir. Bunu söndürmək üçün bura vurun</string>
     <string name="multisound_sound_via_headphone">%s səs qulaqlıqda səslənir. Bunu söndürmək üçün bura vurun.</string>
     <string name="multisound_sound_via_headphone_multiselection">Səs qulaqlıqlarınız vasitəsilə səsləndirilir. Bunu söndürmək üçün bura vurun.</string>
-    <string name="multisound_sound_via_phone_speaker">%s səs telefon dinamikində səslənir. Söndürmək üçün bura vurun.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Səs telefon dinamikiniz vasitəsilə səsləndirilir. Bunu söndürmək üçün bura vurun.</string>
+    <string name="multisound_sound_via_phone_speaker">%s səs tablet dinamikində səslənir. Bunu söndürmək üçün bura vurun.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Səs tablet dinamikiniz vasitəsilə səsləndirilir. Bunu söndürmək üçün bura vurun.</string>
     <string name="multisound_sound_via_usb_audio">%s səs USB audio cihazında səslənir. Bunu söndürmək üçün bura vurun.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Səs USB audio cihazınız vasitəsilə səsləndirilir. Bunu söndürmək üçün bura vurun.</string>
     <string name="multisound_title">Ayrı proqram səsi</string>
     <string name="multisound_turn_off_multisound">Söndür</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX-də açıla bilmir. Telefon rejimdə açmağa çalışın.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-də açıla bilmir. O, telefonun Əsas ekranı üçündür.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Bəzi oyunlar yalnız sensor ekranlarda işləyir. Samsung DeX-də siçan ilə idarəetmə işləmirsə, telefon rejimində oynamağı yoxlayın.</string>
-    <string name="my_device">Bu telefon</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX-də işləyə bilmir. Tablet rejimində işlətməyə çalışın.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-də işləyə bilmir. O, tabletin Əsas ekranı üçündür.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Bəzi oyunlar yalnız sensor ekranlarda işləyir. Samsung DeX-də siçan ilə idarəetmə işləmirsə, tablet rejimində oynamağı yoxlayın.</string>
+    <string name="my_device">Bu tablet</string>
     <string name="network_locked_sim_dialog_message_ais">Abunə şərt və qaydalarına cavab vermədiyindən SIM kartınız bu telefonda düzgün işləmir. Bununla bağlı sualınız və ya əlavə məlumata ehtiyacınız olarsa, Samsung Müştəri Xidməti və ya məhsulu sizə satan mağaza ilə əlaqə saxlayın.</string>
     <string name="network_locked_sim_notification_text">Şəbəkə SIM kartı kilidləyib.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@ QAYIT"</string>
     <string name="policydesc_allow_desktopsync">İş masası sinxronlaşmasından istifadənin qarşısını al.</string>
     <string name="policydesc_allow_internetsharing">Mobil Giriş nöqtəsindən istifadənin qarşısını al.</string>
     <string name="policydesc_allow_irda">IrDA-dan istifadənin qarşısını al.</string>
-    <string name="policydesc_allow_popimapemail">Telefonda POP və IMAP e-poçtundan istifadənin qarşısını al.</string>
+    <string name="policydesc_allow_popimapemail">Tabletdə POP və IMAP e-poçtundan istifadənin qarşısını al.</string>
     <string name="policydesc_allow_storagecard">SD kartlardan istifadənin qarşısını al.</string>
     <string name="policydesc_allow_textmessaging">Mətn və multimedia mesajlaşmasından istifadənin qarşısını al.</string>
     <string name="policydesc_allow_thirdParty">Bu proqram üçüncü tərəf proqramlarının işləməsinin qarşısını ala bilər.</string>
@@ -838,7 +838,7 @@ QAYIT"</string>
     <string name="pwd_change_enforced">Təhlükəsizlik siyasəti parolu dəyişməyi tələb edir.</string>
     <string name="recording_fail">%2$s-də istifadə edilən zaman %1$s-də mikrofondan istifadə etmək olmur.</string>
     <string name="recording_popup">%s mikrofondan istifadə edin.</string>
-    <string name="recording_popup_device">Telefon</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth mikrofonundan istifadə edir.</string>
     <string name="recording_popup_with_device">%1$s %2$s cihazının mikrofonundan istifadə edir.</string>
     <string name="redo">Geri</string>
@@ -904,12 +904,12 @@ tutqunluq"</string>
     <string name="screencapture_restrict">Təhlükəsizlik siyasəti ekran çəkilişindən istifadənin qarşısını alır.</string>
     <string name="sd_card_unavailable_message">Başqa bir istifadəçi profili istifadə edilərkən SD kart taxıldığı üçün ondan istifadə etmək mümkün deyil.</string>
     <string name="sd_card_unavailable_title">SD kartı əlçatan deyil</string>
-    <string name="sdcard_bad_removal_message">SD kart təhlükəli qaydada çıxarıldı. Telefonunuzun gözlənilmədən yenidən başladılmasının qarşısını almaq üçün saxlanılmamış verilənləri saxlayın və elə indi yenidən başladın.</string>
+    <string name="sdcard_bad_removal_message">SD kart təhlükəli qaydada çıxarıldı. Tabletinizin gözlənilmədən yenidən başladılmasının qarşısını almaq üçün saxlanılmamış verilənləri saxlayın və elə indi yenidən başladın.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD kartın şifrini aç</string>
     <string name="sdcard_batch_decrypt_noti_title">SD kart şifrinin açılması</string>
     <string name="sdcard_batch_decrypt_popup_content">Şifrlənmiş SD kartdan istifadə etmək üçün onun şifri açılmalıdır. Şifraçma bir və ya bir neçə saat davam edə bilər. Doldurulmuş batareya ilə başlayın və şifraçma tamamlanana kimi onu enerji mənbəyindən ayırmayın. Şifraçma prosesinin dayandırılması bəzi və ya bütün məlumatların itməsinə səbəb olacaq.</string>
     <string name="sdcard_decrypt_err_notification">SD kart şifrinin açılması səhvi baş verdi.</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD kartdakı bəzi fayllar başqa cihazda şifrləndi və bu telefonda istifadə edilə bilməz.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD kartdakı bəzi fayllar başqa cihazda şifrləndi və bu tabletdə istifadə edilə bilməz.</string>
     <string name="sdcard_decrypt_notification">SD kartın şifri açıldı.</string>
     <string name="sdcard_decrypt_title_notification">SD kart şifrinin açılması</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD kartın şifri açılır…</string>
@@ -1235,7 +1235,7 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="usb_abnormal_reset_title">USB bağlantısı stabil deyil</string>
     <string name="usb_abnormal_reset_toast">USB bağlantısı sabit deyil. Naqili ayırn və yenidən taxın və ya fərqli naqili sınayın.</string>
     <string name="usb_accessory_notification_title">USB aksesuarına qoşuldu</string>
-    <string name="usb_bad_removal_message">USB yaddaş cihazı təhlükəli qaydada çıxarıldı. Telefonunuzun gözlənilmədən yenidən başladılmasının qarşısını almaq üçün saxlanılmamış verilənləri saxlayın və elə indi yenidən başladın.</string>
+    <string name="usb_bad_removal_message">USB yaddaş cihazı təhlükəli qaydada çıxarıldı. Tabletinizin gözlənilmədən yenidən başladılmasının qarşısını almaq üçün saxlanılmamış verilənləri saxlayın və elə indi yenidən başladın.</string>
     <string name="usb_blocked_by_emergency_mode">Bəzi USB funksiyaları Fövqəladə rejimdə işləmir.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Maksimum enerjiyə qənaət rejimi aktiv olan zaman qoşulmuş USB cihazı ilə əlaqədar funksiyalardan istifadə etmək olmur.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Maksimal enerjiyə qənaət rejimi yanılı olduqda bəzi USB funksiyaları məhdudlaşacaq.</string>
@@ -1244,13 +1244,13 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="usb_camera_connected_notification_title">Media cihazı qoşuldu</string>
     <string name="usb_camera_disconnected_notification_title">Media cihazı ilə əlaqə kəsildi</string>
     <string name="usb_cd_installer_notification_title">Proqram yeniləməsi</string>
-    <string name="usb_charing_only_notification_title">USB adapteri</string>
+    <string name="usb_charing_only_notification_title">Qoşuldu</string>
     <string name="usb_debugging_only_notification_title">Yalnız sazlama</string>
-    <string name="usb_host_resource_exceed_message">Telefonunuzun USB idarəedicisi cihazı qoşmaq üçün kifayət qədər resursa malik deyil. Cihazı ayırın və yenidən qoşun.</string>
+    <string name="usb_host_resource_exceed_message">Tabletinizin USB idarəedicisi cihazı qoşmaq üçün kifayət qədər resursa malik deyil. Cihazı ayırın və yenidən qoşun.</string>
     <string name="usb_host_resource_exceed_title">USB idarəedici resursu yetərincə deyil</string>
-    <string name="usb_hub_depth_exceed_message">Telefonunuz eyni anda ən çoxu 5 USB paylayıcı qoşulmasını dəstəkləyir.</string>
+    <string name="usb_hub_depth_exceed_message">Tabletiniz eyni anda ən çoxu 5 USB paylayıcı qoşulmasını dəstəkləyir.</string>
     <string name="usb_hub_depth_exceed_title">Maks. USB paylayıcı qoşulması</string>
-    <string name="usb_hub_power_exceed_message">Telefonunuz bu USB cihaz üçün kifayət qədər enerji təmin edə bilmir. Cihazı telefonunuza qoşmazdan əvvəl onu özünü enerji ilə təmin edən USB paylayıcıya qoşun.</string>
+    <string name="usb_hub_power_exceed_message">Tabletiniz bu USB cihaz üçün kifayət qədər enerji təmin edə bilmir. Cihazı tabletinizə qoşmazdan əvvəl onu özünü enerji ilə təmin edən USB paylayıcıya qoşun.</string>
     <string name="usb_increase_battery_usage">USB bağlantısı batareya istifadəsini artıra bilər.</string>
     <string name="usb_mass_storage_restrict">Təhlükəsizlik siyasəti USB kütləvi yaddaş yerindən istifadənin qarşısını alır.</string>
     <string name="usb_midi_notification_title">MIDI üçün USB</string>
@@ -1276,8 +1276,8 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="usb_storage_stop_title">USB yaddaşı istifadədədir.</string>
     <string name="usb_storage_title">USB qoşuldu.</string>
     <string name="usb_type_c_supply_power_notification_title">USB adapterinə qoşulan cihaz</string>
-    <string name="usb_unblock_by_screen_unlock">Qoşulmuş USB cihazından istifadə etmək üçün telefonun kilidini açın.</string>
-    <string name="usb_unsupport_accessory_message">Bu USB cihaz telefonunuz tərəfindən dəstəklənmir.</string>
+    <string name="usb_unblock_by_screen_unlock">Qoşulmuş USB cihazından istifadə etmək üçün tabletin kilidini açın.</string>
+    <string name="usb_unsupport_accessory_message">Bu USB cihaz tabletiniz tərəfindən dəstəklənmir.</string>
     <string name="usb_unsupport_accessory_title">USB cihaz dəstəklənmir</string>
     <string name="usb_unsupported_device">Qoşulmuş USB cihazı dəstəklənmir.</string>
     <string name="usb_unsupported_device_title">Cihaz dəstəklənmir</string>
@@ -1295,19 +1295,19 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="usb_water_dialg_method_2_desc_2">Fen və ya quruducunu (yalnız soyuq hava) porta yönləndirərək qurumanı sürətləndirə bilərsiniz.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Doldurma/USB portunuzda nəm və ya yad cisim aşkar etmişik.
 
-Doldurma/USB portunuzda toz və ya zibil kimi hər hansı yad cismin olub-olmadığını yoxlayın. Telefonunuzun zədələnməsinin qarşısını almaq üçün doldurma portu təmiz olana və nəm aradan qalxana qədər ona heç nə taxmayın.
+Doldurma/USB portunuzda toz və ya zibil kimi hər hansı yad cismin olub-olmadığını yoxlayın. Tabletinizin zədələnməsinin qarşısını almaq üçün doldurma portu təmiz olana və nəm aradan qalxana qədər ona heç nə taxmayın.
 
 Portu qurutmaq üçün nəmi silkələyib çıxararaq qurumasını gözləyin, bu, bir neçə saat çəkə bilər. Ventilyator və ya feni (yalnız sərin hava) porta tutmaqla qurutma prosesini sürətləndirə bilərsiniz."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Doldurma/USB portunuzda nəm və ya yad cisim aşkar etmişik.
 
-Doldurma/USB portunuzda toz və ya zibil kimi hər hansı yad cismin olub-olmadığını yoxlayın. Telefonunuzun zədələnməsinin qarşısını almaq üçün doldurma portu təmiz olana və nəm aradan qalxana qədər ona heç nə taxmayın.
+Doldurma/USB portunuzda toz və ya zibil kimi hər hansı yad cismin olub-olmadığını yoxlayın. Tabletinizin zədələnməsinin qarşısını almaq üçün doldurma portu təmiz olana və nəm aradan qalxana qədər ona heç nə taxmayın.
 
 Portu qurutmaq üçün nəmi silkələyib çıxararaq qurumasını gözləyin, bu, bir neçə saat çəkə bilər. Ventilyator və ya feni (yalnız sərin hava) porta tutmaqla qurutma prosesini sürətləndirə bilərsiniz.
 
-Bu müddət ərzində telefonunuzu simsiz doldura bilərsiniz."</string>
+Bu müddət ərzində tabletinizi simsiz doldura bilərsiniz."</string>
     <string name="usb_water_notification_content">Doldurma/USB portunuzda nəm və ya xarici maddə var. Doldurmazdan öncə yoxlayın.</string>
-    <string name="usb_water_notification_message">Adapter/USB port-da nəm aşkar edildi. Telefonu yükləməzdən öncə onun quru olduğundan əmin olun. Tam qurumaq üçün bir qədər vaxt lazım ola bilər.</string>
+    <string name="usb_water_notification_message">Adapter/USB port-da nəm aşkar edildi. Tableti yükləməzdən öncə onun quru olduğundan əmin olun. Tam qurumaq üçün bir qədər vaxt lazım ola bilər.</string>
     <string name="usb_water_notification_message_button">Təfərrüatlar</string>
     <string name="usb_water_notification_title">Adapteri/USB portunu yoxlayın</string>
     <string name="usbhostStorage_restrict">Təhlükəsizlik siyasəti USB host yaddaşından istifadənin qarşısını alır.</string>

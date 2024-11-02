@@ -10,11 +10,14 @@ public class IAFDHCDatabase {
     private static final int IAFDHCDBVersion = 5;
     private IAFDDiagnosis.IAFD_DATA mIafdHCDatabase;
 
+    /* synthetic */ IAFDHCDatabase(IAFDHCDatabaseIA iAFDHCDatabaseIA) {
+        this();
+    }
+
     private IAFDHCDatabase() {
         this.mIafdHCDatabase = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
     public static class IAFDHCDatabaseHolder {
         private static final IAFDHCDatabase INSTANCE = new IAFDHCDatabase();
@@ -27,7 +30,6 @@ public class IAFDHCDatabase {
         return IAFDHCDatabaseHolder.INSTANCE;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void init(Context context, String salesCode, boolean isCHN) {
         IAFDDiagnosis.IAFD_DATA iafd_data = new IAFDDiagnosis.IAFD_DATA();
         this.mIafdHCDatabase = iafd_data;

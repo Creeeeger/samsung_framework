@@ -133,11 +133,23 @@ public class LocalePicker extends ListFragment {
         return constructAdapter(context, R.layout.locale_picker_item, R.id.locale);
     }
 
-    public static ArrayAdapter<LocaleInfo> constructAdapter(Context context, final int layoutId, final int fieldId) {
+    public static ArrayAdapter<LocaleInfo> constructAdapter(Context context, int layoutId, int fieldId) {
         boolean isInDeveloperMode = Settings.Global.getInt(context.getContentResolver(), "development_settings_enabled", 0) != 0;
         List<LocaleInfo> localeInfos = getAllAssetLocales(context, isInDeveloperMode);
-        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         return new ArrayAdapter<LocaleInfo>(context, layoutId, fieldId, localeInfos) { // from class: com.android.internal.app.LocalePicker.1
+            final /* synthetic */ int val$fieldId;
+            final /* synthetic */ LayoutInflater val$inflater;
+            final /* synthetic */ int val$layoutId;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Context context2, int layoutId2, int fieldId2, List localeInfos2, LayoutInflater inflater2, int layoutId22, int fieldId22) {
+                super(context2, layoutId22, fieldId22, localeInfos2);
+                inflater = inflater2;
+                layoutId = layoutId22;
+                fieldId = fieldId22;
+            }
+
             @Override // android.widget.ArrayAdapter, android.widget.Adapter
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view;
@@ -156,6 +168,40 @@ public class LocalePicker extends ListFragment {
                 return view;
             }
         };
+    }
+
+    /* renamed from: com.android.internal.app.LocalePicker$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends ArrayAdapter<LocaleInfo> {
+        final /* synthetic */ int val$fieldId;
+        final /* synthetic */ LayoutInflater val$inflater;
+        final /* synthetic */ int val$layoutId;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(Context context2, int layoutId22, int fieldId22, List localeInfos2, LayoutInflater inflater2, int layoutId222, int fieldId222) {
+            super(context2, layoutId222, fieldId222, localeInfos2);
+            inflater = inflater2;
+            layoutId = layoutId222;
+            fieldId = fieldId222;
+        }
+
+        @Override // android.widget.ArrayAdapter, android.widget.Adapter
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view;
+            TextView text;
+            if (convertView == null) {
+                view = inflater.inflate(layoutId, parent, false);
+                text = (TextView) view.findViewById(fieldId);
+                view.setTag(text);
+            } else {
+                view = convertView;
+                text = (TextView) view.getTag();
+            }
+            LocaleInfo item = getItem(position);
+            text.setText(item.toString());
+            text.setTextLocale(item.getLocale());
+            return view;
+        }
     }
 
     private static String toTitleCase(String s) {

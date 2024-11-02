@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextPedometer extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextPedometer> CREATOR = new Parcelable.Creator<SemContextPedometer>() { // from class: com.samsung.android.hardware.context.SemContextPedometer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextPedometer createFromParcel(Parcel in) {
             return new SemContextPedometer(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextPedometer[] newArray(int size) {
             return new SemContextPedometer[size];
@@ -44,7 +45,23 @@ public class SemContextPedometer extends SemContextEventContext {
     private Bundle mContext;
     private int mMode;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextPedometer$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextPedometer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextPedometer createFromParcel(Parcel in) {
+            return new SemContextPedometer(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextPedometer[] newArray(int size) {
+            return new SemContextPedometer[size];
+        }
+    }
+
     public SemContextPedometer() {
         this.mContext = new Bundle();
         this.mMode = 0;

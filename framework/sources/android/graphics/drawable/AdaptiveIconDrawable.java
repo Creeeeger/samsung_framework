@@ -51,7 +51,6 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     private final Rect mTmpOutRect;
     private final Region mTransparentRegion;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
     public AdaptiveIconDrawable() {
         this((LayerState) null, (Resources) null);
@@ -154,7 +153,6 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         return this.mLayerState.mChildren[2].mDrawable;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         if (bounds.isEmpty()) {
@@ -542,7 +540,6 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         return this.mLayerState.hasFocusStateSpecified();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] state) {
         boolean changed = false;
@@ -559,7 +556,6 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onLevelChange(int level) {
         boolean changed = false;
@@ -669,7 +665,6 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         this.mNightModeLayer = nightMode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class ChildDrawable {
         public int mDensity;
@@ -717,7 +712,6 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class LayerState extends Drawable.ConstantState {
         static final int N_CHILDREN = 3;

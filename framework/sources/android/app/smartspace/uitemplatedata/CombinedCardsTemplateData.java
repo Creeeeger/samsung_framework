@@ -11,19 +11,24 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class CombinedCardsTemplateData extends BaseTemplateData {
     public static final Parcelable.Creator<CombinedCardsTemplateData> CREATOR = new Parcelable.Creator<CombinedCardsTemplateData>() { // from class: android.app.smartspace.uitemplatedata.CombinedCardsTemplateData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CombinedCardsTemplateData createFromParcel(Parcel in) {
             return new CombinedCardsTemplateData(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CombinedCardsTemplateData[] newArray(int size) {
             return new CombinedCardsTemplateData[size];
         }
     };
     private final List<BaseTemplateData> mCombinedCardDataList;
+
+    /* synthetic */ CombinedCardsTemplateData(int i, BaseTemplateData.SubItemInfo subItemInfo, BaseTemplateData.SubItemInfo subItemInfo2, BaseTemplateData.SubItemInfo subItemInfo3, BaseTemplateData.SubItemInfo subItemInfo4, BaseTemplateData.SubItemInfo subItemInfo5, int i2, List list, CombinedCardsTemplateDataIA combinedCardsTemplateDataIA) {
+        this(i, subItemInfo, subItemInfo2, subItemInfo3, subItemInfo4, subItemInfo5, i2, list);
+    }
 
     CombinedCardsTemplateData(Parcel in) {
         super(in);
@@ -37,6 +42,23 @@ public final class CombinedCardsTemplateData extends BaseTemplateData {
 
     public List<BaseTemplateData> getCombinedCardDataList() {
         return this.mCombinedCardDataList;
+    }
+
+    /* renamed from: android.app.smartspace.uitemplatedata.CombinedCardsTemplateData$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CombinedCardsTemplateData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CombinedCardsTemplateData createFromParcel(Parcel in) {
+            return new CombinedCardsTemplateData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CombinedCardsTemplateData[] newArray(int size) {
+            return new CombinedCardsTemplateData[size];
+        }
     }
 
     @Override // android.app.smartspace.uitemplatedata.BaseTemplateData, android.os.Parcelable

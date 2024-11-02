@@ -196,7 +196,6 @@ public class GestureStore {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Learner getLearner() {
         return this.mClassifier;
     }

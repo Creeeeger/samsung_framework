@@ -58,7 +58,6 @@ public class MediaFilterPlaceHolder implements MediaFilter, PlaceHolder<MediaFil
         this.mediaFilter = instance;
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.functional.PlaceHolder
     public MediaFilter reset() {
         if (this.mediaFilter == null) {
@@ -68,7 +67,7 @@ public class MediaFilterPlaceHolder implements MediaFilter, PlaceHolder<MediaFil
         this.mediaFilterUpdaterList.forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterPlaceHolder$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MediaFilterPlaceHolder.this.m8758x59f5e82e((Consumer) obj);
+                MediaFilterPlaceHolder.this.m8750x59f5e82e((Consumer) obj);
             }
         });
         MediaFilterRetriever mediaFilterRetriever = this.mediaFilterRetriever;
@@ -80,9 +79,8 @@ public class MediaFilterPlaceHolder implements MediaFilter, PlaceHolder<MediaFil
         return this.mediaFilter;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$reset$0$com-samsung-android-sume-core-filter-MediaFilterPlaceHolder, reason: not valid java name */
-    public /* synthetic */ void m8758x59f5e82e(Consumer it) {
+    /* renamed from: lambda$reset$0$com-samsung-android-sume-core-filter-MediaFilterPlaceHolder */
+    public /* synthetic */ void m8750x59f5e82e(Consumer it) {
         it.accept(this.mediaFilter);
     }
 

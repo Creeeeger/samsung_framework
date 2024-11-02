@@ -96,8 +96,9 @@ public interface ITransientNotification extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ITransientNotification {
+        public static class Proxy implements ITransientNotification {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

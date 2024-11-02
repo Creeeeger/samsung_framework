@@ -17,7 +17,6 @@ public class LocalSocketAddress {
             this.id = id;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getId() {
             return this.id;
         }

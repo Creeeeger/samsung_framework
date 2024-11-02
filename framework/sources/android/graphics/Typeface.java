@@ -114,10 +114,13 @@ public class Typeface {
     public @interface Style {
     }
 
+    /* synthetic */ Typeface(long j, String str, TypefaceIA typefaceIA) {
+        this(j, str);
+    }
+
     @CriticalNative
     private static native void nativeAddFontCollections(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeCreateFromArray(long[] jArr, long j, int i, int i2);
 
     private static native long nativeCreateFromTypeface(long j, int i);
@@ -405,7 +408,6 @@ public class Typeface {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static String createAssetUid(AssetManager mgr, String path, int ttcIndex, FontVariationAxis[] axes, int weight, int italic, String fallback) {
             SparseArray<String> pkgs = mgr.getAssignedPackageIdentifiers();
             StringBuilder builder = new StringBuilder();
@@ -553,16 +555,17 @@ public class Typeface {
         }
 
         public Typeface build() {
-            int size = this.mFamilies.size();
-            Typeface systemDefaultTypeface = Typeface.getSystemDefaultTypeface(this.mFallbackName);
-            long[] jArr = new long[size];
-            for (int i = 0; i < size; i++) {
-                jArr[i] = this.mFamilies.get(i).getNativePtr();
+            int userFallbackSize = this.mFamilies.size();
+            Typeface fallbackTypeface = Typeface.getSystemDefaultTypeface(this.mFallbackName);
+            long[] ptrArray = new long[userFallbackSize];
+            for (int i = 0; i < userFallbackSize; i++) {
+                ptrArray[i] = this.mFamilies.get(i).getNativePtr();
             }
             FontStyle fontStyle = this.mStyle;
             int weight = fontStyle == null ? 400 : fontStyle.getWeight();
             FontStyle fontStyle2 = this.mStyle;
-            return new Typeface(Typeface.nativeCreateFromArray(jArr, systemDefaultTypeface.native_instance, weight, (fontStyle2 == null || fontStyle2.getSlant() == 0) ? 0 : 1), null);
+            int italic = (fontStyle2 == null || fontStyle2.getSlant() == 0) ? 0 : 1;
+            return new Typeface(Typeface.nativeCreateFromArray(ptrArray, fallbackTypeface.native_instance, weight, italic), null);
         }
     }
 
@@ -620,7 +623,6 @@ public class Typeface {
         return createWeightStyle(family, weight, italic);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Typeface createWeightStyle(Typeface typeface, int i, boolean z) {
         int i2 = (i << 1) | (z ? 1 : 0);
         if (isFlipFontUsed && typeface.isLikeDefault) {
@@ -756,7 +758,6 @@ public class Typeface {
         this.mCleaner.run();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Typeface getSystemDefaultTypeface(String familyName) {
         Typeface tf = sSystemFontMap.get(familyName);
         return tf == null ? DEFAULT : tf;

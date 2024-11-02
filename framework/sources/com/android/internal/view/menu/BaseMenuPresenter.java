@@ -85,7 +85,6 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void addItemView(View itemView, int childIndex) {
         ViewGroup currentParent = (ViewGroup) itemView.getParent();
         if (currentParent != null) {
@@ -94,7 +93,6 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
         ((ViewGroup) this.mMenuView).addView(itemView, childIndex);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean filterLeftoverView(ViewGroup parent, int childIndex) {
         parent.removeViewAt(childIndex);
         return true;
@@ -170,7 +168,6 @@ public abstract class BaseMenuPresenter implements MenuPresenter {
         this.mId = id;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setMenuLayoutResources(int menuLayoutRes, int itemLayoutRes) {
         this.mMenuLayoutRes = menuLayoutRes;
         this.mItemLayoutRes = itemLayoutRes;

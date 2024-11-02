@@ -29,7 +29,6 @@ public class ConnectStats {
         this.mMaxLatencyRecords = maxLatencyRecords;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean addEvent(int errno, int latencyMs, String ipAddr) {
         this.eventCount++;
         if (isSuccess(errno)) {
@@ -67,7 +66,6 @@ public class ConnectStats {
         return errno == 0 || isNonBlocking(errno);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isNonBlocking(int errno) {
         return errno == EINPROGRESS || errno == EALREADY;
     }

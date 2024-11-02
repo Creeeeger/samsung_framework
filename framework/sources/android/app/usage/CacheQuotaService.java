@@ -39,6 +39,10 @@ public abstract class CacheQuotaService extends Service {
 
     /* loaded from: classes.dex */
     private final class CacheQuotaServiceWrapper extends ICacheQuotaService.Stub {
+        /* synthetic */ CacheQuotaServiceWrapper(CacheQuotaService cacheQuotaService, CacheQuotaServiceWrapperIA cacheQuotaServiceWrapperIA) {
+            this();
+        }
+
         private CacheQuotaServiceWrapper() {
         }
 

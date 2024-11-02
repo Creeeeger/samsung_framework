@@ -196,7 +196,6 @@ public class DrmStore {
         public static final int SEM_COLLABORATIVE_PLAY = 8;
         public static final int TRANSFER = 3;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static boolean isValid(int action) {
             switch (action) {
                 case 0:

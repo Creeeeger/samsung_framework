@@ -12,18 +12,23 @@ public final class PageRange implements Parcelable {
     private final int mEnd;
     private final int mStart;
 
+    /* synthetic */ PageRange(Parcel parcel, PageRangeIA pageRangeIA) {
+        this(parcel);
+    }
+
     static {
         PageRange pageRange = new PageRange(0, Integer.MAX_VALUE);
         ALL_PAGES = pageRange;
         ALL_PAGES_ARRAY = new PageRange[]{pageRange};
         CREATOR = new Parcelable.Creator<PageRange>() { // from class: android.print.PageRange.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PageRange createFromParcel(Parcel parcel) {
                 return new PageRange(parcel);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PageRange[] newArray(int size) {
                 return new PageRange[size];
@@ -102,5 +107,22 @@ public final class PageRange implements Parcelable {
         StringBuilder builder = new StringBuilder();
         builder.append("PageRange[").append(this.mStart).append(" - ").append(this.mEnd).append(NavigationBarInflaterView.SIZE_MOD_END);
         return builder.toString();
+    }
+
+    /* renamed from: android.print.PageRange$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PageRange> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PageRange createFromParcel(Parcel parcel) {
+            return new PageRange(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PageRange[] newArray(int size) {
+            return new PageRange[size];
+        }
     }
 }

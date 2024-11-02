@@ -85,8 +85,9 @@ public interface IRotationChangeListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IRotationChangeListener {
+        public static class Proxy implements IRotationChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

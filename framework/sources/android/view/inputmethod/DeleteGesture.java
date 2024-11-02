@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class DeleteGesture extends PreviewableHandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<DeleteGesture> CREATOR = new Parcelable.Creator<DeleteGesture>() { // from class: android.view.inputmethod.DeleteGesture.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DeleteGesture createFromParcel(Parcel source) {
             return new DeleteGesture(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeleteGesture[] newArray(int size) {
             return new DeleteGesture[size];
@@ -22,6 +23,14 @@ public final class DeleteGesture extends PreviewableHandwritingGesture implement
     };
     private RectF mArea;
     private int mGranularity;
+
+    /* synthetic */ DeleteGesture(int i, RectF rectF, String str, DeleteGestureIA deleteGestureIA) {
+        this(i, rectF, str);
+    }
+
+    /* synthetic */ DeleteGesture(Parcel parcel, DeleteGestureIA deleteGestureIA) {
+        this(parcel);
+    }
 
     private DeleteGesture(int granularity, RectF area, String fallbackText) {
         this.mType = 4;
@@ -75,6 +84,23 @@ public final class DeleteGesture extends PreviewableHandwritingGesture implement
                 throw new IllegalArgumentException("Deletion granularity must be set.");
             }
             return new DeleteGesture(this.mGranularity, this.mArea, this.mFallbackText);
+        }
+    }
+
+    /* renamed from: android.view.inputmethod.DeleteGesture$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DeleteGesture> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeleteGesture createFromParcel(Parcel source) {
+            return new DeleteGesture(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeleteGesture[] newArray(int size) {
+            return new DeleteGesture[size];
         }
     }
 

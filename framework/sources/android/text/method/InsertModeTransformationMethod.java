@@ -245,12 +245,10 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
             return (T[]) ArrayUtils.concat(cls, objArr, objArr2);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ Object[] lambda$getSpans$0(Class type, int size) {
             return (Object[]) Array.newInstance((Class<?>) type, size);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$getSpans$1(int start, int end, Object span) {
             return InsertModeTransformationMethod.intersect(getSpanStart(span), getSpanEnd(span), start, end);
         }
@@ -351,7 +349,6 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean intersect(int s1, int e1, int s2, int e2) {
         if (s1 > e2 || e1 < s2) {
             return false;

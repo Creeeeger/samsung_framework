@@ -12,7 +12,9 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class DnsEvent extends NetworkEvent implements Parcelable {
     public static final Parcelable.Creator<DnsEvent> CREATOR = new Parcelable.Creator<DnsEvent>() { // from class: android.app.admin.DnsEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DnsEvent createFromParcel(Parcel in) {
             if (in.readInt() != 1) {
@@ -21,7 +23,6 @@ public final class DnsEvent extends NetworkEvent implements Parcelable {
             return new DnsEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DnsEvent[] newArray(int size) {
             return new DnsEvent[size];
@@ -30,6 +31,10 @@ public final class DnsEvent extends NetworkEvent implements Parcelable {
     private final String mHostname;
     private final String[] mIpAddresses;
     private final int mIpAddressesCount;
+
+    /* synthetic */ DnsEvent(Parcel parcel, DnsEventIA dnsEventIA) {
+        this(parcel);
+    }
 
     public DnsEvent(String hostname, String[] ipAddresses, int ipAddressesCount, String packageName, long timestamp) {
         super(packageName, timestamp);
@@ -80,6 +85,26 @@ public final class DnsEvent extends NetworkEvent implements Parcelable {
         objArr[4] = Long.valueOf(this.mTimestamp);
         objArr[5] = this.mPackageName;
         return String.format("DnsEvent(%d, %s, %s, %d, %d, %s)", objArr);
+    }
+
+    /* renamed from: android.app.admin.DnsEvent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DnsEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DnsEvent createFromParcel(Parcel in) {
+            if (in.readInt() != 1) {
+                return null;
+            }
+            return new DnsEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DnsEvent[] newArray(int size) {
+            return new DnsEvent[size];
+        }
     }
 
     @Override // android.app.admin.NetworkEvent, android.os.Parcelable

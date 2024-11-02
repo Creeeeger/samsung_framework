@@ -67,11 +67,51 @@ public class InstallLocationUtils {
         throw new RemoteException("Could not contact storagemanager service");
     }
 
+    /* renamed from: com.android.internal.content.InstallLocationUtils$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends TestableInterface {
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.content.InstallLocationUtils.TestableInterface
+        public StorageManager getStorageManager(Context context) {
+            return (StorageManager) context.getSystemService(StorageManager.class);
+        }
+
+        @Override // com.android.internal.content.InstallLocationUtils.TestableInterface
+        public boolean getForceAllowOnExternalSetting(Context context) {
+            return Settings.Global.getInt(context.getContentResolver(), Settings.Global.FORCE_ALLOW_ON_EXTERNAL, 0) != 0;
+        }
+
+        @Override // com.android.internal.content.InstallLocationUtils.TestableInterface
+        public boolean getAllow3rdPartyOnInternalConfig(Context context) {
+            return context.getResources().getBoolean(R.bool.config_allow3rdPartyAppOnInternal);
+        }
+
+        @Override // com.android.internal.content.InstallLocationUtils.TestableInterface
+        public ApplicationInfo getExistingAppInfo(Context context, String packageName) {
+            try {
+                ApplicationInfo existingInfo = context.getPackageManager().getApplicationInfo(packageName, 4194304);
+                return existingInfo;
+            } catch (PackageManager.NameNotFoundException e) {
+                return null;
+            }
+        }
+
+        @Override // com.android.internal.content.InstallLocationUtils.TestableInterface
+        public File getDataDirectory() {
+            return Environment.getDataDirectory();
+        }
+    }
+
     private static synchronized TestableInterface getDefaultTestableInterface() {
         TestableInterface testableInterface;
         synchronized (InstallLocationUtils.class) {
             if (sDefaultTestableInterface == null) {
                 sDefaultTestableInterface = new TestableInterface() { // from class: com.android.internal.content.InstallLocationUtils.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // com.android.internal.content.InstallLocationUtils.TestableInterface
                     public StorageManager getStorageManager(Context context) {
                         return (StorageManager) context.getSystemService(StorageManager.class);

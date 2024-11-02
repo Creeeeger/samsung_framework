@@ -32,18 +32,15 @@ public final class RippleAnimationSession {
     private static final TimeInterpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
     private static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0.0f, 0.2f, 1.0f);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RippleAnimationSession(AnimationProperties<Float, Paint> properties, boolean forceSoftware) {
         this.mProperties = properties;
         this.mForceSoftware = forceSoftware;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isForceSoftware() {
         return this.mForceSoftware;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RippleAnimationSession enter(Canvas canvas) {
         this.mStartTime = AnimationUtils.currentAnimationTimeMillis();
         if (useRTAnimations(canvas)) {
@@ -54,7 +51,6 @@ public final class RippleAnimationSession {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void end() {
         Animator animator = this.mCurrentAnimation;
         if (animator != null) {
@@ -62,7 +58,6 @@ public final class RippleAnimationSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RippleAnimationSession exit(Canvas canvas) {
         if (useRTAnimations(canvas)) {
             exitHardware((RecordingCanvas) canvas);
@@ -72,18 +67,15 @@ public final class RippleAnimationSession {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onAnimationEnd(Animator anim) {
         notifyUpdate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RippleAnimationSession setOnSessionEnd(Consumer<RippleAnimationSession> onSessionEnd) {
         this.mOnSessionEnd = onSessionEnd;
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RippleAnimationSession setOnAnimationUpdated(Runnable run) {
         this.mOnUpdate = run;
         return this;
@@ -108,6 +100,14 @@ public final class RippleAnimationSession {
             }
         });
         expand.addListener(new AnimatorListener(this) { // from class: android.graphics.drawable.RippleAnimationSession.1
+            final /* synthetic */ ValueAnimator val$expand;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(RippleAnimationSession this, final ValueAnimator expand2) {
+                super(this);
+                expand = expand2;
+            }
+
             @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -123,15 +123,41 @@ public final class RippleAnimationSession {
                 }
             }
         });
-        expand.setInterpolator(LINEAR_INTERPOLATOR);
-        expand.start();
-        this.mCurrentAnimation = expand;
+        expand2.setInterpolator(LINEAR_INTERPOLATOR);
+        expand2.start();
+        this.mCurrentAnimation = expand2;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$exitSoftware$0(ValueAnimator expand, ValueAnimator updatedAnimation) {
         notifyUpdate();
         this.mProperties.getShader().setProgress(((Float) expand.getAnimatedValue()).floatValue());
+    }
+
+    /* renamed from: android.graphics.drawable.RippleAnimationSession$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends AnimatorListener {
+        final /* synthetic */ ValueAnimator val$expand;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(RippleAnimationSession this, final ValueAnimator expand2) {
+            super(this);
+            expand = expand2;
+        }
+
+        @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+            if (RippleAnimationSession.this.mLoopAnimation != null) {
+                RippleAnimationSession.this.mLoopAnimation.cancel();
+            }
+            Consumer<RippleAnimationSession> onEnd = RippleAnimationSession.this.mOnSessionEnd;
+            if (onEnd != null) {
+                onEnd.accept(RippleAnimationSession.this);
+            }
+            if (RippleAnimationSession.this.mCurrentAnimation == expand) {
+                RippleAnimationSession.this.mCurrentAnimation = null;
+            }
+        }
     }
 
     private long computeDelay() {
@@ -146,7 +172,6 @@ public final class RippleAnimationSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RippleAnimationSession setForceSoftwareAnimation(boolean forceSw) {
         this.mForceSoftware = forceSw;
         return this;
@@ -154,9 +179,17 @@ public final class RippleAnimationSession {
 
     private void exitHardware(RecordingCanvas canvas) {
         AnimationProperties<CanvasProperty<Float>, CanvasProperty<Paint>> props = getCanvasProperties();
-        final RenderNodeAnimator exit = new RenderNodeAnimator(props.getProgress(), 1.0f);
+        RenderNodeAnimator exit = new RenderNodeAnimator(props.getProgress(), 1.0f);
         exit.setDuration(375L);
         exit.addListener(new AnimatorListener(this) { // from class: android.graphics.drawable.RippleAnimationSession.2
+            final /* synthetic */ RenderNodeAnimator val$exit;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass2(RippleAnimationSession this, RenderNodeAnimator exit2) {
+                super(this);
+                exit = exit2;
+            }
+
             @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -172,12 +205,39 @@ public final class RippleAnimationSession {
                 }
             }
         });
-        exit.setTarget(canvas);
-        exit.setInterpolator(LINEAR_INTERPOLATOR);
+        exit2.setTarget(canvas);
+        exit2.setInterpolator(LINEAR_INTERPOLATOR);
         long delay = computeDelay();
-        exit.setStartDelay(delay);
-        exit.start();
-        this.mCurrentAnimation = exit;
+        exit2.setStartDelay(delay);
+        exit2.start();
+        this.mCurrentAnimation = exit2;
+    }
+
+    /* renamed from: android.graphics.drawable.RippleAnimationSession$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 extends AnimatorListener {
+        final /* synthetic */ RenderNodeAnimator val$exit;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass2(RippleAnimationSession this, RenderNodeAnimator exit2) {
+            super(this);
+            exit = exit2;
+        }
+
+        @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+            if (RippleAnimationSession.this.mLoopAnimation != null) {
+                RippleAnimationSession.this.mLoopAnimation.cancel();
+            }
+            Consumer<RippleAnimationSession> onEnd = RippleAnimationSession.this.mOnSessionEnd;
+            if (onEnd != null) {
+                onEnd.accept(RippleAnimationSession.this);
+            }
+            if (RippleAnimationSession.this.mCurrentAnimation == exit) {
+                RippleAnimationSession.this.mCurrentAnimation = null;
+            }
+        }
     }
 
     private void enterHardware(RecordingCanvas canvas) {
@@ -197,6 +257,10 @@ public final class RippleAnimationSession {
         expand.start();
         loop.setDuration(NOISE_ANIMATION_DURATION);
         loop.addListener(new AnimatorListener(this) { // from class: android.graphics.drawable.RippleAnimationSession.3
+            AnonymousClass3(RippleAnimationSession this) {
+                super(this);
+            }
+
             @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -210,6 +274,20 @@ public final class RippleAnimationSession {
             animator.cancel();
         }
         this.mLoopAnimation = loop;
+    }
+
+    /* renamed from: android.graphics.drawable.RippleAnimationSession$3 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass3 extends AnimatorListener {
+        AnonymousClass3(RippleAnimationSession this) {
+            super(this);
+        }
+
+        @Override // android.graphics.drawable.RippleAnimationSession.AnimatorListener, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+            RippleAnimationSession.this.mLoopAnimation = null;
+        }
     }
 
     private void enterSoftware() {
@@ -232,19 +310,16 @@ public final class RippleAnimationSession {
         this.mCurrentAnimation = expand;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$enterSoftware$1(ValueAnimator expand, ValueAnimator updatedAnimation) {
         notifyUpdate();
         this.mProperties.getShader().setProgress(((Float) expand.getAnimatedValue()).floatValue());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$enterSoftware$2(ValueAnimator loop, ValueAnimator updatedAnimation) {
         notifyUpdate();
         this.mProperties.getShader().setNoisePhase(((Float) loop.getAnimatedValue()).floatValue());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setRadius(float radius) {
         this.mProperties.setRadius(Float.valueOf(radius));
         this.mProperties.getShader().setRadius(radius);
@@ -255,12 +330,10 @@ public final class RippleAnimationSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AnimationProperties<Float, Paint> getProperties() {
         return this.mProperties;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AnimationProperties<CanvasProperty<Float>, CanvasProperty<Paint>> getCanvasProperties() {
         if (this.mCanvasProperties == null) {
             this.mCanvasProperties = new AnimationProperties<>(CanvasProperty.createFloat(this.mProperties.getX().floatValue()), CanvasProperty.createFloat(this.mProperties.getY().floatValue()), CanvasProperty.createFloat(this.mProperties.getMaxRadius().floatValue()), CanvasProperty.createFloat(this.mProperties.getNoisePhase().floatValue()), CanvasProperty.createPaint(this.mProperties.getPaint()), CanvasProperty.createFloat(this.mProperties.getProgress().floatValue()), this.mProperties.getColor(), this.mProperties.getShader());
@@ -268,7 +341,6 @@ public final class RippleAnimationSession {
         return this.mCanvasProperties;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class AnimatorListener implements Animator.AnimatorListener {
         private final RippleAnimationSession mSession;
@@ -295,7 +367,6 @@ public final class RippleAnimationSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class AnimationProperties<FloatType, PaintType> {
         private final int mColor;
@@ -307,7 +378,6 @@ public final class RippleAnimationSession {
         private FloatType mX;
         private FloatType mY;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public AnimationProperties(FloatType x, FloatType y, FloatType maxRadius, FloatType noisePhase, PaintType paint, FloatType progress, int color, RippleShader shader) {
             this.mY = y;
             this.mX = x;
@@ -319,7 +389,6 @@ public final class RippleAnimationSession {
             this.mColor = color;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public FloatType getProgress() {
             return this.mProgress;
         }
@@ -328,43 +397,35 @@ public final class RippleAnimationSession {
             this.mMaxRadius = radius;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setOrigin(FloatType x, FloatType y) {
             this.mX = x;
             this.mY = y;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public FloatType getX() {
             return this.mX;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public FloatType getY() {
             return this.mY;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public FloatType getMaxRadius() {
             return this.mMaxRadius;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public PaintType getPaint() {
             return this.mPaint;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public RippleShader getShader() {
             return this.mShader;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public FloatType getNoisePhase() {
             return this.mNoisePhase;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getColor() {
             return this.mColor;
         }

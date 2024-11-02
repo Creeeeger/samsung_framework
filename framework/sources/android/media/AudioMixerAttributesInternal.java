@@ -8,7 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class AudioMixerAttributesInternal implements Parcelable {
     public static final Parcelable.Creator<AudioMixerAttributesInternal> CREATOR = new Parcelable.Creator<AudioMixerAttributesInternal>() { // from class: android.media.AudioMixerAttributesInternal.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioMixerAttributesInternal createFromParcel(Parcel _aidl_source) {
             AudioMixerAttributesInternal _aidl_out = new AudioMixerAttributesInternal();
@@ -16,7 +18,6 @@ public class AudioMixerAttributesInternal implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMixerAttributesInternal[] newArray(int _aidl_size) {
             return new AudioMixerAttributesInternal[_aidl_size];
@@ -24,6 +25,25 @@ public class AudioMixerAttributesInternal implements Parcelable {
     };
     public AudioConfigBase config;
     public int mixerBehavior;
+
+    /* renamed from: android.media.AudioMixerAttributesInternal$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioMixerAttributesInternal> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioMixerAttributesInternal createFromParcel(Parcel _aidl_source) {
+            AudioMixerAttributesInternal _aidl_out = new AudioMixerAttributesInternal();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioMixerAttributesInternal[] newArray(int _aidl_size) {
+            return new AudioMixerAttributesInternal[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

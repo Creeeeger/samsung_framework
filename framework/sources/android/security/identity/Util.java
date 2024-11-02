@@ -27,7 +27,6 @@ public class Util {
         return ret;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] publicKeyEncodeUncompressedForm(PublicKey publicKey) {
         ECPoint w = ((ECPublicKey) publicKey).getW();
         BigInteger x = w.getAffineX();

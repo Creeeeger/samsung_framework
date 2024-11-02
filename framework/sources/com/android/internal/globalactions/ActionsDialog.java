@@ -32,7 +32,6 @@ public final class ActionsDialog extends Dialog implements DialogInterface {
         return outValue.resourceId;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Dialog
     public void onStart() {
         super.setCanceledOnTouchOutside(true);
@@ -43,7 +42,6 @@ public final class ActionsDialog extends Dialog implements DialogInterface {
         return this.mAlert.getListView();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Dialog
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

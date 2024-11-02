@@ -11,7 +11,6 @@ public class SContextTemperatureAlertAttribute extends SContextAttribute {
     private boolean mIsIncluding;
     private int mLowTemperature;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextTemperatureAlertAttribute() {
         this.mLowTemperature = 70;
         this.mHighTemperature = 127;

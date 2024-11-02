@@ -7,13 +7,14 @@ import android.os.UserHandle;
 /* loaded from: classes.dex */
 public class SemUserInfo implements Parcelable {
     public static final Parcelable.Creator<SemUserInfo> CREATOR = new Parcelable.Creator<SemUserInfo>() { // from class: android.content.pm.SemUserInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemUserInfo createFromParcel(Parcel source) {
             return new SemUserInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemUserInfo[] newArray(int size) {
             return new SemUserInfo[size];
@@ -23,6 +24,10 @@ public class SemUserInfo implements Parcelable {
     public int flags;
     public int id;
     public String name;
+
+    /* synthetic */ SemUserInfo(Parcel parcel, SemUserInfoIA semUserInfoIA) {
+        this(parcel);
+    }
 
     public SemUserInfo(UserInfo ui) {
         if (ui != null) {
@@ -56,6 +61,23 @@ public class SemUserInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.content.pm.SemUserInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemUserInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemUserInfo createFromParcel(Parcel source) {
+            return new SemUserInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemUserInfo[] newArray(int size) {
+            return new SemUserInfo[size];
+        }
     }
 
     private SemUserInfo(Parcel source) {

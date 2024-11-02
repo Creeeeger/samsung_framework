@@ -48,7 +48,6 @@ public abstract class ICmdList {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void putAtCommands(String cmd, int cmd_type) {
         putAtCommands(cmd, cmd_type, false);
     }

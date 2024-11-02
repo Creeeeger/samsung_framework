@@ -23,7 +23,9 @@ public final class ZenPolicy implements Parcelable {
     public static final int CONVERSATION_SENDERS_NONE = 3;
     public static final int CONVERSATION_SENDERS_UNSET = 0;
     public static final Parcelable.Creator<ZenPolicy> CREATOR = new Parcelable.Creator<ZenPolicy>() { // from class: android.service.notification.ZenPolicy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ZenPolicy createFromParcel(Parcel source) {
             ZenPolicy policy = new ZenPolicy();
@@ -39,7 +41,6 @@ public final class ZenPolicy implements Parcelable {
             return policy;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ZenPolicy[] newArray(int size) {
             return new ZenPolicy[size];
@@ -363,7 +364,10 @@ public final class ZenPolicy implements Parcelable {
         }
 
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Code restructure failed: missing block: B:8:0x001c, code lost:            return r0;     */
+        /* JADX WARN: Code restructure failed: missing block: B:8:0x001c, code lost:
+        
+            return r0;
+         */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -461,7 +465,10 @@ public final class ZenPolicy implements Parcelable {
         }
 
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Code restructure failed: missing block: B:9:0x0020, code lost:            return r0;     */
+        /* JADX WARN: Code restructure failed: missing block: B:9:0x0020, code lost:
+        
+            return r0;
+         */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -526,11 +533,37 @@ public final class ZenPolicy implements Parcelable {
         dest.writeBoolean(this.mIsAppBypassDndOverridden);
     }
 
+    /* renamed from: android.service.notification.ZenPolicy$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ZenPolicy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ZenPolicy createFromParcel(Parcel source) {
+            ZenPolicy policy = new ZenPolicy();
+            policy.mPriorityCategories = ZenPolicy.trimList(source.readArrayList(Integer.class.getClassLoader(), Integer.class), 9);
+            policy.mVisualEffects = ZenPolicy.trimList(source.readArrayList(Integer.class.getClassLoader(), Integer.class), 7);
+            policy.mPriorityCalls = source.readInt();
+            policy.mPriorityMessages = source.readInt();
+            policy.mConversationSenders = source.readInt();
+            policy.mAppsToBypassDnd = source.readArrayList(String.class.getClassLoader());
+            policy.mExceptionContacts = source.readArrayList(String.class.getClassLoader());
+            policy.mIsContactsOverridden = source.readBoolean();
+            policy.mIsAppBypassDndOverridden = source.readBoolean();
+            return policy;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ZenPolicy[] newArray(int size) {
+            return new ZenPolicy[size];
+        }
+    }
+
     public String toString() {
         return ZenPolicy.class.getSimpleName() + "{priorityCategories=[" + priorityCategoriesToString() + "], visualEffects=[" + visualEffectsToString() + "], priorityCallsSenders=" + peopleTypeToString(this.mPriorityCalls) + ", priorityMessagesSenders=" + peopleTypeToString(this.mPriorityMessages) + ", priorityConversationSenders=" + conversationTypeToString(this.mConversationSenders) + ", appsToBypassDnd=" + appsToBypassDndToString(this.mAppsToBypassDnd) + ", exceptionContacts=" + appsToBypassDndToString(this.mExceptionContacts) + ", isContactsOverridden=" + Boolean.toString(this.mIsContactsOverridden) + ", isAppBypassDndOverridden=" + Boolean.toString(this.mIsAppBypassDndOverridden) + '}';
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ArrayList<Integer> trimList(ArrayList<Integer> list, int maxLength) {
         if (list == null || list.size() <= maxLength) {
             return list;

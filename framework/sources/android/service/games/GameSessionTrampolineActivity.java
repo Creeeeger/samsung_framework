@@ -26,7 +26,6 @@ public final class GameSessionTrampolineActivity extends Activity {
         return trampolineIntent;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,14 +47,12 @@ public final class GameSessionTrampolineActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(HAS_LAUNCHED_INTENT_KEY, this.mHasLaunchedIntent);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode != 1) {

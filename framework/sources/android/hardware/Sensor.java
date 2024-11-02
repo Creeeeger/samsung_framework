@@ -280,7 +280,6 @@ public final class Sensor {
         return 16;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Sensor() {
     }
 

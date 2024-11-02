@@ -12,6 +12,10 @@ public class RuleSet {
     private final List<Rule> mRules;
     private final String mVersion;
 
+    /* synthetic */ RuleSet(String str, List list, RuleSetIA ruleSetIA) {
+        this(str, list);
+    }
+
     private RuleSet(String version, List<Rule> rules) {
         this.mVersion = version;
         this.mRules = Collections.unmodifiableList(rules);

@@ -96,8 +96,9 @@ public interface ISemWifiP2pCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISemWifiP2pCallback {
+        public static class Proxy implements ISemWifiP2pCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

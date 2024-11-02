@@ -15,19 +15,24 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class RegisterCredentialDescriptionRequest implements Parcelable {
     public static final Parcelable.Creator<RegisterCredentialDescriptionRequest> CREATOR = new Parcelable.Creator<RegisterCredentialDescriptionRequest>() { // from class: android.credentials.RegisterCredentialDescriptionRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RegisterCredentialDescriptionRequest createFromParcel(Parcel in) {
             return new RegisterCredentialDescriptionRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RegisterCredentialDescriptionRequest[] newArray(int size) {
             return new RegisterCredentialDescriptionRequest[size];
         }
     };
     private final List<CredentialDescription> mCredentialDescriptions;
+
+    /* synthetic */ RegisterCredentialDescriptionRequest(Parcel parcel, RegisterCredentialDescriptionRequestIA registerCredentialDescriptionRequestIA) {
+        this(parcel);
+    }
 
     public RegisterCredentialDescriptionRequest(CredentialDescription credentialDescription) {
         this.mCredentialDescriptions = Arrays.asList((CredentialDescription) Objects.requireNonNull(credentialDescription));
@@ -44,6 +49,23 @@ public final class RegisterCredentialDescriptionRequest implements Parcelable {
         this.mCredentialDescriptions = arrayList2;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
         arrayList2.addAll(arrayList);
+    }
+
+    /* renamed from: android.credentials.RegisterCredentialDescriptionRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RegisterCredentialDescriptionRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RegisterCredentialDescriptionRequest createFromParcel(Parcel in) {
+            return new RegisterCredentialDescriptionRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RegisterCredentialDescriptionRequest[] newArray(int size) {
+            return new RegisterCredentialDescriptionRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

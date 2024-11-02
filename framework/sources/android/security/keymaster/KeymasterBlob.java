@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class KeymasterBlob implements Parcelable {
     public static final Parcelable.Creator<KeymasterBlob> CREATOR = new Parcelable.Creator<KeymasterBlob>() { // from class: android.security.keymaster.KeymasterBlob.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeymasterBlob createFromParcel(Parcel in) {
             return new KeymasterBlob(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeymasterBlob[] newArray(int length) {
             return new KeymasterBlob[length];
@@ -22,6 +23,23 @@ public class KeymasterBlob implements Parcelable {
 
     public KeymasterBlob(byte[] blob) {
         this.blob = blob;
+    }
+
+    /* renamed from: android.security.keymaster.KeymasterBlob$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeymasterBlob> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeymasterBlob createFromParcel(Parcel in) {
+            return new KeymasterBlob(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeymasterBlob[] newArray(int length) {
+            return new KeymasterBlob[length];
+        }
     }
 
     protected KeymasterBlob(Parcel in) {

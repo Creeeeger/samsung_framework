@@ -8,14 +8,15 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class TableRequest extends BroadcastInfoRequest implements Parcelable {
     public static final Parcelable.Creator<TableRequest> CREATOR = new Parcelable.Creator<TableRequest>() { // from class: android.media.tv.TableRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TableRequest createFromParcel(Parcel source) {
             source.readInt();
             return TableRequest.createFromParcelBody(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TableRequest[] newArray(int size) {
             return new TableRequest[size];
@@ -41,7 +42,24 @@ public final class TableRequest extends BroadcastInfoRequest implements Parcelab
     public @interface TableName {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.TableRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TableRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TableRequest createFromParcel(Parcel source) {
+            source.readInt();
+            return TableRequest.createFromParcelBody(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TableRequest[] newArray(int size) {
+            return new TableRequest[size];
+        }
+    }
+
     public static TableRequest createFromParcelBody(Parcel in) {
         return new TableRequest(in);
     }

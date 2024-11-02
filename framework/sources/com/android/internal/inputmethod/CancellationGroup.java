@@ -10,7 +10,6 @@ public final class CancellationGroup {
     private ArrayList<CompletableFuture<?>> mFutureList = null;
     private boolean mCanceled = false;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean tryRegisterFutureOrCancelImmediately(CompletableFuture<?> future) {
         synchronized (this.mLock) {
             if (this.mCanceled) {
@@ -25,7 +24,6 @@ public final class CancellationGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unregisterFuture(CompletableFuture<?> future) {
         synchronized (this.mLock) {
             ArrayList<CompletableFuture<?>> arrayList = this.mFutureList;

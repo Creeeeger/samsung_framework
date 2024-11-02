@@ -93,8 +93,9 @@ public interface IInjectGlobalEvent extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IInjectGlobalEvent {
+        public static class Proxy implements IInjectGlobalEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

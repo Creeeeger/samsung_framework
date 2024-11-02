@@ -384,12 +384,12 @@
     <string name="allow_settings_changes">Η πολιτική ασφάλειας δεν επιτρέπει την αλλαγή των ρυθμίσεων.</string>
     <string name="alwaysUse">Χρήση από προεπιλογή για αυτήν την ενέργεια.</string>
     <string name="android_preparing_apk">Προετοιμασία %1$s.</string>
-    <string name="android_start_title">Εκκίνηση τηλεφώνου…</string>
+    <string name="android_start_title">Εκκίνηση tablet…</string>
     <string name="android_system_label">Σύστημα Android</string>
     <string name="android_upgrading_complete">Ολοκλήρωση εκκίνησης.</string>
     <string name="android_upgrading_notification_title">Ολοκλήρωση ενημέρωσης συστήματος…</string>
     <string name="android_upgrading_starting_apps">Έναρξη εφαρμογών.</string>
-    <string name="android_upgrading_title">Ενημέρωση τηλεφώνου…</string>
+    <string name="android_upgrading_title">Ενημέρωση tablet…</string>
     <string name="anr_activity_application">Η εφαρμογή %2$s δεν ανταποκρίνεται</string>
     <string name="anr_activity_process">Η δραστηριότητα %1$s δεν ανταποκρίνεται</string>
     <string name="anr_application_process">Η εφαρμογή %1$s δεν ανταποκρίνεται</string>
@@ -423,16 +423,16 @@
     <string name="app_restricted_message_concentration_mode">Η πρόσβαση στην εφαρμογή %s είναι περιορισμένη στη Λειτουργία συγκέντρωσης. Επικοινωνήστε με τον διαχειριστή IT για να μάθετε περισσότερα.</string>
     <string name="app_running_notification_text">Πατήστε για περισσότερες πληροφορίες ή για να διακόψετε την εκτέλεση της εφαρμογής.</string>
     <string name="app_running_notification_title">Η εφαρμογή %1$s εκτελείται</string>
-    <string name="app_streaming_blocked_message">Δεν είναι δυνατή η πρόσβαση στη συγκεκριμένη εφαρμογή από τη συσκευή %1$s αυτήν τη στιγμή. Δοκιμάστε στο τηλέφωνό σας.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Αυτή η εφαρμογή ζητά πρόσθετη ασφάλεια. Δοκιμάστε στο τηλέφωνό σας.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Δεν είναι δυνατή η πρόσβαση σε αυτό το στοιχείο από τη συσκευή %1$s. Δοκιμάστε στο τηλέφωνό σας.</string>
+    <string name="app_streaming_blocked_message">Δεν είναι δυνατή η πρόσβαση στη συγκεκριμένη εφαρμογή από τη συσκευή %1$s αυτήν τη στιγμή. Δοκιμάστε στο tablet σας.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Αυτή η εφαρμογή ζητά πρόσθετη ασφάλεια. Δοκιμάστε στο tablet σας.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Δεν είναι δυνατή η πρόσβαση σε αυτό το στοιχείο από τη συσκευή %1$s. Δοκιμάστε στο tablet σας.</string>
     <string name="app_streaming_blocked_title">%1$s δεν διατίθεται</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Η κάμερα δεν είναι διαθέσιμη</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Συνέχεια στο τηλέφωνο</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Το μικρόφωνο δεν είναι διαθέσιμο</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Απαιτείται άδεια</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Το Play Store δεν είναι διαθέσιμο</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Οι ρυθμίσεις του τηλεφώνου δεν είναι διαθέσιμες</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Οι ρυθμίσεις του tablet δεν είναι διαθέσιμες</string>
     <string name="app_suspended_default_message">Η εφαρμογή %1$s δεν είναι διαθέσιμη αυτήν τη στιγμή. Η διαχείριση πραγματοποιείται από την εφαρμογή %2$s.</string>
     <string name="app_suspended_more_details">Μάθετε περισσότερα</string>
     <string name="app_suspended_title">Η εφαρμογή δεν είναι διαθέσιμη</string>
@@ -503,7 +503,7 @@
     <string name="badPuk">Ο κωδικός PUK που πληκτρολογήσατε είναι λάθος.</string>
     <string name="badPuk2">Το PUK2 που καταχωρίσατε είναι λανθασμένο</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Το τηλέφωνο είναι αρκετά φορτισμένο. Οι λειτουργίες δεν περιορίζονται πλέον.</string>
+    <string name="battery_saver_charged_notification_summary">Το tablet είναι αρκετά φορτισμένο. Οι λειτουργίες δεν περιορίζονται πλέον.</string>
     <string name="battery_saver_description">Η Εξοικονόμηση μπαταρίας ενεργοποιεί το Σκούρο θέμα και περιορίζει ή απενεργοποιεί τη δραστηριότητα στο παρασκήνιο, ορισμένα οπτικά εφέ, συγκεκριμένες λειτουργίες και ορισμένες συνδέσεις δικτύου.</string>
     <string name="battery_saver_description_with_learn_more">Η Εξοικονόμηση μπαταρίας ενεργοποιεί το Σκούρο θέμα και περιορίζει ή απενεργοποιεί τη δραστηριότητα στο παρασκήνιο, ορισμένα οπτικά εφέ, συγκεκριμένες λειτουργίες και κάποιες συνδέσεις δικτύου.</string>
     <string name="battery_saver_notification_channel_name">Εξοικονόμηση μπαταρίας</string>
@@ -733,7 +733,7 @@
     <string name="decline">Απόρριψη</string>
     <string name="decline_remote_bugreport_action">ΑΠΟΡΡΙΨΗ</string>
     <string name="default_audio_route_category_name">Σύστημα</string>
-    <string name="default_audio_route_name">Τηλέφωνο</string>
+    <string name="default_audio_route_name">Tablet</string>
     <string name="default_audio_route_name_dock_speakers">Ηχεία βάσης σύνδεσης</string>
     <string name="default_audio_route_name_external_device">Εξωτερική συσκευή</string>
     <string name="default_audio_route_name_headphones">Ακουστικά</string>
@@ -860,7 +860,7 @@
     <string name="emergency_call_dialog_number_for_display">Αριθμός έκτακτης ανάγκης</string>
     <string name="emergency_calls_only">Μόνο κλήσεις έκτακτης ανάγκης</string>
     <string name="enablePin">Ανεπιτυχής προσπάθεια. Ενεργοποιήστε το Κλείδωμα SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">Η υπηρεσία %1$s απαιτεί ενεργοποίηση της Εξερεύνησης μέσω αφής. Όταν είναι ενεργοποιημένη η Εξερεύνηση μέσω αφής, μπορείτε να δείτε ή να ακούσετε περιγραφές για τις επιλογές που βρίσκονται κάτω από το δάχτυλό σας ή να κάνετε κινήσεις αλληλεπίδρασης με το τηλέφωνό σας.</string>
+    <string name="enable_explore_by_touch_warning_message">Η υπηρεσία %1$s απαιτεί ενεργοποίηση της Εξερεύνησης μέσω αφής. Όταν είναι ενεργοποιημένη η Εξερεύνηση μέσω αφής, μπορείτε να δείτε ή να ακούσετε περιγραφές για τις επιλογές που βρίσκονται κάτω από το δάχτυλό σας ή να κάνετε κινήσεις αλληλεπίδρασης με το tablet σας.</string>
     <string name="enable_explore_by_touch_warning_title">Ενεργοποίηση Αναζήτησης μέσω αφής;</string>
     <string name="error_message_change_not_allowed">Αυτή η αλλαγή δεν επιτρέπεται από το διαχειριστή σας</string>
     <string name="error_message_title">Σφάλμα</string>
@@ -924,7 +924,7 @@
     <string name="ext_media_unsupported_notification_message">Αυτή η συσκευή δεν υποστηρίζει τη συγκεκριμένη κάρτα %s. Πατήστε για να τη διαμορφώσετε σε μια υποστηριζόμενη μορφή.</string>
     <string name="ext_media_unsupported_notification_title">Μη υποστηριζόμενη κάρτα %s</string>
     <string name="ext_storage_bad_removal_button">Επανεκκίνηση</string>
-    <string name="ext_storage_bad_removal_title">Επανεκκινήστε το τηλέφωνό σας</string>
+    <string name="ext_storage_bad_removal_title">Επανεκκινήστε το tablet σας</string>
     <string name="extmedia_format_button_format">Μορφή</string>
     <string name="extmedia_format_message">Όλα τα δεδομένα που υπάρχουν στην κάρτα σας θα χαθούν.</string>
     <string name="extmedia_format_message_usbhost">Όλα τα αρχεία που είναι αποθηκευμένα στον αποθηκευτικό σας χώρο USB θα διαγραφούν. Αυτή η ενέργεια δεν είναι αναστρέψιμη!</string>
@@ -1128,7 +1128,7 @@
     <string name="global_action_toggle_sealed_mode">Λειτουργία σφράγισης</string>
     <string name="global_action_toggle_silent_mode">Λειτουργία σίγασης</string>
     <string name="global_action_voice_assist">Φων.υποβοηθ.</string>
-    <string name="global_actions">Επιλογές τηλεφώνου</string>
+    <string name="global_actions">Επιλογές tablet</string>
     <string name="global_actions_airplane_mode_off_status">Λειτ. πτήσης είναι ανενεργή</string>
     <string name="global_actions_airplane_mode_on_status">Η λειτουργία πτήσης είναι ενεργοποιημένη.</string>
     <string name="global_actions_toggle_airplane_mode">Λειτουργία πτήσης</string>
@@ -1313,11 +1313,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Πατήστε για εισαγ.κωδ. πρόσβ.&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Λανθασμένος κωδικός PIN.</string>
     <string name="kg_enter_confirm_pin_hint">Επιβεβαιώστε τον απαιτούμενο κωδικό PIN</string>
-    <string name="kg_failed_attempts_almost_at_login">"Σχεδιάσατε το μοτίβο ξεκλειδώματος εσφαλμένα %1$d φορές. Μετά από %2$d ανεπιτυχείς προσπάθειες ακόμη, θα σας ζητηθεί να ξεκλειδώσετε το τηλέφωνό σας με τη χρήση ενός λογαριασμού ηλεκτρονικού ταχυδρομείου.
+    <string name="kg_failed_attempts_almost_at_login">"Σχεδιάσατε το μοτίβο ξεκλειδώματος εσφαλμένα %1$d φορές. Μετά από %2$d ανεπιτυχείς προσπάθειες ακόμη, θα σας ζητηθεί να ξεκλειδώσετε το tablet σας με τη χρήση ενός λογαριασμού ηλεκτρονικού ταχυδρομείου.
 
- Δοκιμάστε ξανά σε %3$d δευτερόλεπτα."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Προσπαθήσατε να ξεκλειδώσετε εσφαλμένα το τηλέφωνο %1$d φορές. Μετά από %2$d προσπάθειες, το τηλέφωνο θα επαναφερθεί στις εργοστασιακές ρυθμίσεις και όλα τα δεδομένα χρήστη θα χαθούν.</string>
-    <string name="kg_failed_attempts_now_wiping">Προσπαθήσατε να ξεκλειδώσετε εσφαλμένα το τηλέφωνο %d φορές. Το τηλέφωνο θα επαναφερθεί στις εργοστασιακές ρυθμίσεις.</string>
+ Δοκιμάστε να συνδεθείτε ξανά σε %3$d δευτερόλεπτα."</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Προσπαθήσατε να ξεκλειδώσετε εσφαλμένα το tablet %1$d φορές. Μετά από %2$d προσπάθειες, το tablet θα επαναφερθεί στις εργοστασιακές ρυθμίσεις και όλα τα δεδομένα χρήστη θα χαθούν.</string>
+    <string name="kg_failed_attempts_now_wiping">Προσπαθήσατε να ξεκλειδώσετε εσφαλμένα το tablet %d φορές. Το tablet θα επαναφερθεί στις εργοστασιακές ρυθμίσεις.</string>
     <string name="kg_forgot_pattern_button_text">Ξεχάσατε το μοτίβο</string>
     <string name="kg_invalid_confirm_pin_hint">Δεν υπάρχει αντιστοιχία των κωδικών PIN</string>
     <string name="kg_invalid_puk">Εισαγάγετε ξανά τον κωδικό PUK. Οι επαναλαμβανόμενες προσπάθειες θα απενεργοποιήσουν οριστικά την κάρτα SIM.</string>
@@ -1405,11 +1405,11 @@
     <string name="lockscreen_carrier_default">Δίκτυο μη διαθέσιμο</string>
     <string name="lockscreen_carrier_noservice">(Μη διαθέσιμη υπηρεσία).</string>
     <string name="lockscreen_emergency_call">Κλήση έκτακτης ανάγκης</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Προσπαθήσατε να ξεκλειδώσετε εσφαλμένα το τηλέφωνο %1$d φορές. Μετά από %2$d προσπάθειες, το τηλέφωνο θα επαναφερθεί στις εργοστασιακές ρυθμίσεις και όλα τα δεδομένα χρήστη θα χαθούν.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Σχεδιάσατε το μοτίβο ξεκλειδώματος εσφαλμένα %1$d φορές. Μετά από %2$d ανεπιτυχείς προσπάθειες ακόμη, θα σας ζητηθεί να ξεκλειδώσετε το τηλέφωνό σας με τη χρήση της σύνδεσής σας Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Προσπαθήσατε να ξεκλειδώσετε εσφαλμένα το tablet %1$d φορές. Μετά από %2$d προσπάθειες, το tablet θα επαναφερθεί στις εργοστασιακές ρυθμίσεις και όλα τα δεδομένα χρήστη θα χαθούν.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Σχεδιάσατε το μοτίβο ξεκλειδώματος εσφαλμένα %1$d φορές. Μετά από %2$d ανεπιτυχείς προσπάθειες ακόμη, θα σας ζητηθεί να ξεκλειδώσετε το tablet σας με τη χρήση της σύνδεσής σας Google.
 
  Προσπαθήστε ξανά σε %3$d δευτερόλεπτα."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Προσπαθήσατε να ξεκλειδώσετε εσφαλμένα το τηλέφωνο %d φορές. Το τηλέφωνο θα επαναφερθεί στην εργοστασιακή προεπιλογή.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Προσπαθήσατε να ξεκλειδώσετε εσφαλμένα το tablet %d φορές. Το tablet θα επαναφερθεί στην εργοστασιακή προεπιλογή.</string>
     <string name="lockscreen_forgot_pattern_button_text">Ξεχάσατε το μοτίβο;</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Ξεχάσατε το όνομα χρήστη ή τον κωδικό πρόσβασής σας;
 Επισκεφτείτε τη διεύθυνση "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1425,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Πατήστε \"Menu\" για ξεκλείδωμα ή για κλήση έκτακτης ανάγκης.</string>
     <string name="lockscreen_missing_sim_instructions">Προσθέστε μια SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">Η SIM λείπει ή δεν είναι δυνατή η ανάγνωσή της. Προσθέστε μια SIM.</string>
-    <string name="lockscreen_missing_sim_message">Δεν υπάρχει SIM στο τηλέφωνο.</string>
+    <string name="lockscreen_missing_sim_message">Δεν υπάρχει SIM στο tablet.</string>
     <string name="lockscreen_missing_sim_message_short">Δεν υπάρχει SIM</string>
     <string name="lockscreen_network_locked_message">Το δίκτυο κλειδώθηκε</string>
     <string name="lockscreen_password_wrong">Προσπαθήστε ξανά</string>
@@ -1465,7 +1465,7 @@
     <string name="low_internal_storage_view_text">Ορισμένες λειτουργίες συστήματος ενδέχεται να μην λειτουργούν</string>
     <string name="low_internal_storage_view_text_no_boot">Δεν υπάρχει αρκετός αποθηκευτικός χώρος για το σύστημα. Βεβαιωθείτε ότι διαθέτετε 250 MB ελεύθερου χώρου και κάντε επανεκκίνηση.</string>
     <string name="low_internal_storage_view_title">Ο αποθηκευτικός χώρος εξαντλείται</string>
-    <string name="low_memory">Ο αποθηκευτικός χώρος του τηλεφώνου είναι πλήρης. Διαγράψτε μερικά αρχεία για να δημιουργήσετε ελεύθερο χώρο.</string>
+    <string name="low_memory">Ο αποθηκευτικός χώρος του tablet είναι πλήρης. Διαγράψτε μερικά αρχεία για να δημιουργήσετε ελεύθερο χώρο.</string>
     <string name="ltb_kill_content_v2_phone">Η εφαρμογή %s έκλεισε επειδή προκαλούσε υπερθέρμανση του τηλεφώνου. Μπορείτε να την ανοίξετε ξανά αργότερα, μόλις μειωθεί η θερμοκρασία του τηλεφώνου.</string>
     <string name="ltb_kill_content_v2_tablet">Η εφαρμογή %s έκλεισε επειδή προκαλούσε υπερθέρμανση του tablet. Μπορείτε να την ανοίξετε ξανά αργότερα, μόλις μειωθεί η θερμοκρασία του tablet.</string>
     <string name="ltb_warning_button">Να μην κλείσει</string>
@@ -1777,18 +1777,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Ο ήχος αναπαράγεται στη συσκευή ήχου Bluetooth. Πατήστε εδώ για απενεργοποίηση</string>
     <string name="multisound_sound_via_headphone">Ο ήχος της εφαρμογής %s ακούγεται μέσω των ακουστικών σας. Πατήστε εδώ για να τον απενεργοποιήσετε.</string>
     <string name="multisound_sound_via_headphone_multiselection">Ο ήχος αναπαράγεται μέσω των ακουστικών σας. Πατήστε εδώ για απενεργοποίηση.</string>
-    <string name="multisound_sound_via_phone_speaker">Ο ήχος της εφαρμογής %s ακούγεται μέσω του ηχείου του τηλεφώνου σας. Πατήστε εδώ για να τον απενεργοποιήσετε.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Ο ήχος αναπαράγεται μέσω του ηχείου του τηλεφώνου σας. Πατήστε εδώ για απενεργοποίηση.</string>
+    <string name="multisound_sound_via_phone_speaker">Ο ήχος της εφαρμογής %s ακούγεται μέσω του ηχείου του tablet σας. Πατήστε εδώ για να τον απενεργοποιήσετε.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Ο ήχος αναπαράγεται μέσω του ηχείου του tablet σας. Πατήστε εδώ για απενεργοποίηση.</string>
     <string name="multisound_sound_via_usb_audio">Ο ήχος της εφαρμογής %s ακούγεται μέσω της συσκευής ήχου USB. Πατήστε εδώ για να τον απενεργοποιήσετε.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Ο ήχος αναπαράγεται μέσω της συσκευής ήχου USB. Πατήστε εδώ για απενεργοποίηση.</string>
     <string name="multisound_title">Διαχωρισμός ήχου εφαρμογής</string>
     <string name="multisound_turn_off_multisound">Απενεργοποίηση</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Η εφαρμογή %s δεν μπορεί να εκτελεστεί στο Samsung DeX. Δοκιμάστε να την εκτελέσετε σε λειτουργία τηλεφώνου.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Η εφαρμογή %s δεν μπορεί να εκτελεστεί στο Samsung DeX. Έχει σχεδιαστεί για Αρχικές οθόνες τηλεφώνων.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Ορισμένα παιχνίδια λειτουργούν μόνο σε οθόνες αφής. Αν ο χειρισμός με το ποντίκι δεν λειτουργεί στο Samsung DeX, δοκιμάστε αντί αυτού να παίξετε στη λειτουργία τηλεφώνου.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Η εφαρμογή %s δεν μπορεί να εκτελεστεί στο Samsung DeX. Δοκιμάστε να την εκτελέσετε σε λειτουργία tablet.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Η εφαρμογή %s δεν μπορεί να εκτελεστεί στο Samsung DeX. Έχει σχεδιαστεί για Αρχικές οθόνες tablet.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Ορισμένα παιχνίδια λειτουργούν μόνο σε οθόνες αφής. Αν ο χειρισμός με το ποντίκι δεν λειτουργεί στο Samsung DeX, δοκιμάστε αντί αυτού να παίξετε στη λειτουργία tablet.</string>
     <string name="music_recognition_manager_service">Υπηρεσία διαχείρισης αναγνώρισης μουσικής</string>
     <string name="muted_by">Το τρίτο μέρος %1$s θέτει ορισμένους ήχους σε σίγαση</string>
-    <string name="my_device">Αυτό το τηλέφωνο</string>
+    <string name="my_device">Αυτό το tablet</string>
     <string name="nas_upgrade_notification_content">Οι προτεινόμενες ενέργειες και απαντήσεις παρέχονται πλέον από βελτιωμένες ειδοποιήσεις. Δεν υποστηρίζονται πλέον οι Προσαρμοστικές ειδοποιήσεις Android.</string>
     <string name="nas_upgrade_notification_disable_action">Απενεργοποίηση</string>
     <string name="nas_upgrade_notification_enable_action">ΟΚ</string>
@@ -1953,23 +1953,23 @@
     <string name="permdesc_bindNotificationListenerService">Επιτρέπει στον κάτοχο τη δέσμευση στη διεπαφή ανωτάτου επιπέδου μιας υπηρεσίας ακρόασης ειδοποιήσεων. Δεν απαιτείται σε κανονικές εφαρμογές.</string>
     <string name="permdesc_bind_connection_service">Επιτρέπει στην εφαρμογή να αλληλεπιδρά με υπηρεσίες τηλεφωνίας για την πραγματοποίηση/λήψη κλήσεων.</string>
     <string name="permdesc_bind_incall_service">Επιτρέπει στην εφαρμογή να ελέγχει πότε και πώς βλέπει ο χρήστης την οθόνη κατά τη διάρκεια κλήσης.</string>
-    <string name="permdesc_bluetooth">Επιτρέπει στην εφαρμογή να προβάλλει τη διαμόρφωση του Bluetooth στο τηλέφωνο, καθώς και να πραγματοποιεί και να αποδέχεται συνδέσεις με συνδεδεμένες συσκευές.</string>
+    <string name="permdesc_bluetooth">Επιτρέπει στην εφαρμογή να προβάλλει τη διαμόρφωση του Bluetooth στο tablet, καθώς και να πραγματοποιεί και να αποδέχεται συνδέσεις με συνδεδεμένες συσκευές.</string>
     <string name="permdesc_bluetoothAdmin">Επιτρέπει στην εφαρμογή τη διαμόρφωση του τοπικού tablet Bluetooth, τον εντοπισμό και τη σύζευξη με απομακρυσμένες συσκευές.</string>
     <string name="permdesc_bluetooth_advertise">Επιτρέπει στην εφαρμογή να προβάλλει διαφημίσεις σε κοντινές συσκευές Bluetooth</string>
     <string name="permdesc_bluetooth_connect">Επιτρέπει στην εφαρμογή τη σύνδεση σε συζευγμένες συσκευές Bluetooth</string>
     <string name="permdesc_bluetooth_scan">Επιτρέπει στην εφαρμογή την ανακάλυψη και τη σύζευξη κοντινών συσκευών Bluetooth</string>
     <string name="permdesc_bodySensors">Επιτρέπει στην εφαρμογή να αποκτά πρόσβαση σε δεδομένα αισθητήρων σώματος, όπως καρδιακό ρυθμό, θερμοκρασία και ποσοστό οξυγόνου στο αίμα, ενώ η εφαρμογή χρησιμοποιείται.</string>
     <string name="permdesc_bodySensors_background">Επιτρέπει στην εφαρμογή να αποκτά πρόσβαση σε δεδομένα αισθητήρων σώματος, όπως καρδιακό ρυθμό, θερμοκρασία και ποσοστό οξυγόνου στο αίμα, ενώ η εφαρμογή βρίσκεται στο παρασκήνιο.</string>
-    <string name="permdesc_broadcastSticky">Επιτρέπει στην εφαρμογή την αποστολή εκπομπών sticky, οι οποίες παραμένουν μετά το τέλος της εκπομπής. Η υπερβολική χρήση ενδέχεται να καταστήσει τη λειτουργία του τηλεφώνου αργή ή ασταθή, προκαλώντας τη χρήση μεγάλου τμήματος της μνήμης.</string>
+    <string name="permdesc_broadcastSticky">Επιτρέπει στην εφαρμογή την αποστολή εκπομπών sticky, οι οποίες παραμένουν μετά το τέλος της εκπομπής. Η υπερβολική χρήση ενδέχεται να καταστήσει τη λειτουργία του tablet αργή ή ασταθή, προκαλώντας τη χρήση μεγάλου τμήματος της μνήμης.</string>
     <string name="permdesc_callCompanionApp">Επιτρέπει στην εφαρμογή να βλέπει και να ελέγχει τις εισερχόμενες κλήσεις στη συσκευή. Αυτό περιλαμβάνει πληροφορίες όπως τους αριθμούς κλήσεων για τις κλήσεις και την κατάσταση των κλήσεων.</string>
     <string name="permdesc_callPhone">Επιτρέπει στην εφαρμογή να καλεί αριθμούς τηλεφώνου χωρίς τη δική σας παρέμβαση. Αυτό μπορεί να οδηγήσει σε απροσδόκητες χρεώσεις ή κλήσεις. Λάβετε υπόψη ότι αυτό δεν επιτρέπει την κλήση αριθμών έκτακτης ανάγκης. Οι κακόβουλες εφαρμογές ενδέχεται να σας επιφέρουν χρεώσεις πραγματοποιώντας κλήσεις χωρίς την επιβεβαίωσή σας ή καλώντας κωδικούς εταιρείας κινητής τηλεφωνίας που προκαλούν την αυτόματη προώθηση των εισερχόμενων κλήσεων σε άλλον αριθμό.</string>
     <string name="permdesc_camera">Αυτή η εφαρμογή μπορεί να τραβάει φωτογραφίες και να εγγράφει βίντεο μέσω της κάμερας, όταν τη χρησιμοποιείτε.</string>
     <string name="permdesc_cameraOpenCloseListener">Αυτή η εφαρμογή μπορεί να λαμβάνει επανακλήσεις κατά το άνοιγμα οποιασδήποτε συσκευής κάμερας (από οποιαδήποτε εφαρμογή) ή κατά το κλείσιμο.</string>
     <string name="permdesc_changeNetworkState">Επιτρέπει στην εφαρμογή την αλλαγή της κατάστασης συνδεσιμότητας δικτύου.</string>
     <string name="permdesc_changeTetherState">Επιτρέπει στην εφαρμογή την αλλαγή της κατάστασης συνδεσιμότητας δικτύου.</string>
-    <string name="permdesc_changeWifiMulticastState">Επιτρέπει στην εφαρμογή τη λήψη πακέτων που αποστέλλονται σε όλες τις συσκευές σε ένα δίκτυο Wi-Fi, με χρήση διευθύνσεων πολλαπλής διανομής και όχι απλώς στο τηλέφωνό σας. Χρησιμοποιεί περισσότερη ενέργεια σε σχέση με τη λειτουργία χωρίς πολλαπλή διανομή.</string>
+    <string name="permdesc_changeWifiMulticastState">Επιτρέπει στην εφαρμογή τη λήψη πακέτων που αποστέλλονται σε όλες τις συσκευές σε ένα δίκτυο Wi-Fi, με χρήση διευθύνσεων πολλαπλής διανομής και όχι απλώς στο tablet σας. Χρησιμοποιεί περισσότερη ενέργεια σε σχέση με τη λειτουργία χωρίς πολλαπλή διανομή.</string>
     <string name="permdesc_changeWifiState">Επιτρέπει στην εφαρμογή τη σύνδεση σε σημεία πρόσβασης Wi-Fi και την αποσύνδεση από αυτά, καθώς και την πραγματοποίηση αλλαγών σε διαμόρφωση συσκευών για δίκτυα Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Επιτρέπει στην εφαρμογή τη σύνδεση στο τηλέφωνο και την αποσύνδεση από αυτό, από δίκτυα WiMAX.</string>
+    <string name="permdesc_changeWimaxState">Επιτρέπει στην εφαρμογή τη σύνδεση στο tablet και την αποσύνδεση από αυτό, από δίκτυα WiMAX.</string>
     <string name="permdesc_companionProfileWatch">Επιτρέπει σε μια συνοδευτική εφαρμογή να διαχειρίζεται ρολόγια.</string>
     <string name="permdesc_connection_manager">Επιτρέπει στην εφαρμογή να διαχειρίζεται τις συνδέσεις τηλεπικοινωνιών.</string>
     <string name="permdesc_control_incall_experience">Επιτρέπει στην εφαρμογή να παρέχει μια εμπειρία στο χρήστη κατά τη διάρκεια κλήσης.</string>
@@ -1997,7 +1997,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">Επιτρέπει στην εφαρμογή να χρησιμοποιεί τις υπηρεσίες στο προσκήνιο με τον τύπο \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Επιτρέπει στην εφαρμογή να χρησιμοποιεί τις υπηρεσίες στο προσκήνιο με τον τύπο \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">Επιτρέπει στην εφαρμογή να προβάλει ειδοποιήσεις ως δραστηριότητες πλήρους οθόνης σε μια κλειδωμένη συσκευή</string>
-    <string name="permdesc_getAccounts">Επιτρέπει στην εφαρμογή τη λήψη της λίστας λογαριασμών που υπάρχουν στο τηλέφωνο. Μπορεί να περιλαμβάνονται τυχόν λογαριασμοί που δημιουργήθηκαν από εφαρμογές που έχετε εγκαταστήσει.</string>
+    <string name="permdesc_getAccounts">Επιτρέπει στην εφαρμογή τη λήψη της λίστας λογαριασμών που υπάρχουν στο tablet. Μπορεί να περιλαμβάνονται τυχόν λογαριασμοί που δημιουργήθηκαν από εφαρμογές που έχετε εγκαταστήσει.</string>
     <string name="permdesc_getAppList">Επιτρέπει σε μια εφαρμογή να διαβάζει τη λίστα με τις εγκατεστημένες εφαρμογές.</string>
     <string name="permdesc_getPackageSize">Επιτρέπει στην εφαρμογή να ανακτήσει τα μεγέθη κώδικα, δεδομένων και προσωρινής μνήμης</string>
     <string name="permdesc_getTasks">Επιτρέπει στην εφαρμογή την ανάκτηση πληροφοριών σχετικά με τρέχουσες και πρόσφατα εκτελούμενες εργασίες. Αυτό μπορεί να δίνει τη δυνατότητα στην εφαρμογή να ανακαλύπτει πληροφορίες σχετικά με το ποιες εφαρμογές χρησιμοποιούνται στη συσκευή.</string>
@@ -2096,16 +2096,16 @@
     <string name="permdesc_nearby_wifi_devices">Επιτρέπει στην εφαρμογή: προβολή διαφημίσεων, σύνδεση και καθορισμό της σχετικής τοποθεσίας των κοντινών συσκευών Wi‑Fi</string>
     <string name="permdesc_nfc">Επιτρέπει στην εφαρμογή την επικοινωνία με ετικέτες, κάρτες και αναγνώστες της Επικοινωνίας κοντινού πεδίου (NFC).</string>
     <string name="permdesc_observeCompanionDevicePresence">Επιτρέπει σε μια συνοδευτική εφαρμογή να παρατηρεί την παρουσία συνοδευτικών συσκευών όταν οι συσκευές βρίσκονται σε κοντινή απόσταση ή μακριά.</string>
-    <string name="permdesc_persistentActivity">Επιτρέπει στην εφαρμογή να δημιουργεί μόνιμα τμήματα του εαυτού της στη μνήμη. Αυτό μπορεί να περιορίζει τη μνήμη που διατίθεται σε άλλες εφαρμογές, καθυστερώντας τη λειτουργία του τηλεφώνου.</string>
+    <string name="permdesc_persistentActivity">Επιτρέπει στην εφαρμογή να δημιουργεί μόνιμα τμήματα του εαυτού της στη μνήμη. Αυτό μπορεί να περιορίζει τη μνήμη που διατίθεται σε άλλες εφαρμογές, καθυστερώντας τη λειτουργία του tablet.</string>
     <string name="permdesc_postNotification">Επιτρέπει στην εφαρμογή να εμφανίζει ειδοποιήσεις</string>
     <string name="permdesc_preferredPaymentInfo">Επιτρέπει στην εφαρμογή να λαμβάνει πληροφορίες προτιμώμενης υπηρεσίας πληρωμής NFC, όπως καταχωρημένα βοηθήματα και προορισμό διαδρομής.</string>
     <string name="permdesc_processOutgoingCalls">Επιτρέπει στην εφαρμογή να βλέπει τον αριθμό που καλέσατε κατά τη διάρκεια μιας εξερχόμενης κλήσης με επιλογή ανακατεύθυνσης της κλήσης σε έναν διαφορετικό αριθμό ή διακοπής της κλήσης.</string>
     <string name="permdesc_queryAllPackages">Επιτρέπει σε μια εφαρμογή να βλέπει όλα τα εγκατεστημένα πακέτα.</string>
     <string name="permdesc_readBasicPhoneState">Επιτρέπει στην εφαρμογή να έχει πρόσβαση στις βασικές λειτουργίες τηλεφωνίας της συσκευής.</string>
-    <string name="permdesc_readCalendar">Αυτή η εφαρμογή μπορεί να διαβάσει όλα τα συμβάντα ημερολογίου που είναι αποθηκευμένα στο τηλέφωνό σας και να μοιραστεί ή να αποθηκεύσει τα δεδομένα ημερολογίου σας.</string>
+    <string name="permdesc_readCalendar">Αυτή η εφαρμογή μπορεί να διαβάσει όλα τα συμβάντα ημερολογίου που είναι αποθηκευμένα στο tablet που χρησιμοποιείτε και να μοιραστεί ή να αποθηκεύσει τα δεδομένα ημερολογίου σας.</string>
     <string name="permdesc_readCallLog">Αυτή η εφαρμογή μπορεί να διαβάσει το ιστορικό κλήσεων.</string>
     <string name="permdesc_readCellBroadcasts">Επιτρέπει στην εφαρμογή την ανάγνωση μηνυμάτων που έχουν μεταδοθεί μέσω κινητού τηλεφώνου και έχουν ληφθεί από τη συσκευή σας. Ειδοποιήσεις που μεταδίδονται μέσω κινητού παραδίδονται σε ορισμένες τοποθεσίες για να σας προειδοποιήσουν για καταστάσεις έκτακτης ανάγκης. Κακόβουλες εφαρμογές ενδέχεται να παρεμποδίσουν την απόδοση ή τη λειτουργία της συσκευής σας κατά τη λήψη μετάδοσης μέσω κινητού σχετικά με μια επείγουσα κατάσταση.</string>
-    <string name="permdesc_readContacts">Επιτρέπει στην εφαρμογή να διαβάζει δεδομένα σχετικά με τις επαφές σας που έχουν αποθηκευτεί στο τηλέφωνό σας. Οι εφαρμογές θα έχουν επίσης πρόσβαση στους λογαριασμούς στο τηλέφωνό σας, οι οποίοι έχουν δημιουργήσει επαφές. Σε αυτούς ενδέχεται να περιλαμβάνονται λογαριασμοί που δημιουργήθηκαν από εφαρμογές που έχετε εγκαταστήσει. Αυτή η άδεια δίνει τη δυνατότητα στις εφαρμογές να αποθηκεύουν τα δεδομένα των επαφών σας. Οι κακόβουλες εφαρμογές ενδέχεται να μοιράζονται τα δεδομένα επαφών χωρίς να το γνωρίζετε.</string>
+    <string name="permdesc_readContacts">Επιτρέπει στην εφαρμογή να διαβάζει δεδομένα σχετικά με τις επαφές σας που έχουν αποθηκευτεί στο tablet. Οι εφαρμογές θα έχουν επίσης πρόσβαση στους λογαριασμούς στο tablet, οι οποίοι έχουν δημιουργήσει επαφές. Σε αυτούς ενδέχεται να περιλαμβάνονται λογαριασμοί που δημιουργήθηκαν από εφαρμογές που έχετε εγκαταστήσει. Αυτή η άδεια δίνει τη δυνατότητα στις εφαρμογές να αποθηκεύουν τα δεδομένα των επαφών σας. Οι κακόβουλες εφαρμογές ενδέχεται να μοιράζονται τα δεδομένα επαφών χωρίς να το γνωρίζετε.</string>
     <string name="permdesc_readInstallSessions">Επιτρέπει σε μια εφαρμογή την ανάγνωση των περιόδων σύνδεσης εγκατάστασης. Αυτό της επιτρέπει να βλέπει λεπτομέρειες σχετικά με τις εγκαταστάσεις του ενεργού πακέτου.</string>
     <string name="permdesc_readMediaAudio">Επιτρέπει στην εφαρμογή την ανάγνωση αρχείων ήχου από τον κοινόχρηστο αποθηκευτικό σας χώρο.</string>
     <string name="permdesc_readMediaImages">Επιτρέπει στην εφαρμογή την ανάγνωση αρχείων εικόνας από τον κοινόχρηστο αποθηκευτικό σας χώρο.</string>
@@ -2113,11 +2113,11 @@
     <string name="permdesc_readNetworkUsageHistory">Επιτρέπει στην εφαρμογή την ανάγνωση ιστορικών στοιχείων χρήσης δικτύου για συγκεκριμένα δίκτυα και εφαρμογές.</string>
     <string name="permdesc_readPhoneNumbers">Επιτρέπει στην εφαρμογή να αποκτήσει πρόσβαση στους αριθμούς τηλεφώνου της συσκευής</string>
     <string name="permdesc_readPhoneState">Επιτρέπει στην εφαρμογή την πρόσβαση στις λειτουργίες τηλεφώνου της συσκευής. Αυτή η άδεια δίνει τη δυνατότητα στην εφαρμογή να καθορίζει τον αριθμό τηλεφώνου και τα αναγνωριστικά συσκευών, εάν μια κλήση είναι ενεργή, καθώς και τον απομακρυσμένο αριθμό που συνδέεται από μια κλήση.</string>
-    <string name="permdesc_readSms">Αυτή η εφαρμογή μπορεί να διαβάσει όλα τα μηνύματα SMS (κειμένου) που είναι αποθηκευμένα στο τηλέφωνό σας.</string>
+    <string name="permdesc_readSms">Αυτή η εφαρμογή μπορεί να διαβάσει όλα τα μηνύματα SMS (κειμένου) που είναι αποθηκευμένα στο tablet που χρησιμοποιείτε.</string>
     <string name="permdesc_readSyncSettings">Επιτρέπει στην εφαρμογή την ανάγνωση των ρυθμίσεων συγχρονισμού για έναν λογαριασμό. Για παράδειγμα, αυτό μπορεί να καθορίσει εάν η εφαρμογή \"Άτομα\" είναι συγχρονισμένη με έναν λογαριασμό.</string>
     <string name="permdesc_readSyncStats">Επιτρέπει σε μια εφαρμογή την ανάγνωση των στατιστικών στοιχείων συγχρονισμού για έναν λογαριασμό, συμπεριλαμβανομένων του ιστορικού των συμβάντων συγχρονισμού και του όγκου των δεδομένων που συγχρονίζονται.</string>
     <string name="permdesc_readVisualUserSelect">Επιτρέπει στην εφαρμογή την ανάγνωση των αρχείων εικόνας και βίντεο που θα επιλέξετε από τον κοινόχρηστο αποθηκευτικό χώρο.</string>
-    <string name="permdesc_receiveBootCompleted">Επιτρέπει στην εφαρμογή να εκκινηθεί αμέσως μόλις ολοκληρωθεί η εκκίνηση του συστήματος. Αυτό ενδέχεται να καθυστερήσει την εκκίνηση του τηλεφώνου και να προκαλέσει γενική μείωση της ταχύτητας λειτουργίας του τηλεφώνου, καθώς η εφαρμογή θα εκτελείται συνεχώς.</string>
+    <string name="permdesc_receiveBootCompleted">Επιτρέπει στην εφαρμογή να εκκινηθεί αμέσως μόλις ολοκληρωθεί η εκκίνηση του συστήματος. Αυτό ενδέχεται να καθυστερήσει την εκκίνηση του tablet και να προκαλέσει γενική μείωση της ταχύτητας λειτουργίας του tablet, καθώς η εφαρμογή θα εκτελείται συνεχώς.</string>
     <string name="permdesc_receiveMms">Επιτρέπει στην εφαρμογή τη λήψη και την επεξεργασία μηνυμάτων MMS. Αυτό σημαίνει ότι η εφαρμογή θα μπορούσε να παρακολουθήσει ή να διαγράψει τα μηνύματα που αποστέλλονται στη συσκευή σας χωρίς αυτά να εμφανιστούν σε εσάς.</string>
     <string name="permdesc_receiveSms">Επιτρέπει στην εφαρμογή τη λήψη και την επεξεργασία μηνυμάτων SMS. Αυτό σημαίνει ότι η εφαρμογή θα μπορούσε να παρακολουθήσει ή να διαγράψει τα μηνύματα που αποστέλλονται στη συσκευή σας χωρίς αυτά να εμφανιστούν σε εσάς.</string>
     <string name="permdesc_receiveWapPush">Επιτρέπει στην εφαρμογή τη λήψη και την επεξεργασία μηνυμάτων WAP. Αυτό σημαίνει ότι η εφαρμογή θα μπορούσε να παρακολουθήσει ή να διαγράψει τα μηνύματα που αποστέλλονται στη συσκευή σας χωρίς αυτά να εμφανιστούν σε εσάς.</string>
@@ -2139,7 +2139,7 @@
     <string name="permdesc_sendSms">Επιτρέπει στην εφαρμογή των αποστολή μηνυμάτων SMS. Αυτό μπορεί να προκαλέσει μη αναμενόμενες χρεώσεις. Οι κακόβουλες εφαρμογές ενδέχεται να σας κοστίσουν χρήματα, αποστέλλοντας μηνύματα χωρίς την έγκρισή σας.</string>
     <string name="permdesc_setAlarm">Επιτρέπει στην εφαρμογή τη ρύθμιση μιας ειδοποίησης σε μια εγκατεστημένη εφαρμογή ξυπνητηριού. Ορισμένες εφαρμογές ξυπνητηριού ενδέχεται να μην μπορούν να ενσωματώσουν αυτήν τη λειτουργία.</string>
     <string name="permdesc_setInputCalibration">Επιτρέπει στην εφαρμογή να τροποποιεί τις παραμέτρους βαθμονόμησης της οθόνης αφής. Δεν απαιτείται για τις κανονικές εφαρμογές.</string>
-    <string name="permdesc_setTimeZone">Επιτρέπει στην εφαρμογή την αλλαγή της ζώνης ώρας του τηλεφώνου.</string>
+    <string name="permdesc_setTimeZone">Επιτρέπει στην εφαρμογή την αλλαγή της ζώνης ώρας του tablet.</string>
     <string name="permdesc_setWallpaper">Επιτρέπει στην εφαρμογή τον ορισμό της ταπετσαρίας συστήματος.</string>
     <string name="permdesc_setWallpaperHints">Επιτρέπει στην εφαρμογή τον ορισμό συμβουλών μεγέθους ταπετσαρίας συστήματος.</string>
     <string name="permdesc_sim_communication">Επιτρέπει στην εφαρμογή την αποστολή εντολών στην κάρτα SIM. Αυτό είναι εξαιρετικά επικίνδυνο.</string>
@@ -2153,7 +2153,7 @@
     <string name="permdesc_subscribedFeedsRead">Επιτρέπει στην εφαρμογή τη λήψη λεπτομερειών σχετικά με τις τρέχουσες συγχρονισμένες ροές δεδομένων.</string>
     <string name="permdesc_systemAlertWindow">Αυτή η εφαρμογή μπορεί να εμφανίζεται πάνω από άλλες εφαρμογές ή άλλα τμήματα της οθόνης. Αυτό μπορεί να επηρεάσει την κανονική χρήση της εφαρμογής και να αλλάξει τον τρόπο με τον οποίο εμφανίζονται οι άλλες εφαρμογές.</string>
     <string name="permdesc_systemCamera">Αυτή η προνομιακή εφαρμογή ή εφαρμογή συστήματος μπορεί να τραβάει φωτογραφίες και να εγγράφει βίντεο, χρησιμοποιώντας μια κάμερα του συστήματος ανά πάσα στιγμή. Απαιτείται, επίσης, η εφαρμογή να έχει την άδεια android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Επιτρέπει στην εφαρμογή να χρησιμοποιεί τον πομπό υπερύθρων του τηλεφώνου.</string>
+    <string name="permdesc_transmitIr">Επιτρέπει στην εφαρμογή να χρησιμοποιεί τον πομπό υπερύθρων του tablet.</string>
     <string name="permdesc_turnScreenOn">Επιτρέπει στην εφαρμογή να ενεργοποιεί την οθόνη.</string>
     <string name="permdesc_ucsPlugin">Λειτουργεί με πρόσθετα αποθήκευσης διαπιστευτηρίων τρίτων.</string>
     <string name="permdesc_uninstall_shortcut">Επιτρέπει στην εφαρμογή την κατάργηση συντομεύσεων από την Αρχική οθόνη χωρίς την παρέμβαση του χρήστη.</string>
@@ -2167,10 +2167,10 @@
     <string name="permdesc_vibrate">Επιτρέπει στην εφαρμογή τον έλεγχο της δόνησης.</string>
     <string name="permdesc_vibrator_state">Επιτρέπει στην εφαρμογή να έχει πρόσβαση στην κατάσταση δόνησης.</string>
     <string name="permdesc_videoWrite">Επιτρέπει στην εφαρμογή να τροποποιήσει τη συλλογή βίντεό σας.</string>
-    <string name="permdesc_wakeLock">Επιτρέπει στην εφαρμογή την παρεμπόδιση της μετάβασης του τηλεφώνου σε κατάσταση αδράνειας.</string>
-    <string name="permdesc_writeCalendar">Αυτή η εφαρμογή μπορεί να προσθέσει, να καταργήσει ή να αλλάξει συμβάντα ημερολογίου στο τηλέφωνό σας. Αυτή η εφαρμογή μπορεί να στέλνει μηνύματα τα οποία μπορεί να φαίνεται ότι προέρχονται από κατόχους ημερολογίου ή να αλλάζει συμβάντα χωρίς να ειδοποιεί τους κατόχους.</string>
-    <string name="permdesc_writeCallLog">Επιτρέπει στην εφαρμογή να τροποποιεί το αρχείο καταγραφής κλήσεων του τηλεφώνου σας, συμπεριλαμβανομένων των δεδομένων σχετικά με τις εισερχόμενες και τις εξερχόμενες κλήσεις. Οι κακόβουλες εφαρμογές μπορεί να το χρησιμοποιήσουν για να διαγράψουν ή να τροποποιήσουν το αρχείο καταγραφής κλήσεων.</string>
-    <string name="permdesc_writeContacts">Επιτρέπει στην εφαρμογή να τροποποιεί τα δεδομένα σχετικά με τις επαφές σας που έχουν αποθηκευτεί στο tablet. Αυτή η άδεια επιτρέπει στις εφαρμογές να διαγράφουν δεδομένα επαφών.</string>
+    <string name="permdesc_wakeLock">Επιτρέπει στην εφαρμογή την παρεμπόδιση της μετάβασης του tablet σε κατάσταση αδράνειας.</string>
+    <string name="permdesc_writeCalendar">Αυτή η εφαρμογή μπορεί να προσθέσει, να καταργήσει ή να αλλάξει συμβάντα ημερολογίου στο tablet που χρησιμοποιείτε. Αυτή η εφαρμογή μπορεί να στέλνει μηνύματα τα οποία μπορεί να φαίνεται ότι προέρχονται από κατόχους ημερολογίου ή να αλλάζει συμβάντα χωρίς να ειδοποιεί τους κατόχους.</string>
+    <string name="permdesc_writeCallLog">Επιτρέπει στην εφαρμογή να τροποποιεί το αρχείο καταγραφής κλήσεων του tablet σας, συμπεριλαμβανομένων των δεδομένων σχετικά με τις εισερχόμενες και τις εξερχόμενες κλήσεις. Οι κακόβουλες εφαρμογές μπορεί να το χρησιμοποιήσουν για να διαγράψουν ή να τροποποιήσουν το αρχείο καταγραφής κλήσεων.</string>
+    <string name="permdesc_writeContacts">Επιτρέπει στην εφαρμογή να τροποποιεί δεδομένα σχετικά με τις επαφές σας που έχουν αποθηκευτεί στο tablet. Αυτή η άδεια επιτρέπει στις εφαρμογές να διαγράφουν δεδομένα επαφών.</string>
     <string name="permdesc_writeSettings">Επιτρέπει στην εφαρμογή την τροποποίηση των δεδομένων των ρυθμίσεων του συστήματος. Τυχόν κακόβουλες εφαρμογές ενδέχεται να καταστρέψουν τη διαμόρφωση του συστήματός σας.</string>
     <string name="permdesc_writeSyncSettings">Επιτρέπει σε μια εφαρμογή την τροποποίηση των ρυθμίσεων συγχρονισμού για έναν λογαριασμό. Για παράδειγμα, αυτό μπορεί να χρησιμοποιηθεί για να ενεργοποιηθεί ο συγχρονισμός της εφαρμογής \"Άτομα\" με έναν λογαριασμό.</string>
     <string name="permgroupdesc_activityRecognition">πρόσβαση στη σωματική σας δραστηριότητα</string>
@@ -2445,7 +2445,7 @@
     <string name="permlab_uwb_ranging">προσδιορισμός σχετ. θέσης μεταξύ κοντινών συσκευών Ultra-Wideband</string>
     <string name="permlab_vibrate">ελέγχει τη δόνηση</string>
     <string name="permlab_videoWrite">τροποποίηση της συλλογής βίντεό σας</string>
-    <string name="permlab_wakeLock">αποτρέπει το τηλεφώνο να μεταβεί σε κατάσταση αδράνειας</string>
+    <string name="permlab_wakeLock">αποτρέπει την μετάβαση του tablet σε κατάσταση αδράνειας</string>
     <string name="permlab_writeCalendar">προσθέτει ή τροποποιεί συμβάντα ημερολογίου και να στέλνει μηνύματα ηλ. ταχυδρομείου σε προσκεκλημένους χωρίς να το γνωρίζουν οι κάτοχοι</string>
     <string name="permlab_writeCallLog">εγγράφει αρχείο καταγραφής κλήσεων</string>
     <string name="permlab_writeContacts">τροποποιεί τις επαφές σας</string>
@@ -2487,7 +2487,7 @@
     <string name="policydesc_allow_desktopsync">Να αποτρέπεται η χρήση του συγχρονισμού επιφάνειας εργασίας.</string>
     <string name="policydesc_allow_internetsharing">Να αποτρέπεται η χρήση του Mobile Hotspot.</string>
     <string name="policydesc_allow_irda">Να αποτρέπεται η χρήση IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Να αποτρέπεται η χρήση των email POP και IMAP στο τηλέφωνο.</string>
+    <string name="policydesc_allow_popimapemail">Να αποτρέπεται η χρήση των email POP και IMAP στο tablet.</string>
     <string name="policydesc_allow_storagecard">Να αποτρέπεται η χρήση καρτών SD.</string>
     <string name="policydesc_allow_textmessaging">Να αποτρέπεται η χρήση υπηρεσιών ανταλλαγής μηνυμάτων κειμένου/πολυμέσων.</string>
     <string name="policydesc_allow_thirdParty">Αυτή η εφαρμογή μπορεί να αποτρέψει την εκτέλεση εφαρμογών τρίτων.</string>
@@ -2505,10 +2505,10 @@
     <string name="policydesc_setGlobalProxy">Ρυθμίστε τη χρήση του γενικού διακομιστή μεσολάβησης της συσκευής, ενώ η πολιτική είναι ενεργοποιημένη. Μόνο ο κάτοχος της συσκευής μπορεί να ρυθμίσει τον γενικό διακομιστής μεσολάβησης.</string>
     <string name="policydesc_unsigned_app">Αυτή η εφαρμογή μπορεί να αποτρέψει την εκτέλεση εφαρμογών που προέρχονται από άγνωστες πηγές.</string>
     <string name="policydesc_unsigned_pkg">Αυτή η εφαρμογή μπορεί να αποτρέψει την εγκατάσταση εφαρμογών που προέρχονται από άγνωστες πηγές.</string>
-    <string name="policydesc_watchLogin">Παρακολούθηση του αριθμού λανθασμένων κωδικών πρόσβασης που πληκτρολογούνται κατά το ξεκλείδωμα της οθόνης και κλείδωμα του τηλεφώνου ή διαγραφή όλων των δεδομένων του σε περίπτωση πληκτρολόγησης πάρα πολλών εσφαλμένων κωδικών πρόσβασης.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Παρακολουθήστε τον αριθμό των εσφαλμένων κωδικών πρόσβασης που πληκτρολογούνται κατά το ξεκλείδωμα της οθόνης και κλειδώστε το τηλέφωνο ή διαγράψτε όλα τα δεδομένα του χρήστη, σε περίπτωση εισαγωγής πάρα πολλών εσφαλμένων κωδικών πρόσβασης.</string>
-    <string name="policydesc_wipeData">Διαγραφή των δεδομένων του τηλεφώνου χωρίς προειδοποίηση με επαναφορά των εργοστασιακών ρυθμίσεων.</string>
-    <string name="policydesc_wipeData_secondaryUser">Διαγραφή των δεδομένων αυτού του χρήστη σε αυτό το τηλέφωνο χωρίς προειδοποίηση.</string>
+    <string name="policydesc_watchLogin">Παρακολούθηση του αριθμού λανθασμένων κωδικών πρόσβασης που πληκτρολογούνται κατά το ξεκλείδωμα της οθόνης και κλείδωμα του tablet ή διαγραφή όλων των δεδομένων του σε περίπτωση πληκτρολόγησης πάρα πολλών εσφαλμένων κωδικών πρόσβασης.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Παρακολουθήστε τον αριθμό των εσφαλμένων κωδικών πρόσβασης που πληκτρολογούνται κατά το ξεκλείδωμα της οθόνης και κλειδώστε το tablet ή διαγράψτε όλα τα δεδομένα του χρήστη, σε περίπτωση εισαγωγής πάρα πολλών εσφαλμένων κωδικών πρόσβασης.</string>
+    <string name="policydesc_wipeData">Διαγραφή των δεδομένων του tablet χωρίς προειδοποίηση με επαναφορά των εργοστασιακών ρυθμίσεων.</string>
+    <string name="policydesc_wipeData_secondaryUser">Διαγραφή των δεδομένων αυτού του χρήστη σε αυτό το tablet χωρίς προειδοποίηση.</string>
     <string name="policylab_allow_bluetoothmode">Απενεργοποίηση Bluetooth</string>
     <string name="policylab_allow_browser">Απενεργοποίηση Internet</string>
     <string name="policylab_allow_camera">Απενεργοποίηση καμερών</string>
@@ -2542,7 +2542,7 @@
     <string name="postalTypeHome">Σπίτι</string>
     <string name="postalTypeOther">Άλλο</string>
     <string name="postalTypeWork">Εργασία</string>
-    <string name="power_dialog">Επιλογές τηλεφώνου</string>
+    <string name="power_dialog">Επιλογές tablet</string>
     <string name="power_off">Απενεργοποίηση</string>
     <string name="prepend_shortcut_label">Πλήκτρο Menu+</string>
     <string name="preposition_for_date">στις %s</string>
@@ -2588,7 +2588,7 @@
     <string name="recent_tasks_title">Πρόσφατα</string>
     <string name="recording_fail">Δεν είναι δυνατή η χρήση του μικροφώνου στην εφαρμογή %1$s όταν χρησιμοποιείται στην εφαρμογή %2$s.</string>
     <string name="recording_popup">Η εφαρμογή %s χρησιμοποιεί το μικρόφωνο.</string>
-    <string name="recording_popup_device">Τηλέφωνο</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">Η εφαρμογή %s χρησιμοποιεί το μικρόφωνο Bluetooth.</string>
     <string name="recording_popup_with_device">Η εφαρμογή %1$s χρησιμοποιεί το μικρόφωνο της συσκευής %2$s.</string>
     <string name="redo">Επανάληψη</string>
@@ -2735,12 +2735,12 @@
     <string name="screenshot_edit">Επεξεργασία</string>
     <string name="sd_card_unavailable_message">Δεν μπορείτε να χρησιμοποιήσετε την κάρτα SD επειδή είχε εισαχθεί ενώ χρησιμοποιούταν διαφορετικό προφίλ χρήστη.</string>
     <string name="sd_card_unavailable_title">Η κάρτα SD δεν είναι διαθέσιμη</string>
-    <string name="sdcard_bad_removal_message">Μια κάρτα SD αφαιρέθηκε χωρίς ασφάλεια. Για να αποτρέψετε την απροσδόκητη επανεκκίνηση του τηλεφώνου σας, αποθηκεύστε τα μη αποθηκευμένα δεδομένα και κάντε επανεκκίνηση τώρα.</string>
+    <string name="sdcard_bad_removal_message">Μια κάρτα SD αφαιρέθηκε χωρίς ασφάλεια. Για να αποτρέψετε την απροσδόκητη επανεκκίνηση του tablet σας, αποθηκεύστε τα μη αποθηκευμένα δεδομένα και κάντε επανεκκίνηση τώρα.</string>
     <string name="sdcard_batch_decrypt_noti_content">Αποκρυπτογράφηση κάρτας SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Αποκρυπτογράφηση κάρτας SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Η κρυπτογραφημένη κάρτα SD πρέπει να αποκρυπτογραφηθεί πριν τη χρήση. Για την ολοκλήρωση της αποκρυπτογράφησης απαιτείται μία ώρα ή και περισσότερο. Ξεκινήστε με φορτισμένη μπαταρία και διατηρήστε συνδεδεμένη τη συσκευή έως ότου ολοκληρωθεί η αποκρυπτογράφηση. Η διακοπή της διαδικασίας αποκρυπτογράφησης ενδέχεται να προκαλέσει απώλεια ορισμένων ή όλων των δεδομένων.</string>
     <string name="sdcard_decrypt_err_notification">Προέκυψε σφάλμα αποκρυπτογράφησης της κάρτας SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Ορισμένα αρχεία στην κάρτα SD κρυπτογραφήθηκαν σε άλλη συσκευή και δεν μπορούν να χρησιμοποιηθούν σε αυτό το τηλέφωνο.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Ορισμένα αρχεία στην κάρτα SD κρυπτογραφήθηκαν σε άλλη συσκευή και δεν μπορούν να χρησιμοποιηθούν σε αυτό το tablet.</string>
     <string name="sdcard_decrypt_notification">Η κάρτα SD αποκρυπτογραφήθηκε.</string>
     <string name="sdcard_decrypt_title_notification">Αποκρυπτογράφηση κάρτας SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Αποκρυπτογρ. κάρτας SD…</string>
@@ -2998,7 +2998,7 @@
     <string name="showing_touch_sensitivity_noti_action">Ενεργοποίηση</string>
     <string name="showing_touch_sensitivity_noti_text">Ενεργοποιήστε την επιλογή «Ευαισθησία αφής» κατά τη χρήση του Privacy Screen ή του Notepaper Screen για πιο ακριβή απόκριση μέσω αφής.</string>
     <string name="showing_touch_sensitivity_noti_title">Αύξηση ευαισθησίας αφής</string>
-    <string name="shutdown_confirm">Το τηλέφωνό σας θα απενεργοποιηθεί.</string>
+    <string name="shutdown_confirm">Το tablet σας θα απενεργοποιηθεί.</string>
     <string name="shutdown_confirm_question">Θέλετε να γίνει τερματισμός λειτουργίας;</string>
     <string name="shutdown_progress">Απενεργοποίηση...</string>
     <string name="side_key_double_press_deleted_app">Η εγκατάσταση της εφαρμογής καταργήθηκε. Επιλέξτε κάτι άλλο.</string>
@@ -3225,7 +3225,7 @@
     <string name="usb_abnormal_reset_title">Η σύνδεση USB δεν είναι σταθερή</string>
     <string name="usb_abnormal_reset_toast">Η σύνδεση USB δεν είναι σταθερή. Αποσυνδέστε το καλώδιο και συνδέστε το ξανά ή δοκιμάστε άλλο καλώδιο.</string>
     <string name="usb_accessory_notification_title">Συνδέθηκε σε αξεσουάρ αποθήκευσης USB</string>
-    <string name="usb_bad_removal_message">Μια συσκευή αποθήκευσης USB αφαιρέθηκε χωρίς ασφάλεια. Για να αποτρέψετε την απροσδόκητη επανεκκίνηση του τηλεφώνου σας, αποθηκεύστε τα μη αποθηκευμένα δεδομένα και κάντε επανεκκίνηση τώρα.</string>
+    <string name="usb_bad_removal_message">Μια συσκευή αποθήκευσης USB αφαιρέθηκε χωρίς ασφάλεια. Για να αποτρέψετε την απροσδόκητη επανεκκίνηση του tablet σας, αποθηκεύστε τα μη αποθηκευμένα δεδομένα και κάντε επανεκκίνηση τώρα.</string>
     <string name="usb_blocked_by_emergency_mode">Ορισμένες λειτουργίες USB δεν είναι διαθέσιμες στη Λειτουργία έκτακτης ανάγκης.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Δεν είναι δυνατή η χρήση λειτουργιών που σχετίζονται με τη συνδεδεμένη συσκευή USB όσο είναι ενεργοποιημένη η λειτουργία μέγιστης εξοικονόμησης ενέργειας.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Ορισμένες λειτουργίες USB θα περιοριστούν όσο είναι ενεργοποιημένη η λειτουργία μέγιστης εξοικονόμησης ενέργειας.</string>
@@ -3235,7 +3235,7 @@
     <string name="usb_camera_disconnected_notification_title">Η συσκευή πολυμέσων αποσυνδέθηκε</string>
     <string name="usb_cd_installer_notification_title">Ενημέρωση λογισμικού</string>
     <string name="usb_charging_notification_title">Φόρτιση μέσω USB</string>
-    <string name="usb_charing_only_notification_title">Φόρτιση μέσω USB</string>
+    <string name="usb_charing_only_notification_title">Συνδέθηκε</string>
     <string name="usb_contaminant_detected_message">Η θύρα USB απενεργοποιείται αυτόματα. Πατήστε για να μάθετε περισσότερα.</string>
     <string name="usb_contaminant_detected_title">Υγρασία ή ακαθαρσίες στη θύρα USB</string>
     <string name="usb_contaminant_not_detected_message">Το τηλέφωνο δεν εντοπίζει πλέον υγρασία ή ακαθαρσίες.</string>
@@ -3247,11 +3247,11 @@
     <string name="usb_host_cable_disconnected_notification_title">Ο προσαρμογέας USB αποσυνδέθηκε.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Δεν είναι δυνατή η πρόσβαση σε αυτήν τη συσκευή. Η συνδεδεμένη συσκευή χρειάζεται εξωτερική τροφοδοσία ρεύματος.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Συνδέθηκε συσκευή USB υψηλής ταχύτητας.</string>
-    <string name="usb_host_resource_exceed_message">Ο ελεγκτής USB του τηλεφώνου δεν έχει αρκετούς πόρους για τη σύνδεση αυτής της συσκευής. Δοκιμάστε να αποσυνδέσετε τη συσκευή και να τη συνδέσετε ξανά.</string>
+    <string name="usb_host_resource_exceed_message">Ο ελεγκτής USB του tablet δεν έχει αρκετούς πόρους για τη σύνδεση αυτής της συσκευής. Δοκιμάστε να αποσυνδέσετε τη συσκευή και να τη συνδέσετε ξανά.</string>
     <string name="usb_host_resource_exceed_title">Οι πόροι ελεγκτή USB δεν επαρκούν</string>
-    <string name="usb_hub_depth_exceed_message">Το τηλέφωνό σας μπορεί να υποστηρίξει μόνο έως 5 συνδέσεις κόμβου USB ταυτόχρονα.</string>
+    <string name="usb_hub_depth_exceed_message">Το tablet σας μπορεί να υποστηρίξει μόνο έως 5 συνδέσεις κόμβου USB ταυτόχρονα.</string>
     <string name="usb_hub_depth_exceed_title">Μέγιστες συνδέσεις κόμβου USB</string>
-    <string name="usb_hub_power_exceed_message">Το τηλέφωνό σας δεν μπορεί να παρέχει αρκετή ισχύ για αυτήν τη συσκευή USB. Συνδέστε τη συσκευή σε έναν αυτοτροφοδοτούμενο κόμβο USB προτού τη συνδέσετε στο τηλέφωνό σας.</string>
+    <string name="usb_hub_power_exceed_message">Το tablet σας δεν μπορεί να παρέχει αρκετή ισχύ για αυτήν τη συσκευή USB. Συνδέστε τη συσκευή σε έναν αυτοτροφοδοτούμενο κόμβο USB προτού τη συνδέσετε στο tablet σας.</string>
     <string name="usb_increase_battery_usage">Η σύνδεση USB μπορεί να αυξήσει τη χρήση της μπαταρίας.</string>
     <string name="usb_keyboard_connected_notification_title">Συνδέθηκε πληκτρολόγιο</string>
     <string name="usb_keyboard_disconnected_notification_title">Το πληκτρολόγιο αποσυνδέθηκε</string>
@@ -3294,8 +3294,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">Η συσκευή μαζικής αποθήκευσης USB αφαιρέθηκε απρόσμενα.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Συνδέθηκε συσκευή μαζικής αποθήκευσης USB</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Η συσκευή μαζικής αποθήκευσης USB αφαιρέθηκε με ασφάλεια.</string>
-    <string name="usb_unblock_by_screen_unlock">Ξεκλειδώστε το τηλέφωνό σας για να χρησιμοποιήσετε τη συνδεδεμένη συσκευή USB.</string>
-    <string name="usb_unsupport_accessory_message">Αυτή η συσκευή USB δεν υποστηρίζεται από το τηλέφωνό σας.</string>
+    <string name="usb_unblock_by_screen_unlock">Ξεκλειδώστε το tablet σας για να χρησιμοποιήσετε τη συνδεδεμένη συσκευή USB.</string>
+    <string name="usb_unsupport_accessory_message">Αυτή η συσκευή USB δεν υποστηρίζεται από το tablet σας.</string>
     <string name="usb_unsupport_accessory_title">Η συσκευή USB δεν υποστηρίζεται</string>
     <string name="usb_unsupported_audio_accessory_message">Η συνδεδεμένη συσκευή δεν είναι συμβατή με αυτό το τηλέφωνο. Πατήστε για να μάθετε περισσότερα.</string>
     <string name="usb_unsupported_audio_accessory_title">Εντοπίστηκε αναλογικό αξεσουάρ ήχου</string>
@@ -3316,19 +3316,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Μπορείτε να επιταχύνετε το στέγνωμα στρέφοντας έναν ανεμιστήρα ή ένα πιστολάκι μαλλιών (μόνο με κρύο αέρα) προς τη θύρα.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Ανιχνεύτηκε υγρασία ή ξένο σώμα στη θύρα φόρτισης/USB.
 
-Ελέγξτε τη θύρα φόρτισης/USB για ξένα σώματα, όπως σκόνη ή βρωμιά. Για να μην προκληθεί ζημιά στο τηλέφωνό σας, μη συνδέσετε τίποτα μέχρι να καθαριστεί η θύρα φόρτισης και να εξαλειφθεί η υγρασία.
+Ελέγξτε τη θύρα φόρτισης/USB για ξένα σώματα, όπως σκόνη ή βρωμιά. Για να μην προκληθεί ζημιά στο tablet σας, μη συνδέσετε τίποτα μέχρι να καθαριστεί η θύρα φόρτισης και να εξαλειφθεί η υγρασία.
 
 Για να στεγνώσετε τη θύρα, ανακινήστε τη συσκευή για να φύγει η υγρασία και περιμένετε να στεγνώσει, διαδικασία που μπορεί να διαρκέσει αρκετές ώρες. Μπορείτε να επιταχύνετε το στέγνωμα στρέφοντας έναν ανεμιστήρα ή ένα πιστολάκι (μόνο ψυχρό αέρα) προς τη θύρα."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Ανιχνεύτηκε υγρασία ή ξένο σώμα στη θύρα φόρτισης/USB.
 
-Ελέγξτε τη θύρα φόρτισης/USB για ξένα σώματα, όπως σκόνη ή βρωμιά. Για να μην προκληθεί ζημιά στο τηλέφωνό σας, μη συνδέσετε τίποτα μέχρι να καθαριστεί η θύρα φόρτισης και να εξαλειφθεί η υγρασία.
+Ελέγξτε τη θύρα φόρτισης/USB για ξένα σώματα, όπως σκόνη ή βρωμιά. Για να μην προκληθεί ζημιά στο tablet σας, μη συνδέσετε τίποτα μέχρι να καθαριστεί η θύρα φόρτισης και να εξαλειφθεί η υγρασία.
 
 Για να στεγνώσετε τη θύρα, ανακινήστε τη συσκευή για να φύγει η υγρασία και περιμένετε να στεγνώσει, διαδικασία που μπορεί να διαρκέσει αρκετές ώρες. Μπορείτε να επιταχύνετε το στέγνωμα στρέφοντας έναν ανεμιστήρα ή ένα πιστολάκι (μόνο ψυχρό αέρα) προς τη θύρα.
 
-Εν τω μεταξύ, μπορείτε να φορτίσετε το τηλέφωνο ασύρματα."</string>
+Εν τω μεταξύ, μπορείτε να φορτίσετε το tablet ασύρματα."</string>
     <string name="usb_water_notification_content">Υπάρχει υγρασία ή κάποιο ξένο σώμα στη θύρα φόρτισης/USB. Ελέγξτε πριν από τη φόρτιση.</string>
-    <string name="usb_water_notification_message">Ανιχνεύθηκε υγρασία στο φορτιστή σας/θύρα USB. Φροντίστε να είναι στεγνός προτού φορτίσετε το τηλέφωνό σας. Μπορεί να χρειαστεί λίγος χρόνος για να στεγνώσει πλήρως.</string>
+    <string name="usb_water_notification_message">Ανιχνεύθηκε υγρασία στο φορτιστή σας/θύρα USB. Φροντίστε να έχει στεγνώσει προτού φορτίσετε το tablet σας. Μπορεί να χρειαστεί λίγος χρόνος για να στεγνώσει πλήρως.</string>
     <string name="usb_water_notification_message_button">Λεπτομέρειες</string>
     <string name="usb_water_notification_title">Έλεγχος θύρας φορτιστή/USB</string>
     <string name="usbhostStorage_restrict">Η πολιτική ασφαλείας δεν επιτρέπει τη χρήση της κεντρικής συσκευής αποθήκευσης USB.</string>
@@ -3346,7 +3346,7 @@
     <string name="user_switched">Τρέχων χρήστης %1$s.</string>
     <string name="user_switching_message">Εναλλαγή σε %1$s…</string>
     <string name="validity_period">Ισχύς:</string>
-    <string name="vdm_camera_access_denied">Δεν είναι δυνατή η πρόσβαση στην κάμερα τηλεφώνου από το %1$s</string>
+    <string name="vdm_camera_access_denied">Δεν είναι δυνατή η πρόσβαση στην κάμερα του tablet από τη συσκευή %1$s</string>
     <string name="vdm_pip_blocked">Δεν είναι δυνατή η προβολή picture-in-picture κατά τη ροή</string>
     <string name="vdm_secure_window">Δεν είναι δυνατή η πρόσβαση σε αυτό το στοιχείο κατά τη ροή. Δοκιμάστε στο τηλέφωνό σας.</string>
     <string name="view_and_control_notification_content">Η υπηρεσία %s μπορεί να βλέπει και να ελέγχει την οθόνη σας. Πατήστε για έλεγχο.</string>

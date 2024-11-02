@@ -85,8 +85,9 @@ public interface ISelectionToolbarRenderServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISelectionToolbarRenderServiceCallback {
+        public static class Proxy implements ISelectionToolbarRenderServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -37,6 +37,9 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
         this.mUserPresent = true;
         this.mAdvancedByHost = false;
         this.mReceiver = new BroadcastReceiver() { // from class: android.widget.AdapterViewFlipper.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -50,6 +53,9 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
             }
         };
         this.mFlipRunnable = new Runnable() { // from class: android.widget.AdapterViewFlipper.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (AdapterViewFlipper.this.mRunning) {
@@ -77,6 +83,9 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
         this.mUserPresent = true;
         this.mAdvancedByHost = false;
         this.mReceiver = new BroadcastReceiver() { // from class: android.widget.AdapterViewFlipper.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
@@ -90,6 +99,9 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
             }
         };
         this.mFlipRunnable = new Runnable() { // from class: android.widget.AdapterViewFlipper.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (AdapterViewFlipper.this.mRunning) {
@@ -105,7 +117,26 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
         a.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.AdapterViewFlipper$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context2, Intent intent) {
+            String action = intent.getAction();
+            if (Intent.ACTION_SCREEN_OFF.equals(action)) {
+                AdapterViewFlipper.this.mUserPresent = false;
+                AdapterViewFlipper.this.updateRunning();
+            } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
+                AdapterViewFlipper.this.mUserPresent = true;
+                AdapterViewFlipper.this.updateRunning(false);
+            }
+        }
+    }
+
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -118,7 +149,6 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -127,7 +157,6 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
         updateRunning();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
@@ -179,12 +208,10 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
         super.showPrevious();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateRunning() {
         updateRunning(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateRunning(boolean flipNow) {
         boolean running = !this.mAdvancedByHost && this.mVisible && this.mStarted && this.mUserPresent && this.mAdapter != null;
         if (running != this.mRunning) {
@@ -208,6 +235,21 @@ public class AdapterViewFlipper extends AdapterViewAnimator {
 
     public boolean isAutoStart() {
         return this.mAutoStart;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.AdapterViewFlipper$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (AdapterViewFlipper.this.mRunning) {
+                AdapterViewFlipper.this.showNext();
+            }
+        }
     }
 
     @Override // android.widget.AdapterViewAnimator, android.widget.Advanceable

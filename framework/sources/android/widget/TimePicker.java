@@ -40,7 +40,6 @@ public class TimePicker extends FrameLayout {
         void onTimeChanged(TimePicker timePicker, int i, int i2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public interface TimePickerDelegate {
         void autofill(AutofillValue autofillValue);
@@ -171,7 +170,6 @@ public class TimePicker extends FrameLayout {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(Context context, TimePicker v, int h, int m) {
         AutofillManager afm = (AutofillManager) context.getSystemService(AutofillManager.class);
         if (afm != null) {
@@ -254,14 +252,12 @@ public class TimePicker extends FrameLayout {
         return this.mDelegate.validateInput();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         return this.mDelegate.onSaveInstanceState(superState);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         View.BaseSavedState ss = (View.BaseSavedState) state;
@@ -295,7 +291,6 @@ public class TimePicker extends FrameLayout {
         return this.mDelegate.getPmView();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String[] getAmPmStrings(Context context) {
         Locale locale = context.getResources().getConfiguration().locale;
         DateFormatSymbols dfs = DateFormat.getIcuDateFormatSymbols(locale);
@@ -307,8 +302,9 @@ public class TimePicker extends FrameLayout {
         return result;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static abstract class AbstractTimePickerDelegate implements TimePickerDelegate {
+    public static abstract class AbstractTimePickerDelegate implements TimePickerDelegate {
         protected OnTimeChangedListener mAutoFillChangeListener;
         private long mAutofilledValue;
         protected final Context mContext;
@@ -357,22 +353,21 @@ public class TimePicker extends FrameLayout {
             return AutofillValue.forDate(cal.getTimeInMillis());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void resetAutofilledValue() {
             this.mAutofilledValue = 0L;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         /* loaded from: classes4.dex */
         public static class SavedState extends View.BaseSavedState {
             public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.TimePicker.AbstractTimePickerDelegate.SavedState.1
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Parcelable.Creator
                 public SavedState createFromParcel(Parcel in) {
                     return new SavedState(in);
                 }
 
-                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public SavedState[] newArray(int size) {
                     return new SavedState[size];
@@ -382,6 +377,10 @@ public class TimePicker extends FrameLayout {
             private final int mHour;
             private final boolean mIs24HourMode;
             private final int mMinute;
+
+            /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+                this(parcel);
+            }
 
             public SavedState(Parcelable superState, int hour, int minute, boolean is24HourMode) {
                 this(superState, hour, minute, is24HourMode, 0);
@@ -426,6 +425,23 @@ public class TimePicker extends FrameLayout {
                 parcel.writeInt(this.mMinute);
                 parcel.writeInt(this.mIs24HourMode ? 1 : 0);
                 parcel.writeInt(this.mCurrentItemShowing);
+            }
+
+            /* renamed from: android.widget.TimePicker$AbstractTimePickerDelegate$SavedState$1 */
+            /* loaded from: classes4.dex */
+            class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+                AnonymousClass1() {
+                }
+
+                @Override // android.os.Parcelable.Creator
+                public SavedState createFromParcel(Parcel in) {
+                    return new SavedState(in);
+                }
+
+                @Override // android.os.Parcelable.Creator
+                public SavedState[] newArray(int size) {
+                    return new SavedState[size];
+                }
             }
         }
     }

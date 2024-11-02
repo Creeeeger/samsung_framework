@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class RtpHeaderExtension implements Parcelable {
     public static final Parcelable.Creator<RtpHeaderExtension> CREATOR = new Parcelable.Creator<RtpHeaderExtension>() { // from class: android.telephony.ims.RtpHeaderExtension.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RtpHeaderExtension createFromParcel(Parcel in) {
             return new RtpHeaderExtension(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RtpHeaderExtension[] newArray(int size) {
             return new RtpHeaderExtension[size];
@@ -24,6 +25,10 @@ public final class RtpHeaderExtension implements Parcelable {
     };
     private byte[] mExtensionData;
     private int mLocalIdentifier;
+
+    /* synthetic */ RtpHeaderExtension(Parcel parcel, RtpHeaderExtensionIA rtpHeaderExtensionIA) {
+        this(parcel);
+    }
 
     public RtpHeaderExtension(int localIdentifier, byte[] extensionData) {
         if (localIdentifier < 1 || localIdentifier > 13) {
@@ -58,6 +63,23 @@ public final class RtpHeaderExtension implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mLocalIdentifier);
         dest.writeByteArray(this.mExtensionData);
+    }
+
+    /* renamed from: android.telephony.ims.RtpHeaderExtension$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RtpHeaderExtension> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RtpHeaderExtension createFromParcel(Parcel in) {
+            return new RtpHeaderExtension(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RtpHeaderExtension[] newArray(int size) {
+            return new RtpHeaderExtension[size];
+        }
     }
 
     public boolean equals(Object o) {

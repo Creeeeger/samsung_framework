@@ -24,8 +24,32 @@ public final class GcUtils {
         Slog.v(TAG, "Running gc and finalizers");
     }
 
-    private static void createFinalizationObserver(final CountDownLatch fence) {
+    /* renamed from: com.android.internal.util.GcUtils$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 {
+        final /* synthetic */ CountDownLatch val$fence;
+
+        AnonymousClass1(CountDownLatch countDownLatch) {
+            fence = countDownLatch;
+        }
+
+        protected void finalize() throws Throwable {
+            try {
+                fence.countDown();
+            } finally {
+                super.finalize();
+            }
+        }
+    }
+
+    private static void createFinalizationObserver(CountDownLatch fence) {
         new Object() { // from class: com.android.internal.util.GcUtils.1
+            final /* synthetic */ CountDownLatch val$fence;
+
+            AnonymousClass1(CountDownLatch fence2) {
+                fence = fence2;
+            }
+
             protected void finalize() throws Throwable {
                 try {
                     fence.countDown();

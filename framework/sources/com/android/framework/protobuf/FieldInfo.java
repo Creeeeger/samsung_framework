@@ -179,9 +179,10 @@ final class FieldInfo implements Comparable<FieldInfo> {
         return this.cachedSizeField;
     }
 
-    /* renamed from: com.android.framework.protobuf.FieldInfo$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.framework.protobuf.FieldInfo$1 */
     /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$FieldType;
 
         static {

@@ -38,6 +38,10 @@ public abstract class AccessibilityRequestPreparer {
 
     /* loaded from: classes4.dex */
     private class ViewAttachStateListener implements View.OnAttachStateChangeListener {
+        /* synthetic */ ViewAttachStateListener(AccessibilityRequestPreparer accessibilityRequestPreparer, ViewAttachStateListenerIA viewAttachStateListenerIA) {
+            this();
+        }
+
         private ViewAttachStateListener() {
         }
 
@@ -55,7 +59,6 @@ public abstract class AccessibilityRequestPreparer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getAccessibilityViewId() {
         return this.mAccessibilityViewId;
     }

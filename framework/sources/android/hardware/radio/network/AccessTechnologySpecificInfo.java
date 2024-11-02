@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AccessTechnologySpecificInfo implements Parcelable {
     public static final Parcelable.Creator<AccessTechnologySpecificInfo> CREATOR = new Parcelable.Creator<AccessTechnologySpecificInfo>() { // from class: android.hardware.radio.network.AccessTechnologySpecificInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AccessTechnologySpecificInfo createFromParcel(Parcel _aidl_source) {
             return new AccessTechnologySpecificInfo(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessTechnologySpecificInfo[] newArray(int _aidl_size) {
             return new AccessTechnologySpecificInfo[_aidl_size];
@@ -35,6 +36,10 @@ public final class AccessTechnologySpecificInfo implements Parcelable {
         public static final int geranDtmSupported = 4;
         public static final int ngranNrVopsInfo = 3;
         public static final int noinit = 0;
+    }
+
+    /* synthetic */ AccessTechnologySpecificInfo(Parcel parcel, AccessTechnologySpecificInfoIA accessTechnologySpecificInfoIA) {
+        this(parcel);
     }
 
     public AccessTechnologySpecificInfo() {
@@ -123,6 +128,23 @@ public final class AccessTechnologySpecificInfo implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.radio.network.AccessTechnologySpecificInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AccessTechnologySpecificInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessTechnologySpecificInfo createFromParcel(Parcel _aidl_source) {
+            return new AccessTechnologySpecificInfo(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessTechnologySpecificInfo[] newArray(int _aidl_size) {
+            return new AccessTechnologySpecificInfo[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

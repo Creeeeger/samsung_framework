@@ -27,7 +27,9 @@ public final class Message implements Parcelable {
     private static int sPoolSize = 0;
     private static boolean gCheckRecycle = true;
     public static final Parcelable.Creator<Message> CREATOR = new Parcelable.Creator<Message>() { // from class: android.os.Message.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Message createFromParcel(Parcel source) {
             Message msg = Message.obtain();
@@ -35,7 +37,6 @@ public final class Message implements Parcelable {
             return msg;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Message[] newArray(int size) {
             return new Message[size];
@@ -138,7 +139,6 @@ public final class Message implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void recycleUnchecked() {
         this.flags = 1;
         this.what = 0;
@@ -236,12 +236,10 @@ public final class Message implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isInUse() {
         return (this.flags & 1) == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void markInUse() {
         this.flags |= 1;
     }
@@ -250,7 +248,6 @@ public final class Message implements Parcelable {
         return toString(SystemClock.uptimeMillis());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String toString(long now) {
         StringBuilder b = new StringBuilder();
         b.append("{ when=");
@@ -285,7 +282,6 @@ public final class Message implements Parcelable {
         return b.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long messageToken = proto.start(fieldId);
         proto.write(1112396529665L, this.when);
@@ -313,6 +309,25 @@ public final class Message implements Parcelable {
             proto.write(1120986464264L, this.arg1);
         }
         proto.end(messageToken);
+    }
+
+    /* renamed from: android.os.Message$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Message> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Message createFromParcel(Parcel source) {
+            Message msg = Message.obtain();
+            msg.readFromParcel(source);
+            return msg;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
     }
 
     @Override // android.os.Parcelable
@@ -347,7 +362,6 @@ public final class Message implements Parcelable {
         dest.writeInt(this.workSourceUid);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void readFromParcel(Parcel source) {
         this.what = source.readInt();
         this.arg1 = source.readInt();

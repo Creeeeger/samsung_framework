@@ -2,7 +2,6 @@ package android.os;
 
 import android.os.IServiceManager;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: ServiceManagerNative.java */
 /* loaded from: classes3.dex */
 public class ServiceManagerProxy implements IServiceManager {

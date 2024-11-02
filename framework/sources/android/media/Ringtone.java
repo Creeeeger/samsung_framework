@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.R;
 import com.samsung.android.audio.Rune;
-import com.samsung.android.common.AsPackageName;
 import com.samsung.android.media.AudioTag;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -281,8 +280,14 @@ public class Ringtone {
         return title;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x0089, code lost:            if (r10 != null) goto L35;     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00bf, code lost:            if (0 == 0) goto L36;     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x0089, code lost:
+    
+        if (r10 != null) goto L107;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00bf, code lost:
+    
+        if (0 == 0) goto L108;
+     */
     /* JADX WARN: Removed duplicated region for block: B:13:? A[RETURN, SYNTHETIC] */
     /* JADX WARN: Removed duplicated region for block: B:8:0x00d2  */
     /*
@@ -320,9 +325,6 @@ public class Ringtone {
         }
         if (this.mIsTelecomPackage) {
             addTag(AudioTag.AUDIO_STREAM_RING);
-        }
-        if (!this.mNeedFadeIn) {
-            addTag(AudioTag.AUDIO_NO_FADE);
         }
     }
 
@@ -515,7 +517,6 @@ public class Ringtone {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public class MyOnCompletionListener implements MediaPlayer.OnCompletionListener {
         MyOnCompletionListener() {
@@ -534,9 +535,6 @@ public class Ringtone {
         String packageName = this.mContext.getPackageName();
         this.mIsTelecomPackage = "com.android.server.telecom".equals(packageName);
         this.mUriStatus = false;
-        if (AsPackageName.RINGTONE_PICKER.equals(packageName) || "com.android.settings".equals(packageName)) {
-            this.mNeedFadeIn = false;
-        }
     }
 
     public void setSecForSeek(int seek) {

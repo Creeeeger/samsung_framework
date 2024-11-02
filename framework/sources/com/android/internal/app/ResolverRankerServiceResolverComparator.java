@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ResolverRankerServiceResolverComparator extends AbstractResolverComparator {
     private static final int CONNECTION_COST_TIMEOUT_MILLIS = 200;
@@ -270,11 +269,13 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ResolverRankerServiceConnection implements ServiceConnection {
         private final CountDownLatch mConnectSignal;
         public final IResolverRankerResult resolverRankerResult = new IResolverRankerResult.Stub() { // from class: com.android.internal.app.ResolverRankerServiceResolverComparator.ResolverRankerServiceConnection.1
+            AnonymousClass1() {
+            }
+
             @Override // android.service.resolver.IResolverRankerResult
             public void sendResult(List<ResolverTarget> targets) throws RemoteException {
                 synchronized (ResolverRankerServiceResolverComparator.this.mLock) {
@@ -288,6 +289,24 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
 
         public ResolverRankerServiceConnection(CountDownLatch connectSignal) {
             this.mConnectSignal = connectSignal;
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.android.internal.app.ResolverRankerServiceResolverComparator$ResolverRankerServiceConnection$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 extends IResolverRankerResult.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.service.resolver.IResolverRankerResult
+            public void sendResult(List<ResolverTarget> targets) throws RemoteException {
+                synchronized (ResolverRankerServiceResolverComparator.this.mLock) {
+                    Message msg = Message.obtain();
+                    msg.what = 0;
+                    msg.obj = targets;
+                    ResolverRankerServiceResolverComparator.this.mHandler.sendMessage(msg);
+                }
+            }
         }
 
         @Override // android.content.ServiceConnection
@@ -316,7 +335,6 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractResolverComparator
     public void beforeCompute() {
         super.beforeCompute();
@@ -366,12 +384,10 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
         return (rci == null || rci.getCount() <= 0 || (rci.getResolveInfoAt(0).activityInfo.applicationInfo.flags & 8) == 0) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ResolverRankerServiceComparatorModel buildUpdatedModel() {
         return new ResolverRankerServiceComparatorModel(this.mStatsPerUser, this.mTargetsDictPerUser, this.mTargets, this.mCollator, this.mRanker, this.mRankerServiceName, this.mAnnotations != null, this.mPmMap);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ResolverRankerServiceComparatorModel implements ResolverComparatorModel {
         private final boolean mAnnotationsUsed;
@@ -406,7 +422,6 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ int lambda$getComparator$0(ResolveInfo lhs, ResolveInfo rhs) {
             int selectProbabilityDiff;
             ResolverTarget lhsTarget = getActivityResolverTargetForUser(lhs.activityInfo, lhs.userHandle);

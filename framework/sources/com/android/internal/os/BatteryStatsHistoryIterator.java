@@ -39,7 +39,6 @@ public class BatteryStatsHistoryIterator implements Iterator<BatteryStats.Histor
         return true;
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.util.Iterator
     public BatteryStats.HistoryItem next() {
         Parcel p = this.mBatteryStatsHistory.getNextParcel();

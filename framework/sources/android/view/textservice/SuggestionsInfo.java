@@ -20,13 +20,14 @@ public final class SuggestionsInfo implements Parcelable {
     private final boolean mSuggestionsAvailable;
     private static final String[] EMPTY = (String[]) ArrayUtils.emptyArray(String.class);
     public static final Parcelable.Creator<SuggestionsInfo> CREATOR = new Parcelable.Creator<SuggestionsInfo>() { // from class: android.view.textservice.SuggestionsInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SuggestionsInfo createFromParcel(Parcel source) {
             return new SuggestionsInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuggestionsInfo[] newArray(int size) {
             return new SuggestionsInfo[size];
@@ -98,6 +99,23 @@ public final class SuggestionsInfo implements Parcelable {
 
     public String getSuggestionAt(int i) {
         return this.mSuggestions[i];
+    }
+
+    /* renamed from: android.view.textservice.SuggestionsInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SuggestionsInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SuggestionsInfo createFromParcel(Parcel source) {
+            return new SuggestionsInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SuggestionsInfo[] newArray(int size) {
+            return new SuggestionsInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -88,7 +88,6 @@ public final class ViewStub extends View {
         return this.mInflater;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(0, 0);
@@ -98,7 +97,6 @@ public final class ViewStub extends View {
     public void draw(Canvas canvas) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void dispatchDraw(Canvas canvas) {
     }
@@ -144,7 +142,6 @@ public final class ViewStub extends View {
         return view;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void replaceSelfWithView(View view, ViewGroup parent) {
         int index = parent.indexOfChild(this);
         parent.removeViewInLayout(this);

@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextActivityBatch extends SContextEventContext {
     public static final Parcelable.Creator<SContextActivityBatch> CREATOR = new Parcelable.Creator<SContextActivityBatch>() { // from class: android.hardware.scontext.SContextActivityBatch.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextActivityBatch createFromParcel(Parcel in) {
             return new SContextActivityBatch(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityBatch[] newArray(int size) {
             return new SContextActivityBatch[size];
@@ -23,7 +24,6 @@ public class SContextActivityBatch extends SContextEventContext {
     private Bundle mContext;
     private int mMode;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextActivityBatch() {
         this.mContext = new Bundle();
         this.mMode = 0;
@@ -86,5 +86,22 @@ public class SContextActivityBatch extends SContextEventContext {
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
         this.mMode = src.readInt();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextActivityBatch$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextActivityBatch> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextActivityBatch createFromParcel(Parcel in) {
+            return new SContextActivityBatch(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextActivityBatch[] newArray(int size) {
+            return new SContextActivityBatch[size];
+        }
     }
 }

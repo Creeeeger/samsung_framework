@@ -19,13 +19,14 @@ import java.lang.Thread;
 /* loaded from: classes.dex */
 public class ApplicationErrorReport implements Parcelable {
     public static final Parcelable.Creator<ApplicationErrorReport> CREATOR = new Parcelable.Creator<ApplicationErrorReport>() { // from class: android.app.ApplicationErrorReport.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ApplicationErrorReport createFromParcel(Parcel source) {
             return new ApplicationErrorReport(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationErrorReport[] newArray(int size) {
             return new ApplicationErrorReport[size];
@@ -305,13 +306,14 @@ public class ApplicationErrorReport implements Parcelable {
     /* loaded from: classes.dex */
     public static class ParcelableCrashInfo extends CrashInfo implements Parcelable {
         public static final Parcelable.Creator<ParcelableCrashInfo> CREATOR = new Parcelable.Creator<ParcelableCrashInfo>() { // from class: android.app.ApplicationErrorReport.ParcelableCrashInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ParcelableCrashInfo createFromParcel(Parcel in) {
                 return new ParcelableCrashInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ParcelableCrashInfo[] newArray(int size) {
                 return new ParcelableCrashInfo[size];
@@ -332,6 +334,23 @@ public class ApplicationErrorReport implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: android.app.ApplicationErrorReport$ParcelableCrashInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ParcelableCrashInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ParcelableCrashInfo createFromParcel(Parcel in) {
+                return new ParcelableCrashInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ParcelableCrashInfo[] newArray(int size) {
+                return new ParcelableCrashInfo[size];
+            }
         }
     }
 
@@ -416,6 +435,23 @@ public class ApplicationErrorReport implements Parcelable {
         public void dump(Printer pw, String prefix) {
             pw.println(prefix + "durationMillis: " + this.durationMillis);
             pw.println(prefix + "serviceDetails: " + this.serviceDetails);
+        }
+    }
+
+    /* renamed from: android.app.ApplicationErrorReport$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ApplicationErrorReport> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApplicationErrorReport createFromParcel(Parcel source) {
+            return new ApplicationErrorReport(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApplicationErrorReport[] newArray(int size) {
+            return new ApplicationErrorReport[size];
         }
     }
 

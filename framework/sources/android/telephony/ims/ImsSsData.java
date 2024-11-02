@@ -67,13 +67,14 @@ public final class ImsSsData implements Parcelable {
     public final int teleserviceType;
     private static final String TAG = ImsSsData.class.getCanonicalName();
     public static final Parcelable.Creator<ImsSsData> CREATOR = new Parcelable.Creator<ImsSsData>() { // from class: android.telephony.ims.ImsSsData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsSsData createFromParcel(Parcel in) {
             return new ImsSsData(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsSsData[] newArray(int size) {
             return new ImsSsData[size];
@@ -98,6 +99,10 @@ public final class ImsSsData implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface TeleserviceType {
+    }
+
+    /* synthetic */ ImsSsData(Parcel parcel, ImsSsDataIA imsSsDataIA) {
+        this(parcel);
     }
 
     /* loaded from: classes3.dex */
@@ -140,6 +145,23 @@ public final class ImsSsData implements Parcelable {
         this.mSsInfo = in.createIntArray();
         this.mCfInfo = in.readParcelableList(new ArrayList(), getClass().getClassLoader(), ImsCallForwardInfo.class);
         this.mImsSsInfo = in.readParcelableList(new ArrayList(), getClass().getClassLoader(), ImsSsInfo.class);
+    }
+
+    /* renamed from: android.telephony.ims.ImsSsData$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsSsData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsSsData createFromParcel(Parcel in) {
+            return new ImsSsData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsSsData[] newArray(int size) {
+            return new ImsSsData[size];
+        }
     }
 
     @Override // android.os.Parcelable

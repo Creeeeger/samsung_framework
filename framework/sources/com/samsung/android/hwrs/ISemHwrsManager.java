@@ -85,8 +85,9 @@ public interface ISemHwrsManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemHwrsManager {
+        public static class Proxy implements ISemHwrsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -16,13 +16,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class NetworkKey implements Parcelable {
     public static final Parcelable.Creator<NetworkKey> CREATOR = new Parcelable.Creator<NetworkKey>() { // from class: android.net.NetworkKey.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NetworkKey createFromParcel(Parcel in) {
             return new NetworkKey(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkKey[] newArray(int size) {
             return new NetworkKey[size];
@@ -36,6 +37,10 @@ public class NetworkKey implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface NetworkType {
+    }
+
+    /* synthetic */ NetworkKey(Parcel parcel, NetworkKeyIA networkKeyIA) {
+        this(parcel);
     }
 
     public static NetworkKey createFromScanResult(ScanResult result) {
@@ -132,6 +137,23 @@ public class NetworkKey implements Parcelable {
                 return this.wifiKey.toString();
             default:
                 return "InvalidKey";
+        }
+    }
+
+    /* renamed from: android.net.NetworkKey$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NetworkKey> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkKey createFromParcel(Parcel in) {
+            return new NetworkKey(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkKey[] newArray(int size) {
+            return new NetworkKey[size];
         }
     }
 }

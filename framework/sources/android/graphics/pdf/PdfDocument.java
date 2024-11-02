@@ -116,8 +116,9 @@ public class PdfDocument {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private final class PdfCanvas extends Canvas {
+    public final class PdfCanvas extends Canvas {
         public PdfCanvas(long nativeCanvas) {
             super(nativeCanvas);
         }
@@ -134,6 +135,10 @@ public class PdfDocument {
         private int mPageHeight;
         private int mPageNumber;
         private int mPageWidth;
+
+        /* synthetic */ PageInfo(PageInfoIA pageInfoIA) {
+            this();
+        }
 
         private PageInfo() {
         }
@@ -197,6 +202,10 @@ public class PdfDocument {
         private Canvas mCanvas;
         private final PageInfo mPageInfo;
 
+        /* synthetic */ Page(Canvas canvas, PageInfo pageInfo, PageIA pageIA) {
+            this(canvas, pageInfo);
+        }
+
         private Page(Canvas canvas, PageInfo pageInfo) {
             this.mCanvas = canvas;
             this.mPageInfo = pageInfo;
@@ -214,7 +223,6 @@ public class PdfDocument {
             return this.mCanvas == null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void finish() {
             Canvas canvas = this.mCanvas;
             if (canvas != null) {

@@ -217,7 +217,10 @@ public class BrowserContract {
         private Settings() {
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:17:0x003a, code lost:            r0.close();     */
+        /* JADX WARN: Code restructure failed: missing block: B:17:0x003a, code lost:
+        
+            r0.close();
+         */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences

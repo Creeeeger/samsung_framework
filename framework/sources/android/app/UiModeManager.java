@@ -134,7 +134,6 @@ public class UiModeManager {
     public @interface ProjectionType {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class Globals extends IUiModeManagerCallback.Stub {
         private float mContrast;
@@ -153,7 +152,6 @@ public class UiModeManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public float getContrast() {
             float f;
             synchronized (this.mGlobalsLock) {
@@ -162,14 +160,12 @@ public class UiModeManager {
             return f;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void addContrastChangeListener(ContrastChangeListener listener, Executor executor) {
             synchronized (this.mGlobalsLock) {
                 this.mContrastChangeListeners.put(listener, executor);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void removeContrastChangeListener(ContrastChangeListener listener) {
             synchronized (this.mGlobalsLock) {
                 this.mContrastChangeListeners.remove(listener);
@@ -234,7 +230,6 @@ public class UiModeManager {
                     	at jadx.core.utils.InsnRemover.unbindInsn(InsnRemover.java:80)
                     	at jadx.core.utils.InsnRemover.addAndUnbind(InsnRemover.java:56)
                     	at jadx.core.dex.visitors.ModVisitor.removeStep(ModVisitor.java:452)
-                    	at jadx.core.dex.visitors.ModVisitor.visit(ModVisitor.java:96)
                     */
                 @Override // java.util.function.ToDoubleFunction
                 public final double applyAsDouble(java.lang.Object r3) {
@@ -262,7 +257,6 @@ public class UiModeManager {
             return contrastLevel / 2.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$fromContrastLevel$1(int contrastLevel, Integer level) {
             return level.intValue() == contrastLevel;
         }
@@ -272,7 +266,6 @@ public class UiModeManager {
         this(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UiModeManager(Context context) throws ServiceManager.ServiceNotFoundException {
         Object obj = new Object();
         this.mLock = obj;
@@ -627,10 +620,13 @@ public class UiModeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class InnerListener extends IOnProjectionStateChangedListener.Stub {
         private final WeakReference<OnProjectionStateChangedListenerResourceManager> mResourceManager;
+
+        /* synthetic */ InnerListener(Executor executor, OnProjectionStateChangedListener onProjectionStateChangedListener, OnProjectionStateChangedListenerResourceManager onProjectionStateChangedListenerResourceManager, InnerListenerIA innerListenerIA) {
+            this(executor, onProjectionStateChangedListener, onProjectionStateChangedListenerResourceManager);
+        }
 
         private InnerListener(Executor executor, OnProjectionStateChangedListener outerListener, OnProjectionStateChangedListenerResourceManager resourceManager) {
             resourceManager.put(this, executor, outerListener);
@@ -659,11 +655,14 @@ public class UiModeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class OnProjectionStateChangedListenerResourceManager {
         private final Map<InnerListener, Executor> mExecutorMap;
         private final Map<InnerListener, OnProjectionStateChangedListener> mOuterListenerMap;
+
+        /* synthetic */ OnProjectionStateChangedListenerResourceManager(OnProjectionStateChangedListenerResourceManagerIA onProjectionStateChangedListenerResourceManagerIA) {
+            this();
+        }
 
         private OnProjectionStateChangedListenerResourceManager() {
             this.mOuterListenerMap = new ArrayMap(1);

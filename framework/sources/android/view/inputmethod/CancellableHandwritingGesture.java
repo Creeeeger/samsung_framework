@@ -13,7 +13,6 @@ public abstract class CancellableHandwritingGesture extends HandwritingGesture {
         this.mCancellationSignal = cancellationSignal;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CancellationSignal getCancellationSignal() {
         return this.mCancellationSignal;
     }

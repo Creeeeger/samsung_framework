@@ -71,15 +71,72 @@ public class UnmodifiableLazyStringList extends AbstractList<String> implements 
         throw new UnsupportedOperationException();
     }
 
+    /* renamed from: com.android.framework.protobuf.UnmodifiableLazyStringList$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements ListIterator<String> {
+        ListIterator<String> iter;
+        final /* synthetic */ int val$index;
+
+        AnonymousClass1(int i) {
+            this.val$index = i;
+            this.iter = UnmodifiableLazyStringList.this.list.listIterator(i);
+        }
+
+        @Override // java.util.ListIterator, java.util.Iterator
+        public boolean hasNext() {
+            return this.iter.hasNext();
+        }
+
+        @Override // java.util.ListIterator, java.util.Iterator
+        public String next() {
+            return this.iter.next();
+        }
+
+        @Override // java.util.ListIterator
+        public boolean hasPrevious() {
+            return this.iter.hasPrevious();
+        }
+
+        @Override // java.util.ListIterator
+        public String previous() {
+            return this.iter.previous();
+        }
+
+        @Override // java.util.ListIterator
+        public int nextIndex() {
+            return this.iter.nextIndex();
+        }
+
+        @Override // java.util.ListIterator
+        public int previousIndex() {
+            return this.iter.previousIndex();
+        }
+
+        @Override // java.util.ListIterator, java.util.Iterator
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // java.util.ListIterator
+        public void set(String o) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // java.util.ListIterator
+        public void add(String o) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
     @Override // java.util.AbstractList, java.util.List
     public ListIterator<String> listIterator(int index) {
         return new ListIterator<String>(index) { // from class: com.android.framework.protobuf.UnmodifiableLazyStringList.1
             ListIterator<String> iter;
             final /* synthetic */ int val$index;
 
-            {
-                this.val$index = index;
-                this.iter = UnmodifiableLazyStringList.this.list.listIterator(index);
+            AnonymousClass1(int index2) {
+                this.val$index = index2;
+                this.iter = UnmodifiableLazyStringList.this.list.listIterator(index2);
             }
 
             @Override // java.util.ListIterator, java.util.Iterator
@@ -129,12 +186,37 @@ public class UnmodifiableLazyStringList extends AbstractList<String> implements 
         };
     }
 
+    /* renamed from: com.android.framework.protobuf.UnmodifiableLazyStringList$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Iterator<String> {
+        Iterator<String> iter;
+
+        AnonymousClass2() {
+            this.iter = UnmodifiableLazyStringList.this.list.iterator();
+        }
+
+        @Override // java.util.Iterator
+        public boolean hasNext() {
+            return this.iter.hasNext();
+        }
+
+        @Override // java.util.Iterator
+        public String next() {
+            return this.iter.next();
+        }
+
+        @Override // java.util.Iterator
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
     @Override // java.util.AbstractList, java.util.AbstractCollection, java.util.Collection, java.lang.Iterable, java.util.List
     public Iterator<String> iterator() {
         return new Iterator<String>() { // from class: com.android.framework.protobuf.UnmodifiableLazyStringList.2
             Iterator<String> iter;
 
-            {
+            AnonymousClass2() {
                 this.iter = UnmodifiableLazyStringList.this.list.iterator();
             }
 

@@ -66,8 +66,9 @@ public class MultiWindowManager {
     public static final int FREEFORM_TRANSIT_NONE = 0;
     public static final int FREEFORM_TRANSIT_RESTORE = 2;
     private static final Singleton<IMultiTaskingBinder> IMultiTaskingBinderSingleton = new Singleton<IMultiTaskingBinder>() { // from class: com.samsung.android.multiwindow.MultiWindowManager.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.util.Singleton
         public IMultiTaskingBinder create() {
             try {
@@ -249,6 +250,22 @@ public class MultiWindowManager {
             sInstance = new MultiWindowManager();
         }
         return sInstance;
+    }
+
+    /* renamed from: com.samsung.android.multiwindow.MultiWindowManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends Singleton<IMultiTaskingBinder> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.Singleton
+        public IMultiTaskingBinder create() {
+            try {
+                return ActivityTaskManager.getService().getMultiTaskingBinder();
+            } catch (RemoteException e) {
+                return null;
+            }
+        }
     }
 
     private static IMultiTaskingBinder getDefault() {

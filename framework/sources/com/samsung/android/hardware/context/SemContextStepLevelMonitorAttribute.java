@@ -9,13 +9,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextStepLevelMonitorAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextStepLevelMonitorAttribute> CREATOR = new Parcelable.Creator<SemContextStepLevelMonitorAttribute>() { // from class: com.samsung.android.hardware.context.SemContextStepLevelMonitorAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextStepLevelMonitorAttribute createFromParcel(Parcel in) {
             return new SemContextStepLevelMonitorAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextStepLevelMonitorAttribute[] newArray(int size) {
             return new SemContextStepLevelMonitorAttribute[size];
@@ -24,7 +25,23 @@ public class SemContextStepLevelMonitorAttribute extends SemContextAttribute {
     private static final String TAG = "SemContextStepLevelMonitorAttribute";
     private int mDuration;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextStepLevelMonitorAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextStepLevelMonitorAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextStepLevelMonitorAttribute createFromParcel(Parcel in) {
+            return new SemContextStepLevelMonitorAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextStepLevelMonitorAttribute[] newArray(int size) {
+            return new SemContextStepLevelMonitorAttribute[size];
+        }
+    }
+
     public SemContextStepLevelMonitorAttribute() {
         this.mDuration = 300;
         setAttribute();

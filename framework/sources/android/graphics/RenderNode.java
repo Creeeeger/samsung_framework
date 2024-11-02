@@ -32,7 +32,7 @@ public final class RenderNode {
     public @interface UsageHint {
     }
 
-    /* renamed from: -$$Nest$smnGetNativeFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnGetNativeFinalizer */
     static /* bridge */ /* synthetic */ long m1147$$Nest$smnGetNativeFinalizer() {
         return nGetNativeFinalizer();
     }
@@ -298,8 +298,9 @@ public final class RenderNode {
     @CriticalNative
     private static native boolean nStretch(long j, float f, float f2, float f3, float f4);
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class NoImagePreloadHolder {
+    public static class NoImagePreloadHolder {
         public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(RenderNode.class.getClassLoader(), RenderNode.m1147$$Nest$smnGetNativeFinalizer());
 
         private NoImagePreloadHolder() {
@@ -368,7 +369,6 @@ public final class RenderNode {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class CompositePositionUpdateListener implements PositionUpdateListener {
         private static final PositionUpdateListener[] sEmpty = new PositionUpdateListener[0];

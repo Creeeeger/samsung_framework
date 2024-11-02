@@ -5,13 +5,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class CarrierAssociatedAppEntry implements Parcelable {
     public static final Parcelable.Creator<CarrierAssociatedAppEntry> CREATOR = new Parcelable.Creator<CarrierAssociatedAppEntry>() { // from class: android.os.CarrierAssociatedAppEntry.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CarrierAssociatedAppEntry createFromParcel(Parcel source) {
             return new CarrierAssociatedAppEntry(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CarrierAssociatedAppEntry[] newArray(int size) {
             return new CarrierAssociatedAppEntry[size];
@@ -40,5 +41,22 @@ public final class CarrierAssociatedAppEntry implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.packageName);
         dest.writeInt(this.addedInSdk);
+    }
+
+    /* renamed from: android.os.CarrierAssociatedAppEntry$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CarrierAssociatedAppEntry> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CarrierAssociatedAppEntry createFromParcel(Parcel source) {
+            return new CarrierAssociatedAppEntry(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CarrierAssociatedAppEntry[] newArray(int size) {
+            return new CarrierAssociatedAppEntry[size];
+        }
     }
 }

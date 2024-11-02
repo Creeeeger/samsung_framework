@@ -75,8 +75,9 @@ import java.util.Map;
 import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class CertPathValidatorUtilities {
+public class CertPathValidatorUtilities {
     protected static final String ANY_POLICY = "2.5.29.32.0";
     protected static final int CRL_SIGN = 6;
     protected static final int KEY_CERT_SIGN = 5;
@@ -99,7 +100,6 @@ class CertPathValidatorUtilities {
     CertPathValidatorUtilities() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Collection findTargets(PKIXExtendedBuilderParameters paramsPKIX) throws CertPathBuilderException {
         PKIXExtendedParameters baseParams = paramsPKIX.getBaseParameters();
         PKIXCertStoreSelector certSelect = baseParams.getTargetConstraints();
@@ -124,7 +124,6 @@ class CertPathValidatorUtilities {
         return findTrustAnchor(cert, trustAnchors, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static TrustAnchor findTrustAnchor(X509Certificate cert, Set trustAnchors, String sigProvider) throws AnnotatedException {
         TrustAnchor trust = null;
         PublicKey trustPublicKey = null;
@@ -175,7 +174,6 @@ class CertPathValidatorUtilities {
         return trust;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isIssuerTrustAnchor(X509Certificate cert, Set trustAnchors, String sigProvider) throws AnnotatedException {
         try {
             return findTrustAnchor(cert, trustAnchors, sigProvider) != null;
@@ -184,7 +182,6 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List<PKIXCertStore> getAdditionalStoresFromAltNames(byte[] issuerAlternativeName, Map<GeneralName, PKIXCertStore> altNameCertStoreMap) throws CertificateParsingException {
         if (issuerAlternativeName == null) {
             return Collections.EMPTY_LIST;
@@ -202,18 +199,15 @@ class CertPathValidatorUtilities {
         return stores;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static Date getValidityDate(PKIXExtendedParameters paramsPKIX, Date currentDate) {
         Date validityDate = paramsPKIX.getValidityDate();
         return validityDate == null ? currentDate : validityDate;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static boolean isSelfIssued(X509Certificate cert) {
         return cert.getSubjectDN().equals(cert.getIssuerDN());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static ASN1Primitive getExtensionValue(X509Extension ext, String oid) throws AnnotatedException {
         byte[] bytes = ext.getExtensionValue(oid);
         if (bytes == null) {
@@ -231,7 +225,6 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static AlgorithmIdentifier getAlgorithmIdentifier(PublicKey key) throws CertPathValidatorException {
         try {
             return SubjectPublicKeyInfo.getInstance(key.getEncoded()).getAlgorithm();
@@ -240,7 +233,6 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final Set getQualifierSet(ASN1Sequence qualifiers) throws CertPathValidatorException {
         Set pq = new HashSet();
         if (qualifiers == null) {
@@ -261,7 +253,6 @@ class CertPathValidatorUtilities {
         return pq;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static PKIXPolicyNode removePolicyNode(PKIXPolicyNode validPolicyTree, List[] policyNodes, PKIXPolicyNode _node) {
         PKIXPolicyNode _parent = (PKIXPolicyNode) _node.getParent();
         if (validPolicyTree == null) {
@@ -289,7 +280,6 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static boolean processCertD1i(int index, List[] policyNodes, ASN1ObjectIdentifier pOid, Set pq) {
         List policyNodeVec = policyNodes[index - 1];
         for (int j = 0; j < policyNodeVec.size(); j++) {
@@ -307,7 +297,6 @@ class CertPathValidatorUtilities {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void processCertD1ii(int index, List[] policyNodes, ASN1ObjectIdentifier _poid, Set _pq) {
         List policyNodeVec = policyNodes[index - 1];
         for (int j = 0; j < policyNodeVec.size(); j++) {
@@ -323,7 +312,10 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:40:?, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:?, code lost:
+    
+        return;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -357,12 +349,10 @@ class CertPathValidatorUtilities {
         return validPolicyTree;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static boolean isAnyPolicy(Set policySet) {
         return policySet == null || policySet.contains("2.5.29.32.0") || policySet.isEmpty();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void findCertificates(LinkedHashSet certs, PKIXCertStoreSelector certSelect, List certStores) throws AnnotatedException {
         for (Object obj : certStores) {
             CertStore certStore = (CertStore) obj;
@@ -374,7 +364,6 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List<PKIXCRLStore> getAdditionalStoresFromCRLDistributionPoint(CRLDistPoint crldp, Map<GeneralName, PKIXCRLStore> namedCRLStoreMap, Date validDate, JcaJceHelper helper) throws AnnotatedException {
         if (crldp == null) {
             return Collections.EMPTY_LIST;
@@ -454,7 +443,6 @@ class CertPathValidatorUtilities {
         return ((X509Certificate) cert).getSerialNumber();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void getCertStatus(Date validDate, X509CRL crl, Object cert, CertStatus certStatus) throws AnnotatedException {
         X509CRLEntry crl_entry;
         int reasonCodeValue;
@@ -503,7 +491,6 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Unreachable blocks removed: 2, instructions: 2 */
     public static Set getDeltaCRLs(Date validityDate, X509CRL completeCRL, List<CertStore> certStores, List<PKIXCRLStore> pkixCrlStores, JcaJceHelper helper) throws AnnotatedException {
         CertificateFactory certFact;
@@ -594,7 +581,6 @@ class CertPathValidatorUtilities {
         return critical.contains(RFC3280CertPathUtilities.DELTA_CRL_INDICATOR);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static Set getCompleteCRLs(PKIXCertRevocationCheckerParameters params, DistributionPoint dp, Object cert, PKIXExtendedParameters paramsPKIX, Date validityDate) throws AnnotatedException, RecoverableCertPathValidatorException {
         X509CRLSelector baseCrlSelect = new X509CRLSelector();
         try {
@@ -613,7 +599,6 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static Date getValidCertDateFromValidityModel(Date validityDate, int validityModel, CertPath certPath, int index) throws AnnotatedException {
         if (1 != validityModel || index <= 0) {
             return validityDate;
@@ -642,7 +627,6 @@ class CertPathValidatorUtilities {
         return issuedCert.getNotBefore();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static PublicKey getNextWorkingKey(List certs, int index, JcaJceHelper helper) throws CertPathValidatorException {
         Certificate cert = (Certificate) certs.get(index);
         PublicKey pubKey = cert.getPublicKey();
@@ -674,7 +658,6 @@ class CertPathValidatorUtilities {
         throw new CertPathValidatorException("DSA parameters cannot be inherited from previous certificate.");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Collection findIssuerCerts(X509Certificate cert, List<CertStore> certStores, List<PKIXCertStore> pkixCertStores) throws AnnotatedException {
         X509CertSelector selector = new X509CertSelector();
         try {
@@ -704,7 +687,6 @@ class CertPathValidatorUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void verifyX509Certificate(X509Certificate cert, PublicKey publicKey, String sigProvider) throws GeneralSecurityException {
         if (sigProvider == null) {
             cert.verify(publicKey);

@@ -11,13 +11,14 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class ResumeActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<ResumeActivityItem> CREATOR = new Parcelable.Creator<ResumeActivityItem>() { // from class: android.app.servertransaction.ResumeActivityItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ResumeActivityItem createFromParcel(Parcel in) {
             return new ResumeActivityItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResumeActivityItem[] newArray(int size) {
             return new ResumeActivityItem[size];
@@ -28,6 +29,10 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
     private int mProcState;
     private boolean mShouldSendCompatFakeFocus;
     private boolean mUpdateProcState;
+
+    /* synthetic */ ResumeActivityItem(Parcel parcel, ResumeActivityItemIA resumeActivityItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.BaseClientRequest
     public void preExecute(ClientTransactionHandler client, IBinder token) {
@@ -103,6 +108,23 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
         this.mUpdateProcState = in.readBoolean();
         this.mIsForward = in.readBoolean();
         this.mShouldSendCompatFakeFocus = in.readBoolean();
+    }
+
+    /* renamed from: android.app.servertransaction.ResumeActivityItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ResumeActivityItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResumeActivityItem createFromParcel(Parcel in) {
+            return new ResumeActivityItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResumeActivityItem[] newArray(int size) {
+            return new ResumeActivityItem[size];
+        }
     }
 
     public boolean equals(Object o) {

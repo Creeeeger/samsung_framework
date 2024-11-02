@@ -3,6 +3,7 @@ package com.samsung.android.allshare;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Parcelable;
 import com.samsung.android.allshare.Device;
 import com.sec.android.allshare.iface.CVMessage;
@@ -13,13 +14,16 @@ import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class DeviceImpl extends Device implements IBundleHolder, IHandlerHolder {
     private static final String TAG = "DeviceImpl";
     private Bundle mDeviceBundle;
     private IAllShareConnector mAllShareConnector = null;
     AllShareResponseHandler mResponseHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.DeviceImpl.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
             String actionID = cvm.getActionID();
@@ -39,7 +43,6 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DeviceImpl(Bundle bundle) {
         this.mDeviceBundle = null;
         this.mDeviceBundle = bundle;
@@ -52,6 +55,33 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
             DLog.w_api(TAG, "deviceImpl is null");
         } else {
             this.mAllShareConnector = connector;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.DeviceImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareResponseHandler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            String actionID = cvm.getActionID();
+            Bundle resBundle = cvm.getBundle();
+            if (actionID == null || resBundle == null) {
+                DLog.w_api(DeviceImpl.TAG, "handleResponseMessage : actionID == null || resBundle == null");
+                return;
+            }
+            ERROR error = ERROR.FAIL;
+            String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+            if (errorStr != null) {
+                error = ERROR.stringToEnum(errorStr);
+            }
+            if (actionID.equals(AllShareAction.ACTION_REQUEST_MOBILE_TO_TV) && error.equals(ERROR.SUCCESS)) {
+                DLog.w_api(DeviceImpl.TAG, "handleResponseMessage : actionID :ACTION_REQUEST_MOBILE_TO_TV response SUCCESS");
+            }
         }
     }
 
@@ -223,8 +253,7 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.DeviceImpl$2, reason: invalid class name */
+    /* renamed from: com.samsung.android.allshare.DeviceImpl$2 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Device$InformationType;

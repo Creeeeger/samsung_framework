@@ -257,8 +257,9 @@ public interface IVibratorManagerService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IVibratorManagerService {
+        public static class Proxy implements IVibratorManagerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

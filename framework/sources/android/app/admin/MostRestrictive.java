@@ -10,13 +10,14 @@ import java.util.function.Function;
 /* loaded from: classes.dex */
 public final class MostRestrictive<V> extends ResolutionMechanism<V> {
     public static final Parcelable.Creator<MostRestrictive<?>> CREATOR = new Parcelable.Creator<MostRestrictive<?>>() { // from class: android.app.admin.MostRestrictive.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MostRestrictive<?> createFromParcel(Parcel source) {
             return new MostRestrictive<>(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MostRestrictive<?>[] newArray(int size) {
             return new MostRestrictive[size];
@@ -78,6 +79,23 @@ public final class MostRestrictive<V> extends ResolutionMechanism<V> {
         dest.writeInt(this.mMostToLeastRestrictive.size());
         for (PolicyValue<V> entry : this.mMostToLeastRestrictive) {
             dest.writeParcelable(entry, flags);
+        }
+    }
+
+    /* renamed from: android.app.admin.MostRestrictive$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MostRestrictive<?>> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MostRestrictive<?> createFromParcel(Parcel source) {
+            return new MostRestrictive<>(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MostRestrictive<?>[] newArray(int size) {
+            return new MostRestrictive[size];
         }
     }
 }

@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class SearchResult implements Parcelable {
     public static final Parcelable.Creator<SearchResult> CREATOR = new Parcelable.Creator<SearchResult>() { // from class: android.app.cloudsearch.SearchResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchResult createFromParcel(Parcel p) {
             return new SearchResult();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchResult[] newArray(int size) {
             return new SearchResult[size];
@@ -50,6 +51,10 @@ public final class SearchResult implements Parcelable {
     public @interface SearchResultExtraInfoKey {
     }
 
+    /* synthetic */ SearchResult(SearchResultIA searchResultIA) {
+        this();
+    }
+
     private SearchResult() {
     }
 
@@ -67,6 +72,23 @@ public final class SearchResult implements Parcelable {
 
     public Bundle getExtraInfos() {
         return Bundle.EMPTY;
+    }
+
+    /* renamed from: android.app.cloudsearch.SearchResult$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchResult createFromParcel(Parcel p) {
+            return new SearchResult();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchResult[] newArray(int size) {
+            return new SearchResult[size];
+        }
     }
 
     @Override // android.os.Parcelable

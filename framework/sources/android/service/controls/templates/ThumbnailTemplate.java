@@ -25,7 +25,6 @@ public final class ThumbnailTemplate extends ControlTemplate {
         this.mContentDescription = contentDescription;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ThumbnailTemplate(Bundle b) {
         super(b);
         this.mActive = b.getBoolean(KEY_ACTIVE);

@@ -86,8 +86,9 @@ public interface IAuthTouchEnableListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements IAuthTouchEnableListener {
+        public static class Proxy implements IAuthTouchEnableListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

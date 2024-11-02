@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class KeystoreAtomPayload implements Parcelable {
     public static final Parcelable.Creator<KeystoreAtomPayload> CREATOR = new Parcelable.Creator<KeystoreAtomPayload>() { // from class: android.security.metrics.KeystoreAtomPayload.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeystoreAtomPayload createFromParcel(Parcel _aidl_source) {
             return new KeystoreAtomPayload(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeystoreAtomPayload[] newArray(int _aidl_size) {
             return new KeystoreAtomPayload[_aidl_size];
@@ -41,6 +42,10 @@ public final class KeystoreAtomPayload implements Parcelable {
         public static final int keystore2AtomWithOverflow = 4;
         public static final int rkpErrorStats = 7;
         public static final int storageStats = 0;
+    }
+
+    /* synthetic */ KeystoreAtomPayload(Parcel parcel, KeystoreAtomPayloadIA keystoreAtomPayloadIA) {
+        this(parcel);
     }
 
     public KeystoreAtomPayload() {
@@ -176,6 +181,23 @@ public final class KeystoreAtomPayload implements Parcelable {
 
     public void setCrashStats(CrashStats _value) {
         _set(8, _value);
+    }
+
+    /* renamed from: android.security.metrics.KeystoreAtomPayload$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeystoreAtomPayload> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeystoreAtomPayload createFromParcel(Parcel _aidl_source) {
+            return new KeystoreAtomPayload(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeystoreAtomPayload[] newArray(int _aidl_size) {
+            return new KeystoreAtomPayload[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -84,8 +84,9 @@ public interface IUsbOperationInternal extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IUsbOperationInternal {
+        public static class Proxy implements IUsbOperationInternal {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

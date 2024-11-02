@@ -207,8 +207,9 @@ public interface ISamsungTelecomService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISamsungTelecomService {
+        public static class Proxy implements ISamsungTelecomService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

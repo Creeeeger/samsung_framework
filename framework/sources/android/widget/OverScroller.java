@@ -2,10 +2,7 @@ package android.widget;
 
 import android.content.Context;
 import android.hardware.scontext.SContextConstants;
-import android.os.Looper;
-import android.os.Process;
 import android.util.Log;
-import android.view.Choreographer;
 import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -41,12 +38,8 @@ public class OverScroller {
             this.mInterpolator = interpolator;
         }
         this.mFlywheel = flywheel;
-        SplineOverScroller splineOverScroller = new SplineOverScroller(context);
-        this.mScrollerX = splineOverScroller;
-        SplineOverScroller splineOverScroller2 = new SplineOverScroller(context);
-        this.mScrollerY = splineOverScroller2;
-        splineOverScroller.setSTBIndex(0);
-        splineOverScroller2.setSTBIndex(1);
+        this.mScrollerX = new SplineOverScroller(context);
+        this.mScrollerY = new SplineOverScroller(context);
     }
 
     @Deprecated
@@ -59,7 +52,6 @@ public class OverScroller {
         this(context, interpolator, flywheel);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setInterpolator(Interpolator interpolator) {
         if (interpolator == null) {
             this.mInterpolator = new Scroller.ViscousFluidInterpolator();
@@ -180,7 +172,6 @@ public class OverScroller {
         fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY, 0, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void fling(int startX, int startY, int velocityX, int velocityY, int minX, int maxX, int minY, int maxY, boolean accDisabled) {
         fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY, 0, 0, accDisabled);
     }
@@ -253,9 +244,9 @@ public class OverScroller {
             boolean r3 = r13.isFinished()
             if (r3 != 0) goto L3d
             android.widget.OverScroller$SplineOverScroller r3 = r0.mScrollerX
-            float r3 = android.widget.OverScroller.SplineOverScroller.m6363$$Nest$fgetmCurrVelocity(r3)
+            float r3 = android.widget.OverScroller.SplineOverScroller.m6358$$Nest$fgetmCurrVelocity(r3)
             android.widget.OverScroller$SplineOverScroller r4 = r0.mScrollerY
-            float r4 = android.widget.OverScroller.SplineOverScroller.m6363$$Nest$fgetmCurrVelocity(r4)
+            float r4 = android.widget.OverScroller.SplineOverScroller.m6358$$Nest$fgetmCurrVelocity(r4)
             float r5 = (float) r1
             float r5 = java.lang.Math.signum(r5)
             float r6 = java.lang.Math.signum(r3)
@@ -357,12 +348,10 @@ public class OverScroller {
         this.mScrollerY.setMode(z ? 1 : 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public double getSplineFlingDistance(int velocity) {
         return this.mScrollerY.getSplineFlingDistance(velocity);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SplineOverScroller {
         private static final int BALLISTIC = 2;
@@ -569,13 +558,6 @@ public class OverScroller {
                 SemPerfManager.onSmoothScrollEvent(false);
                 this.mIsDVFSBoosting = false;
             }
-            if (Process.myUid() >= 10000 && Process.myUid() <= 19999 && this.mSTBIndex != -1 && this.mFlingSTBFlag) {
-                Choreographer choreographer = Looper.myLooper() != null ? Choreographer.getInstance() : null;
-                if (choreographer != null) {
-                    choreographer.setFlingSTBFlag(false, this.mSTBIndex);
-                    this.mFlingSTBFlag = false;
-                }
-            }
             this.mCurrentPosition = this.mFinal;
             this.mFinished = true;
         }
@@ -649,13 +631,6 @@ public class OverScroller {
                     SemPerfManager.onSmoothScrollEvent(true);
                     this.mIsDVFSBoosting = true;
                 }
-                if (Process.myUid() >= 10000 && Process.myUid() <= 19999 && this.mSTBIndex != -1 && !this.mFlingSTBFlag) {
-                    Choreographer choreographer = Looper.myLooper() != null ? Choreographer.getInstance() : null;
-                    if (choreographer != null) {
-                        choreographer.setFlingSTBFlag(true, this.mSTBIndex);
-                        this.mFlingSTBFlag = true;
-                    }
-                }
             }
             int signum = (int) (Math.signum(velocity) * totalDistance);
             this.mSplineDistance = signum;
@@ -679,7 +654,6 @@ public class OverScroller {
             return Math.log((INFLEXION * Math.abs(velocity)) / (this.mFlingFriction * this.mPhysicalCoeff));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public double getSplineFlingDistance(int velocity) {
             double l = getSplineDeceleration(velocity);
             float f = DECELERATION_RATE;

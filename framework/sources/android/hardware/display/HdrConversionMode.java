@@ -9,13 +9,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class HdrConversionMode implements Parcelable {
     public static final Parcelable.Creator<HdrConversionMode> CREATOR = new Parcelable.Creator<HdrConversionMode>() { // from class: android.hardware.display.HdrConversionMode.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HdrConversionMode createFromParcel(Parcel source) {
             return new HdrConversionMode(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HdrConversionMode[] newArray(int size) {
             return new HdrConversionMode[size];
@@ -31,6 +32,27 @@ public final class HdrConversionMode implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface ConversionMode {
+    }
+
+    /* synthetic */ HdrConversionMode(Parcel parcel, HdrConversionModeIA hdrConversionModeIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.hardware.display.HdrConversionMode$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HdrConversionMode> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HdrConversionMode createFromParcel(Parcel source) {
+            return new HdrConversionMode(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HdrConversionMode[] newArray(int size) {
+            return new HdrConversionMode[size];
+        }
     }
 
     public HdrConversionMode(int conversionMode, int preferredHdrOutputType) {

@@ -10,7 +10,6 @@ import android.util.Log;
 import com.android.internal.inputmethod.IInputMethodSession;
 import com.android.internal.inputmethod.IRemoteInputConnection;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class IInputMethodSessionInvoker {
     private static final String TAG = "InputMethodSessionWrapper";
@@ -44,7 +43,6 @@ public final class IInputMethodSessionInvoker {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishInput() {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -59,7 +57,6 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void finishInputInternal() {
         try {
             this.mSession.finishInput();
@@ -68,7 +65,6 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateCursorAnchorInfo(final CursorAnchorInfo cursorAnchorInfo) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -83,8 +79,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: updateCursorAnchorInfoInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: updateCursorAnchorInfoInternal */
     public void lambda$updateCursorAnchorInfo$0(CursorAnchorInfo cursorAnchorInfo) {
         try {
             this.mSession.updateCursorAnchorInfo(cursorAnchorInfo);
@@ -93,7 +88,6 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void displayCompletions(final CompletionInfo[] completions) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -108,8 +102,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: displayCompletionsInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: displayCompletionsInternal */
     public void lambda$displayCompletions$1(CompletionInfo[] completions) {
         try {
             this.mSession.displayCompletions(completions);
@@ -118,12 +111,10 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateExtractedTextSync(int token, ExtractedText text) {
         lambda$updateExtractedText$2(token, text);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateExtractedText(final int token, final ExtractedText text) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -138,8 +129,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: updateExtractedTextInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: updateExtractedTextInternal */
     public void lambda$updateExtractedText$2(int token, ExtractedText text) {
         try {
             this.mSession.updateExtractedText(token, text);
@@ -148,7 +138,6 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void appPrivateCommand(final String action, final Bundle data) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -163,8 +152,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: appPrivateCommandInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: appPrivateCommandInternal */
     public void lambda$appPrivateCommand$3(String action, Bundle data) {
         try {
             this.mSession.appPrivateCommand(action, data);
@@ -173,7 +161,6 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void viewClicked(final boolean focusChanged) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -188,8 +175,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: viewClickedInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: viewClickedInternal */
     public void lambda$viewClicked$4(boolean focusChanged) {
         try {
             this.mSession.viewClicked(focusChanged);
@@ -198,7 +184,6 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateCursor(final Rect newCursor) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -213,8 +198,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: updateCursorInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: updateCursorInternal */
     public void lambda$updateCursor$5(Rect newCursor) {
         try {
             this.mSession.updateCursor(newCursor);
@@ -223,7 +207,6 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSelection(final int oldSelStart, final int oldSelEnd, final int selStart, final int selEnd, final int candidatesStart, final int candidatesEnd) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -238,8 +221,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: updateSelectionInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: updateSelectionInternal */
     public void lambda$updateSelection$6(int oldSelStart, int oldSelEnd, int selStart, int selEnd, int candidatesStart, int candidatesEnd) {
         try {
             this.mSession.updateSelection(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
@@ -248,7 +230,6 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateInput(final EditorInfo editorInfo, final IRemoteInputConnection inputConnection, final int sessionId) {
         Handler handler = this.mCustomHandler;
         if (handler == null) {
@@ -263,8 +244,7 @@ public final class IInputMethodSessionInvoker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: invalidateInputInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: invalidateInputInternal */
     public void lambda$invalidateInput$7(EditorInfo editorInfo, IRemoteInputConnection inputConnection, int sessionId) {
         try {
             this.mSession.invalidateInput(editorInfo, inputConnection, sessionId);

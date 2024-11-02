@@ -26,7 +26,9 @@ public class WindowInfo implements Parcelable {
     public int type;
     private static final Pools.SynchronizedPool<WindowInfo> sPool = new Pools.SynchronizedPool<>(10);
     public static final Parcelable.Creator<WindowInfo> CREATOR = new Parcelable.Creator<WindowInfo>() { // from class: android.view.WindowInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WindowInfo createFromParcel(Parcel parcel) {
             WindowInfo window = WindowInfo.obtain();
@@ -34,7 +36,6 @@ public class WindowInfo implements Parcelable {
             return window;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowInfo[] newArray(int size) {
             return new WindowInfo[size];
@@ -160,7 +161,6 @@ public class WindowInfo implements Parcelable {
         return builder.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void initFromParcel(Parcel parcel) {
         this.displayId = parcel.readInt();
         this.taskId = parcel.readInt();
@@ -216,6 +216,25 @@ public class WindowInfo implements Parcelable {
                 this.locales = LocaleList.getEmptyLocaleList();
                 return;
             }
+        }
+    }
+
+    /* renamed from: android.view.WindowInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WindowInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowInfo createFromParcel(Parcel parcel) {
+            WindowInfo window = WindowInfo.obtain();
+            window.initFromParcel(parcel);
+            return window;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowInfo[] newArray(int size) {
+            return new WindowInfo[size];
         }
     }
 }

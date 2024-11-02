@@ -8,19 +8,41 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public class ConcurrentCameraIdCombination implements Parcelable {
     public static final Parcelable.Creator<ConcurrentCameraIdCombination> CREATOR = new Parcelable.Creator<ConcurrentCameraIdCombination>() { // from class: android.hardware.camera2.utils.ConcurrentCameraIdCombination.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ConcurrentCameraIdCombination createFromParcel(Parcel in) {
             return new ConcurrentCameraIdCombination(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConcurrentCameraIdCombination[] newArray(int size) {
             return new ConcurrentCameraIdCombination[size];
         }
     };
     private Set<String> mConcurrentCameraIds;
+
+    /* synthetic */ ConcurrentCameraIdCombination(Parcel parcel, ConcurrentCameraIdCombinationIA concurrentCameraIdCombinationIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.hardware.camera2.utils.ConcurrentCameraIdCombination$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConcurrentCameraIdCombination> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConcurrentCameraIdCombination createFromParcel(Parcel in) {
+            return new ConcurrentCameraIdCombination(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConcurrentCameraIdCombination[] newArray(int size) {
+            return new ConcurrentCameraIdCombination[size];
+        }
+    }
 
     private ConcurrentCameraIdCombination(Parcel in) {
         this.mConcurrentCameraIds = new HashSet();

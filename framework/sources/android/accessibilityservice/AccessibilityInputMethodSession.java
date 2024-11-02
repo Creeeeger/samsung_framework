@@ -3,7 +3,6 @@ package android.accessibilityservice;
 import android.view.inputmethod.EditorInfo;
 import com.android.internal.inputmethod.IRemoteAccessibilityInputConnection;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public interface AccessibilityInputMethodSession {
     void finishInput();

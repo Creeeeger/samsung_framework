@@ -8,7 +8,9 @@ import android.util.MathUtils;
 /* loaded from: classes3.dex */
 public final class ParcelableHolder implements Parcelable {
     public static final Parcelable.Creator<ParcelableHolder> CREATOR = new Parcelable.Creator<ParcelableHolder>() { // from class: android.os.ParcelableHolder.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelableHolder createFromParcel(Parcel parcel) {
             ParcelableHolder parcelable = new ParcelableHolder();
@@ -16,7 +18,6 @@ public final class ParcelableHolder implements Parcelable {
             return parcelable;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableHolder[] newArray(int size) {
             return new ParcelableHolder[size];
@@ -25,6 +26,10 @@ public final class ParcelableHolder implements Parcelable {
     private Parcel mParcel;
     private Parcelable mParcelable;
     private int mStability;
+
+    /* synthetic */ ParcelableHolder(ParcelableHolderIA parcelableHolderIA) {
+        this();
+    }
 
     public ParcelableHolder(int stability) {
         this.mStability = 0;
@@ -38,6 +43,25 @@ public final class ParcelableHolder implements Parcelable {
     @Override // android.os.Parcelable
     public int getStability() {
         return this.mStability;
+    }
+
+    /* renamed from: android.os.ParcelableHolder$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ParcelableHolder> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableHolder createFromParcel(Parcel parcel) {
+            ParcelableHolder parcelable = new ParcelableHolder();
+            parcelable.readFromParcel(parcel);
+            return parcelable;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableHolder[] newArray(int size) {
+            return new ParcelableHolder[size];
+        }
     }
 
     public void setParcelable(Parcelable p) {

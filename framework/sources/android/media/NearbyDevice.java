@@ -20,13 +20,14 @@ public final class NearbyDevice implements Parcelable {
     private final int mRangeZone;
     private static final List<Integer> RANGE_WEIGHT_LIST = Arrays.asList(0, 1, 2, 3, 4);
     public static final Parcelable.Creator<NearbyDevice> CREATOR = new Parcelable.Creator<NearbyDevice>() { // from class: android.media.NearbyDevice.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NearbyDevice createFromParcel(Parcel in) {
             return new NearbyDevice(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NearbyDevice[] newArray(int size) {
             return new NearbyDevice[size];
@@ -36,6 +37,10 @@ public final class NearbyDevice implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface RangeZone {
+    }
+
+    /* synthetic */ NearbyDevice(Parcel parcel, NearbyDeviceIA nearbyDeviceIA) {
+        this(parcel);
     }
 
     public static String rangeZoneToString(int rangeZone) {
@@ -63,6 +68,23 @@ public final class NearbyDevice implements Parcelable {
     private NearbyDevice(Parcel in) {
         this.mMediaRoute2Id = in.readString8();
         this.mRangeZone = in.readInt();
+    }
+
+    /* renamed from: android.media.NearbyDevice$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NearbyDevice> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NearbyDevice createFromParcel(Parcel in) {
+            return new NearbyDevice(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NearbyDevice[] newArray(int size) {
+            return new NearbyDevice[size];
+        }
     }
 
     public static int compareRangeZones(int rangeZone, int anotherRangeZone) {

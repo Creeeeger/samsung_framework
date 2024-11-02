@@ -4,6 +4,7 @@ import android.annotation.SystemApi;
 import android.app.backup.IRestoreObserver;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
@@ -137,13 +138,11 @@ public class RestoreSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RestoreSession(Context context, IRestoreSession binder) {
         this.mContext = context;
         this.mBinder = binder;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class RestoreObserverWrapper extends IRestoreObserver.Stub {
         static final int MSG_RESTORE_FINISHED = 3;
@@ -153,8 +152,49 @@ public class RestoreSession {
         final RestoreObserver mAppObserver;
         final Handler mHandler;
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.app.backup.RestoreSession$RestoreObserverWrapper$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ RestoreSession val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper, RestoreSession restoreSession) {
+                super(looper);
+                r3 = restoreSession;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        RestoreObserverWrapper.this.mAppObserver.restoreStarting(msg.arg1);
+                        return;
+                    case 2:
+                        RestoreObserverWrapper.this.mAppObserver.onUpdate(msg.arg1, (String) msg.obj);
+                        return;
+                    case 3:
+                        RestoreObserverWrapper.this.mAppObserver.restoreFinished(msg.arg1);
+                        return;
+                    case 4:
+                        RestoreObserverWrapper.this.mAppObserver.restoreSetsAvailable((RestoreSet[]) msg.obj);
+                        return;
+                    default:
+                        return;
+                }
+            }
+        }
+
         RestoreObserverWrapper(Context context, RestoreObserver appObserver) {
             this.mHandler = new Handler(context.getMainLooper()) { // from class: android.app.backup.RestoreSession.RestoreObserverWrapper.1
+                final /* synthetic */ RestoreSession val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper, RestoreSession restoreSession) {
+                    super(looper);
+                    r3 = restoreSession;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     switch (msg.what) {

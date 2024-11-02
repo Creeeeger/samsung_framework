@@ -12,13 +12,14 @@ import java.util.TreeSet;
 /* loaded from: classes3.dex */
 public final class MediaThreshold implements Parcelable {
     public static final Parcelable.Creator<MediaThreshold> CREATOR = new Parcelable.Creator<MediaThreshold>() { // from class: android.telephony.ims.MediaThreshold.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MediaThreshold createFromParcel(Parcel in) {
             return new MediaThreshold(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaThreshold[] newArray(int size) {
             return new MediaThreshold[size];
@@ -27,6 +28,14 @@ public final class MediaThreshold implements Parcelable {
     private final long[] mRtpInactivityTimeMillis;
     private final int[] mRtpJitter;
     private final int[] mRtpPacketLossRate;
+
+    /* synthetic */ MediaThreshold(Parcel parcel, MediaThresholdIA mediaThresholdIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ MediaThreshold(int[] iArr, int[] iArr2, long[] jArr, MediaThresholdIA mediaThresholdIA) {
+        this(iArr, iArr2, jArr);
+    }
 
     @SystemApi
     public int[] getThresholdsRtpPacketLossRate() {
@@ -58,6 +67,23 @@ public final class MediaThreshold implements Parcelable {
         dest.writeIntArray(this.mRtpPacketLossRate);
         dest.writeIntArray(this.mRtpJitter);
         dest.writeLongArray(this.mRtpInactivityTimeMillis);
+    }
+
+    /* renamed from: android.telephony.ims.MediaThreshold$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MediaThreshold> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaThreshold createFromParcel(Parcel in) {
+            return new MediaThreshold(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaThreshold[] newArray(int size) {
+            return new MediaThreshold[size];
+        }
     }
 
     public static boolean isValidRtpPacketLossRate(int packetLossRate) {

@@ -367,7 +367,6 @@ public class Path {
         return this.mNativePath;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final long mutateNI() {
         return this.mNativePath;
     }

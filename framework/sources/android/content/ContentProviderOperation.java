@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class ContentProviderOperation implements Parcelable {
     public static final Parcelable.Creator<ContentProviderOperation> CREATOR = new Parcelable.Creator<ContentProviderOperation>() { // from class: android.content.ContentProviderOperation.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentProviderOperation createFromParcel(Parcel source) {
             return new ContentProviderOperation(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentProviderOperation[] newArray(int size) {
             return new ContentProviderOperation[size];
@@ -42,6 +43,14 @@ public class ContentProviderOperation implements Parcelable {
     private final Uri mUri;
     private final ArrayMap<String, Object> mValues;
     private final boolean mYieldAllowed;
+
+    /* synthetic */ ContentProviderOperation(Builder builder, ContentProviderOperationIA contentProviderOperationIA) {
+        this(builder);
+    }
+
+    /* synthetic */ ContentProviderOperation(Parcel parcel, ContentProviderOperationIA contentProviderOperationIA) {
+        this(parcel);
+    }
 
     private ContentProviderOperation(Builder builder) {
         this.mType = builder.mType;
@@ -222,15 +231,44 @@ public class ContentProviderOperation implements Parcelable {
         return applyInternal(provider, backRefs, numBackRefs);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x00d7, code lost:            if (r2 != null) goto L44;     */
-    /* JADX WARN: Code restructure failed: missing block: B:55:0x00dd, code lost:            if (r3.moveToNext() == false) goto L74;     */
-    /* JADX WARN: Code restructure failed: missing block: B:56:0x00df, code lost:            r5 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x00e1, code lost:            if (r5 >= r2.length) goto L75;     */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x00e3, code lost:            r6 = r3.getString(r5);        r7 = r0.getAsString(r2[r5]);     */
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x00f1, code lost:            if (android.text.TextUtils.equals(r6, r7) == false) goto L73;     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00f3, code lost:            r5 = r5 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x0124, code lost:            throw new android.content.OperationApplicationException("Found value " + r6 + " when expected " + r7 + " for column " + r2[r5]);     */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x0126, code lost:            r3.close();        r2 = r4;     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x00d7, code lost:
+    
+        if (r2 != null) goto L120;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:55:0x00dd, code lost:
+    
+        if (r3.moveToNext() == false) goto L150;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x00df, code lost:
+    
+        r5 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x00e1, code lost:
+    
+        if (r5 >= r2.length) goto L151;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x00e3, code lost:
+    
+        r6 = r3.getString(r5);
+        r7 = r0.getAsString(r2[r5]);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x00f1, code lost:
+    
+        if (android.text.TextUtils.equals(r6, r7) == false) goto L149;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00f3, code lost:
+    
+        r5 = r5 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x0124, code lost:
+    
+        throw new android.content.OperationApplicationException("Found value " + r6 + " when expected " + r7 + " for column " + r2[r5]);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:68:0x0126, code lost:
+    
+        r3.close();
+        r2 = r4;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -353,16 +391,34 @@ public class ContentProviderOperation implements Parcelable {
         return 0;
     }
 
+    /* renamed from: android.content.ContentProviderOperation$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentProviderOperation> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentProviderOperation createFromParcel(Parcel source) {
+            return new ContentProviderOperation(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentProviderOperation[] newArray(int size) {
+            return new ContentProviderOperation[size];
+        }
+    }
+
     /* loaded from: classes.dex */
     public static class BackReference implements Parcelable {
         public static final Parcelable.Creator<BackReference> CREATOR = new Parcelable.Creator<BackReference>() { // from class: android.content.ContentProviderOperation.BackReference.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public BackReference createFromParcel(Parcel source) {
                 return new BackReference(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BackReference[] newArray(int size) {
                 return new BackReference[size];
@@ -370,6 +426,10 @@ public class ContentProviderOperation implements Parcelable {
         };
         private final int fromIndex;
         private final String fromKey;
+
+        /* synthetic */ BackReference(int i, String str, BackReferenceIA backReferenceIA) {
+            this(i, str);
+        }
 
         private BackReference(int fromIndex, String fromKey) {
             this.fromIndex = fromIndex;
@@ -420,6 +480,23 @@ public class ContentProviderOperation implements Parcelable {
         public int describeContents() {
             return 0;
         }
+
+        /* renamed from: android.content.ContentProviderOperation$BackReference$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<BackReference> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BackReference createFromParcel(Parcel source) {
+                return new BackReference(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BackReference[] newArray(int size) {
+                return new BackReference[size];
+            }
+        }
     }
 
     /* loaded from: classes.dex */
@@ -435,6 +512,14 @@ public class ContentProviderOperation implements Parcelable {
         private final Uri mUri;
         private ArrayMap<String, Object> mValues;
         private boolean mYieldAllowed;
+
+        /* synthetic */ Builder(int i, Uri uri, BuilderIA builderIA) {
+            this(i, uri);
+        }
+
+        /* synthetic */ Builder(int i, Uri uri, String str, String str2, BuilderIA builderIA) {
+            this(i, uri, str, str2);
+        }
 
         private Builder(int type, Uri uri) {
             this(type, uri, null, null);
@@ -523,18 +608,18 @@ public class ContentProviderOperation implements Parcelable {
             return this;
         }
 
-        public Builder withValueBackReferences(ContentValues contentValues) {
+        public Builder withValueBackReferences(ContentValues backReferences) {
             assertValuesAllowed();
-            ArrayMap<String, Object> values = contentValues.getValues();
-            for (int i = 0; i < values.size(); i++) {
-                setValue(values.keyAt(i), new BackReference(((Integer) values.valueAt(i)).intValue(), null));
+            ArrayMap<String, Object> rawValues = backReferences.getValues();
+            for (int i = 0; i < rawValues.size(); i++) {
+                setValue(rawValues.keyAt(i), new BackReference(((Integer) rawValues.valueAt(i)).intValue(), null));
             }
             return this;
         }
 
-        public Builder withValueBackReference(String str, int i) {
+        public Builder withValueBackReference(String key, int fromIndex) {
             assertValuesAllowed();
-            setValue(str, new BackReference(i, null));
+            setValue(key, new BackReference(fromIndex, null));
             return this;
         }
 
@@ -559,9 +644,9 @@ public class ContentProviderOperation implements Parcelable {
             return this;
         }
 
-        public Builder withExtraBackReference(String str, int i) {
+        public Builder withExtraBackReference(String key, int fromIndex) {
             assertExtrasAllowed();
-            setExtra(str, new BackReference(i, null));
+            setExtra(key, new BackReference(fromIndex, null));
             return this;
         }
 
@@ -583,9 +668,9 @@ public class ContentProviderOperation implements Parcelable {
             return this;
         }
 
-        public Builder withSelectionBackReference(int i, int i2) {
+        public Builder withSelectionBackReference(int index, int fromIndex) {
             assertSelectionAllowed();
-            setSelectionArg(i, new BackReference(i2, null));
+            setSelectionArg(index, new BackReference(fromIndex, null));
             return this;
         }
 

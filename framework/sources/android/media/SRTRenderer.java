@@ -15,7 +15,6 @@ public class SRTRenderer extends SubtitleController.Renderer {
         this(context, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SRTRenderer(Context mContext, Handler mEventHandler) {
         this.mContext = mContext;
         this.mRender = mEventHandler == null;

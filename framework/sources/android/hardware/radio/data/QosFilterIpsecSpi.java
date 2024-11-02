@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class QosFilterIpsecSpi implements Parcelable {
     public static final Parcelable.Creator<QosFilterIpsecSpi> CREATOR = new Parcelable.Creator<QosFilterIpsecSpi>() { // from class: android.hardware.radio.data.QosFilterIpsecSpi.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public QosFilterIpsecSpi createFromParcel(Parcel _aidl_source) {
             return new QosFilterIpsecSpi(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosFilterIpsecSpi[] newArray(int _aidl_size) {
             return new QosFilterIpsecSpi[_aidl_size];
@@ -28,6 +29,10 @@ public final class QosFilterIpsecSpi implements Parcelable {
     public @interface Tag {
         public static final int noinit = 0;
         public static final int value = 1;
+    }
+
+    /* synthetic */ QosFilterIpsecSpi(Parcel parcel, QosFilterIpsecSpiIA qosFilterIpsecSpiIA) {
+        this(parcel);
     }
 
     public QosFilterIpsecSpi() {
@@ -77,6 +82,23 @@ public final class QosFilterIpsecSpi implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.radio.data.QosFilterIpsecSpi$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<QosFilterIpsecSpi> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public QosFilterIpsecSpi createFromParcel(Parcel _aidl_source) {
+            return new QosFilterIpsecSpi(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public QosFilterIpsecSpi[] newArray(int _aidl_size) {
+            return new QosFilterIpsecSpi[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ImsRegistration implements Parcelable {
     public static final Parcelable.Creator<ImsRegistration> CREATOR = new Parcelable.Creator<ImsRegistration>() { // from class: android.hardware.radio.ims.ImsRegistration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsRegistration createFromParcel(Parcel _aidl_source) {
             ImsRegistration _aidl_out = new ImsRegistration();
@@ -17,7 +19,6 @@ public class ImsRegistration implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsRegistration[] newArray(int _aidl_size) {
             return new ImsRegistration[_aidl_size];
@@ -32,6 +33,25 @@ public class ImsRegistration implements Parcelable {
     public int capabilities = 0;
     public int regState;
     public int suggestedAction;
+
+    /* renamed from: android.hardware.radio.ims.ImsRegistration$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsRegistration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsRegistration createFromParcel(Parcel _aidl_source) {
+            ImsRegistration _aidl_out = new ImsRegistration();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsRegistration[] newArray(int _aidl_size) {
+            return new ImsRegistration[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

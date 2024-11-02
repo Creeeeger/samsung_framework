@@ -14,13 +14,14 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class ContentValues implements Parcelable {
     public static final Parcelable.Creator<ContentValues> CREATOR = new Parcelable.Creator<ContentValues>() { // from class: android.content.ContentValues.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentValues createFromParcel(Parcel in) {
             return new ContentValues(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentValues[] newArray(int size) {
             return new ContentValues[size];
@@ -31,6 +32,10 @@ public final class ContentValues implements Parcelable {
 
     @Deprecated
     private HashMap<String, Object> mValues;
+
+    /* synthetic */ ContentValues(Parcel parcel, ContentValuesIA contentValuesIA) {
+        this(parcel);
+    }
 
     public ContentValues() {
         this.mMap = new ArrayMap<>();
@@ -348,6 +353,23 @@ public final class ContentValues implements Parcelable {
 
     public Set<String> keySet() {
         return this.mMap.keySet();
+    }
+
+    /* renamed from: android.content.ContentValues$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentValues> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentValues createFromParcel(Parcel in) {
+            return new ContentValues(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentValues[] newArray(int size) {
+            return new ContentValues[size];
+        }
     }
 
     @Override // android.os.Parcelable

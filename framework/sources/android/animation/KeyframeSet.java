@@ -134,7 +134,7 @@ public class KeyframeSet implements Keyframes {
     }
 
     @Override // 
-    /* renamed from: clone */
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
     public KeyframeSet mo64clone() {
         List<Keyframe> keyframes = this.mKeyframes;
         int numKeyframes = this.mKeyframes.size();

@@ -15,6 +15,10 @@ public class LevelListDrawable extends DrawableContainer {
     private LevelListState mLevelListState;
     private boolean mMutated;
 
+    /* synthetic */ LevelListDrawable(LevelListState levelListState, Resources resources, LevelListDrawableIA levelListDrawableIA) {
+        this(levelListState, resources);
+    }
+
     public LevelListDrawable() {
         this(null, null);
     }
@@ -26,7 +30,6 @@ public class LevelListDrawable extends DrawableContainer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
     public boolean onLevelChange(int level) {
         int idx = this.mLevelListState.indexOfLevel(level);
@@ -88,7 +91,6 @@ public class LevelListDrawable extends DrawableContainer {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.DrawableContainer
     public LevelListState cloneConstantState() {
         return new LevelListState(this.mLevelListState, this, null);
@@ -100,7 +102,6 @@ public class LevelListDrawable extends DrawableContainer {
         this.mMutated = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class LevelListState extends DrawableContainer.DrawableContainerState {
         private int[] mHighs;
@@ -117,7 +118,6 @@ public class LevelListDrawable extends DrawableContainer {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void mutate() {
             this.mLows = (int[]) this.mLows.clone();
             this.mHighs = (int[]) this.mHighs.clone();
@@ -163,7 +163,6 @@ public class LevelListDrawable extends DrawableContainer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableContainer
     public void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);

@@ -410,7 +410,6 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
         return this.mNavigationBarHeight;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int i;
@@ -461,7 +460,6 @@ public class ActionMenuItemView extends TextView implements MenuView.ItemView, V
         super.onRestoreInstanceState(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public boolean setFrame(int l, int t, int r, int b) {
         boolean changed = super.setFrame(l, t, r, b);

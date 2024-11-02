@@ -1146,7 +1146,6 @@ public interface IApplicationThread extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IApplicationThread {
             private IBinder mRemote;

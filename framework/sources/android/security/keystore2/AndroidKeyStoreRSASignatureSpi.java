@@ -4,8 +4,9 @@ import android.hardware.security.keymint.KeyParameter;
 import java.security.InvalidKeyException;
 import java.util.List;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-abstract class AndroidKeyStoreRSASignatureSpi extends AndroidKeyStoreSignatureSpiBase {
+public abstract class AndroidKeyStoreRSASignatureSpi extends AndroidKeyStoreSignatureSpiBase {
     private final int mKeymasterDigest;
     private final int mKeymasterPadding;
 
@@ -184,7 +185,6 @@ abstract class AndroidKeyStoreRSASignatureSpi extends AndroidKeyStoreSignatureSp
         this.mKeymasterPadding = keymasterPadding;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
     public final void initKey(AndroidKeyStoreKey key) throws InvalidKeyException {
         if (!"RSA".equalsIgnoreCase(key.getAlgorithm())) {
@@ -193,13 +193,11 @@ abstract class AndroidKeyStoreRSASignatureSpi extends AndroidKeyStoreSignatureSp
         super.initKey(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
     public final void resetAll() {
         super.resetAll();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
     public final void resetWhilePreservingInitState() {
         super.resetWhilePreservingInitState();

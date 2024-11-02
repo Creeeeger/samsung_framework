@@ -104,6 +104,10 @@ public class AudioRecord implements AudioRouting, MicrophoneDirection, AudioReco
     public @interface ReadMode {
     }
 
+    /* synthetic */ AudioRecord(AudioAttributes audioAttributes, AudioFormat audioFormat, int i, int i2, Context context, int i3, int i4, AudioRecordIA audioRecordIA) {
+        this(audioAttributes, audioFormat, i, i2, context, i3, i4);
+    }
+
     private final native void native_disableDeviceCallback();
 
     private final native void native_enableDeviceCallback();
@@ -289,7 +293,6 @@ public class AudioRecord implements AudioRouting, MicrophoneDirection, AudioReco
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioRecord(long nativeRecordInJavaObj) {
         this.mState = 0;
         this.mRecordingState = 1;
@@ -316,7 +319,6 @@ public class AudioRecord implements AudioRouting, MicrophoneDirection, AudioReco
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void unregisterAudioPolicyOnRelease(AudioPolicy audioPolicy) {
         this.mAudioCapturePolicy = audioPolicy;
     }
@@ -1157,7 +1159,6 @@ public class AudioRecord implements AudioRouting, MicrophoneDirection, AudioReco
         return this.mLogSessionId;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class NativeEventHandler extends Handler {
         private final AudioRecord mAudioRecord;
@@ -1237,7 +1238,6 @@ public class AudioRecord implements AudioRouting, MicrophoneDirection, AudioReco
         Log.d(TAG, msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void loge(String msg) {
         Log.e(TAG, msg);
     }

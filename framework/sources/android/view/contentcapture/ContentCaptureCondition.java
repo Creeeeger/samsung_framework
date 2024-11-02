@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ContentCaptureCondition implements Parcelable {
     public static final Parcelable.Creator<ContentCaptureCondition> CREATOR = new Parcelable.Creator<ContentCaptureCondition>() { // from class: android.view.contentcapture.ContentCaptureCondition.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentCaptureCondition createFromParcel(Parcel parcel) {
             return new ContentCaptureCondition((LocusId) parcel.readParcelable(null, LocusId.class), parcel.readInt());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureCondition[] newArray(int size) {
             return new ContentCaptureCondition[size];
@@ -91,5 +92,22 @@ public final class ContentCaptureCondition implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeParcelable(this.mLocusId, flags);
         parcel.writeInt(this.mFlags);
+    }
+
+    /* renamed from: android.view.contentcapture.ContentCaptureCondition$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentCaptureCondition> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentCaptureCondition createFromParcel(Parcel parcel) {
+            return new ContentCaptureCondition((LocusId) parcel.readParcelable(null, LocusId.class), parcel.readInt());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentCaptureCondition[] newArray(int size) {
+            return new ContentCaptureCondition[size];
+        }
     }
 }

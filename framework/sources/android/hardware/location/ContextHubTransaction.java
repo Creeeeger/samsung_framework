@@ -58,7 +58,6 @@ public class ContextHubTransaction<T> {
         private R mContents;
         private int mResult;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Response(int result, R contents) {
             this.mResult = result;
             this.mContents = contents;
@@ -73,7 +72,6 @@ public class ContextHubTransaction<T> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ContextHubTransaction(int type) {
         this.mTransactionType = type;
     }
@@ -127,7 +125,6 @@ public class ContextHubTransaction<T> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setOnCompleteListener$0() {
         this.mListener.onComplete(this, this.mResponse);
     }
@@ -136,7 +133,6 @@ public class ContextHubTransaction<T> {
         setOnCompleteListener(listener, new HandlerExecutor(Handler.getMain()));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setResponse(Response<T> response) {
         synchronized (this) {
             Objects.requireNonNull(response, "Response cannot be null");
@@ -157,7 +153,6 @@ public class ContextHubTransaction<T> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setResponse$1() {
         this.mListener.onComplete(this, this.mResponse);
     }

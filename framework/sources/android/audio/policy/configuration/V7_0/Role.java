@@ -17,7 +17,6 @@ public enum Role {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Role fromString(String rawString) {
         for (Role _f : values()) {
             if (_f.getRawName().equals(rawString)) {

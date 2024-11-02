@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public final class TaskFragmentCreationParams implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentCreationParams> CREATOR = new Parcelable.Creator<TaskFragmentCreationParams>() { // from class: android.window.TaskFragmentCreationParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaskFragmentCreationParams createFromParcel(Parcel in) {
             return new TaskFragmentCreationParams(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentCreationParams[] newArray(int size) {
             return new TaskFragmentCreationParams[size];
@@ -27,6 +28,14 @@ public final class TaskFragmentCreationParams implements Parcelable {
     private final IBinder mPairedActivityToken;
     private final IBinder mPairedPrimaryFragmentToken;
     private final int mWindowingMode;
+
+    /* synthetic */ TaskFragmentCreationParams(Parcel parcel, TaskFragmentCreationParamsIA taskFragmentCreationParamsIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ TaskFragmentCreationParams(TaskFragmentOrganizerToken taskFragmentOrganizerToken, IBinder iBinder, IBinder iBinder2, Rect rect, int i, IBinder iBinder3, IBinder iBinder4, TaskFragmentCreationParamsIA taskFragmentCreationParamsIA) {
+        this(taskFragmentOrganizerToken, iBinder, iBinder2, rect, i, iBinder3, iBinder4);
+    }
 
     private TaskFragmentCreationParams(TaskFragmentOrganizerToken organizer, IBinder fragmentToken, IBinder ownerToken, Rect initialRelativeBounds, int windowingMode, IBinder pairedPrimaryFragmentToken, IBinder pairedActivityToken) {
         Rect rect = new Rect();
@@ -92,6 +101,23 @@ public final class TaskFragmentCreationParams implements Parcelable {
         dest.writeInt(this.mWindowingMode);
         dest.writeStrongBinder(this.mPairedPrimaryFragmentToken);
         dest.writeStrongBinder(this.mPairedActivityToken);
+    }
+
+    /* renamed from: android.window.TaskFragmentCreationParams$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentCreationParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentCreationParams createFromParcel(Parcel in) {
+            return new TaskFragmentCreationParams(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentCreationParams[] newArray(int size) {
+            return new TaskFragmentCreationParams[size];
+        }
     }
 
     public String toString() {

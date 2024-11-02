@@ -114,8 +114,9 @@ public interface IWwanSelectorCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IWwanSelectorCallback {
+        public static class Proxy implements IWwanSelectorCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

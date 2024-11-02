@@ -32,7 +32,9 @@ public final class WifiDisplay implements Parcelable {
     private int mState = 6;
     public static final WifiDisplay[] EMPTY_ARRAY = new WifiDisplay[0];
     public static final Parcelable.Creator<WifiDisplay> CREATOR = new Parcelable.Creator<WifiDisplay>() { // from class: android.hardware.display.WifiDisplay.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WifiDisplay createFromParcel(Parcel in) {
             String deviceAddress = in.readString();
@@ -62,12 +64,52 @@ public final class WifiDisplay implements Parcelable {
             return wifiDisplay;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiDisplay[] newArray(int size) {
             return size == 0 ? WifiDisplay.EMPTY_ARRAY : new WifiDisplay[size];
         }
     };
+
+    /* renamed from: android.hardware.display.WifiDisplay$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WifiDisplay> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiDisplay createFromParcel(Parcel in) {
+            String deviceAddress = in.readString();
+            String deviceName = in.readString();
+            String deviceAlias = in.readString();
+            boolean isAvailable = in.readInt() != 0;
+            boolean canConnect = in.readInt() != 0;
+            boolean isRemembered = in.readInt() != 0;
+            String deviceType = in.readString();
+            WifiDisplay wifiDisplay = new WifiDisplay(deviceAddress, deviceName, deviceAlias, isAvailable, canConnect, isRemembered, deviceType);
+            String btMac = in.readString();
+            wifiDisplay.setBluetoothMacAddress(btMac);
+            wifiDisplay.setScreenSharingHashedDi(in.readString());
+            wifiDisplay.setSamsungDeviceType(in.readInt());
+            wifiDisplay.setSamsungDeviceIcon(in.readInt());
+            boolean isEmptySurface = in.readInt() != 0;
+            wifiDisplay.setEmptySurface(isEmptySurface);
+            wifiDisplay.setFlags(in.readInt());
+            wifiDisplay.setMode(in.readInt());
+            wifiDisplay.setDeviceInfo(in.readInt());
+            int parameterMapSize = in.readInt();
+            for (int i = 0; i < parameterMapSize; i++) {
+                String key = in.readString();
+                String value = (String) in.readValue(String.class.getClassLoader());
+                wifiDisplay.addParameter(key, value);
+            }
+            return wifiDisplay;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiDisplay[] newArray(int size) {
+            return size == 0 ? WifiDisplay.EMPTY_ARRAY : new WifiDisplay[size];
+        }
+    }
 
     public WifiDisplay(String deviceAddress, String deviceName, String deviceAlias, boolean available, boolean canConnect, boolean remembered, String deviceType) {
         if (deviceAddress == null) {

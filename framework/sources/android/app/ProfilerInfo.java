@@ -15,13 +15,14 @@ public class ProfilerInfo implements Parcelable {
     public static final int CLOCK_TYPE_THREAD_CPU = 256;
     public static final int CLOCK_TYPE_WALL = 16;
     public static final Parcelable.Creator<ProfilerInfo> CREATOR = new Parcelable.Creator<ProfilerInfo>() { // from class: android.app.ProfilerInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProfilerInfo createFromParcel(Parcel in) {
             return new ProfilerInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProfilerInfo[] newArray(int size) {
             return new ProfilerInfo[size];
@@ -36,6 +37,10 @@ public class ProfilerInfo implements Parcelable {
     public final String profileFile;
     public final int samplingInterval;
     public final boolean streamingOutput;
+
+    /* synthetic */ ProfilerInfo(Parcel parcel, ProfilerInfoIA profilerInfoIA) {
+        this(parcel);
+    }
 
     public ProfilerInfo(String filename, ParcelFileDescriptor fd, int interval, boolean autoStop, boolean streaming, String agent, boolean attachAgentDuringBind, int clockType) {
         this.profileFile = filename;
@@ -127,6 +132,23 @@ public class ProfilerInfo implements Parcelable {
         proto.write(1138166333446L, this.agent);
         proto.write(1120986464263L, this.clockType);
         proto.end(token);
+    }
+
+    /* renamed from: android.app.ProfilerInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProfilerInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProfilerInfo createFromParcel(Parcel in) {
+            return new ProfilerInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProfilerInfo[] newArray(int size) {
+            return new ProfilerInfo[size];
+        }
     }
 
     private ProfilerInfo(Parcel in) {

@@ -7,7 +7,6 @@ abstract class Utils {
     private Utils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Date cloneIfNotNull(Date value) {
         if (value != null) {
             return (Date) value.clone();
@@ -15,7 +14,6 @@ abstract class Utils {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] cloneIfNotNull(byte[] value) {
         if (value != null) {
             return (byte[]) value.clone();

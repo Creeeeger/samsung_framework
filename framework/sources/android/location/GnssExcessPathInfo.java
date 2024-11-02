@@ -10,7 +10,9 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class GnssExcessPathInfo implements Parcelable {
     public static final Parcelable.Creator<GnssExcessPathInfo> CREATOR = new Parcelable.Creator<GnssExcessPathInfo>() { // from class: android.location.GnssExcessPathInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssExcessPathInfo createFromParcel(Parcel parcel) {
             int flags = parcel.readInt();
@@ -21,7 +23,6 @@ public final class GnssExcessPathInfo implements Parcelable {
             return new GnssExcessPathInfo(flags, excessPathLengthMeters, excessPathLengthUncertaintyMeters, reflectingPlane, attenuationDb);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssExcessPathInfo[] newArray(int i) {
             return new GnssExcessPathInfo[i];
@@ -36,6 +37,10 @@ public final class GnssExcessPathInfo implements Parcelable {
     private final float mExcessPathLengthUncertaintyMeters;
     private final int mFlags;
     private final GnssReflectingPlane mReflectingPlane;
+
+    /* synthetic */ GnssExcessPathInfo(int i, float f, float f2, GnssReflectingPlane gnssReflectingPlane, float f3, GnssExcessPathInfoIA gnssExcessPathInfoIA) {
+        this(i, f, f2, gnssReflectingPlane, f3);
+    }
 
     private GnssExcessPathInfo(int flags, float excessPathLengthMeters, float excessPathLengthUncertaintyMeters, GnssReflectingPlane reflectingPlane, float attenuationDb) {
         this.mFlags = flags;
@@ -112,6 +117,28 @@ public final class GnssExcessPathInfo implements Parcelable {
         }
         if (hasAttenuation()) {
             parcel.writeFloat(this.mAttenuationDb);
+        }
+    }
+
+    /* renamed from: android.location.GnssExcessPathInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssExcessPathInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssExcessPathInfo createFromParcel(Parcel parcel) {
+            int flags = parcel.readInt();
+            float excessPathLengthMeters = (flags & 1) != 0 ? parcel.readFloat() : 0.0f;
+            float excessPathLengthUncertaintyMeters = (flags & 2) != 0 ? parcel.readFloat() : 0.0f;
+            GnssReflectingPlane reflectingPlane = (flags & 4) != 0 ? GnssReflectingPlane.CREATOR.createFromParcel(parcel) : null;
+            float attenuationDb = (flags & 8) != 0 ? parcel.readFloat() : 0.0f;
+            return new GnssExcessPathInfo(flags, excessPathLengthMeters, excessPathLengthUncertaintyMeters, reflectingPlane, attenuationDb);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssExcessPathInfo[] newArray(int i) {
+            return new GnssExcessPathInfo[i];
         }
     }
 

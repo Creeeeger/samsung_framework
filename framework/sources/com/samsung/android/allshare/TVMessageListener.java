@@ -12,7 +12,6 @@ import java.nio.CharBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: IAppControlAPI.java */
 /* loaded from: classes5.dex */
 public class TVMessageListener extends Thread {

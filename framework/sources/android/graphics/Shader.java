@@ -9,14 +9,13 @@ public class Shader {
     private Matrix mLocalMatrix;
     private long mNativeInstance;
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnativeGetFinalizer */
     static /* bridge */ /* synthetic */ long m1149$$Nest$smnativeGetFinalizer() {
         return nativeGetFinalizer();
     }
 
     private static native long nativeGetFinalizer();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class NoImagePreloadHolder {
         public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Shader.class.getClassLoader(), Shader.m1149$$Nest$smnativeGetFinalizer());
@@ -30,7 +29,6 @@ public class Shader {
         this.mColorSpace = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Shader(ColorSpace colorSpace) {
         this.mColorSpace = colorSpace;
         if (colorSpace == null) {
@@ -39,7 +37,6 @@ public class Shader {
         colorSpace.getNativeInstance();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ColorSpace colorSpace() {
         return this.mColorSpace;
     }
@@ -90,7 +87,6 @@ public class Shader {
         return 0L;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final synchronized void discardNativeInstance() {
         discardNativeInstanceLocked();
     }
@@ -126,7 +122,6 @@ public class Shader {
         return getNativeInstance(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static long[] convertColors(int[] colors) {
         if (colors.length < 2) {
             throw new IllegalArgumentException("needs >= 2 number of colors");
@@ -138,7 +133,6 @@ public class Shader {
         return colorLongs;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static ColorSpace detectColorSpace(long[] colors) {
         if (colors.length < 2) {
             throw new IllegalArgumentException("needs >= 2 number of colors");

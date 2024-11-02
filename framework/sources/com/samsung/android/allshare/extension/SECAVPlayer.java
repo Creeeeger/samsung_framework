@@ -31,6 +31,9 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
     boolean mRequestChangeMute = false;
     private State mState = new State();
     private Runnable mNotifyStopRunnable = new Runnable() { // from class: com.samsung.android.allshare.extension.SECAVPlayer.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             DLog.i_api("SECAVPLAYER", " mNotifyStopRunnable : " + SECAVPlayer.this.mState.currentState);
@@ -43,6 +46,9 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
     private ISECAVPlayerExtensionEventListener mSECExtensionListener = null;
     private boolean mIsPlayInfoThreadRunning = false;
     private Runnable mRunnablePlayInfo = new Runnable() { // from class: com.samsung.android.allshare.extension.SECAVPlayer.2
+        AnonymousClass2() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             SECAVPlayer.this.mAVPlayer.getPlayPosition();
@@ -60,6 +66,9 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
     private AVPlayer.IAVPlayerVolumeResponseListener mAVPlayerVolumeResponseListener = null;
     private AVPlayer.IAVPlayerExtensionResponseListener mAVPlayerExtensionResponseListener = null;
     private AVPlayer.IAVPlayerVolumeResponseListener mSECAvPlayerVolumeResponseListener = new AVPlayer.IAVPlayerVolumeResponseListener() { // from class: com.samsung.android.allshare.extension.SECAVPlayer.4
+        AnonymousClass4() {
+        }
+
         @Override // com.samsung.android.allshare.media.AVPlayer.IAVPlayerVolumeResponseListener
         public void onGetVolumeResponseReceived(int volume, ERROR error) {
             SECAVPlayer.this.mRequestVolume = false;
@@ -143,7 +152,6 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         void onStop();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public enum SECAVPlayerState {
         STOPPED,
@@ -154,7 +162,6 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         UNKNOWN
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class State {
         private SECAVPlayerState currentState;
@@ -163,6 +170,10 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         private MediaInfo mMediaInfo;
         private AtomicBoolean mNearlyFinished;
         private boolean mPlayRequested;
+
+        /* synthetic */ State(StateIA stateIA) {
+            this();
+        }
 
         private State() {
             this.mMediaInfo = null;
@@ -173,7 +184,6 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
             this.currentState = SECAVPlayerState.UNKNOWN;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setNewPlayState(long pos) {
             this.mLastPos = 0L;
             this.mMediaInfo = null;
@@ -183,54 +193,44 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
             this.currentState = SECAVPlayerState.UNKNOWN;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setPlayRequested(boolean flag) {
             this.mPlayRequested = flag;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean isPlayRequested() {
             return this.mPlayRequested;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setNearlyFinished(boolean flag) {
             this.mNearlyFinished.set(flag);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean compareAndSetNearlyFinished(boolean expected, boolean updated) {
             return this.mNearlyFinished.compareAndSet(expected, updated);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setMediaInfo(MediaInfo info) {
             this.mMediaInfo = info;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setLastPos(long pos) {
             if (pos > 0) {
                 this.mLastPos = pos;
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public long getLastPos() {
             return this.mLastPos;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public MediaInfo getMediaInfo() {
             return this.mMediaInfo;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setItemDuration(long duration) {
             this.mItemDuration = duration;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public long getItemDuration() {
             return this.mItemDuration;
         }
@@ -280,6 +280,21 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         if (Math.abs(mediaDuration - curPos) <= endingMargin) {
             this.mState.setNearlyFinished(true);
             getPlayPosition();
+        }
+    }
+
+    /* renamed from: com.samsung.android.allshare.extension.SECAVPlayer$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            DLog.i_api("SECAVPLAYER", " mNotifyStopRunnable : " + SECAVPlayer.this.mState.currentState);
+            if (SECAVPlayer.this.mState.currentState == SECAVPlayerState.STOPPED) {
+                SECAVPlayer.this.notifyOnStop();
+            }
         }
     }
 
@@ -409,6 +424,25 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         }
     }
 
+    /* renamed from: com.samsung.android.allshare.extension.SECAVPlayer$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SECAVPlayer.this.mAVPlayer.getPlayPosition();
+            SECAVPlayer.this.mAVPlayer.getState();
+            if (SECAVPlayer.this.mState.getMediaInfo() == null || SECAVPlayer.this.mState.getMediaInfo().getDuration() <= 0) {
+                SECAVPlayer.this.mAVPlayer.getMediaInfo();
+            }
+            if (SECAVPlayer.this.mIsPlayInfoThreadRunning) {
+                SECAVPlayer.this.mHandlerPlayInfo.postDelayed(SECAVPlayer.this.mRunnablePlayInfo, 1000L);
+            }
+        }
+    }
+
     @Override // com.samsung.android.allshare.media.AVPlayer.IAVPlayerPlaybackResponseListener
     public void onPlayResponseReceived(Item ai, ContentInfo ci, ERROR err) {
         if (ERROR.SUCCESS.equals(err)) {
@@ -508,6 +542,9 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         this.mIsSubscriberRequested = true;
         this.mAVPlayer.getMediaInfo();
         new Handler().postDelayed(new Runnable() { // from class: com.samsung.android.allshare.extension.SECAVPlayer.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (SECAVPlayer.this.mIsSubscriberRequested) {
@@ -520,6 +557,25 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
                 }
             }
         }, TelecomManager.VERY_SHORT_CALL_TIME_MS);
+    }
+
+    /* renamed from: com.samsung.android.allshare.extension.SECAVPlayer$3 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (SECAVPlayer.this.mIsSubscriberRequested) {
+                SECAVPlayer.this.mIsSubscriberRequested = false;
+                if (SECAVPlayer.this.mAVPlayerPlaybackResponseListener != null) {
+                    SECAVPlayer.this.mAVPlayerPlaybackResponseListener.onGetMediaInfoResponseReceived(null, ERROR.FAIL);
+                } else {
+                    DLog.w_api(SECAVPlayer.TAG_CLASS, "getMediaInfo timeout over 3sec, but no way to response FAIL");
+                }
+            }
+        }
     }
 
     @Override // com.samsung.android.allshare.Device
@@ -652,7 +708,6 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setVolumeDelta(int currentVolume) {
         int setVolume = this.mVolumeDelta + currentVolume;
         this.mVolumeDelta = 0;
@@ -673,6 +728,69 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         if (!this.mRequestChangeMute) {
             this.mRequestChangeMute = true;
             this.mAVPlayer.getMute();
+        }
+    }
+
+    /* renamed from: com.samsung.android.allshare.extension.SECAVPlayer$4 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass4 implements AVPlayer.IAVPlayerVolumeResponseListener {
+        AnonymousClass4() {
+        }
+
+        @Override // com.samsung.android.allshare.media.AVPlayer.IAVPlayerVolumeResponseListener
+        public void onGetVolumeResponseReceived(int volume, ERROR error) {
+            SECAVPlayer.this.mRequestVolume = false;
+            if (error == ERROR.SUCCESS) {
+                DLog.i_api("SECAVPLAYER", " onGetVolumeResponseReceived - " + volume);
+                SECAVPlayer.this.setVolumeDelta(volume);
+            } else {
+                SECAVPlayer.this.mVolumeDelta = 0;
+                DLog.i_api("SECAVPLAYER", " onGetVolumeResponseReceived - " + error);
+            }
+            if (SECAVPlayer.this.mAVPlayerVolumeResponseListener != null) {
+                SECAVPlayer.this.mAVPlayerVolumeResponseListener.onGetVolumeResponseReceived(volume, error);
+            }
+        }
+
+        @Override // com.samsung.android.allshare.media.AVPlayer.IAVPlayerVolumeResponseListener
+        public void onSetVolumeResponseReceived(int volume, ERROR error) {
+            if (error == ERROR.SUCCESS) {
+                DLog.i_api("SECAVPLAYER", " onSetVolumeResponseReceived - " + volume);
+            } else {
+                DLog.i_api("SECAVPLAYER", " onSetVolumeResponseReceived - " + error);
+            }
+            if (SECAVPlayer.this.mAVPlayerVolumeResponseListener != null) {
+                SECAVPlayer.this.mAVPlayerVolumeResponseListener.onSetVolumeResponseReceived(volume, error);
+            }
+        }
+
+        @Override // com.samsung.android.allshare.media.AVPlayer.IAVPlayerVolumeResponseListener
+        public void onGetMuteResponseReceived(boolean ret, ERROR error) {
+            SECAVPlayer.this.mRequestChangeMute = false;
+            if (error == ERROR.SUCCESS) {
+                DLog.i_api("SECAVPLAYER", " onGetMuteResponseReceived - " + ret);
+                if (SECAVPlayer.this.mChangeMute) {
+                    SECAVPlayer.this.mAVPlayer.setMute(!ret);
+                }
+            } else {
+                DLog.i_api("SECAVPLAYER", " onGetMuteResponseReceived - " + error);
+            }
+            SECAVPlayer.this.mChangeMute = false;
+            if (SECAVPlayer.this.mAVPlayerVolumeResponseListener != null) {
+                SECAVPlayer.this.mAVPlayerVolumeResponseListener.onGetMuteResponseReceived(ret, error);
+            }
+        }
+
+        @Override // com.samsung.android.allshare.media.AVPlayer.IAVPlayerVolumeResponseListener
+        public void onSetMuteResponseReceived(boolean ret, ERROR error) {
+            if (error == ERROR.SUCCESS) {
+                DLog.i_api("SECAVPLAYER", " onSetMuteResponseReceived - " + ret);
+            } else {
+                DLog.i_api("SECAVPLAYER", " onSetMuteResponseReceived - " + error);
+            }
+            if (SECAVPlayer.this.mAVPlayerVolumeResponseListener != null) {
+                SECAVPlayer.this.mAVPlayerVolumeResponseListener.onSetMuteResponseReceived(ret, error);
+            }
         }
     }
 
@@ -717,8 +835,7 @@ public class SECAVPlayer extends AVPlayer implements AVPlayer.IAVPlayerEventList
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.extension.SECAVPlayer$5, reason: invalid class name */
+    /* renamed from: com.samsung.android.allshare.extension.SECAVPlayer$5 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass5 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$media$AVPlayer$AVPlayerState;

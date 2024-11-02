@@ -21,7 +21,9 @@ public final class AutofillOptions implements Parcelable {
     public ArraySet<ComponentName> whitelistedActivitiesForAugmentedAutofill;
     private static final String TAG = AutofillOptions.class.getSimpleName();
     public static final Parcelable.Creator<AutofillOptions> CREATOR = new Parcelable.Creator<AutofillOptions>() { // from class: android.content.AutofillOptions.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AutofillOptions createFromParcel(Parcel parcel) {
             int loggingLevel = parcel.readInt();
@@ -40,7 +42,6 @@ public final class AutofillOptions implements Parcelable {
             return options;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AutofillOptions[] newArray(int size) {
             return new AutofillOptions[size];
@@ -140,6 +141,36 @@ public final class AutofillOptions implements Parcelable {
                 parcel.writeString(key);
                 parcel.writeLong(this.disabledActivities.get(key).longValue());
             }
+        }
+    }
+
+    /* renamed from: android.content.AutofillOptions$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AutofillOptions> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AutofillOptions createFromParcel(Parcel parcel) {
+            int loggingLevel = parcel.readInt();
+            boolean compatMode = parcel.readBoolean();
+            AutofillOptions options = new AutofillOptions(loggingLevel, compatMode);
+            options.augmentedAutofillEnabled = parcel.readBoolean();
+            options.whitelistedActivitiesForAugmentedAutofill = parcel.readArraySet(null);
+            options.appDisabledExpiration = parcel.readLong();
+            int size = parcel.readInt();
+            if (size > 0) {
+                options.disabledActivities = new ArrayMap<>();
+                for (int i = 0; i < size; i++) {
+                    options.disabledActivities.put(parcel.readString(), Long.valueOf(parcel.readLong()));
+                }
+            }
+            return options;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AutofillOptions[] newArray(int size) {
+            return new AutofillOptions[size];
         }
     }
 }

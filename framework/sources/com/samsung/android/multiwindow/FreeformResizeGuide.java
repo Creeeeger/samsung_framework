@@ -411,7 +411,6 @@ public class FreeformResizeGuide {
         this.mNeedToFullscreenTransition = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public final class H extends Handler {
         static final int DISMISS_FREEFORM_RESIZE_GUIDE = 0;
@@ -454,11 +453,13 @@ public class FreeformResizeGuide {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class TransitionInfo {
         private long mAnimationDuration;
         private Animator.AnimatorListener mDismissListener = new Animator.AnimatorListener() { // from class: com.samsung.android.multiwindow.FreeformResizeGuide.TransitionInfo.1
+            AnonymousClass1() {
+            }
+
             @Override // android.animation.Animator.AnimatorListener
             public void onAnimationStart(Animator animation) {
             }
@@ -491,7 +492,6 @@ public class FreeformResizeGuide {
             reset();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void reset() {
             this.mAnimationDuration = 0L;
             this.mInterpolator = null;
@@ -499,31 +499,58 @@ public class FreeformResizeGuide {
             this.mFromAlpha = -1;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public long getAnimationDuration(long defaultDuration) {
             long j = this.mAnimationDuration;
             return j > 0 ? j : defaultDuration;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public TimeInterpolator getInterpolator(TimeInterpolator defaultInterpolator) {
             TimeInterpolator timeInterpolator = this.mInterpolator;
             return timeInterpolator != null ? timeInterpolator : defaultInterpolator;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getFromAlpha() {
             return this.mFromAlpha;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getToAlpha() {
             return this.mToAlpha;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void addDismissListener(AnimatorSet animatorSet) {
             animatorSet.addListener(this.mDismissListener);
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.multiwindow.FreeformResizeGuide$TransitionInfo$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 implements Animator.AnimatorListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                onAnimationEnd();
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationCancel(Animator animation) {
+                onAnimationEnd();
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationRepeat(Animator animation) {
+            }
+
+            private void onAnimationEnd() {
+                if (FreeformResizeGuide.this.mDismissRequested && !FreeformResizeGuide.this.mDismissed) {
+                    FreeformResizeGuide.this.dismiss();
+                }
+            }
         }
     }
 }

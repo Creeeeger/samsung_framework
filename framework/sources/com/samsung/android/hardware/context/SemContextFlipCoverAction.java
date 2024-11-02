@@ -8,13 +8,14 @@ import android.os.Parcelable;
 public class SemContextFlipCoverAction extends SemContextEventContext {
     public static final int CLOSE = 1;
     public static final Parcelable.Creator<SemContextFlipCoverAction> CREATOR = new Parcelable.Creator<SemContextFlipCoverAction>() { // from class: com.samsung.android.hardware.context.SemContextFlipCoverAction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextFlipCoverAction createFromParcel(Parcel in) {
             return new SemContextFlipCoverAction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextFlipCoverAction[] newArray(int size) {
             return new SemContextFlipCoverAction[size];
@@ -24,7 +25,23 @@ public class SemContextFlipCoverAction extends SemContextEventContext {
     public static final int UNKNOWN = -1;
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextFlipCoverAction$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextFlipCoverAction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextFlipCoverAction createFromParcel(Parcel in) {
+            return new SemContextFlipCoverAction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextFlipCoverAction[] newArray(int size) {
+            return new SemContextFlipCoverAction[size];
+        }
+    }
+
     public SemContextFlipCoverAction() {
         this.mContext = new Bundle();
     }

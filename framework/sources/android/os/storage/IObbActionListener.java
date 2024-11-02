@@ -85,8 +85,9 @@ public interface IObbActionListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IObbActionListener {
+        public static class Proxy implements IObbActionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

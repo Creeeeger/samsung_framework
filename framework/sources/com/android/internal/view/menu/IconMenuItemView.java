@@ -53,7 +53,6 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
         this(context, attrs, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void initialize(CharSequence title, Drawable icon) {
         setClickable(true);
         setFocusable(true);
@@ -109,7 +108,6 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCaptionMode(boolean shortcut) {
         MenuItemImpl menuItemImpl = this.mItemData;
         if (menuItemImpl == null) {
@@ -159,12 +157,10 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setIconMenuView(IconMenuView iconMenuView) {
         this.mIconMenuView = iconMenuView;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -175,21 +171,18 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         positionIcon();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView
     public void onTextChanged(CharSequence text, int start, int before, int after) {
         super.onTextChanged(text, start, before, after);
         setLayoutParams(getTextAppropriateLayoutParams());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IconMenuView.LayoutParams getTextAppropriateLayoutParams() {
         IconMenuView.LayoutParams lp = (IconMenuView.LayoutParams) getLayoutParams();
         if (lp == null) {

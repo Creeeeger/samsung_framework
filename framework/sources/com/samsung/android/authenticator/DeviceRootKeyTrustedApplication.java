@@ -5,7 +5,6 @@ final class DeviceRootKeyTrustedApplication implements TrustedApplication {
     private static final String TAG = "DRTA";
     private final int mHandle;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DeviceRootKeyTrustedApplication(int handle) {
         this.mHandle = handle;
     }

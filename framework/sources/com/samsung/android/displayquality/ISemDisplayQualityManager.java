@@ -100,8 +100,9 @@ public interface ISemDisplayQualityManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemDisplayQualityManager {
+        public static class Proxy implements ISemDisplayQualityManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

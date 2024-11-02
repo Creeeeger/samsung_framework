@@ -179,8 +179,9 @@ public interface ITextServicesManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ITextServicesManager {
+        public static class Proxy implements ITextServicesManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

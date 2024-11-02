@@ -15,13 +15,14 @@ import java.util.function.Predicate;
 public final class CompoundFormula extends IntegrityFormula implements Parcelable {
     public static final int AND = 0;
     public static final Parcelable.Creator<CompoundFormula> CREATOR = new Parcelable.Creator<CompoundFormula>() { // from class: android.content.integrity.CompoundFormula.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CompoundFormula createFromParcel(Parcel in) {
             return new CompoundFormula(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompoundFormula[] newArray(int size) {
             return new CompoundFormula[size];
@@ -35,6 +36,23 @@ public final class CompoundFormula extends IntegrityFormula implements Parcelabl
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Connector {
+    }
+
+    /* renamed from: android.content.integrity.CompoundFormula$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CompoundFormula> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompoundFormula createFromParcel(Parcel in) {
+            return new CompoundFormula(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompoundFormula[] newArray(int size) {
+            return new CompoundFormula[size];
+        }
     }
 
     public CompoundFormula(int connector, List<IntegrityFormula> formulas) {

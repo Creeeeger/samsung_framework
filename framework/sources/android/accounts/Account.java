@@ -21,13 +21,14 @@ public class Account implements Parcelable {
     public final String type;
     private static final Set<Account> sAccessedAccounts = new ArraySet();
     public static final Parcelable.Creator<Account> CREATOR = new Parcelable.Creator<Account>() { // from class: android.accounts.Account.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Account createFromParcel(Parcel source) {
             return new Account(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Account[] newArray(int size) {
             return new Account[size];
@@ -112,6 +113,23 @@ public class Account implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.type);
         dest.writeString(this.accessId);
+    }
+
+    /* renamed from: android.accounts.Account$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Account> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Account createFromParcel(Parcel source) {
+            return new Account(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Account[] newArray(int size) {
+            return new Account[size];
+        }
     }
 
     public String toString() {

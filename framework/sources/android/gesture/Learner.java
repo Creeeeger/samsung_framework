@@ -6,20 +6,16 @@ import java.util.ArrayList;
 abstract class Learner {
     private final ArrayList<Instance> mInstances = new ArrayList<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract ArrayList<Prediction> classify(int i, int i2, float[] fArr);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addInstance(Instance instance) {
         this.mInstances.add(instance);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayList<Instance> getInstances() {
         return this.mInstances;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeInstance(long id) {
         ArrayList<Instance> instances = this.mInstances;
         int count = instances.size();
@@ -32,7 +28,6 @@ abstract class Learner {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeInstances(String name) {
         ArrayList<Instance> toDelete = new ArrayList<>();
         ArrayList<Instance> instances = this.mInstances;

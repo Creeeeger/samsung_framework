@@ -252,7 +252,6 @@ public class LooperStats implements Looper.Observer {
         return ThreadLocalRandom.current().nextInt(this.mSamplingInterval) == 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class DispatchSession {
         static final DispatchSession NOT_SAMPLED = new DispatchSession();
@@ -260,11 +259,14 @@ public class LooperStats implements Looper.Observer {
         public long startTimeMicro;
         public long systemUptimeMillis;
 
+        /* synthetic */ DispatchSession(DispatchSessionIA dispatchSessionIA) {
+            this();
+        }
+
         private DispatchSession() {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class Entry {
         public long cpuUsageMicro;

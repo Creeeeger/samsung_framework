@@ -9,7 +9,6 @@ class VerbatimX509Certificate extends WrappedX509Certificate {
     private final byte[] mEncodedVerbatim;
     private int mHash;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VerbatimX509Certificate(X509Certificate wrapped, byte[] encodedVerbatim) {
         super(wrapped);
         this.mHash = -1;

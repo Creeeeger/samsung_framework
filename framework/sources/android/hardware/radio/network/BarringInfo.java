@@ -12,7 +12,9 @@ public class BarringInfo implements Parcelable {
     public static final int BARRING_TYPE_NONE = 0;
     public static final int BARRING_TYPE_UNCONDITIONAL = 2;
     public static final Parcelable.Creator<BarringInfo> CREATOR = new Parcelable.Creator<BarringInfo>() { // from class: android.hardware.radio.network.BarringInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BarringInfo createFromParcel(Parcel _aidl_source) {
             BarringInfo _aidl_out = new BarringInfo();
@@ -20,7 +22,6 @@ public class BarringInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BarringInfo[] newArray(int _aidl_size) {
             return new BarringInfo[_aidl_size];
@@ -71,6 +72,25 @@ public class BarringInfo implements Parcelable {
     public BarringTypeSpecificInfo barringTypeSpecificInfo;
     public int serviceType = 0;
     public int barringType = 0;
+
+    /* renamed from: android.hardware.radio.network.BarringInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BarringInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BarringInfo createFromParcel(Parcel _aidl_source) {
+            BarringInfo _aidl_out = new BarringInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BarringInfo[] newArray(int _aidl_size) {
+            return new BarringInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

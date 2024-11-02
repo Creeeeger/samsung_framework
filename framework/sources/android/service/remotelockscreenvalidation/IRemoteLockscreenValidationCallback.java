@@ -99,8 +99,9 @@ public interface IRemoteLockscreenValidationCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRemoteLockscreenValidationCallback {
+        public static class Proxy implements IRemoteLockscreenValidationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

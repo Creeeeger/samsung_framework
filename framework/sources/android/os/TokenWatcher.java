@@ -14,6 +14,9 @@ public abstract class TokenWatcher {
     private Handler mHandler;
     private String mTag;
     private Runnable mNotificationTask = new Runnable() { // from class: android.os.TokenWatcher.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             int value;
@@ -118,6 +121,27 @@ public abstract class TokenWatcher {
         return a;
     }
 
+    /* renamed from: android.os.TokenWatcher$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            int value;
+            synchronized (TokenWatcher.this.mTokens) {
+                value = TokenWatcher.this.mNotificationQueue;
+                TokenWatcher.this.mNotificationQueue = -1;
+            }
+            if (value == 1) {
+                TokenWatcher.this.acquired();
+            } else if (value == 0) {
+                TokenWatcher.this.released();
+            }
+        }
+    }
+
     private void sendNotificationLocked(boolean z) {
         int i = this.mNotificationQueue;
         if (i == -1) {
@@ -129,7 +153,6 @@ public abstract class TokenWatcher {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class Death implements IBinder.DeathRecipient {
         String tag;

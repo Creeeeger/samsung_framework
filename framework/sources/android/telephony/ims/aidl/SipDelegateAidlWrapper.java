@@ -25,9 +25,10 @@ public class SipDelegateAidlWrapper implements DelegateStateCallback, DelegateMe
     private final ISipDelegateMessageCallback mMessageBinder;
     private final ISipDelegateStateCallback mStateBinder;
 
-    /* renamed from: android.telephony.ims.aidl.SipDelegateAidlWrapper$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telephony.ims.aidl.SipDelegateAidlWrapper$1 */
     /* loaded from: classes3.dex */
-    class AnonymousClass1 extends ISipDelegate.Stub {
+    public class AnonymousClass1 extends ISipDelegate.Stub {
         AnonymousClass1() {
         }
 

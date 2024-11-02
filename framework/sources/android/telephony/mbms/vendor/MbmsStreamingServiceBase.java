@@ -22,12 +22,22 @@ public class MbmsStreamingServiceBase extends IMbmsStreamingService.Stub {
     }
 
     @Override // android.telephony.mbms.vendor.IMbmsStreamingService
-    public final int initialize(final IMbmsStreamingSessionCallback callback, final int subscriptionId) throws RemoteException {
+    public final int initialize(IMbmsStreamingSessionCallback callback, int subscriptionId) throws RemoteException {
         if (callback == null) {
             throw new NullPointerException("Callback must not be null");
         }
-        final int uid = Binder.getCallingUid();
+        int uid = Binder.getCallingUid();
         int result = initialize(new MbmsStreamingSessionCallback() { // from class: android.telephony.mbms.vendor.MbmsStreamingServiceBase.1
+            final /* synthetic */ IMbmsStreamingSessionCallback val$callback;
+            final /* synthetic */ int val$subscriptionId;
+            final /* synthetic */ int val$uid;
+
+            AnonymousClass1(IMbmsStreamingSessionCallback callback2, int uid2, int subscriptionId2) {
+                callback = callback2;
+                uid = uid2;
+                subscriptionId = subscriptionId2;
+            }
+
             @Override // android.telephony.mbms.MbmsStreamingSessionCallback
             public void onError(int errorCode, String message) {
                 try {
@@ -57,9 +67,17 @@ public class MbmsStreamingServiceBase extends IMbmsStreamingService.Stub {
                     MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
                 }
             }
-        }, subscriptionId);
+        }, subscriptionId2);
         if (result == 0) {
-            callback.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.telephony.mbms.vendor.MbmsStreamingServiceBase.2
+            callback2.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.telephony.mbms.vendor.MbmsStreamingServiceBase.2
+                final /* synthetic */ int val$subscriptionId;
+                final /* synthetic */ int val$uid;
+
+                AnonymousClass2(int uid2, int subscriptionId2) {
+                    uid = uid2;
+                    subscriptionId = subscriptionId2;
+                }
+
                 @Override // android.os.IBinder.DeathRecipient
                 public void binderDied() {
                     MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
@@ -67,6 +85,67 @@ public class MbmsStreamingServiceBase extends IMbmsStreamingService.Stub {
             }, 0);
         }
         return result;
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsStreamingServiceBase$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends MbmsStreamingSessionCallback {
+        final /* synthetic */ IMbmsStreamingSessionCallback val$callback;
+        final /* synthetic */ int val$subscriptionId;
+        final /* synthetic */ int val$uid;
+
+        AnonymousClass1(IMbmsStreamingSessionCallback callback2, int uid2, int subscriptionId2) {
+            callback = callback2;
+            uid = uid2;
+            subscriptionId = subscriptionId2;
+        }
+
+        @Override // android.telephony.mbms.MbmsStreamingSessionCallback
+        public void onError(int errorCode, String message) {
+            try {
+                if (errorCode == -1) {
+                    throw new IllegalArgumentException("Middleware cannot send an unknown error.");
+                }
+                callback.onError(errorCode, message);
+            } catch (RemoteException e) {
+                MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+
+        @Override // android.telephony.mbms.MbmsStreamingSessionCallback
+        public void onStreamingServicesUpdated(List<StreamingServiceInfo> services) {
+            try {
+                callback.onStreamingServicesUpdated(services);
+            } catch (RemoteException e) {
+                MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+
+        @Override // android.telephony.mbms.MbmsStreamingSessionCallback
+        public void onMiddlewareReady() {
+            try {
+                callback.onMiddlewareReady();
+            } catch (RemoteException e) {
+                MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsStreamingServiceBase$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 implements IBinder.DeathRecipient {
+        final /* synthetic */ int val$subscriptionId;
+        final /* synthetic */ int val$uid;
+
+        AnonymousClass2(int uid2, int subscriptionId2) {
+            uid = uid2;
+            subscriptionId = subscriptionId2;
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+        }
     }
 
     @Override // android.telephony.mbms.vendor.IMbmsStreamingService
@@ -79,12 +158,22 @@ public class MbmsStreamingServiceBase extends IMbmsStreamingService.Stub {
     }
 
     @Override // android.telephony.mbms.vendor.IMbmsStreamingService
-    public int startStreaming(final int subscriptionId, String serviceId, final IStreamingServiceCallback callback) throws RemoteException {
+    public int startStreaming(int subscriptionId, String serviceId, IStreamingServiceCallback callback) throws RemoteException {
         if (callback == null) {
             throw new NullPointerException("Callback must not be null");
         }
-        final int uid = Binder.getCallingUid();
+        int uid = Binder.getCallingUid();
         int result = startStreaming(subscriptionId, serviceId, new StreamingServiceCallback() { // from class: android.telephony.mbms.vendor.MbmsStreamingServiceBase.3
+            final /* synthetic */ IStreamingServiceCallback val$callback;
+            final /* synthetic */ int val$subscriptionId;
+            final /* synthetic */ int val$uid;
+
+            AnonymousClass3(IStreamingServiceCallback callback2, int uid2, int subscriptionId2) {
+                callback = callback2;
+                uid = uid2;
+                subscriptionId = subscriptionId2;
+            }
+
             @Override // android.telephony.mbms.StreamingServiceCallback
             public void onError(int errorCode, String message) {
                 try {
@@ -134,7 +223,15 @@ public class MbmsStreamingServiceBase extends IMbmsStreamingService.Stub {
             }
         });
         if (result == 0) {
-            callback.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.telephony.mbms.vendor.MbmsStreamingServiceBase.4
+            callback2.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.telephony.mbms.vendor.MbmsStreamingServiceBase.4
+                final /* synthetic */ int val$subscriptionId;
+                final /* synthetic */ int val$uid;
+
+                AnonymousClass4(int uid2, int subscriptionId2) {
+                    uid = uid2;
+                    subscriptionId = subscriptionId2;
+                }
+
                 @Override // android.os.IBinder.DeathRecipient
                 public void binderDied() {
                     MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
@@ -142,6 +239,85 @@ public class MbmsStreamingServiceBase extends IMbmsStreamingService.Stub {
             }, 0);
         }
         return result;
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsStreamingServiceBase$3 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass3 extends StreamingServiceCallback {
+        final /* synthetic */ IStreamingServiceCallback val$callback;
+        final /* synthetic */ int val$subscriptionId;
+        final /* synthetic */ int val$uid;
+
+        AnonymousClass3(IStreamingServiceCallback callback2, int uid2, int subscriptionId2) {
+            callback = callback2;
+            uid = uid2;
+            subscriptionId = subscriptionId2;
+        }
+
+        @Override // android.telephony.mbms.StreamingServiceCallback
+        public void onError(int errorCode, String message) {
+            try {
+                if (errorCode == -1) {
+                    throw new IllegalArgumentException("Middleware cannot send an unknown error.");
+                }
+                callback.onError(errorCode, message);
+            } catch (RemoteException e) {
+                MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+
+        @Override // android.telephony.mbms.StreamingServiceCallback
+        public void onStreamStateUpdated(int state, int reason) {
+            try {
+                callback.onStreamStateUpdated(state, reason);
+            } catch (RemoteException e) {
+                MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+
+        @Override // android.telephony.mbms.StreamingServiceCallback
+        public void onMediaDescriptionUpdated() {
+            try {
+                callback.onMediaDescriptionUpdated();
+            } catch (RemoteException e) {
+                MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+
+        @Override // android.telephony.mbms.StreamingServiceCallback
+        public void onBroadcastSignalStrengthUpdated(int signalStrength) {
+            try {
+                callback.onBroadcastSignalStrengthUpdated(signalStrength);
+            } catch (RemoteException e) {
+                MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+
+        @Override // android.telephony.mbms.StreamingServiceCallback
+        public void onStreamMethodUpdated(int methodType) {
+            try {
+                callback.onStreamMethodUpdated(methodType);
+            } catch (RemoteException e) {
+                MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsStreamingServiceBase$4 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass4 implements IBinder.DeathRecipient {
+        final /* synthetic */ int val$subscriptionId;
+        final /* synthetic */ int val$uid;
+
+        AnonymousClass4(int uid2, int subscriptionId2) {
+            uid = uid2;
+            subscriptionId = subscriptionId2;
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            MbmsStreamingServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+        }
     }
 
     @Override // android.telephony.mbms.vendor.IMbmsStreamingService

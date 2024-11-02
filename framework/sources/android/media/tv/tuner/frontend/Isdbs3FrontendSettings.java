@@ -51,6 +51,10 @@ public class Isdbs3FrontendSettings extends FrontendSettings {
     public @interface Rolloff {
     }
 
+    /* synthetic */ Isdbs3FrontendSettings(long j, int i, int i2, int i3, int i4, int i5, int i6, Isdbs3FrontendSettingsIA isdbs3FrontendSettingsIA) {
+        this(j, i, i2, i3, i4, i5, i6);
+    }
+
     private Isdbs3FrontendSettings(long frequency, int streamId, int streamIdType, int modulation, int codeRate, int symbolRate, int rolloff) {
         super(frequency);
         this.mStreamId = streamId;
@@ -98,6 +102,10 @@ public class Isdbs3FrontendSettings extends FrontendSettings {
         private int mStreamId;
         private int mStreamIdType;
         private int mSymbolRate;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;

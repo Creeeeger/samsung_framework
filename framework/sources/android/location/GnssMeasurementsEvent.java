@@ -15,7 +15,9 @@ import java.util.List;
 /* loaded from: classes2.dex */
 public final class GnssMeasurementsEvent implements Parcelable {
     public static final Parcelable.Creator<GnssMeasurementsEvent> CREATOR = new Parcelable.Creator<GnssMeasurementsEvent>() { // from class: android.location.GnssMeasurementsEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssMeasurementsEvent createFromParcel(Parcel in) {
             int flag = in.readInt();
@@ -26,7 +28,6 @@ public final class GnssMeasurementsEvent implements Parcelable {
             return new GnssMeasurementsEvent(flag, clock, measurements, agcs, isFullTracking);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssMeasurementsEvent[] newArray(int size) {
             return new GnssMeasurementsEvent[size];
@@ -38,6 +39,10 @@ public final class GnssMeasurementsEvent implements Parcelable {
     private final List<GnssAutomaticGainControl> mGnssAgcs;
     private final boolean mIsFullTracking;
     private final List<GnssMeasurement> mMeasurements;
+
+    /* synthetic */ GnssMeasurementsEvent(int i, GnssClock gnssClock, List list, List list2, boolean z, GnssMeasurementsEventIA gnssMeasurementsEventIA) {
+        this(i, gnssClock, list, list2, z);
+    }
 
     /* loaded from: classes2.dex */
     public static abstract class Callback {
@@ -94,6 +99,28 @@ public final class GnssMeasurementsEvent implements Parcelable {
 
     public boolean hasIsFullTracking() {
         return (this.mFlag & 1) == 1;
+    }
+
+    /* renamed from: android.location.GnssMeasurementsEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssMeasurementsEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssMeasurementsEvent createFromParcel(Parcel in) {
+            int flag = in.readInt();
+            GnssClock clock = (GnssClock) in.readParcelable(getClass().getClassLoader(), GnssClock.class);
+            List<GnssMeasurement> measurements = in.createTypedArrayList(GnssMeasurement.CREATOR);
+            List<GnssAutomaticGainControl> agcs = in.createTypedArrayList(GnssAutomaticGainControl.CREATOR);
+            boolean isFullTracking = in.readBoolean();
+            return new GnssMeasurementsEvent(flag, clock, measurements, agcs, isFullTracking);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssMeasurementsEvent[] newArray(int size) {
+            return new GnssMeasurementsEvent[size];
+        }
     }
 
     @Override // android.os.Parcelable

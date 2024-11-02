@@ -98,8 +98,9 @@ public interface IGoodCatchDispatcher extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGoodCatchDispatcher {
+        public static class Proxy implements IGoodCatchDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

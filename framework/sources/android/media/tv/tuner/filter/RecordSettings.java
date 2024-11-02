@@ -90,6 +90,10 @@ public class RecordSettings extends Settings {
     public @interface TsIndexMask {
     }
 
+    /* synthetic */ RecordSettings(int i, int i2, int i3, int i4, RecordSettingsIA recordSettingsIA) {
+        this(i, i2, i3, i4);
+    }
+
     private RecordSettings(int mainType, int tsIndexType, int scIndexType, int scIndexMask) {
         super(TunerUtils.getFilterSubtype(mainType, 6));
         this.mTsIndexMask = tsIndexType;
@@ -119,6 +123,10 @@ public class RecordSettings extends Settings {
         private int mScIndexMask;
         private int mScIndexType;
         private int mTsIndexMask;
+
+        /* synthetic */ Builder(int i, BuilderIA builderIA) {
+            this(i);
+        }
 
         private Builder(int mainType) {
             this.mMainType = mainType;

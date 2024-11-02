@@ -15,7 +15,6 @@ public class X509CRLEntryHolder {
     private GeneralNames ca;
     private TBSCertList.CRLEntry entry;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public X509CRLEntryHolder(TBSCertList.CRLEntry entry, boolean isIndirect, GeneralNames previousCA) {
         Extension currentCaName;
         this.entry = entry;

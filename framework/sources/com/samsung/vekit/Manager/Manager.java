@@ -16,7 +16,6 @@ public class Manager<T> extends Element {
     protected ManagerType managerType;
     protected HashMap<Integer, T> map;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Manager(VEContext context, ManagerType type) {
         super(context, ElementType.MANAGER, 0, "Manager");
         this.map = new HashMap<>();
@@ -24,7 +23,6 @@ public class Manager<T> extends Element {
         this.index = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int generateUniqueId() throws Exception {
         if (this.map.size() >= 2147483646) {
             throw new Exception("Map is full");
@@ -61,8 +59,7 @@ public class Manager<T> extends Element {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.vekit.Manager.Manager$1, reason: invalid class name */
+    /* renamed from: com.samsung.vekit.Manager.Manager$1 */
     /* loaded from: classes6.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$ManagerType;

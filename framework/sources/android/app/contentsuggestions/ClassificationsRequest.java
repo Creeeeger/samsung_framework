@@ -10,13 +10,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class ClassificationsRequest implements Parcelable {
     public static final Parcelable.Creator<ClassificationsRequest> CREATOR = new Parcelable.Creator<ClassificationsRequest>() { // from class: android.app.contentsuggestions.ClassificationsRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ClassificationsRequest createFromParcel(Parcel source) {
             return new ClassificationsRequest(source.createTypedArrayList(ContentSelection.CREATOR), source.readBundle());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClassificationsRequest[] newArray(int size) {
             return new ClassificationsRequest[size];
@@ -24,6 +25,10 @@ public final class ClassificationsRequest implements Parcelable {
     };
     private final Bundle mExtras;
     private final List<ContentSelection> mSelections;
+
+    /* synthetic */ ClassificationsRequest(List list, Bundle bundle, ClassificationsRequestIA classificationsRequestIA) {
+        this(list, bundle);
+    }
 
     private ClassificationsRequest(List<ContentSelection> selections, Bundle extras) {
         this.mSelections = selections;
@@ -48,6 +53,23 @@ public final class ClassificationsRequest implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.mSelections);
         dest.writeBundle(this.mExtras);
+    }
+
+    /* renamed from: android.app.contentsuggestions.ClassificationsRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ClassificationsRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClassificationsRequest createFromParcel(Parcel source) {
+            return new ClassificationsRequest(source.createTypedArrayList(ContentSelection.CREATOR), source.readBundle());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClassificationsRequest[] newArray(int size) {
+            return new ClassificationsRequest[size];
+        }
     }
 
     @SystemApi

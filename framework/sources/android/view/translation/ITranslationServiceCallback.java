@@ -84,8 +84,9 @@ public interface ITranslationServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements ITranslationServiceCallback {
+        public static class Proxy implements ITranslationServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

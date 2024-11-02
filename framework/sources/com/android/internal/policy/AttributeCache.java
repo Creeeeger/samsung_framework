@@ -58,15 +58,15 @@ public final class AttributeCache {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void monitorPackageRemove(Handler handler) {
         if (this.mPackageMonitor == null) {
             this.mPackageMonitor = new PackageMonitor(this.mContext, handler);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    static class PackageMonitor extends BroadcastReceiver {
+    public static class PackageMonitor extends BroadcastReceiver {
         PackageMonitor(Context context, Handler handler) {
             IntentFilter filter = new IntentFilter("android.intent.action.PACKAGE_REMOVED");
             filter.addDataScheme("package");

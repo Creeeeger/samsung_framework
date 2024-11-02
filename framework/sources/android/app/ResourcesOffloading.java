@@ -18,7 +18,6 @@ public final class ResourcesOffloading {
     private Handler mHandler = null;
     private Runnable mScheduleEndAppLaunchMarker = null;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ResourcesOffloading(Context appContext) {
         this.appContext = appContext;
     }
@@ -38,19 +37,35 @@ public final class ResourcesOffloading {
                     handler.removeCallbacks(runnable);
                 }
             }
-            Runnable runnable2 = new Runnable() { // from class: android.app.ResourcesOffloading.1
+            AnonymousClass1 anonymousClass1 = new Runnable() { // from class: android.app.ResourcesOffloading.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     ResourcesOffloading.this.appContext.getResources();
                     Resources.setIfAppLaunching(false);
                 }
             };
-            this.mScheduleEndAppLaunchMarker = runnable2;
-            if (!this.mHandler.postDelayed(runnable2, 2000L)) {
+            this.mScheduleEndAppLaunchMarker = anonymousClass1;
+            if (!this.mHandler.postDelayed(anonymousClass1, 2000L)) {
                 return;
             }
             Thread thread = new Thread(new ResourcesOffloadingRunnable());
             thread.start();
+        }
+    }
+
+    /* renamed from: android.app.ResourcesOffloading$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ResourcesOffloading.this.appContext.getResources();
+            Resources.setIfAppLaunching(false);
         }
     }
 
@@ -61,9 +76,12 @@ public final class ResourcesOffloading {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class ResourcesOffloadingRunnable implements Runnable {
+        /* synthetic */ ResourcesOffloadingRunnable(ResourcesOffloading resourcesOffloading, ResourcesOffloadingRunnableIA resourcesOffloadingRunnableIA) {
+            this();
+        }
+
         private ResourcesOffloadingRunnable() {
         }
 

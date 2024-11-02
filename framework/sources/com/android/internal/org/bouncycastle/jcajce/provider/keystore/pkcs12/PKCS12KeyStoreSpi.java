@@ -114,12 +114,12 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
     private static final DefaultSecretKeyProvider keySizeProvider = new DefaultSecretKeyProvider();
     private ASN1ObjectIdentifier certAlgorithm;
     private CertificateFactory certFact;
-    private IgnoresCaseHashtable certs;
     private ASN1ObjectIdentifier keyAlgorithm;
-    private IgnoresCaseHashtable keys;
     private final JcaJceHelper helper = new DefaultJcaJceHelper();
     private final JcaJceHelper selfHelper = new BCJcaJceHelper();
+    private IgnoresCaseHashtable keys = new IgnoresCaseHashtable();
     private Hashtable localIds = new Hashtable();
+    private IgnoresCaseHashtable certs = new IgnoresCaseHashtable();
     private Hashtable chainCerts = new Hashtable();
     private Hashtable keyCerts = new Hashtable();
     protected SecureRandom random = CryptoServicesRegistrar.getSecureRandom();
@@ -127,7 +127,6 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
     private int itCount = 102400;
     private int saltLength = 20;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class CertId {
         byte[] id;
@@ -157,8 +156,6 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
     }
 
     public PKCS12KeyStoreSpi(JcaJceHelper helper, ASN1ObjectIdentifier keyAlgorithm, ASN1ObjectIdentifier certAlgorithm) {
-        this.keys = new IgnoresCaseHashtable();
-        this.certs = new IgnoresCaseHashtable();
         this.keyAlgorithm = keyAlgorithm;
         this.certAlgorithm = certAlgorithm;
         try {
@@ -168,7 +165,6 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public SubjectKeyIdentifier createSubjectKeyId(PublicKey pubKey) {
         try {
             SubjectPublicKeyInfo info = SubjectPublicKeyInfo.getInstance(pubKey.getEncoded());
@@ -1085,11 +1081,14 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class IgnoresCaseHashtable {
         private Hashtable keys;
         private Hashtable orig;
+
+        /* synthetic */ IgnoresCaseHashtable(IgnoresCaseHashtableIA ignoresCaseHashtableIA) {
+            this();
+        }
 
         private IgnoresCaseHashtable() {
             this.orig = new Hashtable();
@@ -1135,7 +1134,6 @@ public class PKCS12KeyStoreSpi extends KeyStoreSpi implements PKCSObjectIdentifi
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class DefaultSecretKeyProvider {
         private final Map KEY_SIZES;

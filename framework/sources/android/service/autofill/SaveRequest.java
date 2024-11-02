@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class SaveRequest implements Parcelable {
     public static final Parcelable.Creator<SaveRequest> CREATOR = new Parcelable.Creator<SaveRequest>() { // from class: android.service.autofill.SaveRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SaveRequest createFromParcel(Parcel parcel) {
             return new SaveRequest(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SaveRequest[] newArray(int size) {
             return new SaveRequest[size];
@@ -25,6 +26,10 @@ public final class SaveRequest implements Parcelable {
     private final Bundle mClientState;
     private final ArrayList<String> mDatasetIds;
     private final ArrayList<FillContext> mFillContexts;
+
+    /* synthetic */ SaveRequest(Parcel parcel, SaveRequestIA saveRequestIA) {
+        this(parcel);
+    }
 
     public SaveRequest(ArrayList<FillContext> fillContexts, Bundle clientState, ArrayList<String> datasetIds) {
         this.mFillContexts = (ArrayList) Objects.requireNonNull(fillContexts, "fillContexts");
@@ -58,5 +63,22 @@ public final class SaveRequest implements Parcelable {
         parcel.writeTypedList(this.mFillContexts, flags);
         parcel.writeBundle(this.mClientState);
         parcel.writeStringList(this.mDatasetIds);
+    }
+
+    /* renamed from: android.service.autofill.SaveRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SaveRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SaveRequest createFromParcel(Parcel parcel) {
+            return new SaveRequest(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SaveRequest[] newArray(int size) {
+            return new SaveRequest[size];
+        }
     }
 }

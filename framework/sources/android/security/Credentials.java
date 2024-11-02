@@ -63,7 +63,10 @@ public class Credentials {
         return bao.toByteArray();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0060, code lost:            throw new java.lang.IllegalArgumentException("Unknown type " + r5.getType());     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0060, code lost:
+    
+        throw new java.lang.IllegalArgumentException("Unknown type " + r5.getType());
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -38,7 +38,7 @@ public class SemPhotoRemasterManager {
     private static final String TAG = "SemPhotoRemasterManager";
     private static IDirector sEngineInstance;
     private final Map<Integer, IGetParam> mParamGetterType = new HashMap<Integer, IGetParam>() { // from class: com.samsung.android.media.photoremaster.SemPhotoRemasterManager.1
-        {
+        AnonymousClass1() {
             put(1000, new IStringParamGetter(1000));
             put(1002, new IStringParamGetter(1002));
             put(1003, new IStringParamGetter(1003));
@@ -61,12 +61,11 @@ public class SemPhotoRemasterManager {
         void onUpdateProgress(double d, int i, int i2);
     }
 
-    /* renamed from: -$$Nest$smgetEngineInstance, reason: not valid java name */
-    static /* bridge */ /* synthetic */ IDirector m8578$$Nest$smgetEngineInstance() {
+    /* renamed from: -$$Nest$smgetEngineInstance */
+    static /* bridge */ /* synthetic */ IDirector m8570$$Nest$smgetEngineInstance() {
         return getEngineInstance();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static abstract class IGetParam<T> {
         protected int mID;
@@ -78,43 +77,61 @@ public class SemPhotoRemasterManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class ILongParamGetter extends IGetParam<String> {
+    public static class ILongParamGetter extends IGetParam<String> {
         ILongParamGetter(int id) {
             super(id);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.samsung.android.media.photoremaster.SemPhotoRemasterManager.IGetParam
         public String getParam() {
-            return Long.toString(SemPhotoRemasterManager.m8578$$Nest$smgetEngineInstance().getLongParam(this.mID));
+            return Long.toString(SemPhotoRemasterManager.m8570$$Nest$smgetEngineInstance().getLongParam(this.mID));
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class IStringParamGetter extends IGetParam<String> {
+    public static class IStringParamGetter extends IGetParam<String> {
         IStringParamGetter(int id) {
             super(id);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // com.samsung.android.media.photoremaster.SemPhotoRemasterManager.IGetParam
         public String getParam() {
-            return SemPhotoRemasterManager.m8578$$Nest$smgetEngineInstance().getStringParam(this.mID);
+            return SemPhotoRemasterManager.m8570$$Nest$smgetEngineInstance().getStringParam(this.mID);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class IBitmapParamGetter extends IGetParam<Bitmap> {
+    public static class IBitmapParamGetter extends IGetParam<Bitmap> {
         IBitmapParamGetter(int id) {
             super(id);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.samsung.android.media.photoremaster.SemPhotoRemasterManager.IGetParam
         public Bitmap getParam() {
-            return SemPhotoRemasterManager.m8578$$Nest$smgetEngineInstance().getBitmapParam(this.mID);
+            return SemPhotoRemasterManager.m8570$$Nest$smgetEngineInstance().getBitmapParam(this.mID);
+        }
+    }
+
+    /* renamed from: com.samsung.android.media.photoremaster.SemPhotoRemasterManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends HashMap<Integer, IGetParam> {
+        AnonymousClass1() {
+            put(1000, new IStringParamGetter(1000));
+            put(1002, new IStringParamGetter(1002));
+            put(1003, new IStringParamGetter(1003));
+            put(2101, new IStringParamGetter(2101));
+            put(2102, new IStringParamGetter(2102));
+            put(2103, new IStringParamGetter(2103));
+            put(2202, new IStringParamGetter(2202));
+            put(2201, new ILongParamGetter(2201));
+            put(1006, new ILongParamGetter(1006));
+            put(1008, new ILongParamGetter(1008));
+            put(1005, new IStringParamGetter(1005));
+            put(2203, new IBitmapParamGetter(2203));
         }
     }
 
@@ -229,9 +246,9 @@ public class SemPhotoRemasterManager {
                 private final ProgressUpdateListener mListener;
                 final /* synthetic */ ProgressUpdateListener val$listener;
 
-                {
-                    this.val$listener = listener;
-                    this.mListener = listener;
+                AnonymousClass2(ProgressUpdateListener listener2) {
+                    this.val$listener = listener2;
+                    this.mListener = listener2;
                 }
 
                 @Override // com.samsung.android.photoremaster.IDirector.ProgressUpdateListener
@@ -244,6 +261,28 @@ public class SemPhotoRemasterManager {
                     this.mListener.onUpdateMetadata(metadata);
                 }
             });
+        }
+    }
+
+    /* renamed from: com.samsung.android.media.photoremaster.SemPhotoRemasterManager$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 implements IDirector.ProgressUpdateListener {
+        private final ProgressUpdateListener mListener;
+        final /* synthetic */ ProgressUpdateListener val$listener;
+
+        AnonymousClass2(ProgressUpdateListener listener2) {
+            this.val$listener = listener2;
+            this.mListener = listener2;
+        }
+
+        @Override // com.samsung.android.photoremaster.IDirector.ProgressUpdateListener
+        public void onUpdateProgress(double percent, int currentImageIndex, int totalImageCount) {
+            this.mListener.onUpdateProgress(percent, currentImageIndex, totalImageCount);
+        }
+
+        @Override // com.samsung.android.photoremaster.IDirector.ProgressUpdateListener
+        public void onUpdateMetadata(String metadata) {
+            this.mListener.onUpdateMetadata(metadata);
         }
     }
 

@@ -26,8 +26,8 @@ public final class UidState {
         this.mDurations = new DurationsTable(processStats.mTableData);
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public UidState m7231clone() {
+    /* renamed from: clone */
+    public UidState m7226clone() {
         UidState unew = new UidState(this.mStats, this.mUid);
         unew.mDurations.addDurations(this.mDurations);
         unew.mCurCombinedState = this.mCurCombinedState;
@@ -106,7 +106,6 @@ public final class UidState {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$resetSafely$0(ProcessState p) {
         return !p.isInUse();
     }
@@ -137,7 +136,6 @@ public final class UidState {
         this.mTotalRunningDuration += other.mTotalRunningDuration;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addProcess(ProcessState proc) {
         this.mProcesses.add(proc);
     }
@@ -182,13 +180,11 @@ public final class UidState {
         return states;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToParcel(Parcel out, long now) {
         this.mDurations.writeToParcel(out);
         out.writeLong(getTotalRunningDuration(now));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean readFromParcel(Parcel in) {
         if (!this.mDurations.readFromParcel(in)) {
             return false;
@@ -203,7 +199,6 @@ public final class UidState {
         return sb.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpState(PrintWriter pw, String prefix, int[] screenStates, int[] memStates, int[] procStates, long now) {
         int i;
         long time;

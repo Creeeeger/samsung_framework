@@ -152,7 +152,6 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         return toCertificate(encodedCert2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static X509Certificate toCertificate(byte[] bytes) {
         try {
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
@@ -782,7 +781,6 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public KeyDescriptor[] getAliasesBatch(String startPastAlias) {
         try {
             return this.mKeyStore.listBatch(getTargetDomain(), this.mNamespace, startPastAlias);
@@ -943,6 +941,10 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         private KeyDescriptor[] mCurrentBatch;
         private int mCurrentEntry;
         private String mLastAlias;
+
+        /* synthetic */ KeyEntriesEnumerator(AndroidKeyStoreSpi androidKeyStoreSpi, KeyEntriesEnumeratorIA keyEntriesEnumeratorIA) {
+            this();
+        }
 
         private KeyEntriesEnumerator() {
             this.mCurrentEntry = 0;

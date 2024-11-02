@@ -13,9 +13,24 @@ import java.util.Vector;
 public final class Strings {
     private static String LINE_SEPARATOR;
 
+    /* renamed from: com.android.internal.org.bouncycastle.util.Strings$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements PrivilegedAction<String> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.security.PrivilegedAction
+        public String run() {
+            return System.getProperty("line.separator");
+        }
+    }
+
     static {
         try {
             LINE_SEPARATOR = (String) AccessController.doPrivileged(new PrivilegedAction<String>() { // from class: com.android.internal.org.bouncycastle.util.Strings.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.security.PrivilegedAction
                 public String run() {
                     return System.getProperty("line.separator");
@@ -187,6 +202,10 @@ public final class Strings {
 
     /* loaded from: classes5.dex */
     private static class StringListImpl extends ArrayList<String> implements StringList {
+        /* synthetic */ StringListImpl(StringListImplIA stringListImplIA) {
+            this();
+        }
+
         private StringListImpl() {
         }
 

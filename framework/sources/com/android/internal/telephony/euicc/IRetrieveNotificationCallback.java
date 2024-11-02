@@ -86,8 +86,9 @@ public interface IRetrieveNotificationCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IRetrieveNotificationCallback {
+        public static class Proxy implements IRetrieveNotificationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

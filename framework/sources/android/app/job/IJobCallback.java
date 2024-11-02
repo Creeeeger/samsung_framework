@@ -241,7 +241,6 @@ public interface IJobCallback extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IJobCallback {
             private IBinder mRemote;

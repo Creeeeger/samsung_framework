@@ -30,13 +30,14 @@ public class VibratorInfo implements Parcelable {
     private final SparseIntArray mSupportedPrimitives;
     public static final VibratorInfo EMPTY_VIBRATOR_INFO = new Builder(-1).build();
     public static final Parcelable.Creator<VibratorInfo> CREATOR = new Parcelable.Creator<VibratorInfo>() { // from class: android.os.VibratorInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VibratorInfo createFromParcel(Parcel in) {
             return new VibratorInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VibratorInfo[] newArray(int size) {
             return new VibratorInfo[size];
@@ -66,9 +67,9 @@ public class VibratorInfo implements Parcelable {
         Preconditions.checkNotNull(frequencyProfile);
         this.mId = id;
         this.mCapabilities = capabilities;
-        this.mSupportedEffects = supportedEffects == null ? null : supportedEffects.m4952clone();
-        this.mSupportedBraking = supportedBraking != null ? supportedBraking.m4952clone() : null;
-        this.mSupportedPrimitives = supportedPrimitives.m4954clone();
+        this.mSupportedEffects = supportedEffects == null ? null : supportedEffects.m4951clone();
+        this.mSupportedBraking = supportedBraking != null ? supportedBraking.m4951clone() : null;
+        this.mSupportedPrimitives = supportedPrimitives.m4953clone();
         this.mPrimitiveDelayMax = primitiveDelayMax;
         this.mCompositionSizeMax = compositionSizeMax;
         this.mPwlePrimitiveDurationMax = pwlePrimitiveDurationMax;
@@ -157,7 +158,7 @@ public class VibratorInfo implements Parcelable {
         if (sparseBooleanArray == null) {
             return null;
         }
-        return sparseBooleanArray.m4952clone();
+        return sparseBooleanArray.m4951clone();
     }
 
     public boolean isBrakingSupportKnown() {
@@ -186,7 +187,7 @@ public class VibratorInfo implements Parcelable {
         if (sparseBooleanArray == null) {
             return null;
         }
-        return sparseBooleanArray.m4952clone();
+        return sparseBooleanArray.m4951clone();
     }
 
     public boolean isPrimitiveSupported(int primitiveId) {
@@ -198,7 +199,7 @@ public class VibratorInfo implements Parcelable {
     }
 
     public SparseIntArray getSupportedPrimitives() {
-        return this.mSupportedPrimitives.m4954clone();
+        return this.mSupportedPrimitives.m4953clone();
     }
 
     public int getPrimitiveDelayMax() {
@@ -233,7 +234,6 @@ public class VibratorInfo implements Parcelable {
         return this.mFrequencyProfile;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public long getCapabilities() {
         return this.mCapabilities;
     }
@@ -316,13 +316,14 @@ public class VibratorInfo implements Parcelable {
     /* loaded from: classes3.dex */
     public static final class FrequencyProfile implements Parcelable {
         public static final Parcelable.Creator<FrequencyProfile> CREATOR = new Parcelable.Creator<FrequencyProfile>() { // from class: android.os.VibratorInfo.FrequencyProfile.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public FrequencyProfile createFromParcel(Parcel in) {
                 return new FrequencyProfile(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public FrequencyProfile[] newArray(int size) {
                 return new FrequencyProfile[size];
@@ -435,6 +436,23 @@ public class VibratorInfo implements Parcelable {
         public String toString() {
             return "FrequencyProfile{mFrequencyRange=" + this.mFrequencyRangeHz + ", mMinFrequency=" + this.mMinFrequencyHz + ", mResonantFrequency=" + this.mResonantFrequencyHz + ", mFrequencyResolution=" + this.mFrequencyResolutionHz + ", mMaxAmplitudes count=" + this.mMaxAmplitudes.length + '}';
         }
+
+        /* renamed from: android.os.VibratorInfo$FrequencyProfile$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<FrequencyProfile> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public FrequencyProfile createFromParcel(Parcel in) {
+                return new FrequencyProfile(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public FrequencyProfile[] newArray(int size) {
+                return new FrequencyProfile[size];
+            }
+        }
     }
 
     /* loaded from: classes3.dex */
@@ -518,6 +536,23 @@ public class VibratorInfo implements Parcelable {
                 array.put(key, true);
             }
             return array;
+        }
+    }
+
+    /* renamed from: android.os.VibratorInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VibratorInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VibratorInfo createFromParcel(Parcel in) {
+            return new VibratorInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VibratorInfo[] newArray(int size) {
+            return new VibratorInfo[size];
         }
     }
 }

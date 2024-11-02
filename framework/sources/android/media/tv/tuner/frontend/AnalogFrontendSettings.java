@@ -58,6 +58,10 @@ public class AnalogFrontendSettings extends FrontendSettings {
     public @interface SignalType {
     }
 
+    /* synthetic */ AnalogFrontendSettings(long j, int i, int i2, int i3, AnalogFrontendSettingsIA analogFrontendSettingsIA) {
+        this(j, i, i2, i3);
+    }
+
     @Override // android.media.tv.tuner.frontend.FrontendSettings
     public int getType() {
         return 1;
@@ -92,6 +96,10 @@ public class AnalogFrontendSettings extends FrontendSettings {
         private long mFrequency;
         private int mSifStandard;
         private int mSignalType;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;

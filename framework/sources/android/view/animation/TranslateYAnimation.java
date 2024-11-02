@@ -16,8 +16,9 @@ public class TranslateYAnimation extends TranslateAnimation {
         this.mTmpValues = new float[9];
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.TranslateAnimation, android.view.animation.Animation
-    protected void applyTransformation(float interpolatedTime, Transformation t) {
+    public void applyTransformation(float interpolatedTime, Transformation t) {
         Matrix m = t.getMatrix();
         m.getValues(this.mTmpValues);
         float dy = this.mFromYDelta + ((this.mToYDelta - this.mFromYDelta) * interpolatedTime);

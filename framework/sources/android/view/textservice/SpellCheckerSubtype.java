@@ -30,13 +30,14 @@ public final class SpellCheckerSubtype implements Parcelable {
     private final int mSubtypeNameResId;
     private static final String TAG = SpellCheckerSubtype.class.getSimpleName();
     public static final Parcelable.Creator<SpellCheckerSubtype> CREATOR = new Parcelable.Creator<SpellCheckerSubtype>() { // from class: android.view.textservice.SpellCheckerSubtype.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SpellCheckerSubtype createFromParcel(Parcel source) {
             return new SpellCheckerSubtype(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SpellCheckerSubtype[] newArray(int size) {
             return new SpellCheckerSubtype[size];
@@ -162,6 +163,23 @@ public final class SpellCheckerSubtype implements Parcelable {
         dest.writeString(this.mSubtypeLanguageTag);
         dest.writeString(this.mSubtypeExtraValue);
         dest.writeInt(this.mSubtypeId);
+    }
+
+    /* renamed from: android.view.textservice.SpellCheckerSubtype$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SpellCheckerSubtype> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SpellCheckerSubtype createFromParcel(Parcel source) {
+            return new SpellCheckerSubtype(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SpellCheckerSubtype[] newArray(int size) {
+            return new SpellCheckerSubtype[size];
+        }
     }
 
     private static int hashCodeInternal(String locale, String extraValue) {

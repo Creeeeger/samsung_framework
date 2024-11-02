@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextPedometer extends SContextEventContext {
     public static final Parcelable.Creator<SContextPedometer> CREATOR = new Parcelable.Creator<SContextPedometer>() { // from class: android.hardware.scontext.SContextPedometer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextPedometer createFromParcel(Parcel in) {
             return new SContextPedometer(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextPedometer[] newArray(int size) {
             return new SContextPedometer[size];
@@ -23,7 +24,6 @@ public class SContextPedometer extends SContextEventContext {
     private Bundle mContext;
     private int mMode;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextPedometer() {
         this.mContext = new Bundle();
         this.mMode = 0;
@@ -299,5 +299,22 @@ public class SContextPedometer extends SContextEventContext {
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
         this.mMode = src.readInt();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextPedometer$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextPedometer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextPedometer createFromParcel(Parcel in) {
+            return new SContextPedometer(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextPedometer[] newArray(int size) {
+            return new SContextPedometer[size];
+        }
     }
 }

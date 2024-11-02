@@ -144,7 +144,7 @@ public class StackView extends AdapterViewAnimator {
     }
 
     @Override // android.widget.AdapterViewAnimator
-    void transformViewForTransition(int fromIndex, int toIndex, final View view, boolean animate) {
+    void transformViewForTransition(int fromIndex, int toIndex, View view, boolean animate) {
         if (!animate) {
             ((StackFrame) view).cancelSliderAnimator();
             view.setRotationX(0.0f);
@@ -201,25 +201,46 @@ public class StackView extends AdapterViewAnimator {
             } else if (toIndex == -1) {
                 if (animate) {
                     postDelayed(new Runnable() { // from class: android.widget.StackView.1
+                        final /* synthetic */ View val$view;
+
+                        AnonymousClass1(View view2) {
+                            view = view2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             view.setAlpha(0.0f);
                         }
                     }, MIN_TIME_BETWEEN_SCROLLS);
                 } else {
-                    view.setAlpha(0.0f);
+                    view2.setAlpha(0.0f);
                 }
             }
         } else {
-            view.setVisibility(0);
-            view.setAlpha(1.0f);
-            view.setRotationX(0.0f);
-            LayoutParams lp2 = (LayoutParams) view.getLayoutParams();
+            view2.setVisibility(0);
+            view2.setAlpha(1.0f);
+            view2.setRotationX(0.0f);
+            LayoutParams lp2 = (LayoutParams) view2.getLayoutParams();
             lp2.setVerticalOffset(0);
             lp2.setHorizontalOffset(0);
         }
         if (toIndex != -1) {
-            transformViewAtIndex(toIndex, view, animate);
+            transformViewAtIndex(toIndex, view2, animate);
+        }
+    }
+
+    /* renamed from: android.widget.StackView$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Runnable {
+        final /* synthetic */ View val$view;
+
+        AnonymousClass1(View view2) {
+            view = view2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            view.setAlpha(0.0f);
         }
     }
 
@@ -312,7 +333,6 @@ public class StackView extends AdapterViewAnimator {
         super.showPrevious();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AdapterViewAnimator
     public void showOnly(int childIndex, boolean animate) {
         View v;
@@ -367,7 +387,6 @@ public class StackView extends AdapterViewAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class StackFrame extends FrameLayout {
         WeakReference<ObjectAnimator> sliderAnimator;
@@ -418,7 +437,6 @@ public class StackView extends AdapterViewAnimator {
     void applyTransformForChildAtIndex(View child, int relativeIndex) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         boolean expandClipRegion = false;
@@ -736,7 +754,6 @@ public class StackView extends AdapterViewAnimator {
         this.mSwipeGestureType = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class StackSlider {
         static final int BEGINNING_OF_STACK_MODE = 1;
@@ -901,7 +918,6 @@ public class StackView extends AdapterViewAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AdapterViewAnimator
     public LayoutParams createOrReuseLayoutParams(View v) {
         ViewGroup.LayoutParams currentLp = v.getLayoutParams();
@@ -916,7 +932,6 @@ public class StackView extends AdapterViewAnimator {
         return new LayoutParams(v);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterViewAnimator, android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         checkForAndHandleDataChanged();
@@ -975,7 +990,6 @@ public class StackView extends AdapterViewAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterViewAnimator, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int i;
@@ -1094,7 +1108,6 @@ public class StackView extends AdapterViewAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class LayoutParams extends ViewGroup.LayoutParams {
         private final Rect globalInvalidateRect;
@@ -1191,7 +1204,6 @@ public class StackView extends AdapterViewAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class HolographicHelper {
         private static final int CLICK_FEEDBACK = 1;

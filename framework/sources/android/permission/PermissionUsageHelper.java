@@ -246,7 +246,6 @@ public class PermissionUsageHelper implements AppOpsManager.OnOpActiveChangedLis
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ArrayList lambda$addLinkToChainIfNotPresentLocked$0(Integer k) {
         return new ArrayList();
     }
@@ -646,7 +645,6 @@ public class PermissionUsageHelper implements AppOpsManager.OnOpActiveChangedLis
         return PermissionManager.shouldShowPackageForIndicatorCached(this.mContext, packageName);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class OpUsage {
         public final String attributionTag;
@@ -688,7 +686,6 @@ public class PermissionUsageHelper implements AppOpsManager.OnOpActiveChangedLis
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class AccessChainLink {
         public final int flags;

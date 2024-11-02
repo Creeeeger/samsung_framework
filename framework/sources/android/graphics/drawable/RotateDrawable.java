@@ -18,6 +18,10 @@ public class RotateDrawable extends DrawableWrapper {
     private static final int MAX_LEVEL = 10000;
     private RotateState mState;
 
+    /* synthetic */ RotateDrawable(RotateState rotateState, Resources resources, RotateDrawableIA rotateDrawableIA) {
+        this(rotateState, resources);
+    }
+
     public RotateDrawable() {
         this(new RotateState(null, null), null);
     }
@@ -161,7 +165,6 @@ public class RotateDrawable extends DrawableWrapper {
         return this.mState.mPivotYRel;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
     public boolean onLevelChange(int level) {
         super.onLevelChange(level);
@@ -179,7 +182,6 @@ public class RotateDrawable extends DrawableWrapper {
         return rotateState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class RotateState extends DrawableWrapper.DrawableWrapperState {
         float mCurrentDegrees;

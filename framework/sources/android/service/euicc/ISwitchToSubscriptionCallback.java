@@ -83,8 +83,9 @@ public interface ISwitchToSubscriptionCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISwitchToSubscriptionCallback {
+        public static class Proxy implements ISwitchToSubscriptionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

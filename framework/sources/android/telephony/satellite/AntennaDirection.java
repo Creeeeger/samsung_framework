@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AntennaDirection implements Parcelable {
     public static final Parcelable.Creator<AntennaDirection> CREATOR = new Parcelable.Creator<AntennaDirection>() { // from class: android.telephony.satellite.AntennaDirection.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AntennaDirection createFromParcel(Parcel in) {
             return new AntennaDirection(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AntennaDirection[] newArray(int size) {
             return new AntennaDirection[size];
@@ -24,6 +25,10 @@ public final class AntennaDirection implements Parcelable {
     private float mX;
     private float mY;
     private float mZ;
+
+    /* synthetic */ AntennaDirection(Parcel parcel, AntennaDirectionIA antennaDirectionIA) {
+        this(parcel);
+    }
 
     public AntennaDirection(float x, float y, float z) {
         this.mX = x;
@@ -45,6 +50,23 @@ public final class AntennaDirection implements Parcelable {
         out.writeFloat(this.mX);
         out.writeFloat(this.mY);
         out.writeFloat(this.mZ);
+    }
+
+    /* renamed from: android.telephony.satellite.AntennaDirection$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AntennaDirection> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AntennaDirection createFromParcel(Parcel in) {
+            return new AntennaDirection(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AntennaDirection[] newArray(int size) {
+            return new AntennaDirection[size];
+        }
     }
 
     public String toString() {

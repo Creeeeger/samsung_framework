@@ -50,7 +50,6 @@ public class SemSwitchPreferenceScreen extends SwitchPreference {
         this(context, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.TwoStatePreference, android.preference.Preference
     @Deprecated
     public void onClick() {
@@ -103,7 +102,6 @@ public class SemSwitchPreferenceScreen extends SwitchPreference {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.SwitchPreference, android.preference.Preference
     public void onBindView(View view) {
         super.onBindView(view);

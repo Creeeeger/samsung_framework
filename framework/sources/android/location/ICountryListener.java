@@ -83,8 +83,9 @@ public interface ICountryListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ICountryListener {
+        public static class Proxy implements ICountryListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

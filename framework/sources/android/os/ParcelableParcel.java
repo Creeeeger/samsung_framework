@@ -6,12 +6,14 @@ import android.util.MathUtils;
 /* loaded from: classes3.dex */
 public class ParcelableParcel implements Parcelable {
     public static final Parcelable.ClassLoaderCreator<ParcelableParcel> CREATOR = new Parcelable.ClassLoaderCreator<ParcelableParcel>() { // from class: android.os.ParcelableParcel.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelableParcel createFromParcel(Parcel in) {
             return new ParcelableParcel(in, null);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.ClassLoaderCreator
         public ParcelableParcel createFromParcel(Parcel in, ClassLoader loader) {
             return new ParcelableParcel(in, loader);
@@ -62,5 +64,27 @@ public class ParcelableParcel implements Parcelable {
         dest.writeInt(this.mParcel.dataSize());
         Parcel parcel = this.mParcel;
         dest.appendFrom(parcel, 0, parcel.dataSize());
+    }
+
+    /* renamed from: android.os.ParcelableParcel$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.ClassLoaderCreator<ParcelableParcel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableParcel createFromParcel(Parcel in) {
+            return new ParcelableParcel(in, null);
+        }
+
+        @Override // android.os.Parcelable.ClassLoaderCreator
+        public ParcelableParcel createFromParcel(Parcel in, ClassLoader loader) {
+            return new ParcelableParcel(in, loader);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableParcel[] newArray(int size) {
+            return new ParcelableParcel[size];
+        }
     }
 }

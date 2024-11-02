@@ -9,13 +9,14 @@ import android.text.TextUtils;
 /* loaded from: classes.dex */
 public class LabeledIntent extends Intent {
     public static final Parcelable.Creator<LabeledIntent> CREATOR = new Parcelable.Creator<LabeledIntent>() { // from class: android.content.pm.LabeledIntent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LabeledIntent createFromParcel(Parcel source) {
             return new LabeledIntent(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LabeledIntent[] newArray(int size) {
             return new LabeledIntent[size];
@@ -116,5 +117,22 @@ public class LabeledIntent extends Intent {
         this.mLabelRes = in.readInt();
         this.mNonLocalizedLabel = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
         this.mIcon = in.readInt();
+    }
+
+    /* renamed from: android.content.pm.LabeledIntent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LabeledIntent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LabeledIntent createFromParcel(Parcel source) {
+            return new LabeledIntent(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LabeledIntent[] newArray(int size) {
+            return new LabeledIntent[size];
+        }
     }
 }

@@ -7,7 +7,6 @@ import android.os.ConditionVariable;
 import android.speech.tts.TextToSpeechService;
 import android.util.Log;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class AudioPlaybackQueueItem extends PlaybackQueueItem {
     private static final String TAG = "TTS.AudioQueueItem";
@@ -18,7 +17,6 @@ public class AudioPlaybackQueueItem extends PlaybackQueueItem {
     private MediaPlayer mPlayer;
     private final Uri mUri;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioPlaybackQueueItem(TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, Context context, Uri uri, TextToSpeechService.AudioOutputParams audioParams) {
         super(dispatcher, callerIdentity);
         this.mContext = context;
@@ -42,6 +40,9 @@ public class AudioPlaybackQueueItem extends PlaybackQueueItem {
         }
         try {
             create.setOnErrorListener(new MediaPlayer.OnErrorListener() { // from class: android.speech.tts.AudioPlaybackQueueItem.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.media.MediaPlayer.OnErrorListener
                 public boolean onError(MediaPlayer mp, int what, int extra) {
                     Log.w(AudioPlaybackQueueItem.TAG, "Audio playback error: " + what + ", " + extra);
@@ -50,6 +51,9 @@ public class AudioPlaybackQueueItem extends PlaybackQueueItem {
                 }
             });
             this.mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() { // from class: android.speech.tts.AudioPlaybackQueueItem.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.media.MediaPlayer.OnCompletionListener
                 public void onCompletion(MediaPlayer mp) {
                     AudioPlaybackQueueItem.this.mFinished = true;
@@ -68,6 +72,33 @@ public class AudioPlaybackQueueItem extends PlaybackQueueItem {
             dispatcher.dispatchOnSuccess();
         } else {
             dispatcher.dispatchOnStop();
+        }
+    }
+
+    /* renamed from: android.speech.tts.AudioPlaybackQueueItem$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements MediaPlayer.OnErrorListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.MediaPlayer.OnErrorListener
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            Log.w(AudioPlaybackQueueItem.TAG, "Audio playback error: " + what + ", " + extra);
+            AudioPlaybackQueueItem.this.mDone.open();
+            return true;
+        }
+    }
+
+    /* renamed from: android.speech.tts.AudioPlaybackQueueItem$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 implements MediaPlayer.OnCompletionListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.media.MediaPlayer.OnCompletionListener
+        public void onCompletion(MediaPlayer mp) {
+            AudioPlaybackQueueItem.this.mFinished = true;
+            AudioPlaybackQueueItem.this.mDone.open();
         }
     }
 
@@ -96,7 +127,6 @@ public class AudioPlaybackQueueItem extends PlaybackQueueItem {
         this.mPlayer.release();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.speech.tts.PlaybackQueueItem
     public void stop(int errorCode) {
         this.mDone.open();

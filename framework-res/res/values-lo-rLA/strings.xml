@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">ອຸປະກອນນີ້ບໍ່ຮອງຮັບ %sນີ້. ແຕະເພື່ອຕັ້ງໃນຮູບແບບທີ່ຮອງຮັບ.</string>
     <string name="ext_media_unsupported_notification_title">%s ທີ່ບໍ່ຮອງຮັບ</string>
     <string name="ext_storage_bad_removal_button">ປິດເປີດຄືນໃໝ່</string>
-    <string name="ext_storage_bad_removal_title">ປິດເປີດໂທລະສັບຂອງທ່ານຄືນໃໝ່</string>
+    <string name="ext_storage_bad_removal_title">ປິດເປີດແທັບເລັດຂອງທ່ານຄືນໃໝ່</string>
     <string name="extmedia_format_button_format">ຮູບ​ແບບ</string>
     <string name="extmedia_format_message_usbhost">ໄຟລ໌ທັງໝົດທີ່ຢູ່ໃນບ່ອນຈັດເກັບຂໍ້ມູນ USB ຂອງທ່ານຈະຖືກລຶບອອກໝົດ. ການກະທຳຈະບໍ່ສາມາດຍົກເລີກໄດ້!</string>
     <string name="extmedia_format_title_usbhost">ຟໍແມັດ ບ່ອນຈັດເກັບຂໍ້ມູນ USB?</string>
@@ -593,16 +593,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ສຽງກຳລັງຫຼິ້ນໃນອຸປະກອນສຽງບລູທູດຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້</string>
     <string name="multisound_sound_via_headphone">ສຽງ %s ກຳລັງຫຼິ້ນຜ່ານຊຸດຫູຟັງຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້.</string>
     <string name="multisound_sound_via_headphone_multiselection">ສຽງກຳລັງຫຼິ້ນຜ່ານຊຸດຫູຟັງຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້.</string>
-    <string name="multisound_sound_via_phone_speaker">ສຽງ %s ກຳລັງຫຼິ້ນຜ່ານລຳໂພງໂທລະສັບຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ສຽງກຳລັງຫຼິ້ນຜ່ານລຳໂພງໂທລະສັບຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້.</string>
+    <string name="multisound_sound_via_phone_speaker">ສຽງ %s ກຳລັງຫຼິ້ນຜ່ານລຳໂພງແທັບເລັດຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ສຽງກຳລັງຫຼິ້ນຜ່ານລຳໂພງແທັບເລັດຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້.</string>
     <string name="multisound_sound_via_usb_audio">ສຽງ %s ກຳລັງຫຼິ້ນຜ່ານອຸປະກອນສຽງ USB ຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ສຽງກຳລັງຫຼິ້ນຜ່ານອຸປະກອນສຽງ USB ຂອງທ່ານ. ແຕະທີ່ນີ້ເພື່ອປິດສິ່ງນີ້.</string>
     <string name="multisound_title">ສຽງແອັບທີ່ແຍກຕ່າງຫາກ</string>
     <string name="multisound_turn_off_multisound">ປິດ</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ບໍ່​ສາ​ມາດໃຊ້ງານ​ໃນ Samsung DeX ໄດ້. ລອງ​ໃຊ້​ງານ​ໃນ​ໂໝດ​ໂທ​ລະ​ສັບ.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ບໍ່​ສາ​ມາດ​ແລ່ນ​ໃນ Samsung DeX ໄດ້. ມັນ​ຖືກອ​ອກ​ແບບ​ມາ​ສຳ​ລັບ​ໜ້າ​ຈໍຫຼັກ​ຂອງ​ໂທ​ລະ​ສັບ.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ບາງເກມໃຊ້ໄດ້ໃນໜ້າຈໍສຳພັດເທົ່ານັ້ນ. ຖ້າການຄວບຄຸມເມົ້າໃຊ້ບໍ່ໄດ້ໃນ Samsung DeX, ລອງຫຼິ້ນໃນໂໝດໂທລະສັບແທນ.</string>
-    <string name="my_device">ໂທລະສັບນີ້</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ບໍ່ສາມາດເປີດໃຊ້ງານໃນ Samsung DeX ໄດ້. ລອງເປີດໃຊ້ງານໃນໂໝດແທັບເລັດ.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ບໍ່ສາມາດເປີດໃຊ້ງານໃນ Samsung DeX ໄດ້. ມັນຖືກອອກແບບມາສຳລັບໜ້າຈໍຫຼັກຂອງແທັບເລັດ.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ບາງເກມໃຊ້ໄດ້ໃນໜ້າຈໍສຳພັດເທົ່ານັ້ນ. ຖ້າການຄວບຄຸມເມົ້າໃຊ້ບໍ່ໄດ້ໃນ Samsung DeX, ລອງຫຼິ້ນໃນໂໝດແທັບເລັດແທນ.</string>
+    <string name="my_device">ແທັບເລັດນີ້</string>
     <string name="network_locked_sim_dialog_message_ais">ແຜ່ນ SIM ຂອງທ່ານໃຊ້ງານບໍ່ໄດ້ເຕັມທີ່ກັບໂທລະສັບນີ້ເພາະວ່າມັນບໍ່ປະຕິບັດຕາມຂໍ້ກຳນົດ ແລະເງື່ອນໄຂການສະໝັກຂອງທ່ານ. ຖ້າທ່ານມີຄຳຖາມໃດໆ ຫຼື ຕ້ອງການຂໍ້ມູນເພີ່ມເຕີມກ່ຽວກັບເລື່ອງນີ້, ກະລຸນາຕິດຕໍ່ສຳນັກງານບໍລິການລູກຄ້າຂອງຊຳຊຸງ ຫຼື ຮ້ານຄ້າທີ່ຂາຍຜະລິດຕະພັນເຫຼົ່ານີ້ໃຫ້ທ່ານ.</string>
     <string name="network_locked_sim_notification_text">ໄດ້ເອົາແຜ່ນ SIM ທີ່ໄດ້ລັອກເຄືອຂ່າຍໄວ້ໃສ່ເຂົ້າໄປ.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -793,7 +793,7 @@
     <string name="policydesc_allow_desktopsync">ປ້ອງກັນການໃຊ້ການຊິງຄ໌ເດັສທັອບ.</string>
     <string name="policydesc_allow_internetsharing">ປ້ອງກັນການໃຊ້ຮັອດສະປັອດມືຖື.</string>
     <string name="policydesc_allow_irda">ປ້ອງກັນການໃຊ້ IrDA.</string>
-    <string name="policydesc_allow_popimapemail">ປ້ອງກັນການໃຊ້ອີເມລ໌ POP ແລະ IMAP ໃນໂທລະສັບ.</string>
+    <string name="policydesc_allow_popimapemail">ປ້ອງກັນການໃຊ້ອີເມລ໌ POP ແລະ IMAP ໃນແທັບເລັດ.</string>
     <string name="policydesc_allow_storagecard">ປ້ອງກັນການໃຊ້ແຜ່ນ SD.</string>
     <string name="policydesc_allow_textmessaging">ປ້ອງກັນການໃຊ້ຂໍ້ຄວາມຕົວອັກສອນແລະມັລຕິມີເດຍ.</string>
     <string name="policydesc_allow_thirdParty">ແອພພລິເຄຊັນນີ້ສາມາດປ້ອງກັນແອພພລິເຄຊັນບຸກຄົນທີສາມບໍ່ໃຫ້ແລ່ນໄດ້.</string>
@@ -839,7 +839,7 @@
     <string name="pwd_change_enforced">ນະໂຍບາຍດ້ານຄວາມປອດໄພຮຽກຮ້ອງໃຫ້ທ່ານປ່ຽນລະຫັດ.</string>
     <string name="recording_fail">ບໍ່ສາມາດໃຊ້ໄມໃນ %1$s ໃນຂະນະທີ່ມັນກຳລັງຖືກໃຊ້ໃນ %2$s.</string>
     <string name="recording_popup">%s ກຳລັງໃຊ້ໄມໂຄຣໂຟນ.</string>
-    <string name="recording_popup_device">ໂທລະສັບ</string>
+    <string name="recording_popup_device">ແທັບເລັດ</string>
     <string name="recording_popup_with_bluetooth">%s ກຳລັງໃຊ້ໄມໂຄຣໂຟນບລູທູດ.</string>
     <string name="recording_popup_with_device">%1$s ກຳລັງໃຊ້ໄມໂຄຣໂຟນຂອງ %2$s.</string>
     <string name="redo">ເຮັດຄືນ</string>
@@ -904,12 +904,12 @@
     <string name="screencapture_restrict">ນະໂຍບາຍວ່າດ້ວຍຄວາມປອດໄພປ້ອງກັນການໃຊ້ການແຄັບເຈີ້ໜ້າຈໍ.</string>
     <string name="sd_card_unavailable_message">ທ່ານບໍ່ສາມາດໃຊ້ແຜ່ນ SD ໄດ້ ຍ້ອນວ່າມັນຖືກແຊກໃສ່ແລ້ວໃນຂະນະທີ່ໂປຣໄຟລ໌ຜູ້ໃຊ້ຄົນອື່ນຖືກໃຊ້ງານຢູ່.</string>
     <string name="sd_card_unavailable_title">ແຜ່ນ SD ບໍ່ມີຢູ່</string>
-    <string name="sdcard_bad_removal_message">ແຜ່ນ SD ຖືກເອົາອອກຢ່າງບໍ່ປອດໄພ. ເພື່ອປ້ອງກັນໂທລະສັບຂອງທ່ານຈາກການປິດເປີດຄືນໃໝ່ໂດຍບໍ່ຄາດຄິດ, ບັນທຶກຂໍ້ມູນທີ່ບໍ່ທັນໄດ້ບັນທຶກ ແລະ ປິດເປີດຄືນໃໝ່ດຽວນີ້.</string>
+    <string name="sdcard_bad_removal_message">ແຜ່ນ SD ຖືກເອົາອອກຢ່າງບໍ່ປອດໄພ. ເພື່ອປ້ອງກັນແທັບເລັດຂອງທ່ານຈາກການປິດເປີດຄືນໃໝ່ໂດຍບໍ່ຄາດຄິດ, ບັນທຶກຂໍ້ມູນທີ່ບໍ່ທັນໄດ້ບັນທຶກ ແລະ ປິດເປີດຄືນໃໝ່ດຽວນີ້.</string>
     <string name="sdcard_batch_decrypt_noti_content">ຖອດລະຫັດແຜ່ນ SD</string>
     <string name="sdcard_batch_decrypt_noti_title">ການຖອດລະຫັດແຜ່ນ SD</string>
     <string name="sdcard_batch_decrypt_popup_content">ແຜ່ນ SD ທີ່ເຂົ້າລະຫັດແລ້ວຕ້ອງຖືກຖອດລະຫັດກ່ອນຖືກນໍາໃຊ້. ການຖອດລະຫັດສາມາດໃຊ້ເວລາເປັນຊົ່ວໂມງ ຫຼືຫຼາຍກວ່ານັ້ນ. ເລີ່ມຕົ້ນດ້ວຍແບັດເຕີຣີທີ່ສາກແລ້ວ ແລະສຽບປລັກເຄື່ອງໄວ້ຈົນກວ່າການຖອດລະຫັດສໍາເລັດ. ການຕັດຂະບວນການຖອດລະຫັດອາດຈະເຮັດໃຫ້ບາງຂໍ້ມູນ ຫຼືຂໍ້ມູນທັງໝົດເສຍໄປ.</string>
     <string name="sdcard_decrypt_err_notification">ການຖອດລະຫັດແຜ່ນ SD ເກີດຂັດຂ້ອງ.</string>
-    <string name="sdcard_decrypt_error_otherdevice">ບາງໄຟລ໌ໃນແຜ່ນ SD ຂອງທ່ານຖືກໃສ່ລະຫັດໄວ້ໃນອຸປະກອນອື່ນ ແລະ ບໍ່ສາມາດໃຊ້ໃນໂທລະສັບນີ້ໄດ້.</string>
+    <string name="sdcard_decrypt_error_otherdevice">ບາງໄຟລ໌ໃນແຜ່ນ SD ຂອງທ່ານຖືກໃສ່ລະຫັດໄວ້ໃນອຸປະກອນອື່ນ ແລະ ບໍ່ສາມາດໃຊ້ໃນແທັບເລັດນີ້ໄດ້.</string>
     <string name="sdcard_decrypt_notification">ຖອດລະຫັດແຜ່ນ SD ແລ້ວ.</string>
     <string name="sdcard_decrypt_title_notification">ການຖອດລະຫັດແຜ່ນ SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">ກໍາລັງຖອດລະຫັດແຜ່ນ SD…</string>
@@ -1235,7 +1235,7 @@
     <string name="usb_abnormal_reset_title">ການເຊື່ອມຕໍ່ USB ບໍ່ສະຖຽນ</string>
     <string name="usb_abnormal_reset_toast">ການເຊື່ອມຕໍ່ USB ບໍ່ສະຖຽນລະພາບ. ຖອດສາຍອອກ ແລະ ສຽບມັນເຂົ້າອີກຄັ້ງ ຫຼື ລອງໃຊ້ສາຍອື່ນ.</string>
     <string name="usb_accessory_notification_title">ໄດ້ເຊື່ອມຕໍ່ກັບອຸປະກອນ USB</string>
-    <string name="usb_bad_removal_message">ເຄື່ອງເກັບຂໍ້ມູນ USB ຖືກເອົາອອກຢ່າງບໍ່ປອດໄພ. ເພື່ອປ້ອງກັນໂທລະສັບຂອງທ່ານຈາກການປິດເປີດຄືນໃໝ່ໂດຍບໍ່ຄາດຄິດ, ບັນທຶກຂໍ້ມູນທີ່ບໍ່ທັນໄດ້ບັນທຶກ ແລະ ປິດເປີດຄືນໃໝ່ດຽວນີ້.</string>
+    <string name="usb_bad_removal_message">ເຄື່ອງເກັບຂໍ້ມູນ USB ຖືກເອົາອອກຢ່າງບໍ່ປອດໄພ. ເພື່ອປ້ອງກັນແທັບເລັດຂອງທ່ານຈາກການປິດເປີດຄືນໃໝ່ໂດຍບໍ່ຄາດຄິດ, ບັນທຶກຂໍ້ມູນທີ່ບໍ່ທັນໄດ້ບັນທຶກ ແລະ ປິດເປີດຄືນໃໝ່ດຽວນີ້.</string>
     <string name="usb_blocked_by_emergency_mode">ບາງຟັງຄ໌ຊັນ USB ບໍ່ມີຢູ່ໃນໂໝດສຸກເສີນ.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">ບໍ່ສາມາດໃຊ້ຟັງຄ໌ຊັນທີ່ກ່ຽວຂ້ອງກັບອຸປະກອນ USB ທີ່ຖືກເຊື່ອມຕໍ່ ໃນຂະນະທີ່ໂໝດປະຢັດໄຟສູງສຸດເປີດໃຊ້ງານຢູ່.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ບາງຟັງຄ໌ຊັນ USB ອາດຖືກຈຳກັດ ໃນຂະນະທີ່ໂໝດປະຢັດໄຟທີ່ສຸດເປີດຢູ່.</string>
@@ -1244,13 +1244,13 @@
     <string name="usb_camera_connected_notification_title">ເຊື່ອມຕໍ່ອຸປະກອນມີເດຍແລ້ວ</string>
     <string name="usb_camera_disconnected_notification_title">ອຸປະກອນມີເດຍຢຸດເຊື່ອມຕໍ່ແລ້ວ</string>
     <string name="usb_cd_installer_notification_title">ອັບເດດຊອບແວ</string>
-    <string name="usb_charing_only_notification_title">ການສາກດ້ວຍ USB</string>
+    <string name="usb_charing_only_notification_title">ເຊື່ອມຕໍ່ແລ້ວ</string>
     <string name="usb_debugging_only_notification_title">ແກ້​ໄຂ​ບັນ​ຫາ​ເທົ່າ​ນັ້ນ</string>
-    <string name="usb_host_resource_exceed_message">ຕົວຄວບຄຸມ USB ໃນໂທລະສັບຂອງທ່ານບໍ່ມີແຫຼ່ງຂໍ້ມູນພຽງພໍເພື່ອເຊື່ອມຕໍ່ອຸປະກອນນີ້. ລອງຕັດເຊື່ອມຕໍ່ອຸປະກອນ ແລະ ເຊື່ອມຕໍ່ມັນໃໝ່ອີກ.</string>
+    <string name="usb_host_resource_exceed_message">ຕົວຄວບຄຸມ USB ໃນແທັບເລັດຂອງທ່ານບໍ່ມີແຫຼ່ງຂໍ້ມູນພຽງພໍເພື່ອເຊື່ອມຕໍ່ອຸປະກອນນີ້. ລອງຕັດເຊື່ອມຕໍ່ອຸປະກອນ ແລະ ເຊື່ອມຕໍ່ມັນໃໝ່ອີກ.</string>
     <string name="usb_host_resource_exceed_title">ແຫຼ່ງຕົວຄວບຄຸມ USB ບໍ່ພຽງພໍ</string>
-    <string name="usb_hub_depth_exceed_message">ໂທລະສັບຂອງທ່ານສາມາດຮອງຮັບການເຊື່ອມຕໍ່ຮັບ USB ໄດ້ເຖິງ 5 ຕົວເທົ່ານັ້ນໃນເວລາດຽວ.</string>
+    <string name="usb_hub_depth_exceed_message">ແທັບເລັດຂອງທ່ານສາມາດຮອງຮັບການເຊື່ອມຕໍ່ຮັບ USB ໄດ້ເຖິງ 5 ຕົວເທົ່ານັ້ນໃນເວລາດຽວ.</string>
     <string name="usb_hub_depth_exceed_title">ການເຊື່ອມຕໍ່ຮັບ USB ສູງສຸດ</string>
-    <string name="usb_hub_power_exceed_message">ໂທລະສັບຂອງທ່ານບໍ່ສາມາດສະໜອງໄຟພຽງພໍສຳລັບອຸປະກອນ USB ນີ້. ເຊື່ອມຕໍ່ອຸປະກອນກັບຮັບ USB ທີ່ມີໄຟໃນຕົວ ກ່ອນເຊື່ອມຕໍ່ມັນກັບໂທລະສັບຂອງທ່ານ.</string>
+    <string name="usb_hub_power_exceed_message">ແທັບເລັດຂອງທ່ານບໍ່ສາມາດສະໜອງໄຟພຽງພໍສຳລັບອຸປະກອນ USB ນີ້. ເຊື່ອມຕໍ່ອຸປະກອນກັບຮັບ USB ທີ່ມີໄຟໃນຕົວ ກ່ອນເຊື່ອມຕໍ່ມັນກັບແທັບເລັດຂອງທ່ານ.</string>
     <string name="usb_increase_battery_usage">ການເຊື່ອມຕໍ່ USB ອາດເພີ່ມການນຳໃຊ້ແບັດເຕີຣີຂຶ້ນ.</string>
     <string name="usb_mass_storage_restrict">ນະໂຍບາຍວ່າດ້ວຍຄວາມປອດໄພປ້ອງກັນການໃຊ້ບ່ອນເກັບຂໍ້ມູນຂະໜາດໃຫຍ່ຂອງ USB.</string>
     <string name="usb_midi_notification_title">USB ສຳລັບ MIDI</string>
@@ -1276,8 +1276,8 @@
     <string name="usb_storage_stop_title">ບ່ອນເກັບຂໍ້ມູນ USB ໃຊ້ງານຢູ່.</string>
     <string name="usb_storage_title">USB ໄດ້ເຊື່ອມຕໍ່ແລ້ວ.</string>
     <string name="usb_type_c_supply_power_notification_title">ການສາກອຸປະກອນທີ່ຖືກເຊື່ອມຕໍ່ດ້ວຍ USB</string>
-    <string name="usb_unblock_by_screen_unlock">ປົດລັອກໂທລະສັບຂອງທ່ານເພື່ອໃຊ້ອຸປະກອນ USB ທີ່ເຊື່ອມຕໍ່.</string>
-    <string name="usb_unsupport_accessory_message">ອຸປະກອນ USB ນີ້ ບໍ່ຖືກຮອງຮັບໂດຍໂທລະສັບຂອງທ່ານ.</string>
+    <string name="usb_unblock_by_screen_unlock">ປົດລັອກແທັບເລັດຂອງທ່ານເພື່ອໃຊ້ອຸປະກອນ USB ທີ່ເຊື່ອມຕໍ່.</string>
+    <string name="usb_unsupport_accessory_message">ອຸປະກອນ USB ນີ້ ບໍ່ຖືກຮອງຮັບໂດຍແທັບເລັດຂອງທ່ານ.</string>
     <string name="usb_unsupport_accessory_title">ອຸປະກອນ USB ບໍ່ຖືກຮອງຮັບ</string>
     <string name="usb_unsupported_device">ອຸປະກອນ USB ທີ່ຖືກເຊື່ອມຕໍ່ບໍ່ຖືກຮອງຮັບ.</string>
     <string name="usb_unsupported_device_title">ອຸປະກອນບໍ່ຖືກຮອງຮັບ</string>
@@ -1295,19 +1295,19 @@
     <string name="usb_water_dialg_method_2_desc_2">ທ່ານສາມາດເພີ່ມຄວາມໄວໃນການອົບແຫ້ງໂດຍການຫັນພັດລົມ ຫຼື ເຄື່ອງເປົ່າຜົມ (ອາກາດເຢັນເທົ່ານັ້ນ) ໄປຍັງຜອດ.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ພວກເຮົາກວດພົບຄວາມຊຸ່ມ ຫຼື ວັດຖຸແປກປອມໃນຜອດສາກ/USB ຂອງທ່ານ.
 
-ກວດເບິ່ງຜອດສາກ/USB ຂອງທ່ານສຳລັບວັດຖຸແປກປອມໃດໜຶ່ງ ເຊັ່ນ ຝຸ່ນ ຫຼື ເສດຂີ້ເຫຍື້ອ. ເພື່ອປ້ອງກັນບໍ່ໃຫ້ໂທລະສັບຂອງທ່ານເສຍຫາຍ, ຢ່າສຽບສິ່ງໃດໜຶ່ງເຂົ້າໄປຈົນກວ່າຜອດສາກຈະສະອາດ, ຄວາມຊຸ່ມໝົດໄປ.
+ກວດເບິ່ງຜອດສາກ/USB ຂອງທ່ານສຳລັບວັດຖຸແປກປອມໃດໜຶ່ງ ເຊັ່ນ ຝຸ່ນ ຫຼື ເສດຂີ້ເຫຍື້ອ. ເພື່ອປ້ອງກັນບໍ່ໃຫ້ແທັບເລັດຂອງທ່ານເສຍຫາຍ, ຢ່າສຽບສິ່ງໃດໜຶ່ງເຂົ້າໄປຈົນກວ່າຜອດສາກຈະສະອາດ, ຄວາມຊຸ່ມໝົດໄປ.
 
 ເພື່ອເຮັດໃຫ້ຜອດແຫ້ງ, ສັ່ນຄວາມຊຸ່ມໃດໜຶ່ງອອກ, ຈາກນັ້ນລໍຖ້າໃຫ້ມັນແຫ້ງ, ເຊິ່ງອາດຈະໃຊ້ເວລາຫຼາຍຊົ່ວໂມງ. ທ່ານສາມາດເພີ່ມຄວາມໄວການເຮັດໃຫ້ແຫ້ງໂດຍການຫັນພັດລົມ ຫຼື ຈັກເປົ່າ (ລົມເຢັນເທົ່ານັ້ນ) ໃສ່ທີ່ຜອດ."</string>
     <string name="usb_water_dialg_positive_button">ຕົກລົງ</string>
     <string name="usb_water_dialg_support_wireless_charging">"ພວກເຮົາກວດພົບຄວາມຊຸ່ມ ຫຼື ວັດຖຸແປກປອມໃນຜອດສາກ/USB ຂອງທ່ານ.
 
-ກວດເບິ່ງຜອດສາກ/USB ຂອງທ່ານສຳລັບວັດຖຸແປກປອມໃດໜຶ່ງ ເຊັ່ນ ຝຸ່ນ ຫຼື ເສດຂີ້ເຫຍື້ອ. ເພື່ອປ້ອງກັນບໍ່ໃຫ້ໂທລະສັບຂອງທ່ານເສຍຫາຍ, ຢ່າສຽບສິ່ງໃດໜຶ່ງເຂົ້າໄປຈົນກວ່າຜອດສາກຈະສະອາດ, ຄວາມຊຸ່ມໝົດໄປ.
+ກວດເບິ່ງຜອດສາກ/USB ຂອງທ່ານສຳລັບວັດຖຸແປກປອມໃດໜຶ່ງ ເຊັ່ນ ຝຸ່ນ ຫຼື ເສດຂີ້ເຫຍື້ອ. ເພື່ອປ້ອງກັນບໍ່ໃຫ້ແທັບເລັດຂອງທ່ານເສຍຫາຍ, ຢ່າສຽບສິ່ງໃດໜຶ່ງເຂົ້າໄປຈົນກວ່າຜອດສາກຈະສະອາດ, ຄວາມຊຸ່ມໝົດໄປ.
 
 ເພື່ອເຮັດໃຫ້ຜອດແຫ້ງ, ສັ່ນຄວາມຊຸ່ມໃດໜຶ່ງອອກ, ຈາກນັ້ນລໍຖ້າໃຫ້ມັນແຫ້ງ, ເຊິ່ງອາດຈະໃຊ້ເວລາຫຼາຍຊົ່ວໂມງ. ທ່ານສາມາດເພີ່ມຄວາມໄວການເຮັດໃຫ້ແຫ້ງໂດຍການຫັນພັດລົມ ຫຼື ຈັກເປົ່າ (ລົມເຢັນເທົ່ານັ້ນ) ໃສ່ທີ່ຜອດ.
 
-ໃນລະຫວ່າງນີ້, ທ່ານສາມາດສາກໂທລະສັບຂອງທ່ານແບບໄວເລສໄດ້."</string>
+ໃນລະຫວ່າງນີ້, ທ່ານສາມາດສາກແທັບເລັດຂອງທ່ານແບບໄວເລສໄດ້."</string>
     <string name="usb_water_notification_content">ມີຄວາມຊຸ່ມ ຫຼື ວັດຖຸແປກປອມໃນຜອດສາກ/USB ຂອງທ່ານ. ກວດເບິ່ງກ່ອນສາກ.</string>
-    <string name="usb_water_notification_message">ໄດ້ກວດພົບຄວາມຊຸ່ມໃນພອດເຄື່ອງສາກ/USB ຂອງທ່ານ. ເບິ່ງໃຫ້ແນ່ໃຈວ່າມັນແຫ້ງ ກ່ອນທີ່ຈະສາກໂທລະສັບຂອງທ່ານ. ມັນອາດຈະໃຊ້ເວລາພໍສົມຄວນເພື່ອຈະເຮັດໃຫ້ແຫ້ງຮ້ອຍເປີເຊັນ.</string>
+    <string name="usb_water_notification_message">ໄດ້ກວດພົບຄວາມຊຸ່ມໃນພອດເຄື່ອງສາກ/USB ຂອງທ່ານ. ເບິ່ງໃຫ້ແນ່ໃຈວ່າມັນແຫ້ງ ກ່ອນທີ່ຈະສາກແທັບເລັດຂອງທ່ານ. ມັນອາດຈະໃຊ້ເວລາພໍສົມຄວນເພື່ອຈະເຮັດໃຫ້ແຫ້ງຮ້ອຍເປີເຊັນ.</string>
     <string name="usb_water_notification_message_button">ລາຍລະອຽດ</string>
     <string name="usb_water_notification_title">ກວດເບິ່ງເຄື່ອງສາກ/ພອດ USB</string>
     <string name="usbhostStorage_restrict">ນະໂຍບາຍວ່າດ້ວຍຄວາມປອດໄພປ້ອງກັນການໃຊ້ບ່ອນເກັບຂໍ້ມູນໂຮສ USB.</string>

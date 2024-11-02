@@ -121,7 +121,6 @@ public abstract class WallpaperService extends Service {
 
     public abstract Engine onCreateEngine();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static final class WallpaperCommand {
         String action;
@@ -231,6 +230,104 @@ public abstract class WallpaperService extends Service {
         float mZoom;
 
         /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.service.wallpaper.WallpaperService$Engine$1 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass1 extends Handler {
+            AnonymousClass1(Looper looper, Handler.Callback callback, boolean async) {
+                super(looper, callback, async);
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        boolean isFolded = ((Boolean) msg.obj).booleanValue();
+                        Engine.this.switchDisplay(isFolded);
+                        return;
+                    case 2:
+                        int which = ((Integer) msg.obj).intValue();
+                        Engine.this.refreshCachedWallpaper(which);
+                        return;
+                    case 3:
+                        Engine.this.resetDisplayOffset();
+                        return;
+                    default:
+                        return;
+                }
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.service.wallpaper.WallpaperService$Engine$2 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass2 extends BaseSurfaceHolder {
+            AnonymousClass2() {
+                this.mRequestedFormat = 2;
+            }
+
+            @Override // com.android.internal.view.BaseSurfaceHolder
+            public boolean onAllowLockCanvas() {
+                return Engine.this.mDrawingAllowed;
+            }
+
+            @Override // com.android.internal.view.BaseSurfaceHolder
+            public void onRelayoutContainer() {
+                Message msg = Engine.this.mCaller.obtainMessage(10000);
+                Engine.this.mCaller.sendMessage(msg);
+            }
+
+            @Override // com.android.internal.view.BaseSurfaceHolder
+            public void onUpdateSurface() {
+                Message msg = Engine.this.mCaller.obtainMessage(10000);
+                Engine.this.mCaller.sendMessage(msg);
+            }
+
+            @Override // android.view.SurfaceHolder
+            public boolean isCreating() {
+                return Engine.this.mIsCreating;
+            }
+
+            @Override // com.android.internal.view.BaseSurfaceHolder, android.view.SurfaceHolder
+            public void setFixedSize(int width, int height) {
+                if (!Engine.this.mFixedSizeAllowed && !Engine.this.mIWallpaperEngine.mIsPreview) {
+                    throw new UnsupportedOperationException("Wallpapers currently only support sizing from layout");
+                }
+                super.setFixedSize(width, height);
+            }
+
+            @Override // android.view.SurfaceHolder
+            public void setKeepScreenOn(boolean screenOn) {
+                throw new UnsupportedOperationException("Wallpapers do not support keep screen on");
+            }
+
+            private void prepareToDraw() {
+                if (Engine.this.mDisplayState == 3 || Engine.this.mDisplayState == 4) {
+                    try {
+                        Engine.this.mSession.pokeDrawLock(Engine.this.mWindow);
+                    } catch (RemoteException e) {
+                    }
+                }
+            }
+
+            @Override // com.android.internal.view.BaseSurfaceHolder, android.view.SurfaceHolder
+            public Canvas lockCanvas() {
+                prepareToDraw();
+                return super.lockCanvas();
+            }
+
+            @Override // com.android.internal.view.BaseSurfaceHolder, android.view.SurfaceHolder
+            public Canvas lockCanvas(Rect dirty) {
+                prepareToDraw();
+                return super.lockCanvas(dirty);
+            }
+
+            @Override // com.android.internal.view.BaseSurfaceHolder, android.view.SurfaceHolder
+            public Canvas lockHardwareCanvas() {
+                prepareToDraw();
+                return super.lockHardwareCanvas();
+            }
+        }
+
         /* loaded from: classes3.dex */
         public final class WallpaperInputEventReceiver extends InputEventReceiver {
             public WallpaperInputEventReceiver(InputChannel inputChannel, Looper looper) {
@@ -248,6 +345,105 @@ public abstract class WallpaperService extends Service {
                     }
                 } finally {
                     finishInputEvent(event, false);
+                }
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.service.wallpaper.WallpaperService$Engine$3 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass3 extends BaseIWindow {
+            AnonymousClass3() {
+            }
+
+            @Override // com.android.internal.view.BaseIWindow, android.view.IWindow
+            public void resized(ClientWindowFrames clientWindowFrames, boolean z, MergedConfiguration mergedConfiguration, InsetsState insetsState, boolean z2, boolean z3, int i, int i2, boolean z4) {
+                Log.i(WallpaperService.TAG, "resized: " + Engine.this.getWallpaperFlagsString() + ", reportDraw=" + z + ", forceLayout=" + z2 + ", displayId=" + i);
+                Message obtainMessageIO = Engine.this.mCaller.obtainMessageIO(10030, z ? 1 : 0, mergedConfiguration);
+                Engine.this.mIWallpaperEngine.mPendingResizeCount.incrementAndGet();
+                Engine.this.mCaller.sendMessage(obtainMessageIO);
+            }
+
+            @Override // com.android.internal.view.BaseIWindow, android.view.IWindow
+            public void moved(int newX, int newY) {
+                Message msg = Engine.this.mCaller.obtainMessageII(10035, newX, newY);
+                Engine.this.mCaller.sendMessage(msg);
+            }
+
+            @Override // com.android.internal.view.BaseIWindow, android.view.IWindow
+            public void dispatchAppVisibility(boolean z) {
+                Log.i(WallpaperService.TAG, "dispatchAppVisibility: " + Engine.this.getWallpaperFlagsString() + ", visible=" + z);
+                if (!Engine.this.mIWallpaperEngine.mIsPreview) {
+                    Engine.this.mCaller.sendMessage(Engine.this.mCaller.obtainMessageI(10010, z ? 1 : 0));
+                }
+            }
+
+            @Override // com.android.internal.view.BaseIWindow, android.view.IWindow
+            public void dispatchWallpaperOffsets(float x, float y, float xStep, float yStep, float zoom, boolean sync) {
+                synchronized (Engine.this.mLock) {
+                    Engine.this.mPendingXOffset = x;
+                    Engine.this.mPendingYOffset = y;
+                    Engine.this.mPendingXOffsetStep = xStep;
+                    Engine.this.mPendingYOffsetStep = yStep;
+                    if (sync) {
+                        Engine.this.mPendingSync = true;
+                    }
+                    if (!Engine.this.mOffsetMessageEnqueued) {
+                        Engine.this.mOffsetMessageEnqueued = true;
+                        Message msg = Engine.this.mCaller.obtainMessage(10020);
+                        Engine.this.mCaller.sendMessage(msg);
+                    }
+                    Message msg2 = Engine.this.mCaller.obtainMessageI(10100, Float.floatToIntBits(zoom));
+                    Engine.this.mCaller.sendMessage(msg2);
+                }
+            }
+
+            @Override // com.android.internal.view.BaseIWindow, android.view.IWindow
+            public void dispatchWallpaperCommand(String action, int x, int y, int z, Bundle extras, boolean sync) {
+                synchronized (Engine.this.mLock) {
+                    if (Rune.SUPPORT_SUB_DISPLAY_MODE) {
+                        try {
+                            if ("switch_display".equals(action)) {
+                                boolean isFolded = extras.getBoolean("isFolded");
+                                Log.i(WallpaperService.TAG, " dispatchWallpaperCommand: isFolded " + isFolded);
+                                if (Engine.this.mDisplayHandler != null) {
+                                    Engine.this.mDisplayHandler.removeMessages(1);
+                                    Message msg = Engine.this.mDisplayHandler.obtainMessage(1);
+                                    msg.obj = Boolean.valueOf(isFolded);
+                                    Engine.this.mDisplayHandler.sendMessageAtFrontOfQueue(msg);
+                                }
+                                return;
+                            }
+                            if ("refresh_cache".equals(action)) {
+                                int which = extras.getInt("which");
+                                Log.i(WallpaperService.TAG, "dispatchWallpaperCommand: refresh cache which = " + which);
+                                if (Engine.this.mDisplayHandler != null) {
+                                    Engine.this.mDisplayHandler.removeMessages(2);
+                                    Message msg2 = Engine.this.mDisplayHandler.obtainMessage(2);
+                                    msg2.obj = Integer.valueOf(which);
+                                    Engine.this.mDisplayHandler.sendMessage(msg2);
+                                }
+                                return;
+                            }
+                            if ("reset_offset".equals(action)) {
+                                Engine.this.mDisplayHandler.removeMessages(3);
+                                Engine.this.mDisplayHandler.sendMessageAtFrontOfQueue(Engine.this.mDisplayHandler.obtainMessage(3));
+                            }
+                        } catch (NullPointerException e) {
+                            Log.d(WallpaperService.TAG, "dispatchWallpaperCommand: " + e.getMessage());
+                            return;
+                        }
+                    }
+                    WallpaperCommand cmd = new WallpaperCommand();
+                    cmd.action = action;
+                    cmd.x = x;
+                    cmd.y = y;
+                    cmd.z = z;
+                    cmd.extras = extras;
+                    cmd.sync = sync;
+                    Message msg3 = Engine.this.mCaller.obtainMessage(10025);
+                    msg3.obj = cmd;
+                    Engine.this.mCaller.sendMessage(msg3);
                 }
             }
         }
@@ -306,6 +502,10 @@ public abstract class WallpaperService extends Service {
             this.mSurfaceControl = new SurfaceControl();
             this.mScreenshotSize = new Point();
             this.mDisplayHandler = new Handler(Looper.myLooper(), null, true) { // from class: android.service.wallpaper.WallpaperService.Engine.1
+                AnonymousClass1(Looper looper, Handler.Callback callback, boolean async) {
+                    super(looper, callback, async);
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
@@ -326,7 +526,7 @@ public abstract class WallpaperService extends Service {
                 }
             };
             this.mSurfaceHolder = new BaseSurfaceHolder() { // from class: android.service.wallpaper.WallpaperService.Engine.2
-                {
+                AnonymousClass2() {
                     this.mRequestedFormat = 2;
                 }
 
@@ -393,6 +593,9 @@ public abstract class WallpaperService extends Service {
                 }
             };
             this.mWindow = new BaseIWindow() { // from class: android.service.wallpaper.WallpaperService.Engine.3
+                AnonymousClass3() {
+                }
+
                 @Override // com.android.internal.view.BaseIWindow, android.view.IWindow
                 public void resized(ClientWindowFrames clientWindowFrames, boolean z, MergedConfiguration mergedConfiguration, InsetsState insetsState, boolean z2, boolean z3, int i, int i2, boolean z4) {
                     Log.i(WallpaperService.TAG, "resized: " + Engine.this.getWallpaperFlagsString() + ", reportDraw=" + z + ", forceLayout=" + z2 + ", displayId=" + i);
@@ -485,6 +688,9 @@ public abstract class WallpaperService extends Service {
                 }
             };
             this.mDisplayListener = new DisplayManager.DisplayListener() { // from class: android.service.wallpaper.WallpaperService.Engine.5
+                AnonymousClass5() {
+                }
+
                 @Override // android.hardware.display.DisplayManager.DisplayListener
                 public void onDisplayChanged(int displayId) {
                     if (Engine.this.mDisplay.getDisplayId() == displayId) {
@@ -750,7 +956,6 @@ public abstract class WallpaperService extends Service {
             setPrimaryWallpaperColors(primaryColors);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setPrimaryWallpaperColors(WallpaperColors colors) {
             if (colors == null) {
                 return;
@@ -784,7 +989,6 @@ public abstract class WallpaperService extends Service {
             Log.w(WallpaperService.TAG, "setSurfaceAlpha mBbqSurfaceControl is null or invalid");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void updateWallpaperDimming(float dimAmount) {
             if (dimAmount == this.mWallpaperDimAmount) {
                 return;
@@ -805,7 +1009,7 @@ public abstract class WallpaperService extends Service {
             }
         }
 
-        /* renamed from: android.service.wallpaper.WallpaperService$Engine$4, reason: invalid class name */
+        /* renamed from: android.service.wallpaper.WallpaperService$Engine$4 */
         /* loaded from: classes3.dex */
         class AnonymousClass4 extends AnimatorListenerAdapter {
             AnonymousClass4() {
@@ -938,7 +1142,6 @@ public abstract class WallpaperService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void dispatchPointer(MotionEvent event) {
             if (event.isTouchEvent()) {
                 synchronized (this.mLock) {
@@ -997,7 +1200,6 @@ public abstract class WallpaperService extends Service {
             return (prevWidth == newWidth && prevHeight == newHeight) ? false : true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void resizePreview(Rect position) {
             if (position != null) {
                 this.mSurfaceHolder.setFixedSize(position.width(), position.height());
@@ -1210,7 +1412,6 @@ public abstract class WallpaperService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$processLocalColors$1(long now, long timeToWait) {
             this.mLastProcessLocalColorsTimestamp = now + timeToWait;
             this.mProcessLocalColorsPending.set(false);
@@ -1359,7 +1560,6 @@ public abstract class WallpaperService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$updatePage$2(int pixelCopyCount, EngineWindowPage currentPage, Set areas, int pageIndx, int numPages, float wallpaperDimAmount, Bitmap finalScreenShot, long current, int res) {
             Trace.endAsyncSection("WallpaperService#pixelCopy", pixelCopyCount);
             if (res != 0) {
@@ -1418,7 +1618,6 @@ public abstract class WallpaperService extends Service {
             Trace.endSection();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$updatePageColors$3(RectF area, WallpaperColors color) {
             try {
                 this.mConnection.onLocalWallpaperColorsChanged(area, color, this.mDisplayContext.getDisplayId());
@@ -1487,7 +1686,6 @@ public abstract class WallpaperService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$addLocalColorsAreas$4(List regions) {
             synchronized (this.mLock) {
                 this.mLocalColorsToAdd.addAll(regions);
@@ -1507,7 +1705,6 @@ public abstract class WallpaperService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$removeLocalColorsAreas$5(List regions) {
             synchronized (this.mLock) {
                 float step = this.mPendingXOffsetStep;
@@ -1738,6 +1935,30 @@ public abstract class WallpaperService extends Service {
             return false;
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.service.wallpaper.WallpaperService$Engine$5 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass5 implements DisplayManager.DisplayListener {
+            AnonymousClass5() {
+            }
+
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayChanged(int displayId) {
+                if (Engine.this.mDisplay.getDisplayId() == displayId) {
+                    boolean forceReport = WallpaperService.this.mIsWearOs && Engine.this.mDisplay.getState() != 4;
+                    Engine.this.reportVisibility(forceReport);
+                }
+            }
+
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayRemoved(int displayId) {
+            }
+
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayAdded(int displayId) {
+            }
+        }
+
         private Surface getOrCreateBLASTSurface(int width, int height, int format) {
             BLASTBufferQueue bLASTBufferQueue = this.mBlastBufferQueue;
             if (bLASTBufferQueue == null) {
@@ -1792,7 +2013,6 @@ public abstract class WallpaperService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public String getWallpaperFlagsString() {
             int which = getWallpaperFlags();
             if (isPreview()) {
@@ -1815,7 +2035,6 @@ public abstract class WallpaperService extends Service {
         return super.getMainLooper();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isValid(RectF area) {
         return area != null && area.bottom > area.top && area.left < area.right && LOCAL_COLOR_BOUNDS.contains(area);
     }
@@ -1824,7 +2043,6 @@ public abstract class WallpaperService extends Service {
         return number >= 0.0f && number <= 1.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public class IWallpaperEngineWrapper extends IWallpaperEngine.Stub implements HandlerCaller.Callback {
         private final HandlerCaller mCaller;
@@ -2289,14 +2507,12 @@ public abstract class WallpaperService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isAodTransitionRequired() {
         boolean isAodEnabled = Settings.System.getInt(getContentResolver(), "aod_show_state", 0) != 0;
         boolean isAodShowLockWallpaper = Settings.System.getInt(getContentResolver(), Settings.System.AOD_SHOW_LOCKSCREEN_WALLPAPER, 1) != 0;
         return isAodEnabled && isAodShowLockWallpaper;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(FileDescriptor fd, PrintWriter out, String[] args) {
         out.print("State of wallpaper ");

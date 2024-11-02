@@ -347,8 +347,9 @@ public interface ISession extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ISession {
+        public static class Proxy implements ISession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

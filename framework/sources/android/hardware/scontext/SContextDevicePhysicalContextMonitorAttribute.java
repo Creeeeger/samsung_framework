@@ -12,7 +12,6 @@ public class SContextDevicePhysicalContextMonitorAttribute extends SContextAttri
     private static int DEVICE_PHYSICAL_CONTEXT_MONITOR_MODE = 2;
     private static int DEVICE_PHYSICAL_CONTEXT_MONITOR_DATA = 1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextDevicePhysicalContextMonitorAttribute() {
         this.mMode = DEVICE_PHYSICAL_CONTEXT_MONITOR_MODE;
         this.mData = DEVICE_PHYSICAL_CONTEXT_MONITOR_DATA;

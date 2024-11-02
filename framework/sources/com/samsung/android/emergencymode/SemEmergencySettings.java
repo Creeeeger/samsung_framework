@@ -32,8 +32,14 @@ public class SemEmergencySettings {
         resolver.insert(SemEmergencyConstants.URI_PREFSETTINGS, values);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x006a, code lost:            return r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x0067, code lost:            if (r1 == null) goto L19;     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x006a, code lost:
+    
+        return r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x0067, code lost:
+    
+        if (r1 == null) goto L48;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -156,11 +162,26 @@ public class SemEmergencySettings {
         return getEmergencyNumber(context, resolver, type);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x003a, code lost:            if (r11 != 1) goto L16;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x012c, code lost:            if ("China".equalsIgnoreCase(r0) != false) goto L57;     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:?, code lost:            return "119";     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:?, code lost:            return "911";     */
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x00f4, code lost:            if ("China".equalsIgnoreCase(r0) != false) goto L57;     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x003a, code lost:
+    
+        if (r11 != 1) goto L102;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x012c, code lost:
+    
+        if ("China".equalsIgnoreCase(r0) != false) goto L143;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:?, code lost:
+    
+        return "119";
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:?, code lost:
+    
+        return "911";
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x00f4, code lost:
+    
+        if ("China".equalsIgnoreCase(r0) != false) goto L143;
+     */
     /* JADX WARN: Removed duplicated region for block: B:26:0x011c  */
     /* JADX WARN: Removed duplicated region for block: B:28:0x0121  */
     /* JADX WARN: Removed duplicated region for block: B:35:? A[RETURN, SYNTHETIC] */

@@ -28,7 +28,6 @@ class Instance {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Instance createInstance(int sequenceType, int orientationType, Gesture gesture, String label) {
         if (sequenceType == 2) {
             float[] pts = temporalSampler(orientationType, gesture);

@@ -27,7 +27,6 @@ public class PokeDrawLockController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestToAllowPokeDrawLock() {
         if (this.mAllowedPokeDrawLockCounts > 0) {
             this.mRequestedToAllowPokeDrawLock = true;

@@ -128,7 +128,6 @@ public class LocalImageResolver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$resolveImage$1(int maxWidth, int maxHeight, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source unused) {
         if (maxWidth <= 0 || maxHeight <= 0) {
             return;
@@ -156,7 +155,6 @@ public class LocalImageResolver {
         return Math.max(1, k);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void onHeaderDecoded(ImageDecoder decoder, ImageDecoder.ImageInfo info, int maxWidth, int maxHeight) {
         double ratio;
         Size size = info.getSize();

@@ -129,7 +129,6 @@ public interface IZeroTrustListener extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg1, int i) {
             String k = data.readString();
             String v = data.readString();
@@ -189,7 +188,6 @@ public interface IZeroTrustListener extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$onEventGeneralized$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);

@@ -248,6 +248,10 @@ public abstract class ContentResolver implements ContentInterface {
     public static ContentResolver wrap(ContentInterface wrapped) {
         Objects.requireNonNull(wrapped);
         return new ContentResolver(null, wrapped) { // from class: android.content.ContentResolver.1
+            AnonymousClass1(Context context, ContentInterface wrapped2) {
+                super(context, wrapped2);
+            }
+
             @Override // android.content.ContentResolver
             public void unstableProviderDied(IContentProvider icp) {
                 throw new UnsupportedOperationException();
@@ -273,6 +277,39 @@ public abstract class ContentResolver implements ContentInterface {
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    /* renamed from: android.content.ContentResolver$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends ContentResolver {
+        AnonymousClass1(Context context, ContentInterface wrapped2) {
+            super(context, wrapped2);
+        }
+
+        @Override // android.content.ContentResolver
+        public void unstableProviderDied(IContentProvider icp) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // android.content.ContentResolver
+        public boolean releaseUnstableProvider(IContentProvider icp) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // android.content.ContentResolver
+        public boolean releaseProvider(IContentProvider icp) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // android.content.ContentResolver
+        protected IContentProvider acquireUnstableProvider(Context c, String name) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // android.content.ContentResolver
+        protected IContentProvider acquireProvider(Context c, String name) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public static ContentResolver wrap(ContentProvider wrapped) {
@@ -364,12 +401,15 @@ public abstract class ContentResolver implements ContentInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static abstract class ResultListener<T> implements RemoteCallback.OnResultListener {
         public boolean done;
         public RuntimeException exception;
         public T result;
+
+        /* synthetic */ ResultListener(ResultListenerIA resultListenerIA) {
+            this();
+        }
 
         protected abstract T getResultFromBundle(Bundle bundle);
 
@@ -407,29 +447,32 @@ public abstract class ContentResolver implements ContentInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class StringResultListener extends ResultListener<String> {
+        /* synthetic */ StringResultListener(StringResultListenerIA stringResultListenerIA) {
+            this();
+        }
+
         private StringResultListener() {
             super();
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.content.ContentResolver.ResultListener
         public String getResultFromBundle(Bundle result) {
             return result.getString("result");
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class UriResultListener extends ResultListener<Uri> {
+        /* synthetic */ UriResultListener(UriResultListenerIA uriResultListenerIA) {
+            this();
+        }
+
         private UriResultListener() {
             super();
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.content.ContentResolver.ResultListener
         public Uri getResultFromBundle(Bundle result) {
             return (Uri) result.getParcelable("result", Uri.class);
@@ -1816,12 +1859,15 @@ public abstract class ContentResolver implements ContentInterface {
         }
     }
 
-    public static Object addStatusChangeListener(int mask, final SyncStatusObserver callback) {
+    public static Object addStatusChangeListener(int mask, SyncStatusObserver callback) {
         if (callback == null) {
             throw new IllegalArgumentException("you passed in a null callback");
         }
         try {
             ISyncStatusObserver.Stub observer = new ISyncStatusObserver.Stub() { // from class: android.content.ContentResolver.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.content.ISyncStatusObserver
                 public void onStatusChanged(int which) throws RemoteException {
                     SyncStatusObserver.this.onStatusChanged(which);
@@ -1831,6 +1877,18 @@ public abstract class ContentResolver implements ContentInterface {
             return observer;
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /* renamed from: android.content.ContentResolver$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends ISyncStatusObserver.Stub {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.ISyncStatusObserver
+        public void onStatusChanged(int which) throws RemoteException {
+            SyncStatusObserver.this.onStatusChanged(which);
         }
     }
 
@@ -1885,7 +1943,6 @@ public abstract class ContentResolver implements ContentInterface {
     private void maybeLogUpdateToEventLog(long durationMillis, Uri uri, String operation, String selection) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class CursorWrapperInner extends CrossProcessCursorWrapper {
         private final CloseGuard mCloseGuard;
@@ -1923,7 +1980,6 @@ public abstract class ContentResolver implements ContentInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class ParcelFileDescriptorInner extends ParcelFileDescriptor {
         private final IContentProvider mContentProvider;
@@ -2094,7 +2150,6 @@ public abstract class ContentResolver implements ContentInterface {
         return bitmap;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ AssetFileDescriptor lambda$loadThumbnail$0(ContentInterface content, Uri uri, Bundle opts, CancellationSignal signal, Int64Ref orientation) throws Exception {
         AssetFileDescriptor afd = content.openTypedAssetFile(uri, ContentType.IMAGE_UNSPECIFIED, opts, signal);
         Bundle extras = afd.getExtras();
@@ -2102,7 +2157,6 @@ public abstract class ContentResolver implements ContentInterface {
         return afd;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$loadThumbnail$1(int allocator, CancellationSignal signal, Size size, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
         decoder.setAllocator(allocator);
         if (signal != null) {

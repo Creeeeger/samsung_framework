@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class EnhancedAttestationResult implements Parcelable {
     public static final Parcelable.Creator<EnhancedAttestationResult> CREATOR = new Parcelable.Creator<EnhancedAttestationResult>() { // from class: com.samsung.android.knox.tima.attestation.EnhancedAttestationResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EnhancedAttestationResult createFromParcel(Parcel source) {
             return new EnhancedAttestationResult(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnhancedAttestationResult[] newArray(int size) {
             return new EnhancedAttestationResult[size];
@@ -47,11 +48,32 @@ public class EnhancedAttestationResult implements Parcelable {
     private int errorCode;
     private String reason;
 
+    /* synthetic */ EnhancedAttestationResult(Parcel parcel, EnhancedAttestationResultIA enhancedAttestationResultIA) {
+        this(parcel);
+    }
+
     public EnhancedAttestationResult() {
     }
 
     private EnhancedAttestationResult(Parcel in) {
         readFromParcel(in);
+    }
+
+    /* renamed from: com.samsung.android.knox.tima.attestation.EnhancedAttestationResult$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EnhancedAttestationResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EnhancedAttestationResult createFromParcel(Parcel source) {
+            return new EnhancedAttestationResult(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EnhancedAttestationResult[] newArray(int size) {
+            return new EnhancedAttestationResult[size];
+        }
     }
 
     @Override // android.os.Parcelable
@@ -84,17 +106,14 @@ public class EnhancedAttestationResult implements Parcelable {
         this.reason = reason;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getError() {
         return this.errorCode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getReason() {
         return this.reason;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getUniqueId() {
         Bundle bundle = this.data;
         if (bundle == null) {
@@ -103,7 +122,6 @@ public class EnhancedAttestationResult implements Parcelable {
         return bundle.getString(DATA_FIELD_UNIQUE_ID);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getUrl() {
         Bundle bundle = this.data;
         if (bundle == null) {
@@ -112,7 +130,6 @@ public class EnhancedAttestationResult implements Parcelable {
         return bundle.getString(DATA_FIELD_URL);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResponseRawData() {
         Bundle bundle = this.data;
         if (bundle == null) {
@@ -121,7 +138,6 @@ public class EnhancedAttestationResult implements Parcelable {
         return bundle.getString(DATA_FIELD_SERVER_RESPONSE_RAW_DATA);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] getBlob() {
         Bundle bundle = this.data;
         if (bundle == null) {
@@ -130,7 +146,6 @@ public class EnhancedAttestationResult implements Parcelable {
         return bundle.getByteArray(DATA_FIELD_BLOB);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getServerResponseId() {
         Bundle bundle = this.data;
         if (bundle == null) {
@@ -139,7 +154,6 @@ public class EnhancedAttestationResult implements Parcelable {
         return bundle.getString(DATA_FIELD_SERVER_RESPONSE_ID);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getRetryAfterTime() {
         try {
             String str = this.reason;

@@ -5,7 +5,7 @@ import android.animation.Keyframes;
 import java.util.List;
 
 /* loaded from: classes.dex */
-class IntKeyframeSet extends KeyframeSet implements Keyframes.IntKeyframes {
+public class IntKeyframeSet extends KeyframeSet implements Keyframes.IntKeyframes {
     public IntKeyframeSet(Keyframe.IntKeyframe... keyframes) {
         super(keyframes);
     }

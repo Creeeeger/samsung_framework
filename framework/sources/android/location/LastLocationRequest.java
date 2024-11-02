@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class LastLocationRequest implements Parcelable {
     public static final Parcelable.Creator<LastLocationRequest> CREATOR = new Parcelable.Creator<LastLocationRequest>() { // from class: android.location.LastLocationRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LastLocationRequest createFromParcel(Parcel in) {
             return new LastLocationRequest(in.readBoolean(), in.readBoolean(), in.readBoolean());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LastLocationRequest[] newArray(int size) {
             return new LastLocationRequest[size];
@@ -24,6 +25,10 @@ public final class LastLocationRequest implements Parcelable {
     private final boolean mAdasGnssBypass;
     private final boolean mHiddenFromAppOps;
     private final boolean mLocationSettingsIgnored;
+
+    /* synthetic */ LastLocationRequest(boolean z, boolean z2, boolean z3, LastLocationRequestIA lastLocationRequestIA) {
+        this(z, z2, z3);
+    }
 
     private LastLocationRequest(boolean hiddenFromAppOps, boolean adasGnssBypass, boolean locationSettingsIgnored) {
         this.mHiddenFromAppOps = hiddenFromAppOps;
@@ -48,6 +53,23 @@ public final class LastLocationRequest implements Parcelable {
 
     public boolean isBypass() {
         return this.mAdasGnssBypass || this.mLocationSettingsIgnored;
+    }
+
+    /* renamed from: android.location.LastLocationRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LastLocationRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LastLocationRequest createFromParcel(Parcel in) {
+            return new LastLocationRequest(in.readBoolean(), in.readBoolean(), in.readBoolean());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LastLocationRequest[] newArray(int size) {
+            return new LastLocationRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

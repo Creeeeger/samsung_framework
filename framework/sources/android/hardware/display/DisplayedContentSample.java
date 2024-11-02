@@ -24,7 +24,7 @@ public final class DisplayedContentSample {
         this.mSamplesComponent3 = sampleComponent3;
     }
 
-    /* renamed from: android.hardware.display.DisplayedContentSample$1, reason: invalid class name */
+    /* renamed from: android.hardware.display.DisplayedContentSample$1 */
     /* loaded from: classes2.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$hardware$display$DisplayedContentSample$ColorComponent;

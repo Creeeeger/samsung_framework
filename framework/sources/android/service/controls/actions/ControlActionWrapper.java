@@ -7,13 +7,14 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class ControlActionWrapper implements Parcelable {
     public static final Parcelable.Creator<ControlActionWrapper> CREATOR = new Parcelable.Creator<ControlActionWrapper>() { // from class: android.service.controls.actions.ControlActionWrapper.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ControlActionWrapper createFromParcel(Parcel in) {
             return new ControlActionWrapper(ControlAction.createActionFromBundle(in.readBundle()));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ControlActionWrapper[] newArray(int size) {
             return new ControlActionWrapper[size];
@@ -38,5 +39,22 @@ public final class ControlActionWrapper implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.service.controls.actions.ControlActionWrapper$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ControlActionWrapper> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ControlActionWrapper createFromParcel(Parcel in) {
+            return new ControlActionWrapper(ControlAction.createActionFromBundle(in.readBundle()));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ControlActionWrapper[] newArray(int size) {
+            return new ControlActionWrapper[size];
+        }
     }
 }

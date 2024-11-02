@@ -233,8 +233,9 @@ public interface INetworkManagementEventObserver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements INetworkManagementEventObserver {
+        public static class Proxy implements INetworkManagementEventObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

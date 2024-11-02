@@ -60,8 +60,9 @@ public interface IBRReceiverAgent extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IBRReceiverAgent {
+        public static class Proxy implements IBRReceiverAgent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextFlipMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextFlipMotion> CREATOR = new Parcelable.Creator<SContextFlipMotion>() { // from class: android.hardware.scontext.SContextFlipMotion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextFlipMotion createFromParcel(Parcel in) {
             return new SContextFlipMotion(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextFlipMotion[] newArray(int size) {
             return new SContextFlipMotion[size];
@@ -22,7 +23,6 @@ public class SContextFlipMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextFlipMotion() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextFlipMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextFlipMotion$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextFlipMotion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextFlipMotion createFromParcel(Parcel in) {
+            return new SContextFlipMotion(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextFlipMotion[] newArray(int size) {
+            return new SContextFlipMotion[size];
+        }
     }
 }

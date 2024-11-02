@@ -58,11 +58,36 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
             return null;
         } catch (Exception e) {
             throw new InvalidKeyException("calculation failed: " + e.getMessage()) { // from class: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.ec.KeyAgreementSpi.1
+                final /* synthetic */ Exception val$e;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(String arg0, Exception e2) {
+                    super(arg0);
+                    e = e2;
+                }
+
                 @Override // java.lang.Throwable
                 public Throwable getCause() {
                     return e;
                 }
             };
+        }
+    }
+
+    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.ec.KeyAgreementSpi$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends InvalidKeyException {
+        final /* synthetic */ Exception val$e;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(String arg0, Exception e2) {
+            super(arg0);
+            e = e2;
+        }
+
+        @Override // java.lang.Throwable
+        public Throwable getCause() {
+            return e;
         }
     }
 

@@ -67,8 +67,7 @@ public class TelephonyRegistryManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyRegistryManager$1, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyRegistryManager$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IOnSubscriptionsChangedListener.Stub {
         final /* synthetic */ Executor val$executor;
@@ -123,8 +122,7 @@ public class TelephonyRegistryManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyRegistryManager$2, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyRegistryManager$2 */
     /* loaded from: classes3.dex */
     public class AnonymousClass2 extends IOnSubscriptionsChangedListener.Stub {
         final /* synthetic */ Executor val$executor;
@@ -734,7 +732,6 @@ public class TelephonyRegistryManager {
         listenFromCallback(false, false, subId, pkgName, attributionTag, callback, new int[0], notifyNow);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class CarrierPrivilegesCallbackWrapper extends ICarrierPrivilegesCallback.Stub implements ListenerExecutor {
         private final WeakReference<TelephonyManager.CarrierPrivilegesCallback> mCallback;
@@ -757,7 +754,6 @@ public class TelephonyRegistryManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCarrierPrivilegesChanged$1(final Set privilegedPkgNamesSet, final Set privilegedUidsSet) throws Exception {
             Executor executor = this.mExecutor;
             WeakReference<TelephonyManager.CarrierPrivilegesCallback> weakReference = this.mCallback;
@@ -780,7 +776,6 @@ public class TelephonyRegistryManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCarrierServiceChanged$3(final String packageName, final int uid) throws Exception {
             Executor executor = this.mExecutor;
             WeakReference<TelephonyManager.CarrierPrivilegesCallback> weakReference = this.mCallback;
@@ -874,8 +869,7 @@ public class TelephonyRegistryManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyRegistryManager$3, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyRegistryManager$3 */
     /* loaded from: classes3.dex */
     public class AnonymousClass3 extends ICarrierConfigChangeListener.Stub {
         final /* synthetic */ Executor val$executor;

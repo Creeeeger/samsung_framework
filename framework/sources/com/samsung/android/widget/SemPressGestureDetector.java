@@ -98,6 +98,9 @@ public class SemPressGestureDetector {
     private long mTouchedTime = 0;
     private long mBixbyTouchVersion = 0;
     private Runnable mLongLongTouchRunnable = new Runnable() { // from class: com.samsung.android.widget.SemPressGestureDetector.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             Log.secD(SemPressGestureDetector.TAG, "mLongLongTouchRunnable: " + SemPressGestureDetector.this.mCallerPackage + "," + SemPressGestureDetector.this.mActivityName + "," + SemPressGestureDetector.this.mProcessName);
@@ -106,6 +109,9 @@ public class SemPressGestureDetector {
         }
     };
     private Runnable mLongTouchRunnable = new Runnable() { // from class: com.samsung.android.widget.SemPressGestureDetector.2
+        AnonymousClass2() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             if (SemPressGestureDetector.this.mTouchDownRestricted) {
@@ -131,6 +137,9 @@ public class SemPressGestureDetector {
         }
     };
     private Runnable mCheckRestrictTouchRunnable = new Runnable() { // from class: com.samsung.android.widget.SemPressGestureDetector.3
+        AnonymousClass3() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             SemPressGestureDetector semPressGestureDetector = SemPressGestureDetector.this;
@@ -138,6 +147,9 @@ public class SemPressGestureDetector {
         }
     };
     private Runnable mGetSettingRunnable = new Runnable() { // from class: com.samsung.android.widget.SemPressGestureDetector.4
+        AnonymousClass4() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             try {
@@ -161,7 +173,6 @@ public class SemPressGestureDetector {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
     public static class Point {
         float x;
@@ -170,6 +181,53 @@ public class SemPressGestureDetector {
         public Point(float x, float y) {
             this.x = x;
             this.y = y;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.widget.SemPressGestureDetector$1 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Log.secD(SemPressGestureDetector.TAG, "mLongLongTouchRunnable: " + SemPressGestureDetector.this.mCallerPackage + "," + SemPressGestureDetector.this.mActivityName + "," + SemPressGestureDetector.this.mProcessName);
+            SemPressGestureDetector semPressGestureDetector = SemPressGestureDetector.this;
+            semPressGestureDetector.mResponeLongLongTouch = semPressGestureDetector.sendBixbyLongClickedEvent(2);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.widget.SemPressGestureDetector$2 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (SemPressGestureDetector.this.mTouchDownRestricted) {
+                SemPressGestureDetector.this.mResponeLongTouch = false;
+                return;
+            }
+            SemPressGestureDetector.sRequestCode = System.currentTimeMillis();
+            SemPressGestureDetector.sWidgetNameList.clear();
+            SemPressGestureDetector.sWidgetIdList.clear();
+            SemPressGestureDetector.this.mHasDoneLongTouch = true;
+            SemPressGestureDetector.this.parseInfoFromView();
+            Log.secD(SemPressGestureDetector.TAG, "mLongTouchRunnable: " + SemPressGestureDetector.this.mCallerPackage + "," + SemPressGestureDetector.this.mActivityName + "," + SemPressGestureDetector.this.mProcessName);
+            SemPressGestureDetector.sHasCallReflectCount = 0;
+            if (SemPressGestureDetector.this.mView != null) {
+                SemPressGestureDetector semPressGestureDetector = SemPressGestureDetector.this;
+                semPressGestureDetector.mTouchedViews = semPressGestureDetector.getTouchedViews();
+                SemPressGestureDetector semPressGestureDetector2 = SemPressGestureDetector.this;
+                semPressGestureDetector2.mResponeLongTouch = semPressGestureDetector2.sendBixbyLongClickedEvent(1);
+                if (SemPressGestureDetector.this.mResponeLongTouch) {
+                    SemPressGestureDetector.this.mView.postDelayed(SemPressGestureDetector.this.mLongLongTouchRunnable, SemPressGestureDetector.sLongLongPressTime);
+                }
+            }
         }
     }
 
@@ -205,6 +263,50 @@ public class SemPressGestureDetector {
         return mTouchedViews;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.widget.SemPressGestureDetector$3 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SemPressGestureDetector semPressGestureDetector = SemPressGestureDetector.this;
+            semPressGestureDetector.mTouchDownRestricted = semPressGestureDetector.isFingerPrintInDisplay();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.widget.SemPressGestureDetector$4 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass4 implements Runnable {
+        AnonymousClass4() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                long version = SemPressGestureDetector.getAppVersionCode(SemPressGestureDetector.this.mContext, SemPressGestureDetector.TAEGET_PKG_NAME);
+                if (version < SemPressGestureDetector.SUPPORT_DOUBLE_FINGER_MODE_MIN_VERSION && version != SemPressGestureDetector.this.mBixbyTouchVersion) {
+                    if (SemPressGestureDetector.this.mContext.checkSelfPermission("android.permission.WRITE_SECURE_SETTINGS") == 0) {
+                        Settings.Secure.putInt(SemPressGestureDetector.this.mContext.getContentResolver(), SemPressGestureDetector.KEY_BIXBYTOUCH_FINGER_TOUCH_TRIGGER, 1);
+                    }
+                    SemPressGestureDetector.sCurrentTouchMode = 1;
+                } else {
+                    SemPressGestureDetector.sCurrentTouchMode = Settings.Secure.getInt(SemPressGestureDetector.this.mContext.getContentResolver(), SemPressGestureDetector.KEY_BIXBYTOUCH_FINGER_TOUCH_TRIGGER, 1);
+                }
+                SemPressGestureDetector.sLongPressTime = Settings.Secure.getInt(SemPressGestureDetector.this.mContext.getContentResolver(), SemPressGestureDetector.KEY_BIXBYTOUCH_LONG_PRESS_TIME, 500);
+                SemPressGestureDetector.sLongLongPressTime = Settings.Secure.getInt(SemPressGestureDetector.this.mContext.getContentResolver(), SemPressGestureDetector.KEY_LONG_LONG_PRESS_TIME, 1500);
+                SemPressGestureDetector.sCheckTouchDownDelayTime = Settings.Secure.getInt(SemPressGestureDetector.this.mContext.getContentResolver(), SemPressGestureDetector.KEY_CHECK_FP_DELAY_TIME, 100);
+                SemPressGestureDetector.sFingerDownThreshold = Settings.Secure.getInt(SemPressGestureDetector.this.mContext.getContentResolver(), SemPressGestureDetector.KEY_BIXBYTOUCH_FINGER_DOWN_THRESHOLD, 100);
+                SemPressGestureDetector.this.mBixbyTouchVersion = version;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public SemPressGestureDetector(Context context, View view) {
         init(context, view);
     }
@@ -217,7 +319,6 @@ public class SemPressGestureDetector {
         return sVersionCode;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static long getAppVersionCode(Context context, String packageName) {
         try {
             long versionCode = context.getPackageManager().getPackageInfo(packageName, 0).getLongVersionCode();
@@ -289,7 +390,6 @@ public class SemPressGestureDetector {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void parseInfoFromView() {
         try {
             if (this.mView != null) {
@@ -404,7 +504,6 @@ public class SemPressGestureDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isFingerPrintInDisplay() {
         if (!sHasFingerPrintFeature) {
             return false;
@@ -470,7 +569,6 @@ public class SemPressGestureDetector {
         return packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean sendBixbyLongClickedEvent(int flag) {
         String str;
         if (this.mDetachedFromWindow || (str = this.mActivityName) == null || str.startsWith(TAEGET_PKG_NAME)) {
@@ -639,7 +737,6 @@ public class SemPressGestureDetector {
         this.mView.removeCallbacks(this.mLongLongTouchRunnable);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean matchPackage(String pkgName) {
         return pkgName.equals(this.mCallerPackage);
     }
@@ -649,8 +746,34 @@ public class SemPressGestureDetector {
         return (mm / 25.4f) * dpi;
     }
 
+    /* renamed from: com.samsung.android.widget.SemPressGestureDetector$5 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass5 implements Runnable {
+        AnonymousClass5() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            boolean z;
+            try {
+                SemPressGestureDetector semPressGestureDetector = SemPressGestureDetector.this;
+                if (!semPressGestureDetector.isLauncherApp() && !SemPressGestureDetector.this.matchPackage(SemPressGestureDetector.TAEGET_PKG_NAME)) {
+                    z = false;
+                    semPressGestureDetector.mFindViewRestricted = z;
+                }
+                z = true;
+                semPressGestureDetector.mFindViewRestricted = z;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void checkBlockApp() {
         new Thread(new Runnable() { // from class: com.samsung.android.widget.SemPressGestureDetector.5
+            AnonymousClass5() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 boolean z;
@@ -669,7 +792,6 @@ public class SemPressGestureDetector {
         }).start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isLauncherApp() {
         if (this.mCallerPackage == null) {
             return false;

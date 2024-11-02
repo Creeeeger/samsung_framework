@@ -125,8 +125,9 @@ public interface IDragAndDropPermissions extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDragAndDropPermissions {
+        public static class Proxy implements IDragAndDropPermissions {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

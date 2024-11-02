@@ -385,12 +385,12 @@
     <string name="allow_settings_changes">Политиката за защита пречи на промяната на настройки.</string>
     <string name="alwaysUse">Използване по подразбиране за това действие.</string>
     <string name="android_preparing_apk">%1$s се подготвя.</string>
-    <string name="android_start_title">Телефонът се стартира…</string>
+    <string name="android_start_title">Таблетът се стартира…</string>
     <string name="android_system_label">Система Android</string>
     <string name="android_upgrading_complete">Зареждането завършва.</string>
     <string name="android_upgrading_notification_title">Системната актуализация завършва…</string>
     <string name="android_upgrading_starting_apps">Приложенията се стартират.</string>
-    <string name="android_upgrading_title">Телефонът се актуализира…</string>
+    <string name="android_upgrading_title">Таблетът се актуализира…</string>
     <string name="anr_activity_application">%2$s не реагира</string>
     <string name="anr_activity_process">%1$s не реагира</string>
     <string name="anr_application_process">%1$s не реагира</string>
@@ -424,16 +424,16 @@
     <string name="app_restricted_message_concentration_mode">%s се блокира по време на Режим на концентрация. Свържете се с ИТ администратора, за да научите повече.</string>
     <string name="app_running_notification_text">Докоснете за още информация или за да спрете приложението.</string>
     <string name="app_running_notification_title">%1$s се изпълнява</string>
-    <string name="app_streaming_blocked_message">Понастоящем не може да се осъществи достъп от устройството ви %1$s. Вместо това опитайте от телефона си.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Това приложение изисква допълнителна стъпка за сигурност. Вместо това опитайте от телефона си.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Не може да се осъществи достъп от устройството ви %1$s. Вместо това опитайте от телефона си.</string>
+    <string name="app_streaming_blocked_message">Понастоящем не може да се осъществи достъп от устройството ви %1$s. Вместо това опитайте от таблета си.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Това приложение изисква допълнителна стъпка за сигурност. Вместо това опитайте от таблета си.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Не може да се осъществи достъп от устройството ви %1$s. Вместо това опитайте от таблета си.</string>
     <string name="app_streaming_blocked_title">%1$s не е налице</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Няма достъп до камерата</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Продължете на телефона</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Микрофонът не е достъпен</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Необходимо е разрешение</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Няма достъп до Google Play Магазин</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Настройките за телефона не са достъпни</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Настройките за таблета не са достъпни</string>
     <string name="app_suspended_default_message">В момента няма достъп до %1$s. Това се управлява от %2$s.</string>
     <string name="app_suspended_more_details">Научете повече</string>
     <string name="app_suspended_title">Няма достъп до приложението</string>
@@ -504,7 +504,7 @@
     <string name="badPuk">Въведеният PUK е неправилен.</string>
     <string name="badPuk2">PUK2 кодът, който въведохте, е неправилен</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Батерията на телефона има достатъчно заряд. Функциите вече не са ограничени.</string>
+    <string name="battery_saver_charged_notification_summary">Батерията на таблета има достатъчно заряд. Функциите вече не са ограничени.</string>
     <string name="battery_saver_description">Режимът за запазване на батерията включва тъмната тема и ограничава или изключва активността на заден план, някои визуални ефекти, определени функции и някои връзки с мрежата.</string>
     <string name="battery_saver_description_with_learn_more">Режимът за запазване на батерията включва тъмната тема и ограничава или изключва активността на заден план, някои визуални ефекти, определени функции и някои връзки с мрежата.</string>
     <string name="battery_saver_notification_channel_name">Режим за запазване на батерията</string>
@@ -734,7 +734,7 @@
     <string name="decline">Отхвърлям</string>
     <string name="decline_remote_bugreport_action">ОТХВЪРЛЯНЕ</string>
     <string name="default_audio_route_category_name">Система</string>
-    <string name="default_audio_route_name">Телефон</string>
+    <string name="default_audio_route_name">Таблет</string>
     <string name="default_audio_route_name_dock_speakers">Високоговорители докинг станция</string>
     <string name="default_audio_route_name_external_device">Външно устройство</string>
     <string name="default_audio_route_name_headphones">Слушалки</string>
@@ -861,7 +861,7 @@
     <string name="emergency_call_dialog_number_for_display">Спешен номер</string>
     <string name="emergency_calls_only">Само спешни повиквания</string>
     <string name="enablePin">Неуспешно – активирайте заключването на SIM/RUIM картата.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s иска да активира изследването чрез докосване. Когато услугата е включена, можете да чувате или да виждате описания на това, което е под пръста ви, или да изпълнявате жестове, за да взаимодействате с телефона.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s иска да активира изследването чрез докосване. Когато услугата е включена, можете да чувате или да виждате описания на това, което е под пръста ви, или да изпълнявате жестове, за да взаимодействате с таблета.</string>
     <string name="enable_explore_by_touch_warning_title">Да се активира ли изследв. чрез докосване?</string>
     <string name="error_message_change_not_allowed">Тази промяна не е разрешена от администратора ви</string>
     <string name="error_message_title">Грешка</string>
@@ -925,7 +925,7 @@
     <string name="ext_media_unsupported_notification_message">Това устройство не поддържа тази %s. Докоснете, за да я зададете в поддържан формат.</string>
     <string name="ext_media_unsupported_notification_title">Неподдържана %s</string>
     <string name="ext_storage_bad_removal_button">Рестартиране</string>
-    <string name="ext_storage_bad_removal_title">Рестартирайте телефона</string>
+    <string name="ext_storage_bad_removal_title">Рестартирайте таблета</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message">Всички данни на картата ви ще бъдат заличени.</string>
     <string name="extmedia_format_message_usbhost">Всички файлове, съхранявани в USB хранилището ви, ще бъдат изтрити. Това действие не може да бъде отменено!</string>
@@ -1129,7 +1129,7 @@
     <string name="global_action_toggle_sealed_mode">Изолиран режим</string>
     <string name="global_action_toggle_silent_mode">Тих режим</string>
     <string name="global_action_voice_assist">Гласова помощ</string>
-    <string name="global_actions">Опции на телефона</string>
+    <string name="global_actions">Опции за таблета</string>
     <string name="global_actions_airplane_mode_off_status">Самолетният режим е ИЗКЛЮЧЕН</string>
     <string name="global_actions_airplane_mode_on_status">Самолетният режим е ВКЛЮЧЕН</string>
     <string name="global_actions_toggle_airplane_mode">Самолетен режим</string>
@@ -1314,11 +1314,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Докоснете и въведете парола&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Неправилен ПИН код.</string>
     <string name="kg_enter_confirm_pin_hint">Потвърдете желания ПИН код</string>
-    <string name="kg_failed_attempts_almost_at_login">"Начертахте неправилно фигурата си за отключване %1$d пъти. След още %2$d неуспешни опита ще бъдете помолени да отключите телефона посредством имейл адрес.
+    <string name="kg_failed_attempts_almost_at_login">"Начертахте неправилно фигурата си за отключване %1$d пъти. След още %2$d неуспешни опита ще бъдете помолени да отключите таблета посредством имейл адрес.
 
  Опитайте отново след %3$d секунди."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Направихте опит да отключите неправилно телефона %1$d пъти. След още %2$d неуспешни опита ще бъдат възстановени стандартните му фабрични настройки и всички потребителски данни ще бъдат заличени.</string>
-    <string name="kg_failed_attempts_now_wiping">Направихте опит да отключите неправилно телефона %d пъти. Сега ще бъдат възстановени стандартните му фабрични настройки.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Направихте опит да отключите неправилно таблета %1$d пъти. След още %2$d неуспешни опита ще бъдат възстановени стандартните му фабрични настройки и всички потребителски данни ще бъдат заличени.</string>
+    <string name="kg_failed_attempts_now_wiping">Направихте опит да отключите неправилно таблета %d пъти. Сега ще бъдат възстановени стандартните му фабрични настройки.</string>
     <string name="kg_forgot_pattern_button_text">Забравена фигура</string>
     <string name="kg_invalid_confirm_pin_hint">ПИН кодовете не съвпадат</string>
     <string name="kg_invalid_puk">Въведете отново правилния PUK код. Многократните опити ще деактивират за постоянно SIM картата.</string>
@@ -1406,11 +1406,11 @@
     <string name="lockscreen_carrier_default">Няма покритие</string>
     <string name="lockscreen_carrier_noservice">(Няма обслужване)</string>
     <string name="lockscreen_emergency_call">Спешни случаи</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Направихте опит да отключите телефона неправилно %1$d пъти. След още %2$d неуспешни опита ще бъдат възстановени стандартните му фабрични настройки и всички потребителски данни ще бъдат заличени.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Начертахте неправилно фигурата си за отключване %1$d пъти. След още %2$d неуспешни опита ще бъдете помолени да отключите телефона посредством данните си за вход в Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Направихте опит да отключите таблета неправилно %1$d пъти. След още %2$d неуспешни опита ще бъдат възстановени стандартните му фабрични настройки и всички потребителски данни ще бъдат заличени.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Начертахте неправилно фигурата си за отключване %1$d пъти. След още %2$d неуспешни опита ще бъдете помолени да отключите таблета посредством данните си за вход в Google.
 
- Опитайте отново след %3$d секунди."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Направихте опит да отключите телефона неправилно %d пъти. Сега ще бъдат възстановени стандартните му фабрични настройки.</string>
+Опитайте отново след %3$d секунди."</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Направихте опит да отключите таблета неправилно %d пъти. Сега ще бъдат възстановени стандартните му фабрични настройки.</string>
     <string name="lockscreen_forgot_pattern_button_text">Забравили сте фигурата?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Забравили сте потребителското си име или парола?
 Посетете "<b>google.com/accounts/recovery</b>.</string>
@@ -1426,7 +1426,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Натиснете „Меню“, за да отключите или да извършите спешно обаждане.</string>
     <string name="lockscreen_missing_sim_instructions">Добавете SIM карта.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM картата липсва или е нечетлива. Добавете SIM карта.</string>
-    <string name="lockscreen_missing_sim_message">В телефона няма SIM карта.</string>
+    <string name="lockscreen_missing_sim_message">В таблета няма SIM карта.</string>
     <string name="lockscreen_missing_sim_message_short">Няма SIM карта</string>
     <string name="lockscreen_network_locked_message">Мрежата е заключена</string>
     <string name="lockscreen_password_wrong">Опитайте отново</string>
@@ -1466,7 +1466,7 @@
     <string name="low_internal_storage_view_text">Възможно е някои функции на системата да не работят</string>
     <string name="low_internal_storage_view_text_no_boot">За системата няма достатъчно място в хранилището. Уверете се, че имате свободни 250 МБ, и рестартирайте.</string>
     <string name="low_internal_storage_view_title">Мястото в хранилището е на изчерпване</string>
-    <string name="low_memory">Хранилището на телефона е пълно. Изтрийте файлове, за да освободите място.</string>
+    <string name="low_memory">Хранилището на таблета е пълно. Изтрийте файлове, за да освободите място.</string>
     <string name="ltb_kill_content_v2_phone">%s се затвори, тъй като караше телефона да прегрява. Може да го отворите отново по-късно, след като телефонът се охлади.</string>
     <string name="ltb_kill_content_v2_tablet">%s се затвори, тъй като караше таблета да прегрява. Може да го отворите отново по-късно, след като таблетът се охлади.</string>
     <string name="ltb_warning_button">Да не се затваря</string>
@@ -1778,18 +1778,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Звукът се възпроизвежда на вашето Bluetooth аудио устройство. Докоснете тук, за да изключите това</string>
     <string name="multisound_sound_via_headphone">Звукът на %s се възпроизвежда чрез слушалките. Докоснете тук, за да го изключите.</string>
     <string name="multisound_sound_via_headphone_multiselection">Звукът се възпроизвежда чрез слушалките. Докоснете тук, за да го изключите.</string>
-    <string name="multisound_sound_via_phone_speaker">Звукът на %s се възпроизвежда чрез високоговорителя на телефона. Докоснете тук, за да го изключите.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Звукът се възпроизвежда чрез високоговорителя на телефона. Докоснете тук, за да го изключите.</string>
+    <string name="multisound_sound_via_phone_speaker">Звукът на %s се възпроизвежда чрез високоговорителя на таблета. Докоснете тук, за да го изключите.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Звукът се възпроизвежда чрез високоговорителя на таблета. Докоснете тук, за да го изключите.</string>
     <string name="multisound_sound_via_usb_audio">Звукът на %s се възпроизвежда чрез USB аудио устройство. Докоснете тук, за да го изключите.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Звукът се възпроизвежда чрез USB аудио устройство. Докоснете тук, за да го изключите.</string>
     <string name="multisound_title">Отделен звук на приложение</string>
     <string name="multisound_turn_off_multisound">Изключване</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s не може да се стартира в Samsung DeX. Опитайте да го стартирате в Режим на телефон.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s не може да се стартира в Samsung DeX. То е предназначено за начален екран на телефон.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Някои игри работят само на сензорни екрани. Ако контролите за мишка не работят в Samsung DeX, опитайте вместо това да играете в режим на телефон.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s не може да се стартира в Samsung DeX. Опитайте да го стартирате в Режим на таблет.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s не може да се стартира в Samsung DeX. То е предназначено за начален екран на таблет.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Някои игри работят само на сензорни екрани. Ако контролите за мишка не работят в Samsung DeX, опитайте вместо това да играете в режим на таблет.</string>
     <string name="music_recognition_manager_service">Услуга за управление на разпознаването на музика</string>
     <string name="muted_by">%1$s заглушава някои звуци</string>
-    <string name="my_device">Този телефон</string>
+    <string name="my_device">Този таблет</string>
     <string name="nas_upgrade_notification_content">Предложените действия и отговори вече се предоставят от функцията за подо­брени известия. Адаптивните известия за Android вече не се поддържат.</string>
     <string name="nas_upgrade_notification_disable_action">Изключване</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1954,23 +1954,23 @@
     <string name="permdesc_bindNotificationListenerService">Разрешава на притежателя да се обвърже с интерфейса от първо ниво на услуга за слушател на известия. Нормалните приложения не би трябвало никога да се нуждаят от това.</string>
     <string name="permdesc_bind_connection_service">Разрешава на приложението да взаимодейства с телефонни услуги за извършване/получаване на обаждания.</string>
     <string name="permdesc_bind_incall_service">Разрешава на приложението да контролира кога и как потребителят вижда екрана за обаждане.</string>
-    <string name="permdesc_bluetooth">Разрешава на приложението да вижда конфигурацията на Bluetooth на телефона и да изгражда и приема връзки със сдвоени устройства.</string>
-    <string name="permdesc_bluetoothAdmin">Разрешава на приложението да конфигурира локалния телефон с Bluetooth, както и да открива и да се сдвоява с отдалечени устройства.</string>
+    <string name="permdesc_bluetooth">Разрешава на приложението да вижда конфигурацията на Bluetooth на таблета и да изгражда и приема връзки със сдвоени устройства.</string>
+    <string name="permdesc_bluetoothAdmin">Разрешава на приложението да конфигурира локалния таблет с Bluetooth, както и да открива и да се сдвоява с отдалечени устройства.</string>
     <string name="permdesc_bluetooth_advertise">Разрешава на приложението да рекламира на устройства с Bluetooth в близост</string>
     <string name="permdesc_bluetooth_connect">Дава възможност на приложението да се свързва със сдвоените устройства с Bluetooth</string>
     <string name="permdesc_bluetooth_scan">Дава възможност на приложението да открива устройства с Bluetooth в близост и да се сдвоява с тях</string>
     <string name="permdesc_bodySensors">Разрешава на приложението да осъществява достъп до данните от сензорите за тяло, като например тези за сърдечен ритъм, температура и процент на кислорода в кръвта, докато то се използва.</string>
     <string name="permdesc_bodySensors_background">Разрешава на приложението да осъществява достъп до данните от сензорите за тяло, като например тези за сърдечен ритъм, температура и процент на кислорода в кръвта, докато то се изпълнява на заден план.</string>
-    <string name="permdesc_broadcastSticky">Разрешава на приложението да изпраща оставащи излъчвания, които се запазват след края на излъчването. Прекалената употреба може да причини бавна или нестабилна работа на телефона, като го накара да използва твърде много памет.</string>
+    <string name="permdesc_broadcastSticky">Разрешава на приложението да изпраща оставащи излъчвания, които се запазват след края на излъчването. Прекалената употреба може да причини бавна или нестабилна работа на таблета, като го накара да използва твърде много памет.</string>
     <string name="permdesc_callCompanionApp">Разрешава на приложението да вижда и управлява текущите обаждания на устройството. Това включва различна информация, като например номерата и състоянието на обажданията.</string>
     <string name="permdesc_callPhone">Разрешава на приложението да се обажда без ваша намеса на телефонни номера. Това може да доведе до неочаквани таксувания или обаждания. Имайте предвид, че това не позволява на приложението да извършва обаждания до номера за спешни случаи. Злонамерените приложения могат да ви въвлекат в разходи, като извършват обаждания без потвърждение от ваша страна или като набират кодове на оператора, които автоматично пренасочват входящите обаждания към друг номер.</string>
     <string name="permdesc_camera">Когато се използва, това приложение може да прави снимки и да записва видеоклипове посредством камерата.</string>
     <string name="permdesc_cameraOpenCloseListener">Това приложение може да получава обратни повиквания, когато снимачно устройство бъде отворено (от кое приложение) или затворено.</string>
     <string name="permdesc_changeNetworkState">Разрешава на приложението да променя състоянието на връзката с мрежата.</string>
     <string name="permdesc_changeTetherState">Разрешава на приложението да променя състоянието на споделената връзка с мрежата.</string>
-    <string name="permdesc_changeWifiMulticastState">Разрешава на приложението да получава пакети, изпратени до всички устройства в Wi-Fi мрежа посредством адреси за мултикаст, а не само до телефона ви. Консумира се повече енергия отколкото в режим без мултикаст.</string>
+    <string name="permdesc_changeWifiMulticastState">Разрешава на приложението да получава пакети, изпратени до всички устройства в Wi-Fi мрежа посредством адреси за мултикаст, а не само до таблета ви. Консумира се повече енергия отколкото в режим без мултикаст.</string>
     <string name="permdesc_changeWifiState">Разрешава на приложението да се свързва към точки за достъп до Wi-Fi и да прекратява връзката с тях, както и да извършва промени в конфигурацията на устройствата за Wi-Fi мрежи.</string>
-    <string name="permdesc_changeWimaxState">Разрешава на приложението да свързва телефона към WiMAX мрежа и да прекратява връзката му с нея.</string>
+    <string name="permdesc_changeWimaxState">Разрешава на приложението да свързва таблета към WiMAX мрежа и да прекратява връзката му с нея.</string>
     <string name="permdesc_companionProfileWatch">Разрешава на дадено придружаващо приложение да управлява часовници.</string>
     <string name="permdesc_connection_manager">Разрешава на приложението да управлява телекомуникационните връзки.</string>
     <string name="permdesc_control_incall_experience">Разрешава на приложението да предоставя опции за практическа работа по време на обаждане.</string>
@@ -1998,7 +1998,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">Разрешава на приложението да се възползва от услуги на преден план от тип specialUse</string>
     <string name="permdesc_foregroundServiceSystemExempted">Разрешава на приложението да се възползва от услуги на преден план от тип systemExempted</string>
     <string name="permdesc_fullScreenIntent">Дава възможност на приложението да показва известия като активности на цял екран на заключено устройство</string>
-    <string name="permdesc_getAccounts">Разрешава на приложението да получава списъка с профили, известни на телефона. Това може да включва и създадените от инсталирани от вас приложения.</string>
+    <string name="permdesc_getAccounts">Разрешава на приложението да получава списъка с профили, известни на таблета. Това може да включва и създадените от инсталирани от вас приложения</string>
     <string name="permdesc_getAppList">Разрешава на дадено приложение да чете списъка с инсталирани приложения.</string>
     <string name="permdesc_getPackageSize">Разрешава на приложението да извлича размера на своя код, данни и кеш</string>
     <string name="permdesc_getTasks">Разрешава на приложението да извлича информация за задачите, изпълнявани понастоящем и неотдавна. Това може да му позволи да открива данни за това, кои приложения се използват на устройството.</string>
@@ -2097,16 +2097,16 @@
     <string name="permdesc_nearby_wifi_devices">Разрешава на приложението да рекламира, да се свързва и да определя относителната позиция на устройствата с Wi-Fi в близост</string>
     <string name="permdesc_nfc">Разрешава на приложението да комуникира с маркери, карти и четци, ползващи комуникация в близкото поле (NFC).</string>
     <string name="permdesc_observeCompanionDevicePresence">Разрешава на дадено придружаващо приложение да наблюдава присъствието на придружаващите устройства, когато са близо или далеч.</string>
-    <string name="permdesc_persistentActivity">Разрешава на приложението да прави части от себе си постоянни в паметта. Това може да ограничи наличната за другите приложения, забавяйки телефона.</string>
+    <string name="permdesc_persistentActivity">Разрешава на приложението да прави части от себе си постоянни в паметта. Това може да ограничи наличната за другите приложения, забавяйки таблета.</string>
     <string name="permdesc_postNotification">Разрешава на приложението да показва известия</string>
     <string name="permdesc_preferredPaymentInfo">Дава възможност на приложението да получава информация за предпочитаната услуга за плащане чрез NFC, като например регистрирани помощни средства и местоназначение.</string>
     <string name="permdesc_processOutgoingCalls">Разрешава на приложението да вижда набирания номер по време на изходящо обаждане и му дава възможност да пренасочи обаждането към друг номер или да го прекрати изцяло.</string>
     <string name="permdesc_queryAllPackages">Разрешава на приложението да вижда всички инсталирани пакети.</string>
     <string name="permdesc_readBasicPhoneState">Разрешава на приложението да осъществява достъп до основните телефонни функции на устройството.</string>
-    <string name="permdesc_readCalendar">Това приложение може да чете всички съхранявани на телефона ви събития в календара и да споделя или запазва данни в календара ви.</string>
+    <string name="permdesc_readCalendar">Това приложение може да чете всички съхранявани на таблета ви събития в календара и да споделя или запазва данни в календара ви.</string>
     <string name="permdesc_readCallLog">Това приложение може да чете историята на обажданията ви.</string>
     <string name="permdesc_readCellBroadcasts">Разрешава на приложението да чете съобщения с клетъчно излъчване, получени от устройството ви. Сигналите с клетъчно излъчване се получават на някои местоположения, за да ви предупредят за спешни ситуации. Злонамерените приложения могат да възпрепятстват изпълнението или работата на устройството ви при получаване на такова спешно излъчване.</string>
-    <string name="permdesc_readContacts">Разрешава на приложението да чете данните за съхраняваните в телефона ви контакти. Приложенията ще имат достъп и до профилите на телефона ви, в които са създадени контакти. Това може да включва и профилите, създадени от инсталирани от вас приложения. Така приложенията могат да запазват данните за контактите ви, а злонамерените приложения – да ги споделят без ваше знание.</string>
+    <string name="permdesc_readContacts">Разрешава на приложението да чете данните за съхраняваните в таблета ви контакти. Приложенията ще имат достъп и до профилите на таблета ви, в които са създадени контакти. Това може да включва и профилите, създадени от инсталирани от вас приложения. Така приложенията могат да запазват данните за контактите ви, а злонамерените приложения – да ги споделят без ваше знание.</string>
     <string name="permdesc_readInstallSessions">Разрешава на приложението да чете сесии за инсталиране. Това му позволява да вижда подробности за активните инсталирания на пакети.</string>
     <string name="permdesc_readMediaAudio">Разрешава на приложението да чете аудиофайлове от споделеното ви хранилище.</string>
     <string name="permdesc_readMediaImages">Разрешава на приложението да чете графични файлове от споделеното ви хранилище.</string>
@@ -2114,11 +2114,11 @@
     <string name="permdesc_readNetworkUsageHistory">Разрешава на приложението да чете употребата на данни за конкретни мрежи и приложения до момента.</string>
     <string name="permdesc_readPhoneNumbers">Разрешава на приложението да осъществява достъп до телефонните номера на устройството.</string>
     <string name="permdesc_readPhoneState">Разрешава на приложението достъп до телефонните функции на устройството. Това разрешение позволява на приложението да определя телефонния номер и идентификационния номер на устройството, дали се води разговор и отдалечения номер, до който е установена връзка с обаждането.</string>
-    <string name="permdesc_readSms">Това приложение може да чете всички съхранявани на телефона ви текстови съобщения (SMS).</string>
+    <string name="permdesc_readSms">Това приложение може да чете всички съхранявани на таблета ви текстови съобщения (SMS).</string>
     <string name="permdesc_readSyncSettings">Разрешава на приложението да чете настройките за синхронизиране на профил. Например това може да определи дали приложението Хора е синхронизирано с даден профил.</string>
     <string name="permdesc_readSyncStats">Разрешава на приложението да чете статистическите данни за синхронизирането на профил, включително историята на синхронизираните събития и обема на информацията, която се синхронизира.</string>
     <string name="permdesc_readVisualUserSelect">Разрешава на приложението да чете графичните и видеофайловете, които сте избрали от споделеното си хранилище.</string>
-    <string name="permdesc_receiveBootCompleted">Разрешава на приложението да се стартира веднага щом системата завърши зареждането си. Това може да доведе до по-бавно стартиране на телефона и да позволи на приложението да забави телефона като цяло, тъй като се изпълнява постоянно.</string>
+    <string name="permdesc_receiveBootCompleted">Разрешава на приложението да се стартира веднага щом системата завърши зареждането си. Това може да доведе до по-бавно стартиране на таблета и да позволи на приложението да забави таблета като цяло, тъй като се изпълнява постоянно.</string>
     <string name="permdesc_receiveMms">Разрешава на приложението да получава и обработва MMS съобщения. Това означава, че то може да наблюдава или изтрива изпратените до устройството ви, без да ви ги покаже.</string>
     <string name="permdesc_receiveSms">Разрешава на приложението да получава и обработва SMS съобщения. Това означава, че то може да наблюдава или изтрива изпратените до устройството ви, без да ви ги покаже.</string>
     <string name="permdesc_receiveWapPush">Разрешава на приложението да получава и обработва WAP съобщения. Това разрешение включва възможността да наблюдава или изтрива изпратените до вас, без да ви ги покаже.</string>
@@ -2140,7 +2140,7 @@
     <string name="permdesc_sendSms">Разрешава на приложението да изпраща SMS съобщения. Това може да доведе до неочаквано таксуване. Злонамерените приложения могат да ви въвлекат в разходи, като изпращат съобщения без потвърждение от ваша страна.</string>
     <string name="permdesc_setAlarm">Разрешава на приложението да навие инсталирано приложение будилник. Някои будилници може да не изпълнят тази функция.</string>
     <string name="permdesc_setInputCalibration">Разрешава на приложението да променя параметрите на калибриране на сензорния екран. Нормалните приложения би трябвало никога да не се нуждаят от това.</string>
-    <string name="permdesc_setTimeZone">Разрешава на приложението да променя часовата зона на телефона.</string>
+    <string name="permdesc_setTimeZone">Разрешава на приложението да променя часовата зона на таблета.</string>
     <string name="permdesc_setWallpaper">Разрешава на приложението да задава системния тапет.</string>
     <string name="permdesc_setWallpaperHints">Разрешава на приложението да задава подсказките за размерите на системния тапет.</string>
     <string name="permdesc_sim_communication">Разрешава на приложението да изпраща команди до SIM картата. Това е много опасно.</string>
@@ -2154,7 +2154,7 @@
     <string name="permdesc_subscribedFeedsRead">Разрешава на приложението да получи подробности за текущо синхронизираните емисии.</string>
     <string name="permdesc_systemAlertWindow">Това приложение може да се показва върху други приложения или други части от екрана. Така може да се попречи на нормалната употреба на приложенията и да се промени начинът, по който се показват други приложения.</string>
     <string name="permdesc_systemCamera">Това привилегировано или системно приложение може по всяко време да прави снимки и да записва видео посредством системна камера. Необходимо е също на приложението да бъде дадено разрешението android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Разрешава на приложението да използва инфрачервения предавател на телефона.</string>
+    <string name="permdesc_transmitIr">Разрешава на приложението да използва инфрачервения предавател на таблета.</string>
     <string name="permdesc_turnScreenOn">Разрешава на приложението да включва екрана.</string>
     <string name="permdesc_ucsPlugin">Работете с добавки на трети лица за място за съхранение на идентификационни данни.</string>
     <string name="permdesc_uninstall_shortcut">Разрешава на приложението да премахва преки пътища от началния екран без намеса на потребителя.</string>
@@ -2168,10 +2168,10 @@
     <string name="permdesc_vibrate">Разрешава на приложението да контролира устройството за вибрация.</string>
     <string name="permdesc_vibrator_state">Дава възможност на приложението да осъществява достъп до състоянието на вибриране.</string>
     <string name="permdesc_videoWrite">Разрешава на приложението да променя видеоколекцията ви.</string>
-    <string name="permdesc_wakeLock">Разрешава на приложението да предотвратява преминаването на телефона в спящ режим.</string>
-    <string name="permdesc_writeCalendar">Това приложение може да добавя, премахва или променя събития в календара на телефона ви. То е в състояние да изпраща съобщения от името на собственици на календари или да променя събития, без да уведомява собствениците.</string>
-    <string name="permdesc_writeCallLog">Разрешава на приложението да променя списъка с обаждания на телефона ви, включително данните за входящите и изходящите обаждания. Злонамерените приложения могат да използват това, за да изтрият или променят този списък.</string>
-    <string name="permdesc_writeContacts">Разрешава на приложението да променя данните за съхраняваните на телефона ви контакти. Това разрешение позволява на приложенията да изтриват данните за контактите.</string>
+    <string name="permdesc_wakeLock">Разрешава на приложението да предотвратява преминаването на таблета в спящ режим.</string>
+    <string name="permdesc_writeCalendar">Това приложение може да добавя, премахва или променя събития в календара на таблета ви. То е в състояние да изпраща съобщения от името на собственици на календари или да променя събития, без да уведомява собствениците.</string>
+    <string name="permdesc_writeCallLog">Разрешава на приложението да променя списъка с обаждания на таблета ви, включително данните за входящите и изходящите обаждания. Злонамерените приложения могат да използват това, за да изтрият или променят този списък.</string>
+    <string name="permdesc_writeContacts">Разрешава на приложението да променя данните за съхраняваните на таблета ви контакти. Това разрешение позволява на приложенията да изтриват данните за контактите.</string>
     <string name="permdesc_writeSettings">Разрешава на приложението да променя данните на настройките на системата. Злонамерените приложения могат да повредят конфигурацията на системата ви.</string>
     <string name="permdesc_writeSyncSettings">Разрешава на приложението да чете настройките за синхронизиране на профил. Например това може да бъде използвано за активиране на синхронизирането на приложението Хора с даден профил.</string>
     <string name="permgroupdesc_activityRecognition">достъп до физическата ви активност</string>
@@ -2446,7 +2446,7 @@
     <string name="permlab_uwb_ranging">опред. на относителната позиция м/у у-вата с ултрашироколентови сигнали в близост</string>
     <string name="permlab_vibrate">контролиране на вибрирането</string>
     <string name="permlab_videoWrite">да променя видеоколекцията ви</string>
-    <string name="permlab_wakeLock">предотвратява спящ режим на телефона</string>
+    <string name="permlab_wakeLock">предотвратяване на спящия режим на таблета</string>
     <string name="permlab_writeCalendar">добавяне или промяна на събития от календари и изпращане на имейл до гости без знанието на собствениците</string>
     <string name="permlab_writeCallLog">запис на списъка с обаждания</string>
     <string name="permlab_writeContacts">промяна на контактите ви</string>
@@ -2488,7 +2488,7 @@
     <string name="policydesc_allow_desktopsync">Предотвратете използването на синхр. на настолен компютър.</string>
     <string name="policydesc_allow_internetsharing">Предотвратете използването на „Мобилна точка за достъп“.</string>
     <string name="policydesc_allow_irda">Предотвратете използването на IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Предотвратете използването на POP и IMAP имейл на телефона.</string>
+    <string name="policydesc_allow_popimapemail">Предотвратете използването на POP и IMAP имейл на таблета.</string>
     <string name="policydesc_allow_storagecard">Предотвратете използването на SD карти.</string>
     <string name="policydesc_allow_textmessaging">Предотвратете използването на текстови и мултимедийни съобщения.</string>
     <string name="policydesc_allow_thirdParty">Това приложение може да пречи на приложения на трети лица да се изпълняват.</string>
@@ -2506,10 +2506,10 @@
     <string name="policydesc_setGlobalProxy">Задава глобалния прокси сървър за устройството, който да се използва, когато правилото е активирано. Само собственикът на устройството може да задава такъв сървър.</string>
     <string name="policydesc_unsigned_app">Това приложение може да пречи на приложения от непознати източници да се изпълняват.</string>
     <string name="policydesc_unsigned_pkg">Това приложение може да пречи на приложения от непознати източници да бъдат инсталирани.</string>
-    <string name="policydesc_watchLogin">Наблюдава броя въведени неправилни пароли при отключването на екрана и заключва телефона или изтрива всички данни от него, ако неправилните пароли са твърде много.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Наблюдава броя на неправилно въведените пароли при отключване на екрана и заключва телефона или изтрива всички данни на този потребител, ако неуспешните опити са твърде много.</string>
-    <string name="policydesc_wipeData">Изтрива данните в телефона без предупреждение чрез възстановяване на фабричните настройки.</string>
-    <string name="policydesc_wipeData_secondaryUser">Изтрива данните на този потребител от телефона без предупреждение.</string>
+    <string name="policydesc_watchLogin">Наблюдава броя въведени неправилни пароли при отключването на екрана и заключва таблета или изтрива всички данни от него, ако неправилните пароли са твърде много.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Наблюдава броя на неправилно въведените пароли при отключване на екрана и заключва таблета или изтрива всички данни на този потребител, ако неуспешните опити са твърде много.</string>
+    <string name="policydesc_wipeData">Изтриване на данните в таблета без предупреждение чрез възстановяване на фабричните настройки.</string>
+    <string name="policydesc_wipeData_secondaryUser">Изтрива данните на този потребител от таблета без предупреждение.</string>
     <string name="policylab_allow_bluetoothmode">Деактивиране на Bluetooth</string>
     <string name="policylab_allow_browser">Деактивиране на интернет</string>
     <string name="policylab_allow_camera">Без камери</string>
@@ -2543,7 +2543,7 @@
     <string name="postalTypeHome">Домашен</string>
     <string name="postalTypeOther">Друг</string>
     <string name="postalTypeWork">Служебен</string>
-    <string name="power_dialog">Опции на телефона</string>
+    <string name="power_dialog">Опции за таблета</string>
     <string name="power_off">Изключване</string>
     <string name="prepend_shortcut_label">Меню+</string>
     <string name="preposition_for_date">на %s</string>
@@ -2589,7 +2589,7 @@
     <string name="recent_tasks_title">Скорошни</string>
     <string name="recording_fail">Не може да се използва микрофонът в %1$s, докато се използва в %2$s.</string>
     <string name="recording_popup">%s използва микрофона.</string>
-    <string name="recording_popup_device">Телефон</string>
+    <string name="recording_popup_device">Таблет</string>
     <string name="recording_popup_with_bluetooth">%s използва Bluetooth микрофона.</string>
     <string name="recording_popup_with_device">%1$s използва микрофона на %2$s.</string>
     <string name="redo">Повтаряне</string>
@@ -2736,12 +2736,12 @@
     <string name="screenshot_edit">Редакти­ране</string>
     <string name="sd_card_unavailable_message">Не можете да използвате SD картата, защото тя е била поставена, докато е бил използван различен потребителски профил.</string>
     <string name="sd_card_unavailable_title">SD картата е недостъпна</string>
-    <string name="sdcard_bad_removal_message">SD картата не е премахната безопасно. За да предотвратите неочакваното рестартиране на телефона, запишете незапазените данни и рестартирайте сега.</string>
+    <string name="sdcard_bad_removal_message">SD картата не е премахната безопасно. За да предотвратите неочакваното рестартиране на таблета, запишете незапазените данни и рестартирайте сега.</string>
     <string name="sdcard_batch_decrypt_noti_content">Дешифриране на SD картата</string>
     <string name="sdcard_batch_decrypt_noti_title">Дешифриране на SD карта</string>
     <string name="sdcard_batch_decrypt_popup_content">Шифрованата SD карта трябва да бъде дешифрирана, преди да се използва. Дешифрирането може да отнеме един час и повече. Започнете със заредена батерия и поддържайте устройството включено, докато дешифрирането завърши. При прекъсване на процеса на дешифриране може да се изгубят някои или всички данни.</string>
     <string name="sdcard_decrypt_err_notification">Възникна грешка при дешифрирането на SD картата.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Някои файлове на SD картата са шифровани на друго устройство и не може да се използват на този телефон.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Някои файлове на SD картата са шифровани на друго устройство и не може да се използват на този таблет.</string>
     <string name="sdcard_decrypt_notification">SD картата е дешифрирана.</string>
     <string name="sdcard_decrypt_title_notification">Дешифриране на SD карта</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Дешифриране SD карта…</string>
@@ -2999,7 +2999,7 @@
     <string name="showing_touch_sensitivity_noti_action">Включване</string>
     <string name="showing_touch_sensitivity_noti_text">Включете „Чувствителност на допир“, докато използвате Privacy Screen или Notepaper Screen за по-точна реакция при докосване.</string>
     <string name="showing_touch_sensitivity_noti_title">Увелич. чувствителн. на допир</string>
-    <string name="shutdown_confirm">Телефонът ви ще се изключи.</string>
+    <string name="shutdown_confirm">Таблетът ви ще се изключи.</string>
     <string name="shutdown_confirm_question">Искате ли да изключите?</string>
     <string name="shutdown_progress">Изключва се...</string>
     <string name="side_key_double_press_deleted_app">Приложението е инсталирано. Изберете нещо друго.</string>
@@ -3226,7 +3226,7 @@
     <string name="usb_abnormal_reset_title">USB връзката не е стабилна</string>
     <string name="usb_abnormal_reset_toast">USB връзката не е стабилна. Извадете кабела и го свържете отново или опитайте с друг кабел.</string>
     <string name="usb_accessory_notification_title">Свързан с USB аксесоар</string>
-    <string name="usb_bad_removal_message">USB устройството с памет не е премахнато безопасно. За да предотвратите неочакваното рестартиране на телефона, запишете незапазените данни и рестартирайте сега.</string>
+    <string name="usb_bad_removal_message">USB устройството с памет не е премахнато безопасно. За да предотвратите неочакваното рестартиране на таблета, запишете незапазените данни и рестартирайте сега.</string>
     <string name="usb_blocked_by_emergency_mode">Някои функции за USB не са достъпни в Спешен режим.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Не може да се използват функции, отнасящи се към свързано USB устройство, докато Режим на максимално пестене на енергия е активиран.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Някои USB функции ще бъдат ограничени, докато Режим на максимално пестене на енергия е включен.</string>
@@ -3236,7 +3236,7 @@
     <string name="usb_camera_disconnected_notification_title">Мултимедийно устройство е изключено</string>
     <string name="usb_cd_installer_notification_title">Софтуерна актуализация</string>
     <string name="usb_charging_notification_title">Устройството се зарежда през USB</string>
-    <string name="usb_charing_only_notification_title">USB зареждане</string>
+    <string name="usb_charing_only_notification_title">Свързано</string>
     <string name="usb_contaminant_detected_message">USB портът е деактивиран автоматично. Докоснете, за да научите повече.</string>
     <string name="usb_contaminant_detected_title">Течност или замърсяване в USB порта</string>
     <string name="usb_contaminant_not_detected_message">Телефонът вече не открива течности или замърсяване.</string>
@@ -3248,11 +3248,11 @@
     <string name="usb_host_cable_disconnected_notification_title">USB съединителят е изваден.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Достъпът до това устройство е невъзможен. Свързаното устройство се нуждае от външно захранване.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Свързано е USB устройство с голяма мощност.</string>
-    <string name="usb_host_resource_exceed_message">USB контролерът на телефона няма достатъчно ресурси за свързване на това устройство. Опитайте да изключите устройството и да го свържете отново.</string>
+    <string name="usb_host_resource_exceed_message">USB контролерът на таблета няма достатъчно ресурси за свързване на това устройство. Опитайте да изключите устройството и да го свържете отново.</string>
     <string name="usb_host_resource_exceed_title">Недостиг на ресурси за USB контролера</string>
-    <string name="usb_hub_depth_exceed_message">Телефонът може да поддържа само до 5 връзки на USB концентратор едновременно.</string>
+    <string name="usb_hub_depth_exceed_message">Таблетът може да поддържа само до 5 връзки на USB концентратор едновременно.</string>
     <string name="usb_hub_depth_exceed_title">Макс. връзки на USB концентр.</string>
-    <string name="usb_hub_power_exceed_message">Телефонът не може да осигури достатъчно захранване за това USB устройство. Свържете устройството към самостоятелно захранван USB концентратор, преди да го свържете към телефона.</string>
+    <string name="usb_hub_power_exceed_message">Таблетът не може да осигури достатъчно захранване за това USB устройство. Свържете устройството към самостоятелно захранван USB концентратор, преди да го свържете към таблета.</string>
     <string name="usb_increase_battery_usage">USB връзката може да увеличи използването на батерията.</string>
     <string name="usb_keyboard_connected_notification_title">Клавиатурата е свързана</string>
     <string name="usb_keyboard_disconnected_notification_title">Връзката с клавиатурата е прекъсната</string>
@@ -3295,8 +3295,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB запаметяващото устройство за е извадено неочаквано.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB запаметяващо устройство е свързано</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB запаметяващото устройство е извадено безопасно.</string>
-    <string name="usb_unblock_by_screen_unlock">Отключете телефона, за да използвате свързаното USB устройство.</string>
-    <string name="usb_unsupport_accessory_message">Това USB устройство не се поддържа от телефона.</string>
+    <string name="usb_unblock_by_screen_unlock">Отключете таблета, за да използвате свързаното USB устройство.</string>
+    <string name="usb_unsupport_accessory_message">Това USB устройство не се поддържа от таблета.</string>
     <string name="usb_unsupport_accessory_title">USB устройството не се поддържа</string>
     <string name="usb_unsupported_audio_accessory_message">Свързаното устройство не е съвместимо с този телефон. Докоснете, за да научите повече.</string>
     <string name="usb_unsupported_audio_accessory_title">Открит е аналогов аудиоаксесоар</string>
@@ -3317,19 +3317,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Може да ускорите изсушаването, като насочите вентилатор или сешоар (само хладен въздух) към порта.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Открихме влага или чужди материали в USB порта/порта за зареждане.
 
-Проверете USB порта/порта за зареждане за наличие на чужди материали като прах или замърсявания. За да предотвратите повреда на телефона, не включвайте нищо в порта за зареждане, докато не го почистите и влагата не изчезне.
+Проверете USB порта/порта за зареждане за наличие на чужди материали като прах или замърсявания. За да предотвратите повреда на таблета, не включвайте нищо в порта за зареждане, докато не го почистите и влагата не изчезне.
 
 За да изсушите порта, изтръскайте влагата, след което изчакайте да изсъхне, което може да отнеме няколко часа. Можете да ускорите сушенето, като насочите вентилатор или сешоар (само хладен въздух) към порта."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Открихме влага или чужди материали в USB порта/порта за зареждане.
 
-Проверете USB порта/порта за зареждане за наличие на чужди материали като прах или замърсявания. За да предотвратите повреда на телефона, не включвайте нищо в порта за зареждане, докато не го почистите и влагата не изчезне.
+Проверете USB порта/порта за зареждане за наличие на чужди материали като прах или замърсявания. За да предотвратите повреда на таблета, не включвайте нищо в порта за зареждане, докато не го почистите и влагата не изчезне.
 
-За да изсушите порта, изтръскайте влагата, след което изчакайте да изсъхне, което може да отнеме няколко часа. Можете да ускорите сушенето, като насочите вентилатор или сешоар (само хладен въздух) към порта.
+За да изсушите порта, изтръскайте влагата, след което изчакайте да изсъхне. Това може да отнеме няколко часа. Можете да ускорите сушенето, като насочите вентилатор или сешоар (само хладен въздух) към порта.
 
-Междувременно можете да зареждате телефона безжично."</string>
+Междувременно можете да зареждате таблета безжично."</string>
     <string name="usb_water_notification_content">Има влага или чужд материал в порта за зареждане/USB порта. Проверете преди зареждане.</string>
-    <string name="usb_water_notification_message">Открита е влага в порта за зарядното устройство/USB. Уверете се, че е сух, преди да заредите телефона. Изсушаването напълно може да отнеме известно време.</string>
+    <string name="usb_water_notification_message">Открита е влага в порта за зарядното устройство/USB. Уверете се, че е сух, преди да заредите таблета. Изсушаването напълно може да отнеме известно време.</string>
     <string name="usb_water_notification_message_button">Подробности</string>
     <string name="usb_water_notification_title">Проверка на зареждащия/USB порт</string>
     <string name="usbhostStorage_restrict">Политиката за защита пречи на използването на място за съхранение на USB хостове.</string>
@@ -3347,7 +3347,7 @@
     <string name="user_switched">Текущ потребител %1$s.</string>
     <string name="user_switching_message">Превключва се към: %1$s…</string>
     <string name="validity_period">Валидност:</string>
-    <string name="vdm_camera_access_denied">Няма достъп до камерата на телефона от вашия %1$s</string>
+    <string name="vdm_camera_access_denied">Няма достъп до камерата на таблета от вашия %1$s</string>
     <string name="vdm_pip_blocked">Функцията „Картина в картината“ не е налице при поточно предаване</string>
     <string name="vdm_secure_window">До това съдържание не може да се осъществи достъп при поточно предаване. Вместо това опитайте от телефона си.</string>
     <string name="view_and_control_notification_content">%s може да преглежда и управлява съдържанието на екрана ви. Докоснете за преглед.</string>

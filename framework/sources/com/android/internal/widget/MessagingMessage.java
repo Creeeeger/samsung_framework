@@ -94,7 +94,6 @@ public interface MessagingMessage extends MessagingLinearLayout.MessagingChild {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* synthetic */ default void lambda$hideAnimated$0() {
         setIsHidingAnimated(false);
     }

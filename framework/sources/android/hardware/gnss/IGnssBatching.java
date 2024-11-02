@@ -190,8 +190,9 @@ public interface IGnssBatching extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGnssBatching {
+        public static class Proxy implements IGnssBatching {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -364,7 +365,9 @@ public interface IGnssBatching extends IInterface {
     /* loaded from: classes2.dex */
     public static class Options implements Parcelable {
         public static final Parcelable.Creator<Options> CREATOR = new Parcelable.Creator<Options>() { // from class: android.hardware.gnss.IGnssBatching.Options.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Options createFromParcel(Parcel _aidl_source) {
                 Options _aidl_out = new Options();
@@ -372,7 +375,6 @@ public interface IGnssBatching extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Options[] newArray(int _aidl_size) {
                 return new Options[_aidl_size];
@@ -381,6 +383,25 @@ public interface IGnssBatching extends IInterface {
         public long periodNanos = 0;
         public float minDistanceMeters = 0.0f;
         public int flags = 0;
+
+        /* renamed from: android.hardware.gnss.IGnssBatching$Options$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Options> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Options createFromParcel(Parcel _aidl_source) {
+                Options _aidl_out = new Options();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Options[] newArray(int _aidl_size) {
+                return new Options[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

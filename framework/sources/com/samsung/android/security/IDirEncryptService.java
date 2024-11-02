@@ -59,8 +59,9 @@ public interface IDirEncryptService extends IInterface {
         static final int TRANSACTION_unmountSDCardByAdmin = 10;
         static final int TRANSACTION_unregisterListener = 2;
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDirEncryptService {
+        public static class Proxy implements IDirEncryptService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

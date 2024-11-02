@@ -236,13 +236,14 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     public final WindowConfiguration windowConfiguration;
     public static final Configuration EMPTY = new Configuration();
     public static final Parcelable.Creator<Configuration> CREATOR = new Parcelable.Creator<Configuration>() { // from class: android.content.res.Configuration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Configuration createFromParcel(Parcel source) {
             return new Configuration(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Configuration[] newArray(int size) {
             return new Configuration[size];
@@ -264,6 +265,10 @@ public final class Configuration implements Parcelable, Comparable<Configuration
 
     /* loaded from: classes.dex */
     public @interface Orientation {
+    }
+
+    /* synthetic */ Configuration(Parcel parcel, ConfigurationIA configurationIA) {
+        this(parcel);
     }
 
     public static int resetScreenLayout(int curLayout) {
@@ -1581,6 +1586,23 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         this.dexCompatEnabled = source.readInt();
         this.dexCompatUiMode = source.readInt();
         this.themeSeq = source.readInt();
+    }
+
+    /* renamed from: android.content.res.Configuration$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Configuration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Configuration createFromParcel(Parcel source) {
+            return new Configuration(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Configuration[] newArray(int size) {
+            return new Configuration[size];
+        }
     }
 
     private Configuration(Parcel source) {

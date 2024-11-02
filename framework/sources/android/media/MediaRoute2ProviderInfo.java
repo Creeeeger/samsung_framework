@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class MediaRoute2ProviderInfo implements Parcelable {
     public static final Parcelable.Creator<MediaRoute2ProviderInfo> CREATOR = new Parcelable.Creator<MediaRoute2ProviderInfo>() { // from class: android.media.MediaRoute2ProviderInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MediaRoute2ProviderInfo createFromParcel(Parcel in) {
             return new MediaRoute2ProviderInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaRoute2ProviderInfo[] newArray(int size) {
             return new MediaRoute2ProviderInfo[size];
@@ -27,6 +28,23 @@ public final class MediaRoute2ProviderInfo implements Parcelable {
     };
     final ArrayMap<String, MediaRoute2Info> mRoutes;
     final String mUniqueId;
+
+    /* renamed from: android.media.MediaRoute2ProviderInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MediaRoute2ProviderInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaRoute2ProviderInfo createFromParcel(Parcel in) {
+            return new MediaRoute2ProviderInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaRoute2ProviderInfo[] newArray(int size) {
+            return new MediaRoute2ProviderInfo[size];
+        }
+    }
 
     MediaRoute2ProviderInfo(Builder builder) {
         Objects.requireNonNull(builder, "builder must not be null.");

@@ -10,13 +10,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class SearchResponse implements Parcelable {
     public static final Parcelable.Creator<SearchResponse> CREATOR = new Parcelable.Creator<SearchResponse>() { // from class: android.app.cloudsearch.SearchResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchResponse createFromParcel(Parcel p) {
             return new SearchResponse();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchResponse[] newArray(int size) {
             return new SearchResponse[size];
@@ -29,6 +30,10 @@ public final class SearchResponse implements Parcelable {
 
     /* loaded from: classes.dex */
     public @interface SearchStatusCode {
+    }
+
+    /* synthetic */ SearchResponse(SearchResponseIA searchResponseIA) {
+        this();
     }
 
     private SearchResponse() {
@@ -47,6 +52,23 @@ public final class SearchResponse implements Parcelable {
     }
 
     public void setSource(String source) {
+    }
+
+    /* renamed from: android.app.cloudsearch.SearchResponse$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchResponse createFromParcel(Parcel p) {
+            return new SearchResponse();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchResponse[] newArray(int size) {
+            return new SearchResponse[size];
+        }
     }
 
     @Override // android.os.Parcelable

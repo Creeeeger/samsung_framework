@@ -54,7 +54,6 @@ public final class MessageQueue {
 
     private static native void nativeWake(long j);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MessageQueue(boolean quitAllowed) {
         this.mQuitAllowed = quitAllowed;
     }
@@ -195,18 +194,55 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0020, code lost:            if (r8.target == null) goto L14;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0022, code lost:            r7 = r8;        r8 = r8.next;     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0026, code lost:            if (r8 == null) goto L82;     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x002c, code lost:            if (r8.isAsynchronous() == false) goto L84;     */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x0095, code lost:            r5 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x0096, code lost:            if (r5 >= r2) goto L85;     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x0098, code lost:            r6 = r13.mPendingIdleHandlers;        r7 = r6[r5];        r6[r5] = null;        r6 = false;     */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x00a3, code lost:            r6 = r7.queueIdle();     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00a5, code lost:            r8 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x00a6, code lost:            android.util.Log.wtf(android.os.MessageQueue.TAG, "IdleHandler threw exception", r8);     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x00bd, code lost:            r2 = 0;        r4 = 0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0020, code lost:
+    
+        if (r8.target == null) goto L102;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0022, code lost:
+    
+        r7 = r8;
+        r8 = r8.next;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x0026, code lost:
+    
+        if (r8 == null) goto L170;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x002c, code lost:
+    
+        if (r8.isAsynchronous() == false) goto L172;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x0095, code lost:
+    
+        r5 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x0096, code lost:
+    
+        if (r5 >= r2) goto L173;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x0098, code lost:
+    
+        r6 = r13.mPendingIdleHandlers;
+        r7 = r6[r5];
+        r6[r5] = null;
+        r6 = false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x00a3, code lost:
+    
+        r6 = r7.queueIdle();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00a5, code lost:
+    
+        r8 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x00a6, code lost:
+    
+        android.util.Log.wtf(android.os.MessageQueue.TAG, "IdleHandler threw exception", r8);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x00bd, code lost:
+    
+        r2 = 0;
+        r4 = 0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -219,7 +255,6 @@ public final class MessageQueue {
         throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.next():android.os.Message");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void quit(boolean safe) {
         if (!this.mQuitAllowed) {
             throw new IllegalStateException("Main thread not allowed to quit.");
@@ -300,7 +335,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:46:0x0082 A[Catch: all -> 0x00a2, TryCatch #0 {, blocks: (B:5:0x0005, B:7:0x000b, B:9:0x0010, B:10:0x0036, B:13:0x0038, B:17:0x0048, B:20:0x004f, B:22:0x0053, B:24:0x0057, B:28:0x005e, B:30:0x0064, B:34:0x006d, B:44:0x0075, B:46:0x0082, B:47:0x0087, B:50:0x007a, B:51:0x0089, B:52:0x00a1), top: B:4:0x0005 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -406,7 +440,6 @@ public final class MessageQueue {
         throw new UnsupportedOperationException("Method not decompiled: android.os.MessageQueue.enqueueMessage(android.os.Message, long):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasMessages(Handler h, int what, Object object) {
         if (h == null) {
             return false;
@@ -421,7 +454,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasEqualMessages(Handler h, int what, Object object) {
         if (h == null) {
             return false;
@@ -436,7 +468,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasMessages(Handler h, Runnable r, Object object) {
         if (h == null) {
             return false;
@@ -451,7 +482,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasMessages(Handler h) {
         if (h == null) {
             return false;
@@ -466,7 +496,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeMessages(Handler h, int what, Object object) {
         if (h == null) {
             return;
@@ -492,7 +521,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeEqualMessages(Handler h, int what, Object object) {
         if (h == null) {
             return;
@@ -518,7 +546,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeMessages(Handler h, Runnable r, Object object) {
         if (h == null || r == null) {
             return;
@@ -569,7 +596,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeCallbacksAndMessages(Handler h, Object object) {
         if (h == null) {
             return;
@@ -595,7 +621,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeCallbacksAndEqualMessages(Handler h, Object object) {
         if (h == null) {
             return;
@@ -660,7 +685,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(Printer pw, String prefix, Handler h) {
         synchronized (this) {
             long now = SystemClock.uptimeMillis();
@@ -675,7 +699,6 @@ public final class MessageQueue {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long messageQueueToken = proto.start(fieldId);
         synchronized (this) {
@@ -688,7 +711,6 @@ public final class MessageQueue {
         proto.end(messageQueueToken);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class FileDescriptorRecord {
         public final FileDescriptor mDescriptor;

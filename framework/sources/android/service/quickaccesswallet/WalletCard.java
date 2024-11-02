@@ -18,13 +18,14 @@ public final class WalletCard implements Parcelable {
     public static final int CARD_TYPE_PAYMENT = 1;
     public static final int CARD_TYPE_UNKNOWN = 0;
     public static final Parcelable.Creator<WalletCard> CREATOR = new Parcelable.Creator<WalletCard>() { // from class: android.service.quickaccesswallet.WalletCard.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WalletCard createFromParcel(Parcel source) {
             return WalletCard.readFromParcel(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WalletCard[] newArray(int size) {
             return new WalletCard[size];
@@ -43,6 +44,10 @@ public final class WalletCard implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface CardType {
+    }
+
+    /* synthetic */ WalletCard(Builder builder, WalletCardIA walletCardIA) {
+        this(builder);
     }
 
     private WalletCard(Builder builder) {
@@ -84,7 +89,6 @@ public final class WalletCard implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static WalletCard readFromParcel(Parcel source) {
         String cardId = source.readString();
         int cardType = source.readInt();
@@ -102,6 +106,23 @@ public final class WalletCard implements Parcelable {
         source.readTypedList(arrayList, Location.CREATOR);
         builder.setCardLocations(arrayList);
         return builder.build();
+    }
+
+    /* renamed from: android.service.quickaccesswallet.WalletCard$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WalletCard> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WalletCard createFromParcel(Parcel source) {
+            return WalletCard.readFromParcel(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WalletCard[] newArray(int size) {
+            return new WalletCard[size];
+        }
     }
 
     public String getCardId() {

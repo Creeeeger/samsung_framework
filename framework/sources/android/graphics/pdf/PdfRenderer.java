@@ -32,17 +32,14 @@ public final class PdfRenderer implements AutoCloseable {
 
     private static native void nativeClose(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeClosePage(long j);
 
     private static native long nativeCreate(int i, long j);
 
     private static native int nativeGetPageCount(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeOpenPageAndGetSize(long j, int i, Point point);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeRenderPage(long j, long j2, long j3, int i, int i2, int i3, int i4, long j4, int i5);
 
     private static native boolean nativeScaleForPrinting(long j);
@@ -164,6 +161,10 @@ public final class PdfRenderer implements AutoCloseable {
         private final int mIndex;
         private long mNativePage;
         private final int mWidth;
+
+        /* synthetic */ Page(PdfRenderer pdfRenderer, int i, PageIA pageIA) {
+            this(i);
+        }
 
         private Page(int index) {
             CloseGuard closeGuard = CloseGuard.get();

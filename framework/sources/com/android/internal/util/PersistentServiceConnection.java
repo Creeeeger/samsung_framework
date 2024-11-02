@@ -20,6 +20,52 @@ public class PersistentServiceConnection<T> extends ObservableServiceConnection<
     private final int mMinConnectionDurationMs;
     private int mReconnectAttempts;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.util.PersistentServiceConnection$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements ObservableServiceConnection.Callback<T> {
+        private long mConnectedTime;
+
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.util.ObservableServiceConnection.Callback
+        public void onConnected(ObservableServiceConnection<T> connection, T service) {
+            this.mConnectedTime = PersistentServiceConnection.this.mInjector.uptimeMillis();
+        }
+
+        @Override // com.android.internal.util.ObservableServiceConnection.Callback
+        public void onDisconnected(ObservableServiceConnection<T> connection, int reason) {
+            if (reason == 4) {
+                return;
+            }
+            synchronized (PersistentServiceConnection.this.mLock) {
+                if (PersistentServiceConnection.this.mInjector.uptimeMillis() - this.mConnectedTime > PersistentServiceConnection.this.mMinConnectionDurationMs) {
+                    PersistentServiceConnection.this.mReconnectAttempts = 0;
+                    PersistentServiceConnection.this.bindInternalLocked();
+                } else {
+                    PersistentServiceConnection.this.scheduleConnectionAttemptLocked();
+                }
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.util.PersistentServiceConnection$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (PersistentServiceConnection.this.mLock) {
+                PersistentServiceConnection.this.mCancelToken = null;
+                PersistentServiceConnection.this.bindInternalLocked();
+            }
+        }
+    }
+
     public PersistentServiceConnection(Context context, Executor executor, Handler handler, ObservableServiceConnection.ServiceTransformer<T> transformer, Intent serviceIntent, int flags, int minConnectionDurationMs, int maxReconnectAttempts, int baseReconnectDelayMs) {
         this(context, executor, handler, transformer, serviceIntent, flags, minConnectionDurationMs, maxReconnectAttempts, baseReconnectDelayMs, new Injector());
     }
@@ -28,6 +74,9 @@ public class PersistentServiceConnection<T> extends ObservableServiceConnection<
         super(context, executor, transformer, serviceIntent, flags);
         this.mConnectionCallback = new ObservableServiceConnection.Callback<T>() { // from class: com.android.internal.util.PersistentServiceConnection.1
             private long mConnectedTime;
+
+            AnonymousClass1() {
+            }
 
             @Override // com.android.internal.util.ObservableServiceConnection.Callback
             public void onConnected(ObservableServiceConnection<T> connection, T service) {
@@ -51,6 +100,9 @@ public class PersistentServiceConnection<T> extends ObservableServiceConnection<
         };
         this.mLock = new Object();
         this.mConnectRunnable = new Runnable() { // from class: com.android.internal.util.PersistentServiceConnection.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 synchronized (PersistentServiceConnection.this.mLock) {
@@ -77,7 +129,6 @@ public class PersistentServiceConnection<T> extends ObservableServiceConnection<
         return bindInternalLocked;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean bindInternalLocked() {
         return super.bind();
     }
@@ -99,7 +150,6 @@ public class PersistentServiceConnection<T> extends ObservableServiceConnection<
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void scheduleConnectionAttemptLocked() {
         cancelPendingConnectionAttemptLocked();
         int i = this.mReconnectAttempts;

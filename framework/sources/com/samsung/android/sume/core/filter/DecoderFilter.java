@@ -152,7 +152,6 @@ public class DecoderFilter extends MediaCodecFilter implements BufferSupplier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public MediaBuffer supplyMediaBuffer() {
         Log.d(TAG, "supplyMediaBuffer");
         if (this.mediaCodec == null) {

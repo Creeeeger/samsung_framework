@@ -70,7 +70,6 @@ public class ScaleGestureDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SaveState {
         float mLenBeforeSqrt;
@@ -314,7 +313,7 @@ public class ScaleGestureDetector {
                 int mQuickScaleDoubleTapY;
                 int mQuickScaleSpanSlop;
 
-                {
+                AnonymousClass1() {
                     this.mQuickScaleSpanSlop = ViewConfiguration.get(ScaleGestureDetector.this.mContext).getScaledTouchSlop();
                 }
 
@@ -338,6 +337,34 @@ public class ScaleGestureDetector {
             GestureDetector gestureDetector = new GestureDetector(this.mContext, gestureListener, this.mHandler);
             this.mGestureDetector = gestureDetector;
             gestureDetector.setIsLongpressEnabled(false);
+        }
+    }
+
+    /* renamed from: android.view.ScaleGestureDetector$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends GestureDetector.SimpleOnGestureListener {
+        int mQuickScaleDoubleTapY;
+        int mQuickScaleSpanSlop;
+
+        AnonymousClass1() {
+            this.mQuickScaleSpanSlop = ViewConfiguration.get(ScaleGestureDetector.this.mContext).getScaledTouchSlop();
+        }
+
+        @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnDoubleTapListener
+        public boolean onDoubleTap(MotionEvent e) {
+            ScaleGestureDetector.this.mAnchoredScaleStartX = e.getX();
+            ScaleGestureDetector.this.mAnchoredScaleStartY = e.getY();
+            this.mQuickScaleDoubleTapY = (int) e.getY();
+            return true;
+        }
+
+        @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnDoubleTapListener
+        public boolean onDoubleTapEvent(MotionEvent e) {
+            int delta = (int) Math.abs(this.mQuickScaleDoubleTapY - e.getY());
+            if (delta > this.mQuickScaleSpanSlop) {
+                ScaleGestureDetector.this.mAnchoredScaleMode = 1;
+            }
+            return true;
         }
     }
 

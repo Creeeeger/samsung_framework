@@ -16,13 +16,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TaskFragmentTransaction implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentTransaction> CREATOR = new Parcelable.Creator<TaskFragmentTransaction>() { // from class: android.window.TaskFragmentTransaction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaskFragmentTransaction createFromParcel(Parcel in) {
             return new TaskFragmentTransaction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentTransaction[] newArray(int size) {
             return new TaskFragmentTransaction[size];
@@ -40,6 +41,10 @@ public final class TaskFragmentTransaction implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes4.dex */
     @interface ChangeType {
+    }
+
+    /* synthetic */ TaskFragmentTransaction(Parcel parcel, TaskFragmentTransactionIA taskFragmentTransactionIA) {
+        this(parcel);
     }
 
     public TaskFragmentTransaction() {
@@ -98,16 +103,34 @@ public final class TaskFragmentTransaction implements Parcelable {
         return 0;
     }
 
+    /* renamed from: android.window.TaskFragmentTransaction$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentTransaction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentTransaction createFromParcel(Parcel in) {
+            return new TaskFragmentTransaction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentTransaction[] newArray(int size) {
+            return new TaskFragmentTransaction[size];
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static final class Change implements Parcelable {
         public static final Parcelable.Creator<Change> CREATOR = new Parcelable.Creator<Change>() { // from class: android.window.TaskFragmentTransaction.Change.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Change createFromParcel(Parcel in) {
                 return new Change(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Change[] newArray(int size) {
                 return new Change[size];
@@ -122,6 +145,10 @@ public final class TaskFragmentTransaction implements Parcelable {
         private IBinder mTaskFragmentToken;
         private int mTaskId;
         private final int mType;
+
+        /* synthetic */ Change(Parcel parcel, ChangeIA changeIA) {
+            this(parcel);
+        }
 
         public Change(int type) {
             this.mType = type;
@@ -244,6 +271,23 @@ public final class TaskFragmentTransaction implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: android.window.TaskFragmentTransaction$Change$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Change> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Change createFromParcel(Parcel in) {
+                return new Change(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Change[] newArray(int size) {
+                return new Change[size];
+            }
         }
     }
 }

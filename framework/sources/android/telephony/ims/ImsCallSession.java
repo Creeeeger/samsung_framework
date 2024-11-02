@@ -677,9 +677,12 @@ public class ImsCallSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class IImsCallSessionListenerProxy extends IImsCallSessionListener.Stub {
+        /* synthetic */ IImsCallSessionListenerProxy(ImsCallSession imsCallSession, IImsCallSessionListenerProxyIA iImsCallSessionListenerProxyIA) {
+            this();
+        }
+
         private IImsCallSessionListenerProxy() {
         }
 
@@ -693,7 +696,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInitiating$0(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionInitiating(ImsCallSession.this, profile);
@@ -710,7 +712,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionProgressing$1(ImsStreamMediaProfile profile) {
             if (ImsCallSession.this.mClosed) {
                 Log.d(ImsCallSession.TAG, "The session is closed so don't notify callSessionProgressing");
@@ -729,7 +730,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInitiated$2(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionStarted(ImsCallSession.this, profile);
@@ -746,7 +746,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInitiatingFailed$3(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionStartFailed(ImsCallSession.this, reasonInfo);
@@ -763,7 +762,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInitiatedFailed$4(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionStartFailed(ImsCallSession.this, reasonInfo);
@@ -780,7 +778,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionTerminated$5(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionTerminated(ImsCallSession.this, reasonInfo);
@@ -797,7 +794,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHeld$6(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHeld(ImsCallSession.this, profile);
@@ -814,7 +810,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHoldFailed$7(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHoldFailed(ImsCallSession.this, reasonInfo);
@@ -831,7 +826,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHoldReceived$8(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHoldReceived(ImsCallSession.this, profile);
@@ -848,7 +842,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionResumed$9(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionResumed(ImsCallSession.this, profile);
@@ -865,7 +858,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionResumeFailed$10(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionResumeFailed(ImsCallSession.this, reasonInfo);
@@ -882,7 +874,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionResumeReceived$11(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionResumeReceived(ImsCallSession.this, profile);
@@ -912,7 +903,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionMergeComplete$12(IImsCallSession newSession) {
             if (ImsCallSession.this.mListener != null) {
                 if (newSession != null) {
@@ -933,7 +923,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionMergeFailed$13(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionMergeFailed(ImsCallSession.this, reasonInfo);
@@ -950,7 +939,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionUpdated$14(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionUpdated(ImsCallSession.this, profile);
@@ -967,7 +955,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionUpdateFailed$15(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionUpdateFailed(ImsCallSession.this, reasonInfo);
@@ -984,7 +971,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionUpdateReceived$16(ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionUpdateReceived(ImsCallSession.this, profile);
@@ -1001,7 +987,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionConferenceExtended$17(IImsCallSession newSession, ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionConferenceExtended(ImsCallSession.this, new ImsCallSession(newSession), profile);
@@ -1018,7 +1003,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionConferenceExtendFailed$18(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionConferenceExtendFailed(ImsCallSession.this, reasonInfo);
@@ -1035,7 +1019,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionConferenceExtendReceived$19(IImsCallSession newSession, ImsCallProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionConferenceExtendReceived(ImsCallSession.this, new ImsCallSession(newSession), profile);
@@ -1052,7 +1035,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInviteParticipantsRequestDelivered$20() {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionInviteParticipantsRequestDelivered(ImsCallSession.this);
@@ -1069,7 +1051,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionInviteParticipantsRequestFailed$21(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionInviteParticipantsRequestFailed(ImsCallSession.this, reasonInfo);
@@ -1086,7 +1067,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRemoveParticipantsRequestDelivered$22() {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRemoveParticipantsRequestDelivered(ImsCallSession.this);
@@ -1103,7 +1083,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRemoveParticipantsRequestFailed$23(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRemoveParticipantsRequestFailed(ImsCallSession.this, reasonInfo);
@@ -1120,7 +1099,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionConferenceStateUpdated$24(ImsConferenceState state) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionConferenceStateUpdated(ImsCallSession.this, state);
@@ -1137,7 +1115,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionUssdMessageReceived$25(int mode, String ussdMessage) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionUssdMessageReceived(ImsCallSession.this, mode, ussdMessage);
@@ -1154,7 +1131,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionMayHandover$26(int srcNetworkType, int targetNetworkType) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionMayHandover(ImsCallSession.this, srcNetworkType, targetNetworkType);
@@ -1171,7 +1147,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHandover$27(int srcNetworkType, int targetNetworkType, ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHandover(ImsCallSession.this, srcNetworkType, targetNetworkType, reasonInfo);
@@ -1188,7 +1163,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionHandoverFailed$28(int srcNetworkType, int targetNetworkType, ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionHandoverFailed(ImsCallSession.this, srcNetworkType, targetNetworkType, reasonInfo);
@@ -1205,7 +1179,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionTtyModeReceived$29(int mode) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionTtyModeReceived(ImsCallSession.this, mode);
@@ -1222,7 +1195,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionMultipartyStateChanged$30(boolean isMultiParty) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionMultipartyStateChanged(ImsCallSession.this, isMultiParty);
@@ -1239,7 +1211,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionSuppServiceReceived$31(ImsSuppServiceNotification suppServiceInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionSuppServiceReceived(ImsCallSession.this, suppServiceInfo);
@@ -1256,7 +1227,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRttModifyRequestReceived$32(ImsCallProfile callProfile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRttModifyRequestReceived(ImsCallSession.this, callProfile);
@@ -1273,7 +1243,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRttModifyResponseReceived$33(int status) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRttModifyResponseReceived(status);
@@ -1290,7 +1259,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRttMessageReceived$34(String rttMessage) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRttMessageReceived(rttMessage);
@@ -1307,7 +1275,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRttAudioIndicatorChanged$35(ImsStreamMediaProfile profile) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRttAudioIndicatorChanged(profile);
@@ -1324,7 +1291,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionTransferred$36() {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionTransferred(ImsCallSession.this);
@@ -1341,7 +1307,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionTransferFailed$37(ImsReasonInfo reasonInfo) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionTransferFailed(ImsCallSession.this, reasonInfo);
@@ -1379,7 +1344,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionDtmfReceived$38(char dtmf) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionDtmfReceived(dtmf);
@@ -1396,7 +1360,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callQualityChanged$39(CallQuality callQuality) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callQualityChanged(callQuality);
@@ -1413,7 +1376,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionRtpHeaderExtensionsReceived$40(List extensions) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionRtpHeaderExtensionsReceived(new ArraySet(extensions));
@@ -1431,7 +1393,6 @@ public class ImsCallSession {
             }, ImsCallSession.this.mListenerExecutor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$callSessionSendAnbrQuery$41(int mediaType, int direction, int bitsPerSecond) {
             if (ImsCallSession.this.mListener != null) {
                 ImsCallSession.this.mListener.callSessionSendAnbrQuery(mediaType, direction, bitsPerSecond);

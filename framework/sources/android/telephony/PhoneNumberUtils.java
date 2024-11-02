@@ -254,8 +254,14 @@ public class PhoneNumberUtils {
         return !isDialable(ch) && ('a' > ch || ch > 'z') && ('A' > ch || ch > 'Z');
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0081, code lost:            return r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x007e, code lost:            if (r12 == null) goto L37;     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0081, code lost:
+    
+        return r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x007e, code lost:
+    
+        if (r12 == null) goto L83;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -2028,7 +2034,6 @@ public class PhoneNumberUtils {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class CountryCallingCodeAndNewIndex {
         public final int countryCallingCode;
@@ -2331,33 +2336,121 @@ public class PhoneNumberUtils {
         return false;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:110:0x0131, code lost:            if (r3 != 11) goto L55;     */
-    /* JADX WARN: Code restructure failed: missing block: B:111:0x0133, code lost:            if ('1' == r5) goto L54;     */
-    /* JADX WARN: Code restructure failed: missing block: B:114:0x013c, code lost:            r15 = r2.substring(r3 - 11);     */
-    /* JADX WARN: Code restructure failed: missing block: B:115:0x0146, code lost:            if (r11 == false) goto L58;     */
-    /* JADX WARN: Code restructure failed: missing block: B:116:0x0148, code lost:            r4 = r2.substring(android.telephony.PhoneNumberUtils.otaCountryIDDPrefix.length(), r2.length());     */
-    /* JADX WARN: Code restructure failed: missing block: B:117:0x015d, code lost:            if (r11 == false) goto L72;     */
-    /* JADX WARN: Code restructure failed: missing block: B:118:0x015f, code lost:            r13 = android.telephony.PhoneNumberUtils.otaCountryIDDPrefix.length();        r13 = r2.substring(r13);     */
-    /* JADX WARN: Code restructure failed: missing block: B:119:0x016e, code lost:            if (isOneNanp(r15) == false) goto L65;     */
-    /* JADX WARN: Code restructure failed: missing block: B:121:0x017a, code lost:            if (r2.length() != (r13 + 11)) goto L66;     */
-    /* JADX WARN: Code restructure failed: missing block: B:122:0x017c, code lost:            r10.append(r13);     */
-    /* JADX WARN: Code restructure failed: missing block: B:124:0x01a3, code lost:            return r10.toString();     */
-    /* JADX WARN: Code restructure failed: missing block: B:126:0x0188, code lost:            if (startWithCountryCode(r4, r22) == false) goto L69;     */
-    /* JADX WARN: Code restructure failed: missing block: B:127:0x018a, code lost:            com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "Found Country Code after IDD");        r10.append(r2);        r10.replace(0, r13, android.telephony.PhoneNumberUtils.NANP_IDP_STRING);     */
-    /* JADX WARN: Code restructure failed: missing block: B:128:0x0197, code lost:            com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "No Condition");        r10.append(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:131:0x01aa, code lost:            if ('+' != r5) goto L85;     */
-    /* JADX WARN: Code restructure failed: missing block: B:132:0x01ac, code lost:            r6 = r2.substring(1);     */
-    /* JADX WARN: Code restructure failed: missing block: B:133:0x01b5, code lost:            if (isOneNanp(r6) == false) goto L79;     */
-    /* JADX WARN: Code restructure failed: missing block: B:135:0x01bd, code lost:            if (r2.length() != 12) goto L79;     */
-    /* JADX WARN: Code restructure failed: missing block: B:136:0x01bf, code lost:            r10.append(r6);     */
-    /* JADX WARN: Code restructure failed: missing block: B:138:0x01dc, code lost:            return r10.toString();     */
-    /* JADX WARN: Code restructure failed: missing block: B:140:0x01c7, code lost:            if (startWithCountryCode(r6, r22) == false) goto L82;     */
-    /* JADX WARN: Code restructure failed: missing block: B:141:0x01c9, code lost:            r10.append(android.telephony.PhoneNumberUtils.NANP_IDP_STRING);        r10.append(r6);     */
-    /* JADX WARN: Code restructure failed: missing block: B:142:0x01d0, code lost:            com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "1NANP is not matched");        r10.append(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:144:0x01e1, code lost:            if (startWithCountryCode(r2, r22) == false) goto L91;     */
-    /* JADX WARN: Code restructure failed: missing block: B:145:0x01e3, code lost:            r10.append(android.telephony.PhoneNumberUtils.NANP_IDP_STRING);        r10.append(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:146:0x01ed, code lost:            return r10.toString();     */
-    /* JADX WARN: Code restructure failed: missing block: B:147:0x015b, code lost:            r4 = null;     */
+    /* JADX WARN: Code restructure failed: missing block: B:110:0x0131, code lost:
+    
+        if (r3 != 11) goto L215;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:111:0x0133, code lost:
+    
+        if ('1' == r5) goto L214;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:114:0x013c, code lost:
+    
+        r15 = r2.substring(r3 - 11);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:115:0x0146, code lost:
+    
+        if (r11 == false) goto L218;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:116:0x0148, code lost:
+    
+        r4 = r2.substring(android.telephony.PhoneNumberUtils.otaCountryIDDPrefix.length(), r2.length());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:117:0x015d, code lost:
+    
+        if (r11 == false) goto L232;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:118:0x015f, code lost:
+    
+        r13 = android.telephony.PhoneNumberUtils.otaCountryIDDPrefix.length();
+        r13 = r2.substring(r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:119:0x016e, code lost:
+    
+        if (isOneNanp(r15) == false) goto L225;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:121:0x017a, code lost:
+    
+        if (r2.length() != (r13 + 11)) goto L226;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:122:0x017c, code lost:
+    
+        r10.append(r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:124:0x01a3, code lost:
+    
+        return r10.toString();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:126:0x0188, code lost:
+    
+        if (startWithCountryCode(r4, r22) == false) goto L229;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:127:0x018a, code lost:
+    
+        com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "Found Country Code after IDD");
+        r10.append(r2);
+        r10.replace(0, r13, android.telephony.PhoneNumberUtils.NANP_IDP_STRING);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:128:0x0197, code lost:
+    
+        com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "No Condition");
+        r10.append(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:131:0x01aa, code lost:
+    
+        if ('+' != r5) goto L245;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:132:0x01ac, code lost:
+    
+        r6 = r2.substring(1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:133:0x01b5, code lost:
+    
+        if (isOneNanp(r6) == false) goto L239;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:135:0x01bd, code lost:
+    
+        if (r2.length() != 12) goto L239;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:136:0x01bf, code lost:
+    
+        r10.append(r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:138:0x01dc, code lost:
+    
+        return r10.toString();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:140:0x01c7, code lost:
+    
+        if (startWithCountryCode(r6, r22) == false) goto L242;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:141:0x01c9, code lost:
+    
+        r10.append(android.telephony.PhoneNumberUtils.NANP_IDP_STRING);
+        r10.append(r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:142:0x01d0, code lost:
+    
+        com.android.telephony.Rlog.d(android.telephony.PhoneNumberUtils.LOG_TAG, "1NANP is not matched");
+        r10.append(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:144:0x01e1, code lost:
+    
+        if (startWithCountryCode(r2, r22) == false) goto L251;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:145:0x01e3, code lost:
+    
+        r10.append(android.telephony.PhoneNumberUtils.NANP_IDP_STRING);
+        r10.append(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:146:0x01ed, code lost:
+    
+        return r10.toString();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:147:0x015b, code lost:
+    
+        r4 = null;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

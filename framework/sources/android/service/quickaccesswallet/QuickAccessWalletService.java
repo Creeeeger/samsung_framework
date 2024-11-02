@@ -30,14 +30,12 @@ public abstract class QuickAccessWalletService extends Service {
 
     public abstract void onWalletDismissed();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletService$1, reason: invalid class name */
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletService$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IQuickAccessWalletService.Stub {
         AnonymousClass1() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onWalletCardsRequested$0(GetWalletCardsRequest request, IQuickAccessWalletServiceCallbacks callback) {
             QuickAccessWalletService.this.onWalletCardsRequestedInternal(request, callback);
         }
@@ -52,7 +50,6 @@ public abstract class QuickAccessWalletService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onWalletCardSelected$1(SelectWalletCardRequest request) {
             QuickAccessWalletService.this.onWalletCardSelected(request);
         }
@@ -89,12 +86,10 @@ public abstract class QuickAccessWalletService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTargetActivityIntentRequested$2(IQuickAccessWalletServiceCallbacks callbacks) {
             QuickAccessWalletService.this.onTargetActivityIntentRequestedInternal(callbacks);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$registerWalletServiceEventListener$3(WalletServiceEventListenerRequest request, IQuickAccessWalletServiceCallbacks callback) {
             QuickAccessWalletService.this.registerDismissWalletListenerInternal(request, callback);
         }
@@ -109,7 +104,6 @@ public abstract class QuickAccessWalletService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$unregisterWalletServiceEventListener$4(WalletServiceEventListenerRequest request) {
             QuickAccessWalletService.this.unregisterDismissWalletListenerInternal(request);
         }
@@ -125,12 +119,10 @@ public abstract class QuickAccessWalletService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onWalletCardsRequestedInternal(GetWalletCardsRequest request, IQuickAccessWalletServiceCallbacks callback) {
         onWalletCardsRequested(request, new GetWalletCardsCallbackImpl(request, callback, this.mHandler, this));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onTargetActivityIntentRequestedInternal(IQuickAccessWalletServiceCallbacks callbacks) {
         try {
             callbacks.onTargetActivityPendingIntentReceived(getTargetActivityPendingIntent());
@@ -161,8 +153,7 @@ public abstract class QuickAccessWalletService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: sendWalletServiceEventInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: sendWalletServiceEventInternal */
     public void lambda$sendWalletServiceEvent$0(WalletServiceEvent serviceEvent) {
         IQuickAccessWalletServiceCallbacks iQuickAccessWalletServiceCallbacks = this.mEventListener;
         if (iQuickAccessWalletServiceCallbacks == null) {
@@ -178,13 +169,11 @@ public abstract class QuickAccessWalletService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void registerDismissWalletListenerInternal(WalletServiceEventListenerRequest request, IQuickAccessWalletServiceCallbacks callback) {
         this.mEventListenerId = request.getListenerId();
         this.mEventListener = callback;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void unregisterDismissWalletListenerInternal(WalletServiceEventListenerRequest request) {
         String str = this.mEventListenerId;
         if (str != null && str.equals(request.getListenerId())) {

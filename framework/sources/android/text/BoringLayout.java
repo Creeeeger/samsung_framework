@@ -374,7 +374,6 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
             return super.toString() + " width=" + this.width;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void reset() {
             this.top = 0;
             this.bottom = 0;

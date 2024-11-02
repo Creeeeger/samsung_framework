@@ -162,6 +162,14 @@ public final class AudioAttributes implements Parcelable {
     public @interface SpatializationBehavior {
     }
 
+    /* synthetic */ AudioAttributes(AudioAttributesIA audioAttributesIA) {
+        this();
+    }
+
+    /* synthetic */ AudioAttributes(Parcel parcel, AudioAttributesIA audioAttributesIA) {
+        this(parcel);
+    }
+
     static {
         SparseIntArray sparseIntArray = new SparseIntArray();
         SUPPRESSIBLE_USAGES = sparseIntArray;
@@ -184,13 +192,14 @@ public final class AudioAttributes implements Parcelable {
         sparseIntArray.put(13, 6);
         SDK_USAGES = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16};
         CREATOR = new Parcelable.Creator<AudioAttributes>() { // from class: android.media.AudioAttributes.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AudioAttributes createFromParcel(Parcel p) {
                 return new AudioAttributes(p);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AudioAttributes[] newArray(int size) {
                 return new AudioAttributes[size];
@@ -751,6 +760,23 @@ public final class AudioAttributes implements Parcelable {
         }
     }
 
+    /* renamed from: android.media.AudioAttributes$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioAttributes createFromParcel(Parcel p) {
+            return new AudioAttributes(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioAttributes[] newArray(int size) {
+            return new AudioAttributes[size];
+        }
+    }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -914,7 +940,6 @@ public final class AudioAttributes implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int usageForStreamType(int streamType) {
         switch (streamType) {
             case 0:

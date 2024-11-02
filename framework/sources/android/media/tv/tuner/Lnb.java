@@ -70,7 +70,6 @@ public class Lnb implements AutoCloseable {
     private Lnb() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCallbackAndOwner(Tuner tuner, Executor executor, LnbCallback callback) {
         synchronized (this.mCallbackLock) {
             if (callback != null && executor != null) {
@@ -97,7 +96,6 @@ public class Lnb implements AutoCloseable {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setOwner(Tuner newOwner) {
         Objects.requireNonNull(newOwner, "newOwner must not be null");
         synchronized (this.mLock) {
@@ -121,7 +119,6 @@ public class Lnb implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onEvent$0(LnbCallback callback, int eventType) {
         synchronized (this.mCallbackLock) {
             if (callback != null) {
@@ -146,7 +143,6 @@ public class Lnb implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDiseqcMessage$1(LnbCallback callback, byte[] diseqcMessage) {
         synchronized (this.mCallbackLock) {
             if (callback != null) {

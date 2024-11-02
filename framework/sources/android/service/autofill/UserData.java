@@ -21,7 +21,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class UserData implements FieldClassificationUserData, Parcelable {
     public static final Parcelable.Creator<UserData> CREATOR = new Parcelable.Creator<UserData>() { // from class: android.service.autofill.UserData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UserData createFromParcel(Parcel parcel) {
             String id = parcel.readString();
@@ -47,7 +49,6 @@ public final class UserData implements FieldClassificationUserData, Parcelable {
             return builder.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UserData[] newArray(int size) {
             return new UserData[size];
@@ -66,6 +67,10 @@ public final class UserData implements FieldClassificationUserData, Parcelable {
     private final Bundle mDefaultArgs;
     private final String mId;
     private final String[] mValues;
+
+    /* synthetic */ UserData(Builder builder, UserDataIA userDataIA) {
+        this(builder);
+    }
 
     private UserData(Builder builder) {
         this.mId = builder.mId;
@@ -311,6 +316,43 @@ public final class UserData implements FieldClassificationUserData, Parcelable {
         parcel.writeBundle(this.mDefaultArgs);
         parcel.writeMap(this.mCategoryAlgorithms);
         parcel.writeMap(this.mCategoryArgs);
+    }
+
+    /* renamed from: android.service.autofill.UserData$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UserData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserData createFromParcel(Parcel parcel) {
+            String id = parcel.readString();
+            String[] categoryIds = parcel.readStringArray();
+            String[] values = parcel.readStringArray();
+            String defaultAlgorithm = parcel.readString();
+            Bundle defaultArgs = parcel.readBundle();
+            ArrayMap<String, String> categoryAlgorithms = new ArrayMap<>();
+            parcel.readMap(categoryAlgorithms, String.class.getClassLoader());
+            ArrayMap<String, Bundle> categoryArgs = new ArrayMap<>();
+            parcel.readMap(categoryArgs, Bundle.class.getClassLoader());
+            Builder builder = new Builder(id, values[0], categoryIds[0]).setFieldClassificationAlgorithm(defaultAlgorithm, defaultArgs);
+            for (int i = 1; i < categoryIds.length; i++) {
+                builder.add(values[i], categoryIds[i]);
+            }
+            int size = categoryAlgorithms.size();
+            if (size > 0) {
+                for (int i2 = 0; i2 < size; i2++) {
+                    String categoryId = categoryAlgorithms.keyAt(i2);
+                    builder.setFieldClassificationAlgorithmForCategory(categoryId, categoryAlgorithms.valueAt(i2), categoryArgs.get(categoryId));
+                }
+            }
+            return builder.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserData[] newArray(int size) {
+            return new UserData[size];
+        }
     }
 
     public static int getMaxUserDataSize() {

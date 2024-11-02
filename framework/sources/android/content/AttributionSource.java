@@ -25,13 +25,14 @@ public final class AttributionSource implements Parcelable {
     private static final String DESCRIPTOR = "android.content.AttributionSource";
     private static final Binder sDefaultToken = new Binder(DESCRIPTOR);
     public static final Parcelable.Creator<AttributionSource> CREATOR = new Parcelable.Creator<AttributionSource>() { // from class: android.content.AttributionSource.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AttributionSource[] newArray(int size) {
             return new AttributionSource[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AttributionSource createFromParcel(Parcel in) {
             return new AttributionSource(in);
@@ -297,6 +298,23 @@ public final class AttributionSource implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.content.AttributionSource$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AttributionSource> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AttributionSource[] newArray(int size) {
+            return new AttributionSource[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AttributionSource createFromParcel(Parcel in) {
+            return new AttributionSource(in);
+        }
     }
 
     /* loaded from: classes.dex */

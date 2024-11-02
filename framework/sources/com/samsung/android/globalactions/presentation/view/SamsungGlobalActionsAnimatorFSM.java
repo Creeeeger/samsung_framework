@@ -163,9 +163,10 @@ public class SamsungGlobalActionsAnimatorFSM {
         }
     }
 
-    /* renamed from: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimatorFSM$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimatorFSM$1 */
     /* loaded from: classes5.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$globalactions$presentation$view$SamsungGlobalActionsAnimatorFSM$State;
 
         static {

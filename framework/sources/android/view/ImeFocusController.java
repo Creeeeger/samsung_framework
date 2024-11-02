@@ -32,7 +32,6 @@ public final class ImeFocusController {
         void onWindowLostFocus(ViewRootImpl viewRootImpl);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ImeFocusController(ViewRootImpl viewRootImpl) {
         this.mViewRootImpl = viewRootImpl;
     }
@@ -44,12 +43,10 @@ public final class ImeFocusController {
         return this.mDelegate;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onMovedToDisplay() {
         this.mDelegate = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onTraversal(boolean hasWindowFocus, WindowManager.LayoutParams windowAttribute) {
         boolean hasImeFocus = WindowManager.LayoutParams.mayUseInputMethod(windowAttribute.flags);
         if (!hasWindowFocus || isInLocalFocusMode(windowAttribute) || hasImeFocus == this.mHasImeFocus) {
@@ -64,7 +61,6 @@ public final class ImeFocusController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onPreWindowFocus(boolean hasWindowFocus, WindowManager.LayoutParams windowAttribute) {
         boolean mayUseInputMethod = WindowManager.LayoutParams.mayUseInputMethod(windowAttribute.flags);
         this.mHasImeFocus = mayUseInputMethod;
@@ -79,7 +75,6 @@ public final class ImeFocusController {
         getImmDelegate().onPreWindowGainedFocus(this.mViewRootImpl);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onPostWindowFocus(View focusedView, boolean hasWindowFocus, WindowManager.LayoutParams windowAttribute) {
         if (!hasWindowFocus || !this.mHasImeFocus || isInLocalFocusMode(windowAttribute)) {
             Log.i(TAG, "onPostWindowFocus: skipped, hasWindowFocus=" + hasWindowFocus + " mHasImeFocus=" + this.mHasImeFocus);
@@ -92,22 +87,18 @@ public final class ImeFocusController {
         getImmDelegate().onPostWindowGainedFocus(viewForWindowFocus, windowAttribute);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onScheduledCheckFocus() {
         getImmDelegate().onScheduledCheckFocus(this.mViewRootImpl);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onViewFocusChanged(View view, boolean hasFocus) {
         getImmDelegate().onViewFocusChanged(view, hasFocus);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onViewDetachedFromWindow(View view) {
         getImmDelegate().onViewDetachedFromWindow(view, this.mViewRootImpl);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onWindowDismissed() {
         getImmDelegate().onWindowDismissed(this.mViewRootImpl);
         this.mHasImeFocus = false;
@@ -117,7 +108,6 @@ public final class ImeFocusController {
         return (windowAttribute.flags & 268435456) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int onProcessImeInputStage(Object token, InputEvent event, WindowManager.LayoutParams windowAttribute, InputMethodManager.FinishedInputEventCallback callback) {
         InputMethodManager imm;
         if (!this.mHasImeFocus || isInLocalFocusMode(windowAttribute) || (imm = (InputMethodManager) this.mViewRootImpl.mContext.getSystemService(InputMethodManager.class)) == null) {
@@ -126,12 +116,10 @@ public final class ImeFocusController {
         return imm.dispatchInputEvent(event, token, callback, this.mViewRootImpl.mHandler);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasImeFocus() {
         return this.mHasImeFocus;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
         proto.write(1133871366145L, this.mHasImeFocus);

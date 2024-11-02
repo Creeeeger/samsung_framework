@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextExercise extends SContextEventContext {
     public static final Parcelable.Creator<SContextExercise> CREATOR = new Parcelable.Creator<SContextExercise>() { // from class: android.hardware.scontext.SContextExercise.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextExercise createFromParcel(Parcel in) {
             return new SContextExercise(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextExercise[] newArray(int size) {
             return new SContextExercise[size];
@@ -23,7 +24,6 @@ public class SContextExercise extends SContextEventContext {
     private Bundle mContext;
     private int mMode;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextExercise() {
         this.mContext = new Bundle();
         this.mMode = 0;
@@ -140,5 +140,22 @@ public class SContextExercise extends SContextEventContext {
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
         this.mMode = src.readInt();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextExercise$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextExercise> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextExercise createFromParcel(Parcel in) {
+            return new SContextExercise(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextExercise[] newArray(int size) {
+            return new SContextExercise[size];
+        }
     }
 }

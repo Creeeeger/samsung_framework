@@ -24,12 +24,10 @@ public enum Vendor {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$all$0(Vendor e) {
         return e != NONE;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Vendor[] lambda$all$1(int x$0) {
         return new Vendor[x$0];
     }

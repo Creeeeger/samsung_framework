@@ -168,7 +168,6 @@ public class OverlayManagerExt {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ OverlayInfoExt lambda$replaceOverlays$1(OverlayStateChangeRequest request, String path) {
         try {
             return parsePathToOverlayInfo(request.category, path, request.opsFlags, request.userId);
@@ -177,7 +176,6 @@ public class OverlayManagerExt {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$replaceOverlays$2(String normalizedPath, OverlayInfoExt infoExt) {
         return normalizedPath != null && normalizedPath.equals(infoExt.info.baseCodePath);
     }
@@ -223,7 +221,6 @@ public class OverlayManagerExt {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ OverlayInfoExt lambda$addOverlayPaths$3(OverlayStateChangeRequest request, String path) {
         try {
             return parsePathToOverlayInfo(request.category, path, request.opsFlags, request.userId);
@@ -232,7 +229,6 @@ public class OverlayManagerExt {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$addOverlayPaths$4(String normalizedPath, OverlayInfoExt infoExt) {
         return normalizedPath != null && normalizedPath.equals(infoExt.info.baseCodePath);
     }
@@ -258,7 +254,6 @@ public class OverlayManagerExt {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$removeOverlayPaths$5(OverlayStateChangeRequest request, OverlayInfoExt overlay) {
         Stream stream = Arrays.stream(request.paths);
         String str = overlay.info.baseCodePath;

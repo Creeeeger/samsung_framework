@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class MissingForegroundServiceTypeException extends ForegroundServiceTypeException implements Parcelable {
     public static final Parcelable.Creator<MissingForegroundServiceTypeException> CREATOR = new Parcelable.Creator<MissingForegroundServiceTypeException>() { // from class: android.app.MissingForegroundServiceTypeException.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MissingForegroundServiceTypeException createFromParcel(Parcel source) {
             return new MissingForegroundServiceTypeException(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MissingForegroundServiceTypeException[] newArray(int size) {
             return new MissingForegroundServiceTypeException[size];
@@ -35,5 +36,22 @@ public final class MissingForegroundServiceTypeException extends ForegroundServi
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getMessage());
+    }
+
+    /* renamed from: android.app.MissingForegroundServiceTypeException$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MissingForegroundServiceTypeException> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MissingForegroundServiceTypeException createFromParcel(Parcel source) {
+            return new MissingForegroundServiceTypeException(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MissingForegroundServiceTypeException[] newArray(int size) {
+            return new MissingForegroundServiceTypeException[size];
+        }
     }
 }

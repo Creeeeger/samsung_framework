@@ -20,8 +20,9 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 import libcore.io.IoUtils;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-abstract class DirectoryCertificateSource implements CertificateSource {
+public abstract class DirectoryCertificateSource implements CertificateSource {
     private static final char[] DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', DateFormat.AM_PM, 'b', 'c', DateFormat.DATE, 'e', 'f'};
     private static final String LOG_TAG = "DirectoryCertificateSrc";
     private final CertificateFactory mCertFactory;
@@ -29,7 +30,6 @@ abstract class DirectoryCertificateSource implements CertificateSource {
     private final File mDir;
     private final Object mLock = new Object();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public interface CertSelector {
         boolean match(X509Certificate x509Certificate);
@@ -37,7 +37,6 @@ abstract class DirectoryCertificateSource implements CertificateSource {
 
     protected abstract boolean isCertMarkedAsRemoved(String str);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public DirectoryCertificateSource(File caDir) {
         this.mDir = caDir;
         try {
@@ -68,9 +67,31 @@ abstract class DirectoryCertificateSource implements CertificateSource {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.security.net.config.DirectoryCertificateSource$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements CertSelector {
+        final /* synthetic */ X509Certificate val$cert;
+
+        AnonymousClass1(X509Certificate x509Certificate) {
+            cert = x509Certificate;
+        }
+
+        @Override // android.security.net.config.DirectoryCertificateSource.CertSelector
+        public boolean match(X509Certificate ca) {
+            return ca.getPublicKey().equals(cert.getPublicKey());
+        }
+    }
+
     @Override // android.security.net.config.CertificateSource
-    public X509Certificate findBySubjectAndPublicKey(final X509Certificate cert) {
+    public X509Certificate findBySubjectAndPublicKey(X509Certificate cert) {
         return findCert(cert.getSubjectX500Principal(), new CertSelector() { // from class: android.security.net.config.DirectoryCertificateSource.1
+            final /* synthetic */ X509Certificate val$cert;
+
+            AnonymousClass1(X509Certificate cert2) {
+                cert = cert2;
+            }
+
             @Override // android.security.net.config.DirectoryCertificateSource.CertSelector
             public boolean match(X509Certificate ca) {
                 return ca.getPublicKey().equals(cert.getPublicKey());
@@ -78,9 +99,36 @@ abstract class DirectoryCertificateSource implements CertificateSource {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.security.net.config.DirectoryCertificateSource$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements CertSelector {
+        final /* synthetic */ X509Certificate val$cert;
+
+        AnonymousClass2(X509Certificate x509Certificate) {
+            cert = x509Certificate;
+        }
+
+        @Override // android.security.net.config.DirectoryCertificateSource.CertSelector
+        public boolean match(X509Certificate ca) {
+            try {
+                cert.verify(ca.getPublicKey());
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+    }
+
     @Override // android.security.net.config.CertificateSource
-    public X509Certificate findByIssuerAndSignature(final X509Certificate cert) {
+    public X509Certificate findByIssuerAndSignature(X509Certificate cert) {
         return findCert(cert.getIssuerX500Principal(), new CertSelector() { // from class: android.security.net.config.DirectoryCertificateSource.2
+            final /* synthetic */ X509Certificate val$cert;
+
+            AnonymousClass2(X509Certificate cert2) {
+                cert = cert2;
+            }
+
             @Override // android.security.net.config.DirectoryCertificateSource.CertSelector
             public boolean match(X509Certificate ca) {
                 try {
@@ -93,9 +141,36 @@ abstract class DirectoryCertificateSource implements CertificateSource {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.security.net.config.DirectoryCertificateSource$3 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass3 implements CertSelector {
+        final /* synthetic */ X509Certificate val$cert;
+
+        AnonymousClass3(X509Certificate x509Certificate) {
+            cert = x509Certificate;
+        }
+
+        @Override // android.security.net.config.DirectoryCertificateSource.CertSelector
+        public boolean match(X509Certificate ca) {
+            try {
+                cert.verify(ca.getPublicKey());
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+    }
+
     @Override // android.security.net.config.CertificateSource
-    public Set<X509Certificate> findAllByIssuerAndSignature(final X509Certificate cert) {
+    public Set<X509Certificate> findAllByIssuerAndSignature(X509Certificate cert) {
         return findCerts(cert.getIssuerX500Principal(), new CertSelector() { // from class: android.security.net.config.DirectoryCertificateSource.3
+            final /* synthetic */ X509Certificate val$cert;
+
+            AnonymousClass3(X509Certificate cert2) {
+                cert = cert2;
+            }
+
             @Override // android.security.net.config.DirectoryCertificateSource.CertSelector
             public boolean match(X509Certificate ca) {
                 try {

@@ -36,22 +36,18 @@ public class LongitudinalReportingConfig implements DifferentialPrivacyConfig {
         return ALGORITHM_NAME;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RapporConfig getIRRConfig() {
         return this.mIRRConfig;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public double getProbabilityP() {
         return this.mProbabilityP;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public double getProbabilityQ() {
         return this.mProbabilityQ;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getEncoderId() {
         return this.mEncoderId;
     }

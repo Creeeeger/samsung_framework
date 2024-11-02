@@ -32,6 +32,10 @@ public class PKIXExtendedParameters implements CertPathParameters {
     private final Date validityDate;
     private final int validityModel;
 
+    /* synthetic */ PKIXExtendedParameters(Builder builder, PKIXExtendedParametersIA pKIXExtendedParametersIA) {
+        this(builder);
+    }
+
     /* loaded from: classes5.dex */
     public static class Builder {
         private final PKIXParameters baseParameters;

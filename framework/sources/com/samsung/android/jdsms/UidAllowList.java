@@ -17,7 +17,6 @@ final class UidAllowList {
         mAllowList = Collections.unmodifiableSet(modifiableSet);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean containsUid(String uidName) {
         return mAllowList.contains(uidName);
     }

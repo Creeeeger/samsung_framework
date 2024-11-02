@@ -100,8 +100,7 @@ public abstract class ColorSpace {
         sNamedColorSpaces = colorSpaceArr;
         SparseIntArray sparseIntArray = new SparseIntArray();
         sDataToColorSpaces = sparseIntArray;
-        float[] fArr8 = null;
-        colorSpaceArr[Named.SRGB.ordinal()] = new Rgb("sRGB IEC61966-2.1", fArr5, fArr4, fArr8, transferParameters, Named.SRGB.ordinal());
+        colorSpaceArr[Named.SRGB.ordinal()] = new Rgb("sRGB IEC61966-2.1", fArr5, fArr4, (float[]) null, transferParameters, Named.SRGB.ordinal());
         sparseIntArray.put(142671872, Named.SRGB.ordinal());
         colorSpaceArr[Named.LINEAR_SRGB.ordinal()] = new Rgb("sRGB IEC61966-2.1 (Linear)", fArr5, fArr4, 1.0d, 0.0f, 1.0f, Named.LINEAR_SRGB.ordinal());
         sparseIntArray.put(138477568, Named.LINEAR_SRGB.ordinal());
@@ -123,31 +122,24 @@ public abstract class ColorSpace {
         sparseIntArray.put(411107328, Named.EXTENDED_SRGB.ordinal());
         colorSpaceArr[Named.LINEAR_EXTENDED_SRGB.ordinal()] = new Rgb("scRGB IEC 61966-2-2:2003", fArr5, fArr4, 1.0d, -0.5f, 7.499f, Named.LINEAR_EXTENDED_SRGB.ordinal());
         sparseIntArray.put(406913024, Named.LINEAR_EXTENDED_SRGB.ordinal());
-        colorSpaceArr[Named.BT709.ordinal()] = new Rgb("Rec. ITU-R BT.709-5", new float[]{0.64f, 0.33f, 0.3f, 0.6f, 0.15f, 0.06f}, fArr4, fArr8, new Rgb.TransferParameters(0.9099181073703367d, 0.09008189262966333d, 0.2222222222222222d, 0.081d, 2.2222222222222223d), Named.BT709.ordinal());
+        colorSpaceArr[Named.BT709.ordinal()] = new Rgb("Rec. ITU-R BT.709-5", new float[]{0.64f, 0.33f, 0.3f, 0.6f, 0.15f, 0.06f}, fArr4, (float[]) null, new Rgb.TransferParameters(0.9099181073703367d, 0.09008189262966333d, 0.2222222222222222d, 0.081d, 2.2222222222222223d), Named.BT709.ordinal());
         sparseIntArray.put(281083904, Named.BT709.ordinal());
-        colorSpaceArr[Named.BT2020.ordinal()] = new Rgb("Rec. ITU-R BT.2020-1", fArr7, fArr4, fArr8, new Rgb.TransferParameters(0.9096697898662786d, 0.09033021013372146d, 0.2222222222222222d, 0.08145d, 2.2222222222222223d), Named.BT2020.ordinal());
+        colorSpaceArr[Named.BT2020.ordinal()] = new Rgb("Rec. ITU-R BT.2020-1", fArr7, fArr4, (float[]) null, new Rgb.TransferParameters(0.9096697898662786d, 0.09033021013372146d, 0.2222222222222222d, 0.08145d, 2.2222222222222223d), Named.BT2020.ordinal());
         sparseIntArray.put(147193856, Named.BT2020.ordinal());
         colorSpaceArr[Named.DCI_P3.ordinal()] = new Rgb("SMPTE RP 431-2-2007 DCI (P3)", new float[]{0.68f, 0.32f, 0.265f, 0.69f, 0.15f, 0.06f}, new float[]{0.314f, 0.351f}, 2.6d, 0.0f, 1.0f, Named.DCI_P3.ordinal());
         sparseIntArray.put(155844608, Named.DCI_P3.ordinal());
-        colorSpaceArr[Named.DISPLAY_P3.ordinal()] = new Rgb("Display P3", new float[]{0.68f, 0.32f, 0.265f, 0.69f, 0.15f, 0.06f}, fArr4, fArr8, transferParameters, Named.DISPLAY_P3.ordinal());
+        colorSpaceArr[Named.DISPLAY_P3.ordinal()] = new Rgb("Display P3", new float[]{0.68f, 0.32f, 0.265f, 0.69f, 0.15f, 0.06f}, fArr4, (float[]) null, transferParameters, Named.DISPLAY_P3.ordinal());
         sparseIntArray.put(143261696, Named.DISPLAY_P3.ordinal());
         colorSpaceArr[Named.NTSC_1953.ordinal()] = new Rgb("NTSC (1953)", fArr6, fArr, (float[]) null, new Rgb.TransferParameters(0.9099181073703367d, 0.09008189262966333d, 0.2222222222222222d, 0.081d, 2.2222222222222223d), Named.NTSC_1953.ordinal());
-        float[] fArr9 = null;
-        colorSpaceArr[Named.SMPTE_C.ordinal()] = new Rgb("SMPTE-C RGB", new float[]{0.63f, 0.34f, 0.31f, 0.595f, 0.155f, 0.07f}, fArr4, fArr9, new Rgb.TransferParameters(0.9099181073703367d, 0.09008189262966333d, 0.2222222222222222d, 0.081d, 2.2222222222222223d), Named.SMPTE_C.ordinal());
+        colorSpaceArr[Named.SMPTE_C.ordinal()] = new Rgb("SMPTE-C RGB", new float[]{0.63f, 0.34f, 0.31f, 0.595f, 0.155f, 0.07f}, fArr4, (float[]) null, new Rgb.TransferParameters(0.9099181073703367d, 0.09008189262966333d, 0.2222222222222222d, 0.081d, 2.2222222222222223d), Named.SMPTE_C.ordinal());
         colorSpaceArr[Named.ADOBE_RGB.ordinal()] = new Rgb("Adobe RGB (1998)", new float[]{0.64f, 0.33f, 0.21f, 0.71f, 0.15f, 0.06f}, fArr4, 2.2d, 0.0f, 1.0f, Named.ADOBE_RGB.ordinal());
         sparseIntArray.put(151715840, Named.ADOBE_RGB.ordinal());
-        colorSpaceArr[Named.PRO_PHOTO_RGB.ordinal()] = new Rgb("ROMM RGB ISO 22028-2:2013", new float[]{0.7347f, 0.2653f, 0.1596f, 0.8404f, 0.0366f, 1.0E-4f}, fArr2, fArr9, new Rgb.TransferParameters(1.0d, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, 0.0625d, 0.031248d, 1.8d), Named.PRO_PHOTO_RGB.ordinal());
-        double d = 1.0d;
-        float f = -65504.0f;
-        float f2 = 65504.0f;
-        colorSpaceArr[Named.ACES.ordinal()] = new Rgb("SMPTE ST 2065-1:2012 ACES", new float[]{0.7347f, 0.2653f, 0.0f, 1.0f, 1.0E-4f, -0.077f}, fArr3, d, f, f2, Named.ACES.ordinal());
-        colorSpaceArr[Named.ACESCG.ordinal()] = new Rgb("Academy S-2014-004 ACEScg", new float[]{0.713f, 0.293f, 0.165f, 0.83f, 0.128f, 0.044f}, fArr3, d, f, f2, Named.ACESCG.ordinal());
+        colorSpaceArr[Named.PRO_PHOTO_RGB.ordinal()] = new Rgb("ROMM RGB ISO 22028-2:2013", new float[]{0.7347f, 0.2653f, 0.1596f, 0.8404f, 0.0366f, 1.0E-4f}, fArr2, (float[]) null, new Rgb.TransferParameters(1.0d, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, 0.0625d, 0.031248d, 1.8d), Named.PRO_PHOTO_RGB.ordinal());
+        colorSpaceArr[Named.ACES.ordinal()] = new Rgb("SMPTE ST 2065-1:2012 ACES", new float[]{0.7347f, 0.2653f, 0.0f, 1.0f, 1.0E-4f, -0.077f}, fArr3, 1.0d, -65504.0f, 65504.0f, Named.ACES.ordinal());
+        colorSpaceArr[Named.ACESCG.ordinal()] = new Rgb("Academy S-2014-004 ACEScg", new float[]{0.713f, 0.293f, 0.165f, 0.83f, 0.128f, 0.044f}, fArr3, 1.0d, -65504.0f, 65504.0f, Named.ACESCG.ordinal());
         colorSpaceArr[Named.CIE_XYZ.ordinal()] = new Xyz("Generic XYZ", Named.CIE_XYZ.ordinal());
         colorSpaceArr[Named.CIE_LAB.ordinal()] = new Lab("Generic L*a*b*", Named.CIE_LAB.ordinal());
-        float[] fArr10 = null;
-        float f3 = 0.0f;
-        float f4 = 1.0f;
-        colorSpaceArr[Named.BT2020_HLG.ordinal()] = new Rgb("Hybrid Log Gamma encoding", fArr7, fArr4, fArr10, new DoubleUnaryOperator() { // from class: android.graphics.ColorSpace$$ExternalSyntheticLambda2
+        colorSpaceArr[Named.BT2020_HLG.ordinal()] = new Rgb("Hybrid Log Gamma encoding", fArr7, fArr4, null, new DoubleUnaryOperator() { // from class: android.graphics.ColorSpace$$ExternalSyntheticLambda2
             @Override // java.util.function.DoubleUnaryOperator
             public final double applyAsDouble(double d2) {
                 double transferHLGOETF;
@@ -161,9 +153,9 @@ public abstract class ColorSpace {
                 transferHLGEOTF = ColorSpace.transferHLGEOTF(ColorSpace.BT2020_HLG_TRANSFER_PARAMETERS, d2);
                 return transferHLGEOTF;
             }
-        }, f3, f4, transferParameters2, Named.BT2020_HLG.ordinal());
+        }, 0.0f, 1.0f, transferParameters2, Named.BT2020_HLG.ordinal());
         sparseIntArray.put(168165376, Named.BT2020_HLG.ordinal());
-        colorSpaceArr[Named.BT2020_PQ.ordinal()] = new Rgb("Perceptual Quantizer encoding", fArr7, fArr4, fArr10, new DoubleUnaryOperator() { // from class: android.graphics.ColorSpace$$ExternalSyntheticLambda4
+        colorSpaceArr[Named.BT2020_PQ.ordinal()] = new Rgb("Perceptual Quantizer encoding", fArr7, fArr4, null, new DoubleUnaryOperator() { // from class: android.graphics.ColorSpace$$ExternalSyntheticLambda4
             @Override // java.util.function.DoubleUnaryOperator
             public final double applyAsDouble(double d2) {
                 double transferST2048OETF;
@@ -177,7 +169,7 @@ public abstract class ColorSpace {
                 transferST2048EOTF = ColorSpace.transferST2048EOTF(ColorSpace.BT2020_PQ_TRANSFER_PARAMETERS, d2);
                 return transferST2048EOTF;
             }
-        }, f3, f4, transferParameters3, Named.BT2020_PQ.ordinal());
+        }, 0.0f, 1.0f, transferParameters3, Named.BT2020_PQ.ordinal());
         sparseIntArray.put(163971072, Named.BT2020_PQ.ordinal());
     }
 
@@ -328,7 +320,6 @@ public abstract class ColorSpace {
         return colorSpace;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float[] adaptToIlluminantD50(float[] origWhitePoint, float[] origTransform) {
         float[] desired = ILLUMINANT_D50;
         if (compare(origWhitePoint, desired)) {
@@ -339,7 +330,6 @@ public abstract class ColorSpace {
         return mul3x3(adaptationTransform, origTransform);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ColorSpace get(int index) {
         if (index >= 0) {
             ColorSpace[] colorSpaceArr = sNamedColorSpaces;
@@ -383,7 +373,6 @@ public abstract class ColorSpace {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double transferHLGOETF(Rgb.TransferParameters params, double x) {
         double sign = x < SContextConstants.ENVIRONMENT_VALUE_UNKNOWN ? -1.0d : 1.0d;
         double x2 = x * sign;
@@ -398,7 +387,6 @@ public abstract class ColorSpace {
         return (x3 <= 1.0d ? Math.pow(x3, G) * R : (Math.log(x3 - b) * a) + c) * sign2;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double transferHLGEOTF(Rgb.TransferParameters params, double x) {
         double sign = x < SContextConstants.ENVIRONMENT_VALUE_UNKNOWN ? -1.0d : 1.0d;
         double x2 = x * sign;
@@ -412,7 +400,6 @@ public abstract class ColorSpace {
         return K * sign * (x2 * R <= 1.0d ? Math.pow(x2 * R, G) : Math.exp((x2 - c) * a) + b);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double transferST2048OETF(Rgb.TransferParameters params, double x) {
         double sign = x < SContextConstants.ENVIRONMENT_VALUE_UNKNOWN ? -1.0d : 1.0d;
         double x2 = x * sign;
@@ -426,7 +413,6 @@ public abstract class ColorSpace {
         return Math.pow(tmp / ((Math.pow(x2, c) * e) + d), f) * sign;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double transferST2048EOTF(Rgb.TransferParameters pq, double x) {
         double sign = x < SContextConstants.ENVIRONMENT_VALUE_UNKNOWN ? -1.0d : 1.0d;
         double x2 = x * sign;
@@ -434,32 +420,26 @@ public abstract class ColorSpace {
         return Math.pow(tmp / (pq.d + (pq.e * Math.pow(x2, pq.c))), pq.f) * sign;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double rcpResponse(double x, double a, double b, double c, double d, double g) {
         return x >= d * c ? (Math.pow(x, 1.0d / g) - b) / a : x / c;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double response(double x, double a, double b, double c, double d, double g) {
         return x >= d ? Math.pow((a * x) + b, g) : c * x;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double rcpResponse(double x, double a, double b, double c, double d, double e, double f, double g) {
         return x >= d * c ? (Math.pow(x - e, 1.0d / g) - b) / a : (x - f) / c;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double response(double x, double a, double b, double c, double d, double e, double f, double g) {
         return x >= d ? Math.pow((a * x) + b, g) + e : (c * x) + f;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double absRcpResponse(double x, double a, double b, double c, double d, double g) {
         return Math.copySign(rcpResponse(x < SContextConstants.ENVIRONMENT_VALUE_UNKNOWN ? -x : x, a, b, c, d, g), x);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static double absResponse(double x, double a, double b, double c, double d, double g) {
         return Math.copySign(response(x < SContextConstants.ENVIRONMENT_VALUE_UNKNOWN ? -x : x, a, b, c, d, g), x);
     }
@@ -471,7 +451,6 @@ public abstract class ColorSpace {
         return a != null && b != null && Math.abs(a.a - b.a) < 0.001d && Math.abs(a.b - b.b) < 0.001d && Math.abs(a.c - b.c) < 0.001d && Math.abs(a.d - b.d) < 0.002d && Math.abs(a.e - b.e) < 0.001d && Math.abs(a.f - b.f) < 0.001d && Math.abs(a.g - b.g) < 0.001d;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean compare(float[] a, float[] b) {
         if (a == b) {
             return true;
@@ -484,7 +463,6 @@ public abstract class ColorSpace {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float[] inverse3x3(float[] m) {
         float a = m[0];
         float b = m[3];
@@ -512,13 +490,11 @@ public abstract class ColorSpace {
         return inverted;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float[] mul3x3(float[] lhs, float[] rhs) {
         float[] r = {(lhs[0] * rhs[0]) + (lhs[3] * rhs[1]) + (lhs[6] * rhs[2]), (lhs[1] * rhs[0]) + (lhs[4] * rhs[1]) + (lhs[7] * rhs[2]), (lhs[2] * rhs[0]) + (lhs[5] * rhs[1]) + (lhs[8] * rhs[2]), (lhs[0] * rhs[3]) + (lhs[3] * rhs[4]) + (lhs[6] * rhs[5]), (lhs[1] * rhs[3]) + (lhs[4] * rhs[4]) + (lhs[7] * rhs[5]), (lhs[2] * rhs[3]) + (lhs[5] * rhs[4]) + (lhs[8] * rhs[5]), (lhs[0] * rhs[6]) + (lhs[3] * rhs[7]) + (lhs[6] * rhs[8]), (lhs[1] * rhs[6]) + (lhs[4] * rhs[7]) + (lhs[7] * rhs[8]), (lhs[2] * rhs[6]) + (lhs[5] * rhs[7]) + (lhs[8] * rhs[8])};
         return r;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float[] mul3x3Float3(float[] lhs, float[] rhs) {
         float r0 = rhs[0];
         float r1 = rhs[1];
@@ -529,17 +505,14 @@ public abstract class ColorSpace {
         return rhs;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float[] mul3x3Diag(float[] lhs, float[] rhs) {
         return new float[]{lhs[0] * rhs[0], lhs[1] * rhs[1], lhs[2] * rhs[2], lhs[0] * rhs[3], lhs[1] * rhs[4], lhs[2] * rhs[5], lhs[0] * rhs[6], lhs[1] * rhs[7], lhs[2] * rhs[8]};
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float[] xyYToXyz(float[] xyY) {
         return new float[]{xyY[0] / xyY[1], 1.0f, ((1.0f - xyY[0]) - xyY[1]) / xyY[1]};
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float[] chromaticAdaptation(float[] matrix, float[] srcWhitePoint, float[] dstWhitePoint) {
         float[] srcLMS = mul3x3Float3(matrix, srcWhitePoint);
         float[] dstLMS = mul3x3Float3(matrix, dstWhitePoint);
@@ -585,6 +558,10 @@ public abstract class ColorSpace {
 
     /* loaded from: classes.dex */
     private static final class Xyz extends ColorSpace {
+        /* synthetic */ Xyz(String str, int i, XyzIA xyzIA) {
+            this(str, i);
+        }
+
         private Xyz(String name, int id) {
             super(name, Model.XYZ, id);
         }
@@ -637,6 +614,10 @@ public abstract class ColorSpace {
         private static final float B = 7.787037f;
         private static final float C = 0.13793103f;
         private static final float D = 0.20689656f;
+
+        /* synthetic */ Lab(String str, int i, LabIA labIA) {
+            this(str, i);
+        }
 
         private Lab(String name, int id) {
             super(name, Model.LAB, id);
@@ -696,7 +677,6 @@ public abstract class ColorSpace {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getNativeInstance() {
         throw new IllegalArgumentException("colorSpace must be an RGB color space");
     }
@@ -718,9 +698,25 @@ public abstract class ColorSpace {
         private final float[] mTransform;
         private final float[] mWhitePoint;
 
-        /* renamed from: -$$Nest$smnativeGetNativeFinalizer, reason: not valid java name */
+        /* renamed from: -$$Nest$smnativeGetNativeFinalizer */
         static /* bridge */ /* synthetic */ long m1103$$Nest$smnativeGetNativeFinalizer() {
             return nativeGetNativeFinalizer();
+        }
+
+        /* synthetic */ Rgb(Rgb rgb, float[] fArr, float[] fArr2, RgbIA rgbIA) {
+            this(rgb, fArr, fArr2);
+        }
+
+        /* synthetic */ Rgb(String str, float[] fArr, float[] fArr2, double d, float f, float f2, int i, RgbIA rgbIA) {
+            this(str, fArr, fArr2, d, f, f2, i);
+        }
+
+        /* synthetic */ Rgb(String str, float[] fArr, float[] fArr2, float[] fArr3, TransferParameters transferParameters, int i, RgbIA rgbIA) {
+            this(str, fArr, fArr2, fArr3, transferParameters, i);
+        }
+
+        /* synthetic */ Rgb(String str, float[] fArr, float[] fArr2, float[] fArr3, DoubleUnaryOperator doubleUnaryOperator, DoubleUnaryOperator doubleUnaryOperator2, float f, float f2, TransferParameters transferParameters, int i, RgbIA rgbIA) {
+            this(str, fArr, fArr2, fArr3, doubleUnaryOperator, doubleUnaryOperator2, f, f2, transferParameters, i);
         }
 
         private static native long nativeCreate(float f, float f2, float f3, float f4, float f5, float f6, float f7, float[] fArr);
@@ -816,19 +812,18 @@ public abstract class ColorSpace {
                 return (result6 * 31) + ((int) ((temp7 >>> 32) ^ temp7));
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public boolean isHLGish() {
                 return this.g == TYPE_HLGish;
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public boolean isPQish() {
                 return this.g == TYPE_PQish;
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.graphics.ColorSpace
-        long getNativeInstance() {
+        public long getNativeInstance() {
             long j = this.mNativePtr;
             if (j == 0) {
                 throw new IllegalArgumentException("ColorSpace must use an ICC parametric transfer function! used " + this);
@@ -960,7 +955,6 @@ public abstract class ColorSpace {
             }, min, max, new TransferParameters(1.0d, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN, gamma), id);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ double lambda$new$8(double gamma, double x) {
             double d = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
             if (x >= SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
@@ -969,7 +963,6 @@ public abstract class ColorSpace {
             return Math.pow(d, 1.0d / gamma);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ double lambda$new$9(double gamma, double x) {
             double d = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
             if (x >= SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
@@ -1036,8 +1029,9 @@ public abstract class ColorSpace {
             NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, nativeCreate);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class NoImagePreloadHolder {
+        public static class NoImagePreloadHolder {
             public static final NativeAllocationRegistry sRegistry = new NativeAllocationRegistry(Rgb.class.getClassLoader(), Rgb.m1103$$Nest$smnativeGetNativeFinalizer(), 0);
 
             private NoImagePreloadHolder() {
@@ -1168,7 +1162,6 @@ public abstract class ColorSpace {
             return v;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public double clamp(double x) {
             float f = this.mMin;
             if (x >= f) {
@@ -1354,6 +1347,10 @@ public abstract class ColorSpace {
         private final ColorSpace mTransformDestination;
         private final ColorSpace mTransformSource;
 
+        /* synthetic */ Connector(ColorSpace colorSpace, ColorSpace colorSpace2, ColorSpace colorSpace3, ColorSpace colorSpace4, RenderIntent renderIntent, float[] fArr, ConnectorIA connectorIA) {
+            this(colorSpace, colorSpace2, colorSpace3, colorSpace4, renderIntent, fArr);
+        }
+
         Connector(ColorSpace source, ColorSpace destination, RenderIntent intent) {
             this(source, destination, source.getModel() == Model.RGB ? ColorSpace.adapt(source, ColorSpace.ILLUMINANT_D50_XYZ) : source, destination.getModel() == Model.RGB ? ColorSpace.adapt(destination, ColorSpace.ILLUMINANT_D50_XYZ) : destination, intent, computeTransform(source, destination, intent));
         }
@@ -1412,7 +1409,6 @@ public abstract class ColorSpace {
             return this.mTransformDestination.fromXyz(xyz);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Rgb extends Connector {
             private final Rgb mDestination;
@@ -1462,8 +1458,25 @@ public abstract class ColorSpace {
             }
         }
 
+        /* renamed from: android.graphics.ColorSpace$Connector$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 extends Connector {
+            AnonymousClass1(ColorSpace source, ColorSpace destination, RenderIntent intent) {
+                super(source, destination, intent);
+            }
+
+            @Override // android.graphics.ColorSpace.Connector
+            public float[] transform(float[] v) {
+                return v;
+            }
+        }
+
         static Connector identity(ColorSpace source) {
             return new Connector(source, source, RenderIntent.RELATIVE) { // from class: android.graphics.ColorSpace.Connector.1
+                AnonymousClass1(ColorSpace source2, ColorSpace source22, RenderIntent intent) {
+                    super(source22, source22, intent);
+                }
+
                 @Override // android.graphics.ColorSpace.Connector
                 public float[] transform(float[] v) {
                     return v;

@@ -124,8 +124,9 @@ public interface IDataLoaderManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IDataLoaderManager {
+        public static class Proxy implements IDataLoaderManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

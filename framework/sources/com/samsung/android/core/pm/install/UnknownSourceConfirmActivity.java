@@ -18,7 +18,6 @@ public class UnknownSourceConfirmActivity extends AlertActivity implements Dialo
     private boolean mButtonClicked = false;
     private int mSessionId;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.AlertActivity, android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +103,6 @@ public class UnknownSourceConfirmActivity extends AlertActivity implements Dialo
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$initAlertParams$0(int installType, DialogInterface dialogInterface, int i) {
         this.mButtonClicked = true;
         Intent intent = new Intent();

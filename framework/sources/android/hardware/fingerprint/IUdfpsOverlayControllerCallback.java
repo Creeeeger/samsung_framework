@@ -82,8 +82,9 @@ public interface IUdfpsOverlayControllerCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IUdfpsOverlayControllerCallback {
+        public static class Proxy implements IUdfpsOverlayControllerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

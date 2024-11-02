@@ -255,8 +255,16 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:5:0x0009, code lost:            r4.mCurrentToken = 4;        r4.mCurrentName = null;        r4.mCurrentText = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0011, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:5:0x0009, code lost:
+    
+        r4.mCurrentToken = 4;
+        r4.mCurrentName = null;
+        r4.mCurrentText = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:6:0x0011, code lost:
+    
+        return;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -671,7 +679,6 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         throw new IllegalArgumentException("Namespaces are not supported");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class Attribute {
         public String name;
@@ -682,6 +689,10 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         public int valueInt;
         public long valueLong;
         public String valueString;
+
+        /* synthetic */ Attribute(AttributeIA attributeIA) {
+            this();
+        }
 
         private Attribute() {
         }

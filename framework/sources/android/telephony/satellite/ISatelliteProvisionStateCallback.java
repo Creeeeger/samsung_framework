@@ -84,7 +84,6 @@ public interface ISatelliteProvisionStateCallback extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class Proxy implements ISatelliteProvisionStateCallback {
             private IBinder mRemote;

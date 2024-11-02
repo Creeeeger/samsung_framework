@@ -21,7 +21,6 @@ public class CompatChangeableApps extends ICompatChangeableManager.Stub {
     private CompatChangeablePackageInfo mDummyInfo;
     private final int mUserId;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class OrientationOverrideDisallowedLazyHolder {
         static final HashSet<String> sList = new HashSet<>(Arrays.asList("com.sec.android.app.camera", "com.samsung.android.globalroaming", "com.samsung.android.app.watchmanager"));

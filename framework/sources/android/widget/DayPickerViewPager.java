@@ -29,7 +29,6 @@ class DayPickerViewPager extends ViewPager {
         this.mMatchParentChildren = new ArrayList<>(1);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.widget.ViewPager, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int childWidthMeasureSpec;
@@ -88,7 +87,6 @@ class DayPickerViewPager extends ViewPager {
         this.mMatchParentChildren.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
         T t;

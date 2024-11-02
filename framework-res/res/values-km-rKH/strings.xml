@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">ឧបករណ៍​នេះ​មិន​គាំទ្រ %s នេះ។ ប៉ះ ដើម្បី​រៀបចំ​ជា​ទ្រង់ទ្រាយ​ដែល​ទទួល​ការគាំទ្រ។</string>
     <string name="ext_media_unsupported_notification_title">%s មិន​ទទួល​ការគាំទ្រ</string>
     <string name="ext_storage_bad_removal_button">ចាប់ផ្ដើម​ឡើងវិញ</string>
-    <string name="ext_storage_bad_removal_title">ចាប់ផ្តើម​ទូរសព្ទ​របស់​អ្នក​ឡើងវិញ</string>
+    <string name="ext_storage_bad_removal_title">ចាប់ផ្ដើម​ថេប្លិត​របស់​អ្នក​ឡើងវិញ</string>
     <string name="extmedia_format_button_format">ប្រភេទ</string>
     <string name="extmedia_format_message_usbhost">ឯកសារ​ទាំងអស់​ដែល​បាន​រក្សាទុក​ក្នុង​ឧបករណ៍​ផ្ទុក​យូអេសប៊ី​នឹង​ត្រូវ​បាន​លុប។ សកម្មភាព​នេះ​មិន​អាច​ត្រឡប់​វិញ​បាន​ទេ!</string>
     <string name="extmedia_format_title_usbhost">ធ្វើ​ទ្រង់ទ្រាយ​ឧបករណ៍​ផ្ទុក​យូអេសប៊ី?</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">សំឡេង​កំពុង​ចាក់​លើ​ឧបករណ៍​អូឌីយ៉ូ Bluetooth របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា</string>
     <string name="multisound_sound_via_headphone">សំឡេង %s កំពុង​ចាក់​តាម​កាស​របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
     <string name="multisound_sound_via_headphone_multiselection">សំឡេង​កំពុង​ចាក់​តាម​កាស​របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
-    <string name="multisound_sound_via_phone_speaker">កំពុង​ចាក់​សំឡេង %s តាម​ឧបល័រ​ទូរសព្ទ​របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">សំឡេង​កំពុង​ចាក់​តាម​ឧបល័រ​ទូរសព្ទ​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
+    <string name="multisound_sound_via_phone_speaker">សំឡេង %s កំពុង​ចាក់​តាម​ឧបល័រ​ថេប្លិត​របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">សំឡេង​កំពុង​ចាក់​តាម​ឧបល័រ​ថេប្លិត​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
     <string name="multisound_sound_via_usb_audio">សំឡេង %s កំពុង​ចាក់​តាម​ឧបករណ៍​អូឌីយ៉ូ USB របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
     <string name="multisound_sound_via_usb_audio_multiselection">សំឡេង​កំពុង​ចាក់​តាម​ឧបករណ៍​អូឌីយ៉ូ USB របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
     <string name="multisound_title">សំឡេង​កម្មវិធី​ដាច់ដោយឡែក</string>
     <string name="multisound_turn_off_multisound">បិទ</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s មិន​អាច​ដំណើរការ​ក្នុង Samsung DeX ទេ។ សាកល្បង​ដំណើរការ​ក្នុង​ទម្រង់​ទូរសព្ទ។</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s មិន​អាច​ដំណើរការ​ក្នុង Samsung DeX ទេ។ វា​ត្រូវ​បាន​រចនា​សម្រាប់​គេហអេក្រង់​ទូរសព្ទ។</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ហ្គេម​ខ្លះ​ដំណើរការ​តែ​លើ​អេក្រង់​ប៉ះ​ប៉ុណ្ណោះ។ បើ​ការបញ្ជា​ម៉ៅស៍​មិន​ដំណើរការ​ក្នុង Samsung DeX ទេ សូម​សាកល្បង​លេង​ក្នុង​ទម្រង់​ទូរសព្ទ​ជំនួស​នេះ។</string>
-    <string name="my_device">ទូរសព្ទ​នេះ</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s មិន​អាច​ដំណើរការ​ក្នុង Samsung DeX ទេ។ សាកល្បង​ដំណើរការ​ក្នុង​ទម្រង់​ថេប្លិត។</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s មិន​អាច​ដំណើរការ​ក្នុង Samsung DeX ទេ។ វា​ត្រូវ​បាន​រចនា​សម្រាប់​គេហអេក្រង់​ថេប្លិត។</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ហ្គេម​ខ្លះ​ដំណើរការ​តែ​លើ​អេក្រង់​ប៉ះ​ប៉ុណ្ណោះ។ បើ​ការបញ្ជា​ម៉ៅស៍​មិន​ដំណើរការ​ក្នុង Samsung DeX ទេ សូម​សាកល្បង​លេង​ក្នុង​ទម្រង់​ថេប្លិត​ជំនួស​នេះ។</string>
+    <string name="my_device">ថេប្លិត​នេះ</string>
     <string name="network_locked_sim_dialog_message_ais">កាត SIM របស់​អ្នក​មិន​អាច​ធ្វើ​ប្រតិបត្តិការ​ពេញលេញ​នៅ​ក្នុង​ទូរសព្ទ​នេះ​ទេ ដោយសារ​វា​មិន​អនុលោម​ជាមួយ​ពេលវេលា​និង​លក្ខខណ្ឌ​នៃ​ការចុះឈ្មោះ​របស់​អ្នក។ បើ​អ្នក​មាន​សំណួរ​ផ្សេងៗ ឬ​ក៏​ត្រូវការ​ព័ត៌មាន​បន្ថែម​អំពី​រឿង​នេះ សូម​ទាក់ទង​ទីកន្លែង​សេវា​អតិថិជន Samsung ឬ​ក៏​ហាង​ដែល​បាន​លក់​ផលិតផល​ទាំងនេះ​ជូន​អ្នក។</string>
     <string name="network_locked_sim_notification_text">បណ្ដាញ​បាន​ចាក់​សោ​កាត SIM ដែល​បាន​បញ្ចូល។</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">រារាំង​ការប្រើ​សមកាល​កុំព្យូទ័រ។</string>
     <string name="policydesc_allow_internetsharing">រារាំង​ការប្រើ​ហត់ស្ប៉ត់​ចល័ត។</string>
     <string name="policydesc_allow_irda">រារាំង​ការប្រើ IrDA។</string>
-    <string name="policydesc_allow_popimapemail">រារាំង​ការប្រើ​អ៊ីមែល POP និង IMAP លើ​ទូរសព្ទ។</string>
+    <string name="policydesc_allow_popimapemail">រារាំង​ការប្រើ​អ៊ីមែល POP និង IMAP លើ​ថេប្លិត។</string>
     <string name="policydesc_allow_storagecard">រារាំង​ការប្រើ​កាត SD។</string>
     <string name="policydesc_allow_textmessaging">រារាំង​ការប្រើ​សេវា​សារ​អត្ថបទ​និង​ពហុព័ត៌មាន។</string>
     <string name="policydesc_allow_thirdParty">កម្មវិធី​នេះ​អាច​រារាំង​មិន​ឲ្យ​កម្មវិធី​តតិយភាគី​ដំណើរការ។</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">គោលការណ៍​សន្តិសុខ​តម្រូវ​ឲ្យ​អ្នក​ប្ដូរ​ពាក្យសម្ងាត់​របស់​អ្នក។</string>
     <string name="recording_fail">មិន​អាច​ប្រើ​មីក្រូហ្វូន​ក្នុង %1$s ខណៈពេល​កំពុង​ប្រើ​វា​ក្នុង %2$s។</string>
     <string name="recording_popup">%s កំពុង​ប្រើ​មីក្រូហ្វូន។</string>
-    <string name="recording_popup_device">ទូរសព្ទ</string>
+    <string name="recording_popup_device">ថេប្លិត</string>
     <string name="recording_popup_with_bluetooth">%s កំពុង​ប្រើ​មីក្រូហ្វូន Bluetooth។</string>
     <string name="recording_popup_with_device">%1$s កំពុង​ប្រើ​មីក្រូហ្វូន​របស់ %2$s។</string>
     <string name="redo">ធ្វើវិញ</string>
@@ -903,12 +903,12 @@
     <string name="screencapture_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​ការថត​រូប​អេក្រង់។</string>
     <string name="sd_card_unavailable_message">អ្នក​មិន​អាច​ប្រើ​កាត SD ទេ ពីព្រោះ​វា​ត្រូវ​បាន​បញ្ចូល ខណៈពេល​កំពុង​ប្រើ​ទម្រង់​អ្នកប្រើប្រាស់​ផ្សេង។</string>
     <string name="sd_card_unavailable_title">កាត SD មិន​អាច​ប្រើ​បាន</string>
-    <string name="sdcard_bad_removal_message">កាត SD ត្រូវ​បាន​ដោះ​ដោយ​អសុវត្ថិភាព។ ដើម្បី​រារាំង​កុំ​ឲ្យ​ទូរសព្ទ​របស់​អ្នក​ចាប់ផ្ដើម​ឡើងវិញ​ដោយ​មិន​នឹក​ស្មាន សូម​រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក និង​ចាប់ផ្ដើម​ឡើងវិញ​ឥឡូវ។</string>
+    <string name="sdcard_bad_removal_message">កាត SD ត្រូវ​បាន​ដោះ​ដោយ​អសុវត្ថិភាព។ ដើម្បី​រារាំង​កុំ​ឲ្យ​ថេប្លិត​របស់​អ្នក​ចាប់ផ្ដើម​ឡើងវិញ​ដោយ​មិន​នឹក​ស្មាន សូម​រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក និង​ចាប់ផ្ដើម​ឡើងវិញ​ឥឡូវ។</string>
     <string name="sdcard_batch_decrypt_noti_content">ឌីគ្រីប​កាត SD</string>
     <string name="sdcard_batch_decrypt_noti_title">ឌីគ្រីបសុន​កាត SD</string>
     <string name="sdcard_batch_decrypt_popup_content">ត្រូវតែ​ឌីគ្រីប​កាត SD ដែល​បាន​អ៊ិនគ្រីប មុន​ពេល​អាច​ប្រើ​បាន។ ឌីគ្រីបសុន​អាច​ត្រូវការ​ពេល​មួយ​ម៉ោង ឬ ច្រើន​ជាង​នេះ។ ចាប់ផ្ដើម​ជាមួយ​ថ្ម​ដែល​បាន​សាក និង រក្សា​ឲ្យ​ឧបករណ៍​ដោត​ទៅ​ឆ្នាំងសាក រហូត​ទាល់​តែ​ឌីគ្រីបសុន​បាន​បញ្ចប់។ ការបង្អាក់​រំខាន​ដំណើរការ​ឌីគ្រីបសុន អាច​នាំ​ឲ្យ​បាត់បង់​ទិន្នន័យ​ខ្លះ ឬ ទាំងអស់។</string>
     <string name="sdcard_decrypt_err_notification">កំហុស​ឌីគ្រីបសុន​កាត SD បាន​កើតឡើង។</string>
-    <string name="sdcard_decrypt_error_otherdevice">ឯកសារ​ខ្លះ​លើ​កាត SD របស់​អ្នក​ត្រូវ​បាន​អ៊ិនគ្រីប​លើ​ឧបករណ៍​មួយ​ទៀត ហើយ​មិន​អាច​ប្រើ​លើ​ទូរសព្ទ​នេះ​ទេ។</string>
+    <string name="sdcard_decrypt_error_otherdevice">ឯកសារ​ខ្លះ​លើ​កាត SD របស់​អ្នក​ត្រូវ​បាន​អ៊ិនគ្រីប​លើ​ឧបករណ៍​មួយ​ទៀត ហើយ​មិន​អាច​ប្រើ​លើ​ថេប្លិត​នេះ​ទេ។</string>
     <string name="sdcard_decrypt_notification">បាន​ឌីគ្រីបសុន​កាត SD។</string>
     <string name="sdcard_decrypt_title_notification">ឌីគ្រីបសុន​កាត SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">កំពុង​ឌីគ្រីប​កាត SD…</string>
@@ -1234,7 +1234,7 @@
     <string name="usb_abnormal_reset_title">ការភ្ជាប់ USB អស្ថិរភាព</string>
     <string name="usb_abnormal_reset_toast">ការភ្ជាប់ USB អស្ថិរភាព។ ដកឆ្នុក​ខ្សែ​និង​ដោត​វា​ចូល​ម្ដងទៀត ឬ​ក៏​សាកល្បង​ខ្សែ​ផ្សេង។</string>
     <string name="usb_accessory_notification_title">បាន​ភ្ជាប់​ទៅ​គ្រឿង​បន្សំ USB</string>
-    <string name="usb_bad_removal_message">ឧបករណ៍​ឃ្លាំងផ្ទុក USB ត្រូវ​បាន​ដោះ​ដោយ​អសុវត្ថិភាព។ ដើម្បី​រារាំង​កុំ​ឲ្យ​ទូរសព្ទ​របស់​អ្នក​ចាប់ផ្ដើម​ឡើងវិញ​ដោយ​មិន​នឹក​ស្មាន សូម​រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក និង​ចាប់ផ្ដើម​ឡើងវិញ​ឥឡូវ។</string>
+    <string name="usb_bad_removal_message">ឧបករណ៍​ឃ្លាំងផ្ទុក USB ត្រូវ​បាន​ដោះ​ដោយ​អសុវត្ថិភាព។ ដើម្បី​រារាំង​កុំ​ឲ្យ​ថេប្លិត​របស់​អ្នក​ចាប់ផ្ដើម​ឡើងវិញ​ដោយ​មិន​នឹក​ស្មាន សូម​រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក និង​ចាប់ផ្ដើម​ឡើងវិញ​ឥឡូវ។</string>
     <string name="usb_blocked_by_emergency_mode">មុខងារ USB ខ្លះ​មិន​អាច​ប្រើ​បាន​ឡើយ​ក្នុង​ទម្រង់​អាសន្ន។</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">មិន​អាច​ប្រើ​មុខងារ​ពាក់ព័ន្ធ​នឹង​ឧបករណ៍ USB ដែល​បាន​ភ្ជាប់ ខណៈពេល​បើកប្រើ​ទម្រង់​សំចៃ​ថាមពល​អតិបរមា។</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">មុខងារ USB នឹង​មាន​កម្រិត ខណៈពេល​បាន​បើក​ទម្រង់​សំចៃ​ថាមពល​អតិបរមា។</string>
@@ -1243,13 +1243,13 @@
     <string name="usb_camera_connected_notification_title">បាន​ភ្ជាប់​ឧបករណ៍​មេឌៀ</string>
     <string name="usb_camera_disconnected_notification_title">បាន​ផ្ដាច់​ឧបករណ៍​មេឌៀ</string>
     <string name="usb_cd_installer_notification_title">អាប់ដេត​នៃ​សុហ្វវែរ</string>
-    <string name="usb_charing_only_notification_title">កំពុង​សាក​តាម USB</string>
+    <string name="usb_charing_only_notification_title">បាន​ភ្ជាប់</string>
     <string name="usb_debugging_only_notification_title">ការបំបាត់​កំហុស​ប៉ុណ្ណោះ</string>
-    <string name="usb_host_resource_exceed_message">ប្រដាប់បញ្ជា USB នៃ​ទូរសព្ទ​របស់​អ្នក​មិនមាន​ធនធាន​គ្រប់គ្រាន់ ដើម្បី​ភ្ជាប់​ឧបករណ៍​នេះ​ទេ។ សាកល្បង​ផ្ដាច់​ឧបករណ៍ រួច​ភ្ជាប់​វា​ម្ដងទៀត។</string>
+    <string name="usb_host_resource_exceed_message">ប្រដាប់បញ្ជា USB នៃ​ថេប្លិត​របស់​អ្នក​មិនមាន​ធនធាន​គ្រប់គ្រាន់ ដើម្បី​ភ្ជាប់​ឧបករណ៍​នេះ​ទេ។ សាកល្បង​ផ្ដាច់​ឧបករណ៍ រួច​ភ្ជាប់​វា​ម្ដងទៀត។</string>
     <string name="usb_host_resource_exceed_title">ធនធាន​ប្រដាប់បញ្ជា USB មិន​គ្រប់គ្រាន់</string>
-    <string name="usb_hub_depth_exceed_message">ទូរសព្ទ​របស់​អ្នក​អាច​គាំទ្រ​ការភ្ជាប់ USB Hub ដល់ទៅ 5 ប៉ុណ្ណោះ ក្នុង​ពេល​តែ​មួយ។</string>
+    <string name="usb_hub_depth_exceed_message">ថេប្លិត​របស់​អ្នក​អាច​គាំទ្រ​ការភ្ជាប់ USB Hub ដល់ទៅ 5 ប៉ុណ្ណោះ ក្នុង​ពេល​តែ​មួយ។</string>
     <string name="usb_hub_depth_exceed_title">ការភ្ជាប់ USB Hub អតិបរមា</string>
-    <string name="usb_hub_power_exceed_message">ទូរសព្ទ​របស់​អ្នក​មិន​អាច​ផ្ដល់​ថាមពល​គ្រប់គ្រាន់​សម្រាប់​ឧបករណ៍ USB នេះ​ទេ។ ភ្ជាប់​ឧបករណ៍​នេះ​ទៅ USB Hub ដែល​ផ្ដល់​ថាមពល​ដោយ​ខ្លួនឯង មុនពេល​ភ្ជាប់​វា​ទៅ​ទូរសព្ទ​របស់​អ្នក។</string>
+    <string name="usb_hub_power_exceed_message">ថេប្លិត​របស់​អ្នក​មិន​អាច​ផ្ដល់​ថាមពល​គ្រប់គ្រាន់​សម្រាប់​ឧបករណ៍ USB នេះ​ទេ។ ភ្ជាប់​ឧបករណ៍​នេះ​ទៅ USB Hub ដែល​ផ្ដល់​ថាមពល​ដោយ​ខ្លួនឯង មុនពេល​ភ្ជាប់​វា​ទៅ​ថេប្លិត​របស់​អ្នក។</string>
     <string name="usb_increase_battery_usage">ការភ្ជាប់ USB អាច​បង្កើន​ការប្រើប្រាស់​ថ្ម។</string>
     <string name="usb_mass_storage_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​ឃ្លាំងផ្ទុក​ដុល USB។</string>
     <string name="usb_midi_notification_title">USB សម្រាប់ MIDI</string>
@@ -1275,8 +1275,8 @@
     <string name="usb_storage_stop_title">ឃ្លាំងផ្ទុក USB កំពុង​ប្រើ។</string>
     <string name="usb_storage_title">បាន​ភ្ជាប់ USB។</string>
     <string name="usb_type_c_supply_power_notification_title">កំពុង​សាក​តាម USB ចំពោះ​ឧបករណ៍​ដែល​បាន​ភ្ជាប់</string>
-    <string name="usb_unblock_by_screen_unlock">ដោះសោ​ទូរសព្ទ​អ្នក ដើម្បី​ប្រើ​ឧបករណ៍ USB ដែល​បាន​ភ្ជាប់។</string>
-    <string name="usb_unsupport_accessory_message">ឧបករណ៍ USB នេះ​មិន​ទទួល​ការគាំទ្រ​ពី​ទូរសព្ទ​របស់​អ្នក​ទេ។</string>
+    <string name="usb_unblock_by_screen_unlock">ដោះសោ​ថេប្លិត​អ្នក ដើម្បី​ប្រើ​ឧបករណ៍ USB ដែល​បាន​ភ្ជាប់។</string>
+    <string name="usb_unsupport_accessory_message">ឧបករណ៍ USB នេះ​មិន​ទទួល​ការគាំទ្រ​ពី​ថេប្លិត​របស់​អ្នក​ទេ។</string>
     <string name="usb_unsupport_accessory_title">ឧបករណ៍ USB មិន​ទទួល​ការគាំទ្រ</string>
     <string name="usb_unsupported_device">ឧបករណ៍ USB ដែល​បាន​ភ្ជាប់ មិន​ទទួល​ការគាំទ្រ។</string>
     <string name="usb_unsupported_device_title">ឧបករណ៍​មិន​ទទួល​ការគាំទ្រ</string>
@@ -1294,19 +1294,19 @@
     <string name="usb_water_dialg_method_2_desc_2">អ្នក​អាច​បង្កើន​ល្បឿន​សម្ងួត ដោយ​តម្រង់​កង្ហារ​ឬ​ឧបករណ៍​សម្ងួត (ខ្យល់​ត្រជាក់​ប៉ុណ្ណោះ) ទៅ​រក​ច្រក។</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"យើង​ចាប់​បាន​សំណើម​ឬ​វត្ថុ​ខាងក្រៅ​ក្នុង​ច្រក​សាក/USB របស់​អ្នក។
 
-ពិនិត្យ​ច្រក​សាក/USB របស់​អ្នក រក​មើល​វត្ថុ​ខាងក្រៅ ដូចជា​ធូលី​ឬ​កម្ទេចកម្ទី។ ដើម្បី​បង្ការ​កុំ​ឲ្យ​ខូច​ទូរសព្ទ​អ្នក សូម​កុំ​ដោត​អ្វី​មួយ​ចូល ទាល់តែ​ច្រក​សាក​ស្អាត និង​អស់​សំណើម។
+ពិនិត្យ​ច្រក​សាក/USB របស់​អ្នក រក​មើល​វត្ថុ​ខាងក្រៅ ដូចជា​ធូលី​ឬ​កម្ទេចកម្ទី។ ដើម្បី​បង្ការ​កុំ​ឲ្យ​ខូច​ថេប្លិត​អ្នក សូម​កុំ​ដោត​អ្វី​មួយ​ចូល ទាល់តែ​ច្រក​សាក​ស្អាត និង​អស់​សំណើម។
 
 ដើម្បី​សម្ងួត​ច្រក សូម​អង្រួន​សំណើម​ទាំងអស់​ចេញ រួច​រង់ចាំ​ឲ្យ​វា​ស្ងួត​សិន ដែល​អាច​ត្រូវការ​ជាច្រើន​ម៉ោង។ អ្នក​អាច​បង្កើន​ល្បឿន​សម្ងួត ដោយ​តម្រង់​កង្ហារ​ឬ​ឧបករណ៍​សម្ងួត (ខ្យល់​ត្រជាក់​ប៉ុណ្ណោះ) ទៅ​រក​ច្រក។"</string>
     <string name="usb_water_dialg_positive_button">ព្រម</string>
     <string name="usb_water_dialg_support_wireless_charging">"យើង​ចាប់​បាន​សំណើម​ឬ​វត្ថុ​ខាងក្រៅ​ក្នុង​ច្រក​សាក/USB របស់​អ្នក។
 
-ពិនិត្យ​ច្រក​សាក/USB របស់​អ្នក រក​មើល​វត្ថុ​ខាងក្រៅ ដូចជា​ធូលី​ឬ​កម្ទេចកម្ទី។ ដើម្បី​បង្ការ​កុំ​ឲ្យ​ខូច​ទូរសព្ទ​អ្នក សូម​កុំ​ដោត​អ្វី​មួយ​ចូល ទាល់តែ​ច្រក​សាក​ស្អាត និង​អស់​សំណើម។
+ពិនិត្យ​ច្រក​សាក/USB របស់​អ្នក រក​មើល​វត្ថុ​ខាងក្រៅ ដូចជា​ធូលី​ឬ​កម្ទេចកម្ទី។ ដើម្បី​បង្ការ​កុំ​ឲ្យ​ខូច​ថេប្លិត​អ្នក សូម​កុំ​ដោត​អ្វី​មួយ​ចូល ទាល់តែ​ច្រក​សាក​ស្អាត និង​អស់​សំណើម។
 
 ដើម្បី​សម្ងួត​ច្រក សូម​អង្រួន​សំណើម​ទាំងអស់​ចេញ រួច​រង់ចាំ​ឲ្យ​វា​ស្ងួត​សិន ដែល​អាច​ត្រូវការ​ជាច្រើន​ម៉ោង។ អ្នក​អាច​បង្កើន​ល្បឿន​សម្ងួត ដោយ​តម្រង់​កង្ហារ​ឬ​ឧបករណ៍​សម្ងួត (ខ្យល់​ត្រជាក់​ប៉ុណ្ណោះ) ទៅ​រក​ច្រក។
 
-ក្នុង​ពេល​ជាមួយគ្នា អ្នក​អាច​សាក​ទូរសព្ទ​អ្នក​ដោយ​ឥត​ប្រើ​ខ្សែ។"</string>
+ក្នុង​ពេល​ជាមួយគ្នា អ្នក​អាច​សាក​ថេប្លិត​អ្នក​ដោយ​ឥត​ប្រើ​ខ្សែ។"</string>
     <string name="usb_water_notification_content">មាន​សំណើម​ឬ​វត្ថុ​ខាងក្រៅ​ក្នុង​ច្រក​សាក/USB របស់​អ្នក។ ពិនិត្យ​មុន​ពេល​សាក។</string>
-    <string name="usb_water_notification_message">មាន​សំណើម​ក្នុង​គ្រឿងសាក/ច្រក USB របស់​អ្នក។ ត្រូវ​ប្រាកដ​ថា វា​ស្ងួត​មុនពេល​សាក​ទូរសព្ទ​របស់​អ្នក។ វា​អាច​ត្រូវការ​ពេល​ខ្លះ​ដើម្បី​ឲ្យ​ស្ងួត​ទាំងស្រុង។</string>
+    <string name="usb_water_notification_message">មាន​សំណើម​ក្នុង​គ្រឿងសាក/ច្រក USB របស់​អ្នក។ ត្រូវ​ប្រាកដ​ថា វា​ស្ងួត​មុនពេល​សាក​ថេប្លិត​របស់​អ្នក។ វា​អាច​ត្រូវការ​ពេល​ខ្លះ​ដើម្បី​ឲ្យ​ស្ងួត​ទាំងស្រុង។</string>
     <string name="usb_water_notification_message_button">ព័ត៌មាន​លម្អិត</string>
     <string name="usb_water_notification_title">ពិនិត្យ​ច្រក​សាក/USB</string>
     <string name="usbhostStorage_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​ឃ្លាំងផ្ទុក​អ្នកទទួល USB។</string>

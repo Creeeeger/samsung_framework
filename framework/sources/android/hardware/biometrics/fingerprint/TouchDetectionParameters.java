@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class TouchDetectionParameters implements Parcelable {
     public static final Parcelable.Creator<TouchDetectionParameters> CREATOR = new Parcelable.Creator<TouchDetectionParameters>() { // from class: android.hardware.biometrics.fingerprint.TouchDetectionParameters.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TouchDetectionParameters createFromParcel(Parcel _aidl_source) {
             TouchDetectionParameters _aidl_out = new TouchDetectionParameters();
@@ -15,7 +17,6 @@ public class TouchDetectionParameters implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TouchDetectionParameters[] newArray(int _aidl_size) {
             return new TouchDetectionParameters[_aidl_size];
@@ -23,6 +24,25 @@ public class TouchDetectionParameters implements Parcelable {
     };
     public float targetSize = 1.0f;
     public float minOverlap = 0.0f;
+
+    /* renamed from: android.hardware.biometrics.fingerprint.TouchDetectionParameters$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TouchDetectionParameters> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TouchDetectionParameters createFromParcel(Parcel _aidl_source) {
+            TouchDetectionParameters _aidl_out = new TouchDetectionParameters();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TouchDetectionParameters[] newArray(int _aidl_size) {
+            return new TouchDetectionParameters[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

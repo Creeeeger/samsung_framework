@@ -4168,14 +4168,12 @@ public interface IPackageManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg1, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg1.put(k, v);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IPackageManager {
             private IBinder mRemote;
@@ -6081,7 +6079,6 @@ public interface IPackageManager extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$notifyDexLoad$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);

@@ -237,8 +237,9 @@ public interface IImsRegistrationListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IImsRegistrationListener {
+        public static class Proxy implements IImsRegistrationListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

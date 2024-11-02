@@ -40,8 +40,9 @@ public final class SemDesktopModeManager {
         void onDesktopModeChanged(boolean z);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class DesktopModeListenerDelegate extends IDesktopModeListener.Stub {
+    public static class DesktopModeListenerDelegate extends IDesktopModeListener.Stub {
         private DesktopModeListener mListener;
 
         DesktopModeListenerDelegate(DesktopModeListener listener) {
@@ -73,8 +74,9 @@ public final class SemDesktopModeManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class DesktopModeBlockerDelegate extends IDesktopModeBlocker.Stub {
+    public static class DesktopModeBlockerDelegate extends IDesktopModeBlocker.Stub {
         private DesktopModeBlocker mBlocker;
 
         DesktopModeBlockerDelegate(DesktopModeBlocker blocker) {

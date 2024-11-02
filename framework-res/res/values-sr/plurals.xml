@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Telefon je nestabilan jer je SD kartica na kojoj su bile instalirane aplikacije uklonjena. Telefon će se restartovati za %d sekundi kako bi se vratio u normalno stanje. Sačuvajte nesačuvane podatke pre nego što se telefon restartuje.</item>
+        <item quantity="other">Tablet je nestabilan jer je SD kartica na kojoj su bile instalirane aplikacije uklonjena. Tablet će se restartovati za %d sekundi kako bi se vratio u normalno stanje. Sačuvajte nesačuvane podatke pre nego što se tablet restartuje.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefon je nestabilan jer je SD kartica na kojoj su bile instalirane aplikacije uklonjena. Telefon će se restartovati za %d sekundu kako bi se vratio u normalno stanje. Sačuvajte nesačuvane podatke pre nego što se telefon restartuje.</item>
+        <item quantity="one">Tablet je nestabilan jer je SD kartica na kojoj su bile instalirane aplikacije uklonjena. Tablet će se restartovati za %d sekundu kako bi se vratio u normalno stanje. Sačuvajte nesačuvane podatke pre nego što se tablet restartuje.</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefon je nestabilan jer je SD kartica na kojoj su bile instalirane aplikacije uklonjena. Telefon će se restartovati za %d sekunde kako bi se vratio u normalno stanje. Sačuvajte nesačuvane podatke pre nego što se telefon restartuje.</item>
+        <item quantity="few">Tablet je nestabilan jer je SD kartica na kojoj su bile instalirane aplikacije uklonjena. Tablet će se restartovati za %d sekunde kako bi se vratio u normalno stanje. Sačuvajte nesačuvane podatke pre nego što se tablet restartuje.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefon će se restartovati za %d sekundi</item>
+        <item quantity="other">Tablet će se restartovati za %d sekundi</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefon će se restartovati za %d sekundu</item>
+        <item quantity="one">Tablet će se restartovati za %d sekundu</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefon će se restartovati za %d sekunde</item>
+        <item quantity="few">Tablet će se restartovati za %d sekunde</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">

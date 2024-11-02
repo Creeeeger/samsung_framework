@@ -318,7 +318,6 @@ public class CCMBlockCipher implements AEADBlockCipher {
         return getAssociatedTextLength() > 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class ExposedByteArrayOutputStream extends ByteArrayOutputStream {
         public ExposedByteArrayOutputStream() {

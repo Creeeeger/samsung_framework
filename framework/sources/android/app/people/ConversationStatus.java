@@ -24,13 +24,14 @@ public final class ConversationStatus implements Parcelable {
     public static final int AVAILABILITY_OFFLINE = 2;
     public static final int AVAILABILITY_UNKNOWN = -1;
     public static final Parcelable.Creator<ConversationStatus> CREATOR = new Parcelable.Creator<ConversationStatus>() { // from class: android.app.people.ConversationStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ConversationStatus createFromParcel(Parcel source) {
             return new ConversationStatus(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConversationStatus[] newArray(int size) {
             return new ConversationStatus[size];
@@ -53,6 +54,14 @@ public final class ConversationStatus implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Availability {
+    }
+
+    /* synthetic */ ConversationStatus(Builder builder, ConversationStatusIA conversationStatusIA) {
+        this(builder);
+    }
+
+    /* synthetic */ ConversationStatus(Parcel parcel, ConversationStatusIA conversationStatusIA) {
+        this(parcel);
     }
 
     private ConversationStatus(Builder b) {
@@ -139,6 +148,23 @@ public final class ConversationStatus implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.app.people.ConversationStatus$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConversationStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConversationStatus createFromParcel(Parcel source) {
+            return new ConversationStatus(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConversationStatus[] newArray(int size) {
+            return new ConversationStatus[size];
+        }
     }
 
     /* loaded from: classes.dex */

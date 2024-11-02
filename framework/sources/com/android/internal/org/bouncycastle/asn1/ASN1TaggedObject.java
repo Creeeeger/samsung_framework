@@ -9,7 +9,6 @@ public abstract class ASN1TaggedObject extends ASN1Primitive implements ASN1Tagg
     final ASN1Encodable obj;
     final int tagNo;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
@@ -43,7 +42,6 @@ public abstract class ASN1TaggedObject extends ASN1Primitive implements ASN1Tagg
         this.obj = obj;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive other) {
         if (!(other instanceof ASN1TaggedObject)) {
@@ -98,13 +96,11 @@ public abstract class ASN1TaggedObject extends ASN1Primitive implements ASN1Tagg
         return toASN1Primitive();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         return new DERTaggedObject(this.explicit, this.tagNo, this.obj);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return new DLTaggedObject(this.explicit, this.tagNo, this.obj);

@@ -335,7 +335,7 @@ Uni baribir o‘rnatishni tanlasangiz, u o‘zingiz ishongan manbadan olinganlig
     <string name="ext_media_unsupported_notification_message">Bu qurilma ushbu %s ni qo‘llab-quvvatlamaydi. Qo‘llab-quvvatlanmaydigan formatda sozlash uchun teging.</string>
     <string name="ext_media_unsupported_notification_title">Qo‘llab-quvvatlanmaydigan %s</string>
     <string name="ext_storage_bad_removal_button">Qayta yuklash</string>
-    <string name="ext_storage_bad_removal_title">Telefon. qayta ishga tushiring</string>
+    <string name="ext_storage_bad_removal_title">Planshet. qayta ishga tushiring</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message_usbhost">USB xotiradagi barcha fayllar o‘chirib tashlanadi. Ushbu amalni ortga qaytarib bo‘lmaydi!</string>
     <string name="extmedia_format_title_usbhost">USB xotira formatlansinmi?</string>
@@ -592,16 +592,16 @@ Planshetingiz tez orada qayta ishlanadi."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Ovoz Bluetooth audio qurilmasida eshittirilmoqda. Buni o‘chirish uchun bu yerga teging</string>
     <string name="multisound_sound_via_headphone">%s ovozi quloqliklaringiz orqali eshittirilmoqda. Buni o‘chirish uchun bu yerga teging.</string>
     <string name="multisound_sound_via_headphone_multiselection">Ovoz quloqliklaringiz orqali eshittirilmoqda. Buni o‘chirish uchun bu yerga teging.</string>
-    <string name="multisound_sound_via_phone_speaker">%s ovozi telefoningiz karnayi orqali eshittirilmoqda. Buni o‘chirish uchun bu yerga teging.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Ovoz telefoningiz karnayi orqali eshittirilmoqda. Buni o‘chirish uchun bu yerga teging.</string>
+    <string name="multisound_sound_via_phone_speaker">%s ovozi planshetingiz karnayi orqali eshittirilmoqda. Buni o‘chirish uchun bu yerga teging.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Ovoz planshetingiz karnayi orqali eshittirilmoqda. Buni o‘chirish uchun bu yerga teging.</string>
     <string name="multisound_sound_via_usb_audio">%s ovozi USB audio qurilmangiz orqali eshittirilmoqda. Buni o‘chirish uchun bu yerga teging.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Ovoz USB audio qurilmangiz orqali eshittirilmoqda. Buni o‘chirish uchun bu yerga teging.</string>
     <string name="multisound_title">Ilova ovozini ajratish</string>
     <string name="multisound_turn_off_multisound">O‘chirish</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s’ni Samsung DeX’da ishga tushirib bo‘lmaydi. Telefon rejimida ishga tushirishga urinib ko‘ring.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s’ni Samsung DeX’da ishga tushirib bo‘lmaydi. U telefon Asosiy ekranlari uchun mo‘ljallangan.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Ayrim o‘yinlar faqat sensorli ekranlarda ishlaydi. Agar Samsung DeX’da sichqoncha boshqaruv elementlari ishlamasa, telefon rejimida qo‘yishga urinib ko‘ring.</string>
-    <string name="my_device">Bu telefon</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s’ni Samsung DeX’da ishga tushirib bo‘lmaydi. Planshet rejimida ishga tushirishga urinib ko‘ring.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s’ni Samsung DeX’da ishga tushirib bo‘lmaydi. U planshet Asosiy ekranlari uchun mo‘ljallangan.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Ayrim o‘yinlar faqat sensorli ekranlarda ishlaydi. Agar Samsung DeX’da sichqoncha boshqaruv elementlari ishlamasa, planshet rejimida qo‘yishga urinib ko‘ring.</string>
+    <string name="my_device">Bu planshet</string>
     <string name="network_locked_sim_dialog_message_ais">SIM-karta xizmatga tegishli talab va shartlarga mos kelmagani tufayli undan bu telefonda toʻliq tartibda foydalanib boʻlmaydi. Agar bu haqda biror savolingiz boʻlsa yoki qoʻshimcha maʼlumot talab etilsa, Samsung Mijozlarga xizmat koʻrsatish markaziga yoki bu mahsulotni sizga sotgan doʻkon bogʻlaning.</string>
     <string name="network_locked_sim_notification_text">"Tarmog'i blok-gan SIM-karta kir-di."</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@ QAYTARING"</string>
     <string name="policydesc_allow_desktopsync">Ishchi stolni sinxronlash ishlatilishining oldini olish.</string>
     <string name="policydesc_allow_internetsharing">Mobil Faol nuqta ishlatilishining oldini olish.</string>
     <string name="policydesc_allow_irda">IrDA ishlatilishining oldini olish.</string>
-    <string name="policydesc_allow_popimapemail">Telefonda POP va IMAP ishlatilishining oldini olish.</string>
+    <string name="policydesc_allow_popimapemail">Planshetda POP va IMAP ishlatilishining oldini olish.</string>
     <string name="policydesc_allow_storagecard">SD-kartalar ishlatilishining oldini olish.</string>
     <string name="policydesc_allow_textmessaging">Matnli va multimedia xabarlar ishlatilishining oldini olish.</string>
     <string name="policydesc_allow_thirdParty">Ushbu ilova uchinchi ilovalar ishga tushirilishining oldini olishi mumkin.</string>
@@ -838,7 +838,7 @@ QAYTARING"</string>
     <string name="pwd_change_enforced">Xavfsizlik siyosati parolingizni o‘zgartirishni talab qiladi.</string>
     <string name="recording_fail">Mikrofon %2$s’da ishlatilayotganda, undan %1$s’da foydalanib bo‘lmaydi.</string>
     <string name="recording_popup">%s mikrofondan foydalanmoqda.</string>
-    <string name="recording_popup_device">Telefon</string>
+    <string name="recording_popup_device">Planshet</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth mikrofonidan foydallanmoqda.</string>
     <string name="recording_popup_with_device">%1$s %2$s mikrofonidan foydalanmoqda.</string>
     <string name="redo">Takrorla</string>
@@ -903,12 +903,12 @@ QAYTARING"</string>
     <string name="screencapture_restrict">Xavfsizlik siyosati ekran rasmga olinishiga yo‘l qo‘ymaydi.</string>
     <string name="sd_card_unavailable_message">SD-kartadan foydalana olmaysiz, chunki u boshqa foydalanuvchi profilidan foydalanilayotganda kiritilgan.</string>
     <string name="sd_card_unavailable_title">SD-karta mavjud emas</string>
-    <string name="sdcard_bad_removal_message">SD-karta notoʻgʻri olib tashlandi. Telefoningiz kutilmaganda qayta ishga tushishiga yoʻl qoʻymaslik uchun saqlanmagan maʼlumotlarni saqlang va hozir qayta ishga tushiring.</string>
+    <string name="sdcard_bad_removal_message">SD-karta notoʻgʻri olib tashlandi. Planshetingiz kutilmaganda qayta ishga tushishiga yoʻl qoʻymaslik uchun saqlanmagan maʼlumotlarni saqlang va hozir qayta ishga tushiring.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD kartani shifrdan chiqarish</string>
     <string name="sdcard_batch_decrypt_noti_title">SD-kartani shifrdan chiqarish</string>
     <string name="sdcard_batch_decrypt_popup_content">"Shirflangan SD karta foydalanishdan oldin shifrdan chiqarilishi kerak. Shifrdan chiqarish bir soat yoki undan ham ko'proq vaqt olishi mumkin. Bu ishni to'liq quvvatlangan batareya bilan boshlang va oxirigacha qurilmani ulangan holda tuting. Shifrlashning uzilishi ba'zi bir yoki barcha ma'lumotlarning yo'qolishiga olib keladi."</string>
     <string name="sdcard_decrypt_err_notification">SD-karta shifrdan chiqarishda xato yuzaga keldi.</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD-kartadagi ayrim fayllar boshqa qurilmada shifrlangan, shuning uchun ularni bu telefonda ishlatib boʻlmaydi.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD-kartadagi ayrim fayllar boshqa qurilmada shifrlangan, shuning uchun ularni bu planshetda ishlatib boʻlmaydi.</string>
     <string name="sdcard_decrypt_notification">SD-karta shifrdan chiqarildi.</string>
     <string name="sdcard_decrypt_title_notification">SD-kartani shifrdan chiqarish</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD-karta shifr. chiqar…</string>
@@ -1235,7 +1235,7 @@ Ushbu himoyani olib tashlash uchun Sozlamalar > Xavfsizlik va maxfiylik > Avtoma
     <string name="usb_abnormal_reset_title">USB ulanishi barqaror emas</string>
     <string name="usb_abnormal_reset_toast">USB ulanishi barqaror emas. Kabelni chiqaring va qayta kiriting yoki boshqa kabel bilan urinib ko‘ring.</string>
     <string name="usb_accessory_notification_title">USB aksessuariga ulandi</string>
-    <string name="usb_bad_removal_message">USB saqlash qurilmasi notoʻgʻri olib tashlandi. Telefoningiz kutilmaganda qayta ishga tushishiga yoʻl qoʻymaslik uchun saqlanmagan maʼlumotlarni saqlang va hozir qayta ishga tushiring.</string>
+    <string name="usb_bad_removal_message">USB saqlash qurilmasi notoʻgʻri olib tashlandi. Planshetingiz kutilmaganda qayta ishga tushishiga yoʻl qoʻymaslik uchun saqlanmagan maʼlumotlarni saqlang va hozir qayta ishga tushiring.</string>
     <string name="usb_blocked_by_emergency_mode">Favqulodda rejimda ayrim USB funksiyalaridan foydalanib bo‘lmaydi.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Maksimal quvvat tejash rejimi yoqilgan vaqtda ulangan USB qurilmaga tegishli funksiyalardan foydalanib bo‘lmaydi.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Maksimal quvvat tejash rejimi yoqilgan vaqtda ayrim USB funksiyalari cheklanadi.</string>
@@ -1244,13 +1244,13 @@ Ushbu himoyani olib tashlash uchun Sozlamalar > Xavfsizlik va maxfiylik > Avtoma
     <string name="usb_camera_connected_notification_title">Media qurilma ulangan</string>
     <string name="usb_camera_disconnected_notification_title">Media qurilma uzildi</string>
     <string name="usb_cd_installer_notification_title">Dastur yangilanishi</string>
-    <string name="usb_charing_only_notification_title">USB orqali zaryadlash</string>
+    <string name="usb_charing_only_notification_title">Ulangan</string>
     <string name="usb_debugging_only_notification_title">Nosozliklarni tuzatish</string>
-    <string name="usb_host_resource_exceed_message">Telefoningizni USB nazoratchisida ushbu qurilmani ulash uchun yetarli resurslar mavjud emas. Qurilmani uzing va qayta ulashga urinib ko‘ring.</string>
+    <string name="usb_host_resource_exceed_message">Planshetingizni USB nazoratchisida ushbu qurilmani ulash uchun yetarli resurslar mavjud emas. Qurilmani uzing va qayta ulashga urinib ko‘ring.</string>
     <string name="usb_host_resource_exceed_title">USB nazoratchisi resurslari yetarli emas</string>
-    <string name="usb_hub_depth_exceed_message">Telefoningiz bir vaqtda faqat 5 tagacha USB-uyali ulanishni qo‘llab-quvvatlaydi.</string>
+    <string name="usb_hub_depth_exceed_message">Planshetingiz bir vaqtda faqat 5 tagacha USB-uyali ulanishni qo‘llab-quvvatlaydi.</string>
     <string name="usb_hub_depth_exceed_title">Maksimum USB uya ulanishlari</string>
-    <string name="usb_hub_power_exceed_message">Telefoningiz ushbu USB qurilmasini yetarli quvvat bilan ta’minlay olmaydi. Qurilmani telefoningizga ulashdan oldin uni o‘z-o‘zidan quvvatlanadigan USB uyasiga ulang.</string>
+    <string name="usb_hub_power_exceed_message">Planshetingiz ushbu USB qurilmasini yetarli quvvat bilan ta’minlay olmaydi. Qurilmani planshetingizga ulashdan oldin uni o‘zini-o‘zi quvvatlaydigan USB uyasiga ulang.</string>
     <string name="usb_increase_battery_usage">USB ulanishi batareya quvvati sarfini ko‘paytirishi mumkin.</string>
     <string name="usb_mass_storage_restrict">Xavfsizlik siyosati USB-katta hajmli xotiradan foydalanishga yo‘l qo‘ymaydi.</string>
     <string name="usb_midi_notification_title">MIDI uchun USB</string>
@@ -1276,8 +1276,8 @@ Ushbu himoyani olib tashlash uchun Sozlamalar > Xavfsizlik va maxfiylik > Avtoma
     <string name="usb_storage_stop_title">USB-ichki xotira ishlatilmoqda.</string>
     <string name="usb_storage_title">USB ulangan.</string>
     <string name="usb_type_c_supply_power_notification_title">Ulangan qrlm. USB orq. zaryadla</string>
-    <string name="usb_unblock_by_screen_unlock">Ulangan USB-qurilmadan foydalanish uchun telefoningizni blokdan chiqaring.</string>
-    <string name="usb_unsupport_accessory_message">Ushbu USB qurilmasi telefoningiz tomonidan qo‘llab-quvvatlanmaydi.</string>
+    <string name="usb_unblock_by_screen_unlock">Ulangan USB-qurilmadan foydalanish uchun planshetingizni blokdan chiqaring.</string>
+    <string name="usb_unsupport_accessory_message">Ushbu USB qurilmasi planshetingiz tomonidan qo‘llab-quvvatlanmaydi.</string>
     <string name="usb_unsupport_accessory_title">USB qurilma ishlamaydi</string>
     <string name="usb_unsupported_device">Ulangan USB qurilmasi qo‘llab-quvvatlanmaydi.</string>
     <string name="usb_unsupported_device_title">Qurilma qo‘llab-quvvatlanmaydi</string>
@@ -1295,19 +1295,19 @@ Ushbu himoyani olib tashlash uchun Sozlamalar > Xavfsizlik va maxfiylik > Avtoma
     <string name="usb_water_dialg_method_2_desc_2">Ventilyator yoki quritgichni (faqat iliq havo) portga qaratish orqali quritishni tezlashtirishingiz mumkin.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Zaryadlash/USB portida namlik yoki yot jism aniqladik.
 
-Zaryadlash/USB portini chang yoki zarra kabi yot narsalarga qarshi tekshiring. Telefoningizga zarar yetmasligi uchun zaryadlash porti toza boʻlguncha, namlik yoʻqolguncha hech narsa ulamang.
+Zaryadlash/USB portini chang yoki zarra kabi yot narsalarga qarshi tekshiring. Planshetingizga zarar yetmasligi uchun zaryadlash porti toza boʻlguncha, namlik yoʻqolguncha hech narsa ulamang.
 
 Portni quritish uchun namlikni silkitib tashlang, soʻngra qurishini kuting, bu bir necha soat vaqtni olishi mumkin. Ventilyator yoki quritgichni (faqat sovuq havo) portga qaratish orqali quritishni tezlashtirishingiz mumkin."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Zaryadlash/USB portida namlik yoki yot jism aniqladik.
 
-Zaryadlash/USB portini chang yoki zarra kabi yot narsalarga qarshi tekshiring. Telefoningizga zarar yetmasligi uchun zaryadlash porti toza boʻlguncha, namlik yoʻqolguncha hech narsa ulamang.
+Zaryadlash/USB portini chang yoki zarra kabi yot narsalarga qarshi tekshiring. Planshetingizga zarar yetmasligi uchun zaryadlash porti toza boʻlguncha, namlik yoʻqolguncha hech narsa ulamang.
 
 Portni quritish uchun namlikni silkitib tashlang, soʻngra qurishini kuting, bu bir necha soat vaqtni olishi mumkin. Ventilyator yoki quritgichni (faqat sovuq havo) portga qaratish orqali quritishni tezlashtirishingiz mumkin.
 
-Ayni vaqtda telefoningizni simsiz zaryadlashingiz mumkin."</string>
+Ayni vaqtda planshetingizni simsiz zaryadlashingiz mumkin."</string>
     <string name="usb_water_notification_content">Zaryadlash/USB portida namlik yoki begona moddalar mavjud. Zaryad qilishdan oldin tekshiring.</string>
-    <string name="usb_water_notification_message">Zaryadlash qurilmasi/USB portda namlik aniqlandi. Telefonni zaryadlashdan oldin u quruq ekanligiga ishonch hosil qiling. Butunlay qurishi uchun bir oz vaqt ketadi.</string>
+    <string name="usb_water_notification_message">Zaryadlash qurilmasi/USB portda namlik aniqlandi. Planshetni zaryadlashdan oldin u quruq ekanligiga ishonch hosil qiling. Butunlay qurishi uchun bir oz vaqt ketadi.</string>
     <string name="usb_water_notification_message_button">Tafsilotlar</string>
     <string name="usb_water_notification_title">Zaryad. qrlm/USB portni tekshir</string>
     <string name="usbhostStorage_restrict">Xavfsizlik siyosati USB xost xotirasidan foydalanishga yo‘l qo‘ymaydi.</string>

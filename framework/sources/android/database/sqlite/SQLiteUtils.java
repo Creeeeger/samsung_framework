@@ -49,7 +49,6 @@ public class SQLiteUtils {
         return f.length();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ReportRunnable implements Runnable {
         Context context;

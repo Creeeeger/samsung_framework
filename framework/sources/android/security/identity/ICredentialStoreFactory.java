@@ -90,8 +90,9 @@ public interface ICredentialStoreFactory extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ICredentialStoreFactory {
+        public static class Proxy implements ICredentialStoreFactory {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Teie telefon on ebastabiilne, kuna rakendustega SD-kaart eemaldati. Telefon taaskäivitub %d sekundi pärast, et taastada tavaseisund. Salvestage kõik salvestamata andmed enne, kui telefon taaskäivitub.</item>
+        <item quantity="other">Teie tahvelseade on ebastabiilne, kuna rakendustega SD-kaart eemaldati. Tahvelseade taaskäivitub %d sekundi pärast, et taastada tavaseisund. Salvestage kõik salvestamata andmed enne, kui tahvelseade taaskäivitub.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Teie telefon on ebastabiilne, kuna rakendustega SD-kaart eemaldati. Telefon taaskäivitub %d sekundi pärast, et taastada tavaseisund. Salvestage kõik salvestamata andmed enne, kui telefon taaskäivitub.</item>
+        <item quantity="one">Teie tahvelseade on ebastabiilne, kuna rakendustega SD-kaart eemaldati. Tahvelseade taaskäivitub %d sekundi pärast, et taastada tavaseisund. Salvestage kõik salvestamata andmed enne, kui tahvelseade taaskäivitub.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefon taaskäivitub %d s pärast</item>
+        <item quantity="other">Tahvelseade taaskäivitub %d s pärast</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefon taaskäivitub %d s pärast</item>
+        <item quantity="one">Tahvelseade taaskäivitub %d s pärast</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

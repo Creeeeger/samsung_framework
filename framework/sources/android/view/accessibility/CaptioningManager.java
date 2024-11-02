@@ -31,6 +31,9 @@ public class CaptioningManager {
     private final Resources mResources;
     private final ArrayList<CaptioningChangeListener> mListeners = new ArrayList<>();
     private final Runnable mStyleChangedRunnable = new Runnable() { // from class: android.view.accessibility.CaptioningManager.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             CaptioningManager.this.notifyUserStyleChanged();
@@ -166,7 +169,6 @@ public class CaptioningManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyEnabledChanged() {
         boolean enabled = isEnabled();
         synchronized (this.mListeners) {
@@ -178,7 +180,6 @@ public class CaptioningManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyUserStyleChanged() {
         CaptionStyle userStyle = getUserStyle();
         synchronized (this.mListeners) {
@@ -190,7 +191,6 @@ public class CaptioningManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyLocaleChanged() {
         Locale locale = getLocale();
         synchronized (this.mListeners) {
@@ -202,7 +202,6 @@ public class CaptioningManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyFontScaleChanged() {
         float fontScale = getFontScale();
         synchronized (this.mListeners) {
@@ -214,7 +213,6 @@ public class CaptioningManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifySystemAudioCaptionChanged() {
         boolean enabled = isSystemAudioCaptioningEnabled();
         synchronized (this.mListeners) {
@@ -226,7 +224,6 @@ public class CaptioningManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifySystemAudioCaptionUiChanged() {
         boolean enabled = isSystemAudioCaptioningUiEnabled();
         synchronized (this.mListeners) {
@@ -238,8 +235,9 @@ public class CaptioningManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class MyContentObserver extends ContentObserver {
+    public class MyContentObserver extends ContentObserver {
         private final Handler mHandler;
 
         public MyContentObserver(Handler handler) {
@@ -271,6 +269,19 @@ public class CaptioningManager {
                 this.mHandler.removeCallbacks(CaptioningManager.this.mStyleChangedRunnable);
                 this.mHandler.post(CaptioningManager.this.mStyleChangedRunnable);
             }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.accessibility.CaptioningManager$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            CaptioningManager.this.notifyUserStyleChanged();
         }
     }
 

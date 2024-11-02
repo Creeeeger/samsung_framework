@@ -7,7 +7,9 @@ import java.util.Arrays;
 /* loaded from: classes2.dex */
 public final class WifiDisplayStatus implements Parcelable {
     public static final Parcelable.Creator<WifiDisplayStatus> CREATOR = new Parcelable.Creator<WifiDisplayStatus>() { // from class: android.hardware.display.WifiDisplayStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WifiDisplayStatus createFromParcel(Parcel in) {
             WifiDisplay activeDisplay;
@@ -28,7 +30,6 @@ public final class WifiDisplayStatus implements Parcelable {
             return new WifiDisplayStatus(featureState, scanState, activeDisplayState, activeDisplay, displays, sessionInfo);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiDisplayStatus[] newArray(int size) {
             return new WifiDisplayStatus[size];
@@ -50,6 +51,38 @@ public final class WifiDisplayStatus implements Parcelable {
     private final int mFeatureState;
     private final int mScanState;
     private final WifiDisplaySessionInfo mSessionInfo;
+
+    /* renamed from: android.hardware.display.WifiDisplayStatus$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WifiDisplayStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiDisplayStatus createFromParcel(Parcel in) {
+            WifiDisplay activeDisplay;
+            int featureState = in.readInt();
+            int scanState = in.readInt();
+            int activeDisplayState = in.readInt();
+            if (in.readInt() == 0) {
+                activeDisplay = null;
+            } else {
+                WifiDisplay activeDisplay2 = WifiDisplay.CREATOR.createFromParcel(in);
+                activeDisplay = activeDisplay2;
+            }
+            WifiDisplay[] displays = WifiDisplay.CREATOR.newArray(in.readInt());
+            for (int i = 0; i < displays.length; i++) {
+                displays[i] = WifiDisplay.CREATOR.createFromParcel(in);
+            }
+            WifiDisplaySessionInfo sessionInfo = WifiDisplaySessionInfo.CREATOR.createFromParcel(in);
+            return new WifiDisplayStatus(featureState, scanState, activeDisplayState, activeDisplay, displays, sessionInfo);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiDisplayStatus[] newArray(int size) {
+            return new WifiDisplayStatus[size];
+        }
+    }
 
     public WifiDisplayStatus() {
         this(0, 0, 0, null, WifiDisplay.EMPTY_ARRAY, null);

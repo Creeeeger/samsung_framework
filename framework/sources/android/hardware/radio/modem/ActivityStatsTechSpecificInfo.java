@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ActivityStatsTechSpecificInfo implements Parcelable {
     public static final Parcelable.Creator<ActivityStatsTechSpecificInfo> CREATOR = new Parcelable.Creator<ActivityStatsTechSpecificInfo>() { // from class: android.hardware.radio.modem.ActivityStatsTechSpecificInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ActivityStatsTechSpecificInfo createFromParcel(Parcel _aidl_source) {
             ActivityStatsTechSpecificInfo _aidl_out = new ActivityStatsTechSpecificInfo();
@@ -18,7 +20,6 @@ public class ActivityStatsTechSpecificInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityStatsTechSpecificInfo[] newArray(int _aidl_size) {
             return new ActivityStatsTechSpecificInfo[_aidl_size];
@@ -33,6 +34,25 @@ public class ActivityStatsTechSpecificInfo implements Parcelable {
     public int[] txmModetimeMs;
     public int frequencyRange = 0;
     public int rxModeTimeMs = 0;
+
+    /* renamed from: android.hardware.radio.modem.ActivityStatsTechSpecificInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ActivityStatsTechSpecificInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityStatsTechSpecificInfo createFromParcel(Parcel _aidl_source) {
+            ActivityStatsTechSpecificInfo _aidl_out = new ActivityStatsTechSpecificInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityStatsTechSpecificInfo[] newArray(int _aidl_size) {
+            return new ActivityStatsTechSpecificInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

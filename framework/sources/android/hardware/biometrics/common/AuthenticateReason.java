@@ -8,13 +8,14 @@ import android.os.ParcelableHolder;
 /* loaded from: classes.dex */
 public final class AuthenticateReason implements Parcelable {
     public static final Parcelable.Creator<AuthenticateReason> CREATOR = new Parcelable.Creator<AuthenticateReason>() { // from class: android.hardware.biometrics.common.AuthenticateReason.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AuthenticateReason createFromParcel(Parcel _aidl_source) {
             return new AuthenticateReason(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthenticateReason[] newArray(int _aidl_size) {
             return new AuthenticateReason[_aidl_size];
@@ -51,6 +52,10 @@ public final class AuthenticateReason implements Parcelable {
         public static final int faceAuthenticateReason = 1;
         public static final int fingerprintAuthenticateReason = 2;
         public static final int vendorAuthenticateReason = 0;
+    }
+
+    /* synthetic */ AuthenticateReason(Parcel parcel, AuthenticateReasonIA authenticateReasonIA) {
+        this(parcel);
     }
 
     public AuthenticateReason() {
@@ -113,6 +118,23 @@ public final class AuthenticateReason implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.biometrics.common.AuthenticateReason$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AuthenticateReason> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AuthenticateReason createFromParcel(Parcel _aidl_source) {
+            return new AuthenticateReason(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AuthenticateReason[] newArray(int _aidl_size) {
+            return new AuthenticateReason[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable
@@ -198,7 +220,9 @@ public final class AuthenticateReason implements Parcelable {
     /* loaded from: classes.dex */
     public static class Vendor implements Parcelable {
         public static final Parcelable.Creator<Vendor> CREATOR = new Parcelable.Creator<Vendor>() { // from class: android.hardware.biometrics.common.AuthenticateReason.Vendor.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Vendor createFromParcel(Parcel _aidl_source) {
                 Vendor _aidl_out = new Vendor();
@@ -206,13 +230,31 @@ public final class AuthenticateReason implements Parcelable {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Vendor[] newArray(int _aidl_size) {
                 return new Vendor[_aidl_size];
             }
         };
         public final ParcelableHolder extension = new ParcelableHolder(1);
+
+        /* renamed from: android.hardware.biometrics.common.AuthenticateReason$Vendor$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Vendor> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Vendor createFromParcel(Parcel _aidl_source) {
+                Vendor _aidl_out = new Vendor();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Vendor[] newArray(int _aidl_size) {
+                return new Vendor[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

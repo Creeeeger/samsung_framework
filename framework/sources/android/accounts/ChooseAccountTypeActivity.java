@@ -72,6 +72,9 @@ public class ChooseAccountTypeActivity extends Activity {
         list.setChoiceMode(0);
         list.setTextFilterEnabled(false);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: android.accounts.ChooseAccountTypeActivity.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.AdapterView.OnItemClickListener
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 ChooseAccountTypeActivity chooseAccountTypeActivity = ChooseAccountTypeActivity.this;
@@ -80,7 +83,19 @@ public class ChooseAccountTypeActivity extends Activity {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.accounts.ChooseAccountTypeActivity$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements AdapterView.OnItemClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.AdapterView.OnItemClickListener
+        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            ChooseAccountTypeActivity chooseAccountTypeActivity = ChooseAccountTypeActivity.this;
+            chooseAccountTypeActivity.setResultAndFinish(((AuthInfo) chooseAccountTypeActivity.mAuthenticatorInfosToDisplay.get(position)).desc.type);
+        }
+    }
+
     public void setResultAndFinish(String type) {
         Bundle bundle = new Bundle();
         bundle.putString("accountType", type);
@@ -116,7 +131,6 @@ public class ChooseAccountTypeActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class AuthInfo {
         final AuthenticatorDescription desc;
@@ -134,6 +148,10 @@ public class ChooseAccountTypeActivity extends Activity {
     private static class ViewHolder {
         ImageView icon;
         TextView text;
+
+        /* synthetic */ ViewHolder(ViewHolderIA viewHolderIA) {
+            this();
+        }
 
         private ViewHolder() {
         }

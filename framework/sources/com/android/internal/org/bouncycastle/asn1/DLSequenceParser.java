@@ -6,7 +6,6 @@ import java.io.IOException;
 public class DLSequenceParser implements ASN1SequenceParser {
     private ASN1StreamParser _parser;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DLSequenceParser(ASN1StreamParser parser) {
         this._parser = parser;
     }

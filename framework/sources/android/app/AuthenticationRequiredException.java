@@ -7,13 +7,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AuthenticationRequiredException extends SecurityException implements Parcelable {
     public static final Parcelable.Creator<AuthenticationRequiredException> CREATOR = new Parcelable.Creator<AuthenticationRequiredException>() { // from class: android.app.AuthenticationRequiredException.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AuthenticationRequiredException createFromParcel(Parcel source) {
             return new AuthenticationRequiredException(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthenticationRequiredException[] newArray(int size) {
             return new AuthenticationRequiredException[size];
@@ -44,5 +45,22 @@ public final class AuthenticationRequiredException extends SecurityException imp
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getMessage());
         this.mUserAction.writeToParcel(dest, flags);
+    }
+
+    /* renamed from: android.app.AuthenticationRequiredException$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AuthenticationRequiredException> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AuthenticationRequiredException createFromParcel(Parcel source) {
+            return new AuthenticationRequiredException(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AuthenticationRequiredException[] newArray(int size) {
+            return new AuthenticationRequiredException[size];
+        }
     }
 }

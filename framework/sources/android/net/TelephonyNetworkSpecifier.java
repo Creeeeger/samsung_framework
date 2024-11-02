@@ -7,14 +7,15 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class TelephonyNetworkSpecifier extends NetworkSpecifier implements Parcelable {
     public static final Parcelable.Creator<TelephonyNetworkSpecifier> CREATOR = new Parcelable.Creator<TelephonyNetworkSpecifier>() { // from class: android.net.TelephonyNetworkSpecifier.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TelephonyNetworkSpecifier createFromParcel(Parcel in) {
             int subId = in.readInt();
             return new TelephonyNetworkSpecifier(subId);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyNetworkSpecifier[] newArray(int size) {
             return new TelephonyNetworkSpecifier[size];
@@ -28,6 +29,24 @@ public final class TelephonyNetworkSpecifier extends NetworkSpecifier implements
 
     public TelephonyNetworkSpecifier(int subId) {
         this.mSubId = subId;
+    }
+
+    /* renamed from: android.net.TelephonyNetworkSpecifier$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TelephonyNetworkSpecifier> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyNetworkSpecifier createFromParcel(Parcel in) {
+            int subId = in.readInt();
+            return new TelephonyNetworkSpecifier(subId);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyNetworkSpecifier[] newArray(int size) {
+            return new TelephonyNetworkSpecifier[size];
+        }
     }
 
     @Override // android.os.Parcelable

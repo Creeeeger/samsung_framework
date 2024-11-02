@@ -160,8 +160,9 @@ public interface IHermesService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IHermesService {
+        public static class Proxy implements IHermesService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -86,8 +86,9 @@ public interface ILocalWallpaperColorConsumer extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ILocalWallpaperColorConsumer {
+        public static class Proxy implements ILocalWallpaperColorConsumer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

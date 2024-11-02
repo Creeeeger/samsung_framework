@@ -26,7 +26,6 @@ public class Script extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public KernelID createKernelID(int slot, int sig, Element ein, Element eout) {
         KernelID k = this.mKIDs.get(slot);
         if (k != null) {
@@ -79,7 +78,6 @@ public class Script extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public FieldID createFieldID(int slot, Element e) {
         FieldID f = this.mFIDs.get(slot);
         if (f != null) {
@@ -106,12 +104,10 @@ public class Script extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void forEach(int slot, Allocation ain, Allocation aout, FieldPacker v) {
         forEach(slot, ain, aout, v, (LaunchOptions) null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void forEach(int slot, Allocation ain, Allocation aout, FieldPacker v, LaunchOptions sc) {
         byte[] params;
         int[] limits;
@@ -219,7 +215,6 @@ public class Script extends BaseObj {
         this.mRS.nScriptReduce(getID(this.mRS), slot, in_ids, out_id, limits);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Script(long id, RenderScript rs) {
         super(id, rs);
         this.mKIDs = new SparseArray<>();

@@ -6,7 +6,6 @@ import com.android.internal.util.GrowingArrayUtils;
 import java.lang.reflect.Array;
 import libcore.util.EmptyArray;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public abstract class SpannableStringInternal {
     private static final int COLUMNS = 3;
@@ -19,7 +18,6 @@ public abstract class SpannableStringInternal {
     private Object[] mSpans;
     private String mText;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public SpannableStringInternal(CharSequence charSequence, int start, int end, boolean ignoreNoCopySpan) {
         if (start == 0 && end == charSequence.length()) {
@@ -145,7 +143,6 @@ public abstract class SpannableStringInternal {
         this.mText.getChars(start, end, dest, off);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSpan(Object what, int start, int end, int flags) {
         setSpan(what, start, end, flags, true);
     }
@@ -207,7 +204,6 @@ public abstract class SpannableStringInternal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeSpan(Object what) {
         removeSpan(what, 0);
     }

@@ -23,6 +23,10 @@ public abstract class ContainerCoreService extends Service {
 
     /* loaded from: classes5.dex */
     private final class ServiceImpl extends IContainerService.Stub {
+        /* synthetic */ ServiceImpl(ContainerCoreService containerCoreService, ServiceImplIA serviceImplIA) {
+            this();
+        }
+
         private ServiceImpl() {
         }
 

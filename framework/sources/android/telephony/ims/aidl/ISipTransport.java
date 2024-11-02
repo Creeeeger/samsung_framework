@@ -106,8 +106,9 @@ public interface ISipTransport extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISipTransport {
+        public static class Proxy implements ISipTransport {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

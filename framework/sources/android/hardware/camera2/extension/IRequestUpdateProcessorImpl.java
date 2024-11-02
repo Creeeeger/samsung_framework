@@ -136,8 +136,9 @@ public interface IRequestUpdateProcessorImpl extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IRequestUpdateProcessorImpl {
+        public static class Proxy implements IRequestUpdateProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -2,12 +2,10 @@ package android.speech.tts;
 
 import android.text.TextUtils;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class EventLogger extends AbstractEventLogger {
     private final SynthesisRequest mRequest;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public EventLogger(SynthesisRequest request, int callerUid, int callerPid, String serviceApp) {
         super(callerUid, callerPid, serviceApp);
         this.mRequest = request;

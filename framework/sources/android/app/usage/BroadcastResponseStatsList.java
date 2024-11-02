@@ -9,19 +9,24 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class BroadcastResponseStatsList implements Parcelable {
     public static final Parcelable.Creator<BroadcastResponseStatsList> CREATOR = new Parcelable.Creator<BroadcastResponseStatsList>() { // from class: android.app.usage.BroadcastResponseStatsList.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BroadcastResponseStatsList createFromParcel(Parcel source) {
             return new BroadcastResponseStatsList(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BroadcastResponseStatsList[] newArray(int size) {
             return new BroadcastResponseStatsList[size];
         }
     };
     private List<BroadcastResponseStats> mBroadcastResponseStats;
+
+    /* synthetic */ BroadcastResponseStatsList(Parcel parcel, BroadcastResponseStatsListIA broadcastResponseStatsListIA) {
+        this(parcel);
+    }
 
     public BroadcastResponseStatsList(List<BroadcastResponseStats> broadcastResponseStats) {
         this.mBroadcastResponseStats = broadcastResponseStats;
@@ -58,6 +63,23 @@ public final class BroadcastResponseStatsList implements Parcelable {
             dest.writeBlob(data.marshall());
         } finally {
             data.recycle();
+        }
+    }
+
+    /* renamed from: android.app.usage.BroadcastResponseStatsList$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BroadcastResponseStatsList> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BroadcastResponseStatsList createFromParcel(Parcel source) {
+            return new BroadcastResponseStatsList(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BroadcastResponseStatsList[] newArray(int size) {
+            return new BroadcastResponseStatsList[size];
         }
     }
 }

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.RandomAccess;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class IntArrayList extends AbstractProtobufList<Integer> implements Internal.IntList, RandomAccess, PrimitiveNonBoxingCollection {
     private static final IntArrayList EMPTY_LIST;
@@ -22,7 +21,6 @@ public final class IntArrayList extends AbstractProtobufList<Integer> implements
         return EMPTY_LIST;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IntArrayList() {
         this(new int[10], 0);
     }

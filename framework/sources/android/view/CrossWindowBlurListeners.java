@@ -87,7 +87,6 @@ public final class CrossWindowBlurListeners {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyListener(final Consumer<Boolean> listener, Executor executor, final boolean enabled) {
         executor.execute(new Runnable() { // from class: android.view.CrossWindowBlurListeners$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
@@ -97,9 +96,12 @@ public final class CrossWindowBlurListeners {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class BlurEnabledListenerInternal extends ICrossWindowBlurEnabledListener.Stub {
+        /* synthetic */ BlurEnabledListenerInternal(CrossWindowBlurListeners crossWindowBlurListeners, BlurEnabledListenerInternalIA blurEnabledListenerInternalIA) {
+            this();
+        }
+
         private BlurEnabledListenerInternal() {
         }
 

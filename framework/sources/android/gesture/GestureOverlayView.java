@@ -389,7 +389,6 @@ public class GestureOverlayView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setPaintAlpha(int alpha) {
         int i = this.mCurrentColor;
         int baseAlpha = i >>> 24;
@@ -471,7 +470,6 @@ public class GestureOverlayView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -676,7 +674,6 @@ public class GestureOverlayView extends FrameLayout {
         clear(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void fireOnGesturePerformed() {
         ArrayList<OnGesturePerformedListener> actionListeners = this.mOnGesturePerformedListeners;
         int count = actionListeners.size();
@@ -685,11 +682,14 @@ public class GestureOverlayView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class FadeOutRunnable implements Runnable {
         boolean fireActionPerformed;
         boolean resetMultipleStrokes;
+
+        /* synthetic */ FadeOutRunnable(GestureOverlayView gestureOverlayView, FadeOutRunnableIA fadeOutRunnableIA) {
+            this();
+        }
 
         private FadeOutRunnable() {
         }

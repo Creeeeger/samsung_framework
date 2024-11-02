@@ -11,13 +11,14 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class ClientRequestStats implements Parcelable {
     public static final Parcelable.Creator<ClientRequestStats> CREATOR = new Parcelable.Creator<ClientRequestStats>() { // from class: android.telephony.ClientRequestStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ClientRequestStats createFromParcel(Parcel in) {
             return new ClientRequestStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClientRequestStats[] newArray(int size) {
             return new ClientRequestStats[size];
@@ -30,6 +31,23 @@ public final class ClientRequestStats implements Parcelable {
     private long mPendingRequestsCount;
     private long mPendingRequestsWakelockTime;
     private SparseArray<TelephonyHistogram> mRequestHistograms;
+
+    /* renamed from: android.telephony.ClientRequestStats$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ClientRequestStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClientRequestStats createFromParcel(Parcel in) {
+            return new ClientRequestStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClientRequestStats[] newArray(int size) {
+            return new ClientRequestStats[size];
+        }
+    }
 
     public ClientRequestStats(Parcel in) {
         this.mCompletedRequestsWakelockTime = 0L;

@@ -63,7 +63,6 @@ public class SensorAdditionalInfo {
     public @interface AdditionalInfoType {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SensorAdditionalInfo(Sensor aSensor, int aType, int aSerial, int[] aIntValues, float[] aFloatValues) {
         this.sensor = aSensor;
         this.type = aType;

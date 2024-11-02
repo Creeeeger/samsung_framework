@@ -84,8 +84,9 @@ public class HealthKeys {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class SortedIntArray {
+    public static class SortedIntArray {
         int[] mArray;
         int mCount;
 

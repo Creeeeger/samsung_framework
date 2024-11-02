@@ -19,7 +19,6 @@ public abstract class PolicyKey implements Parcelable {
 
     public abstract void writeToBundle(Bundle bundle);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public PolicyKey(String identifier) {
         this.mIdentifier = (String) Objects.requireNonNull(identifier);
     }

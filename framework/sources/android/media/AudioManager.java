@@ -484,6 +484,9 @@ public class AudioManager {
     private final ConcurrentHashMap<String, FocusRequestInfo> mAudioFocusIdListenerMap = new ConcurrentHashMap<>();
     private final ServiceEventHandlerDelegate mServiceEventHandlerDelegate = new ServiceEventHandlerDelegate(null);
     private final IAudioFocusDispatcher mAudioFocusDispatcher = new IAudioFocusDispatcher.Stub() { // from class: android.media.AudioManager.1
+        AnonymousClass1() {
+        }
+
         @Override // android.media.IAudioFocusDispatcher
         public void dispatchAudioFocusChange(int focusChange, String id) {
             FocusRequestInfo fri = AudioManager.this.findFocusRequestInfo(id);
@@ -512,6 +515,9 @@ public class AudioManager {
     private final Object mFocusRequestsLock = new Object();
     private final Object mPlaybackCallbackLock = new Object();
     private final IPlaybackConfigDispatcher mPlayCb = new IPlaybackConfigDispatcher.Stub() { // from class: android.media.AudioManager.2
+        AnonymousClass2() {
+        }
+
         @Override // android.media.IPlaybackConfigDispatcher
         public void dispatchPlaybackConfigChange(List<AudioPlaybackConfiguration> configs, boolean flush) {
             if (flush) {
@@ -532,6 +538,9 @@ public class AudioManager {
     };
     private final Object mRecordCallbackLock = new Object();
     private final IRecordingConfigDispatcher mRecCb = new IRecordingConfigDispatcher.Stub() { // from class: android.media.AudioManager.3
+        AnonymousClass3() {
+        }
+
         @Override // android.media.IRecordingConfigDispatcher
         public void dispatchRecordingConfigChange(List<AudioRecordingConfiguration> configs) {
             synchronized (AudioManager.this.mRecordCallbackLock) {
@@ -833,7 +842,6 @@ public class AudioManager {
         sContext = new WeakReference<>(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static IAudioService getService() {
         IAudioService iAudioService = sService;
         if (iAudioService != null) {
@@ -1399,7 +1407,6 @@ public class AudioManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnPreferredDevicesForStrategyChangedListener$0() {
         return new StrategyPreferredDevicesDispatcherStub();
     }
@@ -1424,7 +1431,6 @@ public class AudioManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnNonDefaultDevicesForStrategyChangedListener$1() {
         return new StrategyNonDefaultDevicesDispatcherStub();
     }
@@ -1435,9 +1441,12 @@ public class AudioManager {
         this.mNonDefDevListenerMgr.removeListener(listener, "removeOnNonDefaultDevicesForStrategyChangedListener");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class StrategyPreferredDevicesDispatcherStub extends IStrategyPreferredDevicesDispatcher.Stub implements CallbackUtil.DispatcherStub {
+        /* synthetic */ StrategyPreferredDevicesDispatcherStub(AudioManager audioManager, StrategyPreferredDevicesDispatcherStubIA strategyPreferredDevicesDispatcherStubIA) {
+            this();
+        }
+
         private StrategyPreferredDevicesDispatcherStub() {
         }
 
@@ -1466,9 +1475,12 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class StrategyNonDefaultDevicesDispatcherStub extends IStrategyNonDefaultDevicesDispatcher.Stub implements CallbackUtil.DispatcherStub {
+        /* synthetic */ StrategyNonDefaultDevicesDispatcherStub(AudioManager audioManager, StrategyNonDefaultDevicesDispatcherStubIA strategyNonDefaultDevicesDispatcherStubIA) {
+            this();
+        }
+
         private StrategyNonDefaultDevicesDispatcherStub() {
         }
 
@@ -1636,7 +1648,6 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class DevRoleListenerInfo<T> {
         final Executor mExecutor;
@@ -1648,11 +1659,14 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class DevRoleListeners<T> {
         private final Object mDevRoleListenersLock;
         private ArrayList<DevRoleListenerInfo<T>> mListenerInfos;
+
+        /* synthetic */ DevRoleListeners(AudioManager audioManager, DevRoleListenersIA devRoleListenersIA) {
+            this();
+        }
 
         private DevRoleListeners() {
             this.mDevRoleListenersLock = new Object();
@@ -1673,12 +1687,10 @@ public class AudioManager {
             return null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean hasDevRoleListener(T listener) {
             return getDevRoleListenerInfo(listener) != null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean removeDevRoleListener(T listener) {
             DevRoleListenerInfo<T> infoToRemove = getDevRoleListenerInfo(listener);
             if (infoToRemove != null) {
@@ -1689,9 +1701,12 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class CapturePresetDevicesRoleDispatcherStub extends ICapturePresetDevicesRoleDispatcher.Stub {
+        /* synthetic */ CapturePresetDevicesRoleDispatcherStub(AudioManager audioManager, CapturePresetDevicesRoleDispatcherStubIA capturePresetDevicesRoleDispatcherStubIA) {
+            this();
+        }
+
         private CapturePresetDevicesRoleDispatcherStub() {
         }
 
@@ -1898,7 +1913,6 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public final class ModeDispatcherStub extends IAudioModeDispatcher.Stub implements CallbackUtil.DispatcherStub {
         ModeDispatcherStub() {
@@ -1939,7 +1953,6 @@ public class AudioManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnModeChangedListener$2() {
         return new ModeDispatcherStub();
     }
@@ -2218,7 +2231,6 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class FocusRequestInfo {
         final Handler mHandler;
@@ -2230,12 +2242,10 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public FocusRequestInfo findFocusRequestInfo(String id) {
         return this.mAudioFocusIdListenerMap.get(id);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class ServiceEventHandlerDelegate {
         private final Handler mHandler;
@@ -2253,6 +2263,14 @@ public class AudioManager {
             }
             if (looper != null) {
                 this.mHandler = new Handler(looper) { // from class: android.media.AudioManager.ServiceEventHandlerDelegate.1
+                    final /* synthetic */ AudioManager val$this$0;
+
+                    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                    AnonymousClass1(Looper looper2, AudioManager audioManager) {
+                        super(looper2);
+                        r3 = audioManager;
+                    }
+
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         OnAudioFocusChangeListener listener;
@@ -2290,8 +2308,86 @@ public class AudioManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.media.AudioManager$ServiceEventHandlerDelegate$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ AudioManager val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper2, AudioManager audioManager) {
+                super(looper2);
+                r3 = audioManager;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                OnAudioFocusChangeListener listener;
+                switch (msg.what) {
+                    case 0:
+                        FocusRequestInfo fri = AudioManager.this.findFocusRequestInfo((String) msg.obj);
+                        if (fri != null && (listener = fri.mRequest.getOnAudioFocusChangeListener()) != null) {
+                            Log.d(AudioManager.TAG, "dispatching onAudioFocusChange(" + msg.arg1 + ") to " + msg.obj);
+                            listener.onAudioFocusChange(msg.arg1);
+                            return;
+                        }
+                        return;
+                    case 1:
+                        RecordConfigChangeCallbackData cbData = (RecordConfigChangeCallbackData) msg.obj;
+                        if (cbData.mCb != null) {
+                            cbData.mCb.onRecordingConfigChanged(cbData.mConfigs);
+                            return;
+                        }
+                        return;
+                    case 2:
+                        PlaybackConfigChangeCallbackData cbData2 = (PlaybackConfigChangeCallbackData) msg.obj;
+                        if (cbData2.mCb != null) {
+                            cbData2.mCb.onPlaybackConfigChanged(cbData2.mConfigs);
+                            return;
+                        }
+                        return;
+                    default:
+                        Log.e(AudioManager.TAG, "Unknown event " + msg.what);
+                        return;
+                }
+            }
+        }
+
         Handler getHandler() {
             return this.mHandler;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.AudioManager$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends IAudioFocusDispatcher.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.IAudioFocusDispatcher
+        public void dispatchAudioFocusChange(int focusChange, String id) {
+            FocusRequestInfo fri = AudioManager.this.findFocusRequestInfo(id);
+            if (fri != null) {
+                OnAudioFocusChangeListener listener = fri.mRequest.getOnAudioFocusChangeListener();
+                if (listener != null) {
+                    Handler h = fri.mHandler == null ? AudioManager.this.mServiceEventHandlerDelegate.getHandler() : fri.mHandler;
+                    Message m = h.obtainMessage(0, focusChange, 0, id);
+                    h.sendMessage(m);
+                }
+            }
+        }
+
+        @Override // android.media.IAudioFocusDispatcher
+        public void dispatchFocusResultFromExtPolicy(int requestResult, String clientId) {
+            synchronized (AudioManager.this.mFocusRequestsLock) {
+                BlockingFocusResultReceiver focusReceiver = (BlockingFocusResultReceiver) AudioManager.this.mFocusRequestsAwaitingResult.remove(clientId);
+                if (focusReceiver != null) {
+                    focusReceiver.notifyResult(requestResult);
+                } else {
+                    Log.e(AudioManager.TAG, "dispatchFocusResultFromExtPolicy found no result receiver");
+                }
+            }
         }
     }
 
@@ -2476,10 +2572,13 @@ public class AudioManager {
         return focusReceiver.requestResult();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class SafeWaitObject {
         private boolean mQuit;
+
+        /* synthetic */ SafeWaitObject(SafeWaitObjectIA safeWaitObjectIA) {
+            this();
+        }
 
         private SafeWaitObject() {
             this.mQuit = false;
@@ -2507,7 +2606,6 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class BlockingFocusResultReceiver {
         private final String mFocusClientId;
@@ -2719,7 +2817,6 @@ public class AudioManager {
         return registerAudioPolicyStatic(policy);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int registerAudioPolicyStatic(AudioPolicy policy) {
         if (policy == null) {
             throw new IllegalArgumentException("Illegal null AudioPolicy argument");
@@ -2743,7 +2840,6 @@ public class AudioManager {
         unregisterAudioPolicyAsyncStatic(policy);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void unregisterAudioPolicyAsyncStatic(AudioPolicy policy) {
         if (policy == null) {
             throw new IllegalArgumentException("Illegal null AudioPolicy argument");
@@ -2785,7 +2881,6 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class AudioPlaybackCallbackInfo {
         final AudioPlaybackCallback mCb;
@@ -2893,13 +2988,38 @@ public class AudioManager {
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.AudioManager$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 extends IPlaybackConfigDispatcher.Stub {
+        AnonymousClass2() {
+        }
+
+        @Override // android.media.IPlaybackConfigDispatcher
+        public void dispatchPlaybackConfigChange(List<AudioPlaybackConfiguration> configs, boolean flush) {
+            if (flush) {
+                Binder.flushPendingCommands();
+            }
+            synchronized (AudioManager.this.mPlaybackCallbackLock) {
+                if (AudioManager.this.mPlaybackCallbackList != null) {
+                    for (int i = 0; i < AudioManager.this.mPlaybackCallbackList.size(); i++) {
+                        AudioPlaybackCallbackInfo arci = (AudioPlaybackCallbackInfo) AudioManager.this.mPlaybackCallbackList.get(i);
+                        if (arci.mHandler != null) {
+                            Message m = arci.mHandler.obtainMessage(2, new PlaybackConfigChangeCallbackData(arci.mCb, configs));
+                            arci.mHandler.sendMessage(m);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /* loaded from: classes2.dex */
     public static abstract class AudioRecordingCallback {
         public void onRecordingConfigChanged(List<AudioRecordingConfiguration> configs) {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class AudioRecordingCallbackInfo {
         final AudioRecordingCallback mCb;
@@ -3008,6 +3128,29 @@ public class AudioManager {
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.AudioManager$3 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass3 extends IRecordingConfigDispatcher.Stub {
+        AnonymousClass3() {
+        }
+
+        @Override // android.media.IRecordingConfigDispatcher
+        public void dispatchRecordingConfigChange(List<AudioRecordingConfiguration> configs) {
+            synchronized (AudioManager.this.mRecordCallbackLock) {
+                if (AudioManager.this.mRecordCallbackList != null) {
+                    for (int i = 0; i < AudioManager.this.mRecordCallbackList.size(); i++) {
+                        AudioRecordingCallbackInfo arci = (AudioRecordingCallbackInfo) AudioManager.this.mRecordCallbackList.get(i);
+                        if (arci.mHandler != null) {
+                            Message m = arci.mHandler.obtainMessage(1, new RecordConfigChangeCallbackData(arci.mCb, configs));
+                            arci.mHandler.sendMessage(m);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void reloadAudioSettings() {
         IAudioService service = getService();
         try {
@@ -3066,7 +3209,6 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class IDevicesForAttributesCallbackStub extends IDevicesForAttributesCallback.Stub {
         CallbackUtil.ListenerInfo<OnDevicesForAttributesChangedListener> mInfo;
@@ -3097,7 +3239,6 @@ public class AudioManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDevicesForAttributesChanged$0(AudioAttributes attributes, List devices) {
             this.mInfo.mListener.onDevicesForAttributesChanged(attributes, devices);
         }
@@ -3530,7 +3671,6 @@ public class AudioManager {
         sAudioPortEventHandler.unregisterListener(l);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int resetAudioPortGeneration() {
         int generation;
         synchronized (sAudioPortGenerationLock) {
@@ -3540,7 +3680,6 @@ public class AudioManager {
         return generation;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int updateAudioPortCache(ArrayList<AudioPort> ports, ArrayList<AudioPatch> patches, ArrayList<AudioPort> previousPorts) {
         sAudioPortEventHandler.init();
         synchronized (sAudioPortGenerationLock) {
@@ -3883,7 +4022,6 @@ public class AudioManager {
         return getHwOffloadFormatsSupportedForLeAudio(536870914);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void broadcastDeviceListChange_sync(Handler handler) {
         ArrayList<AudioDevicePort> current_ports = new ArrayList<>();
         int status = listAudioDevicePorts(current_ports);
@@ -3913,9 +4051,14 @@ public class AudioManager {
         this.mPreviousPorts = current_ports;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class OnAmPortUpdateListener implements OnAudioPortUpdateListener {
+    public class OnAmPortUpdateListener implements OnAudioPortUpdateListener {
         static final String TAG = "OnAmPortUpdateListener";
+
+        /* synthetic */ OnAmPortUpdateListener(AudioManager audioManager, OnAmPortUpdateListenerIA onAmPortUpdateListenerIA) {
+            this();
+        }
 
         private OnAmPortUpdateListener() {
         }
@@ -3949,9 +4092,10 @@ public class AudioManager {
         }
     }
 
-    /* renamed from: android.media.AudioManager$4, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.AudioManager$4 */
     /* loaded from: classes2.dex */
-    class AnonymousClass4 extends IAudioServerStateDispatcher.Stub {
+    public class AnonymousClass4 extends IAudioServerStateDispatcher.Stub {
         AnonymousClass4() {
         }
 
@@ -4330,7 +4474,6 @@ public class AudioManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnCommunicationDeviceChangedListener$3() {
         return new CommunicationDeviceDispatcherStub();
     }
@@ -4339,9 +4482,12 @@ public class AudioManager {
         this.mCommDeviceChangedListenerMgr.removeListener(listener, "removeOnCommunicationDeviceChangedListener");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class CommunicationDeviceDispatcherStub extends ICommunicationDeviceDispatcher.Stub implements CallbackUtil.DispatcherStub {
+        /* synthetic */ CommunicationDeviceDispatcherStub(AudioManager audioManager, CommunicationDeviceDispatcherStubIA communicationDeviceDispatcherStubIA) {
+            this();
+        }
+
         private CommunicationDeviceDispatcherStub() {
         }
 
@@ -4612,7 +4758,6 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ MuteAwaitConnectionDispatcherStub lambda$registerMuteAwaitConnectionCallback$4() {
         return new MuteAwaitConnectionDispatcherStub();
     }
@@ -4744,7 +4889,6 @@ public class AudioManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnPreferredMixerAttributesChangedListener$7() {
         return new PreferredMixerAttributesDispatcherStub();
     }
@@ -4754,9 +4898,12 @@ public class AudioManager {
         this.mPrefMixerAttributesListenerMgr.removeListener(listener, "removeOnPreferredMixerAttributesChangedListener");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class PreferredMixerAttributesDispatcherStub extends IPreferredMixerAttributesDispatcher.Stub implements CallbackUtil.DispatcherStub {
+        /* synthetic */ PreferredMixerAttributesDispatcherStub(AudioManager audioManager, PreferredMixerAttributesDispatcherStubIA preferredMixerAttributesDispatcherStubIA) {
+            this();
+        }
+
         private PreferredMixerAttributesDispatcherStub() {
         }
 
@@ -4816,7 +4963,6 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public final class StreamAliasingDispatcherStub extends IStreamAliasingDispatcher.Stub implements CallbackUtil.DispatcherStub {
         StreamAliasingDispatcherStub() {
@@ -4854,7 +5000,6 @@ public class AudioManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnStreamAliasingChangedListener$8() {
         return new StreamAliasingDispatcherStub();
     }
@@ -4902,9 +5047,12 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class MuteAwaitConnectionDispatcherStub extends IMuteAwaitConnectionCallback.Stub {
+        /* synthetic */ MuteAwaitConnectionDispatcherStub(AudioManager audioManager, MuteAwaitConnectionDispatcherStubIA muteAwaitConnectionDispatcherStubIA) {
+            this();
+        }
+
         private MuteAwaitConnectionDispatcherStub() {
         }
 
@@ -4937,12 +5085,11 @@ public class AudioManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class NativeEventHandlerDelegate {
         private final Handler mHandler;
 
-        NativeEventHandlerDelegate(final AudioDeviceCallback callback, Handler handler) {
+        NativeEventHandlerDelegate(AudioDeviceCallback callback, Handler handler) {
             Looper looper;
             if (handler != null) {
                 looper = handler.getLooper();
@@ -4951,6 +5098,16 @@ public class AudioManager {
             }
             if (looper != null) {
                 this.mHandler = new Handler(looper) { // from class: android.media.AudioManager.NativeEventHandlerDelegate.1
+                    final /* synthetic */ AudioDeviceCallback val$callback;
+                    final /* synthetic */ AudioManager val$this$0;
+
+                    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                    AnonymousClass1(Looper looper2, AudioManager audioManager, AudioDeviceCallback callback2) {
+                        super(looper2);
+                        r3 = audioManager;
+                        callback = callback2;
+                    }
+
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         switch (msg.what) {
@@ -4977,6 +5134,45 @@ public class AudioManager {
                 };
             } else {
                 this.mHandler = null;
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.media.AudioManager$NativeEventHandlerDelegate$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ AudioDeviceCallback val$callback;
+            final /* synthetic */ AudioManager val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper2, AudioManager audioManager, AudioDeviceCallback callback2) {
+                super(looper2);
+                r3 = audioManager;
+                callback = callback2;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 0:
+                    case 1:
+                        AudioDeviceCallback audioDeviceCallback = callback;
+                        if (audioDeviceCallback != null) {
+                            audioDeviceCallback.onAudioDevicesAdded((AudioDeviceInfo[]) msg.obj);
+                            return;
+                        }
+                        return;
+                    case 2:
+                        AudioDeviceCallback audioDeviceCallback2 = callback;
+                        if (audioDeviceCallback2 != null) {
+                            audioDeviceCallback2.onAudioDevicesRemoved((AudioDeviceInfo[]) msg.obj);
+                            return;
+                        }
+                        return;
+                    default:
+                        Log.e(AudioManager.TAG, "Unknown native event type: " + msg.what);
+                        return;
+                }
             }
         }
 

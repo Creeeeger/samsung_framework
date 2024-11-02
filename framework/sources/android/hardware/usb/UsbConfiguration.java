@@ -10,7 +10,9 @@ public class UsbConfiguration implements Parcelable {
     private static final int ATTR_REMOTE_WAKEUP = 32;
     private static final int ATTR_SELF_POWERED = 64;
     public static final Parcelable.Creator<UsbConfiguration> CREATOR = new Parcelable.Creator<UsbConfiguration>() { // from class: android.hardware.usb.UsbConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UsbConfiguration createFromParcel(Parcel in) {
             int id = in.readInt();
@@ -23,7 +25,6 @@ public class UsbConfiguration implements Parcelable {
             return configuration;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsbConfiguration[] newArray(int size) {
             return new UsbConfiguration[size];
@@ -86,6 +87,30 @@ public class UsbConfiguration implements Parcelable {
         }
         builder.append(NavigationBarInflaterView.SIZE_MOD_END);
         return builder.toString();
+    }
+
+    /* renamed from: android.hardware.usb.UsbConfiguration$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UsbConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsbConfiguration createFromParcel(Parcel in) {
+            int id = in.readInt();
+            String name = in.readString();
+            int attributes = in.readInt();
+            int maxPower = in.readInt();
+            Parcelable[] interfaces = (Parcelable[]) in.readParcelableArray(UsbInterface.class.getClassLoader(), UsbInterface.class);
+            UsbConfiguration configuration = new UsbConfiguration(id, name, attributes, maxPower);
+            configuration.setInterfaces(interfaces);
+            return configuration;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsbConfiguration[] newArray(int size) {
+            return new UsbConfiguration[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -111,8 +111,9 @@ public interface IAccountAuthenticatorResponse extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IAccountAuthenticatorResponse {
+        public static class Proxy implements IAccountAuthenticatorResponse {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -18,7 +18,9 @@ public final class VisualVoicemailSmsFilterSettings implements Parcelable {
     public final String packageName;
     public static final List<String> DEFAULT_ORIGINATING_NUMBERS = Collections.emptyList();
     public static final Parcelable.Creator<VisualVoicemailSmsFilterSettings> CREATOR = new Parcelable.Creator<VisualVoicemailSmsFilterSettings>() { // from class: android.telephony.VisualVoicemailSmsFilterSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VisualVoicemailSmsFilterSettings createFromParcel(Parcel in) {
             Builder builder = new Builder();
@@ -29,12 +31,15 @@ public final class VisualVoicemailSmsFilterSettings implements Parcelable {
             return builder.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VisualVoicemailSmsFilterSettings[] newArray(int size) {
             return new VisualVoicemailSmsFilterSettings[size];
         }
     };
+
+    /* synthetic */ VisualVoicemailSmsFilterSettings(Builder builder, VisualVoicemailSmsFilterSettingsIA visualVoicemailSmsFilterSettingsIA) {
+        this(builder);
+    }
 
     /* loaded from: classes3.dex */
     public static class Builder {
@@ -79,6 +84,28 @@ public final class VisualVoicemailSmsFilterSettings implements Parcelable {
         this.originatingNumbers = builder.mOriginatingNumbers;
         this.destinationPort = builder.mDestinationPort;
         this.packageName = builder.mPackageName;
+    }
+
+    /* renamed from: android.telephony.VisualVoicemailSmsFilterSettings$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VisualVoicemailSmsFilterSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VisualVoicemailSmsFilterSettings createFromParcel(Parcel in) {
+            Builder builder = new Builder();
+            builder.setClientPrefix(in.readString());
+            builder.setOriginatingNumbers(in.createStringArrayList());
+            builder.setDestinationPort(in.readInt());
+            builder.setPackageName(in.readString());
+            return builder.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VisualVoicemailSmsFilterSettings[] newArray(int size) {
+            return new VisualVoicemailSmsFilterSettings[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -57,7 +57,6 @@ public abstract class AbstractThreadedSyncAdapter {
         return this.mContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Account toSyncKey(Account account) {
         if (this.mAllowParallelSyncs) {
             return account;
@@ -65,8 +64,13 @@ public abstract class AbstractThreadedSyncAdapter {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class ISyncAdapterImpl extends ISyncAdapter.Stub {
+    public class ISyncAdapterImpl extends ISyncAdapter.Stub {
+        /* synthetic */ ISyncAdapterImpl(AbstractThreadedSyncAdapter abstractThreadedSyncAdapter, ISyncAdapterImplIA iSyncAdapterImplIA) {
+            this();
+        }
+
         private ISyncAdapterImpl() {
         }
 
@@ -153,7 +157,6 @@ public abstract class AbstractThreadedSyncAdapter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class SyncThread extends Thread {
         private final Account mAccount;
@@ -161,6 +164,10 @@ public abstract class AbstractThreadedSyncAdapter {
         private final Bundle mExtras;
         private final SyncContext mSyncContext;
         private final Account mThreadsKey;
+
+        /* synthetic */ SyncThread(AbstractThreadedSyncAdapter abstractThreadedSyncAdapter, String str, SyncContext syncContext, String str2, Account account, Bundle bundle, SyncThreadIA syncThreadIA) {
+            this(str, syncContext, str2, account, bundle);
+        }
 
         private SyncThread(String name, SyncContext syncContext, String authority, Account account, Bundle extras) {
             super(name);
@@ -294,7 +301,6 @@ public abstract class AbstractThreadedSyncAdapter {
         return this.mISyncAdapterImpl.asBinder();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnUnsyncableAccount(ISyncAdapterUnsyncableAccountCallback cb) {
         boolean doSync;
         try {

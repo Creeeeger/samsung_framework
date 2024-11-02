@@ -10,6 +10,10 @@ public class SectionSettingsWithTableInfo extends SectionSettings {
     private final int mTableId;
     private final int mVersion;
 
+    /* synthetic */ SectionSettingsWithTableInfo(int i, boolean z, boolean z2, boolean z3, int i2, int i3, int i4, SectionSettingsWithTableInfoIA sectionSettingsWithTableInfoIA) {
+        this(i, z, z2, z3, i2, i3, i4);
+    }
+
     private SectionSettingsWithTableInfo(int mainType, boolean isCheckCrc, boolean isRepeat, boolean isRaw, int bitWidthOfLengthField, int tableId, int version) {
         super(mainType, isCheckCrc, isRepeat, isRaw, bitWidthOfLengthField);
         this.mTableId = tableId;
@@ -33,6 +37,10 @@ public class SectionSettingsWithTableInfo extends SectionSettings {
         private int mTableId;
         private int mVersion;
 
+        /* synthetic */ Builder(int i, BuilderIA builderIA) {
+            this(i);
+        }
+
         private Builder(int mainType) {
             super(mainType);
             this.mVersion = -1;
@@ -52,7 +60,6 @@ public class SectionSettingsWithTableInfo extends SectionSettings {
             return new SectionSettingsWithTableInfo(this.mMainType, this.mCrcEnabled, this.mIsRepeat, this.mIsRaw, this.mBitWidthOfLengthField, this.mTableId, this.mVersion);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         @Override // android.media.tv.tuner.filter.SectionSettings.Builder
         public Builder self() {
             return this;

@@ -10,7 +10,9 @@ import java.util.UUID;
 /* loaded from: classes3.dex */
 public abstract class CellIdentity implements Parcelable {
     public static final Parcelable.Creator<CellIdentity> CREATOR = new Parcelable.Creator<CellIdentity>() { // from class: android.telephony.CellIdentity.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellIdentity createFromParcel(Parcel in) {
             int type = in.readInt();
@@ -32,7 +34,6 @@ public abstract class CellIdentity implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentity[] newArray(int size) {
             return new CellIdentity[size];
@@ -58,7 +59,6 @@ public abstract class CellIdentity implements Parcelable {
 
     protected abstract void updateGlobalCellId();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public CellIdentity(String tag, int type, String mcc, String mnc, String alphal, String alphas) {
         this.mTag = tag;
         this.mType = type;
@@ -166,16 +166,47 @@ public abstract class CellIdentity implements Parcelable {
         return plmn.length() >= 5 && plmn.length() <= 6 && isMcc(plmn.substring(0, 3)) && isMnc(plmn.substring(3));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public CellIdentity(String tag, int type, Parcel source) {
         this(tag, type, source.readString(), source.readString(), source.readString(), source.readString());
+    }
+
+    /* renamed from: android.telephony.CellIdentity$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellIdentity> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentity createFromParcel(Parcel in) {
+            int type = in.readInt();
+            switch (type) {
+                case 1:
+                    return CellIdentityGsm.createFromParcelBody(in);
+                case 2:
+                    return CellIdentityCdma.createFromParcelBody(in);
+                case 3:
+                    return CellIdentityLte.createFromParcelBody(in);
+                case 4:
+                    return CellIdentityWcdma.createFromParcelBody(in);
+                case 5:
+                    return CellIdentityTdscdma.createFromParcelBody(in);
+                case 6:
+                    return CellIdentityNr.createFromParcelBody(in);
+                default:
+                    throw new IllegalArgumentException("Bad Cell identity Parcel");
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentity[] newArray(int size) {
+            return new CellIdentity[size];
+        }
     }
 
     protected void log(String s) {
         com.android.telephony.Rlog.w(this.mTag, s);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final int inRangeOrUnavailable(int value, int rangeMin, int rangeMax) {
         if (value < rangeMin || value > rangeMax) {
             return Integer.MAX_VALUE;
@@ -183,7 +214,6 @@ public abstract class CellIdentity implements Parcelable {
         return value;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final long inRangeOrUnavailable(long value, long rangeMin, long rangeMax) {
         if (value < rangeMin || value > rangeMax) {
             return Long.MAX_VALUE;

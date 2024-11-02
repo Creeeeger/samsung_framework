@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CellIdentityNr implements Parcelable {
     public static final Parcelable.Creator<CellIdentityNr> CREATOR = new Parcelable.Creator<CellIdentityNr>() { // from class: android.hardware.radio.network.CellIdentityNr.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellIdentityNr createFromParcel(Parcel _aidl_source) {
             CellIdentityNr _aidl_out = new CellIdentityNr();
@@ -18,7 +20,6 @@ public class CellIdentityNr implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityNr[] newArray(int _aidl_size) {
             return new CellIdentityNr[_aidl_size];
@@ -33,6 +34,25 @@ public class CellIdentityNr implements Parcelable {
     public int pci = 0;
     public int tac = 0;
     public int nrarfcn = 0;
+
+    /* renamed from: android.hardware.radio.network.CellIdentityNr$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellIdentityNr> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityNr createFromParcel(Parcel _aidl_source) {
+            CellIdentityNr _aidl_out = new CellIdentityNr();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityNr[] newArray(int _aidl_size) {
+            return new CellIdentityNr[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

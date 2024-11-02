@@ -337,13 +337,14 @@ public interface WindowManager extends ViewManager {
         public static final int COVER_MODE_SVIEW = 1;
         public static final int COVER_MODE_SVIEW_SUB_WINDOW = 10;
         public static final Parcelable.Creator<LayoutParams> CREATOR = new Parcelable.Creator<LayoutParams>() { // from class: android.view.WindowManager.LayoutParams.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public LayoutParams createFromParcel(Parcel in) {
                 return new LayoutParams(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public LayoutParams[] newArray(int size) {
                 return new LayoutParams[size];
@@ -1307,6 +1308,23 @@ public interface WindowManager extends ViewManager {
             out.writeInt(this.coverMode);
         }
 
+        /* renamed from: android.view.WindowManager$LayoutParams$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<LayoutParams> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public LayoutParams createFromParcel(Parcel in) {
+                return new LayoutParams(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public LayoutParams[] newArray(int size) {
+                return new LayoutParams[size];
+            }
+        }
+
         public LayoutParams(Parcel in) {
             Rect rect = new Rect();
             this.surfaceInsets = rect;
@@ -2043,7 +2061,6 @@ public interface WindowManager extends ViewManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void backup() {
             int[] backup = this.mCompatibilityParamsBackup;
             if (backup == null) {
@@ -2057,7 +2074,6 @@ public interface WindowManager extends ViewManager {
             backup[3] = this.height;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void restore() {
             int[] backup = this.mCompatibilityParamsBackup;
             if (backup != null) {
@@ -2068,7 +2084,6 @@ public interface WindowManager extends ViewManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup.LayoutParams
         public void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);

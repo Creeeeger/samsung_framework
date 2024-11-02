@@ -26,7 +26,10 @@ public class DexObserver {
     private boolean mTestModeOn = false;
 
     public DexObserver() {
-        UEventObserver uEventObserver = new UEventObserver() { // from class: android.util.sysfwutil.DexObserver.1
+        AnonymousClass1 anonymousClass1 = new UEventObserver() { // from class: android.util.sysfwutil.DexObserver.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.UEventObserver
             public void onUEvent(UEventObserver.UEvent event) {
                 try {
@@ -37,13 +40,29 @@ public class DexObserver {
                 }
             }
         };
-        this.mDexUEventObserver = uEventObserver;
+        this.mDexUEventObserver = anonymousClass1;
         Slog.d(TAG, "Started" + (this.mTestModeOn ? " TestModeOn" : ""));
         checkDexStatebySysfs();
-        uEventObserver.startObserving(CCIC_DOCK_UEVENT_MATCH);
+        anonymousClass1.startObserving(CCIC_DOCK_UEVENT_MATCH);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.util.sysfwutil.DexObserver$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends UEventObserver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.UEventObserver
+        public void onUEvent(UEventObserver.UEvent event) {
+            try {
+                Slog.d(DexObserver.TAG, "UEventObserver, event : " + event);
+                DexObserver.this.setDexState(Integer.parseInt(event.get("SWITCH_STATE")), event);
+            } catch (NumberFormatException e) {
+                Slog.e(DexObserver.TAG, "Could not parse switch state from event " + event);
+            }
+        }
+    }
+
     public void setDexState(int state, UEventObserver.UEvent event) {
         Slog.d(TAG, "setDockState() : " + state);
         switch (state) {
@@ -228,7 +247,6 @@ public class DexObserver {
         }
     }
 
-    /* JADX WARN: Type inference failed for: r1v3, types: [android.util.sysfwutil.DexObserver$2] */
     private void onUpdateDexMode() {
         if (this.mTestModeOn) {
             Slog.d(TAG, "setDexMode() : delay ++");
@@ -242,6 +260,10 @@ public class DexObserver {
             Slog.d(TAG, "setDexMode() : mDexMode " + this.mDexMode + " mSemiDexMode " + this.mSemiDexMode);
             if (this.mDexMode || this.mSemiDexMode) {
                 new Thread("notifyListeners") { // from class: android.util.sysfwutil.DexObserver.2
+                    AnonymousClass2(String name) {
+                        super(name);
+                    }
+
                     @Override // java.lang.Thread, java.lang.Runnable
                     public void run() {
                         for (DexConnectionListener li : DexObserver.this.mListeners) {
@@ -249,6 +271,21 @@ public class DexObserver {
                         }
                     }
                 }.start();
+            }
+        }
+    }
+
+    /* renamed from: android.util.sysfwutil.DexObserver$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends Thread {
+        AnonymousClass2(String name) {
+            super(name);
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public void run() {
+            for (DexConnectionListener li : DexObserver.this.mListeners) {
+                li.onConnect();
             }
         }
     }

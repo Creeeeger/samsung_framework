@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class ClientWindowFrames implements Parcelable {
     public static final Parcelable.Creator<ClientWindowFrames> CREATOR = new Parcelable.Creator<ClientWindowFrames>() { // from class: android.window.ClientWindowFrames.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ClientWindowFrames createFromParcel(Parcel in) {
             return new ClientWindowFrames(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClientWindowFrames[] newArray(int size) {
             return new ClientWindowFrames[size];
@@ -25,6 +26,10 @@ public class ClientWindowFrames implements Parcelable {
     public final Rect frame;
     public boolean isParentFrameClippedByDisplayCutout;
     public final Rect parentFrame;
+
+    /* synthetic */ ClientWindowFrames(Parcel parcel, ClientWindowFramesIA clientWindowFramesIA) {
+        this(parcel);
+    }
 
     public ClientWindowFrames() {
         this.frame = new Rect();
@@ -86,5 +91,22 @@ public class ClientWindowFrames implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.window.ClientWindowFrames$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ClientWindowFrames> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClientWindowFrames createFromParcel(Parcel in) {
+            return new ClientWindowFrames(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClientWindowFrames[] newArray(int size) {
+            return new ClientWindowFrames[size];
+        }
     }
 }

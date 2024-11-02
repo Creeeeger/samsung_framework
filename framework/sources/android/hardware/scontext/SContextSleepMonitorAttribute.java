@@ -11,7 +11,6 @@ public class SContextSleepMonitorAttribute extends SContextAttribute {
     private int mSamplingInterval;
     private int mSensibility;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextSleepMonitorAttribute() {
         this.mSensibility = 80;
         this.mSamplingInterval = 100;

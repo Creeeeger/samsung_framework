@@ -6,7 +6,6 @@ import java.util.Objects;
 public final class TelephonyNetworkFinder {
     private final com.android.i18n.timezone.TelephonyNetworkFinder mDelegate;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TelephonyNetworkFinder(com.android.i18n.timezone.TelephonyNetworkFinder delegate) {
         this.mDelegate = (com.android.i18n.timezone.TelephonyNetworkFinder) Objects.requireNonNull(delegate);
     }

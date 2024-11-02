@@ -83,8 +83,9 @@ public interface IDownloadSubscriptionCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDownloadSubscriptionCallback {
+        public static class Proxy implements IDownloadSubscriptionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

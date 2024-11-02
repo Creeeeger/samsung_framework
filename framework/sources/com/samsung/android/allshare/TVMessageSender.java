@@ -18,7 +18,6 @@ import java.nio.ByteOrder;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: IAppControlAPI.java */
 /* loaded from: classes5.dex */
 public class TVMessageSender extends Thread {
@@ -421,8 +420,133 @@ public class TVMessageSender extends Thread {
         this.mBuf.clear();
     }
 
+    /* compiled from: IAppControlAPI.java */
+    /* renamed from: com.samsung.android.allshare.TVMessageSender$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    if (TVMessageSender.this.mProtocol == 1 && TVMessageSender.this.mSocket != null) {
+                        try {
+                            TVMessageSender.this.mSocket.close();
+                        } catch (IOException e) {
+                            DLog.w_api(TVMessageSender.TAG, "", e);
+                        }
+                        TVMessageSender.this.mSocket = null;
+                        return;
+                    }
+                    return;
+                case 1:
+                    if (TVMessageSender.this.mProtocol == 1) {
+                        if (TVMessageSender.this.mSocket != null && TVMessageSender.this.mSocket.isConnected()) {
+                            TVMessageSender.this.sendKeyboardString(msg.arg1, (String) msg.obj);
+                            return;
+                        } else {
+                            DLog.w_api(TVMessageSender.TAG, "CONTROLLER_EVENT_KEYBOARD_INPUT : socket is not connected");
+                            return;
+                        }
+                    }
+                    return;
+                case 2:
+                    EventMouse mEventMouse = (EventMouse) msg.obj;
+                    if (TVMessageSender.this.mProtocol == 1) {
+                        if (TVMessageSender.this.mSocket != null && TVMessageSender.this.mSocket.isConnected()) {
+                            TVMessageSender.this.sendMouseProcess(mEventMouse.mType, mEventMouse.mX, mEventMouse.mY, mEventMouse.mDX, mEventMouse.mDY, mEventMouse.mButton);
+                            return;
+                        } else {
+                            DLog.w_api(TVMessageSender.TAG, "CONTROLLER_EVENT_MOUSE : socket is not connected");
+                            return;
+                        }
+                    }
+                    return;
+                case 5:
+                    EventTouch mEvent = (EventTouch) msg.obj;
+                    if (TVMessageSender.this.mProtocol == 1) {
+                        if (TVMessageSender.this.mSocket != null && TVMessageSender.this.mSocket.isConnected()) {
+                            TVMessageSender.this.sendTouchGuestureEvent2012(mEvent.mType, 10, 0, mEvent.mX, mEvent.mY, mEvent.mDX, mEvent.mDY);
+                            return;
+                        } else {
+                            DLog.w_api(TVMessageSender.TAG, "CONTROLLER_EVENT_GESTURE : socket is not connected");
+                            return;
+                        }
+                    }
+                    return;
+                case 6:
+                    EventTouch mEvent2 = (EventTouch) msg.obj;
+                    if (TVMessageSender.this.mProtocol == 1) {
+                        if (TVMessageSender.this.mSocket != null && TVMessageSender.this.mSocket.isConnected()) {
+                            TVMessageSender.this.sendTouchGestureSemanticEvent(mEvent2.mType, mEvent2.mDistance, mEvent2.mDegree, mEvent2.mX, mEvent2.mY);
+                            return;
+                        } else {
+                            DLog.w_api(TVMessageSender.TAG, "CONTROLLER_EVENT_SEMANTIC : socket is not connected");
+                            return;
+                        }
+                    }
+                    return;
+                case 8:
+                    if (TVMessageSender.this.mSocket != null && TVMessageSender.this.mSocket.isConnected()) {
+                        DLog.i_api(TVMessageSender.TAG, "sendDTVKeyboardEnd");
+                        TVMessageSender.this.sendKeyboardEnd();
+                        return;
+                    }
+                    return;
+                case 9:
+                    TVMessageSender.this.setTouchGestureTouchMode(msg.arg1);
+                    return;
+                case 14:
+                    if (TVMessageSender.this.mProtocol == 1) {
+                        if (TVMessageSender.this.mSocket != null && TVMessageSender.this.mSocket.isConnected()) {
+                            if (msg.arg1 == 0) {
+                                TVMessageSender.this.sendRemoteControlKey((String) msg.obj, msg.arg1);
+                                return;
+                            }
+                            return;
+                        }
+                        DLog.w_api(TVMessageSender.TAG, "CONTROLLER_EVENT_REMOTECONTROL_KEY : socket is not connected");
+                        return;
+                    }
+                    return;
+                case 15:
+                    if (TVMessageSender.this.mSocket.isConnected()) {
+                        TVMessageSender.this.sendMouseCreate();
+                        return;
+                    } else {
+                        DLog.w_api(TVMessageSender.TAG, "CONTROLLER_EVENT_MOUSE_CREATE : socket is not connected");
+                        return;
+                    }
+                case 16:
+                    if (TVMessageSender.this.mSocket != null && TVMessageSender.this.mSocket.isConnected()) {
+                        TVMessageSender.this.sendMouseDestroy();
+                        return;
+                    } else {
+                        DLog.w_api(TVMessageSender.TAG, "CONTROLLER_EVENT_MOUSE_DESTROY : socket is not connected");
+                        return;
+                    }
+                case 52:
+                    if (TVMessageSender.this.mSocket != null && TVMessageSender.this.mSocket.isConnected()) {
+                        TVMessageSender.this.sendAuthentication();
+                        return;
+                    } else {
+                        DLog.w_api(TVMessageSender.TAG, "CONTROLLER_EVENT_DEVICE_AUTHENTICATION : socket is not connected");
+                        TVMessageSender.this.mControlAPI.sendSocketIsNotConnectedEvent();
+                        return;
+                    }
+                default:
+                    return;
+            }
+        }
+    }
+
     private void createHandler() {
         this.mHandler = new Handler() { // from class: com.samsung.android.allshare.TVMessageSender.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {

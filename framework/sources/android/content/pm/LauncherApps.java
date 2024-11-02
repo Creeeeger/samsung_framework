@@ -246,6 +246,9 @@ public class LauncherApps {
         this.mDelegates = new ArrayList();
         this.mShortcutChangeCallbacks = new HashMap();
         this.mAppsChangedListener = new IOnAppsChangedListener.Stub() { // from class: android.content.pm.LauncherApps.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.pm.IOnAppsChangedListener
             public void onPackageRemoved(UserHandle user, String packageName) throws RemoteException {
                 Log.d(LauncherApps.TAG, "onPackageRemoved " + user.getIdentifier() + "," + packageName);
@@ -570,7 +573,6 @@ public class LauncherApps {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public List<ShortcutInfo> maybeUpdateDisabledMessage(List<ShortcutInfo> shortcuts) {
         if (shortcuts == null) {
             return null;
@@ -935,7 +937,99 @@ public class LauncherApps {
         this.mCallbacks.add(toAdd);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.content.pm.LauncherApps$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends IOnAppsChangedListener.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onPackageRemoved(UserHandle user, String packageName) throws RemoteException {
+            Log.d(LauncherApps.TAG, "onPackageRemoved " + user.getIdentifier() + "," + packageName);
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnPackageRemoved(packageName, user);
+                }
+            }
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onPackageChanged(UserHandle user, String packageName) throws RemoteException {
+            Log.d(LauncherApps.TAG, "onPackageChanged " + user.getIdentifier() + "," + packageName);
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnPackageChanged(packageName, user);
+                }
+            }
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onPackageAdded(UserHandle user, String packageName) throws RemoteException {
+            Log.d(LauncherApps.TAG, "onPackageAdded " + user.getIdentifier() + "," + packageName);
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnPackageAdded(packageName, user);
+                }
+            }
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onPackagesAvailable(UserHandle user, String[] packageNames, boolean replacing) throws RemoteException {
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnPackagesAvailable(packageNames, user, replacing);
+                }
+            }
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onPackagesUnavailable(UserHandle user, String[] packageNames, boolean replacing) throws RemoteException {
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnPackagesUnavailable(packageNames, user, replacing);
+                }
+            }
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onPackagesSuspended(UserHandle user, String[] packageNames, Bundle launcherExtras) throws RemoteException {
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnPackagesSuspended(packageNames, launcherExtras, user);
+                }
+            }
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onPackagesUnsuspended(UserHandle user, String[] packageNames) throws RemoteException {
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnPackagesUnsuspended(packageNames, user);
+                }
+            }
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onShortcutChanged(UserHandle user, String packageName, ParceledListSlice shortcuts) {
+            List<ShortcutInfo> list = shortcuts.getList();
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnShortcutChanged(packageName, user, list);
+                }
+            }
+        }
+
+        @Override // android.content.pm.IOnAppsChangedListener
+        public void onPackageLoadingProgressChanged(UserHandle user, String packageName, float progress) {
+            synchronized (LauncherApps.this) {
+                for (CallbackMessageHandler callback : LauncherApps.this.mCallbacks) {
+                    callback.postOnPackageLoadingProgressChanged(user, packageName, progress);
+                }
+            }
+        }
+    }
+
     /* loaded from: classes.dex */
     public static class CallbackMessageHandler extends Handler {
         private static final int MSG_ADDED = 1;
@@ -949,7 +1043,6 @@ public class LauncherApps {
         private static final int MSG_UNSUSPENDED = 7;
         private Callback mCallback;
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class CallbackInfo {
             Bundle launcherExtras;
@@ -959,6 +1052,10 @@ public class LauncherApps {
             boolean replacing;
             List<ShortcutInfo> shortcuts;
             UserHandle user;
+
+            /* synthetic */ CallbackInfo(CallbackInfoIA callbackInfoIA) {
+                this();
+            }
 
             private CallbackInfo() {
             }
@@ -1149,13 +1246,14 @@ public class LauncherApps {
     /* loaded from: classes.dex */
     public static final class PinItemRequest implements Parcelable {
         public static final Parcelable.Creator<PinItemRequest> CREATOR = new Parcelable.Creator<PinItemRequest>() { // from class: android.content.pm.LauncherApps.PinItemRequest.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PinItemRequest createFromParcel(Parcel source) {
                 return new PinItemRequest(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PinItemRequest[] newArray(int size) {
                 return new PinItemRequest[size];
@@ -1169,6 +1267,10 @@ public class LauncherApps {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes.dex */
         public @interface RequestType {
+        }
+
+        /* synthetic */ PinItemRequest(Parcel parcel, PinItemRequestIA pinItemRequestIA) {
+            this(parcel);
         }
 
         public PinItemRequest(IPinItemRequest inner, int type) {
@@ -1241,6 +1343,23 @@ public class LauncherApps {
             dest.writeStrongBinder(this.mInner.asBinder());
         }
 
+        /* renamed from: android.content.pm.LauncherApps$PinItemRequest$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PinItemRequest> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PinItemRequest createFromParcel(Parcel source) {
+                return new PinItemRequest(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PinItemRequest[] newArray(int size) {
+                return new PinItemRequest[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -1251,13 +1370,14 @@ public class LauncherApps {
     /* loaded from: classes.dex */
     public static final class AppUsageLimit implements Parcelable {
         public static final Parcelable.Creator<AppUsageLimit> CREATOR = new Parcelable.Creator<AppUsageLimit>() { // from class: android.content.pm.LauncherApps.AppUsageLimit.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AppUsageLimit createFromParcel(Parcel source) {
                 return new AppUsageLimit(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AppUsageLimit[] newArray(int size) {
                 return new AppUsageLimit[size];
@@ -1265,6 +1385,10 @@ public class LauncherApps {
         };
         private final long mTotalUsageLimit;
         private final long mUsageRemaining;
+
+        /* synthetic */ AppUsageLimit(Parcel parcel, AppUsageLimitIA appUsageLimitIA) {
+            this(parcel);
+        }
 
         public AppUsageLimit(long totalUsageLimit, long usageRemaining) {
             this.mTotalUsageLimit = totalUsageLimit;
@@ -1282,6 +1406,23 @@ public class LauncherApps {
         private AppUsageLimit(Parcel source) {
             this.mTotalUsageLimit = source.readLong();
             this.mUsageRemaining = source.readLong();
+        }
+
+        /* renamed from: android.content.pm.LauncherApps$AppUsageLimit$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AppUsageLimit> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AppUsageLimit createFromParcel(Parcel source) {
+                return new AppUsageLimit(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AppUsageLimit[] newArray(int size) {
+                return new AppUsageLimit[size];
+            }
         }
 
         @Override // android.os.Parcelable

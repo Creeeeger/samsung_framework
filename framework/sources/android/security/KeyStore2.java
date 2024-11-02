@@ -26,7 +26,6 @@ public class KeyStore2 {
     private static final String TAG = "KeyStore";
     private IKeystoreService mBinder = null;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @FunctionalInterface
     /* loaded from: classes3.dex */
     public interface CheckedRemoteRequest<R> {
@@ -81,7 +80,6 @@ public class KeyStore2 {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$delete$0(KeyDescriptor descriptor, IKeystoreService service) throws RemoteException {
         service.deleteKey(descriptor);
         return 0;
@@ -142,7 +140,6 @@ public class KeyStore2 {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$ungrant$4(KeyDescriptor descriptor, int granteeUid, IKeystoreService service) throws RemoteException {
         service.ungrant(descriptor, granteeUid);
         return 0;
@@ -168,7 +165,6 @@ public class KeyStore2 {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ KeyStoreSecurityLevel lambda$getSecurityLevel$6(int securityLevel, IKeystoreService service) throws RemoteException {
         return new KeyStoreSecurityLevel(service.getSecurityLevel(securityLevel));
     }
@@ -196,7 +192,6 @@ public class KeyStore2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$updateSubcomponents$7(KeyDescriptor key, byte[] publicCert, byte[] publicCertChain, IKeystoreService service) throws RemoteException {
         service.updateSubcomponent(key, publicCert, publicCertChain);
         return 0;
@@ -230,7 +225,6 @@ public class KeyStore2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$deleteKey$9(KeyDescriptor descriptor, IKeystoreService service) throws RemoteException {
         service.deleteKey(descriptor);
         return 0;
@@ -270,7 +264,6 @@ public class KeyStore2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KeyStoreException getKeyStoreException(int errorCode, String serviceErrorMessage) {
         if (errorCode > 0) {
             switch (errorCode) {

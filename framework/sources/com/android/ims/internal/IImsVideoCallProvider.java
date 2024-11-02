@@ -225,8 +225,9 @@ public interface IImsVideoCallProvider extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IImsVideoCallProvider {
+        public static class Proxy implements IImsVideoCallProvider {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

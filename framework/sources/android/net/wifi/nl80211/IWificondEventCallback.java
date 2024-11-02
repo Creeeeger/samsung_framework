@@ -84,8 +84,9 @@ public interface IWificondEventCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IWificondEventCallback {
+        public static class Proxy implements IWificondEventCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

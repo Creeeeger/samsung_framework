@@ -12,7 +12,6 @@ class SessionSecretKeySpec implements KeySpec, SecretKey {
     private boolean isDestroyed;
     private byte[] key;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SessionSecretKeySpec(byte[] key, String algorithm) {
         if (key == null || algorithm == null) {
             throw new IllegalArgumentException("No key/algorithm specified");

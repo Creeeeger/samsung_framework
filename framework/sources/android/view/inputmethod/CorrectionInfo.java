@@ -7,13 +7,14 @@ import android.text.TextUtils;
 /* loaded from: classes4.dex */
 public final class CorrectionInfo implements Parcelable {
     public static final Parcelable.Creator<CorrectionInfo> CREATOR = new Parcelable.Creator<CorrectionInfo>() { // from class: android.view.inputmethod.CorrectionInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CorrectionInfo createFromParcel(Parcel source) {
             return new CorrectionInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CorrectionInfo[] newArray(int size) {
             return new CorrectionInfo[size];
@@ -22,6 +23,10 @@ public final class CorrectionInfo implements Parcelable {
     private final CharSequence mNewText;
     private final int mOffset;
     private final CharSequence mOldText;
+
+    /* synthetic */ CorrectionInfo(Parcel parcel, CorrectionInfoIA correctionInfoIA) {
+        this(parcel);
+    }
 
     public CorrectionInfo(int offset, CharSequence oldText, CharSequence newText) {
         this.mOffset = offset;
@@ -56,6 +61,23 @@ public final class CorrectionInfo implements Parcelable {
         dest.writeInt(this.mOffset);
         TextUtils.writeToParcel(this.mOldText, dest, flags);
         TextUtils.writeToParcel(this.mNewText, dest, flags);
+    }
+
+    /* renamed from: android.view.inputmethod.CorrectionInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CorrectionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CorrectionInfo createFromParcel(Parcel source) {
+            return new CorrectionInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CorrectionInfo[] newArray(int size) {
+            return new CorrectionInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

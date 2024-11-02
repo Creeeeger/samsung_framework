@@ -144,6 +144,10 @@ public final class SemMediaPostProcessor {
             public static final int STRING = 1;
         }
 
+        /* synthetic */ ProcessingFormat(Map map, ProcessingFormatIA processingFormatIA) {
+            this(map);
+        }
+
         public ProcessingFormat() {
             this.format = new HashMap();
         }

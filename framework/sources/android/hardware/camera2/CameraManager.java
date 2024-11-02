@@ -88,7 +88,6 @@ public final class CameraManager {
         void onDeviceStateChanged(boolean z);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class CameraDeviceState {
         public final String mClientName;
@@ -161,7 +160,6 @@ public final class CameraManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class FoldStateListener implements DeviceStateManager.DeviceStateCallback {
         private ArrayList<WeakReference<DeviceStateListener>> mDeviceStateListeners = new ArrayList<>();
@@ -197,7 +195,6 @@ public final class CameraManager {
             this.mDeviceStateListeners.add(new WeakReference<>(listener));
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$addDeviceStateListener$0(WeakReference l) {
             return l.get() == null;
         }
@@ -759,7 +756,6 @@ public final class CameraManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class CameraManagerGlobal extends ICameraServiceListener.Stub implements IBinder.DeathRecipient {
         private static final String CAMERA_SERVICE_BINDER_NAME = "media.camera";
@@ -917,8 +913,44 @@ public final class CameraManager {
             return concurrentCameraIds;
         }
 
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 implements Comparator<String> {
+            AnonymousClass1() {
+            }
+
+            @Override // java.util.Comparator
+            public int compare(String s1, String s2) {
+                int s1Int;
+                int s2Int;
+                try {
+                    s1Int = Integer.parseInt(s1);
+                } catch (NumberFormatException e) {
+                    s1Int = -1;
+                }
+                try {
+                    s2Int = Integer.parseInt(s2);
+                } catch (NumberFormatException e2) {
+                    s2Int = -1;
+                }
+                if (s1Int >= 0 && s2Int >= 0) {
+                    return s1Int - s2Int;
+                }
+                if (s1Int >= 0) {
+                    return -1;
+                }
+                if (s2Int >= 0) {
+                    return 1;
+                }
+                return s1.compareTo(s2);
+            }
+        }
+
         private static void sortCameraIds(String[] cameraIds) {
             Arrays.sort(cameraIds, new Comparator<String>() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.util.Comparator
                 public int compare(String s1, String s2) {
                     int s1Int;
@@ -962,6 +994,9 @@ public final class CameraManager {
                 return new String[0];
             }
             ICameraServiceListener.Stub testListener = new ICameraServiceListener.Stub() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.hardware.ICameraServiceListener
                 public void onStatusChanged(int status, String id) throws RemoteException {
                 }
@@ -1037,6 +1072,45 @@ public final class CameraManager {
                 }
             }
             return publicCameraIds;
+        }
+
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$2 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass2 extends ICameraServiceListener.Stub {
+            AnonymousClass2() {
+            }
+
+            @Override // android.hardware.ICameraServiceListener
+            public void onStatusChanged(int status, String id) throws RemoteException {
+            }
+
+            @Override // android.hardware.ICameraServiceListener
+            public void onPhysicalCameraStatusChanged(int status, String id, String physicalId) throws RemoteException {
+            }
+
+            @Override // android.hardware.ICameraServiceListener
+            public void onTorchStatusChanged(int status, String id) throws RemoteException {
+            }
+
+            @Override // android.hardware.ICameraServiceListener
+            public void onTorchStrengthLevelChanged(String id, int newStrengthLevel) throws RemoteException {
+            }
+
+            @Override // android.hardware.ICameraServiceListener
+            public void onCameraAccessPrioritiesChanged() {
+            }
+
+            @Override // android.hardware.ICameraServiceListener
+            public void onCameraOpened(String id, String clientPackageId) {
+            }
+
+            @Override // android.hardware.ICameraServiceListener
+            public void onCameraClosed(String id) {
+            }
+
+            @Override // android.hardware.ICameraServiceListener
+            public void onCameraDeviceStateChanged(String cameraId, int facing, int newCameraState, String clientName, int apiLevel, int userId) {
+            }
         }
 
         public String[] getCameraIdList() {
@@ -1234,10 +1308,16 @@ public final class CameraManager {
             }
         }
 
-        private void postSingleAccessPriorityChangeUpdate(final AvailabilityCallback callback, Executor executor) {
+        private void postSingleAccessPriorityChangeUpdate(AvailabilityCallback callback, Executor executor) {
             long ident = Binder.clearCallingIdentity();
             try {
                 executor.execute(new Runnable() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.3
+                    final /* synthetic */ AvailabilityCallback val$callback;
+
+                    AnonymousClass3(AvailabilityCallback callback2) {
+                        callback = callback2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onCameraAccessPrioritiesChanged();
@@ -1248,10 +1328,35 @@ public final class CameraManager {
             }
         }
 
-        private void postSingleCameraOpenedUpdate(final AvailabilityCallback callback, Executor executor, final String id, final String packageId) {
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$3 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass3 implements Runnable {
+            final /* synthetic */ AvailabilityCallback val$callback;
+
+            AnonymousClass3(AvailabilityCallback callback2) {
+                callback = callback2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                callback.onCameraAccessPrioritiesChanged();
+            }
+        }
+
+        private void postSingleCameraOpenedUpdate(AvailabilityCallback callback, Executor executor, String id, String packageId) {
             long ident = Binder.clearCallingIdentity();
             try {
                 executor.execute(new Runnable() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.4
+                    final /* synthetic */ AvailabilityCallback val$callback;
+                    final /* synthetic */ String val$id;
+                    final /* synthetic */ String val$packageId;
+
+                    AnonymousClass4(AvailabilityCallback callback2, String id2, String packageId2) {
+                        callback = callback2;
+                        id = id2;
+                        packageId = packageId2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onCameraOpened(id, packageId);
@@ -1262,10 +1367,37 @@ public final class CameraManager {
             }
         }
 
-        private void postSingleCameraClosedUpdate(final AvailabilityCallback callback, Executor executor, final String id) {
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$4 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass4 implements Runnable {
+            final /* synthetic */ AvailabilityCallback val$callback;
+            final /* synthetic */ String val$id;
+            final /* synthetic */ String val$packageId;
+
+            AnonymousClass4(AvailabilityCallback callback2, String id2, String packageId2) {
+                callback = callback2;
+                id = id2;
+                packageId = packageId2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                callback.onCameraOpened(id, packageId);
+            }
+        }
+
+        private void postSingleCameraClosedUpdate(AvailabilityCallback callback, Executor executor, String id) {
             long ident = Binder.clearCallingIdentity();
             try {
                 executor.execute(new Runnable() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.5
+                    final /* synthetic */ AvailabilityCallback val$callback;
+                    final /* synthetic */ String val$id;
+
+                    AnonymousClass5(AvailabilityCallback callback2, String id2) {
+                        callback = callback2;
+                        id = id2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         callback.onCameraClosed(id);
@@ -1276,7 +1408,24 @@ public final class CameraManager {
             }
         }
 
-        private void postSingleUpdate(final AvailabilityCallback callback, Executor executor, final String id, final String physicalId, int status) {
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$5 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass5 implements Runnable {
+            final /* synthetic */ AvailabilityCallback val$callback;
+            final /* synthetic */ String val$id;
+
+            AnonymousClass5(AvailabilityCallback callback2, String id2) {
+                callback = callback2;
+                id = id2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                callback.onCameraClosed(id);
+            }
+        }
+
+        private void postSingleUpdate(AvailabilityCallback callback, Executor executor, String id, String physicalId, int status) {
             long ident;
             if (Integer.parseInt(id) >= 20 && callback != null && !callback.mIsHiddenIdPermittedPackage) {
                 return;
@@ -1286,6 +1435,16 @@ public final class CameraManager {
                 ident = Binder.clearCallingIdentity();
                 try {
                     executor.execute(new Runnable() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.6
+                        final /* synthetic */ AvailabilityCallback val$callback;
+                        final /* synthetic */ String val$id;
+                        final /* synthetic */ String val$physicalId;
+
+                        AnonymousClass6(String physicalId2, AvailabilityCallback callback2, String id2) {
+                            physicalId = physicalId2;
+                            callback = callback2;
+                            id = id2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             String str = physicalId;
@@ -1302,6 +1461,16 @@ public final class CameraManager {
                 ident = Binder.clearCallingIdentity();
                 try {
                     executor.execute(new Runnable() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.7
+                        final /* synthetic */ AvailabilityCallback val$callback;
+                        final /* synthetic */ String val$id;
+                        final /* synthetic */ String val$physicalId;
+
+                        AnonymousClass7(String physicalId2, AvailabilityCallback callback2, String id2) {
+                            physicalId = physicalId2;
+                            callback = callback2;
+                            id = id2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             String str = physicalId;
@@ -1313,6 +1482,54 @@ public final class CameraManager {
                         }
                     });
                 } finally {
+                }
+            }
+        }
+
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$6 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass6 implements Runnable {
+            final /* synthetic */ AvailabilityCallback val$callback;
+            final /* synthetic */ String val$id;
+            final /* synthetic */ String val$physicalId;
+
+            AnonymousClass6(String physicalId2, AvailabilityCallback callback2, String id2) {
+                physicalId = physicalId2;
+                callback = callback2;
+                id = id2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                String str = physicalId;
+                if (str == null) {
+                    callback.onCameraAvailable(id);
+                } else {
+                    callback.onPhysicalCameraAvailable(id, str);
+                }
+            }
+        }
+
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$7 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass7 implements Runnable {
+            final /* synthetic */ AvailabilityCallback val$callback;
+            final /* synthetic */ String val$id;
+            final /* synthetic */ String val$physicalId;
+
+            AnonymousClass7(String physicalId2, AvailabilityCallback callback2, String id2) {
+                physicalId = physicalId2;
+                callback = callback2;
+                id = id2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                String str = physicalId;
+                if (str == null) {
+                    callback.onCameraUnavailable(id);
+                } else {
+                    callback.onPhysicalCameraUnavailable(id, str);
                 }
             }
         }
@@ -1349,13 +1566,11 @@ public final class CameraManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$postSingleTorchUpdate$0(TorchCallback callback, String id, int status) {
             Log.i(TAG, "onTorchModeChanged");
             callback.onTorchModeChanged(id, status == 2);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$postSingleTorchUpdate$1(TorchCallback callback, String id) {
             Log.i(TAG, "onTorchModeUnavailable");
             callback.onTorchModeUnavailable(id);
@@ -1698,10 +1913,20 @@ public final class CameraManager {
             }
         }
 
-        private void postSingleCameraDeviceStateUpdate(final SemCameraDeviceStateCallback callback, Executor executor, final String cameraId, final CameraDeviceState state) {
+        private void postSingleCameraDeviceStateUpdate(SemCameraDeviceStateCallback callback, Executor executor, String cameraId, CameraDeviceState state) {
             long ident = Binder.clearCallingIdentity();
             try {
                 executor.execute(new Runnable() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.8
+                    final /* synthetic */ SemCameraDeviceStateCallback val$callback;
+                    final /* synthetic */ String val$cameraId;
+                    final /* synthetic */ CameraDeviceState val$state;
+
+                    AnonymousClass8(SemCameraDeviceStateCallback callback2, CameraDeviceState state2, String cameraId2) {
+                        callback = callback2;
+                        state = state2;
+                        cameraId = cameraId2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (!callback.isExtended && state.mDeviceState >= 100) {
@@ -1713,6 +1938,29 @@ public final class CameraManager {
                 });
             } finally {
                 Binder.restoreCallingIdentity(ident);
+            }
+        }
+
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$8 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass8 implements Runnable {
+            final /* synthetic */ SemCameraDeviceStateCallback val$callback;
+            final /* synthetic */ String val$cameraId;
+            final /* synthetic */ CameraDeviceState val$state;
+
+            AnonymousClass8(SemCameraDeviceStateCallback callback2, CameraDeviceState state2, String cameraId2) {
+                callback = callback2;
+                state = state2;
+                cameraId = cameraId2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (!callback.isExtended && state.mDeviceState >= 100) {
+                    return;
+                }
+                callback.onCameraDeviceStateChanged(cameraId, state.mFacing, state.mDeviceState, state.mClientName);
+                callback.onCameraDeviceStateChanged(cameraId, state.mFacing, state.mDeviceState, state.mClientName, state.mUserId);
             }
         }
 
@@ -1730,10 +1978,20 @@ public final class CameraManager {
             }
         }
 
-        private void postSemSingleCameraDeviceStateUpdate(final AvailabilityCallback callback, Executor executor, final String cameraId, final CameraDeviceState state) {
+        private void postSemSingleCameraDeviceStateUpdate(AvailabilityCallback callback, Executor executor, String cameraId, CameraDeviceState state) {
             long ident = Binder.clearCallingIdentity();
             try {
                 executor.execute(new Runnable() { // from class: android.hardware.camera2.CameraManager.CameraManagerGlobal.9
+                    final /* synthetic */ AvailabilityCallback val$callback;
+                    final /* synthetic */ String val$cameraId;
+                    final /* synthetic */ CameraDeviceState val$state;
+
+                    AnonymousClass9(CameraDeviceState state2, AvailabilityCallback callback2, String cameraId2) {
+                        state = state2;
+                        callback = callback2;
+                        cameraId = cameraId2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         int lensFacing;
@@ -1778,6 +2036,59 @@ public final class CameraManager {
             }
         }
 
+        /* renamed from: android.hardware.camera2.CameraManager$CameraManagerGlobal$9 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass9 implements Runnable {
+            final /* synthetic */ AvailabilityCallback val$callback;
+            final /* synthetic */ String val$cameraId;
+            final /* synthetic */ CameraDeviceState val$state;
+
+            AnonymousClass9(CameraDeviceState state2, AvailabilityCallback callback2, String cameraId2) {
+                state = state2;
+                callback = callback2;
+                cameraId = cameraId2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                int lensFacing;
+                switch (state.mFacing) {
+                    case 0:
+                        lensFacing = 1;
+                        break;
+                    case 1:
+                        lensFacing = 0;
+                        break;
+                    case 2:
+                        lensFacing = 2;
+                        break;
+                    default:
+                        Log.w(CameraManagerGlobal.TAG, "Unknown lens facing.");
+                        return;
+                }
+                switch (state.mDeviceState) {
+                    case 0:
+                        callback.onSemCameraDeviceOpen(cameraId, lensFacing, state.mClientName);
+                        return;
+                    case 1:
+                        callback.onSemCameraDeviceActive(cameraId, lensFacing, state.mClientName);
+                        return;
+                    case 2:
+                        callback.onSemCameraDeviceIdle(cameraId, lensFacing, state.mClientName);
+                        return;
+                    case 3:
+                        callback.onSemCameraDeviceClose(cameraId, lensFacing, state.mClientName);
+                        return;
+                    case 100:
+                    case 101:
+                        return;
+                    default:
+                        Log.w(CameraManagerGlobal.TAG, "Unknown device state");
+                        return;
+                }
+            }
+        }
+
         private void scheduleCameraServiceReconnectionLocked() {
             if (this.mCallbackMap.isEmpty() && this.mTorchCallbackMap.isEmpty() && this.mSemCameraDeviceStateCallbackMap.isEmpty()) {
                 return;
@@ -1794,7 +2105,6 @@ public final class CameraManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$scheduleCameraServiceReconnectionLocked$4() {
             ICameraService cameraService = getCameraService();
             if (cameraService == null) {

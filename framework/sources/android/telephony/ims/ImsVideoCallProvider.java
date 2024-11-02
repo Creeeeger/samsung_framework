@@ -28,6 +28,10 @@ public abstract class ImsVideoCallProvider {
     private static final int MSG_SET_ZOOM = 6;
     private IImsVideoCallCallback mCallback;
     private final Handler mProviderHandler = new Handler(Looper.getMainLooper()) { // from class: android.telephony.ims.ImsVideoCallProvider.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             SomeArgs args;
@@ -103,8 +107,74 @@ public abstract class ImsVideoCallProvider {
 
     public abstract void onSetZoom(float f);
 
+    /* renamed from: android.telephony.ims.ImsVideoCallProvider$1 */
     /* loaded from: classes3.dex */
-    private final class ImsVideoCallProviderBinder extends IImsVideoCallProvider.Stub {
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            SomeArgs args;
+            switch (msg.what) {
+                case 1:
+                    ImsVideoCallProvider.this.mCallback = (IImsVideoCallCallback) msg.obj;
+                    return;
+                case 2:
+                    args = (SomeArgs) msg.obj;
+                    try {
+                        ImsVideoCallProvider.this.onSetCamera((String) args.arg1);
+                        ImsVideoCallProvider.this.onSetCamera((String) args.arg1, args.argi1);
+                        return;
+                    } finally {
+                    }
+                case 3:
+                    ImsVideoCallProvider.this.onSetPreviewSurface((Surface) msg.obj);
+                    return;
+                case 4:
+                    ImsVideoCallProvider.this.onSetDisplaySurface((Surface) msg.obj);
+                    return;
+                case 5:
+                    ImsVideoCallProvider.this.onSetDeviceOrientation(msg.arg1);
+                    return;
+                case 6:
+                    ImsVideoCallProvider.this.onSetZoom(((Float) msg.obj).floatValue());
+                    return;
+                case 7:
+                    args = (SomeArgs) msg.obj;
+                    try {
+                        VideoProfile fromProfile = (VideoProfile) args.arg1;
+                        VideoProfile toProfile = (VideoProfile) args.arg2;
+                        ImsVideoCallProvider.this.onSendSessionModifyRequest(fromProfile, toProfile);
+                        return;
+                    } finally {
+                    }
+                case 8:
+                    ImsVideoCallProvider.this.onSendSessionModifyResponse((VideoProfile) msg.obj);
+                    return;
+                case 9:
+                    ImsVideoCallProvider.this.onRequestCameraCapabilities();
+                    return;
+                case 10:
+                    ImsVideoCallProvider.this.onRequestCallDataUsage();
+                    return;
+                case 11:
+                    ImsVideoCallProvider.this.onSetPauseImage((Uri) msg.obj);
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    /* loaded from: classes3.dex */
+    public final class ImsVideoCallProviderBinder extends IImsVideoCallProvider.Stub {
+        /* synthetic */ ImsVideoCallProviderBinder(ImsVideoCallProvider imsVideoCallProvider, ImsVideoCallProviderBinderIA imsVideoCallProviderBinderIA) {
+            this();
+        }
+
         private ImsVideoCallProviderBinder() {
         }
 

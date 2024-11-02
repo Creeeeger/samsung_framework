@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public class LocalSocketImpl {
     private FileDescriptor fd;
@@ -28,19 +27,14 @@ public class LocalSocketImpl {
 
     private native Credentials getPeerCredentials_native(FileDescriptor fileDescriptor) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native int read_native(FileDescriptor fileDescriptor) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native int readba_native(byte[] bArr, int i, int i2, FileDescriptor fileDescriptor) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native void write_native(int i, FileDescriptor fileDescriptor) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native void writeba_native(byte[] bArr, int i, int i2, FileDescriptor fileDescriptor) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public class SocketInputStream extends InputStream {
         SocketInputStream() {
@@ -99,8 +93,9 @@ public class LocalSocketImpl {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
-    class SocketOutputStream extends OutputStream {
+    public class SocketOutputStream extends OutputStream {
         SocketOutputStream() {
         }
 
@@ -140,11 +135,9 @@ public class LocalSocketImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LocalSocketImpl() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LocalSocketImpl(FileDescriptor fd) {
         this.fd = fd;
     }
@@ -195,7 +188,6 @@ public class LocalSocketImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void connect(LocalSocketAddress address, int timeout) throws IOException {
         FileDescriptor fileDescriptor = this.fd;
         if (fileDescriptor == null) {
@@ -212,7 +204,6 @@ public class LocalSocketImpl {
         bindLocal(fileDescriptor, endpoint.getName(), endpoint.getNamespace().getId());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void listen(int backlog) throws IOException {
         FileDescriptor fileDescriptor = this.fd;
         if (fileDescriptor == null) {
@@ -225,7 +216,6 @@ public class LocalSocketImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void accept(LocalSocketImpl s) throws IOException {
         FileDescriptor fileDescriptor = this.fd;
         if (fileDescriptor == null) {
@@ -239,7 +229,6 @@ public class LocalSocketImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public InputStream getInputStream() throws IOException {
         SocketInputStream socketInputStream;
         if (this.fd == null) {
@@ -254,7 +243,6 @@ public class LocalSocketImpl {
         return socketInputStream;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public OutputStream getOutputStream() throws IOException {
         SocketOutputStream socketOutputStream;
         if (this.fd == null) {
@@ -273,7 +261,6 @@ public class LocalSocketImpl {
         return getInputStream().available();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void shutdownInput() throws IOException {
         FileDescriptor fileDescriptor = this.fd;
         if (fileDescriptor == null) {
@@ -286,7 +273,6 @@ public class LocalSocketImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void shutdownOutput() throws IOException {
         FileDescriptor fileDescriptor = this.fd;
         if (fileDescriptor == null) {
@@ -299,7 +285,6 @@ public class LocalSocketImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public FileDescriptor getFileDescriptor() {
         return this.fd;
     }

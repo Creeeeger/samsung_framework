@@ -74,7 +74,6 @@ public class OverlayConfig {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$static$0(OverlayConfigParser.ParsedConfiguration c1, OverlayConfigParser.ParsedConfiguration c2) {
         OverlayScanner.ParsedOverlayInfo o1 = c1.parsedInfo;
         OverlayScanner.ParsedOverlayInfo o2 = c2.parsedInfo;
@@ -164,7 +163,6 @@ public class OverlayConfig {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ OverlayConfigParser.OverlayPartition lambda$new$1(File rootDirectory, PackagePartitions.SystemPartition p) {
         return new OverlayConfigParser.OverlayPartition(new File(rootDirectory, p.getNonConicalFolder().getPath()), p);
     }
@@ -259,7 +257,6 @@ public class OverlayConfig {
         return overlays;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getOverlayPackageInfos$3(HashMap overlays, PackageProvider.Package p, Boolean isSystem, File preInstalledApexPath) {
         if (p.getOverlayTarget() != null && isSystem.booleanValue()) {
             overlays.put(p.getPackageName(), new OverlayScanner.ParsedOverlayInfo(p.getPackageName(), p.getOverlayTarget(), p.getTargetSdkVersion(), p.isOverlayIsStatic(), p.getOverlayPriority(), new File(p.getBaseApkPath()), preInstalledApexPath));

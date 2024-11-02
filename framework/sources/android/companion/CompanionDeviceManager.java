@@ -180,7 +180,6 @@ public final class CompanionDeviceManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$getAssociations$0(AssociationInfo a) {
         if (a.isSelfManaged()) {
             return null;
@@ -317,9 +316,10 @@ public final class CompanionDeviceManager {
         }
     }
 
-    public void removeOnTransportsChangedListener(OnTransportsChangedListener onTransportsChangedListener) {
+    public void removeOnTransportsChangedListener(OnTransportsChangedListener listener) {
+        OnTransportsChangedListenerProxy proxy = new OnTransportsChangedListenerProxy(null, listener);
         try {
-            this.mService.removeOnTransportsChangedListener(new OnTransportsChangedListenerProxy(null, onTransportsChangedListener));
+            this.mService.removeOnTransportsChangedListener(proxy);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -342,9 +342,10 @@ public final class CompanionDeviceManager {
         }
     }
 
-    public void removeOnMessageReceivedListener(int i, OnMessageReceivedListener onMessageReceivedListener) {
+    public void removeOnMessageReceivedListener(int messageType, OnMessageReceivedListener listener) {
+        OnMessageReceivedListenerProxy proxy = new OnMessageReceivedListenerProxy(null, listener);
         try {
-            this.mService.removeOnMessageReceivedListener(i, new OnMessageReceivedListenerProxy(null, onMessageReceivedListener));
+            this.mService.removeOnMessageReceivedListener(messageType, proxy);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -523,6 +524,14 @@ public final class CompanionDeviceManager {
         private final Executor mExecutor;
         private final Handler mHandler;
 
+        /* synthetic */ AssociationRequestCallbackProxy(Handler handler, Callback callback, AssociationRequestCallbackProxyIA associationRequestCallbackProxyIA) {
+            this(handler, callback);
+        }
+
+        /* synthetic */ AssociationRequestCallbackProxy(Executor executor, Callback callback, AssociationRequestCallbackProxyIA associationRequestCallbackProxyIA) {
+            this(executor, callback);
+        }
+
         private AssociationRequestCallbackProxy(Executor executor, Callback callback) {
             this.mExecutor = executor;
             this.mHandler = null;
@@ -591,18 +600,20 @@ public final class CompanionDeviceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class OnAssociationsChangedListenerProxy extends IOnAssociationsChangedListener.Stub {
         private final Executor mExecutor;
         private final OnAssociationsChangedListener mListener;
+
+        /* synthetic */ OnAssociationsChangedListenerProxy(Executor executor, OnAssociationsChangedListener onAssociationsChangedListener, OnAssociationsChangedListenerProxyIA onAssociationsChangedListenerProxyIA) {
+            this(executor, onAssociationsChangedListener);
+        }
 
         private OnAssociationsChangedListenerProxy(Executor executor, OnAssociationsChangedListener listener) {
             this.mExecutor = executor;
             this.mListener = listener;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAssociationsChanged$0(List associations) {
             this.mListener.onAssociationsChanged(associations);
         }
@@ -618,18 +629,20 @@ public final class CompanionDeviceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class OnTransportsChangedListenerProxy extends IOnTransportsChangedListener.Stub {
         private final Executor mExecutor;
         private final OnTransportsChangedListener mListener;
+
+        /* synthetic */ OnTransportsChangedListenerProxy(Executor executor, OnTransportsChangedListener onTransportsChangedListener, OnTransportsChangedListenerProxyIA onTransportsChangedListenerProxyIA) {
+            this(executor, onTransportsChangedListener);
+        }
 
         private OnTransportsChangedListenerProxy(Executor executor, OnTransportsChangedListener listener) {
             this.mExecutor = executor;
             this.mListener = listener;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTransportsChanged$0(List associations) {
             this.mListener.onTransportsChanged(associations);
         }
@@ -645,18 +658,20 @@ public final class CompanionDeviceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class OnMessageReceivedListenerProxy extends IOnMessageReceivedListener.Stub {
         private final Executor mExecutor;
         private final OnMessageReceivedListener mListener;
+
+        /* synthetic */ OnMessageReceivedListenerProxy(Executor executor, OnMessageReceivedListener onMessageReceivedListener, OnMessageReceivedListenerProxyIA onMessageReceivedListenerProxyIA) {
+            this(executor, onMessageReceivedListener);
+        }
 
         private OnMessageReceivedListenerProxy(Executor executor, OnMessageReceivedListener listener) {
             this.mExecutor = executor;
             this.mListener = listener;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onMessageReceived$0(int associationId, byte[] data) {
             this.mListener.onMessageReceived(associationId, data);
         }
@@ -672,18 +687,20 @@ public final class CompanionDeviceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class SystemDataTransferCallbackProxy extends ISystemDataTransferCallback.Stub {
         private final OutcomeReceiver<Void, CompanionException> mCallback;
         private final Executor mExecutor;
+
+        /* synthetic */ SystemDataTransferCallbackProxy(Executor executor, OutcomeReceiver outcomeReceiver, SystemDataTransferCallbackProxyIA systemDataTransferCallbackProxyIA) {
+            this(executor, outcomeReceiver);
+        }
 
         private SystemDataTransferCallbackProxy(Executor executor, OutcomeReceiver<Void, CompanionException> callback) {
             this.mExecutor = executor;
             this.mCallback = callback;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResult$0() {
             this.mCallback.onResult(null);
         }
@@ -698,7 +715,6 @@ public final class CompanionDeviceManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$1(String error) {
             this.mCallback.onError(new CompanionException(error));
         }
@@ -714,7 +730,6 @@ public final class CompanionDeviceManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class Transport {
         private final int mAssociationId;
@@ -755,7 +770,6 @@ public final class CompanionDeviceManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$start$0() {
             try {
                 copyWithFlushing(this.mLocalIn, this.mRemoteOut);
@@ -767,7 +781,6 @@ public final class CompanionDeviceManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$start$1() {
             try {
                 copyWithFlushing(this.mRemoteIn, this.mLocalOut);

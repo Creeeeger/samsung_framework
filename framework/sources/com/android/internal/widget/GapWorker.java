@@ -9,11 +9,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class GapWorker implements Runnable {
     static final ThreadLocal<GapWorker> sGapWorker = new ThreadLocal<>();
     static Comparator<Task> sTaskComparator = new Comparator<Task>() { // from class: com.android.internal.widget.GapWorker.1
+        AnonymousClass1() {
+        }
+
         @Override // java.util.Comparator
         public int compare(Task lhs, Task rhs) {
             if ((lhs.view == null) != (rhs.view == null)) {
@@ -38,7 +40,6 @@ public final class GapWorker implements Runnable {
     ArrayList<RecyclerView> mRecyclerViews = new ArrayList<>();
     private ArrayList<Task> mTasks = new ArrayList<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class Task {
         public int distanceToItem;
@@ -59,7 +60,6 @@ public final class GapWorker implements Runnable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class LayoutPrefetchRegistryImpl implements RecyclerView.LayoutManager.LayoutPrefetchRegistry {
         int mCount;
@@ -118,7 +118,6 @@ public final class GapWorker implements Runnable {
             this.mCount++;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean lastPrefetchIncludedPosition(int position) {
             if (this.mPrefetchArray != null) {
                 int count = this.mCount * 2;
@@ -132,7 +131,6 @@ public final class GapWorker implements Runnable {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void clearPrefetchPositions() {
             int[] iArr = this.mPrefetchArray;
             if (iArr != null) {
@@ -149,13 +147,38 @@ public final class GapWorker implements Runnable {
         this.mRecyclerViews.remove(recyclerView);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void postFromTraversal(RecyclerView recyclerView, int prefetchDx, int prefetchDy) {
         if (recyclerView.isAttachedToWindow() && this.mPostTimeNs == 0) {
             this.mPostTimeNs = recyclerView.getNanoTime();
             recyclerView.post(this);
         }
         recyclerView.mPrefetchRegistry.setPrefetchVector(prefetchDx, prefetchDy);
+    }
+
+    /* renamed from: com.android.internal.widget.GapWorker$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Comparator<Task> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(Task lhs, Task rhs) {
+            if ((lhs.view == null) != (rhs.view == null)) {
+                return lhs.view == null ? 1 : -1;
+            }
+            if (lhs.immediate != rhs.immediate) {
+                return lhs.immediate ? -1 : 1;
+            }
+            int deltaViewVelocity = rhs.viewVelocity - lhs.viewVelocity;
+            if (deltaViewVelocity != 0) {
+                return deltaViewVelocity;
+            }
+            int deltaDistanceToItem = lhs.distanceToItem - rhs.distanceToItem;
+            if (deltaDistanceToItem != 0) {
+                return deltaDistanceToItem;
+            }
+            return 0;
+        }
     }
 
     private void buildTaskList() {

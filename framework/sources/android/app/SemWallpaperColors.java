@@ -50,13 +50,14 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     public static final int COMPARE_COLOR = 0;
     public static final int COMPARE_SHADOW = 1;
     public static final Parcelable.Creator<SemWallpaperColors> CREATOR = new Parcelable.Creator<SemWallpaperColors>() { // from class: android.app.SemWallpaperColors.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemWallpaperColors createFromParcel(Parcel in) {
             return new SemWallpaperColors(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWallpaperColors[] newArray(int size) {
             return new SemWallpaperColors[size];
@@ -107,6 +108,10 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
     private int mRotation;
     private int[] mSeedColors;
     private int mWhich;
+
+    /* synthetic */ SemWallpaperColors(int i, Item item, Bitmap bitmap, SemWallpaperColorsIA semWallpaperColorsIA) {
+        this(i, item, bitmap);
+    }
 
     public static int getDeviceVersion() {
         Log.d(TAG, "version 22");
@@ -1091,6 +1096,23 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         return stringBuilder.toString();
     }
 
+    /* renamed from: android.app.SemWallpaperColors$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemWallpaperColors> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWallpaperColors createFromParcel(Parcel in) {
+            return new SemWallpaperColors(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWallpaperColors[] newArray(int size) {
+            return new SemWallpaperColors[size];
+        }
+    }
+
     public int[] getSeedColors() {
         return this.mSeedColors;
     }
@@ -1270,7 +1292,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         return this.mDataList.size();
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public SemWallpaperColors m498clone() {
         try {
             SemWallpaperColors clone = (SemWallpaperColors) super.clone();
@@ -1317,6 +1339,10 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         private LegibilityLogic.LegibilityResult mRightLegibilityResult;
         private float mShadowOpacity;
         private float mShadowSize;
+
+        /* synthetic */ Item(ItemIA itemIA) {
+            this();
+        }
 
         private Item() {
             this.mHSV = new float[3];
@@ -1366,27 +1392,22 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             this.mLegibilityResult = legibilityResult;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setFontColor(int fontColor) {
             this.mFontColor = fontColor;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setFontColorRgb(int fontColorRgb) {
             this.mFontColorRgb = fontColorRgb;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setShadowSize(float shadowSize) {
             this.mShadowSize = shadowSize;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setShadowOpacity(float shadowOpacity) {
             this.mShadowOpacity = shadowOpacity;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setHSV(float[] hsv) {
             this.mHSV = hsv;
         }
@@ -1419,17 +1440,14 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             return new float[]{fArr[0], fArr[1], fArr[2]};
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public LegibilityLogic.LegibilityResult getLegibilityResult() {
             return this.mLegibilityResult;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public LegibilityLogic.LegibilityResult getLeftLegibilityResult() {
             return this.mLeftLegibilityResult;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public LegibilityLogic.LegibilityResult getRightLegibilityResult() {
             return this.mRightLegibilityResult;
         }
@@ -1492,7 +1510,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             return result;
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        /* renamed from: clone */
         public Item m509clone() {
             try {
                 Item item = (Item) super.clone();
@@ -1511,15 +1529,15 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
                 }
                 LegibilityLogic.LegibilityResult legibilityResult = this.mLegibilityResult;
                 if (legibilityResult != null) {
-                    item.mLegibilityResult = legibilityResult.m8846clone();
+                    item.mLegibilityResult = legibilityResult.m8838clone();
                 }
                 LegibilityLogic.LegibilityResult legibilityResult2 = this.mLeftLegibilityResult;
                 if (legibilityResult2 != null) {
-                    item.mLeftLegibilityResult = legibilityResult2.m8846clone();
+                    item.mLeftLegibilityResult = legibilityResult2.m8838clone();
                 }
                 LegibilityLogic.LegibilityResult legibilityResult3 = this.mRightLegibilityResult;
                 if (legibilityResult3 != null) {
-                    item.mRightLegibilityResult = legibilityResult3.m8846clone();
+                    item.mRightLegibilityResult = legibilityResult3.m8838clone();
                 }
                 return item;
             } catch (CloneNotSupportedException e) {
@@ -1559,7 +1577,6 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public class WallpaperColorsData implements Cloneable {
         private long mExternalKey;
@@ -1614,7 +1631,7 @@ public class SemWallpaperColors implements Parcelable, Cloneable {
             return this.mItem;
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        /* renamed from: clone */
         public WallpaperColorsData m510clone() {
             try {
                 WallpaperColorsData clone = (WallpaperColorsData) super.clone();

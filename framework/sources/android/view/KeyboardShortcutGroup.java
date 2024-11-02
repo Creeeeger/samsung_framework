@@ -11,13 +11,14 @@ import java.util.List;
 /* loaded from: classes4.dex */
 public final class KeyboardShortcutGroup implements Parcelable {
     public static final Parcelable.Creator<KeyboardShortcutGroup> CREATOR = new Parcelable.Creator<KeyboardShortcutGroup>() { // from class: android.view.KeyboardShortcutGroup.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeyboardShortcutGroup createFromParcel(Parcel source) {
             return new KeyboardShortcutGroup(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyboardShortcutGroup[] newArray(int size) {
             return new KeyboardShortcutGroup[size];
@@ -26,6 +27,10 @@ public final class KeyboardShortcutGroup implements Parcelable {
     private final List<KeyboardShortcutInfo> mItems;
     private final CharSequence mLabel;
     private boolean mSystemGroup;
+
+    /* synthetic */ KeyboardShortcutGroup(Parcel parcel, KeyboardShortcutGroupIA keyboardShortcutGroupIA) {
+        this(parcel);
+    }
 
     public KeyboardShortcutGroup(CharSequence label, List<KeyboardShortcutInfo> items) {
         this.mLabel = label;
@@ -80,5 +85,22 @@ public final class KeyboardShortcutGroup implements Parcelable {
         parcel.writeCharSequence(this.mLabel);
         parcel.writeTypedList(this.mItems);
         parcel.writeInt(this.mSystemGroup ? 1 : 0);
+    }
+
+    /* renamed from: android.view.KeyboardShortcutGroup$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyboardShortcutGroup> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyboardShortcutGroup createFromParcel(Parcel source) {
+            return new KeyboardShortcutGroup(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyboardShortcutGroup[] newArray(int size) {
+            return new KeyboardShortcutGroup[size];
+        }
     }
 }

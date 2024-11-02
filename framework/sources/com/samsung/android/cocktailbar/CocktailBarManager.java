@@ -983,8 +983,9 @@ public class CocktailBarManager extends SemCocktailBarManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class CocktailBarStateListenerDelegate extends ICocktailBarStateCallback.Stub {
+    public class CocktailBarStateListenerDelegate extends ICocktailBarStateCallback.Stub {
         private static final int MSG_LISTEN_COCKTAIL_BAR_STATE_CHANGE = 0;
         private Handler mHandler;
 
@@ -998,6 +999,14 @@ public class CocktailBarManager extends SemCocktailBarManager {
             this.mStateChangedListener = null;
             Looper looper = handler == null ? CocktailBarManager.this.mContext.getMainLooper() : handler.getLooper();
             this.mHandler = new Handler(looper) { // from class: com.samsung.android.cocktailbar.CocktailBarManager.CocktailBarStateListenerDelegate.1
+                final /* synthetic */ CocktailBarManager val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper2, CocktailBarManager cocktailBarManager) {
+                    super(looper2);
+                    r3 = cocktailBarManager;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     if (CocktailBarStateListenerDelegate.this.mListener == null || msg.what != 0) {
@@ -1021,11 +1030,53 @@ public class CocktailBarManager extends SemCocktailBarManager {
             };
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.cocktailbar.CocktailBarManager$CocktailBarStateListenerDelegate$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ CocktailBarManager val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper2, CocktailBarManager cocktailBarManager) {
+                super(looper2);
+                r3 = cocktailBarManager;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                if (CocktailBarStateListenerDelegate.this.mListener == null || msg.what != 0) {
+                    return;
+                }
+                CocktailBarStateInfo stateInfo = (CocktailBarStateInfo) msg.obj;
+                if (stateInfo.changeFlag == 0) {
+                    return;
+                }
+                CocktailBarStateListenerDelegate.this.mListener.onCocktailBarStateChanged(stateInfo);
+                if ((stateInfo.changeFlag & 1) != 0) {
+                    CocktailBarStateListenerDelegate.this.mListener.onCocktailBarVisibilityChanged(stateInfo.visibility);
+                }
+                if ((stateInfo.changeFlag & 4) != 0) {
+                    CocktailBarStateListenerDelegate.this.mListener.onCocktailBarPositionChanged(stateInfo.position);
+                }
+                if ((stateInfo.changeFlag & 128) != 0) {
+                    CocktailBarStateListenerDelegate.this.mListener.onCocktailBarWindowTypeChanged(stateInfo.windowType);
+                }
+            }
+        }
+
         public CocktailBarStateListenerDelegate(CocktailBarStateChangedListener stateChangedListener, Handler handler) {
             this.mStateChangedListener = stateChangedListener;
             this.mListener = null;
             Looper looper = handler == null ? CocktailBarManager.this.mContext.getMainLooper() : handler.getLooper();
             this.mHandler = new Handler(looper) { // from class: com.samsung.android.cocktailbar.CocktailBarManager.CocktailBarStateListenerDelegate.2
+                final /* synthetic */ CocktailBarManager val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass2(Looper looper2, CocktailBarManager cocktailBarManager) {
+                    super(looper2);
+                    r3 = cocktailBarManager;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     if (CocktailBarStateListenerDelegate.this.mStateChangedListener != null && msg.what == 0) {
@@ -1036,6 +1087,29 @@ public class CocktailBarManager extends SemCocktailBarManager {
                     }
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.cocktailbar.CocktailBarManager$CocktailBarStateListenerDelegate$2 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass2 extends Handler {
+            final /* synthetic */ CocktailBarManager val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass2(Looper looper2, CocktailBarManager cocktailBarManager) {
+                super(looper2);
+                r3 = cocktailBarManager;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                if (CocktailBarStateListenerDelegate.this.mStateChangedListener != null && msg.what == 0) {
+                    CocktailBarStateInfo stateInfo = (CocktailBarStateInfo) msg.obj;
+                    if (stateInfo.changeFlag != 0) {
+                        CocktailBarStateListenerDelegate.this.mStateChangedListener.onCocktailBarStateChanged(stateInfo);
+                    }
+                }
+            }
         }
 
         @Deprecated
@@ -1164,8 +1238,9 @@ public class CocktailBarManager extends SemCocktailBarManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class SystemUiVisibilityListenerDelegate extends ISystemUiVisibilityCallback.Stub {
+    public class SystemUiVisibilityListenerDelegate extends ISystemUiVisibilityCallback.Stub {
         private static final int MSG_SYSTEM_UI_VISIBILITY_CHANGED = 1;
         private Handler mHandler;
         private SystemUiVisibilityListener mListener;
@@ -1174,6 +1249,14 @@ public class CocktailBarManager extends SemCocktailBarManager {
             this.mListener = listener;
             Looper looper = handler == null ? CocktailBarManager.this.mContext.getMainLooper() : handler.getLooper();
             this.mHandler = new Handler(looper) { // from class: com.samsung.android.cocktailbar.CocktailBarManager.SystemUiVisibilityListenerDelegate.1
+                final /* synthetic */ CocktailBarManager val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper2, CocktailBarManager cocktailBarManager) {
+                    super(looper2);
+                    r3 = cocktailBarManager;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     if (SystemUiVisibilityListenerDelegate.this.mListener != null && msg.what == 1) {
@@ -1181,6 +1264,26 @@ public class CocktailBarManager extends SemCocktailBarManager {
                     }
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.cocktailbar.CocktailBarManager$SystemUiVisibilityListenerDelegate$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ CocktailBarManager val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper2, CocktailBarManager cocktailBarManager) {
+                super(looper2);
+                r3 = cocktailBarManager;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                if (SystemUiVisibilityListenerDelegate.this.mListener != null && msg.what == 1) {
+                    SystemUiVisibilityListenerDelegate.this.mListener.onSystemUiVisibilityChanged(msg.arg1);
+                }
+            }
         }
 
         public SystemUiVisibilityListener getListener() {

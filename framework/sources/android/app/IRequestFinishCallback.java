@@ -82,8 +82,9 @@ public interface IRequestFinishCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IRequestFinishCallback {
+        public static class Proxy implements IRequestFinishCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

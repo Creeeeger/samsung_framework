@@ -7,6 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehApnProfile implements Parcelable {
     public static final Parcelable.Creator<SehApnProfile> CREATOR = new Parcelable.Creator<SehApnProfile>() { // from class: vendor.samsung.hardware.radio.data.SehApnProfile.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehApnProfile createFromParcel(Parcel _aidl_source) {
             SehApnProfile _aidl_out = new SehApnProfile();
@@ -25,6 +28,25 @@ public class SehApnProfile implements Parcelable {
     public String pw;
     public String roamingProto;
     public String user;
+
+    /* renamed from: vendor.samsung.hardware.radio.data.SehApnProfile$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehApnProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehApnProfile createFromParcel(Parcel _aidl_source) {
+            SehApnProfile _aidl_out = new SehApnProfile();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehApnProfile[] newArray(int _aidl_size) {
+            return new SehApnProfile[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

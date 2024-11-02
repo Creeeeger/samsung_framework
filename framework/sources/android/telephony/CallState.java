@@ -14,6 +14,9 @@ public final class CallState implements Parcelable {
     public static final int CALL_CLASSIFICATION_RINGING = 0;
     public static final int CALL_CLASSIFICATION_UNKNOWN = -1;
     public static final Parcelable.Creator<CallState> CREATOR = new Parcelable.Creator() { // from class: android.telephony.CallState.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CallState createFromParcel(Parcel in) {
             return new CallState(in);
@@ -31,6 +34,14 @@ public final class CallState implements Parcelable {
     private int mImsCallType;
     private final int mNetworkType;
     private final int mPreciseCallState;
+
+    /* synthetic */ CallState(int i, int i2, CallQuality callQuality, int i3, String str, int i4, int i5, CallStateIA callStateIA) {
+        this(i, i2, callQuality, i3, str, i4, i5);
+    }
+
+    /* synthetic */ CallState(Parcel parcel, CallStateIA callStateIA) {
+        this(parcel);
+    }
 
     private CallState(int callState, int networkType, CallQuality callQuality, int callClassification, String imsCallId, int imsCallServiceType, int imsCallType) {
         this.mPreciseCallState = callState;
@@ -116,6 +127,23 @@ public final class CallState implements Parcelable {
         dest.writeString(this.mImsCallId);
         dest.writeInt(this.mImsCallServiceType);
         dest.writeInt(this.mImsCallType);
+    }
+
+    /* renamed from: android.telephony.CallState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallState createFromParcel(Parcel in) {
+            return new CallState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallState[] newArray(int size) {
+            return new CallState[size];
+        }
     }
 
     /* loaded from: classes3.dex */

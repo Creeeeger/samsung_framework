@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="Apps targeting Android R and above will need to declare the packages and intents they intend to use to get details about other apps on a device. Such declarations must be made via the {@code &lt;queries&gt;} tag in the manifest." enableSinceTargetSdk="30" id="135549675" name="FILTER_APPLICATION_QUERY"><meta-data definedIn="android.content.pm.PackageManager" sourcePosition="frameworks/base/core/java/android/content/pm/PackageManager.java:5417"/></compat-change></config>
+Error decode xml
+java.util.zip.ZipException: invalid END header (bad central directory offset)
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
+

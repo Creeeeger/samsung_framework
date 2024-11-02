@@ -109,12 +109,18 @@ public class ViewPager extends ViewGroup {
     private VelocityTracker mVelocityTracker;
     private static final int[] LAYOUT_ATTRS = {16842931};
     private static final Comparator<ItemInfo> COMPARATOR = new Comparator<ItemInfo>() { // from class: com.android.internal.widget.ViewPager.1
+        AnonymousClass1() {
+        }
+
         @Override // java.util.Comparator
         public int compare(ItemInfo lhs, ItemInfo rhs) {
             return lhs.position - rhs.position;
         }
     };
     private static final Interpolator sInterpolator = new Interpolator() { // from class: com.android.internal.widget.ViewPager.2
+        AnonymousClass2() {
+        }
+
         @Override // android.animation.TimeInterpolator
         public float getInterpolation(float t) {
             float t2 = t - 1.0f;
@@ -127,8 +133,9 @@ public class ViewPager extends ViewGroup {
     interface Decor {
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    interface OnAdapterChangeListener {
+    public interface OnAdapterChangeListener {
         void onAdapterChanged(PagerAdapter pagerAdapter, PagerAdapter pagerAdapter2);
     }
 
@@ -189,7 +196,6 @@ public class ViewPager extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class ItemInfo {
         Object object;
@@ -199,6 +205,45 @@ public class ViewPager extends ViewGroup {
         float widthFactor;
 
         ItemInfo() {
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ViewPager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Comparator<ItemInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(ItemInfo lhs, ItemInfo rhs) {
+            return lhs.position - rhs.position;
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ViewPager$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 implements Interpolator {
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.TimeInterpolator
+        public float getInterpolation(float t) {
+            float t2 = t - 1.0f;
+            return (t2 * t2 * t2 * t2 * t2) + 1.0f;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.widget.ViewPager$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewPager.this.setScrollState(0);
+            ViewPager.this.populate();
         }
     }
 
@@ -245,6 +290,9 @@ public class ViewPager extends ViewGroup {
         this.mFirstLayout = true;
         this.mConfigurationChanged = false;
         this.mEndScrollRunnable = new Runnable() { // from class: com.android.internal.widget.ViewPager.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ViewPager.this.setScrollState(0);
@@ -271,14 +319,12 @@ public class ViewPager extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         removeCallbacks(this.mEndScrollRunnable);
         super.onDetachedFromWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setScrollState(int newState) {
         if (this.mScrollState == newState) {
             return;
@@ -480,7 +526,6 @@ public class ViewPager extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public int getChildDrawingOrder(int childCount, int i) {
         int index = this.mDrawingOrder == 2 ? (childCount - 1) - i : i;
@@ -534,13 +579,11 @@ public class ViewPager extends ViewGroup {
         setPageMarginDrawable(getContext().getDrawable(resId));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == this.mMarginDrawable;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -962,7 +1005,9 @@ public class ViewPager extends ViewGroup {
     /* loaded from: classes5.dex */
     public static class SavedState extends AbsSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.ClassLoaderCreator<SavedState>() { // from class: com.android.internal.widget.ViewPager.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.ClassLoaderCreator
             public SavedState createFromParcel(Parcel in, ClassLoader loader) {
                 return new SavedState(in, loader);
@@ -995,6 +1040,28 @@ public class ViewPager extends ViewGroup {
 
         public String toString() {
             return "FragmentPager.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " position=" + this.position + "}";
+        }
+
+        /* renamed from: com.android.internal.widget.ViewPager$SavedState$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.ClassLoaderCreator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.ClassLoaderCreator
+            public SavedState createFromParcel(Parcel in, ClassLoader loader) {
+                return new SavedState(in, loader);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in, null);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
 
         SavedState(Parcel in, ClassLoader loader) {
@@ -1106,14 +1173,12 @@ public class ViewPager extends ViewGroup {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.mFirstLayout = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         LayoutParams lp;
@@ -1205,7 +1270,6 @@ public class ViewPager extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -1245,7 +1309,6 @@ public class ViewPager extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         boolean z;
@@ -1988,7 +2051,6 @@ public class ViewPager extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         float itemOffset;
@@ -2268,7 +2330,6 @@ public class ViewPager extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         int index;
@@ -2304,7 +2365,6 @@ public class ViewPager extends ViewGroup {
         return generateDefaultLayoutParams();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return (p instanceof LayoutParams) && super.checkLayoutParams(p);
@@ -2373,8 +2433,13 @@ public class ViewPager extends ViewGroup {
         return pagerAdapter != null && pagerAdapter.getCount() > 1;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class PagerObserver extends DataSetObserver {
+    public class PagerObserver extends DataSetObserver {
+        /* synthetic */ PagerObserver(ViewPager viewPager, PagerObserverIA pagerObserverIA) {
+            this();
+        }
+
         private PagerObserver() {
         }
 
@@ -2393,7 +2458,6 @@ public class ViewPager extends ViewGroup {
         this.mConfigurationChanged = changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class ViewPositionComparator implements Comparator<View> {
         ViewPositionComparator() {

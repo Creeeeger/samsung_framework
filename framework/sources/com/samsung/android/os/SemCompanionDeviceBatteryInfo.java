@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public final class SemCompanionDeviceBatteryInfo implements Parcelable {
     public static final Parcelable.Creator<SemCompanionDeviceBatteryInfo> CREATOR = new Parcelable.Creator<SemCompanionDeviceBatteryInfo>() { // from class: com.samsung.android.os.SemCompanionDeviceBatteryInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemCompanionDeviceBatteryInfo createFromParcel(Parcel in) {
             return new SemCompanionDeviceBatteryInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemCompanionDeviceBatteryInfo[] newArray(int size) {
             return new SemCompanionDeviceBatteryInfo[size];
@@ -29,6 +30,10 @@ public final class SemCompanionDeviceBatteryInfo implements Parcelable {
     private int mExtraBatteryStatusCradle;
     private int mExtraBatteryStatusLeft;
     private int mExtraBatteryStatusRight;
+
+    /* synthetic */ SemCompanionDeviceBatteryInfo(Parcel parcel, SemCompanionDeviceBatteryInfoIA semCompanionDeviceBatteryInfoIA) {
+        this(parcel);
+    }
 
     public String getAddress() {
         return this.mAddress;
@@ -116,6 +121,23 @@ public final class SemCompanionDeviceBatteryInfo implements Parcelable {
 
     public void setExtraBatteryStatusCradle(int batteryStatus) {
         this.mExtraBatteryStatusCradle = batteryStatus;
+    }
+
+    /* renamed from: com.samsung.android.os.SemCompanionDeviceBatteryInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemCompanionDeviceBatteryInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCompanionDeviceBatteryInfo createFromParcel(Parcel in) {
+            return new SemCompanionDeviceBatteryInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCompanionDeviceBatteryInfo[] newArray(int size) {
+            return new SemCompanionDeviceBatteryInfo[size];
+        }
     }
 
     public SemCompanionDeviceBatteryInfo() {

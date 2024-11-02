@@ -13,6 +13,9 @@ import android.view.accessibility.AccessibilityManager;
 /* loaded from: classes5.dex */
 public class SemAnimatorUtils {
     public static final TypeEvaluator<Rect> BOUNDS_EVALUATOR = new TypeEvaluator<Rect>() { // from class: com.samsung.android.animation.SemAnimatorUtils.1
+        AnonymousClass1() {
+        }
+
         @Override // android.animation.TypeEvaluator
         public Rect evaluate(float fraction, Rect startValue, Rect endValue) {
             Rect out = new Rect(interpolate(startValue.left, endValue.left, fraction), interpolate(startValue.top, endValue.top, fraction), interpolate(startValue.right, endValue.right, fraction), interpolate(startValue.bottom, endValue.bottom, fraction));
@@ -25,6 +28,23 @@ public class SemAnimatorUtils {
     };
     private static final boolean DEBUGGABLE_LOW = true;
 
+    /* renamed from: com.samsung.android.animation.SemAnimatorUtils$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements TypeEvaluator<Rect> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.TypeEvaluator
+        public Rect evaluate(float fraction, Rect startValue, Rect endValue) {
+            Rect out = new Rect(interpolate(startValue.left, endValue.left, fraction), interpolate(startValue.top, endValue.top, fraction), interpolate(startValue.right, endValue.right, fraction), interpolate(startValue.bottom, endValue.bottom, fraction));
+            return out;
+        }
+
+        public int interpolate(int start, int end, float fraction) {
+            return (int) (start + ((end - start) * fraction));
+        }
+    }
+
     public static BitmapDrawable getBitmapDrawableFromView(View view) {
         Bitmap b = Bitmap.createBitmap(view.getResources().getDisplayMetrics(), view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
@@ -32,12 +52,10 @@ public class SemAnimatorUtils {
         return new BitmapDrawable(view.getResources(), b);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getViewCenterX(View view) {
         return (view.getLeft() + view.getRight()) / 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getViewCenterY(View view) {
         return (view.getTop() + view.getBottom()) / 2;
     }

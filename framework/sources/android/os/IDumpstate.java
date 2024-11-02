@@ -165,8 +165,9 @@ public interface IDumpstate extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDumpstate {
+        public static class Proxy implements IDumpstate {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

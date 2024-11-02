@@ -142,8 +142,9 @@ public interface ICarrierMessagingCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ICarrierMessagingCallback {
+        public static class Proxy implements ICarrierMessagingCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

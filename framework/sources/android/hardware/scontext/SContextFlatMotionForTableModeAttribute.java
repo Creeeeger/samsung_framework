@@ -9,7 +9,6 @@ public class SContextFlatMotionForTableModeAttribute extends SContextAttribute {
     private static final String TAG = "SContextFlatMotionForTableModeAttribute";
     private int mDuration;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextFlatMotionForTableModeAttribute() {
         this.mDuration = 500;
         setAttribute();

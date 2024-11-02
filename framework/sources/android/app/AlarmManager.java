@@ -72,7 +72,6 @@ public class AlarmManager {
         void onAlarm();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public final class ListenerWrapper extends IAlarmListener.Stub implements Runnable {
         IAlarmCompleteListener mCompletion;
@@ -121,7 +120,6 @@ public class AlarmManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AlarmManager(IAlarmManager service, Context ctx) {
         this.mService = service;
         this.mContext = ctx;
@@ -413,13 +411,14 @@ public class AlarmManager {
     /* loaded from: classes.dex */
     public static final class AlarmClockInfo implements Parcelable {
         public static final Parcelable.Creator<AlarmClockInfo> CREATOR = new Parcelable.Creator<AlarmClockInfo>() { // from class: android.app.AlarmManager.AlarmClockInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AlarmClockInfo createFromParcel(Parcel in) {
                 return new AlarmClockInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AlarmClockInfo[] newArray(int size) {
                 return new AlarmClockInfo[size];
@@ -455,6 +454,23 @@ public class AlarmManager {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeLong(this.mTriggerTime);
             dest.writeParcelable(this.mShowIntent, flags);
+        }
+
+        /* renamed from: android.app.AlarmManager$AlarmClockInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AlarmClockInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AlarmClockInfo createFromParcel(Parcel in) {
+                return new AlarmClockInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AlarmClockInfo[] newArray(int size) {
+                return new AlarmClockInfo[size];
+            }
         }
 
         public void dumpDebug(ProtoOutputStream proto, long fieldId) {

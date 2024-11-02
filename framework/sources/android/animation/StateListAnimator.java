@@ -20,8 +20,26 @@ public class StateListAnimator implements Cloneable {
         initAnimatorListener();
     }
 
+    /* renamed from: android.animation.StateListAnimator$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            animation.setTarget(null);
+            if (StateListAnimator.this.mRunningAnimator == animation) {
+                StateListAnimator.this.mRunningAnimator = null;
+            }
+        }
+    }
+
     private void initAnimatorListener() {
         this.mAnimatorListener = new AnimatorListenerAdapter() { // from class: android.animation.StateListAnimator.1
+            AnonymousClass1() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 animation.setTarget(null);
@@ -74,7 +92,7 @@ public class StateListAnimator implements Cloneable {
         this.mRunningAnimator = null;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public StateListAnimator m106clone() {
         try {
             StateListAnimator clone = (StateListAnimator) super.clone();
@@ -175,6 +193,10 @@ public class StateListAnimator implements Cloneable {
         final Animator mAnimator;
         final int[] mSpecs;
 
+        /* synthetic */ Tuple(int[] iArr, Animator animator, TupleIA tupleIA) {
+            this(iArr, animator);
+        }
+
         private Tuple(int[] specs, Animator animator) {
             this.mSpecs = specs;
             this.mAnimator = animator;
@@ -189,8 +211,9 @@ public class StateListAnimator implements Cloneable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class StateListAnimatorConstantState extends ConstantState<StateListAnimator> {
+    public static class StateListAnimatorConstantState extends ConstantState<StateListAnimator> {
         final StateListAnimator mAnimator;
         int mChangingConf;
 
@@ -205,7 +228,6 @@ public class StateListAnimator implements Cloneable {
             return this.mChangingConf;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.content.res.ConstantState
         /* renamed from: newInstance */
         public StateListAnimator newInstance2() {

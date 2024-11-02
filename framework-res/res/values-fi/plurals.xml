@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Puhelimesi on epävakaa, sillä asennettuja sovelluksia sisältävä SD-kortti on poistettu. Puhelin käynnistyy %d sekunnin kuluttua uudelleen palatakseen normaalitilaan. Tallenna tallentamattomat tiedot, ennen kuin puhelin käynnistyy uudelleen.</item>
+        <item quantity="other">Tablet-laitteesi on epävakaa, sillä asennettuja sovelluksia sisältävä SD-kortti on poistettu. Tablet-laitteesi käynnistyy %d sekunnin kuluttua uudelleen palatakseen normaalitilaan. Tallenna tallentamattomat tiedot, ennen kuin tablet-laite käynnistyy uudelleen.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Puhelimesi on epävakaa, sillä asennettuja sovelluksia sisältävä SD-kortti on poistettu. Puhelin käynnistyy %d sekunnin kuluttua uudelleen palatakseen normaalitilaan. Tallenna tallentamattomat tiedot, ennen kuin puhelin käynnistyy uudelleen.</item>
+        <item quantity="one">Tablet-laitteesi on epävakaa, sillä asennettuja sovelluksia sisältävä SD-kortti on poistettu. Tablet-laitteesi käynnistyy %d sekunnin kuluttua uudelleen palatakseen normaalitilaan. Tallenna tallentamattomat tiedot, ennen kuin tablet-laite käynnistyy uudelleen.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Puhelin käynnistyy %d s kuluttua uud.</item>
+        <item quantity="other">Tablet-laite käynn. uud. %d s kuluttua</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Puhelin käynnistyy %d s kuluttua uud.</item>
+        <item quantity="one">Tablet-laite käynn. uud. %d s kuluttua</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

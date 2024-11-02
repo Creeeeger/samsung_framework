@@ -154,8 +154,9 @@ public interface IWallpaperConnection extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IWallpaperConnection {
+        public static class Proxy implements IWallpaperConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

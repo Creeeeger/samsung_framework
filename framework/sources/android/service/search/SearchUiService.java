@@ -42,7 +42,7 @@ public abstract class SearchUiService extends Service {
 
     public abstract void onQuery(SearchSessionId searchSessionId, Query query, Consumer<List<SearchTarget>> consumer);
 
-    /* renamed from: android.service.search.SearchUiService$1, reason: invalid class name */
+    /* renamed from: android.service.search.SearchUiService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends ISearchUiService.Stub {
         AnonymousClass1() {
@@ -138,7 +138,6 @@ public abstract class SearchUiService extends Service {
         this.mSessionEmptyQueryResultCallbacks.put(sessionId, new ArrayList<>());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doRegisterEmptyQueryResultUpdateCallback(SearchSessionId sessionId, ISearchCallback callback) {
         final ArrayList<CallbackWrapper> callbacks = this.mSessionEmptyQueryResultCallbacks.get(sessionId);
         if (callbacks == null) {
@@ -159,7 +158,6 @@ public abstract class SearchUiService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$doRegisterEmptyQueryResultUpdateCallback$1(final ArrayList callbacks, final CallbackWrapper callbackWrapper) {
         this.mHandler.post(new Runnable() { // from class: android.service.search.SearchUiService$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
@@ -172,7 +170,6 @@ public abstract class SearchUiService extends Service {
     public void onStartUpdateEmptyQueryResult() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doUnregisterEmptyQueryResultUpdateCallback(SearchSessionId sessionId, ISearchCallback callback) {
         ArrayList<CallbackWrapper> callbacks = this.mSessionEmptyQueryResultCallbacks.get(sessionId);
         if (callbacks == null) {
@@ -192,8 +189,7 @@ public abstract class SearchUiService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: removeCallbackWrapper, reason: merged with bridge method [inline-methods] */
+    /* renamed from: removeCallbackWrapper */
     public void lambda$doRegisterEmptyQueryResultUpdateCallback$0(ArrayList<CallbackWrapper> callbacks, CallbackWrapper wrapper) {
         if (callbacks == null || wrapper == null) {
             return;
@@ -208,7 +204,6 @@ public abstract class SearchUiService extends Service {
     public void onStopUpdateEmptyQueryResult() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doDestroy(SearchSessionId sessionId) {
         super.onDestroy();
         onDestroy(sessionId);
@@ -223,7 +218,6 @@ public abstract class SearchUiService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class CallbackWrapper implements Consumer<List<SearchTarget>>, IBinder.DeathRecipient {
         private ISearchCallback mCallback;

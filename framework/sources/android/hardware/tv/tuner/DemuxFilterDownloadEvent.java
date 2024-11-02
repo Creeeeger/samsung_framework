@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxFilterDownloadEvent implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterDownloadEvent> CREATOR = new Parcelable.Creator<DemuxFilterDownloadEvent>() { // from class: android.hardware.tv.tuner.DemuxFilterDownloadEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxFilterDownloadEvent createFromParcel(Parcel _aidl_source) {
             DemuxFilterDownloadEvent _aidl_out = new DemuxFilterDownloadEvent();
@@ -15,7 +17,6 @@ public class DemuxFilterDownloadEvent implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterDownloadEvent[] newArray(int _aidl_size) {
             return new DemuxFilterDownloadEvent[_aidl_size];
@@ -27,6 +28,25 @@ public class DemuxFilterDownloadEvent implements Parcelable {
     public int itemFragmentIndex = 0;
     public int lastItemFragmentIndex = 0;
     public int dataLength = 0;
+
+    /* renamed from: android.hardware.tv.tuner.DemuxFilterDownloadEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterDownloadEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterDownloadEvent createFromParcel(Parcel _aidl_source) {
+            DemuxFilterDownloadEvent _aidl_out = new DemuxFilterDownloadEvent();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterDownloadEvent[] newArray(int _aidl_size) {
+            return new DemuxFilterDownloadEvent[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

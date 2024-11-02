@@ -12,13 +12,14 @@ public class SemPackageConfiguration implements Parcelable {
     public static final int CATEGORY_NON_GAME_TUNABLE = 2;
     public static final int CATEGORY_UNDEFINED = -1;
     public static final Parcelable.Creator<SemPackageConfiguration> CREATOR = new Parcelable.Creator<SemPackageConfiguration>() { // from class: com.samsung.android.game.SemPackageConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemPackageConfiguration createFromParcel(Parcel in) {
             return new SemPackageConfiguration(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemPackageConfiguration[] newArray(int size) {
             return new SemPackageConfiguration[size];
@@ -33,6 +34,10 @@ public class SemPackageConfiguration implements Parcelable {
     private String packageName;
     private String performancePolicyForSsrm;
     private String userId;
+
+    /* synthetic */ SemPackageConfiguration(Parcel parcel, SemPackageConfigurationIA semPackageConfigurationIA) {
+        this(parcel);
+    }
 
     public SemPackageConfiguration(String packageName) {
         this.performancePolicyForSsrm = null;
@@ -157,6 +162,23 @@ public class SemPackageConfiguration implements Parcelable {
         sb.append(", fillBlackSurfaceOnMargins: ").append(shouldFillBlackSurfaceOnMargins());
         sb.append(", userId: ").append(getUserId());
         return sb.toString();
+    }
+
+    /* renamed from: com.samsung.android.game.SemPackageConfiguration$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemPackageConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemPackageConfiguration createFromParcel(Parcel in) {
+            return new SemPackageConfiguration(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemPackageConfiguration[] newArray(int size) {
+            return new SemPackageConfiguration[size];
+        }
     }
 
     @Override // android.os.Parcelable

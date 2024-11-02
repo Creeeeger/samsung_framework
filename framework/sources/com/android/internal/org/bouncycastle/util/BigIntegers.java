@@ -43,7 +43,10 @@ public final class BigIntegers {
         return tmp;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x0012, code lost:            if (r0.length != 1) goto L12;     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0012, code lost:
+    
+        if (r0.length != 1) goto L30;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

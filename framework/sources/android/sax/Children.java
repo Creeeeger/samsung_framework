@@ -1,10 +1,10 @@
 package android.sax;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-class Children {
+public class Children {
     Child[] children = new Child[16];
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Element getOrCreate(Element parent, String uri, String localName) {
         Child previous;
         int hash = (uri.hashCode() * 31) + localName.hashCode();
@@ -27,7 +27,6 @@ class Children {
         return current3;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Element get(String uri, String localName) {
         int hash = (uri.hashCode() * 31) + localName.hashCode();
         int index = hash & 15;
@@ -44,8 +43,9 @@ class Children {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    static class Child extends Element {
+    public static class Child extends Element {
         final int hash;
         Child next;
 

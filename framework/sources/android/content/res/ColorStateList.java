@@ -36,13 +36,14 @@ public class ColorStateList extends ComplexColor implements Parcelable {
     private static final int[][] EMPTY = {new int[0]};
     private static final SparseArray<WeakReference<ColorStateList>> sCache = new SparseArray<>();
     public static final Parcelable.Creator<ColorStateList> CREATOR = new Parcelable.Creator<ColorStateList>() { // from class: android.content.res.ColorStateList.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ColorStateList[] newArray(int size) {
             return new ColorStateList[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ColorStateList createFromParcel(Parcel source) {
             int N = source.readInt();
@@ -119,7 +120,6 @@ public class ColorStateList extends ComplexColor implements Parcelable {
         return createFromXmlInner(r, parser, attrs, theme);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ColorStateList createFromXmlInner(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
         String name = parser.getName();
         if (!name.equals("selector")) {
@@ -421,8 +421,9 @@ public class ColorStateList extends ComplexColor implements Parcelable {
         return this.mFactory;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class ColorStateListFactory extends ConstantState<ComplexColor> {
+    public static class ColorStateListFactory extends ConstantState<ComplexColor> {
         private final ColorStateList mSrc;
 
         public ColorStateListFactory(ColorStateList src) {
@@ -435,13 +436,13 @@ public class ColorStateList extends ComplexColor implements Parcelable {
         }
 
         @Override // android.content.res.ConstantState
-        /* renamed from: newInstance, reason: merged with bridge method [inline-methods] */
+        /* renamed from: newInstance */
         public ComplexColor newInstance2() {
             return this.mSrc;
         }
 
         @Override // android.content.res.ConstantState
-        /* renamed from: newInstance, reason: merged with bridge method [inline-methods] */
+        /* renamed from: newInstance */
         public ComplexColor newInstance2(Resources res, Resources.Theme theme) {
             return this.mSrc.obtainForTheme(theme);
         }
@@ -463,5 +464,28 @@ public class ColorStateList extends ComplexColor implements Parcelable {
             dest.writeIntArray(this.mStateSpecs[i]);
         }
         dest.writeIntArray(this.mColors);
+    }
+
+    /* renamed from: android.content.res.ColorStateList$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ColorStateList> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ColorStateList[] newArray(int size) {
+            return new ColorStateList[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ColorStateList createFromParcel(Parcel source) {
+            int N = source.readInt();
+            int[][] stateSpecs = new int[N];
+            for (int i = 0; i < N; i++) {
+                stateSpecs[i] = source.createIntArray();
+            }
+            int[] colors = source.createIntArray();
+            return new ColorStateList(stateSpecs, colors);
+        }
     }
 }

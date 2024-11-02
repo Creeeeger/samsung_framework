@@ -4,5 +4,6 @@ package com.samsung.android.sume.core.format;
 public interface Copyable<T> extends Cloneable {
     T copy();
 
-    T deepCopy();
+    /* renamed from: deepCopy */
+    T deepCopy2();
 }

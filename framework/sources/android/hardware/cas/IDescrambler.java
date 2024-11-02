@@ -145,8 +145,9 @@ public interface IDescrambler extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IDescrambler {
+        public static class Proxy implements IDescrambler {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

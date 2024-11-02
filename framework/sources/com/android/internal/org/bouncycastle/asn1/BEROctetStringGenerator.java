@@ -23,7 +23,6 @@ public class BEROctetStringGenerator extends BERGenerator {
         return new BufferedBEROctetStream(buf);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class BufferedBEROctetStream extends OutputStream {
         private byte[] _buf;

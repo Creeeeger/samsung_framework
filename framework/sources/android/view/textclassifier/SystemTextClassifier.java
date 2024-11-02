@@ -190,7 +190,6 @@ public final class SystemTextClassifier implements TextClassifier {
         printWriter.println();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void initializeRemoteSession(TextClassificationContext classificationContext, TextClassificationSessionId sessionId) {
         this.mSessionId = (TextClassificationSessionId) Objects.requireNonNull(sessionId);
         try {
@@ -224,13 +223,16 @@ public final class SystemTextClassifier implements TextClassifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class ResponseReceiver<T> {
         private final CountDownLatch mLatch;
         private final String mName;
         private T mResponse;
         private final TextClassificationConstants mSettings;
+
+        /* synthetic */ ResponseReceiver(String str, TextClassificationConstants textClassificationConstants, ResponseReceiverIA responseReceiverIA) {
+            this(str, textClassificationConstants);
+        }
 
         private ResponseReceiver(String name, TextClassificationConstants settings) {
             this.mLatch = new CountDownLatch(1);

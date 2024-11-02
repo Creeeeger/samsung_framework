@@ -87,8 +87,9 @@ public interface IAppClipsService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IAppClipsService {
+        public static class Proxy implements IAppClipsService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

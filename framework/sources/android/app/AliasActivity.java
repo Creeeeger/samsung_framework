@@ -17,7 +17,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class AliasActivity extends Activity {
     public final String ALIAS_META_DATA = "android.app.alias";
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -22,7 +22,9 @@ public class RoundedCorners implements Parcelable {
     public static final RoundedCorners NO_ROUNDED_CORNERS = new RoundedCorners(new RoundedCorner(0), new RoundedCorner(1), new RoundedCorner(2), new RoundedCorner(3));
     private static final Object CACHE_LOCK = new Object();
     public static final Parcelable.Creator<RoundedCorners> CREATOR = new Parcelable.Creator<RoundedCorners>() { // from class: android.view.RoundedCorners.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RoundedCorners createFromParcel(Parcel in) {
             int variant = in.readInt();
@@ -34,7 +36,6 @@ public class RoundedCorners implements Parcelable {
             return new RoundedCorners(roundedCorners);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RoundedCorners[] newArray(int size) {
             return new RoundedCorners[size];
@@ -400,6 +401,29 @@ public class RoundedCorners implements Parcelable {
         } else {
             dest.writeInt(1);
             dest.writeTypedArray(this.mRoundedCorners, flags);
+        }
+    }
+
+    /* renamed from: android.view.RoundedCorners$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RoundedCorners> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RoundedCorners createFromParcel(Parcel in) {
+            int variant = in.readInt();
+            if (variant == 0) {
+                return RoundedCorners.NO_ROUNDED_CORNERS;
+            }
+            RoundedCorner[] roundedCorners = new RoundedCorner[4];
+            in.readTypedArray(roundedCorners, RoundedCorner.CREATOR);
+            return new RoundedCorners(roundedCorners);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RoundedCorners[] newArray(int size) {
+            return new RoundedCorners[size];
         }
     }
 }

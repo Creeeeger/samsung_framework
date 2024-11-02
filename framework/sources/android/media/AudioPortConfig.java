@@ -13,7 +13,6 @@ public class AudioPortConfig {
     final AudioPort mPort;
     private final int mSamplingRate;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioPortConfig(AudioPort port, int samplingRate, int channelMask, int format, AudioGainConfig gain) {
         this.mPort = port;
         this.mSamplingRate = samplingRate;

@@ -114,8 +114,9 @@ public interface IFillCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IFillCallback {
+        public static class Proxy implements IFillCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

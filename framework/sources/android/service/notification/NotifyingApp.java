@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class NotifyingApp implements Parcelable, Comparable<NotifyingApp> {
     public static final Parcelable.Creator<NotifyingApp> CREATOR = new Parcelable.Creator<NotifyingApp>() { // from class: android.service.notification.NotifyingApp.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NotifyingApp createFromParcel(Parcel in) {
             return new NotifyingApp(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotifyingApp[] newArray(int size) {
             return new NotifyingApp[size];
@@ -58,6 +59,23 @@ public final class NotifyingApp implements Parcelable, Comparable<NotifyingApp> 
     public NotifyingApp setLastNotified(long mLastNotified) {
         this.mLastNotified = mLastNotified;
         return this;
+    }
+
+    /* renamed from: android.service.notification.NotifyingApp$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NotifyingApp> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotifyingApp createFromParcel(Parcel in) {
+            return new NotifyingApp(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotifyingApp[] newArray(int size) {
+            return new NotifyingApp[size];
+        }
     }
 
     @Override // android.os.Parcelable

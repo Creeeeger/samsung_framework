@@ -44,13 +44,14 @@ public final class PreferentialNetworkServiceConfig implements Parcelable {
     final boolean mShouldBlockNonMatchingNetworks;
     public static final PreferentialNetworkServiceConfig DEFAULT = new Builder().build();
     public static final Parcelable.Creator<PreferentialNetworkServiceConfig> CREATOR = new Parcelable.Creator<PreferentialNetworkServiceConfig>() { // from class: android.app.admin.PreferentialNetworkServiceConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PreferentialNetworkServiceConfig[] newArray(int size) {
             return new PreferentialNetworkServiceConfig[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PreferentialNetworkServiceConfig createFromParcel(Parcel in) {
             return new PreferentialNetworkServiceConfig(in);
@@ -60,6 +61,14 @@ public final class PreferentialNetworkServiceConfig implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface PreferentialNetworkPreferenceId {
+    }
+
+    /* synthetic */ PreferentialNetworkServiceConfig(Parcel parcel, PreferentialNetworkServiceConfigIA preferentialNetworkServiceConfigIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ PreferentialNetworkServiceConfig(boolean z, boolean z2, boolean z3, int[] iArr, int[] iArr2, int i, PreferentialNetworkServiceConfigIA preferentialNetworkServiceConfigIA) {
+        this(z, z2, z3, iArr, iArr2, i);
     }
 
     private PreferentialNetworkServiceConfig(boolean isEnabled, boolean allowFallbackToDefaultConnection, boolean shouldBlockNonMatchingNetworks, int[] includedUids, int[] excludedUids, int networkId) {
@@ -322,5 +331,22 @@ public final class PreferentialNetworkServiceConfig implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.app.admin.PreferentialNetworkServiceConfig$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PreferentialNetworkServiceConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PreferentialNetworkServiceConfig[] newArray(int size) {
+            return new PreferentialNetworkServiceConfig[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PreferentialNetworkServiceConfig createFromParcel(Parcel in) {
+            return new PreferentialNetworkServiceConfig(in);
+        }
     }
 }

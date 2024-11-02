@@ -237,7 +237,6 @@ public class SuggestedLocaleAdapter extends BaseAdapter implements Filterable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setTextTo(TextView textView, int resId) {
         Context context = this.mContextOverride;
         if (context == null) {
@@ -487,8 +486,9 @@ public class SuggestedLocaleAdapter extends BaseAdapter implements Filterable {
         this.mSubheaderColor = color;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    class FilterByNativeAndUiNames extends Filter {
+    public class FilterByNativeAndUiNames extends Filter {
         FilterByNativeAndUiNames() {
         }
 

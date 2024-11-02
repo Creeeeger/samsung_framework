@@ -84,8 +84,9 @@ public interface IDeleteProfileCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDeleteProfileCallback {
+        public static class Proxy implements IDeleteProfileCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -37,14 +37,13 @@ public class SeekBarDialogPreference extends DialogPreference {
         setNegativeButtonText(17039360);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
     public void onBindDialogView(View view) {
         super.onBindDialogView(view);
         ImageView iconView = (ImageView) view.findViewById(16908294);
         Drawable drawable = this.mMyIcon;
         if (drawable != null) {
-            iconView.setImageDrawable(drawable);
+            iconView.lambda$setImageURIAsync$2(drawable);
         } else {
             iconView.setVisibility(8);
         }

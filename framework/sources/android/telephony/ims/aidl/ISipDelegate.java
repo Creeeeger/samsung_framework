@@ -129,8 +129,9 @@ public interface ISipDelegate extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISipDelegate {
+        public static class Proxy implements ISipDelegate {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

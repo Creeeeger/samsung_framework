@@ -12,8 +12,9 @@ import android.util.Singleton;
 /* loaded from: classes.dex */
 public class UriGrantsManager {
     private static final Singleton<IUriGrantsManager> IUriGrantsManagerSingleton = new Singleton<IUriGrantsManager>() { // from class: android.app.UriGrantsManager.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.util.Singleton
         public IUriGrantsManager create() {
             IBinder b = ServiceManager.getService(Context.URI_GRANTS_SERVICE);
@@ -22,13 +23,25 @@ public class UriGrantsManager {
     };
     private final Context mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UriGrantsManager(Context context, Handler handler) {
         this.mContext = context;
     }
 
     public static IUriGrantsManager getService() {
         return IUriGrantsManagerSingleton.get();
+    }
+
+    /* renamed from: android.app.UriGrantsManager$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends Singleton<IUriGrantsManager> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.Singleton
+        public IUriGrantsManager create() {
+            IBinder b = ServiceManager.getService(Context.URI_GRANTS_SERVICE);
+            return IUriGrantsManager.Stub.asInterface(b);
+        }
     }
 
     public void clearGrantedUriPermissions(String packageName) {

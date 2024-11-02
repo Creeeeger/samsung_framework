@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="For apps targeting Android S and above, all LocationRequest objects marked as low power will throw exceptions if the caller does not have the LOCATION_HARDWARE permission, instead of silently dropping the low power part of the request." enableAfterTargetSdk="30" id="168936375" name="LOW_POWER_EXCEPTIONS"><meta-data definedIn="android.location.LocationRequest" sourcePosition="frameworks/base/location/java/android/location/LocationRequest.java:61"/></compat-change></config>
+Error decode xml
+java.util.zip.ZipException: invalid END header (bad central directory offset)
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
+

@@ -78,8 +78,9 @@ public final class ImeInsetsSourceConsumer extends InsetsSourceConsumer {
         return 0;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.InsetsSourceConsumer
-    void requestHide(boolean fromIme, ImeTracker.Token statsToken) {
+    public void requestHide(boolean fromIme, ImeTracker.Token statsToken) {
         if (!fromIme) {
             notifyHidden(statsToken);
         }
@@ -123,8 +124,9 @@ public final class ImeInsetsSourceConsumer extends InsetsSourceConsumer {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.InsetsSourceConsumer
-    protected boolean isRequestedVisibleAwaitingControl() {
+    public boolean isRequestedVisibleAwaitingControl() {
         return super.isRequestedVisibleAwaitingControl() || this.mIsRequestedVisibleAwaitingControl;
     }
 

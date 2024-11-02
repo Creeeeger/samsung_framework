@@ -187,8 +187,7 @@ public final class AccessibilityManager {
         void onTouchExplorationStateChanged(boolean z);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.accessibility.AccessibilityManager$1, reason: invalid class name */
+    /* renamed from: android.view.accessibility.AccessibilityManager$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 extends IAccessibilityManagerClient.Stub {
         AnonymousClass1() {
@@ -220,7 +219,6 @@ public final class AccessibilityManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyServicesStateChanged$0(AccessibilityServicesStateChangeListener listener) {
             listener.onAccessibilityServicesStateChanged(AccessibilityManager.this);
         }
@@ -356,8 +354,14 @@ public final class AccessibilityManager {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x009c, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x0099, code lost:            if (r8 == r2) goto L38;     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x009c, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x0099, code lost:
+    
+        if (r8 == r2) goto L98;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -846,7 +850,6 @@ public final class AccessibilityManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setStateLocked(int stateFlags) {
         boolean enabled = (stateFlags & 1) != 0;
         boolean touchExplorationEnabled = (stateFlags & 2) != 0;
@@ -1441,13 +1444,11 @@ public final class AccessibilityManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateUiTimeout(long uiTimeout) {
         this.mInteractiveUiTimeout = IntPair.first(uiTimeout);
         this.mNonInteractiveUiTimeout = IntPair.second(uiTimeout);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateFocusAppearanceLocked(int strokeWidth, int color) {
         if (this.mFocusStrokeWidth == strokeWidth && this.mFocusColor == color) {
             return;
@@ -1472,9 +1473,14 @@ public final class AccessibilityManager {
         return res.getBoolean(R.bool.config_showNavigationBar);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private final class MyCallback implements Handler.Callback {
+    public final class MyCallback implements Handler.Callback {
         public static final int MSG_SET_STATE = 1;
+
+        /* synthetic */ MyCallback(AccessibilityManager accessibilityManager, MyCallbackIA myCallbackIA) {
+            this();
+        }
 
         private MyCallback() {
         }

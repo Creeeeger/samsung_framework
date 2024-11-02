@@ -452,7 +452,6 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         copyBounds(this.mDstRect);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
@@ -562,7 +561,6 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         return super.isStateful() || !((sprState = this.mState) == null || sprState.mTint == null || !this.mState.mTint.isStateful());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         SprState state = this.mState;
@@ -673,6 +671,10 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         object115.appendAttribute(fill);
         document.appendObject(object115);
         return new SemPathRenderingDrawable(document) { // from class: com.samsung.android.graphics.spr.SemPathRenderingDrawable.1
+            AnonymousClass1(SprDocument document2) {
+                super(document2);
+            }
+
             @Override // com.samsung.android.graphics.spr.SemPathRenderingDrawable, android.graphics.drawable.Drawable
             public void draw(Canvas canvas) {
                 super.draw(canvas);
@@ -691,6 +693,32 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
                 canvas.drawText(this.mDocument.mName, 5.0f, 40.0f, textPaint);
             }
         };
+    }
+
+    /* renamed from: com.samsung.android.graphics.spr.SemPathRenderingDrawable$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends SemPathRenderingDrawable {
+        AnonymousClass1(SprDocument document2) {
+            super(document2);
+        }
+
+        @Override // com.samsung.android.graphics.spr.SemPathRenderingDrawable, android.graphics.drawable.Drawable
+        public void draw(Canvas canvas) {
+            super.draw(canvas);
+            Paint textOutlinePaint = new Paint();
+            textOutlinePaint.setAntiAlias(true);
+            textOutlinePaint.setTextSize(20.0f);
+            textOutlinePaint.setStyle(Paint.Style.STROKE);
+            textOutlinePaint.setColor(-16777216);
+            textOutlinePaint.setStrokeWidth(4.0f);
+            Paint textPaint = new Paint();
+            textPaint.setAntiAlias(true);
+            textPaint.setTextSize(20.0f);
+            textPaint.setStyle(Paint.Style.FILL);
+            textPaint.setColor(-1);
+            canvas.drawText(this.mDocument.mName, 5.0f, 40.0f, textOutlinePaint);
+            canvas.drawText(this.mDocument.mName, 5.0f, 40.0f, textPaint);
+        }
     }
 
     @Deprecated
@@ -837,9 +865,18 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         updateDensity(r);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x002a, code lost:            if (r1 != null) goto L15;     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0032, code lost:            r1.recycle();     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0030, code lost:            if (r1 == null) goto L34;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x002a, code lost:
+    
+        if (r1 != null) goto L55;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0032, code lost:
+    
+        r1.recycle();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0030, code lost:
+    
+        if (r1 == null) goto L74;
+     */
     @Override // android.graphics.drawable.Drawable
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -853,14 +890,14 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
             if (r0 != 0) goto L8
             return
         L8:
-            int[] r1 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8401$$Nest$fgetmThemeAttrs(r0)
+            int[] r1 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8393$$Nest$fgetmThemeAttrs(r0)
             r2 = 0
             if (r1 == 0) goto L43
             r1 = 0
             java.lang.reflect.Method r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mResolveAttributes     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
             r4 = 2
             java.lang.Object[] r4 = new java.lang.Object[r4]     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
-            int[] r5 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8401$$Nest$fgetmThemeAttrs(r0)     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
+            int[] r5 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8393$$Nest$fgetmThemeAttrs(r0)     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
             r4[r2] = r5     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
             int[] r5 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mStyleableBitmapDrawable     // Catch: java.lang.Throwable -> L2d java.lang.Exception -> L2f org.xmlpull.v1.XmlPullParserException -> L36
             r6 = 1
@@ -892,7 +929,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
             throw r2
         L43:
             java.lang.reflect.Method r1 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mCanApplyTheme     // Catch: java.lang.Exception -> L56
-            android.content.res.ColorStateList r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8404$$Nest$fgetmTint(r0)     // Catch: java.lang.Exception -> L56
+            android.content.res.ColorStateList r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8396$$Nest$fgetmTint(r0)     // Catch: java.lang.Exception -> L56
             java.lang.Object[] r2 = new java.lang.Object[r2]     // Catch: java.lang.Exception -> L56
             java.lang.Object r1 = r1.invoke(r3, r2)     // Catch: java.lang.Exception -> L56
             java.lang.Boolean r1 = (java.lang.Boolean) r1     // Catch: java.lang.Exception -> L56
@@ -903,15 +940,15 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
             r2 = 0
             r1 = r2
         L59:
-            android.content.res.ColorStateList r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8404$$Nest$fgetmTint(r0)
+            android.content.res.ColorStateList r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8396$$Nest$fgetmTint(r0)
             if (r2 == 0) goto L76
             if (r1 == 0) goto L76
             java.lang.reflect.Method r2 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.mObtainForTheme     // Catch: java.lang.Exception -> L75
-            android.content.res.ColorStateList r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8404$$Nest$fgetmTint(r0)     // Catch: java.lang.Exception -> L75
+            android.content.res.ColorStateList r3 = com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8396$$Nest$fgetmTint(r0)     // Catch: java.lang.Exception -> L75
             java.lang.Object[] r4 = new java.lang.Object[]{r8}     // Catch: java.lang.Exception -> L75
             java.lang.Object r2 = r2.invoke(r3, r4)     // Catch: java.lang.Exception -> L75
             android.content.res.ColorStateList r2 = (android.content.res.ColorStateList) r2     // Catch: java.lang.Exception -> L75
-            com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8416$$Nest$fputmTint(r0, r2)     // Catch: java.lang.Exception -> L75
+            com.samsung.android.graphics.spr.SemPathRenderingDrawable.SprState.m8408$$Nest$fputmTint(r0, r2)     // Catch: java.lang.Exception -> L75
             goto L76
         L75:
             r2 = move-exception
@@ -923,9 +960,18 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.graphics.spr.SemPathRenderingDrawable.applyTheme(android.content.res.Resources$Theme):void");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x0015, code lost:            if (r0 == null) goto L11;     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0018, code lost:            updateLocalState(r4);     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x001b, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x0015, code lost:
+    
+        if (r0 == null) goto L32;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:6:0x0018, code lost:
+    
+        updateLocalState(r4);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x001b, code lost:
+    
+        return;
+     */
     @Override // android.graphics.drawable.Drawable
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -973,7 +1019,6 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         return this.mDocument.mLeft + "," + this.mDocument.mTop + NativeLibraryHelper.CLEAR_ABI_OVERRIDE + this.mDocument.mRight + "," + this.mDocument.mBottom + "\nLoading:" + this.mDocument.getLoadingTime() + "ms\nElement:" + this.mDocument.getTotalElementCount() + "\nSegment:" + this.mDocument.getTotalSegmentCount() + "\nAttribute:" + this.mDocument.getTotalAttributeCount();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int getDeviceDensityDpi(Resources res) {
         if (res == null) {
             return Resources.getSystem().getDisplayMetrics().densityDpi;
@@ -1020,7 +1065,6 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static final class SprState extends Drawable.ConstantState {
         private boolean mAutoMirrored;
@@ -1137,7 +1181,6 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void createNinePatchRenderer() {
             if (this.mNinePatchRenderer == null && this.mDocument != null) {
                 int width = getIntrinsicWidth();
@@ -1364,7 +1407,7 @@ public class SemPathRenderingDrawable extends Drawable implements Animatable {
         } else if (this.mDocument.getValueAnimationObjects().size() > 0) {
             if (this.mDocument.isIntrinsic()) {
                 try {
-                    this.mDocument = this.mDocument.m8419clone();
+                    this.mDocument = this.mDocument.m8411clone();
                 } catch (CloneNotSupportedException e) {
                     throw new RuntimeException(e);
                 }

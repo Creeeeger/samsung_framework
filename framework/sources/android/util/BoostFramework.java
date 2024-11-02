@@ -588,7 +588,6 @@ public class BoostFramework {
         private static Method sGetFrameDelay = null;
         private static Method sGetAdjustedAnimationClock = null;
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void initQXPerfFuncs() {
             if (sQXIsLoaded) {
                 return;
@@ -627,7 +626,7 @@ public class BoostFramework {
             }
         }
 
-        public static void setFrameInterval(final long frameIntervalNanos) {
+        public static void setFrameInterval(long frameIntervalNanos) {
             Method method;
             if (sQXIsLoaded) {
                 if (sScrollOptEnable && (method = sSetFrameInterval) != null) {
@@ -642,6 +641,12 @@ public class BoostFramework {
                 return;
             }
             Thread initThread = new Thread(new Runnable() { // from class: android.util.BoostFramework.ScrollOptimizer.1
+                final /* synthetic */ long val$frameIntervalNanos;
+
+                AnonymousClass1(long frameIntervalNanos2) {
+                    frameIntervalNanos = frameIntervalNanos2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -657,6 +662,30 @@ public class BoostFramework {
                 }
             });
             initThread.start();
+        }
+
+        /* renamed from: android.util.BoostFramework$ScrollOptimizer$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ long val$frameIntervalNanos;
+
+            AnonymousClass1(long frameIntervalNanos2) {
+                frameIntervalNanos = frameIntervalNanos2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    ScrollOptimizer.initQXPerfFuncs();
+                    if (ScrollOptimizer.sScrollOptProp && ScrollOptimizer.sSetFrameInterval != null) {
+                        ScrollOptimizer.sSetFrameInterval.invoke(null, Long.valueOf(frameIntervalNanos));
+                        ScrollOptimizer.sScrollOptEnable = true;
+                    }
+                } catch (Exception e2) {
+                    Log.e(BoostFramework.TAG, "Failed to run initThread.");
+                    e2.printStackTrace();
+                }
+            }
         }
 
         public static void setBLASTBufferQueue(BLASTBufferQueue blastBufferQueue) {

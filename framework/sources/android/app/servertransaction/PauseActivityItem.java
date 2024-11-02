@@ -11,13 +11,14 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class PauseActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<PauseActivityItem> CREATOR = new Parcelable.Creator<PauseActivityItem>() { // from class: android.app.servertransaction.PauseActivityItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PauseActivityItem createFromParcel(Parcel in) {
             return new PauseActivityItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PauseActivityItem[] newArray(int size) {
             return new PauseActivityItem[size];
@@ -29,6 +30,10 @@ public class PauseActivityItem extends ActivityLifecycleItem {
     private boolean mDontReport;
     private boolean mFinished;
     private boolean mUserLeaving;
+
+    /* synthetic */ PauseActivityItem(Parcel parcel, PauseActivityItemIA pauseActivityItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
@@ -105,6 +110,23 @@ public class PauseActivityItem extends ActivityLifecycleItem {
         this.mConfigChanges = in.readInt();
         this.mDontReport = in.readBoolean();
         this.mAutoEnteringPip = in.readBoolean();
+    }
+
+    /* renamed from: android.app.servertransaction.PauseActivityItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PauseActivityItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PauseActivityItem createFromParcel(Parcel in) {
+            return new PauseActivityItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PauseActivityItem[] newArray(int size) {
+            return new PauseActivityItem[size];
+        }
     }
 
     public boolean equals(Object o) {

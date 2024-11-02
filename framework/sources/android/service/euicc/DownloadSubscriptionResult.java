@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class DownloadSubscriptionResult implements Parcelable {
     public static final Parcelable.Creator<DownloadSubscriptionResult> CREATOR = new Parcelable.Creator<DownloadSubscriptionResult>() { // from class: android.service.euicc.DownloadSubscriptionResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DownloadSubscriptionResult createFromParcel(Parcel in) {
             return new DownloadSubscriptionResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DownloadSubscriptionResult[] newArray(int size) {
             return new DownloadSubscriptionResult[size];
@@ -23,6 +24,27 @@ public final class DownloadSubscriptionResult implements Parcelable {
     private final int mCardId;
     private final int mResolvableErrors;
     private final int mResult;
+
+    /* synthetic */ DownloadSubscriptionResult(Parcel parcel, DownloadSubscriptionResultIA downloadSubscriptionResultIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.service.euicc.DownloadSubscriptionResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DownloadSubscriptionResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DownloadSubscriptionResult createFromParcel(Parcel in) {
+            return new DownloadSubscriptionResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DownloadSubscriptionResult[] newArray(int size) {
+            return new DownloadSubscriptionResult[size];
+        }
+    }
 
     public DownloadSubscriptionResult(int result, int resolvableErrors, int cardId) {
         this.mResult = result;

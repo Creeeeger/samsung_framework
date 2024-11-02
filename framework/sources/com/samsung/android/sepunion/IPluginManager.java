@@ -86,8 +86,9 @@ public interface IPluginManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IPluginManager {
+        public static class Proxy implements IPluginManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

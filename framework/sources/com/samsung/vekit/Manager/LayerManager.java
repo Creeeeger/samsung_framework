@@ -49,7 +49,7 @@ public class LayerManager extends Manager<Layer> {
         }
     }
 
-    /* renamed from: com.samsung.vekit.Manager.LayerManager$1, reason: invalid class name */
+    /* renamed from: com.samsung.vekit.Manager.LayerManager$1 */
     /* loaded from: classes6.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$LayerType;

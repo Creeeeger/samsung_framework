@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class VisualQueryDetectionServiceFailure implements Parcelable {
     public static final Parcelable.Creator<VisualQueryDetectionServiceFailure> CREATOR = new Parcelable.Creator<VisualQueryDetectionServiceFailure>() { // from class: android.service.voice.VisualQueryDetectionServiceFailure.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VisualQueryDetectionServiceFailure[] newArray(int size) {
             return new VisualQueryDetectionServiceFailure[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VisualQueryDetectionServiceFailure createFromParcel(Parcel in) {
             return new VisualQueryDetectionServiceFailure(in.readInt(), in.readString8());
@@ -82,5 +83,22 @@ public final class VisualQueryDetectionServiceFailure implements Parcelable {
 
     public String toString() {
         return "VisualQueryDetectionServiceFailure { errorCode = " + this.mErrorCode + ", errorMessage = " + this.mErrorMessage + " }";
+    }
+
+    /* renamed from: android.service.voice.VisualQueryDetectionServiceFailure$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VisualQueryDetectionServiceFailure> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VisualQueryDetectionServiceFailure[] newArray(int size) {
+            return new VisualQueryDetectionServiceFailure[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VisualQueryDetectionServiceFailure createFromParcel(Parcel in) {
+            return new VisualQueryDetectionServiceFailure(in.readInt(), in.readString8());
+        }
     }
 }

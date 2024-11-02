@@ -45,8 +45,8 @@ public class Panel {
         this.height = panel.height;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public Panel m8993clone() {
+    /* renamed from: clone */
+    public Panel m8985clone() {
         Panel result = new Panel(this);
         return result;
     }

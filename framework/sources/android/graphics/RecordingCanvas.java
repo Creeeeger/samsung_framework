@@ -53,7 +53,6 @@ public final class RecordingCanvas extends BaseRecordingCanvas {
         return Math.max(SystemProperties.getInt("ro.hwui.max_texture_allocation_size", 157286400), 157286400);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static RecordingCanvas obtain(RenderNode node, int width, int height) {
         if (node == null) {
             throw new IllegalArgumentException("node cannot be null");
@@ -70,13 +69,11 @@ public final class RecordingCanvas extends BaseRecordingCanvas {
         return canvas;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void recycle() {
         this.mNode = null;
         sPool.release(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishRecording(RenderNode node) {
         nFinishRecording(this.mNativeCanvasWrapper, node.mNativeRenderNode);
     }
@@ -160,7 +157,6 @@ public final class RecordingCanvas extends BaseRecordingCanvas {
         nDrawRoundRect(this.mNativeCanvasWrapper, left.getNativeContainer(), top.getNativeContainer(), right.getNativeContainer(), bottom.getNativeContainer(), rx.getNativeContainer(), ry.getNativeContainer(), paint.getNativeContainer());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.BaseCanvas
     public void throwIfCannotDraw(Bitmap bitmap) {
         super.throwIfCannotDraw(bitmap);

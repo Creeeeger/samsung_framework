@@ -114,6 +114,10 @@ public class SearchIndexablesContract {
         public static final String COLUMN_INTENT_TARGET_PACKAGE = "intentTargetPackage";
         public static final String COLUMN_RANK = "rank";
 
+        /* synthetic */ BaseColumns(BaseColumnsIA baseColumnsIA) {
+            this();
+        }
+
         private BaseColumns() {
         }
     }

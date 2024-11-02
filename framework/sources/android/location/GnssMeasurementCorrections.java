@@ -12,7 +12,9 @@ import java.util.List;
 /* loaded from: classes2.dex */
 public final class GnssMeasurementCorrections implements Parcelable {
     public static final Parcelable.Creator<GnssMeasurementCorrections> CREATOR = new Parcelable.Creator<GnssMeasurementCorrections>() { // from class: android.location.GnssMeasurementCorrections.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssMeasurementCorrections createFromParcel(Parcel parcel) {
             Builder gnssMeasurementCorrectons = new Builder().setLatitudeDegrees(parcel.readDouble()).setLongitudeDegrees(parcel.readDouble()).setAltitudeMeters(parcel.readDouble()).setHorizontalPositionUncertaintyMeters(parcel.readDouble()).setVerticalPositionUncertaintyMeters(parcel.readDouble()).setToaGpsNanosecondsOfWeek(parcel.readLong());
@@ -27,7 +29,6 @@ public final class GnssMeasurementCorrections implements Parcelable {
             return gnssMeasurementCorrectons.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssMeasurementCorrections[] newArray(int i) {
             return new GnssMeasurementCorrections[i];
@@ -43,6 +44,10 @@ public final class GnssMeasurementCorrections implements Parcelable {
     private final List<GnssSingleSatCorrection> mSingleSatCorrectionList;
     private final long mToaGpsNanosecondsOfWeek;
     private final double mVerticalPositionUncertaintyMeters;
+
+    /* synthetic */ GnssMeasurementCorrections(Builder builder, GnssMeasurementCorrectionsIA gnssMeasurementCorrectionsIA) {
+        this(builder);
+    }
 
     private GnssMeasurementCorrections(Builder builder) {
         this.mLatitudeDegrees = builder.mLatitudeDegrees;
@@ -102,6 +107,32 @@ public final class GnssMeasurementCorrections implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.location.GnssMeasurementCorrections$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssMeasurementCorrections> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssMeasurementCorrections createFromParcel(Parcel parcel) {
+            Builder gnssMeasurementCorrectons = new Builder().setLatitudeDegrees(parcel.readDouble()).setLongitudeDegrees(parcel.readDouble()).setAltitudeMeters(parcel.readDouble()).setHorizontalPositionUncertaintyMeters(parcel.readDouble()).setVerticalPositionUncertaintyMeters(parcel.readDouble()).setToaGpsNanosecondsOfWeek(parcel.readLong());
+            ArrayList arrayList = new ArrayList();
+            parcel.readTypedList(arrayList, GnssSingleSatCorrection.CREATOR);
+            gnssMeasurementCorrectons.setSingleSatelliteCorrectionList(arrayList);
+            boolean hasEnvironmentBearing = parcel.readBoolean();
+            if (hasEnvironmentBearing) {
+                gnssMeasurementCorrectons.setEnvironmentBearingDegrees(parcel.readFloat());
+                gnssMeasurementCorrectons.setEnvironmentBearingUncertaintyDegrees(parcel.readFloat());
+            }
+            return gnssMeasurementCorrectons.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssMeasurementCorrections[] newArray(int i) {
+            return new GnssMeasurementCorrections[i];
+        }
     }
 
     public String toString() {

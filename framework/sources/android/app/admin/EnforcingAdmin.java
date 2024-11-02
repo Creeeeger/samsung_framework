@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class EnforcingAdmin implements Parcelable {
     public static final Parcelable.Creator<EnforcingAdmin> CREATOR = new Parcelable.Creator<EnforcingAdmin>() { // from class: android.app.admin.EnforcingAdmin.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EnforcingAdmin createFromParcel(Parcel source) {
             return new EnforcingAdmin(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnforcingAdmin[] newArray(int size) {
             return new EnforcingAdmin[size];
@@ -25,6 +26,10 @@ public final class EnforcingAdmin implements Parcelable {
     private final Authority mAuthority;
     private final String mPackageName;
     private final UserHandle mUserHandle;
+
+    /* synthetic */ EnforcingAdmin(Parcel parcel, EnforcingAdminIA enforcingAdminIA) {
+        this(parcel);
+    }
 
     public EnforcingAdmin(String packageName, Authority authority, UserHandle userHandle) {
         this.mPackageName = (String) Objects.requireNonNull(packageName);
@@ -82,5 +87,22 @@ public final class EnforcingAdmin implements Parcelable {
         dest.writeString(this.mPackageName);
         dest.writeInt(this.mUserHandle.getIdentifier());
         dest.writeParcelable(this.mAuthority, flags);
+    }
+
+    /* renamed from: android.app.admin.EnforcingAdmin$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EnforcingAdmin> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EnforcingAdmin createFromParcel(Parcel source) {
+            return new EnforcingAdmin(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EnforcingAdmin[] newArray(int size) {
+            return new EnforcingAdmin[size];
+        }
     }
 }

@@ -473,7 +473,6 @@ public interface IImsRcsController extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class Proxy implements IImsRcsController {
             private IBinder mRemote;

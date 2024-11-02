@@ -30,10 +30,16 @@ public class WTauNafMultiplier extends AbstractECMultiplier {
         return multiplyFromWTnaf(p, u);
     }
 
-    private static ECPoint.AbstractF2m multiplyFromWTnaf(final ECPoint.AbstractF2m p, byte[] u) {
+    private static ECPoint.AbstractF2m multiplyFromWTnaf(ECPoint.AbstractF2m p, byte[] u) {
         ECCurve.AbstractF2m curve = (ECCurve.AbstractF2m) p.getCurve();
-        final byte a = curve.getA().toBigInteger().byteValue();
+        byte a = curve.getA().toBigInteger().byteValue();
         WTauNafPreCompInfo preCompInfo = (WTauNafPreCompInfo) curve.precompute(p, PRECOMP_NAME, new PreCompCallback() { // from class: com.android.internal.org.bouncycastle.math.ec.WTauNafMultiplier.1
+            final /* synthetic */ byte val$a;
+
+            AnonymousClass1(byte a2) {
+                a = a2;
+            }
+
             @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
             public PreCompInfo precompute(PreCompInfo existing) {
                 if (existing instanceof WTauNafPreCompInfo) {
@@ -65,5 +71,25 @@ public class WTauNafMultiplier extends AbstractECMultiplier {
             return q.tauPow(tauCount);
         }
         return q;
+    }
+
+    /* renamed from: com.android.internal.org.bouncycastle.math.ec.WTauNafMultiplier$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements PreCompCallback {
+        final /* synthetic */ byte val$a;
+
+        AnonymousClass1(byte a2) {
+            a = a2;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
+        public PreCompInfo precompute(PreCompInfo existing) {
+            if (existing instanceof WTauNafPreCompInfo) {
+                return existing;
+            }
+            WTauNafPreCompInfo result = new WTauNafPreCompInfo();
+            result.setPreComp(Tnaf.getPreComp(ECPoint.AbstractF2m.this, a));
+            return result;
+        }
     }
 }

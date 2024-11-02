@@ -13,13 +13,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes3.dex */
 public final class FillContext implements Parcelable {
     public static final Parcelable.Creator<FillContext> CREATOR = new Parcelable.Creator<FillContext>() { // from class: android.service.autofill.FillContext.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FillContext[] newArray(int size) {
             return new FillContext[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FillContext createFromParcel(Parcel in) {
             int requestId = in.readInt();
@@ -186,6 +187,26 @@ public final class FillContext implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.service.autofill.FillContext$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FillContext> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FillContext[] newArray(int size) {
+            return new FillContext[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FillContext createFromParcel(Parcel in) {
+            int requestId = in.readInt();
+            AssistStructure structure = (AssistStructure) in.readTypedObject(AssistStructure.CREATOR);
+            AutofillId focusedId = (AutofillId) in.readTypedObject(AutofillId.CREATOR);
+            return new FillContext(requestId, structure, focusedId);
+        }
     }
 
     @Deprecated

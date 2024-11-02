@@ -29,13 +29,14 @@ import java.util.zip.GZIPInputStream;
 /* loaded from: classes.dex */
 public final class ApplicationExitInfo implements Parcelable {
     public static final Parcelable.Creator<ApplicationExitInfo> CREATOR = new Parcelable.Creator<ApplicationExitInfo>() { // from class: android.app.ApplicationExitInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ApplicationExitInfo createFromParcel(Parcel in) {
             return new ApplicationExitInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationExitInfo[] newArray(int size) {
             return new ApplicationExitInfo[size];
@@ -118,6 +119,10 @@ public final class ApplicationExitInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface SubReason {
+    }
+
+    /* synthetic */ ApplicationExitInfo(Parcel parcel, ApplicationExitInfoIA applicationExitInfoIA) {
+        this(parcel);
     }
 
     public int getPid() {
@@ -424,6 +429,23 @@ public final class ApplicationExitInfo implements Parcelable {
             return source.intern();
         }
         return null;
+    }
+
+    /* renamed from: android.app.ApplicationExitInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ApplicationExitInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApplicationExitInfo createFromParcel(Parcel in) {
+            return new ApplicationExitInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApplicationExitInfo[] newArray(int size) {
+            return new ApplicationExitInfo[size];
+        }
     }
 
     public void dump(PrintWriter pw, String prefix, String seqSuffix, SimpleDateFormat sdf) {

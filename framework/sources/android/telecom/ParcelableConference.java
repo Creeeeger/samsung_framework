@@ -12,7 +12,9 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class ParcelableConference implements Parcelable {
     public static final Parcelable.Creator<ParcelableConference> CREATOR = new Parcelable.Creator<ParcelableConference>() { // from class: android.telecom.ParcelableConference.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelableConference createFromParcel(Parcel source) {
             ClassLoader classLoader = ParcelableConference.class.getClassLoader();
@@ -38,7 +40,6 @@ public final class ParcelableConference implements Parcelable {
             return new ParcelableConference(phoneAccount, state, capabilities, properties, arrayList, videoCallProvider, videoState, connectTimeMillis, connectElapsedTimeMillis, statusHints, extras, address, addressPresentation, callerDisplayName, callerDisplayNamePresentation, disconnectCause, isRingbackRequested, callDirection);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableConference[] newArray(int size) {
             return new ParcelableConference[size];
@@ -62,6 +63,10 @@ public final class ParcelableConference implements Parcelable {
     private final StatusHints mStatusHints;
     private final IVideoProvider mVideoProvider;
     private final int mVideoState;
+
+    /* synthetic */ ParcelableConference(PhoneAccountHandle phoneAccountHandle, int i, int i2, int i3, List list, IVideoProvider iVideoProvider, int i4, long j, long j2, StatusHints statusHints, Bundle bundle, Uri uri, int i5, String str, int i6, DisconnectCause disconnectCause, boolean z, int i7, ParcelableConferenceIA parcelableConferenceIA) {
+        this(phoneAccountHandle, i, i2, i3, list, iVideoProvider, i4, j, j2, statusHints, bundle, uri, i5, str, i6, disconnectCause, z, i7);
+    }
 
     /* loaded from: classes3.dex */
     public static final class Builder {
@@ -253,6 +258,43 @@ public final class ParcelableConference implements Parcelable {
 
     public int getCallerDisplayNamePresentation() {
         return this.mCallerDisplayNamePresentation;
+    }
+
+    /* renamed from: android.telecom.ParcelableConference$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ParcelableConference> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableConference createFromParcel(Parcel source) {
+            ClassLoader classLoader = ParcelableConference.class.getClassLoader();
+            PhoneAccountHandle phoneAccount = (PhoneAccountHandle) source.readParcelable(classLoader, PhoneAccountHandle.class);
+            int state = source.readInt();
+            int capabilities = source.readInt();
+            ArrayList arrayList = new ArrayList(2);
+            source.readList(arrayList, classLoader, String.class);
+            long connectTimeMillis = source.readLong();
+            IVideoProvider videoCallProvider = IVideoProvider.Stub.asInterface(source.readStrongBinder());
+            int videoState = source.readInt();
+            StatusHints statusHints = (StatusHints) source.readParcelable(classLoader, StatusHints.class);
+            Bundle extras = source.readBundle(classLoader);
+            int properties = source.readInt();
+            long connectElapsedTimeMillis = source.readLong();
+            Uri address = (Uri) source.readParcelable(classLoader, Uri.class);
+            int addressPresentation = source.readInt();
+            String callerDisplayName = source.readString();
+            int callerDisplayNamePresentation = source.readInt();
+            DisconnectCause disconnectCause = (DisconnectCause) source.readParcelable(classLoader, DisconnectCause.class);
+            boolean isRingbackRequested = source.readInt() == 1;
+            int callDirection = source.readInt();
+            return new ParcelableConference(phoneAccount, state, capabilities, properties, arrayList, videoCallProvider, videoState, connectTimeMillis, connectElapsedTimeMillis, statusHints, extras, address, addressPresentation, callerDisplayName, callerDisplayNamePresentation, disconnectCause, isRingbackRequested, callDirection);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableConference[] newArray(int size) {
+            return new ParcelableConference[size];
+        }
     }
 
     @Override // android.os.Parcelable

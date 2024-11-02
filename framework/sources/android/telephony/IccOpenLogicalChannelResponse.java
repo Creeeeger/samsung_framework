@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class IccOpenLogicalChannelResponse implements Parcelable {
     public static final Parcelable.Creator<IccOpenLogicalChannelResponse> CREATOR = new Parcelable.Creator<IccOpenLogicalChannelResponse>() { // from class: android.telephony.IccOpenLogicalChannelResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public IccOpenLogicalChannelResponse createFromParcel(Parcel in) {
             return new IccOpenLogicalChannelResponse(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IccOpenLogicalChannelResponse[] newArray(int size) {
             return new IccOpenLogicalChannelResponse[size];
@@ -26,6 +27,10 @@ public class IccOpenLogicalChannelResponse implements Parcelable {
     private final int mChannel;
     private final byte[] mSelectResponse;
     private final int mStatus;
+
+    /* synthetic */ IccOpenLogicalChannelResponse(Parcel parcel, IccOpenLogicalChannelResponseIA iccOpenLogicalChannelResponseIA) {
+        this(parcel);
+    }
 
     public IccOpenLogicalChannelResponse(int channel, int status, byte[] selectResponse) {
         this.mChannel = channel;
@@ -73,6 +78,23 @@ public class IccOpenLogicalChannelResponse implements Parcelable {
             out.writeByteArray(this.mSelectResponse);
         } else {
             out.writeInt(0);
+        }
+    }
+
+    /* renamed from: android.telephony.IccOpenLogicalChannelResponse$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<IccOpenLogicalChannelResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IccOpenLogicalChannelResponse createFromParcel(Parcel in) {
+            return new IccOpenLogicalChannelResponse(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IccOpenLogicalChannelResponse[] newArray(int size) {
+            return new IccOpenLogicalChannelResponse[size];
         }
     }
 

@@ -48,10 +48,18 @@ public class JcaContentVerifierProviderBuilder {
         return build(this.helper.convertCertificate(certHolder));
     }
 
-    public ContentVerifierProvider build(final X509Certificate certificate) throws OperatorCreationException {
+    public ContentVerifierProvider build(X509Certificate certificate) throws OperatorCreationException {
         try {
-            final X509CertificateHolder certHolder = new JcaX509CertificateHolder(certificate);
+            X509CertificateHolder certHolder = new JcaX509CertificateHolder(certificate);
             return new ContentVerifierProvider() { // from class: com.android.internal.org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder.1
+                final /* synthetic */ X509CertificateHolder val$certHolder;
+                final /* synthetic */ X509Certificate val$certificate;
+
+                AnonymousClass1(X509CertificateHolder certHolder2, X509Certificate certificate2) {
+                    certHolder = certHolder2;
+                    certificate = certificate2;
+                }
+
                 @Override // com.android.internal.org.bouncycastle.operator.ContentVerifierProvider
                 public boolean hasAssociatedCertificate() {
                     return true;
@@ -85,8 +93,103 @@ public class JcaContentVerifierProviderBuilder {
         }
     }
 
-    public ContentVerifierProvider build(final PublicKey publicKey) throws OperatorCreationException {
+    /* renamed from: com.android.internal.org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements ContentVerifierProvider {
+        final /* synthetic */ X509CertificateHolder val$certHolder;
+        final /* synthetic */ X509Certificate val$certificate;
+
+        AnonymousClass1(X509CertificateHolder certHolder2, X509Certificate certificate2) {
+            certHolder = certHolder2;
+            certificate = certificate2;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.operator.ContentVerifierProvider
+        public boolean hasAssociatedCertificate() {
+            return true;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.operator.ContentVerifierProvider
+        public X509CertificateHolder getAssociatedCertificate() {
+            return certHolder;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.operator.ContentVerifierProvider
+        public ContentVerifier get(AlgorithmIdentifier algorithm) throws OperatorCreationException {
+            if (algorithm.getAlgorithm().equals((ASN1Primitive) MiscObjectIdentifiers.id_alg_composite)) {
+                return JcaContentVerifierProviderBuilder.this.createCompositeVerifier(algorithm, certificate.getPublicKey());
+            }
+            try {
+                Signature sig = JcaContentVerifierProviderBuilder.this.helper.createSignature(algorithm);
+                sig.initVerify(certificate.getPublicKey());
+                Signature rawSig = JcaContentVerifierProviderBuilder.this.createRawSig(algorithm, certificate.getPublicKey());
+                if (rawSig != null) {
+                    return new RawSigVerifier(algorithm, sig, rawSig);
+                }
+                return new SigVerifier(algorithm, sig);
+            } catch (GeneralSecurityException e) {
+                throw new OperatorCreationException("exception on setup: " + e, e);
+            }
+        }
+    }
+
+    /* renamed from: com.android.internal.org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements ContentVerifierProvider {
+        final /* synthetic */ PublicKey val$publicKey;
+
+        AnonymousClass2(PublicKey publicKey) {
+            publicKey = publicKey;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.operator.ContentVerifierProvider
+        public boolean hasAssociatedCertificate() {
+            return false;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.operator.ContentVerifierProvider
+        public X509CertificateHolder getAssociatedCertificate() {
+            return null;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.operator.ContentVerifierProvider
+        public ContentVerifier get(AlgorithmIdentifier algorithm) throws OperatorCreationException {
+            if (algorithm.getAlgorithm().equals((ASN1Primitive) MiscObjectIdentifiers.id_alg_composite)) {
+                return JcaContentVerifierProviderBuilder.this.createCompositeVerifier(algorithm, publicKey);
+            }
+            PublicKey publicKey = publicKey;
+            if (publicKey instanceof CompositePublicKey) {
+                List<PublicKey> keys = ((CompositePublicKey) publicKey).getPublicKeys();
+                for (int i = 0; i != keys.size(); i++) {
+                    try {
+                        Signature sig = JcaContentVerifierProviderBuilder.this.createSignature(algorithm, keys.get(i));
+                        Signature rawSig = JcaContentVerifierProviderBuilder.this.createRawSig(algorithm, keys.get(i));
+                        if (rawSig != null) {
+                            return new RawSigVerifier(algorithm, sig, rawSig);
+                        }
+                        return new SigVerifier(algorithm, sig);
+                    } catch (OperatorCreationException e) {
+                    }
+                }
+                throw new OperatorCreationException("no matching algorithm found for key");
+            }
+            Signature sig2 = JcaContentVerifierProviderBuilder.this.createSignature(algorithm, publicKey);
+            Signature rawSig2 = JcaContentVerifierProviderBuilder.this.createRawSig(algorithm, publicKey);
+            if (rawSig2 != null) {
+                return new RawSigVerifier(algorithm, sig2, rawSig2);
+            }
+            return new SigVerifier(algorithm, sig2);
+        }
+    }
+
+    public ContentVerifierProvider build(PublicKey publicKey) throws OperatorCreationException {
         return new ContentVerifierProvider() { // from class: com.android.internal.org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder.2
+            final /* synthetic */ PublicKey val$publicKey;
+
+            AnonymousClass2(PublicKey publicKey2) {
+                publicKey = publicKey2;
+            }
+
             @Override // com.android.internal.org.bouncycastle.operator.ContentVerifierProvider
             public boolean hasAssociatedCertificate() {
                 return false;
@@ -132,7 +235,6 @@ public class JcaContentVerifierProviderBuilder {
         return build(this.helper.convertPublicKey(publicKey));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ContentVerifier createCompositeVerifier(AlgorithmIdentifier compAlgId, PublicKey publicKey) throws OperatorCreationException {
         if (publicKey instanceof CompositePublicKey) {
             List<PublicKey> pubKeys = ((CompositePublicKey) publicKey).getPublicKeys();
@@ -161,7 +263,6 @@ public class JcaContentVerifierProviderBuilder {
         return new CompositeVerifier(sigs2);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Signature createSignature(AlgorithmIdentifier algorithm, PublicKey publicKey) throws OperatorCreationException {
         try {
             Signature sig = this.helper.createSignature(algorithm);
@@ -172,7 +273,6 @@ public class JcaContentVerifierProviderBuilder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Signature createRawSig(AlgorithmIdentifier algorithm, PublicKey publicKey) {
         try {
             Signature rawSig = this.helper.createRawSignature(algorithm);
@@ -186,8 +286,9 @@ public class JcaContentVerifierProviderBuilder {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class SigVerifier implements ContentVerifier {
+    public class SigVerifier implements ContentVerifier {
         private final AlgorithmIdentifier algorithm;
         private final Signature signature;
         protected final OutputStream stream;
@@ -267,7 +368,6 @@ public class JcaContentVerifierProviderBuilder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class CompositeVerifier implements ContentVerifier {
         private Signature[] sigs;

@@ -16,18 +16,23 @@ public final class SyncFence implements AutoCloseable, Parcelable {
     private long mNativePtr;
     private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createNonmalloced(SyncFence.class.getClassLoader(), nGetDestructor(), 4);
     public static final Parcelable.Creator<SyncFence> CREATOR = new Parcelable.Creator<SyncFence>() { // from class: android.hardware.SyncFence.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SyncFence createFromParcel(Parcel in) {
             return new SyncFence(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncFence[] newArray(int size) {
             return new SyncFence[size];
         }
     };
+
+    /* synthetic */ SyncFence(Parcel parcel, SyncFenceIA syncFenceIA) {
+        this(parcel);
+    }
 
     private static native long nCreate(int i);
 
@@ -64,7 +69,6 @@ public final class SyncFence implements AutoCloseable, Parcelable {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$new$0() {
     }
 
@@ -82,7 +86,6 @@ public final class SyncFence implements AutoCloseable, Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$new$1() {
     }
 
@@ -95,7 +98,6 @@ public final class SyncFence implements AutoCloseable, Parcelable {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$new$2() {
     }
 
@@ -202,6 +204,23 @@ public final class SyncFence implements AutoCloseable, Parcelable {
                 temp.setInt$(fd);
                 out.writeFileDescriptor(temp);
             }
+        }
+    }
+
+    /* renamed from: android.hardware.SyncFence$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SyncFence> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncFence createFromParcel(Parcel in) {
+            return new SyncFence(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncFence[] newArray(int size) {
+            return new SyncFence[size];
         }
     }
 }

@@ -24,7 +24,6 @@ public class TabActivity extends ActivityGroup {
         this.mDefaultTabIndex = index;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
@@ -46,7 +45,6 @@ public class TabActivity extends ActivityGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onPostCreate(Bundle icicle) {
         super.onPostCreate(icicle);
@@ -56,7 +54,6 @@ public class TabActivity extends ActivityGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.ActivityGroup, android.app.Activity
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

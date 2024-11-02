@@ -48,7 +48,6 @@ public class InputMethod {
     public void onUpdateSelection(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void createImeSession(IAccessibilityInputMethodSessionCallback callback) {
         AccessibilityInputMethodSessionWrapper wrapper = new AccessibilityInputMethodSessionWrapper(this.mService.getMainLooper(), new SessionImpl());
         try {
@@ -57,7 +56,6 @@ public class InputMethod {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void startInput(RemoteAccessibilityInputConnection ic, EditorInfo attribute) {
         Log.v(LOG_TAG, "startInput(): editor=" + attribute);
         Trace.traceBegin(32L, "AccessibilityService.startInput");
@@ -65,7 +63,6 @@ public class InputMethod {
         Trace.traceEnd(32L);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void restartInput(RemoteAccessibilityInputConnection ic, EditorInfo attribute) {
         Log.v(LOG_TAG, "restartInput(): editor=" + attribute);
         Trace.traceBegin(32L, "AccessibilityService.restartInput");
@@ -172,10 +169,13 @@ public class InputMethod {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class SessionImpl implements AccessibilityInputMethodSession {
         boolean mEnabled;
+
+        /* synthetic */ SessionImpl(InputMethod inputMethod, SessionImplIA sessionImplIA) {
+            this();
+        }
 
         private SessionImpl() {
             this.mEnabled = true;

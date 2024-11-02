@@ -63,7 +63,6 @@ public class CoreSaLogger {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$sendSaLoggingBroadcast$0(String eventId, String detail, long value, HashMap customDimension, String mode, String trackingId, Context context) {
         if (CoreRune.SAFE_DEBUG) {
             Log.d(TAG, "sendSaLoggingBroadcast eventId : " + eventId + ", eventDetail : " + detail + ", value : " + (value != -1 ? Long.valueOf(value) : SemCapabilities.FEATURE_TAG_NULL) + ", customDimension : " + customDimension + ", mode : " + mode);
@@ -130,7 +129,6 @@ public class CoreSaLogger {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$sendSaLoggingBroadcastForSetting$1(String trackingId, String settingId, String value, Context context) {
         HashMap<String, String> setting = putToSettingMap(trackingId, settingId, value);
         if (setting == null) {
@@ -149,7 +147,6 @@ public class CoreSaLogger {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$sendSaLoggingBroadcastForBasicSetting$2(HashMap setting, Context context) {
         HashMap<String, String> settingMapForBasic = getSettingMap(BASIC_TRACKING_ID);
         if (settingMapForBasic != null) {

@@ -18,7 +18,7 @@ public class HardwareBufferRenderer implements AutoCloseable {
     private final RenderRequest mRenderRequest;
     private final RenderNode mRootNode;
 
-    /* renamed from: -$$Nest$smnGetFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnGetFinalizer */
     static /* bridge */ /* synthetic */ long m1118$$Nest$smnGetFinalizer() {
         return nGetFinalizer();
     }
@@ -107,6 +107,10 @@ public class HardwareBufferRenderer implements AutoCloseable {
         public @interface RenderResultStatus {
         }
 
+        /* synthetic */ RenderResult(SyncFence syncFence, int i, RenderResultIA renderResultIA) {
+            this(syncFence, i);
+        }
+
         private RenderResult(SyncFence fence, int resultStatus) {
             this.mFence = fence;
             this.mResultStatus = resultStatus;
@@ -125,6 +129,10 @@ public class HardwareBufferRenderer implements AutoCloseable {
     public final class RenderRequest {
         private ColorSpace mColorSpace;
         private int mTransform;
+
+        /* synthetic */ RenderRequest(HardwareBufferRenderer hardwareBufferRenderer, RenderRequestIA renderRequestIA) {
+            this();
+        }
 
         private RenderRequest() {
             this.mColorSpace = HardwareBufferRenderer.DEFAULT_COLORSPACE;
@@ -162,7 +170,6 @@ public class HardwareBufferRenderer implements AutoCloseable {
             throw new IllegalStateException("Attempt to draw with a HardwareBufferRenderer instance that has already been closed");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void reset() {
             this.mColorSpace = HardwareBufferRenderer.DEFAULT_COLORSPACE;
             this.mTransform = 0;

@@ -373,8 +373,9 @@ public interface IGameManagerService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGameManagerService {
+        public static class Proxy implements IGameManagerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

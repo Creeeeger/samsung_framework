@@ -13,10 +13,15 @@ public class SemSoundTriggerModule {
     private static final int EVENT_SOUNDMODEL = 3;
     private SoundTriggerModuleWrapper instance;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public SemSoundTriggerModule(int moduleId, final SemSoundTrigger.StatusListener listener, Handler handler) {
+    public SemSoundTriggerModule(int moduleId, SemSoundTrigger.StatusListener listener, Handler handler) {
         this.instance = null;
         SoundTrigger.StatusListener stListener = new SoundTrigger.StatusListener() { // from class: com.samsung.android.hardware.soundtrigger.SemSoundTriggerModule.1
+            final /* synthetic */ SemSoundTrigger.StatusListener val$listener;
+
+            AnonymousClass1(SemSoundTrigger.StatusListener listener2) {
+                listener = listener2;
+            }
+
             @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
             public void onRecognition(SoundTrigger.RecognitionEvent recognitionEvent) {
                 if (recognitionEvent.status == 1) {
@@ -54,6 +59,53 @@ public class SemSoundTriggerModule {
             }
         };
         this.instance = new SoundTriggerModuleWrapper(moduleId, stListener, handler);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.soundtrigger.SemSoundTriggerModule$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements SoundTrigger.StatusListener {
+        final /* synthetic */ SemSoundTrigger.StatusListener val$listener;
+
+        AnonymousClass1(SemSoundTrigger.StatusListener listener2) {
+            listener = listener2;
+        }
+
+        @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
+        public void onRecognition(SoundTrigger.RecognitionEvent recognitionEvent) {
+            if (recognitionEvent.status == 1) {
+                listener.onServiceStateChange(1);
+                return;
+            }
+            if (recognitionEvent instanceof SoundTrigger.KeyphraseRecognitionEvent) {
+                SoundTrigger.KeyphraseRecognitionExtra[] stKeyphraseExtras = ((SoundTrigger.KeyphraseRecognitionEvent) recognitionEvent).keyphraseExtras;
+                SemSoundTrigger.KeyphraseRecognitionExtra[] KeyphraseExtras = new SemSoundTrigger.KeyphraseRecognitionExtra[stKeyphraseExtras.length];
+                for (int i = 0; i < stKeyphraseExtras.length; i++) {
+                    SemSoundTrigger.ConfidenceLevel[] confidenceLevels = new SemSoundTrigger.ConfidenceLevel[stKeyphraseExtras[i].confidenceLevels.length];
+                    for (int j = 0; j < stKeyphraseExtras[i].confidenceLevels.length; j++) {
+                        confidenceLevels[j] = new SemSoundTrigger.ConfidenceLevel(stKeyphraseExtras[i].confidenceLevels[j].userId, stKeyphraseExtras[i].confidenceLevels[j].confidenceLevel);
+                    }
+                    KeyphraseExtras[i] = new SemSoundTrigger.KeyphraseRecognitionExtra(stKeyphraseExtras[i].id, stKeyphraseExtras[i].recognitionModes, stKeyphraseExtras[i].coarseConfidenceLevel, confidenceLevels);
+                }
+                listener.onRecognition(new SemSoundTrigger.KeyphraseRecognitionEvent(recognitionEvent.status, recognitionEvent.soundModelHandle, recognitionEvent.captureAvailable, recognitionEvent.captureSession, recognitionEvent.captureDelayMs, recognitionEvent.capturePreambleMs, recognitionEvent.triggerInData, recognitionEvent.captureFormat, recognitionEvent.data, KeyphraseExtras));
+                return;
+            }
+            listener.onRecognition(new SemSoundTrigger.RecognitionEvent(recognitionEvent.status, recognitionEvent.soundModelHandle, recognitionEvent.captureAvailable, recognitionEvent.captureSession, recognitionEvent.captureDelayMs, recognitionEvent.capturePreambleMs, recognitionEvent.triggerInData, recognitionEvent.captureFormat, recognitionEvent.data));
+        }
+
+        @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
+        public void onModelUnloaded(int modelHandle) {
+        }
+
+        @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
+        public void onResourcesAvailable() {
+            listener.onServiceStateChange(0);
+        }
+
+        @Override // android.hardware.soundtrigger.SoundTrigger.StatusListener
+        public void onServiceDied() {
+            listener.onServiceDied();
+        }
     }
 
     public void detach() {

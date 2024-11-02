@@ -17,7 +17,6 @@ public class LocationProvider {
     private final String mName;
     private final ProviderProperties mProperties;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LocationProvider(String name, ProviderProperties properties) {
         this.mName = name;
         this.mProperties = properties;

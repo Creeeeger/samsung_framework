@@ -111,8 +111,9 @@ public interface IDataShareReadAdapter extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDataShareReadAdapter {
+        public static class Proxy implements IDataShareReadAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

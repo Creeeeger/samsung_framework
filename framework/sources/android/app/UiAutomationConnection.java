@@ -403,7 +403,7 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
     }
 
     @Override // android.app.IUiAutomationConnection
-    public void executeShellCommandWithStderr(String command, final ParcelFileDescriptor sink, final ParcelFileDescriptor source, final ParcelFileDescriptor stderrSink) throws RemoteException {
+    public void executeShellCommandWithStderr(String command, ParcelFileDescriptor sink, ParcelFileDescriptor source, ParcelFileDescriptor stderrSink) throws RemoteException {
         Thread readFromProcess;
         Thread writeToProcess;
         Thread readStderrFromProcess;
@@ -413,7 +413,7 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
             throwIfNotConnectedLocked();
         }
         try {
-            final Process process = Runtime.getRuntime().exec(command);
+            Process process = Runtime.getRuntime().exec(command);
             if (sink != null) {
                 InputStream sink_in = process.getInputStream();
                 OutputStream sink_out = new FileOutputStream(sink.getFileDescriptor());
@@ -441,24 +441,39 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
             } else {
                 readStderrFromProcess = null;
             }
-            final Thread thread = writeToProcess;
-            final Thread thread2 = readFromProcess;
-            final Thread thread3 = readStderrFromProcess;
             Thread cleanup = new Thread(new Runnable() { // from class: android.app.UiAutomationConnection.1
+                final /* synthetic */ Process val$process;
+                final /* synthetic */ Thread val$readFromProcess;
+                final /* synthetic */ Thread val$readStderrFromProcess;
+                final /* synthetic */ ParcelFileDescriptor val$sink;
+                final /* synthetic */ ParcelFileDescriptor val$source;
+                final /* synthetic */ ParcelFileDescriptor val$stderrSink;
+                final /* synthetic */ Thread val$writeToProcess;
+
+                AnonymousClass1(Thread writeToProcess3, Thread readFromProcess3, Thread readStderrFromProcess3, ParcelFileDescriptor sink2, ParcelFileDescriptor source2, ParcelFileDescriptor stderrSink2, Process process2) {
+                    thread = writeToProcess3;
+                    thread2 = readFromProcess3;
+                    thread3 = readStderrFromProcess3;
+                    sink = sink2;
+                    source = source2;
+                    stderrSink = stderrSink2;
+                    process = process2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
-                        Thread thread4 = thread;
-                        if (thread4 != null) {
-                            thread4.join();
+                        Thread thread = thread;
+                        if (thread != null) {
+                            thread.join();
                         }
-                        Thread thread5 = thread2;
-                        if (thread5 != null) {
-                            thread5.join();
+                        Thread thread2 = thread2;
+                        if (thread2 != null) {
+                            thread2.join();
                         }
-                        Thread thread6 = thread3;
-                        if (thread6 != null) {
-                            thread6.join();
+                        Thread thread3 = thread3;
+                        if (thread3 != null) {
+                            thread3.join();
                         }
                     } catch (InterruptedException e) {
                         Log.e(UiAutomationConnection.TAG, "At least one of the threads was interrupted");
@@ -472,6 +487,52 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
             cleanup.start();
         } catch (IOException exc) {
             throw new RuntimeException("Error running shell command '" + command + "'", exc);
+        }
+    }
+
+    /* renamed from: android.app.UiAutomationConnection$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ Process val$process;
+        final /* synthetic */ Thread val$readFromProcess;
+        final /* synthetic */ Thread val$readStderrFromProcess;
+        final /* synthetic */ ParcelFileDescriptor val$sink;
+        final /* synthetic */ ParcelFileDescriptor val$source;
+        final /* synthetic */ ParcelFileDescriptor val$stderrSink;
+        final /* synthetic */ Thread val$writeToProcess;
+
+        AnonymousClass1(Thread writeToProcess3, Thread readFromProcess3, Thread readStderrFromProcess3, ParcelFileDescriptor sink2, ParcelFileDescriptor source2, ParcelFileDescriptor stderrSink2, Process process2) {
+            thread = writeToProcess3;
+            thread2 = readFromProcess3;
+            thread3 = readStderrFromProcess3;
+            sink = sink2;
+            source = source2;
+            stderrSink = stderrSink2;
+            process = process2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                Thread thread = thread;
+                if (thread != null) {
+                    thread.join();
+                }
+                Thread thread2 = thread2;
+                if (thread2 != null) {
+                    thread2.join();
+                }
+                Thread thread3 = thread3;
+                if (thread3 != null) {
+                    thread3.join();
+                }
+            } catch (InterruptedException e) {
+                Log.e(UiAutomationConnection.TAG, "At least one of the threads was interrupted");
+            }
+            IoUtils.closeQuietly(sink);
+            IoUtils.closeQuietly(source);
+            IoUtils.closeQuietly(stderrSink);
+            process.destroy();
         }
     }
 

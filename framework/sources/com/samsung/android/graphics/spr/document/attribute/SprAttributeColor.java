@@ -131,11 +131,11 @@ public abstract class SprAttributeColor extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     /* renamed from: clone */
-    public SprAttributeColor mo8420clone() throws CloneNotSupportedException {
-        SprAttributeColor attribute = (SprAttributeColor) super.mo8420clone();
+    public SprAttributeColor mo8412clone() throws CloneNotSupportedException {
+        SprAttributeColor attribute = (SprAttributeColor) super.mo8412clone();
         SprGradientBase sprGradientBase = this.gradient;
         if (sprGradientBase != null) {
-            attribute.gradient = sprGradientBase.m8421clone();
+            attribute.gradient = sprGradientBase.m8413clone();
         }
         return attribute;
     }

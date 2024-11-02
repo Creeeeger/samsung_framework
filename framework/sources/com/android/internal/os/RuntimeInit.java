@@ -52,12 +52,10 @@ public class RuntimeInit {
 
     private static final native void nativeSetExitWithoutCleanup(boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int Clog_e(String tag, String msg, Throwable tr) {
         return Log.printlns(4, 6, tag, msg, tr);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int Mlog_i(String tag, String msg, Throwable tr) {
         return Log.printlns(0, 4, tag, msg, tr);
     }
@@ -72,10 +70,13 @@ public class RuntimeInit {
         Clog_e(TAG, message.toString(), e);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class LoggingHandler implements Thread.UncaughtExceptionHandler {
         public volatile boolean mTriggered;
+
+        /* synthetic */ LoggingHandler(LoggingHandlerIA loggingHandlerIA) {
+            this();
+        }
 
         private LoggingHandler() {
             this.mTriggered = false;
@@ -97,7 +98,6 @@ public class RuntimeInit {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class KillApplicationHandler implements Thread.UncaughtExceptionHandler {
         private final LoggingHandler mLoggingHandler;
@@ -201,7 +201,6 @@ public class RuntimeInit {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static final void commonInit() {
         LoggingHandler loggingHandler = new LoggingHandler();
         RuntimeHooks.setUncaughtExceptionPreHandler(loggingHandler);
@@ -246,7 +245,6 @@ public class RuntimeInit {
         return result.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static Runnable findStaticMain(String className, String[] argv, ClassLoader classLoader) {
         try {
             Class<?> cl = Class.forName(className, true, classLoader);
@@ -276,7 +274,6 @@ public class RuntimeInit {
         nativeFinishInit();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static Runnable applicationInit(int targetSdkVersion, long[] disabledCompatChanges, String[] argv, ClassLoader classLoader) {
         nativeSetExitWithoutCleanup(true);
         VMRuntime.getRuntime().setTargetSdkVersion(targetSdkVersion);
@@ -335,12 +332,12 @@ public class RuntimeInit {
         DdmRegister.registerHandlers();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    static class Arguments {
+    public static class Arguments {
         String[] startArgs;
         String startClass;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Arguments(String[] args) throws IllegalArgumentException {
             parseArgs(args);
         }
@@ -372,7 +369,6 @@ public class RuntimeInit {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class MethodAndArgsCaller implements Runnable {
         private final String[] mArgs;

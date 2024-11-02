@@ -83,7 +83,7 @@ public class ListPopupWindow implements ShowableListMenu {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public ListPopupWindow(Context context, AttributeSet attributeSet, int i, int i2) {
+    public ListPopupWindow(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         boolean z;
         this.mDropDownHeight = -2;
         this.mDropDownWidth = -2;
@@ -103,20 +103,20 @@ public class ListPopupWindow implements ShowableListMenu {
         this.mIsDeviceDefault = false;
         this.mContext = context;
         this.mHandler = new Handler(context.getMainLooper());
-        TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.ListPopupWindow, i, i2);
-        this.mDropDownHorizontalOffset = obtainStyledAttributes.getDimensionPixelOffset(0, 0);
-        int dimensionPixelOffset = obtainStyledAttributes.getDimensionPixelOffset(1, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ListPopupWindow, defStyleAttr, defStyleRes);
+        this.mDropDownHorizontalOffset = a.getDimensionPixelOffset(0, 0);
+        int dimensionPixelOffset = a.getDimensionPixelOffset(1, 0);
         this.mDropDownVerticalOffset = dimensionPixelOffset;
         if (dimensionPixelOffset != 0) {
             this.mDropDownVerticalOffsetSet = true;
         }
-        obtainStyledAttributes.recycle();
-        PopupWindow popupWindow = new PopupWindow(context, attributeSet, i, i2);
+        a.recycle();
+        PopupWindow popupWindow = new PopupWindow(context, attrs, defStyleAttr, defStyleRes);
         this.mPopup = popupWindow;
         popupWindow.setInputMethodMode(1);
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, typedValue, false);
-        if (typedValue.data != 0) {
+        TypedValue themeValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, themeValue, false);
+        if (themeValue.data != 0) {
             z = true;
         } else {
             z = false;
@@ -520,7 +520,6 @@ public class ListPopupWindow implements ShowableListMenu {
         return new DropDownListView(context, hijackFocus);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setListItemExpandMax(int max) {
         this.mListItemExpandMaximum = max;
     }
@@ -606,8 +605,25 @@ public class ListPopupWindow implements ShowableListMenu {
         return false;
     }
 
+    /* renamed from: android.widget.ListPopupWindow$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends ForwardingListener {
+        AnonymousClass1(View src) {
+            super(src);
+        }
+
+        @Override // android.widget.ForwardingListener
+        public ShowableListMenu getPopup() {
+            return ListPopupWindow.this;
+        }
+    }
+
     public View.OnTouchListener createDragToOpenListener(View src) {
         return new ForwardingListener(src) { // from class: android.widget.ListPopupWindow.1
+            AnonymousClass1(View src2) {
+                super(src2);
+            }
+
             @Override // android.widget.ForwardingListener
             public ShowableListMenu getPopup() {
                 return ListPopupWindow.this;
@@ -624,6 +640,9 @@ public class ListPopupWindow implements ShowableListMenu {
         if (this.mDropDownList == null) {
             Context context = this.mContext;
             this.mShowDropDownRunnable = new Runnable() { // from class: android.widget.ListPopupWindow.2
+                AnonymousClass2() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     View view = ListPopupWindow.this.getAnchorView();
@@ -643,6 +662,9 @@ public class ListPopupWindow implements ShowableListMenu {
             this.mDropDownList.setFocusable(true);
             this.mDropDownList.setFocusableInTouchMode(true);
             this.mDropDownList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { // from class: android.widget.ListPopupWindow.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.widget.AdapterView.OnItemSelectedListener
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     DropDownListView dropDownList;
@@ -741,6 +763,40 @@ public class ListPopupWindow implements ShowableListMenu {
         return listPadding2;
     }
 
+    /* renamed from: android.widget.ListPopupWindow$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            View view = ListPopupWindow.this.getAnchorView();
+            if (view != null && view.getWindowToken() != null) {
+                ListPopupWindow.this.show();
+            }
+        }
+    }
+
+    /* renamed from: android.widget.ListPopupWindow$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements AdapterView.OnItemSelectedListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.widget.AdapterView.OnItemSelectedListener
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            DropDownListView dropDownList;
+            if (position != -1 && (dropDownList = ListPopupWindow.this.mDropDownList) != null) {
+                dropDownList.setListSelectionHidden(false);
+            }
+        }
+
+        @Override // android.widget.AdapterView.OnItemSelectedListener
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
+    }
+
     private void setBlurEffect() {
         int blurBackgroundColorId;
         Context context = this.mContext;
@@ -773,9 +829,12 @@ public class ListPopupWindow implements ShowableListMenu {
         this.mOverlapAnchor = overlap;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PopupDataSetObserver extends DataSetObserver {
+        /* synthetic */ PopupDataSetObserver(ListPopupWindow listPopupWindow, PopupDataSetObserverIA popupDataSetObserverIA) {
+            this();
+        }
+
         private PopupDataSetObserver() {
         }
 
@@ -792,9 +851,12 @@ public class ListPopupWindow implements ShowableListMenu {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ListSelectorHider implements Runnable {
+        /* synthetic */ ListSelectorHider(ListPopupWindow listPopupWindow, ListSelectorHiderIA listSelectorHiderIA) {
+            this();
+        }
+
         private ListSelectorHider() {
         }
 
@@ -804,9 +866,12 @@ public class ListPopupWindow implements ShowableListMenu {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ResizePopupRunnable implements Runnable {
+        /* synthetic */ ResizePopupRunnable(ListPopupWindow listPopupWindow, ResizePopupRunnableIA resizePopupRunnableIA) {
+            this();
+        }
+
         private ResizePopupRunnable() {
         }
 
@@ -827,9 +892,12 @@ public class ListPopupWindow implements ShowableListMenu {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PopupTouchInterceptor implements View.OnTouchListener {
+        /* synthetic */ PopupTouchInterceptor(ListPopupWindow listPopupWindow, PopupTouchInterceptorIA popupTouchInterceptorIA) {
+            this();
+        }
+
         private PopupTouchInterceptor() {
         }
 
@@ -850,9 +918,12 @@ public class ListPopupWindow implements ShowableListMenu {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PopupScrollListener implements AbsListView.OnScrollListener {
+        /* synthetic */ PopupScrollListener(ListPopupWindow listPopupWindow, PopupScrollListenerIA popupScrollListenerIA) {
+            this();
+        }
+
         private PopupScrollListener() {
         }
 

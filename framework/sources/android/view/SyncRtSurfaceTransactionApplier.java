@@ -43,7 +43,6 @@ public class SyncRtSurfaceTransactionApplier {
         this.mTargetViewRootImpl.getView().invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$scheduleApply$0(SurfaceControl.Transaction t, long frame) {
         SurfaceControl surfaceControl = this.mTargetSc;
         if (surfaceControl != null && surfaceControl.isValid()) {
@@ -52,7 +51,6 @@ public class SyncRtSurfaceTransactionApplier {
         t.close();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void applyParams(SurfaceControl.Transaction t, SurfaceParams... params) {
         for (int i = params.length - 1; i >= 0; i--) {
             SurfaceParams surfaceParams = params[i];
@@ -101,13 +99,19 @@ public class SyncRtSurfaceTransactionApplier {
         }
     }
 
-    public static void create(final View targetView, final Consumer<SyncRtSurfaceTransactionApplier> callback) {
+    public static void create(View targetView, Consumer<SyncRtSurfaceTransactionApplier> callback) {
         if (targetView == null) {
             callback.accept(null);
         } else if (targetView.getViewRootImpl() != null) {
             callback.accept(new SyncRtSurfaceTransactionApplier(targetView));
         } else {
             targetView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() { // from class: android.view.SyncRtSurfaceTransactionApplier.1
+                final /* synthetic */ Consumer val$callback;
+
+                AnonymousClass1(Consumer callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.view.View.OnAttachStateChangeListener
                 public void onViewAttachedToWindow(View v) {
                     View.this.removeOnAttachStateChangeListener(this);
@@ -118,6 +122,26 @@ public class SyncRtSurfaceTransactionApplier {
                 public void onViewDetachedFromWindow(View v) {
                 }
             });
+        }
+    }
+
+    /* renamed from: android.view.SyncRtSurfaceTransactionApplier$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements View.OnAttachStateChangeListener {
+        final /* synthetic */ Consumer val$callback;
+
+        AnonymousClass1(Consumer callback2) {
+            callback = callback2;
+        }
+
+        @Override // android.view.View.OnAttachStateChangeListener
+        public void onViewAttachedToWindow(View v) {
+            View.this.removeOnAttachStateChangeListener(this);
+            callback.accept(new SyncRtSurfaceTransactionApplier(View.this));
+        }
+
+        @Override // android.view.View.OnAttachStateChangeListener
+        public void onViewDetachedFromWindow(View v) {
         }
     }
 
@@ -133,6 +157,10 @@ public class SyncRtSurfaceTransactionApplier {
         public final SurfaceControl surface;
         public final boolean visible;
         public final Rect windowCrop;
+
+        /* synthetic */ SurfaceParams(SurfaceControl surfaceControl, int i, float f, Matrix matrix, Rect rect, int i2, float f2, int i3, boolean z, SurfaceControl.Transaction transaction, SurfaceParamsIA surfaceParamsIA) {
+            this(surfaceControl, i, f, matrix, rect, i2, f2, i3, z, transaction);
+        }
 
         /* loaded from: classes4.dex */
         public static class Builder {

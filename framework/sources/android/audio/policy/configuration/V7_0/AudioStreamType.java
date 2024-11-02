@@ -30,7 +30,6 @@ public enum AudioStreamType {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AudioStreamType fromString(String rawString) {
         for (AudioStreamType _f : values()) {
             if (_f.getRawName().equals(rawString)) {

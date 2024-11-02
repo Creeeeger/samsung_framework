@@ -29,7 +29,6 @@ public class NotificationMaxHeightFrameLayout extends FrameLayout {
         this.mNotificationMaxHeight = getFontScaledHeight(this.mContext, R.dimen.notification_min_height);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (View.MeasureSpec.getSize(heightMeasureSpec) > this.mNotificationMaxHeight) {

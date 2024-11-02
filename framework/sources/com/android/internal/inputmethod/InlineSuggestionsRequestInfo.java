@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InlineSuggestionsRequestInfo implements Parcelable {
     public static final Parcelable.Creator<InlineSuggestionsRequestInfo> CREATOR = new Parcelable.Creator<InlineSuggestionsRequestInfo>() { // from class: com.android.internal.inputmethod.InlineSuggestionsRequestInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsRequestInfo[] newArray(int size) {
             return new InlineSuggestionsRequestInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsRequestInfo createFromParcel(Parcel in) {
             return new InlineSuggestionsRequestInfo(in);
@@ -94,6 +95,23 @@ public final class InlineSuggestionsRequestInfo implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) autofillId);
         this.mUiExtras = uiExtras;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) uiExtras);
+    }
+
+    /* renamed from: com.android.internal.inputmethod.InlineSuggestionsRequestInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InlineSuggestionsRequestInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlineSuggestionsRequestInfo[] newArray(int size) {
+            return new InlineSuggestionsRequestInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlineSuggestionsRequestInfo createFromParcel(Parcel in) {
+            return new InlineSuggestionsRequestInfo(in);
+        }
     }
 
     @Deprecated

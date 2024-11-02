@@ -222,6 +222,10 @@ public final class ImsReasonInfo implements Parcelable {
     public @interface UtReason {
     }
 
+    /* synthetic */ ImsReasonInfo(Parcel parcel, ImsReasonInfoIA imsReasonInfoIA) {
+        this(parcel);
+    }
+
     static {
         HashMap hashMap = new HashMap();
         sImsCodeMap = hashMap;
@@ -401,13 +405,14 @@ public final class ImsReasonInfo implements Parcelable {
         hashMap.put(61455, "CODE_OEM_CAUSE_15");
         hashMap.put(9000, "CODE_LOCAL_E911_RETRY_REQUIRED");
         CREATOR = new Parcelable.Creator<ImsReasonInfo>() { // from class: android.telephony.ims.ImsReasonInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ImsReasonInfo createFromParcel(Parcel in) {
                 return new ImsReasonInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ImsReasonInfo[] newArray(int size) {
                 return new ImsReasonInfo[size];
@@ -467,5 +472,22 @@ public final class ImsReasonInfo implements Parcelable {
         out.writeInt(this.mCode);
         out.writeInt(this.mExtraCode);
         out.writeString(this.mExtraMessage);
+    }
+
+    /* renamed from: android.telephony.ims.ImsReasonInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsReasonInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsReasonInfo createFromParcel(Parcel in) {
+            return new ImsReasonInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsReasonInfo[] newArray(int size) {
+            return new ImsReasonInfo[size];
+        }
     }
 }

@@ -101,13 +101,14 @@ public final class VpnProfile implements Cloneable, Parcelable {
     public String username;
     private static final String DEFAULT_ENCODING = StandardCharsets.UTF_8.name();
     public static final Parcelable.Creator<VpnProfile> CREATOR = new Parcelable.Creator<VpnProfile>() { // from class: com.android.internal.net.VpnProfile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VpnProfile createFromParcel(Parcel in) {
             return new VpnProfile(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VpnProfile[] newArray(int size) {
             return new VpnProfile[size];
@@ -570,6 +571,23 @@ public final class VpnProfile implements Cloneable, Parcelable {
         }
         VpnProfile other = (VpnProfile) obj;
         return Objects.equals(this.key, other.key) && Objects.equals(this.name, other.name) && this.type == other.type && Objects.equals(this.server, other.server) && Objects.equals(this.username, other.username) && Objects.equals(this.password, other.password) && Objects.equals(this.dnsServers, other.dnsServers) && Objects.equals(this.searchDomains, other.searchDomains) && Objects.equals(this.routes, other.routes) && this.mppe == other.mppe && Objects.equals(this.l2tpSecret, other.l2tpSecret) && Objects.equals(this.ipsecIdentifier, other.ipsecIdentifier) && Objects.equals(this.ipsecSecret, other.ipsecSecret) && Objects.equals(this.ipsecUserCert, other.ipsecUserCert) && Objects.equals(this.ipsecCaCert, other.ipsecCaCert) && Objects.equals(this.ipsecServerCert, other.ipsecServerCert) && Objects.equals(this.proxy, other.proxy) && Objects.equals(this.mAllowedAlgorithms, other.mAllowedAlgorithms) && this.isBypassable == other.isBypassable && this.isMetered == other.isMetered && this.maxMtu == other.maxMtu && this.areAuthParamsInline == other.areAuthParamsInline && this.isRestrictedToTestNetworks == other.isRestrictedToTestNetworks && this.excludeLocalRoutes == other.excludeLocalRoutes && this.requiresInternetValidation == other.requiresInternetValidation && Objects.equals(this.ikeTunConnParams, other.ikeTunConnParams) && this.automaticNattKeepaliveTimerEnabled == other.automaticNattKeepaliveTimerEnabled && this.automaticIpVersionSelectionEnabled == other.automaticIpVersionSelectionEnabled;
+    }
+
+    /* renamed from: com.android.internal.net.VpnProfile$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VpnProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VpnProfile createFromParcel(Parcel in) {
+            return new VpnProfile(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VpnProfile[] newArray(int size) {
+            return new VpnProfile[size];
+        }
     }
 
     @Override // android.os.Parcelable

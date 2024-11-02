@@ -178,18 +178,15 @@ public class FrameLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-1, -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getPaddingLeftWithForeground() {
         return isForegroundInsidePadding() ? Math.max(this.mPaddingLeft, this.mForegroundPaddingLeft) : this.mPaddingLeft + this.mForegroundPaddingLeft;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getPaddingRightWithForeground() {
         return isForegroundInsidePadding() ? Math.max(this.mPaddingRight, this.mForegroundPaddingRight) : this.mPaddingRight + this.mForegroundPaddingRight;
     }
@@ -202,7 +199,6 @@ public class FrameLayout extends ViewGroup {
         return isForegroundInsidePadding() ? Math.max(this.mPaddingBottom, this.mForegroundPaddingBottom) : this.mPaddingBottom + this.mForegroundPaddingBottom;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width;
@@ -271,13 +267,11 @@ public class FrameLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         layoutChildren(left, top, right, bottom, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void layoutChildren(int left, int top, int right, int bottom, boolean forceLeftGravity) {
         int count;
         int parentLeft;
@@ -383,7 +377,6 @@ public class FrameLayout extends ViewGroup {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
@@ -407,7 +400,6 @@ public class FrameLayout extends ViewGroup {
         return FrameLayout.class.getName();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);

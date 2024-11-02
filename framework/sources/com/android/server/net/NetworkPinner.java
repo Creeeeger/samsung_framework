@@ -24,9 +24,12 @@ public class NetworkPinner extends ConnectivityManager.NetworkCallback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class Callback extends ConnectivityManager.NetworkCallback {
+        /* synthetic */ Callback(CallbackIA callbackIA) {
+            this();
+        }
+
         private Callback() {
         }
 

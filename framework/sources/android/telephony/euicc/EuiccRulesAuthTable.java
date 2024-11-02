@@ -13,13 +13,14 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class EuiccRulesAuthTable implements Parcelable {
     public static final Parcelable.Creator<EuiccRulesAuthTable> CREATOR = new Parcelable.Creator<EuiccRulesAuthTable>() { // from class: android.telephony.euicc.EuiccRulesAuthTable.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EuiccRulesAuthTable createFromParcel(Parcel source) {
             return new EuiccRulesAuthTable(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EuiccRulesAuthTable[] newArray(int size) {
             return new EuiccRulesAuthTable[size];
@@ -33,6 +34,14 @@ public final class EuiccRulesAuthTable implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface PolicyRuleFlag {
+    }
+
+    /* synthetic */ EuiccRulesAuthTable(Parcel parcel, EuiccRulesAuthTableIA euiccRulesAuthTableIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ EuiccRulesAuthTable(int[] iArr, CarrierIdentifier[][] carrierIdentifierArr, int[] iArr2, EuiccRulesAuthTableIA euiccRulesAuthTableIA) {
+        this(iArr, carrierIdentifierArr, iArr2);
     }
 
     /* loaded from: classes3.dex */
@@ -139,7 +148,10 @@ public final class EuiccRulesAuthTable implements Parcelable {
         dest.writeIntArray(this.mPolicyRuleFlags);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x004e, code lost:            return false;     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x004e, code lost:
+    
+        return false;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -233,5 +245,22 @@ public final class EuiccRulesAuthTable implements Parcelable {
             this.mCarrierIds[i] = (CarrierIdentifier[]) source.createTypedArray(CarrierIdentifier.CREATOR);
         }
         this.mPolicyRuleFlags = source.createIntArray();
+    }
+
+    /* renamed from: android.telephony.euicc.EuiccRulesAuthTable$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EuiccRulesAuthTable> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EuiccRulesAuthTable createFromParcel(Parcel source) {
+            return new EuiccRulesAuthTable(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EuiccRulesAuthTable[] newArray(int size) {
+            return new EuiccRulesAuthTable[size];
+        }
     }
 }

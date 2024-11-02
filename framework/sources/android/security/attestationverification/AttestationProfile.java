@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AttestationProfile implements Parcelable {
     public static final Parcelable.Creator<AttestationProfile> CREATOR = new Parcelable.Creator<AttestationProfile>() { // from class: android.security.attestationverification.AttestationProfile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AttestationProfile[] newArray(int size) {
             return new AttestationProfile[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AttestationProfile createFromParcel(Parcel in) {
             return new AttestationProfile(in);
@@ -131,6 +132,23 @@ public final class AttestationProfile implements Parcelable {
         AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.AttestationProfileId.class, (Annotation) null, attestationProfileId);
         this.mPackageName = packageName;
         this.mProfileName = profileName;
+    }
+
+    /* renamed from: android.security.attestationverification.AttestationProfile$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AttestationProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AttestationProfile[] newArray(int size) {
+            return new AttestationProfile[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AttestationProfile createFromParcel(Parcel in) {
+            return new AttestationProfile(in);
+        }
     }
 
     @Deprecated

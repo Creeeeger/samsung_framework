@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="The method {@link TileService#startActivityAndCollapse(Intent)} will verify that only apps targeting {@link android.os.Build.VERSION_CODES#UPSIDE_DOWN_CAKE} or higher will not be allowed to use it." enableSinceTargetSdk="34" id="241766793" name="START_ACTIVITY_NEEDS_PENDING_INTENT"><meta-data definedIn="android.service.quicksettings.TileService" sourcePosition="frameworks/base/core/java/android/service/quicksettings/TileService.java:319"/></compat-change></config>
+Error decode xml
+java.util.zip.ZipException: invalid END header (bad central directory offset)
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
+

@@ -27,13 +27,13 @@ public class MessageChannelRouter {
     private final Map<Integer, List<MessageChannel>> messageSubscribers = new HashMap();
     private ReplayMessageChannel replayChannel;
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class ReplayMessageChannel extends BlockingMessageChannel {
+    public static class ReplayMessageChannel extends BlockingMessageChannel {
         public ReplayMessageChannel(int replay) {
             super("", replay);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.samsung.android.sume.core.message.BlockingMessageChannel, com.samsung.android.sume.core.channel.Channel
         public void send(Message data) {
             Log.d(MessageChannelRouter.TAG, "send replay message: " + data.getCode());
@@ -64,7 +64,6 @@ public class MessageChannelRouter {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public List<MessageChannel> queryMessageChannel(int code) {
         ReplayMessageChannel replayMessageChannel;
         String str = TAG;
@@ -108,7 +107,7 @@ public class MessageChannelRouter {
             Map<Boolean, List<Message>> partitions = (Map) replayMessages.stream().collect(Collectors.partitioningBy(new Predicate() { // from class: com.samsung.android.sume.core.message.MessageChannelRouter$$ExternalSyntheticLambda1
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
-                    return MessageChannelRouter.this.m8810xbafa26ef((Message) obj);
+                    return MessageChannelRouter.this.m8802xbafa26ef((Message) obj);
                 }
             }));
             if (partitions.containsKey(false)) {
@@ -128,9 +127,8 @@ public class MessageChannelRouter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$addMessageSubscriber$1$com-samsung-android-sume-core-message-MessageChannelRouter, reason: not valid java name */
-    public /* synthetic */ boolean m8810xbafa26ef(Message it) {
+    /* renamed from: lambda$addMessageSubscriber$1$com-samsung-android-sume-core-message-MessageChannelRouter */
+    public /* synthetic */ boolean m8802xbafa26ef(Message it) {
         return this.messageSubscribers.containsKey(Integer.valueOf(it.getCode()));
     }
 

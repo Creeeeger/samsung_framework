@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SoundDoseRecord implements Parcelable {
     public static final Parcelable.Creator<SoundDoseRecord> CREATOR = new Parcelable.Creator<SoundDoseRecord>() { // from class: android.media.SoundDoseRecord.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SoundDoseRecord createFromParcel(Parcel _aidl_source) {
             SoundDoseRecord _aidl_out = new SoundDoseRecord();
@@ -16,7 +18,6 @@ public class SoundDoseRecord implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SoundDoseRecord[] newArray(int _aidl_size) {
             return new SoundDoseRecord[_aidl_size];
@@ -26,6 +27,25 @@ public class SoundDoseRecord implements Parcelable {
     public int duration = 0;
     public float value = 0.0f;
     public float averageMel = 0.0f;
+
+    /* renamed from: android.media.SoundDoseRecord$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SoundDoseRecord> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SoundDoseRecord createFromParcel(Parcel _aidl_source) {
+            SoundDoseRecord _aidl_out = new SoundDoseRecord();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SoundDoseRecord[] newArray(int _aidl_size) {
+            return new SoundDoseRecord[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

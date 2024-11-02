@@ -257,7 +257,6 @@ public class CertificateFactory extends CertificateFactorySpi {
         return new PKIXCertPath(certificates);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class ExCertificateException extends CertificateException {
         private Throwable cause;

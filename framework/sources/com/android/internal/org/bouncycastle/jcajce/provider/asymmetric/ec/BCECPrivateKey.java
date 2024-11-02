@@ -139,7 +139,6 @@ public class BCECPrivateKey implements ECPrivateKey, com.android.internal.org.bo
         this.configuration = configuration;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCECPrivateKey(String algorithm, PrivateKeyInfo info, ProviderConfiguration configuration) throws IOException {
         this.algorithm = KeyProperties.KEY_ALGORITHM_EC;
         this.attrCarrier = new PKCS12BagAttributeCarrierImpl();

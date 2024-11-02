@@ -46,7 +46,6 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
     private IQuickAccessWalletService mService;
     private final QuickAccessWalletServiceInfo mServiceInfo;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public QuickAccessWalletClientImpl(Context context, Executor bgExecutor) {
         this.mContext = context.getApplicationContext();
         this.mServiceInfo = QuickAccessWalletServiceInfo.tryCreate(context);
@@ -77,7 +76,7 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
     }
 
     @Override // android.service.quickaccesswallet.QuickAccessWalletClient
-    public void getWalletCards(Executor executor, final GetWalletCardsRequest request, final QuickAccessWalletClient.OnWalletCardsRetrievedCallback callback) {
+    public void getWalletCards(Executor executor, GetWalletCardsRequest request, final QuickAccessWalletClient.OnWalletCardsRetrievedCallback callback) {
         if (!isWalletServiceAvailable()) {
             executor.execute(new Runnable() { // from class: android.service.quickaccesswallet.QuickAccessWalletClientImpl$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
@@ -86,8 +85,18 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
                 }
             });
         } else {
-            final BaseCallbacks serviceCallback = new AnonymousClass1(executor, callback);
+            BaseCallbacks serviceCallback = new AnonymousClass1(executor, callback);
             executeApiCall(new ApiCaller("onWalletCardsRequested") { // from class: android.service.quickaccesswallet.QuickAccessWalletClientImpl.2
+                final /* synthetic */ GetWalletCardsRequest val$request;
+                final /* synthetic */ BaseCallbacks val$serviceCallback;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass2(String desc, GetWalletCardsRequest request2, BaseCallbacks serviceCallback2) {
+                    super(desc);
+                    request = request2;
+                    serviceCallback = serviceCallback2;
+                }
+
                 @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
                 public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
                     service.onWalletCardsRequested(request, serviceCallback);
@@ -101,8 +110,7 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$1, reason: invalid class name */
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends BaseCallbacks {
         final /* synthetic */ QuickAccessWalletClient.OnWalletCardsRetrievedCallback val$callback;
@@ -140,17 +148,66 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         }
     }
 
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 extends ApiCaller {
+        final /* synthetic */ GetWalletCardsRequest val$request;
+        final /* synthetic */ BaseCallbacks val$serviceCallback;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass2(String desc, GetWalletCardsRequest request2, BaseCallbacks serviceCallback2) {
+            super(desc);
+            request = request2;
+            serviceCallback = serviceCallback2;
+        }
+
+        @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
+        public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
+            service.onWalletCardsRequested(request, serviceCallback);
+        }
+
+        @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
+        public void onApiError() {
+            serviceCallback.onGetWalletCardsFailure(new GetWalletCardsError(null, null));
+        }
+    }
+
     @Override // android.service.quickaccesswallet.QuickAccessWalletClient
-    public void selectWalletCard(final SelectWalletCardRequest request) {
+    public void selectWalletCard(SelectWalletCardRequest request) {
         if (!isWalletServiceAvailable()) {
             return;
         }
         executeApiCall(new ApiCaller("onWalletCardSelected") { // from class: android.service.quickaccesswallet.QuickAccessWalletClientImpl.3
+            final /* synthetic */ SelectWalletCardRequest val$request;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass3(String desc, SelectWalletCardRequest request2) {
+                super(desc);
+                request = request2;
+            }
+
             @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
             public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
                 service.onWalletCardSelected(request);
             }
         });
+    }
+
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$3 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass3 extends ApiCaller {
+        final /* synthetic */ SelectWalletCardRequest val$request;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass3(String desc, SelectWalletCardRequest request2) {
+            super(desc);
+            request = request2;
+        }
+
+        @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
+        public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
+            service.onWalletCardSelected(request);
+        }
     }
 
     @Override // android.service.quickaccesswallet.QuickAccessWalletClient
@@ -159,11 +216,28 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
             return;
         }
         executeApiCall(new ApiCaller("onWalletDismissed") { // from class: android.service.quickaccesswallet.QuickAccessWalletClientImpl.4
+            AnonymousClass4(String desc) {
+                super(desc);
+            }
+
             @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
             public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
                 service.onWalletDismissed();
             }
         });
+    }
+
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$4 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass4 extends ApiCaller {
+        AnonymousClass4(String desc) {
+            super(desc);
+        }
+
+        @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
+        public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
+            service.onWalletDismissed();
+        }
     }
 
     @Override // android.service.quickaccesswallet.QuickAccessWalletClient
@@ -172,12 +246,22 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
     }
 
     @Override // android.service.quickaccesswallet.QuickAccessWalletClient
-    public void addWalletServiceEventListener(Executor executor, final QuickAccessWalletClient.WalletServiceEventListener listener) {
+    public void addWalletServiceEventListener(Executor executor, QuickAccessWalletClient.WalletServiceEventListener listener) {
         if (!isWalletServiceAvailable()) {
             return;
         }
-        final BaseCallbacks callback = new AnonymousClass5(executor, listener);
+        BaseCallbacks callback = new AnonymousClass5(executor, listener);
         executeApiCall(new ApiCaller("registerListener") { // from class: android.service.quickaccesswallet.QuickAccessWalletClientImpl.6
+            final /* synthetic */ BaseCallbacks val$callback;
+            final /* synthetic */ QuickAccessWalletClient.WalletServiceEventListener val$listener;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass6(String desc, QuickAccessWalletClient.WalletServiceEventListener listener2, BaseCallbacks callback2) {
+                super(desc);
+                listener = listener2;
+                callback = callback2;
+            }
+
             @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
             public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
                 String listenerId = UUID.randomUUID().toString();
@@ -188,8 +272,7 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$5, reason: invalid class name */
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$5 */
     /* loaded from: classes3.dex */
     public class AnonymousClass5 extends BaseCallbacks {
         final /* synthetic */ Executor val$executor;
@@ -215,12 +298,42 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         }
     }
 
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$6 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass6 extends ApiCaller {
+        final /* synthetic */ BaseCallbacks val$callback;
+        final /* synthetic */ QuickAccessWalletClient.WalletServiceEventListener val$listener;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass6(String desc, QuickAccessWalletClient.WalletServiceEventListener listener2, BaseCallbacks callback2) {
+            super(desc);
+            listener = listener2;
+            callback = callback2;
+        }
+
+        @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
+        public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
+            String listenerId = UUID.randomUUID().toString();
+            WalletServiceEventListenerRequest request = new WalletServiceEventListenerRequest(listenerId);
+            QuickAccessWalletClientImpl.this.mEventListeners.put(listener, listenerId);
+            service.registerWalletServiceEventListener(request, callback);
+        }
+    }
+
     @Override // android.service.quickaccesswallet.QuickAccessWalletClient
-    public void removeWalletServiceEventListener(final QuickAccessWalletClient.WalletServiceEventListener listener) {
+    public void removeWalletServiceEventListener(QuickAccessWalletClient.WalletServiceEventListener listener) {
         if (!isWalletServiceAvailable()) {
             return;
         }
         executeApiCall(new ApiCaller("unregisterListener") { // from class: android.service.quickaccesswallet.QuickAccessWalletClientImpl.7
+            final /* synthetic */ QuickAccessWalletClient.WalletServiceEventListener val$listener;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass7(String desc, QuickAccessWalletClient.WalletServiceEventListener listener2) {
+                super(desc);
+                listener = listener2;
+            }
+
             @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
             public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
                 String listenerId = (String) QuickAccessWalletClientImpl.this.mEventListeners.remove(listener);
@@ -233,12 +346,33 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         });
     }
 
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$7 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass7 extends ApiCaller {
+        final /* synthetic */ QuickAccessWalletClient.WalletServiceEventListener val$listener;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass7(String desc, QuickAccessWalletClient.WalletServiceEventListener listener2) {
+            super(desc);
+            listener = listener2;
+        }
+
+        @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
+        public void performApiCall(IQuickAccessWalletService service) throws RemoteException {
+            String listenerId = (String) QuickAccessWalletClientImpl.this.mEventListeners.remove(listener);
+            if (listenerId == null) {
+                return;
+            }
+            WalletServiceEventListenerRequest request = new WalletServiceEventListenerRequest(listenerId);
+            service.unregisterWalletServiceEventListener(request);
+        }
+    }
+
     @Override // java.io.Closeable, java.lang.AutoCloseable
     public void close() throws IOException {
         disconnect();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$disconnect$1() {
         disconnectInternal(true);
     }
@@ -264,7 +398,7 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         return createIntent(walletActivity, packageName, QuickAccessWalletService.ACTION_VIEW_WALLET);
     }
 
-    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$8, reason: invalid class name */
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$8 */
     /* loaded from: classes3.dex */
     class AnonymousClass8 extends BaseCallbacks {
         final /* synthetic */ Executor val$executor;
@@ -292,13 +426,38 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
 
     @Override // android.service.quickaccesswallet.QuickAccessWalletClient
     public void getWalletPendingIntent(Executor executor, QuickAccessWalletClient.WalletPendingIntentCallback pendingIntentCallback) {
-        final BaseCallbacks callbacks = new AnonymousClass8(executor, pendingIntentCallback);
+        BaseCallbacks callbacks = new AnonymousClass8(executor, pendingIntentCallback);
         executeApiCall(new ApiCaller("getTargetActivityPendingIntent") { // from class: android.service.quickaccesswallet.QuickAccessWalletClientImpl.9
+            final /* synthetic */ BaseCallbacks val$callbacks;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass9(String desc, BaseCallbacks callbacks2) {
+                super(desc);
+                callbacks = callbacks2;
+            }
+
             @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
             void performApiCall(IQuickAccessWalletService service) throws RemoteException {
                 service.onTargetActivityIntentRequested(callbacks);
             }
         });
+    }
+
+    /* renamed from: android.service.quickaccesswallet.QuickAccessWalletClientImpl$9 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass9 extends ApiCaller {
+        final /* synthetic */ BaseCallbacks val$callbacks;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass9(String desc, BaseCallbacks callbacks2) {
+            super(desc);
+            callbacks = callbacks2;
+        }
+
+        @Override // android.service.quickaccesswallet.QuickAccessWalletClientImpl.ApiCaller
+        void performApiCall(IQuickAccessWalletService service) throws RemoteException {
+            service.onTargetActivityIntentRequested(callbacks);
+        }
     }
 
     @Override // android.service.quickaccesswallet.QuickAccessWalletClient
@@ -405,7 +564,6 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void connectInternal() {
         if (this.mServiceInfo == null) {
             Log.w(TAG, "Wallet service unavailable");
@@ -427,13 +585,11 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         resetServiceConnectionTimeout();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$connectInternal$2(Intent intent, int flags) {
         this.mContext.bindService(intent, this, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: onConnectedInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onConnectedInternal */
     public void lambda$onServiceConnected$7(IQuickAccessWalletService service) {
         if (!this.mIsConnected) {
             Log.w(TAG, "onConnectInternal but connection closed");
@@ -459,7 +615,6 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         }, 5, 60000L);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$resetServiceConnectionTimeout$3() {
         disconnectInternal(true);
     }
@@ -493,12 +648,10 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         this.mRequestQueue.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$disconnectInternal$4() {
         disconnectInternal(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$disconnectInternal$5() {
         this.mContext.unbindService(this);
     }
@@ -512,8 +665,7 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: executeInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: executeInternal */
     public void lambda$executeApiCall$6(ApiCaller apiCaller) {
         IQuickAccessWalletService iQuickAccessWalletService;
         if (this.mIsConnected && (iQuickAccessWalletService = this.mService) != null) {
@@ -539,10 +691,13 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static abstract class ApiCaller {
         private final String mDesc;
+
+        /* synthetic */ ApiCaller(String str, ApiCallerIA apiCallerIA) {
+            this(str);
+        }
 
         abstract void performApiCall(IQuickAccessWalletService iQuickAccessWalletService) throws RemoteException;
 
@@ -588,9 +743,12 @@ public class QuickAccessWalletClientImpl implements QuickAccessWalletClient, Ser
         return Settings.Secure.getIntForUser(this.mContext.getContentResolver(), Settings.Secure.USER_SETUP_COMPLETE, 0, -2) == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class BaseCallbacks extends IQuickAccessWalletServiceCallbacks.Stub {
+        /* synthetic */ BaseCallbacks(BaseCallbacksIA baseCallbacksIA) {
+            this();
+        }
+
         private BaseCallbacks() {
         }
 

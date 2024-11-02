@@ -13,7 +13,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CellularBatteryStats implements Parcelable {
     public static final Parcelable.Creator<CellularBatteryStats> CREATOR = new Parcelable.Creator<CellularBatteryStats>() { // from class: android.os.connectivity.CellularBatteryStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellularBatteryStats createFromParcel(Parcel in) {
             long loggingDurationMs = in.readLong();
@@ -33,7 +35,6 @@ public final class CellularBatteryStats implements Parcelable {
             return new CellularBatteryStats(loggingDurationMs, kernelActiveTimeMs, numPacketsTx, numBytesTx, numPacketsRx, numBytesRx, sleepTimeMs, idleTimeMs, rxTimeMs, Long.valueOf(energyConsumedMaMs), timeInRatMs, timeInRxSignalStrengthLevelMs, txTimeMs, monitoredRailChargeConsumedMaMs);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellularBatteryStats[] newArray(int size) {
             return new CellularBatteryStats[size];
@@ -53,6 +54,37 @@ public final class CellularBatteryStats implements Parcelable {
     private final long[] mTimeInRatMs;
     private final long[] mTimeInRxSignalStrengthLevelMs;
     private final long[] mTxTimeMs;
+
+    /* renamed from: android.os.connectivity.CellularBatteryStats$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellularBatteryStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellularBatteryStats createFromParcel(Parcel in) {
+            long loggingDurationMs = in.readLong();
+            long kernelActiveTimeMs = in.readLong();
+            long numPacketsTx = in.readLong();
+            long numBytesTx = in.readLong();
+            long numPacketsRx = in.readLong();
+            long numBytesRx = in.readLong();
+            long sleepTimeMs = in.readLong();
+            long idleTimeMs = in.readLong();
+            long rxTimeMs = in.readLong();
+            long energyConsumedMaMs = in.readLong();
+            long[] timeInRatMs = in.createLongArray();
+            long[] timeInRxSignalStrengthLevelMs = in.createLongArray();
+            long[] txTimeMs = in.createLongArray();
+            long monitoredRailChargeConsumedMaMs = in.readLong();
+            return new CellularBatteryStats(loggingDurationMs, kernelActiveTimeMs, numPacketsTx, numBytesTx, numPacketsRx, numBytesRx, sleepTimeMs, idleTimeMs, rxTimeMs, Long.valueOf(energyConsumedMaMs), timeInRatMs, timeInRxSignalStrengthLevelMs, txTimeMs, monitoredRailChargeConsumedMaMs);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellularBatteryStats[] newArray(int size) {
+            return new CellularBatteryStats[size];
+        }
+    }
 
     public CellularBatteryStats(long loggingDurationMs, long kernelActiveTimeMs, long numPacketsTx, long numBytesTx, long numPacketsRx, long numBytesRx, long sleepTimeMs, long idleTimeMs, long rxTimeMs, Long energyConsumedMaMs, long[] timeInRatMs, long[] timeInRxSignalStrengthLevelMs, long[] txTimeMs, long monitoredRailChargeConsumedMaMs) {
         this.mLoggingDurationMs = loggingDurationMs;

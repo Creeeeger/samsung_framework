@@ -97,8 +97,9 @@ public interface ISyncContext extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISyncContext {
+        public static class Proxy implements ISyncContext {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

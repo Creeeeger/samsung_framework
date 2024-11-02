@@ -131,8 +131,9 @@ public interface IGnssAntennaInfo extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGnssAntennaInfo {
+        public static class Proxy implements IGnssAntennaInfo {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

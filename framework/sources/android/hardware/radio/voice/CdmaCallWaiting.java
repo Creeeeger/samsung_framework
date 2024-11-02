@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaCallWaiting implements Parcelable {
     public static final Parcelable.Creator<CdmaCallWaiting> CREATOR = new Parcelable.Creator<CdmaCallWaiting>() { // from class: android.hardware.radio.voice.CdmaCallWaiting.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CdmaCallWaiting createFromParcel(Parcel _aidl_source) {
             CdmaCallWaiting _aidl_out = new CdmaCallWaiting();
@@ -17,7 +19,6 @@ public class CdmaCallWaiting implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaCallWaiting[] newArray(int _aidl_size) {
             return new CdmaCallWaiting[_aidl_size];
@@ -43,6 +44,25 @@ public class CdmaCallWaiting implements Parcelable {
     public int numberPresentation = 0;
     public int numberType = 0;
     public int numberPlan = 0;
+
+    /* renamed from: android.hardware.radio.voice.CdmaCallWaiting$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CdmaCallWaiting> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaCallWaiting createFromParcel(Parcel _aidl_source) {
+            CdmaCallWaiting _aidl_out = new CdmaCallWaiting();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaCallWaiting[] newArray(int _aidl_size) {
+            return new CdmaCallWaiting[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

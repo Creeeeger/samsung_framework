@@ -7,7 +7,6 @@ import android.os.Bundle;
 final class SubtitleImpl extends Subtitle {
     private Bundle mBundle;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SubtitleImpl(Bundle bundle) {
         this.mBundle = null;
         this.mBundle = bundle;

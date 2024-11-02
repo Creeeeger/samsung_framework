@@ -1,8 +1,8 @@
 package com.android.internal.os;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class ZygoteSecurityException extends RuntimeException {
-    /* JADX INFO: Access modifiers changed from: package-private */
+public class ZygoteSecurityException extends RuntimeException {
     public ZygoteSecurityException(String message) {
         super(message);
     }

@@ -115,8 +115,9 @@ public interface ICountryDetector extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ICountryDetector {
+        public static class Proxy implements ICountryDetector {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

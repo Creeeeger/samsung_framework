@@ -53,7 +53,6 @@ public class SliceQuery {
         }).findAny().isPresent();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$contains$0(SliceItem item, SliceItem s) {
         return s == item;
     }
@@ -75,7 +74,6 @@ public class SliceQuery {
         }).collect(Collectors.toList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$findAll$1(String type, String[] hints, String[] nonHints, SliceItem item) {
         return compareTypes(item, type) && item.hasHints(hints) && !item.hasAnyHints(nonHints);
     }
@@ -110,21 +108,25 @@ public class SliceQuery {
         }).findFirst().orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$find$2(String type, String[] hints, String[] nonHints, SliceItem item) {
         return compareTypes(item, type) && item.hasHints(hints) && !item.hasAnyHints(nonHints);
     }
 
     public static Stream<SliceItem> stream(SliceItem slice) {
-        final Queue<SliceItem> items = new LinkedList<>();
+        Queue<SliceItem> items = new LinkedList<>();
         items.add(slice);
         Iterator<SliceItem> iterator = new Iterator<SliceItem>() { // from class: android.app.slice.SliceQuery.1
+            final /* synthetic */ Queue val$items;
+
+            AnonymousClass1(Queue items2) {
+                items = items2;
+            }
+
             @Override // java.util.Iterator
             public boolean hasNext() {
                 return items.size() != 0;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.util.Iterator
             public SliceItem next() {
                 SliceItem item = (SliceItem) items.poll();
@@ -135,6 +137,30 @@ public class SliceQuery {
             }
         };
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
+    }
+
+    /* renamed from: android.app.slice.SliceQuery$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Iterator<SliceItem> {
+        final /* synthetic */ Queue val$items;
+
+        AnonymousClass1(Queue items2) {
+            items = items2;
+        }
+
+        @Override // java.util.Iterator
+        public boolean hasNext() {
+            return items.size() != 0;
+        }
+
+        @Override // java.util.Iterator
+        public SliceItem next() {
+            SliceItem item = (SliceItem) items.poll();
+            if (SliceQuery.compareTypes(item, "slice") || SliceQuery.compareTypes(item, "action")) {
+                items.addAll(item.getSlice().getItems());
+            }
+            return item;
+        }
     }
 
     public static boolean compareTypes(SliceItem item, String desiredType) {

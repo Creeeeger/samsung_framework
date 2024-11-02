@@ -14,13 +14,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class KeyChainSnapshot implements Parcelable {
     public static final Parcelable.Creator<KeyChainSnapshot> CREATOR = new Parcelable.Creator<KeyChainSnapshot>() { // from class: android.security.keystore.recovery.KeyChainSnapshot.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeyChainSnapshot createFromParcel(Parcel in) {
             return new KeyChainSnapshot(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyChainSnapshot[] newArray(int length) {
             return new KeyChainSnapshot[length];
@@ -36,6 +37,10 @@ public final class KeyChainSnapshot implements Parcelable {
     private int mMaxAttempts;
     private byte[] mServerParams;
     private int mSnapshotVersion;
+
+    /* synthetic */ KeyChainSnapshot(KeyChainSnapshotIA keyChainSnapshotIA) {
+        this();
+    }
 
     private KeyChainSnapshot() {
         this.mMaxAttempts = 10;
@@ -76,6 +81,23 @@ public final class KeyChainSnapshot implements Parcelable {
 
     public byte[] getEncryptedRecoveryKeyBlob() {
         return this.mEncryptedRecoveryKeyBlob;
+    }
+
+    /* renamed from: android.security.keystore.recovery.KeyChainSnapshot$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeyChainSnapshot> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyChainSnapshot createFromParcel(Parcel in) {
+            return new KeyChainSnapshot(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeyChainSnapshot[] newArray(int length) {
+            return new KeyChainSnapshot[length];
+        }
     }
 
     /* loaded from: classes3.dex */

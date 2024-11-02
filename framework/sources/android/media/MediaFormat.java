@@ -227,7 +227,6 @@ public final class MediaFormat {
     public @interface VideoEncodingStatisticsLevel {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MediaFormat(Map<String, Object> map) {
         this.mMap = map;
     }
@@ -236,7 +235,6 @@ public final class MediaFormat {
         this.mMap = new HashMap();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Map<String, Object> getMap() {
         return this.mMap;
     }
@@ -370,12 +368,10 @@ public final class MediaFormat {
         this.mMap.remove(KEY_FEATURE_ + name);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public abstract class FilteredMappedKeySet extends AbstractSet<String> {
         private Set<String> mKeys;
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public abstract boolean keepKey(String str);
 
         protected abstract String mapItemToKey(String str);
@@ -408,7 +404,6 @@ public final class MediaFormat {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public class KeyIterator implements Iterator<String> {
             Iterator<String> mIterator;
@@ -425,7 +420,6 @@ public final class MediaFormat {
                 }).collect(Collectors.toList())).iterator();
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ boolean lambda$new$0(String k) {
                 return FilteredMappedKeySet.this.keepKey(k);
             }
@@ -474,7 +468,6 @@ public final class MediaFormat {
             this.mPrefix = prefix;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.media.MediaFormat.FilteredMappedKeySet
         public boolean keepKey(String key) {
             return !key.startsWith(this.mPrefix);
@@ -502,7 +495,6 @@ public final class MediaFormat {
             this.mPrefixLength = prefix.length();
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.media.MediaFormat.FilteredMappedKeySet
         public boolean keepKey(String key) {
             return key.startsWith(this.mPrefix);

@@ -213,8 +213,29 @@ public class WifiNetworkScoreCache extends INetworkScoreCache.Stub {
             this.mHandler = handler;
         }
 
-        void post(final List<ScoredNetwork> updatedNetworks) {
+        /* renamed from: android.net.wifi.WifiNetworkScoreCache$CacheListener$1 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ List val$updatedNetworks;
+
+            AnonymousClass1(List list) {
+                updatedNetworks = list;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                CacheListener.this.networkCacheUpdated(updatedNetworks);
+            }
+        }
+
+        void post(List<ScoredNetwork> updatedNetworks) {
             this.mHandler.post(new Runnable() { // from class: android.net.wifi.WifiNetworkScoreCache.CacheListener.1
+                final /* synthetic */ List val$updatedNetworks;
+
+                AnonymousClass1(List updatedNetworks2) {
+                    updatedNetworks = updatedNetworks2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     CacheListener.this.networkCacheUpdated(updatedNetworks);

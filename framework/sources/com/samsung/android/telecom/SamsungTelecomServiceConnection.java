@@ -19,16 +19,34 @@ public class SamsungTelecomServiceConnection {
     private final Object mLock;
     private TelecomServiceConnection mTelecomServiceConnection;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class TelecomServiceConnection implements ServiceConnection {
+        /* synthetic */ TelecomServiceConnection(SamsungTelecomServiceConnection samsungTelecomServiceConnection, TelecomServiceConnectionIA telecomServiceConnectionIA) {
+            this();
+        }
+
         private TelecomServiceConnection() {
+        }
+
+        /* renamed from: com.samsung.android.telecom.SamsungTelecomServiceConnection$TelecomServiceConnection$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements IBinder.DeathRecipient {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.IBinder.DeathRecipient
+            public void binderDied() {
+                SamsungTelecomServiceConnection.this.connectToSamsungTelecom();
+            }
         }
 
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName name, IBinder service) {
             try {
                 service.linkToDeath(new IBinder.DeathRecipient() { // from class: com.samsung.android.telecom.SamsungTelecomServiceConnection.TelecomServiceConnection.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.os.IBinder.DeathRecipient
                     public void binderDied() {
                         SamsungTelecomServiceConnection.this.connectToSamsungTelecom();

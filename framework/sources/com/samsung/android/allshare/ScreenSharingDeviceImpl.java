@@ -3,6 +3,7 @@ package com.samsung.android.allshare;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.ScreenSharingDevice;
 import com.sec.android.allshare.iface.CVMessage;
@@ -13,7 +14,6 @@ import com.sec.android.allshare.iface.message.AllShareEvent;
 import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implements IBundleHolder, IHandlerHolder {
     private static final String TAG_CLASS = "ScreenSharingDeviceImpl";
@@ -31,6 +31,10 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
         this.mActionResponseListener = null;
         this.mIsSubscribed = false;
         this.mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ScreenSharingDeviceImpl.1
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
             @Override // com.samsung.android.allshare.AllShareEventHandler
             public void handleEventMessage(CVMessage cvm) {
                 ERROR error = ERROR.FAIL;
@@ -49,6 +53,10 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
             }
         };
         this.mAllShareRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ScreenSharingDeviceImpl.2
+            AnonymousClass2(Looper looper) {
+                super(looper);
+            }
+
             @Override // com.samsung.android.allshare.AllShareResponseHandler
             public void handleResponseMessage(CVMessage cvm) {
                 String actionID = cvm.getActionID();
@@ -85,13 +93,16 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ScreenSharingDeviceImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mDeviceImpl = null;
         this.mUPnPDeviceEventListener = null;
         this.mActionResponseListener = null;
         this.mIsSubscribed = false;
         this.mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ScreenSharingDeviceImpl.1
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
             @Override // com.samsung.android.allshare.AllShareEventHandler
             public void handleEventMessage(CVMessage cvm) {
                 ERROR error = ERROR.FAIL;
@@ -110,6 +121,10 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
             }
         };
         this.mAllShareRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ScreenSharingDeviceImpl.2
+            AnonymousClass2(Looper looper) {
+                super(looper);
+            }
+
             @Override // com.samsung.android.allshare.AllShareResponseHandler
             public void handleResponseMessage(CVMessage cvm) {
                 String actionID = cvm.getActionID();
@@ -149,6 +164,32 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
         } else {
             this.mAllShareConnector = connector;
             this.mDeviceImpl = deviceImpl;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ScreenSharingDeviceImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareEventHandler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            ERROR error = ERROR.FAIL;
+            try {
+                Bundle resBundle = cvm.getBundle();
+                ERROR error2 = ERROR.stringToEnum(resBundle.getString("BUNDLE_ENUM_ERROR"));
+                if (error2 == null) {
+                    error2 = ERROR.FAIL;
+                }
+                ScreenSharingDeviceImpl.this.mUPnPDeviceEventListener.onEventReceived("", "", error2);
+            } catch (Error err) {
+                DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "mEventHandler.handleEventMessage Error", err);
+            } catch (Exception e) {
+                DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "mEventHandler.handleEventMessage Exception");
+            }
         }
     }
 
@@ -262,6 +303,49 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
             this.mIsSubscribed = false;
         }
         return ERROR.SUCCESS;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ScreenSharingDeviceImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareResponseHandler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cvm) {
+            String actionID = cvm.getActionID();
+            Bundle resBundle = cvm.getBundle();
+            if (actionID == null || resBundle == null) {
+                return;
+            }
+            ERROR err = ERROR.stringToEnum(resBundle.getString("BUNDLE_ENUM_ERROR"));
+            try {
+                if (ScreenSharingDeviceImpl.this.mActionResponseListener != null) {
+                    if (actionID.equals(AllShareAction.ACTION_CONNECT_SCREENSHARING_MOBILE_TO_TV)) {
+                        if (err.equals(ERROR.SUCCESS)) {
+                            String tBSSID = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_BSSID);
+                            String tWlanFreq = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_WLANFREQ);
+                            String tListenFreq = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_LISTENFREQ);
+                            DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "handleResponseMessage : actionID :ACTION_CONNECT_SCREENSHARING_MOBILE_TO_TV response SUCCESS");
+                            ScreenSharingDeviceImpl.this.mActionResponseListener.onConnectScreenSharingM2TV(tBSSID, tWlanFreq, tListenFreq);
+                        }
+                    } else if (actionID.equals(AllShareAction.ACTION_CONNECT_SCREENSHARING_TV_TO_MOBILE) && err.equals(ERROR.SUCCESS)) {
+                        String tBSSID2 = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_BSSID);
+                        String tWlanFreq2 = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_WLANFREQ);
+                        String tListenFreq2 = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_LISTENFREQ);
+                        String tWFDSourcePort = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_WFDSOURCEPORT);
+                        DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "handleResponseMessage : actionID :ACTION_CONNECT_SCREENSHARING_TV_TO_MOBILE response SUCCESS");
+                        ScreenSharingDeviceImpl.this.mActionResponseListener.onConnectScreenSharingTV2M(tBSSID2, tWlanFreq2, tListenFreq2, tWFDSourcePort);
+                    }
+                }
+            } catch (Error e) {
+                DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "mAllShareRespHandler.handleResponseMessage Error", e);
+            } catch (Exception e2) {
+                DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "mAllShareRespHandler.handleResponseMessage Exception", e2);
+            }
+        }
     }
 
     @Override // com.samsung.android.allshare.Device

@@ -37,7 +37,6 @@ public enum AudioInOutFlag {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AudioInOutFlag fromString(String rawString) {
         for (AudioInOutFlag _f : values()) {
             if (_f.getRawName().equals(rawString)) {

@@ -21,6 +21,10 @@ public final class PackageOverride {
     public @interface EvaluatedOverride {
     }
 
+    /* synthetic */ PackageOverride(long j, long j2, boolean z, PackageOverrideIA packageOverrideIA) {
+        this(j, j2, z);
+    }
+
     private PackageOverride(long minVersionCode, long maxVersionCode, boolean enabled) {
         this.mMinVersionCode = minVersionCode;
         this.mMaxVersionCode = maxVersionCode;

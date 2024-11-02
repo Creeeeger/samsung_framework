@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
 /* loaded from: classes3.dex */
 public final class CallAudioState implements Parcelable {
     public static final Parcelable.Creator<CallAudioState> CREATOR = new Parcelable.Creator<CallAudioState>() { // from class: android.telecom.CallAudioState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CallAudioState createFromParcel(Parcel source) {
             boolean isMuted = source.readByte() != 0;
@@ -28,7 +30,6 @@ public final class CallAudioState implements Parcelable {
             return new CallAudioState(isMuted, route, supportedRouteMask, activeBluetoothDevice, arrayList);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallAudioState[] newArray(int size) {
             return new CallAudioState[size];
@@ -150,6 +151,29 @@ public final class CallAudioState implements Parcelable {
             listAppend(buffer, "STREAMING");
         }
         return buffer.toString();
+    }
+
+    /* renamed from: android.telecom.CallAudioState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CallAudioState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallAudioState createFromParcel(Parcel source) {
+            boolean isMuted = source.readByte() != 0;
+            int route = source.readInt();
+            int supportedRouteMask = source.readInt();
+            BluetoothDevice activeBluetoothDevice = (BluetoothDevice) source.readParcelable(ClassLoader.getSystemClassLoader(), BluetoothDevice.class);
+            ArrayList arrayList = new ArrayList();
+            source.readParcelableList(arrayList, ClassLoader.getSystemClassLoader(), BluetoothDevice.class);
+            return new CallAudioState(isMuted, route, supportedRouteMask, activeBluetoothDevice, arrayList);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallAudioState[] newArray(int size) {
+            return new CallAudioState[size];
+        }
     }
 
     @Override // android.os.Parcelable

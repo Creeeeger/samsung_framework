@@ -62,7 +62,6 @@ public class NotificationActionListLayout extends LinearLayout {
         ta.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isPriority(View actionView) {
         return (actionView instanceof EmphasizedNotificationButton) && ((EmphasizedNotificationButton) actionView).isPriority();
     }
@@ -193,7 +192,6 @@ public class NotificationActionListLayout extends LinearLayout {
         return usedWidth;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         countAndRebuildMeasureOrder();
@@ -242,7 +240,6 @@ public class NotificationActionListLayout extends LinearLayout {
         clearMeasureOrder();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int childLeft;
@@ -298,7 +295,6 @@ public class NotificationActionListLayout extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -354,7 +350,6 @@ public class NotificationActionListLayout extends LinearLayout {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$static$0(TextViewInfo a, TextViewInfo b) {
         int priorityComparison = -Boolean.compare(a.mIsPriority, b.mIsPriority);
         if (priorityComparison != 0) {
@@ -363,7 +358,6 @@ public class NotificationActionListLayout extends LinearLayout {
         return Integer.compare(a.mTextLength, b.mTextLength);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static final class TextViewInfo {
         final boolean mIsPriority;

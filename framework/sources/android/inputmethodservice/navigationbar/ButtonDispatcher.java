@@ -8,7 +8,6 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import java.util.ArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public final class ButtonDispatcher {
     private static final int FADE_DURATION_IN = 150;
@@ -36,6 +35,9 @@ public final class ButtonDispatcher {
         }
     };
     private final AnimatorListenerAdapter mFadeListener = new AnimatorListenerAdapter() { // from class: android.inputmethodservice.navigationbar.ButtonDispatcher.1
+        AnonymousClass1() {
+        }
+
         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
         public void onAnimationEnd(Animator animation) {
             ButtonDispatcher.this.mFadeAnimator = null;
@@ -44,12 +46,25 @@ public final class ButtonDispatcher {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(ValueAnimator animation) {
         setAlpha(((Float) animation.getAnimatedValue()).floatValue(), false, false);
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.inputmethodservice.navigationbar.ButtonDispatcher$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ButtonDispatcher.this.mFadeAnimator = null;
+            ButtonDispatcher buttonDispatcher = ButtonDispatcher.this;
+            buttonDispatcher.setVisibility(buttonDispatcher.getAlpha() == 1.0f ? 0 : 4);
+        }
+    }
+
     public ButtonDispatcher(int id) {
         this.mId = id;
     }
@@ -83,7 +98,7 @@ public final class ButtonDispatcher {
             }
             KeyButtonDrawable keyButtonDrawable = this.mImageDrawable;
             if (keyButtonDrawable != null) {
-                button.setImageDrawable(keyButtonDrawable);
+                button.lambda$setImageURIAsync$2(keyButtonDrawable);
             }
             Boolean bool2 = this.mDelayTouchFeedback;
             if (bool2 != null) {
@@ -117,7 +132,7 @@ public final class ButtonDispatcher {
         int numViews = this.mViews.size();
         for (int i = 0; i < numViews; i++) {
             if (this.mViews.get(i) instanceof ButtonInterface) {
-                ((ButtonInterface) this.mViews.get(i)).setImageDrawable(this.mImageDrawable);
+                ((ButtonInterface) this.mViews.get(i)).lambda$setImageURIAsync$2(this.mImageDrawable);
             }
         }
         KeyButtonDrawable keyButtonDrawable = this.mImageDrawable;

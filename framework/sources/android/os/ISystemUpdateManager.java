@@ -93,8 +93,9 @@ public interface ISystemUpdateManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISystemUpdateManager {
+        public static class Proxy implements ISystemUpdateManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

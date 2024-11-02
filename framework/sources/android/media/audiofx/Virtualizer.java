@@ -200,6 +200,10 @@ public class Virtualizer extends AudioEffect {
 
     /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
+        /* synthetic */ BaseParameterListener(Virtualizer virtualizer, BaseParameterListenerIA baseParameterListenerIA) {
+            this();
+        }
+
         private BaseParameterListener() {
         }
 

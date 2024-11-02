@@ -67,8 +67,8 @@ public class SprAttributeShadow extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     /* renamed from: clone */
-    public SprAttributeShadow mo8420clone() throws CloneNotSupportedException {
-        SprAttributeShadow attribute = (SprAttributeShadow) super.mo8420clone();
+    public SprAttributeShadow mo8412clone() throws CloneNotSupportedException {
+        SprAttributeShadow attribute = (SprAttributeShadow) super.mo8412clone();
         attribute.radius = this.radius;
         attribute.dx = this.dx;
         attribute.dy = this.dy;

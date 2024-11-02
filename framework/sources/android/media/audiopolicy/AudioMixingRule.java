@@ -42,6 +42,10 @@ public class AudioMixingRule {
     public @interface MixRole {
     }
 
+    /* synthetic */ AudioMixingRule(int i, Collection collection, boolean z, boolean z2, AudioMixingRuleIA audioMixingRuleIA) {
+        this(i, collection, z, z2);
+    }
+
     private AudioMixingRule(int mixType, Collection<AudioMixMatchCriterion> criteria, boolean allowPrivilegedMediaPlaybackCapture, boolean voiceCommunicationCaptureAllowed) {
         this.mAllowPrivilegedPlaybackCapture = false;
         this.mVoiceCommunicationCaptureAllowed = false;
@@ -87,7 +91,6 @@ public class AudioMixingRule {
             return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void writeToParcel(Parcel dest) {
             dest.writeInt(this.mRule);
             int match_rule = this.mRule & (-32769);
@@ -121,7 +124,6 @@ public class AudioMixingRule {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isAffectingUsage(int usage) {
         Iterator<AudioMixMatchCriterion> it = this.mCriteria.iterator();
         while (it.hasNext()) {
@@ -133,7 +135,6 @@ public class AudioMixingRule {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean containsMatchAttributeRuleForUsage(int usage) {
         Iterator<AudioMixMatchCriterion> it = this.mCriteria.iterator();
         while (it.hasNext()) {
@@ -145,7 +146,6 @@ public class AudioMixingRule {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getTargetMixType() {
         return this.mTargetMixType;
     }
@@ -199,7 +199,6 @@ public class AudioMixingRule {
         return Objects.hash(Integer.valueOf(this.mTargetMixType), this.mCriteria, Boolean.valueOf(this.mAllowPrivilegedPlaybackCapture), Boolean.valueOf(this.mVoiceCommunicationCaptureAllowed));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidSystemApiRule(int rule) {
         switch (rule) {
             case 1:
@@ -213,7 +212,6 @@ public class AudioMixingRule {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidAttributesSystemApiRule(int rule) {
         switch (rule) {
             case 1:
@@ -224,7 +222,6 @@ public class AudioMixingRule {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidRule(int rule) {
         int match_rule = (-32769) & rule;
         switch (match_rule) {
@@ -239,7 +236,6 @@ public class AudioMixingRule {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isPlayerRule(int rule) {
         int match_rule = (-32769) & rule;
         switch (match_rule) {
@@ -251,7 +247,6 @@ public class AudioMixingRule {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isRecorderRule(int rule) {
         int match_rule = (-32769) & rule;
         switch (match_rule) {
@@ -262,7 +257,6 @@ public class AudioMixingRule {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isAudioAttributeRule(int match_rule) {
         switch (match_rule) {
             case 1:
@@ -406,12 +400,10 @@ public class AudioMixingRule {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$addRuleInternal$0(int oppositeRule, AudioMixMatchCriterion criterion) {
             return criterion.mRule == oppositeRule;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder addRuleFromParcel(Parcel in) throws IllegalArgumentException {
             int rule = in.readInt();
             int match_rule = (-32769) & rule;

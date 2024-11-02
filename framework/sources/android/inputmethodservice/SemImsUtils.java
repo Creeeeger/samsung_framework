@@ -28,7 +28,6 @@ final class SemImsUtils {
     SemImsUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getNavigationBarHeight(Resources resources) {
         int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         if (resourceId > 0) {
@@ -37,22 +36,18 @@ final class SemImsUtils {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isHoneyboard(String packageName) {
         return "com.samsung.android.honeyboard".equals(packageName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isMockIme(String packageName) {
         return "com.android.cts.mockime".equals(packageName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isBixbyDictationId(String id) {
         return "com.samsung.android.bixby.service/.dictation.DictationInputMethodService".equals(id);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Context createDisplayContextAndSetTheme(Context context, int theme, InputMethodManager mImm) {
         int curTokenDisplayId = mImm.getCurTokenDisplayId();
         Log.d(TAG, "onCreate: FocusDisplayId=" + mImm.getCurrentFocusDisplayID() + ", CurTokenDisplayId " + curTokenDisplayId);
@@ -71,7 +66,6 @@ final class SemImsUtils {
         return context;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void sendBroadcastShownState(Context context, EditorInfo editorInfo, boolean isInputViewShown, int candidatesVisibility) {
         Log.d(TAG, "sendBroadcastImeShownState: isInputViewShown=" + isInputViewShown + " candidatesVisibility=" + candidatesVisibility);
         Intent respInt = new Intent();
@@ -90,7 +84,6 @@ final class SemImsUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void sendBroadcastForSSRM(Context context, boolean isVisible) {
         Log.d(TAG, "sendInputViewShownStateSSRM(): " + isVisible);
         Intent respInt = new Intent();
@@ -100,7 +93,6 @@ final class SemImsUtils {
         context.sendBroadcast(respInt);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getExtractSideMargin() {
         float secFloatingFeatureSystemuiConfigCornerRound = Float.parseFloat(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_SYSTEMUI_CONFIG_CORNER_ROUND"));
         int extractSideMargin = (int) (((10.0f - secFloatingFeatureSystemuiConfigCornerRound) * secFloatingFeatureSystemuiConfigCornerRound) - 1.0f);
@@ -108,7 +100,6 @@ final class SemImsUtils {
         return extractSideMargin * 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static FrameLayout.LayoutParams getLayoutParamsExtractSideMargin(int extractSideMargin) {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(-1, -1, 48);
         layoutParams.setMarginStart(extractSideMargin);
@@ -116,7 +107,6 @@ final class SemImsUtils {
         return layoutParams;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getPixel(Resources resources, int dp) {
         return (int) TypedValue.applyDimension(1, dp, resources.getDisplayMetrics());
     }

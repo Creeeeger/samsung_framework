@@ -229,7 +229,6 @@ public class StorageManager {
 
     private static native boolean setQuotaProjectId(String str, long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class StorageEventListenerDelegate extends IStorageEventListener.Stub {
         final StorageVolumeCallback mCallback;
@@ -252,7 +251,6 @@ public class StorageManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUsbMassStorageConnectionChanged$0(boolean connected) {
             this.mListener.onUsbMassStorageConnectionChanged(connected);
         }
@@ -267,7 +265,6 @@ public class StorageManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onStorageStateChanged$1(String path, String oldState, String newState) {
             this.mListener.onStorageStateChanged(path, oldState, newState);
             if (path != null) {
@@ -289,7 +286,6 @@ public class StorageManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVolumeStateChanged$2(VolumeInfo vol, int oldState, int newState) {
             this.mListener.onVolumeStateChanged(vol, oldState, newState);
             File path = vol.getPathForUser(UserHandle.myUserId());
@@ -312,7 +308,6 @@ public class StorageManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVolumeRecordChanged$3(VolumeRecord rec) {
             this.mListener.onVolumeRecordChanged(rec);
         }
@@ -327,7 +322,6 @@ public class StorageManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVolumeForgotten$4(String fsUuid) {
             this.mListener.onVolumeForgotten(fsUuid);
         }
@@ -342,7 +336,6 @@ public class StorageManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDiskScanned$5(DiskInfo disk, int volumeCount) {
             this.mListener.onDiskScanned(disk, volumeCount);
         }
@@ -357,15 +350,19 @@ public class StorageManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDiskDestroyed$6(DiskInfo disk) {
             this.mListener.onDiskDestroyed(disk);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private class ObbActionListener extends IObbActionListener.Stub {
+    public class ObbActionListener extends IObbActionListener.Stub {
         private SparseArray<ObbListenerDelegate> mListeners;
+
+        /* synthetic */ ObbActionListener(StorageManager storageManager, ObbActionListenerIA obbActionListenerIA) {
+            this();
+        }
 
         private ObbActionListener() {
             this.mListeners = new SparseArray<>();
@@ -394,12 +391,10 @@ public class StorageManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getNextNonce() {
         return this.mNextNonce.getAndIncrement();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class ObbListenerDelegate {
         private final Handler mHandler;
@@ -410,6 +405,14 @@ public class StorageManager {
             this.nonce = StorageManager.this.getNextNonce();
             this.mObbEventListenerRef = new WeakReference<>(listener);
             this.mHandler = new Handler(StorageManager.this.mLooper) { // from class: android.os.storage.StorageManager.ObbListenerDelegate.1
+                final /* synthetic */ StorageManager val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper, StorageManager storageManager) {
+                    super(looper);
+                    r3 = storageManager;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     OnObbStateChangeListener changeListener = ObbListenerDelegate.this.getListener();
@@ -419,6 +422,28 @@ public class StorageManager {
                     changeListener.onObbStateChange((String) msg.obj, msg.arg1);
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.os.storage.StorageManager$ObbListenerDelegate$1 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ StorageManager val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper, StorageManager storageManager) {
+                super(looper);
+                r3 = storageManager;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                OnObbStateChangeListener changeListener = ObbListenerDelegate.this.getListener();
+                if (changeListener == null) {
+                    return;
+                }
+                changeListener.onObbStateChange((String) msg.obj, msg.arg1);
+            }
         }
 
         OnObbStateChangeListener getListener() {
@@ -805,10 +830,35 @@ public class StorageManager {
         }
     }
 
+    /* renamed from: android.os.storage.StorageManager$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends IVoldTaskListener.Stub {
+        final /* synthetic */ CompletableFuture val$result;
+
+        AnonymousClass1(CompletableFuture completableFuture) {
+            result = completableFuture;
+        }
+
+        @Override // android.os.IVoldTaskListener
+        public void onStatus(int status, PersistableBundle extras) {
+        }
+
+        @Override // android.os.IVoldTaskListener
+        public void onFinished(int status, PersistableBundle extras) {
+            result.complete(extras);
+        }
+    }
+
     @Deprecated
     public long benchmark(String volId) {
-        final CompletableFuture<PersistableBundle> result = new CompletableFuture<>();
+        CompletableFuture<PersistableBundle> result = new CompletableFuture<>();
         benchmark(volId, new IVoldTaskListener.Stub() { // from class: android.os.storage.StorageManager.1
+            final /* synthetic */ CompletableFuture val$result;
+
+            AnonymousClass1(CompletableFuture result2) {
+                result = result2;
+            }
+
             @Override // android.os.IVoldTaskListener
             public void onStatus(int status, PersistableBundle extras) {
             }
@@ -819,7 +869,7 @@ public class StorageManager {
             }
         });
         try {
-            return result.get(3L, TimeUnit.MINUTES).getLong("run", Long.MAX_VALUE) * 1000000;
+            return result2.get(3L, TimeUnit.MINUTES).getLong("run", Long.MAX_VALUE) * 1000000;
         } catch (Exception e) {
             return Long.MAX_VALUE;
         }
@@ -931,7 +981,10 @@ public class StorageManager {
         return getStorageVolume(getVolumeList(), file);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0084, code lost:            if (r0.equals("external_primary") != false) goto L34;     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0084, code lost:
+    
+        if (r0.equals("external_primary") != false) goto L105;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

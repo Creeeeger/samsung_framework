@@ -43,6 +43,9 @@ public class SuspendedAppActivity extends AlertActivity implements DialogInterfa
     private PackageManager mPm;
     private SuspendDialogInfo mSuppliedDialogInfo;
     private BroadcastReceiver mSuspendModifiedReceiver = new BroadcastReceiver() { // from class: com.android.internal.app.SuspendedAppActivity.1
+        AnonymousClass1() {
+        }
+
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_PACKAGES_SUSPENSION_CHANGED.equals(intent.getAction())) {
@@ -63,7 +66,27 @@ public class SuspendedAppActivity extends AlertActivity implements DialogInterfa
     private int mUserId;
     private UsageStatsManager mUsm;
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.app.SuspendedAppActivity$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_PACKAGES_SUSPENSION_CHANGED.equals(intent.getAction())) {
+                String[] modified = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
+                if (ArrayUtils.contains(modified, SuspendedAppActivity.this.mSuspendedPackage)) {
+                    SuspendedAppActivity suspendedAppActivity = SuspendedAppActivity.this;
+                    if (!suspendedAppActivity.isPackageSuspended(suspendedAppActivity.mSuspendedPackage) && !SuspendedAppActivity.this.isFinishing()) {
+                        Slog.w(SuspendedAppActivity.TAG, "Package " + SuspendedAppActivity.this.mSuspendedPackage + " has modified suspension conditions while dialog was visible. Finishing.");
+                        SuspendedAppActivity.this.finish();
+                    }
+                }
+            }
+        }
+    }
+
     public boolean isPackageSuspended(String packageName) {
         try {
             return this.mPm.isPackageSuspended(packageName);
@@ -233,7 +256,6 @@ public class SuspendedAppActivity extends AlertActivity implements DialogInterfa
         registerReceiverAsUser(this.mSuspendModifiedReceiver, UserHandle.of(this.mUserId), suspendModifiedFilter, null, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         super.onDestroy();
@@ -245,6 +267,9 @@ public class SuspendedAppActivity extends AlertActivity implements DialogInterfa
         if (km.isKeyguardLocked()) {
             this.mIsKeyguardLocked = true;
             km.requestDismissKeyguard(this, dismissMessage, new KeyguardManager.KeyguardDismissCallback() { // from class: com.android.internal.app.SuspendedAppActivity.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.app.KeyguardManager.KeyguardDismissCallback
                 public void onDismissError() {
                     Slog.e(SuspendedAppActivity.TAG, "Error while dismissing keyguard. Keeping the dialog visible.");
@@ -256,6 +281,24 @@ public class SuspendedAppActivity extends AlertActivity implements DialogInterfa
                     SuspendedAppActivity.this.finish();
                 }
             });
+        }
+    }
+
+    /* renamed from: com.android.internal.app.SuspendedAppActivity$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends KeyguardManager.KeyguardDismissCallback {
+        AnonymousClass2() {
+        }
+
+        @Override // android.app.KeyguardManager.KeyguardDismissCallback
+        public void onDismissError() {
+            Slog.e(SuspendedAppActivity.TAG, "Error while dismissing keyguard. Keeping the dialog visible.");
+        }
+
+        @Override // android.app.KeyguardManager.KeyguardDismissCallback
+        public void onDismissCancelled() {
+            Slog.w(SuspendedAppActivity.TAG, "Keyguard dismiss was cancelled. Finishing.");
+            SuspendedAppActivity.this.finish();
         }
     }
 
@@ -308,7 +351,6 @@ public class SuspendedAppActivity extends AlertActivity implements DialogInterfa
         finish();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onPause() {
         super.onPause();

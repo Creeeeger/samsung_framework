@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class SmartspaceTargetEvent implements Parcelable {
     public static final Parcelable.Creator<SmartspaceTargetEvent> CREATOR = new Parcelable.Creator<SmartspaceTargetEvent>() { // from class: android.app.smartspace.SmartspaceTargetEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmartspaceTargetEvent createFromParcel(Parcel parcel) {
             return new SmartspaceTargetEvent(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartspaceTargetEvent[] newArray(int size) {
             return new SmartspaceTargetEvent[size];
@@ -37,6 +38,31 @@ public final class SmartspaceTargetEvent implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface EventType {
+    }
+
+    /* synthetic */ SmartspaceTargetEvent(SmartspaceTarget smartspaceTarget, String str, int i, SmartspaceTargetEventIA smartspaceTargetEventIA) {
+        this(smartspaceTarget, str, i);
+    }
+
+    /* synthetic */ SmartspaceTargetEvent(Parcel parcel, SmartspaceTargetEventIA smartspaceTargetEventIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.app.smartspace.SmartspaceTargetEvent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmartspaceTargetEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartspaceTargetEvent createFromParcel(Parcel parcel) {
+            return new SmartspaceTargetEvent(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartspaceTargetEvent[] newArray(int size) {
+            return new SmartspaceTargetEvent[size];
+        }
     }
 
     private SmartspaceTargetEvent(SmartspaceTarget smartspaceTarget, String smartspaceActionId, int eventType) {

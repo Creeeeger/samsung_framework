@@ -104,8 +104,9 @@ public interface IShortcutChangeCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IShortcutChangeCallback {
+        public static class Proxy implements IShortcutChangeCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

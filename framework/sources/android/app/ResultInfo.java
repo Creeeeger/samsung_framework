@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class ResultInfo implements Parcelable {
     public static final Parcelable.Creator<ResultInfo> CREATOR = new Parcelable.Creator<ResultInfo>() { // from class: android.app.ResultInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ResultInfo createFromParcel(Parcel in) {
             return new ResultInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResultInfo[] newArray(int size) {
             return new ResultInfo[size];
@@ -51,6 +52,23 @@ public class ResultInfo implements Parcelable {
             this.mData.writeToParcel(out, 0);
         } else {
             out.writeInt(0);
+        }
+    }
+
+    /* renamed from: android.app.ResultInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ResultInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResultInfo createFromParcel(Parcel in) {
+            return new ResultInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResultInfo[] newArray(int size) {
+            return new ResultInfo[size];
         }
     }
 

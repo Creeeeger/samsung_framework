@@ -26,19 +26,16 @@ class SRTTrack extends WebVttTrack {
     private static final String TAG = "SRTTrack";
     private final Handler mEventHandler;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SRTTrack(WebVttRenderingWidget renderingWidget, MediaFormat format) {
         super(renderingWidget, format);
         this.mEventHandler = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SRTTrack(Handler eventHandler, MediaFormat format) {
         super(null, format);
         this.mEventHandler = eventHandler;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.media.SubtitleTrack
     public void onData(SubtitleData data) {
         try {

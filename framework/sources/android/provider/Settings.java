@@ -381,7 +381,6 @@ public final class Settings {
     public @interface EnableMmsDataReason {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     /* loaded from: classes3.dex */
@@ -590,7 +589,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class GenerationTracker {
         private static final boolean DEBUG = "eng".equals(Build.TYPE);
@@ -656,7 +654,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class ContentProviderHolder {
         private IContentProvider mContentProvider;
@@ -685,7 +682,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class NameValueCache {
         private static final String NAME_EQ_PLACEHOLDER = "name=?";
@@ -705,7 +701,10 @@ public final class Settings {
         private static final boolean DEBUG = "eng".equals(Build.TYPE);
         private static final String[] SELECT_VALUE_PROJECTION = {"value"};
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* synthetic */ NameValueCache(Uri uri, String str, String str2, String str3, String str4, String str5, ContentProviderHolder contentProviderHolder, Class cls, NameValueCacheIA nameValueCacheIA) {
+            this(uri, str, str2, str3, str4, str5, contentProviderHolder, cls);
+        }
+
         public /* synthetic */ void lambda$new$0(String name) {
             synchronized (this) {
                 Log.e(Settings.TAG, "Error accessing generation tracker - removing");
@@ -1062,7 +1061,6 @@ public final class Settings {
         return isCallingPackageAllowedToDrawOverlays(context, Process.myUid(), context.getOpPackageName(), false) || context.checkSelfPermission(Manifest.permission.SYSTEM_APPLICATION_OVERLAY) == 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends NameValueTable> void getPublicSettingsForClass(Class<T> callerClass, Set<String> allKeys, Set<String> readableKeys, ArrayMap<String, Integer> keysWithMaxTargetSdk) {
         Field[] allFields = callerClass.getDeclaredFields();
         for (Field field : allFields) {
@@ -1088,7 +1086,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float parseFloatSetting(String settingValue, String settingName) throws SettingNotFoundException {
         if (settingValue == null) {
             throw new SettingNotFoundException(settingName);
@@ -1100,7 +1097,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float parseFloatSettingWithDefault(String settingValue, float defaultValue) {
         if (settingValue == null) {
             return defaultValue;
@@ -1112,7 +1108,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int parseIntSetting(String settingValue, String settingName) throws SettingNotFoundException {
         if (settingValue == null) {
             throw new SettingNotFoundException(settingName);
@@ -1124,7 +1119,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int parseIntSettingWithDefault(String settingValue, int defaultValue) {
         if (settingValue == null) {
             return defaultValue;
@@ -1136,7 +1130,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static long parseLongSetting(String settingValue, String settingName) throws SettingNotFoundException {
         if (settingValue == null) {
             throw new SettingNotFoundException(settingName);
@@ -1148,7 +1141,6 @@ public final class Settings {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static long parseLongSettingWithDefault(String settingValue, long defaultValue) {
         if (settingValue == null) {
             return defaultValue;
@@ -2925,7 +2917,6 @@ public final class Settings {
             return putStringForUser(resolver, name, value, null, false, userHandle, overrideableByRestore);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static boolean putStringForUser(ContentResolver resolver, String name, String value, String tag, boolean makeDefault, int userHandle, boolean overrideableByRestore) {
             if (MOVED_TO_SECURE.contains(name)) {
                 Log.w(Settings.TAG, "Setting " + name + " has moved from android.provider.Settings.System to android.provider.Settings.Secure, value is unchanged.");
@@ -8170,7 +8161,6 @@ public final class Settings {
             sNameValueCache.clearGenerationTrackerForTest();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
         public static void handleMonitorCallback(Bundle result, Executor executor, final DeviceConfig.MonitorCallback monitorCallback) {
             char c;

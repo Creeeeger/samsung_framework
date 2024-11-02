@@ -6,13 +6,14 @@ import com.android.internal.os.IResultReceiver;
 /* loaded from: classes3.dex */
 public class ResultReceiver implements Parcelable {
     public static final Parcelable.Creator<ResultReceiver> CREATOR = new Parcelable.Creator<ResultReceiver>() { // from class: android.os.ResultReceiver.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ResultReceiver createFromParcel(Parcel in) {
             return new ResultReceiver(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResultReceiver[] newArray(int size) {
             return new ResultReceiver[size];
@@ -22,7 +23,6 @@ public class ResultReceiver implements Parcelable {
     final boolean mLocal;
     IResultReceiver mReceiver;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public class MyRunnable implements Runnable {
         final int mResultCode;
@@ -39,8 +39,9 @@ public class ResultReceiver implements Parcelable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    class MyResultReceiver extends IResultReceiver.Stub {
+    public class MyResultReceiver extends IResultReceiver.Stub {
         MyResultReceiver() {
         }
 
@@ -79,7 +80,6 @@ public class ResultReceiver implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onReceiveResult(int resultCode, Bundle resultData) {
     }
 
@@ -102,5 +102,22 @@ public class ResultReceiver implements Parcelable {
         this.mLocal = false;
         this.mHandler = null;
         this.mReceiver = IResultReceiver.Stub.asInterface(in.readStrongBinder());
+    }
+
+    /* renamed from: android.os.ResultReceiver$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ResultReceiver> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResultReceiver createFromParcel(Parcel in) {
+            return new ResultReceiver(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResultReceiver[] newArray(int size) {
+            return new ResultReceiver[size];
+        }
     }
 }

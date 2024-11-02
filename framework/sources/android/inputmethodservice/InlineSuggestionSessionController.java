@@ -15,7 +15,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public class InlineSuggestionSessionController {
     private static final String TAG = "InlineSuggestionSessionController";
@@ -29,14 +28,12 @@ public class InlineSuggestionSessionController {
     private final Consumer<InlineSuggestionsResponse> mResponseConsumer;
     private InlineSuggestionSession mSession;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InlineSuggestionSessionController(Function<Bundle, InlineSuggestionsRequest> requestSupplier, Supplier<IBinder> hostInputTokenSupplier, Consumer<InlineSuggestionsResponse> responseConsumer) {
         this.mRequestSupplier = requestSupplier;
         this.mHostInputTokenSupplier = hostInputTokenSupplier;
         this.mResponseConsumer = responseConsumer;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onMakeInlineSuggestionsRequest(InlineSuggestionsRequestInfo requestInfo, IInlineSuggestionsRequestCallback callback) {
         InlineSuggestionSession inlineSuggestionSession = this.mSession;
         if (inlineSuggestionSession != null) {
@@ -56,7 +53,6 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyOnStartInput(String imeClientPackageName, AutofillId imeFieldId) {
         if (imeClientPackageName == null || imeFieldId == null) {
             return;
@@ -79,7 +75,6 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyOnShowInputRequested(boolean requestResult) {
         InlineSuggestionSession inlineSuggestionSession = this.mSession;
         if (inlineSuggestionSession != null && inlineSuggestionSession.shouldSendImeStatus()) {
@@ -91,7 +86,6 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyOnStartInputView() {
         this.mImeInputViewStarted = true;
         InlineSuggestionSession inlineSuggestionSession = this.mSession;
@@ -104,7 +98,6 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyOnFinishInputView() {
         this.mImeInputViewStarted = false;
         InlineSuggestionSession inlineSuggestionSession = this.mSession;
@@ -117,7 +110,6 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyOnFinishInput() {
         this.mImeClientPackageName = null;
         this.mImeClientFieldId = null;
@@ -137,7 +129,6 @@ public class InlineSuggestionSessionController {
         return match(requestInfo, this.mImeClientPackageName, this.mImeClientFieldId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean match(AutofillId autofillId) {
         return match(autofillId, this.mImeClientFieldId);
     }

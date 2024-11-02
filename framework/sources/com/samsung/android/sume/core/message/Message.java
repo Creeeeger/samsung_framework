@@ -183,12 +183,10 @@ public class Message {
         return message;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Message(int code) {
         this(typeOf(code), code);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Message(int type, int code) {
         this.data = new HashMap();
         Def.require(isValidCode(type, code), "invalid code(" + code + ") for message(" + type + NavigationBarInflaterView.KEY_CODE_END, new Object[0]);
@@ -196,7 +194,6 @@ public class Message {
         this.code = code;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Message(Message other) {
         this.data = new HashMap();
         this.type = other.type;
@@ -231,12 +228,10 @@ public class Message {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$isValidCode$0(int typeOfCode, Integer it) {
         return it.intValue() == typeOfCode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$isValidCode$1(int typeOfCode, Integer it) {
         return it.intValue() == typeOfCode;
     }
@@ -257,14 +252,13 @@ public class Message {
         return Arrays.stream(keys).allMatch(new Predicate() { // from class: com.samsung.android.sume.core.message.Message$$ExternalSyntheticLambda2
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return Message.this.m8807xc0a52838((String) obj);
+                return Message.this.m8799xc0a52838((String) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$containsAll$2$com-samsung-android-sume-core-message-Message, reason: not valid java name */
-    public /* synthetic */ boolean m8807xc0a52838(String it) {
+    /* renamed from: lambda$containsAll$2$com-samsung-android-sume-core-message-Message */
+    public /* synthetic */ boolean m8799xc0a52838(String it) {
         return this.data.containsKey(it);
     }
 
@@ -272,14 +266,13 @@ public class Message {
         return Arrays.stream(keys).anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.message.Message$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return Message.this.m8808x136f6cc4((String) obj);
+                return Message.this.m8800x136f6cc4((String) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$containsAny$3$com-samsung-android-sume-core-message-Message, reason: not valid java name */
-    public /* synthetic */ boolean m8808x136f6cc4(String it) {
+    /* renamed from: lambda$containsAny$3$com-samsung-android-sume-core-message-Message */
+    public /* synthetic */ boolean m8800x136f6cc4(String it) {
         return this.data.containsKey(it);
     }
 
@@ -334,16 +327,15 @@ public class Message {
             publisher.getChannels(this.code).forEach(new Consumer() { // from class: com.samsung.android.sume.core.message.Message$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    Message.this.m8809lambda$post$4$comsamsungandroidsumecoremessageMessage((MessageChannel) obj);
+                    Message.this.m8801lambda$post$4$comsamsungandroidsumecoremessageMessage((MessageChannel) obj);
                 }
             });
         }
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$post$4$com-samsung-android-sume-core-message-Message, reason: not valid java name */
-    public /* synthetic */ void m8809lambda$post$4$comsamsungandroidsumecoremessageMessage(MessageChannel it) {
+    /* renamed from: lambda$post$4$com-samsung-android-sume-core-message-Message */
+    public /* synthetic */ void m8801lambda$post$4$comsamsungandroidsumecoremessageMessage(MessageChannel it) {
         Log.d(TAG, "post: " + this.code + " to channel[" + it.getId() + "]: " + it);
         it.send(this);
     }

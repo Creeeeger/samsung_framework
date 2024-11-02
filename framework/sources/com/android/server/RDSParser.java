@@ -71,8 +71,9 @@ public class RDSParser {
         return this.mFinalProgramService;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class RadioText {
+    public class RadioText {
         private char[] buffer_rt;
         private String final_rt = null;
         private int buffer_validate = 0;
@@ -126,13 +127,18 @@ public class RDSParser {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class ProgramService {
+    public class ProgramService {
         private char[] buffer_ps;
         private int buffer_validate;
         private String final_ps;
         private boolean isPSValid;
         private int receivedChar;
+
+        /* synthetic */ ProgramService(RDSParser rDSParser, ProgramServiceIA programServiceIA) {
+            this();
+        }
 
         private ProgramService() {
             this.final_ps = null;
@@ -178,7 +184,6 @@ public class RDSParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void Log(String msg) {
         Log.d(TAG, msg);
     }

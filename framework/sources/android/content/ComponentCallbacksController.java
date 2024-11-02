@@ -64,7 +64,6 @@ public class ComponentCallbacksController {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$dispatchTrimMemory$1(int level, ComponentCallbacks callbacks) {
         if (callbacks instanceof ComponentCallbacks2) {
             ((ComponentCallbacks2) callbacks).onTrimMemory(level);

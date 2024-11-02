@@ -8,13 +8,14 @@ import android.telecom.PhoneAccountHandle;
 /* loaded from: classes3.dex */
 public final class VisualVoicemailSms implements Parcelable {
     public static final Parcelable.Creator<VisualVoicemailSms> CREATOR = new Parcelable.Creator<VisualVoicemailSms>() { // from class: android.telephony.VisualVoicemailSms.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VisualVoicemailSms createFromParcel(Parcel in) {
             return new Builder().setPhoneAccountHandle((PhoneAccountHandle) in.readParcelable(null, PhoneAccountHandle.class)).setPrefix(in.readString()).setFields(in.readBundle()).setMessageBody(in.readString()).build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VisualVoicemailSms[] newArray(int size) {
             return new VisualVoicemailSms[size];
@@ -77,6 +78,23 @@ public final class VisualVoicemailSms implements Parcelable {
         public Builder setMessageBody(String messageBody) {
             this.mMessageBody = messageBody;
             return this;
+        }
+    }
+
+    /* renamed from: android.telephony.VisualVoicemailSms$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VisualVoicemailSms> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VisualVoicemailSms createFromParcel(Parcel in) {
+            return new Builder().setPhoneAccountHandle((PhoneAccountHandle) in.readParcelable(null, PhoneAccountHandle.class)).setPrefix(in.readString()).setFields(in.readBundle()).setMessageBody(in.readString()).build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VisualVoicemailSms[] newArray(int size) {
+            return new VisualVoicemailSms[size];
         }
     }
 

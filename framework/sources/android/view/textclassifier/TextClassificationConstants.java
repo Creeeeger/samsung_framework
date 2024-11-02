@@ -72,7 +72,6 @@ public final class TextClassificationConstants {
         return DeviceConfig.getInt("textclassifier", SMART_SELECTION_TRIM_DELTA, 120);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(IndentingPrintWriter pw) {
         pw.println("TextClassificationConstants:");
         pw.increaseIndent();

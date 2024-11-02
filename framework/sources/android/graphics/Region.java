@@ -10,7 +10,9 @@ public class Region implements Parcelable {
     public long mNativeRegion;
     private static final Pools.SynchronizedPool<Region> sPool = new Pools.SynchronizedPool<>(10);
     public static final Parcelable.Creator<Region> CREATOR = new Parcelable.Creator<Region>() { // from class: android.graphics.Region.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Region createFromParcel(Parcel p) {
             long ni = Region.nativeCreateFromParcel(p);
@@ -20,7 +22,6 @@ public class Region implements Parcelable {
             return new Region(ni);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Region[] newArray(int size) {
             return new Region[size];
@@ -29,7 +30,6 @@ public class Region implements Parcelable {
 
     private static native long nativeConstructor();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeCreateFromParcel(Parcel parcel);
 
     private static native void nativeDestructor(long j);
@@ -215,6 +215,27 @@ public class Region implements Parcelable {
         sPool.release(this);
     }
 
+    /* renamed from: android.graphics.Region$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Region> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Region createFromParcel(Parcel p) {
+            long ni = Region.nativeCreateFromParcel(p);
+            if (ni == 0) {
+                throw new RuntimeException();
+            }
+            return new Region(ni);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Region[] newArray(int size) {
+            return new Region[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -244,7 +265,6 @@ public class Region implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Region(long ni) {
         if (ni == 0) {
             throw new RuntimeException();
@@ -256,7 +276,6 @@ public class Region implements Parcelable {
         this(ni);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final long ni() {
         return this.mNativeRegion;
     }

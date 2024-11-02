@@ -5,14 +5,12 @@ import android.util.LongSparseArray;
 import android.util.Pools;
 import com.android.internal.widget.RecyclerView;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class ViewInfoStore {
     private static final boolean DEBUG = false;
     final ArrayMap<RecyclerView.ViewHolder, InfoRecord> mLayoutHolderMap = new ArrayMap<>();
     final LongSparseArray<RecyclerView.ViewHolder> mOldChangedHolders = new LongSparseArray<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public interface ProcessCallback {
         void processAppeared(RecyclerView.ViewHolder viewHolder, RecyclerView.ItemAnimator.ItemHolderInfo itemHolderInfo, RecyclerView.ItemAnimator.ItemHolderInfo itemHolderInfo2);
@@ -24,13 +22,11 @@ public class ViewInfoStore {
         void unused(RecyclerView.ViewHolder viewHolder);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clear() {
         this.mLayoutHolderMap.clear();
         this.mOldChangedHolders.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addToPreLayout(RecyclerView.ViewHolder holder, RecyclerView.ItemAnimator.ItemHolderInfo info) {
         InfoRecord record = this.mLayoutHolderMap.get(holder);
         if (record == null) {
@@ -41,18 +37,15 @@ public class ViewInfoStore {
         record.flags |= 4;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isDisappearing(RecyclerView.ViewHolder holder) {
         InfoRecord record = this.mLayoutHolderMap.get(holder);
         return (record == null || (record.flags & 1) == 0) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RecyclerView.ItemAnimator.ItemHolderInfo popFromPreLayout(RecyclerView.ViewHolder vh) {
         return popFromLayoutStep(vh, 4);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RecyclerView.ItemAnimator.ItemHolderInfo popFromPostLayout(RecyclerView.ViewHolder vh) {
         return popFromLayoutStep(vh, 8);
     }
@@ -79,12 +72,10 @@ public class ViewInfoStore {
         return info;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addToOldChangeHolders(long key, RecyclerView.ViewHolder holder) {
         this.mOldChangedHolders.put(key, holder);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addToAppearedInPreLayoutHolders(RecyclerView.ViewHolder holder, RecyclerView.ItemAnimator.ItemHolderInfo info) {
         InfoRecord record = this.mLayoutHolderMap.get(holder);
         if (record == null) {
@@ -95,18 +86,15 @@ public class ViewInfoStore {
         record.preInfo = info;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isInPreLayout(RecyclerView.ViewHolder viewHolder) {
         InfoRecord record = this.mLayoutHolderMap.get(viewHolder);
         return (record == null || (record.flags & 4) == 0) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RecyclerView.ViewHolder getFromOldChangeHolders(long key) {
         return this.mOldChangedHolders.get(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addToPostLayout(RecyclerView.ViewHolder holder, RecyclerView.ItemAnimator.ItemHolderInfo info) {
         InfoRecord record = this.mLayoutHolderMap.get(holder);
         if (record == null) {
@@ -117,7 +105,6 @@ public class ViewInfoStore {
         record.flags |= 8;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addToDisappearedInLayout(RecyclerView.ViewHolder holder) {
         InfoRecord record = this.mLayoutHolderMap.get(holder);
         if (record == null) {
@@ -127,7 +114,6 @@ public class ViewInfoStore {
         record.flags |= 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeFromDisappearedInLayout(RecyclerView.ViewHolder holder) {
         InfoRecord record = this.mLayoutHolderMap.get(holder);
         if (record == null) {
@@ -136,7 +122,6 @@ public class ViewInfoStore {
         record.flags &= -2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void process(ProcessCallback callback) {
         for (int index = this.mLayoutHolderMap.size() - 1; index >= 0; index--) {
             RecyclerView.ViewHolder viewHolder = this.mLayoutHolderMap.keyAt(index);
@@ -164,7 +149,6 @@ public class ViewInfoStore {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeViewHolder(RecyclerView.ViewHolder holder) {
         int i = this.mOldChangedHolders.size() - 1;
         while (true) {
@@ -184,7 +168,6 @@ public class ViewInfoStore {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onDetach() {
         InfoRecord.drainCache();
     }
@@ -193,7 +176,6 @@ public class ViewInfoStore {
         removeFromDisappearedInLayout(viewHolder);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class InfoRecord {
         static final int FLAG_APPEAR = 2;

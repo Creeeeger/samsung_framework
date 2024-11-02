@@ -43,6 +43,12 @@ public class LocalServiceProxy implements ServiceProxy, MediaController.OnEventL
     private ExecutorService requestThreadPool = Executors.newCachedThreadPool();
     private final List<ResponseHolder> responseList = new CopyOnWriteArrayList();
     private ServiceConnection connection = new ServiceConnection() { // from class: com.samsung.android.sume.core.service.LocalServiceProxy.1
+        final /* synthetic */ MediaController.OnEventListener val$eventListener;
+
+        AnonymousClass1(MediaController.OnEventListener this) {
+            this = this;
+        }
+
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocalServiceProxy.this.localService = ((LocalService.LocalBinder) service).getService();
@@ -73,7 +79,7 @@ public class LocalServiceProxy implements ServiceProxy, MediaController.OnEventL
     private Future<Void> requestJob = this.requestThreadPool.submit(new Runnable() { // from class: com.samsung.android.sume.core.service.LocalServiceProxy$$ExternalSyntheticLambda3
         @Override // java.lang.Runnable
         public final void run() {
-            LocalServiceProxy.this.m8828x9a09a3ff();
+            LocalServiceProxy.this.m8820x9a09a3ff();
         }
     });
 
@@ -91,8 +97,45 @@ public class LocalServiceProxy implements ServiceProxy, MediaController.OnEventL
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$0$com-samsung-android-sume-core-service-LocalServiceProxy, reason: not valid java name */
-    public /* synthetic */ void m8828x9a09a3ff() {
+    /* renamed from: com.samsung.android.sume.core.service.LocalServiceProxy$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements ServiceConnection {
+        final /* synthetic */ MediaController.OnEventListener val$eventListener;
+
+        AnonymousClass1(LocalServiceProxy this) {
+            this = this;
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocalServiceProxy.this.localService = ((LocalService.LocalBinder) service).getService();
+            LocalServiceProxy.this.localService.setEventListener(this);
+            LocalServiceProxy localServiceProxy = LocalServiceProxy.this;
+            localServiceProxy.mediaFilterControllerId = localServiceProxy.localService.createMediaFilterController();
+            LocalServiceProxy.this.mfControllerSync.open();
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            Log.e(LocalServiceProxy.TAG, "onServiceDisconnected E");
+            Exception exception = new IllegalStateException("service disconnected abnormally");
+            LocalServiceProxy.this.onError(Response.of(-4, exception));
+            Log.e(LocalServiceProxy.TAG, "onServiceDisconnected X");
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onBindingDied(ComponentName name) {
+            super.onBindingDied(name);
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onNullBinding(ComponentName name) {
+            super.onNullBinding(name);
+        }
+    }
+
+    /* renamed from: lambda$new$0$com-samsung-android-sume-core-service-LocalServiceProxy */
+    public /* synthetic */ void m8820x9a09a3ff() {
         this.mfControllerSync.block();
         while (true) {
             try {
@@ -153,20 +196,18 @@ public class LocalServiceProxy implements ServiceProxy, MediaController.OnEventL
         return this.requestThreadPool.submit(new Callable() { // from class: com.samsung.android.sume.core.service.LocalServiceProxy$$ExternalSyntheticLambda5
             @Override // java.util.concurrent.Callable
             public final Object call() {
-                return LocalServiceProxy.this.m8829x6d0c7cb0(request, responseHolder);
+                return LocalServiceProxy.this.m8821x6d0c7cb0(request, responseHolder);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$request$1(ResponseHolder responseHolder, Message response) {
         responseHolder.put((Response) response);
         responseHolder.signal();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$request$2$com-samsung-android-sume-core-service-LocalServiceProxy, reason: not valid java name */
-    public /* synthetic */ Response m8829x6d0c7cb0(Request request, ResponseHolder responseHolder) throws Exception {
+    /* renamed from: lambda$request$2$com-samsung-android-sume-core-service-LocalServiceProxy */
+    public /* synthetic */ Response m8821x6d0c7cb0(Request request, ResponseHolder responseHolder) throws Exception {
         ExceptionHandler exceptionHandler;
         try {
             if (!request.isOneWay()) {
@@ -226,7 +267,6 @@ public class LocalServiceProxy implements ServiceProxy, MediaController.OnEventL
         Log.d(TAG, "release X");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$release$3(ResponseHolder it) {
         Log.i(TAG, "send canceled response for " + it.getCode() + " to finish up releasing");
         it.put(Response.of(702));
@@ -248,7 +288,6 @@ public class LocalServiceProxy implements ServiceProxy, MediaController.OnEventL
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onWarn$4(Response response, ResponseHolder it) {
         String str = TAG;
         Log.w(str, "send response(" + response.getCode() + ") for request(" + it.getCode() + NavigationBarInflaterView.KEY_CODE_END);
@@ -257,7 +296,6 @@ public class LocalServiceProxy implements ServiceProxy, MediaController.OnEventL
         it.signal();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onError(final Response response) {
         final Exception exception = response.getException();
         ExceptionHandler exceptionHandler = this.exceptionHandler;
@@ -273,7 +311,6 @@ public class LocalServiceProxy implements ServiceProxy, MediaController.OnEventL
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onError$5(Response response, Exception exception, ResponseHolder it) {
         String str = TAG;
         Log.e(str, "send response(" + response.getCode() + ") for request(" + it.getCode() + NavigationBarInflaterView.KEY_CODE_END);

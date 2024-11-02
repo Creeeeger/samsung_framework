@@ -89,6 +89,10 @@ public class Plugin {
     private class DefaultClickHandler implements PreferencesClickHandler, DialogInterface.OnClickListener {
         private AlertDialog mDialog;
 
+        /* synthetic */ DefaultClickHandler(Plugin plugin, DefaultClickHandlerIA defaultClickHandlerIA) {
+            this();
+        }
+
         private DefaultClickHandler() {
         }
 

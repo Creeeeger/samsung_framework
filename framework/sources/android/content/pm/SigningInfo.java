@@ -6,19 +6,24 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class SigningInfo implements Parcelable {
     public static final Parcelable.Creator<SigningInfo> CREATOR = new Parcelable.Creator<SigningInfo>() { // from class: android.content.pm.SigningInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SigningInfo createFromParcel(Parcel source) {
             return new SigningInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SigningInfo[] newArray(int size) {
             return new SigningInfo[size];
         }
     };
     private final SigningDetails mSigningDetails;
+
+    /* synthetic */ SigningInfo(Parcel parcel, SigningInfoIA signingInfoIA) {
+        this(parcel);
+    }
 
     public SigningInfo() {
         this.mSigningDetails = SigningDetails.UNKNOWN;
@@ -66,5 +71,22 @@ public final class SigningInfo implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int parcelableFlags) {
         this.mSigningDetails.writeToParcel(dest, parcelableFlags);
+    }
+
+    /* renamed from: android.content.pm.SigningInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SigningInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SigningInfo createFromParcel(Parcel source) {
+            return new SigningInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SigningInfo[] newArray(int size) {
+            return new SigningInfo[size];
+        }
     }
 }

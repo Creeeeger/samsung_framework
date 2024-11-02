@@ -211,8 +211,9 @@ public interface IOnAppsChangedListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IOnAppsChangedListener {
+        public static class Proxy implements IOnAppsChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

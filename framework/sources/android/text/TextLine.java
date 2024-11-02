@@ -169,7 +169,6 @@ public class TextLine {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void draw(Canvas c, float x, int top, int y, int bottom) {
         int runCount;
         int runCount2;
@@ -217,7 +216,6 @@ public class TextLine {
         return measure(this.mLen, false, fmi);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void shape(TextShaper.GlyphsConsumer consumer) {
         float x;
         int j;
@@ -495,19 +493,55 @@ public class TextLine {
         return handleRun(start, limit, limit, runIsRtl, null, consumer, x, 0, 0, 0, null, needWidth, null, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x0186, code lost:            r8 = r6;        r1 = -1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x018c, code lost:            if (r8 != (-1)) goto L115;     */
-    /* JADX WARN: Code restructure failed: missing block: B:55:0x018e, code lost:            if (r0 == false) goto L114;     */
-    /* JADX WARN: Code restructure failed: missing block: B:56:0x0190, code lost:            r1 = r27.mLen + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:57:0x0194, code lost:            r6 = r1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:58:?, code lost:            return r6;     */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x0196, code lost:            if (r8 > r11) goto L120;     */
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x0198, code lost:            if (r0 == false) goto L118;     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x019a, code lost:            r1 = r11;     */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x019d, code lost:            r6 = r1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:63:?, code lost:            return r6;     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x019c, code lost:            r1 = 0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x0186, code lost:
+    
+        r8 = r6;
+        r1 = -1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x018c, code lost:
+    
+        if (r8 != (-1)) goto L255;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:55:0x018e, code lost:
+    
+        if (r0 == false) goto L254;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x0190, code lost:
+    
+        r1 = r27.mLen + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x0194, code lost:
+    
+        r6 = r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:?, code lost:
+    
+        return r6;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x0196, code lost:
+    
+        if (r8 > r11) goto L260;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x0198, code lost:
+    
+        if (r0 == false) goto L258;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x019a, code lost:
+    
+        r1 = r11;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x019d, code lost:
+    
+        r6 = r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:63:?, code lost:
+    
+        return r6;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x019c, code lost:
+    
+        r1 = 0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -771,7 +805,6 @@ public class TextLine {
         return endHyphenEdit;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class DecorationInfo {
         public int end;
@@ -780,6 +813,10 @@ public class TextLine {
         public int start;
         public int underlineColor;
         public float underlineThickness;
+
+        /* synthetic */ DecorationInfo(DecorationInfoIA decorationInfoIA) {
+            this();
+        }
 
         private DecorationInfo() {
             this.start = -1;

@@ -352,8 +352,9 @@ public interface ISoundTriggerSession extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements ISoundTriggerSession {
+        public static class Proxy implements ISoundTriggerSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

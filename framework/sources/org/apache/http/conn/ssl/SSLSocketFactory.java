@@ -37,6 +37,10 @@ public class SSLSocketFactory implements LayeredSocketFactory {
     public static final X509HostnameVerifier BROWSER_COMPATIBLE_HOSTNAME_VERIFIER = new BrowserCompatHostnameVerifier();
     public static final X509HostnameVerifier STRICT_HOSTNAME_VERIFIER = new StrictHostnameVerifier();
 
+    /* synthetic */ SSLSocketFactory(SSLSocketFactoryIA sSLSocketFactoryIA) {
+        this();
+    }
+
     /* loaded from: classes6.dex */
     private static class NoPreloadHolder {
         private static final SSLSocketFactory DEFAULT_FACTORY = new SSLSocketFactory();

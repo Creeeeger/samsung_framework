@@ -47,7 +47,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, R> {
     private static final boolean DEBUG = false;
@@ -66,7 +65,6 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
     Object[] mArgs = null;
     int mFlags = 0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class Pool extends Pools.SynchronizedPool<PooledLambdaImpl> {
         public Pool(Object lock) {
@@ -340,7 +338,6 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
         return name.endsWith("Consumer") ? "consumer" : name.endsWith("Function") ? "function" : name.endsWith("Predicate") ? "predicate" : name.endsWith("Supplier") ? "supplier" : name.endsWith("Runnable") ? "runnable" : name;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <E extends PooledLambda> E acquire(Pool pool, Object func, int fNumArgs, int numPlaceholders, int fReturnType, Object a, Object b, Object c, Object d, Object e, Object f, Object g, Object h, Object i, Object j, Object k, Object l) {
         PooledLambdaImpl r = acquire(pool);
         r.mFunc = Objects.requireNonNull(func);
@@ -364,7 +361,6 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
         return r;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static PooledLambdaImpl acquireConstSupplier(int type) {
         PooledLambdaImpl r = acquire(sPool);
         int lambdaType = LambdaType.encode(15, type);
@@ -447,17 +443,14 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
         this.mFlags = i | mask(mask, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int mask(int mask, int value) {
         return (value << Integer.numberOfTrailingZeros(mask)) & mask;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int unmask(int mask, int bits) {
         return (bits & mask) / (1 << Integer.numberOfTrailingZeros(mask));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class LambdaType {
         public static final int MASK = 127;
@@ -530,7 +523,6 @@ public final class PooledLambdaImpl<R> extends OmniFunction<Object, Object, Obje
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes5.dex */
         public static class ReturnType {
             public static final int BOOLEAN = 2;

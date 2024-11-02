@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Telefon działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Telefon uruchomi się ponownie ze %d sekund, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem telefonu.</item>
+        <item quantity="other">Tablet działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Tablet uruchomi się ponownie za %d sekund, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem tabletu.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefon działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Telefon uruchomi się ponownie ze %d sekundę, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem telefonu.</item>
+        <item quantity="one">Tablet działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Tablet uruchomi się ponownie za %d sekundę, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem tabletu.</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefon działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Telefon uruchomi się ponownie ze %d sekundy, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem telefonu.</item>
-        <item quantity="many">Telefon działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Telefon uruchomi się ponownie ze %d sekund, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem telefonu.</item>
+        <item quantity="few">Tablet działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Tablet uruchomi się ponownie za %d sekundy, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem tabletu.</item>
+        <item quantity="many">Tablet działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Tablet uruchomi się ponownie za %d sekund, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem tabletu.</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefon uruchomi się ponownie za %d s</item>
+        <item quantity="other">Tablet uruchomi się ponownie za %d s</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefon uruchomi się ponownie za %d s</item>
+        <item quantity="one">Tablet uruchomi się ponownie za %d s</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefon uruchomi się ponownie za %d s</item>
-        <item quantity="many">Telefon uruchomi się ponownie za %d s</item>
+        <item quantity="few">Tablet uruchomi się ponownie za %d s</item>
+        <item quantity="many">Tablet uruchomi się ponownie za %d s</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">
         <item quantity="other">%d aplikacji zostało zamkniętych automatycznie, ponieważ powodowały przegrzewanie telefonu. Możesz ponownie otworzyć je później po ostygnięciu telefonu.</item>

@@ -81,7 +81,6 @@ public enum AudioChannelMask {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AudioChannelMask fromString(String rawString) {
         for (AudioChannelMask _f : values()) {
             if (_f.getRawName().equals(rawString)) {

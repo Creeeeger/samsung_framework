@@ -128,8 +128,9 @@ public interface IRadioService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IRadioService {
+        public static class Proxy implements IRadioService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -129,7 +129,6 @@ public class Picture {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class PictureCanvas extends Canvas {
         private final Picture mPicture;
@@ -154,7 +153,6 @@ public class Picture {
             super.drawPicture(picture);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.graphics.BaseCanvas
         public boolean onHwFeatureInSwMode() {
             this.mUsesHwFeature = true;

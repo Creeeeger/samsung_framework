@@ -56,6 +56,9 @@ public final class GeofenceHardwareImpl {
     private int mVersion = 1;
     private int[] mSupportedMonitorTypes = new int[2];
     private Handler mGeofenceHandler = new Handler() { // from class: android.hardware.location.GeofenceHardwareImpl.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             IGeofenceHardwareCallback callback;
@@ -184,6 +187,9 @@ public final class GeofenceHardwareImpl {
         }
     };
     private Handler mCallbacksHandler = new Handler() { // from class: android.hardware.location.GeofenceHardwareImpl.2
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -245,6 +251,9 @@ public final class GeofenceHardwareImpl {
         }
     };
     private Handler mReaperHandler = new Handler() { // from class: android.hardware.location.GeofenceHardwareImpl.3
+        AnonymousClass3() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -312,7 +321,6 @@ public final class GeofenceHardwareImpl {
         this.mWakeLock.acquire();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void releaseWakeLock() {
         if (this.mWakeLock.isHeld()) {
             this.mWakeLock.release();
@@ -751,6 +759,258 @@ public final class GeofenceHardwareImpl {
         reportGeofenceOperationStatus(5, geofenceId, status);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.location.GeofenceHardwareImpl$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            IGeofenceHardwareCallback callback;
+            IGeofenceHardwareCallback callback2;
+            IGeofenceHardwareCallback callback3;
+            IGeofenceHardwareCallback callback4;
+            IGeofenceHardwareCallback callback5;
+            switch (msg.what) {
+                case 1:
+                    GeofenceTransition geofenceTransition = (GeofenceTransition) msg.obj;
+                    synchronized (GeofenceHardwareImpl.this.mGeofences) {
+                        callback = (IGeofenceHardwareCallback) GeofenceHardwareImpl.this.mGeofences.get(geofenceTransition.mGeofenceId);
+                        if (GeofenceHardwareImpl.DEBUG) {
+                            Log.d(GeofenceHardwareImpl.TAG, "GeofenceTransistionCallback: GPS : GeofenceId: " + geofenceTransition.mGeofenceId + " Transition: " + geofenceTransition.mTransition + " Location: " + geofenceTransition.mLocation + ":" + GeofenceHardwareImpl.this.mGeofences);
+                        }
+                    }
+                    if (callback != null) {
+                        try {
+                            callback.onGeofenceTransition(geofenceTransition.mGeofenceId, geofenceTransition.mTransition, geofenceTransition.mLocation, geofenceTransition.mTimestamp, geofenceTransition.mMonitoringType);
+                        } catch (RemoteException e) {
+                        }
+                    }
+                    GeofenceHardwareImpl.this.releaseWakeLock();
+                    return;
+                case 2:
+                    int geofenceId = msg.arg1;
+                    synchronized (GeofenceHardwareImpl.this.mGeofences) {
+                        callback2 = (IGeofenceHardwareCallback) GeofenceHardwareImpl.this.mGeofences.get(geofenceId);
+                    }
+                    if (callback2 != null) {
+                        try {
+                            callback2.onGeofenceAdd(geofenceId, msg.arg2);
+                        } catch (RemoteException e2) {
+                            Log.i(GeofenceHardwareImpl.TAG, "Remote Exception:" + e2);
+                        }
+                    }
+                    GeofenceHardwareImpl.this.releaseWakeLock();
+                    return;
+                case 3:
+                    int geofenceId2 = msg.arg1;
+                    synchronized (GeofenceHardwareImpl.this.mGeofences) {
+                        callback3 = (IGeofenceHardwareCallback) GeofenceHardwareImpl.this.mGeofences.get(geofenceId2);
+                    }
+                    if (callback3 != null) {
+                        try {
+                            callback3.onGeofenceRemove(geofenceId2, msg.arg2);
+                        } catch (RemoteException e3) {
+                        }
+                        IBinder callbackBinder = callback3.asBinder();
+                        boolean callbackInUse = false;
+                        synchronized (GeofenceHardwareImpl.this.mGeofences) {
+                            GeofenceHardwareImpl.this.mGeofences.remove(geofenceId2);
+                            int i = 0;
+                            while (true) {
+                                if (i < GeofenceHardwareImpl.this.mGeofences.size()) {
+                                    if (((IGeofenceHardwareCallback) GeofenceHardwareImpl.this.mGeofences.valueAt(i)).asBinder() != callbackBinder) {
+                                        i++;
+                                    } else {
+                                        callbackInUse = true;
+                                    }
+                                }
+                            }
+                        }
+                        if (!callbackInUse) {
+                            Iterator<Reaper> iterator = GeofenceHardwareImpl.this.mReapers.iterator();
+                            while (iterator.hasNext()) {
+                                Reaper reaper = iterator.next();
+                                if (reaper.mCallback != null && reaper.mCallback.asBinder() == callbackBinder) {
+                                    iterator.remove();
+                                    reaper.unlinkToDeath();
+                                    if (GeofenceHardwareImpl.DEBUG) {
+                                        Log.d(GeofenceHardwareImpl.TAG, String.format("Removed reaper %s because binder %s is no longer needed.", reaper, callbackBinder));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    GeofenceHardwareImpl.this.releaseWakeLock();
+                    return;
+                case 4:
+                    int geofenceId3 = msg.arg1;
+                    synchronized (GeofenceHardwareImpl.this.mGeofences) {
+                        callback4 = (IGeofenceHardwareCallback) GeofenceHardwareImpl.this.mGeofences.get(geofenceId3);
+                    }
+                    if (callback4 != null) {
+                        try {
+                            callback4.onGeofencePause(geofenceId3, msg.arg2);
+                        } catch (RemoteException e4) {
+                        }
+                    }
+                    GeofenceHardwareImpl.this.releaseWakeLock();
+                    return;
+                case 5:
+                    int geofenceId4 = msg.arg1;
+                    synchronized (GeofenceHardwareImpl.this.mGeofences) {
+                        callback5 = (IGeofenceHardwareCallback) GeofenceHardwareImpl.this.mGeofences.get(geofenceId4);
+                    }
+                    if (callback5 != null) {
+                        try {
+                            callback5.onGeofenceResume(geofenceId4, msg.arg2);
+                        } catch (RemoteException e5) {
+                        }
+                    }
+                    GeofenceHardwareImpl.this.releaseWakeLock();
+                    return;
+                case 6:
+                    IGeofenceHardwareCallback callback6 = (IGeofenceHardwareCallback) msg.obj;
+                    if (GeofenceHardwareImpl.DEBUG) {
+                        Log.d(GeofenceHardwareImpl.TAG, "Geofence callback reaped:" + callback6);
+                    }
+                    int monitoringType = msg.arg1;
+                    synchronized (GeofenceHardwareImpl.this.mGeofences) {
+                        for (int i2 = 0; i2 < GeofenceHardwareImpl.this.mGeofences.size(); i2++) {
+                            if (((IGeofenceHardwareCallback) GeofenceHardwareImpl.this.mGeofences.valueAt(i2)).equals(callback6)) {
+                                int geofenceId5 = GeofenceHardwareImpl.this.mGeofences.keyAt(i2);
+                                GeofenceHardwareImpl geofenceHardwareImpl = GeofenceHardwareImpl.this;
+                                geofenceHardwareImpl.removeGeofence(geofenceHardwareImpl.mGeofences.keyAt(i2), monitoringType);
+                                GeofenceHardwareImpl.this.mGeofences.remove(geofenceId5);
+                            }
+                        }
+                    }
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.location.GeofenceHardwareImpl$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 extends Handler {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    GeofenceHardwareMonitorEvent event = (GeofenceHardwareMonitorEvent) msg.obj;
+                    ArrayList<IGeofenceHardwareMonitorCallback> callbackList = GeofenceHardwareImpl.this.mCallbacks[event.getMonitoringType()];
+                    if (callbackList != null) {
+                        if (GeofenceHardwareImpl.DEBUG) {
+                            Log.d(GeofenceHardwareImpl.TAG, "MonitoringSystemChangeCallback: " + event);
+                        }
+                        Iterator<IGeofenceHardwareMonitorCallback> it = callbackList.iterator();
+                        while (it.hasNext()) {
+                            IGeofenceHardwareMonitorCallback c = it.next();
+                            try {
+                                c.onMonitoringSystemChange(event);
+                            } catch (RemoteException e) {
+                                Log.d(GeofenceHardwareImpl.TAG, "Error reporting onMonitoringSystemChange.", e);
+                            }
+                        }
+                    }
+                    GeofenceHardwareImpl.this.releaseWakeLock();
+                    return;
+                case 2:
+                    int monitoringType = msg.arg1;
+                    IGeofenceHardwareMonitorCallback callback = (IGeofenceHardwareMonitorCallback) msg.obj;
+                    ArrayList<IGeofenceHardwareMonitorCallback> callbackList2 = GeofenceHardwareImpl.this.mCallbacks[monitoringType];
+                    if (callbackList2 == null) {
+                        callbackList2 = new ArrayList<>();
+                        GeofenceHardwareImpl.this.mCallbacks[monitoringType] = callbackList2;
+                    }
+                    if (!callbackList2.contains(callback)) {
+                        callbackList2.add(callback);
+                        return;
+                    }
+                    return;
+                case 3:
+                    int monitoringType2 = msg.arg1;
+                    IGeofenceHardwareMonitorCallback callback2 = (IGeofenceHardwareMonitorCallback) msg.obj;
+                    ArrayList<IGeofenceHardwareMonitorCallback> callbackList3 = GeofenceHardwareImpl.this.mCallbacks[monitoringType2];
+                    if (callbackList3 != null) {
+                        callbackList3.remove(callback2);
+                        return;
+                    }
+                    return;
+                case 4:
+                    IGeofenceHardwareMonitorCallback callback3 = (IGeofenceHardwareMonitorCallback) msg.obj;
+                    if (GeofenceHardwareImpl.DEBUG) {
+                        Log.d(GeofenceHardwareImpl.TAG, "Monitor callback reaped:" + callback3);
+                    }
+                    ArrayList<IGeofenceHardwareMonitorCallback> callbackList4 = GeofenceHardwareImpl.this.mCallbacks[msg.arg1];
+                    if (callbackList4 != null && callbackList4.contains(callback3)) {
+                        callbackList4.remove(callback3);
+                        return;
+                    }
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.location.GeofenceHardwareImpl$3 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass3 extends Handler {
+        AnonymousClass3() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    IGeofenceHardwareCallback callback = (IGeofenceHardwareCallback) msg.obj;
+                    int monitoringType = msg.arg1;
+                    Reaper r = new Reaper(callback, monitoringType);
+                    if (!GeofenceHardwareImpl.this.mReapers.contains(r)) {
+                        GeofenceHardwareImpl.this.mReapers.add(r);
+                        IBinder b = callback.asBinder();
+                        try {
+                            b.linkToDeath(r, 0);
+                            return;
+                        } catch (RemoteException e) {
+                            return;
+                        }
+                    }
+                    return;
+                case 2:
+                    IGeofenceHardwareMonitorCallback monitorCallback = (IGeofenceHardwareMonitorCallback) msg.obj;
+                    int monitoringType2 = msg.arg1;
+                    Reaper r2 = new Reaper(monitorCallback, monitoringType2);
+                    if (!GeofenceHardwareImpl.this.mReapers.contains(r2)) {
+                        GeofenceHardwareImpl.this.mReapers.add(r2);
+                        IBinder b2 = monitorCallback.asBinder();
+                        try {
+                            b2.linkToDeath(r2, 0);
+                            return;
+                        } catch (RemoteException e2) {
+                            return;
+                        }
+                    }
+                    return;
+                case 3:
+                    GeofenceHardwareImpl.this.mReapers.remove((Reaper) msg.obj);
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     /* loaded from: classes2.dex */
     private class GeofenceTransition {
         private int mGeofenceId;
@@ -776,7 +1036,6 @@ public final class GeofenceHardwareImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getMonitoringResolutionLevel(int monitoringType) {
         switch (monitoringType) {
             case 0:
@@ -788,8 +1047,9 @@ public final class GeofenceHardwareImpl {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
-    class Reaper implements IBinder.DeathRecipient {
+    public class Reaper implements IBinder.DeathRecipient {
         private IGeofenceHardwareCallback mCallback;
         private IGeofenceHardwareMonitorCallback mMonitorCallback;
         private int mMonitoringType;
@@ -846,7 +1106,6 @@ public final class GeofenceHardwareImpl {
             return left == null ? right == null : right != null && left.asBinder() == right.asBinder();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean unlinkToDeath() {
             IGeofenceHardwareMonitorCallback iGeofenceHardwareMonitorCallback = this.mMonitorCallback;
             if (iGeofenceHardwareMonitorCallback != null) {
@@ -865,7 +1124,6 @@ public final class GeofenceHardwareImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getAllowedResolutionLevel(int pid, int uid) {
         if (this.mContext.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, pid, uid) == 0) {
             return 3;

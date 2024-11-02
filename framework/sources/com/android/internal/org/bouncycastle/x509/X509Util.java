@@ -98,7 +98,6 @@ class X509Util {
         return new RSASSAPSSparams(hashAlgId, new AlgorithmIdentifier(PKCSObjectIdentifiers.id_mgf1, hashAlgId), new ASN1Integer(saltSize), new ASN1Integer(1L));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1ObjectIdentifier getAlgorithmOID(String algorithmName) {
         String algorithmName2 = Strings.toUpperCase(algorithmName);
         if (algorithms.containsKey(algorithmName2)) {
@@ -107,7 +106,6 @@ class X509Util {
         return new ASN1ObjectIdentifier(algorithmName2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AlgorithmIdentifier getSigAlgID(ASN1ObjectIdentifier sigOid, String algorithmName) {
         if (noParams.contains(sigOid)) {
             return new AlgorithmIdentifier(sigOid);
@@ -119,7 +117,6 @@ class X509Util {
         return new AlgorithmIdentifier(sigOid, DERNull.INSTANCE);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Iterator getAlgNames() {
         Enumeration e = algorithms.keys();
         List l = new ArrayList();
@@ -140,7 +137,6 @@ class X509Util {
         return Signature.getInstance(algorithm);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] calculateSignature(ASN1ObjectIdentifier sigOid, String sigName, PrivateKey key, SecureRandom random, ASN1Encodable object) throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         if (sigOid == null) {
             throw new IllegalStateException("no signature algorithm specified");
@@ -155,7 +151,6 @@ class X509Util {
         return sig.sign();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] calculateSignature(ASN1ObjectIdentifier sigOid, String sigName, String provider, PrivateKey key, SecureRandom random, ASN1Encodable object) throws IOException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         if (sigOid == null) {
             throw new IllegalStateException("no signature algorithm specified");
@@ -170,7 +165,6 @@ class X509Util {
         return sig.sign();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static X509Principal convertPrincipal(X500Principal principal) {
         try {
             return new X509Principal(principal.getEncoded());
@@ -179,7 +173,6 @@ class X509Util {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class Implementation {
         Object engine;

@@ -182,7 +182,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         return this.mInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         SparseArray<Parcelable> jail = new SparseArray<>();
@@ -199,7 +198,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         return id == -1 ? this.mAppWidgetId : id;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         Parcelable parcelable = container.get(generateId());
@@ -238,7 +236,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         return new SizeF((((right - left) - getPaddingLeft()) - getPaddingRight()) / density, (((bottom - top) - getPaddingTop()) - getPaddingBottom()) / density);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         RemoteViews toApply;
@@ -258,7 +255,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleViewError() {
         removeViewInLayout(this.mView);
         View child = getErrorView();
@@ -396,7 +392,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         restoreHierarchyState(savedState);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void applyRemoteViews(RemoteViews remoteViews, boolean useAsyncIfPossible) {
         boolean recycled = false;
         View content = null;
@@ -450,7 +445,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         applyContent(content, recycled, exception);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void applyContent(View content, boolean recycled, Exception exception) {
         AppWidgetProviderInfo appWidgetProviderInfo;
         this.mColorMappingChanged = false;
@@ -497,7 +491,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         this.mConfigChanged = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class ViewApplyListener implements RemoteViews.OnViewAppliedListener {
         private final boolean mIsReapply;
@@ -679,7 +672,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         return defaultView;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onDefaultViewClicked(View view) {
         if (this.mInfo != null) {
             LauncherApps launcherApps = (LauncherApps) getContext().getSystemService(LauncherApps.class);
@@ -741,7 +733,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$getHandler$1(RemoteViews.InteractionHandler handler, View view, PendingIntent pendingIntent, RemoteViews.RemoteResponse response) {
         AppWidgetManager.getInstance(this.mContext).noteAppWidgetTapped(this.mAppWidgetId);
         if (handler != null) {
@@ -789,7 +780,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         try {
@@ -821,7 +811,6 @@ public class AppWidgetHostView extends FrameLayout implements AppWidgetHost.AppW
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

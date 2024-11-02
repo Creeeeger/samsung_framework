@@ -10,13 +10,14 @@ public class SemContextActivityNotificationEx extends SemContextEventContext {
     public static final int ACCURACY_LOW = 0;
     public static final int ACCURACY_MID = 1;
     public static final Parcelable.Creator<SemContextActivityNotificationEx> CREATOR = new Parcelable.Creator<SemContextActivityNotificationEx>() { // from class: com.samsung.android.hardware.context.SemContextActivityNotificationEx.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationEx createFromParcel(Parcel in) {
             return new SemContextActivityNotificationEx(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationEx[] newArray(int size) {
             return new SemContextActivityNotificationEx[size];
@@ -30,6 +31,23 @@ public class SemContextActivityNotificationEx extends SemContextEventContext {
     public static final int STATUS_VEHICLE = 4;
     public static final int STATUS_WALK = 2;
     private Bundle mContext;
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextActivityNotificationEx$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityNotificationEx> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityNotificationEx createFromParcel(Parcel in) {
+            return new SemContextActivityNotificationEx(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityNotificationEx[] newArray(int size) {
+            return new SemContextActivityNotificationEx[size];
+        }
+    }
 
     SemContextActivityNotificationEx() {
         this.mContext = new Bundle();

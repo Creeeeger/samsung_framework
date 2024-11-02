@@ -18,7 +18,9 @@ public class SemMobileWipsWifiSsid implements Parcelable {
     private static final String CHARSET_CN = "gbk";
     private static final String CHARSET_KOR = "ksc5601";
     public static final Parcelable.Creator<SemMobileWipsWifiSsid> CREATOR = new Parcelable.Creator<SemMobileWipsWifiSsid>() { // from class: com.samsung.android.wifi.SemMobileWipsWifiSsid.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemMobileWipsWifiSsid createFromParcel(Parcel in) {
             SemMobileWipsWifiSsid ssid = new SemMobileWipsWifiSsid();
@@ -27,7 +29,6 @@ public class SemMobileWipsWifiSsid implements Parcelable {
             return ssid;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemMobileWipsWifiSsid[] newArray(int size) {
             return new SemMobileWipsWifiSsid[size];
@@ -38,6 +39,30 @@ public class SemMobileWipsWifiSsid implements Parcelable {
     private static final String TAG = "SemMobileWipsWifiSsid";
     private final String CONFIG_CHARSET;
     public final ByteArrayOutputStream octets;
+
+    /* synthetic */ SemMobileWipsWifiSsid(SemMobileWipsWifiSsidIA semMobileWipsWifiSsidIA) {
+        this();
+    }
+
+    /* renamed from: com.samsung.android.wifi.SemMobileWipsWifiSsid$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemMobileWipsWifiSsid> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemMobileWipsWifiSsid createFromParcel(Parcel in) {
+            SemMobileWipsWifiSsid ssid = new SemMobileWipsWifiSsid();
+            byte[] b = in.createByteArray();
+            ssid.octets.write(b, 0, b.length);
+            return ssid;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemMobileWipsWifiSsid[] newArray(int size) {
+            return new SemMobileWipsWifiSsid[size];
+        }
+    }
 
     private SemMobileWipsWifiSsid() {
         this.octets = new ByteArrayOutputStream(32);

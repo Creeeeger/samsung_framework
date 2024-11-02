@@ -23,7 +23,6 @@ public final class NfcActivityManager extends IAppCallback.Stub implements Appli
     final List<NfcActivityState> mActivities = new LinkedList();
     final List<NfcApplicationState> mApps = new ArrayList(1);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public class NfcApplicationState {
         final Application app;
@@ -79,7 +78,6 @@ public final class NfcActivityManager extends IAppCallback.Stub implements Appli
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public class NfcActivityState {
         Activity activity;

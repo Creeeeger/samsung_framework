@@ -12,9 +12,25 @@ public class BatchedInputEventReceiver extends InputEventReceiver {
     private final Runnable mConsumeBatchedInputEvents;
     private final Handler mHandler;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.BatchedInputEventReceiver$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            BatchedInputEventReceiver.this.consumeBatchedInputEvents(-1L);
+        }
+    }
+
     public BatchedInputEventReceiver(InputChannel inputChannel, Looper looper, Choreographer choreographer) {
         super(inputChannel, looper);
         this.mConsumeBatchedInputEvents = new Runnable() { // from class: android.view.BatchedInputEventReceiver.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 BatchedInputEventReceiver.this.consumeBatchedInputEvents(-1L);
@@ -77,9 +93,12 @@ public class BatchedInputEventReceiver extends InputEventReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class BatchedInputRunnable implements Runnable {
+        /* synthetic */ BatchedInputRunnable(BatchedInputEventReceiver batchedInputEventReceiver, BatchedInputRunnableIA batchedInputRunnableIA) {
+            this();
+        }
+
         private BatchedInputRunnable() {
         }
 

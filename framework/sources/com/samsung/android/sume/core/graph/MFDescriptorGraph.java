@@ -33,18 +33,23 @@ public class MFDescriptorGraph implements Parcelable {
     private final Graph.Option option;
     private static final String TAG = Def.tagOf((Class<?>) MFDescriptorGraph.class);
     public static final Parcelable.Creator<MFDescriptorGraph> CREATOR = new Parcelable.Creator<MFDescriptorGraph>() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MFDescriptorGraph createFromParcel(Parcel in) {
             return new MFDescriptorGraph(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MFDescriptorGraph[] newArray(int size) {
             return new MFDescriptorGraph[size];
         }
     };
+
+    /* synthetic */ MFDescriptorGraph(DescriptorNode[] x0, Graph.Option x1, AnonymousClass1 x2) {
+        this(x0, x1);
+    }
 
     private MFDescriptorGraph(DescriptorNode[] nodes, Graph.Option option) {
         this.nodes = nodes;
@@ -75,12 +80,10 @@ public class MFDescriptorGraph implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ DescriptorNode lambda$new$0(Parcelable it) {
         return (DescriptorNode) it;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ DescriptorNode[] lambda$new$1(int x$0) {
         return new DescriptorNode[x$0];
     }
@@ -122,12 +125,10 @@ public class MFDescriptorGraph implements Parcelable {
         return builder.build();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Pair lambda$toMediaFilterGraph$2(MFGraphUnitFactory unitFactory, DescriptorNode it) {
         return new Pair(it, unitFactory.newNode(it.descriptor));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public static /* synthetic */ void lambda$toMediaFilterGraph$4(final MFGraph.Builder builder, final List nodeList, Pair it) {
         List<Integer> children = ((DescriptorNode) it.first).children;
@@ -146,7 +147,6 @@ public class MFDescriptorGraph implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$toMediaFilterGraph$3(List nodeList, Map evaluatorMap, Map channelMapMap, MFGraph.Builder builder, GraphNode from, Integer idx) {
         GraphNode<MediaFilter> to = (GraphNode) ((Pair) nodeList.get(idx.intValue())).second;
         Evaluator evaluator = null;
@@ -161,6 +161,24 @@ public class MFDescriptorGraph implements Parcelable {
             channelDesc = new BufferChannelDescriptor();
         }
         builder.addNode(from, to, evaluator, channelDesc);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.sume.core.graph.MFDescriptorGraph$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Parcelable.Creator<MFDescriptorGraph> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MFDescriptorGraph createFromParcel(Parcel in) {
+            return new MFDescriptorGraph(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MFDescriptorGraph[] newArray(int size) {
+            return new MFDescriptorGraph[size];
+        }
     }
 
     @Override // android.os.Parcelable
@@ -223,17 +241,17 @@ public class MFDescriptorGraph implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class DescriptorNode implements Parcelable {
         public static final Parcelable.Creator<DescriptorNode> CREATOR = new Parcelable.Creator<DescriptorNode>() { // from class: com.samsung.android.sume.core.graph.MFDescriptorGraph.DescriptorNode.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public DescriptorNode createFromParcel(Parcel in) {
                 return new DescriptorNode(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DescriptorNode[] newArray(int size) {
                 return new DescriptorNode[size];
@@ -253,7 +271,6 @@ public class MFDescriptorGraph implements Parcelable {
             this.descriptor = descriptor;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getId() {
             return this.id;
         }
@@ -284,6 +301,23 @@ public class MFDescriptorGraph implements Parcelable {
             dest.writeIntArray(this.children.stream().mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray());
             dest.writeMap(this.evaluatorMap);
             dest.writeMap(this.channelMap);
+        }
+
+        /* renamed from: com.samsung.android.sume.core.graph.MFDescriptorGraph$DescriptorNode$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<DescriptorNode> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DescriptorNode createFromParcel(Parcel in) {
+                return new DescriptorNode(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DescriptorNode[] newArray(int size) {
+                return new DescriptorNode[size];
+            }
         }
 
         @Override // android.os.Parcelable

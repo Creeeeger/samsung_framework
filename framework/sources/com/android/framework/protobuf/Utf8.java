@@ -6,7 +6,6 @@ import com.samsung.android.transcode.constants.EncodeConstants;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class Utf8 {
     private static final long ASCII_MASK_LONG = -9187201950435737472L;
@@ -26,22 +25,18 @@ public final class Utf8 {
         processor = safeProcessor;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isValidUtf8(byte[] bytes) {
         return processor.isValidUtf8(bytes, 0, bytes.length);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isValidUtf8(byte[] bytes, int index, int limit) {
         return processor.isValidUtf8(bytes, index, limit);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int partialIsValidUtf8(int state, byte[] bytes, int index, int limit) {
         return processor.partialIsValidUtf8(state, bytes, index, limit);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int incompleteStateFor(int byte1) {
         if (byte1 > -12) {
             return -1;
@@ -49,7 +44,6 @@ public final class Utf8 {
         return byte1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int incompleteStateFor(int byte1, int byte2) {
         if (byte1 > -12 || byte2 > -65) {
             return -1;
@@ -57,7 +51,6 @@ public final class Utf8 {
         return (byte2 << 8) ^ byte1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int incompleteStateFor(int byte1, int byte2, int byte3) {
         if (byte1 > -12 || byte2 > -65 || byte3 > -65) {
             return -1;
@@ -65,7 +58,6 @@ public final class Utf8 {
         return ((byte2 << 8) ^ byte1) ^ (byte3 << 16);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int incompleteStateFor(byte[] bytes, int index, int limit) {
         int byte1 = bytes[index - 1];
         switch (limit - index) {
@@ -80,7 +72,6 @@ public final class Utf8 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int incompleteStateFor(ByteBuffer buffer, int byte1, int index, int remaining) {
         switch (remaining) {
             case 0:
@@ -94,16 +85,13 @@ public final class Utf8 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class UnpairedSurrogateException extends IllegalArgumentException {
-        /* JADX INFO: Access modifiers changed from: package-private */
         public UnpairedSurrogateException(int index, int length) {
             super("Unpaired surrogate at index " + index + " of " + length);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int encodedLength(CharSequence sequence) {
         int utf16Length = sequence.length();
         int utf8Length = utf16Length;
@@ -154,37 +142,30 @@ public final class Utf8 {
         return utf8Length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int encode(CharSequence in, byte[] out, int offset, int length) {
         return processor.encodeUtf8(in, out, offset, length);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isValidUtf8(ByteBuffer buffer) {
         return processor.isValidUtf8(buffer, buffer.position(), buffer.remaining());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int partialIsValidUtf8(int state, ByteBuffer buffer, int index, int limit) {
         return processor.partialIsValidUtf8(state, buffer, index, limit);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String decodeUtf8(ByteBuffer buffer, int index, int size) throws InvalidProtocolBufferException {
         return processor.decodeUtf8(buffer, index, size);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String decodeUtf8(byte[] bytes, int index, int size) throws InvalidProtocolBufferException {
         return processor.decodeUtf8(bytes, index, size);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void encodeUtf8(CharSequence in, ByteBuffer out) {
         processor.encodeUtf8(in, out);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int estimateConsecutiveAscii(ByteBuffer buffer, int index, int limit) {
         int i = index;
         int lim = limit - 7;
@@ -194,7 +175,6 @@ public final class Utf8 {
         return i - index;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static abstract class Processor {
         abstract String decodeUtf8(byte[] bArr, int i, int i2) throws InvalidProtocolBufferException;
@@ -648,7 +628,10 @@ public final class Utf8 {
             return decodeUtf8Default(buffer, index, size);
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:12:0x0023, code lost:            return r13 + r0;     */
+        /* JADX WARN: Code restructure failed: missing block: B:12:0x0023, code lost:
+        
+            return r13 + r0;
+         */
         @Override // com.android.framework.protobuf.Utf8.Processor
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -1182,7 +1165,10 @@ public final class Utf8 {
             return maxChars - remaining;
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:74:0x003b, code lost:            return -1;     */
+        /* JADX WARN: Code restructure failed: missing block: B:74:0x003b, code lost:
+        
+            return -1;
+         */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1299,7 +1285,10 @@ public final class Utf8 {
             throw new UnsupportedOperationException("Method not decompiled: com.android.framework.protobuf.Utf8.UnsafeProcessor.partialIsValidUtf8(byte[], long, int):int");
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:74:0x003b, code lost:            return -1;     */
+        /* JADX WARN: Code restructure failed: missing block: B:74:0x003b, code lost:
+        
+            return -1;
+         */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1441,33 +1430,27 @@ public final class Utf8 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class DecodeUtil {
         private DecodeUtil() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static boolean isOneByte(byte b) {
             return b >= 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static boolean isTwoBytes(byte b) {
             return b < -32;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static boolean isThreeBytes(byte b) {
             return b < -16;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void handleOneByte(byte byte1, char[] resultArr, int resultPos) {
             resultArr[resultPos] = (char) byte1;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void handleTwoBytes(byte byte1, byte byte2, char[] resultArr, int resultPos) throws InvalidProtocolBufferException {
             if (byte1 < -62 || isNotTrailingByte(byte2)) {
                 throw InvalidProtocolBufferException.invalidUtf8();
@@ -1475,7 +1458,6 @@ public final class Utf8 {
             resultArr[resultPos] = (char) (((byte1 & SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN) << 6) | trailingByteValue(byte2));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void handleThreeBytes(byte byte1, byte byte2, byte byte3, char[] resultArr, int resultPos) throws InvalidProtocolBufferException {
             if (isNotTrailingByte(byte2) || ((byte1 == -32 && byte2 < -96) || ((byte1 == -19 && byte2 >= -96) || isNotTrailingByte(byte3)))) {
                 throw InvalidProtocolBufferException.invalidUtf8();
@@ -1483,7 +1465,6 @@ public final class Utf8 {
             resultArr[resultPos] = (char) (((byte1 & 15) << 12) | (trailingByteValue(byte2) << 6) | trailingByteValue(byte3));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void handleFourBytes(byte byte1, byte byte2, byte byte3, byte byte4, char[] resultArr, int resultPos) throws InvalidProtocolBufferException {
             if (isNotTrailingByte(byte2) || (((byte1 << SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN) + (byte2 + SprAttributeBase.TYPE_SHADOW)) >> 30) != 0 || isNotTrailingByte(byte3) || isNotTrailingByte(byte4)) {
                 throw InvalidProtocolBufferException.invalidUtf8();

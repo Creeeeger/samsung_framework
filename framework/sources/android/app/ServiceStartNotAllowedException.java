@@ -2,7 +2,6 @@ package android.app;
 
 /* loaded from: classes.dex */
 public abstract class ServiceStartNotAllowedException extends IllegalStateException {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ServiceStartNotAllowedException(String message) {
         super(message);
     }

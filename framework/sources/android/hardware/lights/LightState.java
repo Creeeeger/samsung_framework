@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class LightState implements Parcelable {
     public static final Parcelable.Creator<LightState> CREATOR = new Parcelable.Creator<LightState>() { // from class: android.hardware.lights.LightState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LightState createFromParcel(Parcel in) {
             return new LightState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LightState[] newArray(int size) {
             return new LightState[size];
@@ -21,6 +22,10 @@ public final class LightState implements Parcelable {
     };
     private final int mColor;
     private final int mPlayerId;
+
+    /* synthetic */ LightState(Parcel parcel, LightStateIA lightStateIA) {
+        this(parcel);
+    }
 
     @SystemApi
     @Deprecated
@@ -84,5 +89,22 @@ public final class LightState implements Parcelable {
 
     public String toString() {
         return "LightState{Color=0x" + Integer.toHexString(this.mColor) + ", PlayerId=" + this.mPlayerId + "}";
+    }
+
+    /* renamed from: android.hardware.lights.LightState$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LightState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LightState createFromParcel(Parcel in) {
+            return new LightState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LightState[] newArray(int size) {
+            return new LightState[size];
+        }
     }
 }

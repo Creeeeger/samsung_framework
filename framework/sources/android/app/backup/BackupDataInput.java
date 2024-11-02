@@ -20,10 +20,15 @@ public class BackupDataInput {
 
     private native int skipEntityData_native(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class EntityHeader {
+    public static class EntityHeader {
         int dataSize;
         String key;
+
+        /* synthetic */ EntityHeader(EntityHeaderIA entityHeaderIA) {
+            this();
+        }
 
         private EntityHeader() {
         }

@@ -9,13 +9,14 @@ import android.os.Parcelable;
 public final class UnknownAuthority extends Authority {
     public static final UnknownAuthority UNKNOWN_AUTHORITY = new UnknownAuthority();
     public static final Parcelable.Creator<UnknownAuthority> CREATOR = new Parcelable.Creator<UnknownAuthority>() { // from class: android.app.admin.UnknownAuthority.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UnknownAuthority createFromParcel(Parcel source) {
             return UnknownAuthority.UNKNOWN_AUTHORITY;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UnknownAuthority[] newArray(int size) {
             return new UnknownAuthority[size];
@@ -46,5 +47,22 @@ public final class UnknownAuthority extends Authority {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    /* renamed from: android.app.admin.UnknownAuthority$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UnknownAuthority> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UnknownAuthority createFromParcel(Parcel source) {
+            return UnknownAuthority.UNKNOWN_AUTHORITY;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UnknownAuthority[] newArray(int size) {
+            return new UnknownAuthority[size];
+        }
     }
 }

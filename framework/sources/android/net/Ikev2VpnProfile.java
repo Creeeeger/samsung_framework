@@ -60,6 +60,10 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
     private final String mUserIdentity;
     private final String mUsername;
 
+    /* synthetic */ Ikev2VpnProfile(int i, String str, String str2, byte[] bArr, X509Certificate x509Certificate, String str3, String str4, PrivateKey privateKey, X509Certificate x509Certificate2, ProxyInfo proxyInfo, List list, boolean z, boolean z2, int i2, boolean z3, boolean z4, boolean z5, IkeTunnelConnectionParams ikeTunnelConnectionParams, boolean z6, boolean z7, Ikev2VpnProfileIA ikev2VpnProfileIA) {
+        this(i, str, str2, bArr, x509Certificate, str3, str4, privateKey, x509Certificate2, proxyInfo, list, z, z2, i2, z3, z4, z5, ikeTunnelConnectionParams, z6, z7);
+    }
+
     static {
         List<String> algorithms = new ArrayList<>();
         addAlgorithmIfSupported(algorithms, "cbc(aes)");
@@ -144,7 +148,6 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
         validateAllowedAlgorithms(this.mAllowedAlgorithms);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void validateAllowedAlgorithms(List<String> algorithmNames) {
         if (algorithmNames.contains("hmac(md5)") || algorithmNames.contains("hmac(sha1)")) {
             throw new IllegalArgumentException("Algorithm not supported for IKEv2 VPN profiles");
@@ -427,7 +430,6 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
         return keyFactory.generatePrivate(privateKeySpec);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void checkCert(X509Certificate cert) {
         try {
             certificateToPemString(cert);
@@ -436,12 +438,10 @@ public final class Ikev2VpnProfile extends PlatformVpnProfile {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static <T> T checkNotNull(T t, String str, Object... objArr) {
         return (T) Objects.requireNonNull(t, String.format(str, objArr));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void checkBuilderSetter(boolean constructedFromIkeTunConParams, String field) {
         if (constructedFromIkeTunConParams) {
             throw new IllegalArgumentException(field + " can't be set with IkeTunnelConnectionParams builder");

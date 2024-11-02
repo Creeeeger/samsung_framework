@@ -187,8 +187,9 @@ public interface ISemContinuityManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemContinuityManager {
+        public static class Proxy implements ISemContinuityManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

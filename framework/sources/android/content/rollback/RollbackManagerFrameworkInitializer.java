@@ -19,7 +19,6 @@ public class RollbackManagerFrameworkInitializer {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ RollbackManager lambda$initialize$0(Context context, IBinder b) {
         return new RollbackManager(context, IRollbackManager.Stub.asInterface(b));
     }

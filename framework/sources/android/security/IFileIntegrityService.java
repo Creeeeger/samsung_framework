@@ -103,8 +103,9 @@ public interface IFileIntegrityService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IFileIntegrityService {
+        public static class Proxy implements IFileIntegrityService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

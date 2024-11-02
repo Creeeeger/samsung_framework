@@ -15,13 +15,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class VibrationAttributes implements Parcelable {
     public static final Parcelable.Creator<VibrationAttributes> CREATOR = new Parcelable.Creator<VibrationAttributes>() { // from class: android.os.VibrationAttributes.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VibrationAttributes createFromParcel(Parcel p) {
             return new VibrationAttributes(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VibrationAttributes[] newArray(int size) {
             return new VibrationAttributes[size];
@@ -69,6 +70,14 @@ public final class VibrationAttributes implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface UsageClass {
+    }
+
+    /* synthetic */ VibrationAttributes(int i, int i2, int i3, VibrationAttributesIA vibrationAttributesIA) {
+        this(i, i2, i3);
+    }
+
+    /* synthetic */ VibrationAttributes(Parcel parcel, VibrationAttributesIA vibrationAttributesIA) {
+        this(parcel);
     }
 
     public static VibrationAttributes createForUsage(int usage) {
@@ -161,6 +170,23 @@ public final class VibrationAttributes implements Parcelable {
         }
     }
 
+    /* renamed from: android.os.VibrationAttributes$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VibrationAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VibrationAttributes createFromParcel(Parcel p) {
+            return new VibrationAttributes(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VibrationAttributes[] newArray(int size) {
+            return new VibrationAttributes[size];
+        }
+    }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -248,9 +274,6 @@ public final class VibrationAttributes implements Parcelable {
             this.mTags = new HashSet<>();
             setUsage(audio);
             setFlags(audio);
-            if (audio.getTags().contains("VIRTUAL_VIB_SOUND")) {
-                semAddTag("VIRTUAL_VIB_SOUND");
-            }
         }
 
         private void setUsage(AudioAttributes audio) {

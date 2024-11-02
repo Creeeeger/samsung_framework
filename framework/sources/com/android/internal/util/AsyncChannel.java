@@ -85,18 +85,40 @@ public class AsyncChannel {
         return status;
     }
 
+    /* renamed from: com.android.internal.util.AsyncChannel$1ConnectAsync */
+    /* loaded from: classes5.dex */
+    public final class C1ConnectAsync implements Runnable {
+        String mDstClassName;
+        String mDstPackageName;
+        Context mSrcCtx;
+        Handler mSrcHdlr;
+
+        C1ConnectAsync(Context srcContext, Handler srcHandler, String dstPackageName, String dstClassName) {
+            this.mSrcCtx = srcContext;
+            this.mSrcHdlr = srcHandler;
+            this.mDstPackageName = dstPackageName;
+            this.mDstClassName = dstClassName;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            int result = AsyncChannel.this.connectSrcHandlerToPackageSync(this.mSrcCtx, this.mSrcHdlr, this.mDstPackageName, this.mDstClassName);
+            AsyncChannel.this.replyHalfConnected(result);
+        }
+    }
+
     public void connect(Context srcContext, Handler srcHandler, String dstPackageName, String dstClassName) {
-        new Thread(new Runnable(srcContext, srcHandler, dstPackageName, dstClassName) { // from class: com.android.internal.util.AsyncChannel.1ConnectAsync
+        C1ConnectAsync ca = new Runnable(srcContext, srcHandler, dstPackageName, dstClassName) { // from class: com.android.internal.util.AsyncChannel.1ConnectAsync
             String mDstClassName;
             String mDstPackageName;
             Context mSrcCtx;
             Handler mSrcHdlr;
 
-            {
-                this.mSrcCtx = srcContext;
-                this.mSrcHdlr = srcHandler;
-                this.mDstPackageName = dstPackageName;
-                this.mDstClassName = dstClassName;
+            C1ConnectAsync(Context srcContext2, Handler srcHandler2, String dstPackageName2, String dstClassName2) {
+                this.mSrcCtx = srcContext2;
+                this.mSrcHdlr = srcHandler2;
+                this.mDstPackageName = dstPackageName2;
+                this.mDstClassName = dstClassName2;
             }
 
             @Override // java.lang.Runnable
@@ -104,7 +126,8 @@ public class AsyncChannel {
                 int result = AsyncChannel.this.connectSrcHandlerToPackageSync(this.mSrcCtx, this.mSrcHdlr, this.mDstPackageName, this.mDstClassName);
                 AsyncChannel.this.replyHalfConnected(result);
             }
-        }).start();
+        };
+        new Thread(ca).start();
     }
 
     public void connect(Context srcContext, Handler srcHandler, Class<?> klass) {
@@ -303,7 +326,6 @@ public class AsyncChannel {
         return resultMsg;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class SyncMessenger {
         private SyncHandler mHandler;
@@ -315,11 +337,14 @@ public class AsyncChannel {
         private SyncMessenger() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
         public class SyncHandler extends Handler {
             private Object mLockObject;
             private Message mResultMsg;
+
+            /* synthetic */ SyncHandler(SyncMessenger syncMessenger, Looper looper, SyncHandlerIA syncHandlerIA) {
+                this(looper);
+            }
 
             private SyncHandler(Looper looper) {
                 super(looper);
@@ -364,7 +389,6 @@ public class AsyncChannel {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static Message sendMessageSynchronously(Messenger dstMessenger, Message msg) {
             SyncMessenger sm = obtain();
             Message resultMsg = null;
@@ -392,7 +416,6 @@ public class AsyncChannel {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void replyHalfConnected(int status) {
         Message msg = this.mSrcHandler.obtainMessage(69632);
         msg.arg1 = status;
@@ -418,7 +441,6 @@ public class AsyncChannel {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void replyDisconnected(int status) {
         Handler handler = this.mSrcHandler;
         if (handler == null) {
@@ -431,7 +453,6 @@ public class AsyncChannel {
         this.mSrcHandler.sendMessage(msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class AsyncChannelConnection implements ServiceConnection {
         AsyncChannelConnection() {
@@ -453,7 +474,6 @@ public class AsyncChannel {
         Log.d(TAG, s);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public final class DeathMonitor implements IBinder.DeathRecipient {
         DeathMonitor() {

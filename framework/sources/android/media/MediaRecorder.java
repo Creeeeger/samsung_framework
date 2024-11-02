@@ -687,8 +687,9 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
         this.mOnInfoListener = listener;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class EventHandler extends Handler {
+    public class EventHandler extends Handler {
         private static final int MEDIA_RECORDER_AUDIO_ROUTING_CHANGED = 10000;
         private static final int MEDIA_RECORDER_EVENT_ERROR = 1;
         private static final int MEDIA_RECORDER_EVENT_INFO = 2;

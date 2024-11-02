@@ -609,6 +609,9 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         sNumSyncsInProgress = 0;
         sAnrReported = false;
         sTransactionHangCallback = new BLASTBufferQueue.TransactionHangCallback() { // from class: android.view.ViewRootImpl.1
+            AnonymousClass1() {
+            }
+
             @Override // android.graphics.BLASTBufferQueue.TransactionHangCallback
             public void onTransactionHang(String reason) {
                 if (ViewRootImpl.sAnrReported) {
@@ -629,7 +632,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         sSafeScheduleTraversals = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public FrameInfo getUpdatedFrameInfo() {
         FrameInfo frameInfo = this.mChoreographer.mFrameInfo;
         this.mViewFrameInfo.populateFrameInfo(frameInfo);
@@ -670,7 +672,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CompatTranslator getCompatTranslator() {
         if (this.mCompatTranslatorEnabled) {
             return this.mCompatTranslator;
@@ -711,7 +712,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mImeFocusController;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class SystemUiVisibilityInfo {
         int globalVisibility;
@@ -724,6 +724,30 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
 
     public HandwritingInitiator getHandwritingInitiator() {
         return this.mHandwritingInitiator;
+    }
+
+    /* renamed from: android.view.ViewRootImpl$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements BLASTBufferQueue.TransactionHangCallback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.graphics.BLASTBufferQueue.TransactionHangCallback
+        public void onTransactionHang(String reason) {
+            if (ViewRootImpl.sAnrReported) {
+                return;
+            }
+            ViewRootImpl.sAnrReported = true;
+            long identityToken = Binder.clearCallingIdentity();
+            try {
+                ActivityManager.getService().appNotResponding(reason);
+            } catch (RemoteException e) {
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(identityToken);
+                throw th;
+            }
+            Binder.restoreCallingIdentity(identityToken);
+        }
     }
 
     public ViewRootImpl(Context context, Display display) {
@@ -854,6 +878,9 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mFlexPanelScrollY = 0.0f;
         this.mProfile = false;
         this.mDisplayListener = new DisplayManager.DisplayListener() { // from class: android.view.ViewRootImpl.3
+            AnonymousClass3() {
+            }
+
             @Override // android.hardware.display.DisplayManager.DisplayListener
             public void onDisplayChanged(int displayId) {
                 if (ViewRootImpl.this.mView != null && ViewRootImpl.this.mDisplay.getDisplayId() == displayId) {
@@ -1205,7 +1232,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         throw new UnsupportedOperationException("Method not decompiled: android.view.ViewRootImpl.setView(android.view.View, android.view.WindowManager$LayoutParams, android.view.View, int):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setAccessibilityWindowAttributesIfNeeded() {
         boolean registered = this.mAttachInfo.mAccessibilityWindowId != -1;
         if (registered) {
@@ -1273,7 +1299,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mHeight;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void destroyHardwareResources() {
         ThreadedRenderer renderer = this.mAttachInfo.mThreadedRenderer;
         if (renderer != null) {
@@ -1329,9 +1354,39 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    public void registerRtFrameCallback(final HardwareRenderer.FrameDrawingCallback callback) {
+    /* renamed from: android.view.ViewRootImpl$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements HardwareRenderer.FrameDrawingCallback {
+        final /* synthetic */ HardwareRenderer.FrameDrawingCallback val$callback;
+
+        AnonymousClass2(HardwareRenderer.FrameDrawingCallback frameDrawingCallback) {
+            callback = frameDrawingCallback;
+        }
+
+        @Override // android.graphics.HardwareRenderer.FrameDrawingCallback
+        public void onFrameDraw(long frame) {
+        }
+
+        @Override // android.graphics.HardwareRenderer.FrameDrawingCallback
+        public HardwareRenderer.FrameCommitCallback onFrameDraw(int syncResult, long frame) {
+            try {
+                return callback.onFrameDraw(syncResult, frame);
+            } catch (Exception e) {
+                Log.e(ViewRootImpl.TAG, "Exception while executing onFrameDraw", e);
+                return null;
+            }
+        }
+    }
+
+    public void registerRtFrameCallback(HardwareRenderer.FrameDrawingCallback callback) {
         if (this.mAttachInfo.mThreadedRenderer != null) {
             this.mAttachInfo.mThreadedRenderer.registerRtFrameCallback(new HardwareRenderer.FrameDrawingCallback() { // from class: android.view.ViewRootImpl.2
+                final /* synthetic */ HardwareRenderer.FrameDrawingCallback val$callback;
+
+                AnonymousClass2(HardwareRenderer.FrameDrawingCallback callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.graphics.HardwareRenderer.FrameDrawingCallback
                 public void onFrameDraw(long frame) {
                 }
@@ -1409,7 +1464,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mView;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final WindowLeaked getLocation() {
         return this.mLocation;
     }
@@ -1528,7 +1582,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         scheduleTraversals();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleResized(int msg, SomeArgs args) {
         boolean z;
         Rect attachedFrame;
@@ -1623,6 +1676,66 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         requestLayout();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewRootImpl$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements DisplayManager.DisplayListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayChanged(int displayId) {
+            if (ViewRootImpl.this.mView != null && ViewRootImpl.this.mDisplay.getDisplayId() == displayId) {
+                int oldDisplayState = ViewRootImpl.this.mAttachInfo.mDisplayState;
+                int newDisplayState = ViewRootImpl.this.mDisplay.getState();
+                Log.i(ViewRootImpl.this.mTag, "onDisplayChanged oldDisplayState=" + oldDisplayState + " newDisplayState=" + newDisplayState);
+                if (oldDisplayState != newDisplayState) {
+                    ViewRootImpl.this.mAttachInfo.mDisplayState = newDisplayState;
+                    ViewRootImpl.this.pokeDrawLockIfNeeded();
+                    if (oldDisplayState != 0) {
+                        int oldScreenState = toViewScreenState(oldDisplayState);
+                        int newScreenState = toViewScreenState(newDisplayState);
+                        if (oldScreenState != newScreenState) {
+                            ViewRootImpl.this.mView.dispatchScreenStateChanged(newScreenState);
+                        }
+                        if (ViewRootImpl.DEBUG_TRAVERSAL && ViewRootImpl.DEBUG_TRAVERSAL_PACKAGE_NAME.equals(ViewRootImpl.this.mView.getContext().getPackageName())) {
+                            Log.i(ViewRootImpl.this.mTag, "Traversal, [4] mView=" + ViewRootImpl.this.mView + " oldDisplayState=" + oldDisplayState);
+                        }
+                        switch (oldDisplayState) {
+                            case 1:
+                                ViewRootImpl.this.mFullRedrawNeeded = true;
+                                ViewRootImpl.this.scheduleTraversals();
+                                return;
+                            case 2:
+                            default:
+                                return;
+                            case 3:
+                            case 4:
+                                if (newDisplayState == 2 && displayId == 0 && (ViewRootImpl.this.mWindowAttributes.samsungFlags & 262144) == 0) {
+                                    ViewRootImpl.this.mFullRedrawNeeded = true;
+                                    ViewRootImpl.this.scheduleTraversals();
+                                    return;
+                                }
+                                return;
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayRemoved(int displayId) {
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayAdded(int displayId) {
+        }
+
+        private int toViewScreenState(int displayState) {
+            return Settings.System.getInt(ViewRootImpl.this.mContentResolver, ViewRootImpl.AOD_SHOW_STATE, 0) != 0 ? displayState == 2 ? 1 : 0 : displayState == 1 ? 0 : 1;
+        }
+    }
+
     public void onMovedToDisplay(int displayId, Configuration config) {
         View view;
         if (this.mDisplay.getDisplayId() != displayId && (view = this.mView) != null) {
@@ -1694,7 +1807,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         scheduleTraversals();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyInsetsChanged() {
         InsetsSource imeSource = this.mInsetsController.getState().peekSource(InsetsSource.ID_IME);
         WindowConfiguration winConfig = getConfiguration().windowConfiguration;
@@ -1740,7 +1852,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidate() {
         if (DEBUG_TRAVERSAL && DEBUG_TRAVERSAL_PACKAGE_NAME.equals(this.mView.getContext().getPackageName())) {
             Log.i(this.mTag, "Traversal, [8] mView=" + this.mView + " mWillDrawSoon=" + this.mWillDrawSoon);
@@ -1824,7 +1935,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mIsAmbientMode = ambient;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setWindowStopped(boolean stopped) {
         Log.i(this.mTag, "stopped(" + stopped + ") old = " + this.mStopped);
         checkThread();
@@ -2038,7 +2148,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
     public void bringChildToFront(View child) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getHostVisibility() {
         View view = this.mView;
         if (view == null || !(this.mAppVisible || this.mForceDecorViewVisibility)) {
@@ -2069,7 +2178,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void scheduleTraversals() {
         if (DEBUG_TRAVERSAL && DEBUG_TRAVERSAL_PACKAGE_NAME.equals(this.mView.getContext().getPackageName())) {
             Log.i(this.mTag, "Traversal, scheduleTraversals! mView=" + this.mView + " callers=" + Debug.getCallers(7));
@@ -2156,7 +2264,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return vis;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateCompatSysUiVisibility(int visibleTypes, int requestedVisibleTypes, int controllableTypes) {
         int visibleTypes2 = (requestedVisibleTypes & controllableTypes) | ((~controllableTypes) & visibleTypes);
         updateCompatSystemUiVisibilityInfo(4, WindowInsets.Type.statusBars(), visibleTypes2, controllableTypes);
@@ -2181,7 +2288,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         info.localChanges &= ~systemUiFlag;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void clearLowProfileModeIfNeeded(int showTypes, boolean fromIme) {
         SystemUiVisibilityInfo info = this.mCompatibleVisibilityInfo;
         if ((WindowInsets.Type.systemBars() & showTypes) != 0 && !fromIme && (info.globalVisibility & 1) != 0) {
@@ -2199,7 +2305,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDispatchSystemUiVisibilityChanged() {
         if (this.mView == null) {
             return;
@@ -2322,17 +2427,14 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void transformMatrixToGlobal(Matrix m) {
         m.preTranslate(this.mAttachInfo.mWindowLeft, this.mAttachInfo.mWindowTop);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void transformMatrixToLocal(Matrix m) {
         m.postTranslate(-this.mAttachInfo.mWindowLeft, -this.mAttachInfo.mWindowTop);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public WindowInsets getWindowInsets(boolean forceConstruct) {
         return getWindowInsets(forceConstruct, false);
     }
@@ -2424,45 +2526,185 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return bounds;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int dipToPx(int dip) {
         DisplayMetrics displayMetrics = this.mContext.getResources().getDisplayMetrics();
         return (int) ((displayMetrics.density * dip) + 0.5f);
     }
 
     /* JADX WARN: Can't wrap try/catch for region: R(189:16|(1:980)(1:24)|25|(4:27|(1:29)(1:978)|(1:31)(1:977)|(181:33|34|(3:36|(1:38)(1:975)|39)(1:976)|40|(6:42|(1:44)(2:961|(1:966)(1:965))|45|(1:47)|48|(1:50))(2:967|(3:971|(1:973)|974))|(3:52|(2:(1:55)(1:57)|56)|(1:61))|62|(1:64)|65|(1:67)|68|(1:960)(1:74)|75|(3:77|(1:958)(2:83|(1:85)(1:957))|86)(1:959)|87|(1:89)|90|(1:92)|93|(2:940|(6:942|(3:944|(2:946|947)(1:949)|948)|950|(1:952)|953|(1:955))(1:956))(1:97)|98|(2:100|(1:102)(1:938))(1:939)|(1:104)|(1:937)(151:107|(1:936)(4:111|(2:113|(1:115))|929|(2:931|(1:933)))|117|118|(1:928)(1:122)|123|(1:927)(1:127)|128|(1:130)(1:926)|131|(1:133)(1:925)|(4:135|(1:139)|140|(1:142))(1:924)|143|(1:923)(2:148|(1:150)(45:922|277|(1:279)|280|(1:538)(4:284|285|(1:287)|289)|(1:535)|(1:534)(1:303)|(1:533)(1:307)|(2:309|(6:311|(1:530)|315|(1:317)|318|(2:320|(1:322)))(1:531))(1:532)|323|(1:325)(1:(1:527)(1:(1:529)))|(1:327)|(1:329)|330|(3:332|(3:520|(1:522)(1:524)|523)(1:336)|337)(1:525)|338|(1:519)(1:342)|343|(7:345|(4:347|(1:349)|350|(1:352))(1:507)|(1:354)(1:506)|(1:356)|(1:358)(1:(1:505))|359|360)(2:508|(3:512|513|514))|361|(1:497)(6:363|(2:489|(1:493))|368|(1:370)(1:488)|371|(2:373|(2:375|(1:377))(1:(1:379))))|(2:485|(20:487|(1:386)|387|(1:484)(1:390)|391|(1:393)|(1:483)(1:396)|397|(1:482)(1:402)|(1:481)(4:404|(1:406)(1:480)|407|(1:411))|478|415|(1:475)|425|(1:429)|(4:431|(4:435|(2:438|436)|439|440)|441|(1:443))(1:(2:(1:457)(1:459)|458)(4:460|(4:464|(2:467|465)|468|469)|470|(1:474)))|444|(1:446)|447|(2:449|(2:451|452)(1:453))(1:454)))(1:383)|384|(0)|387|(0)|484|391|(0)|(0)|483|397|(1:400)|482|(0)(0)|478|415|(1:477)(2:418|475)|425|(2:427|429)|(0)(0)|444|(0)|447|(0)(0)))|151|(3:153|(1:155)(1:920)|156)(1:921)|157|(1:159)|160|161|162|(9:164|165|166|167|168|169|170|171|172)(1:914)|174|175|(1:895)|178|179|(1:181)(1:893)|182|183|184|185|186|187|188|189|190|(5:872|873|(1:875)|876|(1:878))|192|(1:194)(1:871)|195|(6:838|839|(1:843)|(1:847)|(1:851)|(1:865)(4:860|861|862|863))(1:197)|(1:199)|200|201|(6:205|(1:207)|208|(1:210)(1:585)|211|212)|586|(6:588|589|590|591|592|593)(1:832)|594|595|(1:597)(1:818)|598|(1:817)(1:602)|603|(1:816)(1:607)|608|609|(2:812|(93:814|613|(1:615)|(2:617|618)(1:811)|619|620|(1:622)|(6:787|788|789|790|791|(1:793))(1:624)|625|626|627|628|(4:630|631|632|(87:660|661|662|663|664|665|666|667|668|669|670|671|672|673|674|675|(1:679)|681|636|(1:(5:639|(1:649)(1:643)|644|(1:646)(1:648)|647)(1:650))|651|(1:(1:654)(1:655))|656|(1:658)|659|219|(1:221)|222|(1:577)|226|(6:228|(1:230)|231|(2:233|(3:235|(1:237)|238))|(2:564|(3:566|(4:568|(1:570)|571|572)(1:574)|573)(1:575))(1:243)|(4:245|246|247|248))(1:576)|253|(3:264|(1:270)(1:268)|269)|271|(8:545|(1:547)(1:563)|548|(1:550)(1:562)|551|(1:553)(1:561)|(1:560)(2:(1:556)(1:559)|557)|558)(1:275)|276|277|(0)|280|(1:282)|538|(0)|535|(2:299|301)|534|(1:305)|533|(0)(0)|323|(0)(0)|(0)|(0)|330|(0)(0)|338|(1:340)|519|343|(0)(0)|361|(0)(0)|(1:381)|485|(0)|384|(0)|387|(0)|484|391|(0)|(0)|483|397|(0)|482|(0)(0)|478|415|(0)(0)|425|(0)|(0)(0)|444|(0)|447|(0)(0))(1:634))(3:731|732|(8:734|(1:736)|737|(1:739)|740|(1:742)|743|(1:745)(1:746))(3:(1:751)|752|(1:777)(2:756|(6:758|759|760|761|762|763)(1:776))))|635|636|(0)|651|(0)|656|(0)|659|219|(0)|222|(1:224)|577|226|(0)(0)|253|(5:255|264|(1:266)|270|269)|271|(1:273)|539|545|(0)(0)|548|(0)(0)|551|(0)(0)|(0)(0)|558|276|277|(0)|280|(0)|538|(0)|535|(0)|534|(0)|533|(0)(0)|323|(0)(0)|(0)|(0)|330|(0)(0)|338|(0)|519|343|(0)(0)|361|(0)(0)|(0)|485|(0)|384|(0)|387|(0)|484|391|(0)|(0)|483|397|(0)|482|(0)(0)|478|415|(0)(0)|425|(0)|(0)(0)|444|(0)|447|(0)(0)))|612|613|(0)|(0)(0)|619|620|(0)|(0)(0)|625|626|627|628|(0)(0)|635|636|(0)|651|(0)|656|(0)|659|219|(0)|222|(0)|577|226|(0)(0)|253|(0)|271|(0)|539|545|(0)(0)|548|(0)(0)|551|(0)(0)|(0)(0)|558|276|277|(0)|280|(0)|538|(0)|535|(0)|534|(0)|533|(0)(0)|323|(0)(0)|(0)|(0)|330|(0)(0)|338|(0)|519|343|(0)(0)|361|(0)(0)|(0)|485|(0)|384|(0)|387|(0)|484|391|(0)|(0)|483|397|(0)|482|(0)(0)|478|415|(0)(0)|425|(0)|(0)(0)|444|(0)|447|(0)(0))|935|118|(1:120)|928|123|(1:125)|927|128|(0)(0)|131|(0)(0)|(0)(0)|143|(0)|923|151|(0)(0)|157|(0)|160|161|162|(0)(0)|174|175|(0)|895|178|179|(0)(0)|182|183|184|185|186|187|188|189|190|(0)|192|(0)(0)|195|(0)(0)|(0)|200|201|(7:203|205|(0)|208|(0)(0)|211|212)|586|(0)(0)|594|595|(0)(0)|598|(1:600)|817|603|(1:605)|816|608|609|(0)|812|(0)|612|613|(0)|(0)(0)|619|620|(0)|(0)(0)|625|626|627|628|(0)(0)|635|636|(0)|651|(0)|656|(0)|659|219|(0)|222|(0)|577|226|(0)(0)|253|(0)|271|(0)|539|545|(0)(0)|548|(0)(0)|551|(0)(0)|(0)(0)|558|276|277|(0)|280|(0)|538|(0)|535|(0)|534|(0)|533|(0)(0)|323|(0)(0)|(0)|(0)|330|(0)(0)|338|(0)|519|343|(0)(0)|361|(0)(0)|(0)|485|(0)|384|(0)|387|(0)|484|391|(0)|(0)|483|397|(0)|482|(0)(0)|478|415|(0)(0)|425|(0)|(0)(0)|444|(0)|447|(0)(0)))|979|34|(0)(0)|40|(0)(0)|(0)|62|(0)|65|(0)|68|(2:70|72)|960|75|(0)(0)|87|(0)|90|(0)|93|(1:95)|940|(0)(0)|98|(0)(0)|(0)|(0)|937|935|118|(0)|928|123|(0)|927|128|(0)(0)|131|(0)(0)|(0)(0)|143|(0)|923|151|(0)(0)|157|(0)|160|161|162|(0)(0)|174|175|(0)|895|178|179|(0)(0)|182|183|184|185|186|187|188|189|190|(0)|192|(0)(0)|195|(0)(0)|(0)|200|201|(0)|586|(0)(0)|594|595|(0)(0)|598|(0)|817|603|(0)|816|608|609|(0)|812|(0)|612|613|(0)|(0)(0)|619|620|(0)|(0)(0)|625|626|627|628|(0)(0)|635|636|(0)|651|(0)|656|(0)|659|219|(0)|222|(0)|577|226|(0)(0)|253|(0)|271|(0)|539|545|(0)(0)|548|(0)(0)|551|(0)(0)|(0)(0)|558|276|277|(0)|280|(0)|538|(0)|535|(0)|534|(0)|533|(0)(0)|323|(0)(0)|(0)|(0)|330|(0)(0)|338|(0)|519|343|(0)(0)|361|(0)(0)|(0)|485|(0)|384|(0)|387|(0)|484|391|(0)|(0)|483|397|(0)|482|(0)(0)|478|415|(0)(0)|425|(0)|(0)(0)|444|(0)|447|(0)(0)) */
-    /* JADX WARN: Code restructure failed: missing block: B:116:0x0314, code lost:            if (r30.width() != r58.mWidth) goto L169;     */
-    /* JADX WARN: Code restructure failed: missing block: B:413:0x1254, code lost:            if (r1 != false) goto L864;     */
-    /* JADX WARN: Code restructure failed: missing block: B:414:0x1257, code lost:            r25 = false;     */
-    /* JADX WARN: Code restructure failed: missing block: B:784:0x0a9b, code lost:            r50 = r15;        r5 = r28;        r15 = r29;        r12 = r43;        r9 = 8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:785:0x0a8c, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:786:0x0a8d, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:794:0x077d, code lost:            if (r58.mApplyInsetsRequested != false) goto L993;     */
-    /* JADX WARN: Code restructure failed: missing block: B:807:0x0aba, code lost:            r50 = r15;        r5 = r28;        r15 = r29;        r12 = r43;        r9 = 8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:808:0x0aa9, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:809:0x0aaa, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:820:0x0add, code lost:            r50 = r15;        r5 = r28;        r15 = r29;        r12 = r43;        r13 = r44;        r9 = 8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:821:0x0aca, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:822:0x0acb, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:835:0x0b04, code lost:            r50 = r15;        r5 = r28;        r15 = r13;        r12 = r43;        r13 = r44;        r9 = 8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:836:0x0aef, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:837:0x0af0, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:880:0x0b2f, code lost:            r50 = r15;        r5 = r12;        r15 = r13;        r12 = r43;        r13 = r44;        r9 = 8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:881:0x0b18, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:882:0x0b19, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:885:0x0b5e, code lost:            r47 = r3;        r50 = r15;        r5 = r12;        r15 = r13;        r12 = r43;        r13 = r44;        r9 = 8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:886:0x0b45, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:887:0x0b46, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:890:0x0b91, code lost:            r47 = r3;        r50 = r15;        r5 = r12;        r15 = r13;        r12 = r43;        r13 = r44;        r9 = 8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:891:0x0b76, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:892:0x0b77, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:897:0x0bc1, code lost:            r47 = r3;        r50 = r15;        r15 = r29;        r5 = r37;        r12 = r43;        r13 = r44;        r9 = 8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:898:0x0bab, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:899:0x0bac, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:917:0x0bf9, code lost:            r47 = r3;        r50 = r15;        r9 = 8;        r15 = r29;        r5 = r37;     */
-    /* JADX WARN: Code restructure failed: missing block: B:918:0x0bd6, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:919:0x0bd7, code lost:            r2 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:934:0x0327, code lost:            if (r30.height() != r58.mHeight) goto L169;     */
+    /* JADX WARN: Code restructure failed: missing block: B:116:0x0314, code lost:
+    
+        if (r30.width() != r58.mWidth) goto L1178;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:413:0x1254, code lost:
+    
+        if (r1 != false) goto L1873;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:414:0x1257, code lost:
+    
+        r25 = false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:784:0x0a9b, code lost:
+    
+        r50 = r15;
+        r5 = r28;
+        r15 = r29;
+        r12 = r43;
+        r9 = 8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:785:0x0a8c, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:786:0x0a8d, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:794:0x077d, code lost:
+    
+        if (r58.mApplyInsetsRequested != false) goto L2002;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:807:0x0aba, code lost:
+    
+        r50 = r15;
+        r5 = r28;
+        r15 = r29;
+        r12 = r43;
+        r9 = 8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:808:0x0aa9, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:809:0x0aaa, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:820:0x0add, code lost:
+    
+        r50 = r15;
+        r5 = r28;
+        r15 = r29;
+        r12 = r43;
+        r13 = r44;
+        r9 = 8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:821:0x0aca, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:822:0x0acb, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:835:0x0b04, code lost:
+    
+        r50 = r15;
+        r5 = r28;
+        r15 = r13;
+        r12 = r43;
+        r13 = r44;
+        r9 = 8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:836:0x0aef, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:837:0x0af0, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:880:0x0b2f, code lost:
+    
+        r50 = r15;
+        r5 = r12;
+        r15 = r13;
+        r12 = r43;
+        r13 = r44;
+        r9 = 8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:881:0x0b18, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:882:0x0b19, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:885:0x0b5e, code lost:
+    
+        r47 = r3;
+        r50 = r15;
+        r5 = r12;
+        r15 = r13;
+        r12 = r43;
+        r13 = r44;
+        r9 = 8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:886:0x0b45, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:887:0x0b46, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:890:0x0b91, code lost:
+    
+        r47 = r3;
+        r50 = r15;
+        r5 = r12;
+        r15 = r13;
+        r12 = r43;
+        r13 = r44;
+        r9 = 8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:891:0x0b76, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:892:0x0b77, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:897:0x0bc1, code lost:
+    
+        r47 = r3;
+        r50 = r15;
+        r15 = r29;
+        r5 = r37;
+        r12 = r43;
+        r13 = r44;
+        r9 = 8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:898:0x0bab, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:899:0x0bac, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:917:0x0bf9, code lost:
+    
+        r47 = r3;
+        r50 = r15;
+        r9 = 8;
+        r15 = r29;
+        r5 = r37;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:918:0x0bd6, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:919:0x0bd7, code lost:
+    
+        r2 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:934:0x0327, code lost:
+    
+        if (r30.height() != r58.mHeight) goto L1178;
+     */
     /* JADX WARN: Removed duplicated region for block: B:100:0x02c3  */
     /* JADX WARN: Removed duplicated region for block: B:104:0x02eb  */
     /* JADX WARN: Removed duplicated region for block: B:120:0x0336  */
@@ -2607,7 +2849,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mWmsRequestSyncGroup.add(this, (Runnable) null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createSyncIfNeeded$3(int seqId, SurfaceControl.Transaction t) {
         if (CoreRune.FW_SURFACE_DEBUG_APPLY && t != null && !TextUtils.isEmpty(t.mDebugName)) {
             t.mDebugName += "_seqId<" + seqId + ">";
@@ -2677,7 +2918,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void maybeHandleWindowMove(Rect frame) {
         boolean windowMoved = (this.mAttachInfo.mWindowLeft == frame.left && this.mAttachInfo.mWindowTop == frame.top) ? false : true;
         if (windowMoved) {
@@ -2693,7 +2933,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleWindowFocusChanged() {
         boolean z;
         synchronized (this) {
@@ -2795,7 +3034,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleWindowTouchModeChanged() {
         boolean inTouchMode;
         synchronized (this) {
@@ -2903,12 +3141,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isInLayout() {
         return this.mInLayout;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean requestLayoutDuringLayout(View view) {
         if (view.mParent == null || view.mAttachInfo == null) {
             return true;
@@ -2947,9 +3183,15 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
                 this.mInLayout = true;
                 host.layout(0, 0, host.getMeasuredWidth(), host.getMeasuredHeight());
                 this.mHandlingLayoutInLayoutRequest = false;
-                final ArrayList<View> validLayoutRequesters2 = getValidLayoutRequesters(this.mLayoutRequesters, true);
+                ArrayList<View> validLayoutRequesters2 = getValidLayoutRequesters(this.mLayoutRequesters, true);
                 if (validLayoutRequesters2 != null) {
                     getRunQueue().post(new Runnable() { // from class: android.view.ViewRootImpl.4
+                        final /* synthetic */ ArrayList val$finalRequesters;
+
+                        AnonymousClass4(ArrayList validLayoutRequesters22) {
+                            validLayoutRequesters2 = validLayoutRequesters22;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             int numValidRequests2 = validLayoutRequesters2.size();
@@ -2967,6 +3209,26 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         } catch (Throwable th) {
             Trace.traceEnd(8L);
             throw th;
+        }
+    }
+
+    /* renamed from: android.view.ViewRootImpl$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements Runnable {
+        final /* synthetic */ ArrayList val$finalRequesters;
+
+        AnonymousClass4(ArrayList validLayoutRequesters22) {
+            validLayoutRequesters2 = validLayoutRequesters22;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            int numValidRequests2 = validLayoutRequesters2.size();
+            for (int i2 = 0; i2 < numValidRequests2; i2++) {
+                View view2 = (View) validLayoutRequesters2.get(i2);
+                Log.w("View", "requestLayout() improperly called by " + view2 + " during second layout pass: posting in next frame");
+                view2.requestLayout();
+            }
         }
     }
 
@@ -3064,12 +3326,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void outputDisplayList(View view) {
         view.mRenderNode.output();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void profileRendering(boolean enabled) {
         if (this.mProfileRendering) {
             this.mRenderProfilingEnabled = enabled;
@@ -3080,6 +3340,9 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
             if (this.mRenderProfilingEnabled) {
                 if (this.mRenderProfiler == null) {
                     this.mRenderProfiler = new Choreographer.FrameCallback() { // from class: android.view.ViewRootImpl.5
+                        AnonymousClass5() {
+                        }
+
                         @Override // android.view.Choreographer.FrameCallback
                         public void doFrame(long frameTimeNanos) {
                             ViewRootImpl.this.mDirty.set(0, 0, ViewRootImpl.this.mWidth, ViewRootImpl.this.mHeight);
@@ -3097,6 +3360,25 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
                 return;
             }
             this.mRenderProfiler = null;
+        }
+    }
+
+    /* renamed from: android.view.ViewRootImpl$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements Choreographer.FrameCallback {
+        AnonymousClass5() {
+        }
+
+        @Override // android.view.Choreographer.FrameCallback
+        public void doFrame(long frameTimeNanos) {
+            ViewRootImpl.this.mDirty.set(0, 0, ViewRootImpl.this.mWidth, ViewRootImpl.this.mHeight);
+            if (ViewRootImpl.DEBUG_TRAVERSAL && ViewRootImpl.DEBUG_TRAVERSAL_PACKAGE_NAME.equals(ViewRootImpl.this.mView.getContext().getPackageName())) {
+                Log.i(ViewRootImpl.this.mTag, "Traversal, [12] mView=" + ViewRootImpl.this.mView);
+            }
+            ViewRootImpl.this.scheduleTraversals();
+            if (ViewRootImpl.this.mRenderProfilingEnabled) {
+                ViewRootImpl.this.mChoreographer.postFrameCallback(ViewRootImpl.this.mRenderProfiler);
+            }
         }
     }
 
@@ -3179,7 +3461,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addFrameCommitCallbackIfNeeded$5(final ArrayList commitCallbacks, boolean didProduceBuffer) {
         Log.d(this.mTag, "Received frameCommitCallback didProduceBuffer=" + didProduceBuffer);
         this.mHandler.postAtFrontOfQueue(new Runnable() { // from class: android.view.ViewRootImpl$$ExternalSyntheticLambda2
@@ -3190,7 +3471,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$addFrameCommitCallbackIfNeeded$4(ArrayList commitCallbacks) {
         for (int i = 0; i < commitCallbacks.size(); i++) {
             ((Runnable) commitCallbacks.get(i)).run();
@@ -3204,8 +3484,7 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         registerRtFrameCallback(new AnonymousClass6(t));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewRootImpl$6, reason: invalid class name */
+    /* renamed from: android.view.ViewRootImpl$6 */
     /* loaded from: classes4.dex */
     public class AnonymousClass6 implements HardwareRenderer.FrameDrawingCallback {
         final /* synthetic */ SurfaceControl.Transaction val$t;
@@ -3232,7 +3511,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFrameDraw$0(long frame, boolean didProduceBuffer) {
             if (!didProduceBuffer && ViewRootImpl.this.mBlastBufferQueue != null) {
                 ViewRootImpl.this.mBlastBufferQueue.applyPendingTransactions(frame);
@@ -3331,7 +3609,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$performDraw$6(SurfaceSyncGroup surfaceSyncGroup) {
         if (surfaceSyncGroup != null) {
             surfaceSyncGroup.markSyncReady();
@@ -3524,7 +3801,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mAttachInfo.mAccessibilityFocusDrawable;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSystemGestureExclusionRectsForView(View view) {
         this.mGestureExclusionTracker.updateRectsForView(view);
         this.mHandler.sendEmptyMessage(30);
@@ -3551,7 +3827,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mGestureExclusionTracker.getRootRects();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateKeepClearRectsForView(View view) {
         this.mKeepClearRectsTracker.updateRectsForView(view);
         this.mUnrestrictedKeepClearRectsTracker.updateRectsForView(view);
@@ -3730,7 +4005,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mAccessibilityFocusedVirtualView;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAccessibilityFocus(View view, AccessibilityNodeInfo node) {
         if (this.mAccessibilityFocusedVirtualView != null) {
             AccessibilityNodeInfo focusNode = this.mAccessibilityFocusedVirtualView;
@@ -3759,12 +4033,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasPointerCapture() {
         return this.mPointerCapture;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestPointerCapture(boolean enabled) {
         IBinder inputToken = getInputToken();
         if (inputToken == null) {
@@ -3774,7 +4046,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handlePointerCaptureChanged(boolean hasCapture) {
         if (this.mPointerCapture == hasCapture) {
             return;
@@ -3825,7 +4096,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$updateColorModeIfNeeded$7(Display display) {
         updateRenderHdrSdrRatio();
         invalidate();
@@ -3905,7 +4175,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$recomputeViewAttributes$8() {
         this.mAttachInfo.mRecomputeGlobalAttributes = true;
     }
@@ -3968,7 +4237,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mIsDetached = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void performConfigurationChange(MergedConfiguration mergedConfiguration, boolean force, int newDisplayId) {
         View.AttachInfo attachInfo;
         if (mergedConfiguration == null) {
@@ -4100,7 +4368,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class ViewRootHandler extends Handler {
         ViewRootHandler() {
@@ -4386,12 +4653,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$9(Runnable r) {
         this.mHandler.post(r);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean ensureTouchMode(boolean inTouchMode) {
         if (this.mAttachInfo.mInTouchMode == inTouchMode) {
             return false;
@@ -4550,7 +4815,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public abstract class InputStage {
         protected static final int FINISH_HANDLED = 1;
@@ -4696,8 +4960,9 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    abstract class AsyncInputStage extends InputStage {
+    public abstract class AsyncInputStage extends InputStage {
         protected static final int DEFER = 3;
         private QueuedInputEvent mQueueHead;
         private int mQueueLength;
@@ -4809,7 +5074,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class NativePreImeInputStage extends AsyncInputStage implements InputQueue.FinishedInputEventCallback {
         public NativePreImeInputStage(InputStage next, String traceCounter) {
@@ -4876,7 +5140,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class ViewPreImeInputStage extends InputStage {
         private boolean mIsBackKeyDuringDrag;
@@ -4913,7 +5176,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class ImeInputStage extends AsyncInputStage implements InputMethodManager.FinishedInputEventCallback {
         public ImeInputStage(InputStage next, String traceCounter) {
@@ -4947,7 +5209,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class EarlyPostImeInputStage extends InputStage {
         public EarlyPostImeInputStage(InputStage next) {
@@ -5029,7 +5290,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class NativePostImeInputStage extends AsyncInputStage implements InputQueue.FinishedInputEventCallback {
         public NativePostImeInputStage(InputStage next, String traceCounter) {
@@ -5056,7 +5316,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class ViewPostImeInputStage extends InputStage {
         public ViewPostImeInputStage(InputStage next) {
@@ -5300,7 +5559,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void resetPointerIcon(MotionEvent event) {
         this.mPointerIconType = null;
         updatePointerIcon(event);
@@ -5314,7 +5572,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mDesktopModeStandAlone;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean updatePointerIcon(MotionEvent event) {
         float x = event.getX(0);
         float y = event.getY(0);
@@ -5365,7 +5622,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void maybeUpdateTooltip(MotionEvent event) {
         if (event.getPointerCount() != 1) {
             return;
@@ -5394,7 +5650,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class SyntheticInputStage extends InputStage {
         private final SyntheticJoystickHandler mJoystick;
@@ -5464,8 +5719,9 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    final class SyntheticTrackballHandler {
+    public final class SyntheticTrackballHandler {
         private long mLastTime;
         private final TrackballAxis mX = new TrackballAxis();
         private final TrackballAxis mY = new TrackballAxis();
@@ -5592,7 +5848,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class TrackballAxis {
         static final float ACCEL_MOVE_SCALING_FACTOR = 0.025f;
@@ -5719,7 +5974,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class SyntheticJoystickHandler extends Handler {
         private static final int MSG_ENQUEUE_X_AXIS_KEY_REPEAT = 1;
@@ -5767,7 +6021,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void cancel() {
             removeMessages(1);
             removeMessages(2);
@@ -5797,7 +6050,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
             this.mJoystickAxesState.updateStateForAxis(event, time2, 16, event.getAxisValue(16));
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public final class JoystickAxesState {
             private static final int STATE_DOWN_OR_RIGHT = 1;
@@ -5907,18 +6159,60 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    final class SyntheticTouchNavigationHandler extends Handler {
+    public final class SyntheticTouchNavigationHandler extends Handler {
         private static final String LOCAL_TAG = "SyntheticTouchNavigationHandler";
         private int mCurrentDeviceId;
         private int mCurrentSource;
         private final GestureDetector mGestureDetector;
         private int mPendingKeyMetaState;
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.view.ViewRootImpl$SyntheticTouchNavigationHandler$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements GestureDetector.OnGestureListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.view.GestureDetector.OnGestureListener
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override // android.view.GestureDetector.OnGestureListener
+            public void onShowPress(MotionEvent e) {
+            }
+
+            @Override // android.view.GestureDetector.OnGestureListener
+            public boolean onSingleTapUp(MotionEvent e) {
+                SyntheticTouchNavigationHandler.this.dispatchTap(e.getEventTime());
+                return true;
+            }
+
+            @Override // android.view.GestureDetector.OnGestureListener
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return true;
+            }
+
+            @Override // android.view.GestureDetector.OnGestureListener
+            public void onLongPress(MotionEvent e) {
+            }
+
+            @Override // android.view.GestureDetector.OnGestureListener
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                SyntheticTouchNavigationHandler.this.dispatchFling(velocityX, velocityY, e2.getEventTime());
+                return true;
+            }
+        }
+
         SyntheticTouchNavigationHandler() {
             super(true);
             this.mCurrentDeviceId = -1;
             this.mGestureDetector = new GestureDetector(ViewRootImpl.this.mContext, new GestureDetector.OnGestureListener() { // from class: android.view.ViewRootImpl.SyntheticTouchNavigationHandler.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.view.GestureDetector.OnGestureListener
                 public boolean onDown(MotionEvent e) {
                     return true;
@@ -5965,12 +6259,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
             this.mGestureDetector.onTouchEvent(event);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void dispatchTap(long time) {
             dispatchEvent(time, 23);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void dispatchFling(float x, float y, long time) {
             if (Math.abs(x) > Math.abs(y)) {
                 dispatchEvent(time, x > 0.0f ? 22 : 21);
@@ -5985,8 +6277,9 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    final class SyntheticKeyboardHandler {
+    public final class SyntheticKeyboardHandler {
         SyntheticKeyboardHandler() {
         }
 
@@ -6031,7 +6324,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return keyEvent.getUnicodeChar() > 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkForLeavingTouchModeAndConsume(KeyEvent event) {
         if (!this.mAttachInfo.mInTouchMode) {
             return false;
@@ -6050,12 +6342,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setLocalDragState(Object obj) {
         this.mLocalDragState = obj;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDragEvent(DragEvent event) {
         InputMethodManager imm;
         if (this.mView != null && this.mAdded) {
@@ -6241,7 +6531,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mCurrentDragView = newDragTarget;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDragStartedViewForAccessibility(View view) {
         if (this.mStartedDragViewForA11y == null) {
             this.mStartedDragViewForA11y = view;
@@ -6261,7 +6550,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mAudioManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public AutofillManager getAutofillManager() {
         View view = this.mView;
         if (view instanceof ViewGroup) {
@@ -6274,7 +6562,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isAutofillUiShowing() {
         AutofillManager afm = getAutofillManager();
         if (afm == null) {
@@ -6360,7 +6647,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mIsSurfaceOpaque = opaque;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setFrame(Rect frame, boolean withinRelayout) {
         Rect rect;
         boolean changed = !this.mWinFrame.equals(frame);
@@ -6403,20 +6689,17 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         insetsController.onFrameChanged(rect4);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setOverrideInsetsFrame(Rect frame) {
         Rect rect = new Rect(frame);
         this.mOverrideInsetsFrame = rect;
         this.mInsetsController.onFrameChanged(rect);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void getDisplayFrame(Rect outFrame) {
         outFrame.set(this.mTmpFrames.displayFrame);
         applyViewBoundsSandboxingIfNeeded(outFrame);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void getWindowVisibleDisplayFrame(Rect outFrame) {
         outFrame.set(this.mTmpFrames.displayFrame);
         Rect insets = this.mAttachInfo.mVisibleInsets;
@@ -6427,7 +6710,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         applyViewBoundsSandboxingIfNeeded(outFrame);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void applyViewBoundsSandboxingIfNeeded(Rect inOutRect) {
         if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
             Configuration config = this.mLastReportedMergedConfiguration.getMergedConfiguration();
@@ -6674,14 +6956,12 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class GfxInfo {
         public long renderNodeMemoryAllocated;
         public long renderNodeMemoryUsage;
         public int viewCount;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void add(GfxInfo other) {
             this.viewCount += other.viewCount;
             this.renderNodeMemoryUsage += other.renderNodeMemoryUsage;
@@ -6689,7 +6969,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GfxInfo getGfxInfo() {
         GfxInfo info = new GfxInfo();
         View view = this.mView;
@@ -6720,7 +6999,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean die(boolean immediate) {
         if (immediate && !this.mIsInTraversal) {
             doDie();
@@ -6735,7 +7013,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doDie() {
         checkThread();
         synchronized (this) {
@@ -6784,8 +7061,35 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mHandler.sendMessage(msg);
     }
 
+    /* renamed from: android.view.ViewRootImpl$7 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass7 implements Runnable {
+        AnonymousClass7() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewRootImpl.this.mProfileRendering = SystemProperties.getBoolean(ViewRootImpl.PROPERTY_PROFILE_RENDERING, false);
+            ViewRootImpl viewRootImpl = ViewRootImpl.this;
+            viewRootImpl.profileRendering(viewRootImpl.mAttachInfo.mHasWindowFocus);
+            if (ViewRootImpl.this.mAttachInfo.mThreadedRenderer != null && ViewRootImpl.this.mAttachInfo.mThreadedRenderer.loadSystemProperties()) {
+                ViewRootImpl.this.invalidate();
+            }
+            boolean layout = DisplayProperties.debug_layout().orElse(false).booleanValue();
+            if (layout != ViewRootImpl.this.mAttachInfo.mDebugLayout) {
+                ViewRootImpl.this.mAttachInfo.mDebugLayout = layout;
+                if (!ViewRootImpl.this.mHandler.hasMessages(22)) {
+                    ViewRootImpl.this.mHandler.sendEmptyMessageDelayed(22, 200L);
+                }
+            }
+        }
+    }
+
     public void loadSystemProperties() {
         this.mHandler.post(new Runnable() { // from class: android.view.ViewRootImpl.7
+            AnonymousClass7() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ViewRootImpl.this.mProfileRendering = SystemProperties.getBoolean(ViewRootImpl.PROPERTY_PROFILE_RENDERING, false);
@@ -6830,7 +7134,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchResized(ClientWindowFrames clientWindowFrames, boolean z, MergedConfiguration mergedConfiguration, InsetsState insetsState, boolean z2, boolean z3, int i, int i2, boolean z4) {
         InsetsState insetsState2;
         Message obtainMessage = this.mHandler.obtainMessage(z ? 5 : 4);
@@ -6864,7 +7167,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mHandler.sendMessage(obtainMessage);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchInsetsControlChanged(InsetsState insetsState, InsetsSourceControl[] activeControls) {
         if (Binder.getCallingPid() == Process.myPid()) {
             insetsState = new InsetsState(insetsState, true);
@@ -6888,12 +7190,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mHandler.obtainMessage(29, args).sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void showInsets(int i, boolean z, ImeTracker.Token token) {
         this.mHandler.obtainMessage(31, i, z ? 1 : 0, token).sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void hideInsets(int i, boolean z, ImeTracker.Token token) {
         this.mHandler.obtainMessage(32, i, z ? 1 : 0, token).sendToTarget();
     }
@@ -6925,7 +7225,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mHandler.sendMessage(msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class QueuedInputEvent {
         public static final int FLAG_DEFERRED = 2;
@@ -6939,6 +7238,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         public int mFlags;
         public QueuedInputEvent mNext;
         public InputEventReceiver mReceiver;
+
+        /* synthetic */ QueuedInputEvent(QueuedInputEventIA queuedInputEventIA) {
+            this();
+        }
 
         private QueuedInputEvent() {
         }
@@ -7166,7 +7469,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void finishInputEvent(QueuedInputEvent q) {
         Trace.asyncTraceEnd(8L, "deliverInputEvent", q.mEvent.getId());
         if (q.mReceiver != null) {
@@ -7238,7 +7540,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return consumedBatches;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class TraversalRunnable implements Runnable {
         TraversalRunnable() {
@@ -7250,7 +7551,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class WindowInputEventReceiver extends InputEventReceiver {
         public WindowInputEventReceiver(InputChannel inputChannel, Looper looper) {
@@ -7328,7 +7628,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class InputMetricsListener implements HardwareRendererObserver.OnFrameMetricsAvailableListener {
         public long[] data = new long[23];
@@ -7361,7 +7660,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class ConsumeBatchedInputRunnable implements Runnable {
         ConsumeBatchedInputRunnable() {
@@ -7377,7 +7675,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class ConsumeBatchedInputImmediatelyRunnable implements Runnable {
         ConsumeBatchedInputImmediatelyRunnable() {
@@ -7390,7 +7687,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class InvalidateOnAnimationRunnable implements Runnable {
         private boolean mPosted;
@@ -7646,7 +7942,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         viewRootHandler.sendMessage(viewRootHandler.obtainMessage(15, eventToRestart));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void windowFocusInTaskChanged(boolean hasFocus) {
         synchronized (this) {
             this.mWindowFocusInTaskChanged = true;
@@ -7660,7 +7955,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mHandler.sendMessage(msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleWindowFocusInTaskChanged() {
         synchronized (this) {
             if (this.mWindowFocusInTaskChanged) {
@@ -7692,7 +7986,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mHandler.obtainMessage(26, deviceId, 0, receiver).sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchPointerCaptureChanged(boolean z) {
         this.mHandler.removeMessages(28);
         Message obtainMessage = this.mHandler.obtainMessage(28);
@@ -7892,7 +8185,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public View getCommonPredecessor(View first, View second) {
         if (this.mTempHashSet == null) {
             this.mTempHashSet = new HashSet<>();
@@ -8076,8 +8368,7 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: dispatchScrollCaptureSearchResponse, reason: merged with bridge method [inline-methods] */
+    /* renamed from: dispatchScrollCaptureSearchResponse */
     public void lambda$handleScrollCaptureRequest$10(IScrollCaptureResponseListener listener, ScrollCaptureSearchResults results) {
         ScrollCaptureTarget selectedTarget = results.getTopResult();
         ScrollCaptureResponse.Builder response = new ScrollCaptureResponse.Builder();
@@ -8139,7 +8430,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void changeCanvasOpacity(boolean opaque) {
         Log.d(this.mTag, "changeCanvasOpacity: opaque=" + opaque);
         boolean opaque2 = opaque & ((this.mView.mPrivateFlags & 512) == 0);
@@ -8152,7 +8442,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mUnhandledKeyManager.dispatch(this.mView, event);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class TakenSurfaceHolder extends BaseSurfaceHolder {
         TakenSurfaceHolder() {
@@ -8198,7 +8487,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class W extends IWindow.Stub {
         private final WeakReference<ViewRootImpl> mViewAncestor;
@@ -8433,8 +8721,8 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
 
         @Override // android.view.IWindow
         public void invalidateForScreenShot(boolean forceMode) {
-            final ViewRootImpl viewAncestor = this.mViewAncestor.get();
-            final String tag = viewAncestor.getTag() != null ? viewAncestor.getTag() : ViewRootImpl.TAG;
+            ViewRootImpl viewAncestor = this.mViewAncestor.get();
+            String tag = viewAncestor.getTag() != null ? viewAncestor.getTag() : ViewRootImpl.TAG;
             Log.i(tag, "invalidateForScreenShot forceMode=" + forceMode);
             viewAncestor.mForceModeInScreenshot = forceMode;
             if (forceMode) {
@@ -8446,6 +8734,14 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
             }
             if (viewAncestor.mInvalidateForScreenshotRunnable == null) {
                 viewAncestor.mInvalidateForScreenshotRunnable = new Runnable() { // from class: android.view.ViewRootImpl.W.1
+                    final /* synthetic */ String val$tag;
+                    final /* synthetic */ ViewRootImpl val$viewAncestor;
+
+                    AnonymousClass1(String tag2, ViewRootImpl viewAncestor2) {
+                        tag = tag2;
+                        viewAncestor = viewAncestor2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         Log.i(tag, "invalidateForScreenShot post vri invalidate");
@@ -8453,7 +8749,25 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
                     }
                 };
             }
-            viewAncestor.mAttachInfo.mHandler.post(viewAncestor.mInvalidateForScreenshotRunnable);
+            viewAncestor2.mAttachInfo.mHandler.post(viewAncestor2.mInvalidateForScreenshotRunnable);
+        }
+
+        /* renamed from: android.view.ViewRootImpl$W$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ String val$tag;
+            final /* synthetic */ ViewRootImpl val$viewAncestor;
+
+            AnonymousClass1(String tag2, ViewRootImpl viewAncestor2) {
+                tag = tag2;
+                viewAncestor = viewAncestor2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                Log.i(tag, "invalidateForScreenShot post vri invalidate");
+                viewAncestor.invalidate();
+            }
         }
     }
 
@@ -8537,7 +8851,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mAttachInfo.mWindowToken;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class AccessibilityInteractionConnectionManager implements AccessibilityManager.AccessibilityStateChangeListener {
         private int mDirectConnectionId = -1;
@@ -8601,7 +8914,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doRelayoutForHCT(boolean isNotFromHandler) {
         if (this.mThread == Thread.currentThread()) {
             destroyHardwareResources();
@@ -8622,7 +8934,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class HCTRelayoutHandler extends Handler {
         public static final int MSG_NEED_TO_DO_RELAYOUT = 1;
@@ -8642,7 +8953,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class HighContrastTextManager implements AccessibilityManager.HighTextContrastChangeListener {
         HighContrastTextManager() {
@@ -8656,7 +8966,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class AccessibilityInteractionConnection extends IAccessibilityInteractionConnection.Stub {
         private final WeakReference<ViewRootImpl> mViewRootImpl;
@@ -8788,7 +9097,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mAccessibilityEmbeddedConnection;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SendWindowContentChangedAccessibilityEvent implements Runnable {
         public OptionalInt mAction;
@@ -8796,6 +9104,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         public long mLastEventTimeMillis;
         public StackTraceElement[] mOrigin;
         public View mSource;
+
+        /* synthetic */ SendWindowContentChangedAccessibilityEvent(ViewRootImpl viewRootImpl, SendWindowContentChangedAccessibilityEventIA sendWindowContentChangedAccessibilityEventIA) {
+            this();
+        }
 
         private SendWindowContentChangedAccessibilityEvent() {
             this.mChangeTypes = 0;
@@ -8879,12 +9191,15 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class UnhandledKeyManager {
         private final SparseArray<WeakReference<View>> mCapturedKeys;
         private WeakReference<View> mCurrentReceiver;
         private boolean mDispatched;
+
+        /* synthetic */ UnhandledKeyManager(UnhandledKeyManagerIA unhandledKeyManagerIA) {
+            this();
+        }
 
         private UnhandledKeyManager() {
             this.mDispatched = true;
@@ -9024,7 +9339,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mUseBLASTAdapter && !this.mForceDisableBLAST;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSurfaceSequenceId() {
         return this.mSurfaceSequenceId;
     }
@@ -9220,12 +9534,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mBlurFilter = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean wasRelayoutRequested() {
         return this.mRelayoutRequested;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void forceWmRelayout() {
         this.mForceNextWindowRelayout = true;
         if (DEBUG_TRAVERSAL && DEBUG_TRAVERSAL_PACKAGE_NAME.equals(this.mView.getContext().getPackageName())) {
@@ -9267,7 +9579,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$registerCompatOnBackInvokedCallback$11() {
         sendBackKeyEvent(0);
         sendBackKeyEvent(1);
@@ -9284,7 +9595,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IWindowSession getWindowSession() {
         return this.mWindowSession;
     }
@@ -9301,8 +9611,7 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mAttachInfo.mThreadedRenderer.registerRtFrameCallback(new AnonymousClass8(t, surfaceSyncGroup, syncBuffer));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewRootImpl$8, reason: invalid class name */
+    /* renamed from: android.view.ViewRootImpl$8 */
     /* loaded from: classes4.dex */
     public class AnonymousClass8 implements HardwareRenderer.FrameDrawingCallback {
         final /* synthetic */ SurfaceSyncGroup val$surfaceSyncGroup;
@@ -9358,7 +9667,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFrameDraw$0(SurfaceSyncGroup surfaceSyncGroup, SurfaceControl.Transaction transaction) {
             if (CoreRune.FW_SURFACE_DEBUG_APPLY) {
                 transaction.addDebugName("syncBuffer_" + surfaceSyncGroup.getName());
@@ -9368,7 +9676,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
             surfaceSyncGroup.markSyncReady();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFrameDraw$1(long frame, SurfaceSyncGroup surfaceSyncGroup, boolean syncBuffer, boolean didProduceBuffer) {
             if (ViewRootImpl.DEBUG_BLAST) {
                 Log.i(ViewRootImpl.this.mTag, "Received frameCommittedCallback lastAttemptedDrawFrameNum=" + frame + " didProduceBuffer=" + didProduceBuffer);
@@ -9419,7 +9726,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         activeSurfaceSyncGroup.addTransaction(t);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$safeguardOverlappingSyncs$13(SurfaceSyncGroup safeguardSsg) {
         safeguardSsg.markSyncReady();
         synchronized (this.mPreviousSyncSafeguardLock) {
@@ -9458,7 +9764,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return this.mActiveSurfaceSyncGroup;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getOrCreateSurfaceSyncGroup$15() {
         Runnable runnable = new Runnable() { // from class: android.view.ViewRootImpl$$ExternalSyntheticLambda20
             @Override // java.lang.Runnable
@@ -9473,7 +9778,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getOrCreateSurfaceSyncGroup$14() {
         int i = this.mNumPausedForSync;
         if (i > 0) {
@@ -9506,7 +9810,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$updateSyncInProgressCount$16() {
         synchronized (sSyncProgressLock) {
             int i = sNumSyncsInProgress - 1;
@@ -9517,7 +9820,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addToSync(SurfaceSyncGroup syncable) {
         SurfaceSyncGroup surfaceSyncGroup = this.mActiveSurfaceSyncGroup;
         if (surfaceSyncGroup == null) {
@@ -9567,12 +9869,10 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         scheduleTraversals();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$requestRecomputeViewAttributes$17() {
         this.mAttachInfo.mRecomputeGlobalAttributes = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchLetterboxDirectionChanged(int direction) {
         if (CoreRune.SAFE_DEBUG && DEBUG_LAYOUT) {
             Log.v(this.mTag, "dispatchLetterboxDirectionChanged, direction=" + direction);
@@ -9582,7 +9882,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mHandler.sendMessage(msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDispatchLetterboxDirectionChanged(int direction) {
         this.mRequestedLetterboxDirection = direction;
         if (updateAppliedLetterboxDirection(direction) && (this.mView instanceof DecorView)) {
@@ -9603,7 +9902,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         return updated;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class SmartClipRemoteRequestDispatcherProxy {
         private boolean DEBUG;
@@ -9612,9 +9910,58 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         private SmartClipRemoteRequestDispatcher mDispatcher;
         private SmartClipRemoteRequestDispatcher.ViewRootImplGateway mGateway;
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.view.ViewRootImpl$SmartClipRemoteRequestDispatcherProxy$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements SmartClipRemoteRequestDispatcher.ViewRootImplGateway {
+            AnonymousClass1() {
+            }
+
+            @Override // com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.ViewRootImplGateway
+            public void enqueueInputEvent(InputEvent event, InputEventReceiver receiver, int flags, boolean processImmediately) {
+                ViewRootImpl.this.enqueueInputEvent(event, receiver, flags, processImmediately);
+            }
+
+            @Override // com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.ViewRootImplGateway
+            public PointF getScaleFactor() {
+                return new PointF(1.0f, 1.0f);
+            }
+
+            @Override // com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.ViewRootImplGateway
+            public View getRootView() {
+                return ViewRootImpl.this.mView;
+            }
+
+            @Override // com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.ViewRootImplGateway
+            public Handler getHandler() {
+                return ViewRootImpl.this.mHandler;
+            }
+
+            @Override // com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.ViewRootImplGateway
+            public ViewRootImpl getViewRootImpl() {
+                return ViewRootImpl.this;
+            }
+
+            @Override // com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.ViewRootImplGateway
+            public PointF getTranslatedPoint() {
+                return null;
+            }
+
+            @Override // com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.ViewRootImplGateway
+            public void getTranslatedRectIfNeeded(Rect outRect) {
+                CompatTranslator translator = ViewRootImpl.this.getCompatTranslator();
+                if (translator != null) {
+                    translator.translateToScreen(outRect);
+                }
+            }
+        }
+
         public SmartClipRemoteRequestDispatcherProxy(Context context) {
             this.DEBUG = false;
-            SmartClipRemoteRequestDispatcher.ViewRootImplGateway viewRootImplGateway = new SmartClipRemoteRequestDispatcher.ViewRootImplGateway() { // from class: android.view.ViewRootImpl.SmartClipRemoteRequestDispatcherProxy.1
+            AnonymousClass1 anonymousClass1 = new SmartClipRemoteRequestDispatcher.ViewRootImplGateway() { // from class: android.view.ViewRootImpl.SmartClipRemoteRequestDispatcherProxy.1
+                AnonymousClass1() {
+                }
+
                 @Override // com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.ViewRootImplGateway
                 public void enqueueInputEvent(InputEvent event, InputEventReceiver receiver, int flags, boolean processImmediately) {
                     ViewRootImpl.this.enqueueInputEvent(event, receiver, flags, processImmediately);
@@ -9653,14 +10000,14 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
                     }
                 }
             };
-            this.mGateway = viewRootImplGateway;
+            this.mGateway = anonymousClass1;
             this.mContext = context;
-            SmartClipRemoteRequestDispatcher smartClipRemoteRequestDispatcher = new SmartClipRemoteRequestDispatcher(context, viewRootImplGateway);
+            SmartClipRemoteRequestDispatcher smartClipRemoteRequestDispatcher = new SmartClipRemoteRequestDispatcher(context, anonymousClass1);
             this.mDispatcher = smartClipRemoteRequestDispatcher;
             this.DEBUG = smartClipRemoteRequestDispatcher.isDebugMode();
         }
 
-        public void dispatchSmartClipRemoteRequest(final SmartClipRemoteRequestInfo request) {
+        public void dispatchSmartClipRemoteRequest(SmartClipRemoteRequestInfo request) {
             if (this.DEBUG) {
                 Log.i("SmartClipRemoteRequestDispatcher_ViewRootImpl", "dispatchSmartClipRemoteRequest : req id=" + request.mRequestId + " type=" + request.mRequestType + " pid=" + request.mCallerPid + " uid=" + request.mCallerUid);
             }
@@ -9668,6 +10015,12 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
                 case 1:
                     this.mDispatcher.checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request.mCallerPid, request.mCallerUid);
                     ViewRootImpl.this.mHandler.post(new Runnable() { // from class: android.view.ViewRootImpl.SmartClipRemoteRequestDispatcherProxy.2
+                        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+                        AnonymousClass2(SmartClipRemoteRequestInfo request2) {
+                            request = request2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             SmartClipRemoteRequestDispatcherProxy.this.dispatchSmartClipMetaDataExtraction(request);
@@ -9675,12 +10028,26 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
                     });
                     return;
                 default:
-                    this.mDispatcher.dispatchSmartClipRemoteRequest(request);
+                    this.mDispatcher.dispatchSmartClipRemoteRequest(request2);
                     return;
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: android.view.ViewRootImpl$SmartClipRemoteRequestDispatcherProxy$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements Runnable {
+            final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+            AnonymousClass2(SmartClipRemoteRequestInfo request2) {
+                request = request2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SmartClipRemoteRequestDispatcherProxy.this.dispatchSmartClipMetaDataExtraction(request);
+            }
+        }
+
         public void dispatchSmartClipMetaDataExtraction(SmartClipRemoteRequestInfo request) {
             SmartClipDataExtractionEvent requestInfo = (SmartClipDataExtractionEvent) request.mRequestData;
             requestInfo.mRequestId = request.mRequestId;
@@ -9788,7 +10155,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         this.mHandler.sendMessage(msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDispatchSPenGestureEvent(InputEvent[] events) {
         if (events == null) {
             Slog.e(TAG, "dispatchSPenGestureEventInjection : Event is null!");
@@ -9816,7 +10182,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleDispatchSPenGestureEvent$18(InputEvent event) {
         if (CoreRune.SAFE_DEBUG) {
             Slog.d(TAG, "dispatchSPenGestureEventInjection : injecting.. " + event);
@@ -9842,7 +10207,6 @@ public final class ViewRootImpl implements ViewParent, View.AttachInfo.Callbacks
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isWheelScrollingHandled(MotionEvent event) {
         switch (event.getAction()) {
             case 0:

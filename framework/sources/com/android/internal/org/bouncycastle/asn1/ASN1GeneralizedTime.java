@@ -61,7 +61,6 @@ public class ASN1GeneralizedTime extends ASN1Primitive {
         this.time = Strings.toByteArray(dateF.format(time));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1GeneralizedTime(byte[] bytes) {
         if (bytes.length < 4) {
             throw new IllegalArgumentException("GeneralizedTime string too short");
@@ -201,7 +200,6 @@ public class ASN1GeneralizedTime extends ASN1Primitive {
         return DateUtil.epochAdjust(dateF.parse(d));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean hasFractionalSeconds() {
         int i = 0;
         while (true) {
@@ -218,12 +216,10 @@ public class ASN1GeneralizedTime extends ASN1Primitive {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean hasSeconds() {
         return isDigit(12) && isDigit(13);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean hasMinutes() {
         return isDigit(10) && isDigit(11);
     }
@@ -234,38 +230,32 @@ public class ASN1GeneralizedTime extends ASN1Primitive {
         return bArr.length > pos && (b = bArr[pos]) >= 48 && b <= 57;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() {
         int length = this.time.length;
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 24, this.time);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         return new DERGeneralizedTime(this.time);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return new DERGeneralizedTime(this.time);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1GeneralizedTime)) {

@@ -18,7 +18,6 @@ import java.util.function.Consumer;
 
 /* loaded from: classes3.dex */
 public abstract class KeyStore2ParameterUtils {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KeyParameter makeBool(int tag) {
         int type = KeymasterDefs.getTagType(tag);
         if (type != 1879048192) {
@@ -30,7 +29,6 @@ public abstract class KeyStore2ParameterUtils {
         return p;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KeyParameter makeEnum(int tag, int v) {
         KeyParameter kp = new KeyParameter();
         kp.tag = tag;
@@ -68,7 +66,6 @@ public abstract class KeyStore2ParameterUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KeyParameter makeInt(int tag, int v) {
         int type = KeymasterDefs.getTagType(tag);
         if (type != 805306368 && type != 1073741824) {
@@ -80,7 +77,6 @@ public abstract class KeyStore2ParameterUtils {
         return p;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KeyParameter makeLong(int tag, long v) {
         int type = KeymasterDefs.getTagType(tag);
         if (type != 1342177280 && type != -1610612736) {
@@ -92,7 +88,6 @@ public abstract class KeyStore2ParameterUtils {
         return p;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KeyParameter makeBytes(int tag, byte[] b) {
         if (KeymasterDefs.getTagType(tag) != -1879048192) {
             throw new IllegalArgumentException("Not a bytes tag: " + tag);
@@ -103,7 +98,6 @@ public abstract class KeyStore2ParameterUtils {
         return p;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KeyParameter makeBignum(int tag, BigInteger b) {
         if (KeymasterDefs.getTagType(tag) != Integer.MIN_VALUE) {
             throw new IllegalArgumentException("Not a bignum tag: " + tag);
@@ -114,7 +108,6 @@ public abstract class KeyStore2ParameterUtils {
         return p;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static KeyParameter makeDate(int tag, Date date) {
         if (KeymasterDefs.getTagType(tag) != 1610612736) {
             throw new IllegalArgumentException("Not a date tag: " + tag);
@@ -125,12 +118,10 @@ public abstract class KeyStore2ParameterUtils {
         return p;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isSecureHardware(int securityLevel) {
         return securityLevel == 1 || securityLevel == 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long getUnsignedInt(Authorization param) {
         if (KeymasterDefs.getTagType(param.keyParameter.tag) != 805306368) {
             throw new IllegalArgumentException("Not an int tag: " + param.keyParameter.tag);
@@ -138,7 +129,6 @@ public abstract class KeyStore2ParameterUtils {
         return param.keyParameter.value.getInteger() & 4294967295L;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Date getDate(Authorization param) {
         if (KeymasterDefs.getTagType(param.keyParameter.tag) != 1610612736) {
             throw new IllegalArgumentException("Not a date tag: " + param.keyParameter.tag);
@@ -149,7 +139,6 @@ public abstract class KeyStore2ParameterUtils {
         return new Date(param.keyParameter.value.getDateTime());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void forEachSetFlag(int flags, Consumer<Integer> consumer) {
         int offset = 0;
         while (flags != 0) {
@@ -205,7 +194,6 @@ public abstract class KeyStore2ParameterUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void addUserAuthArgs(List<KeyParameter> args, UserAuthArgs spec) {
         if (spec.isUserConfirmationRequired()) {
             args.add(makeBool(1879048700));

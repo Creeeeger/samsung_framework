@@ -175,13 +175,14 @@ public final class ProcessStats implements Parcelable {
     public static final String[] OPTIONS_STR = {"proc", "pkg-proc", "pkg-svc", "pkg-asc", "pkg-all", "uid", "all"};
     private static final Pattern sPageTypeRegex = Pattern.compile("^Node\\s+(\\d+),.* zone\\s+(\\w+),.* type\\s+(\\w+)\\s+([\\s\\d]+?)\\s*$");
     public static final Parcelable.Creator<ProcessStats> CREATOR = new Parcelable.Creator<ProcessStats>() { // from class: com.android.internal.app.procstats.ProcessStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProcessStats createFromParcel(Parcel in) {
             return new ProcessStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProcessStats[] newArray(int size) {
             return new ProcessStats[size];
@@ -344,7 +345,7 @@ public final class ProcessStats implements Parcelable {
             int uid2 = uidStates2.keyAt(ip2);
             UidState uidState = this.mUidStates.get(uid2);
             if (uidState == null) {
-                this.mUidStates.put(uid2, uidStates2.valueAt(ip2).m7231clone());
+                this.mUidStates.put(uid2, uidStates2.valueAt(ip2).m7226clone());
             } else {
                 uidState.add(uidStates2.valueAt(ip2));
             }
@@ -427,6 +428,23 @@ public final class ProcessStats implements Parcelable {
                 jArr[i2 + 13] = nativeMem;
             }
             this.mSysMemUsage.mergeStats(state, this.mSysMemUsageArgs, 0);
+        }
+    }
+
+    /* renamed from: com.android.internal.app.procstats.ProcessStats$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProcessStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProcessStats createFromParcel(Parcel in) {
+            return new ProcessStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProcessStats[] newArray(int size) {
+            return new ProcessStats[size];
         }
     }
 
@@ -797,7 +815,6 @@ public final class ProcessStats implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeCommonString(Parcel out, String name) {
         Integer index = this.mCommonStringToIndex.get(name);
         if (index != null) {
@@ -810,7 +827,6 @@ public final class ProcessStats implements Parcelable {
         out.writeString(name);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String readCommonString(Parcel in, int version) {
         if (version <= 9) {
             return in.readString();
@@ -1532,7 +1548,6 @@ public final class ProcessStats implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public final class AssociationDumpContainer {
         long mActiveTime;
@@ -1545,7 +1560,6 @@ public final class ProcessStats implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$static$0(AssociationDumpContainer o1, AssociationDumpContainer o2) {
         int diff = o1.mState.getProcessName().compareTo(o2.mState.getProcessName());
         if (diff != 0) {
@@ -2878,7 +2892,6 @@ public final class ProcessStats implements Parcelable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dumpProcessState$1(int atomTag, StatsEventOutput statsEventOutput, ProcessState processState) {
         if (processState.isMultiPackage() && processState.getCommonProcess() != processState) {
             return;
@@ -2895,7 +2908,6 @@ public final class ProcessStats implements Parcelable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dumpProcessAssociation$2(StatsEventOutput statsEventOutput, int atomTag, AssociationState asc, Integer serviceUid, String serviceName, AssociationState.SourceKey key, AssociationState.SourceState src) {
         statsEventOutput.write(atomTag, key.mUid, key.mProcess, serviceUid.intValue(), serviceName, (int) TimeUnit.MILLISECONDS.toSeconds(this.mTimePeriodStartUptime), (int) TimeUnit.MILLISECONDS.toSeconds(this.mTimePeriodEndUptime), (int) TimeUnit.MILLISECONDS.toSeconds(this.mTimePeriodEndUptime - this.mTimePeriodStartUptime), (int) TimeUnit.MILLISECONDS.toSeconds(src.mDuration), src.mActiveCount, asc.getProcessName());
     }
@@ -3137,7 +3149,6 @@ public final class ProcessStats implements Parcelable {
             this.procStates = _procStates;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void print(PrintWriter pw, long overallTime, boolean full) {
             if (this.totalTime > overallTime) {
                 pw.print("*");

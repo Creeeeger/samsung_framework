@@ -219,6 +219,9 @@ public abstract class Connection extends Conferenceable {
     private VideoProvider mVideoProvider;
     private int mVideoState;
     private final Listener mConnectionDeathListener = new Listener() { // from class: android.telecom.Connection.1
+        AnonymousClass1() {
+        }
+
         @Override // android.telecom.Connection.Listener
         public void onDestroyed(Connection c) {
             if (Connection.this.mConferenceables.remove(c)) {
@@ -227,6 +230,9 @@ public abstract class Connection extends Conferenceable {
         }
     };
     private final Conference.Listener mConferenceDeathListener = new Conference.Listener() { // from class: android.telecom.Connection.2
+        AnonymousClass2() {
+        }
+
         @Override // android.telecom.Conference.Listener
         public void onDestroyed(Conference c) {
             if (Connection.this.mConferenceables.remove(c)) {
@@ -402,7 +408,6 @@ public abstract class Connection extends Conferenceable {
         return builder.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static abstract class Listener {
         public void onStateChanged(Connection c, int state) {
@@ -619,7 +624,6 @@ public abstract class Connection extends Conferenceable {
 
         public abstract void onSetZoom(float f);
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public final class VideoProviderHandler extends Handler {
             public VideoProviderHandler() {
@@ -721,7 +725,6 @@ public abstract class Connection extends Conferenceable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static final class VideoProviderBinder extends IVideoProvider.Stub {
             VideoProviderHandler mMessageHandler;
@@ -949,6 +952,36 @@ public abstract class Connection extends Conferenceable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telecom.Connection$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends Listener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.telecom.Connection.Listener
+        public void onDestroyed(Connection c) {
+            if (Connection.this.mConferenceables.remove(c)) {
+                Connection.this.fireOnConferenceableConnectionsChanged();
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telecom.Connection$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 extends Conference.Listener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.telecom.Conference.Listener
+        public void onDestroyed(Conference c) {
+            if (Connection.this.mConferenceables.remove(c)) {
+                Connection.this.fireOnConferenceableConnectionsChanged();
+            }
+        }
+    }
+
     public Connection() {
         ArrayList arrayList = new ArrayList();
         this.mConferenceables = arrayList;
@@ -1041,13 +1074,11 @@ public abstract class Connection extends Conferenceable {
         return extras;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Connection addConnectionListener(Listener l) {
         this.mListeners.add(l);
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Connection removeConnectionListener(Listener l) {
         if (l != null) {
             this.mListeners.remove(l);
@@ -1064,7 +1095,6 @@ public abstract class Connection extends Conferenceable {
         this.mTelecomCallId = callId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setCallAudioState(CallAudioState state) {
         checkImmutable();
         Log.d(this, "setAudioState %s", state);
@@ -1073,7 +1103,6 @@ public abstract class Connection extends Conferenceable {
         onCallAudioStateChanged(state);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setCallEndpoint(CallEndpoint endpoint) {
         checkImmutable();
         Log.d(this, "setCallEndpoint %s", endpoint);
@@ -1081,14 +1110,12 @@ public abstract class Connection extends Conferenceable {
         onCallEndpointChanged(endpoint);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setAvailableCallEndpoints(List<CallEndpoint> availableEndpoints) {
         checkImmutable();
         Log.d(this, "setAvailableCallEndpoints", new Object[0]);
         onAvailableCallEndpointsChanged(availableEndpoints);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setMuteState(boolean isMuted) {
         checkImmutable();
         Log.d(this, "setMuteState %s", Boolean.valueOf(isMuted));
@@ -1483,7 +1510,6 @@ public abstract class Connection extends Conferenceable {
         return this.mCallEndpoint;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendRttInitiationSuccess$0(Listener l) {
         l.onRttInitiationSuccess(this);
     }
@@ -1497,7 +1523,6 @@ public abstract class Connection extends Conferenceable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendRttInitiationFailure$1(int reason, Listener l) {
         l.onRttInitiationFailure(this, reason);
     }
@@ -1511,7 +1536,6 @@ public abstract class Connection extends Conferenceable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendRttSessionRemotelyTerminated$2(Listener l) {
         l.onRttSessionRemotelyTerminated(this);
     }
@@ -1525,7 +1549,6 @@ public abstract class Connection extends Conferenceable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendRemoteRttRequest$3(Listener l) {
         l.onRemoteRttRequest(this);
     }
@@ -1554,7 +1577,6 @@ public abstract class Connection extends Conferenceable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$queryLocationForEmergency$4(long timeoutMillis, String provider, Executor executor, OutcomeReceiver callback, Listener l) {
         l.onQueryLocation(this, timeoutMillis, provider, executor, callback);
     }
@@ -1672,13 +1694,14 @@ public abstract class Connection extends Conferenceable {
     /* loaded from: classes3.dex */
     public static final class CallFilteringCompletionInfo implements Parcelable {
         public static final Parcelable.Creator<CallFilteringCompletionInfo> CREATOR = new Parcelable.Creator<CallFilteringCompletionInfo>() { // from class: android.telecom.Connection.CallFilteringCompletionInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public CallFilteringCompletionInfo createFromParcel(Parcel in) {
                 return new CallFilteringCompletionInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CallFilteringCompletionInfo[] newArray(int size) {
                 return new CallFilteringCompletionInfo[size];
@@ -1702,6 +1725,23 @@ public abstract class Connection extends Conferenceable {
             CallScreeningService.ParcelableCallResponse response = (CallScreeningService.ParcelableCallResponse) in.readParcelable(CallScreeningService.class.getClassLoader(), CallScreeningService.ParcelableCallResponse.class);
             this.mCallResponse = response == null ? null : response.toCallResponse();
             this.mCallScreeningComponent = (ComponentName) in.readParcelable(ComponentName.class.getClassLoader(), ComponentName.class);
+        }
+
+        /* renamed from: android.telecom.Connection$CallFilteringCompletionInfo$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<CallFilteringCompletionInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CallFilteringCompletionInfo createFromParcel(Parcel in) {
+                return new CallFilteringCompletionInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CallFilteringCompletionInfo[] newArray(int size) {
+                return new CallFilteringCompletionInfo[size];
+            }
         }
 
         public boolean isBlocked() {
@@ -1743,7 +1783,6 @@ public abstract class Connection extends Conferenceable {
     public void onCallFilteringCompleted(CallFilteringCompletionInfo callFilteringCompletionInfo) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String toLogSafePhoneNumber(String number) {
         if (number == null) {
             return "";
@@ -1787,7 +1826,6 @@ public abstract class Connection extends Conferenceable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class FailureSignalingConnection extends Connection {
         private boolean mImmutable;
@@ -1817,7 +1855,6 @@ public abstract class Connection extends Conferenceable {
         return new FailureSignalingConnection(new DisconnectCause(4));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final void fireOnConferenceableConnectionsChanged() {
         for (Listener l : this.mListeners) {
             l.onConferenceablesChanged(this, getConferenceables());
@@ -1843,7 +1880,6 @@ public abstract class Connection extends Conferenceable {
         this.mConferenceables.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void handleExtrasChanged(Bundle extras) {
         Bundle b = null;
         synchronized (this.mExtrasLock) {

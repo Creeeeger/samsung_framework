@@ -14,7 +14,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CustomDescription implements Parcelable {
     public static final Parcelable.Creator<CustomDescription> CREATOR = new Parcelable.Creator<CustomDescription>() { // from class: android.service.autofill.CustomDescription.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CustomDescription createFromParcel(Parcel parcel) {
             RemoteViews parentPresentation = (RemoteViews) parcel.readParcelable(null, RemoteViews.class);
@@ -49,7 +51,6 @@ public final class CustomDescription implements Parcelable {
             return builder.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CustomDescription[] newArray(int size) {
             return new CustomDescription[size];
@@ -59,6 +60,10 @@ public final class CustomDescription implements Parcelable {
     private final RemoteViews mPresentation;
     private final ArrayList<Pair<Integer, InternalTransformation>> mTransformations;
     private final ArrayList<Pair<InternalValidator, BatchUpdates>> mUpdates;
+
+    /* synthetic */ CustomDescription(Builder builder, CustomDescriptionIA customDescriptionIA) {
+        this(builder);
+    }
 
     private CustomDescription(Builder builder) {
         this.mPresentation = builder.mPresentation;
@@ -207,5 +212,51 @@ public final class CustomDescription implements Parcelable {
         }
         dest.writeIntArray(ids2);
         dest.writeParcelableArray(values2, flags);
+    }
+
+    /* renamed from: android.service.autofill.CustomDescription$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CustomDescription> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CustomDescription createFromParcel(Parcel parcel) {
+            RemoteViews parentPresentation = (RemoteViews) parcel.readParcelable(null, RemoteViews.class);
+            if (parentPresentation == null) {
+                return null;
+            }
+            Builder builder = new Builder(parentPresentation);
+            int[] transformationIds = parcel.createIntArray();
+            if (transformationIds != null) {
+                InternalTransformation[] values = (InternalTransformation[]) parcel.readParcelableArray(null, InternalTransformation.class);
+                int size = transformationIds.length;
+                for (int i = 0; i < size; i++) {
+                    builder.addChild(transformationIds[i], values[i]);
+                }
+            }
+            InternalValidator[] conditions = (InternalValidator[]) parcel.readParcelableArray(null, InternalValidator.class);
+            if (conditions != null) {
+                BatchUpdates[] updates = (BatchUpdates[]) parcel.readParcelableArray(null, BatchUpdates.class);
+                int size2 = conditions.length;
+                for (int i2 = 0; i2 < size2; i2++) {
+                    builder.batchUpdate(conditions[i2], updates[i2]);
+                }
+            }
+            int[] actionIds = parcel.createIntArray();
+            if (actionIds != null) {
+                InternalOnClickAction[] values2 = (InternalOnClickAction[]) parcel.readParcelableArray(null, InternalOnClickAction.class);
+                int size3 = actionIds.length;
+                for (int i3 = 0; i3 < size3; i3++) {
+                    builder.addOnClickAction(actionIds[i3], values2[i3]);
+                }
+            }
+            return builder.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CustomDescription[] newArray(int size) {
+            return new CustomDescription[size];
+        }
     }
 }

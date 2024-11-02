@@ -7,7 +7,6 @@ public abstract class Event {
     Bundle mMetricsBundle;
     final long mTimeSinceCreatedMillis;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Event() {
         this.mMetricsBundle = new Bundle();
         this.mTimeSinceCreatedMillis = -1L;

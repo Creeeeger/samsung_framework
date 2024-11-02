@@ -18,8 +18,8 @@ public class TransitionManager {
     ArrayMap<Scene, Transition> mSceneTransitions = new ArrayMap<>();
     ArrayMap<Scene, ArrayMap<Scene, Transition>> mScenePairTransitions = new ArrayMap<>();
 
-    /* renamed from: -$$Nest$smgetRunningTransitions, reason: not valid java name */
-    static /* bridge */ /* synthetic */ ArrayMap m4919$$Nest$smgetRunningTransitions() {
+    /* renamed from: -$$Nest$smgetRunningTransitions */
+    static /* bridge */ /* synthetic */ ArrayMap m4918$$Nest$smgetRunningTransitions() {
         return getRunningTransitions();
     }
 
@@ -70,7 +70,7 @@ public class TransitionManager {
                 return;
             }
             sPendingTransitions.add(sceneRoot);
-            Transition transitionClone = transition.mo4917clone();
+            Transition transitionClone = transition.mo4916clone();
             transitionClone.setSceneRoot(sceneRoot);
             if (oldScene != null && oldScene.isCreatedFromLayoutResource()) {
                 transitionClone.setCanRemoveViews(true);
@@ -100,7 +100,6 @@ public class TransitionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class MultiListener implements ViewTreeObserver.OnPreDrawListener, View.OnAttachStateChangeListener {
         ViewGroup mSceneRoot;
@@ -130,7 +129,7 @@ public class TransitionManager {
         public void onViewDetachedFromWindow(View v) {
             removeListeners();
             TransitionManager.sPendingTransitions.remove(this.mSceneRoot);
-            ArrayList<Transition> runningTransitions = (ArrayList) TransitionManager.m4919$$Nest$smgetRunningTransitions().get(this.mSceneRoot);
+            ArrayList<Transition> runningTransitions = (ArrayList) TransitionManager.m4918$$Nest$smgetRunningTransitions().get(this.mSceneRoot);
             if (runningTransitions != null && runningTransitions.size() > 0) {
                 Iterator<Transition> it = runningTransitions.iterator();
                 while (it.hasNext()) {
@@ -147,7 +146,7 @@ public class TransitionManager {
             if (!TransitionManager.sPendingTransitions.remove(this.mSceneRoot)) {
                 return true;
             }
-            final ArrayMap<ViewGroup, ArrayList<Transition>> runningTransitions = TransitionManager.m4919$$Nest$smgetRunningTransitions();
+            ArrayMap<ViewGroup, ArrayList<Transition>> runningTransitions = TransitionManager.m4918$$Nest$smgetRunningTransitions();
             ArrayList<Transition> currentTransitions = runningTransitions.get(this.mSceneRoot);
             ArrayList<Transition> previousRunningTransitions = null;
             if (currentTransitions == null) {
@@ -158,6 +157,12 @@ public class TransitionManager {
             }
             currentTransitions.add(this.mTransition);
             this.mTransition.addListener(new TransitionListenerAdapter() { // from class: android.transition.TransitionManager.MultiListener.1
+                final /* synthetic */ ArrayMap val$runningTransitions;
+
+                AnonymousClass1(ArrayMap runningTransitions2) {
+                    runningTransitions = runningTransitions2;
+                }
+
                 @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
                 public void onTransitionEnd(Transition transition) {
                     ArrayList<Transition> currentTransitions2 = (ArrayList) runningTransitions.get(MultiListener.this.mSceneRoot);
@@ -175,6 +180,23 @@ public class TransitionManager {
             }
             this.mTransition.playTransition(this.mSceneRoot);
             return true;
+        }
+
+        /* renamed from: android.transition.TransitionManager$MultiListener$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 extends TransitionListenerAdapter {
+            final /* synthetic */ ArrayMap val$runningTransitions;
+
+            AnonymousClass1(ArrayMap runningTransitions2) {
+                runningTransitions = runningTransitions2;
+            }
+
+            @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
+            public void onTransitionEnd(Transition transition) {
+                ArrayList<Transition> currentTransitions2 = (ArrayList) runningTransitions.get(MultiListener.this.mSceneRoot);
+                currentTransitions2.remove(transition);
+                transition.removeListener(this);
+            }
         }
     }
 
@@ -218,7 +240,7 @@ public class TransitionManager {
             if (transition == null) {
                 transition = sDefaultTransition;
             }
-            Transition transitionClone = transition.mo4917clone();
+            Transition transitionClone = transition.mo4916clone();
             sceneChangeSetup(sceneRoot, transitionClone);
             Scene.setCurrentScene(sceneRoot, null);
             sceneChangeRunTransition(sceneRoot, transitionClone);

@@ -117,6 +117,10 @@ public abstract class CodedInputStream {
 
     public abstract void skipRawBytes(int i) throws IOException;
 
+    /* synthetic */ CodedInputStream(AnonymousClass1 x0) {
+        this();
+    }
+
     public static CodedInputStream newInstance(InputStream input) {
         return newInstance(input, 4096);
     }
@@ -138,7 +142,6 @@ public abstract class CodedInputStream {
         return newInstance(input, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static CodedInputStream newInstance(Iterable<ByteBuffer> bufs, boolean bufferIsImmutable) {
         int flag = 0;
         int totalSize = 0;
@@ -166,7 +169,6 @@ public abstract class CodedInputStream {
         return newInstance(buf, off, len, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static CodedInputStream newInstance(byte[] buf, int off, int len, boolean bufferIsImmutable) {
         ArrayDecoder result = new ArrayDecoder(buf, off, len, bufferIsImmutable);
         try {
@@ -181,7 +183,6 @@ public abstract class CodedInputStream {
         return newInstance(buf, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static CodedInputStream newInstance(ByteBuffer buf, boolean bufferIsImmutable) {
         if (buf.hasArray()) {
             return newInstance(buf.array(), buf.arrayOffset() + buf.position(), buf.remaining(), bufferIsImmutable);
@@ -232,7 +233,6 @@ public abstract class CodedInputStream {
         this.shouldDiscardUnknownFields = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean shouldDiscardUnknownFields() {
         return this.shouldDiscardUnknownFields;
     }
@@ -285,7 +285,6 @@ public abstract class CodedInputStream {
         return readRawVarint32(firstByte, input);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class ArrayDecoder extends CodedInputStream {
         private final byte[] buffer;
@@ -297,6 +296,10 @@ public abstract class CodedInputStream {
         private int limit;
         private int pos;
         private int startPos;
+
+        /* synthetic */ ArrayDecoder(byte[] x0, int x1, int x2, boolean x3, AnonymousClass1 x4) {
+            this(x0, x1, x2, x3);
+        }
 
         private ArrayDecoder(byte[] buffer, int offset, int len, boolean immutable) {
             super();
@@ -642,7 +645,10 @@ public abstract class CodedInputStream {
             return decodeZigZag64(readRawVarint64());
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:32:0x006f, code lost:            if (r2[r1] < 0) goto L33;     */
+        /* JADX WARN: Code restructure failed: missing block: B:32:0x006f, code lost:
+        
+            if (r2[r1] < 0) goto L72;
+         */
         @Override // com.android.framework.protobuf.CodedInputStream
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -769,7 +775,10 @@ public abstract class CodedInputStream {
             throw InvalidProtocolBufferException.malformedVarint();
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:36:0x00bd, code lost:            if (r2[r1] < 0) goto L37;     */
+        /* JADX WARN: Code restructure failed: missing block: B:36:0x00bd, code lost:
+        
+            if (r2[r1] < 0) goto L79;
+         */
         @Override // com.android.framework.protobuf.CodedInputStream
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -934,7 +943,6 @@ public abstract class CodedInputStream {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class UnsafeDirectNioDecoder extends CodedInputStream {
         private final long address;
@@ -947,6 +955,10 @@ public abstract class CodedInputStream {
         private long limit;
         private long pos;
         private long startPos;
+
+        /* synthetic */ UnsafeDirectNioDecoder(ByteBuffer x0, boolean x1, AnonymousClass1 x2) {
+            this(x0, x1);
+        }
 
         static boolean isSupported() {
             return UnsafeUtil.hasUnsafeByteBufferOperations();
@@ -1635,7 +1647,6 @@ public abstract class CodedInputStream {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class StreamDecoder extends CodedInputStream {
         private final byte[] buffer;
@@ -1648,10 +1659,13 @@ public abstract class CodedInputStream {
         private RefillCallback refillCallback;
         private int totalBytesRetired;
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public interface RefillCallback {
             void onRefill();
+        }
+
+        /* synthetic */ StreamDecoder(InputStream x0, int x1, AnonymousClass1 x2) {
+            this(x0, x1);
         }
 
         private StreamDecoder(InputStream input, int bufferSize) {
@@ -2055,7 +2069,10 @@ public abstract class CodedInputStream {
             return decodeZigZag64(readRawVarint64());
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:32:0x006f, code lost:            if (r2[r1] < 0) goto L33;     */
+        /* JADX WARN: Code restructure failed: missing block: B:32:0x006f, code lost:
+        
+            if (r2[r1] < 0) goto L72;
+         */
         @Override // com.android.framework.protobuf.CodedInputStream
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -2182,7 +2199,10 @@ public abstract class CodedInputStream {
             throw InvalidProtocolBufferException.malformedVarint();
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:36:0x00bd, code lost:            if (r2[r1] < 0) goto L37;     */
+        /* JADX WARN: Code restructure failed: missing block: B:36:0x00bd, code lost:
+        
+            if (r2[r1] < 0) goto L79;
+         */
         @Override // com.android.framework.protobuf.CodedInputStream
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -2542,7 +2562,6 @@ public abstract class CodedInputStream {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class IterableDirectByteBufferDecoder extends CodedInputStream {
         private int bufferSizeAfterCurrentLimit;
@@ -2560,6 +2579,10 @@ public abstract class CodedInputStream {
         private int startOffset;
         private int totalBufferSize;
         private int totalBytesRead;
+
+        /* synthetic */ IterableDirectByteBufferDecoder(Iterable x0, int x1, boolean x2, AnonymousClass1 x3) {
+            this(x0, x1, x2);
+        }
 
         private IterableDirectByteBufferDecoder(Iterable<ByteBuffer> inputBufs, int size, boolean immutableFlag) {
             super();

@@ -78,12 +78,10 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         return cancellation;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startCapture$0(Runnable listener) {
         this.mLocal.onScrollCaptureStart(this.mSession, this.mCancellation, listener);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onStartCaptureCompleted() {
         this.mActive = true;
         try {
@@ -119,7 +117,6 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         return cancellation;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$requestImage$1(Rect requestRect, Consumer listener) {
         ScrollCaptureCallback scrollCaptureCallback = this.mLocal;
         if (scrollCaptureCallback != null) {
@@ -127,7 +124,6 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onImageRequestCompleted(Rect capturedArea) {
         try {
             try {
@@ -165,7 +161,6 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         return cancellation;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$endCapture$2(Runnable listener) {
         ScrollCaptureCallback scrollCaptureCallback = this.mLocal;
         if (scrollCaptureCallback != null) {
@@ -173,7 +168,6 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onEndCaptureCompleted() {
         this.mActive = false;
         try {
@@ -234,7 +228,6 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         Reference.reachabilityFence(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$close$3() {
     }
 
@@ -276,8 +269,9 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class SafeCallback<T> {
+    public static class SafeCallback<T> {
         private final Executor mExecutor;
         private final CancellationSignal mSignal;
         private final AtomicReference<T> mValue;
@@ -309,7 +303,6 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class RunnableCallback extends SafeCallback<Runnable> implements Runnable {
         RunnableCallback(CancellationSignal signal, Executor executor, Runnable target) {
@@ -322,7 +315,6 @@ public class ScrollCaptureConnection extends IScrollCaptureConnection.Stub imple
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class ConsumerCallback<T> extends SafeCallback<Consumer<T>> implements Consumer<T> {
         ConsumerCallback(CancellationSignal signal, Executor executor, Consumer<T> target) {

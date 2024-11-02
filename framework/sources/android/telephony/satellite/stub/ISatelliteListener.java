@@ -139,8 +139,9 @@ public interface ISatelliteListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISatelliteListener {
+        public static class Proxy implements ISatelliteListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -85,8 +85,9 @@ public interface IPacProxyInstalledListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IPacProxyInstalledListener {
+        public static class Proxy implements IPacProxyInstalledListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

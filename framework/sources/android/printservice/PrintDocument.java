@@ -14,7 +14,6 @@ public final class PrintDocument {
     private final PrintJobId mPrintJobId;
     private final IPrintServiceClient mPrintServiceClient;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PrintDocument(PrintJobId printJobId, IPrintServiceClient printServiceClient, PrintDocumentInfo info) {
         this.mPrintJobId = printJobId;
         this.mPrintServiceClient = printServiceClient;

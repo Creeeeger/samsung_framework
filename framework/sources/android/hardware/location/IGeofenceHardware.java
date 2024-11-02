@@ -258,8 +258,9 @@ public interface IGeofenceHardware extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGeofenceHardware {
+        public static class Proxy implements IGeofenceHardware {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -449,42 +450,34 @@ public interface IGeofenceHardware extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void getMonitoringTypes_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void getStatusOfMonitoringType_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void addCircularFence_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void removeGeofence_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void pauseGeofence_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void resumeGeofence_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void registerForMonitorStateChangeCallback_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void unregisterForMonitorStateChangeCallback_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }

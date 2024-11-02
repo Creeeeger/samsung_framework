@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextLocationChangeTriggerAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextLocationChangeTriggerAttribute> CREATOR = new Parcelable.Creator<SemContextLocationChangeTriggerAttribute>() { // from class: com.samsung.android.hardware.context.SemContextLocationChangeTriggerAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextLocationChangeTriggerAttribute createFromParcel(Parcel in) {
             return new SemContextLocationChangeTriggerAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextLocationChangeTriggerAttribute[] newArray(int size) {
             return new SemContextLocationChangeTriggerAttribute[size];
@@ -24,7 +25,23 @@ public class SemContextLocationChangeTriggerAttribute extends SemContextAttribut
     private int mDuration;
     private int mTriggerType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextLocationChangeTriggerAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextLocationChangeTriggerAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextLocationChangeTriggerAttribute createFromParcel(Parcel in) {
+            return new SemContextLocationChangeTriggerAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextLocationChangeTriggerAttribute[] newArray(int size) {
+            return new SemContextLocationChangeTriggerAttribute[size];
+        }
+    }
+
     public SemContextLocationChangeTriggerAttribute() {
         this.mTriggerType = 1;
         this.mDuration = 10;

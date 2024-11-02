@@ -24,7 +24,6 @@ public class AttributeCertificateHolder implements Selector {
     private static DigestCalculatorProvider digestCalculatorProvider;
     final Holder holder;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AttributeCertificateHolder(ASN1Sequence seq) {
         this.holder = Holder.getInstance(seq);
     }

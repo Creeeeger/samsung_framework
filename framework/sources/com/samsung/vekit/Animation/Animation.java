@@ -33,7 +33,6 @@ public abstract class Animation<T> extends Element implements AnimationStatusLis
         FINISHED
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Animation(VEContext context, AnimationType type, int id, String name) {
         super(context, ElementType.ANIMATION, id, name);
         this.bezierControlPoint = new BezierControlPoint();

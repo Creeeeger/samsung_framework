@@ -100,8 +100,9 @@ public interface ISemCmcRecordingListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemCmcRecordingListener {
+        public static class Proxy implements ISemCmcRecordingListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

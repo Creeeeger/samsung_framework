@@ -68,8 +68,7 @@ public class ImsService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.ImsService$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.ImsService$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IImsServiceController.Stub {
         AnonymousClass1() {
@@ -109,12 +108,10 @@ public class ImsService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$0() {
             ImsService.this.releaseResource();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$1() {
             ImsService.this.releaseResource();
         }
@@ -135,7 +132,6 @@ public class ImsService extends Service {
             return f.getBinder();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsMmTelFeature lambda$createMmTelFeature$2(int slotId, int subId) {
             return ImsService.this.createMmTelFeatureInternal(slotId, subId);
         }
@@ -156,7 +152,6 @@ public class ImsService extends Service {
             return f.getBinder();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsMmTelFeature lambda$createEmergencyOnlyMmTelFeature$3(int slotId) {
             return ImsService.this.createEmergencyOnlyMmTelFeatureInternal(slotId);
         }
@@ -177,12 +172,10 @@ public class ImsService extends Service {
             return f.getBinder();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsRcsFeature lambda$createRcsFeature$4(int slotId, int subId) {
             return ImsService.this.createRcsFeatureInternal(slotId, subId);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$addFeatureStatusCallback$5(int slotId, int featureType, IImsFeatureStatusCallback c) {
             ImsService.this.addImsFeatureStatusCallback(slotId, featureType, c);
         }
@@ -197,7 +190,6 @@ public class ImsService extends Service {
             }, "addFeatureStatusCallback");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$removeFeatureStatusCallback$6(int slotId, int featureType, IImsFeatureStatusCallback c) {
             ImsService.this.removeImsFeatureStatusCallback(slotId, featureType, c);
         }
@@ -227,12 +219,10 @@ public class ImsService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$removeImsFeature$7(int slotId, int featureType) {
             ImsService.this.removeImsFeature(slotId, featureType);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ ImsFeatureConfiguration lambda$querySupportedImsFeatures$8() {
             return ImsService.this.querySupportedImsFeatures();
         }
@@ -261,7 +251,6 @@ public class ImsService extends Service {
             }, "getImsServiceCapabilities")).longValue();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Long lambda$getImsServiceCapabilities$9() {
             long caps = ImsService.this.getImsServiceCapabilities();
             long sanitizedCaps = ImsService.sanitizeCapabilities(caps);
@@ -271,7 +260,6 @@ public class ImsService extends Service {
             return Long.valueOf(sanitizedCaps);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyImsServiceReadyForFeatureCreation$10() {
             ImsService.this.readyForFeatureCreation();
         }
@@ -298,7 +286,6 @@ public class ImsService extends Service {
             }, "getConfig");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsConfig lambda$getConfig$11(int slotId, int subId) {
             ImsConfigImplBase c = ImsService.this.getConfigForSubscription(slotId, subId);
             if (c != null) {
@@ -320,7 +307,6 @@ public class ImsService extends Service {
             }, "getRegistration");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsRegistration lambda$getRegistration$12(int slotId, int subId) {
             ImsRegistrationImplBase r = ImsService.this.getRegistrationForSubscription(slotId, subId);
             if (r != null) {
@@ -342,7 +328,6 @@ public class ImsService extends Service {
             }, "getSipTransport");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ ISipTransport lambda$getSipTransport$13(int slotId) {
             SipTransportImplBase s = ImsService.this.getSipTransport(slotId);
             if (s != null) {
@@ -362,7 +347,6 @@ public class ImsService extends Service {
             }, "enableIms");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$enableIms$14(int slotId, int subId) {
             ImsService.this.enableImsForSubscription(slotId, subId);
         }
@@ -377,7 +361,6 @@ public class ImsService extends Service {
             }, "disableIms");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$disableIms$15(int slotId, int subId) {
             ImsService.this.disableImsForSubscription(slotId, subId);
         }
@@ -392,14 +375,12 @@ public class ImsService extends Service {
             }, "resetIms");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$resetIms$16(int slotId, int subId) {
             ImsService.this.resetImsInternal(slotId, subId);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.ImsService$2, reason: invalid class name */
+    /* renamed from: android.telephony.ims.ImsService$2 */
     /* loaded from: classes3.dex */
     public class AnonymousClass2 implements IBinder.DeathRecipient {
         AnonymousClass2() {
@@ -416,7 +397,6 @@ public class ImsService extends Service {
             }, "releaseResource");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$binderDied$0() {
             ImsService.this.releaseResource();
         }
@@ -431,7 +411,6 @@ public class ImsService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Executor getCachedExecutor() {
         Executor e;
         synchronized (this.mExecutorLock) {
@@ -444,7 +423,6 @@ public class ImsService extends Service {
         return e;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public IImsMmTelFeature createMmTelFeatureInternal(int slotId, int subscriptionId) {
         MmTelFeature f = createMmTelFeatureForSubscription(slotId, subscriptionId);
         if (f != null) {
@@ -456,7 +434,6 @@ public class ImsService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public IImsMmTelFeature createEmergencyOnlyMmTelFeatureInternal(int slotId) {
         MmTelFeature f = createEmergencyOnlyMmTelFeature(slotId);
         if (f != null) {
@@ -468,7 +445,6 @@ public class ImsService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public IImsRcsFeature createRcsFeatureInternal(int slotId, int subId) {
         RcsFeature f = createRcsFeatureForSubscription(slotId, subId);
         if (f != null) {
@@ -485,7 +461,6 @@ public class ImsService extends Service {
         addImsFeature(slotId, featureType, f);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void addImsFeatureStatusCallback(int slotId, int featureType, IImsFeatureStatusCallback c) {
         synchronized (this.mFeaturesBySlot) {
             SparseArray<ImsFeature> features = this.mFeaturesBySlot.get(slotId);
@@ -500,7 +475,6 @@ public class ImsService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeImsFeatureStatusCallback(int slotId, int featureType, IImsFeatureStatusCallback c) {
         synchronized (this.mFeaturesBySlot) {
             SparseArray<ImsFeature> features = this.mFeaturesBySlot.get(slotId);
@@ -526,7 +500,6 @@ public class ImsService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeImsFeature(int slotId, int featureType) {
         notifySubscriptionRemoved(slotId);
         synchronized (this.mFeaturesBySlot) {
@@ -555,7 +528,6 @@ public class ImsService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setImsFeatureCreatedForSlot(int slotId, int featureType, boolean createdForSlot) {
         synchronized (this.mCreateImsFeatureWithSlotIdFlagMap) {
             getImsFeatureCreatedForSlot(slotId).put(featureType, createdForSlot);
@@ -580,7 +552,6 @@ public class ImsService extends Service {
         return createFlag;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void releaseResource() {
         Log.w(LOG_TAG, "cleaning up features");
         synchronized (this.mFeaturesBySlot) {
@@ -600,7 +571,6 @@ public class ImsService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void executeMethodAsync(final Runnable r, String errorLogName) {
         try {
             CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.ImsService$$ExternalSyntheticLambda1
@@ -614,7 +584,6 @@ public class ImsService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public <T> T executeMethodAsyncForResult(final Supplier<T> r, String errorLogName) {
         CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.ImsService$$ExternalSyntheticLambda0
             @Override // java.util.function.Supplier
@@ -632,7 +601,6 @@ public class ImsService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void resetImsInternal(int slotId, int subId) {
         try {
             resetIms(slotId);
@@ -741,7 +709,6 @@ public class ImsService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static long sanitizeCapabilities(long caps) {
         long filter = (-1) << ((int) (CAPABILITY_MAX_INDEX + 1));
         return caps & (~filter) & (-2);

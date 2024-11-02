@@ -94,6 +94,9 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
             }
         });
         this.mAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.view.InsetsResizeAnimationRunner.1
+            AnonymousClass1() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 InsetsResizeAnimationRunner.this.mFinished = true;
@@ -103,19 +106,39 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
         this.mAnimator.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onReady$0(ValueAnimator animation) {
         this.mAnimation.setFraction(animation.getAnimatedFraction());
         this.mController.scheduleApplyChangeInsets(this);
     }
 
+    /* renamed from: android.view.InsetsResizeAnimationRunner$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            InsetsResizeAnimationRunner.this.mFinished = true;
+            InsetsResizeAnimationRunner.this.mController.scheduleApplyChangeInsets(InsetsResizeAnimationRunner.this);
+        }
+    }
+
     @Override // android.view.InternalInsetsAnimationController
-    public boolean applyChangeInsets(final InsetsState outState) {
+    public boolean applyChangeInsets(InsetsState outState) {
         if (this.mCancelled) {
             return false;
         }
-        final float fraction = this.mAnimation.getInterpolatedFraction();
+        float fraction = this.mAnimation.getInterpolatedFraction();
         InsetsState.traverse(this.mFromState, this.mToState, new InsetsState.OnTraverseCallbacks() { // from class: android.view.InsetsResizeAnimationRunner.2
+            final /* synthetic */ float val$fraction;
+            final /* synthetic */ InsetsState val$outState;
+
+            AnonymousClass2(float fraction2, InsetsState outState2) {
+                fraction = fraction2;
+                outState = outState2;
+            }
+
             @Override // android.view.InsetsState.OnTraverseCallbacks
             public void onIdMatch(InsetsSource fromSource, InsetsSource toSource) {
                 Rect fromFrame = fromSource.getFrame();
@@ -131,6 +154,29 @@ public class InsetsResizeAnimationRunner implements InsetsAnimationControlRunner
             this.mController.notifyFinished(this, true);
         }
         return this.mFinished;
+    }
+
+    /* renamed from: android.view.InsetsResizeAnimationRunner$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements InsetsState.OnTraverseCallbacks {
+        final /* synthetic */ float val$fraction;
+        final /* synthetic */ InsetsState val$outState;
+
+        AnonymousClass2(float fraction2, InsetsState outState2) {
+            fraction = fraction2;
+            outState = outState2;
+        }
+
+        @Override // android.view.InsetsState.OnTraverseCallbacks
+        public void onIdMatch(InsetsSource fromSource, InsetsSource toSource) {
+            Rect fromFrame = fromSource.getFrame();
+            Rect toFrame = toSource.getFrame();
+            Rect frame = new Rect((int) (fromFrame.left + (fraction * (toFrame.left - fromFrame.left))), (int) (fromFrame.top + (fraction * (toFrame.top - fromFrame.top))), (int) (fromFrame.right + (fraction * (toFrame.right - fromFrame.right))), (int) (fromFrame.bottom + (fraction * (toFrame.bottom - fromFrame.bottom))));
+            InsetsSource source = new InsetsSource(fromSource.getId(), fromSource.getType());
+            source.setFrame(frame);
+            source.setVisible(toSource.isVisible());
+            outState.addSource(source);
+        }
     }
 
     @Override // android.view.InsetsAnimationControlRunner

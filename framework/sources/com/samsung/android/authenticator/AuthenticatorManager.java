@@ -26,7 +26,6 @@ final class AuthenticatorManager {
     private final ConcurrentMap<File, TrustedApplication> mFileTrustedApplications = new ConcurrentHashMap();
     private final AtomicInteger mFileTrustedApplicationHandle = new AtomicInteger(2000000);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static synchronized AuthenticatorManager getInstance() {
         AuthenticatorManager authenticatorManager;
         synchronized (AuthenticatorManager.class) {
@@ -41,7 +40,6 @@ final class AuthenticatorManager {
     private AuthenticatorManager() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int load(SemTrustedApplicationExecutor.TrustedAppType type) {
         if (type == null) {
             AuthenticatorLog.e(TAG, "type is null");
@@ -59,8 +57,7 @@ final class AuthenticatorManager {
         return ta.load();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.authenticator.AuthenticatorManager$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.authenticator.AuthenticatorManager$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppType;
@@ -141,7 +138,6 @@ final class AuthenticatorManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int load(SemTrustedApplicationExecutor.TrustedAppAssetType type, AssetFileDescriptor file) {
         if (file == null) {
             AuthenticatorLog.e(TAG, "file is null");
@@ -156,7 +152,6 @@ final class AuthenticatorManager {
         return ta.load();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] execute(int taHandle, byte[] command) {
         TrustedApplication ta = getTrustedApplication(taHandle);
         if (ta == null) {
@@ -208,7 +203,6 @@ final class AuthenticatorManager {
         return 2000000 <= taHandle && taHandle <= FILE_TRUSTED_APP_HANDLE_LIMIT;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean unload(int taHandle) {
         TrustedApplication ta = getTrustedApplication(taHandle);
         if (ta != null) {
@@ -235,27 +229,22 @@ final class AuthenticatorManager {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getCommandVersion() {
         return AuthenticatorService.getVersion();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean writeFile(String path, byte[] data) {
         return AuthenticatorService.writeFile(data, path);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean deleteFile(String path) {
         return AuthenticatorService.deleteFile(path);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String readFile(String path) {
         return AuthenticatorService.readFile(path);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public List<String> getFiles(String path, String filter) {
         return AuthenticatorService.getMatchedFilePaths(path, filter);
     }

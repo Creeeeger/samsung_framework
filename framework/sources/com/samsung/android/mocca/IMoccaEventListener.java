@@ -130,8 +130,9 @@ public interface IMoccaEventListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IMoccaEventListener {
+        public static class Proxy implements IMoccaEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

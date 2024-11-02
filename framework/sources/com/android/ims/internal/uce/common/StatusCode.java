@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class StatusCode implements Parcelable {
     public static final Parcelable.Creator<StatusCode> CREATOR = new Parcelable.Creator<StatusCode>() { // from class: com.android.ims.internal.uce.common.StatusCode.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StatusCode createFromParcel(Parcel source) {
             return new StatusCode(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StatusCode[] newArray(int size) {
             return new StatusCode[size];
@@ -37,6 +38,10 @@ public class StatusCode implements Parcelable {
     public static final int UCE_SUCCESS_ASYC_UPDATE = 2;
     private int mStatusCode;
 
+    /* synthetic */ StatusCode(Parcel parcel, StatusCodeIA statusCodeIA) {
+        this(parcel);
+    }
+
     public StatusCode() {
         this.mStatusCode = 0;
     }
@@ -57,6 +62,23 @@ public class StatusCode implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mStatusCode);
+    }
+
+    /* renamed from: com.android.ims.internal.uce.common.StatusCode$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StatusCode> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StatusCode createFromParcel(Parcel source) {
+            return new StatusCode(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StatusCode[] newArray(int size) {
+            return new StatusCode[size];
+        }
     }
 
     private StatusCode(Parcel source) {

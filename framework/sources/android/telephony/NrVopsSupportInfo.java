@@ -11,14 +11,15 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class NrVopsSupportInfo extends VopsSupportInfo {
     public static final Parcelable.Creator<NrVopsSupportInfo> CREATOR = new Parcelable.Creator<NrVopsSupportInfo>() { // from class: android.telephony.NrVopsSupportInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NrVopsSupportInfo createFromParcel(Parcel in) {
             in.readInt();
             return new NrVopsSupportInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrVopsSupportInfo[] newArray(int size) {
             return new NrVopsSupportInfo[size];
@@ -52,6 +53,10 @@ public final class NrVopsSupportInfo extends VopsSupportInfo {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface NrVopsStatus {
+    }
+
+    /* synthetic */ NrVopsSupportInfo(Parcel parcel, NrVopsSupportInfoIA nrVopsSupportInfoIA) {
+        this(parcel);
     }
 
     public NrVopsSupportInfo(int vops, int emc, int emf) {
@@ -124,7 +129,24 @@ public final class NrVopsSupportInfo extends VopsSupportInfo {
         return "NrVopsSupportInfo :  mVopsSupport = " + this.mVopsSupport + " mEmcSupport = " + this.mEmcSupport + " mEmfSupport = " + this.mEmfSupport;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.telephony.NrVopsSupportInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NrVopsSupportInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrVopsSupportInfo createFromParcel(Parcel in) {
+            in.readInt();
+            return new NrVopsSupportInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrVopsSupportInfo[] newArray(int size) {
+            return new NrVopsSupportInfo[size];
+        }
+    }
+
     public static NrVopsSupportInfo createFromParcelBody(Parcel in) {
         return new NrVopsSupportInfo(in);
     }

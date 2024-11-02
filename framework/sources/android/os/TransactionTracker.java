@@ -28,7 +28,6 @@ public class TransactionTracker {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TransactionTracker() {
         resetTraces();
     }

@@ -182,7 +182,6 @@ public class Allocation extends BaseObj {
         this.mBitmap = b;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Allocation(long id, RenderScript rs, Type t, int usage) {
         super(id, rs);
         this.mOwningType = false;
@@ -224,8 +223,9 @@ public class Allocation extends BaseObj {
         this.mMipmapControl = mips;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.renderscript.BaseObj
-    protected void finalize() throws Throwable {
+    public void finalize() throws Throwable {
         RenderScript.registerNativeFree.invoke(RenderScript.sRuntime, Integer.valueOf(this.mSize));
         super.finalize();
     }
@@ -279,7 +279,6 @@ public class Allocation extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.renderscript.BaseObj
     public void updateFromNative() {
         super.updateFromNative();
@@ -411,8 +410,7 @@ public class Allocation extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.renderscript.Allocation$1, reason: invalid class name */
+    /* renamed from: android.renderscript.Allocation$1 */
     /* loaded from: classes3.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$graphics$Bitmap$Config;
@@ -1459,7 +1457,6 @@ public class Allocation extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void sendBufferNotification(long id) {
         OnBufferAvailableListener onBufferAvailableListener;
         synchronized (mAllocationMap) {

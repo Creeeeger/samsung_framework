@@ -140,8 +140,9 @@ public interface INetworkWatchlistManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements INetworkWatchlistManager {
+        public static class Proxy implements INetworkWatchlistManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

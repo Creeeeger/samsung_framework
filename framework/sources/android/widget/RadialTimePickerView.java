@@ -104,7 +104,6 @@ public class RadialTimePickerView extends View {
     private static final float[] COS_30 = new float[12];
     private static final float[] SIN_30 = new float[12];
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public interface OnValueSelectedListener {
         void onValueSelected(int i, int i2, boolean z);
@@ -122,6 +121,26 @@ public class RadialTimePickerView extends View {
             COS_30[i] = (float) Math.cos(angle);
             SIN_30[i] = (float) Math.sin(angle);
             angle += 0.5235987755982988d;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.RadialTimePickerView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends FloatProperty<RadialTimePickerView> {
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
+        @Override // android.util.Property
+        public Float get(RadialTimePickerView radialTimePickerView) {
+            return Float.valueOf(radialTimePickerView.mHoursToMinutes);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(RadialTimePickerView object, float value) {
+            object.mHoursToMinutes = value;
+            object.invalidate();
         }
     }
 
@@ -155,7 +174,6 @@ public class RadialTimePickerView extends View {
         return iArr[degrees];
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int snapOnly30s(int degrees, int forceHigherOrLower) {
         int floor = (degrees / 30) * 30;
         int ceiling = floor + 30;
@@ -189,6 +207,10 @@ public class RadialTimePickerView extends View {
     public RadialTimePickerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs);
         this.HOURS_TO_MINUTES = new FloatProperty<RadialTimePickerView>("hoursToMinutes") { // from class: android.widget.RadialTimePickerView.1
+            AnonymousClass1(String name) {
+                super(name);
+            }
+
             @Override // android.util.Property
             public Float get(RadialTimePickerView radialTimePickerView) {
                 return Float.valueOf(radialTimePickerView.mHoursToMinutes);
@@ -270,7 +292,6 @@ public class RadialTimePickerView extends View {
         setHapticFeedbackEnabled(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void applyAttributes(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         int selectorActivatedColor;
         Context context = getContext();
@@ -354,7 +375,6 @@ public class RadialTimePickerView extends View {
         return getHourForDegrees(this.mSelectionDegrees[0], this.mIsOnInnerCircle);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getHourForDegrees(int degrees, boolean innerCircle) {
         int hour = (degrees / 30) % 12;
         if (this.mIs24HourMode) {
@@ -372,7 +392,6 @@ public class RadialTimePickerView extends View {
         return hour;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getDegreesForHour(int hour) {
         if (this.mIs24HourMode) {
             if (hour >= 12) {
@@ -384,7 +403,6 @@ public class RadialTimePickerView extends View {
         return hour * 30;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean getInnerCircleForHour(int hour) {
         return this.mIs24HourMode && (hour == 0 || hour > 12);
     }
@@ -406,12 +424,10 @@ public class RadialTimePickerView extends View {
         return getMinuteForDegrees(this.mSelectionDegrees[1]);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getMinuteForDegrees(int degrees) {
         return degrees / 6;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getDegreesForMinute(int minute) {
         return minute * 6;
     }
@@ -461,7 +477,6 @@ public class RadialTimePickerView extends View {
         this.mMinutesText = this.mMinutesTexts;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (!changed) {
@@ -677,7 +692,6 @@ public class RadialTimePickerView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getDegreesFromXY(float f, float f2, boolean z) {
         int i;
         int i2;
@@ -707,7 +721,6 @@ public class RadialTimePickerView extends View {
         return degrees;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean getInnerCircleFromXY(float x, float y) {
         if (!this.mIs24HourMode || !this.mShowHours) {
             return false;
@@ -807,7 +820,6 @@ public class RadialTimePickerView extends View {
         return super.onResolvePointerIcon(event, pointerIndex);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class RadialPickerTouchHelper extends ExploreByTouchHelper {
         private final int MASK_TYPE;

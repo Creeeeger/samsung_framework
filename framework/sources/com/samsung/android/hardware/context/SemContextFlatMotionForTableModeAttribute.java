@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextFlatMotionForTableModeAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextFlatMotionForTableModeAttribute> CREATOR = new Parcelable.Creator<SemContextFlatMotionForTableModeAttribute>() { // from class: com.samsung.android.hardware.context.SemContextFlatMotionForTableModeAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextFlatMotionForTableModeAttribute createFromParcel(Parcel in) {
             return new SemContextFlatMotionForTableModeAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextFlatMotionForTableModeAttribute[] newArray(int size) {
             return new SemContextFlatMotionForTableModeAttribute[size];
@@ -23,7 +24,23 @@ public class SemContextFlatMotionForTableModeAttribute extends SemContextAttribu
     private static final String TAG = "SemContextFlatMotionForTableModeAttribute";
     private int mDuration;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextFlatMotionForTableModeAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextFlatMotionForTableModeAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextFlatMotionForTableModeAttribute createFromParcel(Parcel in) {
+            return new SemContextFlatMotionForTableModeAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextFlatMotionForTableModeAttribute[] newArray(int size) {
+            return new SemContextFlatMotionForTableModeAttribute[size];
+        }
+    }
+
     public SemContextFlatMotionForTableModeAttribute() {
         this.mDuration = 500;
         setAttribute();

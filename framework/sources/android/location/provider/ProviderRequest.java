@@ -21,7 +21,9 @@ public final class ProviderRequest implements Parcelable {
     private final WorkSource mWorkSource;
     public static final ProviderRequest EMPTY_REQUEST = new ProviderRequest(Long.MAX_VALUE, 102, 0, false, false, false, new WorkSource());
     public static final Parcelable.Creator<ProviderRequest> CREATOR = new Parcelable.Creator<ProviderRequest>() { // from class: android.location.provider.ProviderRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProviderRequest createFromParcel(Parcel in) {
             long intervalMillis = in.readLong();
@@ -31,7 +33,6 @@ public final class ProviderRequest implements Parcelable {
             return new ProviderRequest(intervalMillis, in.readInt(), in.readLong(), in.readBoolean(), in.readBoolean(), in.readBoolean(), (WorkSource) in.readTypedObject(WorkSource.CREATOR));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProviderRequest[] newArray(int size) {
             return new ProviderRequest[size];
@@ -41,6 +42,10 @@ public final class ProviderRequest implements Parcelable {
     /* loaded from: classes2.dex */
     public interface ChangedListener {
         void onProviderRequestChanged(String str, ProviderRequest providerRequest);
+    }
+
+    /* synthetic */ ProviderRequest(long j, int i, long j2, boolean z, boolean z2, boolean z3, WorkSource workSource, ProviderRequestIA providerRequestIA) {
+        this(j, i, j2, z, z2, z3, workSource);
     }
 
     private ProviderRequest(long intervalMillis, int quality, long maxUpdateDelayMillis, boolean lowPower, boolean adasGnssBypass, boolean locationSettingsIgnored, WorkSource workSource) {
@@ -87,6 +92,27 @@ public final class ProviderRequest implements Parcelable {
 
     public WorkSource getWorkSource() {
         return this.mWorkSource;
+    }
+
+    /* renamed from: android.location.provider.ProviderRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProviderRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderRequest createFromParcel(Parcel in) {
+            long intervalMillis = in.readLong();
+            if (intervalMillis == Long.MAX_VALUE) {
+                return ProviderRequest.EMPTY_REQUEST;
+            }
+            return new ProviderRequest(intervalMillis, in.readInt(), in.readLong(), in.readBoolean(), in.readBoolean(), in.readBoolean(), (WorkSource) in.readTypedObject(WorkSource.CREATOR));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderRequest[] newArray(int size) {
+            return new ProviderRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -55,13 +55,14 @@ public class LocationConstants {
         DEVICE_IDLE_CHANGED;
 
         public static final Parcelable.Creator<STATE_TYPE> CREATOR = new Parcelable.Creator<STATE_TYPE>() { // from class: android.location.LocationConstants.STATE_TYPE.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public STATE_TYPE createFromParcel(Parcel source) {
                 return STATE_TYPE.valueOf(source.readString());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public STATE_TYPE[] newArray(int size) {
                 return new STATE_TYPE[size];
@@ -77,6 +78,23 @@ public class LocationConstants {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(name());
         }
+
+        /* renamed from: android.location.LocationConstants$STATE_TYPE$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<STATE_TYPE> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public STATE_TYPE createFromParcel(Parcel source) {
+                return STATE_TYPE.valueOf(source.readString());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public STATE_TYPE[] newArray(int size) {
+                return new STATE_TYPE[size];
+            }
+        }
     }
 
     /* loaded from: classes2.dex */
@@ -90,13 +108,14 @@ public class LocationConstants {
         UNKNOWN;
 
         public static final Parcelable.Creator<PAUSED_BY> CREATOR = new Parcelable.Creator<PAUSED_BY>() { // from class: android.location.LocationConstants.PAUSED_BY.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PAUSED_BY createFromParcel(Parcel source) {
                 return PAUSED_BY.valueOf(source.readString());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PAUSED_BY[] newArray(int size) {
                 return new PAUSED_BY[size];
@@ -112,6 +131,23 @@ public class LocationConstants {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(name());
         }
+
+        /* renamed from: android.location.LocationConstants$PAUSED_BY$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PAUSED_BY> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PAUSED_BY createFromParcel(Parcel source) {
+                return PAUSED_BY.valueOf(source.readString());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PAUSED_BY[] newArray(int size) {
+                return new PAUSED_BY[size];
+            }
+        }
     }
 
     /* loaded from: classes2.dex */
@@ -124,13 +160,14 @@ public class LocationConstants {
         GNSS_NAVIGATION_MESSAGE("LISTENER_NAVIGATION", false);
 
         public static final Parcelable.Creator<LISTENER_TYPE> CREATOR = new Parcelable.Creator<LISTENER_TYPE>() { // from class: android.location.LocationConstants.LISTENER_TYPE.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public LISTENER_TYPE createFromParcel(Parcel source) {
                 return LISTENER_TYPE.valueOf(source.readString());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public LISTENER_TYPE[] newArray(int size) {
                 return new LISTENER_TYPE[size];
@@ -169,6 +206,23 @@ public class LocationConstants {
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(name());
+        }
+
+        /* renamed from: android.location.LocationConstants$LISTENER_TYPE$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<LISTENER_TYPE> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public LISTENER_TYPE createFromParcel(Parcel source) {
+                return LISTENER_TYPE.valueOf(source.readString());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public LISTENER_TYPE[] newArray(int size) {
+                return new LISTENER_TYPE[size];
+            }
         }
     }
 }

@@ -9,21 +9,8 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/* JADX WARN: Enum visitor error
-jadx.core.utils.exceptions.JadxRuntimeException: Init of enum field 'RAW_IMAGE' uses external variables
-	at jadx.core.dex.visitors.EnumVisitor.createEnumFieldByConstructor(EnumVisitor.java:451)
-	at jadx.core.dex.visitors.EnumVisitor.processEnumFieldByField(EnumVisitor.java:372)
-	at jadx.core.dex.visitors.EnumVisitor.processEnumFieldByWrappedInsn(EnumVisitor.java:337)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromFilledArray(EnumVisitor.java:322)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInsn(EnumVisitor.java:262)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInvoke(EnumVisitor.java:293)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInsn(EnumVisitor.java:266)
-	at jadx.core.dex.visitors.EnumVisitor.convertToEnum(EnumVisitor.java:151)
-	at jadx.core.dex.visitors.EnumVisitor.visit(EnumVisitor.java:100)
- */
-/* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
 /* loaded from: classes4.dex */
-public final class MediaType implements NumericEnum {
+public final class MediaType extends Enum<MediaType> implements NumericEnum {
     private static final /* synthetic */ MediaType[] $VALUES;
     public static final MediaType AUDIO;
     public static final MediaType COMPRESSED_AUDIO;
@@ -91,6 +78,7 @@ public final class MediaType implements NumericEnum {
     }
 
     private MediaType(String str, int i, int value) {
+        super(str, i);
         this.value = value;
     }
 
@@ -149,12 +137,10 @@ public final class MediaType implements NumericEnum {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$of$0(int value, MediaType e) {
         return e.getValue() == value;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ InvalidParameterException lambda$of$1(int value) {
         return new InvalidParameterException("invalid MediaType value: " + value);
     }

@@ -145,8 +145,9 @@ public interface IAudioPolicyServiceClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IAudioPolicyServiceClient {
+        public static class Proxy implements IAudioPolicyServiceClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

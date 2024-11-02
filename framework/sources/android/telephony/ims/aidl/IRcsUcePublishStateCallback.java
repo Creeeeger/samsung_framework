@@ -85,8 +85,9 @@ public interface IRcsUcePublishStateCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRcsUcePublishStateCallback {
+        public static class Proxy implements IRcsUcePublishStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

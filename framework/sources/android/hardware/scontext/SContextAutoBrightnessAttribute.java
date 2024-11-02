@@ -13,7 +13,6 @@ public class SContextAutoBrightnessAttribute extends SContextAttribute {
     private static int MODE_DEVICE_MODE = 0;
     private static int MODE_CONFIGURATION = 1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextAutoBrightnessAttribute() {
         this.mLuminanceTable = null;
         this.mDeviceMode = 0;

@@ -49,6 +49,9 @@ public class SemImsManager {
     private BroadcastReceiver mRestartReceiver = null;
     DmConfigEventRelay mEventRelay = null;
     SemImsDmConfigListener.Stub mEventProxy = new SemImsDmConfigListener.Stub() { // from class: com.samsung.android.ims.SemImsManager.2
+        AnonymousClass2() {
+        }
+
         @Override // com.samsung.android.ims.SemImsDmConfigListener
         public void onChangeDmValue(String uri, boolean state) throws RemoteException {
             if (SemImsManager.this.mEventRelay == null) {
@@ -179,7 +182,6 @@ public class SemImsManager {
         this.mPhoneId = phoneId;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public SemImsService getImsService() {
         return SemImsService.Stub.asInterface(getSystemService(SERVICE_NAME));
     }
@@ -211,7 +213,6 @@ public class SemImsManager {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void registerPreviousListeners(SemImsService imsService) {
         Log.d(LOG_TAG, "registerPreviousListeners:  mRegListeners: " + this.mRegListeners.size() + " mEpdgListeners: " + this.mEpdgListeners.size());
         for (SemImsRegistrationListener tempListener : this.mRegListeners.keySet()) {
@@ -236,6 +237,9 @@ public class SemImsManager {
         if (this.mRestartReceiver == null) {
             Log.d("semImsManager[" + this.mPhoneId + NavigationBarInflaterView.SIZE_MOD_END, "Register Receiver for Restart");
             this.mRestartReceiver = new BroadcastReceiver() { // from class: com.samsung.android.ims.SemImsManager.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.content.BroadcastReceiver
                 public void onReceive(Context context, Intent intent) {
                     Log.d("semImsManager[" + SemImsManager.this.mPhoneId + NavigationBarInflaterView.SIZE_MOD_END, "onReceive " + intent.getAction());
@@ -260,6 +264,30 @@ public class SemImsManager {
         SemImsService imsService = getImsService();
         if (imsService != null && (imsServiceConnectionListener = this.mListener) != null) {
             imsServiceConnectionListener.onConnected();
+        }
+    }
+
+    /* renamed from: com.samsung.android.ims.SemImsManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            Log.d("semImsManager[" + SemImsManager.this.mPhoneId + NavigationBarInflaterView.SIZE_MOD_END, "onReceive " + intent.getAction());
+            if (TextUtils.equals(intent.getAction(), SemImsManager.INTENT_ACTION_IMSSERVICE_RESTART)) {
+                SemImsService imsService = SemImsManager.this.getImsService();
+                if (imsService == null) {
+                    Log.e("semImsManager[" + SemImsManager.this.mPhoneId + NavigationBarInflaterView.SIZE_MOD_END, "ImsService not found, this should not happen!");
+                    return;
+                }
+                SemImsManager semImsManager = SemImsManager.this;
+                semImsManager.registerPreviousListeners(semImsManager.getImsService());
+                if (SemImsManager.this.mListener != null) {
+                    SemImsManager.this.mListener.onConnected();
+                }
+            }
         }
     }
 
@@ -843,6 +871,23 @@ public class SemImsManager {
         }
     }
 
+    /* renamed from: com.samsung.android.ims.SemImsManager$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 extends SemImsDmConfigListener.Stub {
+        AnonymousClass2() {
+        }
+
+        @Override // com.samsung.android.ims.SemImsDmConfigListener
+        public void onChangeDmValue(String uri, boolean state) throws RemoteException {
+            if (SemImsManager.this.mEventRelay == null) {
+                Log.d("semImsManager[" + SemImsManager.this.mPhoneId + NavigationBarInflaterView.SIZE_MOD_END, "no listener for SemImsDmConfigListener");
+                throw new RemoteException();
+            }
+            Log.d("semImsManager[" + SemImsManager.this.mPhoneId + NavigationBarInflaterView.SIZE_MOD_END, "mEventRelay : " + SemImsManager.this.mEventRelay);
+            SemImsManager.this.mEventRelay.onChangeDmValue(uri, state);
+        }
+    }
+
     public SemImsProfile[] getCurrentProfile(int phoneId) {
         Log.d("semImsManager[" + this.mPhoneId + NavigationBarInflaterView.SIZE_MOD_END, "getCurrentProfile");
         SemImsService imsService = getImsService();
@@ -955,7 +1000,6 @@ public class SemImsManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ImsRegistrationListenerDelegate extends SemImsRegiListener.Stub {
         private WeakReference<SemImsRegistrationListener> mListener;
@@ -990,7 +1034,6 @@ public class SemImsManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class SemEpdgListenerDelegate extends ISemEpdgListener.Stub {
         private WeakReference<SemEpdgListener> mListener;
@@ -1054,7 +1097,6 @@ public class SemImsManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ImsOngoingFtEventListenerDelegate extends SemImsFtListener.Stub {
         private WeakReference<SemImsOngoingFtEventListener> mListener;
@@ -1081,7 +1123,6 @@ public class SemImsManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class AutoConfigurationListenerDelegate extends SemAutoConfigListener.Stub {
         private WeakReference<SemAutoConfigurationListener> mListener;
@@ -1132,7 +1173,6 @@ public class SemImsManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class SimMobilityStatusListenerDelegate extends SemSimMobStatusListener.Stub {
         private WeakReference<SemSimMobilityStatusListener> mListener;

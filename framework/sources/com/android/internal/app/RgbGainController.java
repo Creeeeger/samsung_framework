@@ -29,6 +29,10 @@ public final class RgbGainController {
         this.mContext = context.getApplicationContext();
         this.mUserId = userId;
         this.mContentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.android.internal.app.RgbGainController.1
+            AnonymousClass1(Handler handler) {
+                super(handler);
+            }
+
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange, Uri uri) {
                 super.onChange(selfChange, uri);
@@ -38,6 +42,24 @@ public final class RgbGainController {
                 }
             }
         };
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.RgbGainController$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends ContentObserver {
+        AnonymousClass1(Handler handler) {
+            super(handler);
+        }
+
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            String setting = uri == null ? null : uri.getLastPathSegment();
+            if (setting != null) {
+                RgbGainController.this.onSettingChanged(setting);
+            }
+        }
     }
 
     public boolean isActivated() {
@@ -104,7 +126,6 @@ public final class RgbGainController {
         return 127;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public void onSettingChanged(String setting) {
         char c;

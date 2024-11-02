@@ -269,12 +269,12 @@
     <string name="allow">Дозволи</string>
     <string name="alwaysUse">Користи ја стандардно за ова дејство.</string>
     <string name="android_preparing_apk">Се подготвува %1$s.</string>
-    <string name="android_start_title">Телефонот стартува…</string>
+    <string name="android_start_title">Таблетот стартува…</string>
     <string name="android_system_label">Систем Android</string>
     <string name="android_upgrading_complete">Подигањето завршува.</string>
     <string name="android_upgrading_notification_title">Завршува системската надградба…</string>
     <string name="android_upgrading_starting_apps">Се стартуваат апликациите.</string>
-    <string name="android_upgrading_title">Телефонот се ажурира…</string>
+    <string name="android_upgrading_title">Таблетот се ажурира…</string>
     <string name="anr_activity_application">%2$s не реагира</string>
     <string name="anr_activity_process">%1$s не реагира</string>
     <string name="anr_application_process">%1$s не реагира</string>
@@ -295,16 +295,16 @@
     <string name="app_not_found">Не се пронајдени апликации да се изврши ова дејство</string>
     <string name="app_running_notification_text">Допрете за повеќе информации или за сопирање на апликацијата.</string>
     <string name="app_running_notification_title">%1$s работи</string>
-    <string name="app_streaming_blocked_message">Ова не може да се отвори на %1$s во моментов. Пробајте на вашиот телефон како алтернатива.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Апликацијава бара дополнителна безбедност. Пробајте на вашиот телефон како алтернатива.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Ова не може да се отвори на %1$s. Пробајте на вашиот телефон како алтернатива.</string>
+    <string name="app_streaming_blocked_message">Ова не може да се отвори на %1$s во моментов. Пробајте на вашиот таблет како алтернатива.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Апликацијава бара дополнителна безбедност. Пробајте на вашиот таблет како алтернатива.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Ова не може да се отвори на %1$s. Пробајте на вашиот таблет како алтернатива.</string>
     <string name="app_streaming_blocked_title">%1$s е недостапна</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Камерата е недостапна</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Продолжете на телефонот</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Микрофонот не е достапен</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Потребна е дозвола</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store не е достапна</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Поставките за телефонот не се достапни</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Поставките за таблетот не се достапни</string>
     <string name="app_suspended_default_message">Апликацијата %1$s не е достапна во моментов. Со ова управува %2$s.</string>
     <string name="app_suspended_more_details">Дознај повеќе</string>
     <string name="app_suspended_title">Апликацијата не е достапна</string>
@@ -344,7 +344,7 @@
     <string name="back_button_label">Назад</string>
     <string name="badPin">Стариот PIN што го напишавте не е точен.</string>
     <string name="badPuk">ПУК-бројот што го напишавте не е точен.</string>
-    <string name="battery_saver_charged_notification_summary">Телефонот е доволно полн. Функциите веќе не се ограничени.</string>
+    <string name="battery_saver_charged_notification_summary">Таблетот е доволно полн. Функциите веќе не се ограничени.</string>
     <string name="battery_saver_description">„Штедачот на батерија“ вклучува „Темна тема“ и ограничува или исклучува активност во заднина, некои визуелни ефекти, одредени функции и некои мрежни врски.</string>
     <string name="battery_saver_description_with_learn_more">„Штедачот на батерија“ вклучува „Темна тема“ и ограничува или исклучува активност во заднина, некои визуелни ефекти, одредени функции и некои мрежни врски.</string>
     <string name="battery_saver_notification_channel_name">Штедач на батерија</string>
@@ -486,7 +486,7 @@
     <string name="decline">Одбиј</string>
     <string name="decline_remote_bugreport_action">ОДБИЈ</string>
     <string name="default_audio_route_category_name">Систем</string>
-    <string name="default_audio_route_name">Телефон</string>
+    <string name="default_audio_route_name">Таблет</string>
     <string name="default_audio_route_name_dock_speakers">Звучници на док</string>
     <string name="default_audio_route_name_external_device">Надворешен уред</string>
     <string name="default_audio_route_name_headphones">Слушалки</string>
@@ -563,7 +563,7 @@
     <string name="emergency_call_dialog_number_for_display">Број за итни случаи</string>
     <string name="emergency_calls_only">Само итни повици</string>
     <string name="enablePin">Неуспешно, овозможи заклучување на SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s сака да овозможи „Истражувај со допир“. Кога е вклучено „Истражувај со допир“, може да се слушнат или да се видат описи на она што е под вашиот прст или да се прават движења за комуницирање со телефонот.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s сака да овозможи „Истражувај со допир“. Кога е вклучено „Истражувај со допир“, може да се слушнат или да се видат описи на она што е под вашиот прст или да се прават движења за комуницирање со таблетот.</string>
     <string name="enable_explore_by_touch_warning_title">Овозможи „Истражувај со допир“?</string>
     <string name="error_message_change_not_allowed">Администраторот не ја дозволува промената</string>
     <string name="error_message_title">Грешка</string>
@@ -776,7 +776,7 @@
     <string name="global_action_silent_mode_on_status">Звукот е исклучен</string>
     <string name="global_action_toggle_silent_mode">Тивок режим</string>
     <string name="global_action_voice_assist">Гласовна помош</string>
-    <string name="global_actions">Опции на телефон</string>
+    <string name="global_actions">Опции на таблет</string>
     <string name="global_actions_airplane_mode_off_status">Режимот на работа во авион е исклучен</string>
     <string name="global_actions_airplane_mode_on_status">Режимот на работа во авион е вклучен</string>
     <string name="global_actions_toggle_airplane_mode">Авионски режим</string>
@@ -917,11 +917,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">Допрете за да внесете лозинка</font></string>
     <string name="keyguard_password_wrong_pin_code">Погрешен PIN код.</string>
     <string name="kg_enter_confirm_pin_hint">Потврди го саканиот PIN код</string>
-    <string name="kg_failed_attempts_almost_at_login">"Погрешно сте ја употребиле вашата шема на отклучување %1$d пати. По %2$d неуспешни обиди, ќе побараат од вас да го отклучите телефонот со користење сметка на е-пошта.
+    <string name="kg_failed_attempts_almost_at_login">"Погрешно сте ја употребиле вашата шема на отклучување %1$d пати. По %2$d неуспешни обиди, ќе побараат од вас да го отклучите таблетот со користење сметка на е-пошта.
 
  Обидете се повторно за %3$d секунди."</string>
     <string name="kg_failed_attempts_almost_at_wipe">Погрешно сте се обиделе да го отклучите телефонот %1$d пати. По %2$d неуспешни обиди, телефонот ќе се ресетира на фабрички стандардни вредности и сите податоци за корисникот ќе се изгубат.</string>
-    <string name="kg_failed_attempts_now_wiping">Погрешно сте се обиделе да го отклучите телефонот %d пати. Телефонот ќе се ресетира на фабрички стандардни вредности.</string>
+    <string name="kg_failed_attempts_now_wiping">Погрешно сте се обиделе да го отклучите таблетот %d пати. Таблетот ќе се ресетира на фабрички стандардни вредности.</string>
     <string name="kg_forgot_pattern_button_text">Заборавив шема</string>
     <string name="kg_invalid_confirm_pin_hint">PIN кодовите не се совпаѓаат</string>
     <string name="kg_invalid_puk">Повторно внесете го точниот ПУК код. Повторните обиди трајно ќе ја оневозможат SIM картичката.</string>
@@ -986,11 +986,11 @@
     <string name="lockscreen_access_pattern_start">Шемата е започната</string>
     <string name="lockscreen_carrier_default">Нема услуга</string>
     <string name="lockscreen_emergency_call">Итен случај</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Имавте %1$d неуспешни обиди да го отклучите телефонот. Ви преостануваат уште %2$d неуспешни обиди и телефонот ќе се ресетира на фабричките поставки и сите податоци на корисникот ќе се изгубат.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Погрешно ја употребивте шемата за отклучување %1$d пати. По уште %2$d неуспешни обиди, ќе побараме да го отклучите телефонот со пријавата за Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Имавте %1$d неуспешни обиди да го отклучите таблетот. Ви преостануваат уште %2$d неуспешни обиди и таблетот ќе се ресетира на фабричките поставки и сите податоци на корисникот ќе се изгубат.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Погрешно ја употребивте шемата за отклучување %1$d пати. По уште %2$d неуспешни обиди, ќе побараме да го отклучите таблетот со пријавата за Google.
 
  Обидете се повторно за %3$d секунди."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Имавте %d неуспешни обиди да го отклучите телефонот. Сега телефонот ќе се ресетира на фабричките поставки.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Имавте %d неуспешни обиди да го отклучите таблетот. Сега таблетот ќе се ресетира на фабричките поставки.</string>
     <string name="lockscreen_forgot_pattern_button_text">Ја заборавивте шемата?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Го заборави своето корисничко име или лозинката?
 Посети"<b>google.com/accounts/recovery</b>.</string>
@@ -1006,7 +1006,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Притисни „Мени“ да се отклучи или да направи итен повик.</string>
     <string name="lockscreen_missing_sim_instructions">Додајте SIM-картичка.</string>
     <string name="lockscreen_missing_sim_instructions_long">Нема SIM-картичка или не може да се прочита. Додајте SIM-картичка.</string>
-    <string name="lockscreen_missing_sim_message">Нема SIM-картичка во телефонот.</string>
+    <string name="lockscreen_missing_sim_message">Нема SIM-картичка во таблетот.</string>
     <string name="lockscreen_missing_sim_message_short">Нема SIM-картичка</string>
     <string name="lockscreen_network_locked_message">Мрежата е заклучена</string>
     <string name="lockscreen_password_wrong">Обидете се повторно</string>
@@ -1046,7 +1046,7 @@
     <string name="low_internal_storage_view_text">Некои системски функции може да не работат</string>
     <string name="low_internal_storage_view_text_no_boot">Нема доволно меморија во системот. Проверете дали има слободен простор од 250 MB и рестартирајте.</string>
     <string name="low_internal_storage_view_title">Капацитетот е речиси полн</string>
-    <string name="low_memory">Меморијата на телефонот е полна. Избришете некои датотеки за да ослободите простор.</string>
+    <string name="low_memory">Меморијата на таблетот е полна. Избришете некои датотеки за да ослободите простор.</string>
     <string name="managed_profile_app_label">Префрлете се на работната апликација %1$s</string>
     <string name="managed_profile_label">Префрли се на работен профил</string>
     <string name="managed_profile_label_badge">Работа %1$s</string>
@@ -1376,23 +1376,23 @@
     <string name="permdesc_bindNotificationListenerService">Овозможува сопственикот да се поврзе со интерфејс од највисоко ниво на услугата слушател на известувања. Не треба да се користи за стандардни апликации.</string>
     <string name="permdesc_bind_connection_service">Дозволува апликацијата да комуницира со телефонски услуги за да прави/прима повици.</string>
     <string name="permdesc_bind_incall_service">Овозможува апликацијата да контролира кога и како корисникот го гледа екранот на дојдовен повик.</string>
-    <string name="permdesc_bluetooth">Овозможува апликацијата да ја види конфигурацијата на Bluetooth на телефонот и да прави и да прифаќа врски со спарени уреди.</string>
-    <string name="permdesc_bluetoothAdmin">Дозволува апликацијата да го конфигурира телефонот со локалниот Bluetooth и да открива и да се спарува со уреди на далечина.</string>
+    <string name="permdesc_bluetooth">Овозможува апликацијата да ја види конфигурацијата на Bluetooth на таблетот и да прави и да прифаќа врски со спарени уреди.</string>
+    <string name="permdesc_bluetoothAdmin">Дозволува апликацијата да го конфигурира таблетот со локалниот Bluetooth и да открива и да се спарува со уреди на далечина.</string>
     <string name="permdesc_bluetooth_advertise">Дозволува апликацијата да рекламира на уреди со Bluetooth во близина</string>
     <string name="permdesc_bluetooth_connect">Дозволува апликацијата да се поврзува со спарени уреди со Bluetooth</string>
     <string name="permdesc_bluetooth_scan">Дозволува апликацијата да открива и да се поврзува со спарени уреди со Bluetooth во близина</string>
     <string name="permdesc_bodySensors">Дозволува апликацијата да пристапува до податоци од телесните сензори, како што се пулс, температура и процент на кислород во телото, додека се користи апликацијата.</string>
     <string name="permdesc_bodySensors_background">Дозволува апликацијата да пристапува до податоци од телесните сензори, како што се пулс, температура и процент на кислород во телото, додека апликацијата работи во заднина.</string>
-    <string name="permdesc_broadcastSticky">Овозможува апликацијата да испраќа лепливи емитувања, кои остануваат по завршувањето на емитувањето. Прекумерна употреба може да предизвика телефонот да биде бавен или нестабилен со тоа што предизвикува да користи премногу меморија.</string>
+    <string name="permdesc_broadcastSticky">Овозможува апликацијата да испраќа лепливи емитувања, кои остануваат по завршувањето на емитувањето. Прекумерна употреба може да предизвика таблетот да биде бавен или нестабилен со тоа што предизвикува да користи премногу меморија.</string>
     <string name="permdesc_callCompanionApp">Дозволува апликацијата да гледа и контролира тековни повици на уредот. Ова вклучува информации како телефонски броеви за повици и состојбата на повиците.</string>
     <string name="permdesc_callPhone">Дозволува апликацијата да повика кој било телефонски број без ваша интервенција. Поради тоа може да дојде до неочекувани плаќања или повици. Имајте на ум дека ова не дозволува апликацијата да повикува броеви за итни случаи. Злонамерните апликации може да ве чинат пари со упатување повици без ваша потврда или бирање шифри на оператор што предизвикуваат дојдовните повици автоматски да се проследуваат до друг број.</string>
     <string name="permdesc_camera">Апликацијава може да фотографира и снима видеа со камерата додека се користи апликацијата.</string>
     <string name="permdesc_cameraOpenCloseListener">Оваа апликација може да прима повратни повици кога кој било уред со камера се отвора (од некоја апликација) или затвора.</string>
     <string name="permdesc_changeNetworkState">Дозволува апликацијата да ја промени состојбата на мрежната поврзливост.</string>
     <string name="permdesc_changeTetherState">Дозволува апликацијата да ја менува состојбата на обврзаната мрежна поврзливост.</string>
-    <string name="permdesc_changeWifiMulticastState">Овозможува апликацијата да добива пакети испратени до сите уреди на Wi-Fi мрежа со користење повеќекратни адреси, а не само вашиот телефон. Користи повеќе батерија отколку кога е во режим на еднократност.</string>
+    <string name="permdesc_changeWifiMulticastState">Овозможува апликацијата да добива пакети испратени до сите уреди на Wi-Fi мрежа со користење повеќекратни адреси, а не само вашиот таблет. Користи повеќе батерија отколку кога е во режим на еднократност.</string>
     <string name="permdesc_changeWifiState">Овозможува апликацијата да се вклучи на и да се исклучи од Wi-Fi точки за пристап и да направи промени на конфигурацијата на уредот за Wi-Fi мрежи.</string>
-    <string name="permdesc_changeWimaxState">Овозможува апликацијата да го вклучи телефонот на и да го исклучи телефонот од WiMAX мрежи.</string>
+    <string name="permdesc_changeWimaxState">Овозможува апликацијата да го вклучи таблетот на и да го исклучи таблетот од WiMAX мрежи.</string>
     <string name="permdesc_companionProfileWatch">Дозволува придружна апликација да управува со часовници.</string>
     <string name="permdesc_connection_manager">Дозволува апликацијата да управува со телекомуникациски врски.</string>
     <string name="permdesc_control_incall_experience">Овозможува апликацијата да обезбеди искуство за корисникот при дојдовен повик.</string>
@@ -1418,7 +1418,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">Дозволува апликацијата да ги користи во преден план услугите со типот „specialUse“</string>
     <string name="permdesc_foregroundServiceSystemExempted">Дозволува апликацијата да ги користи во преден план услугите со типот „systemExempted“</string>
     <string name="permdesc_fullScreenIntent">Дозволува апликацијата да прикажува известувања како активности на цел екран на заклучен уред</string>
-    <string name="permdesc_getAccounts">Овозможува апликацијата да го добие списокот со сметки познати на телефонот. Ова може да опфати кои било сметки што ги создале апликациите што сте ги инсталирале.</string>
+    <string name="permdesc_getAccounts">Овозможува апликацијата да го добие списокот со сметки познати на таблетот. Ова може да опфати кои било сметки што ги создале апликациите што сте ги инсталирале.</string>
     <string name="permdesc_getPackageSize">Дозволува апликацијата да ги обнови кодот, податоците и величините на кеш.</string>
     <string name="permdesc_getTasks">Овозможува апликацијата да поврати информации за тековно и до неодамна активни задачи. Ова може да овозможи апликацијата да открие информации за тоа кои апликации се користат на уредот.</string>
     <string name="permdesc_handoverStatus">Ѝ дозволува на оваа апликација да добива информации за моменталните трансфери на Android Beam</string>
@@ -1441,16 +1441,16 @@
     <string name="permdesc_nearby_wifi_devices">Дозволува апликацијата да рекламира, да се поврзува и да ја одредува релативната положба на уреди со Wi‑Fi во близина</string>
     <string name="permdesc_nfc">Дозволува апликацијата да комуницира со ознаки, картички и читачи за Комуникација при непосредна близина (NFC).</string>
     <string name="permdesc_observeCompanionDevicePresence">Дозволува придружна апликација да набљудува присуство на придружни уреди кога тие се во близина или подалеку.</string>
-    <string name="permdesc_persistentActivity">Овозможува апликацијата да прави трајни делови од себеси во меморијата. Ова може да ја ограничи расположливата меморија на други апликации што го забавува телефонот.</string>
+    <string name="permdesc_persistentActivity">Овозможува апликацијата да прави трајни делови од себеси во меморијата. Ова може да ја ограничи расположливата меморија на други апликации што го забавува таблетот.</string>
     <string name="permdesc_postNotification">Ѝ дозволува на апликацијата да прикажува известувања</string>
     <string name="permdesc_preferredPaymentInfo">Дозволува апликацијата да добие информации за претпочитаната услуга за плаќање преку NFC, како регистрирани помагала и дестинација на маршрутата.</string>
     <string name="permdesc_processOutgoingCalls">Дозволува апликацијата да го види бројот што се повикува за време на појдовен повик, со опција да го пренасочи повикот кон друг број или да го прекине повикот.</string>
     <string name="permdesc_queryAllPackages">Дозволува апликацијата да ги гледа сите инсталирани пакети.</string>
     <string name="permdesc_readBasicPhoneState">Дозволете апликацијава да пристапи до основните телефонски функции на уредот.</string>
-    <string name="permdesc_readCalendar">Апликацијава може да ги чита сите настани во календарот складирани во вашиот телефон и да ги споделува или зачувува податоците од календарот.</string>
+    <string name="permdesc_readCalendar">Апликацијава може да ги чита сите настани во календарот складирани во вашиот таблет и да ги споделува или зачувува податоците од календарот.</string>
     <string name="permdesc_readCallLog">Апликацијава може да ја чита историјата на повиците.</string>
     <string name="permdesc_readCellBroadcasts">Овозможува апликациите да ги читаат пораките за мобилно емитување што ги прима вашиот уред. Предупредувањата за мобилно емитување се доставуваат на некои локации, за да ве предупредат на итни ситуации. Злонамерните апликации може да пречат во ефикасноста или работењето на вашиот уред кога се прима емитување за итен случај.</string>
-    <string name="permdesc_readContacts">Овозможува апликацијата да чита податоци за контактите складирани во вашиот телефон. Апликациите ќе имаат пристап и до сметките на вашиот телефон што создале контакти. Тука може да спаѓаат сметките создадени од апликациите што сте ги инсталирале. Оваа дозвола им овозможува на апликациите да ги зачувуваат податоците за вашите контакти, а злонамерните апликации може да споделуваат податоци за контактите без ваше знаење.</string>
+    <string name="permdesc_readContacts">Овозможува апликацијата да чита податоци за контактите складирани во вашиот таблет. Апликациите ќе имаат пристап и до сметките на вашиот таблет што создале контакти. Тука може да спаѓаат сметките создадени од апликациите што сте ги инсталирале. Оваа дозвола им овозможува на апликациите да ги зачувуваат податоците за вашите контакти, а злонамерните апликации може да споделуваат податоци за контактите без ваше знаење.</string>
     <string name="permdesc_readInstallSessions">Дозволува апликација да чита сесии на инсталирање. Тоа овозможува апликацијата да гледа детали за активни инсталации на пакет.</string>
     <string name="permdesc_readMediaAudio">Дозволува апликацијата да ги чита аудиодатотеките од споделениот капацитет.</string>
     <string name="permdesc_readMediaImages">Дозволува апликацијата да ги чита датотеките со слики од споделениот капацитет.</string>
@@ -1458,11 +1458,11 @@
     <string name="permdesc_readNetworkUsageHistory">Дозволува апликацијата да го чита историското користење на мрежата за одредени мрежи или апликации.</string>
     <string name="permdesc_readPhoneNumbers">Ѝ дозволува на апликацијата да пристапи до телефонските броеви на уредот.</string>
     <string name="permdesc_readPhoneState">Овозможува апликацијата да пристапи кон карактеристиките на телефонот на уредот. Оваа дозвола овозможува апликацијата да ги утврди телефонскиот број и ID на уредот, дали повикот е активен и далечинскиот број поврзан со повикот.</string>
-    <string name="permdesc_readSms">Апликацијава може да ги чита сите SMS (текстуални) пораки складирани на телефонот.</string>
+    <string name="permdesc_readSms">Апликацијава може да ги чита сите SMS (текстуални) пораки складирани на таблетот.</string>
     <string name="permdesc_readSyncSettings">Овозможува апликацијата да ги чита поставките за синхронизирање на сметка. На пример, така може да се утврди дали апликацијата „Луѓе“ е синхронизирана со сметка.</string>
     <string name="permdesc_readSyncStats">Овозможува апликацијата да ја чита статистиката за синхронизација на сметка, вклучувајќи ја и историјата на синхронизирани настани и колку податоци се синхронизирани.</string>
     <string name="permdesc_readVisualUserSelect">Дозволува апликацијата да чита датотеки со слики и видеа што ќе ги изберете од вашиот споделен простор.</string>
-    <string name="permdesc_receiveBootCompleted">Дозволува апликацијата сама да се стартува откако системот ќе се рестартира. Со тоа можно е телефонот подолго да се стартува и да се дозволи апликацијата да го забави телефонот, така што постојано ќе биде активна.</string>
+    <string name="permdesc_receiveBootCompleted">Дозволува апликацијата сама да стартува откако системот ќе се рестартира. Со тоа можно е телефонот подолго да стартува и да се дозволи апликацијата да го забави таблетот, така што постојано ќе биде активна.</string>
     <string name="permdesc_receiveMms">Овозможува апликацијата да прима и да обработува MMS пораки. Тоа значи дека апликацијата може да следи или да брише пораки испратени до вашиот уред без да ви ги прикаже вам.</string>
     <string name="permdesc_receiveSms">Овозможува апликацијата да прима и да обработува SMS пораки. Тоа значи дека апликацијата може да следи или да брише пораки испратени до вашиот уред без да ви ги прикаже вам.</string>
     <string name="permdesc_receiveWapPush">Овозможува апликацијата да прима и да обработува WAP пораки. Оваа дозвола ја опфаќа способноста за следење или за бришење пораки испратени до вашиот уред без да ви ги прикаже вам.</string>
@@ -1484,7 +1484,7 @@
     <string name="permdesc_sendSms">Овозможува апликацијата да испраќа SMS пораки. Ова може да предизвика неочекувани трошоци. Злонамерните апликации може да ве чинат пари поради испраќање пораки без ваша потврда.</string>
     <string name="permdesc_setAlarm">Дозволува апликацијата да постави аларм во инсталираната апликација со будилник. Некои апликации со будилници може да не ја применуваат оваа можност.</string>
     <string name="permdesc_setInputCalibration">Дозволува апликацијата да ги изменува калибрирачките параметри на екранот на допир. Не треба да се користи за стандардни апликации.</string>
-    <string name="permdesc_setTimeZone">Дозволува апликацијата да ја промени часовната зона на телефонот.</string>
+    <string name="permdesc_setTimeZone">Дозволува апликацијата да ја промени часовната зона на таблетот.</string>
     <string name="permdesc_setWallpaper">Дозволува апликацијата да го постави системскиот тапет.</string>
     <string name="permdesc_setWallpaperHints">Дозволува апликацијата да постави сугестии за големина на системски тапет.</string>
     <string name="permdesc_sim_communication">Овозможува апликацијата да испраќа наредби до SIM картичката. Ова е многу опасно.</string>
@@ -1497,7 +1497,7 @@
     <string name="permdesc_subscribedFeedsRead">Дозволува апликацијата да добива детали за навестувања што се тековно синхронизирани.</string>
     <string name="permdesc_systemAlertWindow">Апликацијава може да се појави врз други апликации или делови од екранот. Тоа може да го попречи нормалното користење на апликацијата и да го смени начинот на кој се појавуваат другите апликации.</string>
     <string name="permdesc_systemCamera">Оваа привилегирана или системска апликација може да фотографира и да снима видеа со системската камера во секое време. Потребно е апликацијата да ја има и дозволата android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Овозможува апликацијата да го користи инфрацрвениот предавател на телефонот.</string>
+    <string name="permdesc_transmitIr">Овозможува апликацијата да го користи инфрацрвениот предавател на таблетот.</string>
     <string name="permdesc_turnScreenOn">Дозволува апликацијата да го вклучува екранот.</string>
     <string name="permdesc_uninstall_shortcut">Овозможува апликацијата да отстранува кратенки од почетниот екран без интервенција на корисникот.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Дозволува сопственикот да ја ажурира апликацијата што претходно ја инсталирал без дејство од корисникот</string>
@@ -1510,10 +1510,10 @@
     <string name="permdesc_vibrate">Дозволува апликацијата да ги контролира вибрациите.</string>
     <string name="permdesc_vibrator_state">Ѝ дозволува на апликацијата да пристапи до состојбата на вибрации.</string>
     <string name="permdesc_videoWrite">Дозволува апликацијата да ја менува вашата збирка на видеа.</string>
-    <string name="permdesc_wakeLock">Дозволува апликацијата да го спречи телефонот да не заспие.</string>
-    <string name="permdesc_writeCalendar">Апликацијава може да додава, отстранува или менува настани во календарот на телефонот. Таа може да испраќа пораки што ќе изгледаат како да се испратени од сопствениците на календарот или да менува настани без да ги извести нивните сопственици.</string>
-    <string name="permdesc_writeCallLog">Овозможува апликацијата да го менува дневникот на повици на вашиот телефон, вклучувајќи податоци за дојдовни и појдовни повици. Злонамерните апликации може да го искористат ова да го избришат или да го менуваат вашиот дневник на повици.</string>
-    <string name="permdesc_writeContacts">Овозможува апликацијата да менува податоци за контактите складирани во вашиот телефон. Оваа дозвола им овозможува на апликациите да бришат податоци за контактите.</string>
+    <string name="permdesc_wakeLock">Дозволува апликацијата да го спречи таблетот да не заспие.</string>
+    <string name="permdesc_writeCalendar">Апликацијава може да додава, отстранува или менува настани во календарот на таблетот. Таа може да испраќа пораки што ќе изгледаат како да се испратени од сопствениците на календарот или да менува настани без да ги извести нивните сопственици.</string>
+    <string name="permdesc_writeCallLog">Овозможува апликацијата да го менува дневникот на повици на вашиот таблет, вклучувајќи податоци за дојдовни и појдовни повици. Злонамерните апликации може да го искористат ова да го избришат или да го менуваат вашиот дневник на повици.</string>
+    <string name="permdesc_writeContacts">Овозможува апликацијата да менува податоци за контактите складирани во вашиот таблет. Оваа дозвола им овозможува на апликациите да бришат податоци за контактите.</string>
     <string name="permdesc_writeSettings">Дозволува апликацијата да ги измени податоците за поставки на системот. Злонамерните апликации може да ја нарушат конфигурацијата на системот.</string>
     <string name="permdesc_writeSyncSettings">Овозможува апликацијата да ги менува поставките за синхронизирање на сметка. На пример, ова може да се употреби да овозможи синхронизација на апликацијата „Луѓе“ со сметка.</string>
     <string name="permgroupdesc_activityRecognition">пристапете до вашата физичка активност</string>
@@ -1710,7 +1710,7 @@
     <string name="permlab_uwb_ranging">да ја одреди релативната положба помеѓу уредите со ултраширок појас во близина</string>
     <string name="permlab_vibrate">контролирај вибрации</string>
     <string name="permlab_videoWrite">да ја менува вашата збирка на видеа</string>
-    <string name="permlab_wakeLock">спречи телефон од режим на штедење</string>
+    <string name="permlab_wakeLock">спречи режим на штедење кај таблет</string>
     <string name="permlab_writeCalendar">додади или измени настани во календар и прати е-пошта на посетители без знаење на сопствениците</string>
     <string name="permlab_writeCallLog">напиши дневник на повици</string>
     <string name="permlab_writeContacts">измени ги своите контакти</string>
@@ -1753,10 +1753,10 @@
     <string name="policydesc_limitPassword">Контролирај ги должината и знаците што се дозволени за лозинки и PIN-броеви за отклучување екран.</string>
     <string name="policydesc_resetPassword">Промени го заклучувањето на екранот.</string>
     <string name="policydesc_setGlobalProxy">Поставете го глобалниот прокси на уредот да се користи додека политиката е овозможена. Само сопственикот на уредот може да го поставува глобалниот прокси.</string>
-    <string name="policydesc_watchLogin">Посматрај го бројот на неточни лозинки што се напишани за да се отклучи екранот и заклучи го телефонот или избриши ги сите податоци од него ако бидат напишани премногу неточни лозинки.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Набљудувај го бројот на погрешно внесени лозинки при отклучување на екранот и заклучи го телефонот или избриши ги сите податоци од овој корисник доколку се внесени премногу погрешни лозинки.</string>
-    <string name="policydesc_wipeData">Избриши ги податоците во телефонот без предупредување со ресетирање на фабрички податоци.</string>
-    <string name="policydesc_wipeData_secondaryUser">Избриши ги податоците на овој корисник на телефонот без предупредување.</string>
+    <string name="policydesc_watchLogin">Посматрај го бројот на неточни лозинки што се напишани за да се отклучи екранот и заклучи го таблетот или избриши ги сите податоци од него ако бидат напишани премногу неточни лозинки.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Набљудувај го бројот на погрешно внесени лозинки при отклучување на екранот и заклучи го таблетот или избриши ги сите податоци од овој корисник доколку се внесени премногу погрешни лозинки.</string>
+    <string name="policydesc_wipeData">Избриши ги податоците во таблетот без предупредување со ресетирање на фабрички податоци.</string>
+    <string name="policydesc_wipeData_secondaryUser">Избриши ги податоците на овој корисник на таблетот без предупредување.</string>
     <string name="policylab_disableCamera">Оневозможи фотоапарати</string>
     <string name="policylab_disableKeyguardFeatures">Онев. функции од заклуч. екран</string>
     <string name="policylab_encryptedStorage">Постави шифрирање на меморија</string>
@@ -1773,7 +1773,7 @@
     <string name="postalTypeHome">Дома</string>
     <string name="postalTypeOther">Друго</string>
     <string name="postalTypeWork">Работа</string>
-    <string name="power_dialog">Опции на телефон</string>
+    <string name="power_dialog">Опции на таблет</string>
     <string name="power_off">Исклучи</string>
     <string name="prepend_shortcut_label">Мени+</string>
     <string name="preposition_for_date">на %s</string>
@@ -1945,7 +1945,7 @@
     <string name="shortcut_restore_unknown_issue">Не може да се врати кратенката</string>
     <string name="shortcut_restored_on_lower_version">Верзијата на апликацијата е постара или не е компатибилна со кратенкава</string>
     <string name="show_ime">Прикажувај ја на екранот додека е активна физичката тастатура</string>
-    <string name="shutdown_confirm">Вашиот телефон ќе се исклучи.</string>
+    <string name="shutdown_confirm">Вашиот таблет ќе се исклучи.</string>
     <string name="shutdown_confirm_question">Дали сакате да се исклучи?</string>
     <string name="shutdown_progress">Се исклучува...</string>
     <string name="silent_mode">Тивок режим</string>
@@ -2115,7 +2115,7 @@
     <string name="user_switched">Тековен корисник %1$s.</string>
     <string name="user_switching_message">Се префрла на %1$s…</string>
     <string name="validity_period">Важи до:</string>
-    <string name="vdm_camera_access_denied">Не може да се пристапи до камерата на вашиот телефон од %1$s</string>
+    <string name="vdm_camera_access_denied">Не може да се пристапи до камерата на вашиот таблет од %1$s</string>
     <string name="vdm_pip_blocked">Не може да се прикажува слика во слика при стримување</string>
     <string name="vdm_secure_window">До ова не може да се пристапи при стриминг. Наместо тоа, пробајте на вашиот телефон.</string>
     <string name="view_and_control_notification_content">%s може да го прегледува и контролира вашиот екран. Допрете за да прегледате.</string>

@@ -55,13 +55,14 @@ public final class HotwordDetectedResult implements Parcelable {
     private final int mScore;
     private static int sMaxBundleSize = -1;
     public static final Parcelable.Creator<HotwordDetectedResult> CREATOR = new Parcelable.Creator<HotwordDetectedResult>() { // from class: android.service.voice.HotwordDetectedResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HotwordDetectedResult[] newArray(int size) {
             return new HotwordDetectedResult[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotwordDetectedResult createFromParcel(Parcel in) {
             return new HotwordDetectedResult(in);
@@ -73,8 +74,9 @@ public final class HotwordDetectedResult implements Parcelable {
     public @interface ConfidenceLevel {
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    @interface HotwordConfidenceLevelValue {
+    public @interface HotwordConfidenceLevelValue {
     }
 
     @Retention(RetentionPolicy.SOURCE)
@@ -92,38 +94,38 @@ public final class HotwordDetectedResult implements Parcelable {
     public @interface ProximityValue {
     }
 
-    /* renamed from: -$$Nest$smdefaultAudioStreams, reason: not valid java name */
-    static /* bridge */ /* synthetic */ List m3972$$Nest$smdefaultAudioStreams() {
+    /* renamed from: -$$Nest$smdefaultAudioStreams */
+    static /* bridge */ /* synthetic */ List m3971$$Nest$smdefaultAudioStreams() {
         return defaultAudioStreams();
     }
 
-    /* renamed from: -$$Nest$smdefaultBackgroundAudioPower, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m3973$$Nest$smdefaultBackgroundAudioPower() {
+    /* renamed from: -$$Nest$smdefaultBackgroundAudioPower */
+    static /* bridge */ /* synthetic */ int m3972$$Nest$smdefaultBackgroundAudioPower() {
         return defaultBackgroundAudioPower();
     }
 
-    /* renamed from: -$$Nest$smdefaultConfidenceLevel, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m3974$$Nest$smdefaultConfidenceLevel() {
+    /* renamed from: -$$Nest$smdefaultConfidenceLevel */
+    static /* bridge */ /* synthetic */ int m3973$$Nest$smdefaultConfidenceLevel() {
         return defaultConfidenceLevel();
     }
 
-    /* renamed from: -$$Nest$smdefaultExtras, reason: not valid java name */
-    static /* bridge */ /* synthetic */ PersistableBundle m3975$$Nest$smdefaultExtras() {
+    /* renamed from: -$$Nest$smdefaultExtras */
+    static /* bridge */ /* synthetic */ PersistableBundle m3974$$Nest$smdefaultExtras() {
         return defaultExtras();
     }
 
-    /* renamed from: -$$Nest$smdefaultHotwordPhraseId, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m3976$$Nest$smdefaultHotwordPhraseId() {
+    /* renamed from: -$$Nest$smdefaultHotwordPhraseId */
+    static /* bridge */ /* synthetic */ int m3975$$Nest$smdefaultHotwordPhraseId() {
         return defaultHotwordPhraseId();
     }
 
-    /* renamed from: -$$Nest$smdefaultPersonalizedScore, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m3977$$Nest$smdefaultPersonalizedScore() {
+    /* renamed from: -$$Nest$smdefaultPersonalizedScore */
+    static /* bridge */ /* synthetic */ int m3976$$Nest$smdefaultPersonalizedScore() {
         return defaultPersonalizedScore();
     }
 
-    /* renamed from: -$$Nest$smdefaultScore, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m3978$$Nest$smdefaultScore() {
+    /* renamed from: -$$Nest$smdefaultScore */
+    static /* bridge */ /* synthetic */ int m3977$$Nest$smdefaultScore() {
         return defaultScore();
     }
 
@@ -283,7 +285,6 @@ public final class HotwordDetectedResult implements Parcelable {
         return 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static abstract class BaseBuilder {
         BaseBuilder() {
@@ -501,6 +502,23 @@ public final class HotwordDetectedResult implements Parcelable {
         onConstructed();
     }
 
+    /* renamed from: android.service.voice.HotwordDetectedResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HotwordDetectedResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotwordDetectedResult[] newArray(int size) {
+            return new HotwordDetectedResult[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HotwordDetectedResult createFromParcel(Parcel in) {
+            return new HotwordDetectedResult(in);
+        }
+    }
+
     /* loaded from: classes3.dex */
     public static final class Builder extends BaseBuilder {
         private int mAudioChannel;
@@ -604,7 +622,7 @@ public final class HotwordDetectedResult implements Parcelable {
             long j = this.mBuilderFieldsSet | 4096;
             this.mBuilderFieldsSet = j;
             if ((j & 1) == 0) {
-                this.mConfidenceLevel = HotwordDetectedResult.m3974$$Nest$smdefaultConfidenceLevel();
+                this.mConfidenceLevel = HotwordDetectedResult.m3973$$Nest$smdefaultConfidenceLevel();
             }
             long j2 = this.mBuilderFieldsSet;
             if ((2 & j2) == 0) {
@@ -623,22 +641,22 @@ public final class HotwordDetectedResult implements Parcelable {
                 this.mHotwordDetectionPersonalized = false;
             }
             if ((j2 & 64) == 0) {
-                this.mScore = HotwordDetectedResult.m3978$$Nest$smdefaultScore();
+                this.mScore = HotwordDetectedResult.m3977$$Nest$smdefaultScore();
             }
             if ((this.mBuilderFieldsSet & 128) == 0) {
-                this.mPersonalizedScore = HotwordDetectedResult.m3977$$Nest$smdefaultPersonalizedScore();
+                this.mPersonalizedScore = HotwordDetectedResult.m3976$$Nest$smdefaultPersonalizedScore();
             }
             if ((this.mBuilderFieldsSet & 256) == 0) {
-                this.mHotwordPhraseId = HotwordDetectedResult.m3976$$Nest$smdefaultHotwordPhraseId();
+                this.mHotwordPhraseId = HotwordDetectedResult.m3975$$Nest$smdefaultHotwordPhraseId();
             }
             if ((this.mBuilderFieldsSet & 512) == 0) {
-                this.mAudioStreams = HotwordDetectedResult.m3972$$Nest$smdefaultAudioStreams();
+                this.mAudioStreams = HotwordDetectedResult.m3971$$Nest$smdefaultAudioStreams();
             }
             if ((this.mBuilderFieldsSet & 1024) == 0) {
-                this.mExtras = HotwordDetectedResult.m3975$$Nest$smdefaultExtras();
+                this.mExtras = HotwordDetectedResult.m3974$$Nest$smdefaultExtras();
             }
             if ((this.mBuilderFieldsSet & 2048) == 0) {
-                this.mBackgroundAudioPower = HotwordDetectedResult.m3973$$Nest$smdefaultBackgroundAudioPower();
+                this.mBackgroundAudioPower = HotwordDetectedResult.m3972$$Nest$smdefaultBackgroundAudioPower();
             }
             HotwordDetectedResult o = new HotwordDetectedResult(this.mConfidenceLevel, this.mMediaSyncEvent, this.mHotwordOffsetMillis, this.mHotwordDurationMillis, this.mAudioChannel, this.mHotwordDetectionPersonalized, this.mScore, this.mPersonalizedScore, this.mHotwordPhraseId, this.mAudioStreams, this.mExtras, this.mBackgroundAudioPower);
             return o;

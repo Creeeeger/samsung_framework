@@ -11,7 +11,6 @@ public class SemCroppedImageInfo {
     private int width = -1;
     private int height = -1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SemCroppedImageInfo(int size) {
         this.buffer = NativeBuffer.allocNativeBuffer(size);
     }
@@ -28,7 +27,6 @@ public class SemCroppedImageInfo {
         return this.buffer;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reAllocInJavaBuffer(int newSize) {
         Log.d(TAG, "reAllocate : " + newSize);
         this.buffer.limit(newSize);

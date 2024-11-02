@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">앱이 설치된 SD 카드가 분리되어 휴대전화가 불안정합니다. 정상 상태로 돌아갈 수 있도록 %d초 안에 휴대전화를 껐다 켜주세요. 저장하지 않은 데이터는 미리 저장해 주세요.</item>
+        <item quantity="other">앱이 설치된 SD 카드가 분리되어 태블릿이 불안정합니다. 정상 상태로 돌아갈 수 있도록 %d초 안에 태블릿을 껐다 켜주세요. 저장하지 않은 데이터는 미리 저장해 주세요.</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">%d초 안에 휴대전화 재시작하기</item>
+        <item quantity="other">%d초 안에 태블릿 재시작하기</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

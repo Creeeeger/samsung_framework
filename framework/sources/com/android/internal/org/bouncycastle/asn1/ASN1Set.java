@@ -12,7 +12,6 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
     protected final ASN1Encodable[] elements;
     protected final boolean isSorted;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
@@ -70,13 +69,11 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
         throw new IllegalArgumentException("unknown object in getInstance: " + taggedObject.getClass().getName());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Set() {
         this.elements = ASN1EncodableVector.EMPTY_ELEMENTS;
         this.isSorted = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Set(ASN1Encodable element) {
         if (element == null) {
             throw new NullPointerException("'element' cannot be null");
@@ -85,7 +82,6 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
         this.isSorted = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Set(ASN1EncodableVector elementVector, boolean doSort) {
         ASN1Encodable[] tmp;
         if (elementVector == null) {
@@ -101,7 +97,6 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
         this.isSorted = doSort || tmp.length < 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Set(ASN1Encodable[] elements, boolean doSort) {
         if (Arrays.isNullOrContainsNull(elements)) {
             throw new NullPointerException("'elements' cannot be null, or contain null");
@@ -114,15 +109,43 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
         this.isSorted = doSort || tmp.length < 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Set(boolean isSorted, ASN1Encodable[] elements) {
         this.elements = elements;
         this.isSorted = isSorted || elements.length < 2;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.org.bouncycastle.asn1.ASN1Set$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Enumeration {
+        private int pos = 0;
+
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Enumeration
+        public boolean hasMoreElements() {
+            return this.pos < ASN1Set.this.elements.length;
+        }
+
+        @Override // java.util.Enumeration
+        public Object nextElement() {
+            if (this.pos < ASN1Set.this.elements.length) {
+                ASN1Encodable[] aSN1EncodableArr = ASN1Set.this.elements;
+                int i = this.pos;
+                this.pos = i + 1;
+                return aSN1EncodableArr[i];
+            }
+            throw new NoSuchElementException();
+        }
+    }
+
     public Enumeration getObjects() {
         return new Enumeration() { // from class: com.android.internal.org.bouncycastle.asn1.ASN1Set.1
             private int pos = 0;
+
+            AnonymousClass1() {
+            }
 
             @Override // java.util.Enumeration
             public boolean hasMoreElements() {
@@ -155,9 +178,14 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
     }
 
     public ASN1SetParser parser() {
-        final int count = size();
+        int count = size();
         return new ASN1SetParser() { // from class: com.android.internal.org.bouncycastle.asn1.ASN1Set.2
             private int pos = 0;
+            final /* synthetic */ int val$count;
+
+            AnonymousClass2(int count2) {
+                count = count2;
+            }
 
             @Override // com.android.internal.org.bouncycastle.asn1.ASN1SetParser
             public ASN1Encodable readObject() throws IOException {
@@ -189,6 +217,45 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
         };
     }
 
+    /* renamed from: com.android.internal.org.bouncycastle.asn1.ASN1Set$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements ASN1SetParser {
+        private int pos = 0;
+        final /* synthetic */ int val$count;
+
+        AnonymousClass2(int count2) {
+            count = count2;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.asn1.ASN1SetParser
+        public ASN1Encodable readObject() throws IOException {
+            if (count == this.pos) {
+                return null;
+            }
+            ASN1Encodable[] aSN1EncodableArr = ASN1Set.this.elements;
+            int i = this.pos;
+            this.pos = i + 1;
+            ASN1Encodable obj = aSN1EncodableArr[i];
+            if (obj instanceof ASN1Sequence) {
+                return ((ASN1Sequence) obj).parser();
+            }
+            if (obj instanceof ASN1Set) {
+                return ((ASN1Set) obj).parser();
+            }
+            return obj;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.asn1.InMemoryRepresentable
+        public ASN1Primitive getLoadedObject() {
+            return ASN1Set.this;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.asn1.ASN1Encodable
+        public ASN1Primitive toASN1Primitive() {
+            return ASN1Set.this;
+        }
+    }
+
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive, com.android.internal.org.bouncycastle.asn1.ASN1Object
     public int hashCode() {
         int i = this.elements.length;
@@ -203,7 +270,6 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         ASN1Encodable[] tmp;
@@ -216,13 +282,11 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
         return new DERSet(true, tmp);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return new DLSet(this.isSorted, this.elements);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive other) {
         if (!(other instanceof ASN1Set)) {
@@ -245,7 +309,6 @@ public abstract class ASN1Set extends ASN1Primitive implements Iterable<ASN1Enco
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return true;

@@ -12,7 +12,9 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class SatellitePvt implements Parcelable {
     public static final Parcelable.Creator<SatellitePvt> CREATOR = new Parcelable.Creator<SatellitePvt>() { // from class: android.location.SatellitePvt.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SatellitePvt createFromParcel(Parcel in) {
             int flags = in.readInt();
@@ -30,7 +32,6 @@ public final class SatellitePvt implements Parcelable {
             return new SatellitePvt(flags, positionEcef, velocityEcef, clockInfo, ionoDelayMeters, tropoDelayMeters, toc, toe, iodc, iode, ephemerisSource);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SatellitePvt[] newArray(int size) {
             return new SatellitePvt[size];
@@ -64,16 +65,21 @@ public final class SatellitePvt implements Parcelable {
     public @interface EphemerisSource {
     }
 
+    /* synthetic */ SatellitePvt(int i, PositionEcef positionEcef, VelocityEcef velocityEcef, ClockInfo clockInfo, double d, double d2, long j, long j2, int i2, int i3, int i4, SatellitePvtIA satellitePvtIA) {
+        this(i, positionEcef, velocityEcef, clockInfo, d, d2, j, j2, i2, i3, i4);
+    }
+
     /* loaded from: classes2.dex */
     public static final class PositionEcef implements Parcelable {
         public static final Parcelable.Creator<PositionEcef> CREATOR = new Parcelable.Creator<PositionEcef>() { // from class: android.location.SatellitePvt.PositionEcef.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PositionEcef createFromParcel(Parcel in) {
                 return new PositionEcef(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PositionEcef[] newArray(int size) {
                 return new PositionEcef[size];
@@ -89,6 +95,23 @@ public final class SatellitePvt implements Parcelable {
             this.mYMeters = yMeters;
             this.mZMeters = zMeters;
             this.mUreMeters = ureMeters;
+        }
+
+        /* renamed from: android.location.SatellitePvt$PositionEcef$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PositionEcef> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PositionEcef createFromParcel(Parcel in) {
+                return new PositionEcef(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PositionEcef[] newArray(int size) {
+                return new PositionEcef[size];
+            }
         }
 
         public double getXMeters() {
@@ -128,13 +151,14 @@ public final class SatellitePvt implements Parcelable {
     /* loaded from: classes2.dex */
     public static final class VelocityEcef implements Parcelable {
         public static final Parcelable.Creator<VelocityEcef> CREATOR = new Parcelable.Creator<VelocityEcef>() { // from class: android.location.SatellitePvt.VelocityEcef.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public VelocityEcef createFromParcel(Parcel in) {
                 return new VelocityEcef(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VelocityEcef[] newArray(int size) {
                 return new VelocityEcef[size];
@@ -150,6 +174,23 @@ public final class SatellitePvt implements Parcelable {
             this.mYMetersPerSecond = yMetersPerSecond;
             this.mZMetersPerSecond = zMetersPerSecond;
             this.mUreRateMetersPerSecond = ureRateMetersPerSecond;
+        }
+
+        /* renamed from: android.location.SatellitePvt$VelocityEcef$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<VelocityEcef> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public VelocityEcef createFromParcel(Parcel in) {
+                return new VelocityEcef(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public VelocityEcef[] newArray(int size) {
+                return new VelocityEcef[size];
+            }
         }
 
         public double getXMetersPerSecond() {
@@ -189,13 +230,14 @@ public final class SatellitePvt implements Parcelable {
     /* loaded from: classes2.dex */
     public static final class ClockInfo implements Parcelable {
         public static final Parcelable.Creator<ClockInfo> CREATOR = new Parcelable.Creator<ClockInfo>() { // from class: android.location.SatellitePvt.ClockInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ClockInfo createFromParcel(Parcel in) {
                 return new ClockInfo(in.readDouble(), in.readDouble(), in.readDouble());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ClockInfo[] newArray(int size) {
                 return new ClockInfo[size];
@@ -209,6 +251,23 @@ public final class SatellitePvt implements Parcelable {
             this.mHardwareCodeBiasMeters = hardwareCodeBiasMeters;
             this.mTimeCorrectionMeters = timeCorrectionMeters;
             this.mClockDriftMetersPerSecond = clockDriftMetersPerSecond;
+        }
+
+        /* renamed from: android.location.SatellitePvt$ClockInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ClockInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ClockInfo createFromParcel(Parcel in) {
+                return new ClockInfo(in.readDouble(), in.readDouble(), in.readDouble());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ClockInfo[] newArray(int size) {
+                return new ClockInfo[size];
+            }
         }
 
         public double getHardwareCodeBiasMeters() {
@@ -320,6 +379,35 @@ public final class SatellitePvt implements Parcelable {
 
     public boolean hasTimeOfEphemerisSeconds() {
         return (this.mFlags & 64) != 0;
+    }
+
+    /* renamed from: android.location.SatellitePvt$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SatellitePvt> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SatellitePvt createFromParcel(Parcel in) {
+            int flags = in.readInt();
+            ClassLoader classLoader = getClass().getClassLoader();
+            PositionEcef positionEcef = (PositionEcef) in.readParcelable(classLoader, PositionEcef.class);
+            VelocityEcef velocityEcef = (VelocityEcef) in.readParcelable(classLoader, VelocityEcef.class);
+            ClockInfo clockInfo = (ClockInfo) in.readParcelable(classLoader, ClockInfo.class);
+            double ionoDelayMeters = in.readDouble();
+            double tropoDelayMeters = in.readDouble();
+            long toc = in.readLong();
+            long toe = in.readLong();
+            int iodc = in.readInt();
+            int iode = in.readInt();
+            int ephemerisSource = in.readInt();
+            return new SatellitePvt(flags, positionEcef, velocityEcef, clockInfo, ionoDelayMeters, tropoDelayMeters, toc, toe, iodc, iode, ephemerisSource);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SatellitePvt[] newArray(int size) {
+            return new SatellitePvt[size];
+        }
     }
 
     @Override // android.os.Parcelable

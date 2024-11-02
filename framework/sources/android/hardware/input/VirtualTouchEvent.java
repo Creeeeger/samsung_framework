@@ -15,13 +15,14 @@ public final class VirtualTouchEvent implements Parcelable {
     public static final int ACTION_UNKNOWN = -1;
     public static final int ACTION_UP = 1;
     public static final Parcelable.Creator<VirtualTouchEvent> CREATOR = new Parcelable.Creator<VirtualTouchEvent>() { // from class: android.hardware.input.VirtualTouchEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualTouchEvent createFromParcel(Parcel source) {
             return new VirtualTouchEvent(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualTouchEvent[] newArray(int size) {
             return new VirtualTouchEvent[size];
@@ -48,6 +49,14 @@ public final class VirtualTouchEvent implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface ToolType {
+    }
+
+    /* synthetic */ VirtualTouchEvent(int i, int i2, int i3, float f, float f2, float f3, float f4, long j, VirtualTouchEventIA virtualTouchEventIA) {
+        this(i, i2, i3, f, f2, f3, f4, j);
+    }
+
+    /* synthetic */ VirtualTouchEvent(Parcel parcel, VirtualTouchEventIA virtualTouchEventIA) {
+        this(parcel);
     }
 
     private VirtualTouchEvent(int pointerId, int toolType, int action, float x, float y, float pressure, float majorAxisSize, long eventTimeNanos) {
@@ -199,6 +208,23 @@ public final class VirtualTouchEvent implements Parcelable {
             }
             this.mEventTimeNanos = eventTimeNanos;
             return this;
+        }
+    }
+
+    /* renamed from: android.hardware.input.VirtualTouchEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualTouchEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualTouchEvent createFromParcel(Parcel source) {
+            return new VirtualTouchEvent(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualTouchEvent[] newArray(int size) {
+            return new VirtualTouchEvent[size];
         }
     }
 }

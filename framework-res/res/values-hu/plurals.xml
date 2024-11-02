@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">A telefon instabil, mert eltávolították belőle egy olyan SD-kártyát, amelyre alkalmazások voltak telepítve. A telefon %d másodperc múlva újraindul, hogy visszaálljon a normál működése. A telefon újraindítása előtt mentsen minden nem mentett adatot.</item>
+        <item quantity="other">A táblagép instabil, mert eltávolították belőle egy olyan SD-kártyát, amelyre alkalmazások voltak telepítve. A táblagép %d másodperc múlva újraindul, hogy visszaálljon a normál működése. A táblagép újraindítása előtt mentsen minden nem mentett adatot.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">A telefon instabil, mert eltávolították belőle egy olyan SD-kártyát, amelyre alkalmazások voltak telepítve. A telefon %d másodperc múlva újraindul, hogy visszaálljon a normál működése. A telefon újraindítása előtt mentsen minden nem mentett adatot.</item>
+        <item quantity="one">A táblagép instabil, mert eltávolították belőle egy olyan SD-kártyát, amelyre alkalmazások voltak telepítve. A táblagép %d másodperc múlva újraindul, hogy visszaálljon a normál működése. A táblagép újraindítása előtt mentsen minden nem mentett adatot.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">A telefon %d másodperc múlva újraindul</item>
+        <item quantity="other">A táblagép %d másodperc múlva újraindul</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">A telefon %d másodperc múlva újraindul</item>
+        <item quantity="one">A táblagép %d másodperc múlva újraindul</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

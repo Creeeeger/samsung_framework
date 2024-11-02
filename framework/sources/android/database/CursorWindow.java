@@ -19,18 +19,23 @@ public class CursorWindow extends SQLiteClosable implements Parcelable {
     public long mWindowPtr;
     private static int sCursorWindowSize = -1;
     public static final Parcelable.Creator<CursorWindow> CREATOR = new Parcelable.Creator<CursorWindow>() { // from class: android.database.CursorWindow.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CursorWindow createFromParcel(Parcel source) {
             return new CursorWindow(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CursorWindow[] newArray(int size) {
             return new CursorWindow[size];
         }
     };
+
+    /* synthetic */ CursorWindow(Parcel parcel, CursorWindowIA cursorWindowIA) {
+        this(parcel);
+    }
 
     @FastNative
     private static native boolean nativeAllocRow(long j);
@@ -346,6 +351,23 @@ public class CursorWindow extends SQLiteClosable implements Parcelable {
             return nativePutNull(this.mWindowPtr, row - this.mStartPos, column);
         } finally {
             releaseReference();
+        }
+    }
+
+    /* renamed from: android.database.CursorWindow$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CursorWindow> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CursorWindow createFromParcel(Parcel source) {
+            return new CursorWindow(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CursorWindow[] newArray(int size) {
+            return new CursorWindow[size];
         }
     }
 

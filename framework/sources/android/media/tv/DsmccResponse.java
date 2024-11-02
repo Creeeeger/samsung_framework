@@ -15,14 +15,15 @@ public final class DsmccResponse extends BroadcastInfoResponse implements Parcel
     public static final String BIOP_MESSAGE_TYPE_SERVICE_GATEWAY = "service_gateway";
     public static final String BIOP_MESSAGE_TYPE_STREAM = "stream";
     public static final Parcelable.Creator<DsmccResponse> CREATOR = new Parcelable.Creator<DsmccResponse>() { // from class: android.media.tv.DsmccResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DsmccResponse createFromParcel(Parcel source) {
             source.readInt();
             return DsmccResponse.createFromParcelBody(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DsmccResponse[] newArray(int size) {
             return new DsmccResponse[size];
@@ -40,7 +41,24 @@ public final class DsmccResponse extends BroadcastInfoResponse implements Parcel
     public @interface BiopMessageType {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.DsmccResponse$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DsmccResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DsmccResponse createFromParcel(Parcel source) {
+            source.readInt();
+            return DsmccResponse.createFromParcelBody(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DsmccResponse[] newArray(int size) {
+            return new DsmccResponse[size];
+        }
+    }
+
     public static DsmccResponse createFromParcelBody(Parcel in) {
         return new DsmccResponse(in);
     }

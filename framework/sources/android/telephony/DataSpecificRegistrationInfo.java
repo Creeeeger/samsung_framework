@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class DataSpecificRegistrationInfo implements Parcelable {
     public static final Parcelable.Creator<DataSpecificRegistrationInfo> CREATOR = new Parcelable.Creator<DataSpecificRegistrationInfo>() { // from class: android.telephony.DataSpecificRegistrationInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DataSpecificRegistrationInfo createFromParcel(Parcel source) {
             return new DataSpecificRegistrationInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataSpecificRegistrationInfo[] newArray(int size) {
             return new DataSpecificRegistrationInfo[size];
@@ -47,6 +48,14 @@ public final class DataSpecificRegistrationInfo implements Parcelable {
     public @interface LteAttachResultType {
     }
 
+    /* synthetic */ DataSpecificRegistrationInfo(Parcel parcel, DataSpecificRegistrationInfoIA dataSpecificRegistrationInfoIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ DataSpecificRegistrationInfo(Builder builder, DataSpecificRegistrationInfoIA dataSpecificRegistrationInfoIA) {
+        this(builder);
+    }
+
     private DataSpecificRegistrationInfo(Builder builder) {
         this.maxDataCalls = builder.mMaxDataCalls;
         this.isDcNrRestricted = builder.mIsDcNrRestricted;
@@ -67,7 +76,6 @@ public final class DataSpecificRegistrationInfo implements Parcelable {
         this.mLteAttachExtraInfo = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DataSpecificRegistrationInfo(DataSpecificRegistrationInfo dsri) {
         this.maxDataCalls = dsri.maxDataCalls;
         this.isDcNrRestricted = dsri.isDcNrRestricted;
@@ -121,6 +129,23 @@ public final class DataSpecificRegistrationInfo implements Parcelable {
         }
         DataSpecificRegistrationInfo other = (DataSpecificRegistrationInfo) o;
         return this.maxDataCalls == other.maxDataCalls && this.isDcNrRestricted == other.isDcNrRestricted && this.isNrAvailable == other.isNrAvailable && this.isEnDcAvailable == other.isEnDcAvailable && Objects.equals(this.mVopsSupportInfo, other.mVopsSupportInfo) && this.mLteAttachResultType == other.mLteAttachResultType && this.mLteAttachExtraInfo == other.mLteAttachExtraInfo;
+    }
+
+    /* renamed from: android.telephony.DataSpecificRegistrationInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DataSpecificRegistrationInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataSpecificRegistrationInfo createFromParcel(Parcel source) {
+            return new DataSpecificRegistrationInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataSpecificRegistrationInfo[] newArray(int size) {
+            return new DataSpecificRegistrationInfo[size];
+        }
     }
 
     @Deprecated

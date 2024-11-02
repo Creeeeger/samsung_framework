@@ -8,6 +8,10 @@ import java.util.Set;
 public final class WfaCertificateSource extends DirectoryCertificateSource {
     private static final String CACERTS_WFA_PATH = "/apex/com.android.wifi/etc/security/cacerts_wfa";
 
+    /* synthetic */ WfaCertificateSource(WfaCertificateSourceIA wfaCertificateSourceIA) {
+        this();
+    }
+
     @Override // android.security.net.config.DirectoryCertificateSource, android.security.net.config.CertificateSource
     public /* bridge */ /* synthetic */ Set findAllByIssuerAndSignature(X509Certificate x509Certificate) {
         return super.findAllByIssuerAndSignature(x509Certificate);
@@ -33,8 +37,9 @@ public final class WfaCertificateSource extends DirectoryCertificateSource {
         super.handleTrustStorageUpdate();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class NoPreloadHolder {
+    public static class NoPreloadHolder {
         private static final WfaCertificateSource INSTANCE = new WfaCertificateSource();
 
         private NoPreloadHolder() {

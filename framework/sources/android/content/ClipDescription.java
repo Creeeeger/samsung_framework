@@ -21,13 +21,14 @@ public class ClipDescription implements Parcelable {
     public static final int CLASSIFICATION_NOT_COMPLETE = 1;
     public static final int CLASSIFICATION_NOT_PERFORMED = 2;
     public static final Parcelable.Creator<ClipDescription> CREATOR = new Parcelable.Creator<ClipDescription>() { // from class: android.content.ClipDescription.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ClipDescription createFromParcel(Parcel source) {
             return new ClipDescription(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClipDescription[] newArray(int size) {
             return new ClipDescription[size];
@@ -159,7 +160,6 @@ public class ClipDescription implements Parcelable {
         return this.mMimeTypes.get(index);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addMimeTypes(String[] mimeTypes) {
         for (int i = 0; i != mimeTypes.length; i++) {
             String mimeType = mimeTypes[i];
@@ -197,7 +197,6 @@ public class ClipDescription implements Parcelable {
         return this.mIsStyledText;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setIsStyledText(boolean isStyledText) {
         this.mIsStyledText = isStyledText;
     }
@@ -375,7 +374,6 @@ public class ClipDescription implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ClipDescription(Parcel in) {
         this.mEntityConfidence = new ArrayMap<>();
         this.mClassificationStatus = 1;
@@ -386,6 +384,23 @@ public class ClipDescription implements Parcelable {
         this.mIsStyledText = in.readBoolean();
         this.mClassificationStatus = in.readInt();
         readBundleToConfidences(in.readBundle());
+    }
+
+    /* renamed from: android.content.ClipDescription$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ClipDescription> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClipDescription createFromParcel(Parcel source) {
+            return new ClipDescription(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClipDescription[] newArray(int size) {
+            return new ClipDescription[size];
+        }
     }
 
     public ArrayList<String> semGetMimeTypes() {

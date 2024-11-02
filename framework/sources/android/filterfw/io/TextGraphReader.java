@@ -19,13 +19,11 @@ public class TextGraphReader extends GraphReader {
     private FilterFactory mFactory;
     private KeyValueMap mSettings;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public interface Command {
         void execute(TextGraphReader textGraphReader) throws GraphIOException;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class ImportPackageCommand implements Command {
         private String mPackageName;
@@ -44,7 +42,6 @@ public class TextGraphReader extends GraphReader {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class AddLibraryCommand implements Command {
         private String mLibraryName;
@@ -60,7 +57,6 @@ public class TextGraphReader extends GraphReader {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class AllocateFilterCommand implements Command {
         private String mClassName;
@@ -82,7 +78,6 @@ public class TextGraphReader extends GraphReader {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class InitFilterCommand implements Command {
         private KeyValueMap mParams;
@@ -103,7 +98,6 @@ public class TextGraphReader extends GraphReader {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class ConnectCommand implements Command {
         private String mSourceFilter;
@@ -476,10 +470,22 @@ public class TextGraphReader extends GraphReader {
         return readKeyValueAssignments(scanner, null);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x017c, code lost:            if (r15 != 3) goto L47;     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x01a1, code lost:            throw new android.filterfw.io.GraphIOException("Unexpected end of assignments on line " + r25.lineNo() + "!");     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x01a2, code lost:            return r3;     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x0179, code lost:            if (r15 == 0) goto L49;     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x017c, code lost:
+    
+        if (r15 != 3) goto L106;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x01a1, code lost:
+    
+        throw new android.filterfw.io.GraphIOException("Unexpected end of assignments on line " + r25.lineNo() + "!");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x01a2, code lost:
+    
+        return r3;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0179, code lost:
+    
+        if (r15 == 0) goto L108;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

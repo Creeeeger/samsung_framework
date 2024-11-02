@@ -113,8 +113,9 @@ public interface IIsrbManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IIsrbManager {
+        public static class Proxy implements IIsrbManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

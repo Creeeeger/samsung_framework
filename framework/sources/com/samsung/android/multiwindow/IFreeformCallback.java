@@ -150,8 +150,9 @@ public interface IFreeformCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IFreeformCallback {
+        public static class Proxy implements IFreeformCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

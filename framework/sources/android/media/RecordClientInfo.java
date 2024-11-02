@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class RecordClientInfo implements Parcelable {
     public static final Parcelable.Creator<RecordClientInfo> CREATOR = new Parcelable.Creator<RecordClientInfo>() { // from class: android.media.RecordClientInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RecordClientInfo createFromParcel(Parcel _aidl_source) {
             RecordClientInfo _aidl_out = new RecordClientInfo();
@@ -15,7 +17,6 @@ public class RecordClientInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecordClientInfo[] newArray(int _aidl_size) {
             return new RecordClientInfo[_aidl_size];
@@ -27,6 +28,25 @@ public class RecordClientInfo implements Parcelable {
     public int session = 0;
     public int portId = 0;
     public boolean silenced = false;
+
+    /* renamed from: android.media.RecordClientInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RecordClientInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RecordClientInfo createFromParcel(Parcel _aidl_source) {
+            RecordClientInfo _aidl_out = new RecordClientInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RecordClientInfo[] newArray(int _aidl_size) {
+            return new RecordClientInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

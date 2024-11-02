@@ -34,8 +34,8 @@ public final class BinderProxy implements IBinder {
     private static volatile Binder.ProxyTransactListener sTransactListener = null;
     private static final ProxyMap sProxyMap = new ProxyMap();
 
-    /* renamed from: -$$Nest$smgetNativeFinalizer, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m3134$$Nest$smgetNativeFinalizer() {
+    /* renamed from: -$$Nest$smgetNativeFinalizer */
+    static /* bridge */ /* synthetic */ long m3133$$Nest$smgetNativeFinalizer() {
         return getNativeFinalizer();
     }
 
@@ -61,7 +61,6 @@ public final class BinderProxy implements IBinder {
     @Override // android.os.IBinder
     public native boolean unlinkToDeath(IBinder.DeathRecipient deathRecipient, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class BinderProxyMapSizeException extends AssertionError {
         BinderProxyMapSizeException(String s) {
@@ -88,6 +87,10 @@ public final class BinderProxy implements IBinder {
         private int mRandom;
         private int mWarnBucketSize;
 
+        /* synthetic */ ProxyMap(ProxyMapIA proxyMapIA) {
+            this();
+        }
+
         private ProxyMap() {
             this.mWarnBucketSize = 20;
             this.mMainIndexKeys = new Long[256];
@@ -98,7 +101,6 @@ public final class BinderProxy implements IBinder {
             return ((int) ((arg >> 2) ^ (arg >> 10))) & 255;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public int size() {
             int size = 0;
             for (ArrayList<WeakReference<BinderProxy>> a : this.mMainIndexValues) {
@@ -224,7 +226,6 @@ public final class BinderProxy implements IBinder {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public InterfaceCount[] getSortedInterfaceCounts(int maxToReturn) {
             if (maxToReturn < 0) {
                 throw new IllegalArgumentException("negative interface count");
@@ -280,7 +281,6 @@ public final class BinderProxy implements IBinder {
             return ifaceCounts;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$getSortedInterfaceCounts$0(ArrayList proxiesToQuery, Map counts) {
             String key;
             Iterator it = proxiesToQuery.iterator();
@@ -308,7 +308,6 @@ public final class BinderProxy implements IBinder {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void dumpProxyInterfaceCounts() {
             InterfaceCount[] sorted = getSortedInterfaceCounts(10);
             Log.v("Binder", "BinderProxy descriptor histogram (top " + Integer.toString(10) + "):");
@@ -317,7 +316,6 @@ public final class BinderProxy implements IBinder {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void dumpPerUidProxyCounts() {
             SparseIntArray counts = BinderInternal.nGetBinderProxyPerUidCounts();
             if (counts.size() == 0) {
@@ -400,9 +398,9 @@ public final class BinderProxy implements IBinder {
         }
 
         static {
-            long m3134$$Nest$smgetNativeFinalizer = BinderProxy.m3134$$Nest$smgetNativeFinalizer();
-            sNativeFinalizer = m3134$$Nest$smgetNativeFinalizer;
-            sRegistry = new NativeAllocationRegistry(BinderProxy.class.getClassLoader(), m3134$$Nest$smgetNativeFinalizer, 1000L);
+            long m3133$$Nest$smgetNativeFinalizer = BinderProxy.m3133$$Nest$smgetNativeFinalizer();
+            sNativeFinalizer = m3133$$Nest$smgetNativeFinalizer;
+            sRegistry = new NativeAllocationRegistry(BinderProxy.class.getClassLoader(), m3133$$Nest$smgetNativeFinalizer, 1000L);
         }
     }
 

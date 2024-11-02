@@ -16,13 +16,14 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class CredentialProviderInfo implements Parcelable {
     public static final Parcelable.Creator<CredentialProviderInfo> CREATOR = new Parcelable.Creator<CredentialProviderInfo>() { // from class: android.credentials.CredentialProviderInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CredentialProviderInfo[] newArray(int size) {
             return new CredentialProviderInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialProviderInfo createFromParcel(Parcel in) {
             return new CredentialProviderInfo(in);
@@ -35,6 +36,14 @@ public final class CredentialProviderInfo implements Parcelable {
     private final CharSequence mOverrideLabel;
     private final ServiceInfo mServiceInfo;
     private CharSequence mSettingsSubtitle;
+
+    /* synthetic */ CredentialProviderInfo(Builder builder, CredentialProviderInfoIA credentialProviderInfoIA) {
+        this(builder);
+    }
+
+    /* synthetic */ CredentialProviderInfo(Parcel parcel, CredentialProviderInfoIA credentialProviderInfoIA) {
+        this(parcel);
+    }
 
     private CredentialProviderInfo(Builder builder) {
         HashSet hashSet = new HashSet();
@@ -131,6 +140,23 @@ public final class CredentialProviderInfo implements Parcelable {
         ArrayList arrayList = new ArrayList();
         in.readStringList(arrayList);
         hashSet.addAll(arrayList);
+    }
+
+    /* renamed from: android.credentials.CredentialProviderInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CredentialProviderInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CredentialProviderInfo[] newArray(int size) {
+            return new CredentialProviderInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CredentialProviderInfo createFromParcel(Parcel in) {
+            return new CredentialProviderInfo(in);
+        }
     }
 
     /* loaded from: classes.dex */

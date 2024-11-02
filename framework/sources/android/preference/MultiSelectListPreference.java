@@ -90,7 +90,6 @@ public class MultiSelectListPreference extends DialogPreference {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
     public void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
@@ -99,6 +98,9 @@ public class MultiSelectListPreference extends DialogPreference {
         }
         boolean[] checkedItems = getSelectedItems();
         builder.setMultiChoiceItems(this.mEntries, checkedItems, new DialogInterface.OnMultiChoiceClickListener() { // from class: android.preference.MultiSelectListPreference.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.DialogInterface.OnMultiChoiceClickListener
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 if (isChecked) {
@@ -112,6 +114,22 @@ public class MultiSelectListPreference extends DialogPreference {
         this.mNewValues.addAll(this.mValues);
     }
 
+    /* renamed from: android.preference.MultiSelectListPreference$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements DialogInterface.OnMultiChoiceClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.DialogInterface.OnMultiChoiceClickListener
+        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+            if (isChecked) {
+                MultiSelectListPreference.this.mPreferenceChanged |= MultiSelectListPreference.this.mNewValues.add(MultiSelectListPreference.this.mEntryValues[which].toString());
+            } else {
+                MultiSelectListPreference.this.mPreferenceChanged |= MultiSelectListPreference.this.mNewValues.remove(MultiSelectListPreference.this.mEntryValues[which].toString());
+            }
+        }
+    }
+
     private boolean[] getSelectedItems() {
         CharSequence[] entries = this.mEntryValues;
         int entryCount = entries.length;
@@ -123,7 +141,6 @@ public class MultiSelectListPreference extends DialogPreference {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference
     public void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
@@ -151,7 +168,6 @@ public class MultiSelectListPreference extends DialogPreference {
         setValues(restoreValue ? getPersistedStringSet(this.mValues) : (Set) defaultValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.DialogPreference, android.preference.Preference
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -163,17 +179,17 @@ public class MultiSelectListPreference extends DialogPreference {
         return myState;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.MultiSelectListPreference.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -198,6 +214,23 @@ public class MultiSelectListPreference extends DialogPreference {
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeStringArray((String[]) this.values.toArray(new String[0]));
+        }
+
+        /* renamed from: android.preference.MultiSelectListPreference$SavedState$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 }

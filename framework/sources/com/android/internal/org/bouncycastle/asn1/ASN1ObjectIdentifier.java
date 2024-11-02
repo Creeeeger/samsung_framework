@@ -44,7 +44,6 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         return fromOctetString(ASN1OctetString.getInstance(o).getOctets());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1ObjectIdentifier(byte[] bytes) {
         StringBuffer objId = new StringBuffer();
         long value = 0;
@@ -104,7 +103,6 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         this.identifier = identifier.intern();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1ObjectIdentifier(ASN1ObjectIdentifier oid, String branchID) {
         if (!isValidBranchID(branchID, 0)) {
             throw new IllegalArgumentException("string " + branchID + " not a valid OID branch");
@@ -183,20 +181,17 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         return this.body;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         int length = getBody().length;
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 6, getBody());
@@ -207,7 +202,6 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         return this.identifier.hashCode();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (o == this) {
@@ -223,7 +217,10 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         return getId();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x002e, code lost:            return false;     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x002e, code lost:
+    
+        return false;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -298,7 +295,6 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         return oid;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class OidHandle {
         private final byte[] enc;
@@ -321,7 +317,6 @@ public class ASN1ObjectIdentifier extends ASN1Primitive {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1ObjectIdentifier fromOctetString(byte[] enc) {
         OidHandle hdl = new OidHandle(enc);
         ASN1ObjectIdentifier oid = pool.get(hdl);

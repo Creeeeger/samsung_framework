@@ -132,8 +132,9 @@ public interface SemCapabilityServiceEventListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements SemCapabilityServiceEventListener {
+        public static class Proxy implements SemCapabilityServiceEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

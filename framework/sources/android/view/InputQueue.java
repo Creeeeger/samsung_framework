@@ -118,11 +118,14 @@ public final class InputQueue {
         this.mActiveInputEventPool.release(e);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class ActiveInputEvent {
         public FinishedInputEventCallback mCallback;
         public Object mToken;
+
+        /* synthetic */ ActiveInputEvent(InputQueue inputQueue, ActiveInputEventIA activeInputEventIA) {
+            this();
+        }
 
         private ActiveInputEvent() {
         }

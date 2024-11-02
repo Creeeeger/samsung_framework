@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemDMACdata implements Parcelable {
     public static final Parcelable.Creator<SemDMACdata> CREATOR = new Parcelable.Creator<SemDMACdata>() { // from class: com.android.internal.telephony.SemDMACdata.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemDMACdata createFromParcel(Parcel in) {
             return new SemDMACdata(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemDMACdata[] newArray(int size) {
             return new SemDMACdata[size];
@@ -24,7 +25,6 @@ public class SemDMACdata implements Parcelable {
     private String preInstalledMsgAppError;
     private String tssActivated;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SemDMACdata() {
         this.preInstalledMsgAppError = "None";
         this.tssActivated = "";
@@ -79,6 +79,23 @@ public class SemDMACdata implements Parcelable {
 
     public String getMccmnc() {
         return this.mccmnc;
+    }
+
+    /* renamed from: com.android.internal.telephony.SemDMACdata$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemDMACdata> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemDMACdata createFromParcel(Parcel in) {
+            return new SemDMACdata(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemDMACdata[] newArray(int size) {
+            return new SemDMACdata[size];
+        }
     }
 
     @Override // android.os.Parcelable

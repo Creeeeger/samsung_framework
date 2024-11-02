@@ -10,7 +10,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class DeviceWiphyCapabilities implements Parcelable {
     public static final Parcelable.Creator<DeviceWiphyCapabilities> CREATOR = new Parcelable.Creator<DeviceWiphyCapabilities>() { // from class: android.net.wifi.nl80211.DeviceWiphyCapabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DeviceWiphyCapabilities createFromParcel(Parcel in) {
             DeviceWiphyCapabilities capabilities = new DeviceWiphyCapabilities();
@@ -26,7 +28,6 @@ public final class DeviceWiphyCapabilities implements Parcelable {
             return capabilities;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeviceWiphyCapabilities[] newArray(int size) {
             return new DeviceWiphyCapabilities[size];
@@ -183,5 +184,32 @@ public final class DeviceWiphyCapabilities implements Parcelable {
         sb.append("mMaxNumberTxSpatialStreams: ").append(this.mMaxNumberTxSpatialStreams);
         sb.append("mMaxNumberRxSpatialStreams: ").append(this.mMaxNumberRxSpatialStreams);
         return sb.toString();
+    }
+
+    /* renamed from: android.net.wifi.nl80211.DeviceWiphyCapabilities$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DeviceWiphyCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeviceWiphyCapabilities createFromParcel(Parcel in) {
+            DeviceWiphyCapabilities capabilities = new DeviceWiphyCapabilities();
+            capabilities.m80211nSupported = in.readBoolean();
+            capabilities.m80211acSupported = in.readBoolean();
+            capabilities.m80211axSupported = in.readBoolean();
+            capabilities.m80211beSupported = in.readBoolean();
+            capabilities.mChannelWidth160MhzSupported = in.readBoolean();
+            capabilities.mChannelWidth80p80MhzSupported = in.readBoolean();
+            capabilities.mChannelWidth320MhzSupported = in.readBoolean();
+            capabilities.mMaxNumberTxSpatialStreams = in.readInt();
+            capabilities.mMaxNumberRxSpatialStreams = in.readInt();
+            return capabilities;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeviceWiphyCapabilities[] newArray(int size) {
+            return new DeviceWiphyCapabilities[size];
+        }
     }
 }

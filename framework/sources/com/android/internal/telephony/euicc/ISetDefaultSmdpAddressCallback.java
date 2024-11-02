@@ -84,8 +84,9 @@ public interface ISetDefaultSmdpAddressCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISetDefaultSmdpAddressCallback {
+        public static class Proxy implements ISetDefaultSmdpAddressCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

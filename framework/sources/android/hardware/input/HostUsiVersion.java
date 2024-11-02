@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class HostUsiVersion implements Parcelable {
     public static final Parcelable.Creator<HostUsiVersion> CREATOR = new Parcelable.Creator<HostUsiVersion>() { // from class: android.hardware.input.HostUsiVersion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HostUsiVersion[] newArray(int size) {
             return new HostUsiVersion[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HostUsiVersion createFromParcel(Parcel in) {
             return new HostUsiVersion(in);
@@ -77,6 +78,23 @@ public final class HostUsiVersion implements Parcelable {
         int minorVersion = in.readInt();
         this.mMajorVersion = majorVersion;
         this.mMinorVersion = minorVersion;
+    }
+
+    /* renamed from: android.hardware.input.HostUsiVersion$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HostUsiVersion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HostUsiVersion[] newArray(int size) {
+            return new HostUsiVersion[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HostUsiVersion createFromParcel(Parcel in) {
+            return new HostUsiVersion(in);
+        }
     }
 
     @Deprecated

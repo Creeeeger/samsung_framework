@@ -39,7 +39,6 @@ public class NativeFrame extends Frame {
 
     private native boolean setNativeInts(int[] iArr);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public NativeFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         this.nativeFrameId = -1;
@@ -48,14 +47,12 @@ public class NativeFrame extends Frame {
         setReusable(capacity != 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public synchronized void releaseNativeAllocation() {
         nativeDeallocate();
         this.nativeFrameId = -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public synchronized boolean hasNativeAllocation() {
         return this.nativeFrameId != -1;

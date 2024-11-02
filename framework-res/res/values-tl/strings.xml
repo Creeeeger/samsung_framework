@@ -384,12 +384,12 @@ Puwede mong palitan ng ibang feature ang shortcut na ito sa Mga Setting > Access
     <string name="allow_settings_changes">Pinipigilan ng patakaran sa seguridad ang pagbabago sa mga setting.</string>
     <string name="alwaysUse">Gamitin bilang default para sa pagkilos na ito.</string>
     <string name="android_preparing_apk">Ihinahanda ang %1$s.</string>
-    <string name="android_start_title">Nagsisimula ang telepono…</string>
+    <string name="android_start_title">Nagsisimula ang tablet…</string>
     <string name="android_system_label">Android System</string>
     <string name="android_upgrading_complete">Pagtatapos ng pag-boot.</string>
     <string name="android_upgrading_notification_title">Tinatapos ang pag-update ng system…</string>
     <string name="android_upgrading_starting_apps">Sinisimulan ang apps.</string>
-    <string name="android_upgrading_title">Nag-a-update ang telepono…</string>
+    <string name="android_upgrading_title">Nag-a-update ang tablet…</string>
     <string name="anr_activity_application">Hindi tumutugon ang %2$s</string>
     <string name="anr_activity_process">Hindi tumutugon ang %1$s</string>
     <string name="anr_application_process">Hindi tumutugon ang %1$s</string>
@@ -423,16 +423,16 @@ Puwede mong palitan ng ibang feature ang shortcut na ito sa Mga Setting > Access
     <string name="app_restricted_message_concentration_mode">Naka-block ang %s habang naka-Concentration mode. Makipag-ugnayan sa inyong IT admin para malaman pa.</string>
     <string name="app_running_notification_text">I-tap para sa higit pang impormasyon o upang ihinto ang app.</string>
     <string name="app_running_notification_title">Tumatakbo ang %1$s</string>
-    <string name="app_streaming_blocked_message">Hindi ito maa-access sa iyong %1$s sa ngayon. Subukan na lang sa iyong telepono.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Humihiling ng karagdagang seguridad ang app na ito. Subukan na lang sa iyong telepono.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Hindi ito maa-access sa iyong %1$s. Subukan na lang sa iyong telepono.</string>
+    <string name="app_streaming_blocked_message">Hindi ito maa-access sa iyong %1$s sa ngayon. Subukan na lang sa iyong tablet.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Humihiling ng karagdagang seguridad ang app na ito. Subukan na lang sa iyong tablet.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Hindi ito maa-access sa iyong %1$s. Subukan na lang sa iyong tablet.</string>
     <string name="app_streaming_blocked_title">Hindi available ang %1$s</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Hindi available ang camera</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Magpatuloy sa telepono</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Hindi available ang mikropono</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Kailangan ng pahintulot</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Hindi available ang Play Store</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Hindi available ang mga setting ng telepono</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Hindi available ang mga setting ng tablet</string>
     <string name="app_suspended_default_message">Hindi available ang %1$s sa ngayon. Pinamamahalaan ito ng %2$s.</string>
     <string name="app_suspended_more_details">Matuto pa</string>
     <string name="app_suspended_title">Hindi available ang app</string>
@@ -503,7 +503,7 @@ Kung pipiliin mo pa ring i-install ang app na ito, tiyaking nagmumula ito sa pin
     <string name="badPuk">Hindi tama ang na-type mong PUK.</string>
     <string name="badPuk2">Mali ang PUK2 na ipinasok mo</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">May sapat na charge ang telepono. Hindi na pinaghihigpitan ang mga feature.</string>
+    <string name="battery_saver_charged_notification_summary">May sapat na charge ang tablet. Hindi na pinaghihigpitan ang mga feature.</string>
     <string name="battery_saver_description">Ino-on ng Pantipid ng Baterya ang Madilim na tema at nililimitahan o ino-off nito ang aktibidad sa background, ilang visual effect, ilang partikular na feature, at ilang koneksyon sa network.</string>
     <string name="battery_saver_description_with_learn_more">Ino-on ng Pantipid ng Baterya ang Madilim na tema at nililimitahan o ino-off nito ang aktibidad sa background, ilang visual effect, ilang partikular na feature, at ilang koneksyon sa network.</string>
     <string name="battery_saver_notification_channel_name">Pantipid ng Baterya</string>
@@ -733,7 +733,7 @@ Mas malakas ang volume kaysa sa inirerekomenda, at posible nitong mapinsala ang 
     <string name="decline">Tanggihan</string>
     <string name="decline_remote_bugreport_action">TANGGIHAN</string>
     <string name="default_audio_route_category_name">System</string>
-    <string name="default_audio_route_name">Telepono</string>
+    <string name="default_audio_route_name">Tablet</string>
     <string name="default_audio_route_name_dock_speakers">Mga speaker ng dock</string>
     <string name="default_audio_route_name_external_device">External na Device</string>
     <string name="default_audio_route_name_headphones">Mga Headphone</string>
@@ -860,7 +860,7 @@ gamit ang %s"</string>
     <string name="emergency_call_dialog_number_for_display">Pang-emergency na numero</string>
     <string name="emergency_calls_only">Mga emergency call lang</string>
     <string name="enablePin">Hindi matagumpay, i-enable ang SIM/RUIM Lock.</string>
-    <string name="enable_explore_by_touch_warning_message">Nais i-enable ng %1$s ang Explore by Touch. Kapag naka-on ang Explore by Touch, maaari mong marinig o makita ang mga paglalarawan ng nasa ilalim ng iyong daliri o maaari kang magsagawa ng mga galaw upang makipag-ugnayan sa telepono.</string>
+    <string name="enable_explore_by_touch_warning_message">Nais i-enable ng %1$s ang Explore by Touch. Kapag naka-on ang Explore by Touch, maaari mong marinig o makita ang mga paglalarawan ng nasa ilalim ng iyong daliri o maaari kang magsagawa ng mga galaw upang makipag-ugnayan sa tablet.</string>
     <string name="enable_explore_by_touch_warning_title">I-enable ang Explore by Touch?</string>
     <string name="error_message_change_not_allowed">Hindi pinapayagan ng iyong admin ang pagbabagong ito</string>
     <string name="error_message_title">Error</string>
@@ -924,7 +924,7 @@ gamit ang %s"</string>
     <string name="ext_media_unsupported_notification_message">Hindi suportado ng device na ito ang %s na ito. I-tap para mag-set up ng suportadong format.</string>
     <string name="ext_media_unsupported_notification_title">Hindi suportadong %s</string>
     <string name="ext_storage_bad_removal_button">I-restart</string>
-    <string name="ext_storage_bad_removal_title">I-restart ang telepono mo</string>
+    <string name="ext_storage_bad_removal_title">I-restart ang tablet mo</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message">Mawawala ang lahat ng data sa iyong card.</string>
     <string name="extmedia_format_message_usbhost">Mabubura ang lahat ng file na nakaimbak sa iyong USB storage. Hindi mababawi ang pagkilos na ito!</string>
@@ -1128,7 +1128,7 @@ Subukang i-tap habang sine-set up ang iyong fingerprint."</string>
     <string name="global_action_toggle_sealed_mode">Sealed mode</string>
     <string name="global_action_toggle_silent_mode">Silent mode</string>
     <string name="global_action_voice_assist">Voice Assist</string>
-    <string name="global_actions">Pagpipilian sa telepono</string>
+    <string name="global_actions">Mga pagpipilian sa tablet</string>
     <string name="global_actions_airplane_mode_off_status">Naka-OFF ang airplane mode</string>
     <string name="global_actions_airplane_mode_on_status">Naka-ON ang airplane mode</string>
     <string name="global_actions_toggle_airplane_mode">Airplane mode</string>
@@ -1313,11 +1313,11 @@ Sigurado ka bang gusto mong mag-navigate paalis sa pahinang ito?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>I-tap para i-type ang password&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Maling PIN code.</string>
     <string name="kg_enter_confirm_pin_hint">Kumpirmahin ang ninanais na PIN code</string>
-    <string name="kg_failed_attempts_almost_at_login">"Naguhit mo nang hindi tama ang iyong pattern sa pag-unlock nang %1$d (na) beses. Pagkatapos ng %2$d pang hindi matagumpay na pagtatangka, hihilingin sa iyong i-unlock ang telepono mo gamit ang isang email account.
+    <string name="kg_failed_attempts_almost_at_login">"Naguhit mo nang hindi tama ang iyong pattern sa pag-unlock nang %1$d (na) beses. Pagkatapos ng %2$d pang hindi matagumpay na pagtatangka, hihilingin sa iyong i-unlock ang tablet mo gamit ang isang email account.
 
  Subukang muli sa loob ng %3$d (na) segundo."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Tinangka mo sa hindi tamang paraan na i-unlock ang telepono nang %1$d (na) beses. Pagkatapos ng %2$d pang hindi matagumpay na pagtatangka, ire-reset ang telepono sa factory default at mawawala ang lahat ng data ng user.</string>
-    <string name="kg_failed_attempts_now_wiping">Tinangka mo sa hindi tamang paraan na i-unlock ang telepono nang %d (na) beses. Ire-reset na ngayon ang telepono sa factory default.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Tinangka mo sa hindi tamang paraan na i-unlock ang tabelt nang %1$d (na) beses. Pagkatapos ng %2$d pang hindi matagumpay na pagtatangka, ire-reset ang tablet sa factory default at mawawala ang lahat ng data ng user.</string>
+    <string name="kg_failed_attempts_now_wiping">Tinangka mo sa hindi tamang paraan na i-unlock ang tablet nang %d (na) beses. Ire-reset na ngayon ang tablet sa factory default.</string>
     <string name="kg_forgot_pattern_button_text">Nakalimutan ang Pattern</string>
     <string name="kg_invalid_confirm_pin_hint">Hindi tumutugma ang mga PIN code</string>
     <string name="kg_invalid_puk">Muling ilagay ang tamang PUK code. Permanenteng hindi pagaganahin ang SIM ng mga paulit-ulit na pagtatangka.</string>
@@ -1405,11 +1405,11 @@ Subukang muli sa loob ng %2$d (na) segundo."</string>
     <string name="lockscreen_carrier_default">Walang serbisyo</string>
     <string name="lockscreen_carrier_noservice">(Walang serbisyo).</string>
     <string name="lockscreen_emergency_call">Emergency</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Mali mong tinangkang ma-unlock ang telepono nang %1$d (na) beses. Pagkatapos ng %2$d pang mga hindi matagumpay na pagtatangka, mare-reset ang telepono sa factory default at mawawala ang lahat ng data ng user.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Naguhit mo nang mali ang iyong pattern sa pag-unlock nang %1$d (na) beses. Pagkatapos ng %2$d pang hindi matagumpay na pagtatangka, hihilingin sa iyong i-unlock ang iyong telepono gamit ang iyong pag-sign-in sa Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Mali mong tinangkang ma-unlock ang tablet nang %1$d (na) beses. Pagkatapos ng %2$d pang mga hindi matagumpay na pagtatangka, mare-reset ang tablet sa factory default at mawawala ang lahat ng data ng user.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Naiguhit mo nang hindi tama ang iyong pattern sa pag-unlock nang %1$d (na) beses. Pagkatapos ng %2$d pang hindi matagumpay na pagtatangka, hihilingin sa iyong i-unlock ang iyong tablet gamit ang iyong pag-sign-in sa Google.
 
  Subukang muli sa loob ng %3$d (na) segundo."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Mali mong tinangkang ma-unlock ang telepono nang %d (na) beses. Mare-reset na ang telepono sa factory default.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Mali mong tinangkang ma-unlock ang tablet nang %d (na) beses. Mare-reset na ngayon ang tablet sa factory default.</string>
     <string name="lockscreen_forgot_pattern_button_text">Nakalimutan ang pattern?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Nakalimutan ang iyong username o password?
 Bisitahin ang "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1425,7 @@ Bisitahin ang "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Pindutin ang Menu upang i-unlock o magsagawa ng pang-emergency na tawag.</string>
     <string name="lockscreen_missing_sim_instructions">Magdagdag ng SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">Wala o hindi nababasa ang SIM. Magdagdag ng SIM.</string>
-    <string name="lockscreen_missing_sim_message">Walang SIM sa telepono.</string>
+    <string name="lockscreen_missing_sim_message">Walang SIM sa tablet.</string>
     <string name="lockscreen_missing_sim_message_short">Walang SIM</string>
     <string name="lockscreen_network_locked_message">Naka-lock ang network</string>
     <string name="lockscreen_password_wrong">Subukang muli</string>
@@ -1465,7 +1465,7 @@ Subukang muli sa loob ng %2$d (na) segundo."</string>
     <string name="low_internal_storage_view_text">Maaaring hindi gumana nang tama ang ilang paggana ng system</string>
     <string name="low_internal_storage_view_text_no_boot">Walang sapat na storage para sa system. Tiyaking mayroon kang 250MB na libreng espasyo at i-restart.</string>
     <string name="low_internal_storage_view_title">Nauubusan na ang puwang ng storage</string>
-    <string name="low_memory">Puno na ang storage ng telepono. Magtanggal ng ilang file upang magbakante ng espasyo.</string>
+    <string name="low_memory">Puno na ang storage ng tablet. Magtanggal ng ilang file upang magbakante ng espasyo.</string>
     <string name="ltb_kill_content_v2_phone">Isinara ang %s dahil nagdudulot ito ng pag-overheat ng telepono mo. Mabubuksan mo itong muli pagkatapos lumamig ng telepono mo.</string>
     <string name="ltb_kill_content_v2_tablet">Isinara ang %s dahil nagdudulot ito ng pag-overheat ng tablet mo. Mabubuksan mo itong muli pagkatapos lumamig ng tablet mo.</string>
     <string name="ltb_warning_button">Huwag isara</string>
@@ -1777,18 +1777,18 @@ Malapit nang mag-restart ang tablet mo."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Nagpi-play ang tunog sa Bluetooth audio device mo. I-tap dito para i-off ito</string>
     <string name="multisound_sound_via_headphone">Tumutunog ang tunog ng %s sa headphones mo. I-tap dito para i-off ito.</string>
     <string name="multisound_sound_via_headphone_multiselection">Nagpi-play ang tunog sa headphones mo. I-tap dito para i-off ito.</string>
-    <string name="multisound_sound_via_phone_speaker">Tumutunog ang tunog ng %s sa speaker ng telepono mo. I-tap dito para i-off ito.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Nagpi-play ang tunog sa speaker ng telepono mo. I-tap dito para i-off ito.</string>
+    <string name="multisound_sound_via_phone_speaker">Nagpi-play ang tunog ng %s sa speaker ng tablet mo. I-tap dito para i-off ito.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Nagpi-play ang tunog sa speaker ng tablet mo. I-tap dito para i-off ito.</string>
     <string name="multisound_sound_via_usb_audio">Nagpi-play ang tunog ng %s sa USB audio device mo. I-tap dito para i-off ito.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Nagpi-play ang tunog sa USB audio device mo. I-tap dito para i-off ito.</string>
     <string name="multisound_title">Hiwalay na tunog ng app</string>
     <string name="multisound_turn_off_multisound">I-off</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Hindi tatakbo ang %s sa Samsung DeX. Subukang patakbuhin sa phone mode.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Hindi tatakbo ang %s sa Samsung DeX. Idinisenyo ito para sa mga Home screen ng telepono.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Gumagana lang ang ilang game sa mga touch screen. Kung hindi gumagana ang mga mouse control sa Samsung DeX, subukang maglaro sa phone mode sa halip.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Hindi tatakbo ang %s sa Samsung DeX. Subukang patakbuhin sa tablet mode.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Hindi tatakbo ang %s sa Samsung DeX. Idinisenyo ito para sa mga Home screen ng tablet.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Gumagana lang ang ilang game sa mga touch screen. Kung hindi gumagana ang mga mouse control sa Samsung DeX, subukang maglaro sa tablet mode sa halip.</string>
     <string name="music_recognition_manager_service">Serbisyo ng Music Recognition Manager</string>
     <string name="muted_by">Minu-mute ng %1$s ang ilang tunog</string>
-    <string name="my_device">Ang telepono na ito</string>
+    <string name="my_device">Ang tablet na ito</string>
     <string name="nas_upgrade_notification_content">Nagbibigay na ng mga iminumungkahing pagkilos at tugon ang mga pinahusay na notification. Hindi na sinusuportahan ang Mga Adaptive na Notification ng Android.</string>
     <string name="nas_upgrade_notification_disable_action">I-off</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1953,23 +1953,23 @@ Maa-access ng Mga pinahusay na notification ang content ng notification, kabilan
     <string name="permdesc_bindNotificationListenerService">Nagbibigay-daan sa may-ari na mapailalim sa interface sa tuktok na antas ng isang serbisyo ng notification listener. Hindi dapat kailanganin para sa karaniwang apps kahit kailan.</string>
     <string name="permdesc_bind_connection_service">Pinapayagan ang app na makipag-ugnayan sa mga serbisyo sa telephony upang tumawag/makatanggap ng mga tawag.</string>
     <string name="permdesc_bind_incall_service">Nagbibigay-daan sa app na kontrolin kung kailan at kung paano makikita ng user ang in-call na screen.</string>
-    <string name="permdesc_bluetooth">Pinapayagan ang app na tingnan ang configuration ng Bluetooth sa telepono, at na gumawa at tumanggap ng mga koneksyong may mga nakapares na device.</string>
-    <string name="permdesc_bluetoothAdmin">Pinapayagan ang app na i-configure ang lokal na Bluetooth na telepono, at tumuklas ng at ipares sa mga malayuang device.</string>
+    <string name="permdesc_bluetooth">Pinapayagan ang app na tingnan ang configuration ng Bluetooth sa tablet, at na gumawa at tumanggap ng mga koneksyong may mga nakapares na device.</string>
+    <string name="permdesc_bluetoothAdmin">Pinapayagan ang app na i-configure ang lokal na Bluetooth tablet, at tumuklas ng at ipares sa mga malayuang device.</string>
     <string name="permdesc_bluetooth_advertise">Nagbibigay-daan sa app na mag-advertise sa mga kalapit na Bluetooth device</string>
     <string name="permdesc_bluetooth_connect">Nagbibigay-daan sa app na kumonekta sa mga nakapares na Bluetooth device</string>
     <string name="permdesc_bluetooth_scan">Nagbibigay-daan sa app na tumuklas at makipagpares sa mga malapit na Bluetooth device</string>
     <string name="permdesc_bodySensors">Nagpapahintulot sa app na i-access ang data ng sensor ng katawan, gaya ng bilis ng tibok ng puso, temperatura, at porsyento ng oxygen sa dugo, habang ginagamit ang app.</string>
     <string name="permdesc_bodySensors_background">Nagpapahintulot sa app na i-access ang data ng sensor ng katawan, gaya ng bilis ng tibok ng puso, temperatura, at porsyento ng oxygen sa dugo, habang nasa background ang app.</string>
-    <string name="permdesc_broadcastSticky">Pinapayagan ang app na magpadala ng mga sticky na pag-broadcast, na nananatili pagkatapos ng pag-broadcast. Maaaring pabagalin o gawing hindi matatag ng labis na paggamit ang telepono sa pamamagitan ng pagdulot dito na gumamit ng masyadong maraming memory.</string>
+    <string name="permdesc_broadcastSticky">Pinapayagan ang app na magpadala ng mga sticky na pag-broadcast, na nananatili pagkatapos ng pag-broadcast. Maaaring pabagalin o gawing hindi matatag ng labis na paggamit ang tablet sa pamamagitan ng pagdulot dito na gumamit ng masyadong maraming memory.</string>
     <string name="permdesc_callCompanionApp">Binibigyang-daan ang app na makita at makontrol ang mga kasalukuyang tawag sa device. Kabilang dito ang impormasyon gaya ng mga numero ng tawag para sa mga tawag at ang status ng mga tawag.</string>
     <string name="permdesc_callPhone">Pinapayagan ang app na tumawag sa mga numero ng telepono nang walang pamamagitan mo. Puwede itong magresulta sa mga hindi inaasahang singil o tawag. Tandaang hindi nito binibigyang-daan ang app na tumawag sa mga numerong pang-emergency. Posibleng may kailanganin kang bayaran dahil sa pagtawag ng mga nakakapinsalang app nang wala ang iyong kumpirmasyon, o mag-dial ang mga ito sa mga code ng carrier na nagdudulot ng awtomatikong pag-forward ng mga papasok na tawag sa ibang numero.</string>
     <string name="permdesc_camera">Makakakuha ng mga larawan at makakapag-record ng mga video ang app na ito gamit ang camera habang ginagamit ang app.</string>
     <string name="permdesc_cameraOpenCloseListener">Puwedeng makatanggap ang app na ito ng mga callback kapag binubuksan (kung anong application) o isinasara ang anumang camera device.</string>
     <string name="permdesc_changeNetworkState">Pinapayagan ang app na baguhin ang katayuan ng pagkakakonekta ng network.</string>
     <string name="permdesc_changeTetherState">Pinapayagan ang app na baguhin ang katayuan ng naka-tether na pagkakakonekta ng network.</string>
-    <string name="permdesc_changeWifiMulticastState">Pinapayagan ang app na tumanggap ng mga packet na ipinapadala sa lahat ng device sa isang Wi-Fi network gamit ang mga multicast na address, hindi lang sa iyong telepono. Gumagamit ito ng higit na power kaysa sa mode na hindi multicast.</string>
+    <string name="permdesc_changeWifiMulticastState">Pinapayagan ang app na tumanggap ng mga packet na ipinapadala sa lahat ng device sa isang Wi-Fi network gamit ang mga multicast na address, hindi lang sa iyong tablet. Gumagamit ito ng higit na power kaysa sa mode na hindi multicast.</string>
     <string name="permdesc_changeWifiState">Pinapayagan ang app na kumonekta sa at magdiskonekta mula sa mga Wi-Fi access point at na gumawa ng mga pagbabago sa configuration ng device para sa mga Wi-Fi network.</string>
-    <string name="permdesc_changeWimaxState">Pinapayagan ang app na ikonekta ang telepono at idiskonekta ang telepono mula sa mga WiMAX network.</string>
+    <string name="permdesc_changeWimaxState">Pinapayagan ang app na ikonekta ang tablet at idiskonekta ang tablet mula sa mga WiMAX network.</string>
     <string name="permdesc_companionProfileWatch">Nagbibigay-daan sa kasamang app na pamahalaan ang mga relo.</string>
     <string name="permdesc_connection_manager">Pinapayagan ang app na mamahala ng mga koneksyon sa telecom.</string>
     <string name="permdesc_control_incall_experience">Nagbibigay-daan sa app na magbigay ng in-call na karanasan sa user.</string>
@@ -1997,7 +1997,7 @@ Maa-access ng Mga pinahusay na notification ang content ng notification, kabilan
     <string name="permdesc_foregroundServiceSpecialUse">Nagbibigay-daan sa app na gamitin ang mga serbisyo sa foreground na may uring \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Nagbibigay-daan sa app na gamitin ang mga serbisyo sa foreground na may uring \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">Nagbibigay-daan sa app na magpakita ng mga notification bilang mga full screen na aktibidad sa naka-lock na device</string>
-    <string name="permdesc_getAccounts">Pinapayagan ang app na kunin ang listahan ng mga account na alam ng telepono. Maaari itong kabilangan ng anumang mga account na nililikha ng mga application na iyong na-install.</string>
+    <string name="permdesc_getAccounts">Pinapayagan ang app na kunin ang listahan ng mga account na alam ng tablet. Maaari itong kabilangan ng anumang mga account na nililikha ng mga application na iyong na-install.</string>
     <string name="permdesc_getAppList">Nagbibigay-daan sa isang app na mabasa ang listahan ng mga naka-install na app.</string>
     <string name="permdesc_getPackageSize">Pinapayagan ang app na bawiin ang code, data, at mga laki ng cache nito</string>
     <string name="permdesc_getTasks">Pinapayagan ang app na kumuha ng impormasyon tungkol sa mga kasalukuyan at kamakailang gumaganang gawain. Maaari nitong payagan ang app na tumuklas ng impormasyon tungkol sa kung aling mga application ang ginagamit sa device.</string>
@@ -2096,16 +2096,16 @@ ISAULI KAY"</string>
     <string name="permdesc_nearby_wifi_devices">Nagbibigay-daan sa app na i-advertise ang, kumonekta sa, at tukuyin ang nauugnay na posisyon ng mga kalapit na Wi‑Fi device</string>
     <string name="permdesc_nfc">Pinapayagan ang app na makipag-ugnay sa Near Field Communication (NFC) na mga tag, card, at reader.</string>
     <string name="permdesc_observeCompanionDevicePresence">Nagbibigay-daan sa kasamang app na obserbahan ang presensya ng kasamang device kapag malapit o malayo ang mga device.</string>
-    <string name="permdesc_persistentActivity">Pinapayagan ang app na panatilihin ang ilang bahagi nito sa memory. Maaari nitong limitahan ang memory na available sa iba pang apps na nagpapabagal sa telepono.</string>
+    <string name="permdesc_persistentActivity">Pinapayagan ang app na panatilihin ang ilang bahagi nito sa memory. Maaari nitong limitahan ang memory na available sa iba pang apps na nagpapabagal sa tablet.</string>
     <string name="permdesc_postNotification">Pinapayagan ang app na magpakita ng mga notification</string>
     <string name="permdesc_preferredPaymentInfo">Pinapayagan ang app na makakuha ng impormasyon sa gustong nfc na serbisyo sa pagbabayad tulad ng mga nakarehistrong application ID at destinasyon ng ruta.</string>
     <string name="permdesc_processOutgoingCalls">Pinapayagan ang app na makita ang numerong idina-dial sa isang papalabas na tawag na may opsyon na i-redirect ang tawag sa ibang numero o itigil ang tawag nang tuluyan.</string>
     <string name="permdesc_queryAllPackages">Nagbibigay-daan sa isang app na makita ang lahat ng naka-install na package.</string>
     <string name="permdesc_readBasicPhoneState">Pinapayagan ang app na i-access ang mga pangunahing feature sa telephony ng device.</string>
-    <string name="permdesc_readCalendar">Mababasa ng app na ito ang lahat ng event sa kalendaryo na naka-store sa iyong telepono at maibabahagi o mase-save nito ang data ng iyong kalendaryo.</string>
+    <string name="permdesc_readCalendar">Mababasa ng app na ito ang lahat ng event sa kalendaryo na naka-store sa iyong tablet at maibabahagi o mase-save nito ang data ng iyong kalendaryo.</string>
     <string name="permdesc_readCallLog">Mababasa ng app na ito ang iyong history ng tawag.</string>
     <string name="permdesc_readCellBroadcasts">Binibigyang-daan ang app na magbasa ng mga mensahe ng cell broadcast na natanggap ng iyong device. Inihahatid ang mga alerto ng cell broadcast sa ilang lokasyon upang balaan ka tungkol sa mga emergency na sitwasyon. Maaaring makaabala ang nakakahamak na apps sa performance o pagpapatakbo ng iyong device kapag nakatanggap ng emergency na cell broadcast.</string>
-    <string name="permdesc_readContacts">Nagbibigay-daan sa app na magbasa ng data tungkol sa iyong mga contact na naka-store sa telepono mo. Magkakaroon din ang mga app ng access sa mga account sa iyong telepono na gumawa ng mga contact. Puwedeng kasama rito ang mga account na ginawa ng mga na-install mong app. Nagbibigay-daan ang pahintulot na ito sa mga app na i-save ang iyong data ng contact, at puwedeng magbahagi ng data ng contact ang mga nakakahamak na app nang hindi mo alam.</string>
+    <string name="permdesc_readContacts">Nagbibigay-daan sa app na magbasa ng data tungkol sa iyong mga contact na naka-store sa tablet mo. Magkakaroon din ang mga app ng access sa mga account sa iyong tablet na gumawa ng mga contact. Puwedeng kasama rito ang mga account na ginawa ng mga na-install mong app. Nagbibigay-daan ang pahintulot na ito sa mga app na i-save ang iyong data ng contact, at puwedeng magbahagi ng data ng contact ang mga nakakahamak na app nang hindi mo alam.</string>
     <string name="permdesc_readInstallSessions">Pinapayagan ang isang application na magbasa ng mga session ng pag-install. Nagbibigay-daan ito upang makita ang mga detalye tungkol sa mga aktibong pag-install ng package.</string>
     <string name="permdesc_readMediaAudio">Nagbibigay-daan sa app na magbasa ng mga audio file mula sa iyong nakabahaging storage.</string>
     <string name="permdesc_readMediaImages">Nagbibigay-daan sa app na magbasa ng mga image file mula sa iyong nakabahaging storage.</string>
@@ -2113,11 +2113,11 @@ ISAULI KAY"</string>
     <string name="permdesc_readNetworkUsageHistory">Pinapayagan ang app na basahin ang makasaysayang paggamit network para sa mga tukoy na network at apps.</string>
     <string name="permdesc_readPhoneNumbers">Pinapayagan ang app na i-access ang mga numero ng telepono ng device.</string>
     <string name="permdesc_readPhoneState">"Pinapayagan ang app na i-access ang mga tampok ng telepono ng device. Pinapayagan ng pahintulot na ito ang app na tukuyin ang numero ng telepono at  mga ID ng device, kung aktibo man ang isang tawag, at ang malayuang numerong ikinonekta ng isang tawag."</string>
-    <string name="permdesc_readSms">Mababasa ng app na ito ang lahat ng mensaheng SMS (text) na naka-store sa iyong telepono.</string>
+    <string name="permdesc_readSms">Mababasa ng app na ito ang lahat ng mensaheng SMS (text) na naka-store sa iyong tablet.</string>
     <string name="permdesc_readSyncSettings">Pinapayagan ang app na basahin ang mga setting ng pag-sync para sa isang account. Halimbawa, matutukoy nito kung naka-sync ang app na Mga Tao sa isang account.</string>
     <string name="permdesc_readSyncStats">Pinapayagan ang app na basahin ang mga istatistika ng pag-sync para sa isang account, kabilang ang kasaysayan ng mga event sa pag-sync at kung ilang data ang naka-sync.</string>
     <string name="permdesc_readVisualUserSelect">Nagbibigay-daan sa app na magbasa ng mga image at video file na pipiliin mo mula sa iyong nakabahaging storage.</string>
-    <string name="permdesc_receiveBootCompleted">Pinapayagan ang app na mapasimula ang sarili nito sa sandaling matapos ang system sa pag-boot. Maaari nitong gawing mas matagal upang simulan ang telepono at pinapayagan ang app na pabagalin ang buong telepono sa pamamagitan ng palaging pagtakbo.</string>
+    <string name="permdesc_receiveBootCompleted">Pinapayagan ang app na mapasimula ang sarili nito sa sandaling matapos ang system sa pag-boot. Maaari nitong gawing mas matagal upang simulan ang tablet at pinapayagan ang app na pabagalin ang buong tablet sa pamamagitan ng palaging pagtakbo.</string>
     <string name="permdesc_receiveMms">Pinapayagan ang app na tumanggap at magproseso ng mga mensaheng MMS. Nangangahulugan ito na maaaring sumubaybay o magtanggal ang app ng mga mensaheng ipinapadala sa iyong device nang hindi ipinapakita ang mga ito sa iyo.</string>
     <string name="permdesc_receiveSms">Pinapayagan ang app na tumanggap at magproseso ng mga mensaheng SMS. Nangangahulugan ito na maaaring sumubaybay o magtanggal ang app ng mga mensaheng ipinapadala sa iyong device nang hindi ipinapakita ang mga ito sa iyo.</string>
     <string name="permdesc_receiveWapPush">Pinapayagan ang app na tumanggap at magproseso ng mga mensaheng WAP. Kabilang sa pahintulot na ito ang kakayahang sumubaybay o magtanggal ang app ng mga mensaheng ipinapadala sa iyo nang hindi ipinapakita ang mga ito sa iyo.</string>
@@ -2139,7 +2139,7 @@ ISAULI KAY"</string>
     <string name="permdesc_sendSms">Pinapayagan ang app na magpadala ng mga mensaheng SMS. Maaari itong magresulta sa mga hindi inaasahang pagsingil. Maaaring magpagastos sa iyo ng pera ang nakakahamak na apps sa pamamagitan ng pagpapadala ng mga mensahe nang wala ng iyong kumpirmasyon.</string>
     <string name="permdesc_setAlarm">Pinapayagan ang app na magtakda ng alarm sa isang naka-install na app ng alarm clock. Maaaring hindi ipatupad ng ilang apps ng alarm clock ang tampok na ito.</string>
     <string name="permdesc_setInputCalibration">Pinapayagan ang app na baguhin ang mga parameter sa pag-calibrate ng touch screen. Hindi dapat kailanganin sa normal na apps.</string>
-    <string name="permdesc_setTimeZone">Pinapayagan ang app na baguhin ang time zone ng telepono.</string>
+    <string name="permdesc_setTimeZone">Pinapayagan ang app na baguhin ang time zone ng tablet.</string>
     <string name="permdesc_setWallpaper">Pinapayagan ang app na itakda ang wallpaper ng system.</string>
     <string name="permdesc_setWallpaperHints">Pinapayagan ang app na itakda ang mga pahiwatig sa laki ng wallpaper ng system.</string>
     <string name="permdesc_sim_communication">Pinapahintulutang magpadala ang app ng mga command sa SIM. Napakapanganib nito.</string>
@@ -2153,7 +2153,7 @@ ISAULI KAY"</string>
     <string name="permdesc_subscribedFeedsRead">Pinapayagan ang app na kumuha ng mga detalye tungkol sa kasalukuyang naka-sync na mga feed.</string>
     <string name="permdesc_systemAlertWindow">Maaaring lumabas ang app na ito sa ibabaw ng iba pang mga app o iba pang mga bahagi ng screen. Maaaring makasagabal ito sa normal na paggamit ng app at mabago nito ang paraan kung paano lumalabas ang iba pang mga app.</string>
     <string name="permdesc_systemCamera">Ang may pribilehiyong app o system app na ito ay makakakuha ng mga larawan at makakapag-record ng mga video gamit ang isang camera ng system anumang oras. Kinakailangang may android.permission.CAMERA na pahintulot din ang app</string>
-    <string name="permdesc_transmitIr">Nagbibigay-daan sa app na gamitin ang infrared transmitter ng telepono.</string>
+    <string name="permdesc_transmitIr">Nagbibigay-daan sa app na gamitin ang infrared transmitter ng tablet.</string>
     <string name="permdesc_turnScreenOn">Nagpapahintulot sa app na i-on ang screen.</string>
     <string name="permdesc_ucsPlugin">Gagana kasabay ng mga third-party na plug-in sa storage ng kredensiyal.</string>
     <string name="permdesc_uninstall_shortcut">Pinapayagan ang application na alisin ang mga shortcut ng Homescreen nang walang panghihimasok ng user.</string>
@@ -2167,10 +2167,10 @@ ISAULI KAY"</string>
     <string name="permdesc_vibrate">Pinapayagan ang app na kontrolin ang vibrator.</string>
     <string name="permdesc_vibrator_state">Pinapayagan ang app na ma-access ang naka-vibrate na status.</string>
     <string name="permdesc_videoWrite">Pinapayagan ang app na baguhin ang iyong koleksyon ng video.</string>
-    <string name="permdesc_wakeLock">Pinapayagan ang app na pigilan ang telepono mula sa pag-sleep.</string>
-    <string name="permdesc_writeCalendar">Makakapagdagdag, makakapag-alis o makakapagbago ang app na ito ng mga event sa kalendaryo sa iyong telepono. Magagawa ng app na ito na magpadala ng mga mensahe na maaaring mukhang mula sa mga may-ari ng kalendaryo o magbago ng mga event nang hindi inaabisuhan ang mga may-ari nito.</string>
-    <string name="permdesc_writeCallLog">Binibigyan-daan ang app na baguhin ang log ng tawag ng iyong telepono, kabilang ang data tungkol sa mga paparating at papalabas na tawag. Maaari itong gamitin ng nakakahamak na apps upang burahin o baguhin ang iyong log ng tawag.</string>
-    <string name="permdesc_writeContacts">Nagbibigay-daan sa app na baguhin ang data tungkol sa iyong mga contact na naka-store sa telepono mo. Nagbibigay-daan ang pahintulot na ito sa mga app na mag-delete ng data ng contact.</string>
+    <string name="permdesc_wakeLock">Pinapayagan ang app na pigilan ang tablet mula sa pag-sleep.</string>
+    <string name="permdesc_writeCalendar">Makakapagdagdag, makakapag-alis o makakapagbago ang app na ito ng mga event sa kalendaryo sa iyong tablet. Magagawa ng app na ito na magpadala ng mga mensahe na maaaring mukhang mula sa mga may-ari ng kalendaryo o magbago ng mga event nang hindi inaabisuhan ang mga may-ari nito.</string>
+    <string name="permdesc_writeCallLog">Binibigyan-daan ang app na baguhin ang log ng tawag ng iyong tablet, kabilang ang data tungkol sa mga paparating at papalabas na tawag. Maaari itong gamitin ng nakakahamak na apps upang burahin o baguhin ang iyong log ng tawag.</string>
+    <string name="permdesc_writeContacts">Nagbibigay-daan sa app na baguhin ang data tungkol sa iyong mga contact na naka-store sa tablet mo. Nagbibigay-daan ang pahintulot na ito sa mga app na mag-delete ng data ng contact.</string>
     <string name="permdesc_writeSettings">Pinapayagan ang app na baguhin ang data ng mga setting ng system. Maaaring sirain ng nakakahamak na apps ang configuration ng iyong system.</string>
     <string name="permdesc_writeSyncSettings">Pinapayagan ang isang app na baguhin ang mga setting ng pag-sync para sa isang account. Halimbawa, magagamit ito upang paganahin ang pag-sync ng app na Mga Tao sa isang account.</string>
     <string name="permgroupdesc_activityRecognition">i-access ang iyong pisikal na aktibidad</string>
@@ -2445,7 +2445,7 @@ para sa account na %s."</string>
     <string name="permlab_uwb_ranging">tukuyin ang relatibong posisyon sa pagitan ng mga kalapit na Ultra-Wideband device</string>
     <string name="permlab_vibrate">kontrolin ang pag-vibrate</string>
     <string name="permlab_videoWrite">baguhin ang iyong koleksyon ng video</string>
-    <string name="permlab_wakeLock">pigilan ang telepono mula sa paghinto</string>
+    <string name="permlab_wakeLock">pigilan ang tablet mula sa pag-sleep</string>
     <string name="permlab_writeCalendar">magdagdag o magbago ng mga event sa kalendaryo at magpadala ng email sa mga bisita nang hindi nalalaman ng mga may-ari</string>
     <string name="permlab_writeCallLog">isulat ang log ng tawag</string>
     <string name="permlab_writeContacts">baguhin ang iyong mga contact</string>
@@ -2487,7 +2487,7 @@ para sa account na %s."</string>
     <string name="policydesc_allow_desktopsync">Pigilan ang paggamit ng desktop sync.</string>
     <string name="policydesc_allow_internetsharing">Pigilan ang paggamit ng Mobile Hotspot.</string>
     <string name="policydesc_allow_irda">Pigilan ang paggamit ng IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Pigilan ang paggamit ng POP at IMAP Email sa telepono.</string>
+    <string name="policydesc_allow_popimapemail">Pigilan ang paggamit ng POP at IMAP Email sa tablet.</string>
     <string name="policydesc_allow_storagecard">Pigilan ang paggamit ng mga SD card.</string>
     <string name="policydesc_allow_textmessaging">Pigilan ang paggamit ng text at multimedia messaging.</string>
     <string name="policydesc_allow_thirdParty">Ang application na ito ay maaaring pigilan ang third-party na mga application mula sa pagpapatakbo.</string>
@@ -2505,10 +2505,10 @@ para sa account na %s."</string>
     <string name="policydesc_setGlobalProxy">Itakda ang pandaigdigang proxy ng device na gagamitin habang naka-enable ang patakaran. Ang may-ari ng device lang ang makakapagtakda sa pandaigdigang proxy.</string>
     <string name="policydesc_unsigned_app">Ang application na ito ay maaaring pigilan ang mga application mula sa mga hindi alam pinagmulan mula sa pagkakatakbo.</string>
     <string name="policydesc_unsigned_pkg">Ang application na ito ay maaaring pigilan ang mga application mula sa mga hindi alam pinagmulan mula sa pagkaka-install.</string>
-    <string name="policydesc_watchLogin">Subaybayan ang bilang ng mga maling password na na-type kapag ina-unlock ang screen, at i-lock ang telepono o burahin ang lahat ng data ng telepono kung masyadong maraming maling password ang na-type.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Subaybayan ang bilang ng mga maling password na na-type kapag ina-unlock ang screen, at i-lock ang telepono o burahin ang lahat ng data ng user na ito kung masyadong maraming maling password ang nata-type.</string>
-    <string name="policydesc_wipeData">Burahin ang data ng telepono nang walang babala sa pamamagitan ng pagsasagawa ng pag-reset ng factory data.</string>
-    <string name="policydesc_wipeData_secondaryUser">Burahin ang data ng user na ito sa teleponong ito nang walang babala.</string>
+    <string name="policydesc_watchLogin">Subaybayan ang bilang ng mga hindi tamang password na na-type kapag ina-unlock ang screen, at i-lock ang tablet o burahin ang lahat ng data ng tablet kung masyadong maraming hindi tamang password ang na-type.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Subaybayan ang bilang ng mga maling password na na-type kapag ina-unlock ang screen, at i-lock ang tablet o burahin ang lahat ng data ng user na ito kung masyadong maraming maling password ang nata-type.</string>
+    <string name="policydesc_wipeData">Burahin ang data ng tablet nang walang babala sa pamamagitan ng pagsasagawa ng pag-reset ng factory data.</string>
+    <string name="policydesc_wipeData_secondaryUser">Burahin ang data ng user na ito sa tablet na ito nang walang babala.</string>
     <string name="policylab_allow_bluetoothmode">Huwag paganahin ang Bluetooth.</string>
     <string name="policylab_allow_browser">Huwag paganahin ang Internet.</string>
     <string name="policylab_allow_camera">Huwag paganahin ang mga camera.</string>
@@ -2542,7 +2542,7 @@ para sa account na %s."</string>
     <string name="postalTypeHome">Home</string>
     <string name="postalTypeOther">Iba pa</string>
     <string name="postalTypeWork">Trabaho</string>
-    <string name="power_dialog">Mga pagpipilian sa telepono</string>
+    <string name="power_dialog">Mga pagpipilian sa tablet</string>
     <string name="power_off">I-off</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">sa %s</string>
@@ -2588,7 +2588,7 @@ para sa account na %s."</string>
     <string name="recent_tasks_title">Kamakailan</string>
     <string name="recording_fail">Hindi magamit ang mic sa %1$s habang ginagamit ito sa %2$s.</string>
     <string name="recording_popup">Ginagamit ng %s ang mikropono.</string>
-    <string name="recording_popup_device">Telepono</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">Ginagamit ng %s ang Bluetooth microphone.</string>
     <string name="recording_popup_with_device">Ginagamit ng %1$s ang microphone ng %2$s.</string>
     <string name="redo">Ulitin</string>
@@ -2735,12 +2735,12 @@ Maaaring mapinsala ng pakikinig sa malakas na volume sa loob ng mahahabang panah
     <string name="screenshot_edit">I-edit</string>
     <string name="sd_card_unavailable_message">Hindi mo magagamit ang SD card na ito dahil ikinabit ito habang ibang profile ng user ang ginagamit.</string>
     <string name="sd_card_unavailable_title">Hindi magagamit ang SD card</string>
-    <string name="sdcard_bad_removal_message">May SD card na inalis sa di-ligtas na paraan. Para mapigilan ang di-inaasahan pag-restart ng telepono mo, i-save ang data na hindi naka-save at mag-restart ngayon.</string>
+    <string name="sdcard_bad_removal_message">May SD card na inalis sa di-ligtas na paraan. Para mapigilan ang di-inaasahan pag-restart ng tablet mo, i-save ang data na hindi naka-save at mag-restart ngayon.</string>
     <string name="sdcard_batch_decrypt_noti_content">Decrypt SD card</string>
     <string name="sdcard_batch_decrypt_noti_title">Pag-decrypt ng SD card</string>
     <string name="sdcard_batch_decrypt_popup_content">The encrypted SD card must be decrypted before being used. Decryption could take an hour or more. Start with a charged battery and keep device plugged in until decryption is complete. Interrupting decryption process may cause some or all data to be lost.</string>
     <string name="sdcard_decrypt_err_notification">Nagkaroon ng error sa pag-decrypt ng SD card.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Na-encrypt sa ibang device ang ilang file na nasa SD card mo at hindi magagamit sa telepono na ito.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Na-encrypt sa ibang device ang ilang file na nasa SD card mo at hindi magagamit sa tablet na ito.</string>
     <string name="sdcard_decrypt_notification">Na-decrypt na ang SD card.</string>
     <string name="sdcard_decrypt_title_notification">Pag-decrypt ng SD card</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Dini-decrypt ang SD card…</string>
@@ -2998,7 +2998,7 @@ Para lumitaw muli ang mga button, i-swipe pataas mula sa ilalim ng screen tulad 
     <string name="showing_touch_sensitivity_noti_action">Naka-on</string>
     <string name="showing_touch_sensitivity_noti_text">I-on ang Touch sensitivity habang ginagamit ang Privacy Screen o Notepaper Screen para sa mas tumpak na touch responsiveness.</string>
     <string name="showing_touch_sensitivity_noti_title">Dagdagan ang touch sensitivity</string>
-    <string name="shutdown_confirm">Magsa-shut down ang iyong telepono.</string>
+    <string name="shutdown_confirm">Mag-shut down ang iyong tablet.</string>
     <string name="shutdown_confirm_question">Nais mo bang mag-shut down?</string>
     <string name="shutdown_progress">Nagsa-shut down…</string>
     <string name="side_key_double_press_deleted_app">Nai-uninstall ang app. Pumili ng iba.</string>
@@ -3225,7 +3225,7 @@ Para alisin ang proteksiyon na ito, pumunta sa Settings > Security at privacy > 
     <string name="usb_abnormal_reset_title">Hindi matatag ang koneksiyon ng USB</string>
     <string name="usb_abnormal_reset_toast">Hindi matatag ang koneksiyon ng USB. Hugutin ang kawad at muli itong isaksak o sumubok ng ibang kawad.</string>
     <string name="usb_accessory_notification_title">Nakakonekta bilang USB accessory</string>
-    <string name="usb_bad_removal_message">May USB storage device na inalis sa di-ligtas na paraan. Para mapigilan ang di-inaasahan pag-restart ng telepono mo, i-save ang data na hindi naka-save at mag-restart ngayon.</string>
+    <string name="usb_bad_removal_message">May USB storage device na inalis sa di-ligtas na paraan. Para mapigilan ang di-inaasahan pag-restart ng tablet mo, i-save ang data na hindi naka-save at mag-restart ngayon.</string>
     <string name="usb_blocked_by_emergency_mode">Hindi magagamit ang ilang USB function sa Emergency mode.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Hindi magamit ang mga function kaugnay ng nakakonektang USB device habang gumagana ang Maximum power saving mode.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Magiging limitado ang ilang function ng USB habang naka-on ang Maximum power saving mode.</string>
@@ -3235,7 +3235,7 @@ Para alisin ang proteksiyon na ito, pumunta sa Settings > Security at privacy > 
     <string name="usb_camera_disconnected_notification_title">Nadiskonekta ang media device</string>
     <string name="usb_cd_installer_notification_title">Update ng software</string>
     <string name="usb_charging_notification_title">China-charge ang device sa USB</string>
-    <string name="usb_charing_only_notification_title">Pag-charge sa USB</string>
+    <string name="usb_charing_only_notification_title">Nakakonekta</string>
     <string name="usb_contaminant_detected_message">Awtomatikong na-disable ang USB port. Mag-tap para matuto pa.</string>
     <string name="usb_contaminant_detected_title">Liquid o debris sa USB port</string>
     <string name="usb_contaminant_not_detected_message">Hindi na nakaka-detect ang telepono ng liquid o debris.</string>
@@ -3247,11 +3247,11 @@ Para alisin ang proteksiyon na ito, pumunta sa Settings > Security at privacy > 
     <string name="usb_host_cable_disconnected_notification_title">Nagdiskonekta ng USB connector.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Hindi maa-access ang device na ito. Ang ikinonektang device ay nangangailangan ng panlabas na supply ng kuryente.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">May nakakonektang USB device na malakas sa kuryente.</string>
-    <string name="usb_host_resource_exceed_message">Hindi sapat ang pagkukunan ng USB controller ng telepono mo para makakonekta sa device na ito. Subukang idiskonekta ang device at muli itong ikonekta.</string>
+    <string name="usb_host_resource_exceed_message">Hindi sapat ang pagkukunan ng USB controller ng tablet mo para makakonekta sa device na ito. Subukang idiskonekta ang device at muli itong ikonekta.</string>
     <string name="usb_host_resource_exceed_title">Hindi Sapat na pagkukunan ng USB controller</string>
-    <string name="usb_hub_depth_exceed_message">Kaya lang suportahan ng telepono mo ang hanggang 5 USB na koneksiyon sa hub nang sabay-sabay.</string>
+    <string name="usb_hub_depth_exceed_message">Kaya lang suportahan ng tablet mo ang hanggang 5 USB na koneksiyon sa hub nang sabay-sabay.</string>
     <string name="usb_hub_depth_exceed_title">Maximum na koneksiyon sa USB hub</string>
-    <string name="usb_hub_power_exceed_message">Hindi makapagbigay ng sapat na kuryente ang telepono mo para sa USB device na ito. Ikonekta ang device sa USB hub na may sariling kuryente bago ito ikonekta sa telepono mo.</string>
+    <string name="usb_hub_power_exceed_message">Hindi makapagbigay ng sapat na kuryente ang tablet mo para sa USB device na ito. Ikonekta ang device sa USB hub na may sariling kuryente bago ito ikonekta sa tablet mo.</string>
     <string name="usb_increase_battery_usage">Maaaring makadagdag sa konsumo sa baterya ang koneksiyon sa USB.</string>
     <string name="usb_keyboard_connected_notification_title">Nakonekta ang keyboard</string>
     <string name="usb_keyboard_disconnected_notification_title">Nadiskonekta ang keyboard</string>
@@ -3294,8 +3294,8 @@ Para alisin ang proteksiyon na ito, pumunta sa Settings > Security at privacy > 
     <string name="usb_ums_connected_notification_message_usbhost">Tinanggal ang USB mass storage nang hindi inaasahan.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Nagkonekta ng USB mass storage</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Tinanggal nang ligtas ang USB mass storage.</string>
-    <string name="usb_unblock_by_screen_unlock">I-unlock ang telepono mo para magamit ang nakakonektang USB device.</string>
-    <string name="usb_unsupport_accessory_message">Hindi suportado ng telepono mo ang USB device na ito.</string>
+    <string name="usb_unblock_by_screen_unlock">I-unlock ang tablet mo para magamit ang nakakonektang USB device.</string>
+    <string name="usb_unsupport_accessory_message">Hindi suportado ng tablet mo ang USB device na ito.</string>
     <string name="usb_unsupport_accessory_title">Hindi suportado ang USB device</string>
     <string name="usb_unsupported_audio_accessory_message">Hindi tugma sa teleponong ito ang naka-attach na device. I-tap upang matuto pa.</string>
     <string name="usb_unsupported_audio_accessory_title">May na-detect na analog na audio accessory</string>
@@ -3316,19 +3316,19 @@ Para alisin ang proteksiyon na ito, pumunta sa Settings > Security at privacy > 
     <string name="usb_water_dialg_method_2_desc_2">Mapapabilis mo ang pagpapatuyo sa pamamagitan ng pagtutok ng bentilador o dryer (malamig na hangin lang) sa port.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"May nadetekta kaming basa o dumi sa charging/USB port mo.
 
-Silipin ang charging/USB port mo para sa anumang dumi gaya ng alikabok o basura. Para maiwasan ang pagkasira ng telepono mo, huwag magsasaksak ng kahit ano hanggang sa malinis ang charging port at wala nang basa.
+Silipin ang charging/USB port mo para sa anumang dumi gaya ng alikabok o basura. Para maiwasan ang pagkasira ng tablet mo, huwag magsasaksak ng kahit ano hanggang sa malinis ang charging port at wala nang basa.
 
 Para patuyuin ang port, alugin ang anumang basa, tapos hintayin na matuyo ito, na maaaring abutin ng ilang oras. Mapapabilis mo ang pagpapatuyo sa pamamagitan ng pagtutok ng bentilador o dryer (malamig na hangin lang) sa port."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"May nadetekta kaming basa o dumi sa charging/USB port mo.
 
-Silipin ang charging/USB port mo para sa anumang dumi gaya ng alikabok o basura. Para maiwasan ang pagkasira ng telepono mo, huwag magsasaksak ng kahit ano hanggang sa malinis ang charging port at wala nang basa.
+Silipin ang charging/USB port mo para sa anumang dumi gaya ng alikabok o basura. Para maiwasan ang pagkasira ng tablet mo, huwag magsasaksak ng kahit ano hanggang sa malinis ang charging port at wala na ang basa.
 
 Para patuyuin ang port, alugin ang anumang basa, tapos hintayin na matuyo ito, na maaaring abutin ng ilang oras. Mapapabilis mo ang pagpapatuyo sa pamamagitan ng pagtutok ng bentilador o dryer (malamig na hangin lang) sa port.
 
-Samantala, maaari mong i-charge nang wireless ang telepono mo."</string>
+Samantala, maaari mong i-charge nang wireless ang tablet mo."</string>
     <string name="usb_water_notification_content">Mayroong basa o dumi sa charging/USB port mo. Silipin bago mag-charge.</string>
-    <string name="usb_water_notification_message">May nadetektang tubig sa charger/USB port mo. Tiyakin na tuyong-tuyo ito bago i-charge ang telepono mo. Maaaring matagalan ito para matuyo nang ganap.</string>
+    <string name="usb_water_notification_message">May nadetektang tubig sa charger/USB port mo. Tiyakin na tuyong-tuyo ito bago i-charge ang tablet mo. Maaaring matagalan ito para matuyo nang ganap.</string>
     <string name="usb_water_notification_message_button">Mga detalye</string>
     <string name="usb_water_notification_title">Suriin ang charger/USB port</string>
     <string name="usbhostStorage_restrict">Pinipigilan ng patakaran sa seguridad ang paggamit sa USB host storage.</string>
@@ -3346,7 +3346,7 @@ Samantala, maaari mong i-charge nang wireless ang telepono mo."</string>
     <string name="user_switched">Kasalukuyang user %1$s.</string>
     <string name="user_switching_message">Lumilipat kay %1$s…</string>
     <string name="validity_period">Pagkabisa:</string>
-    <string name="vdm_camera_access_denied">Hindi ma-access ang camera ng telepono mula sa iyong %1$s</string>
+    <string name="vdm_camera_access_denied">Hindi ma-access ang camera ng tablet mula sa iyong %1$s</string>
     <string name="vdm_pip_blocked">Hindi matingnan nang picture-in-picture habang nagsi-stream</string>
     <string name="vdm_secure_window">Hindi ito puwedeng i-access habang nagsi-stream. Subukan na lang sa iyong telepono.</string>
     <string name="view_and_control_notification_content">Makikita at makokontrol ng %s ang iyong screen. I-tap para suriin.</string>

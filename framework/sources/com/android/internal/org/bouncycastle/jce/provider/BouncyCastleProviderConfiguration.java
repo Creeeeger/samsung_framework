@@ -33,7 +33,6 @@ class BouncyCastleProviderConfiguration implements ProviderConfiguration {
     private volatile Set acceptableNamedCurves = new HashSet();
     private volatile Map additionalECParameters = new HashMap();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setParameter(String parameterName, Object parameter) {
         ECParameterSpec curveSpec;
         SecurityManager securityManager = System.getSecurityManager();

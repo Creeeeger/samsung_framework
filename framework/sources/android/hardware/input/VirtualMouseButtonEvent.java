@@ -19,13 +19,14 @@ public final class VirtualMouseButtonEvent implements Parcelable {
     public static final int BUTTON_TERTIARY = 4;
     public static final int BUTTON_UNKNOWN = -1;
     public static final Parcelable.Creator<VirtualMouseButtonEvent> CREATOR = new Parcelable.Creator<VirtualMouseButtonEvent>() { // from class: android.hardware.input.VirtualMouseButtonEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualMouseButtonEvent createFromParcel(Parcel source) {
             return new VirtualMouseButtonEvent(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualMouseButtonEvent[] newArray(int size) {
             return new VirtualMouseButtonEvent[size];
@@ -43,6 +44,14 @@ public final class VirtualMouseButtonEvent implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface Button {
+    }
+
+    /* synthetic */ VirtualMouseButtonEvent(int i, int i2, long j, VirtualMouseButtonEventIA virtualMouseButtonEventIA) {
+        this(i, i2, j);
+    }
+
+    /* synthetic */ VirtualMouseButtonEvent(Parcel parcel, VirtualMouseButtonEventIA virtualMouseButtonEventIA) {
+        this(parcel);
     }
 
     private VirtualMouseButtonEvent(int action, int buttonCode, long eventTimeNanos) {
@@ -116,6 +125,23 @@ public final class VirtualMouseButtonEvent implements Parcelable {
             }
             this.mEventTimeNanos = eventTimeNanos;
             return this;
+        }
+    }
+
+    /* renamed from: android.hardware.input.VirtualMouseButtonEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualMouseButtonEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualMouseButtonEvent createFromParcel(Parcel source) {
+            return new VirtualMouseButtonEvent(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualMouseButtonEvent[] newArray(int size) {
+            return new VirtualMouseButtonEvent[size];
         }
     }
 }

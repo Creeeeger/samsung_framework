@@ -82,9 +82,10 @@ public class ChooserListAdapter extends ResolverListAdapter {
         void sendListViewUpdateMessage(UserHandle userHandle);
     }
 
-    /* renamed from: com.android.internal.app.ChooserListAdapter$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.ChooserListAdapter$1 */
     /* loaded from: classes4.dex */
-    class AnonymousClass1 implements View.OnLayoutChangeListener {
+    public class AnonymousClass1 implements View.OnLayoutChangeListener {
         AnonymousClass1() {
         }
 
@@ -203,7 +204,6 @@ public class ChooserListAdapter extends ResolverListAdapter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void refreshListView() {
         if (this.mListViewDataChanged) {
             super.notifyDataSetChanged();
@@ -293,10 +293,55 @@ public class ChooserListAdapter extends ResolverListAdapter {
         return new LoadDirectShareIconTask(info);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.ChooserListAdapter$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends AsyncTask<Void, Void, List<DisplayResolveInfo>> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.AsyncTask
+        public List<DisplayResolveInfo> doInBackground(Void... voids) {
+            List<DisplayResolveInfo> allTargets = new ArrayList<>();
+            allTargets.addAll(ChooserListAdapter.this.mDisplayList);
+            allTargets.addAll(ChooserListAdapter.this.mCallerTargets);
+            if (!ChooserListAdapter.this.mEnableStackedApps) {
+                return allTargets;
+            }
+            Map<String, DisplayResolveInfo> consolidated = new HashMap<>();
+            for (DisplayResolveInfo info : allTargets) {
+                if (info.getResolveInfo().userHandle == null) {
+                    Log.e(ChooserListAdapter.TAG, "ResolveInfo with null UserHandle found: " + info.getResolveInfo());
+                }
+                String resolvedTarget = info.getResolvedComponentName().getPackageName() + '#' + ((Object) info.getDisplayLabel()) + '#' + ResolverActivity.getResolveInfoUserHandle(info.getResolveInfo(), ChooserListAdapter.this.getUserHandle()).getIdentifier();
+                DisplayResolveInfo multiDri = consolidated.get(resolvedTarget);
+                if (multiDri == null) {
+                    consolidated.put(resolvedTarget, info);
+                } else if (multiDri instanceof MultiDisplayResolveInfo) {
+                    ((MultiDisplayResolveInfo) multiDri).addTarget(info);
+                } else {
+                    MultiDisplayResolveInfo multiDisplayResolveInfo = new MultiDisplayResolveInfo(resolvedTarget, multiDri);
+                    multiDisplayResolveInfo.addTarget(info);
+                    consolidated.put(resolvedTarget, multiDisplayResolveInfo);
+                }
+            }
+            List<DisplayResolveInfo> groupedTargets = new ArrayList<>();
+            groupedTargets.addAll(consolidated.values());
+            Collections.sort(groupedTargets, new ChooserActivity.AzInfoComparator(ChooserListAdapter.this.mContext));
+            return groupedTargets;
+        }
+
+        @Override // android.os.AsyncTask
+        public void onPostExecute(List<DisplayResolveInfo> newList) {
+            ChooserListAdapter.this.mSortedList = newList;
+            ChooserListAdapter.this.notifyDataSetChanged();
+        }
+    }
+
     public void updateAlphabeticalList() {
         new AsyncTask<Void, Void, List<DisplayResolveInfo>>() { // from class: com.android.internal.app.ChooserListAdapter.2
-            /* JADX INFO: Access modifiers changed from: protected */
+            AnonymousClass2() {
+            }
+
             @Override // android.os.AsyncTask
             public List<DisplayResolveInfo> doInBackground(Void... voids) {
                 List<DisplayResolveInfo> allTargets = new ArrayList<>();
@@ -328,7 +373,6 @@ public class ChooserListAdapter extends ResolverListAdapter {
                 return groupedTargets;
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.os.AsyncTask
             public void onPostExecute(List<DisplayResolveInfo> newList) {
                 ChooserListAdapter.this.mSortedList = newList;
@@ -373,7 +417,6 @@ public class ChooserListAdapter extends ResolverListAdapter {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getAlphaTargetCount() {
         int groupedCount = this.mSortedList.size();
         int ungroupedCount = this.mCallerTargets.size() + this.mDisplayList.size();
@@ -441,7 +484,6 @@ public class ChooserListAdapter extends ResolverListAdapter {
         return this.mSortedList.get(position - offset3);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.ResolverListAdapter
     public boolean shouldAddResolveInfo(DisplayResolveInfo dri) {
         for (TargetInfo existingInfo : this.mCallerTargets) {
@@ -520,7 +562,6 @@ public class ChooserListAdapter extends ResolverListAdapter {
         return score;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$completeServiceTargetLoading$0(ChooserTargetInfo o) {
         return o instanceof ChooserActivity.PlaceHolderTargetInfo;
     }
@@ -578,9 +619,14 @@ public class ChooserListAdapter extends ResolverListAdapter {
     }
 
     @Override // com.android.internal.app.ResolverListAdapter
-    AsyncTask<List<ResolverActivity.ResolvedComponentInfo>, Void, List<ResolverActivity.ResolvedComponentInfo>> createSortingTask(final boolean doPostProcessing) {
+    AsyncTask<List<ResolverActivity.ResolvedComponentInfo>, Void, List<ResolverActivity.ResolvedComponentInfo>> createSortingTask(boolean doPostProcessing) {
         return new AsyncTask<List<ResolverActivity.ResolvedComponentInfo>, Void, List<ResolverActivity.ResolvedComponentInfo>>() { // from class: com.android.internal.app.ChooserListAdapter.3
-            /* JADX INFO: Access modifiers changed from: protected */
+            final /* synthetic */ boolean val$doPostProcessing;
+
+            AnonymousClass3(boolean doPostProcessing2) {
+                doPostProcessing = doPostProcessing2;
+            }
+
             @Override // android.os.AsyncTask
             public List<ResolverActivity.ResolvedComponentInfo> doInBackground(List<ResolverActivity.ResolvedComponentInfo>... params) {
                 Trace.beginSection("ChooserListAdapter#SortingTask");
@@ -589,7 +635,6 @@ public class ChooserListAdapter extends ResolverListAdapter {
                 return params[0];
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.os.AsyncTask
             public void onPostExecute(List<ResolverActivity.ResolvedComponentInfo> sortedComponents) {
                 ChooserListAdapter.this.processSortedList(sortedComponents, doPostProcessing);
@@ -599,6 +644,33 @@ public class ChooserListAdapter extends ResolverListAdapter {
                 }
             }
         };
+    }
+
+    /* renamed from: com.android.internal.app.ChooserListAdapter$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 extends AsyncTask<List<ResolverActivity.ResolvedComponentInfo>, Void, List<ResolverActivity.ResolvedComponentInfo>> {
+        final /* synthetic */ boolean val$doPostProcessing;
+
+        AnonymousClass3(boolean doPostProcessing2) {
+            doPostProcessing = doPostProcessing2;
+        }
+
+        @Override // android.os.AsyncTask
+        public List<ResolverActivity.ResolvedComponentInfo> doInBackground(List<ResolverActivity.ResolvedComponentInfo>... params) {
+            Trace.beginSection("ChooserListAdapter#SortingTask");
+            ChooserListAdapter.this.mResolverListController.topK(params[0], ChooserListAdapter.this.mChooserListCommunicator.getMaxRankedTargets());
+            Trace.endSection();
+            return params[0];
+        }
+
+        @Override // android.os.AsyncTask
+        public void onPostExecute(List<ResolverActivity.ResolvedComponentInfo> sortedComponents) {
+            ChooserListAdapter.this.processSortedList(sortedComponents, doPostProcessing);
+            if (doPostProcessing) {
+                ChooserListAdapter.this.mChooserListCommunicator.updateProfileViewButton();
+                ChooserListAdapter.this.notifyDataSetChanged();
+            }
+        }
     }
 
     public void setAppPredictor(AppPredictor appPredictor) {
@@ -621,17 +693,19 @@ public class ChooserListAdapter extends ResolverListAdapter {
     public class LoadDirectShareIconTask extends AsyncTask<Void, Void, Boolean> {
         private final SelectableTargetInfo mTargetInfo;
 
+        /* synthetic */ LoadDirectShareIconTask(ChooserListAdapter chooserListAdapter, SelectableTargetInfo selectableTargetInfo, LoadDirectShareIconTaskIA loadDirectShareIconTaskIA) {
+            this(selectableTargetInfo);
+        }
+
         private LoadDirectShareIconTask(SelectableTargetInfo targetInfo) {
             this.mTargetInfo = targetInfo;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public Boolean doInBackground(Void... voids) {
             return Boolean.valueOf(this.mTargetInfo.loadIcon());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onPostExecute(Boolean isLoaded) {
             if (isLoaded.booleanValue()) {

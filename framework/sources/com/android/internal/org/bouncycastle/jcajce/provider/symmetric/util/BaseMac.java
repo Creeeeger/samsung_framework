@@ -30,7 +30,6 @@ public class BaseMac extends MacSpi implements PBE {
     private int pbeHash;
     private int scheme;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseMac(Mac macEngine) {
         this.scheme = 2;
         this.pbeHash = 1;

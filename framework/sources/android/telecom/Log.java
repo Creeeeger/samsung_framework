@@ -478,7 +478,6 @@ public class Log {
         }).collect(Collectors.joining(""));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$getPackageAbbreviation$0(String s) {
         return s.length() == 0 ? "" : s.substring(0, 1);
     }

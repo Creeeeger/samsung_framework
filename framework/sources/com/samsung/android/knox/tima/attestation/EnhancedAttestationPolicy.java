@@ -23,6 +23,9 @@ public class EnhancedAttestationPolicy {
     private Context mContext;
     private final HashMap<String, RequestInfo> mTrackOpsHash = new HashMap<>();
     private ServiceConnection conn = new ServiceConnection() { // from class: com.samsung.android.knox.tima.attestation.EnhancedAttestationPolicy.1
+        AnonymousClass1() {
+        }
+
         @Override // android.content.ServiceConnection
         public void onServiceDisconnected(ComponentName name) {
             synchronized (EnhancedAttestationPolicy.class) {
@@ -43,7 +46,6 @@ public class EnhancedAttestationPolicy {
     private IEnhancedAttestation mEnhancedAttestation = null;
     private boolean mProcessPendingRequest = false;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static synchronized EnhancedAttestationPolicy getInstance(Context context) {
         synchronized (EnhancedAttestationPolicy.class) {
             if (context == null) {
@@ -57,7 +59,6 @@ public class EnhancedAttestationPolicy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static synchronized EnhancedAttestationPolicy getInstance() {
         EnhancedAttestationPolicy enhancedAttestationPolicy;
         synchronized (EnhancedAttestationPolicy.class) {
@@ -70,7 +71,6 @@ public class EnhancedAttestationPolicy {
         this.mContext = context.getApplicationContext();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isSupported() {
         if (!isDongleDevice() && isKnoxVersionSupported()) {
             return !(isSepLiteDevice() || isJdmDevice()) || isEaSupportedFromSepLite();
@@ -114,13 +114,11 @@ public class EnhancedAttestationPolicy {
         return Integer.parseInt("37") - 5;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startAttestation(String nonce, EnhancedAttestationPolicyCallback cb) {
         Log.d(TAG, "startAttestation on-prem");
         startAttestation(null, nonce, cb, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startAttestation(String auk, String nonce, EnhancedAttestationPolicyCallback cb) {
         Log.d(TAG, "startAttestation");
         startAttestation(auk, nonce, cb, false);
@@ -179,6 +177,31 @@ public class EnhancedAttestationPolicy {
         return result;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.knox.tima.attestation.EnhancedAttestationPolicy$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements ServiceConnection {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            synchronized (EnhancedAttestationPolicy.class) {
+                EnhancedAttestationPolicy.this.mEnhancedAttestation = null;
+                Log.i(EnhancedAttestationPolicy.TAG, "On onServiceDisconnected");
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            synchronized (EnhancedAttestationPolicy.class) {
+                EnhancedAttestationPolicy.this.mEnhancedAttestation = IEnhancedAttestation.Stub.asInterface(service);
+                Log.i(EnhancedAttestationPolicy.TAG, "On onServiceConnected");
+            }
+            EnhancedAttestationPolicy.this.handlePendingRequest();
+        }
+    }
+
     private boolean bindService() {
         synchronized (EnhancedAttestationPolicy.class) {
             Log.d(TAG, "bindService: " + this.mEnhancedAttestation);
@@ -201,7 +224,6 @@ public class EnhancedAttestationPolicy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handlePendingRequest() {
         HashMap<String, RequestInfo> trackOpsHash;
         if (getTrackMapSize() < 1) {
@@ -233,7 +255,6 @@ public class EnhancedAttestationPolicy {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void removeFromTrackMap(String nonce) {
         this.mTrackOpsHash.remove(nonce);
         Log.d(TAG, "removeFromTrackMap: size: " + this.mTrackOpsHash.size() + ", pending: " + this.mProcessPendingRequest);
@@ -252,7 +273,6 @@ public class EnhancedAttestationPolicy {
         return this.mTrackOpsHash.size();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class RequestInfo {
         private String mAuk;

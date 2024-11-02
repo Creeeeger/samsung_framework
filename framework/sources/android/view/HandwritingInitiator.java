@@ -315,7 +315,6 @@ public class HandwritingInitiator {
         return f > ((float) (i * i));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class State {
         private boolean mExceedHandwritingSlop;
@@ -327,6 +326,10 @@ public class HandwritingInitiator {
         private final float mStylusDownX;
         private final float mStylusDownY;
         private final int mStylusPointerId;
+
+        /* synthetic */ State(MotionEvent motionEvent, StateIA stateIA) {
+            this(motionEvent);
+        }
 
         private State(MotionEvent motionEvent) {
             this.mPendingConnectedView = null;
@@ -342,7 +345,6 @@ public class HandwritingInitiator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isViewActive(View view) {
         return view != null && view.isAttachedToWindow() && view.isAggregatedVisible() && view.shouldInitiateHandwriting();
     }
@@ -370,7 +372,6 @@ public class HandwritingInitiator {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$computeViewInfos$0(HandwritableViewInfo viewInfo) {
             return !viewInfo.update();
         }

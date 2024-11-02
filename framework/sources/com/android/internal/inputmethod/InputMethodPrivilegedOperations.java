@@ -15,9 +15,14 @@ public final class InputMethodPrivilegedOperations {
     private static final String TAG = "InputMethodPrivilegedOperations";
     private final OpsHolder mOps = new OpsHolder();
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static final class OpsHolder {
+    public static final class OpsHolder {
         private IInputMethodPrivilegedOperations mPrivOps;
+
+        /* synthetic */ OpsHolder(OpsHolderIA opsHolderIA) {
+            this();
+        }
 
         private OpsHolder() {
         }

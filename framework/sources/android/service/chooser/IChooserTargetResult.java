@@ -84,8 +84,9 @@ public interface IChooserTargetResult extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IChooserTargetResult {
+        public static class Proxy implements IChooserTargetResult {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

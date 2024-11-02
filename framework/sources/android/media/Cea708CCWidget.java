@@ -73,13 +73,15 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         ((ViewGroup) this.mClosedCaptionLayout).draw(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: Cea708CaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class ScaledLayout extends ViewGroup {
         private static final boolean DEBUG = false;
         private static final String TAG = "ScaledLayout";
         private static final Comparator<Rect> mRectTopLeftSorter = new Comparator<Rect>() { // from class: android.media.Cea708CCWidget.ScaledLayout.1
+            AnonymousClass1() {
+            }
+
             @Override // java.util.Comparator
             public int compare(Rect lhs, Rect rhs) {
                 if (lhs.top != rhs.top) {
@@ -90,11 +92,26 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         };
         private Rect[] mRectArray;
 
+        /* compiled from: Cea708CaptionRenderer.java */
+        /* renamed from: android.media.Cea708CCWidget$ScaledLayout$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Comparator<Rect> {
+            AnonymousClass1() {
+            }
+
+            @Override // java.util.Comparator
+            public int compare(Rect lhs, Rect rhs) {
+                if (lhs.top != rhs.top) {
+                    return lhs.top - rhs.top;
+                }
+                return lhs.left - rhs.left;
+            }
+        }
+
         public ScaledLayout(Context context) {
             super(context);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* compiled from: Cea708CaptionRenderer.java */
         /* loaded from: classes2.dex */
         public static class ScaledLayoutParams extends ViewGroup.LayoutParams {
@@ -122,13 +139,11 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
             return new ScaledLayoutParams(getContext(), attrs);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup
         public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
             return p instanceof ScaledLayoutParams;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             int widthSpecSize = View.MeasureSpec.getSize(widthMeasureSpec);
@@ -219,7 +234,6 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
             setMeasuredDimension(widthSpecSize3, heightSpecSize3);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup, android.view.View
         public void onLayout(boolean changed, int l, int t, int r, int b) {
             int paddingLeft = getPaddingLeft();
@@ -261,7 +275,6 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: Cea708CaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class CCLayout extends ScaledLayout implements ClosedCaptionWidget.ClosedCaptionLayout {
@@ -310,9 +323,10 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: Cea708CaptionRenderer.java */
     /* loaded from: classes2.dex */
-    static class CCHandler implements Handler.Callback {
+    public static class CCHandler implements Handler.Callback {
         private static final int CAPTION_ALL_WINDOWS_BITMAP = 255;
         private static final long CAPTION_CLEAR_INTERVAL_MS = 60000;
         private static final int CAPTION_WINDOWS_MAX = 8;
@@ -589,7 +603,6 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: Cea708CaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class CCWindowLayout extends RelativeLayout implements View.OnLayoutChangeListener {
@@ -956,7 +969,6 @@ class Cea708CCWidget extends ClosedCaptionWidget implements Cea708CCParser.Displ
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: Cea708CaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class CCView extends SubtitleView {

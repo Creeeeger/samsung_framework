@@ -200,8 +200,9 @@ public interface IRollbackManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IRollbackManager {
+        public static class Proxy implements IRollbackManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

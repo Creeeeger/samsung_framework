@@ -9,6 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehCdmaSmsAddress implements Parcelable {
     public static final Parcelable.Creator<SehCdmaSmsAddress> CREATOR = new Parcelable.Creator<SehCdmaSmsAddress>() { // from class: vendor.samsung.hardware.radio.messaging.SehCdmaSmsAddress.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehCdmaSmsAddress createFromParcel(Parcel _aidl_source) {
             SehCdmaSmsAddress _aidl_out = new SehCdmaSmsAddress();
@@ -52,6 +55,25 @@ public class SehCdmaSmsAddress implements Parcelable {
     public boolean isNumberModeDataNetwork = false;
     public int numberType = 0;
     public int numberPlan = 0;
+
+    /* renamed from: vendor.samsung.hardware.radio.messaging.SehCdmaSmsAddress$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehCdmaSmsAddress> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehCdmaSmsAddress createFromParcel(Parcel _aidl_source) {
+            SehCdmaSmsAddress _aidl_out = new SehCdmaSmsAddress();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehCdmaSmsAddress[] newArray(int _aidl_size) {
+            return new SehCdmaSmsAddress[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

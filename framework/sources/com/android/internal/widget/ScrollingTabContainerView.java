@@ -168,7 +168,6 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
         return spinner;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -201,12 +200,18 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
     }
 
     public void animateToTab(int position) {
-        final View tabView = this.mTabLayout.getChildAt(position);
+        View tabView = this.mTabLayout.getChildAt(position);
         Runnable runnable = this.mTabSelector;
         if (runnable != null) {
             removeCallbacks(runnable);
         }
-        Runnable runnable2 = new Runnable() { // from class: com.android.internal.widget.ScrollingTabContainerView.1
+        AnonymousClass1 anonymousClass1 = new Runnable() { // from class: com.android.internal.widget.ScrollingTabContainerView.1
+            final /* synthetic */ View val$tabView;
+
+            AnonymousClass1(View tabView2) {
+                tabView = tabView2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 int scrollPos = tabView.getLeft() - ((ScrollingTabContainerView.this.getWidth() - tabView.getWidth()) / 2);
@@ -214,8 +219,25 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
                 ScrollingTabContainerView.this.mTabSelector = null;
             }
         };
-        this.mTabSelector = runnable2;
-        post(runnable2);
+        this.mTabSelector = anonymousClass1;
+        post(anonymousClass1);
+    }
+
+    /* renamed from: com.android.internal.widget.ScrollingTabContainerView$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ View val$tabView;
+
+        AnonymousClass1(View tabView2) {
+            tabView = tabView2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            int scrollPos = tabView.getLeft() - ((ScrollingTabContainerView.this.getWidth() - tabView.getWidth()) / 2);
+            ScrollingTabContainerView.this.smoothScrollTo(scrollPos, 0);
+            ScrollingTabContainerView.this.mTabSelector = null;
+        }
     }
 
     @Override // android.widget.HorizontalScrollView, android.view.ViewGroup, android.view.View
@@ -236,7 +258,6 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public TabView createTabView(Context context, ActionBar.Tab tab, boolean forAdapter) {
         TabView tabView = new TabView(context, tab, forAdapter);
         if (forAdapter) {
@@ -321,7 +342,6 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
         tabView.getTab().select();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class TabView extends LinearLayout {
         private View mCustomView;
@@ -446,7 +466,6 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class TabAdapter extends BaseAdapter {
         private Context mDropDownContext;
@@ -494,9 +513,12 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class TabClickListener implements View.OnClickListener {
+        /* synthetic */ TabClickListener(ScrollingTabContainerView scrollingTabContainerView, TabClickListenerIA tabClickListenerIA) {
+            this();
+        }
+
         private TabClickListener() {
         }
 
@@ -512,8 +534,9 @@ public class ScrollingTabContainerView extends HorizontalScrollView implements A
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes5.dex */
-    protected class VisibilityAnimListener implements Animator.AnimatorListener {
+    public class VisibilityAnimListener implements Animator.AnimatorListener {
         private boolean mCanceled = false;
         private int mFinalVisibility;
 

@@ -114,11 +114,27 @@ public class ListView extends AbsListView {
         this.mDndListAnimator = animator;
         setChildrenDrawingOrderEnabled(true);
         this.mDndListAnimator.setAutoScrollListener(new SemAbsDragAndDropAnimator.SemDragAutoScrollListener() { // from class: android.widget.ListView.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator.SemDragAutoScrollListener
             public void onAutoScroll(int delta) {
                 ListView.this.trackMotionScroll(delta, delta);
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.ListView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements SemAbsDragAndDropAnimator.SemDragAutoScrollListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator.SemDragAutoScrollListener
+        public void onAutoScroll(int delta) {
+            ListView.this.trackMotionScroll(delta, delta);
+        }
     }
 
     public ListView(Context context) {
@@ -301,7 +317,6 @@ public class ListView extends AbsListView {
         return false;
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // android.widget.AdapterView
     public ListAdapter getAdapter() {
         return this.mAdapter;
@@ -313,7 +328,6 @@ public class ListView extends AbsListView {
         super.setRemoteViewsAdapter(intent);
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // android.widget.AbsListView, android.widget.AdapterView
     public void setAdapter(ListAdapter adapter) {
         int position;
@@ -360,7 +374,7 @@ public class ListView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView
-    void resetList() {
+    public void resetList() {
         clearRecycledState(this.mHeaderViewInfos);
         clearRecycledState(this.mFooterViewInfos);
         super.resetList();
@@ -643,7 +657,6 @@ public class ListView extends AbsListView {
         return sel;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class FocusSelector implements Runnable {
         private static final int STATE_REQUEST_FOCUS = 3;
@@ -652,6 +665,10 @@ public class ListView extends AbsListView {
         private int mAction;
         private int mPosition;
         private int mPositionTop;
+
+        /* synthetic */ FocusSelector(ListView listView, FocusSelectorIA focusSelectorIA) {
+            this();
+        }
 
         private FocusSelector() {
         }
@@ -694,7 +711,6 @@ public class ListView extends AbsListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         FocusSelector focusSelector = this.mFocusSelector;
@@ -709,7 +725,7 @@ public class ListView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.view.View
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    public void onSizeChanged(int w, int h, int oldw, int oldh) {
         View focusedChild;
         if (getChildCount() > 0 && (focusedChild = getFocusedChild()) != null) {
             int childPosition = this.mFirstPosition + indexOfChild(focusedChild);
@@ -724,7 +740,6 @@ public class ListView extends AbsListView {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSize;
@@ -794,7 +809,6 @@ public class ListView extends AbsListView {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final int measureHeightOfChildren(int widthMeasureSpec, int startPosition, int endPosition, int maxHeight, int disallowPartialChildPosition) {
         ListAdapter adapter = this.mAdapter;
         if (adapter == null) {
@@ -965,14 +979,12 @@ public class ListView extends AbsListView {
         return super.onTouchEvent(ev);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public int getChildDrawingOrder(int childCount, int i) {
         SemDragAndDropListAnimator semDragAndDropListAnimator = this.mDndListAnimator;
         return semDragAndDropListAnimator != null ? semDragAndDropListAnimator.getChildDrawingOrder(childCount, i) : super.getChildDrawingOrder(childCount, i);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Removed duplicated region for block: B:183:0x0323 A[Catch: all -> 0x049f, TryCatch #0 {all -> 0x049f, blocks: (B:7:0x000b, B:9:0x0015, B:17:0x0027, B:18:0x0043, B:19:0x0046, B:20:0x0070, B:23:0x0078, B:24:0x007d, B:26:0x0086, B:27:0x008c, B:28:0x009a, B:30:0x00a0, B:31:0x00a3, B:33:0x00a7, B:41:0x00b9, B:43:0x00c3, B:45:0x00d4, B:47:0x00da, B:52:0x00e5, B:54:0x00eb, B:56:0x00f1, B:58:0x00fc, B:59:0x0115, B:62:0x0121, B:64:0x0127, B:66:0x012d, B:68:0x0141, B:70:0x0147, B:72:0x0155, B:76:0x0160, B:79:0x0179, B:80:0x0181, B:83:0x0192, B:85:0x0261, B:86:0x02bb, B:88:0x02cb, B:90:0x02cf, B:92:0x02d5, B:97:0x02e1, B:101:0x02f2, B:103:0x02f8, B:104:0x02fb, B:106:0x030c, B:109:0x036f, B:112:0x0377, B:114:0x037e, B:117:0x0387, B:119:0x0396, B:122:0x039d, B:124:0x03b2, B:128:0x03ba, B:130:0x03cb, B:131:0x03dc, B:134:0x03e4, B:136:0x03e9, B:137:0x03d8, B:138:0x03ec, B:140:0x03f0, B:143:0x041d, B:145:0x0423, B:146:0x0426, B:148:0x0431, B:149:0x0438, B:151:0x0447, B:152:0x044a, B:160:0x03f4, B:162:0x03f8, B:165:0x0404, B:168:0x0415, B:169:0x0411, B:170:0x0418, B:171:0x02ff, B:172:0x02e7, B:175:0x0309, B:176:0x0313, B:178:0x0318, B:183:0x0323, B:185:0x032e, B:187:0x0361, B:190:0x0369, B:191:0x0334, B:193:0x0338, B:195:0x033e, B:197:0x0342, B:199:0x034d, B:200:0x0353, B:202:0x0357, B:204:0x0271, B:205:0x0287, B:207:0x028b, B:209:0x0291, B:212:0x029b, B:213:0x0297, B:214:0x02a0, B:216:0x02a6, B:219:0x02b0, B:220:0x02ac, B:221:0x02b5, B:222:0x0196, B:223:0x01b0, B:225:0x01c0, B:226:0x01cf, B:227:0x01d9, B:229:0x01f1, B:231:0x01f6, B:233:0x01fc, B:234:0x01ff, B:236:0x0203, B:238:0x0207, B:240:0x020b, B:242:0x0211, B:245:0x0238, B:246:0x0242, B:247:0x0248, B:248:0x0174, B:249:0x0131, B:251:0x0139, B:255:0x00f5, B:259:0x045e, B:260:0x049e, B:261:0x0049, B:264:0x0053), top: B:6:0x000b }] */
     /* JADX WARN: Removed duplicated region for block: B:191:0x0334 A[Catch: all -> 0x049f, TryCatch #0 {all -> 0x049f, blocks: (B:7:0x000b, B:9:0x0015, B:17:0x0027, B:18:0x0043, B:19:0x0046, B:20:0x0070, B:23:0x0078, B:24:0x007d, B:26:0x0086, B:27:0x008c, B:28:0x009a, B:30:0x00a0, B:31:0x00a3, B:33:0x00a7, B:41:0x00b9, B:43:0x00c3, B:45:0x00d4, B:47:0x00da, B:52:0x00e5, B:54:0x00eb, B:56:0x00f1, B:58:0x00fc, B:59:0x0115, B:62:0x0121, B:64:0x0127, B:66:0x012d, B:68:0x0141, B:70:0x0147, B:72:0x0155, B:76:0x0160, B:79:0x0179, B:80:0x0181, B:83:0x0192, B:85:0x0261, B:86:0x02bb, B:88:0x02cb, B:90:0x02cf, B:92:0x02d5, B:97:0x02e1, B:101:0x02f2, B:103:0x02f8, B:104:0x02fb, B:106:0x030c, B:109:0x036f, B:112:0x0377, B:114:0x037e, B:117:0x0387, B:119:0x0396, B:122:0x039d, B:124:0x03b2, B:128:0x03ba, B:130:0x03cb, B:131:0x03dc, B:134:0x03e4, B:136:0x03e9, B:137:0x03d8, B:138:0x03ec, B:140:0x03f0, B:143:0x041d, B:145:0x0423, B:146:0x0426, B:148:0x0431, B:149:0x0438, B:151:0x0447, B:152:0x044a, B:160:0x03f4, B:162:0x03f8, B:165:0x0404, B:168:0x0415, B:169:0x0411, B:170:0x0418, B:171:0x02ff, B:172:0x02e7, B:175:0x0309, B:176:0x0313, B:178:0x0318, B:183:0x0323, B:185:0x032e, B:187:0x0361, B:190:0x0369, B:191:0x0334, B:193:0x0338, B:195:0x033e, B:197:0x0342, B:199:0x034d, B:200:0x0353, B:202:0x0357, B:204:0x0271, B:205:0x0287, B:207:0x028b, B:209:0x0291, B:212:0x029b, B:213:0x0297, B:214:0x02a0, B:216:0x02a6, B:219:0x02b0, B:220:0x02ac, B:221:0x02b5, B:222:0x0196, B:223:0x01b0, B:225:0x01c0, B:226:0x01cf, B:227:0x01d9, B:229:0x01f1, B:231:0x01f6, B:233:0x01fc, B:234:0x01ff, B:236:0x0203, B:238:0x0207, B:240:0x020b, B:242:0x0211, B:245:0x0238, B:246:0x0242, B:247:0x0248, B:248:0x0174, B:249:0x0131, B:251:0x0139, B:255:0x00f5, B:259:0x045e, B:260:0x049e, B:261:0x0049, B:264:0x0053), top: B:6:0x000b }] */
     @Override // android.widget.AbsListView
@@ -989,7 +1001,7 @@ public class ListView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView
-    boolean trackMotionScroll(int deltaY, int incrementalDeltaY) {
+    public boolean trackMotionScroll(int deltaY, int incrementalDeltaY) {
         boolean result = super.trackMotionScroll(deltaY, incrementalDeltaY);
         removeUnusedFixedViews(this.mHeaderViewInfos);
         removeUnusedFixedViews(this.mFooterViewInfos);
@@ -1113,7 +1125,6 @@ public class ListView extends AbsListView {
         Trace.traceEnd(8L);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup
     public boolean canAnimate() {
         return super.canAnimate() && this.mItemCount > 0;
@@ -1146,7 +1157,6 @@ public class ListView extends AbsListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AdapterView
     public int lookForSelectablePosition(int position, boolean lookDown) {
         ListAdapter adapter = this.mAdapter;
@@ -1622,11 +1632,14 @@ public class ListView extends AbsListView {
         return Math.min(amountToScroll2, max4);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ArrowScrollFocusResult {
         private int mAmountToScroll;
         private int mSelectedPosition;
+
+        /* synthetic */ ArrowScrollFocusResult(ArrowScrollFocusResultIA arrowScrollFocusResultIA) {
+            this();
+        }
 
         private ArrowScrollFocusResult() {
         }
@@ -1936,7 +1949,6 @@ public class ListView extends AbsListView {
         canvas.restore();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         ListAdapter adapter;
@@ -2192,7 +2204,6 @@ public class ListView extends AbsListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean drawChild(Canvas canvas, View child, long drawingTime) {
         SemDragAndDropListAnimator semDragAndDropListAnimator = this.mDndListAnimator;
@@ -2210,7 +2221,6 @@ public class ListView extends AbsListView {
         return more;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void drawDivider(Canvas canvas, Rect bounds, int childIndex) {
         Drawable divider = this.mDivider;
         divider.setBounds(bounds);
@@ -2282,7 +2292,7 @@ public class ListView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.view.View
-    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+    public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
         ListAdapter adapter = this.mAdapter;
         int closetChildIndex = -1;
@@ -2318,6 +2328,9 @@ public class ListView extends AbsListView {
         }
         if (gainFocus && this.mDndListAnimator != null) {
             post(new Runnable() { // from class: android.widget.ListView.2
+                AnonymousClass2() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     ListView.this.mDndListAnimator.speakDescriptionForAccessibility();
@@ -2326,7 +2339,18 @@ public class ListView extends AbsListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.widget.ListView$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ListView.this.mDndListAnimator.speakDescriptionForAccessibility();
+        }
+    }
+
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -2339,7 +2363,6 @@ public class ListView extends AbsListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public <T extends View> T findViewTraversal(int i) {
         T t = (T) super.findViewTraversal(i);
@@ -2371,7 +2394,6 @@ public class ListView extends AbsListView {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public <T extends View> T findViewWithTagTraversal(Object obj) {
         T t = (T) super.findViewWithTagTraversal(obj);
@@ -2403,7 +2425,6 @@ public class ListView extends AbsListView {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
         T t = (T) super.findViewByPredicateTraversal(predicate, view);
@@ -2463,7 +2484,7 @@ public class ListView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView
-    int getHeightForPosition(int position) {
+    public int getHeightForPosition(int position) {
         int height = super.getHeightForPosition(position);
         if (shouldAdjustHeightForDivider(position)) {
             return this.mDividerHeight + height;
@@ -2598,7 +2619,7 @@ public class ListView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView, android.widget.AdapterView, android.view.ViewGroup, android.view.View
-    protected void encodeProperties(ViewHierarchyEncoder encoder) {
+    public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("recycleOnMeasure", recycleOnMeasure());
     }
@@ -2607,12 +2628,10 @@ public class ListView extends AbsListView {
         return new HeaderViewListAdapter(headerViewInfos, footerViewInfos, adapter);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void wrapHeaderListAdapterInternal() {
         this.mAdapter = wrapHeaderListAdapterInternal(this.mHeaderViewInfos, this.mFooterViewInfos, this.mAdapter);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dispatchDataSetObserverOnChangedInternal() {
         if (this.mDataSetObserver != null) {
             this.mDataSetObserver.onChanged();
@@ -2620,7 +2639,7 @@ public class ListView extends AbsListView {
     }
 
     @Override // android.widget.AbsListView
-    boolean performLongPress(View child, int longPressPosition, long longPressId) {
+    public boolean performLongPress(View child, int longPressPosition, long longPressId) {
         if (this.mSweepListAnimator != null && this.mSweepListAnimator.isSwiping()) {
             return false;
         }

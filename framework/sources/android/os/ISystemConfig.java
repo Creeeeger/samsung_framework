@@ -162,8 +162,9 @@ public interface ISystemConfig extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISystemConfig {
+        public static class Proxy implements ISystemConfig {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

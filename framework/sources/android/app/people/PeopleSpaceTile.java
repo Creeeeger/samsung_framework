@@ -20,13 +20,14 @@ import java.util.List;
 public class PeopleSpaceTile implements Parcelable {
     public static final int BLOCK_CONVERSATIONS = 2;
     public static final Parcelable.Creator<PeopleSpaceTile> CREATOR = new Parcelable.Creator<PeopleSpaceTile>() { // from class: android.app.people.PeopleSpaceTile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PeopleSpaceTile createFromParcel(Parcel source) {
             return new PeopleSpaceTile(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PeopleSpaceTile[] newArray(int size) {
             return new PeopleSpaceTile[size];
@@ -59,6 +60,10 @@ public class PeopleSpaceTile implements Parcelable {
     private UserHandle mUserHandle;
     private Icon mUserIcon;
     private CharSequence mUserName;
+
+    /* synthetic */ PeopleSpaceTile(Builder builder, PeopleSpaceTileIA peopleSpaceTileIA) {
+        this(builder);
+    }
 
     private PeopleSpaceTile(Builder b) {
         this.mId = b.mId;
@@ -456,6 +461,23 @@ public class PeopleSpaceTile implements Parcelable {
         dest.writeBoolean(this.mIsUserQuieted);
         dest.writeInt(this.mNotificationPolicyState);
         dest.writeFloat(this.mContactAffinity);
+    }
+
+    /* renamed from: android.app.people.PeopleSpaceTile$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PeopleSpaceTile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PeopleSpaceTile createFromParcel(Parcel source) {
+            return new PeopleSpaceTile(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PeopleSpaceTile[] newArray(int size) {
+            return new PeopleSpaceTile[size];
+        }
     }
 
     public static Icon convertDrawableToIcon(Drawable drawable) {

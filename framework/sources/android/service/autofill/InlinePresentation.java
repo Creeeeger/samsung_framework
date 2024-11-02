@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class InlinePresentation implements Parcelable {
     public static final Parcelable.Creator<InlinePresentation> CREATOR = new Parcelable.Creator<InlinePresentation>() { // from class: android.service.autofill.InlinePresentation.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InlinePresentation[] newArray(int size) {
             return new InlinePresentation[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlinePresentation createFromParcel(Parcel in) {
             return new InlinePresentation(in);
@@ -103,6 +104,23 @@ public final class InlinePresentation implements Parcelable {
         this.mInlinePresentationSpec = inlinePresentationSpec;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inlinePresentationSpec);
         this.mPinned = pinned;
+    }
+
+    /* renamed from: android.service.autofill.InlinePresentation$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InlinePresentation> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlinePresentation[] newArray(int size) {
+            return new InlinePresentation[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlinePresentation createFromParcel(Parcel in) {
+            return new InlinePresentation(in);
+        }
     }
 
     @Deprecated

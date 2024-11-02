@@ -75,7 +75,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
     public @interface Reasons {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class JankInfo {
         long frameVsyncId;
@@ -175,8 +174,7 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
         viewRootWrapper2.addSurfaceChangedCallback(anonymousClass1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.jank.FrameTracker$1, reason: invalid class name */
+    /* renamed from: com.android.internal.jank.FrameTracker$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 implements ViewRootImpl.SurfaceChangedCallback {
         AnonymousClass1() {
@@ -192,7 +190,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
             }, 500L);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$surfaceCreated$0() {
             if (FrameTracker.this.mSurfaceControl == null) {
                 FrameTracker frameTracker = FrameTracker.this;
@@ -217,7 +214,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
             }, 50L);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$surfaceDestroyed$1() {
             if (!FrameTracker.this.mMetricsFinalized) {
                 FrameTracker.this.end(1);
@@ -254,7 +250,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
         this.mChoreographer.mChoreographer.postCallback(0, action, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void beginInternal() {
         if (this.mCancelled || this.mEndVsyncId != -1) {
             return;
@@ -292,8 +287,7 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.jank.FrameTracker$2, reason: invalid class name */
+    /* renamed from: com.android.internal.jank.FrameTracker$2 */
     /* loaded from: classes4.dex */
     public class AnonymousClass2 implements Runnable {
         private int mFlushAttempts = 0;
@@ -326,7 +320,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
             FrameTracker.this.getHandler().postDelayed(FrameTracker.this.mWaitForFinishTimedOut, delay);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$run$0() {
             Log.e(FrameTracker.TAG, "force finish cuj, time out: " + FrameTracker.this.mSession.getName());
             FrameTracker.this.finish();
@@ -378,7 +371,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onJankDataAvailable$0(SurfaceControl.JankData[] jankData) {
         if (this.mCancelled || this.mMetricsFinalized) {
             return;
@@ -419,7 +411,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFrameMetricsAvailable$1() {
         if (this.mCancelled || this.mMetricsFinalized) {
             return;
@@ -478,7 +469,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
         return info.hwuiCallbackFired && info.surfaceControlCallbackFired;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void finish() {
         int totalFramesCount;
         int totalFramesCount2;
@@ -618,7 +608,6 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
         return this.mRendererWrapper;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewRootWrapper getViewRoot() {
         return this.mViewRoot;
     }
@@ -702,27 +691,22 @@ public class FrameTracker extends SurfaceControl.OnJankDataListener implements H
             return this.mViewRoot.getSurfaceControl();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void requestInvalidateRootRenderNode() {
             this.mViewRoot.requestInvalidateRootRenderNode();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void addWindowCallbacks(WindowCallbacks windowCallbacks) {
             this.mViewRoot.addWindowCallbacks(windowCallbacks);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void removeWindowCallbacks(WindowCallbacks windowCallbacks) {
             this.mViewRoot.removeWindowCallbacks(windowCallbacks);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public View getView() {
             return this.mViewRoot.getView();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int dipToPx(int dip) {
             DisplayMetrics displayMetrics = this.mViewRoot.mContext.getResources().getDisplayMetrics();
             return (int) ((displayMetrics.density * dip) + 0.5f);

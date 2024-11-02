@@ -89,8 +89,9 @@ public interface IChimera extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IChimera {
+        public static class Proxy implements IChimera {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

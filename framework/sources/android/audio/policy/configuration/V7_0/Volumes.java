@@ -26,7 +26,6 @@ public class Volumes {
         return this.reference;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Volumes read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Volumes _instance = new Volumes();

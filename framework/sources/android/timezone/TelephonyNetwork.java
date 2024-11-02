@@ -6,7 +6,6 @@ import java.util.Objects;
 public final class TelephonyNetwork {
     private final com.android.i18n.timezone.TelephonyNetwork mDelegate;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TelephonyNetwork(com.android.i18n.timezone.TelephonyNetwork delegate) {
         this.mDelegate = (com.android.i18n.timezone.TelephonyNetwork) Objects.requireNonNull(delegate);
     }

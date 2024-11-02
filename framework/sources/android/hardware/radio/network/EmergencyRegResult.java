@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class EmergencyRegResult implements Parcelable {
     public static final Parcelable.Creator<EmergencyRegResult> CREATOR = new Parcelable.Creator<EmergencyRegResult>() { // from class: android.hardware.radio.network.EmergencyRegResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EmergencyRegResult createFromParcel(Parcel _aidl_source) {
             EmergencyRegResult _aidl_out = new EmergencyRegResult();
@@ -18,7 +20,6 @@ public class EmergencyRegResult implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EmergencyRegResult[] newArray(int _aidl_size) {
             return new EmergencyRegResult[_aidl_size];
@@ -33,6 +34,25 @@ public class EmergencyRegResult implements Parcelable {
     public byte nwProvidedEmf = 0;
     public String mcc = "";
     public String mnc = "";
+
+    /* renamed from: android.hardware.radio.network.EmergencyRegResult$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EmergencyRegResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EmergencyRegResult createFromParcel(Parcel _aidl_source) {
+            EmergencyRegResult _aidl_out = new EmergencyRegResult();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EmergencyRegResult[] newArray(int _aidl_size) {
+            return new EmergencyRegResult[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

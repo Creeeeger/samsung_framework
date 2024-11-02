@@ -5,7 +5,6 @@ public abstract class Violation extends Throwable {
     private int mHashCode;
     private boolean mHashCodeValid;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Violation(String message) {
         super(message);
     }

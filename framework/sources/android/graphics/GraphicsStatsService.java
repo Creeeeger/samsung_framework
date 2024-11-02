@@ -95,6 +95,9 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         HandlerThread bgthread = new HandlerThread("GraphicsStats-disk", 10);
         bgthread.start();
         this.mWriteOutHandler = new Handler(bgthread.getLooper(), new Handler.Callback() { // from class: android.graphics.GraphicsStatsService.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Handler.Callback
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
@@ -112,6 +115,27 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         nativeInit();
     }
 
+    /* renamed from: android.graphics.GraphicsStatsService$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Handler.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler.Callback
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    GraphicsStatsService.this.saveBuffer((HistoricalBuffer) msg.obj);
+                    return true;
+                case 2:
+                    GraphicsStatsService.this.deleteOldBuffers();
+                    return true;
+                default:
+                    return true;
+            }
+        }
+    }
+
     private void scheduleRotateLocked() {
         if (this.mRotateIsScheduled) {
             return;
@@ -127,7 +151,6 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }, this.mWriteOutHandler);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onAlarm() {
         int i;
         ActiveBuffer[] activeCopy;
@@ -308,7 +331,6 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         return new File(this.mGraphicsStatsDir, subPath);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void saveBuffer(HistoricalBuffer buffer) {
         if (Trace.isTagEnabled(524288L)) {
             Trace.traceBegin(524288L, "saving graphicsstats for " + buffer.mInfo.mPackageName);
@@ -337,7 +359,6 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void deleteOldBuffers() {
         Trace.traceBegin(524288L, "deleting old graphicsstats buffers");
         synchronized (this.mFileAccessLock) {
@@ -373,7 +394,6 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         buffer.closeAllBuffers();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void processDied(ActiveBuffer buffer) {
         synchronized (this.mLock) {
             this.mActive.remove(buffer);
@@ -381,9 +401,19 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         addToSaveQueue(buffer);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0040, code lost:            r0 = new android.graphics.GraphicsStatsService.ActiveBuffer(r15, r16, r17, r18, r19, r20);        r15.mActive.add(r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0056, code lost:            return r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x005f, code lost:            throw new android.os.RemoteException("Failed to allocate space");     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0040, code lost:
+    
+        r0 = new android.graphics.GraphicsStatsService.ActiveBuffer(r15, r16, r17, r18, r19, r20);
+        r15.mActive.add(r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0056, code lost:
+    
+        return r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x005f, code lost:
+    
+        throw new android.os.RemoteException("Failed to allocate space");
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -539,7 +569,6 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         nativeDestructor();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class BufferInfo {
         long mEndTime;
@@ -554,7 +583,6 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class ActiveBuffer implements IBinder.DeathRecipient {
         final IGraphicsStatsCallback mCallback;
@@ -621,7 +649,6 @@ public class GraphicsStatsService extends IGraphicsStats.Stub {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class HistoricalBuffer {
         final byte[] mData;

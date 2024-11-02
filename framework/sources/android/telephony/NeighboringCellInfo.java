@@ -10,13 +10,14 @@ import com.android.internal.telephony.SemTelephonyUtils;
 /* loaded from: classes3.dex */
 public class NeighboringCellInfo implements Parcelable {
     public static final Parcelable.Creator<NeighboringCellInfo> CREATOR = new Parcelable.Creator<NeighboringCellInfo>() { // from class: android.telephony.NeighboringCellInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NeighboringCellInfo createFromParcel(Parcel in) {
             return new NeighboringCellInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NeighboringCellInfo[] newArray(int size) {
             return new NeighboringCellInfo[size];
@@ -214,5 +215,22 @@ public class NeighboringCellInfo implements Parcelable {
         dest.writeInt(this.mCid);
         dest.writeInt(this.mPsc);
         dest.writeInt(this.mNetworkType);
+    }
+
+    /* renamed from: android.telephony.NeighboringCellInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NeighboringCellInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NeighboringCellInfo createFromParcel(Parcel in) {
+            return new NeighboringCellInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NeighboringCellInfo[] newArray(int size) {
+            return new NeighboringCellInfo[size];
+        }
     }
 }

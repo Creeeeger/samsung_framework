@@ -326,7 +326,7 @@
     <string name="ext_media_unsupported_notification_message">এই ডিভাইসটি এটি সমর্থন করে না %s। একটি সমর্থিত ফর্ম্যাটে সেট আপ করতে ট্যাপ করুন।</string>
     <string name="ext_media_unsupported_notification_title">%s অসমর্থিত</string>
     <string name="ext_storage_bad_removal_button">পুনঃশুরু</string>
-    <string name="ext_storage_bad_removal_title">আপনার ফোনটি পুনঃশুরু করুন</string>
+    <string name="ext_storage_bad_removal_title">আপনার ট্যাবলেটটি পুনঃশুরু করুন</string>
     <string name="factoryreset_restrict">সুরক্ষা নীতি ফ্যাক্টরি পুনরায় সেট সীমিত করে।</string>
     <string name="firmwarerecovery_restrict">সুরক্ষা নীতি ফার্মওয়্যার পুনরুদ্ধার সীমিত করে।</string>
     <string name="foldable_restart_app_dialog_checkbox">সমস্ত অ্যাপের জন্য আবার জিজ্ঞাসা করবেন না</string>
@@ -576,16 +576,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">আপনার ব্লুটুথ অডিও ডিভাইসে শব্দ প্লে করা হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন</string>
     <string name="multisound_sound_via_headphone">%s-এর শব্দ আপনার হেডফোনগুলির মাধ্যমে বাজানো হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন।</string>
     <string name="multisound_sound_via_headphone_multiselection">শব্দ আপনার হেডফোনগুলির মাধ্যমে প্লে করা হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন।</string>
-    <string name="multisound_sound_via_phone_speaker">%s-এর শব্দ আপনার ফোন স্পীকারের মাধ্যমে বাজানো হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন।</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">শব্দ আপনার ফোনের স্পীকারের মাধ্যমে প্লে করা হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন।</string>
+    <string name="multisound_sound_via_phone_speaker">%s-এর শব্দ আপনার ট্যাবলেট স্পীকারের মাধ্যমে বাজানো হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন।</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">শব্দ আপনার ট্যাবলেটের স্পীকারের মাধ্যমে প্লে করা হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন।</string>
     <string name="multisound_sound_via_usb_audio">আপনার USB অডিও ডিভাইসে %s শব্দ বাজানো হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন।</string>
     <string name="multisound_sound_via_usb_audio_multiselection">আপনার USB অডিও ডিভাইসের মাধ্যমে শব্দ প্লে করা হচ্ছে। এটি বন্ধ করতে এখানে ট্যাপ করুন।</string>
     <string name="multisound_title">পৃথক অ্যাপের শব্দ</string>
     <string name="multisound_turn_off_multisound">বন্ধ করুন</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX-এ চালানো যাচ্ছে না। ফোন মোডে চালানোর চেষ্টা করুন।</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-এ চালানো যাচ্ছে না। এটি ফোনের হোম স্ক্রিনগুলির জন্য ডিজাইন করা হয়েছে।</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">কিছু গেম কেবলমাত্র স্পর্শ স্ক্রিনগুলিতে কাজ করে। মাউসের নিয়ন্ত্রণ Samsung DeX-এ কাজ না করলে, পরিবর্তে ফোন মোডে চালানোর চেষ্টা করুন।</string>
-    <string name="my_device">এই ফোন</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX-এ চালানো যাচ্ছে না। ট্যাবলেট মোডে চালানোর চেষ্টা করুন।</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-এ চালানো যাচ্ছে না। এটি ট্যাবলেট হোম স্ক্রিনগুলির জন্য ডিজাইন করা হয়েছে।</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">কিছু গেম কেবলমাত্র স্পর্শ স্ক্রিনগুলিতে কাজ করে। মাউসের নিয়ন্ত্রণ Samsung DeX-এ কাজ না করলে, পরিবর্তে ট্যাবলেট মোডে চালানোর চেষ্টা করুন।</string>
+    <string name="my_device">এই ট্যাবলেট</string>
     <string name="network_locked_sim_dialog_message_ais">আপনার SIM কার্ড আপনার সদস্যতার বিধি ও শর্তাবলীর সাথে সম্মত না হওয়ার কারণে এটি এই ফোনে সম্পূর্ণরূপে কাজ করে না। আপনার এই বিষয়ে কোনও প্রশ্ন থাকলে বা আরও তথ্যের প্রয়োজন হলে, দয়া করে স্যামসাং গ্রাহক পরিষেবা অবস্থানে বা যে স্টোর থেকে এই পণ্যসমূহ কিনেছেন সেখানে যোগাযোগ করুন।</string>
     <string name="network_locked_sim_notification_text">নেটওয়ার্ক লক করা SIM কার্ড প্রবেশ করানো হয়েছে।</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -772,7 +772,7 @@
     <string name="policydesc_allow_desktopsync">ডেস্কটপ সিঙ্কের ব্যবহার প্রতিরোধ করে।</string>
     <string name="policydesc_allow_internetsharing">মোবাইল হটস্পটের ব্যবহার প্রতিরোধ করে।</string>
     <string name="policydesc_allow_irda">IrDA-এর ব্যবহার প্রতিরোধ করে।</string>
-    <string name="policydesc_allow_popimapemail">ফোনে POP ও IMAP ইমেলের ব্যবহার প্রতিরোধ করে।</string>
+    <string name="policydesc_allow_popimapemail">ট্যাবলেটে POP ও IMAP ইমেলের ব্যবহার প্রতিরোধ করে।</string>
     <string name="policydesc_allow_storagecard">SD কার্ডগুলির ব্যবহার প্রতিরোধ করে।</string>
     <string name="policydesc_allow_textmessaging">টেক্সট ও মাল্টিমিডিয়া মেসেজের ব্যবহার প্রতিরোধ করে।</string>
     <string name="policydesc_allow_thirdParty">এই অ্যাপ্লিকেশনটি তৃতীয় পক্ষের অ্যাপ্লিকেশনগুলিকে চলা থেকে প্রতিরোধ করতে পারে।</string>
@@ -815,7 +815,7 @@
     <string name="pwd_change_enforced">সুরক্ষা নীতিটির আপনার পাসওয়ার্ডের পরিবর্তনের প্রয়োজন।</string>
     <string name="recording_fail">%2$s-এ মাইক ব্যবহৃত হলে %1$s-এ এটি ব্যবহার করা যাচ্ছে না।</string>
     <string name="recording_popup">%s মাইক্রোফোন ব্যবহার করছে।</string>
-    <string name="recording_popup_device">ফোন</string>
+    <string name="recording_popup_device">ট্যাবলেট</string>
     <string name="recording_popup_with_bluetooth">%s ব্লুটুথের মাইক্রোফোন ব্যবহার করছে।</string>
     <string name="recording_popup_with_device">%1$s %2$s-এর মাইক্রোফোন ব্যবহার করছে।</string>
     <string name="redo">রিডু</string>
@@ -880,12 +880,12 @@
     <string name="screencapture_restrict">সুরক্ষা নীতিটি স্ক্রিন ক্যাপচারের ব্যবহার প্রতিরোধ করে।</string>
     <string name="sd_card_unavailable_message">আপনার SD কার্ডটি পৃথক ব্যবহারকারীর প্রোফাইল ব্যবহার চলাকালীন প্রবেশ করানোর কারণে আপনি এটি ব্যবহার করতে পারবেন না।</string>
     <string name="sd_card_unavailable_title">SD কার্ড অনুপলব্ধ</string>
-    <string name="sdcard_bad_removal_message">একটি SD কার্ড অনিরাপদভাবে অপসারণ করা হয়েছে। আপনার ফোনটির অপ্রত্যাশিতভাবে পুনঃশুরু হওয়া প্রতিরোধ করতে, অসংরক্ষিত তথ্য সংরক্ষণ করুন এবং এখন পুনঃশুরু করুন।</string>
+    <string name="sdcard_bad_removal_message">একটি SD কার্ড অনিরাপদভাবে অপসারণ করা হয়েছে। আপনার ট্যাবলেটটির অপ্রত্যাশিতভাবে পুনঃশুরু হওয়া প্রতিরোধ করতে, অসংরক্ষিত তথ্য সংরক্ষণ করুন এবং এখন পুনঃশুরু করুন।</string>
     <string name="sdcard_batch_decrypt_noti_content">SD কার্ড ডিক্রিপ্ট করুন</string>
     <string name="sdcard_batch_decrypt_noti_title">SD কার্ড ডিক্রিপশন</string>
     <string name="sdcard_batch_decrypt_popup_content">এনক্রিপ্ট করা SD কার্ডটি ব্যবহার করার আগে ডিক্রিপ্ট করতে হবে। ডিক্রিপশন এক ঘন্টা বা তার বেশি সময় নিতে পারে। একটি চার্জ করা ব্যাটারি দিয়ে আরম্ভ করুন এবং ডিক্রিপশন সম্পূর্ণ না হওয়া পর্যন্ত ডিভাইসটিকে প্লাগ ইন করে রাখুন। ডিক্রিপশন প্রক্রিয়া বন্ধ করার ফলে কিছু বা সব তথ্য হারিয়ে যেতে পারে।</string>
     <string name="sdcard_decrypt_err_notification">SD কার্ড ডিক্রিপশন ত্রুটি ঘটেছে।</string>
-    <string name="sdcard_decrypt_error_otherdevice">আপনার SD কার্ডের কিছু ফাইল অন্য কোনও ডিভাইসে এনক্রিপ্ট করা হয়েছে এবং এই ফোনে ব্যবহার করা যাবে না।</string>
+    <string name="sdcard_decrypt_error_otherdevice">আপনার SD কার্ডের কিছু ফাইল অন্য কোনও ডিভাইসে এনক্রিপ্ট করা হয়েছে এবং এই ট্যাবলেটে ব্যবহার করা যাবে না।</string>
     <string name="sdcard_decrypt_notification">SD কার্ড ডিক্রিপ্ট করা হয়েছে।</string>
     <string name="sdcard_decrypt_title_notification">SD কার্ড ডিক্রিপশন</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD কার্ড ডিক্রিপ্ট করা হচ্ছে…</string>
@@ -1206,7 +1206,7 @@
     <string name="usb_abnormal_reset_message">কেবলটি আনপ্লাগ করে এটি আবার প্লাগ ইন করুন বা কোনও ভিন্ন কেবল ব্যবহারের চেষ্টা করুন।</string>
     <string name="usb_abnormal_reset_title">USB কানেকশন স্থিতিশীল নয়</string>
     <string name="usb_abnormal_reset_toast">USB কানেকশন স্থিতিশীল নয়। কেবলটি আনপ্লাগ করে এটি আবার প্লাগ ইন করুন বা কোনও ভিন্ন কেবল ব্যবহারের চেষ্টা করুন।</string>
-    <string name="usb_bad_removal_message">একটি USB স্টোরেজ ডিভাইস অনিরাপদভাবে অপসারণ করা হয়েছে। আপনার ফোনটির অপ্রত্যাশিতভাবে পুনঃশুরু হওয়া প্রতিরোধ করতে, অসংরক্ষিত তথ্য সংরক্ষণ করুন এবং এখন পুনঃশুরু করুন।</string>
+    <string name="usb_bad_removal_message">একটি USB স্টোরেজ ডিভাইস অনিরাপদভাবে অপসারণ করা হয়েছে। আপনার ট্যাবলেটটির অপ্রত্যাশিতভাবে পুনঃশুরু হওয়া প্রতিরোধ করতে, অসংরক্ষিত তথ্য সংরক্ষণ করুন এবং এখন পুনঃশুরু করুন।</string>
     <string name="usb_blocked_by_emergency_mode">জরুরী মোডে কিছু USB কার্যকারিতা অনুপলব্ধ রয়েছে।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">সর্বাধিক পাওয়ার সাশ্রয় মোড সক্ষম করা থাকলে সংযুক্ত USB ডিভাইস সম্পর্কিত কার্যকারিতাগুলি ব্যবহার করতে অক্ষম।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">সর্বাধিক পাওয়ার সাশ্রয় মোড চালু থাকার সময় কিছু USB কার্যকারিতা সীমিত হতে পারে।</string>
@@ -1215,13 +1215,13 @@
     <string name="usb_camera_connected_notification_title">মিডিয়া ডিভাইস সংযুক্ত</string>
     <string name="usb_camera_disconnected_notification_title">মিডিয়া ডিভাইসের সংযোগ বিচ্ছিন্ন</string>
     <string name="usb_cd_installer_notification_title">সফ্টওয়্যার আপডেট</string>
-    <string name="usb_charing_only_notification_title">USB চার্জিং</string>
+    <string name="usb_charing_only_notification_title">সংযুক্ত হয়েছে</string>
     <string name="usb_debugging_only_notification_title">কেবলমাত্র ডিবাগিং</string>
-    <string name="usb_host_resource_exceed_message">এই ডিভাইসটি কানেক্ট করার জন্য আপনার ফোনের USB নিয়ন্ত্রকে পর্যাপ্ত সংস্থান নেই। ডিভাইসটির কানেকশন বিচ্ছিন্ন করার ও এটি আবার কানেক্ট করার চেষ্টা করুন।</string>
+    <string name="usb_host_resource_exceed_message">এই ডিভাইসটি কানেক্ট করার জন্য আপনার ট্যাবলেটের USB নিয়ন্ত্রকে পর্যাপ্ত সংস্থান নেই। ডিভাইসটির কানেকশন বিচ্ছিন্ন করার ও এটি আবার কানেক্ট করার চেষ্টা করুন।</string>
     <string name="usb_host_resource_exceed_title">পর্যাপ্ত USB নিয়ন্ত্রক সংস্থান নেই</string>
-    <string name="usb_hub_depth_exceed_message">আপনার ফোনটি একসাথে কেবলমাত্র 5টি অবধি USB হাব কানেকশনগুলিকে সমর্থন করতে পারে।</string>
+    <string name="usb_hub_depth_exceed_message">আপনার ট্যাবলেটটি একসাথে কেবলমাত্র 5টি অবধি USB হাব কানেকশনগুলিকে সমর্থন করতে পারে।</string>
     <string name="usb_hub_depth_exceed_title">সর্বাধিক USB হাব সংযোগগুলি</string>
-    <string name="usb_hub_power_exceed_message">এই USB ডিভাইসের জন্য আপনার ফোন পর্যাপ্ত পাওয়ার সরবরাহ করতে পারছে না। ডিভাইসটি আপনার ফোনে কানেক্ট করার আগে এটি একটি স্ব-চালিত USB হাবে কানেক্ট করুন।</string>
+    <string name="usb_hub_power_exceed_message">এই USB ডিভাইসের জন্য আপনার ট্যাবলেট পর্যাপ্ত পাওয়ার সরবরাহ করতে পারছে না। ডিভাইসটি আপনার ট্যাবলেটে কানেক্ট করার আগে এটি একটি স্ব-চালিত USB হাবে কানেক্ট করুন।</string>
     <string name="usb_increase_battery_usage">USB কানেকশন ব্যাটারির ব্যবহার বৃদ্ধি করতে পারে।</string>
     <string name="usb_mass_storage_restrict">সুরক্ষা নীতিটি USB মাস স্টোরেজের ব্যবহার প্রতিরোধ করে।</string>
     <string name="usb_midi_notification_title">MIDI-এর জন্য USB</string>
@@ -1234,8 +1234,8 @@
     <string name="usb_open_charging_notification_title">USB চার্জিং</string>
     <string name="usb_ptp_notification_title">চিত্র স্থানান্তরের জন্য USB</string>
     <string name="usb_type_c_supply_power_notification_title">কানেক্ট ডিভাইসে USB চার্জিং</string>
-    <string name="usb_unblock_by_screen_unlock">কানেক্ট থাকা USB ডিভাইস ব্যবহার করতে আপনার ফোন আনলক করুন।</string>
-    <string name="usb_unsupport_accessory_message">আপনার ফোনে এই USB ডিভাইস সমর্থিত নয়।</string>
+    <string name="usb_unblock_by_screen_unlock">কানেক্ট থাকা USB ডিভাইস ব্যবহার করতে আপনার ট্যাবলেট আনলক করুন।</string>
+    <string name="usb_unsupport_accessory_message">আপনার ট্যাবলেটে এই USB ডিভাইস সমর্থিত নয়।</string>
     <string name="usb_unsupport_accessory_title">USB ডিভাইস সমর্থিত নয়</string>
     <string name="usb_unsupported_device">কানেক্ট হওয়া USB ডিভাইসটি সমর্থিত নয়।</string>
     <string name="usb_unsupported_device_title">ডিভাইস সমর্থিত নয়</string>
@@ -1253,19 +1253,19 @@
     <string name="usb_water_dialg_method_2_desc_2">আপনি পোর্টের দিকে কোনও পাখা বা শুষ্ক করার যন্ত্র (কেবলমাত্র ঠান্ডা হাওয়া) পয়েন্ট করে আপনি আরও তাড়াতাড়ি শুষ্ক করতে পারেন।</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"আমরা আপনার চার্জিং/USB পোর্টে আর্দ্রতা বা অজানা উপাদান শনাক্ত করেছি।
 
-ধূলো বা বাজে জিনিসের মতো কোনও অজানা উপাদানের জন্য আপনার চার্জিং/USB পোর্টটি পরীক্ষা করুন। আপনার ফোনের ক্ষতি প্রতিরোধ করতে, চার্জিং পোর্টটি পরিষ্কার না হওয়া, আর্দ্রতা কেটে না যাওয়া পর্যন্ত কোনও কিছুই প্লাগ ইন করবেন না।
+ধূলো বা বাজে জিনিসের মতো কোনও অজানা উপাদানের জন্য আপনার চার্জিং/USB পোর্টটি পরীক্ষা করুন। আপনার ট্যাবলেটের ক্ষতি প্রতিরোধ করতে, চার্জিং পোর্টটি পরিষ্কার না হওয়া, আর্দ্রতা কেটে না যাওয়া পর্যন্ত কোনও কিছুই প্লাগ ইন করবেন না।
 
 পোর্টটি শুষ্ক করার জন্য, আর্দ্রতা ঝেড়ে ফেলুন, তারপর এটি শুষ্ক হওয়ার জন্য যা বেশ কয়েক ঘণ্টা সময় লাগতে পারে তার জন্য অপেক্ষা করুন। আপনি পোর্টে পাখা বা ড্রায়ার (কেবলমাত্র ঠান্ডা বাতাস) নির্দেশ করে শুষ্ক করার গতি বাড়িয়ে তুলতে পারেন।"</string>
     <string name="usb_water_dialg_positive_button">ওকে</string>
     <string name="usb_water_dialg_support_wireless_charging">"আমরা আপনার চার্জিং/USB পোর্টে আর্দ্রতা বা অজানা উপাদান শনাক্ত করেছি।
 
-ধূলো বা বাজে জিনিসের মতো কোনও অজানা উপাদানের জন্য আপনার চার্জিং/USB পোর্টটি পরীক্ষা করুন। আপনার ফোনের ক্ষতি প্রতিরোধ করতে, চার্জিং পোর্টটি পরিষ্কার না হওয়া, আর্দ্রতা কেটে না যাওয়া পর্যন্ত কোনও কিছুই প্লাগ ইন করবেন না।
+ধূলো বা বাজে জিনিসের মতো কোনও অজানা উপাদানের জন্য আপনার চার্জিং/USB পোর্টটি পরীক্ষা করুন। আপনার ট্যাবলেটের ক্ষতি প্রতিরোধ করতে, চার্জিং পোর্টটি পরিষ্কার না হওয়া, আর্দ্রতা কেটে না যাওয়া পর্যন্ত কোনও কিছুই প্লাগ ইন করবেন না।
 
-পোর্টটি শুষ্ক করার জন্য, আর্দ্রতা ঝেড়ে ফেলুন, তারপর এটি শুষ্ক হওয়ার জন্য যা বেশ কয়েক ঘণ্টা সময় লাগতে পারে তার জন্য অপেক্ষা করুন। আপনি পোর্টে পাখা বা ড্রায়ার (কেবলমাত্র ঠান্ডা বাতাস) নির্দেশ করে শুষ্ক করার গতি বাড়িয়ে তুলতে পারেন।
+পোর্টটি শুষ্ক করার জন্য, আর্দ্রতা ঝেড়ে ফেলুন, তারপর এটি শুষ্ক হওয়ার জন্য যা বেশ কয়েক ঘন্টা সময় লাগতে পারে তার জন্য অপেক্ষা করুন। আপনি পোর্টে পাখা বা ড্রায়ার (কেবলমাত্র ঠান্ডা বাতাস) নির্দেশ করে শুষ্ক করার গতি বাড়িয়ে তুলতে পারেন।
 
-এর মধ্যে, আপনি আপনার ফোনটি ওয়্যারলেসভাবে চার্জ করতে পারবেন।"</string>
+এর মধ্যে, আপনি আপনার ট্যাবলেটটি ওয়্যারলেসভাবে চার্জ করতে পারবেন।"</string>
     <string name="usb_water_notification_content">আপনার চার্জিং/USB পোর্টে আর্দ্রতা বা অজানা উপাদান রয়েছে। চার্জ করার আগে পরীক্ষা করুন।</string>
-    <string name="usb_water_notification_message">আপনার চার্জার/USB পোর্টে আর্দ্রতা শনাক্ত করা হয়েছে। আপনার ফোন চার্জ দেওয়ার আগে এটি শুষ্ক আছে তা নিশ্চিত করুন। সম্পূর্ণ পরিমাণে শুষ্ক করতে এটি কিছু সময় নিতে পারে।</string>
+    <string name="usb_water_notification_message">আপনার চার্জার/USB পোর্টে আর্দ্রতা শনাক্ত করা হয়েছে। আপনার ট্যাবলেট চার্জ দেওয়ার আগে এটি শুষ্ক আছে তা নিশ্চিত করুন। সম্পূর্ণরূপে শুষ্ক করতে এটি কিছু সময় নিতে পারে।</string>
     <string name="usb_water_notification_message_button">বিশদ</string>
     <string name="usb_water_notification_title">চার্জার/USB পোর্ট পরীক্ষা করুন</string>
     <string name="usbhostStorage_restrict">সুরক্ষা নীতিটি USB হোস্ট স্টোরেজের ব্যবহার প্রতিরোধ করে।</string>

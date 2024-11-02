@@ -16,13 +16,14 @@ import java.util.Comparator;
 /* loaded from: classes.dex */
 public class ResolveInfo implements Parcelable {
     public static final Parcelable.Creator<ResolveInfo> CREATOR = new Parcelable.Creator<ResolveInfo>() { // from class: android.content.pm.ResolveInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ResolveInfo createFromParcel(Parcel source) {
             return new ResolveInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResolveInfo[] newArray(int size) {
             return new ResolveInfo[size];
@@ -54,6 +55,10 @@ public class ResolveInfo implements Parcelable {
     public boolean system;
     public int targetUserId;
     public UserHandle userHandle;
+
+    /* synthetic */ ResolveInfo(Parcel parcel, ResolveInfoIA resolveInfoIA) {
+        this(parcel);
+    }
 
     public ComponentInfo getComponentInfo() {
         ActivityInfo activityInfo = this.activityInfo;
@@ -295,6 +300,23 @@ public class ResolveInfo implements Parcelable {
         parcel.writeInt(this.isInstantAppAvailable ? 1 : 0);
         UserHandle userHandle = this.userHandle;
         parcel.writeInt(userHandle != null ? userHandle.getIdentifier() : -2);
+    }
+
+    /* renamed from: android.content.pm.ResolveInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ResolveInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResolveInfo createFromParcel(Parcel source) {
+            return new ResolveInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ResolveInfo[] newArray(int size) {
+            return new ResolveInfo[size];
+        }
     }
 
     private ResolveInfo(Parcel source) {

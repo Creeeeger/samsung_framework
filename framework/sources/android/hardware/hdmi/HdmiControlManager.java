@@ -318,7 +318,6 @@ public final class HdmiControlManager {
     public @interface VolumeControl {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setLocalPhysicalAddress(int physicalAddress) {
         synchronized (this.mLock) {
             this.mLocalPhysicalAddress = physicalAddress;
@@ -351,8 +350,13 @@ public final class HdmiControlManager {
         addHotplugEventListener(new ClientHotplugEventListener());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class ClientHotplugEventListener implements HotplugEventListener {
+    public final class ClientHotplugEventListener implements HotplugEventListener {
+        /* synthetic */ ClientHotplugEventListener(HdmiControlManager hdmiControlManager, ClientHotplugEventListenerIA clientHotplugEventListenerIA) {
+            this();
+        }
+
         private ClientHotplugEventListener() {
         }
 
@@ -641,8 +645,7 @@ public final class HdmiControlManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.hdmi.HdmiControlManager$1, reason: invalid class name */
+    /* renamed from: android.hardware.hdmi.HdmiControlManager$1 */
     /* loaded from: classes2.dex */
     public class AnonymousClass1 extends IHdmiHotplugEventListener.Stub {
         final /* synthetic */ Executor val$executor;
@@ -714,8 +717,7 @@ public final class HdmiControlManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.hdmi.HdmiControlManager$2, reason: invalid class name */
+    /* renamed from: android.hardware.hdmi.HdmiControlManager$2 */
     /* loaded from: classes2.dex */
     public class AnonymousClass2 extends IHdmiControlStatusChangeListener.Stub {
         final /* synthetic */ Executor val$executor;
@@ -783,8 +785,7 @@ public final class HdmiControlManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.hdmi.HdmiControlManager$3, reason: invalid class name */
+    /* renamed from: android.hardware.hdmi.HdmiControlManager$3 */
     /* loaded from: classes2.dex */
     public class AnonymousClass3 extends IHdmiCecVolumeControlFeatureListener.Stub {
         final /* synthetic */ Executor val$executor;
@@ -855,8 +856,7 @@ public final class HdmiControlManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.hdmi.HdmiControlManager$4, reason: invalid class name */
+    /* renamed from: android.hardware.hdmi.HdmiControlManager$4 */
     /* loaded from: classes2.dex */
     public class AnonymousClass4 extends IHdmiCecSettingChangeListener.Stub {
         final /* synthetic */ Executor val$executor;

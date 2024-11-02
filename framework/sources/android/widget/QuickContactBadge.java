@@ -61,7 +61,6 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
         setOnClickListener(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ImageView, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -70,7 +69,6 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ImageView, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -96,7 +94,6 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
         this.mPrioritizedMimeType = prioritizedMimeType;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ImageView, android.view.View
     public void onDraw(Canvas canvas) {
         Drawable drawable;
@@ -170,7 +167,6 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
         this.mOverlay = overlay;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onContactUriChanged() {
         setEnabled(isAssigned());
     }
@@ -207,7 +203,6 @@ public class QuickContactBadge extends ImageView implements View.OnClickListener
         this.mExcludeMimes = excludeMimes;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class QueryHandler extends AsyncQueryHandler {
         public QueryHandler(ContentResolver cr) {

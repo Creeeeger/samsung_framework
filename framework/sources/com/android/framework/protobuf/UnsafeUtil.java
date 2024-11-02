@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import sun.misc.Unsafe;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class UnsafeUtil {
     private static final long BOOLEAN_ARRAY_BASE_OFFSET;
@@ -66,12 +65,10 @@ public final class UnsafeUtil {
     private UnsafeUtil() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean hasUnsafeArrayOperations() {
         return HAS_UNSAFE_ARRAY_OPERATIONS;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean hasUnsafeByteBufferOperations() {
         return HAS_UNSAFE_BYTEBUFFER_OPERATIONS;
     }
@@ -80,7 +77,6 @@ public final class UnsafeUtil {
         return IS_ANDROID_64;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> T allocateInstance(Class<T> cls) {
         try {
             return (T) UNSAFE.allocateInstance(cls);
@@ -89,7 +85,6 @@ public final class UnsafeUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long objectFieldOffset(Field field) {
         return MEMORY_ACCESSOR.objectFieldOffset(field);
     }
@@ -116,72 +111,58 @@ public final class UnsafeUtil {
         MEMORY_ACCESSOR.putByte(target, offset, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getInt(Object target, long offset) {
         return MEMORY_ACCESSOR.getInt(target, offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putInt(Object target, long offset, int value) {
         MEMORY_ACCESSOR.putInt(target, offset, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long getLong(Object target, long offset) {
         return MEMORY_ACCESSOR.getLong(target, offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putLong(Object target, long offset, long value) {
         MEMORY_ACCESSOR.putLong(target, offset, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean getBoolean(Object target, long offset) {
         return MEMORY_ACCESSOR.getBoolean(target, offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putBoolean(Object target, long offset, boolean value) {
         MEMORY_ACCESSOR.putBoolean(target, offset, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float getFloat(Object target, long offset) {
         return MEMORY_ACCESSOR.getFloat(target, offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putFloat(Object target, long offset, float value) {
         MEMORY_ACCESSOR.putFloat(target, offset, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static double getDouble(Object target, long offset) {
         return MEMORY_ACCESSOR.getDouble(target, offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putDouble(Object target, long offset, double value) {
         MEMORY_ACCESSOR.putDouble(target, offset, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Object getObject(Object target, long offset) {
         return MEMORY_ACCESSOR.getObject(target, offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putObject(Object target, long offset, Object value) {
         MEMORY_ACCESSOR.putObject(target, offset, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte getByte(byte[] target, long index) {
         return MEMORY_ACCESSOR.getByte(target, BYTE_ARRAY_BASE_OFFSET + index);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putByte(byte[] target, long index, byte value) {
         MEMORY_ACCESSOR.putByte(target, BYTE_ARRAY_BASE_OFFSET + index, value);
     }
@@ -234,12 +215,10 @@ public final class UnsafeUtil {
         MEMORY_ACCESSOR.putObject(target, OBJECT_ARRAY_BASE_OFFSET + (OBJECT_ARRAY_INDEX_SCALE * index), value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void copyMemory(byte[] src, long srcIndex, long targetOffset, long length) {
         MEMORY_ACCESSOR.copyMemory(src, srcIndex, targetOffset, length);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void copyMemory(long srcOffset, byte[] target, long targetIndex, long length) {
         MEMORY_ACCESSOR.copyMemory(srcOffset, target, targetIndex, length);
     }
@@ -248,12 +227,10 @@ public final class UnsafeUtil {
         System.arraycopy(src, (int) srcIndex, target, (int) targetIndex, (int) length);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte getByte(long address) {
         return MEMORY_ACCESSOR.getByte(address);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void putByte(long address, byte value) {
         MEMORY_ACCESSOR.putByte(address, value);
     }
@@ -266,7 +243,6 @@ public final class UnsafeUtil {
         MEMORY_ACCESSOR.putInt(address, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long getLong(long address) {
         return MEMORY_ACCESSOR.getLong(address);
     }
@@ -275,20 +251,20 @@ public final class UnsafeUtil {
         MEMORY_ACCESSOR.putLong(address, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long addressOffset(ByteBuffer buffer) {
         return MEMORY_ACCESSOR.getLong(buffer, BUFFER_ADDRESS_OFFSET);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Object getStaticObject(Field field) {
         return MEMORY_ACCESSOR.getStaticObject(field);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Unsafe getUnsafe() {
         try {
             Unsafe unsafe = (Unsafe) AccessController.doPrivileged(new PrivilegedExceptionAction<Unsafe>() { // from class: com.android.framework.protobuf.UnsafeUtil.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.security.PrivilegedExceptionAction
                 public Unsafe run() throws Exception {
                     for (Field f : Unsafe.class.getDeclaredFields()) {
@@ -303,6 +279,25 @@ public final class UnsafeUtil {
             });
             return unsafe;
         } catch (Throwable th) {
+            return null;
+        }
+    }
+
+    /* renamed from: com.android.framework.protobuf.UnsafeUtil$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements PrivilegedExceptionAction<Unsafe> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.security.PrivilegedExceptionAction
+        public Unsafe run() throws Exception {
+            for (Field f : Unsafe.class.getDeclaredFields()) {
+                f.setAccessible(true);
+                Object x = f.get(null);
+                if (Unsafe.class.isInstance(x)) {
+                    return (Unsafe) Unsafe.class.cast(x);
+                }
+            }
             return null;
         }
     }
@@ -434,7 +429,6 @@ public final class UnsafeUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static abstract class MemoryAccessor {
         Unsafe unsafe;
@@ -553,7 +547,6 @@ public final class UnsafeUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class JvmMemoryAccessor extends MemoryAccessor {
         JvmMemoryAccessor(Unsafe unsafe) {
@@ -690,7 +683,6 @@ public final class UnsafeUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class Android64MemoryAccessor extends MemoryAccessor {
         Android64MemoryAccessor(Unsafe unsafe) {
@@ -800,7 +792,6 @@ public final class UnsafeUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class Android32MemoryAccessor extends MemoryAccessor {
         private static final long SMALL_ADDRESS_MASK = -1;
@@ -916,17 +907,14 @@ public final class UnsafeUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static byte getByteBigEndian(Object target, long offset) {
         return (byte) ((getInt(target, (-4) & offset) >>> ((int) (((~offset) & 3) << 3))) & 255);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static byte getByteLittleEndian(Object target, long offset) {
         return (byte) ((getInt(target, (-4) & offset) >>> ((int) ((3 & offset) << 3))) & 255);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void putByteBigEndian(Object target, long offset, byte value) {
         int intValue = getInt(target, offset & (-4));
         int shift = ((~((int) offset)) & 3) << 3;
@@ -934,7 +922,6 @@ public final class UnsafeUtil {
         putInt(target, (-4) & offset, output);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void putByteLittleEndian(Object target, long offset, byte value) {
         int intValue = getInt(target, offset & (-4));
         int shift = (((int) offset) & 3) << 3;
@@ -942,27 +929,22 @@ public final class UnsafeUtil {
         putInt(target, (-4) & offset, output);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean getBooleanBigEndian(Object target, long offset) {
         return getByteBigEndian(target, offset) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean getBooleanLittleEndian(Object target, long offset) {
         return getByteLittleEndian(target, offset) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void putBooleanBigEndian(Object obj, long j, boolean z) {
         putByteBigEndian(obj, j, z ? (byte) 1 : (byte) 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void putBooleanLittleEndian(Object obj, long j, boolean z) {
         putByteLittleEndian(obj, j, z ? (byte) 1 : (byte) 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void logMissingMethod(Throwable e) {
         Logger.getLogger(UnsafeUtil.class.getName()).log(Level.WARNING, "platform method missing - proto runtime falling back to safer methods: " + e);
     }

@@ -84,8 +84,9 @@ public interface IRemoveNotificationFromListCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IRemoveNotificationFromListCallback {
+        public static class Proxy implements IRemoveNotificationFromListCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

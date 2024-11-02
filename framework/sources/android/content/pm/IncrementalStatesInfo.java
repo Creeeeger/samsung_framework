@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class IncrementalStatesInfo implements Parcelable {
     public static final Parcelable.Creator<IncrementalStatesInfo> CREATOR = new Parcelable.Creator<IncrementalStatesInfo>() { // from class: android.content.pm.IncrementalStatesInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public IncrementalStatesInfo createFromParcel(Parcel source) {
             return new IncrementalStatesInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IncrementalStatesInfo[] newArray(int size) {
             return new IncrementalStatesInfo[size];
@@ -21,6 +22,10 @@ public class IncrementalStatesInfo implements Parcelable {
     private boolean mIsLoading;
     private long mLoadingCompletedTime;
     private float mProgress;
+
+    /* synthetic */ IncrementalStatesInfo(Parcel parcel, IncrementalStatesInfoIA incrementalStatesInfoIA) {
+        this(parcel);
+    }
 
     public IncrementalStatesInfo(boolean isLoading, float progress, long loadingCompletedTime) {
         this.mIsLoading = isLoading;
@@ -56,5 +61,22 @@ public class IncrementalStatesInfo implements Parcelable {
         dest.writeBoolean(this.mIsLoading);
         dest.writeFloat(this.mProgress);
         dest.writeLong(this.mLoadingCompletedTime);
+    }
+
+    /* renamed from: android.content.pm.IncrementalStatesInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<IncrementalStatesInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IncrementalStatesInfo createFromParcel(Parcel source) {
+            return new IncrementalStatesInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IncrementalStatesInfo[] newArray(int size) {
+            return new IncrementalStatesInfo[size];
+        }
     }
 }

@@ -18,13 +18,13 @@ public abstract class Primes {
         private BigInteger factor;
         private boolean provablyComposite;
 
-        /* renamed from: -$$Nest$smprobablyPrime, reason: not valid java name */
-        static /* bridge */ /* synthetic */ MROutput m7407$$Nest$smprobablyPrime() {
+        /* renamed from: -$$Nest$smprobablyPrime */
+        static /* bridge */ /* synthetic */ MROutput m7402$$Nest$smprobablyPrime() {
             return probablyPrime();
         }
 
-        /* renamed from: -$$Nest$smprovablyCompositeNotPrimePower, reason: not valid java name */
-        static /* bridge */ /* synthetic */ MROutput m7408$$Nest$smprovablyCompositeNotPrimePower() {
+        /* renamed from: -$$Nest$smprovablyCompositeNotPrimePower */
+        static /* bridge */ /* synthetic */ MROutput m7403$$Nest$smprovablyCompositeNotPrimePower() {
             return provablyCompositeNotPrimePower();
         }
 
@@ -32,7 +32,6 @@ public abstract class Primes {
             return new MROutput(false, null);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static MROutput provablyCompositeWithFactor(BigInteger factor) {
             return new MROutput(true, factor);
         }
@@ -64,6 +63,10 @@ public abstract class Primes {
         private BigInteger prime;
         private int primeGenCounter;
         private byte[] primeSeed;
+
+        /* synthetic */ STOutput(BigInteger bigInteger, byte[] bArr, int i, STOutputIA sTOutputIA) {
+            this(bigInteger, bArr, i);
+        }
 
         private STOutput(BigInteger prime, byte[] primeSeed, int primeGenCounter) {
             this.prime = prime;
@@ -106,7 +109,7 @@ public abstract class Primes {
             throw new IllegalArgumentException("'iterations' must be > 0");
         }
         if (candidate.bitLength() == 2) {
-            return MROutput.m7407$$Nest$smprobablyPrime();
+            return MROutput.m7402$$Nest$smprobablyPrime();
         }
         if (!candidate.testBit(0)) {
             return MROutput.provablyCompositeWithFactor(TWO);
@@ -155,11 +158,11 @@ public abstract class Primes {
                     if (g2.compareTo(bigInteger2) > 0) {
                         return MROutput.provablyCompositeWithFactor(g2);
                     }
-                    return MROutput.m7408$$Nest$smprovablyCompositeNotPrimePower();
+                    return MROutput.m7403$$Nest$smprovablyCompositeNotPrimePower();
                 }
             }
         }
-        return MROutput.m7407$$Nest$smprobablyPrime();
+        return MROutput.m7402$$Nest$smprobablyPrime();
     }
 
     public static boolean hasAnySmallFactors(BigInteger candidate) {

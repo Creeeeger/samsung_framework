@@ -15,6 +15,10 @@ public class ColorStateListDrawable extends Drawable implements Drawable.Callbac
     private boolean mMutated;
     private ColorStateListDrawableState mState;
 
+    /* synthetic */ ColorStateListDrawable(ColorStateListDrawableState colorStateListDrawableState, ColorStateListDrawableIA colorStateListDrawableIA) {
+        this(colorStateListDrawableState);
+    }
+
     public ColorStateListDrawable() {
         this.mMutated = false;
         this.mState = new ColorStateListDrawableState();
@@ -116,14 +120,12 @@ public class ColorStateListDrawable extends Drawable implements Drawable.Callbac
         return this.mColorDrawable.getOpacity();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         this.mColorDrawable.setBounds(bounds);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] state) {
         if (this.mState.mColor == null) {
@@ -200,7 +202,6 @@ public class ColorStateListDrawable extends Drawable implements Drawable.Callbac
         onStateChange(getState());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class ColorStateListDrawableState extends Drawable.ConstantState {
         int mAlpha;

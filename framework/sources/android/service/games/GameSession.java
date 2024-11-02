@@ -66,7 +66,7 @@ public abstract class GameSession {
         void onSuccess();
     }
 
-    /* renamed from: android.service.games.GameSession$1, reason: invalid class name */
+    /* renamed from: android.service.games.GameSession$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IGameSession.Stub {
         AnonymousClass1() {
@@ -113,12 +113,10 @@ public abstract class GameSession {
         surfaceControlViewHost.setView(gameSessionRootView, widthPx, heightPx);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doCreate() {
         moveToState(LifecycleState.CREATED);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doDestroy() {
         this.mSurfaceControlViewHost.release();
         moveToState(LifecycleState.DESTROYED);
@@ -188,8 +186,7 @@ public abstract class GameSession {
         this.mLifecycleState = newLifecycleState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.games.GameSession$2, reason: invalid class name */
+    /* renamed from: android.service.games.GameSession$2 */
     /* loaded from: classes3.dex */
     public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$android$service$games$GameSession$LifecycleState;
@@ -247,8 +244,9 @@ public abstract class GameSession {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static final class GameSessionRootView extends FrameLayout {
+    public static final class GameSessionRootView extends FrameLayout {
         private final SurfaceControlViewHost mSurfaceControlViewHost;
 
         GameSessionRootView(Context context, SurfaceControlViewHost surfaceControlViewHost) {
@@ -256,7 +254,6 @@ public abstract class GameSession {
             this.mSurfaceControlViewHost = surfaceControlViewHost;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onConfigurationChanged(Configuration newConfig) {
             super.onConfigurationChanged(newConfig);
@@ -282,8 +279,7 @@ public abstract class GameSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: handleScreenshotResult, reason: merged with bridge method [inline-methods] */
+    /* renamed from: handleScreenshotResult */
     public void lambda$takeScreenshot$0(ScreenshotCallback callback, GameScreenshotResult result, Throwable error) {
         if (error != null) {
             Slog.w(TAG, error.getMessage(), error.getCause());
@@ -328,7 +324,6 @@ public abstract class GameSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$startActivityFromGameSessionForResult$1(GameSessionActivityCallback callback, GameSessionActivityResult result, Throwable ex) {
         if (ex != null) {
             callback.onActivityStartFailed(ex);

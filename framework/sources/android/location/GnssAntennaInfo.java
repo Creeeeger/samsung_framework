@@ -11,7 +11,9 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class GnssAntennaInfo implements Parcelable {
     public static final Parcelable.Creator<GnssAntennaInfo> CREATOR = new Parcelable.Creator<GnssAntennaInfo>() { // from class: android.location.GnssAntennaInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssAntennaInfo createFromParcel(Parcel in) {
             double carrierFrequencyMHz = in.readDouble();
@@ -21,7 +23,6 @@ public final class GnssAntennaInfo implements Parcelable {
             return new GnssAntennaInfo(carrierFrequencyMHz, phaseCenterOffset, phaseCenterVariationCorrections, signalGainCorrections);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssAntennaInfo[] newArray(int size) {
             return new GnssAntennaInfo[size];
@@ -37,16 +38,21 @@ public final class GnssAntennaInfo implements Parcelable {
         void onGnssAntennaInfoReceived(List<GnssAntennaInfo> list);
     }
 
+    /* synthetic */ GnssAntennaInfo(double d, PhaseCenterOffset phaseCenterOffset, SphericalCorrections sphericalCorrections, SphericalCorrections sphericalCorrections2, GnssAntennaInfoIA gnssAntennaInfoIA) {
+        this(d, phaseCenterOffset, sphericalCorrections, sphericalCorrections2);
+    }
+
     /* loaded from: classes2.dex */
     public static final class PhaseCenterOffset implements Parcelable {
         public static final Parcelable.Creator<PhaseCenterOffset> CREATOR = new Parcelable.Creator<PhaseCenterOffset>() { // from class: android.location.GnssAntennaInfo.PhaseCenterOffset.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PhaseCenterOffset createFromParcel(Parcel in) {
                 return new PhaseCenterOffset(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PhaseCenterOffset[] newArray(int size) {
                 return new PhaseCenterOffset[size];
@@ -66,6 +72,23 @@ public final class GnssAntennaInfo implements Parcelable {
             this.mOffsetXUncertaintyMm = offsetXUncertaintyMm;
             this.mOffsetYUncertaintyMm = offsetYUncertaintyMm;
             this.mOffsetZUncertaintyMm = offsetZUncertaintyMm;
+        }
+
+        /* renamed from: android.location.GnssAntennaInfo$PhaseCenterOffset$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PhaseCenterOffset> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PhaseCenterOffset createFromParcel(Parcel in) {
+                return new PhaseCenterOffset(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PhaseCenterOffset[] newArray(int size) {
+                return new PhaseCenterOffset[size];
+            }
         }
 
         public double getXOffsetMm() {
@@ -130,13 +153,14 @@ public final class GnssAntennaInfo implements Parcelable {
     /* loaded from: classes2.dex */
     public static final class SphericalCorrections implements Parcelable {
         public static final Parcelable.Creator<SphericalCorrections> CREATOR = new Parcelable.Creator<SphericalCorrections>() { // from class: android.location.GnssAntennaInfo.SphericalCorrections.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SphericalCorrections createFromParcel(Parcel in) {
                 return new SphericalCorrections(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SphericalCorrections[] newArray(int size) {
                 return new SphericalCorrections[size];
@@ -146,6 +170,10 @@ public final class GnssAntennaInfo implements Parcelable {
         private final double[][] mCorrections;
         private final int mNumColumns;
         private final int mNumRows;
+
+        /* synthetic */ SphericalCorrections(Parcel parcel, SphericalCorrectionsIA sphericalCorrectionsIA) {
+            this(parcel);
+        }
 
         public SphericalCorrections(double[][] corrections, double[][] correctionUncertainties) {
             if (corrections.length != correctionUncertainties.length || corrections.length < 1) {
@@ -195,6 +223,23 @@ public final class GnssAntennaInfo implements Parcelable {
 
         public double getDeltaPhi() {
             return 180.0d / (this.mNumColumns - 1);
+        }
+
+        /* renamed from: android.location.GnssAntennaInfo$SphericalCorrections$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SphericalCorrections> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SphericalCorrections createFromParcel(Parcel in) {
+                return new SphericalCorrections(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SphericalCorrections[] newArray(int size) {
+                return new SphericalCorrections[size];
+            }
         }
 
         @Override // android.os.Parcelable
@@ -305,6 +350,27 @@ public final class GnssAntennaInfo implements Parcelable {
 
     public SphericalCorrections getSignalGainCorrections() {
         return this.mSignalGainCorrections;
+    }
+
+    /* renamed from: android.location.GnssAntennaInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssAntennaInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssAntennaInfo createFromParcel(Parcel in) {
+            double carrierFrequencyMHz = in.readDouble();
+            PhaseCenterOffset phaseCenterOffset = (PhaseCenterOffset) in.readTypedObject(PhaseCenterOffset.CREATOR);
+            SphericalCorrections phaseCenterVariationCorrections = (SphericalCorrections) in.readTypedObject(SphericalCorrections.CREATOR);
+            SphericalCorrections signalGainCorrections = (SphericalCorrections) in.readTypedObject(SphericalCorrections.CREATOR);
+            return new GnssAntennaInfo(carrierFrequencyMHz, phaseCenterOffset, phaseCenterVariationCorrections, signalGainCorrections);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssAntennaInfo[] newArray(int size) {
+            return new GnssAntennaInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

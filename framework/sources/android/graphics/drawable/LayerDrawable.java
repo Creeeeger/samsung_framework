@@ -41,7 +41,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         this(layers, (LayerState) null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LayerDrawable(Drawable[] layers, LayerState state) {
         this(state, (Resources) null);
         if (layers == null) {
@@ -64,13 +63,11 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         refreshPadding();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
     public LayerDrawable() {
         this((LayerState) null, (Resources) null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LayerDrawable(LayerState state, Resources res) {
         this.mTmpRect = new Rect();
         this.mTmpOutRect = new Rect();
@@ -300,7 +297,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ChildDrawable addLayer(Drawable dr, int[] themeAttrs, int id, int left, int top, int right, int bottom) {
         ChildDrawable childDrawable = createLayer(dr);
         childDrawable.mId = id;
@@ -885,7 +881,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return this.mLayerState.hasFocusStateSpecified();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] state) {
         boolean changed = false;
@@ -904,7 +899,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onLevelChange(int level) {
         boolean changed = false;
@@ -923,7 +917,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         updateLayerBounds(bounds);
@@ -1116,7 +1109,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void ensurePadding() {
         int N = this.mLayerState.mNumChildren;
         int[] iArr = this.mPaddingL;
@@ -1129,7 +1121,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         this.mPaddingB = new int[N];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void refreshPadding() {
         int N = this.mLayerState.mNumChildren;
         ChildDrawable[] array = this.mLayerState.mChildren;
@@ -1194,7 +1185,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class ChildDrawable {
         public int mDensity;
@@ -1306,7 +1296,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class LayerState extends Drawable.ConstantState {
         private boolean mAutoMirrored;
@@ -1329,7 +1318,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         int mPaddingTop;
         private int[] mThemeAttrs;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public LayerState(LayerState orig, LayerDrawable owner, Resources res) {
             this.mPaddingTop = -1;
             this.mPaddingBottom = -1;
@@ -1386,7 +1374,6 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void onDensityChanged(int sourceDensity, int targetDensity) {
             applyDensityScaling(sourceDensity, targetDensity);
         }

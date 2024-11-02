@@ -119,6 +119,10 @@ public final class SyncResultReceiver extends IResultReceiver.Stub {
 
     /* loaded from: classes5.dex */
     public static final class TimeoutException extends Exception {
+        /* synthetic */ TimeoutException(String str, TimeoutExceptionIA timeoutExceptionIA) {
+            this(str);
+        }
+
         private TimeoutException(String msg) {
             super(msg);
         }

@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class EvdoSignalStrength implements Parcelable {
     public static final Parcelable.Creator<EvdoSignalStrength> CREATOR = new Parcelable.Creator<EvdoSignalStrength>() { // from class: android.hardware.radio.network.EvdoSignalStrength.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EvdoSignalStrength createFromParcel(Parcel _aidl_source) {
             EvdoSignalStrength _aidl_out = new EvdoSignalStrength();
@@ -16,7 +18,6 @@ public class EvdoSignalStrength implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EvdoSignalStrength[] newArray(int _aidl_size) {
             return new EvdoSignalStrength[_aidl_size];
@@ -25,6 +26,25 @@ public class EvdoSignalStrength implements Parcelable {
     public int dbm = 0;
     public int ecio = 0;
     public int signalNoiseRatio = 0;
+
+    /* renamed from: android.hardware.radio.network.EvdoSignalStrength$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EvdoSignalStrength> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EvdoSignalStrength createFromParcel(Parcel _aidl_source) {
+            EvdoSignalStrength _aidl_out = new EvdoSignalStrength();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EvdoSignalStrength[] newArray(int _aidl_size) {
+            return new EvdoSignalStrength[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -29,7 +29,10 @@ public final class UidBatteryConsumer extends BatteryConsumer {
     public @interface State {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ UidBatteryConsumer(Builder builder, UidBatteryConsumerIA uidBatteryConsumerIA) {
+        this(builder);
+    }
+
     public UidBatteryConsumer(BatteryConsumer.BatteryConsumerData data) {
         super(data);
     }
@@ -89,7 +92,6 @@ public final class UidBatteryConsumer extends BatteryConsumer {
         return new UidBatteryConsumer(data);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToXml(TypedXmlSerializer serializer) throws IOException {
         if (getConsumedPower() == SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
             return;
@@ -106,7 +108,6 @@ public final class UidBatteryConsumer extends BatteryConsumer {
         serializer.endTag(null, "uid");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void createFromXml(TypedXmlPullParser parser, BatteryUsageStats.Builder builder) throws XmlPullParserException, IOException {
         int uid = parser.getAttributeInt(null, "uid");
         Builder consumerBuilder = builder.getOrCreateUidBatteryConsumerBuilder(uid);

@@ -7,13 +7,14 @@ import android.util.SparseArray;
 /* loaded from: classes.dex */
 public class InstrumentationInfo extends PackageItemInfo implements Parcelable {
     public static final Parcelable.Creator<InstrumentationInfo> CREATOR = new Parcelable.Creator<InstrumentationInfo>() { // from class: android.content.pm.InstrumentationInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InstrumentationInfo createFromParcel(Parcel source) {
             return new InstrumentationInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstrumentationInfo[] newArray(int size) {
             return new InstrumentationInfo[size];
@@ -36,6 +37,10 @@ public class InstrumentationInfo extends PackageItemInfo implements Parcelable {
     public String[] splitSourceDirs;
     public String targetPackage;
     public String targetProcesses;
+
+    /* synthetic */ InstrumentationInfo(Parcel parcel, InstrumentationInfoIA instrumentationInfoIA) {
+        this(parcel);
+    }
 
     public InstrumentationInfo() {
     }
@@ -90,6 +95,23 @@ public class InstrumentationInfo extends PackageItemInfo implements Parcelable {
         parcel.writeString8(this.secondaryNativeLibraryDir);
         parcel.writeInt(this.handleProfiling ? 1 : 0);
         parcel.writeInt(this.functionalTest ? 1 : 0);
+    }
+
+    /* renamed from: android.content.pm.InstrumentationInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InstrumentationInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstrumentationInfo createFromParcel(Parcel source) {
+            return new InstrumentationInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstrumentationInfo[] newArray(int size) {
+            return new InstrumentationInfo[size];
+        }
     }
 
     private InstrumentationInfo(Parcel source) {

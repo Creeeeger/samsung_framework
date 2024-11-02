@@ -18,7 +18,10 @@ public class ScaleDrawable extends DrawableWrapper {
     private ScaleState mState;
     private final Rect mTmpRect;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ ScaleDrawable(ScaleState scaleState, Resources resources, ScaleDrawableIA scaleDrawableIA) {
+        this(scaleState, resources);
+    }
+
     public ScaleDrawable() {
         this(new ScaleState(null, null), null);
     }
@@ -120,7 +123,6 @@ public class ScaleDrawable extends DrawableWrapper {
         return opacity;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
     public boolean onLevelChange(int level) {
         super.onLevelChange(level);
@@ -129,7 +131,6 @@ public class ScaleDrawable extends DrawableWrapper {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         int w;
@@ -166,7 +167,6 @@ public class ScaleDrawable extends DrawableWrapper {
         return scaleState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class ScaleState extends DrawableWrapper.DrawableWrapperState {
         private static final float DO_NOT_SCALE = -1.0f;

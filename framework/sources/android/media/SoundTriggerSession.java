@@ -8,7 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SoundTriggerSession implements Parcelable {
     public static final Parcelable.Creator<SoundTriggerSession> CREATOR = new Parcelable.Creator<SoundTriggerSession>() { // from class: android.media.SoundTriggerSession.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SoundTriggerSession createFromParcel(Parcel _aidl_source) {
             SoundTriggerSession _aidl_out = new SoundTriggerSession();
@@ -16,7 +18,6 @@ public class SoundTriggerSession implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SoundTriggerSession[] newArray(int _aidl_size) {
             return new SoundTriggerSession[_aidl_size];
@@ -25,6 +26,25 @@ public class SoundTriggerSession implements Parcelable {
     public AudioDeviceDescription device;
     public int session = 0;
     public int ioHandle = 0;
+
+    /* renamed from: android.media.SoundTriggerSession$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SoundTriggerSession> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SoundTriggerSession createFromParcel(Parcel _aidl_source) {
+            SoundTriggerSession _aidl_out = new SoundTriggerSession();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SoundTriggerSession[] newArray(int _aidl_size) {
+            return new SoundTriggerSession[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

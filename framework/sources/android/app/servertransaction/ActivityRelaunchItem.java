@@ -16,13 +16,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class ActivityRelaunchItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<ActivityRelaunchItem> CREATOR = new Parcelable.Creator<ActivityRelaunchItem>() { // from class: android.app.servertransaction.ActivityRelaunchItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ActivityRelaunchItem createFromParcel(Parcel in) {
             return new ActivityRelaunchItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityRelaunchItem[] newArray(int size) {
             return new ActivityRelaunchItem[size];
@@ -35,6 +36,10 @@ public class ActivityRelaunchItem extends ActivityTransactionItem {
     private List<ReferrerIntent> mPendingNewIntents;
     private List<ResultInfo> mPendingResults;
     private boolean mPreserveWindow;
+
+    /* synthetic */ ActivityRelaunchItem(Parcel parcel, ActivityRelaunchItemIA activityRelaunchItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.BaseClientRequest
     public void preExecute(ClientTransactionHandler client, IBinder token) {
@@ -102,6 +107,23 @@ public class ActivityRelaunchItem extends ActivityTransactionItem {
         this.mConfigChanges = in.readInt();
         this.mConfig = (MergedConfiguration) in.readTypedObject(MergedConfiguration.CREATOR);
         this.mPreserveWindow = in.readBoolean();
+    }
+
+    /* renamed from: android.app.servertransaction.ActivityRelaunchItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ActivityRelaunchItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityRelaunchItem createFromParcel(Parcel in) {
+            return new ActivityRelaunchItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityRelaunchItem[] newArray(int size) {
+            return new ActivityRelaunchItem[size];
+        }
     }
 
     public boolean equals(Object o) {

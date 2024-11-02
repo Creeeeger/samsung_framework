@@ -199,7 +199,6 @@ public final class DeviceStateManagerGlobal {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDeviceStateInfoChanged(DeviceStateInfo info) {
         DeviceStateInfo oldInfo;
         ArrayList<DeviceStateCallbackWrapper> callbacks;
@@ -229,7 +228,6 @@ public final class DeviceStateManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleRequestActive(IBinder token) {
         DeviceStateRequestWrapper request;
         synchronized (this.mLock) {
@@ -240,7 +238,6 @@ public final class DeviceStateManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleRequestCanceled(IBinder token) {
         DeviceStateRequestWrapper request;
         synchronized (this.mLock) {
@@ -251,9 +248,12 @@ public final class DeviceStateManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class DeviceStateManagerCallback extends IDeviceStateManagerCallback.Stub {
+        /* synthetic */ DeviceStateManagerCallback(DeviceStateManagerGlobal deviceStateManagerGlobal, DeviceStateManagerCallbackIA deviceStateManagerCallbackIA) {
+            this();
+        }
+
         private DeviceStateManagerCallback() {
         }
 
@@ -273,7 +273,6 @@ public final class DeviceStateManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class DeviceStateCallbackWrapper {
         private final DeviceStateManager.DeviceStateCallback mDeviceStateCallback;
@@ -293,12 +292,10 @@ public final class DeviceStateManagerGlobal {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifySupportedStatesChanged$0(int[] newSupportedStates) {
             this.mDeviceStateCallback.onSupportedStatesChanged(newSupportedStates);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyBaseStateChanged$1(int newBaseState) {
             this.mDeviceStateCallback.onBaseStateChanged(newBaseState);
         }
@@ -312,7 +309,6 @@ public final class DeviceStateManagerGlobal {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyStateChanged$2(int newDeviceState) {
             this.mDeviceStateCallback.onStateChanged(newDeviceState);
         }
@@ -327,7 +323,6 @@ public final class DeviceStateManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class DeviceStateRequestWrapper {
         private final DeviceStateRequest.Callback mCallback;
@@ -353,7 +348,6 @@ public final class DeviceStateManagerGlobal {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyRequestActive$0() {
             this.mCallback.onRequestActivated(this.mRequest);
         }
@@ -370,7 +364,6 @@ public final class DeviceStateManagerGlobal {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyRequestCanceled$1() {
             this.mCallback.onRequestCanceled(this.mRequest);
         }
@@ -385,7 +378,6 @@ public final class DeviceStateManagerGlobal {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public class SemFoldStateListener implements DeviceStateManager.DeviceStateCallback {
         private Boolean mFolded;

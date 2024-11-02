@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioDeviceAddress implements Parcelable {
     public static final Parcelable.Creator<AudioDeviceAddress> CREATOR = new Parcelable.Creator<AudioDeviceAddress>() { // from class: android.media.audio.common.AudioDeviceAddress.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioDeviceAddress createFromParcel(Parcel _aidl_source) {
             return new AudioDeviceAddress(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDeviceAddress[] newArray(int _aidl_size) {
             return new AudioDeviceAddress[_aidl_size];
@@ -36,6 +37,10 @@ public final class AudioDeviceAddress implements Parcelable {
         public static final int ipv4 = 2;
         public static final int ipv6 = 3;
         public static final int mac = 1;
+    }
+
+    /* synthetic */ AudioDeviceAddress(Parcel parcel, AudioDeviceAddressIA audioDeviceAddressIA) {
+        this(parcel);
     }
 
     public AudioDeviceAddress() {
@@ -124,6 +129,23 @@ public final class AudioDeviceAddress implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.media.audio.common.AudioDeviceAddress$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioDeviceAddress> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioDeviceAddress createFromParcel(Parcel _aidl_source) {
+            return new AudioDeviceAddress(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioDeviceAddress[] newArray(int _aidl_size) {
+            return new AudioDeviceAddress[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

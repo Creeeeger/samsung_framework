@@ -38,7 +38,6 @@ public final class DrawableInflater {
         return inflateFromXmlForDensity(name, parser, attrs, 0, theme);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Drawable inflateFromXmlForDensity(String name, XmlPullParser parser, AttributeSet attrs, int density, Resources.Theme theme) throws XmlPullParserException, IOException {
         if (name.equals("drawable") && (name = attrs.getAttributeValue(null, "class")) == null) {
             throw new InflateException("<drawable> tag must specify class attribute");

@@ -25,8 +25,33 @@ public class BiometricTestSession implements AutoCloseable {
         ITestSession createTestSession(Context context, int i, ITestSessionCallback iTestSessionCallback) throws RemoteException;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.biometrics.BiometricTestSession$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends ITestSessionCallback.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.hardware.biometrics.ITestSessionCallback
+        public void onCleanupStarted(int userId) {
+            Log.d(BiometricTestSession.this.getTag(), "onCleanupStarted, sensor: " + BiometricTestSession.this.mSensorId + ", userId: " + userId);
+        }
+
+        @Override // android.hardware.biometrics.ITestSessionCallback
+        public void onCleanupFinished(int userId) {
+            Log.d(BiometricTestSession.this.getTag(), "onCleanupFinished, sensor: " + BiometricTestSession.this.mSensorId + ", userId: " + userId + ", remaining users: " + BiometricTestSession.this.mUsersCleaningUp.size());
+            BiometricTestSession.this.mUsersCleaningUp.remove(Integer.valueOf(userId));
+            if (BiometricTestSession.this.mUsersCleaningUp.isEmpty() && BiometricTestSession.this.mCloseLatch != null) {
+                BiometricTestSession.this.mCloseLatch.countDown();
+            }
+        }
+    }
+
     public BiometricTestSession(Context context, int sensorId, TestSessionProvider testSessionProvider) throws RemoteException {
-        ITestSessionCallback.Stub stub = new ITestSessionCallback.Stub() { // from class: android.hardware.biometrics.BiometricTestSession.1
+        AnonymousClass1 anonymousClass1 = new ITestSessionCallback.Stub() { // from class: android.hardware.biometrics.BiometricTestSession.1
+            AnonymousClass1() {
+            }
+
             @Override // android.hardware.biometrics.ITestSessionCallback
             public void onCleanupStarted(int userId) {
                 Log.d(BiometricTestSession.this.getTag(), "onCleanupStarted, sensor: " + BiometricTestSession.this.mSensorId + ", userId: " + userId);
@@ -41,10 +66,10 @@ public class BiometricTestSession implements AutoCloseable {
                 }
             }
         };
-        this.mCallback = stub;
+        this.mCallback = anonymousClass1;
         this.mContext = context;
         this.mSensorId = sensorId;
-        this.mTestSession = testSessionProvider.createTestSession(context, sensorId, stub);
+        this.mTestSession = testSessionProvider.createTestSession(context, sensorId, anonymousClass1);
         this.mTestedUsers = new ArraySet<>();
         this.mUsersCleaningUp = new ArraySet<>();
         setTestHalEnabled(true);
@@ -145,7 +170,6 @@ public class BiometricTestSession implements AutoCloseable {
         setTestHalEnabled(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public String getTag() {
         return "BiometricTestSession_" + this.mSensorId;
     }

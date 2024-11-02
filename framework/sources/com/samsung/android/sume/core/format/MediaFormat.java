@@ -222,7 +222,7 @@ public interface MediaFormat extends Serializable, Cloneable {
                 throw new UnsupportedOperationException("not support yet for planar except yuv format");
             }
             return new ArrayList<MediaFormat>() { // from class: com.samsung.android.sume.core.format.MediaFormat.1
-                {
+                AnonymousClass1() {
                     add(MediaFormat.this);
                 }
             };
@@ -235,5 +235,13 @@ public interface MediaFormat extends Serializable, Cloneable {
             return it.toMediaFormat();
         }
         return it;
+    }
+
+    /* renamed from: com.samsung.android.sume.core.format.MediaFormat$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends ArrayList<MediaFormat> {
+        AnonymousClass1() {
+            add(MediaFormat.this);
+        }
     }
 }

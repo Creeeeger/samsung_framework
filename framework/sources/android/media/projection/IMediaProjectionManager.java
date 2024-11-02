@@ -299,8 +299,9 @@ public interface IMediaProjectionManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMediaProjectionManager {
+        public static class Proxy implements IMediaProjectionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

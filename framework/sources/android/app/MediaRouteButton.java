@@ -79,7 +79,6 @@ public class MediaRouteButton extends View {
         showDialogInternal();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean showDialogInternal() {
         if (!this.mAttachedToWindow) {
             return false;
@@ -112,7 +111,6 @@ public class MediaRouteButton extends View {
         return showDialogInternal() || handled;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int[] onCreateDrawableState(int extraSpace) {
         int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
@@ -124,7 +122,6 @@ public class MediaRouteButton extends View {
         return drawableState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -149,7 +146,6 @@ public class MediaRouteButton extends View {
         refreshDrawableState();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == this.mRemoteIndicator;
@@ -193,7 +189,6 @@ public class MediaRouteButton extends View {
         super.onDetachedFromWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int measuredWidth;
@@ -233,7 +228,6 @@ public class MediaRouteButton extends View {
         setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -252,7 +246,6 @@ public class MediaRouteButton extends View {
         this.mRemoteIndicator.draw(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void refreshRoute() {
         MediaRouter.RouteInfo route = this.mRouter.getSelectedRoute();
         boolean isConnecting = false;
@@ -294,9 +287,12 @@ public class MediaRouteButton extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class MediaRouterCallback extends MediaRouter.SimpleCallback {
+        /* synthetic */ MediaRouterCallback(MediaRouteButton mediaRouteButton, MediaRouterCallbackIA mediaRouterCallbackIA) {
+            this();
+        }
+
         private MediaRouterCallback() {
         }
 

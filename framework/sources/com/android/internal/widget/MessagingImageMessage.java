@@ -82,7 +82,7 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
             }
             this.mDrawable = drawable;
             this.mAspectRatio = drawable.getIntrinsicWidth() / intrinsicHeight;
-            setImageDrawable(drawable);
+            lambda$setImageURIAsync$2(drawable);
             setContentDescription(message.getText());
             return true;
         } catch (IOException | SecurityException e) {
@@ -91,7 +91,6 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static MessagingMessage createMessage(IMessagingLayout layout, Notification.MessagingStyle.Message m, ImageResolver resolver) {
         MessagingLinearLayout messagingLinearLayout = layout.getMessagingLinearLayout();
         MessagingImageMessage createdMessage = sInstancePool.acquire();
@@ -112,7 +111,6 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
         this.mImageResolver = resolver;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ImageView, android.view.View
     public void onDraw(Canvas canvas) {
         if (this.mDrawable == null) {
@@ -186,7 +184,6 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
     public void setMaxDisplayedLines(int lines) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ImageView, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -204,7 +201,6 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);

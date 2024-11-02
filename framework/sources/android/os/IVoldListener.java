@@ -247,8 +247,9 @@ public interface IVoldListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IVoldListener {
+        public static class Proxy implements IVoldListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

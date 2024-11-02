@@ -52,7 +52,6 @@ public class FreeformResizeGuideView extends FrameLayout {
         this.mAnimatorSet = new AnimatorSet();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -63,7 +62,6 @@ public class FreeformResizeGuideView extends FrameLayout {
         this.mAppIconSize = getResources().getDimensionPixelSize(R.dimen.freeform_resize_guide_view_app_icon_size);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void update(int dexDockingState, String packageName) {
         if (WindowConfiguration.isDexTaskDocking(dexDockingState)) {
             this.mDimViewMargin = 0;
@@ -95,12 +93,10 @@ public class FreeformResizeGuideView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void show(Rect lastBounds, Rect bounds, boolean toFullScreen) {
         show(lastBounds, bounds, toFullScreen, toFullScreen, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void show(Rect lastBounds, Rect bounds, boolean isTransition, boolean toFullScreen, FreeformResizeGuide.TransitionInfo transitionInfo) {
         boolean isTransitionAnimation;
         long duration;
@@ -220,56 +216,47 @@ public class FreeformResizeGuideView extends FrameLayout {
         this.mDimView.setVisibility(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$show$0(FrameLayout.LayoutParams dimLp, ValueAnimator animation) {
         dimLp.leftMargin = ((Integer) animation.getAnimatedValue()).intValue();
         this.mDimView.setLayoutParams(dimLp);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$show$1(FrameLayout.LayoutParams dimLp, ValueAnimator animation) {
         dimLp.topMargin = ((Integer) animation.getAnimatedValue()).intValue();
         this.mDimView.setLayoutParams(dimLp);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$show$2(FrameLayout.LayoutParams dimLp, ValueAnimator animation) {
         dimLp.width = ((Integer) animation.getAnimatedValue()).intValue();
         this.mDimView.setLayoutParams(dimLp);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$show$3(FrameLayout.LayoutParams dimLp, ValueAnimator animation) {
         dimLp.height = ((Integer) animation.getAnimatedValue()).intValue();
         this.mDimView.setLayoutParams(dimLp);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$show$4(ValueAnimator animation) {
         int value = ((Integer) animation.getAnimatedValue()).intValue();
         float alpha = value > 0 ? value / 100.0f : 0.0f;
         this.mDimView.setAlpha(alpha);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void hide() {
         this.mDimView.setVisibility(8);
         this.mAppIconView.setVisibility(8);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dismiss() {
         this.mAnimatorSet.cancel();
         this.mAnimList.clear();
         removeAllViews();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDimViewVisibility(int visibility) {
         this.mDimView.setVisibility(visibility);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startShowAppIconAnimation() {
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(this.mAppIconView, "scaleX", 0.0f, 0.95f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(this.mAppIconView, "scaleY", 0.0f, 0.95f);
@@ -278,6 +265,9 @@ public class FreeformResizeGuideView extends FrameLayout {
         animatorSet.setDuration(300L);
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.multiwindow.FreeformResizeGuideView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationStart(Animator animation) {
                 FreeformResizeGuideView.this.mAppIconView.setVisibility(0);
@@ -296,6 +286,19 @@ public class FreeformResizeGuideView extends FrameLayout {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.multiwindow.FreeformResizeGuideView$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+            FreeformResizeGuideView.this.mAppIconView.setVisibility(0);
+            FreeformResizeGuideView.this.mAppIconView.setAlpha(1.0f);
+        }
+    }
+
     public void startHideAppIconAnimation() {
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(this.mAppIconView, "scaleX", 0.9f, 0.5f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(this.mAppIconView, "scaleY", 0.9f, 0.5f);
@@ -305,6 +308,9 @@ public class FreeformResizeGuideView extends FrameLayout {
         animatorSet.setDuration(100L);
         animatorSet.playTogether(scaleX, scaleY, alpha);
         animatorSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.multiwindow.FreeformResizeGuideView.2
+            AnonymousClass2() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 FreeformResizeGuideView.this.mAppIconView.setVisibility(4);
@@ -314,6 +320,18 @@ public class FreeformResizeGuideView extends FrameLayout {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.multiwindow.FreeformResizeGuideView$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            FreeformResizeGuideView.this.mAppIconView.setVisibility(4);
+        }
+    }
+
     public boolean isShowingAppIcon() {
         return this.mAppIconView.getVisibility() == 0;
     }

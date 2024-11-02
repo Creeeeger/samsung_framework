@@ -15,13 +15,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class DataRemovalRequest implements Parcelable {
     public static final Parcelable.Creator<DataRemovalRequest> CREATOR = new Parcelable.Creator<DataRemovalRequest>() { // from class: android.view.contentcapture.DataRemovalRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DataRemovalRequest createFromParcel(Parcel parcel) {
             return new DataRemovalRequest(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataRemovalRequest[] newArray(int size) {
             return new DataRemovalRequest[size];
@@ -35,6 +36,14 @@ public final class DataRemovalRequest implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes4.dex */
     @interface Flags {
+    }
+
+    /* synthetic */ DataRemovalRequest(Parcel parcel, DataRemovalRequestIA dataRemovalRequestIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ DataRemovalRequest(Builder builder, DataRemovalRequestIA dataRemovalRequestIA) {
+        this(builder);
     }
 
     private DataRemovalRequest(Builder builder) {
@@ -133,10 +142,31 @@ public final class DataRemovalRequest implements Parcelable {
         }
     }
 
+    /* renamed from: android.view.contentcapture.DataRemovalRequest$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DataRemovalRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataRemovalRequest createFromParcel(Parcel parcel) {
+            return new DataRemovalRequest(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataRemovalRequest[] newArray(int size) {
+            return new DataRemovalRequest[size];
+        }
+    }
+
     /* loaded from: classes4.dex */
     public final class LocusIdRequest {
         private final int mFlags;
         private final LocusId mLocusId;
+
+        /* synthetic */ LocusIdRequest(DataRemovalRequest dataRemovalRequest, LocusId locusId, int i, LocusIdRequestIA locusIdRequestIA) {
+            this(locusId, i);
+        }
 
         private LocusIdRequest(LocusId locusId, int flags) {
             this.mLocusId = locusId;

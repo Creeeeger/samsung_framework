@@ -31,7 +31,6 @@ public class ClientRemasterDirector implements IDirector {
         progressUpdateClient.registerObserver(photoRemasterServiceClient.getProgressObserver());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class StopLockManager {
         private final ReentrantLock mStopLock = new ReentrantLock();

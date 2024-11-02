@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class GrantorDescriptor implements Parcelable {
     public static final Parcelable.Creator<GrantorDescriptor> CREATOR = new Parcelable.Creator<GrantorDescriptor>() { // from class: android.hardware.common.fmq.GrantorDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GrantorDescriptor createFromParcel(Parcel _aidl_source) {
             GrantorDescriptor _aidl_out = new GrantorDescriptor();
@@ -15,7 +17,6 @@ public class GrantorDescriptor implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GrantorDescriptor[] newArray(int _aidl_size) {
             return new GrantorDescriptor[_aidl_size];
@@ -24,6 +25,25 @@ public class GrantorDescriptor implements Parcelable {
     public int fdIndex = 0;
     public int offset = 0;
     public long extent = 0;
+
+    /* renamed from: android.hardware.common.fmq.GrantorDescriptor$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GrantorDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GrantorDescriptor createFromParcel(Parcel _aidl_source) {
+            GrantorDescriptor _aidl_out = new GrantorDescriptor();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GrantorDescriptor[] newArray(int _aidl_size) {
+            return new GrantorDescriptor[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

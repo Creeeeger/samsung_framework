@@ -22,8 +22,9 @@ import com.android.internal.inputmethod.IRemoteInputConnection;
 import com.android.internal.os.HandlerCaller;
 import com.android.internal.os.SomeArgs;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-class IInputMethodSessionWrapper extends IInputMethodSession.Stub implements HandlerCaller.Callback {
+public class IInputMethodSessionWrapper extends IInputMethodSession.Stub implements HandlerCaller.Callback {
     private static final int DO_APP_PRIVATE_COMMAND = 100;
     private static final int DO_DISPLAY_COMPLETIONS = 65;
     private static final int DO_FINISH_INPUT = 140;
@@ -195,7 +196,6 @@ class IInputMethodSessionWrapper extends IInputMethodSession.Stub implements Han
         handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(140));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class ImeInputEventReceiver extends InputEventReceiver implements InputMethodSession.EventCallback {
         private final SparseArray<InputEvent> mPendingEvents;

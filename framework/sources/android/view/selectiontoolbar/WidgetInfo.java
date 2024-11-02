@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class WidgetInfo implements Parcelable {
     public static final Parcelable.Creator<WidgetInfo> CREATOR = new Parcelable.Creator<WidgetInfo>() { // from class: android.view.selectiontoolbar.WidgetInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WidgetInfo[] newArray(int size) {
             return new WidgetInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WidgetInfo createFromParcel(Parcel in) {
             return new WidgetInfo(in);
@@ -91,6 +92,23 @@ public final class WidgetInfo implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) contentRect);
         this.mSurfacePackage = surfacePackage;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) surfacePackage);
+    }
+
+    /* renamed from: android.view.selectiontoolbar.WidgetInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WidgetInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WidgetInfo[] newArray(int size) {
+            return new WidgetInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WidgetInfo createFromParcel(Parcel in) {
+            return new WidgetInfo(in);
+        }
     }
 
     @Deprecated

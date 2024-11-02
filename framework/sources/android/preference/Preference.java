@@ -86,7 +86,6 @@ public class Preference implements Comparable<Preference> {
     private int mWhere;
     private int mWidgetLayoutResId;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public interface OnPreferenceChangeInternalListener {
         void onPreferenceChange(Preference preference);
@@ -329,7 +328,6 @@ public class Preference implements Comparable<Preference> {
         return layout;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onBindView(View view) {
         int i;
         TextView titleView = (TextView) view.findViewById(16908310);
@@ -392,7 +390,7 @@ public class Preference implements Comparable<Preference> {
                 }
                 Drawable drawable = this.mIcon;
                 if (drawable != null) {
-                    imageView.setImageDrawable(drawable);
+                    imageView.lambda$setImageURIAsync$2(drawable);
                 }
             }
             if (this.mIcon != null) {
@@ -560,12 +558,10 @@ public class Preference implements Comparable<Preference> {
         return this.mIconSpaceReserved;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getId() {
         return this.mId;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onClick() {
     }
 
@@ -603,7 +599,6 @@ public class Preference implements Comparable<Preference> {
         this.mPersistent = persistent;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean callChangeListener(Object newValue) {
         OnPreferenceChangeListener onPreferenceChangeListener = this.mOnChangeListener;
         return onPreferenceChangeListener == null || onPreferenceChangeListener.onPreferenceChange(this, newValue);
@@ -698,12 +693,10 @@ public class Preference implements Comparable<Preference> {
         return CharSequences.compareToIgnoreCase(charSequence, charSequence2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setOnPreferenceChangeInternalListener(OnPreferenceChangeInternalListener listener) {
         this.mListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void notifyChanged() {
         OnPreferenceChangeInternalListener onPreferenceChangeInternalListener = this.mListener;
         if (onPreferenceChangeInternalListener != null) {
@@ -711,7 +704,6 @@ public class Preference implements Comparable<Preference> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void notifyHierarchyChanged() {
         OnPreferenceChangeInternalListener onPreferenceChangeInternalListener = this.mListener;
         if (onPreferenceChangeInternalListener != null) {
@@ -723,19 +715,16 @@ public class Preference implements Comparable<Preference> {
         return this.mPreferenceManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onAttachedToHierarchy(PreferenceManager preferenceManager) {
         this.mPreferenceManager = preferenceManager;
         this.mId = preferenceManager.getNextId();
         dispatchSetInitialValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onAttachedToActivity() {
         registerDependency();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void assignParent(PreferenceGroup parentGroup) {
         this.mParentGroup = parentGroup;
     }
@@ -828,7 +817,6 @@ public class Preference implements Comparable<Preference> {
         return this.mParentGroup;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onPrepareForRemoval() {
         unregisterDependency();
     }
@@ -867,7 +855,6 @@ public class Preference implements Comparable<Preference> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean persistString(String value) {
         if (!shouldPersist()) {
             return false;
@@ -886,7 +873,6 @@ public class Preference implements Comparable<Preference> {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public String getPersistedString(String defaultReturnValue) {
         if (!shouldPersist()) {
             return defaultReturnValue;
@@ -927,7 +913,6 @@ public class Preference implements Comparable<Preference> {
         return this.mPreferenceManager.getSharedPreferences().getStringSet(this.mKey, defaultReturnValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean persistInt(int value) {
         if (!shouldPersist()) {
             return false;
@@ -946,7 +931,6 @@ public class Preference implements Comparable<Preference> {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getPersistedInt(int defaultReturnValue) {
         if (!shouldPersist()) {
             return defaultReturnValue;
@@ -1016,7 +1000,6 @@ public class Preference implements Comparable<Preference> {
         return this.mPreferenceManager.getSharedPreferences().getLong(this.mKey, defaultReturnValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean persistBoolean(boolean value) {
         if (!shouldPersist()) {
             return false;
@@ -1035,7 +1018,6 @@ public class Preference implements Comparable<Preference> {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean getPersistedBoolean(boolean defaultReturnValue) {
         if (!shouldPersist()) {
             return defaultReturnValue;
@@ -1071,7 +1053,6 @@ public class Preference implements Comparable<Preference> {
         dispatchSaveInstanceState(container);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchSaveInstanceState(Bundle container) {
         if (hasKey()) {
             this.mBaseMethodCalled = false;
@@ -1085,7 +1066,6 @@ public class Preference implements Comparable<Preference> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Parcelable onSaveInstanceState() {
         this.mBaseMethodCalled = true;
         return BaseSavedState.EMPTY_STATE;
@@ -1095,7 +1075,6 @@ public class Preference implements Comparable<Preference> {
         dispatchRestoreInstanceState(container);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchRestoreInstanceState(Bundle container) {
         Parcelable state;
         if (hasKey() && (state = container.getParcelable(this.mKey)) != null) {
@@ -1107,7 +1086,6 @@ public class Preference implements Comparable<Preference> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onRestoreInstanceState(Parcelable state) {
         this.mBaseMethodCalled = true;
         if (state != BaseSavedState.EMPTY_STATE && state != null) {
@@ -1119,13 +1097,14 @@ public class Preference implements Comparable<Preference> {
     /* loaded from: classes3.dex */
     public static class BaseSavedState extends AbsSavedState {
         public static final Parcelable.Creator<BaseSavedState> CREATOR = new Parcelable.Creator<BaseSavedState>() { // from class: android.preference.Preference.BaseSavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public BaseSavedState createFromParcel(Parcel in) {
                 return new BaseSavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BaseSavedState[] newArray(int size) {
                 return new BaseSavedState[size];
@@ -1138,6 +1117,23 @@ public class Preference implements Comparable<Preference> {
 
         public BaseSavedState(Parcelable superState) {
             super(superState);
+        }
+
+        /* renamed from: android.preference.Preference$BaseSavedState$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<BaseSavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BaseSavedState createFromParcel(Parcel in) {
+                return new BaseSavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public BaseSavedState[] newArray(int size) {
+                return new BaseSavedState[size];
+            }
         }
     }
 
@@ -1164,23 +1160,19 @@ public class Preference implements Comparable<Preference> {
         return this.mIsSummaryColorPrimaryDark;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasRTL() {
         return this.mContext.getApplicationInfo().hasRtlSupport();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isRTL() {
         Configuration config = this.mContext.getResources().getConfiguration();
         return config.getLayoutDirection() == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setRoundCorner(int where) {
         this.mWhere = where;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCategoryBGColor(int color) {
         this.mIsChangedCategoryBG = true;
         this.mCategoryBGColor = color;

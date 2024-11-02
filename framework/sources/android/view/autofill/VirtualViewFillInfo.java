@@ -8,8 +8,8 @@ import java.lang.annotation.Annotation;
 public final class VirtualViewFillInfo {
     private String[] mAutofillHints;
 
-    /* renamed from: -$$Nest$smdefaultAutofillHints, reason: not valid java name */
-    static /* bridge */ /* synthetic */ String[] m5578$$Nest$smdefaultAutofillHints() {
+    /* renamed from: -$$Nest$smdefaultAutofillHints */
+    static /* bridge */ /* synthetic */ String[] m5573$$Nest$smdefaultAutofillHints() {
         return defaultAutofillHints();
     }
 
@@ -43,7 +43,7 @@ public final class VirtualViewFillInfo {
             long j = this.mBuilderFieldsSet | 2;
             this.mBuilderFieldsSet = j;
             if ((j & 1) == 0) {
-                this.mAutofillHints = VirtualViewFillInfo.m5578$$Nest$smdefaultAutofillHints();
+                this.mAutofillHints = VirtualViewFillInfo.m5573$$Nest$smdefaultAutofillHints();
             }
             VirtualViewFillInfo o = new VirtualViewFillInfo(this.mAutofillHints);
             return o;

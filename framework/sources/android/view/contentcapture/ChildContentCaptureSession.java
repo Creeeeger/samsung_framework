@@ -8,13 +8,11 @@ import android.view.contentcapture.ViewNode;
 final class ChildContentCaptureSession extends ContentCaptureSession {
     private final ContentCaptureSession mParent;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ChildContentCaptureSession(ContentCaptureSession parent, ContentCaptureContext clientContext) {
         super(clientContext);
         this.mParent = parent;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.contentcapture.ContentCaptureSession
     public MainContentCaptureSession getMainCaptureSession() {
         ContentCaptureSession contentCaptureSession = this.mParent;
@@ -31,7 +29,6 @@ final class ChildContentCaptureSession extends ContentCaptureSession {
         return child;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.contentcapture.ContentCaptureSession
     public void flush(int reason) {
         this.mParent.flush(reason);
@@ -82,7 +79,6 @@ final class ChildContentCaptureSession extends ContentCaptureSession {
         getMainCaptureSession().notifySessionPaused();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.contentcapture.ContentCaptureSession
     public boolean isContentCaptureEnabled() {
         return getMainCaptureSession().isContentCaptureEnabled();

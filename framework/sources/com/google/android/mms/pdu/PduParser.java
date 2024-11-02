@@ -564,26 +564,91 @@ public class PduParser {
         return headers;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x0141, code lost:            r2 = new byte[r10];        r17 = r3;        r20 = r5;        r3 = new java.lang.String(r11.getContentType());        r6 = r23.read(r2, 0, r10);     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x0156, code lost:            if (r6 != (-1)) goto L57;     */
-    /* JADX WARN: Code restructure failed: missing block: B:45:0x0160, code lost:            if (r3.equalsIgnoreCase(com.google.android.mms.ContentType.MULTIPART_ALTERNATIVE) == false) goto L64;     */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x0162, code lost:            r5 = r0.parseParts(new java.io.ByteArrayInputStream(r2), r14);     */
-    /* JADX WARN: Code restructure failed: missing block: B:47:0x016b, code lost:            if (r5 != null) goto L62;     */
-    /* JADX WARN: Code restructure failed: missing block: B:48:0x016d, code lost:            log("childBody is null");     */
-    /* JADX WARN: Code restructure failed: missing block: B:49:0x0178, code lost:            r0 = null;     */
-    /* JADX WARN: Code restructure failed: missing block: B:57:0x0173, code lost:            r11 = r5.getPart(0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x017a, code lost:            r0 = r11.getContentTransferEncoding();     */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x017e, code lost:            if (r0 == null) goto L72;     */
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x0180, code lost:            r5 = new java.lang.String(r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x018d, code lost:            if (r5.equalsIgnoreCase(com.google.android.mms.pdu.PduPart.P_BASE64) == false) goto L69;     */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x018f, code lost:            r2 = com.google.android.mms.pdu.Base64.decodeBase64(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:63:0x01a4, code lost:            if (r2 != null) goto L76;     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x01ad, code lost:            r0 = null;        r11.setData(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:66:0x01a6, code lost:            log("Decode part data error!");     */
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x01ac, code lost:            return null;     */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x019b, code lost:            if (r5.equalsIgnoreCase(com.google.android.mms.pdu.PduPart.P_QUOTED_PRINTABLE) == false) goto L73;     */
-    /* JADX WARN: Code restructure failed: missing block: B:70:0x019d, code lost:            r2 = com.google.android.mms.pdu.QuotedPrintable.decodeQuotedPrintable(r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:73:0x0158, code lost:            return null;     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x0141, code lost:
+    
+        r2 = new byte[r10];
+        r17 = r3;
+        r20 = r5;
+        r3 = new java.lang.String(r11.getContentType());
+        r6 = r23.read(r2, 0, r10);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x0156, code lost:
+    
+        if (r6 != (-1)) goto L150;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x0160, code lost:
+    
+        if (r3.equalsIgnoreCase(com.google.android.mms.ContentType.MULTIPART_ALTERNATIVE) == false) goto L157;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x0162, code lost:
+    
+        r5 = r0.parseParts(new java.io.ByteArrayInputStream(r2), r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x016b, code lost:
+    
+        if (r5 != null) goto L155;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:48:0x016d, code lost:
+    
+        log("childBody is null");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x0178, code lost:
+    
+        r0 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x0173, code lost:
+    
+        r11 = r5.getPart(0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x017a, code lost:
+    
+        r0 = r11.getContentTransferEncoding();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x017e, code lost:
+    
+        if (r0 == null) goto L165;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x0180, code lost:
+    
+        r5 = new java.lang.String(r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x018d, code lost:
+    
+        if (r5.equalsIgnoreCase(com.google.android.mms.pdu.PduPart.P_BASE64) == false) goto L162;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x018f, code lost:
+    
+        r2 = com.google.android.mms.pdu.Base64.decodeBase64(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:63:0x01a4, code lost:
+    
+        if (r2 != null) goto L169;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x01ad, code lost:
+    
+        r0 = null;
+        r11.setData(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x01a6, code lost:
+    
+        log("Decode part data error!");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x01ac, code lost:
+    
+        return null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x019b, code lost:
+    
+        if (r5.equalsIgnoreCase(com.google.android.mms.pdu.PduPart.P_QUOTED_PRINTABLE) == false) goto L166;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:70:0x019d, code lost:
+    
+        r2 = com.google.android.mms.pdu.QuotedPrintable.decodeQuotedPrintable(r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:73:0x0158, code lost:
+    
+        return null;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

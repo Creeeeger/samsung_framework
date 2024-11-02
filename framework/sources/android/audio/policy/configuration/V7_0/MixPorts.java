@@ -220,7 +220,6 @@ public class MixPorts {
         return this.mixPort;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static MixPorts read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         MixPorts _instance = new MixPorts();

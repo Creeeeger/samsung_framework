@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class VirtualSensorConfig implements Parcelable {
     public static final Parcelable.Creator<VirtualSensorConfig> CREATOR = new Parcelable.Creator<VirtualSensorConfig>() { // from class: android.companion.virtual.sensor.VirtualSensorConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualSensorConfig createFromParcel(Parcel source) {
             return new VirtualSensorConfig(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualSensorConfig[] newArray(int size) {
             return new VirtualSensorConfig[size];
@@ -34,6 +35,14 @@ public final class VirtualSensorConfig implements Parcelable {
     private final float mResolution;
     private final int mType;
     private final String mVendor;
+
+    /* synthetic */ VirtualSensorConfig(int i, String str, String str2, float f, float f2, float f3, int i2, int i3, int i4, VirtualSensorConfigIA virtualSensorConfigIA) {
+        this(i, str, str2, f, f2, f3, i2, i3, i4);
+    }
+
+    /* synthetic */ VirtualSensorConfig(Parcel parcel, VirtualSensorConfigIA virtualSensorConfigIA) {
+        this(parcel);
+    }
 
     private VirtualSensorConfig(int type, String name, String vendor2, float maximumRange, float resolution, float power, int minDelay, int maxDelay, int flags) {
         this.mType = type;
@@ -215,6 +224,23 @@ public final class VirtualSensorConfig implements Parcelable {
                 throw new IllegalArgumentException("Only TYPE_MEMORY_FILE direct channels can be supported for virtual sensors.");
             }
             return this;
+        }
+    }
+
+    /* renamed from: android.companion.virtual.sensor.VirtualSensorConfig$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualSensorConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualSensorConfig createFromParcel(Parcel source) {
+            return new VirtualSensorConfig(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualSensorConfig[] newArray(int size) {
+            return new VirtualSensorConfig[size];
         }
     }
 }

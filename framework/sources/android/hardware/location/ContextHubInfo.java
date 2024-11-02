@@ -13,13 +13,14 @@ import java.util.Arrays;
 /* loaded from: classes2.dex */
 public class ContextHubInfo implements Parcelable {
     public static final Parcelable.Creator<ContextHubInfo> CREATOR = new Parcelable.Creator<ContextHubInfo>() { // from class: android.hardware.location.ContextHubInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContextHubInfo createFromParcel(Parcel in) {
             return new ContextHubInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContextHubInfo[] newArray(int size) {
             return new ContextHubInfo[size];
@@ -42,6 +43,10 @@ public class ContextHubInfo implements Parcelable {
     private String mToolchain;
     private int mToolchainVersion;
     private String mVendor;
+
+    /* synthetic */ ContextHubInfo(Parcel parcel, ContextHubInfoIA contextHubInfoIA) {
+        this(parcel);
+    }
 
     public ContextHubInfo() {
     }
@@ -241,5 +246,22 @@ public class ContextHubInfo implements Parcelable {
         out.writeInt(this.mSupportedSensors.length);
         out.writeIntArray(this.mSupportedSensors);
         out.writeTypedArray(this.mMemoryRegions, flags);
+    }
+
+    /* renamed from: android.hardware.location.ContextHubInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContextHubInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContextHubInfo createFromParcel(Parcel in) {
+            return new ContextHubInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContextHubInfo[] newArray(int size) {
+            return new ContextHubInfo[size];
+        }
     }
 }

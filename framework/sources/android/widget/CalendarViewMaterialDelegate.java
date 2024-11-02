@@ -7,15 +7,19 @@ import android.util.AttributeSet;
 import android.widget.CalendarView;
 import android.widget.DayPickerView;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class CalendarViewMaterialDelegate extends CalendarView.AbstractCalendarViewDelegate {
+public class CalendarViewMaterialDelegate extends CalendarView.AbstractCalendarViewDelegate {
     private final DayPickerView mDayPickerView;
     private CalendarView.OnDateChangeListener mOnDateChangeListener;
     private final DayPickerView.OnDaySelectedListener mOnDaySelectedListener;
 
     public CalendarViewMaterialDelegate(CalendarView delegator, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(delegator, context);
-        DayPickerView.OnDaySelectedListener onDaySelectedListener = new DayPickerView.OnDaySelectedListener() { // from class: android.widget.CalendarViewMaterialDelegate.1
+        AnonymousClass1 anonymousClass1 = new DayPickerView.OnDaySelectedListener() { // from class: android.widget.CalendarViewMaterialDelegate.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.DayPickerView.OnDaySelectedListener
             public void onDaySelected(DayPickerView view, Calendar day) {
                 if (CalendarViewMaterialDelegate.this.mOnDateChangeListener != null) {
@@ -26,10 +30,10 @@ class CalendarViewMaterialDelegate extends CalendarView.AbstractCalendarViewDele
                 }
             }
         };
-        this.mOnDaySelectedListener = onDaySelectedListener;
+        this.mOnDaySelectedListener = anonymousClass1;
         DayPickerView dayPickerView = new DayPickerView(context, attrs, defStyleAttr, defStyleRes);
         this.mDayPickerView = dayPickerView;
-        dayPickerView.setOnDaySelectedListener(onDaySelectedListener);
+        dayPickerView.setOnDaySelectedListener(anonymousClass1);
         delegator.addView(dayPickerView);
     }
 
@@ -117,5 +121,23 @@ class CalendarViewMaterialDelegate extends CalendarView.AbstractCalendarViewDele
             return true;
         }
         return false;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.CalendarViewMaterialDelegate$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements DayPickerView.OnDaySelectedListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.DayPickerView.OnDaySelectedListener
+        public void onDaySelected(DayPickerView view, Calendar day) {
+            if (CalendarViewMaterialDelegate.this.mOnDateChangeListener != null) {
+                int year = day.get(1);
+                int month = day.get(2);
+                int dayOfMonth = day.get(5);
+                CalendarViewMaterialDelegate.this.mOnDateChangeListener.onSelectedDayChange(CalendarViewMaterialDelegate.this.mDelegator, year, month, dayOfMonth);
+            }
+        }
     }
 }

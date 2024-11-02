@@ -40,7 +40,9 @@ public class Session {
     /* loaded from: classes3.dex */
     public static class Info implements Parcelable {
         public static final Parcelable.Creator<Info> CREATOR = new Parcelable.Creator<Info>() { // from class: android.telecom.Logging.Session.Info.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Info createFromParcel(Parcel source) {
                 String id = source.readString();
@@ -49,7 +51,6 @@ public class Session {
                 return new Info(id, methodName, ownerInfo);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Info[] newArray(int size) {
                 return new Info[size];
@@ -58,6 +59,10 @@ public class Session {
         public final String methodPath;
         public final String ownerInfo;
         public final String sessionId;
+
+        /* synthetic */ Info(String str, String str2, String str3, InfoIA infoIA) {
+            this(str, str2, str3);
+        }
 
         private Info(String id, String path, String owner) {
             this.sessionId = id;
@@ -77,6 +82,26 @@ public class Session {
                 newInfo = ownerInfo != null ? ownerInfo : s.getOwnerInfo();
             }
             return new Info(s.getFullSessionId(), s.getFullMethodPath(!Log.DEBUG && s.isSessionExternal()), newInfo);
+        }
+
+        /* renamed from: android.telecom.Logging.Session$Info$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Info> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Info createFromParcel(Parcel source) {
+                String id = source.readString();
+                String methodName = source.readString();
+                String ownerInfo = source.readString();
+                return new Info(id, methodName, ownerInfo);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Info[] newArray(int size) {
+                return new Info[size];
+            }
         }
 
         @Override // android.os.Parcelable
@@ -205,7 +230,6 @@ public class Session {
         return String.valueOf(i);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public String getFullSessionId() {
         return getFullSessionId(0);
     }
@@ -310,7 +334,6 @@ public class Session {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isSessionExternal() {
         return getRootSession("isSessionExternal").isExternal();
     }

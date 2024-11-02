@@ -36,10 +36,13 @@ final class RemoteInputConnection implements InputConnection {
     private final InputMethodServiceInternalHolder mImsInternal;
     private final IRemoteInputConnectionInvoker mInvoker;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class InputMethodServiceInternalHolder {
         private final WeakReference<InputMethodServiceInternal> mServiceRef;
+
+        /* synthetic */ InputMethodServiceInternalHolder(WeakReference weakReference, InputMethodServiceInternalHolderIA inputMethodServiceInternalHolderIA) {
+            this(weakReference);
+        }
 
         private InputMethodServiceInternalHolder(WeakReference<InputMethodServiceInternal> ims) {
             this.mServiceRef = ims;
@@ -54,7 +57,6 @@ final class RemoteInputConnection implements InputConnection {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RemoteInputConnection(WeakReference<InputMethodServiceInternal> inputMethodService, IRemoteInputConnection inputConnection, CancellationGroup cancellationGroup) {
         this.mImsInternal = new InputMethodServiceInternalHolder(inputMethodService);
         this.mInvoker = IRemoteInputConnectionInvoker.create(inputConnection);
@@ -65,7 +67,6 @@ final class RemoteInputConnection implements InputConnection {
         return this.mInvoker.isSameConnection(inputConnection);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RemoteInputConnection(RemoteInputConnection original, int sessionId) {
         this.mImsInternal = original.mImsInternal;
         this.mInvoker = original.mInvoker.cloneWithSessionId(sessionId);

@@ -91,7 +91,6 @@ public class DateTimeView extends TextView {
         a.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -107,7 +106,6 @@ public class DateTimeView extends TextView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -293,7 +291,6 @@ public class DateTimeView extends TextView {
         return toEpochMillis(nextMidnight, zoneId);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -317,7 +314,6 @@ public class DateTimeView extends TextView {
         return android.text.format.DateFormat.getTimeFormat(getContext());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearFormatAndUpdate() {
         this.mLastFormat = null;
         update();
@@ -369,16 +365,24 @@ public class DateTimeView extends TextView {
         ri.setHandler(handler);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class ReceiverInfo {
+    public static class ReceiverInfo {
         private final ArrayList<DateTimeView> mAttachedViews;
         private Handler mHandler;
         private final ContentObserver mObserver;
         private final BroadcastReceiver mReceiver;
 
+        /* synthetic */ ReceiverInfo(ReceiverInfoIA receiverInfoIA) {
+            this();
+        }
+
         private ReceiverInfo() {
             this.mAttachedViews = new ArrayList<>();
             this.mReceiver = new BroadcastReceiver() { // from class: android.widget.DateTimeView.ReceiverInfo.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.content.BroadcastReceiver
                 public void onReceive(Context context, Intent intent) {
                     String action = intent.getAction();
@@ -389,12 +393,47 @@ public class DateTimeView extends TextView {
                 }
             };
             this.mObserver = new ContentObserver(new Handler()) { // from class: android.widget.DateTimeView.ReceiverInfo.2
+                AnonymousClass2(Handler handler) {
+                    super(handler);
+                }
+
                 @Override // android.database.ContentObserver
                 public void onChange(boolean selfChange) {
                     ReceiverInfo.this.updateAll();
                 }
             };
             this.mHandler = new Handler();
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.DateTimeView$ReceiverInfo$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 extends BroadcastReceiver {
+            AnonymousClass1() {
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (Intent.ACTION_TIME_TICK.equals(action) && System.currentTimeMillis() < ReceiverInfo.this.getSoonestUpdateTime()) {
+                    return;
+                }
+                ReceiverInfo.this.updateAll();
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.DateTimeView$ReceiverInfo$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 extends ContentObserver {
+            AnonymousClass2(Handler handler) {
+                super(handler);
+            }
+
+            @Override // android.database.ContentObserver
+            public void onChange(boolean selfChange) {
+                ReceiverInfo.this.updateAll();
+            }
         }
 
         public void addView(DateTimeView v) {

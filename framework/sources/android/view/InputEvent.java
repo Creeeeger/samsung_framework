@@ -14,7 +14,9 @@ public abstract class InputEvent implements Parcelable {
     protected int mSeq = mNextSeq.getAndIncrement();
     private static final AtomicInteger mNextSeq = new AtomicInteger();
     public static final Parcelable.Creator<InputEvent> CREATOR = new Parcelable.Creator<InputEvent>() { // from class: android.view.InputEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputEvent createFromParcel(Parcel in) {
             int token = in.readInt();
@@ -27,7 +29,6 @@ public abstract class InputEvent implements Parcelable {
             throw new IllegalStateException("Unexpected input event type token in parcel.");
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputEvent[] newArray(int size) {
             return new InputEvent[size];
@@ -77,7 +78,6 @@ public abstract class InputEvent implements Parcelable {
         recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void prepareForReuse() {
         this.mRecycled = false;
         this.mRecycledLocation = null;
@@ -91,5 +91,29 @@ public abstract class InputEvent implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.view.InputEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputEvent createFromParcel(Parcel in) {
+            int token = in.readInt();
+            if (token == 2) {
+                return KeyEvent.createFromParcelBody(in);
+            }
+            if (token == 1) {
+                return MotionEvent.createFromParcelBody(in);
+            }
+            throw new IllegalStateException("Unexpected input event type token in parcel.");
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputEvent[] newArray(int size) {
+            return new InputEvent[size];
+        }
     }
 }

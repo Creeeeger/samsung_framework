@@ -99,8 +99,13 @@ public class TestLooperManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private class LooperHolder implements Runnable {
+    public class LooperHolder implements Runnable {
+        /* synthetic */ LooperHolder(TestLooperManager testLooperManager, LooperHolderIA looperHolderIA) {
+            this();
+        }
+
         private LooperHolder() {
         }
 
@@ -137,11 +142,14 @@ public class TestLooperManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class MessageExecution {
         private Message m;
         private Throwable response;
+
+        /* synthetic */ MessageExecution(MessageExecutionIA messageExecutionIA) {
+            this();
+        }
 
         private MessageExecution() {
         }

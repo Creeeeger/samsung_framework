@@ -491,7 +491,7 @@ public class Instrumentation {
         }
     }
 
-    /* renamed from: android.app.Instrumentation$1MenuRunnable, reason: invalid class name */
+    /* renamed from: android.app.Instrumentation$1MenuRunnable */
     /* loaded from: classes.dex */
     class C1MenuRunnable implements Runnable {
         private final Activity activity;
@@ -537,7 +537,7 @@ public class Instrumentation {
         }
     }
 
-    /* renamed from: android.app.Instrumentation$1ContextMenuRunnable, reason: invalid class name */
+    /* renamed from: android.app.Instrumentation$1ContextMenuRunnable */
     /* loaded from: classes.dex */
     class C1ContextMenuRunnable implements Runnable {
         private final Activity activity;
@@ -918,7 +918,10 @@ public class Instrumentation {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0077, code lost:            r13 = r6;     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0077, code lost:
+    
+        r13 = r6;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -998,7 +1001,10 @@ public class Instrumentation {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0065, code lost:            r13 = r4;     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0065, code lost:
+    
+        r13 = r4;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1117,7 +1123,10 @@ public class Instrumentation {
         throw new UnsupportedOperationException("Method not decompiled: android.app.Instrumentation.execStartActivity(android.content.Context, android.os.IBinder, android.os.IBinder, java.lang.String, android.content.Intent, int, android.os.Bundle):android.app.Instrumentation$ActivityResult");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0065, code lost:            r13 = r4;     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0065, code lost:
+    
+        r13 = r4;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1240,7 +1249,10 @@ public class Instrumentation {
         throw new UnsupportedOperationException("Method not decompiled: android.app.Instrumentation.execStartActivity(android.content.Context, android.os.IBinder, android.os.IBinder, java.lang.String, android.content.Intent, int, android.os.Bundle, android.os.UserHandle):android.app.Instrumentation$ActivityResult");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0067, code lost:            r13 = r5;     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0067, code lost:
+    
+        r13 = r5;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1296,7 +1308,6 @@ public class Instrumentation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void init(ActivityThread thread, Context instrContext, Context appContext, ComponentName component, IInstrumentationWatcher watcher, IUiAutomationConnection uiAutomationConnection) {
         this.mThread = thread;
         thread.getLooper();
@@ -1308,7 +1319,6 @@ public class Instrumentation {
         this.mUiAutomationConnection = uiAutomationConnection;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void basicInit(ActivityThread thread) {
         this.mThread = thread;
     }
@@ -1418,9 +1428,12 @@ public class Instrumentation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class EmptyRunnable implements Runnable {
+        /* synthetic */ EmptyRunnable(EmptyRunnableIA emptyRunnableIA) {
+            this();
+        }
+
         private EmptyRunnable() {
         }
 
@@ -1429,7 +1442,6 @@ public class Instrumentation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class SyncRunnable implements Runnable {
         private boolean mComplete;
@@ -1460,7 +1472,6 @@ public class Instrumentation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class ActivityWaiter {
         public Activity activity;
@@ -1471,7 +1482,6 @@ public class Instrumentation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class ActivityGoing implements MessageQueue.IdleHandler {
         private final ActivityWaiter mWaiter;
@@ -1490,7 +1500,6 @@ public class Instrumentation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class Idler implements MessageQueue.IdleHandler {
         private final Runnable mCallback;

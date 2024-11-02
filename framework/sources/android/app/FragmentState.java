@@ -6,17 +6,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public final class FragmentState implements Parcelable {
     public static final Parcelable.Creator<FragmentState> CREATOR = new Parcelable.Creator<FragmentState>() { // from class: android.app.FragmentState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FragmentState createFromParcel(Parcel in) {
             return new FragmentState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FragmentState[] newArray(int size) {
             return new FragmentState[size];
@@ -35,7 +35,6 @@ public final class FragmentState implements Parcelable {
     Bundle mSavedFragmentState;
     final String mTag;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FragmentState(Fragment frag) {
         this.mClassName = frag.getClass().getName();
         this.mIndex = frag.mIndex;
@@ -116,5 +115,22 @@ public final class FragmentState implements Parcelable {
         parcel.writeBundle(this.mArguments);
         parcel.writeInt(this.mHidden ? 1 : 0);
         parcel.writeBundle(this.mSavedFragmentState);
+    }
+
+    /* renamed from: android.app.FragmentState$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FragmentState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FragmentState createFromParcel(Parcel in) {
+            return new FragmentState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FragmentState[] newArray(int size) {
+            return new FragmentState[size];
+        }
     }
 }

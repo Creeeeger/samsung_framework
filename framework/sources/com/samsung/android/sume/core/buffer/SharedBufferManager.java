@@ -14,8 +14,7 @@ import org.json.JSONObject;
 public final class SharedBufferManager {
     private static volatile SharedBufferManager sInstance;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.sume.core.buffer.SharedBufferManager$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.sume.core.buffer.SharedBufferManager$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$ColorFormat = new int[ColorFormat.values().length];

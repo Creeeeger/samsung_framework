@@ -75,7 +75,7 @@ public class SurfaceTexture {
         setOnFrameAvailableListener(listener, null);
     }
 
-    public void setOnFrameAvailableListener(final OnFrameAvailableListener listener, Handler handler) {
+    public void setOnFrameAvailableListener(OnFrameAvailableListener listener, Handler handler) {
         Looper looper;
         if (listener != null) {
             if (handler != null) {
@@ -88,6 +88,14 @@ public class SurfaceTexture {
                 looper = looper2;
             }
             this.mOnFrameAvailableHandler = new Handler(looper, null, true) { // from class: android.graphics.SurfaceTexture.1
+                final /* synthetic */ OnFrameAvailableListener val$listener;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper3, Handler.Callback callback, boolean async, OnFrameAvailableListener listener2) {
+                    super(looper3, callback, async);
+                    listener = listener2;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     listener.onFrameAvailable(SurfaceTexture.this);
@@ -96,6 +104,23 @@ public class SurfaceTexture {
             return;
         }
         this.mOnFrameAvailableHandler = null;
+    }
+
+    /* renamed from: android.graphics.SurfaceTexture$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends Handler {
+        final /* synthetic */ OnFrameAvailableListener val$listener;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass1(Looper looper3, Handler.Callback callback, boolean async, OnFrameAvailableListener listener2) {
+            super(looper3, callback, async);
+            listener = listener2;
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            listener.onFrameAvailable(SurfaceTexture.this);
+        }
     }
 
     public void setDefaultBufferSize(int width, int height) {

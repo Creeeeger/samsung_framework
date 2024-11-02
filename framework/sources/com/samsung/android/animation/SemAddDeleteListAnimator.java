@@ -39,6 +39,9 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
     private final int EXTRA_ANIM_TIMEOUT_DUTAION = 100;
     private final Handler mHandler = new Handler();
     private final Runnable mAniTimeoutRunnable = new Runnable() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             Log.i(SemAddDeleteListAnimator.TAG, "mAniTimeoutRunnable.run");
@@ -74,6 +77,28 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
     @Override // com.samsung.android.animation.SemAbsAddDeleteAnimator
     public /* bridge */ /* synthetic */ void setTransitionDuration(int i) {
         super.setTransitionDuration(i);
+    }
+
+    /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Log.i(SemAddDeleteListAnimator.TAG, "mAniTimeoutRunnable.run");
+            if (SemAddDeleteListAnimator.this.mGhostViewSnapshots.size() > 0) {
+                Iterator<SemAbsAddDeleteAnimator.ViewInfo> it = SemAddDeleteListAnimator.this.mGhostViewSnapshots.iterator();
+                while (it.hasNext()) {
+                    SemAbsAddDeleteAnimator.ViewInfo vInfo = it.next();
+                    vInfo.recycleBitmap();
+                }
+            }
+            SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+            SemAddDeleteListAnimator.this.mListView.invalidate();
+            SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+        }
     }
 
     public SemAddDeleteListAnimator(Context context, ListView listview) {
@@ -118,6 +143,9 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
         }
         this.mDeletePending = false;
         this.mListView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.ViewTreeObserver.OnPreDrawListener
             public boolean onPreDraw() {
                 SemAddDeleteListAnimator.this.mListView.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -131,17 +159,49 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
         });
     }
 
+    /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements ViewTreeObserver.OnPreDrawListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            SemAddDeleteListAnimator.this.mListView.getViewTreeObserver().removeOnPreDrawListener(this);
+            if (SemAddDeleteListAnimator.this.mDeleteRunnable != null) {
+                SemAddDeleteListAnimator.this.mDeleteRunnable.run();
+                SemAddDeleteListAnimator.this.mDeleteRunnable = null;
+                return true;
+            }
+            return true;
+        }
+    }
+
     private void prepareDelete(ArrayList<Integer> deletingItemPositions) {
         this.mDeletePending = true;
-        final ArrayList<Integer> deletedItems = new ArrayList<>(deletingItemPositions);
+        ArrayList<Integer> deletedItems = new ArrayList<>(deletingItemPositions);
         ensureAdapterAndListener();
         Collections.sort(deletedItems);
-        final HashSet<Integer> deletedItemPosHash = new HashSet<>(deletedItems);
-        final int childCountBefore = this.mListView.getChildCount();
-        final int firstVisiblePosBefore = this.mListView.getFirstVisiblePosition();
-        final ListAdapter adapter = this.mListView.getAdapter();
+        HashSet<Integer> deletedItemPosHash = new HashSet<>(deletedItems);
+        int childCountBefore = this.mListView.getChildCount();
+        int firstVisiblePosBefore = this.mListView.getFirstVisiblePosition();
+        ListAdapter adapter = this.mListView.getAdapter();
         capturePreAnimationViewCoordinates();
         this.mDeleteRunnable = new Runnable() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.3
+            final /* synthetic */ ListAdapter val$adapter;
+            final /* synthetic */ int val$childCountBefore;
+            final /* synthetic */ HashSet val$deletedItemPosHash;
+            final /* synthetic */ ArrayList val$deletedItems;
+            final /* synthetic */ int val$firstVisiblePosBefore;
+
+            AnonymousClass3(ListAdapter adapter2, int firstVisiblePosBefore2, int childCountBefore2, ArrayList deletedItems2, HashSet deletedItemPosHash2) {
+                adapter = adapter2;
+                firstVisiblePosBefore = firstVisiblePosBefore2;
+                childCountBefore = childCountBefore2;
+                deletedItems = deletedItems2;
+                deletedItemPosHash = deletedItemPosHash2;
+            }
+
             /* JADX WARN: Removed duplicated region for block: B:43:0x01c6  */
             /* JADX WARN: Removed duplicated region for block: B:46:0x0230  */
             /* JADX WARN: Removed duplicated region for block: B:49:0x0238 A[SYNTHETIC] */
@@ -158,7 +218,156 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
                 */
                 throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.animation.SemAddDeleteListAnimator.AnonymousClass3.run():void");
             }
+
+            /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$3$1 */
+            /* loaded from: classes5.dex */
+            class AnonymousClass1 extends AnimatorListenerAdapter {
+                AnonymousClass1() {
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationStart(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #1");
+                    if (SemAddDeleteListAnimator.this.mListView.isPressed()) {
+                        SemAddDeleteListAnimator.this.mListView.setPressed(false);
+                    }
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(false);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationStart(false);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationEnd(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationEnd #1");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    if (SemAddDeleteListAnimator.this.mGhostViewSnapshots.size() > 0) {
+                        Iterator<SemAbsAddDeleteAnimator.ViewInfo> it = SemAddDeleteListAnimator.this.mGhostViewSnapshots.iterator();
+                        while (it.hasNext()) {
+                            SemAbsAddDeleteAnimator.ViewInfo vInfo = it.next();
+                            vInfo.recycleBitmap();
+                        }
+                    }
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationEnd(false);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationCancel(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationCancel #1");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    if (SemAddDeleteListAnimator.this.mGhostViewSnapshots.size() > 0) {
+                        Iterator<SemAbsAddDeleteAnimator.ViewInfo> it = SemAddDeleteListAnimator.this.mGhostViewSnapshots.iterator();
+                        while (it.hasNext()) {
+                            SemAbsAddDeleteAnimator.ViewInfo vInfo = it.next();
+                            vInfo.recycleBitmap();
+                        }
+                    }
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                }
+            }
         };
+    }
+
+    /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 implements Runnable {
+        final /* synthetic */ ListAdapter val$adapter;
+        final /* synthetic */ int val$childCountBefore;
+        final /* synthetic */ HashSet val$deletedItemPosHash;
+        final /* synthetic */ ArrayList val$deletedItems;
+        final /* synthetic */ int val$firstVisiblePosBefore;
+
+        AnonymousClass3(ListAdapter adapter2, int firstVisiblePosBefore2, int childCountBefore2, ArrayList deletedItems2, HashSet deletedItemPosHash2) {
+            adapter = adapter2;
+            firstVisiblePosBefore = firstVisiblePosBefore2;
+            childCountBefore = childCountBefore2;
+            deletedItems = deletedItems2;
+            deletedItemPosHash = deletedItemPosHash2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            /*  JADX ERROR: Method code generation error
+                java.lang.NullPointerException: Cannot invoke "jadx.core.dex.nodes.IContainer.get(jadx.api.plugins.input.data.attributes.IJadxAttrType)" because "cont" is null
+                	at jadx.core.codegen.RegionGen.declareVars(RegionGen.java:70)
+                	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:65)
+                	at jadx.core.codegen.MethodGen.addRegionInsns(MethodGen.java:297)
+                	at jadx.core.codegen.MethodGen.addInstructions(MethodGen.java:276)
+                	at jadx.core.codegen.ClassGen.addMethodCode(ClassGen.java:406)
+                	at jadx.core.codegen.ClassGen.addMethod(ClassGen.java:335)
+                	at jadx.core.codegen.ClassGen.lambda$addInnerClsAndMethods$3(ClassGen.java:301)
+                	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+                	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+                	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
+                	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
+                */
+            /*
+                Method dump skipped, instructions count: 697
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.animation.SemAddDeleteListAnimator.AnonymousClass3.run():void");
+        }
+
+        /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$3$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 extends AnimatorListenerAdapter {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #1");
+                if (SemAddDeleteListAnimator.this.mListView.isPressed()) {
+                    SemAddDeleteListAnimator.this.mListView.setPressed(false);
+                }
+                SemAddDeleteListAnimator.this.mListView.setEnabled(false);
+                if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                    SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationStart(false);
+                }
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationEnd #1");
+                SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                if (SemAddDeleteListAnimator.this.mGhostViewSnapshots.size() > 0) {
+                    Iterator<SemAbsAddDeleteAnimator.ViewInfo> it = SemAddDeleteListAnimator.this.mGhostViewSnapshots.iterator();
+                    while (it.hasNext()) {
+                        SemAbsAddDeleteAnimator.ViewInfo vInfo = it.next();
+                        vInfo.recycleBitmap();
+                    }
+                }
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                SemAddDeleteListAnimator.this.mListView.invalidate();
+                SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                    SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationEnd(false);
+                }
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationCancel(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationCancel #1");
+                SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                if (SemAddDeleteListAnimator.this.mGhostViewSnapshots.size() > 0) {
+                    Iterator<SemAbsAddDeleteAnimator.ViewInfo> it = SemAddDeleteListAnimator.this.mGhostViewSnapshots.iterator();
+                    while (it.hasNext()) {
+                        SemAbsAddDeleteAnimator.ViewInfo vInfo = it.next();
+                        vInfo.recycleBitmap();
+                    }
+                }
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                SemAddDeleteListAnimator.this.mListView.invalidate();
+                SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+            }
+        }
     }
 
     private void capturePreAnimationViewCoordinates() {
@@ -206,7 +415,6 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getChildMaxHeight() {
         int height;
         int childCount = this.mListView.getChildCount();
@@ -254,6 +462,9 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
         }
         this.mInsertPending = false;
         this.mListView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.4
+            AnonymousClass4() {
+            }
+
             @Override // android.view.ViewTreeObserver.OnPreDrawListener
             public boolean onPreDraw() {
                 SemAddDeleteListAnimator.this.mListView.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -267,17 +478,35 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
         });
     }
 
+    /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 implements ViewTreeObserver.OnPreDrawListener {
+        AnonymousClass4() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            SemAddDeleteListAnimator.this.mListView.getViewTreeObserver().removeOnPreDrawListener(this);
+            if (SemAddDeleteListAnimator.this.mInsertRunnable != null) {
+                SemAddDeleteListAnimator.this.mInsertRunnable.run();
+                SemAddDeleteListAnimator.this.mInsertRunnable = null;
+                return true;
+            }
+            return true;
+        }
+    }
+
     private void prepareInsert(ArrayList<Integer> insertedItemPositions) {
         int childCount;
         int adapterCount;
         int i = 1;
         this.mInsertPending = true;
         ensureAdapterAndListener();
-        final ArrayList<Integer> insertedItems = new ArrayList<>(insertedItemPositions);
+        ArrayList<Integer> insertedItems = new ArrayList<>(insertedItemPositions);
         Collections.sort(insertedItems);
-        final HashSet<Integer> insertedItemPosHash = new HashSet<>(insertedItems);
+        HashSet<Integer> insertedItemPosHash = new HashSet<>(insertedItems);
         ListView listview = this.mListView;
-        final ListAdapter adapter = listview.getAdapter();
+        ListAdapter adapter = listview.getAdapter();
         int childCount2 = listview.getChildCount();
         int adapterCount2 = adapter.getCount();
         int firstVisiblePos = listview.getFirstVisiblePosition();
@@ -321,7 +550,7 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
             adapterCount2 = adapterCount;
             i = 1;
         }
-        final HashMap<Integer, Integer> upcomingViewsStartCoords = new HashMap<>();
+        HashMap<Integer, Integer> upcomingViewsStartCoords = new HashMap<>();
         for (int j = 0; j < insertedItems.size(); j++) {
             int insertedItemPos = insertedItems.get(j).intValue();
             int itemAtStartPos = insertedItemPos - j;
@@ -331,6 +560,18 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
             }
         }
         this.mInsertRunnable = new Runnable() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.5
+            final /* synthetic */ ListAdapter val$adapter;
+            final /* synthetic */ HashSet val$insertedItemPosHash;
+            final /* synthetic */ ArrayList val$insertedItems;
+            final /* synthetic */ HashMap val$upcomingViewsStartCoords;
+
+            AnonymousClass5(ListAdapter adapter2, HashMap upcomingViewsStartCoords2, ArrayList insertedItems2, HashSet insertedItemPosHash2) {
+                adapter = adapter2;
+                upcomingViewsStartCoords = upcomingViewsStartCoords2;
+                insertedItems = insertedItems2;
+                insertedItemPosHash = insertedItemPosHash2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 int width;
@@ -506,6 +747,9 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
                 animSet.playTogether(animations);
                 animSet.setInterpolator(SemAbsAddDeleteAnimator.INSERT_INTERPOLATOR);
                 animSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.5.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                     public void onAnimationStart(Animator animation) {
                         Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #2");
@@ -544,7 +788,320 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
                 Log.i(SemAddDeleteListAnimator.TAG, "postDelayed #2 mAniTimeoutRunnable delay = " + (SemAddDeleteListAnimator.this.mTranslationDuration + 100));
                 SemAddDeleteListAnimator.this.mHandler.postDelayed(SemAddDeleteListAnimator.this.mAniTimeoutRunnable, SemAddDeleteListAnimator.this.mTranslationDuration + 100);
             }
+
+            /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$5$1 */
+            /* loaded from: classes5.dex */
+            class AnonymousClass1 extends AnimatorListenerAdapter {
+                AnonymousClass1() {
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationStart(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #2");
+                    if (SemAddDeleteListAnimator.this.mListView.isPressed()) {
+                        SemAddDeleteListAnimator.this.mListView.setPressed(false);
+                    }
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(false);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationStart(true);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationEnd(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationEnd #2");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationEnd(true);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationCancel(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationCancel #2");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                }
+            }
         };
+    }
+
+    /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$5 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass5 implements Runnable {
+        final /* synthetic */ ListAdapter val$adapter;
+        final /* synthetic */ HashSet val$insertedItemPosHash;
+        final /* synthetic */ ArrayList val$insertedItems;
+        final /* synthetic */ HashMap val$upcomingViewsStartCoords;
+
+        AnonymousClass5(ListAdapter adapter2, HashMap upcomingViewsStartCoords2, ArrayList insertedItems2, HashSet insertedItemPosHash2) {
+            adapter = adapter2;
+            upcomingViewsStartCoords = upcomingViewsStartCoords2;
+            insertedItems = insertedItems2;
+            insertedItemPosHash = insertedItemPosHash2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            int width;
+            int newY;
+            int footerViewsCount2;
+            int adapterCount3;
+            int left;
+            int width2;
+            int firstVisiblePos2;
+            ObjectAnimator anim;
+            ListView listview2 = SemAddDeleteListAnimator.this.mListView;
+            int firstVisiblePos3 = listview2.getFirstVisiblePosition();
+            int headerViewsCount = listview2.getHeaderViewsCount();
+            int footerViewsCount3 = listview2.getFooterViewsCount();
+            int childCount3 = listview2.getChildCount();
+            int adapterCount4 = adapter.getCount();
+            ArrayList<Animator> animations = new ArrayList<>();
+            int singleItemHeight = 0;
+            int left2 = 0;
+            if (childCount3 > headerViewsCount) {
+                singleItemHeight = SemAddDeleteListAnimator.this.getChildMaxHeight() + listview2.getDividerHeight();
+                left2 = listview2.getChildAt(headerViewsCount).getLeft();
+                width = listview2.getChildAt(0).getWidth();
+            } else {
+                width = listview2.getWidth();
+            }
+            int i3 = 0;
+            while (i3 < childCount3) {
+                int position2 = i3 + firstVisiblePos3;
+                long itemId2 = adapter.getItemId(position2);
+                View child2 = listview2.getChildAt(i3);
+                int headerViewsCount2 = headerViewsCount;
+                float newY2 = child2.getTop();
+                int childCount4 = childCount3;
+                if (itemId2 == -1) {
+                    footerViewsCount2 = footerViewsCount3;
+                    long footerId2 = ((position2 + footerViewsCount3) - adapterCount4) + 1;
+                    adapterCount3 = adapterCount4;
+                    left = left2;
+                    width2 = width;
+                    SemAbsAddDeleteAnimator.ViewInfo viewInfo = SemAddDeleteListAnimator.this.mOldHeaderFooterViewCache.remove(Long.valueOf(-footerId2));
+                    if (viewInfo == null) {
+                        Log.e(SemAddDeleteListAnimator.TAG, "AFTER header/footer SOMETHING WENT WRONG, in the new layout, header/footer is appearing that was not present before!");
+                    } else {
+                        viewInfo.recycleBitmap();
+                        if (viewInfo.top == newY2) {
+                            Log.e(SemAddDeleteListAnimator.TAG, "AFTER header/footer something strange is happening, the coordinates are same after layout, viewInfo.top=" + viewInfo.top + ", newY=" + newY2);
+                        } else {
+                            ObjectAnimator anim2 = SemAddDeleteListAnimator.this.getTranslateAnim(child2, 0.0f, viewInfo.top - newY2);
+                            animations.add(anim2);
+                            firstVisiblePos2 = firstVisiblePos3;
+                            i3++;
+                            headerViewsCount = headerViewsCount2;
+                            footerViewsCount3 = footerViewsCount2;
+                            childCount3 = childCount4;
+                            adapterCount4 = adapterCount3;
+                            left2 = left;
+                            width = width2;
+                            firstVisiblePos3 = firstVisiblePos2;
+                        }
+                    }
+                    firstVisiblePos2 = firstVisiblePos3;
+                    i3++;
+                    headerViewsCount = headerViewsCount2;
+                    footerViewsCount3 = footerViewsCount2;
+                    childCount3 = childCount4;
+                    adapterCount4 = adapterCount3;
+                    left2 = left;
+                    width = width2;
+                    firstVisiblePos3 = firstVisiblePos2;
+                } else {
+                    footerViewsCount2 = footerViewsCount3;
+                    adapterCount3 = adapterCount4;
+                    left = left2;
+                    width2 = width;
+                    Integer startPos = (Integer) upcomingViewsStartCoords.remove(Integer.valueOf(position2));
+                    SemAbsAddDeleteAnimator.ViewInfo viewInfo2 = SemAddDeleteListAnimator.this.mOldViewCache.remove(Long.valueOf(itemId2));
+                    if (viewInfo2 != null) {
+                        viewInfo2.recycleBitmap();
+                        if (viewInfo2.top != newY2) {
+                            ObjectAnimator anim3 = SemAddDeleteListAnimator.this.getTranslateAnim(child2, 0.0f, viewInfo2.top - newY2);
+                            animations.add(anim3);
+                            firstVisiblePos2 = firstVisiblePos3;
+                        }
+                        firstVisiblePos2 = firstVisiblePos3;
+                    } else if (startPos != null) {
+                        ObjectAnimator anim4 = SemAddDeleteListAnimator.this.getInsertTranslateAlphaScaleAnim(child2, 0.0f, startPos.intValue() - newY2);
+                        animations.add(anim4);
+                        firstVisiblePos2 = firstVisiblePos3;
+                    } else {
+                        int currentPos = i3 + firstVisiblePos3;
+                        int shiftCount = SemAddDeleteListAnimator.this.getShiftCount(currentPos, insertedItems);
+                        int oldPos = currentPos - shiftCount;
+                        int rowShift = currentPos - oldPos;
+                        firstVisiblePos2 = firstVisiblePos3;
+                        int firstVisiblePos4 = child2.getTop() - (rowShift * singleItemHeight);
+                        float translationY = firstVisiblePos4 - newY2;
+                        if (insertedItemPosHash.contains(Integer.valueOf(currentPos))) {
+                            anim = SemAddDeleteListAnimator.this.getInsertTranslateAlphaScaleAnim(child2, 0.0f, translationY);
+                        } else {
+                            anim = SemAddDeleteListAnimator.this.getTranslateAnim(child2, 0.0f, translationY);
+                        }
+                        animations.add(anim);
+                    }
+                    i3++;
+                    headerViewsCount = headerViewsCount2;
+                    footerViewsCount3 = footerViewsCount2;
+                    childCount3 = childCount4;
+                    adapterCount4 = adapterCount3;
+                    left2 = left;
+                    width = width2;
+                    firstVisiblePos3 = firstVisiblePos2;
+                }
+            }
+            int left3 = left2;
+            int width3 = width;
+            upcomingViewsStartCoords.clear();
+            Iterator<Map.Entry<Long, SemAbsAddDeleteAnimator.ViewInfo>> entrySetIterator = SemAddDeleteListAnimator.this.mOldViewCache.entrySet().iterator();
+            int lastVisiblePosition = listview2.getLastVisiblePosition();
+            boolean updateListenerAdded = false;
+            int currentPos2 = lastVisiblePosition;
+            while (entrySetIterator.hasNext()) {
+                currentPos2++;
+                if (!insertedItems.contains(Integer.valueOf(currentPos2))) {
+                    Map.Entry<Long, SemAbsAddDeleteAnimator.ViewInfo> viewEntry = entrySetIterator.next();
+                    SemAbsAddDeleteAnimator.ViewInfo viewinfo = viewEntry.getValue();
+                    int newPosition = SemAddDeleteListAnimator.this.getNewPositionForInsert(viewinfo.oldPosition, insertedItems);
+                    if (newPosition < listview2.getFirstVisiblePosition()) {
+                        currentPos2--;
+                        int rowShift2 = listview2.getFirstVisiblePosition() - newPosition;
+                        newY = listview2.getChildAt(0).getTop() - (rowShift2 * singleItemHeight);
+                    } else {
+                        int rowShift3 = currentPos2 - viewinfo.oldPosition;
+                        newY = viewinfo.top + (rowShift3 * singleItemHeight);
+                    }
+                    ListView listview3 = listview2;
+                    Iterator<Map.Entry<Long, SemAbsAddDeleteAnimator.ViewInfo>> entrySetIterator2 = entrySetIterator;
+                    int lastVisiblePosition2 = lastVisiblePosition;
+                    int currentPos3 = currentPos2;
+                    int currentPos4 = left3;
+                    Rect oldViewBounds = new Rect(currentPos4, viewinfo.top, left3 + width3, viewinfo.bottom);
+                    Rect newViewBounds = new Rect(currentPos4, newY, oldViewBounds.width() + currentPos4, oldViewBounds.height() + newY);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.add(viewinfo);
+                    ObjectAnimator animBounds = ObjectAnimator.ofObject(viewinfo.viewSnapshot, "bounds", SemAnimatorUtils.BOUNDS_EVALUATOR, oldViewBounds, newViewBounds);
+                    animations.add(animBounds);
+                    if (!updateListenerAdded) {
+                        animBounds.addUpdateListener(SemAddDeleteListAnimator.this.mBitmapUpdateListener);
+                        updateListenerAdded = true;
+                    }
+                    left3 = currentPos4;
+                    listview2 = listview3;
+                    entrySetIterator = entrySetIterator2;
+                    lastVisiblePosition = lastVisiblePosition2;
+                    currentPos2 = currentPos3;
+                }
+            }
+            int currentPos5 = left3;
+            for (Map.Entry<Long, SemAbsAddDeleteAnimator.ViewInfo> viewEntry2 : SemAddDeleteListAnimator.this.mOldHeaderFooterViewCache.entrySet()) {
+                SemAbsAddDeleteAnimator.ViewInfo viewinfo2 = viewEntry2.getValue();
+                int newY3 = viewinfo2.top + (insertedItems.size() * singleItemHeight);
+                Rect oldViewBounds2 = new Rect(currentPos5, viewinfo2.top, currentPos5 + width3, viewinfo2.bottom);
+                Rect newViewBounds2 = new Rect(currentPos5, newY3, oldViewBounds2.width() + currentPos5, oldViewBounds2.height() + newY3);
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.add(viewinfo2);
+                ObjectAnimator animBounds2 = ObjectAnimator.ofObject(viewinfo2.viewSnapshot, "bounds", SemAnimatorUtils.BOUNDS_EVALUATOR, oldViewBounds2, newViewBounds2);
+                if (!updateListenerAdded) {
+                    animBounds2.addUpdateListener(SemAddDeleteListAnimator.this.mBitmapUpdateListener);
+                }
+                animations.add(animBounds2);
+            }
+            SemAddDeleteListAnimator.this.mOldViewCache.clear();
+            SemAddDeleteListAnimator.this.mOldHeaderFooterViewCache.clear();
+            AnimatorSet animSet = new AnimatorSet();
+            animSet.playTogether(animations);
+            animSet.setInterpolator(SemAbsAddDeleteAnimator.INSERT_INTERPOLATOR);
+            animSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.5.1
+                AnonymousClass1() {
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationStart(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #2");
+                    if (SemAddDeleteListAnimator.this.mListView.isPressed()) {
+                        SemAddDeleteListAnimator.this.mListView.setPressed(false);
+                    }
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(false);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationStart(true);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationEnd(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationEnd #2");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationEnd(true);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationCancel(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationCancel #2");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                }
+            });
+            animSet.setDuration(SemAddDeleteListAnimator.this.mTranslationDuration);
+            animSet.start();
+            Log.i(SemAddDeleteListAnimator.TAG, "postDelayed #2 mAniTimeoutRunnable delay = " + (SemAddDeleteListAnimator.this.mTranslationDuration + 100));
+            SemAddDeleteListAnimator.this.mHandler.postDelayed(SemAddDeleteListAnimator.this.mAniTimeoutRunnable, SemAddDeleteListAnimator.this.mTranslationDuration + 100);
+        }
+
+        /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$5$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 extends AnimatorListenerAdapter {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #2");
+                if (SemAddDeleteListAnimator.this.mListView.isPressed()) {
+                    SemAddDeleteListAnimator.this.mListView.setPressed(false);
+                }
+                SemAddDeleteListAnimator.this.mListView.setEnabled(false);
+                if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                    SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationStart(true);
+                }
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationEnd #2");
+                SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                SemAddDeleteListAnimator.this.mListView.invalidate();
+                SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                    SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationEnd(true);
+                }
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationCancel(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationCancel #2");
+                SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                SemAddDeleteListAnimator.this.mListView.invalidate();
+                SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+            }
+        }
     }
 
     public void setInsertDelete(ArrayList<Integer> insertedItemPositions, ArrayList<Integer> deletingItemPositions) {
@@ -618,6 +1175,9 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
         }
         this.mInsertDeletePending = false;
         this.mListView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.6
+            AnonymousClass6() {
+            }
+
             @Override // android.view.ViewTreeObserver.OnPreDrawListener
             public boolean onPreDraw() {
                 SemAddDeleteListAnimator.this.mListView.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -631,6 +1191,24 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
         });
     }
 
+    /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$6 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass6 implements ViewTreeObserver.OnPreDrawListener {
+        AnonymousClass6() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            SemAddDeleteListAnimator.this.mListView.getViewTreeObserver().removeOnPreDrawListener(this);
+            if (SemAddDeleteListAnimator.this.mInsertDeleteRunnable != null) {
+                SemAddDeleteListAnimator.this.mInsertDeleteRunnable.run();
+                SemAddDeleteListAnimator.this.mInsertDeleteRunnable = null;
+                return true;
+            }
+            return true;
+        }
+    }
+
     private void prepareInsertDelete(ArrayList<Integer> insertedItemPositions, ArrayList<Integer> deletingItemPositions) {
         int i;
         int i2;
@@ -638,14 +1216,14 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
         int position;
         this.mInsertDeletePending = true;
         ensureAdapterAndListener();
-        final ArrayList<Integer> insertedItems = new ArrayList<>(insertedItemPositions);
+        ArrayList<Integer> insertedItems = new ArrayList<>(insertedItemPositions);
         Collections.sort(insertedItems);
-        final HashSet<Integer> insertedItemPosHash = new HashSet<>(insertedItems);
-        final ArrayList<Integer> deletedItems = new ArrayList<>(deletingItemPositions);
+        HashSet<Integer> insertedItemPosHash = new HashSet<>(insertedItems);
+        ArrayList<Integer> deletedItems = new ArrayList<>(deletingItemPositions);
         Collections.sort(deletedItems);
-        final HashSet<Integer> deletedItemPosHash = new HashSet<>(deletedItems);
-        final ListAdapter adapter = this.mListView.getAdapter();
-        final int childCountBefore = this.mListView.getChildCount();
+        HashSet<Integer> deletedItemPosHash = new HashSet<>(deletedItems);
+        ListAdapter adapter = this.mListView.getAdapter();
+        int childCountBefore = this.mListView.getChildCount();
         int adapterCount = adapter.getCount();
         int firstVisiblePosBefore = this.mListView.getFirstVisiblePosition();
         int headerViewsCount = this.mListView.getHeaderViewsCount();
@@ -688,7 +1266,7 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
             Log.e(TAG, "setInsert() child's one of dimensions is 0, i=" + i2);
             i4 = i2 + 1;
         }
-        final HashMap<Integer, Integer> upcomingViewsStartCoords = new HashMap<>();
+        HashMap<Integer, Integer> upcomingViewsStartCoords = new HashMap<>();
         for (int j = 0; j < insertedItems.size(); j++) {
             int insertedItemPos = insertedItems.get(j).intValue();
             int itemAtStartPos = insertedItemPos - j;
@@ -703,6 +1281,24 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
             }
         }
         this.mInsertDeleteRunnable = new Runnable() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.7
+            final /* synthetic */ ListAdapter val$adapter;
+            final /* synthetic */ int val$childCountBefore;
+            final /* synthetic */ HashSet val$deletedItemPosHash;
+            final /* synthetic */ ArrayList val$deletedItems;
+            final /* synthetic */ HashSet val$insertedItemPosHash;
+            final /* synthetic */ ArrayList val$insertedItems;
+            final /* synthetic */ HashMap val$upcomingViewsStartCoords;
+
+            AnonymousClass7(ListAdapter adapter2, int childCountBefore2, HashMap upcomingViewsStartCoords2, HashSet insertedItemPosHash2, ArrayList insertedItems2, ArrayList deletedItems2, HashSet deletedItemPosHash2) {
+                adapter = adapter2;
+                childCountBefore = childCountBefore2;
+                upcomingViewsStartCoords = upcomingViewsStartCoords2;
+                insertedItemPosHash = insertedItemPosHash2;
+                insertedItems = insertedItems2;
+                deletedItems = deletedItems2;
+                deletedItemPosHash = deletedItemPosHash2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 int width;
@@ -976,6 +1572,9 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
                 animSet.playTogether(animations);
                 animSet.setInterpolator(SemAbsAddDeleteAnimator.INSERT_INTERPOLATOR);
                 animSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.7.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                     public void onAnimationStart(Animator animation) {
                         Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #3");
@@ -1014,7 +1613,424 @@ public class SemAddDeleteListAnimator extends SemAbsAddDeleteAnimator {
                 Log.i(SemAddDeleteListAnimator.TAG, "postDelayed #3 mAniTimeoutRunnable delay = " + (SemAddDeleteListAnimator.this.mTranslationDuration + 100));
                 SemAddDeleteListAnimator.this.mHandler.postDelayed(SemAddDeleteListAnimator.this.mAniTimeoutRunnable, SemAddDeleteListAnimator.this.mTranslationDuration + 100);
             }
+
+            /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$7$1 */
+            /* loaded from: classes5.dex */
+            class AnonymousClass1 extends AnimatorListenerAdapter {
+                AnonymousClass1() {
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationStart(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #3");
+                    if (SemAddDeleteListAnimator.this.mListView.isPressed()) {
+                        SemAddDeleteListAnimator.this.mListView.setPressed(false);
+                    }
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(false);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationStart(true);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationEnd(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationEnd #3");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationEnd(true);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationCancel(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationCancel #3");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                }
+            }
         };
+    }
+
+    /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$7 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass7 implements Runnable {
+        final /* synthetic */ ListAdapter val$adapter;
+        final /* synthetic */ int val$childCountBefore;
+        final /* synthetic */ HashSet val$deletedItemPosHash;
+        final /* synthetic */ ArrayList val$deletedItems;
+        final /* synthetic */ HashSet val$insertedItemPosHash;
+        final /* synthetic */ ArrayList val$insertedItems;
+        final /* synthetic */ HashMap val$upcomingViewsStartCoords;
+
+        AnonymousClass7(ListAdapter adapter2, int childCountBefore2, HashMap upcomingViewsStartCoords2, HashSet insertedItemPosHash2, ArrayList insertedItems2, ArrayList deletedItems2, HashSet deletedItemPosHash2) {
+            adapter = adapter2;
+            childCountBefore = childCountBefore2;
+            upcomingViewsStartCoords = upcomingViewsStartCoords2;
+            insertedItemPosHash = insertedItemPosHash2;
+            insertedItems = insertedItems2;
+            deletedItems = deletedItems2;
+            deletedItemPosHash = deletedItemPosHash2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            int width;
+            int firstVisiblePos;
+            ListView listview;
+            float translationY;
+            float translationY2;
+            float translationY3;
+            boolean newItemsComingFromTop;
+            ObjectAnimator anim;
+            float firstChildTop;
+            int footerViewsCount2;
+            int left;
+            int width2;
+            int headerViewsCount2;
+            int adapterCount2;
+            int rowShift;
+            int headerViewsCount3;
+            ListView listview2 = SemAddDeleteListAnimator.this.mListView;
+            int firstVisiblePos2 = listview2.getFirstVisiblePosition();
+            int lastVisiblePos = listview2.getLastVisiblePosition();
+            int headerViewsCount4 = listview2.getHeaderViewsCount();
+            int footerViewsCount3 = listview2.getFooterViewsCount();
+            int childCount = listview2.getChildCount();
+            int adapterCount3 = adapter.getCount();
+            float translationY4 = 0.0f;
+            ArrayList<Animator> animations = new ArrayList<>();
+            int singleItemHeight = 0;
+            int left2 = 0;
+            if (childCount > headerViewsCount4) {
+                singleItemHeight = SemAddDeleteListAnimator.this.getChildMaxHeight() + listview2.getDividerHeight();
+                left2 = listview2.getChildAt(headerViewsCount4).getLeft();
+                width = listview2.getChildAt(0).getWidth();
+            } else {
+                width = listview2.getWidth();
+            }
+            boolean newItemsComingFromTop2 = true;
+            int newItemsComingFromTopCount = firstVisiblePos2;
+            int newItemsFromTopRemaining = newItemsComingFromTopCount;
+            int newlyAppearingViewOldPositionFromBottom = lastVisiblePos + 1 + (childCountBefore - childCount);
+            int i5 = 0;
+            while (i5 < childCount) {
+                int lastVisiblePos2 = lastVisiblePos;
+                int lastVisiblePos3 = i5 + firstVisiblePos2;
+                float translationY5 = translationY4;
+                long itemId2 = adapter.getItemId(lastVisiblePos3);
+                View child2 = listview2.getChildAt(i5);
+                int newItemsComingFromTopCount2 = newItemsComingFromTopCount;
+                float newY = child2.getTop();
+                ListView listview3 = listview2;
+                if (itemId2 == -1) {
+                    if (lastVisiblePos3 < headerViewsCount4) {
+                        left = left2;
+                        width2 = width;
+                        headerViewsCount3 = headerViewsCount4;
+                        footerViewsCount2 = footerViewsCount3;
+                        itemId2 = lastVisiblePos3 + 1;
+                    } else {
+                        left = left2;
+                        width2 = width;
+                        if (lastVisiblePos3 < adapterCount3 - footerViewsCount3) {
+                            headerViewsCount3 = headerViewsCount4;
+                            footerViewsCount2 = footerViewsCount3;
+                        } else {
+                            long footerId2 = ((lastVisiblePos3 + footerViewsCount3) - adapterCount3) + 1;
+                            headerViewsCount3 = headerViewsCount4;
+                            footerViewsCount2 = footerViewsCount3;
+                            itemId2 = -footerId2;
+                        }
+                    }
+                    SemAbsAddDeleteAnimator.ViewInfo viewInfo = SemAddDeleteListAnimator.this.mOldHeaderFooterViewCache.remove(Long.valueOf(itemId2));
+                    if (viewInfo == null) {
+                        Log.e(SemAddDeleteListAnimator.TAG, "AFTER header/footer SOMETHING WENT WRONG, in the new layout, header/footer is appearing that was not present before!");
+                        headerViewsCount2 = headerViewsCount3;
+                        adapterCount2 = adapterCount3;
+                    } else {
+                        viewInfo.recycleBitmap();
+                        if (viewInfo.top == newY) {
+                            Log.e(SemAddDeleteListAnimator.TAG, "AFTER header/footer something strange is happening, the coordinates are same after layout, viewInfo.top=" + viewInfo.top + ", newY=" + newY);
+                            headerViewsCount2 = headerViewsCount3;
+                            adapterCount2 = adapterCount3;
+                        } else {
+                            float translationY6 = viewInfo.top - newY;
+                            ObjectAnimator anim2 = SemAddDeleteListAnimator.this.getTranslateAnim(child2, 0.0f, translationY6);
+                            animations.add(anim2);
+                            headerViewsCount2 = headerViewsCount3;
+                            translationY4 = translationY6;
+                            adapterCount2 = adapterCount3;
+                            i5++;
+                            lastVisiblePos = lastVisiblePos2;
+                            headerViewsCount4 = headerViewsCount2;
+                            newItemsComingFromTopCount = newItemsComingFromTopCount2;
+                            listview2 = listview3;
+                            left2 = left;
+                            width = width2;
+                            footerViewsCount3 = footerViewsCount2;
+                            adapterCount3 = adapterCount2;
+                        }
+                    }
+                    translationY4 = translationY5;
+                    i5++;
+                    lastVisiblePos = lastVisiblePos2;
+                    headerViewsCount4 = headerViewsCount2;
+                    newItemsComingFromTopCount = newItemsComingFromTopCount2;
+                    listview2 = listview3;
+                    left2 = left;
+                    width = width2;
+                    footerViewsCount3 = footerViewsCount2;
+                    adapterCount3 = adapterCount2;
+                } else {
+                    int headerViewsCount5 = headerViewsCount4;
+                    footerViewsCount2 = footerViewsCount3;
+                    left = left2;
+                    width2 = width;
+                    Integer startPos = (Integer) upcomingViewsStartCoords.remove(Integer.valueOf(lastVisiblePos3));
+                    SemAbsAddDeleteAnimator.ViewInfo viewInfo2 = SemAddDeleteListAnimator.this.mOldViewCache.remove(Long.valueOf(itemId2));
+                    if (viewInfo2 != null) {
+                        viewInfo2.recycleBitmap();
+                        if (viewInfo2.top == newY) {
+                            headerViewsCount2 = headerViewsCount5;
+                            adapterCount2 = adapterCount3;
+                            newItemsComingFromTop2 = false;
+                            translationY4 = translationY5;
+                        } else {
+                            float translationY7 = viewInfo2.top - newY;
+                            headerViewsCount2 = headerViewsCount5;
+                            ObjectAnimator anim3 = SemAddDeleteListAnimator.this.getTranslateAnim(child2, 0.0f, translationY7);
+                            animations.add(anim3);
+                            adapterCount2 = adapterCount3;
+                            newItemsComingFromTop2 = false;
+                            translationY4 = translationY7;
+                        }
+                    } else {
+                        headerViewsCount2 = headerViewsCount5;
+                        if (startPos != null) {
+                            float translationY8 = startPos.intValue() - newY;
+                            ObjectAnimator anim4 = SemAddDeleteListAnimator.this.getInsertTranslateAlphaScaleAnim(child2, 0.0f, translationY8);
+                            animations.add(anim4);
+                            translationY4 = translationY8;
+                            adapterCount2 = adapterCount3;
+                        } else {
+                            int currentPos = i5 + firstVisiblePos2;
+                            if (insertedItemPosHash.contains(Integer.valueOf(currentPos))) {
+                                int shiftCount = SemAddDeleteListAnimator.this.getShiftCount(currentPos, insertedItems, deletedItems);
+                                int oldPos = currentPos - shiftCount;
+                                int rowShiftInsert = currentPos - oldPos;
+                                int shiftCount2 = child2.getTop() - (rowShiftInsert * singleItemHeight);
+                                float translationYInsert = shiftCount2 - newY;
+                                adapterCount2 = adapterCount3;
+                                ObjectAnimator anim5 = SemAddDeleteListAnimator.this.getInsertTranslateAlphaScaleAnim(child2, 0.0f, translationYInsert);
+                                animations.add(anim5);
+                                translationY4 = translationY5;
+                            } else {
+                                adapterCount2 = adapterCount3;
+                                if (newItemsFromTopRemaining > 0 && newItemsComingFromTop2) {
+                                    rowShift = -SemAddDeleteListAnimator.this.getShiftCount(currentPos, insertedItems, deletedItems);
+                                    newItemsFromTopRemaining--;
+                                } else {
+                                    rowShift = newlyAppearingViewOldPositionFromBottom - lastVisiblePos3;
+                                    newlyAppearingViewOldPositionFromBottom++;
+                                }
+                                int oldY = child2.getTop() + (rowShift * singleItemHeight);
+                                float translationY9 = oldY - newY;
+                                ObjectAnimator anim6 = SemAddDeleteListAnimator.this.getTranslateAnim(child2, 0.0f, translationY9);
+                                animations.add(anim6);
+                                translationY4 = translationY9;
+                            }
+                        }
+                    }
+                    i5++;
+                    lastVisiblePos = lastVisiblePos2;
+                    headerViewsCount4 = headerViewsCount2;
+                    newItemsComingFromTopCount = newItemsComingFromTopCount2;
+                    listview2 = listview3;
+                    left2 = left;
+                    width = width2;
+                    footerViewsCount3 = footerViewsCount2;
+                    adapterCount3 = adapterCount2;
+                }
+            }
+            ListView listview4 = listview2;
+            int left3 = left2;
+            int width3 = width;
+            upcomingViewsStartCoords.clear();
+            Iterator<Map.Entry<Long, SemAbsAddDeleteAnimator.ViewInfo>> entrySetIterator = SemAddDeleteListAnimator.this.mOldViewCache.entrySet().iterator();
+            boolean updateListenerAdded = false;
+            while (entrySetIterator.hasNext()) {
+                Map.Entry<Long, SemAbsAddDeleteAnimator.ViewInfo> oldViewCoordinate = entrySetIterator.next();
+                SemAbsAddDeleteAnimator.ViewInfo viewInfo3 = oldViewCoordinate.getValue();
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.add(viewInfo3);
+                Iterator<Map.Entry<Long, SemAbsAddDeleteAnimator.ViewInfo>> entrySetIterator2 = entrySetIterator;
+                int left4 = left3;
+                Rect startValue = new Rect(left4, viewInfo3.top, left3 + width3, viewInfo3.bottom);
+                int newPosition = SemAddDeleteListAnimator.this.getNewPosition(viewInfo3.oldPosition, insertedItems, deletedItems);
+                boolean isDeletedItem = deletedItemPosHash.contains(Integer.valueOf(viewInfo3.oldPosition));
+                int destinationViewIndex = newPosition - firstVisiblePos2;
+                if (destinationViewIndex < 0) {
+                    if (childCount == 0) {
+                        firstVisiblePos = firstVisiblePos2;
+                        firstChildTop = listview4.getPaddingTop();
+                        listview = listview4;
+                    } else {
+                        firstVisiblePos = firstVisiblePos2;
+                        listview = listview4;
+                        firstChildTop = listview.getChildAt(0).getTop();
+                    }
+                    int newPosition2 = viewInfo3.top;
+                    float translationY10 = firstChildTop - newPosition2;
+                    translationY = translationY10 - ((-destinationViewIndex) * singleItemHeight);
+                } else {
+                    firstVisiblePos = firstVisiblePos2;
+                    listview = listview4;
+                    if (destinationViewIndex >= childCount) {
+                        if (listview.getChildAt(childCount - 1) == null) {
+                            translationY2 = 0 - viewInfo3.top;
+                        } else {
+                            translationY2 = listview.getChildAt(childCount - 1).getTop() - viewInfo3.top;
+                        }
+                        translationY = translationY2 + (((destinationViewIndex - childCount) + 1) * singleItemHeight);
+                    } else {
+                        float referenceY = listview.getChildAt(destinationViewIndex).getTop();
+                        translationY = referenceY - viewInfo3.top;
+                    }
+                }
+                Rect endValue = new Rect(startValue);
+                int childCount2 = childCount;
+                endValue.offset(0, (int) translationY);
+                if (isDeletedItem) {
+                    int horizOffset = (int) (((1.0f - SemAbsAddDeleteAnimator.START_SCALE_FACTOR) / 2.0f) * endValue.width());
+                    translationY3 = translationY;
+                    int vertOffset = (int) (((1.0f - SemAbsAddDeleteAnimator.START_SCALE_FACTOR) / 2.0f) * endValue.height());
+                    newItemsComingFromTop = newItemsComingFromTop2;
+                    PropertyValuesHolder pvhBounds = PropertyValuesHolder.ofObject("bounds", SemAnimatorUtils.BOUNDS_EVALUATOR, startValue, new Rect(endValue.left + horizOffset, endValue.top + vertOffset, endValue.right - horizOffset, endValue.bottom - vertOffset));
+                    PropertyValuesHolder pvhAlpha = PropertyValuesHolder.ofInt("alpha", 255, 0);
+                    anim = ObjectAnimator.ofPropertyValuesHolder(viewInfo3.viewSnapshot, pvhBounds, pvhAlpha);
+                } else {
+                    translationY3 = translationY;
+                    newItemsComingFromTop = newItemsComingFromTop2;
+                    anim = ObjectAnimator.ofObject(viewInfo3.viewSnapshot, "bounds", SemAnimatorUtils.BOUNDS_EVALUATOR, startValue, endValue);
+                }
+                if (!updateListenerAdded) {
+                    anim.addUpdateListener(SemAddDeleteListAnimator.this.mBitmapUpdateListener);
+                    updateListenerAdded = true;
+                }
+                animations.add(anim);
+                firstVisiblePos2 = firstVisiblePos;
+                childCount = childCount2;
+                newItemsComingFromTop2 = newItemsComingFromTop;
+                left3 = left4;
+                listview4 = listview;
+                entrySetIterator = entrySetIterator2;
+            }
+            int left5 = left3;
+            for (Map.Entry<Long, SemAbsAddDeleteAnimator.ViewInfo> viewEntry : SemAddDeleteListAnimator.this.mOldHeaderFooterViewCache.entrySet()) {
+                SemAbsAddDeleteAnimator.ViewInfo viewinfo = viewEntry.getValue();
+                int newY2 = viewinfo.top + (insertedItems.size() * singleItemHeight);
+                Rect oldViewBounds = new Rect(left5, viewinfo.top, left5 + width3, viewinfo.bottom);
+                Rect newViewBounds = new Rect(left5, newY2, oldViewBounds.width() + left5, oldViewBounds.height() + newY2);
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.add(viewinfo);
+                int left6 = left5;
+                ObjectAnimator animBounds = ObjectAnimator.ofObject(viewinfo.viewSnapshot, "bounds", SemAnimatorUtils.BOUNDS_EVALUATOR, oldViewBounds, newViewBounds);
+                if (!updateListenerAdded) {
+                    animBounds.addUpdateListener(SemAddDeleteListAnimator.this.mBitmapUpdateListener);
+                }
+                animations.add(animBounds);
+                left5 = left6;
+            }
+            SemAddDeleteListAnimator.this.mOldViewCache.clear();
+            SemAddDeleteListAnimator.this.mOldHeaderFooterViewCache.clear();
+            AnimatorSet animSet = new AnimatorSet();
+            animSet.playTogether(animations);
+            animSet.setInterpolator(SemAbsAddDeleteAnimator.INSERT_INTERPOLATOR);
+            animSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.animation.SemAddDeleteListAnimator.7.1
+                AnonymousClass1() {
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationStart(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #3");
+                    if (SemAddDeleteListAnimator.this.mListView.isPressed()) {
+                        SemAddDeleteListAnimator.this.mListView.setPressed(false);
+                    }
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(false);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationStart(true);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationEnd(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationEnd #3");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                    if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                        SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationEnd(true);
+                    }
+                }
+
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public void onAnimationCancel(Animator animation) {
+                    Log.i(SemAddDeleteListAnimator.TAG, "onAnimationCancel #3");
+                    SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                    SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                    SemAddDeleteListAnimator.this.mListView.invalidate();
+                    SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                }
+            });
+            animSet.setDuration(SemAddDeleteListAnimator.this.mTranslationDuration);
+            animSet.start();
+            Log.i(SemAddDeleteListAnimator.TAG, "postDelayed #3 mAniTimeoutRunnable delay = " + (SemAddDeleteListAnimator.this.mTranslationDuration + 100));
+            SemAddDeleteListAnimator.this.mHandler.postDelayed(SemAddDeleteListAnimator.this.mAniTimeoutRunnable, SemAddDeleteListAnimator.this.mTranslationDuration + 100);
+        }
+
+        /* renamed from: com.samsung.android.animation.SemAddDeleteListAnimator$7$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 extends AnimatorListenerAdapter {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationStart #3");
+                if (SemAddDeleteListAnimator.this.mListView.isPressed()) {
+                    SemAddDeleteListAnimator.this.mListView.setPressed(false);
+                }
+                SemAddDeleteListAnimator.this.mListView.setEnabled(false);
+                if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                    SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationStart(true);
+                }
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationEnd #3");
+                SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                SemAddDeleteListAnimator.this.mListView.invalidate();
+                SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+                if (SemAddDeleteListAnimator.this.mOnAddDeleteListener != null) {
+                    SemAddDeleteListAnimator.this.mOnAddDeleteListener.onAnimationEnd(true);
+                }
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationCancel(Animator animation) {
+                Log.i(SemAddDeleteListAnimator.TAG, "onAnimationCancel #3");
+                SemAddDeleteListAnimator.this.mHandler.removeCallbacks(SemAddDeleteListAnimator.this.mAniTimeoutRunnable);
+                SemAddDeleteListAnimator.this.mGhostViewSnapshots.clear();
+                SemAddDeleteListAnimator.this.mListView.invalidate();
+                SemAddDeleteListAnimator.this.mListView.setEnabled(true);
+            }
+        }
     }
 
     private void ensureAdapterAndListener() {

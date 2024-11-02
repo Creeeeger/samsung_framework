@@ -170,20 +170,20 @@ public class SContext implements Parcelable {
     private static final String[] sServiceList = {"Approach", "Pedometer", "S Count Alert", "Motion", "Movement", "Auto Rotation", "Air Motion", "Environment", "Movemnt For Positioning", "Current Status For Positioning", "Call Pose", "Shake Motion", "Flip Cover Action", "Gyro Temperature", "Put Down Motion", "Wake Up Voice", "Bounce Short Motion", "Bounce Long Motion", "Wrist Up Motion", "Flat Motion", "Movement Alert", "Device Position", "Temperature Alert", "Activity Location Logging", "Activity Tracker", "Activity Batch", "Activity Notification", "Specific Pose Alert", "Sleep Monitor", "Activity Notification Ex", "Capture Motion", "Call Motion", "Step Level Monitor", "Acitve Time Monitor", "Inactive Timer", "Flat Motion For Table Mode", "Carrying Status Monitor", "Bottom Flat Detector", "Auto Brightness", "Exercise", "Abnormal Pressure", "Phone Status Monitor", "Hall Sensor", "Environment Adaptive Display", "Dual Display Angle", "Wireless Charging Detection", "Slocation Core", "Interrupt Gyro", "Flip Motion", "Any Motion Detector", "Device Physical Context Monitor", "Sensor Status Check", "Activity Calibration"};
     private static final int[] sServiceReportingModes = {3, 3, 2, 3, 2, 4, 3, 1, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 4, 2, 4, 2, 3, 3, 5, 4, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 4, 4, 3, 3, 4, 2, 3, 4, 3};
     public static final Parcelable.Creator<SContext> CREATOR = new Parcelable.Creator<SContext>() { // from class: android.hardware.scontext.SContext.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContext createFromParcel(Parcel in) {
             return new SContext(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContext[] newArray(int size) {
             return new SContext[size];
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContext() {
         this.mType = 0;
     }
@@ -215,7 +215,6 @@ public class SContext implements Parcelable {
         return this.mType;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setType(int type) {
         this.mType = type;
     }
@@ -232,5 +231,22 @@ public class SContext implements Parcelable {
 
     private void readFromParcel(Parcel src) {
         this.mType = src.readInt();
+    }
+
+    /* renamed from: android.hardware.scontext.SContext$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContext> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContext createFromParcel(Parcel in) {
+            return new SContext(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContext[] newArray(int size) {
+            return new SContext[size];
+        }
     }
 }

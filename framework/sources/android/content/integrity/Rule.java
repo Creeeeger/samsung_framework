@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class Rule implements Parcelable {
     public static final Parcelable.Creator<Rule> CREATOR = new Parcelable.Creator<Rule>() { // from class: android.content.integrity.Rule.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Rule createFromParcel(Parcel in) {
             return new Rule(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Rule[] newArray(int size) {
             return new Rule[size];
@@ -44,6 +45,23 @@ public final class Rule implements Parcelable {
     Rule(Parcel in) {
         this.mFormula = IntegrityFormula.readFromParcel(in);
         this.mEffect = in.readInt();
+    }
+
+    /* renamed from: android.content.integrity.Rule$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Rule> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Rule createFromParcel(Parcel in) {
+            return new Rule(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Rule[] newArray(int size) {
+            return new Rule[size];
+        }
     }
 
     @Override // android.os.Parcelable

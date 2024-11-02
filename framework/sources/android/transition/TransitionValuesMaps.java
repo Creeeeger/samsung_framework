@@ -5,7 +5,6 @@ import android.util.LongSparseArray;
 import android.util.SparseArray;
 import android.view.View;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class TransitionValuesMaps {
     ArrayMap<View, TransitionValues> viewValues = new ArrayMap<>();

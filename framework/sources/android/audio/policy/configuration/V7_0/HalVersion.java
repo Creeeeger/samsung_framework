@@ -15,7 +15,6 @@ public enum HalVersion {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static HalVersion fromString(String rawString) {
         for (HalVersion _f : values()) {
             if (_f.getRawName().equals(rawString)) {

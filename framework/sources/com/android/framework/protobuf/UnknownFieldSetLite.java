@@ -18,12 +18,10 @@ public final class UnknownFieldSetLite {
         return DEFAULT_INSTANCE;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static UnknownFieldSetLite newInstance() {
         return new UnknownFieldSetLite();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static UnknownFieldSetLite mutableCopyOf(UnknownFieldSetLite first, UnknownFieldSetLite second) {
         int count = first.count + second.count;
         int[] tags = Arrays.copyOf(first.tags, count);
@@ -91,7 +89,6 @@ public final class UnknownFieldSetLite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeAsMessageSetTo(Writer writer) throws IOException {
         if (writer.fieldOrder() == Writer.FieldOrder.DESCENDING) {
             for (int i = this.count - 1; i >= 0; i--) {
@@ -260,7 +257,6 @@ public final class UnknownFieldSetLite {
         return (((hashCode * 31) + hashCode(this.tags, i)) * 31) + hashCode(this.objects, this.count);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void printWithIndent(StringBuilder buffer, int indent) {
         for (int i = 0; i < this.count; i++) {
             int fieldNumber = WireFormat.getTagFieldNumber(this.tags[i]);
@@ -268,7 +264,6 @@ public final class UnknownFieldSetLite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void storeField(int tag, Object value) {
         checkMutable();
         ensureCapacity(this.count + 1);
@@ -295,7 +290,6 @@ public final class UnknownFieldSetLite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean mergeFieldFrom(int tag, CodedInputStream input) throws IOException {
         checkMutable();
         int fieldNumber = WireFormat.getTagFieldNumber(tag);
@@ -325,7 +319,6 @@ public final class UnknownFieldSetLite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UnknownFieldSetLite mergeVarintField(int fieldNumber, int value) {
         checkMutable();
         if (fieldNumber == 0) {
@@ -335,7 +328,6 @@ public final class UnknownFieldSetLite {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UnknownFieldSetLite mergeLengthDelimitedField(int fieldNumber, ByteString value) {
         checkMutable();
         if (fieldNumber == 0) {
@@ -356,7 +348,6 @@ public final class UnknownFieldSetLite {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UnknownFieldSetLite mergeFrom(UnknownFieldSetLite other) {
         if (other.equals(getDefaultInstance())) {
             return this;

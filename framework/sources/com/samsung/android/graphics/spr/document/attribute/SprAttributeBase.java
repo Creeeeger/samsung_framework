@@ -26,7 +26,6 @@ public abstract class SprAttributeBase implements Cloneable {
 
     public abstract void toSPR(DataOutputStream dataOutputStream) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SprAttributeBase(byte type) {
         this.mType = type;
     }
@@ -36,8 +35,8 @@ public abstract class SprAttributeBase implements Cloneable {
     }
 
     @Override // 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SprAttributeBase mo8420clone() throws CloneNotSupportedException {
+    /* renamed from: clone */
+    public SprAttributeBase mo8412clone() throws CloneNotSupportedException {
         return (SprAttributeBase) super.clone();
     }
 }

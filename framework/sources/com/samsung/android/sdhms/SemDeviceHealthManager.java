@@ -193,6 +193,9 @@ public class SemDeviceHealthManager {
             if (asInterface != null) {
                 try {
                     binder.linkToDeath(new IBinder.DeathRecipient() { // from class: com.samsung.android.sdhms.SemDeviceHealthManager.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // android.os.IBinder.DeathRecipient
                         public void binderDied() {
                             SemDeviceHealthManager.this.mService = null;
@@ -204,5 +207,17 @@ public class SemDeviceHealthManager {
             }
         }
         return this.mService;
+    }
+
+    /* renamed from: com.samsung.android.sdhms.SemDeviceHealthManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements IBinder.DeathRecipient {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            SemDeviceHealthManager.this.mService = null;
+        }
     }
 }

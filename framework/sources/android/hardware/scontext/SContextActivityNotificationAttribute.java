@@ -11,7 +11,6 @@ public class SContextActivityNotificationAttribute extends SContextAttribute {
     private static final String TAG = "SContextActivityNotificationAttribute";
     private int[] mActivityFilter;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextActivityNotificationAttribute() {
         this.mActivityFilter = new int[]{4};
         setAttribute();

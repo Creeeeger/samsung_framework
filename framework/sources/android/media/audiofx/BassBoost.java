@@ -49,6 +49,10 @@ public class BassBoost extends AudioEffect {
 
     /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
+        /* synthetic */ BaseParameterListener(BassBoost bassBoost, BaseParameterListenerIA baseParameterListenerIA) {
+            this();
+        }
+
         private BaseParameterListener() {
         }
 

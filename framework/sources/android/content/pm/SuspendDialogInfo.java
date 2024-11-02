@@ -37,13 +37,14 @@ public final class SuspendDialogInfo implements Parcelable {
     private final int mTitleResId;
     private static final String TAG = SuspendDialogInfo.class.getSimpleName();
     public static final Parcelable.Creator<SuspendDialogInfo> CREATOR = new Parcelable.Creator<SuspendDialogInfo>() { // from class: android.content.pm.SuspendDialogInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SuspendDialogInfo createFromParcel(Parcel source) {
             return new SuspendDialogInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuspendDialogInfo[] newArray(int size) {
             return new SuspendDialogInfo[size];
@@ -53,6 +54,10 @@ public final class SuspendDialogInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface ButtonAction {
+    }
+
+    /* synthetic */ SuspendDialogInfo(Parcel parcel, SuspendDialogInfoIA suspendDialogInfoIA) {
+        this(parcel);
     }
 
     public int getIconResId() {
@@ -245,6 +250,23 @@ public final class SuspendDialogInfo implements Parcelable {
         this.mNeutralButtonTextResId = i3;
         this.mNeutralButtonText = i3 == 0 ? b.mNeutralButtonText : null;
         this.mNeutralButtonAction = b.mNeutralButtonAction;
+    }
+
+    /* renamed from: android.content.pm.SuspendDialogInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SuspendDialogInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SuspendDialogInfo createFromParcel(Parcel source) {
+            return new SuspendDialogInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SuspendDialogInfo[] newArray(int size) {
+            return new SuspendDialogInfo[size];
+        }
     }
 
     /* loaded from: classes.dex */

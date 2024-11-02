@@ -15,7 +15,6 @@ public class RawDataReader implements MediaBufferReader<Number> {
     private final Supplier<?> pixelRead;
     private final Function<Integer, ?> pixelReadByIndex;
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.buffer.MediaBufferReader
     public Number get() {
         return (Number) this.pixelRead.get();
@@ -136,26 +135,24 @@ public class RawDataReader implements MediaBufferReader<Number> {
         this.pixelRead = (Supplier) Optional.ofNullable((ByteBuffer) buffer.getTypedData(ByteBuffer.class)).map(new Function() { // from class: com.samsung.android.sume.core.buffer.RawDataReader$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return RawDataReader.this.m8735lambda$new$8$comsamsungandroidsumecorebufferRawDataReader(format, (ByteBuffer) obj);
+                return RawDataReader.this.m8727lambda$new$8$comsamsungandroidsumecorebufferRawDataReader(format, (ByteBuffer) obj);
             }
         }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
         this.pixelReadByIndex = (Function) Optional.ofNullable((ByteBuffer) buffer.getTypedData(ByteBuffer.class)).map(new Function() { // from class: com.samsung.android.sume.core.buffer.RawDataReader$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return RawDataReader.this.m8736lambda$new$9$comsamsungandroidsumecorebufferRawDataReader(format, (ByteBuffer) obj);
+                return RawDataReader.this.m8728lambda$new$9$comsamsungandroidsumecorebufferRawDataReader(format, (ByteBuffer) obj);
             }
         }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$8$com-samsung-android-sume-core-buffer-RawDataReader, reason: not valid java name */
-    public /* synthetic */ Supplier m8735lambda$new$8$comsamsungandroidsumecorebufferRawDataReader(MediaFormat format, ByteBuffer it) {
+    /* renamed from: lambda$new$8$com-samsung-android-sume-core-buffer-RawDataReader */
+    public /* synthetic */ Supplier m8727lambda$new$8$comsamsungandroidsumecorebufferRawDataReader(MediaFormat format, ByteBuffer it) {
         return getRawDataRead(format.getDataType(), it);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$9$com-samsung-android-sume-core-buffer-RawDataReader, reason: not valid java name */
-    public /* synthetic */ Function m8736lambda$new$9$comsamsungandroidsumecorebufferRawDataReader(MediaFormat format, ByteBuffer e) {
+    /* renamed from: lambda$new$9$com-samsung-android-sume-core-buffer-RawDataReader */
+    public /* synthetic */ Function m8728lambda$new$9$comsamsungandroidsumecorebufferRawDataReader(MediaFormat format, ByteBuffer e) {
         return getRawDataReadByIndex(format.getDataType(), e);
     }
 }

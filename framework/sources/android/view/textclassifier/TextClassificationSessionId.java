@@ -11,13 +11,14 @@ import java.util.UUID;
 /* loaded from: classes4.dex */
 public final class TextClassificationSessionId implements Parcelable {
     public static final Parcelable.Creator<TextClassificationSessionId> CREATOR = new Parcelable.Creator<TextClassificationSessionId>() { // from class: android.view.textclassifier.TextClassificationSessionId.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TextClassificationSessionId createFromParcel(Parcel parcel) {
             return new TextClassificationSessionId(parcel.readString(), parcel.readStrongBinder());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextClassificationSessionId[] newArray(int size) {
             return new TextClassificationSessionId[size];
@@ -74,5 +75,22 @@ public final class TextClassificationSessionId implements Parcelable {
 
     public String getValue() {
         return this.mValue;
+    }
+
+    /* renamed from: android.view.textclassifier.TextClassificationSessionId$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TextClassificationSessionId> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextClassificationSessionId createFromParcel(Parcel parcel) {
+            return new TextClassificationSessionId(parcel.readString(), parcel.readStrongBinder());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextClassificationSessionId[] newArray(int size) {
+            return new TextClassificationSessionId[size];
+        }
     }
 }

@@ -30,13 +30,14 @@ public final class PrintAttributes implements Parcelable {
     public static final int COLOR_MODE_COLOR = 2;
     public static final int COLOR_MODE_MONOCHROME = 1;
     public static final Parcelable.Creator<PrintAttributes> CREATOR = new Parcelable.Creator<PrintAttributes>() { // from class: android.print.PrintAttributes.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrintAttributes createFromParcel(Parcel parcel) {
             return new PrintAttributes(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintAttributes[] newArray(int size) {
             return new PrintAttributes[size];
@@ -61,6 +62,10 @@ public final class PrintAttributes implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     @interface DuplexMode {
+    }
+
+    /* synthetic */ PrintAttributes(Parcel parcel, PrintAttributesIA printAttributesIA) {
+        this(parcel);
     }
 
     PrintAttributes() {
@@ -442,7 +447,6 @@ public final class PrintAttributes implements Parcelable {
             return new MediaSize(this.mId, this.mLabel, this.mPackageName, Math.max(this.mWidthMils, this.mHeightMils), Math.min(this.mWidthMils, this.mHeightMils), this.mLabelResId);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void writeToParcel(Parcel parcel) {
             parcel.writeString(this.mId);
             parcel.writeString(this.mLabel);
@@ -452,7 +456,6 @@ public final class PrintAttributes implements Parcelable {
             parcel.writeInt(this.mLabelResId);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static MediaSize createFromParcel(Parcel parcel) {
             return new MediaSize(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt());
         }
@@ -536,7 +539,6 @@ public final class PrintAttributes implements Parcelable {
             return this.mVerticalDpi;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void writeToParcel(Parcel parcel) {
             parcel.writeString(this.mId);
             parcel.writeString(this.mLabel);
@@ -544,7 +546,6 @@ public final class PrintAttributes implements Parcelable {
             parcel.writeInt(this.mVerticalDpi);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static Resolution createFromParcel(Parcel parcel) {
             return new Resolution(parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt());
         }
@@ -611,7 +612,6 @@ public final class PrintAttributes implements Parcelable {
             return this.mBottomMils;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void writeToParcel(Parcel parcel) {
             parcel.writeInt(this.mLeftMils);
             parcel.writeInt(this.mTopMils);
@@ -619,7 +619,6 @@ public final class PrintAttributes implements Parcelable {
             parcel.writeInt(this.mBottomMils);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static Margins createFromParcel(Parcel parcel) {
             return new Margins(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
         }
@@ -655,7 +654,6 @@ public final class PrintAttributes implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String colorModeToString(int colorMode) {
         switch (colorMode) {
             case 1:
@@ -667,7 +665,6 @@ public final class PrintAttributes implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String duplexModeToString(int duplexMode) {
         switch (duplexMode) {
             case 1:
@@ -682,14 +679,12 @@ public final class PrintAttributes implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void enforceValidColorMode(int colorMode) {
         if ((colorMode & 3) == 0 || Integer.bitCount(colorMode) != 1) {
             throw new IllegalArgumentException("invalid color mode: " + colorMode);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void enforceValidDuplexMode(int duplexMode) {
         if ((duplexMode & 7) == 0 || Integer.bitCount(duplexMode) != 1) {
             throw new IllegalArgumentException("invalid duplex mode: " + duplexMode);
@@ -727,6 +722,23 @@ public final class PrintAttributes implements Parcelable {
 
         public PrintAttributes build() {
             return this.mAttributes;
+        }
+    }
+
+    /* renamed from: android.print.PrintAttributes$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrintAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrintAttributes createFromParcel(Parcel parcel) {
+            return new PrintAttributes(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrintAttributes[] newArray(int size) {
+            return new PrintAttributes[size];
         }
     }
 }

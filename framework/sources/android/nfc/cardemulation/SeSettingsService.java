@@ -20,6 +20,10 @@ public abstract class SeSettingsService extends Service {
 
     /* loaded from: classes3.dex */
     private class ISeSettingsServiceWrapper extends ISeSettingsService.Stub {
+        /* synthetic */ ISeSettingsServiceWrapper(SeSettingsService seSettingsService, ISeSettingsServiceWrapperIA iSeSettingsServiceWrapperIA) {
+            this();
+        }
+
         private ISeSettingsServiceWrapper() {
         }
 

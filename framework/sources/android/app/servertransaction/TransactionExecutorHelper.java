@@ -126,7 +126,6 @@ public class TransactionExecutorHelper {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int lastCallbackRequestingState(ClientTransaction transaction) {
         List<ClientTransactionItem> callbacks = transaction.getCallbacks();
         if (callbacks == null || callbacks.size() == 0) {
@@ -148,7 +147,6 @@ public class TransactionExecutorHelper {
         return lastRequestingCallback;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String transactionToString(ClientTransaction transaction, ClientTransactionHandler transactionHandler) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter pw = new PrintWriter(stringWriter);
@@ -158,7 +156,6 @@ public class TransactionExecutorHelper {
         return stringWriter.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String tId(ClientTransaction transaction) {
         return "tId:" + transaction.hashCode() + " ";
     }

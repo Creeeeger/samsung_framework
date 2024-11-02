@@ -84,8 +84,9 @@ public interface IUpdateAvailableNetworksCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IUpdateAvailableNetworksCallback {
+        public static class Proxy implements IUpdateAvailableNetworksCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

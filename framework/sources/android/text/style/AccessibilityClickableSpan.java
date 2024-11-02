@@ -13,13 +13,14 @@ import com.android.internal.R;
 /* loaded from: classes3.dex */
 public class AccessibilityClickableSpan extends ClickableSpan implements ParcelableSpan {
     public static final Parcelable.Creator<AccessibilityClickableSpan> CREATOR = new Parcelable.Creator<AccessibilityClickableSpan>() { // from class: android.text.style.AccessibilityClickableSpan.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AccessibilityClickableSpan createFromParcel(Parcel parcel) {
             return new AccessibilityClickableSpan(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityClickableSpan[] newArray(int size) {
             return new AccessibilityClickableSpan[size];
@@ -92,5 +93,22 @@ public class AccessibilityClickableSpan extends ClickableSpan implements Parcela
         }
         AccessibilityInteractionClient client = AccessibilityInteractionClient.getInstance();
         client.performAccessibilityAction(this.mConnectionId, this.mWindowId, this.mSourceNodeId, R.id.accessibilityActionClickOnClickableSpan, arguments);
+    }
+
+    /* renamed from: android.text.style.AccessibilityClickableSpan$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AccessibilityClickableSpan> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityClickableSpan createFromParcel(Parcel parcel) {
+            return new AccessibilityClickableSpan(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityClickableSpan[] newArray(int size) {
+            return new AccessibilityClickableSpan[size];
+        }
     }
 }

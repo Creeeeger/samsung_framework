@@ -16,13 +16,14 @@ import java.util.Arrays;
 /* loaded from: classes.dex */
 public final class ApkChecksum implements Parcelable {
     public static final Parcelable.Creator<ApkChecksum> CREATOR = new Parcelable.Creator<ApkChecksum>() { // from class: android.content.pm.ApkChecksum.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ApkChecksum[] newArray(int size) {
             return new ApkChecksum[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApkChecksum createFromParcel(Parcel in) {
             return new ApkChecksum(in);
@@ -125,6 +126,23 @@ public final class ApkChecksum implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) checksum);
         this.mInstallerPackageName = installerPackageName;
         this.mInstallerCertificate = installerCertificate;
+    }
+
+    /* renamed from: android.content.pm.ApkChecksum$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ApkChecksum> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApkChecksum[] newArray(int size) {
+            return new ApkChecksum[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApkChecksum createFromParcel(Parcel in) {
+            return new ApkChecksum(in);
+        }
     }
 
     @Deprecated

@@ -551,8 +551,9 @@ public interface IRadioSimResponse extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IRadioSimResponse {
+        public static class Proxy implements IRadioSimResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

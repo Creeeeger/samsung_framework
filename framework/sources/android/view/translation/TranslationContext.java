@@ -15,13 +15,14 @@ import java.util.function.IntFunction;
 /* loaded from: classes4.dex */
 public final class TranslationContext implements Parcelable {
     public static final Parcelable.Creator<TranslationContext> CREATOR = new Parcelable.Creator<TranslationContext>() { // from class: android.view.translation.TranslationContext.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TranslationContext[] newArray(int size) {
             return new TranslationContext[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationContext createFromParcel(Parcel in) {
             return new TranslationContext(in);
@@ -40,13 +41,13 @@ public final class TranslationContext implements Parcelable {
     public @interface TranslationFlag {
     }
 
-    /* renamed from: -$$Nest$smdefaultActivityId, reason: not valid java name */
-    static /* bridge */ /* synthetic */ ActivityId m5847$$Nest$smdefaultActivityId() {
+    /* renamed from: -$$Nest$smdefaultActivityId */
+    static /* bridge */ /* synthetic */ ActivityId m5842$$Nest$smdefaultActivityId() {
         return defaultActivityId();
     }
 
-    /* renamed from: -$$Nest$smdefaultTranslationFlags, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m5848$$Nest$smdefaultTranslationFlags() {
+    /* renamed from: -$$Nest$smdefaultTranslationFlags */
+    static /* bridge */ /* synthetic */ int m5843$$Nest$smdefaultTranslationFlags() {
         return defaultTranslationFlags();
     }
 
@@ -79,8 +80,9 @@ public final class TranslationContext implements Parcelable {
         return this.mActivityId;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    static abstract class BaseBuilder {
+    public static abstract class BaseBuilder {
         BaseBuilder() {
         }
     }
@@ -94,7 +96,6 @@ public final class TranslationContext implements Parcelable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String singleTranslationFlagToString(int value) {
         switch (value) {
             case 1:
@@ -165,6 +166,23 @@ public final class TranslationContext implements Parcelable {
         this.mActivityId = activityId;
     }
 
+    /* renamed from: android.view.translation.TranslationContext$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TranslationContext> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TranslationContext[] newArray(int size) {
+            return new TranslationContext[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TranslationContext createFromParcel(Parcel in) {
+            return new TranslationContext(in);
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private ActivityId mActivityId;
@@ -199,10 +217,10 @@ public final class TranslationContext implements Parcelable {
             long j = this.mBuilderFieldsSet | 16;
             this.mBuilderFieldsSet = j;
             if ((j & 4) == 0) {
-                this.mTranslationFlags = TranslationContext.m5848$$Nest$smdefaultTranslationFlags();
+                this.mTranslationFlags = TranslationContext.m5843$$Nest$smdefaultTranslationFlags();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mActivityId = TranslationContext.m5847$$Nest$smdefaultActivityId();
+                this.mActivityId = TranslationContext.m5842$$Nest$smdefaultActivityId();
             }
             TranslationContext o = new TranslationContext(this.mSourceSpec, this.mTargetSpec, this.mTranslationFlags, this.mActivityId);
             return o;

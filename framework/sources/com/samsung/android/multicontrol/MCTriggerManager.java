@@ -26,6 +26,9 @@ public class MCTriggerManager {
     boolean isEnabled = false;
     private boolean isDexEnabled = false;
     private SemDesktopModeManager.DesktopModeListener desktopModeListener = new SemDesktopModeManager.DesktopModeListener() { // from class: com.samsung.android.multicontrol.MCTriggerManager.1
+        AnonymousClass1() {
+        }
+
         @Override // com.samsung.android.desktopmode.SemDesktopModeManager.DesktopModeListener
         public void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
             if (semDesktopModeState.state == 4 && semDesktopModeState.getDisplayType() == 102) {
@@ -46,6 +49,29 @@ public class MCTriggerManager {
     public MCTriggerManager(Context context, Looper looper) {
         this.mContext = context;
         this.mLooper = looper;
+    }
+
+    /* renamed from: com.samsung.android.multicontrol.MCTriggerManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements SemDesktopModeManager.DesktopModeListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.desktopmode.SemDesktopModeManager.DesktopModeListener
+        public void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
+            if (semDesktopModeState.state == 4 && semDesktopModeState.getDisplayType() == 102) {
+                if (!MCTriggerManager.this.isDexEnabled) {
+                    MCTriggerManager.this.enable(false);
+                    MCTriggerManager.this.enable(true);
+                }
+                MCTriggerManager.this.isDexEnabled = true;
+                return;
+            }
+            if (MCTriggerManager.this.isDexEnabled) {
+                MCTriggerManager.this.enable(false);
+            }
+            MCTriggerManager.this.isDexEnabled = false;
+        }
     }
 
     private void registerDesktopModeListener() {

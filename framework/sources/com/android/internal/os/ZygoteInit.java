@@ -91,7 +91,6 @@ public class ZygoteInit {
         sCachedSystemServerClassLoader = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void preload(TimingsTraceLog bootTimingsTraceLog) {
         Log.d(TAG, "begin preload");
         if (startSystemServer) {
@@ -135,7 +134,6 @@ public class ZygoteInit {
         sPreloadComplete = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void lazyPreload() {
         Preconditions.checkState(!sPreloadComplete);
         Log.i(TAG, "Lazily preloading resources.");
@@ -205,7 +203,6 @@ public class ZygoteInit {
         return SystemProperties.getBoolean("persist.device_config.runtime_native_boot." + experiment, defaultValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean shouldProfileSystemServer() {
         return isExperimentEnabled("profilesystemserver");
     }
@@ -626,7 +623,6 @@ public class ZygoteInit {
         VMRuntime.setHiddenApiUsageLogger(logger);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ClassLoader createPathClassLoader(String classPath, int targetSdkVersion) {
         String libraryPath = System.getProperty("java.library.path");
         ClassLoader parent = ClassLoader.getSystemClassLoader().getParent();
@@ -820,7 +816,6 @@ public class ZygoteInit {
         ZygoteProcess.waitForConnectionToZygote(otherZygoteName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isPreloadComplete() {
         return sPreloadComplete;
     }
@@ -836,7 +831,6 @@ public class ZygoteInit {
         return RuntimeInit.applicationInit(targetSdkVersion, disabledCompatChanges, argv, classLoader);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Runnable childZygoteInit(String[] argv) {
         RuntimeInit.Arguments args = new RuntimeInit.Arguments(argv);
         return RuntimeInit.findStaticMain(args.startClass, args.startArgs, null);

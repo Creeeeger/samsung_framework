@@ -18,6 +18,10 @@ public class AtscFrontendSettings extends FrontendSettings {
     public @interface Modulation {
     }
 
+    /* synthetic */ AtscFrontendSettings(long j, int i, AtscFrontendSettingsIA atscFrontendSettingsIA) {
+        this(j, i);
+    }
+
     private AtscFrontendSettings(long frequency, int modulation) {
         super(frequency);
         this.mModulation = modulation;
@@ -35,6 +39,10 @@ public class AtscFrontendSettings extends FrontendSettings {
     public static class Builder {
         private long mFrequency;
         private int mModulation;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;

@@ -64,7 +64,6 @@ public class RingtonePreference extends Preference implements PreferenceManager.
         this.mShowSilent = showSilent;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onClick() {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
@@ -114,7 +113,6 @@ public class RingtonePreference extends Preference implements PreferenceManager.
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onAttachedToHierarchy(PreferenceManager preferenceManager) {
         super.onAttachedToHierarchy(preferenceManager);

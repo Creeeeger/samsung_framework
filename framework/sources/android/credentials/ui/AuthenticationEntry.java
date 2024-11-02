@@ -12,13 +12,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class AuthenticationEntry implements Parcelable {
     public static final Parcelable.Creator<AuthenticationEntry> CREATOR = new Parcelable.Creator<AuthenticationEntry>() { // from class: android.credentials.ui.AuthenticationEntry.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AuthenticationEntry createFromParcel(Parcel in) {
             return new AuthenticationEntry(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthenticationEntry[] newArray(int size) {
             return new AuthenticationEntry[size];
@@ -36,6 +37,10 @@ public final class AuthenticationEntry implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Status {
+    }
+
+    /* synthetic */ AuthenticationEntry(Parcel parcel, AuthenticationEntryIA authenticationEntryIA) {
+        this(parcel);
     }
 
     private AuthenticationEntry(Parcel in) {
@@ -96,5 +101,22 @@ public final class AuthenticationEntry implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.credentials.ui.AuthenticationEntry$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AuthenticationEntry> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AuthenticationEntry createFromParcel(Parcel in) {
+            return new AuthenticationEntry(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AuthenticationEntry[] newArray(int size) {
+            return new AuthenticationEntry[size];
+        }
     }
 }

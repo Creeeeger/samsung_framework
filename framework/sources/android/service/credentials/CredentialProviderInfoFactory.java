@@ -109,8 +109,14 @@ public final class CredentialProviderInfoFactory {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x004b, code lost:            r8.addCapabilities(parseXmlProviderOuterCapabilities(r0, r11));     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x0048, code lost:            if (r4 == null) goto L25;     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x004b, code lost:
+    
+        r8.addCapabilities(parseXmlProviderOuterCapabilities(r0, r11));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x0048, code lost:
+    
+        if (r4 == null) goto L65;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -233,8 +233,9 @@ public interface IRecognitionListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IRecognitionListener {
+        public static class Proxy implements IRecognitionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

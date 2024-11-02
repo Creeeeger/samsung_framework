@@ -158,7 +158,6 @@ public abstract class LocationProviderBase {
         return mapped;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class Service extends ILocationProvider.Stub {
         Service() {
@@ -191,7 +190,6 @@ public abstract class LocationProviderBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$setRequest$0(RuntimeException e) {
             throw new AssertionError(e);
         }
@@ -216,12 +214,10 @@ public abstract class LocationProviderBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$flush$1(RuntimeException e) {
             throw new AssertionError(e);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void onFlushComplete() {
             ILocationProviderManager manager = LocationProviderBase.this.mManager;
             if (manager != null) {
@@ -248,7 +244,6 @@ public abstract class LocationProviderBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$sendExtraCommand$2(RuntimeException e) {
             throw new AssertionError(e);
         }

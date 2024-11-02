@@ -25,13 +25,11 @@ class SecureSessionManager {
     SecureSessionManager() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class PrivateSessionEndpoint {
         private PrivateKey privateKey;
         private PublicKey publicKey;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public PrivateSessionEndpoint() throws Exception {
             try {
                 KeyPair keyPair = createKeyPair();
@@ -43,7 +41,6 @@ class SecureSessionManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String getPublicKeyString() {
             return Util.byteArrayToHexString(this.publicKey.getEncoded());
         }
@@ -56,7 +53,6 @@ class SecureSessionManager {
             return this.privateKey;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void destroy() throws Exception {
             try {
                 this.privateKey.destroy();
@@ -73,12 +69,10 @@ class SecureSessionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class PublicSessionEndpoint {
         private PublicKey publicKey;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public PublicSessionEndpoint(String publicKeyString) throws Exception {
             try {
                 this.publicKey = createPublicKey(publicKeyString);
@@ -112,7 +106,6 @@ class SecureSessionManager {
         private SecretKey sessionKey;
         private byte[] xorMask;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public SecureSession(PrivateSessionEndpoint privSessionEndPoint, PublicSessionEndpoint pubSessionEndPoint) throws Exception {
             this.privateSessionEndpoint = privSessionEndPoint;
             this.publicSessionEndpoint = pubSessionEndPoint;
@@ -131,13 +124,11 @@ class SecureSessionManager {
             Wiper.wipe(trunckey);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void destroySessionkey() throws Exception {
             Wiper.wipe(this.xorMask);
             this.sessionKey.destroy();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String encryptString(String plaintext) throws Exception {
             if (plaintext == null) {
                 return null;
@@ -145,7 +136,6 @@ class SecureSessionManager {
             return encryptData(generateIV(), plaintext.getBytes());
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public byte[] encryptBytes(byte[] plaintext) throws Exception {
             if (plaintext == null) {
                 return null;
@@ -153,7 +143,6 @@ class SecureSessionManager {
             return encryptData(generateIV(), plaintext).getBytes();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String decryptString(String ciphertext) throws Exception {
             if (ciphertext == null) {
                 return null;
@@ -161,7 +150,6 @@ class SecureSessionManager {
             return new String(decryptData(ciphertext));
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public byte[] decryptBytes(byte[] ciphertext) throws Exception {
             if (ciphertext == null) {
                 return null;

@@ -35,7 +35,9 @@ public final class SemDlnaDevice implements Parcelable {
     private String mUid;
     public static final SemDlnaDevice[] EMPTY_ARRAY = new SemDlnaDevice[0];
     public static final Parcelable.Creator<SemDlnaDevice> CREATOR = new Parcelable.Creator<SemDlnaDevice>() { // from class: android.hardware.display.SemDlnaDevice.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemDlnaDevice createFromParcel(Parcel in) {
             String deviceName = in.readString();
@@ -55,12 +57,42 @@ public final class SemDlnaDevice implements Parcelable {
             return dlnaDevice;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemDlnaDevice[] newArray(int size) {
             return size == 0 ? SemDlnaDevice.EMPTY_ARRAY : new SemDlnaDevice[size];
         }
     };
+
+    /* renamed from: android.hardware.display.SemDlnaDevice$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemDlnaDevice> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemDlnaDevice createFromParcel(Parcel in) {
+            String deviceName = in.readString();
+            String deviceIpAddress = in.readString();
+            String deviceP2pMacAddress = in.readString();
+            String deviceMacAddressFromARP = in.readString();
+            String deviceNICType = in.readString();
+            String uid = in.readString();
+            int dlnaType = in.readInt();
+            boolean isSwitchingDevice = in.readInt() != 0;
+            String uri = in.readString();
+            int dlnaSupportTypes = in.readInt();
+            int connectionState = in.readInt();
+            SemDlnaDevice dlnaDevice = new SemDlnaDevice(deviceName, deviceIpAddress, deviceP2pMacAddress, deviceMacAddressFromARP, deviceNICType, uid, dlnaType, isSwitchingDevice, uri);
+            dlnaDevice.setDlnaSupportTypes(dlnaSupportTypes);
+            dlnaDevice.setConnectionState(connectionState);
+            return dlnaDevice;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemDlnaDevice[] newArray(int size) {
+            return size == 0 ? SemDlnaDevice.EMPTY_ARRAY : new SemDlnaDevice[size];
+        }
+    }
 
     public SemDlnaDevice() {
         Log.d(TAG, "SemDlnaDevice " + toString());

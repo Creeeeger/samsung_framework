@@ -18,13 +18,14 @@ public final class ImsCallForwardInfo implements Parcelable {
     public static final int CDIV_CF_REASON_NO_REPLY = 2;
     public static final int CDIV_CF_REASON_UNCONDITIONAL = 0;
     public static final Parcelable.Creator<ImsCallForwardInfo> CREATOR = new Parcelable.Creator<ImsCallForwardInfo>() { // from class: android.telephony.ims.ImsCallForwardInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsCallForwardInfo createFromParcel(Parcel in) {
             return new ImsCallForwardInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsCallForwardInfo[] newArray(int size) {
             return new ImsCallForwardInfo[size];
@@ -98,6 +99,23 @@ public final class ImsCallForwardInfo implements Parcelable {
         this.mNumber = in.readString();
         this.mTimeSeconds = in.readInt();
         this.mServiceClass = in.readInt();
+    }
+
+    /* renamed from: android.telephony.ims.ImsCallForwardInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsCallForwardInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsCallForwardInfo createFromParcel(Parcel in) {
+            return new ImsCallForwardInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsCallForwardInfo[] newArray(int size) {
+            return new ImsCallForwardInfo[size];
+        }
     }
 
     public int getCondition() {

@@ -85,8 +85,9 @@ public interface ISemLidStateChangedListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ISemLidStateChangedListener {
+        public static class Proxy implements ISemLidStateChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

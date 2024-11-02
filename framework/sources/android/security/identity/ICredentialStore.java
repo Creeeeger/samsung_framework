@@ -154,8 +154,9 @@ public interface ICredentialStore extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ICredentialStore {
+        public static class Proxy implements ICredentialStore {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

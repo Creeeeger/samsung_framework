@@ -17,13 +17,14 @@ import java.net.InetSocketAddress;
 /* loaded from: classes3.dex */
 public final class SipDelegateImsConfiguration implements Parcelable {
     public static final Parcelable.Creator<SipDelegateImsConfiguration> CREATOR = new Parcelable.Creator<SipDelegateImsConfiguration>() { // from class: android.telephony.ims.SipDelegateImsConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SipDelegateImsConfiguration createFromParcel(Parcel source) {
             return new SipDelegateImsConfiguration(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDelegateImsConfiguration[] newArray(int size) {
             return new SipDelegateImsConfiguration[size];
@@ -85,6 +86,14 @@ public final class SipDelegateImsConfiguration implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface StringConfigKey {
+    }
+
+    /* synthetic */ SipDelegateImsConfiguration(long j, PersistableBundle persistableBundle, SipDelegateImsConfigurationIA sipDelegateImsConfigurationIA) {
+        this(j, persistableBundle);
+    }
+
+    /* synthetic */ SipDelegateImsConfiguration(Parcel parcel, SipDelegateImsConfigurationIA sipDelegateImsConfigurationIA) {
+        this(parcel);
     }
 
     /* loaded from: classes3.dex */
@@ -171,6 +180,23 @@ public final class SipDelegateImsConfiguration implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.mVersion);
         dest.writePersistableBundle(this.mBundle);
+    }
+
+    /* renamed from: android.telephony.ims.SipDelegateImsConfiguration$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SipDelegateImsConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SipDelegateImsConfiguration createFromParcel(Parcel source) {
+            return new SipDelegateImsConfiguration(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SipDelegateImsConfiguration[] newArray(int size) {
+            return new SipDelegateImsConfiguration[size];
+        }
     }
 
     public SipDelegateConfiguration toNewConfig() {

@@ -48,7 +48,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public final class RemoteSelectionToolbar {
     private static final int MAX_OVERFLOW_SIZE = 4;
@@ -98,6 +97,9 @@ public final class RemoteSelectionToolbar {
     private final Rect mViewPortOnScreen = new Rect();
     private final Point mRelativeCoordsForToolbar = new Point();
     private final Runnable mPreparePopupContentRTLHelper = new Runnable() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             RemoteSelectionToolbar.this.setPanelsStatesAtRestingPosition();
@@ -111,6 +113,19 @@ public final class RemoteSelectionToolbar {
     private final int[] mTempCoords = new int[2];
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            RemoteSelectionToolbar.this.setPanelsStatesAtRestingPosition();
+            RemoteSelectionToolbar.this.mContentContainer.setAlpha(1.0f);
+        }
+    }
+
     public RemoteSelectionToolbar(Context context, long selectionToolbarToken, ShowInfo showInfo, SelectionToolbarRenderService.RemoteCallbackWrapper callbackWrapper, SelectionToolbarRenderService.TransferTouchListener transferTouchListener) {
         Context applyDefaultTheme = applyDefaultTheme(context, showInfo.isIsLightTheme());
         this.mContext = applyDefaultTheme;
@@ -156,12 +171,18 @@ public final class RemoteSelectionToolbar {
         this.mCloseOverflowAnimation = animationSet2;
         animationSet2.setAnimationListener(createOverflowAnimationListener);
         this.mShowAnimation = createEnterAnimation(createContentContainer, new AnimatorListenerAdapter() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.2
+            AnonymousClass2() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 RemoteSelectionToolbar.this.updateFloatingToolbarRootContentRect();
             }
         });
         this.mDismissAnimation = createExitAnimation(createContentContainer, 150, new AnimatorListenerAdapter() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.3
+            AnonymousClass3() {
+            }
+
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 RemoteSelectionToolbar.this.mContentContainer.removeAllViews();
@@ -179,7 +200,35 @@ public final class RemoteSelectionToolbar {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            RemoteSelectionToolbar.this.updateFloatingToolbarRootContentRect();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$3 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass3 extends AnimatorListenerAdapter {
+        AnonymousClass3() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            RemoteSelectionToolbar.this.mContentContainer.removeAllViews();
+            RemoteSelectionToolbar.this.mSurfaceControlViewHost.release();
+            RemoteSelectionToolbar.this.mSurfaceControlViewHost = null;
+            RemoteSelectionToolbar.this.mSurfacePackage = null;
+        }
+    }
+
     public /* synthetic */ void lambda$new$0(View v) {
         Object tag = v.getTag();
         if (!(tag instanceof ToolbarMenuItem)) {
@@ -188,7 +237,6 @@ public final class RemoteSelectionToolbar {
         this.mCallbackWrapper.onMenuItemClicked((ToolbarMenuItem) tag);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateFloatingToolbarRootContentRect() {
         SurfaceControlViewHost surfaceControlViewHost = this.mSurfaceControlViewHost;
         if (surfaceControlViewHost == null) {
@@ -371,15 +419,26 @@ public final class RemoteSelectionToolbar {
     }
 
     private void openOverflow() {
-        final int targetWidth = this.mOverflowPanelSize.getWidth();
-        final int targetHeight = this.mOverflowPanelSize.getHeight();
-        final int startWidth = this.mContentContainer.getWidth();
-        final int startHeight = this.mContentContainer.getHeight();
-        final float startY = this.mContentContainer.getY();
-        final float left = this.mContentContainer.getX();
-        final float right = left + this.mContentContainer.getWidth();
+        int targetWidth = this.mOverflowPanelSize.getWidth();
+        int targetHeight = this.mOverflowPanelSize.getHeight();
+        int startWidth = this.mContentContainer.getWidth();
+        int startHeight = this.mContentContainer.getHeight();
+        float startY = this.mContentContainer.getY();
+        float left = this.mContentContainer.getX();
+        float right = left + this.mContentContainer.getWidth();
         Animation widthAnimation = new Animation() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.4
-            /* JADX INFO: Access modifiers changed from: protected */
+            final /* synthetic */ float val$left;
+            final /* synthetic */ float val$right;
+            final /* synthetic */ int val$startWidth;
+            final /* synthetic */ int val$targetWidth;
+
+            AnonymousClass4(int targetWidth2, int startWidth2, float left2, float right2) {
+                targetWidth = targetWidth2;
+                startWidth = startWidth2;
+                left = left2;
+                right = right2;
+            }
+
             @Override // android.view.animation.Animation
             public void applyTransformation(float interpolatedTime, Transformation t) {
                 int deltaWidth = (int) ((targetWidth - startWidth) * interpolatedTime);
@@ -396,7 +455,16 @@ public final class RemoteSelectionToolbar {
             }
         };
         Animation heightAnimation = new Animation() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.5
-            /* JADX INFO: Access modifiers changed from: protected */
+            final /* synthetic */ int val$startHeight;
+            final /* synthetic */ float val$startY;
+            final /* synthetic */ int val$targetHeight;
+
+            AnonymousClass5(int targetHeight2, int startHeight2, float startY2) {
+                targetHeight = targetHeight2;
+                startHeight = startHeight2;
+                startY = startY2;
+            }
+
             @Override // android.view.animation.Animation
             public void applyTransformation(float interpolatedTime, Transformation t) {
                 int deltaHeight = (int) ((targetHeight - startHeight) * interpolatedTime);
@@ -407,10 +475,19 @@ public final class RemoteSelectionToolbar {
                 }
             }
         };
-        final float overflowButtonStartX = this.mOverflowButton.getX();
-        final float overflowButtonTargetX = isInRTLMode() ? (targetWidth + overflowButtonStartX) - this.mOverflowButton.getWidth() : (overflowButtonStartX - targetWidth) + this.mOverflowButton.getWidth();
+        float overflowButtonStartX = this.mOverflowButton.getX();
+        float overflowButtonTargetX = isInRTLMode() ? (targetWidth2 + overflowButtonStartX) - this.mOverflowButton.getWidth() : (overflowButtonStartX - targetWidth2) + this.mOverflowButton.getWidth();
         Animation overflowButtonAnimation = new Animation() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.6
-            /* JADX INFO: Access modifiers changed from: protected */
+            final /* synthetic */ float val$overflowButtonStartX;
+            final /* synthetic */ float val$overflowButtonTargetX;
+            final /* synthetic */ int val$startWidth;
+
+            AnonymousClass6(float overflowButtonStartX2, float overflowButtonTargetX2, int startWidth2) {
+                overflowButtonStartX = overflowButtonStartX2;
+                overflowButtonTargetX = overflowButtonTargetX2;
+                startWidth = startWidth2;
+            }
+
             @Override // android.view.animation.Animation
             public void applyTransformation(float interpolatedTime, Transformation t) {
                 float f = overflowButtonStartX;
@@ -437,13 +514,103 @@ public final class RemoteSelectionToolbar {
         this.mOverflowPanel.setAlpha(1.0f);
     }
 
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$4 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass4 extends Animation {
+        final /* synthetic */ float val$left;
+        final /* synthetic */ float val$right;
+        final /* synthetic */ int val$startWidth;
+        final /* synthetic */ int val$targetWidth;
+
+        AnonymousClass4(int targetWidth2, int startWidth2, float left2, float right2) {
+            targetWidth = targetWidth2;
+            startWidth = startWidth2;
+            left = left2;
+            right = right2;
+        }
+
+        @Override // android.view.animation.Animation
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            int deltaWidth = (int) ((targetWidth - startWidth) * interpolatedTime);
+            RemoteSelectionToolbar.setWidth(RemoteSelectionToolbar.this.mContentContainer, startWidth + deltaWidth);
+            if (RemoteSelectionToolbar.this.isInRTLMode()) {
+                RemoteSelectionToolbar.this.mContentContainer.setX(left);
+                RemoteSelectionToolbar.this.mMainPanel.setX(0.0f);
+                RemoteSelectionToolbar.this.mOverflowPanel.setX(0.0f);
+            } else {
+                RemoteSelectionToolbar.this.mContentContainer.setX(right - RemoteSelectionToolbar.this.mContentContainer.getWidth());
+                RemoteSelectionToolbar.this.mMainPanel.setX(RemoteSelectionToolbar.this.mContentContainer.getWidth() - startWidth);
+                RemoteSelectionToolbar.this.mOverflowPanel.setX(RemoteSelectionToolbar.this.mContentContainer.getWidth() - targetWidth);
+            }
+        }
+    }
+
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$5 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass5 extends Animation {
+        final /* synthetic */ int val$startHeight;
+        final /* synthetic */ float val$startY;
+        final /* synthetic */ int val$targetHeight;
+
+        AnonymousClass5(int targetHeight2, int startHeight2, float startY2) {
+            targetHeight = targetHeight2;
+            startHeight = startHeight2;
+            startY = startY2;
+        }
+
+        @Override // android.view.animation.Animation
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            int deltaHeight = (int) ((targetHeight - startHeight) * interpolatedTime);
+            RemoteSelectionToolbar.setHeight(RemoteSelectionToolbar.this.mContentContainer, startHeight + deltaHeight);
+            if (RemoteSelectionToolbar.this.mOpenOverflowUpwards) {
+                RemoteSelectionToolbar.this.mContentContainer.setY(startY - (RemoteSelectionToolbar.this.mContentContainer.getHeight() - startHeight));
+                RemoteSelectionToolbar.this.positionContentYCoordinatesIfOpeningOverflowUpwards();
+            }
+        }
+    }
+
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$6 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass6 extends Animation {
+        final /* synthetic */ float val$overflowButtonStartX;
+        final /* synthetic */ float val$overflowButtonTargetX;
+        final /* synthetic */ int val$startWidth;
+
+        AnonymousClass6(float overflowButtonStartX2, float overflowButtonTargetX2, int startWidth2) {
+            overflowButtonStartX = overflowButtonStartX2;
+            overflowButtonTargetX = overflowButtonTargetX2;
+            startWidth = startWidth2;
+        }
+
+        @Override // android.view.animation.Animation
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            float f = overflowButtonStartX;
+            float overflowButtonX = f + ((overflowButtonTargetX - f) * interpolatedTime);
+            float deltaContainerWidth = RemoteSelectionToolbar.this.isInRTLMode() ? 0.0f : RemoteSelectionToolbar.this.mContentContainer.getWidth() - startWidth;
+            float actualOverflowButtonX = overflowButtonX + deltaContainerWidth;
+            RemoteSelectionToolbar.this.mOverflowButton.setX(actualOverflowButtonX);
+            RemoteSelectionToolbar.this.updateFloatingToolbarRootContentRect();
+        }
+    }
+
     private void closeOverflow() {
-        final int targetWidth = this.mMainPanelSize.getWidth();
-        final int startWidth = this.mContentContainer.getWidth();
-        final float left = this.mContentContainer.getX();
-        final float right = left + this.mContentContainer.getWidth();
+        int targetWidth = this.mMainPanelSize.getWidth();
+        int startWidth = this.mContentContainer.getWidth();
+        float left = this.mContentContainer.getX();
+        float right = left + this.mContentContainer.getWidth();
         Animation widthAnimation = new Animation() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.7
-            /* JADX INFO: Access modifiers changed from: protected */
+            final /* synthetic */ float val$left;
+            final /* synthetic */ float val$right;
+            final /* synthetic */ int val$startWidth;
+            final /* synthetic */ int val$targetWidth;
+
+            AnonymousClass7(int targetWidth2, int startWidth2, float left2, float right2) {
+                targetWidth = targetWidth2;
+                startWidth = startWidth2;
+                left = left2;
+                right = right2;
+            }
+
             @Override // android.view.animation.Animation
             public void applyTransformation(float interpolatedTime, Transformation t) {
                 int deltaWidth = (int) ((targetWidth - startWidth) * interpolatedTime);
@@ -459,11 +626,20 @@ public final class RemoteSelectionToolbar {
                 }
             }
         };
-        final int targetHeight = this.mMainPanelSize.getHeight();
-        final int startHeight = this.mContentContainer.getHeight();
-        final float bottom = this.mContentContainer.getY() + this.mContentContainer.getHeight();
+        int targetHeight = this.mMainPanelSize.getHeight();
+        int startHeight = this.mContentContainer.getHeight();
+        float bottom = this.mContentContainer.getY() + this.mContentContainer.getHeight();
         Animation heightAnimation = new Animation() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.8
-            /* JADX INFO: Access modifiers changed from: protected */
+            final /* synthetic */ float val$bottom;
+            final /* synthetic */ int val$startHeight;
+            final /* synthetic */ int val$targetHeight;
+
+            AnonymousClass8(int targetHeight2, int startHeight2, float bottom2) {
+                targetHeight = targetHeight2;
+                startHeight = startHeight2;
+                bottom = bottom2;
+            }
+
             @Override // android.view.animation.Animation
             public void applyTransformation(float interpolatedTime, Transformation t) {
                 int deltaHeight = (int) ((targetHeight - startHeight) * interpolatedTime);
@@ -474,10 +650,19 @@ public final class RemoteSelectionToolbar {
                 }
             }
         };
-        final float overflowButtonStartX = this.mOverflowButton.getX();
-        final float overflowButtonTargetX = isInRTLMode() ? (overflowButtonStartX - startWidth) + this.mOverflowButton.getWidth() : (startWidth + overflowButtonStartX) - this.mOverflowButton.getWidth();
+        float overflowButtonStartX = this.mOverflowButton.getX();
+        float overflowButtonTargetX = isInRTLMode() ? (overflowButtonStartX - startWidth2) + this.mOverflowButton.getWidth() : (startWidth2 + overflowButtonStartX) - this.mOverflowButton.getWidth();
         Animation overflowButtonAnimation = new Animation() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.9
-            /* JADX INFO: Access modifiers changed from: protected */
+            final /* synthetic */ float val$overflowButtonStartX;
+            final /* synthetic */ float val$overflowButtonTargetX;
+            final /* synthetic */ int val$startWidth;
+
+            AnonymousClass9(float overflowButtonStartX2, float overflowButtonTargetX2, int startWidth2) {
+                overflowButtonStartX = overflowButtonStartX2;
+                overflowButtonTargetX = overflowButtonTargetX2;
+                startWidth = startWidth2;
+            }
+
             @Override // android.view.animation.Animation
             public void applyTransformation(float interpolatedTime, Transformation t) {
                 float f = overflowButtonStartX;
@@ -504,7 +689,85 @@ public final class RemoteSelectionToolbar {
         this.mOverflowPanel.animate().alpha(0.0f).withLayer().setInterpolator(this.mLinearOutSlowInInterpolator).setDuration(150L).start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$7 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass7 extends Animation {
+        final /* synthetic */ float val$left;
+        final /* synthetic */ float val$right;
+        final /* synthetic */ int val$startWidth;
+        final /* synthetic */ int val$targetWidth;
+
+        AnonymousClass7(int targetWidth2, int startWidth2, float left2, float right2) {
+            targetWidth = targetWidth2;
+            startWidth = startWidth2;
+            left = left2;
+            right = right2;
+        }
+
+        @Override // android.view.animation.Animation
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            int deltaWidth = (int) ((targetWidth - startWidth) * interpolatedTime);
+            RemoteSelectionToolbar.setWidth(RemoteSelectionToolbar.this.mContentContainer, startWidth + deltaWidth);
+            if (RemoteSelectionToolbar.this.isInRTLMode()) {
+                RemoteSelectionToolbar.this.mContentContainer.setX(left);
+                RemoteSelectionToolbar.this.mMainPanel.setX(0.0f);
+                RemoteSelectionToolbar.this.mOverflowPanel.setX(0.0f);
+            } else {
+                RemoteSelectionToolbar.this.mContentContainer.setX(right - RemoteSelectionToolbar.this.mContentContainer.getWidth());
+                RemoteSelectionToolbar.this.mMainPanel.setX(RemoteSelectionToolbar.this.mContentContainer.getWidth() - targetWidth);
+                RemoteSelectionToolbar.this.mOverflowPanel.setX(RemoteSelectionToolbar.this.mContentContainer.getWidth() - startWidth);
+            }
+        }
+    }
+
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$8 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass8 extends Animation {
+        final /* synthetic */ float val$bottom;
+        final /* synthetic */ int val$startHeight;
+        final /* synthetic */ int val$targetHeight;
+
+        AnonymousClass8(int targetHeight2, int startHeight2, float bottom2) {
+            targetHeight = targetHeight2;
+            startHeight = startHeight2;
+            bottom = bottom2;
+        }
+
+        @Override // android.view.animation.Animation
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            int deltaHeight = (int) ((targetHeight - startHeight) * interpolatedTime);
+            RemoteSelectionToolbar.setHeight(RemoteSelectionToolbar.this.mContentContainer, startHeight + deltaHeight);
+            if (RemoteSelectionToolbar.this.mOpenOverflowUpwards) {
+                RemoteSelectionToolbar.this.mContentContainer.setY(bottom - RemoteSelectionToolbar.this.mContentContainer.getHeight());
+                RemoteSelectionToolbar.this.positionContentYCoordinatesIfOpeningOverflowUpwards();
+            }
+        }
+    }
+
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$9 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass9 extends Animation {
+        final /* synthetic */ float val$overflowButtonStartX;
+        final /* synthetic */ float val$overflowButtonTargetX;
+        final /* synthetic */ int val$startWidth;
+
+        AnonymousClass9(float overflowButtonStartX2, float overflowButtonTargetX2, int startWidth2) {
+            overflowButtonStartX = overflowButtonStartX2;
+            overflowButtonTargetX = overflowButtonTargetX2;
+            startWidth = startWidth2;
+        }
+
+        @Override // android.view.animation.Animation
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            float f = overflowButtonStartX;
+            float overflowButtonX = f + ((overflowButtonTargetX - f) * interpolatedTime);
+            float deltaContainerWidth = RemoteSelectionToolbar.this.isInRTLMode() ? 0.0f : RemoteSelectionToolbar.this.mContentContainer.getWidth() - startWidth;
+            float actualOverflowButtonX = overflowButtonX + deltaContainerWidth;
+            RemoteSelectionToolbar.this.mOverflowButton.setX(actualOverflowButtonX);
+            RemoteSelectionToolbar.this.updateFloatingToolbarRootContentRect();
+        }
+    }
+
     public void setPanelsStatesAtRestingPosition() {
         this.mOverflowButton.setEnabled(true);
         this.mOverflowPanel.awakenScrollBars();
@@ -514,7 +777,7 @@ public final class RemoteSelectionToolbar {
             this.mMainPanel.setVisibility(4);
             this.mOverflowPanel.setAlpha(1.0f);
             this.mOverflowPanel.setVisibility(0);
-            this.mOverflowButton.setImageDrawable(this.mArrow);
+            this.mOverflowButton.lambda$setImageURIAsync$2(this.mArrow);
             this.mOverflowButton.setContentDescription(this.mContext.getString(R.string.floating_toolbar_close_overflow_description));
             if (isInRTLMode()) {
                 this.mContentContainer.setX(this.mMarginHorizontal);
@@ -546,7 +809,7 @@ public final class RemoteSelectionToolbar {
         this.mMainPanel.setVisibility(0);
         this.mOverflowPanel.setAlpha(0.0f);
         this.mOverflowPanel.setVisibility(4);
-        this.mOverflowButton.setImageDrawable(this.mOverflow);
+        this.mOverflowButton.lambda$setImageURIAsync$2(this.mOverflow);
         this.mOverflowButton.setContentDescription(this.mContext.getString(R.string.floating_toolbar_open_overflow_description));
         if (hasOverflow()) {
             if (isInRTLMode()) {
@@ -630,7 +893,6 @@ public final class RemoteSelectionToolbar {
         return Math.min(width, maximumWidth);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isInRTLMode() {
         return this.mContext.getApplicationInfo().hasRtlSupport() && this.mContext.getResources().getConfiguration().getLayoutDirection() == 1;
     }
@@ -754,7 +1016,6 @@ public final class RemoteSelectionToolbar {
         this.mContentContainer.removeAllViews();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void positionContentYCoordinatesIfOpeningOverflowUpwards() {
         if (this.mOpenOverflowUpwards) {
             this.mMainPanel.setY(this.mContentContainer.getHeight() - this.mMainPanelSize.getHeight());
@@ -802,9 +1063,33 @@ public final class RemoteSelectionToolbar {
         }
     }
 
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$10 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass10 extends LinearLayout {
+        AnonymousClass10(Context context) {
+            super(context);
+        }
+
+        @Override // android.widget.LinearLayout, android.view.View
+        public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            if (RemoteSelectionToolbar.this.isOverflowAnimating()) {
+                widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(RemoteSelectionToolbar.this.mMainPanelSize.getWidth(), 1073741824);
+            }
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+
+        @Override // android.view.ViewGroup
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            return RemoteSelectionToolbar.this.isOverflowAnimating();
+        }
+    }
+
     private ViewGroup createMainPanel() {
         return new LinearLayout(this.mContext) { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.10
-            /* JADX INFO: Access modifiers changed from: protected */
+            AnonymousClass10(Context context) {
+                super(context);
+            }
+
             @Override // android.widget.LinearLayout, android.view.View
             public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
                 if (RemoteSelectionToolbar.this.isOverflowAnimating()) {
@@ -822,7 +1107,7 @@ public final class RemoteSelectionToolbar {
 
     private ImageButton createOverflowButton() {
         final ImageButton overflowButton = (ImageButton) LayoutInflater.from(this.mContext).inflate(R.layout.floating_popup_overflow_button, (ViewGroup) null);
-        overflowButton.setImageDrawable(this.mOverflow);
+        overflowButton.lambda$setImageURIAsync$2(this.mOverflow);
         overflowButton.setOnClickListener(new View.OnClickListener() { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar$$ExternalSyntheticLambda2
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
@@ -832,7 +1117,6 @@ public final class RemoteSelectionToolbar {
         return overflowButton;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createOverflowButton$1(ImageButton overflowButton, View v) {
         if (isShowing()) {
             preparePopupContent();
@@ -841,11 +1125,11 @@ public final class RemoteSelectionToolbar {
             this.mCallbackWrapper.onWidgetUpdated(widgetInfo);
         }
         if (this.mIsOverflowOpen) {
-            overflowButton.setImageDrawable(this.mToOverflow);
+            overflowButton.lambda$setImageURIAsync$2(this.mToOverflow);
             this.mToOverflow.start();
             closeOverflow();
         } else {
-            overflowButton.setImageDrawable(this.mToArrow);
+            overflowButton.lambda$setImageURIAsync$2(this.mToArrow);
             this.mToArrow.start();
             openOverflow();
         }
@@ -857,6 +1141,10 @@ public final class RemoteSelectionToolbar {
         overflowPanel.setDivider(null);
         overflowPanel.setDividerHeight(0);
         ArrayAdapter adapter = new ArrayAdapter<ToolbarMenuItem>(this.mContext, 0) { // from class: android.service.selectiontoolbar.RemoteSelectionToolbar.11
+            AnonymousClass11(Context context, int resource) {
+                super(context, resource);
+            }
+
             @Override // android.widget.ArrayAdapter, android.widget.Adapter
             public View getView(int position, View convertView, ViewGroup parent) {
                 return RemoteSelectionToolbar.this.mOverflowPanelViewHelper.getView(getItem(position), RemoteSelectionToolbar.this.mOverflowPanelSize.getWidth(), convertView);
@@ -872,21 +1160,31 @@ public final class RemoteSelectionToolbar {
         return overflowPanel;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$11 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass11 extends ArrayAdapter<ToolbarMenuItem> {
+        AnonymousClass11(Context context, int resource) {
+            super(context, resource);
+        }
+
+        @Override // android.widget.ArrayAdapter, android.widget.Adapter
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return RemoteSelectionToolbar.this.mOverflowPanelViewHelper.getView(getItem(position), RemoteSelectionToolbar.this.mOverflowPanelSize.getWidth(), convertView);
+        }
+    }
+
     public /* synthetic */ void lambda$createOverflowPanel$2(OverflowPanel overflowPanel, AdapterView parent, View view, int position, long id) {
         ToolbarMenuItem menuItem = (ToolbarMenuItem) overflowPanel.getAdapter().getItem(position);
         this.mCallbackWrapper.onMenuItemClicked(menuItem);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isOverflowAnimating() {
         boolean overflowOpening = this.mOpenOverflowAnimation.hasStarted() && !this.mOpenOverflowAnimation.hasEnded();
         boolean overflowClosing = this.mCloseOverflowAnimation.hasStarted() && !this.mCloseOverflowAnimation.hasEnded();
         return overflowOpening || overflowClosing;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$12, reason: invalid class name */
+    /* renamed from: android.service.selectiontoolbar.RemoteSelectionToolbar$12 */
     /* loaded from: classes3.dex */
     public class AnonymousClass12 implements Animation.AnimationListener {
         AnonymousClass12() {
@@ -909,7 +1207,6 @@ public final class RemoteSelectionToolbar {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAnimationEnd$0() {
             RemoteSelectionToolbar.this.setPanelsStatesAtRestingPosition();
         }
@@ -943,19 +1240,16 @@ public final class RemoteSelectionToolbar {
         setSize(view, size.getWidth(), size.getHeight());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void setWidth(View view, int width) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         setSize(view, width, params.height);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void setHeight(View view, int height) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         setSize(view, params.width, height);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class OverflowPanel extends ListView {
         private final RemoteSelectionToolbar mPopup;
@@ -967,7 +1261,6 @@ public final class RemoteSelectionToolbar {
             setScrollIndicators(3);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.ListView, android.widget.AbsListView, android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             int height = this.mPopup.mOverflowPanelSize.getHeight() - this.mPopup.mOverflowButtonSize.getHeight();
@@ -983,17 +1276,21 @@ public final class RemoteSelectionToolbar {
             return super.dispatchTouchEvent(ev);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public boolean awakenScrollBars() {
             return super.awakenScrollBars();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static final class LogAccelerateInterpolator implements Interpolator {
+    public static final class LogAccelerateInterpolator implements Interpolator {
         private static final int BASE = 100;
         private static final float LOGS_SCALE = 1.0f / computeLog(1.0f, 100);
+
+        /* synthetic */ LogAccelerateInterpolator(LogAccelerateInterpolatorIA logAccelerateInterpolatorIA) {
+            this();
+        }
 
         private LogAccelerateInterpolator() {
         }
@@ -1008,7 +1305,6 @@ public final class RemoteSelectionToolbar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class OverflowPanelViewHelper {
         private final View mCalculator = createMenuButton(null);
@@ -1051,7 +1347,6 @@ public final class RemoteSelectionToolbar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static View createMenuItemButton(Context context, ToolbarMenuItem menuItem, int iconTextSpacing, boolean showIcon) {
         View menuItemButton = LayoutInflater.from(context).inflate(R.layout.floating_popup_menu_button, (ViewGroup) null);
         if (menuItem != null) {
@@ -1060,7 +1355,6 @@ public final class RemoteSelectionToolbar {
         return menuItemButton;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void updateMenuItemButton(View menuItemButton, ToolbarMenuItem menuItem, int iconTextSpacing, boolean showIcon) {
         TextView buttonText = (TextView) menuItemButton.findViewById(R.id.floating_toolbar_menu_item_text);
         buttonText.setEllipsize(null);
@@ -1076,7 +1370,7 @@ public final class RemoteSelectionToolbar {
             buttonText.setPaddingRelative(0, 0, 0, 0);
         } else {
             buttonIcon.setVisibility(0);
-            buttonIcon.setImageDrawable(menuItem.getIcon().loadDrawable(menuItemButton.getContext()));
+            buttonIcon.lambda$setImageURIAsync$2(menuItem.getIcon().loadDrawable(menuItemButton.getContext()));
             buttonText.setPaddingRelative(iconTextSpacing, 0, 0, 0);
         }
         CharSequence contentDescription = menuItem.getContentDescription();
@@ -1123,7 +1417,6 @@ public final class RemoteSelectionToolbar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(String prefix, PrintWriter pw) {
         pw.print(prefix);
         pw.print("toolbar token: ");

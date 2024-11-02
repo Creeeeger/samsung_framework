@@ -9,7 +9,9 @@ import java.util.List;
 /* loaded from: classes2.dex */
 public class ActivityChangedEvent implements Parcelable {
     public static final Parcelable.Creator<ActivityChangedEvent> CREATOR = new Parcelable.Creator<ActivityChangedEvent>() { // from class: android.hardware.location.ActivityChangedEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ActivityChangedEvent createFromParcel(Parcel source) {
             int activityRecognitionEventsLength = source.readInt();
@@ -18,7 +20,6 @@ public class ActivityChangedEvent implements Parcelable {
             return new ActivityChangedEvent(activityRecognitionEvents);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityChangedEvent[] newArray(int size) {
             return new ActivityChangedEvent[size];
@@ -35,6 +36,26 @@ public class ActivityChangedEvent implements Parcelable {
 
     public Iterable<ActivityRecognitionEvent> getActivityRecognitionEvents() {
         return this.mActivityRecognitionEvents;
+    }
+
+    /* renamed from: android.hardware.location.ActivityChangedEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ActivityChangedEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityChangedEvent createFromParcel(Parcel source) {
+            int activityRecognitionEventsLength = source.readInt();
+            ActivityRecognitionEvent[] activityRecognitionEvents = new ActivityRecognitionEvent[activityRecognitionEventsLength];
+            source.readTypedArray(activityRecognitionEvents, ActivityRecognitionEvent.CREATOR);
+            return new ActivityChangedEvent(activityRecognitionEvents);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityChangedEvent[] newArray(int size) {
+            return new ActivityChangedEvent[size];
+        }
     }
 
     @Override // android.os.Parcelable

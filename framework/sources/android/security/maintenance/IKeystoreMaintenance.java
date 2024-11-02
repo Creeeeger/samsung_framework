@@ -221,8 +221,9 @@ public interface IKeystoreMaintenance extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IKeystoreMaintenance {
+        public static class Proxy implements IKeystoreMaintenance {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

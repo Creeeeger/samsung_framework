@@ -19,13 +19,14 @@ import java.util.Arrays;
 /* loaded from: classes.dex */
 public class Signature implements Parcelable {
     public static final Parcelable.Creator<Signature> CREATOR = new Parcelable.Creator<Signature>() { // from class: android.content.pm.Signature.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Signature createFromParcel(Parcel source) {
             return new Signature(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Signature[] newArray(int size) {
             return new Signature[size];
@@ -37,6 +38,10 @@ public class Signature implements Parcelable {
     private boolean mHaveHashCode;
     private final byte[] mSignature;
     private SoftReference<String> mStringRef;
+
+    /* synthetic */ Signature(Parcel parcel, SignatureIA signatureIA) {
+        this(parcel);
+    }
 
     public Signature(byte[] signature) {
         this.mSignature = (byte[]) signature.clone();
@@ -201,6 +206,23 @@ public class Signature implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int parcelableFlags) {
         dest.writeByteArray(this.mSignature);
+    }
+
+    /* renamed from: android.content.pm.Signature$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Signature> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Signature createFromParcel(Parcel source) {
+            return new Signature(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Signature[] newArray(int size) {
+            return new Signature[size];
+        }
     }
 
     public void writeToXmlAttributeBytesHex(TypedXmlSerializer out, String namespace, String name) throws IOException {

@@ -53,7 +53,6 @@ public class WebViewZygote {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void onWebViewProviderChanged(PackageInfo packageInfo) {
         synchronized (sLock) {
             sPackage = packageInfo;

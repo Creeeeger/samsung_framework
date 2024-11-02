@@ -555,8 +555,9 @@ public interface IRadioVoiceResponse extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IRadioVoiceResponse {
+        public static class Proxy implements IRadioVoiceResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

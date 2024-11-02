@@ -26,8 +26,9 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
     private final Map<IBinder, DownloadProgressListener> mDownloadProgressListenerBinderMap = new HashMap();
     private final Map<IBinder, IBinder.DeathRecipient> mDownloadCallbackDeathRecipients = new HashMap();
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static abstract class VendorDownloadStatusListener extends DownloadStatusListener {
+    public static abstract class VendorDownloadStatusListener extends DownloadStatusListener {
         private final IDownloadStatusListener mListener;
 
         protected abstract void onRemoteException(RemoteException remoteException);
@@ -46,8 +47,9 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static abstract class VendorDownloadProgressListener extends DownloadProgressListener {
+    public static abstract class VendorDownloadProgressListener extends DownloadProgressListener {
         private final IDownloadProgressListener mListener;
 
         protected abstract void onRemoteException(RemoteException remoteException);
@@ -71,12 +73,22 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
     }
 
     @Override // android.telephony.mbms.vendor.IMbmsDownloadService
-    public final int initialize(final int subscriptionId, final IMbmsDownloadSessionCallback callback) throws RemoteException {
+    public final int initialize(int subscriptionId, IMbmsDownloadSessionCallback callback) throws RemoteException {
         if (callback == null) {
             throw new NullPointerException("Callback must not be null");
         }
-        final int uid = Binder.getCallingUid();
+        int uid = Binder.getCallingUid();
         int result = initialize(subscriptionId, new MbmsDownloadSessionCallback() { // from class: android.telephony.mbms.vendor.MbmsDownloadServiceBase.1
+            final /* synthetic */ IMbmsDownloadSessionCallback val$callback;
+            final /* synthetic */ int val$subscriptionId;
+            final /* synthetic */ int val$uid;
+
+            AnonymousClass1(IMbmsDownloadSessionCallback callback2, int uid2, int subscriptionId2) {
+                callback = callback2;
+                uid = uid2;
+                subscriptionId = subscriptionId2;
+            }
+
             @Override // android.telephony.mbms.MbmsDownloadSessionCallback
             public void onError(int errorCode, String message) {
                 try {
@@ -108,7 +120,15 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
             }
         });
         if (result == 0) {
-            callback.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.telephony.mbms.vendor.MbmsDownloadServiceBase.2
+            callback2.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: android.telephony.mbms.vendor.MbmsDownloadServiceBase.2
+                final /* synthetic */ int val$subscriptionId;
+                final /* synthetic */ int val$uid;
+
+                AnonymousClass2(int uid2, int subscriptionId2) {
+                    uid = uid2;
+                    subscriptionId = subscriptionId2;
+                }
+
                 @Override // android.os.IBinder.DeathRecipient
                 public void binderDied() {
                     MbmsDownloadServiceBase.this.onAppCallbackDied(uid, subscriptionId);
@@ -116,6 +136,67 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
             }, 0);
         }
         return result;
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsDownloadServiceBase$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends MbmsDownloadSessionCallback {
+        final /* synthetic */ IMbmsDownloadSessionCallback val$callback;
+        final /* synthetic */ int val$subscriptionId;
+        final /* synthetic */ int val$uid;
+
+        AnonymousClass1(IMbmsDownloadSessionCallback callback2, int uid2, int subscriptionId2) {
+            callback = callback2;
+            uid = uid2;
+            subscriptionId = subscriptionId2;
+        }
+
+        @Override // android.telephony.mbms.MbmsDownloadSessionCallback
+        public void onError(int errorCode, String message) {
+            try {
+                if (errorCode == -1) {
+                    throw new IllegalArgumentException("Middleware cannot send an unknown error.");
+                }
+                callback.onError(errorCode, message);
+            } catch (RemoteException e) {
+                MbmsDownloadServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+
+        @Override // android.telephony.mbms.MbmsDownloadSessionCallback
+        public void onFileServicesUpdated(List<FileServiceInfo> services) {
+            try {
+                callback.onFileServicesUpdated(services);
+            } catch (RemoteException e) {
+                MbmsDownloadServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+
+        @Override // android.telephony.mbms.MbmsDownloadSessionCallback
+        public void onMiddlewareReady() {
+            try {
+                callback.onMiddlewareReady();
+            } catch (RemoteException e) {
+                MbmsDownloadServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+            }
+        }
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsDownloadServiceBase$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 implements IBinder.DeathRecipient {
+        final /* synthetic */ int val$subscriptionId;
+        final /* synthetic */ int val$uid;
+
+        AnonymousClass2(int uid2, int subscriptionId2) {
+            uid = uid2;
+            subscriptionId = subscriptionId2;
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            MbmsDownloadServiceBase.this.onAppCallbackDied(uid, subscriptionId);
+        }
     }
 
     @Override // android.telephony.mbms.vendor.IMbmsDownloadService
@@ -143,8 +224,8 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
     }
 
     @Override // android.telephony.mbms.vendor.IMbmsDownloadService
-    public final int addStatusListener(final DownloadRequest downloadRequest, final IDownloadStatusListener listener) throws RemoteException {
-        final int uid = Binder.getCallingUid();
+    public final int addStatusListener(DownloadRequest downloadRequest, IDownloadStatusListener listener) throws RemoteException {
+        int uid = Binder.getCallingUid();
         if (downloadRequest == null) {
             throw new NullPointerException("Download request must not be null");
         }
@@ -152,14 +233,34 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
             throw new NullPointerException("Callback must not be null");
         }
         DownloadStatusListener exposedCallback = new VendorDownloadStatusListener(listener) { // from class: android.telephony.mbms.vendor.MbmsDownloadServiceBase.3
+            final /* synthetic */ DownloadRequest val$downloadRequest;
+            final /* synthetic */ int val$uid;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass3(IDownloadStatusListener listener2, int uid2, DownloadRequest downloadRequest2) {
+                super(listener2);
+                uid = uid2;
+                downloadRequest = downloadRequest2;
+            }
+
             @Override // android.telephony.mbms.vendor.MbmsDownloadServiceBase.VendorDownloadStatusListener
             protected void onRemoteException(RemoteException e) {
                 MbmsDownloadServiceBase.this.onAppCallbackDied(uid, downloadRequest.getSubscriptionId());
             }
         };
-        int result = addStatusListener(downloadRequest, exposedCallback);
+        int result = addStatusListener(downloadRequest2, exposedCallback);
         if (result == 0) {
             IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() { // from class: android.telephony.mbms.vendor.MbmsDownloadServiceBase.4
+                final /* synthetic */ DownloadRequest val$downloadRequest;
+                final /* synthetic */ IDownloadStatusListener val$listener;
+                final /* synthetic */ int val$uid;
+
+                AnonymousClass4(int uid2, DownloadRequest downloadRequest2, IDownloadStatusListener listener2) {
+                    uid = uid2;
+                    downloadRequest = downloadRequest2;
+                    listener = listener2;
+                }
+
                 @Override // android.os.IBinder.DeathRecipient
                 public void binderDied() {
                     MbmsDownloadServiceBase.this.onAppCallbackDied(uid, downloadRequest.getSubscriptionId());
@@ -167,11 +268,51 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
                     MbmsDownloadServiceBase.this.mDownloadCallbackDeathRecipients.remove(listener.asBinder());
                 }
             };
-            this.mDownloadCallbackDeathRecipients.put(listener.asBinder(), deathRecipient);
-            listener.asBinder().linkToDeath(deathRecipient, 0);
-            this.mDownloadStatusListenerBinderMap.put(listener.asBinder(), exposedCallback);
+            this.mDownloadCallbackDeathRecipients.put(listener2.asBinder(), deathRecipient);
+            listener2.asBinder().linkToDeath(deathRecipient, 0);
+            this.mDownloadStatusListenerBinderMap.put(listener2.asBinder(), exposedCallback);
         }
         return result;
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsDownloadServiceBase$3 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass3 extends VendorDownloadStatusListener {
+        final /* synthetic */ DownloadRequest val$downloadRequest;
+        final /* synthetic */ int val$uid;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass3(IDownloadStatusListener listener2, int uid2, DownloadRequest downloadRequest2) {
+            super(listener2);
+            uid = uid2;
+            downloadRequest = downloadRequest2;
+        }
+
+        @Override // android.telephony.mbms.vendor.MbmsDownloadServiceBase.VendorDownloadStatusListener
+        protected void onRemoteException(RemoteException e) {
+            MbmsDownloadServiceBase.this.onAppCallbackDied(uid, downloadRequest.getSubscriptionId());
+        }
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsDownloadServiceBase$4 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass4 implements IBinder.DeathRecipient {
+        final /* synthetic */ DownloadRequest val$downloadRequest;
+        final /* synthetic */ IDownloadStatusListener val$listener;
+        final /* synthetic */ int val$uid;
+
+        AnonymousClass4(int uid2, DownloadRequest downloadRequest2, IDownloadStatusListener listener2) {
+            uid = uid2;
+            downloadRequest = downloadRequest2;
+            listener = listener2;
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            MbmsDownloadServiceBase.this.onAppCallbackDied(uid, downloadRequest.getSubscriptionId());
+            MbmsDownloadServiceBase.this.mDownloadStatusListenerBinderMap.remove(listener.asBinder());
+            MbmsDownloadServiceBase.this.mDownloadCallbackDeathRecipients.remove(listener.asBinder());
+        }
     }
 
     public int removeStatusListener(DownloadRequest downloadRequest, DownloadStatusListener listener) throws RemoteException {
@@ -203,8 +344,8 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
     }
 
     @Override // android.telephony.mbms.vendor.IMbmsDownloadService
-    public final int addProgressListener(final DownloadRequest downloadRequest, final IDownloadProgressListener listener) throws RemoteException {
-        final int uid = Binder.getCallingUid();
+    public final int addProgressListener(DownloadRequest downloadRequest, IDownloadProgressListener listener) throws RemoteException {
+        int uid = Binder.getCallingUid();
         if (downloadRequest == null) {
             throw new NullPointerException("Download request must not be null");
         }
@@ -212,14 +353,34 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
             throw new NullPointerException("Callback must not be null");
         }
         DownloadProgressListener exposedCallback = new VendorDownloadProgressListener(listener) { // from class: android.telephony.mbms.vendor.MbmsDownloadServiceBase.5
+            final /* synthetic */ DownloadRequest val$downloadRequest;
+            final /* synthetic */ int val$uid;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass5(IDownloadProgressListener listener2, int uid2, DownloadRequest downloadRequest2) {
+                super(listener2);
+                uid = uid2;
+                downloadRequest = downloadRequest2;
+            }
+
             @Override // android.telephony.mbms.vendor.MbmsDownloadServiceBase.VendorDownloadProgressListener
             protected void onRemoteException(RemoteException e) {
                 MbmsDownloadServiceBase.this.onAppCallbackDied(uid, downloadRequest.getSubscriptionId());
             }
         };
-        int result = addProgressListener(downloadRequest, exposedCallback);
+        int result = addProgressListener(downloadRequest2, exposedCallback);
         if (result == 0) {
             IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() { // from class: android.telephony.mbms.vendor.MbmsDownloadServiceBase.6
+                final /* synthetic */ DownloadRequest val$downloadRequest;
+                final /* synthetic */ IDownloadProgressListener val$listener;
+                final /* synthetic */ int val$uid;
+
+                AnonymousClass6(int uid2, DownloadRequest downloadRequest2, IDownloadProgressListener listener2) {
+                    uid = uid2;
+                    downloadRequest = downloadRequest2;
+                    listener = listener2;
+                }
+
                 @Override // android.os.IBinder.DeathRecipient
                 public void binderDied() {
                     MbmsDownloadServiceBase.this.onAppCallbackDied(uid, downloadRequest.getSubscriptionId());
@@ -227,11 +388,51 @@ public class MbmsDownloadServiceBase extends IMbmsDownloadService.Stub {
                     MbmsDownloadServiceBase.this.mDownloadCallbackDeathRecipients.remove(listener.asBinder());
                 }
             };
-            this.mDownloadCallbackDeathRecipients.put(listener.asBinder(), deathRecipient);
-            listener.asBinder().linkToDeath(deathRecipient, 0);
-            this.mDownloadProgressListenerBinderMap.put(listener.asBinder(), exposedCallback);
+            this.mDownloadCallbackDeathRecipients.put(listener2.asBinder(), deathRecipient);
+            listener2.asBinder().linkToDeath(deathRecipient, 0);
+            this.mDownloadProgressListenerBinderMap.put(listener2.asBinder(), exposedCallback);
         }
         return result;
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsDownloadServiceBase$5 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass5 extends VendorDownloadProgressListener {
+        final /* synthetic */ DownloadRequest val$downloadRequest;
+        final /* synthetic */ int val$uid;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass5(IDownloadProgressListener listener2, int uid2, DownloadRequest downloadRequest2) {
+            super(listener2);
+            uid = uid2;
+            downloadRequest = downloadRequest2;
+        }
+
+        @Override // android.telephony.mbms.vendor.MbmsDownloadServiceBase.VendorDownloadProgressListener
+        protected void onRemoteException(RemoteException e) {
+            MbmsDownloadServiceBase.this.onAppCallbackDied(uid, downloadRequest.getSubscriptionId());
+        }
+    }
+
+    /* renamed from: android.telephony.mbms.vendor.MbmsDownloadServiceBase$6 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass6 implements IBinder.DeathRecipient {
+        final /* synthetic */ DownloadRequest val$downloadRequest;
+        final /* synthetic */ IDownloadProgressListener val$listener;
+        final /* synthetic */ int val$uid;
+
+        AnonymousClass6(int uid2, DownloadRequest downloadRequest2, IDownloadProgressListener listener2) {
+            uid = uid2;
+            downloadRequest = downloadRequest2;
+            listener = listener2;
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            MbmsDownloadServiceBase.this.onAppCallbackDied(uid, downloadRequest.getSubscriptionId());
+            MbmsDownloadServiceBase.this.mDownloadProgressListenerBinderMap.remove(listener.asBinder());
+            MbmsDownloadServiceBase.this.mDownloadCallbackDeathRecipients.remove(listener.asBinder());
+        }
     }
 
     public int removeProgressListener(DownloadRequest downloadRequest, DownloadProgressListener listener) throws RemoteException {

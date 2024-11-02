@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class RssiCurve implements Parcelable {
     public static final Parcelable.Creator<RssiCurve> CREATOR = new Parcelable.Creator<RssiCurve>() { // from class: android.net.RssiCurve.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RssiCurve createFromParcel(Parcel in) {
             return new RssiCurve(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RssiCurve[] newArray(int size) {
             return new RssiCurve[size];
@@ -29,6 +30,10 @@ public class RssiCurve implements Parcelable {
     public final int bucketWidth;
     public final byte[] rssiBuckets;
     public final int start;
+
+    /* synthetic */ RssiCurve(Parcel parcel, RssiCurveIA rssiCurveIA) {
+        this(parcel);
+    }
 
     public RssiCurve(int start, int bucketWidth, byte[] rssiBuckets) {
         this(start, bucketWidth, rssiBuckets, 25);
@@ -123,6 +128,23 @@ public class RssiCurve implements Parcelable {
                 sb.append(NavigationBarInflaterView.SIZE_MOD_END);
                 return sb.toString();
             }
+        }
+    }
+
+    /* renamed from: android.net.RssiCurve$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RssiCurve> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RssiCurve createFromParcel(Parcel in) {
+            return new RssiCurve(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RssiCurve[] newArray(int size) {
+            return new RssiCurve[size];
         }
     }
 }

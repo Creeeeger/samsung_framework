@@ -61,7 +61,7 @@ public abstract class ContentCaptureService extends Service {
     private final IContentCaptureDirectManager mClientInterface = new AnonymousClass2();
     private final SparseIntArray mSessionUids = new SparseIntArray();
 
-    /* renamed from: android.service.contentcapture.ContentCaptureService$1, reason: invalid class name */
+    /* renamed from: android.service.contentcapture.ContentCaptureService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IContentCaptureService.Stub {
         AnonymousClass1() {
@@ -150,7 +150,7 @@ public abstract class ContentCaptureService extends Service {
         }
     }
 
-    /* renamed from: android.service.contentcapture.ContentCaptureService$2, reason: invalid class name */
+    /* renamed from: android.service.contentcapture.ContentCaptureService$2 */
     /* loaded from: classes3.dex */
     class AnonymousClass2 extends IContentCaptureDirectManager.Stub {
         AnonymousClass2() {
@@ -275,7 +275,6 @@ public abstract class ContentCaptureService extends Service {
         Slog.i(TAG, "unbinding from " + getClass().getName());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.print("Debug: ");
@@ -295,19 +294,16 @@ public abstract class ContentCaptureService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnConnected(IBinder callback) {
         this.mCallback = IContentCaptureServiceCallback.Stub.asInterface(callback);
         onConnected();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnDisconnected() {
         onDisconnected();
         this.mCallback = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnCreateSession(ContentCaptureContext context, int sessionId, int uid, IResultReceiver clientReceiver, int initialState) {
         int stateFlags;
         this.mSessionUids.put(sessionId, uid);
@@ -328,7 +324,6 @@ public abstract class ContentCaptureService extends Service {
         setClientState(clientReceiver, stateFlags, this.mClientInterface.asBinder());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleSendEvents(int uid, ParceledListSlice<ContentCaptureEvent> parceledEvents, int reason, ContentCaptureOptions options) {
         List<ContentCaptureEvent> events = parceledEvents.getList();
         if (events.isEmpty()) {
@@ -389,25 +384,58 @@ public abstract class ContentCaptureService extends Service {
         writeFlushMetrics(lastSessionId, activityComponent, metrics, options, reason);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnActivitySnapshot(int sessionId, SnapshotData snapshotData) {
         onActivitySnapshot(new ContentCaptureSessionId(sessionId), snapshotData);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleFinishSession(int sessionId) {
         this.mSessionUids.delete(sessionId);
         onDestroyContentCaptureSession(new ContentCaptureSessionId(sessionId));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnDataRemovalRequest(DataRemovalRequest request) {
         onDataRemovalRequest(request);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void handleOnDataShared(DataShareRequest request, final IDataShareCallback callback) {
+    /* renamed from: android.service.contentcapture.ContentCaptureService$3 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass3 implements DataShareCallback {
+        final /* synthetic */ IDataShareCallback val$callback;
+
+        AnonymousClass3(IDataShareCallback iDataShareCallback) {
+            callback = iDataShareCallback;
+        }
+
+        @Override // android.service.contentcapture.DataShareCallback
+        public void onAccept(Executor executor, DataShareReadAdapter adapter) {
+            Objects.requireNonNull(adapter);
+            Objects.requireNonNull(executor);
+            DataShareReadAdapterDelegate delegate = new DataShareReadAdapterDelegate(executor, adapter, ContentCaptureService.this.mDataShareAdapterResourceManager);
+            try {
+                callback.accept(delegate);
+            } catch (RemoteException e) {
+                Slog.e(ContentCaptureService.TAG, "Failed to accept data sharing", e);
+            }
+        }
+
+        @Override // android.service.contentcapture.DataShareCallback
+        public void onReject() {
+            try {
+                callback.reject();
+            } catch (RemoteException e) {
+                Slog.e(ContentCaptureService.TAG, "Failed to reject data sharing", e);
+            }
+        }
+    }
+
+    public void handleOnDataShared(DataShareRequest request, IDataShareCallback callback) {
         onDataShareRequest(request, new DataShareCallback() { // from class: android.service.contentcapture.ContentCaptureService.3
+            final /* synthetic */ IDataShareCallback val$callback;
+
+            AnonymousClass3(IDataShareCallback callback2) {
+                callback = callback2;
+            }
+
             @Override // android.service.contentcapture.DataShareCallback
             public void onAccept(Executor executor, DataShareReadAdapter adapter) {
                 Objects.requireNonNull(adapter);
@@ -431,7 +459,6 @@ public abstract class ContentCaptureService extends Service {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnActivityEvent(ActivityEvent event) {
         onActivityEvent(event);
     }
@@ -495,7 +522,6 @@ public abstract class ContentCaptureService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class DataShareReadAdapterDelegate extends IDataShareReadAdapter.Stub {
         private final Object mLock = new Object();
@@ -576,11 +602,14 @@ public abstract class ContentCaptureService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class LocalDataShareAdapterResourceManager {
         private Map<DataShareReadAdapterDelegate, DataShareReadAdapter> mDataShareReadAdapterHardReferences;
         private Map<DataShareReadAdapterDelegate, Executor> mExecutorHardReferences;
+
+        /* synthetic */ LocalDataShareAdapterResourceManager(LocalDataShareAdapterResourceManagerIA localDataShareAdapterResourceManagerIA) {
+            this();
+        }
 
         private LocalDataShareAdapterResourceManager() {
             this.mDataShareReadAdapterHardReferences = new HashMap();

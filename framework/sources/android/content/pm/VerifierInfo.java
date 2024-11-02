@@ -7,13 +7,14 @@ import java.security.PublicKey;
 /* loaded from: classes.dex */
 public class VerifierInfo implements Parcelable {
     public static final Parcelable.Creator<VerifierInfo> CREATOR = new Parcelable.Creator<VerifierInfo>() { // from class: android.content.pm.VerifierInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VerifierInfo createFromParcel(Parcel source) {
             return new VerifierInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerifierInfo[] newArray(int size) {
             return new VerifierInfo[size];
@@ -21,6 +22,10 @@ public class VerifierInfo implements Parcelable {
     };
     public final String packageName;
     public final PublicKey publicKey;
+
+    /* synthetic */ VerifierInfo(Parcel parcel, VerifierInfoIA verifierInfoIA) {
+        this(parcel);
+    }
 
     public VerifierInfo(String packageName, PublicKey publicKey) {
         if (packageName == null || packageName.length() == 0) {
@@ -47,5 +52,22 @@ public class VerifierInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.packageName);
         dest.writeSerializable(this.publicKey);
+    }
+
+    /* renamed from: android.content.pm.VerifierInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VerifierInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifierInfo createFromParcel(Parcel source) {
+            return new VerifierInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VerifierInfo[] newArray(int size) {
+            return new VerifierInfo[size];
+        }
     }
 }

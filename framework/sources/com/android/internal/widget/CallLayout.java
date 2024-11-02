@@ -46,7 +46,6 @@ public class CallLayout extends FrameLayout {
         this.mPeopleHelper = new PeopleHelper();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -63,7 +62,6 @@ public class CallLayout extends FrameLayout {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFinishInflate$0(Boolean forceHidden) {
         this.mPeopleHelper.animateViewForceHidden(this.mConversationIconBadgeBg, forceHidden.booleanValue());
     }

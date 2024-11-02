@@ -541,7 +541,6 @@ public final class InputEventConsistencyVerifier {
         this.mKeyStateList = state;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class KeyState {
         private static KeyState mRecycledList;

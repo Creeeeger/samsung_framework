@@ -139,8 +139,9 @@ public interface IStreamingServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IStreamingServiceCallback {
+        public static class Proxy implements IStreamingServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

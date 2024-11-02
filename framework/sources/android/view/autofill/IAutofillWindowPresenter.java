@@ -103,8 +103,9 @@ public interface IAutofillWindowPresenter extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IAutofillWindowPresenter {
+        public static class Proxy implements IAutofillWindowPresenter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

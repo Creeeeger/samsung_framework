@@ -94,8 +94,9 @@ public interface IInputMonitorHost extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IInputMonitorHost {
+        public static class Proxy implements IInputMonitorHost {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

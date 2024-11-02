@@ -5,11 +5,12 @@ import android.os.Parcelable;
 import java.util.HashMap;
 import java.util.Map;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ParcelableMap extends HashMap<AutofillId, AutofillValue> implements Parcelable {
     public static final Parcelable.Creator<ParcelableMap> CREATOR = new Parcelable.Creator<ParcelableMap>() { // from class: android.view.autofill.ParcelableMap.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelableMap createFromParcel(Parcel source) {
             int size = source.readInt();
@@ -22,14 +23,12 @@ public class ParcelableMap extends HashMap<AutofillId, AutofillValue> implements
             return map;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableMap[] newArray(int size) {
             return new ParcelableMap[size];
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ParcelableMap(int size) {
         super(size);
     }
@@ -45,6 +44,30 @@ public class ParcelableMap extends HashMap<AutofillId, AutofillValue> implements
         for (Map.Entry<AutofillId, AutofillValue> entry : entrySet()) {
             dest.writeParcelable(entry.getKey(), 0);
             dest.writeParcelable(entry.getValue(), 0);
+        }
+    }
+
+    /* renamed from: android.view.autofill.ParcelableMap$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ParcelableMap> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableMap createFromParcel(Parcel source) {
+            int size = source.readInt();
+            ParcelableMap map = new ParcelableMap(size);
+            for (int i = 0; i < size; i++) {
+                AutofillId key = (AutofillId) source.readParcelable(null, AutofillId.class);
+                AutofillValue value = (AutofillValue) source.readParcelable(null, AutofillValue.class);
+                map.put(key, value);
+            }
+            return map;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableMap[] newArray(int size) {
+            return new ParcelableMap[size];
         }
     }
 }

@@ -24,7 +24,9 @@ public class SemSmartClipDataRepository implements Parcelable {
     public static final String CONTENT_TYPE_WEB = "web";
     public static final String CONTENT_TYPE_YOUTUBE = "youtube";
     public static final Parcelable.Creator<SemSmartClipDataRepository> CREATOR = new Parcelable.Creator<SemSmartClipDataRepository>() { // from class: com.samsung.android.content.smartclip.SemSmartClipDataRepository.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemSmartClipDataRepository createFromParcel(Parcel in) {
             Log.d(SemSmartClipDataRepository.TAG, "SemSmartClipDataRepository.createFromParcel called");
@@ -33,7 +35,6 @@ public class SemSmartClipDataRepository implements Parcelable {
             return data;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemSmartClipDataRepository[] newArray(int size) {
             return new SemSmartClipDataRepository[size];
@@ -445,6 +446,26 @@ public class SemSmartClipDataRepository implements Parcelable {
         new SmartClipMetaTagArrayImpl();
         SmartClipMetaTagArrayImpl listArray = (SmartClipMetaTagArrayImpl) in.readParcelable(SemSmartClipExtendedMetaTag.class.getClassLoader());
         this.mTags = listArray;
+    }
+
+    /* renamed from: com.samsung.android.content.smartclip.SemSmartClipDataRepository$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemSmartClipDataRepository> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSmartClipDataRepository createFromParcel(Parcel in) {
+            Log.d(SemSmartClipDataRepository.TAG, "SemSmartClipDataRepository.createFromParcel called");
+            SemSmartClipDataRepository data = new SemSmartClipDataRepository();
+            data.readFromParcel(in);
+            return data;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemSmartClipDataRepository[] newArray(int size) {
+            return new SemSmartClipDataRepository[size];
+        }
     }
 
     private void setupRepositoryFromString(String jsonStr, SemSmartClipDataRepository repository) {

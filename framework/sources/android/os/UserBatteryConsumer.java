@@ -18,7 +18,10 @@ public class UserBatteryConsumer extends BatteryConsumer {
     private static final int COLUMN_INDEX_USER_ID = 1;
     static final int CONSUMER_TYPE_USER = 2;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ UserBatteryConsumer(Builder builder, UserBatteryConsumerIA userBatteryConsumerIA) {
+        this(builder);
+    }
+
     public UserBatteryConsumer(BatteryConsumer.BatteryConsumerData data) {
         super(data);
     }
@@ -43,7 +46,6 @@ public class UserBatteryConsumer extends BatteryConsumer {
         pw.print(" ) ");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToXml(TypedXmlSerializer serializer) throws IOException {
         if (getConsumedPower() == SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
             return;
@@ -54,7 +56,6 @@ public class UserBatteryConsumer extends BatteryConsumer {
         serializer.endTag(null, "user");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void createFromXml(TypedXmlPullParser parser, BatteryUsageStats.Builder builder) throws XmlPullParserException, IOException {
         int userId = parser.getAttributeInt(null, "user_id");
         Builder consumerBuilder = builder.getOrCreateUserBatteryConsumerBuilder(userId);
@@ -135,7 +136,6 @@ public class UserBatteryConsumer extends BatteryConsumer {
             return super.setUsageDurationMillis(key, j);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder(BatteryConsumer.BatteryConsumerData data, int userId) {
             super(data, 2);
             data.putLong(1, userId);

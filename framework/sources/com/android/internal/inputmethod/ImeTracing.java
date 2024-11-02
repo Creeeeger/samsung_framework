@@ -97,7 +97,6 @@ public abstract class ImeTracing {
         return ActivityThread.isSystem();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void logAndPrintln(PrintWriter pw, String msg) {
         Log.i(TAG, msg);
         if (pw != null) {

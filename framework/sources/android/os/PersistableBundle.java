@@ -30,13 +30,14 @@ public final class PersistableBundle extends BaseBundle implements Cloneable, Pa
         EMPTY = persistableBundle;
         persistableBundle.mMap = ArrayMap.EMPTY;
         CREATOR = new Parcelable.Creator<PersistableBundle>() { // from class: android.os.PersistableBundle.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PersistableBundle createFromParcel(Parcel in) {
                 return in.readPersistableBundle();
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PersistableBundle[] newArray(int size) {
                 return new PersistableBundle[size];
@@ -93,7 +94,6 @@ public final class PersistableBundle extends BaseBundle implements Cloneable, Pa
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PersistableBundle(Parcel parcelledData, int length) {
         super(parcelledData, length);
         this.mFlags = 1;
@@ -133,6 +133,23 @@ public final class PersistableBundle extends BaseBundle implements Cloneable, Pa
         } catch (ClassCastException e) {
             typeWarning(key, o, "Bundle", e);
             return null;
+        }
+    }
+
+    /* renamed from: android.os.PersistableBundle$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PersistableBundle> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PersistableBundle createFromParcel(Parcel in) {
+            return in.readPersistableBundle();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PersistableBundle[] newArray(int size) {
+            return new PersistableBundle[size];
         }
     }
 
@@ -191,7 +208,6 @@ public final class PersistableBundle extends BaseBundle implements Cloneable, Pa
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class MyReadMapCallback implements XmlUtils.ReadMapCallback {
         MyReadMapCallback() {

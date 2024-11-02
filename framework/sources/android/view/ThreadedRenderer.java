@@ -64,7 +64,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
     private final WebViewOverlayProvider mWebViewOverlayProvider = new WebViewOverlayProvider();
     private boolean mWebViewOverlaysEnabled = false;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public interface DrawCallbacks {
         void onPostDraw(RecordingCanvas recordingCanvas);
@@ -90,7 +89,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         return new ThreadedRenderer(context, translucent, name);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class WebViewOverlayProvider implements HardwareRenderer.PrepareSurfaceControlForWebviewCallback, HardwareRenderer.ASurfaceTransactionCallback {
         private static final boolean sOverlaysAreEnabled = ThreadedRenderer.access$000();
@@ -98,6 +96,10 @@ public final class ThreadedRenderer extends HardwareRenderer {
         private boolean mHasWebViewOverlays;
         private SurfaceControl mSurfaceControl;
         private final SurfaceControl.Transaction mTransaction;
+
+        /* synthetic */ WebViewOverlayProvider(WebViewOverlayProviderIA webViewOverlayProviderIA) {
+            this();
+        }
 
         private WebViewOverlayProvider() {
             this.mTransaction = new SurfaceControl.Transaction();
@@ -187,7 +189,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         super.destroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isEnabled() {
         return this.mEnabled;
     }
@@ -196,12 +197,10 @@ public final class ThreadedRenderer extends HardwareRenderer {
         this.mEnabled = enabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isRequested() {
         return this.mRequested;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setRequested(boolean requested) {
         this.mRequested = requested;
     }
@@ -214,7 +213,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean initialize(Surface surface) throws Surface.OutOfResourcesException {
         boolean status = !this.mInitialized;
         this.mInitialized = true;
@@ -223,7 +221,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         return status;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean initializeIfNeeded(int width, int height, View.AttachInfo attachInfo, Surface surface, Rect surfaceInsets) throws Surface.OutOfResourcesException {
         if (isRequested() && !isEnabled() && initialize(surface)) {
             setup(width, height, attachInfo, surfaceInsets);
@@ -232,7 +229,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSurface(Surface surface) throws Surface.OutOfResourcesException {
         updateEnabledState(surface);
         setSurface(surface);
@@ -247,7 +243,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerRtFrameCallback(HardwareRenderer.FrameDrawingCallback callback) {
         if (this.mNextRtFrameCallbacks == null) {
             this.mNextRtFrameCallbacks = new ArrayList<>();
@@ -263,7 +258,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         arrayList.remove(callback);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void destroyHardwareResources(View view) {
         destroyResources(view);
         clearContent();
@@ -273,12 +267,10 @@ public final class ThreadedRenderer extends HardwareRenderer {
         view.destroyHardwareResources();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setup(int width, int height, View.AttachInfo attachInfo, Rect surfaceInsets) {
         setup(width, height, attachInfo, surfaceInsets, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setup(int width, int height, View.AttachInfo attachInfo, Rect surfaceInsets, Rect bounds) {
         this.mWidth = width;
         this.mHeight = height;
@@ -346,12 +338,10 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setLightCenter(View.AttachInfo attachInfo) {
         setLightCenter(attachInfo, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setLightCenter(View.AttachInfo attachInfo, Rect bounds) {
         if (setLightCenterWithMaxBounds(attachInfo)) {
             return;
@@ -382,12 +372,10 @@ public final class ThreadedRenderer extends HardwareRenderer {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getWidth() {
         return this.mWidth;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getHeight() {
         return this.mHeight;
     }
@@ -440,7 +428,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         WindowManagerGlobal.getInstance().dumpGfxInfo(fd, args);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpGfxInfo(PrintWriter pw, FileDescriptor fd, String[] args) {
         pw.flush();
         dumpProfileInfo(fd, dumpArgsToFlags(args));
@@ -494,8 +481,7 @@ public final class ThreadedRenderer extends HardwareRenderer {
         Trace.traceEnd(8L);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ThreadedRenderer$1, reason: invalid class name */
+    /* renamed from: android.view.ThreadedRenderer$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 implements HardwareRenderer.FrameDrawingCallback {
         final /* synthetic */ ArrayList val$frameCallbacks;
@@ -528,7 +514,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onFrameDraw$0(ArrayList frameCommitCallbacks, boolean didProduceBuffer) {
             for (int i = 0; i < frameCommitCallbacks.size(); i++) {
                 ((HardwareRenderer.FrameCommitCallback) frameCommitCallbacks.get(i)).onFrameCommit(didProduceBuffer);
@@ -536,12 +521,10 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateRoot() {
         this.mRootNodeNeedsUpdate = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void draw(View view, View.AttachInfo attachInfo, DrawCallbacks callbacks) {
         attachInfo.mViewRootImpl.mViewFrameInfo.markDrawStart();
         updateRootDisplayList(view, callbacks);
@@ -628,7 +611,6 @@ public final class ThreadedRenderer extends HardwareRenderer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isInDexDisplay(Context context) {
         return CoreRune.MW_CAPTION_SHELL_DEX && context.getResources().getConfiguration().isDesktopModeEnabled() && context.getDisplayId() != 0;
     }

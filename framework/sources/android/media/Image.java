@@ -38,7 +38,6 @@ public abstract class Image implements AutoCloseable {
 
     public abstract int getWidth();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void throwISEIfImageIsInvalid() {
         if (!this.mIsImageValid) {
             throw new IllegalStateException("Image is already closed");
@@ -100,13 +99,11 @@ public abstract class Image implements AutoCloseable {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Object getOwner() {
         throwISEIfImageIsInvalid();
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getNativeContext() {
         throwISEIfImageIsInvalid();
         return 0L;

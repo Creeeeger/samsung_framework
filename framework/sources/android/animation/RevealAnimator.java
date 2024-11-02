@@ -13,7 +13,6 @@ public class RevealAnimator extends RenderNodeAnimator {
         setTarget(clipView);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.animation.RenderNodeAnimator
     public void onFinished() {
         this.mClipView.setRevealClip(false, 0.0f, 0.0f, 0.0f);

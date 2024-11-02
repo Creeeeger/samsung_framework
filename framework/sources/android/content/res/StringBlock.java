@@ -179,7 +179,6 @@ public final class StringBlock implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class StyleIDs {
         private int boldId = -1;
@@ -200,7 +199,7 @@ public final class StringBlock implements Closeable {
     }
 
     /* JADX WARN: Type inference failed for: r3v0 */
-    /* JADX WARN: Type inference failed for: r3v1, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r3v1, types: [int, boolean] */
     /* JADX WARN: Type inference failed for: r3v5 */
     private CharSequence applyStyles(String str, int[] style, StyleIDs ids, boolean hasCustomizedString) {
         String str2 = str;
@@ -357,14 +356,38 @@ public final class StringBlock implements Closeable {
         return new BackgroundColorSpan(c);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0029, code lost:            if (r3.charAt(r6 - 1) != '\n') goto L15;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x002b, code lost:            r6 = r6 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x002d, code lost:            if (r6 >= r0) goto L25;     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x0035, code lost:            if (r3.charAt(r6 - 1) != '\n') goto L26;     */
-    /* JADX WARN: Code restructure failed: missing block: B:5:0x0010, code lost:            if (r3.charAt(r5 - 1) != '\n') goto L7;     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0012, code lost:            r5 = r5 - 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0014, code lost:            if (r5 <= 0) goto L21;     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x001c, code lost:            if (r3.charAt(r5 - 1) != '\n') goto L23;     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x0029, code lost:
+    
+        if (r3.charAt(r6 - 1) != '\n') goto L42;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x002b, code lost:
+    
+        r6 = r6 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x002d, code lost:
+    
+        if (r6 >= r0) goto L52;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0035, code lost:
+    
+        if (r3.charAt(r6 - 1) != '\n') goto L53;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:5:0x0010, code lost:
+    
+        if (r3.charAt(r5 - 1) != '\n') goto L34;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:6:0x0012, code lost:
+    
+        r5 = r5 - 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x0014, code lost:
+    
+        if (r5 <= 0) goto L48;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x001c, code lost:
+    
+        if (r3.charAt(r5 - 1) != '\n') goto L50;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -417,7 +440,6 @@ public final class StringBlock implements Closeable {
         return full.substring(start2, end);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class Height implements LineHeightSpan.WithDensity {
         private static float sProportion = 0.0f;

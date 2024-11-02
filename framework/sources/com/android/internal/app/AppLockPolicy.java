@@ -127,6 +127,9 @@ public class AppLockPolicy {
     private ArrayList<String> mAppLockLaunchingExcpetionList = new ArrayList<>();
     private ArrayList<String> mApplockCallingExceptionList = new ArrayList<>();
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.android.internal.app.AppLockPolicy.2
+        AnonymousClass2() {
+        }
+
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             AppLockPolicy.this.mAppLockSharedPref.initializeSharedPreference();
@@ -411,9 +414,41 @@ public class AppLockPolicy {
         }
     }
 
+    /* renamed from: com.android.internal.app.AppLockPolicy$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends IUserSwitchObserver.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.app.IUserSwitchObserver
+        public void onBeforeUserSwitching(int newUserId) {
+        }
+
+        @Override // android.app.IUserSwitchObserver
+        public void onUserSwitching(int newUserId, IRemoteCallback reply) {
+        }
+
+        @Override // android.app.IUserSwitchObserver
+        public void onUserSwitchComplete(int newUserId) throws RemoteException {
+            Log.d(AppLockPolicy.TAG, "onUserSwitchComplete getLockedApps");
+            AppLockPolicy.this.updateLockedApps();
+        }
+
+        @Override // android.app.IUserSwitchObserver
+        public void onForegroundProfileSwitch(int newProfileId) {
+        }
+
+        @Override // android.app.IUserSwitchObserver
+        public void onLockedBootComplete(int newUserId) {
+        }
+    }
+
     private void init() {
         try {
             ActivityManagerNative.getDefault().registerUserSwitchObserver(new IUserSwitchObserver.Stub() { // from class: com.android.internal.app.AppLockPolicy.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.app.IUserSwitchObserver
                 public void onBeforeUserSwitching(int newUserId) {
                 }
@@ -443,7 +478,22 @@ public class AppLockPolicy {
         this.mContext.registerReceiver(this.mReceiver, filter);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.AppLockPolicy$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends BroadcastReceiver {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            AppLockPolicy.this.mAppLockSharedPref.initializeSharedPreference();
+            AppLockPolicy.this.reloadFromSettings();
+            AppLockPolicy.this.updateSettings();
+            AppLockPolicy.this.updateLockedApps();
+        }
+    }
+
     public void updateLockedApps() {
         switch (this.mLockedTypeInt) {
             case 1:

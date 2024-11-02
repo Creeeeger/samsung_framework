@@ -9,12 +9,10 @@ final class NewInstanceSchemas {
     NewInstanceSchemas() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static NewInstanceSchema full() {
         return FULL_SCHEMA;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static NewInstanceSchema lite() {
         return LITE_SCHEMA;
     }

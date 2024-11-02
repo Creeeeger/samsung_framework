@@ -83,8 +83,9 @@ public interface INotificationPlayerOnCompletionListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements INotificationPlayerOnCompletionListener {
+        public static class Proxy implements INotificationPlayerOnCompletionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

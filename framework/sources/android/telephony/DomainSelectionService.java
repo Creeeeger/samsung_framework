@@ -60,13 +60,14 @@ public class DomainSelectionService extends Service {
     /* loaded from: classes3.dex */
     public static final class SelectionAttributes implements Parcelable {
         public static final Parcelable.Creator<SelectionAttributes> CREATOR = new Parcelable.Creator<SelectionAttributes>() { // from class: android.telephony.DomainSelectionService.SelectionAttributes.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SelectionAttributes createFromParcel(Parcel in) {
                 return new SelectionAttributes(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SelectionAttributes[] newArray(int size) {
                 return new SelectionAttributes[size];
@@ -84,6 +85,14 @@ public class DomainSelectionService extends Service {
         private int mSelectorType;
         private int mSlotId;
         private int mSubId;
+
+        /* synthetic */ SelectionAttributes(int i, int i2, String str, String str2, int i3, boolean z, boolean z2, boolean z3, ImsReasonInfo imsReasonInfo, int i4, EmergencyRegResult emergencyRegResult, SelectionAttributesIA selectionAttributesIA) {
+            this(i, i2, str, str2, i3, z, z2, z3, imsReasonInfo, i4, emergencyRegResult);
+        }
+
+        /* synthetic */ SelectionAttributes(Parcel parcel, SelectionAttributesIA selectionAttributesIA) {
+            this(parcel);
+        }
 
         private SelectionAttributes(int slotId, int subId, String callId, String number, int selectorType, boolean video, boolean emergency, boolean exited, ImsReasonInfo imsReasonInfo, int cause, EmergencyRegResult regResult) {
             this.mSlotId = slotId;
@@ -216,6 +225,23 @@ public class DomainSelectionService extends Service {
             this.mEmergencyRegResult = (EmergencyRegResult) in.readParcelable(EmergencyRegResult.class.getClassLoader(), EmergencyRegResult.class);
         }
 
+        /* renamed from: android.telephony.DomainSelectionService$SelectionAttributes$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SelectionAttributes> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SelectionAttributes createFromParcel(Parcel in) {
+                return new SelectionAttributes(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SelectionAttributes[] newArray(int size) {
+                return new SelectionAttributes[size];
+            }
+        }
+
         private static boolean equalsHandlesNulls(Object a, Object b) {
             return a == null ? b == null : a.equals(b);
         }
@@ -286,7 +312,6 @@ public class DomainSelectionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public final class TransportSelectorCallbackWrapper implements TransportSelectorCallback {
         private static final String TAG = "TransportSelectorCallbackWrapper";
@@ -359,7 +384,6 @@ public class DomainSelectionService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public class ITransportSelectorResultCallbackAdapter extends ITransportSelectorResultCallback.Stub {
             private final Consumer<WwanSelectorCallback> mConsumer;
@@ -384,15 +408,15 @@ public class DomainSelectionService extends Service {
                 }, TransportSelectorCallbackWrapper.TAG, "onWwanSelectedAsync-Completed");
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onCompleted$0(WwanSelectorCallback callback) {
                 this.mConsumer.accept(callback);
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class DomainSelectorWrapper {
+    public final class DomainSelectorWrapper {
         private static final String TAG = "DomainSelectorWrapper";
         private IDomainSelector mCallbackBinder;
 
@@ -400,8 +424,9 @@ public class DomainSelectionService extends Service {
             this.mCallbackBinder = new IDomainSelectorAdapter(cb, executor);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private class IDomainSelectorAdapter extends IDomainSelector.Stub {
+        public class IDomainSelectorAdapter extends IDomainSelector.Stub {
             private final WeakReference<DomainSelector> mDomainSelectorWeakRef;
             private final Executor mExecutor;
 
@@ -458,8 +483,9 @@ public class DomainSelectionService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class WwanSelectorCallbackWrapper implements WwanSelectorCallback, CancellationSignal.OnCancelListener {
+    public final class WwanSelectorCallbackWrapper implements WwanSelectorCallback, CancellationSignal.OnCancelListener {
         private static final String TAG = "WwanSelectorCallbackWrapper";
         private final IWwanSelectorCallback mCallback;
         private final Executor mExecutor;
@@ -502,7 +528,6 @@ public class DomainSelectionService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public class IWwanSelectorResultCallbackAdapter extends IWwanSelectorResultCallback.Stub {
             private final Consumer<EmergencyRegResult> mConsumer;
@@ -526,7 +551,6 @@ public class DomainSelectionService extends Service {
                 }, WwanSelectorCallbackWrapper.TAG, "onScanComplete");
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onComplete$0(EmergencyRegResult result) {
                 this.mConsumer.accept(result);
             }
@@ -542,8 +566,7 @@ public class DomainSelectionService extends Service {
     public void onBarringInfoUpdated(int slotId, int subId, BarringInfo info) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.DomainSelectionService$1, reason: invalid class name */
+    /* renamed from: android.telephony.DomainSelectionService$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IDomainSelectionServiceController.Stub {
         AnonymousClass1() {
@@ -559,7 +582,6 @@ public class DomainSelectionService extends Service {
             }, DomainSelectionService.LOG_TAG, "onDomainSelection");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$selectDomain$0(SelectionAttributes attr, ITransportSelectorCallback callback) {
             DomainSelectionService domainSelectionService = DomainSelectionService.this;
             domainSelectionService.onDomainSelection(attr, new TransportSelectorCallbackWrapper(callback, domainSelectionService.getCachedExecutor()));
@@ -576,7 +598,6 @@ public class DomainSelectionService extends Service {
             }, DomainSelectionService.LOG_TAG, "onServiceStateUpdated");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$updateServiceState$1(int slotId, int subId, ServiceState serviceState) {
             DomainSelectionService.this.onServiceStateUpdated(slotId, subId, serviceState);
         }
@@ -592,13 +613,11 @@ public class DomainSelectionService extends Service {
             }, DomainSelectionService.LOG_TAG, "onBarringInfoUpdated");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$updateBarringInfo$2(int slotId, int subId, BarringInfo info) {
             DomainSelectionService.this.onBarringInfoUpdated(slotId, subId, info);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void executeMethodAsync(Executor executor, final Runnable r, String tag, String errorLogName) throws RemoteException {
         try {
             CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.DomainSelectionService$$ExternalSyntheticLambda1
@@ -613,7 +632,6 @@ public class DomainSelectionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void executeMethodAsyncNoException(Executor executor, final Runnable r, String tag, String errorLogName) {
         try {
             CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.DomainSelectionService$$ExternalSyntheticLambda0

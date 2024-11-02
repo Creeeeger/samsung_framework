@@ -7,7 +7,9 @@ import android.text.TextUtils;
 /* loaded from: classes4.dex */
 public class ExtractedText implements Parcelable {
     public static final Parcelable.Creator<ExtractedText> CREATOR = new Parcelable.Creator<ExtractedText>() { // from class: android.view.inputmethod.ExtractedText.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ExtractedText createFromParcel(Parcel source) {
             ExtractedText res = new ExtractedText();
@@ -22,7 +24,6 @@ public class ExtractedText implements Parcelable {
             return res;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExtractedText[] newArray(int size) {
             return new ExtractedText[size];
@@ -49,6 +50,32 @@ public class ExtractedText implements Parcelable {
         dest.writeInt(this.selectionEnd);
         dest.writeInt(this.flags);
         TextUtils.writeToParcel(this.hint, dest, flags);
+    }
+
+    /* renamed from: android.view.inputmethod.ExtractedText$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ExtractedText> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ExtractedText createFromParcel(Parcel source) {
+            ExtractedText res = new ExtractedText();
+            res.text = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+            res.startOffset = source.readInt();
+            res.partialStartOffset = source.readInt();
+            res.partialEndOffset = source.readInt();
+            res.selectionStart = source.readInt();
+            res.selectionEnd = source.readInt();
+            res.flags = source.readInt();
+            res.hint = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+            return res;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ExtractedText[] newArray(int size) {
+            return new ExtractedText[size];
+        }
     }
 
     @Override // android.os.Parcelable

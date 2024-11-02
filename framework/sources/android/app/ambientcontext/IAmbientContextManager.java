@@ -155,8 +155,9 @@ public interface IAmbientContextManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IAmbientContextManager {
+        public static class Proxy implements IAmbientContextManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

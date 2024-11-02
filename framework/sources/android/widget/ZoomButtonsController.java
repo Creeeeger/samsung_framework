@@ -47,6 +47,9 @@ public class ZoomButtonsController implements View.OnTouchListener {
     private final int[] mTempIntArray = new int[2];
     private final IntentFilter mConfigurationChangedFilter = new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED);
     private final BroadcastReceiver mConfigurationChangedReceiver = new BroadcastReceiver() { // from class: android.widget.ZoomButtonsController.1
+        AnonymousClass1() {
+        }
+
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             if (ZoomButtonsController.this.mIsVisible) {
@@ -56,6 +59,9 @@ public class ZoomButtonsController implements View.OnTouchListener {
         }
     };
     private final Handler mHandler = new Handler() { // from class: android.widget.ZoomButtonsController.2
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -84,6 +90,50 @@ public class ZoomButtonsController implements View.OnTouchListener {
         void onVisibilityChanged(boolean z);
 
         void onZoom(boolean z);
+    }
+
+    /* renamed from: android.widget.ZoomButtonsController$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            if (ZoomButtonsController.this.mIsVisible) {
+                ZoomButtonsController.this.mHandler.removeMessages(2);
+                ZoomButtonsController.this.mHandler.sendEmptyMessage(2);
+            }
+        }
+    }
+
+    /* renamed from: android.widget.ZoomButtonsController$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 extends Handler {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 2:
+                    ZoomButtonsController.this.onPostConfigurationChanged();
+                    return;
+                case 3:
+                    ZoomButtonsController.this.setVisible(false);
+                    return;
+                case 4:
+                    if (ZoomButtonsController.this.mOwnerView.getWindowToken() == null) {
+                        Log.e(ZoomButtonsController.TAG, "Cannot make the zoom controller visible if the owner view is not attached to a window.");
+                        return;
+                    } else {
+                        ZoomButtonsController.this.setVisible(true);
+                        return;
+                    }
+                default:
+                    return;
+            }
+        }
     }
 
     public ZoomButtonsController(View ownerView) {
@@ -127,6 +177,9 @@ public class ZoomButtonsController implements View.OnTouchListener {
         ZoomControls zoomControls = (ZoomControls) container.findViewById(R.id.zoomControls);
         this.mControls = zoomControls;
         zoomControls.setOnZoomInClickListener(new View.OnClickListener() { // from class: android.widget.ZoomButtonsController.3
+            AnonymousClass3() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 ZoomButtonsController.this.dismissControlsDelayed(ZoomButtonsController.ZOOM_CONTROLS_TIMEOUT);
@@ -136,6 +189,9 @@ public class ZoomButtonsController implements View.OnTouchListener {
             }
         });
         this.mControls.setOnZoomOutClickListener(new View.OnClickListener() { // from class: android.widget.ZoomButtonsController.4
+            AnonymousClass4() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 ZoomButtonsController.this.dismissControlsDelayed(ZoomButtonsController.ZOOM_CONTROLS_TIMEOUT);
@@ -145,6 +201,36 @@ public class ZoomButtonsController implements View.OnTouchListener {
             }
         });
         return container;
+    }
+
+    /* renamed from: android.widget.ZoomButtonsController$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements View.OnClickListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            ZoomButtonsController.this.dismissControlsDelayed(ZoomButtonsController.ZOOM_CONTROLS_TIMEOUT);
+            if (ZoomButtonsController.this.mCallback != null) {
+                ZoomButtonsController.this.mCallback.onZoom(true);
+            }
+        }
+    }
+
+    /* renamed from: android.widget.ZoomButtonsController$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements View.OnClickListener {
+        AnonymousClass4() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            ZoomButtonsController.this.dismissControlsDelayed(ZoomButtonsController.ZOOM_CONTROLS_TIMEOUT);
+            if (ZoomButtonsController.this.mCallback != null) {
+                ZoomButtonsController.this.mCallback.onZoom(false);
+            }
+        }
     }
 
     public void setOnZoomListener(OnZoomListener listener) {
@@ -200,6 +286,9 @@ public class ZoomButtonsController implements View.OnTouchListener {
             this.mWindowManager.addView(this.mContainer, this.mContainerLayoutParams);
             if (this.mPostedVisibleInitializer == null) {
                 this.mPostedVisibleInitializer = new Runnable() { // from class: android.widget.ZoomButtonsController.5
+                    AnonymousClass5() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         ZoomButtonsController.this.refreshPositioningVariables();
@@ -229,6 +318,21 @@ public class ZoomButtonsController implements View.OnTouchListener {
         }
     }
 
+    /* renamed from: android.widget.ZoomButtonsController$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements Runnable {
+        AnonymousClass5() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ZoomButtonsController.this.refreshPositioningVariables();
+            if (ZoomButtonsController.this.mCallback != null) {
+                ZoomButtonsController.this.mCallback.onVisibilityChanged(true);
+            }
+        }
+    }
+
     public ViewGroup getContainer() {
         return this.mContainer;
     }
@@ -237,7 +341,6 @@ public class ZoomButtonsController implements View.OnTouchListener {
         return this.mControls;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dismissControlsDelayed(int delay) {
         if (this.mAutoDismissControls) {
             this.mHandler.removeMessages(3);
@@ -245,7 +348,6 @@ public class ZoomButtonsController implements View.OnTouchListener {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void refreshPositioningVariables() {
         if (this.mOwnerView.getWindowToken() == null) {
             return;
@@ -268,7 +370,6 @@ public class ZoomButtonsController implements View.OnTouchListener {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean onContainerKey(KeyEvent event) {
         KeyEvent.DispatcherState ds;
         int keyCode = event.getKeyCode();
@@ -407,13 +508,11 @@ public class ZoomButtonsController implements View.OnTouchListener {
         return closestChild;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onPostConfigurationChanged() {
         dismissControlsDelayed(ZOOM_CONTROLS_TIMEOUT);
         refreshPositioningVariables();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class Container extends FrameLayout {
         public Container(Context context) {

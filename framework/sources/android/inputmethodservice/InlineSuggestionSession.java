@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public class InlineSuggestionSession {
     static final InlineSuggestionsResponse EMPTY_RESPONSE = new InlineSuggestionsResponse((List<InlineSuggestion>) Collections.emptyList());
@@ -37,7 +36,6 @@ public class InlineSuggestionSession {
     private InlineSuggestionsResponseCallbackImpl mResponseCallback;
     private final Consumer<InlineSuggestionsResponse> mResponseConsumer;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InlineSuggestionSession(InlineSuggestionsRequestInfo requestInfo, IInlineSuggestionsRequestCallback callback, Function<Bundle, InlineSuggestionsRequest> requestSupplier, Supplier<IBinder> hostInputTokenSupplier, Consumer<InlineSuggestionsResponse> responseConsumer, InlineSuggestionSessionController inlineSuggestionSessionController, Handler mainThreadHandler) {
         this.mRequestInfo = requestInfo;
         this.mCallback = callback;
@@ -48,27 +46,22 @@ public class InlineSuggestionSession {
         this.mMainThreadHandler = mainThreadHandler;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InlineSuggestionsRequestInfo getRequestInfo() {
         return this.mRequestInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IInlineSuggestionsRequestCallback getRequestCallback() {
         return this.mCallback;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldSendImeStatus() {
         return this.mResponseCallback != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isCallbackInvoked() {
         return this.mCallbackInvoked;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidate() {
         try {
             this.mCallback.onInlineSuggestionsSessionInvalidated();
@@ -82,7 +75,6 @@ public class InlineSuggestionSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void makeInlineSuggestionRequestUncheck() {
         if (this.mCallbackInvoked) {
             return;
@@ -104,7 +96,6 @@ public class InlineSuggestionSession {
         this.mCallbackInvoked = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleOnInlineSuggestionsResponse(AutofillId fieldId, InlineSuggestionsResponse response) {
         if (!this.mInlineSuggestionSessionController.match(fieldId)) {
             return;
@@ -112,7 +103,6 @@ public class InlineSuggestionSession {
         consumeInlineSuggestionsResponse(response);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void consumeInlineSuggestionsResponse(InlineSuggestionsResponse response) {
         boolean isResponseEmpty = response.getInlineSuggestions().isEmpty();
         if (isResponseEmpty && Boolean.TRUE.equals(this.mPreviousResponseIsEmpty)) {
@@ -122,11 +112,14 @@ public class InlineSuggestionSession {
         this.mResponseConsumer.accept(response);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class InlineSuggestionsResponseCallbackImpl extends IInlineSuggestionsResponseCallback.Stub {
         private volatile boolean mInvalid;
         private final WeakReference<InlineSuggestionSession> mSession;
+
+        /* synthetic */ InlineSuggestionsResponseCallbackImpl(InlineSuggestionSession inlineSuggestionSession, InlineSuggestionsResponseCallbackImplIA inlineSuggestionsResponseCallbackImplIA) {
+            this(inlineSuggestionSession);
+        }
 
         private InlineSuggestionsResponseCallbackImpl(InlineSuggestionSession session) {
             this.mInvalid = false;

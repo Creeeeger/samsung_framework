@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class QosFilterTypeOfService implements Parcelable {
     public static final Parcelable.Creator<QosFilterTypeOfService> CREATOR = new Parcelable.Creator<QosFilterTypeOfService>() { // from class: android.hardware.radio.data.QosFilterTypeOfService.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public QosFilterTypeOfService createFromParcel(Parcel _aidl_source) {
             return new QosFilterTypeOfService(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public QosFilterTypeOfService[] newArray(int _aidl_size) {
             return new QosFilterTypeOfService[_aidl_size];
@@ -28,6 +29,10 @@ public final class QosFilterTypeOfService implements Parcelable {
     public @interface Tag {
         public static final int noinit = 0;
         public static final int value = 1;
+    }
+
+    /* synthetic */ QosFilterTypeOfService(Parcel parcel, QosFilterTypeOfServiceIA qosFilterTypeOfServiceIA) {
+        this(parcel);
     }
 
     public QosFilterTypeOfService() {
@@ -77,6 +82,23 @@ public final class QosFilterTypeOfService implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.radio.data.QosFilterTypeOfService$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<QosFilterTypeOfService> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public QosFilterTypeOfService createFromParcel(Parcel _aidl_source) {
+            return new QosFilterTypeOfService(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public QosFilterTypeOfService[] newArray(int _aidl_size) {
+            return new QosFilterTypeOfService[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

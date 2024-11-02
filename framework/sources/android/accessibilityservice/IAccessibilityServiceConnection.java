@@ -1006,8 +1006,9 @@ public interface IAccessibilityServiceConnection extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IAccessibilityServiceConnection {
+        public static class Proxy implements IAccessibilityServiceConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

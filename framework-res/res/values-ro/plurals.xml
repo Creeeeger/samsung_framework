@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Telefonul dvs. este instabil deoarece a fost scos un card SD pe care erau instalate aplicații. Telefonul va reporni peste %d secunde, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea telefonului.</item>
+        <item quantity="other">Tableta dvs. este instabilă deoarece a fost scos un card SD pe care erau instalate aplicații. Tableta va reporni peste %d secunde, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea tabletei.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefonul dvs. este instabil deoarece a fost scos un card SD pe care erau instalate aplicații. Telefonul va reporni peste %d secundă, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea telefonului.</item>
+        <item quantity="one">Tableta dvs. este instabilă deoarece a fost scos un card SD pe care erau instalate aplicații. Tableta va reporni peste %d secundă, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea tabletei.</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefonul dvs. este instabil deoarece a fost scos un card SD pe care erau instalate aplicații. Telefonul va reporni peste %d secunde, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea telefonului.</item>
+        <item quantity="few">Tableta dvs. este instabilă deoarece a fost scos un card SD pe care erau instalate aplicații. Tableta va reporni peste %d secunde, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea tabletei.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefonul va reporni peste %d secunde</item>
+        <item quantity="other">Tableta va reporni peste %d secunde</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefonul va reporni peste %d secundă</item>
+        <item quantity="one">Tableta va reporni peste %d secundă</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Telefonul va reporni peste %d secunde</item>
+        <item quantity="few">Tableta va reporni peste %d secunde</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">

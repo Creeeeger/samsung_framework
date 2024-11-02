@@ -107,7 +107,6 @@ public abstract class SpellCheckerService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class InternalISpellCheckerSession extends ISpellCheckerSession.Stub {
         private final Bundle mBundle;
@@ -210,7 +209,6 @@ public abstract class SpellCheckerService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class SentenceLevelAdapter {
         public static final SentenceSuggestionsInfo[] EMPTY_SENTENCE_SUGGESTIONS_INFOS = new SentenceSuggestionsInfo[0];
@@ -247,7 +245,6 @@ public abstract class SpellCheckerService extends Service {
             this.mWordIterator = new WordIterator(locale);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public SentenceTextInfoParams getSplitWords(TextInfo originalTextInfo) {
             int beginning;
             WordIterator wordIterator = this.mWordIterator;

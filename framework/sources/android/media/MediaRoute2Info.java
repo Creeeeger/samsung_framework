@@ -22,13 +22,14 @@ public final class MediaRoute2Info implements Parcelable {
     public static final int CONNECTION_STATE_CONNECTING = 1;
     public static final int CONNECTION_STATE_DISCONNECTED = 0;
     public static final Parcelable.Creator<MediaRoute2Info> CREATOR = new Parcelable.Creator<MediaRoute2Info>() { // from class: android.media.MediaRoute2Info.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MediaRoute2Info createFromParcel(Parcel in) {
             return new MediaRoute2Info(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaRoute2Info[] newArray(int size) {
             return new MediaRoute2Info[size];
@@ -102,6 +103,23 @@ public final class MediaRoute2Info implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface Type {
+    }
+
+    /* renamed from: android.media.MediaRoute2Info$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MediaRoute2Info> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaRoute2Info createFromParcel(Parcel in) {
+            return new MediaRoute2Info(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaRoute2Info[] newArray(int size) {
+            return new MediaRoute2Info[size];
+        }
     }
 
     MediaRoute2Info(Builder builder) {

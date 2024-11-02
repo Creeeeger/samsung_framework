@@ -4,7 +4,6 @@ import android.content.Context;
 
 /* loaded from: classes4.dex */
 public class ViewGroupOverlay extends ViewOverlay {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewGroupOverlay(Context context, View hostView) {
         super(context, hostView);
     }

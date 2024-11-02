@@ -70,7 +70,6 @@ public class BitmapShader extends Shader {
         return this.mMaxAniso;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized long getNativeInstanceWithDirectSampling() {
         this.mRequestDirectSampling = true;
         return getNativeInstance();

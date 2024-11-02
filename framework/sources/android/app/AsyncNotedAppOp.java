@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AsyncNotedAppOp implements Parcelable {
     public static final Parcelable.Creator<AsyncNotedAppOp> CREATOR = new Parcelable.Creator<AsyncNotedAppOp>() { // from class: android.app.AsyncNotedAppOp.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AsyncNotedAppOp[] newArray(int size) {
             return new AsyncNotedAppOp[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AsyncNotedAppOp createFromParcel(Parcel in) {
             return new AsyncNotedAppOp(in);
@@ -131,6 +132,23 @@ public final class AsyncNotedAppOp implements Parcelable {
         this.mTime = time;
         AnnotationValidations.validate((Class<? extends Annotation>) CurrentTimeMillisLong.class, (Annotation) null, time);
         onConstructed();
+    }
+
+    /* renamed from: android.app.AsyncNotedAppOp$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AsyncNotedAppOp> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AsyncNotedAppOp[] newArray(int size) {
+            return new AsyncNotedAppOp[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AsyncNotedAppOp createFromParcel(Parcel in) {
+            return new AsyncNotedAppOp(in);
+        }
     }
 
     @Deprecated

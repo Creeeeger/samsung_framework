@@ -26,13 +26,14 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
     public static final int AUTHENTICATE_REASON_UDFPS_POINTER_DOWN = 10;
     public static final int AUTHENTICATE_REASON_UNKNOWN = 0;
     public static final Parcelable.Creator<FaceAuthenticateOptions> CREATOR = new Parcelable.Creator<FaceAuthenticateOptions>() { // from class: android.hardware.face.FaceAuthenticateOptions.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FaceAuthenticateOptions[] newArray(int size) {
             return new FaceAuthenticateOptions[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceAuthenticateOptions createFromParcel(Parcel in) {
             return new FaceAuthenticateOptions(in);
@@ -51,37 +52,37 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
     public @interface AuthenticateReason {
     }
 
-    /* renamed from: -$$Nest$smdefaultAttributionTag, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultAttributionTag */
     static /* bridge */ /* synthetic */ String m1664$$Nest$smdefaultAttributionTag() {
         return defaultAttributionTag();
     }
 
-    /* renamed from: -$$Nest$smdefaultAuthenticateReason, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultAuthenticateReason */
     static /* bridge */ /* synthetic */ int m1665$$Nest$smdefaultAuthenticateReason() {
         return defaultAuthenticateReason();
     }
 
-    /* renamed from: -$$Nest$smdefaultDisplayState, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultDisplayState */
     static /* bridge */ /* synthetic */ int m1666$$Nest$smdefaultDisplayState() {
         return defaultDisplayState();
     }
 
-    /* renamed from: -$$Nest$smdefaultOpPackageName, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultOpPackageName */
     static /* bridge */ /* synthetic */ String m1667$$Nest$smdefaultOpPackageName() {
         return defaultOpPackageName();
     }
 
-    /* renamed from: -$$Nest$smdefaultSensorId, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultSensorId */
     static /* bridge */ /* synthetic */ int m1668$$Nest$smdefaultSensorId() {
         return defaultSensorId();
     }
 
-    /* renamed from: -$$Nest$smdefaultUserId, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultUserId */
     static /* bridge */ /* synthetic */ int m1669$$Nest$smdefaultUserId() {
         return defaultUserId();
     }
 
-    /* renamed from: -$$Nest$smdefaultWakeReason, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultWakeReason */
     static /* bridge */ /* synthetic */ int m1670$$Nest$smdefaultWakeReason() {
         return defaultWakeReason();
     }
@@ -270,6 +271,23 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
         this.mOpPackageName = opPackageName;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) opPackageName);
         this.mAttributionTag = attributionTag;
+    }
+
+    /* renamed from: android.hardware.face.FaceAuthenticateOptions$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FaceAuthenticateOptions> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FaceAuthenticateOptions[] newArray(int size) {
+            return new FaceAuthenticateOptions[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FaceAuthenticateOptions createFromParcel(Parcel in) {
+            return new FaceAuthenticateOptions(in);
+        }
     }
 
     /* loaded from: classes2.dex */

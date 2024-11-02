@@ -18,6 +18,10 @@ public final class DeviceStateRequest {
     public @interface RequestFlags {
     }
 
+    /* synthetic */ DeviceStateRequest(int i, int i2, DeviceStateRequestIA deviceStateRequestIA) {
+        this(i, i2);
+    }
+
     public static Builder newBuilder(int requestedState) {
         return new Builder(requestedState);
     }
@@ -26,6 +30,10 @@ public final class DeviceStateRequest {
     public static final class Builder {
         private int mFlags;
         private final int mRequestedState;
+
+        /* synthetic */ Builder(int i, BuilderIA builderIA) {
+            this(i);
+        }
 
         private Builder(int requestedState) {
             this.mRequestedState = requestedState;

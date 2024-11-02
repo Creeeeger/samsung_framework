@@ -35,7 +35,6 @@ public class Registrant {
         internalNotifyRegistrant(ar.result, ar.exception);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void internalNotifyRegistrant(Object result, Throwable exception) {
         Handler h = getHandler();
         if (h == null) {

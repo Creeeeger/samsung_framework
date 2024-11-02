@@ -16,7 +16,6 @@ public enum AudioGainMode {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AudioGainMode fromString(String rawString) {
         for (AudioGainMode _f : values()) {
             if (_f.getRawName().equals(rawString)) {

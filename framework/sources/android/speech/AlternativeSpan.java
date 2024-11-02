@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AlternativeSpan implements Parcelable {
     public static final Parcelable.Creator<AlternativeSpan> CREATOR = new Parcelable.Creator<AlternativeSpan>() { // from class: android.speech.AlternativeSpan.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AlternativeSpan[] newArray(int size) {
             return new AlternativeSpan[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AlternativeSpan createFromParcel(Parcel in) {
             return new AlternativeSpan(in);
@@ -100,6 +101,23 @@ public final class AlternativeSpan implements Parcelable {
         this.mAlternatives = alternatives;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) alternatives);
         onConstructed();
+    }
+
+    /* renamed from: android.speech.AlternativeSpan$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AlternativeSpan> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AlternativeSpan[] newArray(int size) {
+            return new AlternativeSpan[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AlternativeSpan createFromParcel(Parcel in) {
+            return new AlternativeSpan(in);
+        }
     }
 
     @Deprecated

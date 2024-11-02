@@ -15,7 +15,6 @@ public enum MixType {
         return this.rawName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static MixType fromString(String rawString) {
         for (MixType _f : values()) {
             if (_f.getRawName().equals(rawString)) {

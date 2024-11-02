@@ -12,7 +12,6 @@ public class UcmKeyStoreKey implements Key {
         this.mAlgorithm = algorithm;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getAlias() {
         return this.mAlias;
     }

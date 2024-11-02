@@ -50,7 +50,18 @@ public final class BackgroundBlurDrawable extends Drawable {
     private final float[] mTmpRadii;
     private boolean mVisible;
 
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x0017, code lost:            if (android.os.SystemProperties.getInt("viewroot.debug.blur", 0) != 0) goto L6;     */
+    /* synthetic */ BackgroundBlurDrawable(Aggregator aggregator, BackgroundBlurDrawableIA backgroundBlurDrawableIA) {
+        this(aggregator);
+    }
+
+    /* synthetic */ BackgroundBlurDrawable(Aggregator aggregator, boolean z, BackgroundBlurDrawableIA backgroundBlurDrawableIA) {
+        this(aggregator, z);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x0017, code lost:
+    
+        if (android.os.SystemProperties.getInt("viewroot.debug.blur", 0) != 0) goto L15;
+     */
     static {
         /*
             java.lang.Class<com.android.internal.graphics.drawable.BackgroundBlurDrawable> r0 = com.android.internal.graphics.drawable.BackgroundBlurDrawable.class
@@ -72,8 +83,7 @@ public final class BackgroundBlurDrawable extends Drawable {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.graphics.drawable.BackgroundBlurDrawable.<clinit>():void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.graphics.drawable.BackgroundBlurDrawable$1, reason: invalid class name */
+    /* renamed from: com.android.internal.graphics.drawable.BackgroundBlurDrawable$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 implements RenderNode.PositionUpdateListener {
         AnonymousClass1() {
@@ -102,7 +112,6 @@ public final class BackgroundBlurDrawable extends Drawable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$positionChanged$1(final boolean showDebug, final long frameNumber, int left, int top, int right, int bottom) {
             if (BackgroundBlurDrawable.DEBUG || showDebug) {
                 Log.i(BackgroundBlurDrawable.TAG, "positionChanged$run fn=" + frameNumber + " dr=BackgroundBlurDrawable@" + BackgroundBlurDrawable.this.hashCode() + " rect=" + BackgroundBlurDrawable.this.mRect);
@@ -115,7 +124,6 @@ public final class BackgroundBlurDrawable extends Drawable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$positionChanged$0(boolean showDebug, long frameNumber) {
             if (BackgroundBlurDrawable.DEBUG || showDebug) {
                 Log.i(BackgroundBlurDrawable.TAG, "positionChanged$run#2 fn=" + frameNumber + " dr=BackgroundBlurDrawable@" + BackgroundBlurDrawable.this.hashCode() + " rect=" + BackgroundBlurDrawable.this.mRect);
@@ -139,7 +147,6 @@ public final class BackgroundBlurDrawable extends Drawable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$positionLost$3(final boolean showDebug, final long frameNumber) {
             if (BackgroundBlurDrawable.DEBUG || showDebug) {
                 Log.i(BackgroundBlurDrawable.TAG, "positionLost$run fn=" + frameNumber + " dr=BackgroundBlurDrawable@" + BackgroundBlurDrawable.this.hashCode() + " rect=" + BackgroundBlurDrawable.this.mRect);
@@ -152,7 +159,6 @@ public final class BackgroundBlurDrawable extends Drawable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$positionLost$2(boolean showDebug, long frameNumber) {
             if (BackgroundBlurDrawable.DEBUG || showDebug) {
                 Log.i(BackgroundBlurDrawable.TAG, "positionLost$run#2 fn=" + frameNumber + " dr=BackgroundBlurDrawable@" + BackgroundBlurDrawable.this.hashCode() + " rect=" + BackgroundBlurDrawable.this.mRect);
@@ -465,7 +471,6 @@ public final class BackgroundBlurDrawable extends Drawable {
             this.mViewRoot.getView().getViewTreeObserver().addOnPreDrawListener(this.mOnPreDrawListener);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$registerPreDrawListener$1(boolean debug) {
             final boolean hasUiUpdates = hasUpdates();
             if (hasUiUpdates || hasRegions()) {
@@ -489,7 +494,6 @@ public final class BackgroundBlurDrawable extends Drawable {
             return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$registerPreDrawListener$0(BlurRegion[] blurRegionsForNextFrame, boolean hasUiUpdates, long frame) {
             synchronized (this.mRtLock) {
                 this.mLastFrameNumber = frame;

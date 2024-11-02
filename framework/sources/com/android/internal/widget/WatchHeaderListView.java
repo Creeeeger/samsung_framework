@@ -51,7 +51,6 @@ public class WatchHeaderListView extends ListView {
         wrapAdapterIfNecessary();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ListView, android.view.ViewGroup, android.view.View
     public View findViewTraversal(int id) {
         View view;
@@ -62,7 +61,6 @@ public class WatchHeaderListView extends ListView {
         return v;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ListView, android.view.ViewGroup, android.view.View
     public View findViewWithTagTraversal(Object tag) {
         View view;
@@ -73,7 +71,6 @@ public class WatchHeaderListView extends ListView {
         return v;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ListView, android.view.ViewGroup, android.view.View
     public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
         View view2;
@@ -103,7 +100,6 @@ public class WatchHeaderListView extends ListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class WatchHeaderListAdapter extends HeaderViewListAdapter {
         private View mTopPanel;

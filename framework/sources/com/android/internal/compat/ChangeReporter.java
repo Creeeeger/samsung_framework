@@ -36,7 +36,6 @@ public final class ChangeReporter {
     public @interface State {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class ChangeReport {
         long mChangeId;

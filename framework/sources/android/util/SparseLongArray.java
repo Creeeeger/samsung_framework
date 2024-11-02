@@ -26,8 +26,8 @@ public class SparseLongArray implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SparseLongArray m4955clone() {
+    /* renamed from: clone */
+    public SparseLongArray m4954clone() {
         SparseLongArray clone = null;
         try {
             clone = (SparseLongArray) super.clone();

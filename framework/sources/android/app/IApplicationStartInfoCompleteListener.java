@@ -85,7 +85,6 @@ public interface IApplicationStartInfoCompleteListener extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IApplicationStartInfoCompleteListener {
             private IBinder mRemote;

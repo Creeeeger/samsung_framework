@@ -1,7 +1,6 @@
 package android.view;
 
 import android.animation.AnimationHandler;
-import android.app.tare.EconomyManager;
 import android.graphics.FrameInfo;
 import android.hardware.display.DisplayManagerGlobal;
 import android.os.Debug;
@@ -78,8 +77,9 @@ public final class Choreographer {
     private static long sSTBFrameTimeThreshold = Long.MAX_VALUE;
     private static volatile long sFrameDelay = 10;
     private static final ThreadLocal<Choreographer> sThreadInstance = new ThreadLocal<Choreographer>() { // from class: android.view.Choreographer.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.ThreadLocal
         public Choreographer initialValue() {
             Looper looper = Looper.myLooper();
@@ -94,8 +94,9 @@ public final class Choreographer {
         }
     };
     private static final ThreadLocal<Choreographer> sSfThreadInstance = new ThreadLocal<Choreographer>() { // from class: android.view.Choreographer.2
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // java.lang.ThreadLocal
         public Choreographer initialValue() {
             Looper looper = Looper.myLooper();
@@ -109,11 +110,17 @@ public final class Choreographer {
     private static final boolean USE_FRAME_TIME = SystemProperties.getBoolean("debug.choreographer.frametime", true);
     private static final int SKIPPED_FRAME_WARNING_LIMIT = SystemProperties.getInt("debug.choreographer.skipwarning", 30);
     private static final Object FRAME_CALLBACK_TOKEN = new Object() { // from class: android.view.Choreographer.3
+        AnonymousClass3() {
+        }
+
         public String toString() {
             return "FRAME_CALLBACK_TOKEN";
         }
     };
     private static final Object VSYNC_CALLBACK_TOKEN = new Object() { // from class: android.view.Choreographer.4
+        AnonymousClass4() {
+        }
+
         public String toString() {
             return "VSYNC_CALLBACK_TOKEN";
         }
@@ -128,6 +135,68 @@ public final class Choreographer {
     /* loaded from: classes4.dex */
     public interface VsyncCallback {
         void onVsync(FrameData frameData);
+    }
+
+    /* synthetic */ Choreographer(Looper looper, int i, ChoreographerIA choreographerIA) {
+        this(looper, i);
+    }
+
+    /* renamed from: android.view.Choreographer$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends ThreadLocal<Choreographer> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.ThreadLocal
+        public Choreographer initialValue() {
+            Looper looper = Looper.myLooper();
+            if (looper == null) {
+                throw new IllegalStateException("The current thread must have a looper!");
+            }
+            Choreographer choreographer = new Choreographer(looper, 0);
+            if (looper == Looper.getMainLooper()) {
+                Choreographer.mMainInstance = choreographer;
+            }
+            return choreographer;
+        }
+    }
+
+    /* renamed from: android.view.Choreographer$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 extends ThreadLocal<Choreographer> {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.ThreadLocal
+        public Choreographer initialValue() {
+            Looper looper = Looper.myLooper();
+            if (looper == null) {
+                throw new IllegalStateException("The current thread must have a looper!");
+            }
+            return new Choreographer(looper, 1);
+        }
+    }
+
+    /* renamed from: android.view.Choreographer$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 {
+        AnonymousClass3() {
+        }
+
+        public String toString() {
+            return "FRAME_CALLBACK_TOKEN";
+        }
+    }
+
+    /* renamed from: android.view.Choreographer$4 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass4 {
+        AnonymousClass4() {
+        }
+
+        public String toString() {
+            return "VSYNC_CALLBACK_TOKEN";
+        }
     }
 
     private Choreographer(Looper looper, int vsyncSource) {
@@ -156,8 +225,6 @@ public final class Choreographer {
         this.mDebugCallbackConsumer = null;
         this.mDebugCallStackCnt = 5;
         this.mDebugDispatchThresholdMs = 20;
-        this.mFlingSTBFlag = new boolean[]{false, false};
-        sScrollDf = new AtomicBoolean(false);
         this.mLooper = looper;
         this.mHandler = new FrameHandler(looper);
         if (USE_VSYNC) {
@@ -192,7 +259,6 @@ public final class Choreographer {
         return sSfThreadInstance.get();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Choreographer getInstanceForSurfaceControl(long layerHandle, Looper looper) {
         if (looper == null) {
             throw new IllegalStateException("The current thread must have a looper!");
@@ -215,12 +281,10 @@ public final class Choreographer {
         this.mDisplayEventReceiver.dispose();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidate() {
         dispose();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isTheLooperSame(Looper looper) {
         return this.mLooper == looper;
     }
@@ -249,7 +313,6 @@ public final class Choreographer {
         return j;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(String prefix, PrintWriter writer) {
         String innerPrefix = prefix + "  ";
         writer.print(prefix);
@@ -464,13 +527,11 @@ public final class Choreographer {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public long getSTBCount() {
+    long getSTBCount() {
         return this.mSTBCount;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public void resetSTBCount() {
+    void resetSTBCount() {
         this.mSTBCount = 0L;
     }
 
@@ -485,16 +546,16 @@ public final class Choreographer {
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:71:0x01db A[Catch: all -> 0x020c, TryCatch #5 {all -> 0x020c, blocks: (B:97:0x01b8, B:69:0x01c2, B:71:0x01db, B:72:0x01de, B:74:0x01e2, B:76:0x01e6, B:77:0x01ef), top: B:96:0x01b8 }] */
-    /* JADX WARN: Removed duplicated region for block: B:80:0x0204  */
-    /* JADX WARN: Removed duplicated region for block: B:88:0x0263  */
+    /* JADX WARN: Removed duplicated region for block: B:71:0x01d4 A[Catch: all -> 0x0205, TryCatch #0 {all -> 0x0205, blocks: (B:97:0x01b1, B:69:0x01bb, B:71:0x01d4, B:72:0x01d7, B:74:0x01db, B:76:0x01df, B:77:0x01e8), top: B:96:0x01b1 }] */
+    /* JADX WARN: Removed duplicated region for block: B:80:0x01fd  */
+    /* JADX WARN: Removed duplicated region for block: B:88:0x025c  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     void doFrame(long r34, int r36, android.view.DisplayEventReceiver.VsyncEventData r37) {
         /*
-            Method dump skipped, instructions count: 618
+            Method dump skipped, instructions count: 611
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.view.Choreographer.doFrame(long, int, android.view.DisplayEventReceiver$VsyncEventData):void");
@@ -600,7 +661,6 @@ public final class Choreographer {
         return Looper.myLooper() == this.mLooper;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public CallbackRecord obtainCallbackLocked(long dueTime, Object action, Object token, String log) {
         CallbackRecord callback = this.mCallbackPool;
         if (callback == null) {
@@ -616,7 +676,6 @@ public final class Choreographer {
         return callback;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void recycleCallbackLocked(CallbackRecord callback) {
         callback.action = null;
         callback.token = null;
@@ -783,7 +842,6 @@ public final class Choreographer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class FrameHandler extends Handler {
         public FrameHandler(Looper looper) {
@@ -811,7 +869,6 @@ public final class Choreographer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class FrameDisplayEventReceiver extends DisplayEventReceiver implements Runnable {
         private int mFrame;
@@ -905,26 +962,11 @@ public final class Choreographer {
         @Override // java.lang.Runnable
         public void run() {
             this.mHavePendingVsync = false;
-            long start = System.nanoTime();
+            System.nanoTime();
             Choreographer.this.doFrame(this.mTimestampNanos, this.mFrame, this.mLastVsyncEventData);
-            if (isSTBNeeded()) {
-                long end = System.nanoTime();
-                int lastFrameIntervalMillis = (int) (Choreographer.this.mLastFrameIntervalNanos / 1000000);
-                if (lastFrameIntervalMillis == 8) {
-                    Choreographer.sSTBFrameTimeThreshold = EconomyManager.DEFAULT_AM_REWARD_TOP_ACTIVITY_ONGOING_CAKES;
-                } else if (lastFrameIntervalMillis == 16) {
-                    Choreographer.sSTBFrameTimeThreshold = 20000000L;
-                } else {
-                    Choreographer.sSTBFrameTimeThreshold = Long.MAX_VALUE;
-                }
-                if (end - start > Choreographer.sSTBFrameTimeThreshold && Choreographer.this.mFramesSinceSTB != 1) {
-                    scheduleSTB();
-                }
-            }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class CallbackRecord {
         public Object action;
@@ -932,6 +974,10 @@ public final class Choreographer {
         public String log;
         public CallbackRecord next;
         public Object token;
+
+        /* synthetic */ CallbackRecord(CallbackRecordIA callbackRecordIA) {
+            this();
+        }
 
         private CallbackRecord() {
         }
@@ -955,10 +1001,13 @@ public final class Choreographer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class CallbackQueue {
         private CallbackRecord mHead;
+
+        /* synthetic */ CallbackQueue(Choreographer choreographer, CallbackQueueIA callbackQueueIA) {
+            this();
+        }
 
         private CallbackQueue() {
         }

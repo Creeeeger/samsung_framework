@@ -165,8 +165,9 @@ public interface ISmartFaceService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISmartFaceService {
+        public static class Proxy implements ISmartFaceService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

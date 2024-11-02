@@ -80,7 +80,6 @@ abstract class AndroidKeyStoreCipherSpiBase extends CipherSpi implements KeyStor
 
     protected abstract void loadAlgorithmSpecificParametersFromBeginResult(KeyParameter[] keyParameterArr);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AndroidKeyStoreCipherSpiBase() {
         this.mKeymasterPurposeOverride = -1;
         this.mKeymasterPurposeOverride = -1;
@@ -219,7 +218,6 @@ abstract class AndroidKeyStoreCipherSpiBase extends CipherSpi implements KeyStor
         this.mOperation = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void resetAll() {
         abortOperation();
         this.mEncrypting = false;
@@ -234,7 +232,6 @@ abstract class AndroidKeyStoreCipherSpiBase extends CipherSpi implements KeyStor
         this.mCipher = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void resetWhilePreservingInitState() {
         abortOperation();
         this.mOperationChallenge = 0L;
@@ -672,27 +669,22 @@ abstract class AndroidKeyStoreCipherSpiBase extends CipherSpi implements KeyStor
         return this.mOperationChallenge;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void setKey(AndroidKeyStoreKey key) {
         this.mKey = key;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void setKeymasterPurposeOverride(int keymasterPurpose) {
         this.mKeymasterPurposeOverride = keymasterPurpose;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final int getKeymasterPurposeOverride() {
         return this.mKeymasterPurposeOverride;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final boolean isEncrypting() {
         return this.mEncrypting;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final long getConsumedInputSizeBytes() {
         KeyStoreCryptoOperationStreamer keyStoreCryptoOperationStreamer = this.mMainDataStreamer;
         if (keyStoreCryptoOperationStreamer == null) {
@@ -701,7 +693,6 @@ abstract class AndroidKeyStoreCipherSpiBase extends CipherSpi implements KeyStor
         return keyStoreCryptoOperationStreamer.getConsumedInputSizeBytes();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final long getProducedOutputSizeBytes() {
         KeyStoreCryptoOperationStreamer keyStoreCryptoOperationStreamer = this.mMainDataStreamer;
         if (keyStoreCryptoOperationStreamer == null) {
@@ -710,7 +701,6 @@ abstract class AndroidKeyStoreCipherSpiBase extends CipherSpi implements KeyStor
         return keyStoreCryptoOperationStreamer.getProducedOutputSizeBytes();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String opmodeToString(int opmode) {
         switch (opmode) {
             case 1:
@@ -726,7 +716,6 @@ abstract class AndroidKeyStoreCipherSpiBase extends CipherSpi implements KeyStor
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final int getKeySecurityLevel() {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance(this.mKey.getAlgorithm(), AndroidKeyStoreSpi.NAME);
@@ -738,7 +727,6 @@ abstract class AndroidKeyStoreCipherSpiBase extends CipherSpi implements KeyStor
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void addAlgorithmSpecificParametersToBegin(List<KeyParameter> parameters, Authorization[] keyCharacteristics) {
         addAlgorithmSpecificParametersToBegin(parameters);
     }

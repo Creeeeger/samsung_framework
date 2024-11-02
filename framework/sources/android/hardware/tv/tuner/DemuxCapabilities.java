@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxCapabilities implements Parcelable {
     public static final Parcelable.Creator<DemuxCapabilities> CREATOR = new Parcelable.Creator<DemuxCapabilities>() { // from class: android.hardware.tv.tuner.DemuxCapabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxCapabilities createFromParcel(Parcel _aidl_source) {
             DemuxCapabilities _aidl_out = new DemuxCapabilities();
@@ -15,7 +17,6 @@ public class DemuxCapabilities implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxCapabilities[] newArray(int _aidl_size) {
             return new DemuxCapabilities[_aidl_size];
@@ -34,6 +35,25 @@ public class DemuxCapabilities implements Parcelable {
     public long numBytesInSectionFilter = 0;
     public int filterCaps = 0;
     public boolean bTimeFilter = false;
+
+    /* renamed from: android.hardware.tv.tuner.DemuxCapabilities$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxCapabilities createFromParcel(Parcel _aidl_source) {
+            DemuxCapabilities _aidl_out = new DemuxCapabilities();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxCapabilities[] newArray(int _aidl_size) {
+            return new DemuxCapabilities[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

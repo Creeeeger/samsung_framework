@@ -5,10 +5,8 @@ import android.content.Context;
 import com.android.internal.accessibility.dialog.TargetAdapter;
 import com.android.internal.accessibility.util.ShortcutUtils;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class AccessibilityActivityTarget extends AccessibilityTarget {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AccessibilityActivityTarget(Context context, int shortcutType, AccessibilityShortcutInfo shortcutInfo) {
         super(context, shortcutType, 3, ShortcutUtils.isShortcutContained(context, shortcutType, shortcutInfo.getComponentName().flattenToString()), shortcutInfo.getComponentName().flattenToString(), shortcutInfo.getActivityInfo().applicationInfo.uid, shortcutInfo.getActivityInfo().loadLabel(context.getPackageManager()), shortcutInfo.getActivityInfo().loadIcon(context.getPackageManager()), ShortcutUtils.convertToKey(ShortcutUtils.convertToUserType(shortcutType)));
     }

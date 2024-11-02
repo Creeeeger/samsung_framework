@@ -14,7 +14,6 @@ public final class CertificatesEntryRef {
         this.mOverridesPins = overridesPins;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean overridesPins() {
         return this.mOverridesPins;
     }

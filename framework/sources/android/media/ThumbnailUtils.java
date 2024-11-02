@@ -40,7 +40,6 @@ public class ThumbnailUtils {
         return MediaStore.Images.Thumbnails.getKindSize(kind);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class Resizer implements ImageDecoder.OnHeaderDecodedListener {
         private final CancellationSignal signal;
@@ -137,13 +136,11 @@ public class ThumbnailUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$createAudioThumbnail$0(File dir, String name) {
         String lower = name.toLowerCase();
         return lower.contains("albumart") && (lower.endsWith(".jpg") || lower.endsWith(".png"));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$createAudioThumbnail$1(File f) {
         String lower = f.getName().toLowerCase();
         if (lower.equals("albumart.jpg")) {
@@ -155,7 +152,6 @@ public class ThumbnailUtils {
         return (lower.contains("albumart") && lower.endsWith(".jpg")) ? 2 : 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$createAudioThumbnail$2(ToIntFunction score, File a, File b) {
         return score.applyAsInt(a) - score.applyAsInt(b);
     }

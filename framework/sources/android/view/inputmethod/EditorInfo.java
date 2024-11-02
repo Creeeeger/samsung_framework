@@ -25,7 +25,9 @@ import java.util.Set;
 /* loaded from: classes4.dex */
 public class EditorInfo implements InputType, Parcelable {
     public static final Parcelable.Creator<EditorInfo> CREATOR = new Parcelable.Creator<EditorInfo>() { // from class: android.view.inputmethod.EditorInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EditorInfo createFromParcel(Parcel source) {
             EditorInfo res = new EditorInfo();
@@ -59,7 +61,6 @@ public class EditorInfo implements InputType, Parcelable {
             return res;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EditorInfo[] newArray(int size) {
             return new EditorInfo[size];
@@ -510,6 +511,51 @@ public class EditorInfo implements InputType, Parcelable {
         }
         dest.writeStringArray(this.contentMimeTypes);
         UserHandle.writeToParcel(this.targetInputMethodUser, dest);
+    }
+
+    /* renamed from: android.view.inputmethod.EditorInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EditorInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EditorInfo createFromParcel(Parcel source) {
+            EditorInfo res = new EditorInfo();
+            res.inputType = source.readInt();
+            res.imeOptions = source.readInt();
+            res.privateImeOptions = source.readString();
+            res.internalImeOptions = source.readInt();
+            res.actionLabel = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+            res.actionId = source.readInt();
+            res.initialSelStart = source.readInt();
+            res.initialSelEnd = source.readInt();
+            res.initialCapsMode = source.readInt();
+            res.mInitialToolType = source.readInt();
+            res.hintText = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+            res.label = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+            res.packageName = source.readString();
+            res.autofillId = (AutofillId) source.readParcelable(AutofillId.class.getClassLoader(), AutofillId.class);
+            res.fieldId = source.readInt();
+            res.fieldName = source.readString();
+            res.extras = source.readBundle();
+            res.mSupportedHandwritingGestureTypes = source.readInt();
+            res.mSupportedHandwritingGesturePreviewTypes = source.readInt();
+            boolean hasInitialSurroundingText = source.readBoolean();
+            if (hasInitialSurroundingText) {
+                res.mInitialSurroundingText = SurroundingText.CREATOR.createFromParcel(source);
+            }
+            LocaleList hintLocales = LocaleList.CREATOR.createFromParcel(source);
+            res.hintLocales = hintLocales.isEmpty() ? null : hintLocales;
+            res.contentMimeTypes = source.readStringArray();
+            res.targetInputMethodUser = UserHandle.readFromParcel(source);
+            return res;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EditorInfo[] newArray(int size) {
+            return new EditorInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

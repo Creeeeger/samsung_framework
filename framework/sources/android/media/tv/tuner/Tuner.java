@@ -241,8 +241,27 @@ public class Tuner implements AutoCloseable {
         sTunerVersion = 0;
     }
 
+    /* renamed from: android.media.tv.tuner.Tuner$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends TunerResourceManager.ResourcesReclaimListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.tv.tunerresourcemanager.TunerResourceManager.ResourcesReclaimListener
+        public void onReclaimResources() {
+            if (Tuner.this.mFrontend != null) {
+                FrameworkStatsLog.write(276, Tuner.this.mUserId, 0);
+            }
+            Tuner.this.releaseAll();
+            Tuner.this.mHandler.sendMessage(Tuner.this.mHandler.obtainMessage(1));
+        }
+    }
+
     public Tuner(Context context, String tvInputSessionId, int useCase) {
-        TunerResourceManager.ResourcesReclaimListener resourcesReclaimListener = new TunerResourceManager.ResourcesReclaimListener() { // from class: android.media.tv.tuner.Tuner.1
+        AnonymousClass1 anonymousClass1 = new TunerResourceManager.ResourcesReclaimListener() { // from class: android.media.tv.tuner.Tuner.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.tv.tunerresourcemanager.TunerResourceManager.ResourcesReclaimListener
             public void onReclaimResources() {
                 if (Tuner.this.mFrontend != null) {
@@ -252,7 +271,7 @@ public class Tuner implements AutoCloseable {
                 Tuner.this.mHandler.sendMessage(Tuner.this.mHandler.obtainMessage(1));
             }
         };
-        this.mResourceListener = resourcesReclaimListener;
+        this.mResourceListener = anonymousClass1;
         this.mContext = context;
         TunerResourceManager tunerResourceManager = (TunerResourceManager) context.getSystemService(TunerResourceManager.class);
         this.mTunerResourceManager = tunerResourceManager;
@@ -274,7 +293,7 @@ public class Tuner implements AutoCloseable {
         ResourceClientProfile profile = new ResourceClientProfile();
         profile.tvInputSessionId = tvInputSessionId;
         profile.useCase = useCase;
-        tunerResourceManager.registerClientProfile(profile, new PendingIntent$$ExternalSyntheticLambda1(), resourcesReclaimListener, clientId);
+        tunerResourceManager.registerClientProfile(profile, new PendingIntent$$ExternalSyntheticLambda1(), anonymousClass1, clientId);
         this.mClientId = clientId[0];
         this.mUserId = Process.myUid();
     }
@@ -307,7 +326,6 @@ public class Tuner implements AutoCloseable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ FrontendInfo[] lambda$getFrontendInfoListInternal$0(int x$0) {
         return new FrontendInfo[x$0];
     }
@@ -696,7 +714,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void releaseAll() {
         releaseCiCam();
         releaseFrontend();
@@ -718,9 +735,12 @@ public class Tuner implements AutoCloseable {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class EventHandler extends Handler {
+        /* synthetic */ EventHandler(Tuner tuner, Looper looper, EventHandlerIA eventHandlerIA) {
+            this(looper);
+        }
+
         private EventHandler(Looper looper) {
             super(looper);
         }
@@ -753,7 +773,6 @@ public class Tuner implements AutoCloseable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleMessage$0() {
             synchronized (Tuner.this.mOnResourceLostListenerLock) {
                 if (Tuner.this.mOnResourceLostListener != null) {
@@ -763,7 +782,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class Frontend {
         private int mId;
@@ -1271,7 +1289,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFrontendEvent$1(int eventType) {
         synchronized (this.mOnTuneEventLock) {
             OnTuneEventListener onTuneEventListener = this.mOnTuneEventListener;
@@ -1297,7 +1314,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onLocked$2() {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1323,7 +1339,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onUnlocked$3() {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1347,7 +1362,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onScanStopped$4() {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1371,7 +1385,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onProgress$5(int percent) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1395,7 +1408,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFrequenciesReport$6(long[] frequencies) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1419,7 +1431,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSymbolRates$7(int[] rate) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1443,7 +1454,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onHierarchy$8(int hierarchy) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1467,7 +1477,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSignalType$9(int signalType) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1491,7 +1500,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onPlpIds$10(int[] plpIds) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1515,7 +1523,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onGroupIds$11(int[] groupIds) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1539,7 +1546,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onInputStreamIds$12(int[] inputStreamIds) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1563,7 +1569,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDvbsStandard$13(int dvbsStandandard) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1587,7 +1592,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDvbtStandard$14(int dvbtStandard) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1611,7 +1615,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onAnalogSifStandard$15(int sif) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1635,7 +1638,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onAtsc3PlpInfos$16(Atsc3PlpInfo[] atsc3PlpInfos) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1659,7 +1661,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onModulationReported$17(int modulation) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1683,7 +1684,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onPriorityReported$18(boolean isHighPriority) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1707,7 +1707,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDvbcAnnexReported$19(int dvbcAnnex) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -1731,7 +1730,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDvbtCellIdsReported$20(int[] dvbtCellIds) {
         synchronized (this.mScanCallbackLock) {
             ScanCallback scanCallback = this.mScanCallback;
@@ -2142,7 +2140,6 @@ public class Tuner implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void releaseLnb() {
         acquireTRMSLock("releaseLnb()");
         this.mLnbLock.lock();

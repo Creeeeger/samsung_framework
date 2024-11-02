@@ -13,13 +13,14 @@ public final class SearchRequest implements Parcelable {
     public static final String CONSTRAINT_IS_PRESUBMIT_SUGGESTION = "android.app.cloudsearch.IS_PRESUBMIT_SUGGESTION";
     public static final String CONSTRAINT_SEARCH_PROVIDER_FILTER = "android.app.cloudsearch.SEARCH_PROVIDER_FILTER";
     public static final Parcelable.Creator<SearchRequest> CREATOR = new Parcelable.Creator<SearchRequest>() { // from class: android.app.cloudsearch.SearchRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchRequest createFromParcel(Parcel p) {
             return new SearchRequest();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchRequest[] newArray(int size) {
             return new SearchRequest[size];
@@ -29,6 +30,10 @@ public final class SearchRequest implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface SearchConstraintKey {
+    }
+
+    /* synthetic */ SearchRequest(SearchRequestIA searchRequestIA) {
+        this();
     }
 
     private SearchRequest() {
@@ -63,6 +68,23 @@ public final class SearchRequest implements Parcelable {
     }
 
     public void setCallerPackageName(String callerPackageName) {
+    }
+
+    /* renamed from: android.app.cloudsearch.SearchRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchRequest createFromParcel(Parcel p) {
+            return new SearchRequest();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchRequest[] newArray(int size) {
+            return new SearchRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

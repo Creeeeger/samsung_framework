@@ -2,7 +2,6 @@ package android.graphics.drawable;
 
 import android.graphics.Rect;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public abstract class RippleComponent {
     protected final Rect mBounds;
@@ -46,12 +45,10 @@ public abstract class RippleComponent {
         bounds.set(-r, -r, r, r);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void invalidateSelf() {
         this.mOwner.invalidateSelf(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void onHotspotBoundsChanged() {
         if (!this.mHasMaxRadius) {
             float targetRadius = getTargetRadius(this.mBounds);

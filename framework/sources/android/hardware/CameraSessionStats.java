@@ -19,13 +19,14 @@ public class CameraSessionStats implements Parcelable {
     public static final int CAMERA_STATE_OPENING = 100;
     public static final int CAMERA_STATE_OPENING_FAILED = 101;
     public static final Parcelable.Creator<CameraSessionStats> CREATOR = new Parcelable.Creator<CameraSessionStats>() { // from class: android.hardware.CameraSessionStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CameraSessionStats createFromParcel(Parcel in) {
             return new CameraSessionStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraSessionStats[] newArray(int size) {
             return new CameraSessionStats[size];
@@ -50,6 +51,10 @@ public class CameraSessionStats implements Parcelable {
     private ArrayList<CameraStreamStats> mStreamStats;
     private String mUserTag;
     private int mVideoStabilizationMode;
+
+    /* synthetic */ CameraSessionStats(Parcel parcel, CameraSessionStatsIA cameraSessionStatsIA) {
+        this(parcel);
+    }
 
     public CameraSessionStats() {
         this.mFacing = -1;
@@ -85,6 +90,23 @@ public class CameraSessionStats implements Parcelable {
         this.mStreamStats = new ArrayList<>();
         this.mSessionIndex = sessionIdx;
         this.mCameraExtensionSessionStats = new CameraExtensionSessionStats();
+    }
+
+    /* renamed from: android.hardware.CameraSessionStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CameraSessionStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraSessionStats createFromParcel(Parcel in) {
+            return new CameraSessionStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CameraSessionStats[] newArray(int size) {
+            return new CameraSessionStats[size];
+        }
     }
 
     private CameraSessionStats(Parcel in) {

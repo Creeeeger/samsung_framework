@@ -334,7 +334,7 @@
     <string name="ext_media_unsupported_notification_message">මෙම උපාංගය මෙම %s හට සහාය නොදක්වයි. සහාය දක්වන ආකෘතියකින් පිහිටුවීමට තට්ටු කරන්න.</string>
     <string name="ext_media_unsupported_notification_title">සහාය නොදක්වන %s</string>
     <string name="ext_storage_bad_removal_button">යළි අරඹන්න</string>
-    <string name="ext_storage_bad_removal_title">ඔබේ දුරකථනය යළි අරඹන්න</string>
+    <string name="ext_storage_bad_removal_title">ඔබේ ටැබ්ලටය යළි අරඹන්න</string>
     <string name="extmedia_format_message_usbhost">ඔබගේ USB ආචයනයේ ඇති සියලුම ගොනු මැකී යනු ඇත. මෙම ක්‍රියාව ආපසු හැරවිය නොහැක!</string>
     <string name="extmedia_format_title_usbhost">USB ආචයනය ෆෝමැට් කරන්නද?</string>
     <string name="factoryreset_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් කර්මාන්තශාලා යළි සකසුව සීමා කරයි.</string>
@@ -587,16 +587,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">හඬ ඔබේ බ්ලූටූත් ශ්‍රව්‍ය උපාංගයෙහි වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න</string>
     <string name="multisound_sound_via_headphone">%s හඬ ඔබේ හෙඩ්ෆෝන් හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="multisound_sound_via_headphone_multiselection">හඬ ඔබේ හෙඩ්ෆෝන් හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
-    <string name="multisound_sound_via_phone_speaker">%s හඬ ඔබේ දුරකථනයේ ස්පීකරය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">හඬ ඔබේ දුරකථනයේ ස්පීකරය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
+    <string name="multisound_sound_via_phone_speaker">%s හඬ ඔබේ ටැබ්ලටයේ ස්පීකරය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">හඬ ඔබේ ටැබ්ලටයේ ස්පීකරය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="multisound_sound_via_usb_audio">%s හඬ ඔබේ USB ශ්‍රව්‍ය උපාංගය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">හඬ ඔබේ USB ශ්‍රව්‍ය උපාංගය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="multisound_title">යෙදුම් සඳහා වෙනම හඬ</string>
     <string name="multisound_turn_off_multisound">ක්‍රියාවි. ක.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX තුළ ධාවනය කළ නොහැක. දුරකථන ප්‍රකාරයෙන් ධාවනය කිරීමට උත්සාහ කරන්න.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX තුළ ධාවනය කළ නොහැක. එය දුරකථන මුල් තිර සඳහා නිර්මාණය කර ඇත.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">සමහර ක්‍රීඩා ස්පර්ශ තිරවල පමණක් වැඩ කරයි. Samsung DeX තුළ මූසික පාලන වැඩ නොකරයි නම්, ඒ වෙනුවට දුරකථන ප්‍රකාරයේ ක්‍රීඩා කිරීමට උත්සාහ කරන්න.</string>
-    <string name="my_device">මෙම දුරකථනය</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX තුළ ධාවනය කළ නොහැක. ටැබ්ලට ප්‍රකාරයෙන් ධාවනය කිරීමට උත්සාහ කරන්න.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX තුළ ධාවනය කළ නොහැක. එය ටැබ්ලට මුල් තිර සඳහා නිර්මාණය කර ඇත.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">සමහර ක්‍රීඩා ස්පර්ශ තිරවල පමණක් වැඩ කරයි. Samsung DeX තුළ මූසික පාලන වැඩ නොකරයි නම්, ඒ වෙනුවට ටැබ්ලට ප්‍රකාරයේ ක්‍රීඩා කිරීමට උත්සාහ කරන්න.</string>
+    <string name="my_device">මෙම ටැබ්ලටය</string>
     <string name="network_locked_sim_dialog_message_ais">ඔබේ SIM කාඩ්පත මෙම දුරකථනය සමග සම්පූර්ණයෙන්ම ක්‍රියාත්මක නොවන්නේ එය ඔබේ දායකත්ව නියමයන් සහ කොන්දේසි සමග අනුකූල නොවන බැවිනි. ඔබට කිසියම් ප්‍රශ්නයක් ඇත්නම් හෝ මේ පිළිබඳව වැඩිදුර තොරතුරු අවශ්‍ය නම්, මෙම නිෂ්පාදන ඔබට අලෙවි කළ Samsung පාරිභෝගික සේවා පිහිටීම හෝ වෙළඳසැල අමතන්න.</string>
     <string name="network_locked_sim_notification_text">ජාලය අගුලු දැමූ SIM කාඩ්පත ඇතුළු කර ඇත.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -783,7 +783,7 @@
     <string name="policydesc_allow_desktopsync">වැඩතල සමමුහුව භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_internetsharing">ජංගම හොට්ස්පොට් භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_irda">IrDA භාවිතය වළක්වන්න.</string>
-    <string name="policydesc_allow_popimapemail">දුරකථනයෙන් POP සහ IMAP ඊමේල් භාවිතය වළක්වන්න.</string>
+    <string name="policydesc_allow_popimapemail">ටැබ්ලටයේ POP සහ IMAP ඊමේල් භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_storagecard">SD කාඩ්පත් භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_textmessaging">පෙළ සහ බහුමාධ්‍ය පණිවිඩකරණය භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_thirdParty">මෙම යෙදුමට තෙවන-පාර්ශ්ව යෙදුම් ධාවනය වීම වළක්වාලිය හැක.</string>
@@ -828,7 +828,7 @@
     <string name="pwd_change_enforced">ආරක්ෂක ප්‍රතිපත්තිය මඟින් ඔබේ මුරපදය වෙනස් කරන ලෙස ඉල්ලා සිටී.</string>
     <string name="recording_fail">%2$s තුළ භාවිතා වන අතරේ %1$s තුළ මයික්‍රෆෝනය භාවිතා කළ නොහැක.</string>
     <string name="recording_popup">%s මයික්‍රෆෝනය භාවිතා කරයි.</string>
-    <string name="recording_popup_device">දුරකථනය</string>
+    <string name="recording_popup_device">ටැබ්ලටය</string>
     <string name="recording_popup_with_bluetooth">%s බ්ලූටූත් මයික්‍රෆෝනය භාවිතා කරයි.</string>
     <string name="recording_popup_with_device">%1$s %2$sගේ මයික්‍රෆෝනය භාවිතා කරයි.</string>
     <string name="redo">යළි කරන්න</string>
@@ -892,12 +892,12 @@
     <string name="screencapture_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් තිර ග්‍රහණය භාවිතය වළක්වයි.</string>
     <string name="sd_card_unavailable_message">වෙනස් පරිශීලක පැතිකඩක් භාවිතයේ තිබෙන අතරේ ඇතුළත් කළ නිසා ඔබට SD කාඩ්පත භාවිතා කළ නොහැක.</string>
     <string name="sd_card_unavailable_title">SD කාඩ්පත නොමැත</string>
-    <string name="sdcard_bad_removal_message">SD කාඩ්පතක් අනාරක්ෂිතව ඉවත් කර ඇත. ඔබේ දුරකථනය අනපේක්ෂිත ලෙස යළි ඇරඹීමෙන් වැළැක්වීම සඳහා, නොසුරැකි දත්ත සුරැක දැන් යළි අරඹන්න.</string>
+    <string name="sdcard_bad_removal_message">SD කාඩ්පතක් අනාරක්ෂිතව ඉවත් කර ඇත. ඔබේ ටැබ්ලටය අනපේක්ෂිත ලෙස යළි ඇරඹීමෙන් වැළැක්වීම සඳහා, නොසුරැකි දත්ත සුරැක දැන් යළි අරඹන්න.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD කාඩ්පත විකේතනය කරන්න</string>
     <string name="sdcard_batch_decrypt_noti_title">SD කාඩ්පත් විකේතනය</string>
     <string name="sdcard_batch_decrypt_popup_content">සංකේතිත SD කාඩ්පත භාවිතා කිරීමට පෙර විකේතනය කළ යුතුය. විකේතනය සඳහා පැයක් හෝ ඊට වඩා වැඩි කාලයක් ගත වනු ඇත. චාර්ජ් වු බැටරියක් ආරම්භ කර විකේතනය සම්පුර්ණයෙන්ම නිම වන තෙක් උපාංගය පේනුවෙන් ඉවත් කර තබන්න. විකේතන ක්‍රියාවලියට බාධා කිරීමෙන් දත්ත සමහරක් හෝ සියල්ල අහිමි වීමට හේතු විය හැකිය.</string>
     <string name="sdcard_decrypt_err_notification">SD කාඩ්පත විකේතනයේදී දෝෂයක් මතුවිය.</string>
-    <string name="sdcard_decrypt_error_otherdevice">ඔබේ SD කාඩ්පතෙහි සමහර ගොනු වෙනත් උපාංගයක සංකේතනය කර ඇති අතර මෙම දුරකථනයෙහි භාවිතා කළ නොහැක.</string>
+    <string name="sdcard_decrypt_error_otherdevice">ඔබේ SD කාඩ්පතෙහි සමහර ගොනු වෙනත් උපාංගයක සංකේතනය කර ඇති අතර මෙම ටැබ්ලටයෙහි භාවිතා කළ නොහැක.</string>
     <string name="sdcard_decrypt_notification">SD කාඩ්පත විකේතනය කෙරිණ.</string>
     <string name="sdcard_decrypt_title_notification">SD කාඩ්පත් විකේතනය</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD කාඩ්පත ගුප්ත වි. කර…</string>
@@ -1223,7 +1223,7 @@
     <string name="usb_abnormal_reset_title">USB සබැඳුම ස්ථායී නොවේ</string>
     <string name="usb_abnormal_reset_toast">USB සබැඳුම ස්ථායී නොවේ. කේබලය ගලවා නැවත එය පේනු වද්දන්න, හෝ වෙනස් කේබලයක් උත්සාහ කරන්න.</string>
     <string name="usb_accessory_notification_title">USB මෙවලමකට සම්බන්ධිතයි</string>
-    <string name="usb_bad_removal_message">USB ගබඩා උපාංගයක් අනාරක්ෂිතව ඉවත් කර ඇත. ඔබේ දුරකථනය අනපේක්ෂිත ලෙස යළි ඇරඹීමෙන් වැළැක්වීම සඳහා, නොසුරැකි දත්ත සුරැක දැන් යළි අරඹන්න.</string>
+    <string name="usb_bad_removal_message">USB ගබඩා උපාංගයක් අනාරක්ෂිතව ඉවත් කර ඇත. ඔබේ ටැබ්ලටය අනපේක්ෂිත ලෙස යළි ඇරඹීමෙන් වැළැක්වීම සඳහා, නොසුරැකි දත්ත සුරැක දැන් යළි අරඹන්න.</string>
     <string name="usb_blocked_by_emergency_mode">සමහර USB ක්‍රියාදාමයන් හදිසි ප්‍රකාරයේ නොමැත.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">උපරිම බල සුරැකුම් ප්‍රකාරය සක්‍රිය අතරතුර සම්බන්ධිත USB උපාංගයට අදාළ ක්‍රියාදාම භාවිතා කළ නොහැකිය.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">උපරිම බල සුරැකුම් ප්‍රකාරය ක්‍රියාත්මක අතරේ සමහර USB ක්‍රියාදාමයන් සීමා වනු ඇත.</string>
@@ -1231,13 +1231,13 @@
     <string name="usb_camera_connected_notification_title">මාධ්‍ය උපාංගය සබැඳිණි</string>
     <string name="usb_camera_disconnected_notification_title">මාධ්‍ය උපාංගය විසන්ධි කෙරිණි</string>
     <string name="usb_cd_installer_notification_title">මෘදුකාංග යාවත්කාලය</string>
-    <string name="usb_charing_only_notification_title">USB චාර්ජ් වීම</string>
+    <string name="usb_charing_only_notification_title">සම්බන්ධිතයි</string>
     <string name="usb_debugging_only_notification_title">නිදොස් කිරීම පමණි</string>
-    <string name="usb_host_resource_exceed_message">ඔබේ දුරකථනයේ USB පාලකයට මෙම උපාංගය සබැඳීමට ප්‍රමාණවත් සම්පත් නොමැත. උපාංගය විසන්ධි කර එය නැවත සබැඳීමට උත්සාහ කරන්න.</string>
+    <string name="usb_host_resource_exceed_message">ඔබේ ටැබ්ලටයේ USB පාලකයට මෙම උපාංගය සබැඳීමට ප්‍රමාණවත් සම්පත් නොමැත. උපාංගය විසන්ධි කර එය නැවත සබැඳීමට උත්සාහ කරන්න.</string>
     <string name="usb_host_resource_exceed_title">USB පාලක සම්පත් ප්‍රමාණවත් නොවේ</string>
-    <string name="usb_hub_depth_exceed_message">ඔබේ දුරකථනයට එකවර සහාය දැක්විය හැක්කේ USB නාභි සබැඳුම් 5ක් දක්වා පමණි.</string>
+    <string name="usb_hub_depth_exceed_message">ඔබේ ටැබ්ලටයට එකවර සහාය දැක්විය හැක්කේ USB නාභි සබැඳුම් 5ක් දක්වා පමණි.</string>
     <string name="usb_hub_depth_exceed_title">උපරිම USB නාභි සබැඳුම්</string>
-    <string name="usb_hub_power_exceed_message">ඔබේ දුරකථනයට මෙම USB උපාංගය සඳහා ප්‍රමාණවත් බලයක් සැපයිය නොහැක. ඔබේ දුරකථනයට සබැඳීමට පෙර උපාංගය ස්වයං-බලැති USB නාභියකට සබඳින්න.</string>
+    <string name="usb_hub_power_exceed_message">ඔබේ ටැබ්ලටයට මෙම USB උපාංගය සඳහා ප්‍රමාණවත් බලයක් සැපයිය නොහැක. ඔබේ ටැබ්ලටයට සබැඳීමට පෙර උපාංගය ස්වයං-බලැති USB නාභියකට සබඳින්න.</string>
     <string name="usb_increase_battery_usage">USB සබැඳුම බැටරි භාවිතය ඉහළ නැංවිය හැක.</string>
     <string name="usb_mass_storage_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් USB අධි ගබඩාව භාවිතය වළක්වයි.</string>
     <string name="usb_midi_notification_title">MIDI සඳහා USB</string>
@@ -1262,8 +1262,8 @@
     <string name="usb_storage_stop_title">USB ආචයනය භාවිතයේ පවතී</string>
     <string name="usb_storage_title">USB සම්බන්ධිතයි</string>
     <string name="usb_type_c_supply_power_notification_title">සම්බන්ධිත උපාංගය USB චාර්ජ් වේ</string>
-    <string name="usb_unblock_by_screen_unlock">සම්බන්ධිත USB උපාංගය භාවිතා කිරීමට ඔබේ දුරකථනය අගුළු හරින්න.</string>
-    <string name="usb_unsupport_accessory_message">මෙම USB උපාංගයට ඔබේ දුරකථනය සහාය නොදක්වයි.</string>
+    <string name="usb_unblock_by_screen_unlock">සම්බන්ධිත USB උපාංගය භාවිතා කිරීමට ඔබේ ටැබ්ලටය අගුළු හරින්න.</string>
+    <string name="usb_unsupport_accessory_message">මෙම USB උපාංගයට ඔබේ ටැබ්ලටය සහාය නොදක්වයි.</string>
     <string name="usb_unsupport_accessory_title">USB උපාංගය සහාය නොදක්වයි</string>
     <string name="usb_unsupported_device">සම්බන්ධිත USB උපාංගය සහාය නොදක්වයි.</string>
     <string name="usb_unsupported_device_title">උපාංගය සහාය නොදක්වයි</string>
@@ -1281,19 +1281,19 @@
     <string name="usb_water_dialg_method_2_desc_2">ඔබට කවුළුව දෙසට පංකාවක් හෝ වියළනයක් (සිසිල් වාතය පමණි) යොමු කිරීමෙන් වියළීම වේගවත් කළ හැකිය.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ඔබේ චාර්ජ් වීමේ/USB පෝටයේ තෙතමනය හෝ සම්බන්ධකමක් නැති ද්‍රව්‍ය අපි අනාවරණය කර ගෙන ඇත්තෙමු.
 
-දූවිලි හෝ සුන්බුන් වැනි ඕනෑම සම්බන්ධකමක් නැති ද්‍රව්‍යයක් සඳහා ඔබේ චාර්ජ් කිරීමේ/USB පෝටය පරීක්ෂා කරන්න. ඔබේ දුරකථනයට වන හානිය වැළැක්වීම සඳහා, චාර්ජ් කිරීමේ පෝටය පිරිසිදු වී තෙතමනය නැති වන තුරු කිසිවක් පේනුගත නොකරන්න.
+දූවිලි හෝ සුන්බුන් වැනි ඕනෑම සම්බන්ධකමක් නැති ද්‍රව්‍යයක් සඳහා ඔබේ චාර්ජ් කිරීමේ/USB පෝටය පරීක්ෂා කරන්න. ඔබේ ටැබ්ලටයට වන හානිය වැළැක්වීම සඳහා, චාර්ජ් කිරීමේ පෝටය පිරිසිදු වී තෙතමනය නැති වන තුරු කිසිවක් පේනුගත නොකරන්න.
 
 පෝටය වියළීම සඳහා, ඕනෑම තෙතමනයක් සොලවා, එය පැය කිහිපයක් ගත වනු ඇති, වියළී යන තෙක් රැඳී සිටින්න. ඔබට පෝටය දෙසට පංකාවක් හෝ වියළනයක් (සිසිල් වාතය පමණි) යොමු කිරීමෙන් වියළීම වේගවත් කළ හැක."</string>
     <string name="usb_water_dialg_positive_button">හරි</string>
     <string name="usb_water_dialg_support_wireless_charging">"ඔබේ චාර්ජ් වීමේ/USB පෝටයේ තෙතමනය හෝ සම්බන්ධකමක් නැති ද්‍රව්‍ය අපි අනාවරණය කර ගෙන ඇත්තෙමු.
 
-දූවිලි හෝ සුන්බුන් වැනි ඕනෑම සම්බන්ධකමක් නැති ද්‍රව්‍යයක් සඳහා ඔබේ චාර්ජ් කිරීමේ/USB පෝටය පරීක්ෂා කරන්න. ඔබේ දුරකථනයට වන හානිය වැළැක්වීම සඳහා, චාර්ජ් කිරීමේ පෝටය පිරිසිදු වී තෙතමනය නැති වන තුරු කිසිවක් පේනුගත නොකරන්න.
+දූවිලි හෝ සුන්බුන් වැනි කිසියම් සම්බන්ධකමක් නැති ද්‍රව්‍යයක් සඳහා ඔබේ චාර්ජ් කිරීමේ/USB පෝටය පරීක්ෂා කරන්න. ඔබේ ටැබ්ලටයට වන හානිය වැළැක්වීම සඳහා, චාර්ජ් කිරීමේ කවුළුව පිරිසිදු වන තුරු සහ තෙතමනය නැති වී යන තුරු කිසිවක් පේනු වැද්දීම නොකරන්න.
 
-පෝටය වියළීම සඳහා, ඕනෑම තෙතමනයක් සොලවා, එය පැය කිහිපයක් ගත වනු ඇති, වියළී යන තෙක් රැඳී සිටින්න. ඔබට පෝටය දෙසට පංකාවක් හෝ වියළනයක් (සිසිල් වාතය පමණි) යොමු කිරීමෙන් වියළීම වේගවත් කළ හැක.
+කවුළුව වියළීම සඳහා, කිසියම් තෙතමනයක් සොලවා, එය පැය කිහිපයක් ගත වනු ඇති, වියළී යන තෙක් රැඳී සිටින්න. ඔබට පෝටය දෙසට පංකාවක් හෝ වියළනයක් (සිසිල් වාතය පමණි) යොමු කිරීමෙන් වියළීම වේගවත් කළ හැක.
 
-මේ අතරතුර, ඔබට නොරැහැන්ව ඔබේ දුරකථනය චාර්ජ් කළ හැක."</string>
+මේ අතරතුර, ඔබට නොරැහැන්ව ඔබේ ටැබ්ලටය චාර්ජ් කළ හැක."</string>
     <string name="usb_water_notification_content">ඔබේ චාර්ජ් කිරීමේ/USB පෝටයේ තෙතමනය හෝ සම්බන්ධකමක් නැති ද්‍රව්‍ය තිබේ. චාර්ජ් කිරීමට පෙර පරීක්ෂා කරන්න.</string>
-    <string name="usb_water_notification_message">ඔබේ චාර්ජරය/USB කවුළුව තුළ තෙතමනය අනාවරණය වී ඇත. ඔබේ දුරකථනය චාර්ජ් කිරීමට පෙර එය වියළි බවට වග බලා ගන්න. සම්පූර්ණයෙන්ම වියළි වීමට යම් කාලයක් ගත විය හැකිය.</string>
+    <string name="usb_water_notification_message">ඔබේ චාර්ජරය/USB කවුළුව තුළ තෙතමනය අනාවරණය වී ඇත. ඔබේ ටැබ්ලටය චාර්ජ් කිරීමට පෙර එය වියළි බවට වග බලා ගන්න. සම්පූර්ණයෙන්ම වියළි වීමට යම් කාලයක් ගත විය හැකිය.</string>
     <string name="usb_water_notification_message_button">විස්තර</string>
     <string name="usb_water_notification_title">චාජරය/USB කවුළුව පිරික්සන්න</string>
     <string name="usbhostStorage_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් USB සත්කාරක ගබඩාව භාවිතය වළක්වයි.</string>

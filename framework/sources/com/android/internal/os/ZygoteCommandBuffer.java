@@ -24,7 +24,6 @@ class ZygoteCommandBuffer implements AutoCloseable {
 
     private static native void nativeReadFullyAndReset(long j);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ZygoteCommandBuffer(LocalSocket socket) {
         this.mSocket = socket;
         if (socket == null) {
@@ -35,7 +34,6 @@ class ZygoteCommandBuffer implements AutoCloseable {
         this.mNativeBuffer = getNativeBuffer(this.mNativeSocket);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
     public ZygoteCommandBuffer(String[] args) {
         this((LocalSocket) null);
@@ -48,7 +46,6 @@ class ZygoteCommandBuffer implements AutoCloseable {
         this.mNativeBuffer = 0L;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getCount() {
         try {
             return nativeGetCount(this.mNativeBuffer);
@@ -65,7 +62,6 @@ class ZygoteCommandBuffer implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String nextArg() {
         try {
             return nativeNextArg(this.mNativeBuffer);
@@ -82,7 +78,6 @@ class ZygoteCommandBuffer implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean forkRepeatedly(FileDescriptor zygoteSocket, int expectedUid, int minUid, String firstNiceName) {
         try {
             return nativeForkRepeatedly(this.mNativeBuffer, zygoteSocket.getInt$(), expectedUid, minUid, firstNiceName);

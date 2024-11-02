@@ -11,7 +11,6 @@ public class PlayerProxy {
     private static final String TAG = "PlayerProxy";
     private final AudioPlaybackConfiguration mConf;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PlayerProxy(AudioPlaybackConfiguration apc) {
         if (apc == null) {
             throw new IllegalArgumentException("Illegal null AudioPlaybackConfiguration");

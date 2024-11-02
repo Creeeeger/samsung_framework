@@ -26,13 +26,14 @@ public final class InstantAppResolveInfo implements Parcelable {
     private final long mVersionCode;
     private static final byte[] EMPTY_DIGEST = new byte[0];
     public static final Parcelable.Creator<InstantAppResolveInfo> CREATOR = new Parcelable.Creator<InstantAppResolveInfo>() { // from class: android.content.pm.InstantAppResolveInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InstantAppResolveInfo createFromParcel(Parcel in) {
             return new InstantAppResolveInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppResolveInfo[] newArray(int size) {
             return new InstantAppResolveInfo[size];
@@ -143,6 +144,23 @@ public final class InstantAppResolveInfo implements Parcelable {
         out.writeLong(this.mVersionCode);
     }
 
+    /* renamed from: android.content.pm.InstantAppResolveInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InstantAppResolveInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstantAppResolveInfo createFromParcel(Parcel in) {
+            return new InstantAppResolveInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstantAppResolveInfo[] newArray(int size) {
+            return new InstantAppResolveInfo[size];
+        }
+    }
+
     @SystemApi
     /* loaded from: classes.dex */
     public static final class InstantAppDigest implements Parcelable {
@@ -162,7 +180,9 @@ public final class InstantAppResolveInfo implements Parcelable {
                 sRandom = new Random();
             }
             CREATOR = new Parcelable.Creator<InstantAppDigest>() { // from class: android.content.pm.InstantAppResolveInfo.InstantAppDigest.1
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Parcelable.Creator
                 public InstantAppDigest createFromParcel(Parcel in) {
                     if (in.readBoolean()) {
@@ -171,7 +191,6 @@ public final class InstantAppResolveInfo implements Parcelable {
                     return new InstantAppDigest(in);
                 }
 
-                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public InstantAppDigest[] newArray(int size) {
                     return new InstantAppDigest[size];
@@ -303,6 +322,26 @@ public final class InstantAppResolveInfo implements Parcelable {
             }
             out.writeIntArray(this.mDigestPrefix);
             out.writeIntArray(this.mDigestPrefixSecure);
+        }
+
+        /* renamed from: android.content.pm.InstantAppResolveInfo$InstantAppDigest$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<InstantAppDigest> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InstantAppDigest createFromParcel(Parcel in) {
+                if (in.readBoolean()) {
+                    return InstantAppDigest.UNDEFINED;
+                }
+                return new InstantAppDigest(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InstantAppDigest[] newArray(int size) {
+                return new InstantAppDigest[size];
+            }
         }
     }
 }

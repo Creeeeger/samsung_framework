@@ -73,12 +73,14 @@ public class MediaRouteControllerDialog extends AlertDialog {
         return this.mVolumeControlEnabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.AlertDialog, android.app.Dialog
     public void onCreate(Bundle savedInstanceState) {
         setTitle(this.mRoute.getName());
         Resources res = getContext().getResources();
         setButton(-2, res.getString(R.string.media_route_controller_disconnect), new DialogInterface.OnClickListener() { // from class: com.android.internal.app.MediaRouteControllerDialog.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.DialogInterface.OnClickListener
             public void onClick(DialogInterface dialogInterface, int id) {
                 if (MediaRouteControllerDialog.this.mRoute.isSelected()) {
@@ -103,6 +105,9 @@ public class MediaRouteControllerDialog extends AlertDialog {
         this.mVolumeSlider = seekBar;
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.android.internal.app.MediaRouteControllerDialog.2
             private final Runnable mStopTrackingTouch = new Runnable() { // from class: com.android.internal.app.MediaRouteControllerDialog.2.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (MediaRouteControllerDialog.this.mVolumeSliderTouched) {
@@ -111,6 +116,25 @@ public class MediaRouteControllerDialog extends AlertDialog {
                     }
                 }
             };
+
+            /* JADX INFO: Access modifiers changed from: package-private */
+            /* renamed from: com.android.internal.app.MediaRouteControllerDialog$2$1 */
+            /* loaded from: classes4.dex */
+            public class AnonymousClass1 implements Runnable {
+                AnonymousClass1() {
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (MediaRouteControllerDialog.this.mVolumeSliderTouched) {
+                        MediaRouteControllerDialog.this.mVolumeSliderTouched = false;
+                        MediaRouteControllerDialog.this.updateVolume();
+                    }
+                }
+            }
+
+            AnonymousClass2() {
+            }
 
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onStartTrackingTouch(SeekBar seekBar2) {
@@ -148,6 +172,83 @@ public class MediaRouteControllerDialog extends AlertDialog {
         }
     }
 
+    /* renamed from: com.android.internal.app.MediaRouteControllerDialog$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements DialogInterface.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.DialogInterface.OnClickListener
+        public void onClick(DialogInterface dialogInterface, int id) {
+            if (MediaRouteControllerDialog.this.mRoute.isSelected()) {
+                if (MediaRouteControllerDialog.this.mRoute.isBluetooth()) {
+                    MediaRouteControllerDialog.this.mRouter.getDefaultRoute().select();
+                } else {
+                    MediaRouteControllerDialog.this.mRouter.getFallbackRoute().select();
+                }
+            }
+            MediaRouteControllerDialog.this.dismiss();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.MediaRouteControllerDialog$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements SeekBar.OnSeekBarChangeListener {
+        private final Runnable mStopTrackingTouch = new Runnable() { // from class: com.android.internal.app.MediaRouteControllerDialog.2.1
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (MediaRouteControllerDialog.this.mVolumeSliderTouched) {
+                    MediaRouteControllerDialog.this.mVolumeSliderTouched = false;
+                    MediaRouteControllerDialog.this.updateVolume();
+                }
+            }
+        };
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.android.internal.app.MediaRouteControllerDialog$2$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (MediaRouteControllerDialog.this.mVolumeSliderTouched) {
+                    MediaRouteControllerDialog.this.mVolumeSliderTouched = false;
+                    MediaRouteControllerDialog.this.updateVolume();
+                }
+            }
+        }
+
+        AnonymousClass2() {
+        }
+
+        @Override // android.widget.SeekBar.OnSeekBarChangeListener
+        public void onStartTrackingTouch(SeekBar seekBar2) {
+            if (MediaRouteControllerDialog.this.mVolumeSliderTouched) {
+                MediaRouteControllerDialog.this.mVolumeSlider.removeCallbacks(this.mStopTrackingTouch);
+            } else {
+                MediaRouteControllerDialog.this.mVolumeSliderTouched = true;
+            }
+        }
+
+        @Override // android.widget.SeekBar.OnSeekBarChangeListener
+        public void onStopTrackingTouch(SeekBar seekBar2) {
+            MediaRouteControllerDialog.this.mVolumeSlider.postDelayed(this.mStopTrackingTouch, 250L);
+        }
+
+        @Override // android.widget.SeekBar.OnSeekBarChangeListener
+        public void onProgressChanged(SeekBar seekBar2, int progress, boolean fromUser) {
+            if (fromUser) {
+                MediaRouteControllerDialog.this.mRoute.requestSetVolume(progress);
+            }
+        }
+    }
+
     @Override // android.app.Dialog, android.view.Window.Callback
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -180,7 +281,6 @@ public class MediaRouteControllerDialog extends AlertDialog {
         return super.onKeyUp(keyCode, event);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean update() {
         if (!this.mRoute.isSelected() || this.mRoute.isDefault()) {
             dismiss();
@@ -235,7 +335,6 @@ public class MediaRouteControllerDialog extends AlertDialog {
         return stateListDrawable2.getCurrent();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateVolume() {
         if (!this.mVolumeSliderTouched) {
             if (isVolumeControlAvailable()) {
@@ -252,8 +351,13 @@ public class MediaRouteControllerDialog extends AlertDialog {
         return this.mVolumeControlEnabled && this.mRoute.getVolumeHandling() == 1;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private final class MediaRouterCallback extends MediaRouter.SimpleCallback {
+    public final class MediaRouterCallback extends MediaRouter.SimpleCallback {
+        /* synthetic */ MediaRouterCallback(MediaRouteControllerDialog mediaRouteControllerDialog, MediaRouterCallbackIA mediaRouterCallbackIA) {
+            this();
+        }
+
         private MediaRouterCallback() {
         }
 

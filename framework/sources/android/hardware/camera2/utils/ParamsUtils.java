@@ -54,7 +54,7 @@ public class ParamsUtils {
         int den = 1000000;
         while (true) {
             numF = den * value;
-            if ((numF <= -2.1474836E9f || numF >= 2.1474836E9f) && den != 1) {
+            if ((numF <= -2.14748365E9f || numF >= 2.14748365E9f) && den != 1) {
                 den /= 10;
             }
         }

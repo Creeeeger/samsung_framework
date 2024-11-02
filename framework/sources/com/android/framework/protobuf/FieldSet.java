@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class FieldSet<T extends FieldDescriptorLite<T>> {
     private static final int DEFAULT_FIELD_MAP_ARRAY_SIZE = 16;
@@ -68,7 +67,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return new Builder<>((AnonymousClass1) null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isEmpty() {
         return this.fields.isEmpty();
     }
@@ -106,8 +104,8 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return this.fields.hashCode();
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public FieldSet<T> m7009clone() {
+    /* renamed from: clone */
+    public FieldSet<T> m7004clone() {
         FieldSet<T> clone = newFieldSet();
         for (int i = 0; i < this.fields.getNumArrayEntries(); i++) {
             Map.Entry<T, Object> entry = this.fields.getArrayEntryAt(i);
@@ -136,7 +134,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends FieldDescriptorLite<T>> SmallSortedMap<T, Object> cloneAllFieldsMap(SmallSortedMap<T, Object> fields, boolean copyList) {
         SmallSortedMap<T, Object> result = SmallSortedMap.newFieldMap(16);
         for (int i = 0; i < fields.getNumArrayEntries(); i++) {
@@ -167,7 +164,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return this.fields.entrySet().iterator();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Iterator<Map.Entry<T, Object>> descendingIterator() {
         if (this.hasLazyField) {
             return new LazyField.LazyIterator(this.fields.descendingEntrySet().iterator());
@@ -273,7 +269,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidType(WireFormat.FieldType type, Object value) {
         Internal.checkNotNull(value);
         switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$JavaType[type.getJavaType().ordinal()]) {
@@ -314,7 +309,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends FieldDescriptorLite<T>> boolean isInitialized(Map.Entry<T, Object> entry) {
         T descriptor = entry.getKey();
         if (descriptor.getLiteJavaType() == WireFormat.JavaType.MESSAGE) {
@@ -341,7 +335,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         throw new IllegalArgumentException("Wrong object type used with protocol message reflection.");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getWireFormatForFieldType(WireFormat.FieldType type, boolean isPacked) {
         if (isPacked) {
             return 2;
@@ -358,7 +351,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Object cloneIfMutable(Object value) {
         if (value instanceof byte[]) {
             byte[] bytes = (byte[]) value;
@@ -438,7 +430,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         writeField(descriptor, entry.getValue(), output);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void writeElement(CodedOutputStream output, WireFormat.FieldType type, int number, Object value) throws IOException {
         if (type == WireFormat.FieldType.GROUP) {
             output.writeGroup(number, (MessageLite) value);
@@ -448,8 +439,7 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.FieldSet$1, reason: invalid class name */
+    /* renamed from: com.android.framework.protobuf.FieldSet$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
@@ -711,7 +701,6 @@ public final class FieldSet<T extends FieldDescriptorLite<T>> {
         return computeFieldSize(descriptor, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int computeElementSize(WireFormat.FieldType type, int number, Object value) {
         int tagSize = CodedOutputStream.computeTagSize(number);
         if (type == WireFormat.FieldType.GROUP) {

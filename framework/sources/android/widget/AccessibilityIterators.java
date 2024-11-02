@@ -10,7 +10,6 @@ final class AccessibilityIterators {
     AccessibilityIterators() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class LineTextSegmentIterator extends AccessibilityIterators.AbstractTextSegmentIterator {
         protected static final int DIRECTION_END = 1;

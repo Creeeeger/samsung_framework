@@ -607,9 +607,64 @@ public final class ArrayMap<K, V> implements Map<K, V> {
         return buffer.toString();
     }
 
+    /* renamed from: android.util.ArrayMap$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends MapCollections<K, V> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.MapCollections
+        protected int colGetSize() {
+            return ArrayMap.this.mSize;
+        }
+
+        @Override // android.util.MapCollections
+        protected Object colGetEntry(int index, int offset) {
+            return ArrayMap.this.mArray[(index << 1) + offset];
+        }
+
+        @Override // android.util.MapCollections
+        protected int colIndexOfKey(Object key) {
+            return ArrayMap.this.indexOfKey(key);
+        }
+
+        @Override // android.util.MapCollections
+        protected int colIndexOfValue(Object value) {
+            return ArrayMap.this.indexOfValue(value);
+        }
+
+        @Override // android.util.MapCollections
+        protected Map<K, V> colGetMap() {
+            return ArrayMap.this;
+        }
+
+        @Override // android.util.MapCollections
+        protected void colPut(K key, V value) {
+            ArrayMap.this.put(key, value);
+        }
+
+        @Override // android.util.MapCollections
+        protected V colSetValue(int i, V v) {
+            return (V) ArrayMap.this.setValueAt(i, v);
+        }
+
+        @Override // android.util.MapCollections
+        protected void colRemoveAt(int index) {
+            ArrayMap.this.removeAt(index);
+        }
+
+        @Override // android.util.MapCollections
+        protected void colClear() {
+            ArrayMap.this.clear();
+        }
+    }
+
     private MapCollections<K, V> getCollection() {
         if (this.mCollections == null) {
             this.mCollections = new MapCollections<K, V>() { // from class: android.util.ArrayMap.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.util.MapCollections
                 protected int colGetSize() {
                     return ArrayMap.this.mSize;

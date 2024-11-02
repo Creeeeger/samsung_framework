@@ -99,8 +99,8 @@ public final class SmsApplication {
     private static StringBuffer mLogStb = new StringBuffer();
     private static SemDMACdata sDMACdata = new SemDMACdata();
 
-    /* renamed from: -$$Nest$smgetIncomingUserId, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m7531$$Nest$smgetIncomingUserId() {
+    /* renamed from: -$$Nest$smgetIncomingUserId */
+    static /* bridge */ /* synthetic */ int m7526$$Nest$smgetIncomingUserId() {
         return getIncomingUserId();
     }
 
@@ -355,7 +355,6 @@ public final class SmsApplication {
         return applicationData;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String getDefaultSmsPackage(Context context, int userId) {
         return ((RoleManager) context.getSystemService(RoleManager.class)).getSmsRoleHolder(userId);
     }
@@ -483,7 +482,6 @@ public final class SmsApplication {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$setDefaultApplicationInternal$0(CompletableFuture future, Boolean successful) {
         if (successful.booleanValue()) {
             future.complete(null);
@@ -511,7 +509,6 @@ public final class SmsApplication {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void broadcastSmsAppChange(Context context, UserHandle userHandle, String oldPackage, String newPackage) {
         Collection<SmsApplicationData> apps = getApplicationCollection(context);
         broadcastSmsAppChange(context, userHandle, getApplicationForPackage(apps, oldPackage), getApplicationForPackage(apps, newPackage));
@@ -564,8 +561,9 @@ public final class SmsApplication {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static final class SmsPackageMonitor extends PackageChangeReceiver {
+    public static final class SmsPackageMonitor extends PackageChangeReceiver {
         private static ThreadPoolExecutor threadPool = new ThreadPoolExecutor(1, 30, 60, TimeUnit.MINUTES, new LinkedBlockingQueue());
         final Context mContext;
 
@@ -603,8 +601,14 @@ public final class SmsApplication {
                 } catch (PackageManager.NameNotFoundException e2) {
                 }
             }
-            final Context threadContext = userContext;
+            Context threadContext = userContext;
             threadPool.execute(new Runnable() { // from class: com.android.internal.telephony.SmsApplication.SmsPackageMonitor.1
+                final /* synthetic */ Context val$threadContext;
+
+                AnonymousClass1(Context threadContext2) {
+                    threadContext = threadContext2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     Rlog.d(SmsApplication.LOG_TAG, "onPackageChanged: run");
@@ -616,6 +620,27 @@ public final class SmsApplication {
                     Rlog.d(SmsApplication.LOG_TAG, "onPackageChanged: end");
                 }
             });
+        }
+
+        /* renamed from: com.android.internal.telephony.SmsApplication$SmsPackageMonitor$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ Context val$threadContext;
+
+            AnonymousClass1(Context threadContext2) {
+                threadContext = threadContext2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                Rlog.d(SmsApplication.LOG_TAG, "onPackageChanged: run");
+                PackageManager packageManager = threadContext.getPackageManager();
+                ComponentName componentName = SmsApplication.getDefaultSendToApplication(threadContext, true);
+                if (componentName != null) {
+                    SmsApplication.configurePreferredActivity(packageManager, componentName);
+                }
+                Rlog.d(SmsApplication.LOG_TAG, "onPackageChanged: end");
+            }
         }
     }
 
@@ -663,7 +688,6 @@ public final class SmsApplication {
         sSmsRoleListener = new SmsRoleListener(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void configurePreferredActivity(PackageManager packageManager, ComponentName componentName) {
         replacePreferredActivity(packageManager, componentName, "sms");
         replacePreferredActivity(packageManager, componentName, SCHEME_SMSTO);
@@ -687,7 +711,6 @@ public final class SmsApplication {
         packageManager.replacePreferredActivity(intentFilter, 2129920, components, componentName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ComponentName lambda$replacePreferredActivity$1(ResolveInfo info) {
         return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
     }
@@ -1269,7 +1292,7 @@ public final class SmsApplication {
             String activeOperatorId = getActiveOperatorId();
             Log.i(SmsApplication.LOG_TAG, "setDefaultMsgAppFromConfig");
             SmsApplication.mLogStb.append("setDefaultMsgApp Config Info =");
-            int userId = SmsApplication.m7531$$Nest$smgetIncomingUserId();
+            int userId = SmsApplication.m7526$$Nest$smgetIncomingUserId();
             String oldPackageName = SmsApplication.getDefaultSmsPackage(this.mContext, userId);
             boolean carrierApp = false;
             if ("SBM".equals(activeOperatorId) || "DCM".equals(activeOperatorId) || "KDI".equals(activeOperatorId)) {
@@ -1300,7 +1323,10 @@ public final class SmsApplication {
         }
 
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Code restructure failed: missing block: B:34:0x0050, code lost:            if (r0.equals("DCM") != false) goto L22;     */
+        /* JADX WARN: Code restructure failed: missing block: B:34:0x0050, code lost:
+        
+            if (r0.equals("DCM") != false) goto L63;
+         */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1440,7 +1466,10 @@ public final class SmsApplication {
         }
 
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Code restructure failed: missing block: B:64:0x02c8, code lost:            if (r5.equals("111111") != false) goto L99;     */
+        /* JADX WARN: Code restructure failed: missing block: B:64:0x02c8, code lost:
+        
+            if (r5.equals("111111") != false) goto L268;
+         */
         /* JADX WARN: Failed to find 'out' block for switch in B:121:0x011b. Please report as an issue. */
         /*
             Code decompiled incorrectly, please refer to instructions dump.

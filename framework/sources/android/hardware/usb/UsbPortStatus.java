@@ -23,7 +23,9 @@ public final class UsbPortStatus implements Parcelable {
     public static final int CONTAMINANT_PROTECTION_SINK = 1;
     public static final int CONTAMINANT_PROTECTION_SOURCE = 2;
     public static final Parcelable.Creator<UsbPortStatus> CREATOR = new Parcelable.Creator<UsbPortStatus>() { // from class: android.hardware.usb.UsbPortStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UsbPortStatus createFromParcel(Parcel in) {
             int currentMode = in.readInt();
@@ -42,7 +44,6 @@ public final class UsbPortStatus implements Parcelable {
             return new UsbPortStatus(currentMode, currentPowerRole, currentDataRole, supportedRoleCombinations, contaminantProtectionStatus, contaminantDetectionStatus, usbDataStatus, powerTransferLimited, powerBrickConnectionStatus, complianceWarnings, plugState, displayPortAltModeInfo);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsbPortStatus[] newArray(int size) {
             return new UsbPortStatus[size];
@@ -254,6 +255,36 @@ public final class UsbPortStatus implements Parcelable {
         } else {
             dest.writeBoolean(true);
             this.mDisplayPortAltModeInfo.writeToParcel(dest, 0);
+        }
+    }
+
+    /* renamed from: android.hardware.usb.UsbPortStatus$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UsbPortStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsbPortStatus createFromParcel(Parcel in) {
+            int currentMode = in.readInt();
+            int currentPowerRole = in.readInt();
+            int currentDataRole = in.readInt();
+            int supportedRoleCombinations = in.readInt();
+            int contaminantProtectionStatus = in.readInt();
+            int contaminantDetectionStatus = in.readInt();
+            int usbDataStatus = in.readInt();
+            boolean powerTransferLimited = in.readBoolean();
+            int powerBrickConnectionStatus = in.readInt();
+            int[] complianceWarnings = in.createIntArray();
+            int plugState = in.readInt();
+            boolean supportsDisplayPortAltMode = in.readBoolean();
+            DisplayPortAltModeInfo displayPortAltModeInfo = supportsDisplayPortAltMode ? DisplayPortAltModeInfo.CREATOR.createFromParcel(in) : null;
+            return new UsbPortStatus(currentMode, currentPowerRole, currentDataRole, supportedRoleCombinations, contaminantProtectionStatus, contaminantDetectionStatus, usbDataStatus, powerTransferLimited, powerBrickConnectionStatus, complianceWarnings, plugState, displayPortAltModeInfo);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsbPortStatus[] newArray(int size) {
+            return new UsbPortStatus[size];
         }
     }
 

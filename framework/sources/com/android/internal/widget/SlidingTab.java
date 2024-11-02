@@ -63,7 +63,27 @@ public class SlidingTab extends ViewGroup {
         void onTrigger(View view, int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.widget.SlidingTab$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Animation.AnimationListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationEnd(Animation animation) {
+            SlidingTab.this.onAnimationDone();
+        }
+    }
+
     /* loaded from: classes5.dex */
     public static class Slider {
         public static final int ALIGN_BOTTOM = 3;
@@ -344,6 +364,9 @@ public class SlidingTab extends ViewGroup {
         this.mGrabbedState = 0;
         this.mTriggered = false;
         this.mAnimationDoneListener = new Animation.AnimationListener() { // from class: com.android.internal.widget.SlidingTab.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationStart(Animation animation) {
             }
@@ -367,7 +390,6 @@ public class SlidingTab extends ViewGroup {
         this.mRightSlider = new Slider(this, R.drawable.jog_tab_right_generic, R.drawable.jog_tab_bar_right_generic, R.drawable.jog_tab_target_gray);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width;
@@ -449,8 +471,14 @@ public class SlidingTab extends ViewGroup {
         super.setVisibility(visibility);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0051, code lost:            r7 = true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x0064, code lost:            r7 = true;     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0051, code lost:
+    
+        r7 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x0064, code lost:
+    
+        r7 = true;
+     */
     @Override // android.view.View
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -586,10 +614,10 @@ public class SlidingTab extends ViewGroup {
         setGrabbedState(0);
     }
 
-    void startAnimating(final boolean holdAfter) {
+    void startAnimating(boolean holdAfter) {
         int holdOffset;
-        final int dx;
-        final int right;
+        int dx;
+        int right;
         this.mAnimating = true;
         Slider slider = this.mCurrentSlider;
         Slider slider2 = this.mOtherSlider;
@@ -619,6 +647,16 @@ public class SlidingTab extends ViewGroup {
         trans2.setInterpolator(new LinearInterpolator());
         trans2.setFillAfter(true);
         trans1.setAnimationListener(new Animation.AnimationListener() { // from class: com.android.internal.widget.SlidingTab.2
+            final /* synthetic */ int val$dx;
+            final /* synthetic */ int val$dy;
+            final /* synthetic */ boolean val$holdAfter;
+
+            AnonymousClass2(boolean holdAfter2, int dx2, int right3) {
+                holdAfter = holdAfter2;
+                dx = dx2;
+                right = right3;
+            }
+
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationEnd(Animation animation) {
                 Animation anim;
@@ -650,7 +688,47 @@ public class SlidingTab extends ViewGroup {
         slider.startAnimation(trans1, trans2);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.widget.SlidingTab$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements Animation.AnimationListener {
+        final /* synthetic */ int val$dx;
+        final /* synthetic */ int val$dy;
+        final /* synthetic */ boolean val$holdAfter;
+
+        AnonymousClass2(boolean holdAfter2, int dx2, int right3) {
+            holdAfter = holdAfter2;
+            dx = dx2;
+            right = right3;
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationEnd(Animation animation) {
+            Animation anim;
+            if (holdAfter) {
+                int i = dx;
+                int i2 = right;
+                anim = new TranslateAnimation(i, i, i2, i2);
+                anim.setDuration(1000L);
+                SlidingTab.this.mAnimating = false;
+            } else {
+                anim = new AlphaAnimation(0.5f, 1.0f);
+                anim.setDuration(250L);
+                SlidingTab.this.resetView();
+            }
+            anim.setAnimationListener(SlidingTab.this.mAnimationDoneListener);
+            SlidingTab.this.mLeftSlider.startAnimation(anim, anim);
+            SlidingTab.this.mRightSlider.startAnimation(anim, anim);
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationStart(Animation animation) {
+        }
+    }
+
     public void onAnimationDone() {
         resetView();
         this.mAnimating = false;
@@ -664,13 +742,11 @@ public class SlidingTab extends ViewGroup {
         return this.mOrientation == 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void resetView() {
         this.mLeftSlider.reset(false);
         this.mRightSlider.reset(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         if (changed) {
@@ -746,7 +822,6 @@ public class SlidingTab extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);

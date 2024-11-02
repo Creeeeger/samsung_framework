@@ -10,7 +10,9 @@ public class SelectUiccSub implements Parcelable {
     public static final int ACT_STATUS_ACTIVATE = 1;
     public static final int ACT_STATUS_DEACTIVATE = 0;
     public static final Parcelable.Creator<SelectUiccSub> CREATOR = new Parcelable.Creator<SelectUiccSub>() { // from class: android.hardware.radio.sim.SelectUiccSub.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SelectUiccSub createFromParcel(Parcel _aidl_source) {
             SelectUiccSub _aidl_out = new SelectUiccSub();
@@ -18,7 +20,6 @@ public class SelectUiccSub implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectUiccSub[] newArray(int _aidl_size) {
             return new SelectUiccSub[_aidl_size];
@@ -31,6 +32,25 @@ public class SelectUiccSub implements Parcelable {
     public int appIndex = 0;
     public int subType = 0;
     public int actStatus = 0;
+
+    /* renamed from: android.hardware.radio.sim.SelectUiccSub$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SelectUiccSub> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SelectUiccSub createFromParcel(Parcel _aidl_source) {
+            SelectUiccSub _aidl_out = new SelectUiccSub();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SelectUiccSub[] newArray(int _aidl_size) {
+            return new SelectUiccSub[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -10,7 +10,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class WifiBatteryStats implements Parcelable {
     public static final Parcelable.Creator<WifiBatteryStats> CREATOR = new Parcelable.Creator<WifiBatteryStats>() { // from class: android.os.connectivity.WifiBatteryStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WifiBatteryStats createFromParcel(Parcel in) {
             long loggingDurationMillis = in.readLong();
@@ -33,7 +35,6 @@ public final class WifiBatteryStats implements Parcelable {
             return new WifiBatteryStats(loggingDurationMillis, kernelActiveTimeMillis, numPacketsTx, numBytesTx, numPacketsRx, numBytesRx, sleepTimeMillis, scanTimeMillis, idleTimeMillis, rxTimeMillis, txTimeMillis, energyConsumedMaMillis, appScanRequestCount, timeInStateMillis, timeInRxSignalStrengthLevelMillis, timeInSupplicantStateMillis, monitoredRailChargeConsumedMaMillis);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiBatteryStats[] newArray(int size) {
             return new WifiBatteryStats[size];
@@ -56,6 +57,40 @@ public final class WifiBatteryStats implements Parcelable {
     private final long[] mTimeInStateMillis;
     private final long[] mTimeInSupplicantStateMillis;
     private final long mTxTimeMillis;
+
+    /* renamed from: android.os.connectivity.WifiBatteryStats$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WifiBatteryStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiBatteryStats createFromParcel(Parcel in) {
+            long loggingDurationMillis = in.readLong();
+            long kernelActiveTimeMillis = in.readLong();
+            long numPacketsTx = in.readLong();
+            long numBytesTx = in.readLong();
+            long numPacketsRx = in.readLong();
+            long numBytesRx = in.readLong();
+            long sleepTimeMillis = in.readLong();
+            long scanTimeMillis = in.readLong();
+            long idleTimeMillis = in.readLong();
+            long rxTimeMillis = in.readLong();
+            long txTimeMillis = in.readLong();
+            long energyConsumedMaMillis = in.readLong();
+            long appScanRequestCount = in.readLong();
+            long[] timeInStateMillis = in.createLongArray();
+            long[] timeInRxSignalStrengthLevelMillis = in.createLongArray();
+            long[] timeInSupplicantStateMillis = in.createLongArray();
+            long monitoredRailChargeConsumedMaMillis = in.readLong();
+            return new WifiBatteryStats(loggingDurationMillis, kernelActiveTimeMillis, numPacketsTx, numBytesTx, numPacketsRx, numBytesRx, sleepTimeMillis, scanTimeMillis, idleTimeMillis, rxTimeMillis, txTimeMillis, energyConsumedMaMillis, appScanRequestCount, timeInStateMillis, timeInRxSignalStrengthLevelMillis, timeInSupplicantStateMillis, monitoredRailChargeConsumedMaMillis);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiBatteryStats[] newArray(int size) {
+            return new WifiBatteryStats[size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public int describeContents() {

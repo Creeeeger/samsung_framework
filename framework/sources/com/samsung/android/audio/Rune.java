@@ -15,13 +15,13 @@ public class Rune {
     public static final boolean SEC_AUDIO_ALL_SOUND_MUTE = true;
     public static final boolean SEC_AUDIO_AMP_BOOST = true;
     public static final boolean SEC_AUDIO_AOSP_BUG_FIX = true;
-    public static final boolean SEC_AUDIO_APP_MODE = true;
+    public static final boolean SEC_AUDIO_APP_MODE = false;
     public static final boolean SEC_AUDIO_ATT_SOFTPHONE;
     public static final boolean SEC_AUDIO_BIKE_MODE;
     public static final boolean SEC_AUDIO_BLE_DUAL_MODE = true;
     public static final boolean SEC_AUDIO_BLE_DUAL_MODE_VOLUME_SYNC = true;
     public static final boolean SEC_AUDIO_BLUETOOTH_CAST = true;
-    public static final String SEC_AUDIO_BRAND_SOUND_VERSION = "3.1.1";
+    public static final String SEC_AUDIO_BRAND_SOUND_VERSION = "";
     public static final boolean SEC_AUDIO_BROADCAST_NOISY_INTENT = true;
     public static final boolean SEC_AUDIO_BT_MULTIPLE_PROFILE = true;
     public static final boolean SEC_AUDIO_BT_OFFLOAD = true;
@@ -65,7 +65,7 @@ public class Rune {
     public static final boolean SEC_AUDIO_FACTORY_TEST_MODE = true;
     public static final boolean SEC_AUDIO_FINE_MEDIA_VOLUME = true;
     public static final boolean SEC_AUDIO_FIXED_SCO_VOLUME;
-    public static final boolean SEC_AUDIO_FLEX_MODE_VIDEOCALL = true;
+    public static final boolean SEC_AUDIO_FLEX_MODE_VIDEOCALL = false;
     public static final boolean SEC_AUDIO_FM_RADIO;
     public static final boolean SEC_AUDIO_FM_RADIO_RECORDING;
     public static final boolean SEC_AUDIO_GAMECHAT_SPEAKER_AEC;
@@ -94,7 +94,7 @@ public class Rune {
     public static final boolean SEC_AUDIO_NB_QUALITY_MODE = true;
     public static final boolean SEC_AUDIO_NO_FADEOUT_FROM_AUDIOFOCUS = true;
     public static final boolean SEC_AUDIO_NO_MUTE_IN_CALL = true;
-    public static final int SEC_AUDIO_NUM_OF_SPEAKER = Integer.valueOf("2").intValue();
+    public static final int SEC_AUDIO_NUM_OF_SPEAKER = Integer.valueOf("4").intValue();
     public static final boolean SEC_AUDIO_OPEN_THEME = true;
     public static final boolean SEC_AUDIO_PACKAGE_LIST = true;
     public static final boolean SEC_AUDIO_PARAMETERS = true;
@@ -139,13 +139,13 @@ public class Rune {
     public static final boolean SEC_AUDIO_SUBDIVISION_NOTIFICATION_VOLUME = true;
     public static final boolean SEC_AUDIO_SUPPORT_A2DP_AV_SYNC = true;
     public static final boolean SEC_AUDIO_SUPPORT_ACH_RINGTONE;
-    public static final boolean SEC_AUDIO_SUPPORT_DUAL_SPEAKER = true;
+    public static final boolean SEC_AUDIO_SUPPORT_DUAL_SPEAKER = false;
     public static final boolean SEC_AUDIO_SUPPORT_FOLD_STATE = false;
     public static final boolean SEC_AUDIO_SUPPORT_MODE_CHANGE_INTENT = true;
     public static final boolean SEC_AUDIO_SUPPORT_PTT = true;
     public static final boolean SEC_AUDIO_SUPPORT_SEC_MHL = true;
     public static final boolean SEC_AUDIO_SUPPORT_SOUND_THEME;
-    public static final boolean SEC_AUDIO_SUPPORT_VIRTUAL_VIBRATION_SOUND = true;
+    public static final boolean SEC_AUDIO_SUPPORT_VIRTUAL_VIBRATION_SOUND = false;
     public static final boolean SEC_AUDIO_SUPPORT_VOIP_ANTI_HOWLING;
     public static final boolean SEC_AUDIO_SUPPORT_VOIP_SOUND_LOUDER;
     public static final boolean SEC_AUDIO_SYSTRACE = true;
@@ -177,7 +177,7 @@ public class Rune {
         SEC_AUDIO_DEFAULT_STREAM_NOTIFICATION = "wifi-only".equalsIgnoreCase(SystemProperties.get("ro.carrier", "Unknown").trim()) || "yes".equalsIgnoreCase(SystemProperties.get("ro.radio.noril", "no").trim());
         TextUtils.equals("sep_basic", "sep_basic");
         SEC_AUDIO_SUPPORT_SOUND_THEME = true;
-        SEC_AUDIO_SUPPORT_ACH_RINGTONE = "ACH".contains("ACH");
+        SEC_AUDIO_SUPPORT_ACH_RINGTONE = "".contains("ACH");
         SEC_AUDIO_DOLBY_PHRTF = "3.10".contains("3.10");
         SEC_AUDIO_DOLBY_ENABLED = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_MMFW_SUPPORT_DOLBY_AUDIO");
         SEC_AUDIO_DOLBY_GAME_FX = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_AUDIO_SUPPORT_DOLBY_GAME_PROFILE") && SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_AUDIO_SUPPORT_DEFAULT_ON_DOLBY_IN_GAME");

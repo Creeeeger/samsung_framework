@@ -37,7 +37,7 @@ public abstract class AccessibilityTarget implements TargetOperations, OnTargetS
 
     @Override // com.android.internal.accessibility.dialog.TargetOperations
     public void updateActionItem(TargetAdapter.ViewHolder holder, int shortcutMenuMode) {
-        holder.mIconView.setImageDrawable(getIcon());
+        holder.mIconView.lambda$setImageURIAsync$2(getIcon());
         holder.mLabelView.setText(getLabel());
         if (shortcutMenuMode == 2) {
             holder.mStatusView.setVisibility(8);

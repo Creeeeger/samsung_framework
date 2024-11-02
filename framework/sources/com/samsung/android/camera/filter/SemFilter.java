@@ -13,7 +13,6 @@ public abstract class SemFilter {
     private String mVendor;
     private int mVersion;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SemFilter(String packageName, String filterName, String title, String vendor2, int category, int version) {
         this.mFilterName = "";
         this.mPackageName = "";

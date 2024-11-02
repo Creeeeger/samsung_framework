@@ -219,7 +219,6 @@ public interface IRemoteViewsFactory extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
         public static class Proxy implements IRemoteViewsFactory {
             private IBinder mRemote;

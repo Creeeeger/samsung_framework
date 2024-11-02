@@ -62,7 +62,7 @@ public class ViewRune {
     public static final boolean SUPPORT_DIRECT_WRITING;
     public static final boolean SUPPORT_DIRECT_WRITING_INPUT_CONNECTION = false;
     public static final boolean SUPPORT_EAGLE_EYE;
-    public static final boolean SYSTEM_STB = true;
+    public static final boolean SYSTEM_STB = false;
     private static final String TAG = "ViewRune";
     public static final boolean UIMODEMANAGER_NIGHT_MODE = true;
     public static final boolean VIEWCORE_AID = true;

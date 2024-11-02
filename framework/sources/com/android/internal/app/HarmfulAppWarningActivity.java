@@ -23,7 +23,6 @@ public class HarmfulAppWarningActivity extends AlertActivity implements DialogIn
     private String mPackageName;
     private IntentSender mTarget;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.AlertActivity, android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

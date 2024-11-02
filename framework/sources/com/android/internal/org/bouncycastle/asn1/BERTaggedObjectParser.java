@@ -8,7 +8,6 @@ public class BERTaggedObjectParser implements ASN1TaggedObjectParser {
     private ASN1StreamParser _parser;
     private int _tagNumber;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BERTaggedObjectParser(boolean constructed, int tagNumber, ASN1StreamParser parser) {
         this._constructed = constructed;
         this._tagNumber = tagNumber;

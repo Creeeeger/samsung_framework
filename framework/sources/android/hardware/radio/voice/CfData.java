@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CfData implements Parcelable {
     public static final Parcelable.Creator<CfData> CREATOR = new Parcelable.Creator<CfData>() { // from class: android.hardware.radio.voice.CfData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CfData createFromParcel(Parcel _aidl_source) {
             CfData _aidl_out = new CfData();
@@ -17,7 +19,6 @@ public class CfData implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CfData[] newArray(int _aidl_size) {
             return new CfData[_aidl_size];
@@ -25,6 +26,25 @@ public class CfData implements Parcelable {
     };
     public static final int NUM_SERVICE_CLASSES = 7;
     public CallForwardInfo[] cfInfo;
+
+    /* renamed from: android.hardware.radio.voice.CfData$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CfData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CfData createFromParcel(Parcel _aidl_source) {
+            CfData _aidl_out = new CfData();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CfData[] newArray(int _aidl_size) {
+            return new CfData[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

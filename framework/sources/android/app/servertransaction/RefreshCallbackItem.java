@@ -9,19 +9,24 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class RefreshCallbackItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<RefreshCallbackItem> CREATOR = new Parcelable.Creator<RefreshCallbackItem>() { // from class: android.app.servertransaction.RefreshCallbackItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RefreshCallbackItem createFromParcel(Parcel in) {
             return new RefreshCallbackItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RefreshCallbackItem[] newArray(int size) {
             return new RefreshCallbackItem[size];
         }
     };
     private int mPostExecutionState;
+
+    /* synthetic */ RefreshCallbackItem(Parcel parcel, RefreshCallbackItemIA refreshCallbackItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
@@ -38,7 +43,6 @@ public class RefreshCallbackItem extends ActivityTransactionItem {
         return this.mPostExecutionState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.app.servertransaction.ClientTransactionItem
     public boolean shouldHaveDefinedPreExecutionState() {
         return false;
@@ -94,5 +98,22 @@ public class RefreshCallbackItem extends ActivityTransactionItem {
 
     private RefreshCallbackItem(Parcel in) {
         this.mPostExecutionState = in.readInt();
+    }
+
+    /* renamed from: android.app.servertransaction.RefreshCallbackItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RefreshCallbackItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RefreshCallbackItem createFromParcel(Parcel in) {
+            return new RefreshCallbackItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RefreshCallbackItem[] newArray(int size) {
+            return new RefreshCallbackItem[size];
+        }
     }
 }

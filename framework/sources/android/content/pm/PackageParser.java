@@ -175,7 +175,6 @@ public class PackageParser {
     public @interface ParseFlags {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     @Deprecated
     /* loaded from: classes.dex */
     public interface SplitAssetLoader extends AutoCloseable {
@@ -228,7 +227,6 @@ public class PackageParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class ParsePackageItemArgs {
         final int bannerRes;
@@ -402,13 +400,16 @@ public class PackageParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class CachedComponentArgs {
         ParseComponentArgs mActivityAliasArgs;
         ParseComponentArgs mActivityArgs;
         ParseComponentArgs mProviderArgs;
         ParseComponentArgs mServiceArgs;
+
+        /* synthetic */ CachedComponentArgs(CachedComponentArgsIA cachedComponentArgsIA) {
+            this();
+        }
 
         private CachedComponentArgs() {
         }
@@ -682,6 +683,10 @@ public class PackageParser {
 
     /* loaded from: classes.dex */
     private static class SplitNameComparator implements Comparator<String> {
+        /* synthetic */ SplitNameComparator(SplitNameComparatorIA splitNameComparatorIA) {
+            this();
+        }
+
         private SplitNameComparator() {
         }
 
@@ -1419,26 +1424,94 @@ public class PackageParser {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x081f, code lost:            com.samsung.android.core.pm.runtimemanifest.RuntimeManifestCoreOverlayUtils.applyRuntimeManifestIfNeeded(r36, r38);     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x0822, code lost:            if (r18 != 0) goto L267;     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x082a, code lost:            if (r36.instrumentation.size() != 0) goto L267;     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x082c, code lost:            r41[0] = "<manifest> does not contain an <application> or <instrumentation>";        r35.mParseError = -109;     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0835, code lost:            r1 = android.content.pm.PackageParser.NEW_PERMISSIONS.length;        r2 = null;        r0 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x083f, code lost:            if (r0 >= r1) goto L390;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0841, code lost:            r3 = android.content.pm.PackageParser.NEW_PERMISSIONS[r0];     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x084b, code lost:            if (r36.applicationInfo.targetSdkVersion < r3.sdkVersion) goto L272;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0856, code lost:            if (r36.requestedPermissions.contains(r3.name) != false) goto L392;     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0858, code lost:            if (r2 != null) goto L276;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x085a, code lost:            r2 = new java.lang.StringBuilder(128);        r2.append(r36.packageName);        r2.append(": compat added ");     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0872, code lost:            r2.append(r3.name);        r36.requestedPermissions.add(r3.name);        r36.implicitPermissions.add(r3.name);     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x0885, code lost:            r0 = r0 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x086d, code lost:            r2.append(' ');     */
-    /* JADX WARN: Code restructure failed: missing block: B:36:0x0888, code lost:            if (r2 == null) goto L337;     */
-    /* JADX WARN: Code restructure failed: missing block: B:371:0x027d, code lost:            r41[0] = "<overlay> priority must be between 0 and 9999";        r35.mParseError = -108;     */
-    /* JADX WARN: Code restructure failed: missing block: B:372:0x0286, code lost:            return null;     */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x088a, code lost:            android.util.Slog.i(android.content.pm.PackageParser.TAG, r2.toString());     */
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0891, code lost:            r0 = android.app.ActivityThread.getPermissionManager().getSplitPermissions();     */
-    /* JADX WARN: Code restructure failed: missing block: B:99:0x089b, code lost:            r0 = java.util.Collections.emptyList();     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x081f, code lost:
+    
+        com.samsung.android.core.pm.runtimemanifest.RuntimeManifestCoreOverlayUtils.applyRuntimeManifestIfNeeded(r36, r38);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x0822, code lost:
+    
+        if (r18 != 0) goto L676;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x082a, code lost:
+    
+        if (r36.instrumentation.size() != 0) goto L676;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x082c, code lost:
+    
+        r41[0] = "<manifest> does not contain an <application> or <instrumentation>";
+        r35.mParseError = -109;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0835, code lost:
+    
+        r1 = android.content.pm.PackageParser.NEW_PERMISSIONS.length;
+        r2 = null;
+        r0 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x083f, code lost:
+    
+        if (r0 >= r1) goto L799;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0841, code lost:
+    
+        r3 = android.content.pm.PackageParser.NEW_PERMISSIONS[r0];
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x084b, code lost:
+    
+        if (r36.applicationInfo.targetSdkVersion < r3.sdkVersion) goto L681;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0856, code lost:
+    
+        if (r36.requestedPermissions.contains(r3.name) != false) goto L801;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0858, code lost:
+    
+        if (r2 != null) goto L685;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x085a, code lost:
+    
+        r2 = new java.lang.StringBuilder(128);
+        r2.append(r36.packageName);
+        r2.append(": compat added ");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0872, code lost:
+    
+        r2.append(r3.name);
+        r36.requestedPermissions.add(r3.name);
+        r36.implicitPermissions.add(r3.name);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x0885, code lost:
+    
+        r0 = r0 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x086d, code lost:
+    
+        r2.append(' ');
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x0888, code lost:
+    
+        if (r2 == null) goto L746;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:371:0x027d, code lost:
+    
+        r41[0] = "<overlay> priority must be between 0 and 9999";
+        r35.mParseError = -108;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:372:0x0286, code lost:
+    
+        return null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x088a, code lost:
+    
+        android.util.Slog.i(android.content.pm.PackageParser.TAG, r2.toString());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0891, code lost:
+    
+        r0 = android.app.ActivityThread.getPermissionManager().getSplitPermissions();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:99:0x089b, code lost:
+    
+        r0 = java.util.Collections.emptyList();
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1581,7 +1654,10 @@ public class PackageParser {
         return true;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x0078, code lost:            return r0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0078, code lost:
+    
+        return r0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1753,25 +1829,89 @@ public class PackageParser {
         return buildCompoundName(pkg, procSeq, "taskAffinity", outError);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x021a, code lost:            r4 = r7.keySet();     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0228, code lost:            if (r4.removeAll(r9.keySet()) == false) goto L60;     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x022a, code lost:            r26[0] = "Package" + r23.packageName + " AndroidManifext.xml 'key-set' and 'public-key' names must be distinct.";        r22.mParseError = -108;     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x024a, code lost:            return false;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x024b, code lost:            r23.mKeySetMapping = new android.util.ArrayMap<>();        r5 = r9.entrySet().iterator();     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x025e, code lost:            if (r5.hasNext() == false) goto L101;     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x0260, code lost:            r12 = r5.next();        r13 = r12.getKey();     */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0278, code lost:            if (r12.getValue().size() != 0) goto L100;     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x02a7, code lost:            if (r10.contains(r13) == false) goto L102;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x02d2, code lost:            r23.mKeySetMapping.put(r13, new android.util.ArraySet<>());        r2 = r12.getValue().iterator();     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x02ea, code lost:            if (r2.hasNext() == false) goto L109;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x02ec, code lost:            r3 = r2.next();        r23.mKeySetMapping.get(r13).add(r7.get(r3));        r2 = r2;     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x02a9, code lost:            android.util.Slog.w(android.content.pm.PackageParser.TAG, "Package" + r23.packageName + " AndroidManifext.xml 'key-set' " + r13 + " contained improper 'public-key' tags. Not including in package's defined key-sets.");     */
-    /* JADX WARN: Code restructure failed: missing block: B:36:0x027a, code lost:            android.util.Slog.w(android.content.pm.PackageParser.TAG, "Package" + r23.packageName + " AndroidManifext.xml 'key-set' " + r13 + " has no valid associated 'public-key'. Not including in package's defined key-sets.");     */
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x031a, code lost:            if (r23.mKeySetMapping.keySet().containsAll(r8) == false) goto L78;     */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x031c, code lost:            r23.mUpgradeKeySets = r8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x031f, code lost:            return true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x0320, code lost:            r26[0] = "Package" + r23.packageName + " AndroidManifext.xml does not define all 'upgrade-key-set's .";        r22.mParseError = -108;     */
-    /* JADX WARN: Code restructure failed: missing block: B:44:0x0340, code lost:            return false;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x021a, code lost:
+    
+        r4 = r7.keySet();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0228, code lost:
+    
+        if (r4.removeAll(r9.keySet()) == false) goto L170;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x022a, code lost:
+    
+        r26[0] = "Package" + r23.packageName + " AndroidManifext.xml 'key-set' and 'public-key' names must be distinct.";
+        r22.mParseError = -108;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x024a, code lost:
+    
+        return false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x024b, code lost:
+    
+        r23.mKeySetMapping = new android.util.ArrayMap<>();
+        r5 = r9.entrySet().iterator();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x025e, code lost:
+    
+        if (r5.hasNext() == false) goto L211;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x0260, code lost:
+    
+        r12 = r5.next();
+        r13 = r12.getKey();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x0278, code lost:
+    
+        if (r12.getValue().size() != 0) goto L210;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x02a7, code lost:
+    
+        if (r10.contains(r13) == false) goto L212;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x02d2, code lost:
+    
+        r23.mKeySetMapping.put(r13, new android.util.ArraySet<>());
+        r2 = r12.getValue().iterator();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x02ea, code lost:
+    
+        if (r2.hasNext() == false) goto L219;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x02ec, code lost:
+    
+        r3 = r2.next();
+        r23.mKeySetMapping.get(r13).add(r7.get(r3));
+        r2 = r2;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x02a9, code lost:
+    
+        android.util.Slog.w(android.content.pm.PackageParser.TAG, "Package" + r23.packageName + " AndroidManifext.xml 'key-set' " + r13 + " contained improper 'public-key' tags. Not including in package's defined key-sets.");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x027a, code lost:
+    
+        android.util.Slog.w(android.content.pm.PackageParser.TAG, "Package" + r23.packageName + " AndroidManifext.xml 'key-set' " + r13 + " has no valid associated 'public-key'. Not including in package's defined key-sets.");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x031a, code lost:
+    
+        if (r23.mKeySetMapping.keySet().containsAll(r8) == false) goto L188;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x031c, code lost:
+    
+        r23.mUpgradeKeySets = r8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x031f, code lost:
+    
+        return true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x0320, code lost:
+    
+        r26[0] = "Package" + r23.packageName + " AndroidManifext.xml does not define all 'upgrade-key-set's .";
+        r22.mParseError = -108;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x0340, code lost:
+    
+        return false;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1889,22 +2029,74 @@ public class PackageParser {
         return a;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:184:0x07c9, code lost:            if (android.text.TextUtils.isEmpty(r14.staticSharedLibName) == false) goto L322;     */
-    /* JADX WARN: Code restructure failed: missing block: B:185:0x07cb, code lost:            r14.activities.add(r0.generateAppDetailsHiddenActivity(r14, r38, r9, r14.baseHardwareAccelerated));     */
-    /* JADX WARN: Code restructure failed: missing block: B:186:0x07db, code lost:            if (r21 == 0) goto L325;     */
-    /* JADX WARN: Code restructure failed: missing block: B:187:0x07dd, code lost:            java.util.Collections.sort(r14.activities, new android.content.pm.PackageParser$$ExternalSyntheticLambda0());     */
-    /* JADX WARN: Code restructure failed: missing block: B:188:0x07e7, code lost:            if (r23 == false) goto L327;     */
-    /* JADX WARN: Code restructure failed: missing block: B:189:0x07e9, code lost:            java.util.Collections.sort(r14.receivers, new android.content.pm.PackageParser$$ExternalSyntheticLambda1());     */
-    /* JADX WARN: Code restructure failed: missing block: B:190:0x07f3, code lost:            if (r24 == false) goto L329;     */
-    /* JADX WARN: Code restructure failed: missing block: B:191:0x07f5, code lost:            java.util.Collections.sort(r14.services, new android.content.pm.PackageParser$$ExternalSyntheticLambda2());     */
-    /* JADX WARN: Code restructure failed: missing block: B:192:0x07ff, code lost:            setMaxAspectRatio(r35);        setMinAspectRatio(r35);        setSupportsSizeChanges(r35);     */
-    /* JADX WARN: Code restructure failed: missing block: B:193:0x080c, code lost:            if (hasDomainURLs(r35) == false) goto L332;     */
-    /* JADX WARN: Code restructure failed: missing block: B:194:0x080e, code lost:            r14.applicationInfo.privateFlags |= 16;     */
-    /* JADX WARN: Code restructure failed: missing block: B:195:?, code lost:            return true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:196:0x0817, code lost:            r14.applicationInfo.privateFlags &= -17;     */
-    /* JADX WARN: Code restructure failed: missing block: B:197:0x081f, code lost:            return true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:282:0x066f, code lost:            r9[0] = "Bad static-library declaration name: " + r10 + " version: " + r13;        r0.mParseError = -108;        com.android.internal.util.XmlUtils.skipCurrentTag(r37);     */
-    /* JADX WARN: Code restructure failed: missing block: B:283:0x0695, code lost:            return false;     */
+    /* JADX WARN: Code restructure failed: missing block: B:184:0x07c9, code lost:
+    
+        if (android.text.TextUtils.isEmpty(r14.staticSharedLibName) == false) goto L689;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:185:0x07cb, code lost:
+    
+        r14.activities.add(r0.generateAppDetailsHiddenActivity(r14, r38, r9, r14.baseHardwareAccelerated));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:186:0x07db, code lost:
+    
+        if (r21 == 0) goto L692;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:187:0x07dd, code lost:
+    
+        java.util.Collections.sort(r14.activities, new android.content.pm.PackageParser$$ExternalSyntheticLambda0());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:188:0x07e7, code lost:
+    
+        if (r23 == false) goto L694;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:189:0x07e9, code lost:
+    
+        java.util.Collections.sort(r14.receivers, new android.content.pm.PackageParser$$ExternalSyntheticLambda1());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:190:0x07f3, code lost:
+    
+        if (r24 == false) goto L696;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:191:0x07f5, code lost:
+    
+        java.util.Collections.sort(r14.services, new android.content.pm.PackageParser$$ExternalSyntheticLambda2());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:192:0x07ff, code lost:
+    
+        setMaxAspectRatio(r35);
+        setMinAspectRatio(r35);
+        setSupportsSizeChanges(r35);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:193:0x080c, code lost:
+    
+        if (hasDomainURLs(r35) == false) goto L699;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:194:0x080e, code lost:
+    
+        r14.applicationInfo.privateFlags |= 16;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:195:?, code lost:
+    
+        return true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:196:0x0817, code lost:
+    
+        r14.applicationInfo.privateFlags &= -17;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:197:0x081f, code lost:
+    
+        return true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:282:0x066f, code lost:
+    
+        r9[0] = "Bad static-library declaration name: " + r10 + " version: " + r13;
+        r0.mParseError = -108;
+        com.android.internal.util.XmlUtils.skipCurrentTag(r37);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:283:0x0695, code lost:
+    
+        return false;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1954,7 +2146,6 @@ public class PackageParser {
         throw new UnsupportedOperationException("Method not decompiled: android.content.pm.PackageParser.parseSplitApplication(android.content.pm.PackageParser$Package, android.content.res.Resources, android.content.res.XmlResourceParser, int, int, java.lang.String[]):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean parsePackageItemInfo(Package owner, PackageItemInfo outInfo, String[] outError, String tag, TypedArray sa, boolean nameRequired, int nameRes, int labelRes, int iconRes, int roundIconRes, int logoRes, int bannerRes) {
         if (sa == null) {
             outError[0] = tag + " does not contain any attributes";
@@ -2464,13 +2655,34 @@ public class PackageParser {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x03b8, code lost:            if (r14 != false) goto L104;     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x03ba, code lost:            r0 = r12.info;     */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x03c2, code lost:            if (r12.intents.size() <= 0) goto L102;     */
-    /* JADX WARN: Code restructure failed: missing block: B:63:0x03c4, code lost:            r1 = r29;     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x03c9, code lost:            r0.exported = r1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:65:0x03c7, code lost:            r1 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:66:0x03cb, code lost:            return r12;     */
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x03b8, code lost:
+    
+        if (r14 != false) goto L229;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x03ba, code lost:
+    
+        r0 = r12.info;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x03c2, code lost:
+    
+        if (r12.intents.size() <= 0) goto L227;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:63:0x03c4, code lost:
+    
+        r1 = r29;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x03c9, code lost:
+    
+        r0.exported = r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:65:0x03c7, code lost:
+    
+        r1 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x03cb, code lost:
+    
+        return r12;
+     */
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r1v0, types: [android.content.res.TypedArray] */
     /* JADX WARN: Type inference failed for: r1v1 */
@@ -2484,7 +2696,7 @@ public class PackageParser {
     /* JADX WARN: Type inference failed for: r1v7 */
     /* JADX WARN: Type inference failed for: r1v9 */
     /* JADX WARN: Type inference failed for: r4v1 */
-    /* JADX WARN: Type inference failed for: r4v2, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r4v2, types: [int, boolean] */
     /* JADX WARN: Type inference failed for: r4v28 */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -2734,13 +2946,34 @@ public class PackageParser {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x0262, code lost:            if (r12 != false) goto L86;     */
-    /* JADX WARN: Code restructure failed: missing block: B:52:0x0264, code lost:            r1 = r0.info;     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x026c, code lost:            if (r0.intents.size() <= 0) goto L84;     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x026e, code lost:            r10 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:55:0x0271, code lost:            r1.exported = r10;     */
-    /* JADX WARN: Code restructure failed: missing block: B:56:0x0270, code lost:            r10 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:57:0x0273, code lost:            return r0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x0262, code lost:
+    
+        if (r12 != false) goto L191;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x0264, code lost:
+    
+        r1 = r0.info;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x026c, code lost:
+    
+        if (r0.intents.size() <= 0) goto L189;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x026e, code lost:
+    
+        r10 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:55:0x0271, code lost:
+    
+        r1.exported = r10;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x0270, code lost:
+    
+        r10 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x0273, code lost:
+    
+        return r0;
+     */
     /* JADX WARN: Multi-variable type inference failed */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -2903,10 +3136,22 @@ public class PackageParser {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x00af, code lost:            r24[0] = "No value supplied for <android:name>";     */
-    /* JADX WARN: Code restructure failed: missing block: B:44:0x00b1, code lost:            return false;     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x00ce, code lost:            r24[0] = "No value supplied for <android:name>";     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x00d0, code lost:            return false;     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x00af, code lost:
+    
+        r24[0] = "No value supplied for <android:name>";
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x00b1, code lost:
+    
+        return false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x00ce, code lost:
+    
+        r24[0] = "No value supplied for <android:name>";
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x00d0, code lost:
+    
+        return false;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -2928,7 +3173,9 @@ public class PackageParser {
         public final Signature[] signatures;
         public static final SigningDetails UNKNOWN = new SigningDetails(null, 0, null, null);
         public static final Parcelable.Creator<SigningDetails> CREATOR = new Parcelable.Creator<SigningDetails>() { // from class: android.content.pm.PackageParser.SigningDetails.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SigningDetails createFromParcel(Parcel source) {
                 if (source.readBoolean()) {
@@ -2937,7 +3184,6 @@ public class PackageParser {
                 return new SigningDetails(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SigningDetails[] newArray(int size) {
                 return new SigningDetails[size];
@@ -3016,8 +3262,14 @@ public class PackageParser {
             return descendantSigningDetails == this ? mergeLineageWithAncestorOrSelf(otherSigningDetails) : otherSigningDetails.mergeLineageWithAncestorOrSelf(this);
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:24:0x0077, code lost:            if (r7 < 0) goto L49;     */
-        /* JADX WARN: Code restructure failed: missing block: B:25:0x0079, code lost:            return r10;     */
+        /* JADX WARN: Code restructure failed: missing block: B:24:0x0077, code lost:
+        
+            if (r7 < 0) goto L100;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:25:0x0079, code lost:
+        
+            return r10;
+         */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -3332,6 +3584,26 @@ public class PackageParser {
             this.pastSigningCertificates = (Signature[]) in.createTypedArray(Signature.CREATOR);
         }
 
+        /* renamed from: android.content.pm.PackageParser$SigningDetails$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SigningDetails> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SigningDetails createFromParcel(Parcel source) {
+                if (source.readBoolean()) {
+                    return SigningDetails.UNKNOWN;
+                }
+                return new SigningDetails(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SigningDetails[] newArray(int size) {
+                return new SigningDetails[size];
+            }
+        }
+
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -3411,13 +3683,14 @@ public class PackageParser {
     /* loaded from: classes.dex */
     public static final class Package implements Parcelable {
         public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Package>() { // from class: android.content.pm.PackageParser.Package.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Package createFromParcel(Parcel in) {
                 return new Package(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Package[] newArray(int size) {
                 return new Package[size];
@@ -4152,6 +4425,23 @@ public class PackageParser {
             parcel.writeByteArray(this.restrictUpdateHash);
             parcel.writeInt(this.visibleToInstantApps ? 1 : 0);
         }
+
+        /* renamed from: android.content.pm.PackageParser$Package$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Package> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Package createFromParcel(Parcel in) {
+                return new Package(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Package[] newArray(int size) {
+                return new Package[size];
+            }
+        }
     }
 
     /* loaded from: classes.dex */
@@ -4232,7 +4522,6 @@ public class PackageParser {
             this.owner = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.className);
             dest.writeBundle(this.metaData);
@@ -4293,13 +4582,14 @@ public class PackageParser {
     /* loaded from: classes.dex */
     public static final class Permission extends Component<IntentInfo> implements Parcelable {
         public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Permission>() { // from class: android.content.pm.PackageParser.Permission.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Permission createFromParcel(Parcel in) {
                 return new Permission(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Permission[] newArray(int size) {
                 return new Permission[size];
@@ -4308,6 +4598,10 @@ public class PackageParser {
         public PermissionGroup group;
         public final PermissionInfo info;
         public boolean tree;
+
+        /* synthetic */ Permission(Parcel parcel, PermissionIA permissionIA) {
+            this(parcel);
+        }
 
         public Permission(Package owner, String backgroundPermission) {
             super(owner);
@@ -4357,24 +4651,46 @@ public class PackageParser {
             this.tree = in.readInt() == 1;
             this.group = (PermissionGroup) in.readParcelable(boot, PermissionGroup.class);
         }
+
+        /* renamed from: android.content.pm.PackageParser$Permission$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Permission> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Permission createFromParcel(Parcel in) {
+                return new Permission(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Permission[] newArray(int size) {
+                return new Permission[size];
+            }
+        }
     }
 
     /* loaded from: classes.dex */
     public static final class PermissionGroup extends Component<IntentInfo> implements Parcelable {
         public static final Parcelable.Creator CREATOR = new Parcelable.Creator<PermissionGroup>() { // from class: android.content.pm.PackageParser.PermissionGroup.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PermissionGroup createFromParcel(Parcel in) {
                 return new PermissionGroup(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PermissionGroup[] newArray(int size) {
                 return new PermissionGroup[size];
             }
         };
         public final PermissionGroupInfo info;
+
+        /* synthetic */ PermissionGroup(Parcel parcel, PermissionGroupIA permissionGroupIA) {
+            this(parcel);
+        }
 
         public PermissionGroup(Package owner, int requestDetailResourceId, int backgroundRequestResourceId, int backgroundRequestDetailResourceId) {
             super(owner);
@@ -4410,6 +4726,23 @@ public class PackageParser {
         private PermissionGroup(Parcel in) {
             super(in);
             this.info = (PermissionGroupInfo) in.readParcelable(Object.class.getClassLoader(), PermissionGroupInfo.class);
+        }
+
+        /* renamed from: android.content.pm.PackageParser$PermissionGroup$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PermissionGroup> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PermissionGroup createFromParcel(Parcel in) {
+                return new PermissionGroup(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PermissionGroup[] newArray(int size) {
+                return new PermissionGroup[size];
+            }
         }
     }
 
@@ -4561,13 +4894,14 @@ public class PackageParser {
     /* loaded from: classes.dex */
     public static final class Activity extends Component<ActivityIntentInfo> implements Parcelable {
         public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Activity>() { // from class: android.content.pm.PackageParser.Activity.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Activity createFromParcel(Parcel in) {
                 return new Activity(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Activity[] newArray(int size) {
                 return new Activity[size];
@@ -4577,12 +4911,14 @@ public class PackageParser {
         private boolean mHasMaxAspectRatio;
         private boolean mHasMinAspectRatio;
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* synthetic */ Activity(Parcel parcel, ActivityIA activityIA) {
+            this(parcel);
+        }
+
         public boolean hasMaxAspectRatio() {
             return this.mHasMaxAspectRatio;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean hasMinAspectRatio() {
             return this.mHasMinAspectRatio;
         }
@@ -4605,7 +4941,6 @@ public class PackageParser {
             this.info.packageName = packageName;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setMaxAspectRatio(float maxAspectRatio) {
             if (this.info.resizeMode == 2 || this.info.resizeMode == 1) {
                 return;
@@ -4617,7 +4952,6 @@ public class PackageParser {
             this.mHasMaxAspectRatio = true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setMinAspectRatio(float minAspectRatio) {
             if (this.info.resizeMode == 2 || this.info.resizeMode == 1) {
                 return;
@@ -4668,6 +5002,23 @@ public class PackageParser {
                 activityInfo.permission = activityInfo.permission.intern();
             }
         }
+
+        /* renamed from: android.content.pm.PackageParser$Activity$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Activity> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Activity createFromParcel(Parcel in) {
+                return new Activity(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Activity[] newArray(int size) {
+                return new Activity[size];
+            }
+        }
     }
 
     public static final ActivityInfo generateActivityInfo(Activity a, int flags, FrameworkPackageUserState state, int userId) {
@@ -4703,19 +5054,24 @@ public class PackageParser {
     /* loaded from: classes.dex */
     public static final class Service extends Component<ServiceIntentInfo> implements Parcelable {
         public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Service>() { // from class: android.content.pm.PackageParser.Service.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Service createFromParcel(Parcel in) {
                 return new Service(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Service[] newArray(int size) {
                 return new Service[size];
             }
         };
         public final ServiceInfo info;
+
+        /* synthetic */ Service(Parcel parcel, ServiceIA serviceIA) {
+            this(parcel);
+        }
 
         public Service(ParseComponentArgs args, ServiceInfo _info) {
             super(args, (ComponentInfo) _info);
@@ -4764,6 +5120,23 @@ public class PackageParser {
                 serviceInfo.permission = serviceInfo.permission.intern();
             }
         }
+
+        /* renamed from: android.content.pm.PackageParser$Service$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Service> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Service createFromParcel(Parcel in) {
+                return new Service(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Service[] newArray(int size) {
+                return new Service[size];
+            }
+        }
     }
 
     public static final ServiceInfo generateServiceInfo(Service s, int flags, FrameworkPackageUserState state, int userId) {
@@ -4790,13 +5163,14 @@ public class PackageParser {
     /* loaded from: classes.dex */
     public static final class Provider extends Component<ProviderIntentInfo> implements Parcelable {
         public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Provider>() { // from class: android.content.pm.PackageParser.Provider.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Provider createFromParcel(Parcel in) {
                 return new Provider(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Provider[] newArray(int size) {
                 return new Provider[size];
@@ -4804,6 +5178,10 @@ public class PackageParser {
         };
         public final ProviderInfo info;
         public boolean syncable;
+
+        /* synthetic */ Provider(Parcel parcel, ProviderIA providerIA) {
+            this(parcel);
+        }
 
         public Provider(ParseComponentArgs args, ProviderInfo _info) {
             super(args, (ComponentInfo) _info);
@@ -4868,6 +5246,23 @@ public class PackageParser {
                 providerInfo3.authority = providerInfo3.authority.intern();
             }
         }
+
+        /* renamed from: android.content.pm.PackageParser$Provider$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Provider> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Provider createFromParcel(Parcel in) {
+                return new Provider(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Provider[] newArray(int size) {
+                return new Provider[size];
+            }
+        }
     }
 
     public static final ProviderInfo generateProviderInfo(Provider p, int flags, FrameworkPackageUserState state, int userId) {
@@ -4897,19 +5292,24 @@ public class PackageParser {
     /* loaded from: classes.dex */
     public static final class Instrumentation extends Component<IntentInfo> implements Parcelable {
         public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Instrumentation>() { // from class: android.content.pm.PackageParser.Instrumentation.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Instrumentation createFromParcel(Parcel in) {
                 return new Instrumentation(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Instrumentation[] newArray(int size) {
                 return new Instrumentation[size];
             }
         };
         public final InstrumentationInfo info;
+
+        /* synthetic */ Instrumentation(Parcel parcel, InstrumentationIA instrumentationIA) {
+            this(parcel);
+        }
 
         public Instrumentation(ParsePackageItemArgs args, InstrumentationInfo _info) {
             super(args, _info);
@@ -4952,6 +5352,23 @@ public class PackageParser {
             }
             if (instrumentationInfo.targetProcesses != null) {
                 instrumentationInfo.targetProcesses = instrumentationInfo.targetProcesses.intern();
+            }
+        }
+
+        /* renamed from: android.content.pm.PackageParser$Instrumentation$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Instrumentation> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Instrumentation createFromParcel(Parcel in) {
+                return new Instrumentation(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Instrumentation[] newArray(int size) {
+                return new Instrumentation[size];
             }
         }
     }
@@ -5107,7 +5524,6 @@ public class PackageParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     @Deprecated
     /* loaded from: classes.dex */
     public static abstract class SplitDependencyLoader<E extends Exception> {
@@ -5164,6 +5580,10 @@ public class PackageParser {
 
         /* loaded from: classes.dex */
         public static class IllegalDependencyException extends Exception {
+            /* synthetic */ IllegalDependencyException(String str, IllegalDependencyExceptionIA illegalDependencyExceptionIA) {
+                this(str);
+            }
+
             private IllegalDependencyException(String message) {
                 super(message);
             }
@@ -5183,64 +5603,58 @@ public class PackageParser {
             int depIdx2;
             SparseArray<int[]> splitDependencies = new SparseArray<>();
             splitDependencies.put(0, new int[]{-1});
-            int splitIdx = 0;
-            while (true) {
-                if (splitIdx < pkg.splitNames.length) {
-                    if (pkg.isFeatureSplits[splitIdx]) {
-                        String splitDependency = pkg.usesSplitNames[splitIdx];
-                        if (splitDependency != null) {
-                            int depIdx3 = Arrays.binarySearch(pkg.splitNames, splitDependency);
-                            if (depIdx3 < 0) {
-                                throw new IllegalDependencyException("Split '" + pkg.splitNames[splitIdx] + "' requires split '" + splitDependency + "', which is missing.");
-                            }
-                            depIdx2 = depIdx3 + 1;
-                        } else {
-                            depIdx2 = 0;
+            for (int splitIdx = 0; splitIdx < pkg.splitNames.length; splitIdx++) {
+                if (pkg.isFeatureSplits[splitIdx]) {
+                    String splitDependency = pkg.usesSplitNames[splitIdx];
+                    if (splitDependency != null) {
+                        int depIdx3 = Arrays.binarySearch(pkg.splitNames, splitDependency);
+                        if (depIdx3 < 0) {
+                            throw new IllegalDependencyException("Split '" + pkg.splitNames[splitIdx] + "' requires split '" + splitDependency + "', which is missing.");
                         }
-                        splitDependencies.put(splitIdx + 1, new int[]{depIdx2});
+                        depIdx2 = depIdx3 + 1;
+                    } else {
+                        depIdx2 = 0;
                     }
-                    splitIdx++;
-                } else {
-                    int size = pkg.splitNames.length;
-                    for (int splitIdx2 = 0; splitIdx2 < size; splitIdx2++) {
-                        if (!pkg.isFeatureSplits[splitIdx2]) {
-                            String configForSplit = pkg.configForSplit[splitIdx2];
-                            if (configForSplit != null) {
-                                int depIdx4 = Arrays.binarySearch(pkg.splitNames, configForSplit);
-                                if (depIdx4 < 0) {
-                                    throw new IllegalDependencyException("Split '" + pkg.splitNames[splitIdx2] + "' targets split '" + configForSplit + "', which is missing.");
-                                }
-                                if (!pkg.isFeatureSplits[depIdx4]) {
-                                    throw new IllegalDependencyException("Split '" + pkg.splitNames[splitIdx2] + "' declares itself as configuration split for a non-feature split '" + pkg.splitNames[depIdx4] + "'");
-                                }
-                                depIdx = depIdx4 + 1;
-                            } else {
-                                depIdx = 0;
-                            }
-                            splitDependencies.put(depIdx, append(splitDependencies.get(depIdx), splitIdx2 + 1));
-                        }
-                    }
-                    BitSet bitset = new BitSet();
-                    int size2 = splitDependencies.size();
-                    for (int i = 0; i < size2; i++) {
-                        int splitIdx3 = splitDependencies.keyAt(i);
-                        bitset.clear();
-                        while (splitIdx3 != -1) {
-                            if (bitset.get(splitIdx3)) {
-                                throw new IllegalDependencyException("Cycle detected in split dependencies.");
-                            }
-                            bitset.set(splitIdx3);
-                            int[] deps = splitDependencies.get(splitIdx3);
-                            splitIdx3 = deps != null ? deps[0] : -1;
-                        }
-                    }
-                    return splitDependencies;
+                    splitDependencies.put(splitIdx + 1, new int[]{depIdx2});
                 }
             }
+            int size = pkg.splitNames.length;
+            for (int splitIdx2 = 0; splitIdx2 < size; splitIdx2++) {
+                if (!pkg.isFeatureSplits[splitIdx2]) {
+                    String configForSplit = pkg.configForSplit[splitIdx2];
+                    if (configForSplit != null) {
+                        int depIdx4 = Arrays.binarySearch(pkg.splitNames, configForSplit);
+                        if (depIdx4 < 0) {
+                            throw new IllegalDependencyException("Split '" + pkg.splitNames[splitIdx2] + "' targets split '" + configForSplit + "', which is missing.");
+                        }
+                        if (!pkg.isFeatureSplits[depIdx4]) {
+                            throw new IllegalDependencyException("Split '" + pkg.splitNames[splitIdx2] + "' declares itself as configuration split for a non-feature split '" + pkg.splitNames[depIdx4] + "'");
+                        }
+                        depIdx = depIdx4 + 1;
+                    } else {
+                        depIdx = 0;
+                    }
+                    splitDependencies.put(depIdx, append(splitDependencies.get(depIdx), splitIdx2 + 1));
+                }
+            }
+            BitSet bitset = new BitSet();
+            int size2 = splitDependencies.size();
+            for (int i = 0; i < size2; i++) {
+                int splitIdx3 = splitDependencies.keyAt(i);
+                bitset.clear();
+                while (splitIdx3 != -1) {
+                    if (bitset.get(splitIdx3)) {
+                        throw new IllegalDependencyException("Cycle detected in split dependencies.");
+                    }
+                    bitset.set(splitIdx3);
+                    int[] deps = splitDependencies.get(splitIdx3);
+                    splitIdx3 = deps != null ? deps[0] : -1;
+                }
+            }
+            return splitDependencies;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     @Deprecated
     /* loaded from: classes.dex */
     public static class DefaultSplitAssetLoader implements SplitAssetLoader {
@@ -5313,7 +5727,6 @@ public class PackageParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     @Deprecated
     /* loaded from: classes.dex */
     public static class SplitAssetDependencyLoader extends SplitDependencyLoader<PackageParserException> implements SplitAssetLoader {

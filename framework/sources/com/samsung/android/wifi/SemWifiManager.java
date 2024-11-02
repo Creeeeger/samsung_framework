@@ -381,7 +381,6 @@ public class SemWifiManager {
             return this.mSemWifiApSmartCallbackProxy;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
         public static class SemWifiApSmartCallbackProxy extends ISemWifiApSmartCallback.Stub {
             private final Object mLock = new Object();
@@ -440,7 +439,6 @@ public class SemWifiManager {
             return this.mSemWifiApClientListUpdateCallbackProxy;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
         public static class SemWifiApClientListUpdateCallbackProxy extends ISemWifiApClientListUpdateCallback.Stub {
             private final Object mLock = new Object();
@@ -518,7 +516,6 @@ public class SemWifiManager {
             return this.mSemWifiApClientUpdateCallbackProxy;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
         public static class SemWifiApClientUpdateCallbackProxy extends ISemWifiApClientUpdateCallback.Stub {
             private final Object mLock = new Object();
@@ -960,7 +957,6 @@ public class SemWifiManager {
             return this.mSemWifiApDataUsageClient;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
         public static class SemWifiApDataUsageClient extends ISemWifiApDataUsageCallback.Stub {
             private final Object mLock = new Object();
@@ -2949,7 +2945,6 @@ public class SemWifiManager {
             return this.mProxy;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
         public static class TasPolicyListenerProxy extends SemTasPolicyListener.Stub {
             private TasPolicyListener mListener;

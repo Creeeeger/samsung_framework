@@ -85,8 +85,9 @@ public interface IVoldMountCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IVoldMountCallback {
+        public static class Proxy implements IVoldMountCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

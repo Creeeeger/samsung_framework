@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Int implements Parcelable {
     public static final Parcelable.Creator<Int> CREATOR = new Parcelable.Creator<Int>() { // from class: android.media.audio.common.Int.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Int createFromParcel(Parcel _aidl_source) {
             Int _aidl_out = new Int();
@@ -18,13 +20,31 @@ public class Int implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Int[] newArray(int _aidl_size) {
             return new Int[_aidl_size];
         }
     };
     public int value = 0;
+
+    /* renamed from: android.media.audio.common.Int$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Int> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Int createFromParcel(Parcel _aidl_source) {
+            Int _aidl_out = new Int();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Int[] newArray(int _aidl_size) {
+            return new Int[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

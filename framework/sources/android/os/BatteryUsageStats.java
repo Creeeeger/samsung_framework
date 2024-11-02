@@ -37,13 +37,14 @@ public final class BatteryUsageStats implements Parcelable, Closeable {
     public static final int AGGREGATE_BATTERY_CONSUMER_SCOPE_DEVICE = 0;
     private static final long BATTERY_CONSUMER_CURSOR_WINDOW_SIZE = 3500000;
     public static final Parcelable.Creator<BatteryUsageStats> CREATOR = new Parcelable.Creator<BatteryUsageStats>() { // from class: android.os.BatteryUsageStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BatteryUsageStats createFromParcel(Parcel source) {
             return new BatteryUsageStats(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BatteryUsageStats[] newArray(int size) {
             return new BatteryUsageStats[size];
@@ -106,6 +107,14 @@ public final class BatteryUsageStats implements Parcelable, Closeable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface AggregateBatteryConsumerScope {
+    }
+
+    /* synthetic */ BatteryUsageStats(Builder builder, BatteryUsageStatsIA batteryUsageStatsIA) {
+        this(builder);
+    }
+
+    /* synthetic */ BatteryUsageStats(Parcel parcel, BatteryUsageStatsIA batteryUsageStatsIA) {
+        this(parcel);
     }
 
     private BatteryUsageStats(Builder builder) {
@@ -302,6 +311,23 @@ public final class BatteryUsageStats implements Parcelable, Closeable {
         }
     }
 
+    /* renamed from: android.os.BatteryUsageStats$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BatteryUsageStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BatteryUsageStats createFromParcel(Parcel source) {
+            return new BatteryUsageStats(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BatteryUsageStats[] newArray(int size) {
+            return new BatteryUsageStats[size];
+        }
+    }
+
     public byte[] getStatsProto() {
         int maxRawSize = 78750;
         for (int i = 0; i < 3; i++) {
@@ -371,7 +397,6 @@ public final class BatteryUsageStats implements Parcelable, Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public double getUidBatteryConsumerWeight(UidBatteryConsumer uidBatteryConsumer) {
         double consumedPower = uidBatteryConsumer.getConsumedPower();
         long timeInForeground = uidBatteryConsumer.getTimeInStateMs(0);
@@ -717,7 +742,6 @@ public final class BatteryUsageStats implements Parcelable, Closeable {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public long getStatsDuration() {
             long j = this.mStatsDurationMs;
             if (j != -1) {

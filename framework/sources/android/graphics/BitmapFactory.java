@@ -85,7 +85,6 @@ public class BitmapFactory {
             this.mCancel = true;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static void validate(Options opts) {
             if (opts == null) {
                 return;
@@ -113,7 +112,6 @@ public class BitmapFactory {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static long nativeInBitmap(Options opts) {
             Bitmap bitmap;
             if (opts == null || (bitmap = opts.inBitmap) == null) {
@@ -123,7 +121,6 @@ public class BitmapFactory {
             return opts.inBitmap.getNativeInstance();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static long nativeColorSpace(Options opts) {
             ColorSpace colorSpace;
             if (opts == null || (colorSpace = opts.inPreferredColorSpace) == null) {

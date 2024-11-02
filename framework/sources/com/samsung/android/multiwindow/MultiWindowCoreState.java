@@ -83,7 +83,10 @@ public class MultiWindowCoreState {
         return MW_FREEFORM_CORNER_GESTURE_CUSTOM_VALUE != lastCustomValue ? 8192 : 0;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x000f, code lost:            if (r5.getInt("open_in_pop_up_view", 0) == 1) goto L8;     */
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x000f, code lost:
+    
+        if (r5.getInt("open_in_pop_up_view", 0) == 1) goto L22;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -146,7 +149,10 @@ public class MultiWindowCoreState {
         return z != wasEnabled ? 2048 : 0;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x000f, code lost:            if (r5.getInt(com.samsung.android.multiwindow.MultiWindowCoreState.Key.MW_MULTISTAR_STAY_FOCUS_ACTIVITY_DYNAMIC_ENABLED, 0) == 1) goto L8;     */
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x000f, code lost:
+    
+        if (r5.getInt(com.samsung.android.multiwindow.MultiWindowCoreState.Key.MW_MULTISTAR_STAY_FOCUS_ACTIVITY_DYNAMIC_ENABLED, 0) == 1) goto L22;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -177,7 +183,10 @@ public class MultiWindowCoreState {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.multiwindow.MultiWindowCoreState.updateMultiStarSupportStayFocusActivity(android.os.Bundle):int");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x000f, code lost:            if (r5.getInt(com.samsung.android.multiwindow.MultiWindowCoreState.Key.MW_MULTISTAR_STAY_TOP_RESUMED_ACTIVITY_DYNAMIC_ENABLED, 0) == 1) goto L8;     */
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x000f, code lost:
+    
+        if (r5.getInt(com.samsung.android.multiwindow.MultiWindowCoreState.Key.MW_MULTISTAR_STAY_TOP_RESUMED_ACTIVITY_DYNAMIC_ENABLED, 0) == 1) goto L22;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -199,7 +208,7 @@ public class MultiWindowCoreState {
         L13:
             com.samsung.android.multiwindow.MultiWindowCoreState.MW_MULTISTAR_STAY_TOP_RESUMED_ACTIVITY_DYNAMIC_ENABLED = r3
             if (r3 == r0) goto L1a
-            r2 = 128(0x80, float:1.8E-43)
+            r2 = 128(0x80, float:1.794E-43)
             goto L1b
         L1a:
         L1b:

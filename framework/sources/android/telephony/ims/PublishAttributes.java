@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PublishAttributes implements Parcelable {
     public static final Parcelable.Creator<PublishAttributes> CREATOR = new Parcelable.Creator<PublishAttributes>() { // from class: android.telephony.ims.PublishAttributes.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PublishAttributes createFromParcel(Parcel source) {
             return new PublishAttributes(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PublishAttributes[] newArray(int size) {
             return new PublishAttributes[size];
@@ -27,6 +28,14 @@ public final class PublishAttributes implements Parcelable {
     private List<RcsContactPresenceTuple> mPresenceTuples;
     private final int mPublishState;
     private SipDetails mSipDetails;
+
+    /* synthetic */ PublishAttributes(int i, PublishAttributesIA publishAttributesIA) {
+        this(i);
+    }
+
+    /* synthetic */ PublishAttributes(Parcel parcel, PublishAttributesIA publishAttributesIA) {
+        this(parcel);
+    }
 
     /* loaded from: classes3.dex */
     public static final class Builder {
@@ -81,6 +90,23 @@ public final class PublishAttributes implements Parcelable {
         dest.writeInt(this.mPublishState);
         dest.writeList(this.mPresenceTuples);
         dest.writeParcelable(this.mSipDetails, 0);
+    }
+
+    /* renamed from: android.telephony.ims.PublishAttributes$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PublishAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PublishAttributes createFromParcel(Parcel source) {
+            return new PublishAttributes(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PublishAttributes[] newArray(int size) {
+            return new PublishAttributes[size];
+        }
     }
 
     private PublishAttributes(Parcel in) {

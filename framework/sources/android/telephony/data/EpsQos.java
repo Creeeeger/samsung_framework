@@ -8,19 +8,24 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class EpsQos extends Qos implements Parcelable {
     public static final Parcelable.Creator<EpsQos> CREATOR = new Parcelable.Creator<EpsQos>() { // from class: android.telephony.data.EpsQos.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EpsQos createFromParcel(Parcel source) {
             return new EpsQos(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EpsQos[] newArray(int size) {
             return new EpsQos[size];
         }
     };
     int qosClassId;
+
+    /* synthetic */ EpsQos(Parcel parcel, EpsQosIA epsQosIA) {
+        this(parcel);
+    }
 
     public EpsQos(Qos.QosBandwidth downlink, Qos.QosBandwidth uplink, int qosClassId) {
         super(1, downlink, uplink);
@@ -73,5 +78,22 @@ public final class EpsQos extends Qos implements Parcelable {
 
     public String toString() {
         return "EpsQos { qosClassId=" + this.qosClassId + " downlink=" + this.downlink + " uplink=" + this.uplink + "}";
+    }
+
+    /* renamed from: android.telephony.data.EpsQos$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EpsQos> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EpsQos createFromParcel(Parcel source) {
+            return new EpsQos(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EpsQos[] newArray(int size) {
+            return new EpsQos[size];
+        }
     }
 }

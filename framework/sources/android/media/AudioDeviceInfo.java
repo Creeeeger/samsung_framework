@@ -69,7 +69,6 @@ public final class AudioDeviceInfo {
     public @interface AudioDeviceTypeOut {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isValidAudioDeviceTypeOut(int type) {
         switch (type) {
             case 1:
@@ -173,7 +172,6 @@ public final class AudioDeviceInfo {
         return Objects.hash(getPort());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioDeviceInfo(AudioDevicePort port) {
         this.mPort = port;
     }

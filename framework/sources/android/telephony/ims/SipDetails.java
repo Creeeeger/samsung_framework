@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class SipDetails implements Parcelable {
     public static final Parcelable.Creator<SipDetails> CREATOR = new Parcelable.Creator<SipDetails>() { // from class: android.telephony.ims.SipDetails.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SipDetails createFromParcel(Parcel source) {
             return new SipDetails(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDetails[] newArray(int size) {
             return new SipDetails[size];
@@ -37,6 +38,14 @@ public final class SipDetails implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface Method {
+    }
+
+    /* synthetic */ SipDetails(Parcel parcel, SipDetailsIA sipDetailsIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ SipDetails(Builder builder, SipDetailsIA sipDetailsIA) {
+        this(builder);
     }
 
     /* loaded from: classes3.dex */
@@ -132,6 +141,23 @@ public final class SipDetails implements Parcelable {
         dest.writeInt(this.mReasonHeaderCause);
         dest.writeString(this.mReasonHeaderText);
         dest.writeString(this.mCallId);
+    }
+
+    /* renamed from: android.telephony.ims.SipDetails$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SipDetails> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SipDetails createFromParcel(Parcel source) {
+            return new SipDetails(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SipDetails[] newArray(int size) {
+            return new SipDetails[size];
+        }
     }
 
     private SipDetails(Parcel in) {

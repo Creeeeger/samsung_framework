@@ -1757,7 +1757,6 @@ public class DevicePolicyManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$executeCallback$0(Throwable error, Consumer callback, Boolean result) {
         long token = Binder.clearCallingIdentity();
         try {
@@ -2595,7 +2594,6 @@ public class DevicePolicyManager {
         return getKeyguardDisabledFeatures(admin, myUserId());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Multi-variable type inference failed */
     public /* synthetic */ Integer lambda$new$2(Pair query) throws RemoteException {
         return Integer.valueOf(getService().getKeyguardDisabledFeatures((ComponentName) query.first, ((Integer) query.second).intValue(), isParentInstance()));
@@ -2829,7 +2827,6 @@ public class DevicePolicyManager {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Boolean lambda$new$3(Void query) throws RemoteException {
         return Boolean.valueOf(getService().hasDeviceOwner());
     }
@@ -3031,7 +3028,6 @@ public class DevicePolicyManager {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ ComponentName lambda$new$4(UserHandle arg) throws RemoteException {
         return getService().getProfileOwnerOrDeviceOwnerSupervisionComponent(arg);
     }
@@ -3080,7 +3076,6 @@ public class DevicePolicyManager {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$new$5(Object query) throws RemoteException {
         return Boolean.valueOf(getService().isOrganizationOwnedDeviceWithManagedProfile());
     }
@@ -4804,7 +4799,6 @@ public class DevicePolicyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$new$8(Object query) throws RemoteException {
         return getService().getDeviceOwnerOrganizationName();
     }
@@ -4814,7 +4808,6 @@ public class DevicePolicyManager {
         return this.mGetDeviceOwnerOrganizationNameCache.query(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CharSequence lambda$new$9(Integer query) throws RemoteException {
         return getService().getOrganizationNameForUser(query.intValue());
     }
@@ -4983,7 +4976,6 @@ public class DevicePolicyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Boolean lambda$new$10(ComponentName admin) throws RemoteException {
         return Boolean.valueOf(getService().isNetworkLoggingEnabled(admin, getContext().getPackageName()));
     }
@@ -5114,7 +5106,7 @@ public class DevicePolicyManager {
         }
     }
 
-    /* renamed from: android.app.admin.DevicePolicyManager$1, reason: invalid class name */
+    /* renamed from: android.app.admin.DevicePolicyManager$1 */
     /* loaded from: classes.dex */
     class AnonymousClass1 extends IPackageDataObserver.Stub {
         final /* synthetic */ Executor val$executor;
@@ -5349,7 +5341,7 @@ public class DevicePolicyManager {
         }
     }
 
-    public void installSystemUpdate(ComponentName admin, Uri updateFilePath, final Executor executor, final InstallSystemUpdateCallback callback) {
+    public void installSystemUpdate(ComponentName admin, Uri updateFilePath, Executor executor, InstallSystemUpdateCallback callback) {
         throwIfParentInstance("installUpdate");
         if (this.mService == null) {
             return;
@@ -5358,6 +5350,14 @@ public class DevicePolicyManager {
             ParcelFileDescriptor fileDescriptor = this.mContext.getContentResolver().openFileDescriptor(updateFilePath, "r");
             try {
                 this.mService.installUpdateFromFile(admin, this.mContext.getPackageName(), fileDescriptor, new StartInstallingUpdateCallback.Stub() { // from class: android.app.admin.DevicePolicyManager.2
+                    final /* synthetic */ InstallSystemUpdateCallback val$callback;
+                    final /* synthetic */ Executor val$executor;
+
+                    AnonymousClass2(Executor executor2, InstallSystemUpdateCallback callback2) {
+                        executor = executor2;
+                        callback = callback2;
+                    }
+
                     @Override // android.app.admin.StartInstallingUpdateCallback
                     public void onStartInstallingUpdateError(int errorCode, String errorMessage) {
                         DevicePolicyManager.this.executeCallback(errorCode, errorMessage, executor, callback);
@@ -5380,14 +5380,30 @@ public class DevicePolicyManager {
             throw e.rethrowFromSystemServer();
         } catch (FileNotFoundException e2) {
             Log.w(TAG, e2);
-            executeCallback(4, Log.getStackTraceString(e2), executor, callback);
+            executeCallback(4, Log.getStackTraceString(e2), executor2, callback2);
         } catch (IOException e3) {
             Log.w(TAG, e3);
-            executeCallback(1, Log.getStackTraceString(e3), executor, callback);
+            executeCallback(1, Log.getStackTraceString(e3), executor2, callback2);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.app.admin.DevicePolicyManager$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends StartInstallingUpdateCallback.Stub {
+        final /* synthetic */ InstallSystemUpdateCallback val$callback;
+        final /* synthetic */ Executor val$executor;
+
+        AnonymousClass2(Executor executor2, InstallSystemUpdateCallback callback2) {
+            executor = executor2;
+            callback = callback2;
+        }
+
+        @Override // android.app.admin.StartInstallingUpdateCallback
+        public void onStartInstallingUpdateError(int errorCode, String errorMessage) {
+            DevicePolicyManager.this.executeCallback(errorCode, errorMessage, executor, callback);
+        }
+    }
+
     public void executeCallback(final int errorCode, final String errorMessage, Executor executor, final InstallSystemUpdateCallback callback) {
         executor.execute(new Runnable() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda3
             @Override // java.lang.Runnable

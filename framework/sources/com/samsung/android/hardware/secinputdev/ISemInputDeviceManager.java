@@ -610,8 +610,9 @@ public interface ISemInputDeviceManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemInputDeviceManager {
+        public static class Proxy implements ISemInputDeviceManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

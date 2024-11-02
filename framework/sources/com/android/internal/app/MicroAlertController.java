@@ -51,7 +51,6 @@ public class MicroAlertController extends AlertController {
         contentPanel.setVisibility(8);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.AlertController
     public void setupTitle(ViewGroup topPanel) {
         super.setupTitle(topPanel);
@@ -60,7 +59,6 @@ public class MicroAlertController extends AlertController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.AlertController
     public void setupButtons(ViewGroup buttonPanel) {
         super.setupButtons(buttonPanel);

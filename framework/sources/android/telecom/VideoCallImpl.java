@@ -27,6 +27,9 @@ public class VideoCallImpl extends InCallService.VideoCall {
     private int mVideoQuality = 0;
     private int mVideoState = 0;
     private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() { // from class: android.telecom.VideoCallImpl.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.IBinder.DeathRecipient
         public void binderDied() {
             try {
@@ -36,9 +39,28 @@ public class VideoCallImpl extends InCallService.VideoCall {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telecom.VideoCallImpl$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements IBinder.DeathRecipient {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            try {
+                VideoCallImpl.this.mVideoProvider.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
+            }
+        }
+    }
+
     /* loaded from: classes3.dex */
     public final class VideoCallListenerBinder extends IVideoCallback.Stub {
+        /* synthetic */ VideoCallListenerBinder(VideoCallImpl videoCallImpl, VideoCallListenerBinderIA videoCallListenerBinderIA) {
+            this();
+        }
+
         private VideoCallListenerBinder() {
         }
 
@@ -111,7 +133,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public final class MessageHandler extends Handler {
         private static final int MSG_CHANGE_CALL_DATA_USAGE = 5;
@@ -174,7 +195,6 @@ public class VideoCallImpl extends InCallService.VideoCall {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VideoCallImpl(IVideoProvider videoProvider, String callingPackageName, int targetSdkVersion) throws RemoteException {
         this.mVideoProvider = videoProvider;
         videoProvider.asBinder().linkToDeath(this.mDeathRecipient, 0);

@@ -62,7 +62,6 @@ public abstract class AbsActionBarView extends ViewGroup {
         this.mIsThemeDeviceDefaultFamily = outValue.data != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -208,8 +207,24 @@ public abstract class AbsActionBarView extends ViewGroup {
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.widget.AbsActionBarView$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AbsActionBarView.this.showOverflowMenu();
+        }
+    }
+
     public void postShowOverflowMenu() {
         post(new Runnable() { // from class: com.android.internal.widget.AbsActionBarView.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AbsActionBarView.this.showOverflowMenu();
@@ -257,18 +272,15 @@ public abstract class AbsActionBarView extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int measureChildView(View child, int availableWidth, int childSpecHeight, int spacing) {
         child.measure(View.MeasureSpec.makeMeasureSpec(availableWidth, Integer.MIN_VALUE), childSpecHeight);
         return Math.max(0, (availableWidth - child.getMeasuredWidth()) - spacing);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int next(int x, int val, boolean isRtl) {
         return isRtl ? x - val : x + val;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int positionChild(View child, int x, int y, int contentHeight, boolean reverse) {
         int childWidth = child.getMeasuredWidth();
         int childHeight = child.getMeasuredHeight();
@@ -281,7 +293,6 @@ public abstract class AbsActionBarView extends ViewGroup {
         return reverse ? -childWidth : childWidth;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes5.dex */
     public class VisibilityAnimListener implements Animator.AnimatorListener {
         private boolean mCanceled = false;

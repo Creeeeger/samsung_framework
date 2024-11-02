@@ -62,7 +62,6 @@ public abstract class AbstractX500NameStyle implements X500NameStyle {
         return encodeStringValue(oid, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Encodable encodeStringValue(ASN1ObjectIdentifier oid, String value) {
         return new DERUTF8String(value);
     }
@@ -105,7 +104,6 @@ public abstract class AbstractX500NameStyle implements X500NameStyle {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean rdnAreEqual(RDN rdn1, RDN rdn2) {
         return IETFUtils.rDNAreEqual(rdn1, rdn2);
     }

@@ -51,7 +51,6 @@ public final class MediaCodecList {
         throw new IllegalArgumentException();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static final Map<String, Object> getGlobalSettings() {
         synchronized (sInitLock) {
             if (sGlobalSettings == null) {

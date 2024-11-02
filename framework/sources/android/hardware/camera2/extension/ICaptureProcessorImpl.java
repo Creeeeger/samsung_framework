@@ -152,8 +152,9 @@ public interface ICaptureProcessorImpl extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ICaptureProcessorImpl {
+        public static class Proxy implements ICaptureProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

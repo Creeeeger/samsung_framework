@@ -47,7 +47,6 @@ public class KernelCpuThreadReaderDiff {
         return this.mReader.getCpuFrequenciesKhz();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setMinimumTotalCpuUsageMillis(int minimumTotalCpuUsageMillis) {
         if (minimumTotalCpuUsageMillis < 0) {
             Slog.w(TAG, "Negative minimumTotalCpuUsageMillis: " + minimumTotalCpuUsageMillis);
@@ -122,7 +121,6 @@ public class KernelCpuThreadReaderDiff {
         return difference;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ThreadKey {
         private final int mProcessId;

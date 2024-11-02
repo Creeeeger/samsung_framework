@@ -21,12 +21,10 @@ public class AndroidKeyStoreKey implements Key {
         this.mSecurityLevel = securityLevel;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public KeyDescriptor getUserKeyDescriptor() {
         return this.mDescriptor;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public KeyDescriptor getKeyIdDescriptor() {
         KeyDescriptor descriptor = new KeyDescriptor();
         descriptor.nspace = this.mKeyId;
@@ -36,12 +34,10 @@ public class AndroidKeyStoreKey implements Key {
         return descriptor;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Authorization[] getAuthorizations() {
         return this.mAuthorizations;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public KeyStoreSecurityLevel getSecurityLevel() {
         return this.mSecurityLevel;
     }

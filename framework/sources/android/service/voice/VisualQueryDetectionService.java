@@ -33,6 +33,9 @@ public abstract class VisualQueryDetectionService extends Service implements San
     private IRecognitionServiceManager mIRecognitionServiceManager;
     private IDetectorSessionVisualQueryDetectionCallback mRemoteCallback = null;
     private final ISandboxedDetectionService mInterface = new ISandboxedDetectionService.Stub() { // from class: android.service.voice.VisualQueryDetectionService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.service.voice.ISandboxedDetectionService
         public void detectWithVisualSignals(IDetectorSessionVisualQueryDetectionCallback callback) {
             Log.v(VisualQueryDetectionService.TAG, "#detectWithVisualSignals");
@@ -83,6 +86,62 @@ public abstract class VisualQueryDetectionService extends Service implements San
         }
     };
 
+    /* renamed from: android.service.voice.VisualQueryDetectionService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends ISandboxedDetectionService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void detectWithVisualSignals(IDetectorSessionVisualQueryDetectionCallback callback) {
+            Log.v(VisualQueryDetectionService.TAG, "#detectWithVisualSignals");
+            VisualQueryDetectionService.this.mRemoteCallback = callback;
+            VisualQueryDetectionService.this.onStartDetection();
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void stopDetection() {
+            Log.v(VisualQueryDetectionService.TAG, "#stopDetection");
+            VisualQueryDetectionService.this.onStopDetection();
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void updateState(PersistableBundle options, SharedMemory sharedMemory, IRemoteCallback callback) throws RemoteException {
+            Log.v(VisualQueryDetectionService.TAG, "#updateState" + (callback != null ? " with callback" : ""));
+            VisualQueryDetectionService.this.onUpdateStateInternal(options, sharedMemory, callback);
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void ping(IRemoteCallback callback) throws RemoteException {
+            callback.sendResult(null);
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void detectFromDspSource(SoundTrigger.KeyphraseRecognitionEvent event, AudioFormat audioFormat, long timeoutMillis, IDspHotwordDetectionCallback callback) {
+            throw new UnsupportedOperationException("Not supported by VisualQueryDetectionService");
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void detectFromMicrophoneSource(ParcelFileDescriptor audioStream, int audioSource, AudioFormat audioFormat, PersistableBundle options, IDspHotwordDetectionCallback callback) {
+            throw new UnsupportedOperationException("Not supported by VisualQueryDetectionService");
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void updateAudioFlinger(IBinder audioFlinger) {
+            AudioSystem.setAudioFlingerBinder(audioFlinger);
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void updateContentCaptureManager(IContentCaptureManager manager, ContentCaptureOptions options) {
+            VisualQueryDetectionService.this.mContentCaptureManager = new ContentCaptureManager(VisualQueryDetectionService.this, manager, options);
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void updateRecognitionServiceManager(IRecognitionServiceManager manager) {
+            VisualQueryDetectionService.this.mIRecognitionServiceManager = manager;
+        }
+    }
+
     @Override // android.content.ContextWrapper, android.content.Context
     public Object getSystemService(String name) {
         IRecognitionServiceManager iRecognitionServiceManager;
@@ -109,7 +168,6 @@ public abstract class VisualQueryDetectionService extends Service implements San
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onUpdateStateInternal(PersistableBundle options, SharedMemory sharedMemory, IRemoteCallback callback) {
         IntConsumer intConsumer = SandboxedDetectionInitializer.createInitializationStatusConsumer(callback);
         onUpdateState(options, sharedMemory, UPDATE_TIMEOUT_MILLIS, intConsumer);

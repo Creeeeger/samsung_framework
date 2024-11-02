@@ -70,6 +70,10 @@ public class AudioPolicy {
     public @interface PolicyStatus {
     }
 
+    /* synthetic */ AudioPolicy(AudioPolicyConfig audioPolicyConfig, Context context, Looper looper, AudioPolicyFocusListener audioPolicyFocusListener, AudioPolicyStatusListener audioPolicyStatusListener, boolean z, boolean z2, AudioPolicyVolumeCallback audioPolicyVolumeCallback, MediaProjection mediaProjection, AudioPolicyIA audioPolicyIA) {
+        this(audioPolicyConfig, context, looper, audioPolicyFocusListener, audioPolicyStatusListener, z, z2, audioPolicyVolumeCallback, mediaProjection);
+    }
+
     public AudioPolicyConfig getConfig() {
         return this.mConfig;
     }
@@ -97,6 +101,9 @@ public class AudioPolicy {
     private AudioPolicy(AudioPolicyConfig config, Context context, Looper looper, AudioPolicyFocusListener fl, AudioPolicyStatusListener sl, boolean isFocusPolicy, boolean isTestFocusPolicy, AudioPolicyVolumeCallback vc, MediaProjection projection) {
         this.mLock = new Object();
         this.mPolicyCb = new IAudioPolicyCallback.Stub() { // from class: android.media.audiopolicy.AudioPolicy.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.audiopolicy.IAudioPolicyCallback
             public void notifyAudioFocusGrant(AudioFocusInfo afi, int requestResult) {
                 AudioPolicy.this.sendMsg(1, afi, requestResult);
@@ -474,7 +481,6 @@ public class AudioPolicy {
         return allMatch;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$isLoopbackRenderPolicy$0(AudioMix mix) {
         return mix.getRouteFlags() == 3;
     }
@@ -688,7 +694,6 @@ public class AudioPolicy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onPolicyStatusChange() {
         AudioPolicyStatusListener audioPolicyStatusListener = this.mStatusListener;
         if (audioPolicyStatusListener != null) {
@@ -700,7 +705,56 @@ public class AudioPolicy {
         return this.mPolicyCb;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.audiopolicy.AudioPolicy$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends IAudioPolicyCallback.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.audiopolicy.IAudioPolicyCallback
+        public void notifyAudioFocusGrant(AudioFocusInfo afi, int requestResult) {
+            AudioPolicy.this.sendMsg(1, afi, requestResult);
+        }
+
+        @Override // android.media.audiopolicy.IAudioPolicyCallback
+        public void notifyAudioFocusLoss(AudioFocusInfo audioFocusInfo, boolean z) {
+            AudioPolicy.this.sendMsg(2, audioFocusInfo, z ? 1 : 0);
+        }
+
+        @Override // android.media.audiopolicy.IAudioPolicyCallback
+        public void notifyAudioFocusRequest(AudioFocusInfo afi, int requestResult) {
+            AudioPolicy.this.sendMsg(4, afi, requestResult);
+        }
+
+        @Override // android.media.audiopolicy.IAudioPolicyCallback
+        public void notifyAudioFocusAbandon(AudioFocusInfo afi) {
+            AudioPolicy.this.sendMsg(5, afi, 0);
+        }
+
+        @Override // android.media.audiopolicy.IAudioPolicyCallback
+        public void notifyMixStateUpdate(String regId, int state) {
+            Iterator<AudioMix> it = AudioPolicy.this.mConfig.getMixes().iterator();
+            while (it.hasNext()) {
+                AudioMix mix = it.next();
+                if (mix.getRegistration().equals(regId)) {
+                    mix.mMixState = state;
+                    AudioPolicy.this.sendMsg(3, mix, 0);
+                }
+            }
+        }
+
+        @Override // android.media.audiopolicy.IAudioPolicyCallback
+        public void notifyVolumeAdjust(int adjustment) {
+            AudioPolicy.this.sendMsg(6, null, adjustment);
+        }
+
+        @Override // android.media.audiopolicy.IAudioPolicyCallback
+        public void notifyUnregistration() {
+            AudioPolicy.this.setRegistration(null);
+        }
+    }
+
     /* loaded from: classes2.dex */
     public class EventHandler extends Handler {
         public EventHandler(AudioPolicy ap, Looper looper) {
@@ -773,7 +827,6 @@ public class AudioPolicy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendMsg(int msg, Object obj, int i) {
         EventHandler eventHandler = this.mEventHandler;
         if (eventHandler != null) {

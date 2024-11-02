@@ -12,7 +12,7 @@ public final class PhysicalSensor {
     public String type = new String();
     public String name = new String();
 
-    /* renamed from: vendor, reason: collision with root package name */
+    /* renamed from: vendor */
     public String f3vendor = new String();
     public int version = 0;
     public int fifoReservedCount = 0;

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
-class ObjectPool {
+public class ObjectPool {
     private static final int MAX_POOL_SIZE = 50;
     private static final Object sPoolSync = new Object();
     private static final Map<Class, ArrayList<? extends ObjectPoolItem>> sPoolMap = new HashMap();

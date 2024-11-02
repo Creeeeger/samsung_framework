@@ -324,7 +324,7 @@
     <string name="ext_media_unsupported_notification_message">Гэта прылада не падтрымлівае гэту %s. Націсніце для наладкі ў фармаце, які падтрымліваецца.</string>
     <string name="ext_media_unsupported_notification_title">%s не падтрымліваецца</string>
     <string name="ext_storage_bad_removal_button">Перазапусціць</string>
-    <string name="ext_storage_bad_removal_title">Перазапусціце тэлефон</string>
+    <string name="ext_storage_bad_removal_title">Перазапусціце планшэт</string>
     <string name="factoryreset_restrict">Палітыка бяспекі абмяжоўвае аднаўленне заводскіх налад.</string>
     <string name="firmwarerecovery_restrict">Палітыка бяспекі абмяжоўвае аднаўленне ўбудаванага ПЗ.</string>
     <string name="foldable_restart_app_dialog_checkbox">Больш не пытацца для ўсіх праграм</string>
@@ -573,16 +573,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Гук прайграецца на аўдыяпрыладзе Bluetooth. Націсніце тут, каб выключыць</string>
     <string name="multisound_sound_via_headphone">Гук %s прайграецца праз вашы навушнікі. Націсніце тут, каб выключыць.</string>
     <string name="multisound_sound_via_headphone_multiselection">Гук прайграецца праз навушнікі. Націсніце тут, каб выключыць.</string>
-    <string name="multisound_sound_via_phone_speaker">Гук %s прайграецца ў дынаміку тэлефона. Націсніце тут, каб выключыць.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Гук прайграецца праз дынамік тэлефона. Націсніце тут, каб выключыць.</string>
+    <string name="multisound_sound_via_phone_speaker">Гук %s прайграецца ў дынаміку планшэта. Націсніце тут, каб выключыць.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Гук прайграецца праз дынамік планшэта. Націсніце тут, каб выключыць.</string>
     <string name="multisound_sound_via_usb_audio">Гук %s прайграецца праз вашу аўдыяпрыладу USB. Націсніце тут, каб выключыць.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Гук прайграецца на аўдыяпрыладзе USB. Націсніце тут, каб выключыць.</string>
     <string name="multisound_title">Асобны гук праграмы</string>
     <string name="multisound_turn_off_multisound">Выключыць</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Немагчыма запусціць %s у Samsung DeX. Паспрабуйце запусціць у рэжыме тэлефона.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s немагчыма запусціць у Samsung DeX. Яна распрацавана для галоўных экранаў тэлефонаў.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некаторыя гульні працуюць толькі на сэнсарных экранах. Калі функцыі мышы не працуюць у Samsung DeX, паспрабуйце гуляць у рэжыме тэлефона.</string>
-    <string name="my_device">Гэты тэлефон</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Немагчыма запусціць праграму %s у Samsung DeX. Паспрабуйце запусціць у рэжыме планшэта.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Немагчыма запусціць праграму %s у Samsung DeX. Яна распрацавана для галоўных экранаў планшэтаў.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некаторыя гульні працуюць толькі на сэнсарных экранах. Калі функцыі мышы не працуюць у Samsung DeX, паспрабуйце гуляць у рэжыме планшэта.</string>
+    <string name="my_device">Гэты планшэт</string>
     <string name="network_locked_sim_dialog_message_ais">Ваша SIM-карта не поўнасцю працаздольна на гэтым тэлефоне, таму што не адпавядае ўмовам вашай падпіскі. Калі ў вас узніклі пытанні ці вам неабходна дадатковая інфармацыя па гэтым пытанні, звярніцеся ў службу падтрымкі кліентаў Samsung або краму, якая прадала вам гэтыя вырабы.</string>
     <string name="network_locked_sim_notification_text">Устаўлена SIM-карта заблак. сеткі.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -767,7 +767,7 @@
     <string name="policydesc_allow_desktopsync">Забараніць сінхранізацыю з ПК.</string>
     <string name="policydesc_allow_internetsharing">Забараніць выкарыстанне мабільнага хот-споту.</string>
     <string name="policydesc_allow_irda">Забараніць выкарыстанне IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Забараніць выкарыстанне эл. пошты праз POP і IMAP на тэлефоне.</string>
+    <string name="policydesc_allow_popimapemail">Забараніць выкарыстанне эл. пошты праз POP і IMAP на планшэце.</string>
     <string name="policydesc_allow_storagecard">Забараніць выкарыстанне SD-карт.</string>
     <string name="policydesc_allow_textmessaging">Забараніць выкарыстанне функцыі абмену тэкставымі і мультымедыйнымі паведамленнямі.</string>
     <string name="policydesc_allow_thirdParty">Гэта праграма можа не дазваляць запуск праграм іншых вытворцаў.</string>
@@ -810,7 +810,7 @@
     <string name="pwd_change_enforced">Палітыка бяспекі абмяжоўвае змяніць пароль.</string>
     <string name="recording_fail">Немагчыма выкарыстоўваць мікрафон у %1$s падчас яго выкарыстання ў %2$s.</string>
     <string name="recording_popup">%s выкарыстоўвае мікрафон.</string>
-    <string name="recording_popup_device">Тэлефон</string>
+    <string name="recording_popup_device">Планшэт</string>
     <string name="recording_popup_with_bluetooth">%s выкарыстоўвае мікрафон Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s выкарыстоўвае мікрафон прылады «%2$s».</string>
     <string name="redo">Паўтарыць</string>
@@ -875,12 +875,12 @@
     <string name="screencapture_restrict">Палітыка бяспекі забараняе здымкі экрана.</string>
     <string name="sd_card_unavailable_message">Вы не можаце выкарыстоўваць SD-карту, таму што яна была ўстаўлена падчас таго, як выкарыстоўваўся іншы профіль карыстальніка.</string>
     <string name="sd_card_unavailable_title">SD-карта недаступна</string>
-    <string name="sdcard_bad_removal_message">SD-карта была выдалена небяспечным чынам. Каб прадухіліць нечаканы перазапуск тэлефона, захавайце незахаваныя даныя і перазапусціце яго зараз.</string>
+    <string name="sdcard_bad_removal_message">SD-карта была выдалена небяспечным чынам. Каб прадухіліць нечаканы перазапуск планшэта, захавайце незахаваныя даныя і перазапусціце яго зараз.</string>
     <string name="sdcard_batch_decrypt_noti_content">Расшыфраваць SD-карту</string>
     <string name="sdcard_batch_decrypt_noti_title">Расшыфроўка SD-карты</string>
     <string name="sdcard_batch_decrypt_popup_content">Каб скарыстацца зашыфраванай SD-картай, яе трэба расшыфраваць. На расшыфроўку можа спатрэбіцца гадзіна ці болей. Зарадзіце акумулятар і не адлучайце прыладу ад сілкавання да завяршэння расшыфроўкі. Перарыванне расшыфроўкі можа спрычыніцца да частковай ці поўнай страты даных.</string>
     <string name="sdcard_decrypt_err_notification">Памылка расшыфроўкі SD-карты.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Некаторыя файлы на SD-карце былі зашыфраваны на іншай прыладзе, і іх немагчыма выкарыстоўваць на гэтым тэлефоне.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Некаторыя файлы на SD-карце былі зашыфраваны на іншай прыладзе, і іх немагчыма выкарыстоўваць на гэтым планшэце.</string>
     <string name="sdcard_decrypt_notification">SD-карта расшыфравана.</string>
     <string name="sdcard_decrypt_title_notification">Расшыфроўка SD-карты</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Расшыфроўка SD-карты…</string>
@@ -1201,7 +1201,7 @@
     <string name="usb_abnormal_reset_message">Адключыце кабель і падключыце яго зноў ці паспрабуйце выкарыстаць іншы кабель.</string>
     <string name="usb_abnormal_reset_title">USB-падлучэнне нестабільнае</string>
     <string name="usb_abnormal_reset_toast">USB-падлучэнне нестабільнае. Адключыце кабель і падключыце яго зноў ці паспрабуйце выкарыстаць іншы кабель.</string>
-    <string name="usb_bad_removal_message">Прылада сховішча USB была выдалена небяспечным чынам. Каб прадухіліць нечаканы перазапуск тэлефона, захавайце незахаваныя даныя і перазапусціце яго зараз.</string>
+    <string name="usb_bad_removal_message">Прылада сховішча USB была выдалена небяспечным чынам. Каб прадухіліць нечаканы перазапуск планшэта, захавайце незахаваныя даныя і перазапусціце яго зараз.</string>
     <string name="usb_blocked_by_emergency_mode">Некаторыя функцыі USB недаступны ў экстранным рэжыме.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Немагчыма выкарыстоўваць функцыі, звязаныя з падлучанай прыладай USB, пры ўключаным рэжыме максімальнага энергазберажэння.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Некаторыя функцыі USB будуць абмежаваны пры ўключаным рэжыме максімальнага энергазберажэння.</string>
@@ -1209,13 +1209,13 @@
     <string name="usb_camera_connected_notification_title">Падлучана медыяпрылада</string>
     <string name="usb_camera_disconnected_notification_title">Медыяпрылада адлучана</string>
     <string name="usb_cd_installer_notification_title">Абнаўленне праграмнага забеспячэння</string>
-    <string name="usb_charing_only_notification_title">Зарадка праз USB</string>
+    <string name="usb_charing_only_notification_title">Падлучана</string>
     <string name="usb_debugging_only_notification_title">Толькі адладка</string>
-    <string name="usb_host_resource_exceed_message">У USB-кантролера вашага тэлефона не хапае рэсурсаў для падлучэння да гэтай прылады. Паспрабуйце адлучыць прыладу і падлучыць яе зноў.</string>
+    <string name="usb_host_resource_exceed_message">У USB-кантролера вашага планшэта не хапае рэсурсаў для падлучэння да гэтай прылады. Паспрабуйце адлучыць прыладу і падлучыць яе зноў.</string>
     <string name="usb_host_resource_exceed_title">Не хапае рэсурсаў USB-кантролера</string>
-    <string name="usb_hub_depth_exceed_message">Тэлефон можа падтрымліваць максімум 5 падлучэнняў праз USB-канцэнтратар адначасова.</string>
+    <string name="usb_hub_depth_exceed_message">Планшэт можа падтрымліваць максімум 5 падлучэнняў праз USB-канцэнтратар адначасова.</string>
     <string name="usb_hub_depth_exceed_title">Макс падлуч праз USB-канцэнтр</string>
-    <string name="usb_hub_power_exceed_message">Ваш тэлефон не можа забяспечыць дастатковы зарад для гэтай прылады USB. Падлучыце прыладу да канцэнтратара USB з аўтаномным сілкаваннем, перш чым падлучаць яе да тэлефона.</string>
+    <string name="usb_hub_power_exceed_message">Ваш планшэт не можа забяспечыць дастатковы зарад для гэтай прылады USB. Падлучыце прыладу да канцэнтратара USB з аўтаномным сілкаваннем, перш чым падлучаць яе да планшэта.</string>
     <string name="usb_increase_battery_usage">USB-падлучэнне можа павялічыць спажыванне акумулятара.</string>
     <string name="usb_mass_storage_restrict">Палітыка бяспекі забараняе выкарыстанне масавага USB-сховішча.</string>
     <string name="usb_midi_notification_title">USB для MIDI</string>
@@ -1227,8 +1227,8 @@
     <string name="usb_open_charging_notification_title">Зарадка праз USB</string>
     <string name="usb_ptp_notification_title">USB для перадачы відарыса</string>
     <string name="usb_type_c_supply_power_notification_title">Зарадка падлуч прыл праз USB</string>
-    <string name="usb_unblock_by_screen_unlock">Каб выкарыстоўваць падлучаную USB-прыладу, разблакіруйце тэлефон.</string>
-    <string name="usb_unsupport_accessory_message">Гэта прылада USB не падтрымліваецца вашым тэлефонам.</string>
+    <string name="usb_unblock_by_screen_unlock">Каб выкарыстоўваць падлучаную USB-прыладу, разблакіруйце планшэт.</string>
+    <string name="usb_unsupport_accessory_message">Гэта прылада USB не падтрымліваецца вашым планшэтам.</string>
     <string name="usb_unsupport_accessory_title">Прылада USB не падтрымліваецца</string>
     <string name="usb_unsupported_device">Падлучаная прылада USB не падтрымліваецца.</string>
     <string name="usb_unsupported_device_title">Прылада не падтрымліваецца</string>
@@ -1246,19 +1246,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Вы можаце паскорыць сушку, накіраваўшы вентылятар або фен (толькі халоднае паветра) на порт.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"У зарадным порце або порце USB выяўлена вільгаць або іншародны матэрыял.
 
-Праверце порт зарадкі або порт USB на наяўнасць іншароднага матэрыялу, напрыклад пылу або смецця. Каб прадухіліць пашкоджанне тэлефона, не падключайце нічога, пакуль зарадны порт не стане чыстым, а вільгаць не знікне.
+Праверце порт зарадкі або порт USB на наяўнасць іншароднага матэрыялу, напрыклад пылу або смецця. Каб прадухіліць пашкоджанне планшэта, не падключайце нічога, пакуль зарадны порт не стане чыстым, а вільгаць не знікне.
 
 Каб высушыць порт, вытрасіце вільгаць і пачакайце, пакуль ён высахне; гэта можа заняць некалькі гадзін. Вы можаце паскорыць сушку, накіраваўшы вентылятар або фен (толькі халоднае паветра) на порт."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"У зарадным порце або порце USB выяўлена вільгаць або іншародны матэрыял.
 
-Праверце порт зарадкі або порт USB на наяўнасць іншароднага матэрыялу, напрыклад пылу або смецця. Каб прадухіліць пашкоджанне тэлефона, не падключайце нічога, пакуль зарадны порт не стане чыстым, а вільгаць не знікне.
+Праверце порт зарадкі або порт USB на наяўнасць іншароднага матэрыялу, напрыклад пылу або смецця. Каб прадухіліць пашкоджанне планшэта, не падключайце нічога, пакуль зарадны порт не стане чыстым, вільгаць не знікне, а апавяшчэнне не будзе ачышчана.
 
-Каб высушыць порт, вытрасіце вільгаць і пачакайце, пакуль ён высахне; гэта можа заняць некалькі гадзін. Вы можаце паскорыць сушку, накіраваўшы вентылятар або фен (толькі халоднае паветра) у бок порта.
+Каб высушыць порт, вытрасіце вільгаць і пачакайце, пакуль ён высахне; гэта можа заняць некалькі гадзін. Вы можаце паскорыць сушку, накіраваўшы вентылятар ці фен (толькі халоднае паветра) на порт.
 
-Тым часам вы можаце зараджаць тэлефон па бесправадной тэхналогіі."</string>
+Тым часам вы можаце зараджаць планшэт па бесправадной тэхналогіі."</string>
     <string name="usb_water_notification_content">У зарадным порце або порце USB вільгаць або іншародны матэрыял. Праверце перад зарадкай.</string>
-    <string name="usb_water_notification_message">У вашай зараднай прыладзе/порце USB выяўлена вільгаць. Перш чым зараджаць тэлефон, упэўніцеся, што прылада ці порт сухія. Працэс поўнага высыхання можа заняць некаторы час.</string>
+    <string name="usb_water_notification_message">У вашай зараднай прыладзе/порце USB выяўлена вільгаць. Перш чым зараджаць планшэт, упэўніцеся, што прылада ці порт сухія. Працэс поўнага высыхання можа заняць некаторы час.</string>
     <string name="usb_water_notification_message_button">Падрабязнасці</string>
     <string name="usb_water_notification_title">Праверыць зар прыл (USB-порт)</string>
     <string name="usbhostStorage_restrict">Палітыка бяспекі забараняе выкарыстанне сховішча USB-хаста.</string>

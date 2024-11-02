@@ -85,8 +85,9 @@ public interface IImsServiceControllerListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IImsServiceControllerListener {
+        public static class Proxy implements IImsServiceControllerListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -48,7 +48,6 @@ public class ASN1Integer extends ASN1Primitive {
         this(bytes, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Integer(byte[] bytes, boolean clone) {
         if (isMalformed(bytes)) {
             throw new IllegalArgumentException("malformed integer");
@@ -102,19 +101,16 @@ public class ASN1Integer extends ASN1Primitive {
         return longValue(bArr, i, -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() {
         return StreamUtil.calculateBodyLength(this.bytes.length) + 1 + this.bytes.length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 2, this.bytes);
@@ -125,7 +121,6 @@ public class ASN1Integer extends ASN1Primitive {
         return Arrays.hashCode(this.bytes);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1Integer)) {
@@ -139,7 +134,6 @@ public class ASN1Integer extends ASN1Primitive {
         return getValue().toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int intValue(byte[] bytes, int start, int signExt) {
         int length = bytes.length;
         int pos = Math.max(start, length - 4);
@@ -168,7 +162,6 @@ public class ASN1Integer extends ASN1Primitive {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isMalformed(byte[] bytes) {
         switch (bytes.length) {
             case 0:
@@ -180,7 +173,6 @@ public class ASN1Integer extends ASN1Primitive {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int signBytesToSkip(byte[] bytes) {
         int pos = 0;
         int last = bytes.length - 1;

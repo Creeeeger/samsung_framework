@@ -57,7 +57,6 @@ public final class VirtualAudioSession extends IAudioRoutingCallback.Stub implem
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPlaybackConfigChanged$0(List configs) {
             this.mCallback.onPlaybackConfigChanged(configs);
         }
@@ -74,7 +73,6 @@ public final class VirtualAudioSession extends IAudioRoutingCallback.Stub implem
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRecordingConfigChanged$1(List configs) {
             this.mCallback.onRecordingConfigChanged(configs);
         }

@@ -84,7 +84,6 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
         this(context, attrs, 16844018);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -99,7 +98,7 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
         ImageView imageView = (ImageView) findViewById(R.id.submenuarrow);
         this.mSubMenuArrowView = imageView;
         if (imageView != null) {
-            imageView.setImageDrawable(this.mSubMenuArrow);
+            imageView.lambda$setImageURIAsync$2(this.mSubMenuArrow);
         }
         this.mGroupDivider = (ImageView) findViewById(R.id.group_divider);
         this.mContent = (LinearLayout) findViewById(16908290);
@@ -260,7 +259,7 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
             insertIconView();
         }
         if (icon != null || this.mPreserveIconSpacing) {
-            this.mIconView.setImageDrawable(showIcon ? icon : null);
+            this.mIconView.lambda$setImageURIAsync$2(showIcon ? icon : null);
             if (this.mIconView.getVisibility() != 0) {
                 this.mIconView.setVisibility(0);
                 return;
@@ -270,7 +269,6 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView,
         this.mIconView.setVisibility(8);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (this.mIconView != null && this.mPreserveIconSpacing) {

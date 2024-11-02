@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 public class NrQos implements Parcelable {
     public static final int AVERAGING_WINDOW_UNKNOWN = -1;
     public static final Parcelable.Creator<NrQos> CREATOR = new Parcelable.Creator<NrQos>() { // from class: android.hardware.radio.data.NrQos.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NrQos createFromParcel(Parcel _aidl_source) {
             NrQos _aidl_out = new NrQos();
@@ -18,7 +20,6 @@ public class NrQos implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrQos[] newArray(int _aidl_size) {
             return new NrQos[_aidl_size];
@@ -34,6 +35,25 @@ public class NrQos implements Parcelable {
     @Deprecated
     public char averagingWindowMs = 0;
     public int averagingWindowMillis = -1;
+
+    /* renamed from: android.hardware.radio.data.NrQos$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NrQos> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrQos createFromParcel(Parcel _aidl_source) {
+            NrQos _aidl_out = new NrQos();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrQos[] newArray(int _aidl_size) {
+            return new NrQos[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

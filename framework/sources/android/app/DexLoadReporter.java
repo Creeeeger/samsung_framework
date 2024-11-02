@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public class DexLoadReporter implements BaseDexClassLoader.Reporter {
     private static final boolean DEBUG = false;
@@ -23,12 +22,10 @@ public class DexLoadReporter implements BaseDexClassLoader.Reporter {
     private DexLoadReporter() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static DexLoadReporter getInstance() {
         return INSTANCE;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerAppDataDir(String packageName, String dataDir) {
         if (dataDir != null) {
             synchronized (this.mDataDirs) {

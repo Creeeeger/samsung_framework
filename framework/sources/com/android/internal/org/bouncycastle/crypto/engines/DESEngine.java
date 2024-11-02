@@ -71,7 +71,6 @@ public class DESEngine implements BlockCipher {
     public void reset() {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int[] generateWorkingKey(boolean encrypting, byte[] key) {
         int m;
         int[] newKey = new int[32];
@@ -135,7 +134,6 @@ public class DESEngine implements BlockCipher {
         return newKey;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void desFunc(int[] wKey, byte[] in, int inOff, byte[] out, int outOff) {
         int left = Pack.bigEndianToInt(in, inOff);
         int right = Pack.bigEndianToInt(in, inOff + 4);

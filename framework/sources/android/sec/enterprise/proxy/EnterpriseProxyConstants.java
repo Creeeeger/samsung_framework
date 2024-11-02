@@ -22,7 +22,7 @@ public class EnterpriseProxyConstants {
     public static final int ERROR_RETURN_CODE = -1;
     public static final int KNOX_VPN_PROXY_CONFIG = 1;
     public static final List<String> LOCAL_ENTERPRISE_PROXY_WHITELIST = new ArrayList<String>() { // from class: android.sec.enterprise.proxy.EnterpriseProxyConstants.1
-        {
+        AnonymousClass1() {
             add("com.android.chrome");
             add("com.sec.android.app.sbrowser");
         }
@@ -33,4 +33,13 @@ public class EnterpriseProxyConstants {
     public static final String PROXY_CLEAR_SERVER_CACHE = "com.samsung.android.knox.intent.action.PROXY_CLEAR_SERVER_CACHE";
     public static final String PROXY_REFRESH_CREDENTIALS_DIALOG = "com.samsung.android.knox.intent.action.PROXY_REFRESH_CREDENTIALS_DIALOG_INTERNAL";
     public static final String PROXY_SERVICE = "com.android.proxyhandler.ProxyService";
+
+    /* renamed from: android.sec.enterprise.proxy.EnterpriseProxyConstants$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends ArrayList<String> {
+        AnonymousClass1() {
+            add("com.android.chrome");
+            add("com.sec.android.app.sbrowser");
+        }
+    }
 }

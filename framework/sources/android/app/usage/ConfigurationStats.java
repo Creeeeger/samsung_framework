@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class ConfigurationStats implements Parcelable {
     public static final Parcelable.Creator<ConfigurationStats> CREATOR = new Parcelable.Creator<ConfigurationStats>() { // from class: android.app.usage.ConfigurationStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ConfigurationStats createFromParcel(Parcel source) {
             ConfigurationStats stats = new ConfigurationStats();
@@ -22,7 +24,6 @@ public final class ConfigurationStats implements Parcelable {
             return stats;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConfigurationStats[] newArray(int size) {
             return new ConfigurationStats[size];
@@ -89,5 +90,31 @@ public final class ConfigurationStats implements Parcelable {
         dest.writeLong(this.mLastTimeActive);
         dest.writeLong(this.mTotalTimeActive);
         dest.writeInt(this.mActivationCount);
+    }
+
+    /* renamed from: android.app.usage.ConfigurationStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConfigurationStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConfigurationStats createFromParcel(Parcel source) {
+            ConfigurationStats stats = new ConfigurationStats();
+            if (source.readInt() != 0) {
+                stats.mConfiguration = Configuration.CREATOR.createFromParcel(source);
+            }
+            stats.mBeginTimeStamp = source.readLong();
+            stats.mEndTimeStamp = source.readLong();
+            stats.mLastTimeActive = source.readLong();
+            stats.mTotalTimeActive = source.readLong();
+            stats.mActivationCount = source.readInt();
+            return stats;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConfigurationStats[] newArray(int size) {
+            return new ConfigurationStats[size];
+        }
     }
 }

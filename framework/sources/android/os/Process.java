@@ -427,7 +427,10 @@ public class Process {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x004e, code lost:            if (r3 != null) goto L20;     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x004e, code lost:
+    
+        if (r3 != null) goto L80;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

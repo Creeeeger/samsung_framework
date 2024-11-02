@@ -45,7 +45,6 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
 
     protected abstract void configCodec(Message message);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public MediaCodecFilter(CodecDescriptor codecDescriptor) {
         ReentrantLock reentrantLock = new ReentrantLock();
         this.lock = reentrantLock;
@@ -56,7 +55,6 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
         conditionVariable.open();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void awaitCodecToReady() {
         StringBuilder sb;
         String str = TAG;
@@ -81,7 +79,6 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void signalCodecFromReady() {
         String str = TAG;
         Log.d(str, "signalCodecFromReady...E: " + this);
@@ -232,7 +229,6 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
         return this.sendChannelCount;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public String tagged(String fmt, Object... args) {
         return String.format(NavigationBarInflaterView.SIZE_MOD_START + this.codecTag + NavigationBarInflaterView.SIZE_MOD_END + fmt, args);
     }

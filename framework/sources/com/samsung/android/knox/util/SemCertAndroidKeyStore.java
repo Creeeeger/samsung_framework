@@ -7,13 +7,14 @@ import java.security.cert.Certificate;
 /* loaded from: classes5.dex */
 public class SemCertAndroidKeyStore implements Parcelable {
     public static final Parcelable.Creator<SemCertAndroidKeyStore> CREATOR = new Parcelable.Creator<SemCertAndroidKeyStore>() { // from class: com.samsung.android.knox.util.SemCertAndroidKeyStore.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemCertAndroidKeyStore createFromParcel(Parcel source) {
             return new SemCertAndroidKeyStore(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemCertAndroidKeyStore[] newArray(int size) {
             return null;
@@ -38,5 +39,22 @@ public class SemCertAndroidKeyStore implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeSerializable(this.certs);
+    }
+
+    /* renamed from: com.samsung.android.knox.util.SemCertAndroidKeyStore$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemCertAndroidKeyStore> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCertAndroidKeyStore createFromParcel(Parcel source) {
+            return new SemCertAndroidKeyStore(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemCertAndroidKeyStore[] newArray(int size) {
+            return null;
+        }
     }
 }

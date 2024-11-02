@@ -97,8 +97,9 @@ public interface ISoundTriggerHwGlobalCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ISoundTriggerHwGlobalCallback {
+        public static class Proxy implements ISoundTriggerHwGlobalCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

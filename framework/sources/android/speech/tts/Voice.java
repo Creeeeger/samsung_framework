@@ -13,13 +13,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public class Voice implements Parcelable {
     public static final Parcelable.Creator<Voice> CREATOR = new Parcelable.Creator<Voice>() { // from class: android.speech.tts.Voice.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Voice createFromParcel(Parcel in) {
             return new Voice(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Voice[] newArray(int size) {
             return new Voice[size];
@@ -41,6 +42,10 @@ public class Voice implements Parcelable {
     private final String mName;
     private final int mQuality;
     private final boolean mRequiresNetworkConnection;
+
+    /* synthetic */ Voice(Parcel parcel, VoiceIA voiceIA) {
+        this(parcel);
+    }
 
     public Voice(String name, Locale locale, int quality, int latency, boolean requiresNetworkConnection, Set<String> features) {
         this.mName = name;
@@ -75,6 +80,23 @@ public class Voice implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.speech.tts.Voice$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Voice> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Voice createFromParcel(Parcel in) {
+            return new Voice(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Voice[] newArray(int size) {
+            return new Voice[size];
+        }
     }
 
     public Locale getLocale() {

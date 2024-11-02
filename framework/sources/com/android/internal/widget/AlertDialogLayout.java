@@ -27,7 +27,6 @@ public class AlertDialogLayout extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!tryOnMeasure(widthMeasureSpec, heightMeasureSpec)) {
@@ -174,7 +173,6 @@ public class AlertDialogLayout extends LinearLayout {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int childTop;

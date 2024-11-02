@@ -1429,7 +1429,6 @@ public class AudioSystem {
         return routeDevices;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getOffloadSupport(AudioFormat format, AudioAttributes attr) {
         return native_get_offload_support(format.getEncoding(), format.getSampleRate(), format.getChannelMask(), format.getChannelIndexMask(), attr.getVolumeControlStream());
     }

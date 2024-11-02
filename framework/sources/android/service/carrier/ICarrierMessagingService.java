@@ -179,8 +179,9 @@ public interface ICarrierMessagingService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ICarrierMessagingService {
+        public static class Proxy implements ICarrierMessagingService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

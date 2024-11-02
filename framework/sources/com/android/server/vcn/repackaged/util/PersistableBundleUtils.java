@@ -65,27 +65,23 @@ public class PersistableBundleUtils {
         PersistableBundle toPersistableBundle(T t);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ PersistableBundle lambda$static$0(Integer i) {
         PersistableBundle result = new PersistableBundle();
         result.putInt(INTEGER_KEY, i.intValue());
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$static$1(PersistableBundle bundle) {
         Objects.requireNonNull(bundle, "PersistableBundle is null");
         return Integer.valueOf(bundle.getInt(INTEGER_KEY));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ PersistableBundle lambda$static$2(String i) {
         PersistableBundle result = new PersistableBundle();
         result.putString(STRING_KEY, i);
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$static$3(PersistableBundle bundle) {
         Objects.requireNonNull(bundle, "PersistableBundle is null");
         return bundle.getString(STRING_KEY);

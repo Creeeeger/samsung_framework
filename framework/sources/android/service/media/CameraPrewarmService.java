@@ -13,6 +13,9 @@ public abstract class CameraPrewarmService extends Service {
     public static final int MSG_CAMERA_FIRED = 1;
     private boolean mCameraIntentFired;
     private final Handler mHandler = new Handler() { // from class: android.service.media.CameraPrewarmService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -29,6 +32,25 @@ public abstract class CameraPrewarmService extends Service {
     public abstract void onCooldown(boolean z);
 
     public abstract void onPrewarm();
+
+    /* renamed from: android.service.media.CameraPrewarmService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    CameraPrewarmService.this.mCameraIntentFired = true;
+                    return;
+                default:
+                    super.handleMessage(msg);
+                    return;
+            }
+        }
+    }
 
     @Override // android.app.Service
     public IBinder onBind(Intent intent) {

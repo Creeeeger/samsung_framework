@@ -546,7 +546,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ProgressBar, android.view.View
     public boolean verifyDrawable(Drawable who) {
         return who == this.mThumb || who == this.mTickMark || super.verifyDrawable(who);
@@ -565,7 +564,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ProgressBar, android.view.View
     public void drawableStateChanged() {
         Drawable drawable;
@@ -609,7 +607,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.ProgressBar
     public void onVisualProgressChanged(int id, float scale) {
         Drawable thumb;
@@ -620,7 +617,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ProgressBar, android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -747,7 +743,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ProgressBar, android.view.View
     public synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -760,7 +755,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.ProgressBar
     public void drawTrack(Canvas canvas) {
         Drawable thumbDrawable = this.mThumb;
@@ -840,7 +834,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ProgressBar, android.view.View
     public synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         Drawable d = getCurrentDrawable();
@@ -995,17 +988,14 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onStartTrackingTouch() {
         this.mIsDragging = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onStopTrackingTouch() {
         this.mIsDragging = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onKeyChange() {
     }
 
@@ -1146,7 +1136,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canUserSetProgress() {
         return !isIndeterminate() && isEnabled();
     }
@@ -1169,7 +1158,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.ProgressBar
     public void onProgressRefresh(float scale, boolean fromUser, int progress) {
         int targetLevel = (int) (10000.0f * scale);
@@ -1299,15 +1287,12 @@ public abstract class AbsSeekBar extends ProgressBar {
         return superRet;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onStartTrackingHover(int hoverLevel, int posX, int posY) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onStopTrackingHover() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onHoverChanged(int hoverLevel, int posX, int posY) {
     }
 
@@ -1535,7 +1520,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ProgressBar
     public void updateDrawableBounds(int w, int h) {
         super.updateDrawableBounds(w, h);
@@ -1572,6 +1556,9 @@ public abstract class AbsSeekBar extends ProgressBar {
             progressZeroAnimation.setDuration(duration);
             progressZeroAnimation.setInterpolator(new LinearInterpolator());
             progressZeroAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.AbsSeekBar.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     AbsSeekBar.this.mCurrentProgressLevel = ((Integer) animation.getAnimatedValue()).intValue();
@@ -1585,6 +1572,20 @@ public abstract class AbsSeekBar extends ProgressBar {
             }
         }
         this.mMuteAnimationSet.playSequentially(list);
+    }
+
+    /* renamed from: android.widget.AbsSeekBar$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            AbsSeekBar.this.mCurrentProgressLevel = ((Integer) animation.getAnimatedValue()).intValue();
+            AbsSeekBar absSeekBar = AbsSeekBar.this;
+            absSeekBar.onSlidingRefresh(absSeekBar.mCurrentProgressLevel);
+        }
     }
 
     private void cancelMuteAnimation() {
@@ -1608,7 +1609,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.ProgressBar
     public void onSlidingRefresh(int level) {
         super.onSlidingRefresh(level);
@@ -1688,7 +1688,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         this.mIsTouchDisabled = disabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SliderDrawable extends Drawable {
         private static final int ANIMATION_DURATION = 250;
@@ -1739,6 +1738,9 @@ public abstract class AbsSeekBar extends ProgressBar {
             ofFloat.setDuration(250L);
             this.mPressedAnimator.setInterpolator(this.SINE_IN_OUT_80);
             this.mPressedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.AbsSeekBar.SliderDrawable.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                     float value = ((Float) valueAnimator.getAnimatedValue()).floatValue();
@@ -1750,12 +1752,41 @@ public abstract class AbsSeekBar extends ProgressBar {
             ofFloat2.setDuration(250L);
             this.mReleasedAnimator.setInterpolator(this.SINE_IN_OUT_80);
             this.mReleasedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.AbsSeekBar.SliderDrawable.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                     float value = ((Float) valueAnimator.getAnimatedValue()).floatValue();
                     SliderDrawable.this.invalidateTrack(value);
                 }
             });
+        }
+
+        /* renamed from: android.widget.AbsSeekBar$SliderDrawable$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float value = ((Float) valueAnimator.getAnimatedValue()).floatValue();
+                SliderDrawable.this.invalidateTrack(value);
+            }
+        }
+
+        /* renamed from: android.widget.AbsSeekBar$SliderDrawable$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass2() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float value = ((Float) valueAnimator.getAnimatedValue()).floatValue();
+                SliderDrawable.this.invalidateTrack(value);
+            }
         }
 
         @Override // android.graphics.drawable.Drawable
@@ -1826,7 +1857,6 @@ public abstract class AbsSeekBar extends ProgressBar {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.graphics.drawable.Drawable
         public boolean onStateChange(int[] stateSet) {
             boolean changed = super.onStateChange(stateSet);
@@ -1911,8 +1941,13 @@ public abstract class AbsSeekBar extends ProgressBar {
             return this.mState;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private class SliderState extends Drawable.ConstantState {
+        public class SliderState extends Drawable.ConstantState {
+            /* synthetic */ SliderState(SliderDrawable sliderDrawable, SliderStateIA sliderStateIA) {
+                this();
+            }
+
             private SliderState() {
             }
 
@@ -1928,7 +1963,6 @@ public abstract class AbsSeekBar extends ProgressBar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ThumbDrawable extends Drawable {
         private static final int PRESSED_DURATION = 100;
@@ -1973,6 +2007,9 @@ public abstract class AbsSeekBar extends ProgressBar {
             ofFloat.setDuration(100L);
             this.mThumbPressed.setInterpolator(new LinearInterpolator());
             this.mThumbPressed.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.AbsSeekBar.ThumbDrawable.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float value = ((Float) animation.getAnimatedValue()).floatValue();
@@ -1985,6 +2022,9 @@ public abstract class AbsSeekBar extends ProgressBar {
             ofFloat2.setDuration(300L);
             this.mThumbReleased.setInterpolator(this.SINE_IN_OUT_90);
             this.mThumbReleased.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.AbsSeekBar.ThumbDrawable.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float value = ((Float) animation.getAnimatedValue()).floatValue();
@@ -1992,6 +2032,34 @@ public abstract class AbsSeekBar extends ProgressBar {
                     ThumbDrawable.this.invalidateSelf();
                 }
             });
+        }
+
+        /* renamed from: android.widget.AbsSeekBar$ThumbDrawable$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = ((Float) animation.getAnimatedValue()).floatValue();
+                ThumbDrawable.this.setRadius((int) value);
+                ThumbDrawable.this.invalidateSelf();
+            }
+        }
+
+        /* renamed from: android.widget.AbsSeekBar$ThumbDrawable$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass2() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = ((Float) animation.getAnimatedValue()).floatValue();
+                ThumbDrawable.this.setRadius((int) value);
+                ThumbDrawable.this.invalidateSelf();
+            }
         }
 
         @Override // android.graphics.drawable.Drawable
@@ -2039,7 +2107,6 @@ public abstract class AbsSeekBar extends ProgressBar {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.graphics.drawable.Drawable
         public boolean onStateChange(int[] stateSet) {
             boolean changed = super.onStateChange(stateSet);
@@ -2097,7 +2164,6 @@ public abstract class AbsSeekBar extends ProgressBar {
             this.mThumbReleased.start();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setRadius(int radius) {
             this.mRadiusForAni = radius;
         }

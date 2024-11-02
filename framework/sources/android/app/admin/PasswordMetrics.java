@@ -19,7 +19,9 @@ public final class PasswordMetrics implements Parcelable {
     private static final int CHAR_SYMBOL = 3;
     private static final int CHAR_UPPER_CASE = 1;
     public static final Parcelable.Creator<PasswordMetrics> CREATOR = new Parcelable.Creator<PasswordMetrics>() { // from class: android.app.admin.PasswordMetrics.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PasswordMetrics createFromParcel(Parcel in) {
             int credType = in.readInt();
@@ -35,7 +37,6 @@ public final class PasswordMetrics implements Parcelable {
             return new PasswordMetrics(credType, length, letters, upperCase, lowerCase, numeric, symbols, nonLetter, nonNumeric, seqLength);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PasswordMetrics[] newArray(int size) {
             return new PasswordMetrics[size];
@@ -138,6 +139,33 @@ public final class PasswordMetrics implements Parcelable {
         dest.writeInt(this.nonLetter);
         dest.writeInt(this.nonNumeric);
         dest.writeInt(this.seqLength);
+    }
+
+    /* renamed from: android.app.admin.PasswordMetrics$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PasswordMetrics> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PasswordMetrics createFromParcel(Parcel in) {
+            int credType = in.readInt();
+            int length = in.readInt();
+            int letters = in.readInt();
+            int upperCase = in.readInt();
+            int lowerCase = in.readInt();
+            int numeric = in.readInt();
+            int symbols = in.readInt();
+            int nonLetter = in.readInt();
+            int nonNumeric = in.readInt();
+            int seqLength = in.readInt();
+            return new PasswordMetrics(credType, length, letters, upperCase, lowerCase, numeric, symbols, nonLetter, nonNumeric, seqLength);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PasswordMetrics[] newArray(int size) {
+            return new PasswordMetrics[size];
+        }
     }
 
     public static PasswordMetrics computeForCredential(LockscreenCredential credential) {
@@ -286,17 +314,18 @@ public final class PasswordMetrics implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
-    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
     /* loaded from: classes.dex */
-    public static abstract class ComplexityBucket {
-        public static final ComplexityBucket BUCKET_HIGH;
-        public static final ComplexityBucket BUCKET_NONE;
+    public static abstract class ComplexityBucket extends Enum<ComplexityBucket> {
         int mComplexityLevel;
+        public static final ComplexityBucket BUCKET_HIGH = new AnonymousClass1("BUCKET_HIGH", 0, 327680);
         public static final ComplexityBucket BUCKET_MEDIUM = new AnonymousClass2("BUCKET_MEDIUM", 1, 196608);
         public static final ComplexityBucket BUCKET_LOW = new AnonymousClass3("BUCKET_LOW", 2, 65536);
+        public static final ComplexityBucket BUCKET_NONE = new AnonymousClass4("BUCKET_NONE", 3, 0);
         private static final /* synthetic */ ComplexityBucket[] $VALUES = $values();
+
+        /* synthetic */ ComplexityBucket(String str, int i, int i2, ComplexityBucketIA complexityBucketIA) {
+            this(str, i, i2);
+        }
 
         abstract boolean allowsCredType(int i);
 
@@ -316,9 +345,13 @@ public final class PasswordMetrics implements Parcelable {
             return (ComplexityBucket[]) $VALUES.clone();
         }
 
-        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$1, reason: invalid class name */
+        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$1 */
         /* loaded from: classes.dex */
         enum AnonymousClass1 extends ComplexityBucket {
+            /* synthetic */ AnonymousClass1(String str, int i, int i2, C1IA c1ia) {
+                this(str, i, i2);
+            }
+
             private AnonymousClass1(String str, int i, int complexityLevel) {
                 super(str, i, complexityLevel);
             }
@@ -339,15 +372,13 @@ public final class PasswordMetrics implements Parcelable {
             }
         }
 
-        static {
-            int i = 0;
-            BUCKET_HIGH = new AnonymousClass1("BUCKET_HIGH", i, 327680);
-            BUCKET_NONE = new AnonymousClass4("BUCKET_NONE", 3, i);
-        }
-
-        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$2, reason: invalid class name */
+        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$2 */
         /* loaded from: classes.dex */
         enum AnonymousClass2 extends ComplexityBucket {
+            /* synthetic */ AnonymousClass2(String str, int i, int i2, C2IA c2ia) {
+                this(str, i, i2);
+            }
+
             private AnonymousClass2(String str, int i, int complexityLevel) {
                 super(str, i, complexityLevel);
             }
@@ -368,9 +399,13 @@ public final class PasswordMetrics implements Parcelable {
             }
         }
 
-        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$3, reason: invalid class name */
+        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$3 */
         /* loaded from: classes.dex */
         enum AnonymousClass3 extends ComplexityBucket {
+            /* synthetic */ AnonymousClass3(String str, int i, int i2, C3IA c3ia) {
+                this(str, i, i2);
+            }
+
             private AnonymousClass3(String str, int i, int complexityLevel) {
                 super(str, i, complexityLevel);
             }
@@ -391,9 +426,13 @@ public final class PasswordMetrics implements Parcelable {
             }
         }
 
-        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$4, reason: invalid class name */
+        /* renamed from: android.app.admin.PasswordMetrics$ComplexityBucket$4 */
         /* loaded from: classes.dex */
         enum AnonymousClass4 extends ComplexityBucket {
+            /* synthetic */ AnonymousClass4(String str, int i, int i2, C4IA c4ia) {
+                this(str, i, i2);
+            }
+
             private AnonymousClass4(String str, int i, int complexityLevel) {
                 super(str, i, complexityLevel);
             }
@@ -415,6 +454,7 @@ public final class PasswordMetrics implements Parcelable {
         }
 
         private ComplexityBucket(String str, int i, int complexityLevel) {
+            super(str, i);
             this.mComplexityLevel = complexityLevel;
         }
 

@@ -9,19 +9,24 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public class ApduList implements Parcelable {
     public static final Parcelable.Creator<ApduList> CREATOR = new Parcelable.Creator<ApduList>() { // from class: android.nfc.ApduList.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ApduList createFromParcel(Parcel in) {
             return new ApduList(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApduList[] newArray(int size) {
             return new ApduList[size];
         }
     };
     private ArrayList<byte[]> commands;
+
+    /* synthetic */ ApduList(Parcel parcel, ApduListIA apduListIA) {
+        this(parcel);
+    }
 
     public ApduList() {
         this.commands = new ArrayList<>();
@@ -33,6 +38,23 @@ public class ApduList implements Parcelable {
 
     public List<byte[]> get() {
         return this.commands;
+    }
+
+    /* renamed from: android.nfc.ApduList$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ApduList> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApduList createFromParcel(Parcel in) {
+            return new ApduList(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApduList[] newArray(int size) {
+            return new ApduList[size];
+        }
     }
 
     private ApduList(Parcel in) {

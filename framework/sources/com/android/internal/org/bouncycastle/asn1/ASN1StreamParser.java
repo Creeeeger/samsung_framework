@@ -39,7 +39,6 @@ public class ASN1StreamParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Encodable readImplicit(boolean constructed, int tag) throws IOException {
         InputStream inputStream = this._in;
         if (inputStream instanceof IndefiniteLengthInputStream) {
@@ -69,7 +68,6 @@ public class ASN1StreamParser {
         throw new ASN1Exception("implicit tagging not implemented");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Primitive readTaggedObject(boolean constructed, int tag) throws IOException {
         if (!constructed) {
             DefiniteLengthInputStream defIn = (DefiniteLengthInputStream) this._in;
@@ -151,7 +149,6 @@ public class ASN1StreamParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1EncodableVector readVector() throws IOException {
         ASN1Encodable readObject;
         ASN1Encodable obj = readObject();

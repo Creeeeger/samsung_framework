@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Long implements Parcelable {
     public static final Parcelable.Creator<Long> CREATOR = new Parcelable.Creator<Long>() { // from class: android.media.audio.common.Long.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Long createFromParcel(Parcel _aidl_source) {
             Long _aidl_out = new Long();
@@ -18,13 +20,31 @@ public class Long implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Long[] newArray(int _aidl_size) {
             return new Long[_aidl_size];
         }
     };
     public long value = 0;
+
+    /* renamed from: android.media.audio.common.Long$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Long> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Long createFromParcel(Parcel _aidl_source) {
+            Long _aidl_out = new Long();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Long[] newArray(int _aidl_size) {
+            return new Long[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

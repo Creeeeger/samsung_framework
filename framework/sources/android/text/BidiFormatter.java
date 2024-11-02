@@ -24,6 +24,10 @@ public final class BidiFormatter {
     private static final BidiFormatter DEFAULT_LTR_INSTANCE = new BidiFormatter(false, 2, DEFAULT_TEXT_DIRECTION_HEURISTIC);
     private static final BidiFormatter DEFAULT_RTL_INSTANCE = new BidiFormatter(true, 2, DEFAULT_TEXT_DIRECTION_HEURISTIC);
 
+    /* synthetic */ BidiFormatter(boolean z, int i, TextDirectionHeuristic textDirectionHeuristic, BidiFormatterIA bidiFormatterIA) {
+        this(z, i, textDirectionHeuristic);
+    }
+
     /* loaded from: classes3.dex */
     public static final class Builder {
         private int mFlags;
@@ -185,12 +189,10 @@ public final class BidiFormatter {
         return unicodeWrap(str, this.mDefaultTextDirectionHeuristic, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static BidiFormatter getDefaultInstanceFromContext(boolean isRtlContext) {
         return isRtlContext ? DEFAULT_RTL_INSTANCE : DEFAULT_LTR_INSTANCE;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isRtlLocale(Locale locale) {
         return TextUtils.getLayoutDirectionFromLocale(locale) == 1;
     }

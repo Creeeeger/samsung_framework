@@ -99,8 +99,9 @@ public interface IAttentionCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IAttentionCallback {
+        public static class Proxy implements IAttentionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

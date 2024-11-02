@@ -27,7 +27,7 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
     protected MediaFormatUpdater formatUpdater;
     protected Operator processor;
 
-    /* renamed from: com.samsung.android.sume.core.functional.OperatorWrapper$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.sume.core.functional.OperatorWrapper$1 */
     /* loaded from: classes4.dex */
     class AnonymousClass1 extends HashMap<ImgpType, MediaFormatUpdater> {
         AnonymousClass1() {
@@ -75,7 +75,6 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$new$2(MediaFormat ifmt, MutableMediaFormat ofmt) {
             Integer orientation = (Integer) ifmt.get("rotation-degrees");
             if (orientation != null) {
@@ -87,7 +86,6 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$new$3(MediaFormat ifmt, MutableMediaFormat ofmt) {
             if (ifmt.getColorFormat().getChannels() != ofmt.getColorFormat().getChannels()) {
                 ofmt.setDataType(DataType.of(ofmt.getDataType().depth(), ifmt.getColorFormat().getChannels()));
@@ -95,7 +93,6 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
             ofmt.setColorFormat(ifmt.getColorFormat());
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$new$5(MediaFormat ifmt, MutableMediaFormat ofmt) {
             int dim = ((Integer) Optional.ofNullable(ifmt.getShape()).map(new Function() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$1$$ExternalSyntheticLambda7
                 @Override // java.util.function.Function
@@ -124,11 +121,9 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$new$0(MediaFormat ifmt, MutableMediaFormat ofmt) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaFormatUpdater lambda$new$1() {
         return new MediaFormatUpdater() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$$ExternalSyntheticLambda4
             @Override // com.samsung.android.sume.core.functional.MediaFormatUpdater
@@ -155,7 +150,6 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
         return new OperatorWrapper(type, processor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ OperatorWrapper lambda$of$2(Enum type, Operator e) {
         return new OperatorWrapper(type, e);
     }

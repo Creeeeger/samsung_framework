@@ -1012,7 +1012,6 @@ public final class ContactsContract {
             return new EntityIteratorImpl(cursor);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class EntityIteratorImpl extends CursorEntityIterator {
             private static final String[] DATA_KEYS = {"data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", DataColumns.DATA12, DataColumns.DATA13, "data14", "data15", DataColumns.SYNC1, DataColumns.SYNC2, DataColumns.SYNC3, DataColumns.SYNC4};
@@ -1269,6 +1268,10 @@ public final class ContactsContract {
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/status-update";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(ContactsContract.AUTHORITY_URI, "status_updates");
         public static final Uri PROFILE_CONTENT_URI = Uri.withAppendedPath(Profile.CONTENT_URI, "status_updates");
+
+        /* synthetic */ StatusUpdates(StatusUpdatesIA statusUpdatesIA) {
+            this();
+        }
 
         private StatusUpdates() {
         }
@@ -2043,7 +2046,9 @@ public final class ContactsContract {
     public static final class SimAccount implements Parcelable {
         public static final int ADN_EF_TYPE = 1;
         public static final Parcelable.Creator<SimAccount> CREATOR = new Parcelable.Creator<SimAccount>() { // from class: android.provider.ContactsContract.SimAccount.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SimAccount createFromParcel(Parcel source) {
                 String accountName = source.readString();
@@ -2054,7 +2059,6 @@ public final class ContactsContract {
                 return simAccount;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SimAccount[] newArray(int size) {
                 return new SimAccount[size];
@@ -2128,6 +2132,28 @@ public final class ContactsContract {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: android.provider.ContactsContract$SimAccount$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SimAccount> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SimAccount createFromParcel(Parcel source) {
+                String accountName = source.readString();
+                String accountType = source.readString();
+                int simSlot = source.readInt();
+                int efType = source.readInt();
+                SimAccount simAccount = new SimAccount(accountName, accountType, simSlot, efType);
+                return simAccount;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SimAccount[] newArray(int size) {
+                return new SimAccount[size];
+            }
         }
     }
 
@@ -2321,7 +2347,6 @@ public final class ContactsContract {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Bundle nullSafeCall(ContentResolver resolver, Uri uri, String method, String arg, Bundle extras) {
         try {
             ContentProviderClient client = resolver.acquireContentProviderClient(uri);

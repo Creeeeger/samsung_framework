@@ -112,8 +112,48 @@ public class MediaMetrics {
         public static final String YES = "yes";
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native int native_submit_bytebuffer(ByteBuffer byteBuffer, int i);
+
+    /* renamed from: android.media.MediaMetrics$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1<T> implements Key<T> {
+        private final String mName;
+        private final Class<T> mType;
+        final /* synthetic */ String val$name;
+        final /* synthetic */ Class val$type;
+
+        AnonymousClass1(String str, Class cls) {
+            this.val$name = str;
+            this.val$type = cls;
+            this.mName = str;
+            this.mType = cls;
+        }
+
+        @Override // android.media.MediaMetrics.Key
+        public String getName() {
+            return this.mName;
+        }
+
+        @Override // android.media.MediaMetrics.Key
+        public Class<T> getValueClass() {
+            return this.mType;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof Key)) {
+                return false;
+            }
+            Key<?> other = (Key) obj;
+            return this.mName.equals(other.getName()) && this.mType.equals(other.getValueClass());
+        }
+
+        public int hashCode() {
+            return Objects.hash(this.mName, this.mType);
+        }
+    }
 
     public static <T> Key<T> createKey(String name, Class<T> type) {
         return new Key<T>(name, type) { // from class: android.media.MediaMetrics.1
@@ -122,11 +162,11 @@ public class MediaMetrics {
             final /* synthetic */ String val$name;
             final /* synthetic */ Class val$type;
 
-            {
-                this.val$name = name;
-                this.val$type = type;
-                this.mName = name;
-                this.mType = type;
+            AnonymousClass1(String name2, Class type2) {
+                this.val$name = name2;
+                this.val$type = type2;
+                this.mName = name2;
+                this.mType = type2;
             }
 
             @Override // android.media.MediaMetrics.Key

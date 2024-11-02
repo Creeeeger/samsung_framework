@@ -10,7 +10,9 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioFocusInfo implements Parcelable {
     public static final Parcelable.Creator<AudioFocusInfo> CREATOR = new Parcelable.Creator<AudioFocusInfo>() { // from class: android.media.AudioFocusInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioFocusInfo createFromParcel(Parcel in) {
             AudioFocusInfo afi = new AudioFocusInfo(AudioAttributes.CREATOR.createFromParcel(in), in.readInt(), in.readString(), in.readString(), in.readInt(), in.readInt(), in.readInt(), in.readInt());
@@ -18,7 +20,6 @@ public final class AudioFocusInfo implements Parcelable {
             return afi;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioFocusInfo[] newArray(int size) {
             return new AudioFocusInfo[size];
@@ -123,5 +124,24 @@ public final class AudioFocusInfo implements Parcelable {
             return true;
         }
         return false;
+    }
+
+    /* renamed from: android.media.AudioFocusInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioFocusInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioFocusInfo createFromParcel(Parcel in) {
+            AudioFocusInfo afi = new AudioFocusInfo(AudioAttributes.CREATOR.createFromParcel(in), in.readInt(), in.readString(), in.readString(), in.readInt(), in.readInt(), in.readInt(), in.readInt());
+            afi.setGen(in.readLong());
+            return afi;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioFocusInfo[] newArray(int size) {
+            return new AudioFocusInfo[size];
+        }
     }
 }

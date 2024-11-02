@@ -20,13 +20,14 @@ public class ContentsInfo implements Parcelable {
     private final Map<String, Object> data;
     private static final String TAG = Def.tagOf((Class<?>) ContentsInfo.class);
     public static final Parcelable.Creator<ContentsInfo> CREATOR = new Parcelable.Creator<ContentsInfo>() { // from class: com.samsung.android.sume.core.message.ContentsInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentsInfo createFromParcel(Parcel in) {
             return new ContentsInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentsInfo[] newArray(int size) {
             return new ContentsInfo[size];
@@ -46,6 +47,23 @@ public class ContentsInfo implements Parcelable {
     protected ContentsInfo(Parcel in) {
         this();
         in.readMap(this.data, null);
+    }
+
+    /* renamed from: com.samsung.android.sume.core.message.ContentsInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentsInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentsInfo createFromParcel(Parcel in) {
+            return new ContentsInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentsInfo[] newArray(int size) {
+            return new ContentsInfo[size];
+        }
     }
 
     ContentsInfo(Message message) {
@@ -340,14 +358,13 @@ public class ContentsInfo implements Parcelable {
         return (String) this.data.keySet().stream().map(new Function() { // from class: com.samsung.android.sume.core.message.ContentsInfo$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return ContentsInfo.this.m8806x3d006615((String) obj);
+                return ContentsInfo.this.m8798x3d006615((String) obj);
             }
         }).collect(Collectors.joining(", ", "{", "}"));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$toString$0$com-samsung-android-sume-core-message-ContentsInfo, reason: not valid java name */
-    public /* synthetic */ String m8806x3d006615(String it) {
+    /* renamed from: lambda$toString$0$com-samsung-android-sume-core-message-ContentsInfo */
+    public /* synthetic */ String m8798x3d006615(String it) {
         return it + "=" + this.data.get(it);
     }
 }

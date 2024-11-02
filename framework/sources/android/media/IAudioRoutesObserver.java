@@ -83,7 +83,6 @@ public interface IAudioRoutesObserver extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class Proxy implements IAudioRoutesObserver {
             private IBinder mRemote;

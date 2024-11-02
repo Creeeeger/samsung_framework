@@ -14,7 +14,6 @@ public abstract class SQLiteProgram extends SQLiteClosable {
     private final boolean mReadOnly;
     private final String mSql;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SQLiteProgram(SQLiteDatabase db, String sql, Object[] bindArgs, CancellationSignal cancellationSignalForPrepare) {
         boolean z;
         this.mDatabase = db;
@@ -69,32 +68,26 @@ public abstract class SQLiteProgram extends SQLiteClosable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final SQLiteDatabase getDatabase() {
         return this.mDatabase;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final String getSql() {
         return this.mSql;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Object[] getBindArgs() {
         return this.mBindArgs;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final String[] getColumnNames() {
         return this.mColumnNames;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final SQLiteSession getSession() {
         return this.mDatabase.getThreadSession();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final int getConnectionFlags() {
         return this.mDatabase.getThreadDefaultConnectionFlags(this.mReadOnly);
     }
@@ -103,7 +96,6 @@ public abstract class SQLiteProgram extends SQLiteClosable {
         this.mDatabase.onCorruption();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void onCorruption(int errCode) {
         this.mDatabase.onCorruption(errCode);
     }

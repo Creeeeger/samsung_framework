@@ -27,7 +27,9 @@ public final class ModemActivityInfo implements Parcelable {
     private int[] mTotalTxTimeMs;
     private static final Range<Integer>[] TX_POWER_RANGES = {new Range(Integer.MIN_VALUE, 0), new Range(0, 5), new Range(5, 15), new Range(15, 20), new Range(20, Integer.MAX_VALUE)};
     public static final Parcelable.Creator<ModemActivityInfo> CREATOR = new Parcelable.Creator<ModemActivityInfo>() { // from class: android.telephony.ModemActivityInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ModemActivityInfo createFromParcel(Parcel in) {
             long timestamp = in.readLong();
@@ -41,7 +43,6 @@ public final class ModemActivityInfo implements Parcelable {
             return new ModemActivityInfo(timestamp, sleepTimeMs, idleTimeMs, activityStatsTechSpecificInfo);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ModemActivityInfo[] newArray(int size) {
             return new ModemActivityInfo[size];
@@ -106,6 +107,31 @@ public final class ModemActivityInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.ModemActivityInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ModemActivityInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ModemActivityInfo createFromParcel(Parcel in) {
+            long timestamp = in.readLong();
+            int sleepTimeMs = in.readInt();
+            int idleTimeMs = in.readInt();
+            Parcelable[] tempSpecifiers = (Parcelable[]) in.createTypedArray(ActivityStatsTechSpecificInfo.CREATOR);
+            ActivityStatsTechSpecificInfo[] activityStatsTechSpecificInfo = new ActivityStatsTechSpecificInfo[tempSpecifiers.length];
+            for (int i = 0; i < tempSpecifiers.length; i++) {
+                activityStatsTechSpecificInfo[i] = (ActivityStatsTechSpecificInfo) tempSpecifiers[i];
+            }
+            return new ModemActivityInfo(timestamp, sleepTimeMs, idleTimeMs, activityStatsTechSpecificInfo);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ModemActivityInfo[] newArray(int size) {
+            return new ModemActivityInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

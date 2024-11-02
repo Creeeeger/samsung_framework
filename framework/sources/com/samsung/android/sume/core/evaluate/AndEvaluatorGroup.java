@@ -2,10 +2,8 @@ package com.samsung.android.sume.core.evaluate;
 
 import java.util.function.Predicate;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class AndEvaluatorGroup extends EvaluatorGroup {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AndEvaluatorGroup(Evaluator... evaluators) {
         super(evaluators);
     }

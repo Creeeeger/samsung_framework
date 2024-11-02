@@ -112,7 +112,6 @@ public class SemSoundTrigger {
         public final int status;
         public final boolean triggerInData;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public RecognitionEvent(int status, int soundModelHandle, boolean captureAvailable, int captureSession, int captureDelayMs, int capturePreambleMs, boolean triggerInData, AudioFormat captureFormat, byte[] data) {
             this.status = status;
             this.soundModelHandle = soundModelHandle;

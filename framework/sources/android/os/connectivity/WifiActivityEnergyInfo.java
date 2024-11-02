@@ -13,7 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class WifiActivityEnergyInfo implements Parcelable {
     public static final Parcelable.Creator<WifiActivityEnergyInfo> CREATOR = new Parcelable.Creator<WifiActivityEnergyInfo>() { // from class: android.os.connectivity.WifiActivityEnergyInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WifiActivityEnergyInfo createFromParcel(Parcel in) {
             long timestamp = in.readLong();
@@ -25,7 +27,6 @@ public final class WifiActivityEnergyInfo implements Parcelable {
             return new WifiActivityEnergyInfo(timestamp, stackState, txTime, rxTime, scanTime, idleTime);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiActivityEnergyInfo[] newArray(int size) {
             return new WifiActivityEnergyInfo[size];
@@ -79,6 +80,29 @@ public final class WifiActivityEnergyInfo implements Parcelable {
 
     public String toString() {
         return "WifiActivityEnergyInfo{ mTimeSinceBootMillis=" + this.mTimeSinceBootMillis + " mStackState=" + this.mStackState + " mControllerTxDurationMillis=" + this.mControllerTxDurationMillis + " mControllerRxDurationMillis=" + this.mControllerRxDurationMillis + " mControllerScanDurationMillis=" + this.mControllerScanDurationMillis + " mControllerIdleDurationMillis=" + this.mControllerIdleDurationMillis + " mControllerEnergyUsedMicroJoules=" + this.mControllerEnergyUsedMicroJoules + " }";
+    }
+
+    /* renamed from: android.os.connectivity.WifiActivityEnergyInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WifiActivityEnergyInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiActivityEnergyInfo createFromParcel(Parcel in) {
+            long timestamp = in.readLong();
+            int stackState = in.readInt();
+            long txTime = in.readLong();
+            long rxTime = in.readLong();
+            long scanTime = in.readLong();
+            long idleTime = in.readLong();
+            return new WifiActivityEnergyInfo(timestamp, stackState, txTime, rxTime, scanTime, idleTime);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WifiActivityEnergyInfo[] newArray(int size) {
+            return new WifiActivityEnergyInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -30,13 +30,14 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
     private volatile List<MediaFormat> planes;
     private static final String TAG = Def.tagOf((Class<?>) GenericMediaBuffer.class);
     public static final Parcelable.Creator<GenericMediaBuffer<?>> CREATOR = new Parcelable.Creator<GenericMediaBuffer<?>>() { // from class: com.samsung.android.sume.core.buffer.GenericMediaBuffer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GenericMediaBuffer<?> createFromParcel(Parcel in) {
             return new GenericMediaBuffer<>(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GenericMediaBuffer<?>[] newArray(int size) {
             return new GenericMediaBuffer[size];
@@ -170,7 +171,6 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
         return super.setStride(i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GenericMediaBuffer(MediaFormat mediaFormat, T t) {
         super(mediaFormat);
         this.data = t;
@@ -178,7 +178,6 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
         adjustShape();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GenericMediaBuffer(MediaFormat mediaFormat, Align align, T t) {
         super(mediaFormat, align);
         this.data = t;
@@ -375,7 +374,6 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
         }).orElse("n/a");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$dataToString$0(Object it) {
         try {
             return BufferExtension.stringfy(it);
@@ -400,5 +398,22 @@ public class GenericMediaBuffer<T> extends MediaBufferBase {
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public String contentToString() {
         return contentToString(this);
+    }
+
+    /* renamed from: com.samsung.android.sume.core.buffer.GenericMediaBuffer$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GenericMediaBuffer<?>> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GenericMediaBuffer<?> createFromParcel(Parcel in) {
+            return new GenericMediaBuffer<>(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GenericMediaBuffer<?>[] newArray(int size) {
+            return new GenericMediaBuffer[size];
+        }
     }
 }

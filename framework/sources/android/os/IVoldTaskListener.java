@@ -93,8 +93,9 @@ public interface IVoldTaskListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IVoldTaskListener {
+        public static class Proxy implements IVoldTaskListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

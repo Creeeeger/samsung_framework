@@ -119,8 +119,9 @@ public interface IFontManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IFontManager {
+        public static class Proxy implements IFontManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

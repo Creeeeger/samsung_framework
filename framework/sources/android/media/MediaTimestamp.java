@@ -30,7 +30,6 @@ public final class MediaTimestamp {
         this.clockRate = clockRate;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MediaTimestamp() {
         this.mediaTimeUs = 0L;
         this.nanoTime = 0L;

@@ -15,7 +15,6 @@ public class GesturePoint {
         this.timestamp = t;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static GesturePoint deserialize(DataInputStream in) throws IOException {
         float x = in.readFloat();
         float y = in.readFloat();

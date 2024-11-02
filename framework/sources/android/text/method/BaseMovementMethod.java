@@ -106,7 +106,6 @@ public class BaseMovementMethod implements MovementMethod {
         return KeyEvent.normalizeMetaState(metaState) & (-194);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode, int movementMetaState, KeyEvent event) {
         switch (keyCode) {
             case 19:
@@ -308,7 +307,6 @@ public class BaseMovementMethod implements MovementMethod {
         return right;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollLeft(TextView widget, Spannable buffer, int amount) {
         int minScrollX = getScrollBoundsLeft(widget);
         int scrollX = widget.getScrollX();
@@ -319,7 +317,6 @@ public class BaseMovementMethod implements MovementMethod {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollRight(TextView widget, Spannable buffer, int amount) {
         int maxScrollX = getScrollBoundsRight(widget) - getInnerWidth(widget);
         int scrollX = widget.getScrollX();
@@ -330,7 +327,6 @@ public class BaseMovementMethod implements MovementMethod {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollUp(TextView widget, Spannable buffer, int amount) {
         Layout layout = widget.getLayout();
         int top = widget.getScrollY();
@@ -345,7 +341,6 @@ public class BaseMovementMethod implements MovementMethod {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollDown(TextView widget, Spannable buffer, int amount) {
         Layout layout = widget.getLayout();
         int innerHeight = getInnerHeight(widget);
@@ -362,7 +357,6 @@ public class BaseMovementMethod implements MovementMethod {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollPageUp(TextView widget, Spannable buffer) {
         Layout layout = widget.getLayout();
         int top = widget.getScrollY() - getInnerHeight(widget);
@@ -374,7 +368,6 @@ public class BaseMovementMethod implements MovementMethod {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollPageDown(TextView widget, Spannable buffer) {
         Layout layout = widget.getLayout();
         int innerHeight = getInnerHeight(widget);
@@ -387,7 +380,6 @@ public class BaseMovementMethod implements MovementMethod {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollTop(TextView widget, Spannable buffer) {
         Layout layout = widget.getLayout();
         if (getTopLine(widget) < 0) {
@@ -397,7 +389,6 @@ public class BaseMovementMethod implements MovementMethod {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollBottom(TextView widget, Spannable buffer) {
         Layout layout = widget.getLayout();
         int lineCount = layout.getLineCount();
@@ -408,7 +399,6 @@ public class BaseMovementMethod implements MovementMethod {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollLineStart(TextView widget, Spannable buffer) {
         int minScrollX = getScrollBoundsLeft(widget);
         int scrollX = widget.getScrollX();
@@ -419,7 +409,6 @@ public class BaseMovementMethod implements MovementMethod {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean scrollLineEnd(TextView widget, Spannable buffer) {
         int maxScrollX = getScrollBoundsRight(widget) - getInnerWidth(widget);
         int scrollX = widget.getScrollX();

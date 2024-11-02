@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class GsmBroadcastSmsConfigInfo implements Parcelable {
     public static final Parcelable.Creator<GsmBroadcastSmsConfigInfo> CREATOR = new Parcelable.Creator<GsmBroadcastSmsConfigInfo>() { // from class: android.hardware.radio.messaging.GsmBroadcastSmsConfigInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GsmBroadcastSmsConfigInfo createFromParcel(Parcel _aidl_source) {
             GsmBroadcastSmsConfigInfo _aidl_out = new GsmBroadcastSmsConfigInfo();
@@ -16,7 +18,6 @@ public class GsmBroadcastSmsConfigInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GsmBroadcastSmsConfigInfo[] newArray(int _aidl_size) {
             return new GsmBroadcastSmsConfigInfo[_aidl_size];
@@ -27,6 +28,25 @@ public class GsmBroadcastSmsConfigInfo implements Parcelable {
     public int fromCodeScheme = 0;
     public int toCodeScheme = 0;
     public boolean selected = false;
+
+    /* renamed from: android.hardware.radio.messaging.GsmBroadcastSmsConfigInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GsmBroadcastSmsConfigInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GsmBroadcastSmsConfigInfo createFromParcel(Parcel _aidl_source) {
+            GsmBroadcastSmsConfigInfo _aidl_out = new GsmBroadcastSmsConfigInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GsmBroadcastSmsConfigInfo[] newArray(int _aidl_size) {
+            return new GsmBroadcastSmsConfigInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -50,18 +50,23 @@ public final class InputMethodSubtype implements Parcelable {
     private final int mSubtypeNameResId;
     private static final String TAG = InputMethodSubtype.class.getSimpleName();
     public static final Parcelable.Creator<InputMethodSubtype> CREATOR = new Parcelable.Creator<InputMethodSubtype>() { // from class: android.view.inputmethod.InputMethodSubtype.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputMethodSubtype createFromParcel(Parcel source) {
             return new InputMethodSubtype(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputMethodSubtype[] newArray(int size) {
             return new InputMethodSubtype[size];
         }
     };
+
+    /* synthetic */ InputMethodSubtype(InputMethodSubtypeBuilder inputMethodSubtypeBuilder, InputMethodSubtypeIA inputMethodSubtypeIA) {
+        this(inputMethodSubtypeBuilder);
+    }
 
     /* loaded from: classes4.dex */
     public static class InputMethodSubtypeBuilder {
@@ -444,6 +449,23 @@ public final class InputMethodSubtype implements Parcelable {
         parcel.writeInt(this.mSubtypeHashCode);
         parcel.writeInt(this.mSubtypeId);
         parcel.writeInt(this.mIsAsciiCapable ? 1 : 0);
+    }
+
+    /* renamed from: android.view.inputmethod.InputMethodSubtype$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputMethodSubtype> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputMethodSubtype createFromParcel(Parcel source) {
+            return new InputMethodSubtype(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputMethodSubtype[] newArray(int size) {
+            return new InputMethodSubtype[size];
+        }
     }
 
     private static int hashCodeInternal(String locale, String mode, String extraValue, boolean isAuxiliary, boolean overridesImplicitlyEnabledSubtype, boolean isAsciiCapable) {

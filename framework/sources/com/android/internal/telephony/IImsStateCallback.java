@@ -96,8 +96,9 @@ public interface IImsStateCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IImsStateCallback {
+        public static class Proxy implements IImsStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

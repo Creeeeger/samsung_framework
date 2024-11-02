@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class FlushMetrics implements Parcelable {
     public static final Parcelable.Creator<FlushMetrics> CREATOR = new Parcelable.Creator<FlushMetrics>() { // from class: android.service.contentcapture.FlushMetrics.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FlushMetrics createFromParcel(Parcel in) {
             FlushMetrics flushMetrics = new FlushMetrics();
@@ -18,7 +20,6 @@ public final class FlushMetrics implements Parcelable {
             return flushMetrics;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FlushMetrics[] newArray(int size) {
             return new FlushMetrics[size];
@@ -50,5 +51,28 @@ public final class FlushMetrics implements Parcelable {
         out.writeInt(this.viewAppearedCount);
         out.writeInt(this.viewDisappearedCount);
         out.writeInt(this.viewTextChangedCount);
+    }
+
+    /* renamed from: android.service.contentcapture.FlushMetrics$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FlushMetrics> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FlushMetrics createFromParcel(Parcel in) {
+            FlushMetrics flushMetrics = new FlushMetrics();
+            flushMetrics.sessionStarted = in.readInt();
+            flushMetrics.sessionFinished = in.readInt();
+            flushMetrics.viewAppearedCount = in.readInt();
+            flushMetrics.viewDisappearedCount = in.readInt();
+            flushMetrics.viewTextChangedCount = in.readInt();
+            return flushMetrics;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FlushMetrics[] newArray(int size) {
+            return new FlushMetrics[size];
+        }
     }
 }

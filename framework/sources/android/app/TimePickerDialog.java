@@ -68,10 +68,30 @@ public class TimePickerDialog extends AlertDialog implements DialogInterface.OnC
     public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
     }
 
+    /* renamed from: android.app.TimePickerDialog$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements View.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View view) {
+            if (TimePickerDialog.this.mTimePicker.validateInput()) {
+                TimePickerDialog timePickerDialog = TimePickerDialog.this;
+                timePickerDialog.onClick(timePickerDialog, -1);
+                TimePickerDialog.this.mTimePicker.clearFocus();
+                TimePickerDialog.this.dismiss();
+            }
+        }
+    }
+
     @Override // android.app.Dialog
     public void show() {
         super.show();
         getButton(-1).setOnClickListener(new View.OnClickListener() { // from class: android.app.TimePickerDialog.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
                 if (TimePickerDialog.this.mTimePicker.validateInput()) {

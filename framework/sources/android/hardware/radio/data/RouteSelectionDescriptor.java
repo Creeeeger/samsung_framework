@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RouteSelectionDescriptor implements Parcelable {
     public static final Parcelable.Creator<RouteSelectionDescriptor> CREATOR = new Parcelable.Creator<RouteSelectionDescriptor>() { // from class: android.hardware.radio.data.RouteSelectionDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RouteSelectionDescriptor createFromParcel(Parcel _aidl_source) {
             RouteSelectionDescriptor _aidl_out = new RouteSelectionDescriptor();
@@ -17,7 +19,6 @@ public class RouteSelectionDescriptor implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RouteSelectionDescriptor[] newArray(int _aidl_size) {
             return new RouteSelectionDescriptor[_aidl_size];
@@ -32,6 +33,25 @@ public class RouteSelectionDescriptor implements Parcelable {
     public SliceInfo[] sliceInfo;
     public byte precedence = 0;
     public byte sscMode = 0;
+
+    /* renamed from: android.hardware.radio.data.RouteSelectionDescriptor$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RouteSelectionDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RouteSelectionDescriptor createFromParcel(Parcel _aidl_source) {
+            RouteSelectionDescriptor _aidl_out = new RouteSelectionDescriptor();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RouteSelectionDescriptor[] newArray(int _aidl_size) {
+            return new RouteSelectionDescriptor[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

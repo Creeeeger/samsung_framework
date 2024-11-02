@@ -15,13 +15,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class ClientTransaction implements Parcelable, ObjectPoolItem {
     public static final Parcelable.Creator<ClientTransaction> CREATOR = new Parcelable.Creator<ClientTransaction>() { // from class: android.app.servertransaction.ClientTransaction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ClientTransaction createFromParcel(Parcel in) {
             return new ClientTransaction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClientTransaction[] newArray(int size) {
             return new ClientTransaction[size];
@@ -31,6 +32,10 @@ public class ClientTransaction implements Parcelable, ObjectPoolItem {
     private IBinder mActivityToken;
     private IApplicationThread mClient;
     private ActivityLifecycleItem mLifecycleStateRequest;
+
+    /* synthetic */ ClientTransaction(Parcel parcel, ClientTransactionIA clientTransactionIA) {
+        this(parcel);
+    }
 
     public IApplicationThread getClient() {
         return this.mClient;
@@ -136,6 +141,23 @@ public class ClientTransaction implements Parcelable, ObjectPoolItem {
             ArrayList arrayList = new ArrayList();
             this.mActivityCallbacks = arrayList;
             in.readParcelableList(arrayList, getClass().getClassLoader(), ClientTransactionItem.class);
+        }
+    }
+
+    /* renamed from: android.app.servertransaction.ClientTransaction$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ClientTransaction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClientTransaction createFromParcel(Parcel in) {
+            return new ClientTransaction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClientTransaction[] newArray(int size) {
+            return new ClientTransaction[size];
         }
     }
 

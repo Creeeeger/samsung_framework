@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AutomaticZenRule implements Parcelable {
     public static final Parcelable.Creator<AutomaticZenRule> CREATOR = new Parcelable.Creator<AutomaticZenRule>() { // from class: android.app.AutomaticZenRule.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AutomaticZenRule createFromParcel(Parcel source) {
             return new AutomaticZenRule(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AutomaticZenRule[] newArray(int size) {
             return new AutomaticZenRule[size];
@@ -192,6 +193,23 @@ public final class AutomaticZenRule implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(Boolean.valueOf(this.enabled), this.name, Integer.valueOf(this.interruptionFilter), this.conditionId, this.owner, this.configurationActivity, this.mZenPolicy, Boolean.valueOf(this.mModified), Long.valueOf(this.creationTime), this.mPkg);
+    }
+
+    /* renamed from: android.app.AutomaticZenRule$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AutomaticZenRule> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AutomaticZenRule createFromParcel(Parcel source) {
+            return new AutomaticZenRule(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AutomaticZenRule[] newArray(int size) {
+            return new AutomaticZenRule[size];
+        }
     }
 
     private static ComponentName getTrimmedComponentName(ComponentName cn) {

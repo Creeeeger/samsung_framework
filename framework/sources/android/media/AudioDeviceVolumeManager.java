@@ -51,7 +51,7 @@ public class AudioDeviceVolumeManager {
     public @interface VolumeAdjustmentMode {
     }
 
-    /* renamed from: -$$Nest$smgetService, reason: not valid java name */
+    /* renamed from: -$$Nest$smgetService */
     static /* bridge */ /* synthetic */ IAudioService m2165$$Nest$smgetService() {
         return getService();
     }
@@ -61,7 +61,6 @@ public class AudioDeviceVolumeManager {
         this.mPackageName = context.getApplicationContext().getOpPackageName();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class ListenerInfo {
         final AudioDeviceAttributes mDevice;
@@ -77,7 +76,6 @@ public class AudioDeviceVolumeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public final class DeviceVolumeDispatcherStub extends IAudioDeviceVolumeDispatcher.Stub {
         DeviceVolumeDispatcherStub() {
@@ -192,7 +190,6 @@ public class AudioDeviceVolumeManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnDeviceVolumeBehaviorChangedListener$1() {
         return new DeviceVolumeBehaviorDispatcherStub();
     }
@@ -239,9 +236,12 @@ public class AudioDeviceVolumeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class DeviceVolumeBehaviorDispatcherStub extends IDeviceVolumeBehaviorDispatcher.Stub implements CallbackUtil.DispatcherStub {
+        /* synthetic */ DeviceVolumeBehaviorDispatcherStub(AudioDeviceVolumeManager audioDeviceVolumeManager, DeviceVolumeBehaviorDispatcherStubIA deviceVolumeBehaviorDispatcherStubIA) {
+            this();
+        }
+
         private DeviceVolumeBehaviorDispatcherStub() {
         }
 

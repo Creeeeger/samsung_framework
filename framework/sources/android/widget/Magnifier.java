@@ -94,6 +94,10 @@ public final class Magnifier {
     public @interface SourceBound {
     }
 
+    /* synthetic */ Magnifier(Builder builder, MagnifierIA magnifierIA) {
+        this(builder);
+    }
+
     static {
         HandlerThread handlerThread = new HandlerThread("magnifier pixel copy result handler");
         sPixelCopyHandlerThread = handlerThread;
@@ -105,7 +109,6 @@ public final class Magnifier {
         this(createBuilderWithOldMagnifierDefaults(view));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Builder createBuilderWithOldMagnifierDefaults(View view) {
         Builder params = new Builder(view);
         Context context = view.getContext();
@@ -177,7 +180,6 @@ public final class Magnifier {
         show(sourceCenterX, sourceCenterY, this.mDefaultHorizontalSourceToMagnifierOffset + sourceCenterX, this.mDefaultVerticalSourceToMagnifierOffset + sourceCenterY);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDrawCursor(boolean enabled, Drawable cursorDrawable) {
         this.mDrawCursorEnabled = enabled;
         this.mCursorDrawable = cursorDrawable;
@@ -298,7 +300,6 @@ public final class Magnifier {
         this.mPrevShowWindowCoords.y = magnifierCenterY3;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$show$0(InternalPopupWindow currentWindowInstance, Point windowCoords) {
         synchronized (this.mLock) {
             InternalPopupWindow internalPopupWindow = this.mWindow;
@@ -359,7 +360,6 @@ public final class Magnifier {
         this.mDirtyState = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSourceFactors(int sourceHeight, float zoom) {
         this.mZoom = zoom;
         this.mSourceHeight = sourceHeight;
@@ -569,7 +569,6 @@ public final class Magnifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$performPixelCopy$1(InternalPopupWindow currentWindowInstance, boolean updateWindowPosition, Point windowCoords, Bitmap bitmap, int result) {
         if (result != 0) {
             onPixelCopyFailed();
@@ -609,7 +608,6 @@ public final class Magnifier {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onPixelCopyFailed$2() {
         dismiss();
         Callback callback = this.mCallback;
@@ -634,7 +632,6 @@ public final class Magnifier {
         return new Point(windowCoordsX, windowCoordsY);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class SurfaceInfo {
         public static final SurfaceInfo NULL = new SurfaceInfo(null, null, 0, 0, null, false);
@@ -655,7 +652,6 @@ public final class Magnifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class InternalPopupWindow {
         private static final int SURFACE_Z = 5;
@@ -755,7 +751,6 @@ public final class Magnifier {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void updateContentFactors(int contentHeight, float zoom) {
             int i = this.mContentHeight;
             if (i == contentHeight && this.mZoom == zoom) {
@@ -871,6 +866,9 @@ public final class Magnifier {
         private void setupOverlay() {
             drawOverlay();
             this.mOverlay.setCallback(new Drawable.Callback() { // from class: android.widget.Magnifier.InternalPopupWindow.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.graphics.drawable.Drawable.Callback
                 public void invalidateDrawable(Drawable who) {
                     InternalPopupWindow.this.drawOverlay();
@@ -891,7 +889,31 @@ public final class Magnifier {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: android.widget.Magnifier$InternalPopupWindow$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Drawable.Callback {
+            AnonymousClass1() {
+            }
+
+            @Override // android.graphics.drawable.Drawable.Callback
+            public void invalidateDrawable(Drawable who) {
+                InternalPopupWindow.this.drawOverlay();
+                if (InternalPopupWindow.this.mCallback != null) {
+                    InternalPopupWindow.this.updateCurrentContentForTesting();
+                }
+            }
+
+            @Override // android.graphics.drawable.Drawable.Callback
+            public void scheduleDrawable(Drawable who, Runnable what, long when) {
+                Handler.getMain().postAtTime(what, who, when);
+            }
+
+            @Override // android.graphics.drawable.Drawable.Callback
+            public void unscheduleDrawable(Drawable who, Runnable what) {
+                Handler.getMain().removeCallbacks(what, who);
+            }
+        }
+
         public void drawOverlay() {
             RecordingCanvas canvas = this.mOverlayRenderNode.beginRecording(this.mContentWidth, this.mContentHeight);
             try {
@@ -942,7 +964,6 @@ public final class Magnifier {
             this.mOverlay.setCallback(null);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* JADX WARN: Removed duplicated region for block: B:26:0x00ef  */
         /* JADX WARN: Removed duplicated region for block: B:28:? A[RETURN, SYNTHETIC] */
         /*
@@ -957,7 +978,6 @@ public final class Magnifier {
             throw new UnsupportedOperationException("Method not decompiled: android.widget.Magnifier.InternalPopupWindow.doDraw():void");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$doDraw$0(boolean updateWindowPosition, int pendingX, int pendingY, boolean firstDraw, long frame) {
             if (!this.mSurface.isValid()) {
                 return;
@@ -971,7 +991,6 @@ public final class Magnifier {
             this.mBBQ.mergeWithNextTransaction(this.mTransaction, frame);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void updateCurrentContentForTesting() {
             Canvas canvas = new Canvas(this.mCurrentContent);
             Rect bounds = new Rect(0, 0, this.mContentWidth, this.mContentHeight);
@@ -1078,14 +1097,12 @@ public final class Magnifier {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder setSourceSize(int width, int height) {
             this.mSourceWidth = width;
             this.mSourceHeight = height;
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder setFishEyeStyle() {
             this.mIsFishEyeStyle = true;
             return this;

@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">ಈ %sಗೆ ಈ ಸಾಧನ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ. ಬೆಂಬಲಿತ ಸ್ವರೂಪದಲ್ಲಿ ಸೆಟಪ್ ಮಾಡಲು ತಟ್ಟಿ.</string>
     <string name="ext_media_unsupported_notification_title">%s ಬೆಂಬಲಿತವಾಗಿಲ್ಲ</string>
     <string name="ext_storage_bad_removal_button">ಮರುಪ್ರಾರಂಭ</string>
-    <string name="ext_storage_bad_removal_title">ನಿಮ್ಮ ಫೋನ್ ಪುನಾರಂಭಿಸಿ</string>
+    <string name="ext_storage_bad_removal_title">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಮರುಪ್ರಾರಂಭಿಸಿ</string>
     <string name="extmedia_format_button_format">ಸ್ವರೂಪ</string>
     <string name="extmedia_format_message_usbhost">ನಿಮ್ಮ USB ಸಂಗ್ರಹಣೆಯಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ಎಲ್ಲಾ ಫೈಲ್‌ಗಳನ್ನು ಅಳಿಸಿಹಾಕಲಾಗುವುದು. ಈ ಕ್ರಿಯೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ!</string>
     <string name="extmedia_format_title_usbhost">USB ಸಂಗ್ರಹಣೆಯನ್ನು ಫಾರ್ಮ್ಯಾಟ್ ಮಾಡುವುದೇ?</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ನಿಮ್ಮ ಬ್ಲೂಟೂತ್ ಆಡಿಯೊ ಸಾಧನದಲ್ಲಿ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ</string>
     <string name="multisound_sound_via_headphone">ನಿಮ್ಮ ಹೆಡ್‍ಫೋನ್‍ಗಳ ಮೂಲಕ %s ದ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
     <string name="multisound_sound_via_headphone_multiselection">ನಿಮ್ಮ ಹೆಡ್‌ಫೋನ್‌ಗಳ ಮೂಲಕ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
-    <string name="multisound_sound_via_phone_speaker">ನಿಮ್ಮ ಫೋನ್ ಸ್ಪೀಕರ್ ಮೂಲಕ %s ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ನಿಮ್ಮ ಫೋನ್ ಸ್ಪೀಕರ್ ಮೂಲಕ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="multisound_sound_via_phone_speaker">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಸ್ಪೀಕರ್ ಮೂಲಕ %s ಶಬ್ಧ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಸ್ಪೀಕರ್ ಮೂಲಕ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
     <string name="multisound_sound_via_usb_audio">ನಿಮ್ಮ USB ಆಡಿಯೋ ಸಾಧನದಲ್ಲಿ %s ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ನಿಮ್ಮ USB ಆಡಿಯೊ ಸಾಧನದ ಮೂಲಕ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
     <string name="multisound_title">ಪ್ರತ್ಯೇಖ ಅನ್ವಯಿಸುವಿಕೆ ಧ್ವನಿ</string>
     <string name="multisound_turn_off_multisound">ಆಫ್ ಮಾಡಿ</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಫೋನ್ ಮೋಡ್‌ನಲ್ಲಿ ರನ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಅದನ್ನು ಫೋನ್ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗಳಿಗೆಂದು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ಕೆಲವು ಆಟಗಳು ಟಚ್ ಸ್ಕ್ರೀನ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ. Samsung DeXನಲ್ಲಿ ಮೌಸ್ ನಿಯಂತ್ರಣಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸದಿದ್ದರೆ, ಬದಲಿಗೆ ಫೋನ್ ಮೋಡ್‌ನಲ್ಲಿ ಆಟವಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="my_device">ಈ ಫೋನ್</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಟ್ಯಾಬ್ಲೆಟ್ ಮೋಡ್‌ನಲ್ಲಿ ರನ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ ಅದನ್ನು. ಟ್ಯಾಬ್ಲೆಟ್ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗಳಿಗೆಂದು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ಕೆಲವು ಆಟಗಳು ಟಚ್ ಸ್ಕ್ರೀನ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ. Samsung DeXನಲ್ಲಿ ಮೌಸ್ ನಿಯಂತ್ರಣಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸದಿದ್ದರೆ, ಬದಲಿಗೆ ಟ್ಯಾಬ್ಲೆಟ್ ಮೋಡ್‌ನಲ್ಲಿ ಆಟವಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="my_device">ಈ ಟ್ಯಾಬ್ಲೆಟ್</string>
     <string name="network_locked_sim_dialog_message_ais">ಈ ಫೋನ್ ಜೊತೆಗೆ ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಪೂರ್ಣವಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆ ನಿಯಮಗಳು ಮತ್ತು ಷರತ್ತುಗಳನ್ನು ಅನುಸರಿಸುವುದಿಲ್ಲ. ನಿಮಗೇನಾದರೂ ಪ್ರಶ್ನೆಗಳಿದ್ದರೆ ಅಥವಾ ಈ ಸಂಗತಿಯ ಕುರಿತು ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ಬೇಕಾಗಿದ್ದರೆ, ದಯವಿಟ್ಟು ಸ್ಯಾಮ್‌ಸಂಗ್ ಗ್ರಾಹಕ ಸೇವೆ ಸ್ಥಳವನ್ನು ಅಥವಾ ಈ ಉತ್ಪನ್ನಗಳನ್ನು ನಿಮಗೆ ಮಾರಾಟ ಮಾಡಿದ ಸ್ಟೋರ್ ಅನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
     <string name="network_locked_sim_notification_text">ನೆಟ್‌‌ವರ್ಕ್ ಲಾಕ್ ಆದ SIM ಕಾರ್ಡ್ ಸೇರಿಸಿದೆ.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">ಡೆಸ್ಕ್‌ಟಾಪ್‍‍ನ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_internetsharing">ಮೊಬೈಲ್ ಹಾಟ್‍ಸ್ಪಾಟ್ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_irda">IrDA ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
-    <string name="policydesc_allow_popimapemail">ಫೋನ್‍ನಲ್ಲಿ POP ಮತ್ತು IMAP ಇಮೇಲ್ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
+    <string name="policydesc_allow_popimapemail">ಟ್ಯಾಬ್ಲೆಟ್‍ನಲ್ಲಿ POP ಮತ್ತು IMAP ಇಮೇಲ್ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_storagecard">SD ಕಾರ್ಡ್‍ಗಳ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_textmessaging">ಪಠ್ಯ ಮತ್ತು ಮಲ್ಟಿಮೀಡಿಯಾ ಸಂದೇಶಿಸುವಿಕೆ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_thirdParty">ಈ ಅನ್ವಯಿಸುವಿಕೆಯು ಮೂರನೇ-ವ್ಯಕ್ತಿಯ ಅನ್ವಯಿಸುವಿಕೆಗಳು ರನ್ ಆಗುವುದನ್ನು ತಡೆಯಬಹುದು.</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">ಸುರಕ್ಷತೆ ನೀತಿಯ ಪ್ರಕಾರ ನೀವು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಯಿಸುವುದು ಅಗತ್ಯವಾಗಿರುತ್ತದೆ.</string>
     <string name="recording_fail">ಮೈಕ್ %2$sನಲ್ಲಿ ಬಳಕೆಯಲ್ಲಿರುವಾಗ %1$sನಲ್ಲಿ ಅದನ್ನು ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="recording_popup">%s ಮೈಕ್ರೋಫೋನ್ ಬಳಸುತ್ತಿದೆ.</string>
-    <string name="recording_popup_device">ಫೋನ್</string>
+    <string name="recording_popup_device">ಟ್ಯಾಬ್ಲೆಟ್</string>
     <string name="recording_popup_with_bluetooth">ಬ್ಲೂಟೂತ್ ಮೈಕ್ರೋಫೋನ್ ಅನ್ನು %s ಬಳಸುತ್ತಿದೆ.</string>
     <string name="recording_popup_with_device">%2$sನ ಮೈಕ್ರೋಫೋನ್ ಅನ್ನು %1$s ಬಳಸುತ್ತಿದೆ.</string>
     <string name="redo">ಮತ್ತೆಮಾಡಿ</string>
@@ -903,12 +903,12 @@
     <string name="screencapture_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಸ್ಕ್ರೀನ್ ಕ್ಯಾಪ್ಚರ್‌ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="sd_card_unavailable_message">ಬೇರೊಂದು ಬಳಕೆದಾರ ಪ್ರೊಫೈಲ್ ಬಳಕೆಯಲ್ಲಿದ್ದಾಗ SD ಕಾರ್ಡ್ ಸೇರಿಸಲಾಗಿರುವ ಕಾರಣದಿಂದ ಅದನ್ನು ನಿಮಗೆ ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="sd_card_unavailable_title">SD ಕಾರ್ಡ್ ಲಭ್ಯವಿಲ್ಲ</string>
-    <string name="sdcard_bad_removal_message">ಅಸುರಕ್ಷಿತವಾಗಿ SD ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ನಿಮ್ಮ ಫೋನ್ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಪುನಾರಂಭಗೊಳ್ಳುವುದನ್ನು ತಡೆಯಲು, ಉಳಿಸದ ಡೇಟಾ ಉಳಿಸಿ ಮತ್ತು ಇದೀಗ ಪುನಾರಂಭಿಸಿ.</string>
+    <string name="sdcard_bad_removal_message">ಅಸುರಕ್ಷಿತವಾಗಿ SD ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಪುನಾರಂಭಗೊಳ್ಳುವುದನ್ನು ತಡೆಯಲು, ಉಳಿಸದ ಡೇಟಾ ಉಳಿಸಿ ಮತ್ತು ಇದೀಗ ಪುನಾರಂಭಿಸಿ.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಟ್ ಮಾಡಿ</string>
     <string name="sdcard_batch_decrypt_noti_title">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಶನ್</string>
     <string name="sdcard_batch_decrypt_popup_content">ಎನ್‌ಕ್ರಿಪ್ಟ್ ಆದ SD ಕಾರ್ಡ್‌ನ್ನು ಬಳಸುವ ಮೊದಲು ಡೀಕ್ರಿಪ್ಟ್ ಮಾಡಬೇಕು. ಡೀಕ್ರಿಪ್ಶನ್ ಒಂದು ಗಂಟೆ ಅಥವಾ ಹೆಚ್ಚು ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ಚಾರ್ಜ್ ಆದ ಬ್ಯಾಟರಿಯೊಂದಿಗೆ ಆರಂಭಿಸಿ ಮತ್ತು ಡಿಕ್ರಿಪ್ಶನ್ ಪೂರ್ಣಗೊಳ್ಳುವವರೆಗೆ ಸಾಧನವನ್ನು ಪ್ಲಗ್‌ನಲ್ಲಿ ಇಡಿ. ಡೀಕ್ರಿಪ್ಶನ್ ಪ್ರಕ್ರಿಯೆಗೆ ಅಡಚಣೆ ಮಾಡುವಿಕೆ ಕೆಲವು ಅಥವಾ ಎಲ್ಲ ಡೇಟಾ ನಷ್ಟ ಮಾಡಬಹುದು.</string>
     <string name="sdcard_decrypt_err_notification">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಶನ್ ದೋಷ ಸಂಭವಿಸಿದೆ.</string>
-    <string name="sdcard_decrypt_error_otherdevice">ನಿಮ್ಮ SD ಕಾರ್ಡ್‌ನಲ್ಲಿರುವ ಕೆಲವು ಫೈಲ್‌ಗಳನ್ನು ಮತ್ತೊಂದು ಸಾಧನದಲ್ಲಿ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳನ್ನು ಈ ಪೋನ್‌ನಲ್ಲಿ ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
+    <string name="sdcard_decrypt_error_otherdevice">ನಿಮ್ಮ SD ಕಾರ್ಡ್‌ನಲ್ಲಿರುವ ಕೆಲವು ಫೈಲ್‌ಗಳನ್ನು ಮತ್ತೊಂದು ಸಾಧನದಲ್ಲಿ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳನ್ನು ಈ ಟ್ಯಾಬ್ಲೆಟ್‌ನಲ್ಲಿ ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="sdcard_decrypt_notification">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಟ್ ಆಗಿದೆ.</string>
     <string name="sdcard_decrypt_title_notification">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಶನ್</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
@@ -1234,7 +1234,7 @@
     <string name="usb_abnormal_reset_title">USB ಸಂಪರ್ಕ ಸ್ಥಿರವಾಗಿಲ್ಲ</string>
     <string name="usb_abnormal_reset_toast">USB ಸಂಪರ್ಕ ಸ್ಥಿರವಾಗಿಲ್ಲ. ಕೇಬಲ್ ತೆಗೆದು, ಇನ್ನೊಮ್ಮೆ ಹಾಕಿ ನೋಡಿ ಅಥವಾ ಬೇರೆ ಕೇಬಲ್ ಬಳಸಿ ನೋಡಿ.</string>
     <string name="usb_accessory_notification_title">ಒಂದು USB ಉಪಕರಣಕ್ಕೆ ಸಂಪರ್ಕಿಸಿದೆ</string>
-    <string name="usb_bad_removal_message">ಅಸುರಕ್ಷಿತವಾಗಿ USB ಸಂಗ್ರಹ ಸಾಧನವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ನಿಮ್ಮ ಫೋನ್ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಪುನಾರಂಭಗೊಳ್ಳುವುದನ್ನು ತಡೆಯಲು, ಉಳಿಸದ ಡೇಟಾ ಉಳಿಸಿ ಮತ್ತು ಇದೀಗ ಪುನಾರಂಭಿಸಿ.</string>
+    <string name="usb_bad_removal_message">ಅಸುರಕ್ಷಿತವಾಗಿ USB ಸಂಗ್ರಹ ಸಾಧನವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಪುನಾರಂಭಗೊಳ್ಳುವುದನ್ನು ತಡೆಯಲು, ಉಳಿಸದ ಡೇಟಾ ಉಳಿಸಿ ಮತ್ತು ಇದೀಗ ಪುನಾರಂಭಿಸಿ.</string>
     <string name="usb_blocked_by_emergency_mode">ತುರ್ತು ಮೋಡ್‌ನಲ್ಲಿ ಕೆಲವು USB ಕಾರ್ಯಗಳು ಲಭ್ಯವಿಲ್ಲ.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">ಗರಿಷ್ಠ ಪವರ್ ಸೇವಿಂಗ್ ಮೋಡ್ ಶಕ್ತಗೊಂಡಿರುವಾಗ ಸಂಪರ್ಕಿತ USB ಸಾಧನಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಕಾರ್ಯಗಳನ್ನು ಬಳಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ಗರಿಷ್ಠ ಪವರ್ ಸೇವಿಂಗ್ ಮೋಡ್‌ ಆನ್ ಆಗಿರುವಾಗ ಕೆಲವು USB ಕಾರ್ಯಗಳನ್ನು ಸೀಮಿತಗೊಳಿಸಬಹುದು.</string>
@@ -1243,13 +1243,13 @@
     <string name="usb_camera_connected_notification_title">ಮೀಡಿಯಾ ಸಾಧನದ ಸಂಪರ್ಕಗೊಂಡಿದೆ</string>
     <string name="usb_camera_disconnected_notification_title">ಮೀಡಿಯಾ ಸಾಧನದ ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ</string>
     <string name="usb_cd_installer_notification_title">ಸಾಫ್ಟ್‌ವೇರ್ ನವೀಕರಣ</string>
-    <string name="usb_charing_only_notification_title">USB ಚಾರ್ಜಿಂಗ್</string>
+    <string name="usb_charing_only_notification_title">ಸಂಪರ್ಕಿಸಲಾಗಿದೆ</string>
     <string name="usb_debugging_only_notification_title">ಡೀಬಗ್ಗಿಂಗ್ ಮಾತ್ರ</string>
-    <string name="usb_host_resource_exceed_message">ಈ ಸಾಧನಕ್ಕೆ ಸಂಪರ್ಕಿಸಲು ನಿಮ್ಮ ಫೋನ್‌ನ USB ಕಂಟ್ರೋಲರ್ ಸಾಕಷ್ಟು ಸಂಪನ್ಮೂಲಗಳನ್ನು ಹೊಂದಿಲ್ಲ. ಸಾಧನ ಸಂಪರ್ಕಕಡಿತಗೊಳಿಸಲು ತದನಂತರ ಮತ್ತೆ ಅದನ್ನು ಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="usb_host_resource_exceed_message">ಈ ಸಾಧನಕ್ಕೆ ಸಂಪರ್ಕಿಸಲು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ನ USB ಕಂಟ್ರೋಲರ್ ಸಾಕಷ್ಟು ಸಂಪನ್ಮೂಲಗಳನ್ನು ಹೊಂದಿಲ್ಲ. ಸಾಧನ ಸಂಪರ್ಕಕಡಿತಗೊಳಿಸಲು ತದನಂತರ ಮತ್ತೆ ಅದನ್ನು ಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="usb_host_resource_exceed_title">ಸಾಕಷ್ಟು USB ಕಂಟ್ರೋಲರ್ ಸಂಪನ್ಮೂಲಗಳಿಲ್ಲ</string>
-    <string name="usb_hub_depth_exceed_message">ಒಂದು ಬಾರಿಗೆ 5 USB ಹಬ್ ಸಂಪರ್ಕಗಳನ್ನು ಮಾತ್ರ ನಿಮ್ಮ ಫೋನ್ ಬೆಂಬಲಿಸಬಹುದು.</string>
+    <string name="usb_hub_depth_exceed_message">ಒಂದು ಬಾರಿಗೆ 5 USB ಹಬ್ ಸಂಪರ್ಕಗಳನ್ನು ಮಾತ್ರ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಬೆಂಬಲಿಸಬಹುದು.</string>
     <string name="usb_hub_depth_exceed_title">ಗರಿಷ್ಠ USB ಹಬ್ ಸಂಪರ್ಕಗಳು</string>
-    <string name="usb_hub_power_exceed_message">ಈ USB ಸಾಧನಕ್ಕೆ ನಿಮ್ಮ ಫೋನ್ ಸಾಕಷ್ಟು ಪವರ್ ಒದಗಿಸುವುದಿಲ್ಲ. ಸಾಧನವನ್ನು ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಸಂಪರ್ಕಿಸುವ ಮೊದಲು ಅದನ್ನು ಸ್ವಯಂ-ಸಾಮರ್ಥ್ಯದ USB ಹಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಿ.</string>
+    <string name="usb_hub_power_exceed_message">ಈ USB ಸಾಧನಕ್ಕೆ ಸಾಕಷ್ಟು ಪವರ್ ಅನ್ನು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಒದಗಿಸಲಾಗುವುದಿಲ್ಲ. ಸಾಧನವನ್ನು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಿಸುವ ಮೊದಲು ಅದನ್ನು ಸ್ವಯಂ-ಸಾಮರ್ಥ್ಯದ USB ಹಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಿ.</string>
     <string name="usb_increase_battery_usage">USB ಸಂಪರ್ಕ ಬ್ಯಾಟರಿ ಬಳಕೆಯನ್ನು ಹೆಚ್ಚಿಸಬಹುದು.</string>
     <string name="usb_mass_storage_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು USB ಮಾಸ್‌ ಸಂಗ್ರಹಣೆ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="usb_midi_notification_title">MIDIಗೆ USB</string>
@@ -1275,8 +1275,8 @@
     <string name="usb_storage_stop_title">USBಸಂಗ್ರಹಣೆ ಬಳಕೆಯಲ್ಲಿದೆ.</string>
     <string name="usb_storage_title">USB ಸಂಪರ್ಕಗೊಂಡಿದೆ.</string>
     <string name="usb_type_c_supply_power_notification_title">USB ಚಾರ್ಜಿಂಗ್ ಸಂಪರ್ಕಿತ ಸಾಧನ</string>
-    <string name="usb_unblock_by_screen_unlock">ಸಂಪರ್ಕಿತ USB ಸಾಧನವನ್ನು ಬಳಸುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಫೋನ್ ಅನ್‌ಲಾಕ್ ಮಾಡಿ.</string>
-    <string name="usb_unsupport_accessory_message">ಈ USB ಸಾಧನವನ್ನು ನಿಮ್ಮ ಫೋನ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.</string>
+    <string name="usb_unblock_by_screen_unlock">ಸಂಪರ್ಕಿತ USB ಸಾಧನವನ್ನು ಬಳಸುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್‌ಲಾಕ್ ಮಾಡಿ.</string>
+    <string name="usb_unsupport_accessory_message">ಈ USB ಸಾಧನವನ್ನು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.</string>
     <string name="usb_unsupport_accessory_title">USB ಸಾಧನ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ</string>
     <string name="usb_unsupported_device">ಸಂಪರ್ಕಿತ USB ಸಾಧನ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ.</string>
     <string name="usb_unsupported_device_title">ಸಾಧನ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ</string>
@@ -1294,19 +1294,19 @@
     <string name="usb_water_dialg_method_2_desc_2">ನೀವು ಪೋರ್ಟ್ ಕಡೆಗೆ ಫ್ಯಾನ್ ಅಥವಾ ಡ್ರೈಯರ್ (ತಂಪಾದ ಗಾಳಿ ಮಾತ್ರ) ಪಾಯಿಂಟ್ ಮಾಡುವ ಮೂಲಕ ಒಣಗಿಸುವ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಬಹುದು.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್‌ನಲ್ಲಿ ನಾವು ತೇವಾಂಶವನ್ನು ಅಥವಾ ಬಾಹ್ಯ ವಸ್ತುವನ್ನು ಪತ್ತೆಹಚ್ಚಿದ್ದೇವೆ.
 
-ಧೂಳು ಅಥವಾ ಅವಶೇಷಗಳಂತಹ ಯಾವುದೇ ಬಾಹ್ಯ ವಸ್ತುವಿಗಾಗಿ ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಹಾನಿಯನ್ನು ತಡೆಗಟ್ಟಲು, ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಸ್ವಚ್ಛವಾಗಿರುವ ಮತ್ತು ತೇವಾಂಶವು ಹೊರಟುಹೋಗುವ ತನಕ ಏನನ್ನೂ ಪ್ಲಗ್ ಮಾಡಬೇಡಿ.
+ಧೂಳು ಅಥವಾ ಅವಶೇಷಗಳಂತಹ ಯಾವುದೇ ಬಾಹ್ಯ ವಸ್ತುವಿಗಾಗಿ ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ಗೆ ಹಾನಿಯನ್ನು ತಡೆಗಟ್ಟಲು, ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಸ್ವಚ್ಛವಾಗಿರುವ ಮತ್ತು ತೇವಾಂಶವು ಹೊರಟುಹೋಗುವ ತನಕ ಏನನ್ನೂ ಪ್ಲಗ್ ಮಾಡಬೇಡಿ.
 
 ಪೋರ್ಟ್ ಅನ್ನು ಒಣಗಿಸಲು, ಯಾವುದೇ ತೇವಾಂಶವನ್ನು ತೆಗೆದುಹಾಕಿ, ನಂತರ ಅದು ಒಣಗುವ ತನಕ ಕಾಯಿರಿ, ಇದು ಹಲವು ಗಂಟೆಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ನೀವು ಪೋರ್ಟ್‌ನತ್ತ ಫ್ಯಾನ್ ಅಥವಾ ಡ್ರೈಯರ್ (ತಂಪಾದ ಗಾಳಿ ಮಾತ್ರ) ತಿರುಗಿಸುವ ಮೂಲಕ ಒಣಗಿಸುವ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಬಹುದು."</string>
     <string name="usb_water_dialg_positive_button">ಓಕೆ</string>
     <string name="usb_water_dialg_support_wireless_charging">"ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್‌ನಲ್ಲಿ ನಾವು ತೇವಾಂಶವನ್ನು ಅಥವಾ ಬಾಹ್ಯ ವಸ್ತುವನ್ನು ಪತ್ತೆಹಚ್ಚಿದ್ದೇವೆ.
 
-ಧೂಳು ಅಥವಾ ಅವಶೇಷಗಳಂತಹ ಯಾವುದೇ ಬಾಹ್ಯ ವಸ್ತುವಿಗಾಗಿ ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಹಾನಿಯನ್ನು ತಡೆಗಟ್ಟಲು, ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಸ್ವಚ್ಛವಾಗಿರುವ ಮತ್ತು ತೇವಾಂಶವು ಹೊರಟುಹೋಗುವ ತನಕ ಏನನ್ನೂ ಪ್ಲಗ್ ಮಾಡಬೇಡಿ.
+ಧೂಳು ಅಥವಾ ಅವಶೇಷಗಳಂತಹ ಯಾವುದೇ ಬಾಹ್ಯ ವಸ್ತುವಿಗಾಗಿ ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ಗೆ ಹಾನಿಯನ್ನು ತಡೆಗಟ್ಟಲು, ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಸ್ವಚ್ಛವಾಗಿರುವ ಮತ್ತು ತೇವಾಂಶವು ಹೊರಟುಹೋಗುವ ತನಕ ಏನನ್ನೂ ಪ್ಲಗ್ ಮಾಡಬೇಡಿ.
 
-ಪೋರ್ಟ್ ಅನ್ನು ಒಣಗಿಸಲು, ಯಾವುದೇ ತೇವಾಂಶವನ್ನು ತೆಗೆದುಹಾಕಿ, ನಂತರ ಅದು ಒಣಗುವ ತನಕ ಕಾಯಿರಿ, ಇದು ಹಲವು ಗಂಟೆಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ನೀವು ಪೋರ್ಟ್‌ನತ್ತ ಫ್ಯಾನ್ ಅಥವಾ ಡ್ರೈಯರ್ (ತಂಪಾದ ಗಾಳಿ ಮಾತ್ರ) ತಿರುಗಿಸುವ ಮೂಲಕ ಒಣಗಿಸುವ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಬಹುದು.
+ಪೋರ್ಟ್ ಅನ್ನು ಒಣಗಿಸಲು, ಯಾವುದೇ ತೇವಾಂಶವನ್ನು ತೆಗೆದುಹಾಕಿ, ನಂತರ ಅದು ಒಣಗುವ ತನಕ ಕಾಯಿರಿ, ಇದಕ್ಕೆ ಹಲವು ಗಂಟೆಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ಪೋರ್ಟ್‌ನತ್ತ ಫ್ಯಾನ್ ಅಥವಾ ಡ್ರೈಯರ್ (ತಂಪಾದ ಗಾಳಿ ಮಾತ್ರ) ಅನ್ನು ತಿರುಗಿಸುವ ಮೂಲಕ ನೀವು ಒಣಗುವಿಕೆಯ ವೇಗ ಹೆಚ್ಚಿಸಬಹುದು.
 
-ಈ ಮಧ್ಯೆ, ನೀವು ವೈರ್‌ಲೆಸ್ ಆಗಿ ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಚಾರ್ಜ್ ಮಾಡಬಹುದು."</string>
+ಈ ಮಧ್ಯೆ, ನೀವು ವೈರ್‌ಲೆಸ್ ಆಗಿ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್ನು ಚಾರ್ಜ್ ಮಾಡಬಹುದು."</string>
     <string name="usb_water_notification_content">ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್‌ನಲ್ಲಿ ತೇವಾಂಶ ಅಥವಾ ಬಾಹ್ಯ ವಸ್ತು ಇದೆ. ಚಾರ್ಜಿಂಗ್‌ಗೂ ಮೊದಲು ಪರೀಕ್ಷಿಸಿ.</string>
-    <string name="usb_water_notification_message">ನಿಮ್ಮ ಚಾರ್ಜರ್/USB ಪೋರ್ಟ್‍ನಲ್ಲಿ ಆರ್ದ್ರತೆ ಕಂಡುಬಂದಿದೆ. ನಿಮ್ಮ ಫೋನ್ ಚಾರ್ಜ್ ಮಾಡುವುದಕ್ಕೂ ಮೊದಲು ಅದು ಸಂಪೂರ್ಣವಾಗಿ ಶುಷ್ಕವಾಗಿದೆಯೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಅದು ಸಂಪೂರ್ಣವಾಗಿ ಒಣಗಲು ಸ್ವಲ್ಪ ಸಮಯ ಬೇಕಾಗಬಹುದು.</string>
+    <string name="usb_water_notification_message">ನಿಮ್ಮ ಚಾರ್ಜರ್/USB ಪೋರ್ಟ್‍ನಲ್ಲಿ ಆರ್ದ್ರತೆ ಕಂಡುಬಂದಿದೆ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಚಾರ್ಜ್ ಮಾಡುವುದಕ್ಕೂ ಮೊದಲು ಅದು ಸಂಪೂರ್ಣವಾಗಿ ಶುಷ್ಕವಾಗಿದೆಯೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಅದು ಸಂಪೂರ್ಣವಾಗಿ ಒಣಗಲು ಸ್ವಲ್ಪ ಸಮಯ ಬೇಕಾಗಬಹುದು.</string>
     <string name="usb_water_notification_message_button">ವಿವರಗಳು</string>
     <string name="usb_water_notification_title">ಚಾರ್ಜರ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ</string>
     <string name="usbhostStorage_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು USB ಹೋಸ್ಟ್‌ ಸಂಗ್ರಹಣೆ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>

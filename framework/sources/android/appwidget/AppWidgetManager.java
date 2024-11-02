@@ -95,7 +95,6 @@ public class AppWidgetManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$3() {
         try {
             this.mService.notifyProviderInheritance((ComponentName[]) getInstalledProvidersForPackage(this.mPackageName, null).stream().filter(new Predicate() { // from class: android.appwidget.AppWidgetManager$$ExternalSyntheticLambda0
@@ -126,7 +125,6 @@ public class AppWidgetManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$new$1(ComponentName p) {
         try {
             Class clazz = Class.forName(p.getClassName());
@@ -136,7 +134,6 @@ public class AppWidgetManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ComponentName[] lambda$new$2(int x$0) {
         return new ComponentName[x$0];
     }

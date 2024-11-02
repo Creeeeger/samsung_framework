@@ -155,12 +155,10 @@ public class AccessibilityRecord {
         setBooleanProperty(512, importantForAccessibility);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isAccessibilityDataSensitive() {
         return getBooleanProperty(1024);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAccessibilityDataSensitive(boolean accessibilityDataSensitive) {
         enforceNotSealed();
         setBooleanProperty(1024, accessibilityDataSensitive);
@@ -331,7 +329,6 @@ public class AccessibilityRecord {
         this.mSealed = sealed;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isSealed() {
         return this.mSealed;
     }
@@ -342,7 +339,6 @@ public class AccessibilityRecord {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void enforceNotSealed() {
         if (isSealed()) {
             throw new IllegalStateException("Cannot perform this action on a sealed instance.");
@@ -377,7 +373,6 @@ public class AccessibilityRecord {
     public void recycle() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void init(AccessibilityRecord record) {
         this.mSealed = record.mSealed;
         this.mBooleanProperties = record.mBooleanProperties;
@@ -404,7 +399,6 @@ public class AccessibilityRecord {
         this.mConnectionId = record.mConnectionId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clear() {
         this.mSealed = false;
         this.mBooleanProperties = 0;
@@ -435,7 +429,6 @@ public class AccessibilityRecord {
         return appendTo(new StringBuilder()).toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public StringBuilder appendTo(StringBuilder builder) {
         builder.append(" [ ClassName: ").append(this.mClassName);
         appendPropName(builder, "Text").append(this.mText);

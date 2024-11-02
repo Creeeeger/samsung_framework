@@ -33,7 +33,6 @@ public class BaseInputConnection implements InputConnection {
     static final Object COMPOSING = new ComposingText();
     private static int INVALID_INDEX = -1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BaseInputConnection(InputMethodManager mgr, boolean fullEditor) {
         this.mIMM = mgr;
         this.mTargetView = null;

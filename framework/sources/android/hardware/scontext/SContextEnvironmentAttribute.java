@@ -10,7 +10,6 @@ public class SContextEnvironmentAttribute extends SContextAttribute {
     private int mSensorType;
     private int mUpdateInterval;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextEnvironmentAttribute() {
         this.mSensorType = 1;
         this.mUpdateInterval = 60;

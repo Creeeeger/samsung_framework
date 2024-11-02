@@ -14,26 +14,20 @@ public final class PerformanceHintManager {
 
     private static native long nativeAcquireManager();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeCloseSession(long j);
 
     private static native long nativeCreateSession(long j, int[] iArr, long j2);
 
     private static native long nativeGetPreferredUpdateRateNanos(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native int[] nativeGetThreadIds(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeReportActualWorkDuration(long j, long j2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSendHint(long j, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetThreads(long j, int[] iArr);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeUpdateTargetWorkDuration(long j, long j2);
 
     public static PerformanceHintManager create() throws ServiceManager.ServiceNotFoundException {

@@ -16,12 +16,10 @@ public abstract class SplitDependencyLoader<E extends Exception> {
 
     protected abstract boolean isSplitCached(int i);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SplitDependencyLoader(SparseArray<int[]> dependencies) {
         this.mDependencies = dependencies;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void loadDependenciesForSplit(int splitIdx) throws Exception {
         if (isSplitCached(splitIdx)) {
             return;
@@ -65,6 +63,10 @@ public abstract class SplitDependencyLoader<E extends Exception> {
 
     /* loaded from: classes.dex */
     public static class IllegalDependencyException extends Exception {
+        /* synthetic */ IllegalDependencyException(String str, IllegalDependencyExceptionIA illegalDependencyExceptionIA) {
+            this(str);
+        }
+
         private IllegalDependencyException(String message) {
             super(message);
         }
@@ -84,59 +86,54 @@ public abstract class SplitDependencyLoader<E extends Exception> {
         int depIdx2;
         SparseArray<int[]> splitDependencies = new SparseArray<>();
         splitDependencies.put(0, new int[]{-1});
-        int splitIdx = 0;
-        while (true) {
-            if (splitIdx < pkg.getSplitNames().length) {
-                if (pkg.getIsFeatureSplits()[splitIdx]) {
-                    String splitDependency = pkg.getUsesSplitNames()[splitIdx];
-                    if (splitDependency != null) {
-                        int depIdx3 = Arrays.binarySearch(pkg.getSplitNames(), splitDependency);
-                        if (depIdx3 < 0) {
-                            throw new IllegalDependencyException("Split '" + pkg.getSplitNames()[splitIdx] + "' requires split '" + splitDependency + "', which is missing.");
-                        }
-                        depIdx2 = depIdx3 + 1;
-                    } else {
-                        depIdx2 = 0;
+        for (int splitIdx = 0; splitIdx < pkg.getSplitNames().length; splitIdx++) {
+            if (pkg.getIsFeatureSplits()[splitIdx]) {
+                String splitDependency = pkg.getUsesSplitNames()[splitIdx];
+                if (splitDependency != null) {
+                    int depIdx3 = Arrays.binarySearch(pkg.getSplitNames(), splitDependency);
+                    if (depIdx3 < 0) {
+                        throw new IllegalDependencyException("Split '" + pkg.getSplitNames()[splitIdx] + "' requires split '" + splitDependency + "', which is missing.");
                     }
-                    splitDependencies.put(splitIdx + 1, new int[]{depIdx2});
+                    depIdx2 = depIdx3 + 1;
+                } else {
+                    depIdx2 = 0;
                 }
-                splitIdx++;
-            } else {
-                int size = pkg.getSplitNames().length;
-                for (int splitIdx2 = 0; splitIdx2 < size; splitIdx2++) {
-                    if (!pkg.getIsFeatureSplits()[splitIdx2]) {
-                        String configForSplit = pkg.getConfigForSplit()[splitIdx2];
-                        if (configForSplit != null) {
-                            int depIdx4 = Arrays.binarySearch(pkg.getSplitNames(), configForSplit);
-                            if (depIdx4 < 0) {
-                                throw new IllegalDependencyException("Split '" + pkg.getSplitNames()[splitIdx2] + "' targets split '" + configForSplit + "', which is missing.");
-                            }
-                            if (!pkg.getIsFeatureSplits()[depIdx4]) {
-                                throw new IllegalDependencyException("Split '" + pkg.getSplitNames()[splitIdx2] + "' declares itself as configuration split for a non-feature split '" + pkg.getSplitNames()[depIdx4] + "'");
-                            }
-                            depIdx = depIdx4 + 1;
-                        } else {
-                            depIdx = 0;
-                        }
-                        splitDependencies.put(depIdx, append(splitDependencies.get(depIdx), splitIdx2 + 1));
-                    }
-                }
-                BitSet bitset = new BitSet();
-                int size2 = splitDependencies.size();
-                for (int i = 0; i < size2; i++) {
-                    int splitIdx3 = splitDependencies.keyAt(i);
-                    bitset.clear();
-                    while (splitIdx3 != -1) {
-                        if (bitset.get(splitIdx3)) {
-                            throw new IllegalDependencyException("Cycle detected in split dependencies.");
-                        }
-                        bitset.set(splitIdx3);
-                        int[] deps = splitDependencies.get(splitIdx3);
-                        splitIdx3 = deps != null ? deps[0] : -1;
-                    }
-                }
-                return splitDependencies;
+                splitDependencies.put(splitIdx + 1, new int[]{depIdx2});
             }
         }
+        int size = pkg.getSplitNames().length;
+        for (int splitIdx2 = 0; splitIdx2 < size; splitIdx2++) {
+            if (!pkg.getIsFeatureSplits()[splitIdx2]) {
+                String configForSplit = pkg.getConfigForSplit()[splitIdx2];
+                if (configForSplit != null) {
+                    int depIdx4 = Arrays.binarySearch(pkg.getSplitNames(), configForSplit);
+                    if (depIdx4 < 0) {
+                        throw new IllegalDependencyException("Split '" + pkg.getSplitNames()[splitIdx2] + "' targets split '" + configForSplit + "', which is missing.");
+                    }
+                    if (!pkg.getIsFeatureSplits()[depIdx4]) {
+                        throw new IllegalDependencyException("Split '" + pkg.getSplitNames()[splitIdx2] + "' declares itself as configuration split for a non-feature split '" + pkg.getSplitNames()[depIdx4] + "'");
+                    }
+                    depIdx = depIdx4 + 1;
+                } else {
+                    depIdx = 0;
+                }
+                splitDependencies.put(depIdx, append(splitDependencies.get(depIdx), splitIdx2 + 1));
+            }
+        }
+        BitSet bitset = new BitSet();
+        int size2 = splitDependencies.size();
+        for (int i = 0; i < size2; i++) {
+            int splitIdx3 = splitDependencies.keyAt(i);
+            bitset.clear();
+            while (splitIdx3 != -1) {
+                if (bitset.get(splitIdx3)) {
+                    throw new IllegalDependencyException("Cycle detected in split dependencies.");
+                }
+                bitset.set(splitIdx3);
+                int[] deps = splitDependencies.get(splitIdx3);
+                splitIdx3 = deps != null ? deps[0] : -1;
+            }
+        }
+        return splitDependencies;
     }
 }

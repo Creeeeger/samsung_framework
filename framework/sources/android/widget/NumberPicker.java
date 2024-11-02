@@ -134,7 +134,6 @@ public class NumberPicker extends LinearLayout {
         void onValueChange(NumberPicker numberPicker, int i, int i2);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class TwoDigitFormatter implements Formatter {
         java.util.Formatter mFmt;
@@ -192,7 +191,7 @@ public class NumberPicker extends LinearLayout {
 
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v16 */
-    /* JADX WARN: Type inference failed for: r0v17, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r0v17, types: [int, boolean] */
     /* JADX WARN: Type inference failed for: r0v18 */
     public NumberPicker(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -257,6 +256,9 @@ public class NumberPicker extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(layoutResId, (ViewGroup) this, true);
         View.OnClickListener onClickListener = new View.OnClickListener() { // from class: android.widget.NumberPicker.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 NumberPicker.this.hideSoftInput();
@@ -269,6 +271,9 @@ public class NumberPicker extends LinearLayout {
             }
         };
         View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() { // from class: android.widget.NumberPicker.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.View.OnLongClickListener
             public boolean onLongClick(View v) {
                 NumberPicker.this.hideSoftInput();
@@ -300,6 +305,9 @@ public class NumberPicker extends LinearLayout {
         EditText editText = (EditText) findViewById(R.id.numberpicker_input);
         this.mInputText = editText;
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() { // from class: android.widget.NumberPicker.3
+            AnonymousClass3() {
+            }
+
             @Override // android.view.View.OnFocusChangeListener
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
@@ -343,7 +351,63 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.NumberPicker$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements View.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            NumberPicker.this.hideSoftInput();
+            NumberPicker.this.mInputText.clearFocus();
+            if (v.getId() == 16909170) {
+                NumberPicker.this.changeValueByOne(true);
+            } else {
+                NumberPicker.this.changeValueByOne(false);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.NumberPicker$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements View.OnLongClickListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.View.OnLongClickListener
+        public boolean onLongClick(View v) {
+            NumberPicker.this.hideSoftInput();
+            NumberPicker.this.mInputText.clearFocus();
+            if (v.getId() == 16909170) {
+                NumberPicker.this.postChangeCurrentByOneFromLongPress(true, 0L);
+            } else {
+                NumberPicker.this.postChangeCurrentByOneFromLongPress(false, 0L);
+            }
+            return true;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.NumberPicker$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements View.OnFocusChangeListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.view.View.OnFocusChangeListener
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                NumberPicker.this.mInputText.selectAll();
+            } else {
+                NumberPicker.this.mInputText.setSelection(0, 0);
+                NumberPicker.this.validateInputTextView(v);
+            }
+        }
+    }
+
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (!this.mHasSelectorWheel) {
@@ -371,7 +435,6 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!this.mHasSelectorWheel) {
@@ -587,7 +650,6 @@ public class NumberPicker extends LinearLayout {
         return super.dispatchTrackballEvent(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public boolean dispatchHoverEvent(MotionEvent event) {
         int hoveredVirtualViewId;
@@ -715,19 +777,16 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollOffset() {
         return this.mCurrentScrollOffset;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollRange() {
         return ((this.mMaxValue - this.mMinValue) + 1) * this.mSelectorElementHeight;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollExtent() {
         return getHeight();
@@ -794,7 +853,6 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void hideSoftInput() {
         InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(InputMethodManager.class);
         if (inputMethodManager != null && inputMethodManager.isActive(this.mInputText)) {
@@ -943,26 +1001,22 @@ public class NumberPicker extends LinearLayout {
         return this.mSelectionDividerHeight;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getTopFadingEdgeStrength() {
         return TOP_AND_BOTTOM_FADING_EDGE_STRENGTH;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getBottomFadingEdgeStrength() {
         return TOP_AND_BOTTOM_FADING_EDGE_STRENGTH;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeAllCallbacks();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -990,7 +1044,6 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onDraw(Canvas canvas) {
         Drawable drawable;
@@ -1137,7 +1190,6 @@ public class NumberPicker extends LinearLayout {
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void changeValueByOne(boolean increment) {
         if (!this.mHasSelectorWheel) {
             if (increment) {
@@ -1213,7 +1265,6 @@ public class NumberPicker extends LinearLayout {
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getWrappedSelectorIndex(int selectorIndex) {
         int i = this.mMaxValue;
         if (selectorIndex > i) {
@@ -1275,13 +1326,11 @@ public class NumberPicker extends LinearLayout {
         cache.put(selectorIndex, scrollSelectorValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public String formatNumber(int value) {
         Formatter formatter = this.mFormatter;
         return formatter != null ? formatter.format(value) : formatNumberWithLocale(value);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void validateInputTextView(View v) {
         String str = String.valueOf(((TextView) v).getText());
         if (TextUtils.isEmpty(str)) {
@@ -1324,7 +1373,6 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void postChangeCurrentByOneFromLongPress(boolean increment, long delayMillis) {
         ChangeCurrentByOneFromLongPressCommand changeCurrentByOneFromLongPressCommand = this.mChangeCurrentByOneFromLongPressCommand;
         if (changeCurrentByOneFromLongPressCommand == null) {
@@ -1376,7 +1424,6 @@ public class NumberPicker extends LinearLayout {
         this.mPressedStateHelper.cancel();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getSelectedPos(String value) {
         if (this.mDisplayedValues == null) {
             try {
@@ -1399,7 +1446,6 @@ public class NumberPicker extends LinearLayout {
         return this.mMinValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void postSetSelectionCommand(int selectionStart, int selectionEnd) {
         if (this.mSetSelectionCommand == null) {
             this.mSetSelectionCommand = new SetSelectionCommand(this.mInputText);
@@ -1407,8 +1453,9 @@ public class NumberPicker extends LinearLayout {
         this.mSetSelectionCommand.post(selectionStart, selectionEnd);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    class InputTextFilter extends NumberKeyListener {
+    public class InputTextFilter extends NumberKeyListener {
         InputTextFilter() {
         }
 
@@ -1474,7 +1521,6 @@ public class NumberPicker extends LinearLayout {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class PressedStateHelper implements Runnable {
         public static final int BUTTON_DECREMENT = 2;
@@ -1564,7 +1610,6 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class SetSelectionCommand implements Runnable {
         private final EditText mInputText;
@@ -1599,7 +1644,6 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class ChangeCurrentByOneFromLongPressCommand implements Runnable {
         private boolean mIncrement;
@@ -1607,7 +1651,6 @@ public class NumberPicker extends LinearLayout {
         ChangeCurrentByOneFromLongPressCommand() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setStep(boolean increment) {
             this.mIncrement = increment;
         }
@@ -1635,7 +1678,6 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class BeginSoftInputOnLongPressCommand implements Runnable {
         BeginSoftInputOnLongPressCommand() {
@@ -1647,7 +1689,6 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class AccessibilityNodeProviderImpl extends AccessibilityNodeProvider {
         private static final int UNDEFINED = Integer.MIN_VALUE;

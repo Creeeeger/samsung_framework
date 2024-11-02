@@ -34,7 +34,9 @@ public final class UaSecurityProtocolIdentifier implements Parcelable {
     private int mTlsCipherSuite;
     private static final int[] sUaSp3gppIds = {0, 1, 2, 3, 4, 5, 6, 256, 65536, 131072};
     public static final Parcelable.Creator<UaSecurityProtocolIdentifier> CREATOR = new Parcelable.Creator<UaSecurityProtocolIdentifier>() { // from class: android.telephony.gba.UaSecurityProtocolIdentifier.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UaSecurityProtocolIdentifier createFromParcel(Parcel in) {
             int org2 = in.readInt();
@@ -60,7 +62,6 @@ public final class UaSecurityProtocolIdentifier implements Parcelable {
             return builder.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UaSecurityProtocolIdentifier[] newArray(int size) {
             return new UaSecurityProtocolIdentifier[size];
@@ -75,6 +76,14 @@ public final class UaSecurityProtocolIdentifier implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface UaSecurityProtocol3gpp {
+    }
+
+    /* synthetic */ UaSecurityProtocolIdentifier(UaSecurityProtocolIdentifierIA uaSecurityProtocolIdentifierIA) {
+        this();
+    }
+
+    /* synthetic */ UaSecurityProtocolIdentifier(UaSecurityProtocolIdentifier uaSecurityProtocolIdentifier, UaSecurityProtocolIdentifierIA uaSecurityProtocolIdentifierIA) {
+        this(uaSecurityProtocolIdentifier);
     }
 
     private UaSecurityProtocolIdentifier() {
@@ -113,6 +122,43 @@ public final class UaSecurityProtocolIdentifier implements Parcelable {
         out.writeInt(this.mTlsCipherSuite);
     }
 
+    /* renamed from: android.telephony.gba.UaSecurityProtocolIdentifier$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UaSecurityProtocolIdentifier> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UaSecurityProtocolIdentifier createFromParcel(Parcel in) {
+            int org2 = in.readInt();
+            int protocol = in.readInt();
+            int cs = in.readInt();
+            if (org2 < 0 || protocol < 0 || cs < 0) {
+                return null;
+            }
+            Builder builder = new Builder();
+            if (org2 > 0) {
+                try {
+                    builder.setOrg(org2);
+                } catch (IllegalArgumentException e) {
+                    return null;
+                }
+            }
+            if (protocol > 0) {
+                builder.setProtocol(protocol);
+            }
+            if (cs > 0) {
+                builder.setTlsCipherSuite(cs);
+            }
+            return builder.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UaSecurityProtocolIdentifier[] newArray(int size) {
+            return new UaSecurityProtocolIdentifier[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -134,7 +180,6 @@ public final class UaSecurityProtocolIdentifier implements Parcelable {
         return Objects.hash(Integer.valueOf(this.mOrg), Integer.valueOf(this.mProtocol), Integer.valueOf(this.mTlsCipherSuite));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isTlsSupported() {
         if (this.mOrg != 1) {
             return false;

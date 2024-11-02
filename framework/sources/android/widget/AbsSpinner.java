@@ -110,7 +110,6 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetList() {
         this.mDataChanged = false;
         this.mNeedSync = false;
@@ -122,7 +121,6 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         SpinnerAdapter spinnerAdapter;
@@ -206,13 +204,11 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         return child.getMeasuredWidth();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new ViewGroup.LayoutParams(-1, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void recycleAllViews() {
         int childCount = getChildCount();
         RecycleBin recycleBin = this.mRecycler;
@@ -224,7 +220,10 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:5:0x000f, code lost:            if (r3 <= ((r2.mFirstPosition + getChildCount()) - 1)) goto L9;     */
+    /* JADX WARN: Code restructure failed: missing block: B:5:0x000f, code lost:
+    
+        if (r3 <= ((r2.mFirstPosition + getChildCount()) - 1)) goto L20;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -313,24 +312,23 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         super.dispatchRestoreInstanceState(container);
         handleDataChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.AbsSpinner.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -339,12 +337,10 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         int position;
         long selectedId;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public SavedState(Parcelable superState) {
             super(superState);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public SavedState(Parcel in) {
             super(in);
             this.selectedId = in.readLong();
@@ -360,6 +356,23 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
 
         public String toString() {
             return "AbsSpinner.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " selectedId=" + this.selectedId + " position=" + this.position + "}";
+        }
+
+        /* renamed from: android.widget.AbsSpinner$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 
@@ -390,7 +403,6 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class RecycleBin {
         private final SparseArray<View> mScrapHeap = new SparseArray<>();
@@ -402,7 +414,6 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
             this.mScrapHeap.put(position, v);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public View get(int position) {
             View result = this.mScrapHeap.get(position);
             if (result != null) {
@@ -411,7 +422,6 @@ public abstract class AbsSpinner extends AdapterView<SpinnerAdapter> {
             return result;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void clear() {
             SparseArray<View> scrapHeap = this.mScrapHeap;
             int count = scrapHeap.size();

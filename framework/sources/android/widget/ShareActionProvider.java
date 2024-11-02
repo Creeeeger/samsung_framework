@@ -102,6 +102,10 @@ public class ShareActionProvider extends ActionProvider {
 
     /* loaded from: classes4.dex */
     private class ShareMenuItemOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
+        /* synthetic */ ShareMenuItemOnMenuItemClickListener(ShareActionProvider shareActionProvider, ShareMenuItemOnMenuItemClickListenerIA shareMenuItemOnMenuItemClickListenerIA) {
+            this();
+        }
+
         private ShareMenuItemOnMenuItemClickListener() {
         }
 
@@ -133,9 +137,12 @@ public class ShareActionProvider extends ActionProvider {
         dataModel.setOnChooseActivityListener(this.mOnChooseActivityListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ShareActivityChooserModelPolicy implements ActivityChooserModel.OnChooseActivityListener {
+        /* synthetic */ ShareActivityChooserModelPolicy(ShareActionProvider shareActionProvider, ShareActivityChooserModelPolicyIA shareActivityChooserModelPolicyIA) {
+            this();
+        }
+
         private ShareActivityChooserModelPolicy() {
         }
 

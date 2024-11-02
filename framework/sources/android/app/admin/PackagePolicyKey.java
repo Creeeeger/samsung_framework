@@ -15,19 +15,24 @@ import org.xmlpull.v1.XmlPullParserException;
 public final class PackagePolicyKey extends PolicyKey {
     private static final String ATTR_PACKAGE_NAME = "package-name";
     public static final Parcelable.Creator<PackagePolicyKey> CREATOR = new Parcelable.Creator<PackagePolicyKey>() { // from class: android.app.admin.PackagePolicyKey.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PackagePolicyKey createFromParcel(Parcel source) {
             return new PackagePolicyKey(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackagePolicyKey[] newArray(int size) {
             return new PackagePolicyKey[size];
         }
     };
     private final String mPackageName;
+
+    /* synthetic */ PackagePolicyKey(Parcel parcel, PackagePolicyKeyIA packagePolicyKeyIA) {
+        this(parcel);
+    }
 
     public PackagePolicyKey(String key, String packageName) {
         super(key);
@@ -102,5 +107,22 @@ public final class PackagePolicyKey extends PolicyKey {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getIdentifier());
         dest.writeString(this.mPackageName);
+    }
+
+    /* renamed from: android.app.admin.PackagePolicyKey$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PackagePolicyKey> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PackagePolicyKey createFromParcel(Parcel source) {
+            return new PackagePolicyKey(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PackagePolicyKey[] newArray(int size) {
+            return new PackagePolicyKey[size];
+        }
     }
 }

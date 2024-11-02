@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextWakeUpVoiceAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextWakeUpVoiceAttribute> CREATOR = new Parcelable.Creator<SemContextWakeUpVoiceAttribute>() { // from class: com.samsung.android.hardware.context.SemContextWakeUpVoiceAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextWakeUpVoiceAttribute createFromParcel(Parcel in) {
             return new SemContextWakeUpVoiceAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWakeUpVoiceAttribute[] newArray(int size) {
             return new SemContextWakeUpVoiceAttribute[size];
@@ -27,6 +28,23 @@ public class SemContextWakeUpVoiceAttribute extends SemContextAttribute {
     private int mMode;
     private byte[] mNetData;
     private int mVoiceMode;
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextWakeUpVoiceAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextWakeUpVoiceAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextWakeUpVoiceAttribute createFromParcel(Parcel in) {
+            return new SemContextWakeUpVoiceAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextWakeUpVoiceAttribute[] newArray(int size) {
+            return new SemContextWakeUpVoiceAttribute[size];
+        }
+    }
 
     SemContextWakeUpVoiceAttribute() {
         this.mMode = -1;
@@ -45,7 +63,6 @@ public class SemContextWakeUpVoiceAttribute extends SemContextAttribute {
         this.mGramData = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SemContextWakeUpVoiceAttribute(int mode) {
         this.mMode = -1;
         this.mVoiceMode = 1;

@@ -27,12 +27,18 @@ public abstract class VoiceInteractionSessionService extends Service {
     VoiceInteractionSession mSession;
     IVoiceInteractionManagerService mSystemService;
     IVoiceInteractionSessionService mInterface = new IVoiceInteractionSessionService.Stub() { // from class: android.service.voice.VoiceInteractionSessionService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.service.voice.IVoiceInteractionSessionService
         public void newSession(IBinder token, Bundle args, int startFlags) {
             VoiceInteractionSessionService.this.mHandlerCaller.sendMessage(VoiceInteractionSessionService.this.mHandlerCaller.obtainMessageIOO(1, startFlags, token, args));
         }
     };
     final HandlerCaller.Callback mHandlerCallerCallback = new HandlerCaller.Callback() { // from class: android.service.voice.VoiceInteractionSessionService.2
+        AnonymousClass2() {
+        }
+
         @Override // com.android.internal.os.HandlerCaller.Callback
         public void executeMessage(Message msg) {
             SomeArgs args = (SomeArgs) msg.obj;
@@ -47,6 +53,37 @@ public abstract class VoiceInteractionSessionService extends Service {
     };
 
     public abstract VoiceInteractionSession onNewSession(Bundle bundle);
+
+    /* renamed from: android.service.voice.VoiceInteractionSessionService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends IVoiceInteractionSessionService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.service.voice.IVoiceInteractionSessionService
+        public void newSession(IBinder token, Bundle args, int startFlags) {
+            VoiceInteractionSessionService.this.mHandlerCaller.sendMessage(VoiceInteractionSessionService.this.mHandlerCaller.obtainMessageIOO(1, startFlags, token, args));
+        }
+    }
+
+    /* renamed from: android.service.voice.VoiceInteractionSessionService$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 implements HandlerCaller.Callback {
+        AnonymousClass2() {
+        }
+
+        @Override // com.android.internal.os.HandlerCaller.Callback
+        public void executeMessage(Message msg) {
+            SomeArgs args = (SomeArgs) msg.obj;
+            switch (msg.what) {
+                case 1:
+                    VoiceInteractionSessionService.this.doNewSession((IBinder) args.arg1, (Bundle) args.arg2, args.argi1);
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
 
     @Override // android.app.Service
     public void onCreate() {
@@ -87,7 +124,6 @@ public abstract class VoiceInteractionSessionService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
         if (this.mSession == null) {

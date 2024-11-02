@@ -15,7 +15,9 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes2.dex */
 public final class BrightnessCorrection implements Parcelable {
     public static final Parcelable.Creator<BrightnessCorrection> CREATOR = new Parcelable.Creator<BrightnessCorrection>() { // from class: android.hardware.display.BrightnessCorrection.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BrightnessCorrection createFromParcel(Parcel in) {
             int type = in.readInt();
@@ -27,7 +29,6 @@ public final class BrightnessCorrection implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrightnessCorrection[] newArray(int size) {
             return new BrightnessCorrection[size];
@@ -37,7 +38,6 @@ public final class BrightnessCorrection implements Parcelable {
     private static final String TAG_SCALE_AND_TRANSLATE_LOG = "scale-and-translate-log";
     private BrightnessCorrectionImplementation mImplementation;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public interface BrightnessCorrectionImplementation {
         float apply(float f);
@@ -81,6 +81,29 @@ public final class BrightnessCorrection implements Parcelable {
         return this.mImplementation.hashCode();
     }
 
+    /* renamed from: android.hardware.display.BrightnessCorrection$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BrightnessCorrection> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BrightnessCorrection createFromParcel(Parcel in) {
+            int type = in.readInt();
+            switch (type) {
+                case 1:
+                    return ScaleAndTranslateLog.readFromParcel(in);
+                default:
+                    return null;
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BrightnessCorrection[] newArray(int size) {
+            return new BrightnessCorrection[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         this.mImplementation.writeToParcel(dest);
@@ -105,12 +128,10 @@ public final class BrightnessCorrection implements Parcelable {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static float loadFloatFromXml(TypedXmlPullParser parser, String attribute) {
         return parser.getAttributeFloat(null, attribute, Float.NaN);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class ScaleAndTranslateLog implements BrightnessCorrectionImplementation {
         private static final String ATTR_SCALE = "scale";

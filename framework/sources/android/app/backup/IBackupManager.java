@@ -1361,7 +1361,6 @@ public interface IBackupManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IBackupManager {
             private IBinder mRemote;

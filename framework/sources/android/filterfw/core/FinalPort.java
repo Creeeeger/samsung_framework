@@ -8,7 +8,6 @@ public class FinalPort extends FieldPort {
         super(filter, name, field, hasDefault);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.FieldPort
     public synchronized void setFieldFrame(Frame frame, boolean isAssignment) {
         assertPortIsOpen();

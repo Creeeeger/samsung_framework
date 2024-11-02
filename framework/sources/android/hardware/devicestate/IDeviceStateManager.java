@@ -177,7 +177,6 @@ public interface IDeviceStateManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class Proxy implements IDeviceStateManager {
             private IBinder mRemote;

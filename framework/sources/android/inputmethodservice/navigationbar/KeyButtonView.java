@@ -39,11 +39,37 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
     private int mTouchDownY;
     private boolean mTracking;
 
+    /* renamed from: android.inputmethodservice.navigationbar.KeyButtonView$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (KeyButtonView.this.isPressed()) {
+                if (KeyButtonView.this.isLongClickable()) {
+                    KeyButtonView.this.performLongClick();
+                    KeyButtonView.this.mLongClicked = true;
+                } else {
+                    if (KeyButtonView.this.mCode != 0) {
+                        KeyButtonView.this.sendEvent(0, 128);
+                        KeyButtonView.this.sendAccessibilityEvent(2);
+                    }
+                    KeyButtonView.this.mLongClicked = true;
+                }
+            }
+        }
+    }
+
     public KeyButtonView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mOvalBgPaint = new Paint(3);
         this.mHasOvalBg = false;
         this.mCheckLongPress = new Runnable() { // from class: android.inputmethodservice.navigationbar.KeyButtonView.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (KeyButtonView.this.isPressed()) {
@@ -104,7 +130,6 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
@@ -226,7 +251,6 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendEvent(int action, int flags) {
         sendEvent(action, flags, SystemClock.uptimeMillis());
     }

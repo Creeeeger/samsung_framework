@@ -2,11 +2,11 @@ package com.android.internal.org.bouncycastle.math.field;
 
 import com.android.internal.org.bouncycastle.util.Arrays;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class GF2Polynomial implements Polynomial {
+public class GF2Polynomial implements Polynomial {
     protected final int[] exponents;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GF2Polynomial(int[] exponents) {
         this.exponents = Arrays.clone(exponents);
     }

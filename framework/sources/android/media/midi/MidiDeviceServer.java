@@ -50,13 +50,14 @@ public final class MidiDeviceServer implements Closeable {
         void onDeviceStatusChanged(MidiDeviceServer midiDeviceServer, MidiDeviceStatus midiDeviceStatus);
     }
 
-    /* renamed from: -$$Nest$smcreateSeqPacketSocketPair, reason: not valid java name */
+    /* renamed from: -$$Nest$smcreateSeqPacketSocketPair */
     static /* bridge */ /* synthetic */ FileDescriptor[] m2621$$Nest$smcreateSeqPacketSocketPair() {
         return createSeqPacketSocketPair();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private abstract class PortClient implements IBinder.DeathRecipient {
+    public abstract class PortClient implements IBinder.DeathRecipient {
         final IBinder mToken;
 
         abstract void close();
@@ -148,6 +149,145 @@ public final class MidiDeviceServer implements Closeable {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.midi.MidiDeviceServer$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends IMidiDeviceServer.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.midi.IMidiDeviceServer
+        public FileDescriptor openInputPort(IBinder token, int portNumber) {
+            if (MidiDeviceServer.this.mDeviceInfo.isPrivate() && Binder.getCallingUid() != Process.myUid()) {
+                throw new SecurityException("Can't access private device from different UID");
+            }
+            if (portNumber < 0 || portNumber >= MidiDeviceServer.this.mInputPortCount) {
+                Log.e(MidiDeviceServer.TAG, "portNumber out of range in openInputPort: " + portNumber);
+                return null;
+            }
+            synchronized (MidiDeviceServer.this.mInputPortOutputPorts) {
+                if (MidiDeviceServer.this.mInputPortOutputPorts[portNumber] != null) {
+                    Log.d(MidiDeviceServer.TAG, "port " + portNumber + " already open");
+                    return null;
+                }
+                try {
+                    FileDescriptor[] pair = MidiDeviceServer.m2621$$Nest$smcreateSeqPacketSocketPair();
+                    MidiOutputPort outputPort = new MidiOutputPort(pair[0], portNumber);
+                    MidiDeviceServer.this.mInputPortOutputPorts[portNumber] = outputPort;
+                    outputPort.connect(MidiDeviceServer.this.mInputPortReceivers[portNumber]);
+                    InputPortClient client = new InputPortClient(token, outputPort);
+                    synchronized (MidiDeviceServer.this.mPortClients) {
+                        MidiDeviceServer.this.mPortClients.put(token, client);
+                    }
+                    MidiDeviceServer.this.mInputPortOpen[portNumber] = true;
+                    MidiDeviceServer.this.updateDeviceStatus();
+                    return pair[1];
+                } catch (IOException e) {
+                    Log.e(MidiDeviceServer.TAG, "unable to create FileDescriptors in openInputPort");
+                    return null;
+                }
+            }
+        }
+
+        @Override // android.media.midi.IMidiDeviceServer
+        public FileDescriptor openOutputPort(IBinder token, int portNumber) {
+            if (MidiDeviceServer.this.mDeviceInfo.isPrivate() && Binder.getCallingUid() != Process.myUid()) {
+                throw new SecurityException("Can't access private device from different UID");
+            }
+            if (portNumber < 0 || portNumber >= MidiDeviceServer.this.mOutputPortCount) {
+                Log.e(MidiDeviceServer.TAG, "portNumber out of range in openOutputPort: " + portNumber);
+                return null;
+            }
+            try {
+                FileDescriptor[] pair = MidiDeviceServer.m2621$$Nest$smcreateSeqPacketSocketPair();
+                MidiInputPort inputPort = new MidiInputPort(pair[0], portNumber);
+                if (MidiDeviceServer.this.mDeviceInfo.getType() != 2) {
+                    IoUtils.setBlocking(pair[0], false);
+                }
+                MidiDispatcher dispatcher = MidiDeviceServer.this.mOutputPortDispatchers[portNumber];
+                synchronized (dispatcher) {
+                    dispatcher.getSender().connect(inputPort);
+                    int openCount = dispatcher.getReceiverCount();
+                    MidiDeviceServer.this.mOutputPortOpenCount[portNumber] = openCount;
+                    MidiDeviceServer.this.updateDeviceStatus();
+                }
+                MidiDeviceServer.this.mInputPorts.add(inputPort);
+                OutputPortClient client = new OutputPortClient(token, inputPort);
+                synchronized (MidiDeviceServer.this.mPortClients) {
+                    MidiDeviceServer.this.mPortClients.put(token, client);
+                }
+                synchronized (MidiDeviceServer.this.mInputPortClients) {
+                    MidiDeviceServer.this.mInputPortClients.put(inputPort, client);
+                }
+                return pair[1];
+            } catch (IOException e) {
+                Log.e(MidiDeviceServer.TAG, "unable to create FileDescriptors in openOutputPort");
+                return null;
+            }
+        }
+
+        @Override // android.media.midi.IMidiDeviceServer
+        public void closePort(IBinder token) {
+            MidiInputPort inputPort = null;
+            synchronized (MidiDeviceServer.this.mPortClients) {
+                PortClient client = (PortClient) MidiDeviceServer.this.mPortClients.remove(token);
+                if (client != null) {
+                    inputPort = client.getInputPort();
+                    client.close();
+                }
+            }
+            if (inputPort != null) {
+                synchronized (MidiDeviceServer.this.mInputPortClients) {
+                    MidiDeviceServer.this.mInputPortClients.remove(inputPort);
+                }
+            }
+        }
+
+        @Override // android.media.midi.IMidiDeviceServer
+        public void closeDevice() {
+            if (MidiDeviceServer.this.mCallback != null) {
+                MidiDeviceServer.this.mCallback.onClose();
+            }
+            IoUtils.closeQuietly(MidiDeviceServer.this);
+        }
+
+        @Override // android.media.midi.IMidiDeviceServer
+        public int connectPorts(IBinder token, FileDescriptor fd, int outputPortNumber) {
+            MidiInputPort inputPort = new MidiInputPort(fd, outputPortNumber);
+            MidiDispatcher dispatcher = MidiDeviceServer.this.mOutputPortDispatchers[outputPortNumber];
+            synchronized (dispatcher) {
+                dispatcher.getSender().connect(inputPort);
+                int openCount = dispatcher.getReceiverCount();
+                MidiDeviceServer.this.mOutputPortOpenCount[outputPortNumber] = openCount;
+                MidiDeviceServer.this.updateDeviceStatus();
+            }
+            MidiDeviceServer.this.mInputPorts.add(inputPort);
+            OutputPortClient client = new OutputPortClient(token, inputPort);
+            synchronized (MidiDeviceServer.this.mPortClients) {
+                MidiDeviceServer.this.mPortClients.put(token, client);
+            }
+            synchronized (MidiDeviceServer.this.mInputPortClients) {
+                MidiDeviceServer.this.mInputPortClients.put(inputPort, client);
+            }
+            return Process.myPid();
+        }
+
+        @Override // android.media.midi.IMidiDeviceServer
+        public MidiDeviceInfo getDeviceInfo() {
+            return MidiDeviceServer.this.mDeviceInfo;
+        }
+
+        @Override // android.media.midi.IMidiDeviceServer
+        public void setDeviceInfo(MidiDeviceInfo deviceInfo) {
+            if (Binder.getCallingUid() != 1000) {
+                throw new SecurityException("setDeviceInfo should only be called by MidiService");
+            }
+            if (MidiDeviceServer.this.mDeviceInfo != null) {
+                throw new IllegalStateException("setDeviceInfo should only be called once");
+            }
+            MidiDeviceServer.this.mDeviceInfo = deviceInfo;
+        }
+    }
+
     public MidiDeviceServer(IMidiManager midiManager, MidiReceiver[] inputPortReceivers, int numOutputPorts, Callback callback) {
         this.mInputPorts = new CopyOnWriteArrayList<>();
         this.mGuard = CloseGuard.get();
@@ -156,6 +296,9 @@ public final class MidiDeviceServer implements Closeable {
         this.mTotalInputBytes = new AtomicInteger();
         this.mTotalOutputBytes = new AtomicInteger();
         this.mServer = new IMidiDeviceServer.Stub() { // from class: android.media.midi.MidiDeviceServer.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.midi.IMidiDeviceServer
             public FileDescriptor openInputPort(IBinder token, int portNumber) {
                 if (MidiDeviceServer.this.mDeviceInfo.isPrivate() && Binder.getCallingUid() != Process.myUid()) {
@@ -289,6 +432,9 @@ public final class MidiDeviceServer implements Closeable {
             }
         };
         this.mInputPortFailureHandler = new MidiDispatcher.MidiReceiverFailureHandler() { // from class: android.media.midi.MidiDeviceServer.2
+            AnonymousClass2() {
+            }
+
             @Override // com.android.internal.midi.MidiDispatcher.MidiReceiverFailureHandler
             public void onReceiverFailure(MidiReceiver receiver, IOException failure) {
                 PortClient client;
@@ -319,12 +465,30 @@ public final class MidiDeviceServer implements Closeable {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.midi.MidiDeviceServer$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 implements MidiDispatcher.MidiReceiverFailureHandler {
+        AnonymousClass2() {
+        }
+
+        @Override // com.android.internal.midi.MidiDispatcher.MidiReceiverFailureHandler
+        public void onReceiverFailure(MidiReceiver receiver, IOException failure) {
+            PortClient client;
+            Log.e(MidiDeviceServer.TAG, "MidiInputPort failed to send data", failure);
+            synchronized (MidiDeviceServer.this.mInputPortClients) {
+                client = (PortClient) MidiDeviceServer.this.mInputPortClients.remove(receiver);
+            }
+            if (client != null) {
+                client.close();
+            }
+        }
+    }
+
     public MidiDeviceServer(IMidiManager midiManager, MidiReceiver[] inputPortReceivers, MidiDeviceInfo deviceInfo, Callback callback) {
         this(midiManager, inputPortReceivers, deviceInfo.getOutputPortCount(), callback);
         this.mDeviceInfo = deviceInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IMidiDeviceServer getBinderInterface() {
         return this.mServer;
     }
@@ -333,7 +497,6 @@ public final class MidiDeviceServer implements Closeable {
         return this.mServer.asBinder();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateDeviceStatus() {
         long identityToken = Binder.clearCallingIdentity();
         try {
@@ -403,7 +566,6 @@ public final class MidiDeviceServer implements Closeable {
         return receivers;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateTotalBytes() {
         try {
             this.mMidiManager.updateTotalBytes(this.mServer, this.mTotalInputBytes.get(), this.mTotalOutputBytes.get());

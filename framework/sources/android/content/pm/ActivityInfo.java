@@ -193,13 +193,14 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     private static final Parcelling.BuiltIn.ForStringSet sForStringSet = (Parcelling.BuiltIn.ForStringSet) Parcelling.Cache.getOrCreate(Parcelling.BuiltIn.ForStringSet.class);
     public static int[] CONFIG_NATIVE_BITS = {2, 1, 4, 8, 16, 32, 64, 128, 2048, 4096, 512, 8192, 256, 16384, 65536, 131072, 131072, 32768, 262144, 524288, 2097152, 1048576};
     public static final Parcelable.Creator<ActivityInfo> CREATOR = new Parcelable.Creator<ActivityInfo>() { // from class: android.content.pm.ActivityInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ActivityInfo createFromParcel(Parcel source) {
             return new ActivityInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityInfo[] newArray(int size) {
             return new ActivityInfo[size];
@@ -229,6 +230,10 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface SizeChangesSupportMode {
+    }
+
+    /* synthetic */ ActivityInfo(Parcel parcel, ActivityInfoIA activityInfoIA) {
+        this(parcel);
     }
 
     public static String launchModeToString(int launchMode) {
@@ -382,7 +387,6 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         return orientation == 14 || orientation == 5 || isFixedOrientationLandscape(orientation) || isFixedOrientationPortrait(orientation);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isFixedOrientationLandscape() {
         return isFixedOrientationLandscape(this.screenOrientation);
     }
@@ -391,7 +395,6 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
         return orientation == 0 || orientation == 6 || orientation == 8 || orientation == 11;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isFixedOrientationPortrait() {
         return isFixedOrientationPortrait(this.screenOrientation);
     }
@@ -702,6 +705,23 @@ public class ActivityInfo extends ComponentInfo implements Parcelable {
                 return Integer.toString(colorMode);
             case 4:
                 return "COLOR_MODE_A8";
+        }
+    }
+
+    /* renamed from: android.content.pm.ActivityInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ActivityInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityInfo createFromParcel(Parcel source) {
+            return new ActivityInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityInfo[] newArray(int size) {
+            return new ActivityInfo[size];
         }
     }
 

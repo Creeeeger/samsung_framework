@@ -12,7 +12,6 @@ public class FrameMetricsObserver implements HardwareRendererObserver.OnFrameMet
     private final HardwareRendererObserver mObserver;
     private final WeakReference<Window> mWindow;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FrameMetricsObserver(Window window, Handler handler, Window.OnFrameMetricsAvailableListener listener) {
         this.mWindow = new WeakReference<>(window);
         this.mListener = listener;
@@ -28,7 +27,6 @@ public class FrameMetricsObserver implements HardwareRendererObserver.OnFrameMet
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public HardwareRendererObserver getRendererObserver() {
         return this.mObserver;
     }

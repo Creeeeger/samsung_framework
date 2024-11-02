@@ -142,8 +142,9 @@ public interface IFieldClassificationCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IFieldClassificationCallback {
+        public static class Proxy implements IFieldClassificationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

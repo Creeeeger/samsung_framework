@@ -15,11 +15,14 @@ public class AsyncRunner extends GraphRunner {
     private SyncRunner mRunner;
     private Class mSchedulerClass;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class RunnerResult {
         public Exception exception;
         public int status;
+
+        /* synthetic */ RunnerResult(AsyncRunner asyncRunner, RunnerResultIA runnerResultIA) {
+            this();
+        }
 
         private RunnerResult() {
             this.status = 0;
@@ -30,10 +33,13 @@ public class AsyncRunner extends GraphRunner {
     private class AsyncRunnerTask extends AsyncTask<SyncRunner, Void, RunnerResult> {
         private static final String TAG = "AsyncRunnerTask";
 
+        /* synthetic */ AsyncRunnerTask(AsyncRunner asyncRunner, AsyncRunnerTaskIA asyncRunnerTaskIA) {
+            this();
+        }
+
         private AsyncRunnerTask() {
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public RunnerResult doInBackground(SyncRunner... runner) {
             RunnerResult result = new RunnerResult();
@@ -82,13 +88,11 @@ public class AsyncRunner extends GraphRunner {
             return result;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onCancelled(RunnerResult result) {
             onPostExecute(result);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onPostExecute(RunnerResult result) {
             if (AsyncRunner.this.mLogVerbose) {
@@ -205,12 +209,10 @@ public class AsyncRunner extends GraphRunner {
         return this.mException;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void setRunning(boolean running) {
         this.isProcessing = running;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void setException(Exception exception) {
         this.mException = exception;
     }

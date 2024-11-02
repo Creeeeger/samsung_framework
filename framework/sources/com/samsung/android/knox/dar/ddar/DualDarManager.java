@@ -96,7 +96,6 @@ public final class DualDarManager {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Boolean lambda$isInnerAuthRequired$0(int userId, IDarManagerService s) {
         try {
             return Boolean.valueOf(s.isInnerAuthRequired(userId));
@@ -116,7 +115,6 @@ public final class DualDarManager {
         }).orElse(false)).booleanValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Boolean lambda$setDualDarInfo$1(int userId, int flag, IDarManagerService s) {
         try {
             return Boolean.valueOf(s.setDualDarInfo(userId, flag));

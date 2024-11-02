@@ -13,19 +13,24 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class ActivityConfigurationChangeItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<ActivityConfigurationChangeItem> CREATOR = new Parcelable.Creator<ActivityConfigurationChangeItem>() { // from class: android.app.servertransaction.ActivityConfigurationChangeItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ActivityConfigurationChangeItem createFromParcel(Parcel in) {
             return new ActivityConfigurationChangeItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityConfigurationChangeItem[] newArray(int size) {
             return new ActivityConfigurationChangeItem[size];
         }
     };
     private Configuration mConfiguration;
+
+    /* synthetic */ ActivityConfigurationChangeItem(Parcel parcel, ActivityConfigurationChangeItemIA activityConfigurationChangeItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.BaseClientRequest
     public void preExecute(ClientTransactionHandler client, IBinder token) {
@@ -68,6 +73,23 @@ public class ActivityConfigurationChangeItem extends ActivityTransactionItem {
 
     private ActivityConfigurationChangeItem(Parcel in) {
         this.mConfiguration = (Configuration) in.readTypedObject(Configuration.CREATOR);
+    }
+
+    /* renamed from: android.app.servertransaction.ActivityConfigurationChangeItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ActivityConfigurationChangeItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityConfigurationChangeItem createFromParcel(Parcel in) {
+            return new ActivityConfigurationChangeItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityConfigurationChangeItem[] newArray(int size) {
+            return new ActivityConfigurationChangeItem[size];
+        }
     }
 
     public boolean equals(Object o) {

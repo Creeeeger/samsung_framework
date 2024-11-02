@@ -21,19 +21,17 @@ public class RectShape extends Shape {
         outline.setRect((int) Math.ceil(rect.left), (int) Math.ceil(rect.top), (int) Math.floor(rect.right), (int) Math.floor(rect.bottom));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.shapes.Shape
     public void onResize(float width, float height) {
         this.mRect.set(0.0f, 0.0f, width, height);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final RectF rect() {
         return this.mRect;
     }
 
     @Override // android.graphics.drawable.shapes.Shape
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public RectShape mo1293clone() throws CloneNotSupportedException {
         RectShape shape = (RectShape) super.mo1293clone();
         shape.mRect = new RectF(this.mRect);

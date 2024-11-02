@@ -29,8 +29,13 @@ public class FastPrintWriter extends PrintWriter {
     private final char[] mText;
     private final Writer mWriter;
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class DummyWriter extends Writer {
+    public static class DummyWriter extends Writer {
+        /* synthetic */ DummyWriter(DummyWriterIA dummyWriterIA) {
+            this();
+        }
+
         private DummyWriter() {
         }
 

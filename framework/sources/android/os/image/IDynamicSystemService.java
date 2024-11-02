@@ -328,8 +328,9 @@ public interface IDynamicSystemService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDynamicSystemService {
+        public static class Proxy implements IDynamicSystemService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

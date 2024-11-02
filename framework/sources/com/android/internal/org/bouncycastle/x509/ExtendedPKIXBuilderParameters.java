@@ -45,7 +45,6 @@ public class ExtendedPKIXBuilderParameters extends ExtendedPKIXParameters {
         return this.maxPathLength;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.x509.ExtendedPKIXParameters
     public void setParams(PKIXParameters params) {
         super.setParams(params);

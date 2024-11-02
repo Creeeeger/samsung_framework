@@ -13,7 +13,9 @@ import java.util.Set;
 /* loaded from: classes2.dex */
 public class Address implements Parcelable {
     public static final Parcelable.Creator<Address> CREATOR = new Parcelable.Creator<Address>() { // from class: android.location.Address.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Address createFromParcel(Parcel in) {
             Locale locale;
@@ -63,7 +65,6 @@ public class Address implements Parcelable {
             return a;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Address[] newArray(int size) {
             return new Address[size];
@@ -335,6 +336,67 @@ public class Address implements Parcelable {
         sb.append(this.mExtras);
         sb.append(']');
         return sb.toString();
+    }
+
+    /* renamed from: android.location.Address$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Address> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Address createFromParcel(Parcel in) {
+            Locale locale;
+            String language = in.readString();
+            String country = in.readString();
+            if (country.length() > 0) {
+                locale = new Locale(language, country);
+            } else {
+                locale = new Locale(language);
+            }
+            Address a = new Address(locale);
+            int N = in.readInt();
+            if (N > 0) {
+                a.mAddressLines = new HashMap(N);
+                for (int i = 0; i < N; i++) {
+                    int index = in.readInt();
+                    String line = in.readString();
+                    a.mAddressLines.put(Integer.valueOf(index), line);
+                    a.mMaxAddressLineIndex = Math.max(a.mMaxAddressLineIndex, index);
+                }
+            } else {
+                a.mAddressLines = null;
+                a.mMaxAddressLineIndex = -1;
+            }
+            a.mFeatureName = in.readString();
+            a.mAdminArea = in.readString();
+            a.mSubAdminArea = in.readString();
+            a.mLocality = in.readString();
+            a.mSubLocality = in.readString();
+            a.mThoroughfare = in.readString();
+            a.mSubThoroughfare = in.readString();
+            a.mPremises = in.readString();
+            a.mPostalCode = in.readString();
+            a.mCountryCode = in.readString();
+            a.mCountryName = in.readString();
+            a.mHasLatitude = in.readInt() != 0;
+            if (a.mHasLatitude) {
+                a.mLatitude = in.readDouble();
+            }
+            a.mHasLongitude = in.readInt() != 0;
+            if (a.mHasLongitude) {
+                a.mLongitude = in.readDouble();
+            }
+            a.mPhone = in.readString();
+            a.mUrl = in.readString();
+            a.mExtras = in.readBundle();
+            return a;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Address[] newArray(int size) {
+            return new Address[size];
+        }
     }
 
     @Override // android.os.Parcelable

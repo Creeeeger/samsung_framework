@@ -601,11 +601,17 @@ public interface ISehThermal extends IThermal {
         }
 
         @Override // android.os.HwBinder
-        public void onTransact(int _hidl_code, HwParcel _hidl_request, final HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
+        public void onTransact(int _hidl_code, HwParcel _hidl_request, HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
             switch (_hidl_code) {
                 case 1:
                     _hidl_request.enforceInterface(android.hardware.thermal.V1_0.IThermal.kInterfaceName);
                     getTemperatures(new IThermal.getTemperaturesCallback() { // from class: vendor.samsung.hardware.thermal.V1_0.ISehThermal.Stub.1
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass1(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // android.hardware.thermal.V1_0.IThermal.getTemperaturesCallback
                         public void onValues(ThermalStatus status, ArrayList<Temperature> temperatures) {
                             _hidl_reply.writeStatus(0);
@@ -618,6 +624,12 @@ public interface ISehThermal extends IThermal {
                 case 2:
                     _hidl_request.enforceInterface(android.hardware.thermal.V1_0.IThermal.kInterfaceName);
                     getCpuUsages(new IThermal.getCpuUsagesCallback() { // from class: vendor.samsung.hardware.thermal.V1_0.ISehThermal.Stub.2
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass2(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // android.hardware.thermal.V1_0.IThermal.getCpuUsagesCallback
                         public void onValues(ThermalStatus status, ArrayList<CpuUsage> cpuUsages) {
                             _hidl_reply.writeStatus(0);
@@ -630,6 +642,12 @@ public interface ISehThermal extends IThermal {
                 case 3:
                     _hidl_request.enforceInterface(android.hardware.thermal.V1_0.IThermal.kInterfaceName);
                     getCoolingDevices(new IThermal.getCoolingDevicesCallback() { // from class: vendor.samsung.hardware.thermal.V1_0.ISehThermal.Stub.3
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass3(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // android.hardware.thermal.V1_0.IThermal.getCoolingDevicesCallback
                         public void onValues(ThermalStatus status, ArrayList<CoolingDevice> devices) {
                             _hidl_reply.writeStatus(0);
@@ -644,6 +662,12 @@ public interface ISehThermal extends IThermal {
                     boolean filterType = _hidl_request.readBool();
                     int type = _hidl_request.readInt32();
                     getCurrentTemperatures(filterType, type, new IThermal.getCurrentTemperaturesCallback() { // from class: vendor.samsung.hardware.thermal.V1_0.ISehThermal.Stub.4
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass4(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // android.hardware.thermal.V2_0.IThermal.getCurrentTemperaturesCallback
                         public void onValues(ThermalStatus status, ArrayList<android.hardware.thermal.V2_0.Temperature> temperatures) {
                             _hidl_reply.writeStatus(0);
@@ -658,6 +682,12 @@ public interface ISehThermal extends IThermal {
                     boolean filterType2 = _hidl_request.readBool();
                     int type2 = _hidl_request.readInt32();
                     getTemperatureThresholds(filterType2, type2, new IThermal.getTemperatureThresholdsCallback() { // from class: vendor.samsung.hardware.thermal.V1_0.ISehThermal.Stub.5
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass5(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // android.hardware.thermal.V2_0.IThermal.getTemperatureThresholdsCallback
                         public void onValues(ThermalStatus status, ArrayList<TemperatureThreshold> temperatureThresholds) {
                             _hidl_reply.writeStatus(0);
@@ -673,23 +703,29 @@ public interface ISehThermal extends IThermal {
                     boolean filterType3 = _hidl_request.readBool();
                     int type3 = _hidl_request.readInt32();
                     ThermalStatus _hidl_out_status = registerThermalChangedCallback(callback, filterType3, type3);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_out_status.writeToParcel(_hidl_reply);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_out_status.writeToParcel(_hidl_reply2);
+                    _hidl_reply2.send();
                     return;
                 case 7:
                     _hidl_request.enforceInterface(android.hardware.thermal.V2_0.IThermal.kInterfaceName);
                     IThermalChangedCallback callback2 = IThermalChangedCallback.asInterface(_hidl_request.readStrongBinder());
                     ThermalStatus _hidl_out_status2 = unregisterThermalChangedCallback(callback2);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_out_status2.writeToParcel(_hidl_reply);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_out_status2.writeToParcel(_hidl_reply2);
+                    _hidl_reply2.send();
                     return;
                 case 8:
                     _hidl_request.enforceInterface(android.hardware.thermal.V2_0.IThermal.kInterfaceName);
                     boolean filterType4 = _hidl_request.readBool();
                     int type4 = _hidl_request.readInt32();
                     getCurrentCoolingDevices(filterType4, type4, new IThermal.getCurrentCoolingDevicesCallback() { // from class: vendor.samsung.hardware.thermal.V1_0.ISehThermal.Stub.6
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass6(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // android.hardware.thermal.V2_0.IThermal.getCurrentCoolingDevicesCallback
                         public void onValues(ThermalStatus status, ArrayList<android.hardware.thermal.V2_0.CoolingDevice> devices) {
                             _hidl_reply.writeStatus(0);
@@ -702,6 +738,12 @@ public interface ISehThermal extends IThermal {
                 case 9:
                     _hidl_request.enforceInterface(ISehThermal.kInterfaceName);
                     sehGetTemperatures(new sehGetTemperaturesCallback() { // from class: vendor.samsung.hardware.thermal.V1_0.ISehThermal.Stub.7
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass7(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // vendor.samsung.hardware.thermal.V1_0.ISehThermal.sehGetTemperaturesCallback
                         public void onValues(ThermalStatus status, ArrayList<SehTemperature> temperatures) {
                             _hidl_reply.writeStatus(0);
@@ -715,6 +757,12 @@ public interface ISehThermal extends IThermal {
                     _hidl_request.enforceInterface(ISehThermal.kInterfaceName);
                     int type5 = _hidl_request.readInt32();
                     sehGetTypeTemperatures(type5, new sehGetTypeTemperaturesCallback() { // from class: vendor.samsung.hardware.thermal.V1_0.ISehThermal.Stub.8
+                        final /* synthetic */ HwParcel val$_hidl_reply;
+
+                        AnonymousClass8(HwParcel _hidl_reply2) {
+                            _hidl_reply = _hidl_reply2;
+                        }
+
                         @Override // vendor.samsung.hardware.thermal.V1_0.ISehThermal.sehGetTypeTemperaturesCallback
                         public void onValues(ThermalStatus status, ArrayList<SehTemperature> temperatures) {
                             _hidl_reply.writeStatus(0);
@@ -728,44 +776,44 @@ public interface ISehThermal extends IThermal {
                     _hidl_request.enforceInterface(ISehThermal.kInterfaceName);
                     ISehThermalChangedCallback callback3 = ISehThermalChangedCallback.asInterface(_hidl_request.readStrongBinder());
                     ThermalStatus _hidl_out_status3 = sehRegisterThermalChangedCallback(callback3);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_out_status3.writeToParcel(_hidl_reply);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_out_status3.writeToParcel(_hidl_reply2);
+                    _hidl_reply2.send();
                     return;
                 case 12:
                     _hidl_request.enforceInterface(ISehThermal.kInterfaceName);
                     ISehThermalChangedCallback callback4 = ISehThermalChangedCallback.asInterface(_hidl_request.readStrongBinder());
                     ThermalStatus _hidl_out_status4 = sehUnregisterThermalChangedCallback(callback4);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_out_status4.writeToParcel(_hidl_reply);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_out_status4.writeToParcel(_hidl_reply2);
+                    _hidl_reply2.send();
                     return;
                 case 256067662:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<String> _hidl_out_descriptors = interfaceChain();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeStringVector(_hidl_out_descriptors);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeStringVector(_hidl_out_descriptors);
+                    _hidl_reply2.send();
                     return;
                 case 256131655:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     NativeHandle fd = _hidl_request.readNativeHandle();
                     ArrayList<String> options = _hidl_request.readStringVector();
                     debug(fd, options);
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 256136003:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     String _hidl_out_descriptor = interfaceDescriptor();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.writeString(_hidl_out_descriptor);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.writeString(_hidl_out_descriptor);
+                    _hidl_reply2.send();
                     return;
                 case 256398152:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<byte[]> _hidl_out_hashchain = getHashChain();
-                    _hidl_reply.writeStatus(0);
+                    _hidl_reply2.writeStatus(0);
                     HwBlob _hidl_blob = new HwBlob(16);
                     int _hidl_vec_size = _hidl_out_hashchain.size();
                     _hidl_blob.putInt32(8L, _hidl_vec_size);
@@ -780,8 +828,8 @@ public interface ISehThermal extends IThermal {
                         childBlob.putInt8Array(_hidl_array_offset_1, _hidl_array_item_1);
                     }
                     _hidl_blob.putBlob(0L, childBlob);
-                    _hidl_reply.writeBuffer(_hidl_blob);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeBuffer(_hidl_blob);
+                    _hidl_reply2.send();
                     return;
                 case 256462420:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
@@ -793,20 +841,164 @@ public interface ISehThermal extends IThermal {
                 case 256921159:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ping();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply2.send();
                     return;
                 case 257049926:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     DebugInfo _hidl_out_info = getDebugInfo();
-                    _hidl_reply.writeStatus(0);
-                    _hidl_out_info.writeToParcel(_hidl_reply);
-                    _hidl_reply.send();
+                    _hidl_reply2.writeStatus(0);
+                    _hidl_out_info.writeToParcel(_hidl_reply2);
+                    _hidl_reply2.send();
                     return;
                 case 257120595:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     notifySyspropsChanged();
                     return;
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.thermal.V1_0.ISehThermal$Stub$1 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass1 implements IThermal.getTemperaturesCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass1(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // android.hardware.thermal.V1_0.IThermal.getTemperaturesCallback
+            public void onValues(ThermalStatus status, ArrayList<Temperature> temperatures) {
+                _hidl_reply.writeStatus(0);
+                status.writeToParcel(_hidl_reply);
+                Temperature.writeVectorToParcel(_hidl_reply, temperatures);
+                _hidl_reply.send();
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.thermal.V1_0.ISehThermal$Stub$2 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass2 implements IThermal.getCpuUsagesCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass2(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // android.hardware.thermal.V1_0.IThermal.getCpuUsagesCallback
+            public void onValues(ThermalStatus status, ArrayList<CpuUsage> cpuUsages) {
+                _hidl_reply.writeStatus(0);
+                status.writeToParcel(_hidl_reply);
+                CpuUsage.writeVectorToParcel(_hidl_reply, cpuUsages);
+                _hidl_reply.send();
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.thermal.V1_0.ISehThermal$Stub$3 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass3 implements IThermal.getCoolingDevicesCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass3(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // android.hardware.thermal.V1_0.IThermal.getCoolingDevicesCallback
+            public void onValues(ThermalStatus status, ArrayList<CoolingDevice> devices) {
+                _hidl_reply.writeStatus(0);
+                status.writeToParcel(_hidl_reply);
+                CoolingDevice.writeVectorToParcel(_hidl_reply, devices);
+                _hidl_reply.send();
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.thermal.V1_0.ISehThermal$Stub$4 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass4 implements IThermal.getCurrentTemperaturesCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass4(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // android.hardware.thermal.V2_0.IThermal.getCurrentTemperaturesCallback
+            public void onValues(ThermalStatus status, ArrayList<android.hardware.thermal.V2_0.Temperature> temperatures) {
+                _hidl_reply.writeStatus(0);
+                status.writeToParcel(_hidl_reply);
+                android.hardware.thermal.V2_0.Temperature.writeVectorToParcel(_hidl_reply, temperatures);
+                _hidl_reply.send();
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.thermal.V1_0.ISehThermal$Stub$5 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass5 implements IThermal.getTemperatureThresholdsCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass5(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // android.hardware.thermal.V2_0.IThermal.getTemperatureThresholdsCallback
+            public void onValues(ThermalStatus status, ArrayList<TemperatureThreshold> temperatureThresholds) {
+                _hidl_reply.writeStatus(0);
+                status.writeToParcel(_hidl_reply);
+                TemperatureThreshold.writeVectorToParcel(_hidl_reply, temperatureThresholds);
+                _hidl_reply.send();
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.thermal.V1_0.ISehThermal$Stub$6 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass6 implements IThermal.getCurrentCoolingDevicesCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass6(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // android.hardware.thermal.V2_0.IThermal.getCurrentCoolingDevicesCallback
+            public void onValues(ThermalStatus status, ArrayList<android.hardware.thermal.V2_0.CoolingDevice> devices) {
+                _hidl_reply.writeStatus(0);
+                status.writeToParcel(_hidl_reply);
+                android.hardware.thermal.V2_0.CoolingDevice.writeVectorToParcel(_hidl_reply, devices);
+                _hidl_reply.send();
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.thermal.V1_0.ISehThermal$Stub$7 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass7 implements sehGetTemperaturesCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass7(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // vendor.samsung.hardware.thermal.V1_0.ISehThermal.sehGetTemperaturesCallback
+            public void onValues(ThermalStatus status, ArrayList<SehTemperature> temperatures) {
+                _hidl_reply.writeStatus(0);
+                status.writeToParcel(_hidl_reply);
+                SehTemperature.writeVectorToParcel(_hidl_reply, temperatures);
+                _hidl_reply.send();
+            }
+        }
+
+        /* renamed from: vendor.samsung.hardware.thermal.V1_0.ISehThermal$Stub$8 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass8 implements sehGetTypeTemperaturesCallback {
+            final /* synthetic */ HwParcel val$_hidl_reply;
+
+            AnonymousClass8(HwParcel _hidl_reply2) {
+                _hidl_reply = _hidl_reply2;
+            }
+
+            @Override // vendor.samsung.hardware.thermal.V1_0.ISehThermal.sehGetTypeTemperaturesCallback
+            public void onValues(ThermalStatus status, ArrayList<SehTemperature> temperatures) {
+                _hidl_reply.writeStatus(0);
+                status.writeToParcel(_hidl_reply);
+                SehTemperature.writeVectorToParcel(_hidl_reply, temperatures);
+                _hidl_reply.send();
             }
         }
     }

@@ -122,7 +122,6 @@ public interface IVoiceInteractionSessionListener extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IVoiceInteractionSessionListener {
             private IBinder mRemote;

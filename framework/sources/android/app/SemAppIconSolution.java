@@ -434,7 +434,6 @@ public class SemAppIconSolution {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class IconScale {
         private int mAlpha;
@@ -896,8 +895,9 @@ public class SemAppIconSolution {
             canvas.restore();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class MyConstantState extends Drawable.ConstantState {
+        public static class MyConstantState extends Drawable.ConstantState {
             final Drawable.ConstantState mChildState;
             final Paint mPaint = new Paint(2);
             final Bitmap mShadow;

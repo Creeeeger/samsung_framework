@@ -11,13 +11,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class TvContentRatingSystemInfo implements Parcelable {
     public static final Parcelable.Creator<TvContentRatingSystemInfo> CREATOR = new Parcelable.Creator<TvContentRatingSystemInfo>() { // from class: android.media.tv.TvContentRatingSystemInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TvContentRatingSystemInfo createFromParcel(Parcel in) {
             return new TvContentRatingSystemInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvContentRatingSystemInfo[] newArray(int size) {
             return new TvContentRatingSystemInfo[size];
@@ -25,6 +26,10 @@ public final class TvContentRatingSystemInfo implements Parcelable {
     };
     private final ApplicationInfo mApplicationInfo;
     private final Uri mXmlUri;
+
+    /* synthetic */ TvContentRatingSystemInfo(Parcel parcel, TvContentRatingSystemInfoIA tvContentRatingSystemInfoIA) {
+        this(parcel);
+    }
 
     public static final TvContentRatingSystemInfo createTvContentRatingSystemInfo(int xmlResourceId, ApplicationInfo applicationInfo) {
         Uri uri = new Uri.Builder().scheme(ContentResolver.SCHEME_ANDROID_RESOURCE).authority(applicationInfo.packageName).appendPath(String.valueOf(xmlResourceId)).build();
@@ -42,6 +47,23 @@ public final class TvContentRatingSystemInfo implements Parcelable {
 
     public final Uri getXmlUri() {
         return this.mXmlUri;
+    }
+
+    /* renamed from: android.media.tv.TvContentRatingSystemInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TvContentRatingSystemInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvContentRatingSystemInfo createFromParcel(Parcel in) {
+            return new TvContentRatingSystemInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvContentRatingSystemInfo[] newArray(int size) {
+            return new TvContentRatingSystemInfo[size];
+        }
     }
 
     private TvContentRatingSystemInfo(Parcel in) {

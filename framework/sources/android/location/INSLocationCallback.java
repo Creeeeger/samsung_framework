@@ -327,8 +327,9 @@ public interface INSLocationCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements INSLocationCallback {
+        public static class Proxy implements INSLocationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

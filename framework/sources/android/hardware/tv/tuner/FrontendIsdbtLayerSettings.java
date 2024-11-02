@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendIsdbtLayerSettings implements Parcelable {
     public static final Parcelable.Creator<FrontendIsdbtLayerSettings> CREATOR = new Parcelable.Creator<FrontendIsdbtLayerSettings>() { // from class: android.hardware.tv.tuner.FrontendIsdbtLayerSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendIsdbtLayerSettings createFromParcel(Parcel _aidl_source) {
             FrontendIsdbtLayerSettings _aidl_out = new FrontendIsdbtLayerSettings();
@@ -15,7 +17,6 @@ public class FrontendIsdbtLayerSettings implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendIsdbtLayerSettings[] newArray(int _aidl_size) {
             return new FrontendIsdbtLayerSettings[_aidl_size];
@@ -25,6 +26,25 @@ public class FrontendIsdbtLayerSettings implements Parcelable {
     public int coderate = 0;
     public int timeInterleave = 0;
     public int numOfSegment = 0;
+
+    /* renamed from: android.hardware.tv.tuner.FrontendIsdbtLayerSettings$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendIsdbtLayerSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendIsdbtLayerSettings createFromParcel(Parcel _aidl_source) {
+            FrontendIsdbtLayerSettings _aidl_out = new FrontendIsdbtLayerSettings();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendIsdbtLayerSettings[] newArray(int _aidl_size) {
+            return new FrontendIsdbtLayerSettings[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

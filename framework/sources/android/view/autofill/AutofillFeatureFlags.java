@@ -74,12 +74,10 @@ public class AutofillFeatureFlags {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String[] lambda$getFillDialogEnabledHints$0(int x$0) {
         return new String[x$0];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getFillDialogEnabledHints$1(String str) {
         return !TextUtils.isEmpty(str);
     }

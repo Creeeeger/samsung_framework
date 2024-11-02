@@ -7,7 +7,6 @@ class TextTrackCueSpan {
     String mText;
     long mTimestampMs;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TextTrackCueSpan(String text, long timestamp) {
         this.mTimestampMs = timestamp;
         this.mText = text;

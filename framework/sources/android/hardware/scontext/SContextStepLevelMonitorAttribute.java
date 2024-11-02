@@ -9,7 +9,6 @@ public class SContextStepLevelMonitorAttribute extends SContextAttribute {
     private static final String TAG = "SContextStepLevelMonitorAttribute";
     private int mDuration;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextStepLevelMonitorAttribute() {
         this.mDuration = 300;
         setAttribute();

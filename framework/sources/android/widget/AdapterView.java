@@ -239,7 +239,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return this.mSemOnMultiSelectedListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean semNotifyMultiSelectedState(View view, int position, long id, boolean shiftPressState, boolean ctrlPressState, boolean penPressState) {
         if (this.mSemMultiSelectionListener != null) {
             return true;
@@ -253,7 +252,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void semNotifyMultiSelectedStart(int startX, int startY) {
         SemMultiSelectionListener semMultiSelectionListener = this.mSemMultiSelectionListener;
         if (semMultiSelectionListener != null) {
@@ -266,7 +264,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void semNotifyMultiSelectedStop(int endX, int endY) {
         SemMultiSelectionListener semMultiSelectionListener = this.mSemMultiSelectionListener;
         if (semMultiSelectionListener != null) {
@@ -298,7 +295,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return this.mSemLongPressMultiSelectionListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean semNotifyLongPressMultiSelectionState(View view, int position, long id) {
         SemLongPressMultiSelectionListener semLongPressMultiSelectionListener = this.mSemLongPressMultiSelectionListener;
         if (semLongPressMultiSelectionListener != null) {
@@ -308,7 +304,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void semNotifyLongPressMultiSelectionStarted(int startX, int startY) {
         SemLongPressMultiSelectionListener semLongPressMultiSelectionListener = this.mSemLongPressMultiSelectionListener;
         if (semLongPressMultiSelectionListener != null) {
@@ -316,7 +311,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void semNotifyLongPressMultiSelectionEnded(int endX, int endY) {
         SemLongPressMultiSelectionListener semLongPressMultiSelectionListener = this.mSemLongPressMultiSelectionListener;
         if (semLongPressMultiSelectionListener != null) {
@@ -389,7 +383,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         throw new UnsupportedOperationException("removeAllViews() is not supported in AdapterView");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         this.mLayoutHeight = getHeight();
@@ -499,7 +492,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         super.setFocusableInTouchMode(z);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void checkFocus() {
         T adapter = getAdapter();
         boolean z = true;
@@ -561,24 +553,20 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         throw new RuntimeException("Don't call setOnClickListener for an AdapterView. You probably want setOnItemClickListener instead");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         dispatchFreezeSelfOnly(container);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         dispatchThawSelfOnly(container);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class AdapterDataSetObserver extends DataSetObserver {
         private Parcelable mInstanceState = null;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public AdapterDataSetObserver() {
         }
 
@@ -622,16 +610,18 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeCallbacks(this.mSelectionNotifier);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SelectionNotifier implements Runnable {
+        /* synthetic */ SelectionNotifier(AdapterView adapterView, SelectionNotifierIA selectionNotifierIA) {
+            this();
+        }
+
         private SelectionNotifier() {
         }
 
@@ -649,7 +639,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void selectionChanged() {
         this.mPendingSelectionNotifier = null;
         if (this.mOnItemSelectedListener != null || AccessibilityManager.getInstance(this.mContext).isEnabled()) {
@@ -675,7 +664,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         performAccessibilityActionsOnSelected();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchOnItemSelected() {
         fireOnSelected();
         performAccessibilityActionsOnSelected();
@@ -709,7 +697,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$performAccessibilityActionsOnSelected$0() {
         sendAccessibilityEvent(4);
     }
@@ -773,13 +760,11 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return getFirstVisiblePosition() > 0 || getLastVisiblePosition() < itemCount + (-1);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean canAnimate() {
         return super.canAnimate() && this.mItemCount > 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleDataChanged() {
         int count = this.mItemCount;
         boolean found = false;
@@ -822,7 +807,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         notifySubtreeAccessibilityStateChangedIfNeeded();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void checkSelectionChanged() {
         if (this.mSelectedPosition != this.mOldSelectedPosition || this.mSelectedRowId != this.mOldSelectedRowId) {
             selectionChanged();
@@ -835,7 +819,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int findSyncPosition() {
         int count = this.mItemCount;
         if (count == 0) {
@@ -881,18 +864,15 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int lookForSelectablePosition(int position, boolean lookDown) {
         return position;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSelectedPositionInt(int position) {
         this.mSelectedPosition = position;
         this.mSelectedRowId = getItemIdAtPosition(position);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setNextSelectedPositionInt(int position) {
         this.mNextSelectedPosition = position;
         long itemIdAtPosition = getItemIdAtPosition(position);
@@ -903,7 +883,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void rememberSyncState() {
         if (getChildCount() > 0) {
             this.mNeedSync = true;
@@ -935,7 +914,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void rememberSyncStateHorizontal() {
         if (getChildCount() > 0) {
             this.mNeedSync = true;
@@ -975,7 +953,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
@@ -991,7 +968,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         super.onProvideAutofillStructure(structure, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
         Adapter adapter;

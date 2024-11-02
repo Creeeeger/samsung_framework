@@ -10,7 +10,9 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public class ParcelableGranteeMap implements Parcelable {
     public static final Parcelable.Creator<ParcelableGranteeMap> CREATOR = new Parcelable.Creator<ParcelableGranteeMap>() { // from class: android.app.admin.ParcelableGranteeMap.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelableGranteeMap createFromParcel(Parcel source) {
             Map<Integer, Set<String>> packagesByUid = new ArrayMap<>();
@@ -23,7 +25,6 @@ public class ParcelableGranteeMap implements Parcelable {
             return new ParcelableGranteeMap(packagesByUid);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableGranteeMap[] newArray(int size) {
             return new ParcelableGranteeMap[size];
@@ -42,6 +43,30 @@ public class ParcelableGranteeMap implements Parcelable {
         for (Map.Entry<Integer, Set<String>> uidEntry : this.mPackagesByUid.entrySet()) {
             dest.writeInt(uidEntry.getKey().intValue());
             dest.writeStringArray((String[]) uidEntry.getValue().toArray(new String[0]));
+        }
+    }
+
+    /* renamed from: android.app.admin.ParcelableGranteeMap$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ParcelableGranteeMap> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableGranteeMap createFromParcel(Parcel source) {
+            Map<Integer, Set<String>> packagesByUid = new ArrayMap<>();
+            int numUids = source.readInt();
+            for (int i = 0; i < numUids; i++) {
+                int uid = source.readInt();
+                String[] pkgs = source.readStringArray();
+                packagesByUid.put(Integer.valueOf(uid), new ArraySet<>(pkgs));
+            }
+            return new ParcelableGranteeMap(packagesByUid);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableGranteeMap[] newArray(int size) {
+            return new ParcelableGranteeMap[size];
         }
     }
 

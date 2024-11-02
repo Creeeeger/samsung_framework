@@ -19,13 +19,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InlineSuggestionsRequest implements Parcelable {
     public static final Parcelable.Creator<InlineSuggestionsRequest> CREATOR = new Parcelable.Creator<InlineSuggestionsRequest>() { // from class: android.view.inputmethod.InlineSuggestionsRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsRequest[] newArray(int size) {
             return new InlineSuggestionsRequest[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsRequest createFromParcel(Parcel in) {
             return new InlineSuggestionsRequest(in);
@@ -42,38 +43,38 @@ public final class InlineSuggestionsRequest implements Parcelable {
     private final int mMaxSuggestionCount;
     private LocaleList mSupportedLocales;
 
-    /* renamed from: -$$Nest$smdefaultExtras, reason: not valid java name */
-    static /* bridge */ /* synthetic */ Bundle m5671$$Nest$smdefaultExtras() {
+    /* renamed from: -$$Nest$smdefaultExtras */
+    static /* bridge */ /* synthetic */ Bundle m5666$$Nest$smdefaultExtras() {
         return defaultExtras();
     }
 
-    /* renamed from: -$$Nest$smdefaultHostDisplayId, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m5672$$Nest$smdefaultHostDisplayId() {
+    /* renamed from: -$$Nest$smdefaultHostDisplayId */
+    static /* bridge */ /* synthetic */ int m5667$$Nest$smdefaultHostDisplayId() {
         return defaultHostDisplayId();
     }
 
-    /* renamed from: -$$Nest$smdefaultHostInputToken, reason: not valid java name */
-    static /* bridge */ /* synthetic */ IBinder m5673$$Nest$smdefaultHostInputToken() {
+    /* renamed from: -$$Nest$smdefaultHostInputToken */
+    static /* bridge */ /* synthetic */ IBinder m5668$$Nest$smdefaultHostInputToken() {
         return defaultHostInputToken();
     }
 
-    /* renamed from: -$$Nest$smdefaultHostPackageName, reason: not valid java name */
-    static /* bridge */ /* synthetic */ String m5674$$Nest$smdefaultHostPackageName() {
+    /* renamed from: -$$Nest$smdefaultHostPackageName */
+    static /* bridge */ /* synthetic */ String m5669$$Nest$smdefaultHostPackageName() {
         return defaultHostPackageName();
     }
 
-    /* renamed from: -$$Nest$smdefaultInlineTooltipPresentationSpec, reason: not valid java name */
-    static /* bridge */ /* synthetic */ InlinePresentationSpec m5675$$Nest$smdefaultInlineTooltipPresentationSpec() {
+    /* renamed from: -$$Nest$smdefaultInlineTooltipPresentationSpec */
+    static /* bridge */ /* synthetic */ InlinePresentationSpec m5670$$Nest$smdefaultInlineTooltipPresentationSpec() {
         return defaultInlineTooltipPresentationSpec();
     }
 
-    /* renamed from: -$$Nest$smdefaultMaxSuggestionCount, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m5676$$Nest$smdefaultMaxSuggestionCount() {
+    /* renamed from: -$$Nest$smdefaultMaxSuggestionCount */
+    static /* bridge */ /* synthetic */ int m5671$$Nest$smdefaultMaxSuggestionCount() {
         return defaultMaxSuggestionCount();
     }
 
-    /* renamed from: -$$Nest$smdefaultSupportedLocales, reason: not valid java name */
-    static /* bridge */ /* synthetic */ LocaleList m5677$$Nest$smdefaultSupportedLocales() {
+    /* renamed from: -$$Nest$smdefaultSupportedLocales */
+    static /* bridge */ /* synthetic */ LocaleList m5672$$Nest$smdefaultSupportedLocales() {
         return defaultSupportedLocales();
     }
 
@@ -280,6 +281,23 @@ public final class InlineSuggestionsRequest implements Parcelable {
         onConstructed();
     }
 
+    /* renamed from: android.view.inputmethod.InlineSuggestionsRequest$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InlineSuggestionsRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlineSuggestionsRequest[] newArray(int size) {
+            return new InlineSuggestionsRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlineSuggestionsRequest createFromParcel(Parcel in) {
+            return new InlineSuggestionsRequest(in);
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private long mBuilderFieldsSet = 0;
@@ -370,25 +388,25 @@ public final class InlineSuggestionsRequest implements Parcelable {
             long j = this.mBuilderFieldsSet | 256;
             this.mBuilderFieldsSet = j;
             if ((j & 1) == 0) {
-                this.mMaxSuggestionCount = InlineSuggestionsRequest.m5676$$Nest$smdefaultMaxSuggestionCount();
+                this.mMaxSuggestionCount = InlineSuggestionsRequest.m5671$$Nest$smdefaultMaxSuggestionCount();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mHostPackageName = InlineSuggestionsRequest.m5674$$Nest$smdefaultHostPackageName();
+                this.mHostPackageName = InlineSuggestionsRequest.m5669$$Nest$smdefaultHostPackageName();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mSupportedLocales = InlineSuggestionsRequest.m5677$$Nest$smdefaultSupportedLocales();
+                this.mSupportedLocales = InlineSuggestionsRequest.m5672$$Nest$smdefaultSupportedLocales();
             }
             if ((this.mBuilderFieldsSet & 16) == 0) {
-                this.mExtras = InlineSuggestionsRequest.m5671$$Nest$smdefaultExtras();
+                this.mExtras = InlineSuggestionsRequest.m5666$$Nest$smdefaultExtras();
             }
             if ((this.mBuilderFieldsSet & 32) == 0) {
-                this.mHostInputToken = InlineSuggestionsRequest.m5673$$Nest$smdefaultHostInputToken();
+                this.mHostInputToken = InlineSuggestionsRequest.m5668$$Nest$smdefaultHostInputToken();
             }
             if ((this.mBuilderFieldsSet & 64) == 0) {
-                this.mHostDisplayId = InlineSuggestionsRequest.m5672$$Nest$smdefaultHostDisplayId();
+                this.mHostDisplayId = InlineSuggestionsRequest.m5667$$Nest$smdefaultHostDisplayId();
             }
             if ((this.mBuilderFieldsSet & 128) == 0) {
-                this.mInlineTooltipPresentationSpec = InlineSuggestionsRequest.m5675$$Nest$smdefaultInlineTooltipPresentationSpec();
+                this.mInlineTooltipPresentationSpec = InlineSuggestionsRequest.m5670$$Nest$smdefaultInlineTooltipPresentationSpec();
             }
             InlineSuggestionsRequest o = new InlineSuggestionsRequest(this.mMaxSuggestionCount, this.mInlinePresentationSpecs, this.mHostPackageName, this.mSupportedLocales, this.mExtras, this.mHostInputToken, this.mHostDisplayId, this.mInlineTooltipPresentationSpec);
             return o;

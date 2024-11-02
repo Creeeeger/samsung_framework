@@ -41,10 +41,8 @@ public abstract class PlayerBase {
     private float mPanMultiplierR = 1.0f;
     private float mVolMultiplier = 1.0f;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract VolumeShaper.State playerGetVolumeShaperState(int i);
 
     abstract void playerPause();
@@ -57,7 +55,6 @@ public abstract class PlayerBase {
 
     abstract void playerStop();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PlayerBase(AudioAttributes attr, int implType) {
         if (attr == null) {
             throw new IllegalArgumentException("Illegal null AudioAttributes");
@@ -75,7 +72,6 @@ public abstract class PlayerBase {
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void baseRegisterPlayer(int sessionId) {
         try {
             this.mPlayerIId = getService().trackPlayer(new PlayerIdCard(this.mImplType, this.mAttributes, new IPlayerWrapper(this), sessionId));
@@ -84,7 +80,6 @@ public abstract class PlayerBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void baseUpdateAudioAttributes(AudioAttributes attr) {
         if (attr == null) {
             throw new IllegalArgumentException("Illegal null AudioAttributes");
@@ -99,7 +94,6 @@ public abstract class PlayerBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void baseUpdateSessionId(int sessionId) {
         try {
             getService().playerSessionId(this.mPlayerIId, sessionId);
@@ -108,7 +102,6 @@ public abstract class PlayerBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void baseUpdateDeviceId(AudioDeviceInfo deviceInfo) {
         int piid;
         int deviceId = 0;
@@ -140,19 +133,16 @@ public abstract class PlayerBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void baseStart(int deviceId) {
         updateState(2, deviceId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void baseSetStartDelayMs(int delayMs) {
         synchronized (this.mLock) {
             this.mStartDelayMs = Math.max(delayMs, 0);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getStartDelayMs() {
         int i;
         synchronized (this.mLock) {
@@ -161,12 +151,10 @@ public abstract class PlayerBase {
         return i;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void basePause() {
         updateState(3, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void baseStop() {
         updateState(4, 0);
     }
@@ -203,7 +191,6 @@ public abstract class PlayerBase {
         updatePlayerVolume();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void baseSetVolume(float leftVolume, float rightVolume) {
         synchronized (this.mLock) {
             this.mLeftVolume = leftVolume;
@@ -212,7 +199,6 @@ public abstract class PlayerBase {
         updatePlayerVolume();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int baseSetAuxEffectSendLevel(float level) {
         synchronized (this.mLock) {
             this.mAuxEffectSendLevel = level;
@@ -220,7 +206,6 @@ public abstract class PlayerBase {
         return playerSetAuxEffectSendLevel(false, level);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void baseRelease() {
         boolean releasePlayer = false;
         synchronized (this.mLock) {
@@ -260,8 +245,9 @@ public abstract class PlayerBase {
         baseSetStartDelayMs(delayMs);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static class IPlayerWrapper extends IPlayer.Stub {
+    public static class IPlayerWrapper extends IPlayer.Stub {
         private final WeakReference<PlayerBase> mWeakPB;
 
         public IPlayerWrapper(PlayerBase pb) {
@@ -330,13 +316,14 @@ public abstract class PlayerBase {
         public static final int AUDIO_ATTRIBUTES_DEFINED = 1;
         public static final int AUDIO_ATTRIBUTES_NONE = 0;
         public static final Parcelable.Creator<PlayerIdCard> CREATOR = new Parcelable.Creator<PlayerIdCard>() { // from class: android.media.PlayerBase.PlayerIdCard.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PlayerIdCard createFromParcel(Parcel p) {
                 return new PlayerIdCard(p);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PlayerIdCard[] newArray(int size) {
                 return new PlayerIdCard[size];
@@ -346,6 +333,10 @@ public abstract class PlayerBase {
         public final IPlayer mIPlayer;
         public final int mPlayerType;
         public final int mSessionId;
+
+        /* synthetic */ PlayerIdCard(Parcel parcel, PlayerIdCardIA playerIdCardIA) {
+            this(parcel);
+        }
 
         PlayerIdCard(int type, AudioAttributes attr, IPlayer iplayer, int sessionId) {
             this.mPlayerType = type;
@@ -370,6 +361,23 @@ public abstract class PlayerBase {
             IPlayer iPlayer = this.mIPlayer;
             dest.writeStrongBinder(iPlayer == null ? null : iPlayer.asBinder());
             dest.writeInt(this.mSessionId);
+        }
+
+        /* renamed from: android.media.PlayerBase$PlayerIdCard$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PlayerIdCard> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PlayerIdCard createFromParcel(Parcel p) {
+                return new PlayerIdCard(p);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PlayerIdCard[] newArray(int size) {
+                return new PlayerIdCard[size];
+            }
         }
 
         private PlayerIdCard(Parcel in) {
@@ -403,12 +411,10 @@ public abstract class PlayerBase {
         Log.w(className, "See the documentation of " + opName + " for what to use instead with android.media.AudioAttributes to qualify your playback use case");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public String getCurrentOpPackageName() {
         return TextUtils.emptyIfNull(ActivityThread.currentOpPackageName());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int resolvePlaybackSessionId(Context context, int requestedSessionId) {
         int deviceId;
         VirtualDeviceManager vdm;

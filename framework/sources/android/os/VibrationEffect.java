@@ -45,13 +45,14 @@ public abstract class VibrationEffect implements Parcelable {
     protected SemMagnitudeType mMagnitudeType = SemMagnitudeType.TYPE_EXTRA;
     public static final int[] RINGTONES = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
     public static final Parcelable.Creator<VibrationEffect> CREATOR = new Parcelable.Creator<VibrationEffect>() { // from class: android.os.VibrationEffect.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VibrationEffect createFromParcel(Parcel in) {
             return new Composed(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VibrationEffect[] newArray(int size) {
             return new VibrationEffect[size];
@@ -243,13 +244,14 @@ public abstract class VibrationEffect implements Parcelable {
     /* loaded from: classes3.dex */
     public static final class Composed extends VibrationEffect {
         public static final Parcelable.Creator<Composed> CREATOR = new Parcelable.Creator<Composed>() { // from class: android.os.VibrationEffect.Composed.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Composed createFromParcel(Parcel in) {
                 return new Composed(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Composed[] newArray(int size) {
                 return new Composed[size];
@@ -460,6 +462,23 @@ public abstract class VibrationEffect implements Parcelable {
             out.writeInt(this.mRepeatIndex);
             out.writeInt(this.mMagnitude);
             out.writeInt(this.mMagnitudeType.ordinal());
+        }
+
+        /* renamed from: android.os.VibrationEffect$Composed$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Composed> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Composed createFromParcel(Parcel in) {
+                return new Composed(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Composed[] newArray(int size) {
+                return new Composed[size];
+            }
         }
 
         private static StepSegment castToValidStepSegmentForOffOnTimingsOrNull(VibrationEffectSegment segment) {
@@ -698,7 +717,6 @@ public abstract class VibrationEffect implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class AmplitudeVibrationParameter extends VibrationParameter {
         public final float amplitude;
@@ -709,7 +727,6 @@ public abstract class VibrationEffect implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class FrequencyVibrationParameter extends VibrationParameter {
         public final float frequencyHz;
@@ -718,6 +735,23 @@ public abstract class VibrationEffect implements Parcelable {
             Preconditions.checkArgument(frequencyHz >= 1.0f, "Frequency must be >= 1");
             Preconditions.checkArgument(Float.isFinite(frequencyHz), "Frequency must be finite");
             this.frequencyHz = frequencyHz;
+        }
+    }
+
+    /* renamed from: android.os.VibrationEffect$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VibrationEffect> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VibrationEffect createFromParcel(Parcel in) {
+            return new Composed(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VibrationEffect[] newArray(int size) {
+            return new VibrationEffect[size];
         }
     }
 

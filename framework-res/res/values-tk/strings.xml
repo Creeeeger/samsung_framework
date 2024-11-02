@@ -337,7 +337,7 @@ Eger şonda-da bu programmany gurnamagy saýlasaňyz, onuň ynamdar çeşmeden g
     <string name="ext_media_unsupported_notification_message">Bu enjam bu %s golda’maýar. Goldanylýan formatda sazlamak üçin basyň.</string>
     <string name="ext_media_unsupported_notification_title">Goldanylmaýan %s</string>
     <string name="ext_storage_bad_removal_button">Açyp ýapmak</string>
-    <string name="ext_storage_bad_removal_title">Telefonyňyzy täzeden işlediň</string>
+    <string name="ext_storage_bad_removal_title">Planşetiňizi täzeden işlediň</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message">Siz SD kartany hakykatdan hem formatlasyňyz gelýärmi? Kartadaky ähli maglumatlar ýiter.</string>
     <string name="extmedia_format_message_usbhost">USB ýygnaýjyňyza ýatda saklanan ähli faýllar pozular. Bu işi yzyna gaýtaryp bolmaýar.</string>
@@ -598,16 +598,16 @@ Planşetiňiz basym täzeden işlediler."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Bluetooth audio enjamyňyzda ses gidip dur. Ony ýapmak üçin, şu ýere basyň</string>
     <string name="multisound_sound_via_headphone">%s sesi garnituraňyzda gidip dur. Ony ýapmak üçin, şu ýere basyň.</string>
     <string name="multisound_sound_via_headphone_multiselection">Garnituraňyzda ses gidip dur. Ony ýapmak üçin, şu ýere basyň.</string>
-    <string name="multisound_sound_via_phone_speaker">%s sesi telefon dinamigiňizde gidip dur. Ony ýapmak üçin, şu ýere basyň.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Telefon dinamigiňizde ses gidip dur. Ony ýapmak üçin, şu ýere basyň.</string>
+    <string name="multisound_sound_via_phone_speaker">%s sesi planşet dinamigiňizde gidip dur. Ony ýapmak üçin, şu ýere basyň.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Planşet dinamigiňizde ses gidip dur. Ony ýapmak üçin, şu ýere basyň.</string>
     <string name="multisound_sound_via_usb_audio">%s sesi USB audio enjamyňyzda gidip dur. Ony ýapmak üçin, şu ýere basyň.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">USB audio enjamyňyzda ses gidip dur. Ony ýapmak üçin, şu ýere basyň.</string>
     <string name="multisound_title">Aýratyn programma sesi</string>
     <string name="multisound_turn_off_multisound">Ýap</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX-de işläp bilmeýär. Telefon tertibinde işledip görüň.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-de işläp bilmeýär. Ol telefonyň Öý ekranlary üçin dizaýn edilen.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Käbir oýunlar diňe duýgur ekranlarda işleýär. Syçanjyk dolandyryşlary Samsung DeX-de işlemese, oňa derek, telefon tertibinde oýnap görüň.</string>
-    <string name="my_device">Bu telefon</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX-de işläp bilmeýär. Planşet tertibinde işledip görüň.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-de işläp bilmeýär. Ol planşetiň Öý ekranlary üçin dizaýn edilen.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Käbir oýunlar diňe duýgur ekranlarda işleýär. Syçanjyk dolandyryşlary Samsung DeX-de işlemese, oňa derek, planşet tertibinde oýnap görüň.</string>
+    <string name="my_device">Bu planşet</string>
     <string name="network_locked_sim_dialog_message_ais">SIM kartyňyz bu telefon bilen doly işleýän däl, sebäbi ol siziň ýazylyşyňyzyň Şertler we düzgünleri berjaý etmeýär. Bu mesele barada islendik soragyňyz bar bolsa ýa-da goşmaça maglumat gerek bolsa, size bu önümi satan Samsung Müşderi hyzmat ýerleşişine ýa-da dükana ýüz tutuň.</string>
     <string name="network_locked_sim_notification_text">Tor gulply SIM karta dakylygy.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -800,7 +800,7 @@ Planşetiňiz basym täzeden işlediler."</string>
     <string name="policydesc_allow_desktopsync">Iş stoly sinhronlamasynyň ulanylmagyny bökdäň.</string>
     <string name="policydesc_allow_internetsharing">Mobil hotspotyň ulanylmagyny bökdäň.</string>
     <string name="policydesc_allow_irda">IrDA-nyň ulanylmagyny bökdäň.</string>
-    <string name="policydesc_allow_popimapemail">Telefonda POP we IMAP e-poçta ulanylmagyny bökdäň.</string>
+    <string name="policydesc_allow_popimapemail">Planşetde POP we IMAP e-poçta ulanylmagyny bökdäň.</string>
     <string name="policydesc_allow_storagecard">SD kartlaryň ulanylmagyny bökdäň.</string>
     <string name="policydesc_allow_textmessaging">SMS we multimedia hat alyşmagyň ulanylmagyny bökdäň.</string>
     <string name="policydesc_allow_thirdParty">Bu programma üçünji tarap programmalaryň işlemegine ýol bermän bilýär.</string>
@@ -846,7 +846,7 @@ Planşetiňiz basym täzeden işlediler."</string>
     <string name="pwd_change_enforced">Howpsuzlyk syýasaty siziň açarsözüňizi üýtgetmegiňizi çäklendirýär.</string>
     <string name="recording_fail">Mikrofon %2$s-da ulanylýarka, ony %1$s-da ulanyp bolmaýar.</string>
     <string name="recording_popup">%s mikrofony ulanýar.</string>
-    <string name="recording_popup_device">Telefon</string>
+    <string name="recording_popup_device">Planşet</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth-yň mikrofonyny ulanýar.</string>
     <string name="recording_popup_with_device">%1$s %2$s enjamynyň mikrofonyny ulanýar.</string>
     <string name="redo">Täzedn et</string>
@@ -913,12 +913,12 @@ Planşetiňiz basym täzeden işlediler."</string>
     <string name="screencapture_restrict">Howpsuzlyk syýasaty ekranyň suratynyň alynmagyna ýol bermeýär.</string>
     <string name="sd_card_unavailable_message">SD karty ulanyp bilmeýärsiňiz, sebäbi ol başga ulanyjy profili ulanyşda wagty girizildi.</string>
     <string name="sd_card_unavailable_title">SD kart elýetersiz</string>
-    <string name="sdcard_bad_removal_message">Bir SD kart howpsuz däl aýryldy. Telefonyňyz duýdansyz täzeden işledilmez ýaly, ýazdyrylmadyk maglumaty ýazdyryp, häzir täzeden işlediň.</string>
+    <string name="sdcard_bad_removal_message">Bir SD kart howpsuz däl aýryldy. Planşetiňiz duýdansyz täzeden işledilmez ýaly, ýazdyrylmadyk maglumaty ýazdyryp, häzir täzeden işlediň.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD kartanyň şifrini okamak</string>
     <string name="sdcard_batch_decrypt_noti_title">SD kartany deşifrlemek</string>
     <string name="sdcard_batch_decrypt_popup_content">Şifrlenen SD kartasy ulanylmazdan öň şifrleri açylmalydyr. Şifri açmak bir sagat ýa-da ondanam köp wagta çekip biler. zarýad alan batareýa bilen başlaň we şifrleme açylýança zarýatda goýuň. Şifrleriň açylmagynyň arasyny kesmek käbir ýa-da hemme maglumatlaryň ýitmegine sebäp bolup biler.</string>
     <string name="sdcard_decrypt_err_notification">SD karta şifrlerini okama ýalňyşlygy ýüze çykdy.</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD kartyňyzdaky käbir faýllar başga enjamda şifrlenildi we bu telefonda ulanylyp bolmaýar.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD kartyňyzdaky käbir faýllar başga enjamda şifrlenildi we bu planşetde ulanylyp bolmaýar.</string>
     <string name="sdcard_decrypt_notification">SD kartanyň şifreleri okaldy.</string>
     <string name="sdcard_decrypt_title_notification">SD kartany deşifrlemek</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD kart deşifrlenýär…</string>
@@ -1247,7 +1247,7 @@ Bu goragy aýyrmak üçin, Sazlamalar > Howpsuzlyk we gizlinlik > Awto-bekleýj�
     <string name="usb_abnormal_reset_title">USB birikmesi durnukly däl</string>
     <string name="usb_abnormal_reset_toast">USB birikme durnukly däl. Kabeli aýryp ony täzeden dakyň ýa-da başga kabeli synanyşyň.</string>
     <string name="usb_accessory_notification_title">USB goşunda baglandy</string>
-    <string name="usb_bad_removal_message">Bir USB ammar enjamy howpsuz däl aýryldy. Telefonyňyz duýdansyz täzeden işledilmez ýaly, ýazdyrylmadyk maglumaty ýazdyryp, häzir täzeden işlediň.</string>
+    <string name="usb_bad_removal_message">Bir USB ammar enjamy howpsuz däl aýryldy. Planşetiňiz duýdansyz täzeden işledilmez ýaly, ýazdyrylmadyk maglumaty ýazdyryp, häzir täzeden işlediň.</string>
     <string name="usb_blocked_by_emergency_mode">Käbir USB funksiýalar Gyssagly tertibinde elýeterli däl.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Maksimum güýç tygşytlaýjy tertip açyk wagty, birigen USB enjam bilen dahylly funksiýalary ulanyp bolmaýar.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Maksimum güýç tygşytlaýjy tertip açyk wagty, käbir USB funksiýalaryň çäklendiriler.</string>
@@ -1256,18 +1256,18 @@ Bu goragy aýyrmak üçin, Sazlamalar > Howpsuzlyk we gizlinlik > Awto-bekleýj�
     <string name="usb_camera_connected_notification_title">Media enjamy birikdi</string>
     <string name="usb_camera_disconnected_notification_title">Media enjam birikmesi kesildi</string>
     <string name="usb_cd_installer_notification_title">Programma üpjünçilik täzelemesi</string>
-    <string name="usb_charing_only_notification_title">USB zarýad</string>
+    <string name="usb_charing_only_notification_title">Birikdi</string>
     <string name="usb_debugging_only_notification_title">Diňe çözüw</string>
     <string name="usb_host_Unknown_device_connected_notification_title">Näbelli USB enjamy birikdirildi.</string>
     <string name="usb_host_cable_connected_notification_title">USB birikdiriji birikdirildi.</string>
     <string name="usb_host_cable_disconnected_notification_title">USB birikdirji kesildi.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Bu enjama girip bilenok. Baglanan enjama daşyndan güýç üpjünçiligi gerek.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Ýokary - güýçli USB enjamy birikdirildi.</string>
-    <string name="usb_host_resource_exceed_message">Telefonyňyzyň USB kontrollerinde bu enjama birikmäge ýeterlik resurs ýok. Enjamyň birikmesini kesip, täzeden birikdirip görüň.</string>
+    <string name="usb_host_resource_exceed_message">Planşetiňiziň USB kontrollerinde bu enjama birikmäge ýeterlik resurs ýok. Enjamyň birikmesini kesip, täzeden birikdirip görüň.</string>
     <string name="usb_host_resource_exceed_title">Ýeterlik USB kontroller resursy ýok</string>
-    <string name="usb_hub_depth_exceed_message">Telefonyňyz birlikde 5 USB hab birikmesine çenli goldap bilýär.</string>
+    <string name="usb_hub_depth_exceed_message">Planşetiňiz birlikde 5 USB hab birikmesine çenli goldap bilýär.</string>
     <string name="usb_hub_depth_exceed_title">Maksimum USB hab birikmeleri</string>
-    <string name="usb_hub_power_exceed_message">Telefonyňyz bu USB enjamy üçin ýeterlik energiýa üpjün edip bilmeýär. Telefonyňyza birikdirmezden öň, enjamyňyzy özbaşdak energiýaly USB haba birikdiriň.</string>
+    <string name="usb_hub_power_exceed_message">Planşetiňiz bu USB enjamy üçin ýeterlik energiýa üpjün edip bilmeýär. Planşetiňize birikdirmezden öň, telefonyňyzy özbaşdak energiýaly USB haba birikdiriň.</string>
     <string name="usb_increase_battery_usage">USB birikme köp zarýad iýip biler.</string>
     <string name="usb_keyboard_connected_notification_title">Klawiatura birikdirildi</string>
     <string name="usb_keyboard_disconnected_notification_title">Klawiatura aýryldy</string>
@@ -1300,8 +1300,8 @@ Bu goragy aýyrmak üçin, Sazlamalar > Howpsuzlyk we gizlinlik > Awto-bekleýj�
     <string name="usb_ums_connected_notification_message_usbhost">USB enjamy garaşylmadyk ýagdaýda aýryldy.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB toplam ýygnaýjy birikdirildi</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB enjamy howpsuzlyk bilen aýryldy.</string>
-    <string name="usb_unblock_by_screen_unlock">Birigen USB enjamyňyzy ulanmak üçin, telefonyň gulpuny açyň.</string>
-    <string name="usb_unsupport_accessory_message">Bu USB enjamy telefonyňyz goldamaýar.</string>
+    <string name="usb_unblock_by_screen_unlock">Birigen USB enjamyňyzy ulanmak üçin, planşetiň gulpuny açyň.</string>
+    <string name="usb_unsupport_accessory_message">Bu USB enjamy planşetiňiz goldamaýar.</string>
     <string name="usb_unsupport_accessory_title">USB enjamy goldanylmaýar</string>
     <string name="usb_unsupported_device">Birigen USB enjamy goldanylmaýar.</string>
     <string name="usb_unsupported_device_title">Enjam goldanylmaýar</string>
@@ -1319,19 +1319,19 @@ Bu goragy aýyrmak üçin, Sazlamalar > Howpsuzlyk we gizlinlik > Awto-bekleýj�
     <string name="usb_water_dialg_method_2_desc_2">Wentilýatory ýa-da guradyjyny port tarap tutup guratmasyny tizleşdirip bilersiňiz.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Zarýad/USB portuňyzda çyglylyk ýa-da del jisim anykladyk.
 
-Zarýad/USB portuňyzda tozan ýa-da zyňyndy ýaly del jisim barmy-ýokmy barlaň. Telefonyňyza zeper ýetmez ýaly, port arassalanyp, çyglylyk aýrylýança, oňa hiç zat sokmaň.
+Zarýad/USB portuňyzda tozan ýa-da zyňyndy ýaly del jisim barmy-ýokmy barlaň. Planşetiňize zeper ýetmez ýaly, port arassalanyp, çyglylyk aýrylýança, oňa hiç zat sokmaň.
 
 Port guratmak üçin, islendik çyglylygy silkeläp aýryň we guraýança garaşyň, onuň birnäçe sagada çekmegi mümkin. Porta wentilýator ýa-da guradyjy (diňe mylaýym howaly) tutmak arkaly, guratmagy tizlendirip bilersiňiz."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Zarýad/USB portuňyzda çyglylyk ýa-da del jisim anykladyk.
 
-Zarýad/USB portuňyzda tozan ýa-da zyňyndy ýaly del jisim barmy-ýokmy barlaň. Telefonyňyza zeper ýetmez ýaly, port arassalanyp, çyglylyk aýrylýança, oňa hiç zat sokmaň.
+Zarýad/USB portuňyzda tozan ýa-da zyňyndy ýaly del jisim barmy-ýokmy barlaň. Planşetiňize zeper ýetmez ýaly, zarýad porty arassalanyp, çyglylyk aýrylýança, oňa hiç zat sokmaň.
 
-Port guratmak üçin, islendik çyglylygy silkeläp aýryň we guraýança garaşyň, onuň birnäçe sagada çekmegi mümkin. Porta wentilýator ýa-da guradyjy (diňe mylaýym howaly) tutmak arkaly, guratmagy tizlendirip bilersiňiz.
+Porty guratmak üçin, islendik çyglylygy silkeläp aýryň we guraýança garaşyň, onuň birnäçe sagada çekmegi mümkin. Porta wentilýator ýa-da guradyjy (diňe mylaýym howaly) tutmak arkaly, guratmagy tizlendirip bilersiňiz.
 
-Şol aralykda telefonyňyza simsiz zarýad berip bilersiňiz."</string>
+Şol aralykda planşetiňize simsiz zarýad berip bilersiňiz."</string>
     <string name="usb_water_notification_content">Zarýad beriş/USB portuňyzda çyg ýa-da del jisim bar. Zarýad bermezden öň barlaň.</string>
-    <string name="usb_water_notification_message">Zarýadnik/USB portunda çyg tapyldy. Telefony zarýad bermänkäňiz guradyň. Doly guratmak biraz wagt alyp biler.</string>
+    <string name="usb_water_notification_message">Zarýadnik/USB portunda çyg tapyldy. Planşeti zarýad bermänkäňiz guradyň. Doly guratmak biraz wagt alyp biler.</string>
     <string name="usb_water_notification_message_button">Jikme-jiklik</string>
     <string name="usb_water_notification_title">Zarýadnik/USB port barla</string>
     <string name="usbhostStorage_restrict">Howpsuzlyk syýasaty USB hyzmat beriş ammarynyň ulanylmagyna ýol bermeýär.</string>

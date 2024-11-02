@@ -16,7 +16,7 @@ public abstract class SipDialogStateCallback {
 
     public abstract void onActiveSipDialogsChanged(List<SipDialogState> list);
 
-    /* renamed from: onError, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onError */
     public abstract void lambda$binderDied$0();
 
     public void attachExecutor(Executor executor) {
@@ -26,11 +26,14 @@ public abstract class SipDialogStateCallback {
         this.mCallback = new CallbackBinder(executor);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class CallbackBinder extends ISipDialogStateCallback.Stub {
         private Executor mExecutor;
         private WeakReference<SipDialogStateCallback> mSipDialogStateCallbackWeakRef;
+
+        /* synthetic */ CallbackBinder(SipDialogStateCallback sipDialogStateCallback, Executor executor, CallbackBinderIA callbackBinderIA) {
+            this(sipDialogStateCallback, executor);
+        }
 
         private CallbackBinder(SipDialogStateCallback callback, Executor executor) {
             this.mSipDialogStateCallbackWeakRef = new WeakReference<>(callback);
@@ -55,7 +58,6 @@ public abstract class SipDialogStateCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onActiveSipDialogsChanged$1(final SipDialogStateCallback callback, final List dialogs) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.SipDialogStateCallback$CallbackBinder$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable

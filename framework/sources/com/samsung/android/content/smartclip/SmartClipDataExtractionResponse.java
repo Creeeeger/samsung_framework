@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SmartClipDataExtractionResponse implements Parcelable {
     public static final Parcelable.Creator<SmartClipDataExtractionResponse> CREATOR = new Parcelable.Creator<SmartClipDataExtractionResponse>() { // from class: com.samsung.android.content.smartclip.SmartClipDataExtractionResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmartClipDataExtractionResponse createFromParcel(Parcel in) {
             SmartClipDataExtractionResponse data = new SmartClipDataExtractionResponse(0, 0, null);
@@ -14,7 +16,6 @@ public class SmartClipDataExtractionResponse implements Parcelable {
             return data;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmartClipDataExtractionResponse[] newArray(int size) {
             return new SmartClipDataExtractionResponse[size];
@@ -49,5 +50,24 @@ public class SmartClipDataExtractionResponse implements Parcelable {
         this.mRequestId = in.readInt();
         this.mExtractionMode = in.readInt();
         this.mRepository = (SemSmartClipDataRepository) in.readParcelable(SemSmartClipDataRepository.class.getClassLoader());
+    }
+
+    /* renamed from: com.samsung.android.content.smartclip.SmartClipDataExtractionResponse$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmartClipDataExtractionResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartClipDataExtractionResponse createFromParcel(Parcel in) {
+            SmartClipDataExtractionResponse data = new SmartClipDataExtractionResponse(0, 0, null);
+            data.readFromParcel(in);
+            return data;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmartClipDataExtractionResponse[] newArray(int size) {
+            return new SmartClipDataExtractionResponse[size];
+        }
     }
 }

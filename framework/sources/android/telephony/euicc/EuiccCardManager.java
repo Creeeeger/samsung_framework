@@ -77,7 +77,7 @@ public class EuiccCardManager {
         return IEuiccCardController.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getEuiccCardControllerServiceRegisterer().get());
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$1, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IGetAllProfilesCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -115,7 +115,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$2, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$2 */
     /* loaded from: classes3.dex */
     class AnonymousClass2 extends IGetProfileCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -162,7 +162,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$3, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$3 */
     /* loaded from: classes3.dex */
     class AnonymousClass3 extends IGetProfileCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -191,7 +191,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$4, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$4 */
     /* loaded from: classes3.dex */
     class AnonymousClass4 extends IDisableProfileCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -239,7 +239,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$5, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$5 */
     /* loaded from: classes3.dex */
     class AnonymousClass5 extends ISwitchToProfileCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -268,7 +268,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$6, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$6 */
     /* loaded from: classes3.dex */
     class AnonymousClass6 extends ISwitchToProfileCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -306,7 +306,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$7, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$7 */
     /* loaded from: classes3.dex */
     class AnonymousClass7 extends ISetNicknameCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -344,7 +344,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$8, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$8 */
     /* loaded from: classes3.dex */
     class AnonymousClass8 extends IDeleteProfileCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -382,7 +382,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$9, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$9 */
     /* loaded from: classes3.dex */
     class AnonymousClass9 extends IResetMemoryCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -420,7 +420,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$10, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$10 */
     /* loaded from: classes3.dex */
     class AnonymousClass10 extends IGetDefaultSmdpAddressCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -458,7 +458,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$11, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$11 */
     /* loaded from: classes3.dex */
     class AnonymousClass11 extends IGetSmdsAddressCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -505,7 +505,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$12, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$12 */
     /* loaded from: classes3.dex */
     class AnonymousClass12 extends ISetDefaultSmdpAddressCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -534,7 +534,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$13, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$13 */
     /* loaded from: classes3.dex */
     class AnonymousClass13 extends IGetRulesAuthTableCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -572,7 +572,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$14, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$14 */
     /* loaded from: classes3.dex */
     class AnonymousClass14 extends IGetEuiccChallengeCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -610,7 +610,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$15, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$15 */
     /* loaded from: classes3.dex */
     class AnonymousClass15 extends IGetEuiccInfo1Callback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -648,7 +648,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$16, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$16 */
     /* loaded from: classes3.dex */
     class AnonymousClass16 extends IGetEuiccInfo2Callback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -700,7 +700,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$17, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$17 */
     /* loaded from: classes3.dex */
     class AnonymousClass17 extends IAuthenticateServerCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -738,7 +738,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$18, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$18 */
     /* loaded from: classes3.dex */
     class AnonymousClass18 extends IPrepareDownloadCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -776,7 +776,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$19, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$19 */
     /* loaded from: classes3.dex */
     class AnonymousClass19 extends ILoadBoundProfilePackageCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -814,7 +814,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$20, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$20 */
     /* loaded from: classes3.dex */
     class AnonymousClass20 extends ICancelSessionCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -843,7 +843,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$21, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$21 */
     /* loaded from: classes3.dex */
     class AnonymousClass21 extends IListNotificationsCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -881,7 +881,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$22, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$22 */
     /* loaded from: classes3.dex */
     class AnonymousClass22 extends IRetrieveNotificationListCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -919,7 +919,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$23, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$23 */
     /* loaded from: classes3.dex */
     class AnonymousClass23 extends IRetrieveNotificationCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;
@@ -966,7 +966,7 @@ public class EuiccCardManager {
         }
     }
 
-    /* renamed from: android.telephony.euicc.EuiccCardManager$24, reason: invalid class name */
+    /* renamed from: android.telephony.euicc.EuiccCardManager$24 */
     /* loaded from: classes3.dex */
     class AnonymousClass24 extends IRemoveNotificationFromListCallback.Stub {
         final /* synthetic */ ResultCallback val$callback;

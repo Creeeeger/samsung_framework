@@ -76,7 +76,6 @@ public class ZygoteProcess {
         return this.mZygoteSocketAddress;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class ZygoteState implements AutoCloseable {
         private final List<String> mAbiList;
@@ -152,7 +151,6 @@ public class ZygoteProcess {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static List<String> getAbiList(BufferedWriter writer, DataInputStream inputStream) throws IOException {
         writer.write("1");
         writer.newLine();

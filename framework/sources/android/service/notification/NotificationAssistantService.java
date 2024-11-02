@@ -38,7 +38,6 @@ public abstract class NotificationAssistantService extends NotificationListenerS
 
     public abstract void onNotificationSnoozedUntilContext(StatusBarNotification statusBarNotification, String str);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.service.notification.NotificationListenerService, android.app.Service, android.content.ContextWrapper
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -138,6 +137,10 @@ public abstract class NotificationAssistantService extends NotificationListenerS
 
     /* loaded from: classes3.dex */
     private class NotificationAssistantServiceWrapper extends NotificationListenerService.NotificationListenerWrapper {
+        /* synthetic */ NotificationAssistantServiceWrapper(NotificationAssistantService notificationAssistantService, NotificationAssistantServiceWrapperIA notificationAssistantServiceWrapperIA) {
+            this();
+        }
+
         private NotificationAssistantServiceWrapper() {
             super();
         }
@@ -263,7 +266,6 @@ public abstract class NotificationAssistantService extends NotificationListenerS
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setAdjustmentIssuer(Adjustment adjustment) {
         if (adjustment != null) {
             adjustment.setIssuer(getOpPackageName() + "/" + getClass().getName());

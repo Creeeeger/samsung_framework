@@ -63,7 +63,6 @@ public class RemoteServiceProxy implements ServiceProxy {
         }).orElse("n/a"), serviceClass.getName(), options);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RemoteServiceProxy(Context context, String packageName, String className, Map<Integer, Object> options) {
         this.requestThreadPool = Executors.newFixedThreadPool(4);
         this.mfControllerSync = new ConditionVariable();
@@ -81,6 +80,9 @@ public class RemoteServiceProxy implements ServiceProxy {
             }
         }, this.responseHandlerThread.getLooper()));
         this.connection = new ServiceConnection() { // from class: com.samsung.android.sume.core.service.RemoteServiceProxy.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.ServiceConnection
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Log.d(RemoteServiceProxy.TAG, "onServiceConnected E");
@@ -110,7 +112,7 @@ public class RemoteServiceProxy implements ServiceProxy {
         this.requestJob = this.requestThreadPool.submit(new Runnable() { // from class: com.samsung.android.sume.core.service.RemoteServiceProxy$$ExternalSyntheticLambda3
             @Override // java.lang.Runnable
             public final void run() {
-                RemoteServiceProxy.this.m8830x6d765b44();
+                RemoteServiceProxy.this.m8822x6d765b44();
             }
         });
         Intent intent = new Intent();
@@ -129,8 +131,41 @@ public class RemoteServiceProxy implements ServiceProxy {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$0$com-samsung-android-sume-core-service-RemoteServiceProxy, reason: not valid java name */
-    public /* synthetic */ void m8830x6d765b44() {
+    /* renamed from: com.samsung.android.sume.core.service.RemoteServiceProxy$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements ServiceConnection {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(RemoteServiceProxy.TAG, "onServiceConnected E");
+            RemoteServiceProxy.this.requestMessenger = new Messenger(service);
+            Request.of(905).setReceiver(RemoteServiceProxy.this.requestMessenger).setResponseReceiver(RemoteServiceProxy.this.responseMessenger).post();
+            Log.d(RemoteServiceProxy.TAG, "onServiceConnected X");
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            Log.e(RemoteServiceProxy.TAG, "onServiceDisconnected E");
+            Exception exception = new IllegalStateException("service disconnected abnormally");
+            RemoteServiceProxy.this.onError(Response.of(-4, exception));
+            Log.e(RemoteServiceProxy.TAG, "onServiceDisconnected X");
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onBindingDied(ComponentName name) {
+            super.onBindingDied(name);
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onNullBinding(ComponentName name) {
+            super.onNullBinding(name);
+        }
+    }
+
+    /* renamed from: lambda$new$0$com-samsung-android-sume-core-service-RemoteServiceProxy */
+    public /* synthetic */ void m8822x6d765b44() {
         this.mfControllerSync.block();
         while (true) {
             try {
@@ -178,20 +213,18 @@ public class RemoteServiceProxy implements ServiceProxy {
         return this.requestThreadPool.submit(new Callable() { // from class: com.samsung.android.sume.core.service.RemoteServiceProxy$$ExternalSyntheticLambda1
             @Override // java.util.concurrent.Callable
             public final Object call() {
-                return RemoteServiceProxy.this.m8831xface98b3(request, responseHolder);
+                return RemoteServiceProxy.this.m8823xface98b3(request, responseHolder);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$request$1(ResponseHolder responseHolder, com.samsung.android.sume.core.message.Message response) {
         responseHolder.put((Response) response);
         responseHolder.signal();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$request$2$com-samsung-android-sume-core-service-RemoteServiceProxy, reason: not valid java name */
-    public /* synthetic */ Response m8831xface98b3(Request request, ResponseHolder responseHolder) throws Exception {
+    /* renamed from: lambda$request$2$com-samsung-android-sume-core-service-RemoteServiceProxy */
+    public /* synthetic */ Response m8823xface98b3(Request request, ResponseHolder responseHolder) throws Exception {
         ExceptionHandler exceptionHandler;
         String str = TAG;
         Log.d(str, "request: " + request.getCode());
@@ -216,7 +249,6 @@ public class RemoteServiceProxy implements ServiceProxy {
         return response;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onReceiveResponse(Response response) {
         String str = TAG;
         Log.d(str, "onReceiveResponse: " + response);
@@ -258,7 +290,6 @@ public class RemoteServiceProxy implements ServiceProxy {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onWarn$3(Response response, ResponseHolder it) {
         String str = TAG;
         Log.w(str, "send response(" + response.getCode() + ") for request(" + it.getCode() + NavigationBarInflaterView.KEY_CODE_END);
@@ -267,7 +298,6 @@ public class RemoteServiceProxy implements ServiceProxy {
         it.signal();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onError(final Response response) {
         final Exception exception = response.getException();
         ExceptionHandler exceptionHandler = this.exceptionHandler;
@@ -283,7 +313,6 @@ public class RemoteServiceProxy implements ServiceProxy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onError$4(Response response, Exception exception, ResponseHolder it) {
         String str = TAG;
         Log.e(str, "send response(" + response.getCode() + ") for request(" + it.getCode() + NavigationBarInflaterView.KEY_CODE_END);
@@ -422,7 +451,6 @@ public class RemoteServiceProxy implements ServiceProxy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$release$5(ResponseHolder it) {
         Log.i(TAG, "send canceled response for " + it.getCode() + " to finish up releasing");
         it.put(Response.of(702));
@@ -434,8 +462,9 @@ public class RemoteServiceProxy implements ServiceProxy {
         this.eventListener = new WeakReference<>(eventListener);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static final class IncomingHandler extends Handler {
+    public static final class IncomingHandler extends Handler {
         private final Consumer<Response> responseConsumer;
 
         public IncomingHandler(Consumer<Response> responseConsumer, Looper looper) {

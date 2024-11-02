@@ -13,13 +13,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class Suggestion implements Parcelable {
     public static final Parcelable.Creator<Suggestion> CREATOR = new Parcelable.Creator<Suggestion>() { // from class: android.service.settings.suggestions.Suggestion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Suggestion createFromParcel(Parcel in) {
             return new Suggestion(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Suggestion[] newArray(int size) {
             return new Suggestion[size];
@@ -37,6 +38,14 @@ public final class Suggestion implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface Flags {
+    }
+
+    /* synthetic */ Suggestion(Parcel parcel, SuggestionIA suggestionIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ Suggestion(Builder builder, SuggestionIA suggestionIA) {
+        this(builder);
     }
 
     public String getId() {
@@ -79,6 +88,23 @@ public final class Suggestion implements Parcelable {
         this.mIcon = (Icon) in.readParcelable(Icon.class.getClassLoader(), Icon.class);
         this.mFlags = in.readInt();
         this.mPendingIntent = (PendingIntent) in.readParcelable(PendingIntent.class.getClassLoader(), PendingIntent.class);
+    }
+
+    /* renamed from: android.service.settings.suggestions.Suggestion$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Suggestion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Suggestion createFromParcel(Parcel in) {
+            return new Suggestion(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Suggestion[] newArray(int size) {
+            return new Suggestion[size];
+        }
     }
 
     @Override // android.os.Parcelable

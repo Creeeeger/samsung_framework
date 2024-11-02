@@ -125,7 +125,6 @@ public class TextureView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -138,7 +137,6 @@ public class TextureView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindowInternal() {
         destroyHardwareLayer();
@@ -146,7 +144,6 @@ public class TextureView extends View {
         super.onDetachedFromWindowInternal();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void destroyHardwareResources() {
         super.destroyHardwareResources();
@@ -233,12 +230,10 @@ public class TextureView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public final void onDraw(Canvas canvas) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -284,7 +279,6 @@ public class TextureView extends View {
         return this.mLayer;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
@@ -449,7 +443,6 @@ public class TextureView extends View {
         this.mListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(SurfaceTexture surfaceTexture) {
         updateLayer();
         invalidate();

@@ -9,13 +9,14 @@ import java.util.List;
 /* loaded from: classes5.dex */
 public class TACommandRequest implements Parcelable {
     public static final Parcelable.Creator<TACommandRequest> CREATOR = new Parcelable.Creator<TACommandRequest>() { // from class: com.samsung.android.knox.mpos.TACommandRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TACommandRequest createFromParcel(Parcel in) {
             return new TACommandRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TACommandRequest[] newArray(int size) {
             return new TACommandRequest[size];
@@ -32,6 +33,10 @@ public class TACommandRequest implements Parcelable {
     public int mOffset;
     public byte[] mRequest;
     public int mVersion;
+
+    /* synthetic */ TACommandRequest(Parcel parcel, TACommandRequestIA tACommandRequestIA) {
+        this(parcel);
+    }
 
     public TACommandRequest() {
         this.mVersion = -1;
@@ -53,6 +58,23 @@ public class TACommandRequest implements Parcelable {
             this.mLength = 0;
         }
         this.mOffset = 0;
+    }
+
+    /* renamed from: com.samsung.android.knox.mpos.TACommandRequest$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TACommandRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TACommandRequest createFromParcel(Parcel in) {
+            return new TACommandRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TACommandRequest[] newArray(int size) {
+            return new TACommandRequest[size];
+        }
     }
 
     private TACommandRequest(Parcel in) {

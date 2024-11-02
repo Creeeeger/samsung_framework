@@ -188,7 +188,6 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         }).collect(Collectors.toList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getMetaDataBuffers$0(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META;
     }
@@ -203,7 +202,6 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         }).findAny().orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getExifBuffer$1(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META && it.getFormat().contains("exif");
     }
@@ -218,7 +216,6 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         }).findAny().orElse(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getIccBuffer$2(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META && it.getFormat().contains("icc");
     }
@@ -252,7 +249,6 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         return copied;
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.format.Copyable
     /* renamed from: deepCopy */
     public MediaBuffer deepCopy2() {
@@ -291,14 +287,13 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         return (String) IntStream.range(0, this.buffers.size()).mapToObj(new IntFunction() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda4
             @Override // java.util.function.IntFunction
             public final Object apply(int i) {
-                return MediaBufferGroup.this.m8733xde53324e(i);
+                return MediaBufferGroup.this.m8725xde53324e(i);
             }
         }).collect(Collectors.joining("\n"));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$dataToString$3$com-samsung-android-sume-core-buffer-MediaBufferGroup, reason: not valid java name */
-    public /* synthetic */ String m8733xde53324e(int it) {
+    /* renamed from: lambda$dataToString$3$com-samsung-android-sume-core-buffer-MediaBufferGroup */
+    public /* synthetic */ String m8725xde53324e(int it) {
         return NavigationBarInflaterView.KEY_CODE_START + it + "-th)" + this.buffers.get(it).contentToString();
     }
 

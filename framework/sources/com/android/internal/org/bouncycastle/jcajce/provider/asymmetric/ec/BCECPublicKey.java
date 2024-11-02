@@ -119,7 +119,6 @@ public class BCECPublicKey implements ECPublicKey, com.android.internal.org.boun
         this.configuration = configuration;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCECPublicKey(String algorithm, SubjectPublicKeyInfo info, ProviderConfiguration configuration) {
         this.algorithm = KeyProperties.KEY_ALGORITHM_EC;
         this.algorithm = algorithm;
@@ -198,7 +197,6 @@ public class BCECPublicKey implements ECPublicKey, com.android.internal.org.boun
         return q;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ECPublicKeyParameters engineGetKeyParameters() {
         return this.ecPublicKey;
     }

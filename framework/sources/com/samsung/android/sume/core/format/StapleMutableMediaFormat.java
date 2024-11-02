@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class StapleMutableMediaFormat implements MutableMediaFormat {
     private static final String TAG = Def.tagOf((Class<?>) StapleMutableMediaFormat.class);
@@ -65,9 +64,10 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         }
     }
 
-    /* renamed from: com.samsung.android.sume.core.format.StapleMutableMediaFormat$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.sume.core.format.StapleMutableMediaFormat$1 */
     /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$MediaType;
 
         static {
@@ -130,7 +130,6 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         return (List) Optional.ofNullable(result.get(false)).orElseGet(new ChannelRouterBase$$ExternalSyntheticLambda6());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$config$0(Object it) {
         return (it instanceof DataType) || (it instanceof Shape) || (it instanceof Integer);
     }
@@ -361,14 +360,13 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         return Arrays.stream(keys).anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.format.StapleMutableMediaFormat$$ExternalSyntheticLambda18
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return StapleMutableMediaFormat.this.m8787x64af6031((String) obj);
+                return StapleMutableMediaFormat.this.m8779x64af6031((String) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$containsAnyOf$6$com-samsung-android-sume-core-format-StapleMutableMediaFormat, reason: not valid java name */
-    public /* synthetic */ boolean m8787x64af6031(String e) {
+    /* renamed from: lambda$containsAnyOf$6$com-samsung-android-sume-core-format-StapleMutableMediaFormat */
+    public /* synthetic */ boolean m8779x64af6031(String e) {
         Stream<String> stream = this.attributes.keySet().stream();
         Objects.requireNonNull(e);
         return stream.anyMatch(new OverlayManagerExt$$ExternalSyntheticLambda1(e));
@@ -379,14 +377,13 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         return Arrays.stream(keys).allMatch(new Predicate() { // from class: com.samsung.android.sume.core.format.StapleMutableMediaFormat$$ExternalSyntheticLambda9
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
-                return StapleMutableMediaFormat.this.m8786xf68fa2e7((String) obj);
+                return StapleMutableMediaFormat.this.m8778xf68fa2e7((String) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$containsAllOf$7$com-samsung-android-sume-core-format-StapleMutableMediaFormat, reason: not valid java name */
-    public /* synthetic */ boolean m8786xf68fa2e7(String e) {
+    /* renamed from: lambda$containsAllOf$7$com-samsung-android-sume-core-format-StapleMutableMediaFormat */
+    public /* synthetic */ boolean m8778xf68fa2e7(String e) {
         Stream<String> stream = this.attributes.keySet().stream();
         Objects.requireNonNull(e);
         return stream.anyMatch(new OverlayManagerExt$$ExternalSyntheticLambda1(e));
@@ -490,7 +487,7 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         int channel = ((Integer) Stream.of((Object[]) channelSuppliers).map(new Function() { // from class: com.samsung.android.sume.core.format.StapleMutableMediaFormat$$ExternalSyntheticLambda16
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return StapleMutableMediaFormat.this.m8785x676c63c8((Class) obj);
+                return StapleMutableMediaFormat.this.m8777x676c63c8((Class) obj);
             }
         }).filter(new Predicate() { // from class: com.samsung.android.sume.core.format.StapleMutableMediaFormat$$ExternalSyntheticLambda17
             @Override // java.util.function.Predicate
@@ -514,9 +511,8 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$adjustChannels$8$com-samsung-android-sume-core-format-StapleMutableMediaFormat, reason: not valid java name */
-    public /* synthetic */ Integer m8785x676c63c8(Class it) {
+    /* renamed from: lambda$adjustChannels$8$com-samsung-android-sume-core-format-StapleMutableMediaFormat */
+    public /* synthetic */ Integer m8777x676c63c8(Class it) {
         if (it == MutableShape.class || it == Shape.class) {
             return (Integer) Optional.ofNullable(this.shape).map(new StapleMutableMediaFormat$$ExternalSyntheticLambda10()).orElse(-1);
         }
@@ -543,7 +539,6 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         throw new IllegalArgumentException("not support channel supplier " + it);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$adjustChannels$9(Integer it) {
         return it.intValue() > 0;
     }
@@ -635,7 +630,6 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         return Def.taglnOf(obj) + Def.contentToString("mediaType=" + this.mediaType, "dataType=" + this.dataType, getColorString(), "shape=" + this.shape, "colorspace=" + this.colorSpace) + "\nattributes=" + Collections.singletonList(this.attributes);
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.format.Copyable
     public MutableMediaFormat copy() {
         try {
@@ -646,7 +640,6 @@ public class StapleMutableMediaFormat implements MutableMediaFormat {
         }
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.format.Copyable
     /* renamed from: deepCopy */
     public MutableMediaFormat deepCopy2() {

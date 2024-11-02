@@ -217,8 +217,9 @@ public class BCStyle extends AbstractX500NameStyle {
         INSTANCE = new BCStyle();
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.asn1.x500.style.AbstractX500NameStyle
-    protected ASN1Encodable encodeStringValue(ASN1ObjectIdentifier oid, String value) {
+    public ASN1Encodable encodeStringValue(ASN1ObjectIdentifier oid, String value) {
         if (oid.equals((ASN1Primitive) EmailAddress) || oid.equals((ASN1Primitive) DC)) {
             return new DERIA5String(value);
         }

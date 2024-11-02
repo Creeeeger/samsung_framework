@@ -13,6 +13,10 @@ public final class LightsRequest {
     final List<LightState> mLightStates;
     final Map<Light, LightState> mRequests;
 
+    /* synthetic */ LightsRequest(Map map, LightsRequestIA lightsRequestIA) {
+        this(map);
+    }
+
     private LightsRequest(Map<Light, LightState> requests) {
         HashMap hashMap = new HashMap();
         this.mRequests = hashMap;

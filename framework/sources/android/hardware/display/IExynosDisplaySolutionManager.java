@@ -334,8 +334,9 @@ public interface IExynosDisplaySolutionManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IExynosDisplaySolutionManager {
+        public static class Proxy implements IExynosDisplaySolutionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

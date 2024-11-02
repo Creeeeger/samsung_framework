@@ -50,13 +50,14 @@ public class CocktailProviderInfo implements Parcelable {
     private static final String COCKTAIL_UPDATE_TIME = "updatePeriodMillis";
     private static final String COCKTAIL_WHISPER = "whisper";
     public static final Parcelable.Creator<CocktailProviderInfo> CREATOR = new Parcelable.Creator<CocktailProviderInfo>() { // from class: com.samsung.android.cocktailbar.CocktailProviderInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CocktailProviderInfo createFromParcel(Parcel in) {
             return new CocktailProviderInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CocktailProviderInfo[] newArray(int size) {
             return new CocktailProviderInfo[size];
@@ -93,6 +94,10 @@ public class CocktailProviderInfo implements Parcelable {
     public boolean pullToRefresh;
     public int updatePeriodMillis;
     public String whisper;
+
+    /* synthetic */ CocktailProviderInfo(Parcel parcel, CocktailProviderInfoIA cocktailProviderInfoIA) {
+        this(parcel);
+    }
 
     public CocktailProviderInfo() {
         this.permitVisibilityChanged = false;
@@ -287,6 +292,23 @@ public class CocktailProviderInfo implements Parcelable {
         this.isDateTimeEnabled = in.readByte() == 1;
         this.labelHide = in.readByte() == 1;
         this.landLayout = in.readByte() == 1;
+    }
+
+    /* renamed from: com.samsung.android.cocktailbar.CocktailProviderInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CocktailProviderInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CocktailProviderInfo createFromParcel(Parcel in) {
+            return new CocktailProviderInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CocktailProviderInfo[] newArray(int size) {
+            return new CocktailProviderInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -16,13 +16,14 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class ConnectionRequest implements Parcelable {
     public static final Parcelable.Creator<ConnectionRequest> CREATOR = new Parcelable.Creator<ConnectionRequest>() { // from class: android.telecom.ConnectionRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ConnectionRequest createFromParcel(Parcel source) {
             return new ConnectionRequest(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConnectionRequest[] newArray(int size) {
             return new ConnectionRequest[size];
@@ -39,6 +40,14 @@ public final class ConnectionRequest implements Parcelable {
     private final boolean mShouldShowIncomingCallUi;
     private final String mTelecomCallId;
     private final int mVideoState;
+
+    /* synthetic */ ConnectionRequest(Parcel parcel, ConnectionRequestIA connectionRequestIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ ConnectionRequest(PhoneAccountHandle phoneAccountHandle, Uri uri, Bundle bundle, int i, String str, boolean z, ParcelFileDescriptor parcelFileDescriptor, ParcelFileDescriptor parcelFileDescriptor2, List list, boolean z2, ConnectionRequestIA connectionRequestIA) {
+        this(phoneAccountHandle, uri, bundle, i, str, z, parcelFileDescriptor, parcelFileDescriptor2, list, z2);
+    }
 
     /* loaded from: classes3.dex */
     public static final class Builder {
@@ -260,6 +269,23 @@ public final class ConnectionRequest implements Parcelable {
         }
         sb.append(NavigationBarInflaterView.SIZE_MOD_END);
         return sb.toString();
+    }
+
+    /* renamed from: android.telecom.ConnectionRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConnectionRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConnectionRequest createFromParcel(Parcel source) {
+            return new ConnectionRequest(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConnectionRequest[] newArray(int size) {
+            return new ConnectionRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

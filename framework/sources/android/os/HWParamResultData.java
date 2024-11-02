@@ -9,7 +9,6 @@ public class HWParamResultData extends HWParamData {
     private int server = -1;
     private int interfaceType = -1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void readFromParcelLocked(Parcel in) {
         this.time = in.readLong();
         this.interfaceType = in.readInt();
@@ -26,7 +25,6 @@ public class HWParamResultData extends HWParamData {
         this.envlogMaps = in.readString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToParcelLocked(Parcel out) {
         out.writeLong(this.time);
         out.writeInt(this.interfaceType);

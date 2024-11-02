@@ -28,7 +28,6 @@ public class ObservableTextView extends TextView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onVisibilityChanged(View changedView, int visibility) {
         Consumer<Integer> consumer;

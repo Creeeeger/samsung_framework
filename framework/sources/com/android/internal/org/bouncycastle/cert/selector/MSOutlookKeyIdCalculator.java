@@ -6,12 +6,12 @@ import com.android.internal.org.bouncycastle.util.Pack;
 import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import java.io.IOException;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class MSOutlookKeyIdCalculator {
+public class MSOutlookKeyIdCalculator {
     MSOutlookKeyIdCalculator() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] calculateKeyId(SubjectPublicKeyInfo info) {
         SHA1Digest dig = new SHA1Digest();
         byte[] hash = new byte[dig.getDigestSize()];
@@ -26,7 +26,6 @@ class MSOutlookKeyIdCalculator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static abstract class GeneralDigest {
         private static final int BYTE_LENGTH = 64;
@@ -116,8 +115,9 @@ class MSOutlookKeyIdCalculator {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class SHA1Digest extends GeneralDigest {
+    public static class SHA1Digest extends GeneralDigest {
         private static final int DIGEST_LENGTH = 20;
         private static final int Y1 = 1518500249;
         private static final int Y2 = 1859775393;

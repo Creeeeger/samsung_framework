@@ -385,12 +385,12 @@ Du kan ändra vilken funktion som ska aktiveras med genvägen under Inställning
     <string name="allow_settings_changes">Säkerhetspolicyn förhindrar ändring av inställningarna.</string>
     <string name="alwaysUse">Använd som standard för denna åtgärd.</string>
     <string name="android_preparing_apk">%1$s förbereds.</string>
-    <string name="android_start_title">Mobilen startar …</string>
+    <string name="android_start_title">Surfplattan startar …</string>
     <string name="android_system_label">Android-system</string>
     <string name="android_upgrading_complete">Uppgraderingen är klar.</string>
     <string name="android_upgrading_notification_title">Systemuppdatering avslutas …</string>
     <string name="android_upgrading_starting_apps">Appar startas.</string>
-    <string name="android_upgrading_title">Mobilen uppdateras …</string>
+    <string name="android_upgrading_title">Surfplattan uppdateras …</string>
     <string name="anr_activity_application">%2$s svarar inte</string>
     <string name="anr_activity_process">%1$s svarar inte</string>
     <string name="anr_application_process">%1$s svarar inte</string>
@@ -424,16 +424,16 @@ Du kan ändra vilken funktion som ska aktiveras med genvägen under Inställning
     <string name="app_restricted_message_concentration_mode">%s är blockerat i Koncentrationsläge. Kontakta IT-administratören om du vill veta mer.</string>
     <string name="app_running_notification_text">Tryck om du vill veta mer eller stoppa appen.</string>
     <string name="app_running_notification_title">%1$s körs</string>
-    <string name="app_streaming_blocked_message">Det går inte att streama detta till %1$s för närvarande. Testa med telefonen i stället.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Appen begär ytterligare säkerhet. Testa med telefonen i stället.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Det går inte att streama detta till %1$s. Testa med telefonen i stället.</string>
+    <string name="app_streaming_blocked_message">Det går inte att streama detta till %1$s för närvarande. Testa med surfplattan i stället.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Appen begär ytterligare säkerhet. Testa med surfplattan i stället.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Det går inte att streama detta till %1$s. Testa med surfplattan i stället.</string>
     <string name="app_streaming_blocked_title">%1$s är inte tillgänglig</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kameran är inte tillgänglig</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Fortsätt på telefonen</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofonen är inte tillgänglig</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Behörighet krävs</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Butik är inte tillgängligt</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Telefonens inställningar är inte tillgängliga</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Surfplattans inställningar är inte tillgängliga</string>
     <string name="app_suspended_default_message">%1$s är inte tillgänglig just nu. Detta hanteras av %2$s.</string>
     <string name="app_suspended_more_details">Läs mer</string>
     <string name="app_suspended_title">Appen är inte tillgänglig</string>
@@ -504,7 +504,7 @@ Om du ändå väljer att installera appen bör du säkerställa att den kommer f
     <string name="badPuk">PUK-koden som du angav är fel.</string>
     <string name="badPuk2">PUK2-koden som du har angett är fel.</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Telefonen har laddats tillräckligt. Funktioner begränsas inte längre.</string>
+    <string name="battery_saver_charged_notification_summary">Surfplattan har laddats tillräckligt. Funktioner begränsas inte längre.</string>
     <string name="battery_saver_description">I batterisparläget aktiveras mörkt tema medan bakgrundsaktivitet, vissa visuella effekter och funktioner samt vissa nätverksanslutningar begränsas eller inaktiveras.</string>
     <string name="battery_saver_description_with_learn_more">I batterisparläget aktiveras mörkt tema medan bakgrundsaktivitet, vissa visuella effekter och funktioner samt vissa nätverksanslutningar begränsas eller inaktiveras.</string>
     <string name="battery_saver_notification_channel_name">Batterisparläge</string>
@@ -734,7 +734,7 @@ Volymen i hörlurarna har varit högre än vad som rekommenderas, vilket kan ska
     <string name="decline">Avvisa</string>
     <string name="decline_remote_bugreport_action">AVVISA</string>
     <string name="default_audio_route_category_name">System</string>
-    <string name="default_audio_route_name">Mobil</string>
+    <string name="default_audio_route_name">Surfplatta</string>
     <string name="default_audio_route_name_dock_speakers">Dockningsstationens högtalare</string>
     <string name="default_audio_route_name_external_device">Extern enhet</string>
     <string name="default_audio_route_name_headphones">Hörlurar</string>
@@ -861,7 +861,7 @@ med %s"</string>
     <string name="emergency_call_dialog_number_for_display">Nödsamtalsnummer</string>
     <string name="emergency_calls_only">Endast nödsamtal</string>
     <string name="enablePin">Försöket misslyckades. Aktivera SIM-/RUIM-lås.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s vill aktivera Explore by touch. När funktionen är aktiv kan du höra eller se beskrivningar av vad du har under fingret eller utföra gester för att göra saker med telefonen.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s vill aktivera Explore by touch. När funktionen är aktiv kan du höra eller se beskrivningar av vad du har under fingret eller utföra gester för att göra saker med surfplattan.</string>
     <string name="enable_explore_by_touch_warning_title">Aktivera Explore by touch?</string>
     <string name="error_message_change_not_allowed">Administratören tillåter inte denna ändring</string>
     <string name="error_message_title">Fel</string>
@@ -925,7 +925,7 @@ med %s"</string>
     <string name="ext_media_unsupported_notification_message">Den här enheten stöder inte detta %s. Tryck för att ställa in med ett format som stöds.</string>
     <string name="ext_media_unsupported_notification_title">%s stöds inte</string>
     <string name="ext_storage_bad_removal_button">Omstart</string>
-    <string name="ext_storage_bad_removal_title">Starta om telefonen</string>
+    <string name="ext_storage_bad_removal_title">Starta om surfplattan</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message">Alla data på kortet försvinner.</string>
     <string name="extmedia_format_message_usbhost">Alla filer på USB-lagringsenheten kommer att raderas. Åtgärden kan inte ångras!</string>
@@ -1129,7 +1129,7 @@ Testa att trycka lätt när du konfigurerar fingeravtrycket."</string>
     <string name="global_action_toggle_sealed_mode">Förseglat läge</string>
     <string name="global_action_toggle_silent_mode">Tyst läge</string>
     <string name="global_action_voice_assist">Voice Assist</string>
-    <string name="global_actions">Telefonalternativ</string>
+    <string name="global_actions">Alternativ för surfplattan</string>
     <string name="global_actions_airplane_mode_off_status">Flygplansläge är INAKTIVERAT</string>
     <string name="global_actions_airplane_mode_on_status">Flygplansläge är AKTIVERAT</string>
     <string name="global_actions_toggle_airplane_mode">Flygplansläge</string>
@@ -1314,11 +1314,11 @@ Vill du verkligen navigera bort från den här sidan?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Tryck för att ange lösenord&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Fel PIN-kod.</string>
     <string name="kg_enter_confirm_pin_hint">Bekräfta önskad PIN-kod</string>
-    <string name="kg_failed_attempts_almost_at_login">"Du har ritat ditt grafiska lösenord fel %1$d gånger. Efter ytterligare %2$d försök ombeds du låsa upp mobilen med hjälp av ett e-postkonto.
+    <string name="kg_failed_attempts_almost_at_login">"Du har ritat ditt grafiska lösenord fel %1$d gånger. Efter ytterligare %2$d försök ombeds du låsa upp surfplattan med ett e-postkonto.
 
  Försök igen om %3$d sekunder."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Du har försökt låsa upp mobilen på fel sätt %1$d gånger. Efter ytterligare %2$d misslyckade försök återställs mobilen till fabriksinställningarna. Du förlorar då alla användardata.</string>
-    <string name="kg_failed_attempts_now_wiping">Du har försökt låsa upp mobilen på fel sätt %d gånger. Mobilen återställs nu till fabriksinställningarna.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Du har försökt låsa upp mobilen på fel sätt %1$d gånger. Efter ytterligare %2$d misslyckade försök återställs surfplattan till fabriksinställningarna. Du förlorar då alla användardata.</string>
+    <string name="kg_failed_attempts_now_wiping">Du har försökt låsa upp surfplattan på fel sätt %d gånger. Surfplattan återställs nu till fabriksinställningarna.</string>
     <string name="kg_forgot_pattern_button_text">Har du glömt ditt grafiska lösenord?</string>
     <string name="kg_invalid_confirm_pin_hint">PIN-koderna stämmer inte överens</string>
     <string name="kg_invalid_puk">Ange rätt PUK-kod igen. Om försöken upprepas inaktiveras SIM-kortet permanent.</string>
@@ -1406,11 +1406,11 @@ Försök igen om %2$d sekunder."</string>
     <string name="lockscreen_carrier_default">Ingen tjänst</string>
     <string name="lockscreen_carrier_noservice">(Ingen tjänst)</string>
     <string name="lockscreen_emergency_call">Nödsamtal</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Du har försökt låsa upp mobilen på fel sätt %1$d gånger. Efter %2$d misslyckade försök till kommer mobilen att återställas till fabriksinställningarna. Du förlorar då alla användardata.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Du har ritat ditt grafiska lösenord fel %1$d gånger. Efter %2$d försök till ombeds du att låsa upp mobilen med uppgifterna som du använder när du loggar in på Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Du har försökt låsa upp surfplattan på fel sätt %1$d gånger. Efter %2$d misslyckade försök till kommer surfplattan att återställas till fabriksinställningarna. Du förlorar då alla användardata.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Du har ritat ditt grafiska lösenord fel %1$d gånger. Efter %2$d försök till ombeds du att låsa upp surfplattan med din Google-inloggning.
 
  Försök igen om  %3$d sekunder."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Du har försökt låsa upp mobilen på fel sätt %d gånger. Mobilen återställs nu till fabriksinställningarna.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Du har försökt låsa upp surfplattan på fel sätt %d gånger. Surfplattan återställs nu till fabriksinställningarna.</string>
     <string name="lockscreen_forgot_pattern_button_text">Glömt ditt grafiska lösenord?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Har du glömt ditt användarnamn eller lösenord?
 Besök "<b>google.com/accounts/recovery</b>.</string>
@@ -1426,7 +1426,7 @@ Besök "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Tryck på Menu för att låsa upp eller ringa nödsamtal.</string>
     <string name="lockscreen_missing_sim_instructions">Lägg till ett SIM-kort.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM-kort saknas eller går inte att läsa. Lägg till ett SIM-kort.</string>
-    <string name="lockscreen_missing_sim_message">Inget SIM-kort i telefonen.</string>
+    <string name="lockscreen_missing_sim_message">Inget SIM-kort i surfplattan.</string>
     <string name="lockscreen_missing_sim_message_short">Inget SIM-kort</string>
     <string name="lockscreen_network_locked_message">Nätverk låst</string>
     <string name="lockscreen_password_wrong">Försök igen</string>
@@ -1466,7 +1466,7 @@ Försök igen om %2$d sekunder."</string>
     <string name="low_internal_storage_view_text">Det kan hända att vissa systemfunktioner inte fungerar</string>
     <string name="low_internal_storage_view_text_no_boot">Det finns inte tillräckligt med utrymme för systemet. Kontrollera att du har ett lagringsutrymme på minst 250 MB och starta om.</string>
     <string name="low_internal_storage_view_title">Lagringsutrymmet börjar ta slut</string>
-    <string name="low_memory">Mobilens lagringsutrymme är fullt. Ta bort några filer för att frigöra utrymme.</string>
+    <string name="low_memory">Pekdatorns lagringsutrymme är fullt. Ta bort några filer för att frigöra utrymme.</string>
     <string name="ltb_kill_content_v2_phone">%s har stängts eftersom den gjorde att telefonen överhettades. Du kan öppna appen igen när telefonen har svalnat.</string>
     <string name="ltb_kill_content_v2_tablet">%s har stängts eftersom den gjorde att surfplattan överhettades. Du kan öppna appen igen när surfplattan har svalnat.</string>
     <string name="ltb_warning_button">Stäng inte</string>
@@ -1778,18 +1778,18 @@ Surfplattan startas om snart."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Ljud spelas upp på Bluetooth-ljudenheten. Tryck här om du vill stänga av detta</string>
     <string name="multisound_sound_via_headphone">Ljudet från %s spelas upp i hörlurarna. Tryck här om du vill stänga av detta.</string>
     <string name="multisound_sound_via_headphone_multiselection">Ljud spelas upp i hörlurarna. Tryck här om du vill stänga av detta.</string>
-    <string name="multisound_sound_via_phone_speaker">Ljudet från %s spelas upp i telefonens högtalare. Tryck här om du vill stänga av detta.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Ljud spelas upp i telefonens högtalare. Tryck här om du vill stänga av detta.</string>
+    <string name="multisound_sound_via_phone_speaker">Ljudet från %s spelas upp i surfplattans högtalare. Tryck här om du vill stänga av detta.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Ljud spelas upp i surfplattans högtalare. Tryck här om du vill stänga av detta.</string>
     <string name="multisound_sound_via_usb_audio">Ljudet från %s spelas upp i USB-ljudenheten. Tryck här om du vill stänga av detta.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Ljud spelas upp i USB-ljudenheten. Tryck här om du vill stänga av detta.</string>
     <string name="multisound_title">Separat appljud</string>
     <string name="multisound_turn_off_multisound">Stäng av</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s går inte att köra i Samsung DeX. Försök köra i telefonläget.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s går inte att köra i Samsung DeX. Det är designat för telefonens hemskärmar.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Vissa spel fungerar bara på pekenheter. Om muskontrollerna inte fungerar i Samsung DeX kan du testa i telefonläget i stället.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s går inte att köra i Samsung DeX. Försök köra det i surfplatteläget.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s går inte att köra i Samsung DeX. Det är designat för surfplattors hemskärm.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Vissa spel fungerar bara på pekenheter. Om muskontrollerna inte fungerar i Samsung DeX kan du testa i surfplatteläget i stället.</string>
     <string name="music_recognition_manager_service">Tjänst för hantering av musikidentifiering</string>
     <string name="muted_by">%1$s stänger av vissa ljud</string>
-    <string name="my_device">Den här telefonen</string>
+    <string name="my_device">Den här surfplattan</string>
     <string name="nas_upgrade_notification_content">Förslag på åtgärder och svar tillhandahålls nu via förbättrade aviseringar. Anpassade aviseringar för Android stöds inte längre.</string>
     <string name="nas_upgrade_notification_disable_action">Inaktivera</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1954,23 +1954,23 @@ Förbättrade aviseringar har åtkomst till allt innehåll i aviseringar, inklus
     <string name="permdesc_bindNotificationListenerService">Innehavaren tillåts att binda till den översta nivåns gränssnitt för en meddelandelyssnare. Ska inte behövas för vanliga appar.</string>
     <string name="permdesc_bind_connection_service">Tillåter appen att använda telefonitjänster för att ringa/ta emot samtal.</string>
     <string name="permdesc_bind_incall_service">Tillåter att appen kontrollerar hur och när användaren ser skärmen för inkommande samtal.</string>
-    <string name="permdesc_bluetooth">Tillåter att appen kommer åt mobilens Bluetooth-konfiguration och upprättar och godkänner anslutningar till parkopplade enheter.</string>
-    <string name="permdesc_bluetoothAdmin">Tillåter att appen konfigurerar den lokala Bluetooth-mobilen samt upptäcker och parkopplar den med fjärranslutna enheter.</string>
+    <string name="permdesc_bluetooth">Tillåter att appen kommer åt pekdatorns Bluetooth-konfiguration och upprättar och godkänner anslutningar till parkopplade enheter.</string>
+    <string name="permdesc_bluetoothAdmin">Tillåter att appen konfigurerar den lokala Bluetooth-surfplattan samt upptäcker och parkopplar den med fjärranslutna enheter.</string>
     <string name="permdesc_bluetooth_advertise">Tillåter appen att annonsera till Bluetooth-enheter i närheten</string>
     <string name="permdesc_bluetooth_connect">Tillåter appen att ansluta till parkopplade Bluetooth-enheter</string>
     <string name="permdesc_bluetooth_scan">Tillåter appen att hitta och parkoppla Bluetooth-enheter i närheten</string>
     <string name="permdesc_bodySensors">Tillåter att appen får åtkomst till data från kroppssensorer, t.ex. puls, kroppstemperatur och blodets syrehalt, medan appen används.</string>
     <string name="permdesc_bodySensors_background">Tillåter att appen får åtkomst till data från kroppssensorer, t.ex. puls, kroppstemperatur och blodets syrehalt, medan appen är i bakgrunden.</string>
-    <string name="permdesc_broadcastSticky">Tillåter att appen skickar sticky broadcast, som finns kvar när sändningen är slut. Vid intensiv användning kan mobilen bli långsam eller instabil eftersom minnet överbelastas.</string>
+    <string name="permdesc_broadcastSticky">Tillåter att appen skickar sticky broadcasts, som finns kvar när sändningen är slut. Vid intensiv användning kan mobilen bli långsam eller instabil eftersom minnet överbelastas.</string>
     <string name="permdesc_callCompanionApp">Tillåter att appen kan visa och styra pågående samtal på enheten. Detta omfattar information som telefonnummer för samtal och samtalens status.</string>
     <string name="permdesc_callPhone">Tillåter att appen ringer telefonnummer utan åtgärd från dig. Detta kan leda till oväntade avgifter eller samtal. Observera att appen inte tillåts ringa nödsamtal. Skadliga appar kan ringa utan ditt godkännande och detta kan kosta pengar. De kan även ange operatörskoder vilket kan leda till att inkommande samtal automatiskt vidarebefordras till ett annat nummer.</string>
     <string name="permdesc_camera">Appen kan ta bilder och spela in video med kameran när appen används.</string>
     <string name="permdesc_cameraOpenCloseListener">Den här appen kan få återanrop när en kameraenhet öppnas (efter app) eller stängs.</string>
     <string name="permdesc_changeNetworkState">Tillåter att appen ändrar statusen för en nätverksanslutning.</string>
     <string name="permdesc_changeTetherState">Tillåter att appen ändrar statusen för en delad nätverksanslutning.</string>
-    <string name="permdesc_changeWifiMulticastState">Tillåter att appen tar emot paket som skickats med multicast-adress till alla enheter i ett wifi-nätverk och inte bara till den här mobilen. Detta drar mer batteri än när multicastläget inte används.</string>
+    <string name="permdesc_changeWifiMulticastState">Tillåter att appen tar emot paket som skickats med multicast-adress till alla enheter i ett wifi-nätverk och inte bara till den här surfplattan. Detta drar mer batteri än när multicastläget inte används.</string>
     <string name="permdesc_changeWifiState">Tillåter att appen ansluter till och kopplar från wifi-åtkomstpunkter samt gör ändringar i enhetens konfiguration för wifi-nätverk.</string>
-    <string name="permdesc_changeWimaxState">Tillåter att appen ansluter mobilen till eller kopplar från WiMAX-nätverk.</string>
+    <string name="permdesc_changeWimaxState">Tillåter att appen ansluter surfplattan till eller kopplar från WiMAX-nätverk.</string>
     <string name="permdesc_companionProfileWatch">Tillåter en tillhörande app att hantera klockor.</string>
     <string name="permdesc_connection_manager">Tillåter att appen hanterar telekommunikationsanslutningar.</string>
     <string name="permdesc_control_incall_experience">Tillåter att appen förbättrar användarupplevelsen för inkommande samtal.</string>
@@ -1998,7 +1998,7 @@ Förbättrade aviseringar har åtkomst till allt innehåll i aviseringar, inklus
     <string name="permdesc_foregroundServiceSpecialUse">Tillåter att appen använder förgrundstjänster av typen specialUse</string>
     <string name="permdesc_foregroundServiceSystemExempted">Tillåter att appen använder förgrundstjänster av typen systemExempted</string>
     <string name="permdesc_fullScreenIntent">Tillåter att appen visar aviseringar som aktiviteter i helskärm på en låst enhet</string>
-    <string name="permdesc_getAccounts">Tillåter att appen hämtar en lista över alla kända konton på mobilen. Detta kan inkludera konton som har skapats av appar som du har installerat.</string>
+    <string name="permdesc_getAccounts">Tillåter att appen laddar ned en lista över alla kända konton på surfplattan. Detta kan inkludera konton som har skapats av appar som du har installerat.</string>
     <string name="permdesc_getAppList">Möjliggör för en app att läsa listan med installerade appar.</string>
     <string name="permdesc_getPackageSize">Tillåter att appen hämtar kod, data och cachestorlekar</string>
     <string name="permdesc_getTasks">Tillåter att appen hämtar information om nyligen körda och pågående aktiviteter. Detta kan innebära att appen tillåts ta reda på vilka appar som används på enheten.</string>
@@ -2097,16 +2097,16 @@ Förbättrade aviseringar har åtkomst till allt innehåll i aviseringar, inklus
     <string name="permdesc_nearby_wifi_devices">Tillåter appen att sända ut till, ansluta till och fastställa relativ position för wifi-enheter i närheten</string>
     <string name="permdesc_nfc">Tillåter att appen kommunicerar med etiketter, kort och läsare för närfältskommunikation (NFC).</string>
     <string name="permdesc_observeCompanionDevicePresence">Tillåter att en tillhörande app registrerar den tillhörande enhetens närvaro när enheterna är nära eller långt ifrån varandra.</string>
-    <string name="permdesc_persistentActivity">Tillåter att delar av appen läggs beständigt i minnet. Detta kan innebära att det tillgängliga minnet för andra appar begränsas, vilket gör mobilen långsam.</string>
+    <string name="permdesc_persistentActivity">Tillåter att delar av appen läggs beständigt i minnet. Detta kan innebära att det tillgängliga minnet för andra appar begränsas, vilket gör surfplattan långsam.</string>
     <string name="permdesc_postNotification">Tillåter att appen visar aviseringar</string>
     <string name="permdesc_preferredPaymentInfo">Tillåter att appen hämtar information kopplad till standardtjänsten för NFC-betalning, till exempel registrerade hjälpmedel och ruttdestinationer.</string>
     <string name="permdesc_processOutgoingCalls">Tillåter att appen ser numret du slår under ett utgående samtal och har möjlighet att koppla samtalet till ett annat nummer eller avbryta samtalet helt.</string>
     <string name="permdesc_queryAllPackages">Tillåter att en app ser alla installerade paket.</string>
     <string name="permdesc_readBasicPhoneState">Ger appen åtkomst till grundläggande telefonifunktioner på enheten.</string>
-    <string name="permdesc_readCalendar">Appen kan läsa alla kalenderhändelser som sparats på mobilen och dela eller spara uppgifter i din kalender.</string>
+    <string name="permdesc_readCalendar">Appen kan läsa alla kalenderhändelser som sparats på surfplattan och dela eller spara uppgifter i din kalender.</string>
     <string name="permdesc_readCallLog">Appen kan läsa din samtalshistorik.</string>
     <string name="permdesc_readCellBroadcasts">Appen tillåts läsa SMS som skickas till din enhet. På vissa platser skickas SMS för att varna för nödsituationer. Skadliga appar kan påverka enhetens prestanda eller funktionalitet när du får ett meddelande om en nödsituation via SMS.</string>
-    <string name="permdesc_readContacts">Tillåter att appen läser kontaktuppgifter som sparats på telefonen. Appar har även åtkomst till de konton på telefonen som har skapade kontakter. Detta kan inkludera konton som har skapats av appar som du har installerat. Med den här behörigheten tillåts appen att spara kontaktuppgifter. Skadliga appar kan dela uppgifterna med andra utan din vetskap.</string>
+    <string name="permdesc_readContacts">Tillåter att appen läser kontaktuppgifter som sparats på surfplattan. Appar har även åtkomst till de konton på surfplattan som har skapade kontakter. Detta kan inkludera konton som har skapats av appar som du har installerat. Med den här behörigheten tillåts appen att spara kontaktuppgifter. Skadliga appar kan dela uppgifterna med andra utan din vetskap.</string>
     <string name="permdesc_readInstallSessions">Tillåt appen att läsa installationssessioner. Det ger den tillgång till uppgifter om aktiva paketinstallationer.</string>
     <string name="permdesc_readMediaAudio">Tillåter att appen läser ljudfiler från delad lagring.</string>
     <string name="permdesc_readMediaImages">Tillåter att appen läser bildfiler från delad lagring.</string>
@@ -2114,11 +2114,11 @@ Förbättrade aviseringar har åtkomst till allt innehåll i aviseringar, inklus
     <string name="permdesc_readNetworkUsageHistory">Tillåter att appen läser den historiska nätverksanvändningen för specifika nätverk och appar.</string>
     <string name="permdesc_readPhoneNumbers">Appen beviljas åtkomst till enhetens telefonnummer.</string>
     <string name="permdesc_readPhoneState">Tillåter att appen kommer åt enhetens telefonfunktioner. Med den här behörigheten tillåts appen att identifiera mobilens telefonnummer och enhets-ID, om ett samtal pågår och vilket nummer samtalet är kopplat till.</string>
-    <string name="permdesc_readSms">Appen kan läsa alla sms som sparats på mobilen.</string>
+    <string name="permdesc_readSms">Appen kan läsa alla sms som sparats på surfplattan.</string>
     <string name="permdesc_readSyncSettings">Tillåter att appen läser synkroniseringsinställningarna för ett konto. Detta kan användas till exempel för att avgöra om appen Personer är synkroniserad med ett konto.</string>
     <string name="permdesc_readSyncStats">Tillåter att appen läser synkroniseringsstatistik för ett konto, inklusive historiken för synkroniseringshändelser och mängden data som synkroniseras.</string>
     <string name="permdesc_readVisualUserSelect">Tillåter att appen läser bild- och videofiler som du väljer från ditt delade lagringsutrymme.</string>
-    <string name="permdesc_receiveBootCompleted">Tillåter att appen startar automatiskt när systemet har startats om. Detta kan innebära att det tar längre tid att starta mobilen och att mobilen blir långsammare i och med att appen hela tiden körs i bakgrunden.</string>
+    <string name="permdesc_receiveBootCompleted">Tillåter att appen startar automatiskt när systemet har startats om. Detta kan innebära att det tar längre tid att starta surfplattan och att surfplattan blir långsammare i och med att appen hela tiden körs i bakgrunden.</string>
     <string name="permdesc_receiveMms">Tillåter att appen tar emot och hanterar MMS-meddelanden. Detta innebär att appen kan övervaka eller ta bort meddelanden som skickats till enheten utan att visa dem för dig.</string>
     <string name="permdesc_receiveSms">Tillåter att appen tar emot och hanterar SMS. Detta innebär att appen kan övervaka eller ta bort meddelanden som skickats till enheten utan att visa dem för dig.</string>
     <string name="permdesc_receiveWapPush">Tillåter att appen tar emot och hanterar WAP-meddelanden. Med den här behörigheten kan appen övervaka eller ta bort meddelanden som skickats till dig utan att visa dem för dig.</string>
@@ -2140,7 +2140,7 @@ Förbättrade aviseringar har åtkomst till allt innehåll i aviseringar, inklus
     <string name="permdesc_sendSms">Tillåter att appen skickar SMS. Detta kan leda till oväntade avgifter. Skadliga appar kan skicka meddelanden utan ditt godkännande vilket kan kosta pengar.</string>
     <string name="permdesc_setAlarm">Tillåter att appen ställer in ett alarm i en befintlig alarmapp. Vissa alarmappar har inte den här funktionen.</string>
     <string name="permdesc_setInputCalibration">Tillåter att appen ändrar kalibreringsparametrarna för pekskärmen. Detta behövs aldrig för vanliga appar.</string>
-    <string name="permdesc_setTimeZone">Tillåter att appen ändrar mobilens tidszon.</string>
+    <string name="permdesc_setTimeZone">Tillåter att appen ändrar pekdatorns tidszon.</string>
     <string name="permdesc_setWallpaper">Tillåter att appen anger systemets bakgrund.</string>
     <string name="permdesc_setWallpaperHints">Tillåter att appen ger tips om systemets bakgrundsstorlek.</string>
     <string name="permdesc_sim_communication">Tillåter att appen skickar kommandon till SIM-kortet. Detta är mycket farligt.</string>
@@ -2154,7 +2154,7 @@ Förbättrade aviseringar har åtkomst till allt innehåll i aviseringar, inklus
     <string name="permdesc_subscribedFeedsRead">Tillåter att appen får information om aktuella synkroniserade flöden.</string>
     <string name="permdesc_systemAlertWindow">Appen kan visas ovanpå andra appar eller andra delar av skärmen. Detta kan störa den vanliga användningen av appar och påverka hur andra appar visas.</string>
     <string name="permdesc_systemCamera">Denna systemapp med särskild behörighet kan ta bilder och spela in videor med systemets kamera när som helst. Appen måste även ha behörigheten android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Tillåter att appen använder mobilens IR-sändare.</string>
+    <string name="permdesc_transmitIr">Tillåter att appen använder surfplattans IR-sändare.</string>
     <string name="permdesc_turnScreenOn">Tillåter att appen slår på skärmen.</string>
     <string name="permdesc_ucsPlugin">Arbeta med pluginprogram för autentiseringsuppgiftslagring från tredje part.</string>
     <string name="permdesc_uninstall_shortcut">Tillåter att appen tar bort genvägar på startskärmen utan åtgärd från användaren.</string>
@@ -2168,10 +2168,10 @@ Förbättrade aviseringar har åtkomst till allt innehåll i aviseringar, inklus
     <string name="permdesc_vibrate">Tillåter att appen styr vibrationen.</string>
     <string name="permdesc_vibrator_state">Appen beviljas åtkomst till vibrationsstatus.</string>
     <string name="permdesc_videoWrite">Tillåter att appen gör ändringar i din videosamling.</string>
-    <string name="permdesc_wakeLock">Tillåter att appen förhindrar att mobilen går in i viloläge.</string>
-    <string name="permdesc_writeCalendar">Appen kan lägga till, ta bort eller ändra kalenderhändelser på mobilen. Appen kan skicka meddelanden som ser ut att komma från kalenderns ägare eller ändra uppgifter utan ägarens vetskap.</string>
-    <string name="permdesc_writeCallLog">Tillåter att appen gör ändringar i mobilens samtalslista, inklusive i uppgifter om inkommande och utgående samtal. Skadliga program kan använda detta för att radera eller ändra din samtalslista.</string>
-    <string name="permdesc_writeContacts">Tillåter att appen ändrar kontaktuppgifter som sparats på telefonen. Med den här behörigheten får appar även radera kontaktuppgifter.</string>
+    <string name="permdesc_wakeLock">Tillåter att appen förhindrar att surfplattan går in i viloläge.</string>
+    <string name="permdesc_writeCalendar">Appen kan lägga till, ta bort eller ändra kalenderhändelser på surfplattan. Appen kan skicka meddelanden som ser ut att komma från kalenderns ägare eller ändra uppgifter utan ägarens vetskap.</string>
+    <string name="permdesc_writeCallLog">Tillåter att appen gör ändringar i pekdatorns samtalslista, inklusive i uppgifter om inkommande och utgående samtal. Skadliga program kan använda detta för att radera eller ändra din samtalslista.</string>
+    <string name="permdesc_writeContacts">Tillåter att appen ändrar kontaktuppgifter som sparats på surfplattan. Med den här behörigheten får appar även radera kontaktuppgifter.</string>
     <string name="permdesc_writeSettings">Tillåter att appen ändrar systemets inställningar. Skadliga appar kan skada systemets konfiguration.</string>
     <string name="permdesc_writeSyncSettings">Tillåter att appen ändrar synkroniseringsinställningarna för ett konto. Detta kan användas till exempel för att synkronisera appen Personer med ett konto.</string>
     <string name="permgroupdesc_activityRecognition">åtkomst till data om fysisk aktivitet</string>
@@ -2446,7 +2446,7 @@ för kontot %s."</string>
     <string name="permlab_uwb_ranging">fastställa relativ position för Ultra Wideband-enheter i närheten</string>
     <string name="permlab_vibrate">styra vibration</string>
     <string name="permlab_videoWrite">göra ändringar i din videosamling</string>
-    <string name="permlab_wakeLock">förhindra att telefonen sätts i viloläge</string>
+    <string name="permlab_wakeLock">förhindra att surfplattan går in i viloläge</string>
     <string name="permlab_writeCalendar">lägga till eller ändra kalenderuppgifter och skicka e-post till gäster utan ägarens vetskap</string>
     <string name="permlab_writeCallLog">skriv samtalslogg</string>
     <string name="permlab_writeContacts">ändra kontakterna</string>
@@ -2488,7 +2488,7 @@ för kontot %s."</string>
     <string name="policydesc_allow_desktopsync">Förhindra användning av skrivbordssynkronisering.</string>
     <string name="policydesc_allow_internetsharing">Förhindra användning av Mobil hotspot.</string>
     <string name="policydesc_allow_irda">Förhindra användning av IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Förhindra användning av POP- och IMAP-e-post på telefonen.</string>
+    <string name="policydesc_allow_popimapemail">Förhindra användning av POP- och IMAP-e-post på surfplattan.</string>
     <string name="policydesc_allow_storagecard">Förhindra användning av SD-kort.</string>
     <string name="policydesc_allow_textmessaging">Förhindra användning av SMS och MMS.</string>
     <string name="policydesc_allow_thirdParty">Den här appen kan förhindra att appar från tredje part körs.</string>
@@ -2506,10 +2506,10 @@ för kontot %s."</string>
     <string name="policydesc_setGlobalProxy">Ange enhetens globala proxy som ska användas när policyn aktiveras. Det är bara enhetens ägare som kan ange global proxy.</string>
     <string name="policydesc_unsigned_app">Den här appen kan förhindra att appar från okända källor körs.</string>
     <string name="policydesc_unsigned_pkg">Den här appen kan förhindra att appar från okända källor installeras.</string>
-    <string name="policydesc_watchLogin">Övervaka antalet felaktiga lösenord som angivits för skärmlåset och lås mobilen eller ta bort alla data från mobilen om för många felaktiga försök görs.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Övervaka antalet felaktiga lösenord som skrivits in vid upplåsning av skärmen och lås mobilen eller rensa alla uppgifter för den här användaren om för många felaktiga lösenord har skrivits in.</string>
-    <string name="policydesc_wipeData">Ta bort data från mobilen utan förvarning genom att återställa standardinställningarna.</string>
-    <string name="policydesc_wipeData_secondaryUser">Rensa användarens data på den här mobilen utan förvarning.</string>
+    <string name="policydesc_watchLogin">Övervaka antalet felaktiga lösenord som angetts för skärmlåset och lås surfplattan eller ta bort alla data från surfplattan om för många felaktiga försök görs.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Övervaka antalet felaktiga lösenord som skrivits in vid upplåsning av skärmen och lås surfplattan eller rensa alla uppgifter för den här användaren om för många felaktiga lösenord har skrivits in.</string>
+    <string name="policydesc_wipeData">Ta bort data från surfplattan utan förvarning genom att återställa standardinställningarna.</string>
+    <string name="policydesc_wipeData_secondaryUser">Rensa användarens uppgifter på den här surfplattan utan förvarning.</string>
     <string name="policylab_allow_bluetoothmode">Inaktivera Bluetooth</string>
     <string name="policylab_allow_browser">Inaktivera Internet</string>
     <string name="policylab_allow_camera">Inaktivera kameror</string>
@@ -2543,7 +2543,7 @@ för kontot %s."</string>
     <string name="postalTypeHome">Hem</string>
     <string name="postalTypeOther">Övrigt</string>
     <string name="postalTypeWork">Arbete</string>
-    <string name="power_dialog">Telefonalternativ</string>
+    <string name="power_dialog">Alternativ för surfplattan</string>
     <string name="power_off">Stäng av</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">den %s</string>
@@ -2589,7 +2589,7 @@ för kontot %s."</string>
     <string name="recent_tasks_title">Senaste</string>
     <string name="recording_fail">Det går inte att använda mikrofonen i %1$s när den redan används i %2$s.</string>
     <string name="recording_popup">%s använder mikrofonen.</string>
-    <string name="recording_popup_device">Telefon</string>
+    <string name="recording_popup_device">Surfplatta</string>
     <string name="recording_popup_with_bluetooth">%s använder Bluetooth-mikrofonen.</string>
     <string name="recording_popup_with_device">%1$s använder mikrofonen som tillhör %2$s.</string>
     <string name="redo">Gör om</string>
@@ -2736,12 +2736,12 @@ Att lyssna med stark volym långa stunder åt gången kan skada hörseln."</stri
     <string name="screenshot_edit">Redigera</string>
     <string name="sd_card_unavailable_message">Du kan inte använda SD-kortet eftersom det sattes in medan en annan användarprofil användes.</string>
     <string name="sd_card_unavailable_title">SD-kortet är inte tillgängligt</string>
-    <string name="sdcard_bad_removal_message">Ett SD-kort togs bort på ett osäkert sätt. Hindra telefonen från att starta om oväntat genom att spara data som inte har sparats och starta om nu.</string>
+    <string name="sdcard_bad_removal_message">Ett SD-kort togs bort på ett osäkert sätt. Hindra surfplattan från att starta om oväntat genom att spara data som inte har sparats och starta om nu.</string>
     <string name="sdcard_batch_decrypt_noti_content">Avkryptera SD-kortet</string>
     <string name="sdcard_batch_decrypt_noti_title">Avkryptering av SD-kortet</string>
     <string name="sdcard_batch_decrypt_popup_content">Det krypterade SD-kortet måste avkrypteras innan det kan användas. Avkrypteringen kan ta en timme eller längre. Batteriet måste vara fulladdat och enheten ska vara ansluten till ett vägguttag tills avkrypteringen slutförts. Om du avbryter avkrypteringsprocessen kan du förlora vissa eller alla data.</string>
     <string name="sdcard_decrypt_err_notification">Ett avkrypteringsfel inträffade för SD-kortet.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Några filer på SD-kortet krypterades på en annan enhet och kan inte användas på denna telefon.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Några filer på SD-kortet krypterades på en annan enhet och kan inte användas på denna surfplatta.</string>
     <string name="sdcard_decrypt_notification">SD-kort har avkrypterats.</string>
     <string name="sdcard_decrypt_title_notification">Avkryptering av SD-kortet</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Avkrypterar SD-kortet …</string>
@@ -2999,7 +2999,7 @@ Svep uppåt från undersidan av skärmen som pilen visar om du vill få tillbaka
     <string name="showing_touch_sensitivity_noti_action">Slå på</string>
     <string name="showing_touch_sensitivity_noti_text">Slå på Tryckkänslighet när du använder Sekretesskärmen eller Brevpappersskärmen för bättre tryckrespons.</string>
     <string name="showing_touch_sensitivity_noti_title">Öka tryckkänsligheten</string>
-    <string name="shutdown_confirm">Din telefon stängs av.</string>
+    <string name="shutdown_confirm">Din surfplatta stängs av.</string>
     <string name="shutdown_confirm_question">Vill du stänga av?</string>
     <string name="shutdown_progress">Avslutar…</string>
     <string name="side_key_double_press_deleted_app">Appen har avinstallerats. Välj något annat.</string>
@@ -3226,7 +3226,7 @@ Om du vill ta bort skyddet öppnar du Inställningar > Säkerhet och sekretess >
     <string name="usb_abnormal_reset_title">USB-anslutningen är instabil</string>
     <string name="usb_abnormal_reset_toast">Det finns ingen USB-anslutning. Koppla från kabeln och koppla in den igen eller prova en annan kabel.</string>
     <string name="usb_accessory_notification_title">Ansluten till USB-utrustning</string>
-    <string name="usb_bad_removal_message">En USB-lagringsenhet togs bort på ett osäkert sätt. Hindra telefonen från att starta om oväntat genom att spara data som inte har sparats och starta om nu.</string>
+    <string name="usb_bad_removal_message">En USB-lagringsenhet togs bort på ett osäkert sätt. Hindra surfplattan från att starta om oväntat genom att spara data som inte har sparats och starta om nu.</string>
     <string name="usb_blocked_by_emergency_mode">Vissa USB-funktioner går inte att använda när Nödläge är på.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Det går inte att använda funktioner som rör den anslutna USB-enheten när Maximalt energisparläge är aktiverat.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Vissa USB-funktioner är begränsade när Maximalt energisparläge är på.</string>
@@ -3236,7 +3236,7 @@ Om du vill ta bort skyddet öppnar du Inställningar > Säkerhet och sekretess >
     <string name="usb_camera_disconnected_notification_title">Medieenheten kopplades bort</string>
     <string name="usb_cd_installer_notification_title">Programvaruuppdatering</string>
     <string name="usb_charging_notification_title">Enheten laddas via USB</string>
-    <string name="usb_charing_only_notification_title">USB-laddning</string>
+    <string name="usb_charing_only_notification_title">Anslutet</string>
     <string name="usb_contaminant_detected_message">USB-porten har inaktiverats automatiskt. Tryck för att läsa mer.</string>
     <string name="usb_contaminant_detected_title">Vätska eller smuts i USB-porten</string>
     <string name="usb_contaminant_not_detected_message">Mobilen känner inte längre av någon vätska eller smuts.</string>
@@ -3248,11 +3248,11 @@ Om du vill ta bort skyddet öppnar du Inställningar > Säkerhet och sekretess >
     <string name="usb_host_cable_disconnected_notification_title">USB-koppling frånkopplad.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Det går inte att få åtkomst till enheten. Ansluten enhet kräver extern strömförsörjning.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Höghastighets-USB-enhet ansluten.</string>
-    <string name="usb_host_resource_exceed_message">Telefonens USB-kontroll har för lite resurser för att kunna ansluta denna enhet. Prova med att koppla bort enheten och sedan koppla in den igen.</string>
+    <string name="usb_host_resource_exceed_message">Surfplattans USB-kontroll har för lite resurser för att kunna ansluta denna enhet. Prova med att koppla bort enheten och sedan koppla in den igen.</string>
     <string name="usb_host_resource_exceed_title">För lite USB-kontrollresurser</string>
-    <string name="usb_hub_depth_exceed_message">Telefonen stöder bara upp till fem USB-hubbanslutningar samtidigt.</string>
+    <string name="usb_hub_depth_exceed_message">Surfplattan stöder bara upp till fem USB-hubbanslutningar samtidigt.</string>
     <string name="usb_hub_depth_exceed_title">Högst antal USB-hubbanslutningar</string>
-    <string name="usb_hub_power_exceed_message">Telefonen kan inte förse USB-enheten med tillräckligt mycket ström. Anslut enheten till en självförsörjande USB-hubb innan du ansluter den till telefonen.</string>
+    <string name="usb_hub_power_exceed_message">Surfplattan kan inte förse USB-enheten med tillräckligt mycket ström. Anslut enheten till en självförsörjande USB-hubb innan du ansluter den till surfplattan.</string>
     <string name="usb_increase_battery_usage">USB-anslutningar kan öka batteriförbrukningen.</string>
     <string name="usb_keyboard_connected_notification_title">Tangentbord anslutet</string>
     <string name="usb_keyboard_disconnected_notification_title">Tangentbord frånkopplat</string>
@@ -3295,8 +3295,8 @@ Om du vill ta bort skyddet öppnar du Inställningar > Säkerhet och sekretess >
     <string name="usb_ums_connected_notification_message_usbhost">USB-masslagringen togs oväntat bort.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB-masslagring ansluten</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB-masslagringen är säkert bortkopplad.</string>
-    <string name="usb_unblock_by_screen_unlock">Lås upp telefonen om du vill använda den anslutna USB-enheten.</string>
-    <string name="usb_unsupport_accessory_message">Denna USB-enhet stöds inte av telefonen.</string>
+    <string name="usb_unblock_by_screen_unlock">Lås upp surfplattan om du vill använda den anslutna USB-enheten.</string>
+    <string name="usb_unsupport_accessory_message">Denna USB-enhet stöds inte av surfplattan.</string>
     <string name="usb_unsupport_accessory_title">USB-enheten stöds inte</string>
     <string name="usb_unsupported_audio_accessory_message">Den anslutna enheten är inte kompatibel med mobilen. Tryck här om du vill veta mer.</string>
     <string name="usb_unsupported_audio_accessory_title">Ett tillbehör med analog ljudutgång hittades</string>
@@ -3317,19 +3317,19 @@ Om du vill ta bort skyddet öppnar du Inställningar > Säkerhet och sekretess >
     <string name="usb_water_dialg_method_2_desc_2">Du kan påskynda torkningen genom att rikta en fläkt eller hårtork (bara kalluft) mot porten.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Vi har upptäckt fukt eller ett främmande föremål i laddnings-/USB-porten.
 
-Leta efter främmande föremål i laddnings-/USB-porten, t.ex. damm eller skräp. Du kan hindra att telefonen skadas genom att inte koppla in något förrän laddningsporten är ren och fukten har avdunstat.
+Leta efter främmande föremål i laddnings-/USB-porten, t.ex. damm eller skräp. Du kan hindra att surfplattan skadas genom att inte koppla in något förrän laddningsporten är ren och fukten har avdunstat.
 
 Torka porten genom att skaka ut all fukt och vänta sedan på att den ska torka, vilket kan ta flera timmar. Du kan påskynda det hela genom att rikta en fläkt eller tork (endast sval luft) mot porten."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Vi har upptäckt fukt eller ett främmande föremål i laddnings-/USB-porten.
 
-Leta efter främmande föremål i laddnings-/USB-porten, t.ex. damm eller skräp. Du kan hindra att telefonen skadas genom att inte koppla in något förrän laddningsporten är ren och fukten har avdunstat.
+Leta efter främmande föremål i laddnings-/USB-porten, t.ex. damm eller skräp. Du kan hindra att surfplattan skadas genom att inte koppla in något förrän laddningsporten är ren och fukten borta.
 
 Torka porten genom att skaka ut all fukt och vänta sedan på att den ska torka, vilket kan ta flera timmar. Du kan påskynda det hela genom att rikta en fläkt eller tork (endast sval luft) mot porten.
 
-Under tiden kan du ladda telefonen trådlöst."</string>
+Under tiden kan du ladda surfplattan trådlöst."</string>
     <string name="usb_water_notification_content">Det finns fukt eller främmande föremål i laddnings-/USB-porten. Kolla detta innan du laddar.</string>
-    <string name="usb_water_notification_message">Fukt har upptäckts i laddar-/USB-porten. Se till att den är torr innan du laddar telefonen. Det kan ta en stund innan den är helt torr.</string>
+    <string name="usb_water_notification_message">Fukt har upptäckts i laddar-/USB-porten. Se till att den är torr innan du laddar surfplattan. Det kan ta en stund innan den är helt torr.</string>
     <string name="usb_water_notification_message_button">Detaljer</string>
     <string name="usb_water_notification_title">Kontrollera laddar-/USB-port</string>
     <string name="usbhostStorage_restrict">Säkerhetspolicyn förhindrar att USB-värdlagringen används.</string>
@@ -3347,7 +3347,7 @@ Under tiden kan du ladda telefonen trådlöst."</string>
     <string name="user_switched">Nuvarande användare: %1$s.</string>
     <string name="user_switching_message">Byter till %1$s …</string>
     <string name="validity_period">Giltighet:</string>
-    <string name="vdm_camera_access_denied">Telefonens kamera kan inte användas från %1$s</string>
+    <string name="vdm_camera_access_denied">Surfplattans kamera kan inte användas från %1$s</string>
     <string name="vdm_pip_blocked">Det går inte att visa bild-i-bild när du streamar</string>
     <string name="vdm_secure_window">Det går inte att komma åt innehållet när du streamar. Testa med telefonen i stället.</string>
     <string name="view_and_control_notification_content">%s kan visa och styra din skärm. Tryck för att granska.</string>

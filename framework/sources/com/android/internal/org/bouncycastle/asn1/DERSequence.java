@@ -29,7 +29,6 @@ public class DERSequence extends ASN1Sequence {
         this.bodyLength = -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DERSequence(ASN1Encodable[] elements, boolean clone) {
         super(elements, clone);
         this.bodyLength = -1;
@@ -49,14 +48,12 @@ public class DERSequence extends ASN1Sequence {
         return count2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         int length = getBodyLength();
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         if (withTag) {
@@ -86,13 +83,11 @@ public class DERSequence extends ASN1Sequence {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Sequence, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return this;

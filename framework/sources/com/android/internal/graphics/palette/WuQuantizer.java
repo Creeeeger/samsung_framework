@@ -26,7 +26,6 @@ public final class WuQuantizer implements Quantizer {
     private Palette mPalette;
     private int[] mWeights;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public enum Direction {
         RED,
@@ -291,8 +290,7 @@ public final class WuQuantizer implements Quantizer {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.graphics.palette.WuQuantizer$1, reason: invalid class name */
+    /* renamed from: com.android.internal.graphics.palette.WuQuantizer$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$android$internal$graphics$palette$WuQuantizer$Direction;
@@ -392,7 +390,6 @@ public final class WuQuantizer implements Quantizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class MaximizeResult {
         final int mCutLocation;
@@ -404,7 +401,6 @@ public final class WuQuantizer implements Quantizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class CreateBoxesResult {
         final int mRequestedCount;
@@ -416,7 +412,6 @@ public final class WuQuantizer implements Quantizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class Box {
         public int b0;
@@ -426,6 +421,10 @@ public final class WuQuantizer implements Quantizer {
         public int r0;
         public int r1;
         public int vol;
+
+        /* synthetic */ Box(BoxIA boxIA) {
+            this();
+        }
 
         private Box() {
             this.r0 = 0;

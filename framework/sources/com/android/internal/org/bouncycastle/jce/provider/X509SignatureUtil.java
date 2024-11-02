@@ -28,7 +28,6 @@ class X509SignatureUtil {
     X509SignatureUtil() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setSignatureParameters(Signature signature, ASN1Encodable params) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         if (params != null && !derNull.equals(params)) {
             AlgorithmParameters sigParams = AlgorithmParameters.getInstance(signature.getAlgorithm(), signature.getProvider());
@@ -47,7 +46,6 @@ class X509SignatureUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getSignatureName(AlgorithmIdentifier sigAlgId) {
         ASN1Encodable params = sigAlgId.getParameters();
         if (params != null && !derNull.equals(params) && sigAlgId.getAlgorithm().equals((ASN1Primitive) X9ObjectIdentifiers.ecdsa_with_SHA2)) {

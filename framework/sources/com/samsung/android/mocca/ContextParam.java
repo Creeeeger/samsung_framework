@@ -18,13 +18,14 @@ import java.util.function.BiConsumer;
 /* loaded from: classes5.dex */
 public final class ContextParam implements Serializable, Parcelable {
     public static final Parcelable.Creator<ContextParam> CREATOR = new Parcelable.Creator<ContextParam>() { // from class: com.samsung.android.mocca.ContextParam.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContextParam createFromParcel(Parcel in) {
             return new ContextParam(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContextParam[] newArray(int size) {
             return new ContextParam[size];
@@ -63,7 +64,6 @@ public final class ContextParam implements Serializable, Parcelable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$writeToParcel$0(Parcel dest, String k, Object v) {
         dest.writeString(k);
         dest.writeValue(v);
@@ -72,6 +72,23 @@ public final class ContextParam implements Serializable, Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.samsung.android.mocca.ContextParam$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContextParam> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContextParam createFromParcel(Parcel in) {
+            return new ContextParam(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContextParam[] newArray(int size) {
+            return new ContextParam[size];
+        }
     }
 
     public boolean isEmpty() {

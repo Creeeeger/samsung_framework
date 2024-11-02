@@ -46,7 +46,7 @@ public final class RefreshRateConfig {
             return sSubInstance;
         }
         if (sInstance == null) {
-            sInstance = createRefreshRateConfig("3", "24,10,30,48,60,96,120", "", new BrightnessThreshold("35", "40", PROPERTY_DISPLAY_BRIGHTNESS, PROPERTY_AMBIENT_BRIGHTNESS));
+            sInstance = createRefreshRateConfig("2", "30,60,120", "", new BrightnessThreshold("102", "250", PROPERTY_DISPLAY_BRIGHTNESS, PROPERTY_AMBIENT_BRIGHTNESS));
         }
         return sInstance;
     }
@@ -117,6 +117,10 @@ public final class RefreshRateConfig {
         private int minRefreshRate;
         private List<Integer> supportedRefreshRateListForPassive;
 
+        /* synthetic */ SupportedRefreshRate(RefreshRateConfig refreshRateConfig, String str, boolean z, SupportedRefreshRateIA supportedRefreshRateIA) {
+            this(str, z);
+        }
+
         private SupportedRefreshRate(String feature, boolean useDefaultRefreshRate) {
             this.minRefreshRate = Integer.MAX_VALUE;
             this.maxRefreshRate = Integer.MIN_VALUE;
@@ -142,7 +146,6 @@ public final class RefreshRateConfig {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$new$0(Integer r) {
             return this.maxRefreshRate % r.intValue() == 0;
         }
@@ -169,7 +172,6 @@ public final class RefreshRateConfig {
             }).orElse(Integer.valueOf(refreshRate)).intValue();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$getSupportedRefreshRateForPassive$1(int refreshRate, Integer r) {
             return r.intValue() >= refreshRate;
         }
@@ -254,15 +256,15 @@ public final class RefreshRateConfig {
         }
         pw.println(prefix + "RefreshRateConfigs");
         pw.println(prefix + "  HFR_DEFAULT_REFRESH_RATE: 120");
-        pw.println(prefix + "  HFR_MODE: 3");
-        pw.println(prefix + "  HFR_SUPPORTED_REFRESH_RATE: 24,10,30,48,60,96,120");
+        pw.println(prefix + "  HFR_MODE: 2");
+        pw.println(prefix + "  HFR_SUPPORTED_REFRESH_RATE: 30,60,120");
         pw.println(prefix + "  HFR_SUPPORTED_REFRESH_RATE_NS: ");
-        pw.println(prefix + "  SEAMLESS_BRT: 35");
+        pw.println(prefix + "  SEAMLESS_BRT: 102");
         RefreshRateConfig refreshRateConfig3 = sInstance;
         if (refreshRateConfig3 != null && refreshRateConfig3.getBrightnessThreshold().mDisplayBrightnessProperties != null) {
             pw.println(prefix + "  " + PROPERTY_DISPLAY_BRIGHTNESS + ": " + sInstance.getBrightnessThreshold().mDisplayBrightnessProperties);
         }
-        pw.println(prefix + "  SEAMLESS_LUX: 40");
+        pw.println(prefix + "  SEAMLESS_LUX: 250");
         RefreshRateConfig refreshRateConfig4 = sInstance;
         if (refreshRateConfig4 != null && refreshRateConfig4.getBrightnessThreshold().mAmbientBrightnessProperties != null) {
             pw.println(prefix + "  " + PROPERTY_AMBIENT_BRIGHTNESS + ": " + sInstance.getBrightnessThreshold().mAmbientBrightnessProperties);

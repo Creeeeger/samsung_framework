@@ -35,7 +35,6 @@ public class SynchronousResultReceiver extends ResultReceiver {
         this.mName = name;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.os.ResultReceiver
     public final void onReceiveResult(int resultCode, Bundle resultData) {
         super.onReceiveResult(resultCode, resultData);

@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextActivityCalibrationAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextActivityCalibrationAttribute> CREATOR = new Parcelable.Creator<SemContextActivityCalibrationAttribute>() { // from class: com.samsung.android.hardware.context.SemContextActivityCalibrationAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextActivityCalibrationAttribute createFromParcel(Parcel in) {
             return new SemContextActivityCalibrationAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityCalibrationAttribute[] newArray(int size) {
             return new SemContextActivityCalibrationAttribute[size];
@@ -25,7 +26,23 @@ public class SemContextActivityCalibrationAttribute extends SemContextAttribute 
     private float mSpeed;
     private int mStatus;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextActivityCalibrationAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityCalibrationAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityCalibrationAttribute createFromParcel(Parcel in) {
+            return new SemContextActivityCalibrationAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityCalibrationAttribute[] newArray(int size) {
+            return new SemContextActivityCalibrationAttribute[size];
+        }
+    }
+
     public SemContextActivityCalibrationAttribute() {
         this.mStatus = 0;
         this.mData = 0;

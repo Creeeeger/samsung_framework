@@ -8,6 +8,18 @@ public class Playlist {
     private Item.MediaType mPlayListType;
     private final ArrayList<Item> mPlaylist;
 
+    /* synthetic */ Playlist(AudioListBuilder audioListBuilder, PlaylistIA playlistIA) {
+        this(audioListBuilder);
+    }
+
+    /* synthetic */ Playlist(ImageListBuilder imageListBuilder, PlaylistIA playlistIA) {
+        this(imageListBuilder);
+    }
+
+    /* synthetic */ Playlist(VideoListBuilder videoListBuilder, PlaylistIA playlistIA) {
+        this(videoListBuilder);
+    }
+
     private Playlist(ImageListBuilder builder) {
         this.mPlayListType = Item.MediaType.ITEM_UNKNOWN;
         this.mPlaylist = builder.mPlaylist;

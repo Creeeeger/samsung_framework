@@ -22,6 +22,9 @@ public class AuthFactorTouchManager {
     private boolean isServiceConnected = false;
     private boolean isEnableListenerRegistered = false;
     private ServiceConnection mConnection = new ServiceConnection() { // from class: com.samsung.cmfa.AuthTouch.AuthFactorTouchManager.1
+        AnonymousClass1() {
+        }
+
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(AuthFactorTouchManager.TAG, "onServiceConnected");
@@ -82,6 +85,43 @@ public class AuthFactorTouchManager {
 
     public boolean isEnableListenerRegistered() {
         return this.isEnableListenerRegistered;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.cmfa.AuthTouch.AuthFactorTouchManager$1 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass1 implements ServiceConnection {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(AuthFactorTouchManager.TAG, "onServiceConnected");
+            AuthFactorTouchManager.this.mRemoteService = IAuthFactorTouchService.Stub.asInterface(service);
+            AuthFactorTouchManager.this.isServiceConnected = true;
+            if (name != null) {
+                Log.d(AuthFactorTouchManager.TAG, "onServiceConnected" + name.toString());
+            }
+            if (AuthFactorTouchManager.this.mAuthTouchEnableListener != null) {
+                try {
+                    Log.d(AuthFactorTouchManager.TAG, "mAuthTouchEnableListener:" + AuthFactorTouchManager.this.mAuthTouchEnableListener);
+                    AuthFactorTouchManager.this.mRemoteService.registerAuthTouchEnableListener(AuthFactorTouchManager.this.mAuthTouchEnableListener);
+                    AuthFactorTouchManager.this.mAuthTouchEnableListener = null;
+                    AuthFactorTouchManager.this.isEnableListenerRegistered = true;
+                } catch (RemoteException re) {
+                    re.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            AuthFactorTouchManager.this.mRemoteService = null;
+            AuthFactorTouchManager.this.isServiceConnected = false;
+            AuthFactorTouchManager.this.isEnableListenerRegistered = false;
+        }
     }
 
     public boolean registerAuthTouchEventListener(IAuthTouchEventListener listener) {

@@ -75,8 +75,9 @@ public interface ICancellationSignal extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ICancellationSignal {
+        public static class Proxy implements ICancellationSignal {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

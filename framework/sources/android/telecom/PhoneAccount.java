@@ -46,13 +46,14 @@ public final class PhoneAccount implements Parcelable {
     public static final int CAPABILITY_VIDEO_CALLING_RELIES_ON_PRESENCE = 256;
     public static final int CAPABILITY_VOICE_CALLING_AVAILABLE = 131072;
     public static final Parcelable.Creator<PhoneAccount> CREATOR = new Parcelable.Creator<PhoneAccount>() { // from class: android.telecom.PhoneAccount.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PhoneAccount createFromParcel(Parcel in) {
             return new PhoneAccount(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneAccount[] newArray(int size) {
             return new PhoneAccount[size];
@@ -92,6 +93,14 @@ public final class PhoneAccount implements Parcelable {
     private final Uri mSubscriptionAddress;
     private final int mSupportedAudioRoutes;
     private final List<String> mSupportedUriSchemes;
+
+    /* synthetic */ PhoneAccount(Parcel parcel, PhoneAccountIA phoneAccountIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ PhoneAccount(PhoneAccountHandle phoneAccountHandle, Uri uri, Uri uri2, int i, Icon icon, int i2, CharSequence charSequence, CharSequence charSequence2, List list, Bundle bundle, int i3, boolean z, String str, PhoneAccountIA phoneAccountIA) {
+        this(phoneAccountHandle, uri, uri2, i, icon, i2, charSequence, charSequence2, list, bundle, i3, z, str);
+    }
 
     public boolean equals(Object o) {
         if (this == o) {
@@ -388,6 +397,23 @@ public final class PhoneAccount implements Parcelable {
         parcel.writeBundle(this.mExtras);
         parcel.writeString(this.mGroupId);
         parcel.writeInt(this.mSupportedAudioRoutes);
+    }
+
+    /* renamed from: android.telecom.PhoneAccount$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PhoneAccount> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhoneAccount createFromParcel(Parcel in) {
+            return new PhoneAccount(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhoneAccount[] newArray(int size) {
+            return new PhoneAccount[size];
+        }
     }
 
     private PhoneAccount(Parcel in) {

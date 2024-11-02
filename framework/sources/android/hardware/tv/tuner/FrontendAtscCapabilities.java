@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendAtscCapabilities implements Parcelable {
     public static final Parcelable.Creator<FrontendAtscCapabilities> CREATOR = new Parcelable.Creator<FrontendAtscCapabilities>() { // from class: android.hardware.tv.tuner.FrontendAtscCapabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendAtscCapabilities createFromParcel(Parcel _aidl_source) {
             FrontendAtscCapabilities _aidl_out = new FrontendAtscCapabilities();
@@ -15,13 +17,31 @@ public class FrontendAtscCapabilities implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendAtscCapabilities[] newArray(int _aidl_size) {
             return new FrontendAtscCapabilities[_aidl_size];
         }
     };
     public int modulationCap = 0;
+
+    /* renamed from: android.hardware.tv.tuner.FrontendAtscCapabilities$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendAtscCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendAtscCapabilities createFromParcel(Parcel _aidl_source) {
+            FrontendAtscCapabilities _aidl_out = new FrontendAtscCapabilities();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendAtscCapabilities[] newArray(int _aidl_size) {
+            return new FrontendAtscCapabilities[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

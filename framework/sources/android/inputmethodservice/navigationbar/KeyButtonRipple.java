@@ -20,7 +20,6 @@ import android.view.animation.PathInterpolator;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public final class KeyButtonRipple extends Drawable {
     private static final Interpolator ALPHA_OUT_INTERPOLATOR = new PathInterpolator(0.0f, 0.0f, 0.8f, 1.0f);
@@ -57,6 +56,9 @@ public final class KeyButtonRipple extends Drawable {
     private final TraceAnimatorListener mEnterHwTraceAnimator = new TraceAnimatorListener("enterHardware");
     private Type mType = Type.ROUNDED_RECT;
     private final AnimatorListenerAdapter mAnimatorListener = new AnimatorListenerAdapter() { // from class: android.inputmethodservice.navigationbar.KeyButtonRipple.1
+        AnonymousClass1() {
+        }
+
         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
         public void onAnimationEnd(Animator animation) {
             KeyButtonRipple.this.mRunningAnimations.remove(animation);
@@ -74,7 +76,6 @@ public final class KeyButtonRipple extends Drawable {
         ROUNDED_RECT
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public KeyButtonRipple(Context ctx, View targetView, int maxWidthResource) {
         this.mMaxWidthResource = maxWidthResource;
         this.mMaxWidth = ctx.getResources().getDimensionPixelSize(maxWidthResource);
@@ -198,7 +199,6 @@ public final class KeyButtonRipple extends Drawable {
         return this.mLastDark ? 0.1f : 0.2f;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] state) {
         boolean pressed = false;
@@ -308,7 +308,6 @@ public final class KeyButtonRipple extends Drawable {
         exitSoftware();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void enterSoftware() {
         endAnimations("enterSoftware", true);
         this.mVisible = true;
@@ -392,7 +391,6 @@ public final class KeyButtonRipple extends Drawable {
         return Math.min(size, this.mMaxWidth);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void enterHardware() {
         endAnimations("enterHardware", true);
         this.mVisible = true;
@@ -450,7 +448,24 @@ public final class KeyButtonRipple extends Drawable {
         invalidateSelf();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.inputmethodservice.navigationbar.KeyButtonRipple$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            KeyButtonRipple.this.mRunningAnimations.remove(animation);
+            if (KeyButtonRipple.this.mRunningAnimations.isEmpty() && !KeyButtonRipple.this.mPressed) {
+                KeyButtonRipple.this.mVisible = false;
+                KeyButtonRipple.this.mDrawingHardwareGlow = false;
+                KeyButtonRipple.this.invalidateSelf();
+            }
+        }
+    }
+
     /* loaded from: classes2.dex */
     public static final class TraceAnimatorListener extends AnimatorListenerAdapter {
         private final String mName;
@@ -478,8 +493,13 @@ public final class KeyButtonRipple extends Drawable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static final class LogInterpolator implements Interpolator {
+    public static final class LogInterpolator implements Interpolator {
+        /* synthetic */ LogInterpolator(LogInterpolatorIA logInterpolatorIA) {
+            this();
+        }
+
         private LogInterpolator() {
         }
 

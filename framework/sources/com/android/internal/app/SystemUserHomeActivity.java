@@ -9,7 +9,6 @@ import com.android.internal.R;
 public class SystemUserHomeActivity extends Activity {
     private static final String TAG = "SystemUserHome";
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,7 +16,6 @@ public class SystemUserHomeActivity extends Activity {
         setContentView(R.layout.system_user_home);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         super.onDestroy();

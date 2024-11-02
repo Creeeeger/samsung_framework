@@ -179,7 +179,6 @@ public interface IVolumeController extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class Proxy implements IVolumeController {
             private IBinder mRemote;

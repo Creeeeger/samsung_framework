@@ -48,7 +48,6 @@ public class ZenModeDiff {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static abstract class BaseDiff {
         private int mExists;

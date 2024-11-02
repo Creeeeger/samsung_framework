@@ -49,7 +49,6 @@ public class ExtensionSessionStatsAggregator {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$commit$0(boolean isFinal) {
         synchronized (this.mLock) {
             if (this.mIsDone) {

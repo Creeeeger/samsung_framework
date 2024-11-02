@@ -179,7 +179,6 @@ public final class TextServicesManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishSpellCheckerService(ISpellCheckerSessionListener listener) {
         try {
             this.mService.finishSpellCheckerService(this.mUserId, listener);

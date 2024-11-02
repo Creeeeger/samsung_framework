@@ -7,13 +7,14 @@ import android.util.ArrayMap;
 public class HqmStatsImpl implements Parcelable {
     public static final int CF_SERVER = 1;
     public static final Parcelable.Creator<HqmStatsImpl> CREATOR = new Parcelable.Creator<HqmStatsImpl>() { // from class: android.os.HqmStatsImpl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HqmStatsImpl createFromParcel(Parcel in) {
             return new HqmStatsImpl(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HqmStatsImpl[] newArray(int size) {
             return new HqmStatsImpl[size];
@@ -28,6 +29,27 @@ public class HqmStatsImpl implements Parcelable {
     private ArrayMap<String, HWParamResultData> mHWParamResultDataFromA;
     private ArrayMap<String, HWParamResultData> mHWParamResultDataFromI;
     private ArrayMap<String, HWParamResultData> mHWParamResultDataFromK;
+
+    /* synthetic */ HqmStatsImpl(Parcel parcel, HqmStatsImplIA hqmStatsImplIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.os.HqmStatsImpl$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HqmStatsImpl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HqmStatsImpl createFromParcel(Parcel in) {
+            return new HqmStatsImpl(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HqmStatsImpl[] newArray(int size) {
+            return new HqmStatsImpl[size];
+        }
+    }
 
     public HqmStatsImpl() {
         this.mHWParamResultDataFromK = new ArrayMap<>();

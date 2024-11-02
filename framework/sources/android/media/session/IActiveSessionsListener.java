@@ -85,8 +85,9 @@ public interface IActiveSessionsListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IActiveSessionsListener {
+        public static class Proxy implements IActiveSessionsListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

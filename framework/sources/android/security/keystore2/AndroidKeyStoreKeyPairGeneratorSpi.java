@@ -304,7 +304,6 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$checkAttestKeyPurpose$0(Authorization x) {
         return x.keyParameter.tag == 536870913 && x.keyParameter.value.getKeyPurpose() == 7;
     }
@@ -634,7 +633,6 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         return params;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$constructKeyGenerationArguments$4(final List params, Integer padding) {
         int securityLevel;
         params.add(KeyStore2ParameterUtils.makeEnum(536870918, padding.intValue()));
@@ -657,7 +655,6 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$constructKeyGenerationArguments$3(List params, boolean[] hasDefaultMgf1DigestBeenAdded, Integer digest) {
         params.add(KeyStore2ParameterUtils.makeEnum(536871115, digest.intValue()));
         hasDefaultMgf1DigestBeenAdded[0] = hasDefaultMgf1DigestBeenAdded[0] | digest.equals(Integer.valueOf(KeyProperties.Digest.toKeymaster("SHA-1")));

@@ -35,15 +35,14 @@ public class ParallelSharedFilter extends ParallelFilter {
         filters.forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.collection.ParallelSharedFilter$$ExternalSyntheticLambda3
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                ParallelSharedFilter.this.m8777x3bc28532((MediaFilter) obj);
+                ParallelSharedFilter.this.m8769x3bc28532((MediaFilter) obj);
             }
         });
         return super.addFilter(filters);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$addFilter$0$com-samsung-android-sume-core-filter-collection-ParallelSharedFilter, reason: not valid java name */
-    public /* synthetic */ void m8777x3bc28532(MediaFilter it) {
+    /* renamed from: lambda$addFilter$0$com-samsung-android-sume-core-filter-collection-ParallelSharedFilter */
+    public /* synthetic */ void m8769x3bc28532(MediaFilter it) {
         BufferChannel inChannel = this.channelSupplier.get();
         BufferChannel outChannel = this.channelSupplier.get();
         this.inChannels.add(inChannel);

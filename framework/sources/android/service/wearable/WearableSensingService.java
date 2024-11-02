@@ -38,7 +38,7 @@ public abstract class WearableSensingService extends Service {
 
     public abstract void onStopDetection(String str);
 
-    /* renamed from: android.service.wearable.WearableSensingService$1, reason: invalid class name */
+    /* renamed from: android.service.wearable.WearableSensingService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IWearableSensingService.Stub {
         AnonymousClass1() {
@@ -56,7 +56,6 @@ public abstract class WearableSensingService extends Service {
             WearableSensingService.this.onDataStreamProvided(parcelFileDescriptor, consumer);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$provideDataStream$0(RemoteCallback callback, Integer response) {
             Bundle bundle = new Bundle();
             bundle.putInt("android.app.wearable.WearableSensingStatusBundleKey", response.intValue());
@@ -75,7 +74,6 @@ public abstract class WearableSensingService extends Service {
             WearableSensingService.this.onDataProvided(data, sharedMemory, consumer);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$provideData$1(RemoteCallback callback, Integer response) {
             Bundle bundle = new Bundle();
             bundle.putInt("android.app.wearable.WearableSensingStatusBundleKey", response.intValue());
@@ -104,14 +102,12 @@ public abstract class WearableSensingService extends Service {
             Slog.d(WearableSensingService.TAG, "startDetection " + request);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$startDetection$2(RemoteCallback detectionResultCallback, AmbientContextDetectionResult result) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AmbientContextDetectionResult.RESULT_RESPONSE_BUNDLE_KEY, result);
             detectionResultCallback.sendResult(bundle);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$startDetection$3(RemoteCallback statusCallback, AmbientContextDetectionServiceStatus status) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AmbientContextDetectionServiceStatus.STATUS_RESPONSE_BUNDLE_KEY, status);
@@ -139,7 +135,6 @@ public abstract class WearableSensingService extends Service {
             WearableSensingService.this.onQueryServiceStatus(new HashSet(Arrays.asList(events)), packageName, consumer);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$queryServiceStatus$4(RemoteCallback callback, AmbientContextDetectionServiceStatus response) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AmbientContextDetectionServiceStatus.STATUS_RESPONSE_BUNDLE_KEY, response);
@@ -156,7 +151,6 @@ public abstract class WearableSensingService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Integer[] intArrayToIntegerArray(int[] integerSet) {
         Integer[] intArray = new Integer[integerSet.length];
         int i = 0;

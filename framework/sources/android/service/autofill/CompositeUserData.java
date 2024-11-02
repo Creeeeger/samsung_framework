@@ -12,7 +12,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CompositeUserData implements FieldClassificationUserData, Parcelable {
     public static final Parcelable.Creator<CompositeUserData> CREATOR = new Parcelable.Creator<CompositeUserData>() { // from class: android.service.autofill.CompositeUserData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CompositeUserData createFromParcel(Parcel parcel) {
             UserData genericUserData = (UserData) parcel.readParcelable(null, UserData.class);
@@ -20,7 +22,6 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
             return new CompositeUserData(genericUserData, packageUserData);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompositeUserData[] newArray(int size) {
             return new CompositeUserData[size];
@@ -158,5 +159,24 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeParcelable(this.mGenericUserData, 0);
         parcel.writeParcelable(this.mPackageUserData, 0);
+    }
+
+    /* renamed from: android.service.autofill.CompositeUserData$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CompositeUserData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompositeUserData createFromParcel(Parcel parcel) {
+            UserData genericUserData = (UserData) parcel.readParcelable(null, UserData.class);
+            UserData packageUserData = (UserData) parcel.readParcelable(null, UserData.class);
+            return new CompositeUserData(genericUserData, packageUserData);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompositeUserData[] newArray(int size) {
+            return new CompositeUserData[size];
+        }
     }
 }

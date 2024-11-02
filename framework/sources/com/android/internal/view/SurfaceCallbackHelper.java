@@ -7,6 +7,9 @@ public class SurfaceCallbackHelper {
     int mFinishDrawingCollected = 0;
     int mFinishDrawingExpected = 0;
     private Runnable mFinishDrawingRunnable = new Runnable() { // from class: com.android.internal.view.SurfaceCallbackHelper.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             synchronized (SurfaceCallbackHelper.this) {
@@ -19,6 +22,25 @@ public class SurfaceCallbackHelper {
         }
     };
     Runnable mRunnable;
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.view.SurfaceCallbackHelper$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (SurfaceCallbackHelper.this) {
+                SurfaceCallbackHelper.this.mFinishDrawingCollected++;
+                if (SurfaceCallbackHelper.this.mFinishDrawingCollected < SurfaceCallbackHelper.this.mFinishDrawingExpected) {
+                    return;
+                }
+                SurfaceCallbackHelper.this.mRunnable.run();
+            }
+        }
+    }
 
     public SurfaceCallbackHelper(Runnable callbacksCollected) {
         this.mRunnable = callbacksCollected;

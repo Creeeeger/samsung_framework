@@ -834,7 +834,6 @@ public final class DataFailCause {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$isRadioRestartFailure$0(int cause, int i) {
         return i == cause;
     }

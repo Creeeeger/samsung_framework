@@ -7,7 +7,6 @@ import android.annotation.SystemApi;
 public abstract class Settings {
     private final int mType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Settings(int type) {
         this.mType = type;
     }

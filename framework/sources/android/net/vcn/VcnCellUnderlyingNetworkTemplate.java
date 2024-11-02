@@ -28,6 +28,10 @@ public final class VcnCellUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
     private final int mOpportunisticMatchCriteria;
     private final int mRoamingMatchCriteria;
 
+    /* synthetic */ VcnCellUnderlyingNetworkTemplate(int i, int i2, int i3, int i4, int i5, Set set, Set set2, int i6, int i7, Map map, VcnCellUnderlyingNetworkTemplateIA vcnCellUnderlyingNetworkTemplateIA) {
+        this(i, i2, i3, i4, i5, set, set2, i6, i7, map);
+    }
+
     static {
         Map<Integer, Integer> capsMatchCriteria = new HashMap<>();
         capsMatchCriteria.put(5, 0);
@@ -49,8 +53,9 @@ public final class VcnCellUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
         validate();
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.net.vcn.VcnUnderlyingNetworkTemplate
-    protected void validate() {
+    public void validate() {
         super.validate();
         validatePlmnIds(this.mAllowedNetworkPlmnIds);
         validateCapabilitiesMatchCriteria(this.mCapabilitiesMatchCriteria);
@@ -59,7 +64,6 @@ public final class VcnCellUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
         validateMatchCriteria(this.mOpportunisticMatchCriteria, OPPORTUNISTIC_MATCH_KEY);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void validatePlmnIds(Set<String> matchingOperatorPlmnIds) {
         Objects.requireNonNull(matchingOperatorPlmnIds, "matchingOperatorPlmnIds is null");
         for (String id : matchingOperatorPlmnIds) {

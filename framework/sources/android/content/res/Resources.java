@@ -100,7 +100,6 @@ public class Resources {
         void onLoadersChanged(Resources resources, List<ResourcesLoader> list);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Thread lambda$new$0(Runnable r) {
         return new Thread(r, "queued-work-looper-data");
     }
@@ -285,7 +284,6 @@ public class Resources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Typeface getFont(TypedValue value, int id) throws NotFoundException {
         return this.mResourcesImpl.loadFont(this, value, id);
     }
@@ -449,7 +447,6 @@ public class Resources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Drawable loadDrawable(TypedValue value, int id, int density, Theme theme) throws NotFoundException {
         Drawable dr = null;
         boolean checkOffloadedResources = false;
@@ -520,7 +517,6 @@ public class Resources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ColorStateList loadColorStateList(TypedValue value, int id, Theme theme) throws NotFoundException {
         return this.mResourcesImpl.loadColorStateList(this, value, id, theme);
     }
@@ -589,7 +585,6 @@ public class Resources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public TypedValue obtainTempTypedValue() {
         TypedValue tmpValue = null;
         synchronized (this.mTmpValueLock) {
@@ -605,7 +600,6 @@ public class Resources {
         return tmpValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void releaseTempTypedValue(TypedValue value) {
         synchronized (this.mTmpValueLock) {
             if (this.mTmpValue == null) {
@@ -648,6 +642,10 @@ public class Resources {
         private static final int MAX_NUMBER_OF_TRACING_PARENT_THEME = 100;
         private final Object mLock;
         private ResourcesImpl.ThemeImpl mThemeImpl;
+
+        /* synthetic */ Theme(Resources resources, ThemeIA themeIA) {
+            this();
+        }
 
         private Theme() {
             this.mLock = new Object();
@@ -880,7 +878,6 @@ public class Resources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class ThemeKey implements Cloneable {
         int mCount;
@@ -964,7 +961,7 @@ public class Resources {
             return true;
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        /* renamed from: clone */
         public ThemeKey m937clone() {
             ThemeKey other = new ThemeKey();
             other.mResId = this.mResId;
@@ -1305,7 +1302,6 @@ public class Resources {
         sIsAppLaunching = IfAppLaunchingInProgress;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void clearFutureCaches() {
         sFuturesKeyResourceIdMap.clear();
         synchronized (sFutureMapLock) {
@@ -1374,7 +1370,6 @@ public class Resources {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class UpdateResourceList implements Runnable {
         int resourceId;
@@ -1494,8 +1489,9 @@ public class Resources {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private final class submitToFuture implements Callable<Drawable.ConstantState> {
+    public final class submitToFuture implements Callable<Drawable.ConstantState> {
         private int density;
         private int id;
         private long key;
@@ -1506,7 +1502,6 @@ public class Resources {
             this.key = key;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // java.util.concurrent.Callable
         public Drawable.ConstantState call() throws Exception {
             Resources.sStartedRunnablesMap.put(Long.valueOf(this.key), true);

@@ -116,7 +116,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         this.mPreviousViews = new ArrayList<>();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class ViewAndMetaData {
         int adapterPosition;
@@ -132,7 +131,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void configureViewAnimator(int numVisibleViews, int activeOffset) {
         this.mMaxNumActiveViews = numVisibleViews;
         this.mActiveOffset = activeOffset;
@@ -228,7 +226,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         setDisplayedChild(this.mWhichChild - 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int modulo(int pos, int size) {
         if (size > 0) {
             return ((pos % size) + size) % size;
@@ -236,7 +233,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View getViewAtRelativeIndex(int relativeIndex) {
         if (relativeIndex >= 0 && relativeIndex <= getNumActiveViews() - 1 && this.mAdapter != null) {
             int i = modulo(this.mCurrentWindowStartUnbounded + relativeIndex, getWindowSize());
@@ -248,7 +244,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getNumActiveViews() {
         if (this.mAdapter != null) {
             return Math.min(getCount() + 1, this.mMaxNumActiveViews);
@@ -256,7 +251,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         return this.mMaxNumActiveViews;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getWindowSize() {
         if (this.mAdapter != null) {
             int adapterCount = getCount();
@@ -312,7 +306,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         return new FrameLayout(this.mContext);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void showOnly(int childIndex, boolean animate) {
         int adapterCount;
         int newWindowStart;
@@ -458,7 +451,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         v.setPressed(false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void cancelHandleClick() {
         View v = getCurrentView();
         if (v != null) {
@@ -467,8 +459,9 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         this.mTouchMode = 0;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    final class CheckForTap implements Runnable {
+    public final class CheckForTap implements Runnable {
         CheckForTap() {
         }
 
@@ -482,7 +475,10 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0082, code lost:            return r1;     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0082, code lost:
+    
+        return r1;
+     */
     @Override // android.view.View
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -568,6 +564,53 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         throw new UnsupportedOperationException("Method not decompiled: android.widget.AdapterViewAnimator.onTouchEvent(android.view.MotionEvent):boolean");
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.AdapterViewAnimator$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ View val$v;
+        final /* synthetic */ ViewAndMetaData val$viewData;
+
+        AnonymousClass1(View view, ViewAndMetaData viewAndMetaData) {
+            r2 = view;
+            r3 = viewAndMetaData;
+        }
+
+        /* renamed from: android.widget.AdapterViewAnimator$1$1 */
+        /* loaded from: classes4.dex */
+        class RunnableC00121 implements Runnable {
+            RunnableC00121() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (r3 != null) {
+                    AdapterViewAnimator.this.performItemClick(r2, r3.adapterPosition, r3.itemId);
+                } else {
+                    AdapterViewAnimator.this.performItemClick(r2, 0, 0L);
+                }
+            }
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AdapterViewAnimator.this.hideTapFeedback(r2);
+            AdapterViewAnimator.this.post(new Runnable() { // from class: android.widget.AdapterViewAnimator.1.1
+                RunnableC00121() {
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (r3 != null) {
+                        AdapterViewAnimator.this.performItemClick(r2, r3.adapterPosition, r3.itemId);
+                    } else {
+                        AdapterViewAnimator.this.performItemClick(r2, 0, 0L);
+                    }
+                }
+            });
+        }
+    }
+
     private void measureChildren() {
         int count = getChildCount();
         int childWidth = (getMeasuredWidth() - this.mPaddingLeft) - this.mPaddingRight;
@@ -578,7 +621,6 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSpecSize = View.MeasureSpec.getSize(widthMeasureSpec);
@@ -602,11 +644,13 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         measureChildren();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void checkForAndHandleDataChanged() {
         boolean dataChanged = this.mDataChanged;
         if (dataChanged) {
             post(new Runnable() { // from class: android.widget.AdapterViewAnimator.2
+                AnonymousClass2() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     AdapterViewAnimator.this.handleDataChanged();
@@ -626,7 +670,28 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         this.mDataChanged = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.widget.AdapterViewAnimator$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AdapterViewAnimator.this.handleDataChanged();
+            if (AdapterViewAnimator.this.mWhichChild >= AdapterViewAnimator.this.getWindowSize()) {
+                AdapterViewAnimator.this.mWhichChild = 0;
+                AdapterViewAnimator adapterViewAnimator = AdapterViewAnimator.this;
+                adapterViewAnimator.showOnly(adapterViewAnimator.mWhichChild, false);
+            } else if (AdapterViewAnimator.this.mOldItemCount != AdapterViewAnimator.this.getCount()) {
+                AdapterViewAnimator adapterViewAnimator2 = AdapterViewAnimator.this;
+                adapterViewAnimator2.showOnly(adapterViewAnimator2.mWhichChild, false);
+            }
+            AdapterViewAnimator.this.refreshChildren();
+            AdapterViewAnimator.this.requestLayout();
+        }
+    }
+
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         checkForAndHandleDataChanged();
@@ -639,23 +704,27 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.AdapterViewAnimator.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
         int whichChild;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState, int whichChild) {
             super(superState);
@@ -675,6 +744,23 @@ public abstract class AdapterViewAnimator extends AdapterView<Adapter> implement
 
         public String toString() {
             return "AdapterViewAnimator.SavedState{ whichChild = " + this.whichChild + " }";
+        }
+
+        /* renamed from: android.widget.AdapterViewAnimator$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 

@@ -114,7 +114,6 @@ public interface IPinnedTaskListener extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IPinnedTaskListener {
             private IBinder mRemote;

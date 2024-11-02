@@ -12,13 +12,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes.dex */
 public final class InstantAppRequestInfo implements Parcelable {
     public static final Parcelable.Creator<InstantAppRequestInfo> CREATOR = new Parcelable.Creator<InstantAppRequestInfo>() { // from class: android.content.pm.InstantAppRequestInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InstantAppRequestInfo[] newArray(int size) {
             return new InstantAppRequestInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstantAppRequestInfo createFromParcel(Parcel in) {
             return new InstantAppRequestInfo(in);
@@ -97,6 +98,23 @@ public final class InstantAppRequestInfo implements Parcelable {
         this.mRequesterInstantApp = requesterInstantApp;
         this.mToken = token;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) token);
+    }
+
+    /* renamed from: android.content.pm.InstantAppRequestInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InstantAppRequestInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstantAppRequestInfo[] newArray(int size) {
+            return new InstantAppRequestInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InstantAppRequestInfo createFromParcel(Parcel in) {
+            return new InstantAppRequestInfo(in);
+        }
     }
 
     @Deprecated

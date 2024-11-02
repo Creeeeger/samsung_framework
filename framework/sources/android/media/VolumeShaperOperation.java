@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class VolumeShaperOperation implements Parcelable {
     public static final Parcelable.Creator<VolumeShaperOperation> CREATOR = new Parcelable.Creator<VolumeShaperOperation>() { // from class: android.media.VolumeShaperOperation.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VolumeShaperOperation createFromParcel(Parcel _aidl_source) {
             VolumeShaperOperation _aidl_out = new VolumeShaperOperation();
@@ -15,7 +17,6 @@ public class VolumeShaperOperation implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VolumeShaperOperation[] newArray(int _aidl_size) {
             return new VolumeShaperOperation[_aidl_size];
@@ -24,6 +25,25 @@ public class VolumeShaperOperation implements Parcelable {
     public int flags = 0;
     public int replaceId = 0;
     public float xOffset = 0.0f;
+
+    /* renamed from: android.media.VolumeShaperOperation$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VolumeShaperOperation> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VolumeShaperOperation createFromParcel(Parcel _aidl_source) {
+            VolumeShaperOperation _aidl_out = new VolumeShaperOperation();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VolumeShaperOperation[] newArray(int _aidl_size) {
+            return new VolumeShaperOperation[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

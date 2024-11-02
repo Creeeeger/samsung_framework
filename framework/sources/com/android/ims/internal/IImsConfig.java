@@ -217,8 +217,9 @@ public interface IImsConfig extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IImsConfig {
+        public static class Proxy implements IImsConfig {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

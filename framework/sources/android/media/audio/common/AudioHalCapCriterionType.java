@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioHalCapCriterionType implements Parcelable {
     public static final Parcelable.Creator<AudioHalCapCriterionType> CREATOR = new Parcelable.Creator<AudioHalCapCriterionType>() { // from class: android.media.audio.common.AudioHalCapCriterionType.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioHalCapCriterionType createFromParcel(Parcel _aidl_source) {
             AudioHalCapCriterionType _aidl_out = new AudioHalCapCriterionType();
@@ -18,7 +20,6 @@ public class AudioHalCapCriterionType implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalCapCriterionType[] newArray(int _aidl_size) {
             return new AudioHalCapCriterionType[_aidl_size];
@@ -27,6 +28,25 @@ public class AudioHalCapCriterionType implements Parcelable {
     public boolean isInclusive = false;
     public String name;
     public String[] values;
+
+    /* renamed from: android.media.audio.common.AudioHalCapCriterionType$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioHalCapCriterionType> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalCapCriterionType createFromParcel(Parcel _aidl_source) {
+            AudioHalCapCriterionType _aidl_out = new AudioHalCapCriterionType();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalCapCriterionType[] newArray(int _aidl_size) {
+            return new AudioHalCapCriterionType[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

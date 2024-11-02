@@ -9,7 +9,9 @@ import android.widget.RemoteViews;
 /* loaded from: classes5.dex */
 public class Cocktail implements Parcelable {
     public static final Parcelable.Creator<Cocktail> CREATOR = new Parcelable.Creator<Cocktail>() { // from class: com.samsung.android.cocktailbar.Cocktail.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Cocktail createFromParcel(Parcel in) {
             Cocktail data = new Cocktail();
@@ -17,7 +19,6 @@ public class Cocktail implements Parcelable {
             return data;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Cocktail[] newArray(int size) {
             return new Cocktail[size];
@@ -227,5 +228,24 @@ public class Cocktail implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.samsung.android.cocktailbar.Cocktail$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Cocktail> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Cocktail createFromParcel(Parcel in) {
+            Cocktail data = new Cocktail();
+            data.readFromParcel(in);
+            return data;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Cocktail[] newArray(int size) {
+            return new Cocktail[size];
+        }
     }
 }

@@ -72,7 +72,6 @@ public final class CriticalEventLogProto extends MessageNano {
         super.writeTo(output);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.framework.protobuf.nano.MessageNano
     public int computeSerializedSize() {
         int size = super.computeSerializedSize();

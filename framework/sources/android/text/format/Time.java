@@ -241,10 +241,22 @@ public class Time {
         return false;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x009d, code lost:            if (r9 >= r0) goto L40;     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x00a7, code lost:            if (java.lang.Character.isDigit(r14.charAt(r9)) != false) goto L41;     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x009a, code lost:            if (r14.charAt(19) == '.') goto L10;     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x009c, code lost:            r9 = r9 + 1;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x009d, code lost:
+    
+        if (r9 >= r0) goto L82;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x00a7, code lost:
+    
+        if (java.lang.Character.isDigit(r14.charAt(r9)) != false) goto L83;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x009a, code lost:
+    
+        if (r14.charAt(19) == '.') goto L52;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x009c, code lost:
+    
+        r9 = r9 + 1;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -403,7 +415,6 @@ public class Time {
         return (week * 7) + MONDAY_BEFORE_JULIAN_EPOCH;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class TimeCalculator {
         private ZoneInfoData mZoneInfoData;

@@ -34,8 +34,8 @@ public class LongSparseArray<E> implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public LongSparseArray<E> m4936clone() {
+    /* renamed from: clone */
+    public LongSparseArray<E> m4935clone() {
         LongSparseArray<E> clone = null;
         try {
             clone = (LongSparseArray) super.clone();
@@ -281,7 +281,6 @@ public class LongSparseArray<E> implements Cloneable {
             dest.writeStringArray((String[]) Arrays.copyOfRange(((LongSparseArray) array).mValues, 0, size, String[].class));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.util.Parcelling
         public LongSparseArray<String> unparcel(Parcel source) {
             int size = source.readInt();

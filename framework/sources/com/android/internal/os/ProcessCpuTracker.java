@@ -71,6 +71,9 @@ public class ProcessCpuTracker {
     private static final int[] SYSTEM_CPU_FORMAT = {288, 8224, 8224, 8224, 8224, 8224, 8224, 8224};
     private static final int[] LOAD_AVERAGE_FORMAT = {16416, 16416, 16416};
     private static final Comparator<Stats> sLoadComparator = new Comparator<Stats>() { // from class: com.android.internal.os.ProcessCpuTracker.1
+        AnonymousClass1() {
+        }
+
         @Override // java.util.Comparator
         public final int compare(Stats sta, Stats stb) {
             int ta = sta.rel_utime + sta.rel_stime;
@@ -168,6 +171,29 @@ public class ProcessCpuTracker {
                 Slog.w(ProcessCpuTracker.TAG, "Failed to stat(" + path + "): " + e);
                 return -1;
             }
+        }
+    }
+
+    /* renamed from: com.android.internal.os.ProcessCpuTracker$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Comparator<Stats> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public final int compare(Stats sta, Stats stb) {
+            int ta = sta.rel_utime + sta.rel_stime;
+            int tb = stb.rel_utime + stb.rel_stime;
+            if (ta != tb) {
+                return ta > tb ? -1 : 1;
+            }
+            if (sta.added != stb.added) {
+                return sta.added ? -1 : 1;
+            }
+            if (sta.removed != stb.removed) {
+                return sta.added ? -1 : 1;
+            }
+            return 0;
         }
     }
 

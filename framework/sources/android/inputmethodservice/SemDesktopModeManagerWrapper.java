@@ -21,33 +21,27 @@ final class SemDesktopModeManagerWrapper {
     final InputMethodManager mImm;
     final SemDesktopModeManager mSemDesktopModeManager;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SemDesktopModeManagerWrapper(Context context) {
         this.mSemDesktopModeManager = (SemDesktopModeManager) context.getSystemService(Context.SEM_DESKTOP_MODE_SERVICE);
         this.mImm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Uri getDexKeyboardSettingsUri() {
         return Uri.withAppendedPath(DEX_CONTENT_URI, SETTINGS_KEY_KEYBOARD_DEX);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Uri getDexKeyboardSettingsChangedUri() {
         return Uri.withAppendedPath(DEX_CONTENT_URI_FOR_ON_CHANGE, SETTINGS_KEY_KEYBOARD_DEX);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldRegisterContentObserver(Context context) {
         return isUiServiceExist(context) && isSystemUser(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldUseDexKeyboardSettings() {
         return (isNotDefaultDisplay() && isDeskTopMode()) || isDEXStandAloneMode();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateClientDisplayId(EditorInfo editorInfo) {
         if (editorInfo != null && editorInfo.extras != null) {
             int displayId = editorInfo.extras.getInt("displayId");
@@ -56,7 +50,6 @@ final class SemDesktopModeManagerWrapper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean getOnscreenKeyboardForDEXValue() {
         boolean showImeWithHardKeyboardForDEX = this.mImm.getDexSettingsValue(SETTINGS_KEY_KEYBOARD_DEX, "0");
         Log.d(TAG, "getOnscreenKeyboardForDEXValue: showImeWithHardKeyboardForDEX() : " + showImeWithHardKeyboardForDEX);
@@ -119,7 +112,6 @@ final class SemDesktopModeManagerWrapper {
         return usrMgr.isSystemUser();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpDexMode(Printer p) {
         p.println("Input method service Dex state");
         p.println("  DexDesktopMode=" + isDeskTopMode());

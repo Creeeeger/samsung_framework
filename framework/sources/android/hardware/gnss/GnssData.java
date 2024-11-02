@@ -8,7 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class GnssData implements Parcelable {
     public static final Parcelable.Creator<GnssData> CREATOR = new Parcelable.Creator<GnssData>() { // from class: android.hardware.gnss.GnssData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssData createFromParcel(Parcel _aidl_source) {
             GnssData _aidl_out = new GnssData();
@@ -16,7 +18,6 @@ public class GnssData implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssData[] newArray(int _aidl_size) {
             return new GnssData[_aidl_size];
@@ -26,6 +27,25 @@ public class GnssData implements Parcelable {
     public ElapsedRealtime elapsedRealtime;
     public GnssAgc[] gnssAgcs = new GnssAgc[0];
     public GnssMeasurement[] measurements;
+
+    /* renamed from: android.hardware.gnss.GnssData$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssData createFromParcel(Parcel _aidl_source) {
+            GnssData _aidl_out = new GnssData();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssData[] newArray(int _aidl_size) {
+            return new GnssData[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -124,7 +144,9 @@ public class GnssData implements Parcelable {
     /* loaded from: classes2.dex */
     public static class GnssAgc implements Parcelable {
         public static final Parcelable.Creator<GnssAgc> CREATOR = new Parcelable.Creator<GnssAgc>() { // from class: android.hardware.gnss.GnssData.GnssAgc.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public GnssAgc createFromParcel(Parcel _aidl_source) {
                 GnssAgc _aidl_out = new GnssAgc();
@@ -132,7 +154,6 @@ public class GnssData implements Parcelable {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssAgc[] newArray(int _aidl_size) {
                 return new GnssAgc[_aidl_size];
@@ -141,6 +162,25 @@ public class GnssData implements Parcelable {
         public double agcLevelDb = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         public int constellation = 0;
         public long carrierFrequencyHz = 0;
+
+        /* renamed from: android.hardware.gnss.GnssData$GnssAgc$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<GnssAgc> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GnssAgc createFromParcel(Parcel _aidl_source) {
+                GnssAgc _aidl_out = new GnssAgc();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public GnssAgc[] newArray(int _aidl_size) {
+                return new GnssAgc[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

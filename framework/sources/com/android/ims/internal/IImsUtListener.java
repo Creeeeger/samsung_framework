@@ -215,8 +215,9 @@ public interface IImsUtListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IImsUtListener {
+        public static class Proxy implements IImsUtListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

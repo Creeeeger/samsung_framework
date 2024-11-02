@@ -63,6 +63,10 @@ public class DynamicLayout extends Layout {
     private static StaticLayout.Builder sBuilder = null;
     private static final Object[] sLock = new Object[0];
 
+    /* synthetic */ DynamicLayout(Builder builder, DynamicLayoutIA dynamicLayoutIA) {
+        this(builder);
+    }
+
     /* loaded from: classes3.dex */
     public static final class Builder {
         private static final Pools.SynchronizedPool<Builder> sPool = new Pools.SynchronizedPool<>(3);
@@ -109,7 +113,6 @@ public class DynamicLayout extends Layout {
             return b;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void recycle(Builder b) {
             b.mBase = null;
             b.mDisplay = null;
@@ -784,7 +787,6 @@ public class DynamicLayout extends Layout {
         return this.mEllipsizedWidth;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class ChangeWatcher implements TextWatcher, SpanWatcher {
         private WeakReference<DynamicLayout> mLayout;

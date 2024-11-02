@@ -8,9 +8,9 @@ import com.android.internal.R;
 import com.android.internal.accessibility.util.AccessibilityUtils;
 import com.android.internal.accessibility.util.ShortcutUtils;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class VolumeShortcutToggleAccessibilityServiceTarget extends AccessibilityServiceTarget {
-    /* JADX INFO: Access modifiers changed from: package-private */
+public class VolumeShortcutToggleAccessibilityServiceTarget extends AccessibilityServiceTarget {
     public VolumeShortcutToggleAccessibilityServiceTarget(Context context, int shortcutType, AccessibilityServiceInfo serviceInfo) {
         super(context, shortcutType, 0, serviceInfo);
     }

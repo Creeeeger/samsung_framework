@@ -30,14 +30,12 @@ public abstract class SoundTriggerDetectionService extends Service {
 
     public abstract void onStopOperation(UUID uuid, Bundle bundle, int i);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service, android.content.ContextWrapper
     public final void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         this.mHandler = new Handler(base.getMainLooper());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setClient(UUID uuid, Bundle params, ISoundTriggerDetectionServiceClient client) {
         synchronized (this.mLock) {
             this.mClients.put(uuid, client);
@@ -45,7 +43,6 @@ public abstract class SoundTriggerDetectionService extends Service {
         onConnected(uuid, params);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeClient(UUID uuid, Bundle params) {
         synchronized (this.mLock) {
             this.mClients.remove(uuid);
@@ -82,7 +79,7 @@ public abstract class SoundTriggerDetectionService extends Service {
         }
     }
 
-    /* renamed from: android.media.soundtrigger.SoundTriggerDetectionService$1, reason: invalid class name */
+    /* renamed from: android.media.soundtrigger.SoundTriggerDetectionService$1 */
     /* loaded from: classes2.dex */
     class AnonymousClass1 extends ISoundTriggerDetectionService.Stub {
         private final Object mBinderLock = new Object();

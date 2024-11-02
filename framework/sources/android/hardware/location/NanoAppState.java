@@ -12,13 +12,14 @@ import java.util.List;
 /* loaded from: classes2.dex */
 public final class NanoAppState implements Parcelable {
     public static final Parcelable.Creator<NanoAppState> CREATOR = new Parcelable.Creator<NanoAppState>() { // from class: android.hardware.location.NanoAppState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NanoAppState createFromParcel(Parcel in) {
             return new NanoAppState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppState[] newArray(int size) {
             return new NanoAppState[size];
@@ -29,6 +30,10 @@ public final class NanoAppState implements Parcelable {
     private List<String> mNanoAppPermissions;
     private List<NanoAppRpcService> mNanoAppRpcServiceList;
     private int mNanoAppVersion;
+
+    /* synthetic */ NanoAppState(Parcel parcel, NanoAppStateIA nanoAppStateIA) {
+        this(parcel);
+    }
 
     public NanoAppState(long nanoAppId, int appVersion, boolean enabled) {
         this.mNanoAppPermissions = new ArrayList();
@@ -101,5 +106,22 @@ public final class NanoAppState implements Parcelable {
         parcel.writeInt(this.mIsEnabled ? 1 : 0);
         parcel.writeStringList(this.mNanoAppPermissions);
         parcel.writeParcelableArray((NanoAppRpcService[]) this.mNanoAppRpcServiceList.toArray(new NanoAppRpcService[0]), 0);
+    }
+
+    /* renamed from: android.hardware.location.NanoAppState$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NanoAppState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NanoAppState createFromParcel(Parcel in) {
+            return new NanoAppState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NanoAppState[] newArray(int size) {
+            return new NanoAppState[size];
+        }
     }
 }

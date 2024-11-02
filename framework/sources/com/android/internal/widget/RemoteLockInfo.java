@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class RemoteLockInfo implements Parcelable {
     public static final Parcelable.Creator<RemoteLockInfo> CREATOR = new Parcelable.Creator<RemoteLockInfo>() { // from class: com.android.internal.widget.RemoteLockInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteLockInfo createFromParcel(Parcel in) {
             int lockType = in.readInt();
@@ -30,7 +32,6 @@ public class RemoteLockInfo implements Parcelable {
             return new RemoteLockInfo(lockType, lockState, message, phoneNumber, emailAddress, enableEmergencyCall, clientName, count, time, blockcount, skipPin, skipSupport, bundle);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteLockInfo[] newArray(int size) {
             return new RemoteLockInfo[size];
@@ -66,6 +67,10 @@ public class RemoteLockInfo implements Parcelable {
     public CharSequence phoneNumber;
     public boolean skipPinContainer;
     public boolean skipSupportContainer;
+
+    /* synthetic */ RemoteLockInfo(int i, boolean z, CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3, boolean z2, CharSequence charSequence4, int i2, long j, int i3, boolean z3, boolean z4, Bundle bundle, RemoteLockInfoIA remoteLockInfoIA) {
+        this(i, z, charSequence, charSequence2, charSequence3, z2, charSequence4, i2, j, i3, z3, z4, bundle);
+    }
 
     private RemoteLockInfo(int type, boolean state, CharSequence msg, CharSequence number, CharSequence email, boolean callbutton, CharSequence name, int count, long time, int blockcount, boolean skipPin, boolean skipSupport, Bundle b) {
         this.lockType = type;
@@ -245,6 +250,40 @@ public class RemoteLockInfo implements Parcelable {
 
         public RemoteLockInfo build() {
             return new RemoteLockInfo(this);
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.RemoteLockInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoteLockInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteLockInfo createFromParcel(Parcel in) {
+            int lockType = in.readInt();
+            boolean[] typeBooleanArray = new boolean[1];
+            in.readBooleanArray(typeBooleanArray);
+            boolean lockState = typeBooleanArray[0];
+            CharSequence message = in.readCharSequence();
+            CharSequence phoneNumber = in.readCharSequence();
+            CharSequence emailAddress = in.readCharSequence();
+            boolean[] EMCBooleanArray = new boolean[1];
+            in.readBooleanArray(EMCBooleanArray);
+            boolean enableEmergencyCall = EMCBooleanArray[0];
+            CharSequence clientName = in.readCharSequence();
+            int count = in.readInt();
+            long time = in.readLong();
+            int blockcount = in.readInt();
+            boolean skipPin = in.readBoolean();
+            boolean skipSupport = in.readBoolean();
+            Bundle bundle = in.readBundle();
+            return new RemoteLockInfo(lockType, lockState, message, phoneNumber, emailAddress, enableEmergencyCall, clientName, count, time, blockcount, skipPin, skipSupport, bundle);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteLockInfo[] newArray(int size) {
+            return new RemoteLockInfo[size];
         }
     }
 

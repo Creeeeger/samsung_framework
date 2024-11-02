@@ -223,12 +223,10 @@ public class WindowOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class OnBackInvokedCallbackWrapper extends IOnBackInvokedCallback.Stub {
         final CallbackRef mCallbackRef;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public static class CallbackRef {
             final OnBackInvokedCallback mStrongRef;
@@ -257,7 +255,6 @@ public class WindowOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
             this.mCallbackRef = new CallbackRef(callback, true);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public OnBackInvokedCallbackWrapper(OnBackInvokedCallback callback, boolean useWeakRef) {
             this.mCallbackRef = new CallbackRef(callback, useWeakRef);
         }
@@ -272,7 +269,6 @@ public class WindowOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onBackStarted$1(BackMotionEvent backEvent) {
             final OnBackAnimationCallback callback = getBackAnimationCallback();
             if (callback != null) {
@@ -296,7 +292,6 @@ public class WindowOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onBackProgressed$2(BackMotionEvent backEvent) {
             OnBackAnimationCallback callback = getBackAnimationCallback();
             if (callback != null) {
@@ -314,7 +309,6 @@ public class WindowOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onBackCancelled$4() {
             WindowOnBackInvokedDispatcher.mProgressAnimator.onBackCancelled(new Runnable() { // from class: android.window.WindowOnBackInvokedDispatcher$OnBackInvokedCallbackWrapper$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
@@ -324,7 +318,6 @@ public class WindowOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onBackCancelled$3() {
             OnBackAnimationCallback callback = getBackAnimationCallback();
             if (callback != null) {
@@ -342,7 +335,6 @@ public class WindowOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onBackInvoked$5() {
             boolean isInProgress = WindowOnBackInvokedDispatcher.mProgressAnimator.isBackAnimationInProgress();
             WindowOnBackInvokedDispatcher.mProgressAnimator.reset();
@@ -399,12 +391,10 @@ public class WindowOnBackInvokedDispatcher implements OnBackInvokedDispatcher {
             return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Context getContext() {
             return this.mContext.get();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static boolean isOnBackInvokedCallbackEnabled(Context context) {
             boolean featureFlagEnabled = WindowOnBackInvokedDispatcher.ENABLE_PREDICTIVE_BACK;
             if (!featureFlagEnabled) {

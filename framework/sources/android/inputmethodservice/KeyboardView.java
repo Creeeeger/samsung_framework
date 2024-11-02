@@ -251,13 +251,15 @@ public class KeyboardView extends View implements View.OnClickListener {
         resetMultiTap();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         initGestureDetector();
         if (this.mHandler == null) {
             this.mHandler = new Handler() { // from class: android.inputmethodservice.KeyboardView.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
@@ -285,9 +287,101 @@ public class KeyboardView extends View implements View.OnClickListener {
         }
     }
 
+    /* renamed from: android.inputmethodservice.KeyboardView$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    KeyboardView.this.showKey(msg.arg1);
+                    return;
+                case 2:
+                    KeyboardView.this.mPreviewText.setVisibility(4);
+                    return;
+                case 3:
+                    if (KeyboardView.this.repeatKey()) {
+                        Message repeat = Message.obtain(this, 3);
+                        sendMessageDelayed(repeat, 50L);
+                        return;
+                    }
+                    return;
+                case 4:
+                    KeyboardView.this.openPopupIfRequired((MotionEvent) msg.obj);
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
+    /* renamed from: android.inputmethodservice.KeyboardView$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 extends GestureDetector.SimpleOnGestureListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnGestureListener
+        public boolean onFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+            if (KeyboardView.this.mPossiblePoly) {
+                return false;
+            }
+            float absX = Math.abs(velocityX);
+            float absY = Math.abs(velocityY);
+            float deltaX = me2.getX() - me1.getX();
+            float deltaY = me2.getY() - me1.getY();
+            int travelX = KeyboardView.this.getWidth() / 2;
+            int travelY = KeyboardView.this.getHeight() / 2;
+            KeyboardView.this.mSwipeTracker.computeCurrentVelocity(1000);
+            float endingVelocityX = KeyboardView.this.mSwipeTracker.getXVelocity();
+            float endingVelocityY = KeyboardView.this.mSwipeTracker.getYVelocity();
+            boolean sendDownKey = false;
+            if (velocityX <= KeyboardView.this.mSwipeThreshold || absY >= absX || deltaX <= travelX) {
+                if (velocityX >= (-KeyboardView.this.mSwipeThreshold) || absY >= absX || deltaX >= (-travelX)) {
+                    if (velocityY >= (-KeyboardView.this.mSwipeThreshold) || absX >= absY || deltaY >= (-travelY)) {
+                        if (velocityY > KeyboardView.this.mSwipeThreshold && absX < absY / 2.0f && deltaY > travelY) {
+                            if (KeyboardView.this.mDisambiguateSwipe && endingVelocityY < velocityY / 4.0f) {
+                                sendDownKey = true;
+                            } else {
+                                KeyboardView.this.swipeDown();
+                                return true;
+                            }
+                        }
+                    } else if (KeyboardView.this.mDisambiguateSwipe && endingVelocityY > velocityY / 4.0f) {
+                        sendDownKey = true;
+                    } else {
+                        KeyboardView.this.swipeUp();
+                        return true;
+                    }
+                } else if (KeyboardView.this.mDisambiguateSwipe && endingVelocityX > velocityX / 4.0f) {
+                    sendDownKey = true;
+                } else {
+                    KeyboardView.this.swipeLeft();
+                    return true;
+                }
+            } else if (KeyboardView.this.mDisambiguateSwipe && endingVelocityX < velocityX / 4.0f) {
+                sendDownKey = true;
+            } else {
+                KeyboardView.this.swipeRight();
+                return true;
+            }
+            if (sendDownKey) {
+                KeyboardView keyboardView = KeyboardView.this;
+                keyboardView.detectAndSendKey(keyboardView.mDownKey, KeyboardView.this.mStartX, KeyboardView.this.mStartY, me1.getEventTime());
+            }
+            return false;
+        }
+    }
+
     private void initGestureDetector() {
         if (this.mGestureDetector == null) {
             GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() { // from class: android.inputmethodservice.KeyboardView.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnGestureListener
                 public boolean onFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
                     if (KeyboardView.this.mPossiblePoly) {
@@ -584,25 +678,91 @@ public class KeyboardView extends View implements View.OnClickListener {
         this.mDirtyRect.setEmpty();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0045, code lost:            if (r11.codes[0] <= 32) goto L30;     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0047, code lost:            r14 = r11.codes.length;     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x004a, code lost:            if (r12 >= r7) goto L17;     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x004c, code lost:            r7 = r12;        r6 = r8[r10];     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x004f, code lost:            if (r20 != null) goto L19;     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0051, code lost:            r16 = r4;     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x0093, code lost:            r10 = r10 + 1;        r1 = r18;        r2 = r19;        r4 = r16;     */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0054, code lost:            r15 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x0055, code lost:            r1 = r17.mDistances;     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0058, code lost:            if (r15 >= r1.length) goto L41;     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x005c, code lost:            if (r1[r15] <= r12) goto L28;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0085, code lost:            r15 = r15 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x005e, code lost:            r16 = r4;        java.lang.System.arraycopy(r1, r15, r1, r15 + r14, (r1.length - r15) - r14);        java.lang.System.arraycopy(r20, r15, r20, r15 + r14, (r20.length - r15) - r14);        r1 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0071, code lost:            if (r1 >= r14) goto L40;     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0073, code lost:            r20[r15 + r1] = r11.codes[r1];        r17.mDistances[r15 + r1] = r12;        r1 = r1 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x008e, code lost:            r16 = r4;     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x0091, code lost:            r16 = r4;     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x003c, code lost:            if (r13 != false) goto L12;     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x003a, code lost:            if (r14 >= r17.mProximityThreshold) goto L11;     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0045, code lost:
+    
+        if (r11.codes[0] <= 32) goto L74;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0047, code lost:
+    
+        r14 = r11.codes.length;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x004a, code lost:
+    
+        if (r12 >= r7) goto L61;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x004c, code lost:
+    
+        r7 = r12;
+        r6 = r8[r10];
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x004f, code lost:
+    
+        if (r20 != null) goto L63;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x0051, code lost:
+    
+        r16 = r4;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x0093, code lost:
+    
+        r10 = r10 + 1;
+        r1 = r18;
+        r2 = r19;
+        r4 = r16;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x0054, code lost:
+    
+        r15 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0055, code lost:
+    
+        r1 = r17.mDistances;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0058, code lost:
+    
+        if (r15 >= r1.length) goto L85;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x005c, code lost:
+    
+        if (r1[r15] <= r12) goto L72;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0085, code lost:
+    
+        r15 = r15 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x005e, code lost:
+    
+        r16 = r4;
+        java.lang.System.arraycopy(r1, r15, r1, r15 + r14, (r1.length - r15) - r14);
+        java.lang.System.arraycopy(r20, r15, r20, r15 + r14, (r20.length - r15) - r14);
+        r1 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0071, code lost:
+    
+        if (r1 >= r14) goto L84;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0073, code lost:
+    
+        r20[r15 + r1] = r11.codes[r1];
+        r17.mDistances[r15 + r1] = r12;
+        r1 = r1 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x008e, code lost:
+    
+        r16 = r4;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x0091, code lost:
+    
+        r16 = r4;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x003c, code lost:
+    
+        if (r13 != false) goto L56;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x003a, code lost:
+    
+        if (r14 >= r17.mProximityThreshold) goto L55;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -719,7 +879,6 @@ public class KeyboardView extends View implements View.OnClickListener {
         throw new UnsupportedOperationException("Method not decompiled: android.inputmethodservice.KeyboardView.getKeyIndices(int, int, int[]):int");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void detectAndSendKey(int index, int x, int y, long eventTime) {
         if (index != -1) {
             Keyboard.Key[] keyArr = this.mKeys;
@@ -803,7 +962,6 @@ public class KeyboardView extends View implements View.OnClickListener {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void showKey(int keyIndex) {
         PopupWindow previewPopup = this.mPreviewPopup;
         Keyboard.Key[] keys = this.mKeys;
@@ -923,7 +1081,6 @@ public class KeyboardView extends View implements View.OnClickListener {
         invalidate(key.x + this.mPaddingLeft, key.y + this.mPaddingTop, key.x + key.width + this.mPaddingLeft, key.y + key.height + this.mPaddingTop);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean openPopupIfRequired(MotionEvent me) {
         int i;
         if (this.mPopupLayout != 0 && (i = this.mCurrentKey) >= 0) {
@@ -959,6 +1116,9 @@ public class KeyboardView extends View implements View.OnClickListener {
                 closeButton.setOnClickListener(this);
             }
             this.mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() { // from class: android.inputmethodservice.KeyboardView.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
                 public void onKey(int primaryCode, int[] keyCodes) {
                     KeyboardView.this.mKeyboardActionListener.onKey(primaryCode, keyCodes);
@@ -1025,6 +1185,51 @@ public class KeyboardView extends View implements View.OnClickListener {
         this.mMiniKeyboardOnScreen = true;
         invalidateAllKeys();
         return true;
+    }
+
+    /* renamed from: android.inputmethodservice.KeyboardView$3 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass3 implements OnKeyboardActionListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
+        public void onKey(int primaryCode, int[] keyCodes) {
+            KeyboardView.this.mKeyboardActionListener.onKey(primaryCode, keyCodes);
+            KeyboardView.this.dismissPopupKeyboard();
+        }
+
+        @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
+        public void onText(CharSequence text) {
+            KeyboardView.this.mKeyboardActionListener.onText(text);
+            KeyboardView.this.dismissPopupKeyboard();
+        }
+
+        @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
+        public void swipeLeft() {
+        }
+
+        @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
+        public void swipeRight() {
+        }
+
+        @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
+        public void swipeUp() {
+        }
+
+        @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
+        public void swipeDown() {
+        }
+
+        @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
+        public void onPress(int primaryCode) {
+            KeyboardView.this.mKeyboardActionListener.onPress(primaryCode);
+        }
+
+        @Override // android.inputmethodservice.KeyboardView.OnKeyboardActionListener
+        public void onRelease(int primaryCode) {
+            KeyboardView.this.mKeyboardActionListener.onRelease(primaryCode);
+        }
     }
 
     @Override // android.view.View
@@ -1219,7 +1424,6 @@ public class KeyboardView extends View implements View.OnClickListener {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean repeatKey() {
         Keyboard.Key key = this.mKeys[this.mRepeatKeyIndex];
         detectAndSendKey(this.mCurrentKey, key.x, key.y, this.mLastTapTime);
@@ -1268,7 +1472,6 @@ public class KeyboardView extends View implements View.OnClickListener {
         closing();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dismissPopupKeyboard() {
         if (this.mPopupKeyboard.isShowing()) {
             this.mPopupKeyboard.dismiss();
@@ -1312,7 +1515,6 @@ public class KeyboardView extends View implements View.OnClickListener {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class SwipeTracker {
         static final int LONGEST_PAST_TIME = 200;
@@ -1322,6 +1524,10 @@ public class KeyboardView extends View implements View.OnClickListener {
         final float[] mPastY;
         float mXVelocity;
         float mYVelocity;
+
+        /* synthetic */ SwipeTracker(SwipeTrackerIA swipeTrackerIA) {
+            this();
+        }
 
         private SwipeTracker() {
             this.mPastX = new float[4];

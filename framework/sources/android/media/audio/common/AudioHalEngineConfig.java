@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioHalEngineConfig implements Parcelable {
     public static final Parcelable.Creator<AudioHalEngineConfig> CREATOR = new Parcelable.Creator<AudioHalEngineConfig>() { // from class: android.media.audio.common.AudioHalEngineConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioHalEngineConfig createFromParcel(Parcel _aidl_source) {
             AudioHalEngineConfig _aidl_out = new AudioHalEngineConfig();
@@ -18,7 +20,6 @@ public class AudioHalEngineConfig implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalEngineConfig[] newArray(int _aidl_size) {
             return new AudioHalEngineConfig[_aidl_size];
@@ -28,6 +29,25 @@ public class AudioHalEngineConfig implements Parcelable {
     public int defaultProductStrategyId = -1;
     public AudioHalProductStrategy[] productStrategies;
     public AudioHalVolumeGroup[] volumeGroups;
+
+    /* renamed from: android.media.audio.common.AudioHalEngineConfig$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioHalEngineConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalEngineConfig createFromParcel(Parcel _aidl_source) {
+            AudioHalEngineConfig _aidl_out = new AudioHalEngineConfig();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalEngineConfig[] newArray(int _aidl_size) {
+            return new AudioHalEngineConfig[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -153,7 +173,9 @@ public class AudioHalEngineConfig implements Parcelable {
     /* loaded from: classes2.dex */
     public static class CapSpecificConfig implements Parcelable {
         public static final Parcelable.Creator<CapSpecificConfig> CREATOR = new Parcelable.Creator<CapSpecificConfig>() { // from class: android.media.audio.common.AudioHalEngineConfig.CapSpecificConfig.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public CapSpecificConfig createFromParcel(Parcel _aidl_source) {
                 CapSpecificConfig _aidl_out = new CapSpecificConfig();
@@ -161,7 +183,6 @@ public class AudioHalEngineConfig implements Parcelable {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CapSpecificConfig[] newArray(int _aidl_size) {
                 return new CapSpecificConfig[_aidl_size];
@@ -169,6 +190,25 @@ public class AudioHalEngineConfig implements Parcelable {
         };
         public AudioHalCapCriterion[] criteria;
         public AudioHalCapCriterionType[] criterionTypes;
+
+        /* renamed from: android.media.audio.common.AudioHalEngineConfig$CapSpecificConfig$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<CapSpecificConfig> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CapSpecificConfig createFromParcel(Parcel _aidl_source) {
+                CapSpecificConfig _aidl_out = new CapSpecificConfig();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CapSpecificConfig[] newArray(int _aidl_size) {
+                return new CapSpecificConfig[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

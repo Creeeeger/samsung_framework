@@ -14,6 +14,10 @@ public abstract class UceServiceBase {
 
     /* loaded from: classes4.dex */
     private final class UceServiceBinder extends IUceService.Stub {
+        /* synthetic */ UceServiceBinder(UceServiceBase uceServiceBase, UceServiceBinderIA uceServiceBinderIA) {
+            this();
+        }
+
         private UceServiceBinder() {
         }
 

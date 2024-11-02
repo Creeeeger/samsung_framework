@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class SnoozeCriterion implements Parcelable {
     public static final Parcelable.Creator<SnoozeCriterion> CREATOR = new Parcelable.Creator<SnoozeCriterion>() { // from class: android.service.notification.SnoozeCriterion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SnoozeCriterion createFromParcel(Parcel in) {
             return new SnoozeCriterion(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SnoozeCriterion[] newArray(int size) {
             return new SnoozeCriterion[size];
@@ -58,6 +59,23 @@ public final class SnoozeCriterion implements Parcelable {
 
     public CharSequence getConfirmation() {
         return this.mConfirmation;
+    }
+
+    /* renamed from: android.service.notification.SnoozeCriterion$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SnoozeCriterion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SnoozeCriterion createFromParcel(Parcel in) {
+            return new SnoozeCriterion(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SnoozeCriterion[] newArray(int size) {
+            return new SnoozeCriterion[size];
+        }
     }
 
     @Override // android.os.Parcelable

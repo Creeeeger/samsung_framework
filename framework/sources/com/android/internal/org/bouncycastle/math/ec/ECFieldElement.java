@@ -91,7 +91,6 @@ public abstract class ECFieldElement implements ECConstants {
         BigInteger r;
         BigInteger x;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static BigInteger calculateResidue(BigInteger p) {
             int bitLength = p.bitLength();
             if (bitLength >= 96) {
@@ -108,7 +107,6 @@ public abstract class ECFieldElement implements ECConstants {
             this(q, calculateResidue(q), x);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Fp(BigInteger q, BigInteger r, BigInteger x) {
             if (x == null || x.signum() < 0 || x.compareTo(q) >= 0) {
                 throw new IllegalArgumentException("x value invalid in Fp field element");
@@ -491,7 +489,6 @@ public abstract class ECFieldElement implements ECConstants {
             this.x = new LongArray(x);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public F2m(int m, int[] ks, LongArray x) {
             this.m = m;
             this.representation = ks.length == 1 ? 2 : 3;

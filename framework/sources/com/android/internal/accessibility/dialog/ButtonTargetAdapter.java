@@ -13,7 +13,6 @@ import java.util.List;
 class ButtonTargetAdapter extends TargetAdapter {
     private List<AccessibilityTarget> mTargets;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ButtonTargetAdapter(List<AccessibilityTarget> targets) {
         this.mTargets = targets;
     }

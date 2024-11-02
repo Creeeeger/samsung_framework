@@ -24,13 +24,14 @@ import java.util.stream.Collectors;
 /* loaded from: classes3.dex */
 public class ServiceState implements Parcelable {
     public static final Parcelable.Creator<ServiceState> CREATOR = new Parcelable.Creator<ServiceState>() { // from class: android.telephony.ServiceState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ServiceState createFromParcel(Parcel in) {
             return new ServiceState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceState[] newArray(int size) {
             return new ServiceState[size];
@@ -386,6 +387,23 @@ public class ServiceState implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.ServiceState$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ServiceState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ServiceState createFromParcel(Parcel in) {
+            return new ServiceState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ServiceState[] newArray(int size) {
+            return new ServiceState[size];
+        }
     }
 
     public int getState() {

@@ -101,8 +101,9 @@ public interface IUdfpsOverlay extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IUdfpsOverlay {
+        public static class Proxy implements IUdfpsOverlay {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

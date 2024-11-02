@@ -400,7 +400,6 @@ public class ColorExtractor {
         return (((float) Math.pow(Color.red(c1) - Color.red(c2), 2.0d)) * 0.9f) + (((float) Math.pow(Color.green(c1) - Color.green(c2), 2.0d)) * 1.2f) + (((float) Math.pow(Color.blue(c1) - Color.blue(c2), 2.0d)) * 0.9f);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static boolean checkGayScaleWithSV(float[] hsv, float offsetValue_s, float offsetValue_b) {
         return hsv[1] <= offsetValue_s || hsv[2] <= offsetValue_b;
     }
@@ -529,7 +528,6 @@ public class ColorExtractor {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void mergeDominantColorUnit(DominantColorResult dominantColorResultA, DominantColorResult dominantColorResultB, ColorPaletteExtractor.ColorMergeType colorMergeType) {
         float percentageSum = dominantColorResultA.percentage + dominantColorResultB.percentage;
         if (colorMergeType != ColorPaletteExtractor.ColorMergeType.A) {
@@ -551,7 +549,6 @@ public class ColorExtractor {
         return Color.argb((int) ((Color.alpha(colorA) * weightA) + (Color.alpha(colorB) * weightB)), (int) ((Color.red(colorA) * weightA) + (Color.red(colorB) * weightB)), (int) ((Color.green(colorA) * weightA) + (Color.green(colorB) * weightB)), (int) ((Color.blue(colorA) * weightA) + (Color.blue(colorB) * weightB)));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void sortColorResult(DominantColorResult[] dominantColorArray) {
         Arrays.sort(dominantColorArray, new Comparator() { // from class: com.samsung.android.wallpaper.legibilitycolors.utils.ColorExtractor$$ExternalSyntheticLambda2
             @Override // java.util.Comparator
@@ -620,8 +617,8 @@ public class ColorExtractor {
             return "\nDominantColorResult{\ncolor=" + Integer.toHexString(this.color) + "\npercentage=" + this.percentage + "\n\nisGrayScale=" + this.isGrayScale + '}';
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-        public DominantColorResult m8847clone() {
+        /* renamed from: clone */
+        public DominantColorResult m8839clone() {
             try {
                 DominantColorResult clone = (DominantColorResult) super.clone();
                 float[] fArr = this.hsv;

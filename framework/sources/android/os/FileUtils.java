@@ -599,6 +599,9 @@ public final class FileUtils {
             return false;
         }
         Arrays.sort(files, new Comparator<File>() { // from class: android.os.FileUtils.1
+            AnonymousClass1() {
+            }
+
             @Override // java.util.Comparator
             public int compare(File lhs, File rhs) {
                 return Long.compare(rhs.lastModified(), lhs.lastModified());
@@ -614,6 +617,18 @@ public final class FileUtils {
             }
         }
         return deleted;
+    }
+
+    /* renamed from: android.os.FileUtils$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Comparator<File> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(File lhs, File rhs) {
+            return Long.compare(rhs.lastModified(), lhs.lastModified());
+        }
     }
 
     public static boolean contains(File[] dirs, File file) {
@@ -1191,11 +1206,26 @@ public final class FileUtils {
             return this.sink ? this.pipe[0] : this.pipe[1];
         }
 
-        /* JADX WARN: Code restructure failed: missing block: B:18:0x0022, code lost:            if (r6.sink != false) goto L23;     */
-        /* JADX WARN: Code restructure failed: missing block: B:19:0x0045, code lost:            libcore.io.IoUtils.closeQuietly(r0);     */
-        /* JADX WARN: Code restructure failed: missing block: B:20:0x0049, code lost:            return;     */
-        /* JADX WARN: Code restructure failed: missing block: B:22:0x003c, code lost:            android.os.SystemClock.sleep(java.util.concurrent.TimeUnit.SECONDS.toMillis(1));     */
-        /* JADX WARN: Code restructure failed: missing block: B:26:0x003a, code lost:            if (r6.sink == false) goto L24;     */
+        /* JADX WARN: Code restructure failed: missing block: B:18:0x0022, code lost:
+        
+            if (r6.sink != false) goto L57;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:19:0x0045, code lost:
+        
+            libcore.io.IoUtils.closeQuietly(r0);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:20:0x0049, code lost:
+        
+            return;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:22:0x003c, code lost:
+        
+            android.os.SystemClock.sleep(java.util.concurrent.TimeUnit.SECONDS.toMillis(1));
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:26:0x003a, code lost:
+        
+            if (r6.sink == false) goto L58;
+         */
         @Override // java.lang.Thread, java.lang.Runnable
         /*
             Code decompiled incorrectly, please refer to instructions dump.

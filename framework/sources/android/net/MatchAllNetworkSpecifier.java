@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class MatchAllNetworkSpecifier extends NetworkSpecifier implements Parcelable {
     public static final Parcelable.Creator<MatchAllNetworkSpecifier> CREATOR = new Parcelable.Creator<MatchAllNetworkSpecifier>() { // from class: android.net.MatchAllNetworkSpecifier.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MatchAllNetworkSpecifier createFromParcel(Parcel in) {
             return new MatchAllNetworkSpecifier();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MatchAllNetworkSpecifier[] newArray(int size) {
             return new MatchAllNetworkSpecifier[size];
@@ -41,5 +42,22 @@ public final class MatchAllNetworkSpecifier extends NetworkSpecifier implements 
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    /* renamed from: android.net.MatchAllNetworkSpecifier$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MatchAllNetworkSpecifier> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MatchAllNetworkSpecifier createFromParcel(Parcel in) {
+            return new MatchAllNetworkSpecifier();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MatchAllNetworkSpecifier[] newArray(int size) {
+            return new MatchAllNetworkSpecifier[size];
+        }
     }
 }

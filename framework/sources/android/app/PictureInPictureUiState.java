@@ -7,13 +7,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class PictureInPictureUiState implements Parcelable {
     public static final Parcelable.Creator<PictureInPictureUiState> CREATOR = new Parcelable.Creator<PictureInPictureUiState>() { // from class: android.app.PictureInPictureUiState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PictureInPictureUiState createFromParcel(Parcel in) {
             return new PictureInPictureUiState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureUiState[] newArray(int size) {
             return new PictureInPictureUiState[size];
@@ -56,5 +57,22 @@ public final class PictureInPictureUiState implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeBoolean(this.mIsStashed);
+    }
+
+    /* renamed from: android.app.PictureInPictureUiState$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PictureInPictureUiState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PictureInPictureUiState createFromParcel(Parcel in) {
+            return new PictureInPictureUiState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PictureInPictureUiState[] newArray(int size) {
+            return new PictureInPictureUiState[size];
+        }
     }
 }

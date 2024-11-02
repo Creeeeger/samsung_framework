@@ -12,13 +12,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class CapabilityChangeRequest implements Parcelable {
     public static final Parcelable.Creator<CapabilityChangeRequest> CREATOR = new Parcelable.Creator<CapabilityChangeRequest>() { // from class: android.telephony.ims.feature.CapabilityChangeRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CapabilityChangeRequest createFromParcel(Parcel in) {
             return new CapabilityChangeRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CapabilityChangeRequest[] newArray(int size) {
             return new CapabilityChangeRequest[size];
@@ -106,6 +107,23 @@ public final class CapabilityChangeRequest implements Parcelable {
         this.mCapabilitiesToDisable = new ArraySet(disableSize);
         for (int i2 = 0; i2 < disableSize; i2++) {
             this.mCapabilitiesToDisable.add(new CapabilityPair(in.readInt(), in.readInt()));
+        }
+    }
+
+    /* renamed from: android.telephony.ims.feature.CapabilityChangeRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CapabilityChangeRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CapabilityChangeRequest createFromParcel(Parcel in) {
+            return new CapabilityChangeRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CapabilityChangeRequest[] newArray(int size) {
+            return new CapabilityChangeRequest[size];
         }
     }
 

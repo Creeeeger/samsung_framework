@@ -205,10 +205,18 @@ public class SemInfoExtractionManager {
         return ret;
     }
 
-    private void startExtraction(final int dataType, final Object reqObject) {
+    private void startExtraction(int dataType, Object reqObject) {
         if (this.mConnection == null) {
             Log.d(TAG, "mConnection is NULL");
             this.mConnection = new ServiceConnection() { // from class: com.samsung.android.infoextraction.SemInfoExtractionManager.1
+                final /* synthetic */ int val$dataType;
+                final /* synthetic */ Object val$reqObject;
+
+                AnonymousClass1(int dataType2, Object reqObject2) {
+                    dataType = dataType2;
+                    reqObject = reqObject2;
+                }
+
                 @Override // android.content.ServiceConnection
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     SemInfoExtractionManager.this.mInfoExtractionService = service;
@@ -230,11 +238,33 @@ public class SemInfoExtractionManager {
             bindInfoExtractionService();
         } else {
             Log.d(TAG, "mInfoExtractionService != null");
-            requestInfoExtraction(this.mInfoExtractionService, dataType, reqObject);
+            requestInfoExtraction(this.mInfoExtractionService, dataType2, reqObject2);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.samsung.android.infoextraction.SemInfoExtractionManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements ServiceConnection {
+        final /* synthetic */ int val$dataType;
+        final /* synthetic */ Object val$reqObject;
+
+        AnonymousClass1(int dataType2, Object reqObject2) {
+            dataType = dataType2;
+            reqObject = reqObject2;
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            SemInfoExtractionManager.this.mInfoExtractionService = service;
+            SemInfoExtractionManager.this.requestInfoExtraction(service, dataType, reqObject);
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+            SemInfoExtractionManager.this.mInfoExtractionService = null;
+        }
+    }
+
     public void requestInfoExtraction(IBinder InfoExtractionService, int dataType, Object reqObject) {
         Log.d(TAG, "requestInfoExtraction data type = " + dataType);
         Bundle bundle = new Bundle();
@@ -270,7 +300,6 @@ public class SemInfoExtractionManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class IncomingHandler extends Handler {
         IncomingHandler() {

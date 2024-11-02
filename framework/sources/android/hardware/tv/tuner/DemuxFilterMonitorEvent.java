@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxFilterMonitorEvent implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterMonitorEvent> CREATOR = new Parcelable.Creator<DemuxFilterMonitorEvent>() { // from class: android.hardware.tv.tuner.DemuxFilterMonitorEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxFilterMonitorEvent createFromParcel(Parcel _aidl_source) {
             return new DemuxFilterMonitorEvent(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterMonitorEvent[] newArray(int _aidl_size) {
             return new DemuxFilterMonitorEvent[_aidl_size];
@@ -27,6 +28,10 @@ public final class DemuxFilterMonitorEvent implements Parcelable {
     public @interface Tag {
         public static final int cid = 1;
         public static final int scramblingStatus = 0;
+    }
+
+    /* synthetic */ DemuxFilterMonitorEvent(Parcel parcel, DemuxFilterMonitorEventIA demuxFilterMonitorEventIA) {
+        this(parcel);
     }
 
     public DemuxFilterMonitorEvent() {
@@ -76,6 +81,23 @@ public final class DemuxFilterMonitorEvent implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.DemuxFilterMonitorEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterMonitorEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterMonitorEvent createFromParcel(Parcel _aidl_source) {
+            return new DemuxFilterMonitorEvent(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterMonitorEvent[] newArray(int _aidl_size) {
+            return new DemuxFilterMonitorEvent[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

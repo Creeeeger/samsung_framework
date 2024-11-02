@@ -56,13 +56,14 @@ public final class DomainVerificationRequest implements Parcelable {
             sParcellingForPackageNames = Parcelling.Cache.put(new Parcelling.BuiltIn.ForStringSet());
         }
         CREATOR = new Parcelable.Creator<DomainVerificationRequest>() { // from class: android.content.pm.verify.domain.DomainVerificationRequest.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public DomainVerificationRequest[] newArray(int size) {
                 return new DomainVerificationRequest[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DomainVerificationRequest createFromParcel(Parcel in) {
                 return new DomainVerificationRequest(in);
@@ -84,6 +85,23 @@ public final class DomainVerificationRequest implements Parcelable {
         Set<String> packageNames = unparcelPackageNames(in);
         this.mPackageNames = packageNames;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageNames);
+    }
+
+    /* renamed from: android.content.pm.verify.domain.DomainVerificationRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DomainVerificationRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DomainVerificationRequest[] newArray(int size) {
+            return new DomainVerificationRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DomainVerificationRequest createFromParcel(Parcel in) {
+            return new DomainVerificationRequest(in);
+        }
     }
 
     @Deprecated

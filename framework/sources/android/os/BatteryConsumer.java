@@ -123,6 +123,10 @@ public abstract class BatteryConsumer {
         public final int powerComponent;
         public final int processState;
 
+        /* synthetic */ Key(int i, int i2, int i3, int i4, int i5, KeyIA keyIA) {
+            this(i, i2, i3, i4, i5);
+        }
+
         private Key(int powerComponent, int processState, int powerModelColumnIndex, int powerColumnIndex, int durationColumnIndex) {
             this.powerComponent = powerComponent;
             this.processState = processState;
@@ -155,7 +159,6 @@ public abstract class BatteryConsumer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BatteryConsumer(BatteryConsumerData data, PowerComponents powerComponents) {
         this.mData = data;
         this.mPowerComponents = powerComponents;
@@ -263,12 +266,10 @@ public abstract class BatteryConsumer {
         dump(pw, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasStatsProtoData() {
         return writeStatsProtoImpl(null, 0L);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeStatsProto(ProtoOutputStream proto, long fieldId) {
         writeStatsProtoImpl(proto, fieldId);
     }
@@ -288,26 +289,22 @@ public abstract class BatteryConsumer {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long convertMahToDeciCoulombs(double powerMah) {
         return (long) ((36.0d * powerMah) + 0.5d);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class BatteryConsumerData {
         public final BatteryConsumerDataLayout layout;
         private final int mCursorRow;
         private final CursorWindow mCursorWindow;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public BatteryConsumerData(CursorWindow cursorWindow, int cursorRow, BatteryConsumerDataLayout layout) {
             this.mCursorWindow = cursorWindow;
             this.mCursorRow = cursorRow;
             this.layout = layout;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static BatteryConsumerData create(CursorWindow cursorWindow, BatteryConsumerDataLayout layout) {
             int cursorRow = cursorWindow.getNumRows();
             if (!cursorWindow.allocRow()) {
@@ -321,7 +318,6 @@ public abstract class BatteryConsumer {
             return this.layout.keys[componentId];
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Key getKeyOrThrow(int componentId, int processState) {
             Key key = getKey(componentId, processState);
             if (key != null) {
@@ -333,7 +329,6 @@ public abstract class BatteryConsumer {
             throw new IllegalArgumentException("Unsupported power component ID: " + componentId + " process state: " + processState);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Key getKey(int componentId, int processState) {
             if (componentId >= 19) {
                 return null;
@@ -349,7 +344,6 @@ public abstract class BatteryConsumer {
             return null;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void putInt(int columnIndex, int value) {
             int i = this.mCursorRow;
             if (i == -1) {
@@ -358,7 +352,6 @@ public abstract class BatteryConsumer {
             this.mCursorWindow.putLong(value, i, columnIndex);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getInt(int columnIndex) {
             int i = this.mCursorRow;
             if (i == -1) {
@@ -367,7 +360,6 @@ public abstract class BatteryConsumer {
             return this.mCursorWindow.getInt(i, columnIndex);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void putDouble(int columnIndex, double value) {
             int i = this.mCursorRow;
             if (i == -1) {
@@ -376,7 +368,6 @@ public abstract class BatteryConsumer {
             this.mCursorWindow.putDouble(value, i, columnIndex);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public double getDouble(int columnIndex) {
             int i = this.mCursorRow;
             if (i == -1) {
@@ -385,7 +376,6 @@ public abstract class BatteryConsumer {
             return this.mCursorWindow.getDouble(i, columnIndex);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void putLong(int columnIndex, long value) {
             int i = this.mCursorRow;
             if (i == -1) {
@@ -394,7 +384,6 @@ public abstract class BatteryConsumer {
             this.mCursorWindow.putLong(value, i, columnIndex);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public long getLong(int columnIndex) {
             int i = this.mCursorRow;
             if (i == -1) {
@@ -403,7 +392,6 @@ public abstract class BatteryConsumer {
             return this.mCursorWindow.getLong(i, columnIndex);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void putString(int columnIndex, String value) {
             int i = this.mCursorRow;
             if (i == -1) {
@@ -412,7 +400,6 @@ public abstract class BatteryConsumer {
             this.mCursorWindow.putString(value, i, columnIndex);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String getString(int columnIndex) {
             int i = this.mCursorRow;
             if (i == -1) {
@@ -422,7 +409,6 @@ public abstract class BatteryConsumer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class BatteryConsumerDataLayout {
         private static final Key[] KEY_ARRAY = new Key[0];
@@ -436,6 +422,10 @@ public abstract class BatteryConsumer {
         public final boolean processStateDataIncluded;
         public final Key[][] processStateKeys;
         public final int totalConsumedPowerColumnIndex;
+
+        /* synthetic */ BatteryConsumerDataLayout(int i, String[] strArr, boolean z, boolean z2, BatteryConsumerDataLayoutIA batteryConsumerDataLayoutIA) {
+            this(i, strArr, z, z2);
+        }
 
         private BatteryConsumerDataLayout(int firstColumn, String[] customPowerComponentNames, boolean powerModelsIncluded, boolean includeProcessStateData) {
             int columnIndex;
@@ -458,7 +448,6 @@ public abstract class BatteryConsumer {
                     break;
                 }
                 perComponentKeys.clear();
-                int i4 = 0;
                 if (powerModelsIncluded) {
                     i = columnIndex3;
                     columnIndex = columnIndex3 + 1;
@@ -468,19 +457,19 @@ public abstract class BatteryConsumer {
                 }
                 int columnIndex4 = columnIndex + 1;
                 columnIndex3 = columnIndex4 + 1;
-                perComponentKeys.add(new Key(componentId, i4, i, columnIndex, columnIndex4));
+                perComponentKeys.add(new Key(componentId, 0, i, columnIndex, columnIndex4));
                 if (includeProcessStateData) {
                     boolean isSupported = false;
                     int[] iArr = BatteryConsumer.SUPPORTED_POWER_COMPONENTS_PER_PROCESS_STATE;
                     int length = iArr.length;
-                    int i5 = 0;
+                    int i4 = 0;
                     while (true) {
-                        if (i5 >= length) {
+                        if (i4 >= length) {
                             break;
                         }
-                        int id = iArr[i5];
+                        int id = iArr[i4];
                         if (id != componentId) {
-                            i5++;
+                            i4++;
                         } else {
                             isSupported = true;
                             break;
@@ -488,7 +477,7 @@ public abstract class BatteryConsumer {
                     }
                     if (isSupported) {
                         int processState2 = 0;
-                        for (int i6 = 5; processState2 < i6; i6 = 5) {
+                        for (int i5 = 5; processState2 < i5; i5 = 5) {
                             if (processState2 == 0) {
                                 processState = processState2;
                             } else {
@@ -518,13 +507,13 @@ public abstract class BatteryConsumer {
                 for (int processState3 = 0; processState3 < 5; processState3++) {
                     if (processState3 != 0) {
                         perProcStateKeys.clear();
-                        for (int i7 = 0; i7 < this.keys.length; i7++) {
+                        for (int i6 = 0; i6 < this.keys.length; i6++) {
                             int j = 0;
                             while (true) {
-                                Key[] keyArr = this.keys[i7];
+                                Key[] keyArr = this.keys[i6];
                                 if (j < keyArr.length) {
                                     if (keyArr[j].processState == processState3) {
-                                        perProcStateKeys.add(this.keys[i7][j]);
+                                        perProcStateKeys.add(this.keys[i6][j]);
                                     }
                                     j++;
                                 }
@@ -537,21 +526,21 @@ public abstract class BatteryConsumer {
                 this.processStateKeys = null;
             }
             this.firstCustomConsumedPowerColumn = columnIndex3;
-            int i8 = this.customPowerComponentCount;
-            int columnIndex6 = columnIndex3 + i8;
+            int i7 = this.customPowerComponentCount;
+            int columnIndex6 = columnIndex3 + i7;
             this.firstCustomUsageDurationColumn = columnIndex6;
-            this.columnCount = columnIndex6 + i8;
+            this.columnCount = columnIndex6 + i7;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static BatteryConsumerDataLayout createBatteryConsumerDataLayout(String[] customPowerComponentNames, boolean includePowerModels, boolean includeProcessStateData) {
         int columnCount = Math.max(1, 3);
         return new BatteryConsumerDataLayout(Math.max(Math.max(columnCount, 5), 2), customPowerComponentNames, includePowerModels, includeProcessStateData);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes3.dex */
-    protected static abstract class BaseBuilder<T extends BaseBuilder<?>> {
+    public static abstract class BaseBuilder<T extends BaseBuilder<?>> {
         protected final BatteryConsumerData mData;
         protected final PowerComponents.Builder mPowerComponentsBuilder;
 

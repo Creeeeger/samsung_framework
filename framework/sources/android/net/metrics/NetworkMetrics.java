@@ -106,7 +106,6 @@ public class NetworkMetrics {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class Metrics {
         public int count;

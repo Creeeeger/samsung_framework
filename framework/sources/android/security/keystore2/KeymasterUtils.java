@@ -31,7 +31,6 @@ public abstract class KeymasterUtils {
     private KeymasterUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getDigestOutputSizeBits(int keymasterDigest) {
         switch (keymasterDigest) {
             case 0:
@@ -53,7 +52,6 @@ public abstract class KeymasterUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isKeymasterBlockModeIndCpaCompatibleWithSymmetricCrypto(int keymasterBlockMode) {
         switch (keymasterBlockMode) {
             case 1:
@@ -67,7 +65,6 @@ public abstract class KeymasterUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isKeymasterPaddingSchemeIndCpaCompatibleWithAsymmetricCrypto(int keymasterPadding) {
         switch (keymasterPadding) {
             case 1:
@@ -105,7 +102,6 @@ public abstract class KeymasterUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getEcCurveFromKeymaster(int ecCurve) {
         switch (ecCurve) {
             case 0:
@@ -121,7 +117,6 @@ public abstract class KeymasterUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getKeymasterEcCurve(String ecCurveName) {
         if (ecCurveName.equals("secp224r1")) {
             return 0;
@@ -138,14 +133,12 @@ public abstract class KeymasterUtils {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ECParameterSpec getCurveSpec(String name) throws NoSuchAlgorithmException, InvalidParameterSpecException {
         AlgorithmParameters parameters = AlgorithmParameters.getInstance(KeyProperties.KEY_ALGORITHM_EC);
         parameters.init(new ECGenParameterSpec(name));
         return (ECParameterSpec) parameters.getParameterSpec(ECParameterSpec.class);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getCurveName(ECParameterSpec spec) {
         if (isECParameterSpecOfCurve(spec, "secp224r1")) {
             return "secp224r1";

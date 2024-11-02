@@ -60,7 +60,6 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         return super.isAnimationBack();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SemSweepWaveFilter(ListView listView) {
         int rgb = Color.rgb(97, 170, 19);
         this.leftColor = rgb;
@@ -127,7 +126,6 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doDrawWaveEffect(View viewForeground, float deltaX, int position) {
         float sweepProgress = deltaX / viewForeground.getWidth();
         Canvas canvas = drawWaveToBitmapCanvas(viewForeground, sweepProgress);
@@ -253,7 +251,7 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         initWaveParams(deltaX, position, listener);
     }
 
-    private void initWaveParams(float deltaX, final int itemIndex, SemSweepListAnimator.OnSweepListener listener) {
+    private void initWaveParams(float deltaX, int itemIndex, SemSweepListAnimator.OnSweepListener listener) {
         ListView listView = this.mListView;
         View child = listView.getChildAt(itemIndex - listView.getFirstVisiblePosition());
         if (child == null) {
@@ -279,6 +277,12 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         ValueAnimator ofFloat = ValueAnimator.ofFloat(0.0f, 1.0f);
         this.waveValueAnimator = ofFloat;
         ofFloat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.samsung.android.animation.SemSweepWaveFilter.1
+            final /* synthetic */ int val$position;
+
+            AnonymousClass1(int itemIndex2) {
+                itemIndex = itemIndex2;
+            }
+
             @Override // android.animation.ValueAnimator.AnimatorUpdateListener
             public void onAnimationUpdate(ValueAnimator animation) {
                 float fraction = animation.getAnimatedFraction();
@@ -295,6 +299,27 @@ public class SemSweepWaveFilter extends SemAbsSweepAnimationFilter {
         this.waveValueAnimator.setDuration(1300L);
         this.waveValueAnimator.setInterpolator(this.WAVE_INTERPOLATOR);
         this.waveValueAnimator.start();
+    }
+
+    /* renamed from: com.samsung.android.animation.SemSweepWaveFilter$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+        final /* synthetic */ int val$position;
+
+        AnonymousClass1(int itemIndex2) {
+            itemIndex = itemIndex2;
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            float fraction = animation.getAnimatedFraction();
+            SemSweepWaveFilter semSweepWaveFilter = SemSweepWaveFilter.this;
+            semSweepWaveFilter.incrementYdown = semSweepWaveFilter.waveHeight * fraction * 2.0f;
+            SemSweepWaveFilter semSweepWaveFilter2 = SemSweepWaveFilter.this;
+            semSweepWaveFilter2.incrementYup = (-fraction) * semSweepWaveFilter2.waveHeight * 2.0f;
+            SemSweepWaveFilter semSweepWaveFilter3 = SemSweepWaveFilter.this;
+            semSweepWaveFilter3.doDrawWaveEffect(semSweepWaveFilter3.mViewForeground, SemSweepWaveFilter.this.mDeltaX, itemIndex);
+        }
     }
 
     private void cancelRunningAnimator() {

@@ -85,8 +85,9 @@ public interface IDesktopModeBlocker extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDesktopModeBlocker {
+        public static class Proxy implements IDesktopModeBlocker {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

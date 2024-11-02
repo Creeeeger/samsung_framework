@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">ამ მოწყობილობას არ აქვს ამ %s მხარდაჭერა. შეეხეთ, რომ დააყენოთ მხარდაჭერილ ფორმატში.</string>
     <string name="ext_media_unsupported_notification_title">%s მხარდაჭერა არ არის</string>
     <string name="ext_storage_bad_removal_button">თავიდან ჩართვა</string>
-    <string name="ext_storage_bad_removal_title">გადატვირთეთ ტელეფონი</string>
+    <string name="ext_storage_bad_removal_title">გადატვირთეთ პლანშეტი</string>
     <string name="extmedia_format_button_format">ფორმატი</string>
     <string name="extmedia_format_message_usbhost">თქვენ USB მეხსიერებაში შენახული ყველა ფაილი წაიშლება. ეს მოქმედება ვეღარ შეიცვლება!</string>
     <string name="extmedia_format_title_usbhost">დავაფორმატო USB მეხსიერება?</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ხმა ისმის Bluetooth აუდიო მოწყობილობაში. შეეხეთ აქ, მის გამოსართავად</string>
     <string name="multisound_sound_via_headphone">%s უკრავს ყურსასმენით. შეეხეთ აქ, მის გამოსართავად.</string>
     <string name="multisound_sound_via_headphone_multiselection">ხმა ისმის ყურსასმენში. შეეხეთ აქ, მის გამოსართავად.</string>
-    <string name="multisound_sound_via_phone_speaker">%s უკრავს ტელეფონის დინამიკში. შეეხეთ აქ, მის გამოსართავად.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ხმა ისმის ტელეფონის დინამიკით. შეეხეთ აქ, მის გამოსართავად.</string>
+    <string name="multisound_sound_via_phone_speaker">%s უკრავს პლანშეტის დინამიკში. შეეხეთ აქ, მის გამოსართავად.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ხმა ისმის პლანშეტის დინამიკით. შეეხეთ აქ, მის გამოსართავად.</string>
     <string name="multisound_sound_via_usb_audio">%s-ის ხმა ისმის USB აუდიო მოწყობილობაში. შეეხეთ აქ, მის გამოსართავად.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ხმა ისმის USB აუდიო მოწყობილობაში. შეეხეთ აქ, მის გამოსართავად.</string>
     <string name="multisound_title">აპლიკაციის ხმის განცალკევება</string>
     <string name="multisound_turn_off_multisound">გამორთვა</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ვერ გაეშვება Samsung DeX-ში. სცადეთ ტელეფონის რეჟიმში გაშვება.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ვერ გაეშვება Samsung DeX-ში. ის შექმნილია ტელეფონის „საწყისი ეკრანებისთვის“.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ზოგიერთი თამაში მუშაობს მხოლოდ სენსორული ეკრანებით. თუ მაუსით მართვა შეუძლებელია Samsung DeX-ში, სანაცვლოდ სცადეთ თამაში ტელეფონის რეჟიმში.</string>
-    <string name="my_device">ეს ტელეფონი</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ვერ გაეშვება Samsung DeX-ში. სცადეთ პლანშეტის რეჟიმში გაშვება.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ვერ გაეშვება Samsung DeX-ში. ის შექმნილია პლანშეტის „საწყისი ეკრანებისთვის“.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ზოგიერთი თამაში მუშაობს მხოლოდ სენსორული ეკრანებით. თუ მაუსით მართვა შეუძლებელია Samsung DeX-ში, სანაცვლოდ სცადეთ თამაში პლანშეტის რეჟიმში.</string>
+    <string name="my_device">ეს პლანშეტი</string>
     <string name="network_locked_sim_dialog_message_ais">თქვენი SIM ბარათი სრულყოფილად არ მუშაობს ამ ტელეფონით, რადგან ის არ აკმაყოფილებს გამოწერის წესებსა და პირობებს. თუ შეკითხვები გაქვთ ან დამატებითი ინფორმაცია გჭირდებათ ამ საკითხთან დაკავშირებით, გთხოვთ, მიმართოთ Samsung-ის მომხმარებელთა მომსახურების ცენტრს ან იმ მაღაზიას, სადაც შეიძინეთ ეს პროდუქტი.</string>
     <string name="network_locked_sim_notification_text">დევს ქსელის მიერ დაბლოკილი SIM.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">აკრძალეთ სამუშაო მაგიდის სინქრონიზაციის გამოყენება.</string>
     <string name="policydesc_allow_internetsharing">აკრძალეთ „მობილური ცხელი წერტილის“ გამოყენება.</string>
     <string name="policydesc_allow_irda">აკრძალეთ IrDA-ს გამოყენება.</string>
-    <string name="policydesc_allow_popimapemail">ტელეფონში აკრძალეთ POP და IMAP ელფოსტების გამოყენება.</string>
+    <string name="policydesc_allow_popimapemail">პლანშეტში აკრძალეთ POP და IMAP ელფოსტების გამოყენება.</string>
     <string name="policydesc_allow_storagecard">აკრძალეთ SD ბარათის გამოყენება.</string>
     <string name="policydesc_allow_textmessaging">აკრძალეთ ტექსტური და მულტიმედიური შეტყობინების გამოყენება.</string>
     <string name="policydesc_allow_thirdParty">ამ აპლიკაციას შეუძლია, ხელი შეუშალოს მესამე მხარის აპლიკაციების გაშვებას.</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">უსაფრთხოების პოლიტიკით მოგეთხოვებათ შეცვალოთ პაროლი.</string>
     <string name="recording_fail">%1$s ვერ გამოიყენებს მიკროფონს, როდესაც მას იყენებს %2$s.</string>
     <string name="recording_popup">%s იყენებს მიკროფონს.</string>
-    <string name="recording_popup_device">ტელეფონი</string>
+    <string name="recording_popup_device">პლანშეტი</string>
     <string name="recording_popup_with_bluetooth">%s იყენებს Bluetooth მიკროფონს.</string>
     <string name="recording_popup_with_device">%1$s იყენებს %2$s-ის მიკროფონს.</string>
     <string name="redo">გამეორება</string>
@@ -904,12 +904,12 @@
     <string name="screencapture_restrict">უსაფრთხოების პოლიტიკა კრძალავს ეკრანის გადაღების ფუნქციის გამოყენებას.</string>
     <string name="sd_card_unavailable_message">SD ბარათს ვერ გამოიყენებთ, რადგან ის ჩადებული იყო, როდესაც გამოყენებული იყო სხვა მომხმარებლის პროფილი.</string>
     <string name="sd_card_unavailable_title">SD ბარათი მიუწვდომელია</string>
-    <string name="sdcard_bad_removal_message">SD ბარათის ამოღება არ იყო უსაფრთხო. იმისათვის რომ ტელეფონი უეცრად არ გადაიტვირთოს, შეინახეთ შეუნახავი მონაცემები და გადატვირთეთ ახლა.</string>
+    <string name="sdcard_bad_removal_message">SD ბარათის ამოღება არ იყო უსაფრთხო. იმისათვის რომ პლანშეტი უეცრად არ გადაიტვირთოს, შეინახეთ შეუნახავი მონაცემები და გადატვირთეთ ახლა.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD ბარათის გაშიფვრა</string>
     <string name="sdcard_batch_decrypt_noti_title">SD ბარათის გაშიფვრა</string>
     <string name="sdcard_batch_decrypt_popup_content">დაშიფრული SD ბარათი უნდა გაიშიფროს მის გამოყენებამდე. გაშიფვრას შეიძლება დასჭირდეს ერთი საათი ან მეტი. დაიწყეთ დატენილი კვების ელემენტით და არ მოაცილოთ აპარატს დამტენი გაშიფვრის დასრულებამდე. გაშიფვრის პროცესის შეწყვეტამ შეიძლება გამოიწვიოს მონაცემთა ნაწილის ან ყველა მონაცემის დაკარგვა.</string>
     <string name="sdcard_decrypt_err_notification">SD ბარათის გაშიფვრის დროს მოხდა შეცდომა.</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD ბარათზე ზოგიერთი ფაილი დაშიფრულია სხვა მოწყობილობით და მათი გამოყენება ამ ტელეფონით შეუძლებელია.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD ბარათზე ზოგიერთი ფაილი დაშიფრულია სხვა მოწყობილობით და მათი გამოყენება ამ პლანშეტით შეუძლებელია.</string>
     <string name="sdcard_decrypt_notification">SD ბარათი გაიშიფრა.</string>
     <string name="sdcard_decrypt_title_notification">SD ბარათის გაშიფვრა</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD ბარათის გაშიფვრა…</string>
@@ -1235,7 +1235,7 @@
     <string name="usb_abnormal_reset_title">USB კავშირი არასტაბილურია</string>
     <string name="usb_abnormal_reset_toast">USB კავშირი არასტაბილურია. გამოაძრეთ სადენი და შემდეგ ისევ მიუერთეთ, ან მოსინჯეთ სხვა სადენი.</string>
     <string name="usb_accessory_notification_title">დაკავშირებულია USB აქსესუართან</string>
-    <string name="usb_bad_removal_message">USB მეხსიერების მოწყობილობასთან კავშირის შეწყვეტა არ მოხდა უსაფრთხოდ. იმისათვის რომ ტელეფონი უეცრად არ გადაიტვირთოს, შეინახეთ შეუნახავი მონაცემები და გადატვირთეთ ახლა.</string>
+    <string name="usb_bad_removal_message">USB მეხსიერების მოწყობილობასთან კავშირის შეწყვეტა არ მოხდა უსაფრთხოდ. იმისათვის რომ პლანშეტი უეცრად არ გადაიტვირთოს, შეინახეთ შეუნახავი მონაცემები და გადატვირთეთ ახლა.</string>
     <string name="usb_blocked_by_emergency_mode">ზოგიერთი USB ფუნქცია მიუწვდომელია საგანგებო რეჟიმში.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">დაკავშირებული USB მოწყობილობის შესაბამისი ფუნქციების გამოყენება შეუძლებელია, როდესაც ჩართულია „ენერგიის მაქსიმალური დაზოგვის რეჟიმი“.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ზოგიერთი USB ფუნქციები იზღუდება, როდესაც ჩართულია „ენერგიის მაქსიმალური დაზოგვის რეჟიმი“.</string>
@@ -1244,13 +1244,13 @@
     <string name="usb_camera_connected_notification_title">მედია მოწყობილობა დაკავშირდა</string>
     <string name="usb_camera_disconnected_notification_title">მედია მოწყობილობასთან კაშირი შეწყდა</string>
     <string name="usb_cd_installer_notification_title">პროგრამის განახლება</string>
-    <string name="usb_charing_only_notification_title">USB-თი დამუხტვა</string>
+    <string name="usb_charing_only_notification_title">დაკავშირებული</string>
     <string name="usb_debugging_only_notification_title">მხოლოდ შეცდომების გასწორება</string>
-    <string name="usb_host_resource_exceed_message">თქვენი ტელეფონის USB კონტროლერს არ აქვს საკმარისი რესურსები ამ მოწყობილობის დასაკავშირებლად. სცადეთ მოწყობილობის კავშირის შეწყვეტა და ხელახლა დაკავშირება.</string>
+    <string name="usb_host_resource_exceed_message">თქვენი პლანშეტის USB კონტროლერს არ აქვს საკმარისი რესურსები ამ მოწყობილობის დასაკავშირებლად. სცადეთ მოწყობილობის კავშირის შეწყვეტა და ხელახლა დაკავშირება.</string>
     <string name="usb_host_resource_exceed_title">USB მართვის რესურსები არ არის საკმარისი</string>
-    <string name="usb_hub_depth_exceed_message">თქვენს ტელეფონს შეუძლია ერთდროულად მაქსიმუმ 5 USB კავშირი ჰქონდეს ცენტრთან.</string>
+    <string name="usb_hub_depth_exceed_message">თქვენს პლანშეტს შეუძლია ერთდროულად მაქსიმუმ 5 USB კავშირი ჰქონდეს ცენტრთან.</string>
     <string name="usb_hub_depth_exceed_title">მაქს. კავშირი USB ცენტრთან</string>
-    <string name="usb_hub_power_exceed_message">თქვენს ტელეფონს არ აქვს ამ USB მოწყობილობისთვის საკმარისი ენერგია. დააკავშირეთ მოწყობილობა საკუთარი ენერგიის მქონე USB ცენტრთან, სანამ დაუკავშირებთ მას ტელეფონს.</string>
+    <string name="usb_hub_power_exceed_message">თქვენს პლანშეტს არ აქვს ამ USB მოწყობილობისთვის საკმარისი ენერგია. დააკავშირეთ მოწყობილობა საკუთარი ენერგიის მქონე USB ცენტრთან, სანამ დაუკავშირებთ მას პლანშეტს.</string>
     <string name="usb_increase_battery_usage">USB კავშირმა შეიძლება გაზარდოს ენერგიის ხარჯვა.</string>
     <string name="usb_mass_storage_restrict">უსაფრთხოების პოლიტიკა კრძალავს მასიური USB საცავის გამოყენებას.</string>
     <string name="usb_midi_notification_title">MIDI-ს USB</string>
@@ -1276,8 +1276,8 @@
     <string name="usb_storage_stop_title">გამოყენებულია USB მეხსიერება.</string>
     <string name="usb_storage_title">USB დაკავშირდა.</string>
     <string name="usb_type_c_supply_power_notification_title">დაკავშირებულს დამუხტვა USB-თი</string>
-    <string name="usb_unblock_by_screen_unlock">დაკავშირებული USB მოწყობილობის გამოსაყენებლად განბლოკეთ ტელეფონი.</string>
-    <string name="usb_unsupport_accessory_message">ამ USB მოწყობილობას არ აქვს თქვენი ტელეფონის მხარდაჭერა.</string>
+    <string name="usb_unblock_by_screen_unlock">დაკავშირებული USB მოწყობილობის გამოსაყენებლად განბლოკეთ პლანშეტი.</string>
+    <string name="usb_unsupport_accessory_message">ამ USB მოწყობილობას არ აქვს თქვენი პლანშეტის მხარდაჭერა.</string>
     <string name="usb_unsupport_accessory_title">USB მოწყობილობა მხარდაუჭერელია</string>
     <string name="usb_unsupported_device">დაკავშირებული USB მოწყობილობის მხარდაჭერა არ არის.</string>
     <string name="usb_unsupported_device_title">მოწყობილობის მხარდაჭერა არ არის</string>
@@ -1295,19 +1295,19 @@
     <string name="usb_water_dialg_method_2_desc_2">გაშრობის დასაჩქარებლად, ფენი ან საშრობი (მხოლოდ გრილი ჰაერი) მიუშვირეთ პორტს.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"დამტენის/USB პორტში ამოცნობილია სინესტე ან უცხო ნივთიერება.
 
-შეამოწმეთ, დამტენის/USB პორტში ხომ არ არის უცხო ნივთიერება, როგორიცაა მტვერი ან ჭუჭყი. ტელეფონის დაზიანების ასაცილებლად არაფერი მიუერთოთ მას, სანამ დამტენის პორტი არ გაიწმინდება და არ გაშრება.
+შეამოწმეთ, დამტენის/USB პორტში ხომ არ არის უცხო ნივთიერება, როგორიცაა მტვერი ან ჭუჭყი. პლანშეტის დაზიანების ასაცილებლად არაფერი მიუერთოთ მას, სანამ დამტენის პორტი არ გაიწმინდება და არ გაშრება.
 
 პორტის გასამშრალებლად დაფერთხეთ სითხის მოსაცილებლად, შემდეგ კი დაელოდეთ გაშრობას, რასაც შეიძლება რამდენიმე საათი დასჭირდეს. გაშრობის დასაჩქარებლად ფენი ან საშრობი (მხოლოდ გრილი ჰაერი) მიუშვირეთ პორტს."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"დამტენის/USB პორტში ამოცნობილია სინესტე ან უცხო ნივთიერება.
 
-შეამოწმეთ, დამტენის/USB პორტში ხომ არ არის უცხო ნივთიერება, როგორიცაა მტვერი ან ჭუჭყი. ტელეფონის დაზიანების ასაცილებლად არაფერი მიუერთოთ მას, სანამ დამტენის პორტი არ გაიწმინდება და არ გაშრება.
+შეამოწმეთ, დამტენის/USB პორტში ხომ არ არის უცხო ნივთიერება, როგორიცაა მტვერი ან ჭუჭყი. პლანშეტის დაზიანების ასაცილებლად არაფერი მიუერთოთ მას, სანამ დამტენის პორტი არ გაიწმინდება და არ გაშრება.
 
 პორტის გასამშრალებლად დაფერთხეთ სითხის მოსაცილებლად, შემდეგ კი დაელოდეთ გაშრობას, რასაც შეიძლება რამდენიმე საათი დასჭირდეს. გაშრობის დასაჩქარებლად ფენი ან საშრობი (მხოლოდ გრილი ჰაერი) მიუშვირეთ პორტს.
 
-ამასობაში, შეგიძლიათ ტელეფონი დატენოთ უსადენოდ."</string>
+ამასობაში, შეგიძლიათ პლანშეტი დატენოთ უსადენოდ."</string>
     <string name="usb_water_notification_content">დამტენის/USB პორტი ნესტიანია ან მასში უცხო სხეულია. შეამოწმეთ დატენვამდე.</string>
-    <string name="usb_water_notification_message">დამტენში/USB პორტში ამოცნობილია სინესტე. ტელეფონის დამუხტვამდე დარწმუნდით, რომ ის მშრალია. შესაძლოა, ბოლომდე გაშრობას გარკვეული დრო დასჭირდეს.</string>
+    <string name="usb_water_notification_message">დამტენში/USB პორტში ამოცნობილია სინესტე. პლანშეტის დამუხტვამდე დარწმუნდით, რომ ის მშრალია. შესაძლოა, ბოლომდე გაშრობას გარკვეული დრო დასჭირდეს.</string>
     <string name="usb_water_notification_message_button">დეტალები</string>
     <string name="usb_water_notification_title">შეამოწმეთ დამტენი/USB პორტი</string>
     <string name="usbhostStorage_restrict">უსაფრთხოების პოლიტიკა კრძალავს მასპინძლის USB საცავის გამოყენებას.</string>

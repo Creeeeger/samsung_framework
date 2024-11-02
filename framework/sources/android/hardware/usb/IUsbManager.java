@@ -950,8 +950,9 @@ public interface IUsbManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IUsbManager {
+        public static class Proxy implements IUsbManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

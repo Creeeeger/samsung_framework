@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Float implements Parcelable {
     public static final Parcelable.Creator<Float> CREATOR = new Parcelable.Creator<Float>() { // from class: android.media.audio.common.Float.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Float createFromParcel(Parcel _aidl_source) {
             Float _aidl_out = new Float();
@@ -18,13 +20,31 @@ public class Float implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Float[] newArray(int _aidl_size) {
             return new Float[_aidl_size];
         }
     };
     public float value = 0.0f;
+
+    /* renamed from: android.media.audio.common.Float$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Float> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Float createFromParcel(Parcel _aidl_source) {
+            Float _aidl_out = new Float();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Float[] newArray(int _aidl_size) {
+            return new Float[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

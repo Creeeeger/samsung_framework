@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class AutofillValue implements Parcelable {
     public static final Parcelable.Creator<AutofillValue> CREATOR = new Parcelable.Creator<AutofillValue>() { // from class: android.view.autofill.AutofillValue.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AutofillValue createFromParcel(Parcel source) {
             return new AutofillValue(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AutofillValue[] newArray(int size) {
             return new AutofillValue[size];
@@ -26,6 +27,10 @@ public final class AutofillValue implements Parcelable {
     private static final String TAG = "AutofillValue";
     private final int mType;
     private final Object mValue;
+
+    /* synthetic */ AutofillValue(Parcel parcel, AutofillValueIA autofillValueIA) {
+        this(parcel);
+    }
 
     private AutofillValue(int type, Object value) {
         this.mType = type;
@@ -151,6 +156,23 @@ public final class AutofillValue implements Parcelable {
                 return;
             default:
                 throw new IllegalArgumentException("type=" + readInt + " not valid");
+        }
+    }
+
+    /* renamed from: android.view.autofill.AutofillValue$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AutofillValue> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AutofillValue createFromParcel(Parcel source) {
+            return new AutofillValue(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AutofillValue[] newArray(int size) {
+            return new AutofillValue[size];
         }
     }
 

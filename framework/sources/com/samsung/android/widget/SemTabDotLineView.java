@@ -43,7 +43,6 @@ public class SemTabDotLineView extends View {
         this.mDrawDot = draw;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);

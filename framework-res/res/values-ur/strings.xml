@@ -269,12 +269,12 @@
     <string name="allow">اجازت دیں</string>
     <string name="alwaysUse">اس کارروائی کیلئے بطور ڈیفالٹ استعمال کریں۔</string>
     <string name="android_preparing_apk">%1$s تیار ہو رہی ہے۔</string>
-    <string name="android_start_title">فون شروع ہو رہا ہے…</string>
+    <string name="android_start_title">ٹیبلیٹ شروع ہو رہا ہے…</string>
     <string name="android_system_label">‏Android سسٹم</string>
     <string name="android_upgrading_complete">بوٹ مکمل ہو رہا ہے۔</string>
     <string name="android_upgrading_notification_title">سسٹم اپ ڈیٹ مکمل ہو رہا ہے…</string>
     <string name="android_upgrading_starting_apps">ایپس شروع ہو رہی ہیں۔</string>
-    <string name="android_upgrading_title">فون اپ ڈیٹ ہو رہا ہے…</string>
+    <string name="android_upgrading_title">ٹیبلٹ اپ ڈیٹ ہو رہا ہے…</string>
     <string name="anr_activity_application">%2$s جواب نہیں دے رہی ہے</string>
     <string name="anr_activity_process">%1$s جواب نہیں دے رہی ہے</string>
     <string name="anr_application_process">%1$s جواب نہیں دے رہی ہے</string>
@@ -295,16 +295,16 @@
     <string name="app_not_found">اس عمل کو ہینڈل کرنے کیلئے کوئی ایپلیکیشن نہیں ملا</string>
     <string name="app_running_notification_text">مزید معلومات کیلئے یا ایپ کو روکنے کیلئے تھپتھپائیں۔</string>
     <string name="app_running_notification_title">%1$s چل رہا ہے</string>
-    <string name="app_streaming_blocked_message">اس وقت آپ کے %1$s پر اس تک رسائی نہیں مل سکتی۔ اس کے بجائے اپنے فون پر کوشش کریں۔</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">یہ ایپ اضافی سیکیورٹی کی درخواست کر رہی ہے۔ اس کے بجائے اپنے فون پر کوشش کریں۔</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">آپ کے %1$s پر اس تک رسائی حاصل نہیں ہو سکتی۔ اس کے بجائے اپنے فون پر کوشش کریں۔</string>
+    <string name="app_streaming_blocked_message">اس وقت آپ کے %1$s پر اس تک رسائی نہیں مل سکتی۔ اس کے بجائے اپنے ٹیبلیٹ پر کوشش کریں۔</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">یہ ایپ اضافی سیکیورٹی کی درخواست کر رہی ہے۔ اس کے بجائے اپنے ٹیبلیٹ پر کوشش کریں۔</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">آپ کے %1$s پر اس تک رسائی حاصل نہیں ہو سکتی۔ اس کے بجائے اپنے ٹیبلیٹ پر کوشش کریں۔</string>
     <string name="app_streaming_blocked_title">%1$s دستیاب نہیں ہے</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">کیمرا دستیاب نہیں ہے</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">فون پر جاری رکھیں</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">مائیکروفون دستیاب نہیں ہے</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">اجازت درکار ہے</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">‏Play اسٹور دستیاب نہیں ہے</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">فون کی ترتیبات دستیاب نہیں ہے</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">ٹیبلیٹ کی ترتیبات دستیاب نہیں ہے</string>
     <string name="app_suspended_default_message">%1$s ابھی دستیاب نہیں ہے۔ یہ %2$s کے زیر انتظام ہے۔</string>
     <string name="app_suspended_more_details">مزید جانیں</string>
     <string name="app_suspended_title">ایپ دستیاب نہیں ہے</string>
@@ -344,7 +344,7 @@
     <string name="back_button_label">واپس جائیں</string>
     <string name="badPin">‏آپ نے جو پرانا PIN ٹائپ کیا ہے وہ درست نہیں ہے۔</string>
     <string name="badPuk">‏آپ نے جو PUK ٹائپ کیا ہے وہ درست نہیں ہے۔</string>
-    <string name="battery_saver_charged_notification_summary">فون میں کافی چارج ہے۔ خصوصیات پر اب پابندی نہیں ہے۔</string>
+    <string name="battery_saver_charged_notification_summary">ٹیبلیٹ میں کافی چارج ہے۔ خصوصیات پر اب پابندی نہیں ہے۔</string>
     <string name="battery_saver_description">بیٹری سیور گہری تھیم کو آن کرتی ہے اور پس منظر کی سرگرمی، کچھ بصری اثرات، مخصوص خصوصیات اور کچھ نیٹ ورک کنکشنز کو محدود یا آف کرتی ہے۔</string>
     <string name="battery_saver_description_with_learn_more">بیٹری سیور گہری تھیم کو آن کرتی ہے اور پس منظر کی سرگرمی، کچھ بصری اثرات، مخصوص خصوصیات اور کچھ نیٹ ورک کنکشنز کو محدود یا آف کرتی ہے۔</string>
     <string name="battery_saver_notification_channel_name">بیٹری سیور</string>
@@ -486,7 +486,7 @@
     <string name="decline">مسترد کریں</string>
     <string name="decline_remote_bugreport_action">مسترد کریں</string>
     <string name="default_audio_route_category_name">سسٹم</string>
-    <string name="default_audio_route_name">فون</string>
+    <string name="default_audio_route_name">ٹیبلیٹ</string>
     <string name="default_audio_route_name_dock_speakers">ڈاک اسپیکرز</string>
     <string name="default_audio_route_name_external_device">بیرونی آلہ</string>
     <string name="default_audio_route_name_headphones">ہیڈ فونز</string>
@@ -563,7 +563,7 @@
     <string name="emergency_call_dialog_number_for_display">ایمرجنسی نمبر</string>
     <string name="emergency_calls_only">صرف ایمرجنسی کالز</string>
     <string name="enablePin">‏ناکام، SIM/RUIM لاک کو فعال کریں۔</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s ٹچ کرکے دریافت کریں کو فعال کرنا چاہتی ہے۔ ٹچ کرکے دریافت کریں کے آن ہو جانے پر، آپ کو اپنی انگلی کے نیچے موجود چیزوں کی تفصیلات دکھائی یا سنائی دے سکتی ہیں یا آپ فون کے ساتھ تعامل کرنے کیلئے اشارے انجام دے سکتے ہیں۔</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s ٹچ کرکے دریافت کریں کو فعال کرنا چاہتی ہے۔ ٹچ کرکے دریافت کریں کے آن ہو جانے پر، آپ کو اپنی انگلی کے نیچے موجود چیزوں کی تفصیلات دکھائی یا سنائی دے سکتی ہیں یا آپ ٹیبلیٹ کے ساتھ تعامل کرنے کیلئے اشارے انجام دے سکتے ہیں۔</string>
     <string name="enable_explore_by_touch_warning_title">ٹچ کرکے دریافت کریں کو فعال کریں؟</string>
     <string name="error_message_change_not_allowed">آپ کے منتظم کی جانب سے اس تبدیلی کی اجازت نہیں ہے</string>
     <string name="error_message_title">خرابی</string>
@@ -776,7 +776,7 @@
     <string name="global_action_silent_mode_on_status">آواز آف ہے</string>
     <string name="global_action_toggle_silent_mode">خاموش وضع</string>
     <string name="global_action_voice_assist">Voice Assist</string>
-    <string name="global_actions">فون کے اختیارات</string>
+    <string name="global_actions">ٹیبلیٹ کے اختیارات</string>
     <string name="global_actions_airplane_mode_off_status">ہوائی جہاز وضع آف ہے</string>
     <string name="global_actions_airplane_mode_on_status">ہوائی جہاز وضع آن ہے</string>
     <string name="global_actions_toggle_airplane_mode">ہوائی جہاز وضع</string>
@@ -917,11 +917,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">پاس ورڈ ٹائپ کرنے کیلئے تھپتھپائیں</font></string>
     <string name="keyguard_password_wrong_pin_code">‏غلط PIN کوڈ۔</string>
     <string name="kg_enter_confirm_pin_hint">‏پسندیدہ PIN کوڈ کی توثیق کریں</string>
-    <string name="kg_failed_attempts_almost_at_login">"آپ نے اپنا غیر مقفل کرنے کا پیٹرن %1$d بار غلط طریقے سے ڈرا کیا ہے۔ %2$d مزید ناکام کوششوں کے بعد، آپ سے ایک ای میل اکاؤنٹ استعمال کرکے اپنا فون غیر مقفل کرنے کو کہا جائے گا۔
+    <string name="kg_failed_attempts_almost_at_login">"آپ نے اپنا غیر مقفل کرنے کا پیٹرن %1$d بار غلط طریقے سے ڈرا کیا ہے۔ %2$d مزید ناکام کوششوں کے بعد، آپ سے ایک ای میل اکاؤنٹ استعمال کرکے اپنا ٹیبلیٹ غیر مقفل کرنے کو کہا جائے گا۔
 
  %3$d سیکنڈ میں دوبارہ کوشش کریں۔"</string>
-    <string name="kg_failed_attempts_almost_at_wipe">آپ نے فون کو غیر مقفل کرنے کیلئے %1$d بار غلط طریقے سے کوشش کی ہے۔ %2$d مزید ناکام کوششوں کے بعد، فون فیکٹری ڈیفالٹ پر دوبارہ ترتیب دے دیا جائے گا اور صارف کا سبھی ڈیٹا ضائع ہو جائے گا۔</string>
-    <string name="kg_failed_attempts_now_wiping">آپ نے فون کو غیر مقفل کرنے کیلئے %d بار غلط طریقے سے کوشش کی ہے۔ اب فون فیکٹری ڈیفالٹ پر دوبارہ ترتیب دے دیا جائے گا۔</string>
+    <string name="kg_failed_attempts_almost_at_wipe">آپ نے ٹیبلیٹ کو غیر مقفل کرنے کیلئے %1$d بار غلط طریقے سے کوشش کی ہے۔ %2$d مزید ناکام کوششوں کے بعد، ٹیبلیٹ فیکٹری ڈیفالٹ پر دوبارہ ترتیب دے دیا جائے گا اور صارف کا سبھی ڈیٹا ضائع ہو جائے گا۔</string>
+    <string name="kg_failed_attempts_now_wiping">آپ نے ٹیبلٹ کو غیر مقفل کرنے کیلئے %d بار غلط طریقے سے کوشش کی ہے۔ اب ٹیبلیٹ فیکٹری ڈیفالٹ پر دوبارہ ترتیب دے دیا جائے گا۔</string>
     <string name="kg_forgot_pattern_button_text">پیٹرن بھول گئے</string>
     <string name="kg_invalid_confirm_pin_hint">‏PIN کوڈز مماثل نہیں ہیں</string>
     <string name="kg_invalid_puk">‏صحیح PUK کوڈ دوبارہ درج کریں۔ بار بار کی کوششیں SIM کو مستقل طور پر غیر فعال کر دیں گی۔</string>
@@ -986,11 +986,11 @@
     <string name="lockscreen_access_pattern_start">پیٹرن شروع ہو گیا</string>
     <string name="lockscreen_carrier_default">کوئی سروس نہیں ہے</string>
     <string name="lockscreen_emergency_call">ایمرجنسی</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">آپ نے فون کو %1$d بار غلط طریقہ سے غیر مقفل کرنے کی کوشش کی ہے۔ %2$d مزید ناکام کوششوں کے بعد، فون کو فیکٹری ڈیفالٹ پر ری سیٹ کر دیا جائے گی اور صارف کا سبھی ڈیٹا ضائع ہو جائے گا۔</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"‏آپ نے اپنے غیر مقفل کرنے کے پیٹرن کو %1$d بار غلط طریقے سے ڈرا کیا ہے۔ %2$d مزید ناکام کوششوں کے بعد، آپ سے اپنے Google سائن ان کا استعمال کرکے اپنے فون کو غیر مقفل کرنے کیلئے کہا جائے گا۔ 
+    <string name="lockscreen_failed_attempts_almost_at_wipe">آپ نے ٹیبلیٹ کو %1$d بار غلط طریقہ سے غیر مقفل کرنے کی کوشش کی ہے۔ %2$d مزید ناکام کوششوں کے بعد، ٹیبلیٹ کو فیکٹری ڈیفالٹ پر ری سیٹ کر دیا جائے گیا اور صارف کا سبھی ڈیٹا ضائع ہو جائے گا۔</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"‏آپ نے اپنے غیر مقفل کرنے کے پیٹرن کو %1$d بار غلط طریقے سے ڈرا کیا ہے۔ %2$d مزید ناکام کوششوں کے بعد، آپ سے اپنے Google سائن ان کا استعمال کرکے اپنے ٹیبلٹ کو غیر مقفل کرنے کیلئے کہا جائے گا۔ 
 
  %3$d سیکنڈز بعد دوبارہ کوشش کریں۔"</string>
-    <string name="lockscreen_failed_attempts_now_wiping">آپ نے فون کو %d بار غلط طریقہ سے غیر مقفل کرنے کی کوشش کی ہے۔ فون کو اب فیکٹری ڈیفالٹ پر ری سیٹ کر دیا جائے گیا۔</string>
+    <string name="lockscreen_failed_attempts_now_wiping">آپ نے ٹیبلیٹ کو %d بار غلط طریقہ سے غیر مقفل کرنے کی کوشش کی ہے۔ ٹیبلیٹ کو اب فیکٹری ڈیفالٹ پر ری سیٹ کر دیا جائے گیا۔</string>
     <string name="lockscreen_forgot_pattern_button_text">پیٹرن بھول گئے ہیں؟</string>
     <string name="lockscreen_glogin_account_recovery_hint">"‏اپنا صارف نام یا پاس ورڈ بھول گئے؟
 "<b>google.com/accounts/recovery</b> ملاحظہ کریں۔</string>
@@ -1006,7 +1006,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">غیر مقفل کرنے کیلئے مینیو دبائیں یا ایمرجنسی کال کریں۔</string>
     <string name="lockscreen_missing_sim_instructions">‏ایک SIM شامل کریں۔</string>
     <string name="lockscreen_missing_sim_instructions_long">‏SIM غائب ہے یا پڑھنے لائق نہیں ہے۔ ایک SIM شامل کریں۔</string>
-    <string name="lockscreen_missing_sim_message">‏فون میں کوئی SIM نہيں ہے۔</string>
+    <string name="lockscreen_missing_sim_message">‏ٹیبلیٹ میں کوئی SIM نہیں ہے۔</string>
     <string name="lockscreen_missing_sim_message_short">‏کوئی SIM نہیں ہے</string>
     <string name="lockscreen_network_locked_message">نیٹ ورک مقفل ہو گیا</string>
     <string name="lockscreen_password_wrong">دوبارہ کوشش کریں</string>
@@ -1046,7 +1046,7 @@
     <string name="low_internal_storage_view_text">ممکن ہے سسٹم کے کچھ فنکشنز کام نہ کریں</string>
     <string name="low_internal_storage_view_text_no_boot">‏سسٹم کیلئے کافی اسٹوریج نہیں ہے۔ اس بات کو یقینی بنائیں کہ آپ کے پاس 250MB خالی جگہ ہے اور دوبارہ شروع کریں۔</string>
     <string name="low_internal_storage_view_title">اسٹوریج کی جگہ ختم ہو رہی ہے</string>
-    <string name="low_memory">فون اسٹوریج بھرا ہوا ہے۔ جگہ خالی کرنے کیلئے کچھ فائلیں حذف کریں۔</string>
+    <string name="low_memory">ٹیبلیٹ اسٹوریج بھرا ہوا ہے. جگہ خالی کرنے کیلئے کچھ فائلیں حذف کریں۔</string>
     <string name="managed_profile_app_label">دفتری %1$s پر سوئچ کریں</string>
     <string name="managed_profile_label">دفتری پروفائل پر سوئچ کریں</string>
     <string name="managed_profile_label_badge">دفتر %1$s</string>
@@ -1376,23 +1376,23 @@
     <string name="permdesc_bindNotificationListenerService">حامل کو اطلاع سننے والی سروس کے اعلی سطحی انٹرفیس کا پابند ہونے کی اجازت دیتا ہے۔ عام ایپس کیلئے کبھی بھی اس کی ضرورت نہيں ہونی چاہئے۔</string>
     <string name="permdesc_bind_connection_service">کالز کرنے/وصول کرنے کیلئے ایپ کو ٹیلیفونی سروسز کے ساتھ تعامل کرنے دیتا ہے۔</string>
     <string name="permdesc_bind_incall_service">ایپ کو صارف کے درون کال اسکرین دیکھنے کے وقت اور طریقے کو کنٹرول کرنے کی اجازت دیتا ہے۔</string>
-    <string name="permdesc_bluetooth">ایپ کو فون پر بلوٹوتھ کی ترتیب دیکھنے اور جوڑا بنائے ہوئے آلات کے ساتھ کنکشنز بنانے اور قبول کرنے کی اجازت دیتا ہے۔</string>
-    <string name="permdesc_bluetoothAdmin">ایپ کو مقامی بلوٹوتھ فون کنفیگر کرنے اور ریموٹ آلات دریافت کرنے اور ان کے ساتھ جوڑا بنانے کی اجازت دیتا ہے۔</string>
+    <string name="permdesc_bluetooth">ایپ کو ٹیبلیٹ پر بلوٹوتھ کی ترتیب دیکھنے اور جوڑا بنائے ہوئے آلات کے ساتھ کنکشنز بنانے اور قبول کرنے کی اجازت دیتا ہے۔</string>
+    <string name="permdesc_bluetoothAdmin">ایپ کو مقامی بلوٹوتھ ٹیبلیٹ کنفیگر کرنے اور ریموٹ آلات دریافت کرنے اور ان کے ساتھ جوڑا بنانے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_bluetooth_advertise">اس سے ایپ کو قریبی بلوٹوتھ آلات پر تشہیر کرنے کی اجازت ملتی ہے</string>
     <string name="permdesc_bluetooth_connect">ایپ کو جوڑا بنائے ہوئے بلوٹوتھ آلات سے منسلک کرنے کی اجازت دیں</string>
     <string name="permdesc_bluetooth_scan">ایپ کو قریبی بلوٹوتھ آلات دریافت کرنے اور ان کا جوڑا بنانے کی اجازت دیں</string>
     <string name="permdesc_bodySensors">ایپ کے استعمال میں ہونے کے دوران ایپ کو حرکت قلب کی شرح، درجہ حرارت اور خون میں آکسیجن کا فیصد جیسے باڈی سینسر ڈیٹا تک رسائی کی اجازت دیتا ہے۔</string>
     <string name="permdesc_bodySensors_background">ایپ کے پس منظر میں ہونے کے دوران ایپ کو حرکت قلب کی شرح، درجہ حرارت اور خون میں آکسیجن کا فیصد جیسے باڈی سینسر ڈیٹا تک رسائی کی اجازت دیتا ہے۔</string>
-    <string name="permdesc_broadcastSticky">ایپ کو اسٹیکی براڈکاسٹس بھیجنے کی اجازت دیتا ہے، جو براڈکاسٹ ختم ہونے کے بعد بھی باقی رہتے ہیں۔ حد سے زیادہ استعمال فون کو سست یا غیر مستحکم بنا سکتا ہے جس کی وجہ سے یہ میموری کا کافی زیادہ استعمال کر سکتا ہے۔</string>
+    <string name="permdesc_broadcastSticky">ایپ کو اسٹیکی براڈکاسٹس بھیجنے کی اجازت دیتا ہے، جو براڈکاسٹ ختم ہونے کے بعد بھی باقی رہتے ہیں۔ حد سے زیادہ استعمال ٹیبلیٹ کو سست یا غیر مستحکم بنا سکتا ہے جس کی وجہ سے یہ میموری کا کافی زیادہ استعمال کر سکتا ہے۔</string>
     <string name="permdesc_callCompanionApp">ایپ کو آلہ پر جاری کالز دیکھنے اور کنٹرول کرنے کی اجازت دیں۔ اس میں کالز کیلئے کال نمبرز اور کالز کی حالت جیسی معلومات شامل ہیں۔</string>
     <string name="permdesc_callPhone">ایپ کو آپ کی مداخلت کے بغیر فون نمبرز پر کال کرنے کی سہولت حاصل ہوتی ہے۔ اس کی وجہ سے غیر متوقع چارجز وصول کئے جا سکتے ہیں یا غیر متوقع کالز موصول ہو سکتی ہیں۔ یاد رکھیں کہ اس سے ایپ کو ایمرجنسی نمبرز پر کال کرنے کی سہولت حاصل نہیں ہوتی ہے۔ نقصان دہ ایپس آپ کی تصدیق کے بغیر کالز کر کے آپ کی رقم خرچ کروا سکتی ہیں یا کیریئر کوڈز ڈائل کر سکتی ہیں جس سے اِن کمنگ کالز خودکار طور پر دوسرے نمبر پر فارورڈ ہو جاتی ہیں۔</string>
     <string name="permdesc_camera">ایپ کے استعمال ہونے کے دوران یہ ایپ کیمرا استعمال کرتے ہوئے تصاویر لے سکتی ہے اور ویڈیوز ریکارڈ کر سکتی ہے۔</string>
     <string name="permdesc_cameraOpenCloseListener">یہ ایپ کال بیکس موصول کر سکتی ہے جب کوئی بھی کیمرا کا آلہ (کسی ایپلیکیشن سے) کھولا جا رہا ہو یا بند کیا جا رہا ہو۔</string>
     <string name="permdesc_changeNetworkState">ایپ کو نیٹ ورک کنیکٹوٹی کی حالت تبدیل کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_changeTetherState">ایپ کو مربوط کردہ نیٹ ورک کنیکٹوٹی کی حالت تبدیل کرنے کی اجازت دیتا ہے۔</string>
-    <string name="permdesc_changeWifiMulticastState">‏ایپ کو صرف آپ کا فون نہیں، بلکہ ملٹی کاسٹ پتے استعمال کرکے Wi-Fi نیٹ ورک پر موجود سبھی آلات کو مرسلہ پیکٹس وصول کرنے کی اجازت دیتا ہے۔ اس میں غیر ملٹی کاسٹ طرز سے زیادہ قوت استعمال ہوتی ہے۔</string>
+    <string name="permdesc_changeWifiMulticastState">‏ایپ کو صرف آپ کا ٹیبلٹ نہیں، بلکہ ملٹی کاسٹ پتے استعمال کرکے Wi-Fi نیٹ ورک پر موجود سبھی آلات کو مرسلہ پیکٹس وصول کرنے کی اجازت دیتا ہے۔ اس میں غیر ملٹی کاسٹ طرز سے زیادہ قوت استعمال ہوتی ہے۔</string>
     <string name="permdesc_changeWifiState">‏ایپ کو Wi-Fi کے رسائی مراکز سے مربوط اور منقطع ہونے اور Wi-Fi نیٹ ورکس کیلئے آلے کی ترتیب میں تبدیلیاں کرنے کی اجازت دیتا ہے۔</string>
-    <string name="permdesc_changeWimaxState">‏ایپ کو WiMAX نیٹ ورکس سے فون کو مربوط اور فون کو منقطع کرنے کی اجازت دیتا ہے۔</string>
+    <string name="permdesc_changeWimaxState">‏ایپ کو WiMAX نیٹ ورکس سے ٹیبلٹ کو مربوط اور ٹیبلٹ کو منقطع کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_companionProfileWatch">گھڑیوں کا نظم کرنے کے لیے ساتھی ایپ کی اجازت دیتی ہے۔</string>
     <string name="permdesc_connection_manager">ایپ کو ٹیلی کام کنکشنز کا نظم کرنے کی اجازت دیتی ہے۔</string>
     <string name="permdesc_control_incall_experience">ایپ کو ایک درون کال صارف تجربہ فراہم کرنے کی اجازت دیتا ہے۔</string>
@@ -1418,7 +1418,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">‏ایپ کو \"specialUse\" کی قسم کے ساتھ پیش منظر کی سروسز کے استعمال کی اجازت دیتی ہے</string>
     <string name="permdesc_foregroundServiceSystemExempted">‏ایپ کو \"systemExempted\" کی قسم کے ساتھ پیش منظر کی سروسز کے استعمال کی اجازت دیتی ہے</string>
     <string name="permdesc_fullScreenIntent">ایپ کو مقفل آلے پر فُل اسکرین سرگرمیوں کے بطور اطلاعات کو ڈسپلے کرنے کی اجازت دیتا ہے</string>
-    <string name="permdesc_getAccounts">ایپ کو فون کو معلوم اکاؤنٹس کی فہرست حاصل کرنے کی اجازت دیتا ہے۔ اس میں آپ کی انسٹال کردہ ایپلیکیشنز کے ذریعہ بنائے گئے کوئی بھی اکاؤنٹس شامل ہوسکتے ہیں۔</string>
+    <string name="permdesc_getAccounts">ایپ کو ٹیبلٹ کو معلوم اکاؤنٹس کی فہرست حاصل کرنے کی اجازت دیتا ہے۔ اس میں آپ کی انسٹال کردہ ایپلیکیشنز کے ذریعہ بنائے گئے کوئی بھی اکاؤنٹس شامل ہوسکتے ہیں۔</string>
     <string name="permdesc_getPackageSize">ایپ کو اپنے کوڈ، ڈیٹا اور کیش کے سائزوں کی بازیافت کرنے دیتا ہے</string>
     <string name="permdesc_getTasks">ایپ کو موجودہ اور حالیہ چل رہے ٹاسکس کے بارے میں معلومات بازیافت کرنے کی اجازت دیتا ہے۔ یہ ایپ کو اس بارے میں معلومات دریافت کرنے کی اجازت دے سکتا ہے کہ آلہ پر کون سی ایپلیکیشنز استعمال کی جاتی ہیں۔</string>
     <string name="permdesc_handoverStatus">‏اس ایپلیکیشن کو Android Beam کی حالیہ منتقلیوں کے بارے میں معلومات موصول کرنے کی اجازت دیتا ہے</string>
@@ -1441,16 +1441,16 @@
     <string name="permdesc_nearby_wifi_devices">‏ایپ کو اشتہار دینے، منسلک کرنے اور قریبی Wi-Fi آلات کی متعلقہ پوزیشن کا تعین کرنے کی اجازت دیتا ہے</string>
     <string name="permdesc_nfc">‏ایپ کو Near Field Communication (NFC)‎ ٹیگز، کارڈز اور ریڈرز کے ساتھ مواصلت کرنے کی اجازت دیٹا ہے۔</string>
     <string name="permdesc_observeCompanionDevicePresence">جب آلات قریب یا دور ہوں تو ساتھی ایپ کو ساتھی آلہ کی موجودگی کا مشاہدہ کرنے کی اجازت دیتی ہے۔</string>
-    <string name="permdesc_persistentActivity">ایپ کو خود اپنے ہی حصوں کو میموری میں استقلال پذیر بنانے کی اجازت دیتا ہے۔ یہ فون کو سست بناکر دوسری ایپس کیلئے دستیاب میموری کو محدود کرسکتا ہے۔</string>
+    <string name="permdesc_persistentActivity">ایپ کو خود اپنے ہی حصوں کو میموری میں استقلال پذیر بنانے کی اجازت دیتا ہے۔ یہ ٹیبلٹ کو سست بناکر دوسری ایپس کیلئے دستیاب میموری کو محدود کرسکتا ہے۔</string>
     <string name="permdesc_postNotification">ایپ کو اطلاعات دکھانے کی اجازت دیتا ہے</string>
     <string name="permdesc_preferredPaymentInfo">‏ایپ کو رجسٹرشدہ ایڈز اور روٹ ڈسٹنیشن جیسی ترجیح شدہ nfc ادائیگی سروس کی معلومات حاصل کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_processOutgoingCalls">ایپ کو ایک مختلف نمبر پر کال ری ڈائریکٹ کرنے یا مکمل طور پر کال ختم کر دینے کیلئے اختیار کے ساتھ ایک آؤٹ گوئنگ کال کے دوران ڈائل کیا جا رہا نمبر دیکھنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_queryAllPackages">ایپ کو سبھی انسٹال کردہ پیکیجز دیکھنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_readBasicPhoneState">اس سے ایپ کو آلے کی بنیادی ٹیلیفونی خصوصیات تک رسائی کی اجازت ملتی ہے۔</string>
-    <string name="permdesc_readCalendar">"یہ ایپ آپ کے فون پر اسٹور کردہ سبھی کیلنڈر ایونٹس کو پڑھ سکتی ہے اور آپ کے  کیلنڈر ڈیٹا کا اشتراک یا اسے محفوظ کر سکتی ہے۔"</string>
+    <string name="permdesc_readCalendar">"یہ ایپ آپ کے ٹیبلیٹ پر اسٹور کردہ سبھی کیلنڈر ایونٹس کو پڑھ سکتی ہے اور آپ کے  کیلنڈر ڈیٹا کا اشتراک یا اسے محفوظ کر سکتی ہے۔"</string>
     <string name="permdesc_readCallLog">یہ ایپ آپ کی کال کی سرگزشت پڑھ سکتی ہے۔</string>
     <string name="permdesc_readCellBroadcasts">ایپ کو آپ کے آلے کو موصولہ سیل کے نشریاتی پیغامات پڑھنے کی اجازت دیتا ہے۔ سیل کی نشریاتی الرٹس آپ کو ایمرجنسی حالات سے مطلع کرنے کیلئے کچھ مقامات میں مہیا کی جاتی ہیں۔ نقصان دہ ایپس کوئی ایمرجنسی سیل کا نشریہ موصول ہونے پر آپ کے آلے کی کارکردگی یا عمل میں خلل ڈال سکتی ہیں۔</string>
-    <string name="permdesc_readContacts">ایپ کو آپ کے فون پر اسٹور کردہ آپ کے رابطوں کے بارے میں ڈیٹا پڑھنے کی اجازت دیتی ہے۔ ایپس کو آپ کے فون پر ان اکاؤنٹس تک رسائی حاصل ہو گی جنہوں نے رابطے تخلیق کیے ہیں۔ اس میں آپ کی انسٹال کردہ ایپس کے ذریعے تخلیق کردہ اکاؤنٹس بھی شامل ہو سکتے ہیں۔ یہ اجازت ایپس کو آپ کے رابطے کا ڈیٹا محفوظ کرنے کی اجازت دیتی ہے اور نقصان دہ ایپس آپ کی جانکاری کے بغیر رابطے کے ڈیٹا کا اشتراک کر سکتی ہیں۔</string>
+    <string name="permdesc_readContacts">ایپ کو آپ کے ٹیبلیٹ پر اسٹور کردہ آپ کے رابطوں کے بارے میں ڈیٹا کو پڑھنے کی اجازت دیتی ہے۔ ایپس کو آپ کے ٹیبلیٹ پر ان اکاؤنٹس تک رسائی حاصل ہو گی جنہوں نے رابطے تخلیق کیے ہیں۔ اس میں آپ کی انسٹال کردہ ایپس کے ذریعے تخلیق کردہ اکاؤنٹس بھی شامل ہو سکتے ہیں۔ یہ اجازت ایپس کو آپ کے رابطے کا ڈیٹا محفوظ کرنے کی اجازت دیتی ہے اور نقصان دہ ایپس آپ کی جانکاری کے بغیر رابطے کے ڈیٹا کا اشتراک کر سکتی ہیں۔</string>
     <string name="permdesc_readInstallSessions">ایک ایپلیکیشن کو انسٹال سیشنز پڑھنے کی اجازت دیتا ہے۔ یہ اسے فعال پیکیج انسٹالیشنز کے بارے میں تفصیلات دیکھنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_readMediaAudio">ایپ کو آپ کی اشتراک کردہ اسٹوریج سے آڈیو فائلز کو پڑھنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_readMediaImages">ایپ کو آپ کی اشتراک کردہ اسٹوریج سے تصویری فائلز کو پڑھنے کی اجازت دیتا ہے۔</string>
@@ -1458,11 +1458,11 @@
     <string name="permdesc_readNetworkUsageHistory">ایپ کو مخصوص نیٹ ورکس اور ایپس کیلئے نیٹ ورک کے استعمال کی سرگزشت پڑھنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_readPhoneNumbers">ایپ کو آلہ کے فون نمبرز تک رسائی کرنے دیتا ہے۔</string>
     <string name="permdesc_readPhoneState">‏ایپ کو آلے کی فون والی خصوصیات تک رسائی حاصل کرنے کی اجازت دیتا ہے۔ یہ اجازت ایپ کو فون نمبر اور آلے کے IDs کا تعین کرنے، آیا کوئی کال فعال ہے، اور کال کے ذریعہ مربوط ریموٹ نمبر کا تعین کرنے دیتی ہے۔</string>
-    <string name="permdesc_readSms">‏یہ ایپ آپ کے فون میں اسٹورکردہ تمام SMS (متنی) پیغامات پڑھ سکتی ہے۔</string>
+    <string name="permdesc_readSms">‏یہ ایپ آپ کے ٹیبلیٹ میں اسٹورکردہ تمام SMS (متنی) پیغامات پڑھ سکتی ہے۔</string>
     <string name="permdesc_readSyncSettings">‏ایپ کو کسی اکاؤنٹ کیلئے مطابقت پذیری کی ترتیبات پڑھنے کی اجازت دیتا ہے۔ مثلا، یہ تعین کرسکتا ہے کہ آیا People ایپ کسی اکاؤنٹ کے ساتھ مطابقت پذیر ہے۔</string>
     <string name="permdesc_readSyncStats">ایپ کو کسی اکاؤنٹ کیلئے مطابقت پذیری کے اعداد و شمار، بشمول مطابقت پذیری کے ایونٹس اور جس قدر ڈیٹا مطابقت پذیر ہے اس کی سرگزشت کو پڑھنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_readVisualUserSelect">ایپ کو ان تصویر اور ویڈیو فائلز کو پڑھنے کی اجازت دیتی ہے جنہیں آپ اپنے مشترکہ اسٹوریج سے منتخب کرتے ہیں۔</string>
-    <string name="permdesc_receiveBootCompleted">سسٹم کے بوٹ ہونے کا عمل پورا ہونے کے ساتھ ہی ایپ کو خود سے سٹارٹ ہونے کی اجازت دیتا ہے۔ اس کی وجہ سے فون کو سٹارٹ ہونے میں زیادہ وقت لگ سکتا ہے اور ایپ کو ہمیشہ چلتی حالت میں رکھنا مجموعی طور پر فون کی رفتار سست کرنے کی اجازت دے سکتا ہے۔</string>
+    <string name="permdesc_receiveBootCompleted">سسٹم کے بوٹ ہونے کا عمل پورا ہونے کے ساتھ ہی ایپ کو خود سے سٹارٹ ہونے کی اجازت دیتا ہے۔ اس کی وجہ سے ٹیبلٹ کو سٹارٹ ہونے میں زیادہ وقت لگ سکتا ہے اور ایپ کو ہمیشہ چلتی حالت میں رکھنا مجموعی طور پر ٹیبلٹ کی رفتار سست کرنے کی اجازت دے سکتا ہے۔</string>
     <string name="permdesc_receiveMms">‏ایپ کو MMS پیغامات حاصل اور ان پر کارروائی کرنے کی اجازت دیتا ہے۔ اس کا مطلب ہے کہ ایپ آپ کے آلے پر مرسلہ پیغامات آپ کو دکھائے بغیر ان پر نگاہ رکھ یا انہیں حذف کرسکتی ہے۔</string>
     <string name="permdesc_receiveSms">‏ایپ کو SMS پیغامات حاصل اور ان پر کارروائی کرنے کی اجازت دیتا ہے۔ اس کا مطلب ہے کہ ایپ آپ کے آلے پر مرسلہ پیغامات آپ کو دکھائے بغیر ان پر نگاہ رکھ یا انہیں حذف کرسکتی ہے۔</string>
     <string name="permdesc_receiveWapPush">‏ایپ کو WAP پیغامات حاصل اور ان پر کارروائی کرنے کی اجازت دیتا ہے۔ اس اجازت میں آپ کو مرسلہ پیغامات آپ کو دکھائے بغیر ان پر نگاہ رکھنے یا انہیں حذف کرنے کی اہلیت شامل ہے۔</string>
@@ -1484,7 +1484,7 @@
     <string name="permdesc_sendSms">‏ایپ کو SMS پیغامات بھیجنے کی اجازت دیتا ہے۔ اس کے نتیجے میں غیر متوقع چارجز لگ سکتے ہیں۔ نقصان دہ ایپس آپ کی تصدیق کے بغیر پیغامات بھیج کر آپ کی رقم خرچ کروا سکتی ہیں۔</string>
     <string name="permdesc_setAlarm">ایپ کو ایک انسٹال کردہ الارم گھڑی کی ایپ میں ایک الارم سیٹ کرنے کی اجازت دیتا ہے۔ الارم گھڑی کی کچھ ایپس اس خصوصیت کو نافذ نہیں کر سکتی ہیں۔</string>
     <string name="permdesc_setInputCalibration">ایپ کو ٹچ اسکرین کے کیلیبریشن پیرامیٹرز میں ترمیم کرنے کی اجازت دیتا ہے۔ عام ایپس کیلئے کبھی بھی اس کی ضرورت نہيں ہونی چاہئے۔</string>
-    <string name="permdesc_setTimeZone">ایپ کو فون کا ٹائم زون تبدیل کرنے کی اجازت دیتا ہے۔</string>
+    <string name="permdesc_setTimeZone">ایپ کو ٹیبلیٹ کا ٹائم زون تبدیل کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_setWallpaper">ایپ کو سسٹم کا وال پیپر سیٹ کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_setWallpaperHints">ایپ کو سسٹم کے وال پیپر سائز کے اشاروں کو سیٹ کرنے کی اجازت دیتا ہے</string>
     <string name="permdesc_sim_communication">‏ایپ کو SIM کو کمانڈز بھیجنے کی اجازت دیتا ہے۔ یہ بہت خطرناک ہے۔</string>
@@ -1497,7 +1497,7 @@
     <string name="permdesc_subscribedFeedsRead">ایپ کو فی الحال مطابقت پذیر کیے ہوئے فیڈز کے بارے میں تفصیلات حاصل کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_systemAlertWindow">یہ ایپ دیگر ایپس کے اوپر یا سکرین کے دیگر حصوں پر ظاہر ہو سکتی ہے۔ یہ عام ایپ کے استعمال کے ساتھ مداخلت کر سکتی ہے اور دیگر ایپس کے ظاہر ہونے کا طریقہ بدل سکتی ہے۔</string>
     <string name="permdesc_systemCamera">‏یہ مراعات یافتہ یا سسٹم ایپ کسی بھی وقت ایک سسٹم کیمرا استعمال کرتے ہوئے تصاویر اور ویڈیوز ریکارڈ کر سکتی ہے۔ ایپ کے پاس android.permission.CAMERA کے ليے بھی اجازت ہونا ضروری ہے۔</string>
-    <string name="permdesc_transmitIr">ایپ کو فون کا انفراریڈ ٹرانسمیٹر استعمال کرنے کی اجازت دیتا ہے۔</string>
+    <string name="permdesc_transmitIr">ایپ کو ٹیبلیٹ کا انفراریڈ ٹرانسمیٹر استعمال کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_turnScreenOn">ایپ کو اسکرین آن کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_uninstall_shortcut">ایپلیکیشن کو صارف کی مداخلت کے بغیر ہوم اسکرین شارٹ کٹس ہٹانے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_updatePackagesWithoutUserAction">ہولڈر کو صارف کی کارروائی کے بغیر اپنی پہلے انسٹال کردہ ایپ کو اپ ڈیٹ کرنے کی اجازت دیتا ہے</string>
@@ -1510,10 +1510,10 @@
     <string name="permdesc_vibrate">ایپ کو وائبریٹر کنٹرول کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_vibrator_state">ایپ کو وائبریٹر اسٹیٹ تک رسائی حاصل کرنے کی اجازت دیتا ہے۔</string>
     <string name="permdesc_videoWrite">ایپ کو آپ کی ویڈیو کے مجموعے میں ترمیم کرنے کی اجازت دیتا ہے۔</string>
-    <string name="permdesc_wakeLock">ایپ کو فون کو سلیپ وضع میں جانے سے روکنے کی اجازت دیتا ہے</string>
-    <string name="permdesc_writeCalendar">یہ اپپ آپ کے فون پر کیلنڈر ایونٹس کو شامل، ہٹا یا ترمیم کر سکتی ہے۔ یہ ایپ وہ پیغامات بھیج سکتی ہے جو کیلنڈر کے مالکان کی جانب سے آنے والے معلوم ہو سکتے ہیں یا ان مالکان کو اطلاع دیے بغیر ایونٹس تبدیل کر سکتی ہے۔</string>
-    <string name="permdesc_writeCallLog">ایپ کو آپ کے فون کی کال لاگ، بشمول آنے والی اور باہر جانے والی کالوں کے بارے میں ڈیٹا میں ترمیم کرنے کی اجازت دیتا ہے۔ نقصان دہ ایپس آپ کی کال لاگ مٹانے یا اس میں ترمیم کرنے کیلئے اسے استعمال کرسکتی ہیں۔</string>
-    <string name="permdesc_writeContacts">ایپ کو آپ کے فون پر اسٹور کردہ آپ کے رابطوں کے بارے میں ڈیٹا کو ترمیم کرنے کی اجازت دیتی ہے۔ یہ اجازت ایپس کو رابطے کا ڈیٹا حذف کرنے کی اجازت دیتی ہے۔</string>
+    <string name="permdesc_wakeLock">ایپ کو ٹیبلیٹ کو سلیپ وضع میں جانے سے روکنے کی اجازت دیتا ہے</string>
+    <string name="permdesc_writeCalendar">یہ اپپ آپ کے ٹیبلیٹ پر کیلنڈر ایونٹس کو شامل، ہٹا یا ترمیم کر سکتی ہے۔ یہ ایپ وہ پیغامات بھیج سکتی ہے جو کیلنڈر کے مالکان کی جانب سے آنے والے معلوم ہو سکتے ہیں یا ان مالکان کو اطلاع دیے بغیر ایونٹس تبدیل کر سکتی ہے۔</string>
+    <string name="permdesc_writeCallLog">ایپ کو آپ کے ٹیبلٹ کی کال لاگ، بشمول آنے والی اور باہر جانے والی کالوں کے بارے میں ڈیٹا میں ترمیم کرنے کی اجازت دیتا ہے۔ نقصان دہ ایپس آپ کی کال لاگ مٹانے یا اس میں ترمیم کرنے کیلئے اسے استعمال کرسکتی ہیں۔</string>
+    <string name="permdesc_writeContacts">ایپ کو آپ کے ٹیبلیٹ پر اسٹور کردہ آپ کے رابطوں کے بارے میں ڈیٹا کو ترمیم کرنے کی اجازت دیتی ہے۔ یہ اجازت ایپس کو رابطے کا ڈیٹا حذف کرنے کی اجازت دیتی ہے۔</string>
     <string name="permdesc_writeSettings">ایپ کو سسٹم کی ترتیبات ڈيٹا میں ترمیم کرنے کی اجازت دیتا ہے۔ نقصان دہ ایپس آپ کے سسٹم کی کنفیگریشن کو خراب کر سکتی ہیں۔</string>
     <string name="permdesc_writeSyncSettings">‏ایپ کو کسی اکاؤنٹ کیلئے مطابقت پذیری کی ترتیبات میں ترمیم کرنے کی اجازت دیتا ہے۔ مثلا، کسی اکاؤنٹ کے ساتھ People ایپ کی مطابقت پذیری فعال کرنے کیلئے اسے استعمال کیا جاسکتا ہے۔</string>
     <string name="permgroupdesc_activityRecognition">اپنی جسمانی سرگرمی تک رسائی حاصل کریں</string>
@@ -1710,7 +1710,7 @@
     <string name="permlab_uwb_ranging">قریبی الٹرا وائڈ بینڈ آلات کے مابین متعلقہ پوزیشن کا تعین کریں</string>
     <string name="permlab_vibrate">ارتعاش کو کنٹرول کریں</string>
     <string name="permlab_videoWrite">اپنی ویڈیو کے مجموعے میں ترمیم کریں</string>
-    <string name="permlab_wakeLock">فون کو سلیپ وضع میں جانے سے روکیں</string>
+    <string name="permlab_wakeLock">ٹیبلیٹ کو سلیپ وضع میں جانے سے روکیں</string>
     <string name="permlab_writeCalendar">کیلنڈر ایونٹس شامل یا ان میں ترمیم کریں اور مالک کو بتائے بغیر مہمانوں کو ای میل بھیجیں</string>
     <string name="permlab_writeCallLog">کال لاگ لکھیں</string>
     <string name="permlab_writeContacts">اپنے رابطوں میں ترمیم کریں</string>
@@ -1753,10 +1753,10 @@
     <string name="policydesc_limitPassword">‏اسکرین لاک پاس ورڈز اور PINs میں اجازت یافتہ لمبائی اور حروف کو کنٹرول کریں۔</string>
     <string name="policydesc_resetPassword">اسکرین لاک تبدیل کریں۔</string>
     <string name="policydesc_setGlobalProxy">پالیسی فعال ہونے پر آلہ کی عالمی پراکسی کو استعمال کیے جانے کیلئے سیٹ کریں۔ صرف آلہ کا مالک ہی عالمی پراکسی سیٹ کر سکتا ہے۔</string>
-    <string name="policydesc_watchLogin">اسکرین کو غیر مقفل کرتے وقت ٹائپ کیے گئے غلط پاس ورڈز کی تعداد مانیٹر کریں اور فون کو مقفل کریں یا اگر کافی زیادہ غلط پاس ورڈز ٹائپ کیے گئے ہیں تو فون کا سبھی ڈیٹا صاف کریں۔</string>
-    <string name="policydesc_watchLogin_secondaryUser">اسکرین کو غیر مقفل کرتے وقت ٹائپ کردہ غلط پاس ورڈز کی تعداد پر نگاہ رکھیں اور اگر بہت زیادہ غلط پاس ورڈز ٹائپ کیے جاتے ہیں تو فون کو مقفل کریں یا اس صارف کا سبھی ڈیٹا ہٹائیں۔</string>
-    <string name="policydesc_wipeData">فیکٹری ڈیٹا ری سیٹ انجام دے کر وارننگ کے بغیر فون کا ڈیٹا مٹائیں۔</string>
-    <string name="policydesc_wipeData_secondaryUser">وارننگ کے بغیر اس فون پر موجود اس صارف کا ڈیٹا ہٹائیں۔</string>
+    <string name="policydesc_watchLogin">اسکرین کو غیر مقفل کرتے وقت ٹائپ کیے گئے غلط پاس ورڈز کی تعداد مانیٹر کریں اور ٹیبلیٹ کو مقفل کریں یا اگر کافی زیادہ غلط پاس ورڈز ٹائپ کیے گئے ہیں تو ٹیبلیٹ کا سبھی ڈیٹا صاف کریں۔</string>
+    <string name="policydesc_watchLogin_secondaryUser">اسکرین کو غیر مقفل کرتے وقت ٹائپ کردہ غلط پاس ورڈز کی تعداد پر نگاہ رکھیں اور اگر بہت زیادہ غلط پاس ورڈز ٹائپ کیے جاتے ہیں تو ٹیبلٹ کو مقفل کریں یا اس صارف کا سبھی ڈیٹا ہٹائیں۔</string>
+    <string name="policydesc_wipeData">فیکٹری ڈیٹا ری سیٹ انجام دے کر وارننگ کے بغیر ٹیبلٹ کا ڈیٹا مٹائیں۔</string>
+    <string name="policydesc_wipeData_secondaryUser">وارننگ کے بغیر اس ٹیبلٹ پر موجود اس صارف کا ڈیٹا ہٹائیں۔</string>
     <string name="policylab_disableCamera">کیمروں کو غیر فعال کریں</string>
     <string name="policylab_disableKeyguardFeatures">کچھ اسکرین لاک خصوصیات غیرفعال کریں</string>
     <string name="policylab_encryptedStorage">اسٹوریج کی مرموز کاری سیٹ کریں</string>
@@ -1773,7 +1773,7 @@
     <string name="postalTypeHome">گھر</string>
     <string name="postalTypeOther">دیگر</string>
     <string name="postalTypeWork">دفتر</string>
-    <string name="power_dialog">فون کے اختیارات</string>
+    <string name="power_dialog">ٹیبلیٹ کے اختیارات</string>
     <string name="power_off">پاور آف</string>
     <string name="prepend_shortcut_label">مینیو+</string>
     <string name="preposition_for_date">%s کو</string>
@@ -1945,7 +1945,7 @@
     <string name="shortcut_restore_unknown_issue">شارٹ کٹ کو بحال نہیں کیا جا سکا</string>
     <string name="shortcut_restored_on_lower_version">ایپ کے ورژن کا درجہ کم ہے یا اس شارٹ کٹ کے ساتھ مطابقت پذیر نہیں ہے</string>
     <string name="show_ime">‏جب فزیکل کی بورڈ فعال ہو تو IME کو اسکرین پر رکھیں</string>
-    <string name="shutdown_confirm">آپ کا فون بند ہو جائے گا۔</string>
+    <string name="shutdown_confirm">آپ کا ٹیبلیٹ بند ہو جائے گا۔</string>
     <string name="shutdown_confirm_question">کیا آپ بند کرنا چاہتے ہیں؟</string>
     <string name="shutdown_progress">بند ہو رہا ہے…</string>
     <string name="silent_mode">خاموش وضع</string>
@@ -2115,7 +2115,7 @@
     <string name="user_switched">موجودہ صارف %1$s۔</string>
     <string name="user_switching_message">%1$s پر سوئچ کیا جا رہا ہے…</string>
     <string name="validity_period">استعمال کی میعاد:</string>
-    <string name="vdm_camera_access_denied">آپ کے %1$s سے فون کے کیمرا تک رسائی حاصل نہیں کی جا سکتی</string>
+    <string name="vdm_camera_access_denied">آپ کے %1$s سے ٹیبلیٹ کے کیمرا تک رسائی حاصل نہیں کی جا سکتی</string>
     <string name="vdm_pip_blocked">سلسلہ بندی کے دوران تصویر میں تصویر نہیں دیکھ سکتے</string>
     <string name="vdm_secure_window">سلسلہ بندی کے دوران اس تک رسائی حاصل نہیں کی جا سکتی۔ اس کے بجائے اپنے فون پر کوشش کریں۔</string>
     <string name="view_and_control_notification_content">‫%s آپ کی اسکرین کو دیکھ اور کنٹرول کر سکتی ہیں۔ جائزے کے لیے تھپتھپائیں۔</string>

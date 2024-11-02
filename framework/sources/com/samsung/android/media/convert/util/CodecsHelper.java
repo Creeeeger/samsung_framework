@@ -326,9 +326,18 @@ public class CodecsHelper {
         return AudioFormat.CHANNEL_OUT_QUAD_SIDE;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x0019, code lost:            if (r1 == null) goto L13;     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x001c, code lost:            android.util.Log.d(com.samsung.android.media.convert.util.Constants.TAG, "getRemainedResourceCapacity = " + r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x0035, code lost:            return r0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x0019, code lost:
+    
+        if (r1 == null) goto L33;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x001c, code lost:
+    
+        android.util.Log.d(com.samsung.android.media.convert.util.Constants.TAG, "getRemainedResourceCapacity = " + r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x0035, code lost:
+    
+        return r0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

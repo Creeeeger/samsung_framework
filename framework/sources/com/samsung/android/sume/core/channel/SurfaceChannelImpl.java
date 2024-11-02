@@ -39,7 +39,7 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
     private static final int HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS = 2141391876;
     private static final String TAG = Def.tagOf((Class<?>) SurfaceChannelImpl.class);
     private static final Map<ColorFormat, int[]> vendorSpecificColorFormat = new HashMap<ColorFormat, int[]>() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl.1
-        {
+        AnonymousClass1() {
             put(ColorFormat.NV12, new int[]{SurfaceChannelImpl.HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS});
             put(ColorFormat.NV21, new int[]{261, 291});
         }
@@ -59,7 +59,15 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
     private final AtomicInteger numberOfFrames = new AtomicInteger(0);
     private int capacity = 0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.sume.core.channel.SurfaceChannelImpl$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends HashMap<ColorFormat, int[]> {
+        AnonymousClass1() {
+            put(ColorFormat.NV12, new int[]{SurfaceChannelImpl.HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS});
+            put(ColorFormat.NV21, new int[]{261, 291});
+        }
+    }
+
     public SurfaceChannelImpl(int channelType, final BufferChannel bufferChannel) {
         ReentrantLock reentrantLock = new ReentrantLock();
         this.lock = reentrantLock;
@@ -109,13 +117,13 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
                 this.sendHandler = new Consumer() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda6
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
-                        SurfaceChannelImpl.this.m8742xaa413ced((MediaBuffer) obj);
+                        SurfaceChannelImpl.this.m8734xaa413ced((MediaBuffer) obj);
                     }
                 };
                 this.receiveHandler = new Supplier() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda7
                     @Override // java.util.function.Supplier
                     public final Object get() {
-                        return SurfaceChannelImpl.this.m8743x372e540c();
+                        return SurfaceChannelImpl.this.m8735x372e540c();
                     }
                 };
                 this.onImageAvailableListener = new ImageReader.OnImageAvailableListener() { // from class: com.samsung.android.sume.core.channel.SurfaceChannelImpl$$ExternalSyntheticLambda8
@@ -130,25 +138,21 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$0$com-samsung-android-sume-core-channel-SurfaceChannelImpl, reason: not valid java name */
-    public /* synthetic */ void m8742xaa413ced(MediaBuffer mediaBuffer) {
+    /* renamed from: lambda$new$0$com-samsung-android-sume-core-channel-SurfaceChannelImpl */
+    public /* synthetic */ void m8734xaa413ced(MediaBuffer mediaBuffer) {
         signal();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$new$1$com-samsung-android-sume-core-channel-SurfaceChannelImpl, reason: not valid java name */
-    public /* synthetic */ MediaBuffer m8743x372e540c() {
+    /* renamed from: lambda$new$1$com-samsung-android-sume-core-channel-SurfaceChannelImpl */
+    public /* synthetic */ MediaBuffer m8735x372e540c() {
         waitUntilSignaled("receive buffer");
         return MediaBuffer.mutableOf(MediaFormat.mutableImageOf(new Object[0]));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$new$2() {
         throw new UnsupportedOperationException("");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$new$3(ImageReader imageReader) {
         throw new UnsupportedOperationException("");
     }
@@ -204,7 +208,6 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         return this.reader.getSurface();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onImageTransit(ImageReader reader) {
         if (this.writer == null) {
             waitUntilSignaled("writer is given");
@@ -219,7 +222,6 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         signal();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onImageReceive(ImageReader reader) {
         Image image = reader.acquireLatestImage();
         final HardwareBuffer hwBuffer = image.getHardwareBuffer();
@@ -258,12 +260,10 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         image.close();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$onImageReceive$4(HardwareBuffer hwBuffer, int e) {
         return e == hwBuffer.getFormat();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void writeToSurface(MediaBuffer mediaBuffer) {
         String str = TAG;
         Log.d(str, "writeToSurface: " + mediaBuffer);
@@ -287,7 +287,6 @@ public final class SurfaceChannelImpl implements BufferChannel, SurfaceChannel {
         this.sendHandler.accept(data);
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.channel.Channel
     public MediaBuffer receive() {
         return this.receiveHandler.get();

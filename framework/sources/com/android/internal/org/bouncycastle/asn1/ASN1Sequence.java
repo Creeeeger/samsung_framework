@@ -11,7 +11,6 @@ import java.util.NoSuchElementException;
 public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN1Encodable> {
     ASN1Encodable[] elements;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
@@ -62,12 +61,10 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
         throw new IllegalArgumentException("unknown object in getInstance: " + taggedObject.getClass().getName());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Sequence() {
         this.elements = ASN1EncodableVector.EMPTY_ELEMENTS;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Sequence(ASN1Encodable element) {
         if (element == null) {
             throw new NullPointerException("'element' cannot be null");
@@ -75,7 +72,6 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
         this.elements = new ASN1Encodable[]{element};
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Sequence(ASN1EncodableVector elementVector) {
         if (elementVector == null) {
             throw new NullPointerException("'elementVector' cannot be null");
@@ -83,7 +79,6 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
         this.elements = elementVector.takeElements();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1Sequence(ASN1Encodable[] elements) {
         if (Arrays.isNullOrContainsNull(elements)) {
             throw new NullPointerException("'elements' cannot be null, or contain null");
@@ -91,7 +86,6 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
         this.elements = ASN1EncodableVector.cloneElements(elements);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Sequence(ASN1Encodable[] elements, boolean clone) {
         this.elements = clone ? ASN1EncodableVector.cloneElements(elements) : elements;
     }
@@ -100,14 +94,42 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
         return ASN1EncodableVector.cloneElements(this.elements);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ASN1Encodable[] toArrayInternal() {
         return this.elements;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.org.bouncycastle.asn1.ASN1Sequence$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Enumeration {
+        private int pos = 0;
+
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Enumeration
+        public boolean hasMoreElements() {
+            return this.pos < ASN1Sequence.this.elements.length;
+        }
+
+        @Override // java.util.Enumeration
+        public Object nextElement() {
+            if (this.pos < ASN1Sequence.this.elements.length) {
+                ASN1Encodable[] aSN1EncodableArr = ASN1Sequence.this.elements;
+                int i = this.pos;
+                this.pos = i + 1;
+                return aSN1EncodableArr[i];
+            }
+            throw new NoSuchElementException();
+        }
     }
 
     public Enumeration getObjects() {
         return new Enumeration() { // from class: com.android.internal.org.bouncycastle.asn1.ASN1Sequence.1
             private int pos = 0;
+
+            AnonymousClass1() {
+            }
 
             @Override // java.util.Enumeration
             public boolean hasMoreElements() {
@@ -128,9 +150,14 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
     }
 
     public ASN1SequenceParser parser() {
-        final int count = size();
+        int count = size();
         return new ASN1SequenceParser() { // from class: com.android.internal.org.bouncycastle.asn1.ASN1Sequence.2
             private int pos = 0;
+            final /* synthetic */ int val$count;
+
+            AnonymousClass2(int count2) {
+                count = count2;
+            }
 
             @Override // com.android.internal.org.bouncycastle.asn1.ASN1SequenceParser
             public ASN1Encodable readObject() throws IOException {
@@ -162,6 +189,45 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
         };
     }
 
+    /* renamed from: com.android.internal.org.bouncycastle.asn1.ASN1Sequence$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements ASN1SequenceParser {
+        private int pos = 0;
+        final /* synthetic */ int val$count;
+
+        AnonymousClass2(int count2) {
+            count = count2;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.asn1.ASN1SequenceParser
+        public ASN1Encodable readObject() throws IOException {
+            if (count == this.pos) {
+                return null;
+            }
+            ASN1Encodable[] aSN1EncodableArr = ASN1Sequence.this.elements;
+            int i = this.pos;
+            this.pos = i + 1;
+            ASN1Encodable obj = aSN1EncodableArr[i];
+            if (obj instanceof ASN1Sequence) {
+                return ((ASN1Sequence) obj).parser();
+            }
+            if (obj instanceof ASN1Set) {
+                return ((ASN1Set) obj).parser();
+            }
+            return obj;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.asn1.InMemoryRepresentable
+        public ASN1Primitive getLoadedObject() {
+            return ASN1Sequence.this;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.asn1.ASN1Encodable
+        public ASN1Primitive toASN1Primitive() {
+            return ASN1Sequence.this;
+        }
+    }
+
     public ASN1Encodable getObjectAt(int index) {
         return this.elements[index];
     }
@@ -184,7 +250,6 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive other) {
         if (!(other instanceof ASN1Sequence)) {
@@ -205,19 +270,16 @@ public abstract class ASN1Sequence extends ASN1Primitive implements Iterable<ASN
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         return new DERSequence(this.elements, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return new DLSequence(this.elements, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return true;

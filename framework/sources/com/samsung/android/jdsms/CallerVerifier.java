@@ -16,7 +16,6 @@ final class CallerVerifier {
         CALLER_DEBUG = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final boolean wasCallerValid() {
         StackTraceElement callFrame = extractCaller();
         if (callFrame == null) {

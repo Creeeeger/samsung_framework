@@ -21,7 +21,6 @@ public class PendingInsetsController implements WindowInsetsController {
     private int mCaptionInsetsHeight = 0;
     private int mRequestedVisibleTypes = WindowInsets.Type.defaultVisible();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface PendingRequest {
         void replay(InsetsController insetsController);

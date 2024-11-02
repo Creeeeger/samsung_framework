@@ -129,10 +129,15 @@ public class BinderInternal {
         sBinderProxyLimitListenerDelegate.setListener(null, null);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class BinderProxyLimitListenerDelegate {
+    public static class BinderProxyLimitListenerDelegate {
         private BinderProxyLimitListener mBinderProxyLimitListener;
         private Handler mHandler;
+
+        /* synthetic */ BinderProxyLimitListenerDelegate(BinderProxyLimitListenerDelegateIA binderProxyLimitListenerDelegateIA) {
+            this();
+        }
 
         private BinderProxyLimitListenerDelegate() {
         }
@@ -144,16 +149,37 @@ public class BinderInternal {
             }
         }
 
-        void notifyClient(final int uid) {
+        void notifyClient(int uid) {
             synchronized (this) {
                 if (this.mBinderProxyLimitListener != null) {
                     this.mHandler.post(new Runnable() { // from class: com.android.internal.os.BinderInternal.BinderProxyLimitListenerDelegate.1
+                        final /* synthetic */ int val$uid;
+
+                        AnonymousClass1(int uid2) {
+                            uid = uid2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             BinderProxyLimitListenerDelegate.this.mBinderProxyLimitListener.onLimitReached(uid);
                         }
                     });
                 }
+            }
+        }
+
+        /* renamed from: com.android.internal.os.BinderInternal$BinderProxyLimitListenerDelegate$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ int val$uid;
+
+            AnonymousClass1(int uid2) {
+                uid = uid2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                BinderProxyLimitListenerDelegate.this.mBinderProxyLimitListener.onLimitReached(uid);
             }
         }
     }

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class AppPredictionServiceResolverComparator extends AbstractResolverComparator {
     private static final String TAG = "APSResolverComparator";
@@ -38,7 +37,6 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
     private ResolverRankerServiceResolverComparator mResolverRankerService;
     private final UserHandle mUser;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AppPredictionServiceResolverComparator(Context context, Intent intent, String referrerPackage, AppPredictor appPredictor, UserHandle user, ChooserActivityLogger chooserActivityLogger) {
         super(context, intent, Lists.newArrayList(user));
         this.mContext = context;
@@ -52,7 +50,6 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
         this.mComparatorModel = modelBuilder.buildFromRankedList(Collections.emptyList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractResolverComparator
     public void destroy() {
         ResolverRankerServiceResolverComparator resolverRankerServiceResolverComparator = this.mResolverRankerService;
@@ -63,19 +60,16 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractResolverComparator
     public int compare(ResolveInfo lhs, ResolveInfo rhs) {
         return this.mComparatorModel.getComparator().compare(lhs, rhs);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractResolverComparator
     public float getScore(TargetInfo targetInfo) {
         return this.mComparatorModel.getScore(targetInfo);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.app.AbstractResolverComparator
     public void updateModel(TargetInfo targetInfo) {
         this.mComparatorModel.notifyOnTargetSelected(targetInfo);
@@ -108,7 +102,6 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$doCompute$0(List targets, List sortedAppTargets) {
         if (sortedAppTargets.isEmpty()) {
             Log.i(TAG, "AppPredictionService disabled. Using resolver.");
@@ -131,7 +124,6 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
         this.mResolverRankerService.compute(targets);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setupFallbackModel$1() {
         this.mHandler.sendEmptyMessage(0);
     }
@@ -144,7 +136,6 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ModelBuilder {
         private final AppPredictor mAppPredictor;
@@ -173,8 +164,7 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
             return targetRanks;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.android.internal.app.AppPredictionServiceResolverComparator$ModelBuilder$1, reason: invalid class name */
+        /* renamed from: com.android.internal.app.AppPredictionServiceResolverComparator$ModelBuilder$1 */
         /* loaded from: classes4.dex */
         public class AnonymousClass1 implements ResolverComparatorModel {
             final /* synthetic */ AbstractResolverComparator val$comparator;
@@ -212,7 +202,6 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class AppPredictionServiceComparatorModel implements ResolverComparatorModel {
         private final AppPredictor mAppPredictor;
@@ -237,7 +226,6 @@ public class AppPredictionServiceResolverComparator extends AbstractResolverComp
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ int lambda$getComparator$0(ResolveInfo lhs, ResolveInfo rhs) {
             Integer lhsRank = this.mTargetRanks.get(new ComponentName(lhs.activityInfo.packageName, lhs.activityInfo.name));
             Integer rhsRank = this.mTargetRanks.get(new ComponentName(rhs.activityInfo.packageName, rhs.activityInfo.name));

@@ -8,7 +8,6 @@ public class BCMessageDigest extends MessageDigest {
     protected Digest digest;
     protected int digestSize;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BCMessageDigest(Digest digest) {
         super(digest.getAlgorithmName());
         this.digest = digest;

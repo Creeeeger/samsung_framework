@@ -8,7 +8,6 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class ProvCrlRevocationChecker implements PKIXCertRevocationChecker {
     private Date currentDate = null;

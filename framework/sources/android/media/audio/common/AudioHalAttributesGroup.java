@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioHalAttributesGroup implements Parcelable {
     public static final Parcelable.Creator<AudioHalAttributesGroup> CREATOR = new Parcelable.Creator<AudioHalAttributesGroup>() { // from class: android.media.audio.common.AudioHalAttributesGroup.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioHalAttributesGroup createFromParcel(Parcel _aidl_source) {
             AudioHalAttributesGroup _aidl_out = new AudioHalAttributesGroup();
@@ -18,7 +20,6 @@ public class AudioHalAttributesGroup implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalAttributesGroup[] newArray(int _aidl_size) {
             return new AudioHalAttributesGroup[_aidl_size];
@@ -27,6 +28,25 @@ public class AudioHalAttributesGroup implements Parcelable {
     public AudioAttributes[] attributes;
     public int streamType = -2;
     public String volumeGroupName;
+
+    /* renamed from: android.media.audio.common.AudioHalAttributesGroup$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioHalAttributesGroup> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalAttributesGroup createFromParcel(Parcel _aidl_source) {
+            AudioHalAttributesGroup _aidl_out = new AudioHalAttributesGroup();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalAttributesGroup[] newArray(int _aidl_size) {
+            return new AudioHalAttributesGroup[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

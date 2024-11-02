@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SuppSvcNotification implements Parcelable {
     public static final Parcelable.Creator<SuppSvcNotification> CREATOR = new Parcelable.Creator<SuppSvcNotification>() { // from class: android.hardware.radio.network.SuppSvcNotification.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SuppSvcNotification createFromParcel(Parcel _aidl_source) {
             SuppSvcNotification _aidl_out = new SuppSvcNotification();
@@ -17,7 +19,6 @@ public class SuppSvcNotification implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuppSvcNotification[] newArray(int _aidl_size) {
             return new SuppSvcNotification[_aidl_size];
@@ -28,6 +29,25 @@ public class SuppSvcNotification implements Parcelable {
     public int code = 0;
     public int index = 0;
     public int type = 0;
+
+    /* renamed from: android.hardware.radio.network.SuppSvcNotification$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SuppSvcNotification> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SuppSvcNotification createFromParcel(Parcel _aidl_source) {
+            SuppSvcNotification _aidl_out = new SuppSvcNotification();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SuppSvcNotification[] newArray(int _aidl_size) {
+            return new SuppSvcNotification[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

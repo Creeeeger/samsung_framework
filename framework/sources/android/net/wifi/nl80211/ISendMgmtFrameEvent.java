@@ -103,8 +103,9 @@ public interface ISendMgmtFrameEvent extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISendMgmtFrameEvent {
+        public static class Proxy implements ISendMgmtFrameEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

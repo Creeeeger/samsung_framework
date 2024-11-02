@@ -20,7 +20,9 @@ public final class ContentCaptureOptions implements Parcelable {
     public final ArraySet<ComponentName> whitelistedComponents;
     private static final String TAG = ContentCaptureOptions.class.getSimpleName();
     public static final Parcelable.Creator<ContentCaptureOptions> CREATOR = new Parcelable.Creator<ContentCaptureOptions>() { // from class: android.content.ContentCaptureOptions.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentCaptureOptions createFromParcel(Parcel parcel) {
             boolean lite = parcel.readBoolean();
@@ -36,7 +38,6 @@ public final class ContentCaptureOptions implements Parcelable {
             return new ContentCaptureOptions(loggingLevel, maxBufferSize, idleFlushingFrequencyMs, textChangeFlushingFrequencyMs, logHistorySize, disableFlushForViewTreeAppearing, parcel.readArraySet(null));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentCaptureOptions[] newArray(int size) {
             return new ContentCaptureOptions[size];
@@ -150,5 +151,32 @@ public final class ContentCaptureOptions implements Parcelable {
         parcel.writeInt(this.logHistorySize);
         parcel.writeBoolean(this.disableFlushForViewTreeAppearing);
         parcel.writeArraySet(this.whitelistedComponents);
+    }
+
+    /* renamed from: android.content.ContentCaptureOptions$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentCaptureOptions> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentCaptureOptions createFromParcel(Parcel parcel) {
+            boolean lite = parcel.readBoolean();
+            int loggingLevel = parcel.readInt();
+            if (lite) {
+                return new ContentCaptureOptions(loggingLevel);
+            }
+            int maxBufferSize = parcel.readInt();
+            int idleFlushingFrequencyMs = parcel.readInt();
+            int textChangeFlushingFrequencyMs = parcel.readInt();
+            int logHistorySize = parcel.readInt();
+            boolean disableFlushForViewTreeAppearing = parcel.readBoolean();
+            return new ContentCaptureOptions(loggingLevel, maxBufferSize, idleFlushingFrequencyMs, textChangeFlushingFrequencyMs, logHistorySize, disableFlushForViewTreeAppearing, parcel.readArraySet(null));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentCaptureOptions[] newArray(int size) {
+            return new ContentCaptureOptions[size];
+        }
     }
 }

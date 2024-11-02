@@ -84,8 +84,9 @@ public interface IAddTileResultCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IAddTileResultCallback {
+        public static class Proxy implements IAddTileResultCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

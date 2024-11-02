@@ -154,7 +154,6 @@ public final class ApkAssets {
         return nativeGetDebugName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getStringFromPool(int idx) {
         CharSequence sequence;
         if (this.mStringBlock == null) {
@@ -237,7 +236,6 @@ public final class ApkAssets {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(PrintWriter pw, String prefix) {
         pw.println(prefix + "class=" + getClass());
         pw.println(prefix + "debugName=" + getDebugName());

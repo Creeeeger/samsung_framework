@@ -38,6 +38,9 @@ public class SemGoodCatchManager {
         this.MSG_START = 0;
         this.MSG_STOP = 1;
         this.mGoodCatchDispatcher = new IGoodCatchDispatcher.Stub() { // from class: com.samsung.android.sepunion.SemGoodCatchManager.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.sepunion.IGoodCatchDispatcher
             public void onStart(String function) {
                 SemGoodCatchManager.this.mHandler.sendMessage(SemGoodCatchManager.this.mHandler.obtainMessage(0, 0, 0, function));
@@ -49,6 +52,10 @@ public class SemGoodCatchManager {
             }
         };
         this.mHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.sepunion.SemGoodCatchManager.2
+            AnonymousClass2(Looper looper) {
+                super(looper);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -79,7 +86,10 @@ public class SemGoodCatchManager {
         this.mICallback = binder;
         this.MSG_START = 0;
         this.MSG_STOP = 1;
-        IGoodCatchDispatcher.Stub stub = new IGoodCatchDispatcher.Stub() { // from class: com.samsung.android.sepunion.SemGoodCatchManager.1
+        AnonymousClass1 anonymousClass1 = new IGoodCatchDispatcher.Stub() { // from class: com.samsung.android.sepunion.SemGoodCatchManager.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.sepunion.IGoodCatchDispatcher
             public void onStart(String function2) {
                 SemGoodCatchManager.this.mHandler.sendMessage(SemGoodCatchManager.this.mHandler.obtainMessage(0, 0, 0, function2));
@@ -90,8 +100,12 @@ public class SemGoodCatchManager {
                 SemGoodCatchManager.this.mHandler.sendMessage(SemGoodCatchManager.this.mHandler.obtainMessage(1, 0, 0, function2));
             }
         };
-        this.mGoodCatchDispatcher = stub;
+        this.mGoodCatchDispatcher = anonymousClass1;
         this.mHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.sepunion.SemGoodCatchManager.2
+            AnonymousClass2(Looper looper) {
+                super(looper);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -129,7 +143,7 @@ public class SemGoodCatchManager {
             return;
         }
         try {
-            asInterface.registerListener(this.mModule, function, stub, binder);
+            asInterface.registerListener(this.mModule, function, anonymousClass1, binder);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -178,6 +192,53 @@ public class SemGoodCatchManager {
         } catch (RemoteException e) {
             e.printStackTrace();
             return db_keys;
+        }
+    }
+
+    /* renamed from: com.samsung.android.sepunion.SemGoodCatchManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends IGoodCatchDispatcher.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.sepunion.IGoodCatchDispatcher
+        public void onStart(String function2) {
+            SemGoodCatchManager.this.mHandler.sendMessage(SemGoodCatchManager.this.mHandler.obtainMessage(0, 0, 0, function2));
+        }
+
+        @Override // com.samsung.android.sepunion.IGoodCatchDispatcher
+        public void onStop(String function2) {
+            SemGoodCatchManager.this.mHandler.sendMessage(SemGoodCatchManager.this.mHandler.obtainMessage(1, 0, 0, function2));
+        }
+    }
+
+    /* renamed from: com.samsung.android.sepunion.SemGoodCatchManager$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 extends Handler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    android.util.Log.d(SemGoodCatchManager.TAG, "MSG_START");
+                    if (msg.obj instanceof String) {
+                        SemGoodCatchManager.this.mListener.onStart((String) msg.obj);
+                        return;
+                    }
+                    return;
+                case 1:
+                    android.util.Log.d(SemGoodCatchManager.TAG, "MSG_STOP");
+                    if (msg.obj instanceof String) {
+                        SemGoodCatchManager.this.mListener.onStop((String) msg.obj);
+                        return;
+                    }
+                    return;
+                default:
+                    return;
+            }
         }
     }
 }

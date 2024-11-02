@@ -11,17 +11,17 @@ import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
 import java.util.Date;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class AudioItemImpl extends Item implements IBundleHolder, Parcelable {
     public static final Parcelable.Creator<AudioItemImpl> CREATOR = new Parcelable.Creator<AudioItemImpl>() { // from class: com.samsung.android.allshare.AudioItemImpl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioItemImpl createFromParcel(Parcel src) {
             return new AudioItemImpl(src);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioItemImpl[] newArray(int size) {
             return new AudioItemImpl[size];
@@ -29,7 +29,10 @@ public final class AudioItemImpl extends Item implements IBundleHolder, Parcelab
     };
     private final ItemImpl mItemImpl;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ AudioItemImpl(Parcel parcel, AudioItemImplIA audioItemImplIA) {
+        this(parcel);
+    }
+
     public AudioItemImpl(Bundle bundle) {
         this.mItemImpl = new ItemImpl(bundle);
     }
@@ -133,6 +136,23 @@ public final class AudioItemImpl extends Item implements IBundleHolder, Parcelab
     private AudioItemImpl(Parcel src) {
         Bundle bundle = src.readBundle(Bundle.class.getClassLoader());
         this.mItemImpl = new ItemImpl(bundle);
+    }
+
+    /* renamed from: com.samsung.android.allshare.AudioItemImpl$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioItemImpl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioItemImpl createFromParcel(Parcel src) {
+            return new AudioItemImpl(src);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioItemImpl[] newArray(int size) {
+            return new AudioItemImpl[size];
+        }
     }
 
     @Override // com.samsung.android.allshare.Item

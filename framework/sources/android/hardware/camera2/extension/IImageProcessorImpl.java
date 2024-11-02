@@ -87,8 +87,9 @@ public interface IImageProcessorImpl extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IImageProcessorImpl {
+        public static class Proxy implements IImageProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

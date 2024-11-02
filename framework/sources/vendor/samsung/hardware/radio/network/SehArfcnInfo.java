@@ -8,6 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehArfcnInfo implements Parcelable {
     public static final Parcelable.Creator<SehArfcnInfo> CREATOR = new Parcelable.Creator<SehArfcnInfo>() { // from class: vendor.samsung.hardware.radio.network.SehArfcnInfo.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehArfcnInfo createFromParcel(Parcel _aidl_source) {
             SehArfcnInfo _aidl_out = new SehArfcnInfo();
@@ -23,6 +26,25 @@ public class SehArfcnInfo implements Parcelable {
     public byte rat = 0;
     public int band = 0;
     public int arfcn = 0;
+
+    /* renamed from: vendor.samsung.hardware.radio.network.SehArfcnInfo$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehArfcnInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehArfcnInfo createFromParcel(Parcel _aidl_source) {
+            SehArfcnInfo _aidl_out = new SehArfcnInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehArfcnInfo[] newArray(int _aidl_size) {
+            return new SehArfcnInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

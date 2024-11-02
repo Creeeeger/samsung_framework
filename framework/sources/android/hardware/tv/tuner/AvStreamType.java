@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class AvStreamType implements Parcelable {
     public static final Parcelable.Creator<AvStreamType> CREATOR = new Parcelable.Creator<AvStreamType>() { // from class: android.hardware.tv.tuner.AvStreamType.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AvStreamType createFromParcel(Parcel _aidl_source) {
             return new AvStreamType(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AvStreamType[] newArray(int _aidl_size) {
             return new AvStreamType[_aidl_size];
@@ -27,6 +28,10 @@ public final class AvStreamType implements Parcelable {
     public @interface Tag {
         public static final int audio = 1;
         public static final int video = 0;
+    }
+
+    /* synthetic */ AvStreamType(Parcel parcel, AvStreamTypeIA avStreamTypeIA) {
+        this(parcel);
     }
 
     public AvStreamType() {
@@ -76,6 +81,23 @@ public final class AvStreamType implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.AvStreamType$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AvStreamType> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AvStreamType createFromParcel(Parcel _aidl_source) {
+            return new AvStreamType(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AvStreamType[] newArray(int _aidl_size) {
+            return new AvStreamType[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

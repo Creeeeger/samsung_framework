@@ -8,13 +8,14 @@ import java.util.Arrays;
 /* loaded from: classes5.dex */
 public final class ContextEvent implements Serializable, Parcelable {
     public static final Parcelable.Creator<ContextEvent> CREATOR = new Parcelable.Creator<ContextEvent>() { // from class: com.samsung.android.mocca.ContextEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContextEvent createFromParcel(Parcel in) {
             return new ContextEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContextEvent[] newArray(int size) {
             return new ContextEvent[size];
@@ -25,6 +26,10 @@ public final class ContextEvent implements Serializable, Parcelable {
     public final String deviceId;
     public final long timestamp;
     public final String type;
+
+    /* synthetic */ ContextEvent(long j, String str, String str2, byte[] bArr, ContextEventIA contextEventIA) {
+        this(j, str, str2, bArr);
+    }
 
     private ContextEvent(long timestamp, String deviceId, String type, byte[] data) {
         this.timestamp = timestamp;
@@ -38,6 +43,23 @@ public final class ContextEvent implements Serializable, Parcelable {
         this.deviceId = in.readString();
         this.type = in.readString();
         this.data = in.createByteArray();
+    }
+
+    /* renamed from: com.samsung.android.mocca.ContextEvent$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContextEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContextEvent createFromParcel(Parcel in) {
+            return new ContextEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContextEvent[] newArray(int size) {
+            return new ContextEvent[size];
+        }
     }
 
     public static ContextEventBuilder builder() {

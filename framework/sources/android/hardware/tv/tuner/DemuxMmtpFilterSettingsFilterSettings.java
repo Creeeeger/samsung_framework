@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxMmtpFilterSettingsFilterSettings implements Parcelable {
     public static final Parcelable.Creator<DemuxMmtpFilterSettingsFilterSettings> CREATOR = new Parcelable.Creator<DemuxMmtpFilterSettingsFilterSettings>() { // from class: android.hardware.tv.tuner.DemuxMmtpFilterSettingsFilterSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxMmtpFilterSettingsFilterSettings createFromParcel(Parcel _aidl_source) {
             return new DemuxMmtpFilterSettingsFilterSettings(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxMmtpFilterSettingsFilterSettings[] newArray(int _aidl_size) {
             return new DemuxMmtpFilterSettingsFilterSettings[_aidl_size];
@@ -36,6 +37,10 @@ public final class DemuxMmtpFilterSettingsFilterSettings implements Parcelable {
         public static final int pesData = 3;
         public static final int record = 4;
         public static final int section = 1;
+    }
+
+    /* synthetic */ DemuxMmtpFilterSettingsFilterSettings(Parcel parcel, DemuxMmtpFilterSettingsFilterSettingsIA demuxMmtpFilterSettingsFilterSettingsIA) {
+        this(parcel);
     }
 
     public DemuxMmtpFilterSettingsFilterSettings() {
@@ -137,6 +142,23 @@ public final class DemuxMmtpFilterSettingsFilterSettings implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.DemuxMmtpFilterSettingsFilterSettings$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxMmtpFilterSettingsFilterSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxMmtpFilterSettingsFilterSettings createFromParcel(Parcel _aidl_source) {
+            return new DemuxMmtpFilterSettingsFilterSettings(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxMmtpFilterSettingsFilterSettings[] newArray(int _aidl_size) {
+            return new DemuxMmtpFilterSettingsFilterSettings[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

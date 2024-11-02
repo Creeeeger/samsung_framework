@@ -82,8 +82,9 @@ public interface IVcnUnderlyingNetworkPolicyListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IVcnUnderlyingNetworkPolicyListener {
+        public static class Proxy implements IVcnUnderlyingNetworkPolicyListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

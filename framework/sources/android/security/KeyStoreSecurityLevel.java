@@ -95,12 +95,10 @@ public class KeyStoreSecurityLevel {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ KeyMetadata lambda$generateKey$0(KeyDescriptor descriptor, KeyDescriptor attestationKey, Collection args, int flags, byte[] entropy) throws RemoteException {
         return this.mSecurityLevel.generateKey(descriptor, attestationKey, (KeyParameter[]) args.toArray(new KeyParameter[args.size()]), flags, entropy);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ KeyMetadata lambda$generateKey$1(KeyDescriptor descriptor, KeyDescriptor attestationKey, Collection args, int flags, byte[] entropy) throws RemoteException {
         return this.mSecurityLevel.generateKey(descriptor, attestationKey, (KeyParameter[]) args.toArray(new KeyParameter[args.size()]), flags, entropy);
     }
@@ -141,12 +139,10 @@ public class KeyStoreSecurityLevel {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ KeyMetadata lambda$importKey$2(KeyDescriptor descriptor, KeyDescriptor attestationKey, Collection args, int flags, byte[] keyData) throws RemoteException {
         return this.mSecurityLevel.importKey(descriptor, attestationKey, (KeyParameter[]) args.toArray(new KeyParameter[args.size()]), flags, keyData);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ KeyMetadata lambda$importKey$3(KeyDescriptor descriptor, KeyDescriptor attestationKey, Collection args, int flags, byte[] keyData) throws RemoteException {
         return this.mSecurityLevel.importKey(descriptor, attestationKey, (KeyParameter[]) args.toArray(new KeyParameter[args.size()]), flags, keyData);
     }
@@ -186,12 +182,10 @@ public class KeyStoreSecurityLevel {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ KeyMetadata lambda$importWrappedKey$4(KeyDescriptor keyDescriptor, KeyDescriptor wrappingKeyDescriptor, byte[] maskingKey, Collection args, AuthenticatorSpec[] authenticatorSpecs) throws RemoteException {
         return this.mSecurityLevel.importWrappedKey(keyDescriptor, wrappingKeyDescriptor, maskingKey, (KeyParameter[]) args.toArray(new KeyParameter[args.size()]), authenticatorSpecs);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ KeyMetadata lambda$importWrappedKey$5(KeyDescriptor keyDescriptor, KeyDescriptor wrappingKeyDescriptor, byte[] maskingKey, Collection args, AuthenticatorSpec[] authenticatorSpecs) throws RemoteException {
         return this.mSecurityLevel.importWrappedKey(keyDescriptor, wrappingKeyDescriptor, maskingKey, (KeyParameter[]) args.toArray(new KeyParameter[args.size()]), authenticatorSpecs);
     }

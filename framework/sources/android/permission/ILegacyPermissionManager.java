@@ -224,8 +224,9 @@ public interface ILegacyPermissionManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ILegacyPermissionManager {
+        public static class Proxy implements ILegacyPermissionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

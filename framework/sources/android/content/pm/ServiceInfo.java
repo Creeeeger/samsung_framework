@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public class ServiceInfo extends ComponentInfo implements Parcelable {
     public static final Parcelable.Creator<ServiceInfo> CREATOR = new Parcelable.Creator<ServiceInfo>() { // from class: android.content.pm.ServiceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ServiceInfo createFromParcel(Parcel source) {
             return new ServiceInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceInfo[] newArray(int size) {
             return new ServiceInfo[size];
@@ -58,6 +59,10 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
     public @interface ForegroundServiceType {
     }
 
+    /* synthetic */ ServiceInfo(Parcel parcel, ServiceInfoIA serviceInfoIA) {
+        this(parcel);
+    }
+
     public ServiceInfo() {
         this.mForegroundServiceType = 0;
     }
@@ -78,7 +83,6 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
         dump(pw, prefix, 3);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(Printer pw, String prefix, int dumpFlags) {
         super.dumpFront(pw, prefix);
         pw.println(prefix + "permission=" + this.permission);
@@ -140,6 +144,23 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
         dest.writeString8(this.permission);
         dest.writeInt(this.flags);
         dest.writeInt(this.mForegroundServiceType);
+    }
+
+    /* renamed from: android.content.pm.ServiceInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ServiceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ServiceInfo createFromParcel(Parcel source) {
+            return new ServiceInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ServiceInfo[] newArray(int size) {
+            return new ServiceInfo[size];
+        }
     }
 
     private ServiceInfo(Parcel source) {

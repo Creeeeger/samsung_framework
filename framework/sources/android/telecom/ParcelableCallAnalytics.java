@@ -14,13 +14,14 @@ public class ParcelableCallAnalytics implements Parcelable {
     public static final int CALLTYPE_UNKNOWN = 0;
     public static final int CDMA_PHONE = 1;
     public static final Parcelable.Creator<ParcelableCallAnalytics> CREATOR = new Parcelable.Creator<ParcelableCallAnalytics>() { // from class: android.telecom.ParcelableCallAnalytics.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelableCallAnalytics createFromParcel(Parcel in) {
             return new ParcelableCallAnalytics(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableCallAnalytics[] newArray(int size) {
             return new ParcelableCallAnalytics[size];
@@ -52,13 +53,14 @@ public class ParcelableCallAnalytics implements Parcelable {
     /* loaded from: classes3.dex */
     public static final class VideoEvent implements Parcelable {
         public static final Parcelable.Creator<VideoEvent> CREATOR = new Parcelable.Creator<VideoEvent>() { // from class: android.telecom.ParcelableCallAnalytics.VideoEvent.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public VideoEvent createFromParcel(Parcel in) {
                 return new VideoEvent(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VideoEvent[] newArray(int size) {
                 return new VideoEvent[size];
@@ -71,6 +73,23 @@ public class ParcelableCallAnalytics implements Parcelable {
         private int mEventName;
         private long mTimeSinceLastEvent;
         private int mVideoState;
+
+        /* renamed from: android.telecom.ParcelableCallAnalytics$VideoEvent$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<VideoEvent> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public VideoEvent createFromParcel(Parcel in) {
+                return new VideoEvent(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public VideoEvent[] newArray(int size) {
+                return new VideoEvent[size];
+            }
+        }
 
         public VideoEvent(int eventName, long timeSinceLastEvent, int videoState) {
             this.mEventName = eventName;
@@ -120,13 +139,14 @@ public class ParcelableCallAnalytics implements Parcelable {
         public static final int BLOCK_CHECK_INITIATED = 104;
         public static final int CONFERENCE_WITH = 300;
         public static final Parcelable.Creator<AnalyticsEvent> CREATOR = new Parcelable.Creator<AnalyticsEvent>() { // from class: android.telecom.ParcelableCallAnalytics.AnalyticsEvent.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AnalyticsEvent createFromParcel(Parcel in) {
                 return new AnalyticsEvent(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AnalyticsEvent[] newArray(int size) {
                 return new AnalyticsEvent[size];
@@ -165,6 +185,23 @@ public class ParcelableCallAnalytics implements Parcelable {
         private int mEventName;
         private long mTimeSinceLastEvent;
 
+        /* renamed from: android.telecom.ParcelableCallAnalytics$AnalyticsEvent$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AnalyticsEvent> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AnalyticsEvent createFromParcel(Parcel in) {
+                return new AnalyticsEvent(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AnalyticsEvent[] newArray(int size) {
+                return new AnalyticsEvent[size];
+            }
+        }
+
         public AnalyticsEvent(int eventName, long timestamp) {
             this.mEventName = eventName;
             this.mTimeSinceLastEvent = timestamp;
@@ -201,13 +238,14 @@ public class ParcelableCallAnalytics implements Parcelable {
         public static final int BIND_CS_TIMING = 6;
         public static final int BLOCK_CHECK_FINISHED_TIMING = 9;
         public static final Parcelable.Creator<EventTiming> CREATOR = new Parcelable.Creator<EventTiming>() { // from class: android.telecom.ParcelableCallAnalytics.EventTiming.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public EventTiming createFromParcel(Parcel in) {
                 return new EventTiming(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EventTiming[] newArray(int size) {
                 return new EventTiming[size];
@@ -227,6 +265,27 @@ public class ParcelableCallAnalytics implements Parcelable {
         public static final int UNHOLD_TIMING = 4;
         private int mName;
         private long mTime;
+
+        /* synthetic */ EventTiming(Parcel parcel, EventTimingIA eventTimingIA) {
+            this(parcel);
+        }
+
+        /* renamed from: android.telecom.ParcelableCallAnalytics$EventTiming$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<EventTiming> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public EventTiming createFromParcel(Parcel in) {
+                return new EventTiming(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public EventTiming[] newArray(int size) {
+                return new EventTiming[size];
+            }
+        }
 
         public EventTiming(int name, long time) {
             this.mName = name;
@@ -255,6 +314,23 @@ public class ParcelableCallAnalytics implements Parcelable {
         public void writeToParcel(Parcel out, int flags) {
             out.writeInt(this.mName);
             out.writeLong(this.mTime);
+        }
+    }
+
+    /* renamed from: android.telecom.ParcelableCallAnalytics$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ParcelableCallAnalytics> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableCallAnalytics createFromParcel(Parcel in) {
+            return new ParcelableCallAnalytics(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableCallAnalytics[] newArray(int size) {
+            return new ParcelableCallAnalytics[size];
         }
     }
 

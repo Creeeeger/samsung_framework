@@ -50,18 +50,36 @@ public class SemWifiDisplayParameter implements Parcelable {
     private String mValue;
     public static final SemWifiDisplayParameter[] EMPTY_ARRAY = new SemWifiDisplayParameter[0];
     public static final Parcelable.Creator<SemWifiDisplayParameter> CREATOR = new Parcelable.Creator<SemWifiDisplayParameter>() { // from class: android.hardware.display.SemWifiDisplayParameter.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemWifiDisplayParameter createFromParcel(Parcel in) {
             return new SemWifiDisplayParameter(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiDisplayParameter[] newArray(int size) {
             return size == 0 ? SemWifiDisplayParameter.EMPTY_ARRAY : new SemWifiDisplayParameter[size];
         }
     };
+
+    /* renamed from: android.hardware.display.SemWifiDisplayParameter$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemWifiDisplayParameter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiDisplayParameter createFromParcel(Parcel in) {
+            return new SemWifiDisplayParameter(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiDisplayParameter[] newArray(int size) {
+            return size == 0 ? SemWifiDisplayParameter.EMPTY_ARRAY : new SemWifiDisplayParameter[size];
+        }
+    }
 
     public SemWifiDisplayParameter() {
     }

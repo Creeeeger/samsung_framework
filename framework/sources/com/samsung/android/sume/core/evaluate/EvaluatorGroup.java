@@ -7,13 +7,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public abstract class EvaluatorGroup implements Evaluator {
     private List<Evaluator> evaluators;
     private volatile boolean sorted = false;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public EvaluatorGroup(Evaluator... evaluators) {
         this.evaluators = Arrays.asList(evaluators);
     }
@@ -33,7 +31,6 @@ public abstract class EvaluatorGroup implements Evaluator {
         throw new UnsupportedOperationException("EvaluatorGroup doesn't support this!!!");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public EvaluatorGroup add(Evaluator evaluator) {
         this.evaluators.add(evaluator);
         this.sorted = false;
@@ -49,7 +46,6 @@ public abstract class EvaluatorGroup implements Evaluator {
         return this.evaluators;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void sort() {
         if (!this.sorted) {
             this.evaluators = (List) stream().sorted().collect(Collectors.toList());
@@ -57,7 +53,6 @@ public abstract class EvaluatorGroup implements Evaluator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public <T extends Comparable> T front() {
         sort();
         Evaluator evaluator = this.evaluators.get(0);
@@ -122,7 +117,6 @@ public abstract class EvaluatorGroup implements Evaluator {
         }).collect(Collectors.joining(delimiter));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$toString$0(Evaluator it) {
         return NavigationBarInflaterView.SIZE_MOD_START + it + NavigationBarInflaterView.SIZE_MOD_END;
     }

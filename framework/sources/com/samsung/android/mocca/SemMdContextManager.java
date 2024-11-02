@@ -86,7 +86,6 @@ public class SemMdContextManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MoccaListenerTransport lambda$registerAvailabilityCallback$0(AvailabilityCallback cb) {
         return new MoccaListenerTransport(cb, null);
     }
@@ -154,7 +153,6 @@ public class SemMdContextManager {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MoccaListenerTransport lambda$registerContextEventCallback$1(ContextEventCallback cb) {
         return new MoccaListenerTransport(null, cb);
     }
@@ -189,7 +187,6 @@ public class SemMdContextManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class MoccaListenerTransport extends IMoccaEventListener.Stub {
         private static final int MSG_CONTEXT_AVAILABLE = 3;
@@ -199,6 +196,9 @@ public class SemMdContextManager {
         private AvailabilityCallback mAvailabilityCallback;
         private ContextEventCallback mContextEventCallback;
         private final Handler mListenerHandler = new Handler() { // from class: com.samsung.android.mocca.SemMdContextManager.MoccaListenerTransport.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 MoccaListenerTransport.this._handleMessage(msg);
@@ -208,6 +208,19 @@ public class SemMdContextManager {
         MoccaListenerTransport(AvailabilityCallback availabilityCallback, ContextEventCallback contextEventCallback) {
             this.mAvailabilityCallback = availabilityCallback;
             this.mContextEventCallback = contextEventCallback;
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.mocca.SemMdContextManager$MoccaListenerTransport$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 extends Handler {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                MoccaListenerTransport.this._handleMessage(msg);
+            }
         }
 
         @Override // com.samsung.android.mocca.IMoccaEventListener
@@ -230,7 +243,6 @@ public class SemMdContextManager {
             this.mListenerHandler.obtainMessage(4, contextType).sendToTarget();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void _handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:

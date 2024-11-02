@@ -20,7 +20,7 @@ public enum NNFW implements NumericEnum {
 
     private final int value;
 
-    /* renamed from: vendor, reason: collision with root package name */
+    /* renamed from: vendor */
     private final Vendor[] f5vendor;
 
     NNFW(int value, Vendor[] vendor2) {
@@ -42,9 +42,20 @@ public enum NNFW implements NumericEnum {
         return name() + ":" + this.value;
     }
 
+    /* renamed from: com.samsung.android.sume.core.types.nn.NNFW$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends HashMap<String, NNFW> {
+        AnonymousClass1() {
+            put("dlc", NNFW.SNPE);
+            put("tflite", NNFW.TFLITE);
+            put("tf", NNFW.SNAP);
+            put("pb", NNFW.SNAP);
+        }
+    }
+
     public static NNFW fromExtension(final String ext) {
         return (NNFW) Collections.unmodifiableMap(new HashMap<String, NNFW>() { // from class: com.samsung.android.sume.core.types.nn.NNFW.1
-            {
+            AnonymousClass1() {
                 put("dlc", NNFW.SNPE);
                 put("tflite", NNFW.TFLITE);
                 put("tf", NNFW.SNAP);
@@ -70,7 +81,6 @@ public enum NNFW implements NumericEnum {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ InvalidParameterException lambda$fromExtension$1(String ext) {
         return new InvalidParameterException("not supported model file type: " + ext);
     }

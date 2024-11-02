@@ -53,7 +53,6 @@ public class ExtendedPKIXParameters extends PKIXParameters {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setParams(PKIXParameters params) {
         setDate(params.getDate());
         setCertPathCheckers(params.getCertPathCheckers());

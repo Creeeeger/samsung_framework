@@ -20,22 +20,38 @@ public class AnimationUtils {
     private static final String TAG = "AnimationUtils";
     private static final int TOGETHER = 0;
     private static ThreadLocal<AnimationState> sAnimationState = new ThreadLocal<AnimationState>() { // from class: android.view.animation.AnimationUtils.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.ThreadLocal
         public AnimationState initialValue() {
             return new AnimationState();
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class AnimationState {
         boolean animationClockLocked;
         long currentVsyncTimeMillis;
         long lastReportedTimeMillis;
 
+        /* synthetic */ AnimationState(AnimationStateIA animationStateIA) {
+            this();
+        }
+
         private AnimationState() {
+        }
+    }
+
+    /* renamed from: android.view.animation.AnimationUtils$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends ThreadLocal<AnimationState> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.ThreadLocal
+        public AnimationState initialValue() {
+            return new AnimationState();
         }
     }
 
@@ -231,7 +247,10 @@ public class AnimationUtils {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x00db, code lost:            return r0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x00db, code lost:
+    
+        return r0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

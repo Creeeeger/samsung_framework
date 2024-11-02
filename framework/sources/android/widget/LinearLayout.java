@@ -161,7 +161,6 @@ public class LinearLayout extends ViewGroup {
             return output + "LinearLayout.LayoutParams={width=" + sizeToString(this.width) + ", height=" + sizeToString(this.height) + " weight=" + this.weight + "}";
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup.MarginLayoutParams, android.view.ViewGroup.LayoutParams
         public void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
@@ -328,7 +327,6 @@ public class LinearLayout extends ViewGroup {
         return this.mDividerWidth;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         if (this.mDivider == null) {
@@ -506,7 +504,6 @@ public class LinearLayout extends ViewGroup {
         this.mWeightSum = Math.max(0.0f, weightSum);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (this.mOrientation == 1) {
@@ -516,7 +513,6 @@ public class LinearLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean hasDividerBeforeChildAt(int childIndex) {
         if (this.mShowDividers == 0) {
             return false;
@@ -556,7 +552,6 @@ public class LinearLayout extends ViewGroup {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:124:0x0469  */
     /* JADX WARN: Removed duplicated region for block: B:126:0x046f  */
     /* JADX WARN: Removed duplicated region for block: B:158:0x03dd  */
@@ -591,7 +586,6 @@ public class LinearLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:148:0x0681  */
     /* JADX WARN: Removed duplicated region for block: B:151:0x0687  */
     /* JADX WARN: Removed duplicated region for block: B:197:0x0588  */
@@ -632,7 +626,6 @@ public class LinearLayout extends ViewGroup {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
         measureChildWithMargins(child, widthMeasureSpec, totalWidth, heightMeasureSpec, totalHeight);
     }
@@ -645,7 +638,6 @@ public class LinearLayout extends ViewGroup {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         if (this.mOrientation == 1) {
@@ -655,7 +647,6 @@ public class LinearLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void layoutVertical(int left, int top, int right, int bottom) {
         int childTop;
         int paddingLeft;
@@ -742,7 +733,6 @@ public class LinearLayout extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:23:0x00b8  */
     /* JADX WARN: Removed duplicated region for block: B:26:0x00c3  */
     /* JADX WARN: Removed duplicated region for block: B:28:0x0101  */
@@ -821,7 +811,6 @@ public class LinearLayout extends ViewGroup {
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         int i = this.mOrientation;
@@ -834,7 +823,6 @@ public class LinearLayout extends ViewGroup {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
         if (sPreserveMarginParamsInLayoutParamConversion) {
@@ -848,7 +836,6 @@ public class LinearLayout extends ViewGroup {
         return new LayoutParams(lp);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
@@ -859,7 +846,6 @@ public class LinearLayout extends ViewGroup {
         return LinearLayout.class.getName();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);

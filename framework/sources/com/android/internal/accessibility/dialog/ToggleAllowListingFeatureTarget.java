@@ -7,12 +7,10 @@ import com.android.internal.R;
 import com.android.internal.accessibility.dialog.TargetAdapter;
 import com.android.internal.accessibility.util.ShortcutUtils;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ToggleAllowListingFeatureTarget extends AccessibilityTarget {
     private Context mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ToggleAllowListingFeatureTarget(Context context, int shortcutType, boolean isShortcutSwitched, String id, int uid, CharSequence label, Drawable icon, String key) {
         super(context, shortcutType, 2, isShortcutSwitched, id, uid, label, context.getPackageManager().semGetDrawableForIconTray(icon, 1), key);
         int statusResId;

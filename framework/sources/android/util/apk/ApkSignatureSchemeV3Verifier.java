@@ -370,7 +370,6 @@ public class ApkSignatureSchemeV3Verifier {
         return Pair.create(certChain, por);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] getVerityRootHash(String apkPath) throws IOException, SignatureNotFoundException, SecurityException {
         RandomAccessFile apk = new RandomAccessFile(apkPath, "r");
         try {
@@ -389,7 +388,6 @@ public class ApkSignatureSchemeV3Verifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] generateApkVerity(String apkPath, ByteBufferFactory bufferFactory) throws IOException, SignatureNotFoundException, SecurityException, DigestException, NoSuchAlgorithmException {
         RandomAccessFile apk = new RandomAccessFile(apkPath, "r");
         try {
@@ -424,7 +422,6 @@ public class ApkSignatureSchemeV3Verifier {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class PlatformNotSupportedException extends Exception {
         PlatformNotSupportedException(String s) {

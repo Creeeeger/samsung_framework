@@ -10,13 +10,14 @@ import android.view.animation.AnimationUtils;
 /* loaded from: classes4.dex */
 public class SemRemoteViewsViewAnimation extends SemRemoteViewsAnimation {
     public static final Parcelable.Creator<SemRemoteViewsViewAnimation> CREATOR = new Parcelable.Creator<SemRemoteViewsViewAnimation>() { // from class: android.widget.SemRemoteViewsViewAnimation.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemRemoteViewsViewAnimation createFromParcel(Parcel in) {
             return new SemRemoteViewsViewAnimation(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemRemoteViewsViewAnimation[] newArray(int size) {
             return new SemRemoteViewsViewAnimation[size];
@@ -33,6 +34,23 @@ public class SemRemoteViewsViewAnimation extends SemRemoteViewsAnimation {
     protected SemRemoteViewsViewAnimation(Parcel parcel) {
         super(parcel);
         this.mAnimResId = parcel.readInt();
+    }
+
+    /* renamed from: android.widget.SemRemoteViewsViewAnimation$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemRemoteViewsViewAnimation> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemRemoteViewsViewAnimation createFromParcel(Parcel in) {
+            return new SemRemoteViewsViewAnimation(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemRemoteViewsViewAnimation[] newArray(int size) {
+            return new SemRemoteViewsViewAnimation[size];
+        }
     }
 
     @Override // android.widget.SemRemoteViewsAnimation, android.os.Parcelable
@@ -66,6 +84,9 @@ public class SemRemoteViewsViewAnimation extends SemRemoteViewsAnimation {
             return;
         }
         anim.setAnimationListener(new Animation.AnimationListener() { // from class: android.widget.SemRemoteViewsViewAnimation.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationStart(Animation animation) {
             }
@@ -85,7 +106,26 @@ public class SemRemoteViewsViewAnimation extends SemRemoteViewsAnimation {
         target.startAnimation(anim);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.widget.SemRemoteViewsViewAnimation$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Animation.AnimationListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        @Override // android.view.animation.Animation.AnimationListener
+        public void onAnimationEnd(Animation animation) {
+            SemRemoteViewsViewAnimation.this.mIsExpired = true;
+        }
+    }
+
     @Override // android.widget.SemRemoteViewsAnimation
     /* renamed from: endAnimation */
     public void lambda$play$0(View root) {

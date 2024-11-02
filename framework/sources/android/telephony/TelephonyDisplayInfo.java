@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class TelephonyDisplayInfo implements Parcelable {
     public static final Parcelable.Creator<TelephonyDisplayInfo> CREATOR = new Parcelable.Creator<TelephonyDisplayInfo>() { // from class: android.telephony.TelephonyDisplayInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TelephonyDisplayInfo createFromParcel(Parcel source) {
             return new TelephonyDisplayInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyDisplayInfo[] newArray(int size) {
             return new TelephonyDisplayInfo[size];
@@ -78,6 +79,23 @@ public final class TelephonyDisplayInfo implements Parcelable {
         dest.writeInt(this.mOverrideNetworkType);
         dest.writeBoolean(this.m5gAvailable);
         dest.writeBoolean(this.mIsRoaming);
+    }
+
+    /* renamed from: android.telephony.TelephonyDisplayInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TelephonyDisplayInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyDisplayInfo createFromParcel(Parcel source) {
+            return new TelephonyDisplayInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyDisplayInfo[] newArray(int size) {
+            return new TelephonyDisplayInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

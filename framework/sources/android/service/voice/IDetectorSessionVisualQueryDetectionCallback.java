@@ -132,8 +132,9 @@ public interface IDetectorSessionVisualQueryDetectionCallback extends IInterface
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDetectorSessionVisualQueryDetectionCallback {
+        public static class Proxy implements IDetectorSessionVisualQueryDetectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

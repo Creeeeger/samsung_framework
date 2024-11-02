@@ -41,7 +41,6 @@ public abstract class PrinterDiscoverySession {
         this.mId = i;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setObserver(IPrintServiceClient observer) {
         this.mObserver = observer;
         if (!this.mPrinters.isEmpty()) {
@@ -53,7 +52,6 @@ public abstract class PrinterDiscoverySession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getId() {
         return this.mId;
     }
@@ -206,7 +204,6 @@ public abstract class PrinterDiscoverySession {
         return this.mIsDiscoveryStarted;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startPrinterDiscovery(List<PrinterId> priorityList) {
         if (!this.mIsDestroyed) {
             this.mIsDiscoveryStarted = true;
@@ -218,7 +215,6 @@ public abstract class PrinterDiscoverySession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void stopPrinterDiscovery() {
         if (!this.mIsDestroyed) {
             this.mIsDiscoveryStarted = false;
@@ -226,14 +222,12 @@ public abstract class PrinterDiscoverySession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void validatePrinters(List<PrinterId> printerIds) {
         if (!this.mIsDestroyed && this.mObserver != null) {
             onValidatePrinters(printerIds);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startPrinterStateTracking(PrinterId printerId) {
         if (!this.mIsDestroyed && this.mObserver != null && !this.mTrackedPrinters.contains(printerId)) {
             this.mTrackedPrinters.add(printerId);
@@ -241,7 +235,6 @@ public abstract class PrinterDiscoverySession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestCustomPrinterIcon(PrinterId printerId) {
         IPrintServiceClient iPrintServiceClient;
         if (!this.mIsDestroyed && (iPrintServiceClient = this.mObserver) != null) {
@@ -250,14 +243,12 @@ public abstract class PrinterDiscoverySession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void stopPrinterStateTracking(PrinterId printerId) {
         if (!this.mIsDestroyed && this.mObserver != null && this.mTrackedPrinters.remove(printerId)) {
             onStopPrinterStateTracking(printerId);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void destroy() {
         if (!this.mIsDestroyed) {
             this.mIsDestroyed = true;

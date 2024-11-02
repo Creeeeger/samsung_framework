@@ -8,7 +8,9 @@ import java.util.Arrays;
 /* loaded from: classes5.dex */
 public class DnsSdTxtRecord implements Parcelable {
     public static final Parcelable.Creator<DnsSdTxtRecord> CREATOR = new Parcelable.Creator<DnsSdTxtRecord>() { // from class: com.android.net.module.util.DnsSdTxtRecord.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DnsSdTxtRecord createFromParcel(Parcel in) {
             DnsSdTxtRecord info = new DnsSdTxtRecord();
@@ -16,7 +18,6 @@ public class DnsSdTxtRecord implements Parcelable {
             return info;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DnsSdTxtRecord[] newArray(int size) {
             return new DnsSdTxtRecord[size];
@@ -285,5 +286,24 @@ public class DnsSdTxtRecord implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByteArray(this.mData);
+    }
+
+    /* renamed from: com.android.net.module.util.DnsSdTxtRecord$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DnsSdTxtRecord> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DnsSdTxtRecord createFromParcel(Parcel in) {
+            DnsSdTxtRecord info = new DnsSdTxtRecord();
+            in.readByteArray(info.mData);
+            return info;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DnsSdTxtRecord[] newArray(int size) {
+            return new DnsSdTxtRecord[size];
+        }
     }
 }

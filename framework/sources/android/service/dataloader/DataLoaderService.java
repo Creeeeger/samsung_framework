@@ -32,22 +32,16 @@ public abstract class DataLoaderService extends Service {
         boolean onPrepareImage(Collection<InstallationFile> collection, Collection<String> collection2);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native boolean nativeCreateDataLoader(int i, FileSystemControlParcel fileSystemControlParcel, DataLoaderParamsParcel dataLoaderParamsParcel, IDataLoaderStatusListener iDataLoaderStatusListener);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native boolean nativeDestroyDataLoader(int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native boolean nativePrepareImage(int i, InstallationFileParcel[] installationFileParcelArr, String[] strArr);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native boolean nativeStartDataLoader(int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native boolean nativeStopDataLoader(int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeWriteData(long j, String str, long j2, long j3, ParcelFileDescriptor parcelFileDescriptor);
 
     @SystemApi
@@ -62,6 +56,10 @@ public abstract class DataLoaderService extends Service {
 
     /* loaded from: classes3.dex */
     private class DataLoaderBinderService extends IDataLoader.Stub {
+        /* synthetic */ DataLoaderBinderService(DataLoaderService dataLoaderService, DataLoaderBinderServiceIA dataLoaderBinderServiceIA) {
+            this();
+        }
+
         private DataLoaderBinderService() {
         }
 

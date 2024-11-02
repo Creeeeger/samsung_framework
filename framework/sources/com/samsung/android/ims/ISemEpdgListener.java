@@ -150,8 +150,9 @@ public interface ISemEpdgListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemEpdgListener {
+        public static class Proxy implements ISemEpdgListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

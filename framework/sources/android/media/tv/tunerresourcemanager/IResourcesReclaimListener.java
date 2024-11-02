@@ -70,8 +70,9 @@ public interface IResourcesReclaimListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IResourcesReclaimListener {
+        public static class Proxy implements IResourcesReclaimListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

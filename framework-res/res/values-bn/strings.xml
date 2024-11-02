@@ -269,12 +269,12 @@
     <string name="allow">অনুমতি দিন</string>
     <string name="alwaysUse">এই ক্রিয়াটির জন্য এটিকে ডিফল্টরুপে ব্যবহার করুন৷</string>
     <string name="android_preparing_apk">%1$s প্রস্তুত করা হচ্ছে৷</string>
-    <string name="android_start_title">ফোন চালু করা হচ্ছে…</string>
+    <string name="android_start_title">ট্যাবলেট চালু করা হচ্ছে…</string>
     <string name="android_system_label">Android সিস্টেম</string>
     <string name="android_upgrading_complete">চালু করা সম্পূর্ণ হচ্ছে৷</string>
     <string name="android_upgrading_notification_title">সিস্টেম আপডেট শেষ করা হচ্ছে…</string>
     <string name="android_upgrading_starting_apps">অ্যাপ্লিকেশানগুলি শুরু করা হচ্ছে৷</string>
-    <string name="android_upgrading_title">ফোন আপডেট করা হচ্ছে…</string>
+    <string name="android_upgrading_title">ট্যাবলেট আপডেট করা হচ্ছে…</string>
     <string name="anr_activity_application">%2$s সাড়া দিচ্ছে না</string>
     <string name="anr_activity_process">%1$s সাড়া দিচ্ছে না</string>
     <string name="anr_application_process">%1$s সাড়া দিচ্ছে না</string>
@@ -295,16 +295,16 @@
     <string name="app_not_found">এই ক্রিয়াটিকে চালনা করার জন্য কোনো অ্যাপ্লিকেশান পাওয়া যায়নি</string>
     <string name="app_running_notification_text">আরও তথ্যের জন্য বা অ্যাপ্লিকেশানটি বন্ধ করতে আলতো চাপুন।</string>
     <string name="app_running_notification_title">%1$s চলছে</string>
-    <string name="app_streaming_blocked_message">এই সময়ে আপনার %1$s-এ এটি অ্যাক্সেস করা যাবে না। পরিবর্তে আপনার ফোনে ব্যবহার করে দেখুন।</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">এই অ্যাপ অতিরিক্ত নিরাপত্তার জন্য অনুরোধ করছে। পরিবর্তে আপনার ফোনে ব্যবহার করে দেখুন।</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">আপনার %1$s-এ এটি অ্যাক্সেস করা যাবে না। পরিবর্তে আপনার ফোনে ব্যবহার করে দেখুন।</string>
+    <string name="app_streaming_blocked_message">এই সময়ে আপনার %1$s-এ এটি অ্যাক্সেস করা যাবে না। পরিবর্তে আপনার ট্যাবলেটে ব্যবহার করে দেখুন।</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">এই অ্যাপ অতিরিক্ত নিরাপত্তার জন্য অনুরোধ করছে। পরিবর্তে আপনার ট্যাবলেটে ব্যবহার করে দেখুন।</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">আপনার %1$s-এ এটি অ্যাক্সেস করা যাবে না। পরিবর্তে আপনার ট্যাবলেটে ব্যবহার করে দেখুন।</string>
     <string name="app_streaming_blocked_title">%1$s উপলভ্য নেই</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">ক্যামেরা উপলভ্য নেই</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">ফোনে চালিয়ে যান</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">মাইক্রোফোন উপলভ্য নেই</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">অনুমতি প্রয়োজন</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store উপলভ্য নেই</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">ফোনের সেটিংস উপলভ্য নেই</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">ট্যাবলেটের সেটিংস উপলভ্য নেই</string>
     <string name="app_suspended_default_message">%1$s এখন উপলভ্য নয়। এই অ্যাপটিকে %2$s অ্যাপ ম্যানেজ করে।</string>
     <string name="app_suspended_more_details">আরও জানুন</string>
     <string name="app_suspended_title">অ্যাপটি উপলভ্য নয়</string>
@@ -344,7 +344,7 @@
     <string name="back_button_label">ফিরুন</string>
     <string name="badPin">আপনার দ্বারা টাইপ করা পুরানো পিন সঠিক নয়৷</string>
     <string name="badPuk">আপনার দ্বারা টাইপ করা PUK সঠিক নয়৷</string>
-    <string name="battery_saver_charged_notification_summary">ফোনের ব্যাটারিতে যথেষ্ট চার্জ আছে। ফিচারগুলির উপর আর বিধিনিষেধ নেই।</string>
+    <string name="battery_saver_charged_notification_summary">ট্যাবলেটের ব্যাটারিতে যথেষ্ট চার্জ আছে। ফিচারগুলির উপর আর বিধিনিষেধ নেই।</string>
     <string name="battery_saver_description">ব্যাটারি সেভার ডার্ক থিম চালু করে এবং ব্যাকগ্রাউন্ড অ্যাক্টিভিটি, কিছু ভিজ্যুয়াল এফেক্ট, নির্দিষ্ট ফিচার ও কয়েকটি নেটওয়ার্ক কানেকশনের ব্যবহার সীমিত করে বা বন্ধ করে দেয়।</string>
     <string name="battery_saver_description_with_learn_more">ব্যাটারি সেভার ডার্ক থিম চালু করে এবং ব্যাকগ্রাউন্ড অ্যাক্টিভিটি, কিছু ভিজ্যুয়াল এফেক্ট, নির্দিষ্ট ফিচার ও কয়েকটি নেটওয়ার্ক কানেকশনের ব্যবহার সীমিত করে বা বন্ধ করে দেয়।</string>
     <string name="battery_saver_notification_channel_name">ব্যাটারি সেভার</string>
@@ -486,7 +486,7 @@
     <string name="decline">অস্বীকার করুন</string>
     <string name="decline_remote_bugreport_action">অস্বীকার করুন</string>
     <string name="default_audio_route_category_name">সিস্টেম</string>
-    <string name="default_audio_route_name">ফোন</string>
+    <string name="default_audio_route_name">ট্যাবলেট</string>
     <string name="default_audio_route_name_dock_speakers">ডক স্পিকার</string>
     <string name="default_audio_route_name_external_device">এক্সটার্নাল ডিভাইস</string>
     <string name="default_audio_route_name_headphones">হেডফোন</string>
@@ -563,7 +563,7 @@
     <string name="emergency_call_dialog_number_for_display">জরুরী নম্বর</string>
     <string name="emergency_calls_only">শুধুমাত্র জরুরি কল</string>
     <string name="enablePin">অসফল, সিম/RUIM লক সক্ষম করুন৷</string>
-    <string name="enable_explore_by_touch_warning_message">"%1$s 'স্পর্শের মাধ্যমে অন্বেষণ করুন' সক্ষম করতে চাইছে৷ যখন 'স্পর্শের মাধ্যমে অন্বেষণ করুন' চালু করা হবে তখন আপনার আঙ্গুলের নিয়ন্ত্রণে থাকা জিনিসের বর্ণনাগুলি শুনতে অথবা দেখতে পাবেন অথবা ফোনের সাথে ইন্টারঅ্যাক্ট করার জন্য অঙ্গভঙ্গির সাহায্য নিতে পারবেন৷"</string>
+    <string name="enable_explore_by_touch_warning_message">"%1$s 'স্পর্শের মাধ্যমে অন্বেষণ করুন' সক্ষম করতে চাইছে৷ যখন 'স্পর্শের মাধ্যমে অন্বেষণ করুন' চালু করা হবে তখন আপনার আঙ্গুলের নিয়ন্ত্রণে থাকা জিনিসের বর্ণনাগুলি শুনতে অথবা দেখতে পাবেন অথবা ট্যাবলেটের সাথে ইন্টারঅ্যাক্ট করার জন্য অঙ্গভঙ্গির সাহায্য নিতে পারবেন৷"</string>
     <string name="enable_explore_by_touch_warning_title">"'স্পর্শের মাধ্যমে অন্বেষণ করুন' সক্ষম করতে চান?"</string>
     <string name="error_message_change_not_allowed">এই পরিবর্তনটি আপনার প্রশাসক দ্বারা অনুমোদিত নয়</string>
     <string name="error_message_title">ত্রুটি</string>
@@ -776,7 +776,7 @@
     <string name="global_action_silent_mode_on_status">শব্দ বন্ধ করা আছে</string>
     <string name="global_action_toggle_silent_mode">নীরব মোড</string>
     <string name="global_action_voice_assist">ভয়েস সহায়তা</string>
-    <string name="global_actions">ফোন বিকল্পগুলি</string>
+    <string name="global_actions">ট্যাবলেট বিকল্পগুলি</string>
     <string name="global_actions_airplane_mode_off_status">বিমান মোড বন্ধ করা আছে</string>
     <string name="global_actions_airplane_mode_on_status">বিমান মোড চালু করা আছে</string>
     <string name="global_actions_toggle_airplane_mode">বিমান মোড</string>
@@ -917,11 +917,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">পাসওয়ার্ড লিখতে আলতো চাপুন</font></string>
     <string name="keyguard_password_wrong_pin_code">ভুল পিন কোড৷</string>
     <string name="kg_enter_confirm_pin_hint">কাঙ্ক্ষিত পিন কোড নিশ্চিত করুন</string>
-    <string name="kg_failed_attempts_almost_at_login">"আপনি আপনার আনলকের প্যাটার্ন আঁকার ক্ষেত্রে %1$d বার ভুল করেছেন৷ আর %2$d বার অসফল প্রচেষ্টা করা হলে আপনাকে একটি ইমেল অ্যাকাউন্ট মারফত আপনার ফোন আনলক করতে বলা হবে৷
+    <string name="kg_failed_attempts_almost_at_login">"আপনি আপনার আনলকের প্যাটার্ন আঁকার ক্ষেত্রে %1$d বার ভুল করেছেন৷ আর %2$d বার অসফল প্রচেষ্টা করা হলে আপনাকে একটি ইমেল অ্যাকাউন্ট মারফত আপনার ট্যাবলেট আনলক করতে বলা হবে৷
 
  %3$d সেকেন্ডের মধ্যে আবার চেষ্টা করুন৷"</string>
-    <string name="kg_failed_attempts_almost_at_wipe">আপনি আপনার ফোন আনলকের প্রচেষ্টায় %1$d বার ভুল করেছেন৷ আর %2$d বার অসফল প্রচেষ্টা করা হলে, ফোনটির সেটিংস ফ্যাক্টরি ডিফল্ট অনুযায়ী হয়ে যাবে এবং সমস্ত ব্যবহারকারী ডেটা হারিয়ে যাবে৷</string>
-    <string name="kg_failed_attempts_now_wiping">আপনি আপনার ফোন আনলকের প্রচেষ্টায় %d বার ভুল করেছেন৷ ফোনটি এখন ফ্যাক্টরি ডিফল্ট অনুযায়ী আবার সেট করা হবে৷</string>
+    <string name="kg_failed_attempts_almost_at_wipe">আপনি আপনার ট্যাবলেট আনলকের প্রচেষ্টায় %1$d বার ভুল করেছেন৷ আর %2$d বার অসফল প্রচেষ্টা করা হলে, ট্যাবলেটের সেটিংস ফ্যাক্টরি ডিফল্ট অনুযায়ী হয়ে যাবে এবং সমস্ত ব্যবহারকারী ডেটা হারিয়ে যাবে৷</string>
+    <string name="kg_failed_attempts_now_wiping">আপনি আপনার ট্যাবলেট আনলকের প্রচেষ্টায় %d বার ভুল করেছেন৷ ট্যাবলেটটি এখন ফ্যাক্টরি ডিফল্ট অনুযায়ী আবার সেট করা হবে৷</string>
     <string name="kg_forgot_pattern_button_text">প্যাটার্ন ভুলে গেছেন</string>
     <string name="kg_invalid_confirm_pin_hint">পিন কোডগুলি মিলছে না</string>
     <string name="kg_invalid_puk">সঠিক PUK কোড পুনরায় লিখুন৷ বার বার প্রচেষ্টা করা হলে তা স্থায়ীভাবে সিমটিকে অক্ষম করে দেবে৷</string>
@@ -986,11 +986,11 @@
     <string name="lockscreen_access_pattern_start">প্যাটার্ন শুরু হয়েছে</string>
     <string name="lockscreen_carrier_default">কোনো পরিষেবা নেই</string>
     <string name="lockscreen_emergency_call">জরুরী</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">আপনি %1$d বার ভুল করে ফোনটি আনলক করার চেষ্টা করেছেন৷ আরও %2$dটি অসফল চেষ্টার পরে, ফোনটি ফ্যাক্টরী ডিফল্টে রিসেট হবে এবং ব্যবহারকারীর সমস্ত ডেটা মুছে যাবে৷</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"আপনি %1$d বার ভুল করে আপনার আনলক প্যাটার্ন অঙ্কিত করেছেন৷ আপনি %2$dটি অসফল প্রচেষ্টার পরে, আপনাকে Google এ প্রবেশ করে আপনার ফোন আনলক করার কথা বলা হবে৷
+    <string name="lockscreen_failed_attempts_almost_at_wipe">আপনি %1$d বার ভুল করে ট্যাবলেটটি আনলক করার চেষ্টা করেছেন৷ আরও %2$dটি অসফল চেষ্টার পরে, ট্যাবলেটটি ফ্যাক্টরী ডিফল্টে রিসেট হবে এবং ব্যবহারকারীর সমস্ত ডেটা মুছে যাবে৷</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"আপনি %1$d বার ভুল করে আপনার আনলক প্যাটার্ন অঙ্কিত করেছেন৷ আপনি %2$dটি অসফল প্রচেষ্টার পরে, আপনাকে Google এ প্রবেশ করে আপনার ট্যাবলেট আনলক করার কথা বলা হবে৷
 
  %3$d সেকেন্ড পরে আবার চেষ্টা করুন৷"</string>
-    <string name="lockscreen_failed_attempts_now_wiping">আপনি %d বার ভুল করে ফোনটি আনলক করার চেষ্টা করেছেন৷ ফোনটি এখন ফ্যাক্টরী ডিফল্টে রিসেট হবে৷</string>
+    <string name="lockscreen_failed_attempts_now_wiping">আপনি %d বার ভুল করে ট্যাবলেটটি আনলক করার চেষ্টা করেছেন৷ ট্যাবলেটটি এখন ফ্যাক্টরী ডিফল্টে রিসেট হবে৷</string>
     <string name="lockscreen_forgot_pattern_button_text">প্যাটার্ন ভুলে গেছেন?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"আপনার ইউজারনেম অথবা পাসওয়ার্ড ভুলে গেছেন?
 "<b>google.com/accounts/recovery</b> এ যান৷</string>
@@ -1006,7 +1006,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">আনলক করতে বা জরুরি কল করতে মেনু টিপুন৷</string>
     <string name="lockscreen_missing_sim_instructions">সিম যোগ করুন।</string>
     <string name="lockscreen_missing_sim_instructions_long">সিম নেই অথবা সেটি রিড করা যাচ্ছে না। সিম যোগ করুন।</string>
-    <string name="lockscreen_missing_sim_message">ফোনে কোনও সিম নেই।</string>
+    <string name="lockscreen_missing_sim_message">ট্যাবলেটে কোনও সিম নেই।</string>
     <string name="lockscreen_missing_sim_message_short">কোনও সিম নেই</string>
     <string name="lockscreen_network_locked_message">নেটওয়ার্ক লক হয়েছে</string>
     <string name="lockscreen_password_wrong">আবার চেষ্টা করুন</string>
@@ -1046,7 +1046,7 @@
     <string name="low_internal_storage_view_text">কিছু কিছু সিস্টেম ক্রিয়াকলাপ কাজ নাও করতে পারে</string>
     <string name="low_internal_storage_view_text_no_boot">সিস্টেমের জন্য যথেষ্ট স্টোরেজ নেই৷ আপনার কাছে ২৫০এমবি ফাঁকা স্থান রয়েছে কিনা সে বিষয়ে নিশ্চিত হন এবং সিস্টেম চালু করুন৷</string>
     <string name="low_internal_storage_view_title">স্টোরেজ পূর্ণ হতে চলেছে</string>
-    <string name="low_memory">ফোনের স্টোরেজে আর জায়গা খালি নেই৷ জায়গা খালি করতে কিছু ফাইল মুছে দিন৷</string>
+    <string name="low_memory">ট্যাবলেটের স্টোরেজে আর জায়গা খালি নেই৷ জায়গা খালি করতে কিছু ফাইল মুছে দিন৷</string>
     <string name="managed_profile_app_label">%1$s অফিস প্রোফাইলে পরিবর্তন করুন</string>
     <string name="managed_profile_label">এর বদলে কাজের প্রোফাইল ব্যবহার করুন</string>
     <string name="managed_profile_label_badge">কর্মক্ষেত্র %1$s</string>
@@ -1377,23 +1377,23 @@
     <string name="permdesc_bindNotificationListenerService">ধারককে, একটি বিজ্ঞপ্তি শ্রোতা পরিষেবার উচ্চ স্তরের ইন্টারফেসে জুড়তে অনুমতি দেয়৷ সধারণ অ্যাপ্লিকেশানগুলির জন্য কখনই প্রয়োজন হয় না৷</string>
     <string name="permdesc_bind_connection_service">কল করা/গ্রহণ করার জন্য অ্যাপ্লিকেশনটিকে টেলিফোন পরিষেবার সাথে ইন্টার‌্যাক্ট করার অনুমতি দেয়।</string>
     <string name="permdesc_bind_incall_service">ব্যবহারকারী কখন এবং কীভাবে কলে-থাকা স্ক্রীণটিকে দেখতে পাবেন, অ্যাপ্লিকেশানটিকে তা নিয়ন্ত্রণ করতে দেয়৷</string>
-    <string name="permdesc_bluetooth">ফোনের ব্লুটুথ কনফিগারেশন দেখতে, এবং যুক্ত ডিভাইসগুলির সাথে সংযোগ স্থাপন এবং সংযোগের অনুরোধ স্বীকার করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷</string>
-    <string name="permdesc_bluetoothAdmin">অ্যাপ্লিকেশানটিকে স্থানীয় ব্লুটুথ ফোনটিকে কনফিগার এবং দূরবর্তী ডিভাইসগুলি আবিষ্কার এবং এর সাথে যুক্ত করতে দেয়৷</string>
+    <string name="permdesc_bluetooth">ট্যাবলেটের ব্লুটুথ কনফিগারেশন দেখতে, এবং যুক্ত ডিভাইসগুলির সাথে সংযোগ স্থাপন এবং সংযোগের অনুরোধ স্বীকার করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷</string>
+    <string name="permdesc_bluetoothAdmin">অ্যাপ্লিকেশানটিকে স্থানীয় ব্লুটুথ ট্যাবলেটকে কনফিগার এবং দূরবর্তী ডিভাইসগুলি আবিষ্কার এবং এর সাথে যুক্ত করতে দেয়৷</string>
     <string name="permdesc_bluetooth_advertise">আশেপাশের ব্লুটুথ ডিভাইস বিজ্ঞাপন দেওয়ার জন্য অ্যাপকে অনুমতি দেয়</string>
     <string name="permdesc_bluetooth_connect">অ্যাপটিকে পেয়ার করা ব্লুটুথ ডিভাইসের সাথে কানেক্ট করতে অনুমতি দেয়</string>
     <string name="permdesc_bluetooth_scan">অ্যাপটিকে কাছাকাছি ব্লুটুথ ডিভাইস খুঁজে দেখতে এবং তার সাথে পেয়ার করার অনুমতি দেয়</string>
     <string name="permdesc_bodySensors">এই অ্যাপ ব্যবহার করার সময় বডি সেন্সর ডেটা অ্যাক্সেস করার অনুমতি দেওয়া হয়। এর মধ্যে হার্ট রেট, তাপমাত্রা এবং রক্তে অক্সিজেনের পরিমাণের শতাংশ সম্পর্কিত তথ্যও আছে।</string>
     <string name="permdesc_bodySensors_background">এই অ্যাপ ব্যাকগ্রাউন্ডে চলার সময় বডি সেন্সর ডেটা অ্যাক্সেস করার অনুমতি দেওয়া হয়। এর মধ্যে হার্ট রেট, তাপমাত্রা এবং রক্তে অক্সিজেনের পরিমাণের শতাংশ সম্পর্কিত তথ্যও আছে।</string>
-    <string name="permdesc_broadcastSticky">স্টিকি সম্প্রচারগুলি পাঠাতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে, যা সম্প্রচার শেষ হয়ে যাওয়ার পরও উপলব্ধ থাকে৷ খুব বেশি পরিমাণে ব্যবহার করার ফলে ফোনটিকে ধীরগতির করে দিতে পারে অথবা খুব বেশি পরিমাণ মেমরি ব্যবহারের ফলে এটি যথাযথভাবে কাজ নাও করতে পারে৷</string>
+    <string name="permdesc_broadcastSticky">স্টিকি সম্প্রচারগুলি পাঠাতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে, যা সম্প্রচার শেষ হয়ে যাওয়ার পরও উপলব্ধ থাকে৷ খুব বেশি পরিমাণে ব্যবহার করার ফলে ট্যাবলেটটিকে ধীরগতির করে দিতে পারে অথবা খুব বেশি পরিমাণ মেমরি ব্যবহারের ফলে এটি যথাযথভাবে কাজ নাও করতে পারে৷</string>
     <string name="permdesc_callCompanionApp">ডিভাইসে চালু আছে এমন কল দেখতে এবং নিয়ন্ত্রণ করতে অ্যাপকে অনুমতি দেয়। কল করা হচ্ছে যে নম্বরে সেটি এবং কলের স্ট্যাটাস কী সেই সব তথ্য এতে অন্তর্ভুক্ত।</string>
     <string name="permdesc_callPhone">আপনার হস্তক্ষেপ ছাড়াই ফোন নম্বরে কল করার অনুমতি দেয়। এর ফলে অপ্রত্যাশিত চার্জ লাগতে বা কল হতে পারে। মনে রাখবেন, এটি অ্যাপকে জরুরি নম্বরে কল করার অনুমতি দেয় না। ক্ষতিকর অ্যাপ, আপনার কনফার্মেশন ছাড়াই কল করে আপনার আর্থিক ক্ষতি করতে পারে অথবা পরিষেবা প্রদানকারীর কোড ডায়াল করে, যার ফলে ইনকামিং কল অটোমেটিক অন্য নম্বরে ফরওয়ার্ড হয়ে যায়।</string>
     <string name="permdesc_camera">এই অ্যাপটি যখন ব্যবহার করা হচ্ছে, তখন ক্যামেরা ব্যবহার করে ছবি তুলতে বা ভিডিও রেকর্ড করতে পারবে।</string>
     <string name="permdesc_cameraOpenCloseListener">কোনও ক্যামেরা ডিভাইস খোলা (অ্যাপ্লিকেশনের সাহায্যে) বা বন্ধ করা হলে এই অ্যাপ কলব্যাক গ্রহণ করতে পারে।</string>
     <string name="permdesc_changeNetworkState">অ্যাপ্লিকেশানকে নেটওয়ার্ক সংযোগ অবস্থা পরিবর্তন করার অনুমতি দেয়৷</string>
     <string name="permdesc_changeTetherState">অ্যাপ্লিকেশানকে টেথার করা নেটওয়ার্ক সংযোগ অবস্থা পরিবর্তন করার অনুমতি দেয়৷</string>
-    <string name="permdesc_changeWifiMulticastState">একটি ওয়াই-ফাই নেটওয়ার্কে মাল্টিকাস্ট ঠিকানাগুলি ব্যবহার করে শুধুমাত্র আপনার ফোনের পরিবর্তে সমস্ত ডিভাইসে পাঠানো প্যাকেটগুলি গ্রহণ করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷ এটি নন-মাল্টিকাস্ট মোডের তুলনায় বেশি পাওয়ার ব্যবহার করে৷</string>
+    <string name="permdesc_changeWifiMulticastState">একটি ওয়াই-ফাই নেটওয়ার্কে মাল্টিকাস্ট ঠিকানাগুলি ব্যবহার করে শুধুমাত্র আপনার ট্যাবলেটের পরিবর্তে সমস্ত ডিভাইসে পাঠানো প্যাকেটগুলি গ্রহণ করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷ এটি নন-মাল্টিকাস্ট মোডের তুলনায় বেশি পাওয়ার ব্যবহার করে৷</string>
     <string name="permdesc_changeWifiState">ওয়াই-ফাই অ্যাক্সেস পয়েন্টের সাথে সংযোগ স্থাপন করতে বা সংযোগ বিচ্ছিন্ন করতে এবং ওয়াই-ফাই নেটওয়ার্কগুলির জন্য ডিভাইস কনফিগারেশনে পরিবর্তন করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷</string>
-    <string name="permdesc_changeWimaxState">WiMAX নেটওয়ার্কগুলির সাথে ফোনটির সংযোগ স্থাপন করতে এবং সংযোগ বিচ্ছিন্ন করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷</string>
+    <string name="permdesc_changeWimaxState">WiMAX নেটওয়ার্কগুলির সাথে ট্যাবলেটটির সংযোগ স্থাপন করতে এবং সংযোগ বিচ্ছিন্ন করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷</string>
     <string name="permdesc_companionProfileWatch">কম্প্যানিয়ন অ্যাপকে ওয়াচ ম্যানেজ করার অনুমতি দেয়।</string>
     <string name="permdesc_connection_manager">টেলিকম সংযোগগুলি পরিচালনা করতে  অ্যাপ্লিকেশানটিকে অনুমোদিত করে৷</string>
     <string name="permdesc_control_incall_experience">অ্যাপ্লিকেশনটিকে কলে-থাকা এক ব্যবহারকারী অভিজ্ঞতা সরবরাহের অনুমতি দেয়।</string>
@@ -1419,7 +1419,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">অ্যাপকে \"specialUse\" সম্পর্কিত ফোরগ্রাউন্ড পরিষেবা ব্যবহার করার অনুমতি দেয়</string>
     <string name="permdesc_foregroundServiceSystemExempted">অ্যাপকে \"systemExempted\" সম্পর্কিত ফোরগ্রাউন্ড পরিষেবা ব্যবহার করার অনুমতি দেয়</string>
     <string name="permdesc_fullScreenIntent">এই অ্যাপকে লক করা ডিভাইসে ফুল স্ক্রিন অ্যাক্টিভিটি হিসাবে বিজ্ঞপ্তি দেখানোর অনুমতি দেয়</string>
-    <string name="permdesc_getAccounts">ফোনটির মেমরিতে থাকা অ্যাকাউন্টের তালিকাটি পেতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷ এতে আপনার দ্বারা ইনস্টল করা অ্যাপ্লিকেশানগুলির মাধ্যমে তৈরি যেকোনো অ্যাকাউন্ট অন্তর্ভুক্ত হতে পারে৷</string>
+    <string name="permdesc_getAccounts">ট্যাবলেটের মেমরিতে থাকা অ্যাকাউন্টের তালিকাটি পেতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷ এতে আপনার দ্বারা ইনস্টল করা অ্যাপ্লিকেশানগুলির মাধ্যমে তৈরি যেকোনো অ্যাকাউন্ট অন্তর্ভুক্ত হতে পারে৷</string>
     <string name="permdesc_getPackageSize">অ্যাপ্লিকেশানকে এটির কোড, ডেটা, এবং ক্যাশে মাপ উদ্ধার করার অনুমতি দেয়</string>
     <string name="permdesc_getTasks">বর্তমানে ও সাম্প্রতিককালের সক্রিয় ক্রিয়াগুলি সম্বন্ধে তথ্য পুনরুদ্ধার করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷ এছাড়া এটি ডিভাইসটিতে কোন অ্যাপ্লিকেশানগুলি ব্যবহৃত হচ্ছে তার বিষয়ে তথ্য খুঁজে বের করতে অ্যাপ্লিকেশানটিকে মঞ্জুর করতে পারে৷</string>
     <string name="permdesc_handoverStatus">এই অ্যাপ্লিকেশানকে বর্তমান Android বীম স্থানান্তর সম্বন্ধে তথ্য গ্রহণ করার অনুমিত দেয়</string>
@@ -1442,16 +1442,16 @@
     <string name="permdesc_nearby_wifi_devices">এটির ফলে অ্যাপ আশপাশের ওয়াই-ফাই ডিভাইসের তথ্য দেখতে, তাদের সাথে কানেক্ট করতে এবং তা কত দূরত্বে আছে সেটি জানতে পারবে</string>
     <string name="permdesc_nfc">অ্যাপ্লিকেশানকে নিয়ার ফিল্ড কমিউনিকেশন (NFC) ট্যাগ, কার্ড এবং রিডারগুলির সাথে যোগাযোগ করতে দেয়৷</string>
     <string name="permdesc_observeCompanionDevicePresence">কম্প্যানিয়ন অ্যাপকে, ডিভাইস আশেপাশে বা অনেক দূরে থাকাকালীন কম্প্যানিয়ন ডিভাইসের উপস্থিতি পর্যবেক্ষণের অনুমতি দেয়।</string>
-    <string name="permdesc_persistentActivity">মেমরিতে নিজের জন্য প্রয়োজনীয় জায়গা আলাদা করে রাখতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷ এর ফলে অন্যান্য অ্যাপ্লিকেশানগুলির জায়গা সীমিত হয়ে পড়তে পারে ও ফোনটি অপেক্ষাকৃত ধীরগতির হয়ে পড়তে পারে৷</string>
+    <string name="permdesc_persistentActivity">মেমরিতে নিজের জন্য প্রয়োজনীয় জায়গা আলাদা করে রাখতে অ্যাপ্লিকেশানটিকে মঞ্জুর করে৷ এর ফলে অন্যান্য অ্যাপ্লিকেশানগুলির জায়গা সীমিত হয়ে পড়তে পারে ও ট্যাবলেটটি অপেক্ষাকৃত ধীরগতির হয়ে পড়তে পারে৷</string>
     <string name="permdesc_postNotification">অ্যাপকে বিজ্ঞপ্তি দেখানোর জন্য অনুমতি দেয়</string>
     <string name="permdesc_preferredPaymentInfo">অ্যাপের মাধ্যমে পছন্দসই এনএফসি পেমেন্ট পরিষেবার তথ্য, যেমন রেজিস্ট্রার করার সহায়তা এবং রুট ডেস্টিনেশন সম্পর্কিত তথ্য অ্যাক্সেস করার অনুমতি দেয়।</string>
     <string name="permdesc_processOutgoingCalls">অ্যাপ্লিকেশনকে কল চলাকালীন অন্য একটি নম্বরে কল পুনঃনির্দেশ বা কলটি একসথে বন্ধ করার সাথে ডায়াল করা নম্বরটি দেখতে দেয়৷</string>
     <string name="permdesc_queryAllPackages">এটি কোনও অ্যাপকে সর্বদা ইনস্টল করা সব প্যাকেজ দেখতে অনুমতি দেয়।</string>
     <string name="permdesc_readBasicPhoneState">অ্যাপটিকে ডিভাইসের টেলিফোন সংক্রান্ত প্রাথমিক ফিচারগুলি অ্যাক্সেস করার অনুমতি দিন।</string>
-    <string name="permdesc_readCalendar">এই অ্যাপটি আপনার ফোনে সংরক্ষিত সমস্ত ক্যালেন্ডার ইভেন্ট পড়তে এবং আপনার ক্যালেন্ডারের ডেটা শেয়ার বা সংরক্ষণ করতে পারে৷</string>
+    <string name="permdesc_readCalendar">এই অ্যাপটি আপনার ট্যাবলেটে সংরক্ষিত সমস্ত ক্যালেন্ডার ইভেন্ট পড়তে এবং আপনার ক্যালেন্ডারের ডেটা শেয়ার বা সংরক্ষণ করতে পারে৷</string>
     <string name="permdesc_readCallLog">এই অ্যাপটি আপনার কলের ইতিহাস পড়তে পারে৷</string>
     <string name="permdesc_readCellBroadcasts">আপনার ডিভাইস দ্বারা প্রাপ্ত সেল সম্প্রচার পড়তে অ্যাপ্লিকেশানটিকে অনুমতি দেয়৷ কয়েকটি স্থানে আপনাকে জরুরি অবস্থার জন্য সতর্ক করতে জরুরি সতর্কতাগুলি বিতরণ করা হয়৷ যখন একটি জরুরি সেল সম্প্রচার প্রাপ্ত হয় তখন ক্ষতিকারক অ্যাপ্লিকেশানগুলি আপনার ডিভাইসের কার্য সম্পাদনা বা কার্যকলাপে প্রতিবন্ধকতার সৃষ্টি করতে পারে৷</string>
-    <string name="permdesc_readContacts">এই অ্যাপকে আপনার ফোনে পরিচিতি সম্পর্কে সেভ করা ডেটা পড়ার অনুমতি দেয়। আপনার ফোনের যেসব অ্যাকাউন্ট পরিচিতি তৈরি করা হয়েছে, এই অ্যাপ সেই অ্যাকাউন্টও অ্যাক্সেস করতে পারবে। আপনার ইনস্টল করা কোনও অ্যাপ অ্যাকাউন্ট তৈরি করলে এটির মধ্যে সেটিও থাকতে পারে। এই অনুমতি অ্যাপকে আপনার পরিচিতি সংক্রান্ত ডেটা সেভ করতে দেয় এবং ক্ষতিকারক অ্যাপ আপনাকে না জানিয়ে পরিচিতি সংক্রান্ত ডেটা শেয়ার করতে পারে।</string>
+    <string name="permdesc_readContacts">এই অ্যাপকে আপনার ট্যাবলেটে পরিচিতি সম্পর্কে সেভ করা ডেটা পড়ার অনুমতি দেয়। আপনার ট্যাবলেটের যেসব অ্যাকাউন্ট পরিচিতি তৈরি করা হয়েছে, এই অ্যাপ সেই অ্যাকাউন্টও অ্যাক্সেস করতে পারবে। আপনার ইনস্টল করা কোনও অ্যাপ অ্যাকাউন্ট তৈরি করলে এটির মধ্যে সেটিও থাকতে পারে। এই অনুমতি অ্যাপকে আপনার পরিচিতি সংক্রান্ত ডেটা সেভ করতে দেয় এবং ক্ষতিকারক অ্যাপ আপনাকে না জানিয়ে পরিচিতি সংক্রান্ত ডেটা শেয়ার করতে পারে।</string>
     <string name="permdesc_readInstallSessions">কোনো অ্যাপ্লিকেশানকে সেশনগুলি পড়ার অনুমতি দেয়। এটি সক্রিয় প্যাকেজ ইনস্টলেশনের বিশদ বিবরণ দেখতে দেয়।</string>
     <string name="permdesc_readMediaAudio">আপনার শেয়ার করা স্টোরেজ থেকে অডিও ফাইল রিড করার জন্য অ্যাপকে অনুমতি দিন।</string>
     <string name="permdesc_readMediaImages">আপনার শেয়ার করা স্টোরেজ থেকে ছবির ফাইল রিড করার জন্য অ্যাপকে অনুমতি দেয়।</string>
@@ -1459,11 +1459,11 @@
     <string name="permdesc_readNetworkUsageHistory">অ্যাপ্লিকেশানটিকে নিদিষ্ট নেটওয়ার্ক এবং অ্যাপ্লিকেশানগুলির জন্য পূর্বের নেটওয়ার্কের ব্যবহার পড়তে দেয়৷</string>
     <string name="permdesc_readPhoneNumbers">অ্যাপটিকে এই ডিভাইসের ফোন নম্বরগুলি অ্যাক্সেস করতে দেয়।</string>
     <string name="permdesc_readPhoneState">অ্যাপ্লিকেশানটিকে ডিভাইসের ফোন বৈশিষ্ট্যগুলিকে অ্যাক্সেস করার অনুমতি দেয়৷ এই অনুমতিটি অ্যাপ্লিকেশানটিকে একটি কল সক্রিয় থাকা অবস্থায় এবং দূরবর্তী নম্বর একটি কল দ্বারা সংযুক্ত থাকাকালীনও ফোন নম্বর এবং ডিভাইসের IDগুলি নির্ধারণ করার অনুমতি দেয়৷</string>
-    <string name="permdesc_readSms">এই অ্যাপটি আপনার ফোনে স্টোর করা সমস্ত SMS (টেক্সট) মেসেজ পড়তে পারে৷</string>
+    <string name="permdesc_readSms">এই অ্যাপটি আপনার ট্যাবলেটে স্টোর করা সমস্ত SMS (টেক্সট) মেসেজ পড়তে পারে৷</string>
     <string name="permdesc_readSyncSettings">"অ্যাপ্লিকেশানটিকে একটি অ্যাকাউন্টের জন্য সিঙ্ক সেটিংস পড়ার অনুমতি দেয়৷ উদাহরণস্বরূপ, 'পিপল' অ্যাপ্লিকেশানটি কোনো অ্যাকাউন্টের সাথে সিঙ্ক করা আছে কিনা তা নির্ধারণ করতে পারে৷"</string>
     <string name="permdesc_readSyncStats">অ্যাপ্লিকেশানটিকে একটি অ্যাকাউন্টের জন্য কতটা ডেটা সিঙ্ক হয়েছে এবং সিঙ্ক করা ইভেন্টের ইতিহাস সহ সিঙ্কের স্থিতি পড়ার অনুমতি দেয়৷</string>
     <string name="permdesc_readVisualUserSelect">আপনার শেয়ার করা স্টোরেজ থেকে ছবি ও ভিডিওর ফাইল রিড করার জন্য অ্যাপকে অনুমতি দেয়।</string>
-    <string name="permdesc_receiveBootCompleted">অ্যাপ্লিকেশানকে সিস্টেম বুট হওযার পরে নিজেথেকে শুরু হওয়ার অনুমতি দেয়৷ এটির ফলে আপনার ফোন চালু হতে আরও বেশি সময় নিতে পারে এবং অ্যাপ্লিকেশানটিকে সারাক্ষণ চালু রেখে আপনার ফোনের সমগ্রিক গতীশীলতাকে ধীর করে৷</string>
+    <string name="permdesc_receiveBootCompleted">অ্যাপ্লিকেশানকে সিস্টেম বুট হওযার পরে নিজেথেকে শুরু হওয়ার অনুমতি দেয়৷ এটির ফলে আপনার ট্যাবলেট চালু হতে আরও বেশি সময় নিতে পারে এবং অ্যাপ্লিকেশানটিকে সারাক্ষণ চালু রেখে আপনার ট্যাবলেটের সমগ্রিক গতীশীলতাকে ধীর করে৷</string>
     <string name="permdesc_receiveMms">অ্যাপ্লিকেশানটিকে MMS মেসেজ প্রাপ্ত করার এবং প্রক্রিয়া করার অনুমতি দেয়৷ এর মানে হল অ্যাপ্লিকেশানটি আপনার ডিভাইস থেকে পাঠানো মেসেজগুলিকে পর্যবেক্ষণ করতে পারে এবং মুছতে পারে সেগুলিকে আপনাকে না দেখিয়ে৷</string>
     <string name="permdesc_receiveSms">অ্যাপ্লিকেশানটিকে এসএমএস প্রাপ্ত করার এবং প্রক্রিয়া করার অনুমতি দেয়৷ এর মানে হল অ্যাপ্লিকেশানটি আপনার ডিভাইস থেকে পাঠানো বার্তাগুলিকে পর্যবেক্ষণ করতে পারে এবং মুছতে পারে সেগুলিকে আপনাকে না দেখিয়ে৷</string>
     <string name="permdesc_receiveWapPush">অ্যাপ্লিকেশানটিকে WAP মেসেজ প্রাপ্ত করার এবং প্রক্রিয়া করার অনুমতি দেয়৷ এর মানে হল অ্যাপ্লিকেশানটি আপনার ডিভাইস থেকে পাঠানো মেসেজগুলিকে পর্যবেক্ষণ করতে পারে এবং মুছতে পারে সেগুলিকে আপনাকে না দেখিয়ে৷</string>
@@ -1485,7 +1485,7 @@
     <string name="permdesc_sendSms">অ্যাপ্লিকেশানটিকে এসএমএসগুলি পাঠাতে অনুমতি দেয়৷ এর জন্য অপ্রত্যাশিত চার্জ কাটা হতে পারে৷ ক্ষতিকারক অ্যাপ্লিকেশানগুলি আপনার নিশ্চিতকরণ ছাড়া মেসেজ পাঠানোর মাধ্যমে আপনাকে অর্থ চার্জ করতে পারে৷</string>
     <string name="permdesc_setAlarm">অ্যাপ্লিকেশানকে একটি ইনস্টল থাকা অ্যালার্ম অ্যাপ্লিকেশানে একটি অ্যালার্ম সেট করতে দেয়৷ কিছু অ্যালার্ম ঘড়ি অ্যাপ্লিকেশানগুলিতে ভবিষ্যতে এটি লাগু নাও হতে পারে৷</string>
     <string name="permdesc_setInputCalibration">অ্যাপ্লিকেশানকে টাচ স্ক্রীণের ক্রমাঙ্গন প্যারামিটার সংশোধন করতে দেয়৷ সাধারণ অ্যাপ্লিকেশানগুলির জন্য দরকারী নয়৷</string>
-    <string name="permdesc_setTimeZone">অ্যাপ্লিকেশনকে ফোনের সময় অঞ্চল পরিবর্তন করতে দেয়৷</string>
+    <string name="permdesc_setTimeZone">অ্যাপ্লিকেশনকে ট্যাবলেটের সময় অঞ্চল পরিবর্তন করতে দেয়৷</string>
     <string name="permdesc_setWallpaper">অ্যাপ্লিকেশানটিকে আপনার সিস্টেমের ওয়ালপেপার সেট করতে দেয়৷</string>
     <string name="permdesc_setWallpaperHints">অ্যাপ্লিকেশানটিকে আপনার সিস্টেমের ওয়ালপেপারের আকারের হিন্ট সেট করতে দেয়৷</string>
     <string name="permdesc_sim_communication">অ্যাপ্লিকেশানটিকে সিম কার্ডে কমান্ডগুলি পাঠানোর অনুমতি দেয়৷ এটি খুবই বিপজ্জনক৷</string>
@@ -1498,7 +1498,7 @@
     <string name="permdesc_subscribedFeedsRead">অ্যাপ্লিকেশানকে বর্তমানে সিঙ্ক করা ফিডগুলির সম্পর্কে বিবরণ পেতে দেয়৷</string>
     <string name="permdesc_systemAlertWindow">এই অ্যাপটি অন্যান্য অ্যাপের উপরে বা স্ক্রীনের অন্যান্য অংশে উপস্থিত হতে পারে৷ এটি সাধারণ অ্যাপ ব্যবহারের ক্ষেত্রে হস্তক্ষেপ করতে এবং অন্যান্য অ্যাপের প্রদর্শিত হওয়ার অবস্থাকে পরিবর্তিত করতে পারে৷</string>
     <string name="permdesc_systemCamera">এই প্রিভিলেজ বা সিস্টেম অ্যাপ যেকোনও সময় সিস্টেম ক্যামেরা ব্যবহার করে ছবি তুলতে ও ভিডিও রেকর্ড করতে পারে। এই অ্যাপকে android.permission.CAMERA অনুমতি দিতে হবে</string>
-    <string name="permdesc_transmitIr">অ্যাপ্লিকেশানটিকে ফোনের ইনফ্রারেড ট্রান্সমিটার ব্যবহার করার অনুমতি দেয়৷</string>
+    <string name="permdesc_transmitIr">অ্যাপ্লিকেশানটিকে ট্যাবলেটের ইনফ্রারেড ট্রান্সমিটার ব্যবহার করার অনুমতি দেয়৷</string>
     <string name="permdesc_turnScreenOn">অ্যাপকে স্ক্রিন চালু করার অনুমতি দেয়।</string>
     <string name="permdesc_uninstall_shortcut">অ্যাপ্লিকেশানটিকে ব্যবহারকারীর হস্তক্ষেপ ছাড়াই হোমস্ক্রীণের শর্টকাটগুলি সরানোর অনুমতি দেয়৷</string>
     <string name="permdesc_updatePackagesWithoutUserAction">হোল্ডারকে ব্যবহারকারীর অ্যাকশন ছাড়াই আগের ইনস্টল করা অ্যাপ আপডেট করার অনুমতি দেয়</string>
@@ -1511,10 +1511,10 @@
     <string name="permdesc_vibrate">অ্যাপ্লিকেশানকে কম্পক নিয়ন্ত্রণ করতে দেয়৷</string>
     <string name="permdesc_vibrator_state">ভাইব্রেট করার স্থিতি অ্যাক্সেস করার অনুমতি দিন।</string>
     <string name="permdesc_videoWrite">আপনার ভিডিও সংগ্রহ পরিবর্তন করতে অ্যাপকে অনুমতি দিন।</string>
-    <string name="permdesc_wakeLock">অ্যাপ্লিকেশানকে ফোনকে নিদ্রায় যাওয়া থেকে প্রতিরোধ করার মঞ্জুরি দেয়৷</string>
-    <string name="permdesc_writeCalendar">এই অ্যাপটি আপনার ফোনে ক্যালেন্ডার ইভেন্টগুলি যোগ করতে, সরাতে বা পরিবর্তিত করতে পারে৷ এই অ্যাপটি মেসেজ পাঠাতে পারে যা ক্যালেন্ডারের মাললিকের থেকে এসেছে বলে মনে হয় বা ইভেন্টগুলিকে তাদের মালিকদের না জানিয়েই পরিবর্তিত করতে পারে৷</string>
-    <string name="permdesc_writeCallLog">ইনকামিং ও আউটগোয়িং কলগুলি সম্পর্কিত ডেটা সহ আপনার ফোনের কল লগ পরিবর্তন করতে দেয়৷ ক্ষতিকারক অ্যাপ্লিকেশানগুলি এটিকে আপনার কল লগ মুছে দিতে বা পরিবর্তন করতে ব্যবহার করতে পারে৷</string>
-    <string name="permdesc_writeContacts">এই অ্যাপকে আপনার ফোনে পরিচিতি সম্পর্কে সেভ করা ডেটা পরিবর্তন করার অনুমতি দেয়। এই অনুমতি অ্যাপকে যোগাযোগ সংক্রান্ত ডেটা মুছতে দেয়।</string>
+    <string name="permdesc_wakeLock">অ্যাপ্লিকেশানকে ট্যাবলেট নিদ্রায় যাওয়া থেকে প্রতিরোধ করার মঞ্জুরি দেয়৷</string>
+    <string name="permdesc_writeCalendar">এই অ্যাপটি আপনার ট্যাবলেটে ক্যালেন্ডার ইভেন্টগুলি যোগ করতে, সরাতে বা পরিবর্তিত করতে পারে৷ এই অ্যাপটি মেসেজ পাঠাতে পারে যা ক্যালেন্ডারের মাললিকের থেকে এসেছে বলে মনে হয় বা ইভেন্টগুলিকে তাদের মালিকদের না জানিয়েই পরিবর্তিত করতে পারে৷</string>
+    <string name="permdesc_writeCallLog">ইনকামিং ও আউটগোয়িং কলগুলি সম্পর্কিত ডেটা সহ আপনার ট্যাবলেটের কল লগ পরিবর্তন করতে দেয়৷ ক্ষতিকারক অ্যাপ্লিকেশানগুলি এটিকে আপনার কল লগ মুছে দিতে বা পরিবর্তন করতে ব্যবহার করতে পারে৷</string>
+    <string name="permdesc_writeContacts">এই অ্যাপকে আপনার ট্যাবলেটে পরিচিতি সম্পর্কে সেভ করা ডেটা পরিবর্তন করার অনুমতি দেয়। এই অনুমতি অ্যাপকে যোগাযোগ সংক্রান্ত ডেটা মুছতে দেয়।</string>
     <string name="permdesc_writeSettings">অ্যাপ্লিকেশানকে সিস্টেমের সেটিংস ডেটা সংশোধন করতে দেয়৷ ক্ষতিকারক অ্যাপ্লিকেশানগুলি আপনার সিস্টেমের কনফিগারেশন নষ্ট করতে পারে৷</string>
     <string name="permdesc_writeSyncSettings">একটি অ্যাকাউন্টের জন্য সমন্বয় সেটিংস সংশোধন করতে একটি অ্যাপ্লিকেশানকে অনুমতি দেয়৷ উদাহরণস্বরূপ, এটি একটি অ্যাকাউন্টের সাথে People অ্যাপ্লিকেশানের সমন্বয় সক্ষম করার কাজে ব্যবহৃত হতে পারে৷</string>
     <string name="permgroupdesc_activityRecognition">শারীরিক অ্যাক্টিভিটি অ্যাক্সেস করা</string>
@@ -1711,7 +1711,7 @@
     <string name="permlab_uwb_ranging">আশেপাশের Ultra-Wideband ডিভাইসগুলির আপেক্ষিক অবস্থান নির্ণয় করুন</string>
     <string name="permlab_vibrate">ভাইব্রেশন নিয়ন্ত্রণ করুন</string>
     <string name="permlab_videoWrite">আপনার ভিডিও সংগ্রহ পরিবর্তন করুন</string>
-    <string name="permlab_wakeLock">ঘুমানো থেকে ফোনটিকে প্রতিরোধ করে</string>
+    <string name="permlab_wakeLock">ঘুমানো থেকে ট্যাবলেটকে প্রতিরোধ করে</string>
     <string name="permlab_writeCalendar">ক্যালেন্ডারে ইভেন্ট যোগ বা পরিবর্তন করে এবং মালিকদের অজ্ঞাতেই অতিথিদের ইমেল পাঠায়</string>
     <string name="permlab_writeCallLog">কল লগ লিখুন</string>
     <string name="permlab_writeContacts">আপনার পরিচিতিগুলি সংশোধন করুন</string>
@@ -1754,10 +1754,10 @@
     <string name="policydesc_limitPassword">স্ক্রিন লক করার পাসওয়ার্ডগুলিতে অনুমতিপ্রাপ্ত অক্ষর এবং দৈর্ঘ্য নিয়ন্ত্রণ করে৷</string>
     <string name="policydesc_resetPassword">স্ক্রিন লক পরিবর্তন করুন৷</string>
     <string name="policydesc_setGlobalProxy">নীতিযখন নীতি সক্ষম করা হয় তখন ডিভাইসের বৈশ্বিক প্রক্সী ব্যবহার করা হবে সেই হিসেবে সেট করে৷ শুধুমাত্র ডিভাইসের মালিক বৈশ্বিক প্রক্সী সেট করতে পারেন৷</string>
-    <string name="policydesc_watchLogin">স্ক্রীণ আনলক করার সময় ভুলভাবে লেখা পাসওয়ার্ড প্রবেশের সংখ্যা মনিটার করে, এবং ফোন লক করে এবং অনেক বার পাসওয়ার্ড ভুল ভাবে লেখা হলে ফোনের ডেটা মুছে ফেলে৷</string>
-    <string name="policydesc_watchLogin_secondaryUser">স্ক্রিন আনলক করার সময় ভুলভাবে লেখা পাসওয়ার্ড প্রবেশের সংখ্যা মনিটার করে, এবং ফোন লক করে এবং অনেক বার পাসওয়ার্ড ভুল ভাবে লেখা হলে ব্যবহারকারীর ডেটা মুছে ফেলে৷</string>
-    <string name="policydesc_wipeData">ফ্যাক্টরি ডেটা রিসেট করে কোনও সতর্কতা ছাড়াই ফোনের ডেটা মোছে৷</string>
-    <string name="policydesc_wipeData_secondaryUser">সতর্কীকরণ ছাড়াই এই ফোনে থাকা ব্যাবহারকার্রী ডেটা মুছে ফেলে৷</string>
+    <string name="policydesc_watchLogin">স্ক্রীণ আনলক করার সময় ভুলভাবে লেখা পাসওয়ার্ড প্রবেশের সংখ্যা মনিটার করে, এবং ট্যাবলেট লক করে এবং অনেক বার পাসওয়ার্ড ভুল ভাবে লেখা হলে ট্যাবলেটের ডেটা মুছে ফেলে৷</string>
+    <string name="policydesc_watchLogin_secondaryUser">স্ক্রিন আনলক করার সময় ভুলভাবে লেখা পাসওয়ার্ড প্রবেশের সংখ্যা মনিটার করে, এবং ট্যাবলেট লক করে এবং অনেক বার পাসওয়ার্ড ভুল ভাবে লেখা হলে ব্যবহারকারীর ডেটা মুছে ফেলে৷</string>
+    <string name="policydesc_wipeData">ফ্যাক্টরি ডেটা আবার সেট কার্য সম্পাদনার দ্বারা কোনো রকম সতর্কতা ছাড়াই ট্যাবলেটের ডেটা মোছে৷</string>
+    <string name="policydesc_wipeData_secondaryUser">সতর্কীকরণ ছাড়াই এই ট্যাবলেটে থাকা ব্যাবহারকার্রী ডেটা মুছে ফেলে৷</string>
     <string name="policylab_disableCamera">ক্যামেরাগুলি অক্ষম করে</string>
     <string name="policylab_disableKeyguardFeatures">কিছু স্ক্রিন লক বৈশিষ্ট্য বন্ধ করে</string>
     <string name="policylab_encryptedStorage">সঞ্চয়স্থানের এনক্রিপশান সেট করে</string>
@@ -1774,7 +1774,7 @@
     <string name="postalTypeHome">বাড়ি</string>
     <string name="postalTypeOther">অন্যান্য</string>
     <string name="postalTypeWork">কর্মক্ষেত্র</string>
-    <string name="power_dialog">ফোন বিকল্পগুলি</string>
+    <string name="power_dialog">ট্যাবলেট বিকল্পগুলি</string>
     <string name="power_off">পাওয়ার বন্ধ করুন</string>
     <string name="prepend_shortcut_label">মেনু+</string>
     <string name="preposition_for_date">%s এ</string>
@@ -1946,7 +1946,7 @@
     <string name="shortcut_restore_unknown_issue">শর্টকাট ফিরিয়ে আনা যায়নি</string>
     <string name="shortcut_restored_on_lower_version">অ্যাপের ভার্সন ডাউনগ্রেড করা হয়েছে অথবা এই শর্টকাটের জন্য উপযুক্ত নয়</string>
     <string name="show_ime">ফিজিক্যাল কীবোর্ড সক্রিয় থাকার সময় এটিকে স্ক্রীনে রাখুন</string>
-    <string name="shutdown_confirm">আপনার ফোন বন্ধ হবে৷</string>
+    <string name="shutdown_confirm">আপনার ট্যাবলেট বন্ধ হবে৷</string>
     <string name="shutdown_confirm_question">আপনি কি বন্ধ করতে চান?</string>
     <string name="shutdown_progress">বন্ধ হচ্ছে…</string>
     <string name="silent_mode">নীরব মোড</string>
@@ -2062,7 +2062,7 @@
     <string name="usb_camera_disconnected_notification_title">ক্যামেরার সংযোগ বিচ্ছিন্ন।</string>
     <string name="usb_cd_installer_notification_title">ইনস্টলার হিসাবে সংযুক্ত হয়েছে</string>
     <string name="usb_charging_notification_title">এই ডিভাইসটি USB দিয়ে চার্জ করা হচ্ছে</string>
-    <string name="usb_charing_only_notification_title">চাৰ্জিংয়ের জন্য সংযুক্ত</string>
+    <string name="usb_charing_only_notification_title">সংযুক্ত</string>
     <string name="usb_contaminant_detected_message">ইউএসবি পোর্ট নিজে থেকে বন্ধ করা হবে। আরও জানতে ট্যাপ করুন।</string>
     <string name="usb_contaminant_detected_title">ইউএসবি পোর্টে তরল পদার্থ অথবা ধুলো কণা</string>
     <string name="usb_contaminant_not_detected_message">ফোন আর তরল পদার্থ এবং ধুলো কণা শনাক্ত করবে না।</string>
@@ -2117,7 +2117,7 @@
     <string name="user_switched">বর্তমান ব্যবহারকারী %1$s৷</string>
     <string name="user_switching_message">%1$s প্রোফাইলে পাল্টানো হচ্ছে…</string>
     <string name="validity_period">মেয়াদ:</string>
-    <string name="vdm_camera_access_denied">আপনার %1$s থেকে ফোনের ক্যামেরা অ্যাক্সেস করা যাচ্ছে না</string>
+    <string name="vdm_camera_access_denied">আপনার %1$s থেকে ট্যাবলেটের ক্যামেরা অ্যাক্সেস করা যাচ্ছে না</string>
     <string name="vdm_pip_blocked">"স্ট্রিম করার সময় 'ছবির-মধ্যে-ছবি' দেখা যাবে না"</string>
     <string name="vdm_secure_window">স্ট্রিমিংয়ের সময় এটি অ্যাক্সেস করা যাবে না। পরিবর্তে আপনার ফোনে ব্যবহার করে দেখুন।</string>
     <string name="view_and_control_notification_content">%s আপনার স্ক্রিন দেখতে ও কন্ট্রোল করতে পারবে। পর্যালোচনা করতে ট্যাপ করুন।</string>

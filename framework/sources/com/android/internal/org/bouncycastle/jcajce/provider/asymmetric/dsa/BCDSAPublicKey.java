@@ -28,21 +28,18 @@ public class BCDSAPublicKey implements DSAPublicKey {
     private transient DSAPublicKeyParameters lwKeyParams;
     private BigInteger y;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDSAPublicKey(DSAPublicKeySpec spec) {
         this.y = spec.getY();
         this.dsaSpec = new DSAParameterSpec(spec.getP(), spec.getQ(), spec.getG());
         this.lwKeyParams = new DSAPublicKeyParameters(this.y, DSAUtil.toDSAParameters(this.dsaSpec));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDSAPublicKey(DSAPublicKey key) {
         this.y = key.getY();
         this.dsaSpec = key.getParams();
         this.lwKeyParams = new DSAPublicKeyParameters(this.y, DSAUtil.toDSAParameters(this.dsaSpec));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDSAPublicKey(DSAPublicKeyParameters params) {
         this.y = params.getY();
         if (params.getParameters() != null) {
@@ -83,7 +80,6 @@ public class BCDSAPublicKey implements DSAPublicKey {
         return "X.509";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DSAPublicKeyParameters engineGetKeyParameters() {
         return this.lwKeyParams;
     }

@@ -287,8 +287,14 @@ public class MbmsDownloadReceiver extends BroadcastReceiver {
     private void cleanupTempFiles(Context context, Intent intent) {
         String serviceId = intent.getStringExtra(VendorUtils.EXTRA_SERVICE_ID);
         File tempFileDir = MbmsUtils.getEmbmsTempFileDirForService(context, serviceId);
-        final List<Uri> filesInUse = intent.getParcelableArrayListExtra(VendorUtils.EXTRA_TEMP_FILES_IN_USE, Uri.class);
+        List<Uri> filesInUse = intent.getParcelableArrayListExtra(VendorUtils.EXTRA_TEMP_FILES_IN_USE, Uri.class);
         File[] filesToDelete = tempFileDir.listFiles(new FileFilter() { // from class: android.telephony.mbms.MbmsDownloadReceiver.1
+            final /* synthetic */ List val$filesInUse;
+
+            AnonymousClass1(List filesInUse2) {
+                filesInUse = filesInUse2;
+            }
+
             @Override // java.io.FileFilter
             public boolean accept(File file) {
                 try {
@@ -306,6 +312,31 @@ public class MbmsDownloadReceiver extends BroadcastReceiver {
         });
         for (File fileToDelete : filesToDelete) {
             fileToDelete.delete();
+        }
+    }
+
+    /* renamed from: android.telephony.mbms.MbmsDownloadReceiver$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements FileFilter {
+        final /* synthetic */ List val$filesInUse;
+
+        AnonymousClass1(List filesInUse2) {
+            filesInUse = filesInUse2;
+        }
+
+        @Override // java.io.FileFilter
+        public boolean accept(File file) {
+            try {
+                File canonicalFile = file.getCanonicalFile();
+                if (!canonicalFile.getName().endsWith(MbmsDownloadReceiver.TEMP_FILE_SUFFIX)) {
+                    return false;
+                }
+                Uri fileInUseUri = Uri.fromFile(canonicalFile);
+                return !filesInUse.contains(fileInUseUri);
+            } catch (IOException e) {
+                Log.w(MbmsDownloadReceiver.LOG_TAG, "Got IOException canonicalizing " + file + ", not deleting.");
+                return false;
+            }
         }
     }
 

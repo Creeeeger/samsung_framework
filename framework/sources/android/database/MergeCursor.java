@@ -5,6 +5,9 @@ public class MergeCursor extends AbstractCursor {
     private Cursor mCursor;
     private Cursor[] mCursors;
     private DataSetObserver mObserver = new DataSetObserver() { // from class: android.database.MergeCursor.1
+        AnonymousClass1() {
+        }
+
         @Override // android.database.DataSetObserver
         public void onChanged() {
             MergeCursor.this.mPos = -1;
@@ -15,6 +18,24 @@ public class MergeCursor extends AbstractCursor {
             MergeCursor.this.mPos = -1;
         }
     };
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.database.MergeCursor$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends DataSetObserver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.database.DataSetObserver
+        public void onChanged() {
+            MergeCursor.this.mPos = -1;
+        }
+
+        @Override // android.database.DataSetObserver
+        public void onInvalidated() {
+            MergeCursor.this.mPos = -1;
+        }
+    }
 
     public MergeCursor(Cursor[] cursors) {
         this.mCursors = cursors;

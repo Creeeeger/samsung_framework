@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class TaskFragmentParentInfo implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentParentInfo> CREATOR = new Parcelable.Creator<TaskFragmentParentInfo>() { // from class: android.window.TaskFragmentParentInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaskFragmentParentInfo createFromParcel(Parcel in) {
             return new TaskFragmentParentInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentParentInfo[] newArray(int size) {
             return new TaskFragmentParentInfo[size];
@@ -22,6 +23,10 @@ public class TaskFragmentParentInfo implements Parcelable {
     private final Configuration mConfiguration;
     private final int mDisplayId;
     private final boolean mVisible;
+
+    /* synthetic */ TaskFragmentParentInfo(Parcel parcel, TaskFragmentParentInfoIA taskFragmentParentInfoIA) {
+        this(parcel);
+    }
 
     public TaskFragmentParentInfo(Configuration configuration, int displayId, boolean visible) {
         Configuration configuration2 = new Configuration();
@@ -91,6 +96,23 @@ public class TaskFragmentParentInfo implements Parcelable {
         configuration.readFromParcel(in);
         this.mDisplayId = in.readInt();
         this.mVisible = in.readBoolean();
+    }
+
+    /* renamed from: android.window.TaskFragmentParentInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentParentInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentParentInfo createFromParcel(Parcel in) {
+            return new TaskFragmentParentInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaskFragmentParentInfo[] newArray(int size) {
+            return new TaskFragmentParentInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

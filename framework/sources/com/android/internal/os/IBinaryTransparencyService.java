@@ -153,8 +153,9 @@ public interface IBinaryTransparencyService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IBinaryTransparencyService {
+        public static class Proxy implements IBinaryTransparencyService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -261,7 +262,9 @@ public interface IBinaryTransparencyService extends IInterface {
     /* loaded from: classes5.dex */
     public static class ApexInfo implements Parcelable {
         public static final Parcelable.Creator<ApexInfo> CREATOR = new Parcelable.Creator<ApexInfo>() { // from class: com.android.internal.os.IBinaryTransparencyService.ApexInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ApexInfo createFromParcel(Parcel _aidl_source) {
                 ApexInfo _aidl_out = new ApexInfo();
@@ -269,7 +272,6 @@ public interface IBinaryTransparencyService extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ApexInfo[] newArray(int _aidl_size) {
                 return new ApexInfo[_aidl_size];
@@ -281,6 +283,25 @@ public interface IBinaryTransparencyService extends IInterface {
         public String[] signerDigests;
         public long longVersion = 0;
         public int digestAlgorithm = 0;
+
+        /* renamed from: com.android.internal.os.IBinaryTransparencyService$ApexInfo$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ApexInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ApexInfo createFromParcel(Parcel _aidl_source) {
+                ApexInfo _aidl_out = new ApexInfo();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ApexInfo[] newArray(int _aidl_size) {
+                return new ApexInfo[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -375,7 +396,9 @@ public interface IBinaryTransparencyService extends IInterface {
     /* loaded from: classes5.dex */
     public static class AppInfo implements Parcelable {
         public static final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>() { // from class: com.android.internal.os.IBinaryTransparencyService.AppInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AppInfo createFromParcel(Parcel _aidl_source) {
                 AppInfo _aidl_out = new AppInfo();
@@ -383,7 +406,6 @@ public interface IBinaryTransparencyService extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AppInfo[] newArray(int _aidl_size) {
                 return new AppInfo[_aidl_size];
@@ -400,6 +422,25 @@ public interface IBinaryTransparencyService extends IInterface {
         public long longVersion = 0;
         public int digestAlgorithm = 0;
         public int mbaStatus = 0;
+
+        /* renamed from: com.android.internal.os.IBinaryTransparencyService$AppInfo$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AppInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AppInfo createFromParcel(Parcel _aidl_source) {
+                AppInfo _aidl_out = new AppInfo();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AppInfo[] newArray(int _aidl_size) {
+                return new AppInfo[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

@@ -30,7 +30,6 @@ public final class RangeTemplate extends ControlTemplate {
         validate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RangeTemplate(Bundle b) {
         super(b);
         this.mMinValue = b.getFloat(KEY_MIN_VALUE);
@@ -66,7 +65,6 @@ public final class RangeTemplate extends ControlTemplate {
         return 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.controls.templates.ControlTemplate
     public Bundle getDataBundle() {
         Bundle b = super.getDataBundle();

@@ -10,19 +10,28 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InsertModeGesture extends CancellableHandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<InsertModeGesture> CREATOR = new Parcelable.Creator<InsertModeGesture>() { // from class: android.view.inputmethod.InsertModeGesture.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InsertModeGesture createFromParcel(Parcel source) {
             return new InsertModeGesture(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InsertModeGesture[] newArray(int size) {
             return new InsertModeGesture[size];
         }
     };
     private PointF mPoint;
+
+    /* synthetic */ InsertModeGesture(PointF pointF, String str, CancellationSignal cancellationSignal, InsertModeGestureIA insertModeGestureIA) {
+        this(pointF, str, cancellationSignal);
+    }
+
+    /* synthetic */ InsertModeGesture(Parcel parcel, InsertModeGestureIA insertModeGestureIA) {
+        this(parcel);
+    }
 
     private InsertModeGesture(PointF point, String fallbackText, CancellationSignal cancellationSignal) {
         this.mType = 128;
@@ -76,6 +85,23 @@ public final class InsertModeGesture extends CancellableHandwritingGesture imple
                 throw new IllegalArgumentException("CancellationSignal must be set.");
             }
             return new InsertModeGesture(this.mPoint, this.mFallbackText, this.mCancellationSignal);
+        }
+    }
+
+    /* renamed from: android.view.inputmethod.InsertModeGesture$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InsertModeGesture> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsertModeGesture createFromParcel(Parcel source) {
+            return new InsertModeGesture(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsertModeGesture[] newArray(int size) {
+            return new InsertModeGesture[size];
         }
     }
 

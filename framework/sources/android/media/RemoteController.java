@@ -64,8 +64,7 @@ public final class RemoteController {
         this(context, updateListener, null);
     }
 
-    public RemoteController(Context context, OnClientUpdateListener onClientUpdateListener, Looper looper) throws IllegalArgumentException {
-        byte b = 0;
+    public RemoteController(Context context, OnClientUpdateListener updateListener, Looper looper) throws IllegalArgumentException {
         this.mSessionCb = new MediaControllerCallback();
         this.mIsRegistered = false;
         this.mArtworkWidth = -1;
@@ -74,28 +73,28 @@ public final class RemoteController {
         if (context == null) {
             throw new IllegalArgumentException("Invalid null Context");
         }
-        if (onClientUpdateListener == null) {
+        if (updateListener == null) {
             throw new IllegalArgumentException("Invalid null OnClientUpdateListener");
         }
         if (looper != null) {
             this.mEventHandler = new EventHandler(this, looper);
         } else {
-            Looper myLooper = Looper.myLooper();
-            if (myLooper != null) {
-                this.mEventHandler = new EventHandler(this, myLooper);
+            Looper l = Looper.myLooper();
+            if (l != null) {
+                this.mEventHandler = new EventHandler(this, l);
             } else {
                 throw new IllegalArgumentException("Calling thread not associated with a looper");
             }
         }
-        this.mOnClientUpdateListener = onClientUpdateListener;
+        this.mOnClientUpdateListener = updateListener;
         this.mContext = context;
         this.mSessionManager = (MediaSessionManager) context.getSystemService(Context.MEDIA_SESSION_SERVICE);
         this.mSessionListener = new TopTransportSessionListener();
         if (ActivityManager.isLowRamDeviceStatic()) {
             this.mMaxBitmapDimension = 512;
         } else {
-            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            this.mMaxBitmapDimension = Math.max(displayMetrics.widthPixels, displayMetrics.heightPixels);
+            DisplayMetrics dm = context.getResources().getDisplayMetrics();
+            this.mMaxBitmapDimension = Math.max(dm.widthPixels, dm.heightPixels);
         }
     }
 
@@ -242,8 +241,13 @@ public final class RemoteController {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class MediaControllerCallback extends MediaController.Callback {
+    public class MediaControllerCallback extends MediaController.Callback {
+        /* synthetic */ MediaControllerCallback(RemoteController remoteController, MediaControllerCallbackIA mediaControllerCallbackIA) {
+            this();
+        }
+
         private MediaControllerCallback() {
         }
 
@@ -258,8 +262,13 @@ public final class RemoteController {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class TopTransportSessionListener implements MediaSessionManager.OnActiveSessionsChangedListener {
+    public class TopTransportSessionListener implements MediaSessionManager.OnActiveSessionsChangedListener {
+        /* synthetic */ TopTransportSessionListener(RemoteController remoteController, TopTransportSessionListenerIA topTransportSessionListenerIA) {
+            this();
+        }
+
         private TopTransportSessionListener() {
         }
 
@@ -278,7 +287,6 @@ public final class RemoteController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class EventHandler extends Handler {
         public EventHandler(RemoteController rc, Looper looper) {
@@ -304,7 +312,6 @@ public final class RemoteController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startListeningToSessions() {
         ComponentName listenerComponent = new ComponentName(this.mContext, this.mOnClientUpdateListener.getClass());
         Handler handler = null;
@@ -315,7 +322,6 @@ public final class RemoteController {
         this.mSessionListener.onActiveSessionsChanged(this.mSessionManager.getActiveSessions(listenerComponent));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void stopListeningToSessions() {
         this.mSessionManager.removeOnActiveSessionsChangedListener(this.mSessionListener);
     }
@@ -333,7 +339,6 @@ public final class RemoteController {
         handler.sendMessageDelayed(handler.obtainMessage(msg, arg1, arg2, obj), delayMs);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onClientChange(boolean clearing) {
         OnClientUpdateListener l;
         synchronized (mInfoLock) {
@@ -345,7 +350,6 @@ public final class RemoteController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateController(MediaController controller) {
         synchronized (mInfoLock) {
             if (controller == null) {
@@ -371,7 +375,6 @@ public final class RemoteController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onNewPlaybackState(PlaybackState state) {
         OnClientUpdateListener l;
         synchronized (mInfoLock) {
@@ -390,7 +393,6 @@ public final class RemoteController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onNewMediaMetadata(MediaMetadata metadata) {
         OnClientUpdateListener l;
         MetadataEditor metadataEditor;

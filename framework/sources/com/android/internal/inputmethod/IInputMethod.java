@@ -641,7 +641,9 @@ public interface IInputMethod extends IInterface {
     /* loaded from: classes4.dex */
     public static class InitParams implements Parcelable {
         public static final Parcelable.Creator<InitParams> CREATOR = new Parcelable.Creator<InitParams>() { // from class: com.android.internal.inputmethod.IInputMethod.InitParams.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public InitParams createFromParcel(Parcel _aidl_source) {
                 InitParams _aidl_out = new InitParams();
@@ -649,7 +651,6 @@ public interface IInputMethod extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InitParams[] newArray(int _aidl_size) {
                 return new InitParams[_aidl_size];
@@ -658,6 +659,25 @@ public interface IInputMethod extends IInterface {
         public int navigationBarFlags = 0;
         public IInputMethodPrivilegedOperations privilegedOperations;
         public IBinder token;
+
+        /* renamed from: com.android.internal.inputmethod.IInputMethod$InitParams$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<InitParams> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InitParams createFromParcel(Parcel _aidl_source) {
+                InitParams _aidl_out = new InitParams();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InitParams[] newArray(int _aidl_size) {
+                return new InitParams[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -725,7 +745,9 @@ public interface IInputMethod extends IInterface {
     /* loaded from: classes4.dex */
     public static class StartInputParams implements Parcelable {
         public static final Parcelable.Creator<StartInputParams> CREATOR = new Parcelable.Creator<StartInputParams>() { // from class: com.android.internal.inputmethod.IInputMethod.StartInputParams.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public StartInputParams createFromParcel(Parcel _aidl_source) {
                 StartInputParams _aidl_out = new StartInputParams();
@@ -733,7 +755,6 @@ public interface IInputMethod extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public StartInputParams[] newArray(int _aidl_size) {
                 return new StartInputParams[_aidl_size];
@@ -745,6 +766,25 @@ public interface IInputMethod extends IInterface {
         public IBinder startInputToken;
         public boolean restarting = false;
         public int navigationBarFlags = 0;
+
+        /* renamed from: com.android.internal.inputmethod.IInputMethod$StartInputParams$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<StartInputParams> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public StartInputParams createFromParcel(Parcel _aidl_source) {
+                StartInputParams _aidl_out = new StartInputParams();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public StartInputParams[] newArray(int _aidl_size) {
+                return new StartInputParams[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

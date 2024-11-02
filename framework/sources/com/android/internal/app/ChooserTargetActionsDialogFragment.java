@@ -118,7 +118,6 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
         return v;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Pair lambda$onCreateView$1(DisplayResolveInfo dri) {
         return new Pair(getItemIcon(dri), getItemLabel(dri));
     }
@@ -131,7 +130,6 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
             this.mItems = items;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.widget.RecyclerView.Adapter
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
             return new VH(LayoutInflater.from(parent.getContext()).inflate(R.layout.chooser_dialog_item, parent, false));
@@ -148,7 +146,6 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class VH extends RecyclerView.ViewHolder {
         ImageView mIcon;
@@ -176,7 +173,6 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$bind$0(int position, View v) {
             ChooserTargetActionsDialogFragment chooserTargetActionsDialogFragment = ChooserTargetActionsDialogFragment.this;
             chooserTargetActionsDialogFragment.onClick(chooserTargetActionsDialogFragment.getDialog(), position);
@@ -227,7 +223,6 @@ public class ChooserTargetActionsDialogFragment extends DialogFragment implement
         }).collect(Collectors.toList());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getPinnedShortcutsFromPackageAsUser$2(String packageName, ShortcutInfo s) {
         return s.isPinned() && s.getPackage().equals(packageName);
     }

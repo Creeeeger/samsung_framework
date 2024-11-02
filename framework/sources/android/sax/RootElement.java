@@ -24,8 +24,9 @@ public class RootElement extends Element {
         return this.handler;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    class Handler extends DefaultHandler {
+    public class Handler extends DefaultHandler {
         Locator locator;
         int depth = -1;
         Element current = null;

@@ -10,13 +10,14 @@ import java.io.IOException;
 /* loaded from: classes2.dex */
 public final class AdBuffer implements Parcelable {
     public static final Parcelable.Creator<AdBuffer> CREATOR = new Parcelable.Creator<AdBuffer>() { // from class: android.media.tv.AdBuffer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AdBuffer[] newArray(int size) {
             return new AdBuffer[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AdBuffer createFromParcel(Parcel in) {
             return new AdBuffer(in);
@@ -29,6 +30,10 @@ public final class AdBuffer implements Parcelable {
     private final String mMimeType;
     private final int mOffset;
     private final long mPresentationTimeUs;
+
+    /* synthetic */ AdBuffer(Parcel parcel, AdBufferIA adBufferIA) {
+        this(parcel);
+    }
 
     public AdBuffer(int id, String mimeType, SharedMemory buffer, int offset, int length, long presentationTimeUs, int flags) {
         this.mId = id;
@@ -110,5 +115,22 @@ public final class AdBuffer implements Parcelable {
         this.mLength = length;
         this.mPresentationTimeUs = presentationTimeUs;
         this.mFlags = flags;
+    }
+
+    /* renamed from: android.media.tv.AdBuffer$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AdBuffer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AdBuffer[] newArray(int size) {
+            return new AdBuffer[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AdBuffer createFromParcel(Parcel in) {
+            return new AdBuffer(in);
+        }
     }
 }

@@ -87,8 +87,9 @@ public interface IUsbSerialReader extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IUsbSerialReader {
+        public static class Proxy implements IUsbSerialReader {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

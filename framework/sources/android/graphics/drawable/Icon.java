@@ -55,13 +55,14 @@ public final class Icon implements Parcelable {
     private final int mType;
     static final BlendMode DEFAULT_BLEND_MODE = Drawable.DEFAULT_BLEND_MODE;
     public static final Parcelable.Creator<Icon> CREATOR = new Parcelable.Creator<Icon>() { // from class: android.graphics.drawable.Icon.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Icon createFromParcel(Parcel in) {
             return new Icon(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Icon[] newArray(int size) {
             return new Icon[size];
@@ -75,6 +76,10 @@ public final class Icon implements Parcelable {
     /* loaded from: classes.dex */
     public interface OnDrawableLoadedListener {
         void onDrawableLoaded(Drawable drawable);
+    }
+
+    /* synthetic */ Icon(Parcel parcel, IconIA iconIA) {
+        this(parcel);
     }
 
     public int getType() {
@@ -658,6 +663,23 @@ public final class Icon implements Parcelable {
         dest.writeInt(BlendMode.toValue(this.mBlendMode));
     }
 
+    /* renamed from: android.graphics.drawable.Icon$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Icon> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Icon createFromParcel(Parcel in) {
+            return new Icon(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Icon[] newArray(int size) {
+            return new Icon[size];
+        }
+    }
+
     public static Bitmap scaleDownIfNecessary(Bitmap bitmap, int maxWidth, int maxHeight) {
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
@@ -677,19 +699,46 @@ public final class Icon implements Parcelable {
         setBitmap(scaleDownIfNecessary(bitmap, maxWidth, maxHeight));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class LoadDrawableTask implements Runnable {
+    public class LoadDrawableTask implements Runnable {
         final Context mContext;
         final Message mMessage;
 
-        public LoadDrawableTask(Context context, Handler handler, final OnDrawableLoadedListener listener) {
+        public LoadDrawableTask(Context context, Handler handler, OnDrawableLoadedListener listener) {
             this.mContext = context;
             this.mMessage = Message.obtain(handler, new Runnable() { // from class: android.graphics.drawable.Icon.LoadDrawableTask.1
+                final /* synthetic */ OnDrawableLoadedListener val$listener;
+                final /* synthetic */ Icon val$this$0;
+
+                AnonymousClass1(Icon icon, OnDrawableLoadedListener listener2) {
+                    r2 = icon;
+                    listener = listener2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     listener.onDrawableLoaded((Drawable) LoadDrawableTask.this.mMessage.obj);
                 }
             });
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.graphics.drawable.Icon$LoadDrawableTask$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ OnDrawableLoadedListener val$listener;
+            final /* synthetic */ Icon val$this$0;
+
+            AnonymousClass1(Icon icon, OnDrawableLoadedListener listener2) {
+                r2 = icon;
+                listener = listener2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                listener.onDrawableLoaded((Drawable) LoadDrawableTask.this.mMessage.obj);
+            }
         }
 
         public LoadDrawableTask(Context context, Message message) {

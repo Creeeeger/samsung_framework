@@ -54,7 +54,6 @@ class Cea608CCParser {
     private CCMemory mNonDisplay = new CCMemory();
     private CCMemory mTextMem = new CCMemory();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: ClosedCaptionRenderer.java */
     /* loaded from: classes2.dex */
     public interface DisplayListener {
@@ -63,7 +62,6 @@ class Cea608CCParser {
         void onDisplayChanged(SpannableStringBuilder[] spannableStringBuilderArr);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Cea608CCParser(DisplayListener listener) {
         this.mListener = listener;
     }
@@ -227,7 +225,6 @@ class Cea608CCParser {
         this.mNonDisplay = temp;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: ClosedCaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class StyleCode {
@@ -290,7 +287,6 @@ class Cea608CCParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: ClosedCaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class PAC extends StyleCode {
@@ -364,7 +360,6 @@ class Cea608CCParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: ClosedCaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class CCLineBuilder {
@@ -451,7 +446,6 @@ class Cea608CCParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: ClosedCaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class CCMemory {
@@ -593,7 +587,6 @@ class Cea608CCParser {
             this.mCol = clamp(this.mCol + col, 1, 32);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void moveBaselineTo(int baseRow, int windowSize) {
             int i = this.mRow;
             if (i == baseRow) {
@@ -641,7 +634,6 @@ class Cea608CCParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: ClosedCaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class CCData {
@@ -740,7 +732,6 @@ class Cea608CCParser {
             return (b2 == 17 || b2 == 25) && (b = this.mData2) >= 48 && b <= 63;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean isExtendedChar() {
             byte b;
             byte b2 = this.mData1;

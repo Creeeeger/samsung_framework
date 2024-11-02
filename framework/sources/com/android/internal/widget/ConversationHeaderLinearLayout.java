@@ -37,7 +37,6 @@ public class ConversationHeaderLinearLayout extends LinearLayout {
         return i2 + totalLength + getPaddingRight();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -105,7 +104,6 @@ public class ConversationHeaderLinearLayout extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class ViewInfo {
         final int mStartWidth;

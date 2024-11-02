@@ -9,6 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehCdmaSmsSubaddress implements Parcelable {
     public static final Parcelable.Creator<SehCdmaSmsSubaddress> CREATOR = new Parcelable.Creator<SehCdmaSmsSubaddress>() { // from class: vendor.samsung.hardware.radio.messaging.SehCdmaSmsSubaddress.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehCdmaSmsSubaddress createFromParcel(Parcel _aidl_source) {
             SehCdmaSmsSubaddress _aidl_out = new SehCdmaSmsSubaddress();
@@ -26,6 +29,25 @@ public class SehCdmaSmsSubaddress implements Parcelable {
     public byte[] digits;
     public int subaddressType = 0;
     public boolean odd = false;
+
+    /* renamed from: vendor.samsung.hardware.radio.messaging.SehCdmaSmsSubaddress$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehCdmaSmsSubaddress> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehCdmaSmsSubaddress createFromParcel(Parcel _aidl_source) {
+            SehCdmaSmsSubaddress _aidl_out = new SehCdmaSmsSubaddress();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehCdmaSmsSubaddress[] newArray(int _aidl_size) {
+            return new SehCdmaSmsSubaddress[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

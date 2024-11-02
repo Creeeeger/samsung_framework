@@ -22,7 +22,6 @@ public abstract class MessageNano {
         return size;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int computeSerializedSize() {
         return 0;
     }
@@ -83,8 +82,8 @@ public abstract class MessageNano {
     }
 
     @Override // 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public MessageNano mo7010clone() throws CloneNotSupportedException {
+    /* renamed from: clone */
+    public MessageNano mo7005clone() throws CloneNotSupportedException {
         return (MessageNano) super.clone();
     }
 }

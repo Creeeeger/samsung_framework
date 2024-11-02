@@ -19,13 +19,14 @@ public class SuggestionSpan extends CharacterStyle implements ParcelableSpan {
     @Deprecated
     public static final String ACTION_SUGGESTION_PICKED = "android.text.style.SUGGESTION_PICKED";
     public static final Parcelable.Creator<SuggestionSpan> CREATOR = new Parcelable.Creator<SuggestionSpan>() { // from class: android.text.style.SuggestionSpan.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SuggestionSpan createFromParcel(Parcel source) {
             return new SuggestionSpan(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuggestionSpan[] newArray(int size) {
             return new SuggestionSpan[size];
@@ -237,6 +238,23 @@ public class SuggestionSpan extends CharacterStyle implements ParcelableSpan {
 
     private static int hashCodeInternal(String[] suggestions, String languageTag, String localeStringForCompatibility) {
         return Arrays.hashCode(new Object[]{Long.valueOf(SystemClock.uptimeMillis()), suggestions, languageTag, localeStringForCompatibility});
+    }
+
+    /* renamed from: android.text.style.SuggestionSpan$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SuggestionSpan> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SuggestionSpan createFromParcel(Parcel source) {
+            return new SuggestionSpan(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SuggestionSpan[] newArray(int size) {
+            return new SuggestionSpan[size];
+        }
     }
 
     @Override // android.text.style.CharacterStyle

@@ -108,7 +108,6 @@ public abstract class MessageSubscriberBase implements MessageSubscriber {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void release() {
         Log.d(TAG, "close message channel: " + this.messageChannel);
         this.messageChannel.cancel();

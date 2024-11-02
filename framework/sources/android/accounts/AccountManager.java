@@ -99,14 +99,67 @@ public class AccountManager {
     public static final int VISIBILITY_USER_MANAGED_NOT_VISIBLE = 4;
     public static final int VISIBILITY_USER_MANAGED_VISIBLE = 2;
     public static final int VISIBILITY_VISIBLE = 1;
-    PropertyInvalidatedCache<UserPackage, Account[]> mAccountsForUserCache;
     private final Context mContext;
     private final Handler mMainHandler;
     private final IAccountManager mService;
-    PropertyInvalidatedCache<AccountKeyData, String> mUserDataCache;
+    PropertyInvalidatedCache<UserPackage, Account[]> mAccountsForUserCache = new PropertyInvalidatedCache<UserPackage, Account[]>(4, CACHE_KEY_ACCOUNTS_DATA_PROPERTY) { // from class: android.accounts.AccountManager.1
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Account[] recompute(UserPackage userAndPackage) {
+            try {
+                return AccountManager.this.mService.getAccountsAsUser(null, userAndPackage.userId, userAndPackage.packageName);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(UserPackage query) {
+            return query.userId < 0;
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean resultEquals(Account[] l, Account[] r) {
+            if (l == r) {
+                return true;
+            }
+            if (l == null || r == null) {
+                return false;
+            }
+            return Arrays.equals(l, r);
+        }
+    };
+    PropertyInvalidatedCache<AccountKeyData, String> mUserDataCache = new PropertyInvalidatedCache<AccountKeyData, String>(4, CACHE_KEY_USER_DATA_PROPERTY) { // from class: android.accounts.AccountManager.2
+        AnonymousClass2(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public String recompute(AccountKeyData accountKeyData) {
+            Account account = accountKeyData.account;
+            String key = accountKeyData.key;
+            if (account == null) {
+                throw new IllegalArgumentException("account is null");
+            }
+            if (key == null) {
+                throw new IllegalArgumentException("key is null");
+            }
+            try {
+                return AccountManager.this.mService.getUserData(account, key);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    };
     private final HashMap<OnAccountsUpdateListener, Handler> mAccountsUpdatedListeners = Maps.newHashMap();
     private final HashMap<OnAccountsUpdateListener, Set<String>> mAccountsUpdatedListenersTypes = Maps.newHashMap();
     private final BroadcastReceiver mAccountsChangedBroadcastReceiver = new BroadcastReceiver() { // from class: android.accounts.AccountManager.20
+        AnonymousClass20() {
+        }
+
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             Account[] accounts = AccountManager.this.getAccounts();
@@ -123,7 +176,40 @@ public class AccountManager {
     public @interface AccountVisibility {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.accounts.AccountManager$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends PropertyInvalidatedCache<UserPackage, Account[]> {
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Account[] recompute(UserPackage userAndPackage) {
+            try {
+                return AccountManager.this.mService.getAccountsAsUser(null, userAndPackage.userId, userAndPackage.packageName);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean bypass(UserPackage query) {
+            return query.userId < 0;
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public boolean resultEquals(Account[] l, Account[] r) {
+            if (l == r) {
+                return true;
+            }
+            if (l == null || r == null) {
+                return false;
+            }
+            return Arrays.equals(l, r);
+        }
+    }
+
     /* loaded from: classes.dex */
     public static final class AccountKeyData {
         public final Account account;
@@ -156,103 +242,39 @@ public class AccountManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.accounts.AccountManager$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 extends PropertyInvalidatedCache<AccountKeyData, String> {
+        AnonymousClass2(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public String recompute(AccountKeyData accountKeyData) {
+            Account account = accountKeyData.account;
+            String key = accountKeyData.key;
+            if (account == null) {
+                throw new IllegalArgumentException("account is null");
+            }
+            if (key == null) {
+                throw new IllegalArgumentException("key is null");
+            }
+            try {
+                return AccountManager.this.mService.getUserData(account, key);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
     public AccountManager(Context context, IAccountManager service) {
-        int i = 4;
-        this.mAccountsForUserCache = new PropertyInvalidatedCache<UserPackage, Account[]>(i, CACHE_KEY_ACCOUNTS_DATA_PROPERTY) { // from class: android.accounts.AccountManager.1
-            @Override // android.app.PropertyInvalidatedCache
-            public Account[] recompute(UserPackage userAndPackage) {
-                try {
-                    return AccountManager.this.mService.getAccountsAsUser(null, userAndPackage.userId, userAndPackage.packageName);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean bypass(UserPackage query) {
-                return query.userId < 0;
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean resultEquals(Account[] l, Account[] r) {
-                if (l == r) {
-                    return true;
-                }
-                if (l == null || r == null) {
-                    return false;
-                }
-                return Arrays.equals(l, r);
-            }
-        };
-        this.mUserDataCache = new PropertyInvalidatedCache<AccountKeyData, String>(i, CACHE_KEY_USER_DATA_PROPERTY) { // from class: android.accounts.AccountManager.2
-            @Override // android.app.PropertyInvalidatedCache
-            public String recompute(AccountKeyData accountKeyData) {
-                Account account = accountKeyData.account;
-                String key = accountKeyData.key;
-                if (account == null) {
-                    throw new IllegalArgumentException("account is null");
-                }
-                if (key == null) {
-                    throw new IllegalArgumentException("key is null");
-                }
-                try {
-                    return AccountManager.this.mService.getUserData(account, key);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-        };
         this.mContext = context;
         this.mService = service;
         this.mMainHandler = new Handler(context.getMainLooper());
     }
 
     public AccountManager(Context context, IAccountManager service, Handler handler) {
-        int i = 4;
-        this.mAccountsForUserCache = new PropertyInvalidatedCache<UserPackage, Account[]>(i, CACHE_KEY_ACCOUNTS_DATA_PROPERTY) { // from class: android.accounts.AccountManager.1
-            @Override // android.app.PropertyInvalidatedCache
-            public Account[] recompute(UserPackage userAndPackage) {
-                try {
-                    return AccountManager.this.mService.getAccountsAsUser(null, userAndPackage.userId, userAndPackage.packageName);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean bypass(UserPackage query) {
-                return query.userId < 0;
-            }
-
-            @Override // android.app.PropertyInvalidatedCache
-            public boolean resultEquals(Account[] l, Account[] r) {
-                if (l == r) {
-                    return true;
-                }
-                if (l == null || r == null) {
-                    return false;
-                }
-                return Arrays.equals(l, r);
-            }
-        };
-        this.mUserDataCache = new PropertyInvalidatedCache<AccountKeyData, String>(i, CACHE_KEY_USER_DATA_PROPERTY) { // from class: android.accounts.AccountManager.2
-            @Override // android.app.PropertyInvalidatedCache
-            public String recompute(AccountKeyData accountKeyData) {
-                Account account = accountKeyData.account;
-                String key = accountKeyData.key;
-                if (account == null) {
-                    throw new IllegalArgumentException("account is null");
-                }
-                if (key == null) {
-                    throw new IllegalArgumentException("key is null");
-                }
-                try {
-                    return AccountManager.this.mService.getUserData(account, key);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-        };
         this.mContext = context;
         this.mService = service;
         this.mMainHandler = handler;
@@ -346,7 +368,7 @@ public class AccountManager {
         }
     }
 
-    public AccountManagerFuture<String> getAuthTokenLabel(final String accountType, final String authTokenType, AccountManagerCallback<String> callback, Handler handler) {
+    public AccountManagerFuture<String> getAuthTokenLabel(String accountType, String authTokenType, AccountManagerCallback<String> callback, Handler handler) {
         if (accountType == null) {
             throw new IllegalArgumentException("accountType is null");
         }
@@ -354,6 +376,16 @@ public class AccountManager {
             throw new IllegalArgumentException("authTokenType is null");
         }
         return new Future2Task<String>(handler, callback) { // from class: android.accounts.AccountManager.3
+            final /* synthetic */ String val$accountType;
+            final /* synthetic */ String val$authTokenType;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass3(Handler handler2, AccountManagerCallback callback2, String accountType2, String authTokenType2) {
+                super(handler2, callback2);
+                accountType = accountType2;
+                authTokenType = authTokenType2;
+            }
+
             @Override // android.accounts.AccountManager.BaseFutureTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.getAuthTokenLabel(this.mResponse, accountType, authTokenType);
@@ -369,11 +401,39 @@ public class AccountManager {
         }.start();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.accounts.AccountManager$3 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass3 extends Future2Task<String> {
+        final /* synthetic */ String val$accountType;
+        final /* synthetic */ String val$authTokenType;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass3(Handler handler2, AccountManagerCallback callback2, String accountType2, String authTokenType2) {
+            super(handler2, callback2);
+            accountType = accountType2;
+            authTokenType = authTokenType2;
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.getAuthTokenLabel(this.mResponse, accountType, authTokenType);
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public String bundleToResult(Bundle bundle) throws AuthenticatorException {
+            if (!bundle.containsKey(AccountManager.KEY_AUTH_TOKEN_LABEL)) {
+                throw new AuthenticatorException("no result in response");
+            }
+            return bundle.getString(AccountManager.KEY_AUTH_TOKEN_LABEL);
+        }
+    }
+
     public AccountManagerFuture<Boolean> hasFeatures(Account account, String[] features, AccountManagerCallback<Boolean> callback, Handler handler) {
         return hasFeaturesAsUser(account, features, callback, handler, this.mContext.getUserId());
     }
 
-    private AccountManagerFuture<Boolean> hasFeaturesAsUser(final Account account, final String[] features, AccountManagerCallback<Boolean> callback, Handler handler, final int userId) {
+    private AccountManagerFuture<Boolean> hasFeaturesAsUser(Account account, String[] features, AccountManagerCallback<Boolean> callback, Handler handler, int userId) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
@@ -381,6 +441,18 @@ public class AccountManager {
             throw new IllegalArgumentException("features is null");
         }
         return new Future2Task<Boolean>(handler, callback) { // from class: android.accounts.AccountManager.4
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ String[] val$features;
+            final /* synthetic */ int val$userId;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass4(Handler handler2, AccountManagerCallback callback2, Account account2, String[] features2, int userId2) {
+                super(handler2, callback2);
+                account = account2;
+                features = features2;
+                userId = userId2;
+            }
+
             @Override // android.accounts.AccountManager.BaseFutureTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.hasFeatures(this.mResponse, account, features, userId, AccountManager.this.mContext.getOpPackageName());
@@ -396,6 +468,35 @@ public class AccountManager {
         }.start();
     }
 
+    /* renamed from: android.accounts.AccountManager$4 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass4 extends Future2Task<Boolean> {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ String[] val$features;
+        final /* synthetic */ int val$userId;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass4(Handler handler2, AccountManagerCallback callback2, Account account2, String[] features2, int userId2) {
+            super(handler2, callback2);
+            account = account2;
+            features = features2;
+            userId = userId2;
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.hasFeatures(this.mResponse, account, features, userId, AccountManager.this.mContext.getOpPackageName());
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public Boolean bundleToResult(Bundle bundle) throws AuthenticatorException {
+            if (!bundle.containsKey(AccountManager.KEY_BOOLEAN_RESULT)) {
+                throw new AuthenticatorException("no result in response");
+            }
+            return Boolean.valueOf(bundle.getBoolean(AccountManager.KEY_BOOLEAN_RESULT));
+        }
+    }
+
     private void logAddAccount(String packageName) {
         try {
             ApplicationInfo ai = this.mContext.getPackageManager().getApplicationInfo(packageName, 0);
@@ -407,11 +508,53 @@ public class AccountManager {
         }
     }
 
-    public AccountManagerFuture<Account[]> getAccountsByTypeAndFeatures(final String type, final String[] features, AccountManagerCallback<Account[]> callback, Handler handler) {
+    /* renamed from: android.accounts.AccountManager$5 */
+    /* loaded from: classes.dex */
+    class AnonymousClass5 extends Future2Task<Account[]> {
+        final /* synthetic */ String[] val$features;
+        final /* synthetic */ String val$type;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass5(Handler handler, AccountManagerCallback accountManagerCallback, String str, String[] strArr) {
+            super(handler, accountManagerCallback);
+            type = str;
+            features = strArr;
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.getAccountsByFeatures(this.mResponse, type, features, AccountManager.this.mContext.getOpPackageName());
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public Account[] bundleToResult(Bundle bundle) throws AuthenticatorException {
+            if (!bundle.containsKey(AccountManager.KEY_ACCOUNTS)) {
+                throw new AuthenticatorException("no result in response");
+            }
+            Parcelable[] parcelables = bundle.getParcelableArray(AccountManager.KEY_ACCOUNTS);
+            Account[] descs = new Account[parcelables.length];
+            for (int i = 0; i < parcelables.length; i++) {
+                descs[i] = (Account) parcelables[i];
+            }
+            return descs;
+        }
+    }
+
+    public AccountManagerFuture<Account[]> getAccountsByTypeAndFeatures(String type, String[] features, AccountManagerCallback<Account[]> callback, Handler handler) {
         if (type == null) {
             throw new IllegalArgumentException("type is null");
         }
         return new Future2Task<Account[]>(handler, callback) { // from class: android.accounts.AccountManager.5
+            final /* synthetic */ String[] val$features;
+            final /* synthetic */ String val$type;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass5(Handler handler2, AccountManagerCallback callback2, String type2, String[] features2) {
+                super(handler2, callback2);
+                type = type2;
+                features = features2;
+            }
+
             @Override // android.accounts.AccountManager.BaseFutureTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.getAccountsByFeatures(this.mResponse, type, features, AccountManager.this.mContext.getOpPackageName());
@@ -509,7 +652,7 @@ public class AccountManager {
         }
     }
 
-    public AccountManagerFuture<Account> renameAccount(final Account account, final String newName, AccountManagerCallback<Account> callback, Handler handler) {
+    public AccountManagerFuture<Account> renameAccount(Account account, String newName, AccountManagerCallback<Account> callback, Handler handler) {
         if (account == null) {
             throw new IllegalArgumentException("account is null.");
         }
@@ -517,6 +660,16 @@ public class AccountManager {
             throw new IllegalArgumentException("newName is empty or null.");
         }
         return new Future2Task<Account>(handler, callback) { // from class: android.accounts.AccountManager.6
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ String val$newName;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass6(Handler handler2, AccountManagerCallback callback2, Account account2, String newName2) {
+                super(handler2, callback2);
+                account = account2;
+                newName = newName2;
+            }
+
             @Override // android.accounts.AccountManager.BaseFutureTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.renameAccount(this.mResponse, account, newName);
@@ -530,6 +683,33 @@ public class AccountManager {
                 return new Account(name, type, accessId);
             }
         }.start();
+    }
+
+    /* renamed from: android.accounts.AccountManager$6 */
+    /* loaded from: classes.dex */
+    class AnonymousClass6 extends Future2Task<Account> {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ String val$newName;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass6(Handler handler2, AccountManagerCallback callback2, Account account2, String newName2) {
+            super(handler2, callback2);
+            account = account2;
+            newName = newName2;
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.renameAccount(this.mResponse, account, newName);
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public Account bundleToResult(Bundle bundle) throws AuthenticatorException {
+            String name = bundle.getString(AccountManager.KEY_ACCOUNT_NAME);
+            String type = bundle.getString("accountType");
+            String accessId = bundle.getString(AccountManager.KEY_ACCOUNT_ACCESS_ID);
+            return new Account(name, type, accessId);
+        }
     }
 
     public String getPreviousName(Account account) {
@@ -553,7 +733,7 @@ public class AccountManager {
     }
 
     @Deprecated
-    public AccountManagerFuture<Boolean> removeAccountAsUser(final Account account, AccountManagerCallback<Boolean> callback, Handler handler, final UserHandle userHandle) {
+    public AccountManagerFuture<Boolean> removeAccountAsUser(Account account, AccountManagerCallback<Boolean> callback, Handler handler, UserHandle userHandle) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
@@ -561,6 +741,16 @@ public class AccountManager {
             throw new IllegalArgumentException("userHandle is null");
         }
         return new Future2Task<Boolean>(handler, callback) { // from class: android.accounts.AccountManager.7
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ UserHandle val$userHandle;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass7(Handler handler2, AccountManagerCallback callback2, Account account2, UserHandle userHandle2) {
+                super(handler2, callback2);
+                account = account2;
+                userHandle = userHandle2;
+            }
+
             @Override // android.accounts.AccountManager.BaseFutureTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.removeAccountAsUser(this.mResponse, account, false, userHandle.getIdentifier());
@@ -576,7 +766,34 @@ public class AccountManager {
         }.start();
     }
 
-    public AccountManagerFuture<Bundle> removeAccountAsUser(final Account account, final Activity activity, AccountManagerCallback<Bundle> callback, Handler handler, final UserHandle userHandle) {
+    /* renamed from: android.accounts.AccountManager$7 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass7 extends Future2Task<Boolean> {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ UserHandle val$userHandle;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass7(Handler handler2, AccountManagerCallback callback2, Account account2, UserHandle userHandle2) {
+            super(handler2, callback2);
+            account = account2;
+            userHandle = userHandle2;
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.removeAccountAsUser(this.mResponse, account, false, userHandle.getIdentifier());
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public Boolean bundleToResult(Bundle bundle) throws AuthenticatorException {
+            if (!bundle.containsKey(AccountManager.KEY_BOOLEAN_RESULT)) {
+                throw new AuthenticatorException("no result in response");
+            }
+            return Boolean.valueOf(bundle.getBoolean(AccountManager.KEY_BOOLEAN_RESULT));
+        }
+    }
+
+    public AccountManagerFuture<Bundle> removeAccountAsUser(Account account, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler, UserHandle userHandle) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
@@ -584,11 +801,44 @@ public class AccountManager {
             throw new IllegalArgumentException("userHandle is null");
         }
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.8
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ Activity val$activity;
+            final /* synthetic */ UserHandle val$userHandle;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass8(Activity activity2, Handler handler2, AccountManagerCallback callback2, Account account2, Activity activity22, UserHandle userHandle2) {
+                super(activity22, handler2, callback2);
+                account = account2;
+                activity = activity22;
+                userHandle = userHandle2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.removeAccountAsUser(this.mResponse, account, activity != null, userHandle.getIdentifier());
             }
         }.start();
+    }
+
+    /* renamed from: android.accounts.AccountManager$8 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass8 extends AmsTask {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ UserHandle val$userHandle;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass8(Activity activity22, Handler handler2, AccountManagerCallback callback2, Account account2, Activity activity222, UserHandle userHandle2) {
+            super(activity222, handler2, callback2);
+            account = account2;
+            activity = activity222;
+            userHandle = userHandle2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.removeAccountAsUser(this.mResponse, account, activity != null, userHandle.getIdentifier());
+        }
     }
 
     public boolean removeAccountExplicitly(Account account) {
@@ -694,19 +944,31 @@ public class AccountManager {
         return bundle.getString(KEY_AUTHTOKEN);
     }
 
-    public AccountManagerFuture<Bundle> getAuthToken(final Account account, final String authTokenType, Bundle options, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
+    public AccountManagerFuture<Bundle> getAuthToken(Account account, String authTokenType, Bundle options, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
         if (authTokenType == null) {
             throw new IllegalArgumentException("authTokenType is null");
         }
-        final Bundle optionsIn = new Bundle();
+        Bundle optionsIn = new Bundle();
         if (options != null) {
             optionsIn.putAll(options);
         }
         optionsIn.putString(KEY_ANDROID_PACKAGE_NAME, this.mContext.getPackageName());
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.9
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ String val$authTokenType;
+            final /* synthetic */ Bundle val$optionsIn;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass9(Activity activity2, Handler handler2, AccountManagerCallback callback2, Account account2, String authTokenType2, Bundle optionsIn2) {
+                super(activity2, handler2, callback2);
+                account = account2;
+                authTokenType = authTokenType2;
+                optionsIn = optionsIn2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.getAuthToken(this.mResponse, account, authTokenType, false, true, optionsIn);
@@ -714,24 +976,59 @@ public class AccountManager {
         }.start();
     }
 
+    /* renamed from: android.accounts.AccountManager$9 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass9 extends AmsTask {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ Bundle val$optionsIn;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass9(Activity activity2, Handler handler2, AccountManagerCallback callback2, Account account2, String authTokenType2, Bundle optionsIn2) {
+            super(activity2, handler2, callback2);
+            account = account2;
+            authTokenType = authTokenType2;
+            optionsIn = optionsIn2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.getAuthToken(this.mResponse, account, authTokenType, false, true, optionsIn);
+        }
+    }
+
     @Deprecated
     public AccountManagerFuture<Bundle> getAuthToken(Account account, String authTokenType, boolean notifyAuthFailure, AccountManagerCallback<Bundle> callback, Handler handler) {
         return getAuthToken(account, authTokenType, (Bundle) null, notifyAuthFailure, callback, handler);
     }
 
-    public AccountManagerFuture<Bundle> getAuthToken(final Account account, final String authTokenType, Bundle options, final boolean notifyAuthFailure, AccountManagerCallback<Bundle> callback, Handler handler) {
+    public AccountManagerFuture<Bundle> getAuthToken(Account account, String authTokenType, Bundle options, boolean notifyAuthFailure, AccountManagerCallback<Bundle> callback, Handler handler) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
         if (authTokenType == null) {
             throw new IllegalArgumentException("authTokenType is null");
         }
-        final Bundle optionsIn = new Bundle();
+        Bundle optionsIn = new Bundle();
         if (options != null) {
             optionsIn.putAll(options);
         }
         optionsIn.putString(KEY_ANDROID_PACKAGE_NAME, this.mContext.getPackageName());
         return new AmsTask(null, handler, callback) { // from class: android.accounts.AccountManager.10
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ String val$authTokenType;
+            final /* synthetic */ boolean val$notifyAuthFailure;
+            final /* synthetic */ Bundle val$optionsIn;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass10(Activity activity, Handler handler2, AccountManagerCallback callback2, Account account2, String authTokenType2, boolean notifyAuthFailure2, Bundle optionsIn2) {
+                super(activity, handler2, callback2);
+                account = account2;
+                authTokenType = authTokenType2;
+                notifyAuthFailure = notifyAuthFailure2;
+                optionsIn = optionsIn2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.getAuthToken(this.mResponse, account, authTokenType, notifyAuthFailure, false, optionsIn);
@@ -739,45 +1036,154 @@ public class AccountManager {
         }.start();
     }
 
-    public AccountManagerFuture<Bundle> addAccount(final String accountType, final String authTokenType, final String[] requiredFeatures, Bundle addAccountOptions, final Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
+    /* renamed from: android.accounts.AccountManager$10 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass10 extends AmsTask {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ boolean val$notifyAuthFailure;
+        final /* synthetic */ Bundle val$optionsIn;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass10(Activity activity, Handler handler2, AccountManagerCallback callback2, Account account2, String authTokenType2, boolean notifyAuthFailure2, Bundle optionsIn2) {
+            super(activity, handler2, callback2);
+            account = account2;
+            authTokenType = authTokenType2;
+            notifyAuthFailure = notifyAuthFailure2;
+            optionsIn = optionsIn2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.getAuthToken(this.mResponse, account, authTokenType, notifyAuthFailure, false, optionsIn);
+        }
+    }
+
+    public AccountManagerFuture<Bundle> addAccount(String accountType, String authTokenType, String[] requiredFeatures, Bundle addAccountOptions, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
         logAddAccount(this.mContext.getPackageName());
         if (Process.myUserHandle().equals(this.mContext.getUser())) {
             if (accountType == null) {
                 throw new IllegalArgumentException("accountType is null");
             }
-            final Bundle optionsIn = new Bundle();
+            Bundle optionsIn = new Bundle();
             if (addAccountOptions != null) {
                 optionsIn.putAll(addAccountOptions);
             }
             optionsIn.putString(KEY_ANDROID_PACKAGE_NAME, this.mContext.getPackageName());
             return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.11
+                final /* synthetic */ String val$accountType;
+                final /* synthetic */ Activity val$activity;
+                final /* synthetic */ String val$authTokenType;
+                final /* synthetic */ Bundle val$optionsIn;
+                final /* synthetic */ String[] val$requiredFeatures;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass11(Activity activity2, Handler handler2, AccountManagerCallback callback2, String accountType2, String authTokenType2, String[] requiredFeatures2, Activity activity22, Bundle optionsIn2) {
+                    super(activity22, handler2, callback2);
+                    accountType = accountType2;
+                    authTokenType = authTokenType2;
+                    requiredFeatures = requiredFeatures2;
+                    activity = activity22;
+                    optionsIn = optionsIn2;
+                }
+
                 @Override // android.accounts.AccountManager.AmsTask
                 public void doWork() throws RemoteException {
                     AccountManager.this.mService.addAccount(this.mResponse, accountType, authTokenType, requiredFeatures, activity != null, optionsIn);
                 }
             }.start();
         }
-        return addAccountAsUser(accountType, authTokenType, requiredFeatures, addAccountOptions, activity, callback, handler, this.mContext.getUser());
+        return addAccountAsUser(accountType2, authTokenType2, requiredFeatures2, addAccountOptions, activity22, callback2, handler2, this.mContext.getUser());
     }
 
-    public AccountManagerFuture<Bundle> addAccountAsUser(final String accountType, final String authTokenType, final String[] requiredFeatures, Bundle addAccountOptions, final Activity activity, AccountManagerCallback<Bundle> callback, Handler handler, final UserHandle userHandle) {
+    /* renamed from: android.accounts.AccountManager$11 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass11 extends AmsTask {
+        final /* synthetic */ String val$accountType;
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ Bundle val$optionsIn;
+        final /* synthetic */ String[] val$requiredFeatures;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass11(Activity activity22, Handler handler2, AccountManagerCallback callback2, String accountType2, String authTokenType2, String[] requiredFeatures2, Activity activity222, Bundle optionsIn2) {
+            super(activity222, handler2, callback2);
+            accountType = accountType2;
+            authTokenType = authTokenType2;
+            requiredFeatures = requiredFeatures2;
+            activity = activity222;
+            optionsIn = optionsIn2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.addAccount(this.mResponse, accountType, authTokenType, requiredFeatures, activity != null, optionsIn);
+        }
+    }
+
+    public AccountManagerFuture<Bundle> addAccountAsUser(String accountType, String authTokenType, String[] requiredFeatures, Bundle addAccountOptions, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler, UserHandle userHandle) {
         if (accountType == null) {
             throw new IllegalArgumentException("accountType is null");
         }
         if (userHandle == null) {
             throw new IllegalArgumentException("userHandle is null");
         }
-        final Bundle optionsIn = new Bundle();
+        Bundle optionsIn = new Bundle();
         if (addAccountOptions != null) {
             optionsIn.putAll(addAccountOptions);
         }
         optionsIn.putString(KEY_ANDROID_PACKAGE_NAME, this.mContext.getPackageName());
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.12
+            final /* synthetic */ String val$accountType;
+            final /* synthetic */ Activity val$activity;
+            final /* synthetic */ String val$authTokenType;
+            final /* synthetic */ Bundle val$optionsIn;
+            final /* synthetic */ String[] val$requiredFeatures;
+            final /* synthetic */ UserHandle val$userHandle;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass12(Activity activity2, Handler handler2, AccountManagerCallback callback2, String accountType2, String authTokenType2, String[] requiredFeatures2, Activity activity22, Bundle optionsIn2, UserHandle userHandle2) {
+                super(activity22, handler2, callback2);
+                accountType = accountType2;
+                authTokenType = authTokenType2;
+                requiredFeatures = requiredFeatures2;
+                activity = activity22;
+                optionsIn = optionsIn2;
+                userHandle = userHandle2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.addAccountAsUser(this.mResponse, accountType, authTokenType, requiredFeatures, activity != null, optionsIn, userHandle.getIdentifier());
             }
         }.start();
+    }
+
+    /* renamed from: android.accounts.AccountManager$12 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass12 extends AmsTask {
+        final /* synthetic */ String val$accountType;
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ Bundle val$optionsIn;
+        final /* synthetic */ String[] val$requiredFeatures;
+        final /* synthetic */ UserHandle val$userHandle;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass12(Activity activity22, Handler handler2, AccountManagerCallback callback2, String accountType2, String authTokenType2, String[] requiredFeatures2, Activity activity222, Bundle optionsIn2, UserHandle userHandle2) {
+            super(activity222, handler2, callback2);
+            accountType = accountType2;
+            authTokenType = authTokenType2;
+            requiredFeatures = requiredFeatures2;
+            activity = activity222;
+            optionsIn = optionsIn2;
+            userHandle = userHandle2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.addAccountAsUser(this.mResponse, accountType, authTokenType, requiredFeatures, activity != null, optionsIn, userHandle.getIdentifier());
+        }
     }
 
     public void addSharedAccountsFromParentUser(UserHandle parentUser, UserHandle user) {
@@ -788,7 +1194,7 @@ public class AccountManager {
         }
     }
 
-    public AccountManagerFuture<Boolean> copyAccountToUser(final Account account, final UserHandle fromUser, final UserHandle toUser, AccountManagerCallback<Boolean> callback, Handler handler) {
+    public AccountManagerFuture<Boolean> copyAccountToUser(Account account, UserHandle fromUser, UserHandle toUser, AccountManagerCallback<Boolean> callback, Handler handler) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
@@ -796,6 +1202,18 @@ public class AccountManager {
             throw new IllegalArgumentException("fromUser and toUser cannot be null");
         }
         return new Future2Task<Boolean>(handler, callback) { // from class: android.accounts.AccountManager.13
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ UserHandle val$fromUser;
+            final /* synthetic */ UserHandle val$toUser;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass13(Handler handler2, AccountManagerCallback callback2, Account account2, UserHandle fromUser2, UserHandle toUser2) {
+                super(handler2, callback2);
+                account = account2;
+                fromUser = fromUser2;
+                toUser = toUser2;
+            }
+
             @Override // android.accounts.AccountManager.BaseFutureTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.copyAccountToUser(this.mResponse, account, fromUser.getIdentifier(), toUser.getIdentifier());
@@ -811,16 +1229,59 @@ public class AccountManager {
         }.start();
     }
 
+    /* renamed from: android.accounts.AccountManager$13 */
+    /* loaded from: classes.dex */
+    class AnonymousClass13 extends Future2Task<Boolean> {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ UserHandle val$fromUser;
+        final /* synthetic */ UserHandle val$toUser;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass13(Handler handler2, AccountManagerCallback callback2, Account account2, UserHandle fromUser2, UserHandle toUser2) {
+            super(handler2, callback2);
+            account = account2;
+            fromUser = fromUser2;
+            toUser = toUser2;
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.copyAccountToUser(this.mResponse, account, fromUser.getIdentifier(), toUser.getIdentifier());
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public Boolean bundleToResult(Bundle bundle) throws AuthenticatorException {
+            if (!bundle.containsKey(AccountManager.KEY_BOOLEAN_RESULT)) {
+                throw new AuthenticatorException("no result in response");
+            }
+            return Boolean.valueOf(bundle.getBoolean(AccountManager.KEY_BOOLEAN_RESULT));
+        }
+    }
+
     public AccountManagerFuture<Bundle> confirmCredentials(Account account, Bundle options, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
         return confirmCredentialsAsUser(account, options, activity, callback, handler, this.mContext.getUser());
     }
 
-    public AccountManagerFuture<Bundle> confirmCredentialsAsUser(final Account account, final Bundle options, final Activity activity, AccountManagerCallback<Bundle> callback, Handler handler, UserHandle userHandle) {
+    public AccountManagerFuture<Bundle> confirmCredentialsAsUser(Account account, Bundle options, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler, UserHandle userHandle) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
-        final int userId = userHandle.getIdentifier();
+        int userId = userHandle.getIdentifier();
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.14
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ Activity val$activity;
+            final /* synthetic */ Bundle val$options;
+            final /* synthetic */ int val$userId;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass14(Activity activity2, Handler handler2, AccountManagerCallback callback2, Account account2, Bundle options2, Activity activity22, int userId2) {
+                super(activity22, handler2, callback2);
+                account = account2;
+                options = options2;
+                activity = activity22;
+                userId = userId2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.confirmCredentialsAsUser(this.mResponse, account, options, activity != null, userId);
@@ -828,11 +1289,71 @@ public class AccountManager {
         }.start();
     }
 
-    public AccountManagerFuture<Bundle> updateCredentials(final Account account, final String authTokenType, final Bundle options, final Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
+    /* renamed from: android.accounts.AccountManager$14 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass14 extends AmsTask {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ Bundle val$options;
+        final /* synthetic */ int val$userId;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass14(Activity activity22, Handler handler2, AccountManagerCallback callback2, Account account2, Bundle options2, Activity activity222, int userId2) {
+            super(activity222, handler2, callback2);
+            account = account2;
+            options = options2;
+            activity = activity222;
+            userId = userId2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.confirmCredentialsAsUser(this.mResponse, account, options, activity != null, userId);
+        }
+    }
+
+    /* renamed from: android.accounts.AccountManager$15 */
+    /* loaded from: classes.dex */
+    class AnonymousClass15 extends AmsTask {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ Bundle val$options;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass15(Activity activity, Handler handler, AccountManagerCallback accountManagerCallback, Account account, String str, Activity activity2, Bundle bundle) {
+            super(activity, handler, accountManagerCallback);
+            account = account;
+            authTokenType = str;
+            activity = activity2;
+            options = bundle;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.updateCredentials(this.mResponse, account, authTokenType, activity != null, options);
+        }
+    }
+
+    public AccountManagerFuture<Bundle> updateCredentials(Account account, String authTokenType, Bundle options, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.15
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ Activity val$activity;
+            final /* synthetic */ String val$authTokenType;
+            final /* synthetic */ Bundle val$options;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass15(Activity activity2, Handler handler2, AccountManagerCallback callback2, Account account2, String authTokenType2, Activity activity22, Bundle options2) {
+                super(activity22, handler2, callback2);
+                account = account2;
+                authTokenType = authTokenType2;
+                activity = activity22;
+                options = options2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.updateCredentials(this.mResponse, account, authTokenType, activity != null, options);
@@ -840,11 +1361,40 @@ public class AccountManager {
         }.start();
     }
 
-    public AccountManagerFuture<Bundle> editProperties(final String accountType, final Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
+    /* renamed from: android.accounts.AccountManager$16 */
+    /* loaded from: classes.dex */
+    class AnonymousClass16 extends AmsTask {
+        final /* synthetic */ String val$accountType;
+        final /* synthetic */ Activity val$activity;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass16(Activity activity, Handler handler, AccountManagerCallback accountManagerCallback, String str, Activity activity2) {
+            super(activity, handler, accountManagerCallback);
+            accountType = str;
+            activity = activity2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.editProperties(this.mResponse, accountType, activity != null);
+        }
+    }
+
+    public AccountManagerFuture<Bundle> editProperties(String accountType, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
         if (accountType == null) {
             throw new IllegalArgumentException("accountType is null");
         }
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.16
+            final /* synthetic */ String val$accountType;
+            final /* synthetic */ Activity val$activity;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass16(Activity activity2, Handler handler2, AccountManagerCallback callback2, String accountType2, Activity activity22) {
+                super(activity22, handler2, callback2);
+                accountType = accountType2;
+                activity = activity22;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.editProperties(this.mResponse, accountType, activity != null);
@@ -860,7 +1410,6 @@ public class AccountManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void ensureNotOnMainThread() {
         Looper looper = Looper.myLooper();
         if (looper != null && looper == this.mContext.getMainLooper()) {
@@ -872,9 +1421,33 @@ public class AccountManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void postToHandler(Handler handler, final AccountManagerCallback<Bundle> callback, final AccountManagerFuture<Bundle> future) {
+    /* renamed from: android.accounts.AccountManager$17 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass17 implements Runnable {
+        final /* synthetic */ AccountManagerCallback val$callback;
+        final /* synthetic */ AccountManagerFuture val$future;
+
+        AnonymousClass17(AccountManagerCallback accountManagerCallback, AccountManagerFuture accountManagerFuture) {
+            callback = accountManagerCallback;
+            future = accountManagerFuture;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            callback.run(future);
+        }
+    }
+
+    public void postToHandler(Handler handler, AccountManagerCallback<Bundle> callback, AccountManagerFuture<Bundle> future) {
         (handler == null ? this.mMainHandler : handler).post(new Runnable() { // from class: android.accounts.AccountManager.17
+            final /* synthetic */ AccountManagerCallback val$callback;
+            final /* synthetic */ AccountManagerFuture val$future;
+
+            AnonymousClass17(AccountManagerCallback callback2, AccountManagerFuture future2) {
+                callback = callback2;
+                future = future2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 callback.run(future);
@@ -882,11 +1455,18 @@ public class AccountManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void postToHandler(Handler handler, final OnAccountsUpdateListener listener, Account[] accounts) {
-        final Account[] accountsCopy = new Account[accounts.length];
+    public void postToHandler(Handler handler, OnAccountsUpdateListener listener, Account[] accounts) {
+        Account[] accountsCopy = new Account[accounts.length];
         System.arraycopy(accounts, 0, accountsCopy, 0, accountsCopy.length);
         (handler == null ? this.mMainHandler : handler).post(new Runnable() { // from class: android.accounts.AccountManager.18
+            final /* synthetic */ Account[] val$accountsCopy;
+            final /* synthetic */ OnAccountsUpdateListener val$listener;
+
+            AnonymousClass18(OnAccountsUpdateListener listener2, Account[] accountsCopy2) {
+                listener = listener2;
+                accountsCopy = accountsCopy2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 synchronized (AccountManager.this.mAccountsUpdatedListeners) {
@@ -913,7 +1493,42 @@ public class AccountManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.accounts.AccountManager$18 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass18 implements Runnable {
+        final /* synthetic */ Account[] val$accountsCopy;
+        final /* synthetic */ OnAccountsUpdateListener val$listener;
+
+        AnonymousClass18(OnAccountsUpdateListener listener2, Account[] accountsCopy2) {
+            listener = listener2;
+            accountsCopy = accountsCopy2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (AccountManager.this.mAccountsUpdatedListeners) {
+                try {
+                    if (AccountManager.this.mAccountsUpdatedListeners.containsKey(listener)) {
+                        Set<String> types = (Set) AccountManager.this.mAccountsUpdatedListenersTypes.get(listener);
+                        if (types != null) {
+                            ArrayList<Account> filtered = new ArrayList<>();
+                            for (Account account : accountsCopy) {
+                                if (types.contains(account.type)) {
+                                    filtered.add(account);
+                                }
+                            }
+                            listener.onAccountsUpdated((Account[]) filtered.toArray(new Account[filtered.size()]));
+                        } else {
+                            listener.onAccountsUpdated(accountsCopy);
+                        }
+                    }
+                } catch (SQLException e) {
+                    Log.e(AccountManager.TAG, "Can't update accounts", e);
+                }
+            }
+        }
+    }
+
     /* loaded from: classes.dex */
     public abstract class AmsTask extends FutureTask<Bundle> implements AccountManagerFuture<Bundle> {
         final Activity mActivity;
@@ -923,9 +1538,24 @@ public class AccountManager {
 
         public abstract void doWork() throws RemoteException;
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.accounts.AccountManager$AmsTask$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 implements Callable<Bundle> {
+            AnonymousClass1() {
+            }
+
+            @Override // java.util.concurrent.Callable
+            public Bundle call() throws Exception {
+                throw new IllegalStateException("this should never be called");
+            }
+        }
+
         public AmsTask(Activity activity, Handler handler, AccountManagerCallback<Bundle> callback) {
             super(new Callable<Bundle>() { // from class: android.accounts.AccountManager.AmsTask.1
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass1() {
+                }
+
                 @Override // java.util.concurrent.Callable
                 public Bundle call() throws Exception {
                     throw new IllegalStateException("this should never be called");
@@ -946,7 +1576,6 @@ public class AccountManager {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // java.util.concurrent.FutureTask
         public void set(Bundle bundle) {
             if (bundle == null) {
@@ -996,13 +1625,11 @@ public class AccountManager {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.accounts.AccountManagerFuture
         public Bundle getResult() throws OperationCanceledException, IOException, AuthenticatorException {
             return internalGetResult(null, null);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.accounts.AccountManagerFuture
         public Bundle getResult(long timeout, TimeUnit unit) throws OperationCanceledException, IOException, AuthenticatorException {
             return internalGetResult(Long.valueOf(timeout), unit);
@@ -1016,8 +1643,13 @@ public class AccountManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private class Response extends IAccountManagerResponse.Stub {
+        public class Response extends IAccountManagerResponse.Stub {
+            /* synthetic */ Response(AmsTask amsTask, ResponseIA responseIA) {
+                this();
+            }
+
             private Response() {
             }
 
@@ -1055,7 +1687,6 @@ public class AccountManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public abstract class BaseFutureTask<T> extends FutureTask<T> {
         final Handler mHandler;
@@ -1065,8 +1696,24 @@ public class AccountManager {
 
         public abstract void doWork() throws RemoteException;
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.accounts.AccountManager$BaseFutureTask$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 implements Callable<T> {
+            AnonymousClass1() {
+            }
+
+            @Override // java.util.concurrent.Callable
+            public T call() throws Exception {
+                throw new IllegalStateException("this should never be called");
+            }
+        }
+
         public BaseFutureTask(Handler handler) {
             super(new Callable<T>() { // from class: android.accounts.AccountManager.BaseFutureTask.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.util.concurrent.Callable
                 public T call() throws Exception {
                     throw new IllegalStateException("this should never be called");
@@ -1092,8 +1739,9 @@ public class AccountManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         /* loaded from: classes.dex */
-        protected class Response extends IAccountManagerResponse.Stub {
+        public class Response extends IAccountManagerResponse.Stub {
             protected Response() {
             }
 
@@ -1121,7 +1769,6 @@ public class AccountManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public abstract class Future2Task<T> extends BaseFutureTask<T> implements AccountManagerFuture<T> {
         final AccountManagerCallback<T> mCallback;
@@ -1131,10 +1778,25 @@ public class AccountManager {
             this.mCallback = callback;
         }
 
+        /* renamed from: android.accounts.AccountManager$Future2Task$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                Future2Task.this.mCallback.run(Future2Task.this);
+            }
+        }
+
         @Override // java.util.concurrent.FutureTask
         protected void done() {
             if (this.mCallback != null) {
                 postRunnableToHandler(new Runnable() { // from class: android.accounts.AccountManager.Future2Task.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         Future2Task.this.mCallback.run(Future2Task.this);
@@ -1199,7 +1861,6 @@ public class AccountManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Exception convertErrorToException(int code, String message) {
         if (code == 3) {
             return new IOException(message);
@@ -1216,9 +1877,37 @@ public class AccountManager {
         return new AuthenticatorException(message);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void getAccountByTypeAndFeatures(final String accountType, final String[] features, AccountManagerCallback<Bundle> callback, Handler handler) {
+    /* renamed from: android.accounts.AccountManager$19 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass19 extends AmsTask {
+        final /* synthetic */ String val$accountType;
+        final /* synthetic */ String[] val$features;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass19(Activity activity, Handler handler, AccountManagerCallback accountManagerCallback, String str, String[] strArr) {
+            super(activity, handler, accountManagerCallback);
+            accountType = str;
+            features = strArr;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.getAccountByTypeAndFeatures(this.mResponse, accountType, features, AccountManager.this.mContext.getOpPackageName());
+        }
+    }
+
+    public void getAccountByTypeAndFeatures(String accountType, String[] features, AccountManagerCallback<Bundle> callback, Handler handler) {
         new AmsTask(null, handler, callback) { // from class: android.accounts.AccountManager.19
+            final /* synthetic */ String val$accountType;
+            final /* synthetic */ String[] val$features;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass19(Activity activity, Handler handler2, AccountManagerCallback callback2, String accountType2, String[] features2) {
+                super(activity, handler2, callback2);
+                accountType = accountType2;
+                features = features2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.getAccountByTypeAndFeatures(this.mResponse, accountType, features, AccountManager.this.mContext.getOpPackageName());
@@ -1226,8 +1915,9 @@ public class AccountManager {
         }.start();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class GetAuthTokenByTypeAndFeaturesTask extends AmsTask implements AccountManagerCallback<Bundle> {
+    public class GetAuthTokenByTypeAndFeaturesTask extends AmsTask implements AccountManagerCallback<Bundle> {
         final String mAccountType;
         final Bundle mAddAccountOptions;
         final String mAuthTokenType;
@@ -1252,9 +1942,61 @@ public class AccountManager {
             this.mMyCallback = this;
         }
 
+        /* renamed from: android.accounts.AccountManager$GetAuthTokenByTypeAndFeaturesTask$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements AccountManagerCallback<Bundle> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.accounts.AccountManagerCallback
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    Bundle result = future.getResult();
+                    String accountName = result.getString(AccountManager.KEY_ACCOUNT_NAME);
+                    String accountType = result.getString("accountType");
+                    if (accountName == null) {
+                        if (GetAuthTokenByTypeAndFeaturesTask.this.mActivity != null) {
+                            GetAuthTokenByTypeAndFeaturesTask getAuthTokenByTypeAndFeaturesTask = GetAuthTokenByTypeAndFeaturesTask.this;
+                            getAuthTokenByTypeAndFeaturesTask.mFuture = AccountManager.this.addAccount(GetAuthTokenByTypeAndFeaturesTask.this.mAccountType, GetAuthTokenByTypeAndFeaturesTask.this.mAuthTokenType, GetAuthTokenByTypeAndFeaturesTask.this.mFeatures, GetAuthTokenByTypeAndFeaturesTask.this.mAddAccountOptions, GetAuthTokenByTypeAndFeaturesTask.this.mActivity, GetAuthTokenByTypeAndFeaturesTask.this.mMyCallback, GetAuthTokenByTypeAndFeaturesTask.this.mHandler);
+                            return;
+                        }
+                        Bundle result2 = new Bundle();
+                        result2.putString(AccountManager.KEY_ACCOUNT_NAME, null);
+                        result2.putString("accountType", null);
+                        result2.putString(AccountManager.KEY_AUTHTOKEN, null);
+                        result2.putBinder(AccountManager.KEY_ACCOUNT_ACCESS_ID, null);
+                        try {
+                            GetAuthTokenByTypeAndFeaturesTask.this.mResponse.onResult(result2);
+                            return;
+                        } catch (RemoteException e) {
+                            return;
+                        }
+                    }
+                    GetAuthTokenByTypeAndFeaturesTask.this.mNumAccounts = 1;
+                    Account account = new Account(accountName, accountType);
+                    if (GetAuthTokenByTypeAndFeaturesTask.this.mActivity == null) {
+                        GetAuthTokenByTypeAndFeaturesTask getAuthTokenByTypeAndFeaturesTask2 = GetAuthTokenByTypeAndFeaturesTask.this;
+                        getAuthTokenByTypeAndFeaturesTask2.mFuture = AccountManager.this.getAuthToken(account, GetAuthTokenByTypeAndFeaturesTask.this.mAuthTokenType, false, GetAuthTokenByTypeAndFeaturesTask.this.mMyCallback, GetAuthTokenByTypeAndFeaturesTask.this.mHandler);
+                    } else {
+                        GetAuthTokenByTypeAndFeaturesTask getAuthTokenByTypeAndFeaturesTask3 = GetAuthTokenByTypeAndFeaturesTask.this;
+                        getAuthTokenByTypeAndFeaturesTask3.mFuture = AccountManager.this.getAuthToken(account, GetAuthTokenByTypeAndFeaturesTask.this.mAuthTokenType, GetAuthTokenByTypeAndFeaturesTask.this.mLoginOptions, GetAuthTokenByTypeAndFeaturesTask.this.mActivity, GetAuthTokenByTypeAndFeaturesTask.this.mMyCallback, GetAuthTokenByTypeAndFeaturesTask.this.mHandler);
+                    }
+                } catch (AuthenticatorException e2) {
+                    GetAuthTokenByTypeAndFeaturesTask.this.setException(e2);
+                } catch (OperationCanceledException e3) {
+                    GetAuthTokenByTypeAndFeaturesTask.this.setException(e3);
+                } catch (IOException e4) {
+                    GetAuthTokenByTypeAndFeaturesTask.this.setException(e4);
+                }
+            }
+        }
+
         @Override // android.accounts.AccountManager.AmsTask
         public void doWork() throws RemoteException {
             AccountManager.this.getAccountByTypeAndFeatures(this.mAccountType, this.mFeatures, new AccountManagerCallback<Bundle>() { // from class: android.accounts.AccountManager.GetAuthTokenByTypeAndFeaturesTask.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.accounts.AccountManagerCallback
                 public void run(AccountManagerFuture<Bundle> future) {
                     try {
@@ -1358,6 +2100,24 @@ public class AccountManager {
         return intent;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.accounts.AccountManager$20 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass20 extends BroadcastReceiver {
+        AnonymousClass20() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            Account[] accounts = AccountManager.this.getAccounts();
+            synchronized (AccountManager.this.mAccountsUpdatedListeners) {
+                for (Map.Entry<OnAccountsUpdateListener, Handler> entry : AccountManager.this.mAccountsUpdatedListeners.entrySet()) {
+                    AccountManager.this.postToHandler(entry.getValue(), entry.getKey(), accounts);
+                }
+            }
+        }
+    }
+
     public void addOnAccountsUpdatedListener(OnAccountsUpdateListener listener, Handler handler, boolean updateImmediately) {
         addOnAccountsUpdatedListener(listener, handler, updateImmediately, null);
     }
@@ -1423,16 +2183,32 @@ public class AccountManager {
         }
     }
 
-    public AccountManagerFuture<Bundle> startAddAccountSession(final String accountType, final String authTokenType, final String[] requiredFeatures, Bundle options, final Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
+    public AccountManagerFuture<Bundle> startAddAccountSession(String accountType, String authTokenType, String[] requiredFeatures, Bundle options, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
         if (accountType == null) {
             throw new IllegalArgumentException("accountType is null");
         }
-        final Bundle optionsIn = new Bundle();
+        Bundle optionsIn = new Bundle();
         if (options != null) {
             optionsIn.putAll(options);
         }
         optionsIn.putString(KEY_ANDROID_PACKAGE_NAME, this.mContext.getPackageName());
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.21
+            final /* synthetic */ String val$accountType;
+            final /* synthetic */ Activity val$activity;
+            final /* synthetic */ String val$authTokenType;
+            final /* synthetic */ Bundle val$optionsIn;
+            final /* synthetic */ String[] val$requiredFeatures;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass21(Activity activity2, Handler handler2, AccountManagerCallback callback2, String accountType2, String authTokenType2, String[] requiredFeatures2, Activity activity22, Bundle optionsIn2) {
+                super(activity22, handler2, callback2);
+                accountType = accountType2;
+                authTokenType = authTokenType2;
+                requiredFeatures = requiredFeatures2;
+                activity = activity22;
+                optionsIn = optionsIn2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.startAddAccountSession(this.mResponse, accountType, authTokenType, requiredFeatures, activity != null, optionsIn);
@@ -1440,16 +2216,55 @@ public class AccountManager {
         }.start();
     }
 
-    public AccountManagerFuture<Bundle> startUpdateCredentialsSession(final Account account, final String authTokenType, Bundle options, final Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
+    /* renamed from: android.accounts.AccountManager$21 */
+    /* loaded from: classes.dex */
+    class AnonymousClass21 extends AmsTask {
+        final /* synthetic */ String val$accountType;
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ Bundle val$optionsIn;
+        final /* synthetic */ String[] val$requiredFeatures;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass21(Activity activity22, Handler handler2, AccountManagerCallback callback2, String accountType2, String authTokenType2, String[] requiredFeatures2, Activity activity222, Bundle optionsIn2) {
+            super(activity222, handler2, callback2);
+            accountType = accountType2;
+            authTokenType = authTokenType2;
+            requiredFeatures = requiredFeatures2;
+            activity = activity222;
+            optionsIn = optionsIn2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.startAddAccountSession(this.mResponse, accountType, authTokenType, requiredFeatures, activity != null, optionsIn);
+        }
+    }
+
+    public AccountManagerFuture<Bundle> startUpdateCredentialsSession(Account account, String authTokenType, Bundle options, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
-        final Bundle optionsIn = new Bundle();
+        Bundle optionsIn = new Bundle();
         if (options != null) {
             optionsIn.putAll(options);
         }
         optionsIn.putString(KEY_ANDROID_PACKAGE_NAME, this.mContext.getPackageName());
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.22
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ Activity val$activity;
+            final /* synthetic */ String val$authTokenType;
+            final /* synthetic */ Bundle val$optionsIn;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass22(Activity activity2, Handler handler2, AccountManagerCallback callback2, Account account2, String authTokenType2, Activity activity22, Bundle optionsIn2) {
+                super(activity22, handler2, callback2);
+                account = account2;
+                authTokenType = authTokenType2;
+                activity = activity22;
+                optionsIn = optionsIn2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.startUpdateCredentialsSession(this.mResponse, account, authTokenType, activity != null, optionsIn);
@@ -1457,18 +2272,55 @@ public class AccountManager {
         }.start();
     }
 
+    /* renamed from: android.accounts.AccountManager$22 */
+    /* loaded from: classes.dex */
+    class AnonymousClass22 extends AmsTask {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ String val$authTokenType;
+        final /* synthetic */ Bundle val$optionsIn;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass22(Activity activity22, Handler handler2, AccountManagerCallback callback2, Account account2, String authTokenType2, Activity activity222, Bundle optionsIn2) {
+            super(activity222, handler2, callback2);
+            account = account2;
+            authTokenType = authTokenType2;
+            activity = activity222;
+            optionsIn = optionsIn2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.startUpdateCredentialsSession(this.mResponse, account, authTokenType, activity != null, optionsIn);
+        }
+    }
+
     public AccountManagerFuture<Bundle> finishSession(Bundle sessionBundle, Activity activity, AccountManagerCallback<Bundle> callback, Handler handler) {
         return finishSessionAsUser(sessionBundle, activity, this.mContext.getUser(), callback, handler);
     }
 
     @SystemApi
-    public AccountManagerFuture<Bundle> finishSessionAsUser(final Bundle sessionBundle, final Activity activity, final UserHandle userHandle, AccountManagerCallback<Bundle> callback, Handler handler) {
+    public AccountManagerFuture<Bundle> finishSessionAsUser(Bundle sessionBundle, Activity activity, UserHandle userHandle, AccountManagerCallback<Bundle> callback, Handler handler) {
         if (sessionBundle == null) {
             throw new IllegalArgumentException("sessionBundle is null");
         }
-        final Bundle appInfo = new Bundle();
+        Bundle appInfo = new Bundle();
         appInfo.putString(KEY_ANDROID_PACKAGE_NAME, this.mContext.getPackageName());
         return new AmsTask(activity, handler, callback) { // from class: android.accounts.AccountManager.23
+            final /* synthetic */ Activity val$activity;
+            final /* synthetic */ Bundle val$appInfo;
+            final /* synthetic */ Bundle val$sessionBundle;
+            final /* synthetic */ UserHandle val$userHandle;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass23(Activity activity2, Handler handler2, AccountManagerCallback callback2, Bundle sessionBundle2, Activity activity22, Bundle appInfo2, UserHandle userHandle2) {
+                super(activity22, handler2, callback2);
+                sessionBundle = sessionBundle2;
+                activity = activity22;
+                appInfo = appInfo2;
+                userHandle = userHandle2;
+            }
+
             @Override // android.accounts.AccountManager.AmsTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.finishSessionAsUser(this.mResponse, sessionBundle, activity != null, appInfo, userHandle.getIdentifier());
@@ -1476,7 +2328,30 @@ public class AccountManager {
         }.start();
     }
 
-    public AccountManagerFuture<Boolean> isCredentialsUpdateSuggested(final Account account, final String statusToken, AccountManagerCallback<Boolean> callback, Handler handler) {
+    /* renamed from: android.accounts.AccountManager$23 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass23 extends AmsTask {
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ Bundle val$appInfo;
+        final /* synthetic */ Bundle val$sessionBundle;
+        final /* synthetic */ UserHandle val$userHandle;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass23(Activity activity22, Handler handler2, AccountManagerCallback callback2, Bundle sessionBundle2, Activity activity222, Bundle appInfo2, UserHandle userHandle2) {
+            super(activity222, handler2, callback2);
+            sessionBundle = sessionBundle2;
+            activity = activity222;
+            appInfo = appInfo2;
+            userHandle = userHandle2;
+        }
+
+        @Override // android.accounts.AccountManager.AmsTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.finishSessionAsUser(this.mResponse, sessionBundle, activity != null, appInfo, userHandle.getIdentifier());
+        }
+    }
+
+    public AccountManagerFuture<Boolean> isCredentialsUpdateSuggested(Account account, String statusToken, AccountManagerCallback<Boolean> callback, Handler handler) {
         if (account == null) {
             throw new IllegalArgumentException("account is null");
         }
@@ -1484,6 +2359,16 @@ public class AccountManager {
             throw new IllegalArgumentException("status token is empty");
         }
         return new Future2Task<Boolean>(handler, callback) { // from class: android.accounts.AccountManager.24
+            final /* synthetic */ Account val$account;
+            final /* synthetic */ String val$statusToken;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass24(Handler handler2, AccountManagerCallback callback2, Account account2, String statusToken2) {
+                super(handler2, callback2);
+                account = account2;
+                statusToken = statusToken2;
+            }
+
             @Override // android.accounts.AccountManager.BaseFutureTask
             public void doWork() throws RemoteException {
                 AccountManager.this.mService.isCredentialsUpdateSuggested(this.mResponse, account, statusToken);
@@ -1497,6 +2382,33 @@ public class AccountManager {
                 return Boolean.valueOf(bundle.getBoolean(AccountManager.KEY_BOOLEAN_RESULT));
             }
         }.start();
+    }
+
+    /* renamed from: android.accounts.AccountManager$24 */
+    /* loaded from: classes.dex */
+    class AnonymousClass24 extends Future2Task<Boolean> {
+        final /* synthetic */ Account val$account;
+        final /* synthetic */ String val$statusToken;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass24(Handler handler2, AccountManagerCallback callback2, Account account2, String statusToken2) {
+            super(handler2, callback2);
+            account = account2;
+            statusToken = statusToken2;
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public void doWork() throws RemoteException {
+            AccountManager.this.mService.isCredentialsUpdateSuggested(this.mResponse, account, statusToken);
+        }
+
+        @Override // android.accounts.AccountManager.BaseFutureTask
+        public Boolean bundleToResult(Bundle bundle) throws AuthenticatorException {
+            if (!bundle.containsKey(AccountManager.KEY_BOOLEAN_RESULT)) {
+                throw new AuthenticatorException("no result in response");
+            }
+            return Boolean.valueOf(bundle.getBoolean(AccountManager.KEY_BOOLEAN_RESULT));
+        }
     }
 
     public boolean hasAccountAccess(Account account, String packageName, UserHandle userHandle) {

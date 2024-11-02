@@ -15,7 +15,6 @@ public class FrozenAppActivity extends AlertActivity {
     private static final String PACKAGE_NAME = "com.android.internal.app";
     private static final String TAG = "FrozenAppActivity";
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.app.AlertActivity, android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

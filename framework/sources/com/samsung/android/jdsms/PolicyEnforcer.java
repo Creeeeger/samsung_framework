@@ -13,7 +13,6 @@ final class PolicyEnforcer {
     PolicyEnforcer() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static final boolean isAValidCaller() {
         if (!mCallerVerifier.wasCallerValid()) {
             DsmsLog.e("[POLICY] Unauthorized Caller");
@@ -22,7 +21,6 @@ final class PolicyEnforcer {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static final boolean isAValidUser(Context context) {
         int uid = Binder.getCallingUid();
         String callingUid = context.getPackageManager().getNameForUid(uid);

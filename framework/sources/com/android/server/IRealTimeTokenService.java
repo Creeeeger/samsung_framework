@@ -137,8 +137,9 @@ public interface IRealTimeTokenService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IRealTimeTokenService {
+        public static class Proxy implements IRealTimeTokenService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

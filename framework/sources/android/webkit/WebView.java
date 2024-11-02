@@ -995,24 +995,25 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setFindDialogFindListener(FindListener listener) {
         checkThread();
         setupFindListenerIfNeeded();
         this.mFindListener.mFindDialogFindListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyFindDialogDismissed() {
         checkThread();
         this.mProvider.notifyFindDialogDismissed();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class FindListenerDistributor implements FindListener {
         private FindListener mFindDialogFindListener;
         private FindListener mUserFindListener;
+
+        /* synthetic */ FindListenerDistributor(WebView webView, FindListenerDistributorIA findListenerDistributorIA) {
+            this();
+        }
 
         private FindListenerDistributor() {
         }
@@ -1060,14 +1061,12 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.mProvider.getViewDelegate().onAttachedToWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindowInternal() {
         this.mProvider.getViewDelegate().onDetachedFromWindow();
@@ -1097,31 +1096,26 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         super.setScrollBarStyle(style);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeHorizontalScrollRange() {
         return this.mProvider.getScrollDelegate().computeHorizontalScrollRange();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeHorizontalScrollOffset() {
         return this.mProvider.getScrollDelegate().computeHorizontalScrollOffset();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollRange() {
         return this.mProvider.getScrollDelegate().computeVerticalScrollRange();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollOffset() {
         return this.mProvider.getScrollDelegate().computeVerticalScrollOffset();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollExtent() {
         return this.mProvider.getScrollDelegate().computeVerticalScrollExtent();
@@ -1242,7 +1236,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         return this.mProvider.getViewDelegate().performAccessibilityAction(action, arguments);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDrawVerticalScrollBar(Canvas canvas, Drawable scrollBar, int l, int t, int r, int b) {
         this.mProvider.getViewDelegate().onDrawVerticalScrollBar(canvas, scrollBar, l, t, r, b);
@@ -1253,14 +1246,12 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         this.mProvider.getViewDelegate().onOverScrolled(scrollX, scrollY, clampedX, clampedY);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         this.mProvider.getViewDelegate().onWindowVisibilityChanged(visibility);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         this.mProvider.getViewDelegate().onDraw(canvas);
@@ -1271,7 +1262,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         return this.mProvider.getViewDelegate().performLongClick();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         this.mProvider.getViewDelegate().onConfigurationChanged(newConfig);
@@ -1287,7 +1277,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         return this.mProvider.getViewDelegate().onDragEvent(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
@@ -1301,20 +1290,17 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         super.onWindowFocusChanged(hasWindowFocus);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         this.mProvider.getViewDelegate().onFocusChanged(focused, direction, previouslyFocusedRect);
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int left, int top, int right, int bottom) {
         return this.mProvider.getViewDelegate().setFrame(left, top, right, bottom);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int ow, int oh) {
         super.onSizeChanged(w, h, ow, oh);
@@ -1327,7 +1313,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
@@ -1344,8 +1329,9 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         return this.mProvider.getViewDelegate().requestFocus(direction, previouslyFocusedRect);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsoluteLayout, android.view.View
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         this.mProvider.getViewDelegate().onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -1366,7 +1352,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         this.mProvider.getViewDelegate().setLayerType(layerType, paint);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         this.mProvider.getViewDelegate().preDispatchDraw(canvas);
@@ -1421,7 +1406,6 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
         return this.mProvider.getViewDelegate().onCheckIsTextEditor();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);

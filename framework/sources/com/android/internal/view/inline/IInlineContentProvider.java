@@ -111,8 +111,9 @@ public interface IInlineContentProvider extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IInlineContentProvider {
+        public static class Proxy implements IInlineContentProvider {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

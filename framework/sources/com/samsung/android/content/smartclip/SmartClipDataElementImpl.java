@@ -326,7 +326,10 @@ public class SmartClipDataElementImpl implements SemSmartClipDataElement {
         return parentCount;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0022, code lost:            return r1.mNextSibling;     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0022, code lost:
+    
+        return r1.mNextSibling;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

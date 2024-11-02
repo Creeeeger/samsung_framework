@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextCallPose extends SContextEventContext {
     public static final Parcelable.Creator<SContextCallPose> CREATOR = new Parcelable.Creator<SContextCallPose>() { // from class: android.hardware.scontext.SContextCallPose.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextCallPose createFromParcel(Parcel in) {
             return new SContextCallPose(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextCallPose[] newArray(int size) {
             return new SContextCallPose[size];
@@ -22,7 +23,6 @@ public class SContextCallPose extends SContextEventContext {
     };
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextCallPose() {
         this.mContext = new Bundle();
     }
@@ -47,5 +47,22 @@ public class SContextCallPose extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
+    }
+
+    /* renamed from: android.hardware.scontext.SContextCallPose$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextCallPose> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextCallPose createFromParcel(Parcel in) {
+            return new SContextCallPose(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextCallPose[] newArray(int size) {
+            return new SContextCallPose[size];
+        }
     }
 }

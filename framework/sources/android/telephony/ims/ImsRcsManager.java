@@ -48,12 +48,10 @@ public class ImsRcsManager {
     public @interface RcsImsCapabilityFlag {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class AvailabilityCallbackAdapter {
         private final CapabilityBinder mBinder;
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class CapabilityBinder extends IImsCapabilityCallback.Stub {
             private final Executor mExecutor;
@@ -82,7 +80,6 @@ public class ImsRcsManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onCapabilitiesStatusChanged$0(int config) {
                 this.mOnAvailabilityChangedListener.onAvailabilityChanged(config);
             }
@@ -179,7 +176,7 @@ public class ImsRcsManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsRcsManager$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.ImsRcsManager$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -233,7 +230,7 @@ public class ImsRcsManager {
         }
     }
 
-    /* renamed from: android.telephony.ims.ImsRcsManager$2, reason: invalid class name */
+    /* renamed from: android.telephony.ims.ImsRcsManager$2 */
     /* loaded from: classes3.dex */
     class AnonymousClass2 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;

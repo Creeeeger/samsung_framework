@@ -13,7 +13,6 @@ public class SContextActivityLocationLoggingAttribute extends SContextAttribute 
     private int mStopPeriod;
     private int mWaitPeriod;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextActivityLocationLoggingAttribute() {
         this.mStopPeriod = 60;
         this.mWaitPeriod = 120;

@@ -12,13 +12,14 @@ import android.util.Log;
 /* loaded from: classes3.dex */
 public final class Tile implements Parcelable {
     public static final Parcelable.Creator<Tile> CREATOR = new Parcelable.Creator<Tile>() { // from class: android.service.quicksettings.Tile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Tile createFromParcel(Parcel source) {
             return new Tile(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Tile[] newArray(int size) {
             return new Tile[size];
@@ -159,5 +160,22 @@ public final class Tile implements Parcelable {
         this.mSubtitle = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
         this.mContentDescription = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
         this.mStateDescription = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+    }
+
+    /* renamed from: android.service.quicksettings.Tile$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Tile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Tile createFromParcel(Parcel source) {
+            return new Tile(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Tile[] newArray(int size) {
+            return new Tile[size];
+        }
     }
 }

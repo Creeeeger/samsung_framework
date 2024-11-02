@@ -196,7 +196,6 @@ public class StatusBarManager {
     public @interface WindowVisibleState {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public StatusBarManager(Context context) {
         this.mContext = context;
     }
@@ -808,7 +807,6 @@ public class StatusBarManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class RequestResultCallback extends IAddTileResultCallback.Stub {
         private final Consumer<Integer> mCallback;
@@ -819,7 +817,6 @@ public class StatusBarManager {
             this.mCallback = callback;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTileRequest$0(int userResponse) {
             this.mCallback.accept(Integer.valueOf(userResponse));
         }
@@ -856,8 +853,9 @@ public class StatusBarManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    static final class NearbyMediaDevicesProviderWrapper extends INearbyMediaDevicesProvider.Stub {
+    public static final class NearbyMediaDevicesProviderWrapper extends INearbyMediaDevicesProvider.Stub {
         private final NearbyMediaDevicesProvider mProvider;
         private final Map<INearbyMediaDevicesUpdateCallback, Consumer<List<NearbyDevice>>> mRegisteredCallbacks = new HashMap();
 
@@ -877,7 +875,6 @@ public class StatusBarManager {
             this.mProvider.registerNearbyDevicesCallback(callbackAsConsumer);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$registerNearbyDevicesCallback$0(INearbyMediaDevicesUpdateCallback callback, List nearbyDevices) {
             try {
                 callback.onDevicesUpdated(nearbyDevices);

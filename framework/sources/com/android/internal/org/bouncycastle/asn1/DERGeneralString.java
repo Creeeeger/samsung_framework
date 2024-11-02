@@ -30,7 +30,6 @@ public class DERGeneralString extends ASN1Primitive implements ASN1String {
         return new DERGeneralString(ASN1OctetString.getInstance(o).getOctets());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DERGeneralString(byte[] string) {
         this.string = string;
     }
@@ -52,19 +51,16 @@ public class DERGeneralString extends ASN1Primitive implements ASN1String {
         return Arrays.clone(this.string);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() {
         return StreamUtil.calculateBodyLength(this.string.length) + 1 + this.string.length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 27, this.string);
@@ -75,7 +71,6 @@ public class DERGeneralString extends ASN1Primitive implements ASN1String {
         return Arrays.hashCode(this.string);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof DERGeneralString)) {

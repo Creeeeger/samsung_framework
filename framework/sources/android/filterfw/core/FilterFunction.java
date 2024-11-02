@@ -9,7 +9,6 @@ public class FilterFunction {
     private boolean mFilterIsSetup = false;
     private FrameHolderPort[] mResultHolders;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class FrameHolderPort extends StreamPort {
         public FrameHolderPort() {

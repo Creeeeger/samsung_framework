@@ -8,12 +8,10 @@ import com.android.internal.org.bouncycastle.math.raw.Nat384;
 
 /* loaded from: classes5.dex */
 public class SecP384R1Point extends ECPoint.AbstractFp {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SecP384R1Point(ECCurve curve, ECFieldElement x, ECFieldElement y) {
         super(curve, x, y);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SecP384R1Point(ECCurve curve, ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
         super(curve, x, y, zs);
     }

@@ -94,8 +94,9 @@ public interface IStartActivityInterceptListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IStartActivityInterceptListener {
+        public static class Proxy implements IStartActivityInterceptListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

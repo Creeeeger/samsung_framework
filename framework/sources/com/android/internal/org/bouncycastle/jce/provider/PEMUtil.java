@@ -21,7 +21,10 @@ public class PEMUtil {
         this._footer2 = "-----END X509 " + type + "-----";
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x0022, code lost:            if (r0.length() == 0) goto L27;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0022, code lost:
+    
+        if (r0.length() == 0) goto L57;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

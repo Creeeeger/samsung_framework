@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Temperature implements Parcelable {
     public static final Parcelable.Creator<Temperature> CREATOR = new Parcelable.Creator<Temperature>() { // from class: android.hardware.thermal.Temperature.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Temperature createFromParcel(Parcel _aidl_source) {
             Temperature _aidl_out = new Temperature();
@@ -17,7 +19,6 @@ public class Temperature implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Temperature[] newArray(int _aidl_size) {
             return new Temperature[_aidl_size];
@@ -27,6 +28,25 @@ public class Temperature implements Parcelable {
     public int throttlingStatus;
     public int type;
     public float value = 0.0f;
+
+    /* renamed from: android.hardware.thermal.Temperature$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Temperature> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Temperature createFromParcel(Parcel _aidl_source) {
+            Temperature _aidl_out = new Temperature();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Temperature[] newArray(int _aidl_size) {
+            return new Temperature[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

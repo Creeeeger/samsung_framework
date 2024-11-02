@@ -8,19 +8,24 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class WakeLockStats implements Parcelable {
     public static final Parcelable.Creator<WakeLockStats> CREATOR = new Parcelable.Creator<WakeLockStats>() { // from class: android.os.WakeLockStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WakeLockStats createFromParcel(Parcel in) {
             return new WakeLockStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WakeLockStats[] newArray(int size) {
             return new WakeLockStats[size];
         }
     };
     private final List<WakeLock> mWakeLocks;
+
+    /* synthetic */ WakeLockStats(Parcel parcel, WakeLockStatsIA wakeLockStatsIA) {
+        this(parcel);
+    }
 
     /* loaded from: classes3.dex */
     public static class WakeLock {
@@ -29,6 +34,10 @@ public final class WakeLockStats implements Parcelable {
         public final int timesAcquired;
         public final long totalTimeHeldMs;
         public final int uid;
+
+        /* synthetic */ WakeLock(Parcel parcel, WakeLockIA wakeLockIA) {
+            this(parcel);
+        }
 
         public WakeLock(int uid, String name, int timesAcquired, long totalTimeHeldMs, long timeHeldMs) {
             this.uid = uid;
@@ -46,7 +55,6 @@ public final class WakeLockStats implements Parcelable {
             this.timeHeldMs = in.readLong();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void writeToParcel(Parcel out) {
             out.writeInt(this.uid);
             out.writeString(this.name);
@@ -83,6 +91,23 @@ public final class WakeLockStats implements Parcelable {
         for (int i = 0; i < size; i++) {
             WakeLock stats = this.mWakeLocks.get(i);
             stats.writeToParcel(out);
+        }
+    }
+
+    /* renamed from: android.os.WakeLockStats$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WakeLockStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WakeLockStats createFromParcel(Parcel in) {
+            return new WakeLockStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WakeLockStats[] newArray(int size) {
+            return new WakeLockStats[size];
         }
     }
 

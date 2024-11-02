@@ -95,8 +95,9 @@ public interface ITvInputHardwareCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ITvInputHardwareCallback {
+        public static class Proxy implements ITvInputHardwareCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -116,8 +116,9 @@ public interface IMediaBrowserServiceCallbacks extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IMediaBrowserServiceCallbacks {
+        public static class Proxy implements IMediaBrowserServiceCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

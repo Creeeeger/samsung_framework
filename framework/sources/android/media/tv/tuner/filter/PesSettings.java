@@ -9,6 +9,10 @@ public class PesSettings extends Settings {
     private final boolean mIsRaw;
     private final int mStreamId;
 
+    /* synthetic */ PesSettings(int i, int i2, boolean z, PesSettingsIA pesSettingsIA) {
+        this(i, i2, z);
+    }
+
     private PesSettings(int mainType, int streamId, boolean isRaw) {
         super(TunerUtils.getFilterSubtype(mainType, 2));
         this.mStreamId = streamId;
@@ -32,6 +36,10 @@ public class PesSettings extends Settings {
         private boolean mIsRaw;
         private final int mMainType;
         private int mStreamId;
+
+        /* synthetic */ Builder(int i, BuilderIA builderIA) {
+            this(i);
+        }
 
         private Builder(int mainType) {
             this.mMainType = mainType;

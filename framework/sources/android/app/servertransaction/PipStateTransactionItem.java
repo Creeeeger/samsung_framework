@@ -9,19 +9,24 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class PipStateTransactionItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<PipStateTransactionItem> CREATOR = new Parcelable.Creator<PipStateTransactionItem>() { // from class: android.app.servertransaction.PipStateTransactionItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PipStateTransactionItem createFromParcel(Parcel in) {
             return new PipStateTransactionItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PipStateTransactionItem[] newArray(int size) {
             return new PipStateTransactionItem[size];
         }
     };
     private PictureInPictureUiState mPipState;
+
+    /* synthetic */ PipStateTransactionItem(Parcel parcel, PipStateTransactionItemIA pipStateTransactionItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
@@ -53,6 +58,23 @@ public final class PipStateTransactionItem extends ActivityTransactionItem {
 
     private PipStateTransactionItem(Parcel in) {
         this.mPipState = PictureInPictureUiState.CREATOR.createFromParcel(in);
+    }
+
+    /* renamed from: android.app.servertransaction.PipStateTransactionItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PipStateTransactionItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PipStateTransactionItem createFromParcel(Parcel in) {
+            return new PipStateTransactionItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PipStateTransactionItem[] newArray(int size) {
+            return new PipStateTransactionItem[size];
+        }
     }
 
     public boolean equals(Object o) {

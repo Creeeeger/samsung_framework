@@ -278,6 +278,10 @@ public class Build {
         private final String mName;
         private final long mTimeMs;
 
+        /* synthetic */ Partition(String str, String str2, long j, PartitionIA partitionIA) {
+            this(str, str2, j);
+        }
+
         private Partition(String name, String fingerprint, long timeMs) {
             this.mName = name;
             this.mFingerprint = fingerprint;
@@ -331,7 +335,6 @@ public class Build {
         return joinListOrElse(TelephonyProperties.baseband_version(), null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String getString(String property) {
         return SystemProperties.get(property, "unknown");
     }
@@ -344,7 +347,6 @@ public class Build {
         return getString(TextUtils.formatSimple("ro.product.vendor.%s", property));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String[] getStringList(String property, String separator) {
         String value = SystemProperties.get(property);
         if (value.isEmpty()) {
@@ -371,7 +373,6 @@ public class Build {
         return ret.isEmpty() ? defaultValue : ret;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$joinListOrElse$0(Object elem) {
         return elem == null ? "" : elem.toString();
     }

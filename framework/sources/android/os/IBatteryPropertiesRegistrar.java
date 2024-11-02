@@ -94,8 +94,9 @@ public interface IBatteryPropertiesRegistrar extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IBatteryPropertiesRegistrar {
+        public static class Proxy implements IBatteryPropertiesRegistrar {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

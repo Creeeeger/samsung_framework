@@ -162,8 +162,9 @@ public class IpcDataCache<Query, Result> extends PropertyInvalidatedCache<Query,
         super(config.maxEntries(), config.module(), config.api(), config.name(), computer);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class SystemServerCallHandler<Query, Result> extends QueryHandler<Query, Result> {
+    public static class SystemServerCallHandler<Query, Result> extends QueryHandler<Query, Result> {
         private final RemoteCall<Query, Result> mHandler;
 
         public SystemServerCallHandler(RemoteCall handler) {

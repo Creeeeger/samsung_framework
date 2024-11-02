@@ -53,25 +53,21 @@ public class ASN1Boolean extends ASN1Primitive {
         return this.value != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() {
         return 3;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 1, this.value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive other) {
         if (!(other instanceof ASN1Boolean)) {
@@ -86,7 +82,6 @@ public class ASN1Boolean extends ASN1Primitive {
         return isTrue() ? 1 : 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         return isTrue() ? TRUE : FALSE;
@@ -96,7 +91,6 @@ public class ASN1Boolean extends ASN1Primitive {
         return isTrue() ? "TRUE" : "FALSE";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1Boolean fromOctetString(byte[] value) {
         if (value.length != 1) {
             throw new IllegalArgumentException("BOOLEAN value should have 1 byte in it");

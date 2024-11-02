@@ -47,7 +47,6 @@ public final class MediaSync {
 
     private final native void native_flush();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final native long native_getPlayTimeForPendingAudioFrames();
 
     private final native boolean native_getTimestamp(MediaTimestamp mediaTimestamp);
@@ -66,7 +65,6 @@ public final class MediaSync {
 
     private final native void native_setup();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final native void native_updateQueuedAudioData(int i, long j);
 
     public final native Surface createInputSurface();
@@ -75,7 +73,6 @@ public final class MediaSync {
 
     public native SyncParams getSyncParams();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class AudioBuffer {
         public int mBufferIndex;
@@ -219,9 +216,56 @@ public final class MediaSync {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.media.MediaSync$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (MediaSync.this.mAudioLock) {
+                if (MediaSync.this.mPlaybackRate == SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) {
+                    return;
+                }
+                if (MediaSync.this.mAudioBuffers.isEmpty()) {
+                    return;
+                }
+                AudioBuffer audioBuffer = (AudioBuffer) MediaSync.this.mAudioBuffers.get(0);
+                int size = audioBuffer.mByteBuffer.remaining();
+                if (size > 0 && MediaSync.this.mAudioTrack.getPlayState() != 3) {
+                    try {
+                        MediaSync.this.mAudioTrack.play();
+                    } catch (IllegalStateException e) {
+                        Log.w(MediaSync.TAG, "could not start audio track");
+                    }
+                }
+                int sizeWritten = MediaSync.this.mAudioTrack.write(audioBuffer.mByteBuffer, size, 1);
+                if (sizeWritten > 0) {
+                    if (audioBuffer.mPresentationTimeUs != -1) {
+                        MediaSync.this.native_updateQueuedAudioData(size, audioBuffer.mPresentationTimeUs);
+                        audioBuffer.mPresentationTimeUs = -1L;
+                    }
+                    if (sizeWritten == size) {
+                        MediaSync.this.postReturnByteBuffer(audioBuffer);
+                        MediaSync.this.mAudioBuffers.remove(0);
+                        if (!MediaSync.this.mAudioBuffers.isEmpty()) {
+                            MediaSync.this.postRenderAudio(0L);
+                        }
+                        return;
+                    }
+                }
+                long pendingTimeMs = TimeUnit.MICROSECONDS.toMillis(MediaSync.this.native_getPlayTimeForPendingAudioFrames());
+                MediaSync.this.postRenderAudio(pendingTimeMs / 2);
+            }
+        }
+    }
+
     public void postRenderAudio(long delayMillis) {
         this.mAudioHandler.postDelayed(new Runnable() { // from class: android.media.MediaSync.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 synchronized (MediaSync.this.mAudioLock) {
@@ -262,12 +306,19 @@ public final class MediaSync {
         }, delayMillis);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public final void postReturnByteBuffer(final AudioBuffer audioBuffer) {
+    public final void postReturnByteBuffer(AudioBuffer audioBuffer) {
         synchronized (this.mCallbackLock) {
             Handler handler = this.mCallbackHandler;
             if (handler != null) {
                 handler.post(new Runnable() { // from class: android.media.MediaSync.2
+                    final /* synthetic */ AudioBuffer val$audioBuffer;
+                    final /* synthetic */ MediaSync val$sync;
+
+                    AnonymousClass2(MediaSync this, AudioBuffer audioBuffer2) {
+                        sync = sync;
+                        audioBuffer = audioBuffer2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         synchronized (MediaSync.this.mCallbackLock) {
@@ -284,6 +335,30 @@ public final class MediaSync {
         }
     }
 
+    /* renamed from: android.media.MediaSync$2 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ AudioBuffer val$audioBuffer;
+        final /* synthetic */ MediaSync val$sync;
+
+        AnonymousClass2(MediaSync this, AudioBuffer audioBuffer2) {
+            sync = sync;
+            audioBuffer = audioBuffer2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (MediaSync.this.mCallbackLock) {
+                Callback callback = MediaSync.this.mCallback;
+                if (MediaSync.this.mCallbackHandler != null && MediaSync.this.mCallbackHandler.getLooper().getThread() == Thread.currentThread()) {
+                    if (callback != null) {
+                        callback.onAudioBufferConsumed(sync, audioBuffer.mByteBuffer, audioBuffer.mBufferIndex);
+                    }
+                }
+            }
+        }
+    }
+
     private final void returnAudioBuffers() {
         synchronized (this.mAudioLock) {
             for (AudioBuffer audioBuffer : this.mAudioBuffers) {
@@ -293,8 +368,29 @@ public final class MediaSync {
         }
     }
 
+    /* renamed from: android.media.MediaSync$3 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass3 extends Thread {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public void run() {
+            Looper.prepare();
+            synchronized (MediaSync.this.mAudioLock) {
+                MediaSync.this.mAudioLooper = Looper.myLooper();
+                MediaSync.this.mAudioHandler = new Handler();
+                MediaSync.this.mAudioLock.notify();
+            }
+            Looper.loop();
+        }
+    }
+
     private void createAudioThread() {
-        Thread thread = new Thread() { // from class: android.media.MediaSync.3
+        AnonymousClass3 anonymousClass3 = new Thread() { // from class: android.media.MediaSync.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 Looper.prepare();
@@ -306,8 +402,8 @@ public final class MediaSync {
                 Looper.loop();
             }
         };
-        this.mAudioThread = thread;
-        thread.start();
+        this.mAudioThread = anonymousClass3;
+        anonymousClass3.start();
         synchronized (this.mAudioLock) {
             try {
                 this.mAudioLock.wait();

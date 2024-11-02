@@ -7,7 +7,6 @@ import android.provider.Settings;
 
 /* loaded from: classes.dex */
 public class AppDetailsActivity extends Activity {
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

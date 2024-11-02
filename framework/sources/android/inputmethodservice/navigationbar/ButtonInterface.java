@@ -2,11 +2,13 @@ package android.inputmethodservice.navigationbar;
 
 import android.graphics.drawable.Drawable;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-interface ButtonInterface {
+public interface ButtonInterface {
     void setDarkIntensity(float f);
 
     void setDelayTouchFeedback(boolean z);
 
-    void setImageDrawable(Drawable drawable);
+    /* renamed from: setImageDrawable */
+    void lambda$setImageURIAsync$2(Drawable drawable);
 }

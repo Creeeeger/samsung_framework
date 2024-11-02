@@ -19,13 +19,14 @@ public final class RecognitionPart implements Parcelable {
     public static final int CONFIDENCE_LEVEL_MEDIUM_LOW = 2;
     public static final int CONFIDENCE_LEVEL_UNKNOWN = 0;
     public static final Parcelable.Creator<RecognitionPart> CREATOR = new Parcelable.Creator<RecognitionPart>() { // from class: android.speech.RecognitionPart.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RecognitionPart[] newArray(int size) {
             return new RecognitionPart[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionPart createFromParcel(Parcel in) {
             return new RecognitionPart(in);
@@ -41,18 +42,18 @@ public final class RecognitionPart implements Parcelable {
     public @interface ConfidenceLevel {
     }
 
-    /* renamed from: -$$Nest$smdefaultConfidenceLevel, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m4048$$Nest$smdefaultConfidenceLevel() {
+    /* renamed from: -$$Nest$smdefaultConfidenceLevel */
+    static /* bridge */ /* synthetic */ int m4047$$Nest$smdefaultConfidenceLevel() {
         return defaultConfidenceLevel();
     }
 
-    /* renamed from: -$$Nest$smdefaultFormattedText, reason: not valid java name */
-    static /* bridge */ /* synthetic */ String m4049$$Nest$smdefaultFormattedText() {
+    /* renamed from: -$$Nest$smdefaultFormattedText */
+    static /* bridge */ /* synthetic */ String m4048$$Nest$smdefaultFormattedText() {
         return defaultFormattedText();
     }
 
-    /* renamed from: -$$Nest$smdefaultTimestampMillis, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m4050$$Nest$smdefaultTimestampMillis() {
+    /* renamed from: -$$Nest$smdefaultTimestampMillis */
+    static /* bridge */ /* synthetic */ long m4049$$Nest$smdefaultTimestampMillis() {
         return defaultTimestampMillis();
     }
 
@@ -192,6 +193,23 @@ public final class RecognitionPart implements Parcelable {
         onConstructed();
     }
 
+    /* renamed from: android.speech.RecognitionPart$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RecognitionPart> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RecognitionPart[] newArray(int size) {
+            return new RecognitionPart[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RecognitionPart createFromParcel(Parcel in) {
+            return new RecognitionPart(in);
+        }
+    }
+
     /* loaded from: classes3.dex */
     public static final class Builder extends BaseBuilder {
         private long mBuilderFieldsSet = 0;
@@ -236,19 +254,18 @@ public final class RecognitionPart implements Parcelable {
             long j = this.mBuilderFieldsSet | 16;
             this.mBuilderFieldsSet = j;
             if ((j & 2) == 0) {
-                this.mFormattedText = RecognitionPart.m4049$$Nest$smdefaultFormattedText();
+                this.mFormattedText = RecognitionPart.m4048$$Nest$smdefaultFormattedText();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mTimestampMillis = RecognitionPart.m4050$$Nest$smdefaultTimestampMillis();
+                this.mTimestampMillis = RecognitionPart.m4049$$Nest$smdefaultTimestampMillis();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mConfidenceLevel = RecognitionPart.m4048$$Nest$smdefaultConfidenceLevel();
+                this.mConfidenceLevel = RecognitionPart.m4047$$Nest$smdefaultConfidenceLevel();
             }
             RecognitionPart o = new RecognitionPart(this.mRawText, this.mFormattedText, this.mTimestampMillis, this.mConfidenceLevel);
             return o;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void checkNotUsed() {
             if ((this.mBuilderFieldsSet & 16) != 0) {
                 throw new IllegalStateException("This Builder should not be reused. Use a new Builder instance instead");

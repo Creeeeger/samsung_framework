@@ -296,16 +296,45 @@ public class NetworkPolicyManager {
         }
     }
 
+    /* renamed from: android.net.NetworkPolicyManager$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Iterator<Pair<ZonedDateTime, ZonedDateTime>> {
+        final /* synthetic */ Iterator val$it;
+
+        AnonymousClass1(Iterator it) {
+            it = it;
+        }
+
+        @Override // java.util.Iterator
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override // java.util.Iterator
+        public Pair<ZonedDateTime, ZonedDateTime> next() {
+            if (hasNext()) {
+                Range<ZonedDateTime> r = (Range) it.next();
+                return Pair.create(r.getLower(), r.getUpper());
+            }
+            return Pair.create(null, null);
+        }
+    }
+
     @Deprecated
     public static Iterator<Pair<ZonedDateTime, ZonedDateTime>> cycleIterator(NetworkPolicy policy) {
-        final Iterator<Range<ZonedDateTime>> it = policy.cycleIterator();
+        Iterator<Range<ZonedDateTime>> it = policy.cycleIterator();
         return new Iterator<Pair<ZonedDateTime, ZonedDateTime>>() { // from class: android.net.NetworkPolicyManager.1
+            final /* synthetic */ Iterator val$it;
+
+            AnonymousClass1(Iterator it2) {
+                it = it2;
+            }
+
             @Override // java.util.Iterator
             public boolean hasNext() {
                 return it.hasNext();
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.util.Iterator
             public Pair<ZonedDateTime, ZonedDateTime> next() {
                 if (hasNext()) {
@@ -484,7 +513,6 @@ public class NetworkPolicyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void dispatchOnUidBlockedReasonChanged(Executor executor, NetworkPolicyCallback callback, int uid, int blockedReasons) {
         if (executor == null) {
             callback.onUidBlockedReasonChanged(uid, blockedReasons);

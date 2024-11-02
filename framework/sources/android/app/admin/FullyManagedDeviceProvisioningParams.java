@@ -14,7 +14,9 @@ import java.util.Objects;
 public final class FullyManagedDeviceProvisioningParams implements Parcelable {
     private static final String CAN_DEVICE_OWNER_GRANT_SENSOR_PERMISSIONS_PARAM = "CAN_DEVICE_OWNER_GRANT_SENSOR_PERMISSIONS";
     public static final Parcelable.Creator<FullyManagedDeviceProvisioningParams> CREATOR = new Parcelable.Creator<FullyManagedDeviceProvisioningParams>() { // from class: android.app.admin.FullyManagedDeviceProvisioningParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FullyManagedDeviceProvisioningParams createFromParcel(Parcel in) {
             ComponentName componentName = (ComponentName) in.readTypedObject(ComponentName.CREATOR);
@@ -29,7 +31,6 @@ public final class FullyManagedDeviceProvisioningParams implements Parcelable {
             return new FullyManagedDeviceProvisioningParams(componentName, ownerName, leaveAllSystemAppsEnabled, timeZone, localtime, locale, deviceOwnerCanGrantSensorsPermissions, adminExtras, demoDevice);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FullyManagedDeviceProvisioningParams[] newArray(int size) {
             return new FullyManagedDeviceProvisioningParams[size];
@@ -48,6 +49,14 @@ public final class FullyManagedDeviceProvisioningParams implements Parcelable {
     private final Locale mLocale;
     private final String mOwnerName;
     private final String mTimeZone;
+
+    /* synthetic */ FullyManagedDeviceProvisioningParams(ComponentName componentName, String str, boolean z, String str2, long j, String str3, boolean z2, PersistableBundle persistableBundle, boolean z3, FullyManagedDeviceProvisioningParamsIA fullyManagedDeviceProvisioningParamsIA) {
+        this(componentName, str, z, str2, j, str3, z2, persistableBundle, z3);
+    }
+
+    /* synthetic */ FullyManagedDeviceProvisioningParams(ComponentName componentName, String str, boolean z, String str2, long j, Locale locale, boolean z2, PersistableBundle persistableBundle, boolean z3, FullyManagedDeviceProvisioningParamsIA fullyManagedDeviceProvisioningParamsIA) {
+        this(componentName, str, z, str2, j, locale, z2, persistableBundle, z3);
+    }
 
     private FullyManagedDeviceProvisioningParams(ComponentName deviceAdminComponentName, String ownerName, boolean leaveAllSystemAppsEnabled, String timeZone, long localTime, Locale locale, boolean deviceOwnerCanGrantSensorsPermissions, PersistableBundle adminExtras, boolean demoDevice) {
         this.mDeviceAdminComponentName = (ComponentName) Objects.requireNonNull(deviceAdminComponentName);
@@ -227,5 +236,31 @@ public final class FullyManagedDeviceProvisioningParams implements Parcelable {
         dest.writeBoolean(this.mDeviceOwnerCanGrantSensorsPermissions);
         dest.writePersistableBundle(this.mAdminExtras);
         dest.writeBoolean(this.mDemoDevice);
+    }
+
+    /* renamed from: android.app.admin.FullyManagedDeviceProvisioningParams$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FullyManagedDeviceProvisioningParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FullyManagedDeviceProvisioningParams createFromParcel(Parcel in) {
+            ComponentName componentName = (ComponentName) in.readTypedObject(ComponentName.CREATOR);
+            String ownerName = in.readString();
+            boolean leaveAllSystemAppsEnabled = in.readBoolean();
+            String timeZone = in.readString();
+            long localtime = in.readLong();
+            String locale = in.readString();
+            boolean deviceOwnerCanGrantSensorsPermissions = in.readBoolean();
+            PersistableBundle adminExtras = in.readPersistableBundle();
+            boolean demoDevice = in.readBoolean();
+            return new FullyManagedDeviceProvisioningParams(componentName, ownerName, leaveAllSystemAppsEnabled, timeZone, localtime, locale, deviceOwnerCanGrantSensorsPermissions, adminExtras, demoDevice);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FullyManagedDeviceProvisioningParams[] newArray(int size) {
+            return new FullyManagedDeviceProvisioningParams[size];
+        }
     }
 }

@@ -55,6 +55,10 @@ public abstract class AugmentedAutofillService extends Service {
 
     /* loaded from: classes3.dex */
     private final class AugmentedAutofillServiceImpl extends IAugmentedAutofillService.Stub {
+        /* synthetic */ AugmentedAutofillServiceImpl(AugmentedAutofillService augmentedAutofillService, AugmentedAutofillServiceImplIA augmentedAutofillServiceImplIA) {
+            this();
+        }
+
         private AugmentedAutofillServiceImpl() {
         }
 
@@ -149,7 +153,6 @@ public abstract class AugmentedAutofillService extends Service {
     public void onDisconnected() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnConnected(boolean debug, boolean verbose) {
         if (sDebug || debug) {
             Log.d(TAG, "handleOnConnected(): debug=" + debug + ", verbose=" + verbose);
@@ -159,12 +162,10 @@ public abstract class AugmentedAutofillService extends Service {
         onConnected();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnDisconnected() {
         onDisconnected();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnFillRequest(int sessionId, IBinder client, int taskId, ComponentName componentName, AutofillId focusedId, AutofillValue focusedValue, long requestTime, InlineSuggestionsRequest inlineSuggestionsRequest, IFillCallback callback) {
         ICancellationSignal transport;
         IFillCallback iFillCallback;
@@ -202,7 +203,6 @@ public abstract class AugmentedAutofillService extends Service {
         onFillRequest(new FillRequest(proxy, inlineSuggestionsRequest), cancellationSignal, new FillController(proxy), new FillCallback(proxy));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnDestroyAllFillWindowsRequest() {
         SparseArray<AutofillProxy> sparseArray = this.mAutofillProxies;
         if (sparseArray != null) {
@@ -230,7 +230,6 @@ public abstract class AugmentedAutofillService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnUnbind() {
         SparseArray<AutofillProxy> sparseArray = this.mAutofillProxies;
         if (sparseArray == null) {
@@ -256,7 +255,6 @@ public abstract class AugmentedAutofillService extends Service {
         this.mAutofillProxyForLastRequest = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public final void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.print("Service component: ");
@@ -292,7 +290,6 @@ public abstract class AugmentedAutofillService extends Service {
         return afm.getFillEventHistory();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static final class AutofillProxy {
         static final int REPORT_EVENT_INLINE_RESPONSE = 4;
@@ -321,6 +318,10 @@ public abstract class AugmentedAutofillService extends Service {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes3.dex */
         @interface ReportEvent {
+        }
+
+        /* synthetic */ AutofillProxy(int i, IBinder iBinder, int i2, ComponentName componentName, ComponentName componentName2, AutofillId autofillId, AutofillValue autofillValue, long j, IFillCallback iFillCallback, CancellationSignal cancellationSignal, AutofillProxyIA autofillProxyIA) {
+            this(i, iBinder, i2, componentName, componentName2, autofillId, autofillValue, j, iFillCallback, cancellationSignal);
         }
 
         private AutofillProxy(int sessionId, IBinder client, int taskId, ComponentName serviceComponentName, ComponentName componentName, AutofillId focusedId, AutofillValue focusedValue, long requestTime, IFillCallback callback, CancellationSignal cancellationSignal) {
@@ -406,12 +407,10 @@ public abstract class AugmentedAutofillService extends Service {
             this.mClient.requestHideFillUi(this.mSessionId, this.mFocusedId);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean requestAutofill() throws RemoteException {
             return this.mClient.requestAutofill(this.mSessionId, this.mFocusedId);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void update(AutofillId focusedId, AutofillValue focusedValue, IFillCallback callback, CancellationSignal cancellationSignal) {
             synchronized (this.mLock) {
                 this.mFocusedId = focusedId;
@@ -449,7 +448,6 @@ public abstract class AugmentedAutofillService extends Service {
             return autofillValue;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void reportResult(List<Dataset> inlineSuggestionsData, Bundle clientState, boolean showingFillWindow) {
             try {
                 this.mCallback.onSuccess(inlineSuggestionsData, clientState, showingFillWindow);
@@ -477,7 +475,6 @@ public abstract class AugmentedAutofillService extends Service {
             return viewNode;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void logEvent(int event) {
             if (AugmentedAutofillService.sVerbose) {
                 Log.v(AugmentedAutofillService.TAG, "returnAndLogResult(): " + event);
@@ -602,7 +599,6 @@ public abstract class AugmentedAutofillService extends Service {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void destroy() {
             synchronized (this.mLock) {
                 if (this.mFillWindow != null) {

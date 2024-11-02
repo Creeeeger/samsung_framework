@@ -77,8 +77,8 @@ public class LocaleStore {
     private static final ConcurrentHashMap<String, LocaleInfo> sLocaleCache = new ConcurrentHashMap<>();
     private static volatile int sPreIsDIDLocaleOn = 0;
 
-    /* renamed from: -$$Nest$smisChina, reason: not valid java name */
-    static /* bridge */ /* synthetic */ boolean m7106$$Nest$smisChina() {
+    /* renamed from: -$$Nest$smisChina */
+    static /* bridge */ /* synthetic */ boolean m7101$$Nest$smisChina() {
         return isChina();
     }
 
@@ -117,6 +117,18 @@ public class LocaleStore {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes4.dex */
         public @interface SuggestionType {
+        }
+
+        /* synthetic */ LocaleInfo(LocaleInfo localeInfo, LocaleInfoIA localeInfoIA) {
+            this(localeInfo);
+        }
+
+        /* synthetic */ LocaleInfo(String str, LocaleInfoIA localeInfoIA) {
+            this(str);
+        }
+
+        /* synthetic */ LocaleInfo(Locale locale, LocaleInfoIA localeInfoIA) {
+            this(locale);
         }
 
         private LocaleInfo(Locale locale) {
@@ -185,7 +197,6 @@ public class LocaleStore {
             this.mIsTranslated = isTranslated;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isSuggested() {
             if (!this.mIsTranslated) {
                 return false;
@@ -197,22 +208,18 @@ public class LocaleStore {
             return (i == 0 || i == 16 || i == 18) ? false : true;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isSecSuggested() {
             return ((this.mSuggestionFlags & 16) == 0 || isSuggested()) ? false : true;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isSecXmlSuggested() {
             return (this.mSuggestionFlags & 32) != 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean isPriorityLocale() {
             return this.mIsPriorityLocale;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean isSuggestionOfType(int suggestionMask) {
             return this.mIsTranslated && (this.mSuggestionFlags & suggestionMask) == suggestionMask;
         }
@@ -227,7 +234,7 @@ public class LocaleStore {
         public String getSecFullNameNative() {
             String id = this.mLocale.toString();
             String country = this.mLocale.getCountry();
-            if (!LocaleStore.m7106$$Nest$smisChina() && LocaleStore.LANGUAGE_NAME_CHINESE.equals(id) && LocaleStore.COUNTRY_NAME_CHINESE.equals(country)) {
+            if (!LocaleStore.m7101$$Nest$smisChina() && LocaleStore.LANGUAGE_NAME_CHINESE.equals(id) && LocaleStore.COUNTRY_NAME_CHINESE.equals(country)) {
                 return "简体中文(中国大陆)";
             }
             return getFullNameNative();
@@ -294,7 +301,6 @@ public class LocaleStore {
             this.mIsSelected = selected;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public String getLangScriptKey() {
             String languageTag;
             if (this.mLangScriptKey == null) {
@@ -310,26 +316,22 @@ public class LocaleStore {
             return this.mLangScriptKey;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String getLabel(boolean countryMode) {
             return getLabel(countryMode, 0);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String getLabel(boolean countryMode, int changeDisplayName) {
-            if ((changeDisplayName & 1) != 0 && !LocaleStore.m7106$$Nest$smisChina() && countryMode && LocaleStore.LANGUAGE_NAME_CHINESE.equals(this.mLocale.toString()) && LocaleStore.COUNTRY_NAME_CHINESE.equals(this.mLocale.getCountry())) {
+            if ((changeDisplayName & 1) != 0 && !LocaleStore.m7101$$Nest$smisChina() && countryMode && LocaleStore.LANGUAGE_NAME_CHINESE.equals(this.mLocale.toString()) && LocaleStore.COUNTRY_NAME_CHINESE.equals(this.mLocale.getCountry())) {
                 return LocaleStore.FULLNAME_REGION_CHINESE;
             }
             return countryMode ? getFullCountryNameNative() : getFullNameNative();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String getNumberingSystem() {
             Locale locale = this.mLocale;
             return LocaleHelper.getDisplayNumberingSystemKeyValue(locale, locale);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String getContentDescription(boolean countryMode) {
             if (countryMode) {
                 return getFullCountryNameInUiLanguage();
@@ -678,12 +680,12 @@ public class LocaleStore {
             if (r0 != 0) goto L74
             boolean r14 = r3.contains(r13)
             if (r14 == 0) goto L6d
-            int r14 = com.android.internal.app.LocaleStore.LocaleInfo.m7110$$Nest$fgetmSuggestionFlags(r11)
+            int r14 = com.android.internal.app.LocaleStore.LocaleInfo.m7105$$Nest$fgetmSuggestionFlags(r11)
             r14 = r14 | r7
-            com.android.internal.app.LocaleStore.LocaleInfo.m7114$$Nest$fputmSuggestionFlags(r11, r14)
-            int r14 = com.android.internal.app.LocaleStore.LocaleInfo.m7110$$Nest$fgetmSuggestionFlags(r11)
+            com.android.internal.app.LocaleStore.LocaleInfo.m7109$$Nest$fputmSuggestionFlags(r11, r14)
+            int r14 = com.android.internal.app.LocaleStore.LocaleInfo.m7105$$Nest$fgetmSuggestionFlags(r11)
             r14 = r14 | 32
-            com.android.internal.app.LocaleStore.LocaleInfo.m7114$$Nest$fputmSuggestionFlags(r11, r14)
+            com.android.internal.app.LocaleStore.LocaleInfo.m7109$$Nest$fputmSuggestionFlags(r11, r14)
         L6d:
             boolean r14 = r2.contains(r13)
             if (r14 == 0) goto L7b
@@ -698,9 +700,9 @@ public class LocaleStore {
             java.lang.String r14 = r14.getCountry()
             boolean r14 = r8.contains(r14)
             if (r14 == 0) goto L91
-            int r14 = com.android.internal.app.LocaleStore.LocaleInfo.m7110$$Nest$fgetmSuggestionFlags(r11)
+            int r14 = com.android.internal.app.LocaleStore.LocaleInfo.m7105$$Nest$fgetmSuggestionFlags(r11)
             r14 = r14 | r7
-            com.android.internal.app.LocaleStore.LocaleInfo.m7114$$Nest$fputmSuggestionFlags(r11, r14)
+            com.android.internal.app.LocaleStore.LocaleInfo.m7109$$Nest$fputmSuggestionFlags(r11, r14)
         L91:
             java.util.concurrent.ConcurrentHashMap<java.lang.String, com.android.internal.app.LocaleStore$LocaleInfo> r14 = com.android.internal.app.LocaleStore.sLocaleCache
             r14.put(r13, r11)
@@ -874,7 +876,6 @@ public class LocaleStore {
         return result3;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Locale getLocaleWithOnlyNumberingSystem(Locale locale) {
         return new Locale.Builder().setLocale(locale.stripExtensions()).setUnicodeLocaleKeyword("nu", locale.getUnicodeLocaleType("nu")).build();
     }

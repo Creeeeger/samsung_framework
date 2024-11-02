@@ -384,12 +384,12 @@ Atlasītās funkcijas varat mainīt šeit: Iestatījumi > Pieejamība."</string
     <string name="allow_settings_changes">Drošības politika neļauj mainīt iestatījumus.</string>
     <string name="alwaysUse">Pēc noklusējuma izmantot šai darbībai.</string>
     <string name="android_preparing_apk">Notiek lietotnes %1$s sagatavošana.</string>
-    <string name="android_start_title">Notiek tālruņa palaišana…</string>
+    <string name="android_start_title">Notiek planšetdatora palaišana…</string>
     <string name="android_system_label">Android sistēma</string>
     <string name="android_upgrading_complete">Tiek pabeigta sāknēšana.</string>
     <string name="android_upgrading_notification_title">Notiek sistēmas atjauninājuma pabeigšana</string>
     <string name="android_upgrading_starting_apps">Notiek lietotņu palaišana.</string>
-    <string name="android_upgrading_title">Notiek tālruņa atjaunināšana…</string>
+    <string name="android_upgrading_title">Notiek planšetdatora atjaunināšana…</string>
     <string name="anr_activity_application">%2$s nereaģē</string>
     <string name="anr_activity_process">%1$s nereaģē</string>
     <string name="anr_application_process">%1$s nereaģē</string>
@@ -423,16 +423,16 @@ Atlasītās funkcijas varat mainīt šeit: Iestatījumi > Pieejamība."</string
     <string name="app_restricted_message_concentration_mode">Koncentrēšanās režīmā programma %s ir bloķēta. Lai uzzinātu vairāk, sazinieties ar savu IT administratoru.</string>
     <string name="app_running_notification_text">Pieskarieties, lai iegūtu plašāku informāciju vai apturētu lietotnes darbību.</string>
     <string name="app_running_notification_title">%1$s darbojas</string>
-    <string name="app_streaming_blocked_message">Šajā ierīcē (%1$s) pašlaik nevar piekļūt šai lietotnei. Mēģiniet tai piekļūt savā tālrunī.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Šī lietotne pieprasa papildu drošību. Mēģiniet tai piekļūt savā tālrunī.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Ierīcē %1$s nevar piekļūt šai funkcijai. Mēģiniet tai piekļūt tālrunī.</string>
+    <string name="app_streaming_blocked_message">Šajā ierīcē (%1$s) pašlaik nevar piekļūt šai lietotnei. Mēģiniet tai piekļūt savā planšetdatorā.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Šī lietotne pieprasa papildu drošību. Mēģiniet tai piekļūt savā planšetdatorā.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Šajā ierīcē (%1$s) nevar piekļūt tālvadībai. Mēģiniet tai piekļūt savā planšetdatorā.</string>
     <string name="app_streaming_blocked_title">%1$s nav pieejams</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera nav pieejama</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Turpiniet tālrunī</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofons nav pieejams</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Nepieciešama atļauja</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play veikals nav pieejams</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Tālruņa iestatījumi nav pieejami</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Planšetdatora iestatījumi nav pieejami</string>
     <string name="app_suspended_default_message">%1$s pašlaik nav pieejama. Šo darbību pārvalda %2$s.</string>
     <string name="app_suspended_more_details">Uzzināt vairāk</string>
     <string name="app_suspended_title">Lietotne nav pieejama</string>
@@ -503,7 +503,7 @@ Ja tomēr vēlaties instalēt šo programmu, pārliecinieties, vai to nodrošina
     <string name="badPuk">Ievadītais PUK kods nav pareizs.</string>
     <string name="badPuk2">Ievadītais PUK2 kods nav pareizs</string>
     <string name="batt_cooldown_mode_ok">Labi</string>
-    <string name="battery_saver_charged_notification_summary">Tālruņa uzlādes līmenis ir pietiekams. Funkcijas vairs netiek ierobežotas.</string>
+    <string name="battery_saver_charged_notification_summary">Planšetdatora uzlādes līmenis ir pietiekams. Funkcijas vairs netiek ierobežotas.</string>
     <string name="battery_saver_description">Akumulatora enerģijas taupīšanas režīmā tiek ieslēgts tumšais motīvs un tiek ierobežotas vai izslēgtas darbības fonā, daži vizuālie efekti, noteiktas funkcijas un noteikti tīkla savienojumi.</string>
     <string name="battery_saver_description_with_learn_more">Akumulatora enerģijas taupīšanas režīmā tiek ieslēgts tumšais motīvs un tiek ierobežotas vai izslēgtas darbības fonā, daži vizuālie efekti, noteiktas funkcijas un noteikti tīkla savienojumi.</string>
     <string name="battery_saver_notification_channel_name">Akumulatora enerģijas taupīšanas režīms</string>
@@ -733,7 +733,7 @@ Austiņu skaļums ir lielāks, nekā ieteicams, tādējādi jums var pasliktinā
     <string name="decline">Noraidīt</string>
     <string name="decline_remote_bugreport_action">NORAIDĪT</string>
     <string name="default_audio_route_category_name">Sistēma</string>
-    <string name="default_audio_route_name">Tālrunis</string>
+    <string name="default_audio_route_name">Planšetdators</string>
     <string name="default_audio_route_name_dock_speakers">Doka skaļruņi</string>
     <string name="default_audio_route_name_external_device">Ārēja ierīce</string>
     <string name="default_audio_route_name_headphones">Austiņas</string>
@@ -860,7 +860,7 @@ izmantojot %s"</string>
     <string name="emergency_call_dialog_number_for_display">Ārkārtas numurs</string>
     <string name="emergency_calls_only">Tikai ārkārtas zvani</string>
     <string name="enablePin">Neizdevās. Iespējojiet SIM/RUIM bloķēšanu.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s vēlas iespējot funkciju “Atklāt pieskaroties”. Kad ir ieslēgta funkcija “Atklāt pieskaroties”, var dzirdēt vai redzēt tā vienuma aprakstu, virs kura atrodas pirksts, vai veikt žestus, lai mijiedarbotos ar tālruni.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s vēlas iespējot funkciju “Atklāt pieskaroties”. Kad ir ieslēgta funkcija “Atklāt pieskaroties”, var dzirdēt vai redzēt tā vienuma aprakstu, virs kura atrodas pirksts, vai veikt žestus, lai mijiedarbotos ar planšetdatoru.</string>
     <string name="enable_explore_by_touch_warning_title">Vai iesp. “Pārlūkot pieskaroties”?</string>
     <string name="error_message_change_not_allowed">Jūsu administrators neļauj veikt šīs izmaiņas.</string>
     <string name="error_message_title">Kļūda</string>
@@ -924,7 +924,7 @@ izmantojot %s"</string>
     <string name="ext_media_unsupported_notification_message">Šī ierīce neatbalsta šo %s. Pieskarieties, lai iestatītu atbalstītā formātā.</string>
     <string name="ext_media_unsupported_notification_title">Neatbalstīta %s</string>
     <string name="ext_storage_bad_removal_button">Restartēt</string>
-    <string name="ext_storage_bad_removal_title">Restartējiet tālruni</string>
+    <string name="ext_storage_bad_removal_title">Restartējiet planšetdatoru</string>
     <string name="extmedia_format_button_format">Formāts</string>
     <string name="extmedia_format_message">Visi jūsu kartes dati tiks zaudēti.</string>
     <string name="extmedia_format_message_usbhost">Visi USB atmiņā saglabātie faili tiks dzēsti. Šo darbību nevar atsaukt.</string>
@@ -1128,7 +1128,7 @@ Mēģiniet viegli pieskarties, iestatot pirksta nospiedumu."</string>
     <string name="global_action_toggle_sealed_mode">Slēgtais režīms</string>
     <string name="global_action_toggle_silent_mode">Klusuma režīms</string>
     <string name="global_action_voice_assist">Balss palīgs</string>
-    <string name="global_actions">Tālruņa opcijas</string>
+    <string name="global_actions">Planšetdatora opcijas</string>
     <string name="global_actions_airplane_mode_off_status">Lidojuma režīms ir IZSLĒGTS.</string>
     <string name="global_actions_airplane_mode_on_status">Lidojuma režīms ir IESLĒGTS.</string>
     <string name="global_actions_toggle_airplane_mode">Lidojuma režīms</string>
@@ -1313,11 +1313,11 @@ Vai tiešām vēlaties pamest šo lapu?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Pieskar., lai ievadītu paroli&lt;/font>.</string>
     <string name="keyguard_password_wrong_pin_code">PIN kods nav pareizs.</string>
     <string name="kg_enter_confirm_pin_hint">Apstipriniet vēlamo PIN.</string>
-    <string name="kg_failed_attempts_almost_at_login">"Jūs nepareizi norādījāt atbloķēšanas kombināciju %1$d reizes. Pēc vēl %2$d neveiksmīgiem mēģinājumiem tālrunis būs jāatbloķē, izmantojot e-pasta kontu.
+    <string name="kg_failed_attempts_almost_at_login">"Jūs nepareizi norādījāt atbloķēšanas kombināciju %1$d reizes. Pēc vēl %2$d neveiksmīgiem mēģinājumiem planšetdators būs jāatbloķē, izmantojot e-pasta kontu.
 
 Mēģiniet vēlreiz pēc %3$d sekundēm."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Jūs nepareizi veicāt tālruņa atbloķēšanu %1$d reizes. Pēc vēl %2$d neveiksmīgiem mēģinājumiem tālrunī tiks atiestatīti rūpnīcas noklusējuma iestatījumi un lietotāja dati tiks zaudēti.</string>
-    <string name="kg_failed_attempts_now_wiping">Jūs nepareizi veicāt tālruņa atbloķēšanu %d reizes. Tālrunī tiks atiestatīti rūpnīcas noklusējuma iestatījumi.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Jūs nepareizi veicāt planšetdatora atbloķēšanu %1$d reizes. Pēc vēl %2$d neveiksmīgiem mēģinājumiem planšetdatorā tiks atiestatīti rūpnīcas noklusējuma iestatījumi un lietotāja dati tiks zaudēti.</string>
+    <string name="kg_failed_attempts_now_wiping">Jūs nepareizi veicāt planšetdatora atbloķēšanu %d reizes. Planšetdatorā tiks atiestatīti rūpnīcas noklusējuma iestatījumi.</string>
     <string name="kg_forgot_pattern_button_text">Aizmirsu kombināciju</string>
     <string name="kg_invalid_confirm_pin_hint">PIN kodi neatbilst.</string>
     <string name="kg_invalid_puk">Atkārtoti ievadiet pareizo PUK kodu. Ja vairākas reizes ievadīsiet to nepareizi, SIM karte tiks neatgriezeniski atspējota.</string>
@@ -1405,11 +1405,11 @@ Mēģiniet vēlreiz pēc %2$d sekundēm."</string>
     <string name="lockscreen_carrier_default">Nav pakalpojuma</string>
     <string name="lockscreen_carrier_noservice">(Nav pakalpojuma).</string>
     <string name="lockscreen_emergency_call">Ārkārtas situācija</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Jūs nepareizi veicāt tālruņa atbloķēšanu %1$d reizes. Pēc vēl %2$d neveiksmīga(-iem) mēģinājuma(-iem) tālrunī tiks atiestatīti rūpnīcas noklusējuma iestatījumi, un lietotāja dati tiks zaudēti.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Atbloķēšanas kombinācija tika nepareizi uzzīmēta %1$d reizes. Pēc vēl %2$d neveiksmīgiem mēģinājumiem tālrunis būs jāatbloķē, izmantojot pierakstīšanos Google kontā.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Jūs nepareizi veicāt planšetdatora atbloķēšanu %1$d reizes. Pēc vēl %2$d neveiksmīga(-iem) mēģinājuma(-iem) planšetdatorā tiks atiestatīti rūpnīcas noklusējuma iestatījumi, un lietotāja dati tiks zaudēti.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Atbloķēšanas kombinācija tika nepareizi uzzīmēta %1$d reizes. Pēc vēl %2$d neveiksmīgiem mēģinājumiem planšetdators būs jāatbloķē, izmantojot pierakstīšanos Google kontā.
 
 Mēģiniet vēlreiz pēc %3$d sekundēm."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Jūs nepareizi veicāt tālruņa atbloķēšanu %d reizes. Tālrunī tiks atiestatīti rūpnīcas noklusējuma iestatījumi.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Jūs nepareizi veicāt planšetdatora atbloķēšanu %d reizes. Planšetdatorā tiks atiestatīti rūpnīcas noklusējuma iestatījumi.</string>
     <string name="lockscreen_forgot_pattern_button_text">Vai aizmirsāt kombināciju?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Vai aizmirsāt lietotājvārdu vai paroli?
 Apmeklējiet vietni "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1425,7 @@ Apmeklējiet vietni "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Nospiediet Izvēlne, lai atbloķētu, vai veiciet ārkārtas zvanu.</string>
     <string name="lockscreen_missing_sim_instructions">Pievienojiet SIM karti.</string>
     <string name="lockscreen_missing_sim_instructions_long">Nav SIM kartes, vai arī to nevar nolasīt. Pievienojiet SIM karti.</string>
-    <string name="lockscreen_missing_sim_message">Tālrunī nav SIM kartes.</string>
+    <string name="lockscreen_missing_sim_message">Planšetdatorā nav SIM kartes.</string>
     <string name="lockscreen_missing_sim_message_short">Nav SIM kartes</string>
     <string name="lockscreen_network_locked_message">Tīkls ir bloķēts.</string>
     <string name="lockscreen_password_wrong">Mēģināt vēlreiz</string>
@@ -1465,7 +1465,7 @@ Mēģiniet vēlreiz pēc %2$d sekundēm."</string>
     <string name="low_internal_storage_view_text">Dažas sistēmas funkcijas var nedarboties.</string>
     <string name="low_internal_storage_view_text_no_boot">Sistēmai pietrūkst vietas. Atbrīvojiet vismaz 250 MB vietas un restartējiet ierīci.</string>
     <string name="low_internal_storage_view_title">Paliek maz brīvas vietas</string>
-    <string name="low_memory">Tālruņa atmiņa ir pilna! Dzēsiet dažus failus, lai atbrīvotu vietu.</string>
+    <string name="low_memory">Planšetdatora atmiņa ir pilna. Dzēsiet dažus failus, lai atbrīvotu vietu.</string>
     <string name="ltb_kill_content_v2_phone">Programma %s tika aizvērta, jo tā izraisīja tālruņa pārkaršanu. Vēlāk, kad tālrunis būs atdzisis, varēsit to atkal atvērt.</string>
     <string name="ltb_kill_content_v2_tablet">Programma %s tika aizvērta, jo tā izraisīja planšetdatora pārkaršanu. Vēlāk, kad planšetdators būs atdzisis, varēsit to atkal atvērt.</string>
     <string name="ltb_warning_button">Neaizvērt</string>
@@ -1777,18 +1777,18 @@ Jūsu planšetdators drīz tiks restartēts."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Skaņa tiek atskaņota Bluetooth audio ierīcē. Pieskarieties šeit, lai to izslēgtu</string>
     <string name="multisound_sound_via_headphone">Programmas %s skaņa tiek atskaņota austiņās. Pieskarieties šeit, lai to izslēgtu.</string>
     <string name="multisound_sound_via_headphone_multiselection">Skaņa tiek atskaņota austiņās. Pieskarieties šeit, lai to izslēgtu.</string>
-    <string name="multisound_sound_via_phone_speaker">%s skaņa tiek atskaņota, izmantojot tālruņa skaļruni. Pieskarieties šeit, lai to izslēgtu.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Skaņa tiek atskaņota, izmantojot tālruņa skaļruni. Pieskarieties šeit, lai to izslēgtu.</string>
+    <string name="multisound_sound_via_phone_speaker">%s skaņa tiek atskaņota, izmantojot planšetdatora skaļruni. Pieskarieties šeit, lai to izslēgtu.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Skaņa tiek atskaņota, izmantojot planšetdatora skaļruni. Pieskarieties šeit, lai to izslēgtu.</string>
     <string name="multisound_sound_via_usb_audio">Programmas %s skaņa tiek atskaņota USB audio ierīcē. Pieskarieties šeit, lai to izslēgtu.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Skaņa tiek atskaņota USB audio ierīcē. Pieskarieties šeit, lai to izslēgtu.</string>
     <string name="multisound_title">Atsevišķa programmas skaņa</string>
     <string name="multisound_turn_off_multisound">Izslēgt</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Programmu %s nevar palaist režīmā Samsung DeX. Mēģiniet palaist tālruņa režīmā.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Programmu %s nevar palaist režīmā Samsung DeX. Tā ir paredzēta tālruņu sākuma ekrāniem.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Dažas spēles darbojas tikai skārienekrānos. Ja peles vadības funkcijas režīmā Samsung DeX nedarbojas, mēģiniet spēlēt tālruņa režīmā.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Programmu %s nevar palaist režīmā Samsung DeX. Mēģiniet palaist planšetdatora režīmā.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Programmu %s nevar palaist režīmā Samsung DeX. Tā ir paredzēta planšetdatoru sākuma ekrāniem.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Dažas spēles darbojas tikai skārienekrānos. Ja peles vadības funkcijas režīmā Samsung DeX nedarbojas, mēģiniet spēlēt planšetdatora režīmā.</string>
     <string name="music_recognition_manager_service">Mūzikas atpazīšanas pārziņa pakalpojums</string>
     <string name="muted_by">%1$s izslēdz noteiktas skaņas</string>
-    <string name="my_device">Šis tālrunis</string>
+    <string name="my_device">Šis planšetdators</string>
     <string name="nas_upgrade_notification_content">Tagad ieteiktās darbības un atbildes nodrošina funkcija Uzlabotie paziņojumi. Android adaptīvie paziņojumi vairs netiek atbalstīti.</string>
     <string name="nas_upgrade_notification_disable_action">Izslēgt</string>
     <string name="nas_upgrade_notification_enable_action">Labi</string>
@@ -1953,23 +1953,23 @@ Funkcija “Uzlabotie paziņojumi” var piekļūt paziņojumu saturam, tostarp 
     <string name="permdesc_bindNotificationListenerService">Ļauj īpašniekam izveidot saiti ar paziņojumu uztvērēja pakalpojuma augšējā līmeņa saskarni. Parastajām lietotnēm tas nekad nav nepieciešams.</string>
     <string name="permdesc_bind_connection_service">Ļauj lietotnei sazināties ar tālruņu komunikācijas pakalpojumiem, lai veiktu vai saņemtu zvanus.</string>
     <string name="permdesc_bind_incall_service">Ļauj lietotnei kontrolēt, kad un kā lietotājam ir redzams zvana laikā redzamais ekrāns.</string>
-    <string name="permdesc_bluetooth">Ļauj lietotnei skatīt Bluetooth konfigurāciju tālrunī, kā arī veidot un pieņemt savienojumus ar pārī savienotām ierīcēm.</string>
-    <string name="permdesc_bluetoothAdmin">Ļauj lietotnei konfigurēt vietējo Bluetooth tālruni, kā arī atklāt attālas ierīces un savienot tās pārī.</string>
+    <string name="permdesc_bluetooth">Ļauj lietotnei skatīt Bluetooth konfigurāciju planšetdatorā, kā arī veidot un pieņemt savienojumus ar pārī savienotām ierīcēm.</string>
+    <string name="permdesc_bluetoothAdmin">Ļauj lietotnei konfigurēt vietējo Bluetooth planšetdatoru, kā arī atklāt attālas ierīces un savienot tās pārī.</string>
     <string name="permdesc_bluetooth_advertise">Atļauj lietotnei veikt reklamēšanu tuvumā esošās Bluetooth ierīcēs</string>
     <string name="permdesc_bluetooth_connect">Ļauj lietotnei piekļūt pārī savienotām Bluetooth ierīcēm.</string>
     <string name="permdesc_bluetooth_scan">Ļauj lietotnei atrast un savienot pārī tuvumā esošas Bluetooth ierīces.</string>
     <string name="permdesc_bodySensors">Ļauj lietotnei piekļūt ķermeņa sensoru datiem, piemēram, sirdsdarbības ātrumam, temperatūrai un procentuālajam skābekļa daudzumam asinīs, kamēr lietotne tiek izmantota.</string>
     <string name="permdesc_bodySensors_background">Ļauj lietotnei piekļūt ķermeņa sensoru datiem, piemēram, sirdsdarbības ātrumam, temperatūrai un procentuālajam skābekļa daudzumam asinīs, kamēr lietotne darbojas fonā.</string>
-    <string name="permdesc_broadcastSticky">Ļauj lietotnei sūtīt piesaistošas apraides, kas tiek saglabātas pēc apraides pabeigšanas. Pārmērīga izmantošana var palēnināt tālruņa darbību vai padarīt tā darbību nestabilu, liekot izmantot pārāk daudz atmiņas.</string>
+    <string name="permdesc_broadcastSticky">Ļauj lietotnei sūtīt piesaistošas apraides, kas tiek saglabātas pēc apraides pabeigšanas. Pārmērīga izmantošana var palēnināt planšetdatora darbību vai padarīt tā darbību nestabilu, liekot izmantot pārāk daudz atmiņas.</string>
     <string name="permdesc_callCompanionApp">Ļauj lietotnei ierīcē skatīt un kontrolēt aktīvos zvanus. Šeit ir ietverta tāda informācija kā zvanu tālruņa numuri un zvanu statuss.</string>
     <string name="permdesc_callPhone">Ļauj lietotnei zvanīt uz tālruņa numuriem bez jūsu iejaukšanās. Var rasties neparedzētas izmaksas vai zvani. Ņemiet vērā, ka lietotnei tādējādi netiek atļauts zvanīt uz ārkārtas numuriem. Ļaunprātīgas lietotnes var radīt jums izmaksas, veicot zvanus bez jūsu apstiprinājuma, vai sastādīt mobilo sakaru operatoru kodus, kuru dēļ ienākošie zvani tiek automātiski pāradresēti uz citu numuru.</string>
     <string name="permdesc_camera">Šī lietotne var uzņemt attēlus un ierakstīt videoklipus, izmantojot kameru, kamēr lietotne tiek izmantota.</string>
     <string name="permdesc_cameraOpenCloseListener">Šajā lietotnē var saņemt atzvanus, ja tiek atvērta vai aizvērta jebkāda kameras ierīce (atkarībā no lietojumprogrammas).</string>
     <string name="permdesc_changeNetworkState">Ļauj lietotnei mainīt tīkla savienojamības statusu.</string>
     <string name="permdesc_changeTetherState">Ļauj lietotnei mainīt piesaistes tīkla savienojamības statusu.</string>
-    <string name="permdesc_changeWifiMulticastState">Ļauj lietotnei saņemt sūtījumus, kas sūtīti uz visām ierīcēm Wi-Fi tīklā, izmantojot multiraides adreses, nevis tikai jūsu tālruni. Tādējādi tiek patērēts vairāk enerģijas nekā režīmā, kas nav multiraide.</string>
+    <string name="permdesc_changeWifiMulticastState">Ļauj lietotnei saņemt sūtījumus, kas sūtīti uz visām ierīcēm Wi-Fi tīklā, izmantojot multiraides adreses, nevis tikai jūsu planšetdatoru. Tādējādi tiek patērēts vairāk enerģijas nekā režīmā, kas nav multiraide.</string>
     <string name="permdesc_changeWifiState">Ļauj lietotnei izveidot savienojumu ar Wi-Fi piekļuves punktiem un pārtraukt savienojumus ar tiem, kā arī veikt izmaiņas ierīces Wi-Fi tīklu konfigurācijā.</string>
-    <string name="permdesc_changeWimaxState">Ļauj lietotnei izveidot un pārtraukt tālruņa savienojumu ar WiMAX tīkliem.</string>
+    <string name="permdesc_changeWimaxState">Ļauj lietotnei izveidot un pārtraukt planšetdatora savienojumu ar WiMAX tīkliem.</string>
     <string name="permdesc_companionProfileWatch">Ļauj palīglietotnei pārvaldīt pulksteņus.</string>
     <string name="permdesc_connection_manager">Ļauj lietotnei pārvaldīt telekomunikācijas savienojumus.</string>
     <string name="permdesc_control_incall_experience">Ļauj lietotnei nodrošināt lietotāja pieredzi zvana laikā.</string>
@@ -1997,7 +1997,7 @@ Funkcija “Uzlabotie paziņojumi” var piekļūt paziņojumu saturam, tostarp 
     <string name="permdesc_foregroundServiceSpecialUse">Ļauj lietotnei izmantot šāda veida priekšplāna pakalpojumus: specialUse</string>
     <string name="permdesc_foregroundServiceSystemExempted">Ļauj lietotnei izmantot šāda veida priekšplāna pakalpojumus: systemExempted</string>
     <string name="permdesc_fullScreenIntent">Ļauj lietotnei rādīt paziņojumus kā pilnekrāna režīma darbības, ja ierīce ir bloķēta</string>
-    <string name="permdesc_getAccounts">Ļauj lietotnei iegūt tālrunim zināmo kontu sarakstu. Tas var ietvert jebkādus kontus, ko izveidojušas instalētās lietojumprogrammas.</string>
+    <string name="permdesc_getAccounts">Ļauj lietotnei iegūt planšetdatoram zināmo kontu sarakstu. Tas var ietvert jebkādus kontus, ko izveidojušas instalētās lietojumprogrammas.</string>
     <string name="permdesc_getAppList">Ļauj programmai lasīt instalēto programmu sarakstu.</string>
     <string name="permdesc_getPackageSize">Ļauj lietotnei izgūt tās koda datus un kešatmiņas izmēru.</string>
     <string name="permdesc_getTasks">Ļauj lietotnei izgūt informāciju par pašreiz un nesen darbinātajiem uzdevumiem. Tādējādi lietotne var atklāt informāciju par ierīcē izmantotajām lietojumprogrammām.</string>
@@ -2096,16 +2096,16 @@ ATGRIEZT"</string>
     <string name="permdesc_nearby_wifi_devices">Atļauj lietotnei nodot datus tuvumā esošām Wi‑Fi ierīcē, izveidot savienojumu ar tām un noteikt to relatīvo pozīciju.</string>
     <string name="permdesc_nfc">Ļauj lietotnei sazināties ar tuva darbības lauka sakaru (Near Field Communication — NFC) atzīmēm, kartēm un lasītājiem.</string>
     <string name="permdesc_observeCompanionDevicePresence">Ļauj palīglietotnei noteikt palīgierīču klātbūtni, kad ierīces ir tuvu vai tālu.</string>
-    <string name="permdesc_persistentActivity">Ļauj lietotnei nodrošināt atsevišķu tās daļu nepārtrauktu atrašanos atmiņā. Tas var ierobežot pieejamo atmiņas daudzumu citām lietotnēm, tādējādi palēninot tālruņa darbību.</string>
+    <string name="permdesc_persistentActivity">Ļauj lietotnei nodrošināt atsevišķu tās daļu nepārtrauktu atrašanos atmiņā. Tas var ierobežot pieejamo atmiņas daudzumu citām lietotnēm, tādējādi palēninot planšetdatora darbību.</string>
     <string name="permdesc_postNotification">Ļauj lietotnei rādīt paziņojumus.</string>
     <string name="permdesc_preferredPaymentInfo">Ļauj lietotnei iegūt informāciju par vēlamo NFC maksājumu pakalpojumu, piemēram, par reģistrētajiem lietojumprogrammu ID un maršruta galamērķi.</string>
     <string name="permdesc_processOutgoingCalls">Ļauj lietotnei skatīt ievadīto tālruņa numuru izejošā zvana laikā un piedāvā iespēju šo zvanu pāradresēt uz citu numuru vai vispār pārtraukt zvanu.</string>
     <string name="permdesc_queryAllPackages">Ļauj lietotnei skatīt visas instalētās pakotnes.</string>
     <string name="permdesc_readBasicPhoneState">Lietotnei tiek atļauta piekļuve telefonijas pamatfunkcijām ierīcē.</string>
-    <string name="permdesc_readCalendar">Šī lietotne var lasīt visus kalendāra pasākumus, kas saglabāti tālrunī, un kopīgot vai saglabāt jūsu kalendāra datus.</string>
+    <string name="permdesc_readCalendar">Šī lietotne var lasīt visus kalendāra pasākumus, kas saglabāti planšetdatorā, un kopīgot vai saglabāt jūsu kalendāra datus.</string>
     <string name="permdesc_readCallLog">Šī lietotne var lasīt jūsu zvanu vēsturi.</string>
     <string name="permdesc_readCellBroadcasts">Ļauj lietotnei lasīt ierīcē saņemtos šūnu apraides ziņojumus. Šūnu apraides brīdinājumi tiek piegādāti dažās atrašanās vietās, lai brīdinātu jūs par ārkārtas situācijām. Ļaunprātīgas lietotnes var traucēt ierīces veiktspēju vai darbības, kad ir saņemts ārkārtas šūnas apraides ziņojums.</string>
-    <string name="permdesc_readContacts">Ļauj lietotnei lasīt datus par tālrunī glabātajām kontaktpersonām. Lietotnēm būs arī piekļuve kontiem jūsu tālrunī, kuros ir izveidotas kontaktpersonas. Tas var ietvert kontus, ko izveidojušas jūsu instalētās lietotnes. Ar šo atļauju lietotnes var saglabāt jūsu kontaktpersonu datus, savukārt ļaunprātīgas lietotnes var kopīgot kontaktpersonu datus, jums nezinot.</string>
+    <string name="permdesc_readContacts">Ļauj lietotnei lasīt datus par planšetdatorā glabātajām kontaktpersonām. Lietotnēm būs arī piekļuve kontiem jūsu planšetdatorā, kuros ir izveidotas kontaktpersonas. Tas var ietvert kontus, ko izveidojušas jūsu instalētās lietotnes. Ar šo atļauju lietotnes var saglabāt jūsu kontaktpersonu datus, savukārt ļaunprātīgas lietotnes var kopīgot kontaktpersonu datus, jums nezinot.</string>
     <string name="permdesc_readInstallSessions">Ļauj lietojumprogrammai lasīt instalēšanas sesijas. Tādējādi lietojumprogrammai ir pieejama informācija par aktīvajām pakotņu instalācijām.</string>
     <string name="permdesc_readMediaAudio">Ļauj lietotnei lasīt audio failus jūsu koplietotajā krātuvē.</string>
     <string name="permdesc_readMediaImages">Ļauj lietotnei lasīt attēlu failus jūsu koplietotajā krātuvē.</string>
@@ -2113,11 +2113,11 @@ ATGRIEZT"</string>
     <string name="permdesc_readNetworkUsageHistory">Ļauj lietotnei lasīt informāciju par iepriekšēju tīkla izmantošanu saistībā ar noteiktiem tīkliem un lietotnēm.</string>
     <string name="permdesc_readPhoneNumbers">Ļauj lietotnei piekļūt ierīcē esošajiem tālruņa numuriem.</string>
     <string name="permdesc_readPhoneState">Ļauj lietotnei piekļūt ierīces tālruņa funkcijām. Ar šo atļauju lietotne var noteikt tālruņa numuru un ierīču ID, zvana statusu un attālo numuru, ar ko ir izveidots savienojums, veicot zvanu.</string>
-    <string name="permdesc_readSms">Šī lietotne var lasīt visas īsziņas, kas saglabātas tālrunī.</string>
+    <string name="permdesc_readSms">Šī lietotne var lasīt visas īsziņas, kas saglabātas planšetdatorā.</string>
     <string name="permdesc_readSyncSettings">Ļauj lietotnei lasīt konta sinhronizācijas iestatījumus. Piemēram, šādi var noteikt, vai lietotne Personas ir sinhronizēta ar kontu.</string>
     <string name="permdesc_readSyncStats">Ļauj lietotnei lasīt konta sinhronizācijas statistiku, tostarp sinhronizācijas notikumu vēsturi un sinhronizēto datu apjomu.</string>
     <string name="permdesc_readVisualUserSelect">Ļauj lietotnei lasīt attēlu un video failus, ko atlasāt no savas kopīgās krātuves.</string>
-    <string name="permdesc_receiveBootCompleted">Ļauj lietotnei tikt startētai, tiklīdz sistēma ir pabeigusi sāknēšanu. Šādi tālruņa startēšana var notikt ilgāk un lietotne, ja tā darbojas nepārtraukti, var palēnināt tālruņa vispārējo darbību.</string>
+    <string name="permdesc_receiveBootCompleted">Ļauj lietotnei tikt startētai, tiklīdz sistēma ir pabeigusi sāknēšanu. Šādi planšetdatora startēšana var notikt ilgāk un lietotne, ja tā darbojas nepārtraukti, var palēnināt planšetdatora vispārējo darbību.</string>
     <string name="permdesc_receiveMms">Ļauj lietotnei saņemt un apstrādāt multiziņas. Tas nozīmē, ka lietotne var pārraudzīt vai dzēst uz jūsu ierīci nosūtītos ziņojumus, neparādot tos jums.</string>
     <string name="permdesc_receiveSms">Ļauj lietotnei saņemt un apstrādāt īsziņas. Tas nozīmē, ka lietotne var pārraudzīt vai dzēst uz jūsu ierīci nosūtītos ziņojumus, neparādot tos jums.</string>
     <string name="permdesc_receiveWapPush">Ļauj lietotnei saņemt un apstrādāt WAP ziņojumus. Šī atļauja ietver iespēju pārraudzīt vai dzēst jums nosūtītos ziņojumus, neparādot tos jums.</string>
@@ -2139,7 +2139,7 @@ ATGRIEZT"</string>
     <string name="permdesc_sendSms">Ļauj lietotnei sūtīt īsziņas. Tas var radīt neparedzētas izmaksas. Ļaunprātīgas lietotnes var radīt jums izmaksas, sūtot ziņojumus bez jūsu apstiprinājuma.</string>
     <string name="permdesc_setAlarm">Ļauj lietotnei iestatīt signālu instalētajā modinātājpulksteņa lietotnē. Dažās modinātājpulksteņu lietotnēs šo funkciju, iespējams, nevar ieviest.</string>
     <string name="permdesc_setInputCalibration">Ļauj lietotnei pārveidot skārienekrāna kalibrēšanas parametrus. Parastām lietotnēm šī atļauja nekad nav nepieciešama.</string>
-    <string name="permdesc_setTimeZone">Ļauj lietotnei mainīt tālruņa laika joslu.</string>
+    <string name="permdesc_setTimeZone">Ļauj lietotnei mainīt planšetdatora laika joslu.</string>
     <string name="permdesc_setWallpaper">Ļauj lietotnei iestatīt sistēmas tapeti.</string>
     <string name="permdesc_setWallpaperHints">Ļauj lietotnei iestatīt sistēmas tapetes izmēru norādes.</string>
     <string name="permdesc_sim_communication">Ļauj lietotnei sūtīt komandas uz SIM karti. Tas ir ļoti bīstami!</string>
@@ -2153,7 +2153,7 @@ ATGRIEZT"</string>
     <string name="permdesc_subscribedFeedsRead">Ļauj lietotnei iegūt informāciju par pašlaik sinhronizētajām plūsmām.</string>
     <string name="permdesc_systemAlertWindow">Šo lietotni var rādīt virs citām lietotnēm vai ekrāna daļām. Tādējādi var būt traucēta citu lietotņu izmantošana un var mainīties citu lietotņu izskats.</string>
     <string name="permdesc_systemCamera">Šī privileģētā vai sistēmas lietotne var jebkurā brīdī uzņemt attēlus un ierakstīt videoklipus, izmantojot sistēmas kameru. Lietotnei nepieciešama arī atļauja android.permission.CAMERA.</string>
-    <string name="permdesc_transmitIr">Ļauj lietotnei izmantot tālruņa infrasarkano staru signāla raidītāju.</string>
+    <string name="permdesc_transmitIr">Ļauj lietotnei izmantot planšetdatora infrasarkano staru signāla raidītāju.</string>
     <string name="permdesc_turnScreenOn">Ļauj lietotnei ieslēgt ekrānu.</string>
     <string name="permdesc_ucsPlugin">Darbs ar trešo pušu akreditācijas datu krātuvju spraudņiem.</string>
     <string name="permdesc_uninstall_shortcut">Ļauj lietojumprogrammai noņemt saīsnes no sākuma ekrāna, nejautājot lietotājam.</string>
@@ -2167,10 +2167,10 @@ ATGRIEZT"</string>
     <string name="permdesc_vibrate">Ļauj lietotnei kontrolēt vibrosignālu.</string>
     <string name="permdesc_vibrator_state">Ļauj lietotnei piekļūt vibrosignāla statusam.</string>
     <string name="permdesc_videoWrite">Ļauj lietotnei pārveidot jūsu videoklipu kolekciju.</string>
-    <string name="permdesc_wakeLock">Ļauj lietotnei novērst tālruņa pāriešanu miega režīmā.</string>
-    <string name="permdesc_writeCalendar">Šī lietotne var pievienot, noņemt vai mainīt kalendāra pasākumus jūsu tālrunī. Šī lietotne var sūtīt ziņojumus, ko šķietami sūtījuši kalendāru īpašnieki, vai mainīt pasākumus, neinformējot to īpašniekus.</string>
-    <string name="permdesc_writeCallLog">Ļauj lietotnei pārveidot tālruņa zvanu žurnālu, tostarp ienākošo un izejošo zvanu datus. Ļaunprātīgas lietotnes var to izmantot, lai dzēstu vai pārveidotu savu zvanu žurnālu.</string>
-    <string name="permdesc_writeContacts">Ļauj lietotnei mainīt datus par tālrunī glabātajām kontaktpersonām. Ar šo atļauju lietotnes var dzēst kontaktpersonu datus.</string>
+    <string name="permdesc_wakeLock">Ļauj lietotnei novērst planšetdatora pāriešanu miega režīmā.</string>
+    <string name="permdesc_writeCalendar">Šī lietotne var pievienot, noņemt vai mainīt kalendāra pasākumus jūsu planšetdatorā. Šī lietotne var sūtīt ziņojumus, ko šķietami sūtījuši kalendāru īpašnieki, vai mainīt pasākumus, neinformējot to īpašniekus.</string>
+    <string name="permdesc_writeCallLog">Ļauj lietotnei pārveidot planšetdatora zvanu žurnālu, tostarp ienākošo un izejošo zvanu datus. Ļaunprātīgas lietotnes var to izmantot, lai dzēstu vai pārveidotu savu zvanu žurnālu.</string>
+    <string name="permdesc_writeContacts">Ļauj lietotnei mainīt datus par planšetdatorā glabātajām kontaktpersonām. Ar šo atļauju lietotnes var dzēst kontaktpersonu datus.</string>
     <string name="permdesc_writeSettings">Ļauj lietotnei modificēt sistēmas iestatījumu datus. Ļaunprātīgas lietotnes var uzlauzt sistēmas konfigurāciju.</string>
     <string name="permdesc_writeSyncSettings">Ļauj lietotnei pārveidot konta sinhronizācijas iestatījumus. Piemēram, to var izmantot, lai iespējotu lietotnes Personas sinhronizēšanu ar kontu.</string>
     <string name="permgroupdesc_activityRecognition">piekļūt jūsu fiziskajām aktivitātēm</string>
@@ -2445,7 +2445,7 @@ ir pieprasīta."</string>
     <string name="permlab_uwb_ranging">novietojums starp tuvējām ultraplatjoslas ierīcēm</string>
     <string name="permlab_vibrate">kontrolēt vibrosignālu</string>
     <string name="permlab_videoWrite">Pārveidot jūsu videoklipu kolekciju</string>
-    <string name="permlab_wakeLock">novērst tālruņa pāriešanu miega režīmā</string>
+    <string name="permlab_wakeLock">novērst planšetdatora pāriešanu miega režīmā</string>
     <string name="permlab_writeCalendar">pievienot vai pārveidot kalendāra pasākumus un sūtīt e-pasta ziņojumus viesiem bez īpašnieku ziņas</string>
     <string name="permlab_writeCallLog">rakstīt zvanu žurnālā</string>
     <string name="permlab_writeContacts">mainīt kontaktpersonu informāciju</string>
@@ -2487,7 +2487,7 @@ ir pieprasīta."</string>
     <string name="policydesc_allow_desktopsync">Neļaujiet darbvirsmas sinhronizācijas izmantošanu.</string>
     <string name="policydesc_allow_internetsharing">Neļaujiet mobilā tīklāja izmantošanu.</string>
     <string name="policydesc_allow_irda">Neļaujiet funkcijas IrDA izmantošanu.</string>
-    <string name="policydesc_allow_popimapemail">Neļaujiet POP un IMAP e-pasta izmantošanu tālrunī.</string>
+    <string name="policydesc_allow_popimapemail">Neļaujiet POP un IMAP e-pasta izmantošanu planšetdatorā.</string>
     <string name="policydesc_allow_storagecard">Neļaujiet SD karšu izmantošanu.</string>
     <string name="policydesc_allow_textmessaging">Neļaujiet īsziņu un multiziņu ziņapmaiņas izmantošanu.</string>
     <string name="policydesc_allow_thirdParty">Šī programma var neļaut darboties trešo pušu programmām.</string>
@@ -2505,10 +2505,10 @@ ir pieprasīta."</string>
     <string name="policydesc_setGlobalProxy">Iestatīt ierīces globālo starpniekserveri, kas jāizmanto, kad politika ir iespējota. Globālo starpniekserveri var iestatīt tikai ierīces īpašnieks.</string>
     <string name="policydesc_unsigned_app">Šī programma var neļaut darboties programmām no nezināmiem avotiem.</string>
     <string name="policydesc_unsigned_pkg">Šī programma var neļaut instalēt programmas no nezināmiem avotiem.</string>
-    <string name="policydesc_watchLogin">Pārrauga nepareizi ievadīto paroļu skaitu, atbloķējot ekrānu, un bloķē tālruni vai dzēš visus tālruņa datus, ja tiek ievadīts pārāk daudz nepareizu paroļu.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Pārraudzīt nepareizi ievadīto ekrāna atbloķēšanas paroļu skaitu un bloķēt tālruni vai dzēst visus šī lietotāja datus, ja tiek ievadīts pārāk daudz nepareizu paroļu.</string>
-    <string name="policydesc_wipeData">Dzēš tālruņa datus bez brīdinājuma, veicot rūpnīcas datu atiestatīšanu.</string>
-    <string name="policydesc_wipeData_secondaryUser">Bez brīdinājuma dzēst šī lietotāja datus no tālruņa.</string>
+    <string name="policydesc_watchLogin">Pārrauga nepareizi ievadīto paroļu skaitu, atbloķējot ekrānu, un bloķē planšetdatoru vai dzēš visus planšetdatora datus, ja tiek ievadīts pārāk daudz nepareizu paroļu.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Pārraudzīt nepareizi ievadīto ekrāna atbloķēšanas paroļu skaitu un bloķēt planšetdatoru vai dzēst visus šī lietotāja datus, ja tiek ievadīts pārāk daudz nepareizu paroļu.</string>
+    <string name="policydesc_wipeData">Dzēš planšetdatora datus bez brīdinājuma, veicot rūpnīcas datu atiestatīšanu.</string>
+    <string name="policydesc_wipeData_secondaryUser">Bez brīdinājuma dzēst šī lietotāja datus no planšetdatora.</string>
     <string name="policylab_allow_bluetoothmode">Deaktivizēt Bluetooth</string>
     <string name="policylab_allow_browser">Deaktivizēt internetu</string>
     <string name="policylab_allow_camera">Kameru deaktivizācija</string>
@@ -2542,7 +2542,7 @@ ir pieprasīta."</string>
     <string name="postalTypeHome">Mājas</string>
     <string name="postalTypeOther">Cits</string>
     <string name="postalTypeWork">Darbā</string>
-    <string name="power_dialog">Tālruņa opcijas</string>
+    <string name="power_dialog">Planšetdatora opcijas</string>
     <string name="power_off">Izslēgt tālruni</string>
     <string name="prepend_shortcut_label">Izvēlne+</string>
     <string name="preposition_for_date">šādā datumā: %s</string>
@@ -2588,7 +2588,7 @@ ir pieprasīta."</string>
     <string name="recent_tasks_title">Nesens</string>
     <string name="recording_fail">Mikrofonu nevar izmantot programmā %1$s, kad tas tiek lietots programmā %2$s.</string>
     <string name="recording_popup">%s izmanto mikrofonu.</string>
-    <string name="recording_popup_device">Tālrunis</string>
+    <string name="recording_popup_device">Planšetdators</string>
     <string name="recording_popup_with_bluetooth">%s izmanto Bluetooth mikrofonu.</string>
     <string name="recording_popup_with_device">%1$s izmanto ierīces %2$s mikrofonu.</string>
     <string name="redo">Atc. ats.</string>
@@ -2735,12 +2735,12 @@ Ilgstoši klausoties skaņu lielā skaļumā, var tikt bojāta dzirde."</string>
     <string name="screenshot_edit">Rediģēt</string>
     <string name="sd_card_unavailable_message">Jūs nevarat izmantot SD karti, jo tā tika ievietota, kamēr tika izmantots cits lietotāja profils.</string>
     <string name="sd_card_unavailable_title">SD karte nav pieejama</string>
-    <string name="sdcard_bad_removal_message">SD karte tika izņemta nedroši. Lai tālrunis netiktu negaidīti restartēts, saglabājiet nesaglabātos datus un restartējiet tālruni tūlīt.</string>
+    <string name="sdcard_bad_removal_message">SD karte tika izņemta nedroši. Lai planšetdators netiktu negaidīti restartēts, saglabājiet nesaglabātos datus un restartējiet tālruni tūlīt.</string>
     <string name="sdcard_batch_decrypt_noti_content">Atšifrēt SD karti</string>
     <string name="sdcard_batch_decrypt_noti_title">SD kartes atšifrēšana</string>
     <string name="sdcard_batch_decrypt_popup_content">Šifrēto SD karti pirms lietošanas ir jāatšifrē. Atšifrēšana var ilgt stundu vai ilgāk. Uzlādējiet akumulatoru un neatvienojiet ierīci, līdz atšifrēšana ir pabeigta. Atšifrēšanas procesa pārtraukšana var izraisīt daļēju vai pilnīgu datu zudumu.</string>
     <string name="sdcard_decrypt_err_notification">Radās SD kartes atšifrēšanas kļūda.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Daži jūsu SD kartes faili tika šifrēti citā ierīcē, un tos nevar lietot šajā tālrunī.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Daži jūsu SD kartes faili tika šifrēti citā ierīcē, un tos nevar lietot šajā planšetdatorā.</string>
     <string name="sdcard_decrypt_notification">SD karte ir atšifrēta.</string>
     <string name="sdcard_decrypt_title_notification">SD kartes atšifrēšana</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Atšifrē SD karti…</string>
@@ -2998,7 +2998,7 @@ Lai atkal parādītu pogas, pavelciet uz augšu no ekrāna apakšas, kā norāda
     <string name="showing_touch_sensitivity_noti_action">Ieslēgt</string>
     <string name="showing_touch_sensitivity_noti_text">Ieslēdziet funkciju Skārienjutība, kamēr izmantojat „Privacy Screen“ vai „Notepaper Screen“, lai iegūtu precīzāku skārienjutību.</string>
     <string name="showing_touch_sensitivity_noti_title">Palielināt skārienjutību</string>
-    <string name="shutdown_confirm">Tālrunis tiks izslēgts.</string>
+    <string name="shutdown_confirm">Planšetdators tiks beidzēts.</string>
     <string name="shutdown_confirm_question">Vai vēlaties izslēgt?</string>
     <string name="shutdown_progress">Notiek izslēgšana...</string>
     <string name="side_key_double_press_deleted_app">Programma ir atinstalēta. Izvēlieties citu.</string>
@@ -3225,7 +3225,7 @@ Lai noņemtu šo aizsardzību, dodieties uz izvēlni Iestatījumi > Drošība un
     <string name="usb_abnormal_reset_title">USB savienojums nav stabils</string>
     <string name="usb_abnormal_reset_toast">USB savienojums nav stabils. Atvienojiet kabeli un pievienojiet to vēlreiz vai mēģiniet lietot citu kabeli.</string>
     <string name="usb_accessory_notification_title">Izveidots savienojums ar USB piederumu</string>
-    <string name="usb_bad_removal_message">USB atmiņas ierīce tika noņemta nedroši. Lai tālrunis netiktu negaidīti restartēts, saglabājiet nesaglabātos datus un restartējiet tālruni tūlīt.</string>
+    <string name="usb_bad_removal_message">USB atmiņas ierīce tika noņemta nedroši. Lai planšetdators netiktu negaidīti restartēts, saglabājiet nesaglabātos datus un restartējiet tālruni tūlīt.</string>
     <string name="usb_blocked_by_emergency_mode">Dažas USB funkcijas nav pieejamas ārkārtas režīmā.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ar pievienoto USB ierīci saistītās funkcijas nevar lietot, kamēr ir aktivizēts maksimālais enerģijas taupīšanas režīms.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Dažas USB funkcijas tiks ierobežotas, kamēr būs ieslēgts maksimālais enerģijas taupīšanas režīms.</string>
@@ -3235,7 +3235,7 @@ Lai noņemtu šo aizsardzību, dodieties uz izvēlni Iestatījumi > Drošība un
     <string name="usb_camera_disconnected_notification_title">Multivides ierīce ir atvienota</string>
     <string name="usb_cd_installer_notification_title">Programmatūras atjauninājums</string>
     <string name="usb_charging_notification_title">Ierīces uzlāde, izmantojot USB savienojumu</string>
-    <string name="usb_charing_only_notification_title">USB uzlāde</string>
+    <string name="usb_charing_only_notification_title">Savienots</string>
     <string name="usb_contaminant_detected_message">USB pieslēgvieta ir automātiski atspējota. Pieskarieties, lai uzzinātu vairāk.</string>
     <string name="usb_contaminant_detected_title">USB pieslēgvietā ir šķidrums vai daļiņas</string>
     <string name="usb_contaminant_not_detected_message">Tālrunī vairs netiek konstatēts šķidrums vai gruži.</string>
@@ -3247,11 +3247,11 @@ Lai noņemtu šo aizsardzību, dodieties uz izvēlni Iestatījumi > Drošība un
     <string name="usb_host_cable_disconnected_notification_title">USB savienotājs ir atvienots.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Nevar piekļūt šai ierīcei. Pievienotajai ierīcei nepieciešams ārējs barošanas avots.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Lieljaudas USB ierīce pievienota.</string>
-    <string name="usb_host_resource_exceed_message">Jūsu tālruņa USB vadības ierīcei nepietiek resursu, lai savienotu šo ierīci. Mēģiniet atvienot ierīci, pēc tam pievienojiet to vēlreiz.</string>
+    <string name="usb_host_resource_exceed_message">Jūsu planšetdatora USB vadības ierīcei nepietiek resursu, lai savienotu šo ierīci. Mēģiniet atvienot ierīci, pēc tam pievienojiet to vēlreiz.</string>
     <string name="usb_host_resource_exceed_title">Nepietiek USB vadības ierīces resursu</string>
-    <string name="usb_hub_depth_exceed_message">Jūsu tālrunis vienlaikus atbalsta ne vairāk kā piecus USB centrmezgla savienojumus.</string>
+    <string name="usb_hub_depth_exceed_message">Jūsu planšetdators vienlaikus atbalsta ne vairāk kā piecus USB centrmezgla savienojumus.</string>
     <string name="usb_hub_depth_exceed_title">Maks. USB centrmezgla savienoj.</string>
-    <string name="usb_hub_power_exceed_message">Jūsu tālrunis nevar nodrošināt pietiekami daudz enerģijas šai USB ierīcei. Pirms ierīces savienošanas ar tālruni savienojiet to ar USB centrmezglu, kuram ir autonoms enerģijas avots.</string>
+    <string name="usb_hub_power_exceed_message">Jūsu planšetdators nevar nodrošināt pietiekami daudz enerģijas šai USB ierīcei. Pirms ierīces savienošanas ar planšetdatoru savienojiet to ar USB centrmezglu, kuram ir autonoms enerģijas avots.</string>
     <string name="usb_increase_battery_usage">USB savienojums var palielināt akumulatora enerģijas patēriņu.</string>
     <string name="usb_keyboard_connected_notification_title">Tastatūra pievienota</string>
     <string name="usb_keyboard_disconnected_notification_title">Tastatūra atvienota</string>
@@ -3294,8 +3294,8 @@ Lai noņemtu šo aizsardzību, dodieties uz izvēlni Iestatījumi > Drošība un
     <string name="usb_ums_connected_notification_message_usbhost">USB lielapjoma atmiņa tika negaidīti noņemta.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB lielapjoma atmiņa pievienota</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB lielapjoma atmiņa tika droši noņemta.</string>
-    <string name="usb_unblock_by_screen_unlock">Atbloķējiet tālruni, lai izmantotu pievienoto USB ierīci.</string>
-    <string name="usb_unsupport_accessory_message">Tālrunis neatbalsta šo USB ierīci.</string>
+    <string name="usb_unblock_by_screen_unlock">Atbloķējiet planšetdatoru, lai izmantotu pievienoto USB ierīci.</string>
+    <string name="usb_unsupport_accessory_message">Planšetdators neatbalsta šo USB ierīci.</string>
     <string name="usb_unsupport_accessory_title">USB ierīce netiek atbalstīta</string>
     <string name="usb_unsupported_audio_accessory_message">Pievienotā ierīce nav saderīga ar šo tālruni. Pieskarieties, lai uzzinātu vairāk.</string>
     <string name="usb_unsupported_audio_accessory_title">Konstatēts analogs audio piederums</string>
@@ -3316,19 +3316,19 @@ Lai noņemtu šo aizsardzību, dodieties uz izvēlni Iestatījumi > Drošība un
     <string name="usb_water_dialg_method_2_desc_2">Lai paātrinātu žāvēšanu, pavērsiet pret portu fēnu vai žāvētāju (izmantojiet tikai vēsu gaisu).</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Jūsu uzlādes/USB portā ir konstatēts mitrums vai svešķermenis.
 
-Pārbaudiet, vai uzlādes/USB portā nav svešķermeņu, piemēram, putekļu vai gružu. Lai novērstu tālruņa bojājumus, nepieslēdziet tam neko, līdz uzlādes ports ir tīrs un sauss.
+Pārbaudiet, vai uzlādes/USB portā nav svešķermeņu, piemēram, putekļu vai gružu. Lai novērstu planšetdatora bojājumus, nepieslēdziet tam neko, līdz uzlādes ports ir tīrs un sauss.
 
 Lai izžāvētu portu, nokratiet mitrumu un pēc tam uzgaidiet, līdz ports izžūst — tas var ilgt vairākas stundas. Lai paātrinātu žāvēšanu, pavērsiet pret portu fēnu vai žāvētāju (izmantojiet tikai vēsu gaisu)."</string>
     <string name="usb_water_dialg_positive_button">Labi</string>
     <string name="usb_water_dialg_support_wireless_charging">"Jūsu uzlādes/USB portā ir konstatēts mitrums vai svešķermenis.
 
-Pārbaudiet, vai uzlādes/USB portā nav svešķermeņu, piemēram, putekļu vai gružu. Lai novērstu tālruņa bojājumus, nepieslēdziet tam neko, līdz uzlādes ports ir tīrs un sauss.
+Pārbaudiet, vai uzlādes/USB portā nav svešķermeņu, piemēram, putekļu vai gružu. Lai novērstu planšetdatora bojājumus, nepieslēdziet tam neko, līdz uzlādes ports ir tīrs un sauss.
 
 Lai izžāvētu portu, nokratiet mitrumu un pēc tam uzgaidiet, līdz ports izžūst — tas var ilgt vairākas stundas. Lai paātrinātu žāvēšanu, pavērsiet pret portu fēnu vai žāvētāju (izmantojiet tikai vēsu gaisu).
 
-Pa to laiku varat veikt tālruņa uzlādi bezvadu režīmā."</string>
+Tikmēr planšetdatoru varat uzlādēt bezvadu režīmā."</string>
     <string name="usb_water_notification_content">Uzlādes/USB portā ir mitrums vai svešķermeņi. Pirms uzlādes pārbaudiet to.</string>
-    <string name="usb_water_notification_message">Jūsu lādētājā/USB portā ir konstatēts mitrums. Pirms tālruņa uzlādes pārliecinieties, vai tas ir sauss. Pilnīga izžūšana var aizņemt kādu laiku.</string>
+    <string name="usb_water_notification_message">Jūsu lādētājā/USB portā ir konstatēts mitrums. Pirms planšetdatora uzlādes pārliecinieties, vai tas ir sauss. Pilnīga izžūšana var aizņemt kādu laiku.</string>
     <string name="usb_water_notification_message_button">Dati</string>
     <string name="usb_water_notification_title">Pārbaudiet lādētāja/USB portu</string>
     <string name="usbhostStorage_restrict">Drošības politika neļauj lietot USB resursdatora krātuvi.</string>
@@ -3346,7 +3346,7 @@ Pa to laiku varat veikt tālruņa uzlādi bezvadu režīmā."</string>
     <string name="user_switched">Pašreizējais lietotājs: %1$s.</string>
     <string name="user_switching_message">Notiek pāriešana uz: %1$s</string>
     <string name="validity_period">Derīgums:</string>
-    <string name="vdm_camera_access_denied">Nevar piekļūt tālruņa kamerai no jūsu ierīces (%1$s).</string>
+    <string name="vdm_camera_access_denied">Nevar piekļūt planšetdatora kamerai no jūsu ierīces (%1$s).</string>
     <string name="vdm_pip_blocked">Straumēšanas laikā nevar skatīt attēlu attēlā</string>
     <string name="vdm_secure_window">Straumēšanas laikā nevar piekļūt šim saturam. Mēģiniet tam piekļūt savā tālrunī.</string>
     <string name="view_and_control_notification_content">Pakalpojums %s var skatīt un kontrolēt jūsu ekrānu. Pieskarieties, lai to pārskatītu.</string>

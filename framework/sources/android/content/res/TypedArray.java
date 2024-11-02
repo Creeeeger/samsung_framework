@@ -35,7 +35,6 @@ public class TypedArray implements AutoCloseable {
     TypedValue mValue = new TypedValue();
     XmlBlock.Parser mXml;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static TypedArray obtain(Resources res, int len) {
         TypedArray attrs = res.mTypedArrayPool.acquire();
         if (attrs == null) {

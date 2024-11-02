@@ -36,6 +36,10 @@ public abstract class InlineSuggestionRenderService extends Service {
     private IInlineSuggestionUiCallback mCallback;
     private final Handler mMainHandler = new Handler(Looper.getMainLooper(), null, true);
     private final LruCache<InlineSuggestionUiImpl, Boolean> mActiveInlineSuggestions = new LruCache<InlineSuggestionUiImpl, Boolean>(30) { // from class: android.service.autofill.InlineSuggestionRenderService.1
+        AnonymousClass1(int maxSize) {
+            super(maxSize);
+        }
+
         @Override // android.util.LruCache
         public void entryRemoved(boolean evicted, InlineSuggestionUiImpl key, Boolean oldValue, Boolean newValue) {
             if (evicted) {
@@ -44,6 +48,22 @@ public abstract class InlineSuggestionRenderService extends Service {
             }
         }
     };
+
+    /* renamed from: android.service.autofill.InlineSuggestionRenderService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends LruCache<InlineSuggestionUiImpl, Boolean> {
+        AnonymousClass1(int maxSize) {
+            super(maxSize);
+        }
+
+        @Override // android.util.LruCache
+        public void entryRemoved(boolean evicted, InlineSuggestionUiImpl key, Boolean oldValue, Boolean newValue) {
+            if (evicted) {
+                Log.w(InlineSuggestionRenderService.TAG, "Hit max=30 entries in the cache. Releasing oldest one to make space.");
+                key.releaseSurfaceControlViewHost();
+            }
+        }
+    }
 
     private Size measuredSize(View view, int width, int height, Size minSize, Size maxSize) {
         int widthMeasureSpec;
@@ -65,7 +85,6 @@ public abstract class InlineSuggestionRenderService extends Service {
         return new Size(width, height);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleRenderSuggestion(final IInlineSuggestionUiCallback callback, InlinePresentation presentation, int width, int height, IBinder hostInputToken, int displayId, int userId, int sessionId) {
         if (hostInputToken != null) {
             updateDisplay(displayId);
@@ -123,7 +142,6 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$handleRenderSuggestion$0(IInlineSuggestionUiCallback callback, View v) {
         try {
             callback.onClick();
@@ -132,7 +150,6 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$handleRenderSuggestion$1(View.OnLongClickListener onLongClickListener, IInlineSuggestionUiCallback callback, View v) {
         if (onLongClickListener != null) {
             onLongClickListener.onLongClick(v);
@@ -146,7 +163,6 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$handleRenderSuggestion$2(IInlineSuggestionUiCallback callback, InlineSuggestionUiImpl uiImpl, SurfaceControlViewHost host, Size measuredSize) {
         try {
             callback.onContent(new InlineSuggestionUiWrapper(uiImpl), host.getSurfacePackage(), measuredSize.getWidth(), measuredSize.getHeight());
@@ -155,13 +171,11 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleGetInlineSuggestionsRendererInfo(RemoteCallback callback) {
         Bundle rendererInfo = onGetInlineSuggestionsRendererInfo();
         callback.sendResult(rendererInfo);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleDestroySuggestionViews(int userId, int sessionId) {
         Log.v(TAG, "handleDestroySuggestionViews called for " + userId + ":" + sessionId);
         for (InlineSuggestionUiImpl inlineSuggestionUi : this.mActiveInlineSuggestions.snapshot().keySet()) {
@@ -172,7 +186,6 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class InlineSuggestionUiWrapper extends IInlineSuggestionUi.Stub {
         private final WeakReference<InlineSuggestionUiImpl> mUiImpl;
@@ -198,7 +211,6 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public final class InlineSuggestionUiImpl {
         private final Handler mHandler;
@@ -222,7 +234,6 @@ public abstract class InlineSuggestionRenderService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$releaseSurfaceControlViewHost$0() {
             if (this.mViewHost == null) {
                 return;
@@ -244,7 +255,6 @@ public abstract class InlineSuggestionRenderService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$getSurfacePackage$1(ISurfacePackageResultCallback callback) {
             try {
                 SurfaceControlViewHost surfaceControlViewHost = this.mViewHost;
@@ -255,7 +265,6 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public final void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.println("mActiveInlineSuggestions: " + this.mActiveInlineSuggestions.size());
@@ -274,7 +283,7 @@ public abstract class InlineSuggestionRenderService extends Service {
         return null;
     }
 
-    /* renamed from: android.service.autofill.InlineSuggestionRenderService$2, reason: invalid class name */
+    /* renamed from: android.service.autofill.InlineSuggestionRenderService$2 */
     /* loaded from: classes3.dex */
     class AnonymousClass2 extends IInlineSuggestionRenderService.Stub {
         AnonymousClass2() {

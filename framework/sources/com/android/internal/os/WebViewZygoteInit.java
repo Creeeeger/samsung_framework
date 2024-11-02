@@ -23,6 +23,10 @@ class WebViewZygoteInit {
 
     /* loaded from: classes5.dex */
     private static class WebViewZygoteServer extends ZygoteServer {
+        /* synthetic */ WebViewZygoteServer(WebViewZygoteServerIA webViewZygoteServerIA) {
+            this();
+        }
+
         private WebViewZygoteServer() {
         }
 

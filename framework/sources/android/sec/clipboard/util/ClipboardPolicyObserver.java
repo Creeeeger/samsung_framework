@@ -209,9 +209,18 @@ public class ClipboardPolicyObserver extends ContentObserver {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x004e, code lost:            if (r0.isClosed() == false) goto L21;     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0065, code lost:            r0.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0063, code lost:            if (r0.isClosed() == false) goto L21;     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x004e, code lost:
+    
+        if (r0.isClosed() == false) goto L52;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0065, code lost:
+    
+        r0.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0063, code lost:
+    
+        if (r0.isClosed() == false) goto L52;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -286,9 +295,18 @@ public class ClipboardPolicyObserver extends ContentObserver {
         throw new UnsupportedOperationException("Method not decompiled: android.sec.clipboard.util.ClipboardPolicyObserver.updateClipboardDenyListMap(int):void");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x004e, code lost:            if (r0.isClosed() == false) goto L21;     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0065, code lost:            r0.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0063, code lost:            if (r0.isClosed() == false) goto L21;     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x004e, code lost:
+    
+        if (r0.isClosed() == false) goto L52;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0065, code lost:
+    
+        r0.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0063, code lost:
+    
+        if (r0.isClosed() == false) goto L52;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

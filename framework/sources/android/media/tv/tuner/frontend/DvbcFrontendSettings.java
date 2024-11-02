@@ -87,6 +87,10 @@ public class DvbcFrontendSettings extends FrontendSettings {
     public @interface TimeInterleaveMode {
     }
 
+    /* synthetic */ DvbcFrontendSettings(long j, int i, long j2, int i2, int i3, int i4, int i5, int i6, int i7, DvbcFrontendSettingsIA dvbcFrontendSettingsIA) {
+        this(j, i, j2, i2, i3, i4, i5, i6, i7);
+    }
+
     private DvbcFrontendSettings(long frequency, int modulation, long innerFec, int symbolRate, int outerFec, int annex, int spectralInversion, int interleaveMode, int bandwidth) {
         super(frequency);
         this.mModulation = modulation;
@@ -146,6 +150,10 @@ public class DvbcFrontendSettings extends FrontendSettings {
         private int mOuterFec;
         private int mSpectralInversion;
         private int mSymbolRate;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;

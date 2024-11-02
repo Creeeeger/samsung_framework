@@ -7,13 +7,14 @@ import android.telephony.CellSignalStrength;
 /* loaded from: classes3.dex */
 public class SemDevicePowerInfo implements Parcelable {
     public static final Parcelable.Creator<SemDevicePowerInfo> CREATOR = new Parcelable.Creator<SemDevicePowerInfo>() { // from class: android.os.SemDevicePowerInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemDevicePowerInfo createFromParcel(Parcel in) {
             return new SemDevicePowerInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemDevicePowerInfo[] newArray(int size) {
             return new SemDevicePowerInfo[size];
@@ -373,7 +374,6 @@ public class SemDevicePowerInfo implements Parcelable {
         this.lcRxByte += delta.lcRxByte;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SemDevicePowerInfo(Parcel in) {
         this.screenBrightnessTime = new long[5];
         this.screenAutoBrightnessTime = new long[5];
@@ -459,6 +459,23 @@ public class SemDevicePowerInfo implements Parcelable {
         this.lcRxTime = in.readLong();
         this.lcTxByte = in.readLong();
         this.lcRxByte = in.readLong();
+    }
+
+    /* renamed from: android.os.SemDevicePowerInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemDevicePowerInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemDevicePowerInfo createFromParcel(Parcel in) {
+            return new SemDevicePowerInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemDevicePowerInfo[] newArray(int size) {
+            return new SemDevicePowerInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

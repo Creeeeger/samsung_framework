@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Síminn er óstöðugur vegna þess að SD-kort þar sem forrit voru uppsett var fjarlægt. Síminn verður endurræstur eftir %d sekúndur til að færa hann aftur í venjulegt horf. Vista skal öll gögn áður en síminn er endurræstur.</item>
+        <item quantity="other">Spjaldtölvan er óstöðug vegna þess að SD-kort þar sem forrit voru uppsett var fjarlægt. Spjaldtölvan verður endurræst eftir %d sekúndur til að færa hana aftur í venjulegt horf. Vista skal öll gögn áður en spjaldtölvan er endurræst.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Síminn er óstöðugur vegna þess að SD-kort þar sem forrit voru uppsett var fjarlægt. Síminn verður endurræstur eftir %d sekúndu til að færa hann aftur í venjulegt horf. Vista skal öll gögn áður en síminn er endurræstur.</item>
+        <item quantity="one">Spjaldtölvan er óstöðug vegna þess að SD-kort þar sem forrit voru uppsett var fjarlægt. Spjaldtölvan verður endurræst eftir %d sekúndu til að færa hana aftur í venjulegt horf. Vista skal öll gögn áður en spjaldtölvan er endurræst.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Síminn verður endurr. eftir %d sek.</item>
+        <item quantity="other">Spjaldtölvan endurr. eftir %d sekúndur</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Síminn verður endurr. eftir %d sek.</item>
+        <item quantity="one">Spjaldtölvan endurr. eftir %d sekúndu</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

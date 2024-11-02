@@ -14,7 +14,6 @@ import com.android.internal.view.OneShotPreDrawListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public class ActivityTransitionState {
     private static final String EXITING_MAPPED_FROM = "android:exitingMappedFrom";
@@ -64,7 +63,6 @@ public class ActivityTransitionState {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ArrayList<String> getPendingExitNames() {
         EnterTransitionCoordinator enterTransitionCoordinator;
         if (this.mPendingExitNames == null && (enterTransitionCoordinator = this.mEnterTransitionCoordinator) != null && !enterTransitionCoordinator.isReturning()) {
@@ -187,8 +185,7 @@ public class ActivityTransitionState {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.ActivityTransitionState$1, reason: invalid class name */
+    /* renamed from: android.app.ActivityTransitionState$1 */
     /* loaded from: classes.dex */
     public class AnonymousClass1 implements Runnable {
         AnonymousClass1() {
@@ -209,7 +206,6 @@ public class ActivityTransitionState {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$run$0() {
             ActivityTransitionState.this.getPendingExitNames();
             ActivityTransitionState.this.mEnterTransitionCoordinator = null;
@@ -227,7 +223,6 @@ public class ActivityTransitionState {
         this.mExitTransitionCoordinators = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void restoreExitedViews() {
         ExitTransitionCoordinator exitTransitionCoordinator = this.mCalledExitCoordinator;
         if (exitTransitionCoordinator != null) {
@@ -236,7 +231,6 @@ public class ActivityTransitionState {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void restoreReenteringViews() {
         EnterTransitionCoordinator enterTransitionCoordinator = this.mEnterTransitionCoordinator;
         if (enterTransitionCoordinator != null && enterTransitionCoordinator.isReturning() && !this.mEnterTransitionCoordinator.isCrossTask()) {
@@ -292,7 +286,6 @@ public class ActivityTransitionState {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startExitBackTransition$0(Activity activity) {
         ExitTransitionCoordinator exitTransitionCoordinator = this.mReturnExitCoordinator;
         if (exitTransitionCoordinator != null) {

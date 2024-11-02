@@ -324,8 +324,9 @@ public interface ICredential extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ICredential {
+        public static class Proxy implements ICredential {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -593,8 +593,9 @@ public interface ISemMdnieManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemMdnieManager {
+        public static class Proxy implements ISemMdnieManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -139,8 +139,9 @@ public interface IResourceManagerClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IResourceManagerClient {
+        public static class Proxy implements IResourceManagerClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

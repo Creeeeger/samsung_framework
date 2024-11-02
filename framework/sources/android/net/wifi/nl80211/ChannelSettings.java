@@ -8,7 +8,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public class ChannelSettings implements Parcelable {
     public static final Parcelable.Creator<ChannelSettings> CREATOR = new Parcelable.Creator<ChannelSettings>() { // from class: android.net.wifi.nl80211.ChannelSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ChannelSettings createFromParcel(Parcel in) {
             ChannelSettings result = new ChannelSettings();
@@ -19,7 +21,6 @@ public class ChannelSettings implements Parcelable {
             return result;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ChannelSettings[] newArray(int size) {
             return new ChannelSettings[size];
@@ -48,5 +49,27 @@ public class ChannelSettings implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.frequency);
+    }
+
+    /* renamed from: android.net.wifi.nl80211.ChannelSettings$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ChannelSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ChannelSettings createFromParcel(Parcel in) {
+            ChannelSettings result = new ChannelSettings();
+            result.frequency = in.readInt();
+            if (in.dataAvail() != 0) {
+                Log.e(ChannelSettings.TAG, "Found trailing data after parcel parsing.");
+            }
+            return result;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ChannelSettings[] newArray(int size) {
+            return new ChannelSettings[size];
+        }
     }
 }

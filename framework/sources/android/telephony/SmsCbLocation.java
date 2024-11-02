@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class SmsCbLocation implements Parcelable {
     public static final Parcelable.Creator<SmsCbLocation> CREATOR = new Parcelable.Creator<SmsCbLocation>() { // from class: android.telephony.SmsCbLocation.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmsCbLocation createFromParcel(Parcel in) {
             return new SmsCbLocation(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsCbLocation[] newArray(int size) {
             return new SmsCbLocation[size];
@@ -112,6 +113,23 @@ public final class SmsCbLocation implements Parcelable {
         dest.writeString(this.mPlmn);
         dest.writeInt(this.mLac);
         dest.writeInt(this.mCid);
+    }
+
+    /* renamed from: android.telephony.SmsCbLocation$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmsCbLocation> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsCbLocation createFromParcel(Parcel in) {
+            return new SmsCbLocation(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsCbLocation[] newArray(int size) {
+            return new SmsCbLocation[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -655,8 +655,9 @@ public interface IRemoteInputConnection extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IRemoteInputConnection {
+        public static class Proxy implements IRemoteInputConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -20,6 +20,10 @@ public final class DeviceStateSensorOrientationMap {
     public @interface DeviceState {
     }
 
+    /* synthetic */ DeviceStateSensorOrientationMap(ArrayList arrayList, HashMap hashMap, DeviceStateSensorOrientationMapIA deviceStateSensorOrientationMapIA) {
+        this(arrayList, hashMap);
+    }
+
     public DeviceStateSensorOrientationMap(long[] elements) {
         this.mElements = (long[]) Objects.requireNonNull(elements, "elements must not be null");
         this.mDeviceStateOrientationMap = new HashMap<>();

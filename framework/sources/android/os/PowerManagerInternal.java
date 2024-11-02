@@ -160,8 +160,38 @@ public abstract class PowerManagerInternal {
         return wakefulness == 1 || wakefulness == 2;
     }
 
-    public void registerLowPowerModeObserver(final int serviceType, final Consumer<PowerSaveState> listener) {
+    /* renamed from: android.os.PowerManagerInternal$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements LowPowerModeListener {
+        final /* synthetic */ Consumer val$listener;
+        final /* synthetic */ int val$serviceType;
+
+        AnonymousClass1(int i, Consumer consumer) {
+            serviceType = i;
+            listener = consumer;
+        }
+
+        @Override // android.os.PowerManagerInternal.LowPowerModeListener
+        public int getServiceType() {
+            return serviceType;
+        }
+
+        @Override // android.os.PowerManagerInternal.LowPowerModeListener
+        public void onLowPowerModeChanged(PowerSaveState state) {
+            listener.accept(state);
+        }
+    }
+
+    public void registerLowPowerModeObserver(int serviceType, Consumer<PowerSaveState> listener) {
         registerLowPowerModeObserver(new LowPowerModeListener() { // from class: android.os.PowerManagerInternal.1
+            final /* synthetic */ Consumer val$listener;
+            final /* synthetic */ int val$serviceType;
+
+            AnonymousClass1(int serviceType2, Consumer listener2) {
+                serviceType = serviceType2;
+                listener = listener2;
+            }
+
             @Override // android.os.PowerManagerInternal.LowPowerModeListener
             public int getServiceType() {
                 return serviceType;

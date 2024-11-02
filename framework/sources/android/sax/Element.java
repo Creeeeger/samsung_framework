@@ -18,7 +18,6 @@ public class Element {
     final String uri;
     boolean visited;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Element(Element parent, String uri, String localName, int depth) {
         this.parent = parent;
         this.uri = uri;
@@ -95,12 +94,10 @@ public class Element {
         return toString(this.uri, this.localName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String toString(String uri, String localName) {
         return "'" + (uri.equals("") ? localName : uri + ":" + localName) + "'";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetRequiredChildren() {
         ArrayList<Element> requiredChildren = this.requiredChilden;
         if (requiredChildren != null) {
@@ -110,7 +107,6 @@ public class Element {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void checkRequiredChildren(Locator locator) throws SAXParseException {
         ArrayList<Element> requiredChildren = this.requiredChilden;
         if (requiredChildren != null) {

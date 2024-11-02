@@ -89,7 +89,6 @@ public abstract class WindowProviderService extends Service implements WindowPro
         return context.createTokenContext(this.mWindowToken, getInitialDisplay(context));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service, android.content.ContextWrapper
     public void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);

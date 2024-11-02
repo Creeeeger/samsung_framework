@@ -14,7 +14,6 @@ import android.util.Log;
 import com.android.internal.util.Preconditions;
 import java.util.concurrent.Executor;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public final class InputDeviceVibrator extends Vibrator {
     private static final String TAG = "InputDeviceVibrator";
@@ -24,13 +23,11 @@ public final class InputDeviceVibrator extends Vibrator {
     private final InputManagerGlobal mGlobal = InputManagerGlobal.getInstance();
     private final Binder mToken = new Binder();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InputDeviceVibrator(int deviceId, int vibratorId) {
         this.mDeviceId = deviceId;
         this.mVibratorInfo = new VibratorInfo.Builder(vibratorId).setCapabilities(4L).setSupportedEffects(new int[0]).setSupportedBraking(new int[0]).build();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class OnVibratorStateChangedListenerDelegate extends IVibratorStateListener.Stub {
         private final Executor mExecutor;
@@ -41,7 +38,6 @@ public final class InputDeviceVibrator extends Vibrator {
             this.mListener = listener;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVibrating$0(boolean isVibrating) {
             this.mListener.onVibratorStateChanged(isVibrating);
         }
@@ -57,7 +53,6 @@ public final class InputDeviceVibrator extends Vibrator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.os.Vibrator
     public VibratorInfo getInfo() {
         return this.mVibratorInfo;

@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class CredstoreResultData extends ResultData {
     int mFeatureVersion = 0;
@@ -16,7 +15,6 @@ public class CredstoreResultData extends ResultData {
     byte[] mSignature = null;
     private Map<String, Map<String, EntryData>> mData = new LinkedHashMap();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class EntryData {
         int mStatus;
@@ -41,7 +39,6 @@ public class CredstoreResultData extends ResultData {
         return this.mMessageAuthenticationCode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.security.identity.ResultData
     public byte[] getSignature() {
         if (this.mFeatureVersion < 202301) {
@@ -110,11 +107,11 @@ public class CredstoreResultData extends ResultData {
         return value.mValue;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
-    static class Builder {
+    public static class Builder {
         private CredstoreResultData mResultData;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder(int featureVersion, byte[] staticAuthenticationData, byte[] authenticatedData, byte[] messageAuthenticationCode, byte[] signature) {
             CredstoreResultData credstoreResultData = new CredstoreResultData();
             this.mResultData = credstoreResultData;
@@ -135,21 +132,18 @@ public class CredstoreResultData extends ResultData {
             return innerMap;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder addEntry(String namespaceName, String name, byte[] value) {
             Map<String, EntryData> innerMap = getOrCreateInnerMap(namespaceName);
             innerMap.put(name, new EntryData(value, 0));
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder addErrorStatus(String namespaceName, String name, int status) {
             Map<String, EntryData> innerMap = getOrCreateInnerMap(namespaceName);
             innerMap.put(name, new EntryData(null, status));
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public CredstoreResultData build() {
             return this.mResultData;
         }

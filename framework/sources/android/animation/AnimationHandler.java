@@ -21,6 +21,9 @@ public class AnimationHandler {
     private final ArrayList<Animator> mPausedAnimators = new ArrayList<>();
     private final ArrayList<WeakReference<Object>> mAnimatorRequestors = new ArrayList<>();
     private final Choreographer.FrameCallback mFrameCallback = new Choreographer.FrameCallback() { // from class: android.animation.AnimationHandler.1
+        AnonymousClass1() {
+        }
+
         @Override // android.view.Choreographer.FrameCallback
         public void doFrame(long frameTimeNanos) {
             AnimationHandler animationHandler = AnimationHandler.this;
@@ -56,6 +59,23 @@ public class AnimationHandler {
         void postFrameCallback(Choreographer.FrameCallback frameCallback);
 
         void setFrameDelay(long j);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.animation.AnimationHandler$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Choreographer.FrameCallback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.Choreographer.FrameCallback
+        public void doFrame(long frameTimeNanos) {
+            AnimationHandler animationHandler = AnimationHandler.this;
+            animationHandler.doAnimationFrame(animationHandler.getProvider().getFrameTime());
+            if (AnimationHandler.this.mAnimationCallbacks.size() > 0) {
+                AnimationHandler.this.getProvider().postFrameCallback(this);
+            }
+        }
     }
 
     public long getMaxAnimationCallbackDuration() {
@@ -149,7 +169,6 @@ public class AnimationHandler {
         this.mPausedAnimators.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(long frameTimeNanos) {
         if (this.mAnimatorRequestors.size() > 0) {
             return;
@@ -174,7 +193,6 @@ public class AnimationHandler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public AnimationFrameCallbackProvider getProvider() {
         if (this.mProvider == null) {
             this.mProvider = new MyFrameCallbackProvider();
@@ -210,16 +228,21 @@ public class AnimationHandler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doAnimationFrame(long frameTime) {
         long currentTime = SystemClock.uptimeMillis();
         int size = this.mAnimationCallbacks.size();
         for (int i = 0; i < size; i++) {
-            final AnimationFrameCallback callback = this.mAnimationCallbacks.get(i);
+            AnimationFrameCallback callback = this.mAnimationCallbacks.get(i);
             if (callback != null && isCallbackDue(callback, currentTime)) {
                 callback.doAnimationFrame(frameTime);
                 if (this.mCommitCallbacks.contains(callback)) {
                     getProvider().postCommitCallback(new Runnable() { // from class: android.animation.AnimationHandler.2
+                        final /* synthetic */ AnimationFrameCallback val$callback;
+
+                        AnonymousClass2(AnimationFrameCallback callback2) {
+                            callback = callback2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             AnimationHandler animationHandler = AnimationHandler.this;
@@ -232,7 +255,22 @@ public class AnimationHandler {
         cleanUpList();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.animation.AnimationHandler$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ AnimationFrameCallback val$callback;
+
+        AnonymousClass2(AnimationFrameCallback callback2) {
+            callback = callback2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AnimationHandler animationHandler = AnimationHandler.this;
+            animationHandler.commitAnimationFrame(callback, animationHandler.getProvider().getFrameTime());
+        }
+    }
+
     public void commitAnimationFrame(AnimationFrameCallback callback, long frameTime) {
         if (!this.mDelayedCallbackStartTime.containsKey(callback) && this.mCommitCallbacks.contains(callback)) {
             callback.commitAnimationFrame(frameTime);
@@ -268,7 +306,6 @@ public class AnimationHandler {
         return getInstance().getProvider().getFrameDelay();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void autoCancelBasedOn(ObjectAnimator objectAnimator) {
         for (int i = this.mAnimationCallbacks.size() - 1; i >= 0; i--) {
             AnimationFrameCallback cb = this.mAnimationCallbacks.get(i);
@@ -300,10 +337,13 @@ public class AnimationHandler {
         return count;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class MyFrameCallbackProvider implements AnimationFrameCallbackProvider {
         final Choreographer mChoreographer;
+
+        /* synthetic */ MyFrameCallbackProvider(AnimationHandler animationHandler, MyFrameCallbackProviderIA myFrameCallbackProviderIA) {
+            this();
+        }
 
         private MyFrameCallbackProvider() {
             this.mChoreographer = Choreographer.getInstance();

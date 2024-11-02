@@ -7,13 +7,14 @@ import java.util.ArrayList;
 /* loaded from: classes2.dex */
 public final class MediaRouterClientState implements Parcelable {
     public static final Parcelable.Creator<MediaRouterClientState> CREATOR = new Parcelable.Creator<MediaRouterClientState>() { // from class: android.media.MediaRouterClientState.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MediaRouterClientState createFromParcel(Parcel in) {
             return new MediaRouterClientState(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaRouterClientState[] newArray(int size) {
             return new MediaRouterClientState[size];
@@ -54,16 +55,34 @@ public final class MediaRouterClientState implements Parcelable {
         return "MediaRouterClientState{ routes=" + this.routes.toString() + " }";
     }
 
+    /* renamed from: android.media.MediaRouterClientState$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MediaRouterClientState> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaRouterClientState createFromParcel(Parcel in) {
+            return new MediaRouterClientState(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaRouterClientState[] newArray(int size) {
+            return new MediaRouterClientState[size];
+        }
+    }
+
     /* loaded from: classes2.dex */
     public static final class RouteInfo implements Parcelable {
         public static final Parcelable.Creator<RouteInfo> CREATOR = new Parcelable.Creator<RouteInfo>() { // from class: android.media.MediaRouterClientState.RouteInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RouteInfo createFromParcel(Parcel in) {
                 return new RouteInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RouteInfo[] newArray(int size) {
                 return new RouteInfo[size];
@@ -150,6 +169,23 @@ public final class MediaRouterClientState implements Parcelable {
 
         public String toString() {
             return "RouteInfo{ id=" + this.id + ", name=" + this.name + ", description=" + this.description + ", supportedTypes=0x" + Integer.toHexString(this.supportedTypes) + ", enabled=" + this.enabled + ", statusCode=" + this.statusCode + ", playbackType=" + this.playbackType + ", playbackStream=" + this.playbackStream + ", volume=" + this.volume + ", volumeMax=" + this.volumeMax + ", volumeHandling=" + this.volumeHandling + ", presentationDisplayId=" + this.presentationDisplayId + ", deviceType=" + this.deviceType + " }";
+        }
+
+        /* renamed from: android.media.MediaRouterClientState$RouteInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RouteInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RouteInfo createFromParcel(Parcel in) {
+                return new RouteInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RouteInfo[] newArray(int size) {
+                return new RouteInfo[size];
+            }
         }
     }
 }

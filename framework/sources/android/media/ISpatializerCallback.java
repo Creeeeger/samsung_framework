@@ -98,7 +98,6 @@ public interface ISpatializerCallback extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class Proxy implements ISpatializerCallback {
             private IBinder mRemote;

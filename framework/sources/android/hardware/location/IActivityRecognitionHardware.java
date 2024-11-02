@@ -201,8 +201,9 @@ public interface IActivityRecognitionHardware extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IActivityRecognitionHardware {
+        public static class Proxy implements IActivityRecognitionHardware {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -339,37 +340,30 @@ public interface IActivityRecognitionHardware extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void getSupportedActivities_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void isActivitySupported_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void registerSink_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void unregisterSink_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void enableActivityEvent_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void disableActivityEvent_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void flush_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }

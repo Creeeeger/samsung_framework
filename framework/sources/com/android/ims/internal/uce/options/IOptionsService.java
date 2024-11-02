@@ -225,8 +225,9 @@ public interface IOptionsService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IOptionsService {
+        public static class Proxy implements IOptionsService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

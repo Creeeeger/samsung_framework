@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">โทรศัพท์ของคุณทำงานได้ไม่เสถียรเนื่องจาก SD การ์ดที่มีแอพติดตั้งอยู่ในนั้นถูกถอดออกแล้ว โทรศัพท์ของคุณจะรีสตาร์ทใน %d วินาทีเพื่อให้กลับมาทำงานได้ตามปกติ บันทึกข้อมูลที่ยังไม่ได้บันทึกก่อนที่โทรศัพท์จะรีสตาร์ท</item>
+        <item quantity="other">แท็บเล็ตของคุณไม่เสถียรเนื่องจาก SD การ์ดที่มีแอพติดตั้งอยู่ถูกถอดออก แท็บเล็ตของคุณจะรีสตาร์ทใน %d วินาทีเพื่อกลับสู่ปกติ บันทึกข้อมูลที่ไม่ได้บันทึกก่อนแท็บเล็ตรีสตาร์ท</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">โทรศัพท์จะรีสตาร์ทใน %d วินาที</item>
+        <item quantity="other">แท็บเล็ตของคุณจะรีสตาร์ทใน %d วินาที</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

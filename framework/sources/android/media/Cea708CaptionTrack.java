@@ -9,7 +9,6 @@ class Cea708CaptionTrack extends SubtitleTrack {
     private final Cea708CCParser mCCParser;
     private final Cea708CCWidget mRenderingWidget;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Cea708CaptionTrack(Cea708CCWidget renderingWidget, MediaFormat format) {
         super(format);
         this.mRenderingWidget = renderingWidget;

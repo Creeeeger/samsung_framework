@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextActivityLocationLoggingAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextActivityLocationLoggingAttribute> CREATOR = new Parcelable.Creator<SemContextActivityLocationLoggingAttribute>() { // from class: com.samsung.android.hardware.context.SemContextActivityLocationLoggingAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextActivityLocationLoggingAttribute createFromParcel(Parcel in) {
             return new SemContextActivityLocationLoggingAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityLocationLoggingAttribute[] newArray(int size) {
             return new SemContextActivityLocationLoggingAttribute[size];
@@ -27,7 +28,23 @@ public class SemContextActivityLocationLoggingAttribute extends SemContextAttrib
     private int mStopPeriod;
     private int mWaitPeriod;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextActivityLocationLoggingAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityLocationLoggingAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityLocationLoggingAttribute createFromParcel(Parcel in) {
+            return new SemContextActivityLocationLoggingAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityLocationLoggingAttribute[] newArray(int size) {
+            return new SemContextActivityLocationLoggingAttribute[size];
+        }
+    }
+
     public SemContextActivityLocationLoggingAttribute() {
         this.mStopPeriod = 60;
         this.mWaitPeriod = 120;

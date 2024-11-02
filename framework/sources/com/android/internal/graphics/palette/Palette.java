@@ -16,6 +16,9 @@ public final class Palette {
         private static final float BLACK_MAX_LIGHTNESS = 0.05f;
         private static final float WHITE_MIN_LIGHTNESS = 0.95f;
 
+        AnonymousClass1() {
+        }
+
         @Override // com.android.internal.graphics.palette.Palette.Filter
         public boolean isAllowed(int rgb, float[] hsl) {
             return (isWhite(hsl) || isBlack(hsl) || isNearRedILine(hsl)) ? false : true;
@@ -221,9 +224,14 @@ public final class Palette {
         }
 
         @Deprecated
-        public AsyncTask<Bitmap, Void, Palette> generate(final PaletteAsyncListener listener) {
+        public AsyncTask<Bitmap, Void, Palette> generate(PaletteAsyncListener listener) {
             return new AsyncTask<Bitmap, Void, Palette>() { // from class: com.android.internal.graphics.palette.Palette.Builder.1
-                /* JADX INFO: Access modifiers changed from: protected */
+                final /* synthetic */ PaletteAsyncListener val$listener;
+
+                AnonymousClass1(PaletteAsyncListener listener2) {
+                    listener = listener2;
+                }
+
                 @Override // android.os.AsyncTask
                 public Palette doInBackground(Bitmap... params) {
                     try {
@@ -234,12 +242,36 @@ public final class Palette {
                     }
                 }
 
-                /* JADX INFO: Access modifiers changed from: protected */
                 @Override // android.os.AsyncTask
                 public void onPostExecute(Palette colorExtractor) {
                     listener.onGenerated(colorExtractor);
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.mBitmap);
+        }
+
+        /* renamed from: com.android.internal.graphics.palette.Palette$Builder$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 extends AsyncTask<Bitmap, Void, Palette> {
+            final /* synthetic */ PaletteAsyncListener val$listener;
+
+            AnonymousClass1(PaletteAsyncListener listener2) {
+                listener = listener2;
+            }
+
+            @Override // android.os.AsyncTask
+            public Palette doInBackground(Bitmap... params) {
+                try {
+                    return Builder.this.generate();
+                } catch (Exception e) {
+                    Log.e(Palette.LOG_TAG, "Exception thrown during async generate", e);
+                    return null;
+                }
+            }
+
+            @Override // android.os.AsyncTask
+            public void onPostExecute(Palette colorExtractor) {
+                listener.onGenerated(colorExtractor);
+            }
         }
 
         private int[] getPixelsFromBitmap(Bitmap bitmap) {
@@ -277,6 +309,33 @@ public final class Palette {
                 return bitmap;
             }
             return Bitmap.createScaledBitmap(bitmap, (int) Math.ceil(bitmap.getWidth() * scaleRatio), (int) Math.ceil(bitmap.getHeight() * scaleRatio), false);
+        }
+    }
+
+    /* renamed from: com.android.internal.graphics.palette.Palette$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Filter {
+        private static final float BLACK_MAX_LIGHTNESS = 0.05f;
+        private static final float WHITE_MIN_LIGHTNESS = 0.95f;
+
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.graphics.palette.Palette.Filter
+        public boolean isAllowed(int rgb, float[] hsl) {
+            return (isWhite(hsl) || isBlack(hsl) || isNearRedILine(hsl)) ? false : true;
+        }
+
+        private boolean isBlack(float[] hslColor) {
+            return hslColor[2] <= BLACK_MAX_LIGHTNESS;
+        }
+
+        private boolean isWhite(float[] hslColor) {
+            return hslColor[2] >= WHITE_MIN_LIGHTNESS;
+        }
+
+        private boolean isNearRedILine(float[] hslColor) {
+            return hslColor[0] >= 10.0f && hslColor[0] <= 37.0f && hslColor[1] <= 0.82f;
         }
     }
 }

@@ -94,8 +94,9 @@ public interface IInputFilterInstallListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IInputFilterInstallListener {
+        public static class Proxy implements IInputFilterInstallListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

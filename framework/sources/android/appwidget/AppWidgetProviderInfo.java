@@ -18,13 +18,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public class AppWidgetProviderInfo implements Parcelable {
     public static final Parcelable.Creator<AppWidgetProviderInfo> CREATOR = new Parcelable.Creator<AppWidgetProviderInfo>() { // from class: android.appwidget.AppWidgetProviderInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AppWidgetProviderInfo createFromParcel(Parcel parcel) {
             return new AppWidgetProviderInfo(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppWidgetProviderInfo[] newArray(int size) {
             return new AppWidgetProviderInfo[size];
@@ -182,7 +183,7 @@ public class AppWidgetProviderInfo implements Parcelable {
         out.writeBoolean(this.isExtendedFromAppWidgetProvider);
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public AppWidgetProviderInfo m737clone() {
         AppWidgetProviderInfo that = new AppWidgetProviderInfo();
         ComponentName componentName = this.provider;
@@ -245,6 +246,23 @@ public class AppWidgetProviderInfo implements Parcelable {
         this.minResizeHeight = TypedValue.complexToDimensionPixelSize(this.minResizeHeight, displayMetrics);
         this.maxResizeWidth = TypedValue.complexToDimensionPixelSize(this.maxResizeWidth, displayMetrics);
         this.maxResizeHeight = TypedValue.complexToDimensionPixelSize(this.maxResizeHeight, displayMetrics);
+    }
+
+    /* renamed from: android.appwidget.AppWidgetProviderInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AppWidgetProviderInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppWidgetProviderInfo createFromParcel(Parcel parcel) {
+            return new AppWidgetProviderInfo(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppWidgetProviderInfo[] newArray(int size) {
+            return new AppWidgetProviderInfo[size];
+        }
     }
 
     public String toString() {

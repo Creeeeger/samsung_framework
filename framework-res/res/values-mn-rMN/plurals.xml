@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Таны утас тогтворгүй байна яагаад гэвэл хэрэглүүрүүд суурилуулсан байсан SD картыг арилгасан. Таны утас хэвийн болохын тулд %d секундийн дараа дахин эхэлнэ. Утас дахин эхлэхээс өмнө хадгалаагүй өгөгдлийг хадгална уу.</item>
+        <item quantity="other">Таны таблетаас хэрэглүүрүүд суурилуулсан SD картыг арилгасан учир тогтворгүй байна. Таны таблет хэвийн болохын тулд %d секундийн дараа дахин эхэлнэ. Таблет дахин эхлэхээс өмнө хадгалаагүй өгөгдөл байвал хадгална уу.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Таны утас тогтворгүй байна яагаад гэвэл хэрэглүүрүүд суурилуулсан байсан SD картыг арилгасан. Таны утас хэвийн болохын тулд %d секундийн дараа дахин эхэлнэ. Утас дахин эхлэхээс өмнө хадгалаагүй өгөгдлийг хадгална уу.</item>
+        <item quantity="one">Таны таблетаас хэрэглүүрүүд суурилуулсан SD картыг арилгасан учир тогтворгүй байна. Таны таблет хэвийн болохын тулд %d секундийн дараа дахин эхэлнэ. Таблет дахин эхлэхээс өмнө хадгалаагүй өгөгдөл байвал хадгална уу.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Таны утас %d секунд дараа дахн эхлнэ.</item>
+        <item quantity="other">Таны таблет %d секунд дараа дахн эхлнэ</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Таны утас %d секунд дараа дахн эхлнэ.</item>
+        <item quantity="one">Таны таблет %d секунд дараа дахн эхлнэ</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

@@ -11,19 +11,24 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class TopResumedActivityChangeItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<TopResumedActivityChangeItem> CREATOR = new Parcelable.Creator<TopResumedActivityChangeItem>() { // from class: android.app.servertransaction.TopResumedActivityChangeItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TopResumedActivityChangeItem createFromParcel(Parcel in) {
             return new TopResumedActivityChangeItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TopResumedActivityChangeItem[] newArray(int size) {
             return new TopResumedActivityChangeItem[size];
         }
     };
     private boolean mOnTop;
+
+    /* synthetic */ TopResumedActivityChangeItem(Parcel parcel, TopResumedActivityChangeItemIA topResumedActivityChangeItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
@@ -65,6 +70,23 @@ public class TopResumedActivityChangeItem extends ActivityTransactionItem {
 
     private TopResumedActivityChangeItem(Parcel in) {
         this.mOnTop = in.readBoolean();
+    }
+
+    /* renamed from: android.app.servertransaction.TopResumedActivityChangeItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TopResumedActivityChangeItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TopResumedActivityChangeItem createFromParcel(Parcel in) {
+            return new TopResumedActivityChangeItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TopResumedActivityChangeItem[] newArray(int size) {
+            return new TopResumedActivityChangeItem[size];
+        }
     }
 
     public boolean equals(Object o) {

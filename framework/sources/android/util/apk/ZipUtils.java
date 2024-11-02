@@ -20,7 +20,6 @@ abstract class ZipUtils {
     private ZipUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Pair<ByteBuffer, Long> findZipEndOfCentralDirectoryRecord(RandomAccessFile zip) throws IOException {
         long fileSize = zip.getChannel().size();
         if (fileSize < 22) {

@@ -61,6 +61,18 @@ public final class DisplayCutout {
     public @interface BoundsPosition {
     }
 
+    /* synthetic */ DisplayCutout(Rect rect, Insets insets, Rect rect2, Rect rect3, Rect rect4, Rect rect5, CutoutPathParserInfo cutoutPathParserInfo, boolean z, DisplayCutoutIA displayCutoutIA) {
+        this(rect, insets, rect2, rect3, rect4, rect5, cutoutPathParserInfo, z);
+    }
+
+    /* synthetic */ DisplayCutout(Rect rect, Insets insets, Bounds bounds, CutoutPathParserInfo cutoutPathParserInfo, DisplayCutoutIA displayCutoutIA) {
+        this(rect, insets, bounds, cutoutPathParserInfo);
+    }
+
+    /* synthetic */ DisplayCutout(Rect rect, Insets insets, Rect[] rectArr, CutoutPathParserInfo cutoutPathParserInfo, boolean z, DisplayCutoutIA displayCutoutIA) {
+        this(rect, insets, rectArr, cutoutPathParserInfo, z);
+    }
+
     static {
         Rect rect = new Rect();
         ZERO_RECT = rect;
@@ -73,10 +85,17 @@ public final class DisplayCutout {
         sCachedCutout = pair;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class Bounds {
         private final Rect[] mRects;
+
+        /* synthetic */ Bounds(Rect rect, Rect rect2, Rect rect3, Rect rect4, boolean z, BoundsIA boundsIA) {
+            this(rect, rect2, rect3, rect4, z);
+        }
+
+        /* synthetic */ Bounds(Rect[] rectArr, boolean z, BoundsIA boundsIA) {
+            this(rectArr, z);
+        }
 
         private Bounds(Rect left, Rect top, Rect right, Rect bottom, boolean copyArguments) {
             this.mRects = r0;
@@ -102,7 +121,6 @@ public final class DisplayCutout {
             this.mRects = rects;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean isEmpty() {
             for (Rect rect : this.mRects) {
                 if (!rect.isEmpty()) {
@@ -112,12 +130,10 @@ public final class DisplayCutout {
             return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Rect getRect(int pos) {
             return new Rect(this.mRects[pos]);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Rect[] getRects() {
             Rect[] rects = new Rect[4];
             for (int i = 0; i < 4; i++) {
@@ -126,7 +142,6 @@ public final class DisplayCutout {
             return rects;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void scale(float scale) {
             for (int i = 0; i < 4; i++) {
                 this.mRects[i].scale(scale);
@@ -229,7 +244,6 @@ public final class DisplayCutout {
             return this.mPhysicalPixelDisplaySizeRatio;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean hasCutout() {
             return !this.mCutoutSpec.isEmpty();
         }
@@ -293,7 +307,6 @@ public final class DisplayCutout {
         this.mCutoutPathParserInfo = info == null ? EMPTY_PARSER_INFO : info;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Rect getCopyOrRef(Rect r, boolean copyArguments) {
         if (r == null) {
             return ZERO_RECT;
@@ -689,13 +702,14 @@ public final class DisplayCutout {
     /* loaded from: classes4.dex */
     public static final class ParcelableWrapper implements Parcelable {
         public static final Parcelable.Creator<ParcelableWrapper> CREATOR = new Parcelable.Creator<ParcelableWrapper>() { // from class: android.view.DisplayCutout.ParcelableWrapper.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ParcelableWrapper createFromParcel(Parcel in) {
                 return new ParcelableWrapper(ParcelableWrapper.readCutoutFromParcel(in));
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ParcelableWrapper[] newArray(int size) {
                 return new ParcelableWrapper[size];
@@ -747,6 +761,23 @@ public final class DisplayCutout {
 
         public void readFromParcel(Parcel in) {
             this.mInner = readCutoutFromParcel(in);
+        }
+
+        /* renamed from: android.view.DisplayCutout$ParcelableWrapper$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ParcelableWrapper> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ParcelableWrapper createFromParcel(Parcel in) {
+                return new ParcelableWrapper(ParcelableWrapper.readCutoutFromParcel(in));
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ParcelableWrapper[] newArray(int size) {
+                return new ParcelableWrapper[size];
+            }
         }
 
         public static DisplayCutout readCutoutFromParcel(Parcel in) {

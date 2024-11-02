@@ -10,13 +10,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class BlobInfo implements Parcelable {
     public static final Parcelable.Creator<BlobInfo> CREATOR = new Parcelable.Creator<BlobInfo>() { // from class: android.app.blob.BlobInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BlobInfo createFromParcel(Parcel source) {
             return new BlobInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BlobInfo[] newArray(int size) {
             return new BlobInfo[size];
@@ -27,6 +28,10 @@ public final class BlobInfo implements Parcelable {
     private final CharSequence mLabel;
     private final List<LeaseInfo> mLeaseInfos;
     private final long mSizeBytes;
+
+    /* synthetic */ BlobInfo(Parcel parcel, BlobInfoIA blobInfoIA) {
+        this(parcel);
+    }
 
     public BlobInfo(long id, long expiryTimeMs, CharSequence label, long sizeBytes, List<LeaseInfo> leaseInfos) {
         this.mId = id;
@@ -88,5 +93,22 @@ public final class BlobInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.app.blob.BlobInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BlobInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BlobInfo createFromParcel(Parcel source) {
+            return new BlobInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BlobInfo[] newArray(int size) {
+            return new BlobInfo[size];
+        }
     }
 }

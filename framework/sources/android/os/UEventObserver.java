@@ -10,18 +10,15 @@ public abstract class UEventObserver {
     private static final String TAG = "UEventObserver";
     private static UEventThread sThread;
 
-    /* renamed from: -$$Nest$smnativeWaitForNextEvent, reason: not valid java name */
-    static /* bridge */ /* synthetic */ String m3253$$Nest$smnativeWaitForNextEvent() {
+    /* renamed from: -$$Nest$smnativeWaitForNextEvent */
+    static /* bridge */ /* synthetic */ String m3252$$Nest$smnativeWaitForNextEvent() {
         return nativeWaitForNextEvent();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeAddMatch(String str);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeRemoveMatch(String str);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetup();
 
     private static native String nativeWaitForNextEvent();
@@ -107,7 +104,6 @@ public abstract class UEventObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class UEventThread extends Thread {
         private final ArrayList<Object> mKeysAndObservers;
@@ -123,7 +119,7 @@ public abstract class UEventObserver {
         public void run() {
             UEventObserver.nativeSetup();
             while (true) {
-                String message = UEventObserver.m3253$$Nest$smnativeWaitForNextEvent();
+                String message = UEventObserver.m3252$$Nest$smnativeWaitForNextEvent();
                 if (message != null) {
                     Log.d(UEventObserver.TAG, message);
                     sendEvent(message);

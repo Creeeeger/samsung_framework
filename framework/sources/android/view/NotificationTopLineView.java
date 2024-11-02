@@ -66,7 +66,6 @@ public class NotificationTopLineView extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -79,7 +78,6 @@ public class NotificationTopLineView extends ViewGroup {
         this.mFeedbackIcon = findViewById(R.id.feedback);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int givenHeight;
@@ -129,7 +127,6 @@ public class NotificationTopLineView extends ViewGroup {
         setMeasuredDimension(givenWidth, wrapHeight ? maxChildHeight : givenHeight3);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         int childCount;
@@ -246,7 +243,6 @@ public class NotificationTopLineView extends ViewGroup {
         setPaddingRelative(paddingStart, getPaddingTop(), getPaddingEnd(), getPaddingBottom());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class HeaderTouchListener implements View.OnTouchListener {
         private float mDownX;
@@ -309,7 +305,6 @@ public class NotificationTopLineView extends ViewGroup {
             return this.mTrackGesture;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean onTouchUp(float upX, float upY, float downX, float downY) {
             if (NotificationTopLineView.this.mFeedbackIcon.isVisibleToUser()) {
                 if (this.mFeedbackRect.contains((int) upX, (int) upY) || this.mFeedbackRect.contains((int) downX, (int) downY)) {
@@ -321,13 +316,11 @@ public class NotificationTopLineView extends ViewGroup {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean isInside(float x, float y) {
             return this.mFeedbackRect.contains((int) x, (int) y);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public View getFirstChildNotGone() {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
@@ -357,11 +350,16 @@ public class NotificationTopLineView extends ViewGroup {
         return this.mTouchListener.onTouchUp(upX, upY, downX, downY);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private final class OverflowAdjuster {
+    public final class OverflowAdjuster {
         private int mHeightSpec;
         private int mOverflow;
         private View mRegrowView;
+
+        /* synthetic */ OverflowAdjuster(NotificationTopLineView notificationTopLineView, OverflowAdjusterIA overflowAdjusterIA) {
+            this();
+        }
 
         private OverflowAdjuster() {
         }

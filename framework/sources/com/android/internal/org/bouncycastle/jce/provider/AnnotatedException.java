@@ -15,7 +15,6 @@ public class AnnotatedException extends Exception implements ExtException {
         this(string, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Throwable getUnderlyingException() {
         return this._underlyingException;
     }

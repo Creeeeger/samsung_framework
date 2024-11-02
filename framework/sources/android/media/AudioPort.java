@@ -32,7 +32,6 @@ public class AudioPort {
     protected final int mRole;
     private final int[] mSamplingRates;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioPort(AudioHandle handle, int role, String name, int[] samplingRates, int[] channelMasks, int[] channelIndexMasks, int[] formats, AudioGain[] gains) {
         int[] iArr = formats;
         this.mHandle = handle;
@@ -57,7 +56,6 @@ public class AudioPort {
         this.mDescriptors = new ArrayList();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioPort(AudioHandle handle, int role, String name, List<AudioProfile> profiles, AudioGain[] gains, List<AudioDescriptor> descriptors) {
         this.mHandle = handle;
         this.mRole = role;
@@ -81,7 +79,6 @@ public class AudioPort {
         this.mFormats = formats.stream().mapToInt(new AudioPort$$ExternalSyntheticLambda0()).toArray();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioHandle handle() {
         return this.mHandle;
     }
@@ -126,7 +123,6 @@ public class AudioPort {
         return this.mGains;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioGain gain(int index) {
         if (index < 0) {
             return null;

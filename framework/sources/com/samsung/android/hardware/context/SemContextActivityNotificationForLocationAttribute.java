@@ -9,13 +9,14 @@ import java.util.ArrayList;
 /* loaded from: classes5.dex */
 public class SemContextActivityNotificationForLocationAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextActivityNotificationForLocationAttribute> CREATOR = new Parcelable.Creator<SemContextActivityNotificationForLocationAttribute>() { // from class: com.samsung.android.hardware.context.SemContextActivityNotificationForLocationAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationForLocationAttribute createFromParcel(Parcel in) {
             return new SemContextActivityNotificationForLocationAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationForLocationAttribute[] newArray(int size) {
             return new SemContextActivityNotificationForLocationAttribute[size];
@@ -25,6 +26,23 @@ public class SemContextActivityNotificationForLocationAttribute extends SemConte
     private static final String TAG = "SemContextActivityNotificationForLocationAttribute";
     private int[] mActivityFilter;
     private int mDuration;
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextActivityNotificationForLocationAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityNotificationForLocationAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityNotificationForLocationAttribute createFromParcel(Parcel in) {
+            return new SemContextActivityNotificationForLocationAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityNotificationForLocationAttribute[] newArray(int size) {
+            return new SemContextActivityNotificationForLocationAttribute[size];
+        }
+    }
 
     SemContextActivityNotificationForLocationAttribute() {
         this.mActivityFilter = new int[]{4};

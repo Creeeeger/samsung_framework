@@ -9,7 +9,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class GpsClock implements Parcelable {
     public static final Parcelable.Creator<GpsClock> CREATOR = new Parcelable.Creator<GpsClock>() { // from class: android.location.GpsClock.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GpsClock createFromParcel(Parcel parcel) {
             GpsClock gpsClock = new GpsClock();
@@ -26,7 +28,6 @@ public class GpsClock implements Parcelable {
             return gpsClock;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GpsClock[] newArray(int size) {
             return new GpsClock[size];
@@ -228,6 +229,34 @@ public class GpsClock implements Parcelable {
     public void resetDriftUncertaintyInNsPerSec() {
         resetFlag((short) 64);
         this.mDriftUncertaintyInNsPerSec = Double.NaN;
+    }
+
+    /* renamed from: android.location.GpsClock$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GpsClock> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsClock createFromParcel(Parcel parcel) {
+            GpsClock gpsClock = new GpsClock();
+            gpsClock.mFlags = (short) parcel.readInt();
+            gpsClock.mLeapSecond = (short) parcel.readInt();
+            gpsClock.mType = parcel.readByte();
+            gpsClock.mTimeInNs = parcel.readLong();
+            gpsClock.mTimeUncertaintyInNs = parcel.readDouble();
+            gpsClock.mFullBiasInNs = parcel.readLong();
+            gpsClock.mBiasInNs = parcel.readDouble();
+            gpsClock.mBiasUncertaintyInNs = parcel.readDouble();
+            gpsClock.mDriftInNsPerSec = parcel.readDouble();
+            gpsClock.mDriftUncertaintyInNsPerSec = parcel.readDouble();
+            return gpsClock;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsClock[] newArray(int size) {
+            return new GpsClock[size];
+        }
     }
 
     @Override // android.os.Parcelable

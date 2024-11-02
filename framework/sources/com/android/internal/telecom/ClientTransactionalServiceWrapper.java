@@ -60,7 +60,6 @@ public class ClientTransactionalServiceWrapper {
         return this.mCallEventCallback;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class ReceiverWrapper implements Consumer<Boolean> {
         private final ResultReceiver mRepeaterReceiver;
@@ -84,8 +83,7 @@ public class ClientTransactionalServiceWrapper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.telecom.ClientTransactionalServiceWrapper$1, reason: invalid class name */
+    /* renamed from: com.android.internal.telecom.ClientTransactionalServiceWrapper$1 */
     /* loaded from: classes5.dex */
     public class AnonymousClass1 extends ICallEventCallback.Stub {
         private static final String ON_ANSWER = "onAnswer";
@@ -126,7 +124,6 @@ public class ClientTransactionalServiceWrapper {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
         public /* synthetic */ void lambda$handleCallEventCallback$0(String action, CallControlCallback callback, ReceiverWrapper outcomeReceiverWrapper, Object[] args, String callId) {
             char c;
@@ -268,7 +265,6 @@ public class ClientTransactionalServiceWrapper {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
         public static /* synthetic */ void lambda$handleEventCallback$1(String action, CallEventCallback callback, Object arg) {
             char c;

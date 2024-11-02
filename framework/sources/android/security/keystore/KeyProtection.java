@@ -28,6 +28,10 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
     private final boolean mUserConfirmationRequired;
     private final boolean mUserPresenceRequred;
 
+    /* synthetic */ KeyProtection(Date date, Date date2, Date date3, int i, String[] strArr, String[] strArr2, String[] strArr3, String[] strArr4, boolean z, boolean z2, int i2, int i3, boolean z3, boolean z4, boolean z5, long j, boolean z6, boolean z7, boolean z8, boolean z9, int i4, boolean z10, KeyProtectionIA keyProtectionIA) {
+        this(date, date2, date3, i, strArr, strArr2, strArr3, strArr4, z, z2, i2, i3, z3, z4, z5, j, z6, z7, z8, z9, i4, z10);
+    }
+
     private KeyProtection(Date keyValidityStart, Date keyValidityForOriginationEnd, Date keyValidityForConsumptionEnd, int purposes, String[] encryptionPaddings, String[] signaturePaddings, String[] digests, String[] blockModes, boolean randomizedEncryptionRequired, boolean userAuthenticationRequired, int userAuthenticationType, int userAuthenticationValidityDurationSeconds, boolean userPresenceRequred, boolean userAuthenticationValidWhileOnBody, boolean invalidatedByBiometricEnrollment, long boundToSecureUserId, boolean criticalToDeviceEncryption, boolean userConfirmationRequired, boolean unlockedDeviceRequired, boolean isStrongBoxBacked, int maxUsageCount, boolean rollbackResistant) {
         this.mKeyValidityStart = Utils.cloneIfNotNull(keyValidityStart);
         this.mKeyValidityForOriginationEnd = Utils.cloneIfNotNull(keyValidityForOriginationEnd);

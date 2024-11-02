@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Xml;
 import android.view.Display;
@@ -23,7 +24,6 @@ import java.io.StringReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class ViewControllerImpl extends ViewController implements IBundleHolder {
     private static final int EVENT_CONTROL_MULTI_TOUCH_BEGIN = 37;
@@ -69,6 +69,10 @@ public final class ViewControllerImpl extends ViewController implements IBundleH
     private float mPrevAbsZoomRate = 1.0f;
     private int mPrevAngle = 0;
     private AllShareEventHandler mAllShareEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ViewControllerImpl.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // com.samsung.android.allshare.AllShareEventHandler
         public void handleEventMessage(CVMessage cvm) {
             Bundle resBundle = cvm.getBundle();
@@ -87,6 +91,9 @@ public final class ViewControllerImpl extends ViewController implements IBundleH
         }
     };
     private IAppControlAPI.IControlEventListener mControlEventListener = new IAppControlAPI.IControlEventListener() { // from class: com.samsung.android.allshare.ViewControllerImpl.2
+        AnonymousClass2() {
+        }
+
         @Override // com.samsung.android.allshare.IAppControlAPI.IControlEventListener
         public void controlEvent(EventSync event) {
             Message msg;
@@ -100,6 +107,9 @@ public final class ViewControllerImpl extends ViewController implements IBundleH
         }
     };
     private Handler mEventHandler = new Handler() { // from class: com.samsung.android.allshare.ViewControllerImpl.3
+        AnonymousClass3() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -162,7 +172,6 @@ public final class ViewControllerImpl extends ViewController implements IBundleH
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ViewControllerImpl(IAllShareConnector connector, DeviceImpl deviceImpl, int tvWidth, int tvHeight) {
         String str;
         this.mIAppComponent = null;
@@ -620,6 +629,121 @@ public final class ViewControllerImpl extends ViewController implements IBundleH
             return;
         }
         this.mIAppComponent.sendTouchGestureEvent(13, tvX, tvY, 0, 0);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ViewControllerImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareEventHandler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            Bundle resBundle = cvm.getBundle();
+            if (resBundle == null) {
+                return;
+            }
+            String strEventID = resBundle.getString(AllShareKey.BUNDLE_STRING_MAIN_TV_EVENT_ID);
+            String strXML = resBundle.getString(AllShareKey.BUNDLE_STRING_MAIN_TV_EVENT_XML);
+            DLog.i_api(ViewControllerImpl.TAG, "[TVControl] mAllShareEvent : " + strEventID + " " + strXML);
+            LastChangeEvent lastChangeEvent = new LastChangeEvent();
+            lastChangeEvent.parseFromXML(strXML);
+            if (lastChangeEvent.getPowerOff().equalsIgnoreCase("PowerOFF") && ViewControllerImpl.this.mEventListener != null) {
+                ViewControllerImpl.this.disconnect();
+                ViewControllerImpl.this.mEventListener.onDisconnected(ViewControllerImpl.this, ERROR.SUCCESS);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ViewControllerImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements IAppControlAPI.IControlEventListener {
+        AnonymousClass2() {
+        }
+
+        @Override // com.samsung.android.allshare.IAppControlAPI.IControlEventListener
+        public void controlEvent(EventSync event) {
+            Message msg;
+            if (ViewControllerImpl.this.mEventHandler != null && (msg = ViewControllerImpl.this.mEventHandler.obtainMessage()) != null) {
+                msg.what = event.mWhat;
+                msg.arg1 = event.mArg1;
+                msg.arg2 = event.mArg2;
+                msg.obj = event.mStr;
+                ViewControllerImpl.this.mEventHandler.sendMessage(msg);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ViewControllerImpl$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 extends Handler {
+        AnonymousClass3() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 100:
+                    DLog.i_api(ViewControllerImpl.TAG, "[ViewControl] Event : IAPP_AUTHENTICATION arg : " + msg.arg1);
+                    if (msg.arg1 == 0) {
+                        ViewControllerImpl.this.mIsConnected = false;
+                        if (ViewControllerImpl.this.mResponseListener != null) {
+                            ViewControllerImpl.this.mResponseListener.onConnectResponseReceived(ViewControllerImpl.this, ERROR.PERMISSION_NOT_ALLOWED);
+                            return;
+                        }
+                        return;
+                    }
+                    if (msg.arg1 == 1 || msg.arg1 == 2) {
+                        ViewControllerImpl.this.mIsConnected = true;
+                        ViewControllerImpl.this.mIAppComponent.setTouchGestureTouchMode(0);
+                        if (ViewControllerImpl.this.mResponseListener != null) {
+                            ViewControllerImpl.this.mResponseListener.onConnectResponseReceived(ViewControllerImpl.this, ERROR.SUCCESS);
+                            return;
+                        }
+                        return;
+                    }
+                    return;
+                case 101:
+                    DLog.i_api(ViewControllerImpl.TAG, "[ViewControl] Event : IAPP_AUTHENTICATION_TIMEOUT arg : " + msg.arg1);
+                    ViewControllerImpl.this.mIsConnected = false;
+                    if (ViewControllerImpl.this.mResponseListener != null) {
+                        ViewControllerImpl.this.mResponseListener.onConnectResponseReceived(ViewControllerImpl.this, ERROR.PERMISSION_NOT_ALLOWED);
+                        return;
+                    }
+                    return;
+                case 300:
+                    DLog.i_api(ViewControllerImpl.TAG, "[ViewControl] Event : IAPP_EXIT arg : " + msg.arg1);
+                    ViewControllerImpl.this.mIsConnected = false;
+                    if (msg.arg1 == 0) {
+                        if (ViewControllerImpl.this.mEventListener != null) {
+                            ViewControllerImpl.this.mEventListener.onDisconnected(ViewControllerImpl.this, ERROR.PERMISSION_NOT_ALLOWED);
+                            return;
+                        }
+                        return;
+                    } else {
+                        if (msg.arg1 == 1 && ViewControllerImpl.this.mEventListener != null) {
+                            ViewControllerImpl.this.mEventListener.onDisconnected(ViewControllerImpl.this, ERROR.PERMISSION_NOT_ALLOWED);
+                            return;
+                        }
+                        return;
+                    }
+                case 9999:
+                    ViewControllerImpl.this.mIsConnected = false;
+                    if (ViewControllerImpl.this.mResponseListener != null) {
+                        ViewControllerImpl.this.mResponseListener.onConnectResponseReceived(ViewControllerImpl.this, ERROR.FAIL);
+                        return;
+                    }
+                    return;
+                default:
+                    DLog.i_api(ViewControllerImpl.TAG, "[ViewControl] Event : Others : " + msg.obj);
+                    return;
+            }
+        }
     }
 
     /* loaded from: classes5.dex */

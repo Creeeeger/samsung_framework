@@ -33,7 +33,6 @@ public class BCDHPublicKey implements DHPublicKey {
     private transient SubjectPublicKeyInfo info;
     private BigInteger y;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDHPublicKey(DHPublicKeySpec spec) {
         this.y = spec.getY();
         if (spec instanceof DHExtendedPublicKeySpec) {
@@ -50,7 +49,6 @@ public class BCDHPublicKey implements DHPublicKey {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDHPublicKey(DHPublicKey key) {
         this.y = key.getY();
         DHParameterSpec params = key.getParams();
@@ -63,14 +61,12 @@ public class BCDHPublicKey implements DHPublicKey {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDHPublicKey(DHPublicKeyParameters params) {
         this.y = params.getY();
         this.dhSpec = new DHDomainParameterSpec(params.getParameters());
         this.dhPublicKey = params;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDHPublicKey(BigInteger y, DHParameterSpec dhSpec) {
         this.y = y;
         this.dhSpec = dhSpec;

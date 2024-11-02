@@ -90,7 +90,6 @@ public class FilterContext {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void addGraph(FilterGraph graph) {
         this.mGraphs.add(graph);
     }

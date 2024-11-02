@@ -96,8 +96,9 @@ public interface IStoreUpgradedKeyCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IStoreUpgradedKeyCallback {
+        public static class Proxy implements IStoreUpgradedKeyCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

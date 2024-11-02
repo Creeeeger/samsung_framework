@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class PermissionSyncRequest extends SystemDataTransferRequest implements Parcelable {
     public static final Parcelable.Creator<PermissionSyncRequest> CREATOR = new Parcelable.Creator<PermissionSyncRequest>() { // from class: android.companion.datatransfer.PermissionSyncRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PermissionSyncRequest createFromParcel(Parcel in) {
             return new PermissionSyncRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionSyncRequest[] newArray(int size) {
             return new PermissionSyncRequest[size];
@@ -30,5 +31,22 @@ public class PermissionSyncRequest extends SystemDataTransferRequest implements 
 
     PermissionSyncRequest(Parcel in) {
         super(in);
+    }
+
+    /* renamed from: android.companion.datatransfer.PermissionSyncRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PermissionSyncRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PermissionSyncRequest createFromParcel(Parcel in) {
+            return new PermissionSyncRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PermissionSyncRequest[] newArray(int size) {
+            return new PermissionSyncRequest[size];
+        }
     }
 }

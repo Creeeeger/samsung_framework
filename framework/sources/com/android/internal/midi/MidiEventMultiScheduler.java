@@ -9,6 +9,10 @@ public class MidiEventMultiScheduler {
 
     /* loaded from: classes4.dex */
     private class MultiLockMidiEventScheduler extends MidiEventScheduler {
+        /* synthetic */ MultiLockMidiEventScheduler(MidiEventMultiScheduler midiEventMultiScheduler, MultiLockMidiEventSchedulerIA multiLockMidiEventSchedulerIA) {
+            this();
+        }
+
         private MultiLockMidiEventScheduler() {
         }
 

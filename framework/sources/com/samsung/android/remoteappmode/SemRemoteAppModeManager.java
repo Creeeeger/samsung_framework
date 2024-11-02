@@ -207,8 +207,9 @@ public final class SemRemoteAppModeManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class TaskChangeListenerDelegate extends ITaskChangeListener.Stub {
+    public static class TaskChangeListenerDelegate extends ITaskChangeListener.Stub {
         private TaskChangeListener mListener;
 
         TaskChangeListenerDelegate(TaskChangeListener listener) {
@@ -403,8 +404,9 @@ public final class SemRemoteAppModeManager {
         this.mService = service;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class RotationChangedListenerDelegate extends IRotationChangeListener.Stub {
+    public static class RotationChangedListenerDelegate extends IRotationChangeListener.Stub {
         private RotationChangedListener mListener;
 
         RotationChangedListenerDelegate(RotationChangedListener listener) {
@@ -488,8 +490,9 @@ public final class SemRemoteAppModeManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class SecureAppChangedListenerDelegate extends ISecureAppChangedListener.Stub {
+    public static class SecureAppChangedListenerDelegate extends ISecureAppChangedListener.Stub {
         private SecureAppChangedListener mListener;
 
         SecureAppChangedListenerDelegate(SecureAppChangedListener listener) {
@@ -607,8 +610,9 @@ public final class SemRemoteAppModeManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class StartActivityInterceptedListenerDelegate extends IStartActivityInterceptListener.Stub {
+    public static class StartActivityInterceptedListenerDelegate extends IStartActivityInterceptListener.Stub {
         private StartActivityInterceptedListener mListener;
 
         StartActivityInterceptedListenerDelegate(StartActivityInterceptedListener listener) {
@@ -738,8 +742,9 @@ public final class SemRemoteAppModeManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class RemoteAppModeListenerDelegate extends IRemoteAppModeListener.Stub {
+    public static class RemoteAppModeListenerDelegate extends IRemoteAppModeListener.Stub {
         private RemoteAppModeListener mListener;
 
         RemoteAppModeListenerDelegate(RemoteAppModeListener listener) {

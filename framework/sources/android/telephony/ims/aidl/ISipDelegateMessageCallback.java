@@ -114,8 +114,9 @@ public interface ISipDelegateMessageCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISipDelegateMessageCallback {
+        public static class Proxy implements ISipDelegateMessageCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

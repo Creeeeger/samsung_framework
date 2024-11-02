@@ -3,7 +3,6 @@ package android.speech.tts;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class AudioPlaybackHandler {
     private static final boolean DBG = false;
@@ -68,8 +67,13 @@ public class AudioPlaybackHandler {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class MessageLoop implements Runnable {
+    public final class MessageLoop implements Runnable {
+        /* synthetic */ MessageLoop(AudioPlaybackHandler audioPlaybackHandler, MessageLoopIA messageLoopIA) {
+            this();
+        }
+
         private MessageLoop() {
         }
 

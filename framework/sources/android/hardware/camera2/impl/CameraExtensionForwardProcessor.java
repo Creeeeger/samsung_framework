@@ -94,9 +94,12 @@ public class CameraExtensionForwardProcessor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class ForwardCallback implements ImageReader.OnImageAvailableListener {
+        /* synthetic */ ForwardCallback(CameraExtensionForwardProcessor cameraExtensionForwardProcessor, ForwardCallbackIA forwardCallbackIA) {
+            this();
+        }
+
         private ForwardCallback() {
         }
 

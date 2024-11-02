@@ -18,13 +18,14 @@ import java.util.function.IntFunction;
 /* loaded from: classes3.dex */
 public final class FillRequest implements Parcelable {
     public static final Parcelable.Creator<FillRequest> CREATOR = new Parcelable.Creator<FillRequest>() { // from class: android.service.autofill.FillRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FillRequest[] newArray(int size) {
             return new FillRequest[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FillRequest createFromParcel(Parcel in) {
             return new FillRequest(in);
@@ -67,7 +68,6 @@ public final class FillRequest implements Parcelable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String singleRequestFlagsToString(int value) {
         switch (value) {
             case 1:
@@ -194,6 +194,23 @@ public final class FillRequest implements Parcelable {
         this.mInlineSuggestionsRequest = inlineSuggestionsRequest;
         this.mDelayedFillIntentSender = delayedFillIntentSender;
         onConstructed();
+    }
+
+    /* renamed from: android.service.autofill.FillRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FillRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FillRequest[] newArray(int size) {
+            return new FillRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FillRequest createFromParcel(Parcel in) {
+            return new FillRequest(in);
+        }
     }
 
     @Deprecated

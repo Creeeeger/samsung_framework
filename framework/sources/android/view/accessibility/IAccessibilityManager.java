@@ -1276,7 +1276,6 @@ public interface IAccessibilityManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IAccessibilityManager {
             private IBinder mRemote;
@@ -2506,7 +2505,9 @@ public interface IAccessibilityManager extends IInterface {
     /* loaded from: classes4.dex */
     public static class WindowTransformationSpec implements Parcelable {
         public static final Parcelable.Creator<WindowTransformationSpec> CREATOR = new Parcelable.Creator<WindowTransformationSpec>() { // from class: android.view.accessibility.IAccessibilityManager.WindowTransformationSpec.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public WindowTransformationSpec createFromParcel(Parcel _aidl_source) {
                 WindowTransformationSpec _aidl_out = new WindowTransformationSpec();
@@ -2514,7 +2515,6 @@ public interface IAccessibilityManager extends IInterface {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public WindowTransformationSpec[] newArray(int _aidl_size) {
                 return new WindowTransformationSpec[_aidl_size];
@@ -2522,6 +2522,25 @@ public interface IAccessibilityManager extends IInterface {
         };
         public MagnificationSpec magnificationSpec;
         public float[] transformationMatrix;
+
+        /* renamed from: android.view.accessibility.IAccessibilityManager$WindowTransformationSpec$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<WindowTransformationSpec> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public WindowTransformationSpec createFromParcel(Parcel _aidl_source) {
+                WindowTransformationSpec _aidl_out = new WindowTransformationSpec();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public WindowTransformationSpec[] newArray(int _aidl_size) {
+                return new WindowTransformationSpec[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

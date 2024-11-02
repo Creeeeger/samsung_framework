@@ -420,18 +420,30 @@ public class Selection {
 
     /* loaded from: classes3.dex */
     private static final class START implements NoCopySpan {
+        /* synthetic */ START(STARTIA startia) {
+            this();
+        }
+
         private START() {
         }
     }
 
     /* loaded from: classes3.dex */
     private static final class END implements NoCopySpan {
+        /* synthetic */ END(ENDIA endia) {
+            this();
+        }
+
         private END() {
         }
     }
 
     /* loaded from: classes3.dex */
     private static final class MEMORY implements NoCopySpan {
+        /* synthetic */ MEMORY(MEMORYIA memoryia) {
+            this();
+        }
+
         private MEMORY() {
         }
     }

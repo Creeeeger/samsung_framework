@@ -10,7 +10,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CellBroadcastIdRange implements Parcelable {
     public static final Parcelable.Creator<CellBroadcastIdRange> CREATOR = new Parcelable.Creator<CellBroadcastIdRange>() { // from class: android.telephony.CellBroadcastIdRange.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellBroadcastIdRange createFromParcel(Parcel in) {
             int startId = in.readInt();
@@ -20,7 +22,6 @@ public final class CellBroadcastIdRange implements Parcelable {
             return new CellBroadcastIdRange(startId, endId, type, isEnabled);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellBroadcastIdRange[] newArray(int size) {
             return new CellBroadcastIdRange[size];
@@ -66,6 +67,27 @@ public final class CellBroadcastIdRange implements Parcelable {
         out.writeInt(this.mEndId);
         out.writeInt(this.mType);
         out.writeBoolean(this.mIsEnabled);
+    }
+
+    /* renamed from: android.telephony.CellBroadcastIdRange$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellBroadcastIdRange> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellBroadcastIdRange createFromParcel(Parcel in) {
+            int startId = in.readInt();
+            int endId = in.readInt();
+            int type = in.readInt();
+            boolean isEnabled = in.readBoolean();
+            return new CellBroadcastIdRange(startId, endId, type, isEnabled);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellBroadcastIdRange[] newArray(int size) {
+            return new CellBroadcastIdRange[size];
+        }
     }
 
     @Override // android.os.Parcelable

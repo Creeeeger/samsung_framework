@@ -8,7 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class CaptureBundle implements Parcelable {
     public static final Parcelable.Creator<CaptureBundle> CREATOR = new Parcelable.Creator<CaptureBundle>() { // from class: android.hardware.camera2.extension.CaptureBundle.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CaptureBundle createFromParcel(Parcel _aidl_source) {
             CaptureBundle _aidl_out = new CaptureBundle();
@@ -16,7 +18,6 @@ public class CaptureBundle implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CaptureBundle[] newArray(int _aidl_size) {
             return new CaptureBundle[_aidl_size];
@@ -26,6 +27,25 @@ public class CaptureBundle implements Parcelable {
     public CameraMetadataNative captureResult;
     public int stage = 0;
     public int sequenceId = 0;
+
+    /* renamed from: android.hardware.camera2.extension.CaptureBundle$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CaptureBundle> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CaptureBundle createFromParcel(Parcel _aidl_source) {
+            CaptureBundle _aidl_out = new CaptureBundle();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CaptureBundle[] newArray(int _aidl_size) {
+            return new CaptureBundle[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

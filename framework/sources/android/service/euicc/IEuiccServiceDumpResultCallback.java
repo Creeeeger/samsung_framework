@@ -84,8 +84,9 @@ public interface IEuiccServiceDumpResultCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IEuiccServiceDumpResultCallback {
+        public static class Proxy implements IEuiccServiceDumpResultCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

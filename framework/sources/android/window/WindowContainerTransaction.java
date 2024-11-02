@@ -29,13 +29,14 @@ public final class WindowContainerTransaction implements Parcelable {
     public static final int CHANGE_TRANSIT_REQUEST_SPLIT_TO_FULLSCREEN = 2;
     public static final int CHANGE_TRANSIT_REQUEST_UNDEFINED = 0;
     public static final Parcelable.Creator<WindowContainerTransaction> CREATOR = new Parcelable.Creator<WindowContainerTransaction>() { // from class: android.window.WindowContainerTransaction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WindowContainerTransaction createFromParcel(Parcel in) {
             return new WindowContainerTransaction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowContainerTransaction[] newArray(int size) {
             return new WindowContainerTransaction[size];
@@ -63,6 +64,10 @@ public final class WindowContainerTransaction implements Parcelable {
 
     /* loaded from: classes4.dex */
     public @interface ChangeTransitRequest {
+    }
+
+    /* synthetic */ WindowContainerTransaction(Parcel parcel, WindowContainerTransactionIA windowContainerTransactionIA) {
+        this(parcel);
     }
 
     public static String changeTransitRequestToString(int changeTransitRequest) {
@@ -695,6 +700,23 @@ public final class WindowContainerTransaction implements Parcelable {
         return 0;
     }
 
+    /* renamed from: android.window.WindowContainerTransaction$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WindowContainerTransaction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowContainerTransaction createFromParcel(Parcel in) {
+            return new WindowContainerTransaction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowContainerTransaction[] newArray(int size) {
+            return new WindowContainerTransaction[size];
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static class Change implements Parcelable {
         public static final int CHANGE_BOUNDS_TRANSACTION = 2;
@@ -708,13 +730,14 @@ public final class WindowContainerTransaction implements Parcelable {
         public static final int CHANGE_PIP_CALLBACK = 4;
         public static final int CHANGE_RELATIVE_BOUNDS = 512;
         public static final Parcelable.Creator<Change> CREATOR = new Parcelable.Creator<Change>() { // from class: android.window.WindowContainerTransaction.Change.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Change createFromParcel(Parcel in) {
                 return new Change(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Change[] newArray(int size) {
                 return new Change[size];
@@ -1118,18 +1141,36 @@ public final class WindowContainerTransaction implements Parcelable {
         public int describeContents() {
             return 0;
         }
+
+        /* renamed from: android.window.WindowContainerTransaction$Change$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Change> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Change createFromParcel(Parcel in) {
+                return new Change(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Change[] newArray(int size) {
+                return new Change[size];
+            }
+        }
     }
 
     /* loaded from: classes4.dex */
     public static final class HierarchyOp implements Parcelable {
         public static final Parcelable.Creator<HierarchyOp> CREATOR = new Parcelable.Creator<HierarchyOp>() { // from class: android.window.WindowContainerTransaction.HierarchyOp.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public HierarchyOp createFromParcel(Parcel in) {
                 return new HierarchyOp(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HierarchyOp[] newArray(int size) {
                 return new HierarchyOp[size];
@@ -1170,6 +1211,10 @@ public final class WindowContainerTransaction implements Parcelable {
         private boolean mToTop;
         private final int mType;
         private int[] mWindowingModes;
+
+        /* synthetic */ HierarchyOp(int i, HierarchyOpIA hierarchyOpIA) {
+            this(i);
+        }
 
         public static HierarchyOp createForReparent(IBinder container, IBinder reparent, boolean toTop) {
             return new Builder(0).setContainer(container).setReparentContainer(reparent).setToTop(toTop).build();
@@ -1450,7 +1495,23 @@ public final class WindowContainerTransaction implements Parcelable {
             return 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: android.window.WindowContainerTransaction$HierarchyOp$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<HierarchyOp> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public HierarchyOp createFromParcel(Parcel in) {
+                return new HierarchyOp(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public HierarchyOp[] newArray(int size) {
+                return new HierarchyOp[size];
+            }
+        }
+
         /* loaded from: classes4.dex */
         public static class Builder {
             private Intent mActivityIntent;
@@ -1575,13 +1636,14 @@ public final class WindowContainerTransaction implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class ContainerChange implements Parcelable {
         public static final Parcelable.Creator<ContainerChange> CREATOR = new Parcelable.Creator<ContainerChange>() { // from class: android.window.WindowContainerTransaction.ContainerChange.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ContainerChange createFromParcel(Parcel in) {
                 return new ContainerChange(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ContainerChange[] newArray(int size) {
                 return new ContainerChange[size];
@@ -1604,6 +1666,23 @@ public final class WindowContainerTransaction implements Parcelable {
 
         public IBinder getToken() {
             return this.mToken;
+        }
+
+        /* renamed from: android.window.WindowContainerTransaction$ContainerChange$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ContainerChange> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ContainerChange createFromParcel(Parcel in) {
+                return new ContainerChange(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ContainerChange[] newArray(int size) {
+                return new ContainerChange[size];
+            }
         }
 
         @Override // android.os.Parcelable

@@ -42,7 +42,6 @@ public class PathIterator implements Iterator<Segment> {
     @CriticalNative
     private static native int nPeek(long j);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PathIterator(Path path) {
         this.mPath = path;
         long nCreate = nCreate(path.mNativePath);
@@ -97,7 +96,6 @@ public class PathIterator implements Iterator<Segment> {
         return verb;
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.util.Iterator
     public Segment next() {
         int returnVerb = getReturnVerb(this.mCachedVerb);

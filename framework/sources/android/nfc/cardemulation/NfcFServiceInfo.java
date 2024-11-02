@@ -24,7 +24,9 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes3.dex */
 public final class NfcFServiceInfo implements Parcelable {
     public static final Parcelable.Creator<NfcFServiceInfo> CREATOR = new Parcelable.Creator<NfcFServiceInfo>() { // from class: android.nfc.cardemulation.NfcFServiceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NfcFServiceInfo createFromParcel(Parcel source) {
             String dynamicSystemCode;
@@ -51,7 +53,6 @@ public final class NfcFServiceInfo implements Parcelable {
             return service;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NfcFServiceInfo[] newArray(int size) {
             return new NfcFServiceInfo[size];
@@ -267,6 +268,44 @@ public final class NfcFServiceInfo implements Parcelable {
         }
         dest.writeInt(this.mUid);
         dest.writeString(this.mT3tPmm);
+    }
+
+    /* renamed from: android.nfc.cardemulation.NfcFServiceInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NfcFServiceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NfcFServiceInfo createFromParcel(Parcel source) {
+            String dynamicSystemCode;
+            String dynamicNfcid2;
+            ResolveInfo info = ResolveInfo.CREATOR.createFromParcel(source);
+            String description = source.readString();
+            String systemCode = source.readString();
+            if (source.readInt() == 0) {
+                dynamicSystemCode = null;
+            } else {
+                String dynamicSystemCode2 = source.readString();
+                dynamicSystemCode = dynamicSystemCode2;
+            }
+            String nfcid2 = source.readString();
+            if (source.readInt() == 0) {
+                dynamicNfcid2 = null;
+            } else {
+                String dynamicNfcid22 = source.readString();
+                dynamicNfcid2 = dynamicNfcid22;
+            }
+            int uid = source.readInt();
+            String t3tPmm = source.readString();
+            NfcFServiceInfo service = new NfcFServiceInfo(info, description, systemCode, dynamicSystemCode, nfcid2, dynamicNfcid2, uid, t3tPmm);
+            return service;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NfcFServiceInfo[] newArray(int size) {
+            return new NfcFServiceInfo[size];
+        }
     }
 
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {

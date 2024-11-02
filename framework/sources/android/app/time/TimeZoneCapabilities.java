@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TimeZoneCapabilities implements Parcelable {
     public static final Parcelable.Creator<TimeZoneCapabilities> CREATOR = new Parcelable.Creator<TimeZoneCapabilities>() { // from class: android.app.time.TimeZoneCapabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TimeZoneCapabilities createFromParcel(Parcel in) {
             return TimeZoneCapabilities.createFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneCapabilities[] newArray(int size) {
             return new TimeZoneCapabilities[size];
@@ -29,6 +30,27 @@ public final class TimeZoneCapabilities implements Parcelable {
     private final boolean mUseLocationEnabled;
     private final UserHandle mUserHandle;
 
+    /* synthetic */ TimeZoneCapabilities(Builder builder, TimeZoneCapabilitiesIA timeZoneCapabilitiesIA) {
+        this(builder);
+    }
+
+    /* renamed from: android.app.time.TimeZoneCapabilities$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TimeZoneCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeZoneCapabilities createFromParcel(Parcel in) {
+            return TimeZoneCapabilities.createFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeZoneCapabilities[] newArray(int size) {
+            return new TimeZoneCapabilities[size];
+        }
+    }
+
     private TimeZoneCapabilities(Builder builder) {
         this.mUserHandle = (UserHandle) Objects.requireNonNull(builder.mUserHandle);
         this.mConfigureAutoDetectionEnabledCapability = builder.mConfigureAutoDetectionEnabledCapability;
@@ -37,7 +59,6 @@ public final class TimeZoneCapabilities implements Parcelable {
         this.mSetManualTimeZoneCapability = builder.mSetManualTimeZoneCapability;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static TimeZoneCapabilities createFromParcel(Parcel in) {
         UserHandle userHandle = UserHandle.readFromParcel(in);
         return new Builder(userHandle).setConfigureAutoDetectionEnabledCapability(in.readInt()).setUseLocationEnabled(in.readBoolean()).setConfigureGeoDetectionEnabledCapability(in.readInt()).setSetManualTimeZoneCapability(in.readInt()).build();

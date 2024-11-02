@@ -1,8 +1,8 @@
 package android.os;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-class BadTypeParcelableException extends BadParcelableException {
-    /* JADX INFO: Access modifiers changed from: package-private */
+public class BadTypeParcelableException extends BadParcelableException {
     public BadTypeParcelableException(String msg) {
         super(msg);
     }

@@ -11,7 +11,6 @@ public final class CustomPrinterIconCallback {
     private final IPrintServiceClient mObserver;
     private final PrinterId mPrinterId;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CustomPrinterIconCallback(PrinterId printerId, IPrintServiceClient observer) {
         this.mPrinterId = printerId;
         this.mObserver = observer;

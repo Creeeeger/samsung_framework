@@ -19,7 +19,6 @@ public abstract class MFGraphUnitFactory {
 
     public abstract GraphNode<MediaFilter> newNode(MediaFilter mediaFilter);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract MediaFilter parallelizeFilter(MediaFilterFactory mediaFilterFactory, MFDescriptor mFDescriptor, MediaFilter mediaFilter);
 
     protected MFGraphUnitFactory(Consumer<MediaFilterFactory.Builder> builderConstitutor) {

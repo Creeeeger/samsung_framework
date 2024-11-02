@@ -18,12 +18,10 @@ final class ExtensionSchemas {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ExtensionSchema<?> lite() {
         return LITE_SCHEMA;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ExtensionSchema<?> full() {
         ExtensionSchema<?> extensionSchema = FULL_SCHEMA;
         if (extensionSchema == null) {

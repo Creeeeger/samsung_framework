@@ -9,7 +9,6 @@ public class SContextAutoRotationAttribute extends SContextAttribute {
     private static final String TAG = "SContextAutoRotationAttribute";
     private int mDeviceType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SContextAutoRotationAttribute() {
         this.mDeviceType = 0;
         setAttribute();

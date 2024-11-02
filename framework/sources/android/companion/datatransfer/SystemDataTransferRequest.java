@@ -10,7 +10,6 @@ public abstract class SystemDataTransferRequest {
     boolean mUserConsented;
     int mUserId;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SystemDataTransferRequest(int associationId, int dataType) {
         this.mUserConsented = false;
         this.mAssociationId = associationId;
@@ -41,7 +40,6 @@ public abstract class SystemDataTransferRequest {
         this.mUserConsented = isUserConsented;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SystemDataTransferRequest(Parcel in) {
         this.mUserConsented = false;
         this.mAssociationId = in.readInt();

@@ -212,7 +212,6 @@ public class BatteryStatsHistory {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$new$0(Set dedup, File dir, String name) {
         int c;
         int b = name.lastIndexOf(".bin");
@@ -427,7 +426,6 @@ public class BatteryStatsHistory {
         return new BatteryStatsHistoryIterator(this);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void iteratorFinished() {
         Parcel parcel = this.mHistoryBuffer;
         parcel.setDataPosition(parcel.dataSize());

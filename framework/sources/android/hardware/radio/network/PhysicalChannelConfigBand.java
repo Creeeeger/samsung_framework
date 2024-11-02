@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class PhysicalChannelConfigBand implements Parcelable {
     public static final Parcelable.Creator<PhysicalChannelConfigBand> CREATOR = new Parcelable.Creator<PhysicalChannelConfigBand>() { // from class: android.hardware.radio.network.PhysicalChannelConfigBand.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PhysicalChannelConfigBand createFromParcel(Parcel _aidl_source) {
             return new PhysicalChannelConfigBand(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhysicalChannelConfigBand[] newArray(int _aidl_size) {
             return new PhysicalChannelConfigBand[_aidl_size];
@@ -34,6 +35,10 @@ public final class PhysicalChannelConfigBand implements Parcelable {
         public static final int ngranBand = 4;
         public static final int noinit = 0;
         public static final int utranBand = 2;
+    }
+
+    /* synthetic */ PhysicalChannelConfigBand(Parcel parcel, PhysicalChannelConfigBandIA physicalChannelConfigBandIA) {
+        this(parcel);
     }
 
     public PhysicalChannelConfigBand() {
@@ -122,6 +127,23 @@ public final class PhysicalChannelConfigBand implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.radio.network.PhysicalChannelConfigBand$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PhysicalChannelConfigBand> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhysicalChannelConfigBand createFromParcel(Parcel _aidl_source) {
+            return new PhysicalChannelConfigBand(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PhysicalChannelConfigBand[] newArray(int _aidl_size) {
+            return new PhysicalChannelConfigBand[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

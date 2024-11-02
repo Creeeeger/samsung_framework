@@ -385,9 +385,12 @@ public class SemTelecomManager {
         return sSamsungTelecomService;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class DeathRecipient implements IBinder.DeathRecipient {
+        /* synthetic */ DeathRecipient(DeathRecipientIA deathRecipientIA) {
+            this();
+        }
+
         private DeathRecipient() {
         }
 
@@ -397,7 +400,6 @@ public class SemTelecomManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void resetServiceCache() {
         synchronized (CACHE_LOCK) {
             ISamsungTelecomService iSamsungTelecomService = sSamsungTelecomService;

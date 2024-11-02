@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public class ReferrerIntent extends Intent {
     public static final Parcelable.Creator<ReferrerIntent> CREATOR = new Parcelable.Creator<ReferrerIntent>() { // from class: com.android.internal.content.ReferrerIntent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ReferrerIntent createFromParcel(Parcel source) {
             return new ReferrerIntent(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ReferrerIntent[] newArray(int size) {
             return new ReferrerIntent[size];
@@ -36,6 +37,23 @@ public class ReferrerIntent extends Intent {
     ReferrerIntent(Parcel in) {
         readFromParcel(in);
         this.mReferrer = in.readString();
+    }
+
+    /* renamed from: com.android.internal.content.ReferrerIntent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ReferrerIntent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ReferrerIntent createFromParcel(Parcel source) {
+            return new ReferrerIntent(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ReferrerIntent[] newArray(int size) {
+            return new ReferrerIntent[size];
+        }
     }
 
     public boolean equals(Object obj) {

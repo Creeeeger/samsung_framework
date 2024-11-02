@@ -85,7 +85,6 @@ public interface IVoiceActionCheckCallback extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IVoiceActionCheckCallback {
             private IBinder mRemote;

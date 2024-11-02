@@ -13,6 +13,6 @@ public final /* synthetic */ class VoiceInteractionService$$ExternalSyntheticLam
 
     @Override // java.util.function.Consumer
     public final void accept(Object obj) {
-        VoiceInteractionService.$r8$lambda$DMmQu49JU0VYMYTGExgCNvdgVUw(this.f$0, (AbstractDetector) obj);
+        this.f$0.onHotwordDetectorDestroyed((AbstractDetector) obj);
     }
 }

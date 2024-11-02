@@ -73,7 +73,6 @@ public interface RegistrationManager {
     public static class RegistrationCallback {
         private final RegistrationBinder mBinder = new RegistrationBinder(this);
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class RegistrationBinder extends IImsRegistrationCallback.Stub {
             private Bundle mBundle = new Bundle();
@@ -102,7 +101,6 @@ public interface RegistrationManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRegistered$0(ImsRegistrationAttributes attr) {
                 this.mLocalCallback.onRegistered(attr);
             }
@@ -125,7 +123,6 @@ public interface RegistrationManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRegistering$1(ImsRegistrationAttributes attr) {
                 this.mLocalCallback.onRegistering(attr);
             }
@@ -148,7 +145,6 @@ public interface RegistrationManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDeregistered$2(ImsReasonInfo info, int suggestedAction, int imsRadioTech) {
                 this.mLocalCallback.onUnregistered(info, suggestedAction, imsRadioTech);
             }
@@ -177,12 +173,10 @@ public interface RegistrationManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDeregisteredWithDetails$3(ImsReasonInfo info, int suggestedAction, int imsRadioTech) {
                 this.mLocalCallback.onUnregistered(info, suggestedAction, imsRadioTech);
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDeregisteredWithDetails$4(ImsReasonInfo info, SipDetails details) {
                 this.mLocalCallback.onUnregistered(info, details);
             }
@@ -205,7 +199,6 @@ public interface RegistrationManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onTechnologyChangeFailed$5(int imsRadioTech, ImsReasonInfo info) {
                 this.mLocalCallback.onTechnologyChangeFailed(RegistrationManager.getAccessType(imsRadioTech), info);
             }
@@ -228,12 +221,10 @@ public interface RegistrationManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onSubscriberAssociatedUriChanged$6(Uri[] uris) {
                 this.mLocalCallback.onSubscriberAssociatedUriChanged(uris);
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }

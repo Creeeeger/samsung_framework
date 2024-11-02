@@ -82,7 +82,6 @@ public interface IVoiceInteractorRequest extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IVoiceInteractorRequest {
             private IBinder mRemote;

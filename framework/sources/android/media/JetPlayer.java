@@ -175,7 +175,6 @@ public class JetPlayer {
         return native_clearQueue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class NativeEventHandler extends Handler {
         private JetPlayer mJet;
@@ -255,7 +254,6 @@ public class JetPlayer {
         Log.d(TAG, "[ android.media.JetPlayer ] " + msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void loge(String msg) {
         Log.e(TAG, "[ android.media.JetPlayer ] " + msg);
     }

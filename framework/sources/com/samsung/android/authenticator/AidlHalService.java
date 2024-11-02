@@ -10,8 +10,9 @@ import java.io.FileInputStream;
 import vendor.samsung.hardware.authfw.ISehAuthenticationFramework;
 import vendor.samsung.hardware.authfw.SehResult;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-final class AidlHalService implements XidlHalService, IBinder.DeathRecipient {
+public final class AidlHalService implements XidlHalService, IBinder.DeathRecipient {
     private static final String TAG = "AHS";
     private ISehAuthenticationFramework mService = null;
 
@@ -209,8 +210,7 @@ final class AidlHalService implements XidlHalService, IBinder.DeathRecipient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.authenticator.AidlHalService$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.authenticator.AidlHalService$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$authenticator$SemTrustedApplicationExecutor$TrustedAppAssetType;

@@ -15,7 +15,6 @@ public final class AudioCapture {
     private final Object mLock = new Object();
     private int mRecordingState = 1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setAudioRecord(AudioRecord audioRecord) {
         Log.d(TAG, "set AudioRecord with " + audioRecord);
         synchronized (this.mLock) {
@@ -38,12 +37,10 @@ public final class AudioCapture {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioCapture(AudioFormat audioFormat) {
         this.mAudioFormat = audioFormat;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void close() {
         synchronized (this.mLock) {
             AudioRecord audioRecord = this.mAudioRecord;

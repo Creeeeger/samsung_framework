@@ -109,6 +109,10 @@ public class GbaService extends Service {
 
     /* loaded from: classes3.dex */
     private class IGbaServiceWrapper extends IGbaService.Stub {
+        /* synthetic */ IGbaServiceWrapper(GbaService gbaService, IGbaServiceWrapperIA iGbaServiceWrapperIA) {
+            this();
+        }
+
         private IGbaServiceWrapper() {
         }
 

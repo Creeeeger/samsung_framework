@@ -13,7 +13,9 @@ import java.util.HashMap;
 /* loaded from: classes4.dex */
 public class WindowId implements Parcelable {
     public static final Parcelable.Creator<WindowId> CREATOR = new Parcelable.Creator<WindowId>() { // from class: android.view.WindowId.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WindowId createFromParcel(Parcel in) {
             IBinder target = in.readStrongBinder();
@@ -23,7 +25,6 @@ public class WindowId implements Parcelable {
             return null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowId[] newArray(int size) {
             return new WindowId[size];
@@ -34,6 +35,9 @@ public class WindowId implements Parcelable {
     /* loaded from: classes4.dex */
     public static abstract class FocusObserver {
         final IWindowFocusObserver.Stub mIObserver = new IWindowFocusObserver.Stub() { // from class: android.view.WindowId.FocusObserver.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.IWindowFocusObserver
             public void focusGained(IBinder inputToken) {
                 WindowId token;
@@ -66,6 +70,39 @@ public class WindowId implements Parcelable {
         public abstract void onFocusGained(WindowId windowId);
 
         public abstract void onFocusLost(WindowId windowId);
+
+        /* renamed from: android.view.WindowId$FocusObserver$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 extends IWindowFocusObserver.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.view.IWindowFocusObserver
+            public void focusGained(IBinder inputToken) {
+                WindowId token;
+                synchronized (FocusObserver.this.mRegistrations) {
+                    token = FocusObserver.this.mRegistrations.get(inputToken);
+                }
+                if (FocusObserver.this.mHandler != null) {
+                    FocusObserver.this.mHandler.sendMessage(FocusObserver.this.mHandler.obtainMessage(1, token));
+                } else {
+                    FocusObserver.this.onFocusGained(token);
+                }
+            }
+
+            @Override // android.view.IWindowFocusObserver
+            public void focusLost(IBinder inputToken) {
+                WindowId token;
+                synchronized (FocusObserver.this.mRegistrations) {
+                    token = FocusObserver.this.mRegistrations.get(inputToken);
+                }
+                if (FocusObserver.this.mHandler != null) {
+                    FocusObserver.this.mHandler.sendMessage(FocusObserver.this.mHandler.obtainMessage(2, token));
+                } else {
+                    FocusObserver.this.onFocusLost(token);
+                }
+            }
+        }
 
         /* loaded from: classes4.dex */
         class H extends Handler {
@@ -151,6 +188,27 @@ public class WindowId implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeStrongBinder(this.mToken.asBinder());
+    }
+
+    /* renamed from: android.view.WindowId$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WindowId> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowId createFromParcel(Parcel in) {
+            IBinder target = in.readStrongBinder();
+            if (target != null) {
+                return new WindowId(target);
+            }
+            return null;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowId[] newArray(int size) {
+            return new WindowId[size];
+        }
     }
 
     public IWindowId getTarget() {

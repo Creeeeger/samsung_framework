@@ -13,7 +13,9 @@ import java.util.UUID;
 /* loaded from: classes3.dex */
 public final class CallEndpoint implements Parcelable {
     public static final Parcelable.Creator<CallEndpoint> CREATOR = new Parcelable.Creator<CallEndpoint>() { // from class: android.telecom.CallEndpoint.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CallEndpoint createFromParcel(Parcel source) {
             CharSequence name = source.readCharSequence();
@@ -22,7 +24,6 @@ public final class CallEndpoint implements Parcelable {
             return new CallEndpoint(name, type, id);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallEndpoint[] newArray(int size) {
             return new CallEndpoint[size];
@@ -103,6 +104,26 @@ public final class CallEndpoint implements Parcelable {
                 return "EXTERNAL";
             default:
                 return "UNKNOWN (" + endpointType + NavigationBarInflaterView.KEY_CODE_END;
+        }
+    }
+
+    /* renamed from: android.telecom.CallEndpoint$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CallEndpoint> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallEndpoint createFromParcel(Parcel source) {
+            CharSequence name = source.readCharSequence();
+            int type = source.readInt();
+            ParcelUuid id = ParcelUuid.CREATOR.createFromParcel(source);
+            return new CallEndpoint(name, type, id);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CallEndpoint[] newArray(int size) {
+            return new CallEndpoint[size];
         }
     }
 

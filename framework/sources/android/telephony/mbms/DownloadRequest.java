@@ -24,13 +24,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class DownloadRequest implements Parcelable {
     public static final Parcelable.Creator<DownloadRequest> CREATOR = new Parcelable.Creator<DownloadRequest>() { // from class: android.telephony.mbms.DownloadRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DownloadRequest createFromParcel(Parcel in) {
             return new DownloadRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DownloadRequest[] newArray(int size) {
             return new DownloadRequest[size];
@@ -46,6 +47,14 @@ public final class DownloadRequest implements Parcelable {
     private final Uri sourceUri;
     private final int subscriptionId;
     private final int version;
+
+    /* synthetic */ DownloadRequest(Parcel parcel, DownloadRequestIA downloadRequestIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ DownloadRequest(String str, Uri uri, Uri uri2, int i, String str2, int i2, DownloadRequestIA downloadRequestIA) {
+        this(str, uri, uri2, i, str2, i2);
+    }
 
     /* loaded from: classes3.dex */
     private static class SerializationDataContainer implements Externalizable {
@@ -234,6 +243,23 @@ public final class DownloadRequest implements Parcelable {
 
     public int getVersion() {
         return this.version;
+    }
+
+    /* renamed from: android.telephony.mbms.DownloadRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DownloadRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DownloadRequest createFromParcel(Parcel in) {
+            return new DownloadRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DownloadRequest[] newArray(int size) {
+            return new DownloadRequest[size];
+        }
     }
 
     public static int getMaxAppIntentSize() {

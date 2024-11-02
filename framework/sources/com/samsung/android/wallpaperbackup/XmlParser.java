@@ -24,7 +24,6 @@ public class XmlParser extends DefaultHandler {
     private WallpaperUser mItem = null;
     private ArrayList<WallpaperUser> mItemsList = new ArrayList<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public XmlParser(String fileName) {
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         FileInputStream fis = null;

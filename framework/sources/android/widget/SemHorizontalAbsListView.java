@@ -993,7 +993,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         this.mSemCustomMultiChoiceMode = enable;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean contentFits() {
         int childCount = getChildCount();
         if (childCount == 0) {
@@ -1040,7 +1039,7 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
     }
 
     @Deprecated
-    public void setFastScrollAlwaysVisible(final boolean alwaysShow) {
+    public void setFastScrollAlwaysVisible(boolean alwaysShow) {
         if (this.mFastScrollAlwaysVisible != alwaysShow) {
             if (alwaysShow && !this.mFastScrollEnabled) {
                 setFastScrollEnabled(true);
@@ -1050,6 +1049,12 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                 setFastScrollerAlwaysVisibleUiThread(alwaysShow);
             } else {
                 post(new Runnable() { // from class: android.widget.SemHorizontalAbsListView.1
+                    final /* synthetic */ boolean val$alwaysShow;
+
+                    AnonymousClass1(boolean alwaysShow2) {
+                        alwaysShow = alwaysShow2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SemHorizontalAbsListView.this.setFastScrollerAlwaysVisibleUiThread(alwaysShow);
@@ -1059,7 +1064,21 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.widget.SemHorizontalAbsListView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ boolean val$alwaysShow;
+
+        AnonymousClass1(boolean alwaysShow2) {
+            alwaysShow = alwaysShow2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SemHorizontalAbsListView.this.setFastScrollerAlwaysVisibleUiThread(alwaysShow);
+        }
+    }
+
     public void setFastScrollerAlwaysVisibleUiThread(boolean alwaysShow) {
         SemHorizontalFastScroller semHorizontalFastScroller = this.mFastScroll;
         if (semHorizontalFastScroller != null) {
@@ -1139,7 +1158,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         invokeOnItemScrollListener();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invokeOnItemScrollListener() {
         SemHorizontalFastScroller semHorizontalFastScroller = this.mFastScroll;
         if (semHorizontalFastScroller != null) {
@@ -1176,7 +1194,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSelectionModeForAccessibility() {
         int choiceMode = getChoiceMode();
         switch (choiceMode) {
@@ -1292,17 +1309,17 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.SemHorizontalAbsListView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1318,6 +1335,10 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         long selectedId;
         int viewLeft;
         int width;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -1368,6 +1389,23 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
 
         public String toString() {
             return "SemHorizontalAbsListView.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " selectedId=" + this.selectedId + " firstId=" + this.firstId + " viewLeft=" + this.viewLeft + " position=" + this.position + " width=" + this.width + " filter=" + this.filter + " checkState=" + this.checkState + "}";
+        }
+
+        /* renamed from: android.widget.SemHorizontalAbsListView$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 
@@ -1422,7 +1460,7 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         ss.inActionMode = this.mChoiceMode == 3 && this.mChoiceActionMode != null;
         SparseBooleanArray sparseBooleanArray = this.mCheckStates;
         if (sparseBooleanArray != null) {
-            ss.checkState = sparseBooleanArray.m4952clone();
+            ss.checkState = sparseBooleanArray.m4951clone();
         }
         if (this.mCheckedIdStates != null) {
             LongSparseArray<Integer> idState = new LongSparseArray<>();
@@ -1524,7 +1562,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
@@ -1539,7 +1576,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetList() {
         removeAllViewsInLayout();
         this.mFirstPosition = 0;
@@ -1557,7 +1593,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public int computeHorizontalScrollExtent() {
@@ -1599,7 +1634,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public int computeHorizontalScrollOffset() {
@@ -1643,7 +1677,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public int computeHorizontalScrollRange() {
@@ -1657,7 +1690,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return this.mItemCount;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public float getLeftFadingEdgeStrength() {
@@ -1678,7 +1710,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return left < this.mPaddingLeft ? (-(left - this.mPaddingLeft)) / fadeLength : fadeEdge;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public float getRightFadingEdgeStrength() {
@@ -1700,7 +1731,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return right > width - this.mPaddingRight ? ((right - width) + this.mPaddingRight) / fadeLength : fadeEdge;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -1721,7 +1751,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     @Deprecated
     public void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -1743,7 +1772,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int left, int top, int right, int bottom) {
         PopupWindow popupWindow;
@@ -1757,12 +1785,10 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Deprecated
     public void layoutChildren() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View getAccessibilityFocusedChild(View focusedView) {
         ViewParent viewParent = focusedView.getParent();
         while ((viewParent instanceof View) && viewParent != this) {
@@ -1775,7 +1801,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return focusedView;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateScrollIndicators() {
         if (this.mScrollLeft != null) {
             int count = getChildCount();
@@ -1828,7 +1853,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return this.mListPadding.right;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View obtainView(int position, boolean[] isScrap) {
         LayoutParams lp;
         Trace.traceBegin(8L, "obtainView");
@@ -1912,7 +1936,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         child.setLayoutParams(lp);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class ListItemAccessibilityDelegate extends View.AccessibilityDelegate {
         ListItemAccessibilityDelegate() {
@@ -2007,7 +2030,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void positionSelectorLikeFocus(int position, View sel) {
         if (this.mSelector != null && this.mSelectorPosition != position && position != -1) {
             Rect bounds = this.mSelectorRect;
@@ -2019,7 +2041,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         positionSelector(position, sel);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void positionSelector(int position, View sel) {
         positionSelector(position, sel, false, -1.0f, -1.0f);
     }
@@ -2061,7 +2082,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     @Deprecated
     public void dispatchDraw(Canvas canvas) {
@@ -2158,7 +2178,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return this.mPaddingBottom;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -2182,7 +2201,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldShowSelector() {
         return (hasFocus() && !isInTouchMode()) || (touchModeDrawsInPressedState() && isPressed());
     }
@@ -2245,7 +2263,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return this.mSelector;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void keyPressed() {
         if (!isEnabled() || !isClickable()) {
             return;
@@ -2313,7 +2330,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     @Deprecated
     public void drawableStateChanged() {
@@ -2321,7 +2337,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         updateSelectorState();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     @Deprecated
     public int[] onCreateDrawableState(int extraSpace) {
@@ -2365,7 +2380,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     @Deprecated
     public void onAttachedToWindow() {
@@ -2389,7 +2403,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     @Deprecated
     public void onDetachedFromWindow() {
@@ -2532,10 +2545,13 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class WindowRunnnable {
         private int mOriginalAttachCount;
+
+        /* synthetic */ WindowRunnnable(SemHorizontalAbsListView semHorizontalAbsListView, WindowRunnnableIA windowRunnnableIA) {
+            this();
+        }
 
         private WindowRunnnable() {
         }
@@ -2553,10 +2569,13 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         this.mForcedClick = force;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PerformClick extends WindowRunnnable implements Runnable {
         int mClickMotionPosition;
+
+        /* synthetic */ PerformClick(SemHorizontalAbsListView semHorizontalAbsListView, PerformClickIA performClickIA) {
+            this();
+        }
 
         private PerformClick() {
             super();
@@ -2601,9 +2620,12 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class CheckForLongPress extends WindowRunnnable implements Runnable {
+        /* synthetic */ CheckForLongPress(SemHorizontalAbsListView semHorizontalAbsListView, CheckForLongPressIA checkForLongPressIA) {
+            this();
+        }
+
         private CheckForLongPress() {
             super();
         }
@@ -2631,8 +2653,13 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class CheckForKeyLongPress extends WindowRunnnable implements Runnable {
+    public class CheckForKeyLongPress extends WindowRunnnable implements Runnable {
+        /* synthetic */ CheckForKeyLongPress(SemHorizontalAbsListView semHorizontalAbsListView, CheckForKeyLongPressIA checkForKeyLongPressIA) {
+            this();
+        }
+
         private CheckForKeyLongPress() {
             super();
         }
@@ -2879,11 +2906,14 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return Long.MIN_VALUE;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class CheckForTap implements Runnable {
         float x;
         float y;
+
+        /* synthetic */ CheckForTap(SemHorizontalAbsListView semHorizontalAbsListView, CheckForTapIA checkForTapIA) {
+            this();
+        }
 
         private CheckForTap() {
         }
@@ -3222,15 +3252,14 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         this.mExtraPaddingInRightHoverArea = (int) (TypedValue.applyDimension(1, extraSpace, this.mContext.getResources().getDisplayMetrics()) + 0.5f);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Removed duplicated region for block: B:81:0x037a  */
     /* JADX WARN: Removed duplicated region for block: B:89:0x039e  */
     /* JADX WARN: Removed duplicated region for block: B:93:0x03ba  */
-    /* JADX WARN: Type inference failed for: r4v10, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r4v10, types: [int, boolean] */
     /* JADX WARN: Type inference failed for: r4v14 */
     /* JADX WARN: Type inference failed for: r4v30 */
-    /* JADX WARN: Type inference failed for: r4v31, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r4v31, types: [int, boolean] */
     /* JADX WARN: Type inference failed for: r4v34 */
     /* JADX WARN: Type inference failed for: r4v9 */
     @Override // android.view.ViewGroup, android.view.View
@@ -3848,7 +3877,7 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             case 1:
             case 2:
                 int childCount = this.mMotionPosition;
-                final View child = getChildAt(childCount - this.mFirstPosition);
+                View child = getChildAt(childCount - this.mFirstPosition);
                 if (child != null) {
                     if (this.mTouchMode != 0) {
                         child.setPressed(false);
@@ -3859,7 +3888,7 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                         if (this.mPerformClick == null) {
                             this.mPerformClick = new PerformClick();
                         }
-                        final PerformClick performClick = this.mPerformClick;
+                        PerformClick performClick = this.mPerformClick;
                         performClick.mClickMotionPosition = childCount;
                         performClick.rememberWindowAttachCount();
                         this.mResurrectToPosition = childCount;
@@ -3886,7 +3915,15 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                                 if (runnable != null) {
                                     removeCallbacks(runnable);
                                 }
-                                Runnable runnable2 = new Runnable() { // from class: android.widget.SemHorizontalAbsListView.2
+                                AnonymousClass2 anonymousClass2 = new Runnable() { // from class: android.widget.SemHorizontalAbsListView.2
+                                    final /* synthetic */ View val$child;
+                                    final /* synthetic */ PerformClick val$performClick;
+
+                                    AnonymousClass2(View child2, PerformClick performClick2) {
+                                        child = child2;
+                                        performClick = performClick2;
+                                    }
+
                                     @Override // java.lang.Runnable
                                     public void run() {
                                         SemHorizontalAbsListView.this.mTouchModeReset = null;
@@ -3898,20 +3935,20 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                                         }
                                     }
                                 };
-                                this.mTouchModeReset = runnable2;
-                                postDelayed(runnable2, ViewConfiguration.getPressedStateDuration());
+                                this.mTouchModeReset = anonymousClass2;
+                                postDelayed(anonymousClass2, ViewConfiguration.getPressedStateDuration());
                                 return;
                             }
                             this.mTouchMode = -1;
                             updateSelectorState();
                             if (this.mForcedClick && this.mAdapter.isEnabled(childCount)) {
-                                performClick.run();
+                                performClick2.run();
                                 return;
                             }
                             return;
                         }
                         if ((this.mForcedClick || !this.mDataChanged) && this.mAdapter.isEnabled(childCount)) {
-                            performClick.run();
+                            performClick2.run();
                         }
                     }
                 }
@@ -3999,6 +4036,29 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
+    /* renamed from: android.widget.SemHorizontalAbsListView$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ View val$child;
+        final /* synthetic */ PerformClick val$performClick;
+
+        AnonymousClass2(View child2, PerformClick performClick2) {
+            child = child2;
+            performClick = performClick2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SemHorizontalAbsListView.this.mTouchModeReset = null;
+            SemHorizontalAbsListView.this.mTouchMode = -1;
+            child.setPressed(false);
+            SemHorizontalAbsListView.this.setPressed(false);
+            if (SemHorizontalAbsListView.this.mForcedClick || (!SemHorizontalAbsListView.this.mDataChanged && !SemHorizontalAbsListView.this.mIsDetaching && SemHorizontalAbsListView.this.isAttachedToWindow())) {
+                performClick.run();
+            }
+        }
+    }
+
     private void onTouchCancel() {
         switch (this.mTouchMode) {
             case 5:
@@ -4035,9 +4095,23 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         triggerDoubleFling(1);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.widget.SemHorizontalAbsListView$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SemHorizontalAbsListView.this.onJumpScrollToTopFinished();
+        }
+    }
+
     public void postOnJumpScrollToFinished() {
         postOnAnimation(new Runnable() { // from class: android.widget.SemHorizontalAbsListView.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 SemHorizontalAbsListView.this.onJumpScrollToTopFinished();
@@ -4447,11 +4521,13 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class FlingRunnable implements Runnable {
         private static final int FLYWHEEL_TIMEOUT = 40;
         private final Runnable mCheckFlywheel = new Runnable() { // from class: android.widget.SemHorizontalAbsListView.FlingRunnable.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 int activeId = SemHorizontalAbsListView.this.mActivePointerId;
@@ -4473,6 +4549,33 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         };
         private int mLastFlingX;
         private final OverScroller mScroller;
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.SemHorizontalAbsListView$FlingRunnable$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                int activeId = SemHorizontalAbsListView.this.mActivePointerId;
+                VelocityTracker vt = SemHorizontalAbsListView.this.mVelocityTracker;
+                OverScroller scroller = FlingRunnable.this.mScroller;
+                if (vt == null || activeId == -1) {
+                    return;
+                }
+                vt.computeCurrentVelocity(1000, SemHorizontalAbsListView.this.mMaximumVelocity);
+                float xvel = -vt.getXVelocity(activeId);
+                if (Math.abs(xvel) >= SemHorizontalAbsListView.this.mMinimumVelocity && scroller.isScrollingInDirection(xvel, 0.0f)) {
+                    SemHorizontalAbsListView.this.postDelayed(this, 40L);
+                    return;
+                }
+                FlingRunnable.this.endFling();
+                SemHorizontalAbsListView.this.mTouchMode = 3;
+                SemHorizontalAbsListView.this.reportScrollStateChange(1);
+            }
+        }
 
         FlingRunnable() {
             this.mScroller = new OverScroller(SemHorizontalAbsListView.this.getContext());
@@ -4720,8 +4823,13 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         smoothScrollBy(distance, duration, false);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class SemSmoothScrollByMove implements Runnable {
+    public class SemSmoothScrollByMove implements Runnable {
+        /* synthetic */ SemSmoothScrollByMove(SemHorizontalAbsListView semHorizontalAbsListView, SemSmoothScrollByMoveIA semSmoothScrollByMoveIA) {
+            this();
+        }
+
         private SemSmoothScrollByMove() {
         }
 
@@ -4740,7 +4848,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean semIsShowingScrollbar() {
         return super.semIsShowingScrollbar() && !this.mFastScrollEnabled;
@@ -4841,7 +4948,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         this.mFlingRunnable.startScroll(distance, duration, linear);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void smoothScrollByOffset(int position) {
         View child;
         int index = -1;
@@ -4876,11 +4982,13 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void clearScrollingCache() {
         if (!isHardwareAccelerated()) {
             if (this.mClearScrollingCache == null) {
                 this.mClearScrollingCache = new Runnable() { // from class: android.widget.SemHorizontalAbsListView.4
+                    AnonymousClass4() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (SemHorizontalAbsListView.this.mCachingStarted) {
@@ -4899,6 +5007,29 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                 };
             }
             post(this.mClearScrollingCache);
+        }
+    }
+
+    /* renamed from: android.widget.SemHorizontalAbsListView$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements Runnable {
+        AnonymousClass4() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (SemHorizontalAbsListView.this.mCachingStarted) {
+                SemHorizontalAbsListView semHorizontalAbsListView = SemHorizontalAbsListView.this;
+                semHorizontalAbsListView.mCachingActive = false;
+                semHorizontalAbsListView.mCachingStarted = false;
+                SemHorizontalAbsListView.this.setChildrenDrawnWithCacheEnabled(false);
+                if ((SemHorizontalAbsListView.this.mPersistentDrawingCache & 2) == 0) {
+                    SemHorizontalAbsListView.this.setChildrenDrawingCacheEnabled(false);
+                }
+                if (!SemHorizontalAbsListView.this.isAlwaysDrawnWithCacheEnabled()) {
+                    SemHorizontalAbsListView.this.invalidate();
+                }
+            }
         }
     }
 
@@ -4940,7 +5071,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean trackMotionScroll(int deltaX, int incrementalDeltaX) {
         int spaceAbove;
         int spaceBelow;
@@ -5197,7 +5327,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void hideSelector() {
         if (this.mSelectedPosition != -1) {
             if (this.mLayoutMode != 4) {
@@ -5212,7 +5341,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int reconcileSelectedPosition() {
         int position = this.mSelectedPosition;
         if (position < 0) {
@@ -5238,7 +5366,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean resurrectSelectionIfNeeded() {
         if (this.mSelectedPosition < 0 && resurrectSelection()) {
             updateSelectorState();
@@ -5411,7 +5538,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Failed to find 'out' block for switch in B:43:0x008f. Please report as an issue. */
     @Override // android.widget.AdapterView
@@ -5513,7 +5639,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         checkSelectionChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public void onDisplayHint(int hint) {
@@ -5564,7 +5689,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getDistance(Rect source, Rect dest, int direction) {
         int sX;
         int sY;
@@ -5618,7 +5742,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return this.mFiltered;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean sendToTextFilter(int keyCode, int count, KeyEvent event) {
         PopupWindow popupWindow;
         if (!acceptFilter()) {
@@ -5905,7 +6028,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public EditText getTextFilterInput() {
         if (this.mTextFilter == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
@@ -5997,7 +6119,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     @Deprecated
     public ViewGroup.LayoutParams generateDefaultLayoutParams() {
@@ -6016,7 +6137,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     @Deprecated
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
@@ -6135,7 +6255,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
     public void onRemoteAdapterDisconnected() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setVisibleRangeHint(int start, int end) {
         RemoteViewsAdapter remoteViewsAdapter = this.mRemoteAdapter;
         if (remoteViewsAdapter != null) {
@@ -6148,10 +6267,8 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         this.mRecycler.mRecyclerListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class AdapterDataSetObserver extends AdapterView<ListAdapter>.AdapterDataSetObserver {
-        /* JADX INFO: Access modifiers changed from: package-private */
         public AdapterDataSetObserver() {
             super();
         }
@@ -6173,7 +6290,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class MultiChoiceModeWrapper implements MultiChoiceModeListener {
         private MultiChoiceModeListener mWrapped;
@@ -6269,7 +6385,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class RecycleBin {
         private View[] mActiveViews = new View[0];
@@ -6356,7 +6471,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             return viewType >= 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void clear() {
             if (this.mViewTypeCount == 1) {
                 ArrayList<View> scrap = this.mCurrentScrap;
@@ -6371,7 +6485,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             clearTransientStateViews();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void fillActiveViews(int childCount, int firstActivePosition) {
             if (this.mActiveViews.length < childCount) {
                 this.mActiveViews = new View[childCount];
@@ -6387,7 +6500,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public View getActiveView(int position) {
             int index = position - this.mFirstActivePosition;
             View[] activeViews = this.mActiveViews;
@@ -6453,7 +6565,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         void addScrapView(View scrap, boolean ignoreRetainView) {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void addScrapView(View scrap, int position) {
             LayoutParams lp;
             if (scrap == null || (lp = (LayoutParams) scrap.getLayoutParams()) == null) {
@@ -6499,7 +6610,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void removeSkippedScrap() {
             ArrayList<View> arrayList = this.mSkippedScrap;
             if (arrayList == null) {
@@ -6512,7 +6622,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             this.mSkippedScrap.clear();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void scrapActiveViews() {
             View[] activeViews = this.mActiveViews;
             boolean hasListener = this.mRecyclerListener != null;
@@ -6688,7 +6797,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getWidthForPosition(int position) {
         int firstVisiblePosition = getFirstVisiblePosition();
         int childCount = getChildCount();
@@ -6734,7 +6842,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static abstract class AbsPositionScroller {
         public abstract void start(int i);
@@ -6751,7 +6858,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class PositionScroller extends AbsPositionScroller implements Runnable {
         private static final int MOVE_DOWN_BOUND = 3;
@@ -6773,11 +6879,17 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
 
         @Override // android.widget.SemHorizontalAbsListView.AbsPositionScroller
-        public void start(final int position) {
+        public void start(int position) {
             int viewTravelCount;
             stop();
             if (SemHorizontalAbsListView.this.mDataChanged) {
                 SemHorizontalAbsListView.this.mPositionScrollAfterLayout = new Runnable() { // from class: android.widget.SemHorizontalAbsListView.PositionScroller.1
+                    final /* synthetic */ int val$position;
+
+                    AnonymousClass1(int position2) {
+                        position = position2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         PositionScroller.this.start(position);
@@ -6791,7 +6903,7 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             }
             int firstPos = SemHorizontalAbsListView.this.mFirstPosition;
             int lastPos = (firstPos + childCount) - 1;
-            int clampedPosition = Math.max(0, Math.min(SemHorizontalAbsListView.this.getCount() - 1, position));
+            int clampedPosition = Math.max(0, Math.min(SemHorizontalAbsListView.this.getCount() - 1, position2));
             if (clampedPosition < firstPos) {
                 viewTravelCount = (firstPos - clampedPosition) + 1;
                 this.mMode = 2;
@@ -6816,8 +6928,23 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             SemHorizontalAbsListView.this.postOnAnimation(this);
         }
 
+        /* renamed from: android.widget.SemHorizontalAbsListView$PositionScroller$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ int val$position;
+
+            AnonymousClass1(int position2) {
+                position = position2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                PositionScroller.this.start(position);
+            }
+        }
+
         @Override // android.widget.SemHorizontalAbsListView.AbsPositionScroller
-        public void start(final int position, final int boundPosition) {
+        public void start(int position, int boundPosition) {
             int viewTravelCount;
             stop();
             if (boundPosition == -1) {
@@ -6826,6 +6953,14 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             }
             if (SemHorizontalAbsListView.this.mDataChanged) {
                 SemHorizontalAbsListView.this.mPositionScrollAfterLayout = new Runnable() { // from class: android.widget.SemHorizontalAbsListView.PositionScroller.2
+                    final /* synthetic */ int val$boundPosition;
+                    final /* synthetic */ int val$position;
+
+                    AnonymousClass2(int position2, int boundPosition2) {
+                        position = position2;
+                        boundPosition = boundPosition2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         PositionScroller.this.start(position, boundPosition);
@@ -6839,9 +6974,9 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             }
             int firstPos = SemHorizontalAbsListView.this.mFirstPosition;
             int lastPos = (firstPos + childCount) - 1;
-            int clampedPosition = Math.max(0, Math.min(SemHorizontalAbsListView.this.getCount() - 1, position));
+            int clampedPosition = Math.max(0, Math.min(SemHorizontalAbsListView.this.getCount() - 1, position2));
             if (clampedPosition < firstPos) {
-                int boundPosFromLast = lastPos - boundPosition;
+                int boundPosFromLast = lastPos - boundPosition2;
                 if (boundPosFromLast < 1) {
                     return;
                 }
@@ -6855,7 +6990,7 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                     this.mMode = 2;
                 }
             } else if (clampedPosition > lastPos) {
-                int boundPosFromFirst = boundPosition - firstPos;
+                int boundPosFromFirst = boundPosition2 - firstPos;
                 if (boundPosFromFirst < 1) {
                     return;
                 }
@@ -6868,7 +7003,7 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                     viewTravelCount = posTravel2;
                 }
             } else {
-                scrollToVisible(clampedPosition, boundPosition, 200);
+                scrollToVisible(clampedPosition, boundPosition2, 200);
                 return;
             }
             if (viewTravelCount > 0) {
@@ -6877,9 +7012,26 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                 this.mScrollDuration = 200;
             }
             this.mTargetPos = clampedPosition;
-            this.mBoundPos = boundPosition;
+            this.mBoundPos = boundPosition2;
             this.mLastSeenPos = -1;
             SemHorizontalAbsListView.this.postOnAnimation(this);
+        }
+
+        /* renamed from: android.widget.SemHorizontalAbsListView$PositionScroller$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements Runnable {
+            final /* synthetic */ int val$boundPosition;
+            final /* synthetic */ int val$position;
+
+            AnonymousClass2(int position2, int boundPosition2) {
+                position = position2;
+                boundPosition = boundPosition2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                PositionScroller.this.start(position, boundPosition);
+            }
         }
 
         @Override // android.widget.SemHorizontalAbsListView.AbsPositionScroller
@@ -6888,11 +7040,21 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
 
         @Override // android.widget.SemHorizontalAbsListView.AbsPositionScroller
-        public void startWithOffset(final int position, final int offset, final int duration) {
+        public void startWithOffset(int position, int offset, int duration) {
             int viewTravelCount;
             stop();
             if (SemHorizontalAbsListView.this.mDataChanged) {
                 SemHorizontalAbsListView.this.mPositionScrollAfterLayout = new Runnable() { // from class: android.widget.SemHorizontalAbsListView.PositionScroller.3
+                    final /* synthetic */ int val$duration;
+                    final /* synthetic */ int val$position;
+                    final /* synthetic */ int val$postOffset;
+
+                    AnonymousClass3(int position2, int offset2, int duration2) {
+                        position = position2;
+                        offset = offset2;
+                        duration = duration2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         PositionScroller.this.startWithOffset(position, offset, duration);
@@ -6904,8 +7066,8 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
             if (childCount == 0) {
                 return;
             }
-            int offset2 = offset + SemHorizontalAbsListView.this.getPaddingLeft();
-            this.mTargetPos = Math.max(0, Math.min(SemHorizontalAbsListView.this.getCount() - 1, position));
+            int offset2 = offset2 + SemHorizontalAbsListView.this.getPaddingLeft();
+            this.mTargetPos = Math.max(0, Math.min(SemHorizontalAbsListView.this.getCount() - 1, position2));
             this.mOffsetFromLeft = offset2;
             this.mBoundPos = -1;
             this.mLastSeenPos = -1;
@@ -6919,13 +7081,32 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
                 viewTravelCount = i - lastPos;
             } else {
                 int targetLeft = SemHorizontalAbsListView.this.getChildAt(i - firstPos).getLeft();
-                SemHorizontalAbsListView.this.smoothScrollBy(targetLeft - offset2, duration, true);
+                SemHorizontalAbsListView.this.smoothScrollBy(targetLeft - offset2, duration2, true);
                 return;
             }
             float screenTravelCount = viewTravelCount / childCount;
-            this.mScrollDuration = screenTravelCount < 1.0f ? duration : (int) (duration / screenTravelCount);
+            this.mScrollDuration = screenTravelCount < 1.0f ? duration2 : (int) (duration2 / screenTravelCount);
             this.mLastSeenPos = -1;
             SemHorizontalAbsListView.this.postOnAnimation(this);
+        }
+
+        /* renamed from: android.widget.SemHorizontalAbsListView$PositionScroller$3 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass3 implements Runnable {
+            final /* synthetic */ int val$duration;
+            final /* synthetic */ int val$position;
+            final /* synthetic */ int val$postOffset;
+
+            AnonymousClass3(int position2, int offset2, int duration2) {
+                position = position2;
+                offset = offset2;
+                duration = duration2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                PositionScroller.this.startWithOffset(position, offset, duration);
+            }
         }
 
         void scrollToVisible(int targetPos, int boundPos, int duration) {
@@ -7119,7 +7300,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     @Deprecated
     public void onVisibilityChanged(View changedView, int visibility) {
@@ -7130,7 +7310,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class HoverScrollHandler extends Handler {
         private final WeakReference<SemHorizontalAbsListView> mListView;
@@ -7148,7 +7327,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleMessage(Message msg) {
         switch (msg.what) {
             case 1:
@@ -7271,7 +7449,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         this.mSemIsOnClickEnabled = enable;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void addToPressItemListArray(int firstpoint, int secondpoint) {
         if (!this.mIsMultiFocusEnabled) {
             return;
@@ -7319,7 +7496,6 @@ public abstract class SemHorizontalAbsListView extends AdapterView<ListAdapter> 
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AdapterView
     public void rememberSyncState() {
         rememberSyncStateHorizontal();

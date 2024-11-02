@@ -70,7 +70,6 @@ public class AttestationVerificationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$verifyAttestation$1(Executor executor, final BiConsumer callback, final IVerificationResult result) {
         Log.d(TAG, "verifyAttestation result: " + result.resultCode + " / " + result.token);
         executor.execute(new Runnable() { // from class: android.security.attestationverification.AttestationVerificationManager$$ExternalSyntheticLambda1

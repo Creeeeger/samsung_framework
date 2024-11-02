@@ -32,6 +32,10 @@ public class CutoutSpecification {
     private final Rect mRightBound;
     private final Rect mTopBound;
 
+    /* synthetic */ CutoutSpecification(Parser parser, CutoutSpecificationIA cutoutSpecificationIA) {
+        this(parser);
+    }
+
     private CutoutSpecification(Parser parser) {
         this.mPath = parser.mPath;
         this.mLeftBound = parser.mLeftBound;
@@ -93,7 +97,6 @@ public class CutoutSpecification {
         return this.mInsets.toRect();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int decideWhichEdge(boolean isTopEdgeShortEdge, boolean isShortEdge, boolean isStart) {
         return isTopEdgeShortEdge ? isShortEdge ? isStart ? 48 : 80 : isStart ? 3 : 5 : isShortEdge ? isStart ? 3 : 5 : isStart ? 48 : 80;
     }
@@ -134,7 +137,6 @@ public class CutoutSpecification {
             this(stableDensity, physicalDisplayWidth, physicalDisplayHeight, 1.0f);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Parser(float stableDensity, int physicalDisplayWidth, int physicalDisplayHeight, float physicalPixelDisplaySizeRatio) {
             this.mTmpRect = new Rect();
             this.mTmpRectF = new RectF();

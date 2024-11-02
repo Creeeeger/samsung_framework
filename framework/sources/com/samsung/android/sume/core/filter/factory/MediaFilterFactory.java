@@ -73,7 +73,6 @@ public final class MediaFilterFactory {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ MediaFilter lambda$addDefaultCreators$0(MediaFilterFactory factory, MFDescriptor descriptor, MediaFilter successor) {
             try {
                 Class<?> clazz = Class.forName(descriptor.getFilterId());
@@ -116,7 +115,7 @@ public final class MediaFilterFactory {
             this.comparators.forEach(new BiConsumer() { // from class: com.samsung.android.sume.core.filter.factory.MediaFilterFactory$Builder$$ExternalSyntheticLambda0
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
-                    MediaFilterFactory.Builder.this.m8783x8891efff((Class) obj, (Comparator) obj2);
+                    MediaFilterFactory.Builder.this.m8775x8891efff((Class) obj, (Comparator) obj2);
                 }
             });
             MediaFilterFactory factory = new MediaFilterFactory(this.creators, PluginStore.of(this.pluginStores));
@@ -127,9 +126,8 @@ public final class MediaFilterFactory {
             return factory;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: lambda$build$1$com-samsung-android-sume-core-filter-factory-MediaFilterFactory$Builder, reason: not valid java name */
-        public /* synthetic */ void m8783x8891efff(Class key, Comparator value) {
+        /* renamed from: lambda$build$1$com-samsung-android-sume-core-filter-factory-MediaFilterFactory$Builder */
+        public /* synthetic */ void m8775x8891efff(Class key, Comparator value) {
             if (this.creators.containsKey(key)) {
                 this.creators.get(key).sort(value);
             }
@@ -151,7 +149,7 @@ public final class MediaFilterFactory {
         }).forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.factory.MediaFilterFactory$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MediaFilterFactory.this.m8780x999bf6a4((MediaFilterCreator) obj);
+                MediaFilterFactory.this.m8772x999bf6a4((MediaFilterCreator) obj);
             }
         });
         this.creators.values().stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.factory.MediaFilterFactory$$ExternalSyntheticLambda2
@@ -162,30 +160,26 @@ public final class MediaFilterFactory {
         }).flatMap(new MediaFilterFactory$$ExternalSyntheticLambda3()).forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.factory.MediaFilterFactory$$ExternalSyntheticLambda4
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MediaFilterFactory.this.m8781x351ae6a6((MediaFilterCreator) obj);
+                MediaFilterFactory.this.m8773x351ae6a6((MediaFilterCreator) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$init$0(MediaFilterCreator e) {
         return e instanceof PluginFilterCreator;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$init$1$com-samsung-android-sume-core-filter-factory-MediaFilterFactory, reason: not valid java name */
-    public /* synthetic */ void m8780x999bf6a4(MediaFilterCreator e) {
+    /* renamed from: lambda$init$1$com-samsung-android-sume-core-filter-factory-MediaFilterFactory */
+    public /* synthetic */ void m8772x999bf6a4(MediaFilterCreator e) {
         ((PluginFilterCreator) e).setPluginStore(this.pluginStore);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$init$2(List e) {
         return !e.isEmpty() && (e.get(0) instanceof MediaFilterCreatorChain);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$init$3$com-samsung-android-sume-core-filter-factory-MediaFilterFactory, reason: not valid java name */
-    public /* synthetic */ void m8781x351ae6a6(MediaFilterCreator e) {
+    /* renamed from: lambda$init$3$com-samsung-android-sume-core-filter-factory-MediaFilterFactory */
+    public /* synthetic */ void m8773x351ae6a6(MediaFilterCreator e) {
         ((MediaFilterCreatorChain) e).prepare(this.creators);
     }
 
@@ -206,13 +200,11 @@ public final class MediaFilterFactory {
         this.pluginStore.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public MediaFilter addAdditionalFilters(MediaFilter filter) {
         filter.getDescriptor();
         return filter;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MediaFilter newFilter(final Class<?> type, final MFDescriptor descriptor, final MediaFilter successor) {
         return (MediaFilter) Optional.ofNullable(this.creators.get(type)).flatMap(new Function() { // from class: com.samsung.android.sume.core.filter.factory.MediaFilterFactory$$ExternalSyntheticLambda5
             @Override // java.util.function.Function
@@ -224,7 +216,7 @@ public final class MediaFilterFactory {
         }).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.MediaFilterFactory$$ExternalSyntheticLambda6
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return MediaFilterFactory.this.m8782xbaecdff6(descriptor, successor, (MediaFilterCreator) obj);
+                return MediaFilterFactory.this.m8774xbaecdff6(descriptor, successor, (MediaFilterCreator) obj);
             }
         }).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.MediaFilterFactory$$ExternalSyntheticLambda7
             @Override // java.util.function.Function
@@ -241,13 +233,11 @@ public final class MediaFilterFactory {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$newFilter$5$com-samsung-android-sume-core-filter-factory-MediaFilterFactory, reason: not valid java name */
-    public /* synthetic */ MediaFilter m8782xbaecdff6(MFDescriptor descriptor, MediaFilter successor, MediaFilterCreator it) {
+    /* renamed from: lambda$newFilter$5$com-samsung-android-sume-core-filter-factory-MediaFilterFactory */
+    public /* synthetic */ MediaFilter m8774xbaecdff6(MFDescriptor descriptor, MediaFilter successor, MediaFilterCreator it) {
         return it.newFilter(this, descriptor, successor);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ RuntimeException lambda$newFilter$6(Class type, MFDescriptor descriptor) {
         throw new IllegalStateException("fail to create filter: type=" + type + ", descriptor=" + descriptor);
     }

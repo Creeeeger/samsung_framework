@@ -131,8 +131,9 @@ public interface IGnssNavigationMessageInterface extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGnssNavigationMessageInterface {
+        public static class Proxy implements IGnssNavigationMessageInterface {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

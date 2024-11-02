@@ -604,7 +604,9 @@ public final class DocumentsContract {
     /* loaded from: classes3.dex */
     public static final class Path implements Parcelable {
         public static final Parcelable.Creator<Path> CREATOR = new Parcelable.Creator<Path>() { // from class: android.provider.DocumentsContract.Path.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Path createFromParcel(Parcel in) {
                 String rootId = in.readString();
@@ -612,7 +614,6 @@ public final class DocumentsContract {
                 return new Path(rootId, path);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Path[] newArray(int size) {
                 return new Path[size];
@@ -667,6 +668,25 @@ public final class DocumentsContract {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: android.provider.DocumentsContract$Path$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Path> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Path createFromParcel(Parcel in) {
+                String rootId = in.readString();
+                List<String> path = in.createStringArrayList();
+                return new Path(rootId, path);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Path[] newArray(int size) {
+                return new Path[size];
+            }
         }
     }
 }

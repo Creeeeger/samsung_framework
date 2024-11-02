@@ -53,6 +53,9 @@ public final class HdmiAudioSystemClient extends HdmiClient {
                 this.mService.reportAudioStatus(getDeviceType(), volume, maxVolume, isMute);
                 this.mCanSendAudioStatus = false;
                 this.mHandler.postDelayed(new Runnable() { // from class: android.hardware.hdmi.HdmiAudioSystemClient.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (HdmiAudioSystemClient.this.mPendingReportAudioStatus) {
@@ -77,6 +80,31 @@ public final class HdmiAudioSystemClient extends HdmiClient {
             }
         }
         this.mPendingReportAudioStatus = true;
+    }
+
+    /* renamed from: android.hardware.hdmi.HdmiAudioSystemClient$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (HdmiAudioSystemClient.this.mPendingReportAudioStatus) {
+                try {
+                    try {
+                        HdmiAudioSystemClient.this.mService.reportAudioStatus(HdmiAudioSystemClient.this.getDeviceType(), HdmiAudioSystemClient.this.mLastVolume, HdmiAudioSystemClient.this.mLastMaxVolume, HdmiAudioSystemClient.this.mLastIsMute);
+                        HdmiAudioSystemClient.this.mHandler.postDelayed(this, 500L);
+                    } catch (RemoteException e2) {
+                        HdmiAudioSystemClient.this.mCanSendAudioStatus = true;
+                    }
+                    return;
+                } finally {
+                    HdmiAudioSystemClient.this.mPendingReportAudioStatus = false;
+                }
+            }
+            HdmiAudioSystemClient.this.mCanSendAudioStatus = true;
+        }
     }
 
     public void setSystemAudioMode(boolean state, SetSystemAudioModeCallback callback) {

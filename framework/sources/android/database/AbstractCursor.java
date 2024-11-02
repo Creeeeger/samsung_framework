@@ -89,7 +89,6 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         onDeactivateOrClose();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onDeactivateOrClose() {
         ContentObserver contentObserver = this.mSelfObserver;
         if (contentObserver != null) {
@@ -294,7 +293,6 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         this.mDataSetObservable.unregisterObserver(observer);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onChange(boolean selfChange) {
         synchronized (this.mSelfObserverLock) {
             this.mContentObservable.dispatchChange(selfChange, null);
@@ -391,14 +389,12 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void checkPosition() {
         if (-1 == this.mPos || getCount() == this.mPos) {
             throw new CursorIndexOutOfBoundsException(this.mPos, getCount());
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void finalize() {
         ContentObserver contentObserver = this.mSelfObserver;
         if (contentObserver != null && this.mSelfObserverRegistered) {
@@ -416,7 +412,6 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes.dex */
     public static class SelfContentObserver extends ContentObserver {
         WeakReference<AbstractCursor> mCursor;

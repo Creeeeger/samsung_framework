@@ -384,12 +384,12 @@
     <string name="allow_settings_changes">سیاست امنیتی از تغییر تنظیمات جلوگیری می‌کند.</string>
     <string name="alwaysUse">استفاده به‌صورت پیش‌فرض برای این عملکرد.</string>
     <string name="android_preparing_apk">آماده‌سازی %1$s.</string>
-    <string name="android_start_title">تلفن درحال راه‌اندازی است…</string>
+    <string name="android_start_title">رایانه لوحی درحال راه‌اندازی است…</string>
     <string name="android_system_label">‏سیستم Android</string>
     <string name="android_upgrading_complete">درحال اتمام راه‌اندازی.</string>
     <string name="android_upgrading_notification_title">درحال اتمام به‌روزرسانی سیستم…</string>
     <string name="android_upgrading_starting_apps">درحال آغاز کردن برنامه‌ها.</string>
-    <string name="android_upgrading_title">تلفن درحال به‌روزرسانی است…</string>
+    <string name="android_upgrading_title">رایانه لوحی درحال به‌روزرسانی است…</string>
     <string name="anr_activity_application">%2$s پاسخ نمی‌دهد</string>
     <string name="anr_activity_process">%1$s پاسخ نمی‌دهد</string>
     <string name="anr_application_process">%1$s پاسخ نمی‌دهد</string>
@@ -423,16 +423,16 @@
     <string name="app_restricted_message_concentration_mode">%s در ”حالت تمرکز“ مسدود می‌شود. برای کسب اطلاعات بیشتر، با مدیر IT خود تماس بگیرید.</string>
     <string name="app_running_notification_text">برای کسب اطلاعات بیشتر یا توقف برنامه ضربه بزنید.</string>
     <string name="app_running_notification_title">%1$s در حال اجرا است</string>
-    <string name="app_streaming_blocked_message">درحال‌حاضر نمی‌توان در %1$s شما به این برنامه دسترسی داشت. دسترسی به آن را در تلفنتان امتحان کنید.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">این برنامه درخواست امنیت اضافی دارد. دسترسی به آن را در تلفنتان امتحان کنید.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">نمی‌توان در %1$s به این مورد دسترسی داشت. دسترسی به آن را در تلفنتان امتحان کنید.</string>
+    <string name="app_streaming_blocked_message">درحال‌حاضر نمی‌توان در %1$s شما به این برنامه دسترسی داشت. دسترسی به آن را در رایانه لوحی‌تان امتحان کنید.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">این برنامه درخواست امنیت اضافی دارد. دسترسی به آن را در رایانه لوحی‌تان امتحان کنید.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">نمی‌توان در %1$s به این مورد دسترسی داشت. دسترسی به آن را در رایانه لوحی‌تان امتحان کنید.</string>
     <string name="app_streaming_blocked_title">%1$s دردسترس نیست</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">دوربین دردسترس نیست</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">ادامه دادن در تلفن</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">میکروفون دردسترس نیست</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">اجازه لازم است</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">‏«فروشگاه Play» دردسترس نیست</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">تنظیمات تلفن دردسترس نیست</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">تنظیمات رایانه لوحی دردسترس نیست</string>
     <string name="app_suspended_default_message">%1$s درحال‌حاضر در دسترس نیست. %2$s آن را مدیریت می‌کند.</string>
     <string name="app_suspended_more_details">بیشتر بدانید</string>
     <string name="app_suspended_title">برنامه در دسترس نیست</string>
@@ -503,7 +503,7 @@
     <string name="badPuk">‏PUK که نوشته‌اید صحیح نیست.</string>
     <string name="badPuk2">‏PUK2 وارد شده اشتباه است</string>
     <string name="batt_cooldown_mode_ok">تأیید</string>
-    <string name="battery_saver_charged_notification_summary">تلفن به‌اندازه کافی شارژ دارد. ویژگی‌ها دیگر محدود نمی‌شوند.</string>
+    <string name="battery_saver_charged_notification_summary">رایانه لوحی به‌اندازه کافی شارژ دارد. ویژگی‌ها دیگر محدود نمی‌شوند.</string>
     <string name="battery_saver_description">«بهینه‌سازی باتری» «زمینه تیره» را روشن می‌کند و فعالیت پس‌زمینه، برخی از جلوه‌های بصری، ویژگی‌هایی خاص، و برخی از اتصال‌های شبکه را محدود یا خاموش می‌کند.</string>
     <string name="battery_saver_description_with_learn_more">«بهینه‌سازی باتری» «زمینه تیره» را روشن می‌کند و فعالیت پس‌زمینه، برخی از جلوه‌های بصری، ویژگی‌هایی خاص، و برخی از اتصال‌های شبکه را محدود یا خاموش می‌کند.</string>
     <string name="battery_saver_notification_channel_name">بهینه‌سازی باتری</string>
@@ -733,7 +733,7 @@
     <string name="decline">نپذیرفتن</string>
     <string name="decline_remote_bugreport_action">نپذیرفتن</string>
     <string name="default_audio_route_category_name">سیستم</string>
-    <string name="default_audio_route_name">تلفن</string>
+    <string name="default_audio_route_name">رایانهٔ لوحی</string>
     <string name="default_audio_route_name_dock_speakers">بلندگوهای جایگاه</string>
     <string name="default_audio_route_name_external_device">دستگاه خارجی</string>
     <string name="default_audio_route_name_headphones">هدفون‌ها</string>
@@ -860,7 +860,7 @@
     <string name="emergency_call_dialog_number_for_display">شماره اضطراری</string>
     <string name="emergency_calls_only">فقط تماس‌های اضطراری</string>
     <string name="enablePin">‏ناموفق بود، قفل سیم/RUIM را فعال کنید.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s می‌خواهد «کاوش با لمس» را فعال کند. وقتی «کاوش با لمس» فعال است، می‌توانید توضیحاتی را برای آنچه که زیر انگشت شما است مشاهده کرده یا بشنوید یا برای استفاده از تلفن خود از حرکات استفاده کنید.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s می‌خواهد «کاوش با لمس» را فعال کند. وقتی «کاوش با لمس» فعال است، می‌توانید توضیحاتی را برای آنچه که زیر انگشت شما است مشاهده کرده یا بشنوید یا برای استفاده از رایانهٔ لوحی از حرکات استفاده کنید.</string>
     <string name="enable_explore_by_touch_warning_title">فعال کردن «کاوش با لمس»؟</string>
     <string name="error_message_change_not_allowed">سرپرست سیستم شما این تغییر را مجاز نمی‌داند</string>
     <string name="error_message_title">خطا</string>
@@ -924,7 +924,7 @@
     <string name="ext_media_unsupported_notification_message">این دستگاه از این %s پشتیبانی نمی‌کند. برای تنظیم و راه‌اندازی قالب پشتیبانی‌شده ضربه بزنید.</string>
     <string name="ext_media_unsupported_notification_title">%s پشتیبانی‌نشده</string>
     <string name="ext_storage_bad_removal_button">راه‌اندازی مجدد</string>
-    <string name="ext_storage_bad_removal_title">راه‌اندازی مجدد تلفن</string>
+    <string name="ext_storage_bad_removal_title">راه‌اندازی مجدد تبلت</string>
     <string name="extmedia_format_button_format">فرمت</string>
     <string name="extmedia_format_message">‏تمام اطلاعات روی کارت شما از بین می‎رود.</string>
     <string name="extmedia_format_message_usbhost">‏همه فایل‌های ذخیره شده در حافظهٔ USB پاک خواهد شد. این عمل را نمی‎توان برگرداند!</string>
@@ -1128,7 +1128,7 @@
     <string name="global_action_toggle_sealed_mode">Sealed mode</string>
     <string name="global_action_toggle_silent_mode">حالت ساکت</string>
     <string name="global_action_voice_assist">دستیار صوتی</string>
-    <string name="global_actions">گزینه‌های تلفن</string>
+    <string name="global_actions">گزینه‌های رایانهٔ لوحی</string>
     <string name="global_actions_airplane_mode_off_status">حالت هواپیما خاموش است</string>
     <string name="global_actions_airplane_mode_on_status">حالت هواپیما روشن است</string>
     <string name="global_actions_toggle_airplane_mode">حالت هواپیما</string>
@@ -1313,11 +1313,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>برای تایپ گذرواژه ضربه بزنید&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">پین کد اشتباه است.</string>
     <string name="kg_enter_confirm_pin_hint">تأیید پین کد دلخواه</string>
-    <string name="kg_failed_attempts_almost_at_login">"‏الگوی بازگشایی قفل را %1$d بار اشتباه کشیده‌اید. پس‌از %2$d تلاش ناموفق، از شما خواسته می‌‎شود که بااستفاده از یک حساب ایمیل قفل تلفنتان را باز کنید.
+    <string name="kg_failed_attempts_almost_at_login">"‏الگوی بازگشایی قفل را %1$d بار اشتباه کشیده‌‎اید. بعداز %2$d تلاش ناموفق، از شما خواسته می‎‌شود که بااستفاده از یک حساب ایمیل قفل رایانه لوحی‌تان را باز کنید.
 
  لطفاً پس‌از %3$d ثانیه دوباره امتحان کنید."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">شما به اشتباه %1$d بار اقدام به باز کردن قفل تلفن کرده‌اید. پس از %2$d تلاش ناموفق دیگر، تلفن به پیش‌فرض کارخانه بازنشانی می‌شود و تمام داده‌های کاربر از دست خواهد رفت.</string>
-    <string name="kg_failed_attempts_now_wiping">شما به اشتباه %d بار اقدام به باز کردن قفل تلفن کرده‌اید. این تلفن اکنون به پیش‌فرض کارخانه بازنشانی می‌شود.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">شما به اشتباه %1$d بار اقدام به باز کردن قفل رایانه لوحی کرده‌اید. پس از %2$d تلاش ناموفق دیگر، رایانهٔ لوحی به پیش‌فرض کارخانه بازنشانی می‌شود و تمام داده‌های کاربر از دست خواهد رفت.</string>
+    <string name="kg_failed_attempts_now_wiping">شما به اشتباه %d بار اقدام به باز کردن قفل رایانه لوحی کرده‌اید. رایانه لوحی اکنون به پیش‌فرض کارخانه بازنشانی می‌شود.</string>
     <string name="kg_forgot_pattern_button_text">الگو را فراموش کرده‌اید</string>
     <string name="kg_invalid_confirm_pin_hint">پین کدها منطبق نیستند</string>
     <string name="kg_invalid_puk">پین کد صحیح را دوباره وارد کنید. تلاش‌های مکرر به‌طور دائم سیم کارت را غیرفعال خواهد کرد.</string>
@@ -1405,11 +1405,11 @@
     <string name="lockscreen_carrier_default">بدون سرویس</string>
     <string name="lockscreen_carrier_noservice">(خدماتی وجود ندارد).</string>
     <string name="lockscreen_emergency_call">اضطراری</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">شما به اشتباه %1$d بار اقدام به باز کردن قفل تلفن کرده‌اید. پس از%2$d تلاش ناموفق دیگر، تلفن به پیش‌فرض کارخانه بازنشانی می‌شود و تمام داده‌های کاربر از دست خواهد رفت.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"‏الگوی بازگشایی قفل را %1$d بار اشتباه کشیده‌اید. پس‌از %2$d تلاش ناموفق دیگر، از شما خواسته می‌‎شود که برای بازگشایی قفل گوشی به برنامه Google وارد شوید.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">شما به اشتباه %1$d بار اقدام به باز کردن قفل رایانهٔ لوحی کرده‌اید. پس از %2$d تلاش ناموفق دیگر، رایانهٔ لوحی به پیش‌فرض کارخانه بازنشانی می‌شود و تمام داده‌های کاربر از دست خواهد رفت.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"‏الگوی بازگشایی قفل را %1$d بار اشتباه کشیده‎‌اید. بعداز %2$d تلاش ناموفق، از شما خواسته می‎‌شود که برای بازگشایی قفل رایانهٔ لوحی‌تان به Google وارد شوید.
 
- پس‌از %3$d ثانیه دوباره امتحان کنید."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">به‌اشتباه %d بار اقدام به باز کردن قفل تلفن کرده‌اید. این تلفن دیگر به پیش‌فرض کارخانه بازنشانی می‌شود.</string>
+ لطفاً پس‌از %3$d ثانیه دوباره امتحان کنید."</string>
+    <string name="lockscreen_failed_attempts_now_wiping">شما به اشتباه اقدام به باز کردن قفل %d رایانهٔ لوحی کرده‌اید. رایانهٔ لوحی در حال حاضر به پیش‌فرض کارخانه بازنشانی می‌شود.</string>
     <string name="lockscreen_forgot_pattern_button_text">الگو را فراموش کرده‌اید؟</string>
     <string name="lockscreen_glogin_account_recovery_hint">"‏نام کاربری یا گذرواژهٔ خود را فراموش کردید؟
 از "<b>google.com/accounts/recovery</b> بازدید کنید.</string>
@@ -1425,7 +1425,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">برای بازکردن قفل یا انجام تماس اضطراری روی «منو» فشار دهید.</string>
     <string name="lockscreen_missing_sim_instructions">سیم‌کارت اضافه کنید.</string>
     <string name="lockscreen_missing_sim_instructions_long">سیم‌کارت موجود نیست یا قابل‌خواندن نیست. سیم‌کارت اضافه کنید.</string>
-    <string name="lockscreen_missing_sim_message">سیم‌کارت در تلفن وجود ندارد.</string>
+    <string name="lockscreen_missing_sim_message">سیم‌کارت در رایانه لوحی وجود ندارد.</string>
     <string name="lockscreen_missing_sim_message_short">سیم‌کارتی وجود ندارد</string>
     <string name="lockscreen_network_locked_message">شبکه قفل شد</string>
     <string name="lockscreen_password_wrong">دوباره امتحان کنید</string>
@@ -1465,7 +1465,7 @@
     <string name="low_internal_storage_view_text">برخی از عملکردهای سیستم ممکن است کار نکنند</string>
     <string name="low_internal_storage_view_text_no_boot">فضای ذخیره‌سازی سیستم کافی نیست. اطمینان حاصل کنید که دارای ۲۵۰ مگابایت فضای خالی هستید و سیستم را راه‌اندازی مجدد کنید.</string>
     <string name="low_internal_storage_view_title">فضای ذخیره‌سازی درحال پر شدن است</string>
-    <string name="low_memory">فضای ذخیره‌سازی تلفن پر است. بعضی از فایل‌ها را حذف کنید تا فضا آزاد شود.</string>
+    <string name="low_memory">‏فضای ذخیره‌سازی رایانهٔ لوحی پر است! برخی از فایل‎ها را حذف کنید تا فضا آزاد شود.</string>
     <string name="ltb_kill_content_v2_phone">%s بسته شد چون باعث داغ شدن گوشی‌تان شده بود. می‌توانید بعداً، بعد از خنک شدن گوشی، آن را دوباره باز کنید.</string>
     <string name="ltb_kill_content_v2_tablet">%s بسته شد چون باعث داغ شدن تبلتتان شده بود. می‌توانید بعداً، بعد از خنک شدن تبلت، آن را دوباره باز کنید.</string>
     <string name="ltb_warning_button">بسته نشود</string>
@@ -1777,18 +1777,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">صدا در دستگاه صوتی بلوتوث شما پخش می‌شود. برای خاموش کردن این مورد اینجا ضربه بزنید</string>
     <string name="multisound_sound_via_headphone">صدای %s از طریق هدفون پخش می‌شود. برای خاموش کردن آن اینجا ضربه بزنید.</string>
     <string name="multisound_sound_via_headphone_multiselection">صدا از طریق هدفون شما پخش می‌شود. برای خاموش کردن این مورد اینجا ضربه بزنید.</string>
-    <string name="multisound_sound_via_phone_speaker">صدای %s از طریق بلندگوی تلفن پخش می‌شود. برای خاموش کردن آن اینجا ضربه بزنید.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">صدا از طریق بلندگوی گوشی شما پخش می‌شود. برای خاموش کردن این مورد اینجا ضربه بزنید.</string>
+    <string name="multisound_sound_via_phone_speaker">صدای %s از طریق بلندگوی تبلت پخش می‌شود. برای خاموش کردن آن اینجا ضربه بزنید.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">صدا از طریق بلندگوی تبلت شما پخش می‌شود. برای خاموش کردن این مورد اینجا ضربه بزنید.</string>
     <string name="multisound_sound_via_usb_audio">صدای %s درحال پخش از طریق دستگاه صوتی USB است. برای خاموش کردن آن اینجا ضربه بزنید.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">صدا از طریق دستگاه صوتی USB شما پخش می‌شود. برای خاموش کردن این مورد اینجا ضربه بزنید.</string>
     <string name="multisound_title">صدای برنامه را جدا کنید</string>
     <string name="multisound_turn_off_multisound">خاموش</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s نمی‌تواند در Samsung DeX اجرا شود. سعی کنید آن را در حالت گوشی اجرا کنید.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s نمی‌تواند در Samsung DeX اجرا شود. برای صفحه‌های اصلی گوشی طراحی شده است.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">برخی بازی‌ها فقط در صفحه‌های لمسی کار می‌کنند. اگر کنترل‌های ماوس در Samsung DeX کار نکردند، سعی کنید در حالت گوشی بازی کنید.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s نمی‌تواند در Samsung DeX اجرا شود. سعی کنید آن را در حالت تبلت اجرا کنید.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s نمی‌تواند در Samsung DeX اجرا شود. برای صفحه‌های اصلی تبلت طراحی شده است.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">برخی بازی‌ها فقط در صفحه‌های لمسی کار می‌کنند. اگر کنترل‌های ماوس در Samsung DeX کار نکرد، سعی کنید در حالت تبلت بازی کنید.</string>
     <string name="music_recognition_manager_service">سرویس مدیر تشخیص موسیقی</string>
     <string name="muted_by">%1$s درحال قطع کردن بعضی از صداهاست</string>
-    <string name="my_device">این تلفن</string>
+    <string name="my_device">این تبلت</string>
     <string name="nas_upgrade_notification_content">‏اکنون پاسخ‌ها و کنش‌های پیشنهادی ازطریق اعلان‌های بهبودیافته ارائه می‌شوند. «اعلان‌های تطبیقی Android» دیگر پشتیبانی نمی‌شوند.</string>
     <string name="nas_upgrade_notification_disable_action">خاموش کردن</string>
     <string name="nas_upgrade_notification_enable_action">تأیید</string>
@@ -1953,23 +1953,23 @@
     <string name="permdesc_bindNotificationListenerService">به دارنده اجازه می‌دهد به یک رابط سطح بالای سرویس شنونده اعلان متصل شود. هرگز نباید برای برنامه‌های عادی لازم شود.</string>
     <string name="permdesc_bind_connection_service">به برنامه اجازه می‌دهد جهت برقراری/دریافت تماس با سرویس‌های تلفنی تعامل داشته باشد.</string>
     <string name="permdesc_bind_incall_service">به برنامه امکان می‌دهد کنترل کند که کاربر چه زمانی و چگونه صفحه‌نمایش هنگام تماس را مشاهده کند.</string>
-    <string name="permdesc_bluetooth">‏به برنامه اجازه می‎دهد تا پیکربندی بلوتوث در تلفن را مشاهده کند، و اتصالات دستگاه‌های مرتبط را برقرار کرده و بپذیرد.</string>
-    <string name="permdesc_bluetoothAdmin">‏به برنامه اجازه می‎دهد تا تلفن بلوتوث محلی را پیکربندی کند و دستگاه‌های راه دور را پیدا کند و با آن‌ها مرتبط‌سازی شود.</string>
+    <string name="permdesc_bluetooth">‏به برنامه اجازه می‎دهد تا پیکربندی بلوتوث در رایانهٔ لوحی را مشاهده کند و اتصال با دستگاه‌های مرتبط را برقرار کرده و بپذیرد.</string>
+    <string name="permdesc_bluetoothAdmin">‏به برنامه اجازه می‎دهد تا رایانهٔ لوحی بلوتوث محلی را پیکربندی کرده، دستگاه‌های راه دور را شناسایی کرده و با آن‌ها مرتبط‌سازی شود.</string>
     <string name="permdesc_bluetooth_advertise">برنامه مجاز می‌شود در دستگاه‌های بلوتوث اطراف تبلیغ کند.</string>
     <string name="permdesc_bluetooth_connect">به برنامه اجازه می‌دهد به دستگاه‌های بلوتوث مرتبط‌شده متصل شود</string>
     <string name="permdesc_bluetooth_scan">به برنامه اجازه می‌دهد دستگاه‌های بلوتوث اطراف را پیدا کند و با آن‌ها مرتبط شود</string>
     <string name="permdesc_bodySensors">به برنامه اجازه می‌دهد تا زمانی که درحال استفاده است، به داده‌های حسگر بدن، مثل ضربان قلب، دما، و درصد اکسیژن خون دسترسی داشته باشد.</string>
     <string name="permdesc_bodySensors_background">به برنامه اجازه می‌دهد تا زمانی که در پس‌زمینه درحال اجرا است، به داده‌های حسگر بدن، مثل ضربان قلب، دما، و درصد اکسیژن خون دسترسی داشته باشد.</string>
-    <string name="permdesc_broadcastSticky">‏به برنامه اجازه می‎دهد تا پخش‌های ماندگار را که پس از اتمام پخش باقی می‎مانند ارسال کند. استفاده بیش از حد این ویژگی ممکن است باعث مصرف بیش از حد حافظه و در نتیجه کندی یا ناپایداری تلفن شود.</string>
+    <string name="permdesc_broadcastSticky">‏به برنامه اجازه می‎دهد تا پخش‌های ماندگار را که پس از اتمام پخش باقی می‎مانند ارسال کند. استفاده بیش از حد این ویژگی ممکن است باعث مصرف بیش از حد حافظه و در نتیجه کندی یا ناپایداری رایانهٔ لوحی شود.</string>
     <string name="permdesc_callCompanionApp">به برنامه‌ها اجازه می‌دهد تماس‌های درحال انجام را در این دستگاه ببیند و کنترل کند. این مورد شامل اطلاعاتی مانند شماره تلفن برای تماس‌ها و وضعیت تماس‌ها است.</string>
     <string name="permdesc_callPhone">به این برنامه اجازه می‌دهد بدون دخالت شما با شماره‌های تلفن تماس بگیرد. این کار ممکن است باعث تماس‌ها یا کسر هزینه‌های غیرمنتظره شود. توجه داشته باشید این کار به برنامه اجازه نمی‌دهد با شماره‌های تلفن اضطراری تماس بگیرد. برنامه‌های مخرب ممکن است با برقراری تماس بدون تأیید شما، یا شماره‌گیری کدهای شرکت مخابراتی که باعث می‌شود تماس‌های ورودی به‌طور خودکار به شماره دیگری هدایت شود، برای شما هزینه‌هایی به‌بار آورد.</string>
     <string name="permdesc_camera">این برنامه وقتی درحال استفاده است، می‌تواند بااستفاده از دوربین عکس و فیلم بگیرد.</string>
     <string name="permdesc_cameraOpenCloseListener">این برنامه می‌تواند هروقت دستگاه دوربین باز (براساس برنامه) یا بسته می‌شود، پاسخ تماس دریافت کند.</string>
     <string name="permdesc_changeNetworkState">‏به برنامه اجازه می‎دهد تا وضعیت اتصال شبکه را تغییر دهد.</string>
     <string name="permdesc_changeTetherState">‏به برنامه اجازه می‎دهد تا وضعیت اتصال شبکه اتصال داده با سیم را تغییر دهد.</string>
-    <string name="permdesc_changeWifiMulticastState">‏به برنامه اجازه می‌دهد به دریافت بسته‌های ارسالی به همه دستگاه‌های موجود در شبکه Wi-Fi با استفاده از آدرس‌های پخش چندگانه و نه فقط به تلفن شما بپردازند. این از توان مصرف بیشتری نسبت به حالت پخش غیرچندگانه استفاده می‌کند.</string>
+    <string name="permdesc_changeWifiMulticastState">‏به برنامه اجازه می‌دهد به دریافت بسته‌های ارسالی به همه دستگاه‌های موجود در شبکه Wi-Fi با استفاده از آدرس‌های پخش چندگانه و نه فقط به رایانهٔ لوحی شما بپردازند. این از توان مصرف بیشتری نسبت به حالت پخش غیرچندگانه استفاده می‌کند.</string>
     <string name="permdesc_changeWifiState">‏به برنامه اجازه می‎دهد تا به نقاط دسترسی Wi-Fi وصل شود و ارتباط خود را با آن‌ها قطع کند و تغییراتی را در پیکربندی دستگاه برای شبکه‎های Wi-Fi ایجاد کند.</string>
-    <string name="permdesc_changeWimaxState">‏به برنامه امکان می‎دهد تا تلفن را به شبکه‌های وایمکس متصل کرده یا اتصال آنرا از این شبکه‌ها قطع کند.</string>
+    <string name="permdesc_changeWimaxState">به برنامه امکان می‌دهد رایانهٔ لوحی را به شبکه‌های وایمکس متصل کرده یا اتصال آن را از این شبکه‌ها قطع کند.</string>
     <string name="permdesc_companionProfileWatch">به برنامه همراه اجازه می‌دهد ساعت‌ها را مدیریت کند.</string>
     <string name="permdesc_connection_manager">به برنامه امکان می‌دهد ارتباطات مخابراتی را مدیریت کند.</string>
     <string name="permdesc_control_incall_experience">به برنامه امکان می‌دهد تجربه کاربر در حال تماس را ارائه دهد.</string>
@@ -1997,7 +1997,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">به برنامه اجازه می‌دهد از سرویس‌های پیش‌نما از نوع «استفاده ویژه» استفاده کند</string>
     <string name="permdesc_foregroundServiceSystemExempted">به برنامه اجازه می‌دهد از سرویس‌های پیش‌نما از نوع «معافیت سیستم» استفاده کند</string>
     <string name="permdesc_fullScreenIntent">به برنامه امکان می‌دهد اعلان‌ها را به‌صورت فعالیت‌های تمام‌صفحه در دستگاه قفل نمایش دهد</string>
-    <string name="permdesc_getAccounts">به برنامه اجازه می‌دهد به فهرست حساب‌های شناخته شده توسط تلفن دسترسی پیدا کند. این ممکن است حسا‌ب‌های ایجاد شده توسط برنامه‌هایی را که نصب کرده‌اید، شامل شود.</string>
+    <string name="permdesc_getAccounts">به برنامه اجازه می‌دهد به فهرست حساب‌های شناخته شده توسط رایانهٔ لوحی دسترسی پیدا کند. این ممکن است حسا‌ب‌های ایجاد شده توسط برنامه‌هایی را که نصب کرده‌اید، شامل شود.</string>
     <string name="permdesc_getAppList">اجازه خواندن لیست برنامه‌های نصب‌شده را به برنامه می‌دهد.</string>
     <string name="permdesc_getPackageSize">‏به برنامه اجازه می‎دهد تا کدها، داده‎ها و اندازه‎های حافظهٔ پنهان خود را بازیابی کند</string>
     <string name="permdesc_getTasks">به برنامه امکان می‌دهد اطلاعات مربوط به کارهای در حال اجرای اخیر و کنونی را بازیابی کند. این ممکن است به برنامه امکان دهد به اطلاعات مربوط به برنامه‌هایی که در دستگاه استفاده می‌شوند دست یابد.</string>
@@ -2096,16 +2096,16 @@
     <string name="permdesc_nearby_wifi_devices">‏به برنامه اجازه می‌دهد در دستگاه‌های Wi-Fi اطراف تبلیغ کند، به آن‌ها متصل شود، و موقعیت نسبی آن‌ها را تشخیص دهد</string>
     <string name="permdesc_nfc">‏به برنامه اجازه می‎دهد تا با تگ‌های NFC، کارت‌ها و فایل‌خوان ارتباط برقرار کند.</string>
     <string name="permdesc_observeCompanionDevicePresence">به برنامه همراه اجازه می‌دهد وقتی دستگاه‌های همراه نزدیک یا دور هستند، حضور آن‌ها را بررسی کند.</string>
-    <string name="permdesc_persistentActivity">به برنامه امکان می‌دهد قسمت‌هایی از خود را در حافظه دائمی کند. این کار حافظه موجود را برای سایر برنامه‌ها محدود کرده و باعث کندی تلفن می‌شود.</string>
+    <string name="permdesc_persistentActivity">به برنامه امکان می‌دهد قسمت‌هایی از خود را در حافظه دائمی کند. این کار حافظه موجود را برای سایر برنامه‌ها محدود کرده و باعث کندی رایانهٔ لوحی می‌شود.</string>
     <string name="permdesc_postNotification">به این برنامه اجازه می‌دهد اعلان نمایش دهد</string>
     <string name="permdesc_preferredPaymentInfo">‏به برنامه اجازه می‌دهد اطلاعات ترجیحی سرویس پولی NFC، مانند کمک‌های ثبت‌شده و مقصد مسیر را دریافت کند.</string>
     <string name="permdesc_processOutgoingCalls">به برنامه اجازه می‌دهد عددی را که در طی یک تماس خروجی شماره‌گیری شده، ببیند و این اختیار را دارد که تماس را به شماره دیگری هدایت کند یا کلاً تماس را قطع کند.</string>
     <string name="permdesc_queryAllPackages">به برنامه اجازه می‌دهد همه بسته‌های نصب‌شده را ببیند.</string>
     <string name="permdesc_readBasicPhoneState">به برنامه اجازه می‌دهد به ویژگی‌های اصلی ارتباط دوربرد دستگاه دسترسی داشته باشد.</string>
-    <string name="permdesc_readCalendar">این برنامه می‌تواند همه رویدادهای تقویم ذخیره‌شده در تلفن شما را بخواند و داده‌های تقویم شما را به اشتراک بگذارد یا ذخیره کند.</string>
+    <string name="permdesc_readCalendar">این برنامه می‌تواند همه رویدادهای تقویم ذخیره‌شده در رایانه لوحی شما را بخواند و داده‌های تقویم شما را به اشتراک بگذارد یا ذخیره کند.</string>
     <string name="permdesc_readCallLog">این برنامه می‌تواند سابقه تماس شما را بخواند.</string>
     <string name="permdesc_readCellBroadcasts">‏به برنامه اجازه می‎دهد پیام‌های پخش سلولی دستگاه شما را بخواند. هشدارهای پخش سلولی در برخی از موقعیت‌های مکانی تحویل داده می‎شوند تا موقعیت‌های اضطراری را به شما اعلام کنند. وقتی پخش سلولی دریافت می‎شود، ممکن است برنامه‌های مخرب در عملکرد یا کارکرد دستگاه شما اختلال ایجاد کنند.</string>
-    <string name="permdesc_readContacts">به برنامه اجازه می‌دهد داده‌های مربوط به مخاطبین ذخیره‌شده در تلفن را بخواند. برنامه‌ها همچنین به حساب‌های موجود در تلفن که مخاطبین ایجاد کرده‌اند دسترسی خواهند داشت. می‌تواند شامل حساب‌هایی باشد که توسط برنامه‌هایی که نصب کرده‌اید، ایجاد شده است. این مجوز به برنامه‌ها اجازه می‌دهد داده‌های مخاطب شما را ذخیره کنند، و ممکن است برنامه‌های مخرب بدون اطلاع شما داده‌های مخاطب را هم‌رسانی کنند.</string>
+    <string name="permdesc_readContacts">به برنامه اجازه می‌دهد داده‌های مربوط به مخاطبین ذخیره‌شده در رایانه لوحی شما را بخواند. برنامه‌ها همچنین به حساب‌های موجود در رایانه لوحی که مخاطبین ایجاد کرده‌اند دسترسی خواهند داشت. می‌تواند شامل حساب‌هایی باشد که توسط برنامه‌هایی که نصب کرده‌اید، ایجاد شده است. این مجوز به برنامه‌ها اجازه می‌دهد داده‌های مخاطب شما را ذخیره کنند، و ممکن است برنامه‌های مخرب بدون اطلاع شما داده‌های مخاطب را هم‌رسانی کنند.</string>
     <string name="permdesc_readInstallSessions">به برنامه اجازه می‌دهد جلسات نصب را بخواند. این کار به برنامه اجازه می‌دهد جزئیات نصب‌های بسته فعال را ببیند.</string>
     <string name="permdesc_readMediaAudio">به برنامه اجازه می‌دهد فایل‌های صوتی موجود در فضای ذخیره‌سازی هم‌رسانی‌شده را بخواند.</string>
     <string name="permdesc_readMediaImages">به برنامه اجازه می‌دهد فایل‌های تصویری موجود در فضای ذخیره‌سازی مشترک را بخواند.</string>
@@ -2113,7 +2113,7 @@
     <string name="permdesc_readNetworkUsageHistory">‏به برنامه اجازه می‎دهد تا کاربرد شبکه را در طول زمان برای برنامه‎ها و شبکه‎های خاص بخواند.</string>
     <string name="permdesc_readPhoneNumbers">به برنامه امکان می‌دهد به شماره تلفن‌های دستگاه دسترسی داشته باشد.</string>
     <string name="permdesc_readPhoneState">به برنامه اجازه می‌دهد به ویژگی‌های تلفن دستگاه شما دسترسی پیدا کند. این مجوز به برنامه اجازه می‌دهد شماره تلفن و شناسه‌های دستگاه، فعال بودن یک تماس و شماره راه دوری که با یک تماس متصل شده است را مشخص کند.</string>
-    <string name="permdesc_readSms">این برنامه می‌تواند همه پیامک‌های ذخیره‌شده در تلفن شما را بخواند.</string>
+    <string name="permdesc_readSms">این برنامه می‌تواند همه پیامک‌های ذخیره‌شده در رایانه لوحی شما را بخواند.</string>
     <string name="permdesc_readSyncSettings">به برنامه اجازه می‌دهد تنظیمات را برای یک حساب بخواند. به‌عنوان مثال، این ویژگی می‌تواند تعیین کند آیا حساب «افراد» شما با یک حساب همگام‌سازی شده است.</string>
     <string name="permdesc_readSyncStats">به یک برنامه اجازه می‌دهد وضعیت همگام‌سازی یک حساب را بخواند، از جمله سابقه رویدادهای همگام‌سازی و میزان داده‌های همگام‌سازی شده.</string>
     <string name="permdesc_readVisualUserSelect">به برنامه جازه می‌دهد فایل‌های تصویری و ویدیویی‌ای را که از فضای ذخیره‌سازی مشترکتان انتخاب می‌کنید بخواند.</string>
@@ -2139,7 +2139,7 @@
     <string name="permdesc_sendSms">به برنامه اجازه می‌دهد پیامک‌ها را ارسال کند. این باعث ایجاد هزینه‌های پیش‌بینی نشده می‌شود. برنامه‌های مخرب ممکن است با ارسال پیام بدون تأیید شما هزینه‌هایی را برای شما ایجاد کنند.</string>
     <string name="permdesc_setAlarm">‏به برنامه اجازه می‎دهد تا زنگی را در برنامه ساعت زنگدار نصب‌شده تنظیم کند. برخی از برنامه‌های ساعت زنگدار نمی‌‎توانند این ویژگی را اعمال کنند.</string>
     <string name="permdesc_setInputCalibration">به برنامه امکان می‌دهد پارامترهای کالیبراسیون صفحه لمسی را تغییر دهد. هرگز نباید برای برنامه‌های عادی مورد نیاز باشد.</string>
-    <string name="permdesc_setTimeZone">‏به برنامه اجازه می‎دهد تا منطقهٔ زمانی تلفن را تغییر دهد.</string>
+    <string name="permdesc_setTimeZone">‏به برنامه اجازه می‎دهد تا منطقهٔ زمانی رایانهٔ لوحی را تغییر دهد.</string>
     <string name="permdesc_setWallpaper">‏به برنامه اجازه می‎دهد تا کاغذدیواری سیستم را تنظیم کند.</string>
     <string name="permdesc_setWallpaperHints">‏به برنامه اجازه می‎دهد تا نکات اندازه کاغذدیواری سیستم را تنظیم کند.</string>
     <string name="permdesc_sim_communication">به برنامه اجازه ارسال دستورات به سیم کارت را می‌دهد. این بسیار خطرناک است.</string>
@@ -2153,7 +2153,7 @@
     <string name="permdesc_subscribedFeedsRead">‏به برنامه اجازه می‎دهد تا جزئیات مربوط به فیدهای همگام شده کنونی را دریافت کند.</string>
     <string name="permdesc_systemAlertWindow">این برنامه می‌تواند روی برنامه‌های دیگر یا سایر قسمت‌های صفحه ظاهر شود. ممکن است در عملکرد معمول برنامه‌های دیگر اختلال ایجاد کند و شیوه نمایش آن‌ها را تغییر دهد.</string>
     <string name="permdesc_systemCamera">‏این برنامه سیستم یا دارای امتیاز، می‌تواند با استفاده از دوربین سیستم در هرزمانی عکس‌برداری و فیلم‌برداری کند. برنامه به اجازه android.permission.CAMERA هم نیاز دارد.</string>
-    <string name="permdesc_transmitIr">به برنامه اجازه می‌دهد تا از فرستنده مادون قرمز تلفن استفاده کند.</string>
+    <string name="permdesc_transmitIr">به برنامه اجازه می‌دهد تا از فرستنده مادون قرمز رایانه لوحی استفاده کند.</string>
     <string name="permdesc_turnScreenOn">به برنامه اجازه می‌دهد صفحه‌نمایش را روشن کند.</string>
     <string name="permdesc_ucsPlugin">با افزونه‌های فضای ذخیره‌سازی اطلاعات شناسایی شخص ثالث کار کنید.</string>
     <string name="permdesc_uninstall_shortcut">به برنامه اجازه می‌دهد میان‌برهای صفحه اصلی را بدون دخالت کاربر حذف کند.</string>
@@ -2167,10 +2167,10 @@
     <string name="permdesc_vibrate">‏به برنامه اجازه می‎دهد تا لرزاننده را کنترل کند.</string>
     <string name="permdesc_vibrator_state">به برنامه اجازه می‌دهد تا به وضعیت لرزاننده دسترسی داشته باشد.</string>
     <string name="permdesc_videoWrite">به برنامه اجازه می‌دهد مجموعه ویدیویتان را تغییر دهد.</string>
-    <string name="permdesc_wakeLock">‏به برنامه اجازه می‎دهد تا از غیرفعال شدن تلفن جلوگیری کند.</string>
-    <string name="permdesc_writeCalendar">این برنامه می‌تواند در تلفن شما رویدادهای تقویم اضافه کند، آن‌ها را حذف کند یا تغییر دهد. این برنامه می‌تواند پیام‌هایی ارسال کند که گویی از طرف مالکان تقویم هستند یا رویدادها را بدون اطلاع مالکان تغییر دهد.</string>
-    <string name="permdesc_writeCallLog">‏به برنامه اجازه می‌دهد گزارشات تماس تلفنی شما، از جمله داده‌هایی درمورد تماس‎های ورودی و خروجی را تغییر دهد. برنامه‌های مخرب ممکن است از این ویژگی برای پاک کردن یا تغییر گزارش تماس شما استفاده کنند.</string>
-    <string name="permdesc_writeContacts">به برنامه اجازه می‌دهد داده‌های مربوط به مخاطبین ذخیره‌شده در تلفنتان را تغییر دهد. این مجوز به برنامه‌ها اجازه می‌دهد داده‌های مخاطب را حذف کنند.</string>
+    <string name="permdesc_wakeLock">‏به برنامه اجازه می‎دهد تا از غیرفعال شدن رایانهٔ لوحی جلوگیری کند.</string>
+    <string name="permdesc_writeCalendar">این برنامه می‌تواند در رایانه لوحی شما رویدادهای تقویم اضافه کند، آن‌ها را حذف کند یا تغییر دهد. این برنامه می‌تواند پیام‌هایی ارسال کند که گویی از طرف مالکان تقویم هستند یا رویدادها را بدون اطلاع مالکان تغییر دهد.</string>
+    <string name="permdesc_writeCallLog">‏به برنامه اجازه می‌دهد گزارش‌های تماس رایانهٔ لوحی شما، از جمله داده‌هایی درباره تماس‎های ورودی و خروجی را تغییر دهد. برنامه‌های مخرب ممکن است از این ویژگی برای پاک کردن یا تغییر گزارش تماس شما استفاده کنند.</string>
+    <string name="permdesc_writeContacts">به برنامه اجازه می‌دهد داده‌های مربوط به مخاطبین ذخیره‌شده در رایانه لوحی شما را تغییر دهد. این مجوز به برنامه‌ها اجازه می‌دهد داده‌های مخاطب را حذف کنند.</string>
     <string name="permdesc_writeSettings">‏به برنامه اجازه می‎دهد تا داده‎های تنظیم سیستم را تغییر دهد. برنامه‌های مخرب می‎توانند پیکربندی سیستم شما را خراب کنند.</string>
     <string name="permdesc_writeSyncSettings">به برنامه اجازه می‌دهد تنظیمات همگام‌سازی را برای حساب تغییر دهد. به‌عنوان مثال، از این ویژگی می‌توان برای فعال کردن همگام‌سازی برنامه «افراد» با یک حساب استفاده کرد.</string>
     <string name="permgroupdesc_activityRecognition">دسترسی به فعالیت فیزیکی شما</string>
@@ -2445,7 +2445,7 @@
     <string name="permlab_uwb_ranging">مشخص کردن موقعیت نسبی بین دستگاه‌های باند فوق‌وسیع اطراف</string>
     <string name="permlab_vibrate">کنترل لرزش</string>
     <string name="permlab_videoWrite">"تغییر مجموعه ویدیو  شما"</string>
-    <string name="permlab_wakeLock">ممانعت از به خواب رفتن تلفن</string>
+    <string name="permlab_wakeLock">ممانعت از به خواب رفتن رایانهٔ لوحی</string>
     <string name="permlab_writeCalendar">افزودن یا تغییر رویدادهای تقویم و ارسال ایمیل به مهمانان بدون دخالت مالک</string>
     <string name="permlab_writeCallLog">نوشتن گزارش تماس</string>
     <string name="permlab_writeContacts">تغییر مخاطبین</string>
@@ -2487,7 +2487,7 @@
     <string name="policydesc_allow_desktopsync">از همگام‌سازی دسک‌تاپ جلوگیری می‌شود.</string>
     <string name="policydesc_allow_internetsharing">از استفاده از نقطه اتصال همراه جلوگیری شود.</string>
     <string name="policydesc_allow_irda">از استفاده از IrDA جلوگیری می‌شود.</string>
-    <string name="policydesc_allow_popimapemail">از استفاده از ایمیل POP و IMAP در تلفن جلوگیری می‌شود.</string>
+    <string name="policydesc_allow_popimapemail">از استفاده از ایمیل POP و IMAP در تبلت جلوگیری می‌شود.</string>
     <string name="policydesc_allow_storagecard">از استفاده از کارت‌های حافظه جلوگیری می‌شود.</string>
     <string name="policydesc_allow_textmessaging">از استفاده از پیام متنی و چندرسانه‌ای جلوگیری می‌شود.</string>
     <string name="policydesc_allow_thirdParty">این برنامه از اجرای برنامه‌های شخص ثالث جلوگیری می‌کند.</string>
@@ -2505,10 +2505,10 @@
     <string name="policydesc_setGlobalProxy">پروکسی کلی دستگاه را برای استفاده هنگام فعال بودن این خط‌مشی تنظیم می‌کند. تنها مالک دستگاه می‌تواند پروکسی کلی را تنظیم کند.</string>
     <string name="policydesc_unsigned_app">این برنامه از اجرای برنامه‌های منابع ناشناخته جلوگیری می‌کند.</string>
     <string name="policydesc_unsigned_pkg">این برنامه از نصب شدن برنامه‌های منابع ناشناخته جلوگیری می‌کند.</string>
-    <string name="policydesc_watchLogin">‏تعداد گذرواژه‎های نادرست تایپ‌شده را هنگام بازکردن قفل صفحه کنترل می‎کند و اگر چندین بار گذرواژه‌های نادرست وارد شود، تلفن را قفل می‌کند یا همه داده‎های تلفن را پاک می‌کند.</string>
-    <string name="policydesc_watchLogin_secondaryUser">بر تعداد گذرواژه‌های نادرستی که هنگام باز کردن قفل صفحه تایپ شده، نظارت می‌کند، و اگر تعداد گذرواژه‌های تایپ شده نادرست بیش از حد بود، تلفن را قفل می‌کند یا کلیه داده‌های کاربر را پاک می‌کند.</string>
-    <string name="policydesc_wipeData">با انجام بازنشانی داده‌های کارخانه، داده‌های تلفن بدون هشدار پاک می‌شود.</string>
-    <string name="policydesc_wipeData_secondaryUser">داده‌های این کاربر را در این تلفن بدون هشدار پاک می‌کند.</string>
+    <string name="policydesc_watchLogin">‏تعداد گذرواژه‎های نادرست تایپ شده را هنگام بازکردن قفل صفحه کنترل می‌کند، و اگر دفعات زیادی گذرواژه نادرست وارد شود رایانهٔ لوحی را قفل می‌کند و همه داده‎های رایانهٔ لوحی را پاک می‌کند.</string>
+    <string name="policydesc_watchLogin_secondaryUser">بر تعداد گذرواژه‌های نادرستی که هنگام باز کردن قفل صفحه تایپ شده، نظارت می‌کند، و اگر تعداد گذرواژه‌های تایپ شده نادرست بیش از حد بود، رایانه لوحی را قفل می‌کند یا کلیه داده‌های کاربر را پاک می‌کند.</string>
+    <string name="policydesc_wipeData">با انجام بازنشانی داده‌های کارخانه، داده‌های رایانهٔ لوحی بدون هشدار پاک می‌شود.</string>
+    <string name="policydesc_wipeData_secondaryUser">داده‌های این کاربر را در این رایانه لوحی بدون هشدار پاک می‌کند.</string>
     <string name="policylab_allow_bluetoothmode">بلوتوث را غیرفعال شود</string>
     <string name="policylab_allow_browser">اینترنت را غیرفعال شود</string>
     <string name="policylab_allow_camera">غیر فعال کردن دوربین ها</string>
@@ -2542,7 +2542,7 @@
     <string name="postalTypeHome">خانه</string>
     <string name="postalTypeOther">سایر موارد</string>
     <string name="postalTypeWork">محل کار</string>
-    <string name="power_dialog">گزینه‌های تلفن</string>
+    <string name="power_dialog">گزینه‌های رایانهٔ لوحی</string>
     <string name="power_off">خاموش کردن</string>
     <string name="prepend_shortcut_label">منو+</string>
     <string name="preposition_for_date">در %s</string>
@@ -2588,7 +2588,7 @@
     <string name="recent_tasks_title">اخیر</string>
     <string name="recording_fail">وقتی میکروفن در %2$s استفاده می‌شود، استفاده از آن در %1$s ممکن نیست.</string>
     <string name="recording_popup">%s از میکروفن استفاده می‌کند.</string>
-    <string name="recording_popup_device">تلفن</string>
+    <string name="recording_popup_device">تبلت</string>
     <string name="recording_popup_with_bluetooth">%s از میکروفن بلوتوث استفاده می‌کند.</string>
     <string name="recording_popup_with_device">%1$s در حال استفاده از میکروفن %2$s است.</string>
     <string name="redo">انجام مجدد</string>
@@ -2735,12 +2735,12 @@
     <string name="screenshot_edit">ویرایش</string>
     <string name="sd_card_unavailable_message">نمی‌توانید از کارت حافظه استفاده کنید زیرا این کارت هنگام استفاده شدن نمایه کاربر دیگری وارد شده است.</string>
     <string name="sd_card_unavailable_title">کارت حافظه در دسترس نیست</string>
-    <string name="sdcard_bad_removal_message">کارت حافظه به‌صورت غیرایمن خارج شده است. برای جلوگیری از راه‌اندازی مجدد ناگهانی تلفن، اطلاعات ذخیره‌نشده را ذخیره کنید و اکنون مجدداً راه‌اندازی کنید.</string>
+    <string name="sdcard_bad_removal_message">کارت حافظه به‌صورت غیرایمن خارج شده است. برای جلوگیری از راه‌اندازی مجدد ناگهانی تبلت، اطلاعات ذخیره‌نشده را ذخیره کنید و اکنون مجدداً راه‌اندازی کنید.</string>
     <string name="sdcard_batch_decrypt_noti_content">رمزگشایی کارت حافظه</string>
     <string name="sdcard_batch_decrypt_noti_title">رمزگشایی کارت حافظه</string>
     <string name="sdcard_batch_decrypt_popup_content">کارت حافظه رمزگذاری شده باید قبل از استفاده، رمزگشایی شود. رمزگشایی یک ساعت یا بیشتر به طول می‌انجامد. با باتری شارژ شده شروع کنید. و دستگاه باید به برق وصل باشد تا رمزگشایی کامل شود. در صورت قطع شدن این روند ممکن است همه یا بخشی از داده‌های خود را از دست بدهید.</string>
     <string name="sdcard_decrypt_err_notification">هنگام رمزگشایی کارت حافظه خطایی رخ داد.</string>
-    <string name="sdcard_decrypt_error_otherdevice">برخی فایل‌های کارت حافظه شما در دستگاه دیگری رمزگذاری شده‌اند و استفاده از آنها در این تلفن ممکن نیست.</string>
+    <string name="sdcard_decrypt_error_otherdevice">برخی فایل‌های کارت حافظه شما در دستگاه دیگری رمزگذاری شده‌اند و استفاده از آنها در این تبلت ممکن نیست.</string>
     <string name="sdcard_decrypt_notification">کارت حافظه رمزگشایی شد.</string>
     <string name="sdcard_decrypt_title_notification">رمزگشایی کارت حافظه</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">رمزگشایی کارت حافظه…</string>
@@ -2998,7 +2998,7 @@
     <string name="showing_touch_sensitivity_noti_action">روشن</string>
     <string name="showing_touch_sensitivity_noti_text">برای پاسخگویی لمسی دقیق‌تر، ”حساسیت لمس“ را هنگام استفاده از Privacy Screen یا Notepaper Screen روشن کنید.</string>
     <string name="showing_touch_sensitivity_noti_title">افزايش حساسیت لمس</string>
-    <string name="shutdown_confirm">گوشی شما خاموش می‌شود.</string>
+    <string name="shutdown_confirm">رایانهٔ لوحی شما خاموش می‌شود.</string>
     <string name="shutdown_confirm_question">‏آیا می‎خواهید تلفن خاموش شود؟</string>
     <string name="shutdown_progress">درحال خاموش شدن…</string>
     <string name="side_key_double_press_deleted_app">برنامه حذف شده است. برنامه دیگری انتخاب کنید.</string>
@@ -3225,7 +3225,7 @@
     <string name="usb_abnormal_reset_title">اتصال USB پایدار نیست</string>
     <string name="usb_abnormal_reset_toast">اتصال USB پایدار نیست. سیم را از پریز بکشید و دوباره به پریز بزنید یا سیم دیگری امتحان کنید.</string>
     <string name="usb_accessory_notification_title">به یک لوازم جانبی USB وصل شده است</string>
-    <string name="usb_bad_removal_message">دستگاه محل ذخیره USB به‌صورت غیرایمن خارج شده است. برای جلوگیری از راه‌اندازی مجدد ناگهانی تلفن، اطلاعات ذخیره‌نشده را ذخیره کنید و اکنون مجدداً راه‌اندازی کنید.</string>
+    <string name="usb_bad_removal_message">دستگاه محل ذخیره USB به‌صورت غیرایمن خارج شده است. برای جلوگیری از راه‌اندازی مجدد ناگهانی تبلت، اطلاعات ذخیره‌نشده را ذخیره کنید و اکنون مجدداً راه‌اندازی کنید.</string>
     <string name="usb_blocked_by_emergency_mode">برخی عملکردهای USB در حالت اضطراری در دسترس نیستند.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">هنگامی که حالت ذخیره نیروی حداکثر فعال است، استفاده از عملکردهای مربوط به دستگاه USB متصل ممکن نیست.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">وقتی حالت ذخیره نیروی حداکثر روشن است، ممکن است برخی عملکردهای USB محدود شوند.</string>
@@ -3235,7 +3235,7 @@
     <string name="usb_camera_disconnected_notification_title">اتصال دستگاه رسانه قطع شد</string>
     <string name="usb_cd_installer_notification_title">به‌روزرسانی نرم‌افزار</string>
     <string name="usb_charging_notification_title">‏درحال شارژ کردن این دستگاه ازطریق USB</string>
-    <string name="usb_charing_only_notification_title">شارژ با USB</string>
+    <string name="usb_charing_only_notification_title">متصل شد</string>
     <string name="usb_contaminant_detected_message">‏درگاه USB به‌طور خودکار غیرفعال شده است. برای اطلاعات بیشتر، ضربه بزنید.</string>
     <string name="usb_contaminant_detected_title">‏مایعات یا خاکروبه در درگاه USB</string>
     <string name="usb_contaminant_not_detected_message">تلفن دیگر وجود مایعات یا خاکروبه را تشخیص نمی‌دهد.</string>
@@ -3247,11 +3247,11 @@
     <string name="usb_host_cable_disconnected_notification_title">رابط USB جدا شد.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">دسترسی به این دستگاه ممکن نیست. دستگاه متصل به نیروی برق خارجی احتیاج دارد.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">دستگاه USB پرقدرت وصل شد.</string>
-    <string name="usb_host_resource_exceed_message">کنترل‌کننده USB تلفن شما منبع کافی برای اتصال به این دستگاه ندارد. اتصال دستگاه را قطع کرده و دوباره وصل کنید.</string>
+    <string name="usb_host_resource_exceed_message">کنترل‌کننده USB تبلت شما منبع کافی برای اتصال به این دستگاه ندارد. اتصال دستگاه را قطع کرده و دوباره وصل کنید.</string>
     <string name="usb_host_resource_exceed_title">منابع کنترل‌کننده USB کافی نیست</string>
-    <string name="usb_hub_depth_exceed_message">تلفن شما همزمان فقط می‌تواند تا ۵ اتصال هاب USB را پشتیبانی کند.</string>
+    <string name="usb_hub_depth_exceed_message">تبلت شما همزمان فقط می‌تواند تا ۵ اتصال هاب USB را پشتیبانی کند.</string>
     <string name="usb_hub_depth_exceed_title">حداکثر اتصالات هاب USB</string>
-    <string name="usb_hub_power_exceed_message">تلفن شما نمی‌تواند نیروی کافی برای این دستگاه USB ارائه دهد. قبل از متصل کردن آن به تلفنتان، دستگاه را به یک هاب USB با نیروی خودکار وصل کنید.</string>
+    <string name="usb_hub_power_exceed_message">تبلت شما نمی‌تواند نیروی کافی برای این دستگاه USB ارائه دهد. قبل از متصل کردن آن به تبلتتان، دستگاه را به یک هاب USB با نیروی خودکار وصل کنید.</string>
     <string name="usb_increase_battery_usage">اتصال USB ممکن است مصرف باتری را افزایش دهد.</string>
     <string name="usb_keyboard_connected_notification_title">صفحه کلید متصل شد</string>
     <string name="usb_keyboard_disconnected_notification_title">اتصال صفحه کلید قطع شد</string>
@@ -3294,8 +3294,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">حافظه انبوه USB بصورت غیرمنتظره برداشته شد.</string>
     <string name="usb_ums_connected_notification_title_usbhost">حافظه ذخیره انبوه USB متصل شد</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">حافظه انبوه USB با ایمنی برداشته شد.</string>
-    <string name="usb_unblock_by_screen_unlock">برای استفاده از دستگاه USB متصل، قفل گوشی خود را بازگشایی کنید.</string>
-    <string name="usb_unsupport_accessory_message">این دستگاه USB در تلفن شما پشتیبانی نمی‌شود.</string>
+    <string name="usb_unblock_by_screen_unlock">برای استفاده از دستگاه USB متصل، قفل تبلت خود را بازگشایی کنید.</string>
+    <string name="usb_unsupport_accessory_message">این دستگاه USB در تبلت شما پشتیبانی نمی‌شود.</string>
     <string name="usb_unsupport_accessory_title">دستگاه USB پشتیبانی نمی‌شود</string>
     <string name="usb_unsupported_audio_accessory_message">دستگاه متصل‌شده با این تلفن سازگار نیست. روی اطلاعات بیشتر، ضربه بزنید.</string>
     <string name="usb_unsupported_audio_accessory_title">لوازم جانبی صوتی آنالوگ شناسایی شد</string>
@@ -3316,19 +3316,19 @@
     <string name="usb_water_dialg_method_2_desc_2">می‌توانید با گرفتن یک پنکه یا سشوار (فقط هوای خنک) به طرف پورت، روند خشک کردن را سریع‌تر کنید.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ما رطوبت یا مواد خارجی در درگاه شارژ/USB شما شناسایی کرده‌ایم.
 
-هرگونه ماده خارجی مانند گرد و غبار یا کثیفی را در شارژ/درگاه USB خود بررسی کنید. برای جلوگیری از آسیب رسیدن به گوشی خود، تا زمانی که درگاه شارژ تمیز نشود، و رطوبت آن از بین نرود، چیزی را متصل نکنید.
+هرگونه ماده خارجی مانند گرد و غبار یا کثیفی درگاه شارژ/USB خود را بررسی کنید. برای جلوگیری از آسیب رسیدن به تبلت خود، تا زمانی که درگاه شارژ تمیز نشود، و رطوبت آن از بین نرود، چیزی را متصل نکنید.
 
 دستگاه را تکان دهید تا رطوبتی نداشته باشد، سپس صبر کنید تا خشک شود، که این کار ممکن است چندین ساعت طول بکشد. با گرفتن درگاه به سمت پنکه یا سشوار (فقط در هوای خنک)، می‌توانید سرعت خشک شدن را افزایش دهید."</string>
     <string name="usb_water_dialg_positive_button">تایید</string>
     <string name="usb_water_dialg_support_wireless_charging">"ما رطوبت یا مواد خارجی در درگاه شارژ/USB شما شناسایی کرده‌ایم.
 
-هرگونه ماده خارجی مانند گرد و غبار یا کثیفی را در شارژ/درگاه USB خود بررسی کنید. برای جلوگیری از آسیب رسیدن به گوشی خود، تا زمانی که درگاه شارژ تمیز نشود، و رطوبت آن از بین نرود، چیزی را متصل نکنید.
+هرگونه ماده خارجی مانند گرد و غبار یا کثیفی درگاه شارژ/USB خود را بررسی کنید. برای جلوگیری از آسیب رسیدن به تبلت خود، تا زمانی که درگاه شارژ تمیز نشود، و رطوبت آن از بین نرود، چیزی را متصل نکنید.
 
 دستگاه را تکان دهید تا رطوبتی نداشته باشد، سپس صبر کنید تا خشک شود، که این کار ممکن است چندین ساعت طول بکشد. با گرفتن درگاه به سمت پنکه یا سشوار (فقط در هوای خنک)، می‌توانید سرعت خشک شدن را افزایش دهید.
 
-در این فاصله، می‌توانید گوشی خود را به‌صورت بی‌سیم شارژ کنید."</string>
+در این فاصله، می‌توانید تبلت خود را به‌صورت بی‌سیم شارژ کنید."</string>
     <string name="usb_water_notification_content">در درگاه شارژ/USB شما رطوبت یا مواد خارجی وجود دارد. قبل از شارژ بررسی کنید.</string>
-    <string name="usb_water_notification_message">در شارژر/درگاه USB شما رطوبت وجود دارد. قبل از شارژ کردن تلفنتان، مطمئن شوید کاملاً خشک شده باشد. ممکن است خشک شدن کامل آن مدتی طول بکشد.</string>
+    <string name="usb_water_notification_message">در شارژر/درگاه USB شما رطوبت وجود دارد. قبل از شارژ کردن تبلت، مطمئن شوید کاملاً خشک شده باشد. ممکن است خشک شدن کامل آن مدتی طول بکشد.</string>
     <string name="usb_water_notification_message_button">جزئيات</string>
     <string name="usb_water_notification_title">بررسی درگاه شارژر/USB</string>
     <string name="usbhostStorage_restrict">سیاست امنیتی از استفاده از فضای ذخیره‌سازی USB جلوگیری می‌کند.</string>
@@ -3346,7 +3346,7 @@
     <string name="user_switched">کاربر کنونی %1$s.</string>
     <string name="user_switching_message">در حالت تغییر به %1$s…</string>
     <string name="validity_period">اعتبار:</string>
-    <string name="vdm_camera_access_denied">از %1$s به دوربین تلفن دسترسی ندارید</string>
+    <string name="vdm_camera_access_denied">نمی‌توان از %1$s شما به دوربین رایانه لوحی دسترسی داشت</string>
     <string name="vdm_pip_blocked">هنگام جاری‌سازی نمی‌توان تصویر در تصویر را مشاهده کرد</string>
     <string name="vdm_secure_window">درحین جاری‌سازی، نمی‌توانید به آن دسترسی داشته باشید. دسترسی به آن را در تلفنتان امتحان کنید.</string>
     <string name="view_and_control_notification_content">%s می‌تواند صفحه‌نمایش شما را مشاهده و کنترل کند. برای مرور، ضربه بزنید.</string>

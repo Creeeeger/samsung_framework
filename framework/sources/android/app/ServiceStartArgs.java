@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ServiceStartArgs implements Parcelable {
     public static final Parcelable.Creator<ServiceStartArgs> CREATOR = new Parcelable.Creator<ServiceStartArgs>() { // from class: android.app.ServiceStartArgs.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ServiceStartArgs createFromParcel(Parcel in) {
             return new ServiceStartArgs(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceStartArgs[] newArray(int size) {
             return new ServiceStartArgs[size];
@@ -50,6 +51,23 @@ public class ServiceStartArgs implements Parcelable {
             this.args.writeToParcel(parcel, 0);
         } else {
             parcel.writeInt(0);
+        }
+    }
+
+    /* renamed from: android.app.ServiceStartArgs$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ServiceStartArgs> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ServiceStartArgs createFromParcel(Parcel in) {
+            return new ServiceStartArgs(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ServiceStartArgs[] newArray(int size) {
+            return new ServiceStartArgs[size];
         }
     }
 

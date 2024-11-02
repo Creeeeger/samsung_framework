@@ -44,12 +44,10 @@ public abstract class Keyframe implements Cloneable {
         return this.mHasValue;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean valueWasSetOnStart() {
         return this.mValueWasSetOnStart;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setValueWasSetOnStart(boolean valueWasSetOnStart) {
         this.mValueWasSetOnStart = valueWasSetOnStart;
     }
@@ -74,8 +72,9 @@ public abstract class Keyframe implements Cloneable {
         return this.mValueType;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    static class ObjectKeyframe extends Keyframe {
+    public static class ObjectKeyframe extends Keyframe {
         Object mValue;
 
         ObjectKeyframe(float fraction, Object value) {
@@ -106,8 +105,9 @@ public abstract class Keyframe implements Cloneable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    static class IntKeyframe extends Keyframe {
+    public static class IntKeyframe extends Keyframe {
         int mValue;
 
         IntKeyframe(float fraction, int value) {
@@ -154,8 +154,9 @@ public abstract class Keyframe implements Cloneable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    static class FloatKeyframe extends Keyframe {
+    public static class FloatKeyframe extends Keyframe {
         float mValue;
 
         FloatKeyframe(float fraction, float value) {
@@ -188,7 +189,7 @@ public abstract class Keyframe implements Cloneable {
         }
 
         @Override // android.animation.Keyframe
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+        /* renamed from: clone */
         public FloatKeyframe mo65clone() {
             FloatKeyframe kfClone;
             if (this.mHasValue) {

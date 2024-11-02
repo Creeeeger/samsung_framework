@@ -125,13 +125,14 @@ public final class SurfaceControl implements Parcelable {
     static long sTransactionNestCount = 0;
     private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(SurfaceControl.class.getClassLoader(), nativeGetNativeSurfaceControlFinalizer());
     public static final Parcelable.Creator<SurfaceControl> CREATOR = new Parcelable.Creator<SurfaceControl>() { // from class: android.view.SurfaceControl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SurfaceControl createFromParcel(Parcel in) {
             return new SurfaceControl(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SurfaceControl[] newArray(int size) {
             return new SurfaceControl[size];
@@ -180,37 +181,42 @@ public final class SurfaceControl implements Parcelable {
         void onTransactionCommitted();
     }
 
-    /* renamed from: -$$Nest$smgetNativeTrustedPresentationCallbackFinalizer, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m5201$$Nest$smgetNativeTrustedPresentationCallbackFinalizer() {
+    /* renamed from: -$$Nest$smgetNativeTrustedPresentationCallbackFinalizer */
+    static /* bridge */ /* synthetic */ long m5196$$Nest$smgetNativeTrustedPresentationCallbackFinalizer() {
         return getNativeTrustedPresentationCallbackFinalizer();
     }
 
-    /* renamed from: -$$Nest$smnativeCreateTransaction, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m5209$$Nest$smnativeCreateTransaction() {
+    /* renamed from: -$$Nest$smnativeCreateTransaction */
+    static /* bridge */ /* synthetic */ long m5204$$Nest$smnativeCreateTransaction() {
         return nativeCreateTransaction();
     }
 
-    /* renamed from: -$$Nest$smnativeGetDefaultApplyToken, reason: not valid java name */
-    static /* bridge */ /* synthetic */ IBinder m5210$$Nest$smnativeGetDefaultApplyToken() {
+    /* renamed from: -$$Nest$smnativeGetDefaultApplyToken */
+    static /* bridge */ /* synthetic */ IBinder m5205$$Nest$smnativeGetDefaultApplyToken() {
         return nativeGetDefaultApplyToken();
     }
 
-    /* renamed from: -$$Nest$smnativeGetNativeTransactionFinalizer, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m5211$$Nest$smnativeGetNativeTransactionFinalizer() {
+    /* renamed from: -$$Nest$smnativeGetNativeTransactionFinalizer */
+    static /* bridge */ /* synthetic */ long m5206$$Nest$smnativeGetNativeTransactionFinalizer() {
         return nativeGetNativeTransactionFinalizer();
+    }
+
+    /* synthetic */ SurfaceControl(Parcel parcel, SurfaceControlIA surfaceControlIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ SurfaceControl(SurfaceSession surfaceSession, String str, int i, int i2, int i3, int i4, SurfaceControl surfaceControl, SparseIntArray sparseIntArray, WeakReference weakReference, String str2, SurfaceControlIA surfaceControlIA) {
+        this(surfaceSession, str, i, i2, i3, i4, surfaceControl, sparseIntArray, weakReference, str2);
     }
 
     private static native long getNativeTrustedPresentationCallbackFinalizer();
 
     private static native void nativeAddJankDataListener(long j, long j2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeAddTransactionCommittedListener(long j, TransactionCommittedListener transactionCommittedListener);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeAddWindowInfosReportedListener(long j, Runnable runnable);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeApplyTransaction(long j, boolean z);
 
     private static native boolean nativeBootFinished();
@@ -221,20 +227,16 @@ public final class SurfaceControl implements Parcelable {
 
     private static native boolean nativeClearContentFrameStats(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeClearTransaction(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeClearTrustedPresentationCallback(long j, long j2);
 
     private static native long nativeCopyFromSurfaceControl(long j);
 
     private static native long nativeCreate(SurfaceSession surfaceSession, String str, int i, int i2, int i3, int i4, long j, Parcel parcel) throws Surface.OutOfResourcesException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeCreateJankDataListenerWrapper(OnJankDataListener onJankDataListener);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeCreateTpc(TrustedPresentationCallback trustedPresentationCallback);
 
     private static native long nativeCreateTransaction();
@@ -287,12 +289,10 @@ public final class SurfaceControl implements Parcelable {
 
     private static native StaticDisplayInfo nativeGetStaticDisplayInfo(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeGetTransactionId(long j);
 
     private static native int nativeGetTransformHint(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeMergeTransaction(long j, long j2);
 
     private static native long nativeMirrorSurface(long j);
@@ -301,206 +301,148 @@ public final class SurfaceControl implements Parcelable {
 
     private static native long nativeReadFromParcel(Parcel parcel);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeReadTransactionFromParcel(Parcel parcel);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeRemoveCurrentInputFocus(long j, int i);
 
     private static native void nativeRemoveJankDataListener(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeReparent(long j, long j2, long j3);
 
     private static native void nativeRestrictHighRefreshRate(boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSanitize(long j, int i, int i2);
 
     private static native boolean nativeSetActiveColorMode(IBinder iBinder, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetAlpha(long j, long j2, float f);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetAnimationTransaction(long j);
 
     private static native void nativeSetAutoLowLatencyMode(IBinder iBinder, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetBackgroundBlurColorCurve(long j, long j2, float[] fArr);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetBackgroundBlurRadius(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetBlurRegions(long j, long j2, float[][] fArr, int i);
 
     private static native void nativeSetBootDisplayMode(IBinder iBinder, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetBuffer(long j, long j2, HardwareBuffer hardwareBuffer, long j3, Consumer<SyncFence> consumer);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetBufferTransform(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetCachingHint(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetColor(long j, long j2, float[] fArr);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetColorSpaceAgnostic(long j, long j2, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetColorTransform(long j, long j2, float[] fArr, float[] fArr2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetCornerRadius(long j, long j2, float f);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDamageRegion(long j, long j2, Region region);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDataSpace(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDefaultApplyToken(IBinder iBinder);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDefaultFrameRateCompatibility(long j, long j2, int i);
 
     private static native boolean nativeSetDesiredDisplayModeSpecs(IBinder iBinder, DesiredDisplayModeSpecs desiredDisplayModeSpecs);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDestinationFrame(long j, long j2, int i, int i2, int i3, int i4);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDimmingEnabled(long j, long j2, boolean z);
 
     private static native boolean nativeSetDisplayBrightness(IBinder iBinder, float f, float f2, float f3, float f4);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDisplayFlags(long j, IBinder iBinder, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDisplayLayerStack(long j, IBinder iBinder, int i);
 
     private static native void nativeSetDisplayPowerMode(IBinder iBinder, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDisplayProjection(long j, IBinder iBinder, int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDisplayReluminoEffect(long j, IBinder iBinder, float f, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDisplaySize(long j, IBinder iBinder, int i, int i2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDisplaySurface(long j, IBinder iBinder, long j2);
 
     private static native boolean nativeSetDisplayedContentSamplingEnabled(IBinder iBinder, boolean z, int i, int i2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetDropInputMode(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetEarlyWakeupEnd(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetEarlyWakeupStart(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetExtendedRangeBrightness(long j, long j2, float f, float f2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetFixedTransformHint(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetFlags(long j, long j2, int i, int i2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetFocusedWindow(long j, IBinder iBinder, String str, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetFrameRate(long j, long j2, float f, int i, int i2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetFrameRateSelectionPriority(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetFrameTimelineVsync(long j, long j2);
 
     private static native void nativeSetGameContentType(IBinder iBinder, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetGeometry(long j, long j2, Rect rect, Rect rect2, long j3);
 
     private static native void nativeSetGlobalShadowSettings(float[] fArr, float[] fArr2, float f, float f2, float f3);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetInputWindowInfo(long j, long j2, InputWindowHandle inputWindowHandle);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetLayer(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetLayerStack(long j, long j2, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetMatrix(long j, long j2, float f, float f2, float f3, float f4);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetMetadata(long j, long j2, int i, Parcel parcel);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetPosition(long j, long j2, float f, float f2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetRelativeLayer(long j, long j2, long j3, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetScale(long j, long j2, float f, float f2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetShadowRadius(long j, long j2, float f);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetStretchEffect(long j, long j2, float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10);
 
     private static native void nativeSetTransformHint(long j, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetTransparentRegionHint(long j, long j2, Region region);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetTrustedOverlay(long j, long j2, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetTrustedPresentationCallback(long j, long j2, long j3, TrustedPresentationThresholds trustedPresentationThresholds);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetWindowCrop(long j, long j2, int i, int i2, int i3, int i4);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeStartChangeResolution(long j, IBinder iBinder, boolean z);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeStartSurfaceAnimation(long j, long j2, String str);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSurfaceFlushJankData(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeUnsetBuffer(long j, long j2);
 
     private static native void nativeUpdateDefaultBufferSize(long j, int i, int i2);
 
     private static native void nativeWriteToParcel(long j, Parcel parcel);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeWriteTransactionToParcel(long j, Parcel parcel);
 
     public static int rotationToBufferTransform(int rotation) {
@@ -879,12 +821,10 @@ public final class SurfaceControl implements Parcelable {
         this.mCallsite = callsite;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getCallsite() {
         return this.mCallsite;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getName() {
         return this.mName;
     }
@@ -935,6 +875,23 @@ public final class SurfaceControl implements Parcelable {
         proto.end(token);
     }
 
+    /* renamed from: android.view.SurfaceControl$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SurfaceControl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SurfaceControl createFromParcel(Parcel in) {
+            return new SurfaceControl(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SurfaceControl[] newArray(int size) {
+            return new SurfaceControl[size];
+        }
+    }
+
     protected void finalize() throws Throwable {
         try {
             CloseGuard closeGuard = this.mCloseGuard;
@@ -974,7 +931,6 @@ public final class SurfaceControl implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void checkNotReleased() {
         if (this.mNativeObject == 0) {
             if (this.mReleaseStack != null) {
@@ -1212,13 +1168,14 @@ public final class SurfaceControl implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class RefreshRateRange implements Parcelable {
         public static final Parcelable.Creator<RefreshRateRange> CREATOR = new Parcelable.Creator<RefreshRateRange>() { // from class: android.view.SurfaceControl.RefreshRateRange.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RefreshRateRange createFromParcel(Parcel in) {
                 return new RefreshRateRange(in.readFloat(), in.readFloat());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RefreshRateRange[] newArray(int size) {
                 return new RefreshRateRange[size];
@@ -1280,6 +1237,23 @@ public final class SurfaceControl implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: android.view.SurfaceControl$RefreshRateRange$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RefreshRateRange> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RefreshRateRange createFromParcel(Parcel in) {
+                return new RefreshRateRange(in.readFloat(), in.readFloat());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RefreshRateRange[] newArray(int size) {
+                return new RefreshRateRange[size];
+            }
         }
     }
 
@@ -1628,9 +1602,13 @@ public final class SurfaceControl implements Parcelable {
 
     /* loaded from: classes4.dex */
     public static abstract class TrustedPresentationCallback {
-        private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(TrustedPresentationCallback.class.getClassLoader(), SurfaceControl.m5201$$Nest$smgetNativeTrustedPresentationCallbackFinalizer());
+        private static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(TrustedPresentationCallback.class.getClassLoader(), SurfaceControl.m5196$$Nest$smgetNativeTrustedPresentationCallbackFinalizer());
         private final Runnable mFreeNativeResources;
         private final long mNativeObject;
+
+        /* synthetic */ TrustedPresentationCallback(TrustedPresentationCallbackIA trustedPresentationCallbackIA) {
+            this();
+        }
 
         public abstract void onTrustedPresentationChanged(boolean z);
 
@@ -1649,21 +1627,26 @@ public final class SurfaceControl implements Parcelable {
         public long mNativeObject;
         private final ArrayMap<SurfaceControl, SurfaceControl> mReparentedSurfaces;
         private final ArrayMap<SurfaceControl, Point> mResizedSurfaces;
-        public static final NativeAllocationRegistry sRegistry = new NativeAllocationRegistry(Transaction.class.getClassLoader(), SurfaceControl.m5211$$Nest$smnativeGetNativeTransactionFinalizer(), 512);
+        public static final NativeAllocationRegistry sRegistry = new NativeAllocationRegistry(Transaction.class.getClassLoader(), SurfaceControl.m5206$$Nest$smnativeGetNativeTransactionFinalizer(), 512);
         private static final float[] INVALID_COLOR = {-1.0f, -1.0f, -1.0f};
         public static final Parcelable.Creator<Transaction> CREATOR = new Parcelable.Creator<Transaction>() { // from class: android.view.SurfaceControl.Transaction.2
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass2() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Transaction createFromParcel(Parcel in) {
                 return new Transaction(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Transaction[] newArray(int size) {
                 return new Transaction[size];
             }
         };
+
+        /* synthetic */ Transaction(Parcel parcel, TransactionIA transactionIA) {
+            this(parcel);
+        }
 
         public void addDebugName(String debugName) {
             if (TextUtils.isEmpty(this.mDebugName)) {
@@ -1678,7 +1661,7 @@ public final class SurfaceControl implements Parcelable {
         }
 
         public Transaction() {
-            this(SurfaceControl.m5209$$Nest$smnativeCreateTransaction());
+            this(SurfaceControl.m5204$$Nest$smnativeCreateTransaction());
         }
 
         private Transaction(long nativeObject) {
@@ -1707,7 +1690,7 @@ public final class SurfaceControl implements Parcelable {
         }
 
         public static IBinder getDefaultApplyToken() {
-            return SurfaceControl.m5210$$Nest$smnativeGetDefaultApplyToken();
+            return SurfaceControl.m5205$$Nest$smnativeGetDefaultApplyToken();
         }
 
         public void apply() {
@@ -2388,7 +2371,6 @@ public final class SurfaceControl implements Parcelable {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$addTransactionCommittedListener$0(Executor executor, final TransactionCommittedListener listener) {
             Objects.requireNonNull(listener);
             executor.execute(new Runnable() { // from class: android.view.SurfaceControl$Transaction$$ExternalSyntheticLambda1
@@ -2399,7 +2381,7 @@ public final class SurfaceControl implements Parcelable {
             });
         }
 
-        /* renamed from: android.view.SurfaceControl$Transaction$1, reason: invalid class name */
+        /* renamed from: android.view.SurfaceControl$Transaction$1 */
         /* loaded from: classes4.dex */
         class AnonymousClass1 extends TrustedPresentationCallback {
             final /* synthetic */ Executor val$executor;
@@ -2494,6 +2476,23 @@ public final class SurfaceControl implements Parcelable {
         public int describeContents() {
             return 0;
         }
+
+        /* renamed from: android.view.SurfaceControl$Transaction$2 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass2 implements Parcelable.Creator<Transaction> {
+            AnonymousClass2() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Transaction createFromParcel(Parcel in) {
+                return new Transaction(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Transaction[] newArray(int size) {
+                return new Transaction[size];
+            }
+        }
     }
 
     /* loaded from: classes4.dex */
@@ -2515,6 +2514,10 @@ public final class SurfaceControl implements Parcelable {
 
     /* loaded from: classes4.dex */
     private static class GlobalTransactionWrapper extends Transaction {
+        /* synthetic */ GlobalTransactionWrapper(GlobalTransactionWrapperIA globalTransactionWrapperIA) {
+            this();
+        }
+
         private GlobalTransactionWrapper() {
         }
 

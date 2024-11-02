@@ -14,13 +14,14 @@ import java.util.Map;
 /* loaded from: classes.dex */
 public final class ApplicationStartInfo implements Parcelable {
     public static final Parcelable.Creator<ApplicationStartInfo> CREATOR = new Parcelable.Creator<ApplicationStartInfo>() { // from class: android.app.ApplicationStartInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ApplicationStartInfo createFromParcel(Parcel in) {
             return new ApplicationStartInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationStartInfo[] newArray(int size) {
             return new ApplicationStartInfo[size];
@@ -91,6 +92,10 @@ public final class ApplicationStartInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface StartupTimestamp {
+    }
+
+    /* synthetic */ ApplicationStartInfo(Parcel parcel, ApplicationStartInfoIA applicationStartInfoIA) {
+        this(parcel);
     }
 
     public void setStartupState(int startupState) {
@@ -255,5 +260,22 @@ public final class ApplicationStartInfo implements Parcelable {
             return source.intern();
         }
         return null;
+    }
+
+    /* renamed from: android.app.ApplicationStartInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ApplicationStartInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApplicationStartInfo createFromParcel(Parcel in) {
+            return new ApplicationStartInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ApplicationStartInfo[] newArray(int size) {
+            return new ApplicationStartInfo[size];
+        }
     }
 }

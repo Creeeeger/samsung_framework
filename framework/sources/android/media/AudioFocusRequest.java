@@ -16,6 +16,10 @@ public final class AudioFocusRequest {
     private final AudioManager.OnAudioFocusChangeListener mFocusListener;
     private final Handler mListenerHandler;
 
+    /* synthetic */ AudioFocusRequest(AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener, Handler handler, AudioAttributes audioAttributes, int i, int i2, AudioFocusRequestIA audioFocusRequestIA) {
+        this(onAudioFocusChangeListener, handler, audioAttributes, i, i2);
+    }
+
     private AudioFocusRequest(AudioManager.OnAudioFocusChangeListener listener, Handler handler, AudioAttributes attr, int focusGain, int flags) {
         this.mFocusListener = listener;
         this.mListenerHandler = handler;
@@ -24,7 +28,6 @@ public final class AudioFocusRequest {
         this.mFlags = flags;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static final boolean isValidFocusGain(int focusGain) {
         switch (focusGain) {
             case 1:
@@ -66,7 +69,6 @@ public final class AudioFocusRequest {
         return (this.mFlags & 4) == 4;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getFlags() {
         return this.mFlags;
     }
@@ -125,7 +127,6 @@ public final class AudioFocusRequest {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder setOnAudioFocusChangeListenerInt(AudioManager.OnAudioFocusChangeListener listener, Handler handler) {
             this.mFocusListener = listener;
             this.mListenerHandler = handler;

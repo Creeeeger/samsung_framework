@@ -106,9 +106,10 @@ public class KeyguardManager {
         void onWeakEscrowTokenRemoved(long j, UserHandle userHandle);
     }
 
-    /* renamed from: android.app.KeyguardManager$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.KeyguardManager$1 */
     /* loaded from: classes.dex */
-    class AnonymousClass1 extends IKeyguardLockedStateListener.Stub {
+    public class AnonymousClass1 extends IKeyguardLockedStateListener.Stub {
         AnonymousClass1() {
         }
 
@@ -268,7 +269,6 @@ public class KeyguardManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public KeyguardManager(Context context) throws ServiceManager.ServiceNotFoundException {
         this.mContext = context;
         this.mLockPatternUtils = new LockPatternUtils(context);
@@ -328,9 +328,17 @@ public class KeyguardManager {
     }
 
     @SystemApi
-    public void requestDismissKeyguard(final Activity activity, CharSequence message, final KeyguardDismissCallback callback) {
+    public void requestDismissKeyguard(Activity activity, CharSequence message, KeyguardDismissCallback callback) {
         EventLog.writeEvent(EventLogTags.DISMISS_SCREEN, Integer.valueOf(Process.myPid()), "requestDismissKeyguard");
         ActivityClient.getInstance().dismissKeyguard(activity.getActivityToken(), new IKeyguardDismissCallback.Stub() { // from class: android.app.KeyguardManager.2
+            final /* synthetic */ Activity val$activity;
+            final /* synthetic */ KeyguardDismissCallback val$callback;
+
+            AnonymousClass2(KeyguardDismissCallback callback2, Activity activity2) {
+                callback = callback2;
+                activity = activity2;
+            }
+
             @Override // com.android.internal.policy.IKeyguardDismissCallback
             public void onDismissError() throws RemoteException {
                 if (callback != null && !activity.isDestroyed()) {
@@ -378,10 +386,91 @@ public class KeyguardManager {
         }, message);
     }
 
+    /* renamed from: android.app.KeyguardManager$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 extends IKeyguardDismissCallback.Stub {
+        final /* synthetic */ Activity val$activity;
+        final /* synthetic */ KeyguardDismissCallback val$callback;
+
+        AnonymousClass2(KeyguardDismissCallback callback2, Activity activity2) {
+            callback = callback2;
+            activity = activity2;
+        }
+
+        @Override // com.android.internal.policy.IKeyguardDismissCallback
+        public void onDismissError() throws RemoteException {
+            if (callback != null && !activity.isDestroyed()) {
+                Handler handler = activity.mHandler;
+                final KeyguardDismissCallback keyguardDismissCallback = callback;
+                Objects.requireNonNull(keyguardDismissCallback);
+                handler.post(new Runnable() { // from class: android.app.KeyguardManager$2$$ExternalSyntheticLambda2
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        KeyguardManager.KeyguardDismissCallback.this.onDismissError();
+                    }
+                });
+            }
+        }
+
+        @Override // com.android.internal.policy.IKeyguardDismissCallback
+        public void onDismissSucceeded() throws RemoteException {
+            if (callback != null && !activity.isDestroyed()) {
+                Handler handler = activity.mHandler;
+                final KeyguardDismissCallback keyguardDismissCallback = callback;
+                Objects.requireNonNull(keyguardDismissCallback);
+                handler.post(new Runnable() { // from class: android.app.KeyguardManager$2$$ExternalSyntheticLambda1
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        KeyguardManager.KeyguardDismissCallback.this.onDismissSucceeded();
+                    }
+                });
+            }
+        }
+
+        @Override // com.android.internal.policy.IKeyguardDismissCallback
+        public void onDismissCancelled() throws RemoteException {
+            if (callback != null && !activity.isDestroyed()) {
+                Handler handler = activity.mHandler;
+                final KeyguardDismissCallback keyguardDismissCallback = callback;
+                Objects.requireNonNull(keyguardDismissCallback);
+                handler.post(new Runnable() { // from class: android.app.KeyguardManager$2$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        KeyguardManager.KeyguardDismissCallback.this.onDismissCancelled();
+                    }
+                });
+            }
+        }
+    }
+
+    /* renamed from: android.app.KeyguardManager$3 */
+    /* loaded from: classes.dex */
+    class AnonymousClass3 extends IOnKeyguardExitResult.Stub {
+        final /* synthetic */ OnKeyguardExitResult val$callback;
+
+        AnonymousClass3(OnKeyguardExitResult onKeyguardExitResult) {
+            callback = onKeyguardExitResult;
+        }
+
+        @Override // android.view.IOnKeyguardExitResult
+        public void onKeyguardExitResult(boolean success) throws RemoteException {
+            OnKeyguardExitResult onKeyguardExitResult = callback;
+            if (onKeyguardExitResult != null) {
+                onKeyguardExitResult.onKeyguardExitResult(success);
+            }
+        }
+    }
+
     @Deprecated
-    public void exitKeyguardSecurely(final OnKeyguardExitResult callback) {
+    public void exitKeyguardSecurely(OnKeyguardExitResult callback) {
         try {
             this.mWM.exitKeyguardSecurely(new IOnKeyguardExitResult.Stub() { // from class: android.app.KeyguardManager.3
+                final /* synthetic */ OnKeyguardExitResult val$callback;
+
+                AnonymousClass3(OnKeyguardExitResult callback2) {
+                    callback = callback2;
+                }
+
                 @Override // android.view.IOnKeyguardExitResult
                 public void onKeyguardExitResult(boolean success) throws RemoteException {
                     OnKeyguardExitResult onKeyguardExitResult = callback;
@@ -469,7 +558,7 @@ public class KeyguardManager {
         return this.mLockPatternUtils.addWeakEscrowToken(token, userId, internalListener);
     }
 
-    /* renamed from: android.app.KeyguardManager$4, reason: invalid class name */
+    /* renamed from: android.app.KeyguardManager$4 */
     /* loaded from: classes.dex */
     class AnonymousClass4 extends IWeakEscrowTokenActivatedListener.Stub {
         final /* synthetic */ Executor val$executor;
@@ -535,7 +624,7 @@ public class KeyguardManager {
         return false;
     }
 
-    /* renamed from: android.app.KeyguardManager$5, reason: invalid class name */
+    /* renamed from: android.app.KeyguardManager$5 */
     /* loaded from: classes.dex */
     class AnonymousClass5 extends IWeakEscrowTokenRemovedListener.Stub {
         final /* synthetic */ Executor val$executor;

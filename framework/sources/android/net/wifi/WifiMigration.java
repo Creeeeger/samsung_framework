@@ -25,7 +25,7 @@ public final class WifiMigration {
     public static final int STORE_FILE_USER_GENERAL = 2;
     public static final int STORE_FILE_USER_NETWORK_SUGGESTIONS = 3;
     private static final SparseArray<String> STORE_ID_TO_FILE_NAME = new SparseArray<String>() { // from class: android.net.wifi.WifiMigration.1
-        {
+        AnonymousClass1() {
             put(0, "WifiConfigStore.xml");
             put(1, "WifiConfigStoreSoftAp.xml");
             put(2, "WifiConfigStore.xml");
@@ -41,6 +41,17 @@ public final class WifiMigration {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface UserStoreFileId {
+    }
+
+    /* renamed from: android.net.wifi.WifiMigration$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends SparseArray<String> {
+        AnonymousClass1() {
+            put(0, "WifiConfigStore.xml");
+            put(1, "WifiConfigStoreSoftAp.xml");
+            put(2, "WifiConfigStore.xml");
+            put(3, "WifiConfigStoreNetworkSuggestions.xml");
+        }
     }
 
     private static File getLegacyWifiSharedDirectory() {
@@ -114,7 +125,9 @@ public final class WifiMigration {
     /* loaded from: classes3.dex */
     public static final class SettingsMigrationData implements Parcelable {
         public static final Parcelable.Creator<SettingsMigrationData> CREATOR = new Parcelable.Creator<SettingsMigrationData>() { // from class: android.net.wifi.WifiMigration.SettingsMigrationData.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SettingsMigrationData createFromParcel(Parcel in) {
                 boolean scanAlwaysAvailable = in.readBoolean();
@@ -127,7 +140,6 @@ public final class WifiMigration {
                 return new SettingsMigrationData(scanAlwaysAvailable, p2pFactoryResetPending, p2pDeviceName, softApTimeoutEnabled, wakeupEnabled, scanThrottleEnabled, verboseLoggingEnabled);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SettingsMigrationData[] newArray(int size) {
                 return new SettingsMigrationData[size];
@@ -141,6 +153,10 @@ public final class WifiMigration {
         private final boolean mVerboseLoggingEnabled;
         private final boolean mWakeupEnabled;
 
+        /* synthetic */ SettingsMigrationData(boolean z, boolean z2, String str, boolean z3, boolean z4, boolean z5, boolean z6, SettingsMigrationDataIA settingsMigrationDataIA) {
+            this(z, z2, str, z3, z4, z5, z6);
+        }
+
         private SettingsMigrationData(boolean scanAlwaysAvailable, boolean p2pFactoryResetPending, String p2pDeviceName, boolean softApTimeoutEnabled, boolean wakeupEnabled, boolean scanThrottleEnabled, boolean verboseLoggingEnabled) {
             this.mScanAlwaysAvailable = scanAlwaysAvailable;
             this.mP2pFactoryResetPending = p2pFactoryResetPending;
@@ -149,6 +165,30 @@ public final class WifiMigration {
             this.mWakeupEnabled = wakeupEnabled;
             this.mScanThrottleEnabled = scanThrottleEnabled;
             this.mVerboseLoggingEnabled = verboseLoggingEnabled;
+        }
+
+        /* renamed from: android.net.wifi.WifiMigration$SettingsMigrationData$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SettingsMigrationData> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SettingsMigrationData createFromParcel(Parcel in) {
+                boolean scanAlwaysAvailable = in.readBoolean();
+                boolean p2pFactoryResetPending = in.readBoolean();
+                String p2pDeviceName = in.readString();
+                boolean softApTimeoutEnabled = in.readBoolean();
+                boolean wakeupEnabled = in.readBoolean();
+                boolean scanThrottleEnabled = in.readBoolean();
+                boolean verboseLoggingEnabled = in.readBoolean();
+                return new SettingsMigrationData(scanAlwaysAvailable, p2pFactoryResetPending, p2pDeviceName, softApTimeoutEnabled, wakeupEnabled, scanThrottleEnabled, verboseLoggingEnabled);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SettingsMigrationData[] newArray(int size) {
+                return new SettingsMigrationData[size];
+            }
         }
 
         @Override // android.os.Parcelable

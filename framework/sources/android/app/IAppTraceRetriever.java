@@ -90,8 +90,9 @@ public interface IAppTraceRetriever extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IAppTraceRetriever {
+        public static class Proxy implements IAppTraceRetriever {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

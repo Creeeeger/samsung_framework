@@ -15,13 +15,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class StatusHints implements Parcelable {
     public static final Parcelable.Creator<StatusHints> CREATOR = new Parcelable.Creator<StatusHints>() { // from class: android.telecom.StatusHints.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StatusHints createFromParcel(Parcel in) {
             return new StatusHints(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StatusHints[] newArray(int size) {
             return new StatusHints[size];
@@ -30,6 +31,10 @@ public final class StatusHints implements Parcelable {
     private final Bundle mExtras;
     private Icon mIcon;
     private final CharSequence mLabel;
+
+    /* synthetic */ StatusHints(Parcel parcel, StatusHintsIA statusHintsIA) {
+        this(parcel);
+    }
 
     @SystemApi
     @Deprecated
@@ -104,6 +109,23 @@ public final class StatusHints implements Parcelable {
         out.writeCharSequence(this.mLabel);
         out.writeParcelable(this.mIcon, 0);
         out.writeParcelable(this.mExtras, 0);
+    }
+
+    /* renamed from: android.telecom.StatusHints$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StatusHints> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StatusHints createFromParcel(Parcel in) {
+            return new StatusHints(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StatusHints[] newArray(int size) {
+            return new StatusHints[size];
+        }
     }
 
     private StatusHints(Parcel in) {

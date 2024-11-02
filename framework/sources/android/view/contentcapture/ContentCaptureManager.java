@@ -89,18 +89,20 @@ public final class ContentCaptureManager {
     public @interface LoggingLevel {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface MyRunnable {
         void run(SyncResultReceiver syncResultReceiver) throws RemoteException;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class StrippedContext {
         final String mContext;
         final String mPackageName;
         final int mUserId;
+
+        /* synthetic */ StrippedContext(Context context, StrippedContextIA strippedContextIA) {
+            this(context);
+        }
 
         private StrippedContext(Context context) {
             this.mPackageName = context.getPackageName();
@@ -121,15 +123,14 @@ public final class ContentCaptureManager {
         }
     }
 
-    public ContentCaptureManager(Context context, IContentCaptureManager iContentCaptureManager, ContentCaptureOptions contentCaptureOptions) {
+    public ContentCaptureManager(Context context, IContentCaptureManager service, ContentCaptureOptions options) {
         Objects.requireNonNull(context, "context cannot be null");
-        byte b = 0;
         this.mContext = new StrippedContext(context);
-        this.mService = (IContentCaptureManager) Objects.requireNonNull(iContentCaptureManager, "service cannot be null");
-        ContentCaptureOptions contentCaptureOptions2 = (ContentCaptureOptions) Objects.requireNonNull(contentCaptureOptions, "options cannot be null");
-        this.mOptions = contentCaptureOptions2;
-        ContentCaptureHelper.setLoggingLevel(contentCaptureOptions2.loggingLevel);
-        setFlushViewTreeAppearingEventDisabled(contentCaptureOptions2.disableFlushForViewTreeAppearing);
+        this.mService = (IContentCaptureManager) Objects.requireNonNull(service, "service cannot be null");
+        ContentCaptureOptions contentCaptureOptions = (ContentCaptureOptions) Objects.requireNonNull(options, "options cannot be null");
+        this.mOptions = contentCaptureOptions;
+        ContentCaptureHelper.setLoggingLevel(contentCaptureOptions.loggingLevel);
+        setFlushViewTreeAppearingEventDisabled(contentCaptureOptions.disableFlushForViewTreeAppearing);
         if (ContentCaptureHelper.sVerbose) {
             Log.v(TAG, "Constructor for " + context.getPackageName());
         }
@@ -254,7 +255,6 @@ public final class ContentCaptureManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getContentCaptureConditions$0(SyncResultReceiver r) throws RemoteException {
         this.mService.getContentCaptureConditions(this.mContext.getPackageName(), r);
     }
@@ -344,7 +344,6 @@ public final class ContentCaptureManager {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$isContentCaptureFeatureEnabled$1(SyncResultReceiver r) throws RemoteException {
         this.mService.isContentCaptureFeatureEnabled(r);
     }
@@ -392,9 +391,12 @@ public final class ContentCaptureManager {
         activity.addDumpable(this.mDumpable);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class Dumper implements Dumpable {
+        /* synthetic */ Dumper(ContentCaptureManager contentCaptureManager, DumperIA dumperIA) {
+            this();
+        }
+
         private Dumper() {
         }
 
@@ -486,10 +488,13 @@ public final class ContentCaptureManager {
         return IContentCaptureManager.Stub.asInterface(ServiceManager.getService(Context.CONTENT_CAPTURE_MANAGER_SERVICE));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class DataShareAdapterDelegate extends IDataShareWriteAdapter.Stub {
         private final WeakReference<LocalDataShareAdapterResourceManager> mResourceManagerReference;
+
+        /* synthetic */ DataShareAdapterDelegate(Executor executor, DataShareWriteAdapter dataShareWriteAdapter, LocalDataShareAdapterResourceManager localDataShareAdapterResourceManager, DataShareAdapterDelegateIA dataShareAdapterDelegateIA) {
+            this(executor, dataShareWriteAdapter, localDataShareAdapterResourceManager);
+        }
 
         private DataShareAdapterDelegate(Executor executor, DataShareWriteAdapter adapter, LocalDataShareAdapterResourceManager resourceManager) {
             Objects.requireNonNull(executor);
@@ -571,11 +576,14 @@ public final class ContentCaptureManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class LocalDataShareAdapterResourceManager {
         private Map<DataShareAdapterDelegate, Executor> mExecutorHardReferences;
         private Map<DataShareAdapterDelegate, DataShareWriteAdapter> mWriteAdapterHardReferences;
+
+        /* synthetic */ LocalDataShareAdapterResourceManager(LocalDataShareAdapterResourceManagerIA localDataShareAdapterResourceManagerIA) {
+            this();
+        }
 
         private LocalDataShareAdapterResourceManager() {
             this.mWriteAdapterHardReferences = new HashMap();

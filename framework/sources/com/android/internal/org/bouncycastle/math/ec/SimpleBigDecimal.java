@@ -3,8 +3,9 @@ package com.android.internal.org.bouncycastle.math.ec;
 import android.media.MediaMetrics;
 import java.math.BigInteger;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class SimpleBigDecimal {
+public class SimpleBigDecimal {
     private static final long serialVersionUID = 1;
     private final BigInteger bigInt;
     private final int scale;

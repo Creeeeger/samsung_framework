@@ -27,7 +27,6 @@ public abstract class DynamicDrawableSpan extends ReplacementSpan {
         this.mVerticalAlignment = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public DynamicDrawableSpan(int verticalAlignment) {
         this.mVerticalAlignment = verticalAlignment;
     }

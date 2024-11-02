@@ -7,7 +7,6 @@ public class BlacklistedFeature {
     private List<String> mEvents;
     private String mFeature;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BlacklistedFeature(String feature, List<String> events) {
         this.mFeature = feature;
         this.mEvents = events;

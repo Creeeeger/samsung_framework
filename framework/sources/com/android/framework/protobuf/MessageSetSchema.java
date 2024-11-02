@@ -22,7 +22,6 @@ final class MessageSetSchema<T> implements Schema<T> {
         this.defaultInstance = defaultInstance;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T> MessageSetSchema<T> newSchema(UnknownFieldSchema<?, ?> unknownFieldSchema, ExtensionSchema<?> extensionSchema, MessageLite defaultInstance) {
         return new MessageSetSchema<>(unknownFieldSchema, extensionSchema, defaultInstance);
     }

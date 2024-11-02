@@ -25,6 +25,10 @@ public final class MapFactories {
         private DefaultMapFactory() {
         }
 
+        /* synthetic */ DefaultMapFactory(AnonymousClass1 x0) {
+            this();
+        }
+
         @Override // com.android.framework.protobuf.nano.MapFactories.MapFactory
         public <K, V> Map<K, V> forMap(Map<K, V> oldMap) {
             if (oldMap == null) {

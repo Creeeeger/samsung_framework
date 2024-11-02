@@ -14,7 +14,6 @@ class TranslationAnimationCreator {
     TranslationAnimationCreator() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Animator createAnimation(View view, TransitionValues values, int viewPosX, int viewPosY, float startX, float startY, float endX, float endY, TimeInterpolator interpolator, Transition transition) {
         float startX2;
         float startY2;
@@ -48,8 +47,9 @@ class TranslationAnimationCreator {
         return anim;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class TransitionPositionListener extends AnimatorListenerAdapter implements Transition.TransitionListener {
+    public static class TransitionPositionListener extends AnimatorListenerAdapter implements Transition.TransitionListener {
         private final View mMovingView;
         private float mPausedX;
         private float mPausedY;
@@ -59,6 +59,10 @@ class TranslationAnimationCreator {
         private final float mTerminalY;
         private int[] mTransitionPosition;
         private final View mViewInHierarchy;
+
+        /* synthetic */ TransitionPositionListener(View view, View view2, int i, int i2, float f, float f2, TransitionPositionListenerIA transitionPositionListenerIA) {
+            this(view, view2, i, i2, f, f2);
+        }
 
         private TransitionPositionListener(View movingView, View viewInHierarchy, int startX, int startY, float terminalX, float terminalY) {
             this.mMovingView = movingView;

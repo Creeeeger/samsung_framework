@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class LatencyPair implements Parcelable {
     public static final Parcelable.Creator<LatencyPair> CREATOR = new Parcelable.Creator<LatencyPair>() { // from class: android.hardware.camera2.extension.LatencyPair.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LatencyPair createFromParcel(Parcel _aidl_source) {
             LatencyPair _aidl_out = new LatencyPair();
@@ -15,7 +17,6 @@ public class LatencyPair implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LatencyPair[] newArray(int _aidl_size) {
             return new LatencyPair[_aidl_size];
@@ -23,6 +24,25 @@ public class LatencyPair implements Parcelable {
     };
     public long first = 0;
     public long second = 0;
+
+    /* renamed from: android.hardware.camera2.extension.LatencyPair$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LatencyPair> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LatencyPair createFromParcel(Parcel _aidl_source) {
+            LatencyPair _aidl_out = new LatencyPair();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LatencyPair[] newArray(int _aidl_size) {
+            return new LatencyPair[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

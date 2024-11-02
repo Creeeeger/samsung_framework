@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class FileInfo implements Parcelable {
     public static final Parcelable.Creator<FileInfo> CREATOR = new Parcelable.Creator<FileInfo>() { // from class: android.telephony.mbms.FileInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FileInfo createFromParcel(Parcel source) {
             return new FileInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FileInfo[] newArray(int size) {
             return new FileInfo[size];
@@ -23,6 +24,27 @@ public final class FileInfo implements Parcelable {
     };
     private final String mimeType;
     private final Uri uri;
+
+    /* synthetic */ FileInfo(Parcel parcel, FileInfoIA fileInfoIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.telephony.mbms.FileInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FileInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FileInfo createFromParcel(Parcel source) {
+            return new FileInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FileInfo[] newArray(int size) {
+            return new FileInfo[size];
+        }
+    }
 
     @SystemApi
     public FileInfo(Uri uri, String mimeType) {

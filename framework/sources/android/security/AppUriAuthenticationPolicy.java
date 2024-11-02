@@ -16,7 +16,9 @@ import org.xmlpull.v1.XmlSerializer;
 /* loaded from: classes3.dex */
 public final class AppUriAuthenticationPolicy implements Parcelable {
     public static final Parcelable.Creator<AppUriAuthenticationPolicy> CREATOR = new Parcelable.Creator<AppUriAuthenticationPolicy>() { // from class: android.security.AppUriAuthenticationPolicy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AppUriAuthenticationPolicy createFromParcel(Parcel in) {
             Map<String, UrisToAliases> appToUris = new HashMap<>();
@@ -24,7 +26,6 @@ public final class AppUriAuthenticationPolicy implements Parcelable {
             return new AppUriAuthenticationPolicy(appToUris);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppUriAuthenticationPolicy[] newArray(int size) {
             return new AppUriAuthenticationPolicy[size];
@@ -33,6 +34,10 @@ public final class AppUriAuthenticationPolicy implements Parcelable {
     private static final String KEY_AUTHENTICATION_POLICY_APP = "policy_app";
     private static final String KEY_AUTHENTICATION_POLICY_APP_TO_URIS = "authentication_policy_app_to_uris";
     private final Map<String, UrisToAliases> mAppToUris;
+
+    /* synthetic */ AppUriAuthenticationPolicy(Map map, AppUriAuthenticationPolicyIA appUriAuthenticationPolicyIA) {
+        this(map);
+    }
 
     private AppUriAuthenticationPolicy(Map<String, UrisToAliases> appToUris) {
         Objects.requireNonNull(appToUris);
@@ -73,6 +78,25 @@ public final class AppUriAuthenticationPolicy implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeMap(this.mAppToUris);
+    }
+
+    /* renamed from: android.security.AppUriAuthenticationPolicy$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AppUriAuthenticationPolicy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppUriAuthenticationPolicy createFromParcel(Parcel in) {
+            Map<String, UrisToAliases> appToUris = new HashMap<>();
+            in.readMap(appToUris, UrisToAliases.class.getClassLoader());
+            return new AppUriAuthenticationPolicy(appToUris);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppUriAuthenticationPolicy[] newArray(int size) {
+            return new AppUriAuthenticationPolicy[size];
+        }
     }
 
     public String toString() {

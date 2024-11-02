@@ -52,13 +52,14 @@ public final class ShortcutInfo implements Parcelable {
     public static final int CLONE_REMOVE_PERSON = 16;
     public static final int CLONE_REMOVE_RES_NAMES = 8;
     public static final Parcelable.Creator<ShortcutInfo> CREATOR = new Parcelable.Creator<ShortcutInfo>() { // from class: android.content.pm.ShortcutInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ShortcutInfo createFromParcel(Parcel source) {
             return new ShortcutInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ShortcutInfo[] newArray(int size) {
             return new ShortcutInfo[size];
@@ -152,6 +153,14 @@ public final class ShortcutInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Surface {
+    }
+
+    /* synthetic */ ShortcutInfo(Builder builder, ShortcutInfoIA shortcutInfoIA) {
+        this(builder);
+    }
+
+    /* synthetic */ ShortcutInfo(Parcel parcel, ShortcutInfoIA shortcutInfoIA) {
+        this(parcel);
     }
 
     public static String getDisabledReasonDebugString(int disabledReason) {
@@ -264,7 +273,6 @@ public final class ShortcutInfo implements Parcelable {
         return ret;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Intent[] cloneIntents(Intent[] intents) {
         if (intents == null) {
             return null;
@@ -291,7 +299,6 @@ public final class ShortcutInfo implements Parcelable {
         return ret;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Person[] clonePersons(Person[] persons) {
         if (persons == null) {
             return null;
@@ -1424,6 +1431,23 @@ public final class ShortcutInfo implements Parcelable {
         dest.writeString8(this.mStartingThemeResName);
         dest.writeInt(this.mExcludedSurfaces);
         dest.writeMap(this.mCapabilityBindings);
+    }
+
+    /* renamed from: android.content.pm.ShortcutInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ShortcutInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ShortcutInfo createFromParcel(Parcel source) {
+            return new ShortcutInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ShortcutInfo[] newArray(int size) {
+            return new ShortcutInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

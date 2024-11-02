@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class FingerprintAuthenticateOptions implements AuthenticateOptions, Parcelable {
     public static final Parcelable.Creator<FingerprintAuthenticateOptions> CREATOR = new Parcelable.Creator<FingerprintAuthenticateOptions>() { // from class: android.hardware.fingerprint.FingerprintAuthenticateOptions.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FingerprintAuthenticateOptions[] newArray(int size) {
             return new FingerprintAuthenticateOptions[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FingerprintAuthenticateOptions createFromParcel(Parcel in) {
             return new FingerprintAuthenticateOptions(in);
@@ -30,32 +31,32 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
     private int mSensorId;
     private final int mUserId;
 
-    /* renamed from: -$$Nest$smdefaultAttributionTag, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultAttributionTag */
     static /* bridge */ /* synthetic */ String m1692$$Nest$smdefaultAttributionTag() {
         return defaultAttributionTag();
     }
 
-    /* renamed from: -$$Nest$smdefaultDisplayState, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultDisplayState */
     static /* bridge */ /* synthetic */ int m1693$$Nest$smdefaultDisplayState() {
         return defaultDisplayState();
     }
 
-    /* renamed from: -$$Nest$smdefaultIgnoreEnrollmentState, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultIgnoreEnrollmentState */
     static /* bridge */ /* synthetic */ boolean m1694$$Nest$smdefaultIgnoreEnrollmentState() {
         return defaultIgnoreEnrollmentState();
     }
 
-    /* renamed from: -$$Nest$smdefaultOpPackageName, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultOpPackageName */
     static /* bridge */ /* synthetic */ String m1695$$Nest$smdefaultOpPackageName() {
         return defaultOpPackageName();
     }
 
-    /* renamed from: -$$Nest$smdefaultSensorId, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultSensorId */
     static /* bridge */ /* synthetic */ int m1696$$Nest$smdefaultSensorId() {
         return defaultSensorId();
     }
 
-    /* renamed from: -$$Nest$smdefaultUserId, reason: not valid java name */
+    /* renamed from: -$$Nest$smdefaultUserId */
     static /* bridge */ /* synthetic */ int m1697$$Nest$smdefaultUserId() {
         return defaultUserId();
     }
@@ -197,6 +198,23 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
         this.mOpPackageName = opPackageName;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) opPackageName);
         this.mAttributionTag = attributionTag;
+    }
+
+    /* renamed from: android.hardware.fingerprint.FingerprintAuthenticateOptions$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FingerprintAuthenticateOptions> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FingerprintAuthenticateOptions[] newArray(int size) {
+            return new FingerprintAuthenticateOptions[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FingerprintAuthenticateOptions createFromParcel(Parcel in) {
+            return new FingerprintAuthenticateOptions(in);
+        }
     }
 
     /* loaded from: classes2.dex */

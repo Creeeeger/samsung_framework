@@ -11,8 +11,9 @@ public class CaptureFrameTask {
     private int outputHeight;
     private int outputWidth;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes6.dex */
-    enum CaptureType {
+    public enum CaptureType {
         ORIGINAL_FRAME,
         RENDERED_FRAME
     }

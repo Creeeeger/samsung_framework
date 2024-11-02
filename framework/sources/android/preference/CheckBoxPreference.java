@@ -32,7 +32,6 @@ public class CheckBoxPreference extends TwoStatePreference {
         this(context, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.Preference
     public void onBindView(View view) {
         super.onBindView(view);

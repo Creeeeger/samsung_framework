@@ -50,6 +50,10 @@ public class StaticLayout extends Layout {
     private int[] mRightIndents;
     private int mTopPadding;
 
+    /* synthetic */ StaticLayout(Builder builder, StaticLayoutIA staticLayoutIA) {
+        this(builder);
+    }
+
     /* loaded from: classes3.dex */
     public static final class Builder {
         private static final Pools.SynchronizedPool<Builder> sPool = new Pools.SynchronizedPool<>(3);
@@ -105,7 +109,6 @@ public class StaticLayout extends Layout {
             return b;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static void recycle(Builder b) {
             b.mPaint = null;
             b.mText = null;
@@ -114,7 +117,6 @@ public class StaticLayout extends Layout {
             sPool.release(b);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void finish() {
             this.mText = null;
             this.mPaint = null;
@@ -208,7 +210,6 @@ public class StaticLayout extends Layout {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Builder setAddLastLineLineSpacing(boolean value) {
             this.mAddLastLineLineSpacing = value;
             return this;
@@ -322,16 +323,15 @@ public class StaticLayout extends Layout {
             int[] r7 = com.android.internal.util.ArrayUtils.newUnpaddedIntArray(r7)
             r8.mLines = r7
             r8.mMaximumVisibleLineCount = r12
-            boolean r7 = android.text.StaticLayout.Builder.m4882$$Nest$fgetmIncludePad(r0)
-            boolean r13 = android.text.StaticLayout.Builder.m4882$$Nest$fgetmIncludePad(r0)
+            boolean r7 = android.text.StaticLayout.Builder.m4881$$Nest$fgetmIncludePad(r0)
+            boolean r13 = android.text.StaticLayout.Builder.m4881$$Nest$fgetmIncludePad(r0)
             r14.generate(r0, r7, r13)
-            android.text.StaticLayout.Builder.m4895$$Nest$smrecycle(r0)
+            android.text.StaticLayout.Builder.m4894$$Nest$smrecycle(r0)
             return
         */
         throw new UnsupportedOperationException("Method not decompiled: android.text.StaticLayout.<init>(java.lang.CharSequence, int, int, android.text.TextPaint, int, android.text.Layout$Alignment, android.text.TextDirectionHeuristic, float, float, boolean, android.text.TextUtils$TruncateAt, int, int):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public StaticLayout(CharSequence text) {
         super(text, null, 0, null, 0.0f, 0.0f);
         this.mMaxLineHeight = -1;
@@ -351,48 +351,48 @@ public class StaticLayout extends Layout {
     private StaticLayout(android.text.StaticLayout.Builder r11) {
         /*
             r10 = this;
-            android.text.TextUtils$TruncateAt r0 = android.text.StaticLayout.Builder.m4876$$Nest$fgetmEllipsize(r11)
+            android.text.TextUtils$TruncateAt r0 = android.text.StaticLayout.Builder.m4875$$Nest$fgetmEllipsize(r11)
             if (r0 != 0) goto Lc
-            java.lang.CharSequence r0 = android.text.StaticLayout.Builder.m4892$$Nest$fgetmText(r11)
+            java.lang.CharSequence r0 = android.text.StaticLayout.Builder.m4891$$Nest$fgetmText(r11)
             r3 = r0
             goto L29
         Lc:
-            java.lang.CharSequence r0 = android.text.StaticLayout.Builder.m4892$$Nest$fgetmText(r11)
+            java.lang.CharSequence r0 = android.text.StaticLayout.Builder.m4891$$Nest$fgetmText(r11)
             boolean r0 = r0 instanceof android.text.Spanned
             if (r0 == 0) goto L1f
             android.text.Layout$SpannedEllipsizer r0 = new android.text.Layout$SpannedEllipsizer
-            java.lang.CharSequence r1 = android.text.StaticLayout.Builder.m4892$$Nest$fgetmText(r11)
+            java.lang.CharSequence r1 = android.text.StaticLayout.Builder.m4891$$Nest$fgetmText(r11)
             r0.<init>(r1)
             r3 = r0
             goto L29
         L1f:
             android.text.Layout$Ellipsizer r0 = new android.text.Layout$Ellipsizer
-            java.lang.CharSequence r1 = android.text.StaticLayout.Builder.m4892$$Nest$fgetmText(r11)
+            java.lang.CharSequence r1 = android.text.StaticLayout.Builder.m4891$$Nest$fgetmText(r11)
             r0.<init>(r1)
             r3 = r0
         L29:
-            android.text.TextPaint r4 = android.text.StaticLayout.Builder.m4887$$Nest$fgetmPaint(r11)
-            int r5 = android.text.StaticLayout.Builder.m4894$$Nest$fgetmWidth(r11)
-            android.text.Layout$Alignment r6 = android.text.StaticLayout.Builder.m4874$$Nest$fgetmAlignment(r11)
-            android.text.TextDirectionHeuristic r7 = android.text.StaticLayout.Builder.m4893$$Nest$fgetmTextDir(r11)
-            float r8 = android.text.StaticLayout.Builder.m4890$$Nest$fgetmSpacingMult(r11)
-            float r9 = android.text.StaticLayout.Builder.m4889$$Nest$fgetmSpacingAdd(r11)
+            android.text.TextPaint r4 = android.text.StaticLayout.Builder.m4886$$Nest$fgetmPaint(r11)
+            int r5 = android.text.StaticLayout.Builder.m4893$$Nest$fgetmWidth(r11)
+            android.text.Layout$Alignment r6 = android.text.StaticLayout.Builder.m4873$$Nest$fgetmAlignment(r11)
+            android.text.TextDirectionHeuristic r7 = android.text.StaticLayout.Builder.m4892$$Nest$fgetmTextDir(r11)
+            float r8 = android.text.StaticLayout.Builder.m4889$$Nest$fgetmSpacingMult(r11)
+            float r9 = android.text.StaticLayout.Builder.m4888$$Nest$fgetmSpacingAdd(r11)
             r2 = r10
             r2.<init>(r3, r4, r5, r6, r7, r8, r9)
             r0 = -1
             r10.mMaxLineHeight = r0
             r0 = 2147483647(0x7fffffff, float:NaN)
             r10.mMaximumVisibleLineCount = r0
-            android.text.TextUtils$TruncateAt r0 = android.text.StaticLayout.Builder.m4876$$Nest$fgetmEllipsize(r11)
+            android.text.TextUtils$TruncateAt r0 = android.text.StaticLayout.Builder.m4875$$Nest$fgetmEllipsize(r11)
             if (r0 == 0) goto L71
             java.lang.CharSequence r0 = r10.getText()
             android.text.Layout$Ellipsizer r0 = (android.text.Layout.Ellipsizer) r0
             r0.mLayout = r10
-            int r1 = android.text.StaticLayout.Builder.m4877$$Nest$fgetmEllipsizedWidth(r11)
+            int r1 = android.text.StaticLayout.Builder.m4876$$Nest$fgetmEllipsizedWidth(r11)
             r0.mWidth = r1
-            android.text.TextUtils$TruncateAt r1 = android.text.StaticLayout.Builder.m4876$$Nest$fgetmEllipsize(r11)
+            android.text.TextUtils$TruncateAt r1 = android.text.StaticLayout.Builder.m4875$$Nest$fgetmEllipsize(r11)
             r0.mMethod = r1
-            int r1 = android.text.StaticLayout.Builder.m4877$$Nest$fgetmEllipsizedWidth(r11)
+            int r1 = android.text.StaticLayout.Builder.m4876$$Nest$fgetmEllipsizedWidth(r11)
             r10.mEllipsizedWidth = r1
             r1 = 7
             r10.mColumns = r1
@@ -400,7 +400,7 @@ public class StaticLayout extends Layout {
         L71:
             r0 = 5
             r10.mColumns = r0
-            int r0 = android.text.StaticLayout.Builder.m4894$$Nest$fgetmWidth(r11)
+            int r0 = android.text.StaticLayout.Builder.m4893$$Nest$fgetmWidth(r11)
             r10.mEllipsizedWidth = r0
         L7a:
             java.lang.Class<android.text.Layout$Directions> r0 = android.text.Layout.Directions.class
@@ -412,16 +412,16 @@ public class StaticLayout extends Layout {
             int r0 = r0 * r1
             int[] r0 = com.android.internal.util.ArrayUtils.newUnpaddedIntArray(r0)
             r10.mLines = r0
-            int r0 = android.text.StaticLayout.Builder.m4886$$Nest$fgetmMaxLines(r11)
+            int r0 = android.text.StaticLayout.Builder.m4885$$Nest$fgetmMaxLines(r11)
             r10.mMaximumVisibleLineCount = r0
-            int[] r0 = android.text.StaticLayout.Builder.m4884$$Nest$fgetmLeftIndents(r11)
+            int[] r0 = android.text.StaticLayout.Builder.m4883$$Nest$fgetmLeftIndents(r11)
             r10.mLeftIndents = r0
-            int[] r0 = android.text.StaticLayout.Builder.m4888$$Nest$fgetmRightIndents(r11)
+            int[] r0 = android.text.StaticLayout.Builder.m4887$$Nest$fgetmRightIndents(r11)
             r10.mRightIndents = r0
-            int r0 = android.text.StaticLayout.Builder.m4883$$Nest$fgetmJustificationMode(r11)
+            int r0 = android.text.StaticLayout.Builder.m4882$$Nest$fgetmJustificationMode(r11)
             r10.setJustificationMode(r0)
-            boolean r0 = android.text.StaticLayout.Builder.m4882$$Nest$fgetmIncludePad(r11)
-            boolean r1 = android.text.StaticLayout.Builder.m4882$$Nest$fgetmIncludePad(r11)
+            boolean r0 = android.text.StaticLayout.Builder.m4881$$Nest$fgetmIncludePad(r11)
+            boolean r1 = android.text.StaticLayout.Builder.m4881$$Nest$fgetmIncludePad(r11)
             r10.generate(r11, r0, r1)
             return
         */
@@ -441,8 +441,10 @@ public class StaticLayout extends Layout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x0352, code lost:            if (r2 != android.text.TextUtils.TruncateAt.MARQUEE) goto L110;     */
+    /* JADX WARN: Code restructure failed: missing block: B:68:0x0352, code lost:
+    
+        if (r2 != android.text.TextUtils.TruncateAt.MARQUEE) goto L355;
+     */
     /* JADX WARN: Removed duplicated region for block: B:173:0x069b A[LOOP:0: B:25:0x018f->B:173:0x069b, LOOP_END] */
     /* JADX WARN: Removed duplicated region for block: B:174:0x068b A[SYNTHETIC] */
     /* JADX WARN: Removed duplicated region for block: B:192:0x0359  */
@@ -840,17 +842,14 @@ public class StaticLayout extends Layout {
         return this.mBottomPadding;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int packHyphenEdit(int start, int end) {
         return (start << 3) | end;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int unpackStartHyphenEdit(int packedHyphenEdit) {
         return (packedHyphenEdit & 24) >> 3;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int unpackEndHyphenEdit(int packedHyphenEdit) {
         return packedHyphenEdit & 7;
     }

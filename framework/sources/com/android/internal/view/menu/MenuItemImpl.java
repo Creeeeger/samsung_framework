@@ -67,7 +67,6 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
     private int mFlags = 16;
     private boolean mIsActionViewExpanded = false;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MenuItemImpl(MenuBuilder menu, int group, int id, int categoryOrder, int ordering, CharSequence title, int showAsAction) {
         this.mShowAsAction = 0;
         this.mMenu = menu;
@@ -241,12 +240,10 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public char getShortcut() {
         return this.mMenu.isQwertyMode() ? this.mShortcutAlphabeticChar : this.mShortcutNumericChar;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getShortcutLabel() {
         char shortcut = getShortcut();
         if (shortcut == 0) {
@@ -287,7 +284,6 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldShowShortcut() {
         return this.mMenu.isShortcutsVisible() && getShortcut() != 0;
     }
@@ -302,7 +298,6 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return this.mSubMenu != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setSubMenu(SubMenuBuilder subMenu) {
         this.mSubMenu = subMenu;
         subMenu.setHeaderTitle(getTitle());
@@ -314,7 +309,6 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return this.mTitle;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getTitleForItemView(MenuView.ItemView itemView) {
         if (itemView != null && itemView.prefersCondensedTitle()) {
             return getTitleCondensed();
@@ -468,7 +462,6 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setCheckedInt(boolean checked) {
         int oldFlags = this.mFlags;
         int i = (this.mFlags & (-3)) | (checked ? 2 : 0);
@@ -484,7 +477,6 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return (actionProvider == null || !actionProvider.overridesItemVisibility()) ? (this.mFlags & 8) == 0 : (this.mFlags & 8) == 0 && this.mActionProvider.isVisible();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean setVisibleInt(boolean shown) {
         int oldFlags = this.mFlags;
         int i = (this.mFlags & (-9)) | (shown ? 0 : 8);
@@ -514,7 +506,6 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setMenuInfo(ContextMenu.ContextMenuInfo menuInfo) {
         this.mMenuInfo = menuInfo;
     }
@@ -628,6 +619,9 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
         ActionProvider actionProvider3 = this.mActionProvider;
         if (actionProvider3 != null) {
             actionProvider3.setVisibilityListener(new ActionProvider.VisibilityListener() { // from class: com.android.internal.view.menu.MenuItemImpl.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.view.ActionProvider.VisibilityListener
                 public void onActionProviderVisibilityChanged(boolean isVisible) {
                     MenuItemImpl.this.mMenu.onItemVisibleChanged(MenuItemImpl.this);
@@ -635,6 +629,18 @@ public final class MenuItemImpl implements MenuItem, SemMenuItem {
             });
         }
         return this;
+    }
+
+    /* renamed from: com.android.internal.view.menu.MenuItemImpl$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements ActionProvider.VisibilityListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ActionProvider.VisibilityListener
+        public void onActionProviderVisibilityChanged(boolean isVisible) {
+            MenuItemImpl.this.mMenu.onItemVisibleChanged(MenuItemImpl.this);
+        }
     }
 
     @Override // android.view.MenuItem

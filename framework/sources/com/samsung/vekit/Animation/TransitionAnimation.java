@@ -125,7 +125,6 @@ public class TransitionAnimation extends Animation<Float> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$checkValidItem$0(Item item, ItemType type) {
         return type == item.getItemType();
     }

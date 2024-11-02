@@ -208,7 +208,6 @@ public class DevicePorts {
         return this.devicePort;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static DevicePorts read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         DevicePorts _instance = new DevicePorts();

@@ -8,7 +8,9 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class MessagePdu implements Parcelable {
     public static final Parcelable.Creator<MessagePdu> CREATOR = new Parcelable.Creator<MessagePdu>() { // from class: android.service.carrier.MessagePdu.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MessagePdu createFromParcel(Parcel source) {
             List<byte[]> pduList;
@@ -24,7 +26,6 @@ public final class MessagePdu implements Parcelable {
             return new MessagePdu(pduList);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MessagePdu[] newArray(int size) {
             return new MessagePdu[size];
@@ -59,6 +60,33 @@ public final class MessagePdu implements Parcelable {
         dest.writeInt(list.size());
         for (byte[] messagePdu : this.mPduList) {
             dest.writeByteArray(messagePdu);
+        }
+    }
+
+    /* renamed from: android.service.carrier.MessagePdu$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MessagePdu> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MessagePdu createFromParcel(Parcel source) {
+            List<byte[]> pduList;
+            int size = source.readInt();
+            if (size == -1) {
+                pduList = null;
+            } else {
+                pduList = new ArrayList<>(size);
+                for (int i = 0; i < size; i++) {
+                    pduList.add(source.createByteArray());
+                }
+            }
+            return new MessagePdu(pduList);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MessagePdu[] newArray(int size) {
+            return new MessagePdu[size];
         }
     }
 }

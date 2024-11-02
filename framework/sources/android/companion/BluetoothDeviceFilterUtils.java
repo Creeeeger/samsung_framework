@@ -21,7 +21,6 @@ public class BluetoothDeviceFilterUtils {
     private BluetoothDeviceFilterUtils() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String patternToString(Pattern p) {
         if (p == null) {
             return null;
@@ -29,7 +28,6 @@ public class BluetoothDeviceFilterUtils {
         return p.pattern();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Pattern patternFromString(String s) {
         if (s == null) {
             return null;
@@ -37,12 +35,10 @@ public class BluetoothDeviceFilterUtils {
         return Pattern.compile(s);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean matchesAddress(String deviceAddress, BluetoothDevice device) {
         return deviceAddress == null || (device != null && deviceAddress.equals(device.getAddress()));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean matchesServiceUuids(List<ParcelUuid> serviceUuids, List<ParcelUuid> serviceUuidMasks, BluetoothDevice device) {
         for (int i = 0; i < serviceUuids.size(); i++) {
             ParcelUuid uuid = serviceUuids.get(i);
@@ -69,7 +65,6 @@ public class BluetoothDeviceFilterUtils {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean matchesName(Pattern namePattern, BluetoothDevice device) {
         if (namePattern == null) {
             return true;
@@ -82,7 +77,6 @@ public class BluetoothDeviceFilterUtils {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean matchesName(Pattern namePattern, ScanResult device) {
         if (namePattern == null) {
             return true;

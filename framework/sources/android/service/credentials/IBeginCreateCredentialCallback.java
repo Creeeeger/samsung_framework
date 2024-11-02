@@ -115,8 +115,9 @@ public interface IBeginCreateCredentialCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IBeginCreateCredentialCallback {
+        public static class Proxy implements IBeginCreateCredentialCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

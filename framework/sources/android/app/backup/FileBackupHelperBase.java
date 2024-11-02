@@ -23,7 +23,6 @@ class FileBackupHelperBase {
 
     private static native int writeSnapshot_native(long j, FileDescriptor fileDescriptor);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FileBackupHelperBase(Context context) {
         this.mContext = context;
     }
@@ -36,7 +35,6 @@ class FileBackupHelperBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void performBackup_checked(ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState, String[] files, String[] keys) {
         if (files.length == 0) {
             return;
@@ -60,7 +58,6 @@ class FileBackupHelperBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean writeFile(File f, BackupDataInputStream in) {
         File parent = f.getParentFile();
         parent.mkdirs();
@@ -76,7 +73,6 @@ class FileBackupHelperBase {
         writeSnapshot_native(this.mPtr, fd.getFileDescriptor());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isKeyInList(String key, String[] list) {
         for (String s : list) {
             if (s.equals(key)) {

@@ -91,6 +91,10 @@ public class GradientDrawable extends Drawable {
     public @interface Shape {
     }
 
+    /* synthetic */ GradientDrawable(GradientState gradientState, Resources resources, GradientDrawableIA gradientDrawableIA) {
+        this(gradientState, resources);
+    }
+
     public GradientDrawable() {
         this(new GradientState(DEFAULT_ORIENTATION, (int[]) null), (Resources) null);
     }
@@ -527,7 +531,6 @@ public class GradientDrawable extends Drawable {
         return this.mGradientState.mSolidColors;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         ColorStateList strokeColors;
@@ -632,7 +635,6 @@ public class GradientDrawable extends Drawable {
         return (this.mAlpha == 255 && this.mGradientState.mOpaqueOverBounds && isOpaqueForState()) ? -1 : -3;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect r) {
         super.onBoundsChange(r);
@@ -641,7 +643,6 @@ public class GradientDrawable extends Drawable {
         this.mGradientIsDirty = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onLevelChange(int level) {
         super.onLevelChange(level);
@@ -818,8 +819,7 @@ public class GradientDrawable extends Drawable {
         return !this.mRect.isEmpty();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.graphics.drawable.GradientDrawable$1, reason: invalid class name */
+    /* renamed from: android.graphics.drawable.GradientDrawable$1 */
     /* loaded from: classes.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation;
@@ -1297,7 +1297,6 @@ public class GradientDrawable extends Drawable {
         this.mMutated = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class GradientState extends Drawable.ConstantState {
         public int mAngle;
@@ -1625,7 +1624,6 @@ public class GradientDrawable extends Drawable {
             computeOpacity();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void computeOpacity() {
             boolean z = false;
             this.mOpaqueOverBounds = false;

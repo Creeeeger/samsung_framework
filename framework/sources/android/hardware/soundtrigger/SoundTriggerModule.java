@@ -191,13 +191,22 @@ public class SoundTriggerModule {
         return ConversionUtil.aidl2apiModelParameterRange(this.mService.queryModelParameterSupport(soundModelHandle, ConversionUtil.api2aidlModelParameter(modelParam)));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class EventHandlerDelegate extends ISoundTriggerCallback.Stub implements IBinder.DeathRecipient {
         private final Handler mHandler;
 
-        EventHandlerDelegate(final SoundTrigger.StatusListener listener, Looper looper) {
+        EventHandlerDelegate(SoundTrigger.StatusListener listener, Looper looper) {
             this.mHandler = new Handler(looper) { // from class: android.hardware.soundtrigger.SoundTriggerModule.EventHandlerDelegate.1
+                final /* synthetic */ SoundTrigger.StatusListener val$listener;
+                final /* synthetic */ SoundTriggerModule val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper2, SoundTriggerModule soundTriggerModule, SoundTrigger.StatusListener listener2) {
+                    super(looper2);
+                    r3 = soundTriggerModule;
+                    listener = listener2;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
@@ -219,6 +228,42 @@ public class SoundTriggerModule {
                     }
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.hardware.soundtrigger.SoundTriggerModule$EventHandlerDelegate$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ SoundTrigger.StatusListener val$listener;
+            final /* synthetic */ SoundTriggerModule val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper2, SoundTriggerModule soundTriggerModule, SoundTrigger.StatusListener listener2) {
+                super(looper2);
+                r3 = soundTriggerModule;
+                listener = listener2;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        listener.onRecognition((SoundTrigger.RecognitionEvent) msg.obj);
+                        return;
+                    case 2:
+                        listener.onServiceDied();
+                        return;
+                    case 3:
+                        listener.onResourcesAvailable();
+                        return;
+                    case 4:
+                        listener.onModelUnloaded(((Integer) msg.obj).intValue());
+                        return;
+                    default:
+                        Log.e(SoundTriggerModule.TAG, "Unknown message: " + msg.toString());
+                        return;
+                }
+            }
         }
 
         @Override // android.media.soundtrigger_middleware.ISoundTriggerCallback

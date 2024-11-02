@@ -88,8 +88,9 @@ public interface IDesktopModeLauncher extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDesktopModeLauncher {
+        public static class Proxy implements IDesktopModeLauncher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

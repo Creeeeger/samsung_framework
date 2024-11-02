@@ -53,7 +53,6 @@ public abstract class QualifiedNetworksService extends Service {
             return this.mSlotIndex;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void registerForQualifiedNetworkTypesChanged(IQualifiedNetworksServiceCallback callback) {
             this.mCallback = callback;
             if (callback != null) {
@@ -79,7 +78,6 @@ public abstract class QualifiedNetworksService extends Service {
             QualifiedNetworksService.this.mHandler.obtainMessage(4, this.mSlotIndex, apnTypes, qualifiedNetworkTypesArray).sendToTarget();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void onUpdateQualifiedNetworkTypes(int apnTypes, int[] qualifiedNetworkTypes) {
             this.mQualifiedNetworkTypesList.put(apnTypes, qualifiedNetworkTypes);
             IQualifiedNetworksServiceCallback iQualifiedNetworksServiceCallback = this.mCallback;
@@ -104,7 +102,6 @@ public abstract class QualifiedNetworksService extends Service {
             QualifiedNetworksService.this.mHandler.obtainMessage(7, this.mSlotIndex, supportedApnTypes).sendToTarget();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void onUpdateHandoverEnabled(int supportedApnTypes) {
             IQualifiedNetworksServiceCallback iQualifiedNetworksServiceCallback = this.mCallback;
             if (iQualifiedNetworksServiceCallback != null) {
@@ -220,6 +217,10 @@ public abstract class QualifiedNetworksService extends Service {
 
     /* loaded from: classes3.dex */
     private class IQualifiedNetworksServiceWrapper extends IQualifiedNetworksService.Stub {
+        /* synthetic */ IQualifiedNetworksServiceWrapper(QualifiedNetworksService qualifiedNetworksService, IQualifiedNetworksServiceWrapperIA iQualifiedNetworksServiceWrapperIA) {
+            this();
+        }
+
         private IQualifiedNetworksServiceWrapper() {
         }
 
@@ -248,7 +249,6 @@ public abstract class QualifiedNetworksService extends Service {
         Rlog.d(TAG, s);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void loge(String s) {
         Rlog.e(TAG, s);
     }

@@ -98,8 +98,9 @@ public interface ISdpListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISdpListener {
+        public static class Proxy implements ISdpListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

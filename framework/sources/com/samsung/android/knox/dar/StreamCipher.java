@@ -200,7 +200,6 @@ public class StreamCipher {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class KeyStream {
         private byte[] mKey;

@@ -68,7 +68,6 @@ public final class ScrollCaptureTarget {
         return "ScrollCaptureTarget{view=" + this.mContainingView + ", callback=" + this.mCallback + ", scrollBounds=" + this.mScrollBounds + ", localVisibleRect=" + this.mLocalVisibleRect + ", positionInWindow=" + this.mPositionInWindow + "}";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(PrintWriter writer) {
         View view = getContainingView();
         writer.println("view: " + view);

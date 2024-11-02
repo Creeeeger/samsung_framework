@@ -107,7 +107,6 @@ public class MPSurfaceReader implements AutoCloseable {
         Log.i(str, "close MPSurfaceReader...X");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static final class HandlerExecutor implements Executor {
         private final Handler mHandler;

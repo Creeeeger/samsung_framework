@@ -34,7 +34,6 @@ public class LocalActivityManager {
     private int mCurState = 1;
     private final ActivityThread mActivityThread = ActivityThread.currentActivityThread();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class LocalActivityRecord extends Binder {
         Activity activity;

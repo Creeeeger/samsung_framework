@@ -9,7 +9,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class AudioMix implements Parcelable {
     public static final Parcelable.Creator<AudioMix> CREATOR = new Parcelable.Creator<AudioMix>() { // from class: android.media.AudioMix.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioMix createFromParcel(Parcel _aidl_source) {
             AudioMix _aidl_out = new AudioMix();
@@ -17,7 +19,6 @@ public class AudioMix implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMix[] newArray(int _aidl_size) {
             return new AudioMix[_aidl_size];
@@ -32,6 +33,25 @@ public class AudioMix implements Parcelable {
     public boolean allowPrivilegedMediaPlaybackCapture = false;
     public boolean voiceCommunicationCaptureAllowed = false;
     public int mixFlags = 0;
+
+    /* renamed from: android.media.AudioMix$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioMix> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioMix createFromParcel(Parcel _aidl_source) {
+            AudioMix _aidl_out = new AudioMix();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioMix[] newArray(int _aidl_size) {
+            return new AudioMix[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

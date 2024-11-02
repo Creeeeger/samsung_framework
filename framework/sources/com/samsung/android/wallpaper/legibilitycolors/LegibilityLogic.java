@@ -305,8 +305,8 @@ public class LegibilityLogic extends ColorExtractor {
             return "\nAdaptiveShadowData{\ndominantColorResults=" + Arrays.toString(this.dominantColorResults) + "\nshadowOpacityNormalized=" + this.shadowOpacityNormalized + "\nshadowSizeNormalized=" + this.shadowSizeNormalized + "\ncontentOpacityNormalized=" + this.contentOpacityNormalized + "\ncontentColor=" + this.contentColor + "\nluminanceComplexity=" + this.luminanceComplexity + "\ncontentContrastDiff=" + this.contentContrastDiff + "\ncontentContrastDiffNormalized=" + this.contentContrastDiffNormalized + "\nshapeComplexity=" + this.shapeComplexity + "\nshapeComplexityNormalized=" + this.shapeComplexityNormalized + "\ntotalComplexity=" + this.totalComplexity + '}';
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-        public AdaptiveShadowData m8845clone() {
+        /* renamed from: clone */
+        public AdaptiveShadowData m8837clone() {
             try {
                 AdaptiveShadowData clone = (AdaptiveShadowData) super.clone();
                 ColorExtractor.DominantColorResult[] dominantColorResultArr = this.dominantColorResults;
@@ -318,7 +318,7 @@ public class LegibilityLogic extends ColorExtractor {
                         if (i >= dominantColorResultArr2.length) {
                             break;
                         }
-                        clone.dominantColorResults[i] = dominantColorResultArr2[i].m8847clone();
+                        clone.dominantColorResults[i] = dominantColorResultArr2[i].m8839clone();
                         i++;
                     }
                 }
@@ -393,14 +393,14 @@ public class LegibilityLogic extends ColorExtractor {
             return "\nLegibilityResult{\n  contentsColorType=" + this.contentsColorType + "\n  contentsColor=" + this.contentsColor + "\n  adjustedContentsColor=" + this.adjustedContentsColor + "\n  dominantColorResult=" + Arrays.toString(this.dominantColorResult) + "\n  avgHSV=" + Arrays.toString(this.avgHSV) + "\n  adaptiveShadowData=" + this.adaptiveShadowData + '}';
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-        public LegibilityResult m8846clone() {
+        /* renamed from: clone */
+        public LegibilityResult m8838clone() {
             try {
                 LegibilityResult clone = (LegibilityResult) super.clone();
                 clone.contentsColorType = this.contentsColorType;
                 AdaptiveShadowData adaptiveShadowData = this.adaptiveShadowData;
                 if (adaptiveShadowData != null) {
-                    clone.adaptiveShadowData = adaptiveShadowData.m8845clone();
+                    clone.adaptiveShadowData = adaptiveShadowData.m8837clone();
                 }
                 ColorExtractor.DominantColorResult[] dominantColorResultArr = this.dominantColorResult;
                 if (dominantColorResultArr != null) {
@@ -411,7 +411,7 @@ public class LegibilityLogic extends ColorExtractor {
                         if (i >= dominantColorResultArr2.length) {
                             break;
                         }
-                        clone.dominantColorResult[i] = dominantColorResultArr2[i].m8847clone();
+                        clone.dominantColorResult[i] = dominantColorResultArr2[i].m8839clone();
                         i++;
                     }
                 }

@@ -57,7 +57,7 @@ public abstract class CompositionSamplingListener {
         nativeUnregister(j);
     }
 
-    private static void dispatchOnSampleCollected(final CompositionSamplingListener listener, final float medianLuma) {
+    private static void dispatchOnSampleCollected(CompositionSamplingListener listener, final float medianLuma) {
         listener.mExecutor.execute(new Runnable() { // from class: android.view.CompositionSamplingListener$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {

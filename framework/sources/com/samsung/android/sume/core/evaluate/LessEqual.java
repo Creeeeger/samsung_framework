@@ -8,13 +8,14 @@ import java.util.stream.Stream;
 /* loaded from: classes4.dex */
 public class LessEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
     public static final Parcelable.Creator<LessEqual<?>> CREATOR = new Parcelable.Creator<LessEqual<?>>() { // from class: com.samsung.android.sume.core.evaluate.LessEqual.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LessEqual<?> createFromParcel(Parcel in) {
             return new LessEqual<>(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LessEqual<?>[] newArray(int size) {
             return new LessEqual[size];
@@ -66,7 +67,6 @@ public class LessEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
         super.writeToParcel(parcel, i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LessEqual(T value) {
         super(value);
     }
@@ -78,5 +78,22 @@ public class LessEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
 
     LessEqual(Parcel in) {
         super(in);
+    }
+
+    /* renamed from: com.samsung.android.sume.core.evaluate.LessEqual$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LessEqual<?>> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LessEqual<?> createFromParcel(Parcel in) {
+            return new LessEqual<>(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LessEqual<?>[] newArray(int size) {
+            return new LessEqual[size];
+        }
     }
 }

@@ -130,8 +130,9 @@ public interface IAGnssRilCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IAGnssRilCallback {
+        public static class Proxy implements IAGnssRilCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

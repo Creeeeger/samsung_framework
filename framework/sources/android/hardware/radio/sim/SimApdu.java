@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SimApdu implements Parcelable {
     public static final Parcelable.Creator<SimApdu> CREATOR = new Parcelable.Creator<SimApdu>() { // from class: android.hardware.radio.sim.SimApdu.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SimApdu createFromParcel(Parcel _aidl_source) {
             SimApdu _aidl_out = new SimApdu();
@@ -17,7 +19,6 @@ public class SimApdu implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SimApdu[] newArray(int _aidl_size) {
             return new SimApdu[_aidl_size];
@@ -31,6 +32,25 @@ public class SimApdu implements Parcelable {
     public int p2 = 0;
     public int p3 = 0;
     public boolean isEs10 = false;
+
+    /* renamed from: android.hardware.radio.sim.SimApdu$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SimApdu> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SimApdu createFromParcel(Parcel _aidl_source) {
+            SimApdu _aidl_out = new SimApdu();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SimApdu[] newArray(int _aidl_size) {
+            return new SimApdu[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -30,7 +30,6 @@ final class ByteBufferWriter {
         BUFFER.set(null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void write(ByteBuffer buffer, OutputStream output) throws IOException {
         int initialPos = buffer.position();
         try {

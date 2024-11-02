@@ -84,10 +84,22 @@ public class KeyphraseEnrollmentInfo {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x007e, code lost:            if (r1 != null) goto L23;     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0080, code lost:            r1.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x00bb, code lost:            return r3;     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x00b8, code lost:            if (0 == 0) goto L30;     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x007e, code lost:
+    
+        if (r1 != null) goto L60;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0080, code lost:
+    
+        r1.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x00bb, code lost:
+    
+        return r3;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x00b8, code lost:
+    
+        if (0 == 0) goto L67;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

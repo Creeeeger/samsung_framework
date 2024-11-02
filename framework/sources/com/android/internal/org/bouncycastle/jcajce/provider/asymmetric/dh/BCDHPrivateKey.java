@@ -41,13 +41,11 @@ public class BCDHPrivateKey implements DHPrivateKey, PKCS12BagAttributeCarrier {
     protected BCDHPrivateKey() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDHPrivateKey(DHPrivateKey key) {
         this.x = key.getX();
         this.dhSpec = key.getParams();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDHPrivateKey(DHPrivateKeySpec spec) {
         this.x = spec.getX();
         if (spec instanceof DHExtendedPrivateKeySpec) {
@@ -84,7 +82,6 @@ public class BCDHPrivateKey implements DHPrivateKey, PKCS12BagAttributeCarrier {
         throw new IllegalArgumentException("unknown algorithm type: " + id);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCDHPrivateKey(DHPrivateKeyParameters params) {
         this.x = params.getX();
         this.dhSpec = new DHDomainParameterSpec(params.getParameters());
@@ -143,7 +140,6 @@ public class BCDHPrivateKey implements DHPrivateKey, PKCS12BagAttributeCarrier {
         return this.x;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DHPrivateKeyParameters engineGetKeyParameters() {
         DHPrivateKeyParameters dHPrivateKeyParameters = this.dhPrivateKey;
         if (dHPrivateKeyParameters != null) {

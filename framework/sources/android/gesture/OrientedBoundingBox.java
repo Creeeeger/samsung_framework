@@ -12,7 +12,6 @@ public class OrientedBoundingBox {
     public final float squareness;
     public final float width;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public OrientedBoundingBox(float angle, float cx, float cy, float w, float h) {
         this.orientation = angle;
         this.width = w;

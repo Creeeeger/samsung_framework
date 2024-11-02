@@ -46,7 +46,6 @@ public class EffectContext {
         this.mFilterContext.initGLEnvironment(glEnvironment);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void assertValidGLState() {
         GLEnvironment glEnv = this.mFilterContext.getGLEnvironment();
         if (glEnv == null || !glEnv.isContextActive()) {
@@ -57,14 +56,12 @@ public class EffectContext {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void saveGLState() {
         GLES20.glGetIntegerv(36006, this.mOldState, 0);
         GLES20.glGetIntegerv(GLES20.GL_CURRENT_PROGRAM, this.mOldState, 1);
         GLES20.glGetIntegerv(34964, this.mOldState, 2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void restoreGLState() {
         GLES20.glBindFramebuffer(36160, this.mOldState[0]);
         GLES20.glUseProgram(this.mOldState[1]);

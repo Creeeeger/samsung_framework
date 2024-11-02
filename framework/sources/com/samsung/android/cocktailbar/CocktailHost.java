@@ -85,7 +85,6 @@ public class CocktailHost {
         void onViewDataChanged(int i, int i2, int i3);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class Callbacks extends ICocktailHost.Stub {
         private final WeakReference<Handler> mWeakHandler;
@@ -273,8 +272,9 @@ public class CocktailHost {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    class UpdateHandler extends Handler {
+    public class UpdateHandler extends Handler {
         public UpdateHandler(Looper looper) {
             super(looper);
         }
@@ -416,7 +416,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateCocktail(int cocktailId, Cocktail cocktail, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -424,7 +423,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void partiallyUpdateCocktail(int cocktailId, RemoteViews contentView, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -432,7 +430,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void partiallyUpdateHelpView(int cocktailId, RemoteViews helpView, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -440,7 +437,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeCocktail(int cocktailId, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -448,7 +444,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void showCocktail(int cocktailId, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -456,7 +451,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void closeCocktail(int cocktailId, int category, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -464,7 +458,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void viewDataChanged(int cocktailId, int viewId, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -472,7 +465,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateToolLauncher(int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -480,7 +472,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyKeyguardState(int enable, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -488,7 +479,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyWakeUpState(int bEnable, int keyCode, int reason) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -496,7 +486,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void switchDefaultCocktail(int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -504,7 +493,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendExtraDataToCocktailBar(int userId, Bundle extraData) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -512,7 +500,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setDisableTickerView(int state, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -520,7 +507,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void changeVisibleEdgeService(int visible, int userId) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -528,7 +514,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setPullToRefresh(int cocktailId, int viewId, PendingIntent pendingIntent) {
         ICallbackListener iCallbackListener = this.mCallbackListener;
         if (iCallbackListener != null) {
@@ -536,7 +521,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void noteResumeComponent(ComponentName componentName) {
         try {
             ICallbackListener iCallbackListener = this.mCallbackListener;
@@ -548,7 +532,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notePauseComponent(ComponentName componentName) {
         try {
             ICallbackListener iCallbackListener = this.mCallbackListener;
@@ -560,7 +543,6 @@ public class CocktailHost {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void packageSuspendChanged(Cocktail cocktail) {
         try {
             ICallbackListener iCallbackListener = this.mCallbackListener;

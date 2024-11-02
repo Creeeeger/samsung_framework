@@ -16,13 +16,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class Control implements Parcelable {
     public static final Parcelable.Creator<Control> CREATOR = new Parcelable.Creator<Control>() { // from class: android.service.controls.Control.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Control createFromParcel(Parcel source) {
             return new Control(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Control[] newArray(int size) {
             return new Control[size];
@@ -219,6 +220,23 @@ public final class Control implements Parcelable {
         dest.writeCharSequence(this.mStatusText);
         dest.writeBoolean(this.mAuthRequired);
         this.mCustomControl.writeToParcel(dest, flags);
+    }
+
+    /* renamed from: android.service.controls.Control$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Control> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Control createFromParcel(Parcel source) {
+            return new Control(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Control[] newArray(int size) {
+            return new Control[size];
+        }
     }
 
     /* loaded from: classes3.dex */

@@ -12,7 +12,6 @@ public class Content extends Element {
     protected int height;
     protected int width;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Content(VEContext context, ContentType type, int id, String name) {
         super(context, ElementType.CONTENT, id, name);
         this.contentType = type;

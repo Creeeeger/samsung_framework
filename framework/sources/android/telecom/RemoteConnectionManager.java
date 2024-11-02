@@ -15,7 +15,6 @@ public class RemoteConnectionManager {
         this.mOurConnectionServiceImpl = ourConnectionServiceImpl;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void addConnectionService(ComponentName componentName, IConnectionService outgoingConnectionServiceRpc) {
         if (!this.mRemoteConnectionServices.containsKey(componentName)) {
             try {

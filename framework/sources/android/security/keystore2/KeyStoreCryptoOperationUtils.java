@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import libcore.util.EmptyArray;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-abstract class KeyStoreCryptoOperationUtils {
+public abstract class KeyStoreCryptoOperationUtils {
     private static volatile SecureRandom sRng;
 
     private KeyStoreCryptoOperationUtils() {
@@ -91,7 +92,6 @@ abstract class KeyStoreCryptoOperationUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static byte[] getRandomBytesToMixIntoKeystoreRng(SecureRandom rng, int sizeBytes) {
         if (sizeBytes <= 0) {
             return EmptyArray.BYTE;
@@ -111,7 +111,6 @@ abstract class KeyStoreCryptoOperationUtils {
         return sRng;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void abortOperation(KeyStoreOperation operation) {
         if (operation != null) {
             try {
@@ -124,7 +123,6 @@ abstract class KeyStoreCryptoOperationUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long getOrMakeOperationChallenge(KeyStoreOperation operation, AndroidKeyStoreKey key) throws KeyPermanentlyInvalidatedException {
         if (operation.getChallenge() != null) {
             if (!canUserAuthorizationSucceed(key)) {

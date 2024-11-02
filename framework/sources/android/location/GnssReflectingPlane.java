@@ -9,14 +9,15 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class GnssReflectingPlane implements Parcelable {
     public static final Parcelable.Creator<GnssReflectingPlane> CREATOR = new Parcelable.Creator<GnssReflectingPlane>() { // from class: android.location.GnssReflectingPlane.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssReflectingPlane createFromParcel(Parcel parcel) {
             GnssReflectingPlane reflectingPlane = new Builder().setLatitudeDegrees(parcel.readDouble()).setLongitudeDegrees(parcel.readDouble()).setAltitudeMeters(parcel.readDouble()).setAzimuthDegrees(parcel.readDouble()).build();
             return reflectingPlane;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssReflectingPlane[] newArray(int i) {
             return new GnssReflectingPlane[i];
@@ -26,6 +27,10 @@ public final class GnssReflectingPlane implements Parcelable {
     private final double mAzimuthDegrees;
     private final double mLatitudeDegrees;
     private final double mLongitudeDegrees;
+
+    /* synthetic */ GnssReflectingPlane(Builder builder, GnssReflectingPlaneIA gnssReflectingPlaneIA) {
+        this(builder);
+    }
 
     private GnssReflectingPlane(Builder builder) {
         this.mLatitudeDegrees = builder.mLatitudeDegrees;
@@ -53,6 +58,24 @@ public final class GnssReflectingPlane implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.location.GnssReflectingPlane$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssReflectingPlane> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssReflectingPlane createFromParcel(Parcel parcel) {
+            GnssReflectingPlane reflectingPlane = new Builder().setLatitudeDegrees(parcel.readDouble()).setLongitudeDegrees(parcel.readDouble()).setAltitudeMeters(parcel.readDouble()).setAzimuthDegrees(parcel.readDouble()).build();
+            return reflectingPlane;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssReflectingPlane[] newArray(int i) {
+            return new GnssReflectingPlane[i];
+        }
     }
 
     @Override // android.os.Parcelable

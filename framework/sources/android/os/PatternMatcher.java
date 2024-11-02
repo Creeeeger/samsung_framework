@@ -32,13 +32,14 @@ public class PatternMatcher implements Parcelable {
     private final int mType;
     private static final int[] sParsedPatternScratch = new int[2048];
     public static final Parcelable.Creator<PatternMatcher> CREATOR = new Parcelable.Creator<PatternMatcher>() { // from class: android.os.PatternMatcher.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PatternMatcher createFromParcel(Parcel source) {
             return new PatternMatcher(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PatternMatcher[] newArray(int size) {
             return new PatternMatcher[size];
@@ -124,6 +125,23 @@ public class PatternMatcher implements Parcelable {
         this.mPattern = src.readString();
         this.mType = src.readInt();
         this.mParsedPattern = src.createIntArray();
+    }
+
+    /* renamed from: android.os.PatternMatcher$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PatternMatcher> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PatternMatcher createFromParcel(Parcel source) {
+            return new PatternMatcher(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PatternMatcher[] newArray(int size) {
+            return new PatternMatcher[size];
+        }
     }
 
     static boolean matchPattern(String match, String pattern, int[] parsedPattern, int type) {

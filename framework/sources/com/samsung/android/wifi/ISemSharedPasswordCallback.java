@@ -113,8 +113,9 @@ public interface ISemSharedPasswordCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISemSharedPasswordCallback {
+        public static class Proxy implements ISemSharedPasswordCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

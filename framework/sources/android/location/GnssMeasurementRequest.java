@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class GnssMeasurementRequest implements Parcelable {
     public static final Parcelable.Creator<GnssMeasurementRequest> CREATOR = new Parcelable.Creator<GnssMeasurementRequest>() { // from class: android.location.GnssMeasurementRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssMeasurementRequest createFromParcel(Parcel parcel) {
             return new GnssMeasurementRequest(parcel.readBoolean(), parcel.readBoolean(), parcel.readInt());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssMeasurementRequest[] newArray(int i) {
             return new GnssMeasurementRequest[i];
@@ -26,6 +27,10 @@ public final class GnssMeasurementRequest implements Parcelable {
     private final boolean mCorrelationVectorOutputsEnabled;
     private final boolean mFullTracking;
     private final int mIntervalMillis;
+
+    /* synthetic */ GnssMeasurementRequest(boolean z, boolean z2, int i, GnssMeasurementRequestIA gnssMeasurementRequestIA) {
+        this(z, z2, i);
+    }
 
     private GnssMeasurementRequest(boolean fullTracking, boolean correlationVectorOutputsEnabled, int intervalMillis) {
         this.mFullTracking = fullTracking;
@@ -44,6 +49,23 @@ public final class GnssMeasurementRequest implements Parcelable {
 
     public int getIntervalMillis() {
         return this.mIntervalMillis;
+    }
+
+    /* renamed from: android.location.GnssMeasurementRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssMeasurementRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssMeasurementRequest createFromParcel(Parcel parcel) {
+            return new GnssMeasurementRequest(parcel.readBoolean(), parcel.readBoolean(), parcel.readInt());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssMeasurementRequest[] newArray(int i) {
+            return new GnssMeasurementRequest[i];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -15,13 +15,14 @@ import java.util.Set;
 public final class ImsRegistrationAttributes implements Parcelable {
     public static final int ATTR_EPDG_OVER_CELL_INTERNET = 1;
     public static final Parcelable.Creator<ImsRegistrationAttributes> CREATOR = new Parcelable.Creator<ImsRegistrationAttributes>() { // from class: android.telephony.ims.ImsRegistrationAttributes.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsRegistrationAttributes createFromParcel(Parcel source) {
             return new ImsRegistrationAttributes(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsRegistrationAttributes[] newArray(int size) {
             return new ImsRegistrationAttributes[size];
@@ -138,6 +139,23 @@ public final class ImsRegistrationAttributes implements Parcelable {
         dest.writeInt(this.mImsAttributeFlags);
         dest.writeList(this.mFeatureTags);
         dest.writeParcelable(this.mSipDetails, flags);
+    }
+
+    /* renamed from: android.telephony.ims.ImsRegistrationAttributes$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsRegistrationAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsRegistrationAttributes createFromParcel(Parcel source) {
+            return new ImsRegistrationAttributes(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsRegistrationAttributes[] newArray(int size) {
+            return new ImsRegistrationAttributes[size];
+        }
     }
 
     public boolean equals(Object o) {

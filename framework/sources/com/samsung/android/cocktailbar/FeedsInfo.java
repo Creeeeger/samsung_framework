@@ -9,13 +9,14 @@ import android.text.TextUtils;
 /* loaded from: classes5.dex */
 public class FeedsInfo implements Parcelable {
     public static final Parcelable.Creator<FeedsInfo> CREATOR = new Parcelable.Creator<FeedsInfo>() { // from class: com.samsung.android.cocktailbar.FeedsInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FeedsInfo createFromParcel(Parcel parcel) {
             return new FeedsInfo(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FeedsInfo[] newArray(int size) {
             return new FeedsInfo[size];
@@ -26,6 +27,10 @@ public class FeedsInfo implements Parcelable {
     public int icon;
     public Bitmap largeIcon;
     public String packageName;
+
+    /* synthetic */ FeedsInfo(CharSequence charSequence, String str, FeedsInfoIA feedsInfoIA) {
+        this(charSequence, str);
+    }
 
     public FeedsInfo(Parcel parcel) {
         this.extras = new Bundle();
@@ -96,5 +101,22 @@ public class FeedsInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.samsung.android.cocktailbar.FeedsInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FeedsInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FeedsInfo createFromParcel(Parcel parcel) {
+            return new FeedsInfo(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FeedsInfo[] newArray(int size) {
+            return new FeedsInfo[size];
+        }
     }
 }

@@ -25,7 +25,6 @@ public class PBESecretKeyFactory extends BaseSecretKeyFactory implements PBE {
         this.ivSize = ivSize;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseSecretKeyFactory, javax.crypto.SecretKeyFactorySpi
     public SecretKey engineGenerateSecret(KeySpec keySpec) throws InvalidKeySpecException {
         CipherParameters param;

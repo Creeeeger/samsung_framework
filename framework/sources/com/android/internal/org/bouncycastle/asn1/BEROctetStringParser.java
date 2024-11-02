@@ -8,7 +8,6 @@ import java.io.InputStream;
 public class BEROctetStringParser implements ASN1OctetStringParser {
     private ASN1StreamParser _parser;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BEROctetStringParser(ASN1StreamParser parser) {
         this._parser = parser;
     }

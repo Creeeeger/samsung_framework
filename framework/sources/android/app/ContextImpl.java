@@ -100,7 +100,6 @@ import java.util.concurrent.Executor;
 import java.util.function.IntConsumer;
 import libcore.io.Memory;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public class ContextImpl extends Context {
     private static final int CONTEXT_TYPE_ACTIVITY = 2;
@@ -170,7 +169,6 @@ public class ContextImpl extends Context {
     @interface ServiceInitializationState {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class DeviceIdChangeListenerDelegate {
         final Executor mExecutor;
@@ -182,7 +180,6 @@ public class ContextImpl extends Context {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContextImpl getImpl(Context context) {
         Context nextContext;
         while ((context instanceof ContextWrapper) && (nextContext = ((ContextWrapper) context).getBaseContext()) != null) {
@@ -422,8 +419,29 @@ public class ContextImpl extends Context {
         }
     }
 
-    private static int moveFiles(File sourceDir, File targetDir, final String prefix) {
+    /* renamed from: android.app.ContextImpl$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements FilenameFilter {
+        final /* synthetic */ String val$prefix;
+
+        AnonymousClass1(String str) {
+            prefix = str;
+        }
+
+        @Override // java.io.FilenameFilter
+        public boolean accept(File dir, String name) {
+            return name.startsWith(prefix);
+        }
+    }
+
+    private static int moveFiles(File sourceDir, File targetDir, String prefix) {
         File[] sourceFiles = FileUtils.listFilesOrEmpty(sourceDir, new FilenameFilter() { // from class: android.app.ContextImpl.1
+            final /* synthetic */ String val$prefix;
+
+            AnonymousClass1(String prefix2) {
+                prefix = prefix2;
+            }
+
             @Override // java.io.FilenameFilter
             public boolean accept(File dir, String name) {
                 return name.startsWith(prefix);
@@ -666,7 +684,6 @@ public class ContextImpl extends Context {
         return ensurePrivateCacheDirExists;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static File getCodeCacheDirBeforeBind(File dataDir) {
         return new File(dataDir, "code_cache");
     }
@@ -2611,7 +2628,6 @@ public class ContextImpl extends Context {
         super.finalize();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContextImpl createSystemContext(ActivityThread mainThread) {
         LoadedApk packageInfo = new LoadedApk(mainThread);
         ContextImpl context = new ContextImpl(null, mainThread, packageInfo, ContextParams.EMPTY, null, null, null, null, null, 0, null, null);
@@ -2621,7 +2637,6 @@ public class ContextImpl extends Context {
         return context;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContextImpl createSystemUiContext(ContextImpl contextImpl, int displayId) {
         WindowTokenClient token = new WindowTokenClient();
         ContextImpl context = contextImpl.createWindowContextBase(token, displayId);
@@ -2632,12 +2647,10 @@ public class ContextImpl extends Context {
         return context;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContextImpl createAppContext(ActivityThread mainThread, LoadedApk packageInfo) {
         return createAppContext(mainThread, packageInfo, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContextImpl createAppContext(ActivityThread mainThread, LoadedApk packageInfo, String opPackageName) {
         if (packageInfo == null) {
             throw new IllegalArgumentException("packageInfo");
@@ -2648,7 +2661,6 @@ public class ContextImpl extends Context {
         return context;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ContextImpl createActivityContext(ActivityThread mainThread, LoadedApk packageInfo, ActivityInfo activityInfo, IBinder activityToken, int displayId, Configuration overrideConfiguration) {
         String[] splitDirs;
         ClassLoader classLoader;
@@ -2771,17 +2783,14 @@ public class ContextImpl extends Context {
         this.mResources = r;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void installSystemApplicationInfo(ApplicationInfo info, ClassLoader classLoader) {
         this.mPackageInfo.installSystemApplicationInfo(info, classLoader);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void scheduleFinalCleanup(String who, String what) {
         this.mMainThread.scheduleContextCleanup(this, who, what);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void performFinalCleanup(String who, String what) {
         this.mPackageInfo.removeContextRegistrations(getOuterContext(), who, what);
         if (this.mContextType == 4 && (this.mToken instanceof WindowTokenClient)) {
@@ -2789,7 +2798,6 @@ public class ContextImpl extends Context {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Context getReceiverRestrictedContext() {
         Context context = this.mReceiverRestrictedContext;
         if (context != null) {
@@ -2800,12 +2808,10 @@ public class ContextImpl extends Context {
         return receiverRestrictedContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setOuterContext(Context context) {
         this.mOuterContext = context;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Context getOuterContext() {
         return this.mOuterContext;
     }
@@ -2840,7 +2846,6 @@ public class ContextImpl extends Context {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setFilePermissionsFromMode(String name, int mode, int extraPermissions) {
         int perms = extraPermissions | 432;
         if ((mode & 1) != 0) {
@@ -2861,7 +2866,10 @@ public class ContextImpl extends Context {
         throw new IllegalArgumentException("File " + name + " contains a path separator");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x001d, code lost:            if (r3.mkdirs() == false) goto L10;     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x001d, code lost:
+    
+        if (r3.mkdirs() == false) goto L38;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -2931,7 +2939,6 @@ public class ContextImpl extends Context {
         sendBroadcast(intent, (String) null, options);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class ApplicationContentResolver extends ContentResolver {
         private final ActivityThread mMainThread;

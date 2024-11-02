@@ -95,6 +95,9 @@ public class TileService extends Service {
             dialog.getWindow().setType(2035);
         }
         dialog.getWindow().getDecorView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() { // from class: android.service.quicksettings.TileService.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.View.OnAttachStateChangeListener
             public void onViewAttachedToWindow(View v) {
             }
@@ -111,6 +114,25 @@ public class TileService extends Service {
         try {
             this.mService.onShowDialog(this.mTileToken);
         } catch (RemoteException e) {
+        }
+    }
+
+    /* renamed from: android.service.quicksettings.TileService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements View.OnAttachStateChangeListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnAttachStateChangeListener
+        public void onViewAttachedToWindow(View v) {
+        }
+
+        @Override // android.view.View.OnAttachStateChangeListener
+        public void onViewDetachedFromWindow(View v) {
+            try {
+                TileService.this.mService.onDialogHidden(TileService.this.mTileToken);
+            } catch (RemoteException e) {
+            }
         }
     }
 
@@ -236,6 +258,9 @@ public class TileService extends Service {
                 this.mHandler.sendEmptyMessage(7);
             }
             return new IQSTileService.Stub() { // from class: android.service.quicksettings.TileService.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.service.quicksettings.IQSTileService
                 public void onTileRemoved() throws RemoteException {
                     TileService.this.mHandler.sendEmptyMessage(4);
@@ -305,6 +330,78 @@ public class TileService extends Service {
             String name = getClass().getSimpleName();
             Log.w(TAG, name + " - Couldn't get tile from IQSService.", e);
             return null;
+        }
+    }
+
+    /* renamed from: android.service.quicksettings.TileService$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 extends IQSTileService.Stub {
+        AnonymousClass2() {
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public void onTileRemoved() throws RemoteException {
+            TileService.this.mHandler.sendEmptyMessage(4);
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public void onTileAdded() throws RemoteException {
+            TileService.this.mHandler.sendEmptyMessage(3);
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public void onStopListening() throws RemoteException {
+            TileService.this.mHandler.sendEmptyMessage(2);
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public void onStartListening() throws RemoteException {
+            TileService.this.mHandler.sendEmptyMessage(1);
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public void onClick(IBinder wtoken) throws RemoteException {
+            TileService.this.mHandler.obtainMessage(5, wtoken).sendToTarget();
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public void onUnlockComplete() throws RemoteException {
+            TileService.this.mHandler.sendEmptyMessage(6);
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public CharSequence semGetDetailViewTitle() throws RemoteException {
+            return TileService.this.semGetDetailViewTitle();
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public CharSequence semGetDetailViewSettingButtonName() throws RemoteException {
+            return TileService.this.semGetDetailViewSettingButtonName();
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public boolean semIsToggleButtonExists() throws RemoteException {
+            return TileService.this.semIsToggleButtonExists();
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public boolean semIsToggleButtonChecked() throws RemoteException {
+            return TileService.this.semIsToggleButtonChecked();
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public RemoteViews semGetDetailView() throws RemoteException {
+            return TileService.this.semGetDetailView();
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public Intent semGetSettingsIntent() throws RemoteException {
+            return TileService.this.semGetSettingsIntent();
+        }
+
+        @Override // android.service.quicksettings.IQSTileService
+        public void semSetToggleButtonChecked(boolean checked) throws RemoteException {
+            TileService.this.mHandler.obtainMessage(8, Boolean.valueOf(checked)).sendToTarget();
         }
     }
 

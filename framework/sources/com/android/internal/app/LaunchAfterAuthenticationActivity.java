@@ -24,10 +24,16 @@ public class LaunchAfterAuthenticationActivity extends Activity {
         requestDismissKeyguardIfNeeded(onSuccessIntent);
     }
 
-    private void requestDismissKeyguardIfNeeded(final IntentSender onSuccessIntent) {
+    private void requestDismissKeyguardIfNeeded(IntentSender onSuccessIntent) {
         KeyguardManager km = (KeyguardManager) Objects.requireNonNull((KeyguardManager) getSystemService(KeyguardManager.class));
         if (km.isKeyguardLocked()) {
             km.requestDismissKeyguard(this, new KeyguardManager.KeyguardDismissCallback() { // from class: com.android.internal.app.LaunchAfterAuthenticationActivity.1
+                final /* synthetic */ IntentSender val$onSuccessIntent;
+
+                AnonymousClass1(IntentSender onSuccessIntent2) {
+                    onSuccessIntent = onSuccessIntent2;
+                }
+
                 @Override // android.app.KeyguardManager.KeyguardDismissCallback
                 public void onDismissCancelled() {
                     LaunchAfterAuthenticationActivity.this.finish();
@@ -53,7 +59,36 @@ public class LaunchAfterAuthenticationActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.app.LaunchAfterAuthenticationActivity$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends KeyguardManager.KeyguardDismissCallback {
+        final /* synthetic */ IntentSender val$onSuccessIntent;
+
+        AnonymousClass1(IntentSender onSuccessIntent2) {
+            onSuccessIntent = onSuccessIntent2;
+        }
+
+        @Override // android.app.KeyguardManager.KeyguardDismissCallback
+        public void onDismissCancelled() {
+            LaunchAfterAuthenticationActivity.this.finish();
+        }
+
+        @Override // android.app.KeyguardManager.KeyguardDismissCallback
+        public void onDismissSucceeded() {
+            IntentSender intentSender = onSuccessIntent;
+            if (intentSender != null) {
+                LaunchAfterAuthenticationActivity.this.onUnlocked(intentSender);
+            }
+            LaunchAfterAuthenticationActivity.this.finish();
+        }
+
+        @Override // android.app.KeyguardManager.KeyguardDismissCallback
+        public void onDismissError() {
+            Slog.e(LaunchAfterAuthenticationActivity.TAG, "Error while dismissing keyguard.");
+            LaunchAfterAuthenticationActivity.this.finish();
+        }
+    }
+
     public void onUnlocked(IntentSender targetIntent) {
         try {
             targetIntent.sendIntent(this, 0, null, null, null);

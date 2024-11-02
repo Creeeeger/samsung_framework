@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class ThrottleStatus implements Parcelable {
     public static final Parcelable.Creator<ThrottleStatus> CREATOR = new Parcelable.Creator<ThrottleStatus>() { // from class: android.telephony.data.ThrottleStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ThrottleStatus createFromParcel(Parcel source) {
             return new ThrottleStatus(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ThrottleStatus[] newArray(int size) {
             return new ThrottleStatus[size];
@@ -39,6 +40,14 @@ public final class ThrottleStatus implements Parcelable {
 
     /* loaded from: classes3.dex */
     public @interface ThrottleType {
+    }
+
+    /* synthetic */ ThrottleStatus(int i, int i2, int i3, int i4, long j, int i5, ThrottleStatusIA throttleStatusIA) {
+        this(i, i2, i3, i4, j, i5);
+    }
+
+    /* synthetic */ ThrottleStatus(Parcel parcel, ThrottleStatusIA throttleStatusIA) {
+        this(parcel);
     }
 
     public int getSlotIndex() {
@@ -91,6 +100,23 @@ public final class ThrottleStatus implements Parcelable {
         dest.writeLong(this.mThrottleExpiryTimeMillis);
         dest.writeInt(this.mRetryType);
         dest.writeInt(this.mThrottleType);
+    }
+
+    /* renamed from: android.telephony.data.ThrottleStatus$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ThrottleStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ThrottleStatus createFromParcel(Parcel source) {
+            return new ThrottleStatus(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ThrottleStatus[] newArray(int size) {
+            return new ThrottleStatus[size];
+        }
     }
 
     @Override // android.os.Parcelable

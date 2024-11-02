@@ -35,7 +35,6 @@ public class BaseStreamCipher extends BaseWrapCipher implements PBE {
     private String pbeAlgorithm;
     private PBEParameterSpec pbeSpec;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseStreamCipher(StreamCipher engine, int ivLength) {
         this(engine, ivLength, -1, -1);
     }
@@ -44,7 +43,6 @@ public class BaseStreamCipher extends BaseWrapCipher implements PBE {
         this(engine, ivLength, keySizeInBits, -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BaseStreamCipher(StreamCipher engine, int ivLength, int keySizeInBits, int digest) {
         this.availableSpecs = new Class[]{IvParameterSpec.class, PBEParameterSpec.class};
         this.ivLength = 0;

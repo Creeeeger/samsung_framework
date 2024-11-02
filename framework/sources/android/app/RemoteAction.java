@@ -10,13 +10,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class RemoteAction implements Parcelable {
     public static final Parcelable.Creator<RemoteAction> CREATOR = new Parcelable.Creator<RemoteAction>() { // from class: android.app.RemoteAction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteAction createFromParcel(Parcel in) {
             return new RemoteAction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteAction[] newArray(int size) {
             return new RemoteAction[size];
@@ -83,7 +84,7 @@ public final class RemoteAction implements Parcelable {
         return this.mActionIntent;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public RemoteAction m479clone() {
         RemoteAction action = new RemoteAction(this.mIcon, this.mTitle, this.mContentDescription, this.mActionIntent);
         action.setEnabled(this.mEnabled);
@@ -130,5 +131,22 @@ public final class RemoteAction implements Parcelable {
         pw.print(" action=" + this.mActionIntent.getIntent());
         pw.print(" shouldShowIcon=" + this.mShouldShowIcon);
         pw.println();
+    }
+
+    /* renamed from: android.app.RemoteAction$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoteAction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteAction createFromParcel(Parcel in) {
+            return new RemoteAction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteAction[] newArray(int size) {
+            return new RemoteAction[size];
+        }
     }
 }

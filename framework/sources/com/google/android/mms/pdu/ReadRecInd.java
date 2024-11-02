@@ -13,7 +13,6 @@ public class ReadRecInd extends GenericPdu {
         setReadStatus(readStatus);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ReadRecInd(PduHeaders headers) {
         super(headers);
     }

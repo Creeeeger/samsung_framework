@@ -13,7 +13,9 @@ public final class DeviceStateInfo implements Parcelable {
     public static final int CHANGED_CURRENT_STATE = 4;
     public static final int CHANGED_SUPPORTED_STATES = 1;
     public static final Parcelable.Creator<DeviceStateInfo> CREATOR = new Parcelable.Creator<DeviceStateInfo>() { // from class: android.hardware.devicestate.DeviceStateInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DeviceStateInfo createFromParcel(Parcel source) {
             int numberOfSupportedStates = source.readInt();
@@ -26,7 +28,6 @@ public final class DeviceStateInfo implements Parcelable {
             return new DeviceStateInfo(supportedStates, baseState, currentState);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DeviceStateInfo[] newArray(int size) {
             return new DeviceStateInfo[size];
@@ -120,5 +121,29 @@ public final class DeviceStateInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.hardware.devicestate.DeviceStateInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DeviceStateInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeviceStateInfo createFromParcel(Parcel source) {
+            int numberOfSupportedStates = source.readInt();
+            int[] supportedStates = new int[numberOfSupportedStates];
+            for (int i = 0; i < numberOfSupportedStates; i++) {
+                supportedStates[i] = source.readInt();
+            }
+            int baseState = source.readInt();
+            int currentState = source.readInt();
+            return new DeviceStateInfo(supportedStates, baseState, currentState);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeviceStateInfo[] newArray(int size) {
+            return new DeviceStateInfo[size];
+        }
     }
 }

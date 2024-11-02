@@ -20,7 +20,6 @@ public class DevicePolicyResourcesManager {
     private static String DISABLE_RESOURCES_UPDATABILITY_FLAG = "disable_resources_updatability";
     private static boolean DEFAULT_DISABLE_RESOURCES_UPDATABILITY = false;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public DevicePolicyResourcesManager(Context context, IDevicePolicyManager service) {
         this.mContext = context;
         this.mService = service;

@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes6.dex */
 public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApClientDetails> {
     public static final Parcelable.Creator<SemWifiApClientDetails> CREATOR = new Parcelable.Creator<SemWifiApClientDetails>() { // from class: com.samsung.android.wifi.SemWifiApClientDetails.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemWifiApClientDetails createFromParcel(Parcel source) {
             return new SemWifiApClientDetails(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiApClientDetails[] newArray(int size) {
             return new SemWifiApClientDetails[size];
@@ -47,6 +48,10 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
     protected long mClientRecentConnectionTimeStamp;
     protected long mClientTimeLimitInMilliSec;
     protected long mClientUsedMobileData;
+
+    /* synthetic */ SemWifiApClientDetails(Parcel parcel, SemWifiApClientDetailsIA semWifiApClientDetailsIA) {
+        this(parcel);
+    }
 
     public SemWifiApClientDetails(String mac, String name, String editedName, String nsdName, String ip, int deviceType, long dataLimit, long timeLimit, long currentDayUsedMobileDataUsage, long currentDayUsedTimeUsage, boolean isConnected) {
         this.mClientMac = mac;
@@ -107,6 +112,23 @@ public class SemWifiApClientDetails implements Parcelable, Comparable<SemWifiApC
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: com.samsung.android.wifi.SemWifiApClientDetails$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemWifiApClientDetails> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiApClientDetails createFromParcel(Parcel source) {
+            return new SemWifiApClientDetails(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemWifiApClientDetails[] newArray(int size) {
+            return new SemWifiApClientDetails[size];
+        }
     }
 
     @Override // android.os.Parcelable

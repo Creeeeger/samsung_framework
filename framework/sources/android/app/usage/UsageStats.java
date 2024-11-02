@@ -11,7 +11,9 @@ import android.util.SparseIntArray;
 /* loaded from: classes.dex */
 public final class UsageStats implements Parcelable {
     public static final Parcelable.Creator<UsageStats> CREATOR = new Parcelable.Creator<UsageStats>() { // from class: android.app.usage.UsageStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UsageStats createFromParcel(Parcel in) {
             UsageStats stats = new UsageStats();
@@ -70,7 +72,6 @@ public final class UsageStats implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsageStats[] newArray(int size) {
             return new UsageStats[size];
@@ -124,7 +125,7 @@ public final class UsageStats implements Parcelable {
         this.mLaunchCount = stats.mLaunchCount;
         this.mAppLaunchCount = stats.mAppLaunchCount;
         this.mLastEvent = stats.mLastEvent;
-        this.mActivities = stats.mActivities.m4954clone();
+        this.mActivities = stats.mActivities.m4953clone();
         this.mForegroundServices = new ArrayMap<>(stats.mForegroundServices);
         this.mChooserCounts = new ArrayMap<>(stats.mChooserCounts);
     }
@@ -498,6 +499,76 @@ public final class UsageStats implements Parcelable {
             bundle.putInt(eventMap.keyAt(i), eventMap.valueAt(i).intValue());
         }
         return bundle;
+    }
+
+    /* renamed from: android.app.usage.UsageStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UsageStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsageStats createFromParcel(Parcel in) {
+            UsageStats stats = new UsageStats();
+            stats.mPackageName = in.readString();
+            stats.mBeginTimeStamp = in.readLong();
+            stats.mEndTimeStamp = in.readLong();
+            stats.mLastTimeUsed = in.readLong();
+            stats.mLastTimeVisible = in.readLong();
+            stats.mLastTimeComponentUsed = in.readLong();
+            stats.mLastTimeForegroundServiceUsed = in.readLong();
+            stats.mTotalTimeInForeground = in.readLong();
+            stats.mTotalTimeVisible = in.readLong();
+            stats.mTotalTimeForegroundServiceUsed = in.readLong();
+            stats.mLaunchCount = in.readInt();
+            stats.mAppLaunchCount = in.readInt();
+            stats.mLastEvent = in.readInt();
+            Bundle allCounts = in.readBundle();
+            if (allCounts != null) {
+                stats.mChooserCounts = new ArrayMap<>();
+                for (String action : allCounts.keySet()) {
+                    if (!stats.mChooserCounts.containsKey(action)) {
+                        ArrayMap<String, Integer> newCounts = new ArrayMap<>();
+                        stats.mChooserCounts.put(action, newCounts);
+                    }
+                    Bundle currentCounts = allCounts.getBundle(action);
+                    if (currentCounts != null) {
+                        for (String key : currentCounts.keySet()) {
+                            int value = currentCounts.getInt(key);
+                            if (value > 0) {
+                                stats.mChooserCounts.get(action).put(key, Integer.valueOf(value));
+                            }
+                        }
+                    }
+                }
+            }
+            readSparseIntArray(in, stats.mActivities);
+            readBundleToEventMap(in.readBundle(), stats.mForegroundServices);
+            return stats;
+        }
+
+        private void readSparseIntArray(Parcel in, SparseIntArray arr) {
+            int size = in.readInt();
+            for (int i = 0; i < size; i++) {
+                int key = in.readInt();
+                int value = in.readInt();
+                arr.put(key, value);
+            }
+        }
+
+        private void readBundleToEventMap(Bundle bundle, ArrayMap<String, Integer> eventMap) {
+            if (bundle != null) {
+                for (String className : bundle.keySet()) {
+                    int event = bundle.getInt(className);
+                    eventMap.put(className, Integer.valueOf(event));
+                }
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsageStats[] newArray(int size) {
+            return new UsageStats[size];
+        }
     }
 
     /* loaded from: classes.dex */

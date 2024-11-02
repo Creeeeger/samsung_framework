@@ -11,7 +11,9 @@ import java.util.Locale;
 public class RadioAccessFamily implements Parcelable {
     private static final int CDMA = 72;
     public static final Parcelable.Creator<RadioAccessFamily> CREATOR = new Parcelable.Creator<RadioAccessFamily>() { // from class: android.telephony.RadioAccessFamily.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RadioAccessFamily createFromParcel(Parcel in) {
             int phoneId = in.readInt();
@@ -19,7 +21,6 @@ public class RadioAccessFamily implements Parcelable {
             return new RadioAccessFamily(phoneId, radioAccessFamily);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessFamily[] newArray(int size) {
             return new RadioAccessFamily[size];
@@ -81,6 +82,25 @@ public class RadioAccessFamily implements Parcelable {
     public void writeToParcel(Parcel outParcel, int flags) {
         outParcel.writeInt(this.mPhoneId);
         outParcel.writeInt(this.mRadioAccessFamily);
+    }
+
+    /* renamed from: android.telephony.RadioAccessFamily$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RadioAccessFamily> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioAccessFamily createFromParcel(Parcel in) {
+            int phoneId = in.readInt();
+            int radioAccessFamily = in.readInt();
+            return new RadioAccessFamily(phoneId, radioAccessFamily);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioAccessFamily[] newArray(int size) {
+            return new RadioAccessFamily[size];
+        }
     }
 
     public static int getRafFromNetworkType(int type) {

@@ -39,6 +39,10 @@ public final class VcnConfig implements Parcelable {
     public @interface VcnUnderlyingNetworkTransport {
     }
 
+    /* synthetic */ VcnConfig(String str, Set set, Set set2, boolean z, VcnConfigIA vcnConfigIA) {
+        this(str, set, set2, z);
+    }
+
     static {
         ArraySet arraySet = new ArraySet();
         ALLOWED_TRANSPORTS = arraySet;
@@ -47,13 +51,14 @@ public final class VcnConfig implements Parcelable {
         arraySet.add(7);
         RESTRICTED_TRANSPORTS_DEFAULT = Collections.singleton(1);
         CREATOR = new Parcelable.Creator<VcnConfig>() { // from class: android.net.vcn.VcnConfig.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public VcnConfig createFromParcel(Parcel in) {
                 return new VcnConfig((PersistableBundle) in.readParcelable(null, PersistableBundle.class));
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VcnConfig[] newArray(int size) {
                 return new VcnConfig[size];
@@ -156,6 +161,23 @@ public final class VcnConfig implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
         out.writeParcelable(toPersistableBundle(), flags);
+    }
+
+    /* renamed from: android.net.vcn.VcnConfig$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VcnConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VcnConfig createFromParcel(Parcel in) {
+            return new VcnConfig((PersistableBundle) in.readParcelable(null, PersistableBundle.class));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VcnConfig[] newArray(int size) {
+            return new VcnConfig[size];
+        }
     }
 
     /* loaded from: classes2.dex */

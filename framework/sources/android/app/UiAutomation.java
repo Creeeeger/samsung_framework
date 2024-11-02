@@ -476,7 +476,7 @@ public final class UiAutomation {
     /* JADX WARN: Removed duplicated region for block: B:54:0x00fe  */
     /* JADX WARN: Type inference failed for: r4v1 */
     /* JADX WARN: Type inference failed for: r4v10 */
-    /* JADX WARN: Type inference failed for: r4v8, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r4v8, types: [int, boolean] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -790,17 +790,139 @@ public final class UiAutomation {
         return userManager.getMainDisplayIdAssignedToUser();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class IAccessibilityServiceClientImpl extends AccessibilityService.IAccessibilityServiceClientWrapper {
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.app.UiAutomation$IAccessibilityServiceClientImpl$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 implements AccessibilityService.Callbacks {
+            private final int mGenerationId;
+            final /* synthetic */ int val$generationId;
+
+            AnonymousClass1(int i) {
+                this.val$generationId = i;
+                this.mGenerationId = i;
+            }
+
+            private boolean isGenerationChangedLocked() {
+                return this.mGenerationId != UiAutomation.this.mGenerationId;
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void init(int connectionId, IBinder windowToken) {
+                synchronized (UiAutomation.this.mLock) {
+                    if (isGenerationChangedLocked()) {
+                        return;
+                    }
+                    UiAutomation.this.mConnectionState = 2;
+                    UiAutomation.this.mConnectionId = connectionId;
+                    UiAutomation.this.mLock.notifyAll();
+                    if (Build.IS_DEBUGGABLE) {
+                        Log.v(UiAutomation.LOG_TAG, "Init " + UiAutomation.this);
+                    }
+                }
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onServiceConnected() {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onInterrupt() {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onSystemActionsChanged() {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void createImeSession(IAccessibilityInputMethodSessionCallback callback) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void startInput(RemoteAccessibilityInputConnection inputConnection, EditorInfo editorInfo, boolean restarting) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public boolean onGesture(AccessibilityGestureEvent gestureEvent) {
+                return false;
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onMotionEvent(MotionEvent event) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onTouchStateChanged(int displayId, int state) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onAccessibilityEvent(AccessibilityEvent event) {
+                synchronized (UiAutomation.this.mLock) {
+                    if (isGenerationChangedLocked()) {
+                        return;
+                    }
+                    UiAutomation uiAutomation = UiAutomation.this;
+                    uiAutomation.mLastEventTimeMillis = Math.max(uiAutomation.mLastEventTimeMillis, event.getEventTime());
+                    if (UiAutomation.this.mWaitingForEventDelivery) {
+                        UiAutomation.this.mEventQueue.add(AccessibilityEvent.obtain(event));
+                    }
+                    UiAutomation.this.mLock.notifyAll();
+                    OnAccessibilityEventListener listener = UiAutomation.this.mOnAccessibilityEventListener;
+                    if (listener != null) {
+                        UiAutomation.this.mLocalCallbackHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.app.UiAutomation$IAccessibilityServiceClientImpl$1$$ExternalSyntheticLambda0
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                ((UiAutomation.OnAccessibilityEventListener) obj).onAccessibilityEvent((AccessibilityEvent) obj2);
+                            }
+                        }, listener, AccessibilityEvent.obtain(event)));
+                    }
+                }
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public boolean onKeyEvent(KeyEvent event) {
+                return false;
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onMagnificationChanged(int displayId, Region region, MagnificationConfig config) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onSoftKeyboardShowModeChanged(int showMode) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onPerformGestureResult(int sequence, boolean completedSuccessfully) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onFingerprintCapturingGesturesChanged(boolean active) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onFingerprintGesture(int gesture) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onAccessibilityButtonClicked(int displayId) {
+            }
+
+            @Override // android.accessibilityservice.AccessibilityService.Callbacks
+            public void onAccessibilityButtonAvailabilityChanged(boolean available) {
+            }
+        }
+
         public IAccessibilityServiceClientImpl(Looper looper, int generationId) {
             super((Context) null, looper, new AccessibilityService.Callbacks(generationId) { // from class: android.app.UiAutomation.IAccessibilityServiceClientImpl.1
                 private final int mGenerationId;
                 final /* synthetic */ int val$generationId;
 
-                {
-                    this.val$generationId = generationId;
-                    this.mGenerationId = generationId;
+                AnonymousClass1(int generationId2) {
+                    this.val$generationId = generationId2;
+                    this.mGenerationId = generationId2;
                 }
 
                 private boolean isGenerationChangedLocked() {

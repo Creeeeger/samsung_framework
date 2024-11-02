@@ -86,8 +86,9 @@ public interface IDisplayChangeWindowCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IDisplayChangeWindowCallback {
+        public static class Proxy implements IDisplayChangeWindowCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

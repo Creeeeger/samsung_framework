@@ -30,11 +30,11 @@ public class VibRune {
     public static final boolean SUPPORT_SKIP_CANCEL_VIBRATION_WHEN_SCREEN_OFF = true;
     public static final boolean SUPPORT_VIBRATION_FROM_BACKGROUND_PROCESS = true;
     public static final boolean SUPPORT_VIBRATION_TAG = true;
-    public static final boolean SUPPORT_VIRTUAL_VIBRATION_SOUND = true;
+    public static final boolean SUPPORT_VIRTUAL_VIBRATION_SOUND = false;
     public static final boolean TO_DO = false;
     private static boolean mIsRamIndexSupported = false;
     private static boolean mIsHybridHapticSupported = false;
-    public static final boolean SUPPORT_ACH = "ACH".contains("ACH");
+    public static final boolean SUPPORT_ACH = "".contains("ACH");
     public static final boolean SUPPORT_HAPTIC_FEEDBACK_ON_DC_MOTOR = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_AUDIO_SUPPORT_DC_MOTOR_HAPTIC_FEEDBACK");
     public static final boolean SUPPORT_ALWAYS_VIBRATE = "JP".equalsIgnoreCase(SemCscFeature.getInstance().getString("CountryISO"));
     public static final String DND_EXCEPTION_PACKAGES = SemCscFeature.getInstance().getString("CscFeature_SystemUI_ConfigDndExceptionPackage", "");

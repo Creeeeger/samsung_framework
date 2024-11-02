@@ -236,6 +236,10 @@ public class ProgressBar extends View {
         this.mCurrentMode = 0;
         this.mUseHorizontalProgress = false;
         this.VISUAL_PROGRESS = new FloatProperty<ProgressBar>("visual_progress") { // from class: android.widget.ProgressBar.2
+            AnonymousClass2(String name) {
+                super(name);
+            }
+
             @Override // android.util.FloatProperty
             public void setValue(ProgressBar object, float value) {
                 object.setVisualProgress(16908301, value);
@@ -803,7 +807,6 @@ public class ProgressBar extends View {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ColorStateList semGetProgressTintList() {
         ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
         if (progressTintInfo != null) {
@@ -983,7 +986,6 @@ public class ProgressBar extends View {
         return this.mCurrentDrawable;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean verifyDrawable(Drawable who) {
         return who == this.mProgressDrawable || who == this.mIndeterminateDrawable || super.verifyDrawable(who);
@@ -1025,9 +1027,12 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class RefreshProgressRunnable implements Runnable {
+        /* synthetic */ RefreshProgressRunnable(ProgressBar progressBar, RefreshProgressRunnableIA refreshProgressRunnableIA) {
+            this();
+        }
+
         private RefreshProgressRunnable() {
         }
 
@@ -1046,7 +1051,6 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class RefreshData {
         private static final int POOL_MAX = 24;
@@ -1076,7 +1080,6 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void doRefreshProgress(int id, int progress, boolean fromUser, boolean callBackToApp, boolean animate) {
         ObjectAnimator objectAnimator;
         int range = this.mMax - this.mMin;
@@ -1113,6 +1116,9 @@ public class ProgressBar extends View {
             animator.setDuration(80L);
             animator.setInterpolator(PROGRESS_ANIM_INTERPOLATOR);
             animator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.ProgressBar.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     ProgressBar.this.mLastProgressAnimator = null;
@@ -1129,6 +1135,18 @@ public class ProgressBar extends View {
         }
         if (isPrimary && callBackToApp) {
             onProgressRefresh(scale, fromUser, progress);
+        }
+    }
+
+    /* renamed from: android.widget.ProgressBar$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            ProgressBar.this.mLastProgressAnimator = null;
         }
     }
 
@@ -1159,7 +1177,6 @@ public class ProgressBar extends View {
         super.setStateDescription(stateDescription);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onProgressRefresh(float scale, boolean fromUser, int progress) {
         if (AccessibilityManager.getInstance(this.mContext).isEnabled() && getStateDescription() == null && !isIndeterminate()) {
             AccessibilityEvent event = AccessibilityEvent.obtain();
@@ -1173,7 +1190,6 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setVisualProgress(int id, float progress) {
         this.mVisualProgress = progress;
         Drawable d = this.mCurrentDrawable;
@@ -1189,7 +1205,6 @@ public class ProgressBar extends View {
         onVisualProgressChanged(id, progress);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onVisualProgressChanged(int id, float progress) {
     }
 
@@ -1218,7 +1233,6 @@ public class ProgressBar extends View {
         setProgressInternal(progress, false, animate);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @RemotableViewMethod
     public synchronized boolean setProgressInternal(int progress, boolean fromUser, boolean animate) {
         Drawable drawable;
@@ -1420,13 +1434,11 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         updateDrawableBounds(w, h);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void updateDrawableBounds(int w, int h) {
         int w2 = w - (this.mPaddingRight + this.mPaddingLeft);
         int h2 = h - (this.mPaddingTop + this.mPaddingBottom);
@@ -1467,14 +1479,12 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawTrack(canvas);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public void drawTrack(Canvas canvas) {
         Drawable drawable = this.mCurrentDrawable;
@@ -1509,7 +1519,6 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int dw = 0;
@@ -1531,7 +1540,6 @@ public class ProgressBar extends View {
         setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -1567,17 +1575,17 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.ProgressBar.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1585,6 +1593,10 @@ public class ProgressBar extends View {
         };
         int progress;
         int secondaryProgress;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -1601,6 +1613,23 @@ public class ProgressBar extends View {
             super.writeToParcel(out, flags);
             out.writeInt(this.progress);
             out.writeInt(this.secondaryProgress);
+        }
+
+        /* renamed from: android.widget.ProgressBar$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 
@@ -1621,7 +1650,6 @@ public class ProgressBar extends View {
         setSecondaryProgress(ss.secondaryProgress);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -1642,7 +1670,6 @@ public class ProgressBar extends View {
         this.mAttached = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindow() {
         if (this.mIndeterminate) {
@@ -1687,7 +1714,6 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void encodeProperties(ViewHierarchyEncoder stream) {
         super.encodeProperties(stream);
@@ -1701,7 +1727,6 @@ public class ProgressBar extends View {
         return isIndeterminate() && getWindowVisibility() == 0 && isShown();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ProgressTintInfo {
         boolean mHasIndeterminateTint;
@@ -1721,7 +1746,31 @@ public class ProgressBar extends View {
         BlendMode mSecondaryProgressBlendMode;
         ColorStateList mSecondaryProgressTintList;
 
+        /* synthetic */ ProgressTintInfo(ProgressTintInfoIA progressTintInfoIA) {
+            this();
+        }
+
         private ProgressTintInfo() {
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.ProgressBar$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends FloatProperty<ProgressBar> {
+        AnonymousClass2(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(ProgressBar object, float value) {
+            object.setVisualProgress(16908301, value);
+            object.mVisualProgress = value;
+        }
+
+        @Override // android.util.Property
+        public Float get(ProgressBar object) {
+            return Float.valueOf(object.mVisualProgress);
         }
     }
 
@@ -1758,7 +1807,6 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onSlidingRefresh(int level) {
         Drawable d = this.mCurrentDrawable;
         if (this.mCurrentDrawable != null) {
@@ -1804,7 +1852,6 @@ public class ProgressBar extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class CircleAnimationCallback extends Animatable2.AnimationCallback {
         final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -1814,9 +1861,28 @@ public class ProgressBar extends View {
             this.mProgressBar = new WeakReference<>(progressBar);
         }
 
+        /* renamed from: android.widget.ProgressBar$CircleAnimationCallback$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                ProgressBar progressBar = (ProgressBar) CircleAnimationCallback.this.mProgressBar.get();
+                if (progressBar == null) {
+                    return;
+                }
+                ((AnimatedVectorDrawable) progressBar.mIndeterminateDrawable).start();
+            }
+        }
+
         @Override // android.graphics.drawable.Animatable2.AnimationCallback
         public void onAnimationEnd(Drawable drawable) {
             this.mHandler.post(new Runnable() { // from class: android.widget.ProgressBar.CircleAnimationCallback.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     ProgressBar progressBar = (ProgressBar) CircleAnimationCallback.this.mProgressBar.get();
@@ -1847,7 +1913,6 @@ public class ProgressBar extends View {
         return new ColorStateList(EMPTY, new int[]{color});
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class CirCleProgressDrawable extends Drawable {
         private final IntProperty<CirCleProgressDrawable> VISUAL_CIRCLE_PROGRESS;
@@ -1867,6 +1932,10 @@ public class ProgressBar extends View {
             this.mArcRect = new RectF();
             this.mState = new ProgressState();
             this.VISUAL_CIRCLE_PROGRESS = new IntProperty<CirCleProgressDrawable>("visual_progress") { // from class: android.widget.ProgressBar.CirCleProgressDrawable.1
+                AnonymousClass1(String name) {
+                    super(name);
+                }
+
                 @Override // android.util.IntProperty
                 public void setValue(CirCleProgressDrawable object, int value) {
                     object.mProgress = value;
@@ -1914,6 +1983,26 @@ public class ProgressBar extends View {
         @Override // android.graphics.drawable.Drawable
         public boolean isStateful() {
             return true;
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.ProgressBar$CirCleProgressDrawable$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 extends IntProperty<CirCleProgressDrawable> {
+            AnonymousClass1(String name) {
+                super(name);
+            }
+
+            @Override // android.util.IntProperty
+            public void setValue(CirCleProgressDrawable object, int value) {
+                object.mProgress = value;
+                CirCleProgressDrawable.this.invalidateSelf();
+            }
+
+            @Override // android.util.Property
+            public Integer get(CirCleProgressDrawable object) {
+                return Integer.valueOf(object.mProgress);
+            }
         }
 
         public void setProgress(int progress, boolean animate) {
@@ -1969,7 +2058,6 @@ public class ProgressBar extends View {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.graphics.drawable.Drawable
         public boolean onStateChange(int[] stateSet) {
             boolean changed = super.onStateChange(stateSet);
@@ -1987,8 +2075,13 @@ public class ProgressBar extends View {
             return this.mState;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private class ProgressState extends Drawable.ConstantState {
+        public class ProgressState extends Drawable.ConstantState {
+            /* synthetic */ ProgressState(CirCleProgressDrawable cirCleProgressDrawable, ProgressStateIA progressStateIA) {
+                this();
+            }
+
             private ProgressState() {
             }
 

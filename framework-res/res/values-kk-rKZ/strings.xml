@@ -336,7 +336,7 @@
     <string name="ext_media_unsupported_notification_message">Бұл құрылғы %s қолдау көрсетпейді. Қолдау көрсетілетін форматта орнату үшін түртіңіз.</string>
     <string name="ext_media_unsupported_notification_title">Қолдау көрсетілмейтін %s</string>
     <string name="ext_storage_bad_removal_button">Қайта бастау</string>
-    <string name="ext_storage_bad_removal_title">Телефоныңызды қайта іске қосы-з</string>
+    <string name="ext_storage_bad_removal_title">Планшетіңізді қайта іске қосы-з</string>
     <string name="extmedia_format_button_format">Форматтау</string>
     <string name="extmedia_format_message_usbhost">USB қоймасында сақталған бүкіл файлдар өшіріледі. Бұл әрекетті қайтару мүмкін емес!</string>
     <string name="extmedia_format_title_usbhost">USB қой. піш. к. пе?</string>
@@ -593,16 +593,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Bluetooth аудио құрылғысында дыбыс ойнап тұр. Осыны өшіру үшін осы жерді түртіңіз</string>
     <string name="multisound_sound_via_headphone">%s дыбысы құлаққаптар арқылы ойнатылып жатыр. Бұны өшіру үшін осы жерді түртіңіз.</string>
     <string name="multisound_sound_via_headphone_multiselection">Дыбыс құлаққаптар арқылы ойнап тұр. Осыны өшіру үшін осы жерді түртіңіз.</string>
-    <string name="multisound_sound_via_phone_speaker">%s дыбысы телефон динамигі арқылы ойнатылады. Өшіру үшін осында басыңыз.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Дыбыс телефон динамигі арқылы ойнап тұр. Осыны өшіру үшін осы жерді түртіңіз.</string>
+    <string name="multisound_sound_via_phone_speaker">%s дыбысы планшетіңіздің динамигі арқылы ойнатылуда. Осыны өшіру үшін осы жерді түртіңіз.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Дыбыс планшет динамигі арқылы ойнап тұр. Осыны өшіру үшін осы жерді түртіңіз.</string>
     <string name="multisound_sound_via_usb_audio">%s дыбысы USB аудио құрылғысы арқылы ойнатылып жатыр. Бұны өшіру үшін осы жерді түртіңіз.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Дыбыс USB аудио құрылғысы арқылы ойнап тұр. Осыны өшіру үшін осы жерді түртіңіз.</string>
     <string name="multisound_title">Бөлек қолданбаның дыбысы</string>
     <string name="multisound_turn_off_multisound">Өшіру</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s қолданбасын Samsung DeX режимінде іске қосу мүмкін емес. Телефон режимінде іске қосып көріңіз.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s қолданбасын Samsung DeX режимінде іске қосу мүмкін емес. Бұл қолданба телефонның бастапқы экрандарына арналған.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Кейбір ойындар тек сенсорлы экрандарда ғана жұмыс істейді. Егер тінтуірдің басқару элементтері Samsung DeX режимінде жұмыс істемесе, онда оның орнына телефон режимінде ойнап көріңіз.</string>
-    <string name="my_device">Осы телефон</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX режимінде іске қосу мүмкін емес. Планшет режимінде іске қосып көріңіз.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX режимінде іске қосу мүмкін емес. Ол планшеттің бастапқы экрандарына арналған.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Кейбір ойындар тек сенсорлы экрандарда ғана жұмыс істейді. Егер тінтуірдің басқару элементтері Samsung DeX режимінде жұмыс істемесе, онда оның орнына планшет режимінде ойнап көріңіз.</string>
+    <string name="my_device">Осы планшет</string>
     <string name="network_locked_sim_dialog_message_ais">SIM картаңыз осы телефонмен толықтай жұмыс істемейді, себебі ол жазылымыңыздың талаптары мен шарттарына сәйкес келмейді. Егер қандай да бір сұрақтарыңыз бар болса немесе осы мәселе туралы қосымша ақпарат қажет болса, онда Samsung тұтынушыларға қызмет көрсету орталығына немесе сізге осы өнімдерді сатқан дүкенге хабарласыңыз.</string>
     <string name="network_locked_sim_notification_text">Желіде құл-ған SIM картасы салынды.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -793,7 +793,7 @@
     <string name="policydesc_allow_desktopsync">Жұмыс үстелін синхрондауды пайдалануға жол бермеу.</string>
     <string name="policydesc_allow_internetsharing">Ұялы жедел нүктені пайдалануға жол бермеу.</string>
     <string name="policydesc_allow_irda">IrDA опциясын пайдалануға жол бермеу.</string>
-    <string name="policydesc_allow_popimapemail">POP және IMAP электрондық хабарын телефонда пайдалануға жол бермеу.</string>
+    <string name="policydesc_allow_popimapemail">POP және IMAP электрондық хабарын планшетте пайдалануға жол бермеу.</string>
     <string name="policydesc_allow_storagecard">SD карталарын пайдалануға жол бермеу.</string>
     <string name="policydesc_allow_textmessaging">Мәтіндік және мультимедиалық хабар алмасуды пайдалануға жол бермеу.</string>
     <string name="policydesc_allow_thirdParty">Бұл бағдарлама үшінші тарап бағдарламаларының іске қосылуына жол бермейді.</string>
@@ -839,7 +839,7 @@
     <string name="pwd_change_enforced">Қауіпсіздік саясаты құпиясөздің өзгеруін қажет етеді.</string>
     <string name="recording_fail">Микрофон %2$s қолданбасында пайдаланылып жатқан кезде, оны %1$s қолданбасында пайдалану мүмкін емес.</string>
     <string name="recording_popup">%s қолданбасы микрофонды пайдаланып жатыр.</string>
-    <string name="recording_popup_device">Телефон</string>
+    <string name="recording_popup_device">Планшет</string>
     <string name="recording_popup_with_bluetooth">%s қолданбасы Bluetooth микрофонын пайдаланып жатыр.</string>
     <string name="recording_popup_with_device">%1$s қолданбасы %2$s микрофонын пайдаланып жатыр.</string>
     <string name="redo">Қайталау</string>
@@ -904,12 +904,12 @@
     <string name="screencapture_restrict">Қауіпсіздік саясаты экранды түсіруге жол бермейді.</string>
     <string name="sd_card_unavailable_message">SD картасын пайдалана алмайсыз, себебі ол басқа пайдаланушы профилі пайдаланылып тұрған кезде салынған.</string>
     <string name="sd_card_unavailable_title">SD картасы қолжетімді емес</string>
-    <string name="sdcard_bad_removal_message">SD картасы қауіпті түрде жойылды. Телефоныңыздың күтпеген жерден қайта іске қосылуына жол бермеу үшін, сақталмаған деректерді сақтап, қазір қайта іске қосыңыз.</string>
+    <string name="sdcard_bad_removal_message">SD картасы қауіпті түрде жойылды. Планшетіңіздің күтпеген жерден қайта іске қосылуына жол бермеу үшін, сақталмаған деректерді сақтап, қазір қайта іске қосыңыз.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD картасын шифрсыздандыру</string>
     <string name="sdcard_batch_decrypt_noti_title">SD картасын шифрсыздандыру</string>
     <string name="sdcard_batch_decrypt_popup_content">Шифрланған SD картасы пайдаланылудың алдында шифрсыздандырылуы керек. Шифрсыздандыруға бір сағат не одан көп уақыт кетуі мүмкін. Зарядталған батареямен бастап, шифрсыздандыру аяқталғанша құрылғыны қосулы ұстаңыз. Шифрсыздандыру процесін үзу кейбір не барлық деректердің жоғалуына себеп болуы мүмкін.</string>
     <string name="sdcard_decrypt_err_notification">SD картасын шифрсыздандыру қатесі орын алды.</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD картасындағы кейбір файлдар басқа құрылғыда шифланған және оны осы телефонда пайдалануға болмайды.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD картасындағы кейбір файлдар басқа құрылғыда шифрланған және оны осы планшетте пайдалануға болмайды.</string>
     <string name="sdcard_decrypt_notification">SD картасы шифрсыздандырылды.</string>
     <string name="sdcard_decrypt_title_notification">SD картасын шифрсыздандыру</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD картасы шифрсыз-да…</string>
@@ -1235,7 +1235,7 @@
     <string name="usb_abnormal_reset_title">USB қосылымы тұрақсыз</string>
     <string name="usb_abnormal_reset_toast">USB қосылымы тұрақсыз. Кабельді ажыратып, оны қайтадан жалғаңыз немесе басқа кабельді қолданып көріңіз.</string>
     <string name="usb_accessory_notification_title">USB аксессуарына қосылды</string>
-    <string name="usb_bad_removal_message">USB сақтау құрылғысы қауіпті түрде жойылды. Телефоныңыздың күтпеген жерден қайта іске қосылуына жол бермеу үшін, сақталмаған деректерді сақтап, қазір қайта іске қосыңыз.</string>
+    <string name="usb_bad_removal_message">USB сақтау құрылғысы қауіпті түрде жойылды. Планшетіңіздің күтпеген жерден қайта іске қосылуына жол бермеу үшін, сақталмаған деректерді сақтап, қазір қайта іске қосыңыз.</string>
     <string name="usb_blocked_by_emergency_mode">Кейбір USB функциялары Төтенше жағдай режимінде қолжетімсіз.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Қуатты барынша үнемдеу режимі қосулы кезде, қосылған USB құрылғысына қатысты функцияларды пайдалану мүмкін емес.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Кейбір USB функциялары “Қуатты барынша үнемдеу” режимі қосылған кезде шектеледі.</string>
@@ -1244,13 +1244,13 @@
     <string name="usb_camera_connected_notification_title">Мультимедиалық құрылғы қосылды</string>
     <string name="usb_camera_disconnected_notification_title">Медиа құрылғы ажыратылды</string>
     <string name="usb_cd_installer_notification_title">Бағдарлама-қ жасақтама жаңартуы</string>
-    <string name="usb_charing_only_notification_title">USB арқылы зарядтау</string>
+    <string name="usb_charing_only_notification_title">Қосылды</string>
     <string name="usb_debugging_only_notification_title">Тек жөндеу</string>
-    <string name="usb_host_resource_exceed_message">Телефоныңыздың USB контроллерінде осы құрылғыны қосу үшін ресурстар жеткіліксіз. Құрылғыны ажыратып, оны қайтадан қосып көріңіз.</string>
+    <string name="usb_host_resource_exceed_message">Планшетіңіздің USB контроллерінде осы құрылғыны қосу үшін ресурстар жеткіліксіз. Құрылғыны ажыратып, оны қайтадан қосып көріңіз.</string>
     <string name="usb_host_resource_exceed_title">USB контроллері ресурстары жеткіліксіз</string>
-    <string name="usb_hub_depth_exceed_message">Телефоныңыз бір уақытта 5 USB хаб қосылымына дейін қолдау көрсете алады.</string>
+    <string name="usb_hub_depth_exceed_message">Планшетіңіз бір уақытта 5 USB хаб қосылымына дейін қолдау көрсете алады.</string>
     <string name="usb_hub_depth_exceed_title">Максималды USB хаб қосылымдары</string>
-    <string name="usb_hub_power_exceed_message">Телефоныңыз осы USB құрылғысына жеткілікті қуатты бере алмайды. Телефоныңызға қоспас бұрын, құрылғыны өзін-өзі қуаттайтын USB хабына қосып алыңыз.</string>
+    <string name="usb_hub_power_exceed_message">Планшетіңіз осы USB құрылғысына жеткілікті қуатты бере алмайды. Планшетіңізге қоспас бұрын, құрылғыны өзін-өзі қуаттайтын USB хабына қосып алыңыз.</string>
     <string name="usb_increase_battery_usage">USB қосылымы батарея қуатын пайдалануды арттыруы мүмкін.</string>
     <string name="usb_mass_storage_restrict">Қауіпсіздік саясаты USB жалпы сақтау орнын пайдалануға жол бермейді.</string>
     <string name="usb_midi_notification_title">MIDI-ге арналған USB</string>
@@ -1276,8 +1276,8 @@
     <string name="usb_storage_stop_title">USB сақтау құралы пайдаланылуда.</string>
     <string name="usb_storage_title">USB қосылған.</string>
     <string name="usb_type_c_supply_power_notification_title">USB қосылған құрылғы зарядтауда</string>
-    <string name="usb_unblock_by_screen_unlock">Қосылған USB құрылғысын пайдалану үшін, телефонның құлпын ашыңыз.</string>
-    <string name="usb_unsupport_accessory_message">Осы USB құрылғысына телефоныңыз қолдау көрсетпейді.</string>
+    <string name="usb_unblock_by_screen_unlock">Қосылған USB құрылғысын пайдалану үшін, планшеттің құлпын ашыңыз.</string>
+    <string name="usb_unsupport_accessory_message">Осы USB құрылғысына планшетіңіз қолдау көрсетпейді.</string>
     <string name="usb_unsupport_accessory_title">USB құрылғысы қолданылмайды</string>
     <string name="usb_unsupported_device">Қосылған USB құрылғысына қолдау көрсетілмейді.</string>
     <string name="usb_unsupported_device_title">Құрылғыға қолдау көрсетілмейді</string>
@@ -1295,19 +1295,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Кептіруді фенді немесе кептіргішті (тек суық ауа) портқа қарай бағыттай сілтеу арқылы жылдамдатуыңызға болады.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Зарядтау/USB портыңызда ылғалдың немесе басқа материалдың барын анықтадық.
 
-Зарядтау/USB портыңызда шаң немесе басқа заттардың бар-жоғын тексеріңіз. Телефонның зақымдалуына жол бермеу үшін зарядтау порты тазартылғанша және ылғал кепкенше оған ештеңе қоспаңыз.
+Зарядтау/USB портыңызда шаң немесе басқа заттардың бар-жоғын тексеріңіз. Планшеттің зақымдалуына жол бермеу үшін зарядтау порты тазартылғанша және ылғал кепкенше оған ештеңе қоспаңыз.
 
 Портты құрғату үшін ылғалды сілкіп түсіріңіз, содан кейін ол кепкенше күте тұрыңыз, ол бірнеше сағатқа созылуы мүмкін. Желдеткішті немесе кептіргішті (тек суық ауа) портқа қарай бағыттап, кептіруді жылдамдатуға болады."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
-    <string name="usb_water_dialg_support_wireless_charging">"Зарядтау/USB портыңызда ылғалдың немесе басқа материалдың барын анықтадық.
+    <string name="usb_water_dialg_support_wireless_charging">"Зарядтау/USB портыңызда ылғал немесе бөтен материал анықтадық.
 
-Зарядтау/USB портыңызда шаң немесе басқа заттардың бар-жоғын тексеріңіз. Телефонның зақымдалуына жол бермеу үшін зарядтау порты тазартылғанша және ылғал кепкенше оған ештеңе қоспаңыз.
+Зарядтау/USB портыңызда кез келген шаң немесе бөгде заттардың бар-жоғын тексеріңіз. Планшетіңіздің зақымдалуына жол бермеу үшін, зарядтау порты тазартылғанша және ылғал кепкенше оған ештеңе жалғамаңыз.
 
-Портты құрғату үшін ылғалды сілкіп түсіріңіз, содан кейін ол кепкенше күте тұрыңыз, ол бірнеше сағатқа созылуы мүмкін. Желдеткішті немесе кептіргішті (тек суық ауа) портқа қарай бағыттап, кептіруді жылдамдатуға болады.
+Портты құрғату үшін кез келген ылғалды сілкіңіз, содан кейін ол кепкенше күте тұрыңыз, бұл бірнеше сағатқа созылуы мүмкін. Кептіруді желдеткішті немесе кептіргішті (тек суық ауа) портқа қарай бағыттау арқылы жылдамдатуыңызға болады.
 
-Дегенмен телефонды сымсыз зарядтауға болады."</string>
+Әзірге планшетіңізді сымсыз зарядтауға болады."</string>
     <string name="usb_water_notification_content">Зарядтау/USB портында ылғал немесе басқа зат бар. Зарядтаудан бұрын тексеріңіз.</string>
-    <string name="usb_water_notification_message">Ылғал зарядтағышта/USB портында анықталды. Телефоныңызды зарядтамас бұрын оның құрғақ екеніне көз жеткізіңіз. Толықтай кебуіне біраз уақыт кетуі мүмкін.</string>
+    <string name="usb_water_notification_message">Ылғал зарядтағышта/USB портында анықталды. Планшетіңізді зарядтамас бұрын оның құрғақ екеніне көз жеткізіңіз. Толықтай кебуіне біраз уақыт кетуі мүмкін.</string>
     <string name="usb_water_notification_message_button">Мәліметтер</string>
     <string name="usb_water_notification_title">Зарядтағышты/USB портын тексеру</string>
     <string name="usbhostStorage_restrict">Қауіпсіздік саясаты USB хост сақтау орнын пайдалануға жол бермейді.</string>

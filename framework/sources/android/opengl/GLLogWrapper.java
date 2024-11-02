@@ -23,7 +23,6 @@ import java.nio.ShortBuffer;
 import java.util.Arrays;
 import javax.microedition.khronos.opengles.GL;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class GLLogWrapper extends GLWrapperBase {
     private static final int FORMAT_FIXED = 2;
@@ -929,7 +928,6 @@ public class GLLogWrapper extends GLWrapperBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ByteBuffer toByteBuffer(int byteCount, Buffer input) {
         ByteBuffer result;
         boolean convertWholeBuffer = byteCount < 0;
@@ -1025,7 +1023,10 @@ public class GLLogWrapper extends GLWrapperBase {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0044, code lost:            return r0;     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0044, code lost:
+    
+        return r0;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -3937,7 +3938,6 @@ public class GLLogWrapper extends GLWrapperBase {
         checkError();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class PointerInfo {
         public Buffer mPointer;

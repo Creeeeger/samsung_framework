@@ -27,7 +27,6 @@ public final class GameManager {
     public @interface GameMode {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GameManager(Context context, Handler handler) throws ServiceManager.ServiceNotFoundException {
         this.mContext = context;
     }

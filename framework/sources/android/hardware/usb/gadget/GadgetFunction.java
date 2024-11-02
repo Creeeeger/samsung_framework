@@ -10,7 +10,9 @@ public class GadgetFunction implements Parcelable {
     public static final long ADB = 1;
     public static final long AUDIO_SOURCE = 64;
     public static final Parcelable.Creator<GadgetFunction> CREATOR = new Parcelable.Creator<GadgetFunction>() { // from class: android.hardware.usb.gadget.GadgetFunction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GadgetFunction createFromParcel(Parcel _aidl_source) {
             GadgetFunction _aidl_out = new GadgetFunction();
@@ -18,7 +20,6 @@ public class GadgetFunction implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GadgetFunction[] newArray(int _aidl_size) {
             return new GadgetFunction[_aidl_size];
@@ -31,6 +32,25 @@ public class GadgetFunction implements Parcelable {
     public static final long PTP = 16;
     public static final long RNDIS = 32;
     public static final long UVC = 128;
+
+    /* renamed from: android.hardware.usb.gadget.GadgetFunction$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GadgetFunction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GadgetFunction createFromParcel(Parcel _aidl_source) {
+            GadgetFunction _aidl_out = new GadgetFunction();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GadgetFunction[] newArray(int _aidl_size) {
+            return new GadgetFunction[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

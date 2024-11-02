@@ -176,13 +176,11 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         return ActivityThread.currentProcessName();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void attach(Context context) {
         attachBaseContext(context);
         this.mLoadedApk = ContextImpl.getImpl(context).mPackageInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPreCreated(Activity activity, Bundle savedInstanceState) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -192,7 +190,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityCreated(Activity activity, Bundle savedInstanceState) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -202,7 +199,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPostCreated(Activity activity, Bundle savedInstanceState) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -212,7 +208,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPreStarted(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -222,7 +217,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityStarted(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -232,7 +226,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPostStarted(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -242,7 +235,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPreResumed(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -252,7 +244,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityResumed(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -262,7 +253,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPostResumed(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -272,7 +262,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPrePaused(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -282,7 +271,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPaused(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -292,7 +280,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPostPaused(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -302,7 +289,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPreStopped(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -312,7 +298,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityStopped(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -322,7 +307,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPostStopped(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -332,7 +316,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPreSaveInstanceState(Activity activity, Bundle outState) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -342,7 +325,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivitySaveInstanceState(Activity activity, Bundle outState) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -352,7 +334,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPostSaveInstanceState(Activity activity, Bundle outState) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -362,7 +343,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPreDestroyed(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -372,7 +352,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityDestroyed(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -382,7 +361,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityPostDestroyed(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -392,7 +370,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchActivityConfigurationChanged(Activity activity) {
         Object[] callbacks = collectActivityLifecycleCallbacks();
         if (callbacks != null) {
@@ -412,7 +389,6 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
         return callbacks;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchOnProvideAssistData(Activity activity, Bundle data) {
         synchronized (this) {
             ArrayList<OnProvideAssistDataListener> arrayList = this.mAssistCallbacks;

@@ -52,7 +52,9 @@ public final class PendingIntent implements Parcelable {
     private IBinder mWhitelistToken;
     private static final ThreadLocal<OnMarshaledListener> sOnMarshaledListener = new ThreadLocal<>();
     public static final Parcelable.Creator<PendingIntent> CREATOR = new Parcelable.Creator<PendingIntent>() { // from class: android.app.PendingIntent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PendingIntent createFromParcel(Parcel in) {
             IBinder target = in.readStrongBinder();
@@ -62,7 +64,6 @@ public final class PendingIntent implements Parcelable {
             return null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PendingIntent[] newArray(int size) {
             return new PendingIntent[size];
@@ -90,11 +91,14 @@ public final class PendingIntent implements Parcelable {
         void onMarshaled(PendingIntent pendingIntent, Parcel parcel, int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class CancelListerInfo extends IResultReceiver.Stub {
         private final ArraySet<Pair<Executor, CancelListener>> mCancelListeners;
         private boolean mCanceled;
+
+        /* synthetic */ CancelListerInfo(PendingIntent pendingIntent, CancelListerInfoIA cancelListerInfoIA) {
+            this();
+        }
 
         private CancelListerInfo() {
             this.mCancelListeners = new ArraySet<>();
@@ -120,7 +124,6 @@ public final class PendingIntent implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class FinishedDispatcher extends IIntentReceiver.Stub implements Runnable {
         private static Handler sDefaultSystemHandler;
@@ -478,7 +481,6 @@ public final class PendingIntent implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyCancelListeners() {
         ArraySet<Pair<Executor, CancelListener>> cancelListeners;
         synchronized (this.mTarget) {
@@ -499,7 +501,6 @@ public final class PendingIntent implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyCancelListeners$0(Pair pair) {
         ((CancelListener) pair.second).onCanceled(this);
     }
@@ -642,6 +643,27 @@ public final class PendingIntent implements Parcelable {
         OnMarshaledListener listener = sOnMarshaledListener.get();
         if (listener != null) {
             listener.onMarshaled(this, out, flags);
+        }
+    }
+
+    /* renamed from: android.app.PendingIntent$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PendingIntent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PendingIntent createFromParcel(Parcel in) {
+            IBinder target = in.readStrongBinder();
+            if (target != null) {
+                return new PendingIntent(target, in.getClassCookie(PendingIntent.class));
+            }
+            return null;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PendingIntent[] newArray(int size) {
+            return new PendingIntent[size];
         }
     }
 

@@ -181,7 +181,6 @@ public class LazyFieldLite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeTo(Writer writer, int fieldNumber) throws IOException {
         if (this.memoizedBytes != null) {
             writer.writeBytes(fieldNumber, this.memoizedBytes);

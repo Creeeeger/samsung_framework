@@ -3571,7 +3571,6 @@ public abstract class BatteryStats {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static final class TimerEntry {
         final int mId;
@@ -3636,6 +3635,26 @@ public abstract class BatteryStats {
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.os.BatteryStats.dumpLocked(android.content.Context, java.io.PrintWriter, java.lang.String, int, int, boolean):void");
+    }
+
+    /* renamed from: android.os.BatteryStats$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements Comparator<TimerEntry> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(TimerEntry lhs, TimerEntry rhs) {
+            long lhsTime = lhs.mTime;
+            long rhsTime = rhs.mTime;
+            if (lhsTime < rhsTime) {
+                return 1;
+            }
+            if (lhsTime > rhsTime) {
+                return -1;
+            }
+            return 0;
+        }
     }
 
     static void printBitDescriptions(StringBuilder sb, int oldval, int newval, HistoryTag wakelockTag, BitDescription[] descriptions, boolean longNames) {
@@ -5809,7 +5828,6 @@ public abstract class BatteryStats {
         return powerComponent == 16 || powerComponent == 8 || powerComponent == 0 || powerComponent == 15;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class ProportionalAttributionCalculator {
         private static final double SYSTEM_BATTERY_CONSUMER = -1.0d;
@@ -5896,7 +5914,6 @@ public abstract class BatteryStats {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class UidMobileRadioStats {
         public final double millisecondsPerPacket;
@@ -5905,6 +5922,10 @@ public abstract class BatteryStats {
         public final long rxPackets;
         public final long txPackets;
         public final int uid;
+
+        /* synthetic */ UidMobileRadioStats(int i, long j, long j2, long j3, int i2, double d, UidMobileRadioStatsIA uidMobileRadioStatsIA) {
+            this(i, j, j2, j3, i2, d);
+        }
 
         private UidMobileRadioStats(int uid, long rxPackets, long txPackets, long radioActiveMs, int radioActiveCount, double millisecondsPerPacket) {
             this.uid = uid;

@@ -53,6 +53,9 @@ public class FontsContract {
     private static final Object sLock = new Object();
     private static final LruCache<String, Typeface> sTypefaceCache = new LruCache<>(16);
     private static final Runnable sReplaceDispatcherThreadRunnable = new Runnable() { // from class: android.provider.FontsContract.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             synchronized (FontsContract.sLock) {
@@ -169,6 +172,24 @@ public class FontsContract {
         }
     }
 
+    /* renamed from: android.provider.FontsContract$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (FontsContract.sLock) {
+                if (FontsContract.sThread != null) {
+                    FontsContract.sThread.quitSafely();
+                    FontsContract.sThread = null;
+                    FontsContract.sHandler = null;
+                }
+            }
+        }
+    }
+
     /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
         jadx.core.utils.exceptions.JadxRuntimeException: Can't find top splitter block for handler:B:53:0x00f5
         	at jadx.core.utils.BlockUtils.getTopSplitterForHandler(BlockUtils.java:1166)
@@ -183,7 +204,6 @@ public class FontsContract {
         throw new UnsupportedOperationException("Method not decompiled: android.provider.FontsContract.getFontSync(android.provider.FontRequest):android.graphics.Typeface");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getFontSync$0(FontRequest request, String id, AtomicReference holder, Lock lock, AtomicBoolean timeout, AtomicBoolean waiting, Condition cond) {
         try {
             FontFamilyResult result = fetchFonts(sContext, null, request);
@@ -249,7 +269,6 @@ public class FontsContract {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$requestFonts$12(Context context, CancellationSignal cancellationSignal, FontRequest request, Handler callerThreadHandler, final FontRequestCallback callback) {
         try {
             FontFamilyResult result = fetchFonts(context, cancellationSignal, request);
@@ -483,7 +502,6 @@ public class FontsContract {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$static$13(byte[] l, byte[] r) {
         if (l.length != r.length) {
             return l.length - r.length;

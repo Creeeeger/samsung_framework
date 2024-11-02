@@ -89,6 +89,9 @@ public class AlertController {
     private int mButtonPanelLayoutHint = 0;
     private boolean mIsItemChoiceLayout = false;
     private final View.OnClickListener mButtonHandler = new View.OnClickListener() { // from class: com.android.internal.app.AlertController.1
+        AnonymousClass1() {
+        }
+
         @Override // android.view.View.OnClickListener
         public void onClick(View v) {
             Message m;
@@ -108,8 +111,35 @@ public class AlertController {
         }
     };
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.AlertController$1 */
     /* loaded from: classes4.dex */
-    private static final class ButtonHandler extends Handler {
+    public class AnonymousClass1 implements View.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            Message m;
+            if (v == AlertController.this.mButtonPositive && AlertController.this.mButtonPositiveMessage != null) {
+                m = Message.obtain(AlertController.this.mButtonPositiveMessage);
+            } else if (v == AlertController.this.mButtonNegative && AlertController.this.mButtonNegativeMessage != null) {
+                m = Message.obtain(AlertController.this.mButtonNegativeMessage);
+            } else if (v == AlertController.this.mButtonNeutral && AlertController.this.mButtonNeutralMessage != null) {
+                m = Message.obtain(AlertController.this.mButtonNeutralMessage);
+            } else {
+                m = null;
+            }
+            if (m != null) {
+                m.sendToTarget();
+            }
+            AlertController.this.mHandler.obtainMessage(1, AlertController.this.mDialogInterface).sendToTarget();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    /* loaded from: classes4.dex */
+    public static final class ButtonHandler extends Handler {
         private static final int MSG_DISMISS_DIALOG = 1;
         private WeakReference<DialogInterface> mDialog;
 
@@ -153,7 +183,6 @@ public class AlertController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public AlertController(Context context, DialogInterface di, Window window) {
         this.mContext = context;
         this.mDialogInterface = di;
@@ -321,7 +350,7 @@ public class AlertController {
         if (imageView != null) {
             if (icon != null) {
                 imageView.setVisibility(0);
-                this.mIconView.setImageDrawable(icon);
+                this.mIconView.lambda$setImageURIAsync$2(icon);
             } else {
                 imageView.setVisibility(8);
             }
@@ -503,7 +532,6 @@ public class AlertController {
         a.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setupView$1(final View parentPanel, View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         v.post(new Runnable() { // from class: com.android.internal.app.AlertController$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
@@ -513,7 +541,6 @@ public class AlertController {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setupView$0(View parentPanel) {
         if (this.mContext.getResources().getConfiguration().orientation != this.mLastOrientation) {
             semSetupPaddings();
@@ -573,7 +600,6 @@ public class AlertController {
         customPanel.setVisibility(8);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setupTitle(ViewGroup topPanel) {
         if (this.mCustomTitleView != null && this.mShowTitle) {
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(-1, -2);
@@ -596,7 +622,7 @@ public class AlertController {
             }
             Drawable drawable = this.mIcon;
             if (drawable != null) {
-                this.mIconView.setImageDrawable(drawable);
+                this.mIconView.lambda$setImageURIAsync$2(drawable);
                 return;
             } else {
                 this.mTitleView.setPadding(this.mIconView.getPaddingLeft(), this.mIconView.getPaddingTop(), this.mIconView.getPaddingRight(), this.mIconView.getPaddingBottom());
@@ -655,7 +681,6 @@ public class AlertController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setupButtons(ViewGroup buttonPanel) {
         int buttonTextColor;
         int whichButtons = 0;
@@ -927,7 +952,6 @@ public class AlertController {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$semSetupButtonsPadding$2(int btnTextSize, Button btn) {
         if (btn.getVisibility() != 8) {
             btn.setTextSize(0, btnTextSize);
@@ -1095,14 +1119,22 @@ public class AlertController {
             }
         }
 
-        private void createListView(final AlertController dialog) {
+        private void createListView(AlertController dialog) {
             int layout;
             ListAdapter adapter;
-            final RecycleListView listView = (RecycleListView) this.mInflater.inflate(dialog.mListLayout, (ViewGroup) null);
+            RecycleListView listView = (RecycleListView) this.mInflater.inflate(dialog.mListLayout, (ViewGroup) null);
             if (this.mIsMultiChoice) {
                 Cursor cursor = this.mCursor;
                 if (cursor == null) {
                     adapter = new ArrayAdapter<CharSequence>(this.mContext, dialog.mMultiChoiceItemLayout, 16908308, this.mItems) { // from class: com.android.internal.app.AlertController.AlertParams.1
+                        final /* synthetic */ RecycleListView val$listView;
+
+                        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                        AnonymousClass1(Context context, int resource, int textViewResourceId, CharSequence[] objects, RecycleListView listView2) {
+                            super(context, resource, textViewResourceId, objects);
+                            listView = listView2;
+                        }
+
                         @Override // android.widget.ArrayAdapter, android.widget.Adapter
                         public View getView(int position, View convertView, ViewGroup parent) {
                             View view = super.getView(position, convertView, parent);
@@ -1119,11 +1151,17 @@ public class AlertController {
                     adapter = new CursorAdapter(this.mContext, cursor, false) { // from class: com.android.internal.app.AlertController.AlertParams.2
                         private final int mIsCheckedIndex;
                         private final int mLabelIndex;
+                        final /* synthetic */ AlertController val$dialog;
+                        final /* synthetic */ RecycleListView val$listView;
 
-                        {
-                            Cursor cursor2 = getCursor();
-                            this.mLabelIndex = cursor2.getColumnIndexOrThrow(AlertParams.this.mLabelColumn);
-                            this.mIsCheckedIndex = cursor2.getColumnIndexOrThrow(AlertParams.this.mIsCheckedColumn);
+                        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                        AnonymousClass2(Context context, Cursor cursor2, boolean autoRequery, RecycleListView listView2, AlertController dialog2) {
+                            super(context, cursor2, autoRequery);
+                            listView = listView2;
+                            dialog = dialog2;
+                            Cursor cursor3 = getCursor();
+                            this.mLabelIndex = cursor3.getColumnIndexOrThrow(AlertParams.this.mLabelColumn);
+                            this.mIsCheckedIndex = cursor3.getColumnIndexOrThrow(AlertParams.this.mIsCheckedColumn);
                         }
 
                         @Override // android.widget.CursorAdapter
@@ -1141,12 +1179,12 @@ public class AlertController {
                 }
             } else {
                 if (this.mIsSingleChoice) {
-                    layout = dialog.mSingleChoiceItemLayout;
+                    layout = dialog2.mSingleChoiceItemLayout;
                 } else {
-                    if (dialog.mThemeIsDeviceDefault) {
-                        dialog.mIsItemChoiceLayout = true;
+                    if (dialog2.mThemeIsDeviceDefault) {
+                        dialog2.mIsItemChoiceLayout = true;
                     }
-                    layout = dialog.mListItemLayout;
+                    layout = dialog2.mListItemLayout;
                 }
                 Cursor cursor2 = this.mCursor;
                 if (cursor2 != null) {
@@ -1159,12 +1197,18 @@ public class AlertController {
             }
             OnPrepareListViewListener onPrepareListViewListener = this.mOnPrepareListViewListener;
             if (onPrepareListViewListener != null) {
-                onPrepareListViewListener.onPrepareListView(listView);
+                onPrepareListViewListener.onPrepareListView(listView2);
             }
-            dialog.mAdapter = adapter;
-            dialog.mCheckedItem = this.mCheckedItem;
+            dialog2.mAdapter = adapter;
+            dialog2.mCheckedItem = this.mCheckedItem;
             if (this.mOnClickListener != null) {
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: com.android.internal.app.AlertController.AlertParams.3
+                listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: com.android.internal.app.AlertController.AlertParams.3
+                    final /* synthetic */ AlertController val$dialog;
+
+                    AnonymousClass3(AlertController dialog2) {
+                        dialog = dialog2;
+                    }
+
                     @Override // android.widget.AdapterView.OnItemClickListener
                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                         AlertParams.this.mOnClickListener.onClick(dialog.mDialogInterface, position);
@@ -1174,7 +1218,15 @@ public class AlertController {
                     }
                 });
             } else if (this.mOnCheckboxClickListener != null) {
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: com.android.internal.app.AlertController.AlertParams.4
+                listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: com.android.internal.app.AlertController.AlertParams.4
+                    final /* synthetic */ AlertController val$dialog;
+                    final /* synthetic */ RecycleListView val$listView;
+
+                    AnonymousClass4(RecycleListView listView2, AlertController dialog2) {
+                        listView = listView2;
+                        dialog = dialog2;
+                    }
+
                     @Override // android.widget.AdapterView.OnItemClickListener
                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                         if (AlertParams.this.mCheckedItems != null) {
@@ -1186,19 +1238,111 @@ public class AlertController {
             }
             AdapterView.OnItemSelectedListener onItemSelectedListener = this.mOnItemSelectedListener;
             if (onItemSelectedListener != null) {
-                listView.setOnItemSelectedListener(onItemSelectedListener);
+                listView2.setOnItemSelectedListener(onItemSelectedListener);
             }
             if (this.mIsSingleChoice) {
-                listView.setChoiceMode(1);
+                listView2.setChoiceMode(1);
             } else if (this.mIsMultiChoice) {
-                listView.setChoiceMode(2);
+                listView2.setChoiceMode(2);
             }
-            listView.mRecycleOnMeasure = this.mRecycleOnMeasure;
-            dialog.mListView = listView;
+            listView2.mRecycleOnMeasure = this.mRecycleOnMeasure;
+            dialog2.mListView = listView2;
+        }
+
+        /* renamed from: com.android.internal.app.AlertController$AlertParams$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 extends ArrayAdapter<CharSequence> {
+            final /* synthetic */ RecycleListView val$listView;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Context context, int resource, int textViewResourceId, CharSequence[] objects, RecycleListView listView2) {
+                super(context, resource, textViewResourceId, objects);
+                listView = listView2;
+            }
+
+            @Override // android.widget.ArrayAdapter, android.widget.Adapter
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                if (AlertParams.this.mCheckedItems != null) {
+                    boolean isItemChecked = AlertParams.this.mCheckedItems[position];
+                    if (isItemChecked) {
+                        listView.setItemChecked(position, true);
+                    }
+                }
+                return view;
+            }
+        }
+
+        /* renamed from: com.android.internal.app.AlertController$AlertParams$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 extends CursorAdapter {
+            private final int mIsCheckedIndex;
+            private final int mLabelIndex;
+            final /* synthetic */ AlertController val$dialog;
+            final /* synthetic */ RecycleListView val$listView;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass2(Context context, Cursor cursor2, boolean autoRequery, RecycleListView listView2, AlertController dialog2) {
+                super(context, cursor2, autoRequery);
+                listView = listView2;
+                dialog = dialog2;
+                Cursor cursor3 = getCursor();
+                this.mLabelIndex = cursor3.getColumnIndexOrThrow(AlertParams.this.mLabelColumn);
+                this.mIsCheckedIndex = cursor3.getColumnIndexOrThrow(AlertParams.this.mIsCheckedColumn);
+            }
+
+            @Override // android.widget.CursorAdapter
+            public void bindView(View view, Context context, Cursor cursor2) {
+                CheckedTextView text = (CheckedTextView) view.findViewById(16908308);
+                text.setText(cursor2.getString(this.mLabelIndex));
+                listView.setItemChecked(cursor2.getPosition(), cursor2.getInt(this.mIsCheckedIndex) == 1);
+            }
+
+            @Override // android.widget.CursorAdapter
+            public View newView(Context context, Cursor cursor2, ViewGroup parent) {
+                return AlertParams.this.mInflater.inflate(dialog.mMultiChoiceItemLayout, parent, false);
+            }
+        }
+
+        /* renamed from: com.android.internal.app.AlertController$AlertParams$3 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass3 implements AdapterView.OnItemClickListener {
+            final /* synthetic */ AlertController val$dialog;
+
+            AnonymousClass3(AlertController dialog2) {
+                dialog = dialog2;
+            }
+
+            @Override // android.widget.AdapterView.OnItemClickListener
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                AlertParams.this.mOnClickListener.onClick(dialog.mDialogInterface, position);
+                if (!AlertParams.this.mIsSingleChoice) {
+                    dialog.mDialogInterface.dismiss();
+                }
+            }
+        }
+
+        /* renamed from: com.android.internal.app.AlertController$AlertParams$4 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass4 implements AdapterView.OnItemClickListener {
+            final /* synthetic */ AlertController val$dialog;
+            final /* synthetic */ RecycleListView val$listView;
+
+            AnonymousClass4(RecycleListView listView2, AlertController dialog2) {
+                listView = listView2;
+                dialog = dialog2;
+            }
+
+            @Override // android.widget.AdapterView.OnItemClickListener
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                if (AlertParams.this.mCheckedItems != null) {
+                    AlertParams.this.mCheckedItems[position] = listView.isItemChecked(position);
+                }
+                AlertParams.this.mOnCheckboxClickListener.onClick(dialog.mDialogInterface, position, listView.isItemChecked(position));
+            }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class CheckedItemAdapter extends ArrayAdapter<CharSequence> {
         public CheckedItemAdapter(Context context, int resource, int textViewResourceId, CharSequence[] objects) {

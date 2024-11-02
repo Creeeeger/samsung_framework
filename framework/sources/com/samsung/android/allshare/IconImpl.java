@@ -7,7 +7,6 @@ import android.os.Bundle;
 class IconImpl extends Icon {
     private Bundle mIconBundle;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public IconImpl(Bundle bundle) {
         this.mIconBundle = null;
         this.mIconBundle = bundle;

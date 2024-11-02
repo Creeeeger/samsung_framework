@@ -262,7 +262,6 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ChangeObserver extends ContentObserver {
         public ChangeObserver() {
@@ -280,9 +279,12 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable, C
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class MyDataSetObserver extends DataSetObserver {
+        /* synthetic */ MyDataSetObserver(CursorAdapter cursorAdapter, MyDataSetObserverIA myDataSetObserverIA) {
+            this();
+        }
+
         private MyDataSetObserver() {
         }
 

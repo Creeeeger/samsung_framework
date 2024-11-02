@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public final class DisplayAreaInfo implements Parcelable {
     public static final Parcelable.Creator<DisplayAreaInfo> CREATOR = new Parcelable.Creator<DisplayAreaInfo>() { // from class: android.window.DisplayAreaInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DisplayAreaInfo createFromParcel(Parcel in) {
             return new DisplayAreaInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayAreaInfo[] newArray(int size) {
             return new DisplayAreaInfo[size];
@@ -24,6 +25,10 @@ public final class DisplayAreaInfo implements Parcelable {
     public final int featureId;
     public int rootDisplayAreaId;
     public final WindowContainerToken token;
+
+    /* synthetic */ DisplayAreaInfo(Parcel parcel, DisplayAreaInfoIA displayAreaInfoIA) {
+        this(parcel);
+    }
 
     public DisplayAreaInfo(WindowContainerToken token, int displayId, int featureId) {
         this.configuration = new Configuration();
@@ -51,6 +56,23 @@ public final class DisplayAreaInfo implements Parcelable {
         dest.writeInt(this.displayId);
         dest.writeInt(this.featureId);
         dest.writeInt(this.rootDisplayAreaId);
+    }
+
+    /* renamed from: android.window.DisplayAreaInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DisplayAreaInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayAreaInfo createFromParcel(Parcel in) {
+            return new DisplayAreaInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisplayAreaInfo[] newArray(int size) {
+            return new DisplayAreaInfo[size];
+        }
     }
 
     public String toString() {

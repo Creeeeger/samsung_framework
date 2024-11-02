@@ -184,10 +184,13 @@ public class CustomizedTextParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static final class CscNodeList implements NodeList {
         private ArrayList<Node> children;
+
+        /* synthetic */ CscNodeList(CscNodeListIA cscNodeListIA) {
+            this();
+        }
 
         private CscNodeList() {
             this.children = new ArrayList<>();

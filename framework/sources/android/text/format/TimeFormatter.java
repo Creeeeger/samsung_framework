@@ -59,7 +59,6 @@ class TimeFormatter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String formatMillisWithFixedFormat(long timeMillis) {
         Instant instant = Instant.ofEpochMilli(timeMillis);
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());

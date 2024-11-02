@@ -14,7 +14,6 @@ public class MapEntryLite<K, V> {
     private final Metadata<K, V> metadata;
     private final V value;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class Metadata<K, V> {
         public final K defaultKey;
@@ -54,19 +53,16 @@ public class MapEntryLite<K, V> {
         return new MapEntryLite<>(keyType, defaultKey, valueType, defaultValue);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <K, V> void writeTo(CodedOutputStream output, Metadata<K, V> metadata, K key, V value) throws IOException {
         FieldSet.writeElement(output, metadata.keyType, 1, key);
         FieldSet.writeElement(output, metadata.valueType, 2, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <K, V> int computeSerializedSize(Metadata<K, V> metadata, K key, V value) {
         return FieldSet.computeElementSize(metadata.keyType, 1, key) + FieldSet.computeElementSize(metadata.valueType, 2, value);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.MapEntryLite$1, reason: invalid class name */
+    /* renamed from: com.android.framework.protobuf.MapEntryLite$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
@@ -161,7 +157,6 @@ public class MapEntryLite<K, V> {
         mapFieldLite.put(obj, obj2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Metadata<K, V> getMetadata() {
         return this.metadata;
     }

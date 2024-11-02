@@ -140,7 +140,6 @@ public class SystemSensorManager extends SensorManager {
         return list;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.hardware.SensorManager
     public List<Sensor> getFullSensorList() {
         List<Sensor> fullList;
@@ -429,7 +428,6 @@ public class SystemSensorManager extends SensorManager {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cleanupSensorConnection(Sensor sensor) {
         this.mHandleToSensor.remove(Integer.valueOf(sensor.getHandle()));
         if (sensor.getReportingMode() == 2) {
@@ -451,15 +449,14 @@ public class SystemSensorManager extends SensorManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateDynamicSensorList() {
         synchronized (this.mFullDynamicSensorsList) {
             if (this.mDynamicSensorListDirty) {
                 List<Sensor> list = new ArrayList<>();
                 nativeGetDynamicSensors(this.mNativeInstance, list);
                 List<Sensor> updatedList = new ArrayList<>();
-                final List<Sensor> addedList = new ArrayList<>();
-                final List<Sensor> removedList = new ArrayList<>();
+                List<Sensor> addedList = new ArrayList<>();
+                List<Sensor> removedList = new ArrayList<>();
                 boolean changed = diffSortedSensorList(this.mFullDynamicSensorsList, list, updatedList, addedList, removedList);
                 if (changed) {
                     Log.i("SensorManager", "DYNS dynamic sensor list cached should be updated");
@@ -469,9 +466,19 @@ public class SystemSensorManager extends SensorManager {
                     }
                     Handler mainHandler = new Handler(this.mContext.getMainLooper());
                     for (Map.Entry<SensorManager.DynamicSensorCallback, Handler> entry : this.mDynamicSensorCallbacks.entrySet()) {
-                        final SensorManager.DynamicSensorCallback callback = entry.getKey();
+                        SensorManager.DynamicSensorCallback callback = entry.getKey();
                         Handler handler = entry.getValue() == null ? mainHandler : entry.getValue();
                         handler.post(new Runnable() { // from class: android.hardware.SystemSensorManager.1
+                            final /* synthetic */ List val$addedList;
+                            final /* synthetic */ SensorManager.DynamicSensorCallback val$callback;
+                            final /* synthetic */ List val$removedList;
+
+                            AnonymousClass1(List addedList2, SensorManager.DynamicSensorCallback callback2, List removedList2) {
+                                addedList = addedList2;
+                                callback = callback2;
+                                removedList = removedList2;
+                            }
+
                             @Override // java.lang.Runnable
                             public void run() {
                                 for (Sensor s2 : addedList) {
@@ -483,12 +490,36 @@ public class SystemSensorManager extends SensorManager {
                             }
                         });
                     }
-                    Iterator<Sensor> it = removedList.iterator();
+                    Iterator<Sensor> it = removedList2.iterator();
                     while (it.hasNext()) {
                         cleanupSensorConnection(it.next());
                     }
                 }
                 this.mDynamicSensorListDirty = false;
+            }
+        }
+    }
+
+    /* renamed from: android.hardware.SystemSensorManager$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ List val$addedList;
+        final /* synthetic */ SensorManager.DynamicSensorCallback val$callback;
+        final /* synthetic */ List val$removedList;
+
+        AnonymousClass1(List addedList2, SensorManager.DynamicSensorCallback callback2, List removedList2) {
+            addedList = addedList2;
+            callback = callback2;
+            removedList = removedList2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            for (Sensor s2 : addedList) {
+                callback.onDynamicSensorConnected(s2);
+            }
+            for (Sensor s3 : removedList) {
+                callback.onDynamicSensorDisconnected(s3);
             }
         }
     }
@@ -505,9 +536,35 @@ public class SystemSensorManager extends SensorManager {
         return list;
     }
 
+    /* renamed from: android.hardware.SystemSensorManager$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 extends BroadcastReceiver {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(VirtualDeviceManager.ACTION_VIRTUAL_DEVICE_REMOVED)) {
+                synchronized (SystemSensorManager.this.mFullRuntimeSensorListByDevice) {
+                    int deviceId = intent.getIntExtra(VirtualDeviceManager.EXTRA_VIRTUAL_DEVICE_ID, 0);
+                    List<Sensor> removedSensors = (List) SystemSensorManager.this.mFullRuntimeSensorListByDevice.removeReturnOld(deviceId);
+                    if (removedSensors != null) {
+                        for (Sensor s : removedSensors) {
+                            SystemSensorManager.this.cleanupSensorConnection(s);
+                        }
+                    }
+                    SystemSensorManager.this.mRuntimeSensorListByDeviceByType.remove(deviceId);
+                }
+            }
+        }
+    }
+
     private void setupRuntimeSensorBroadcastReceiver() {
         if (this.mRuntimeSensorBroadcastReceiver == null) {
             this.mRuntimeSensorBroadcastReceiver = new BroadcastReceiver() { // from class: android.hardware.SystemSensorManager.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.content.BroadcastReceiver
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(VirtualDeviceManager.ACTION_VIRTUAL_DEVICE_REMOVED)) {
@@ -530,9 +587,28 @@ public class SystemSensorManager extends SensorManager {
         }
     }
 
+    /* renamed from: android.hardware.SystemSensorManager$3 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass3 extends BroadcastReceiver {
+        AnonymousClass3() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_DYNAMIC_SENSOR_CHANGED)) {
+                Log.i("SensorManager", "DYNS received DYNAMIC_SENSOR_CHANED broadcast");
+                SystemSensorManager.this.mDynamicSensorListDirty = true;
+                SystemSensorManager.this.updateDynamicSensorList();
+            }
+        }
+    }
+
     private void setupDynamicSensorBroadcastReceiver() {
         if (this.mDynamicSensorBroadcastReceiver == null) {
             this.mDynamicSensorBroadcastReceiver = new BroadcastReceiver() { // from class: android.hardware.SystemSensorManager.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.content.BroadcastReceiver
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(Intent.ACTION_DYNAMIC_SENSOR_CHANGED)) {
@@ -607,7 +683,6 @@ public class SystemSensorManager extends SensorManager {
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.hardware.SensorManager
     public int configureDirectChannelImpl(SensorDirectChannel channel, Sensor sensor, int rate) {
         if (!channel.isOpen()) {
@@ -693,7 +768,6 @@ public class SystemSensorManager extends SensorManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static abstract class BaseEventQueue {
         protected static final int OPERATING_MODE_DATA_INJECTION = 1;
@@ -846,7 +920,6 @@ public class SystemSensorManager extends SensorManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class SensorEventQueue extends BaseEventQueue {
         private final SensorEventListener mListener;
@@ -927,7 +1000,6 @@ public class SystemSensorManager extends SensorManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class TriggerEventQueue extends BaseEventQueue {
         private final TriggerEventListener mListener;
@@ -1027,12 +1099,10 @@ public class SystemSensorManager extends SensorManager {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isSensorInCappedSet(int sensorType) {
         return sensorType == 1 || sensorType == 35 || sensorType == 4 || sensorType == 16 || sensorType == 2 || sensorType == 14;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean hasHighSamplingRateSensorsPermission() {
         if (!this.mHasHighSamplingRateSensorsPermission.isPresent()) {
             boolean granted = this.mContext.getPackageManager().checkPermission("android.permission.HIGH_SAMPLING_RATE_SENSORS", this.mContext.getApplicationInfo().packageName) == 0;

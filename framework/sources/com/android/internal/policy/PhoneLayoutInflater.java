@@ -17,7 +17,6 @@ public class PhoneLayoutInflater extends LayoutInflater {
         super(original, newContext);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.LayoutInflater
     public View onCreateView(String name, AttributeSet attrs) throws ClassNotFoundException {
         View view;

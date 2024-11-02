@@ -27,14 +27,94 @@ public class JcaDigestCalculatorProviderBuilder {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements DigestCalculatorProvider {
+        AnonymousClass1() {
+        }
+
+        @Override // com.android.internal.org.bouncycastle.operator.DigestCalculatorProvider
+        public DigestCalculator get(AlgorithmIdentifier algorithm) throws OperatorCreationException {
+            try {
+                MessageDigest dig = JcaDigestCalculatorProviderBuilder.this.helper.createDigest(algorithm);
+                DigestOutputStream stream = new DigestOutputStream(dig);
+                return new DigestCalculator() { // from class: com.android.internal.org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder.1.1
+                    final /* synthetic */ AlgorithmIdentifier val$algorithm;
+                    final /* synthetic */ DigestOutputStream val$stream;
+
+                    C00141(AlgorithmIdentifier algorithm2, DigestOutputStream stream2) {
+                        algorithm = algorithm2;
+                        stream = stream2;
+                    }
+
+                    @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+                    public AlgorithmIdentifier getAlgorithmIdentifier() {
+                        return algorithm;
+                    }
+
+                    @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+                    public OutputStream getOutputStream() {
+                        return stream;
+                    }
+
+                    @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+                    public byte[] getDigest() {
+                        return stream.getDigest();
+                    }
+                };
+            } catch (GeneralSecurityException e) {
+                throw new OperatorCreationException("exception on setup: " + e, e);
+            }
+        }
+
+        /* renamed from: com.android.internal.org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder$1$1 */
+        /* loaded from: classes5.dex */
+        class C00141 implements DigestCalculator {
+            final /* synthetic */ AlgorithmIdentifier val$algorithm;
+            final /* synthetic */ DigestOutputStream val$stream;
+
+            C00141(AlgorithmIdentifier algorithm2, DigestOutputStream stream2) {
+                algorithm = algorithm2;
+                stream = stream2;
+            }
+
+            @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+            public AlgorithmIdentifier getAlgorithmIdentifier() {
+                return algorithm;
+            }
+
+            @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+            public OutputStream getOutputStream() {
+                return stream;
+            }
+
+            @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+            public byte[] getDigest() {
+                return stream.getDigest();
+            }
+        }
+    }
+
     public DigestCalculatorProvider build() throws OperatorCreationException {
         return new DigestCalculatorProvider() { // from class: com.android.internal.org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder.1
+            AnonymousClass1() {
+            }
+
             @Override // com.android.internal.org.bouncycastle.operator.DigestCalculatorProvider
-            public DigestCalculator get(final AlgorithmIdentifier algorithm) throws OperatorCreationException {
+            public DigestCalculator get(AlgorithmIdentifier algorithm2) throws OperatorCreationException {
                 try {
-                    MessageDigest dig = JcaDigestCalculatorProviderBuilder.this.helper.createDigest(algorithm);
-                    final DigestOutputStream stream = new DigestOutputStream(dig);
+                    MessageDigest dig = JcaDigestCalculatorProviderBuilder.this.helper.createDigest(algorithm2);
+                    DigestOutputStream stream2 = new DigestOutputStream(dig);
                     return new DigestCalculator() { // from class: com.android.internal.org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder.1.1
+                        final /* synthetic */ AlgorithmIdentifier val$algorithm;
+                        final /* synthetic */ DigestOutputStream val$stream;
+
+                        C00141(AlgorithmIdentifier algorithm22, DigestOutputStream stream22) {
+                            algorithm = algorithm22;
+                            stream = stream22;
+                        }
+
                         @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
                         public AlgorithmIdentifier getAlgorithmIdentifier() {
                             return algorithm;
@@ -54,11 +134,39 @@ public class JcaDigestCalculatorProviderBuilder {
                     throw new OperatorCreationException("exception on setup: " + e, e);
                 }
             }
+
+            /* renamed from: com.android.internal.org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder$1$1 */
+            /* loaded from: classes5.dex */
+            class C00141 implements DigestCalculator {
+                final /* synthetic */ AlgorithmIdentifier val$algorithm;
+                final /* synthetic */ DigestOutputStream val$stream;
+
+                C00141(AlgorithmIdentifier algorithm22, DigestOutputStream stream22) {
+                    algorithm = algorithm22;
+                    stream = stream22;
+                }
+
+                @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+                public AlgorithmIdentifier getAlgorithmIdentifier() {
+                    return algorithm;
+                }
+
+                @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+                public OutputStream getOutputStream() {
+                    return stream;
+                }
+
+                @Override // com.android.internal.org.bouncycastle.operator.DigestCalculator
+                public byte[] getDigest() {
+                    return stream.getDigest();
+                }
+            }
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private class DigestOutputStream extends OutputStream {
+    public class DigestOutputStream extends OutputStream {
         private MessageDigest dig;
 
         DigestOutputStream(MessageDigest dig) {

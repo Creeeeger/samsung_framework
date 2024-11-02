@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class EventStats implements Parcelable {
     public static final Parcelable.Creator<EventStats> CREATOR = new Parcelable.Creator<EventStats>() { // from class: android.app.usage.EventStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EventStats createFromParcel(Parcel in) {
             EventStats stats = new EventStats();
@@ -19,7 +21,6 @@ public final class EventStats implements Parcelable {
             return stats;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EventStats[] newArray(int size) {
             return new EventStats[size];
@@ -94,5 +95,29 @@ public final class EventStats implements Parcelable {
         dest.writeLong(this.mLastEventTime);
         dest.writeLong(this.mTotalTime);
         dest.writeInt(this.mCount);
+    }
+
+    /* renamed from: android.app.usage.EventStats$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EventStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EventStats createFromParcel(Parcel in) {
+            EventStats stats = new EventStats();
+            stats.mEventType = in.readInt();
+            stats.mBeginTimeStamp = in.readLong();
+            stats.mEndTimeStamp = in.readLong();
+            stats.mLastEventTime = in.readLong();
+            stats.mTotalTime = in.readLong();
+            stats.mCount = in.readInt();
+            return stats;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EventStats[] newArray(int size) {
+            return new EventStats[size];
+        }
     }
 }

@@ -8,7 +8,6 @@ import java.security.spec.InvalidParameterSpecException;
 public abstract class BaseAlgorithmParameters extends AlgorithmParametersSpi {
     protected abstract AlgorithmParameterSpec localEngineGetParameterSpec(Class cls) throws InvalidParameterSpecException;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isASN1FormatString(String format) {
         return format == null || format.equals("ASN.1");
     }

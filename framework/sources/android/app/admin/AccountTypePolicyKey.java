@@ -15,19 +15,24 @@ import org.xmlpull.v1.XmlPullParserException;
 public final class AccountTypePolicyKey extends PolicyKey {
     private static final String ATTR_ACCOUNT_TYPE = "account-type";
     public static final Parcelable.Creator<AccountTypePolicyKey> CREATOR = new Parcelable.Creator<AccountTypePolicyKey>() { // from class: android.app.admin.AccountTypePolicyKey.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AccountTypePolicyKey createFromParcel(Parcel source) {
             return new AccountTypePolicyKey(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccountTypePolicyKey[] newArray(int size) {
             return new AccountTypePolicyKey[size];
         }
     };
     private final String mAccountType;
+
+    /* synthetic */ AccountTypePolicyKey(Parcel parcel, AccountTypePolicyKeyIA accountTypePolicyKeyIA) {
+        this(parcel);
+    }
 
     public AccountTypePolicyKey(String key, String accountType) {
         super(key);
@@ -102,5 +107,22 @@ public final class AccountTypePolicyKey extends PolicyKey {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getIdentifier());
         dest.writeString(this.mAccountType);
+    }
+
+    /* renamed from: android.app.admin.AccountTypePolicyKey$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AccountTypePolicyKey> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccountTypePolicyKey createFromParcel(Parcel source) {
+            return new AccountTypePolicyKey(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccountTypePolicyKey[] newArray(int size) {
+            return new AccountTypePolicyKey[size];
+        }
     }
 }

@@ -547,8 +547,9 @@ public interface IIncrementalService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IIncrementalService {
+        public static class Proxy implements IIncrementalService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

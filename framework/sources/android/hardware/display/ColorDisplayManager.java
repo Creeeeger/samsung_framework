@@ -233,7 +233,6 @@ public final class ColorDisplayManager {
         return this.mMetricsLogger;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class ColorDisplayManagerInternal {
         private static ColorDisplayManagerInternal sInstance;

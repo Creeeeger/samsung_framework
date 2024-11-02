@@ -51,7 +51,7 @@ public class ParallelFilterCreator implements MediaFilterCreator {
         return parallelFilter;
     }
 
-    /* renamed from: com.samsung.android.sume.core.filter.factory.ParallelFilterCreator$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.sume.core.filter.factory.ParallelFilterCreator$1 */
     /* loaded from: classes4.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$filter$collection$ParallelFilter$Type;

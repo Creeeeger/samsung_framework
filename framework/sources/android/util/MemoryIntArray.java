@@ -11,7 +11,9 @@ import libcore.io.IoUtils;
 /* loaded from: classes4.dex */
 public final class MemoryIntArray implements Parcelable, Closeable {
     public static final Parcelable.Creator<MemoryIntArray> CREATOR = new Parcelable.Creator<MemoryIntArray>() { // from class: android.util.MemoryIntArray.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MemoryIntArray createFromParcel(Parcel parcel) {
             try {
@@ -21,7 +23,6 @@ public final class MemoryIntArray implements Parcelable, Closeable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MemoryIntArray[] newArray(int size) {
             return new MemoryIntArray[size];
@@ -33,6 +34,10 @@ public final class MemoryIntArray implements Parcelable, Closeable {
     private int mFd;
     private final boolean mIsOwner;
     private final long mMemoryAddr;
+
+    /* synthetic */ MemoryIntArray(Parcel parcel, MemoryIntArrayIA memoryIntArrayIA) {
+        this(parcel);
+    }
 
     private native void nativeClose(int i, long j, boolean z);
 
@@ -187,5 +192,26 @@ public final class MemoryIntArray implements Parcelable, Closeable {
 
     public static int getMaxSize() {
         return 1024;
+    }
+
+    /* renamed from: android.util.MemoryIntArray$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MemoryIntArray> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MemoryIntArray createFromParcel(Parcel parcel) {
+            try {
+                return new MemoryIntArray(parcel);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Error unparceling MemoryIntArray");
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MemoryIntArray[] newArray(int size) {
+            return new MemoryIntArray[size];
+        }
     }
 }

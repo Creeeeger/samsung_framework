@@ -88,7 +88,6 @@ public class ResourcesProvider implements AutoCloseable, Closeable {
         return this.mApkAssets;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void incrementRefCount() {
         synchronized (this.mLock) {
             if (!this.mOpen) {
@@ -98,7 +97,6 @@ public class ResourcesProvider implements AutoCloseable, Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void decrementRefCount() {
         synchronized (this.mLock) {
             this.mOpenCount--;

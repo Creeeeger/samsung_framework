@@ -177,7 +177,6 @@ public class ResolverListController {
         return listToReturn;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ComputeCallback implements AbstractResolverComparator.AfterCompute {
         private CountDownLatch mFinishComputeSignal;
@@ -263,7 +262,6 @@ public class ResolverListController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ int lambda$topK$0(ResolverActivity.ResolvedComponentInfo o1, ResolverActivity.ResolvedComponentInfo o2) {
         return -this.mResolverComparator.compare(o1, o2);
     }

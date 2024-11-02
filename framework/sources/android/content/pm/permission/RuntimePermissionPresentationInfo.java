@@ -9,13 +9,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class RuntimePermissionPresentationInfo implements Parcelable {
     public static final Parcelable.Creator<RuntimePermissionPresentationInfo> CREATOR = new Parcelable.Creator<RuntimePermissionPresentationInfo>() { // from class: android.content.pm.permission.RuntimePermissionPresentationInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RuntimePermissionPresentationInfo createFromParcel(Parcel source) {
             return new RuntimePermissionPresentationInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RuntimePermissionPresentationInfo[] newArray(int size) {
             return new RuntimePermissionPresentationInfo[size];
@@ -25,6 +26,10 @@ public final class RuntimePermissionPresentationInfo implements Parcelable {
     private static final int FLAG_STANDARD = 2;
     private final int mFlags;
     private final CharSequence mLabel;
+
+    /* synthetic */ RuntimePermissionPresentationInfo(Parcel parcel, RuntimePermissionPresentationInfoIA runtimePermissionPresentationInfoIA) {
+        this(parcel);
+    }
 
     public RuntimePermissionPresentationInfo(CharSequence label, boolean granted, boolean standard) {
         this.mLabel = label;
@@ -58,5 +63,22 @@ public final class RuntimePermissionPresentationInfo implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeCharSequence(this.mLabel);
         parcel.writeInt(this.mFlags);
+    }
+
+    /* renamed from: android.content.pm.permission.RuntimePermissionPresentationInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RuntimePermissionPresentationInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RuntimePermissionPresentationInfo createFromParcel(Parcel source) {
+            return new RuntimePermissionPresentationInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RuntimePermissionPresentationInfo[] newArray(int size) {
+            return new RuntimePermissionPresentationInfo[size];
+        }
     }
 }

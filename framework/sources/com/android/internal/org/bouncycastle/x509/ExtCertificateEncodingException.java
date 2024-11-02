@@ -6,7 +6,6 @@ import java.security.cert.CertificateEncodingException;
 class ExtCertificateEncodingException extends CertificateEncodingException {
     Throwable cause;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ExtCertificateEncodingException(String message, Throwable cause) {
         super(message);
         this.cause = cause;

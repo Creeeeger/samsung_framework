@@ -41,7 +41,10 @@ public class NinePatchDrawable extends Drawable {
     private int mTargetDensity;
     private Rect mTempRect;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ NinePatchDrawable(NinePatchState ninePatchState, Resources resources, NinePatchDrawableIA ninePatchDrawableIA) {
+        this(ninePatchState, resources);
+    }
+
     public NinePatchDrawable() {
         this.mOpticalInsets = Insets.NONE;
         this.mTargetDensity = 160;
@@ -322,7 +325,6 @@ public class NinePatchDrawable extends Drawable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$updateStateFromTypedArray$0(Rect padding, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
         decoder.setOutPaddingRect(padding);
         decoder.setAllocator(1);
@@ -410,7 +412,6 @@ public class NinePatchDrawable extends Drawable {
         this.mMutated = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         NinePatchState state = this.mNinePatchState;
@@ -432,7 +433,6 @@ public class NinePatchDrawable extends Drawable {
         return this.mNinePatchState.mTint != null && this.mNinePatchState.mTint.hasFocusStateSpecified();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class NinePatchState extends Drawable.ConstantState {
         boolean mAutoMirrored;

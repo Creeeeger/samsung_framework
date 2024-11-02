@@ -9,13 +9,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class VersionedPackage implements Parcelable {
     public static final Parcelable.Creator<VersionedPackage> CREATOR = new Parcelable.Creator<VersionedPackage>() { // from class: android.content.pm.VersionedPackage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VersionedPackage createFromParcel(Parcel source) {
             return new VersionedPackage(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VersionedPackage[] newArray(int size) {
             return new VersionedPackage[size];
@@ -27,6 +28,10 @@ public final class VersionedPackage implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface VersionCode {
+    }
+
+    /* synthetic */ VersionedPackage(Parcel parcel, VersionedPackageIA versionedPackageIA) {
+        this(parcel);
     }
 
     public VersionedPackage(String packageName, int versionCode) {
@@ -78,5 +83,22 @@ public final class VersionedPackage implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString8(this.mPackageName);
         parcel.writeLong(this.mVersionCode);
+    }
+
+    /* renamed from: android.content.pm.VersionedPackage$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VersionedPackage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VersionedPackage createFromParcel(Parcel source) {
+            return new VersionedPackage(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VersionedPackage[] newArray(int size) {
+            return new VersionedPackage[size];
+        }
     }
 }

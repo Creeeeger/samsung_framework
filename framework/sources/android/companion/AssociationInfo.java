@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AssociationInfo implements Parcelable {
     public static final Parcelable.Creator<AssociationInfo> CREATOR = new Parcelable.Creator<AssociationInfo>() { // from class: android.companion.AssociationInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AssociationInfo[] newArray(int size) {
             return new AssociationInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssociationInfo createFromParcel(Parcel in) {
             return new AssociationInfo(in);
@@ -47,6 +48,10 @@ public final class AssociationInfo implements Parcelable {
         Builder setRevoked(boolean z);
 
         Builder setSystemDataSyncFlags(int i);
+    }
+
+    /* synthetic */ AssociationInfo(Parcel parcel, AssociationInfoIA associationInfoIA) {
+        this(parcel);
     }
 
     public AssociationInfo(int id, int userId, String packageName, MacAddress macAddress, CharSequence displayName, String deviceProfile, AssociatedDevice associatedDevice, boolean selfManaged, boolean notifyOnDeviceNearby, boolean revoked, long timeApprovedMs, long lastTimeConnectedMs, int systemDataSyncFlags) {
@@ -223,6 +228,23 @@ public final class AssociationInfo implements Parcelable {
         this.mSystemDataSyncFlags = in.readInt();
     }
 
+    /* renamed from: android.companion.AssociationInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AssociationInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssociationInfo[] newArray(int size) {
+            return new AssociationInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssociationInfo createFromParcel(Parcel in) {
+            return new AssociationInfo(in);
+        }
+    }
+
     public static NonActionableBuilder builder(AssociationInfo info) {
         return new Builder();
     }
@@ -234,6 +256,10 @@ public final class AssociationInfo implements Parcelable {
         private final AssociationInfo mOriginalInfo;
         private boolean mRevoked;
         private int mSystemDataSyncFlags;
+
+        /* synthetic */ Builder(AssociationInfo associationInfo, BuilderIA builderIA) {
+            this(associationInfo);
+        }
 
         private Builder(AssociationInfo info) {
             this.mOriginalInfo = info;

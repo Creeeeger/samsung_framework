@@ -8,13 +8,14 @@ import java.util.Iterator;
 /* loaded from: classes5.dex */
 public class SdpCreationParam implements Parcelable {
     public static final Parcelable.Creator<SdpCreationParam> CREATOR = new Parcelable.Creator<SdpCreationParam>() { // from class: com.samsung.android.knox.sdp.core.SdpCreationParam.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SdpCreationParam createFromParcel(Parcel source) {
             return new SdpCreationParam(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SdpCreationParam[] newArray(int size) {
             return new SdpCreationParam[size];
@@ -23,6 +24,10 @@ public class SdpCreationParam implements Parcelable {
     private String mAlias;
     private int mFlags;
     private ArrayList<SdpDomain> mPrivilegedApps;
+
+    /* synthetic */ SdpCreationParam(Parcel parcel, SdpCreationParamIA sdpCreationParamIA) {
+        this(parcel);
+    }
 
     public SdpCreationParam(String alias, int flags, ArrayList<SdpDomain> privilegedApps) {
         this.mFlags = 0;
@@ -69,6 +74,23 @@ public class SdpCreationParam implements Parcelable {
         dest.writeString(this.mAlias);
         dest.writeInt(this.mFlags);
         dest.writeSerializable(this.mPrivilegedApps);
+    }
+
+    /* renamed from: com.samsung.android.knox.sdp.core.SdpCreationParam$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SdpCreationParam> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SdpCreationParam createFromParcel(Parcel source) {
+            return new SdpCreationParam(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SdpCreationParam[] newArray(int size) {
+            return new SdpCreationParam[size];
+        }
     }
 
     private SdpCreationParam(Parcel source) {

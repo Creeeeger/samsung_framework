@@ -124,13 +124,14 @@ public final class NotificationChannel implements Parcelable {
     private boolean mVibrationEnabled;
     public static final int[] LOCKABLE_FIELDS = {1, 2, 4, 8, 16, 32, 128, 256};
     public static final Parcelable.Creator<NotificationChannel> CREATOR = new Parcelable.Creator<NotificationChannel>() { // from class: android.app.NotificationChannel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NotificationChannel createFromParcel(Parcel in) {
             return new NotificationChannel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationChannel[] newArray(int size) {
             return new NotificationChannel[size];
@@ -874,6 +875,23 @@ public final class NotificationChannel implements Parcelable {
             sb.append(values[i2 - 1]);
         }
         return sb.toString();
+    }
+
+    /* renamed from: android.app.NotificationChannel$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NotificationChannel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationChannel createFromParcel(Parcel in) {
+            return new NotificationChannel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationChannel[] newArray(int size) {
+            return new NotificationChannel[size];
+        }
     }
 
     @Override // android.os.Parcelable

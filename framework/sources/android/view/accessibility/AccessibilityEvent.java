@@ -113,7 +113,9 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
     static {
         DEBUG = Log.isLoggable(LOG_TAG, 3) && Build.IS_DEBUGGABLE;
         CREATOR = new Parcelable.Creator<AccessibilityEvent>() { // from class: android.view.accessibility.AccessibilityEvent.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AccessibilityEvent createFromParcel(Parcel parcel) {
                 AccessibilityEvent event = new AccessibilityEvent();
@@ -121,7 +123,6 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
                 return event;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AccessibilityEvent[] newArray(int size) {
                 return new AccessibilityEvent[size];
@@ -218,7 +219,6 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String singleContentChangeTypeToString(int type) {
         switch (type) {
             case 0:
@@ -284,7 +284,6 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String singleSpeechStateChangeTypeToString(int type) {
         switch (type) {
             case 1:
@@ -324,7 +323,6 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String singleWindowChangeTypeToString(int type) {
         switch (type) {
             case 1:
@@ -428,7 +426,6 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
     public void recycle() {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.accessibility.AccessibilityRecord
     public void clear() {
         super.clear();
@@ -655,6 +652,25 @@ public final class AccessibilityEvent extends AccessibilityRecord implements Par
                 return "TYPE_VIEW_TARGETED_BY_SCROLL";
             default:
                 return Integer.toHexString(eventType);
+        }
+    }
+
+    /* renamed from: android.view.accessibility.AccessibilityEvent$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AccessibilityEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityEvent createFromParcel(Parcel parcel) {
+            AccessibilityEvent event = new AccessibilityEvent();
+            event.initFromParcel(parcel);
+            return event;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccessibilityEvent[] newArray(int size) {
+            return new AccessibilityEvent[size];
         }
     }
 }

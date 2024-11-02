@@ -16,13 +16,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class KnownNetwork implements Parcelable {
     public static final Parcelable.Creator<KnownNetwork> CREATOR = new Parcelable.Creator<KnownNetwork>() { // from class: android.net.wifi.sharedconnectivity.app.KnownNetwork.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KnownNetwork createFromParcel(Parcel in) {
             return KnownNetwork.readFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KnownNetwork[] newArray(int size) {
             return new KnownNetwork[size];
@@ -40,6 +41,10 @@ public final class KnownNetwork implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface NetworkSource {
+    }
+
+    /* synthetic */ KnownNetwork(int i, String str, ArraySet arraySet, NetworkProviderInfo networkProviderInfo, Bundle bundle, KnownNetworkIA knownNetworkIA) {
+        this(i, str, arraySet, networkProviderInfo, bundle);
     }
 
     /* loaded from: classes3.dex */
@@ -163,6 +168,23 @@ public final class KnownNetwork implements Parcelable {
             return new KnownNetwork(networkSource, mSsid, readArraySet, NetworkProviderInfo.readFromParcel(in), in.readBundle());
         }
         return new KnownNetwork(networkSource, mSsid, readArraySet, null, in.readBundle());
+    }
+
+    /* renamed from: android.net.wifi.sharedconnectivity.app.KnownNetwork$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KnownNetwork> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KnownNetwork createFromParcel(Parcel in) {
+            return KnownNetwork.readFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KnownNetwork[] newArray(int size) {
+            return new KnownNetwork[size];
+        }
     }
 
     public String toString() {

@@ -58,8 +58,8 @@ public abstract class SprGradientBase implements Cloneable {
         return (this.colors.length * 12) + 30;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SprGradientBase m8421clone() throws CloneNotSupportedException {
+    /* renamed from: clone */
+    public SprGradientBase m8413clone() throws CloneNotSupportedException {
         SprGradientBase attribute = (SprGradientBase) super.clone();
         attribute.colors = new int[this.colors.length];
         attribute.positions = new float[this.colors.length];

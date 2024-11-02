@@ -51,7 +51,6 @@ public final class MicrophoneInfo {
     public @interface MicrophoneLocation {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MicrophoneInfo(String deviceId, int type, String address, int location, int group, int indexInTheGroup, Coordinate3F position, Coordinate3F orientation, List<Pair<Float, Float>> frequencyResponse, List<Pair<Integer, Integer>> channelMapping, float sensitivity, float maxSpl, float minSpl, int directionality) {
         this.mDeviceId = deviceId;
         this.mType = type;

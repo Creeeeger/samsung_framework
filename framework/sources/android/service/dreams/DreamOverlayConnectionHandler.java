@@ -32,17 +32,16 @@ public final class DreamOverlayConnectionHandler {
     private final List<Consumer<IDreamOverlayClient>> mConsumers;
     private final Handler mHandler;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DreamOverlayConnectionHandler(Context context, Looper looper, Intent serviceIntent, int minConnectionDurationMs, int maxReconnectAttempts, int baseReconnectDelayMs) {
         this(context, looper, serviceIntent, minConnectionDurationMs, maxReconnectAttempts, baseReconnectDelayMs, new Injector());
     }
 
-    public DreamOverlayConnectionHandler(Context context, Looper looper, Intent intent, int i, int i2, int i3, Injector injector) {
+    public DreamOverlayConnectionHandler(Context context, Looper looper, Intent serviceIntent, int minConnectionDurationMs, int maxReconnectAttempts, int baseReconnectDelayMs, Injector injector) {
         this.mConsumers = new ArrayList();
         this.mCallback = new OverlayConnectionCallback();
         Handler handler = new Handler(looper, new OverlayHandlerCallback());
         this.mHandler = handler;
-        this.mConnection = injector.buildConnection(context, handler, intent, i, i2, i3);
+        this.mConnection = injector.buildConnection(context, handler, serviceIntent, minConnectionDurationMs, maxReconnectAttempts, baseReconnectDelayMs);
     }
 
     public boolean bind() {
@@ -73,8 +72,13 @@ public final class DreamOverlayConnectionHandler {
         this.mHandler.removeMessages(1, consumer);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class OverlayHandlerCallback implements Handler.Callback {
+    public final class OverlayHandlerCallback implements Handler.Callback {
+        /* synthetic */ OverlayHandlerCallback(DreamOverlayConnectionHandler dreamOverlayConnectionHandler, OverlayHandlerCallbackIA overlayHandlerCallbackIA) {
+            this();
+        }
+
         private OverlayHandlerCallback() {
         }
 
@@ -96,7 +100,6 @@ public final class DreamOverlayConnectionHandler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onOverlayClientReady(IDreamOverlayClient client) {
         this.mClient = client;
         for (Consumer<IDreamOverlayClient> consumer : this.mConsumers) {
@@ -104,7 +107,6 @@ public final class DreamOverlayConnectionHandler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onAddConsumer(Consumer<IDreamOverlayClient> consumer) {
         IDreamOverlayClient iDreamOverlayClient = this.mClient;
         if (iDreamOverlayClient != null) {
@@ -113,24 +115,43 @@ public final class DreamOverlayConnectionHandler {
         this.mConsumers.add(consumer);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onRemoveConsumer(Consumer<IDreamOverlayClient> consumer) {
         this.mConsumers.remove(consumer);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public final class OverlayConnectionCallback implements ObservableServiceConnection.Callback<IDreamOverlay> {
         private final IDreamOverlayClientCallback mClientCallback;
 
+        /* synthetic */ OverlayConnectionCallback(DreamOverlayConnectionHandler dreamOverlayConnectionHandler, OverlayConnectionCallbackIA overlayConnectionCallbackIA) {
+            this();
+        }
+
         private OverlayConnectionCallback() {
             this.mClientCallback = new IDreamOverlayClientCallback.Stub() { // from class: android.service.dreams.DreamOverlayConnectionHandler.OverlayConnectionCallback.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.service.dreams.IDreamOverlayClientCallback
                 public void onDreamOverlayClient(IDreamOverlayClient client) {
                     Message msg = DreamOverlayConnectionHandler.this.mHandler.obtainMessage(3, client);
                     DreamOverlayConnectionHandler.this.mHandler.sendMessage(msg);
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.service.dreams.DreamOverlayConnectionHandler$OverlayConnectionCallback$1 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass1 extends IDreamOverlayClientCallback.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.service.dreams.IDreamOverlayClientCallback
+            public void onDreamOverlayClient(IDreamOverlayClient client) {
+                Message msg = DreamOverlayConnectionHandler.this.mHandler.obtainMessage(3, client);
+                DreamOverlayConnectionHandler.this.mHandler.sendMessage(msg);
+            }
         }
 
         @Override // com.android.internal.util.ObservableServiceConnection.Callback

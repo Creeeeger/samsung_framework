@@ -17,7 +17,9 @@ public final class DisconnectCause implements Parcelable {
     public static final int CANCELED = 4;
     public static final int CONNECTION_MANAGER_NOT_SUPPORTED = 10;
     public static final Parcelable.Creator<DisconnectCause> CREATOR = new Parcelable.Creator<DisconnectCause>() { // from class: android.telecom.DisconnectCause.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DisconnectCause createFromParcel(Parcel source) {
             int code = source.readInt();
@@ -31,7 +33,6 @@ public final class DisconnectCause implements Parcelable {
             return new DisconnectCause(code, label, description, reason, tone, telephonyDisconnectCause, telephonyPreciseDisconnectCause, imsReasonInfo);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisconnectCause[] newArray(int size) {
             return new DisconnectCause[size];
@@ -115,6 +116,31 @@ public final class DisconnectCause implements Parcelable {
 
     public int getTone() {
         return this.mToneToPlay;
+    }
+
+    /* renamed from: android.telecom.DisconnectCause$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DisconnectCause> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisconnectCause createFromParcel(Parcel source) {
+            int code = source.readInt();
+            CharSequence label = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+            CharSequence description = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+            String reason = source.readString();
+            int tone = source.readInt();
+            int telephonyDisconnectCause = source.readInt();
+            int telephonyPreciseDisconnectCause = source.readInt();
+            ImsReasonInfo imsReasonInfo = (ImsReasonInfo) source.readParcelable(null, ImsReasonInfo.class);
+            return new DisconnectCause(code, label, description, reason, tone, telephonyDisconnectCause, telephonyPreciseDisconnectCause, imsReasonInfo);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DisconnectCause[] newArray(int size) {
+            return new DisconnectCause[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class BlocklistedSource implements Parcelable {
     public static final Parcelable.Creator<BlocklistedSource> CREATOR = new Parcelable.Creator<BlocklistedSource>() { // from class: android.hardware.gnss.BlocklistedSource.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BlocklistedSource createFromParcel(Parcel _aidl_source) {
             BlocklistedSource _aidl_out = new BlocklistedSource();
@@ -15,7 +17,6 @@ public class BlocklistedSource implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BlocklistedSource[] newArray(int _aidl_size) {
             return new BlocklistedSource[_aidl_size];
@@ -23,6 +24,25 @@ public class BlocklistedSource implements Parcelable {
     };
     public int constellation = 0;
     public int svid = 0;
+
+    /* renamed from: android.hardware.gnss.BlocklistedSource$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BlocklistedSource> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BlocklistedSource createFromParcel(Parcel _aidl_source) {
+            BlocklistedSource _aidl_out = new BlocklistedSource();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BlocklistedSource[] newArray(int _aidl_size) {
+            return new BlocklistedSource[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

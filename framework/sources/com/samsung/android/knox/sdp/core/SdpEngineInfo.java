@@ -17,18 +17,23 @@ public class SdpEngineInfo implements Parcelable {
     private static String PERSONA_PWD_RESET_TOKEN = "PersonaPwdResetToken";
     private static String PWD_RESET_TOKEN = "PwdResetToken";
     public static final Parcelable.Creator<SdpEngineInfo> CREATOR = new Parcelable.Creator<SdpEngineInfo>() { // from class: com.samsung.android.knox.sdp.core.SdpEngineInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SdpEngineInfo createFromParcel(Parcel source) {
             return new SdpEngineInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SdpEngineInfo[] newArray(int size) {
             return new SdpEngineInfo[size];
         }
     };
+
+    /* synthetic */ SdpEngineInfo(Parcel parcel, SdpEngineInfoIA sdpEngineInfoIA) {
+        this(parcel);
+    }
 
     public SdpEngineInfo(String alias, int id, int userId, int state, int flags, int version, boolean isMigrating) {
         int i;
@@ -180,6 +185,23 @@ public class SdpEngineInfo implements Parcelable {
         parcel.writeInt(this.mVersion);
         parcel.writeInt(this.mType);
         parcel.writeInt(this.mIsMigrating ? 1 : 0);
+    }
+
+    /* renamed from: com.samsung.android.knox.sdp.core.SdpEngineInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SdpEngineInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SdpEngineInfo createFromParcel(Parcel source) {
+            return new SdpEngineInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SdpEngineInfo[] newArray(int size) {
+            return new SdpEngineInfo[size];
+        }
     }
 
     private SdpEngineInfo(Parcel source) {

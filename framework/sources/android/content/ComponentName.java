@@ -9,13 +9,14 @@ import java.io.PrintWriter;
 /* loaded from: classes.dex */
 public final class ComponentName implements Parcelable, Cloneable, Comparable<ComponentName> {
     public static final Parcelable.Creator<ComponentName> CREATOR = new Parcelable.Creator<ComponentName>() { // from class: android.content.ComponentName.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ComponentName createFromParcel(Parcel in) {
             return new ComponentName(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ComponentName[] newArray(int size) {
             return new ComponentName[size];
@@ -71,7 +72,7 @@ public final class ComponentName implements Parcelable, Cloneable, Comparable<Co
         this.mClass = cls.getName();
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public ComponentName m780clone() {
         return new ComponentName(this.mPackage, this.mClass);
     }
@@ -219,6 +220,23 @@ public final class ComponentName implements Parcelable, Cloneable, Comparable<Co
             return new ComponentName(pkg, in);
         }
         return null;
+    }
+
+    /* renamed from: android.content.ComponentName$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ComponentName> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ComponentName createFromParcel(Parcel in) {
+            return new ComponentName(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ComponentName[] newArray(int size) {
+            return new ComponentName[size];
+        }
     }
 
     public ComponentName(Parcel in) {

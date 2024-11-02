@@ -42,14 +42,13 @@ public class NNFilter extends PluginDecorateFilter<NNPlugin> {
         return (MFDescriptor) Optional.ofNullable(this.descriptor).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.filter.NNFilter$$ExternalSyntheticLambda5
             @Override // java.util.function.Supplier
             public final Object get() {
-                return NNFilter.this.m8769xf2fa8145();
+                return NNFilter.this.m8761xf2fa8145();
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$getDescriptor$0$com-samsung-android-sume-core-filter-NNFilter, reason: not valid java name */
-    public /* synthetic */ NNDescriptor m8769xf2fa8145() {
+    /* renamed from: lambda$getDescriptor$0$com-samsung-android-sume-core-filter-NNFilter */
+    public /* synthetic */ NNDescriptor m8761xf2fa8145() {
         return (NNDescriptor) super.getDescriptor();
     }
 
@@ -58,9 +57,8 @@ public class NNFilter extends PluginDecorateFilter<NNPlugin> {
         super.prepare();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$run$1$com-samsung-android-sume-core-filter-NNFilter, reason: not valid java name */
-    public /* synthetic */ MediaBuffer m8771lambda$run$1$comsamsungandroidsumecorefilterNNFilter(MediaBuffer ibuf, BufferProcessor e) {
+    /* renamed from: lambda$run$1$com-samsung-android-sume-core-filter-NNFilter */
+    public /* synthetic */ MediaBuffer m8763lambda$run$1$comsamsungandroidsumecorefilterNNFilter(MediaBuffer ibuf, BufferProcessor e) {
         return e.process(ibuf, this.descriptor.getOption());
     }
 
@@ -71,7 +69,7 @@ public class NNFilter extends PluginDecorateFilter<NNPlugin> {
         MediaBuffer input = (MediaBuffer) ((NNPlugin) this.plugin).getPreExecutor().map(new Function() { // from class: com.samsung.android.sume.core.filter.NNFilter$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return NNFilter.this.m8771lambda$run$1$comsamsungandroidsumecorefilterNNFilter(ibuf, (BufferProcessor) obj);
+                return NNFilter.this.m8763lambda$run$1$comsamsungandroidsumecorefilterNNFilter(ibuf, (BufferProcessor) obj);
             }
         }).orElse(ibuf);
         input.addExtra(ibuf.getExtra());
@@ -84,7 +82,7 @@ public class NNFilter extends PluginDecorateFilter<NNPlugin> {
             outputs = (List) input.stream().map(new Function() { // from class: com.samsung.android.sume.core.filter.NNFilter$$ExternalSyntheticLambda4
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
-                    return NNFilter.this.m8772lambda$run$2$comsamsungandroidsumecorefilterNNFilter((MediaBuffer) obj);
+                    return NNFilter.this.m8764lambda$run$2$comsamsungandroidsumecorefilterNNFilter((MediaBuffer) obj);
                 }
             }).collect(Collectors.toList());
         }
@@ -110,9 +108,8 @@ public class NNFilter extends PluginDecorateFilter<NNPlugin> {
         return obuf;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$run$2$com-samsung-android-sume-core-filter-NNFilter, reason: not valid java name */
-    public /* synthetic */ MediaBuffer m8772lambda$run$2$comsamsungandroidsumecorefilterNNFilter(MediaBuffer it) {
+    /* renamed from: lambda$run$2$com-samsung-android-sume-core-filter-NNFilter */
+    public /* synthetic */ MediaBuffer m8764lambda$run$2$comsamsungandroidsumecorefilterNNFilter(MediaBuffer it) {
         MutableMediaBuffer buf = super.run(it, MediaBuffer.mutableOf());
         return buf.reset();
     }
@@ -154,7 +151,7 @@ public class NNFilter extends PluginDecorateFilter<NNPlugin> {
                     }).ifPresent(new Consumer() { // from class: com.samsung.android.sume.core.filter.NNFilter$$ExternalSyntheticLambda2
                         @Override // java.util.function.Consumer
                         public final void accept(Object obj) {
-                            NNFilter.this.m8770x99249ace((Consumer) obj);
+                            NNFilter.this.m8762x99249ace((Consumer) obj);
                         }
                     });
                     return true;
@@ -168,9 +165,8 @@ public class NNFilter extends PluginDecorateFilter<NNPlugin> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$onMessageReceived$5$com-samsung-android-sume-core-filter-NNFilter, reason: not valid java name */
-    public /* synthetic */ void m8770x99249ace(Consumer it) {
+    /* renamed from: lambda$onMessageReceived$5$com-samsung-android-sume-core-filter-NNFilter */
+    public /* synthetic */ void m8762x99249ace(Consumer it) {
         it.accept(this.descriptor);
     }
 }

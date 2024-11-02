@@ -384,12 +384,12 @@ Anda dapat mengubah pintasan ini ke fitur lain di Setelan > Aksesibilitas."</str
     <string name="allow_settings_changes">Kebijakan keamanan mencegah pengubahan pengaturan.</string>
     <string name="alwaysUse">Gunakan secara default untuk tindakan ini.</string>
     <string name="android_preparing_apk">Menyiapkan %1$s.</string>
-    <string name="android_start_title">Menyalakan ponsel…</string>
+    <string name="android_start_title">Menyalakan tablet…</string>
     <string name="android_system_label">Sistem Android</string>
     <string name="android_upgrading_complete">Menyelesaikan boot.</string>
     <string name="android_upgrading_notification_title">Menyelesaikan update sistem…</string>
     <string name="android_upgrading_starting_apps">Memulai aplikasi.</string>
-    <string name="android_upgrading_title">Mengupdate ponsel…</string>
+    <string name="android_upgrading_title">Mengupdate tablet…</string>
     <string name="anr_activity_application">%2$s tidak menanggapi</string>
     <string name="anr_activity_process">%1$s tidak menanggapi</string>
     <string name="anr_application_process">%1$s tidak menanggapi</string>
@@ -423,16 +423,16 @@ Anda dapat mengubah pintasan ini ke fitur lain di Setelan > Aksesibilitas."</str
     <string name="app_restricted_message_concentration_mode">%s diblokir dalam Mode konsentrasi. Hubungi admin TI Anda untuk mempelajari lebih lanjut.</string>
     <string name="app_running_notification_text">Ketuk untuk informasi selengkapnya atau menghentikan aplikasi.</string>
     <string name="app_running_notification_title">%1$s sedang berjalan</string>
-    <string name="app_streaming_blocked_message">Aplikasi ini tidak dapat diakses di %1$s untuk saat ini. Coba di ponsel.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Aplikasi ini meminta keamanan tambahan. Coba di ponsel.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Setelan ini tidak dapat diakses di %1$s. Coba di ponsel.</string>
+    <string name="app_streaming_blocked_message">Aplikasi ini tidak dapat diakses di %1$s untuk saat ini. Coba di tablet.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Aplikasi ini meminta keamanan tambahan. Coba di tablet.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Setelan ini tidak dapat diakses di %1$s. Coba di tablet.</string>
     <string name="app_streaming_blocked_title">%1$s tidak tersedia</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera tidak tersedia</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Lanjutkan di ponsel</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofon tidak tersedia</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Perlu izin</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store tidak tersedia</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Setelan ponsel tidak tersedia</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Setelan tablet tidak tersedia</string>
     <string name="app_suspended_default_message">%1$s saat ini tidak tersedia. Aplikasi ini dikelola oleh %2$s.</string>
     <string name="app_suspended_more_details">Pelajari lebih lanjut</string>
     <string name="app_suspended_title">Aplikasi tidak tersedia</string>
@@ -503,7 +503,7 @@ Jika Anda tetap memilih untuk menginstal aplikasi ini, pastikan aplikasi tersebu
     <string name="badPuk">PUK yang Anda ketikkan salah.</string>
     <string name="badPuk2">PUK2 yang Anda masukkan salah</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Baterai ponsel cukup terisi. Fitur tidak lagi dibatasi.</string>
+    <string name="battery_saver_charged_notification_summary">Baterai tablet cukup terisi. Fitur tidak lagi dibatasi.</string>
     <string name="battery_saver_description">Penghemat Baterai akan mengaktifkan Tema gelap dan membatasi atau menonaktifkan aktivitas latar belakang, beberapa efek visual, fitur tertentu, dan beberapa koneksi jaringan.</string>
     <string name="battery_saver_description_with_learn_more">Penghemat Baterai akan mengaktifkan Tema gelap dan membatasi atau menonaktifkan aktivitas latar belakang, beberapa efek visual, fitur tertentu, dan beberapa koneksi jaringan.</string>
     <string name="battery_saver_notification_channel_name">Penghemat Baterai</string>
@@ -734,7 +734,7 @@ Volume headphone tinggi selama lebih lama dari yang direkomendasikan, yang dapat
     <string name="decline">Tolak</string>
     <string name="decline_remote_bugreport_action">TOLAK</string>
     <string name="default_audio_route_category_name">Sistem</string>
-    <string name="default_audio_route_name">Ponsel</string>
+    <string name="default_audio_route_name">Tablet</string>
     <string name="default_audio_route_name_dock_speakers">Speaker dok</string>
     <string name="default_audio_route_name_external_device">Perangkat Eksternal</string>
     <string name="default_audio_route_name_headphones">Headphone</string>
@@ -861,7 +861,7 @@ menggunakan%s"</string>
     <string name="emergency_call_dialog_number_for_display">Nomor darurat</string>
     <string name="emergency_calls_only">Hanya panggilan darurat</string>
     <string name="enablePin">Gagal, aktifkan Kunci SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s ingin mengaktifkan Menjelajah dengan Sentuhan. Saat Menjelajah dengan Sentuhan diaktifkan, Anda dapat mendengar atau melihat deskripsi dari apa yang ada di bawah jari Anda atau melakukan gerakan untuk berinteraksi dengan ponsel.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s ingin mengaktifkan Menjelajah dengan Sentuhan. Saat Menjelajah dengan Sentuhan diaktifkan, Anda dapat melihat atau mendengar deskripsi dari apa yang ada di bawah jari Anda atau melakukan gerakan untuk berinteraksi dengan tablet.</string>
     <string name="enable_explore_by_touch_warning_title">Aktifkan Menjelajah dengan Sentuhan?</string>
     <string name="error_message_change_not_allowed">Perubahan ini tidak diizinkan oleh admin Anda</string>
     <string name="error_message_title">Kesalahan</string>
@@ -925,7 +925,7 @@ menggunakan%s"</string>
     <string name="ext_media_unsupported_notification_message">Perangkat ini tidak mendukung %s. Ketuk untuk mengatur dalam format yang didukung.</string>
     <string name="ext_media_unsupported_notification_title">%s tidak didukung</string>
     <string name="ext_storage_bad_removal_button">Mulai ulang</string>
-    <string name="ext_storage_bad_removal_title">Mulai ulang ponsel Anda</string>
+    <string name="ext_storage_bad_removal_title">Mulai ulang tablet Anda</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message">Semua data di kartu Anda akan hilang.</string>
     <string name="extmedia_format_message_usbhost">Semua file yang tersimpan dalam penyimpanan USB Anda akan dihapus. Tindakan ini tidak dapat diurungkan!</string>
@@ -1129,7 +1129,7 @@ Coba ketuk lembut saat menyiapkan sidik jari Anda."</string>
     <string name="global_action_toggle_sealed_mode">Mode Segel</string>
     <string name="global_action_toggle_silent_mode">Mode senyap</string>
     <string name="global_action_voice_assist">Bantuan Suara</string>
-    <string name="global_actions">Opsi telepon</string>
+    <string name="global_actions">Opsi tablet</string>
     <string name="global_actions_airplane_mode_off_status">Mode pesawat MATI</string>
     <string name="global_actions_airplane_mode_on_status">Mode pesawat AKTIF</string>
     <string name="global_actions_toggle_airplane_mode">Mode pesawat</string>
@@ -1314,11 +1314,11 @@ Yakin ingin beranjak dari halaman ini?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Ketuk untuk mengetik sandi&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Kode PIN salah.</string>
     <string name="kg_enter_confirm_pin_hint">Konfirmasi kode PIN yang diinginkan</string>
-    <string name="kg_failed_attempts_almost_at_login">"Anda telah %1$d kali salah menggambar pola pembuka kunci. Setelah %2$d lagi upaya gagal, Anda akan diminta membuka kunci ponsel menggunakan akun email.
+    <string name="kg_failed_attempts_almost_at_login">"Anda telah %1$d kali salah menggambar pola pembuka kunci. Setelah %2$d lagi upaya gagal, Anda akan diminta membuka kunci tablet menggunakan akun email.
 
 Coba lagi dalam %3$d detik."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Anda telah %1$d kali gagal saat berusaha membuka kunci ponsel. Setelah %2$d lagi upaya gagal, ponsel akan direset ke setelan default pabrik dan semua data pengguna akan hilang.</string>
-    <string name="kg_failed_attempts_now_wiping">Anda telah %d kali gagal saat berusaha untuk membuka kunci ponsel. Kini ponsel akan direset ke setelan default pabrik.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Anda telah %1$d kali gagal saat berusaha membuka kunci tablet. Setelah %2$d lagi upaya gagal, tablet akan direset ke setelan default pabrik dan semua data pengguna akan hilang.</string>
+    <string name="kg_failed_attempts_now_wiping">Anda telah %d kali gagal saat berusaha membuka kunci tablet. Kini tablet akan direset ke setelan default pabrik.</string>
     <string name="kg_forgot_pattern_button_text">Lupa Pola?</string>
     <string name="kg_invalid_confirm_pin_hint">Kode PIN tidak cocok</string>
     <string name="kg_invalid_puk">Masukkan kembali kode PUK yang benar. Jika berulang kali gagal, SIM akan dinonaktifkan secara permanen.</string>
@@ -1406,11 +1406,11 @@ Coba lagi dalam %2$d detik."</string>
     <string name="lockscreen_carrier_default">Tidak ada layanan</string>
     <string name="lockscreen_carrier_noservice">(Tdk ada layanan).</string>
     <string name="lockscreen_emergency_call">Darurat</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Anda telah gagal mencoba membuka gembok ponsel sebanyak %1$d kali. Setelah %2$d upaya gagal lagi, ponsel akan direset ke setelan default pabrik dan semua data pengguna hilang.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Anda telah %1$d kali salah menggambar pola pembuka kunci. Setelah %2$d lagi upaya gagal, Anda akan diminta membuka kunci ponsel menggunakan proses masuk Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Anda telah gagal mencoba membuka gembok tablet sebanyak %1$d kali. Setelah %2$d upaya gagal lagi, tablet akan direset ke setelan default pabrik dan semua data pengguna hilang.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Anda telah %1$d kali salah menggambar pola pembuka kunci. Setelah %2$d lagi upaya gagal, Anda akan diminta membuka kunci tablet menggunakan proses masuk Google.
 
 Coba lagi dalam %3$d detik."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Anda telah gagal mencoba membuka gembok ponsel sebanyak %d kali. Kini ponsel akan direset ke setelan default pabrik.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Anda telah gagal mencoba membuka gembok tablet sebanyak %d kali. Kini tablet akan direset ke setelan default pabrik.</string>
     <string name="lockscreen_forgot_pattern_button_text">Lupa pola?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Lupa nama pengguna atau sandi Anda?
 Kunjungi "<b>google.com/accounts/recovery</b>.</string>
@@ -1426,7 +1426,7 @@ Kunjungi "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Tekan Menu untuk membuka atau melakukan panggilan darurat.</string>
     <string name="lockscreen_missing_sim_instructions">Tambahkan SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM tidak ada atau tidak dapat dibaca. Tambahkan SIM.</string>
-    <string name="lockscreen_missing_sim_message">Tidak ada SIM di ponsel.</string>
+    <string name="lockscreen_missing_sim_message">Tidak ada SIM di tablet.</string>
     <string name="lockscreen_missing_sim_message_short">Tidak ada SIM</string>
     <string name="lockscreen_network_locked_message">Jaringan terkunci</string>
     <string name="lockscreen_password_wrong">Coba lagi</string>
@@ -1466,7 +1466,7 @@ Coba lagi dalam %2$d detik."</string>
     <string name="low_internal_storage_view_text">Beberapa fungsi sistem mungkin tidak dapat bekerja</string>
     <string name="low_internal_storage_view_text_no_boot">Penyimpanan tidak cukup untuk sistem. Pastikan Anda memiliki 250 MB ruang kosong, lalu mulai ulang.</string>
     <string name="low_internal_storage_view_title">Ruang penyimpanan hampir habis</string>
-    <string name="low_memory">Penyimpanan di ponsel penuh. Hapus sebagian file untuk mengosongkan ruang.</string>
+    <string name="low_memory">Penyimpanan tablet penuh. Hapus beberapa file untuk mengosongkan ruang.</string>
     <string name="ltb_kill_content_v2_phone">%s ditutup secara otomatis karena menyebabkan ponsel terlalu panas. Buka lagi nanti setelah ponsel dingin.</string>
     <string name="ltb_kill_content_v2_tablet">%s ditutup secara otomatis karena menyebabkan tablet terlalu panas. Buka lagi nanti setelah tablet dingin.</string>
     <string name="ltb_warning_button">Jangan tutup</string>
@@ -1778,18 +1778,18 @@ Tablet Anda akan segera memulai ulang."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Suara diputar di perangkat audio Bluetooth. Ketuk di sini untuk menonaktifkannya</string>
     <string name="multisound_sound_via_headphone">Suara %s diputar melalui headphone Anda. Ketuk di sini untuk menonaktifkan ini.</string>
     <string name="multisound_sound_via_headphone_multiselection">Suara diputar melalui headphone Anda. Ketuk di sini untuk menonaktifkannya.</string>
-    <string name="multisound_sound_via_phone_speaker">%s suara diputar melalui speaker ponsel Anda. Ketuk di sini untuk menonaktifkan ini.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Suara diputar melalui speaker ponsel Anda. Ketuk di sini untuk menonaktifkannya.</string>
+    <string name="multisound_sound_via_phone_speaker">Suara %s diputar melalui speaker tablet Anda. Ketuk di sini untuk menonaktifkan ini.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Suara diputar melalui speaker tablet Anda. Ketuk di sini untuk menonaktifkannya.</string>
     <string name="multisound_sound_via_usb_audio">Suara %s diputar melalui perangkat audio USB. Ketuk di sini untuk menonaktifkan ini.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Suara diputar melalui perangkat audio USB. Ketuk di sini untuk menonaktifkannya.</string>
     <string name="multisound_title">Pisahkan suara aplikasi</string>
     <string name="multisound_turn_off_multisound">Matikan</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s tidak dapat dijalankan di Samsung DeX. Coba jalankan dalam mode ponsel.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s tidak dapat dijalankan di Samsung DeX. Aplikasi ini dirancang untuk Layar depan ponsel.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Beberapa game hanya berfungsi pada layar sentuh. Jika kontrol mouse tidak berfungsi di Samsung DeX, cobalah bermain dalam mode ponsel.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s tidak dapat dijalankan di Samsung DeX. Coba jalankan dalam mode tablet.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s tidak dapat dijalankan di Samsung DeX. Aplikasi ini dirancang untuk Layar depan tablet.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Beberapa game hanya berfungsi pada layar sentuh. Jika kontrol mouse tidak berfungsi di Samsung DeX, cobalah bermain dalam mode tablet.</string>
     <string name="music_recognition_manager_service">Layanan Pengelola Pengenalan Musik</string>
     <string name="muted_by">%1$s mematikan beberapa suara</string>
-    <string name="my_device">Ponsel ini</string>
+    <string name="my_device">Tablet ini</string>
     <string name="nas_upgrade_notification_content">Tindakan dan balasan yang disarankan kini diberikan oleh notifikasi yang ditingkatkan. Notifikasi Adaptif Android tidak lagi didukung.</string>
     <string name="nas_upgrade_notification_disable_action">Nonaktifkan</string>
     <string name="nas_upgrade_notification_enable_action">Oke</string>
@@ -1954,23 +1954,23 @@ Notifikasi yang ditingkatkan dapat mengakses konten notifikasi, termasuk informa
     <string name="permdesc_bindNotificationListenerService">Memungkinkan pemegang mengikat antarmuka tingkat teratas dari suatu layanan pendengar pemberitahuan. Tidak pernah diperlukan oleh aplikasi normal.</string>
     <string name="permdesc_bind_connection_service">Memungkinkan aplikasi berinteraksi dengan layanan telepon untuk melakukan/menerima panggilan.</string>
     <string name="permdesc_bind_incall_service">Memungkinkan aplikasi mengontrol kapan dan bagaimana pengguna melihat layar dalam panggilan.</string>
-    <string name="permdesc_bluetooth">Memungkinkan aplikasi melihat konfigurasi Bluetooth di ponsel, dan membuat serta menerima sambungan dengan perangkat yang disandingkan.</string>
-    <string name="permdesc_bluetoothAdmin">Mengizinkan apl mengonfigurasi ponsel Bluetooth lokal, dan menemukan serta menyandingkan dengan perangkat jarak jauh.</string>
+    <string name="permdesc_bluetooth">Memungkinkan aplikasi melihat konfigurasi Bluetooth di tablet, dan membuat serta menerima sambungan dengan perangkat yang disandingkan.</string>
+    <string name="permdesc_bluetoothAdmin">Mengizinkan apl mengonfigurasi tablet Bluetooth lokal, dan menemukan serta menyandingkan dengan perangkat jarak jauh.</string>
     <string name="permdesc_bluetooth_advertise">Mengizinkan aplikasi untuk menampilkan iklan ke perangkat Bluetooth di sekitar</string>
     <string name="permdesc_bluetooth_connect">Mengizinkan aplikasi terhubung ke perangkat Bluetooth yang disambungkan</string>
     <string name="permdesc_bluetooth_scan">Mengizinkan aplikasi menemukan dan menyambungkan perangkat Bluetooth di sekitar</string>
     <string name="permdesc_bodySensors">Mengizinkan aplikasi mengakses data sensor tubuh, seperti detak jantung, suhu, dan persentase oksigen dalam darah, saat aplikasi sedang digunakan.</string>
     <string name="permdesc_bodySensors_background">Mengizinkan aplikasi mengakses data sensor tubuh, seperti detak jantung, suhu, dan persentase oksigen dalam darah, saat aplikasi berada di latar belakang.</string>
-    <string name="permdesc_broadcastSticky">Memungkinkan aplikasi mengirim siaran permanen, yang tetap ada setelah siaran berakhir. Penggunaan yang berlebihan dapat membuat ponsel menjadi lambat atau tidak stabil dengan memicu penggunaan memori yang terlalu banyak.</string>
+    <string name="permdesc_broadcastSticky">Memungkinkan aplikasi mengirim siaran permanen, yang tetap ada setelah siaran berakhir. Penggunaan yang berlebihan dapat membuat tablet menjadi lambat atau tidak stabil dengan memicu penggunaan memori yang terlalu banyak.</string>
     <string name="permdesc_callCompanionApp">Memungkinkan aplikasi melihat dan mengontrol panggilan telepon yang sedang berlangsung di perangkat. Ini mencakup informasi seperti nomor yang menelepon dan status panggilan telepon.</string>
     <string name="permdesc_callPhone">Mengizinkan aplikasi memanggil nomor telepon tanpa intervensi Anda. Hal ini dapat mengakibatkan adanya biaya atau panggilan yang tidak terduga. Perhatikan bahwa hal ini tidak memungkinkan aplikasi menghubungi nomor darurat. Anda dapat dikenai biaya oleh aplikasi berbahaya dengan melakukan panggilan tanpa konfirmasi dari Anda, atau menghubungi kode operator yang menyebabkan panggilan masuk dialihkan secara otomatis ke nomor lain.</string>
     <string name="permdesc_camera">Aplikasi ini dapat mengambil gambar dan merekam video menggunakan kamera saat aplikasi sedang digunakan.</string>
     <string name="permdesc_cameraOpenCloseListener">Aplikasi ini dapat menerima callback saat perangkat kamera dibuka (oleh aplikasi) atau ditutup.</string>
     <string name="permdesc_changeNetworkState">Mengizinkan apl mengubah keadaan konektivitas jaringan.</string>
     <string name="permdesc_changeTetherState">Mengizinkan apl mengubah status konektivitas jaringan yang tertambat.</string>
-    <string name="permdesc_changeWifiMulticastState">Memungkinkan aplikasi menerima paket yang dikirim ke semua perangkat melalui jaringan Wi-Fi menggunakan alamat multicast, bukan hanya ponsel Anda. Izin ini akan menggunakan lebih banyak daya daripada mode selain multicast.</string>
+    <string name="permdesc_changeWifiMulticastState">Memungkinkan aplikasi menerima paket yang dikirim ke semua perangkat melalui jaringan Wi-Fi menggunakan alamat multicast, bukan hanya tablet Anda. Izin ini akan menggunakan lebih banyak daya daripada mode selain multicast.</string>
     <string name="permdesc_changeWifiState">Memungkinkan aplikasi menyambung ke dan memutus dari titik akses Wi-Fi, dan mengubah konfigurasi perangkat untuk jaringan Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Memungkinkan aplikasi menyambungkan ponsel ke dan memutus ponsel dari jaringan WiMAX.</string>
+    <string name="permdesc_changeWimaxState">Memungkinkan aplikasi menyambungkan tablet ke dan memutus tablet dari jaringan WiMAX.</string>
     <string name="permdesc_companionProfileWatch">Mengizinkan aplikasi pendamping mengelola smartwatch.</string>
     <string name="permdesc_connection_manager">Mengizinkan aplikasi untuk mengelola sambungan telekomunikasi.</string>
     <string name="permdesc_control_incall_experience">Memungkinkan aplikasi memberikan pengalaman pengguna dalam panggilan.</string>
@@ -1998,7 +1998,7 @@ Notifikasi yang ditingkatkan dapat mengakses konten notifikasi, termasuk informa
     <string name="permdesc_foregroundServiceSpecialUse">Mengizinkan aplikasi menggunakan layanan latar depan dengan jenis \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Mengizinkan aplikasi menggunakan layanan latar depan dengan jenis \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">Mengizinkan aplikasi untuk menampilkan notifikasi sebagai aktivitas layar penuh di perangkat terkunci</string>
-    <string name="permdesc_getAccounts">Memungkinkan aplikasi mendapatkan daftar akun yang dikenal oleh ponsel. Ini mungkin termasuk akun yang dibuat oleh aplikasi yang telah Anda instal.</string>
+    <string name="permdesc_getAccounts">Memungkinkan aplikasi mendapatkan daftar akun yang dikenal oleh tablet. Ini mungkin termasuk akun yang dibuat oleh aplikasi yang telah Anda instal.</string>
     <string name="permdesc_getAppList">Mengizinkan aplikasi melihat daftar aplikasi yang terinstal.</string>
     <string name="permdesc_getPackageSize">Mengizinkan apl mengambil kode, data, dan ukuran temboloknya</string>
     <string name="permdesc_getTasks">Memungkinkan aplikasi mengambil informasi tentang tugas yang dijalankan saat ini dan baru-baru ini. Izin ini memungkinkan aplikasi menemukan informasi tentang aplikasi mana yang digunakan pada perangkat.</string>
@@ -2097,16 +2097,16 @@ KEMBALIKAN KE"</string>
     <string name="permdesc_nearby_wifi_devices">Mengizinkan aplikasi menampilkan, menghubungkan, dan menentukan posisi relatif perangkat Wi-Fi di sekitar</string>
     <string name="permdesc_nfc">Mengizinkan apl berkomunikasi dengan tag, kartu, dan alat pembaca Komunikasi Nirkabel Jarak Dekat (NFC).</string>
     <string name="permdesc_observeCompanionDevicePresence">Mengizinkan aplikasi pendamping mengamati kehadiran perangkat pendamping saat perangkat terkait berada di sekitar atau jauh.</string>
-    <string name="permdesc_persistentActivity">Memungkinkan aplikasi membuat bagian dari dirinya sendiri terus-menerus berada dalam memori. Izin ini dapat membatasi memori yang tersedia untuk aplikasi lain sehingga menjadikan ponsel lambat.</string>
+    <string name="permdesc_persistentActivity">Memungkinkan aplikasi membuat bagian dari dirinya sendiri terus-menerus berada dalam memori. Izin ini dapat membatasi memori yang tersedia untuk aplikasi lain sehingga menjadikan tablet lambat.</string>
     <string name="permdesc_postNotification">Mengizinkan aplikasi untuk menampilkan notifikasi</string>
     <string name="permdesc_preferredPaymentInfo">Mengizinkan aplikasi untuk mendapatkan informasi layanan pembayaran NFC pilihan seperti bantuan terdaftar dan tujuan rute.</string>
     <string name="permdesc_processOutgoingCalls">Memungkinkan aplikasi melihat nomor yang dihubungi saat melakukan panggilan keluar dengan opsi untuk mengalihkan panggilan ke nomor lain atau membatalkan panggilan sepenuhnya.</string>
     <string name="permdesc_queryAllPackages">Mengizinkan aplikasi melihat semua paket yang diinstal.</string>
     <string name="permdesc_readBasicPhoneState">Memungkinkan aplikasi mengakses fitur telepon dasar perangkat.</string>
-    <string name="permdesc_readCalendar">Aplikasi ini dapat membaca semua acara kalender yang tersimpan di ponsel dan membagikan atau menyimpan data kalender.</string>
+    <string name="permdesc_readCalendar">Aplikasi ini dapat membaca semua acara kalender yang tersimpan di tablet dan membagikan atau menyimpan data kalender.</string>
     <string name="permdesc_readCallLog">Aplikasi ini dapat membaca histori panggilan.</string>
     <string name="permdesc_readCellBroadcasts">Mengizinkan aplikasi membaca pesan siaran seluler yang diterima perangkat Anda. Notifikasi siaran seluler dikirimkan di beberapa lokasi untuk memperingatkan Anda tentang situasi darurat. Aplikasi berbahaya dapat mengganggu kinerja atau operasi perangkat Anda saat siaran seluler darurat diterima.</string>
-    <string name="permdesc_readContacts">Mengizinkan aplikasi membaca data tentang kontak yang disimpan di ponsel Anda. Aplikasi juga akan memiliki akses ke akun di ponsel Anda yang telah membuat kontak. Ini mungkin mencakup akun yang dibuat oleh aplikasi yang telah diinstal. Izin ini mengizinkan aplikasi menyimpan data kontak, dan aplikasi berbahaya dapat membagikan data kontak tanpa sepengetahuan Anda.</string>
+    <string name="permdesc_readContacts">Mengizinkan aplikasi membaca data tentang kontak yang disimpan di tablet Anda. Aplikasi juga akan memiliki akses ke akun di tablet Anda yang telah membuat kontak. Ini mungkin mencakup akun yang dibuat oleh aplikasi yang telah diinstal. Izin ini mengizinkan aplikasi menyimpan data kontak, dan aplikasi berbahaya dapat membagikan data kontak tanpa sepengetahuan Anda.</string>
     <string name="permdesc_readInstallSessions">Memungkinkan aplikasi membaca sesi pemasangan. Tindakan ini memungkinkannya melihat detail tentang pemasangan paket aktif.</string>
     <string name="permdesc_readMediaAudio">Mengizinkan aplikasi membaca file audio dari penyimpanan bersama.</string>
     <string name="permdesc_readMediaImages">Mengizinkan aplikasi membaca file gambar dari penyimpanan bersama.</string>
@@ -2114,11 +2114,11 @@ KEMBALIKAN KE"</string>
     <string name="permdesc_readNetworkUsageHistory">Mengizinkan apl membaca penggunaan jaringan historis untuk apl dan jaringan tertentu.</string>
     <string name="permdesc_readPhoneNumbers">Mengizinkan aplikasi mengakses nomor telepon perangkat.</string>
     <string name="permdesc_readPhoneState">Memungkinkan aplikasi mengakses fitur telepon perangkat. Izin ini memungkinkan aplikasi menentukan nomor telepon dan ID perangkat, apakah suatu panggilan aktif atau tidak, dan nomor jarak jauh yang terhubung oleh sebuah panggilan.</string>
-    <string name="permdesc_readSms">Aplikasi ini dapat membaca semua SMS yang tersimpan di ponsel.</string>
+    <string name="permdesc_readSms">Aplikasi ini dapat membaca semua SMS yang tersimpan di tablet.</string>
     <string name="permdesc_readSyncSettings">Memungkinkan aplikasi membaca setelan sinkronisasi untuk sebuah akun. Misalnya, izin ini dapat menentukan apakah aplikasi Orang disinkronkan dengan sebuah akun.</string>
     <string name="permdesc_readSyncStats">Memungkinkan aplikasi membaca statistik sinkronisasi untuk sebuah akun, termasuk histori kejadian sinkronisasi dan berapa banyak data yang disinkronkan.</string>
     <string name="permdesc_readVisualUserSelect">Mengizinkan aplikasi membaca file gambar dan video yang Anda pilih dari penyimpanan bersama.</string>
-    <string name="permdesc_receiveBootCompleted">Mengizinkan apl memulai sendiri segera setelah sistem selesai booting. Hal ini dapat memperpanjang waktu yang diperlukan untuk memulai ponsel dan memungkinkan apl memperlambat ponsel secara keseluruhan jika terus berjalan.</string>
+    <string name="permdesc_receiveBootCompleted">Mengizinkan apl memulai sendiri segera setelah sistem selesai booting. Hal ini dapat memperpanjang waktu yang diperlukan untuk memulai tablet dan memungkinkan apl memperlambat tablet secara keseluruhan jika terus berjalan.</string>
     <string name="permdesc_receiveMms">Memungkinkan aplikasi menerima dan memproses pesan MMS. Ini artinya aplikasi dapat memantau atau menghapus pesan yang dikirim ke perangkat Anda tanpa menunjukkannya kepada Anda.</string>
     <string name="permdesc_receiveSms">Memungkinkan aplikasi menerima dan memproses pesan SMS. Ini artinya aplikasi dapat memantau atau menghapus pesan yang dikirim ke perangkat Anda tanpa menunjukkannya kepada Anda.</string>
     <string name="permdesc_receiveWapPush">Memungkinkan aplikasi menerima dan memproses pesan WAP. Izin ini mencakup kemampuan untuk memantau atau menghapus pesan yang dikirim kepada Anda tanpa menunjukkannya kepada Anda.</string>
@@ -2140,7 +2140,7 @@ KEMBALIKAN KE"</string>
     <string name="permdesc_sendSms">Memungkinkan aplikasi mengirim pesan SMS. Izin ini dapat mengakibatkan biaya tak terduga. Aplikasi berbahaya dapat membebankan biaya kepada Anda dengan mengirim pesan tanpa konfirmasi dari Anda.</string>
     <string name="permdesc_setAlarm">Mengizinkan apl menyetel alarm di apl jam alarm yang terpasang. Beberapa apl jam alarm mungkin tidak menerapkan fitur ini.</string>
     <string name="permdesc_setInputCalibration">Memungkinkan aplikasi mengubah parameter kalibrasi layar sentuh. Tidak diperlukan oleh aplikasi normal.</string>
-    <string name="permdesc_setTimeZone">Mengizinkan apl mengubah zona waktu pada ponsel.</string>
+    <string name="permdesc_setTimeZone">Mengizinkan apl mengubah zona waktu tablet.</string>
     <string name="permdesc_setWallpaper">Mengizinkan apl menyetel wallpaper sistem.</string>
     <string name="permdesc_setWallpaperHints">Mengizinkan apl menyetel petunjuk ukuran wallpaper sistem.</string>
     <string name="permdesc_sim_communication">Mengizinkan aplikasi mengirim perintah ke SIM. Ini sangat berbahaya.</string>
@@ -2154,7 +2154,7 @@ KEMBALIKAN KE"</string>
     <string name="permdesc_subscribedFeedsRead">Mengizinkan apl mendapatkan detail tentang feed yang saat ini sedang disinkronkan.</string>
     <string name="permdesc_systemAlertWindow">Aplikasi ini dapat muncul di atas aplikasi lain atau bagian lain pada layar. Ini dapat mengganggu penggunaan aplikasi biasa dan mengubah kemunculan aplikasi lainnya.</string>
     <string name="permdesc_systemCamera">Aplikasi sistem atau yang diberi hak istimewa ini dapat mengambil gambar dan merekam video menggunakan kamera sistem kapan saja. Mewajibkan aplikasi untuk memiliki izin android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Memungkinkan aplikasi menggunakan pemancar inframerah ponsel.</string>
+    <string name="permdesc_transmitIr">Memungkinkan aplikasi menggunakan pemancar inframerah tablet.</string>
     <string name="permdesc_turnScreenOn">Mengizinkan aplikasi mengaktifkan layar.</string>
     <string name="permdesc_ucsPlugin">Bekerja dengan plugin penyimpanan kredensial pihak ketiga.</string>
     <string name="permdesc_uninstall_shortcut">Mengizinkan aplikasi menghapus pintasan Layar Utama tanpa tindakan dari pengguna.</string>
@@ -2168,10 +2168,10 @@ KEMBALIKAN KE"</string>
     <string name="permdesc_vibrate">Mengizinkan aplikasi untuk mengendalikan vibrator.</string>
     <string name="permdesc_vibrator_state">Mengizinkan aplikasi untuk mengakses status vibrator.</string>
     <string name="permdesc_videoWrite">Mengizinkan aplikasi untuk memodifikasi koleksi video Anda.</string>
-    <string name="permdesc_wakeLock">Mengizinkan apl mencegah ponsel tidur.</string>
-    <string name="permdesc_writeCalendar">Aplikasi ini dapat menambahkan, menghapus, atau mengubah acara kalender di ponsel. Aplikasi ini dapat mengirim pesan yang kelihatannya berasal dari pemilik kalender, atau mengubah acara tanpa memberi tahu pemilik.</string>
-    <string name="permdesc_writeCallLog">Memungkinkan apl memodifikasi log panggilan ponsel Anda, termasuk data tentang panggilan masuk dan keluar. Apl berbahaya dapat menggunakan ini untuk menghapus atau memodifikasi log panggilan Anda.</string>
-    <string name="permdesc_writeContacts">Mengizinkan aplikasi mengubah data tentang kontak yang disimpan di ponsel Anda. Izin ini mengizinkan aplikasi menghapus data kontak.</string>
+    <string name="permdesc_wakeLock">Mengizinkan apl mencegah tablet tidur.</string>
+    <string name="permdesc_writeCalendar">Aplikasi ini dapat menambahkan, menghapus, atau mengubah acara kalender di tablet. Aplikasi ini dapat mengirim pesan yang kelihatannya berasal dari pemilik kalender, atau mengubah acara tanpa memberi tahu pemilik.</string>
+    <string name="permdesc_writeCallLog">Memungkinkan apl memodifikasi log panggilan tablet Anda, termasuk data tentang panggilan masuk dan keluar. Apl berbahaya dapat menggunakan ini untuk menghapus atau memodifikasi log panggilan Anda.</string>
+    <string name="permdesc_writeContacts">Mengizinkan aplikasi mengubah data tentang kontak yang disimpan di tablet Anda. Izin ini mengizinkan aplikasi menghapus data kontak.</string>
     <string name="permdesc_writeSettings">Mengizinkan apl memodifikasi data setelan sistem. Apl berbahaya dapat merusak konfigurasi sistem anda.</string>
     <string name="permdesc_writeSyncSettings">Memungkinkan aplikasi mengubah setelan sinkronisasi untuk sebuah akun. Misalnya, izin ini dapat digunakan untuk mengaktifkan sinkronisasi dari aplikasi Orang dengan sebuah akun.</string>
     <string name="permgroupdesc_activityRecognition">mengakses aktivitas fisik Anda</string>
@@ -2446,7 +2446,7 @@ untuk akun %s."</string>
     <string name="permlab_uwb_ranging">menentukan posisi relatif antar-perangkat Ultra-Wideband di sekitar</string>
     <string name="permlab_vibrate">kontrol getaran</string>
     <string name="permlab_videoWrite">memodifikasi koleksi video Anda</string>
-    <string name="permlab_wakeLock">mencegah ponsel menjadi tidak aktif</string>
+    <string name="permlab_wakeLock">cegah tablet dari tidur</string>
     <string name="permlab_writeCalendar">menambah atau mengubah acara kalender dan mengirim email kepada tamu tanpa sepengetahuan pemilik</string>
     <string name="permlab_writeCallLog">menulis log panggilan</string>
     <string name="permlab_writeContacts">ubah kontak Anda</string>
@@ -2488,7 +2488,7 @@ untuk akun %s."</string>
     <string name="policydesc_allow_desktopsync">Cegah penggunaan sinkronisasi desktop.</string>
     <string name="policydesc_allow_internetsharing">Cegah penggunaan Hotspot Seluler.</string>
     <string name="policydesc_allow_irda">Cegah penggunaan IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Cegah penggunaan email POP dan IMAP di ponsel.</string>
+    <string name="policydesc_allow_popimapemail">Cegah penggunaan email POP dan IMAP di tablet.</string>
     <string name="policydesc_allow_storagecard">Cegah penggunaan kartu SD.</string>
     <string name="policydesc_allow_textmessaging">Cegah penggunaan pesan teks dan multimedia.</string>
     <string name="policydesc_allow_thirdParty">Aplikasi ini dapat mencegah aplikasi pihak ketiga berjalan.</string>
@@ -2506,10 +2506,10 @@ untuk akun %s."</string>
     <string name="policydesc_setGlobalProxy">Menyetel proxy global perangkat yang akan digunakan jika kebijakan diaktifkan. Hanya pemilik perangkat yang dapat menyetel proxy global.</string>
     <string name="policydesc_unsigned_app">Aplikasi ini dapat mencegah aplikasi dari sumber yang tidak diketahui berjalan.</string>
     <string name="policydesc_unsigned_pkg">Aplikasi ini dapat mencegah aplikasi dari sumber yang tidak diketahui diinstal.</string>
-    <string name="policydesc_watchLogin">Memantau berapa kali sandi yang dimasukkan salah saat ingin membuka kunci layar, dan mengunci ponsel atau menghapus semua data ponsel jika terjadi terlalu banyak kesalahan memasukkan sandi.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Memantau berapa kali sandi yang dimasukkan salah saat ingin membuka kunci layar, dan mengunci ponsel atau menghapus semua data pengguna ini jika terjadi terlalu banyak kesalahan memasukkan sandi.</string>
-    <string name="policydesc_wipeData">Menghapus data ponsel tanpa peringatan dengan melakukan reset ke setelan pabrik.</string>
-    <string name="policydesc_wipeData_secondaryUser">Menghapus data pengguna ini di ponsel ini tanpa peringatan.</string>
+    <string name="policydesc_watchLogin">Memantau berapa kali sandi yang dimasukkan salah saat ingin membuka kunci layar, dan mengunci tablet atau menghapus semua data tablet jika terjadi terlalu banyak kesalahan memasukkan sandi.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Memantau berapa kali sandi yang dimasukkan salah saat ingin membuka kunci layar, dan mengunci tablet atau menghapus semua data pengguna ini jika terjadi terlalu banyak kesalahan memasukkan sandi.</string>
+    <string name="policydesc_wipeData">Menghapus data tablet tanpa peringatan dengan mereset ke setelan pabrik.</string>
+    <string name="policydesc_wipeData_secondaryUser">Menghapus data pengguna ini di tablet ini tanpa peringatan.</string>
     <string name="policylab_allow_bluetoothmode">Nonaktifkan Bluetooth</string>
     <string name="policylab_allow_browser">Nonaktifkan Internet</string>
     <string name="policylab_allow_camera">Nonaktifkan kamera</string>
@@ -2543,7 +2543,7 @@ untuk akun %s."</string>
     <string name="postalTypeHome">Rumah</string>
     <string name="postalTypeOther">Lainnya</string>
     <string name="postalTypeWork">Kantor</string>
-    <string name="power_dialog">Opsi telepon</string>
+    <string name="power_dialog">Opsi tablet</string>
     <string name="power_off">Matikan</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">pada %s</string>
@@ -2589,7 +2589,7 @@ untuk akun %s."</string>
     <string name="recent_tasks_title">Terbaru</string>
     <string name="recording_fail">Tidak dapat menggunakan mikrofon di %1$s selagi digunakan di %2$s.</string>
     <string name="recording_popup">%s menggunakan mikrofon.</string>
-    <string name="recording_popup_device">Ponsel</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">%s menggunakan mikrofon Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s sedang menggunakan mikrofon %2$s.</string>
     <string name="redo">Lkukn ulg</string>
@@ -2736,12 +2736,12 @@ Mendengarkan dengan volume keras dalam waktu yang lama dapat merusak pendengaran
     <string name="screenshot_edit">Edit</string>
     <string name="sd_card_unavailable_message">Anda tidak dapat menggunakan kartu SD karena telah dimasukkan saat profil pengguna lain sedang digunakan.</string>
     <string name="sd_card_unavailable_title">Kartu SD tidak tersedia</string>
-    <string name="sdcard_bad_removal_message">Kartu SD dicabut dengan tidak aman. Agar ponsel tidak memulai ulang tiba-tiba, simpan data yang belum disimpan dan mulai ulang sekarang.</string>
+    <string name="sdcard_bad_removal_message">Kartu SD dicabut dengan tidak aman. Agar tablet tidak memulai ulang tiba-tiba, simpan data yang belum disimpan dan mulai ulang sekarang.</string>
     <string name="sdcard_batch_decrypt_noti_content">Dekripsi kartu SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Dekripsi kartu SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Kartu SD yang dienkripsi harus didekripsi sebelum digunakan. Dekripsi mungkin memerlukan waktu satu jam atau lebih. Mulai dengan pengisian baterai dan biarkan perangkat tetap tersambung sampai dekripsi selesai. Menghentikan proses dekripsi dapat menyebabkan hilangnya sebagian atau semua data.</string>
     <string name="sdcard_decrypt_err_notification">Kesalahan dekripsi kartu SD terjadi.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Beberapa file di kartu SD Anda dienkripsi di perangkat lain dan tidak dapat digunakan di ponsel ini.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Beberapa file di kartu SD Anda dienkripsi di perangkat lain dan tidak dapat digunakan di tablet ini.</string>
     <string name="sdcard_decrypt_notification">Kartu SD terdekripsi.</string>
     <string name="sdcard_decrypt_title_notification">Dekripsi kartu SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Mendekripsi kartu SD…</string>
@@ -2999,7 +2999,7 @@ Untuk membuat tombol muncul kembali, usap ke atas dari bawah layar seperti yang 
     <string name="showing_touch_sensitivity_noti_action">Aktifkan</string>
     <string name="showing_touch_sensitivity_noti_text">Aktifkan Sensitivitas sentuh saat menggunakan Privacy Screen atau Notepaper Screen untuk respons sentuh yang lebih akurat.</string>
     <string name="showing_touch_sensitivity_noti_title">Tingkatkan sensitivitas sentuh</string>
-    <string name="shutdown_confirm">Ponsel Anda akan dimatikan.</string>
+    <string name="shutdown_confirm">Tablet Anda akan dimatikan.</string>
     <string name="shutdown_confirm_question">Anda ingin mematikannya?</string>
     <string name="shutdown_progress">Sedang mematikan...</string>
     <string name="side_key_double_press_deleted_app">Instalasi aplikasi dihapus. Pilih yang lain.</string>
@@ -3226,7 +3226,7 @@ Untuk menghapus perlindungan ini, buka Pengaturan > Keamanan dan privasi > Pembl
     <string name="usb_abnormal_reset_title">Sambungan USB tidak stabil</string>
     <string name="usb_abnormal_reset_toast">Sambungan USB tidak stabil. Cabut kabel dan colokkan lagi, atau coba kabel yang berbeda.</string>
     <string name="usb_accessory_notification_title">Terhubung ke aksesori USB</string>
-    <string name="usb_bad_removal_message">Perangkat penyimpanan USB tidak dicabut dengan aman. Agar ponsel tidak memulai ulang tiba-tiba, simpan data yang belum disimpan dan mulai ulang sekarang.</string>
+    <string name="usb_bad_removal_message">Perangkat penyimpanan USB tidak dicabut dengan aman. Agar tablet tidak memulai ulang tiba-tiba, simpan data yang belum disimpan dan mulai ulang sekarang.</string>
     <string name="usb_blocked_by_emergency_mode">Beberapa fungsi USB tidak tersedia dalam mode Darurat.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Tidak dapat menggunakan fungsi yang terkait dengan perangkat USB tersambung saat Mode hemat daya maksimum aktif.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Beberapa fungsi USB akan dibatasi saat Mode hemat daya maksimum aktif.</string>
@@ -3236,7 +3236,7 @@ Untuk menghapus perlindungan ini, buka Pengaturan > Keamanan dan privasi > Pembl
     <string name="usb_camera_disconnected_notification_title">Koneksi perangkat media terputus</string>
     <string name="usb_cd_installer_notification_title">Pembaruan perangkat lunak</string>
     <string name="usb_charging_notification_title">Daya perangkat sedang diisi via USB</string>
-    <string name="usb_charing_only_notification_title">Pengisian daya USB</string>
+    <string name="usb_charing_only_notification_title">Tersambung</string>
     <string name="usb_contaminant_detected_message">Port USB otomatis dinonaktifkan. Ketuk untuk mempelajari lebih lanjut.</string>
     <string name="usb_contaminant_detected_title">Cairan atau kotoran di port USB</string>
     <string name="usb_contaminant_not_detected_message">Ponsel tidak lagi mendeteksi adanya cairan atau kotoran.</string>
@@ -3248,11 +3248,11 @@ Untuk menghapus perlindungan ini, buka Pengaturan > Keamanan dan privasi > Pembl
     <string name="usb_host_cable_disconnected_notification_title">Konektor USB terputus.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Tidak dapat mengakses perangkat ini. Perangkat tersambung memerlukan catu daya eksternal.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Perangkat USB berdaya besar tersambung.</string>
-    <string name="usb_host_resource_exceed_message">Pengontrol USB ponsel Anda tidak memiliki cukup sumber daya untuk menyambungkan perangkat ini. Coba putuskan sambungan perangkat, lalu sambungkan lagi.</string>
+    <string name="usb_host_resource_exceed_message">Pengontrol USB tablet Anda tidak memiliki cukup sumber daya untuk menyambungkan perangkat ini. Coba putuskan sambungan perangkat, dan sambungkan lagi.</string>
     <string name="usb_host_resource_exceed_title">Sumber daya pengontrol USB tidak cukup</string>
-    <string name="usb_hub_depth_exceed_message">Ponsel Anda hanya dapat mendukung hingga 5 koneksi hub USB sekaligus.</string>
+    <string name="usb_hub_depth_exceed_message">Tablet Anda hanya dapat mendukung hingga 5 koneksi USB sekaligus.</string>
     <string name="usb_hub_depth_exceed_title">Koneksi hub USB maksimum</string>
-    <string name="usb_hub_power_exceed_message">Ponsel Anda tidak dapat menyediakan cukup daya untuk perangkat USB ini. Sambungkan perangkat ke hub USB berdaya mandiri sebelum menyambungkannya ke ponsel Anda.</string>
+    <string name="usb_hub_power_exceed_message">Tablet Anda tidak dapat memberikan cukup daya untuk perangkat USB ini. Sambungkan perangkat ke hub USB berdaya mandiri sebelum menyambungkannya ke tablet.</string>
     <string name="usb_increase_battery_usage">Koneksi USB dapat meningkatkan penggunaan baterai.</string>
     <string name="usb_keyboard_connected_notification_title">Papan tombol tersambung</string>
     <string name="usb_keyboard_disconnected_notification_title">Papan tombol terputus</string>
@@ -3295,8 +3295,8 @@ Untuk menghapus perlindungan ini, buka Pengaturan > Keamanan dan privasi > Pembl
     <string name="usb_ums_connected_notification_message_usbhost">Media penyimpanan USB dilepas secara tiba-tiba.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Media penyimpanan USB tersambung</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Media penyimpanan USB telah dilepas dengan aman.</string>
-    <string name="usb_unblock_by_screen_unlock">Buka kunci ponsel Anda untuk menggunakan perangkat USB yang tersambung.</string>
-    <string name="usb_unsupport_accessory_message">Perangkat USB ini tidak didukung oleh ponsel Anda.</string>
+    <string name="usb_unblock_by_screen_unlock">Buka kunci tablet Anda untuk menggunakan perangkat USB yang tersambung.</string>
+    <string name="usb_unsupport_accessory_message">Perangkat USB ini tidak didukung oleh tablet Anda.</string>
     <string name="usb_unsupport_accessory_title">Perangkat USB tidak didukung</string>
     <string name="usb_unsupported_audio_accessory_message">Perangkat yang terpasang tidak kompatibel dengan ponsel ini. Ketuk untuk mempelajari lebih lanjut.</string>
     <string name="usb_unsupported_audio_accessory_title">Aksesori audio analog terdeteksi</string>
@@ -3317,19 +3317,19 @@ Untuk menghapus perlindungan ini, buka Pengaturan > Keamanan dan privasi > Pembl
     <string name="usb_water_dialg_method_2_desc_2">Anda dapat mempercepat pengeringan dengan mengarahkan kipas atau pengering (hanya udara dingin) ke port.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Kami mendeteksi kelembapan atau benda asing di port pengisian daya/USB Anda.
 
-Periksa port pengisian daya/USB apabila ada benda asing, seperti debu atau kotoran. Untuk mencegah kerusakan pada ponsel Anda, jangan mencolokkan apa pun hingga port pengisian daya bersih dan kelembapannya hilang.
+Periksa port pengisian daya/USB apabila ada benda asing, seperti debu atau kotoran. Untuk mencegah kerusakan pada tablet Anda, jangan mencolokkan apa pun hingga port pengisian daya bersih dan kelembapannya hilang.
 
 Untuk mengeringkan port, hilangkan kelembapannya lalu tunggu sampai kering. Ini bisa memakan waktu beberapa jam. Anda dapat mempercepat pengeringan dengan mengarahkan kipas atau pengering (hanya udara dingin) ke port."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Kami mendeteksi kelembapan atau benda asing di port pengisian daya/USB Anda.
 
-Periksa port pengisian daya/USB apabila ada benda asing, seperti debu atau kotoran. Untuk mencegah kerusakan pada ponsel Anda, jangan mencolokkan apa pun hingga port pengisian daya bersih dan kelembapannya hilang.
+Periksa port pengisian daya/USB bila ada benda asing, seperti debu atau kotoran. Untuk mencegah kerusakan pada tablet Anda, jangan mencolokkan apa pun hingga port pengisian daya bersih dan kelembapannya hilang.
 
 Untuk mengeringkan port, hilangkan kelembapannya lalu tunggu sampai kering. Ini bisa memakan waktu beberapa jam. Anda dapat mempercepat pengeringan dengan mengarahkan kipas atau pengering (hanya udara dingin) ke port.
 
-Sementara itu, Anda dapat mengisi daya ponsel secara nirkabel."</string>
+Sementara itu, Anda dapat mengisi daya tablet secara nirkabel."</string>
     <string name="usb_water_notification_content">Ada benda asing atau lembap di port USB/pengisian daya. Periksa sebelum mengisi daya.</string>
-    <string name="usb_water_notification_message">Kelembapan terdeteksi di port USB/pengisi daya Anda. Pastikan port kering sebelum mengisi daya ponsel. Mungkin perlu beberapa waktu hingga benar-benar kering.</string>
+    <string name="usb_water_notification_message">Kelembapan terdeteksi di port USB/pengisi daya Anda. Pastikan port kering sebelum mengisi daya tablet. Mungkin perlu beberapa waktu hingga benar-benar kering.</string>
     <string name="usb_water_notification_message_button">Rincian</string>
     <string name="usb_water_notification_title">Perisa pengisi daya/port USB</string>
     <string name="usbhostStorage_restrict">Kebijakan keamanan mencegah penggunaan penyimpanan host USB.</string>
@@ -3347,7 +3347,7 @@ Sementara itu, Anda dapat mengisi daya ponsel secara nirkabel."</string>
     <string name="user_switched">Pengguna saat ini %1$s.</string>
     <string name="user_switching_message">Beralih ke %1$s…</string>
     <string name="validity_period">Validitas:</string>
-    <string name="vdm_camera_access_denied">Tidak dapat mengakses kamera ponsel dari %1$s</string>
+    <string name="vdm_camera_access_denied">Tidak dapat mengakses kamera tablet dari %1$s</string>
     <string name="vdm_pip_blocked">Tidak dapat menampilkan picture-in-picture saat streaming</string>
     <string name="vdm_secure_window">Konten ini tidak dapat diakses saat melakukan streaming. Coba di ponsel.</string>
     <string name="view_and_control_notification_content">%s dapat melihat dan mengontrol layar Anda. Ketuk untuk meninjau.</string>

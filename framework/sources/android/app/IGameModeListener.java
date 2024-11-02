@@ -88,8 +88,9 @@ public interface IGameModeListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IGameModeListener {
+        public static class Proxy implements IGameModeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

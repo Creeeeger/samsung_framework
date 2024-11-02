@@ -16,13 +16,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class CursorAnchorInfo implements Parcelable {
     public static final Parcelable.Creator<CursorAnchorInfo> CREATOR = new Parcelable.Creator<CursorAnchorInfo>() { // from class: android.view.inputmethod.CursorAnchorInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CursorAnchorInfo createFromParcel(Parcel source) {
             return new CursorAnchorInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CursorAnchorInfo[] newArray(int size) {
             return new CursorAnchorInfo[size];
@@ -262,7 +263,6 @@ public final class CursorAnchorInfo implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static CursorAnchorInfo create(Builder builder) {
         SparseRectFArray characterBoundsArray;
         if (builder.mCharacterBoundsArrayBuilder != null) {
@@ -396,6 +396,23 @@ public final class CursorAnchorInfo implements Parcelable {
         Matrix matrix = new Matrix();
         matrix.setValues(this.mMatrixValues);
         return matrix;
+    }
+
+    /* renamed from: android.view.inputmethod.CursorAnchorInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CursorAnchorInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CursorAnchorInfo createFromParcel(Parcel source) {
+            return new CursorAnchorInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CursorAnchorInfo[] newArray(int size) {
+            return new CursorAnchorInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

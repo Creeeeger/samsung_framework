@@ -131,7 +131,6 @@ public class NotificationManager {
         return asInterface;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public NotificationManager(Context context, Handler handler) {
         this.mContext = context;
     }
@@ -836,13 +835,14 @@ public class NotificationManager {
         private static final int[] SCREEN_OFF_SUPPRESSED_EFFECTS = {1, 4, 8, 128};
         private static final int[] SCREEN_ON_SUPPRESSED_EFFECTS = {2, 16, 32, 64, 256};
         public static final Parcelable.Creator<Policy> CREATOR = new Parcelable.Creator<Policy>() { // from class: android.app.NotificationManager.Policy.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Policy createFromParcel(Parcel in) {
                 return new Policy(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Policy[] newArray(int size) {
                 return new Policy[size];
@@ -1246,6 +1246,23 @@ public class NotificationManager {
             }
         }
 
+        /* renamed from: android.app.NotificationManager$Policy$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Policy> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Policy createFromParcel(Parcel in) {
+                return new Policy(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Policy[] newArray(int size) {
+                return new Policy[size];
+            }
+        }
+
         public boolean allowAlarms() {
             return (this.priorityCategories & 32) != 0;
         }
@@ -1496,7 +1513,6 @@ public class NotificationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class EdgeNotificationManager {
         private static final String EXTRA_SAMSUNG_NOTIFICATION_PENDINGINTENT = "samsung.notification.pendingIntent";

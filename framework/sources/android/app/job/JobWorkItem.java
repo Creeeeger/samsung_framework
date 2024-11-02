@@ -9,13 +9,14 @@ import android.os.PersistableBundle;
 /* loaded from: classes.dex */
 public final class JobWorkItem implements Parcelable {
     public static final Parcelable.Creator<JobWorkItem> CREATOR = new Parcelable.Creator<JobWorkItem>() { // from class: android.app.job.JobWorkItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public JobWorkItem createFromParcel(Parcel in) {
             return new JobWorkItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JobWorkItem[] newArray(int size) {
             return new JobWorkItem[size];
@@ -29,6 +30,10 @@ public final class JobWorkItem implements Parcelable {
     private final long mNetworkDownloadBytes;
     private final long mNetworkUploadBytes;
     int mWorkId;
+
+    /* synthetic */ JobWorkItem(Builder builder, JobWorkItemIA jobWorkItemIA) {
+        this(builder);
+    }
 
     public JobWorkItem(Intent intent) {
         this(intent, -1L, -1L);
@@ -236,6 +241,23 @@ public final class JobWorkItem implements Parcelable {
         out.writeLong(this.mMinimumChunkBytes);
         out.writeInt(this.mDeliveryCount);
         out.writeInt(this.mWorkId);
+    }
+
+    /* renamed from: android.app.job.JobWorkItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<JobWorkItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public JobWorkItem createFromParcel(Parcel in) {
+            return new JobWorkItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public JobWorkItem[] newArray(int size) {
+            return new JobWorkItem[size];
+        }
     }
 
     JobWorkItem(Parcel in) {

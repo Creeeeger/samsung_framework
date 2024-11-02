@@ -11,7 +11,6 @@ public abstract class FilterEffect extends Effect {
     protected EffectContext mEffectContext;
     private String mName;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public FilterEffect(EffectContext context, String name) {
         this.mEffectContext = context;
         this.mName = name;
@@ -22,23 +21,19 @@ public abstract class FilterEffect extends Effect {
         return this.mName;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void beginGLEffect() {
         this.mEffectContext.assertValidGLState();
         this.mEffectContext.saveGLState();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void endGLEffect() {
         this.mEffectContext.restoreGLState();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public FilterContext getFilterContext() {
         return this.mEffectContext.mFilterContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Frame frameFromTexture(int texId, int width, int height) {
         FrameManager manager = getFilterContext().getFrameManager();
         FrameFormat format = ImageFormat.create(width, height, 3, 3);

@@ -94,8 +94,9 @@ public interface IPnoScanEvent extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IPnoScanEvent {
+        public static class Proxy implements IPnoScanEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

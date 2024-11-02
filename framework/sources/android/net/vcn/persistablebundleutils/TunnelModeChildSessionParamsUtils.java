@@ -26,7 +26,6 @@ public final class TunnelModeChildSessionParamsUtils {
     private static final String SOFT_LIFETIME_SEC_KEY = "SOFT_LIFETIME_SEC_KEY";
     private static final String TAG = TunnelModeChildSessionParamsUtils.class.getSimpleName();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class ConfigRequest {
         private static final String IP6_PREFIX_LEN = "ip6PrefixLen";
@@ -73,7 +72,6 @@ public final class TunnelModeChildSessionParamsUtils {
             this.ip6PrefixLen = prefixLen;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public ConfigRequest(PersistableBundle in) {
             Objects.requireNonNull(in, "PersistableBundle was null");
             this.type = in.getInt("type");

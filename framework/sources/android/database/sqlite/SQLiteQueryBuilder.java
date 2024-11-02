@@ -367,7 +367,6 @@ public class SQLiteQueryBuilder {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public void enforceStrictToken(String token) {
         char c;

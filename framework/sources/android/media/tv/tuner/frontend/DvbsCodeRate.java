@@ -10,6 +10,10 @@ public class DvbsCodeRate {
     private final boolean mIsLinear;
     private final boolean mIsShortFrames;
 
+    /* synthetic */ DvbsCodeRate(long j, boolean z, boolean z2, int i, DvbsCodeRateIA dvbsCodeRateIA) {
+        this(j, z, z2, i);
+    }
+
     private DvbsCodeRate(long fec, boolean isLinear, boolean isShortFrames, int bitsPer1000Symbol) {
         this.mInnerFec = fec;
         this.mIsLinear = isLinear;
@@ -43,6 +47,10 @@ public class DvbsCodeRate {
         private long mFec;
         private boolean mIsLinear;
         private boolean mIsShortFrames;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
         }

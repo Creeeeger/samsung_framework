@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaSmsSubaddress implements Parcelable {
     public static final Parcelable.Creator<CdmaSmsSubaddress> CREATOR = new Parcelable.Creator<CdmaSmsSubaddress>() { // from class: android.hardware.radio.messaging.CdmaSmsSubaddress.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CdmaSmsSubaddress createFromParcel(Parcel _aidl_source) {
             CdmaSmsSubaddress _aidl_out = new CdmaSmsSubaddress();
@@ -17,7 +19,6 @@ public class CdmaSmsSubaddress implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsSubaddress[] newArray(int _aidl_size) {
             return new CdmaSmsSubaddress[_aidl_size];
@@ -28,6 +29,25 @@ public class CdmaSmsSubaddress implements Parcelable {
     public byte[] digits;
     public int subaddressType = 0;
     public boolean odd = false;
+
+    /* renamed from: android.hardware.radio.messaging.CdmaSmsSubaddress$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CdmaSmsSubaddress> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaSmsSubaddress createFromParcel(Parcel _aidl_source) {
+            CdmaSmsSubaddress _aidl_out = new CdmaSmsSubaddress();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaSmsSubaddress[] newArray(int _aidl_size) {
+            return new CdmaSmsSubaddress[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

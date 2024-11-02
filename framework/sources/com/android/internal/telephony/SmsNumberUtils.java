@@ -58,7 +58,6 @@ public class SmsNumberUtils {
         IDDS_MAPS = new HashMap<>();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class NumberEntry {
         public String IDD;
@@ -159,11 +158,26 @@ public class SmsNumberUtils {
         return returnNumber;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0062, code lost:            com.android.internal.telephony.SmsNumberUtils.IDDS_MAPS.put(r12, r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0069, code lost:            if (com.android.internal.telephony.SmsNumberUtils.DBG == false) goto L28;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x006b, code lost:            android.util.Log.d(com.android.internal.telephony.SmsNumberUtils.TAG, "MCC = " + r12 + ", all IDDs = " + r2);     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x008b, code lost:            return r2;     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x005f, code lost:            if (r10 == null) goto L25;     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0062, code lost:
+    
+        com.android.internal.telephony.SmsNumberUtils.IDDS_MAPS.put(r12, r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0069, code lost:
+    
+        if (com.android.internal.telephony.SmsNumberUtils.DBG == false) goto L68;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x006b, code lost:
+    
+        android.util.Log.d(com.android.internal.telephony.SmsNumberUtils.TAG, "MCC = " + r12 + ", all IDDs = " + r2);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x008b, code lost:
+    
+        return r2;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x005f, code lost:
+    
+        if (r10 == null) goto L65;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -403,8 +417,14 @@ public class SmsNumberUtils {
         return -1;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0065, code lost:            return com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES;     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:            if (r0 == null) goto L23;     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0065, code lost:
+    
+        return com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:
+    
+        if (r0 == null) goto L57;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

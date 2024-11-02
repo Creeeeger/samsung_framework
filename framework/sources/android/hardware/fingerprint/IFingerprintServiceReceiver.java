@@ -217,8 +217,9 @@ public interface IFingerprintServiceReceiver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IFingerprintServiceReceiver {
+        public static class Proxy implements IFingerprintServiceReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

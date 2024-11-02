@@ -104,6 +104,10 @@ public class JsDialogHelper {
 
     /* loaded from: classes4.dex */
     private class CancelListener implements DialogInterface.OnCancelListener, DialogInterface.OnClickListener {
+        /* synthetic */ CancelListener(JsDialogHelper jsDialogHelper, CancelListenerIA cancelListenerIA) {
+            this();
+        }
+
         private CancelListener() {
         }
 

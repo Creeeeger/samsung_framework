@@ -36,17 +36,16 @@ public class IsrbHooks {
     private static volatile boolean mCrashing = false;
     private static final String[] ISRBSKIPSERVICE = {"com.android.server.slice.SliceManagerService$Lifecycle", "com.android.server.telecom.TelecomLoaderService", "com.android.server.privilege.SemPrivilegeManagerService", "com.android.server.BluetoothService", "com.android.server.connectivity.IpConnectivityMetrics", "com.android.server.net.watchlist.NetworkWatchlistService$Lifecycle", "com.android.server.PinnerService", "com.google.android.startop.iorap.IorapForwardingService", "com.android.server.integrity.AppIntegrityManagerService", "com.android.server.appprediction.AppPredictionManagerService", "com.android.server.testharness.TestHarnessModeService", "com.android.server.contentcapture.ContentCaptureManagerService", "com.android.server.systemcaptions.SystemCaptionsManagerService", "com.android.server.textservices.TextServicesManagerService$Lifecycle", "com.android.server.textclassifier.TextClassificationManagerService$Lifecycle", "com.android.server.DockObserver", "com.android.server.midi.MidiService$Lifecycle", "com.android.server.usb.UsbService$Lifecycle", "com.android.server.twilight.TwilightService", "com.android.server.backup.BackupManagerService$Lifecycle", "com.android.server.GestureLauncherService", "com.android.server.SensorNotificationService", "com.android.server.emergency.EmergencyAffordanceService", "com.android.server.print.PrintManagerService", "com.android.server.companion.CompanionDeviceManagerService", "com.android.server.restrictions.RestrictionsManagerService", "com.android.server.cocktailbar.CocktailBarManagerService", "com.android.server.cover.CoverManagerService", "com.android.server.media.MediaResourceMonitorService", "com.android.server.camera.CameraServiceProxy", "com.samsung.android.camera.CameraServiceWorker", "com.android.server.incident.IncidentCompanionService", "com.android.server.MmsServiceBroker", "com.android.server.autofill.AutofillManagerService", "com.android.server.clipboard.ClipboardService", "com.android.server.appbinding.AppBindingService$Lifecycle", "com.android.server.soundtrigger_middleware.SoundTriggerMiddlewareService$Lifecycle", "com.android.server.soundtrigger.SoundTriggerService", "com.android.server.blob.BlobStoreManagerService", "com.android.server.voiceinteraction.VoiceInteractionManagerService"};
 
-    /* renamed from: -$$Nest$smcheckServiceState, reason: not valid java name */
-    static /* bridge */ /* synthetic */ boolean m8990$$Nest$smcheckServiceState() {
+    /* renamed from: -$$Nest$smcheckServiceState */
+    static /* bridge */ /* synthetic */ boolean m8982$$Nest$smcheckServiceState() {
         return checkServiceState();
     }
 
-    /* renamed from: -$$Nest$smgetEnterIdle, reason: not valid java name */
-    static /* bridge */ /* synthetic */ boolean m8991$$Nest$smgetEnterIdle() {
+    /* renamed from: -$$Nest$smgetEnterIdle */
+    static /* bridge */ /* synthetic */ boolean m8983$$Nest$smgetEnterIdle() {
         return getEnterIdle();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int Clog_e(String tag, String msg, Throwable tr) {
         return Log.printlns(4, 6, tag, msg, tr);
     }
@@ -61,10 +60,13 @@ public class IsrbHooks {
         Clog_e(TAG, message.toString(), e);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
     public static class LoggingHandler implements Thread.UncaughtExceptionHandler {
         public volatile boolean mTriggered;
+
+        /* synthetic */ LoggingHandler(LoggingHandlerIA loggingHandlerIA) {
+            this();
+        }
 
         private LoggingHandler() {
             this.mTriggered = false;
@@ -85,11 +87,14 @@ public class IsrbHooks {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
     public static class ISRBExceptionHandler implements Thread.UncaughtExceptionHandler {
         private final Thread.UncaughtExceptionHandler mHandler;
         private final LoggingHandler mLoggingHandler;
+
+        /* synthetic */ ISRBExceptionHandler(Thread.UncaughtExceptionHandler uncaughtExceptionHandler, LoggingHandler loggingHandler, ISRBExceptionHandlerIA iSRBExceptionHandlerIA) {
+            this(uncaughtExceptionHandler, loggingHandler);
+        }
 
         private ISRBExceptionHandler(Thread.UncaughtExceptionHandler handler, LoggingHandler loggingHandler) {
             this.mHandler = handler;
@@ -109,7 +114,7 @@ public class IsrbHooks {
         @Override // java.lang.Thread.UncaughtExceptionHandler
         public void uncaughtException(Thread thread, Throwable ex) {
             IsrbHooks.mApplicationObject = RuntimeInit.getApplicationObject();
-            if (IsrbHooks.mApplicationObject == null && 1000 == Process.myUid() && !IsrbHooks.m8990$$Nest$smcheckServiceState()) {
+            if (IsrbHooks.mApplicationObject == null && 1000 == Process.myUid() && !IsrbHooks.m8982$$Nest$smcheckServiceState()) {
                 Slog.d(IsrbHooks.TAG, "checkServiceState is NULL");
                 IsrbHooks.mState = 0;
                 Thread.UncaughtExceptionHandler uncaughtExceptionHandler = this.mHandler;
@@ -162,9 +167,12 @@ public class IsrbHooks {
                 if (IsrbHooks.mApplicationObject == null && 1000 == Process.myUid()) {
                     Handler checkhandler = new Handler(Looper.getMainLooper());
                     checkhandler.postDelayed(new Runnable() { // from class: com.samsung.isrb.IsrbHooks.ISRBExceptionHandler.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
-                            if (IsrbHooks.m8991$$Nest$smgetEnterIdle()) {
+                            if (IsrbHooks.m8983$$Nest$smgetEnterIdle()) {
                                 Slog.d(IsrbHooks.TAG, "successfully enter idle");
                             } else {
                                 IsrbHooks.mState = 2;
@@ -195,6 +203,24 @@ public class IsrbHooks {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        /* renamed from: com.samsung.isrb.IsrbHooks$ISRBExceptionHandler$1 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (IsrbHooks.m8983$$Nest$smgetEnterIdle()) {
+                    Slog.d(IsrbHooks.TAG, "successfully enter idle");
+                } else {
+                    IsrbHooks.mState = 2;
+                    Slog.d(IsrbHooks.TAG, "can not enter idle, we should back to rescue party");
+                    throw new RuntimeException("exit frorm loop to next step");
                 }
             }
         }
@@ -236,7 +262,7 @@ public class IsrbHooks {
         }
 
         private boolean isBooting(Throwable e) {
-            if (!IsrbHooks.m8990$$Nest$smcheckServiceState()) {
+            if (!IsrbHooks.m8982$$Nest$smcheckServiceState()) {
                 return true;
             }
             if (e == null) {
@@ -276,13 +302,14 @@ public class IsrbHooks {
     }
 
     public static void init() {
-        String str = SystemProperties.get("persist.sys.rescue_mode", "");
-        if (SystemProperties.getBoolean(PROP_ENABLE_ISRB, false) && !"isrb_boot".equals(str)) {
-            String currentProcessName = getCurrentProcessName();
-            if (!("system_server".equals(currentProcessName) || AsPackageName.SYSTEMUI.equals(currentProcessName) || "com.android.networkstack.process".equals(currentProcessName) || "com.android.phone".equals(currentProcessName))) {
+        String isrbmode = SystemProperties.get("persist.sys.rescue_mode", "");
+        if (SystemProperties.getBoolean(PROP_ENABLE_ISRB, false) && !"isrb_boot".equals(isrbmode)) {
+            String mProcessName = getCurrentProcessName();
+            if (!("system_server".equals(mProcessName) || AsPackageName.SYSTEMUI.equals(mProcessName) || "com.android.networkstack.process".equals(mProcessName) || "com.android.phone".equals(mProcessName))) {
                 return;
             }
-            Thread.setDefaultUncaughtExceptionHandler(new ISRBExceptionHandler(Thread.getDefaultUncaughtExceptionHandler(), new LoggingHandler()));
+            LoggingHandler loggingHandler = new LoggingHandler();
+            Thread.setDefaultUncaughtExceptionHandler(new ISRBExceptionHandler(Thread.getDefaultUncaughtExceptionHandler(), loggingHandler));
             mState = 0;
         }
     }

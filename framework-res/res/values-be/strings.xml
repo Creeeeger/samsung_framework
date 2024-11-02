@@ -275,12 +275,12 @@
     <string name="allow_settings_changes">Палітыка бяспекі забараняе змяненне налад.</string>
     <string name="alwaysUse">Выкарыстоўваць стандартна для гэтага дзеяння.</string>
     <string name="android_preparing_apk">Падрыхтоўка %1$s.</string>
-    <string name="android_start_title">Запуск тэлефона…</string>
+    <string name="android_start_title">Запуск планшэта…</string>
     <string name="android_system_label">Сістэма Android</string>
     <string name="android_upgrading_complete">Завяршэнне загрузкі.</string>
     <string name="android_upgrading_notification_title">Завяршэнне абнаўлення сістэмы…</string>
     <string name="android_upgrading_starting_apps">Запуск прыкладанняў.</string>
-    <string name="android_upgrading_title">Абнаўленне тэлефона…</string>
+    <string name="android_upgrading_title">Абнаўленне планшэта…</string>
     <string name="anr_activity_application">%2$s не адказвае</string>
     <string name="anr_activity_process">%1$s не адказвае</string>
     <string name="anr_application_process">%1$s не адказвае</string>
@@ -302,16 +302,16 @@
     <string name="app_not_found">Прыкладанне для гэтага дзеяння не знойдзенае</string>
     <string name="app_running_notification_text">Дакраніцеся, каб атрымаць дадатковую інфармацыю або спыніць праграму.</string>
     <string name="app_running_notification_title">Прыкладанне %1$s працуе</string>
-    <string name="app_streaming_blocked_message">Не ўдаецца атрымаць доступ з вашай прылады \"%1$s\". Паспрабуйце скарыстаць тэлефон.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Гэтай праграме патрабуецца дадатковая бяспека. Паспрабуйце скарыстаць тэлефон.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Не ўдаецца атрымаць доступ з прылады \"%1$s\". Паспрабуйце скарыстаць тэлефон.</string>
+    <string name="app_streaming_blocked_message">Не ўдаецца атрымаць доступ з вашай прылады \"%1$s\". Паспрабуйце скарыстаць планшэт.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Гэтай праграме патрабуецца дадатковая бяспека. Паспрабуйце скарыстаць планшэт.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Не ўдаецца атрымаць доступ з прылады \"%1$s\". Паспрабуйце скарыстаць планшэт.</string>
     <string name="app_streaming_blocked_title">Недаступна: %1$s</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Камера недаступная</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Працягніце на тэлефоне</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Мікрафон недаступны</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Патрабуецца дазвол</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Крама Play недаступная</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Налады тэлефона недаступныя</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Налады планшэта недаступныя</string>
     <string name="app_suspended_default_message">Праграма \"%1$s\" цяпер недаступная. Яна кіруецца праграмай \"%2$s\".</string>
     <string name="app_suspended_more_details">Даведацца больш</string>
     <string name="app_suspended_title">Праграма недаступная</string>
@@ -353,7 +353,7 @@
     <string name="backup_restrict">Палітыка бяспекі забараняе ўжыванне рэзервовага капіравання.</string>
     <string name="badPin">Стары PIN-код уведзены няправільна.</string>
     <string name="badPuk">Няправільны PUK-код.</string>
-    <string name="battery_saver_charged_notification_summary">У тэлефона дастатковы ўзровень зараду. Функцыі больш не абмежаваны.</string>
+    <string name="battery_saver_charged_notification_summary">У планшэта дастатковы ўзровень зараду. Функцыі больш не абмежаваны.</string>
     <string name="battery_saver_description">У рэжыме энергазберажэння ўключаецца цёмная тэма і выключаюцца ці абмяжоўваюцца дзеянні ў фонавым рэжыме, некаторыя візуальныя эфекты, пэўныя функцыі і падключэнні да сетак.</string>
     <string name="battery_saver_description_with_learn_more">У рэжыме энергазберажэння ўключаецца цёмная тэма і выключаюцца ці абмяжоўваюцца дзеянні ў фонавым рэжыме, некаторыя візуальныя эфекты, пэўныя функцыі і падключэнні да сетак.</string>
     <string name="battery_saver_notification_channel_name">Рэжым энергазберажэння</string>
@@ -532,7 +532,7 @@
     <string name="decline">Адхіліць</string>
     <string name="decline_remote_bugreport_action">АДХІЛІЦЬ</string>
     <string name="default_audio_route_category_name">Сістэма</string>
-    <string name="default_audio_route_name">Тэлефон</string>
+    <string name="default_audio_route_name">Планшэт</string>
     <string name="default_audio_route_name_dock_speakers">Дынамікі станцыi</string>
     <string name="default_audio_route_name_external_device">Знешняя прылада</string>
     <string name="default_audio_route_name_headphones">Навушнікі</string>
@@ -618,7 +618,7 @@
     <string name="emergency_call_dialog_number_for_display">Нумар экстранай службы</string>
     <string name="emergency_calls_only">Толькі экстранныя выклікі</string>
     <string name="enablePin">Не атрымалася, уключыце блакіроўку SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">Служба доступу %1$s запытвае ўключэнне функцыі Explore by Touch. Калі функцыя Explore by Touch будзе ўключаная, вы зможаце пачуць або ўбачыць апісанні таго, што знаходзіцца пад вашым пальцам, або выконваць жэсты для ўзаемадзеяння з тэлефонам.</string>
+    <string name="enable_explore_by_touch_warning_message">Служба доступу %1$s запытвае ўключэнне функцыі Explore by Touch. Калі функцыя Explore by Touch будзе ўключаная, вы зможаце пачуць або ўбачыць апісанні таго, што знаходзіцца пад вашым пальцам, або выконваць жэсты для ўзаемадзеяння з планшэтам.</string>
     <string name="enable_explore_by_touch_warning_title">Уключыць функцыю Explore by Touch?</string>
     <string name="error_message_change_not_allowed">Ваш адміністратар не дазваляе гэту змену</string>
     <string name="error_message_title">Памылка</string>
@@ -834,7 +834,7 @@
     <string name="global_action_toggle_sealed_mode">Рэжым Sealed mode</string>
     <string name="global_action_toggle_silent_mode">Бязгучны рэжым</string>
     <string name="global_action_voice_assist">Галас. дапамога</string>
-    <string name="global_actions">Параметры тэлефона</string>
+    <string name="global_actions">Параметры планшэта</string>
     <string name="global_actions_airplane_mode_off_status">Рэжым \"У самалёце\" адключаны</string>
     <string name="global_actions_airplane_mode_on_status">Уключаны рэжым \"У самалёце\"</string>
     <string name="global_actions_toggle_airplane_mode">Рэжым палёту</string>
@@ -980,8 +980,8 @@
     <string name="kg_failed_attempts_almost_at_login">"Вы няправільна ўвялі графічны ключ разблакiроўкi пэўную колькасць разоў: %1$d. Пасля яшчэ некалькiх няўдалых спроб (%2$d) вам будзе прапанавана разблакiраваць тэлефон, увайшоўшы ў Google.
 
  Паўтарыце спробу праз %3$d с."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Вы няправільна спрабавалі разблакiраваць планшэт некалькi разоў (%1$d). Пасля яшчэ некалькiх спроб (%2$d) ён будзе скінуты да завадскіх налад i карыстальнiцкiя дадзеныя будуць згубленыя.</string>
-    <string name="kg_failed_attempts_now_wiping">Вы няправільна спрабавалі разблакiраваць тэлефон некалькi разоў (%d). Цяпер ён будзе скінуты да завадскіх налад.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Вы няправільна спрабавалі разблакiраваць планшэт некалькi разоў (%1$d). Пасля яшчэ некалькiх спроб (%2$d) ён будзе скінуты да заводскіх налад i карыстальнiцкiя дадзеныя будуць згубленыя.</string>
+    <string name="kg_failed_attempts_now_wiping">Вы няправільна спрабавалі разблакiраваць планшэт некалькi разоў (%d). Цяпер ён будзе скінуты да завадскіх налад.</string>
     <string name="kg_forgot_pattern_button_text">Забылі ключ</string>
     <string name="kg_invalid_confirm_pin_hint">PIN-коды не супадаюць</string>
     <string name="kg_invalid_puk">Паўторна увядзіце правільны PUK-код. Неаднаразовыя спробы назаўжды адключаць SIM-карту.</string>
@@ -1049,10 +1049,10 @@
     <string name="lockscreen_carrier_default">Не абслугоўваецца</string>
     <string name="lockscreen_emergency_call">Экстранны выклік</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe">Вы няправільна спрабавалі разблакаваць планшэт некалькi разоў (%1$d). Пасля яшчэ некалькiх спробаў (%2$d) ён будзе скінуты да заводскіх налад i карыстальнiцкiя дадзеныя будуць згубленыя.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Вы няправільна ўвялі графічны ключ разблакавання пэўную колькасць разоў: %1$d. Пасля яшчэ некалькiх няўдалых спроб (%2$d) вам будзе прапанавана разблакаваць тэлефон з дапамогай уваходу ў Google.
+    <string name="lockscreen_failed_attempts_almost_glogin">"Вы няправільна ўвялі графічны ключ разблакавання пэўную колькасць разоў: %1$d. Пасля яшчэ некалькiх няўдалых спроб (%2$d) вам будзе прапанавана разблакаваць планшэт з дапамогай уваходу ў Google.
 
  Паўтарыце спробу праз наступную колькасць секунд: %3$d."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Вы няправільна спрабавалі разблакаваць тэлефон некалькi разоў (%d). Цяпер ён будзе скінуты да заводскіх налад.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Вы няправільна спрабавалі разблакаваць планшэт некалькi разоў (%d). Цяпер ён будзе скінуты да заводскіх налад.</string>
     <string name="lockscreen_forgot_pattern_button_text">Забылі ўзор?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Забыліся на імя карыстальніка або пароль?
 Наведайце "<b>google.com/accounts/recovery</b></string>
@@ -1068,7 +1068,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Націсніце \"Меню\", каб разблакаваць, або зрабіце экстраны выклік.</string>
     <string name="lockscreen_missing_sim_instructions">Дадайце SIM-карту.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM-карта адсутнічае ці не чытаецца. Дадайце SIM-карту.</string>
-    <string name="lockscreen_missing_sim_message">У тэлефоне няма SIM-карты.</string>
+    <string name="lockscreen_missing_sim_message">У планшэце няма SIM-карты.</string>
     <string name="lockscreen_missing_sim_message_short">Няма SIM-карты</string>
     <string name="lockscreen_network_locked_message">Сетка заблакаваная</string>
     <string name="lockscreen_password_wrong">Паўтарыце спробу</string>
@@ -1108,7 +1108,7 @@
     <string name="low_internal_storage_view_text">Некаторыя сістэмныя функцыі могуць не працаваць</string>
     <string name="low_internal_storage_view_text_no_boot">Не хапае сховішча для сістэмы. Пераканайцеся, што ў вас ёсць 250 МБ свабоднага месца, і перазапусціце.</string>
     <string name="low_internal_storage_view_title">Месца для захавання на зыходзе</string>
-    <string name="low_memory">Памяць тэлефона поўная. Выдаліце ​​некаторыя файлы, каб вызваліць месца.</string>
+    <string name="low_memory">Памяць планшэта поўная. Выдаліце некаторыя файлы, каб вызваліць месца.</string>
     <string name="managed_profile_app_label">Пераключыцца на працоўны профіль %1$s</string>
     <string name="managed_profile_label">Пераключыцца на працоўны профіль</string>
     <string name="managed_profile_label_badge">%1$s (праца)</string>
@@ -1444,23 +1444,23 @@
     <string name="permdesc_bindNotificationListenerService">"Дазваляе ўладальніку прывязвацца да верхняга ўзроўню інтэрфейсу службы  апавяшчэння слухачоў. Ніколі не патрэбнае для звычайных прыкладанняў."</string>
     <string name="permdesc_bind_connection_service">Дазваляе праграме ўзаемадзейнічаць са службамі тэлефаніі, каб рабіць/прымаць выклікі.</string>
     <string name="permdesc_bind_incall_service">Дазваляе праграме кіраваць тым, калі і як карыстальнік бачыць экран бягучага выкліку.</string>
-    <string name="permdesc_bluetooth">Дазваляе прыкладанню праглядаць канфігурацыю Bluetooth на тэлефоне , а таксама здзяйсняць і прымаць злучэнні са спалучанымі прыладамі.</string>
-    <string name="permdesc_bluetoothAdmin">Дазваляе праграме наладжваць лакальны тэлефон Bluetooth, а таксама знаходзіць выдаленыя прылады i спалучаць ix.</string>
+    <string name="permdesc_bluetooth">Дазваляе прыкладанню праглядаць канфігурацыю Bluetooth на планшэце , а таксама здзяйсняць і прымаць злучэнні са спалучанымі прыладамі.</string>
+    <string name="permdesc_bluetoothAdmin">Дазваляе праграме наладжваць лакальны планшэт Bluetooth, выяўляць і спалучаць выдаленыя прылады.</string>
     <string name="permdesc_bluetooth_advertise">Дазволіць праграме адпраўляць рэкламу на прылады з Bluetooth, якія знаходзяцца паблізу</string>
     <string name="permdesc_bluetooth_connect">Дазваляе праграме падключацца да спалучаных прылад з Bluetooth</string>
     <string name="permdesc_bluetooth_scan">Дазваляе праграме выяўляць прылады з Bluetooth і спалучацца з імі</string>
     <string name="permdesc_bodySensors">Праграма ў час яе выкарыстання будзе мець доступ да даных датчыкаў цела, такіх як пульс, тэмпература і працэнт утрымання ў крыві кіслароду.</string>
     <string name="permdesc_bodySensors_background">Праграма ў час яе працы ў фонавым рэжыме будзе мець доступ да даных датчыкаў цела, такіх як пульс, тэмпература і працэнт утрымання ў крыві кіслароду.</string>
-    <string name="permdesc_broadcastSticky">Дазваляе прыкладанню адпраўляць далейшыя звязаныя перадачы, якія застаюцца пасля заканчэння асноўнай перадачы. Злоўжыванне можа зрабіць працу тэлефона павольнай або няўстойлівай, прымушаючы яго выкарыстоўваць занадта шмат памяці.</string>
+    <string name="permdesc_broadcastSticky">Дазваляе прыкладанням адпраўляць далейшыя звязаныя перадачы, якія застаюцца пасля заканчэння асноўнай перадачы. Злоўжыванне можа зрабіць працу планшэта павольнай або няўстойлівай, прымушаючы яго выкарыстоўваць занадта шмат памяці.</string>
     <string name="permdesc_callCompanionApp">Дазваляе праграме праглядаць на прыладзе ўваходныя выклікі і кіраваць імі. Гэта інфармацыя ўключае нумары выклікаў і звесткі пра іх краіну.</string>
     <string name="permdesc_callPhone">Дазваляе праграме тэлефанаваць на тэлефонныя нумары без вашага ўдзелу. У выніку вы можаце пабачыць нечаканыя плацяжы і званкі. Аднак праграма не зможа рабіць выклікі на нумары экстранных службаў. Шкодныя праграмы могуць прыносіць выдаткі, робячы выклікі без вашага пацвярджэння, або набіраючы коды аператараў, з якімі ўваходныя выклікі аўтаматычна перанакіроўваюцца на іншы нумар.</string>
     <string name="permdesc_camera">Гэта праграма падчас яе выкарыстання можа рабіць фота і запісваць відэа з дапамогай камеры.</string>
     <string name="permdesc_cameraOpenCloseListener">Гэта праграма можа атрымліваць зваротныя выклікі, калі адкрываецца (праграмай) або закрываецца прылада камеры.</string>
     <string name="permdesc_changeNetworkState">Дазваляе прыкладанням змяняць стан сеткавага падключэння.</string>
     <string name="permdesc_changeTetherState">Дазваляе прыкладанням змяняць стан прывязкі да сеткі.</string>
-    <string name="permdesc_changeWifiMulticastState">Дазваляе прыкладанням атрымліваць пакеты, адпраўленыя на ўсе прылады з сеткi Wi-Fi з дапамогай групавых адрасоў, а не толькі на ваш тэлефон. Будзе выкарыстоўвацца больш энергіі, чым у рэжыме нешматадраснай перадачы.</string>
+    <string name="permdesc_changeWifiMulticastState">Дазваляе прыкладанням атрымліваць пакеты, адпраўленыя на ўсе прылады з сеткi Wi-Fi з дапамогай групавых адрасоў, а не толькі на ваш планшэт. Будзе выкарыстоўвацца больш энергіі, чым у рэжыме нешматадраснай перадачы.</string>
     <string name="permdesc_changeWifiState">Дазваляе прыкладанням падключацца да кропак доступу Wi-Fi і адключацца ад iх, а таксама ўносіць змяненні ў канфiгурацыю прылад сеткі Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Дазваляе прыкладанням падключацца да сетак WiMAX і адключацца ад iх.</string>
+    <string name="permdesc_changeWimaxState">Дазваляе прыкладанням падключаць планшэт да сеткі WiMAX i адключаць яго ад яе.</string>
     <string name="permdesc_companionProfileWatch">Спадарожная праграма зможа кіраваць гадзіннікамі.</string>
     <string name="permdesc_connection_manager">Дазваляе праграме кіраваць падлучэннямі сувязі.</string>
     <string name="permdesc_control_incall_experience">Дазваляе праграме прапаноўваць аперацыі, звязаныя з выклікам.</string>
@@ -1488,7 +1488,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">Дазваляе праграме выкарыстоўваць актыўныя сэрвісы тыпу \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Дазваляе праграме выкарыстоўваць актыўныя сэрвісы тыпу \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">Дазваляе праграме паказваць апавяшчэнні ў поўнаэкранным рэжыме на заблакіраванай прыладзе</string>
-    <string name="permdesc_getAccounts">Дазваляе прыкладанню атрымлiваць спіс уліковых запісаў, вядомых тэлефону. Сярод iх могуць быць улiковыя запiсы, створаныя прыкладаннямi, якiя вы ўсталявалi.</string>
+    <string name="permdesc_getAccounts">Дазваляе прыкладанню атрымлiваць спіс уліковых запісаў, вядомых планшэту. Сярод iх могуць быць улiковыя запiсы, створаныя прыкладаннямi, якiя вы ўсталявалi.</string>
     <string name="permdesc_getPackageSize">"Дазваляе прыкладанням атрымліваць яго код, дадзеныя і аб'ём кэш-памяці"</string>
     <string name="permdesc_getTasks">Дазваляе прыкладанню атрымлiваць звесткi пра прыкладаннi, запушчаныя зараз i нядаўна. Прыкладанне можа знайсцi iнфармацыю пра тое, якiя прыкладаннi выкарыстоўваюцца на прыладзе.</string>
     <string name="permdesc_handoverStatus">Дазваляе праграме атрымліваць інфармацыю аб бягучых перадачах Android Beam</string>
@@ -1572,16 +1572,16 @@
     <string name="permdesc_nearby_wifi_devices">Праграма зможа адпраўляць даныя на прылады Wi-Fi паблізу, падключацца да іх і вызначаць іх месцазнаходжанне</string>
     <string name="permdesc_nfc">Дазваляе прыкладаннzv спалучацца з тэгамі, картамі і счытваючымі прыладамі Near Field Communication (NFC).</string>
     <string name="permdesc_observeCompanionDevicePresence">Спадарожная праграма зможа выяўляць звязаныя з ёй прылады незалежна ад таго, ці далёка яны знаходзяцца.</string>
-    <string name="permdesc_persistentActivity">"Дазваляе прыкладанню захоўваць некаторыя пастаянныя часткi ў памяцi. Гэта можа абмежаваць аб'ём памяці, даступнай для іншых прыкладанняў, i запаволiць працу тэлефона."</string>
+    <string name="permdesc_persistentActivity">"Дазваляе прыкладанню захоўваць некаторыя пастаянныя часткi ў памяцi. Гэта можа абмежаваць аб'ём памяці, даступнай для іншых прыкладанняў, i запаволiць працу планшэта."</string>
     <string name="permdesc_postNotification">Дазваляе праграме паказваць апавяшчэнні</string>
     <string name="permdesc_preferredPaymentInfo">Дазваляе праграме атрымаць доступ да інфармацыі пра прыярытэтны сэрвіс аплаты NFC, напрыклад зарэгістраваныя ідэнтыфікатары праграм і маршруты адпраўкі даных.</string>
     <string name="permdesc_processOutgoingCalls">Дазваляе праграме бачыць набраны нумар падчас выходнага выкліку з магчымасцю перанакіравання выкліку на іншы нумар або спынення выкліку ў цэлым.</string>
     <string name="permdesc_queryAllPackages">Дазваляе праграме выяўляць усе ўсталяваныя пакеты.</string>
     <string name="permdesc_readBasicPhoneState">Дазваляе праграме мець доступ да асноўных функцый тэлефаніі на прыладзе.</string>
-    <string name="permdesc_readCalendar">Гэта праграма можа чытаць усе падзеі календара, захаваныя на вашым тэлефоне, і абагульваць ці захоўваць даныя календара.</string>
+    <string name="permdesc_readCalendar">Гэта праграма можа чытаць усе падзеі календара, захаваныя на вашым планшэце, і абагульваць ці захоўваць даныя календара.</string>
     <string name="permdesc_readCallLog">Гэта праграма можа чытаць вашу гісторыю выклікаў.</string>
     <string name="permdesc_readCellBroadcasts">Дазваляе прыкладанню чытаць паведамленні базавай станцыі, атрыманыя прыладай. Папярэджанні базавай станцыі дасылаюцца ў некаторыя месцы, каб папярэдзіць вас аб надзвычайных сітуацыях. Шкоднасныя прыкладанні могуць уплываць на прадукцыйнасць ці працу прылады пры атрыманні паведамлення базавай станцыі аб надзвычайнай сітуацыі.</string>
-    <string name="permdesc_readContacts">Дазваляе праграме счытваць даныя пра кантакты, якія захоўваюцца на вашым тэлефоне. Праграмы таксама атрымаюць доступ на тэлефоне да ўліковых запісаў, у якіх створаны кантакты. Сярод іх могуць быць уліковыя запісы, створаныя праграмамі, якія вы ўсталявалі. Гэты дазвол дае праграмам магчымасць захоўваць даныя пра кантакты, а шкодныя праграмы могуць абагульваць гэтыя даныя без вашага ведама.</string>
+    <string name="permdesc_readContacts">Дазваляе праграме счытваць даныя пра кантакты, якія захоўваюцца на вашым планшэце. Праграмы таксама атрымаюць доступ на планшэце да ўліковых запісаў, у якіх створаны кантакты. Сярод іх могуць быць уліковыя запісы, створаныя праграмамі, якія вы ўсталявалі. Гэты дазвол дае праграмам магчымасць захоўваць даныя пра кантакты, а шкодныя праграмы могуць абагульваць гэтыя даныя без вашага ведама.</string>
     <string name="permdesc_readInstallSessions">Дазваляе праграме счытваць сеансы ўсталёўкі. Гэта дазваляе ёй праглядаць інфармацыю аб актыўных усталёўках пакета.</string>
     <string name="permdesc_readMediaAudio">Праграма зможа счытваць аўдыяфайлы з абагуленага сховішча.</string>
     <string name="permdesc_readMediaImages">Праграма зможа счытваць файлы відарысаў з абагуленага сховішча.</string>
@@ -1589,11 +1589,11 @@
     <string name="permdesc_readNetworkUsageHistory">Дазваляе прыкладанню счытваць дадзеныя аб гісторыі выкарыстання сеткі для пэўных сетак і прыкладанняў.</string>
     <string name="permdesc_readPhoneNumbers">Дазваляе праграме атрымліваць доступ да нумароў тэлефонаў на прыладзе.</string>
     <string name="permdesc_readPhoneState">Дазваляе прыкладанням атрымлiваць доступ да функцый тэлефона на прыладзе. Дзякуючы гэтаму дазволу прыкладанне можа вызначаць iдэнтыфiкатары нумару тэлефона i прылады, незалежна ад таго, цi актыўны выклiк, i аддалены нумар, на якi робiцца выклiк.</string>
-    <string name="permdesc_readSms">Гэта праграма можа чытаць усе SMS-паведамленні (тэкставыя паведамленні), захаваныя на вашым тэлефоне.</string>
+    <string name="permdesc_readSms">Гэта праграма можа чытаць усе SMS-паведамленні (тэкставыя паведамленні), захаваныя на вашым планшэце.</string>
     <string name="permdesc_readSyncSettings">Дазваляе прыкладанням чытаць параметры сінхранізацыі для ўліковага запісу. Напрыклад, яны могуць вызначыць, цi сiнхранiзавана з улiковым запiсам прыкладанне \"Кантакты\".</string>
     <string name="permdesc_readSyncStats">Дазваляе прыкладанням чытаць статыстыку сінхранізацыі для ўліковага запісу, у тым ліку гісторыю сінхранізацыі мерапрыемстваў і наколькі сінхранізаваны дадзеныя.</string>
     <string name="permdesc_readVisualUserSelect">Праграма зможа счытваць з абагуленага сховішча выбраныя вамі файлы відарысаў і відэа.</string>
-    <string name="permdesc_receiveBootCompleted">Дазваляе прыкладанням самастойна запускацца, як толькі сістэма будзе цалкам запушчана. Гэта можа павялічыць час запуску тэлефону і дазволіць прыкладанню запаволіць увесь тэлефон, прымушаючы яго працаваць заўсёды.</string>
+    <string name="permdesc_receiveBootCompleted">Дазваляе прыкладанню самастойна запускацца, як толькі сістэма будзе цалкам загружана. Гэта можа павялічыць час запуску планшэту і дазволіць прыкладанню запаволіць увесь планшэт, прымушаючы яго працаваць заўсёды.</string>
     <string name="permdesc_receiveMms">Дазваляе прыкладанням атрымліваць і апрацоўваць MMS-паведамленнi. Гэта значыць, што прыкладанне можа кантраляваць або выдаляць паведамленні, адпраўленыя на прыладу, не паказваючы іх вам.</string>
     <string name="permdesc_receiveSms">Дазваляе прыкладанням атрымліваць і апрацоўваць SMS-паведамленні. Гэта значыць, што прыкладанне можа кантраляваць або выдаляць паведамленні, адпраўленыя на прыладу, не паказваючы іх вам.</string>
     <string name="permdesc_receiveWapPush">Дазваляе прыкладанням атрымліваць і апрацоўваць паведамленні WAP. Дзякуючы гэтаму дазволу можна кантраляваць або выдаляць паведамленні, пасланыя вам, не паказваючы іх.</string>
@@ -1615,7 +1615,7 @@
     <string name="permdesc_sendSms">Дазваляе прыкладанне для адпраўкі SMS паведамленняў. Гэта можа прывесці да нечаканых абвінавачванняў. Шкоднасныя праграмы могуць каштаваць вам грошай на адпраўку паведамленняў без вашага пацвярджэння.</string>
     <string name="permdesc_setAlarm">Дазваляе прыкладанню ўсталёўваць сігнал на ўсталяваным прыкладанні будзільніка. Пэўныя прыкладанні будзільніка не могуць рэалізоўваць гэтую магчымасць.</string>
     <string name="permdesc_setInputCalibration">Дазваляе праграме змяняць параметры каліброўкі сэнсарнага экрана. Ніколі не павінна патрабавацца для звычайных праграм.</string>
-    <string name="permdesc_setTimeZone">Дазваляе праграме змяняць часавы пояс тэлефона.</string>
+    <string name="permdesc_setTimeZone">Дазваляе праграмам змяняць часавы пояс планшэта.</string>
     <string name="permdesc_setWallpaper">Дазваляе прыкладанням ксталёўваць сiстэмныя шпалеры.</string>
     <string name="permdesc_setWallpaperHints">Дазваляе прыкладанням задаваць падказкі па памеры сістэмных шпалер.</string>
     <string name="permdesc_sim_communication">Дазваляе праграме адпраўляць каманды SIM-карце. Гэта вельмі небяспечна.</string>
@@ -1629,7 +1629,7 @@
     <string name="permdesc_subscribedFeedsRead">Дазваляе прыкладанням атрымліваць інфармацыю пра каналы, якія сінхранізуюцца ў бягучы момант.</string>
     <string name="permdesc_systemAlertWindow">Гэта праграма можа паказвацца паверх іншых праграм ці іншых частак экрана. Гэта можа перашкодзіць нармальнаму выкарыстанню праграмы і змяніць выгляд іншых праграм.</string>
     <string name="permdesc_systemCamera">Гэта прыярытэтная ці сістэмная праграма можа здымаць фота і запісваць відэа з дапамогай сістэмнай камеры. Праграме таксама патрэбны дазвол android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Дазваляе праграме выкарыстоўваць інфрачырвоны перадатчык тэлефона.</string>
+    <string name="permdesc_transmitIr">Дазваляе праграме выкарыстоўваць інфрачырвоны перадатчык планшэта.</string>
     <string name="permdesc_turnScreenOn">Дазваляе праграме ўключаць экран.</string>
     <string name="permdesc_ucsPlugin">Працаваць з плагінамі сховішчаў ўліковых даных трэціх бакоў.</string>
     <string name="permdesc_uninstall_shortcut">Дазваляе праграме выдаляць ярлыкі з Галоўнага экрана без умяшання карыстальніка.</string>
@@ -1643,10 +1643,10 @@
     <string name="permdesc_vibrate">Дазваляе прыкладанням кіраваць вібрацыяй.</string>
     <string name="permdesc_vibrator_state">Дазваляе праграме атрымліваць доступ да вібрасігналу.</string>
     <string name="permdesc_videoWrite">Праграма зможа змяняць відэакалекцыю.</string>
-    <string name="permdesc_wakeLock">Дазваляе прыкладанням прадухіляць тэлефон ад пераходу ў рэжым сну.</string>
-    <string name="permdesc_writeCalendar">Гэта праграма можа дадаваць, выдаляць або змяняць падзеі календара на вашым тэлефоне. Гэта праграма можа адпраўляць паведамленні, якія могуць здавацца адпраўленымі ўладальнікамі календара, або змяняць падзеі без апавяшчэння іх уладальнікаў.</string>
-    <string name="permdesc_writeCallLog">Дазваляе прыкладанням змяняць гiсторыю выклiкаў тэлефону, у тым лiку дадзеныя пра ўваходныя і зыходныя выклiкi. Шкоднасныя прыкладаннi могуць выкарыстоўваць гэта, каб выдаляць або змяняць гiсторыю выклікаў.</string>
-    <string name="permdesc_writeContacts">Дазваляе праграме змяняць даныя пра кантакты, якія захоўваюцца на вашым тэлефоне. Гэты дазвол дае праграмам магчымасць выдаляць даныя пра кантакты.</string>
+    <string name="permdesc_wakeLock">Дазваляе прыкладанням прадухіляць пераход планшэта ў рэжым сну.</string>
+    <string name="permdesc_writeCalendar">Гэта праграма можа дадаваць, выдаляць або змяняць падзеі календара на вашым планшэце. Гэта праграма можа адпраўляць паведамленні, якія могуць здавацца адпраўленымі ўладальнікамі календара, або змяняць падзеі без апавяшчэння іх уладальнікаў.</string>
+    <string name="permdesc_writeCallLog">Дазваляе прыкладанню змяняць гiсторыю выклiкаў планшэта, у тым лiку дадзеныя пра ўваходныя i зыходныя выклiкi. Шкоднасныя прыкладаннi могуць выкарыстоўваць гэта, каб выдаляць або змяняць гiсторыю выклікаў.</string>
+    <string name="permdesc_writeContacts">Дазваляе праграме змяняць даныя пра кантакты, якія захоўваюцца на вашым планшэце. Гэты дазвол дае праграмам магчымасць выдаляць даныя пра кантакты.</string>
     <string name="permdesc_writeSettings">Дазваляе прыкладаннем змяняць дадзеныя налад сістэмы. Шкоднасныя прыкладанні могуць пашкодзіць канфігурацыю вашай сістэмы.</string>
     <string name="permdesc_writeSyncSettings">Дазваляе прыкладанню змяняць налады сінхранізацыі для ўліковага запісу. Напрыклад, гэта можа выкарыстоўвацца для ўключэння сінхранізацыі прыкладання \"Кантакты\" з уліковым запісам.</string>
     <string name="permgroupdesc_activityRecognition">доступ да даных фізічнай актыўнасці</string>
@@ -1909,7 +1909,7 @@
     <string name="permlab_uwb_ranging">вызначаць адлегласць паміж прыладамі з звышшырокапалоснай сувяззю</string>
     <string name="permlab_vibrate">кіраванне вібрацыяй</string>
     <string name="permlab_videoWrite">змяняць відэакалекцыю</string>
-    <string name="permlab_wakeLock">забараняць тэлефону пераходзіць ў рэжым сну</string>
+    <string name="permlab_wakeLock">прадухіліць планшэт ад пераходу ў рэжым сну</string>
     <string name="permlab_writeCalendar">дадаваць ці змяняць падзеі календара і адпраўляць электронную пошту да гасцей без ведама ўладальнікаў</string>
     <string name="permlab_writeCallLog">запіс гiсторыi выклікаў</string>
     <string name="permlab_writeContacts">змена кантактаў</string>
@@ -1952,10 +1952,10 @@
     <string name="policydesc_limitPassword">Кіраваць даўжынёй і сімваламі, дазволенымі пры ўводзе пароляў і PIN-кодаў блакіроўкі экрана.</string>
     <string name="policydesc_resetPassword">Змяніць блакіроўку экрана.</string>
     <string name="policydesc_setGlobalProxy">Задаць агульны проксі-cервер прылады, які будзе выкарыстоўвацца, калі прылада актыўная. Толькі ўладальнік прылады можа задаць агульны проксі-сервер.</string>
-    <string name="policydesc_watchLogin">Сачыць за колькасцю няправільных набраных пароляў падчас разблакоўкі экрана і блакаваць тяэлефон або сціраць усе дадзеныя на ім, калі набрана занадта шмат няправільных пароляў.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Сачыць за колькасцю няправільна набраных пароляў падчас разблакіроўкі экрана і блакіраваць тэлефон або сцерці ўсе даныя гэтага карыстальніка, калі няправільны пароль набраны занадта шмат разоў.</string>
-    <string name="policydesc_wipeData">Сцерці даныя з тэлефона без папярэджання, выканаўшы скід да заводскіх налад.</string>
-    <string name="policydesc_wipeData_secondaryUser">Сцерці даныя гэтага карыстальніка на дадзеным тэлефоне без папярэджання.</string>
+    <string name="policydesc_watchLogin">Сачыць за колькасцю няправільных набраных пароляў падчас разблакоўкі экрана і блакаваць планшэт або сціраць усе дадзеныя на ім, калі няправільны пароль набраны занадта шмат разоў.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Сачыць за колькасцю няправільна набраных пароляў падчас разблакіроўкі экрана і блакіраваць планшэт або сцерці ўсе даныя гэтага карыстальніка, калі няправільны пароль набраны занадта шмат разоў.</string>
+    <string name="policydesc_wipeData">Cцерці даныя з планшэта без папярэджання, выканаўшы скід да заводскіх даных.</string>
+    <string name="policydesc_wipeData_secondaryUser">Сцерці даныя гэтага карыстальніка на дадзеным планшэце без папярэджання.</string>
     <string name="policylab_disableCamera">Адключыць камеры</string>
     <string name="policylab_disableKeyguardFeatures">Адключаць функцыі блакіроўкі</string>
     <string name="policylab_encryptedStorage">Усталяваць шыфраванне сховішча.</string>
@@ -1972,7 +1972,7 @@
     <string name="postalTypeHome">Хатні</string>
     <string name="postalTypeOther">Іншы</string>
     <string name="postalTypeWork">Працоўны</string>
-    <string name="power_dialog">Параметры тэлефона</string>
+    <string name="power_dialog">Параметры планшэта</string>
     <string name="power_off">Выключыць</string>
     <string name="prepend_shortcut_label">Меню+</string>
     <string name="preposition_for_date">%s</string>
@@ -2166,7 +2166,7 @@
     <string name="shortcut_restore_unknown_issue">Не атрымалася аднавіць ярлык</string>
     <string name="shortcut_restored_on_lower_version">Ярлык адносіцца да старэйшай версіі праграмы або несумяшчальны з ёю</string>
     <string name="show_ime">Захоўваць яе на экране ў той час, калі фізічная клавіятура актыўная</string>
-    <string name="shutdown_confirm">Ваш тэлефон будзе выключаны.</string>
+    <string name="shutdown_confirm">Планшэт будзе адключаны.</string>
     <string name="shutdown_confirm_question">Закрыць?</string>
     <string name="shutdown_progress">Выключэнне...</string>
     <string name="silent_mode">Бязгучны рэжым</string>
@@ -2289,7 +2289,7 @@
     <string name="usb_camera_disconnected_notification_title">Медыяпрылада адлучана</string>
     <string name="usb_cd_installer_notification_title">System update</string>
     <string name="usb_charging_notification_title">Прылада зараджаецца праз USB</string>
-    <string name="usb_charing_only_notification_title">Зарадка праз USB</string>
+    <string name="usb_charing_only_notification_title">Падлучана</string>
     <string name="usb_contaminant_detected_message">Порт USB аўтаматычна адключаны. Каб даведацца больш, націсніце тут.</string>
     <string name="usb_contaminant_detected_title">Вадкасць або смецце ў порце USB</string>
     <string name="usb_contaminant_not_detected_message">Тэлефон выявіў, што вадкасці і смецця больш няма.</string>
@@ -2338,7 +2338,7 @@
     <string name="user_switched">Бягучы карыстальнік %1$s.</string>
     <string name="user_switching_message">Пераход у рэжым \"%1$s\"...</string>
     <string name="validity_period">Тэрмін дзеяння:</string>
-    <string name="vdm_camera_access_denied">Не ўдалося атрымаць доступ да камеры тэлефона з прылады \"%1$s\"</string>
+    <string name="vdm_camera_access_denied">Не ўдалося атрымаць доступ да камеры планшэта з прылады \"%1$s\"</string>
     <string name="vdm_pip_blocked">Падчас перадачы плынню прагляд у рэжыме \"Відарыс у відарысе\" немагчымы</string>
     <string name="vdm_secure_window">Не ўдаецца атрымаць доступ у час перадачы плынню. Паспрабуйце скарыстаць тэлефон.</string>
     <string name="view_and_control_notification_content">%s можа праглядаць экран вашай прылады і кіраваць ім. Націсніце, каб праглядзець.</string>

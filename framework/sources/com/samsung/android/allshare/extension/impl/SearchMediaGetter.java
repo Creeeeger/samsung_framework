@@ -15,7 +15,6 @@ public class SearchMediaGetter implements IMediaGetter {
     private Provider mProvider = null;
     private ArrayList<FlatProviderConnectionInfo> mConns = new ArrayList<>();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class FlatProviderConnectionInfo implements FlatProvider.IFlatProviderConnection {
         private FlatProvider.IFlatProviderConnection mConn;
@@ -122,6 +121,9 @@ public class SearchMediaGetter implements IMediaGetter {
             }
         }
         provider.setSearchResponseListener(new Provider.IProviderSearchResponseListener() { // from class: com.samsung.android.allshare.extension.impl.SearchMediaGetter.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.allshare.media.Provider.IProviderSearchResponseListener
             public void onSearchResponseReceived(ArrayList<Item> items, int requestedStartIndex, int requestedCount, SearchCriteria searchCriteria, boolean endOfItems, ERROR err4) {
                 int returnedCount = items.size();
@@ -170,5 +172,50 @@ public class SearchMediaGetter implements IMediaGetter {
         this.mConns.add(conn);
         conn.setCurrentSearchRequest(criteria, 0);
         provider.search(builder.build(), 0, 50);
+    }
+
+    /* renamed from: com.samsung.android.allshare.extension.impl.SearchMediaGetter$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Provider.IProviderSearchResponseListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.allshare.media.Provider.IProviderSearchResponseListener
+        public void onSearchResponseReceived(ArrayList<Item> items, int requestedStartIndex, int requestedCount, SearchCriteria searchCriteria, boolean endOfItems, ERROR err4) {
+            int returnedCount = items.size();
+            Iterator<Item> itemIt = items.iterator();
+            while (itemIt.hasNext()) {
+                Item obj = itemIt.next();
+                if (obj.getType() == Item.MediaType.ITEM_UNKNOWN) {
+                    itemIt.remove();
+                }
+            }
+            if (err4.compareTo(ERROR.FEATURE_NOT_SUPPORTED) == 0) {
+                DLog.w_api(SearchMediaGetter.class.getSimpleName(), "Feature Not Supported");
+            }
+            Iterator<FlatProviderConnectionInfo> it = SearchMediaGetter.this.mConns.iterator();
+            while (it.hasNext()) {
+                FlatProviderConnectionInfo conn = it.next();
+                if (searchCriteria == null) {
+                    conn.onError(err4);
+                } else if (conn.isCurrentSearchRequest(searchCriteria, requestedStartIndex)) {
+                    if (err4.compareTo(ERROR.SUCCESS) != 0) {
+                        conn.onError(err4);
+                    } else if (conn.isCanceled()) {
+                        it.remove();
+                    } else {
+                        if (items.size() != 0) {
+                            conn.onProgress(items);
+                        }
+                        if (endOfItems) {
+                            conn.onFinish();
+                        } else {
+                            conn.setCurrentSearchRequest(searchCriteria, requestedStartIndex + returnedCount);
+                            SearchMediaGetter.this.mProvider.search(searchCriteria, requestedStartIndex + returnedCount, 50);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -2,7 +2,6 @@ package android.widget;
 
 import java.util.ArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class SemExpandableListPosition {
     public static final int CHILD = 1;
@@ -24,7 +23,6 @@ public class SemExpandableListPosition {
     private SemExpandableListPosition() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long getPackedPosition() {
         if (this.type == 1) {
             return SemExpandableListView.getPackedPositionForChild(this.groupPos, this.childPos);
@@ -32,17 +30,14 @@ public class SemExpandableListPosition {
         return SemExpandableListView.getPackedPositionForGroup(this.groupPos);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SemExpandableListPosition obtainGroupPosition(int groupPosition) {
         return obtain(2, groupPosition, 0, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SemExpandableListPosition obtainChildPosition(int groupPosition, int childPosition) {
         return obtain(1, groupPosition, childPosition, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SemExpandableListPosition obtainPosition(long packedPosition) {
         if (packedPosition == 4294967295L) {
             return null;
@@ -58,7 +53,6 @@ public class SemExpandableListPosition {
         return elp;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SemExpandableListPosition obtain(int type, int groupPos, int childPos, int flatListPos) {
         SemExpandableListPosition elp = getRecycledOrCreate();
         elp.type = type;

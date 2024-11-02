@@ -77,7 +77,6 @@ public final class FillWindow implements AutoCloseable {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$update$0(View view, MotionEvent motionEvent) {
         if (motionEvent.getAction() == 4) {
             if (AugmentedAutofillService.sVerbose) {
@@ -89,7 +88,6 @@ public final class FillWindow implements AutoCloseable {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void show() {
         if (AugmentedAutofillService.sDebug) {
             Log.d(TAG, "show()");
@@ -131,7 +129,6 @@ public final class FillWindow implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleShow(WindowManager.LayoutParams p) {
         if (AugmentedAutofillService.sDebug) {
             Log.d(TAG, "handleShow()");
@@ -159,7 +156,6 @@ public final class FillWindow implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleHide() {
         View view;
         if (AugmentedAutofillService.sDebug) {
@@ -243,8 +239,9 @@ public final class FillWindow implements AutoCloseable {
         destroy();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static final class FillWindowPresenter extends IAutofillWindowPresenter.Stub {
+    public static final class FillWindowPresenter extends IAutofillWindowPresenter.Stub {
         private final WeakReference<FillWindow> mFillWindowReference;
 
         FillWindowPresenter(FillWindow fillWindow) {

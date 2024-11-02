@@ -55,8 +55,9 @@ public abstract class ReplacementTransformationMethod implements TransformationM
     public void onFocusChanged(View view, CharSequence sourceText, boolean focused, int direction, Rect previouslyFocusedRect) {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static class ReplacementCharSequence implements CharSequence, GetChars {
+    public static class ReplacementCharSequence implements CharSequence, GetChars {
         private char[] mOriginal;
         private char[] mReplacement;
         private CharSequence mSource;

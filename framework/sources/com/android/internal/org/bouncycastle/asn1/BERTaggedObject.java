@@ -17,13 +17,11 @@ public class BERTaggedObject extends ASN1TaggedObject {
         super(false, tagNo, new BERSequence());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return this.explicit || this.obj.toASN1Primitive().isConstructed();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         ASN1Primitive primitive = this.obj.toASN1Primitive();
@@ -34,7 +32,6 @@ public class BERTaggedObject extends ASN1TaggedObject {
         return StreamUtil.calculateTagLength(this.tagNo) + (length - 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         Enumeration e;

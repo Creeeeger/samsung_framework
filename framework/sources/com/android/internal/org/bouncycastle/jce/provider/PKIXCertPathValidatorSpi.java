@@ -46,7 +46,6 @@ public class PKIXCertPathValidatorSpi extends CertPathValidatorSpi {
         this.isForCRLCheck = isForCRLCheck;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class NoPreloadHolder {
         private static final CertBlocklist blocklist = new CertBlocklist();

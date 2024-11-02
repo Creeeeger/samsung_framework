@@ -20,9 +20,13 @@ public class MeasuredText {
     private final long mNativePtr;
     private final int mTop;
 
-    /* renamed from: -$$Nest$smnGetReleaseFunc, reason: not valid java name */
+    /* renamed from: -$$Nest$smnGetReleaseFunc */
     static /* bridge */ /* synthetic */ long m1324$$Nest$smnGetReleaseFunc() {
         return nGetReleaseFunc();
+    }
+
+    /* synthetic */ MeasuredText(long j, char[] cArr, boolean z, boolean z2, int i, int i2, MeasuredTextIA measuredTextIA) {
+        this(j, cArr, z, z2, i, i2);
     }
 
     private static native void nGetBounds(long j, char[] cArr, int i, int i2, Rect rect);

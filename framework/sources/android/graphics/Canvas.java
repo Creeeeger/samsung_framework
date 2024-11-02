@@ -37,7 +37,7 @@ public class Canvas extends BaseCanvas {
     public @interface Saveflags {
     }
 
-    /* renamed from: -$$Nest$smnGetNativeFinalizer, reason: not valid java name */
+    /* renamed from: -$$Nest$smnGetNativeFinalizer */
     static /* bridge */ /* synthetic */ long m1073$$Nest$smnGetNativeFinalizer() {
         return nGetNativeFinalizer();
     }
@@ -132,8 +132,9 @@ public class Canvas extends BaseCanvas {
         return this.mNativeCanvasWrapper;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class NoImagePreloadHolder {
+    public static class NoImagePreloadHolder {
         public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Canvas.class.getClassLoader(), Canvas.m1073$$Nest$smnGetNativeFinalizer());
 
         private NoImagePreloadHolder() {
@@ -586,7 +587,6 @@ public class Canvas extends BaseCanvas {
         nFreeTextLayoutCaches();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void setCompatibilityVersion(int apiLevel) {
         sCompatiblityVersion = apiLevel;
         sCompatibilityRestore = apiLevel < 23;

@@ -105,7 +105,6 @@ public final class SQLiteDatabaseConfiguration {
         return (this.openFlags & 1) != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isLegacyCompatibilityWalEnabled() {
         return this.journalMode == null && this.syncMode == null && (this.openFlags & Integer.MIN_VALUE) != 0;
     }
@@ -117,7 +116,6 @@ public final class SQLiteDatabaseConfiguration {
         return EMAIL_IN_DB_PATTERN.matcher(path).replaceAll("XX@YY");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isLookasideConfigSet() {
         return this.lookasideSlotCount >= 0 && this.lookasideSlotSize >= 0;
     }

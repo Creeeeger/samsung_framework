@@ -73,14 +73,16 @@ public abstract class ImsFeature {
 
     protected abstract IInterface getBinder();
 
-    public abstract void onFeatureReady();
+    /* renamed from: onFeatureReady */
+    public abstract void lambda$initialize$0();
 
     public abstract void onFeatureRemoved();
 
     public abstract boolean queryCapabilityConfiguration(int i, int i2);
 
+    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes3.dex */
-    protected static class CapabilityCallbackProxy {
+    public static class CapabilityCallbackProxy {
         private final IImsCapabilityCallback mCallback;
 
         public CapabilityCallbackProxy(IImsCapabilityCallback c) {
@@ -110,7 +112,6 @@ public abstract class ImsFeature {
             this.mCapabilities = 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public Capabilities(int capabilities) {
             this.mCapabilities = 0;
             this.mCapabilities = capabilities;
@@ -217,7 +218,6 @@ public abstract class ImsFeature {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$notifyFeatureState$0(int state, IImsFeatureStatusCallback c) {
         try {
             c.notifyImsFeatureStatus(state);
@@ -235,12 +235,10 @@ public abstract class ImsFeature {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void removeCapabilityCallback(IImsCapabilityCallback c) {
         this.mCapabilityCallbacks.unregister(c);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void queryCapabilityConfigurationInternal(int capability, int radioTech, IImsCapabilityCallback c) {
         boolean enabled = queryCapabilityConfiguration(capability, radioTech);
         if (c != null) {
@@ -267,7 +265,6 @@ public abstract class ImsFeature {
         changeEnabledCapabilities(request, new CapabilityCallbackProxy(c));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final void notifyCapabilitiesStatusChanged(final Capabilities caps) {
         Log.i(LOG_TAG, "notifyCapabilitiesStatusChanged()");
         synchronized (this.mLock) {
@@ -283,7 +280,6 @@ public abstract class ImsFeature {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$notifyCapabilitiesStatusChanged$1(Capabilities caps, IImsCapabilityCallback callback) {
         try {
             Log.d(LOG_TAG, "ImsFeature notifyCapabilitiesStatusChanged Capabilities = " + caps.mCapabilities);

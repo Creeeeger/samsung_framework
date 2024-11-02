@@ -51,6 +51,10 @@ public class BitmapDrawable extends Drawable {
     private Insets mOpticalInsets;
     private int mTargetDensity;
 
+    /* synthetic */ BitmapDrawable(BitmapState bitmapState, Resources resources, BitmapDrawableIA bitmapDrawableIA) {
+        this(bitmapState, resources);
+    }
+
     @Deprecated
     public BitmapDrawable() {
         this.mDstRect = new Rect();
@@ -312,7 +316,6 @@ public class BitmapDrawable extends Drawable {
         return isAutoMirrored() && getLayoutDirection() == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public void onBoundsChange(Rect bounds) {
         this.mDstRectAndInsetsDirty = true;
@@ -523,7 +526,6 @@ public class BitmapDrawable extends Drawable {
         this.mMutated = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.Drawable
     public boolean onStateChange(int[] stateSet) {
         BitmapState state = this.mBitmapState;
@@ -711,7 +713,6 @@ public class BitmapDrawable extends Drawable {
         return this.mBitmapState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class BitmapState extends Drawable.ConstantState {
         boolean mAutoMirrored;

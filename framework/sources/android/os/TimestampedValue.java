@@ -6,12 +6,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class TimestampedValue<T> implements Parcelable {
     public static final Parcelable.Creator<TimestampedValue<?>> CREATOR = new Parcelable.ClassLoaderCreator<TimestampedValue<?>>() { // from class: android.os.TimestampedValue.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TimestampedValue<?> createFromParcel(Parcel source) {
             return createFromParcel(source, (ClassLoader) null);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.ClassLoaderCreator
         public TimestampedValue<?> createFromParcel(Parcel source, ClassLoader classLoader) {
             long referenceTimeMillis = source.readLong();
@@ -64,6 +66,30 @@ public final class TimestampedValue<T> implements Parcelable {
 
     public static long referenceTimeDifference(TimestampedValue<?> one, TimestampedValue<?> two) {
         return ((TimestampedValue) one).mReferenceTimeMillis - ((TimestampedValue) two).mReferenceTimeMillis;
+    }
+
+    /* renamed from: android.os.TimestampedValue$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.ClassLoaderCreator<TimestampedValue<?>> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimestampedValue<?> createFromParcel(Parcel source) {
+            return createFromParcel(source, (ClassLoader) null);
+        }
+
+        @Override // android.os.Parcelable.ClassLoaderCreator
+        public TimestampedValue<?> createFromParcel(Parcel source, ClassLoader classLoader) {
+            long referenceTimeMillis = source.readLong();
+            Object value = source.readValue(classLoader);
+            return new TimestampedValue<>(referenceTimeMillis, value);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimestampedValue[] newArray(int size) {
+            return new TimestampedValue[size];
+        }
     }
 
     @Override // android.os.Parcelable

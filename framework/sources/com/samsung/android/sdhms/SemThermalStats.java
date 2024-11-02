@@ -8,13 +8,14 @@ import java.util.List;
 /* loaded from: classes5.dex */
 public class SemThermalStats implements Parcelable {
     public static final Parcelable.Creator<SemThermalStats> CREATOR = new Parcelable.Creator<SemThermalStats>() { // from class: com.samsung.android.sdhms.SemThermalStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemThermalStats createFromParcel(Parcel in) {
             return new SemThermalStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemThermalStats[] newArray(int size) {
             return new SemThermalStats[size];
@@ -75,6 +76,23 @@ public class SemThermalStats implements Parcelable {
         this.cpuFreqHistoryList = in.createTypedArrayList(CpuMaxFrequencyThrottledHistoryItem.CREATOR);
     }
 
+    /* renamed from: com.samsung.android.sdhms.SemThermalStats$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemThermalStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemThermalStats createFromParcel(Parcel in) {
+            return new SemThermalStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemThermalStats[] newArray(int size) {
+            return new SemThermalStats[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -89,13 +107,14 @@ public class SemThermalStats implements Parcelable {
     /* loaded from: classes5.dex */
     public static class TemperatureHistoryItem implements Parcelable {
         public static final Parcelable.Creator<TemperatureHistoryItem> CREATOR = new Parcelable.Creator<TemperatureHistoryItem>() { // from class: com.samsung.android.sdhms.SemThermalStats.TemperatureHistoryItem.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public TemperatureHistoryItem createFromParcel(Parcel in) {
                 return new TemperatureHistoryItem(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TemperatureHistoryItem[] newArray(int size) {
                 return new TemperatureHistoryItem[size];
@@ -147,6 +166,23 @@ public class SemThermalStats implements Parcelable {
             this.skinTemp = in.readInt();
         }
 
+        /* renamed from: com.samsung.android.sdhms.SemThermalStats$TemperatureHistoryItem$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<TemperatureHistoryItem> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TemperatureHistoryItem createFromParcel(Parcel in) {
+                return new TemperatureHistoryItem(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public TemperatureHistoryItem[] newArray(int size) {
+                return new TemperatureHistoryItem[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -162,13 +198,14 @@ public class SemThermalStats implements Parcelable {
     /* loaded from: classes5.dex */
     public static class CpuMaxFrequencyThrottledHistoryItem implements Parcelable {
         public static final Parcelable.Creator<CpuMaxFrequencyThrottledHistoryItem> CREATOR = new Parcelable.Creator<CpuMaxFrequencyThrottledHistoryItem>() { // from class: com.samsung.android.sdhms.SemThermalStats.CpuMaxFrequencyThrottledHistoryItem.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public CpuMaxFrequencyThrottledHistoryItem createFromParcel(Parcel in) {
                 return new CpuMaxFrequencyThrottledHistoryItem(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CpuMaxFrequencyThrottledHistoryItem[] newArray(int size) {
                 return new CpuMaxFrequencyThrottledHistoryItem[size];
@@ -218,6 +255,23 @@ public class SemThermalStats implements Parcelable {
         protected CpuMaxFrequencyThrottledHistoryItem(Parcel in) {
             this.updatedTime = in.readLong();
             this.cpuMaxFreq = in.readInt();
+        }
+
+        /* renamed from: com.samsung.android.sdhms.SemThermalStats$CpuMaxFrequencyThrottledHistoryItem$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<CpuMaxFrequencyThrottledHistoryItem> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CpuMaxFrequencyThrottledHistoryItem createFromParcel(Parcel in) {
+                return new CpuMaxFrequencyThrottledHistoryItem(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public CpuMaxFrequencyThrottledHistoryItem[] newArray(int size) {
+                return new CpuMaxFrequencyThrottledHistoryItem[size];
+            }
         }
 
         @Override // android.os.Parcelable

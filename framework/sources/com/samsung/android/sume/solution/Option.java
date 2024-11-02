@@ -8,13 +8,14 @@ import com.samsung.android.sume.core.types.OptionBase;
 /* loaded from: classes4.dex */
 public class Option extends Graph.Option {
     public static final Parcelable.Creator<Option> CREATOR = new Parcelable.Creator<Option>() { // from class: com.samsung.android.sume.solution.Option.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Option createFromParcel(Parcel in) {
             return new Option(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Option[] newArray(int size) {
             return new Option[size];
@@ -32,6 +33,23 @@ public class Option extends Graph.Option {
 
     protected Option(Parcel in) {
         super(in);
+    }
+
+    /* renamed from: com.samsung.android.sume.solution.Option$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Option> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Option createFromParcel(Parcel in) {
+            return new Option(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Option[] newArray(int size) {
+            return new Option[size];
+        }
     }
 
     public int getAudioBitrate() {

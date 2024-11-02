@@ -176,8 +176,9 @@ public interface INetworkPolicyListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements INetworkPolicyListener {
+        public static class Proxy implements INetworkPolicyListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

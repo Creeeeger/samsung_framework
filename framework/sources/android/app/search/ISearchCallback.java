@@ -85,8 +85,9 @@ public interface ISearchCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISearchCallback {
+        public static class Proxy implements ISearchCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -54,7 +54,7 @@ public abstract class TunnelModeEnabledListener {
         nativeUnregister(j);
     }
 
-    public static void dispatchOnTunnelModeEnabledChanged(final TunnelModeEnabledListener listener, final boolean tunnelModeEnabled) {
+    public static void dispatchOnTunnelModeEnabledChanged(TunnelModeEnabledListener listener, final boolean tunnelModeEnabled) {
         listener.mExecutor.execute(new Runnable() { // from class: android.view.TunnelModeEnabledListener$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {

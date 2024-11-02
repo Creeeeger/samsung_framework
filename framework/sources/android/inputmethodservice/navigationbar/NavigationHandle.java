@@ -23,7 +23,8 @@ public class NavigationHandle extends View implements ButtonInterface {
     }
 
     @Override // android.inputmethodservice.navigationbar.ButtonInterface
-    public void setImageDrawable(Drawable drawable) {
+    /* renamed from: setImageDrawable */
+    public void lambda$setImageURIAsync$2(Drawable drawable) {
     }
 
     @Override // android.inputmethodservice.navigationbar.ButtonInterface

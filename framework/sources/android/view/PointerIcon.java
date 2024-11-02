@@ -152,7 +152,9 @@ public final class PointerIcon implements Parcelable {
     private static float sPointerIconSizeScale = 1.0f;
     private static int sPointerIconColor = 16777215;
     public static final Parcelable.Creator<PointerIcon> CREATOR = new Parcelable.Creator<PointerIcon>() { // from class: android.view.PointerIcon.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PointerIcon createFromParcel(Parcel in) {
             try {
@@ -182,12 +184,15 @@ public final class PointerIcon implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PointerIcon[] newArray(int size) {
             return new PointerIcon[size];
         }
     };
+
+    /* synthetic */ PointerIcon(int i, PointerIconIA pointerIconIA) {
+        this(i);
+    }
 
     private PointerIcon(int type) {
         this.mDisplayIdForPointerIcon = 0;
@@ -330,12 +335,10 @@ public final class PointerIcon implements Parcelable {
         return icon;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static PointerIcon createSpenIcon(Bitmap bitmap, float hotSpotX, float hotSpotY) {
         return createIcon(bitmap, hotSpotX, hotSpotY, 20000);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static PointerIcon createDefaultIcon(Bitmap bitmap, float hotSpotX, float hotSpotY, int type) {
         return createIcon(bitmap, hotSpotX, hotSpotY, type);
     }
@@ -375,6 +378,47 @@ public final class PointerIcon implements Parcelable {
 
     public int getType() {
         return this.mType;
+    }
+
+    /* renamed from: android.view.PointerIcon$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PointerIcon> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PointerIcon createFromParcel(Parcel in) {
+            try {
+                int type = in.readInt();
+                if (type == 0) {
+                    return PointerIcon.getNullIcon();
+                }
+                int systemIconResourceId = in.readInt();
+                if (systemIconResourceId != 0) {
+                    PointerIcon icon = new PointerIcon(type);
+                    icon.mSystemIconResourceId = systemIconResourceId;
+                    return icon;
+                }
+                Bitmap bitmap = Bitmap.CREATOR.createFromParcel(in);
+                float hotSpotX = in.readFloat();
+                float hotSpotY = in.readFloat();
+                if (type == 20000) {
+                    return PointerIcon.createSpenIcon(bitmap, hotSpotX, hotSpotY);
+                }
+                if (type == -1) {
+                    return PointerIcon.createDefaultIcon(bitmap, hotSpotX, hotSpotY, type);
+                }
+                return PointerIcon.create(bitmap, hotSpotX, hotSpotY);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                return PointerIcon.getNullIcon();
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PointerIcon[] newArray(int size) {
+            return new PointerIcon[size];
+        }
     }
 
     @Override // android.os.Parcelable
@@ -713,8 +757,32 @@ public final class PointerIcon implements Parcelable {
         }
     }
 
+    /* renamed from: android.view.PointerIcon$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements DisplayManager.DisplayListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayAdded(int displayId) {
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayRemoved(int displayId) {
+            PointerIcon.gSystemIconsByDisplay.remove(displayId);
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayChanged(int displayId) {
+            PointerIcon.gSystemIconsByDisplay.remove(displayId);
+        }
+    }
+
     private static void registerDisplayListener(Context context) {
         sDisplayListener = new DisplayManager.DisplayListener() { // from class: android.view.PointerIcon.2
+            AnonymousClass2() {
+            }
+
             @Override // android.hardware.display.DisplayManager.DisplayListener
             public void onDisplayAdded(int displayId) {
             }
@@ -768,7 +836,6 @@ public final class PointerIcon implements Parcelable {
         return iInputManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setType(int type) {
         this.mType = type;
     }

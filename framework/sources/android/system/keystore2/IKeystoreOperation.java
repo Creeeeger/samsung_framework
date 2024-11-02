@@ -165,8 +165,9 @@ public interface IKeystoreOperation extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IKeystoreOperation {
+        public static class Proxy implements IKeystoreOperation {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

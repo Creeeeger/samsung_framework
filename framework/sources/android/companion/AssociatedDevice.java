@@ -11,13 +11,14 @@ public final class AssociatedDevice implements Parcelable {
     private static final int BLUETOOTH_LE = 1;
     private static final int CLASSIC_BLUETOOTH = 0;
     public static final Parcelable.Creator<AssociatedDevice> CREATOR = new Parcelable.Creator<AssociatedDevice>() { // from class: android.companion.AssociatedDevice.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AssociatedDevice[] newArray(int size) {
             return new AssociatedDevice[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssociatedDevice createFromParcel(Parcel in) {
             return new AssociatedDevice(in);
@@ -25,6 +26,10 @@ public final class AssociatedDevice implements Parcelable {
     };
     private static final int WIFI = 2;
     private final Parcelable mDevice;
+
+    /* synthetic */ AssociatedDevice(Parcel parcel, AssociatedDeviceIA associatedDeviceIA) {
+        this(parcel);
+    }
 
     public AssociatedDevice(Parcelable device) {
         this.mDevice = device;
@@ -94,6 +99,23 @@ public final class AssociatedDevice implements Parcelable {
                 return android.net.wifi.ScanResult.CREATOR;
             default:
                 throw new UnsupportedOperationException("Unsupported device type.");
+        }
+    }
+
+    /* renamed from: android.companion.AssociatedDevice$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AssociatedDevice> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssociatedDevice[] newArray(int size) {
+            return new AssociatedDevice[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssociatedDevice createFromParcel(Parcel in) {
+            return new AssociatedDevice(in);
         }
     }
 

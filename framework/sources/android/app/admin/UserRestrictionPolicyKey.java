@@ -10,19 +10,24 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class UserRestrictionPolicyKey extends PolicyKey {
     public static final Parcelable.Creator<UserRestrictionPolicyKey> CREATOR = new Parcelable.Creator<UserRestrictionPolicyKey>() { // from class: android.app.admin.UserRestrictionPolicyKey.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UserRestrictionPolicyKey createFromParcel(Parcel source) {
             return new UserRestrictionPolicyKey(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UserRestrictionPolicyKey[] newArray(int size) {
             return new UserRestrictionPolicyKey[size];
         }
     };
     private final String mRestriction;
+
+    /* synthetic */ UserRestrictionPolicyKey(Parcel parcel, UserRestrictionPolicyKeyIA userRestrictionPolicyKeyIA) {
+        this(parcel);
+    }
 
     public UserRestrictionPolicyKey(String identifier, String restriction) {
         super(identifier);
@@ -51,6 +56,23 @@ public final class UserRestrictionPolicyKey extends PolicyKey {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getIdentifier());
         dest.writeString(this.mRestriction);
+    }
+
+    /* renamed from: android.app.admin.UserRestrictionPolicyKey$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UserRestrictionPolicyKey> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserRestrictionPolicyKey createFromParcel(Parcel source) {
+            return new UserRestrictionPolicyKey(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UserRestrictionPolicyKey[] newArray(int size) {
+            return new UserRestrictionPolicyKey[size];
+        }
     }
 
     public String toString() {

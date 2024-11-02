@@ -38,7 +38,6 @@ public final class GpsStatus {
         void onNmeaReceived(long j, String str);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public final class SatelliteIterator implements Iterator<GpsSatellite> {
         private int mIndex = 0;
@@ -60,7 +59,6 @@ public final class GpsStatus {
             return false;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // java.util.Iterator
         public GpsSatellite next() {
             while (this.mIndex < this.mSatellitesCount) {
@@ -79,7 +77,6 @@ public final class GpsStatus {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Iterator lambda$new$0() {
         return new SatelliteIterator();
     }
@@ -90,7 +87,6 @@ public final class GpsStatus {
         return status;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static GpsStatus createEmpty() {
         return new GpsStatus();
     }
@@ -98,7 +94,6 @@ public final class GpsStatus {
     private GpsStatus() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setStatus(GnssStatus status, int timeToFirstFix) {
         int i;
         for (int i2 = 0; i2 < this.mSatellites.size(); i2++) {

@@ -18,7 +18,6 @@ public abstract class ComplexColor {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setBaseChangingConfigurations(int changingConfigurations) {
         this.mChangingConfigurations = changingConfigurations;
     }

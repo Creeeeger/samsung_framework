@@ -245,11 +245,40 @@ public final class PowerManager {
     public static final int WAKE_REASON_WAKE_MOTION = 7;
     final Context mContext;
     final Handler mHandler;
-    private final PropertyInvalidatedCache<Integer, Boolean> mInteractiveCache;
     private PowerExemptionManager mPowerExemptionManager;
-    private final PropertyInvalidatedCache<Void, Boolean> mPowerSaveModeCache;
     final IPowerManager mService;
     final IThermalService mThermalService;
+    private final PropertyInvalidatedCache<Void, Boolean> mPowerSaveModeCache = new PropertyInvalidatedCache<Void, Boolean>(1, CACHE_KEY_IS_POWER_SAVE_MODE_PROPERTY) { // from class: android.os.PowerManager.1
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(Void query) {
+            try {
+                return Boolean.valueOf(PowerManager.this.mService.isPowerSaveMode());
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    };
+    private final PropertyInvalidatedCache<Integer, Boolean> mInteractiveCache = new PropertyInvalidatedCache<Integer, Boolean>(1, CACHE_KEY_IS_INTERACTIVE_PROPERTY) { // from class: android.os.PowerManager.2
+        AnonymousClass2(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(Integer displayId) {
+            try {
+                if (displayId == null) {
+                    return Boolean.valueOf(PowerManager.this.mService.isInteractive());
+                }
+                return Boolean.valueOf(PowerManager.this.mService.isDisplayInteractive(displayId.intValue()));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    };
     private final ArrayMap<OnThermalStatusChangedListener, IThermalStatusListener> mListenerMap = new ArrayMap<>();
     private final AtomicLong mLastHeadroomUpdate = new AtomicLong(0);
 
@@ -567,31 +596,46 @@ public final class PowerManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.os.PowerManager$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends PropertyInvalidatedCache<Void, Boolean> {
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(Void query) {
+            try {
+                return Boolean.valueOf(PowerManager.this.mService.isPowerSaveMode());
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.os.PowerManager$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 extends PropertyInvalidatedCache<Integer, Boolean> {
+        AnonymousClass2(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Boolean recompute(Integer displayId) {
+            try {
+                if (displayId == null) {
+                    return Boolean.valueOf(PowerManager.this.mService.isInteractive());
+                }
+                return Boolean.valueOf(PowerManager.this.mService.isDisplayInteractive(displayId.intValue()));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
     public PowerManager(Context context, IPowerManager service, IThermalService thermalService, Handler handler) {
-        int i = 1;
-        this.mPowerSaveModeCache = new PropertyInvalidatedCache<Void, Boolean>(i, CACHE_KEY_IS_POWER_SAVE_MODE_PROPERTY) { // from class: android.os.PowerManager.1
-            @Override // android.app.PropertyInvalidatedCache
-            public Boolean recompute(Void query) {
-                try {
-                    return Boolean.valueOf(PowerManager.this.mService.isPowerSaveMode());
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-        };
-        this.mInteractiveCache = new PropertyInvalidatedCache<Integer, Boolean>(i, CACHE_KEY_IS_INTERACTIVE_PROPERTY) { // from class: android.os.PowerManager.2
-            @Override // android.app.PropertyInvalidatedCache
-            public Boolean recompute(Integer displayId) {
-                try {
-                    if (displayId == null) {
-                        return Boolean.valueOf(PowerManager.this.mService.isInteractive());
-                    }
-                    return Boolean.valueOf(PowerManager.this.mService.isDisplayInteractive(displayId.intValue()));
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-        };
         this.mContext = context;
         this.mService = service;
         this.mThermalService = thermalService;
@@ -1117,8 +1161,7 @@ public final class PowerManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.os.PowerManager$3, reason: invalid class name */
+    /* renamed from: android.os.PowerManager$3 */
     /* loaded from: classes3.dex */
     public class AnonymousClass3 extends IThermalStatusListener.Stub {
         final /* synthetic */ Executor val$executor;
@@ -1704,7 +1747,6 @@ public final class PowerManager {
         };
         private final IBinder mToken = new Binder();
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$0() {
             release(65536);
         }
@@ -1922,7 +1964,6 @@ public final class PowerManager {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$wrap$1(Runnable r) {
             try {
                 r.run();
@@ -1952,7 +1993,7 @@ public final class PowerManager {
             }
         }
 
-        /* renamed from: android.os.PowerManager$WakeLock$1, reason: invalid class name */
+        /* renamed from: android.os.PowerManager$WakeLock$1 */
         /* loaded from: classes3.dex */
         class AnonymousClass1 extends IWakeLockCallback.Stub {
             final /* synthetic */ Executor val$executor;

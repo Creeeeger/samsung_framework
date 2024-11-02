@@ -15,13 +15,14 @@ import java.util.stream.Collectors;
 /* loaded from: classes5.dex */
 public class SplitActivityPackageInfo implements Parcelable {
     public static final Parcelable.Creator<SplitActivityPackageInfo> CREATOR = new Parcelable.Creator<SplitActivityPackageInfo>() { // from class: com.samsung.android.multiwindow.splitactivity.SplitActivityPackageInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SplitActivityPackageInfo createFromParcel(Parcel in) {
             return new SplitActivityPackageInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitActivityPackageInfo[] newArray(int size) {
             return new SplitActivityPackageInfo[size];
@@ -47,6 +48,23 @@ public class SplitActivityPackageInfo implements Parcelable {
         String[] fullscreenActivities = in.readStringArray();
         if (fullscreenActivities != null) {
             Collections.addAll(arraySet, fullscreenActivities);
+        }
+    }
+
+    /* renamed from: com.samsung.android.multiwindow.splitactivity.SplitActivityPackageInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SplitActivityPackageInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SplitActivityPackageInfo createFromParcel(Parcel in) {
+            return new SplitActivityPackageInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SplitActivityPackageInfo[] newArray(int size) {
+            return new SplitActivityPackageInfo[size];
         }
     }
 

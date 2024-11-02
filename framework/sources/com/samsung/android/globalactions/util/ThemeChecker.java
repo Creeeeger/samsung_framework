@@ -13,7 +13,6 @@ public class ThemeChecker {
     private final ScreenCaptureUtil mScreenCaptureUtil;
     private State mState = State.NEED_CHECKING;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public enum State {
         NEED_CHECKING,

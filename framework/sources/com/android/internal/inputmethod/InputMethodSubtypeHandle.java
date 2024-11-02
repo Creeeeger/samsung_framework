@@ -16,13 +16,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InputMethodSubtypeHandle implements Parcelable {
     public static final Parcelable.Creator<InputMethodSubtypeHandle> CREATOR = new Parcelable.Creator<InputMethodSubtypeHandle>() { // from class: com.android.internal.inputmethod.InputMethodSubtypeHandle.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputMethodSubtypeHandle createFromParcel(Parcel in) {
             return InputMethodSubtypeHandle.of(in.readString8());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputMethodSubtypeHandle[] newArray(int size) {
             return new InputMethodSubtypeHandle[size];
@@ -117,6 +118,23 @@ public final class InputMethodSubtypeHandle implements Parcelable {
 
     public String toString() {
         return "InputMethodSubtypeHandle{mHandle=" + this.mHandle + "}";
+    }
+
+    /* renamed from: com.android.internal.inputmethod.InputMethodSubtypeHandle$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputMethodSubtypeHandle> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputMethodSubtypeHandle createFromParcel(Parcel in) {
+            return InputMethodSubtypeHandle.of(in.readString8());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputMethodSubtypeHandle[] newArray(int size) {
+            return new InputMethodSubtypeHandle[size];
+        }
     }
 
     @Override // android.os.Parcelable

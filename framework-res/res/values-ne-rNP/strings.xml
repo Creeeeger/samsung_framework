@@ -334,7 +334,7 @@
     <string name="ext_media_unsupported_notification_message">यस यन्त्रले यो %s लाई समर्थन गर्दैन। समर्थन गरिने ढाँचामा सेट अप गर्न ट्याप गर्नुहोस्।</string>
     <string name="ext_media_unsupported_notification_title">समर्थन नगरिने %s</string>
     <string name="ext_storage_bad_removal_button">पुनः सुरु गर्नुहोस्</string>
-    <string name="ext_storage_bad_removal_title">आफ्नो फोन पुनः सुरु गर्नुहोस्</string>
+    <string name="ext_storage_bad_removal_title">आफ्नो ट्याबलेट पुनः सुरु गर्नुहोस्</string>
     <string name="extmedia_format_message_usbhost">तपाईंको USBमा सङ्ग्रह भएका सबै फाइलहरू मेटिने छन्। यो कार्य उल्टाउन सकिँदैन!</string>
     <string name="extmedia_format_title_usbhost">"USB भण्डारणलाई फर्म्याट  गर्न चाहनु हुन्छ?"</string>
     <string name="factoryreset_restrict">सुरक्षा नीतिले फ्याक्ट्री रिसेट गर्न प्रतिबन्ध लगाउँछ।</string>
@@ -587,16 +587,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">तपाईको ब्लुटूथ अडियो यन्त्रमा साउन्ड प्ले हुँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्</string>
     <string name="multisound_sound_via_headphone">%s को ध्वनि तपाईको हेडफोन मार्फत प्ले गरिँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्।</string>
     <string name="multisound_sound_via_headphone_multiselection">साउन्ड तपाईको हेडफोनमार्फत प्ले हुँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्।</string>
-    <string name="multisound_sound_via_phone_speaker">%s को ध्वनि तपाईको फोनको स्पीकर मार्फत प्ले गरिँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्।</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">साउन्ड तपाईको फोनको स्पीकरमार्फत प्ले हुँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्।</string>
+    <string name="multisound_sound_via_phone_speaker">%s को ध्वनि तपाईको ट्याबलेटको स्पीकर मार्फत प्ले गरिँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्।</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">साउन्ड तपाईको ट्याब्लेटको स्पीकरमार्फत प्ले हुँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्।</string>
     <string name="multisound_sound_via_usb_audio">%s को ध्वनि तपाईको USB अडियो यन्त्र मार्फत प्ले गरिँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्।</string>
     <string name="multisound_sound_via_usb_audio_multiselection">साउन्ड तपाईको USB अडियो यन्त्रमार्फत प्ले हुँदै छ। यसलाई अफ गर्न यहाँ ट्याप गर्नुहोस्।</string>
     <string name="multisound_title">छुट्टाछुट्टै एपको साउन्ड</string>
     <string name="multisound_turn_off_multisound">अफ गर्नुहोस्</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX मा %s चलाउन सकिँदैन। फोन मोडमा चलाई हेर्नुहोस्।</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX मा चल्न सक्दैन। यसलाई होम स्क्रीनहरूका लागि डिजाइन गरिएको हो।</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">केही गेमहरूले टच स्क्रीनमा मात्र काम गर्दछन्। Samsung DeX मा माउसका नियन्त्रणहरूले काम नगरेमा त्यसको सट्टामा फोन मोडमा खेली हेर्नुहोस्।</string>
-    <string name="my_device">यो फोन</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX मा %s चलाउन सकिँदैन। ट्याब्लेट मोडमा चलाई हेर्नुहोस्।</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX मा %s चलाउन सकिँदैन। यसलाई ट्याब्लेटका होम स्क्रीनहरूका लागि डिजाइन गरिएको हो।</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">केही गेमहरूले टच स्क्रीनमा मात्र काम गर्दछन्। Samsung DeX मा माउसका नियन्त्रणहरूले काम नगरेमा त्यसको सट्टामा ट्याब्लेट मोडमा खेली हेर्नुहोस्।</string>
+    <string name="my_device">यो ट्याबलेट</string>
     <string name="network_locked_sim_dialog_message_ais">यो SIM कार्डले तपाईको सदस्यताका नियम र सर्तहरूको पालना नगर्ने हुनाले यो कार्डले यो फोनमा पूर्ण रूपमा काम गर्दैन। तपाईसँग कुनै प्रश्न छ वा तपाई यस मामिलामा थप जानकारी चाहनुहुन्छ भने कृपया सैमसंगको ग्राहक सेवा केन्द्र वा तपाईलाई यी उत्पादनहरू बिक्री गर्ने पसलमा सम्पर्क गर्नुहोस्।</string>
     <string name="network_locked_sim_notification_text">नेटवर्क लक गरिएको SIM कार्ड घुसाइयो।</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -783,7 +783,7 @@
     <string name="policydesc_allow_desktopsync">डेस्कटप सिंकको प्रयोग रोक्नुहोस्।</string>
     <string name="policydesc_allow_internetsharing">मोबाइल हटस्पटको प्रयोग रोक्नुहोस्।</string>
     <string name="policydesc_allow_irda">IrDA को प्रयोग रोक्नुहोस्।</string>
-    <string name="policydesc_allow_popimapemail">फोनमा POP र IMAP र्इमेलको प्रयोग रोक्नुहोस्।</string>
+    <string name="policydesc_allow_popimapemail">ट्याबलेटमा POP र IMAP र्इमेलको प्रयोग रोक्नुहोस्।</string>
     <string name="policydesc_allow_storagecard">SD कार्डहरूको प्रयोग रोक्नुहोस्।</string>
     <string name="policydesc_allow_textmessaging">पाठ र मल्टिमिडिया संदेशको प्रयोग रोक्नुहोस्।</string>
     <string name="policydesc_allow_thirdParty">यो अनुप्रयोगले तेस्रो-पक्षका अनुप्रयोगहरू चल्न दिनबाट रोक्न सक्छ।</string>
@@ -828,7 +828,7 @@
     <string name="pwd_change_enforced">सुरक्षा नीतिले तपाईलाई आफ्नो पासवर्ड परिवर्तन गर्न आवश्यक गराउँछ।</string>
     <string name="recording_fail">%2$s मा माइकको प्रयोग भइरहेको बेला %1$s मा माइकको प्रयोग गर्न सकिँदैन।</string>
     <string name="recording_popup">%s ले माइक्रोफोन प्रयोग गर्दैछ।</string>
-    <string name="recording_popup_device">फोन</string>
+    <string name="recording_popup_device">ट्याबलेट</string>
     <string name="recording_popup_with_bluetooth">%s ले ब्लुटूथ माइक्रोफोन प्रयोग गर्दैछ।</string>
     <string name="recording_popup_with_device">%1$s ले %2$s को माइक्रोफोन प्रयोग गर्दै छ।</string>
     <string name="redo">रिडु गर</string>
@@ -892,12 +892,12 @@
     <string name="screencapture_restrict">सुरक्षा नीतिले स्क्रीन क्याप्चरको प्रयोगलाई रोक्छ।</string>
     <string name="sd_card_unavailable_message">यो SD कार्ड कुनै अर्को प्रयोगकर्ताको प्रोफाइल प्रयोग गरिएको बेला हालिएको हुनाले तपाई यो कार्ड प्रयोग गर्न सक्नुहुन्न।</string>
     <string name="sd_card_unavailable_title">SD कार्ड उपलब्ध छैन</string>
-    <string name="sdcard_bad_removal_message">SD कार्ड असुरक्षित तरिकाले निकालियो। फोनलाई अनपेक्षित तरिकाले पुनः सुरु हुनबाट रोक्न सेव नगरिएको डाटा सेव गरी अहिले नै पुनः सुरु गर्नुहोस्।</string>
+    <string name="sdcard_bad_removal_message">SD कार्ड असुरक्षित तरिकाले निकालियो। ट्याबलेटलाई अनपेक्षित तरिकाले पुनः सुरु हुनबाट रोक्न सेव नगरिएको डाटा सेव गरी अहिले नै पुनः सुरु गर्नुहोस्।</string>
     <string name="sdcard_batch_decrypt_noti_content">SD कार्डको गुप्तिकरण हटाउनुहोस्</string>
     <string name="sdcard_batch_decrypt_noti_title">SD कार्डको डिक्रिप्शन हटाउने</string>
     <string name="sdcard_batch_decrypt_popup_content">गुप्तिकरण गरिएको SD कारड् प्रयोग गर्न अघि गुप्तिकरण हटाउनु पर्छ। गुप्तिकरण हटाउन एक वा बढि घण्टा लाग्न सक्छ। चार्ज गरिएको ब्याट्रीबाट सुरू गर्नहोस् र गुप्तिकरण नहटाए सम्म यन्त्रलाई घुसाइ राख्नुहोस्। गुप्तिकरण हटाउने प्रक्रिया बिथोल्येमा केही वा सबै डाटा गुमाउन सकिन्छ।</string>
     <string name="sdcard_decrypt_err_notification">SD कार्ड डिक्रिप्शन त्रुटि भयो।</string>
-    <string name="sdcard_decrypt_error_otherdevice">तपाईको SD कार्डका केही फाइलहरू कुनै अर्को यन्त्रमा इन्क्रिप्ट गरिएका हुनाले यो फोनमा ती फाइलहरू प्रयोग गर्न सकिँदैन।</string>
+    <string name="sdcard_decrypt_error_otherdevice">तपाईको SD कार्डका केही फाइलहरू कुनै अर्को यन्त्रमा इन्क्रिप्ट गरिएका हुनाले यो ट्याबलेटमा ती फाइलहरू प्रयोग गर्न सकिँदैन।</string>
     <string name="sdcard_decrypt_notification">SD कार्डको गुप्तीलेखन हटाइयो।</string>
     <string name="sdcard_decrypt_title_notification">SD कार्डको डिक्रिप्शन हटाउने</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD कार्ड डिक्रिप्ट गर्दै…</string>
@@ -1223,7 +1223,7 @@
     <string name="usb_abnormal_reset_title">USB को जडान स्थिर छैन</string>
     <string name="usb_abnormal_reset_toast">USB जडान स्थिर छैन। यो केबल छुटाई फेरि जोड्नुहोस् वा कुनै अर्को केबल प्रयोग गरी हेर्नुहोस्।</string>
     <string name="usb_accessory_notification_title">USB सहायकमा जोडिएको छ</string>
-    <string name="usb_bad_removal_message">USB भण्डारण यन्त्र असुरक्षित तरिकाले निकालियो। फोनलाई अनपेक्षित तरिकाले पुनः सुरु हुनबाट रोक्न सेव नगरिएको डाटा सेव गरी अहिले नै पुनः सुरु गर्नुहोस्।</string>
+    <string name="usb_bad_removal_message">USB भण्डारण यन्त्र असुरक्षित तरिकाले निकालियो। ट्याबलेटलाई अनपेक्षित तरिकाले पुनः सुरु हुनबाट रोक्न सेव नगरिएको डाटा सेव गरी अहिले नै पुनः सुरु गर्नुहोस्।</string>
     <string name="usb_blocked_by_emergency_mode">आपतकालीन मोडमा USB सम्बन्धी केही फंक्शनहरू उपलब्ध हुँदैनन्।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">अधिकतम पावर बचत मोड सक्षम गरिएको बेला जडान गरिएको USB यन्त्रसँग सम्बन्धित फंक्शनहरू प्रयोग गर्न सकिएन।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">अधिकतम पावर बचत गर्ने मोड अन हुँदा USB का केही फंक्शनहरूलाई सीमित गरिने छ।</string>
@@ -1231,13 +1231,13 @@
     <string name="usb_camera_connected_notification_title">मिडिया यन्त्रलाई जडान गरियो</string>
     <string name="usb_camera_disconnected_notification_title">मिडिया यन्त्रलाई विच्छेद गरियो</string>
     <string name="usb_cd_installer_notification_title">सफ्टवेयर अपडेट</string>
-    <string name="usb_charing_only_notification_title">USB मार्फत चार्ज गर्दै</string>
+    <string name="usb_charing_only_notification_title">जडान भयो</string>
     <string name="usb_debugging_only_notification_title">डिबगिङ मात्र</string>
-    <string name="usb_host_resource_exceed_message">तपाईको फोनको USB कन्ट्रोलरमा यो यन्त्रमा जोडिनका लागि चाहिने पर्याप्त स्रोत-साधनहरू छैनन्। यन्त्रको जडान विच्छेद गर्नुहोस् र फेरि थपी हेर्नुहोस्।</string>
+    <string name="usb_host_resource_exceed_message">तपाईको ट्याबलेटको USB कन्ट्रोलरमा यो यन्त्रमा जोडिनका लागि चाहिने पर्याप्त स्रोत-साधनहरू छैनन्। यन्त्रको जडान विच्छेद गर्नुहोस् र फेरि थपी हेर्नुहोस्।</string>
     <string name="usb_host_resource_exceed_title">USB कन्ट्रोलरका पर्याप्त स्रोतहरू छैनन्</string>
-    <string name="usb_hub_depth_exceed_message">तपाईको फोनमा एकै समयमा बढीमा 5 USB हबका जडानहरू मात्र प्रयोग गर्न सकिन्छ।</string>
+    <string name="usb_hub_depth_exceed_message">तपाईको ट्याबलेटमा एकै समयमा बढीमा 5 USB हबका जडानहरू मात्र प्रयोग गर्न सकिन्छ।</string>
     <string name="usb_hub_depth_exceed_title">USB हबमा जोडिएका यन्त्रहरूको संख्या अधिकतम भयो</string>
-    <string name="usb_hub_power_exceed_message">तपाईको फोन यो USB यन्त्रलाई चाहिने पर्याप्त पावर प्रदान गर्न सक्दैन। यो यन्त्रलाई आफ्नो फोनमा जोड्नुअघि त्यसलाई आफैले पावर प्राप्त गर्ने USB हबमा जोड्नुहोस्।</string>
+    <string name="usb_hub_power_exceed_message">तपाईको ट्याबलेट यो USB यन्त्रलाई चाहिने पर्याप्त पावर प्रदान गर्न सक्दैन। यो यन्त्रलाई आफ्नो ट्याबलेटमा जोड्नुअघि त्यसलाई आफैले पावर प्राप्त गर्ने USB हबमा जोड्नुहोस्।</string>
     <string name="usb_increase_battery_usage">USB जडानले ब्याट्रीको प्रयोग बढाउन सक्छ।</string>
     <string name="usb_mass_storage_restrict">सुरक्षा नीतिले USB मास स्टोरेजको प्रयोगलाई रोक्छ।</string>
     <string name="usb_midi_notification_title">MIDI का लागि USB</string>
@@ -1262,8 +1262,8 @@
     <string name="usb_storage_stop_title">USB भण्डारण प्रयोगमा छ</string>
     <string name="usb_storage_title">USB जोडिएको छ</string>
     <string name="usb_type_c_supply_power_notification_title">जडान गरिएको यन्त्रलाई USB मार्फत चार्ज गर्दै</string>
-    <string name="usb_unblock_by_screen_unlock">कनेक्ट गरिएको USB यन्त्र प्रयोग गर्न आफ्नो फोन अनलक गर्नुहोस्।</string>
-    <string name="usb_unsupport_accessory_message">तपाईको फोनले यो USB यन्त्रलाई समर्थन गर्दैन।</string>
+    <string name="usb_unblock_by_screen_unlock">कनेक्ट गरिएको USB यन्त्र प्रयोग गर्न आफ्नो ट्याब्लेट अनलक गर्नुहोस्।</string>
+    <string name="usb_unsupport_accessory_message">तपाईको ट्याबलेटले यो USB यन्त्रलाई समर्थन गर्दैन।</string>
     <string name="usb_unsupport_accessory_title">USB यन्त्रलाई समर्थन गरिँदैन</string>
     <string name="usb_unsupported_device">जडान गरिएको USB यन्त्रलाई समर्थन गरिँदैन।</string>
     <string name="usb_unsupported_device_title">यन्त्रलाई समर्थन गरिँदैन</string>
@@ -1281,19 +1281,19 @@
     <string name="usb_water_dialg_method_2_desc_2">तपाईले पोर्ट तर्फ पंखा वा ड्रायर (चिसो हावा मात्र) निर्देशित गरी सुक्खा हुने प्रक्रियाको गति बढाउन सक्नुहुन्छ।</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"हामीले तपाईंको चार्जिङ/USB पोर्ट भिजेको वा त्यसमा कुनै बाहिरी वस्तु भएको पत्ता लगाएका छौँ।
 
-तपाईंको चार्जिङ/USB पोर्टमा धुलो वा मैला जस्तो कुनै बाहिरी वस्तु त छैन भन्ने कुराको जाँच गर्नुहोस्। आफ्नो फोनलाई हुनसक्ने क्षति रोक्न चार्जिङ पोर्ट सफा नहोउञ्जेल र नमी नहटुञ्जेल कुनै पनि कुरा प्लग इन नगर्नुहोस्।
+तपाईंको चार्जिङ/USB पोर्टमा धुलो वा मैला जस्तो कुनै बाहिरी वस्तु त छैन भन्ने कुराको जाँच गर्नुहोस्। आफ्नो ट्याब्लेटलाई हुनसक्ने क्षति रोक्न चार्जिङ पोर्ट सफा नहोउञ्जेल र नमी नहटुञ्जेल कुनै पनि कुरा प्लग इन नगर्नुहोस्।
 
 पोर्टलाई सुक्खा बनाउन, त्यसमा कुनै नमी छ भने हल्लाएर हटाउनुहोस्, त्यसपछि त्यो सुकुञ्जेल प्रतीक्षा गर्नुहोस् र यस प्रक्रियामा धेरै समय लाग्न सक्छ। तपाईं पोर्टलाई पंखा वा ड्रयरतिर (चिसो हावा मात्र) फर्काएर अझ छिटो सुकाउन सक्नुहुन्छ।"</string>
     <string name="usb_water_dialg_positive_button">ठीक छ</string>
     <string name="usb_water_dialg_support_wireless_charging">"हामीले तपाईंको चार्जिङ/USB पोर्ट भिजेको वा त्यसमा कुनै बाहिरी वस्तु भएको पत्ता लगाएका छौँ।
 
-तपाईंको चार्जिङ/USB पोर्टमा धुलो वा मैला जस्तो कुनै बाहिरी वस्तु त छैन भन्ने कुराको जाँच गर्नुहोस्। आफ्नो फोनलाई हुनसक्ने क्षति रोक्न चार्जिङ पोर्ट सफा नहोउञ्जेल र नमी नहटुञ्जेल कुनै पनि कुरा प्लग इन नगर्नुहोस्।
+तपाईंको चार्जिङ/USB पोर्टमा धुलो वा मैला जस्तो कुनै बाहिरी वस्तु त छैन भन्ने कुराको जाँच गर्नुहोस्। आफ्नो ट्याब्लेटलाई हुनसक्ने क्षति रोक्न चार्जिङ पोर्ट सफा नहोउञ्जेल र नमी नहटुञ्जेल कुनै पनि कुरा प्लग इन नगर्नुहोस्।
 
 पोर्टलाई सुक्खा बनाउन, त्यसमा कुनै नमी छ भने हल्लाएर हटाउनुहोस्, त्यसपछि त्यो सुकुञ्जेल प्रतीक्षा गर्नुहोस् र यस प्रक्रियामा धेरै समय लाग्न सक्छ। तपाईं पोर्टलाई पंखा वा ड्रयरतिर (चिसो हावा मात्र) फर्काएर अझ छिटो सुकाउन सक्नुहुन्छ।
 
-तबसम्म तपाईं वायरलेस तरिकाले आफ्नो फोन चार्ज गर्न सक्नुहुन्छ।"</string>
+तबसम्म तपाईं वायरलेस तरिकाले आफ्नो ट्याब्लेट चार्ज गर्न सक्नुहुन्छ।"</string>
     <string name="usb_water_notification_content">तपाईंको चार्जिङ/USB पोर्ट भिजेको छ वा त्यसमा बाहिरी वस्तु छ। चार्ज गर्नुअघि त्यसको जाँच गर्नुहोस्।</string>
-    <string name="usb_water_notification_message">तपाईको चार्जर/USB पोर्टमा चिसो पत्ता लगाइएको छ। आफ्नो फोन चार्ज गर्नु अघि त्यो पूर्ण रूपमा सुक्खा छ भन्ने सुनिश्चित गर्नुहोस्। पूर्ण रूपमा सुक्खा हुन केही समय लाग्न सक्छ।</string>
+    <string name="usb_water_notification_message">तपाईको चार्जर/USB पोर्टमा चिसो पत्ता लगाइएको छ। आफ्नो ट्याबलेट चार्ज गर्नु अघि त्यो पूर्ण रूपमा सुक्खा छ भन्ने सुनिश्चित गर्नुहोस्। पूर्ण रूपमा सुक्खा हुन केही समय लाग्न सक्छ।</string>
     <string name="usb_water_notification_message_button">विवरणहरू</string>
     <string name="usb_water_notification_title">चार्जर/USB पोर्ट जाँच्नुहोस्</string>
     <string name="usbhostStorage_restrict">सुरक्षा नीतिले USB होस्ट स्टोरेजको प्रयोगलाई रोक्छ।</string>

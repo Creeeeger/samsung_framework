@@ -9,7 +9,9 @@ import java.util.List;
 /* loaded from: classes6.dex */
 public class SemEasySetupWifiScanSettings implements Parcelable {
     public static final Parcelable.Creator<SemEasySetupWifiScanSettings> CREATOR = new Parcelable.Creator<SemEasySetupWifiScanSettings>() { // from class: com.samsung.android.wifi.SemEasySetupWifiScanSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemEasySetupWifiScanSettings createFromParcel(Parcel in) {
             SemEasySetupWifiScanSettings settings = new SemEasySetupWifiScanSettings();
@@ -20,7 +22,6 @@ public class SemEasySetupWifiScanSettings implements Parcelable {
             return settings;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemEasySetupWifiScanSettings[] newArray(int size) {
             return new SemEasySetupWifiScanSettings[size];
@@ -63,5 +64,27 @@ public class SemEasySetupWifiScanSettings implements Parcelable {
         dest.writeParcelable(this.pendingIntentForIdlePopup, flags);
         dest.writeParcelable(this.pendingIntentForSettings, flags);
         dest.writeInt(this.minRssi);
+    }
+
+    /* renamed from: com.samsung.android.wifi.SemEasySetupWifiScanSettings$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemEasySetupWifiScanSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemEasySetupWifiScanSettings createFromParcel(Parcel in) {
+            SemEasySetupWifiScanSettings settings = new SemEasySetupWifiScanSettings();
+            in.readStringList(settings.ssidPatterns);
+            settings.pendingIntentForIdlePopup = (PendingIntent) in.readParcelable(PendingIntent.class.getClassLoader());
+            settings.pendingIntentForSettings = (PendingIntent) in.readParcelable(PendingIntent.class.getClassLoader());
+            settings.minRssi = in.readInt();
+            return settings;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemEasySetupWifiScanSettings[] newArray(int size) {
+            return new SemEasySetupWifiScanSettings[size];
+        }
     }
 }

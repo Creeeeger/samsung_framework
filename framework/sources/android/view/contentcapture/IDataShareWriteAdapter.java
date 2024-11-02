@@ -123,8 +123,9 @@ public interface IDataShareWriteAdapter extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IDataShareWriteAdapter {
+        public static class Proxy implements IDataShareWriteAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

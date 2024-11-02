@@ -64,7 +64,6 @@ public class GlobalConfiguration {
         this.engine_library = engine_library;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static GlobalConfiguration read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         GlobalConfiguration _instance = new GlobalConfiguration();
         String _raw = _parser.getAttributeValue(null, "speaker_drc_enabled");

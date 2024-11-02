@@ -6,7 +6,6 @@ public abstract class StreamBlockCipher implements BlockCipher, StreamCipher {
 
     protected abstract byte calculateByte(byte b);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public StreamBlockCipher(BlockCipher cipher) {
         this.cipher = cipher;
     }

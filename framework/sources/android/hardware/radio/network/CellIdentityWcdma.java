@@ -10,7 +10,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CellIdentityWcdma implements Parcelable {
     public static final Parcelable.Creator<CellIdentityWcdma> CREATOR = new Parcelable.Creator<CellIdentityWcdma>() { // from class: android.hardware.radio.network.CellIdentityWcdma.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellIdentityWcdma createFromParcel(Parcel _aidl_source) {
             CellIdentityWcdma _aidl_out = new CellIdentityWcdma();
@@ -18,7 +20,6 @@ public class CellIdentityWcdma implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityWcdma[] newArray(int _aidl_size) {
             return new CellIdentityWcdma[_aidl_size];
@@ -33,6 +34,25 @@ public class CellIdentityWcdma implements Parcelable {
     public int cid = 0;
     public int psc = 0;
     public int uarfcn = 0;
+
+    /* renamed from: android.hardware.radio.network.CellIdentityWcdma$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellIdentityWcdma> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityWcdma createFromParcel(Parcel _aidl_source) {
+            CellIdentityWcdma _aidl_out = new CellIdentityWcdma();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellIdentityWcdma[] newArray(int _aidl_size) {
+            return new CellIdentityWcdma[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

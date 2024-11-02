@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RadioResponseInfoModem implements Parcelable {
     public static final Parcelable.Creator<RadioResponseInfoModem> CREATOR = new Parcelable.Creator<RadioResponseInfoModem>() { // from class: android.hardware.radio.RadioResponseInfoModem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RadioResponseInfoModem createFromParcel(Parcel _aidl_source) {
             RadioResponseInfoModem _aidl_out = new RadioResponseInfoModem();
@@ -16,7 +18,6 @@ public class RadioResponseInfoModem implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioResponseInfoModem[] newArray(int _aidl_size) {
             return new RadioResponseInfoModem[_aidl_size];
@@ -26,6 +27,25 @@ public class RadioResponseInfoModem implements Parcelable {
     public int type;
     public int serial = 0;
     public boolean isEnabled = false;
+
+    /* renamed from: android.hardware.radio.RadioResponseInfoModem$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RadioResponseInfoModem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioResponseInfoModem createFromParcel(Parcel _aidl_source) {
+            RadioResponseInfoModem _aidl_out = new RadioResponseInfoModem();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RadioResponseInfoModem[] newArray(int _aidl_size) {
+            return new RadioResponseInfoModem[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

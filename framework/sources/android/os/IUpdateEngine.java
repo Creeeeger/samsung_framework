@@ -266,8 +266,9 @@ public interface IUpdateEngine extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IUpdateEngine {
+        public static class Proxy implements IUpdateEngine {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

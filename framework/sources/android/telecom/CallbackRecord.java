@@ -2,7 +2,6 @@ package android.telecom;
 
 import android.os.Handler;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class CallbackRecord<T> {
     private final T mCallback;

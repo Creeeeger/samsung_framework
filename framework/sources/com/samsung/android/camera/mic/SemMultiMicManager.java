@@ -105,7 +105,7 @@ public class SemMultiMicManager {
     public static boolean isSupported() {
         int version = 0;
         try {
-            version = Integer.parseInt("08020");
+            version = Integer.parseInt("07010");
         } catch (NumberFormatException e) {
         }
         return version >= 8001 || (version >= 7010 && version < 8000);
@@ -178,7 +178,7 @@ public class SemMultiMicManager {
         }
         int version = 0;
         try {
-            version = Integer.parseInt("08020");
+            version = Integer.parseInt("07010");
         } catch (NumberFormatException e) {
         }
         return mode == 0 ? version >= 8001 : mode == 1 ? version >= 8010 || (version >= 7010 && version < 8000) : mode == 2 ? version >= 8020 || (version >= 7020 && version < 8000) : version >= 8001;

@@ -58,7 +58,6 @@ public abstract class TimeZoneProviderService extends Service {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$reportSuggestionInternal$0(TimeZoneProviderSuggestion suggestion, TimeZoneProviderStatus providerStatus) {
         synchronized (this.mLock) {
             ITimeZoneProviderManager manager = this.mManager;
@@ -94,7 +93,6 @@ public abstract class TimeZoneProviderService extends Service {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$reportUncertainInternal$1(TimeZoneProviderStatus providerStatus) {
         synchronized (this.mLock) {
             ITimeZoneProviderManager manager = this.mManager;
@@ -122,7 +120,6 @@ public abstract class TimeZoneProviderService extends Service {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$reportPermanentFailure$2(Throwable cause) {
         synchronized (this.mLock) {
             ITimeZoneProviderManager manager = this.mManager;
@@ -149,7 +146,6 @@ public abstract class TimeZoneProviderService extends Service {
         return timeSinceLastEventMillis > this.mEventFilteringAgeThresholdMillis;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onStartUpdatesInternal(ITimeZoneProviderManager manager, long initializationTimeoutMillis, long eventFilteringAgeThresholdMillis) {
         synchronized (this.mLock) {
             this.mManager = manager;
@@ -159,7 +155,6 @@ public abstract class TimeZoneProviderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onStopUpdatesInternal() {
         synchronized (this.mLock) {
             onStopUpdates();
@@ -167,7 +162,6 @@ public abstract class TimeZoneProviderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
         synchronized (this.mLock) {
@@ -175,9 +169,12 @@ public abstract class TimeZoneProviderService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class TimeZoneProviderServiceWrapper extends ITimeZoneProvider.Stub {
+        /* synthetic */ TimeZoneProviderServiceWrapper(TimeZoneProviderService timeZoneProviderService, TimeZoneProviderServiceWrapperIA timeZoneProviderServiceWrapperIA) {
+            this();
+        }
+
         private TimeZoneProviderServiceWrapper() {
         }
 
@@ -192,7 +189,6 @@ public abstract class TimeZoneProviderService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$startUpdates$0(ITimeZoneProviderManager manager, long initializationTimeoutMillis, long eventFilteringAgeThresholdMillis) {
             TimeZoneProviderService.this.onStartUpdatesInternal(manager, initializationTimeoutMillis, eventFilteringAgeThresholdMillis);
         }

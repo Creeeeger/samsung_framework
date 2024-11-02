@@ -6,6 +6,10 @@ import java.security.KeyStore;
 @Deprecated
 /* loaded from: classes3.dex */
 public final class KeyStoreParameter implements KeyStore.ProtectionParameter {
+    /* synthetic */ KeyStoreParameter(int i, KeyStoreParameterIA keyStoreParameterIA) {
+        this(i);
+    }
+
     private KeyStoreParameter(int flags) {
     }
 

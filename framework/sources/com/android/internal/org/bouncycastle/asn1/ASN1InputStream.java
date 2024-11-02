@@ -40,7 +40,6 @@ public class ASN1InputStream extends FilterInputStream implements BERTags {
         this.tmpBuffers = new byte[11];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getLimit() {
         return this.limit;
     }
@@ -153,7 +152,6 @@ public class ASN1InputStream extends FilterInputStream implements BERTags {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int readTagNumber(InputStream s, int tag) throws IOException {
         int tagNo = tag & 31;
         if (tagNo == 31) {
@@ -174,7 +172,6 @@ public class ASN1InputStream extends FilterInputStream implements BERTags {
         return tagNo;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int readLength(InputStream s, int limit, boolean isParsing) throws IOException {
         int length = s.read();
         if (length < 0) {
@@ -268,7 +265,6 @@ public class ASN1InputStream extends FilterInputStream implements BERTags {
         return string;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1Primitive createPrimitiveDERObject(int tagNo, DefiniteLengthInputStream defIn, byte[][] tmpBuffers) throws IOException {
         switch (tagNo) {
             case 1:

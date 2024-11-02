@@ -23,7 +23,9 @@ public final class GnssStatus implements Parcelable {
     private static final int CONSTELLATION_TYPE_SHIFT_WIDTH = 8;
     public static final int CONSTELLATION_UNKNOWN = 0;
     public static final Parcelable.Creator<GnssStatus> CREATOR = new Parcelable.Creator<GnssStatus>() { // from class: android.location.GnssStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GnssStatus createFromParcel(Parcel in) {
             int svCount = in.readInt();
@@ -44,7 +46,6 @@ public final class GnssStatus implements Parcelable {
             return new GnssStatus(svCount, svidWithFlags, cn0DbHzs, elevations, azimuths, carrierFrequencies, basebandCn0DbHzs);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GnssStatus[] newArray(int size) {
             return new GnssStatus[size];
@@ -68,6 +69,10 @@ public final class GnssStatus implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface ConstellationType {
+    }
+
+    /* synthetic */ GnssStatus(int i, int[] iArr, float[] fArr, float[] fArr2, float[] fArr3, float[] fArr4, float[] fArr5, GnssStatusIA gnssStatusIA) {
+        this(i, iArr, fArr, fArr2, fArr3, fArr4, fArr5);
     }
 
     /* loaded from: classes2.dex */
@@ -196,6 +201,38 @@ public final class GnssStatus implements Parcelable {
         return (((result * 31) + Arrays.hashCode(this.mSvidWithFlags)) * 31) + Arrays.hashCode(this.mCn0DbHzs);
     }
 
+    /* renamed from: android.location.GnssStatus$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GnssStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssStatus createFromParcel(Parcel in) {
+            int svCount = in.readInt();
+            int[] svidWithFlags = new int[svCount];
+            float[] cn0DbHzs = new float[svCount];
+            float[] elevations = new float[svCount];
+            float[] azimuths = new float[svCount];
+            float[] carrierFrequencies = new float[svCount];
+            float[] basebandCn0DbHzs = new float[svCount];
+            for (int i = 0; i < svCount; i++) {
+                svidWithFlags[i] = in.readInt();
+                cn0DbHzs[i] = in.readFloat();
+                elevations[i] = in.readFloat();
+                azimuths[i] = in.readFloat();
+                carrierFrequencies[i] = in.readFloat();
+                basebandCn0DbHzs[i] = in.readFloat();
+            }
+            return new GnssStatus(svCount, svidWithFlags, cn0DbHzs, elevations, azimuths, carrierFrequencies, basebandCn0DbHzs);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GnssStatus[] newArray(int size) {
+            return new GnssStatus[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -266,6 +303,10 @@ public final class GnssStatus implements Parcelable {
         private final float mCn0DbHz;
         private final float mElevation;
         private final int mSvidWithFlags;
+
+        /* synthetic */ GnssSvInfo(int i, int i2, float f, float f2, float f3, boolean z, boolean z2, boolean z3, boolean z4, float f4, boolean z5, float f5, GnssSvInfoIA gnssSvInfoIA) {
+            this(i, i2, f, f2, f3, z, z2, z3, z4, f4, z5, f5);
+        }
 
         private GnssSvInfo(int i, int i2, float f, float f2, float f3, boolean z, boolean z2, boolean z3, boolean z4, float f4, boolean z5, float f5) {
             this.mSvidWithFlags = (i2 << 12) | ((i & 15) << 8) | (z ? 1 : 0) | (z2 ? 2 : 0) | (z3 ? 4 : 0) | (z4 ? 8 : 0) | (z5 ? 16 : 0);

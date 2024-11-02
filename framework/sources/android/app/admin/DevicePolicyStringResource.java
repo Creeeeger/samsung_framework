@@ -10,7 +10,9 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class DevicePolicyStringResource implements Parcelable {
     public static final Parcelable.Creator<DevicePolicyStringResource> CREATOR = new Parcelable.Creator<DevicePolicyStringResource>() { // from class: android.app.admin.DevicePolicyStringResource.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DevicePolicyStringResource createFromParcel(Parcel in) {
             String stringId = in.readString();
@@ -19,7 +21,6 @@ public final class DevicePolicyStringResource implements Parcelable {
             return new DevicePolicyStringResource(stringId, resourceIdInCallingPackage, resource);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DevicePolicyStringResource[] newArray(int size) {
             return new DevicePolicyStringResource[size];
@@ -28,6 +29,10 @@ public final class DevicePolicyStringResource implements Parcelable {
     private ParcelableResource mResource;
     private final int mResourceIdInCallingPackage;
     private final String mStringId;
+
+    /* synthetic */ DevicePolicyStringResource(String str, int i, ParcelableResource parcelableResource, DevicePolicyStringResourceIA devicePolicyStringResourceIA) {
+        this(str, i, parcelableResource);
+    }
 
     public DevicePolicyStringResource(Context context, String stringId, int resourceIdInCallingPackage) {
         this(stringId, resourceIdInCallingPackage, new ParcelableResource(context, resourceIdInCallingPackage, 2));
@@ -81,5 +86,25 @@ public final class DevicePolicyStringResource implements Parcelable {
         dest.writeString(this.mStringId);
         dest.writeInt(this.mResourceIdInCallingPackage);
         dest.writeTypedObject(this.mResource, flags);
+    }
+
+    /* renamed from: android.app.admin.DevicePolicyStringResource$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DevicePolicyStringResource> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DevicePolicyStringResource createFromParcel(Parcel in) {
+            String stringId = in.readString();
+            int resourceIdInCallingPackage = in.readInt();
+            ParcelableResource resource = (ParcelableResource) in.readTypedObject(ParcelableResource.CREATOR);
+            return new DevicePolicyStringResource(stringId, resourceIdInCallingPackage, resource);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DevicePolicyStringResource[] newArray(int size) {
+            return new DevicePolicyStringResource[size];
+        }
     }
 }

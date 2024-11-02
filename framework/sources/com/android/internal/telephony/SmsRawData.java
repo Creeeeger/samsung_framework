@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SmsRawData implements Parcelable {
     public static final Parcelable.Creator<SmsRawData> CREATOR = new Parcelable.Creator<SmsRawData>() { // from class: com.android.internal.telephony.SmsRawData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SmsRawData createFromParcel(Parcel source) {
             int size = source.readInt();
@@ -15,13 +17,32 @@ public class SmsRawData implements Parcelable {
             return new SmsRawData(data);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsRawData[] newArray(int size) {
             return new SmsRawData[size];
         }
     };
     byte[] data;
+
+    /* renamed from: com.android.internal.telephony.SmsRawData$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SmsRawData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsRawData createFromParcel(Parcel source) {
+            int size = source.readInt();
+            byte[] data = new byte[size];
+            source.readByteArray(data);
+            return new SmsRawData(data);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SmsRawData[] newArray(int size) {
+            return new SmsRawData[size];
+        }
+    }
 
     public SmsRawData(byte[] data) {
         this.data = data;

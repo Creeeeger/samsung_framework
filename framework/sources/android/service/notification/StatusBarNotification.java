@@ -19,13 +19,14 @@ import java.util.ArrayList;
 /* loaded from: classes3.dex */
 public class StatusBarNotification implements Parcelable {
     public static final Parcelable.Creator<StatusBarNotification> CREATOR = new Parcelable.Creator<StatusBarNotification>() { // from class: android.service.notification.StatusBarNotification.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StatusBarNotification createFromParcel(Parcel parcel) {
             return new StatusBarNotification(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StatusBarNotification[] newArray(int size) {
             return new StatusBarNotification[size];
@@ -210,14 +211,31 @@ public class StatusBarNotification implements Parcelable {
         return 0;
     }
 
+    /* renamed from: android.service.notification.StatusBarNotification$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StatusBarNotification> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StatusBarNotification createFromParcel(Parcel parcel) {
+            return new StatusBarNotification(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StatusBarNotification[] newArray(int size) {
+            return new StatusBarNotification[size];
+        }
+    }
+
     public StatusBarNotification cloneLight() {
         Notification no = new Notification();
         this.notification.cloneInto(no, false);
         return cloneShallow(no);
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public StatusBarNotification m3803clone() {
+    /* renamed from: clone */
+    public StatusBarNotification m3802clone() {
         return cloneShallow(this.notification.m376clone());
     }
 

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.RandomAccess;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class DoubleArrayList extends AbstractProtobufList<Double> implements Internal.DoubleList, RandomAccess, PrimitiveNonBoxingCollection {
     private static final DoubleArrayList EMPTY_LIST;
@@ -22,7 +21,6 @@ public final class DoubleArrayList extends AbstractProtobufList<Double> implemen
         return EMPTY_LIST;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DoubleArrayList() {
         this(new double[10], 0);
     }

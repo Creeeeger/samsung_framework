@@ -23,9 +23,24 @@ public abstract class LoggingPrintStream extends PrintStream {
 
     protected abstract void log(String str);
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.os.LoggingPrintStream$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends OutputStream {
+        AnonymousClass1() {
+        }
+
+        @Override // java.io.OutputStream
+        public void write(int oneByte) throws IOException {
+            throw new AssertionError();
+        }
+    }
+
     public LoggingPrintStream() {
         super(new OutputStream() { // from class: com.android.internal.os.LoggingPrintStream.1
+            AnonymousClass1() {
+            }
+
             @Override // java.io.OutputStream
             public void write(int oneByte) throws IOException {
                 throw new AssertionError();

@@ -11,12 +11,10 @@ public class MediaCasStateException extends IllegalStateException {
         this.mDiagnosticInfo = diagnosticInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void throwExceptionIfNeeded(int err) {
         throwExceptionIfNeeded(err, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void throwExceptionIfNeeded(int err, String msg) {
         String diagnosticInfo;
         if (err == 0) {

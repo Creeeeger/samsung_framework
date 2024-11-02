@@ -206,7 +206,6 @@ public class PduHeaders {
         this.mHeaderMap = new HashMap<>();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public int getOctet(int field) {
         Integer octet = (Integer) this.mHeaderMap.get(Integer.valueOf(field));
         if (octet == null) {
@@ -215,7 +214,6 @@ public class PduHeaders {
         return octet.intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setOctet(int value, int field) throws InvalidHeaderValueException {
         switch (field) {
             case 134:
@@ -318,12 +316,10 @@ public class PduHeaders {
         this.mHeaderMap.put(Integer.valueOf(field), Integer.valueOf(value));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public byte[] getTextString(int field) {
         return (byte[]) this.mHeaderMap.get(Integer.valueOf(field));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setTextString(byte[] value, int field) {
         if (value == null) {
             throw new NullPointerException();
@@ -347,12 +343,10 @@ public class PduHeaders {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public EncodedStringValue getEncodedStringValue(int field) {
         return (EncodedStringValue) this.mHeaderMap.get(Integer.valueOf(field));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public EncodedStringValue[] getEncodedStringValues(int field) {
         ArrayList<EncodedStringValue> list = (ArrayList) this.mHeaderMap.get(Integer.valueOf(field));
         if (list == null) {
@@ -362,7 +356,6 @@ public class PduHeaders {
         return (EncodedStringValue[]) list.toArray(values);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setEncodedStringValue(EncodedStringValue value, int field) {
         if (value == null) {
             throw new NullPointerException();
@@ -384,7 +377,6 @@ public class PduHeaders {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setEncodedStringValues(EncodedStringValue[] value, int field) {
         if (value == null) {
             throw new NullPointerException();
@@ -404,7 +396,6 @@ public class PduHeaders {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void appendEncodedStringValue(EncodedStringValue value, int field) {
         if (value == null) {
             throw new NullPointerException();
@@ -425,7 +416,6 @@ public class PduHeaders {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public long getLongInteger(int field) {
         Long longInteger = (Long) this.mHeaderMap.get(Integer.valueOf(field));
         if (longInteger == null) {
@@ -434,7 +424,6 @@ public class PduHeaders {
         return longInteger.longValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setLongInteger(long value, int field) {
         switch (field) {
             case 133:

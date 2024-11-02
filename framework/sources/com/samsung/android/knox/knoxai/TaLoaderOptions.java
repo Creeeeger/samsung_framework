@@ -8,13 +8,14 @@ import java.io.FileDescriptor;
 /* loaded from: classes5.dex */
 public class TaLoaderOptions implements Parcelable {
     public static final Parcelable.Creator<TaLoaderOptions> CREATOR = new Parcelable.Creator<TaLoaderOptions>() { // from class: com.samsung.android.knox.knoxai.TaLoaderOptions.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaLoaderOptions createFromParcel(Parcel in) {
             return new TaLoaderOptions(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaLoaderOptions[] newArray(int size) {
             return new TaLoaderOptions[size];
@@ -27,6 +28,10 @@ public class TaLoaderOptions implements Parcelable {
     private int rootLength;
     private int taOffset;
     private int taSize;
+
+    /* synthetic */ TaLoaderOptions(Parcel parcel, TaLoaderOptionsIA taLoaderOptionsIA) {
+        this(parcel);
+    }
 
     public TaLoaderOptions() {
     }
@@ -73,6 +78,23 @@ public class TaLoaderOptions implements Parcelable {
 
     public int getTaSize() {
         return this.taSize;
+    }
+
+    /* renamed from: com.samsung.android.knox.knoxai.TaLoaderOptions$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaLoaderOptions> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaLoaderOptions createFromParcel(Parcel in) {
+            return new TaLoaderOptions(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaLoaderOptions[] newArray(int size) {
+            return new TaLoaderOptions[size];
+        }
     }
 
     private TaLoaderOptions(Parcel in) {

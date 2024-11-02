@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxFilterEvent implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterEvent> CREATOR = new Parcelable.Creator<DemuxFilterEvent>() { // from class: android.hardware.tv.tuner.DemuxFilterEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DemuxFilterEvent createFromParcel(Parcel _aidl_source) {
             return new DemuxFilterEvent(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterEvent[] newArray(int _aidl_size) {
             return new DemuxFilterEvent[_aidl_size];
@@ -44,6 +45,10 @@ public final class DemuxFilterEvent implements Parcelable {
         public static final int startId = 9;
         public static final int temi = 7;
         public static final int tsRecord = 3;
+    }
+
+    /* synthetic */ DemuxFilterEvent(Parcel parcel, DemuxFilterEventIA demuxFilterEventIA) {
+        this(parcel);
     }
 
     public DemuxFilterEvent() {
@@ -197,6 +202,23 @@ public final class DemuxFilterEvent implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.DemuxFilterEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterEvent createFromParcel(Parcel _aidl_source) {
+            return new DemuxFilterEvent(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DemuxFilterEvent[] newArray(int _aidl_size) {
+            return new DemuxFilterEvent[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

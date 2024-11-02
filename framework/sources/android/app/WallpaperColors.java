@@ -47,13 +47,14 @@ public final class WallpaperColors implements Parcelable {
     private static final float BRIGHT_IMAGE_MEAN_LUMINANCE = SystemProperties.getInt("persist.wallpapercolors.threshold", 70) / 100.0f;
     private static final float MAX_DARK_AREA = SystemProperties.getInt("persist.wallpapercolors.max_dark_area", 5) / 100.0f;
     public static final Parcelable.Creator<WallpaperColors> CREATOR = new Parcelable.Creator<WallpaperColors>() { // from class: android.app.WallpaperColors.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WallpaperColors createFromParcel(Parcel in) {
             return new WallpaperColors(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WallpaperColors[] newArray(int size) {
             return new WallpaperColors[size];
@@ -150,7 +151,6 @@ public final class WallpaperColors implements Parcelable {
         return new WallpaperColors(populationByColor, hints | 4);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$fromBitmap$0(Palette.Swatch a, Palette.Swatch b) {
         return b.getPopulation() - a.getPopulation();
     }
@@ -297,6 +297,23 @@ public final class WallpaperColors implements Parcelable {
             proportions[hue] = proportions[hue] + (population / totalPopulation);
         }
         return proportions;
+    }
+
+    /* renamed from: android.app.WallpaperColors$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WallpaperColors> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WallpaperColors createFromParcel(Parcel in) {
+            return new WallpaperColors(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WallpaperColors[] newArray(int size) {
+            return new WallpaperColors[size];
+        }
     }
 
     @Override // android.os.Parcelable

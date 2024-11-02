@@ -7,8 +7,8 @@ import dalvik.annotation.optimization.FastNative;
 public class PathParser {
     static final String LOGTAG = PathParser.class.getSimpleName();
 
-    /* renamed from: -$$Nest$smnCreateEmptyPathData, reason: not valid java name */
-    static /* bridge */ /* synthetic */ long m4945$$Nest$smnCreateEmptyPathData() {
+    /* renamed from: -$$Nest$smnCreateEmptyPathData */
+    static /* bridge */ /* synthetic */ long m4944$$Nest$smnCreateEmptyPathData() {
         return nCreateEmptyPathData();
     }
 
@@ -18,17 +18,14 @@ public class PathParser {
     @FastNative
     private static native long nCreateEmptyPathData();
 
-    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreatePathData(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nCreatePathDataFromString(String str, int i);
 
     @FastNative
     private static native void nCreatePathFromPathData(long j, long j2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nFinalize(long j);
 
@@ -37,7 +34,6 @@ public class PathParser {
 
     private static native void nParseStringForPath(long j, String str, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetPathData(long j, long j2);
 
@@ -64,7 +60,7 @@ public class PathParser {
 
         public PathData() {
             this.mNativePathData = 0L;
-            this.mNativePathData = PathParser.m4945$$Nest$smnCreateEmptyPathData();
+            this.mNativePathData = PathParser.m4944$$Nest$smnCreateEmptyPathData();
         }
 
         public PathData(PathData data) {

@@ -53,7 +53,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
     private int mState = 0;
     private boolean mNextFlushForTextChanged = false;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class SessionStateReceiver extends IResultReceiver.Stub {
         private final WeakReference<MainContentCaptureSession> mMainSession;
@@ -101,7 +100,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public MainContentCaptureSession(ContentCaptureManager.StrippedContext context, ContentCaptureManager manager, Handler handler, IContentCaptureManager systemServerInterface) {
         this.mContext = context;
         this.mManager = manager;
@@ -112,8 +110,9 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         this.mSessionStateReceiver = new SessionStateReceiver(this);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.contentcapture.ContentCaptureSession
-    MainContentCaptureSession getMainCaptureSession() {
+    public MainContentCaptureSession getMainCaptureSession() {
         return this;
     }
 
@@ -124,7 +123,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         return child;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void start(IBinder token, IBinder shareableActivityToken, ComponentName component, int flags) {
         if (isContentCaptureEnabled()) {
             if (ContentCaptureHelper.sVerbose) {
@@ -163,7 +161,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDestroy$0() {
         try {
             flush(4);
@@ -172,7 +169,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onSessionStarted(int resultCode, IBinder binder) {
         if (binder != null) {
             this.mDirectServiceInterface = IContentCaptureDirectManager.Stub.asInterface(binder);
@@ -204,7 +200,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSessionStarted$1() {
         Log.w(TAG, "Keeping session " + this.mId + " when service died");
         this.mState = 1024;
@@ -385,8 +380,7 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         }, 1, flushFrequencyMs);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: flushIfNeeded, reason: merged with bridge method [inline-methods] */
+    /* renamed from: flushIfNeeded */
     public void lambda$scheduleFlush$2(int reason) {
         ArrayList<ContentCaptureEvent> arrayList = this.mEvents;
         if (arrayList == null || arrayList.isEmpty()) {
@@ -399,7 +393,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         flush(reason);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.contentcapture.ContentCaptureSession
     public void flush(int reason) {
         ArrayList<ContentCaptureEvent> arrayList = this.mEvents;
@@ -478,7 +471,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         this.mDirectServiceInterface = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void resetSession(int newState) {
         if (ContentCaptureHelper.sVerbose) {
             Log.v(TAG, "handleResetSession(" + getActivityName() + "): from " + getStateAsString(this.mState) + " to " + getStateAsString(newState));
@@ -536,28 +528,23 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         notifySessionPaused(this.mId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.contentcapture.ContentCaptureSession
     public boolean isContentCaptureEnabled() {
         return super.isContentCaptureEnabled() && this.mManager.isContentCaptureEnabled();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isDisabled() {
         return this.mDisabled.get();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean setDisabled(boolean disabled) {
         return this.mDisabled.compareAndSet(!disabled, disabled);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyChildSessionStarted$3(int childSessionId, int parentSessionId, ContentCaptureContext clientContext) {
         sendEvent(new ContentCaptureEvent(childSessionId, -1).setParentSessionId(parentSessionId).setClientContext(clientContext), true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyChildSessionStarted(final int parentSessionId, final int childSessionId, final ContentCaptureContext clientContext) {
         this.mHandler.post(new Runnable() { // from class: android.view.contentcapture.MainContentCaptureSession$$ExternalSyntheticLambda7
             @Override // java.lang.Runnable
@@ -567,12 +554,10 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyChildSessionFinished$4(int childSessionId, int parentSessionId) {
         sendEvent(new ContentCaptureEvent(childSessionId, -2).setParentSessionId(parentSessionId), true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyChildSessionFinished(final int parentSessionId, final int childSessionId) {
         this.mHandler.post(new Runnable() { // from class: android.view.contentcapture.MainContentCaptureSession$$ExternalSyntheticLambda9
             @Override // java.lang.Runnable
@@ -582,12 +567,10 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyViewAppeared$5(int sessionId, ViewNode.ViewStructureImpl node) {
         sendEvent(new ContentCaptureEvent(sessionId, 1).setViewNode(node.mNode));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyViewAppeared(final int sessionId, final ViewNode.ViewStructureImpl node) {
         this.mHandler.post(new Runnable() { // from class: android.view.contentcapture.MainContentCaptureSession$$ExternalSyntheticLambda4
             @Override // java.lang.Runnable
@@ -597,7 +580,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyViewDisappeared$6(int sessionId, AutofillId id) {
         sendEvent(new ContentCaptureEvent(sessionId, 2).setAutofillId(id));
     }
@@ -611,7 +593,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyViewTextChanged(final int sessionId, final AutofillId id, CharSequence text) {
         final CharSequence eventText;
         int composingStart;
@@ -641,12 +622,10 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyViewTextChanged$7(int sessionId, AutofillId id, CharSequence eventText, int composingStart, int composingEnd, int startIndex, int endIndex) {
         sendEvent(new ContentCaptureEvent(sessionId, 3).setAutofillId(id).setText(eventText).setComposingIndex(composingStart, composingEnd).setSelectionIndex(startIndex, endIndex));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyViewInsetsChanged$8(int sessionId, Insets viewInsets) {
         sendEvent(new ContentCaptureEvent(sessionId, 9).setInsets(viewInsets));
     }
@@ -671,7 +650,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyViewTreeEvent$9(int sessionId, int type, boolean disableFlush, boolean started) {
         ContentCaptureEvent contentCaptureEvent = new ContentCaptureEvent(sessionId, type);
         boolean z = true;
@@ -681,7 +659,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         sendEvent(contentCaptureEvent, z);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifySessionResumed$10(int sessionId) {
         sendEvent(new ContentCaptureEvent(sessionId, 7), true);
     }
@@ -695,7 +672,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifySessionPaused$11(int sessionId) {
         sendEvent(new ContentCaptureEvent(sessionId, 8), true);
     }
@@ -709,12 +685,10 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyContextUpdated$12(int sessionId, ContentCaptureContext context) {
         sendEvent(new ContentCaptureEvent(sessionId, 6).setClientContext(context), true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifyContextUpdated(final int sessionId, final ContentCaptureContext context) {
         this.mHandler.post(new Runnable() { // from class: android.view.contentcapture.MainContentCaptureSession$$ExternalSyntheticLambda5
             @Override // java.lang.Runnable
@@ -724,7 +698,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyWindowBoundsChanged$13(int sessionId, Rect bounds) {
         sendEvent(new ContentCaptureEvent(sessionId, 10).setBounds(bounds));
     }
@@ -738,7 +711,6 @@ public final class MainContentCaptureSession extends ContentCaptureSession {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.view.contentcapture.ContentCaptureSession
     public void dump(String prefix, PrintWriter pw) {
         super.dump(prefix, pw);

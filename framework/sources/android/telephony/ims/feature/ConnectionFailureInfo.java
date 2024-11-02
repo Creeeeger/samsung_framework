@@ -31,6 +31,10 @@ public final class ConnectionFailureInfo implements Parcelable {
     public @interface FailureReason {
     }
 
+    /* synthetic */ ConnectionFailureInfo(Parcel parcel, ConnectionFailureInfoIA connectionFailureInfoIA) {
+        this(parcel);
+    }
+
     static {
         SparseArray<String> sparseArray = new SparseArray<>();
         sReasonMap = sparseArray;
@@ -46,13 +50,14 @@ public final class ConnectionFailureInfo implements Parcelable {
         sparseArray.set(9, "RF_BUSY");
         sparseArray.set(65535, "UNSPECIFIED");
         CREATOR = new Parcelable.Creator<ConnectionFailureInfo>() { // from class: android.telephony.ims.feature.ConnectionFailureInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ConnectionFailureInfo createFromParcel(Parcel in) {
                 return new ConnectionFailureInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ConnectionFailureInfo[] newArray(int size) {
                 return new ConnectionFailureInfo[size];
@@ -99,5 +104,22 @@ public final class ConnectionFailureInfo implements Parcelable {
         out.writeInt(this.mReason);
         out.writeInt(this.mCauseCode);
         out.writeInt(this.mWaitTimeMillis);
+    }
+
+    /* renamed from: android.telephony.ims.feature.ConnectionFailureInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConnectionFailureInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConnectionFailureInfo createFromParcel(Parcel in) {
+            return new ConnectionFailureInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConnectionFailureInfo[] newArray(int size) {
+            return new ConnectionFailureInfo[size];
+        }
     }
 }

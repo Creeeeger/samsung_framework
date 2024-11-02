@@ -7,6 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehStoredMsgCount implements Parcelable {
     public static final Parcelable.Creator<SehStoredMsgCount> CREATOR = new Parcelable.Creator<SehStoredMsgCount>() { // from class: vendor.samsung.hardware.radio.messaging.SehStoredMsgCount.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehStoredMsgCount createFromParcel(Parcel _aidl_source) {
             SehStoredMsgCount _aidl_out = new SehStoredMsgCount();
@@ -21,6 +24,25 @@ public class SehStoredMsgCount implements Parcelable {
     };
     public int usedCount = 0;
     public int totalCount = 0;
+
+    /* renamed from: vendor.samsung.hardware.radio.messaging.SehStoredMsgCount$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehStoredMsgCount> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehStoredMsgCount createFromParcel(Parcel _aidl_source) {
+            SehStoredMsgCount _aidl_out = new SehStoredMsgCount();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehStoredMsgCount[] newArray(int _aidl_size) {
+            return new SehStoredMsgCount[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

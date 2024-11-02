@@ -18,7 +18,6 @@ public abstract class IntentService extends Service {
 
     protected abstract void onHandleIntent(Intent intent);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {

@@ -3,7 +3,6 @@ package com.android.server;
 import android.os.ConditionVariable;
 import android.os.SystemClock;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public abstract class ResettableTimeout {
     private ConditionVariable mLock = new ConditionVariable();
@@ -56,6 +55,10 @@ public abstract class ResettableTimeout {
 
     /* loaded from: classes5.dex */
     private class T extends Thread {
+        /* synthetic */ T(ResettableTimeout resettableTimeout, TIA tia) {
+            this();
+        }
+
         private T() {
         }
 

@@ -266,8 +266,9 @@ public interface IDeviceInfoManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IDeviceInfoManager {
+        public static class Proxy implements IDeviceInfoManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

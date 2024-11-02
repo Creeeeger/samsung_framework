@@ -86,7 +86,10 @@ public class LruCache<K, V> {
         return previous;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0064, code lost:            throw new java.lang.IllegalStateException(getClass().getName() + ".sizeOf() is reporting inconsistent results!");     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0064, code lost:
+    
+        throw new java.lang.IllegalStateException(getClass().getName() + ".sizeOf() is reporting inconsistent results!");
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

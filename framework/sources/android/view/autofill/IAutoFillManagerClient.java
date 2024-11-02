@@ -361,8 +361,9 @@ public interface IAutoFillManagerClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IAutoFillManagerClient {
+        public static class Proxy implements IAutoFillManagerClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

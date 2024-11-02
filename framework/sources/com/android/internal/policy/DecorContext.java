@@ -32,7 +32,6 @@ public class DecorContext extends ContextThemeWrapper {
         attachBaseContext(displayContext);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setPhoneWindow(PhoneWindow phoneWindow) {
         this.mPhoneWindow = phoneWindow;
         Context context = phoneWindow.getContext();

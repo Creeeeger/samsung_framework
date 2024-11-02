@@ -334,7 +334,7 @@
     <string name="ext_media_unsupported_notification_message">ఈ పరికరంలో ఈ %sకు మద్దతు లేదు. మద్దతు ఉన్న ఆకృతిలో సెటప్ చేయడానికి నొక్కండి.</string>
     <string name="ext_media_unsupported_notification_title">మద్దతు లేని %s</string>
     <string name="ext_storage_bad_removal_button">మళ్లీ ప్రారంభించండి</string>
-    <string name="ext_storage_bad_removal_title">మీ ఫోన్‌ని పునఃప్రారంభించండి</string>
+    <string name="ext_storage_bad_removal_title">మీ టాబ్లెట్‌ని పునఃప్రారంభించండి</string>
     <string name="extmedia_format_button_format">ఫార్మాట్</string>
     <string name="extmedia_format_message_usbhost">మీ USB నిల్వలో నిల్వ చేసిన అన్ని ఫైల్‌లు ఎరేజ్ చేయబడతాయి. ఈ చర్యను రద్దు చేసి పూర్వ స్థితికి తీసుకురావడం సాధ్యపడదు!</string>
     <string name="extmedia_format_title_usbhost">USB నిల్వను ఫార్మాట్ చేయాలా?</string>
@@ -591,16 +591,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ధ్వని మీ బ్లూటూత్ ఆడియో పరికరంలో ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి</string>
     <string name="multisound_sound_via_headphone">మీ ఫోన్ హెడ్‌ఫోన్‌ల ద్వారా %s ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
     <string name="multisound_sound_via_headphone_multiselection">మీ హెడ్‌ఫోన్‌ల ద్వారా ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
-    <string name="multisound_sound_via_phone_speaker">మీ ఫోన్ స్పీకర్ ద్వారా %s ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">మీ ఫోన్ స్పీకర్ ద్వారా ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
+    <string name="multisound_sound_via_phone_speaker">మీ టాబ్లెట్ స్పీకర్ ద్వారా %s ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">మీ టాబ్లెట్ స్పీకర్ ద్వారా ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
     <string name="multisound_sound_via_usb_audio">%s ధ్వని మీ USB ఆడియో పరికరంలో ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ధ్వని మీ USB ఆడియో పరికరంలో ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
     <string name="multisound_title">వేరొక అప్లికేషన్ ధ్వని</string>
     <string name="multisound_turn_off_multisound">ఆఫ్ చేయి</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXలో %s అమలు కాదు. ఫోన్ మోడ్‌లో అమలు చేయడానికి ప్రయత్నించండి.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%sని Samsung DeXలో అమలు చేయడం సాధ్యం కాదు. ఇది ఫోన్ హోమ్ స్క్రీన్‌ల కోసం రూపొందించబడింది.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">కొన్ని గేమ్‌లు టచ్ స్క్రీన్‌లలో మాత్రమే పని చేస్తాయి. మౌస్ నియంత్రణలు Samsung DeXలో పని చేయకుంటే, బదులుగా ఫోన్ మోడ్‌లో ప్రయత్నించండి.</string>
-    <string name="my_device">ఈ ఫోన్</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXలో %s అమలు కాదు. టాబ్లెట్ మోడ్‌లో అమలు చేయడానికి ప్రయత్నించండి.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeXలో %s అమలు కాదు. ఇది టాబ్లెట్ హోమ్ స్క్రీన్‌ల కోసం రూపొందించబడింది.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">కొన్ని గేమ్‌లు టచ్ స్క్రీన్‌లలో మాత్రమే పని చేస్తాయి. మౌస్ నియంత్రణలు Samsung DeXలో పని చేయకుంటే, బదులుగా టాబ్లెట్ మోడ్‌లో ప్రయత్నించండి.</string>
+    <string name="my_device">ఈ టాబ్లెట్</string>
     <string name="network_locked_sim_dialog_message_ais">మీ SIM కార్డ్ మీ సభ్యత్వం నిబంధనలు మరియు షరతులకు అనుగుణంగా లేనందున ఈ ఫోన్‌లో ఇది పూర్తిగా పనిచేయదు. మీకు ఏవైనా ప్రశ్నలు ఉంటే లేదా ఈ విషయం గురించి మరింత సమాచారం అవసరమైతే, దయచేసి ఈ ఉత్పత్తులను మీకు విక్రయించిన స్యామ్‌సంగ్ కస్టమర్ సేవా స్థానం లేదా స్టోర్‌ని సంప్రదించండి.</string>
     <string name="network_locked_sim_notification_text">నెట్‌వర్క్ లాక్ చేయబడింది SIM కార్డ్ చొప్పించబడింది.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -791,7 +791,7 @@
     <string name="policydesc_allow_desktopsync">డెస్క్‌టాప్ సమకాలీకరణ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_internetsharing">మొబైల్ హాట్‌స్పాట్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_irda">IrDA ఉపయోగాన్ని నిరోధిస్తుంది.</string>
-    <string name="policydesc_allow_popimapemail">ఫోన్‌లో POP మరియు IMAP ఇమెయిల్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
+    <string name="policydesc_allow_popimapemail">టాబ్లెట్‌లో POP మరియు IMAP ఇమెయిల్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_storagecard">SD కార్డ్‌ల ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_textmessaging">టెక్స్ట్ మరియు మల్టీమీడియా మెసేజింగ్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_thirdParty">మూడవ-పక్ష అప్లికేషన్‌లను అమలు చేయకుండా ఈ అప్లికేషన్ నిరోధించగలదు.</string>
@@ -837,7 +837,7 @@
     <string name="pwd_change_enforced">మీ పాస్‌వర్డ్‌ని మీరే మార్చడం భద్రతా విధానానికి అవసరం.</string>
     <string name="recording_fail">మైక్‌ని %2$sలో ఉపయోగిస్తున్నప్పుడు దాన్ని %1$sలో ఉపయోగించలేరు.</string>
     <string name="recording_popup">%s మైక్రోఫోన్‌ని ఉపయోగిస్తోంది.</string>
-    <string name="recording_popup_device">ఫోన్</string>
+    <string name="recording_popup_device">టాబ్లెట్</string>
     <string name="recording_popup_with_bluetooth">%s బ్లూటూత్ మైక్రోఫోన్‌ని ఉపయోగిస్తోంది.</string>
     <string name="recording_popup_with_device">%1$s %2$s యొక్క మైక్రోఫోన్ ఉపయోగిస్తోంది.</string>
     <string name="redo">చర్య పునరావృతం చేయి</string>
@@ -902,12 +902,12 @@
     <string name="screencapture_restrict">భద్రతా విధానం స్క్రీన్ సంగ్రహణ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="sd_card_unavailable_message">వేరొక వినియోగదారు ప్రొఫైల్ ఉపయోగంలో ఉన్నప్పుడు చొప్పించిన కారణంగా మీరు SD కార్డ్‌ని ఉపయోగించలేరు.</string>
     <string name="sd_card_unavailable_title">SD కార్డ్ అందుబాటులో లేదు</string>
-    <string name="sdcard_bad_removal_message">SD కార్డ్ అసురక్షితంగా తీసివేయబడింది. అనుకోకుండా మీ ఫోన్ పునఃప్రారంభం కావడాన్ని నివారించడానికి, సేవ్ చేయని డేటాని సేవ్ చేసి, ఇప్పుడు పునఃప్రారంభించండి.</string>
+    <string name="sdcard_bad_removal_message">SD కార్డ్ అసురక్షితంగా తీసివేయబడింది. అనుకోకుండా మీ టాబ్లెట్ పునఃప్రారంభం కావడాన్ని నివారించడానికి, సేవ్ చేయని డేటాని సేవ్ చేసి, ఇప్పుడు పునఃప్రారంభించండి.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD కార్డును డిక్రిప్ట్ చేయి</string>
     <string name="sdcard_batch_decrypt_noti_title">SD కార్డ్ డిక్రిప్షన్</string>
     <string name="sdcard_batch_decrypt_popup_content">ఇప్పటికే ఉపయోగించే ముందు ఎన్‌క్రిప్ట్ అయిన SD కార్డ్ తప్పక డిక్రిప్ట్ కావాలి. డిక్రిప్షన్ ఒక గంట లేదా మరింత సమయం తీసుకోవచ్చు. డిక్రిప్షన్ పూర్తి అయ్యే వరకు ఛార్జ్ చేయబడిన బ్యాటరీతో ప్రారంభించండి మరియు పరికరంను ప్లగ్ ఇన్ గా ఉంచండి. డిక్రిప్షన్ పనిని అంతరాయం చేయడం వలన కొంత లేదా మొత్తం డేటా కోల్పోవచ్చు.</string>
     <string name="sdcard_decrypt_err_notification">SD కార్డ్ డిక్రిప్షన్ లోపం ఏర్పడింది.</string>
-    <string name="sdcard_decrypt_error_otherdevice">మీ SD కార్డ్‌లోని కొన్ని ఫైల్‌లు మరో పరికరంలో ఎన్‌క్రిప్ట్ చేయబడ్డాయి మరియు ఈ ఫోన్‌లో ఉపయోగించలేరు.</string>
+    <string name="sdcard_decrypt_error_otherdevice">మీ SD కార్డ్‌లోని కొన్ని ఫైల్‌లు మరో పరికరంలో ఎన్‌క్రిప్ట్ చేయబడ్డాయి మరియు ఈ టాబ్లెట్‌లో ఉపయోగించలేరు.</string>
     <string name="sdcard_decrypt_notification">SD కార్డ్ డిక్రిప్ట్ చేయబడింది.</string>
     <string name="sdcard_decrypt_title_notification">SD కార్డ్ డిక్రిప్షన్</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD కార్డ్‌ని డీక్రిప్ట్ చేస్తోంది…</string>
@@ -1233,7 +1233,7 @@
     <string name="usb_abnormal_reset_title">USB కనెక్షన్ స్థిరంగా లేదు</string>
     <string name="usb_abnormal_reset_toast">USB కనెక్షన్ స్థిరంగా లేదు. కేబుల్‌ను అన్‌ప్లగ్ చేసి మళ్లీ ప్లగ్‌ఇన్ చేయండి లేదా వేరే కేబుల్‌ను ప్రయత్నించండి.</string>
     <string name="usb_accessory_notification_title">USB ఉపసాధనం కు కనెక్టయింది</string>
-    <string name="usb_bad_removal_message">USB నిల్వ పరికరం అసురక్షితంగా తీసివేయబడింది. అనుకోకుండా మీ ఫోన్ పునఃప్రారంభం కావడాన్ని నివారించడానికి, సేవ్ చేయని డేటాని సేవ్ చేసి, ఇప్పుడు పునఃప్రారంభించండి.</string>
+    <string name="usb_bad_removal_message">USB నిల్వ పరికరం అసురక్షితంగా తీసివేయబడింది. అనుకోకుండా మీ టాబ్లెట్ పునఃప్రారంభం కావడాన్ని నివారించడానికి, సేవ్ చేయని డేటాని సేవ్ చేసి, ఇప్పుడు పునఃప్రారంభించండి.</string>
     <string name="usb_blocked_by_emergency_mode">అత్యవసర మోడ్‌లో కొన్ని USB విధులు అందుబాటులో ఉండవు.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">అసాధారణ శక్తి ఆదా మోడ్ ప్రారంభించబడినప్పుడు కనెక్ట్ చేయబడిన USB పరికరానికి సంబంధించిన విధులను ఉపయోగించడం సాధ్యం కాదు.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">గరిష్ట శక్తి ఆదా మోడ్ ఆన్ చేయబడినప్పుడు కొన్ని USB విధులు పరిమితం చేయబడతాయి.</string>
@@ -1242,13 +1242,13 @@
     <string name="usb_camera_connected_notification_title">మీడియా పరికరం కనెక్ట్ చేయబడింది</string>
     <string name="usb_camera_disconnected_notification_title">మీడియా పరికరం డిస్‌కనెక్ట్ చేయబడింది</string>
     <string name="usb_cd_installer_notification_title">సాఫ్ట్‌వేర్ అప్‌డేట్</string>
-    <string name="usb_charing_only_notification_title">USB ఛార్జింగ్</string>
+    <string name="usb_charing_only_notification_title">కనెక్ట్ చేయబడింది</string>
     <string name="usb_debugging_only_notification_title">డీబగ్గింగ్ మాత్రమే</string>
-    <string name="usb_host_resource_exceed_message">మీ ఫోన్ USB కంట్రోలర్ ఈ పరికరంకు కనెక్ట్ అవడానికి తగినన్ని వనరులు కలిగి లేదు. పరికరాన్ని డిస్‌కనెక్ట్ చేసి, దీన్ని మళ్లీ కనెక్ట్ చేయడానికి ప్రయత్నించండి.</string>
+    <string name="usb_host_resource_exceed_message">మీ టాబ్లెట్ USB కంట్రోలర్ ఈ పరికరంకు కనెక్ట్ అవడానికి తగినన్ని వనరులు కలిగి లేదు. పరికరాన్ని డిస్‌కనెక్ట్ చేసి, దీన్ని మళ్లీ కనెక్ట్ చేయడానికి ప్రయత్నించండి.</string>
     <string name="usb_host_resource_exceed_title">తగినన్ని USB నియంత్రించబడదగిన వనరులు లేవు</string>
-    <string name="usb_hub_depth_exceed_message">మీ ఫోన్ ఒకేసారి 5 USB హబ్ కనెక్షన్‌లకు మాత్రమే మద్దతుఇవ్వగలదు.</string>
+    <string name="usb_hub_depth_exceed_message">మీ టాబ్లెట్ ఒకేసారి 5 USB హబ్ కనెక్షన్‌లకు మాత్రమే మద్దతుఇవ్వగలదు.</string>
     <string name="usb_hub_depth_exceed_title">గరిష్ట USB హబ్ కనెక్షన్‌లు</string>
-    <string name="usb_hub_power_exceed_message">మీ ఫోన్ ఈ USB పరికరం తగినంత శక్తిని అందించలేదు. స్వశక్తి కలిగిన USB హబ్‌కు మీ ఫోన్‌ను కనెక్ట్ చేయకముందు పరికరంను కనెక్ట్ చేయండి.</string>
+    <string name="usb_hub_power_exceed_message">మీ టాబ్లెట్ ఈ USB పరికరం తగినంత శక్తిని అందించలేదు. స్వశక్తి కలిగిన USB హబ్‌కు మీ టాబ్లెట్‌ను కనెక్ట్ చేయకముందు పరికరంను కనెక్ట్ చేయండి.</string>
     <string name="usb_increase_battery_usage">USB కనెక్షన్ వల్ల బ్యాటరీ ఉపయోగం పెరగవచ్చు.</string>
     <string name="usb_mass_storage_restrict">భద్రతా విధానం USB మాస్ నిల్వ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="usb_midi_notification_title">MIDI కోసం USB</string>
@@ -1274,8 +1274,8 @@
     <string name="usb_storage_stop_title">USB నిల్వ ఉపయోగంలో ఉంది.</string>
     <string name="usb_storage_title">USB కనెక్ట్ అయ్యింది.</string>
     <string name="usb_type_c_supply_power_notification_title">USB ఛార్జింగ్ కనెక్ట్ చేసిన పరికరం</string>
-    <string name="usb_unblock_by_screen_unlock">కనెక్ట్ చేయబడిన USB పరికరాన్ని ఉపయోగించడానికి మీ ఫోన్‌ను అన్‌లాక్ చేయండి.</string>
-    <string name="usb_unsupport_accessory_message">మీ ఫోన్‌లో ఈ USBకి మద్దతు లేదు.</string>
+    <string name="usb_unblock_by_screen_unlock">కనెక్ట్ చేయబడిన USB పరికరాన్ని ఉపయోగించడానికి మీ టాబ్లెట్‌ను అన్‌లాక్ చేయండి.</string>
+    <string name="usb_unsupport_accessory_message">మీ టాబ్లెట్‌లో ఈ USBకి మద్దతు లేదు.</string>
     <string name="usb_unsupport_accessory_title">USB పరికరానికి మద్దతు లేదు</string>
     <string name="usb_unsupported_device">కనెక్ట్ చేసిన USB పరికరానికి మద్దతు లేదు.</string>
     <string name="usb_unsupported_device_title">పరికరానికి మద్దతు లేదు</string>
@@ -1293,19 +1293,19 @@
     <string name="usb_water_dialg_method_2_desc_2">మీరు పోర్ట్ వైపు ఫ్యాన్ లేదా డ్రయర్‌ని (చల్లని గాలి మాత్రమే) ఉంచడం ద్వారా వేగంగా పొడిగా అయ్యేలా చేయండి.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"మేము మీ ఛార్జింగ్/USB పోర్ట్‌లో తేమ లేదా బయటి అంశాలు కనుగొన్నాము.
 
-దుమ్ము లేదా చెత్త వంటి ఏదైనా బయటి అంశాల కోసం మీ ఛార్జింగ్/USB పోర్ట్‌ను తనిఖీ చేయండి. మీ ఫోన్‌కు కలిగే హానిని నివారించడానికి, ఛార్జింగ్ పోర్ట్ శుభ్రంగా ఉండి, తేమ పోయే వరకు ఏదీ ప్లగిన్ చేయవద్దు.
+దుమ్ము లేదా చెత్త వంటి ఏదైనా బయటి అంశాల కోసం మీ ఛార్జింగ్/USB పోర్ట్‌ను తనిఖీ చేయండి. మీ టాబ్లెట్‌కు కలిగే హానిని నివారించడానికి, ఛార్జింగ్ పోర్ట్ శుభ్రంగా ఉండి, తేమ పోయే వరకు ఏదీ ప్లగిన్ చేయవద్దు.
 
 పోర్ట్‌ను పొడిగా ఉంచడానికి, తేమ బయటకు వచ్చేలా కదిలించి, ఆపై అది ఆరేంత వరకు వేచి ఉండండి, దీనికి కొన్ని గంటల సమయం పట్టవచ్చు. మీరు పోర్ట్ వైపు ఫ్యాన్ లేదా డ్రయర్‌ని (చల్లని గాలి మాత్రమే) ఉంచడం ద్వారా వేగంగా పొడిగా అయ్యేలా చేయవచ్చు."</string>
     <string name="usb_water_dialg_positive_button">సరే</string>
     <string name="usb_water_dialg_support_wireless_charging">"మేము మీ ఛార్జింగ్/USB పోర్ట్‌లో తేమ లేదా బయటి అంశాలు కనుగొన్నాము.
 
-దుమ్ము లేదా చెత్త వంటి ఏదైనా బయటి అంశాల కోసం మీ ఛార్జింగ్/USB పోర్ట్‌ను తనిఖీ చేయండి. మీ ఫోన్‌కు కలిగే హానిని నివారించడానికి, ఛార్జింగ్ పోర్ట్ శుభ్రంగా ఉండి, తేమ పోయే వరకు ఏదీ ప్లగిన్ చేయవద్దు.
+దుమ్ము లేదా చెత్త వంటి ఏదైనా బయటి అంశాల కోసం మీ ఛార్జింగ్/USB పోర్ట్‌ను తనిఖీ చేయండి. మీ టాబ్లెట్‌కు కలిగే హానిని నివారించడానికి, ఛార్జింగ్ పోర్ట్ శుభ్రమయ్యి, తేమ పోయే వరకు ఏదీ ప్లగ్‌లో పెట్టవద్దు.
 
-పోర్ట్‌ను పొడిగా ఉంచడానికి, తేమ బయటకు వచ్చేలా కదిలించి, ఆపై అది ఆరేంత వరకు వేచి ఉండండి, దీనికి కొన్ని గంటల సమయం పట్టవచ్చు. మీరు పోర్ట్ వైపు ఫ్యాన్ లేదా డ్రయర్‌ని (చల్లని గాలి మాత్రమే) ఉంచడం ద్వారా వేగంగా పొడిగా అయ్యేలా చేయవచ్చు.
+పోర్ట్‌ను పొడిగా ఉంచడానికి, తేమ బయటకు వచ్చేలా కుదిపి, ఆపై అది ఆరేంత వరకు వేచి ఉండండి, దీనికి కొన్ని గంటల సమయం పట్టవచ్చు. మీరు పోర్ట్ వైపు ఫ్యాన్ లేదా డ్రయర్‌ని (చల్లని గాలి మాత్రమే) ఉంచడం ద్వారా వేగంగా పొడిగా అయ్యేలా చేయవచ్చు.
 
-అదే సమయంలో మీరు మీ ఫోన్‌ని వైర్‌లెస్‌గా ఛార్జ్ చేయవచ్చు."</string>
+అదే సమయంలో, మీరు మీ టాబ్లెట్‌ను వైర్‌లెస్‌గా ఛార్జ్ చేయవచ్చు."</string>
     <string name="usb_water_notification_content">మీ ఛార్జింగ్/USB పోర్ట్‌లో తేమ లేదా బయటి పదార్థం ఉంది. ఛార్జ్ చేయడానికి ముందు తనిఖీ చేయండి.</string>
-    <string name="usb_water_notification_message">మీ ఛార్జర్/USB పోర్ట్‌లో తేమ గుర్తించబడింది. మీ ఫోన్‌ని ఛార్జ్ చేయడానికి ముందు అది పూర్తిగా పొడిగా ఉందని నిర్ధారించుకోండి. ఇది పూర్తిగా పొడిగా అవ్వడానికి కొంత సమయం పట్టవచ్చు.</string>
+    <string name="usb_water_notification_message">మీ ఛార్జర్/USB పోర్ట్‌లో తేమ గుర్తించబడింది. మీ టాబ్లెట్‌ని ఛార్జ్ చేయడానికి ముందు అది పూర్తిగా పొడిగా ఉందని నిర్ధారించుకోండి. ఇది పూర్తిగా పొడిగా అవ్వడానికి కొంత సమయం పట్టవచ్చు.</string>
     <string name="usb_water_notification_message_button">వివరాలు</string>
     <string name="usb_water_notification_title">ఛార్జర్/USB పోర్ట్‌ని తనిఖీ చేయండి</string>
     <string name="usbhostStorage_restrict">భద్రతా విధానం USB హోస్ట్ నిల్వ ఉపయోగాన్ని నిరోధిస్తుంది.</string>

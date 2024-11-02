@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextWirelessChargingDetection extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextWirelessChargingDetection> CREATOR = new Parcelable.Creator<SemContextWirelessChargingDetection>() { // from class: com.samsung.android.hardware.context.SemContextWirelessChargingDetection.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextWirelessChargingDetection createFromParcel(Parcel in) {
             return new SemContextWirelessChargingDetection(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWirelessChargingDetection[] newArray(int size) {
             return new SemContextWirelessChargingDetection[size];
@@ -23,7 +24,23 @@ public class SemContextWirelessChargingDetection extends SemContextEventContext 
     public static final int NOMOVE = 0;
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextWirelessChargingDetection$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextWirelessChargingDetection> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextWirelessChargingDetection createFromParcel(Parcel in) {
+            return new SemContextWirelessChargingDetection(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextWirelessChargingDetection[] newArray(int size) {
+            return new SemContextWirelessChargingDetection[size];
+        }
+    }
+
     public SemContextWirelessChargingDetection() {
         this.mContext = new Bundle();
     }

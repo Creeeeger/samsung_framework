@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ImsFeatureContainer implements Parcelable {
     public static final Parcelable.Creator<ImsFeatureContainer> CREATOR = new Parcelable.Creator<ImsFeatureContainer>() { // from class: com.android.ims.ImsFeatureContainer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImsFeatureContainer createFromParcel(Parcel source) {
             return new ImsFeatureContainer(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsFeatureContainer[] newArray(int size) {
             return new ImsFeatureContainer[size];
@@ -31,6 +32,10 @@ public final class ImsFeatureContainer implements Parcelable {
     private long mCapabilities;
     private int mState;
     public final ISipTransport sipTransport;
+
+    /* synthetic */ ImsFeatureContainer(Parcel parcel, ImsFeatureContainerIA imsFeatureContainerIA) {
+        this(parcel);
+    }
 
     public ImsFeatureContainer(IBinder iFace, IImsConfig iConfig, IImsRegistration iReg, ISipTransport transport, long initialCaps) {
         this.mState = 0;
@@ -102,5 +107,22 @@ public final class ImsFeatureContainer implements Parcelable {
         dest.writeStrongInterface(this.sipTransport);
         dest.writeInt(this.mState);
         dest.writeLong(this.mCapabilities);
+    }
+
+    /* renamed from: com.android.ims.ImsFeatureContainer$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ImsFeatureContainer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsFeatureContainer createFromParcel(Parcel source) {
+            return new ImsFeatureContainer(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImsFeatureContainer[] newArray(int size) {
+            return new ImsFeatureContainer[size];
+        }
     }
 }

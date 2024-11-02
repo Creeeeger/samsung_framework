@@ -8,7 +8,6 @@ public class DeliveryInd extends GenericPdu {
         setMessageType(134);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DeliveryInd(PduHeaders headers) {
         super(headers);
     }

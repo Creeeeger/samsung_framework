@@ -157,7 +157,6 @@ public class ImageUtils {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$loadThumbnail$1(Size size, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
         decoder.setAllocator(1);
         int sample = calculateSampleSize(info.getSize(), size);

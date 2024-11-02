@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class MediaResourcePolicyParcel implements Parcelable {
     public static final Parcelable.Creator<MediaResourcePolicyParcel> CREATOR = new Parcelable.Creator<MediaResourcePolicyParcel>() { // from class: android.media.MediaResourcePolicyParcel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MediaResourcePolicyParcel createFromParcel(Parcel _aidl_source) {
             MediaResourcePolicyParcel _aidl_out = new MediaResourcePolicyParcel();
@@ -15,7 +17,6 @@ public class MediaResourcePolicyParcel implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaResourcePolicyParcel[] newArray(int _aidl_size) {
             return new MediaResourcePolicyParcel[_aidl_size];
@@ -23,6 +24,25 @@ public class MediaResourcePolicyParcel implements Parcelable {
     };
     public String type;
     public String value;
+
+    /* renamed from: android.media.MediaResourcePolicyParcel$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MediaResourcePolicyParcel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaResourcePolicyParcel createFromParcel(Parcel _aidl_source) {
+            MediaResourcePolicyParcel _aidl_out = new MediaResourcePolicyParcel();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MediaResourcePolicyParcel[] newArray(int _aidl_size) {
+            return new MediaResourcePolicyParcel[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

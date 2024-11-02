@@ -7,13 +7,14 @@ import java.util.Arrays;
 /* loaded from: classes4.dex */
 public final class SentenceSuggestionsInfo implements Parcelable {
     public static final Parcelable.Creator<SentenceSuggestionsInfo> CREATOR = new Parcelable.Creator<SentenceSuggestionsInfo>() { // from class: android.view.textservice.SentenceSuggestionsInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SentenceSuggestionsInfo createFromParcel(Parcel source) {
             return new SentenceSuggestionsInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SentenceSuggestionsInfo[] newArray(int size) {
             return new SentenceSuggestionsInfo[size];
@@ -98,5 +99,22 @@ public final class SentenceSuggestionsInfo implements Parcelable {
             return iArr[i];
         }
         return -1;
+    }
+
+    /* renamed from: android.view.textservice.SentenceSuggestionsInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SentenceSuggestionsInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SentenceSuggestionsInfo createFromParcel(Parcel source) {
+            return new SentenceSuggestionsInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SentenceSuggestionsInfo[] newArray(int size) {
+            return new SentenceSuggestionsInfo[size];
+        }
     }
 }

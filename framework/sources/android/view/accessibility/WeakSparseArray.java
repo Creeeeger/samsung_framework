@@ -5,8 +5,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-final class WeakSparseArray<E> {
+public final class WeakSparseArray<E> {
     private final ReferenceQueue<E> mRefQueue = new ReferenceQueue<>();
     private final SparseArray<WeakReferenceWithId<E>> mSparseArray = new SparseArray<>();
 
@@ -37,7 +38,6 @@ final class WeakSparseArray<E> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class WeakReferenceWithId<E> extends WeakReference<E> {
         final int mId;

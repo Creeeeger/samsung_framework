@@ -65,7 +65,6 @@ public class RDN extends ASN1Object {
         return tmp;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int collectAttributeTypes(ASN1ObjectIdentifier[] oids, int oidsOff) {
         int count = this.values.size();
         for (int i = 0; i < count; i++) {
@@ -75,7 +74,6 @@ public class RDN extends ASN1Object {
         return count;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean containsAttributeType(ASN1ObjectIdentifier attributeType) {
         int count = this.values.size();
         for (int i = 0; i < count; i++) {

@@ -78,8 +78,7 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
     public void onDisplayAreaInfoChanged(DisplayAreaInfo displayAreaInfo) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.window.DisplayAreaOrganizer$1, reason: invalid class name */
+    /* renamed from: android.window.DisplayAreaOrganizer$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 extends IDisplayAreaOrganizer.Stub {
         AnonymousClass1() {
@@ -95,7 +94,6 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDisplayAreaAppeared$0(DisplayAreaInfo displayAreaInfo, SurfaceControl leash) {
             DisplayAreaOrganizer.this.onDisplayAreaAppeared(displayAreaInfo, leash);
         }
@@ -110,7 +108,6 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDisplayAreaVanished$1(DisplayAreaInfo displayAreaInfo) {
             DisplayAreaOrganizer.this.onDisplayAreaVanished(displayAreaInfo);
         }
@@ -125,7 +122,6 @@ public class DisplayAreaOrganizer extends WindowOrganizer {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDisplayAreaInfoChanged$2(DisplayAreaInfo displayAreaInfo) {
             DisplayAreaOrganizer.this.onDisplayAreaInfoChanged(displayAreaInfo);
         }

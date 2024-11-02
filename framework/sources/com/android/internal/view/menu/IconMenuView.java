@@ -82,7 +82,6 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         setDescendantFocusability(262144);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getMaxItems() {
         return this.mMaxItems;
     }
@@ -140,12 +139,10 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Drawable getItemBackgroundDrawable() {
         return this.mItemBackground.getConstantState().newDrawable(getContext().getResources());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IconMenuItemView createMoreItemView() {
         Context context = getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -153,12 +150,27 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         Resources r = context.getResources();
         itemView.initialize(r.getText(R.string.more_item_label), this.mMoreIcon);
         itemView.setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.view.menu.IconMenuView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 IconMenuView.this.mMenu.changeMenuMode();
             }
         });
         return itemView;
+    }
+
+    /* renamed from: com.android.internal.view.menu.IconMenuView$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements View.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            IconMenuView.this.mMenu.changeMenuMode();
+        }
     }
 
     @Override // com.android.internal.view.menu.MenuView
@@ -234,7 +246,6 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int measuredWidth = resolveSize(Integer.MAX_VALUE, widthMeasureSpec);
@@ -250,7 +261,6 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
@@ -260,7 +270,6 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         Drawable drawable = this.mHorizontalDivider;
@@ -291,13 +300,11 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void markStaleChildren() {
         if (!this.mHasStaleChildren) {
             this.mHasStaleChildren = true;
@@ -305,12 +312,10 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getNumActualItemsShown() {
         return this.mNumActualItemsShown;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setNumActualItemsShown(int count) {
         this.mNumActualItemsShown = count;
     }
@@ -345,14 +350,12 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         return super.dispatchKeyEvent(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         requestFocus();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         setCycleShortcutCaptionMode(false);
@@ -415,7 +418,6 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -428,7 +430,6 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         return new SavedState(superState, -1);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         View v;
@@ -439,23 +440,27 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.view.menu.IconMenuView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
         int focusedPosition;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         public SavedState(Parcelable superState, int focusedPosition) {
             super(superState);
@@ -471,6 +476,23 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeInt(this.focusedPosition);
+        }
+
+        /* renamed from: com.android.internal.view.menu.IconMenuView$SavedState$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 

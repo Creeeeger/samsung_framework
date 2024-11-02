@@ -11,13 +11,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes.dex */
 public final class Entry implements Parcelable {
     public static final Parcelable.Creator<Entry> CREATOR = new Parcelable.Creator<Entry>() { // from class: android.credentials.ui.Entry.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Entry createFromParcel(Parcel in) {
             return new Entry(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Entry[] newArray(int size) {
             return new Entry[size];
@@ -28,6 +29,10 @@ public final class Entry implements Parcelable {
     private PendingIntent mPendingIntent;
     private final Slice mSlice;
     private final String mSubkey;
+
+    /* synthetic */ Entry(Parcel parcel, EntryIA entryIA) {
+        this(parcel);
+    }
 
     private Entry(Parcel in) {
         String key = in.readString8();
@@ -86,5 +91,22 @@ public final class Entry implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.credentials.ui.Entry$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Entry> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Entry createFromParcel(Parcel in) {
+            return new Entry(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Entry[] newArray(int size) {
+            return new Entry[size];
+        }
     }
 }

@@ -45,7 +45,6 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
         this.mStringRefs.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setOutput(OutputStream out) {
         if (this.mOut != null) {
             throw new IllegalStateException("setOutput() called before calling release()");
@@ -55,7 +54,6 @@ public class FastDataOutput implements DataOutput, Flushable, Closeable {
         this.mStringRefs.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void drain() throws IOException {
         int i = this.mBufferPos;
         if (i > 0) {

@@ -14,6 +14,10 @@ public final class ContextParams {
     private final AttributionSource mNext;
     private final Set<String> mRenouncedPermissions;
 
+    /* synthetic */ ContextParams(String str, AttributionSource attributionSource, Set set, ContextParamsIA contextParamsIA) {
+        this(str, attributionSource, set);
+    }
+
     private ContextParams(String attributionTag, AttributionSource next, Set<String> renouncedPermissions) {
         this.mAttributionTag = attributionTag;
         this.mNext = next;

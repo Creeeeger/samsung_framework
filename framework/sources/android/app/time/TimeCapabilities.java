@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TimeCapabilities implements Parcelable {
     public static final Parcelable.Creator<TimeCapabilities> CREATOR = new Parcelable.Creator<TimeCapabilities>() { // from class: android.app.time.TimeCapabilities.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TimeCapabilities createFromParcel(Parcel in) {
             return TimeCapabilities.createFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeCapabilities[] newArray(int size) {
             return new TimeCapabilities[size];
@@ -27,13 +28,33 @@ public final class TimeCapabilities implements Parcelable {
     private final int mSetManualTimeCapability;
     private final UserHandle mUserHandle;
 
+    /* synthetic */ TimeCapabilities(Builder builder, TimeCapabilitiesIA timeCapabilitiesIA) {
+        this(builder);
+    }
+
+    /* renamed from: android.app.time.TimeCapabilities$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TimeCapabilities> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeCapabilities createFromParcel(Parcel in) {
+            return TimeCapabilities.createFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeCapabilities[] newArray(int size) {
+            return new TimeCapabilities[size];
+        }
+    }
+
     private TimeCapabilities(Builder builder) {
         this.mUserHandle = (UserHandle) Objects.requireNonNull(builder.mUserHandle);
         this.mConfigureAutoDetectionEnabledCapability = builder.mConfigureAutoDetectionEnabledCapability;
         this.mSetManualTimeCapability = builder.mSetManualTimeCapability;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static TimeCapabilities createFromParcel(Parcel in) {
         UserHandle userHandle = UserHandle.readFromParcel(in);
         return new Builder(userHandle).setConfigureAutoDetectionEnabledCapability(in.readInt()).setSetManualTimeCapability(in.readInt()).build();

@@ -214,6 +214,10 @@ public class SemSoundAlive extends AudioEffect {
 
     /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
+        /* synthetic */ BaseParameterListener(SemSoundAlive semSoundAlive, BaseParameterListenerIA baseParameterListenerIA) {
+            this();
+        }
+
         private BaseParameterListener() {
         }
 
@@ -264,6 +268,10 @@ public class SemSoundAlive extends AudioEffect {
 
     /* loaded from: classes2.dex */
     private class BaseErrorListener implements AudioEffect.OnErrorListener {
+        /* synthetic */ BaseErrorListener(SemSoundAlive semSoundAlive, BaseErrorListenerIA baseErrorListenerIA) {
+            this();
+        }
+
         private BaseErrorListener() {
         }
 

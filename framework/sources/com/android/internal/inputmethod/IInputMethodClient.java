@@ -230,8 +230,9 @@ public interface IInputMethodClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IInputMethodClient {
+        public static class Proxy implements IInputMethodClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

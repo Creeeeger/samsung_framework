@@ -141,7 +141,6 @@ public final class HidlMemoryUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getBuffer$0(long address, int size) {
         try {
             Os.munmap(address, size);

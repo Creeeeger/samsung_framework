@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ComponentInfoInternal implements Parcelable {
     public static final Parcelable.Creator<ComponentInfoInternal> CREATOR = new Parcelable.Creator<ComponentInfoInternal>() { // from class: android.hardware.biometrics.ComponentInfoInternal.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ComponentInfoInternal createFromParcel(Parcel in) {
             return new ComponentInfoInternal(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ComponentInfoInternal[] newArray(int size) {
             return new ComponentInfoInternal[size];
@@ -42,6 +43,23 @@ public class ComponentInfoInternal implements Parcelable {
         this.firmwareVersion = in.readString();
         this.serialNumber = in.readString();
         this.softwareVersion = in.readString();
+    }
+
+    /* renamed from: android.hardware.biometrics.ComponentInfoInternal$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ComponentInfoInternal> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ComponentInfoInternal createFromParcel(Parcel in) {
+            return new ComponentInfoInternal(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ComponentInfoInternal[] newArray(int size) {
+            return new ComponentInfoInternal[size];
+        }
     }
 
     @Override // android.os.Parcelable

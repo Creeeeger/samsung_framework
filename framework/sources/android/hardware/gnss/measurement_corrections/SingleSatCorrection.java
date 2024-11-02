@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SingleSatCorrection implements Parcelable {
     public static final Parcelable.Creator<SingleSatCorrection> CREATOR = new Parcelable.Creator<SingleSatCorrection>() { // from class: android.hardware.gnss.measurement_corrections.SingleSatCorrection.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SingleSatCorrection createFromParcel(Parcel _aidl_source) {
             SingleSatCorrection _aidl_out = new SingleSatCorrection();
@@ -15,7 +17,6 @@ public class SingleSatCorrection implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SingleSatCorrection[] newArray(int _aidl_size) {
             return new SingleSatCorrection[_aidl_size];
@@ -34,6 +35,25 @@ public class SingleSatCorrection implements Parcelable {
     public float combinedExcessPathLengthMeters = 0.0f;
     public float combinedExcessPathLengthUncertaintyMeters = 0.0f;
     public float combinedAttenuationDb = 0.0f;
+
+    /* renamed from: android.hardware.gnss.measurement_corrections.SingleSatCorrection$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SingleSatCorrection> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SingleSatCorrection createFromParcel(Parcel _aidl_source) {
+            SingleSatCorrection _aidl_out = new SingleSatCorrection();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SingleSatCorrection[] newArray(int _aidl_size) {
+            return new SingleSatCorrection[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -177,7 +197,9 @@ public class SingleSatCorrection implements Parcelable {
     /* loaded from: classes2.dex */
     public static class ExcessPathInfo implements Parcelable {
         public static final Parcelable.Creator<ExcessPathInfo> CREATOR = new Parcelable.Creator<ExcessPathInfo>() { // from class: android.hardware.gnss.measurement_corrections.SingleSatCorrection.ExcessPathInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ExcessPathInfo createFromParcel(Parcel _aidl_source) {
                 ExcessPathInfo _aidl_out = new ExcessPathInfo();
@@ -185,7 +207,6 @@ public class SingleSatCorrection implements Parcelable {
                 return _aidl_out;
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ExcessPathInfo[] newArray(int _aidl_size) {
                 return new ExcessPathInfo[_aidl_size];
@@ -200,6 +221,25 @@ public class SingleSatCorrection implements Parcelable {
         public float excessPathLengthMeters = 0.0f;
         public float excessPathLengthUncertaintyMeters = 0.0f;
         public float attenuationDb = 0.0f;
+
+        /* renamed from: android.hardware.gnss.measurement_corrections.SingleSatCorrection$ExcessPathInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ExcessPathInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ExcessPathInfo createFromParcel(Parcel _aidl_source) {
+                ExcessPathInfo _aidl_out = new ExcessPathInfo();
+                _aidl_out.readFromParcel(_aidl_source);
+                return _aidl_out;
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ExcessPathInfo[] newArray(int _aidl_size) {
+                return new ExcessPathInfo[_aidl_size];
+            }
+        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

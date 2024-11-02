@@ -189,12 +189,10 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
         writer.println("nothing to dump");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.content.ContextWrapper
     public void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
@@ -223,7 +221,6 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
         logForegroundServiceStopIfNecessary();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final String getClassName() {
         return this.mClassName;
     }

@@ -9,13 +9,11 @@ public final class SQLiteQuery extends SQLiteProgram {
     private static final String TAG = "SQLiteQuery";
     private final CancellationSignal mCancellationSignal;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SQLiteQuery(SQLiteDatabase db, String query, CancellationSignal cancellationSignal) {
         super(db, query, null, cancellationSignal);
         this.mCancellationSignal = cancellationSignal;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int fillWindow(CursorWindow window, int startPos, int requiredPos, boolean countAllRows) {
         acquireReference();
         try {

@@ -451,7 +451,6 @@ public interface IPlatformCompat extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
         public static class Proxy implements IPlatformCompat {
             private IBinder mRemote;

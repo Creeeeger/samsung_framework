@@ -94,6 +94,10 @@ public class SurfaceEffects {
     public static class Effect {
         private String mBytes;
 
+        /* synthetic */ Effect(Builder builder, EffectIA effectIA) {
+            this(builder);
+        }
+
         /* loaded from: classes4.dex */
         public static class Builder {
             private AnimationMode mAnimationMode;
@@ -102,6 +106,10 @@ public class SurfaceEffects {
             private final Vector<AnimKeyFrame> mGeometryAnimationVector;
             private final Vector<AnimKeyFrame> mPixelAnimationVector;
             private PixEffectType mPixelEffectType;
+
+            /* synthetic */ Builder(BuilderIA builderIA) {
+                this();
+            }
 
             private Builder() {
                 this.mAnimationMode = AnimationMode.STATIC;
@@ -232,7 +240,6 @@ public class SurfaceEffects {
         return new Effect.Builder();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class AnimKeyFrame {
         public final AnimParam animParam;

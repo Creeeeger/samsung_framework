@@ -9,7 +9,9 @@ import java.io.PrintWriter;
 /* loaded from: classes.dex */
 public class RectF implements Parcelable {
     public static final Parcelable.Creator<RectF> CREATOR = new Parcelable.Creator<RectF>() { // from class: android.graphics.RectF.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RectF createFromParcel(Parcel in) {
             RectF r = new RectF();
@@ -17,7 +19,6 @@ public class RectF implements Parcelable {
             return r;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RectF[] newArray(int size) {
             return new RectF[size];
@@ -380,6 +381,25 @@ public class RectF implements Parcelable {
         out.writeFloat(this.top);
         out.writeFloat(this.right);
         out.writeFloat(this.bottom);
+    }
+
+    /* renamed from: android.graphics.RectF$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RectF> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RectF createFromParcel(Parcel in) {
+            RectF r = new RectF();
+            r.readFromParcel(in);
+            return r;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RectF[] newArray(int size) {
+            return new RectF[size];
+        }
     }
 
     public void readFromParcel(Parcel in) {

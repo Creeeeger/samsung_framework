@@ -12,13 +12,11 @@ public class DERTaggedObject extends ASN1TaggedObject {
         super(true, tagNo, encodable);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean isConstructed() {
         return this.explicit || this.obj.toASN1Primitive().toDERObject().isConstructed();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public int encodedLength() throws IOException {
         ASN1Primitive primitive = this.obj.toASN1Primitive().toDERObject();
@@ -29,7 +27,6 @@ public class DERTaggedObject extends ASN1TaggedObject {
         return StreamUtil.calculateTagLength(this.tagNo) + (length - 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         ASN1Primitive primitive = this.obj.toASN1Primitive().toDERObject();
@@ -44,13 +41,11 @@ public class DERTaggedObject extends ASN1TaggedObject {
         primitive.encode(out.getDERSubStream(), this.explicit);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return this;

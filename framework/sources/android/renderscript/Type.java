@@ -129,12 +129,10 @@ public class Type extends BaseObj {
         this.mElementCount = count;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Type(long id, RenderScript rs) {
         super(id, rs);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.renderscript.BaseObj
     public void updateFromNative() {
         boolean z;

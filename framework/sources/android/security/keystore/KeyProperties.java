@@ -675,7 +675,6 @@ public abstract class KeyProperties {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int[] getSetFlags(int flags) {
         if (flags == 0) {
             return EmptyArray.INT;

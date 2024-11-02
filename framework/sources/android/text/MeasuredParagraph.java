@@ -354,7 +354,6 @@ public class MeasuredParagraph {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int breakText(int limit, boolean forwards, float width) {
         float[] w = this.mWidths.getRawArray();
         if (forwards) {
@@ -385,7 +384,6 @@ public class MeasuredParagraph {
         return (limit - i2) - 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float measure(int start, int limit) {
         float width = 0.0f;
         float[] w = this.mWidths.getRawArray();

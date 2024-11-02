@@ -73,6 +73,9 @@ public final class TimeManager {
             }
             if (this.mTimeZoneDetectorReceiver == null) {
                 ITimeZoneDetectorListener iListener = new ITimeZoneDetectorListener.Stub() { // from class: android.app.time.TimeManager.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.app.time.ITimeZoneDetectorListener
                     public void onChange() {
                         TimeManager.this.notifyTimeZoneDetectorListeners();
@@ -94,7 +97,18 @@ public final class TimeManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.app.time.TimeManager$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends ITimeZoneDetectorListener.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.app.time.ITimeZoneDetectorListener
+        public void onChange() {
+            TimeManager.this.notifyTimeZoneDetectorListeners();
+        }
+    }
+
     public static /* synthetic */ void lambda$addTimeZoneDetectorListener$0(Executor executor, final TimeZoneDetectorListener listener) {
         Objects.requireNonNull(listener);
         executor.execute(new Runnable() { // from class: android.app.time.TimeManager$$ExternalSyntheticLambda1
@@ -105,7 +119,6 @@ public final class TimeManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyTimeZoneDetectorListeners() {
         synchronized (this.mLock) {
             ArrayMap<TimeZoneDetectorListener, TimeZoneDetectorListener> arrayMap = this.mTimeZoneDetectorListeners;

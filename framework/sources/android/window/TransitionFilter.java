@@ -14,13 +14,14 @@ public final class TransitionFilter implements Parcelable {
     public static final int CONTAINER_ORDER_ANY = 0;
     public static final int CONTAINER_ORDER_TOP = 1;
     public static final Parcelable.Creator<TransitionFilter> CREATOR = new Parcelable.Creator<TransitionFilter>() { // from class: android.window.TransitionFilter.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TransitionFilter createFromParcel(Parcel in) {
             return new TransitionFilter(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransitionFilter[] newArray(int size) {
             return new TransitionFilter[size];
@@ -33,6 +34,10 @@ public final class TransitionFilter implements Parcelable {
 
     /* loaded from: classes4.dex */
     public @interface ContainerOrder {
+    }
+
+    /* synthetic */ TransitionFilter(Parcel parcel, TransitionFilterIA transitionFilterIA) {
+        this(parcel);
     }
 
     public TransitionFilter() {
@@ -104,6 +109,23 @@ public final class TransitionFilter implements Parcelable {
         dest.writeTypedArray(this.mRequirements, flags);
     }
 
+    /* renamed from: android.window.TransitionFilter$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TransitionFilter> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransitionFilter createFromParcel(Parcel in) {
+            return new TransitionFilter(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TransitionFilter[] newArray(int size) {
+            return new TransitionFilter[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -135,13 +157,14 @@ public final class TransitionFilter implements Parcelable {
     /* loaded from: classes4.dex */
     public static final class Requirement implements Parcelable {
         public static final Parcelable.Creator<Requirement> CREATOR = new Parcelable.Creator<Requirement>() { // from class: android.window.TransitionFilter.Requirement.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Requirement createFromParcel(Parcel in) {
                 return new Requirement(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Requirement[] newArray(int size) {
                 return new Requirement[size];
@@ -155,6 +178,10 @@ public final class TransitionFilter implements Parcelable {
         public boolean mNot;
         public int mOrder;
         public ComponentName mTopActivity;
+
+        /* synthetic */ Requirement(Parcel parcel, RequirementIA requirementIA) {
+            this(parcel);
+        }
 
         public Requirement() {
             this.mActivityType = 0;
@@ -247,6 +274,23 @@ public final class TransitionFilter implements Parcelable {
             dest.writeTypedObject(this.mTopActivity, flags);
         }
 
+        /* renamed from: android.window.TransitionFilter$Requirement$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Requirement> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Requirement createFromParcel(Parcel in) {
+                return new Requirement(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Requirement[] newArray(int size) {
+                return new Requirement[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -278,7 +322,6 @@ public final class TransitionFilter implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String containerOrderToString(int order) {
         switch (order) {
             case 0:

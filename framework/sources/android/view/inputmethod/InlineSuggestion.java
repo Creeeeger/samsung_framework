@@ -92,12 +92,10 @@ public final class InlineSuggestion implements Parcelable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$inflate$2(InlineContentView view) {
         this.mInlineTooltipUi.setTooltipView(view);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$inflate$3(final InlineContentView view) {
         Handler.getMain().post(new Runnable() { // from class: android.view.inputmethod.InlineSuggestion$$ExternalSyntheticLambda3
             @Override // java.lang.Runnable
@@ -154,7 +152,6 @@ public final class InlineSuggestion implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class InlineContentCallbackImpl {
         private final Consumer<InlineContentView> mCallback;
@@ -185,8 +182,7 @@ public final class InlineSuggestion implements Parcelable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* renamed from: handleOnContent, reason: merged with bridge method [inline-methods] */
+        /* renamed from: handleOnContent */
         public void lambda$onContent$0(SurfaceControlViewHost.SurfacePackage content, int width, int height) {
             if (!this.mFirstContentReceived) {
                 handleOnFirstContentReceived(content, width, height);
@@ -211,6 +207,9 @@ public final class InlineSuggestion implements Parcelable {
             this.mView = inlineContentView;
             if (this.mInlineTooltipUi != null) {
                 inlineContentView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() { // from class: android.view.inputmethod.InlineSuggestion.InlineContentCallbackImpl.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.view.View.OnLayoutChangeListener
                     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                         if (InlineContentCallbackImpl.this.mInlineTooltipUi != null) {
@@ -229,12 +228,24 @@ public final class InlineSuggestion implements Parcelable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleOnFirstContentReceived$1() {
             this.mCallback.accept(null);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: android.view.inputmethod.InlineSuggestion$InlineContentCallbackImpl$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements View.OnLayoutChangeListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.view.View.OnLayoutChangeListener
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (InlineContentCallbackImpl.this.mInlineTooltipUi != null) {
+                    InlineContentCallbackImpl.this.mInlineTooltipUi.update(InlineContentCallbackImpl.this.mView);
+                }
+            }
+        }
+
         public /* synthetic */ void lambda$handleOnFirstContentReceived$2() {
             this.mCallback.accept(this.mView);
         }
@@ -261,7 +272,6 @@ public final class InlineSuggestion implements Parcelable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void handleOnSurfacePackageReleased() {
             if (this.mSurfacePackage != null) {
                 try {
@@ -274,7 +284,6 @@ public final class InlineSuggestion implements Parcelable {
             this.mSurfacePackageConsumer = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void handleGetSurfacePackage(Consumer<SurfaceControlViewHost.SurfacePackage> consumer) {
             SurfaceControlViewHost.SurfacePackage surfacePackage = this.mSurfacePackage;
             if (surfacePackage != null) {
@@ -291,8 +300,7 @@ public final class InlineSuggestion implements Parcelable {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.view.inputmethod.InlineSuggestion$InlineContentCallbackImpl$2, reason: invalid class name */
+        /* renamed from: android.view.inputmethod.InlineSuggestion$InlineContentCallbackImpl$2 */
         /* loaded from: classes4.dex */
         public class AnonymousClass2 implements InlineContentView.SurfacePackageUpdater {
             AnonymousClass2() {
@@ -308,7 +316,6 @@ public final class InlineSuggestion implements Parcelable {
                 });
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onSurfacePackageReleased$0() {
                 InlineContentCallbackImpl.this.handleOnSurfacePackageReleased();
             }
@@ -323,7 +330,6 @@ public final class InlineSuggestion implements Parcelable {
                 });
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$getSurfacePackage$1(Consumer consumer) {
                 InlineContentCallbackImpl.this.handleGetSurfacePackage(consumer);
             }
@@ -342,7 +348,6 @@ public final class InlineSuggestion implements Parcelable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClick$3() {
             InlineContentView inlineContentView = this.mView;
             if (inlineContentView != null && inlineContentView.hasOnClickListeners()) {
@@ -359,7 +364,6 @@ public final class InlineSuggestion implements Parcelable {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onLongClick$4() {
             InlineContentView inlineContentView = this.mView;
             if (inlineContentView != null && inlineContentView.hasOnLongClickListeners()) {
@@ -370,6 +374,10 @@ public final class InlineSuggestion implements Parcelable {
 
     /* loaded from: classes4.dex */
     private static class InlineContentCallbackImplParceling implements Parcelling<InlineContentCallbackImpl> {
+        /* synthetic */ InlineContentCallbackImplParceling(InlineContentCallbackImplParcelingIA inlineContentCallbackImplParcelingIA) {
+            this();
+        }
+
         private InlineContentCallbackImplParceling() {
         }
 
@@ -377,7 +385,6 @@ public final class InlineSuggestion implements Parcelable {
         public void parcel(InlineContentCallbackImpl item, Parcel dest, int parcelFlags) {
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.util.Parcelling
         public InlineContentCallbackImpl unparcel(Parcel source) {
             return null;
@@ -386,6 +393,10 @@ public final class InlineSuggestion implements Parcelable {
 
     /* loaded from: classes4.dex */
     private static class InlineTooltipUiParceling implements Parcelling<InlineTooltipUi> {
+        /* synthetic */ InlineTooltipUiParceling(InlineTooltipUiParcelingIA inlineTooltipUiParcelingIA) {
+            this();
+        }
+
         private InlineTooltipUiParceling() {
         }
 
@@ -393,7 +404,6 @@ public final class InlineSuggestion implements Parcelable {
         public void parcel(InlineTooltipUi item, Parcel dest, int parcelFlags) {
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // com.android.internal.util.Parcelling
         public InlineTooltipUi unparcel(Parcel source) {
             return null;
@@ -450,7 +460,6 @@ public final class InlineSuggestion implements Parcelable {
     static {
         Parcelling<InlineContentCallbackImpl> parcelling = Parcelling.Cache.get(InlineContentCallbackImplParceling.class);
         sParcellingForInlineContentCallback = parcelling;
-        byte b = 0;
         if (parcelling == null) {
             sParcellingForInlineContentCallback = Parcelling.Cache.put(new InlineContentCallbackImplParceling());
         }
@@ -460,13 +469,14 @@ public final class InlineSuggestion implements Parcelable {
             sParcellingForInlineTooltipUi = Parcelling.Cache.put(new InlineTooltipUiParceling());
         }
         CREATOR = new Parcelable.Creator<InlineSuggestion>() { // from class: android.view.inputmethod.InlineSuggestion.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public InlineSuggestion[] newArray(int size) {
                 return new InlineSuggestion[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InlineSuggestion createFromParcel(Parcel in) {
                 return new InlineSuggestion(in);
@@ -509,6 +519,23 @@ public final class InlineSuggestion implements Parcelable {
         this.mContentProvider = contentProvider;
         this.mInlineContentCallback = inlineContentCallback;
         this.mInlineTooltipUi = inlineTooltipUi;
+    }
+
+    /* renamed from: android.view.inputmethod.InlineSuggestion$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InlineSuggestion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlineSuggestion[] newArray(int size) {
+            return new InlineSuggestion[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InlineSuggestion createFromParcel(Parcel in) {
+            return new InlineSuggestion(in);
+        }
     }
 
     @Deprecated

@@ -15,7 +15,6 @@ public abstract class ExtensionLite<ContainingType extends MessageLite, Type> {
 
     public abstract boolean isRepeated();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isLite() {
         return true;
     }

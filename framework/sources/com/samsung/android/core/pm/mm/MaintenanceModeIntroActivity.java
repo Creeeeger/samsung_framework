@@ -72,7 +72,6 @@ public class MaintenanceModeIntroActivity extends Activity {
     private final BroadcastReceiver mCloudBackupReceiver = new CloudBackupReceiver();
     private final Timer mTimer = new Timer();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -288,7 +287,6 @@ public class MaintenanceModeIntroActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onResume() {
         boolean isFinished = false;
@@ -332,7 +330,6 @@ public class MaintenanceModeIntroActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onPause() {
         TimerTask timerTask = this.mCloudBackupTimerTask;
@@ -342,7 +339,6 @@ public class MaintenanceModeIntroActivity extends Activity {
         super.onPause();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         try {

@@ -59,43 +59,185 @@ public class UpdateEngine {
         }
     }
 
-    public boolean bind(final UpdateEngineCallback callback, final Handler handler) {
+    /* renamed from: android.os.UpdateEngine$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends IUpdateEngineCallback.Stub {
+        final /* synthetic */ UpdateEngineCallback val$callback;
+        final /* synthetic */ Handler val$handler;
+
+        AnonymousClass1(Handler handler, UpdateEngineCallback updateEngineCallback) {
+            handler = handler;
+            callback = updateEngineCallback;
+        }
+
+        /* renamed from: android.os.UpdateEngine$1$1 */
+        /* loaded from: classes3.dex */
+        class RunnableC00051 implements Runnable {
+            final /* synthetic */ float val$percent;
+            final /* synthetic */ int val$status;
+
+            RunnableC00051(int i, float f) {
+                status = i;
+                percent = f;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                callback.onStatusUpdate(status, percent);
+            }
+        }
+
+        @Override // android.os.IUpdateEngineCallback
+        public void onStatusUpdate(int status, float percent) {
+            Handler handler = handler;
+            if (handler != null) {
+                handler.post(new Runnable() { // from class: android.os.UpdateEngine.1.1
+                    final /* synthetic */ float val$percent;
+                    final /* synthetic */ int val$status;
+
+                    RunnableC00051(int status2, float percent2) {
+                        status = status2;
+                        percent = percent2;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        callback.onStatusUpdate(status, percent);
+                    }
+                });
+            } else {
+                callback.onStatusUpdate(status2, percent2);
+            }
+        }
+
+        /* renamed from: android.os.UpdateEngine$1$2 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ int val$errorCode;
+
+            AnonymousClass2(int i) {
+                errorCode = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                callback.onPayloadApplicationComplete(errorCode);
+            }
+        }
+
+        @Override // android.os.IUpdateEngineCallback
+        public void onPayloadApplicationComplete(int errorCode) {
+            Handler handler = handler;
+            if (handler != null) {
+                handler.post(new Runnable() { // from class: android.os.UpdateEngine.1.2
+                    final /* synthetic */ int val$errorCode;
+
+                    AnonymousClass2(int errorCode2) {
+                        errorCode = errorCode2;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        callback.onPayloadApplicationComplete(errorCode);
+                    }
+                });
+            } else {
+                callback.onPayloadApplicationComplete(errorCode2);
+            }
+        }
+    }
+
+    public boolean bind(UpdateEngineCallback callback, Handler handler) {
         boolean bind;
         synchronized (this.mUpdateEngineCallbackLock) {
-            IUpdateEngineCallback.Stub stub = new IUpdateEngineCallback.Stub() { // from class: android.os.UpdateEngine.1
+            AnonymousClass1 anonymousClass1 = new IUpdateEngineCallback.Stub() { // from class: android.os.UpdateEngine.1
+                final /* synthetic */ UpdateEngineCallback val$callback;
+                final /* synthetic */ Handler val$handler;
+
+                AnonymousClass1(Handler handler2, UpdateEngineCallback callback2) {
+                    handler = handler2;
+                    callback = callback2;
+                }
+
+                /* renamed from: android.os.UpdateEngine$1$1 */
+                /* loaded from: classes3.dex */
+                class RunnableC00051 implements Runnable {
+                    final /* synthetic */ float val$percent;
+                    final /* synthetic */ int val$status;
+
+                    RunnableC00051(int status2, float percent2) {
+                        status = status2;
+                        percent = percent2;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        callback.onStatusUpdate(status, percent);
+                    }
+                }
+
                 @Override // android.os.IUpdateEngineCallback
-                public void onStatusUpdate(final int status, final float percent) {
+                public void onStatusUpdate(int status2, float percent2) {
                     Handler handler2 = handler;
                     if (handler2 != null) {
                         handler2.post(new Runnable() { // from class: android.os.UpdateEngine.1.1
+                            final /* synthetic */ float val$percent;
+                            final /* synthetic */ int val$status;
+
+                            RunnableC00051(int status22, float percent22) {
+                                status = status22;
+                                percent = percent22;
+                            }
+
                             @Override // java.lang.Runnable
                             public void run() {
                                 callback.onStatusUpdate(status, percent);
                             }
                         });
                     } else {
-                        callback.onStatusUpdate(status, percent);
+                        callback.onStatusUpdate(status22, percent22);
+                    }
+                }
+
+                /* renamed from: android.os.UpdateEngine$1$2 */
+                /* loaded from: classes3.dex */
+                class AnonymousClass2 implements Runnable {
+                    final /* synthetic */ int val$errorCode;
+
+                    AnonymousClass2(int errorCode2) {
+                        errorCode = errorCode2;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        callback.onPayloadApplicationComplete(errorCode);
                     }
                 }
 
                 @Override // android.os.IUpdateEngineCallback
-                public void onPayloadApplicationComplete(final int errorCode) {
+                public void onPayloadApplicationComplete(int errorCode2) {
                     Handler handler2 = handler;
                     if (handler2 != null) {
                         handler2.post(new Runnable() { // from class: android.os.UpdateEngine.1.2
+                            final /* synthetic */ int val$errorCode;
+
+                            AnonymousClass2(int errorCode22) {
+                                errorCode = errorCode22;
+                            }
+
                             @Override // java.lang.Runnable
                             public void run() {
                                 callback.onPayloadApplicationComplete(errorCode);
                             }
                         });
                     } else {
-                        callback.onPayloadApplicationComplete(errorCode);
+                        callback.onPayloadApplicationComplete(errorCode22);
                     }
                 }
             };
-            this.mUpdateEngineCallback = stub;
+            this.mUpdateEngineCallback = anonymousClass1;
             try {
-                bind = this.mUpdateEngine.bind(stub);
+                bind = this.mUpdateEngine.bind(anonymousClass1);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -200,6 +342,10 @@ public class UpdateEngine {
         private int mErrorCode;
         private long mFreeSpaceRequired;
 
+        /* synthetic */ AllocateSpaceResult(AllocateSpaceResultIA allocateSpaceResultIA) {
+            this();
+        }
+
         private AllocateSpaceResult() {
             this.mErrorCode = 0;
             this.mFreeSpaceRequired = 0L;
@@ -248,13 +394,16 @@ public class UpdateEngine {
         private int mErrorCode;
         private Object mLock;
 
+        /* synthetic */ CleanupAppliedPayloadCallback(CleanupAppliedPayloadCallbackIA cleanupAppliedPayloadCallbackIA) {
+            this();
+        }
+
         private CleanupAppliedPayloadCallback() {
             this.mErrorCode = 1;
             this.mCompleted = false;
             this.mLock = new Object();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public int getResult() {
             int i;
             synchronized (this.mLock) {

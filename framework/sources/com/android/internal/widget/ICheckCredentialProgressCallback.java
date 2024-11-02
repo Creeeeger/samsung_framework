@@ -81,7 +81,6 @@ public interface ICheckCredentialProgressCallback extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
         public static class Proxy implements ICheckCredentialProgressCallback {
             private IBinder mRemote;

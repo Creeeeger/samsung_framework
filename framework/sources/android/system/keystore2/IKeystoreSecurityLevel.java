@@ -218,8 +218,9 @@ public interface IKeystoreSecurityLevel extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IKeystoreSecurityLevel {
+        public static class Proxy implements IKeystoreSecurityLevel {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

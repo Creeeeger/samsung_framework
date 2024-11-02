@@ -13,8 +13,9 @@ import com.samsung.android.rune.CoreRune;
 /* loaded from: classes4.dex */
 public class WindowOrganizer {
     private static final Singleton<IWindowOrganizerController> IWindowOrganizerControllerSingleton = new Singleton<IWindowOrganizerController>() { // from class: android.window.WindowOrganizer.1
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.util.Singleton
         public IWindowOrganizerController create() {
             try {
@@ -114,8 +115,23 @@ public class WindowOrganizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static IWindowOrganizerController getWindowOrganizerController() {
         return IWindowOrganizerControllerSingleton.get();
+    }
+
+    /* renamed from: android.window.WindowOrganizer$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends Singleton<IWindowOrganizerController> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.Singleton
+        public IWindowOrganizerController create() {
+            try {
+                return ActivityTaskManager.getService().getWindowOrganizerController();
+            } catch (RemoteException e) {
+                return null;
+            }
+        }
     }
 }

@@ -295,8 +295,7 @@ public class SemPersonaManager {
         this.mContext = context;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.knox.SemPersonaManager$2, reason: invalid class name */
+    /* renamed from: com.samsung.android.knox.SemPersonaManager$2 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion;
@@ -2242,8 +2241,46 @@ public class SemPersonaManager {
         return true;
     }
 
-    public static void drawKnoxAppBadge(final Context context, final AppWidgetHostView view, final UserHandle user) {
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.knox.SemPersonaManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ UserHandle val$user;
+        final /* synthetic */ AppWidgetHostView val$view;
+
+        AnonymousClass1(UserHandle userHandle, AppWidgetHostView appWidgetHostView) {
+            user = userHandle;
+            view = appWidgetHostView;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                ImageView dualAppBadge = new ImageView(Context.this);
+                PackageManager pm = Context.this.getPackageManager();
+                Drawable badgeicon = pm.getUserBadgeForDensity(user, 0);
+                if (badgeicon != null) {
+                    dualAppBadge.lambda$setImageURIAsync$2(badgeicon);
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(badgeicon.getIntrinsicWidth(), badgeicon.getIntrinsicHeight());
+                    params.gravity = 85;
+                    view.addView(dualAppBadge, params);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void drawKnoxAppBadge(Context context, AppWidgetHostView view, UserHandle user) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { // from class: com.samsung.android.knox.SemPersonaManager.1
+            final /* synthetic */ UserHandle val$user;
+            final /* synthetic */ AppWidgetHostView val$view;
+
+            AnonymousClass1(UserHandle user2, AppWidgetHostView view2) {
+                user = user2;
+                view = view2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -2251,7 +2288,7 @@ public class SemPersonaManager {
                     PackageManager pm = Context.this.getPackageManager();
                     Drawable badgeicon = pm.getUserBadgeForDensity(user, 0);
                     if (badgeicon != null) {
-                        dualAppBadge.setImageDrawable(badgeicon);
+                        dualAppBadge.lambda$setImageURIAsync$2(badgeicon);
                         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(badgeicon.getIntrinsicWidth(), badgeicon.getIntrinsicHeight());
                         params.gravity = 85;
                         view.addView(dualAppBadge, params);

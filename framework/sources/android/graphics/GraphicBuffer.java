@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class GraphicBuffer implements Parcelable {
     public static final Parcelable.Creator<GraphicBuffer> CREATOR = new Parcelable.Creator<GraphicBuffer>() { // from class: android.graphics.GraphicBuffer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GraphicBuffer createFromParcel(Parcel in) {
             int width = in.readInt();
@@ -21,7 +23,6 @@ public class GraphicBuffer implements Parcelable {
             return null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GraphicBuffer[] newArray(int size) {
             return new GraphicBuffer[size];
@@ -52,6 +53,10 @@ public class GraphicBuffer implements Parcelable {
     private final int mUsage;
     private final int mWidth;
 
+    /* synthetic */ GraphicBuffer(int i, int i2, int i3, int i4, long j, GraphicBufferIA graphicBufferIA) {
+        this(i, i2, i3, i4, j);
+    }
+
     private static native GraphicBuffer nCreateFromHardwareBuffer(HardwareBuffer hardwareBuffer);
 
     private static native long nCreateGraphicBuffer(int i, int i2, int i3, int i4);
@@ -60,7 +65,6 @@ public class GraphicBuffer implements Parcelable {
 
     private static native boolean nLockCanvas(long j, Canvas canvas, Rect rect);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nReadGraphicBufferFromParcel(Parcel parcel);
 
     private static native boolean nUnlockCanvasAndPost(long j, Canvas canvas);
@@ -165,5 +169,30 @@ public class GraphicBuffer implements Parcelable {
         dest.writeInt(this.mFormat);
         dest.writeInt(this.mUsage);
         nWriteGraphicBufferToParcel(this.mNativeObject, dest);
+    }
+
+    /* renamed from: android.graphics.GraphicBuffer$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GraphicBuffer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GraphicBuffer createFromParcel(Parcel in) {
+            int width = in.readInt();
+            int height = in.readInt();
+            int format = in.readInt();
+            int usage = in.readInt();
+            long nativeObject = GraphicBuffer.nReadGraphicBufferFromParcel(in);
+            if (nativeObject != 0) {
+                return new GraphicBuffer(width, height, format, usage, nativeObject);
+            }
+            return null;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GraphicBuffer[] newArray(int size) {
+            return new GraphicBuffer[size];
+        }
     }
 }

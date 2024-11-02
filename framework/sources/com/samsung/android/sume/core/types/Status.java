@@ -29,12 +29,10 @@ public enum Status {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$from$0(int value, Status e) {
         return e.value == value;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ InvalidParameterException lambda$from$1(int value) {
         return new InvalidParameterException("invalid Status value: " + value);
     }

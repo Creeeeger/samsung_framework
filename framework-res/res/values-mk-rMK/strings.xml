@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">Уредот не ја поддржува оваа %s. Допрете за да поставите во поддржан формат.</string>
     <string name="ext_media_unsupported_notification_title">Неподдржана %s</string>
     <string name="ext_storage_bad_removal_button">Рестартирај</string>
-    <string name="ext_storage_bad_removal_title">Рестартирајте го Вашиот телефон</string>
+    <string name="ext_storage_bad_removal_title">Рестартирајте го Вашиот таблет</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message_usbhost">Сите датотеки складирани на УСБ-склад ќе се избришат. Дејството не може да се отповика.</string>
     <string name="extmedia_format_title_usbhost">Форматирај УСБ-склад?</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Се емитува звук на Вашиот аудио уред Bluetooth. Допрете тука за да го исклучите ова</string>
     <string name="multisound_sound_via_headphone">Звукот на %s се пушта преку Вашите звучници. Допрете тука за да го исклучите ова.</string>
     <string name="multisound_sound_via_headphone_multiselection">Звукот се пушта преку Вашите звучници. Допрете тука за да го исклучите ова.</string>
-    <string name="multisound_sound_via_phone_speaker">Звукот на %s се пушта преку звучникот на Вашиот телефон. Допрете тука за да го исклучите ова.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Звукот се пушта преку звучникот на Вашиот телефон. Допрете тука за да го исклучите ова.</string>
+    <string name="multisound_sound_via_phone_speaker">Звукот на %s се пушта преку звучникот на Вашиот таблет. Допрете тука за да го исклучите ова.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Звукот се пушта преку звучникот на Вашиот таблет. Допрете тука за да го исклучите ова.</string>
     <string name="multisound_sound_via_usb_audio">Звукот на %s се пушта преку Вашиот аудио уред USB. Допрете тука за да го исклучите ова.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Звукот се пушта преку Вашиот аудио уред USB. Допрете тука за да го исклучите ова.</string>
     <string name="multisound_title">Одделен звук на апликации</string>
     <string name="multisound_turn_off_multisound">Исклучи</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s не може да се пушти во Samsung DeX. Обидете се да го пуштите во режим на телефон.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s не може да се пушти во Samsung DeX. Направена е за Почетните екрани на телефонот.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некои игри функционираат само на допирните екрани. Ако не функционираат контролите на глувчето во Samsung DeX, обидете се да играте во режим на телефон наместо тоа.</string>
-    <string name="my_device">Овој телефон</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s не може да се пушти во Samsung DeX. Обидете се да го пуштите во режим на таблет.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s не може да се пушти во Samsung DeX. Направена е за Почетните екрани на таблет.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некои игри функционираат само на допирните екрани. Ако не функционираат контролите на глувчето во Samsung DeX, обидете се да играте во режим на таблет наместо тоа.</string>
+    <string name="my_device">Овој таблет</string>
     <string name="network_locked_sim_dialog_message_ais">Вашата SIM-картичка не е целосно операционална со овој телефон затоа што не е во согласност со Вашите одредби и услови на претплатата. Ако имате какви било прашања или Ви требаат повеќе информации за ова, контактирајте со локацијата на Услугите за корисниците на Samsung или со продавницата што Ви ги продала овие производи.</string>
     <string name="network_locked_sim_notification_text">Вметната е SIM-картичка заклучена на мрежа.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">Спречете го користењето на синхронизација на десктоп.</string>
     <string name="policydesc_allow_internetsharing">Спречете го користењето на Мобилен хотспот.</string>
     <string name="policydesc_allow_irda">Спречете го користењето на IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Спречете го користењето на POP и IMAP е-пошта на телефонот.</string>
+    <string name="policydesc_allow_popimapemail">Спречете го користењето на POP и IMAP е-пошта на таблетот.</string>
     <string name="policydesc_allow_storagecard">Спречете го користењето на SD-картички.</string>
     <string name="policydesc_allow_textmessaging">Спречете го користењето на размена на текстуални и мултимедијални пораки.</string>
     <string name="policydesc_allow_thirdParty">Оваа апликација може да спречува употреба на апликации од други производители.</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">Политиката на безбедност бара да ја смените лозинката.</string>
     <string name="recording_fail">Не може да се користи микрофон во %1$s додека се користи во %2$s.</string>
     <string name="recording_popup">%s го користи микрофонот.</string>
-    <string name="recording_popup_device">Телефон</string>
+    <string name="recording_popup_device">Таблет</string>
     <string name="recording_popup_with_bluetooth">%s го користи микрофонот на Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s го користи микрофонот на %2$s.</string>
     <string name="redo">Повтори</string>
@@ -903,12 +903,12 @@
     <string name="screencapture_restrict">Полисата за безбедност спречува користење на сликањето екран.</string>
     <string name="sd_card_unavailable_message">Не можете да ја користите SD-картичката затоа што е вметната додека се користел друг кориснички профил.</string>
     <string name="sd_card_unavailable_title">SD-картичката е недостапна</string>
-    <string name="sdcard_bad_removal_message">SD-картичка е отстранета небезбедно. За да спречите неочекувано рестартирање на телефонот, зачувајте ги незачуваните податоци и рестартирајте сега.</string>
+    <string name="sdcard_bad_removal_message">SD-картичка е отстранета небезбедно. За да спречите неочекувано рестартирање на таблетот, зачувајте ги незачуваните податоци и рестартирајте сега.</string>
     <string name="sdcard_batch_decrypt_noti_content">Дешифрирај SD-картичка</string>
     <string name="sdcard_batch_decrypt_noti_title">Дешифрирање на SD-картичката</string>
     <string name="sdcard_batch_decrypt_popup_content">Шифрираната SD-картичка мора да се дешифрира пред да се користи. Дешифрирањето може да трае еден час или повеќе. Почнете со полна батерија и оставете го уредот приклучен додека не заврши дешифрирањето. Со прекин на дешифрирањето може да изгубите податоци, делумно или целосно.</string>
     <string name="sdcard_decrypt_err_notification">Дојде до грешка при дешифрирањето на SD-картичката.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Некои датотеки на SD-картичката се шифрирани на друг уред и не можат да се користат на овој телефон.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Некои датотеки на SD-картичката се шифрирани на друг уред и не можат да се користат на овој таблет.</string>
     <string name="sdcard_decrypt_notification">SD-картичката е дешифрирана.</string>
     <string name="sdcard_decrypt_title_notification">Дешифрирање на SD-картичката</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Се дешифрира SD-карт…</string>
@@ -1234,7 +1234,7 @@
     <string name="usb_abnormal_reset_title">Врската USB не е стабилна</string>
     <string name="usb_abnormal_reset_toast">Поврзувањето USB не е стабилно. Исклучете го кабелот и повторно приклучете го или обидете се со друг кабел.</string>
     <string name="usb_accessory_notification_title">Поврзано со USB-додаток</string>
-    <string name="usb_bad_removal_message">Мемориски уред USB е отстранет небезбедно. За да спречите неочекувано рестартирање на телефонот, зачувајте ги незачуваните податоци и рестартирајте сега.</string>
+    <string name="usb_bad_removal_message">Мемориски уред USB е отстранет небезбедно. За да спречите неочекувано рестартирање на таблетот, зачувајте ги незачуваните податоци и рестартирајте сега.</string>
     <string name="usb_blocked_by_emergency_mode">Некои USB-функции се недостапни во Итен режим.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Не може да се користат функции поврзани со поврзан уред USB додека е овозможен Режимот за максимално штедење енергија.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Некои функции на USB ќе бидат ограничени додека е вклучен Режимот за максимално штедење енергија.</string>
@@ -1243,13 +1243,13 @@
     <string name="usb_camera_connected_notification_title">Медиумски уред е поврзан</string>
     <string name="usb_camera_disconnected_notification_title">Медиумскиот уред е исклучен</string>
     <string name="usb_cd_installer_notification_title">Ажуририрање на софтвер</string>
-    <string name="usb_charing_only_notification_title">Полнење преку USB</string>
+    <string name="usb_charing_only_notification_title">Поврзано</string>
     <string name="usb_debugging_only_notification_title">Само решавање проблеми</string>
-    <string name="usb_host_resource_exceed_message">Контролерот USB на телефонот нема доволно ресурси за поврзување на овој уред. Обидете се да го исклучите уредот и повторно да го поврзете.</string>
+    <string name="usb_host_resource_exceed_message">Контролерот USB на таблетот нема доволно ресурси за поврзување на овој уред. Обидете се да го исклучите уредот и повторно да го поврзете.</string>
     <string name="usb_host_resource_exceed_title">Нема доволно ресурси на контролер USB</string>
-    <string name="usb_hub_depth_exceed_message">Вашиот телефон може да поддржува само до 5 поврзувања на USB хаб истовремено.</string>
+    <string name="usb_hub_depth_exceed_message">Вашиот таблет може да поддржува само до 5 поврзувања на USB хаб истовремено.</string>
     <string name="usb_hub_depth_exceed_title">Максимум поврзувања на USB хаб</string>
-    <string name="usb_hub_power_exceed_message">Вашиот телефон не може да обезбеди доволно напојување за овој уред USB. Поврзете го уредот на самонапојувачки хаб USB пред да го поврзете со телефонот.</string>
+    <string name="usb_hub_power_exceed_message">Вашиот таблет не може да обезбеди доволно напојување за овој уред USB. Поврзете го уредот на самонапојувачки хаб USB пред да го поврзете со таблетот.</string>
     <string name="usb_increase_battery_usage">Поврзувањето USB може да го зголеми трошењето на батеријата.</string>
     <string name="usb_mass_storage_restrict">Полисата за безбедност го спречува користењето масовен склад USB.</string>
     <string name="usb_midi_notification_title">USB за MIDI</string>
@@ -1275,8 +1275,8 @@
     <string name="usb_storage_stop_title">Се користи меморија USB.</string>
     <string name="usb_storage_title">Поврзано е USB.</string>
     <string name="usb_type_c_supply_power_notification_title">Полнење на поврз.уред преку USB</string>
-    <string name="usb_unblock_by_screen_unlock">Отклучете го телефонот за да го користите поврзаниот уред USB.</string>
-    <string name="usb_unsupport_accessory_message">Оваа уред USB не е поддржан од Вашиот телефон.</string>
+    <string name="usb_unblock_by_screen_unlock">Отклучете го таблетот за да го користите поврзаниот уред USB.</string>
+    <string name="usb_unsupport_accessory_message">Овој уред USB не е поддржан од Вашиот таблет.</string>
     <string name="usb_unsupport_accessory_title">Не е поддржан уредот USB</string>
     <string name="usb_unsupported_device">Поврзаниот USB-уред не е поддржан.</string>
     <string name="usb_unsupported_device_title">Уредот не е поддржан</string>
@@ -1294,19 +1294,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Можете да го забрзате сушењето со насочување на вентилатор или фен (само со ладен воздух) кон портата.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Откривме влага или страни тела во Вашиот приклучок за полнење/USB.
 
-Проверете го приклучокот за полнење/USB за какви било страни тела, како што се прашина или нечистотии. За да спречите оштетување на телефонот, немојте да приклучувате ништо сѐ додека портата за полнење не биде чиста и влагата не исчезне.
+Проверете го приклучокот за полнење/USB за какви било страни тела, како што се прашина или нечистотии. За да спречите оштетување на таблетот, немојте да приклучувате ништо сѐ додека портата за полнење не биде чиста и влагата не исчезне.
 
 За да го исушите приклучокот, истресете ја влагата, а потоа почекајте да се исуши, што може да потрае неколку часа. Можете да го забрзате сушењето насочувајќи вентилатор или фен (само со ладен воздух) кон приклучокот."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Откривме влага или страни тела во Вашиот приклучок за полнење/USB.
 
-Проверете го приклучокот за полнење/USB за какви било страни тела, како што се прашина или нечистотии. За да спречите оштетување на телефонот, немојте да приклучувате ништо сѐ додека портата за полнење не биде чиста и влагата не исчезне.
+Проверете го приклучокот за полнење/USB за какви било страни тела, како што се прашина или нечистотии. За да спречите оштетување на таблетот, немојте да вклучувате ништо сѐ додека портата за полнење не биде чиста и влагата не ја снема.
 
 За да го исушите приклучокот, истресете ја влагата, а потоа почекајте да се исуши, што може да потрае неколку часа. Можете да го забрзате сушењето насочувајќи вентилатор или фен (само со ладен воздух) кон приклучокот.
 
-Во меѓувреме, можете да го полните телефонот безжично."</string>
+Во меѓувреме, можете да го полните таблетот безжично."</string>
     <string name="usb_water_notification_content">Има влага или туѓи тела во приклучокот за полнење/приклучокот USB. Проверете пред полнењето.</string>
-    <string name="usb_water_notification_message">Откриена е влага во портата полнач/USB. Осигурете се дека е сува пред да го полните телефонот. Целосното сушење може да потрае.</string>
+    <string name="usb_water_notification_message">Откриена е влага во портата полнач/USB. Осигурете се дека е сува пред да го полните таблетот. Целосното сушење може да потрае.</string>
     <string name="usb_water_notification_message_button">Детали</string>
     <string name="usb_water_notification_title">Пров. го полначот/приклуч. USB</string>
     <string name="usbhostStorage_restrict">Полисата за безбедност спречува користење на складот на домаќинот преку USB.</string>

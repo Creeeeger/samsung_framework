@@ -47,7 +47,6 @@ public class Program extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Program(long id, RenderScript rs) {
         super(id, rs);
         this.guard.open("destroy");
@@ -136,7 +135,6 @@ public class Program extends BaseObj {
         TextureType[] mTextureTypes = new TextureType[8];
         String[] mTextureNames = new String[8];
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public BaseProgramBuilder(RenderScript rs) {
             this.mRS = rs;
         }
@@ -218,7 +216,6 @@ public class Program extends BaseObj {
             return this;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public void initProgram(Program p) {
             p.mInputs = new Element[this.mInputCount];
             System.arraycopy(this.mInputs, 0, p.mInputs, 0, this.mInputCount);

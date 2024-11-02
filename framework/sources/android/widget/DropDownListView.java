@@ -26,7 +26,6 @@ public class DropDownListView extends ListView {
         setCacheColorHint(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsListView
     public boolean shouldShowSelector() {
         return isHovered() || super.shouldShowSelector();
@@ -79,7 +78,6 @@ public class DropDownListView extends ListView {
         return handled;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.ViewGroup, android.view.View
     public void drawableStateChanged() {
         if (this.mResolveHoverRunnable == null) {
@@ -181,13 +179,11 @@ public class DropDownListView extends ListView {
         refreshDrawableState();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsListView
     public boolean touchModeDrawsInPressedState() {
         return this.mDrawsInPressedState || super.touchModeDrawsInPressedState();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AbsListView
     public View obtainView(int position, boolean[] isScrap) {
         View view = super.obtainView(position, isScrap);
@@ -217,9 +213,12 @@ public class DropDownListView extends ListView {
         return this.mHijackFocus || super.hasFocus();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ResolveHoverRunnable implements Runnable {
+        /* synthetic */ ResolveHoverRunnable(DropDownListView dropDownListView, ResolveHoverRunnableIA resolveHoverRunnableIA) {
+            this();
+        }
+
         private ResolveHoverRunnable() {
         }
 

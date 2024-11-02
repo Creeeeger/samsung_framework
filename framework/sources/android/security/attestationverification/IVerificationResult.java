@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class IVerificationResult implements Parcelable {
     public static final Parcelable.Creator<IVerificationResult> CREATOR = new Parcelable.Creator<IVerificationResult>() { // from class: android.security.attestationverification.IVerificationResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public IVerificationResult createFromParcel(Parcel _aidl_source) {
             IVerificationResult _aidl_out = new IVerificationResult();
@@ -15,7 +17,6 @@ public class IVerificationResult implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IVerificationResult[] newArray(int _aidl_size) {
             return new IVerificationResult[_aidl_size];
@@ -23,6 +24,25 @@ public class IVerificationResult implements Parcelable {
     };
     public int resultCode = 0;
     public VerificationToken token;
+
+    /* renamed from: android.security.attestationverification.IVerificationResult$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<IVerificationResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IVerificationResult createFromParcel(Parcel _aidl_source) {
+            IVerificationResult _aidl_out = new IVerificationResult();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IVerificationResult[] newArray(int _aidl_size) {
+            return new IVerificationResult[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

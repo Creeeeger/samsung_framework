@@ -45,6 +45,10 @@ public class ContentQueryMap extends Observable {
         }
         if (this.mContentObserver == null) {
             this.mContentObserver = new ContentObserver(this.mHandlerForUpdateNotifications) { // from class: android.content.ContentQueryMap.1
+                AnonymousClass1(Handler handler) {
+                    super(handler);
+                }
+
                 @Override // android.database.ContentObserver
                 public void onChange(boolean selfChange) {
                     if (ContentQueryMap.this.countObservers() != 0) {
@@ -57,6 +61,23 @@ public class ContentQueryMap extends Observable {
         }
         this.mCursor.registerContentObserver(this.mContentObserver);
         this.mDirty = true;
+    }
+
+    /* renamed from: android.content.ContentQueryMap$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends ContentObserver {
+        AnonymousClass1(Handler handler) {
+            super(handler);
+        }
+
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange) {
+            if (ContentQueryMap.this.countObservers() != 0) {
+                ContentQueryMap.this.requery();
+            } else {
+                ContentQueryMap.this.mDirty = true;
+            }
+        }
     }
 
     public synchronized ContentValues getValues(String rowName) {

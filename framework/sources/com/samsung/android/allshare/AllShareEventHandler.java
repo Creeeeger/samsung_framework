@@ -6,14 +6,12 @@ import android.os.Looper;
 import android.os.Message;
 import com.sec.android.allshare.iface.CVMessage;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public abstract class AllShareEventHandler extends Handler {
     private static final String TAG = "AllShareEventHandler";
 
     abstract void handleEventMessage(CVMessage cVMessage);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public AllShareEventHandler(Looper looper) {
         super(looper);
     }

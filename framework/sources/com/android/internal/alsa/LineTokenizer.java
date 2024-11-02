@@ -9,7 +9,6 @@ public class LineTokenizer {
         this.mDelimiters = delimiters;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int nextToken(String line, int startIndex) {
         int len = line.length();
         int offset = startIndex;
@@ -22,7 +21,6 @@ public class LineTokenizer {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int nextDelimiter(String line, int startIndex) {
         int len = line.length();
         int offset = startIndex;

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public final class TunerAdapter extends RadioTuner {
     private static final String TAG = "BroadcastRadio.TunerAdapter";
@@ -21,7 +20,6 @@ public final class TunerAdapter extends RadioTuner {
     private final Object mLock = new Object();
     private final ITuner mTuner;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TunerAdapter(ITuner tuner, TunerCallbackAdapter callback, int band) {
         this.mTuner = (ITuner) Objects.requireNonNull(tuner, "Tuner cannot be null");
         this.mCallback = (TunerCallbackAdapter) Objects.requireNonNull(callback, "Callback cannot be null");
@@ -313,7 +311,6 @@ public final class TunerAdapter extends RadioTuner {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getDynamicProgramList$1() {
         try {
             this.mTuner.stopProgramListUpdates();

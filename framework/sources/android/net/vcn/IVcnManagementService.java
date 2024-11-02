@@ -206,8 +206,9 @@ public interface IVcnManagementService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IVcnManagementService {
+        public static class Proxy implements IVcnManagementService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -27,18 +27,23 @@ public final class NrQosSessionAttributes implements Parcelable, QosSessionAttri
     private final List<InetSocketAddress> mRemoteAddresses;
     private static final String TAG = NrQosSessionAttributes.class.getSimpleName();
     public static final Parcelable.Creator<NrQosSessionAttributes> CREATOR = new Parcelable.Creator<NrQosSessionAttributes>() { // from class: android.telephony.data.NrQosSessionAttributes.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NrQosSessionAttributes createFromParcel(Parcel in) {
             return new NrQosSessionAttributes(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrQosSessionAttributes[] newArray(int size) {
             return new NrQosSessionAttributes[size];
         }
     };
+
+    /* synthetic */ NrQosSessionAttributes(Parcel parcel, NrQosSessionAttributesIA nrQosSessionAttributesIA) {
+        this(parcel);
+    }
 
     public int getQosIdentifier() {
         return this.m5Qi;
@@ -156,5 +161,22 @@ public final class NrQosSessionAttributes implements Parcelable, QosSessionAttri
 
     public int hashCode() {
         return Objects.hash(Integer.valueOf(this.m5Qi), Integer.valueOf(this.mQfi), Long.valueOf(this.mMaxUplinkBitRate), Long.valueOf(this.mMaxDownlinkBitRate), Long.valueOf(this.mGuaranteedUplinkBitRate), Long.valueOf(this.mGuaranteedDownlinkBitRate), Long.valueOf(this.mAveragingWindow), this.mRemoteAddresses);
+    }
+
+    /* renamed from: android.telephony.data.NrQosSessionAttributes$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NrQosSessionAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrQosSessionAttributes createFromParcel(Parcel in) {
+            return new NrQosSessionAttributes(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrQosSessionAttributes[] newArray(int size) {
+            return new NrQosSessionAttributes[size];
+        }
     }
 }

@@ -17,6 +17,10 @@ public class DynamicSystemManager {
 
     /* loaded from: classes3.dex */
     public class Session {
+        /* synthetic */ Session(DynamicSystemManager dynamicSystemManager, SessionIA sessionIA) {
+            this();
+        }
+
         private Session() {
         }
 

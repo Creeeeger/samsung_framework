@@ -14,6 +14,10 @@ public final class IpFilterConfiguration extends FilterConfiguration {
     private final byte[] mSrcIpAddress;
     private final int mSrcPort;
 
+    /* synthetic */ IpFilterConfiguration(Settings settings, byte[] bArr, byte[] bArr2, int i, int i2, boolean z, int i3, IpFilterConfigurationIA ipFilterConfigurationIA) {
+        this(settings, bArr, bArr2, i, i2, z, i3);
+    }
+
     private IpFilterConfiguration(Settings settings, byte[] srcAddr, byte[] dstAddr, int srcPort, int dstPort, boolean passthrough, int ipCid) {
         super(settings);
         this.mSrcIpAddress = srcAddr;
@@ -66,6 +70,10 @@ public final class IpFilterConfiguration extends FilterConfiguration {
         private Settings mSettings;
         private byte[] mSrcIpAddress;
         private int mSrcPort;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mSrcIpAddress = new byte[]{0, 0, 0, 0};

@@ -180,6 +180,10 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
     public @interface WriteMode {
     }
 
+    /* synthetic */ AudioTrack(Context context, AudioAttributes audioAttributes, AudioFormat audioFormat, int i, int i2, int i3, boolean z, int i4, TunerConfiguration tunerConfiguration, AudioTrackIA audioTrackIA) {
+        this(context, audioAttributes, audioFormat, i, i2, i3, z, i4, tunerConfiguration);
+    }
+
     private native int native_applyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation);
 
     private final native int native_attachAuxEffect(int i);
@@ -274,7 +278,6 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
 
     private final native int native_setup(Object obj, Object obj2, int[] iArr, int i, int i2, int i3, int i4, int i5, int[] iArr2, Parcel parcel, long j, boolean z, int i6, Object obj3, String str);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public final native void native_start();
 
     private final native void native_stop();
@@ -437,7 +440,6 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AudioTrack(long nativeTrackInJavaObj) {
         super(new AudioAttributes.Builder().build(), 1);
         this.mState = 0;
@@ -674,7 +676,10 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         }
 
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Code restructure failed: missing block: B:8:0x0042, code lost:            if (android.media.AudioTrack.shouldEnablePowerSaving(r13.mAttributes, r13.mFormat, r13.mBufferSizeInBytes, r13.mMode) == false) goto L13;     */
+        /* JADX WARN: Code restructure failed: missing block: B:8:0x0042, code lost:
+        
+            if (android.media.AudioTrack.shouldEnablePowerSaving(r13.mAttributes, r13.mFormat, r13.mBufferSizeInBytes, r13.mMode) == false) goto L68;
+         */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -688,7 +693,6 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void unregisterAudioPolicyOnRelease(AudioPolicy audioPolicy) {
         this.mAudioPolicy = audioPolicy;
     }
@@ -828,7 +832,6 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean shouldEnablePowerSaving(AudioAttributes attributes, AudioFormat format, int bufferSizeInBytes, int mode) {
         int flags = attributes.getAllFlags() & 792;
         if ((attributes != null && (flags != 0 || attributes.getUsage() != 1 || (attributes.getContentType() != 0 && attributes.getContentType() != 2 && attributes.getContentType() != 3))) || format == null || format.getSampleRate() == 0 || !AudioFormat.isEncodingLinearPcm(format.getEncoding()) || !AudioFormat.isValidEncoding(format.getEncoding()) || format.getChannelCount() < 1 || mode != 1) {
@@ -1252,13 +1255,11 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         return setStereoVolume(gain, gain);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.media.PlayerBase
     public int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation) {
         return native_applyVolumeShaper(configuration, operation);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.media.PlayerBase
     public VolumeShaper.State playerGetVolumeShaperState(int id) {
         return native_getVolumeShaperState(id);
@@ -1333,16 +1334,21 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         this.mState = state;
     }
 
-    /* JADX WARN: Type inference failed for: r1v2, types: [android.media.AudioTrack$1] */
     public void play() throws IllegalStateException {
         if (this.mState != 1) {
             throw new IllegalStateException("play() called on uninitialized AudioTrack.");
         }
-        final int delay = getStartDelayMs();
+        int delay = getStartDelayMs();
         if (delay == 0) {
             startImpl();
         } else {
             new Thread() { // from class: android.media.AudioTrack.1
+                final /* synthetic */ int val$delay;
+
+                AnonymousClass1(int delay2) {
+                    delay = delay2;
+                }
+
                 @Override // java.lang.Thread, java.lang.Runnable
                 public void run() {
                     try {
@@ -1360,7 +1366,30 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.media.AudioTrack$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends Thread {
+        final /* synthetic */ int val$delay;
+
+        AnonymousClass1(int delay2) {
+            delay = delay2;
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public void run() {
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            AudioTrack.this.baseSetStartDelayMs(0);
+            try {
+                AudioTrack.this.startImpl();
+            } catch (IllegalStateException e2) {
+            }
+        }
+    }
+
     public void startImpl() {
         synchronized (this.mRoutingChangeListeners) {
             if (!this.mEnableSelfRoutingMonitor) {
@@ -1601,7 +1630,10 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         return native_reload_static();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0012, code lost:            return false;     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0012, code lost:
+    
+        return false;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1794,7 +1826,6 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addOnCodecFormatChangedListener$0(OnCodecFormatChangedListener listener, int eventCode, AudioMetadataReadMap readMap) {
         listener.onCodecFormatChanged(this, readMap);
     }
@@ -1860,7 +1891,6 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class StreamEventCbInfo {
         final StreamEventCallback mStreamEventCb;
@@ -1893,7 +1923,6 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class StreamEventHandler extends Handler {
         StreamEventHandler(Looper looper) {
@@ -1961,17 +1990,14 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleMessage$0(StreamEventCbInfo cbi, Message msg) {
             cbi.mStreamEventCb.onDataRequest(AudioTrack.this, msg.arg1);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleMessage$1(StreamEventCbInfo cbi) {
             cbi.mStreamEventCb.onTearDown(AudioTrack.this);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleMessage$2(StreamEventCbInfo cbi) {
             cbi.mStreamEventCb.onPresentationEnded(AudioTrack.this);
         }
@@ -2011,12 +2037,11 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         return this.mLogSessionId;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class NativePositionEventHandlerDelegate {
         private final Handler mHandler;
 
-        NativePositionEventHandlerDelegate(final AudioTrack track, final OnPlaybackPositionUpdateListener listener, Handler handler) {
+        NativePositionEventHandlerDelegate(AudioTrack track, OnPlaybackPositionUpdateListener listener, Handler handler) {
             Looper looper;
             if (handler != null) {
                 looper = handler.getLooper();
@@ -2025,6 +2050,18 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
             }
             if (looper != null) {
                 this.mHandler = new Handler(looper) { // from class: android.media.AudioTrack.NativePositionEventHandlerDelegate.1
+                    final /* synthetic */ OnPlaybackPositionUpdateListener val$listener;
+                    final /* synthetic */ AudioTrack val$this$0;
+                    final /* synthetic */ AudioTrack val$track;
+
+                    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                    AnonymousClass1(Looper looper2, AudioTrack audioTrack, AudioTrack track2, OnPlaybackPositionUpdateListener listener2) {
+                        super(looper2);
+                        r3 = audioTrack;
+                        track = track2;
+                        listener = listener2;
+                    }
+
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         if (track == null) {
@@ -2053,6 +2090,49 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
                 };
             } else {
                 this.mHandler = null;
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.media.AudioTrack$NativePositionEventHandlerDelegate$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ OnPlaybackPositionUpdateListener val$listener;
+            final /* synthetic */ AudioTrack val$this$0;
+            final /* synthetic */ AudioTrack val$track;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper2, AudioTrack audioTrack, AudioTrack track2, OnPlaybackPositionUpdateListener listener2) {
+                super(looper2);
+                r3 = audioTrack;
+                track = track2;
+                listener = listener2;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                if (track == null) {
+                    return;
+                }
+                switch (msg.what) {
+                    case 3:
+                        OnPlaybackPositionUpdateListener onPlaybackPositionUpdateListener = listener;
+                        if (onPlaybackPositionUpdateListener != null) {
+                            onPlaybackPositionUpdateListener.onMarkerReached(track);
+                            return;
+                        }
+                        return;
+                    case 4:
+                        OnPlaybackPositionUpdateListener onPlaybackPositionUpdateListener2 = listener;
+                        if (onPlaybackPositionUpdateListener2 != null) {
+                            onPlaybackPositionUpdateListener2.onPeriodicNotification(track);
+                            return;
+                        }
+                        return;
+                    default:
+                        AudioTrack.loge("Unknown native event type: " + msg.what);
+                        return;
+                }
             }
         }
 
@@ -2114,7 +2194,6 @@ public class AudioTrack extends PlayerBase implements AudioRouting, VolumeAutoma
         Log.d(TAG, msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void loge(String msg) {
         Log.e(TAG, msg);
     }

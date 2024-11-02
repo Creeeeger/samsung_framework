@@ -9,13 +9,14 @@ import java.util.ArrayList;
 /* loaded from: classes5.dex */
 public class SemContextActivityNotificationExAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextActivityNotificationExAttribute> CREATOR = new Parcelable.Creator<SemContextActivityNotificationExAttribute>() { // from class: com.samsung.android.hardware.context.SemContextActivityNotificationExAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationExAttribute createFromParcel(Parcel in) {
             return new SemContextActivityNotificationExAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationExAttribute[] newArray(int size) {
             return new SemContextActivityNotificationExAttribute[size];
@@ -26,7 +27,23 @@ public class SemContextActivityNotificationExAttribute extends SemContextAttribu
     private int[] mActivityFilter;
     private int mDuration;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextActivityNotificationExAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityNotificationExAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityNotificationExAttribute createFromParcel(Parcel in) {
+            return new SemContextActivityNotificationExAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityNotificationExAttribute[] newArray(int size) {
+            return new SemContextActivityNotificationExAttribute[size];
+        }
+    }
+
     public SemContextActivityNotificationExAttribute() {
         this.mActivityFilter = null;
         this.mDuration = 30;

@@ -29,7 +29,6 @@ public class CompactExtractEditLayout extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -68,7 +67,6 @@ public class CompactExtractEditLayout extends LinearLayout {
         setLayoutMarginBottom(this.mInputExtractAccessories, applyFractionInt(R.fraction.input_extract_action_margin_bottom, screenHeightPx));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();

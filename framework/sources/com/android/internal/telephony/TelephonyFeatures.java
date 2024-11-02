@@ -63,6 +63,7 @@ public class TelephonyFeatures {
     private static final String SALES_CODE = SystemProperties.get("ro.csc.sales_code", KeyProperties.DIGEST_NONE);
 
     static {
+        boolean z = true;
         String str = SystemProperties.get("ro.build.characteristics", "");
         DEVICE_TYPE = str;
         boolean contains = str.contains(BnRConstants.DEVICETYPE_TABLET);
@@ -73,13 +74,16 @@ public class TelephonyFeatures {
         String str2 = SystemProperties.get("ro.boot.hardware", "");
         HARDWARE_TYPE = str2;
         IS_QCOM = str2.contains("qcom");
-        IS_EXYNOS = str2.contains("exynos") || str2.contains("s5e");
+        if (!str2.contains("exynos") && !str2.contains("s5e")) {
+            z = false;
+        }
+        IS_EXYNOS = z;
         IS_MTK = str2.contains("mt");
         IS_WIFI_ONLY = "wifi-only".equals(SemTelephonyProps.carrier().orElse("unknown"));
         IS_FACTORY_BIN = "factory".equalsIgnoreCase(SystemProperties.get("ro.factory.factory_binary", "Unknown"));
         MULTI_SIM_CONFIG = android.sysprop.TelephonyProperties.multi_sim_config().orElse("");
         PROJECT_SIM_NUM = TelephonyManager.getDefault().getActiveModemCount();
-        mSimHotswapSupported = true;
+        mSimHotswapSupported = false;
         mSimbasedChangeType = null;
     }
 

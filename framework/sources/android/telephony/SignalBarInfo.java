@@ -8,6 +8,9 @@ import vendor.samsung.hardware.radio.V2_0.SehSignalBar;
 /* loaded from: classes3.dex */
 public class SignalBarInfo implements Parcelable {
     public static final Parcelable.Creator<SignalBarInfo> CREATOR = new Parcelable.Creator() { // from class: android.telephony.SignalBarInfo.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SignalBarInfo createFromParcel(Parcel in) {
             return new SignalBarInfo(in);
@@ -25,6 +28,10 @@ public class SignalBarInfo implements Parcelable {
     private int mNrLevel;
     private int mTdscdmaLevel;
     private int mWcdmaLevel;
+
+    /* synthetic */ SignalBarInfo(Parcel parcel, SignalBarInfoIA signalBarInfoIA) {
+        this(parcel);
+    }
 
     public SignalBarInfo() {
         this.mCdmaLevel = 0;
@@ -135,6 +142,23 @@ public class SignalBarInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.SignalBarInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SignalBarInfo createFromParcel(Parcel in) {
+            return new SignalBarInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SignalBarInfo[] newArray(int size) {
+            return new SignalBarInfo[size];
+        }
     }
 
     public String toString() {

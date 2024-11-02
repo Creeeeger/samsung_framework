@@ -336,7 +336,7 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="ext_media_unsupported_notification_message">Este dispositivo non admite esta %s. Toca aquí para configurar un formato compatible.</string>
     <string name="ext_media_unsupported_notification_title">%s non compatible</string>
     <string name="ext_storage_bad_removal_button">Reiniciar</string>
-    <string name="ext_storage_bad_removal_title">Reinicia o teléfono</string>
+    <string name="ext_storage_bad_removal_title">Reinicia a tableta</string>
     <string name="extmedia_format_button_format">Formato</string>
     <string name="extmedia_format_message_usbhost">Borraranse todos os ficheiros gardados no teu almacenamento USB. Esta acción non se pode desfacer.</string>
     <string name="extmedia_format_title_usbhost">Queres formatar o almacenamento USB?</string>
@@ -593,16 +593,16 @@ A tableta reiniciarase axiña."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">O son está reproducíndose no teu dispositivo de audio Bluetooth. Pulsa aquí para desactivar esta opción</string>
     <string name="multisound_sound_via_headphone">O son de %s está reproducíndose a través dos auriculares. Toca aquí para desactivar esta opción.</string>
     <string name="multisound_sound_via_headphone_multiselection">O son está reproducíndose a través dos auriculares. Pulsa aquí para desactivar esta opción.</string>
-    <string name="multisound_sound_via_phone_speaker">O son de %s está reproducíndose a través do altofalante do teléfono. Toca aquí para desactivar esta opción.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">O son está reproducíndose a través do altofalante do teléfono. Pulsa aquí para desactivar esta opción.</string>
+    <string name="multisound_sound_via_phone_speaker">O son de %s está reproducíndose a través do altofalante da tableta. Toca aquí para desactivar esta opción.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">O son está reproducíndose a través do altofalante da tableta. Pulsa aquí para desactivar esta opción.</string>
     <string name="multisound_sound_via_usb_audio">O son de %s está reproducíndose a través do dispositivo de audio USB. Toca aquí para desactivar esta opción.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">O son está reproducíndose a través do dispositivo de audio USB. Pulsa aquí para desactivar esta opción.</string>
     <string name="multisound_title">Separar son da aplicación</string>
     <string name="multisound_turn_off_multisound">Desactivar</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s non se pode executar en Samsung DeX. Tenta executalo no modo Teléfono.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s non se pode executar en Samsung DeX porque está deseñada para as pantallas Inicio dos teléfonos.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Algúns xogos só funcionan en pantallas táctiles. Se os controis do rato non funcionan en Samsung DeX, tenta xogar no modo Teléfono no seu lugar.</string>
-    <string name="my_device">Este teléfono</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s non se pode executar en Samsung DeX. Tenta executalo no modo tableta.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s non se pode executar en Samsung DeX porque está deseñada para as pantallas Inicio das tabletas.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Algúns xogos só funcionan en pantallas táctiles. Se os controis do rato non funcionan en Samsung DeX, tenta xogar no modo Tableta no seu lugar.</string>
+    <string name="my_device">Esta tableta</string>
     <string name="network_locked_sim_dialog_message_ais">A túa tarxeta SIM non está plenamente operativa neste teléfono porque non é conforme cos termos e condicións da túa subscrición. Se tes preguntas ou precisas máis información ao respecto, ponte en contacto coa tenda ou centro de atención ao cliente de Samsung que che vendeu estes produtos.</string>
     <string name="network_locked_sim_notification_text">Tarx. SIM bloq. para rede inserida</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -793,7 +793,7 @@ VOLVE A"</string>
     <string name="policydesc_allow_desktopsync">Evita o uso da sincronización do escritorio.</string>
     <string name="policydesc_allow_internetsharing">Evita o uso de Conexión compartida.</string>
     <string name="policydesc_allow_irda">Evita o uso de IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Evita o uso de correo electrónico POP e IMAP no teléfono.</string>
+    <string name="policydesc_allow_popimapemail">Evita o uso de correo electrónico POP e IMAP na tableta.</string>
     <string name="policydesc_allow_storagecard">Evita o uso de tarxetas SD.</string>
     <string name="policydesc_allow_textmessaging">Evita o uso de mensaxería de texto e multimedia.</string>
     <string name="policydesc_allow_thirdParty">Esta aplicación pode evitar a execución de aplicacións de terceiros.</string>
@@ -839,7 +839,7 @@ VOLVE A"</string>
     <string name="pwd_change_enforced">A política de seguridade esíxete que cambies o contrasinal</string>
     <string name="recording_fail">Non se pode usar o micrófono en %1$s mentres se estea usando en %2$s.</string>
     <string name="recording_popup">%s está usando o micrófono.</string>
-    <string name="recording_popup_device">Teléfono</string>
+    <string name="recording_popup_device">Tableta</string>
     <string name="recording_popup_with_bluetooth">%s está usando o micrófono Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s está usando o micrófono de %2$s.</string>
     <string name="redo">Refacer</string>
@@ -904,12 +904,12 @@ VOLVE A"</string>
     <string name="screencapture_restrict">A política de seguridade impide o uso da captura de pantalla.</string>
     <string name="sd_card_unavailable_message">Non podes usar a tarxeta SD porque foi inserida mentres se usaba un perfil de usuario diferente.</string>
     <string name="sd_card_unavailable_title">Tarxeta SD non dispoñible</string>
-    <string name="sdcard_bad_removal_message">Retirouse unha tarxeta SD de forma non segura. Para impedir que o teléfono se reinicie inesperadamente, garda os datos que aínda non gardases e reinicia agora.</string>
+    <string name="sdcard_bad_removal_message">Retirouse unha tarxeta SD de forma non segura. Para impedir que a tableta se reinicie inesperadamente, garda os datos que aínda non gardases e reinicia agora.</string>
     <string name="sdcard_batch_decrypt_noti_content">Descifrar tarxeta SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Descifrado da tarxeta SD</string>
     <string name="sdcard_batch_decrypt_popup_content">A tarxeta SD cifrada debe descifrarse antes de utilizarse. O descifrado pode tardar unha hora ou máis en completarse. Iníciao cunha batería cargada e mantén o dispositivo enchufado á corrente ata que se complete o descifrado. A interrupción do proceso de descifrado pode provocar a perda dalgúns ou de todos os datos.</string>
     <string name="sdcard_decrypt_err_notification">Produciuse un erro ao descifrar a tarxeta SD</string>
-    <string name="sdcard_decrypt_error_otherdevice">Algúns arquivos da tarxeta SD foron cifrados noutro dispositivo e non se poden usar neste teléfono.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Algúns arquivos da tarxeta SD foron cifrados noutro dispositivo e non se poden usar nesta tableta.</string>
     <string name="sdcard_decrypt_notification">Tarxeta SD descifrada</string>
     <string name="sdcard_decrypt_title_notification">Descifrado da tarxeta SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Descifrando tarxeta SD…</string>
@@ -1235,7 +1235,7 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="usb_abnormal_reset_title">A conexión USB é inestable</string>
     <string name="usb_abnormal_reset_toast">A conexión USB non é estable. Desenchufa o cable e volve enchufalo, ou proba con outro diferente.</string>
     <string name="usb_accessory_notification_title">Conectado a un accesorio USB</string>
-    <string name="usb_bad_removal_message">Retirouse un dispositivo de almacenamento USB de forma non segura. Para impedir que o teléfono se reinicie inesperadamente, garda os datos que aínda non gardases e reinicia agora.</string>
+    <string name="usb_bad_removal_message">Retirouse un dispositivo de almacenamento USB de forma non segura. Para impedir que a tableta se reinicie inesperadamente, garda os datos que aínda non gardases e reinicia agora.</string>
     <string name="usb_blocked_by_emergency_mode">Algunhas funcións USB deixan de estar dispoñibles no modo Urxencia.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Non se poden usar funcións relacionadas co dispositivo USB conectado co modo Aforro de enerxía máximo activado.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Algunhas funcións USB estarán limitadas se está activado o modo Aforro de enerxía máximo.</string>
@@ -1244,13 +1244,13 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="usb_camera_connected_notification_title">Dispositivo multimedia conectado</string>
     <string name="usb_camera_disconnected_notification_title">Dispositivo multimedia desconectado</string>
     <string name="usb_cd_installer_notification_title">Actualización de software</string>
-    <string name="usb_charing_only_notification_title">Carga USB</string>
+    <string name="usb_charing_only_notification_title">Conectado</string>
     <string name="usb_debugging_only_notification_title">Só depuración</string>
-    <string name="usb_host_resource_exceed_message">O controlador USB do teu teléfono non dispón de recursos abondo para conectar este dispositivo. Proba a desconectalo e conectalo de novo.</string>
+    <string name="usb_host_resource_exceed_message">O controlador USB da túa tableta non dispón de recursos abondo para conectar este dispositivo. Proba a desconectalo e conectalo de novo.</string>
     <string name="usb_host_resource_exceed_title">Non hai recursos de controlador USB abondo</string>
-    <string name="usb_hub_depth_exceed_message">O teu teléfono só admite 5 conexións de hub USB á vez.</string>
+    <string name="usb_hub_depth_exceed_message">A túa tableta só admite 5 conexións de hub USB á vez.</string>
     <string name="usb_hub_depth_exceed_title">Máximo de conexións de hub USB</string>
-    <string name="usb_hub_power_exceed_message">O teu teléfono non pode facilitar enerxía abondo para este dispositivo USB. Conecta o dispositivo a un hub USB autónomo antes de conectalo ao teléfono.</string>
+    <string name="usb_hub_power_exceed_message">A túa tableta non pode facilitar enerxía abondo para este dispositivo USB. Conecta o dispositivo a un hub USB autónomo antes de conectalo á tableta.</string>
     <string name="usb_increase_battery_usage">A conexión USB pode incrementar o consumo de batería.</string>
     <string name="usb_mass_storage_restrict">A política de seguridade impide o uso do almacenamento masivo USB.</string>
     <string name="usb_midi_notification_title">USB para MIDI</string>
@@ -1276,8 +1276,8 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="usb_storage_stop_title">O espazo de almacenamento do USB está en uso</string>
     <string name="usb_storage_title">USB conectado</string>
     <string name="usb_type_c_supply_power_notification_title">Cargando dispos. conectado por USB</string>
-    <string name="usb_unblock_by_screen_unlock">Desbloquea o teléfono para usar o dispositivo USB conectado.</string>
-    <string name="usb_unsupport_accessory_message">Este dispositivo USB non é compatible co teu teléfono.</string>
+    <string name="usb_unblock_by_screen_unlock">Desbloquea a tableta para usar o dispositivo USB conectado.</string>
+    <string name="usb_unsupport_accessory_message">Este dispositivo USB non é compatible coa túa tableta.</string>
     <string name="usb_unsupport_accessory_title">Dispositivo USB non admitido</string>
     <string name="usb_unsupported_device">Non se admite o dispositivo USB conectado.</string>
     <string name="usb_unsupported_device_title">Dispositivo non admitido</string>
@@ -1295,19 +1295,19 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="usb_water_dialg_method_2_desc_2">Acelera o secado dirixindo o ventilador ou secador (só aire frío) cara ao porto.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Detectamos humidade ou materiais estraños no porto de carga/USB.
 
-Comproba o porto de carga/USB para ver se hai materiais estraños como po ou lixo. Para evitar danar o teléfono, non conectes nada ata que o porto de carga estea limpo e non haxa humidade.
+Comproba o porto de carga/USB para ver se hai materiais estraños como po ou lixo. Para evitar danar a tableta, non conectes nada ata que o porto de carga estea limpo e non haxa humidade.
 
 Para secar o porto, sacude a humidade e agarda ata que se seque (isto pode demorar varias horas). Para que se seque antes, podes poñer o porto diante dun ventilador ou secador (só aire frío)."</string>
     <string name="usb_water_dialg_positive_button">Aceptar</string>
     <string name="usb_water_dialg_support_wireless_charging">"Detectamos humidade ou materiais estraños no porto de carga/USB.
 
-Comproba o porto de carga/USB para ver se hai materiais estraños como po ou lixo. Para evitar danar o teléfono, non conectes nada ata que o porto de carga estea limpo e non haxa humidade.
+Comproba o porto de carga/USB para ver se hai materiais estraños como po ou lixo. Para evitar danar a tableta, non conectes nada ata que o porto de carga estea limpo e non haxa humidade.
 
 Para secar o porto, sacude a humidade e agarda ata que se seque (isto pode demorar varias horas). Para que se seque antes, podes poñer o porto diante dun ventilador ou secador (só aire frío).
 
-Namentres, podes cargar o teléfono de modo sen fíos."</string>
+Namentres, podes cargar a tableta de modo sen fíos."</string>
     <string name="usb_water_notification_content">Hai humidade ou materiais estraños no porto de carga/USB. Compróbao antes de cargar.</string>
-    <string name="usb_water_notification_message">Detectouse humidade no porto cargador/USB. Asegúrate de que estea seco antes de cargar o teléfono. É posible que tarde algún tempo en secar por completo.</string>
+    <string name="usb_water_notification_message">Detectouse humidade no porto cargador/USB. Asegúrate de que estea seco antes de cargar a tableta. É posible que tarde algún tempo en secar por completo.</string>
     <string name="usb_water_notification_message_button">Detalles</string>
     <string name="usb_water_notification_title">Comprobar o porto do cargador/USB</string>
     <string name="usbhostStorage_restrict">A política de seguridade impide o uso do almacenamento host USB.</string>

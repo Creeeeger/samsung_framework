@@ -81,6 +81,9 @@ public class RemoteControlClient {
     private boolean mNeedsPositionSync = false;
     private PlaybackState mSessionPlaybackState = null;
     private MediaSession.Callback mTransportListener = new MediaSession.Callback() { // from class: android.media.RemoteControlClient.1
+        AnonymousClass1() {
+        }
+
         @Override // android.media.session.MediaSession.Callback
         public void onSeekTo(long pos) {
             RemoteControlClient remoteControlClient = RemoteControlClient.this;
@@ -139,6 +142,10 @@ public class RemoteControlClient {
     public class MetadataEditor extends MediaMetadataEditor {
         public static final int BITMAP_KEY_ARTWORK = 100;
         public static final int METADATA_KEY_ARTWORK = 100;
+
+        /* synthetic */ MetadataEditor(RemoteControlClient remoteControlClient, MetadataEditorIA metadataEditorIA) {
+            this();
+        }
 
         private MetadataEditor() {
         }
@@ -375,7 +382,27 @@ public class RemoteControlClient {
         return this.mRcMediaIntent;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.media.RemoteControlClient$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends MediaSession.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.session.MediaSession.Callback
+        public void onSeekTo(long pos) {
+            RemoteControlClient remoteControlClient = RemoteControlClient.this;
+            remoteControlClient.onSeekTo(remoteControlClient.mCurrentClientGenId, pos);
+        }
+
+        @Override // android.media.session.MediaSession.Callback
+        public void onSetRating(Rating rating) {
+            if ((RemoteControlClient.this.mTransportControlFlags & 512) != 0) {
+                RemoteControlClient remoteControlClient = RemoteControlClient.this;
+                remoteControlClient.onUpdateMetadata(remoteControlClient.mCurrentClientGenId, 268435457, rating);
+            }
+        }
+    }
+
     public void onSeekTo(int generationId, long timeMs) {
         OnPlaybackPositionUpdateListener onPlaybackPositionUpdateListener;
         synchronized (this.mCacheLock) {
@@ -385,7 +412,6 @@ public class RemoteControlClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onUpdateMetadata(int generationId, int key, Object value) {
         OnMetadataUpdateListener onMetadataUpdateListener;
         synchronized (this.mCacheLock) {
@@ -446,7 +472,6 @@ public class RemoteControlClient {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getRccStateFromState(int state) {
         switch (state) {
             case 0:
@@ -485,7 +510,6 @@ public class RemoteControlClient {
         return actions;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getRccControlFlagsFromActions(long actions) {
         int rccFlags = 0;
         for (long action = 1; action <= actions && action < 2147483647L; action <<= 1) {

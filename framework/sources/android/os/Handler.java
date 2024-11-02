@@ -341,7 +341,6 @@ public class Handler {
         return "Handler (" + getClass().getName() + ") {" + Integer.toHexString(System.identityHashCode(this)) + "}";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final IMessenger getIMessenger() {
         synchronized (this.mQueue) {
             IMessenger iMessenger = this.mMessenger;
@@ -354,8 +353,13 @@ public class Handler {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class MessengerImpl extends IMessenger.Stub {
+    public final class MessengerImpl extends IMessenger.Stub {
+        /* synthetic */ MessengerImpl(Handler handler, MessengerImplIA messengerImplIA) {
+            this();
+        }
+
         private MessengerImpl() {
         }
 
@@ -383,8 +387,9 @@ public class Handler {
         message.callback.run();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private static final class BlockingRunnable implements Runnable {
+    public static final class BlockingRunnable implements Runnable {
         private boolean mDone;
         private final Runnable mTask;
 

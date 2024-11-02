@@ -15,7 +15,9 @@ import libcore.util.NativeAllocationRegistry;
 public final class HardwareBuffer implements Parcelable, AutoCloseable {
     public static final int BLOB = 33;
     public static final Parcelable.Creator<HardwareBuffer> CREATOR = new Parcelable.Creator<HardwareBuffer>() { // from class: android.hardware.HardwareBuffer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HardwareBuffer createFromParcel(Parcel in) {
             long nativeObject = HardwareBuffer.nReadHardwareBufferFromParcel(in);
@@ -25,7 +27,6 @@ public final class HardwareBuffer implements Parcelable, AutoCloseable {
             return null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HardwareBuffer[] newArray(int size) {
             return new HardwareBuffer[size];
@@ -73,6 +74,10 @@ public final class HardwareBuffer implements Parcelable, AutoCloseable {
     public @interface Usage {
     }
 
+    /* synthetic */ HardwareBuffer(long j, HardwareBufferIA hardwareBufferIA) {
+        this(j);
+    }
+
     private static native long nCreateFromGraphicBuffer(GraphicBuffer graphicBuffer);
 
     private static native long nCreateHardwareBuffer(int i, int i2, int i3, int i4, long j);
@@ -102,7 +107,6 @@ public final class HardwareBuffer implements Parcelable, AutoCloseable {
 
     private static native boolean nIsSupported(int i, int i2, int i3, int i4, long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native long nReadHardwareBufferFromParcel(Parcel parcel);
 
     private static native void nWriteHardwareBufferToParcel(long j, Parcel parcel);
@@ -229,5 +233,26 @@ public final class HardwareBuffer implements Parcelable, AutoCloseable {
             throw new IllegalStateException("This HardwareBuffer has been closed and cannot be written to a parcel.");
         }
         nWriteHardwareBufferToParcel(this.mNativeObject, dest);
+    }
+
+    /* renamed from: android.hardware.HardwareBuffer$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HardwareBuffer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HardwareBuffer createFromParcel(Parcel in) {
+            long nativeObject = HardwareBuffer.nReadHardwareBufferFromParcel(in);
+            if (nativeObject != 0) {
+                return new HardwareBuffer(nativeObject);
+            }
+            return null;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HardwareBuffer[] newArray(int size) {
+            return new HardwareBuffer[size];
+        }
     }
 }

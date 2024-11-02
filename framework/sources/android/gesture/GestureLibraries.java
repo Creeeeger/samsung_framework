@@ -36,7 +36,6 @@ public final class GestureLibraries {
         return new ResourceGestureLibrary(context, resourceId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class FileGestureLibrary extends GestureLibrary {
         private final FileDescriptor mFd;

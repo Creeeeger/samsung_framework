@@ -138,7 +138,6 @@ public class RenderNodeAnimator extends Animator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isNativeInterpolator(TimeInterpolator interpolator) {
         return interpolator.getClass().isAnnotationPresent(HasNativeInterpolator.class);
     }
@@ -268,7 +267,6 @@ public class RenderNodeAnimator extends Animator {
         setTarget(canvas.mNode);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setTarget(RenderNode node) {
         checkMutable();
         if (this.mTarget != null) {
@@ -342,7 +340,6 @@ public class RenderNodeAnimator extends Animator {
         return this.mInterpolator;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onFinished() {
         int i = this.mState;
         if (i == 0) {
@@ -382,7 +379,6 @@ public class RenderNodeAnimator extends Animator {
         return this.mNativePtr.get();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean processDelayed(long frameTimeMs) {
         long j = this.mStartTime;
         if (j == 0) {
@@ -406,7 +402,6 @@ public class RenderNodeAnimator extends Animator {
         return helper;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class DelayedAnimationHelper implements Runnable {
         private boolean mCallbackScheduled;
@@ -455,7 +450,7 @@ public class RenderNodeAnimator extends Animator {
         }
     }
 
-    private static void callOnFinished(final RenderNodeAnimator animator) {
+    private static void callOnFinished(RenderNodeAnimator animator) {
         Handler handler = animator.mHandler;
         if (handler != null) {
             Objects.requireNonNull(animator);

@@ -5,7 +5,9 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class FabricatedOverlayInternalEntry implements Parcelable {
     public static final Parcelable.Creator<FabricatedOverlayInternalEntry> CREATOR = new Parcelable.Creator<FabricatedOverlayInternalEntry>() { // from class: android.os.FabricatedOverlayInternalEntry.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FabricatedOverlayInternalEntry createFromParcel(Parcel _aidl_source) {
             FabricatedOverlayInternalEntry _aidl_out = new FabricatedOverlayInternalEntry();
@@ -13,7 +15,6 @@ public class FabricatedOverlayInternalEntry implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FabricatedOverlayInternalEntry[] newArray(int _aidl_size) {
             return new FabricatedOverlayInternalEntry[_aidl_size];
@@ -27,6 +28,25 @@ public class FabricatedOverlayInternalEntry implements Parcelable {
     public int data = 0;
     public long binaryDataOffset = 0;
     public long binaryDataSize = 0;
+
+    /* renamed from: android.os.FabricatedOverlayInternalEntry$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FabricatedOverlayInternalEntry> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FabricatedOverlayInternalEntry createFromParcel(Parcel _aidl_source) {
+            FabricatedOverlayInternalEntry _aidl_out = new FabricatedOverlayInternalEntry();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FabricatedOverlayInternalEntry[] newArray(int _aidl_size) {
+            return new FabricatedOverlayInternalEntry[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

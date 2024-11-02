@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Telefoni yt nuk është stabël, sepse prej tij është hequr një kartë SD ku ishin instaluar app-e. Telefoni yt do të riniset për %d sekonda, që të kthehet në gjendjen normale. Ruaj çdo të dhënë të paruajtur, para se të riniset telefoni.</item>
+        <item quantity="other">Tableta jote nuk është stabël, sepse prej saj është hequr një kartë SD ku ishin instaluar app-e. Tableta jote do të riniset për %d sekonda, që të kthehet në gjendjen normale. Ruaj çdo të dhënë të paruajtur, para se të riniset tableta.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefoni yt nuk është stabël, sepse prej tij është hequr një kartë SD ku ishin instaluar app-e. Telefoni yt do të riniset për %d sekondë, që të kthehet në gjendjen normale. Ruaj çdo të dhënë të paruajtur, para se të riniset telefoni.</item>
+        <item quantity="one">Tableta jote nuk është stabël, sepse prej saj është hequr një kartë SD ku ishin instaluar app-e. Tableta jote do të riniset për %d sekondë, që të kthehet në gjendjen normale. Ruaj çdo të dhënë të paruajtur, para se të riniset tableta.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefoni do të riniset për %d sekonda</item>
+        <item quantity="other">Tableta do të riniset për %d sekonda</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefoni do të riniset për %d sekondë</item>
+        <item quantity="one">Tableta do të riniset për %d sekondë</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

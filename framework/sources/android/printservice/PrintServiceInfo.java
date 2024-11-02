@@ -18,13 +18,14 @@ public final class PrintServiceInfo implements Parcelable {
     private final String mSettingsActivityName;
     private static final String LOG_TAG = PrintServiceInfo.class.getSimpleName();
     public static final Parcelable.Creator<PrintServiceInfo> CREATOR = new Parcelable.Creator<PrintServiceInfo>() { // from class: android.printservice.PrintServiceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrintServiceInfo createFromParcel(Parcel parcel) {
             return new PrintServiceInfo(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintServiceInfo[] newArray(int size) {
             return new PrintServiceInfo[size];
@@ -52,7 +53,10 @@ public final class PrintServiceInfo implements Parcelable {
         return new ComponentName(this.mResolveInfo.serviceInfo.packageName, this.mResolveInfo.serviceInfo.name);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x00b8, code lost:            if (r3 == null) goto L33;     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x00b8, code lost:
+    
+        if (r3 == null) goto L71;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -238,5 +242,22 @@ public final class PrintServiceInfo implements Parcelable {
         builder.append(", advancedPrintOptionsActivityName=").append(this.mAdvancedPrintOptionsActivityName);
         builder.append("}");
         return builder.toString();
+    }
+
+    /* renamed from: android.printservice.PrintServiceInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrintServiceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrintServiceInfo createFromParcel(Parcel parcel) {
+            return new PrintServiceInfo(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrintServiceInfo[] newArray(int size) {
+            return new PrintServiceInfo[size];
+        }
     }
 }

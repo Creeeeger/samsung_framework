@@ -15,13 +15,14 @@ public class ScoredNetwork implements Parcelable {
     public static final String ATTRIBUTES_KEY_HAS_CAPTIVE_PORTAL = "android.net.attributes.key.HAS_CAPTIVE_PORTAL";
     public static final String ATTRIBUTES_KEY_RANKING_SCORE_OFFSET = "android.net.attributes.key.RANKING_SCORE_OFFSET";
     public static final Parcelable.Creator<ScoredNetwork> CREATOR = new Parcelable.Creator<ScoredNetwork>() { // from class: android.net.ScoredNetwork.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ScoredNetwork createFromParcel(Parcel in) {
             return new ScoredNetwork(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScoredNetwork[] newArray(int size) {
             return new ScoredNetwork[size];
@@ -31,6 +32,10 @@ public class ScoredNetwork implements Parcelable {
     public final boolean meteredHint;
     public final NetworkKey networkKey;
     public final RssiCurve rssiCurve;
+
+    /* synthetic */ ScoredNetwork(Parcel parcel, ScoredNetworkIA scoredNetworkIA) {
+        this(parcel);
+    }
 
     public ScoredNetwork(NetworkKey networkKey, RssiCurve rssiCurve) {
         this(networkKey, rssiCurve, false);
@@ -149,5 +154,22 @@ public class ScoredNetwork implements Parcelable {
             return badgingCurve.lookupScore(rssi);
         }
         return 0;
+    }
+
+    /* renamed from: android.net.ScoredNetwork$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ScoredNetwork> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ScoredNetwork createFromParcel(Parcel in) {
+            return new ScoredNetwork(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ScoredNetwork[] newArray(int size) {
+            return new ScoredNetwork[size];
+        }
     }
 }

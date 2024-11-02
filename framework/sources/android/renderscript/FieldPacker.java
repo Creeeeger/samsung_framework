@@ -25,7 +25,6 @@ public class FieldPacker {
         this.mAlignment = new BitSet();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static FieldPacker createFromArray(Object[] args) {
         FieldPacker fp = new FieldPacker(RenderScript.sPointerSize * 8);
         for (Object arg : args) {

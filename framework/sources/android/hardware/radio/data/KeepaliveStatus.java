@@ -11,7 +11,9 @@ public class KeepaliveStatus implements Parcelable {
     public static final int CODE_INACTIVE = 1;
     public static final int CODE_PENDING = 2;
     public static final Parcelable.Creator<KeepaliveStatus> CREATOR = new Parcelable.Creator<KeepaliveStatus>() { // from class: android.hardware.radio.data.KeepaliveStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public KeepaliveStatus createFromParcel(Parcel _aidl_source) {
             KeepaliveStatus _aidl_out = new KeepaliveStatus();
@@ -19,7 +21,6 @@ public class KeepaliveStatus implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeepaliveStatus[] newArray(int _aidl_size) {
             return new KeepaliveStatus[_aidl_size];
@@ -27,6 +28,25 @@ public class KeepaliveStatus implements Parcelable {
     };
     public int sessionHandle = 0;
     public int code = 0;
+
+    /* renamed from: android.hardware.radio.data.KeepaliveStatus$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<KeepaliveStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeepaliveStatus createFromParcel(Parcel _aidl_source) {
+            KeepaliveStatus _aidl_out = new KeepaliveStatus();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public KeepaliveStatus[] newArray(int _aidl_size) {
+            return new KeepaliveStatus[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

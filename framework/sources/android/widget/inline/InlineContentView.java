@@ -42,6 +42,70 @@ public class InlineContentView extends ViewGroup {
         void onSurfacePackageReleased();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.inline.InlineContentView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements SurfaceHolder.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceCreated(SurfaceHolder holder) {
+            SurfaceControl surfaceControl = InlineContentView.this.mSurfaceView.getSurfaceControl();
+            surfaceControl.addOnReparentListener(InlineContentView.this.mOnReparentListener);
+            InlineContentView.this.mSurfaceControlCallback.onCreated(surfaceControl);
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        }
+
+        @Override // android.view.SurfaceHolder.Callback
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            SurfaceControl surfaceControl = InlineContentView.this.mSurfaceView.getSurfaceControl();
+            surfaceControl.removeOnReparentListener(InlineContentView.this.mOnReparentListener);
+            InlineContentView.this.mSurfaceControlCallback.onDestroyed(surfaceControl);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.inline.InlineContentView$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements SurfaceControl.OnReparentListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.SurfaceControl.OnReparentListener
+        public void onReparent(SurfaceControl.Transaction transaction, SurfaceControl parent) {
+            View parentSurfaceOwnerView;
+            if (parent == null) {
+                parentSurfaceOwnerView = null;
+            } else {
+                parentSurfaceOwnerView = parent.getLocalOwnerView();
+            }
+            if (!(parentSurfaceOwnerView instanceof SurfaceView)) {
+                InlineContentView.this.mParentSurfaceOwnerView = null;
+            } else {
+                InlineContentView.this.mParentSurfaceOwnerView = new WeakReference((SurfaceView) parentSurfaceOwnerView);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.inline.InlineContentView$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements ViewTreeObserver.OnDrawListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnDrawListener
+        public void onDraw() {
+            InlineContentView.this.computeParentPositionAndScale();
+            int visibility = InlineContentView.this.isShown() ? 0 : 8;
+            InlineContentView.this.mSurfaceView.setVisibility(visibility);
+        }
+    }
+
     public InlineContentView(Context context) {
         this(context, null);
     }
@@ -65,9 +129,32 @@ public class InlineContentView extends ViewGroup {
         this.mSurfaceView.setClipBounds(clipBounds);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.inline.InlineContentView$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 extends SurfaceView {
+        AnonymousClass4(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+            super(context, attrs, defStyleAttr, defStyleRes);
+        }
+
+        @Override // android.view.SurfaceView
+        public void onSetSurfacePositionAndScale(SurfaceControl.Transaction transaction, SurfaceControl surface, int positionLeft, int positionTop, float postScaleX, float postScaleY) {
+            if (InlineContentView.this.mParentPosition != null) {
+                positionLeft = (int) ((positionLeft - InlineContentView.this.mParentPosition[0]) / InlineContentView.this.mParentScale.x);
+                positionTop = (int) ((positionTop - InlineContentView.this.mParentPosition[1]) / InlineContentView.this.mParentScale.y);
+            }
+            float postScaleX2 = InlineContentView.this.getScaleX();
+            float postScaleY2 = InlineContentView.this.getScaleY();
+            super.onSetSurfacePositionAndScale(transaction, surface, positionLeft, positionTop, postScaleX2, postScaleY2);
+        }
+    }
+
     public InlineContentView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mSurfaceCallback = new SurfaceHolder.Callback() { // from class: android.widget.inline.InlineContentView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.SurfaceHolder.Callback
             public void surfaceCreated(SurfaceHolder holder) {
                 SurfaceControl surfaceControl = InlineContentView.this.mSurfaceView.getSurfaceControl();
@@ -87,6 +174,9 @@ public class InlineContentView extends ViewGroup {
             }
         };
         this.mOnReparentListener = new SurfaceControl.OnReparentListener() { // from class: android.widget.inline.InlineContentView.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.SurfaceControl.OnReparentListener
             public void onReparent(SurfaceControl.Transaction transaction, SurfaceControl parent) {
                 View parentSurfaceOwnerView;
@@ -103,6 +193,9 @@ public class InlineContentView extends ViewGroup {
             }
         };
         this.mOnDrawListener = new ViewTreeObserver.OnDrawListener() { // from class: android.widget.inline.InlineContentView.3
+            AnonymousClass3() {
+            }
+
             @Override // android.view.ViewTreeObserver.OnDrawListener
             public void onDraw() {
                 InlineContentView.this.computeParentPositionAndScale();
@@ -110,8 +203,11 @@ public class InlineContentView extends ViewGroup {
                 InlineContentView.this.mSurfaceView.setVisibility(visibility);
             }
         };
-        SurfaceView surfaceView = new SurfaceView(context, attrs, defStyleAttr, defStyleRes) { // from class: android.widget.inline.InlineContentView.4
-            /* JADX INFO: Access modifiers changed from: protected */
+        AnonymousClass4 anonymousClass4 = new SurfaceView(context, attrs, defStyleAttr, defStyleRes) { // from class: android.widget.inline.InlineContentView.4
+            AnonymousClass4(Context context2, AttributeSet attrs2, int defStyleAttr2, int defStyleRes2) {
+                super(context2, attrs2, defStyleAttr2, defStyleRes2);
+            }
+
             @Override // android.view.SurfaceView
             public void onSetSurfacePositionAndScale(SurfaceControl.Transaction transaction, SurfaceControl surface, int positionLeft, int positionTop, float postScaleX, float postScaleY) {
                 if (InlineContentView.this.mParentPosition != null) {
@@ -123,10 +219,10 @@ public class InlineContentView extends ViewGroup {
                 super.onSetSurfacePositionAndScale(transaction, surface, positionLeft, positionTop, postScaleX2, postScaleY2);
             }
         };
-        this.mSurfaceView = surfaceView;
-        surfaceView.setZOrderOnTop(true);
-        surfaceView.getHolder().setFormat(-2);
-        addView(surfaceView);
+        this.mSurfaceView = anonymousClass4;
+        anonymousClass4.setZOrderOnTop(true);
+        anonymousClass4.getHolder().setFormat(-2);
+        addView(anonymousClass4);
         setImportantForAccessibility(2);
     }
 
@@ -134,7 +230,6 @@ public class InlineContentView extends ViewGroup {
         this.mSurfacePackageUpdater = surfacePackageUpdater;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -151,14 +246,12 @@ public class InlineContentView extends ViewGroup {
         getViewTreeObserver().addOnDrawListener(this.mOnDrawListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onAttachedToWindow$0(SurfaceControlViewHost.SurfacePackage sp) {
         if (getViewRootImpl() != null) {
             this.mSurfaceView.setChildSurfacePackage(sp);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -193,7 +286,6 @@ public class InlineContentView extends ViewGroup {
         return this.mSurfaceView.setZOrderedOnTop(onTop, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void computeParentPositionAndScale() {
         boolean contentPositionOrScaleChanged = false;
         WeakReference<SurfaceView> weakReference = this.mParentSurfaceOwnerView;

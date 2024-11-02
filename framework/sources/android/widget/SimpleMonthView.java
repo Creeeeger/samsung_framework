@@ -30,7 +30,6 @@ import com.android.internal.widget.ExploreByTouchHelper;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class SimpleMonthView extends View {
     private static final int DAYS_IN_WEEK = 7;
@@ -217,27 +216,23 @@ public class SimpleMonthView extends View {
         this.mDayPaint.setStyle(Paint.Style.FILL);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setMonthTextColor(ColorStateList monthTextColor) {
         int enabledColor = monthTextColor.getColorForState(ENABLED_STATE_SET, 0);
         this.mMonthPaint.setColor(enabledColor);
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDayOfWeekTextColor(ColorStateList dayOfWeekTextColor) {
         int enabledColor = dayOfWeekTextColor.getColorForState(ENABLED_STATE_SET, 0);
         this.mDayOfWeekPaint.setColor(enabledColor);
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDayTextColor(ColorStateList dayTextColor) {
         this.mDayTextColor = dayTextColor;
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDaySelectorColor(ColorStateList dayBackgroundColor) {
         int activatedColor = dayBackgroundColor.getColorForState(StateSet.get(40), 0);
         this.mDaySelectorPaint.setColor(activatedColor);
@@ -246,7 +241,6 @@ public class SimpleMonthView extends View {
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDayHighlightColor(ColorStateList dayHighlightColor) {
         int pressedColor = dayHighlightColor.getColorForState(StateSet.get(24), 0);
         this.mDayHighlightPaint.setColor(pressedColor);
@@ -440,7 +434,6 @@ public class SimpleMonthView extends View {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         if (gainFocus) {
@@ -514,7 +507,6 @@ public class SimpleMonthView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFocusLost() {
         if (!this.mIsTouchHighlighted) {
@@ -552,7 +544,6 @@ public class SimpleMonthView extends View {
         return (offset + day) % 7 == 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         int paddingLeft = getPaddingLeft();
@@ -671,12 +662,10 @@ public class SimpleMonthView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isDayEnabled(int day) {
         return day >= this.mEnabledDayStart && day <= this.mEnabledDayEnd;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isValidDayOfMonth(int day) {
         return day >= 1 && day <= this.mDaysInMonth;
     }
@@ -706,7 +695,6 @@ public class SimpleMonthView extends View {
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setMonthParams(int selectedDay, int month, int year, int weekStart, int enabledDayStart, int enabledDayEnd) {
         this.mActivatedDay = selectedDay;
         if (isValidMonth(month)) {
@@ -773,7 +761,6 @@ public class SimpleMonthView extends View {
         return this.mYear == today.get(1) && this.mMonth == today.get(2) && day == today.get(5);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int preferredHeight = (this.mDesiredDayHeight * 6) + this.mDesiredDayOfWeekHeight + this.mDesiredMonthHeight + getPaddingTop() + getPaddingBottom();
@@ -789,7 +776,6 @@ public class SimpleMonthView extends View {
         requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (!changed) {
@@ -835,7 +821,6 @@ public class SimpleMonthView extends View {
         return offset;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int getDayAtLocation(int x, int y) {
         int headerHeight;
         int paddedY;
@@ -881,7 +866,6 @@ public class SimpleMonthView extends View {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean onDayClicked(int day) {
         if (!isValidDayOfMonth(day) || !isDayEnabled(day)) {
             return false;
@@ -909,7 +893,6 @@ public class SimpleMonthView extends View {
         return super.onResolvePointerIcon(event, pointerIndex);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class MonthViewTouchHelper extends ExploreByTouchHelper {
         private static final String DATE_FORMAT = "dd MMMM yyyy";

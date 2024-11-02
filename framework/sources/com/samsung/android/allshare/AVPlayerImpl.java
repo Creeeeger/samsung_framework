@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import com.samsung.android.allshare.Caption;
 import com.samsung.android.allshare.Device;
@@ -24,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHandlerHolder {
     private static final String TAG_CLASS = "AVPlayerImpl";
@@ -50,7 +50,8 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     private AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.AVPlayerImpl.1
         private HashMap<String, AVPlayer.AVPlayerState> mAVStateMap;
 
-        {
+        AnonymousClass1(Looper looper) {
+            super(looper);
             HashMap<String, AVPlayer.AVPlayerState> hashMap = new HashMap<>();
             this.mAVStateMap = hashMap;
             hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, AVPlayer.AVPlayerState.BUFFERING);
@@ -155,8 +156,15 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
         }
     };
     private AllShareResponseHandler mAllShareRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.AVPlayerImpl.2
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Code restructure failed: missing block: B:151:0x022c, code lost:            if (r1.equals(com.sec.android.allshare.iface.message.AllShareAction.ACTION_AV_PLAYER_ORIGIN_360_VIEW) != false) goto L131;     */
+        /* JADX WARN: Code restructure failed: missing block: B:151:0x022c, code lost:
+        
+            if (r1.equals(com.sec.android.allshare.iface.message.AllShareAction.ACTION_AV_PLAYER_ORIGIN_360_VIEW) != false) goto L335;
+         */
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -197,7 +205,6 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     };
     private AVPlayer.IAVPlayerWHAResponseListener mAVPlayerWHAResponseListener = null;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AVPlayerImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mDeviceImpl = null;
         this.mPlaylistPlayer = null;
@@ -820,6 +827,175 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
         req_bundle.putLong(AllShareKey.BUNDLE_LONG_CONTENT_INFO_STARTINGPOSITION, contentInfo != null ? contentInfo.getStartingPosition() : 0L);
         req_msg.setBundle(req_bundle);
         this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.AVPlayerImpl$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends AllShareEventHandler {
+        private HashMap<String, AVPlayer.AVPlayerState> mAVStateMap;
+
+        AnonymousClass1(Looper looper) {
+            super(looper);
+            HashMap<String, AVPlayer.AVPlayerState> hashMap = new HashMap<>();
+            this.mAVStateMap = hashMap;
+            hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, AVPlayer.AVPlayerState.BUFFERING);
+            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PAUSED, AVPlayer.AVPlayerState.PAUSED);
+            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_STOPPED, AVPlayer.AVPlayerState.STOPPED);
+            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PLAYING, AVPlayer.AVPlayerState.PLAYING);
+            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_FINISHED, AVPlayer.AVPlayerState.FINISHED);
+            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_NOMEDIA, AVPlayer.AVPlayerState.STOPPED);
+            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_CONTENT_CHANGED, AVPlayer.AVPlayerState.CONTENT_CHANGED);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareEventHandler
+        public void handleEventMessage(CVMessage cvm) {
+            try {
+                Bundle resBundle = cvm.getBundle();
+                String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
+                ERROR error = ERROR.stringToEnum(errorStr);
+                String actionId = cvm.getActionID();
+                AVPlayer.AVPlayerState state = this.mAVStateMap.get(actionId);
+                if (state == null) {
+                    String eventValue = resBundle.getString(AllShareKey.BUNDLE_STRING_EXTENSION_EVENT_KEY);
+                    if (actionId != null && eventValue != null) {
+                        notifyExtensionEvent(actionId, eventValue, error);
+                    }
+                    return;
+                }
+                if (state.equals(AVPlayer.AVPlayerState.CONTENT_CHANGED)) {
+                    String currentTrackUri = resBundle.getString(AllShareKey.BUNDLE_STRING_APP_ITEM_ID);
+                    if (currentTrackUri != null && !currentTrackUri.isEmpty()) {
+                        if (AVPlayerImpl.this.mContentChangedNotified) {
+                            DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event yet");
+                            AVPlayerImpl.this.mCurrentDMRUri = currentTrackUri;
+                            return;
+                        }
+                        if (currentTrackUri.equalsIgnoreCase(AVPlayerImpl.this.mCurrentDMRUri)) {
+                            DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mCurrentDMRUri is same as currentTrackUri " + currentTrackUri);
+                            return;
+                        }
+                        DLog.d_api(AVPlayerImpl.TAG_CLASS, "CONTENT_CHANGED, mCurrentDMRUri : " + AVPlayerImpl.this.mCurrentDMRUri + "  currentTrackUri : " + currentTrackUri);
+                        if (AVPlayerImpl.this.mCurrentDMRUri == null) {
+                            DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mCurrentDMRUri is null");
+                            AVPlayerImpl.this.mCurrentDMRUri = currentTrackUri;
+                            return;
+                        }
+                        AVPlayerImpl.this.mCurrentDMRUri = currentTrackUri;
+                        if (AVPlayerImpl.this.mPlayingContentUris != null && !AVPlayerImpl.this.mPlayingContentUris.isEmpty()) {
+                            if (isContains(currentTrackUri, AVPlayerImpl.this.mPlayingContentUris)) {
+                                DLog.d_api(AVPlayerImpl.TAG_CLASS, "handleEventMessage: this is playing content.");
+                                DLog.i_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, this is my=" + currentTrackUri);
+                                return;
+                            } else {
+                                AVPlayerImpl.this.mContentChangedNotified = true;
+                                DLog.w_api(AVPlayerImpl.TAG_CLASS, "Notify CONTENT_CHANGED event, mPlayingContentUris[" + AVPlayerImpl.this.mPlayingContentUris + "] vs currentTrackUri[" + currentTrackUri + NavigationBarInflaterView.SIZE_MOD_END);
+                            }
+                        }
+                        DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mPlayingContentUris is null");
+                        return;
+                    }
+                    DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, currentTrackUri is null");
+                    return;
+                }
+                notifyEvent(state, error);
+            } catch (Error err) {
+                DLog.w_api(AVPlayerImpl.TAG_CLASS, "handleEventMessage Error", err);
+            } catch (Exception e) {
+                DLog.w_api(AVPlayerImpl.TAG_CLASS, "handleEventMessage Fail to notify event : Exception");
+            }
+        }
+
+        private void notifyEvent(AVPlayer.AVPlayerState state, ERROR error) {
+            if (AVPlayerImpl.this.mAVPlayerEventListener != null) {
+                try {
+                    AVPlayerImpl.this.mAVPlayerEventListener.onDeviceChanged(state, error);
+                } catch (Exception e) {
+                    DLog.w_api(AVPlayerImpl.TAG_CLASS, "mEventHandler.notifyEvent Error", e);
+                }
+            }
+        }
+
+        private void notifyExtensionEvent(String eventName, String eventValue, ERROR error) {
+            if (AVPlayerImpl.this.mAVPlayerExtensionEventListener != null) {
+                try {
+                    AVPlayerImpl.this.mAVPlayerExtensionEventListener.onExtensionEvent(eventName, eventValue, error);
+                } catch (Exception e) {
+                    DLog.w_api(AVPlayerImpl.TAG_CLASS, "mEventExtensionHandler.notifyEvent Error", e);
+                }
+            }
+        }
+
+        private boolean isContains(String currentTrackUri, ArrayList<String> playingContentUris) {
+            if (playingContentUris == null || currentTrackUri == null) {
+                return false;
+            }
+            Iterator<String> it = playingContentUris.iterator();
+            while (it.hasNext()) {
+                String uri = it.next();
+                if (currentTrackUri.endsWith(uri)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.AVPlayerImpl$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AllShareResponseHandler {
+        AnonymousClass2(Looper looper) {
+            super(looper);
+        }
+
+        @Override // com.samsung.android.allshare.AllShareResponseHandler
+        public void handleResponseMessage(CVMessage cVMessage) {
+            /*  JADX ERROR: Method code generation error
+                java.lang.NullPointerException: Cannot invoke "jadx.core.dex.nodes.IContainer.get(jadx.api.plugins.input.data.attributes.IJadxAttrType)" because "cont" is null
+                	at jadx.core.codegen.RegionGen.declareVars(RegionGen.java:70)
+                	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:65)
+                	at jadx.core.codegen.MethodGen.addRegionInsns(MethodGen.java:297)
+                	at jadx.core.codegen.MethodGen.addInstructions(MethodGen.java:276)
+                	at jadx.core.codegen.ClassGen.addMethodCode(ClassGen.java:406)
+                	at jadx.core.codegen.ClassGen.addMethod(ClassGen.java:335)
+                	at jadx.core.codegen.ClassGen.lambda$addInnerClsAndMethods$3(ClassGen.java:301)
+                	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+                	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+                	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
+                	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
+                */
+            /*
+                Method dump skipped, instructions count: 1202
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.allshare.AVPlayerImpl.AnonymousClass2.handleResponseMessage(com.sec.android.allshare.iface.CVMessage):void");
+        }
+
+        private void notifyPlaybackEvent(Bundle resBundle, ERROR error) {
+            Bundle bundle = (Bundle) resBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_ITEM);
+            long contentInfoStartingPosition = resBundle.getLong(AllShareKey.BUNDLE_LONG_CONTENT_INFO_STARTINGPOSITION);
+            ContentInfo.Builder cb = new ContentInfo.Builder();
+            ContentInfo contentInfo = cb.setStartingPosition(contentInfoStartingPosition).build();
+            Item item = ItemCreator.fromBundle(bundle);
+            String itemConstructor = bundle.getString(AllShareKey.BUNDLE_STRING_ITEM_CONSTRUCTOR_KEY);
+            if (itemConstructor != null && itemConstructor.equals("WEB_CONTENT") && contentInfo != null) {
+                ContentInfo.Builder builder = new ContentInfo.Builder();
+                builder.setStartingPosition((int) (contentInfo.getStartingPosition() / 1000));
+                contentInfo = builder.build();
+            }
+            if (item == null) {
+                DLog.w_api(AVPlayerImpl.TAG_CLASS, "notifyPlaybackEvent : item is null");
+                AVPlayerImpl.this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.ITEM_NOT_EXIST);
+            } else {
+                if (contentInfo == null) {
+                    DLog.d_api(AVPlayerImpl.TAG_CLASS, "notifyPlaybackEvent : " + item + " = " + error);
+                } else {
+                    DLog.d_api(AVPlayerImpl.TAG_CLASS, "notifyPlaybackEvent : " + item + " position[" + contentInfo.getStartingPosition() + "]=" + error);
+                }
+                AVPlayerImpl.this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, error);
+            }
+        }
     }
 
     @Override // com.samsung.android.allshare.media.AVPlayer

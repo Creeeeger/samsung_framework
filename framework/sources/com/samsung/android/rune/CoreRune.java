@@ -151,7 +151,7 @@ public class CoreRune {
     public static final boolean FW_DECOR_ROUNDED_CORNER_FOR_LETTERBOX = true;
     public static final boolean FW_DEDICATED_MEMORY;
     public static boolean FW_DEFAULT_HIGH_RESOLUTION_DEVICE = false;
-    public static final boolean FW_DEFAULT_LANDSCAPE_ROTATION = false;
+    public static final boolean FW_DEFAULT_LANDSCAPE_ROTATION = true;
     public static final boolean FW_DEFER_EXIT_STARTING_WINDOW = true;
     public static final boolean FW_DEFER_TASKBAR_SIZE_CHANGE = true;
     public static final boolean FW_DELAY_INSETS_ANIMATION_WHILE_FIXED_ROTATION_TRANSFORMING = true;
@@ -362,7 +362,7 @@ public class CoreRune {
     public static final boolean FW_OFFSET_WALLPAPER = true;
     public static final boolean FW_OMC_SPEN_SOUND;
     public static final boolean FW_OMC_SPEN_VIBRATION;
-    public static final boolean FW_ONE_HAND_OPERATION = true;
+    public static final boolean FW_ONE_HAND_OPERATION = false;
     public static final boolean FW_ONE_HAND_OPERATION_SW_BLUELIGHT_FILTER = false;
     public static final boolean FW_ORDERED_TRANSITION = true;
     public static final boolean FW_ORIENTATION_CONTROL;
@@ -708,8 +708,8 @@ public class CoreRune {
     public static final boolean MD_DEX_DEVELOPER_MODE = true;
     public static final boolean MD_DEX_DISPLAY_MANAGEMENT = true;
     public static final boolean MD_DEX_DISPLAY_ORDERING = true;
-    public static final boolean MD_DEX_DOP = true;
-    public static final boolean MD_DEX_DOP_DRAG_AND_DROP = true;
+    public static final boolean MD_DEX_DOP = false;
+    public static final boolean MD_DEX_DOP_DRAG_AND_DROP = false;
     public static final boolean MD_DEX_EMULATOR;
     public static final boolean MD_DEX_FREEFORM_RESIZE_GUIDEVIEW = true;
     public static final boolean MD_DEX_HELP = true;
@@ -949,7 +949,7 @@ public class CoreRune {
     public static final boolean MW_MULTI_SPLIT_BOUNDS_POLICY;
     public static final boolean MW_MULTI_SPLIT_BOUNDS_POLICY_IGNORING_CUTOUT;
     public static final boolean MW_MULTI_SPLIT_CELL_DIVIDER;
-    private static final String MW_MULTI_SPLIT_COUNT_STR = "0";
+    private static final String MW_MULTI_SPLIT_COUNT_STR = "13";
     public static final boolean MW_MULTI_SPLIT_CREATE_MODE;
     public static final boolean MW_MULTI_SPLIT_DIVIDER;
     public static final boolean MW_MULTI_SPLIT_DIVIDER_SIZE_FOLD;
@@ -1194,7 +1194,7 @@ public class CoreRune {
     public static final boolean SYSPERF_SYSTEM_MAIN_THREAD_MONITOR_ENABLE = true;
     public static final boolean SYSPERF_TASKSNAPSHOT_HWBUFFER_CLEAR = true;
     public static final boolean SYSPERF_VI_BOOST;
-    public static final boolean SYSTEM_FCA_ON_FREEZE = true;
+    public static final boolean SYSTEM_FCA_ON_FREEZE = false;
     public static final boolean SYSUI_GRADLE_BUILD;
     private static final String TAG = "CoreRune";
     public static final boolean UMR_ENABLED = true;
@@ -1214,7 +1214,7 @@ public class CoreRune {
     static {
         boolean semIsProductDev = Debug.semIsProductDev();
         SAFE_DEBUG = semIsProductDev;
-        IS_TABLET_DEVICE = BnRConstants.DEVICETYPE_TABLET.equals("phone");
+        IS_TABLET_DEVICE = BnRConstants.DEVICETYPE_TABLET.equals(BnRConstants.DEVICETYPE_TABLET);
         String str = SystemProperties.get("ro.boot.debug_level");
         DEBUG_LEVEL = str;
         IS_DEBUG_LEVEL_MID = "0x494d".equals(str);
@@ -1260,7 +1260,7 @@ public class CoreRune {
         boolean z5 = string.contains("powerplanning") && string.contains("reserve");
         FW_SUPPORT_RESERVE_BATTERY_MODE = z5;
         FW_SUPPORT_DOWNLOADABLE_RESERVE_BATTERY_MODE = string.contains("downloadable_spowerplanning") && z5;
-        boolean contains = "google_touch_display_ultrasonic".contains("touch_side");
+        boolean contains = "google_touch_display_optical,settings=3,screen_off".contains("touch_side");
         FW_FINGERPRINT_SIDE_TOUCH = contains;
         FW_SUPPORT_TOOLBAR_SHORTCUT = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_SIP_SUPPORT_EMOJI_SHORTCUT");
         int i = SemFloatingFeature.getInstance().getInt("SEC_FLOATING_FEATURE_FRAMEWORK_CONFIG_SPEN_VERSION", -1);
@@ -1318,13 +1318,13 @@ public class CoreRune {
         FW_TSP_DEADZONE_V3 = z11 && SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FRAMEWORK_SUPPORT_TSP_STATE_MANAGER").contains("deadzone_v3");
         FW_USE_SMALLER_GRIPZONE_ON_GAME = z11 && !IS_TABLET_DEVICE;
         FW_TSP_DEADZONEHOLE_LAND = z12 && "bsxasm1".equals(SystemProperties.get("ro.com.google.cdb.spa1"));
-        boolean z13 = Integer.parseInt("3") > 0;
+        boolean z13 = Integer.parseInt("2") > 0;
         FW_VRR_POLICY = z13;
-        boolean z14 = z13 && !z10 && Integer.parseInt("3") > 1;
+        boolean z14 = z13 && !z10 && Integer.parseInt("2") > 1;
         FW_VRR_SEAMLESS = z14;
-        FW_VRR_SEAMLESS_PLUS = z14 && Integer.parseInt("3") == 3;
+        FW_VRR_SEAMLESS_PLUS = z14 && Integer.parseInt("2") == 3;
         FW_VRR_REFRESH_RATE_MODE = z13;
-        boolean z15 = z13 && "WQHD,FHD,HD".equals("WQHD,FHD,HD");
+        boolean z15 = z13 && "WQHD,FHD,HD".equals("");
         FW_VRR_RESOLUTION_POLICY = z15;
         FW_VRR_RESOLUTION_POLICY_FOR_SHELL_TRANSITION = z15 && IS_SHELL_TRANSITION_ENABLED;
         FW_VRR_FIXED_REFRESH_RATE_PACKAGE = z13;
@@ -1334,7 +1334,7 @@ public class CoreRune {
         FW_VRR_HIGH_REFRESH_RATE_BLOCK_LIST = z16;
         FW_VRR_HRR_CHINA_DELTA = z16 && "CHINA".equalsIgnoreCase(SystemProperties.get("ro.csc.country_code"));
         FW_VRR_LOW_REFRESH_RATE_LIST = z13 && SystemProperties.getBoolean("persist.debug.lrr.enabled", true);
-        FW_VRR_NAVIGATION_LOW_REFRESH_RATE = z13 && !IS_TABLET_DEVICE && Integer.parseInt("3") == 1 && SystemProperties.getBoolean("persist.debug.lrr_navi.enabled", true);
+        FW_VRR_NAVIGATION_LOW_REFRESH_RATE = z13 && !IS_TABLET_DEVICE && Integer.parseInt("2") == 1 && SystemProperties.getBoolean("persist.debug.lrr_navi.enabled", true);
         FW_VRR_FOR_SUB_DISPLAY = false;
         FW_VRR_PERFORMANCE = z13;
         FW_VRR_LOGGING_UI = z13;
@@ -1408,7 +1408,7 @@ public class CoreRune {
         FW_CUSTOM_SHELL_RECENTS_TRANSITION_WITH_DISPLAY_CHANGE = z25;
         FW_CUSTOM_SHELL_KEYGUARD_TRANSITION_WITH_DISPLAY_CHANGE = z25;
         FW_CUSTOM_SHELL_TRANSITION_OVERRIDE_TYPE = z25;
-        boolean equals3 = "WQHD,FHD,HD".equals("WQHD,FHD,HD");
+        boolean equals3 = "WQHD,FHD,HD".equals("");
         FW_DYNAMIC_RESOLUTION_CONTROL = equals3;
         FW_DEFAULT_HIGH_RESOLUTION_DEVICE = equals3 && "HIGH".equals(SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_COMMON_CONFIG_DEF_PERFORMANCE_MODE"));
         FW_MIGRATION_DENSITY_FOR_TAB_S9_ULTRA = ONE_UI_6_1_1;
@@ -1456,7 +1456,7 @@ public class CoreRune {
         MW_SUPPORT_DRAG_AND_DROP_PATIAL_BLUR = z34;
         MW_SUPPORT_DRAG_AND_DROP_REAL_TIME_BLUR = z33 && z34;
         MW_SUPPORT_DRAG_AND_DROP_CAPTURED_BLUR = !z33 && z34 && SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_GRAPHICS_SUPPORT_CAPTURED_BLUR");
-        boolean z35 = "13".equals("0") || "23".equals("0");
+        boolean z35 = MW_MULTI_SPLIT_COUNT_STR.equals(MW_MULTI_SPLIT_COUNT_STR) || "23".equals(MW_MULTI_SPLIT_COUNT_STR);
         MW_MULTI_SPLIT = z35;
         MW_MULTI_SPLIT_ROUNDED_CORNER = z35;
         MW_SPLIT_FULL_TO_SPLIT_BY_GESTURE_SA_LOGGING = z31;

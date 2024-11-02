@@ -15,13 +15,14 @@ public class NotificationVisibility implements Parcelable {
     public boolean visible;
     private static int sNexrId = 0;
     public static final Parcelable.Creator<NotificationVisibility> CREATOR = new Parcelable.Creator<NotificationVisibility>() { // from class: com.android.internal.statusbar.NotificationVisibility.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NotificationVisibility createFromParcel(Parcel parcel) {
             return NotificationVisibility.obtain(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotificationVisibility[] newArray(int size) {
             return new NotificationVisibility[size];
@@ -69,8 +70,8 @@ public class NotificationVisibility implements Parcelable {
         return "NotificationVisibility(id=" + this.id + " key=" + this.key + " rank=" + this.rank + " count=" + this.count + (this.visible ? " visible" : "") + " location=" + this.location.name() + " )";
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public NotificationVisibility m7516clone() {
+    /* renamed from: clone */
+    public NotificationVisibility m7511clone() {
         return obtain(this.key, this.rank, this.count, this.visible, this.location);
     }
 
@@ -127,7 +128,6 @@ public class NotificationVisibility implements Parcelable {
         return vo;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static NotificationVisibility obtain(Parcel in) {
         NotificationVisibility vo = obtain();
         vo.readFromParcel(in);
@@ -139,5 +139,22 @@ public class NotificationVisibility implements Parcelable {
     }
 
     public void recycle() {
+    }
+
+    /* renamed from: com.android.internal.statusbar.NotificationVisibility$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NotificationVisibility> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationVisibility createFromParcel(Parcel parcel) {
+            return NotificationVisibility.obtain(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotificationVisibility[] newArray(int size) {
+            return new NotificationVisibility[size];
+        }
     }
 }

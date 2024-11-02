@@ -73,8 +73,9 @@ public abstract class LayoutInflater {
 
     public abstract LayoutInflater cloneInContext(Context context);
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class FactoryMerger implements Factory2 {
+    public static class FactoryMerger implements Factory2 {
         private final Factory mF1;
         private final Factory2 mF12;
         private final Factory mF2;
@@ -105,7 +106,6 @@ public abstract class LayoutInflater {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public LayoutInflater(Context context) {
         this.mConstructorArgs = new Object[2];
         StrictMode.assertConfigurationContext(context, "LayoutInflater");
@@ -113,7 +113,6 @@ public abstract class LayoutInflater {
         initPrecompiledViews();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public LayoutInflater(LayoutInflater original, Context newContext) {
         this.mConstructorArgs = new Object[2];
         StrictMode.assertConfigurationContext(newContext, "LayoutInflater");
@@ -528,7 +527,6 @@ public abstract class LayoutInflater {
         throw new InflateException(getParserStateDescription(context, attrs) + ": Class not allowed to be inflated " + (prefix != null ? prefix + name : name));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public View onCreateView(String name, AttributeSet attrs) throws ClassNotFoundException {
         return createView(name, "android.view.", attrs);
     }
@@ -617,12 +615,30 @@ public abstract class LayoutInflater {
         rInflate(parser, parent, parent.getContext(), attrs, finishInflate);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x007d, code lost:            r10.onFinishInflate();     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0080, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:?, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0076, code lost:            if (r1 == false) goto L33;     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x0078, code lost:            r10.restoreDefaultFocus();     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x007b, code lost:            if (r13 == false) goto L53;     */
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x007d, code lost:
+    
+        r10.onFinishInflate();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0080, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x0076, code lost:
+    
+        if (r1 == false) goto L87;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x0078, code lost:
+    
+        r10.restoreDefaultFocus();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x007b, code lost:
+    
+        if (r13 == false) goto L107;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -842,7 +858,6 @@ public abstract class LayoutInflater {
         } while (type != 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class BlinkLayout extends FrameLayout {
         private static final int BLINK_DELAY = 500;
@@ -851,9 +866,33 @@ public abstract class LayoutInflater {
         private boolean mBlinkState;
         private final Handler mHandler;
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.view.LayoutInflater$BlinkLayout$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Handler.Callback {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Handler.Callback
+            public boolean handleMessage(Message msg) {
+                if (msg.what == 66) {
+                    if (BlinkLayout.this.mBlink) {
+                        BlinkLayout.this.mBlinkState = !r0.mBlinkState;
+                        BlinkLayout.this.makeBlink();
+                    }
+                    BlinkLayout.this.invalidate();
+                    return true;
+                }
+                return false;
+            }
+        }
+
         public BlinkLayout(Context context, AttributeSet attrs) {
             super(context, attrs);
             this.mHandler = new Handler(new Handler.Callback() { // from class: android.view.LayoutInflater.BlinkLayout.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Handler.Callback
                 public boolean handleMessage(Message msg) {
                     if (msg.what == 66) {
@@ -869,30 +908,32 @@ public abstract class LayoutInflater {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void makeBlink() {
             Message message = this.mHandler.obtainMessage(66);
             this.mHandler.sendMessageDelayed(message, 500L);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup, android.view.View
-        protected void onAttachedToWindow() {
+        public void onAttachedToWindow() {
             super.onAttachedToWindow();
             this.mBlink = true;
             this.mBlinkState = true;
             makeBlink();
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup, android.view.View
-        protected void onDetachedFromWindow() {
+        public void onDetachedFromWindow() {
             super.onDetachedFromWindow();
             this.mBlink = false;
             this.mBlinkState = true;
             this.mHandler.removeMessages(66);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup, android.view.View
-        protected void dispatchDraw(Canvas canvas) {
+        public void dispatchDraw(Canvas canvas) {
             if (this.mBlinkState) {
                 super.dispatchDraw(canvas);
             }

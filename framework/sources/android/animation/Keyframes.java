@@ -15,7 +15,8 @@ public interface Keyframes extends Cloneable {
         int getIntValue(float f);
     }
 
-    Keyframes clone();
+    /* renamed from: clone */
+    Keyframes mo64clone();
 
     List<Keyframe> getKeyframes();
 

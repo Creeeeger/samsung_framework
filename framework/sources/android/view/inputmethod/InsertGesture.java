@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InsertGesture extends HandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<InsertGesture> CREATOR = new Parcelable.Creator<InsertGesture>() { // from class: android.view.inputmethod.InsertGesture.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InsertGesture createFromParcel(Parcel source) {
             return new InsertGesture(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InsertGesture[] newArray(int size) {
             return new InsertGesture[size];
@@ -22,6 +23,14 @@ public final class InsertGesture extends HandwritingGesture implements Parcelabl
     };
     private PointF mPoint;
     private String mTextToInsert;
+
+    /* synthetic */ InsertGesture(Parcel parcel, InsertGestureIA insertGestureIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ InsertGesture(String str, PointF pointF, String str2, InsertGestureIA insertGestureIA) {
+        this(str, pointF, str2);
+    }
 
     private InsertGesture(String text, PointF point, String fallbackText) {
         this.mType = 2;
@@ -74,6 +83,23 @@ public final class InsertGesture extends HandwritingGesture implements Parcelabl
                 throw new IllegalArgumentException("Text to insert must be set.");
             }
             return new InsertGesture(this.mText, this.mPoint, this.mFallbackText);
+        }
+    }
+
+    /* renamed from: android.view.inputmethod.InsertGesture$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InsertGesture> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsertGesture createFromParcel(Parcel source) {
+            return new InsertGesture(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InsertGesture[] newArray(int size) {
+            return new InsertGesture[size];
         }
     }
 

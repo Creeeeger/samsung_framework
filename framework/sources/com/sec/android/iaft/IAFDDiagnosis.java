@@ -49,7 +49,6 @@ public class IAFDDiagnosis {
     private String mSalesCode;
     private String reason;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes6.dex */
     public static class IAFD_DATA {
         IAFD_ENTITY[] JE_CallStackTB;
@@ -61,8 +60,13 @@ public class IAFDDiagnosis {
         HashMap<String, Integer> hashMapJE_ClassNameTB;
     }
 
+    /* synthetic */ IAFDDiagnosis(IAFDDiagnosisIA iAFDDiagnosisIA) {
+        this();
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
-    private static class IAFDDiagnosisHolder {
+    public static class IAFDDiagnosisHolder {
         private static final IAFDDiagnosis INSTANCE = new IAFDDiagnosis();
 
         private IAFDDiagnosisHolder() {
@@ -682,7 +686,6 @@ public class IAFDDiagnosis {
         return this.callstack;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes6.dex */
     public static class IAFD_CONTROLINFO {
         private boolean IAFDDBControlFeature;
@@ -712,11 +715,9 @@ public class IAFDDiagnosis {
         private String webView_pkgName;
         private String[] whiteList;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public IAFD_CONTROLINFO() {
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public IAFD_CONTROLINFO(boolean enable, int jcsms, String jcss, int ncsms, int nchms, String ncss, int rsms, int csms) {
             this.enable = enable;
             this.JE_cstack_maxSize = jcsms;
@@ -728,57 +729,46 @@ public class IAFDDiagnosis {
             this.callstack_maxSize = csms;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setEnable(boolean enable) {
             this.enable = enable;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setJE_cstack_maxSize(int jcsms) {
             this.JE_cstack_maxSize = jcsms;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setJE_cstack_start(String jcss) {
             this.JE_cstack_start = jcss;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setNE_cstack_maxSize(int ncsms) {
             this.NE_cstack_maxSize = ncsms;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setNE_cHeader_maxSize(int nchms) {
             this.NE_cHeader_maxSize = nchms;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setNE_cstack_start(String ncss) {
             this.NE_cstack_start = ncss;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setReason_maxSize(int rsms) {
             this.reason_maxSize = rsms;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setCallstack_maxSize(int csms) {
             this.callstack_maxSize = csms;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setDBVersion(int dbVersion) {
             this.dbVersion = dbVersion;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getDBVersion() {
             return this.dbVersion;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setreMovableAppPaths(String rule) {
             if (rule.length() > 0) {
                 this.reMovableAppPaths = rule.split(">,<");
@@ -787,12 +777,10 @@ public class IAFDDiagnosis {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setwebView_pkgName(String pkgName) {
             this.webView_pkgName = pkgName;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setenableDetectAll32bitApp(Boolean enable, String suggestion) {
             this.enableDetectAll32bitApps = enable.booleanValue();
             this.supportflagDetectAll32bitApps = 1;
@@ -804,7 +792,6 @@ public class IAFDDiagnosis {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setCSCFilter(String rule, String suggestion, String salesCode) {
             this.enableCSCFilter = true;
             this.supportCSCs = null;
@@ -841,7 +828,6 @@ public class IAFDDiagnosis {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setIAFDDBControlFeature(String rule, String suggestion, boolean isCHN) {
             this.IAFDDBControlFeature = false;
             if (rule != null && rule.equals("1")) {
@@ -862,7 +848,6 @@ public class IAFDDiagnosis {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setWhiteList(String rule, String suggestion) {
             this.enableWhiteList = true;
             this.whiteList = null;
@@ -889,7 +874,6 @@ public class IAFDDiagnosis {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setSupportRepair(boolean isSupport) {
             this.isSupportRepair = false;
         }
@@ -917,7 +901,6 @@ public class IAFDDiagnosis {
             linkHMap.putIfAbsent(strTmp[0], values);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void sethashMapOfLinkForVocApp(String rule) {
             if (rule != null && rule.length() > 0) {
                 String[] strArray = rule.split(">,<");
@@ -936,7 +919,6 @@ public class IAFDDiagnosis {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void sethashMapOfLinkForVocAppOnlyShow(String rule) {
             if (rule != null && rule.length() > 0) {
                 String[] strArray = rule.split(">,<");
@@ -957,7 +939,6 @@ public class IAFDDiagnosis {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes6.dex */
     public static class IAFD_ENTITY {
         private boolean enable;
@@ -998,12 +979,10 @@ public class IAFDDiagnosis {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public IAFD_ENTITY(int tbID, int expID, Boolean enable, String keyWord, String rule, String suggestion) {
             initENTITY(tbID, expID, enable.booleanValue(), keyWord, rule, suggestion);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public IAFD_ENTITY(int tbID, int expID, Boolean enable, String keyWord, String rule, String suggestion, int index, HashMap<String, Integer> hmap) {
             initENTITY(tbID, expID, enable.booleanValue(), keyWord, rule, suggestion);
             if (enable.booleanValue()) {

@@ -142,8 +142,9 @@ public interface ISLocationLMSHook extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISLocationLMSHook {
+        public static class Proxy implements ISLocationLMSHook {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

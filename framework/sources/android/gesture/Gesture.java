@@ -24,7 +24,9 @@ public class Gesture implements Parcelable {
     private static final long GESTURE_ID_BASE = System.currentTimeMillis();
     private static final AtomicInteger sGestureCount = new AtomicInteger(0);
     public static final Parcelable.Creator<Gesture> CREATOR = new Parcelable.Creator<Gesture>() { // from class: android.gesture.Gesture.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Gesture createFromParcel(Parcel in) {
             Gesture gesture = null;
@@ -45,7 +47,6 @@ public class Gesture implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Gesture[] newArray(int size) {
             return new Gesture[size];
@@ -179,7 +180,6 @@ public class Gesture implements Parcelable {
         return bitmap;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void serialize(DataOutputStream out) throws IOException {
         ArrayList<GestureStroke> strokes = this.mStrokes;
         int count = strokes.size();
@@ -190,7 +190,6 @@ public class Gesture implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Gesture deserialize(DataInputStream in) throws IOException {
         Gesture gesture = new Gesture();
         gesture.mGestureID = in.readLong();
@@ -199,6 +198,38 @@ public class Gesture implements Parcelable {
             gesture.addStroke(GestureStroke.deserialize(in));
         }
         return gesture;
+    }
+
+    /* renamed from: android.gesture.Gesture$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Gesture> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Gesture createFromParcel(Parcel in) {
+            Gesture gesture = null;
+            long gestureID = in.readLong();
+            DataInputStream inStream = new DataInputStream(new ByteArrayInputStream(in.createByteArray()));
+            try {
+                try {
+                    gesture = Gesture.deserialize(inStream);
+                } catch (IOException e) {
+                    Log.e(GestureConstants.LOG_TAG, "Error reading Gesture from parcel:", e);
+                }
+                if (gesture != null) {
+                    gesture.mGestureID = gestureID;
+                }
+                return gesture;
+            } finally {
+                GestureUtils.closeStream(inStream);
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Gesture[] newArray(int size) {
+            return new Gesture[size];
+        }
     }
 
     @Override // android.os.Parcelable

@@ -89,8 +89,9 @@ public interface IIAFTCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements IIAFTCallback {
+        public static class Proxy implements IIAFTCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

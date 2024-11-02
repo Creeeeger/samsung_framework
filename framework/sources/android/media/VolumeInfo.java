@@ -14,13 +14,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class VolumeInfo implements Parcelable {
     public static final Parcelable.Creator<VolumeInfo> CREATOR = new Parcelable.Creator<VolumeInfo>() { // from class: android.media.VolumeInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VolumeInfo createFromParcel(Parcel p) {
             return new VolumeInfo(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VolumeInfo[] newArray(int size) {
             return new VolumeInfo[size];
@@ -38,6 +39,14 @@ public final class VolumeInfo implements Parcelable {
     private final boolean mUsesStreamType;
     private final android.media.audiopolicy.AudioVolumeGroup mVolGroup;
     private final int mVolIndex;
+
+    /* synthetic */ VolumeInfo(Parcel parcel, VolumeInfoIA volumeInfoIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ VolumeInfo(boolean z, boolean z2, boolean z3, int i, int i2, int i3, android.media.audiopolicy.AudioVolumeGroup audioVolumeGroup, int i4, VolumeInfoIA volumeInfoIA) {
+        this(z, z2, z3, i, i2, i3, audioVolumeGroup, i4);
+    }
 
     private VolumeInfo(boolean usesStreamType, boolean hasMuteCommand, boolean isMuted, int volIndex, int minVolIndex, int maxVolIndex, android.media.audiopolicy.AudioVolumeGroup volGroup, int streamType) {
         this.mUsesStreamType = usesStreamType;
@@ -272,6 +281,23 @@ public final class VolumeInfo implements Parcelable {
             this.mVolGroup = android.media.audiopolicy.AudioVolumeGroup.CREATOR.createFromParcel(in);
         } else {
             this.mVolGroup = null;
+        }
+    }
+
+    /* renamed from: android.media.VolumeInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VolumeInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VolumeInfo createFromParcel(Parcel p) {
+            return new VolumeInfo(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VolumeInfo[] newArray(int size) {
+            return new VolumeInfo[size];
         }
     }
 }

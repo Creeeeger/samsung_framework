@@ -354,8 +354,9 @@ public interface ISemRemoteContentManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemRemoteContentManager {
+        public static class Proxy implements ISemRemoteContentManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

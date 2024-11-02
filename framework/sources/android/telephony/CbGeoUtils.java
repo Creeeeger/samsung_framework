@@ -123,8 +123,7 @@ public class CbGeoUtils {
             return windingNumber != 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* renamed from: convertAndScaleLatLng, reason: merged with bridge method [inline-methods] */
+        /* renamed from: convertAndScaleLatLng */
         public Point lambda$new$0(LatLng latLng) {
             double x = latLng.lat - this.mOrigin.lat;
             double y = latLng.lng - this.mOrigin.lng;
@@ -141,7 +140,6 @@ public class CbGeoUtils {
             return (a.x * b.y) - (a.y * b.x);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes3.dex */
         public static final class Point {
             public final double x;
@@ -287,12 +285,10 @@ public class CbGeoUtils {
         }).collect(Collectors.joining(NavigationBarInflaterView.GRAVITY_SEPARATOR));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$encodeGeometriesToString$1(String encodedStr) {
         return !TextUtils.isEmpty(encodedStr);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String encodeGeometryToString(Geometry geometry) {
         StringBuilder sb = new StringBuilder();
         if (geometry instanceof Polygon) {

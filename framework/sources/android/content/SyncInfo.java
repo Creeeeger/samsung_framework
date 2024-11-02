@@ -12,13 +12,14 @@ public class SyncInfo implements Parcelable {
     public final long startTime;
     private static final Account REDACTED_ACCOUNT = new Account("*****", "*****");
     public static final Parcelable.Creator<SyncInfo> CREATOR = new Parcelable.Creator<SyncInfo>() { // from class: android.content.SyncInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SyncInfo createFromParcel(Parcel in) {
             return new SyncInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncInfo[] newArray(int size) {
             return new SyncInfo[size];
@@ -61,5 +62,22 @@ public class SyncInfo implements Parcelable {
         this.account = (Account) parcel.readParcelable(Account.class.getClassLoader(), Account.class);
         this.authority = parcel.readString();
         this.startTime = parcel.readLong();
+    }
+
+    /* renamed from: android.content.SyncInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SyncInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncInfo createFromParcel(Parcel in) {
+            return new SyncInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncInfo[] newArray(int size) {
+            return new SyncInfo[size];
+        }
     }
 }

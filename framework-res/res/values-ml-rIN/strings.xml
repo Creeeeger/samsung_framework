@@ -335,7 +335,7 @@
     <string name="ext_media_unsupported_notification_message">ഈ ഉപകരണം ഈ %s-നെ പിന്തുണയ്ക്കുന്നില്ല. പിന്തുണയ്ക്കുന്ന ഒരു ഫോർമാറ്റിൽ സജ്ജീകരിക്കുന്നതിന് സ്പർശിക്കുക.</string>
     <string name="ext_media_unsupported_notification_title">പിന്തുണയ്ക്കാത്ത %s</string>
     <string name="ext_storage_bad_removal_button">പുനരാരംഭിക്കുക</string>
-    <string name="ext_storage_bad_removal_title">നിങ്ങളുടെ ഫോൺ പുനരാരംഭിക്കുക</string>
+    <string name="ext_storage_bad_removal_title">നിങ്ങളുടെ ടാബ്‌ലറ്റ് പുനരാരംഭിക്കുക</string>
     <string name="extmedia_format_button_format">ഫോര്‍മാറ്റ്</string>
     <string name="extmedia_format_message_usbhost">USB സംഭരണത്തിൽ ശേഖരിച്ചിട്ടുള്ള നിങ്ങളുടെ എല്ലാ ഫയലുകളും മായ്ക്കും. ഈ പ്രവർത്തനം പഴയപടിയാക്കാനാവില്ല!</string>
     <string name="extmedia_format_title_usbhost">USB സംഭരണം ഫോർമാറ്റുചെയ്യണോ?</string>
@@ -592,16 +592,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ശബ്ദം നിങ്ങളുടെ ബ്ലൂടൂത്ത് ഓഡിയോ ഉപകരണത്തിലാണ് പ്ലേ ചെയ്യുന്നത്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക</string>
     <string name="multisound_sound_via_headphone">%s ശബ്ദം നിങ്ങളുടെ ഹെഡ്ഫോണുകൾ മുഖേന പ്ലേ ചെയ്യുകയാണ്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക.</string>
     <string name="multisound_sound_via_headphone_multiselection">ശബ്ദം നിങ്ങളുടെ ഹെഡ്ഫോണുകൾ മുഖേനയാണ് പ്ലേ ചെയ്യുന്നത്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക.</string>
-    <string name="multisound_sound_via_phone_speaker">%s ശബ്ദം നിങ്ങളുടെ ഫോൺ സ്പീക്കർ മുഖേന പ്ലേ ചെയ്യുകയാണ്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ശബ്ദം നിങ്ങളുടെ ഫോൺ സ്പീക്കർ മുഖേനയാണ് പ്ലേ ചെയ്യുന്നത്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക.</string>
+    <string name="multisound_sound_via_phone_speaker">%s ശബ്ദം നിങ്ങളുടെ ടാബ്‌ലറ്റ് സ്പീക്കർ മുഖേന പ്ലേ ചെയ്യുകയാണ്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ശബ്ദം നിങ്ങളുടെ ടാബ്‌ലറ്റ് സ്പീക്കർ മുഖേനയാണ് പ്ലേ ചെയ്യുന്നത്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക.</string>
     <string name="multisound_sound_via_usb_audio">%s ശബ്ദം നിങ്ങളുടെ USB ഓഡിയോ ഉപകരണം മുഖേന പ്ലേ ചെയ്യുകയാണ്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ശബ്ദം നിങ്ങളുടെ USB ഓഡിയോ ഉപകരണം മുഖേനയാണ് പ്ലേ ചെയ്യുന്നത്. ഇത് ഓഫ് ചെയ്യുന്നതിന് ഇവിടെ സ്പർശിക്കുക.</string>
     <string name="multisound_title">വേറിട്ട ആപ്ലിക്കേഷൻ ശബ്ദം</string>
     <string name="multisound_turn_off_multisound">ഓഫ് ചെയ്യുക</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX-ൽ %s റൺ ചെയ്യാനാവില്ല. ഫോൺ മോഡിൽ റൺ ചെയ്യാൻ ശ്രമിക്കുക.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-ൽ റൺ ചെയ്യാനാകില്ല. ഇത് ഫോൺ ഹോം സ്ക്രീനുകൾക്കായി ഡിസൈൻ ചെയ്തിരിക്കുന്നു.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ചില ഗെയിമുകൾ ടച്ച് സ്ക്രീനിൽ മാത്രമാണ് പ്രവർത്തിക്കുന്നത്. Samsung DeX-ൽ മൗസ് നിയന്ത്രണങ്ങൾ പ്രവർത്തിക്കുന്നില്ലെങ്കിൽ, പകരം ഫോൺ മോഡിൽ കളിക്കാൻ ശ്രമിക്കുക.</string>
-    <string name="my_device">ഈ ഫോൺ</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX-ൽ %s റൺ ചെയ്യാനാവില്ല. ടാബ്‌ലറ്റ് മോഡിൽ റൺ ചെയ്യാൻ ശ്രമിക്കുക.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX-ൽ %s റൺ ചെയ്യാനാവില്ല. ടാബ്‌ലറ്റ് ഹോം സ്ക്രീനുകൾക്കായാണ് ഇത് രൂപകൽപ്പന ചെയ്തിട്ടുള്ളത്.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ചില ഗെയിമുകൾ ടച്ച് സ്ക്രീനിൽ മാത്രമാണ് പ്രവർത്തിക്കുന്നത്. Samsung DeX-ൽ മൗസ് നിയന്ത്രണങ്ങൾ പ്രവർത്തിക്കുന്നില്ലെങ്കിൽ, പകരം ടാബ്‌ലറ്റ് മോഡിൽ കളിക്കാൻ ശ്രമിക്കുക.</string>
+    <string name="my_device">ഈ ടാബ്‌ലറ്റ്</string>
     <string name="network_locked_sim_dialog_message_ais">നിങ്ങളുടെ SIM കാർഡ് നിങ്ങളുടെ സബ്‌സ്‌ക്രിപ്‌ഷൻ വ്യവസ്ഥകളോടും നിബന്ധനകളോടും പൊരുത്തപ്പെടാത്തതിനാൽ ഈ ഫോണിൽ അത് പൂർണ്ണമായി പ്രവർത്തനക്ഷമമല്ല. ഇക്കാര്യത്തെ കുറിച്ച് നിങ്ങൾക്കെന്തെങ്കിലും ചോദ്യങ്ങളുണ്ടെങ്കിൽ അല്ലെങ്കിൽ കൂടുതൽ വിവരങ്ങൾ ആവശ്യമാണെങ്കിൽ, ഈ ഉൽപ്പന്നങ്ങൾ നിങ്ങൾക്ക് വിൽക്കപ്പെടുന്ന സാംസങ്ങ് ഉപഭോക്തൃ സേവന ലൊക്കേഷനെയോ സ്റ്റോറിനെയോ ബന്ധപ്പെടുക.</string>
     <string name="network_locked_sim_notification_text">നെറ്റ്‌വര്‍ക്ക് ലോക്കുചെയ്ത SIM കാര്‍ഡ് തിരുകി.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@
     <string name="policydesc_allow_desktopsync">ഡെസ്ക്‌ടോപ്പ് സമന്വയ ഉപയോഗം തടയുക.</string>
     <string name="policydesc_allow_internetsharing">മൊബൈൽ ഹോട്ട്സ്പോട്ട് ഉപയോഗം തടയുക.</string>
     <string name="policydesc_allow_irda">IrDA ഉപയോഗം തടയുക.</string>
-    <string name="policydesc_allow_popimapemail">ഫോണിൽ POP, IMAP ഈമെയിൽ ഉപയോഗം തടയുക.</string>
+    <string name="policydesc_allow_popimapemail">ടാബ്‌ലറ്റിൽ POP, IMAP ഈമെയിൽ ഉപയോഗം തടയുക.</string>
     <string name="policydesc_allow_storagecard">SD കാർഡുകളുടെ ഉപയോഗം തടയുക.</string>
     <string name="policydesc_allow_textmessaging">ടെക്സ്റ്റ്, മൾട്ടിമീഡിയ സന്ദേശമയയ്ക്കൽ ഉപയോഗം തടയുക.</string>
     <string name="policydesc_allow_thirdParty">മൂന്നാം കക്ഷി ആപ്ലിക്കേഷനുകൾ റൺ ചെയ്യുന്നത് തടയാൻ ഈ ആപ്ലിക്കേഷന് സാധിക്കും.</string>
@@ -838,7 +838,7 @@
     <string name="pwd_change_enforced">സുരക്ഷാ നയം നിങ്ങള്‍ പാസ്‌വേഡ് മാറ്റുന്നത് ആവശ്യപ്പെടുന്നു.</string>
     <string name="recording_fail">%2$s-ൽ മൈക്ക് ഉപയോഗിക്കുന്ന സമയത്ത് അതിനെ %1$s-ൽ ഉപയോഗിക്കാനാവില്ല.</string>
     <string name="recording_popup">%s മൈക്രോഫോൺ ഉപയോഗിക്കുകയാണ്.</string>
-    <string name="recording_popup_device">ഫോൺ</string>
+    <string name="recording_popup_device">ടാബ്‌ലറ്റ്</string>
     <string name="recording_popup_with_bluetooth">%s ബ്ലൂടൂത്ത് മൈക്രോഫോൺ ഉപയോഗിക്കുന്നു.</string>
     <string name="recording_popup_with_device">%1$s, %2$s-ന്റെ മൈക്രോഫോൺ ഉപയോഗിക്കുന്നു.</string>
     <string name="redo">വീണ്ടും ചെയ്യുക</string>
@@ -903,12 +903,12 @@
     <string name="screencapture_restrict">സ്ക്രീൻ ക്യാപ്ച്വറിന്‍റെ ഉപയോഗത്തെ സുരക്ഷാ നയം തടയുന്നു.</string>
     <string name="sd_card_unavailable_message">നിങ്ങൾക്ക് SD കാർഡ് ഉപയോഗിക്കാനാവില്ല, എന്തെന്നാൽ അത് ഇട്ടത് വേറൊരു ഉപയോക്തൃ പ്രൊഫൈൽ ഉപയോഗത്തിലുള്ള സമയത്തായിരുന്നു.</string>
     <string name="sd_card_unavailable_title">SD കാർഡ് ലഭ്യമല്ല</string>
-    <string name="sdcard_bad_removal_message">ഒരു SD കാർഡ് സുരക്ഷിതമല്ലാതെ നീക്കംചെയ്തിരുന്നു. അവിചാരിതമായി ഫോൺ പുനരാരംഭിക്കുന്നത് തടയുന്നതിന്, സംരക്ഷിക്കാത്ത ഡാറ്റ സംരക്ഷിച്ച് ഇപ്പോൾ പുനരാരംഭിക്കുക.</string>
+    <string name="sdcard_bad_removal_message">ഒരു SD കാർഡ് സുരക്ഷിതമല്ലാതെ നീക്കംചെയ്തിരുന്നു. അവിചാരിതമായി ടാബ്‌ലറ്റ് പുനരാരംഭിക്കുന്നത് തടയുന്നതിന്, സംരക്ഷിക്കാത്ത ഡാറ്റ സംരക്ഷിച്ച് ഇപ്പോൾ പുനരാരംഭിക്കുക.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD കാര്‍ഡ്‌ ഡിക്രിപ്റ്റ് ചെയ്യുക</string>
     <string name="sdcard_batch_decrypt_noti_title">SD കാര്‍ഡ്‌ ഡീക്രിപ്ഷന്‍</string>
     <string name="sdcard_batch_decrypt_popup_content">എന്‍ക്രിപ്റ്റ് ചെയ്ത SD കാര്‍ഡ്‌ ഉപയോഗിക്കുന്നതിന് മുമ്പ് ഡിക്രിപ്റ്റ് ചെയ്യണം. ഡിക്രിപ്റ്റ് ചെയ്യാന്‍ ഒരു മണിക്കൂറോ അതില്‍ കൂടുതലോ എടുത്തേക്കും. ചാര്‍ജ്ജ് ചെയ്ത ഒരു ബാറ്ററി ഉപയോഗിച്ച് ആരംഭിക്കുകയും ഡിക്രപ്ഷന്‍ പൂര്‍ത്തിയാകും വരെ ഉപകരണം അതില്‍ പ്ലഗ് ഇന്‍ ചെയ്ത് വയ്ക്കുകയും ചെയ്യുക. ഡിക്രിപ്ഷന്‍ പ്രൊസസ്സ് തടസ്സപ്പെടുത്തുന്നത് ചില ഡാറ്റ അല്ലെങ്കില്‍ മുഴുവന്‍ ഡാറ്റയും നഷ്ടപ്പെടുത്തിയേക്കാം.</string>
     <string name="sdcard_decrypt_err_notification">SD കാര്‍ഡ്‌ ഡിക്രിപ്ഷന്‍ പിശക് സംഭവിച്ചു.</string>
-    <string name="sdcard_decrypt_error_otherdevice">നിങ്ങളുടെ SD കാർഡിലെ ചില ഫയലുകൾ എൻക്രിപ്റ്റ് ചെയ്യപ്പെട്ടത് മറ്റൊരു ഉപകരണത്തിലായിരുന്നതിനാൽ ഈ ഫോണിൽ ഉപയോഗിക്കാനാവില്ല.</string>
+    <string name="sdcard_decrypt_error_otherdevice">നിങ്ങളുടെ SD കാർഡിലെ ചില ഫയലുകൾ എൻക്രിപ്റ്റ് ചെയ്യപ്പെട്ടത് മറ്റൊരു ഉപകരണത്തിലായിരുന്നതിനാൽ ഈ ടാബ്‌ലറ്റിൽ ഉപയോഗിക്കാനാവില്ല.</string>
     <string name="sdcard_decrypt_notification">SD കാര്‍ഡ്‌ ഡിക്രിപ്റ്റ് ചെയ്തു.</string>
     <string name="sdcard_decrypt_title_notification">SD കാര്‍ഡ്‌ ഡീക്രിപ്ഷന്‍</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD കാര്‍ഡ് ഡീക്രിപ്റ്റ് ചെയ്യുന്നു…</string>
@@ -1234,7 +1234,7 @@
     <string name="usb_abnormal_reset_title">USB കണക്ഷന് സ്ഥിരതയില്ല</string>
     <string name="usb_abnormal_reset_toast">USB കണക്ഷന് സ്ഥിരതയില്ല. പ്ലഗ്ഗിൽ നിന്ന് കേബിൾ വേർപെടുത്തിയ ശേഷം അത് വീണ്ടും ബന്ധിപ്പിക്കുക, അല്ലെങ്കിൽ വേറൊരു കേബിൾ പരീക്ഷിക്കുക.</string>
     <string name="usb_accessory_notification_title">ഒരു USB ആക്സസ്സറിയിലേക്ക് കണക്ട് ചെയ്തിരിക്കുന്നു</string>
-    <string name="usb_bad_removal_message">ഒരു USB സംഭരണ ഉപകരണം സുരക്ഷിതമല്ലാതെ നീക്കംചെയ്തിരുന്നു. അവിചാരിതമായി ഫോൺ പുനരാരംഭിക്കുന്നത് തടയുന്നതിന്, സംരക്ഷിക്കാത്ത ഡാറ്റ സംരക്ഷിച്ച് ഇപ്പോൾ പുനരാരംഭിക്കുക.</string>
+    <string name="usb_bad_removal_message">ഒരു USB സംഭരണ ഉപകരണം സുരക്ഷിതമല്ലാതെ നീക്കംചെയ്തിരുന്നു. അവിചാരിതമായി ടാബ്‌ലറ്റ് പുനരാരംഭിക്കുന്നത് തടയുന്നതിന്, സംരക്ഷിക്കാത്ത ഡാറ്റ സംരക്ഷിച്ച് ഇപ്പോൾ പുനരാരംഭിക്കുക.</string>
     <string name="usb_blocked_by_emergency_mode">എമർജൻസി മോഡിൽ ചില USB പ്രവർത്തനങ്ങൾ ലഭ്യമല്ല.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">മാക്സിമം പവർ സേവിംഗ് മോഡ് പ്രാപ്തമാക്കിയ സമയത്ത് ബന്ധിപ്പിച്ച USB ഉപകരണവുമായി ബന്ധപ്പെട്ട പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കാനാവില്ല.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">മാക്സിമം പവർ സേവിംഗ് മോഡ് ഓൺ ചെയ്തിരിക്കുന്ന സമയത്ത് ഏതാനും USB പ്രവർത്തനങ്ങൾ പരിമിതമാക്കപ്പെടും.</string>
@@ -1243,13 +1243,13 @@
     <string name="usb_camera_connected_notification_title">മീഡിയ ഉപകരണം ബന്ധിപ്പിച്ചു</string>
     <string name="usb_camera_disconnected_notification_title">മീഡിയ ഉപകരണം വിച്ഛേദിച്ചു</string>
     <string name="usb_cd_installer_notification_title">സോഫ്റ്റ്‌വെയര്‍ അപ്ഡേറ്റ്</string>
-    <string name="usb_charing_only_notification_title">USB ചാർജ്ജിംഗ്</string>
+    <string name="usb_charing_only_notification_title">ബന്ധിപ്പിച്ചു</string>
     <string name="usb_debugging_only_notification_title">പ്രശ്നപരിഹാരം മാത്രം</string>
-    <string name="usb_host_resource_exceed_message">ഈ ഉപകരണം ബന്ധിപ്പിക്കാൻ നിങ്ങളുടെ ഫോണിന്‍റെ USB കൺട്രോളറിന് മതിയായ വിഭവങ്ങളില്ല. ഉപകരണം വിച്ഛേദിച്ച് അത് വീണ്ടും ബന്ധിപ്പിക്കാൻ ശ്രമിക്കുക.</string>
+    <string name="usb_host_resource_exceed_message">ഈ ഉപകരണം ബന്ധിപ്പിക്കാൻ നിങ്ങളുടെ ടാബ്‌ലറ്റിന്‍റെ USB കൺട്രോളറിന് മതിയായ വിഭവങ്ങളില്ല. ഉപകരണം വിച്ഛേദിച്ച് അത് വീണ്ടും ബന്ധിപ്പിക്കാൻ ശ്രമിക്കുക.</string>
     <string name="usb_host_resource_exceed_title">മതിയായ USB കൺട്രോളർ വിഭവങ്ങളില്ല</string>
-    <string name="usb_hub_depth_exceed_message">ഒരേ സമയം 5 USB ഹബ് കണക്ഷനുകളെ വരെ മാത്രമേ നിങ്ങളുടെ ഫോണിന് പിന്തുണയ്ക്കാനാവൂ.</string>
+    <string name="usb_hub_depth_exceed_message">ഒരേ സമയം 5 USB ഹബ് കണക്ഷനുകളെ വരെ മാത്രമേ നിങ്ങളുടെ ടാബ്‌ലറ്റിന് പിന്തുണയ്ക്കാനാവൂ.</string>
     <string name="usb_hub_depth_exceed_title">പരമാവധി USB ഹബ് കണക്ഷനുകൾ</string>
-    <string name="usb_hub_power_exceed_message">ഈ USB ഉപകരണത്തിന് മതിയായ പവർ ലഭ്യമാക്കാൻ നിങ്ങളുടെ ഫോണിനാവില്ല. ഉപകരണത്തെ നിങ്ങളുടെ ഫോണിലേക്ക് ബന്ധിപ്പിക്കുന്നതിന് മുമ്പ് അതിനെ സ്വാശ്രയ പവർ ലഭ്യമാക്കുന്ന ഒരു USB ഹബ്ബിലേക്ക് ബന്ധിപ്പിക്കുക.</string>
+    <string name="usb_hub_power_exceed_message">ഈ USB ഉപകരണത്തിന് മതിയായ പവർ ലഭ്യമാക്കാൻ നിങ്ങളുടെ ടാബ്‌ലറ്റിനാവില്ല. ഉപകരണത്തെ നിങ്ങളുടെ ടാബ്‌ലറ്റിലേക്ക് ബന്ധിപ്പിക്കുന്നതിന് മുമ്പ് അതിനെ സ്വാശ്രയ പവർ ലഭ്യമാക്കുന്ന ഒരു USB ഹബ്ബിലേക്ക് ബന്ധിപ്പിക്കുക.</string>
     <string name="usb_increase_battery_usage">USB കണക്ഷൻ ബാറ്ററി ഉപയോഗത്തെ വർദ്ധിപ്പിച്ചേക്കാം.</string>
     <string name="usb_mass_storage_restrict">USB മാസ് സംഭരണത്തിന്‍റെ ഉപയോഗത്തെ സുരക്ഷാ നയം തടയുന്നു.</string>
     <string name="usb_midi_notification_title">MIDI-യ്ക്കുള്ള USB</string>
@@ -1275,8 +1275,8 @@
     <string name="usb_storage_stop_title">USB സ്റ്റോറേജ് ഉപയോഗത്തില്‍.</string>
     <string name="usb_storage_title">USB കണക്ട് ചെയ്തു.</string>
     <string name="usb_type_c_supply_power_notification_title">ബന്ധിപ്പിച്ച ഉപകരണത്തെ USB ചാർജ്ജ് ചെയ്യുന്നു</string>
-    <string name="usb_unblock_by_screen_unlock">ബന്ധിപ്പിച്ച USB ഉപകരണം ഉപയോഗിക്കാൻ നിങ്ങളുടെ ഫോൺ അൺലോക്ക് ചെയ്യുക.</string>
-    <string name="usb_unsupport_accessory_message">ഈ USB ഉപകരണത്തെ നിങ്ങളുടെ ഫോൺ പിന്തുണയ്ക്കുന്നില്ല.</string>
+    <string name="usb_unblock_by_screen_unlock">ബന്ധിപ്പിച്ച USB ഉപകരണം ഉപയോഗിക്കാൻ നിങ്ങളുടെ ടാബ്‌ലറ്റ് അൺലോക്ക് ചെയ്യുക.</string>
+    <string name="usb_unsupport_accessory_message">ഈ USB ഉപകരണത്തെ നിങ്ങളുടെ ടാബ്‌ലറ്റ് പിന്തുണയ്ക്കുന്നില്ല.</string>
     <string name="usb_unsupport_accessory_title">USB ഉപകരണത്തിന് പിന്തുണയില്ല</string>
     <string name="usb_unsupported_device">ബന്ധിപ്പിച്ച USB ഉപകരണത്തിന് പിന്തുണയില്ല.</string>
     <string name="usb_unsupported_device_title">ഉപകരണത്തിന് പിന്തുണയില്ല</string>
@@ -1294,19 +1294,19 @@
     <string name="usb_water_dialg_method_2_desc_2">പോർട്ടിന് നേരെ ഒരു ഫാനോ ഡ്രൈയറോ (തണുത്ത വായു മാത്രം) വെച്ച് ഉണക്കൽ നിങ്ങൾക്ക് വേഗത്തിലാക്കാവുന്നതാണ്.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"നിങ്ങളുടെ ചാർജ്ജിംഗ്/USB പോർട്ടിൽ നനവ് അല്ലെങ്കിൽ അന്യ വസ്തു ഞങ്ങൾ കണ്ടെത്തിയിട്ടുണ്ട്.
 
-പൊടിപടലം അല്ലെങ്കിൽ അവശിഷ്ടം പോലുള്ള ഏതെങ്കിലും അന്യ വസ്തുവിനായി നിങ്ങളുടെ ചാർജ്ജിംഗ്/USB പോർട്ട് പരിശോധിക്കുക. നിങ്ങളുടെ ഫോണിന് കോട്ടം തട്ടുന്നത് തടയുന്നതിന്, ചാർജ്ജിംഗ് പോർട്ട് വൃത്തിയാവുകയും നനവ് പോവുകയും ചെയ്യുന്നത് വരെ പ്ലഗ്ഗിൽ യാതൊന്നും ബന്ധിപ്പിക്കാതിരിക്കുക.
+പൊടിപടലം അല്ലെങ്കിൽ അവശിഷ്ടം പോലുള്ള ഏതെങ്കിലും അന്യ വസ്തുവിനായി നിങ്ങളുടെ ചാർജ്ജിംഗ്/USB പോർട്ട് പരിശോധിക്കുക. നിങ്ങളുടെ ടാബ്‌ലറ്റിന് കോട്ടം തട്ടുന്നത് തടയുന്നതിന്, ചാർജ്ജിംഗ് പോർട്ട് വൃത്തിയാവുകയും നനവ് പോവുകയും ചെയ്യുന്നത് വരെ പ്ലഗ്ഗിൽ യാതൊന്നും ബന്ധിപ്പിക്കാതിരിക്കുക.
 
 പോർട്ട് ഉണക്കുന്നതിന്, നനവ് ഏതെങ്കിലുമുണ്ടെങ്കിൽ കുടഞ്ഞ് കളയുക, തുടർന്ന് അത് ഉണങ്ങാൻ കാക്കുക, അതിന് നിരവധി മണിക്കൂറുകൾ എടുക്കാൻ സാധ്യതയുണ്ട്. പോർട്ടിന് നേർക്ക് ഒരു ഫാനോ ഡ്രൈയറോ (തണുത്ത വായു മാത്രം) വെച്ച് ഉണക്കൽ നിങ്ങൾക്ക് വേഗത്തിലാക്കാവുന്നതാണ്."</string>
     <string name="usb_water_dialg_positive_button">ശരി</string>
     <string name="usb_water_dialg_support_wireless_charging">"നിങ്ങളുടെ ചാർജ്ജിംഗ്/USB പോർട്ടിൽ നനവ് അല്ലെങ്കിൽ അന്യ വസ്തു ഞങ്ങൾ കണ്ടെത്തിയിട്ടുണ്ട്.
 
-പൊടിപടലം അല്ലെങ്കിൽ അവശിഷ്ടം പോലുള്ള ഏതെങ്കിലും അന്യ വസ്തുവിനായി നിങ്ങളുടെ ചാർജ്ജിംഗ്/USB പോർട്ട് പരിശോധിക്കുക. നിങ്ങളുടെ ഫോണിന് കോട്ടം തട്ടുന്നത് തടയുന്നതിന്, ചാർജ്ജിംഗ് പോർട്ട് വൃത്തിയാവുകയും നനവ് പോവുകയും ചെയ്യുന്നത് വരെ പ്ലഗ്ഗിൽ യാതൊന്നും ബന്ധിപ്പിക്കാതിരിക്കുക.
+പൊടിപടലം അല്ലെങ്കിൽ അവശിഷ്ടം പോലുള്ള ഏതെങ്കിലും അന്യ വസ്തുവിനായി നിങ്ങളുടെ ചാർജ്ജിംഗ്/USB പോർട്ട് പരിശോധിക്കുക. നിങ്ങളുടെ ടാബ്‌ലറ്റിന് കോട്ടം തട്ടുന്നത് തടയുന്നതിന്, ചാർജ്ജിംഗ് പോർട്ട് വൃത്തിയാവുകയും നനവ് പോവുകയും ചെയ്യുന്നത് വരെ പ്ലഗ്ഗിൽ യാതൊന്നും ബന്ധിപ്പിക്കാതിരിക്കുക.
 
-പോർട്ട് ഉണക്കുന്നതിന്, നനവ് ഏതെങ്കിലുമുണ്ടെങ്കിൽ കുടഞ്ഞ് കളയുക, തുടർന്ന് അത് ഉണങ്ങാൻ കാക്കുക, അതിന് നിരവധി മണിക്കൂറുകൾ എടുക്കാൻ സാധ്യതയുണ്ട്. പോർട്ടിന് നേർക്ക് ഒരു ഫാനോ ഡ്രൈയറോ (തണുത്ത വായു മാത്രം) വെച്ച് ഉണക്കൽ നിങ്ങൾക്ക് വേഗത്തിലാക്കാവുന്നതാണ്.
+പോർട്ട് ഉണക്കുന്നതിന്, നനവ് ഏതെങ്കിലുമുണ്ടെങ്കിൽ കുടഞ്ഞ് കളയുക, തുടർന്ന് അത് ഉണങ്ങാൻ കാക്കുക, ഇതിന് നിരവധി മണിക്കൂറുകൾ എടുക്കാൻ സാധ്യതയുണ്ട്. പോർട്ടിന് നേർക്ക് ഒരു ഫാനോ ഡ്രൈയറോ (തണുത്ത വായു മാത്രം) വെച്ച് ഉണക്കൽ നിങ്ങൾക്ക് വേഗത്തിലാക്കാവുന്നതാണ്.
 
-ഇതിനിടയിൽ, വയർലസായി നിങ്ങളുടെ ഫോൺ ചാർജ്ജ് ചെയ്യാവുന്നതാണ്."</string>
+ഇതിനിടയിൽ, വയർലസായി നിങ്ങളുടെ ടാബ്‌ലറ്റ് ചാർജ്ജ് ചെയ്യാവുന്നതാണ്."</string>
     <string name="usb_water_notification_content">നിങ്ങളുടെ ചാർജ്ജിംഗ്/USB പോർട്ടിൽ ഈർപ്പം അല്ലെങ്കിൽ അന്യ വസ്തുക്കൾ ഉണ്ട്. ചാർജ്ജ് ചെയ്യുന്നതിന് മുമ്പ് പരിശോധിക്കുക.</string>
-    <string name="usb_water_notification_message">നിങ്ങളുടെ ചാർജ്ജറിൽ/USB പോർട്ടിൽ ഈർപ്പം കണ്ടെത്തി. നിങ്ങളുടെ ഫോൺ ചാർജ്ജ് ചെയ്യുന്നതിന് മുമ്പ് അത് ഉണങ്ങിയിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക. പൂർണ്ണമായി ഉണങ്ങാൻ സ്വൽപ്പം സമയമെടുത്തേക്കാം.</string>
+    <string name="usb_water_notification_message">നിങ്ങളുടെ ചാർജ്ജറിൽ/USB പോർട്ടിൽ ഈർപ്പം കണ്ടെത്തി. നിങ്ങളുടെ ടാബ്‌ലറ്റ് ചാർജ്ജ് ചെയ്യുന്നതിന് മുമ്പ് അത് ഉണങ്ങിയിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക. പൂർണ്ണമായി ഉണങ്ങാൻ സ്വൽപ്പം സമയമെടുത്തേക്കാം.</string>
     <string name="usb_water_notification_message_button">വിശദാംശങ്ങൾ</string>
     <string name="usb_water_notification_title">ചാർജ്ജർ/USB പോർട്ട് പരിശോധിക്കുക</string>
     <string name="usbhostStorage_restrict">USB ഹോസ്റ്റ് സംഭരണത്തിന്‍റെ ഉപയോഗത്തെ സുരക്ഷാ നയം തടയുന്നു.</string>

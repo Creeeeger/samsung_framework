@@ -110,7 +110,6 @@ public abstract class ServiceStub extends Service implements ServiceController, 
         return responseHolder;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$request$0(Request request, Integer it) {
         return it.intValue() == request.getCode();
     }

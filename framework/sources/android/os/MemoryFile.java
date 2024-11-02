@@ -33,7 +33,6 @@ public class MemoryFile {
         this.mSharedMemory.close();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void deactivate() {
         ByteBuffer byteBuffer = this.mMapping;
         if (byteBuffer != null) {
@@ -124,6 +123,10 @@ public class MemoryFile {
         private int mOffset;
         private byte[] mSingleByte;
 
+        /* synthetic */ MemoryInputStream(MemoryFile memoryFile, MemoryInputStreamIA memoryInputStreamIA) {
+            this();
+        }
+
         private MemoryInputStream() {
             this.mMark = 0;
             this.mOffset = 0;
@@ -194,6 +197,10 @@ public class MemoryFile {
     private class MemoryOutputStream extends OutputStream {
         private int mOffset;
         private byte[] mSingleByte;
+
+        /* synthetic */ MemoryOutputStream(MemoryFile memoryFile, MemoryOutputStreamIA memoryOutputStreamIA) {
+            this();
+        }
 
         private MemoryOutputStream() {
             this.mOffset = 0;

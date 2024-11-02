@@ -9,6 +9,10 @@ public class OverlayPaths {
     private final List<String> mOverlayPaths;
     private final List<String> mResourceDirs;
 
+    /* synthetic */ OverlayPaths(OverlayPathsIA overlayPathsIA) {
+        this();
+    }
+
     /* loaded from: classes.dex */
     public static class Builder {
         final OverlayPaths mPaths = new OverlayPaths();

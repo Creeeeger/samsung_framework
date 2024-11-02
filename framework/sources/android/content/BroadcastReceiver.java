@@ -129,9 +129,15 @@ public abstract class BroadcastReceiver {
                 Trace.traceCounter(64L, "PendingResult#finish#ClassName:" + this.mReceiverClassName, 1);
             }
             if (this.mType == 0) {
-                final IActivityManager mgr = ActivityManager.getService();
+                IActivityManager mgr = ActivityManager.getService();
                 if (QueuedWork.hasPendingWork()) {
                     QueuedWork.queue(new Runnable() { // from class: android.content.BroadcastReceiver.PendingResult.1
+                        final /* synthetic */ IActivityManager val$mgr;
+
+                        AnonymousClass1(IActivityManager mgr2) {
+                            mgr = mgr2;
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             PendingResult.this.sendFinished(mgr);
@@ -139,11 +145,26 @@ public abstract class BroadcastReceiver {
                     }, false);
                     return;
                 } else {
-                    sendFinished(mgr);
+                    sendFinished(mgr2);
                     return;
                 }
             }
             sendFinished(ActivityManager.getService());
+        }
+
+        /* renamed from: android.content.BroadcastReceiver$PendingResult$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ IActivityManager val$mgr;
+
+            AnonymousClass1(IActivityManager mgr2) {
+                mgr = mgr2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                PendingResult.this.sendFinished(mgr);
+            }
         }
 
         public void setExtrasClassLoader(ClassLoader cl) {

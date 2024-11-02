@@ -13,7 +13,6 @@ import com.android.internal.policy.PhoneWindow;
 import com.samsung.android.rune.CoreRune;
 import java.util.Objects;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
 public final class InkWindow extends PhoneWindow {
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
@@ -22,7 +21,6 @@ public final class InkWindow extends PhoneWindow {
     private boolean mIsViewAdded;
     private final WindowManager mWindowManager;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public interface InkVisibilityListener {
         void onInkViewVisible();
@@ -48,12 +46,10 @@ public final class InkWindow extends PhoneWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void initOnly() {
         show(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void show() {
         show(false);
     }
@@ -74,7 +70,6 @@ public final class InkWindow extends PhoneWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void hide(boolean remove) {
         if (remove) {
             this.mWindowManager.removeViewImmediate(getDecorView());
@@ -83,7 +78,6 @@ public final class InkWindow extends PhoneWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setToken(IBinder token) {
         WindowManager.LayoutParams lp = getAttributes();
         lp.token = token;
@@ -127,7 +121,6 @@ public final class InkWindow extends PhoneWindow {
         super.clearContentView();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setInkViewVisibilityListener(InkVisibilityListener listener) {
         this.mInkViewVisibilityListener = listener;
         initInkViewVisibilityListener();
@@ -138,6 +131,9 @@ public final class InkWindow extends PhoneWindow {
             return;
         }
         this.mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: android.inputmethodservice.InkWindow.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
             public void onGlobalLayout() {
                 if (InkWindow.this.mInkView != null && InkWindow.this.mInkView.isVisibleToUser()) {
@@ -152,13 +148,29 @@ public final class InkWindow extends PhoneWindow {
         this.mInkView.getViewTreeObserver().addOnGlobalLayoutListener(this.mGlobalLayoutListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.inputmethodservice.InkWindow$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 implements ViewTreeObserver.OnGlobalLayoutListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
+        public void onGlobalLayout() {
+            if (InkWindow.this.mInkView != null && InkWindow.this.mInkView.isVisibleToUser()) {
+                if (InkWindow.this.mInkViewVisibilityListener != null) {
+                    InkWindow.this.mInkViewVisibilityListener.onInkViewVisible();
+                }
+                InkWindow.this.mInkView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                InkWindow.this.mGlobalLayoutListener = null;
+            }
+        }
+    }
+
     public boolean isInkViewVisible() {
         View view;
         return getDecorView().getVisibility() == 0 && (view = this.mInkView) != null && view.isVisibleToUser();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dispatchHandwritingEvent(MotionEvent event) {
         View decor = getDecorView();
         Objects.requireNonNull(decor);

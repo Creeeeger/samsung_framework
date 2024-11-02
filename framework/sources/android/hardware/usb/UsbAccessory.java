@@ -12,7 +12,9 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class UsbAccessory implements Parcelable {
     public static final Parcelable.Creator<UsbAccessory> CREATOR = new Parcelable.Creator<UsbAccessory>() { // from class: android.hardware.usb.UsbAccessory.2
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UsbAccessory createFromParcel(Parcel in) {
             String manufacturer = in.readString();
@@ -24,7 +26,6 @@ public class UsbAccessory implements Parcelable {
             return new UsbAccessory(manufacturer, model, description, version, uri, serialNumberReader);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsbAccessory[] newArray(int size) {
             return new UsbAccessory[size];
@@ -56,9 +57,30 @@ public class UsbAccessory implements Parcelable {
         }
     }
 
+    /* renamed from: android.hardware.usb.UsbAccessory$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends IUsbSerialReader.Stub {
+        final /* synthetic */ String val$serialNumber;
+
+        AnonymousClass1(String str) {
+            serialNumber = str;
+        }
+
+        @Override // android.hardware.usb.IUsbSerialReader
+        public String getSerial(String packageName) {
+            return serialNumber;
+        }
+    }
+
     @Deprecated
-    public UsbAccessory(String manufacturer, String model, String description, String version, String uri, final String serialNumber) {
+    public UsbAccessory(String manufacturer, String model, String description, String version, String uri, String serialNumber) {
         this(manufacturer, model, description, version, uri, new IUsbSerialReader.Stub() { // from class: android.hardware.usb.UsbAccessory.1
+            final /* synthetic */ String val$serialNumber;
+
+            AnonymousClass1(String serialNumber2) {
+                serialNumber = serialNumber2;
+            }
+
             @Override // android.hardware.usb.IUsbSerialReader
             public String getSerial(String packageName) {
                 return serialNumber;
@@ -122,6 +144,29 @@ public class UsbAccessory implements Parcelable {
 
     public String toString() {
         return "UsbAccessory[mManufacturer=" + this.mManufacturer + ", mModel=" + this.mModel + ", mDescription=" + this.mDescription + ", mVersion=" + this.mVersion + ", mUri=" + this.mUri + ", mSerialNumberReader=" + this.mSerialNumberReader + NavigationBarInflaterView.SIZE_MOD_END;
+    }
+
+    /* renamed from: android.hardware.usb.UsbAccessory$2 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass2 implements Parcelable.Creator<UsbAccessory> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsbAccessory createFromParcel(Parcel in) {
+            String manufacturer = in.readString();
+            String model = in.readString();
+            String description = in.readString();
+            String version = in.readString();
+            String uri = in.readString();
+            IUsbSerialReader serialNumberReader = IUsbSerialReader.Stub.asInterface(in.readStrongBinder());
+            return new UsbAccessory(manufacturer, model, description, version, uri, serialNumberReader);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UsbAccessory[] newArray(int size) {
+            return new UsbAccessory[size];
+        }
     }
 
     @Override // android.os.Parcelable

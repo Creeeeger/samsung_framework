@@ -60,10 +60,14 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Integer>[]> CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES = new Key<>("android.control.aeAvailableTargetFpsRanges", new TypeReference<Range<Integer>[]>() { // from class: android.hardware.camera2.CameraCharacteristics.2
+        AnonymousClass2() {
+        }
     });
 
     @PublicKey
     public static final Key<Range<Integer>> CONTROL_AE_COMPENSATION_RANGE = new Key<>("android.control.aeCompensationRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CameraCharacteristics.3
+        AnonymousClass3() {
+        }
     });
 
     @PublicKey
@@ -109,6 +113,8 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Integer>> CONTROL_POST_RAW_SENSITIVITY_BOOST_RANGE = new Key<>("android.control.postRawSensitivityBoostRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CameraCharacteristics.4
+        AnonymousClass4() {
+        }
     });
     public static final Key<int[]> CONTROL_AVAILABLE_EXTENDED_SCENE_MODE_MAX_SIZES = new Key<>("android.control.availableExtendedSceneModeMaxSizes", int[].class);
     public static final Key<float[]> CONTROL_AVAILABLE_EXTENDED_SCENE_MODE_ZOOM_RATIO_RANGES = new Key<>("android.control.availableExtendedSceneModeZoomRatioRanges", float[].class);
@@ -119,6 +125,8 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Float>> CONTROL_ZOOM_RATIO_RANGE = new Key<>("android.control.zoomRatioRange", new TypeReference<Range<Float>>() { // from class: android.hardware.camera2.CameraCharacteristics.5
+        AnonymousClass5() {
+        }
     });
     public static final Key<HighSpeedVideoConfiguration[]> CONTROL_AVAILABLE_HIGH_SPEED_VIDEO_CONFIGURATIONS_MAXIMUM_RESOLUTION = new Key<>("android.control.availableHighSpeedVideoConfigurationsMaximumResolution", HighSpeedVideoConfiguration[].class);
 
@@ -329,6 +337,8 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Integer>> SENSOR_INFO_SENSITIVITY_RANGE = new Key<>("android.sensor.info.sensitivityRange", new TypeReference<Range<Integer>>() { // from class: android.hardware.camera2.CameraCharacteristics.6
+        AnonymousClass6() {
+        }
     });
 
     @PublicKey
@@ -336,6 +346,8 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     @PublicKey
     public static final Key<Range<Long>> SENSOR_INFO_EXPOSURE_TIME_RANGE = new Key<>("android.sensor.info.exposureTimeRange", new TypeReference<Range<Long>>() { // from class: android.hardware.camera2.CameraCharacteristics.7
+        AnonymousClass7() {
+        }
     });
 
     @PublicKey
@@ -556,10 +568,26 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
         return new CameraMetadataNative(this.mProperties);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.hardware.camera2.CameraCharacteristics$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements CameraManager.DeviceStateListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.hardware.camera2.CameraManager.DeviceStateListener
+        public final void onDeviceStateChanged(boolean folded) {
+            synchronized (CameraCharacteristics.this.mLock) {
+                CameraCharacteristics.this.mFoldedDeviceState = folded;
+            }
+        }
+    }
+
     public CameraManager.DeviceStateListener getDeviceStateListener() {
         if (this.mFoldStateListener == null) {
             this.mFoldStateListener = new CameraManager.DeviceStateListener() { // from class: android.hardware.camera2.CameraCharacteristics.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.hardware.camera2.CameraManager.DeviceStateListener
                 public final void onDeviceStateChanged(boolean folded) {
                     synchronized (CameraCharacteristics.this.mLock) {
@@ -592,7 +620,6 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
         return t != null ? t : (T) this.mProperties.get(key);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.hardware.camera2.CameraMetadata
     public <T> T getProtected(Key<?> key) {
         return (T) this.mProperties.get(key);
@@ -698,7 +725,6 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
         return availableSamsungKeys;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public <TKey> List<TKey> getAvailableKeyList(Class<?> metadataClass, Class<TKey> keyClass, int[] filterTags, boolean includeSynthetic) {
         if (metadataClass.equals(CameraMetadata.class)) {
             throw new AssertionError("metadataClass must be a strict subclass of CameraMetadata");
@@ -712,5 +738,47 @@ public final class CameraCharacteristics extends CameraMetadata<Key<?>> {
 
     public Set<String> getPhysicalCameraIds() {
         return this.mProperties.getPhysicalCameraIds();
+    }
+
+    /* renamed from: android.hardware.camera2.CameraCharacteristics$2 */
+    /* loaded from: classes.dex */
+    class AnonymousClass2 extends TypeReference<Range<Integer>[]> {
+        AnonymousClass2() {
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.CameraCharacteristics$3 */
+    /* loaded from: classes.dex */
+    class AnonymousClass3 extends TypeReference<Range<Integer>> {
+        AnonymousClass3() {
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.CameraCharacteristics$4 */
+    /* loaded from: classes.dex */
+    class AnonymousClass4 extends TypeReference<Range<Integer>> {
+        AnonymousClass4() {
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.CameraCharacteristics$5 */
+    /* loaded from: classes.dex */
+    class AnonymousClass5 extends TypeReference<Range<Float>> {
+        AnonymousClass5() {
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.CameraCharacteristics$6 */
+    /* loaded from: classes.dex */
+    class AnonymousClass6 extends TypeReference<Range<Integer>> {
+        AnonymousClass6() {
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.CameraCharacteristics$7 */
+    /* loaded from: classes.dex */
+    class AnonymousClass7 extends TypeReference<Range<Long>> {
+        AnonymousClass7() {
+        }
     }
 }

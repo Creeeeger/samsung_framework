@@ -69,7 +69,6 @@ public class MediaRouter {
         public abstract void onVolumeUpdateRequest(RouteInfo routeInfo, int i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class Static implements DisplayManager.DisplayListener {
         boolean mActivelyScanningWifiDisplays;
@@ -97,8 +96,11 @@ public class MediaRouter {
         int mCurrentUserId = -1;
         SparseIntArray mStreamVolume = new SparseIntArray();
         final IAudioRoutesObserver.Stub mAudioRoutesObserver = new IAudioRoutesObserver.Stub() { // from class: android.media.MediaRouter.Static.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.IAudioRoutesObserver
-            public void dispatchAudioRoutesChanged(final AudioRoutesInfo newRoutes) {
+            public void dispatchAudioRoutesChanged(AudioRoutesInfo newRoutes) {
                 try {
                     Static r0 = Static.this;
                     r0.mIsBluetoothA2dpOn = r0.mAudioService.isBluetoothA2dpOn();
@@ -106,13 +108,79 @@ public class MediaRouter {
                     Log.e(MediaRouter.TAG, "Error querying Bluetooth A2DP state", e);
                 }
                 Static.this.mHandler.post(new Runnable() { // from class: android.media.MediaRouter.Static.1.1
+                    final /* synthetic */ AudioRoutesInfo val$newRoutes;
+
+                    RunnableC00031(AudioRoutesInfo newRoutes2) {
+                        newRoutes = newRoutes2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         Static.this.updateAudioRoutes(newRoutes);
                     }
                 });
             }
+
+            /* renamed from: android.media.MediaRouter$Static$1$1 */
+            /* loaded from: classes2.dex */
+            class RunnableC00031 implements Runnable {
+                final /* synthetic */ AudioRoutesInfo val$newRoutes;
+
+                RunnableC00031(AudioRoutesInfo newRoutes2) {
+                    newRoutes = newRoutes2;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    Static.this.updateAudioRoutes(newRoutes);
+                }
+            }
         };
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.media.MediaRouter$Static$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 extends IAudioRoutesObserver.Stub {
+            AnonymousClass1() {
+            }
+
+            @Override // android.media.IAudioRoutesObserver
+            public void dispatchAudioRoutesChanged(AudioRoutesInfo newRoutes2) {
+                try {
+                    Static r0 = Static.this;
+                    r0.mIsBluetoothA2dpOn = r0.mAudioService.isBluetoothA2dpOn();
+                } catch (RemoteException e) {
+                    Log.e(MediaRouter.TAG, "Error querying Bluetooth A2DP state", e);
+                }
+                Static.this.mHandler.post(new Runnable() { // from class: android.media.MediaRouter.Static.1.1
+                    final /* synthetic */ AudioRoutesInfo val$newRoutes;
+
+                    RunnableC00031(AudioRoutesInfo newRoutes22) {
+                        newRoutes = newRoutes22;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        Static.this.updateAudioRoutes(newRoutes);
+                    }
+                });
+            }
+
+            /* renamed from: android.media.MediaRouter$Static$1$1 */
+            /* loaded from: classes2.dex */
+            class RunnableC00031 implements Runnable {
+                final /* synthetic */ AudioRoutesInfo val$newRoutes;
+
+                RunnableC00031(AudioRoutesInfo newRoutes22) {
+                    newRoutes = newRoutes22;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    Static.this.updateAudioRoutes(newRoutes);
+                }
+            }
+        }
 
         Static(Context appContext) {
             this.mPackageName = appContext.getPackageName();
@@ -593,15 +661,32 @@ public class MediaRouter {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes2.dex */
         public final class Client extends IMediaRouterClient.Stub {
             Client() {
             }
 
+            /* renamed from: android.media.MediaRouter$Static$Client$1 */
+            /* loaded from: classes2.dex */
+            class AnonymousClass1 implements Runnable {
+                AnonymousClass1() {
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    Client client = Client.this;
+                    if (client == Static.this.mClient) {
+                        Static.this.updateClientState();
+                    }
+                }
+            }
+
             @Override // android.media.IMediaRouterClient
             public void onStateChanged() {
                 Static.this.mHandler.post(new Runnable() { // from class: android.media.MediaRouter.Static.Client.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         Client client = Client.this;
@@ -622,7 +707,6 @@ public class MediaRouter {
                 });
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRestoreRoute$0() {
                 if (this == Static.this.mClient && Static.this.mSelectedRoute != null) {
                     if (!Static.this.mSelectedRoute.isDefault() && !Static.this.mSelectedRoute.isBluetooth()) {
@@ -647,7 +731,6 @@ public class MediaRouter {
                 });
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onGroupRouteSelected$1(String groupRouteId) {
                 if (this == Static.this.mClient) {
                     Static.this.handleGroupRouteSelected(groupRouteId);
@@ -1273,9 +1356,43 @@ public class MediaRouter {
         int mPresentationDisplayId = -1;
         boolean mEnabled = true;
         final IRemoteVolumeObserver.Stub mRemoteVolObserver = new IRemoteVolumeObserver.Stub() { // from class: android.media.MediaRouter.RouteInfo.1
+            AnonymousClass1() {
+            }
+
+            /* renamed from: android.media.MediaRouter$RouteInfo$1$1 */
+            /* loaded from: classes2.dex */
+            class RunnableC00021 implements Runnable {
+                final /* synthetic */ int val$direction;
+                final /* synthetic */ int val$value;
+
+                RunnableC00021(int i, int i2) {
+                    direction = i;
+                    value = i2;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (RouteInfo.this.mVcb != null) {
+                        if (direction != 0) {
+                            RouteInfo.this.mVcb.vcb.onVolumeUpdateRequest(RouteInfo.this.mVcb.route, direction);
+                        } else {
+                            RouteInfo.this.mVcb.vcb.onVolumeSetRequest(RouteInfo.this.mVcb.route, value);
+                        }
+                    }
+                }
+            }
+
             @Override // android.media.IRemoteVolumeObserver
-            public void dispatchRemoteVolumeUpdate(final int direction, final int value) {
+            public void dispatchRemoteVolumeUpdate(int direction, int value) {
                 MediaRouter.sStatic.mHandler.post(new Runnable() { // from class: android.media.MediaRouter.RouteInfo.1.1
+                    final /* synthetic */ int val$direction;
+                    final /* synthetic */ int val$value;
+
+                    RunnableC00021(int direction2, int value2) {
+                        direction = direction2;
+                        value = value2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (RouteInfo.this.mVcb != null) {
@@ -1583,6 +1700,61 @@ public class MediaRouter {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.media.MediaRouter$RouteInfo$1 */
+        /* loaded from: classes2.dex */
+        public class AnonymousClass1 extends IRemoteVolumeObserver.Stub {
+            AnonymousClass1() {
+            }
+
+            /* renamed from: android.media.MediaRouter$RouteInfo$1$1 */
+            /* loaded from: classes2.dex */
+            class RunnableC00021 implements Runnable {
+                final /* synthetic */ int val$direction;
+                final /* synthetic */ int val$value;
+
+                RunnableC00021(int direction2, int value2) {
+                    direction = direction2;
+                    value = value2;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (RouteInfo.this.mVcb != null) {
+                        if (direction != 0) {
+                            RouteInfo.this.mVcb.vcb.onVolumeUpdateRequest(RouteInfo.this.mVcb.route, direction);
+                        } else {
+                            RouteInfo.this.mVcb.vcb.onVolumeSetRequest(RouteInfo.this.mVcb.route, value);
+                        }
+                    }
+                }
+            }
+
+            @Override // android.media.IRemoteVolumeObserver
+            public void dispatchRemoteVolumeUpdate(int direction2, int value2) {
+                MediaRouter.sStatic.mHandler.post(new Runnable() { // from class: android.media.MediaRouter.RouteInfo.1.1
+                    final /* synthetic */ int val$direction;
+                    final /* synthetic */ int val$value;
+
+                    RunnableC00021(int direction22, int value22) {
+                        direction = direction22;
+                        value = value22;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        if (RouteInfo.this.mVcb != null) {
+                            if (direction != 0) {
+                                RouteInfo.this.mVcb.vcb.onVolumeUpdateRequest(RouteInfo.this.mVcb.route, direction);
+                            } else {
+                                RouteInfo.this.mVcb.vcb.onVolumeSetRequest(RouteInfo.this.mVcb.route, value);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
         void routeUpdated() {
             MediaRouter.updateRoute(this);
         }
@@ -1767,16 +1939,38 @@ public class MediaRouter {
             this.mSvp = null;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes2.dex */
         public class SessionVolumeProvider extends VolumeProvider {
             SessionVolumeProvider(int volumeControl, int maxVolume, int currentVolume) {
                 super(volumeControl, maxVolume, currentVolume);
             }
 
+            /* renamed from: android.media.MediaRouter$UserRouteInfo$SessionVolumeProvider$1 */
+            /* loaded from: classes2.dex */
+            class AnonymousClass1 implements Runnable {
+                final /* synthetic */ int val$volume;
+
+                AnonymousClass1(int i) {
+                    volume = i;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (UserRouteInfo.this.mVcb != null) {
+                        UserRouteInfo.this.mVcb.vcb.onVolumeSetRequest(UserRouteInfo.this.mVcb.route, volume);
+                    }
+                }
+            }
+
             @Override // android.media.VolumeProvider
-            public void onSetVolumeTo(final int volume) {
+            public void onSetVolumeTo(int volume) {
                 MediaRouter.sStatic.mHandler.post(new Runnable() { // from class: android.media.MediaRouter.UserRouteInfo.SessionVolumeProvider.1
+                    final /* synthetic */ int val$volume;
+
+                    AnonymousClass1(int volume2) {
+                        volume = volume2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (UserRouteInfo.this.mVcb != null) {
@@ -1786,9 +1980,32 @@ public class MediaRouter {
                 });
             }
 
+            /* renamed from: android.media.MediaRouter$UserRouteInfo$SessionVolumeProvider$2 */
+            /* loaded from: classes2.dex */
+            class AnonymousClass2 implements Runnable {
+                final /* synthetic */ int val$direction;
+
+                AnonymousClass2(int i) {
+                    direction = i;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (UserRouteInfo.this.mVcb != null) {
+                        UserRouteInfo.this.mVcb.vcb.onVolumeUpdateRequest(UserRouteInfo.this.mVcb.route, direction);
+                    }
+                }
+            }
+
             @Override // android.media.VolumeProvider
-            public void onAdjustVolume(final int direction) {
+            public void onAdjustVolume(int direction) {
                 MediaRouter.sStatic.mHandler.post(new Runnable() { // from class: android.media.MediaRouter.UserRouteInfo.SessionVolumeProvider.2
+                    final /* synthetic */ int val$direction;
+
+                    AnonymousClass2(int direction2) {
+                        direction = direction2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (UserRouteInfo.this.mVcb != null) {
@@ -2098,7 +2315,6 @@ public class MediaRouter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class CallbackInfo {
         public final Callback cb;
@@ -2190,7 +2406,6 @@ public class MediaRouter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class VolumeChangeReceiver extends BroadcastReceiver {
         VolumeChangeReceiver() {
@@ -2213,7 +2428,6 @@ public class MediaRouter {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class WifiDisplayStatusChangedReceiver extends BroadcastReceiver {
         WifiDisplayStatusChangedReceiver() {

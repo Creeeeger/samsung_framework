@@ -99,8 +99,9 @@ public interface IPublishResponseCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IPublishResponseCallback {
+        public static class Proxy implements IPublishResponseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

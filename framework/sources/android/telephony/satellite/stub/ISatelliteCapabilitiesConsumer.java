@@ -84,8 +84,9 @@ public interface ISatelliteCapabilitiesConsumer extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISatelliteCapabilitiesConsumer {
+        public static class Proxy implements ISatelliteCapabilitiesConsumer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

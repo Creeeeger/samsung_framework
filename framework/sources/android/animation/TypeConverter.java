@@ -12,12 +12,10 @@ public abstract class TypeConverter<T, V> {
         this.mToClass = toClass;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Class<V> getTargetType() {
         return this.mToClass;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Class<T> getSourceType() {
         return this.mFromClass;
     }

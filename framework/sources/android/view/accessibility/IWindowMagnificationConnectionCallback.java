@@ -159,8 +159,9 @@ public interface IWindowMagnificationConnectionCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IWindowMagnificationConnectionCallback {
+        public static class Proxy implements IWindowMagnificationConnectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

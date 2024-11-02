@@ -371,7 +371,6 @@ public class TelephonyCallback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class IPhoneStateListenerStub extends IPhoneStateListener.Stub {
         private Executor mExecutor;
@@ -396,7 +395,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onServiceStateChanged$1(final ServiceStateListener listener, final ServiceState serviceState) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda41
                 @Override // java.lang.Runnable
@@ -424,7 +422,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onMessageWaitingIndicatorChanged$3(final MessageWaitingIndicatorListener listener, final boolean mwi) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
@@ -448,7 +445,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCallForwardingIndicatorChanged$5(final CallForwardingIndicatorListener listener, final boolean cfi) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda31
                 @Override // java.lang.Runnable
@@ -473,7 +469,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCellLocationChanged$7(final CellLocationListener listener, final CellLocation location) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda50
                 @Override // java.lang.Runnable
@@ -501,7 +496,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCallStateChanged$9(final CallStateListener listener, final int state) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda71
                 @Override // java.lang.Runnable
@@ -534,7 +528,6 @@ public class TelephonyCallback {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDataConnectionStateChanged$11(final DataConnectionStateListener listener, final int networkType) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda28
                 @Override // java.lang.Runnable
@@ -544,7 +537,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDataConnectionStateChanged$13(final DataConnectionStateListener listener, final int state, final int networkType) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda14
                 @Override // java.lang.Runnable
@@ -568,7 +560,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDataActivity$15(final DataActivityListener listener, final int direction) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda65
                 @Override // java.lang.Runnable
@@ -592,7 +583,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSignalStrengthsChanged$17(final SignalStrengthsListener listener, final SignalStrength signalStrength) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda58
                 @Override // java.lang.Runnable
@@ -616,7 +606,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCellInfoChanged$19(final CellInfoListener listener, final List cellInfo) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda42
                 @Override // java.lang.Runnable
@@ -640,7 +629,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPreciseCallStateChanged$21(final PreciseCallStateListener listener, final PreciseCallState callState) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
@@ -664,7 +652,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCallDisconnectCauseChanged$23(final CallDisconnectCauseListener listener, final int disconnectCause, final int preciseDisconnectCause) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda54
                 @Override // java.lang.Runnable
@@ -688,7 +675,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPreciseDataConnectionStateChanged$25(final PreciseDataConnectionStateListener listener, final PreciseDataConnectionState dataConnectionState) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda9
                 @Override // java.lang.Runnable
@@ -716,7 +702,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSrvccStateChanged$27(final SrvccStateListener listener, final int state) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda55
                 @Override // java.lang.Runnable
@@ -740,7 +725,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVoiceActivationStateChanged$29(final VoiceActivationStateListener listener, final int activationState) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda48
                 @Override // java.lang.Runnable
@@ -764,7 +748,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDataActivationStateChanged$31(final DataActivationStateListener listener, final int activationState) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda57
                 @Override // java.lang.Runnable
@@ -788,7 +771,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUserMobileDataStateChanged$33(final UserMobileDataStateListener listener, final boolean enabled) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda47
                 @Override // java.lang.Runnable
@@ -812,7 +794,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDisplayInfoChanged$35(final DisplayInfoListener listener, final TelephonyDisplayInfo telephonyDisplayInfo) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda36
                 @Override // java.lang.Runnable
@@ -840,7 +821,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCarrierNetworkChange$37(final CarrierNetworkListener listener, final boolean active) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
@@ -864,7 +844,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onEmergencyNumberListChanged$39(final EmergencyNumberListListener listener, final Map emergencyNumberList) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda12
                 @Override // java.lang.Runnable
@@ -888,7 +867,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onOutgoingEmergencyCall$41(final OutgoingEmergencyCallListener listener, final EmergencyNumber placedEmergencyNumber, final int subscriptionId) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda15
                 @Override // java.lang.Runnable
@@ -912,7 +890,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onOutgoingEmergencySms$43(final OutgoingEmergencySmsListener listener, final EmergencyNumber sentEmergencyNumber, final int subscriptionId) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda38
                 @Override // java.lang.Runnable
@@ -936,7 +913,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPhoneCapabilityChanged$45(final PhoneCapabilityListener listener, final PhoneCapability capability) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
@@ -960,7 +936,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRadioPowerStateChanged$47(final RadioPowerStateListener listener, final int state) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda21
                 @Override // java.lang.Runnable
@@ -984,7 +959,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCallStatesChanged$49(final CallAttributesListener listener, final List callStateList) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda67
                 @Override // java.lang.Runnable
@@ -1008,7 +982,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onActiveDataSubIdChanged$51(final ActiveDataSubscriptionIdListener listener, final int subId) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda30
                 @Override // java.lang.Runnable
@@ -1032,7 +1005,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onImsCallDisconnectCauseChanged$53(final ImsCallDisconnectCauseListener listener, final ImsReasonInfo disconnectCause) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda34
                 @Override // java.lang.Runnable
@@ -1056,7 +1028,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRegistrationFailed$55(final RegistrationFailedListener listener, final CellIdentity cellIdentity, final String chosenPlmn, final int domain, final int causeCode, final int additionalCauseCode) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -1080,7 +1051,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onBarringInfoChanged$57(final BarringInfoListener listener, final BarringInfo barringInfo) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda17
                 @Override // java.lang.Runnable
@@ -1104,7 +1074,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPhysicalChannelConfigChanged$59(final PhysicalChannelConfigListener listener, final List configs) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda20
                 @Override // java.lang.Runnable
@@ -1128,7 +1097,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDataEnabledChanged$61(final DataEnabledListener listener, final boolean enabled, final int reason) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda52
                 @Override // java.lang.Runnable
@@ -1152,7 +1120,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAllowedNetworkTypesChanged$63(final AllowedNetworkTypesListener listener, final int reason, final long allowedNetworkType) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda32
                 @Override // java.lang.Runnable
@@ -1176,7 +1143,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onLinkCapacityEstimateChanged$65(final LinkCapacityEstimateChangedListener listener, final List linkCapacityEstimateList) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda45
                 @Override // java.lang.Runnable
@@ -1200,7 +1166,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onMediaQualityStatusChanged$67(final MediaQualityStatusChangedListener listener, final MediaQualityStatus mediaQualityStatus) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda16
                 @Override // java.lang.Runnable
@@ -1225,7 +1190,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCallBackModeStarted$69(final EmergencyCallbackModeListener listener, final int type) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda51
                 @Override // java.lang.Runnable
@@ -1250,7 +1214,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCallBackModeStopped$71(final EmergencyCallbackModeListener listener, final int type, final int reason) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda25
                 @Override // java.lang.Runnable
@@ -1274,7 +1237,6 @@ public class TelephonyCallback {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCarrierRoamingNtnModeChanged$73(final CarrierRoamingNtnModeListener listener, final boolean active) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.TelephonyCallback$IPhoneStateListenerStub$$ExternalSyntheticLambda11
                 @Override // java.lang.Runnable

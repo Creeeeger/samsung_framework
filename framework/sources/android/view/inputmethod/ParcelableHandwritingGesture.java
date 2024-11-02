@@ -7,14 +7,15 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ParcelableHandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<ParcelableHandwritingGesture> CREATOR = new Parcelable.Creator<ParcelableHandwritingGesture>() { // from class: android.view.inputmethod.ParcelableHandwritingGesture.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ParcelableHandwritingGesture createFromParcel(Parcel in) {
             int gestureType = in.readInt();
             return new ParcelableHandwritingGesture(ParcelableHandwritingGesture.createFromParcelInternal(gestureType, in));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableHandwritingGesture[] newArray(int size) {
             return new ParcelableHandwritingGesture[size];
@@ -22,6 +23,10 @@ public final class ParcelableHandwritingGesture implements Parcelable {
     };
     private final HandwritingGesture mGesture;
     private final Parcelable mGestureAsParcelable;
+
+    /* synthetic */ ParcelableHandwritingGesture(HandwritingGesture handwritingGesture, ParcelableHandwritingGestureIA parcelableHandwritingGestureIA) {
+        this(handwritingGesture);
+    }
 
     /* JADX WARN: Multi-variable type inference failed */
     private ParcelableHandwritingGesture(HandwritingGesture handwritingGesture) {
@@ -37,7 +42,6 @@ public final class ParcelableHandwritingGesture implements Parcelable {
         return this.mGesture;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static HandwritingGesture createFromParcelInternal(int gestureType, Parcel parcel) {
         switch (gestureType) {
             case 0:
@@ -60,6 +64,24 @@ public final class ParcelableHandwritingGesture implements Parcelable {
                 return InsertModeGesture.CREATOR.createFromParcel(parcel);
             default:
                 throw new UnsupportedOperationException("Unknown type=" + gestureType);
+        }
+    }
+
+    /* renamed from: android.view.inputmethod.ParcelableHandwritingGesture$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ParcelableHandwritingGesture> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableHandwritingGesture createFromParcel(Parcel in) {
+            int gestureType = in.readInt();
+            return new ParcelableHandwritingGesture(ParcelableHandwritingGesture.createFromParcelInternal(gestureType, in));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ParcelableHandwritingGesture[] newArray(int size) {
+            return new ParcelableHandwritingGesture[size];
         }
     }
 

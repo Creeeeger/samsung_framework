@@ -274,8 +274,9 @@ public interface IMediaMetricsManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMediaMetricsManager {
+        public static class Proxy implements IMediaMetricsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -84,8 +84,9 @@ public interface IBackupManagerMonitor extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IBackupManagerMonitor {
+        public static class Proxy implements IBackupManagerMonitor {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

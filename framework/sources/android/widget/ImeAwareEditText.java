@@ -61,8 +61,7 @@ public class ImeAwareEditText extends EditText {
         return ic;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: showSoftInputIfNecessary, reason: merged with bridge method [inline-methods] */
+    /* renamed from: showSoftInputIfNecessary */
     public void lambda$new$0() {
         if (this.mHasPendingShowSoftInputRequest) {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(InputMethodManager.class);

@@ -306,38 +306,161 @@ public class SpannableStringBuilder implements CharSequence, GetChars, Spannable
         return resolveGap(this.mSpanStarts[i]) <= end && (i & 1) != 0 && removeSpansForChange(start, end, textIsRemoved, rightChild(i));
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:100:0x01a1, code lost:            r11 = r1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:101:0x01a8, code lost:            if (getSpanStart(r8[r9]) >= 0) goto L116;     */
-    /* JADX WARN: Code restructure failed: missing block: B:102:0x01aa, code lost:            r12 = (r10 - r2) + r26;        r19 = (r11 - r2) + r26;        r6 = r7.getSpanFlags(r8[r9]) | 2048;        setSpan(false, r8[r9], r12, r19, r6, false);     */
-    /* JADX WARN: Code restructure failed: missing block: B:104:0x01cd, code lost:            r9 = r9 + 1;        r2 = r29;        r4 = r30;     */
-    /* JADX WARN: Code restructure failed: missing block: B:107:0x01d4, code lost:            restoreInvariants();     */
-    /* JADX WARN: Code restructure failed: missing block: B:108:0x01d7, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:110:?, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:111:0x0119, code lost:            r5 = false;     */
-    /* JADX WARN: Code restructure failed: missing block: B:112:0x0173, code lost:            r4 = r10;        r2 = r11;        r15 = r12;     */
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x00de, code lost:            if (r16 > 0) goto L61;     */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x00e2, code lost:            if (r25.mSpanCount <= 0) goto L110;     */
-    /* JADX WARN: Code restructure failed: missing block: B:71:0x00ec, code lost:            if (removeSpansForChange(r26, r27, r8, treeRoot()) == false) goto L111;     */
-    /* JADX WARN: Code restructure failed: missing block: B:75:0x00ef, code lost:            r25.mGapStart += r9;        r1 = r25.mGapLength - r9;        r25.mGapLength = r1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:76:0x00f9, code lost:            if (r1 >= 1) goto L69;     */
-    /* JADX WARN: Code restructure failed: missing block: B:77:0x00fb, code lost:            new java.lang.Exception("mGapLength < 1").printStackTrace();     */
-    /* JADX WARN: Code restructure failed: missing block: B:78:0x0106, code lost:            android.text.TextUtils.getChars(r12, r11, r10, r25.mText, r26);     */
-    /* JADX WARN: Code restructure failed: missing block: B:79:0x010b, code lost:            if (r16 <= 0) goto L80;     */
-    /* JADX WARN: Code restructure failed: missing block: B:81:0x0115, code lost:            if ((r25.mGapStart + r25.mGapLength) != r25.mText.length) goto L74;     */
-    /* JADX WARN: Code restructure failed: missing block: B:82:0x0117, code lost:            r5 = true;     */
-    /* JADX WARN: Code restructure failed: missing block: B:83:0x011a, code lost:            r7 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:85:0x011e, code lost:            if (r7 >= r25.mSpanCount) goto L113;     */
-    /* JADX WARN: Code restructure failed: missing block: B:86:0x0120, code lost:            r19 = (r25.mSpanFlags[r7] & 240) >> 4;        r6 = r25.mSpanStarts;        r6[r7] = updatedIntervalBound(r6[r7], r26, r9, r19, r5, r8);        r0 = r25.mSpanFlags[r7] & 15;        r1 = r25.mSpanEnds;        r3 = r7;        r20 = r8;        r1[r3] = updatedIntervalBound(r1[r7], r26, r9, r0, r5, r20);        r7 = r3 + 1;        r11 = r11;        r10 = r10;        r12 = r12;        r8 = r20;     */
-    /* JADX WARN: Code restructure failed: missing block: B:88:0x0167, code lost:            r4 = r10;        r2 = r11;        r15 = r12;        restoreInvariants();     */
-    /* JADX WARN: Code restructure failed: missing block: B:90:0x017c, code lost:            if ((r15 instanceof android.text.Spanned) == false) goto L117;     */
-    /* JADX WARN: Code restructure failed: missing block: B:91:0x017e, code lost:            r7 = (android.text.Spanned) r15;        r8 = r7.getSpans(r2, r4, java.lang.Object.class);        r9 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:93:0x018a, code lost:            if (r9 >= r8.length) goto L114;     */
-    /* JADX WARN: Code restructure failed: missing block: B:94:0x018c, code lost:            r0 = r7.getSpanStart(r8[r9]);        r1 = r7.getSpanEnd(r8[r9]);     */
-    /* JADX WARN: Code restructure failed: missing block: B:95:0x0198, code lost:            if (r0 >= r2) goto L89;     */
-    /* JADX WARN: Code restructure failed: missing block: B:96:0x019a, code lost:            r0 = r29;     */
-    /* JADX WARN: Code restructure failed: missing block: B:97:0x019c, code lost:            r10 = r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:98:0x019d, code lost:            if (r1 <= r4) goto L92;     */
-    /* JADX WARN: Code restructure failed: missing block: B:99:0x019f, code lost:            r1 = r30;     */
+    /* JADX WARN: Code restructure failed: missing block: B:100:0x01a1, code lost:
+    
+        r11 = r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:101:0x01a8, code lost:
+    
+        if (getSpanStart(r8[r9]) >= 0) goto L234;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:102:0x01aa, code lost:
+    
+        r12 = (r10 - r2) + r26;
+        r19 = (r11 - r2) + r26;
+        r6 = r7.getSpanFlags(r8[r9]) | 2048;
+        setSpan(false, r8[r9], r12, r19, r6, false);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:104:0x01cd, code lost:
+    
+        r9 = r9 + 1;
+        r2 = r29;
+        r4 = r30;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:107:0x01d4, code lost:
+    
+        restoreInvariants();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:108:0x01d7, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:110:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:111:0x0119, code lost:
+    
+        r5 = false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:112:0x0173, code lost:
+    
+        r4 = r10;
+        r2 = r11;
+        r15 = r12;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x00de, code lost:
+    
+        if (r16 > 0) goto L179;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x00e2, code lost:
+    
+        if (r25.mSpanCount <= 0) goto L228;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:71:0x00ec, code lost:
+    
+        if (removeSpansForChange(r26, r27, r8, treeRoot()) == false) goto L229;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x00ef, code lost:
+    
+        r25.mGapStart += r9;
+        r1 = r25.mGapLength - r9;
+        r25.mGapLength = r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x00f9, code lost:
+    
+        if (r1 >= 1) goto L187;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:77:0x00fb, code lost:
+    
+        new java.lang.Exception("mGapLength < 1").printStackTrace();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:78:0x0106, code lost:
+    
+        android.text.TextUtils.getChars(r12, r11, r10, r25.mText, r26);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:79:0x010b, code lost:
+    
+        if (r16 <= 0) goto L198;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:81:0x0115, code lost:
+    
+        if ((r25.mGapStart + r25.mGapLength) != r25.mText.length) goto L192;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:82:0x0117, code lost:
+    
+        r5 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:83:0x011a, code lost:
+    
+        r7 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:85:0x011e, code lost:
+    
+        if (r7 >= r25.mSpanCount) goto L231;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:86:0x0120, code lost:
+    
+        r19 = (r25.mSpanFlags[r7] & 240) >> 4;
+        r6 = r25.mSpanStarts;
+        r6[r7] = updatedIntervalBound(r6[r7], r26, r9, r19, r5, r8);
+        r0 = r25.mSpanFlags[r7] & 15;
+        r1 = r25.mSpanEnds;
+        r3 = r7;
+        r20 = r8;
+        r1[r3] = updatedIntervalBound(r1[r7], r26, r9, r0, r5, r20);
+        r7 = r3 + 1;
+        r11 = r11;
+        r10 = r10;
+        r12 = r12;
+        r8 = r20;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:88:0x0167, code lost:
+    
+        r4 = r10;
+        r2 = r11;
+        r15 = r12;
+        restoreInvariants();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:90:0x017c, code lost:
+    
+        if ((r15 instanceof android.text.Spanned) == false) goto L235;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:91:0x017e, code lost:
+    
+        r7 = (android.text.Spanned) r15;
+        r8 = r7.getSpans(r2, r4, java.lang.Object.class);
+        r9 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:93:0x018a, code lost:
+    
+        if (r9 >= r8.length) goto L232;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:94:0x018c, code lost:
+    
+        r0 = r7.getSpanStart(r8[r9]);
+        r1 = r7.getSpanEnd(r8[r9]);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:95:0x0198, code lost:
+    
+        if (r0 >= r2) goto L207;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:96:0x019a, code lost:
+    
+        r0 = r29;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:97:0x019c, code lost:
+    
+        r10 = r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:98:0x019d, code lost:
+    
+        if (r1 <= r4) goto L210;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:99:0x019f, code lost:
+    
+        r1 = r30;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

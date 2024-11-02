@@ -38,10 +38,8 @@ public abstract class DevicePolicyManagerInternal {
 
     public abstract int getDeviceOwnerUserId();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract DevicePolicyCache getDevicePolicyCache();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public abstract DeviceStateCache getDeviceStateCache();
 
     public abstract Set<String> getPackagesSuspendedByAdmin(int i);

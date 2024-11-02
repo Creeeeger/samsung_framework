@@ -10,7 +10,9 @@ import android.os.incremental.IncrementalFileSystemControlParcel;
 /* loaded from: classes.dex */
 public class FileSystemControlParcel implements Parcelable {
     public static final Parcelable.Creator<FileSystemControlParcel> CREATOR = new Parcelable.Creator<FileSystemControlParcel>() { // from class: android.content.pm.FileSystemControlParcel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FileSystemControlParcel createFromParcel(Parcel _aidl_source) {
             FileSystemControlParcel _aidl_out = new FileSystemControlParcel();
@@ -18,7 +20,6 @@ public class FileSystemControlParcel implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FileSystemControlParcel[] newArray(int _aidl_size) {
             return new FileSystemControlParcel[_aidl_size];
@@ -27,6 +28,25 @@ public class FileSystemControlParcel implements Parcelable {
     public IPackageInstallerSessionFileSystemConnector callback;
     public IncrementalFileSystemControlParcel incremental;
     public IIncrementalServiceConnector service;
+
+    /* renamed from: android.content.pm.FileSystemControlParcel$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FileSystemControlParcel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FileSystemControlParcel createFromParcel(Parcel _aidl_source) {
+            FileSystemControlParcel _aidl_out = new FileSystemControlParcel();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FileSystemControlParcel[] newArray(int _aidl_size) {
+            return new FileSystemControlParcel[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

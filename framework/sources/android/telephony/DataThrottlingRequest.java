@@ -11,13 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class DataThrottlingRequest implements Parcelable {
     public static final Parcelable.Creator<DataThrottlingRequest> CREATOR = new Parcelable.Creator<DataThrottlingRequest>() { // from class: android.telephony.DataThrottlingRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DataThrottlingRequest createFromParcel(Parcel in) {
             return new DataThrottlingRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataThrottlingRequest[] newArray(int size) {
             return new DataThrottlingRequest[size];
@@ -41,6 +42,14 @@ public final class DataThrottlingRequest implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface DataThrottlingAction {
+    }
+
+    /* synthetic */ DataThrottlingRequest(int i, long j, DataThrottlingRequestIA dataThrottlingRequestIA) {
+        this(i, j);
+    }
+
+    /* synthetic */ DataThrottlingRequest(Parcel parcel, DataThrottlingRequestIA dataThrottlingRequestIA) {
+        this(parcel);
     }
 
     private DataThrottlingRequest(int dataThrottlingAction, long completionDurationMillis) {
@@ -74,6 +83,23 @@ public final class DataThrottlingRequest implements Parcelable {
 
     public long getCompletionDurationMillis() {
         return this.mCompletionDurationMillis;
+    }
+
+    /* renamed from: android.telephony.DataThrottlingRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DataThrottlingRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataThrottlingRequest createFromParcel(Parcel in) {
+            return new DataThrottlingRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataThrottlingRequest[] newArray(int size) {
+            return new DataThrottlingRequest[size];
+        }
     }
 
     @SystemApi

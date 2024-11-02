@@ -54,7 +54,6 @@ public class BigPictureNotificationImageView extends ImageView {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setImageURIAsync$0(Drawable drawable) {
         lambda$setImageURIAsync$2(drawable);
     }
@@ -76,7 +75,6 @@ public class BigPictureNotificationImageView extends ImageView {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setImageIconAsync$1(Drawable drawable) {
         lambda$setImageURIAsync$2(drawable);
     }

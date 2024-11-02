@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemBioFace implements Parcelable {
     public static final Parcelable.Creator<SemBioFace> CREATOR = new Parcelable.Creator<SemBioFace>() { // from class: com.samsung.android.bio.face.SemBioFace.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemBioFace createFromParcel(Parcel in) {
             return new SemBioFace(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemBioFace[] newArray(int size) {
             return new SemBioFace[size];
@@ -23,6 +24,10 @@ public class SemBioFace implements Parcelable {
     private int mFaceId;
     private int mGroupId;
     private CharSequence mName;
+
+    /* synthetic */ SemBioFace(Parcel parcel, SemBioFaceIA semBioFaceIA) {
+        this(parcel);
+    }
 
     public SemBioFace(CharSequence name, int groupId, int faceId, long deviceId) {
         this.mName = name;
@@ -72,5 +77,22 @@ public class SemBioFace implements Parcelable {
         out.writeInt(this.mGroupId);
         out.writeInt(this.mFaceId);
         out.writeLong(this.mDeviceId);
+    }
+
+    /* renamed from: com.samsung.android.bio.face.SemBioFace$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemBioFace> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemBioFace createFromParcel(Parcel in) {
+            return new SemBioFace(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemBioFace[] newArray(int size) {
+            return new SemBioFace[size];
+        }
     }
 }

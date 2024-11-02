@@ -560,13 +560,11 @@ public interface IOverlayManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, List v) {
             reply.writeString(k);
             reply.writeTypedList(v, 1);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IOverlayManager {
             private IBinder mRemote;
@@ -608,7 +606,6 @@ public interface IOverlayManager extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$getAllOverlays$0(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 _result.put(k, _reply.createTypedArrayList(OverlayInfo.CREATOR));

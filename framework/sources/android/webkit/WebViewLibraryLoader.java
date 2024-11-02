@@ -26,7 +26,6 @@ public class WebViewLibraryLoader {
 
     static native boolean nativeReserveAddressSpace(long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class RelroFileCreator {
         private RelroFileCreator() {
@@ -81,8 +80,14 @@ public class WebViewLibraryLoader {
     }
 
     static void createRelroFile(boolean is64Bit, String packageName, String libraryFileName) {
-        final String abi = is64Bit ? Build.SUPPORTED_64_BIT_ABIS[0] : Build.SUPPORTED_32_BIT_ABIS[0];
+        String abi = is64Bit ? Build.SUPPORTED_64_BIT_ABIS[0] : Build.SUPPORTED_32_BIT_ABIS[0];
         Runnable crashHandler = new Runnable() { // from class: android.webkit.WebViewLibraryLoader.1
+            final /* synthetic */ String val$abi;
+
+            AnonymousClass1(String abi2) {
+                abi = abi2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -94,17 +99,36 @@ public class WebViewLibraryLoader {
             }
         };
         try {
-            boolean success = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).startIsolatedProcess(RelroFileCreator.class.getName(), new String[]{packageName, libraryFileName}, "WebViewLoader-" + abi, abi, 1037, crashHandler);
+            boolean success = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).startIsolatedProcess(RelroFileCreator.class.getName(), new String[]{packageName, libraryFileName}, "WebViewLoader-" + abi2, abi2, 1037, crashHandler);
             if (!success) {
                 throw new Exception("Failed to start the relro file creator process");
             }
         } catch (Throwable t) {
-            Log.e(LOGTAG, "error starting relro file creator for abi " + abi, t);
+            Log.e(LOGTAG, "error starting relro file creator for abi " + abi2, t);
             crashHandler.run();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.webkit.WebViewLibraryLoader$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ String val$abi;
+
+        AnonymousClass1(String abi2) {
+            abi = abi2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                Log.e(WebViewLibraryLoader.LOGTAG, "relro file creator for " + abi + " crashed. Proceeding without");
+                WebViewFactory.getUpdateService().notifyRelroCreationCompleted();
+            } catch (RemoteException e) {
+                Log.e(WebViewLibraryLoader.LOGTAG, "Cannot reach WebViewUpdateService. " + e.getMessage());
+            }
+        }
+    }
+
     public static int prepareNativeLibraries(PackageInfo webViewPackageInfo) {
         String libraryFileName = WebViewFactory.getWebViewLibrary(webViewPackageInfo.applicationInfo);
         if (libraryFileName == null) {
@@ -126,7 +150,6 @@ public class WebViewLibraryLoader {
         return numRelros;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void reserveAddressSpaceInZygote() {
         long addressSpaceToReserve;
         System.loadLibrary("webviewchromium_loader");

@@ -2,8 +2,9 @@ package android.security.keymaster;
 
 import android.os.Parcel;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-class KeymasterBlobArgument extends KeymasterArgument {
+public class KeymasterBlobArgument extends KeymasterArgument {
     public final byte[] blob;
 
     public KeymasterBlobArgument(int tag, byte[] blob) {

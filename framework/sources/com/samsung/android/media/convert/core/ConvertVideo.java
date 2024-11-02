@@ -313,15 +313,54 @@ public class ConvertVideo extends Convert {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.convert.core.ConvertVideo.prepareAudioCodec():boolean");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:267:0x0317, code lost:            throw new java.lang.RuntimeException(r0);     */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x06fd, code lost:            if (r3 == false) goto L302;     */
-    /* JADX WARN: Code restructure failed: missing block: B:48:0x0701, code lost:            if (r52.mUserStop != false) goto L337;     */
-    /* JADX WARN: Code restructure failed: missing block: B:49:0x0703, code lost:            if (r21 == false) goto L338;     */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x0705, code lost:            android.util.Log.d(com.samsung.android.media.convert.util.Constants.TAG, "Encoding finished.");     */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x070a, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:52:?, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:?, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x070b, code lost:            return;     */
+    /* renamed from: com.samsung.android.media.convert.core.ConvertVideo$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ConvertVideo.this.formatupdated = true;
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:267:0x0317, code lost:
+    
+        throw new java.lang.RuntimeException(r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x06fd, code lost:
+    
+        if (r3 == false) goto L641;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:48:0x0701, code lost:
+    
+        if (r52.mUserStop != false) goto L676;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x0703, code lost:
+    
+        if (r21 == false) goto L677;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x0705, code lost:
+    
+        android.util.Log.d(com.samsung.android.media.convert.util.Constants.TAG, "Encoding finished.");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x070a, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:52:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x070b, code lost:
+    
+        return;
+     */
     /* JADX WARN: Removed duplicated region for block: B:105:0x03f5  */
     /* JADX WARN: Removed duplicated region for block: B:157:0x070c A[LOOP:1: B:42:0x00ea->B:157:0x070c, LOOP_END] */
     /* JADX WARN: Removed duplicated region for block: B:158:0x06f5 A[SYNTHETIC] */
@@ -531,8 +570,14 @@ public class ConvertVideo extends Convert {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x0043, code lost:            if (r5 != null) goto L33;     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x005b, code lost:            if (0 == 0) goto L34;     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x0043, code lost:
+    
+        if (r5 != null) goto L94;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x005b, code lost:
+    
+        if (0 == 0) goto L95;
+     */
     /* JADX WARN: Removed duplicated region for block: B:20:0x0064  */
     /* JADX WARN: Removed duplicated region for block: B:22:0x007b  */
     /*
@@ -547,8 +592,14 @@ public class ConvertVideo extends Convert {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.convert.core.ConvertVideo.CheckVideoCodec(java.lang.String, boolean):boolean");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x0043, code lost:            if (r5 != null) goto L33;     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x005b, code lost:            if (0 == 0) goto L34;     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x0043, code lost:
+    
+        if (r5 != null) goto L94;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x005b, code lost:
+    
+        if (0 == 0) goto L95;
+     */
     /* JADX WARN: Removed duplicated region for block: B:20:0x0064  */
     /* JADX WARN: Removed duplicated region for block: B:22:0x007b  */
     /*
@@ -563,10 +614,22 @@ public class ConvertVideo extends Convert {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.convert.core.ConvertVideo.CheckVideoCodec(android.content.Context, android.net.Uri, boolean):boolean");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x002f, code lost:            if (r1 != null) goto L25;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0046, code lost:            return r2;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x0041, code lost:            r1.release();     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x003f, code lost:            if (r1 == null) goto L26;     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x002f, code lost:
+    
+        if (r1 != null) goto L62;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0046, code lost:
+    
+        return r2;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x0041, code lost:
+    
+        r1.release();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x003f, code lost:
+    
+        if (r1 == null) goto L63;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -633,10 +696,22 @@ public class ConvertVideo extends Convert {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.convert.core.ConvertVideo.CheckVideoFormat(java.lang.String):boolean");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x002f, code lost:            if (r1 != null) goto L25;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0046, code lost:            return r2;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x0041, code lost:            r1.release();     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x003f, code lost:            if (r1 == null) goto L26;     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x002f, code lost:
+    
+        if (r1 != null) goto L62;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0046, code lost:
+    
+        return r2;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x0041, code lost:
+    
+        r1.release();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x003f, code lost:
+    
+        if (r1 == null) goto L63;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

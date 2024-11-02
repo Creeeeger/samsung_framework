@@ -202,11 +202,14 @@ public class VcnManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class VcnUnderlyingNetworkPolicyListenerBinder extends IVcnUnderlyingNetworkPolicyListener.Stub {
         private final Executor mExecutor;
         private final VcnNetworkPolicyChangeListener mListener;
+
+        /* synthetic */ VcnUnderlyingNetworkPolicyListenerBinder(Executor executor, VcnNetworkPolicyChangeListener vcnNetworkPolicyChangeListener, VcnUnderlyingNetworkPolicyListenerBinderIA vcnUnderlyingNetworkPolicyListenerBinderIA) {
+            this(executor, vcnNetworkPolicyChangeListener);
+        }
 
         private VcnUnderlyingNetworkPolicyListenerBinder(Executor executor, VcnNetworkPolicyChangeListener listener) {
             this.mExecutor = executor;
@@ -223,12 +226,10 @@ public class VcnManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPolicyChanged$0() {
             this.mListener.onPolicyChanged();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPolicyChanged$1() throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.net.vcn.VcnManager$VcnUnderlyingNetworkPolicyListenerBinder$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
@@ -259,12 +260,10 @@ public class VcnManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVcnStatusChanged$0(int statusCode) {
             this.mCallback.onStatusChanged(statusCode);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVcnStatusChanged$1(final int statusCode) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.net.vcn.VcnManager$VcnStatusCallbackBinder$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -285,7 +284,6 @@ public class VcnManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onGatewayConnectionError$3(final String gatewayConnectionName, final int errorCode, final Throwable cause) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.net.vcn.VcnManager$VcnStatusCallbackBinder$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
@@ -295,7 +293,6 @@ public class VcnManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onGatewayConnectionError$2(String gatewayConnectionName, int errorCode, Throwable cause) {
             this.mCallback.onGatewayConnectionError(gatewayConnectionName, errorCode, cause);
         }

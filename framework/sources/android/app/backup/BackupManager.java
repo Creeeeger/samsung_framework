@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -695,7 +696,6 @@ public class BackupManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class BackupObserverWrapper extends IBackupObserver.Stub {
         static final int MSG_FINISHED = 3;
@@ -704,8 +704,48 @@ public class BackupManager {
         final Handler mHandler;
         final BackupObserver mObserver;
 
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.app.backup.BackupManager$BackupObserverWrapper$1 */
+        /* loaded from: classes.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ BackupManager val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper, BackupManager backupManager) {
+                super(looper);
+                r3 = backupManager;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        Pair<String, BackupProgress> obj = (Pair) msg.obj;
+                        BackupObserverWrapper.this.mObserver.onUpdate(obj.first, obj.second);
+                        return;
+                    case 2:
+                        BackupObserverWrapper.this.mObserver.onResult((String) msg.obj, msg.arg1);
+                        return;
+                    case 3:
+                        BackupObserverWrapper.this.mObserver.backupFinished(msg.arg1);
+                        return;
+                    default:
+                        Log.w(BackupManager.TAG, "Unknown message: " + msg);
+                        return;
+                }
+            }
+        }
+
         BackupObserverWrapper(Context context, BackupObserver observer) {
             this.mHandler = new Handler(context.getMainLooper()) { // from class: android.app.backup.BackupManager.BackupObserverWrapper.1
+                final /* synthetic */ BackupManager val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper, BackupManager backupManager) {
+                    super(looper);
+                    r3 = backupManager;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
@@ -747,8 +787,9 @@ public class BackupManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private class SelectTransportListenerWrapper extends ISelectBackupTransportCallback.Stub {
+    public class SelectTransportListenerWrapper extends ISelectBackupTransportCallback.Stub {
         private final Handler mHandler;
         private final SelectBackupTransportCallback mListener;
 
@@ -757,9 +798,30 @@ public class BackupManager {
             this.mListener = listener;
         }
 
+        /* renamed from: android.app.backup.BackupManager$SelectTransportListenerWrapper$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ String val$transportName;
+
+            AnonymousClass1(String str) {
+                transportName = str;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SelectTransportListenerWrapper.this.mListener.onSuccess(transportName);
+            }
+        }
+
         @Override // android.app.backup.ISelectBackupTransportCallback
-        public void onSuccess(final String transportName) {
+        public void onSuccess(String transportName) {
             this.mHandler.post(new Runnable() { // from class: android.app.backup.BackupManager.SelectTransportListenerWrapper.1
+                final /* synthetic */ String val$transportName;
+
+                AnonymousClass1(String transportName2) {
+                    transportName = transportName2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SelectTransportListenerWrapper.this.mListener.onSuccess(transportName);
@@ -767,9 +829,30 @@ public class BackupManager {
             });
         }
 
+        /* renamed from: android.app.backup.BackupManager$SelectTransportListenerWrapper$2 */
+        /* loaded from: classes.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ int val$reason;
+
+            AnonymousClass2(int i) {
+                reason = i;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SelectTransportListenerWrapper.this.mListener.onFailure(reason);
+            }
+        }
+
         @Override // android.app.backup.ISelectBackupTransportCallback
-        public void onFailure(final int reason) {
+        public void onFailure(int reason) {
             this.mHandler.post(new Runnable() { // from class: android.app.backup.BackupManager.SelectTransportListenerWrapper.2
+                final /* synthetic */ int val$reason;
+
+                AnonymousClass2(int reason2) {
+                    reason = reason2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SelectTransportListenerWrapper.this.mListener.onFailure(reason);

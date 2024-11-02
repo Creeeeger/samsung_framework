@@ -996,7 +996,10 @@ public class SemExtendedFormat {
         return SEFJNI.listKeyNamesByDataType(fileName, dataType);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0085, code lost:            if (0 == 0) goto L44;     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0085, code lost:
+    
+        if (0 == 0) goto L97;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1104,7 +1107,10 @@ public class SemExtendedFormat {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.SemExtendedFormat.getData(java.io.File, java.lang.String):byte[]");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x0079, code lost:            if (0 == 0) goto L40;     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x0079, code lost:
+    
+        if (0 == 0) goto L87;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1403,7 +1409,10 @@ public class SemExtendedFormat {
         return position;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x0085, code lost:            if (0 == 0) goto L44;     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0085, code lost:
+    
+        if (0 == 0) goto L97;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1511,7 +1520,10 @@ public class SemExtendedFormat {
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.media.SemExtendedFormat.getSEFData(java.io.File, java.lang.String):byte[]");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x0069, code lost:            if (0 == 0) goto L39;     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x0069, code lost:
+    
+        if (0 == 0) goto L87;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

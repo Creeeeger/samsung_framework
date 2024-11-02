@@ -22,7 +22,6 @@ public final class DnsEvent {
         this.latenciesMs = new int[initialCapacity];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean addResult(byte eventType, byte returnCode, int latencyMs) {
         boolean isSuccess = returnCode == 0;
         int i = this.eventCount;

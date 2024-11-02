@@ -10,13 +10,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SurfaceFreezerSnapshot implements Parcelable {
     public static final Parcelable.Creator<SurfaceFreezerSnapshot> CREATOR = new Parcelable.Creator<SurfaceFreezerSnapshot>() { // from class: com.samsung.android.multiwindow.SurfaceFreezerSnapshot.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SurfaceFreezerSnapshot createFromParcel(Parcel source) {
             return new SurfaceFreezerSnapshot(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SurfaceFreezerSnapshot[] newArray(int size) {
             return new SurfaceFreezerSnapshot[size];
@@ -30,6 +31,10 @@ public class SurfaceFreezerSnapshot implements Parcelable {
     private final Bitmap mSnapshotBitmap;
     private final int mTaskId;
     private final Bitmap mWallpaperBitmap;
+
+    /* synthetic */ SurfaceFreezerSnapshot(Parcel parcel, SurfaceFreezerSnapshotIA surfaceFreezerSnapshotIA) {
+        this(parcel);
+    }
 
     public SurfaceFreezerSnapshot(Bitmap snapshotBitmap, int taskId, boolean containsSecureLayer, boolean hasProtectedContent, Bitmap wallpaperBitmap) {
         this(snapshotBitmap, taskId, containsSecureLayer, hasProtectedContent, wallpaperBitmap, 0, 0);
@@ -61,6 +66,23 @@ public class SurfaceFreezerSnapshot implements Parcelable {
         this.mHasProtectedContent = in.readInt() != 0;
         this.mFreeformHeaderHeight = in.readInt();
         this.mFreeformHeaderColor = in.readInt();
+    }
+
+    /* renamed from: com.samsung.android.multiwindow.SurfaceFreezerSnapshot$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SurfaceFreezerSnapshot> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SurfaceFreezerSnapshot createFromParcel(Parcel source) {
+            return new SurfaceFreezerSnapshot(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SurfaceFreezerSnapshot[] newArray(int size) {
+            return new SurfaceFreezerSnapshot[size];
+        }
     }
 
     public boolean containsSecureLayer() {

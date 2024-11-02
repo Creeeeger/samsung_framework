@@ -36,7 +36,6 @@ public class SystemVibrator extends Vibrator {
         this.mVibratorManager = (VibratorManager) context.getSystemService(VibratorManager.class);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.os.Vibrator
     public VibratorInfo getInfo() {
         synchronized (this.mLock) {
@@ -235,7 +234,6 @@ public class SystemVibrator extends Vibrator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class SingleVibratorStateListener implements Vibrator.OnVibratorStateChangedListener {
         private final MultiVibratorStateListener mAllVibratorsListener;
@@ -544,7 +542,6 @@ public class SystemVibrator extends Vibrator {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVibrating$0(int vibratorIdx, boolean vibrating) {
             boolean isAnyVibrating;
             int allInitializedMask;

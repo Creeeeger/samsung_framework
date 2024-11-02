@@ -575,8 +575,9 @@ public interface IUiModeManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IUiModeManager {
+        public static class Proxy implements IUiModeManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

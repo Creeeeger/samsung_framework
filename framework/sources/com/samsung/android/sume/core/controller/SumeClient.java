@@ -46,7 +46,6 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
         serviceProxy.request(Request.of(900, "graph", graph).asOneWay());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$new$0(Exception exception) {
         Log.d(TAG, "ignore exception: " + exception.getMessage());
         return true;
@@ -59,7 +58,7 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
     }
 
     @Override // com.samsung.android.sume.core.controller.MediaController
-    /* renamed from: run, reason: avoid collision after fix types in other method */
+    /* renamed from: run */
     public Future<Response> run2(final List<MediaBuffer> inBuffers, final List<MediaBuffer> outBuffers) {
         return (Future) Optional.ofNullable(this.serviceProxy).map(new Function() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
@@ -76,11 +75,9 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$run$2() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Future lambda$run$3() {
         return new FutureTask(new Runnable() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda6
             @Override // java.lang.Runnable
@@ -107,11 +104,9 @@ public class SumeClient implements MediaController<Future<Response>>, MediaContr
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$request$5() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Future lambda$request$6() {
         return new FutureTask(new Runnable() { // from class: com.samsung.android.sume.core.controller.SumeClient$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable

@@ -17,8 +17,24 @@ public class CloseableLock implements AutoCloseable {
     private boolean mExclusive = false;
     private int mSharedLocks = 0;
 
+    /* renamed from: android.hardware.camera2.utils.CloseableLock$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends ThreadLocal<Integer> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.ThreadLocal
+        public Integer initialValue() {
+            return 0;
+        }
+    }
+
     /* loaded from: classes.dex */
     public class ScopedLock implements AutoCloseable {
+        /* synthetic */ ScopedLock(CloseableLock closeableLock, ScopedLockIA scopedLockIA) {
+            this();
+        }
+
         private ScopedLock() {
         }
 
@@ -33,8 +49,9 @@ public class CloseableLock implements AutoCloseable {
         this.mLock = reentrantLock;
         this.mCondition = reentrantLock.newCondition();
         this.mLockCount = new ThreadLocal<Integer>() { // from class: android.hardware.camera2.utils.CloseableLock.1
-            /* JADX INFO: Access modifiers changed from: protected */
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.ThreadLocal
             public Integer initialValue() {
                 return 0;
@@ -48,8 +65,9 @@ public class CloseableLock implements AutoCloseable {
         this.mLock = reentrantLock;
         this.mCondition = reentrantLock.newCondition();
         this.mLockCount = new ThreadLocal<Integer>() { // from class: android.hardware.camera2.utils.CloseableLock.1
-            /* JADX INFO: Access modifiers changed from: protected */
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.ThreadLocal
             public Integer initialValue() {
                 return 0;

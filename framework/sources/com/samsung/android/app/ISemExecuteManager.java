@@ -251,8 +251,9 @@ public interface ISemExecuteManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemExecuteManager {
+        public static class Proxy implements ISemExecuteManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

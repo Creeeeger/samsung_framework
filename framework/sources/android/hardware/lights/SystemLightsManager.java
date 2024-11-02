@@ -69,6 +69,10 @@ public final class SystemLightsManager extends LightsManager {
         private final CloseGuard mCloseGuard;
         private boolean mClosed;
 
+        /* synthetic */ SystemLightsSession(SystemLightsManager systemLightsManager, SystemLightsSessionIA systemLightsSessionIA) {
+            this();
+        }
+
         private SystemLightsSession() {
             CloseGuard closeGuard = new CloseGuard();
             this.mCloseGuard = closeGuard;

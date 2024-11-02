@@ -16,7 +16,10 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
     static final int COLUMN_INDEX_SCOPE = 1;
     static final int CONSUMER_TYPE_AGGREGATE = 0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ AggregateBatteryConsumer(Builder builder, AggregateBatteryConsumerIA aggregateBatteryConsumerIA) {
+        this(builder);
+    }
+
     public AggregateBatteryConsumer(BatteryConsumer.BatteryConsumerData data) {
         super(data);
     }
@@ -25,7 +28,6 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         super(builder.mData, builder.mPowerComponentsBuilder.build());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getScope() {
         return this.mData.getInt(1);
     }
@@ -40,7 +42,6 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         return this.mData.getDouble(2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToXml(TypedXmlSerializer serializer, int scope) throws IOException {
         serializer.startTag(null, "aggregate");
         serializer.attributeInt(null, "scope", scope);
@@ -49,7 +50,6 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         serializer.endTag(null, "aggregate");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void parseXml(TypedXmlPullParser parser, BatteryUsageStats.Builder builder) throws XmlPullParserException, IOException {
         int scope = parser.getAttributeInt(null, "scope");
         Builder consumerBuilder = builder.getAggregateBatteryConsumerBuilder(scope);
@@ -70,7 +70,6 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writePowerComponentModelProto(ProtoOutputStream proto) {
         for (int i = 0; i < 19; i++) {
             int powerModel = getPowerModel(i);

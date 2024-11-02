@@ -32,15 +32,14 @@ public class BufferedConveyorFilter extends SequentialFilter {
         filters.stream().forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.collection.BufferedConveyorFilter$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                BufferedConveyorFilter.this.m8775xdcaa7b8f((MediaFilter) obj);
+                BufferedConveyorFilter.this.m8767xdcaa7b8f((MediaFilter) obj);
             }
         });
         return super.addFilter(filters);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$addFilter$1$com-samsung-android-sume-core-filter-collection-BufferedConveyorFilter, reason: not valid java name */
-    public /* synthetic */ void m8775xdcaa7b8f(final MediaFilter it) {
+    /* renamed from: lambda$addFilter$1$com-samsung-android-sume-core-filter-collection-BufferedConveyorFilter */
+    public /* synthetic */ void m8767xdcaa7b8f(final MediaFilter it) {
         final BufferChannel inChannel = (BufferChannel) Optional.ofNullable(this.lastOutChannel).orElseGet(new BufferedConveyorFilter$$ExternalSyntheticLambda1());
         if (this.firstInChannel == null) {
             this.firstInChannel = inChannel;
@@ -49,15 +48,14 @@ public class BufferedConveyorFilter extends SequentialFilter {
         this.threadPool.submit(new Runnable() { // from class: com.samsung.android.sume.core.filter.collection.BufferedConveyorFilter$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable
             public final void run() {
-                BufferedConveyorFilter.this.m8774x5a5fc6b0(inChannel, it, outChannel);
+                BufferedConveyorFilter.this.m8766x5a5fc6b0(inChannel, it, outChannel);
             }
         });
         this.lastOutChannel = outChannel;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$addFilter$0$com-samsung-android-sume-core-filter-collection-BufferedConveyorFilter, reason: not valid java name */
-    public /* synthetic */ void m8774x5a5fc6b0(BufferChannel inChannel, MediaFilter it, BufferChannel outChannel) {
+    /* renamed from: lambda$addFilter$0$com-samsung-android-sume-core-filter-collection-BufferedConveyorFilter */
+    public /* synthetic */ void m8766x5a5fc6b0(BufferChannel inChannel, MediaFilter it, BufferChannel outChannel) {
         while (!this.done.get()) {
             MediaBuffer inBuffer = inChannel.receive();
             outChannel.send(it.run(inBuffer));

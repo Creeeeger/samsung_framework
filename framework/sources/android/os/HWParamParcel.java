@@ -5,13 +5,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class HWParamParcel implements Parcelable {
     public static final Parcelable.Creator<HWParamParcel> CREATOR = new Parcelable.Creator<HWParamParcel>() { // from class: android.os.HWParamParcel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HWParamParcel createFromParcel(Parcel in) {
             return new HWParamParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HWParamParcel[] newArray(int size) {
             return new HWParamParcel[size];
@@ -27,6 +28,27 @@ public class HWParamParcel implements Parcelable {
     String hitType;
     String privateMap;
     int type;
+
+    /* synthetic */ HWParamParcel(Parcel parcel, HWParamParcelIA hWParamParcelIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.os.HWParamParcel$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HWParamParcel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HWParamParcel createFromParcel(Parcel in) {
+            return new HWParamParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HWParamParcel[] newArray(int size) {
+            return new HWParamParcel[size];
+        }
+    }
 
     public HWParamParcel() {
         this.type = 0;

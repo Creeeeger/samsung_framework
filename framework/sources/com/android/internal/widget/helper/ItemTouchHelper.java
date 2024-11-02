@@ -65,6 +65,9 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
     int mActionState = 0;
     List<RecoverAnimation> mRecoverAnimations = new ArrayList();
     final Runnable mScrollRunnable = new Runnable() { // from class: com.android.internal.widget.helper.ItemTouchHelper.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             if (ItemTouchHelper.this.mSelected != null && ItemTouchHelper.this.scrollIfNecessary()) {
@@ -81,6 +84,9 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
     View mOverdrawChild = null;
     int mOverdrawChildPosition = -1;
     private final RecyclerView.OnItemTouchListener mOnItemTouchListener = new RecyclerView.OnItemTouchListener() { // from class: com.android.internal.widget.helper.ItemTouchHelper.2
+        AnonymousClass2() {
+        }
+
         @Override // com.android.internal.widget.RecyclerView.OnItemTouchListener
         public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent event) {
             int index;
@@ -185,6 +191,132 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
     /* loaded from: classes5.dex */
     public interface ViewDropHandler {
         void prepareForDrop(View view, View view2, int i, int i2);
+    }
+
+    /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (ItemTouchHelper.this.mSelected != null && ItemTouchHelper.this.scrollIfNecessary()) {
+                if (ItemTouchHelper.this.mSelected != null) {
+                    ItemTouchHelper itemTouchHelper = ItemTouchHelper.this;
+                    itemTouchHelper.moveIfNecessary(itemTouchHelper.mSelected);
+                }
+                ItemTouchHelper.this.mRecyclerView.removeCallbacks(ItemTouchHelper.this.mScrollRunnable);
+                ItemTouchHelper.this.mRecyclerView.postOnAnimation(this);
+            }
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 implements RecyclerView.OnItemTouchListener {
+        AnonymousClass2() {
+        }
+
+        @Override // com.android.internal.widget.RecyclerView.OnItemTouchListener
+        public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent event) {
+            int index;
+            RecoverAnimation animation;
+            ItemTouchHelper.this.mGestureDetector.onTouchEvent(event);
+            int action = event.getActionMasked();
+            if (action == 0) {
+                ItemTouchHelper.this.mActivePointerId = event.getPointerId(0);
+                ItemTouchHelper.this.mInitialTouchX = event.getX();
+                ItemTouchHelper.this.mInitialTouchY = event.getY();
+                ItemTouchHelper.this.obtainVelocityTracker();
+                if (ItemTouchHelper.this.mSelected == null && (animation = ItemTouchHelper.this.findAnimation(event)) != null) {
+                    ItemTouchHelper.this.mInitialTouchX -= animation.mX;
+                    ItemTouchHelper.this.mInitialTouchY -= animation.mY;
+                    ItemTouchHelper.this.endRecoverAnimation(animation.mViewHolder, true);
+                    if (ItemTouchHelper.this.mPendingCleanup.remove(animation.mViewHolder.itemView)) {
+                        ItemTouchHelper.this.mCallback.clearView(ItemTouchHelper.this.mRecyclerView, animation.mViewHolder);
+                    }
+                    ItemTouchHelper.this.select(animation.mViewHolder, animation.mActionState);
+                    ItemTouchHelper itemTouchHelper = ItemTouchHelper.this;
+                    itemTouchHelper.updateDxDy(event, itemTouchHelper.mSelectedFlags, 0);
+                }
+            } else if (action == 3 || action == 1) {
+                ItemTouchHelper.this.mActivePointerId = -1;
+                ItemTouchHelper.this.select(null, 0);
+            } else if (ItemTouchHelper.this.mActivePointerId != -1 && (index = event.findPointerIndex(ItemTouchHelper.this.mActivePointerId)) >= 0) {
+                ItemTouchHelper.this.checkSelectForSwipe(action, event, index);
+            }
+            if (ItemTouchHelper.this.mVelocityTracker != null) {
+                ItemTouchHelper.this.mVelocityTracker.addMovement(event);
+            }
+            return ItemTouchHelper.this.mSelected != null;
+        }
+
+        @Override // com.android.internal.widget.RecyclerView.OnItemTouchListener
+        public void onTouchEvent(RecyclerView recyclerView, MotionEvent event) {
+            ItemTouchHelper.this.mGestureDetector.onTouchEvent(event);
+            if (ItemTouchHelper.this.mVelocityTracker != null) {
+                ItemTouchHelper.this.mVelocityTracker.addMovement(event);
+            }
+            if (ItemTouchHelper.this.mActivePointerId == -1) {
+                return;
+            }
+            int action = event.getActionMasked();
+            int activePointerIndex = event.findPointerIndex(ItemTouchHelper.this.mActivePointerId);
+            if (activePointerIndex >= 0) {
+                ItemTouchHelper.this.checkSelectForSwipe(action, event, activePointerIndex);
+            }
+            RecyclerView.ViewHolder viewHolder = ItemTouchHelper.this.mSelected;
+            if (viewHolder == null) {
+                return;
+            }
+            switch (action) {
+                case 1:
+                    break;
+                case 2:
+                    if (activePointerIndex >= 0) {
+                        ItemTouchHelper itemTouchHelper = ItemTouchHelper.this;
+                        itemTouchHelper.updateDxDy(event, itemTouchHelper.mSelectedFlags, activePointerIndex);
+                        ItemTouchHelper.this.moveIfNecessary(viewHolder);
+                        ItemTouchHelper.this.mRecyclerView.removeCallbacks(ItemTouchHelper.this.mScrollRunnable);
+                        ItemTouchHelper.this.mScrollRunnable.run();
+                        ItemTouchHelper.this.mRecyclerView.invalidate();
+                        return;
+                    }
+                    return;
+                case 3:
+                    if (ItemTouchHelper.this.mVelocityTracker != null) {
+                        ItemTouchHelper.this.mVelocityTracker.clear();
+                        break;
+                    }
+                    break;
+                case 4:
+                case 5:
+                default:
+                    return;
+                case 6:
+                    int pointerIndex = event.getActionIndex();
+                    int pointerId = event.getPointerId(pointerIndex);
+                    if (pointerId == ItemTouchHelper.this.mActivePointerId) {
+                        int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                        ItemTouchHelper.this.mActivePointerId = event.getPointerId(newPointerIndex);
+                        ItemTouchHelper itemTouchHelper2 = ItemTouchHelper.this;
+                        itemTouchHelper2.updateDxDy(event, itemTouchHelper2.mSelectedFlags, pointerIndex);
+                        return;
+                    }
+                    return;
+            }
+            ItemTouchHelper.this.select(null, 0);
+            ItemTouchHelper.this.mActivePointerId = -1;
+        }
+
+        @Override // com.android.internal.widget.RecyclerView.OnItemTouchListener
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            if (!disallowIntercept) {
+                return;
+            }
+            ItemTouchHelper.this.select(null, 0);
+        }
     }
 
     public ItemTouchHelper(Callback callback) {
@@ -303,13 +435,13 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
             if (this.mSelected == null) {
                 prevActionState = 2;
             } else {
-                final RecyclerView.ViewHolder prevSelected = this.mSelected;
+                RecyclerView.ViewHolder prevSelected = this.mSelected;
                 if (prevSelected.itemView.getParent() == null) {
                     prevActionState = 2;
                     removeChildDrawingOrderCallbackIfNecessary(prevSelected.itemView);
                     this.mCallback.clearView(this.mRecyclerView, prevSelected);
                 } else {
-                    final int swipeDir = prevActionState2 == 2 ? 0 : swipeIfNecessary(prevSelected);
+                    int swipeDir = prevActionState2 == 2 ? 0 : swipeIfNecessary(prevSelected);
                     releaseVelocityTracker();
                     switch (swipeDir) {
                         case 1:
@@ -344,6 +476,16 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
                     float currentTranslateY = fArr[1];
                     prevActionState = 2;
                     RecoverAnimation rv = new RecoverAnimation(prevSelected, animationType, prevActionState2, currentTranslateX, currentTranslateY, targetTranslateX, targetTranslateY) { // from class: com.android.internal.widget.helper.ItemTouchHelper.3
+                        final /* synthetic */ RecyclerView.ViewHolder val$prevSelected;
+                        final /* synthetic */ int val$swipeDir;
+
+                        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                        AnonymousClass3(RecyclerView.ViewHolder prevSelected2, int animationType2, int prevActionState22, float currentTranslateX2, float currentTranslateY2, float targetTranslateX3, float targetTranslateY3, int swipeDir2, RecyclerView.ViewHolder prevSelected22) {
+                            super(prevSelected22, animationType2, prevActionState22, currentTranslateX2, currentTranslateY2, targetTranslateX3, targetTranslateY3);
+                            swipeDir = swipeDir2;
+                            prevSelected = prevSelected22;
+                        }
+
                         @Override // com.android.internal.widget.helper.ItemTouchHelper.RecoverAnimation, android.animation.Animator.AnimatorListener
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
@@ -365,7 +507,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
                             }
                         }
                     };
-                    long duration = this.mCallback.getAnimationDuration(this.mRecyclerView, animationType, targetTranslateX - currentTranslateX, targetTranslateY - currentTranslateY);
+                    long duration = this.mCallback.getAnimationDuration(this.mRecyclerView, animationType2, targetTranslateX3 - currentTranslateX2, targetTranslateY3 - currentTranslateY2);
                     rv.setDuration(duration);
                     this.mRecoverAnimations.add(rv);
                     rv.start();
@@ -399,8 +541,75 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
         }
     }
 
-    void postDispatchSwipe(final RecoverAnimation anim, final int swipeDir) {
+    /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 extends RecoverAnimation {
+        final /* synthetic */ RecyclerView.ViewHolder val$prevSelected;
+        final /* synthetic */ int val$swipeDir;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass3(RecyclerView.ViewHolder prevSelected22, int animationType2, int prevActionState22, float currentTranslateX2, float currentTranslateY2, float targetTranslateX3, float targetTranslateY3, int swipeDir2, RecyclerView.ViewHolder prevSelected222) {
+            super(prevSelected222, animationType2, prevActionState22, currentTranslateX2, currentTranslateY2, targetTranslateX3, targetTranslateY3);
+            swipeDir = swipeDir2;
+            prevSelected = prevSelected222;
+        }
+
+        @Override // com.android.internal.widget.helper.ItemTouchHelper.RecoverAnimation, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+            if (this.mOverridden) {
+                return;
+            }
+            if (swipeDir <= 0) {
+                ItemTouchHelper.this.mCallback.clearView(ItemTouchHelper.this.mRecyclerView, prevSelected);
+            } else {
+                ItemTouchHelper.this.mPendingCleanup.add(prevSelected.itemView);
+                this.mIsPendingCleanup = true;
+                int i = swipeDir;
+                if (i > 0) {
+                    ItemTouchHelper.this.postDispatchSwipe(this, i);
+                }
+            }
+            if (ItemTouchHelper.this.mOverdrawChild == prevSelected.itemView) {
+                ItemTouchHelper.this.removeChildDrawingOrderCallbackIfNecessary(prevSelected.itemView);
+            }
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 implements Runnable {
+        final /* synthetic */ RecoverAnimation val$anim;
+        final /* synthetic */ int val$swipeDir;
+
+        AnonymousClass4(RecoverAnimation recoverAnimation, int i) {
+            anim = recoverAnimation;
+            swipeDir = i;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (ItemTouchHelper.this.mRecyclerView != null && ItemTouchHelper.this.mRecyclerView.isAttachedToWindow() && !anim.mOverridden && anim.mViewHolder.getAdapterPosition() != -1) {
+                RecyclerView.ItemAnimator animator = ItemTouchHelper.this.mRecyclerView.getItemAnimator();
+                if ((animator == null || !animator.isRunning(null)) && !ItemTouchHelper.this.hasRunningRecoverAnim()) {
+                    ItemTouchHelper.this.mCallback.onSwiped(anim.mViewHolder, swipeDir);
+                } else {
+                    ItemTouchHelper.this.mRecyclerView.post(this);
+                }
+            }
+        }
+    }
+
+    void postDispatchSwipe(RecoverAnimation anim, int swipeDir) {
         this.mRecyclerView.post(new Runnable() { // from class: com.android.internal.widget.helper.ItemTouchHelper.4
+            final /* synthetic */ RecoverAnimation val$anim;
+            final /* synthetic */ int val$swipeDir;
+
+            AnonymousClass4(RecoverAnimation anim2, int swipeDir2) {
+                anim = anim2;
+                swipeDir = swipeDir2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 if (ItemTouchHelper.this.mRecyclerView != null && ItemTouchHelper.this.mRecyclerView.isAttachedToWindow() && !anim.mOverridden && anim.mViewHolder.getAdapterPosition() != -1) {
@@ -869,7 +1078,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
     private void addChildDrawingOrderCallback() {
     }
 
-    /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$5, reason: invalid class name */
+    /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$5 */
     /* loaded from: classes5.dex */
     class AnonymousClass5 implements RecyclerView.ChildDrawingOrderCallback {
         AnonymousClass5() {
@@ -911,12 +1120,18 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
         private int mCachedMaxScrollSpeed = -1;
         private static final ItemTouchUIUtil sUICallback = new ItemTouchUIUtilImpl();
         private static final Interpolator sDragScrollInterpolator = new Interpolator() { // from class: com.android.internal.widget.helper.ItemTouchHelper.Callback.1
+            AnonymousClass1() {
+            }
+
             @Override // android.animation.TimeInterpolator
             public float getInterpolation(float t) {
                 return t * t * t * t * t;
             }
         };
         private static final Interpolator sDragViewScrollCapInterpolator = new Interpolator() { // from class: com.android.internal.widget.helper.ItemTouchHelper.Callback.2
+            AnonymousClass2() {
+            }
+
             @Override // android.animation.TimeInterpolator
             public float getInterpolation(float t) {
                 float t2 = t - 1.0f;
@@ -929,6 +1144,31 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
         public abstract boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder2);
 
         public abstract void onSwiped(RecyclerView.ViewHolder viewHolder, int i);
+
+        /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$Callback$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Interpolator {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.TimeInterpolator
+            public float getInterpolation(float t) {
+                return t * t * t * t * t;
+            }
+        }
+
+        /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$Callback$2 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass2 implements Interpolator {
+            AnonymousClass2() {
+            }
+
+            @Override // android.animation.TimeInterpolator
+            public float getInterpolation(float t) {
+                float t2 = t - 1.0f;
+                return (t2 * t2 * t2 * t2 * t2) + 1.0f;
+            }
+        }
 
         public static ItemTouchUIUtil getDefaultUIUtil() {
             return sUICallback;
@@ -1206,7 +1446,6 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class ItemTouchHelperGestureListener extends GestureDetector.SimpleOnGestureListener {
         ItemTouchHelperGestureListener() {
@@ -1241,7 +1480,6 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class RecoverAnimation implements Animator.AnimatorListener {
         final int mActionState;
@@ -1270,6 +1508,12 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
             ValueAnimator ofFloat = ValueAnimator.ofFloat(0.0f, 1.0f);
             this.mValueAnimator = ofFloat;
             ofFloat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.internal.widget.helper.ItemTouchHelper.RecoverAnimation.1
+                final /* synthetic */ ItemTouchHelper val$this$0;
+
+                AnonymousClass1(ItemTouchHelper itemTouchHelper) {
+                    r2 = itemTouchHelper;
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     RecoverAnimation.this.setFraction(animation.getAnimatedFraction());
@@ -1278,6 +1522,22 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration implements Recy
             ofFloat.setTarget(viewHolder.itemView);
             ofFloat.addListener(this);
             setFraction(0.0f);
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.android.internal.widget.helper.ItemTouchHelper$RecoverAnimation$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+            final /* synthetic */ ItemTouchHelper val$this$0;
+
+            AnonymousClass1(ItemTouchHelper itemTouchHelper) {
+                r2 = itemTouchHelper;
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                RecoverAnimation.this.setFraction(animation.getAnimatedFraction());
+            }
         }
 
         public void setDuration(long duration) {

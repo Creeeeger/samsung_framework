@@ -384,12 +384,12 @@ Túto skratku môžete zmeniť na inú funkciu v časti Nastavenia > Dostupnos�
     <string name="allow_settings_changes">Politika zabezpečenia zabraňuje zmene nastavení.</string>
     <string name="alwaysUse">Použiť ako predvolené nastavenie pre túto akciu.</string>
     <string name="android_preparing_apk">Pripravuje sa aplikácia %1$s.</string>
-    <string name="android_start_title">Telefón sa spúšťa…</string>
+    <string name="android_start_title">Tablet sa spúšťa…</string>
     <string name="android_system_label">Systém Android</string>
     <string name="android_upgrading_complete">Prebieha dokončovanie spúšťania.</string>
     <string name="android_upgrading_notification_title">Dokončuje sa aktualizácia systému…</string>
     <string name="android_upgrading_starting_apps">Prebieha spúšťanie aplikácií.</string>
-    <string name="android_upgrading_title">Telefón sa aktualizuje…</string>
+    <string name="android_upgrading_title">Tablet sa aktualizuje…</string>
     <string name="anr_activity_application">%2$s nereaguje</string>
     <string name="anr_activity_process">%1$s nereaguje</string>
     <string name="anr_application_process">%1$s nereaguje</string>
@@ -423,16 +423,16 @@ Túto skratku môžete zmeniť na inú funkciu v časti Nastavenia > Dostupnos�
     <string name="app_restricted_message_concentration_mode">Aplikácia %s je v režime sústredenia blokovaná. Ďalšie informácie získate od správcu IT.</string>
     <string name="app_running_notification_text">Klepnutím zobrazíte ďalšie informácie alebo zastavíte aplikáciu.</string>
     <string name="app_running_notification_title">Aplikácia %1$s je spustená</string>
-    <string name="app_streaming_blocked_message">V zariadení %1$s momentálne nemáte k tomuto obsahu prístup. Skúste použiť telefón.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Táto aplikácia požaduje dodatočné zabezpečenie. Skúste použiť telefón.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">V zariadení %1$s momentálne nemáte prístup k tomuto obsahu. Skúste použiť telefón.</string>
+    <string name="app_streaming_blocked_message">V zariadení %1$s momentálne nemáte k tomuto obsahu prístup. Skúste namiesto toho použiť tablet.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Táto aplikácia požaduje dodatočné zabezpečenie. Skúste namiesto toho použiť tablet.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">V zariadení %1$s momentálne nemáte prístup k tomuto obsahu. Skúste namiesto toho použiť tablet.</string>
     <string name="app_streaming_blocked_title">%1$s nie je k dispozícii</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera nie je k dispozícii</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Pokračujte v telefóne</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofón nie je k dispozícii</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Vyžaduje sa povolenie</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Obchod Play nie je k dispozícii</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Nastavenia telefónu nie sú k dispozícii</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Nastavenia tabletu nie sú k dispozícii</string>
     <string name="app_suspended_default_message">Aplikácia %1$s nie je momentálne k dispozícii. Spravuje to aplikácia %2$s.</string>
     <string name="app_suspended_more_details">Ďalšie informácie</string>
     <string name="app_suspended_title">Aplikácia nie je k dispozícii</string>
@@ -503,7 +503,7 @@ Ak sa napriek tomu rozhodnete túto aplikáciu nainštalovať, uistite sa, že p
     <string name="badPuk">Kód PUK bol zadaný nesprávne.</string>
     <string name="badPuk2">Zadaný kód PUK2 je nesprávny</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Telefón je dostatočne nabitý. Funkcie už nie sú obmedzené.</string>
+    <string name="battery_saver_charged_notification_summary">Tablet je dostatočne nabitý. Funkcie už nie sú obmedzené.</string>
     <string name="battery_saver_description">Šetrič batérie zapne tmavý motív a obmedzí alebo vypne aktivitu na pozadí, niektoré vizuálne efekty, určité funkcie a niektoré pripojenia k sieti.</string>
     <string name="battery_saver_description_with_learn_more">Šetrič batérie zapne tmavý motív a obmedzí alebo vypne aktivitu na pozadí, niektoré vizuálne efekty, určité funkcie a niektoré pripojenia k sieti.</string>
     <string name="battery_saver_notification_channel_name">Šetrič batérie</string>
@@ -733,7 +733,7 @@ Hlasitosť slúchadiel bola vyššia, ako sa odporúča, čo môže poškodiť v
     <string name="decline">Odmietnuť</string>
     <string name="decline_remote_bugreport_action">ODMIETNUŤ</string>
     <string name="default_audio_route_category_name">Systém</string>
-    <string name="default_audio_route_name">Telefón</string>
+    <string name="default_audio_route_name">Tablet</string>
     <string name="default_audio_route_name_dock_speakers">Reproduktory doku</string>
     <string name="default_audio_route_name_external_device">Externé zariadenie</string>
     <string name="default_audio_route_name_headphones">Slúchadlá</string>
@@ -860,7 +860,7 @@ Hlasitosť slúchadiel bola vyššia, ako sa odporúča, čo môže poškodiť v
     <string name="emergency_call_dialog_number_for_display">Tiesňová linka</string>
     <string name="emergency_calls_only">Iba tiesňové hovory</string>
     <string name="enablePin">Neúspešné, povoľte uzamknutie SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">Služba %1$s požaduje povolenie funkcie Preskúmanie dotykom. Ak je funkcia Preskúmanie dotykom zapnutá, môžete počuť alebo vidieť popisy objektov pod vaším prstom alebo ovládať telefón gestami.</string>
+    <string name="enable_explore_by_touch_warning_message">Služba %1$s požaduje povolenie funkcie Preskúmanie dotykom. Ak je funkcia Preskúmanie dotykom zapnutá, môžete počuť alebo vidieť popisy objektov pod vaším prstom alebo ovládať tablet gestami.</string>
     <string name="enable_explore_by_touch_warning_title">Chcete zapnúť Preskúmanie dotykom?</string>
     <string name="error_message_change_not_allowed">Správca túto zmenu zakázal</string>
     <string name="error_message_title">Chyba</string>
@@ -924,7 +924,7 @@ Hlasitosť slúchadiel bola vyššia, ako sa odporúča, čo môže poškodiť v
     <string name="ext_media_unsupported_notification_message">Táto %s sa v tomto zariadení nepodporuje. Ťuknutím nastavte podporovaný formát.</string>
     <string name="ext_media_unsupported_notification_title">%s sa nepodporuje</string>
     <string name="ext_storage_bad_removal_button">Reštartovať</string>
-    <string name="ext_storage_bad_removal_title">Reštartujte telefón</string>
+    <string name="ext_storage_bad_removal_title">Reštartujte tablet</string>
     <string name="extmedia_format_button_format">Formát</string>
     <string name="extmedia_format_message">Všetky údaje na vašej karte budú stratené.</string>
     <string name="extmedia_format_message_usbhost">Všetky súbory uložené v ukladacom priestore USB budú vymazané. Táto akcia sa nedá vrátiť späť!</string>
@@ -1128,7 +1128,7 @@ Pri nastavovaní odtlačku prsta skúste klepnúť jemne."</string>
     <string name="global_action_toggle_sealed_mode">Izolovaný režim</string>
     <string name="global_action_toggle_silent_mode">Tichý režim</string>
     <string name="global_action_voice_assist">Hlasový asistent</string>
-    <string name="global_actions">Možnosti telefónu</string>
+    <string name="global_actions">Možnosti tabletu</string>
     <string name="global_actions_airplane_mode_off_status">Režim v lietadle je VYPNUTÝ</string>
     <string name="global_actions_airplane_mode_on_status">Režim v lietadle je ZAPNUTÝ</string>
     <string name="global_actions_toggle_airplane_mode">Režim v lietadle</string>
@@ -1313,11 +1313,11 @@ Naozaj chcete túto stránku opustiť?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Klepnutím zadajte heslo&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Nesprávny kód PIN.</string>
     <string name="kg_enter_confirm_pin_hint">Potvrďte požadovaný kód PIN</string>
-    <string name="kg_failed_attempts_almost_at_login">"%1$d-krát ste nesprávne nakreslili svoj bezpečnostný vzor. Po %2$d ďalších neúspešných pokusoch sa zobrazí výzva na odomknutie telefónu pomocou e-mailového účtu.
+    <string name="kg_failed_attempts_almost_at_login">"%1$d-krát ste nesprávne nakreslili svoj bezpečnostný vzor. Po ďalších %2$d neúspešných pokusoch sa zobrazí výzva na odomknutie tabletu pomocou e-mailového účtu.
 
  Skúste to znova o %3$d s."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Telefón ste sa pokúsili odomknúť nesprávnym spôsobom %1$d-krát. Po %2$d ďalších neúspešných pokusoch sa v telefóne obnovia predvolené výrobné nastavenia a všetky používateľské údaje budú stratené.</string>
-    <string name="kg_failed_attempts_now_wiping">Telefón ste sa pokúsili odomknúť nesprávnym spôsobom %d-krát. V telefóne sa teraz obnovia predvolené výrobné nastavenia.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Tablet ste sa pokúsili odomknúť nesprávnym spôsobom %1$d-krát. Po %2$d ďalších neúspešných pokusoch sa v tablete obnovia predvolené výrobné nastavenia a všetky používateľské údaje budú stratené.</string>
+    <string name="kg_failed_attempts_now_wiping">Tablet ste sa pokúsili odomknúť nesprávnym spôsobom %d-krát. V tablete sa teraz obnovia predvolené výrobné nastavenia.</string>
     <string name="kg_forgot_pattern_button_text">Nepamätám si vzor</string>
     <string name="kg_invalid_confirm_pin_hint">Kódy PIN sa nezhodujú</string>
     <string name="kg_invalid_puk">Znova zadajte správny kód PUK. Opakované pokusy zakážu SIM kartu natrvalo.</string>
@@ -1405,11 +1405,11 @@ Skúste to znova o %2$d s."</string>
     <string name="lockscreen_carrier_default">Žiadny signál</string>
     <string name="lockscreen_carrier_noservice">(žiadna služba)</string>
     <string name="lockscreen_emergency_call">Tiesňová linka</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Telefón ste sa pokúsili odomknúť nesprávnym spôsobom %1$d-krát. Po %2$d ďalších neúspešných pokusoch sa v telefóne obnovia predvolené výrobné nastavenia a všetky používateľské údaje budú stratené.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"%1$d-krát ste nesprávne nakreslili svoj bezpečnostný vzor. Po %2$d ďalších neúspešných pokusoch sa zobrazí výzva na odomknutie telefónu pomocou prihlasovacích údajov Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Tablet ste sa pokúsili odomknúť nesprávnym spôsobom %1$d-krát. Po %2$d ďalších neúspešných pokusoch sa v tablete obnovia predvolené výrobné nastavenia a všetky používateľské údaje budú stratené.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"%1$d-krát ste nesprávne nakreslili svoj bezpečnostný vzor. Po ďalších neúspešných pokusoch (%2$d) budete vyzvaní odomknúť tablet pomocou prihlasovacích údajov služby Google.
 
  Skúste to znova o %3$d s."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Telefón ste sa pokúsili odomknúť nesprávnym spôsobom %d-krát. V telefóne sa teraz obnovia predvolené výrobné nastavenia.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Tablet ste sa pokúsili odomknúť nesprávnym spôsobom %d-krát. V tablete sa teraz obnovia predvolené výrobné nastavenia.</string>
     <string name="lockscreen_forgot_pattern_button_text">Zabudli ste vzor?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Zabudli ste používateľské meno alebo heslo?
 Navštívte stránky "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1425,7 @@ Navštívte stránky "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Ak chcete odomknúť telefón alebo uskutočniť tiesňové volanie, stlačte Menu.</string>
     <string name="lockscreen_missing_sim_instructions">Pridajte SIM kartu.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM karta chýba alebo sa nedá čítať. Pridajte SIM kartu.</string>
-    <string name="lockscreen_missing_sim_message">V telefóne nie je SIM karta.</string>
+    <string name="lockscreen_missing_sim_message">V tablete nie je SIM karta.</string>
     <string name="lockscreen_missing_sim_message_short">Žiadna SIM karta</string>
     <string name="lockscreen_network_locked_message">Sieť je zablokovaná</string>
     <string name="lockscreen_password_wrong">Skúsiť znova</string>
@@ -1465,7 +1465,7 @@ Skúste to znova o %2$d s."</string>
     <string name="low_internal_storage_view_text">Niektoré systémové funkcie nemusia fungovať</string>
     <string name="low_internal_storage_view_text_no_boot">V úložisku nie je dostatok voľného miesta pre systém. Zaistite, aby ste mali 250 MB voľného miesta a zariadenie reštartujte.</string>
     <string name="low_internal_storage_view_title">Nedostatok ukladacieho priestoru</string>
-    <string name="low_memory">Pamäť telefónu je plná. Odstráňte niektoré súbory a uvoľnite miesto.</string>
+    <string name="low_memory">Ukladací priestor tabletu je plný. Odstráňte niektoré súbory a uvoľnite miesto.</string>
     <string name="ltb_kill_content_v2_phone">Aplikácia %s bola zavretá, pretože spôsobovala prehrievanie telefónu. Neskôr, keď telefón vychladne, ju môžete znova otvoriť.</string>
     <string name="ltb_kill_content_v2_tablet">Aplikácia %s bola zavretá, pretože spôsobovala prehrievanie tabletu. Neskôr, keď tablet vychladne, ju môžete znova otvoriť.</string>
     <string name="ltb_warning_button">Nezavrieť</string>
@@ -1777,18 +1777,18 @@ Tablet sa čoskoro reštartuje."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Zvuk sa prehráva cez zvukové zariadenie Bluetooth. Ťuknutím sem to môžete vypnúť</string>
     <string name="multisound_sound_via_headphone">Zvuk aplikácie %s sa prehráva cez slúchadlá. Ťuknutím sem to môžete vypnúť.</string>
     <string name="multisound_sound_via_headphone_multiselection">Zvuk sa prehráva cez slúchadlá. Ťuknutím sem to môžete vypnúť.</string>
-    <string name="multisound_sound_via_phone_speaker">Zvuk aplikácie %s sa prehráva cez reproduktor telefónu. Ťuknutím sem to môžete vypnúť.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Zvuk sa prehráva cez reproduktor telefónu. Ťuknutím sem to môžete vypnúť.</string>
+    <string name="multisound_sound_via_phone_speaker">Zvuk aplikácie %s sa prehráva cez reproduktor tabletu. Ťuknutím sem to môžete vypnúť.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Zvuk sa prehráva cez reproduktor tabletu. Ťuknutím sem to môžete vypnúť.</string>
     <string name="multisound_sound_via_usb_audio">Zvuk aplikácie %s sa prehráva cez zvukové zariadenie USB. Ťuknutím sem to môžete vypnúť.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Zvuk sa prehráva cez zvukové zariadenie USB. Ťuknutím sem to môžete vypnúť.</string>
     <string name="multisound_title">Oddelený zvuk aplikácie</string>
     <string name="multisound_turn_off_multisound">Vypnúť</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Aplikácia %s sa nedá spustiť v režime Samsung DeX. Skúste ju spustiť v režime telefónu.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Aplikácia %s sa nedá spustiť v režime Samsung DeX. Je navrhnutá pre domovské obrazovky telefónov.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Niektoré hry fungujú iba na dotykových obrazovkách. Ak v režime Samsung DeX nefungujú ovládacie prvky myši, skúste hrať namiesto toho v režime telefónu.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Aplikácia %s sa nedá spustiť v režime Samsung DeX. Skúste ju spustiť v režime tabletu.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Aplikácia %s sa nedá spustiť v režime Samsung DeX. Je navrhnutá pre domovské obrazovky tabletov.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Niektoré hry fungujú iba na dotykových obrazovkách. Ak v režime Samsung DeX nefungujú ovládacie prvky myši, skúste hrať namiesto toho v režime tabletu.</string>
     <string name="music_recognition_manager_service">Služba správcu rozpoznávania hudby</string>
     <string name="muted_by">%1$s vypína niektoré zvuky</string>
-    <string name="my_device">Tento telefón</string>
+    <string name="my_device">Tento tablet</string>
     <string name="nas_upgrade_notification_content">Navrhované akcie a odpovede budú odteraz poskytované zlepšenými upozorneniami. Adaptívne upozornenia Androidu už nie sú podporované.</string>
     <string name="nas_upgrade_notification_disable_action">Vypnúť</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1953,23 +1953,23 @@ Zlepšené upozornenia majú prístup k obsahu upozornení vrátane osobných �
     <string name="permdesc_bindNotificationListenerService">Umožňuje držiteľovi naviazať sa na najvyššiu úroveň služby na počúvanie upozornení. Bežné aplikácie by toto nastavenie nemali nikdy požadovať.</string>
     <string name="permdesc_bind_connection_service">Umožňuje aplikácii komunikovať s telefonickými službami a uskutočňovať a prijímať hovory.</string>
     <string name="permdesc_bind_incall_service">Umožňuje aplikácii ovládať, kedy a ako sa používateľovi zobrazí obrazovka hovoru.</string>
-    <string name="permdesc_bluetooth">Umožňuje aplikácii zobraziť informácie o konfigurácii Bluetooth na telefóne. Taktiež jej umožňuje nadväzovať a akceptovať spojenia so spárovanými zariadeniami.</string>
-    <string name="permdesc_bluetoothAdmin">Umožňuje aplikácii konfigurovať miestny telefón s rozhraním Bluetooth, vyhľadávať a spárovať vzdialené zariadenia.</string>
+    <string name="permdesc_bluetooth">Umožňuje aplikácii zobraziť informácie o konfigurácii Bluetooth na tablete. Taktiež jej umožňuje nadväzovať a akceptovať spojenia so spárovanými zariadeniami.</string>
+    <string name="permdesc_bluetoothAdmin">Umožňuje aplikácii konfigurovať miestny tablet s rozhraním Bluetooth a vyhľadávať a spárovať vzdialené zariadenia.</string>
     <string name="permdesc_bluetooth_advertise">Umožňuje aplikácii zobrazovať reklamu v zariadeniach s rozhraním Bluetooth v okolí</string>
     <string name="permdesc_bluetooth_connect">Umožňuje aplikácii pripojiť sa k spárovaným zariadeniam s rozhraním Bluetooth</string>
     <string name="permdesc_bluetooth_scan">Umožňuje aplikácii objaviť zariadenia s rozhraním Bluetooth nablízku a spárovať sa s nimi</string>
     <string name="permdesc_bodySensors">Poskytne aplikácii prístup k dátam telových senzorov, ako sú pulz, teplota a saturácia krvi kyslíkom počas používania aplikácie.</string>
     <string name="permdesc_bodySensors_background">Poskytne aplikácii prístup k dátam telových senzorov, ako sú pulz, teplota a saturácia krvi kyslíkom počas spustenia aplikácie na pozadí.</string>
-    <string name="permdesc_broadcastSticky">Umožňuje aplikácii odosielať trvalé vysielania, ktoré pretrvávajú aj po skončení vysielania. Nadmerné používanie môže telefón spomaliť alebo spôsobiť jeho nestabilitu, pretože bude používať príliš veľa pamäte.</string>
+    <string name="permdesc_broadcastSticky">Umožňuje aplikácii odosielať trvalé vysielania, ktoré pretrvávajú aj po skončení vysielania. Nadmerné používanie môže tablet spomaliť alebo spôsobiť jeho nestabilitu, pretože bude používať príliš veľa pamäte.</string>
     <string name="permdesc_callCompanionApp">Umožňuje aplikácii zobrazovať a kontrolovať prebiehajúce hovory v zariadení. Táto možnosť zahŕňa údaje, akými sú napríklad čísla jednotlivých hovorov alebo stav hovorov.</string>
     <string name="permdesc_callPhone">Umožňuje aplikácii volať na telefónne čísla bez vášho zásahu. Môže to viesť k neočakávaným poplatkom alebo hovorov. Upozorňujeme, že aplikácia nemôže volať na tiesňové linky. Škodlivé aplikácie vám môžu spôsobiť poplatky, pretože volajú bez vášho vedomia alebo vytáčajú kódy operátorov, ktoré automaticky presmerovávajú prichádzajúce hovory na iné číslo.</string>
     <string name="permdesc_camera">Táto aplikácia môže fotiť a nahrávať videá pomocou fotoaparátu, keď ju používate.</string>
     <string name="permdesc_cameraOpenCloseListener">Táto aplikácia môže prijímať spätné volania pri otváraní alebo zatváraní ľubovoľného fotoaparátu (s infomáciou o aplikácii, ktorá to robí).</string>
     <string name="permdesc_changeNetworkState">Umožňuje aplikácii zmeniť stav sieťového pripojenia zdieľaného pomocou tetheringu.</string>
     <string name="permdesc_changeTetherState">Umožňuje aplikácii zmeniť stav sieťového pripojenia zdieľaného pomocou tetheringu.</string>
-    <string name="permdesc_changeWifiMulticastState">Umožňuje aplikácii prijímať pakety odoslané na všetky zariadenia v sieti Wi‑Fi pomocou viacsmerových adries, nielen pomocou vášho telefónu. Spotrebuje viac energie ako režim bez viacsmerového vysielania.</string>
+    <string name="permdesc_changeWifiMulticastState">Umožňuje aplikácii prijímať pakety odoslané na všetky zariadenia v sieti Wi‑Fi pomocou viacsmerových adries, nielen pomocou vášho tabletu. Spotrebuje viac energie ako režim bez viacsmerového vysielania.</string>
     <string name="permdesc_changeWifiState">Umožňuje aplikácii pripojiť sa na prístupové body siete Wi‑Fi, odpojiť sa od nich a meniť konfiguráciu zariadení pre siete Wi‑Fi.</string>
-    <string name="permdesc_changeWimaxState">Umožňuje aplikácii pripojiť telefón k sieťam WiMAX a odpojiť ho od nich.</string>
+    <string name="permdesc_changeWimaxState">Umožňuje aplikácii pripojiť tablet k sieťam WiMAX a odpojiť ho od nich.</string>
     <string name="permdesc_companionProfileWatch">Umožňuje sprievodnej aplikácii spravovať hodinky.</string>
     <string name="permdesc_connection_manager">Povoľuje aplikácii spravovať pripojenia telekomunikačnej siete.</string>
     <string name="permdesc_control_incall_experience">Umožňuje aplikácii zobraziť používateľské prostredie počas hovoru.</string>
@@ -1997,7 +1997,7 @@ Zlepšené upozornenia majú prístup k obsahu upozornení vrátane osobných �
     <string name="permdesc_foregroundServiceSpecialUse">Umožňuje aplikácii využívať služby na popredí s typom specialUse</string>
     <string name="permdesc_foregroundServiceSystemExempted">Umožňuje aplikácii využívať služby na popredí s typom dataSync systemExempted</string>
     <string name="permdesc_fullScreenIntent">Táto možnosť umožňuje aplikácii zobrazovať upozornenia ako aktivity na celej obrazovke v uzamknutom zariadení</string>
-    <string name="permdesc_getAccounts">Umožňuje aplikácii získať zoznam účtov v telefóne. Môžu sem patriť akékoľvek účty vytvorené aplikáciami, ktoré ste nainštalovali.</string>
+    <string name="permdesc_getAccounts">Umožňuje aplikácii získať zoznam účtov v tablete. Môžu sem patriť akékoľvek účty vytvorené aplikáciami, ktoré ste nainštalovali.</string>
     <string name="permdesc_getAppList">Umožňuje aplikácii čítať zoznam nainštalovaných aplikácií.</string>
     <string name="permdesc_getPackageSize">Umožňuje aplikácii načítať svoj kód, údaje a veľkosti vyrovnávacej pamäte</string>
     <string name="permdesc_getTasks">Umožňuje aplikácii načítať informácie o aktuálne či nedávno spustených úlohách. Toto povolenie môže aplikácii umožniť objaviť informácie o tom, ktoré aplikácie sa na zariadení používajú.</string>
@@ -2096,16 +2096,16 @@ VRAŤTE HO SEM"</string>
     <string name="permdesc_nearby_wifi_devices">Umožňuje aplikácii oznamovať a rozpoznávať relatívnu polohu zariadení Wi‑Fi v okolí a pripájať sa k nim</string>
     <string name="permdesc_nfc">Umožňuje aplikácii komunikovať so značkami, kartami a čítačkami s podporou technológie NFC.</string>
     <string name="permdesc_observeCompanionDevicePresence">Umožňuje sprievodnej aplikácii sledovať prítomnosť sprievodného zariadenia, keď sú zariadenia nablízku alebo ďaleko.</string>
-    <string name="permdesc_persistentActivity">Umožňuje aplikácii uložiť niektoré svoje časti natrvalo do pamäte. Môže to obmedziť pamäť dostupnú pre ostatné aplikácie a spomaliť tak telefón.</string>
+    <string name="permdesc_persistentActivity">Umožňuje aplikácii uložiť niektoré svoje časti natrvalo do pamäte. Môže to obmedziť pamäť dostupnú pre ostatné aplikácie a spomaliť tak tablet.</string>
     <string name="permdesc_postNotification">Povolí aplikácii zobrazovať upozornenia</string>
     <string name="permdesc_preferredPaymentInfo">Umožňuje aplikácii získavať preferované informácie platenej služby NFC, napríklad o registrovanej pomoci a trasách k cieľu.</string>
     <string name="permdesc_processOutgoingCalls">Umožňuje aplikácii počas odchádzajúceho hovoru rozpoznať vytáčané číslo a poskytuje možnosť presmerovať daný hovor na odlišné číslo alebo ho úplne zrušiť.</string>
     <string name="permdesc_queryAllPackages">Povoľuje aplikácii čítať všetky nainštalované balíky.</string>
     <string name="permdesc_readBasicPhoneState">Umožňuje aplikácii prístup k základným telefonickým funkciám zariadenia.</string>
-    <string name="permdesc_readCalendar">Táto aplikácia môže čítať všetky udalosti kalendára uložené vo vašom telefóne a zdieľať alebo ukladať dáta kalendára.</string>
+    <string name="permdesc_readCalendar">Táto aplikácia môže čítať všetky udalosti kalendára uložené vo vašom tablete a zdieľať alebo ukladať dáta kalendára.</string>
     <string name="permdesc_readCallLog">Táto aplikácia môže čítať históriu vašich hovorov.</string>
     <string name="permdesc_readCellBroadcasts">Umožňuje aplikácii čítať správy informačných služieb prijaté vaším zariadením. Správy informačných služieb sa doručujú na určitých miestach a upozorňujú na tiesňové situácie. Škodlivé aplikácie môžu pri prijatí správy informačnej služby narušiť výkonnosť alebo prevádzku vášho zariadenia.</string>
-    <string name="permdesc_readContacts">Umožňuje aplikácii čítať údaje o kontaktoch uložených v telefóne. Aplikácie budú mať tiež prístup k účtom v telefóne, ktoré vytvorili kontakty. Môže ísť o účty vytvorené aplikáciami, ktoré ste nainštalovali. Toto povolenie umožňuje aplikáciám ukladať údaje o kontaktoch. Škodlivé aplikácie môžu zdieľať údaje o kontaktoch bez vášho vedomia.</string>
+    <string name="permdesc_readContacts">Umožňuje aplikácii čítať údaje o kontaktoch uložených v tablete. Aplikácie budú mať tiež prístup k účtom v tablete, ktoré vytvorili kontakty. Môže ísť o účty vytvorené aplikáciami, ktoré ste nainštalovali. Toto povolenie umožňuje aplikáciám ukladať údaje o kontaktoch. Škodlivé aplikácie môžu zdieľať údaje o kontaktoch bez vášho vedomia.</string>
     <string name="permdesc_readInstallSessions">Toto povolenie umožňuje aplikácii čítať relácie inštalácií a zobraziť tak podrobnosti o aktívnych inštaláciách balíkov.</string>
     <string name="permdesc_readMediaAudio">Umožňuje aplikácii čítať zvukové súbory z vášho zdieľaného priestoru.</string>
     <string name="permdesc_readMediaImages">Umožňuje aplikácii čítať súbory obrázka z vášho zdieľaného priestoru.</string>
@@ -2113,11 +2113,11 @@ VRAŤTE HO SEM"</string>
     <string name="permdesc_readNetworkUsageHistory">Umožňuje aplikácii čítať históriu používania siete pre určité siete a aplikácie.</string>
     <string name="permdesc_readPhoneNumbers">Umožňuje aplikácii pristupovať k telefónnym číslam zariadenia.</string>
     <string name="permdesc_readPhoneState">Umožňuje aplikácii pristupovať k telefónnym funkciám zariadenia. Aplikácia s týmto povolením môže určiť telefónne číslo a ID zariadenia, či práve prebieha hovor, a vzdialené číslo, s ktorým je prostredníctvom hovoru nadviazané spojenie.</string>
-    <string name="permdesc_readSms">Táto aplikácia môže čítať všetky textové správy (SMS) uložené vo vašom telefóne.</string>
+    <string name="permdesc_readSms">Táto aplikácia môže čítať všetky textové správy (SMS) uložené vo vašom tablete.</string>
     <string name="permdesc_readSyncSettings">Umožňuje aplikácii čítať nastavenia synchronizácie v účte. Môže napríklad určiť, či je s účtom synchronizovaná aplikácia Ľudia.</string>
     <string name="permdesc_readSyncStats">Umožňuje aplikácii čítať štatistické informácie o synchronizácii v účte vrátane histórie uskutočnených synchronizácií a informácií o množstve synchronizovaných údajov.</string>
     <string name="permdesc_readVisualUserSelect">Umožňuje aplikácii čítať obrázkové súbory a videosúbory, ktoré vyberiete vo svojom zdieľanom ukladacom priestore.</string>
-    <string name="permdesc_receiveBootCompleted">Umožňuje aplikácii okamžité spustenie po spustení systému. Toto nastavenie môže spomaliť spustenie tabletu a tiež celkový výkon tabletu, pretože aplikácia bude neustále zapnutá.</string>
+    <string name="permdesc_receiveBootCompleted">Umožňuje aplikácii spustiť sa hneď po spustení systému. Toto nastavenie môže spomaliť spustenie tabletu a tiež jeho celkový výkon, pretože aplikácia bude neustále spustená.</string>
     <string name="permdesc_receiveMms">Umožňuje aplikácii prijímať a spracovávať správy MMS. Znamená to, že aplikácia môže sledovať správy odoslané na vaše zariadenie alebo ich odstrániť bez toho, aby sa vám zobrazili.</string>
     <string name="permdesc_receiveSms">Umožňuje aplikácii prijímať a spracovávať správy SMS. Znamená to, že aplikácia môže sledovať správy odoslané na vaše zariadenie alebo ich odstrániť bez toho, aby sa vám zobrazili.</string>
     <string name="permdesc_receiveWapPush">Umožňuje aplikácii prijímať a spracovávať správy WAP. Toto povolenie zahŕňa možnosť sledovať vaše správy alebo ich odstrániť bez toho, aby sa vám zobrazili.</string>
@@ -2139,7 +2139,7 @@ VRAŤTE HO SEM"</string>
     <string name="permdesc_sendSms">Umožňuje aplikácii odosielať správy SMS. Môže to mať za následok účtovanie neočakávaných poplatkov. Škodlivé aplikácie vám môžu spôsobiť výdavky odosielaním správ bez vášho potvrdenia.</string>
     <string name="permdesc_setAlarm">Umožňuje aplikácii nastaviť budík v nainštalovanej aplikácii budík. Niektoré aplikácie budíka nemusia túto funkciu implementovať.</string>
     <string name="permdesc_setInputCalibration">Umožňuje aplikácii upraviť parametre kalibrácie dotykovej obrazovky. Bežné aplikácie by toto povolenie nemali nikdy potrebovať.</string>
-    <string name="permdesc_setTimeZone">Umožňuje aplikácii zmeniť časové pásmo telefónu.</string>
+    <string name="permdesc_setTimeZone">Umožňuje aplikácii zmeniť časové pásmo tabletu.</string>
     <string name="permdesc_setWallpaper">Umožňuje aplikácii nastaviť tapetu systému.</string>
     <string name="permdesc_setWallpaperHints">Umožňuje aplikácii nastaviť tipy pre veľkosť tapety systému.</string>
     <string name="permdesc_sim_communication">Umožňuje aplikácii odosielať príkazy na SIM kartu. Toto je veľmi nebezpečné povolenie.</string>
@@ -2153,7 +2153,7 @@ VRAŤTE HO SEM"</string>
     <string name="permdesc_subscribedFeedsRead">Umožňuje aplikácii získať podrobnosti o aktuálne synchronizovaných informačných kanáloch.</string>
     <string name="permdesc_systemAlertWindow">Táto aplikácia sa môže zobraziť nad ostatnými aplikáciami alebo ďalšími časťami obrazovky. Môže tak narušovať normálne používanie aplikácií a zmeniť spôsob zobrazenia ďalších aplikácií.</string>
     <string name="permdesc_systemCamera">Táto oprávnená alebo systémová aplikácia môže kedykoľvek fotiť a nahrávať videá fotoaparátom systému. Aplikácia musí mať tiež povolenie android.permission.CAMERA.</string>
-    <string name="permdesc_transmitIr">Umožňuje aplikácii používať infračervený vysielač telefónu.</string>
+    <string name="permdesc_transmitIr">Umožňuje aplikácii používať infračervený vysielač tabletu.</string>
     <string name="permdesc_turnScreenOn">Umožňuje aplikácii zapnúť obrazovku.</string>
     <string name="permdesc_ucsPlugin">Práca s doplnkami úložísk poverení tretích strán.</string>
     <string name="permdesc_uninstall_shortcut">Povoľuje aplikácii odstrániť odkazy na ploche bez zásahu používateľa.</string>
@@ -2167,10 +2167,10 @@ VRAŤTE HO SEM"</string>
     <string name="permdesc_vibrate">Umožňuje aplikácii ovládať vibrácie.</string>
     <string name="permdesc_vibrator_state">Povoľuje aplikácii prístup k stavu vibrátora.</string>
     <string name="permdesc_videoWrite">Umožňuje aplikácii upravovať zbierku videí.</string>
-    <string name="permdesc_wakeLock">Umožňuje aplikácii zabrániť prechodu telefónu do režimu spánku.</string>
-    <string name="permdesc_writeCalendar">Táto aplikácia môže pridávať, odstraňovať alebo meniť udalosti kalendára vo vašom telefóne. Táto aplikácia môže odosielať správy od vlastníkov kalendára alebo meniť udalosti bez upozornenia ich vlastníkov.</string>
-    <string name="permdesc_writeCallLog">Umožňuje aplikácii upravovať zoznam hovorov vo vašom telefóne vrátane údajov o prichádzajúcich a odchádzajúcich hovoroch. Škodlivé aplikácie to môžu zneužiť na vymazanie alebo úpravu vášho zoznamu hovorov.</string>
-    <string name="permdesc_writeContacts">Umožňuje aplikácii upraviť údaje o kontaktoch uložených v telefóne. Toto povolenie umožňuje aplikáciám odstraňovať údaje o kontaktoch.</string>
+    <string name="permdesc_wakeLock">Umožňuje aplikácii zabrániť prechodu tabletu do režimu spánku.</string>
+    <string name="permdesc_writeCalendar">Táto aplikácia môže pridávať, odstraňovať alebo meniť udalosti kalendára vo vašom tablete. Táto aplikácia môže odosielať správy od vlastníkov kalendára alebo meniť udalosti bez upozornenia ich vlastníkov.</string>
+    <string name="permdesc_writeCallLog">Umožňuje aplikácii upravovať denník hovorov vo vašom tablete vrátane údajov o prichádzajúcich a odchádzajúcich hovoroch. Škodlivé aplikácie to môžu zneužiť na vymazanie alebo úpravu vášho denníka hovorov.</string>
+    <string name="permdesc_writeContacts">Umožňuje aplikácii upraviť údaje o kontaktoch uložených v tablete. Toto povolenie umožňuje aplikáciám odstraňovať údaje o kontaktoch.</string>
     <string name="permdesc_writeSettings">Umožňuje aplikácii zmeniť údaje nastavení systému. Škodlivé aplikácie môžu poškodiť konfiguráciu vášho systému.</string>
     <string name="permdesc_writeSyncSettings">Umožňuje aplikácii upraviť nastavenia synchronizácie v účte. Pomocou tohto povolenia je možné napríklad povoliť synchronizáciu aplikácie Ľudia s účtom.</string>
     <string name="permgroupdesc_activityRecognition">prístup k vašej fyzickej aktivite</string>
@@ -2445,7 +2445,7 @@ pre účet %s"</string>
     <string name="permlab_uwb_ranging">určovať relatívnu polohu medzi zariadeniami so ultraširokopásmovým pripojením v okolí</string>
     <string name="permlab_vibrate">ovládať vibrovanie</string>
     <string name="permlab_videoWrite">upravovať zbierku videí</string>
-    <string name="permlab_wakeLock">deaktivovať režim spánku</string>
+    <string name="permlab_wakeLock">zabránenie prechodu tabletu do režimu spánku</string>
     <string name="permlab_writeCalendar">pridať alebo upraviť udalosti v kalendári a odoslať e-mail hosťom bez vedomia vlastníka</string>
     <string name="permlab_writeCallLog">zapisovať do denníka hovorov</string>
     <string name="permlab_writeContacts">upraviť kontakty</string>
@@ -2487,7 +2487,7 @@ pre účet %s"</string>
     <string name="policydesc_allow_desktopsync">Zabraňuje používaniu synchronizácie pracovnej plochy.</string>
     <string name="policydesc_allow_internetsharing">Zabraňuje používaniu funkcie Mobilný prístupový bod.</string>
     <string name="policydesc_allow_irda">Zabraňuje používaniu rozhrania IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Zabraňuje používaniu e-mailových kont POP a IMAP v telefóne.</string>
+    <string name="policydesc_allow_popimapemail">Zabraňuje používaniu e-mailových kont POP a IMAP v tablete.</string>
     <string name="policydesc_allow_storagecard">Zabraňuje používaniu kariet SD.</string>
     <string name="policydesc_allow_textmessaging">Zabraňuje používaniu textových a multimediálnych správ.</string>
     <string name="policydesc_allow_thirdParty">Táto aplikácia môže zabrániť spusteniu aplikácií od iných výrobcov.</string>
@@ -2505,10 +2505,10 @@ pre účet %s"</string>
     <string name="policydesc_setGlobalProxy">Vyberte globálny proxy server, ktorý sa bude používať po aktivácii pravidiel. Nastaviť ho môže iba vlastník zariadenia.</string>
     <string name="policydesc_unsigned_app">Táto aplikácia môže zabrániť spusteniu aplikácií z neznámych zdrojov.</string>
     <string name="policydesc_unsigned_pkg">Táto aplikácia môže zabrániť inštalácii aplikácií z neznámych zdrojov.</string>
-    <string name="policydesc_watchLogin">Sledovať počet nesprávnych hesiel zadaných pri odomykaní obrazovky a zamknúť telefón alebo vymazať všetky údaje v telefóne v prípade príliš veľkého počtu neplatných pokusov o zadanie hesla.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Sledujte počet nesprávnych hesiel zadaných pri odomykaní obrazovky a v prípade, že ich je zadaných príliš mnoho, uzamknite telefón alebo vymažte všetky údaje tohto používateľa.</string>
-    <string name="policydesc_wipeData">Bez predchádzajúceho upozornenia vymazať všetky dáta obnovením výrobných nastavení telefónu.</string>
-    <string name="policydesc_wipeData_secondaryUser">Vymažte bez upozornenia údaje tohto používateľa na tomto telefóne.</string>
+    <string name="policydesc_watchLogin">Sledovať počet nesprávnych hesiel zadaných pri odomykaní obrazovky a zamknúť tablet alebo vymazať všetky údaje tabletu v prípade príliš veľkého počtu neplatných pokusov o zadanie hesla.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Sledujte počet nesprávnych hesiel zadaných pri odomykaní obrazovky a v prípade, že ich je zadaných príliš mnoho, uzamknite tablet alebo vymažte všetky údaje tohto používateľa.</string>
+    <string name="policydesc_wipeData">Bez predchádzajúceho upozornenia vymazať všetky dáta obnovením výrobných nastavení tabletu.</string>
+    <string name="policydesc_wipeData_secondaryUser">Vymažte bez upozornenia údaje tohto používateľa na tomto tablete.</string>
     <string name="policylab_allow_bluetoothmode">Zakázať Bluetooth</string>
     <string name="policylab_allow_browser">Zakázať internet</string>
     <string name="policylab_allow_camera">Zakázať fotoaparáty</string>
@@ -2542,7 +2542,7 @@ pre účet %s"</string>
     <string name="postalTypeHome">Domov</string>
     <string name="postalTypeOther">Iné</string>
     <string name="postalTypeWork">Práca</string>
-    <string name="power_dialog">Možnosti telefónu</string>
+    <string name="power_dialog">Možnosti tabletu</string>
     <string name="power_off">Vypnúť</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">dňa %s</string>
@@ -2588,7 +2588,7 @@ pre účet %s"</string>
     <string name="recent_tasks_title">Najnovšie</string>
     <string name="recording_fail">Mikrofón sa nedá použiť v aplikácii %1$s, kým sa používa v aplikácii %2$s.</string>
     <string name="recording_popup">%s používa mikrofón.</string>
-    <string name="recording_popup_device">Telefón</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">%s používa mikrofón Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s používa mikrofón zariadenia %2$s.</string>
     <string name="redo">Opakovať</string>
@@ -2735,12 +2735,12 @@ Dlhodobé počúvanie pri vysokej hlasitosti môže poškodiť váš sluch."</st
     <string name="screenshot_edit">Upraviť</string>
     <string name="sd_card_unavailable_message">Kartu SD nemôžete používať, pretože bola vložená, keď sa používal iný používateľský profil.</string>
     <string name="sd_card_unavailable_title">Karta SD nie je k dispozícii</string>
-    <string name="sdcard_bad_removal_message">Karta SD nebola odstránená bezpečným spôsobom. Aby sa zabránilo neočakávanému reštartovaniu telefónu, uložte neuložené údaje a reštartujte ho.</string>
+    <string name="sdcard_bad_removal_message">Karta SD nebola odstránená bezpečným spôsobom. Aby sa zabránilo neočakávanému reštartovaniu tabletu, uložte neuložené údaje a reštartujte ho.</string>
     <string name="sdcard_batch_decrypt_noti_content">Dešifrovať kartu SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Dešifrovanie karty SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Šifrovanú kartu SD je nutné pred použitím dešifrovať. Dešifrovanie môže trvať aj hodinu alebo dlhšie. Začnite s nabitou batériou a nechajte zariadenie pripojené, až kým sa nedokončí dešifrovanie. Prerušenie procesu dešifrovania môže spôsobiť stratu niektorých alebo všetkých údajov.</string>
     <string name="sdcard_decrypt_err_notification">Vyskytla sa chyba dešifrovania karty SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Niektoré súbory na karte SD boli zašifrované v inom zariadení a v tomto telefóne ich nemožno použiť.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Niektoré súbory na karte SD boli zašifrované v inom zariadení a v tomto tablete ich nemožno použiť.</string>
     <string name="sdcard_decrypt_notification">Karta SD je dešifrovaná.</string>
     <string name="sdcard_decrypt_title_notification">Dešifrovanie karty SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Dešifruje sa karta SD…</string>
@@ -2999,7 +2999,7 @@ rovať"</string>
     <string name="showing_touch_sensitivity_noti_action">Zapnúť</string>
     <string name="showing_touch_sensitivity_noti_text">Počas používania ochrannej fólie Privacy Screen alebo priehľadného puzdra NotePaper zapnite funkciu Citlivosť na dotyk, aby ste získali presnejšiu odozvu na dotyk.</string>
     <string name="showing_touch_sensitivity_noti_title">Zvýšenie citlivosti na dotyk</string>
-    <string name="shutdown_confirm">Váš telefón bude vypnutý.</string>
+    <string name="shutdown_confirm">Váš tablet bude vypnutý.</string>
     <string name="shutdown_confirm_question">Chcete zariadenie vypnúť?</string>
     <string name="shutdown_progress">Prebieha vypínanie...</string>
     <string name="side_key_double_press_deleted_app">Aplikácia bola odinštalovaná. Vyberte niečo iné.</string>
@@ -3226,7 +3226,7 @@ Ak chcete túto ochranu odstrániť, prejdite do časti Nastavenia > Zabezpečen
     <string name="usb_abnormal_reset_title">Pripojenie USB je nestabilné</string>
     <string name="usb_abnormal_reset_toast">Pripojenie USB je nestabilné. Odpojte kábel a znova ho pripojte, alebo skúste použiť iný kábel.</string>
     <string name="usb_accessory_notification_title">Pripojené k príslušenstvu USB</string>
-    <string name="usb_bad_removal_message">Pamäťové zariadenie USB nebolo odstránené bezpečným spôsobom. Aby sa zabránilo neočakávanému reštartovaniu telefónu, uložte neuložené údaje a reštartujte ho.</string>
+    <string name="usb_bad_removal_message">Pamäťové zariadenie USB nebolo odstránené bezpečným spôsobom. Aby sa zabránilo neočakávanému reštartovaniu tabletu, uložte neuložené údaje a reštartujte ho.</string>
     <string name="usb_blocked_by_emergency_mode">Niektoré funkcie rozhrania USB nie sú v tiesňovom režime k dispozícii.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Keď je zapnutý režim maximálneho šetrenia energie, nedajú sa použiť funkcie súvisiace s pripojeným zariadením USB.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Kým je zapnutá funkcia Režim maximálneho šetrenia energie, niektoré funkcie rozhrania USB budú obmedzené.</string>
@@ -3236,7 +3236,7 @@ Ak chcete túto ochranu odstrániť, prejdite do časti Nastavenia > Zabezpečen
     <string name="usb_camera_disconnected_notification_title">Mediálne zariadenie je odpojené</string>
     <string name="usb_cd_installer_notification_title">Aktualizácia softvéru</string>
     <string name="usb_charging_notification_title">Toto zariadenie sa nabíja cez USB</string>
-    <string name="usb_charing_only_notification_title">Nabíja sa cez USB</string>
+    <string name="usb_charing_only_notification_title">Pripojené</string>
     <string name="usb_contaminant_detected_message">Port USB je automaticky deaktivovaný. Ďalšie informácie zobrazíte klepnutím.</string>
     <string name="usb_contaminant_detected_title">Tekutina alebo nečistoty v porte USB</string>
     <string name="usb_contaminant_not_detected_message">Telefón už nerozpoznáva tekutinu ani nečistoty.</string>
@@ -3248,11 +3248,11 @@ Ak chcete túto ochranu odstrániť, prejdite do časti Nastavenia > Zabezpečen
     <string name="usb_host_cable_disconnected_notification_title">Konektor USB je odpojený.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Nedá sa získať prístup k tomuto zariadeniu. Pripojené zariadenie vyžaduje externý zdroj napájania.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Pripojené je zariadenie USB s vysokou spotrebou.</string>
-    <string name="usb_host_resource_exceed_message">Radič USB vášho telefónu nemá dostatok zdrojov na pripojenie tohto zariadenia. Skúste zariadenie odpojiť a znova ho pripojiť.</string>
+    <string name="usb_host_resource_exceed_message">Radič USB vášho tabletu nemá dostatok zdrojov na pripojenie tohto zariadenia. Skúste zariadenie odpojiť a znova ho pripojiť.</string>
     <string name="usb_host_resource_exceed_title">Nedostatok zdrojov pre radič USB</string>
-    <string name="usb_hub_depth_exceed_message">Váš telefón dokáže súčasne podporovať najviac 5 pripojení cez USB rozbočovač.</string>
+    <string name="usb_hub_depth_exceed_message">Váš tablet dokáže súčasne podporovať najviac 5 pripojení cez USB rozbočovač.</string>
     <string name="usb_hub_depth_exceed_title">Max. pripojení cez USB rozboč.</string>
-    <string name="usb_hub_power_exceed_message">Váš telefón nedokáže poskytnúť dostatok energie pre toto zariadenie USB. Pred pripojením k telefónu pripojte toto zariadenie k rozbočovaču USB s vlastným napájaním.</string>
+    <string name="usb_hub_power_exceed_message">Váš tablet nedokáže poskytnúť dostatok energie pre toto zariadenie USB. Pred pripojením k tabletu pripojte toto zariadenie k rozbočovaču USB s vlastným napájaním.</string>
     <string name="usb_increase_battery_usage">Pripojenie USB môže zvyšovať spotrebu energie z batérie.</string>
     <string name="usb_keyboard_connected_notification_title">Klávesnica je pripojená</string>
     <string name="usb_keyboard_disconnected_notification_title">Klávesnica je odpojená</string>
@@ -3295,8 +3295,8 @@ Ak chcete túto ochranu odstrániť, prejdite do časti Nastavenia > Zabezpečen
     <string name="usb_ums_connected_notification_message_usbhost">Veľkokapacitný úložný priestor USB bol neočakávane odstránený.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Veľkokap. uklad. priestor USB je pripojený</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Veľkokapacitný úložný priestor USB bol bezpečne odstránený.</string>
-    <string name="usb_unblock_by_screen_unlock">Ak chcete použiť pripojené zariadenie USB, odomknite telefón.</string>
-    <string name="usb_unsupport_accessory_message">Váš telefón toto zariadenie USB nepodporuje.</string>
+    <string name="usb_unblock_by_screen_unlock">Ak chcete použiť pripojené zariadenie USB, odomknite tablet.</string>
+    <string name="usb_unsupport_accessory_message">Váš tablet toto zariadenie USB nepodporuje.</string>
     <string name="usb_unsupport_accessory_title">Zariadenie USB sa nepodporuje</string>
     <string name="usb_unsupported_audio_accessory_message">Pripojené zariadenie nie je kompatibilné s týmto telefónom. Ďalšie informácie zobrazíte klepnutím.</string>
     <string name="usb_unsupported_audio_accessory_title">Bolo zistené analógové zvukové príslušenstvo</string>
@@ -3317,19 +3317,19 @@ Ak chcete túto ochranu odstrániť, prejdite do časti Nastavenia > Zabezpečen
     <string name="usb_water_dialg_method_2_desc_2">Sušenie môžete urýchliť tým, že na port nasmerujete ventilátor alebo sušič (len studený vzduch).</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"V nabíjacom/USB porte sme zistili vlhkosť alebo cudzorodý materiál.
 
-Skontrolujte, či v nabíjacom/USB porte nie je nejaký cudzorodý materiál, ako napríklad prach alebo nečistoty. Kým nebude nabíjací port čistý a nezmizne vlhkosť, nič nepripájajte, aby sa zabránilo poškodeniu telefónu.
+Skontrolujte, či v nabíjacom/USB porte nie je nejaký cudzorodý materiál, ako napríklad prach alebo nečistoty. Kým nebude nabíjací port čistý a nezmizne vlhkosť, nič nepripájajte, aby sa zabránilo poškodeniu tabletu.
 
 Ak chcete port vysušiť, vytraste všetku vlhkosť a potom počkajte, kým nevyschne, čo môže trvať aj niekoľko hodín. Sušenie môžete urýchliť tým, že na port nasmerujete ventilátor alebo sušič (len studený vzduch)."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"V nabíjacom/USB porte sme zistili vlhkosť alebo cudzorodý materiál.
 
-Skontrolujte, či v nabíjacom/USB porte nie je nejaký cudzorodý materiál, ako napríklad prach alebo nečistoty. Kým nebude nabíjací port čistý a nezmizne vlhkosť, nič nepripájajte, aby sa zabránilo poškodeniu telefónu.
+Skontrolujte, či v nabíjacom/USB porte nie je nejaký cudzorodý materiál, ako napríklad prach alebo nečistoty. Kým nebude nabíjací port čistý a bez vlhkosti, nič nepripájajte, aby sa zabránilo poškodeniu tabletu.
 
 Ak chcete port vysušiť, vytraste všetku vlhkosť a potom počkajte, kým nevyschne, čo môže trvať aj niekoľko hodín. Sušenie môžete urýchliť tým, že na port nasmerujete ventilátor alebo sušič (len studený vzduch).
 
-Medzitým môžete nabíjať telefón bezdrôtovo."</string>
+Medzitým môžete nabíjať tablet bezdrôtovo."</string>
     <string name="usb_water_notification_content">V nabíjacom/USB porte je vlhkosť alebo cudzorodý materiál. Pred nabíjaním to skontrolujte.</string>
-    <string name="usb_water_notification_message">V porte pre nabíjačku/USB sa zistila vlhkosť. Pred nabíjaním telefónu sa uistite, že je suchý. Úplné vysušenie môže určitú dobu trvať.</string>
+    <string name="usb_water_notification_message">V porte pre nabíjačku/USB sa zistila vlhkosť. Pred nabíjaním tabletu sa uistite, že je suchý. Úplné vysušenie môže určitú dobu trvať.</string>
     <string name="usb_water_notification_message_button">Podrobnosti</string>
     <string name="usb_water_notification_title">Skontrol. port pre nabíjačku/USB</string>
     <string name="usbhostStorage_restrict">Politika zabezpečenia zabraňuje používaniu hostiteľského úložiska USB.</string>
@@ -3347,7 +3347,7 @@ Medzitým môžete nabíjať telefón bezdrôtovo."</string>
     <string name="user_switched">Aktuálny používateľ je %1$s.</string>
     <string name="user_switching_message">Prepína sa na účet %1$s…</string>
     <string name="validity_period">Platnosť:</string>
-    <string name="vdm_camera_access_denied">V zariadení %1$s nemáte prístup ku kamere telefónu</string>
+    <string name="vdm_camera_access_denied">V zariadení %1$s nemáte prístup ku kamere tabletu</string>
     <string name="vdm_pip_blocked">Počas streamingu sa obraz v obraze nedá zobraziť</string>
     <string name="vdm_secure_window">K tomuto obsahu nie je počas streamovania prístup. Skúste použiť telefón.</string>
     <string name="view_and_control_notification_content">%s môže zobraziť a ovládať vašu obrazovku. Skontrolujte to klepnutím.</string>

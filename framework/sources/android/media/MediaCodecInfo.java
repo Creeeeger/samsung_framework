@@ -50,12 +50,11 @@ public final class MediaCodecInfo {
     private static final Range<Integer> FRAME_RATE_RANGE = Range.create(0, Integer.valueOf(EncodeConstants.Resolution.MM_360_EXPORT_HEIGHT_960));
     private static final Range<Integer> BITRATE_RANGE = Range.create(0, 500000000);
 
-    /* renamed from: -$$Nest$smgetSizeRange, reason: not valid java name */
+    /* renamed from: -$$Nest$smgetSizeRange */
     static /* bridge */ /* synthetic */ Range m2313$$Nest$smgetSizeRange() {
         return getSizeRange();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MediaCodecInfo(String name, String canonicalName, int flags, CodecCapabilities[] caps) {
         this.mName = name;
         this.mCanonicalName = canonicalName;
@@ -100,7 +99,6 @@ public final class MediaCodecInfo {
         return types;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int checkPowerOfTwo(int value, String message) {
         if (((value - 1) & value) != 0) {
             throw new IllegalArgumentException(message);
@@ -108,7 +106,6 @@ public final class MediaCodecInfo {
         return value;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class Feature {
         public boolean mDefault;
@@ -128,7 +125,6 @@ public final class MediaCodecInfo {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class LazyHolder {
         private static final Range<Integer> SIZE_RANGE;
@@ -331,7 +327,6 @@ public final class MediaCodecInfo {
             return encoderCapabilities == null || encoderCapabilities.supportsFormat(format);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static boolean supportsBitrate(Range<Integer> bitrateRange, MediaFormat format) {
             Map<String, Object> map = format.getMap();
             Integer maxBitrate = (Integer) map.get(MediaFormat.KEY_MAX_BIT_RATE);
@@ -1280,7 +1275,6 @@ public final class MediaCodecInfo {
             return Collections.unmodifiableList(ret);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ int lambda$getPerformancePoints$0(PerformancePoint a, PerformancePoint b) {
             int i = -1;
             if (a.getMaxMacroBlocks() != b.getMaxMacroBlocks()) {

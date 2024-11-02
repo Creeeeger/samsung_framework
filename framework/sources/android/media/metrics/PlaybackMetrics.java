@@ -19,13 +19,14 @@ public final class PlaybackMetrics implements Parcelable {
     public static final int CONTENT_TYPE_OTHER = 3;
     public static final int CONTENT_TYPE_UNKNOWN = 0;
     public static final Parcelable.Creator<PlaybackMetrics> CREATOR = new Parcelable.Creator<PlaybackMetrics>() { // from class: android.media.metrics.PlaybackMetrics.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PlaybackMetrics[] newArray(int size) {
             return new PlaybackMetrics[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PlaybackMetrics createFromParcel(Parcel in) {
             return new PlaybackMetrics(in);
@@ -284,6 +285,23 @@ public final class PlaybackMetrics implements Parcelable {
         this.mNetworkTransferDurationMillis = networkTransferDurationMillis;
         this.mDrmSessionId = drmSessionId;
         this.mMetricsBundle = extras;
+    }
+
+    /* renamed from: android.media.metrics.PlaybackMetrics$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PlaybackMetrics> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PlaybackMetrics[] newArray(int size) {
+            return new PlaybackMetrics[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PlaybackMetrics createFromParcel(Parcel in) {
+            return new PlaybackMetrics(in);
+        }
     }
 
     /* loaded from: classes2.dex */

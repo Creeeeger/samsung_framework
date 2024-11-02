@@ -17,7 +17,6 @@ final class CallerAllowList {
         mAllowList = Collections.unmodifiableSet(modifiableSet);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean contains(String caller) {
         return mAllowList.contains(caller);
     }

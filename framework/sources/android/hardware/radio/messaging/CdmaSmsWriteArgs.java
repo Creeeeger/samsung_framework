@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaSmsWriteArgs implements Parcelable {
     public static final Parcelable.Creator<CdmaSmsWriteArgs> CREATOR = new Parcelable.Creator<CdmaSmsWriteArgs>() { // from class: android.hardware.radio.messaging.CdmaSmsWriteArgs.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CdmaSmsWriteArgs createFromParcel(Parcel _aidl_source) {
             CdmaSmsWriteArgs _aidl_out = new CdmaSmsWriteArgs();
@@ -17,7 +19,6 @@ public class CdmaSmsWriteArgs implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsWriteArgs[] newArray(int _aidl_size) {
             return new CdmaSmsWriteArgs[_aidl_size];
@@ -29,6 +30,25 @@ public class CdmaSmsWriteArgs implements Parcelable {
     public static final int STATUS_STO_UNSENT = 2;
     public CdmaSmsMessage message;
     public int status = 0;
+
+    /* renamed from: android.hardware.radio.messaging.CdmaSmsWriteArgs$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CdmaSmsWriteArgs> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaSmsWriteArgs createFromParcel(Parcel _aidl_source) {
+            CdmaSmsWriteArgs _aidl_out = new CdmaSmsWriteArgs();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaSmsWriteArgs[] newArray(int _aidl_size) {
+            return new CdmaSmsWriteArgs[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

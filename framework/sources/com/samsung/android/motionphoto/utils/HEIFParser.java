@@ -25,8 +25,9 @@ public class HEIFParser {
     int mFoundirefChunk = 0;
     int mFoundilocChunk = 0;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    class XMPInformation {
+    public class XMPInformation {
         public long offset;
         public long size;
 
@@ -36,7 +37,6 @@ public class HEIFParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class ItemReference {
         int itemID;
@@ -46,7 +46,6 @@ public class HEIFParser {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class ItemLocation {
         public long base_offset;

@@ -274,7 +274,10 @@ public class IETFUtils {
         return vBuf.toString();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x005c, code lost:            if (r5 >= r2) goto L30;     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x005c, code lost:
+    
+        if (r5 >= r2) goto L68;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

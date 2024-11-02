@@ -33,17 +33,16 @@ import java.util.List;
 
 /* loaded from: classes2.dex */
 public class VpnService extends Service {
+    private static final boolean DBG = Debug.semIsProductDev();
     private static final String FAST_PACKAGE_NAME = "com.samsung.android.fast";
     private static final String KNOXGUARD_PACKAGE_NAME = "com.samsung.android.kgclient";
     public static final String SERVICE_INTERFACE = "android.net.VpnService";
     public static final String SERVICE_META_DATA_SUPPORTS_ALWAYS_ON = "android.net.VpnService.SUPPORTS_ALWAYS_ON";
     private static final int SYSTEM_VPN = 0;
     private static final String TAG = "VpnService";
-    private static final boolean DBG = Debug.semIsProductDev();
-    private static boolean mIsKGClientPackageInstalled = false;
 
-    /* renamed from: -$$Nest$smgetService, reason: not valid java name */
-    static /* bridge */ /* synthetic */ IVpnManager m2977$$Nest$smgetService() {
+    /* renamed from: -$$Nest$smgetService */
+    static /* bridge */ /* synthetic */ IVpnManager m2976$$Nest$smgetService() {
         return getService();
     }
 
@@ -77,24 +76,7 @@ public class VpnService extends Service {
         }
     }
 
-    private static boolean isKGClientPackageInstalled(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-        try {
-            packageManager.getPackageInfo(KNOXGUARD_PACKAGE_NAME, 1);
-            if (packageManager.checkSignatures("android", KNOXGUARD_PACKAGE_NAME) == 0) {
-                return true;
-            }
-            return false;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Exception occured while calling packageManager.getPackageInfo");
-            return false;
-        }
-    }
-
     public static Intent prepare(Context context) {
-        if (isKGClientPackageInstalled(context)) {
-            mIsKGClientPackageInstalled = true;
-        }
         if (context instanceof GenericVpnContext) {
             Log.d(TAG, "prepare function with generic vpn context is called for knox vpn profile");
             GenericVpnContext knoxVPNContext = (GenericVpnContext) context;
@@ -224,10 +206,13 @@ public class VpnService extends Service {
 
     /* loaded from: classes2.dex */
     private class Callback extends Binder {
+        /* synthetic */ Callback(VpnService vpnService, CallbackIA callbackIA) {
+            this();
+        }
+
         private Callback() {
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) {
             if (code == 16777215) {
@@ -238,7 +223,6 @@ public class VpnService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void check(InetAddress address, int prefixLength) {
         if (address.isLoopbackAddress()) {
             throw new IllegalArgumentException("Bad address");
@@ -258,7 +242,6 @@ public class VpnService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void checkNonPrefixBytes(InetAddress address, int prefixLength) {
         IpPrefix prefix = new IpPrefix(address, prefixLength);
         if (!prefix.getAddress().equals(address)) {
@@ -436,7 +419,7 @@ public class VpnService extends Service {
                 throw new UnsupportedOperationException("addDisallowedApplication already called");
             }
             verifyApp(packageName);
-            if (VpnService.mIsKGClientPackageInstalled && packageName.equals(VpnService.KNOXGUARD_PACKAGE_NAME) && KnoxGuardManager.getInstance().isVpnExceptionRequired()) {
+            if (packageName.equals(VpnService.KNOXGUARD_PACKAGE_NAME) && KnoxGuardManager.getInstance().isVpnExceptionRequired()) {
                 return this;
             }
             if (this.mConfig.allowedApplications == null) {
@@ -496,7 +479,7 @@ public class VpnService extends Service {
         }
 
         public ParcelFileDescriptor establish() {
-            if (this.mConfig.allowedApplications == null && VpnService.mIsKGClientPackageInstalled && KnoxGuardManager.getInstance().isVpnExceptionRequired()) {
+            if (this.mConfig.allowedApplications == null && KnoxGuardManager.getInstance().isVpnExceptionRequired()) {
                 try {
                     addDisallowedApplication(VpnService.KNOXGUARD_PACKAGE_NAME);
                 } catch (PackageManager.NameNotFoundException e) {
@@ -506,7 +489,7 @@ public class VpnService extends Service {
             this.mConfig.addresses = this.mAddresses;
             this.mConfig.routes = this.mRoutes;
             try {
-                return VpnService.m2977$$Nest$smgetService().establishVpn(this.mConfig);
+                return VpnService.m2976$$Nest$smgetService().establishVpn(this.mConfig);
             } catch (RemoteException e2) {
                 throw new IllegalStateException(e2);
             }

@@ -12,13 +12,14 @@ import java.util.Map;
 /* loaded from: classes3.dex */
 public final class FileServiceInfo extends ServiceInfo implements Parcelable {
     public static final Parcelable.Creator<FileServiceInfo> CREATOR = new Parcelable.Creator<FileServiceInfo>() { // from class: android.telephony.mbms.FileServiceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FileServiceInfo createFromParcel(Parcel source) {
             return new FileServiceInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FileServiceInfo[] newArray(int size) {
             return new FileServiceInfo[size];
@@ -30,6 +31,23 @@ public final class FileServiceInfo extends ServiceInfo implements Parcelable {
     public FileServiceInfo(Map<Locale, String> newNames, String newClassName, List<Locale> newLocales, String newServiceId, Date start, Date end, List<FileInfo> newFiles) {
         super(newNames, newClassName, newLocales, newServiceId, start, end);
         this.files = new ArrayList(newFiles);
+    }
+
+    /* renamed from: android.telephony.mbms.FileServiceInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FileServiceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FileServiceInfo createFromParcel(Parcel source) {
+            return new FileServiceInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FileServiceInfo[] newArray(int size) {
+            return new FileServiceInfo[size];
+        }
     }
 
     FileServiceInfo(Parcel in) {

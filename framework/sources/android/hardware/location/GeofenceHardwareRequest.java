@@ -85,7 +85,6 @@ public final class GeofenceHardwareRequest {
         return this.mSourceTechnologies;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getType() {
         return this.mType;
     }

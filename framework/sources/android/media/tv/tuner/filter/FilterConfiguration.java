@@ -9,7 +9,6 @@ public abstract class FilterConfiguration {
 
     public abstract int getType();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FilterConfiguration(Settings settings) {
         this.mSettings = settings;
     }

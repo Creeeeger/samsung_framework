@@ -86,8 +86,9 @@ public interface IOnMediaKeyEventSessionChangedListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IOnMediaKeyEventSessionChangedListener {
+        public static class Proxy implements IOnMediaKeyEventSessionChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

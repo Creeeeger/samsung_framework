@@ -178,8 +178,9 @@ public interface IMbmsStreamingService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IMbmsStreamingService {
+        public static class Proxy implements IMbmsStreamingService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

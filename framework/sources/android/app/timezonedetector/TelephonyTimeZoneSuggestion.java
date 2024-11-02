@@ -19,13 +19,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TelephonyTimeZoneSuggestion implements Parcelable {
     public static final Parcelable.Creator<TelephonyTimeZoneSuggestion> CREATOR = new Parcelable.Creator<TelephonyTimeZoneSuggestion>() { // from class: android.app.timezonedetector.TelephonyTimeZoneSuggestion.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TelephonyTimeZoneSuggestion createFromParcel(Parcel in) {
             return TelephonyTimeZoneSuggestion.createFromParcel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyTimeZoneSuggestion[] newArray(int size) {
             return new TelephonyTimeZoneSuggestion[size];
@@ -57,6 +58,27 @@ public final class TelephonyTimeZoneSuggestion implements Parcelable {
     public @interface Quality {
     }
 
+    /* synthetic */ TelephonyTimeZoneSuggestion(Builder builder, TelephonyTimeZoneSuggestionIA telephonyTimeZoneSuggestionIA) {
+        this(builder);
+    }
+
+    /* renamed from: android.app.timezonedetector.TelephonyTimeZoneSuggestion$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TelephonyTimeZoneSuggestion> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyTimeZoneSuggestion createFromParcel(Parcel in) {
+            return TelephonyTimeZoneSuggestion.createFromParcel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TelephonyTimeZoneSuggestion[] newArray(int size) {
+            return new TelephonyTimeZoneSuggestion[size];
+        }
+    }
+
     public static TelephonyTimeZoneSuggestion createEmptySuggestion(int slotIndex, String debugInfo) {
         return new Builder(slotIndex).addDebugInfo(debugInfo).build();
     }
@@ -71,7 +93,6 @@ public final class TelephonyTimeZoneSuggestion implements Parcelable {
         this.mCountryIso = builder.mCountryIso;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static TelephonyTimeZoneSuggestion createFromParcel(Parcel in) {
         int slotIndex = in.readInt();
         TelephonyTimeZoneSuggestion suggestion = new Builder(slotIndex).setZoneId(in.readString()).setMatchType(in.readInt()).setQuality(in.readInt()).build();

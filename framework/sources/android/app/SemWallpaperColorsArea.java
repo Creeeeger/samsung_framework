@@ -675,7 +675,6 @@ public class SemWallpaperColorsArea implements Cloneable {
         return rect;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String name(int area) {
         if (area < 0) {
             return "";
@@ -777,7 +776,7 @@ public class SemWallpaperColorsArea implements Cloneable {
         return screenSize;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public SemWallpaperColorsArea m511clone() {
         try {
             return (SemWallpaperColorsArea) super.clone();

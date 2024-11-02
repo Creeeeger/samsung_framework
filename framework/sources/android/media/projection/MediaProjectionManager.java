@@ -133,8 +133,9 @@ public final class MediaProjectionManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static final class CallbackDelegate extends IMediaProjectionWatcherCallback.Stub {
+    public static final class CallbackDelegate extends IMediaProjectionWatcherCallback.Stub {
         private Callback mCallback;
         private Handler mHandler;
 
@@ -143,9 +144,30 @@ public final class MediaProjectionManager {
             this.mHandler = handler == null ? new Handler() : handler;
         }
 
+        /* renamed from: android.media.projection.MediaProjectionManager$CallbackDelegate$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ MediaProjectionInfo val$info;
+
+            AnonymousClass1(MediaProjectionInfo mediaProjectionInfo) {
+                info = mediaProjectionInfo;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                CallbackDelegate.this.mCallback.onStart(info);
+            }
+        }
+
         @Override // android.media.projection.IMediaProjectionWatcherCallback
-        public void onStart(final MediaProjectionInfo info) {
+        public void onStart(MediaProjectionInfo info) {
             this.mHandler.post(new Runnable() { // from class: android.media.projection.MediaProjectionManager.CallbackDelegate.1
+                final /* synthetic */ MediaProjectionInfo val$info;
+
+                AnonymousClass1(MediaProjectionInfo info2) {
+                    info = info2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     CallbackDelegate.this.mCallback.onStart(info);
@@ -153,9 +175,30 @@ public final class MediaProjectionManager {
             });
         }
 
+        /* renamed from: android.media.projection.MediaProjectionManager$CallbackDelegate$2 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ MediaProjectionInfo val$info;
+
+            AnonymousClass2(MediaProjectionInfo mediaProjectionInfo) {
+                info = mediaProjectionInfo;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                CallbackDelegate.this.mCallback.onStop(info);
+            }
+        }
+
         @Override // android.media.projection.IMediaProjectionWatcherCallback
-        public void onStop(final MediaProjectionInfo info) {
+        public void onStop(MediaProjectionInfo info) {
             this.mHandler.post(new Runnable() { // from class: android.media.projection.MediaProjectionManager.CallbackDelegate.2
+                final /* synthetic */ MediaProjectionInfo val$info;
+
+                AnonymousClass2(MediaProjectionInfo info2) {
+                    info = info2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     CallbackDelegate.this.mCallback.onStop(info);

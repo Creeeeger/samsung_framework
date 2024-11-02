@@ -32,6 +32,22 @@ public class NotificationHeaderView extends RelativeLayout {
     private HeaderTouchListener mTouchListener;
     private final int mTouchableHeight;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.NotificationHeaderView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends ViewOutlineProvider {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ViewOutlineProvider
+        public void getOutline(View view, Outline outline) {
+            if (NotificationHeaderView.this.mBackground != null) {
+                outline.setRect(0, 0, NotificationHeaderView.this.getWidth(), NotificationHeaderView.this.getHeight());
+                outline.setAlpha(1.0f);
+            }
+        }
+    }
+
     public NotificationHeaderView(Context context) {
         this(context, null);
     }
@@ -48,6 +64,9 @@ public class NotificationHeaderView extends RelativeLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mTouchListener = new HeaderTouchListener();
         this.mProvider = new ViewOutlineProvider() { // from class: android.view.NotificationHeaderView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.ViewOutlineProvider
             public void getOutline(View view, Outline outline) {
                 if (NotificationHeaderView.this.mBackground != null) {
@@ -61,7 +80,6 @@ public class NotificationHeaderView extends RelativeLayout {
         this.mEntireHeaderClickable = res.getBoolean(R.bool.config_notificationHeaderClickableForExpand);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -86,7 +104,6 @@ public class NotificationHeaderView extends RelativeLayout {
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         Drawable drawable = this.mBackground;
@@ -96,13 +113,11 @@ public class NotificationHeaderView extends RelativeLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == this.mBackground;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void drawableStateChanged() {
         Drawable drawable = this.mBackground;
@@ -245,7 +260,6 @@ public class NotificationHeaderView extends RelativeLayout {
             return this.mTrackGesture;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public boolean isInside(float x, float y) {
             if (NotificationHeaderView.this.mAcceptAllTouches) {
                 return true;
@@ -265,7 +279,6 @@ public class NotificationHeaderView extends RelativeLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public View getFirstChildNotGone() {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);

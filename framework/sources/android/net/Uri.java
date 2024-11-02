@@ -37,7 +37,9 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
     private static final String LOG = Uri.class.getSimpleName();
     public static final Uri EMPTY = new HierarchicalUri(null, Part.NULL, PathPart.EMPTY, Part.NULL, Part.NULL);
     public static final Parcelable.Creator<Uri> CREATOR = new Parcelable.Creator<Uri>() { // from class: android.net.Uri.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Uri createFromParcel(Parcel in) {
             int type = in.readInt();
@@ -55,13 +57,16 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Uri[] newArray(int size) {
             return new Uri[size];
         }
     };
     private static final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
+
+    /* synthetic */ Uri(UriIA uriIA) {
+        this();
+    }
 
     public abstract Builder buildUpon();
 
@@ -105,7 +110,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
 
     public abstract String toString();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class NotCachedHolder {
         static final String NOT_CACHED = new String("NOT CACHED");
@@ -195,7 +199,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         return new HierarchicalUri("file", Part.EMPTY, path, Part.NULL, Part.NULL);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class StringUri extends AbstractHierarchicalUri {
         static final int TYPE_ID = 1;
@@ -208,6 +211,10 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         private volatile String scheme;
         private Part ssp;
         private final String uriString;
+
+        /* synthetic */ StringUri(String str, StringUriIA stringUriIA) {
+            this(str);
+        }
 
         private StringUri(String uriString) {
             super();
@@ -278,7 +285,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             return parseScheme;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public String parseScheme() {
             int ssi = findSchemeSeparator();
             if (ssi == -1) {
@@ -287,7 +293,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             return this.uriString.substring(0, ssi);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Part getSsp() {
             Part part = this.ssp;
             if (part != null) {
@@ -317,7 +322,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             return this.uriString.substring(ssi + 1, fsi);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Part getAuthorityPart() {
             Part part = this.authority;
             if (part == null) {
@@ -339,7 +343,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             return getAuthorityPart().getDecoded();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public PathPart getPathPart() {
             PathPart pathPart = this.path;
             if (pathPart != null) {
@@ -377,7 +380,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             return parsePath(uriString, ssi);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Part getQueryPart() {
             Part part = this.query;
             if (part != null) {
@@ -413,7 +415,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             return getQueryPart().getDecoded();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public Part getFragmentPart() {
             Part part = this.fragment;
             if (part != null) {
@@ -518,7 +519,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         return new OpaqueUri(scheme, Part.fromDecoded(ssp), Part.fromDecoded(fragment));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class OpaqueUri extends Uri {
         static final int TYPE_ID = 2;
@@ -526,6 +526,10 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         private final Part fragment;
         private final String scheme;
         private final Part ssp;
+
+        /* synthetic */ OpaqueUri(String str, Part part, Part part2, OpaqueUriIA opaqueUriIA) {
+            this(str, part, part2);
+        }
 
         private OpaqueUri(String scheme, Part ssp, Part fragment) {
             super();
@@ -669,7 +673,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class PathSegments extends AbstractList<String> implements RandomAccess {
         static final PathSegments EMPTY = new PathSegments(null, 0);
@@ -695,7 +698,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class PathSegmentsBuilder {
         String[] segments;
@@ -731,11 +733,16 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private static abstract class AbstractHierarchicalUri extends Uri {
+    public static abstract class AbstractHierarchicalUri extends Uri {
         private volatile String host;
         private volatile int port;
         private Part userInfo;
+
+        /* synthetic */ AbstractHierarchicalUri(AbstractHierarchicalUriIA abstractHierarchicalUriIA) {
+            this();
+        }
 
         private AbstractHierarchicalUri() {
             super();
@@ -851,7 +858,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class HierarchicalUri extends AbstractHierarchicalUri {
         static final int TYPE_ID = 3;
@@ -862,6 +868,10 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         private final String scheme;
         private Part ssp;
         private volatile String uriString;
+
+        /* synthetic */ HierarchicalUri(String str, Part part, PathPart pathPart, Part part2, Part part3, HierarchicalUriIA hierarchicalUriIA) {
+            this(str, part, pathPart, part2, part3);
+        }
 
         private HierarchicalUri(String scheme, Part authority, PathPart path, Part query, Part fragment) {
             super();
@@ -1036,7 +1046,11 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         private String scheme;
 
         public Builder scheme(String scheme) {
-            this.scheme = scheme;
+            if (scheme != null) {
+                this.scheme = scheme.replace("://", "");
+            } else {
+                this.scheme = null;
+            }
             return this;
         }
 
@@ -1280,6 +1294,35 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         return scheme.equals(lowerScheme) ? this : buildUpon().scheme(lowerScheme).build();
     }
 
+    /* renamed from: android.net.Uri$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Uri> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Uri createFromParcel(Parcel in) {
+            int type = in.readInt();
+            switch (type) {
+                case 0:
+                    return null;
+                case 1:
+                    return StringUri.readFrom(in);
+                case 2:
+                    return OpaqueUri.readFrom(in);
+                case 3:
+                    return HierarchicalUri.readFrom(in);
+                default:
+                    throw new IllegalArgumentException("Unknown URI type: " + type);
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Uri[] newArray(int size) {
+            return new Uri[size];
+        }
+    }
+
     public static void writeToParcel(Parcel out, Uri uri) {
         if (uri == null) {
             out.writeInt(0);
@@ -1351,7 +1394,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         return UriCodec.decode(s, false, StandardCharsets.UTF_8, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static abstract class AbstractPart {
         static final int REPRESENTATION_DECODED = 2;
@@ -1406,11 +1448,14 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class Part extends AbstractPart {
         static final Part NULL = new EmptyPart(null);
         static final Part EMPTY = new EmptyPart("");
+
+        /* synthetic */ Part(String str, String str2, PartIA partIA) {
+            this(str, str2);
+        }
 
         private Part(String encoded, String decoded) {
             super(encoded, decoded);
@@ -1490,7 +1535,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static class PathPart extends AbstractPart {
         private PathSegments pathSegments;

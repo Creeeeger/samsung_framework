@@ -28,7 +28,9 @@ public final class AudioMetadata {
     private static final Map<Class, Integer> AUDIO_METADATA_OBJ_TYPES = Map.of(Integer.class, 1, Long.class, 2, Float.class, 3, Double.class, 4, String.class, 5, BaseMap.class, 6);
     private static final Charset AUDIO_METADATA_CHARSET = StandardCharsets.UTF_8;
     private static final Map<Integer, DataPackage<?>> DATA_PACKAGES = Map.of(1, new DataPackage<Integer>() { // from class: android.media.AudioMetadata.2
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.media.AudioMetadata.DataPackage
         public Integer unpack(ByteBuffer buffer) {
             return Integer.valueOf(buffer.getInt());
@@ -40,7 +42,9 @@ public final class AudioMetadata {
             return true;
         }
     }, 2, new DataPackage<Long>() { // from class: android.media.AudioMetadata.3
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass3() {
+        }
+
         @Override // android.media.AudioMetadata.DataPackage
         public Long unpack(ByteBuffer buffer) {
             return Long.valueOf(buffer.getLong());
@@ -52,7 +56,9 @@ public final class AudioMetadata {
             return true;
         }
     }, 3, new DataPackage<Float>() { // from class: android.media.AudioMetadata.4
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass4() {
+        }
+
         @Override // android.media.AudioMetadata.DataPackage
         public Float unpack(ByteBuffer buffer) {
             return Float.valueOf(buffer.getFloat());
@@ -64,7 +70,9 @@ public final class AudioMetadata {
             return true;
         }
     }, 4, new DataPackage<Double>() { // from class: android.media.AudioMetadata.5
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass5() {
+        }
+
         @Override // android.media.AudioMetadata.DataPackage
         public Double unpack(ByteBuffer buffer) {
             return Double.valueOf(buffer.getDouble());
@@ -76,6 +84,9 @@ public final class AudioMetadata {
             return true;
         }
     }, 5, new DataPackage<String>() { // from class: android.media.AudioMetadata.6
+        AnonymousClass6() {
+        }
+
         @Override // android.media.AudioMetadata.DataPackage
         public String unpack(ByteBuffer buffer) {
             int dataSize = buffer.getInt();
@@ -128,6 +139,47 @@ public final class AudioMetadata {
         }
     }
 
+    /* renamed from: android.media.AudioMetadata$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1<T> implements Key<T> {
+        private final String mName;
+        private final Class<T> mType;
+        final /* synthetic */ String val$name;
+        final /* synthetic */ Class val$type;
+
+        AnonymousClass1(String str, Class cls) {
+            this.val$name = str;
+            this.val$type = cls;
+            this.mName = str;
+            this.mType = cls;
+        }
+
+        @Override // android.media.AudioMetadata.Key
+        public String getName() {
+            return this.mName;
+        }
+
+        @Override // android.media.AudioMetadata.Key
+        public Class<T> getValueClass() {
+            return this.mType;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof Key)) {
+                return false;
+            }
+            Key<?> other = (Key) obj;
+            return this.mName.equals(other.getName()) && this.mType.equals(other.getValueClass());
+        }
+
+        public int hashCode() {
+            return Objects.hash(this.mName, this.mType);
+        }
+    }
+
     public static <T> Key<T> createKey(String name, Class<T> type) {
         return new Key<T>(name, type) { // from class: android.media.AudioMetadata.1
             private final String mName;
@@ -135,11 +187,11 @@ public final class AudioMetadata {
             final /* synthetic */ String val$name;
             final /* synthetic */ Class val$type;
 
-            {
-                this.val$name = name;
-                this.val$type = type;
-                this.mName = name;
-                this.mType = type;
+            AnonymousClass1(String name2, Class type2) {
+                this.val$name = name2;
+                this.val$type = type2;
+                this.mName = name2;
+                this.mType = type2;
             }
 
             @Override // android.media.AudioMetadata.Key
@@ -244,7 +296,6 @@ public final class AudioMetadata {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class AutoGrowByteBuffer {
         private static final int DOUBLE_BYTE_COUNT = 8;
@@ -335,7 +386,6 @@ public final class AudioMetadata {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public interface DataPackage<T> {
         boolean pack(AutoGrowByteBuffer autoGrowByteBuffer, T t);
@@ -347,13 +397,114 @@ public final class AudioMetadata {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.media.AudioMetadata$2 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass2 implements DataPackage<Integer> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public Integer unpack(ByteBuffer buffer) {
+            return Integer.valueOf(buffer.getInt());
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public boolean pack(AutoGrowByteBuffer output, Integer obj) {
+            output.putInt(obj.intValue());
+            return true;
+        }
+    }
+
+    /* renamed from: android.media.AudioMetadata$3 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass3 implements DataPackage<Long> {
+        AnonymousClass3() {
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public Long unpack(ByteBuffer buffer) {
+            return Long.valueOf(buffer.getLong());
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public boolean pack(AutoGrowByteBuffer output, Long obj) {
+            output.putLong(obj.longValue());
+            return true;
+        }
+    }
+
+    /* renamed from: android.media.AudioMetadata$4 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass4 implements DataPackage<Float> {
+        AnonymousClass4() {
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public Float unpack(ByteBuffer buffer) {
+            return Float.valueOf(buffer.getFloat());
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public boolean pack(AutoGrowByteBuffer output, Float obj) {
+            output.putFloat(obj.floatValue());
+            return true;
+        }
+    }
+
+    /* renamed from: android.media.AudioMetadata$5 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass5 implements DataPackage<Double> {
+        AnonymousClass5() {
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public Double unpack(ByteBuffer buffer) {
+            return Double.valueOf(buffer.getDouble());
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public boolean pack(AutoGrowByteBuffer output, Double obj) {
+            output.putDouble(obj.doubleValue());
+            return true;
+        }
+    }
+
+    /* renamed from: android.media.AudioMetadata$6 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass6 implements DataPackage<String> {
+        AnonymousClass6() {
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public String unpack(ByteBuffer buffer) {
+            int dataSize = buffer.getInt();
+            if (buffer.position() + dataSize > buffer.limit()) {
+                return null;
+            }
+            byte[] valueArr = new byte[dataSize];
+            buffer.get(valueArr);
+            String value = new String(valueArr, AudioMetadata.AUDIO_METADATA_CHARSET);
+            return value;
+        }
+
+        @Override // android.media.AudioMetadata.DataPackage
+        public boolean pack(AutoGrowByteBuffer output, String obj) {
+            byte[] valueArr = obj.getBytes(AudioMetadata.AUDIO_METADATA_CHARSET);
+            output.putInt(valueArr.length);
+            output.put(valueArr);
+            return true;
+        }
+    }
+
     /* loaded from: classes2.dex */
     public static class ObjectPackage implements DataPackage<Pair<Class, Object>> {
+        /* synthetic */ ObjectPackage(ObjectPackageIA objectPackageIA) {
+            this();
+        }
+
         private ObjectPackage() {
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.media.AudioMetadata.DataPackage
         public Pair<Class, Object> unpack(ByteBuffer buffer) {
             int dataType = buffer.getInt();
@@ -402,10 +553,13 @@ public final class AudioMetadata {
 
     /* loaded from: classes2.dex */
     private static class BaseMapPackage implements DataPackage<BaseMap> {
+        /* synthetic */ BaseMapPackage(BaseMapPackageIA baseMapPackageIA) {
+            this();
+        }
+
         private BaseMapPackage() {
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.media.AudioMetadata.DataPackage
         public BaseMap unpack(ByteBuffer buffer) {
             BaseMap ret = new BaseMap();

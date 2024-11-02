@@ -52,8 +52,7 @@ public final class PixelCopy {
         HardwareRenderer.copySurfaceInto(source, new AnonymousClass1(srcRect, dest, listenerThread, listener));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.PixelCopy$1, reason: invalid class name */
+    /* renamed from: android.view.PixelCopy$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 extends HardwareRenderer.CopyRequest {
         final /* synthetic */ OnPixelCopyFinishedListener val$listener;
@@ -90,7 +89,6 @@ public final class PixelCopy {
         request(surface, adjustSourceRectForInsets(insets, srcRect), dest, listener, listenerThread);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void validateBitmapDest(Bitmap bitmap) {
         if (bitmap == null) {
             throw new IllegalArgumentException("Bitmap cannot be null");
@@ -103,7 +101,6 @@ public final class PixelCopy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Surface sourceForWindow(Window source, Rect outInsets) {
         if (source == null) {
             throw new IllegalArgumentException("source is null");
@@ -124,7 +121,6 @@ public final class PixelCopy {
         return surface;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Rect adjustSourceRectForInsets(Rect insets, Rect srcRect) {
         if (srcRect == null) {
             return insets;
@@ -139,6 +135,11 @@ public final class PixelCopy {
     public static final class Result {
         private Bitmap mBitmap;
         private int mStatus;
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        public /* synthetic */ Result(int i, Bitmap bitmap, ResultIA resultIA) {
+            this(i, bitmap);
+        }
 
         private Result(int status, Bitmap bitmap) {
             this.mStatus = status;
@@ -167,6 +168,10 @@ public final class PixelCopy {
         private final Surface mSource;
         private final Rect mSourceInsets;
         private Rect mSrcRect;
+
+        /* synthetic */ Request(Surface surface, Rect rect, RequestIA requestIA) {
+            this(surface, rect);
+        }
 
         private Request(Surface source, Rect sourceInsets) {
             this.mSource = source;
@@ -204,11 +209,11 @@ public final class PixelCopy {
                 return new Builder(new Request(surface, insets));
             }
 
-            public static Builder ofSurface(Surface surface) {
-                if (surface == null || !surface.isValid()) {
+            public static Builder ofSurface(Surface source) {
+                if (source == null || !source.isValid()) {
                     throw new IllegalArgumentException("Source must not be null & must be valid");
                 }
-                return new Builder(new Request(surface, null));
+                return new Builder(new Request(source, null));
             }
 
             public static Builder ofSurface(SurfaceView source) {
@@ -265,8 +270,7 @@ public final class PixelCopy {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.view.PixelCopy$Request$1, reason: invalid class name */
+        /* renamed from: android.view.PixelCopy$Request$1 */
         /* loaded from: classes4.dex */
         public class AnonymousClass1 extends HardwareRenderer.CopyRequest {
             final /* synthetic */ Executor val$callbackExecutor;
@@ -279,7 +283,6 @@ public final class PixelCopy {
                 this.val$listener = consumer;
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onCopyFinished$0(Consumer listener, int result) {
                 listener.accept(new Result(result, this.mDestinationBitmap));
             }

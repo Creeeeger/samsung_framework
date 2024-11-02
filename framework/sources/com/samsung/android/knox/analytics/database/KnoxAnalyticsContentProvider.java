@@ -384,7 +384,10 @@ public class KnoxAnalyticsContentProvider extends ContentProvider {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0064, code lost:            if (r17.equals(com.samsung.android.knox.analytics.database.Contract.Events.Selection.DELETE_UP_TO_ID) != false) goto L31;     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0064, code lost:
+    
+        if (r17.equals(com.samsung.android.knox.analytics.database.Contract.Events.Selection.DELETE_UP_TO_ID) != false) goto L78;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

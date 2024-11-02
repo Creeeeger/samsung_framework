@@ -170,8 +170,9 @@ public interface IImsSmsListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IImsSmsListener {
+        public static class Proxy implements IImsSmsListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

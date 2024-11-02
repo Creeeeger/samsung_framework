@@ -326,17 +326,14 @@ public abstract class Drawable {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean onStateChange(int[] state) {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean onLevelChange(int level) {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onBoundsChange(Rect bounds) {
     }
 
@@ -403,7 +400,10 @@ public abstract class Drawable {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:45:0x001b, code lost:            if (r13.endsWith(".spr") == false) goto L32;     */
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x001b, code lost:
+    
+        if (r13.endsWith(".spr") == false) goto L79;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -536,7 +536,6 @@ public abstract class Drawable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$getBitmapDrawable$1(ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
         decoder.setAllocator(1);
         decoder.setOnPartialImageListener(new ImageDecoder.OnPartialImageListener() { // from class: android.graphics.drawable.Drawable$$ExternalSyntheticLambda1
@@ -547,7 +546,6 @@ public abstract class Drawable {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getBitmapDrawable$0(ImageDecoder.DecodeException e) {
         return e.getError() == 2;
     }
@@ -587,7 +585,6 @@ public abstract class Drawable {
         return createFromXmlInnerForDensity(r, parser, attrs, 0, theme);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Drawable createFromXmlInnerForDensity(Resources r, XmlPullParser parser, AttributeSet attrs, int density, Resources.Theme theme) throws XmlPullParserException, IOException {
         return r.getDrawableInflater().inflateFromXmlForDensity(parser.getName(), parser, attrs, density, theme);
     }
@@ -628,12 +625,10 @@ public abstract class Drawable {
         a.recycle();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void inflateWithAttributes(Resources r, XmlPullParser parser, TypedArray attrs, int visibleAttr) throws XmlPullParserException, IOException {
         this.mVisible = attrs.getBoolean(visibleAttr, this.mVisible);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final void setSrcDensityOverride(int density) {
         this.mSrcDensityOverride = density;
     }
@@ -668,7 +663,6 @@ public abstract class Drawable {
         return new BitmapDrawable(res, bm);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PorterDuffColorFilter updateTintFilter(PorterDuffColorFilter tintFilter, ColorStateList tint, PorterDuff.Mode tintMode) {
         if (tint == null || tintMode == null) {
             return null;
@@ -680,7 +674,6 @@ public abstract class Drawable {
         return tintFilter;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BlendModeColorFilter updateBlendModeFilter(BlendModeColorFilter blendFilter, ColorStateList tint, BlendMode blendMode) {
         if (tint == null || blendMode == null) {
             return null;
@@ -692,7 +685,6 @@ public abstract class Drawable {
         return blendFilter;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static TypedArray obtainAttributes(Resources res, Resources.Theme theme, AttributeSet set, int[] attrs) {
         if (theme == null) {
             return res.obtainAttributes(set, attrs);
@@ -700,12 +692,10 @@ public abstract class Drawable {
         return theme.obtainStyledAttributes(set, attrs, 0, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float scaleFromDensity(float pixels, int sourceDensity, int targetDensity) {
         return (targetDensity * pixels) / sourceDensity;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int scaleFromDensity(int pixels, int sourceDensity, int targetDensity, boolean isSize) {
         if (pixels == 0 || sourceDensity == targetDensity) {
             return pixels;
@@ -724,7 +714,6 @@ public abstract class Drawable {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int resolveDensity(Resources r, int parentDensity) {
         int densityDpi = r == null ? parentDensity : r.getDisplayMetrics().densityDpi;
         if (densityDpi == 0) {
@@ -733,7 +722,6 @@ public abstract class Drawable {
         return densityDpi;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void rethrowAsRuntimeException(Exception cause) throws RuntimeException {
         RuntimeException e = new RuntimeException(cause);
         e.setStackTrace(new StackTraceElement[0]);

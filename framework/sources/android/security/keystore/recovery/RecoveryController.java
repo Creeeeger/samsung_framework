@@ -47,7 +47,6 @@ public class RecoveryController {
         this.mKeyStore = keystore;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ILockSettings getBinder() {
         return this.mBinder;
     }
@@ -264,7 +263,6 @@ public class RecoveryController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Key getKeyFromGrant(String grantAlias) throws UnrecoverableKeyException, KeyPermanentlyInvalidatedException {
         return AndroidKeyStoreProvider.loadAndroidKeyStoreSecretKeyFromKeystore(KeyStore2.getInstance(), getGrantDescriptor(grantAlias));
     }
@@ -300,7 +298,6 @@ public class RecoveryController {
         return TrustedRootCertificates.getRootCertificates();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InternalRecoveryServiceException wrapUnexpectedServiceSpecificException(ServiceSpecificException e) {
         if (e.errorCode == 22) {
             return new InternalRecoveryServiceException(e.getMessage(), e);

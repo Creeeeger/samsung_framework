@@ -7,8 +7,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.UserManager;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
-final class UserRestrictionsDetector extends BroadcastReceiver {
+public final class UserRestrictionsDetector extends BroadcastReceiver {
     private static final String TAG = "UserRestrictionsDetector";
     private final Context mContext;
     private boolean mIsUnmuteMicDisallowed;
@@ -16,24 +17,22 @@ final class UserRestrictionsDetector extends BroadcastReceiver {
     private final UserManager mUserManager;
     private UserRestrictionsCallback mUserRestrictionsCallback;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
-    interface UserRestrictionsCallback {
+    public interface UserRestrictionsCallback {
         void onMicrophoneRestrictionChanged(boolean z);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UserRestrictionsDetector(Context context) {
         this.mContext = context;
         this.mUserManager = (UserManager) context.getSystemService(UserManager.class);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isUnmuteMicrophoneDisallowed() {
         Bundle bundle = this.mUserManager.getUserRestrictions();
         return bundle.getBoolean(UserManager.DISALLOW_UNMUTE_MICROPHONE);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void register(UserRestrictionsCallback callback) {
         this.mUserRestrictionsCallback = callback;
         IntentFilter filter = new IntentFilter();
@@ -44,7 +43,6 @@ final class UserRestrictionsDetector extends BroadcastReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void unregister() {
         if (this.mUserRestrictionsCallback != null) {
             this.mUserRestrictionsCallback = null;

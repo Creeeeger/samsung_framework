@@ -172,7 +172,6 @@ public abstract class ECPoint {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ECPoint normalize(ECFieldElement zInv) {
         switch (getCurveCoordinateSystem()) {
             case 1:
@@ -208,17 +207,23 @@ public abstract class ECPoint {
         return implIsValid(false, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isValidPartial() {
         return implIsValid(false, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public boolean implIsValid(final boolean decompressed, final boolean checkOrder) {
+    public boolean implIsValid(boolean decompressed, boolean checkOrder) {
         if (isInfinity()) {
             return true;
         }
         ValidityPrecompInfo validity = (ValidityPrecompInfo) getCurve().precompute(this, "bc_validity", new PreCompCallback() { // from class: com.android.internal.org.bouncycastle.math.ec.ECPoint.1
+            final /* synthetic */ boolean val$checkOrder;
+            final /* synthetic */ boolean val$decompressed;
+
+            AnonymousClass1(boolean decompressed2, boolean checkOrder2) {
+                decompressed = decompressed2;
+                checkOrder = checkOrder2;
+            }
+
             @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
             public PreCompInfo precompute(PreCompInfo existing) {
                 ValidityPrecompInfo info = existing instanceof ValidityPrecompInfo ? (ValidityPrecompInfo) existing : null;
@@ -246,6 +251,44 @@ public abstract class ECPoint {
             }
         });
         return true ^ validity.hasFailed();
+    }
+
+    /* renamed from: com.android.internal.org.bouncycastle.math.ec.ECPoint$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements PreCompCallback {
+        final /* synthetic */ boolean val$checkOrder;
+        final /* synthetic */ boolean val$decompressed;
+
+        AnonymousClass1(boolean decompressed2, boolean checkOrder2) {
+            decompressed = decompressed2;
+            checkOrder = checkOrder2;
+        }
+
+        @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
+        public PreCompInfo precompute(PreCompInfo existing) {
+            ValidityPrecompInfo info = existing instanceof ValidityPrecompInfo ? (ValidityPrecompInfo) existing : null;
+            if (info == null) {
+                info = new ValidityPrecompInfo();
+            }
+            if (info.hasFailed()) {
+                return info;
+            }
+            if (!info.hasCurveEquationPassed()) {
+                if (!decompressed && !ECPoint.this.satisfiesCurveEquation()) {
+                    info.reportFailed();
+                    return info;
+                }
+                info.reportCurveEquationPassed();
+            }
+            if (checkOrder && !info.hasOrderPassed()) {
+                if (!ECPoint.this.satisfiesOrder()) {
+                    info.reportFailed();
+                    return info;
+                }
+                info.reportOrderPassed();
+            }
+            return info;
+        }
     }
 
     public ECPoint scaleX(ECFieldElement scale) {
@@ -414,12 +457,10 @@ public abstract class ECPoint {
 
     /* loaded from: classes5.dex */
     public static abstract class AbstractFp extends ECPoint {
-        /* JADX INFO: Access modifiers changed from: protected */
         public AbstractFp(ECCurve curve, ECFieldElement x, ECFieldElement y) {
             super(curve, x, y);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         public AbstractFp(ECCurve curve, ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
             super(curve, x, y, zs);
         }
@@ -481,12 +522,10 @@ public abstract class ECPoint {
 
     /* loaded from: classes5.dex */
     public static class Fp extends AbstractFp {
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Fp(ECCurve curve, ECFieldElement x, ECFieldElement y) {
             super(curve, x, y);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Fp(ECCurve curve, ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
             super(curve, x, y, zs);
         }
@@ -1197,12 +1236,10 @@ public abstract class ECPoint {
 
     /* loaded from: classes5.dex */
     public static class F2m extends AbstractF2m {
-        /* JADX INFO: Access modifiers changed from: package-private */
         public F2m(ECCurve curve, ECFieldElement x, ECFieldElement y) {
             super(curve, x, y);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public F2m(ECCurve curve, ECFieldElement x, ECFieldElement y, ECFieldElement[] zs) {
             super(curve, x, y, zs);
         }

@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class WcdmaSignalStrength implements Parcelable {
     public static final Parcelable.Creator<WcdmaSignalStrength> CREATOR = new Parcelable.Creator<WcdmaSignalStrength>() { // from class: android.hardware.radio.network.WcdmaSignalStrength.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WcdmaSignalStrength createFromParcel(Parcel _aidl_source) {
             WcdmaSignalStrength _aidl_out = new WcdmaSignalStrength();
@@ -16,7 +18,6 @@ public class WcdmaSignalStrength implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WcdmaSignalStrength[] newArray(int _aidl_size) {
             return new WcdmaSignalStrength[_aidl_size];
@@ -26,6 +27,25 @@ public class WcdmaSignalStrength implements Parcelable {
     public int bitErrorRate = 0;
     public int rscp = 0;
     public int ecno = 0;
+
+    /* renamed from: android.hardware.radio.network.WcdmaSignalStrength$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WcdmaSignalStrength> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WcdmaSignalStrength createFromParcel(Parcel _aidl_source) {
+            WcdmaSignalStrength _aidl_out = new WcdmaSignalStrength();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WcdmaSignalStrength[] newArray(int _aidl_size) {
+            return new WcdmaSignalStrength[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -19,7 +19,6 @@ class WebVttTrack extends SubtitleTrack implements WebVttCueListener {
     private final Vector<Long> mTimestamps;
     private final Tokenizer mTokenizer;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public WebVttTrack(WebVttRenderingWidget renderingWidget, MediaFormat format) {
         super(format);
         this.mParser = new WebVttParser(this);

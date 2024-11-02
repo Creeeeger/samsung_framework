@@ -33,7 +33,6 @@ public class ClipRectTBAnimation extends ClipRectAnimation {
         return super.getTransformation(currentTime, outTransformation);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.ClipRectAnimation, android.view.animation.Animation
     public void applyTransformation(float it, Transformation tr) {
         float translationT = this.mTranslateInterpolator.getInterpolation(this.mNormalizedTime);

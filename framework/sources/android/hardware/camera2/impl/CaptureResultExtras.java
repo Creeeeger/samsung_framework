@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class CaptureResultExtras implements Parcelable {
     public static final Parcelable.Creator<CaptureResultExtras> CREATOR = new Parcelable.Creator<CaptureResultExtras>() { // from class: android.hardware.camera2.impl.CaptureResultExtras.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CaptureResultExtras createFromParcel(Parcel in) {
             return new CaptureResultExtras(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CaptureResultExtras[] newArray(int size) {
             return new CaptureResultExtras[size];
@@ -31,6 +32,27 @@ public class CaptureResultExtras implements Parcelable {
     private long readoutTimestamp;
     private int requestId;
     private int subsequenceId;
+
+    /* synthetic */ CaptureResultExtras(Parcel parcel, CaptureResultExtrasIA captureResultExtrasIA) {
+        this(parcel);
+    }
+
+    /* renamed from: android.hardware.camera2.impl.CaptureResultExtras$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CaptureResultExtras> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CaptureResultExtras createFromParcel(Parcel in) {
+            return new CaptureResultExtras(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CaptureResultExtras[] newArray(int size) {
+            return new CaptureResultExtras[size];
+        }
+    }
 
     private CaptureResultExtras(Parcel in) {
         readFromParcel(in);

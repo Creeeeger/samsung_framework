@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextEvent implements Parcelable {
     static final Parcelable.Creator<SemContextEvent> CREATOR = new Parcelable.Creator<SemContextEvent>() { // from class: com.samsung.android.hardware.context.SemContextEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextEvent createFromParcel(Parcel in) {
             return new SemContextEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextEvent[] newArray(int size) {
             return new SemContextEvent[size];
@@ -24,6 +25,23 @@ public class SemContextEvent implements Parcelable {
     private SemContextEventContext mEventContext;
     public SemContext semContext;
     public long timestamp;
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextEvent$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextEvent createFromParcel(Parcel in) {
+            return new SemContextEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextEvent[] newArray(int size) {
+            return new SemContextEvent[size];
+        }
+    }
 
     public SemContextEvent() {
         this.semContext = new SemContext();

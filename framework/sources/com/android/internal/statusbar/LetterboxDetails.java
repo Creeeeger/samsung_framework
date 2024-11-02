@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes5.dex */
 public class LetterboxDetails implements Parcelable {
     public static final Parcelable.Creator<LetterboxDetails> CREATOR = new Parcelable.Creator<LetterboxDetails>() { // from class: com.android.internal.statusbar.LetterboxDetails.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LetterboxDetails[] newArray(int size) {
             return new LetterboxDetails[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LetterboxDetails createFromParcel(Parcel in) {
             return new LetterboxDetails(in);
@@ -96,6 +97,23 @@ public class LetterboxDetails implements Parcelable {
         this.mLetterboxFullBounds = letterboxFullBounds;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) letterboxFullBounds);
         this.mAppAppearance = appAppearance;
+    }
+
+    /* renamed from: com.android.internal.statusbar.LetterboxDetails$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LetterboxDetails> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LetterboxDetails[] newArray(int size) {
+            return new LetterboxDetails[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LetterboxDetails createFromParcel(Parcel in) {
+            return new LetterboxDetails(in);
+        }
     }
 
     @Deprecated

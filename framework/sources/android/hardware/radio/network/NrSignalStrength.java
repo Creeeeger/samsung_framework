@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class NrSignalStrength implements Parcelable {
     public static final Parcelable.Creator<NrSignalStrength> CREATOR = new Parcelable.Creator<NrSignalStrength>() { // from class: android.hardware.radio.network.NrSignalStrength.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NrSignalStrength createFromParcel(Parcel _aidl_source) {
             NrSignalStrength _aidl_out = new NrSignalStrength();
@@ -17,7 +19,6 @@ public class NrSignalStrength implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrSignalStrength[] newArray(int _aidl_size) {
             return new NrSignalStrength[_aidl_size];
@@ -32,6 +33,25 @@ public class NrSignalStrength implements Parcelable {
     public int csiSinr = 0;
     public int csiCqiTableIndex = 0;
     public int timingAdvance = Integer.MAX_VALUE;
+
+    /* renamed from: android.hardware.radio.network.NrSignalStrength$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NrSignalStrength> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrSignalStrength createFromParcel(Parcel _aidl_source) {
+            NrSignalStrength _aidl_out = new NrSignalStrength();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NrSignalStrength[] newArray(int _aidl_size) {
+            return new NrSignalStrength[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

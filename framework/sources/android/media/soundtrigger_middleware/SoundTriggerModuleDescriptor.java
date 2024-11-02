@@ -11,7 +11,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SoundTriggerModuleDescriptor implements Parcelable {
     public static final Parcelable.Creator<SoundTriggerModuleDescriptor> CREATOR = new Parcelable.Creator<SoundTriggerModuleDescriptor>() { // from class: android.media.soundtrigger_middleware.SoundTriggerModuleDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SoundTriggerModuleDescriptor createFromParcel(Parcel _aidl_source) {
             SoundTriggerModuleDescriptor _aidl_out = new SoundTriggerModuleDescriptor();
@@ -19,7 +21,6 @@ public class SoundTriggerModuleDescriptor implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SoundTriggerModuleDescriptor[] newArray(int _aidl_size) {
             return new SoundTriggerModuleDescriptor[_aidl_size];
@@ -27,6 +28,25 @@ public class SoundTriggerModuleDescriptor implements Parcelable {
     };
     public int handle = 0;
     public Properties properties;
+
+    /* renamed from: android.media.soundtrigger_middleware.SoundTriggerModuleDescriptor$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SoundTriggerModuleDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SoundTriggerModuleDescriptor createFromParcel(Parcel _aidl_source) {
+            SoundTriggerModuleDescriptor _aidl_out = new SoundTriggerModuleDescriptor();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SoundTriggerModuleDescriptor[] newArray(int _aidl_size) {
+            return new SoundTriggerModuleDescriptor[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

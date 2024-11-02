@@ -84,7 +84,6 @@ public class RotateAnimation extends Animation {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.Animation
     public void applyTransformation(float interpolatedTime, Transformation t) {
         float f = this.mFromDegrees;

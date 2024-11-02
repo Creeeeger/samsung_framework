@@ -85,7 +85,6 @@ public class NfcControllerAlwaysOnListener extends INfcControllerAlwaysOnListene
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$sendCurrentState$0(NfcAdapter.ControllerAlwaysOnListener listener) {
         listener.onControllerAlwaysOnChanged(this.mCurrentState);
     }

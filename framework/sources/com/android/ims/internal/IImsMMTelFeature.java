@@ -670,8 +670,9 @@ public interface IImsMMTelFeature extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IImsMMTelFeature {
+        public static class Proxy implements IImsMMTelFeature {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

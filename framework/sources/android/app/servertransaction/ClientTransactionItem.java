@@ -8,7 +8,6 @@ public abstract class ClientTransactionItem implements BaseClientRequest, Parcel
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldHaveDefinedPreExecutionState() {
         return true;
     }

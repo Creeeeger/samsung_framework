@@ -24,13 +24,14 @@ public final class CinematicEffectResponse implements Parcelable {
     public static final int CINEMATIC_EFFECT_STATUS_PENDING = 3;
     public static final int CINEMATIC_EFFECT_STATUS_TOO_MANY_REQUESTS = 4;
     public static final Parcelable.Creator<CinematicEffectResponse> CREATOR = new Parcelable.Creator<CinematicEffectResponse>() { // from class: android.app.wallpapereffectsgeneration.CinematicEffectResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CinematicEffectResponse createFromParcel(Parcel in) {
             return new CinematicEffectResponse(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CinematicEffectResponse[] newArray(int size) {
             return new CinematicEffectResponse[size];
@@ -55,6 +56,14 @@ public final class CinematicEffectResponse implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface ImageContentType {
+    }
+
+    /* synthetic */ CinematicEffectResponse(int i, String str, int i2, List list, CameraAttributes cameraAttributes, CameraAttributes cameraAttributes2, CinematicEffectResponseIA cinematicEffectResponseIA) {
+        this(i, str, i2, list, cameraAttributes, cameraAttributes2);
+    }
+
+    /* synthetic */ CinematicEffectResponse(Parcel parcel, CinematicEffectResponseIA cinematicEffectResponseIA) {
+        this(parcel);
     }
 
     private CinematicEffectResponse(Parcel in) {
@@ -99,6 +108,23 @@ public final class CinematicEffectResponse implements Parcelable {
 
     public CameraAttributes getEndKeyFrame() {
         return this.mEndKeyFrame;
+    }
+
+    /* renamed from: android.app.wallpapereffectsgeneration.CinematicEffectResponse$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CinematicEffectResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CinematicEffectResponse createFromParcel(Parcel in) {
+            return new CinematicEffectResponse(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CinematicEffectResponse[] newArray(int size) {
+            return new CinematicEffectResponse[size];
+        }
     }
 
     @Override // android.os.Parcelable

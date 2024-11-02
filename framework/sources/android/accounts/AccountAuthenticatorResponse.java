@@ -10,13 +10,14 @@ import android.util.Log;
 /* loaded from: classes.dex */
 public class AccountAuthenticatorResponse implements Parcelable {
     public static final Parcelable.Creator<AccountAuthenticatorResponse> CREATOR = new Parcelable.Creator<AccountAuthenticatorResponse>() { // from class: android.accounts.AccountAuthenticatorResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AccountAuthenticatorResponse createFromParcel(Parcel source) {
             return new AccountAuthenticatorResponse(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccountAuthenticatorResponse[] newArray(int size) {
             return new AccountAuthenticatorResponse[size];
@@ -72,5 +73,22 @@ public class AccountAuthenticatorResponse implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStrongBinder(this.mAccountAuthenticatorResponse.asBinder());
+    }
+
+    /* renamed from: android.accounts.AccountAuthenticatorResponse$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AccountAuthenticatorResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccountAuthenticatorResponse createFromParcel(Parcel source) {
+            return new AccountAuthenticatorResponse(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AccountAuthenticatorResponse[] newArray(int size) {
+            return new AccountAuthenticatorResponse[size];
+        }
     }
 }

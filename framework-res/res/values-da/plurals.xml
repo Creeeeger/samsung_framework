@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Din telefon er ustabil, fordi et SD-kort med apps på er blevet fjernet. Din telefon vil genstarte om %d sekunder for at vende tilbage til normal tilstand. Gem eventuelle ugemte data, før telefonen genstarter.</item>
+        <item quantity="other">Din tablet er ustabil, fordi et SD-kort med installerede apps er blevet fjernet. Din tablet genstarter om %d sekunder for at vende tilbage til normal tilstand. Gem data, der ikke er gemt, før tabletten genstarter.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Din telefon er ustabil, fordi et SD-kort med apps på er blevet fjernet. Din telefon vil genstarte om %d sekund for at vende tilbage til normal tilstand. Gem eventuelle ugemte data, før telefonen genstarter.</item>
+        <item quantity="one">Din tablet er ustabil, fordi et SD-kort med installerede apps er blevet fjernet. Din tablet genstarter om %d sekund for at vende tilbage til normal tilstand. Gem data, der ikke er gemt, før tabletten genstarter.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Din telefon genstarter om %d sekunder</item>
+        <item quantity="other">Tabletten genstarter om %d sekunder</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Din telefon genstarter om %d sekund</item>
+        <item quantity="one">Tabletten genstarter om %d sekund</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

@@ -63,7 +63,7 @@ public interface ServiceConnector<I extends IInterface> {
         }
 
         @Override // com.android.internal.infra.ServiceConnector.Job
-        /* renamed from: run, reason: avoid collision after fix types in other method */
+        /* renamed from: run */
         default Void run2(II service) throws Exception {
             runNoResult(service);
             return null;
@@ -201,7 +201,6 @@ public interface ServiceConnector<I extends IInterface> {
             return this.mServiceConnectionFutureCache;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ IInterface lambda$connect$0(IInterface s) throws Exception {
             return s;
         }
@@ -222,8 +221,7 @@ public interface ServiceConnector<I extends IInterface> {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: enqueueJobThread, reason: merged with bridge method [inline-methods] */
+        /* renamed from: enqueueJobThread */
         public void lambda$enqueue$1(Job<I, ?> job) {
             cancelTimeout();
             if (this.mUnbinding) {
@@ -297,7 +295,6 @@ public interface ServiceConnector<I extends IInterface> {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void maybeScheduleUnbindTimeout() {
             if (this.mUnfinishedJobs.isEmpty() && this.mQueue.isEmpty()) {
                 scheduleUnbindTimeout();
@@ -331,7 +328,6 @@ public interface ServiceConnector<I extends IInterface> {
             this.mServiceLifecycleCallbacks = callbacks;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void unbindJobThread() {
             cancelTimeout();
             I service = this.mService;
@@ -471,7 +467,6 @@ public interface ServiceConnector<I extends IInterface> {
             Log.i(LOG_TAG, "See stacktrace", new Throwable());
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         /* loaded from: classes4.dex */
         public class CompletionAwareJob<II, R> extends AndroidFuture<R> implements Job<II, R>, BiConsumer<R, Throwable> {
             boolean mAsync = false;
@@ -514,7 +509,7 @@ public interface ServiceConnector<I extends IInterface> {
                 return this.mDelegate + " wrapped into " + super.toString();
             }
 
-            /* renamed from: accept, reason: avoid collision after fix types in other method */
+            /* renamed from: accept */
             public void accept2(R res, Throwable err) {
                 if (err != null) {
                     completeExceptionally(err);
@@ -523,7 +518,6 @@ public interface ServiceConnector<I extends IInterface> {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: protected */
             @Override // com.android.internal.infra.AndroidFuture
             public void onCompleted(R res, Throwable err) {
                 super.onCompleted(res, err);

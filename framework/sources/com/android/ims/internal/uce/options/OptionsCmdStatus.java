@@ -8,13 +8,14 @@ import com.android.ims.internal.uce.common.StatusCode;
 /* loaded from: classes4.dex */
 public class OptionsCmdStatus implements Parcelable {
     public static final Parcelable.Creator<OptionsCmdStatus> CREATOR = new Parcelable.Creator<OptionsCmdStatus>() { // from class: com.android.ims.internal.uce.options.OptionsCmdStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public OptionsCmdStatus createFromParcel(Parcel source) {
             return new OptionsCmdStatus(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OptionsCmdStatus[] newArray(int size) {
             return new OptionsCmdStatus[size];
@@ -24,6 +25,10 @@ public class OptionsCmdStatus implements Parcelable {
     private OptionsCmdId mCmdId;
     private StatusCode mStatus;
     private int mUserData;
+
+    /* synthetic */ OptionsCmdStatus(Parcel parcel, OptionsCmdStatusIA optionsCmdStatusIA) {
+        this(parcel);
+    }
 
     public OptionsCmdId getCmdId() {
         return this.mCmdId;
@@ -79,6 +84,23 @@ public class OptionsCmdStatus implements Parcelable {
         dest.writeParcelable(this.mCmdId, flags);
         dest.writeParcelable(this.mStatus, flags);
         dest.writeParcelable(this.mCapInfo, flags);
+    }
+
+    /* renamed from: com.android.ims.internal.uce.options.OptionsCmdStatus$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<OptionsCmdStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OptionsCmdStatus createFromParcel(Parcel source) {
+            return new OptionsCmdStatus(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public OptionsCmdStatus[] newArray(int size) {
+            return new OptionsCmdStatus[size];
+        }
     }
 
     private OptionsCmdStatus(Parcel source) {

@@ -26,7 +26,7 @@ public class PhoneConstantConversions {
         }
     }
 
-    /* renamed from: com.android.internal.telephony.PhoneConstantConversions$1, reason: invalid class name */
+    /* renamed from: com.android.internal.telephony.PhoneConstantConversions$1 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$android$internal$telephony$PhoneConstants$DataState;

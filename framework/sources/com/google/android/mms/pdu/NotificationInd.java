@@ -8,7 +8,6 @@ public class NotificationInd extends GenericPdu {
         setMessageType(130);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public NotificationInd(PduHeaders headers) {
         super(headers);
     }

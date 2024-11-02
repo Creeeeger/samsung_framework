@@ -40,8 +40,7 @@ public class TunerResourceManager {
         this.mUserId = userId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.tv.tunerresourcemanager.TunerResourceManager$1, reason: invalid class name */
+    /* renamed from: android.media.tv.tunerresourcemanager.TunerResourceManager$1 */
     /* loaded from: classes2.dex */
     public class AnonymousClass1 extends IResourcesReclaimListener.Stub {
         final /* synthetic */ Executor val$executor;

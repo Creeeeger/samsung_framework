@@ -16,7 +16,6 @@ public class CaptureCallbackHolder {
     private final List<CaptureRequest> mRequestList;
     private final int mSessionId;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CaptureCallbackHolder(CaptureCallback callback, List<CaptureRequest> requestList, Executor executor, boolean repeating, int sessionId) {
         if (callback == null || executor == null) {
             throw new UnsupportedOperationException("Must have a valid handler and a valid callback");

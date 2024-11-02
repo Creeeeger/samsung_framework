@@ -439,8 +439,9 @@ public class ITvInputSessionWrapper extends ITvInputSession.Stub implements Hand
         handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(31, Integer.valueOf(type), Boolean.valueOf(enabled)));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class TvInputEventReceiver extends InputEventReceiver {
+    public final class TvInputEventReceiver extends InputEventReceiver {
         TvInputEventReceiver(InputChannel inputChannel, Looper looper) {
             super(inputChannel, looper);
         }

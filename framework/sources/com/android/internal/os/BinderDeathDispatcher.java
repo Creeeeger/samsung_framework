@@ -18,6 +18,10 @@ public class BinderDeathDispatcher<T extends IInterface> {
         ArraySet<IBinder.DeathRecipient> mRecipients;
         final IBinder mTarget;
 
+        /* synthetic */ RecipientsInfo(BinderDeathDispatcher binderDeathDispatcher, IBinder iBinder, RecipientsInfoIA recipientsInfoIA) {
+            this(iBinder);
+        }
+
         private RecipientsInfo(IBinder target) {
             this.mRecipients = new ArraySet<>();
             this.mTarget = target;

@@ -45,7 +45,6 @@ public class KeyFactorySpi extends BaseKeyFactorySpi implements AsymmetricKeyInf
         throw new InvalidKeyException("key type unknown");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
     public KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
         if ((spec.isAssignableFrom(KeySpec.class) || spec.isAssignableFrom(ECPublicKeySpec.class)) && (key instanceof ECPublicKey)) {
@@ -81,7 +80,6 @@ public class KeyFactorySpi extends BaseKeyFactorySpi implements AsymmetricKeyInf
         return super.engineGetKeySpec(key, spec);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
     public PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof com.android.internal.org.bouncycastle.jce.spec.ECPrivateKeySpec) {
@@ -93,7 +91,6 @@ public class KeyFactorySpi extends BaseKeyFactorySpi implements AsymmetricKeyInf
         return super.engineGeneratePrivate(keySpec);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
     public PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
         try {

@@ -22,7 +22,6 @@ public abstract class GraphBuilderBase<T> implements GraphBuilder<T> {
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ GraphNode lambda$addNode$0(GraphNode e) {
         return e;
     }

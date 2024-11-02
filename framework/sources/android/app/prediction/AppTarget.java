@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AppTarget implements Parcelable {
     public static final Parcelable.Creator<AppTarget> CREATOR = new Parcelable.Creator<AppTarget>() { // from class: android.app.prediction.AppTarget.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AppTarget createFromParcel(Parcel parcel) {
             return new AppTarget(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppTarget[] newArray(int size) {
             return new AppTarget[size];
@@ -29,6 +30,14 @@ public final class AppTarget implements Parcelable {
     private final int mRank;
     private final ShortcutInfo mShortcutInfo;
     private final UserHandle mUser;
+
+    /* synthetic */ AppTarget(AppTargetId appTargetId, String str, UserHandle userHandle, ShortcutInfo shortcutInfo, String str2, int i, AppTargetIA appTargetIA) {
+        this(appTargetId, str, userHandle, shortcutInfo, str2, i);
+    }
+
+    /* synthetic */ AppTarget(Parcel parcel, AppTargetIA appTargetIA) {
+        this(parcel);
+    }
 
     @Deprecated
     public AppTarget(AppTargetId id, String packageName, String className, UserHandle user) {
@@ -194,6 +203,23 @@ public final class AppTarget implements Parcelable {
                 throw new IllegalStateException("No target is set");
             }
             return new AppTarget(this.mId, this.mPackageName, this.mUser, this.mShortcutInfo, this.mClassName, this.mRank);
+        }
+    }
+
+    /* renamed from: android.app.prediction.AppTarget$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AppTarget> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppTarget createFromParcel(Parcel parcel) {
+            return new AppTarget(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AppTarget[] newArray(int size) {
+            return new AppTarget[size];
         }
     }
 }

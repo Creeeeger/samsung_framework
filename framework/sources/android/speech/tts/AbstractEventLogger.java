@@ -2,7 +2,6 @@ package android.speech.tts;
 
 import android.os.SystemClock;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public abstract class AbstractEventLogger {
     protected final int mCallerPid;
@@ -19,7 +18,6 @@ public abstract class AbstractEventLogger {
 
     protected abstract void logSuccess(long j, long j2, long j3);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AbstractEventLogger(int callerUid, int callerPid, String serviceApp) {
         this.mCallerUid = callerUid;
         this.mCallerPid = callerPid;

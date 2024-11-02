@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.ToDoubleFunction;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class SmartSelectSprite {
     private static final int EXPAND_DURATION = 200;
@@ -38,7 +37,6 @@ public final class SmartSelectSprite {
             	at jadx.core.utils.InsnRemover.unbindInsn(InsnRemover.java:80)
             	at jadx.core.utils.InsnRemover.addAndUnbind(InsnRemover.java:56)
             	at jadx.core.dex.visitors.ModVisitor.removeStep(ModVisitor.java:452)
-            	at jadx.core.dex.visitors.ModVisitor.visit(ModVisitor.java:96)
             */
         @Override // java.util.function.ToDoubleFunction
         public final double applyAsDouble(java.lang.Object r3) {
@@ -59,7 +57,6 @@ public final class SmartSelectSprite {
             	at jadx.core.utils.InsnRemover.unbindInsn(InsnRemover.java:80)
             	at jadx.core.utils.InsnRemover.addAndUnbind(InsnRemover.java:56)
             	at jadx.core.dex.visitors.ModVisitor.removeStep(ModVisitor.java:452)
-            	at jadx.core.dex.visitors.ModVisitor.visit(ModVisitor.java:96)
             */
         @Override // java.util.function.ToDoubleFunction
         public final double applyAsDouble(java.lang.Object r3) {
@@ -79,13 +76,11 @@ public final class SmartSelectSprite {
     private final int mFillColor;
     private final Runnable mInvalidator;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class RectangleWithTextSelectionLayout {
         private final RectF mRectangle;
         private final int mTextSelectionLayout;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public RectangleWithTextSelectionLayout(RectF rectangle, int textSelectionLayout) {
             this.mRectangle = (RectF) Objects.requireNonNull(rectangle);
             this.mTextSelectionLayout = textSelectionLayout;
@@ -100,7 +95,6 @@ public final class SmartSelectSprite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class RoundedRectangleShape extends Shape {
         private static final String PROPERTY_ROUND_RATIO = "roundRatio";
@@ -120,6 +114,10 @@ public final class SmartSelectSprite {
             public static final int CENTER = 0;
             public static final int LEFT = -1;
             public static final int RIGHT = 1;
+        }
+
+        /* synthetic */ RoundedRectangleShape(RectF rectF, int i, boolean z, RoundedRectangleShapeIA roundedRectangleShapeIA) {
+            this(rectF, i, z);
         }
 
         private static int invert(int expansionDirection) {
@@ -173,7 +171,6 @@ public final class SmartSelectSprite {
             return this.mRoundRatio;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setStartBoundary(float startBoundary) {
             if (this.mInverted) {
                 this.mRightBoundary = this.mBoundingWidth - startBoundary;
@@ -182,7 +179,6 @@ public final class SmartSelectSprite {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setEndBoundary(float endBoundary) {
             if (this.mInverted) {
                 this.mLeftBoundary = this.mBoundingWidth - endBoundary;
@@ -199,13 +195,11 @@ public final class SmartSelectSprite {
             return getCornerRadius() * this.mRoundRatio;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public float getBoundingWidth() {
             return (int) (this.mBoundingRectangle.width() + getCornerRadius());
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class RectangleList extends Shape {
         private static final String PROPERTY_LEFT_BOUNDARY = "leftBoundary";
@@ -220,6 +214,10 @@ public final class SmartSelectSprite {
         private @interface DisplayType {
             public static final int POLYGON = 1;
             public static final int RECTANGLES = 0;
+        }
+
+        /* synthetic */ RectangleList(List list, RectangleListIA rectangleListIA) {
+            this(list);
         }
 
         private RectangleList(List<RoundedRectangleShape> rectangles) {
@@ -265,7 +263,6 @@ public final class SmartSelectSprite {
             this.mDisplayType = displayType;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public int getTotalWidth() {
             int sum = 0;
             for (RoundedRectangleShape rectangle : this.mRectangles) {
@@ -304,68 +301,60 @@ public final class SmartSelectSprite {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SmartSelectSprite(Context context, int highlightColor, Runnable invalidator) {
         this.mExpandInterpolator = AnimationUtils.loadInterpolator(context, 17563661);
         this.mFillColor = highlightColor;
         this.mInvalidator = (Runnable) Objects.requireNonNull(invalidator);
     }
 
-    public void startAnimation(PointF pointF, List<RectangleWithTextSelectionLayout> list, Runnable runnable) {
-        RectangleWithTextSelectionLayout rectangleWithTextSelectionLayout;
+    public void startAnimation(PointF start, List<RectangleWithTextSelectionLayout> destinationRectangles, Runnable onAnimationEnd) {
+        RectangleWithTextSelectionLayout centerRectangle;
         cancelAnimation();
-        ValueAnimator.AnimatorUpdateListener animatorUpdateListener = new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.SmartSelectSprite$$ExternalSyntheticLambda2
+        ValueAnimator.AnimatorUpdateListener updateListener = new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.SmartSelectSprite$$ExternalSyntheticLambda2
             @Override // android.animation.ValueAnimator.AnimatorUpdateListener
             public final void onAnimationUpdate(ValueAnimator valueAnimator) {
                 SmartSelectSprite.this.lambda$startAnimation$2(valueAnimator);
             }
         };
-        int size = list.size();
-        ArrayList arrayList = new ArrayList(size);
-        int i = 0;
-        Iterator<RectangleWithTextSelectionLayout> it = list.iterator();
+        int rectangleCount = destinationRectangles.size();
+        List<RoundedRectangleShape> shapes = new ArrayList<>(rectangleCount);
+        int startingOffset = 0;
+        Iterator<RectangleWithTextSelectionLayout> it = destinationRectangles.iterator();
         while (true) {
             if (!it.hasNext()) {
-                rectangleWithTextSelectionLayout = null;
+                centerRectangle = null;
                 break;
             }
-            RectangleWithTextSelectionLayout next = it.next();
-            RectF rectangle = next.getRectangle();
-            if (contains(rectangle, pointF)) {
-                rectangleWithTextSelectionLayout = next;
+            RectangleWithTextSelectionLayout rectangleWithTextSelectionLayout = it.next();
+            RectF rectangle = rectangleWithTextSelectionLayout.getRectangle();
+            if (contains(rectangle, start)) {
+                centerRectangle = rectangleWithTextSelectionLayout;
                 break;
             }
-            i = (int) (i + rectangle.width());
+            startingOffset = (int) (startingOffset + rectangle.width());
         }
-        if (rectangleWithTextSelectionLayout == null) {
+        if (centerRectangle == null) {
             throw new IllegalArgumentException("Center point is not inside any of the rectangles!");
         }
-        int i2 = (int) (i + (pointF.x - rectangleWithTextSelectionLayout.getRectangle().left));
-        int[] generateDirections = generateDirections(rectangleWithTextSelectionLayout, list);
-        int i3 = 0;
-        while (true) {
-            byte b = 0;
-            if (i3 < size) {
-                RectangleWithTextSelectionLayout rectangleWithTextSelectionLayout2 = list.get(i3);
-                arrayList.add(new RoundedRectangleShape(rectangleWithTextSelectionLayout2.getRectangle(), generateDirections[i3], rectangleWithTextSelectionLayout2.getTextSelectionLayout() == 0));
-                i3++;
-            } else {
-                RectangleList rectangleList = new RectangleList(arrayList);
-                ShapeDrawable shapeDrawable = new ShapeDrawable(rectangleList);
-                Paint paint = shapeDrawable.getPaint();
-                paint.setColor(this.mFillColor);
-                paint.setStyle(Paint.Style.FILL);
-                this.mExistingRectangleList = rectangleList;
-                this.mExistingDrawable = shapeDrawable;
-                Animator createAnimator = createAnimator(rectangleList, i2, i2, animatorUpdateListener, runnable);
-                this.mActiveAnimator = createAnimator;
-                createAnimator.start();
-                return;
-            }
+        int startingOffset2 = (int) (startingOffset + (start.x - centerRectangle.getRectangle().left));
+        int[] expansionDirections = generateDirections(centerRectangle, destinationRectangles);
+        for (int index = 0; index < rectangleCount; index++) {
+            RectangleWithTextSelectionLayout rectangleWithTextSelectionLayout2 = destinationRectangles.get(index);
+            RoundedRectangleShape shape = new RoundedRectangleShape(rectangleWithTextSelectionLayout2.getRectangle(), expansionDirections[index], rectangleWithTextSelectionLayout2.getTextSelectionLayout() == 0);
+            shapes.add(shape);
         }
+        RectangleList rectangleList = new RectangleList(shapes);
+        ShapeDrawable shapeDrawable = new ShapeDrawable(rectangleList);
+        Paint paint = shapeDrawable.getPaint();
+        paint.setColor(this.mFillColor);
+        paint.setStyle(Paint.Style.FILL);
+        this.mExistingRectangleList = rectangleList;
+        this.mExistingDrawable = shapeDrawable;
+        Animator createAnimator = createAnimator(rectangleList, startingOffset2, startingOffset2, updateListener, onAnimationEnd);
+        this.mActiveAnimator = createAnimator;
+        createAnimator.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startAnimation$2(ValueAnimator valueAnimator) {
         this.mInvalidator.run();
     }
@@ -390,8 +379,43 @@ public final class SmartSelectSprite {
         return boundaryAnimator;
     }
 
-    private void setUpAnimatorListener(Animator animator, final Runnable onAnimationEnd) {
+    /* renamed from: android.widget.SmartSelectSprite$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Animator.AnimatorListener {
+        final /* synthetic */ Runnable val$onAnimationEnd;
+
+        AnonymousClass1(Runnable runnable) {
+            onAnimationEnd = runnable;
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animator) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animator) {
+            SmartSelectSprite.this.mExistingRectangleList.setDisplayType(1);
+            SmartSelectSprite.this.mInvalidator.run();
+            onAnimationEnd.run();
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animator) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationRepeat(Animator animator) {
+        }
+    }
+
+    private void setUpAnimatorListener(Animator animator, Runnable onAnimationEnd) {
         animator.addListener(new Animator.AnimatorListener() { // from class: android.widget.SmartSelectSprite.1
+            final /* synthetic */ Runnable val$onAnimationEnd;
+
+            AnonymousClass1(Runnable onAnimationEnd2) {
+                onAnimationEnd = onAnimationEnd2;
+            }
+
             @Override // android.animation.Animator.AnimatorListener
             public void onAnimationStart(Animator animator2) {
             }

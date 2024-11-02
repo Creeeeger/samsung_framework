@@ -18,13 +18,14 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class AmbientContextEventRequest implements Parcelable {
     public static final Parcelable.Creator<AmbientContextEventRequest> CREATOR = new Parcelable.Creator<AmbientContextEventRequest>() { // from class: android.app.ambientcontext.AmbientContextEventRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AmbientContextEventRequest[] newArray(int size) {
             return new AmbientContextEventRequest[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientContextEventRequest createFromParcel(Parcel in) {
             return new AmbientContextEventRequest(in);
@@ -32,6 +33,14 @@ public final class AmbientContextEventRequest implements Parcelable {
     };
     private final Set<Integer> mEventTypes;
     private final PersistableBundle mOptions;
+
+    /* synthetic */ AmbientContextEventRequest(Parcel parcel, AmbientContextEventRequestIA ambientContextEventRequestIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ AmbientContextEventRequest(Set set, PersistableBundle persistableBundle, AmbientContextEventRequestIA ambientContextEventRequestIA) {
+        this((Set<Integer>) set, persistableBundle);
+    }
 
     private AmbientContextEventRequest(Set<Integer> eventTypes, PersistableBundle options) {
         this.mEventTypes = eventTypes;
@@ -82,6 +91,23 @@ public final class AmbientContextEventRequest implements Parcelable {
         }
         this.mOptions = options;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) options);
+    }
+
+    /* renamed from: android.app.ambientcontext.AmbientContextEventRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AmbientContextEventRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AmbientContextEventRequest[] newArray(int size) {
+            return new AmbientContextEventRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AmbientContextEventRequest createFromParcel(Parcel in) {
+            return new AmbientContextEventRequest(in);
+        }
     }
 
     /* loaded from: classes.dex */

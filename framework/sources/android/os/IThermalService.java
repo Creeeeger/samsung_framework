@@ -248,8 +248,9 @@ public interface IThermalService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IThermalService {
+        public static class Proxy implements IThermalService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

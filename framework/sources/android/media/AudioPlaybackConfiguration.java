@@ -118,13 +118,14 @@ public final class AudioPlaybackConfiguration implements Parcelable {
     private final Object mUpdateablePropLock;
     private static final String TAG = new String("AudioPlaybackConfiguration");
     public static final Parcelable.Creator<AudioPlaybackConfiguration> CREATOR = new Parcelable.Creator<AudioPlaybackConfiguration>() { // from class: android.media.AudioPlaybackConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioPlaybackConfiguration createFromParcel(Parcel p) {
             return new AudioPlaybackConfiguration(p);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPlaybackConfiguration[] newArray(int size) {
             return new AudioPlaybackConfiguration[size];
@@ -149,6 +150,10 @@ public final class AudioPlaybackConfiguration implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface PlayerType {
+    }
+
+    /* synthetic */ AudioPlaybackConfiguration(Parcel parcel, AudioPlaybackConfigurationIA audioPlaybackConfigurationIA) {
+        this(parcel);
     }
 
     public static String playerStateToString(int state) {
@@ -352,7 +357,6 @@ public final class AudioPlaybackConfiguration implements Parcelable {
         return convertNativeChannelMaskToOutMask;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IPlayer getIPlayer() {
         IPlayerShell ips;
         synchronized (this) {
@@ -421,7 +425,6 @@ public final class AudioPlaybackConfiguration implements Parcelable {
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void playerDied() {
         PlayerDeathMonitor playerDeathMonitor = sPlayerDeathMonitor;
         if (playerDeathMonitor != null) {
@@ -446,6 +449,23 @@ public final class AudioPlaybackConfiguration implements Parcelable {
 
     public void dump(PrintWriter pw) {
         pw.println("  " + this);
+    }
+
+    /* renamed from: android.media.AudioPlaybackConfiguration$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioPlaybackConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPlaybackConfiguration createFromParcel(Parcel p) {
+            return new AudioPlaybackConfiguration(p);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioPlaybackConfiguration[] newArray(int size) {
+            return new AudioPlaybackConfiguration[size];
+        }
     }
 
     public int hashCode() {
@@ -544,7 +564,6 @@ public final class AudioPlaybackConfiguration implements Parcelable {
         return apcToString.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static final class IPlayerShell implements IBinder.DeathRecipient {
         private volatile IPlayer mIPlayer;
@@ -599,18 +618,23 @@ public final class AudioPlaybackConfiguration implements Parcelable {
         final int mSampleRate;
         static final FormatInfo DEFAULT = new FormatInfo(false, 0, 0);
         public static final Parcelable.Creator<FormatInfo> CREATOR = new Parcelable.Creator<FormatInfo>() { // from class: android.media.AudioPlaybackConfiguration.FormatInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public FormatInfo createFromParcel(Parcel p) {
                 return new FormatInfo(p);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public FormatInfo[] newArray(int size) {
                 return new FormatInfo[size];
             }
         };
+
+        /* synthetic */ FormatInfo(Parcel parcel, FormatInfoIA formatInfoIA) {
+            this(parcel);
+        }
 
         public FormatInfo(boolean isSpatialized, int nativeChannelMask, int sampleRate) {
             this.mIsSpatialized = isSpatialized;
@@ -651,6 +675,23 @@ public final class AudioPlaybackConfiguration implements Parcelable {
 
         private FormatInfo(Parcel in) {
             this(in.readBoolean(), in.readInt(), in.readInt());
+        }
+
+        /* renamed from: android.media.AudioPlaybackConfiguration$FormatInfo$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<FormatInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public FormatInfo createFromParcel(Parcel p) {
+                return new FormatInfo(p);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public FormatInfo[] newArray(int size) {
+                return new FormatInfo[size];
+            }
         }
     }
 

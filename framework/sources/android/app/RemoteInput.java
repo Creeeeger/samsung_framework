@@ -17,13 +17,14 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class RemoteInput implements Parcelable {
     public static final Parcelable.Creator<RemoteInput> CREATOR = new Parcelable.Creator<RemoteInput>() { // from class: android.app.RemoteInput.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteInput createFromParcel(Parcel in) {
             return new RemoteInput(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteInput[] newArray(int size) {
             return new RemoteInput[size];
@@ -56,6 +57,14 @@ public final class RemoteInput implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface Source {
+    }
+
+    /* synthetic */ RemoteInput(Parcel parcel, RemoteInputIA remoteInputIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ RemoteInput(String str, CharSequence charSequence, CharSequence[] charSequenceArr, int i, int i2, Bundle bundle, ArraySet arraySet, RemoteInputIA remoteInputIA) {
+        this(str, charSequence, charSequenceArr, i, i2, bundle, arraySet);
     }
 
     private RemoteInput(String resultKey, CharSequence label, CharSequence[] choices, int flags, int editChoicesBeforeSending, Bundle extras, ArraySet<String> allowedDataTypes) {
@@ -295,6 +304,23 @@ public final class RemoteInput implements Parcelable {
         out.writeInt(this.mEditChoicesBeforeSending);
         out.writeBundle(this.mExtras);
         out.writeArraySet(this.mAllowedDataTypes);
+    }
+
+    /* renamed from: android.app.RemoteInput$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoteInput> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteInput createFromParcel(Parcel in) {
+            return new RemoteInput(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteInput[] newArray(int size) {
+            return new RemoteInput[size];
+        }
     }
 
     private static Intent getClipDataIntentFromIntent(Intent intent) {

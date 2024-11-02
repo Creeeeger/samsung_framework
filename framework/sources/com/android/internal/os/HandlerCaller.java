@@ -17,8 +17,9 @@ public class HandlerCaller {
         void executeMessage(Message message);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
-    class MyHandler extends Handler {
+    public class MyHandler extends Handler {
         MyHandler(Looper looper, boolean async) {
             super(looper, null, async);
         }

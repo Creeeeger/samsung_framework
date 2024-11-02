@@ -72,7 +72,6 @@ public class FunctionalUtils {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$handleExceptions$0(ThrowingRunnable r, Consumer handler) {
         try {
             r.run();

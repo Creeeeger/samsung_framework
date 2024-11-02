@@ -18,13 +18,14 @@ import org.json.JSONObject;
 /* loaded from: classes5.dex */
 public class SemImsProfile implements Parcelable {
     public static final Parcelable.Creator<SemImsProfile> CREATOR = new Parcelable.Creator<SemImsProfile>() { // from class: com.samsung.android.ims.settings.SemImsProfile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemImsProfile createFromParcel(Parcel in) {
             return new SemImsProfile(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsProfile[] newArray(int size) {
             return new SemImsProfile[size];
@@ -54,6 +55,10 @@ public class SemImsProfile implements Parcelable {
         public static final String RCS_PROFILE_TYPE_UP2_PREFIX = "UP_2";
         public static final String RCS_PROFILE_TYPE_UP30 = "UP_3.0";
         public static final String RCS_PROFILE_TYPE_UPT = "UP_T";
+    }
+
+    /* synthetic */ SemImsProfile(Parcel parcel, SemImsProfileIA semImsProfileIA) {
+        this(parcel);
     }
 
     /* loaded from: classes5.dex */
@@ -175,8 +180,7 @@ public class SemImsProfile implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.ims.settings.SemImsProfile$2, reason: invalid class name */
+    /* renamed from: com.samsung.android.ims.settings.SemImsProfile$2 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$ims$settings$SemImsProfile$NETWORK_TYPE;
@@ -202,6 +206,23 @@ public class SemImsProfile implements Parcelable {
             }
         }
         return false;
+    }
+
+    /* renamed from: com.samsung.android.ims.settings.SemImsProfile$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemImsProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemImsProfile createFromParcel(Parcel in) {
+            return new SemImsProfile(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemImsProfile[] newArray(int size) {
+            return new SemImsProfile[size];
+        }
     }
 
     private SemImsProfile(Parcel in) {

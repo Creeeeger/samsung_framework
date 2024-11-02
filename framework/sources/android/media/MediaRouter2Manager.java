@@ -127,7 +127,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$unregisterScanRequest$0(int count) {
         if (count == 0) {
             throw new IllegalStateException("No active scan requests to unregister.");
@@ -169,7 +168,6 @@ public final class MediaRouter2Manager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getTransferableRoutes$1(RoutingSessionInfo sessionInfo, MediaRoute2Info route) {
         return sessionInfo.isSystemSession() ^ route.isSystemRoute();
     }
@@ -200,7 +198,6 @@ public final class MediaRouter2Manager {
         return routes;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ int lambda$getSortedRoutes$2(Map packagePriority, MediaRoute2Info r) {
         return -((Integer) packagePriority.getOrDefault(r.getPackageName(), 0)).intValue();
     }
@@ -354,7 +351,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateRoutesOnHandler(List<MediaRoute2Info> routes) {
         synchronized (this.mRoutesLock) {
             this.mRoutes.clear();
@@ -365,7 +361,6 @@ public final class MediaRouter2Manager {
         notifyRoutesUpdated();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void createSessionOnHandler(int requestId, RoutingSessionInfo sessionInfo) {
         TransferRequest matchingRequest = null;
         Iterator<TransferRequest> it = this.mTransferRequests.iterator();
@@ -399,7 +394,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleFailureOnHandler(int requestId, int reason) {
         TransferRequest matchingRequest = null;
         Iterator<TransferRequest> it = this.mTransferRequests.iterator();
@@ -421,7 +415,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void handleSessionsUpdatedOnHandler(RoutingSessionInfo sessionInfo) {
         Iterator<TransferRequest> it = this.mTransferRequests.iterator();
         while (true) {
@@ -465,7 +458,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void notifySessionReleased(final RoutingSessionInfo session) {
         Iterator<CallbackRecord> it = this.mCallbackRecords.iterator();
         while (it.hasNext()) {
@@ -518,7 +510,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateDiscoveryPreference(final String packageName, final RouteDiscoveryPreference preference) {
         if (preference == null) {
             this.mDiscoveryPreferenceMap.remove(packageName);
@@ -540,7 +531,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateRouteListingPreference(final String packageName, final RouteListingPreference routeListingPreference) {
         RouteListingPreference oldRouteListingPreference;
         if (routeListingPreference == null) {
@@ -593,7 +583,6 @@ public final class MediaRouter2Manager {
         return list;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getSelectableRoutes$11(List selectedRouteIds, String routeId) {
         return !selectedRouteIds.contains(routeId);
     }
@@ -703,7 +692,6 @@ public final class MediaRouter2Manager {
         return requestId;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleTransferTimeout(TransferRequest request) {
         boolean removed = this.mTransferRequests.remove(request);
         if (removed) {
@@ -754,7 +742,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public final class CallbackRecord {
         public final Callback mCallback;
@@ -777,7 +764,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static final class TransferRequest {
         public final RoutingSessionInfo mOldSessionInfo;
@@ -791,7 +777,6 @@ public final class MediaRouter2Manager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public class Client extends IMediaRouter2Manager.Stub {
         Client() {

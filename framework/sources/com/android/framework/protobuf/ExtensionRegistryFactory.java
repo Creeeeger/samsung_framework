@@ -1,6 +1,5 @@
 package com.android.framework.protobuf;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class ExtensionRegistryFactory {
     static final Class<?> EXTENSION_REGISTRY_CLASS = reflectExtensionRegistry();
@@ -27,7 +26,6 @@ public final class ExtensionRegistryFactory {
         return result != null ? result : ExtensionRegistryLite.EMPTY_REGISTRY_LITE;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isFullRegistry(ExtensionRegistryLite registry) {
         Class<?> cls = EXTENSION_REGISTRY_CLASS;
         return cls != null && cls.isAssignableFrom(registry.getClass());

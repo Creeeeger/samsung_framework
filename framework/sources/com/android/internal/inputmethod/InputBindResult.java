@@ -22,13 +22,14 @@ public final class InputBindResult implements Parcelable {
     public final int result;
     public final int sequence;
     public static final Parcelable.Creator<InputBindResult> CREATOR = new Parcelable.Creator<InputBindResult>() { // from class: com.android.internal.inputmethod.InputBindResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public InputBindResult createFromParcel(Parcel source) {
             return new InputBindResult(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputBindResult[] newArray(int size) {
             return new InputBindResult[size];
@@ -66,6 +67,10 @@ public final class InputBindResult implements Parcelable {
         public static final int SUCCESS_WAITING_USER_SWITCHING = 3;
         public static final int SUCCESS_WITH_ACCESSIBILITY_SESSION = 16;
         public static final int SUCCESS_WITH_IME_SESSION = 0;
+    }
+
+    /* synthetic */ InputBindResult(Parcel parcel, InputBindResultIA inputBindResultIA) {
+        this(parcel);
     }
 
     public Matrix getVirtualDisplayToScreenMatrix() {
@@ -149,6 +154,23 @@ public final class InputBindResult implements Parcelable {
         dest.writeInt(this.sequence);
         dest.writeFloatArray(this.mVirtualDisplayToScreenMatrixValues);
         dest.writeBoolean(this.isInputMethodSuppressingSpellChecker);
+    }
+
+    /* renamed from: com.android.internal.inputmethod.InputBindResult$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<InputBindResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputBindResult createFromParcel(Parcel source) {
+            return new InputBindResult(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public InputBindResult[] newArray(int size) {
+            return new InputBindResult[size];
+        }
     }
 
     @Override // android.os.Parcelable

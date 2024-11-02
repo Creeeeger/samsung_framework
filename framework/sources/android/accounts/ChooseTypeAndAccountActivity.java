@@ -209,12 +209,10 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
         Log.i(TAG, "Cancel textColors=" + cancelTextColors + " defaultColor=0x" + Integer.toHexString(cancelTextColors.getDefaultColor()));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$onCreate$0() {
         return getString(R.string.error_message_change_not_allowed);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         if (Log.isLoggable(TAG, 2)) {
@@ -223,7 +221,6 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
         super.onDestroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -267,7 +264,6 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String accountType;
@@ -501,6 +497,9 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
         list.setChoiceMode(1);
         list.setItemsCanFocus(false);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: android.accounts.ChooseTypeAndAccountActivity.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.AdapterView.OnItemClickListener
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 ChooseTypeAndAccountActivity.this.mSelectedItemIndex = position;
@@ -513,6 +512,19 @@ public class ChooseTypeAndAccountActivity extends Activity implements AccountMan
             if (Log.isLoggable(TAG, 2)) {
                 Log.v(TAG, "List item " + this.mSelectedItemIndex + " should be selected");
             }
+        }
+    }
+
+    /* renamed from: android.accounts.ChooseTypeAndAccountActivity$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements AdapterView.OnItemClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.AdapterView.OnItemClickListener
+        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            ChooseTypeAndAccountActivity.this.mSelectedItemIndex = position;
+            ChooseTypeAndAccountActivity.this.mOkButton.setEnabled(true);
         }
     }
 

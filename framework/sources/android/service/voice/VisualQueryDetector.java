@@ -46,14 +46,12 @@ public class VisualQueryDetector {
         void onVisualQueryDetectionServiceRestarted();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VisualQueryDetector(IVoiceInteractionManagerService managerService, Executor executor, Callback callback) {
         this.mManagerService = managerService;
         this.mCallback = callback;
         this.mExecutor = executor;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void initialize(PersistableBundle options, SharedMemory sharedMemory) {
         this.mInitializationDelegate.initialize(options, sharedMemory);
     }
@@ -98,12 +96,10 @@ public class VisualQueryDetector {
         return this.mInitializationDelegate;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerOnDestroyListener(Consumer<AbstractDetector> onDestroyListener) {
         this.mInitializationDelegate.registerOnDestroyListener(onDestroyListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class VisualQueryDetectorInitializationDelegate extends AbstractDetector {
         VisualQueryDetectorInitializationDelegate() {
@@ -138,7 +134,6 @@ public class VisualQueryDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class BinderCallback extends IVisualQueryDetectionVoiceInteractionCallback.Stub {
         private final Callback mCallback;
@@ -160,7 +155,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onQueryDetected$1(final String partialQuery) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.VisualQueryDetector$BinderCallback$$ExternalSyntheticLambda6
                 @Override // java.lang.Runnable
@@ -170,7 +164,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onQueryDetected$0(String partialQuery) {
             this.mCallback.onQueryDetected(partialQuery);
         }
@@ -186,7 +179,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onQueryFinished$3() throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.VisualQueryDetector$BinderCallback$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
@@ -196,7 +188,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onQueryFinished$2() {
             this.mCallback.onQueryFinished();
         }
@@ -212,7 +203,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onQueryRejected$5() throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.VisualQueryDetector$BinderCallback$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
@@ -222,7 +212,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onQueryRejected$4() {
             this.mCallback.onQueryRejected();
         }
@@ -238,7 +227,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVisualQueryDetectionServiceFailure$7(final VisualQueryDetectionServiceFailure visualQueryDetectionServiceFailure) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.VisualQueryDetector$BinderCallback$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
@@ -248,7 +236,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVisualQueryDetectionServiceFailure$6(VisualQueryDetectionServiceFailure visualQueryDetectionServiceFailure) {
             if (visualQueryDetectionServiceFailure != null) {
                 this.mCallback.onFailure(visualQueryDetectionServiceFailure);
@@ -258,7 +245,6 @@ public class VisualQueryDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class InitializationStateListener extends IHotwordRecognitionStatusCallback.Stub {
         private final Callback mCallback;
@@ -300,7 +286,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onStatusReported$1(final int status) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.VisualQueryDetector$InitializationStateListener$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
@@ -310,7 +295,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onStatusReported$0(int status) {
             this.mCallback.onVisualQueryDetectionServiceInitialized(status);
         }
@@ -326,7 +310,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onProcessRestarted$3() throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.VisualQueryDetector$InitializationStateListener$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
@@ -336,7 +319,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onProcessRestarted$2() {
             this.mCallback.onVisualQueryDetectionServiceRestarted();
         }
@@ -357,7 +339,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVisualQueryDetectionServiceFailure$5(final VisualQueryDetectionServiceFailure visualQueryDetectionServiceFailure) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.VisualQueryDetector$InitializationStateListener$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
@@ -367,7 +348,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVisualQueryDetectionServiceFailure$4(VisualQueryDetectionServiceFailure visualQueryDetectionServiceFailure) {
             if (visualQueryDetectionServiceFailure != null) {
                 this.mCallback.onFailure(visualQueryDetectionServiceFailure);
@@ -392,7 +372,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUnknownFailure$7(final String errorMessage) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.VisualQueryDetector$InitializationStateListener$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
@@ -402,7 +381,6 @@ public class VisualQueryDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUnknownFailure$6(String errorMessage) {
             this.mCallback.onUnknownFailure(!TextUtils.isEmpty(errorMessage) ? errorMessage : "Error data is null");
         }

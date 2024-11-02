@@ -9,7 +9,6 @@ public class BufferedBlockCipher {
     protected boolean partialBlockOkay;
     protected boolean pgpCFB;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public BufferedBlockCipher() {
     }
 

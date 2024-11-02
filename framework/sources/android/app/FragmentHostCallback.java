@@ -32,7 +32,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         this(context instanceof Activity ? (Activity) context : null, context, chooseHandler(context, handler), windowAnimations);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FragmentHostCallback(Activity activity) {
         this(activity, activity, activity.mHandler, 0);
     }
@@ -116,32 +115,26 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean getRetainLoaders() {
         return this.mRetainLoaders;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Activity getActivity() {
         return this.mActivity;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Context getContext() {
         return this.mContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Handler getHandler() {
         return this.mHandler;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FragmentManagerImpl getFragmentManagerImpl() {
         return this.mFragmentManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LoaderManagerImpl getLoaderManagerImpl() {
         LoaderManagerImpl loaderManagerImpl = this.mLoaderManager;
         if (loaderManagerImpl != null) {
@@ -153,7 +146,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         return loaderManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void inactivateFragment(String who) {
         LoaderManagerImpl lm;
         ArrayMap<String, LoaderManager> arrayMap = this.mAllLoaderManagers;
@@ -163,7 +155,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doLoaderStart() {
         if (this.mLoadersStarted) {
             return;
@@ -178,7 +169,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         this.mCheckedForLoaderManager = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doLoaderStop(boolean retain) {
         this.mRetainLoaders = retain;
         LoaderManagerImpl loaderManagerImpl = this.mLoaderManager;
@@ -201,7 +191,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         loaderManagerImpl.doRetain();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void doLoaderDestroy() {
         LoaderManagerImpl loaderManagerImpl = this.mLoaderManager;
         if (loaderManagerImpl == null) {
@@ -210,7 +199,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         loaderManagerImpl.doDestroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reportLoaderStart() {
         ArrayMap<String, LoaderManager> arrayMap = this.mAllLoaderManagers;
         if (arrayMap != null) {
@@ -227,7 +215,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LoaderManagerImpl getLoaderManager(String who, boolean started, boolean create) {
         if (this.mAllLoaderManagers == null) {
             this.mAllLoaderManagers = new ArrayMap<>();
@@ -245,7 +232,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         return lm;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ArrayMap<String, LoaderManager> retainLoaderNonConfig() {
         boolean retainLoaders = false;
         ArrayMap<String, LoaderManager> arrayMap = this.mAllLoaderManagers;
@@ -278,7 +264,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void restoreLoaderNonConfig(ArrayMap<String, LoaderManager> loaderManagers) {
         if (loaderManagers != null) {
             int N = loaderManagers.size();
@@ -289,7 +274,6 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         this.mAllLoaderManagers = loaderManagers;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dumpLoaders(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         writer.print(prefix);
         writer.print("mLoadersStarted=");

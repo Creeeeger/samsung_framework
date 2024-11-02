@@ -137,7 +137,6 @@ public class SyncRunner extends GraphRunner {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void waitUntilWake() {
         this.mWakeCondition.block();
     }
@@ -158,10 +157,18 @@ public class SyncRunner extends GraphRunner {
         }
     }
 
-    protected void scheduleFilterWake(final Filter filter, int delay) {
+    protected void scheduleFilterWake(Filter filter, int delay) {
         this.mWakeCondition.close();
-        final ConditionVariable conditionToWake = this.mWakeCondition;
+        ConditionVariable conditionToWake = this.mWakeCondition;
         this.mWakeExecutor.schedule(new Runnable() { // from class: android.filterfw.core.SyncRunner.1
+            final /* synthetic */ ConditionVariable val$conditionToWake;
+            final /* synthetic */ Filter val$filterToSchedule;
+
+            AnonymousClass1(Filter filter2, ConditionVariable conditionToWake2) {
+                filter = filter2;
+                conditionToWake = conditionToWake2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 filter.unsetStatus(4);
@@ -170,7 +177,24 @@ public class SyncRunner extends GraphRunner {
         }, delay, TimeUnit.MILLISECONDS);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.filterfw.core.SyncRunner$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ ConditionVariable val$conditionToWake;
+        final /* synthetic */ Filter val$filterToSchedule;
+
+        AnonymousClass1(Filter filter2, ConditionVariable conditionToWake2) {
+            filter = filter2;
+            conditionToWake = conditionToWake2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            filter.unsetStatus(4);
+            conditionToWake.open();
+        }
+    }
+
     public int determinePostRunState() {
         for (Filter filter : this.mScheduler.getGraph().getFilters()) {
             if (filter.isOpen()) {
@@ -180,7 +204,6 @@ public class SyncRunner extends GraphRunner {
         return 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean performStep() {
         if (this.mLogVerbose) {
             Log.v(TAG, "Performing one step.");
@@ -195,7 +218,6 @@ public class SyncRunner extends GraphRunner {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void assertReadyToStep() {
         if (this.mScheduler == null) {
             throw new RuntimeException("Attempting to run schedule with no scheduler in place!");

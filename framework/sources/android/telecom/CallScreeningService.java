@@ -25,6 +25,10 @@ public abstract class CallScreeningService extends Service {
     public static final String SERVICE_INTERFACE = "android.telecom.CallScreeningService";
     private ICallScreeningAdapter mCallScreeningAdapter;
     private final Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: android.telecom.CallScreeningService.1
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -53,8 +57,45 @@ public abstract class CallScreeningService extends Service {
 
     public abstract void onScreenCall(Call.Details details);
 
+    /* renamed from: android.telecom.CallScreeningService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    SomeArgs args = (SomeArgs) msg.obj;
+                    try {
+                        try {
+                            CallScreeningService.this.mCallScreeningAdapter = (ICallScreeningAdapter) args.arg1;
+                            Call.Details callDetails = Call.Details.createFromParcelableCall((ParcelableCall) args.arg2);
+                            CallScreeningService.this.onScreenCall(callDetails);
+                            if (callDetails.getCallDirection() == 1) {
+                                CallScreeningService.this.mCallScreeningAdapter.onScreeningResponse(callDetails.getTelecomCallId(), new ComponentName(CallScreeningService.this.getPackageName(), getClass().getName()), null);
+                            }
+                        } catch (RemoteException e) {
+                            Log.w(this, "Exception when screening call: " + e, new Object[0]);
+                        }
+                        return;
+                    } finally {
+                        args.recycle();
+                    }
+                default:
+                    return;
+            }
+        }
+    }
+
     /* loaded from: classes3.dex */
     private final class CallScreeningBinder extends ICallScreeningService.Stub {
+        /* synthetic */ CallScreeningBinder(CallScreeningService callScreeningService, CallScreeningBinderIA callScreeningBinderIA) {
+            this();
+        }
+
         private CallScreeningBinder() {
         }
 
@@ -71,13 +112,14 @@ public abstract class CallScreeningService extends Service {
     /* loaded from: classes3.dex */
     public static class ParcelableCallResponse implements Parcelable {
         public static final Parcelable.Creator<ParcelableCallResponse> CREATOR = new Parcelable.Creator<ParcelableCallResponse>() { // from class: android.telecom.CallScreeningService.ParcelableCallResponse.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ParcelableCallResponse createFromParcel(Parcel in) {
                 return new ParcelableCallResponse(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ParcelableCallResponse[] newArray(int size) {
                 return new ParcelableCallResponse[size];
@@ -90,6 +132,10 @@ public abstract class CallScreeningService extends Service {
         private final boolean mShouldSilenceCall;
         private final boolean mShouldSkipCallLog;
         private final boolean mShouldSkipNotification;
+
+        /* synthetic */ ParcelableCallResponse(boolean z, boolean z2, boolean z3, boolean z4, boolean z5, boolean z6, int i, ParcelableCallResponseIA parcelableCallResponseIA) {
+            this(z, z2, z3, z4, z5, z6, i);
+        }
 
         private ParcelableCallResponse(boolean shouldDisallowCall, boolean shouldRejectCall, boolean shouldSilenceCall, boolean shouldSkipCallLog, boolean shouldSkipNotification, boolean shouldScreenCallViaAudioProcessing, int callComposerAttachmentsToShow) {
             this.mShouldDisallowCall = shouldDisallowCall;
@@ -143,6 +189,23 @@ public abstract class CallScreeningService extends Service {
             return this.mCallComposerAttachmentsToShow;
         }
 
+        /* renamed from: android.telecom.CallScreeningService$ParcelableCallResponse$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ParcelableCallResponse> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ParcelableCallResponse createFromParcel(Parcel in) {
+                return new ParcelableCallResponse(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ParcelableCallResponse[] newArray(int size) {
+                return new ParcelableCallResponse[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -178,6 +241,10 @@ public abstract class CallScreeningService extends Service {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes3.dex */
         public @interface CallComposerAttachmentType {
+        }
+
+        /* synthetic */ CallResponse(boolean z, boolean z2, boolean z3, boolean z4, boolean z5, boolean z6, int i, CallResponseIA callResponseIA) {
+            this(z, z2, z3, z4, z5, z6, i);
         }
 
         private CallResponse(boolean shouldDisallowCall, boolean shouldRejectCall, boolean shouldSilenceCall, boolean shouldSkipCallLog, boolean shouldSkipNotification, boolean shouldScreenCallViaAudioProcessing, int callComposerAttachmentsToShow) {

@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public final class UiTranslationSpec implements Parcelable {
     public static final Parcelable.Creator<UiTranslationSpec> CREATOR = new Parcelable.Creator<UiTranslationSpec>() { // from class: android.view.translation.UiTranslationSpec.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UiTranslationSpec[] newArray(int size) {
             return new UiTranslationSpec[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiTranslationSpec createFromParcel(Parcel in) {
             return new UiTranslationSpec(in);
@@ -70,6 +71,23 @@ public final class UiTranslationSpec implements Parcelable {
         byte flg = in.readByte();
         boolean shouldPadContentForCompat = (flg & 1) != 0;
         this.mShouldPadContentForCompat = shouldPadContentForCompat;
+    }
+
+    /* renamed from: android.view.translation.UiTranslationSpec$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UiTranslationSpec> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UiTranslationSpec[] newArray(int size) {
+            return new UiTranslationSpec[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UiTranslationSpec createFromParcel(Parcel in) {
+            return new UiTranslationSpec(in);
+        }
     }
 
     /* loaded from: classes4.dex */

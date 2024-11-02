@@ -89,13 +89,11 @@ public final class Timestamp64 {
         return Objects.hash(Long.valueOf(this.mEraSeconds), Integer.valueOf(this.mFractionBits));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int fractionBitsToNanos(int fractionBits) {
         long fractionBitsLong = fractionBits & 4294967295L;
         return (int) ((1000000000 * fractionBitsLong) >>> 32);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int nanosToFractionBits(long nanos) {
         if (nanos <= 1000000000) {
             return (int) ((nanos << 32) / 1000000000);

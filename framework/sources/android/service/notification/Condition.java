@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class Condition implements Parcelable {
     public static final Parcelable.Creator<Condition> CREATOR = new Parcelable.Creator<Condition>() { // from class: android.service.notification.Condition.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Condition createFromParcel(Parcel source) {
             return new Condition(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Condition[] newArray(int size) {
             return new Condition[size];
@@ -163,6 +164,23 @@ public final class Condition implements Parcelable {
 
     public static boolean isValidId(Uri id, String pkg) {
         return id != null && "condition".equals(id.getScheme()) && pkg.equals(id.getAuthority());
+    }
+
+    /* renamed from: android.service.notification.Condition$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Condition> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Condition createFromParcel(Parcel source) {
+            return new Condition(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Condition[] newArray(int size) {
+            return new Condition[size];
+        }
     }
 
     private static String getTrimmedString(String input) {

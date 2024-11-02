@@ -48,7 +48,6 @@ public class ContextWrapper extends Context {
         this.mBase = base;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void attachBaseContext(Context base) {
         if (this.mBase != null) {
             throw new IllegalStateException("Base context already set");

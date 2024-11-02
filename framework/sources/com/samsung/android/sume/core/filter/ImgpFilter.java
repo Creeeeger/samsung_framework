@@ -54,7 +54,7 @@ public class ImgpFilter extends PluginFilter<ImgpPlugin> {
         }).findFirst().map(new Function() { // from class: com.samsung.android.sume.core.filter.ImgpFilter$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return ImgpFilter.this.m8757lambda$init$0$comsamsungandroidsumecorefilterImgpFilter(obj);
+                return ImgpFilter.this.m8749lambda$init$0$comsamsungandroidsumecorefilterImgpFilter(obj);
             }
         }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
         this.imgp = operator;
@@ -65,9 +65,8 @@ public class ImgpFilter extends PluginFilter<ImgpPlugin> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$init$0$com-samsung-android-sume-core-filter-ImgpFilter, reason: not valid java name */
-    public /* synthetic */ Operator m8757lambda$init$0$comsamsungandroidsumecorefilterImgpFilter(Object it) {
+    /* renamed from: lambda$init$0$com-samsung-android-sume-core-filter-ImgpFilter */
+    public /* synthetic */ Operator m8749lambda$init$0$comsamsungandroidsumecorefilterImgpFilter(Object it) {
         if (it instanceof String) {
             return ((ImgpPlugin) this.plugin).getImgProcessor((String) it);
         }
@@ -140,7 +139,6 @@ public class ImgpFilter extends PluginFilter<ImgpPlugin> {
         return obuf;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$run$1(int contentId, int numBlocks, MediaBuffer it) {
         if (contentId != -1) {
             it.setExtra(Message.KEY_CONTENTS_ID, Integer.valueOf(contentId));

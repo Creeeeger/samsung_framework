@@ -160,11 +160,27 @@ public class GridView extends AbsListView {
         this.mDndGridAnimator = animator;
         setChildrenDrawingOrderEnabled(true);
         this.mDndGridAnimator.setAutoScrollListener(new SemAbsDragAndDropAnimator.SemDragAutoScrollListener() { // from class: android.widget.GridView.1
+            AnonymousClass1() {
+            }
+
             @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator.SemDragAutoScrollListener
             public void onAutoScroll(int delta) {
                 GridView.this.trackMotionScroll(delta, delta);
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.GridView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements SemAbsDragAndDropAnimator.SemDragAutoScrollListener {
+        AnonymousClass1() {
+        }
+
+        @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator.SemDragAutoScrollListener
+        public void onAutoScroll(int delta) {
+            GridView.this.trackMotionScroll(delta, delta);
+        }
     }
 
     @Override // android.widget.AdapterView
@@ -213,7 +229,6 @@ public class GridView extends AbsListView {
         requestLayout();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.AdapterView
     public int lookForSelectablePosition(int position, boolean lookDown) {
         ListAdapter adapter = this.mAdapter;
@@ -751,7 +766,6 @@ public class GridView extends AbsListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int i;
@@ -864,14 +878,12 @@ public class GridView extends AbsListView {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public int getChildDrawingOrder(int childCount, int i) {
         SemDragAndDropGridAnimator semDragAndDropGridAnimator = this.mDndGridAnimator;
         return semDragAndDropGridAnimator != null ? semDragAndDropGridAnimator.getChildDrawingOrder(childCount, i) : super.getChildDrawingOrder(childCount, i);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean drawChild(Canvas canvas, View child, long drawingTime) {
         SemDragAndDropGridAnimator semDragAndDropGridAnimator = this.mDndGridAnimator;
@@ -886,7 +898,6 @@ public class GridView extends AbsListView {
         return retVal;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         SemAddDeleteGridAnimator semAddDeleteGridAnimator = this.mAddDeleteGridAnimator;
@@ -905,6 +916,9 @@ public class GridView extends AbsListView {
         super.onWindowFocusChanged(hasWindowFocus);
         if (hasWindowFocus && this.mDndGridAnimator != null) {
             post(new Runnable() { // from class: android.widget.GridView.2
+                AnonymousClass2() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     GridView.this.mDndGridAnimator.speakDescriptionForAccessibility();
@@ -913,7 +927,18 @@ public class GridView extends AbsListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: android.widget.GridView$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            GridView.this.mDndGridAnimator.speakDescriptionForAccessibility();
+        }
+    }
+
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Removed duplicated region for block: B:101:0x02d5 A[Catch: all -> 0x02e1, TryCatch #0 {all -> 0x02e1, blocks: (B:66:0x00e5, B:69:0x0105, B:70:0x010e, B:72:0x0113, B:74:0x015d, B:76:0x0161, B:80:0x016b, B:81:0x01c2, B:83:0x01c7, B:86:0x021b, B:89:0x0223, B:91:0x022a, B:94:0x0233, B:96:0x02b6, B:98:0x02bf, B:99:0x02c6, B:101:0x02d5, B:102:0x02d8, B:108:0x024a, B:112:0x025e, B:114:0x0273, B:119:0x027f, B:121:0x0290, B:122:0x02a1, B:125:0x02a9, B:127:0x02ae, B:128:0x029d, B:130:0x01d3, B:132:0x01d7, B:136:0x01e1, B:138:0x01ee, B:140:0x01f4, B:142:0x01fb, B:144:0x01ff, B:146:0x020a, B:148:0x0210, B:151:0x0173, B:153:0x017b, B:157:0x0185, B:159:0x018e, B:161:0x0192, B:163:0x0198, B:166:0x01a2, B:167:0x019e, B:168:0x01a7, B:170:0x01ad, B:173:0x01b7, B:174:0x01b3, B:175:0x01bc, B:176:0x0116, B:177:0x011c, B:178:0x0126, B:179:0x0130, B:181:0x013f, B:182:0x0149, B:183:0x014f, B:184:0x00fc), top: B:61:0x00d9 }] */
     /* JADX WARN: Removed duplicated region for block: B:104:0x02dd  */
@@ -1350,7 +1375,6 @@ public class GridView extends AbsListView {
         return moved;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.View
     public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
@@ -1380,11 +1404,26 @@ public class GridView extends AbsListView {
         }
         if (gainFocus && this.mDndGridAnimator != null) {
             post(new Runnable() { // from class: android.widget.GridView.3
+                AnonymousClass3() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     GridView.this.mDndGridAnimator.speakDescriptionForAccessibility();
                 }
             });
+        }
+    }
+
+    /* renamed from: android.widget.GridView$3 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            GridView.this.mDndGridAnimator.speakDescriptionForAccessibility();
         }
     }
 
@@ -1530,7 +1569,6 @@ public class GridView extends AbsListView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.View
     public int computeVerticalScrollExtent() {
         int count = getChildCount();
@@ -1555,7 +1593,6 @@ public class GridView extends AbsListView {
         return extent;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.View
     public int computeVerticalScrollOffset() {
         if (this.mFirstPosition >= 0 && getChildCount() > 0) {
@@ -1573,7 +1610,6 @@ public class GridView extends AbsListView {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.view.View
     public int computeVerticalScrollRange() {
         int numColumns = this.mNumColumns;
@@ -1649,7 +1685,6 @@ public class GridView extends AbsListView {
         info.setCollectionItemInfo(itemInfo);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AbsListView, android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);

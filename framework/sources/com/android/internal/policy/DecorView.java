@@ -263,6 +263,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     public static final ColorViewAttributes STATUS_BAR_COLOR_VIEW_ATTRIBUTES = new ColorViewAttributes(67108864, 48, 3, 5, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME, 16908335, WindowInsets.Type.statusBars());
     public static final ColorViewAttributes NAVIGATION_BAR_COLOR_VIEW_ATTRIBUTES = new ColorViewAttributes(134217728, 80, 5, 3, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME, 16908336, WindowInsets.Type.navigationBars());
     private static final ViewOutlineProvider PIP_OUTLINE_PROVIDER = new ViewOutlineProvider() { // from class: com.android.internal.policy.DecorView.1
+        AnonymousClass1() {
+        }
+
         @Override // android.view.ViewOutlineProvider
         public void getOutline(View view, Outline outline) {
             outline.setRect(0, 0, view.getWidth(), view.getHeight());
@@ -270,13 +273,76 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.policy.DecorView$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 extends ViewOutlineProvider {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ViewOutlineProvider
+        public void getOutline(View view, Outline outline) {
+            outline.setRect(0, 0, view.getWidth(), view.getHeight());
+            outline.setAlpha(1.0f);
+        }
+    }
+
     public /* synthetic */ boolean lambda$new$0() {
         updateBackgroundBlurCorners();
         return true;
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.policy.DecorView$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends ViewOutlineProvider {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.ViewOutlineProvider
+        public void getOutline(View view, Outline outline) {
+            Path path = SemViewUtils.getPopOverSmoothRoundedRect(DecorView.this.mContext, view.getWidth(), view.getHeight());
+            outline.setPath(path);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.policy.DecorView$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 extends FloatProperty<DecorView> {
+        AnonymousClass3(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(DecorView object, float value) {
+            object.setBackgroundAlpha(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(DecorView object) {
+            return Float.valueOf(object.getBackgroundAlpha());
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.policy.DecorView$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 extends FloatProperty<DecorView> {
+        AnonymousClass4(String name) {
+            super(name);
+        }
+
+        @Override // android.util.FloatProperty
+        public void setValue(DecorView object, float value) {
+            object.setContentAlpha(value);
+        }
+
+        @Override // android.util.Property
+        public Float get(DecorView object) {
+            return Float.valueOf(object.getContentAlpha());
+        }
+    }
+
     public DecorView(Context context, int featureId, PhoneWindow window, WindowManager.LayoutParams params) {
         super(context);
         boolean z;
@@ -357,6 +423,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mPopOverContentAlpha = 1.0f;
         this.mKeepCutoutInTentMode = false;
         this.POP_OVER_OUTLINE_PROVIDER = new ViewOutlineProvider() { // from class: com.android.internal.policy.DecorView.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.ViewOutlineProvider
             public void getOutline(View view, Outline outline) {
                 Path path = SemViewUtils.getPopOverSmoothRoundedRect(DecorView.this.mContext, view.getWidth(), view.getHeight());
@@ -364,6 +433,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             }
         };
         this.POP_OVER_BACKGROUND_ALPHA = new FloatProperty<DecorView>("backgroundAlpha") { // from class: com.android.internal.policy.DecorView.3
+            AnonymousClass3(String name) {
+                super(name);
+            }
+
             @Override // android.util.FloatProperty
             public void setValue(DecorView object, float value) {
                 object.setBackgroundAlpha(value);
@@ -375,6 +448,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             }
         };
         this.POP_OVER_CONTENT_ALPHA = new FloatProperty<DecorView>("contentAlpha") { // from class: com.android.internal.policy.DecorView.4
+            AnonymousClass4(String name) {
+                super(name);
+            }
+
             @Override // android.util.FloatProperty
             public void setValue(DecorView object, float value) {
                 object.setContentAlpha(value);
@@ -390,6 +467,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mCalledDisplayCutoutBackgroundColor = false;
         this.mForceHideRoundedCorner = false;
         this.FREEFORM_OUTLINE_PROVIDER = new ViewOutlineProvider() { // from class: com.android.internal.policy.DecorView.12
+            AnonymousClass12() {
+            }
+
             @Override // android.view.ViewOutlineProvider
             public void getOutline(View view, Outline outline) {
                 if (DecorView.this.isFreeformMode()) {
@@ -467,7 +547,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setBackgroundFallback(Drawable fallbackDrawable) {
         this.mBackgroundFallback.setDrawable(fallbackDrawable);
         setWillNotDraw(getBackground() == null && !this.mBackgroundFallback.hasFallback());
@@ -477,12 +556,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return this.mBackgroundFallback.getDrawable();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View getStatusBarBackgroundView() {
         return this.mStatusColorViewState.view;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View getNavigationBarBackgroundView() {
         return this.mNavigationColorViewState.view;
     }
@@ -684,7 +761,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return super.dispatchPopulateAccessibilityEventInternal(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int l, int t, int r, int b) {
         boolean changed = super.setFrame(l, t, r, b);
@@ -713,7 +789,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Removed duplicated region for block: B:20:0x0086  */
     /* JADX WARN: Removed duplicated region for block: B:33:0x00f6 A[ADDED_TO_REGION] */
     /* JADX WARN: Removed duplicated region for block: B:36:0x0106  */
@@ -735,7 +810,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.policy.DecorView.onMeasure(int, int):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -794,7 +868,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         if (this.mPopOverContentAlpha < 1.0f) {
@@ -921,7 +994,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cleanupFloatingActionModeViews() {
         FloatingToolbar floatingToolbar = this.mFloatingToolbar;
         if (floatingToolbar != null) {
@@ -938,12 +1010,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startChanging() {
         this.mChanging = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishChanging() {
         this.mChanging = false;
         drawableChanged();
@@ -1095,8 +1165,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* JADX WARN: Code restructure failed: missing block: B:204:0x01ac, code lost:            if (r9.getHeight() == r10) goto L90;     */
+    /* JADX WARN: Code restructure failed: missing block: B:204:0x01ac, code lost:
+    
+        if (r9.getHeight() == r10) goto L349;
+     */
     /* JADX WARN: Removed duplicated region for block: B:217:0x01db  */
     /* JADX WARN: Removed duplicated region for block: B:224:0x0216  */
     /* JADX WARN: Removed duplicated region for block: B:225:0x0225  */
@@ -1113,6 +1185,23 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.policy.DecorView.updateColorViews(android.view.WindowInsets, boolean):android.view.WindowInsets");
     }
 
+    /* renamed from: com.android.internal.policy.DecorView$5 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass5 extends ColorDrawable {
+        final /* synthetic */ int val$captionHeight;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass5(int color, int i) {
+            super(color);
+            r3 = i;
+        }
+
+        @Override // android.graphics.drawable.Drawable
+        public void setBounds(int left, int top, int right, int bottom) {
+            super.setBounds(left, 0, right, r3);
+        }
+    }
+
     private void updateBackgroundDrawable() {
         if (this.mBackgroundInsets == null) {
             this.mBackgroundInsets = Insets.NONE;
@@ -1126,21 +1215,38 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
         if (destDrawable != null && !this.mBackgroundInsets.equals(Insets.NONE)) {
             destDrawable = new InsetDrawable(destDrawable, this.mBackgroundInsets.left, this.mBackgroundInsets.top, this.mBackgroundInsets.right, this.mBackgroundInsets.bottom) { // from class: com.android.internal.policy.DecorView.6
+                AnonymousClass6(Drawable destDrawable2, int insetLeft, int insetTop, int insetRight, int insetBottom) {
+                    super(destDrawable2, insetLeft, insetTop, insetRight, insetBottom);
+                }
+
                 @Override // android.graphics.drawable.InsetDrawable, android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
                 public boolean getPadding(Rect padding) {
                     return getDrawable().getPadding(padding);
                 }
             };
         }
-        if (CoreRune.MW_CAPTION_SHELL_INSETS && destDrawable != null && this.mCaptionBarBackgroundDrawable != null) {
-            destDrawable = new LayerDrawable(new Drawable[]{this.mCaptionBarBackgroundDrawable, destDrawable});
+        if (CoreRune.MW_CAPTION_SHELL_INSETS && destDrawable2 != null && this.mCaptionBarBackgroundDrawable != null) {
+            destDrawable2 = new LayerDrawable(new Drawable[]{this.mCaptionBarBackgroundDrawable, destDrawable2});
         }
-        super.setBackgroundDrawable(destDrawable);
+        super.setBackgroundDrawable(destDrawable2);
         this.mLastBackgroundInsets = this.mBackgroundInsets;
         this.mLastBackgroundBlurDrawable = this.mBackgroundBlurDrawable;
         this.mLastOriginalBackgroundDrawable = this.mOriginalBackgroundDrawable;
         if (CoreRune.MW_CAPTION_SHELL_INSETS) {
             this.mLastCaptionBarBackgroundDrawable = this.mCaptionBarBackgroundDrawable;
+        }
+    }
+
+    /* renamed from: com.android.internal.policy.DecorView$6 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass6 extends InsetDrawable {
+        AnonymousClass6(Drawable destDrawable2, int insetLeft, int insetTop, int insetRight, int insetBottom) {
+            super(destDrawable2, insetLeft, insetTop, insetRight, insetBottom);
+        }
+
+        @Override // android.graphics.drawable.InsetDrawable, android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
+        public boolean getPadding(Rect padding) {
+            return getDrawable().getPadding(padding);
         }
     }
 
@@ -1173,7 +1279,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setBackgroundBlurRadius(int blurRadius) {
         this.mOriginalBackgroundBlurRadius = blurRadius;
         if (blurRadius > 0) {
@@ -1197,7 +1302,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setBackgroundBlurRadius$1(Boolean enabled) {
         this.mCrossWindowBlurEnabled = enabled.booleanValue();
         updateBackgroundBlurRadius();
@@ -1277,7 +1381,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return 0;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:82:0x012c, code lost:            if (r6.leftMargin != r13) goto L79;     */
+    /* JADX WARN: Code restructure failed: missing block: B:82:0x012c, code lost:
+    
+        if (r6.leftMargin != r13) goto L181;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1288,6 +1395,22 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.policy.DecorView.updateColorViewInt(com.android.internal.policy.DecorView$ColorViewState, int, int, int, boolean, boolean, int, boolean, boolean, int):void");
+    }
+
+    /* renamed from: com.android.internal.policy.DecorView$7 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass7 implements Runnable {
+        final /* synthetic */ View val$hideView;
+
+        AnonymousClass7(View view) {
+            r2 = view;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            r2.setAlpha(1.0f);
+            r2.setVisibility(4);
+        }
     }
 
     private static void setColor(View v, int color, int dividerColor, boolean verticalBar, boolean seascape) {
@@ -1553,7 +1676,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -1597,7 +1719,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mWindow.onViewRootImplSet(getViewRootImpl());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -1748,6 +1869,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 this.mPrimaryActionModeView.setContentHeight(height);
                 this.mPrimaryActionModePopup.setHeight(-2);
                 this.mShowPrimaryActionModePopup = new Runnable() { // from class: com.android.internal.policy.DecorView.8
+                    AnonymousClass8() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         DecorView.this.mPrimaryActionModePopup.showAtLocation(DecorView.this.mPrimaryActionModeView.getApplicationWindowToken(), 55, 0, 0);
@@ -1756,6 +1880,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                             DecorView decorView = DecorView.this;
                             decorView.mFadeAnim = ObjectAnimator.ofFloat(decorView.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 0.0f, 1.0f);
                             DecorView.this.mFadeAnim.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.policy.DecorView.8.1
+                                AnonymousClass1() {
+                                }
+
                                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                                 public void onAnimationStart(Animator animation) {
                                     DecorView.this.mPrimaryActionModeView.setVisibility(0);
@@ -1772,6 +1899,24 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                         }
                         DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
                         DecorView.this.mPrimaryActionModeView.setVisibility(0);
+                    }
+
+                    /* renamed from: com.android.internal.policy.DecorView$8$1 */
+                    /* loaded from: classes5.dex */
+                    class AnonymousClass1 extends AnimatorListenerAdapter {
+                        AnonymousClass1() {
+                        }
+
+                        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                        public void onAnimationStart(Animator animation) {
+                            DecorView.this.mPrimaryActionModeView.setVisibility(0);
+                        }
+
+                        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                        public void onAnimationEnd(Animator animation) {
+                            DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
+                            DecorView.this.mFadeAnim = null;
+                        }
                     }
                 };
             } else {
@@ -1791,7 +1936,60 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return mode;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.android.internal.policy.DecorView$8 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass8 implements Runnable {
+        AnonymousClass8() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            DecorView.this.mPrimaryActionModePopup.showAtLocation(DecorView.this.mPrimaryActionModeView.getApplicationWindowToken(), 55, 0, 0);
+            DecorView.this.endOnGoingFadeAnimation();
+            if (DecorView.this.shouldAnimatePrimaryActionModeView()) {
+                DecorView decorView = DecorView.this;
+                decorView.mFadeAnim = ObjectAnimator.ofFloat(decorView.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 0.0f, 1.0f);
+                DecorView.this.mFadeAnim.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.policy.DecorView.8.1
+                    AnonymousClass1() {
+                    }
+
+                    @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                    public void onAnimationStart(Animator animation) {
+                        DecorView.this.mPrimaryActionModeView.setVisibility(0);
+                    }
+
+                    @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                    public void onAnimationEnd(Animator animation) {
+                        DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
+                        DecorView.this.mFadeAnim = null;
+                    }
+                });
+                DecorView.this.mFadeAnim.start();
+                return;
+            }
+            DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
+            DecorView.this.mPrimaryActionModeView.setVisibility(0);
+        }
+
+        /* renamed from: com.android.internal.policy.DecorView$8$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 extends AnimatorListenerAdapter {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation) {
+                DecorView.this.mPrimaryActionModeView.setVisibility(0);
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
+                DecorView.this.mFadeAnim = null;
+            }
+        }
+    }
+
     public void endOnGoingFadeAnimation() {
         ObjectAnimator objectAnimator = this.mFadeAnim;
         if (objectAnimator != null) {
@@ -1810,6 +2008,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             ObjectAnimator ofFloat = ObjectAnimator.ofFloat(this.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 0.0f, 1.0f);
             this.mFadeAnim = ofFloat;
             ofFloat.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.policy.DecorView.9
+                AnonymousClass9() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     DecorView.this.mPrimaryActionModeView.setVisibility(0);
@@ -1829,6 +2030,24 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mPrimaryActionModeView.sendAccessibilityEvent(32);
     }
 
+    /* renamed from: com.android.internal.policy.DecorView$9 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass9 extends AnimatorListenerAdapter {
+        AnonymousClass9() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+            DecorView.this.mPrimaryActionModeView.setVisibility(0);
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
+            DecorView.this.mFadeAnim = null;
+        }
+    }
+
     boolean shouldAnimatePrimaryActionModeView() {
         return isLaidOut();
     }
@@ -1840,16 +2059,38 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
         cleanupFloatingActionModeViews();
         this.mFloatingToolbar = new FloatingToolbar(this.mWindow);
-        final FloatingActionMode mode = new FloatingActionMode(this.mContext, callback, originatingView, this.mFloatingToolbar);
+        FloatingActionMode mode = new FloatingActionMode(this.mContext, callback, originatingView, this.mFloatingToolbar);
         this.mFloatingActionModeOriginatingView = originatingView;
         this.mFloatingToolbarPreDrawListener = new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.policy.DecorView.10
+            final /* synthetic */ FloatingActionMode val$mode;
+
+            AnonymousClass10(FloatingActionMode mode2) {
+                mode = mode2;
+            }
+
             @Override // android.view.ViewTreeObserver.OnPreDrawListener
             public boolean onPreDraw() {
                 mode.updateViewLocationInWindow();
                 return true;
             }
         };
-        return mode;
+        return mode2;
+    }
+
+    /* renamed from: com.android.internal.policy.DecorView$10 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass10 implements ViewTreeObserver.OnPreDrawListener {
+        final /* synthetic */ FloatingActionMode val$mode;
+
+        AnonymousClass10(FloatingActionMode mode2) {
+            mode = mode2;
+        }
+
+        @Override // android.view.ViewTreeObserver.OnPreDrawListener
+        public boolean onPreDraw() {
+            mode.updateViewLocationInWindow();
+            return true;
+        }
     }
 
     private void setHandledFloatingActionMode(ActionMode mode) {
@@ -1883,7 +2124,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setWindow(PhoneWindow phoneWindow) {
         this.mWindow = phoneWindow;
         Context context = getContext();
@@ -1903,7 +2143,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return getContext().getResources();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         int i;
@@ -2043,7 +2282,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onResourcesLoaded(LayoutInflater inflater, int layoutResource) {
         this.mLastOutlineProvider = getOutlineProvider();
         updateOutlineProvider();
@@ -2137,7 +2375,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateDecorCaptionShade() {
         DecorCaptionView decorCaptionView = this.mDecorCaptionView;
         if (decorCaptionView != null) {
@@ -2178,7 +2415,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return drawable;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void clearContentView() {
         DecorCaptionView decorCaptionView = this.mDecorCaptionView;
         if (decorCaptionView != null) {
@@ -2356,13 +2592,11 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isShowingCaption() {
         DecorCaptionView decorCaptionView = this.mDecorCaptionView;
         return decorCaptionView != null && decorCaptionView.isCaptionShowing();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getCaptionHeight() {
         if (isShowingCaption()) {
             return this.mDecorCaptionView.getCaptionHeight();
@@ -2381,7 +2615,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return TypedValue.applyDimension(1, dip, getResources().getDisplayMetrics());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setUserCaptionBackgroundDrawable(Drawable drawable) {
         this.mUserCaptionBackgroundDrawable = drawable;
         BackdropFrameRenderer backdropFrameRenderer = this.mBackdropFrameRenderer;
@@ -2401,7 +2634,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return split[split.length - 1];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateLogTag(WindowManager.LayoutParams params) {
         this.mLogTag = "DecorView[" + getTitleSuffix(params) + NavigationBarInflaterView.SIZE_MOD_END;
     }
@@ -2708,7 +2940,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         super.semSetRoundedCornerColor(roundedCorner, MultiWindowUtils.getRoundedCornerColor(context));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ColorViewState {
         final ColorViewAttributes attributes;
@@ -2732,6 +2963,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         final String transitionName;
         final int translucentFlag;
         final int verticalGravity;
+
+        /* synthetic */ ColorViewAttributes(int i, int i2, int i3, int i4, String str, int i5, int i6, ColorViewAttributesIA colorViewAttributesIA) {
+            this(i, i2, i3, i4, str, i5, i6);
+        }
 
         private ColorViewAttributes(int translucentFlag, int verticalGravity, int horizontalGravity, int seascapeGravity, String transitionName, int id, int insetsType) {
             this.id = id;
@@ -2758,7 +2993,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class ActionModeCallback2Wrapper extends ActionMode.Callback2 {
         private final ActionMode.Callback mWrapped;
@@ -2812,10 +3046,16 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 }
                 if (DecorView.this.mPrimaryActionModeView != null) {
                     DecorView.this.endOnGoingFadeAnimation();
-                    final ActionBarContextView lastActionModeView = DecorView.this.mPrimaryActionModeView;
+                    ActionBarContextView lastActionModeView = DecorView.this.mPrimaryActionModeView;
                     DecorView decorView2 = DecorView.this;
                     decorView2.mFadeAnim = ObjectAnimator.ofFloat(decorView2.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 1.0f, 0.0f);
                     DecorView.this.mFadeAnim.addListener(new Animator.AnimatorListener() { // from class: com.android.internal.policy.DecorView.ActionModeCallback2Wrapper.1
+                        final /* synthetic */ ActionBarContextView val$lastActionModeView;
+
+                        AnonymousClass1(ActionBarContextView lastActionModeView2) {
+                            lastActionModeView = lastActionModeView2;
+                        }
+
                         @Override // android.animation.Animator.AnimatorListener
                         public void onAnimationStart(Animator animation) {
                         }
@@ -2858,6 +3098,41 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 }
             }
             DecorView.this.requestFitSystemWindows();
+        }
+
+        /* renamed from: com.android.internal.policy.DecorView$ActionModeCallback2Wrapper$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Animator.AnimatorListener {
+            final /* synthetic */ ActionBarContextView val$lastActionModeView;
+
+            AnonymousClass1(ActionBarContextView lastActionModeView2) {
+                lastActionModeView = lastActionModeView2;
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                if (lastActionModeView == DecorView.this.mPrimaryActionModeView) {
+                    lastActionModeView.setVisibility(8);
+                    if (DecorView.this.mPrimaryActionModePopup != null) {
+                        DecorView.this.mPrimaryActionModePopup.dismiss();
+                    }
+                    lastActionModeView.killMode();
+                    DecorView.this.mFadeAnim = null;
+                    DecorView.this.requestApplyInsets();
+                }
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public void onAnimationRepeat(Animator animation) {
+            }
         }
 
         @Override // android.view.ActionMode.Callback2
@@ -2981,7 +3256,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isDrawLegacyNavigationBarBackground() {
         return this.mDrawLegacyNavigationBarBackground;
     }
@@ -2996,7 +3270,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void hideKnoxBadge() {
         ViewGroupOverlay viewGroupOverlay = this.mKnoxBadgeViewGroupOverlay;
         if (viewGroupOverlay != null) {
@@ -3004,7 +3277,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void addKnoxBadge() {
         if (this.mKnoxBadgeViewGroupOverlay == null) {
             setKnoxBadge();
@@ -3036,7 +3308,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mDensityForKnoxBadge = this.mContext.getResources().getConfiguration().densityDpi;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean shouldHideProfileBadge(boolean isGestureHintOff, boolean taskbarEnabled, int displayType) {
         if (((getParent() instanceof ViewGroup) && this.mKnoxBadgeView != null) || isPopOverState()) {
             return true;
@@ -3055,8 +3326,119 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return isSplitMode() && MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED;
     }
 
+    /* renamed from: com.android.internal.policy.DecorView$11 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass11 implements Runnable {
+        AnonymousClass11() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            boolean isLargeDisplay = true;
+            boolean gestureNavBarEnabled = Settings.Global.getInt(DecorView.this.mContext.getContentResolver(), Settings.Global.NAVIGATION_BAR_GESTURE_WHILE_HIDDEN, 0) != 0;
+            boolean gestureHintState = Settings.Global.getInt(DecorView.this.mContext.getContentResolver(), Settings.Global.NAVIGATIONBAR_GESTURE_HINT, 1) != 0;
+            boolean isGestureNavBarInCenter = gestureNavBarEnabled && Settings.Global.getInt(DecorView.this.mContext.getContentResolver(), Settings.Global.NAVIGATIONBAR_GESTURES_DETAIL_TYPE, 0) == 1;
+            boolean isGestureHintOff = gestureNavBarEnabled && !gestureHintState;
+            boolean taskbarEnabled = Settings.Global.getInt(DecorView.this.getContext().getContentResolver(), Settings.Global.SEM_TASK_BAR, 0) == 1;
+            int displayType = DecorView.this.getContext().getResources().getConfiguration().semDisplayDeviceType;
+            if (DecorView.this.shouldHideProfileBadge(isGestureHintOff, taskbarEnabled, displayType)) {
+                DecorView.this.hideKnoxBadge();
+                return;
+            }
+            int rotation = DecorView.this.mWm.getDefaultDisplay().getRotation();
+            boolean isMultiWindow = DecorView.this.getWindowingMode() == 6;
+            boolean isRotation_90 = rotation == 1;
+            boolean isRotation_270 = rotation == 3;
+            if (displayType != 0 && !SemViewUtils.isTablet()) {
+                isLargeDisplay = false;
+            }
+            if (DecorView.this.mIsDexEnabled) {
+                Context candiateContext = DecorView.this.getContext().getApplicationContext();
+                int appDensityDpi = candiateContext.getResources().getConfiguration().densityDpi;
+                int densityDpi = DecorView.this.getContext().getResources().getConfiguration().densityDpi;
+                DecorView.this.mDensityRatio = densityDpi / appDensityDpi;
+            }
+            int badgeW = (int) (DecorView.this.mKnoxBadge.getIntrinsicWidth() * DecorView.this.mDensityRatio);
+            int badgeH = (int) (DecorView.this.mKnoxBadge.getIntrinsicHeight() * DecorView.this.mDensityRatio);
+            int navigation_bar_height = 0;
+            WindowInsets rootInsets = DecorView.this.getRootWindowInsets();
+            if (rootInsets != null) {
+                DecorView.this.mKnoxBadgeInsets = rootInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+                DisplayCutout cutout = rootInsets.getDisplayCutout();
+                if (cutout != null) {
+                    DecorView.sKnoxBadgeRightCutout = cutout.getSafeInsetRight();
+                }
+            }
+            if (DecorView.this.mKnoxBadgeInsets != null) {
+                navigation_bar_height = DecorView.getNavBarSizeForBadge(DecorView.this.mKnoxBadgeInsets.left, DecorView.this.mKnoxBadgeInsets.right, DecorView.this.mKnoxBadgeInsets.bottom);
+            }
+            DecorView.this.addKnoxBadge();
+            if (isLargeDisplay) {
+                DecorView decorView = DecorView.this;
+                decorView.mKnoxBadgeStartX = decorView.mKnoxLayoutRight - badgeW;
+                DecorView decorView2 = DecorView.this;
+                decorView2.mKnoxBadgeStartY = (decorView2.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
+                if (isRotation_270) {
+                    DecorView.this.mKnoxBadgeStartX -= DecorView.sKnoxBadgeRightCutout;
+                }
+                DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mKnoxBadge);
+            } else {
+                int position = DecorView.this.getResources().getConfiguration().windowConfiguration.getStagePosition();
+                if (isRotation_270) {
+                    if (!isGestureNavBarInCenter) {
+                        DecorView decorView3 = DecorView.this;
+                        decorView3.mKnoxBadgeStartX = decorView3.mKnoxLayoutLeft + navigation_bar_height;
+                        DecorView decorView4 = DecorView.this;
+                        decorView4.mKnoxBadgeStartY = decorView4.mKnoxLayoutBottom - badgeH;
+                    } else {
+                        DecorView decorView5 = DecorView.this;
+                        decorView5.mKnoxBadgeStartX = decorView5.mKnoxLayoutLeft;
+                        DecorView decorView6 = DecorView.this;
+                        decorView6.mKnoxBadgeStartY = (decorView6.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
+                    }
+                    if (isMultiWindow && position == 32) {
+                        DecorView.this.mKnoxBadgeStartX = 0;
+                    }
+                    DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mReverseKnoxBadge);
+                } else if (isRotation_90) {
+                    if (isGestureNavBarInCenter) {
+                        DecorView decorView7 = DecorView.this;
+                        decorView7.mKnoxBadgeStartX = decorView7.mKnoxLayoutRight - badgeW;
+                        DecorView decorView8 = DecorView.this;
+                        decorView8.mKnoxBadgeStartY = (decorView8.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
+                    } else {
+                        DecorView decorView9 = DecorView.this;
+                        decorView9.mKnoxBadgeStartX = (decorView9.mKnoxLayoutRight - badgeW) - navigation_bar_height;
+                        DecorView decorView10 = DecorView.this;
+                        decorView10.mKnoxBadgeStartY = decorView10.mKnoxLayoutBottom - badgeH;
+                    }
+                    if (isMultiWindow && position == 8) {
+                        DecorView decorView11 = DecorView.this;
+                        decorView11.mKnoxBadgeStartX = decorView11.mKnoxLayoutRight - badgeW;
+                    }
+                    DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mKnoxBadge);
+                } else {
+                    DecorView decorView12 = DecorView.this;
+                    decorView12.mKnoxBadgeStartX = decorView12.mKnoxLayoutRight - badgeW;
+                    DecorView decorView13 = DecorView.this;
+                    decorView13.mKnoxBadgeStartY = (decorView13.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
+                    DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mKnoxBadge);
+                }
+            }
+            int finishX = DecorView.this.mKnoxBadgeStartX + badgeW;
+            int finishY = DecorView.this.mKnoxBadgeStartY + badgeH;
+            DecorView.this.mKnoxBadgeView.setLeft(DecorView.this.mKnoxBadgeStartX);
+            DecorView.this.mKnoxBadgeView.setTop(DecorView.this.mKnoxBadgeStartY);
+            DecorView.this.mKnoxBadgeView.setRight(finishX);
+            DecorView.this.mKnoxBadgeView.setBottom(finishY);
+        }
+    }
+
     private void setKnoxBadgePosition() {
         this.mKnoxBadgeDisplayRunnable = new Runnable() { // from class: com.android.internal.policy.DecorView.11
+            AnonymousClass11() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 boolean isLargeDisplay = true;
@@ -3191,7 +3573,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return (attrs.flags & 2) != 0 && attrs.dimAmount > 0.0f && attrs.dimAmount < 1.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setBackgroundAlpha(float alpha) {
         if (this.mPopOverBackgroundAlpha != alpha) {
             this.mPopOverBackgroundAlpha = alpha;
@@ -3200,12 +3581,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public float getBackgroundAlpha() {
         return this.mPopOverBackgroundAlpha;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setContentAlpha(float alpha) {
         if (this.mPopOverContentAlpha != alpha) {
             this.mPopOverContentAlpha = alpha;
@@ -3214,7 +3593,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public float getContentAlpha() {
         return this.mPopOverContentAlpha;
     }
@@ -3278,6 +3656,24 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             cb.onWindowFocusChanged(false);
         }
         this.mStayFocus = false;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.policy.DecorView$12 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass12 extends ViewOutlineProvider {
+        AnonymousClass12() {
+        }
+
+        @Override // android.view.ViewOutlineProvider
+        public void getOutline(View view, Outline outline) {
+            if (DecorView.this.isFreeformMode()) {
+                int radius = view.getResources().getDimensionPixelSize(R.dimen.sem_decor_outline_radius_freeform);
+                outline.setPath(SemViewUtils.getSmoothRoundedRect(view.getWidth(), view.getHeight(), 0, 0, radius));
+            } else {
+                outline.setRect(0, 0, view.getWidth(), view.getHeight());
+            }
+        }
     }
 
     private void requestInvalidateRenderNode(String msg) {

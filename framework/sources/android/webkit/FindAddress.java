@@ -7,8 +7,9 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class FindAddress {
+public class FindAddress {
     private static final String HOUSE_COMPONENT = "(?:one|[0-9]+([a-z](?=[^a-z]|$)|st|nd|rd|th)?)";
     private static final String HOUSE_END = "(?=[,\"'\t  \u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006 \u2008\u2009\u200a \u205f\u3000\n\u000b\f\r\u0085\u2028\u2029]|$)";
     private static final String HOUSE_POST_DELIM = ",\"'\t  \u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006 \u2008\u2009\u200a \u205f\u3000\n\u000b\f\r\u0085\u2028\u2029";
@@ -34,7 +35,6 @@ class FindAddress {
     FindAddress() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ZipRange {
         int mException1;
@@ -207,7 +207,6 @@ class FindAddress {
         return -(restartPos > 0 ? restartPos : it);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String findAddress(String content) {
         Matcher houseNumberMatcher = sHouseNumberRe.matcher(content);
         int start = 0;

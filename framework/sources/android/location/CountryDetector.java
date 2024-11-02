@@ -19,7 +19,6 @@ public class CountryDetector {
     private final HashMap<Consumer<Country>, ListenerTransport> mListeners = new HashMap<>();
     private final ICountryDetector mService;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class ListenerTransport extends ICountryListener.Stub {
         private final Executor mExecutor;
@@ -30,7 +29,6 @@ public class CountryDetector {
             this.mExecutor = executor;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCountryDetected$0(Country country) {
             this.mListener.accept(country);
         }

@@ -65,6 +65,10 @@ public final class SoundTriggerDetector {
         private final byte[] mData;
         private final boolean mTriggerAvailable;
 
+        /* synthetic */ EventPayload(boolean z, boolean z2, AudioFormat audioFormat, int i, byte[] bArr, EventPayloadIA eventPayloadIA) {
+            this(z, z2, audioFormat, i, bArr);
+        }
+
         private EventPayload(boolean triggerAvailable, boolean captureAvailable, AudioFormat audioFormat, int captureSession, byte[] data) {
             this.mTriggerAvailable = triggerAvailable;
             this.mCaptureAvailable = captureAvailable;
@@ -99,7 +103,6 @@ public final class SoundTriggerDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SoundTriggerDetector(ISoundTriggerSession soundTriggerSession, SoundTrigger.GenericSoundModel soundModel, Callback callback, Handler handler) {
         this.mSoundTriggerSession = soundTriggerSession;
         this.mSoundModel = soundModel;
@@ -150,8 +153,13 @@ public final class SoundTriggerDetector {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class RecognitionCallback extends IRecognitionStatusCallback.Stub {
+    public class RecognitionCallback extends IRecognitionStatusCallback.Stub {
+        /* synthetic */ RecognitionCallback(SoundTriggerDetector soundTriggerDetector, RecognitionCallbackIA recognitionCallbackIA) {
+            this();
+        }
+
         private RecognitionCallback() {
         }
 
@@ -203,8 +211,9 @@ public final class SoundTriggerDetector {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private class MyHandler extends Handler {
+    public class MyHandler extends Handler {
         MyHandler() {
         }
 

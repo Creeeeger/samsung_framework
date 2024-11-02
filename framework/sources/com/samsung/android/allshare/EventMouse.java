@@ -3,12 +3,13 @@ package com.samsung.android.allshare;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: IAppControlAPI.java */
 /* loaded from: classes5.dex */
 public class EventMouse implements Parcelable {
     public static final Parcelable.Creator<EventMouse> CREATOR = new Parcelable.Creator<EventMouse>() { // from class: com.samsung.android.allshare.EventMouse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EventMouse createFromParcel(Parcel source) {
             EventMouse eventsync = new EventMouse();
@@ -21,7 +22,6 @@ public class EventMouse implements Parcelable {
             return eventsync;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EventMouse[] newArray(int size) {
             return new EventMouse[size];
@@ -47,5 +47,30 @@ public class EventMouse implements Parcelable {
         dest.writeInt(this.mDX);
         dest.writeInt(this.mDY);
         dest.writeInt(this.mButton);
+    }
+
+    /* compiled from: IAppControlAPI.java */
+    /* renamed from: com.samsung.android.allshare.EventMouse$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EventMouse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EventMouse createFromParcel(Parcel source) {
+            EventMouse eventsync = new EventMouse();
+            eventsync.mType = source.readInt();
+            eventsync.mX = source.readInt();
+            eventsync.mY = source.readInt();
+            eventsync.mDX = source.readInt();
+            eventsync.mDY = source.readInt();
+            eventsync.mButton = source.readInt();
+            return eventsync;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EventMouse[] newArray(int size) {
+            return new EventMouse[size];
+        }
     }
 }

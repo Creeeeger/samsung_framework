@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class CompatChangeablePackageInfo implements Parcelable {
     public static final Parcelable.Creator<CompatChangeablePackageInfo> CREATOR = new Parcelable.Creator<CompatChangeablePackageInfo>() { // from class: com.samsung.android.core.CompatChangeablePackageInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CompatChangeablePackageInfo createFromParcel(Parcel in) {
             return new CompatChangeablePackageInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatChangeablePackageInfo[] newArray(int size) {
             return new CompatChangeablePackageInfo[size];
@@ -25,6 +26,10 @@ public class CompatChangeablePackageInfo implements Parcelable {
     final boolean mIsOrientationOverrideDisallowed;
     final String mPackageName;
     final int mUid;
+
+    /* synthetic */ CompatChangeablePackageInfo(String str, int i, boolean z, boolean z2, boolean z3, boolean z4, boolean z5, CompatChangeablePackageInfoIA compatChangeablePackageInfoIA) {
+        this(str, i, z, z2, z3, z4, z5);
+    }
 
     private CompatChangeablePackageInfo(String packageName, int uid, boolean hasLauncherActivity, boolean hasGameCategory, boolean isOrientationOverrideDisallowed, boolean isMinAspectRatioOverrideDisallowed, boolean isActivityEmbeddingSplitsEnabled) {
         this.mPackageName = packageName != null ? packageName : "";
@@ -49,6 +54,23 @@ public class CompatChangeablePackageInfo implements Parcelable {
         dest.writeBoolean(this.mIsOrientationOverrideDisallowed);
         dest.writeBoolean(this.mIsMinAspectRatioOverrideDisallowed);
         dest.writeBoolean(this.mIsActivityEmbeddingSplitsEnabled);
+    }
+
+    /* renamed from: com.samsung.android.core.CompatChangeablePackageInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CompatChangeablePackageInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompatChangeablePackageInfo createFromParcel(Parcel in) {
+            return new CompatChangeablePackageInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompatChangeablePackageInfo[] newArray(int size) {
+            return new CompatChangeablePackageInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

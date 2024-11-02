@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="The {@link InlineSuggestionsRequest#getSupportedLocales()} now returns empty locale list when it's not set, instead of the default system locale." enableSinceTargetSdk="31" id="169273070" name="IME_AUTOFILL_DEFAULT_SUPPORTED_LOCALES_IS_EMPTY"><meta-data definedIn="android.view.inputmethod.InlineSuggestionsRequest" sourcePosition="frameworks/base/core/java/android/view/inputmethod/InlineSuggestionsRequest.java:182"/></compat-change></config>
+Error decode xml
+java.util.zip.ZipException: invalid END header (bad central directory offset)
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
+

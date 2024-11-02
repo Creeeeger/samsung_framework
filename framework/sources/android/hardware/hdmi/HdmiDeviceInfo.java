@@ -46,7 +46,9 @@ public class HdmiDeviceInfo implements Parcelable {
     private final int mVendorId;
     public static final HdmiDeviceInfo INACTIVE_DEVICE = new HdmiDeviceInfo();
     public static final Parcelable.Creator<HdmiDeviceInfo> CREATOR = new Parcelable.Creator<HdmiDeviceInfo>() { // from class: android.hardware.hdmi.HdmiDeviceInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public HdmiDeviceInfo createFromParcel(Parcel source) {
             int hdmiDeviceType = source.readInt();
@@ -74,12 +76,54 @@ public class HdmiDeviceInfo implements Parcelable {
             }
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HdmiDeviceInfo[] newArray(int size) {
             return new HdmiDeviceInfo[size];
         }
     };
+
+    /* synthetic */ HdmiDeviceInfo(Builder builder, HdmiDeviceInfoIA hdmiDeviceInfoIA) {
+        this(builder);
+    }
+
+    /* renamed from: android.hardware.hdmi.HdmiDeviceInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<HdmiDeviceInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HdmiDeviceInfo createFromParcel(Parcel source) {
+            int hdmiDeviceType = source.readInt();
+            int physicalAddress = source.readInt();
+            int portId = source.readInt();
+            switch (hdmiDeviceType) {
+                case 0:
+                    int logicalAddress = source.readInt();
+                    int deviceType = source.readInt();
+                    int vendorId = source.readInt();
+                    int powerStatus = source.readInt();
+                    String displayName = source.readString();
+                    int cecVersion = source.readInt();
+                    return HdmiDeviceInfo.cecDeviceBuilder().setLogicalAddress(logicalAddress).setPhysicalAddress(physicalAddress).setPortId(portId).setDeviceType(deviceType).setVendorId(vendorId).setDisplayName(displayName).setDevicePowerStatus(powerStatus).setCecVersion(cecVersion).build();
+                case 1:
+                    int deviceId = source.readInt();
+                    int adopterId = source.readInt();
+                    return HdmiDeviceInfo.mhlDevice(physicalAddress, portId, adopterId, deviceId);
+                case 2:
+                    return HdmiDeviceInfo.hardwarePort(physicalAddress, portId);
+                case 100:
+                    return HdmiDeviceInfo.INACTIVE_DEVICE;
+                default:
+                    return null;
+            }
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public HdmiDeviceInfo[] newArray(int size) {
+            return new HdmiDeviceInfo[size];
+        }
+    }
 
     @Deprecated
     public HdmiDeviceInfo() {
@@ -316,6 +360,14 @@ public class HdmiDeviceInfo implements Parcelable {
         private int mPhysicalAddress;
         private int mPortId;
         private int mVendorId;
+
+        /* synthetic */ Builder(int i, BuilderIA builderIA) {
+            this(i);
+        }
+
+        /* synthetic */ Builder(HdmiDeviceInfo hdmiDeviceInfo, BuilderIA builderIA) {
+            this(hdmiDeviceInfo);
+        }
 
         private Builder(int hdmiDeviceType) {
             this.mPhysicalAddress = 65535;

@@ -496,42 +496,34 @@ public final class Display {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getSupportedModes$0(RefreshRateConfig config, Mode activeMode, Mode m) {
         return ((int) m.getRefreshRate()) == config.getNormalSpeedRefreshRates().max() && m.equalsExceptRefreshRate(activeMode);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Mode[] lambda$getSupportedModes$1(int x$0) {
         return new Mode[x$0];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getSupportedModes$2(RefreshRateConfig config, Mode m) {
         return ((int) m.getRefreshRate()) >= config.getNormalSpeedRefreshRates().min() && ((int) m.getRefreshRate()) <= config.getNormalSpeedRefreshRates().max();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Mode[] lambda$getSupportedModes$3(int x$0) {
         return new Mode[x$0];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getSupportedModes$4(RefreshRateConfig config, Mode activeMode, Mode m) {
         return ((int) m.getRefreshRate()) == config.getHighSpeedRefreshRates().max() && m.equalsExceptRefreshRate(activeMode);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Mode[] lambda$getSupportedModes$5(int x$0) {
         return new Mode[x$0];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$getSupportedModes$6(RefreshRateConfig config, Mode m) {
         return ((int) m.getRefreshRate()) >= config.getHighSpeedRefreshRates().min() && ((int) m.getRefreshRate()) <= config.getHighSpeedRefreshRates().max();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Mode[] lambda$getSupportedModes$7(int x$0) {
         return new Mode[x$0];
     }
@@ -1036,18 +1028,23 @@ public final class Display {
         private final int mWidth;
         public static final Mode[] EMPTY_ARRAY = new Mode[0];
         public static final Parcelable.Creator<Mode> CREATOR = new Parcelable.Creator<Mode>() { // from class: android.view.Display.Mode.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Mode createFromParcel(Parcel in) {
                 return new Mode(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Mode[] newArray(int size) {
                 return new Mode[size];
             }
         };
+
+        /* synthetic */ Mode(Parcel parcel, ModeIA modeIA) {
+            this(parcel);
+        }
 
         public Mode(int width, int height, float refreshRate) {
             this(-1, width, height, refreshRate, new float[0], new int[0]);
@@ -1167,6 +1164,23 @@ public final class Display {
             out.writeIntArray(this.mSupportedHdrTypes);
         }
 
+        /* renamed from: android.view.Display$Mode$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Mode> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Mode createFromParcel(Parcel in) {
+                return new Mode(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Mode[] newArray(int size) {
+                return new Mode[size];
+            }
+        }
+
         /* loaded from: classes4.dex */
         public static final class Builder {
             private int mWidth = -1;
@@ -1209,13 +1223,14 @@ public final class Display {
         private int[] mSupportedHdrTypes;
         public static final int[] HDR_TYPES = {1, 2, 3, 4};
         public static final Parcelable.Creator<HdrCapabilities> CREATOR = new Parcelable.Creator<HdrCapabilities>() { // from class: android.view.Display.HdrCapabilities.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public HdrCapabilities createFromParcel(Parcel source) {
                 return new HdrCapabilities(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public HdrCapabilities[] newArray(int size) {
                 return new HdrCapabilities[size];
@@ -1225,6 +1240,10 @@ public final class Display {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes4.dex */
         public @interface HdrType {
+        }
+
+        /* synthetic */ HdrCapabilities(Parcel parcel, HdrCapabilitiesIA hdrCapabilitiesIA) {
+            this(parcel);
         }
 
         public HdrCapabilities() {
@@ -1278,6 +1297,23 @@ public final class Display {
         public int hashCode() {
             int hash = (23 * 17) + Arrays.hashCode(this.mSupportedHdrTypes);
             return (((((hash * 17) + Float.floatToIntBits(this.mMaxLuminance)) * 17) + Float.floatToIntBits(this.mMaxAverageLuminance)) * 17) + Float.floatToIntBits(this.mMinLuminance);
+        }
+
+        /* renamed from: android.view.Display$HdrCapabilities$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<HdrCapabilities> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public HdrCapabilities createFromParcel(Parcel source) {
+                return new HdrCapabilities(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public HdrCapabilities[] newArray(int size) {
+                return new HdrCapabilities[size];
+            }
         }
 
         private HdrCapabilities(Parcel source) {
@@ -1342,11 +1378,14 @@ public final class Display {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class HdrSdrRatioListenerWrapper implements DisplayManager.DisplayListener {
         float mLastReportedRatio;
         Consumer<Display> mListener;
+
+        /* synthetic */ HdrSdrRatioListenerWrapper(Display display, Consumer consumer, HdrSdrRatioListenerWrapperIA hdrSdrRatioListenerWrapperIA) {
+            this(consumer);
+        }
 
         private HdrSdrRatioListenerWrapper(Consumer<Display> listener) {
             this.mLastReportedRatio = 1.0f;

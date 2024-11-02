@@ -9,13 +9,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes.dex */
 public final class CancelUiRequest implements Parcelable {
     public static final Parcelable.Creator<CancelUiRequest> CREATOR = new Parcelable.Creator<CancelUiRequest>() { // from class: android.credentials.ui.CancelUiRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CancelUiRequest createFromParcel(Parcel in) {
             return new CancelUiRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CancelUiRequest[] newArray(int size) {
             return new CancelUiRequest[size];
@@ -25,6 +26,10 @@ public final class CancelUiRequest implements Parcelable {
     private final String mAppPackageName;
     private final boolean mShouldShowCancellationUi;
     private final IBinder mToken;
+
+    /* synthetic */ CancelUiRequest(Parcel parcel, CancelUiRequestIA cancelUiRequestIA) {
+        this(parcel);
+    }
 
     public IBinder getToken() {
         return this.mToken;
@@ -64,5 +69,22 @@ public final class CancelUiRequest implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.credentials.ui.CancelUiRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CancelUiRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CancelUiRequest createFromParcel(Parcel in) {
+            return new CancelUiRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CancelUiRequest[] newArray(int size) {
+            return new CancelUiRequest[size];
+        }
     }
 }

@@ -608,9 +608,64 @@ public final class ArraySet<E> implements Collection<E>, Set<E> {
         return buffer.toString();
     }
 
+    /* renamed from: android.util.ArraySet$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends MapCollections<E, E> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.MapCollections
+        protected int colGetSize() {
+            return ArraySet.this.mSize;
+        }
+
+        @Override // android.util.MapCollections
+        protected Object colGetEntry(int index, int offset) {
+            return ArraySet.this.mArray[index];
+        }
+
+        @Override // android.util.MapCollections
+        protected int colIndexOfKey(Object key) {
+            return ArraySet.this.indexOf(key);
+        }
+
+        @Override // android.util.MapCollections
+        protected int colIndexOfValue(Object value) {
+            return ArraySet.this.indexOf(value);
+        }
+
+        @Override // android.util.MapCollections
+        protected Map<E, E> colGetMap() {
+            throw new UnsupportedOperationException("not a map");
+        }
+
+        @Override // android.util.MapCollections
+        protected void colPut(E key, E value) {
+            ArraySet.this.add(key);
+        }
+
+        @Override // android.util.MapCollections
+        protected E colSetValue(int index, E value) {
+            throw new UnsupportedOperationException("not a map");
+        }
+
+        @Override // android.util.MapCollections
+        protected void colRemoveAt(int index) {
+            ArraySet.this.removeAt(index);
+        }
+
+        @Override // android.util.MapCollections
+        protected void colClear() {
+            ArraySet.this.clear();
+        }
+    }
+
     private MapCollections<E, E> getCollection() {
         if (this.mCollections == null) {
             this.mCollections = new MapCollections<E, E>() { // from class: android.util.ArraySet.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.util.MapCollections
                 protected int colGetSize() {
                     return ArraySet.this.mSize;

@@ -37,8 +37,9 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-class CredstoreIdentityCredential extends IdentityCredential {
+public class CredstoreIdentityCredential extends IdentityCredential {
     private static final String TAG = "CredstoreIdentityCredential";
     private ICredential mBinder;
     private int mCipherSuite;
@@ -57,7 +58,6 @@ class CredstoreIdentityCredential extends IdentityCredential {
     private boolean mOperationHandleSet = false;
     private long mOperationHandle = 0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CredstoreIdentityCredential(Context context, String credentialName, int cipherSuite, ICredential binder, CredstorePresentationSession session, int featureVersion) {
         this.mContext = context;
         this.mCredentialName = credentialName;

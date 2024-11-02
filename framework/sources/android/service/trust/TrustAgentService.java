@@ -59,6 +59,9 @@ public class TrustAgentService extends Service {
     private final String TAG = TrustAgentService.class.getSimpleName() + NavigationBarInflaterView.SIZE_MOD_START + getClass().getSimpleName() + NavigationBarInflaterView.SIZE_MOD_END;
     private final Object mLock = new Object();
     private Handler mHandler = new Handler() { // from class: android.service.trust.TrustAgentService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -144,6 +147,76 @@ public class TrustAgentService extends Service {
         }
     }
 
+    /* renamed from: android.service.trust.TrustAgentService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    TrustAgentService.this.onUnlockAttempt(msg.arg1 != 0);
+                    return;
+                case 2:
+                    ConfigurationData data = (ConfigurationData) msg.obj;
+                    boolean result = TrustAgentService.this.onConfigure(data.options);
+                    if (data.token != null) {
+                        try {
+                            synchronized (TrustAgentService.this.mLock) {
+                                TrustAgentService.this.mCallback.onConfigureCompleted(result, data.token);
+                            }
+                            return;
+                        } catch (RemoteException e) {
+                            TrustAgentService.this.onError("calling onSetTrustAgentFeaturesEnabledCompleted()");
+                            return;
+                        }
+                    }
+                    return;
+                case 3:
+                    TrustAgentService.this.onTrustTimeout();
+                    return;
+                case 4:
+                    TrustAgentService.this.onDeviceLocked();
+                    return;
+                case 5:
+                    TrustAgentService.this.onDeviceUnlocked();
+                    return;
+                case 6:
+                    TrustAgentService.this.onDeviceUnlockLockout(msg.arg1);
+                    return;
+                case 7:
+                    Bundle data2 = msg.getData();
+                    byte[] token = data2.getByteArray("token");
+                    long handle = data2.getLong(TrustAgentService.EXTRA_TOKEN_HANDLE);
+                    UserHandle user = (UserHandle) data2.getParcelable("user_handle", UserHandle.class);
+                    TrustAgentService.this.onEscrowTokenAdded(token, handle, user);
+                    return;
+                case 8:
+                    Bundle data3 = msg.getData();
+                    long handle2 = data3.getLong(TrustAgentService.EXTRA_TOKEN_HANDLE);
+                    int tokenState = data3.getInt(TrustAgentService.EXTRA_TOKEN_STATE, 0);
+                    TrustAgentService.this.onEscrowTokenStateReceived(handle2, tokenState);
+                    return;
+                case 9:
+                    Bundle data4 = msg.getData();
+                    long handle3 = data4.getLong(TrustAgentService.EXTRA_TOKEN_HANDLE);
+                    boolean success = data4.getBoolean(TrustAgentService.EXTRA_TOKEN_REMOVED_RESULT);
+                    TrustAgentService.this.onEscrowTokenRemoved(handle3, success);
+                    return;
+                case 10:
+                    TrustAgentService.this.onUserRequestedUnlock(msg.arg1 != 0);
+                    return;
+                case 11:
+                    TrustAgentService.this.onUserMayRequestUnlock();
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     @Override // android.app.Service
     public void onCreate() {
         super.onCreate();
@@ -188,7 +261,6 @@ public class TrustAgentService extends Service {
     public void onEscrowTokenRemoved(long handle, boolean successful) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onError(String msg) {
         Slog.v(this.TAG, "Remote exception while " + msg);
     }
@@ -207,7 +279,7 @@ public class TrustAgentService extends Service {
         grantTrust(message, durationMs, flags, null);
     }
 
-    public final void grantTrust(final CharSequence message, final long durationMs, final int flags, final Consumer<GrantTrustResult> resultCallback) {
+    public final void grantTrust(CharSequence message, long durationMs, int flags, final Consumer<GrantTrustResult> resultCallback) {
         synchronized (this.mLock) {
             if (!this.mManagingTrust) {
                 throw new IllegalStateException("Cannot grant trust if agent is not managing trust. Call setManagingTrust(true) first.");
@@ -228,6 +300,18 @@ public class TrustAgentService extends Service {
                 }
             } else {
                 this.mPendingGrantTrustTask = new Runnable() { // from class: android.service.trust.TrustAgentService.2
+                    final /* synthetic */ long val$durationMs;
+                    final /* synthetic */ int val$flags;
+                    final /* synthetic */ CharSequence val$message;
+                    final /* synthetic */ Consumer val$resultCallback;
+
+                    AnonymousClass2(CharSequence message2, long durationMs2, int flags2, final Consumer resultCallback2) {
+                        message = message2;
+                        durationMs = durationMs2;
+                        flags = flags2;
+                        resultCallback = resultCallback2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         TrustAgentService.this.grantTrust(message, durationMs, flags, resultCallback);
@@ -237,7 +321,6 @@ public class TrustAgentService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$grantTrust$1(final Consumer resultCallback, final GrantTrustResult result) {
         if (resultCallback != null) {
             this.mHandler.post(new Runnable() { // from class: android.service.trust.TrustAgentService$$ExternalSyntheticLambda1
@@ -246,6 +329,27 @@ public class TrustAgentService extends Service {
                     resultCallback.accept(result);
                 }
             });
+        }
+    }
+
+    /* renamed from: android.service.trust.TrustAgentService$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ long val$durationMs;
+        final /* synthetic */ int val$flags;
+        final /* synthetic */ CharSequence val$message;
+        final /* synthetic */ Consumer val$resultCallback;
+
+        AnonymousClass2(CharSequence message2, long durationMs2, int flags2, final Consumer resultCallback2) {
+            message = message2;
+            durationMs = durationMs2;
+            flags = flags2;
+            resultCallback = resultCallback2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            TrustAgentService.this.grantTrust(message, durationMs, flags, resultCallback);
         }
     }
 
@@ -382,6 +486,10 @@ public class TrustAgentService extends Service {
 
     /* loaded from: classes3.dex */
     private final class TrustAgentServiceWrapper extends ITrustAgentService.Stub {
+        /* synthetic */ TrustAgentServiceWrapper(TrustAgentService trustAgentService, TrustAgentServiceWrapperIA trustAgentServiceWrapperIA) {
+            this();
+        }
+
         private TrustAgentServiceWrapper() {
         }
 

@@ -34,7 +34,6 @@ public class CharacterPickerDialog extends Dialog implements AdapterView.OnItemC
         this.mInflater = LayoutInflater.from(context);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Dialog
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

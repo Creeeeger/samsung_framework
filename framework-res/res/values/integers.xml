@@ -222,7 +222,6 @@
     <integer name="config_networkMeteredMultipathPreference">0</integer>
     <integer name="config_networkNotifySwitchType">0</integer>
     <integer name="config_networkPolicyDefaultWarning">2048</integer>
-    <integer name="config_networkTransitionTimeout">0</integer>
     <integer name="config_networkWakeupPacketMark">0</integer>
     <integer name="config_networkWakeupPacketMask">0</integer>
     <integer name="config_nightDisplayColorTemperatureDefault">2850</integer>
@@ -241,7 +240,7 @@
     <integer name="config_ntpPollingInterval">64800000</integer>
     <integer name="config_ntpPollingIntervalShorter">60000</integer>
     <integer name="config_ntpRetry">3</integer>
-    <integer name="config_ntpTimeout">3000</integer>
+    <integer name="config_ntpTimeout">5000</integer>
     <integer name="config_num_physical_slots">1</integer>
     <integer name="config_overrideHasPermanentMenuKey">0</integer>
     <integer name="config_pauseRotationWhenUnfolding_displaySwitchTimeout">0</integer>

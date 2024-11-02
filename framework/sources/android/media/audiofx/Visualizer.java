@@ -334,7 +334,7 @@ public class Visualizer {
 
     private static void postEventFromNative(Object effect_ref, final int what, final int samplingRate, final byte[] data) {
         Handler handler;
-        final Visualizer visualizer = (Visualizer) ((WeakReference) effect_ref).get();
+        Visualizer visualizer = (Visualizer) ((WeakReference) effect_ref).get();
         if (visualizer == null) {
             return;
         }
@@ -368,7 +368,6 @@ public class Visualizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$postEventFromNative$0(Visualizer visualizer, int what, byte[] data, int samplingRate) {
         OnDataCaptureListener l;
         synchronized (visualizer.mListenerLock) {
@@ -383,7 +382,6 @@ public class Visualizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$postEventFromNative$1(Visualizer visualizer) {
         OnServerDiedListener l;
         synchronized (visualizer.mListenerLock) {

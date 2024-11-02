@@ -83,8 +83,9 @@ public interface IOtaStatusChangedCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IOtaStatusChangedCallback {
+        public static class Proxy implements IOtaStatusChangedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

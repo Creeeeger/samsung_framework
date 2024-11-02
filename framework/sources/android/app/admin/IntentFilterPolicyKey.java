@@ -17,13 +17,14 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public final class IntentFilterPolicyKey extends PolicyKey {
     public static final Parcelable.Creator<IntentFilterPolicyKey> CREATOR = new Parcelable.Creator<IntentFilterPolicyKey>() { // from class: android.app.admin.IntentFilterPolicyKey.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public IntentFilterPolicyKey createFromParcel(Parcel source) {
             return new IntentFilterPolicyKey(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IntentFilterPolicyKey[] newArray(int size) {
             return new IntentFilterPolicyKey[size];
@@ -32,6 +33,10 @@ public final class IntentFilterPolicyKey extends PolicyKey {
     private static final String TAG = "IntentFilterPolicyKey";
     private static final String TAG_INTENT_FILTER_ENTRY = "filter";
     private final IntentFilter mFilter;
+
+    /* synthetic */ IntentFilterPolicyKey(Parcel parcel, IntentFilterPolicyKeyIA intentFilterPolicyKeyIA) {
+        this(parcel);
+    }
 
     public IntentFilterPolicyKey(String identifier, IntentFilter filter) {
         super(identifier);
@@ -123,5 +128,22 @@ public final class IntentFilterPolicyKey extends PolicyKey {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getIdentifier());
         dest.writeTypedObject(this.mFilter, flags);
+    }
+
+    /* renamed from: android.app.admin.IntentFilterPolicyKey$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<IntentFilterPolicyKey> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IntentFilterPolicyKey createFromParcel(Parcel source) {
+            return new IntentFilterPolicyKey(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IntentFilterPolicyKey[] newArray(int size) {
+            return new IntentFilterPolicyKey[size];
+        }
     }
 }

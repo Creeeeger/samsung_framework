@@ -33,14 +33,13 @@ public class SequentialPickerFilter extends SequentialFilter {
         IntStream.range(0, this.filters.size()).forEach(new IntConsumer() { // from class: com.samsung.android.sume.core.filter.collection.SequentialPickerFilter$$ExternalSyntheticLambda0
             @Override // java.util.function.IntConsumer
             public final void accept(int i) {
-                SequentialPickerFilter.this.m8778x33bd5385(i);
+                SequentialPickerFilter.this.m8770x33bd5385(i);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$prepare$0$com-samsung-android-sume-core-filter-collection-SequentialPickerFilter, reason: not valid java name */
-    public /* synthetic */ void m8778x33bd5385(int idx) {
+    /* renamed from: lambda$prepare$0$com-samsung-android-sume-core-filter-collection-SequentialPickerFilter */
+    public /* synthetic */ void m8770x33bd5385(int idx) {
         MediaFilter filter = this.filters.get(idx);
         filter.prepare();
         this.evaluateFilters.add(new Pair<>(this.descriptor.getEvaluators().get(idx), filter));

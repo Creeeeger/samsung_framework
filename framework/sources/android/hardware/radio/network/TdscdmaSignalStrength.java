@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class TdscdmaSignalStrength implements Parcelable {
     public static final Parcelable.Creator<TdscdmaSignalStrength> CREATOR = new Parcelable.Creator<TdscdmaSignalStrength>() { // from class: android.hardware.radio.network.TdscdmaSignalStrength.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TdscdmaSignalStrength createFromParcel(Parcel _aidl_source) {
             TdscdmaSignalStrength _aidl_out = new TdscdmaSignalStrength();
@@ -16,7 +18,6 @@ public class TdscdmaSignalStrength implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TdscdmaSignalStrength[] newArray(int _aidl_size) {
             return new TdscdmaSignalStrength[_aidl_size];
@@ -25,6 +26,25 @@ public class TdscdmaSignalStrength implements Parcelable {
     public int signalStrength = 0;
     public int bitErrorRate = 0;
     public int rscp = 0;
+
+    /* renamed from: android.hardware.radio.network.TdscdmaSignalStrength$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TdscdmaSignalStrength> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TdscdmaSignalStrength createFromParcel(Parcel _aidl_source) {
+            TdscdmaSignalStrength _aidl_out = new TdscdmaSignalStrength();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TdscdmaSignalStrength[] newArray(int _aidl_size) {
+            return new TdscdmaSignalStrength[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

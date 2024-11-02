@@ -204,7 +204,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
     private static final Transition USE_DEFAULT_TRANSITION = new TransitionSet();
     static final RotationWatcher sRotationWatcher = new RotationWatcher();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Pair lambda$static$0(View view, WindowInsets insets) {
         if ((view.getWindowSystemUiVisibility() & 1536) != 0) {
             return new Pair(Insets.NONE, insets);
@@ -214,6 +213,24 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.policy.PhoneWindow$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            for (int i = 0; i <= 13; i++) {
+                if ((PhoneWindow.this.mInvalidatePanelMenuFeatures & (1 << i)) != 0) {
+                    PhoneWindow.this.doInvalidatePanelMenu(i);
+                }
+            }
+            PhoneWindow.this.mInvalidatePanelMenuPosted = false;
+            PhoneWindow.this.mInvalidatePanelMenuFeatures = 0;
+        }
+    }
+
     /* loaded from: classes5.dex */
     public static class WindowManagerHolder {
         static final IWindowManager sWindowManager = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
@@ -247,6 +264,9 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         this.mAudioMode = 0;
         this.mUiOptions = 0;
         this.mInvalidatePanelMenuRunnable = new Runnable() { // from class: com.android.internal.policy.PhoneWindow.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 for (int i = 0; i <= 13; i++) {
@@ -472,7 +492,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return this.mIsTranslucent;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isShowingWallpaper() {
         return (getAttributes().flags & 1048576) != 0;
     }
@@ -914,7 +933,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void dismissContextMenu() {
         this.mContextMenu = null;
         MenuHelper menuHelper = this.mContextMenuHelper;
@@ -929,7 +947,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return performPanelShortcut(getPanelState(featureId, false), keyCode, event, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean performPanelShortcut(PanelFeatureState st, int keyCode, KeyEvent event, int flags) {
         if (event.isSystem() || st == null) {
             return false;
@@ -1276,7 +1293,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
         if (drawable != null) {
             drawable.setAlpha(alpha);
-            view.setImageDrawable(drawable);
+            view.lambda$setImageURIAsync$2(drawable);
             view.setVisibility(0);
             return;
         }
@@ -1514,7 +1531,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return this.mDecor.superDispatchGenericMotionEvent(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public boolean onKeyDown(int featureId, int keyCode, KeyEvent event) {
         DecorView decorView = this.mDecor;
@@ -1583,7 +1599,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return this.mMediaSessionManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public boolean onKeyUp(int featureId, int keyCode, KeyEvent event) {
         PanelFeatureState st;
@@ -1668,7 +1683,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return this.mDecor;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onViewRootImplSet(ViewRootImpl viewRoot) {
         viewRoot.setActivityConfigCallback(this.mActivityConfigCallback);
         viewRoot.getOnBackInvokedDispatcher().updateContext(getContext());
@@ -1758,7 +1772,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void openPanelsAfterRestore() {
         PanelFeatureState[] panels = this.mPanels;
         if (panels == null) {
@@ -1784,9 +1797,12 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class PanelMenuPresenterCallback implements MenuPresenter.Callback {
+        /* synthetic */ PanelMenuPresenterCallback(PhoneWindow phoneWindow, PanelMenuPresenterCallbackIA panelMenuPresenterCallbackIA) {
+            this();
+        }
+
         private PanelMenuPresenterCallback() {
         }
 
@@ -1816,9 +1832,12 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public final class ActionMenuPresenterCallback implements MenuPresenter.Callback {
+        /* synthetic */ ActionMenuPresenterCallback(PhoneWindow phoneWindow, ActionMenuPresenterCallbackIA actionMenuPresenterCallbackIA) {
+            this();
+        }
+
         private ActionMenuPresenterCallback() {
         }
 
@@ -2036,7 +2055,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return st;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PanelFeatureState getPanelState(int featureId, boolean required) {
         return getPanelState(featureId, required, null);
     }
@@ -2159,7 +2177,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return imageView2;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.Window
     public void dispatchWindowAttributesChanged(WindowManager.LayoutParams attrs) {
         super.dispatchWindowAttributesChanged(attrs);
@@ -2214,7 +2231,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return imageView2;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void callOnPanelClosed(int featureId, PanelFeatureState panel, Menu menu) {
         Window.Callback cb = getCallback();
         if (cb == null) {
@@ -2300,7 +2316,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setMediaController$1(int mode) {
         this.mAudioMode = mode;
     }
@@ -2459,7 +2474,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return bool.booleanValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static final class DrawableFeatureState {
         Drawable child;
@@ -2477,7 +2491,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static final class PanelFeatureState {
         int background;
@@ -2637,17 +2650,17 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
         public static class SavedState implements Parcelable {
             public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.policy.PhoneWindow.PanelFeatureState.SavedState.1
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Parcelable.Creator
                 public SavedState createFromParcel(Parcel in) {
                     return SavedState.readFromParcel(in);
                 }
 
-                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public SavedState[] newArray(int size) {
                     return new SavedState[size];
@@ -2657,6 +2670,10 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             boolean isInExpandedMode;
             boolean isOpen;
             Bundle menuState;
+
+            /* synthetic */ SavedState(SavedStateIA savedStateIA) {
+                this();
+            }
 
             private SavedState() {
             }
@@ -2676,7 +2693,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public static SavedState readFromParcel(Parcel source) {
                 SavedState savedState = new SavedState();
                 savedState.featureId = source.readInt();
@@ -2687,15 +2703,34 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                 }
                 return savedState;
             }
+
+            /* renamed from: com.android.internal.policy.PhoneWindow$PanelFeatureState$SavedState$1 */
+            /* loaded from: classes5.dex */
+            class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+                AnonymousClass1() {
+                }
+
+                @Override // android.os.Parcelable.Creator
+                public SavedState createFromParcel(Parcel in) {
+                    return SavedState.readFromParcel(in);
+                }
+
+                @Override // android.os.Parcelable.Creator
+                public SavedState[] newArray(int size) {
+                    return new SavedState[size];
+                }
+            }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class RotationWatcher extends IRotationWatcher.Stub {
         private Handler mHandler;
         private boolean mIsWatching;
         private final Runnable mRotationChanged = new Runnable() { // from class: com.android.internal.policy.PhoneWindow.RotationWatcher.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 RotationWatcher.this.dispatchRotationChanged();
@@ -2704,6 +2739,19 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         private final ArrayList<WeakReference<PhoneWindow>> mWindows = new ArrayList<>();
 
         RotationWatcher() {
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.android.internal.policy.PhoneWindow$RotationWatcher$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                RotationWatcher.this.dispatchRotationChanged();
+            }
         }
 
         @Override // android.view.IRotationWatcher
@@ -2826,12 +2874,10 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getLocalFeaturesPrivate() {
         return super.getLocalFeatures();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.Window
     public void setDefaultWindowFormat(int format) {
         super.setDefaultWindowFormat(format);
@@ -2978,7 +3024,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getDecorCaptionShade() {
         return this.mDecorCaptionShade;
     }
@@ -3082,7 +3127,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         return this.mDeviceDefaultNavigationBarColor;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateDeviceDefaultNavigationBarColor() {
         this.mDeviceDefaultNavigationBarColor = getContext().getResources().getColor(R.color.navbar_light_theme_color, null);
     }
@@ -3182,7 +3226,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateForceLightNavigationBar() {
         boolean enable;
         DecorView decorView = this.mDecor;

@@ -148,8 +148,7 @@ public interface ImeTracker {
         return LATENCY_TRACKER;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.inputmethod.ImeTracker$1, reason: invalid class name */
+    /* renamed from: android.view.inputmethod.ImeTracker$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 implements ImeTracker {
         private boolean mLogProgress = SystemProperties.getBoolean("persist.debug.imetracker", false);
@@ -163,7 +162,6 @@ public interface ImeTracker {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$new$0() {
             this.mLogProgress = SystemProperties.getBoolean("persist.debug.imetracker", false);
         }
@@ -250,13 +248,14 @@ public interface ImeTracker {
     /* loaded from: classes4.dex */
     public static final class Token implements Parcelable {
         public static final Parcelable.Creator<Token> CREATOR = new Parcelable.Creator<Token>() { // from class: android.view.inputmethod.ImeTracker.Token.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Token createFromParcel(Parcel in) {
                 return new Token(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Token[] newArray(int size) {
                 return new Token[size];
@@ -264,6 +263,10 @@ public interface ImeTracker {
         };
         private final IBinder mBinder;
         private final String mTag;
+
+        /* synthetic */ Token(Parcel parcel, TokenIA tokenIA) {
+            this(parcel);
+        }
 
         public Token(IBinder binder, String tag) {
             this.mBinder = binder;
@@ -292,6 +295,23 @@ public interface ImeTracker {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeStrongBinder(this.mBinder);
             dest.writeString8(this.mTag);
+        }
+
+        /* renamed from: android.view.inputmethod.ImeTracker$Token$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Token> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Token createFromParcel(Parcel in) {
+                return new Token(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Token[] newArray(int size) {
+                return new Token[size];
+            }
         }
     }
 
@@ -341,7 +361,6 @@ public interface ImeTracker {
             }));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static int getFieldValue(Field field) {
             try {
                 return field.getInt(null);
@@ -353,6 +372,10 @@ public interface ImeTracker {
 
     /* loaded from: classes4.dex */
     public static final class ImeJankTracker {
+        /* synthetic */ ImeJankTracker(ImeJankTrackerIA imeJankTrackerIA) {
+            this();
+        }
+
         private ImeJankTracker() {
         }
 
@@ -374,6 +397,10 @@ public interface ImeTracker {
 
     /* loaded from: classes4.dex */
     public static final class ImeLatencyTracker {
+        /* synthetic */ ImeLatencyTracker(ImeLatencyTrackerIA imeLatencyTrackerIA) {
+            this();
+        }
+
         private ImeLatencyTracker() {
         }
 

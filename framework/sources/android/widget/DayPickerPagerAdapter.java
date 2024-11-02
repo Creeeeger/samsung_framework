@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.SimpleMonthView;
 import com.android.internal.widget.PagerAdapter;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class DayPickerPagerAdapter extends PagerAdapter {
     private static final int MONTHS_IN_YEAR = 12;
@@ -33,6 +32,9 @@ public class DayPickerPagerAdapter extends PagerAdapter {
     private final SparseArray<ViewHolder> mItems = new SparseArray<>();
     private Calendar mSelectedDay = null;
     private final SimpleMonthView.OnDayClickListener mOnDayClickListener = new SimpleMonthView.OnDayClickListener() { // from class: android.widget.DayPickerPagerAdapter.1
+        AnonymousClass1() {
+        }
+
         @Override // android.widget.SimpleMonthView.OnDayClickListener
         public void onDayClick(SimpleMonthView view, Calendar day) {
             if (day != null) {
@@ -114,36 +116,30 @@ public class DayPickerPagerAdapter extends PagerAdapter {
         notifyDataSetChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDaySelectorColor(ColorStateList selectorColor) {
         this.mDaySelectorColor = selectorColor;
         notifyDataSetChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setMonthTextAppearance(int resId) {
         this.mMonthTextAppearance = resId;
         notifyDataSetChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDayOfWeekTextAppearance(int resId) {
         this.mDayOfWeekTextAppearance = resId;
         notifyDataSetChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getDayOfWeekTextAppearance() {
         return this.mDayOfWeekTextAppearance;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setDayTextAppearance(int resId) {
         this.mDayTextAppearance = resId;
         notifyDataSetChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getDayTextAppearance() {
         return this.mDayTextAppearance;
     }
@@ -250,7 +246,6 @@ public class DayPickerPagerAdapter extends PagerAdapter {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SimpleMonthView getView(Object object) {
         if (object == null) {
             return null;
@@ -259,7 +254,24 @@ public class DayPickerPagerAdapter extends PagerAdapter {
         return holder.calendar;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.DayPickerPagerAdapter$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements SimpleMonthView.OnDayClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.SimpleMonthView.OnDayClickListener
+        public void onDayClick(SimpleMonthView view, Calendar day) {
+            if (day != null) {
+                DayPickerPagerAdapter.this.setSelectedDay(day);
+                if (DayPickerPagerAdapter.this.mOnDaySelectedListener != null) {
+                    DayPickerPagerAdapter.this.mOnDaySelectedListener.onDaySelected(DayPickerPagerAdapter.this, day);
+                }
+            }
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static class ViewHolder {
         public final SimpleMonthView calendar;

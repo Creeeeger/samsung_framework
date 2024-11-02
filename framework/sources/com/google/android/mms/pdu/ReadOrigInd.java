@@ -8,7 +8,6 @@ public class ReadOrigInd extends GenericPdu {
         setMessageType(136);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ReadOrigInd(PduHeaders headers) {
         super(headers);
     }

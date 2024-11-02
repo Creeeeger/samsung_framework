@@ -56,6 +56,9 @@ public class CameraInjectionSessionImpl extends CameraInjectionSession implement
                 return;
             }
             Runnable r = new Runnable() { // from class: android.hardware.camera2.impl.CameraInjectionSessionImpl.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     CameraInjectionSessionImpl.this.mInjectionStatusCallback.onInjectionError(1);
@@ -67,6 +70,18 @@ public class CameraInjectionSessionImpl extends CameraInjectionSession implement
             } finally {
                 Binder.restoreCallingIdentity(ident);
             }
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.impl.CameraInjectionSessionImpl$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            CameraInjectionSessionImpl.this.mInjectionStatusCallback.onInjectionError(1);
         }
     }
 
@@ -92,6 +107,9 @@ public class CameraInjectionSessionImpl extends CameraInjectionSession implement
             try {
                 remoteSessionBinder.linkToDeath(this, 0);
                 this.mExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraInjectionSessionImpl.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         CameraInjectionSessionImpl.this.mInjectionStatusCallback.onInjectionSucceeded(CameraInjectionSessionImpl.this);
@@ -102,6 +120,18 @@ public class CameraInjectionSessionImpl extends CameraInjectionSession implement
             } finally {
                 Binder.restoreCallingIdentity(ident);
             }
+        }
+    }
+
+    /* renamed from: android.hardware.camera2.impl.CameraInjectionSessionImpl$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            CameraInjectionSessionImpl.this.mInjectionStatusCallback.onInjectionSucceeded(CameraInjectionSessionImpl.this);
         }
     }
 
@@ -143,7 +173,6 @@ public class CameraInjectionSessionImpl extends CameraInjectionSession implement
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void notifyError(int errorCode) {
         if (this.mInjectionSession != null) {
             this.mInjectionStatusCallback.onInjectionError(errorCode);

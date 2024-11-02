@@ -239,10 +239,13 @@ public final class KeyChain {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class AliasResponse extends IKeyChainAliasCallback.Stub {
         private final KeyChainAliasCallback keyChainAliasResponse;
+
+        /* synthetic */ AliasResponse(KeyChainAliasCallback keyChainAliasCallback, AliasResponseIA aliasResponseIA) {
+            this(keyChainAliasCallback);
+        }
 
         private AliasResponse(KeyChainAliasCallback keyChainAliasResponse) {
             this.keyChainAliasResponse = keyChainAliasResponse;
@@ -534,10 +537,17 @@ public final class KeyChain {
         if (!UserManager.get(context).isUserUnlocked(user)) {
             throw new IllegalStateException("User must be unlocked");
         }
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final AtomicReference<IKeyChainService> keyChainService = new AtomicReference<>();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        AtomicReference<IKeyChainService> keyChainService = new AtomicReference<>();
         ServiceConnection keyChainServiceConnection = new ServiceConnection() { // from class: android.security.KeyChain.1
             volatile boolean mConnectedAtLeastOnce = false;
+            final /* synthetic */ CountDownLatch val$countDownLatch;
+            final /* synthetic */ AtomicReference val$keyChainService;
+
+            AnonymousClass1(AtomicReference keyChainService2, CountDownLatch countDownLatch2) {
+                keyChainService = keyChainService2;
+                countDownLatch = countDownLatch2;
+            }
 
             @Override // android.content.ServiceConnection
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -575,13 +585,47 @@ public final class KeyChain {
             context.unbindService(keyChainServiceConnection);
             throw new AssertionError("could not bind to KeyChainService");
         }
-        countDownLatch.await();
-        IKeyChainService service = keyChainService.get();
+        countDownLatch2.await();
+        IKeyChainService service = keyChainService2.get();
         if (service != null) {
             return new KeyChainConnection(context, keyChainServiceConnection, service);
         }
         context.unbindService(keyChainServiceConnection);
         throw new AssertionError("KeyChainService died while binding");
+    }
+
+    /* renamed from: android.security.KeyChain$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements ServiceConnection {
+        volatile boolean mConnectedAtLeastOnce = false;
+        final /* synthetic */ CountDownLatch val$countDownLatch;
+        final /* synthetic */ AtomicReference val$keyChainService;
+
+        AnonymousClass1(AtomicReference keyChainService2, CountDownLatch countDownLatch2) {
+            keyChainService = keyChainService2;
+            countDownLatch = countDownLatch2;
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            if (!this.mConnectedAtLeastOnce) {
+                this.mConnectedAtLeastOnce = true;
+                keyChainService.set(IKeyChainService.Stub.asInterface(Binder.allowBlocking(service)));
+                countDownLatch.countDown();
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onBindingDied(ComponentName name) {
+            if (!this.mConnectedAtLeastOnce) {
+                this.mConnectedAtLeastOnce = true;
+                countDownLatch.countDown();
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName name) {
+        }
     }
 
     private static void ensureNotOnMainThread(Context context) {

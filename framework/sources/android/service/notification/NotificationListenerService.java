@@ -122,7 +122,6 @@ public abstract class NotificationListenerService extends Service {
     public @interface NotificationFilterTypes {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service, android.content.ContextWrapper
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -182,7 +181,6 @@ public abstract class NotificationListenerService extends Service {
     public void onInterruptionFilterChanged(int interruptionFilter) {
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final INotificationManager getNotificationInterface() {
         if (this.mNoMan == null) {
             this.mNoMan = INotificationManager.Stub.asInterface(ServiceManager.getService("notification"));
@@ -450,7 +448,6 @@ public abstract class NotificationListenerService extends Service {
         return this.mWrapper;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isBound() {
         if (this.mWrapper == null) {
             Log.w(this.TAG, "Notification listener service not yet bound.");
@@ -532,7 +529,6 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void maybePopulateRemoteViews(Notification notification) {
         if (getContext().getApplicationInfo().targetSdkVersion < 24) {
             Notification.Builder builder = Notification.Builder.recoverBuilder(getContext(), notification);
@@ -545,7 +541,6 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void maybePopulatePeople(Notification notification) {
         ArrayList<Person> people;
         if (getContext().getApplicationInfo().targetSdkVersion < 28 && (people = notification.extras.getParcelableArrayList(Notification.EXTRA_PEOPLE_LIST, Person.class)) != null && !people.isEmpty()) {
@@ -559,10 +554,8 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes3.dex */
     public class NotificationListenerWrapper extends INotificationListener.Stub {
-        /* JADX INFO: Access modifiers changed from: protected */
         public NotificationListenerWrapper() {
         }
 
@@ -734,7 +727,6 @@ public abstract class NotificationListenerService extends Service {
         this.mRankingMap = update.getRankingMap();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Context getContext() {
         Context context = this.mSystemContext;
         if (context != null) {
@@ -1078,13 +1070,14 @@ public abstract class NotificationListenerService extends Service {
     /* loaded from: classes3.dex */
     public static class RankingMap implements Parcelable {
         public static final Parcelable.Creator<RankingMap> CREATOR = new Parcelable.Creator<RankingMap>() { // from class: android.service.notification.NotificationListenerService.RankingMap.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RankingMap createFromParcel(Parcel source) {
                 return new RankingMap(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RankingMap[] newArray(int size) {
                 return new RankingMap[size];
@@ -1092,6 +1085,10 @@ public abstract class NotificationListenerService extends Service {
         };
         private ArrayList<String> mOrderedKeys;
         private ArrayMap<String, Ranking> mRankings;
+
+        /* synthetic */ RankingMap(Parcel parcel, RankingMapIA rankingMapIA) {
+            this(parcel);
+        }
 
         public RankingMap(Ranking[] rankings) {
             this.mOrderedKeys = new ArrayList<>();
@@ -1146,6 +1143,23 @@ public abstract class NotificationListenerService extends Service {
             }
         }
 
+        /* renamed from: android.service.notification.NotificationListenerService$RankingMap$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RankingMap> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RankingMap createFromParcel(Parcel source) {
+                return new RankingMap(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RankingMap[] newArray(int size) {
+                return new RankingMap[size];
+            }
+        }
+
         public String[] getOrderedKeys() {
             return (String[]) this.mOrderedKeys.toArray(new String[0]);
         }
@@ -1163,8 +1177,9 @@ public abstract class NotificationListenerService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
-    private final class MyHandler extends Handler {
+    public final class MyHandler extends Handler {
         public static final int MSG_ON_INTERRUPTION_FILTER_CHANGED = 6;
         public static final int MSG_ON_LISTENER_CONNECTED = 3;
         public static final int MSG_ON_LISTENER_HINTS_CHANGED = 5;

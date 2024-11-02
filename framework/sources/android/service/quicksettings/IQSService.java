@@ -274,8 +274,9 @@ public interface IQSService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IQSService {
+        public static class Proxy implements IQSService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

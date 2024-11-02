@@ -11,13 +11,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class CreateCredentialRequest implements Parcelable {
     public static final Parcelable.Creator<CreateCredentialRequest> CREATOR = new Parcelable.Creator<CreateCredentialRequest>() { // from class: android.credentials.CreateCredentialRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CreateCredentialRequest[] newArray(int size) {
             return new CreateCredentialRequest[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CreateCredentialRequest createFromParcel(Parcel in) {
             return new CreateCredentialRequest(in);
@@ -29,6 +30,14 @@ public final class CreateCredentialRequest implements Parcelable {
     private final boolean mIsSystemProviderRequired;
     private final String mOrigin;
     private final String mType;
+
+    /* synthetic */ CreateCredentialRequest(Parcel parcel, CreateCredentialRequestIA createCredentialRequestIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ CreateCredentialRequest(String str, Bundle bundle, Bundle bundle2, boolean z, boolean z2, String str2, CreateCredentialRequestIA createCredentialRequestIA) {
+        this(str, bundle, bundle2, z, z2, str2);
+    }
 
     public String getType() {
         return this.mType;
@@ -97,6 +106,23 @@ public final class CreateCredentialRequest implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) candidateQueryData);
         this.mIsSystemProviderRequired = isSystemProviderRequired;
         this.mAlwaysSendAppInfoToProvider = alwaysSendAppInfoToProvider;
+    }
+
+    /* renamed from: android.credentials.CreateCredentialRequest$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CreateCredentialRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CreateCredentialRequest[] newArray(int size) {
+            return new CreateCredentialRequest[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CreateCredentialRequest createFromParcel(Parcel in) {
+            return new CreateCredentialRequest(in);
+        }
     }
 
     /* loaded from: classes.dex */

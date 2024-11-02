@@ -7,21 +7,8 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/* JADX WARN: Enum visitor error
-jadx.core.utils.exceptions.JadxRuntimeException: Init of enum field 'U8C1' uses external variables
-	at jadx.core.dex.visitors.EnumVisitor.createEnumFieldByConstructor(EnumVisitor.java:451)
-	at jadx.core.dex.visitors.EnumVisitor.processEnumFieldByField(EnumVisitor.java:372)
-	at jadx.core.dex.visitors.EnumVisitor.processEnumFieldByWrappedInsn(EnumVisitor.java:337)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromFilledArray(EnumVisitor.java:322)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInsn(EnumVisitor.java:262)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInvoke(EnumVisitor.java:293)
-	at jadx.core.dex.visitors.EnumVisitor.extractEnumFieldsFromInsn(EnumVisitor.java:266)
-	at jadx.core.dex.visitors.EnumVisitor.convertToEnum(EnumVisitor.java:151)
-	at jadx.core.dex.visitors.EnumVisitor.visit(EnumVisitor.java:100)
- */
-/* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
 /* loaded from: classes4.dex */
-public final class DataType implements NumericEnum {
+public final class DataType extends Enum<DataType> implements NumericEnum {
     private static final /* synthetic */ DataType[] $VALUES;
     static final int DT_CN_SHIFT = 4;
     static final int DT_SET_MASK = 15;
@@ -188,6 +175,7 @@ public final class DataType implements NumericEnum {
     }
 
     private DataType(String str, int i, int value) {
+        super(str, i);
         this.value = value;
     }
 
@@ -199,8 +187,7 @@ public final class DataType implements NumericEnum {
         return this.value >> 4;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.sume.core.types.DataType$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.sume.core.types.DataType$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$DataType;
@@ -316,12 +303,10 @@ public final class DataType implements NumericEnum {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$from$0(int value, DataType e) {
         return e.getValue() == value;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ InvalidParameterException lambda$from$1(int value) {
         return new InvalidParameterException("invalid DataType value: " + value);
     }

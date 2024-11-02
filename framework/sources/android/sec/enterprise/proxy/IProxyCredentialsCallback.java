@@ -85,8 +85,9 @@ public interface IProxyCredentialsCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IProxyCredentialsCallback {
+        public static class Proxy implements IProxyCredentialsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

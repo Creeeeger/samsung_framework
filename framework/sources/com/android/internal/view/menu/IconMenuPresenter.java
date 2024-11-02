@@ -54,7 +54,6 @@ public class IconMenuPresenter extends BaseMenuPresenter {
         return fits && !item.isActionButton();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.view.menu.BaseMenuPresenter
     public void addItemView(View itemView, int childIndex) {
         IconMenuItemView v = (IconMenuItemView) itemView;
@@ -103,7 +102,6 @@ public class IconMenuPresenter extends BaseMenuPresenter {
         menuView.setNumActualItemsShown(needsMore ? this.mMaxItems - 1 : itemsToShow.size());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.view.menu.BaseMenuPresenter
     public boolean filterLeftoverView(ViewGroup parent, int childIndex) {
         if (parent.getChildAt(childIndex) != this.mMoreView) {
@@ -155,7 +153,6 @@ public class IconMenuPresenter extends BaseMenuPresenter {
         restoreHierarchyState((Bundle) state);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public class SubMenuPresenterCallback implements MenuPresenter.Callback {
         SubMenuPresenterCallback() {

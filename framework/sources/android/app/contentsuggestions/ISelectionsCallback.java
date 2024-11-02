@@ -86,8 +86,9 @@ public interface ISelectionsCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISelectionsCallback {
+        public static class Proxy implements ISelectionsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

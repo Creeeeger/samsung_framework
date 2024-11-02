@@ -511,9 +511,12 @@ public class ContentProviderClient implements ContentInterface, AutoCloseable {
         IoUtils.closeQuietly(client);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class NotRespondingRunnable implements Runnable {
+        /* synthetic */ NotRespondingRunnable(ContentProviderClient contentProviderClient, NotRespondingRunnableIA notRespondingRunnableIA) {
+            this();
+        }
+
         private NotRespondingRunnable() {
         }
 
@@ -524,7 +527,6 @@ public class ContentProviderClient implements ContentInterface, AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public final class CursorWrapperInner extends CrossProcessCursorWrapper {
         private final CloseGuard mCloseGuard;

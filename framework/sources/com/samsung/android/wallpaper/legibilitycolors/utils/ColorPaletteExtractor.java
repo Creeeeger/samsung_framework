@@ -33,33 +33,21 @@ public class ColorPaletteExtractor extends ColorExtractor {
         B
     }
 
-    /* JADX WARN: Enum visitor error
-    jadx.core.utils.exceptions.JadxRuntimeException: Can't remove SSA var: r0v0 com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$ColorSpace, still in use, count: 1, list:
-  (r0v0 com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$ColorSpace) from 0x002e: FILLED_NEW_ARRAY 
-  (r0v0 com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$ColorSpace)
-  (r1v1 com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$ColorSpace)
-  (r2v2 com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$ColorSpace)
- A[WRAPPED] (LINE:18) elemType: com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$ColorSpace
-    	at jadx.core.utils.InsnRemover.removeSsaVar(InsnRemover.java:151)
-    	at jadx.core.utils.InsnRemover.unbindResult(InsnRemover.java:116)
-    	at jadx.core.utils.InsnRemover.lambda$unbindInsns$1(InsnRemover.java:88)
-    	at java.base/java.util.ArrayList.forEach(Unknown Source)
-    	at jadx.core.utils.InsnRemover.unbindInsns(InsnRemover.java:87)
-    	at jadx.core.utils.InsnRemover.removeAllAndUnbind(InsnRemover.java:238)
-    	at jadx.core.dex.visitors.EnumVisitor.convertToEnum(EnumVisitor.java:180)
-    	at jadx.core.dex.visitors.EnumVisitor.visit(EnumVisitor.java:100)
-     */
-    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
     /* loaded from: classes5.dex */
-    public static final class ColorSpace {
-        RGB,
-        HSV,
-        LAB,
-        HUE;
-
+    public static final class ColorSpace extends Enum<ColorSpace> {
         static ColorSpace[] ColorSpaceIndex = {new ColorSpace(), new ColorSpace(), new ColorSpace()};
+        public static final ColorSpace HSV;
+        public static final ColorSpace LAB;
+        public static final ColorSpace RGB;
+        public static final ColorSpace HUE = new ColorSpace();
+        private static final /* synthetic */ ColorSpace[] $VALUES = $values();
 
-        private ColorSpace() {
+        private static /* synthetic */ ColorSpace[] $values() {
+            return new ColorSpace[]{RGB, HSV, LAB, HUE};
+        }
+
+        private ColorSpace(String str, int i) {
+            super(str, i);
         }
 
         public static ColorSpace valueOf(String name) {
@@ -71,6 +59,15 @@ public class ColorPaletteExtractor extends ColorExtractor {
         }
 
         static {
+            ColorSpace colorSpace = new ColorSpace();
+            RGB = colorSpace;
+            ColorSpace colorSpace2 = new ColorSpace();
+            HSV = colorSpace2;
+            ColorSpace colorSpace3 = new ColorSpace();
+            LAB = colorSpace3;
+            HUE = new ColorSpace();
+            $VALUES = $values();
+            ColorSpaceIndex = new ColorSpace[]{colorSpace, colorSpace2, colorSpace3};
         }
     }
 
@@ -150,7 +147,6 @@ public class ColorPaletteExtractor extends ColorExtractor {
         return clusterGroupArray;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class ColorResultData {
         double dist;
@@ -399,6 +395,9 @@ public class ColorPaletteExtractor extends ColorExtractor {
             } else {
                 ColorResultData[] colorResultDataArray5 = colorResultDataArray;
                 Arrays.sort(colorResultDataArray5, new Comparator<ColorResultData>() { // from class: com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // java.util.Comparator
                     public int compare(ColorResultData lhs, ColorResultData rhs) {
                         if (lhs == null && rhs == null) {
@@ -501,8 +500,7 @@ public class ColorPaletteExtractor extends ColorExtractor {
         return mergedColorNum;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$2, reason: invalid class name */
+    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$2 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$ColorPaletteExtractor$ColorSpace;
@@ -526,6 +524,27 @@ public class ColorPaletteExtractor extends ColorExtractor {
                 $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$ColorPaletteExtractor$ColorSpace[ColorSpace.LAB.ordinal()] = 4;
             } catch (NoSuchFieldError e4) {
             }
+        }
+    }
+
+    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Comparator<ColorResultData> {
+        AnonymousClass1() {
+        }
+
+        @Override // java.util.Comparator
+        public int compare(ColorResultData lhs, ColorResultData rhs) {
+            if (lhs == null && rhs == null) {
+                return 0;
+            }
+            if (lhs == null) {
+                return 1;
+            }
+            if (rhs == null) {
+                return -1;
+            }
+            return Double.compare(lhs.dist, rhs.dist);
         }
     }
 

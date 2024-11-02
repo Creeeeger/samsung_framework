@@ -8,13 +8,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public final class MagnificationConfig implements Parcelable {
     public static final Parcelable.Creator<MagnificationConfig> CREATOR = new Parcelable.Creator<MagnificationConfig>() { // from class: android.accessibilityservice.MagnificationConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MagnificationConfig createFromParcel(Parcel parcel) {
             return new MagnificationConfig(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MagnificationConfig[] newArray(int size) {
             return new MagnificationConfig[size];
@@ -32,6 +33,14 @@ public final class MagnificationConfig implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     @interface MagnificationMode {
+    }
+
+    /* synthetic */ MagnificationConfig(MagnificationConfigIA magnificationConfigIA) {
+        this();
+    }
+
+    /* synthetic */ MagnificationConfig(Parcel parcel, MagnificationConfigIA magnificationConfigIA) {
+        this(parcel);
     }
 
     private MagnificationConfig() {
@@ -145,6 +154,23 @@ public final class MagnificationConfig implements Parcelable {
             magnificationConfig.mCenterX = this.mCenterX;
             magnificationConfig.mCenterY = this.mCenterY;
             return magnificationConfig;
+        }
+    }
+
+    /* renamed from: android.accessibilityservice.MagnificationConfig$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MagnificationConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MagnificationConfig createFromParcel(Parcel parcel) {
+            return new MagnificationConfig(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MagnificationConfig[] newArray(int size) {
+            return new MagnificationConfig[size];
         }
     }
 }

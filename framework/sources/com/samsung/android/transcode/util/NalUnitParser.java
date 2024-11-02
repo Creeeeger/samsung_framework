@@ -59,7 +59,6 @@ public class NalUnitParser {
             }).findFirst().orElse(UNKNOWN);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$getNalType$0(int val, AVCNalUnitType type) {
             return type.typeValue == val;
         }
@@ -97,7 +96,6 @@ public class NalUnitParser {
             }).findFirst().orElse(UNKNOWN);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ boolean lambda$getNalType$0(int val, HEVCNalUnitType type) {
             return type.typeValue == val;
         }

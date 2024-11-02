@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class TvTrackInfo implements Parcelable {
     public static final Parcelable.Creator<TvTrackInfo> CREATOR = new Parcelable.Creator<TvTrackInfo>() { // from class: android.media.tv.TvTrackInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TvTrackInfo createFromParcel(Parcel in) {
             return new TvTrackInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvTrackInfo[] newArray(int size) {
             return new TvTrackInfo[size];
@@ -48,6 +49,14 @@ public final class TvTrackInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface Type {
+    }
+
+    /* synthetic */ TvTrackInfo(int i, String str, String str2, CharSequence charSequence, String str3, boolean z, int i2, int i3, boolean z2, boolean z3, boolean z4, int i4, int i5, float f, float f2, byte b, Bundle bundle, TvTrackInfoIA tvTrackInfoIA) {
+        this(i, str, str2, charSequence, str3, z, i2, i3, z2, z3, z4, i4, i5, f, f2, b, bundle);
+    }
+
+    /* synthetic */ TvTrackInfo(Parcel parcel, TvTrackInfoIA tvTrackInfoIA) {
+        this(parcel);
     }
 
     private TvTrackInfo(int type, String id, String language, CharSequence description, String encoding, boolean encrypted, int audioChannelCount, int audioSampleRate, boolean audioDescription, boolean hardOfHearing, boolean spokenSubtitle, int videoWidth, int videoHeight, float videoFrameRate, float videoPixelAspectRatio, byte videoActiveFormatDescription, Bundle extra) {
@@ -250,6 +259,23 @@ public final class TvTrackInfo implements Parcelable {
             return Objects.hash(Integer.valueOf(result), Integer.valueOf(this.mVideoWidth), Integer.valueOf(this.mVideoHeight), Float.valueOf(this.mVideoFrameRate), Float.valueOf(this.mVideoPixelAspectRatio));
         }
         return result;
+    }
+
+    /* renamed from: android.media.tv.TvTrackInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TvTrackInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvTrackInfo createFromParcel(Parcel in) {
+            return new TvTrackInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvTrackInfo[] newArray(int size) {
+            return new TvTrackInfo[size];
+        }
     }
 
     /* loaded from: classes2.dex */

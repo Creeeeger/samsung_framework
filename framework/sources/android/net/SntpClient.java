@@ -44,7 +44,6 @@ public class SntpClient {
     private InetSocketAddress mServerSocketAddress;
     private final Supplier<Instant> mSystemTimeSupplier;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class InvalidServerReplyException extends Exception {
         public InvalidServerReplyException(String message) {

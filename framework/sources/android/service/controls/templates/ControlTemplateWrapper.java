@@ -7,13 +7,14 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class ControlTemplateWrapper implements Parcelable {
     public static final Parcelable.Creator<ControlTemplateWrapper> CREATOR = new Parcelable.Creator<ControlTemplateWrapper>() { // from class: android.service.controls.templates.ControlTemplateWrapper.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ControlTemplateWrapper createFromParcel(Parcel source) {
             return new ControlTemplateWrapper(ControlTemplate.createTemplateFromBundle(source.readBundle()));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ControlTemplateWrapper[] newArray(int size) {
             return new ControlTemplateWrapper[size];
@@ -38,5 +39,22 @@ public final class ControlTemplateWrapper implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBundle(this.mControlTemplate.getDataBundle());
+    }
+
+    /* renamed from: android.service.controls.templates.ControlTemplateWrapper$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ControlTemplateWrapper> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ControlTemplateWrapper createFromParcel(Parcel source) {
+            return new ControlTemplateWrapper(ControlTemplate.createTemplateFromBundle(source.readBundle()));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ControlTemplateWrapper[] newArray(int size) {
+            return new ControlTemplateWrapper[size];
+        }
     }
 }

@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Vector;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: ZygoteInit.java */
 /* loaded from: classes5.dex */
 public class ZygoteInitThreadPool {
@@ -28,13 +27,11 @@ public class ZygoteInitThreadPool {
     ArrayList<String> each_preload_list = new ArrayList<>(Arrays.asList("android.graphics.Typeface", "com.android.internal.telephony.GsmAlphabet", "android.icu.text.AnyTransliterator"));
     Vector<Thread> threads = new Vector<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ZygoteInitThreadPool(boolean SystemServer) {
         Log.i(TAG, "Set ZygoteInitThreadPool as " + PARALLEL_THREAD_COUNT + " + " + this.each_preload_list.size() + " threads");
         this.isSystemServer = SystemServer;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int preparePreloadClassList(BufferedReader br) throws IOException {
         Process.setThreadPriority(-16);
         int count = 0;
@@ -57,7 +54,6 @@ public class ZygoteInitThreadPool {
         return count;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean parallelPreloadTimeout() {
         for (int i = 0; i < this.each_preload_list.size(); i++) {
             final int s = i;
@@ -94,18 +90,44 @@ public class ZygoteInitThreadPool {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$parallelPreloadTimeout$0(int s) {
         preloadInternal(this.each_preload_list.get(s));
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x004d, code lost:            android.util.Log.e(com.android.internal.os.ZygoteInitThreadPool.TAG, "!@Time out! kill itself! (" + r17 + android.inputmethodservice.navigationbar.NavigationBarInflaterView.KEY_CODE_END + r16);        r0 = r16.threads.iterator();     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0077, code lost:            if (r0.hasNext() == false) goto L42;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0079, code lost:            r10 = r0.next();        android.util.Log.e(com.android.internal.os.ZygoteInitThreadPool.TAG, "*******Backtrace of Thread: Preload for " + r10.getName() + " *******");        r11 = r10.getStackTrace();        r12 = r11.length;        r13 = 0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x00a5, code lost:            if (r13 >= r12) goto L45;     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x00a7, code lost:            r14 = r11[r13];        android.util.Log.e(com.android.internal.os.ZygoteInitThreadPool.TAG, "    " + r14.toString());     */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x00c4, code lost:            r13 = r13 + 1;     */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x00f4, code lost:            if (r8 >= 0) goto L22;     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x004d, code lost:
+    
+        android.util.Log.e(com.android.internal.os.ZygoteInitThreadPool.TAG, "!@Time out! kill itself! (" + r17 + android.inputmethodservice.navigationbar.NavigationBarInflaterView.KEY_CODE_END + r16);
+        r0 = r16.threads.iterator();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0077, code lost:
+    
+        if (r0.hasNext() == false) goto L88;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0079, code lost:
+    
+        r10 = r0.next();
+        android.util.Log.e(com.android.internal.os.ZygoteInitThreadPool.TAG, "*******Backtrace of Thread: Preload for " + r10.getName() + " *******");
+        r11 = r10.getStackTrace();
+        r12 = r11.length;
+        r13 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x00a5, code lost:
+    
+        if (r13 >= r12) goto L91;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x00a7, code lost:
+    
+        r14 = r11[r13];
+        android.util.Log.e(com.android.internal.os.ZygoteInitThreadPool.TAG, "    " + r14.toString());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x00c4, code lost:
+    
+        r13 = r13 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x00f4, code lost:
+    
+        if (r8 >= 0) goto L68;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -157,10 +179,9 @@ public class ZygoteInitThreadPool {
         this.threads.remove(Thread.currentThread());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Removed duplicated region for block: B:26:0x00f9  */
     /* JADX WARN: Removed duplicated region for block: B:33:0x0107  */
-    /* renamed from: preloadInternal, reason: merged with bridge method [inline-methods] */
+    /* renamed from: preloadInternal */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

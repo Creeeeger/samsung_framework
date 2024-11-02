@@ -11,7 +11,6 @@ public class UndoOwner {
     int mStateSeq;
     final String mTag;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public UndoOwner(String tag, UndoManager manager) {
         if (tag == null) {
             throw new NullPointerException("tag can't be null");

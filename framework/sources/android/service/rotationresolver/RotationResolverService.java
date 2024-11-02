@@ -45,7 +45,7 @@ public abstract class RotationResolverService extends Service {
 
     public abstract void onResolveRotation(RotationResolutionRequest rotationResolutionRequest, CancellationSignal cancellationSignal, RotationResolverCallback rotationResolverCallback);
 
-    /* renamed from: android.service.rotationresolver.RotationResolverService$1, reason: invalid class name */
+    /* renamed from: android.service.rotationresolver.RotationResolverService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IRotationResolverService.Stub {
         AnonymousClass1() {
@@ -74,7 +74,6 @@ public abstract class RotationResolverService extends Service {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void resolveRotation(IRotationResolverCallback callback, RotationResolutionRequest request, ICancellationSignal transport) {
         CancellationSignal cancellationSignal;
         if (this.mPendingCallback != null && (((cancellationSignal = this.mCancellationSignal) == null || !cancellationSignal.isCanceled()) && SystemClock.uptimeMillis() < this.mPendingCallback.mExpirationTime)) {
@@ -87,7 +86,6 @@ public abstract class RotationResolverService extends Service {
         onResolveRotation(request, fromTransport, this.mPendingCallback);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendRotationResult(IRotationResolverCallback internalCallback, int result) {
         RotationResolverCallbackWrapper rotationResolverCallbackWrapper = this.mPendingCallback;
         if (rotationResolverCallbackWrapper != null && rotationResolverCallbackWrapper.mCallback == internalCallback) {
@@ -100,7 +98,6 @@ public abstract class RotationResolverService extends Service {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendFailureResult(IRotationResolverCallback internalCallback, int error) {
         RotationResolverCallbackWrapper rotationResolverCallbackWrapper = this.mPendingCallback;
         if (rotationResolverCallbackWrapper != null && internalCallback == rotationResolverCallbackWrapper.mCallback) {
@@ -123,6 +120,10 @@ public abstract class RotationResolverService extends Service {
         private final long mExpirationTime;
         private final Handler mHandler;
         private final RotationResolverService mService;
+
+        /* synthetic */ RotationResolverCallbackWrapper(IRotationResolverCallback iRotationResolverCallback, RotationResolverService rotationResolverService, long j, RotationResolverCallbackWrapperIA rotationResolverCallbackWrapperIA) {
+            this(iRotationResolverCallback, rotationResolverService, j);
+        }
 
         private RotationResolverCallbackWrapper(IRotationResolverCallback callback, RotationResolverService service, long expirationTime) {
             this.mCallback = callback;

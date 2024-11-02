@@ -779,11 +779,11 @@
     <dimen name="rounded_corner_content_padding">0.0dip</dimen>
     <dimen name="rounded_corner_radius">0.0dip</dimen>
     <dimen name="rounded_corner_radius_adjustment">0.0px</dimen>
-    <dimen name="rounded_corner_radius_bottom">36.0dip</dimen>
+    <dimen name="rounded_corner_radius_bottom">13.0dip</dimen>
     <dimen name="rounded_corner_radius_bottom_adjustment">0.0px</dimen>
     <dimen name="rounded_corner_radius_for_letterbox">5.0mm</dimen>
     <dimen name="rounded_corner_radius_for_multiwindow">12.0dip</dimen>
-    <dimen name="rounded_corner_radius_top">36.0dip</dimen>
+    <dimen name="rounded_corner_radius_top">13.0dip</dimen>
     <dimen name="rounded_corner_radius_top_adjustment">0.0px</dimen>
     <dimen name="samsung_decor_task_offset_height">15.0dip</dimen>
     <dimen name="samsung_decor_task_offset_width">10.0dip</dimen>

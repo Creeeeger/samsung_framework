@@ -20,7 +20,6 @@ public class GraphEnvironment extends MffEnvironment {
     private GraphReader mGraphReader;
     private ArrayList<GraphHandle> mGraphs;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class GraphHandle {
         private AsyncRunner mAsyncRunner;

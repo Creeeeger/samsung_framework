@@ -23,7 +23,6 @@ public final class MtpDevice {
 
     private native boolean native_delete_object(int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native void native_discard_event_request(int i);
 
     private native MtpDeviceInfo native_get_device_info();
@@ -204,10 +203,16 @@ public final class MtpDevice {
     }
 
     public MtpEvent readEvent(CancellationSignal signal) throws IOException {
-        final int handle = native_submit_event_request();
+        int handle = native_submit_event_request();
         Preconditions.checkState(handle >= 0, "Other thread is reading an event.");
         if (signal != null) {
             signal.setOnCancelListener(new CancellationSignal.OnCancelListener() { // from class: android.mtp.MtpDevice.1
+                final /* synthetic */ int val$handle;
+
+                AnonymousClass1(int handle2) {
+                    handle = handle2;
+                }
+
                 @Override // android.os.CancellationSignal.OnCancelListener
                 public void onCancel() {
                     MtpDevice.this.native_discard_event_request(handle);
@@ -215,11 +220,26 @@ public final class MtpDevice {
             });
         }
         try {
-            return native_reap_event_request(handle);
+            return native_reap_event_request(handle2);
         } finally {
             if (signal != null) {
                 signal.setOnCancelListener(null);
             }
+        }
+    }
+
+    /* renamed from: android.mtp.MtpDevice$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements CancellationSignal.OnCancelListener {
+        final /* synthetic */ int val$handle;
+
+        AnonymousClass1(int handle2) {
+            handle = handle2;
+        }
+
+        @Override // android.os.CancellationSignal.OnCancelListener
+        public void onCancel() {
+            MtpDevice.this.native_discard_event_request(handle);
         }
     }
 

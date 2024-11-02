@@ -101,8 +101,8 @@ public class IntArray implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public IntArray m4925clone() {
+    /* renamed from: clone */
+    public IntArray m4924clone() {
         return new IntArray((int[]) this.mValues.clone(), this.mSize);
     }
 

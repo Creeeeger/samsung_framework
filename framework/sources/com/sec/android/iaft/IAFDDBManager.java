@@ -64,6 +64,10 @@ public class IAFDDBManager {
     static final Uri DB_IAFD_TB_URI_SM = Uri.parse("content://com.samsung.android.sm/IAFD_TB");
     static int mCurDBIndex = -1;
 
+    /* synthetic */ IAFDDBManager(IAFDDBManagerIA iAFDDBManagerIA) {
+        this();
+    }
+
     private IAFDDBManager() {
         this.mIfadDBData = new IAFDDiagnosis.IAFD_DATA[]{null, null, null};
         this.mRegisteredSmartManagerIAFDObserver = false;
@@ -74,7 +78,6 @@ public class IAFDDBManager {
         mCurDBIndex = -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
     public static class IAFDDBManagerHolder {
         private static final IAFDDBManager INSTANCE = new IAFDDBManager();
@@ -136,8 +139,9 @@ public class IAFDDBManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
-    private class IAFDDBManagerThread extends Thread {
+    public class IAFDDBManagerThread extends Thread {
         int mPriority;
 
         public IAFDDBManagerThread(String name) {
@@ -160,7 +164,6 @@ public class IAFDDBManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Removed duplicated region for block: B:96:0x0299  */
     /* JADX WARN: Removed duplicated region for block: B:98:? A[RETURN, SYNTHETIC] */
@@ -176,7 +179,6 @@ public class IAFDDBManager {
         throw new UnsupportedOperationException("Method not decompiled: com.sec.android.iaft.IAFDDBManager.initDBByURIOrFile(boolean, android.net.Uri, java.lang.String):com.sec.android.iaft.IAFDDiagnosis$IAFD_DATA");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void syncDBType() {
         int curDBVer = -1;
         mCurDBIndex = -1;
@@ -190,7 +192,6 @@ public class IAFDDBManager {
         Slog.d(TAG, "syncDBType(): mCurDBIndex=" + mCurDBIndex + ", curDBVer=" + curDBVer);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void initIAFDDBHotfix() {
         IAFDDiagnosis.IAFD_DATA iafddataTmp;
         try {
@@ -213,7 +214,6 @@ public class IAFDDBManager {
     private void initARDBHotfix() {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void initTBs() {
         if (this.mContext == null || isDBIniting) {
             return;
@@ -237,7 +237,6 @@ public class IAFDDBManager {
         isDBIniting = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes6.dex */
     public class IAFDDBManagerHandler extends Handler {
         public IAFDDBManagerHandler() {

@@ -4,8 +4,9 @@ import android.animation.Keyframe;
 import android.animation.Keyframes;
 import java.util.List;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
-class FloatKeyframeSet extends KeyframeSet implements Keyframes.FloatKeyframes {
+public class FloatKeyframeSet extends KeyframeSet implements Keyframes.FloatKeyframes {
     public FloatKeyframeSet(Keyframe.FloatKeyframe... keyframes) {
         super(keyframes);
     }
@@ -16,7 +17,7 @@ class FloatKeyframeSet extends KeyframeSet implements Keyframes.FloatKeyframes {
     }
 
     @Override // android.animation.KeyframeSet
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public FloatKeyframeSet mo64clone() {
         List<Keyframe> keyframes = this.mKeyframes;
         int numKeyframes = this.mKeyframes.size();

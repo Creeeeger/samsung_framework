@@ -37,7 +37,6 @@ public class SharedConnectivityManager {
     private final Map<SharedConnectivityClientCallback, SharedConnectivityCallbackProxy> mCallbackProxyCache = new HashMap();
     private final Object mProxyDataLock = new Object();
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static final class SharedConnectivityCallbackProxy extends ISharedConnectivityCallback.Stub {
         private final SharedConnectivityClientCallback mCallback;
@@ -65,7 +64,6 @@ public class SharedConnectivityManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onHotspotNetworksUpdated$0(List networks) {
             this.mCallback.onHotspotNetworksUpdated(networks);
         }
@@ -87,7 +85,6 @@ public class SharedConnectivityManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onKnownNetworksUpdated$1(List networks) {
             this.mCallback.onKnownNetworksUpdated(networks);
         }
@@ -109,7 +106,6 @@ public class SharedConnectivityManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSharedConnectivitySettingsChanged$2(SharedConnectivitySettingsState state) {
             this.mCallback.onSharedConnectivitySettingsChanged(state);
         }
@@ -131,7 +127,6 @@ public class SharedConnectivityManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onHotspotNetworkConnectionStatusChanged$3(HotspotNetworkConnectionStatus status) {
             this.mCallback.onHotspotNetworkConnectionStatusChanged(status);
         }
@@ -153,7 +148,6 @@ public class SharedConnectivityManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onKnownNetworkConnectionStatusChanged$4(KnownNetworkConnectionStatus status) {
             this.mCallback.onKnownNetworkConnectionStatusChanged(status);
         }
@@ -185,8 +179,7 @@ public class SharedConnectivityManager {
         this.mIntentAction = serviceIntentAction;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$1, reason: invalid class name */
+    /* renamed from: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 implements ServiceConnection {
         AnonymousClass1() {
@@ -208,7 +201,6 @@ public class SharedConnectivityManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onServiceConnected$0(SharedConnectivityClientCallback callback) {
             SharedConnectivityManager sharedConnectivityManager = SharedConnectivityManager.this;
             sharedConnectivityManager.registerCallbackInternal(callback, (SharedConnectivityCallbackProxy) sharedConnectivityManager.mCallbackProxyCache.get(callback));
@@ -246,7 +238,6 @@ public class SharedConnectivityManager {
         this.mContext.bindService(new Intent().setPackage(this.mServicePackageName).setAction(this.mIntentAction), this.mServiceConnection, 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void registerCallbackInternal(SharedConnectivityClientCallback callback, SharedConnectivityCallbackProxy proxy) {
         try {
             this.mService.registerCallback(proxy);

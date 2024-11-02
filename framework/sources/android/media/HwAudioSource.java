@@ -13,6 +13,10 @@ public class HwAudioSource extends PlayerBase {
     private final AudioDeviceInfo mAudioDeviceInfo;
     private int mNativeHandle;
 
+    /* synthetic */ HwAudioSource(AudioDeviceInfo audioDeviceInfo, AudioAttributes audioAttributes, HwAudioSourceIA hwAudioSourceIA) {
+        this(audioDeviceInfo, audioAttributes);
+    }
+
     private HwAudioSource(AudioDeviceInfo device, AudioAttributes attributes) {
         super(attributes, 14);
         this.mNativeHandle = 0;
@@ -28,13 +32,11 @@ public class HwAudioSource extends PlayerBase {
     void playerSetVolume(boolean muting, float leftVolume, float rightVolume) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.media.PlayerBase
     public int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation) {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.media.PlayerBase
     public VolumeShaper.State playerGetVolumeShaperState(int id) {
         return new VolumeShaper.State(1.0f, 1.0f);

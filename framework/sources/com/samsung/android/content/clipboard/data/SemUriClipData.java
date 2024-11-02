@@ -130,10 +130,13 @@ public class SemUriClipData extends SemClipData {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ImageFileFilter implements FileFilter {
         private final String[] extensions;
+
+        /* synthetic */ ImageFileFilter(ImageFileFilterIA imageFileFilterIA) {
+            this();
+        }
 
         private ImageFileFilter() {
             this.extensions = new String[]{"jpg", "png", "gif", "jpeg"};

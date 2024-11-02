@@ -7,6 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehSsReleaseComplete implements Parcelable {
     public static final Parcelable.Creator<SehSsReleaseComplete> CREATOR = new Parcelable.Creator<SehSsReleaseComplete>() { // from class: vendor.samsung.hardware.radio.sim.SehSsReleaseComplete.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehSsReleaseComplete createFromParcel(Parcel _aidl_source) {
             SehSsReleaseComplete _aidl_out = new SehSsReleaseComplete();
@@ -24,6 +27,25 @@ public class SehSsReleaseComplete implements Parcelable {
     public int dataLen = 0;
     public int params = 0;
     public int status = 0;
+
+    /* renamed from: vendor.samsung.hardware.radio.sim.SehSsReleaseComplete$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehSsReleaseComplete> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehSsReleaseComplete createFromParcel(Parcel _aidl_source) {
+            SehSsReleaseComplete _aidl_out = new SehSsReleaseComplete();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehSsReleaseComplete[] newArray(int _aidl_size) {
+            return new SehSsReleaseComplete[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

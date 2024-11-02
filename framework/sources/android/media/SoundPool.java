@@ -31,6 +31,10 @@ public class SoundPool extends PlayerBase {
         void onLoadComplete(SoundPool soundPool, int i, int i2);
     }
 
+    /* synthetic */ SoundPool(Context context, int i, AudioAttributes audioAttributes, int i2, SoundPoolIA soundPoolIA) {
+        this(context, i, audioAttributes, i2);
+    }
+
     private final native int _load(FileDescriptor fileDescriptor, long j, long j2, int i);
 
     private final native void _mute(boolean z);
@@ -150,13 +154,11 @@ public class SoundPool extends PlayerBase {
         _setVolume(streamID, leftVolume, rightVolume);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.media.PlayerBase
     public int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation) {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.media.PlayerBase
     public VolumeShaper.State playerGetVolumeShaperState(int id) {
         return null;
@@ -216,8 +218,9 @@ public class SoundPool extends PlayerBase {
         eventHandler.sendMessage(message);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
-    private final class EventHandler extends Handler {
+    public final class EventHandler extends Handler {
         private final OnLoadCompleteListener mOnLoadCompleteListener;
 
         EventHandler(Looper looper, OnLoadCompleteListener onLoadCompleteListener) {

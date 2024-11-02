@@ -114,8 +114,9 @@ public interface IAssociationRequestCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IAssociationRequestCallback {
+        public static class Proxy implements IAssociationRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -325,7 +325,6 @@ public abstract class NtpTrustedTime implements TrustedTime {
         return uris;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static URI validateNtpServerUri(URI uri) throws URISyntaxException {
         if (!uri.isAbsolute()) {
             throw new URISyntaxException(uri.toString(), "Relative URI not supported");
@@ -356,6 +355,10 @@ public abstract class NtpTrustedTime implements TrustedTime {
     private static final class NtpTrustedTimeImpl extends NtpTrustedTime {
         private ConnectivityManager mConnectivityManager;
         private final Context mContext;
+
+        /* synthetic */ NtpTrustedTimeImpl(Context context, NtpTrustedTimeImplIA ntpTrustedTimeImplIA) {
+            this(context);
+        }
 
         private NtpTrustedTimeImpl(Context context) {
             this.mContext = (Context) Objects.requireNonNull(context);

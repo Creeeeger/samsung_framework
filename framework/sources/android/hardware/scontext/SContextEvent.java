@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextEvent implements Parcelable {
     static final Parcelable.Creator<SContextEvent> CREATOR = new Parcelable.Creator<SContextEvent>() { // from class: android.hardware.scontext.SContextEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SContextEvent createFromParcel(Parcel in) {
             return new SContextEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextEvent[] newArray(int size) {
             return new SContextEvent[size];
@@ -529,6 +530,23 @@ public class SContextEvent implements Parcelable {
         this.mEventContext = (SContextEventContext) src.readParcelable(SContextEventContext.class.getClassLoader());
         if (this.scontext.getType() == 49) {
             this.mDuplicatedEventContext = (SContextEventContext) src.readParcelable(SContextEventContext.class.getClassLoader());
+        }
+    }
+
+    /* renamed from: android.hardware.scontext.SContextEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SContextEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextEvent createFromParcel(Parcel in) {
+            return new SContextEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SContextEvent[] newArray(int size) {
+            return new SContextEvent[size];
         }
     }
 }

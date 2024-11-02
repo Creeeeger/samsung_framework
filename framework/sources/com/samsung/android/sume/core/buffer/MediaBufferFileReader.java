@@ -70,7 +70,7 @@ public class MediaBufferFileReader {
 
     public MediaBufferFileReader setShape(Shape shape) {
         if (this.format == null) {
-            this.format = m8730x86d04131(this.paths.get(0));
+            this.format = m8722x86d04131(this.paths.get(0));
         }
         this.format = this.format.toMutableFormat().setShape(shape).toMediaFormat();
         return this;
@@ -117,7 +117,6 @@ public class MediaBufferFileReader {
         return format.toMediaFormat();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer[] lambda$getImageFormatFromName$1(int x$0) {
         return new Integer[x$0];
     }
@@ -129,9 +128,8 @@ public class MediaBufferFileReader {
         return format.toMediaFormat();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: getFormatFromName, reason: merged with bridge method [inline-methods] */
-    public MediaFormat m8730x86d04131(String name) {
+    /* renamed from: getFormatFromName */
+    public MediaFormat m8722x86d04131(String name) {
         String ext = getExtension(name);
         if (isImage(ext)) {
             return getImageFormatFromName(name, ext);
@@ -173,7 +171,7 @@ public class MediaBufferFileReader {
         List<MediaBuffer> buffers = (List) this.paths.stream().map(new Function() { // from class: com.samsung.android.sume.core.buffer.MediaBufferFileReader$$ExternalSyntheticLambda8
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return MediaBufferFileReader.this.m8731xa4e33a0c((String) obj);
+                return MediaBufferFileReader.this.m8723xa4e33a0c((String) obj);
             }
         }).filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferFileReader$$ExternalSyntheticLambda9
             @Override // java.util.function.Predicate
@@ -187,13 +185,12 @@ public class MediaBufferFileReader {
         return MediaBuffer.groupOf(0, buffers);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$read$7$com-samsung-android-sume-core-buffer-MediaBufferFileReader, reason: not valid java name */
-    public /* synthetic */ MediaBuffer m8731xa4e33a0c(final String path) {
+    /* renamed from: lambda$read$7$com-samsung-android-sume-core-buffer-MediaBufferFileReader */
+    public /* synthetic */ MediaBuffer m8723xa4e33a0c(final String path) {
         final MediaFormat format = (MediaFormat) Optional.ofNullable(this.format).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.buffer.MediaBufferFileReader$$ExternalSyntheticLambda2
             @Override // java.util.function.Supplier
             public final Object get() {
-                return MediaBufferFileReader.this.m8730x86d04131(path);
+                return MediaBufferFileReader.this.m8722x86d04131(path);
             }
         });
         switch (AnonymousClass1.$SwitchMap$com$samsung$android$sume$core$types$MediaType[format.getMediaType().ordinal()]) {
@@ -256,9 +253,10 @@ public class MediaBufferFileReader {
         }
     }
 
-    /* renamed from: com.samsung.android.sume.core.buffer.MediaBufferFileReader$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.sume.core.buffer.MediaBufferFileReader$1 */
     /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
+    public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$MediaType;
 
         static {
@@ -279,22 +277,18 @@ public class MediaBufferFileReader {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$read$3(MediaFormat format, String path, BiFunction reader) {
         return (MediaBuffer) reader.apply(format, path);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ IllegalArgumentException lambda$read$4() {
         return new IllegalArgumentException("not implement internal compress image reader yet, plz should set explicitly");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ MediaBuffer lambda$read$5(MediaFormat format, String path, BiFunction reader) {
         return (MediaBuffer) reader.apply(format, path);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ IllegalArgumentException lambda$read$6() {
         return new IllegalArgumentException("not implement internal compress image reader yet, plz should set explicitly");
     }

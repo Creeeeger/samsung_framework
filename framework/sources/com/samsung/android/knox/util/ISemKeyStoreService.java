@@ -155,8 +155,9 @@ public interface ISemKeyStoreService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISemKeyStoreService {
+        public static class Proxy implements ISemKeyStoreService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

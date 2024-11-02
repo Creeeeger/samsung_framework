@@ -14,7 +14,9 @@ public class GpsMeasurement implements Parcelable {
     public static final short ADR_STATE_UNKNOWN = 0;
     public static final short ADR_STATE_VALID = 1;
     public static final Parcelable.Creator<GpsMeasurement> CREATOR = new Parcelable.Creator<GpsMeasurement>() { // from class: android.location.GpsMeasurement.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GpsMeasurement createFromParcel(Parcel parcel) {
             GpsMeasurement gpsMeasurement = new GpsMeasurement();
@@ -53,7 +55,6 @@ public class GpsMeasurement implements Parcelable {
             return gpsMeasurement;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GpsMeasurement[] newArray(int i) {
             return new GpsMeasurement[i];
@@ -668,6 +669,56 @@ public class GpsMeasurement implements Parcelable {
 
     public void setUsedInFix(boolean value) {
         this.mUsedInFix = value;
+    }
+
+    /* renamed from: android.location.GpsMeasurement$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GpsMeasurement> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsMeasurement createFromParcel(Parcel parcel) {
+            GpsMeasurement gpsMeasurement = new GpsMeasurement();
+            gpsMeasurement.mFlags = parcel.readInt();
+            gpsMeasurement.mPrn = parcel.readByte();
+            gpsMeasurement.mTimeOffsetInNs = parcel.readDouble();
+            gpsMeasurement.mState = (short) parcel.readInt();
+            gpsMeasurement.mReceivedGpsTowInNs = parcel.readLong();
+            gpsMeasurement.mReceivedGpsTowUncertaintyInNs = parcel.readLong();
+            gpsMeasurement.mCn0InDbHz = parcel.readDouble();
+            gpsMeasurement.mPseudorangeRateInMetersPerSec = parcel.readDouble();
+            gpsMeasurement.mPseudorangeRateUncertaintyInMetersPerSec = parcel.readDouble();
+            gpsMeasurement.mAccumulatedDeltaRangeState = (short) parcel.readInt();
+            gpsMeasurement.mAccumulatedDeltaRangeInMeters = parcel.readDouble();
+            gpsMeasurement.mAccumulatedDeltaRangeUncertaintyInMeters = parcel.readDouble();
+            gpsMeasurement.mPseudorangeInMeters = parcel.readDouble();
+            gpsMeasurement.mPseudorangeUncertaintyInMeters = parcel.readDouble();
+            gpsMeasurement.mCodePhaseInChips = parcel.readDouble();
+            gpsMeasurement.mCodePhaseUncertaintyInChips = parcel.readDouble();
+            gpsMeasurement.mCarrierFrequencyInHz = parcel.readFloat();
+            gpsMeasurement.mCarrierCycles = parcel.readLong();
+            gpsMeasurement.mCarrierPhase = parcel.readDouble();
+            gpsMeasurement.mCarrierPhaseUncertainty = parcel.readDouble();
+            gpsMeasurement.mLossOfLock = parcel.readByte();
+            gpsMeasurement.mBitNumber = parcel.readInt();
+            gpsMeasurement.mTimeFromLastBitInMs = (short) parcel.readInt();
+            gpsMeasurement.mDopplerShiftInHz = parcel.readDouble();
+            gpsMeasurement.mDopplerShiftUncertaintyInHz = parcel.readDouble();
+            gpsMeasurement.mMultipathIndicator = parcel.readByte();
+            gpsMeasurement.mSnrInDb = parcel.readDouble();
+            gpsMeasurement.mElevationInDeg = parcel.readDouble();
+            gpsMeasurement.mElevationUncertaintyInDeg = parcel.readDouble();
+            gpsMeasurement.mAzimuthInDeg = parcel.readDouble();
+            gpsMeasurement.mAzimuthUncertaintyInDeg = parcel.readDouble();
+            gpsMeasurement.mUsedInFix = parcel.readInt() != 0;
+            return gpsMeasurement;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsMeasurement[] newArray(int i) {
+            return new GpsMeasurement[i];
+        }
     }
 
     @Override // android.os.Parcelable

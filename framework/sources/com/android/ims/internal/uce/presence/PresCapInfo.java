@@ -7,13 +7,14 @@ import com.android.ims.internal.uce.common.CapInfo;
 /* loaded from: classes4.dex */
 public class PresCapInfo implements Parcelable {
     public static final Parcelable.Creator<PresCapInfo> CREATOR = new Parcelable.Creator<PresCapInfo>() { // from class: com.android.ims.internal.uce.presence.PresCapInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PresCapInfo createFromParcel(Parcel source) {
             return new PresCapInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresCapInfo[] newArray(int size) {
             return new PresCapInfo[size];
@@ -21,6 +22,10 @@ public class PresCapInfo implements Parcelable {
     };
     private CapInfo mCapInfo;
     private String mContactUri;
+
+    /* synthetic */ PresCapInfo(Parcel parcel, PresCapInfoIA presCapInfoIA) {
+        this(parcel);
+    }
 
     public CapInfo getCapInfo() {
         return this.mCapInfo;
@@ -52,6 +57,23 @@ public class PresCapInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mContactUri);
         dest.writeParcelable(this.mCapInfo, flags);
+    }
+
+    /* renamed from: com.android.ims.internal.uce.presence.PresCapInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PresCapInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PresCapInfo createFromParcel(Parcel source) {
+            return new PresCapInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PresCapInfo[] newArray(int size) {
+            return new PresCapInfo[size];
+        }
     }
 
     private PresCapInfo(Parcel source) {

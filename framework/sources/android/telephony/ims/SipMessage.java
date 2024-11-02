@@ -21,18 +21,23 @@ public final class SipMessage implements Parcelable {
     private final String mViaBranchParam;
     private static final boolean IS_DEBUGGING = Build.IS_ENG;
     public static final Parcelable.Creator<SipMessage> CREATOR = new Parcelable.Creator<SipMessage>() { // from class: android.telephony.ims.SipMessage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SipMessage createFromParcel(Parcel source) {
             return new SipMessage(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipMessage[] newArray(int size) {
             return new SipMessage[size];
         }
     };
+
+    /* synthetic */ SipMessage(Parcel parcel, SipMessageIA sipMessageIA) {
+        this(parcel);
+    }
 
     public SipMessage(String startLine, String headerSection, byte[] content) {
         Objects.requireNonNull(startLine, "Required parameter is null: startLine");
@@ -92,6 +97,23 @@ public final class SipMessage implements Parcelable {
         dest.writeByteArray(this.mContent);
         dest.writeString(this.mViaBranchParam);
         dest.writeString(this.mCallIdParam);
+    }
+
+    /* renamed from: android.telephony.ims.SipMessage$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SipMessage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SipMessage createFromParcel(Parcel source) {
+            return new SipMessage(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SipMessage[] newArray(int size) {
+            return new SipMessage[size];
+        }
     }
 
     public String toString() {

@@ -139,7 +139,6 @@ public final class CallControl {
         throw new IllegalStateException(INTERFACE_ERROR_MSG);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class CallControlResultReceiver extends ResultReceiver {
         private final String mCallingMethod;
@@ -153,7 +152,6 @@ public final class CallControl {
             this.mClientCallback = clientCallback;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(int resultCode, final Bundle resultData) {
             Log.d(CallControl.TAG, "%s: oRR: resultCode=[%s]", this.mCallingMethod, Integer.valueOf(resultCode));
@@ -180,18 +178,15 @@ public final class CallControl {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReceiveResult$0() {
             this.mClientCallback.onResult(null);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReceiveResult$1(Bundle resultData) {
             this.mClientCallback.onError(CallControl.this.getTransactionException(resultData));
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public CallException getTransactionException(Bundle resultData) {
         if (resultData != null && resultData.containsKey(CallException.TRANSACTION_EXCEPTION_KEY)) {
             return (CallException) resultData.getParcelable(CallException.TRANSACTION_EXCEPTION_KEY, CallException.class);

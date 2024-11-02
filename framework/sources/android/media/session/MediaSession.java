@@ -184,6 +184,9 @@ public final class MediaSession {
             this.mVolumeProvider = volumeProvider;
         }
         volumeProvider.setCallback(new VolumeProvider.Callback() { // from class: android.media.session.MediaSession.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.VolumeProvider.Callback
             public void onVolumeChanged(VolumeProvider volumeProvider2) {
                 MediaSession.this.notifyRemoteVolumeChanged(volumeProvider2);
@@ -194,6 +197,19 @@ public final class MediaSession {
             this.mBinder.setCurrentVolume(volumeProvider.getCurrentVolume());
         } catch (RemoteException e) {
             Log.wtf(TAG, "Failure in setPlaybackToRemote.", e);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.session.MediaSession$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 extends VolumeProvider.Callback {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.VolumeProvider.Callback
+        public void onVolumeChanged(VolumeProvider volumeProvider2) {
+            MediaSession.this.notifyRemoteVolumeChanged(volumeProvider2);
         }
     }
 
@@ -339,7 +355,6 @@ public final class MediaSession {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean hasCustomParcelable(Bundle bundle) {
         if (bundle == null) {
             return false;
@@ -487,13 +502,14 @@ public final class MediaSession {
     /* loaded from: classes2.dex */
     public static final class Token implements Parcelable {
         public static final Parcelable.Creator<Token> CREATOR = new Parcelable.Creator<Token>() { // from class: android.media.session.MediaSession.Token.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Token createFromParcel(Parcel in) {
                 return new Token(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Token[] newArray(int size) {
                 return new Token[size];
@@ -559,6 +575,23 @@ public final class MediaSession {
 
         public ISessionController getBinder() {
             return this.mBinder;
+        }
+
+        /* renamed from: android.media.session.MediaSession$Token$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Token> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Token createFromParcel(Parcel in) {
+                return new Token(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Token[] newArray(int size) {
+                return new Token[size];
+            }
         }
     }
 
@@ -645,7 +678,6 @@ public final class MediaSession {
             return false;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void handleMediaPlayPauseKeySingleTapIfPending() {
             boolean isPlaying;
             boolean canPlay;
@@ -949,13 +981,14 @@ public final class MediaSession {
     /* loaded from: classes2.dex */
     public static final class QueueItem implements Parcelable {
         public static final Parcelable.Creator<QueueItem> CREATOR = new Parcelable.Creator<QueueItem>() { // from class: android.media.session.MediaSession.QueueItem.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public QueueItem createFromParcel(Parcel p) {
                 return new QueueItem(p);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public QueueItem[] newArray(int size) {
                 return new QueueItem[size];
@@ -964,6 +997,10 @@ public final class MediaSession {
         public static final int UNKNOWN_ID = -1;
         private final MediaDescription mDescription;
         private final long mId;
+
+        /* synthetic */ QueueItem(Parcel parcel, QueueItemIA queueItemIA) {
+            this(parcel);
+        }
 
         public QueueItem(MediaDescription description, long id) {
             if (description == null) {
@@ -1000,6 +1037,23 @@ public final class MediaSession {
             return 0;
         }
 
+        /* renamed from: android.media.session.MediaSession$QueueItem$1 */
+        /* loaded from: classes2.dex */
+        class AnonymousClass1 implements Parcelable.Creator<QueueItem> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public QueueItem createFromParcel(Parcel p) {
+                return new QueueItem(p);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public QueueItem[] newArray(int size) {
+                return new QueueItem[size];
+            }
+        }
+
         public String toString() {
             return "MediaSession.QueueItem {Description=" + this.mDescription + ", Id=" + this.mId + " }";
         }
@@ -1016,7 +1070,6 @@ public final class MediaSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static final class Command {
         public final String command;
@@ -1030,7 +1083,6 @@ public final class MediaSession {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class CallbackMessageHandler extends Handler {
         private static final int MSG_ADJUST_VOLUME = 22;

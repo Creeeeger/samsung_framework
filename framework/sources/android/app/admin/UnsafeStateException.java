@@ -9,13 +9,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class UnsafeStateException extends IllegalStateException implements Parcelable {
     public static final Parcelable.Creator<UnsafeStateException> CREATOR = new Parcelable.Creator<UnsafeStateException>() { // from class: android.app.admin.UnsafeStateException.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UnsafeStateException createFromParcel(Parcel source) {
             return new UnsafeStateException(source.readInt(), source.readInt());
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UnsafeStateException[] newArray(int size) {
             return new UnsafeStateException[size];
@@ -52,5 +53,22 @@ public final class UnsafeStateException extends IllegalStateException implements
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mOperation);
         dest.writeInt(this.mReason);
+    }
+
+    /* renamed from: android.app.admin.UnsafeStateException$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UnsafeStateException> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UnsafeStateException createFromParcel(Parcel source) {
+            return new UnsafeStateException(source.readInt(), source.readInt());
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UnsafeStateException[] newArray(int size) {
+            return new UnsafeStateException[size];
+        }
     }
 }

@@ -55,7 +55,6 @@ public final class AccessibilityTargetHelper {
         return results;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static List<AccessibilityTarget> getInstalledTargets(Context context, int shortcutType) {
         List<AccessibilityTarget> targets = new ArrayList<>();
         targets.addAll(getAccessibilityFilteredTargets(context, shortcutType));
@@ -82,7 +81,6 @@ public final class AccessibilityTargetHelper {
         return targets;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean arePackageNameAndLabelTheSame(AccessibilityTarget serviceTarget, AccessibilityTarget activityTarget) {
         try {
             ComponentName serviceComponentName = ComponentName.unflattenFromString(serviceTarget.getId());
@@ -163,7 +161,6 @@ public final class AccessibilityTargetHelper {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static View createEnableDialogContentView(Context context, final AccessibilityServiceTarget target, final View.OnClickListener allowListener, final View.OnClickListener denyListener) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View content = inflater.inflate(R.layout.accessibility_enable_service_warning, (ViewGroup) null);
@@ -188,13 +185,11 @@ public final class AccessibilityTargetHelper {
         return content;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$createEnableDialogContentView$1(AccessibilityServiceTarget target, View.OnClickListener allowListener, View view) {
         target.onCheckedChanged(true);
         allowListener.onClick(view);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$createEnableDialogContentView$2(AccessibilityServiceTarget target, View.OnClickListener denyListener, View view) {
         target.onCheckedChanged(false);
         denyListener.onClick(view);

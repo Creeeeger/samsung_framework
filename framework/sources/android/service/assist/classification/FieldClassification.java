@@ -14,13 +14,14 @@ import java.util.Set;
 /* loaded from: classes3.dex */
 public final class FieldClassification implements Parcelable {
     public static final Parcelable.Creator<FieldClassification> CREATOR = new Parcelable.Creator<FieldClassification>() { // from class: android.service.assist.classification.FieldClassification.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FieldClassification[] newArray(int size) {
             return new FieldClassification[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FieldClassification createFromParcel(Parcel in) {
             return new FieldClassification(in);
@@ -100,6 +101,23 @@ public final class FieldClassification implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hints);
         this.mGroupHints = groupHints;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) groupHints);
+    }
+
+    /* renamed from: android.service.assist.classification.FieldClassification$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FieldClassification> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FieldClassification[] newArray(int size) {
+            return new FieldClassification[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FieldClassification createFromParcel(Parcel in) {
+            return new FieldClassification(in);
+        }
     }
 
     @Deprecated

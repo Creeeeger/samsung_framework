@@ -38,7 +38,6 @@ import java.util.Map;
 
 /* loaded from: classes5.dex */
 public class ECUtil {
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int[] convertMidTerms(int[] k) {
         int[] res = new int[3];
         if (k.length != 1) {
@@ -263,8 +262,35 @@ public class ECUtil {
         return new Fingerprint(publicPoint.getEncoded(false)).toString();
     }
 
-    public static String getNameFrom(final AlgorithmParameterSpec paramSpec) {
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements PrivilegedAction {
+        final /* synthetic */ AlgorithmParameterSpec val$paramSpec;
+
+        AnonymousClass1(AlgorithmParameterSpec algorithmParameterSpec) {
+            paramSpec = algorithmParameterSpec;
+        }
+
+        @Override // java.security.PrivilegedAction
+        public Object run() {
+            try {
+                Method m = paramSpec.getClass().getMethod("getName", new Class[0]);
+                return m.invoke(paramSpec, new Object[0]);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+    }
+
+    public static String getNameFrom(AlgorithmParameterSpec paramSpec) {
         return (String) AccessController.doPrivileged(new PrivilegedAction() { // from class: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil.1
+            final /* synthetic */ AlgorithmParameterSpec val$paramSpec;
+
+            AnonymousClass1(AlgorithmParameterSpec paramSpec2) {
+                paramSpec = paramSpec2;
+            }
+
             @Override // java.security.PrivilegedAction
             public Object run() {
                 try {

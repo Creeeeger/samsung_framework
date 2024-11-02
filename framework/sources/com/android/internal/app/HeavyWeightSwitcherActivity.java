@@ -32,6 +32,9 @@ public class HeavyWeightSwitcherActivity extends Activity {
     String mNewApp;
     IntentSender mStartIntent;
     private View.OnClickListener mSwitchOldListener = new View.OnClickListener() { // from class: com.android.internal.app.HeavyWeightSwitcherActivity.1
+        AnonymousClass1() {
+        }
+
         @Override // android.view.View.OnClickListener
         public void onClick(View v) {
             try {
@@ -44,6 +47,9 @@ public class HeavyWeightSwitcherActivity extends Activity {
         }
     };
     private View.OnClickListener mSwitchNewListener = new View.OnClickListener() { // from class: com.android.internal.app.HeavyWeightSwitcherActivity.2
+        AnonymousClass2() {
+        }
+
         @Override // android.view.View.OnClickListener
         public void onClick(View v) {
             try {
@@ -66,7 +72,6 @@ public class HeavyWeightSwitcherActivity extends Activity {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +122,52 @@ public class HeavyWeightSwitcherActivity extends Activity {
                 }
             }
             setText(descriptionId, getString(descriptionStr, otherAppName));
+        }
+    }
+
+    /* renamed from: com.android.internal.app.HeavyWeightSwitcherActivity$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements View.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            try {
+                ActivityThread thread = ActivityThread.currentActivityThread();
+                IApplicationThread appThread = thread.getApplicationThread();
+                ActivityTaskManager.getService().moveTaskToFront(appThread, HeavyWeightSwitcherActivity.this.getPackageName(), HeavyWeightSwitcherActivity.this.mCurTask, 0, null);
+            } catch (RemoteException e) {
+            }
+            HeavyWeightSwitcherActivity.this.finish();
+        }
+    }
+
+    /* renamed from: com.android.internal.app.HeavyWeightSwitcherActivity$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements View.OnClickListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            try {
+                ActivityManager.getService().finishHeavyWeightApp();
+            } catch (RemoteException e) {
+            }
+            try {
+                if (HeavyWeightSwitcherActivity.this.mHasResult) {
+                    HeavyWeightSwitcherActivity heavyWeightSwitcherActivity = HeavyWeightSwitcherActivity.this;
+                    heavyWeightSwitcherActivity.startIntentSenderForResult(heavyWeightSwitcherActivity.mStartIntent, -1, null, 33554432, 33554432, 0);
+                } else {
+                    ActivityOptions activityOptions = ActivityOptions.makeBasic().setPendingIntentBackgroundActivityStartMode(1);
+                    HeavyWeightSwitcherActivity heavyWeightSwitcherActivity2 = HeavyWeightSwitcherActivity.this;
+                    heavyWeightSwitcherActivity2.startIntentSenderForResult(heavyWeightSwitcherActivity2.mStartIntent, -1, (Intent) null, 0, 0, 0, activityOptions.toBundle());
+                }
+            } catch (IntentSender.SendIntentException ex) {
+                Log.w("HeavyWeightSwitcherActivity", "Failure starting", ex);
+            }
+            HeavyWeightSwitcherActivity.this.finish();
         }
     }
 }

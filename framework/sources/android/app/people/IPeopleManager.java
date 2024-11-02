@@ -279,8 +279,9 @@ public interface IPeopleManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IPeopleManager {
+        public static class Proxy implements IPeopleManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

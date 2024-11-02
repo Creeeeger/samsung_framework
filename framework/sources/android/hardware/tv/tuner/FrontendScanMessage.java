@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendScanMessage implements Parcelable {
     public static final Parcelable.Creator<FrontendScanMessage> CREATOR = new Parcelable.Creator<FrontendScanMessage>() { // from class: android.hardware.tv.tuner.FrontendScanMessage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FrontendScanMessage createFromParcel(Parcel _aidl_source) {
             return new FrontendScanMessage(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendScanMessage[] newArray(int _aidl_size) {
             return new FrontendScanMessage[_aidl_size];
@@ -55,6 +56,10 @@ public final class FrontendScanMessage implements Parcelable {
         public static final int progressPercent = 2;
         public static final int std = 10;
         public static final int symbolRates = 4;
+    }
+
+    /* synthetic */ FrontendScanMessage(Parcel parcel, FrontendScanMessageIA frontendScanMessageIA) {
+        this(parcel);
     }
 
     public FrontendScanMessage() {
@@ -286,6 +291,23 @@ public final class FrontendScanMessage implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.hardware.tv.tuner.FrontendScanMessage$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FrontendScanMessage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendScanMessage createFromParcel(Parcel _aidl_source) {
+            return new FrontendScanMessage(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FrontendScanMessage[] newArray(int _aidl_size) {
+            return new FrontendScanMessage[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

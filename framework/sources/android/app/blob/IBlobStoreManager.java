@@ -294,8 +294,9 @@ public interface IBlobStoreManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IBlobStoreManager {
+        public static class Proxy implements IBlobStoreManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

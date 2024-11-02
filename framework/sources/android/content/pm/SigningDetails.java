@@ -21,7 +21,9 @@ public final class SigningDetails implements Parcelable {
     private final Signature[] mSignatures;
     public static final SigningDetails UNKNOWN = new SigningDetails(null, 0, null, null);
     public static final Parcelable.Creator<SigningDetails> CREATOR = new Parcelable.Creator<SigningDetails>() { // from class: android.content.pm.SigningDetails.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SigningDetails createFromParcel(Parcel source) {
             if (source.readBoolean()) {
@@ -30,7 +32,6 @@ public final class SigningDetails implements Parcelable {
             return new SigningDetails(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SigningDetails[] newArray(int size) {
             return new SigningDetails[size];
@@ -132,8 +133,14 @@ public final class SigningDetails implements Parcelable {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0091, code lost:            if (r7 < 0) goto L54;     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0093, code lost:            return r10;     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0091, code lost:
+    
+        if (r7 < 0) goto L110;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0093, code lost:
+    
+        return r10;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -448,6 +455,26 @@ public final class SigningDetails implements Parcelable {
         this.mSignatureSchemeVersion = in.readInt();
         this.mPublicKeys = in.readArraySet(boot);
         this.mPastSigningCertificates = (Signature[]) in.createTypedArray(Signature.CREATOR);
+    }
+
+    /* renamed from: android.content.pm.SigningDetails$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SigningDetails> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SigningDetails createFromParcel(Parcel source) {
+            if (source.readBoolean()) {
+                return SigningDetails.UNKNOWN;
+            }
+            return new SigningDetails(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SigningDetails[] newArray(int size) {
+            return new SigningDetails[size];
+        }
     }
 
     public boolean equals(Object o) {

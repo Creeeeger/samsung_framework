@@ -86,8 +86,9 @@ public interface ISession2TokensListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements ISession2TokensListener {
+        public static class Proxy implements ISession2TokensListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

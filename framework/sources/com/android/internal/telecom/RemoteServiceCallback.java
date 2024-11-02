@@ -98,8 +98,9 @@ public interface RemoteServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements RemoteServiceCallback {
+        public static class Proxy implements RemoteServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

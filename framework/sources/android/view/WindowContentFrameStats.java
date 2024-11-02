@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public final class WindowContentFrameStats extends FrameStats implements Parcelable {
     public static final Parcelable.Creator<WindowContentFrameStats> CREATOR = new Parcelable.Creator<WindowContentFrameStats>() { // from class: android.view.WindowContentFrameStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public WindowContentFrameStats createFromParcel(Parcel parcel) {
             return new WindowContentFrameStats(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WindowContentFrameStats[] newArray(int size) {
             return new WindowContentFrameStats[size];
@@ -20,6 +21,10 @@ public final class WindowContentFrameStats extends FrameStats implements Parcela
     };
     private long[] mFramesPostedTimeNano;
     private long[] mFramesReadyTimeNano;
+
+    /* synthetic */ WindowContentFrameStats(Parcel parcel, WindowContentFrameStatsIA windowContentFrameStatsIA) {
+        this(parcel);
+    }
 
     public WindowContentFrameStats() {
     }
@@ -75,5 +80,22 @@ public final class WindowContentFrameStats extends FrameStats implements Parcela
         builder.append(", toTimeNano:" + getEndTimeNano());
         builder.append(']');
         return builder.toString();
+    }
+
+    /* renamed from: android.view.WindowContentFrameStats$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<WindowContentFrameStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowContentFrameStats createFromParcel(Parcel parcel) {
+            return new WindowContentFrameStats(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public WindowContentFrameStats[] newArray(int size) {
+            return new WindowContentFrameStats[size];
+        }
     }
 }

@@ -450,8 +450,9 @@ public interface IDeviceIdleController extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IDeviceIdleController {
+        public static class Proxy implements IDeviceIdleController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,13 +8,14 @@ import java.util.stream.Stream;
 /* loaded from: classes4.dex */
 public class NotEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
     public static final Parcelable.Creator<NotEqual<?>> CREATOR = new Parcelable.Creator<NotEqual<?>>() { // from class: com.samsung.android.sume.core.evaluate.NotEqual.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NotEqual<?> createFromParcel(Parcel in) {
             return new NotEqual<>(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NotEqual<?>[] newArray(int size) {
             return new NotEqual[size];
@@ -66,7 +67,6 @@ public class NotEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
         super.writeToParcel(parcel, i);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public NotEqual(T value) {
         super(value);
     }
@@ -78,5 +78,22 @@ public class NotEqual<T extends Comparable<T>> extends GenericEvaluator<T> {
 
     NotEqual(Parcel in) {
         super(in);
+    }
+
+    /* renamed from: com.samsung.android.sume.core.evaluate.NotEqual$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NotEqual<?>> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotEqual<?> createFromParcel(Parcel in) {
+            return new NotEqual<>(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NotEqual<?>[] newArray(int size) {
+            return new NotEqual[size];
+        }
     }
 }

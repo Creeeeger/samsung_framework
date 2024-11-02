@@ -33,7 +33,6 @@ public final class DumpableContainerImpl implements DumpableContainer {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ String lambda$addDumpable$0(Dumpable dumpable) {
         return "name of" + dumpable;
     }

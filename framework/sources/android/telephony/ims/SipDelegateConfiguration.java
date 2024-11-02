@@ -16,13 +16,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class SipDelegateConfiguration implements Parcelable {
     public static final Parcelable.Creator<SipDelegateConfiguration> CREATOR = new Parcelable.Creator<SipDelegateConfiguration>() { // from class: android.telephony.ims.SipDelegateConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SipDelegateConfiguration createFromParcel(Parcel source) {
             return new SipDelegateConfiguration(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDelegateConfiguration[] newArray(int size) {
             return new SipDelegateConfiguration[size];
@@ -59,6 +60,14 @@ public final class SipDelegateConfiguration implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface TransportType {
+    }
+
+    /* synthetic */ SipDelegateConfiguration(long j, int i, InetSocketAddress inetSocketAddress, InetSocketAddress inetSocketAddress2, SipDelegateConfigurationIA sipDelegateConfigurationIA) {
+        this(j, i, inetSocketAddress, inetSocketAddress2);
+    }
+
+    /* synthetic */ SipDelegateConfiguration(Parcel parcel, SipDelegateConfigurationIA sipDelegateConfigurationIA) {
+        this(parcel);
     }
 
     /* loaded from: classes3.dex */
@@ -519,6 +528,23 @@ public final class SipDelegateConfiguration implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.ims.SipDelegateConfiguration$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SipDelegateConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SipDelegateConfiguration createFromParcel(Parcel source) {
+            return new SipDelegateConfiguration(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SipDelegateConfiguration[] newArray(int size) {
+            return new SipDelegateConfiguration[size];
+        }
     }
 
     public boolean equals(Object o) {

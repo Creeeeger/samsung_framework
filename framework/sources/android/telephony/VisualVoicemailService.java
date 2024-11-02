@@ -26,6 +26,9 @@ public abstract class VisualVoicemailService extends Service {
     public static final String SERVICE_INTERFACE = "android.telephony.VisualVoicemailService";
     private static final String TAG = "VvmService";
     private final Messenger mMessenger = new Messenger(new Handler() { // from class: android.telephony.VisualVoicemailService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             PhoneAccountHandle handle = (PhoneAccountHandle) msg.getData().getParcelable(VisualVoicemailService.DATA_PHONE_ACCOUNT_HANDLE, PhoneAccountHandle.class);
@@ -65,6 +68,10 @@ public abstract class VisualVoicemailService extends Service {
         private final Messenger mReplyTo;
         private final int mTaskId;
 
+        /* synthetic */ VisualVoicemailTask(Messenger messenger, int i, VisualVoicemailTaskIA visualVoicemailTaskIA) {
+            this(messenger, i);
+        }
+
         private VisualVoicemailTask(Messenger replyTo, int taskId) {
             this.mTaskId = taskId;
             this.mReplyTo = replyTo;
@@ -87,6 +94,38 @@ public abstract class VisualVoicemailService extends Service {
 
         public int hashCode() {
             return this.mTaskId;
+        }
+    }
+
+    /* renamed from: android.telephony.VisualVoicemailService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            PhoneAccountHandle handle = (PhoneAccountHandle) msg.getData().getParcelable(VisualVoicemailService.DATA_PHONE_ACCOUNT_HANDLE, PhoneAccountHandle.class);
+            VisualVoicemailTask task = new VisualVoicemailTask(msg.replyTo, msg.arg1);
+            switch (msg.what) {
+                case 1:
+                    VisualVoicemailService.this.onCellServiceConnected(task, handle);
+                    return;
+                case 2:
+                    VisualVoicemailSms sms = (VisualVoicemailSms) msg.getData().getParcelable(VisualVoicemailService.DATA_SMS, VisualVoicemailSms.class);
+                    VisualVoicemailService.this.onSmsReceived(task, sms);
+                    return;
+                case 3:
+                    VisualVoicemailService.this.onSimRemoved(task, handle);
+                    return;
+                case 4:
+                default:
+                    super.handleMessage(msg);
+                    return;
+                case 5:
+                    VisualVoicemailService.this.onStopped(task);
+                    return;
+            }
         }
     }
 

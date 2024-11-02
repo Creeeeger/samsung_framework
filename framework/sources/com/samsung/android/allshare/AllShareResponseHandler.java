@@ -12,7 +12,6 @@ abstract class AllShareResponseHandler extends Handler {
 
     public abstract void handleResponseMessage(CVMessage cVMessage);
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public AllShareResponseHandler(Looper looper) {
         super(looper);
     }

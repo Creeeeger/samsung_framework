@@ -7,7 +7,9 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TimeZoneDetectorStatus implements Parcelable {
     public static final Parcelable.Creator<TimeZoneDetectorStatus> CREATOR = new Parcelable.Creator<TimeZoneDetectorStatus>() { // from class: android.app.time.TimeZoneDetectorStatus.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TimeZoneDetectorStatus createFromParcel(Parcel in) {
             int detectorStatus = in.readInt();
@@ -16,7 +18,6 @@ public final class TimeZoneDetectorStatus implements Parcelable {
             return new TimeZoneDetectorStatus(detectorStatus, telephonyTimeZoneAlgorithmStatus, locationTimeZoneAlgorithmStatus);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneDetectorStatus[] newArray(int size) {
             return new TimeZoneDetectorStatus[size];
@@ -46,6 +47,26 @@ public final class TimeZoneDetectorStatus implements Parcelable {
 
     public String toString() {
         return "TimeZoneDetectorStatus{mDetectorStatus=" + DetectorStatusTypes.detectorStatusToString(this.mDetectorStatus) + ", mTelephonyTimeZoneAlgorithmStatus=" + this.mTelephonyTimeZoneAlgorithmStatus + ", mLocationTimeZoneAlgorithmStatus=" + this.mLocationTimeZoneAlgorithmStatus + '}';
+    }
+
+    /* renamed from: android.app.time.TimeZoneDetectorStatus$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TimeZoneDetectorStatus> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeZoneDetectorStatus createFromParcel(Parcel in) {
+            int detectorStatus = in.readInt();
+            TelephonyTimeZoneAlgorithmStatus telephonyTimeZoneAlgorithmStatus = (TelephonyTimeZoneAlgorithmStatus) in.readParcelable(getClass().getClassLoader(), TelephonyTimeZoneAlgorithmStatus.class);
+            LocationTimeZoneAlgorithmStatus locationTimeZoneAlgorithmStatus = (LocationTimeZoneAlgorithmStatus) in.readParcelable(getClass().getClassLoader(), LocationTimeZoneAlgorithmStatus.class);
+            return new TimeZoneDetectorStatus(detectorStatus, telephonyTimeZoneAlgorithmStatus, locationTimeZoneAlgorithmStatus);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TimeZoneDetectorStatus[] newArray(int size) {
+            return new TimeZoneDetectorStatus[size];
+        }
     }
 
     @Override // android.os.Parcelable

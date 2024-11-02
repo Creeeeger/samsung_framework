@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class RemoteInputHistoryItem implements Parcelable {
     public static final Parcelable.Creator<RemoteInputHistoryItem> CREATOR = new Parcelable.Creator<RemoteInputHistoryItem>() { // from class: android.app.RemoteInputHistoryItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoteInputHistoryItem createFromParcel(Parcel in) {
             return new RemoteInputHistoryItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteInputHistoryItem[] newArray(int size) {
             return new RemoteInputHistoryItem[size];
@@ -37,6 +38,23 @@ public class RemoteInputHistoryItem implements Parcelable {
         this.mText = in.readCharSequence();
         this.mMimeType = in.readStringNoHelper();
         this.mUri = (Uri) in.readParcelable(Uri.class.getClassLoader(), Uri.class);
+    }
+
+    /* renamed from: android.app.RemoteInputHistoryItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoteInputHistoryItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteInputHistoryItem createFromParcel(Parcel in) {
+            return new RemoteInputHistoryItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoteInputHistoryItem[] newArray(int size) {
+            return new RemoteInputHistoryItem[size];
+        }
     }
 
     public CharSequence getText() {

@@ -7,13 +7,14 @@ import android.os.PatternMatcher;
 /* loaded from: classes.dex */
 public class PathPermission extends PatternMatcher {
     public static final Parcelable.Creator<PathPermission> CREATOR = new Parcelable.Creator<PathPermission>() { // from class: android.content.pm.PathPermission.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PathPermission createFromParcel(Parcel source) {
             return new PathPermission(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PathPermission[] newArray(int size) {
             return new PathPermission[size];
@@ -47,5 +48,22 @@ public class PathPermission extends PatternMatcher {
         super(src);
         this.mReadPermission = src.readString();
         this.mWritePermission = src.readString();
+    }
+
+    /* renamed from: android.content.pm.PathPermission$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PathPermission> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PathPermission createFromParcel(Parcel source) {
+            return new PathPermission(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PathPermission[] newArray(int size) {
+            return new PathPermission[size];
+        }
     }
 }

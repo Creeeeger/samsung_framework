@@ -53,24 +53,28 @@ public class DERGeneralizedTime extends ASN1GeneralizedTime {
         return this.time;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1GeneralizedTime, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    int encodedLength() {
+    public int encodedLength() {
         int length = getDERTime().length;
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1GeneralizedTime, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 24, getDERTime());
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1GeneralizedTime, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    ASN1Primitive toDERObject() {
+    public ASN1Primitive toDERObject() {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1GeneralizedTime, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    ASN1Primitive toDLObject() {
+    public ASN1Primitive toDLObject() {
         return this;
     }
 }

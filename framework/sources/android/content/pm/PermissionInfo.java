@@ -106,13 +106,14 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
     public int requestRes;
     private static Parcelling.BuiltIn.ForStringSet sForStringSet = (Parcelling.BuiltIn.ForStringSet) Parcelling.Cache.getOrCreate(Parcelling.BuiltIn.ForStringSet.class);
     public static final Parcelable.Creator<PermissionInfo> CREATOR = new Parcelable.Creator<PermissionInfo>() { // from class: android.content.pm.PermissionInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PermissionInfo createFromParcel(Parcel source) {
             return new PermissionInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PermissionInfo[] newArray(int size) {
             return new PermissionInfo[size];
@@ -132,6 +133,10 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface ProtectionFlags {
+    }
+
+    /* synthetic */ PermissionInfo(Parcel parcel, PermissionInfoIA permissionInfoIA) {
+        this(parcel);
     }
 
     public static int fixProtectionLevel(int level) {
@@ -332,6 +337,23 @@ public class PermissionInfo extends PackageItemInfo implements Parcelable {
 
     public boolean isRuntime() {
         return getProtection() == 1;
+    }
+
+    /* renamed from: android.content.pm.PermissionInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PermissionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PermissionInfo createFromParcel(Parcel source) {
+            return new PermissionInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PermissionInfo[] newArray(int size) {
+            return new PermissionInfo[size];
+        }
     }
 
     private PermissionInfo(Parcel source) {

@@ -100,8 +100,9 @@ public interface IGalaxyRegistryService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IGalaxyRegistryService {
+        public static class Proxy implements IGalaxyRegistryService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

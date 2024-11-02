@@ -9,6 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehOperatorInfo implements Parcelable {
     public static final Parcelable.Creator<SehOperatorInfo> CREATOR = new Parcelable.Creator<SehOperatorInfo>() { // from class: vendor.samsung.hardware.radio.network.SehOperatorInfo.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehOperatorInfo createFromParcel(Parcel _aidl_source) {
             SehOperatorInfo _aidl_out = new SehOperatorInfo();
@@ -31,6 +34,25 @@ public class SehOperatorInfo implements Parcelable {
     public String operatorNumeric;
     public String rat;
     public int status = 0;
+
+    /* renamed from: vendor.samsung.hardware.radio.network.SehOperatorInfo$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehOperatorInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehOperatorInfo createFromParcel(Parcel _aidl_source) {
+            SehOperatorInfo _aidl_out = new SehOperatorInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehOperatorInfo[] newArray(int _aidl_size) {
+            return new SehOperatorInfo[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

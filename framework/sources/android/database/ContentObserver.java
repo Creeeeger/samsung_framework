@@ -109,12 +109,10 @@ public abstract class ContentObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dispatchChange$0(boolean selfChange, Collection uris, int flags, int userId) {
         onChange(selfChange, (Collection<Uri>) uris, flags, userId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class Transport extends IContentObserver.Stub {
         private ContentObserver mContentObserver;

@@ -9,9 +9,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: Cea708CaptionRenderer.java */
 /* loaded from: classes2.dex */
-class Cea708CCParser {
+public class Cea708CCParser {
     public static final int CAPTION_EMIT_TYPE_BUFFER = 1;
     public static final int CAPTION_EMIT_TYPE_COMMAND_CLW = 4;
     public static final int CAPTION_EMIT_TYPE_COMMAND_CWX = 3;
@@ -35,7 +36,6 @@ class Cea708CCParser {
     private int mCommand = 0;
     private DisplayListener mListener;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: Cea708CaptionRenderer.java */
     /* loaded from: classes2.dex */
     public interface DisplayListener {
@@ -43,8 +43,23 @@ class Cea708CCParser {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* compiled from: Cea708CaptionRenderer.java */
+    /* renamed from: android.media.Cea708CCParser$1 */
+    /* loaded from: classes2.dex */
+    public class AnonymousClass1 implements DisplayListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.Cea708CCParser.DisplayListener
+        public void emitEvent(CaptionEvent event) {
+        }
+    }
+
     public Cea708CCParser(DisplayListener listener) {
         this.mListener = new DisplayListener() { // from class: android.media.Cea708CCParser.1
+            AnonymousClass1() {
+            }
+
             @Override // android.media.Cea708CCParser.DisplayListener
             public void emitEvent(CaptionEvent event) {
             }

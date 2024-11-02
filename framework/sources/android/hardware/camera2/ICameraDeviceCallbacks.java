@@ -181,8 +181,9 @@ public interface ICameraDeviceCallbacks extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ICameraDeviceCallbacks {
+        public static class Proxy implements ICameraDeviceCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

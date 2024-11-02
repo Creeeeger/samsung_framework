@@ -32,7 +32,9 @@ public final class BrightnessConfiguration implements Parcelable {
     private static final String ATTR_NITS = "nits";
     private static final String ATTR_PACKAGE_NAME = "package-name";
     public static final Parcelable.Creator<BrightnessConfiguration> CREATOR = new Parcelable.Creator<BrightnessConfiguration>() { // from class: android.hardware.display.BrightnessConfiguration.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BrightnessConfiguration createFromParcel(Parcel in) {
             float[] lux = in.createFloatArray();
@@ -60,7 +62,6 @@ public final class BrightnessConfiguration implements Parcelable {
             return builder.build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BrightnessConfiguration[] newArray(int size) {
             return new BrightnessConfiguration[size];
@@ -81,6 +82,10 @@ public final class BrightnessConfiguration implements Parcelable {
     private final long mShortTermModelTimeout;
     private final float mShortTermModelUpperLuxMultiplier;
     private final boolean mShouldCollectColorSamples;
+
+    /* synthetic */ BrightnessConfiguration(float[] fArr, float[] fArr2, Map map, Map map2, String str, boolean z, long j, float f, float f2, BrightnessConfigurationIA brightnessConfigurationIA) {
+        this(fArr, fArr2, map, map2, str, z, j, f, f2);
+    }
 
     private BrightnessConfiguration(float[] lux, float[] nits, Map<String, BrightnessCorrection> correctionsByPackageName, Map<Integer, BrightnessCorrection> correctionsByCategory, String description, boolean shouldCollectColorSamples, long shortTermModelTimeout, float shortTermModelLowerLuxMultiplier, float shortTermModelUpperLuxMultiplier) {
         this.mLux = lux;
@@ -216,6 +221,45 @@ public final class BrightnessConfiguration implements Parcelable {
 
     private boolean checkFloatEquals(float one, float two) {
         return (Float.isNaN(one) && Float.isNaN(two)) || one == two;
+    }
+
+    /* renamed from: android.hardware.display.BrightnessConfiguration$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BrightnessConfiguration> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BrightnessConfiguration createFromParcel(Parcel in) {
+            float[] lux = in.createFloatArray();
+            float[] nits = in.createFloatArray();
+            Builder builder = new Builder(lux, nits);
+            int n = in.readInt();
+            for (int i = 0; i < n; i++) {
+                String packageName = in.readString();
+                BrightnessCorrection correction = BrightnessCorrection.CREATOR.createFromParcel(in);
+                builder.addCorrectionByPackageName(packageName, correction);
+            }
+            int n2 = in.readInt();
+            for (int i2 = 0; i2 < n2; i2++) {
+                int category = in.readInt();
+                BrightnessCorrection correction2 = BrightnessCorrection.CREATOR.createFromParcel(in);
+                builder.addCorrectionByCategory(category, correction2);
+            }
+            String description = in.readString();
+            builder.setDescription(description);
+            boolean shouldCollectColorSamples = in.readBoolean();
+            builder.setShouldCollectColorSamples(shouldCollectColorSamples);
+            builder.setShortTermModelTimeoutMillis(in.readLong());
+            builder.setShortTermModelLowerLuxMultiplier(in.readFloat());
+            builder.setShortTermModelUpperLuxMultiplier(in.readFloat());
+            return builder.build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BrightnessConfiguration[] newArray(int size) {
+            return new BrightnessConfiguration[size];
+        }
     }
 
     public void saveToXml(TypedXmlSerializer serializer) throws IOException {

@@ -8,13 +8,14 @@ import android.util.Log;
 /* loaded from: classes5.dex */
 public class SemContextSlocationArDistanceAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextSlocationArDistanceAttribute> CREATOR = new Parcelable.Creator<SemContextSlocationArDistanceAttribute>() { // from class: com.samsung.android.hardware.context.SemContextSlocationArDistanceAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextSlocationArDistanceAttribute createFromParcel(Parcel in) {
             return new SemContextSlocationArDistanceAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSlocationArDistanceAttribute[] newArray(int size) {
             return new SemContextSlocationArDistanceAttribute[size];
@@ -24,7 +25,27 @@ public class SemContextSlocationArDistanceAttribute extends SemContextAttribute 
     private int[] mDistanceCmd;
     private int mMode;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ SemContextSlocationArDistanceAttribute(Parcel parcel, SemContextSlocationArDistanceAttributeIA semContextSlocationArDistanceAttributeIA) {
+        this(parcel);
+    }
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextSlocationArDistanceAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextSlocationArDistanceAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextSlocationArDistanceAttribute createFromParcel(Parcel in) {
+            return new SemContextSlocationArDistanceAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextSlocationArDistanceAttribute[] newArray(int size) {
+            return new SemContextSlocationArDistanceAttribute[size];
+        }
+    }
+
     public SemContextSlocationArDistanceAttribute() {
         this.mMode = -1;
         this.mDistanceCmd = null;

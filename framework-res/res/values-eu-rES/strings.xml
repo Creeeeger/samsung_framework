@@ -335,7 +335,7 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="ext_media_unsupported_notification_message">Gailuak ez du onartzen %s hau. Ukitu hau formatu bateragarri batean konfiguratzeko.</string>
     <string name="ext_media_unsupported_notification_title">%s ez da bateragarria</string>
     <string name="ext_storage_bad_removal_button">Berrabiarazi</string>
-    <string name="ext_storage_bad_removal_title">Berrabiarazi telefonoa</string>
+    <string name="ext_storage_bad_removal_title">Berrabiarazi tableta</string>
     <string name="extmedia_format_button_format">Formatua</string>
     <string name="extmedia_format_message_usbhost">USB memorian dauden fitxategi guztiak ezabatuko dira. Ezin izango duzu ekintza hori desegin!</string>
     <string name="extmedia_format_title_usbhost">USB memoria formateatu?</string>
@@ -592,16 +592,16 @@ Tableta laster berrabiaraziko da."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Soinua Bluetooth audio gailu batean erreproduzitzen ari da. Ukitu hau hori desaktibatzeko</string>
     <string name="multisound_sound_via_headphone">%s soinua entzungailuen bidez erreproduzitzen ari da. Ukitu hau desaktibatzeko.</string>
     <string name="multisound_sound_via_headphone_multiselection">Soinua entzungailuen bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
-    <string name="multisound_sound_via_phone_speaker">%s soinua telefonoaren bozgorailuaren bidez erreproduzitzen ari da. Ukitu hau hori desaktibatzeko.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Soinua telefonoaren bozgorailuaren bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
+    <string name="multisound_sound_via_phone_speaker">%s soinua tabletaren bozgorailuaren bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Soinua tabletaren bozgorailuaren bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
     <string name="multisound_sound_via_usb_audio">%s soinua USB audio gailuaren bidez erreproduzitzen ari da. Ukitu hau desaktibatzeko.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Soinua USB audio gailuaren bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
     <string name="multisound_title">Aplikazioaren aparteko soinua</string>
     <string name="multisound_turn_off_multisound">Itzali</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ezin da exekutatu %s Samsung DeX-en. Probatu telefono moduan exekutatzen.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ezin da exekutatu %s Samsung DeX-en. Telefonoetako Pantaila nagusietarako dago diseinatuta.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Joko batzuek ukipen pantailatan baino ez dute funtzionatzen. Saguak Samsung DeX-en funtzionatzen ez badu, jolastu telefono moduan.</string>
-    <string name="my_device">Telefono hau</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ezin da exekutatu %s Samsung DeX-en. Probatu tableta moduan exekutatzen.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ezin da exekutatu %s Samsung DeX-en. Tabletetako Pantaila nagusietarako dago diseinatuta.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Joko batzuek ukipen pantailatan baino ez dute funtzionatzen. Saguak Samsung DeX-en funtzionatzen ez badu, jolastu tableta moduan.</string>
+    <string name="my_device">Tableta hau</string>
     <string name="network_locked_sim_dialog_message_ais">SIM txartelak ez du guztiz funtzionatzen telefono honekin, harpidetzaren zehaztapenak eta baldintzak gordetzen ez dituelako. Aipatutakoari buruzko galderarik izanez gero edo informazio gehiago nahi izanez gero, jarri Samsung-en Bezeroentzako zerbitzuarekin harremanetan edo jo produktuak erosi zenituen dendara.</string>
     <string name="network_locked_sim_notification_text">Sareak blok. SIM txartela barruan</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -792,7 +792,7 @@ ITZULI HONA"</string>
     <string name="policydesc_allow_desktopsync">Galarazi mahaigaineko sinkronizazioaren erabiltzea.</string>
     <string name="policydesc_allow_internetsharing">Galarazi Konexioa partekatzea erabiltzea.</string>
     <string name="policydesc_allow_irda">Galarazi IrDA erabiltzea.</string>
-    <string name="policydesc_allow_popimapemail">Galarazi POP eta IMAP mezu elektronikoak telefonoan erabiltzea.</string>
+    <string name="policydesc_allow_popimapemail">Galarazi POP eta IMAP mezu elektronikoak tabletan erabiltzea.</string>
     <string name="policydesc_allow_storagecard">Galarazi SD txartelak erabiltzea.</string>
     <string name="policydesc_allow_textmessaging">Galarazi testu eta multimedia mezularitza erabiltzea.</string>
     <string name="policydesc_allow_thirdParty">Aplikazio honek hirugarrenen aplikazioak abiaraztea galaraz dezake.</string>
@@ -838,7 +838,7 @@ ITZULI HONA"</string>
     <string name="pwd_change_enforced">Segurtasun politikak pasahitza alda dezazula behar du</string>
     <string name="recording_fail">Ezin da erabili mikrofonoa %1$s aplikazioan %2$s aplikazioak darabilen bitartean.</string>
     <string name="recording_popup">%s mikrofonoa erabiltzen ari da.</string>
-    <string name="recording_popup_device">Telefonoa</string>
+    <string name="recording_popup_device">Tableta</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth bidezko mikrofonoa erabiltzen ari da.</string>
     <string name="recording_popup_with_device">%1$s %2$s gailuko mikrofonoa erabiltzen ari da.</string>
     <string name="redo">Berriz</string>
@@ -903,12 +903,12 @@ ITZULI HONA"</string>
     <string name="screencapture_restrict">Segurtasun jarraibideak pantaila kaptura erabiltzea galarazten du.</string>
     <string name="sd_card_unavailable_message">Ezin duzu erabili SD txartela beste erabiltzaile profil bat abian zenean sartu delako.</string>
     <string name="sd_card_unavailable_title">SD txartela ez dago erabilgarri</string>
-    <string name="sdcard_bad_removal_message">SD txartel bat modu ez-seguruan kendu da. Telefonoa espero ez denean berrabiarazi ez dadin, gorde zain dauden datuak eta berrabiaraz ezazu.</string>
+    <string name="sdcard_bad_removal_message">SD txartel bat modu ez-seguruan kendu da. Tableta espero ez denean berrabiarazi ez dadin, gorde zain dauden datuak eta berrabiaraz ezazu.</string>
     <string name="sdcard_batch_decrypt_noti_content">Desenkriptatu SD txartela</string>
     <string name="sdcard_batch_decrypt_noti_title">SD txartela desenkriptatzea</string>
     <string name="sdcard_batch_decrypt_popup_content">Enkriptatutako SD txartela erabili aurretik desenkriptatu behar da. Desenkriptatzeak ordubete edo gehiago beharko du. Hasi kargatutako bateria batekin eta eduki gailua entxufatuta desenkriptatzea osatu arte. Baliteke desenkriptatze prozesua etenez gero datu batzuk edo denak galtzea.</string>
     <string name="sdcard_decrypt_err_notification">Errorea gertatu da SD txartela desenkriptatzean</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD txarteleko fitxategi batzuk beste gailu batean enkriptatu dira eta ezin dira erabili telefono honetan.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD txarteleko fitxategi batzuk beste gailu batean enkriptatu dira eta ezin dira erabili tableta honetan.</string>
     <string name="sdcard_decrypt_notification">SD txartela desenkriptatuta</string>
     <string name="sdcard_decrypt_title_notification">SD txartela desenkriptatzea</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD desenkriptatzen…</string>
@@ -1234,7 +1234,7 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="usb_abnormal_reset_title">USB konexioa ez da egonkorra</string>
     <string name="usb_abnormal_reset_toast">USB konexioa ez da egonkorra. Desentxufatu kablea eta entxufa ezazu berriz, edo probatu beste kable batekin.</string>
     <string name="usb_accessory_notification_title">Konektatu USB osagarri batera</string>
-    <string name="usb_bad_removal_message">USB bidez biltegiratzeko gailu bat modu ez-seguruan kendu da. Telefonoa espero ez denean berrabiarazi ez dadin, gorde zain dauden datuak eta berrabiaraz ezazu.</string>
+    <string name="usb_bad_removal_message">USB bidez biltegiratzeko gailu bat modu ez-seguruan kendu da. Tableta espero ez denean berrabiarazi ez dadin, gorde zain dauden datuak eta berrabiaraz ezazu.</string>
     <string name="usb_blocked_by_emergency_mode">Larrialdi moduan, USB funtzio batzuk ez daude erabilgarri.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ezin dira erabili konektatutako USB gailuarekin lotutako funtzioak Bateria aurrezteko gehienezko modua gaituta badago.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Bateria aurrezteko modu gorena aktibatuta dagoenean, USB funtzio batzuk mugatuta egongo dira.</string>
@@ -1243,13 +1243,13 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="usb_camera_connected_notification_title">Multimedia gailu gisa konektatu da</string>
     <string name="usb_camera_disconnected_notification_title">Multimedia gailua deskonektatu da</string>
     <string name="usb_cd_installer_notification_title">Software eguneraketa</string>
-    <string name="usb_charing_only_notification_title">USB bidez kargatzen</string>
+    <string name="usb_charing_only_notification_title">Konektatuta</string>
     <string name="usb_debugging_only_notification_title">Arazketa soilik</string>
-    <string name="usb_host_resource_exceed_message">Telefonoaren USB kontrolagailuak ez du gailu honetara konektatzeko behar adina baliabide. Deskonektatu gailua eta konekta ezazu berriz.</string>
+    <string name="usb_host_resource_exceed_message">Tabletaren USB kontrolagailuak ez du gailu honetara konektatzeko behar adina baliabide. Deskonektatu gailua eta konekta ezazu berriz.</string>
     <string name="usb_host_resource_exceed_title">Ez dago USB kontr. behar adina baliabide</string>
-    <string name="usb_hub_depth_exceed_message">Telefonoak USB bidezko bost konexio onartzen ditu aldi berean.</string>
+    <string name="usb_hub_depth_exceed_message">Tabletak USB bidezko bost konexio onartzen ditu aldi berean.</string>
     <string name="usb_hub_depth_exceed_title">USB bidezko gehieneko konexioak</string>
-    <string name="usb_hub_power_exceed_message">Telefonoak ezin dio eman behar adina bateria USB bidezko gailuari. Telefonora konektatu baino lehen, konektatu gailua bateria propioa duen USB gailu nagusi batera.</string>
+    <string name="usb_hub_power_exceed_message">Tabletak ezin dio eman behar adina bateria USB bidezko gailuari. Tabletara konektatu baino lehen, konektatu gailua bateria propioa duen USB gailu nagusi batera.</string>
     <string name="usb_increase_battery_usage">Baliteke USB konexioak bateria kontsumoa handitzea.</string>
     <string name="usb_mass_storage_restrict">Segurtasun jarraibideak USB biltegi masiboa erabiltzea galarazten du.</string>
     <string name="usb_midi_notification_title">MIDIrako USB</string>
@@ -1275,8 +1275,8 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="usb_storage_stop_title">USB biltegiraketa erabiltzen</string>
     <string name="usb_storage_title">USB konektatua</string>
     <string name="usb_type_c_supply_power_notification_title">USB bidez karg. ari den gailua</string>
-    <string name="usb_unblock_by_screen_unlock">Konektatutako USB gailua erabiltzeko, desblokeatu telefonoa.</string>
-    <string name="usb_unsupport_accessory_message">Telefonoak ez du onartzen USB gailu hau.</string>
+    <string name="usb_unblock_by_screen_unlock">Konektatutako USB gailua erabiltzeko, desblokeatu tableta.</string>
+    <string name="usb_unsupport_accessory_message">Tabletak ez du onartzen USB gailu hau.</string>
     <string name="usb_unsupport_accessory_title">Ez da onartzen USB gailua</string>
     <string name="usb_unsupported_device">Konektatutako USB gailua ez da bateragarria.</string>
     <string name="usb_unsupported_device_title">Gailua ez da onartzen</string>
@@ -1294,19 +1294,19 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="usb_water_dialg_method_2_desc_2">Lehortzea bizkortzeko, jarri haizagailu edo ile lehorgailu bat (aire hotzarekin soilik) atakari begira.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Hezetasuna edo material arrotz bat hauteman dugu kargatzeko/USB atakan.
 
-Begiratu kargatzeko/USB atakan material arrotzen bat badagoen; hautsa edo hondarra, esaterako. Telefonoa kalte ez dadin, ez entxufatu ezer kargatzeko ataka garbitu eta hezetasuna desagertu arte.
+Begiratu kargatzeko/USB atakan material arrotzen bat badagoen; hautsa edo hondarra, esaterako. Tableta kalte ez dadin, ez entxufatu ezer kargatzeko ataka garbitu eta hezetasuna desagertu arte.
 
 Ataka lehortzeko, astindu gailua hezetasuna irteteko eta, ondoren, itxaron lehortu arte. Baliteke zenbait ordu behar izatea. Azkarrago lehortzeko, jarri haizagailu edo ile lehorgailu bat atakari begira (aire hotza soilik)."</string>
     <string name="usb_water_dialg_positive_button">Ados</string>
     <string name="usb_water_dialg_support_wireless_charging">"Hezetasuna edo material arrotz bat hauteman dugu kargatzeko/USB atakan.
 
-Begiratu kargatzeko/USB atakan material arrotzen bat badagoen; hautsa edo hondarra, esaterako. Telefonoa kalte ez dadin, ez entxufatu ezer kargatzeko ataka garbitu eta hezetasuna desagertu arte.
+Begiratu kargatzeko/USB atakan material arrotzen bat dagoen; hautsa edo hondarra, esaterako. Tableta kalte ez dadin, ez entxufatu ezer kargatzeko ataka garbitu eta hezetasuna desagertu arte.
 
 Ataka lehortzeko, astindu gailua hezetasuna irteteko eta, ondoren, itxaron lehortu arte. Baliteke zenbait ordu behar izatea. Azkarrago lehortzeko, jarri haizagailu edo ile lehorgailu bat atakari begira (aire hotza soilik).
 
-Bitartean, hari gabe karga dezakezu telefonoa."</string>
+Bitartean, hari gabe karga dezakezu tableta."</string>
     <string name="usb_water_notification_content">Hezetasuna edo material arrotzen bat dago kargatzeko/USB atakan. Egiaztatu kargatu aurretik.</string>
-    <string name="usb_water_notification_message">Hezetasuna hauteman da kargagailuan edo USB atakan. Telefonoa kargatu aurretik, ziurtatu lehor dagoela. Ataka guztiz lehortzeak luze jo dezake.</string>
+    <string name="usb_water_notification_message">Hezetasuna hauteman da kargagailuan edo USB atakan. Tableta kargatu aurretik, ziurtatu lehor dagoela. Ataka guztiz lehortzeak luze jo dezake.</string>
     <string name="usb_water_notification_message_button">Xehetasunak</string>
     <string name="usb_water_notification_title">Egiaztatu kargagailua/USB ataka</string>
     <string name="usbhostStorage_restrict">Segurtasun jarraibideak USB ostalari biltegia erabiltzea galarazten du.</string>

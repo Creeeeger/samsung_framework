@@ -9,13 +9,14 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class PrepareGetCredentialResponseInternal implements Parcelable {
     public static final Parcelable.Creator<PrepareGetCredentialResponseInternal> CREATOR = new Parcelable.Creator<PrepareGetCredentialResponseInternal>() { // from class: android.credentials.PrepareGetCredentialResponseInternal.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrepareGetCredentialResponseInternal[] newArray(int size) {
             return new PrepareGetCredentialResponseInternal[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrepareGetCredentialResponseInternal createFromParcel(Parcel in) {
             return new PrepareGetCredentialResponseInternal(in);
@@ -27,6 +28,10 @@ public final class PrepareGetCredentialResponseInternal implements Parcelable {
     private final boolean mHasQueryApiPermission;
     private final boolean mHasRemoteResults;
     private final PendingIntent mPendingIntent;
+
+    /* synthetic */ PrepareGetCredentialResponseInternal(Parcel parcel, PrepareGetCredentialResponseInternalIA prepareGetCredentialResponseInternalIA) {
+        this(parcel);
+    }
 
     public PendingIntent getPendingIntent() {
         return this.mPendingIntent;
@@ -85,5 +90,22 @@ public final class PrepareGetCredentialResponseInternal implements Parcelable {
         this.mHasAuthenticationResults = in.readBoolean();
         this.mHasRemoteResults = in.readBoolean();
         this.mPendingIntent = (PendingIntent) in.readTypedObject(PendingIntent.CREATOR);
+    }
+
+    /* renamed from: android.credentials.PrepareGetCredentialResponseInternal$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrepareGetCredentialResponseInternal> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrepareGetCredentialResponseInternal[] newArray(int size) {
+            return new PrepareGetCredentialResponseInternal[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrepareGetCredentialResponseInternal createFromParcel(Parcel in) {
+            return new PrepareGetCredentialResponseInternal(in);
+        }
     }
 }

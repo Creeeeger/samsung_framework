@@ -8,6 +8,7 @@ import android.hardware.input.InputManager;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -132,6 +133,10 @@ public class SemHoverPopupWindow {
             this.mHoverDetectTimeMS = 750;
         }
         this.mDismissHandler = new Handler(this.mContext.getMainLooper()) { // from class: com.samsung.android.widget.SemHoverPopupWindow.1
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 if (SemHoverPopupWindow.this.mPopup != null && SemHoverPopupWindow.this.mPopup.isShowing() && msg.what == 1) {
@@ -140,6 +145,23 @@ public class SemHoverPopupWindow {
                 }
             }
         };
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.widget.SemHoverPopupWindow$1 */
+    /* loaded from: classes6.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            if (SemHoverPopupWindow.this.mPopup != null && SemHoverPopupWindow.this.mPopup.isShowing() && msg.what == 1) {
+                Log.d(SemHoverPopupWindow.TAG, "mDismissHandler handleMessage: Call dismiss");
+                SemHoverPopupWindow.this.dismiss();
+            }
+        }
     }
 
     private void initInstance() {
@@ -184,7 +206,6 @@ public class SemHoverPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setInstanceByType(int type) {
     }
 
@@ -421,7 +442,6 @@ public class SemHoverPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void showPopup() {
         try {
             if (this.mHashCodeForViewState != getStateHashCode()) {
@@ -534,8 +554,14 @@ public class SemHoverPopupWindow {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:104:0x0229, code lost:            if ((r6.top + r3[1]) != r2[1]) goto L69;     */
-    /* JADX WARN: Code restructure failed: missing block: B:92:0x01f3, code lost:            if (r8.bottom == 10000) goto L60;     */
+    /* JADX WARN: Code restructure failed: missing block: B:104:0x0229, code lost:
+    
+        if ((r6.top + r3[1]) != r2[1]) goto L193;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:92:0x01f3, code lost:
+    
+        if (r8.bottom == 10000) goto L184;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -1044,7 +1070,6 @@ public class SemHoverPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes6.dex */
     public class TouchablePopupContainer extends FrameLayout {
         private static final int MSG_TIMEOUT = 1;
@@ -1061,6 +1086,14 @@ public class SemHoverPopupWindow {
             this.mDismissPopupRunnable = null;
             this.mContainerDismissHandler = null;
             this.mContainerDismissHandler = new Handler(this.mContext.getMainLooper()) { // from class: com.samsung.android.widget.SemHoverPopupWindow.TouchablePopupContainer.1
+                final /* synthetic */ SemHoverPopupWindow val$this$0;
+
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                AnonymousClass1(Looper looper, SemHoverPopupWindow semHoverPopupWindow) {
+                    super(looper);
+                    r3 = semHoverPopupWindow;
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     Log.d(SemHoverPopupWindow.TAG, "TouchablePopupContainer: ***** mContainerDismissHandler handleMessage *****");
@@ -1070,6 +1103,28 @@ public class SemHoverPopupWindow {
                     }
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.widget.SemHoverPopupWindow$TouchablePopupContainer$1 */
+        /* loaded from: classes6.dex */
+        public class AnonymousClass1 extends Handler {
+            final /* synthetic */ SemHoverPopupWindow val$this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass1(Looper looper, SemHoverPopupWindow semHoverPopupWindow) {
+                super(looper);
+                r3 = semHoverPopupWindow;
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                Log.d(SemHoverPopupWindow.TAG, "TouchablePopupContainer: ***** mContainerDismissHandler handleMessage *****");
+                if (SemHoverPopupWindow.this.mPopup != null && SemHoverPopupWindow.this.mPopup.isShowing() && msg.what == 1) {
+                    Log.d(SemHoverPopupWindow.TAG, "TouchablePopupContainer: mContainerDismissHandler handleMessage: Call dismiss");
+                    SemHoverPopupWindow.this.dismiss();
+                }
+            }
         }
 
         @Override // android.view.ViewGroup, android.view.View
@@ -1083,6 +1138,9 @@ public class SemHoverPopupWindow {
             boolean superRet = super.dispatchTouchEvent(event);
             if (event.getAction() == 1 && SemHoverPopupWindow.this.mDismissTouchableHPWOnActionUp) {
                 postDelayed(new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow.TouchablePopupContainer.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SemHoverPopupWindow.this.dismiss();
@@ -1092,7 +1150,18 @@ public class SemHoverPopupWindow {
             return superRet;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
+        /* renamed from: com.samsung.android.widget.SemHoverPopupWindow$TouchablePopupContainer$2 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass2 implements Runnable {
+            AnonymousClass2() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemHoverPopupWindow.this.dismiss();
+            }
+        }
+
         @Override // android.view.ViewGroup, android.view.View
         public boolean dispatchHoverEvent(MotionEvent event) {
             int action = event.getAction();
@@ -1106,14 +1175,17 @@ public class SemHoverPopupWindow {
                 case 10:
                     if (pointInView(event.getX(), event.getY(), -2.0f)) {
                         this.mIsHoverExitCalled = true;
-                        Runnable runnable = new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow.TouchablePopupContainer.3
+                        AnonymousClass3 anonymousClass3 = new Runnable() { // from class: com.samsung.android.widget.SemHoverPopupWindow.TouchablePopupContainer.3
+                            AnonymousClass3() {
+                            }
+
                             @Override // java.lang.Runnable
                             public void run() {
                                 SemHoverPopupWindow.this.dismiss();
                             }
                         };
-                        this.mDismissPopupRunnable = runnable;
-                        postDelayed(runnable, 100L);
+                        this.mDismissPopupRunnable = anonymousClass3;
+                        postDelayed(anonymousClass3, 100L);
                         break;
                     } else {
                         boolean superRet = super.dispatchHoverEvent(event);
@@ -1122,6 +1194,18 @@ public class SemHoverPopupWindow {
                     }
             }
             return super.dispatchHoverEvent(event);
+        }
+
+        /* renamed from: com.samsung.android.widget.SemHoverPopupWindow$TouchablePopupContainer$3 */
+        /* loaded from: classes6.dex */
+        class AnonymousClass3 implements Runnable {
+            AnonymousClass3() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemHoverPopupWindow.this.dismiss();
+            }
         }
 
         public void resetTimeout() {

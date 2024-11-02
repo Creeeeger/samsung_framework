@@ -403,7 +403,6 @@ public final class SQLiteSession {
         this.mTransactionPool = transaction;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class Transaction {
         public boolean mChildFailed;
@@ -411,6 +410,10 @@ public final class SQLiteSession {
         public boolean mMarkedSuccessful;
         public int mMode;
         public Transaction mParent;
+
+        /* synthetic */ Transaction(TransactionIA transactionIA) {
+            this();
+        }
 
         private Transaction() {
         }

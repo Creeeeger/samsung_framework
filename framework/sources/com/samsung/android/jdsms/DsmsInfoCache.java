@@ -88,7 +88,6 @@ public final class DsmsInfoCache {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public final class DsmsInfoServiceClient {
         private static final String ACTION_INFO = "com.samsung.android.dsms.action.INFO";
@@ -99,11 +98,18 @@ public final class DsmsInfoCache {
         private boolean mIsBound;
         private Object mLock;
 
+        /* synthetic */ DsmsInfoServiceClient(DsmsInfoCache dsmsInfoCache, DsmsInfoServiceClientIA dsmsInfoServiceClientIA) {
+            this();
+        }
+
         private DsmsInfoServiceClient() {
             this.mLock = new Object();
             this.mIsBound = false;
             this.mIDsmsInfoService = null;
             this.mConnection = new ServiceConnection() { // from class: com.samsung.android.jdsms.DsmsInfoCache.DsmsInfoServiceClient.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.content.ServiceConnection
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     synchronized (DsmsInfoServiceClient.this.mLock) {
@@ -119,6 +125,29 @@ public final class DsmsInfoCache {
                     }
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.jdsms.DsmsInfoCache$DsmsInfoServiceClient$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 implements ServiceConnection {
+            AnonymousClass1() {
+            }
+
+            @Override // android.content.ServiceConnection
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                synchronized (DsmsInfoServiceClient.this.mLock) {
+                    DsmsInfoServiceClient.this.mIDsmsInfoService = IDsmsInfoService.Stub.asInterface(service);
+                    DsmsInfoServiceClient.this.mLock.notifyAll();
+                }
+            }
+
+            @Override // android.content.ServiceConnection
+            public void onServiceDisconnected(ComponentName name) {
+                synchronized (DsmsInfoServiceClient.this.mLock) {
+                    DsmsInfoServiceClient.this.mIDsmsInfoService = null;
+                }
+            }
         }
 
         public boolean isBound() {

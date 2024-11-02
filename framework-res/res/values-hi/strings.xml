@@ -384,12 +384,12 @@
     <string name="allow_settings_changes">सुरक्षा नीति सेटिंग्स बदलने से रोकती है।</string>
     <string name="alwaysUse">इस कार्रवाई के लिए डिफ़ॉल्‍ट के तौर पर इस्तेमाल करें</string>
     <string name="android_preparing_apk">%1$s तैयार हो रहा है.</string>
-    <string name="android_start_title">फ़ोन चालू हो रहा है…</string>
+    <string name="android_start_title">टैबलेट चालू हो रहा है…</string>
     <string name="android_system_label">Android सिस्‍टम</string>
     <string name="android_upgrading_complete">बूट खत्म हो रहा है.</string>
     <string name="android_upgrading_notification_title">सिस्टम अपडेट पूरा होने वाला है…</string>
     <string name="android_upgrading_starting_apps">"ऐप्स  प्रारंभ होने वाले हैं"</string>
-    <string name="android_upgrading_title">फ़ोन अपडेट हो रहा है…</string>
+    <string name="android_upgrading_title">टैबलेट अपडेट हो रहा है…</string>
     <string name="anr_activity_application">%2$s प्रतिसाद नहीं दे रहा है</string>
     <string name="anr_activity_process">%1$s प्रतिसाद नहीं दे रही है</string>
     <string name="anr_application_process">%1$s प्रतिसाद नहीं दे रहा है</string>
@@ -423,16 +423,16 @@
     <string name="app_restricted_message_concentration_mode">एकाग्रता मोड के दौरान %s को ब्लॉक किया गया है। अधिक जानने के लिए, अपने IT एडमिन से संपर्क करें।</string>
     <string name="app_running_notification_text">ज़्यादा जानकारी के लिए या ऐप्लिकेशन को रोकने के लिए छूएं.</string>
     <string name="app_running_notification_title">%1$s चल रहा है</string>
-    <string name="app_streaming_blocked_message">इस समय, आपके %1$s पर इसे ऐक्सेस नहीं किया जा सकता. इसके बजाय, अपने फ़ोन पर कोशिश करें.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">यह ऐप्लिकेशन ज़्यादा सुरक्षा का अनुरोध कर रहा है. इसके बजाय, अपने फ़ोन पर ऐक्सेस करने की कोशिश करें.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">आपके %1$s पर इसे ऐक्सेस नहीं किया जा सकता. इसके बजाय, अपने फ़ोन पर ऐक्सेस करने की कोशिश करें.</string>
+    <string name="app_streaming_blocked_message">इस समय, आपके %1$s पर इसे ऐक्सेस नहीं किया जा सकता. इसके बजाय, अपने टैबलेट पर कोशिश करें.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">यह ऐप्लिकेशन ज़्यादा सुरक्षा का अनुरोध कर रहा है. इसके बजाय, अपने टैबलेट पर ऐक्सेस करने की कोशिश करें.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">आपके %1$s पर इसे ऐक्सेस नहीं किया जा सकता. इसके बजाय, अपने टैबलेट पर ऐक्सेस करने की कोशिश करें.</string>
     <string name="app_streaming_blocked_title">%1$s उपलब्ध नहीं है</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">कैमरा उपलब्ध नहीं है</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">फ़ोन पर जारी रखें</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">माइक्रोफ़ोन उपलब्ध नहीं है</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">अनुमति ज़रूरी है</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store उपलब्ध नहीं है</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">फ़ोन की सेटिंग उपलब्ध नहीं है</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">टैबलेट की सेटिंग उपलब्ध नहीं हैं</string>
     <string name="app_suspended_default_message">फ़िलहाल %1$s उपलब्ध नहीं है. इसे %2$s के ज़रिए प्रबंधित किया जाता है.</string>
     <string name="app_suspended_more_details">ज़्यादा जानें</string>
     <string name="app_suspended_title">यह ऐप्लिकेशन उपलब्ध नहीं है</string>
@@ -503,7 +503,7 @@
     <string name="badPuk">"  लिखा गया PUK सही नहीं है."</string>
     <string name="badPuk2">आपके द्वारा प्रविष्ट किया गया PUK2 गलत है।</string>
     <string name="batt_cooldown_mode_ok">ओके</string>
-    <string name="battery_saver_charged_notification_summary">फ़ोन में काफ़ी बैटरी बची है. सुविधाओं पर अब पाबंदी नहीं है.</string>
+    <string name="battery_saver_charged_notification_summary">टैबलेट में काफ़ी बैटरी बची है. सुविधाओं पर अब पाबंदी नहीं है.</string>
     <string name="battery_saver_description">बैटरी सेवर, गहरे रंग वाली थीम को चालू करता है. साथ ही, इस मोड में बैकग्राउंड की गतिविधि, कुछ विज़ुअल इफ़ेक्ट, और कुछ सुविधाएं सीमित या बंद हो जाती हैं. कुछ इंटरनेट कनेक्शन भी पूरी तरह काम नहीं करते.</string>
     <string name="battery_saver_description_with_learn_more">बैटरी सेवर, गहरे रंग वाली थीम को चालू करता है. साथ ही, इस मोड में बैकग्राउंड की गतिविधि, कुछ विज़ुअल इफ़ेक्ट, और कुछ खास सुविधाएं कम या बंद हो जाती हैं. कुछ इंटरनेट कनेक्शन भी पूरी तरह काम नहीं करते.</string>
     <string name="battery_saver_notification_channel_name">बैटरी सेवर</string>
@@ -734,7 +734,7 @@
     <string name="decline">अस्वीकार करें</string>
     <string name="decline_remote_bugreport_action">अस्वीकार करें</string>
     <string name="default_audio_route_category_name">सिस्‍टम</string>
-    <string name="default_audio_route_name">फ़ोन</string>
+    <string name="default_audio_route_name">टैबलेट</string>
     <string name="default_audio_route_name_dock_speakers">डॉक स्‍पीकर</string>
     <string name="default_audio_route_name_external_device">बाहरी डिवाइस</string>
     <string name="default_audio_route_name_headphones">हेडफ़ोन</string>
@@ -861,7 +861,7 @@
     <string name="emergency_call_dialog_number_for_display">आपातकालीन नंबर</string>
     <string name="emergency_calls_only">केवल आपातकालीन कॉल्स</string>
     <string name="enablePin">नहीं हो सका, सिम//RUIM लॉक चालू करें.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s छूकर, उससे जुड़ी जानकारी सुनना चालू करना चाहती है. छूकर, उससे जुड़ी जानकारी सुनना चालू होने पर, जो भी आपकी उंगली के नीचे है आप उसकी जानकारी सुन या देख सकते हैं या फ़ोन के ज़रिये बातचीत करने के लिए हाथ के जेश्चर (स्पर्श) का इस्तेमाल कर सकते हैं.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s छूकर, उससे जुड़ी जानकारी सुनना चालू करना चाहती है. छूकर, उससे जुड़ी जानकारी सुनना चालू होने पर, जो भी आपकी उंगली के नीचे है आप उसकी जानकारी सुन या देख सकते हैं या टैबलेट के ज़रिये बातचीत करने के लिए हाथ के जेश्चर (स्पर्श) का इस्तेमाल कर सकते हैं.</string>
     <string name="enable_explore_by_touch_warning_title">छूकर, उससे जुड़ी जानकारी सुनना चालू करें?</string>
     <string name="error_message_change_not_allowed">आपका व्यवस्थापक इस बदलाव की अनुमति नहीं देता</string>
     <string name="error_message_title">गड़बड़ी</string>
@@ -925,7 +925,7 @@
     <string name="ext_media_unsupported_notification_message">यह डिवाइस इस %s का समर्थन नहीं करता है। किसी समर्थित फॉर्मेट में सेट करने हेतु टैप करें।</string>
     <string name="ext_media_unsupported_notification_title">असमर्थित %s</string>
     <string name="ext_storage_bad_removal_button">पुनः चालू करें</string>
-    <string name="ext_storage_bad_removal_title">अपना फोन पुनः चालू करें</string>
+    <string name="ext_storage_bad_removal_title">अपना टैबलेट पुनः चालू करें</string>
     <string name="extmedia_format_button_format">फॉर्मेट</string>
     <string name="extmedia_format_message">आपके कार्ड का सभी डेटा खो जाएगा.</string>
     <string name="extmedia_format_message_usbhost">आपके USB मेमोरी में संग्रहीत सभी फ़ाइलें मिट जाएंगी. यह क्रिया पूर्ववत नहीं की जा सकती!</string>
@@ -1129,7 +1129,7 @@
     <string name="global_action_toggle_sealed_mode">सील्ड मोड</string>
     <string name="global_action_toggle_silent_mode">साइलेंट मोड (खामोश)</string>
     <string name="global_action_voice_assist">आवाज़ से डिवाइस का इस्तेमाल</string>
-    <string name="global_actions">फ़ोन विकल्‍प</string>
+    <string name="global_actions">टैबलेट विकल्‍प</string>
     <string name="global_actions_airplane_mode_off_status">हवाई जहाज मोड बंद है</string>
     <string name="global_actions_airplane_mode_on_status">हवाई जहाज मोड चालू है</string>
     <string name="global_actions_toggle_airplane_mode">हवाई जहाज़ मोड</string>
@@ -1314,11 +1314,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>पासवर्ड लिखने के लिए टैप करें&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">गलत पिन कोड.</string>
     <string name="kg_enter_confirm_pin_hint">पिन कोड की पुष्टि करें</string>
-    <string name="kg_failed_attempts_almost_at_login">"आपने अपने अनलॉक आकार को %1$d बार गलत तरीके से आरेखित किया है. %2$d और असफल प्रयासों के बाद, आपसे अपने फ़ोन को किसी ईमेल खाते का उपयोग करके अनलॉक करने के लिए कहा जाएगा.
+    <string name="kg_failed_attempts_almost_at_login">"आपने अपने अनलॉक आकार को %1$d बार गलत तरीके से आरेखित किया है. %2$d और असफल प्रयासों के बाद, आपसे अपने टैबलेट को किसी ईमेल खाते के उपयोग से अनलॉक करने के लिए कहा जाएगा.
 
  %3$d सेकंड में फिर से प्रयास करें."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">आप फ़ोन का लॉक खोलने के लिए %1$d बार गलत तरीके से कोशिश कर चुके हैं. %2$d बार और गलत कोशिश करने पर फ़ोन फ़ैक्ट्री डिफ़ॉल्ट पर रीसेट हो जाएगा और सभी उपयोगकर्ता डेटा खो जाएगा.</string>
-    <string name="kg_failed_attempts_now_wiping">आप फ़ोन को अनलॉक करने के लिए %d बार गलत तरीके से प्रयास कर चुके हैं. फ़ोन अब फ़ैक्टरी डिफ़ॉल्ट पर रीसेट हो जाएगा.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">आप टैबलेट का लॉक खोलने के लिए %1$d बार गलत तरीके से कोशिश कर चुके हैं. %2$d बार और गलत कोशिश करने पर, टैबलेट फ़ैक्ट्री डिफ़ॉल्ट पर रीसेट हो जाएगा और सभी उपयोगकर्ता डेटा खो जाएगा.</string>
+    <string name="kg_failed_attempts_now_wiping">आप टैबलेट को अनलॉक करने के लिए %d बार गलत तरीके से प्रयास कर चुके हैं. टैबलेट अब फ़ैक्‍टरी डिफ़ॉल्‍ट पर रीसेट हो जाएगा.</string>
     <string name="kg_forgot_pattern_button_text">आकार भूल गए</string>
     <string name="kg_invalid_confirm_pin_hint">पिन कोड का मिलान नहीं होता</string>
     <string name="kg_invalid_puk">सही PUK कोड फिर से डालें. बार-बार प्रयास करने से सिम स्थायी रूप से अक्षम हो जाएगी.</string>
@@ -1406,11 +1406,11 @@
     <string name="lockscreen_carrier_default">कोई सेवा नहीं</string>
     <string name="lockscreen_carrier_noservice">(सेवा नहीं)।</string>
     <string name="lockscreen_emergency_call">आपातकाल</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">आप फ़ोन का लॉक खोलने के लिए %1$d बार गलत तरीके से कोशिश कर चुके हैं. %2$d बार और गलत कोशिश करने पर, फ़ोन फ़ैक्ट्री डिफ़ॉल्ट पर रीसेट हो जाएगा और सभी उपयोगकर्ता डेटा खो जाएगा.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"आपने अपना अनलॉक आकार %1$d बार गलत बनाया है. %2$d और असफल प्रयासों के बाद, आपसे अपने Google साइन-इन का उपयोग करके आपके फ़ोन को अनलॉक करने को कहा जाएगा.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">आप टैबलेट का लॉक खोलने के लिए %1$d बार गलत तरीके से कोशिश कर चुके हैं. %2$d बार और गलत कोशिश करने पर, टैबलेट फ़ैक्ट्री डिफ़ॉल्ट पर रीसेट हो जाएगा और सभी उपयोगकर्ता डेटा खो जाएगा.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"आपने अपना अनलॉक आकार %1$d बार गलत बनाया है. %2$d और असफल प्रयासों के बाद, आपसे अपने Google साइन-इन का उपयोग करके आपके टैबलेट को अनलॉक करने को कहा जाएगा.
 
  %3$d सेकंड में फिर से प्रयास करें."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">आप फ़ोन को गलत तरीके से %d बार अनलॉक करने का प्रयास कर चुके हैं. फ़ोन अब फ़ैक्‍टरी डिफ़ॉल्‍ट पर रीसेट हो जाएगा.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">आप टैबलेट को गलत तरीके से %d बार अनलॉक करने का प्रयास कर चुके हैं. टैबलेट अब फ़ैक्‍टरी डिफ़ॉल्‍ट पर रीसेट हो जाएगा.</string>
     <string name="lockscreen_forgot_pattern_button_text">आकार भूल गए?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"अपना उपयोगकर्ता नाम या पासवर्ड भूल गए?
  "<b>google.com/accounts/recovery</b> पर जाएं.</string>
@@ -1426,7 +1426,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">लॉक खोलने के लिए मेन्यू दबाएं या आपातलकालीन कॉल करें.</string>
     <string name="lockscreen_missing_sim_instructions">कोई सिम जोड़ें.</string>
     <string name="lockscreen_missing_sim_instructions_long">सिम मौजूद नहीं है या उसे ऐक्सेस नहीं किया जा सकता. कोई सिम जोड़ें.</string>
-    <string name="lockscreen_missing_sim_message">फ़ोन में कोई सिम नहीं है.</string>
+    <string name="lockscreen_missing_sim_message">टैबलेट में कोई सिम नहीं है.</string>
     <string name="lockscreen_missing_sim_message_short">कोई सिम नहीं है</string>
     <string name="lockscreen_network_locked_message">नेटवर्क लॉक किया गया</string>
     <string name="lockscreen_password_wrong">फिर से कोशिश करें</string>
@@ -1466,7 +1466,7 @@
     <string name="low_internal_storage_view_text">हो सकता है कुछ सिस्टम फ़ंक्शन काम नहीं करें</string>
     <string name="low_internal_storage_view_text_no_boot">सिस्टम के लिए ज़रूरी मेमोरी नहीं है. पक्का करें कि आपके पास 250एमबी की खाली जगह है और फिर से शुरू करें.</string>
     <string name="low_internal_storage_view_title">मेमोरी में जगह नहीं बची है</string>
-    <string name="low_memory">फ़ोन मेमोरी भर गयी है. जगह खाली करने के लिए कुछ फ़ाइलें मिटाएं.</string>
+    <string name="low_memory">टैबलेट का स्टोरेज भर गया है. जगह खाली करने के लिए कुछ फ़ाइलें मिटाएं.</string>
     <string name="ltb_kill_content_v2_phone">%s बंद हो गया क्योंकि इसकी वजह से आपका फोन बहुत गर्म हो रहा था। आपका फोन ठंडा हो जाने के बाद, आप बाद में इसे फिर से खोल सकते हैं।</string>
     <string name="ltb_kill_content_v2_tablet">%s बंद हो गया क्योंकि इसकी वजह से आपका टैबलेट बहुत गर्म हो रहा था। आपका टैबलेट ठंडा हो जाने के बाद, आप बाद में इसे फिर से खोल सकते हैं।</string>
     <string name="ltb_warning_button">बंद न करें</string>
@@ -1778,18 +1778,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">आपके ब्लूटूथ ऑडियो डिवाइस पर ध्वनि चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें</string>
     <string name="multisound_sound_via_headphone">आपके हेडफोन्स के माध्यम से %s ध्वनि चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें।</string>
     <string name="multisound_sound_via_headphone_multiselection">आपके हेडफोन्स के माध्यम से ध्वनि चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें।</string>
-    <string name="multisound_sound_via_phone_speaker">%s ध्वनि आपके फोन के स्पीकर के माध्यम से चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें।</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">आपके फोन के स्पीकर के माध्यम से ध्वनि चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें।</string>
+    <string name="multisound_sound_via_phone_speaker">%s ध्वनि आपके टैबलेट के स्पीकर के माध्यम से चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें।</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">आपके टैबलेट के स्पीकर के माध्यम से ध्वनि चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें।</string>
     <string name="multisound_sound_via_usb_audio">आपके USB ऑडियो डिवाइस के माध्यम से %s ध्वनि चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें।</string>
     <string name="multisound_sound_via_usb_audio_multiselection">आपके USB ऑडियो डिवाइस के माध्यम से ध्वनि चलाई जा रही है। इसे बंद करने के लिए यहां टैप करें।</string>
     <string name="multisound_title">अलग एप ध्वनि</string>
     <string name="multisound_turn_off_multisound">बंद करें</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX में %s नहीं चल सकता है। फोन मोड में चलाने का प्रयास करें।</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX में %s नहीं चल सकता है। यह फोन की होम स्क्रीन्स के लिए डिजाइन किया गया है।</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">कुछ गेम्स केवल टच स्क्रीन्स पर ही काम करते हैं। अगर Samsung DeX में माउस कंट्रोल काम नहीं करते हैं, तो इसके बजाय फोन मोड में खेलने का प्रयास करें।</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX में %s नहीं चल सकता है। टैबलेट मोड में चलाने का प्रयास करें।</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX में %s नहीं चल सकता है। यह टैबलेट की होम स्क्रीन्स के लिए डिजाइन किया गया है।</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">कुछ गेम्स केवल टच स्क्रीन्स पर ही काम करते हैं। अगर Samsung DeX में माउस कंट्रोल काम नहीं करते हैं, तो इसके बजाय टैबलेट मोड में खेलने का प्रयास करें।</string>
     <string name="music_recognition_manager_service">Music Recognition Manager Service</string>
     <string name="muted_by">%1$s कुछ आवाज़ें म्‍यूट कर रहा है</string>
-    <string name="my_device">यह फोन</string>
+    <string name="my_device">यह टैबलेट</string>
     <string name="nas_upgrade_notification_content">"'बेहतर सूचनाएं' सुविधा अब कार्रवाइयों और जवाबों के लिए सुझाव उपलब्ध कराती है. Android की, ज़रूरत के हिसाब से सूचनाएं पाने की सुविधा अब काम नहीं करती है."</string>
     <string name="nas_upgrade_notification_disable_action">बंद करें</string>
     <string name="nas_upgrade_notification_enable_action">चालू करें</string>
@@ -1954,23 +1954,23 @@
     <string name="permdesc_bindNotificationListenerService">उपयोगकर्ता को सूचना सुनने वाली सेवा के सबसे बेहतर इंटरफ़ेस से जुड़ने देती है. सामान्य ऐप के लिए कभी भी इसकी ज़रुरत नहीं होगी.</string>
     <string name="permdesc_bind_connection_service">कॉल करने/पाने के लिए ऐप्स को टेलीफ़ोनी सेवा के साथ सहभागिता करने दें.</string>
     <string name="permdesc_bind_incall_service">ऐप को यह नियंत्रित करने देती है कि उपयोगकर्ता को इन-कॉल स्क्रीन कब और कैसी दिखाई देती है.</string>
-    <string name="permdesc_bluetooth">ऐप्स को फ़ोन पर ब्लूटूथ का कॉन्‍फ़िगरेशन देखने, और युग्‍मित डिवाइस के साथ कनेक्‍शन बनाने और स्‍वीकार करने देता है.</string>
-    <string name="permdesc_bluetoothAdmin">ऐप्स को स्‍थानीय ब्लूटूथ फ़ोन कॉन्‍फ़िगर करने देता है, और रिमोट डिवाइस के साथ खोजने और युग्‍मित करने देता है.</string>
+    <string name="permdesc_bluetooth">ऐप्स को टैबलेट पर ब्लूटूथ का कॉन्‍फ़िगरेशन देखने, और युग्‍मित डिवाइस के साथ कनेक्‍शन बनाने और स्‍वीकार करने देता है.</string>
+    <string name="permdesc_bluetoothAdmin">किसी ऐप्स को स्‍थानीय ब्लूटूथ टैबलेट कॉन्‍फ़िगर करने की और रिमोट डिवाइस के साथ खोजने और युग्‍मित करने देता है.</string>
     <string name="permdesc_bluetooth_advertise">अनुमति मिलने पर, ऐप्लिकेशन, आस-पास मौजूद ब्लूटूथ डिवाइसों पर विज्ञापन दिखा पाएगा</string>
     <string name="permdesc_bluetooth_connect">अनुमति देने पर, ऐप्लिकेशन, जोड़े गए ब्लूटूथ डिवाइसों से कनेक्ट कर पाएगा</string>
     <string name="permdesc_bluetooth_scan">अनुमति देने पर, ऐप्लिकेशन, आस-पास मौजूद ब्लूटूथ डिवाइसों को खोज पाएगा और उनसे जुड़ पाएगा</string>
     <string name="permdesc_bodySensors">इससे ऐप्लिकेशन को इस्तेमाल करने के दौरान, उसे बॉडी सेंसर के डेटा को ऐक्सेस करने की अनुमति मिलती है. इसमें धड़कन की दर, शरीर का तापमान, और खून में ऑक्सीजन का प्रतिशत जैसी जानकारी शामिल होती है.</string>
     <string name="permdesc_bodySensors_background">इससे ऐप्लिकेशन के बैकग्राउंड में चलने के दौरान, उसे बॉडी सेंसर के डेटा को ऐक्सेस करने की अनुमति मिलती है. इसमें धड़कन की दर, शरीर का तापमान, और खून में ऑक्सीजन का प्रतिशत जैसी जानकारी शामिल होती है.</string>
-    <string name="permdesc_broadcastSticky">ऐप्स को स्‍टिकी प्रसारण भेजने देता है, जो प्रसारण खत्म होने के बाद भी बने रहते हैं. अत्यधिक उपयोग, फ़ोन की बहुत ज़्यादा स्टोरेज का उपयोग करके उसे धीमा या अस्‍थिर कर सकता है.</string>
+    <string name="permdesc_broadcastSticky">ऐप्स को स्‍टिकी प्रसारण भेजने देता है, जो प्रसारण खत्म होने के बाद भी बने रहते हैं. अत्यधिक उपयोग, टैबलेट की बहुत ज़्यादा स्टोरेज का उपयोग करके उसे धीमा या अस्‍थिर कर सकता है.</string>
     <string name="permdesc_callCompanionApp">ऐप्लिकेशन को डिवाइस पर चल रहे कॉल देखने और नियंत्रित करने देती है. इसमें कॉल के नंबर और उनकी स्थिति से जुड़ी जानकारी शामिल है.</string>
     <string name="permdesc_callPhone">इससे ऐप्लिकेशन, आपकी अनुमति के बिना ही किसी के फ़ोन पर कॉल कर सकता है. इस वजह से, हो सकता है कि किसी को भी अनचाहे कॉल लग जाएं या कॉल का शुल्क कट जाए. ध्यान दें कि यह अनुमति मिलने से, ऐप्लिकेशन आपातकालीन नंबर पर कॉल नहीं कर सकता. नुकसान पहुंचाने वाले ऐप्लिकेशन, आपकी अनुमति के बिना किसी को कॉल कर सकते हैं. इस वजह से, कॉल का शुल्क कट सकता है. इसके अलावा, ये ऐप्लिकेशन, कैरियर कोड वाले नंबर डायल कर सकते हैं. इससे, आने वाले (इनकमिंग) कॉल दूसरे नंबर पर अपने-आप फ़ॉरवर्ड हो जाते हैं.</string>
     <string name="permdesc_camera">जब इस ऐप्लिकेशन का इस्तेमाल किया जा रहा हो, तब यह कैमरे का इस्तेमाल करके, तस्वीरें ले सकता है और वीडियो रिकॉर्ड कर सकता है.</string>
     <string name="permdesc_cameraOpenCloseListener">यह ऐप्लिकेशन, डिवाइस के कैमरे को चालू या बंद करते समय (किसी ऐप्लिकेशन से) कॉलबैक पा सकता है.</string>
     <string name="permdesc_changeNetworkState">"ऐप्स  को नेटवर्क कनेक्टिविटी की स्थिति बदलने देता है."</string>
     <string name="permdesc_changeTetherState">ऐप्स को टेदर की गई नेटवर्क कनेक्‍टिविटी की स्‍थिति बदलने देता है.</string>
-    <string name="permdesc_changeWifiMulticastState">"एप्लिकेशन को वाई-फ़ाई  नेटवर्क पर मल्टीकास्ट पते के इस्तेमाल से सिर्फ़ आपके फ़ोन पर ही नहीं, बल्कि सभी डिवाइस पर भेजे गए पैकेट पाने देता है. यह गैर-मल्टीकास्ट मोड से ज़्यादा पावर का इस्तेमाल करता है."</string>
+    <string name="permdesc_changeWifiMulticastState">एप्लिकेशन को वाई-फ़ाई नेटवर्क पर मल्टीकास्ट पते के इस्तेमाल से सिर्फ़ आपके टैबलेट पर ही नहीं, बल्कि सभी डिवाइस पर भेजे गए पैकेट पाने देता है. यह गैर-मल्टीकास्ट मोड से ज़्यादा पावर का इस्तेमाल करता है.</string>
     <string name="permdesc_changeWifiState">"ऐप्स  को वाई-फ़ाई  पहुंच बिंदुओं से कनेक्ट और डिसकनेक्ट करने और वाई-फ़ाई  नेटवर्क के लिए डिवाइस कॉन्फ़िगरेशन में परिवर्तन करने देता है."</string>
-    <string name="permdesc_changeWimaxState">ऐप्स को WiMAX नेटवर्क से फ़ोन को कनेक्‍ट और डिस्‍कनेक्‍ट करने देता है.</string>
+    <string name="permdesc_changeWimaxState">ऐप्स को WiMAX नेटवर्क से टैबलेट को कनेक्‍ट और डिस्‍कनेक्‍ट करने देता है.</string>
     <string name="permdesc_companionProfileWatch">इससे साथी ऐप्लिकेशन को स्मार्टवॉच मैनेज की अनुमति मिलती है.</string>
     <string name="permdesc_connection_manager">ऐप को टेलीकॉम कनेक्शन प्रबंधित करने देती है.</string>
     <string name="permdesc_control_incall_experience">ऐप को इन कॉल उपयोगकर्ता अनुभव लेने देती है.</string>
@@ -1998,7 +1998,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">इससे ऐप्लिकेशन, \"specialUse\" टाइप वाली फ़ोरग्राउंड सेवाओं का इस्तेमाल कर पाता है</string>
     <string name="permdesc_foregroundServiceSystemExempted">इससे ऐप्लिकेशन, \"systemExempted\" टाइप वाली फ़ोरग्राउंड सेवाओं का इस्तेमाल कर पाता है</string>
     <string name="permdesc_fullScreenIntent">यह अनुमति मिलने के बाद ऐप्लिकेशन, लॉक किए गए डिवाइस में सूचनाओं को फ़ुल स्क्रीन मोड में दिखाता है</string>
-    <string name="permdesc_getAccounts">एप्लिकेशन को फ़ोन से ज्ञात खातों की सूची पाने देता है. इसमें वे खाते शामिल हो सकते हैं जिन्‍हें इंस्‍टॉल किए गए एप्लिकेशन ने बनाया है.</string>
+    <string name="permdesc_getAccounts">एप्लिकेशन को टैबलेट से ज्ञात खातों की सूची पाने देता है. इसमें वे खाते शामिल हो सकते हैं जिन्‍हें इंस्‍टॉल किए गए एप्लिकेशन ने बनाया है.</string>
     <string name="permdesc_getAppList">किसी एप को स्थापित किए गए एप्स की सूची पढ़ने की अनुमति देता है।</string>
     <string name="permdesc_getPackageSize">ऐप को उसका कोड, डेटा, और कैश मेमोरी के आकारों को फिर से पाने देता है</string>
     <string name="permdesc_getTasks">ऐप को माजूदा समय में और हाल ही में चल रही कार्रवाइयों के बारे में जानकारी निकालने देता है. इससे ऐप डिवाइस पर इस्तेमाल किए गए ऐप के बारे में जानकारी खोज सकता है.</string>
@@ -2097,16 +2097,16 @@
     <string name="permdesc_nearby_wifi_devices">इससे, ऐप्लिकेशन आस-पास मौजूद वाई-फ़ाई डिवाइसों की जानकारी दिखा पाएगा, उनसे कनेक्ट कर पाएगा, और उनकी दूरी पता लगा पाएगा</string>
     <string name="permdesc_nfc">"ऐप्स  को नियर फ़ील्ड कम्यूनिकेशन (NFC) टैग, कार्ड, और रीडर के साथ संचार करने देता है."</string>
     <string name="permdesc_observeCompanionDevicePresence">इससे साथी ऐप्लिकेशन को स्मार्टवॉच से जुड़े डिवाइस के आस-पास या दूर होने का पता लगाने की अनुमति मिलती है.</string>
-    <string name="permdesc_persistentActivity">"ऐप्स को मेमोरी में स्‍वयं के कुछ हिस्सों को लगातार बनाने देता है. यह अन्‍य ऐप्स  के लिए उपलब्‍ध स्‍मृति को सीमित कर फ़ोन को धीमा कर सकता है."</string>
+    <string name="permdesc_persistentActivity">"ऐप्स को मेमोरी में स्‍वयं के कुछ हिस्सों को लगातार बनाने की अनुमति देता है. यह अन्‍य ऐप्स  के लिए उपलब्‍ध स्‍मृति को सीमित कर टैबलेट को धीमा कर सकता है."</string>
     <string name="permdesc_postNotification">ऐप्लिकेशन को सूचनाएं दिखाने की अनुमति दें</string>
     <string name="permdesc_preferredPaymentInfo">अगर ऐप्लिकेशन को अनुमति दी जाती है, तो वह पैसे चुकाने की आपकी उस पसंदीदा सेवा के बारे में जानकारी पा सकता है जो NFC का इस्तेमाल करती है. इसमें रजिस्टर किए गए डिवाइस और उनके आउटपुट के रूट जैसी जानकारी शामिल होती है.</string>
     <string name="permdesc_processOutgoingCalls">ऐप कॉल को किसी और नंबर पर भेजने या कॉल को पूरी तरह रद्द करने के विकल्प के साथ, किए गए कॉल (आउटगोइंग) के नंबर को देख सकता है.</string>
     <string name="permdesc_queryAllPackages">यह किसी ऐप्लिकेशन को, डिवाइस पर इंस्टॉल किए गए सभी पैकेज देखने की अनुमति देता है.</string>
     <string name="permdesc_readBasicPhoneState">ऐसा करने पर, इस ऐप्लिकेशन को डिवाइस की सामान्य टेलिफ़ोनी सुविधाएं ऐक्सेस करने की अनुमति मिलती है.</string>
-    <string name="permdesc_readCalendar">यह ऐप्लिकेशन आपके फ़ोन पर संग्रहित सभी कैलेंडर इवेंट पढ़ सकता है और आपका कैलेंडर डेटा शेयर कर सकता है या सहेज सकता है.</string>
+    <string name="permdesc_readCalendar">यह ऐप्लिकेशन आपके टैबलेट पर संग्रहित सभी कैलेंडर इवेंट पढ़ सकता है और आपका कैलेंडर डेटा शेयर कर सकता है या सहेज सकता है.</string>
     <string name="permdesc_readCallLog">यह ऐप्लिकेशन आपका कॉल इतिहास पढ़ सकता है.</string>
     <string name="permdesc_readCellBroadcasts">ऐप को, वो सेल ब्रॉडकास्ट (CBC) मैसेज पढ़ने देता है जो आपके डिवाइस को मिले हैं. सेल ब्रॉडकास्ट (CBC) अलर्ट कुछ स्थानों (लोकेशन) पर आपको आपातकालीन स्‍थितियों की चेतावनी देने के लिए दिए जाते हैं. आपातकालीन सेल ब्रॉडकास्ट (CBC) मिलने पर, धोखा देने वाले ऐप आपके डिवाइस के परफ़ॉर्मेंस या कार्यवाही में दखल दे सकते हैं.</string>
-    <string name="permdesc_readContacts">यह ऐप्लिकेशन को आपके फ़ोन पर मौजूद संपर्कों का डेटा देखने की अनुमति देता है. ऐप्लिकेशन को आपके फ़ोन पर मौजूद उन खातों को ऐक्सेस करने की अनुमति भी होगी जिनसे संपर्क बनाए गए हैं. इसमें वे खाते भी शामिल हो सकते हैं जिन्हें आपके इंस्टॉल किए हुए ऐप्लिकेशन ने बनाया है. इस अनुमति के बाद, ऐप्लिकेशन आपके संपर्कों का डेटा सेव कर सकते हैं. हालांकि, नुकसान पहुंचाने वाले ऐप्लिकेशन, आपको बताए बिना ही संपर्कों का डेटा शेयर कर सकते हैं.</string>
+    <string name="permdesc_readContacts">यह ऐप्लिकेशन को आपके टैबलेट पर मौजूद संपर्कों का डेटा देखने की अनुमति देता है. ऐप्लिकेशन को आपके टैबलेट पर मौजूद उन खातों को ऐक्सेस करने की अनुमति भी होगी जिनसे संपर्क बनाए गए हैं. इसमें वे खाते भी शामिल हो सकते हैं जिन्हें आपके इंस्टॉल किए हुए ऐप्लिकेशन ने बनाया है. इस अनुमति के बाद, ऐप्लिकेशन आपके संपर्कों का डेटा सेव कर सकते हैं. हालांकि, नुकसान पहुंचाने वाले ऐप्लिकेशन, आपको बताए बिना ही संपर्कों का डेटा शेयर कर सकते हैं.</string>
     <string name="permdesc_readInstallSessions">ऐप्लिकेशन को इंस्टॉल सत्रों को पढ़ने देती है. इससे उसे सक्रिय पैकेज इंस्टॉलेशन के बारे में विवरण देखने की अनुमति मिल जाती है.</string>
     <string name="permdesc_readMediaAudio">अपने डिवाइस के शेयर किए गए स्टोरेज से, ऐप्लिकेशन को ऑडियो फ़ाइलें पढ़ने की अनुमति दें.</string>
     <string name="permdesc_readMediaImages">अपने डिवाइस के शेयर किए गए स्टोरेज से, ऐप्लिकेशन को इमेज फ़ाइलें देखने की अनुमति दें.</string>
@@ -2114,11 +2114,11 @@
     <string name="permdesc_readNetworkUsageHistory">"किसी ऐप्स  को विशिष्ट नेटवर्क और ऐप्स के लिए ऐतिहासिक नेटवर्क उपयोग को पढ़ने देता है."</string>
     <string name="permdesc_readPhoneNumbers">ऐप को डिवाइस के फ़ोन नंबर का इस्तेमाल करने देती है.</string>
     <string name="permdesc_readPhoneState">"ऐप्स को डिवाइस की फ़ोन सुविधाओं तक पहुंचने देता है. यह अनुमति ऐप्स  को फ़ोन नंबर और डिवाइस आईडी, कॉल सक्रिय है या नहीं, और कॉल द्वारा कनेक्ट किया गया दूरस्‍थ नंबर तय करने देती है."</string>
-    <string name="permdesc_readSms">यह ऐप आपके फ़ोन पर सहेजे गए सभी मैसेज (एसएमएस) पढ़ सकता है.</string>
+    <string name="permdesc_readSms">यह ऐप आपके टैबलेट पर सहेजे गए सभी मैसेज (एसएमएस) पढ़ सकता है.</string>
     <string name="permdesc_readSyncSettings">"ऐप्स  को किसी खाते की समन्वयन सेटिंग पढ़ने देता है. उदाहरण के लिए, इससे यह तय किया जा सकता है कि लोग ऐप्स  किसी खाते के साथ समन्‍वयित है या नहीं."</string>
     <string name="permdesc_readSyncStats">"ऐप्स  को किसी खाते के समन्वयन आंकड़े, साथ ही समन्‍वयित इवेंट का इतिहास और समन्‍वयित डेटा की मात्रा पढ़ने देता है."</string>
     <string name="permdesc_readVisualUserSelect">इससे ऐप्लिकेशन को, डिवाइस के शेयर किए गए स्टोरेज से चुनी गई इमेज और वीडियो फ़ाइलों को देखने की अनुमति मिलती है.</string>
-    <string name="permdesc_receiveBootCompleted">सिस्‍टम के चालू होते ही ऐप को अपने आप शुरू होने देती है. इससे फ़ोन को चालू होने में ज़्यादा समय लग सकता है और ऐप के लगातार चलते रहने से पूरा फ़ोन धीमा हो सकता है.</string>
+    <string name="permdesc_receiveBootCompleted">ऐप्लिकेशन को सिस्टम से बूटिंग पूरी करते ही अपने आप शुरू करने देता है. इससे टैबलेट को शुरू होने में ज़्यादा समय लग सकता है और ऐप्लिकेशन निरंतर चलाकर संपूर्ण टैबलेट को धीमा करने देता है.</string>
     <string name="permdesc_receiveMms">ऐप को मल्टीमीडिया मैसेज (एमएमएस) को पाने और उन पर कार्रवाई करने देता है. इसका मतलब है कि ऐप आपके डिवाइस पर भेजे गए मैसेज की निगरानी आपको दिखाए बिना कर सकता है और उन्‍हें हटा सकता है.</string>
     <string name="permdesc_receiveSms">एप्लिकेशन को मैसेज (एसएमएस) पाने और प्रोसेस करने देता है. इसका मतलब है कि एप्लिकेशन आपके डिवाइस पर भेजे गए मैसेज की निगरानी आपको दिखाए बिना कर सकता है और उन्‍हें हटा सकता है.</string>
     <string name="permdesc_receiveWapPush">एप्लिकेशन को WAP मैसेज पाने और प्रोसेस करने देता है. इस अनुमति में आपको भेजे गए मैसेज की निगरानी आपको दिए एप्लिकेशन को दिखाए बिना करने और हटाने की क्षमता शामिल है.</string>
@@ -2154,7 +2154,7 @@
     <string name="permdesc_subscribedFeedsRead">एप्‍लिकेशन को मौजूदा समय में सिंक फ़ीड के बारे में जानकारी देता है.</string>
     <string name="permdesc_systemAlertWindow">यह ऐप्लिकेशन, दूसरे ऐप्लिकेशन के ऊपर या स्क्रीन के अन्य भागों पर दिखाई दे सकता है. इससे ऐप्लिकेशन के सामान्य उपयोग में बाधा आ सकती है और दूसरे ऐप्लिकेशन के दिखाई देने के तरीकों में बदलाव हो सकता है.</string>
     <string name="permdesc_systemCamera">यह खास सिस्टम ऐप्लिकेशन जब चाहे, तस्वीरें लेने और वीडियो रिकॉर्ड करने के लिए सिस्टम के कैमरे का इस्तेमाल कर सकता है. इसके लिए ऐप्लिकेशन को android.permission.CAMERA की अनुमति देना भी ज़रूरी है</string>
-    <string name="permdesc_transmitIr">ऐप्लिकेशन को फ़ोन के इंफ़्रारेड ट्रांसमीटर का उपयोग करने देती है.</string>
+    <string name="permdesc_transmitIr">ऐप्लिकेशन को टैबलेट के इंफ़्रारेड ट्रांसमीटर का उपयोग करने देती है.</string>
     <string name="permdesc_turnScreenOn">ऐप्लिकेशन को स्क्रीन चालू करने की अनुमति दें.</string>
     <string name="permdesc_ucsPlugin">तृतीय-पक्ष क्रेडेंशियल स्टोरेज प्लग-इन्स के साथ कार्य करें।</string>
     <string name="permdesc_uninstall_shortcut">ऐप्‍लिकेशन को उपयोगकर्ता की रोक के बिना होमस्‍क्रीन शॉर्टकट निकालने की अनुमति देता है.</string>
@@ -2168,10 +2168,10 @@
     <string name="permdesc_vibrate">ऐप्स को कंपनकर्ता नियंत्रित करने देता है.</string>
     <string name="permdesc_vibrator_state">इससे ऐप्लिकेशन, डिवाइस का वाइब्रेटर ऐक्सेस कर पाएगा.</string>
     <string name="permdesc_videoWrite">इससे ऐप्लिकेशन को आपके वीडियो संग्रह में बदलाव करने की मंज़ूरी दी जाती है.</string>
-    <string name="permdesc_wakeLock">"ऐप्स  को फ़ोन को प्रयोग में नहीं होने से रोकता है."</string>
-    <string name="permdesc_writeCalendar">यह ऐप्लिकेशन आपके फ़ोन पर मौजूद कैलेंडर इवेंट जोड़, निकाल या बदल सकता है. यह ऐप्लिकेशन ऐसे संदेश भेज सकता है जो कैलेंडर स्वामियों से आए हुए लग सकते हैं या यह स्वामियों को सूचित किए बिना इवेंट में बदलाव कर सकता है.</string>
-    <string name="permdesc_writeCallLog">ऐप को आने वाला कॉल (इनकमिंग) और किया जाने वाला कॉल (आउटगोइंग) डेटा सहित, आपके फ़ोन के कॉल लॉग को बदलने की अनुमति देता है. धोखा देने वाले ऐप, इसका इस्तेमाल करके आपके कॉल लॉग को मिटा या बदल सकते हैं.</string>
-    <string name="permdesc_writeContacts">यह ऐप्लिकेशन को आपके फ़ोन पर सेव किए संपर्कों के डेटा में बदलाव करने की अनुमति देता है. इस अनुमति के बाद, ऐप्लिकेशन आपके संपर्कों का डेटा मिटा सकते हैं.</string>
+    <string name="permdesc_wakeLock">"ऐप्स  को टैबलेट को प्रयोग में नहीं हो जाने से रोकता है."</string>
+    <string name="permdesc_writeCalendar">यह ऐप्लिकेशन आपके टैबलेट पर मौजूद कैलेंडर इवेंट जोड़, निकाल या बदल सकता है. यह ऐप्लिकेशन ऐसे संदेश भेज सकता है जो कैलेंडर स्वामियों से आए हुए लग सकते हैं या यह स्वामियों को सूचित किए बिना इवेंट में बदलाव कर सकता है.</string>
+    <string name="permdesc_writeCallLog">ऐप को आने वाला कॉल (इनकमिंग) और किया जाने वाला कॉल (आउटगोइंग) डेटा सहित, आपके टैबलेट के कॉल लॉग को बदलने की अनुमति देता है. धोखा देने वाले ऐप, इसका इस्तेमाल करके आपके कॉल लॉग को मिटा या बदल सकते हैं.</string>
+    <string name="permdesc_writeContacts">यह ऐप्लिकेशन को आपके टैबलेट पर सेव किए संपर्कों के डेटा में बदलाव करने की अनुमति देता है. इस अनुमति के बाद, ऐप्लिकेशन आपके संपर्कों का डेटा मिटा सकते हैं.</string>
     <string name="permdesc_writeSettings">ऐप्लिकेशन को सिस्टम सेटिंग डेटा में बदलाव करने देता है. नुकसान पहुंचाने वाले ऐप्लिकेशन आपके सिस्टम के कॉन्फ़िगरेशन को खराब सकते हैं.</string>
     <string name="permdesc_writeSyncSettings">"ऐप्स  को किसी खाते की समन्वयन सेटिंग संशोधित करने देता है. उदाहरण के लिए, इसका उपयोग लोग ऐप्स  का समन्‍वयन किसी खाते से सक्षम करने में हो सकता है."</string>
     <string name="permgroupdesc_activityRecognition">शारीरिक गतिविधि की जानकारी पा सकता है</string>
@@ -2446,7 +2446,7 @@
     <string name="permlab_uwb_ranging">आस-पास मौजूद Ultra-Wideband डिवाइसों के बीच की दूरी का पता लगाएं</string>
     <string name="permlab_vibrate">कंपन (वाइब्रेशन) को नियंत्रित करें</string>
     <string name="permlab_videoWrite">अपने वीडियो संग्रह में बदलाव करने की अनुमति दें</string>
-    <string name="permlab_wakeLock">फ़ोन को सोने (कम बैटरी मोड) से रोकें</string>
+    <string name="permlab_wakeLock">टैबलेट को सोने (कम बैटरी मोड) से रोकें</string>
     <string name="permlab_writeCalendar">आपकी जानकारी के बि‍ना कैलेंडर इवेंट जोड़ें या उनमें बदलाव करें और अति‍थि‍यों को ईमेल भेजें</string>
     <string name="permlab_writeCallLog">कॉल लॉग लिखें</string>
     <string name="permlab_writeContacts">अपने संपर्क बदलें</string>
@@ -2488,7 +2488,7 @@
     <string name="policydesc_allow_desktopsync">डेस्कटॉप सिंक का उपयोग रोकें।</string>
     <string name="policydesc_allow_internetsharing">मोबाइल हॉटस्पॉट का उपयोग रोकें।</string>
     <string name="policydesc_allow_irda">IrDA का उपयोग रोकें।</string>
-    <string name="policydesc_allow_popimapemail">फोन पर POP और IMAP ईमेल का उपयोग रोकें।</string>
+    <string name="policydesc_allow_popimapemail">टैबलेट पर POP और IMAP ईमेल का उपयोग रोकें।</string>
     <string name="policydesc_allow_storagecard">SD कार्ड्स का उपयोग रोकें।</string>
     <string name="policydesc_allow_textmessaging">टेक्स्ट और मल्टीमीडिया सन्देश सेवा का उपयोग रोकें।</string>
     <string name="policydesc_allow_thirdParty">यह एप्लीकेशन तृतीय-पक्ष के एप्लीकेशंस को चलने से रोक सकती है।</string>
@@ -2506,10 +2506,10 @@
     <string name="policydesc_setGlobalProxy">नीति चालू होने के दौरान इस्तेमाल करने के लिए डिवाइस ग्लोबल प्रॉक्‍सी सेट करें. केवल डिवाइस का मालिक ही ग्लोबल प्रॉक्‍सी सेट कर सकता है.</string>
     <string name="policydesc_unsigned_app">य‍ह एप्लीकेशन अज्ञात स्रोतों से एप्लीकेशंस को चलाने से रोक सकती है।</string>
     <string name="policydesc_unsigned_pkg">य‍ह एप्लीकेशन अज्ञात स्रोतों से एप्लीकेशंस को स्थापित करने से रोक सकती है।</string>
-    <string name="policydesc_watchLogin">स्क्रीन को अनलॉक करते समय जितनी बार गलत पासवर्ड लिखा गया है, उसकी संख्या पर नज़र रखना और अगर बहुत बार गलत पासवर्ड डाले गए हैं, तो फ़ोन को लॉक कर देना या फ़ोन का सारा डेटा मिटा देना.</string>
-    <string name="policydesc_watchLogin_secondaryUser">स्‍क्रीनका लॉक खोलते समय गलत तरीके से लिखे गए पासवर्ड पर नज़र रखें, और अगर बार-बार गलत पासवर्ड लिखा जाता है तो फ़ोन को लॉक करें या इस उपयोगकर्ता का सभी डेटा मिटा दें.</string>
-    <string name="policydesc_wipeData">इससे फ़ैक्‍टरी डेटा रीसेट करके, चेतावनी दिए बिना फ़ोन का डेटा मिट जाता है.</string>
-    <string name="policydesc_wipeData_secondaryUser">इस फ़ोन पर मौजूद इस उपयोगकर्ता का डेटा बिना चेतावनी के मिटा दें.</string>
+    <string name="policydesc_watchLogin">स्‍क्रीन को अनलॉक करते समय गलत लिखे गए पासवर्ड की संख्‍या पर निगरानी करें, और बहुत ज़्यादा बार गलत पासवर्ड लिखे जाने पर टैबलेट लॉक करें या टैबलेट का संपूर्ण डेटा मिटाएं.</string>
+    <string name="policydesc_watchLogin_secondaryUser">स्‍क्रीन का लॉक खोलते समय गलत तरीके से लिखे गए पासवर्ड पर नज़र रखें, और अगर बार-बार ज़्यादा पासवर्ड लिखे जाते हैं तो टैबलेट को लॉक करें या इस उपयोगकर्ता का सभी डेटा मिटा दें.</string>
+    <string name="policydesc_wipeData">फ़ैक्‍टरी डेटा रीसेट करके चेतावनी दिए बिना फ़ोन का डेटा मिटाना.</string>
+    <string name="policydesc_wipeData_secondaryUser">इस टैबलेट पर मौजूद इस उपयोगकर्ता का डेटा बिना चेतावनी के मिटा दें.</string>
     <string name="policylab_allow_bluetoothmode">ब्लूटूथ अक्षम करें</string>
     <string name="policylab_allow_browser">इंटरनेट अक्षम करें</string>
     <string name="policylab_allow_camera">कैमरे अक्षम करें</string>
@@ -2543,7 +2543,7 @@
     <string name="postalTypeHome">घर</string>
     <string name="postalTypeOther">अन्य</string>
     <string name="postalTypeWork">कार्यालय</string>
-    <string name="power_dialog">फ़ोन विकल्‍प</string>
+    <string name="power_dialog">टैबलेट विकल्‍प</string>
     <string name="power_off">फ़ोन बंद करें</string>
     <string name="prepend_shortcut_label">मेन्यू+</string>
     <string name="preposition_for_date">%s को</string>
@@ -2589,7 +2589,7 @@
     <string name="recent_tasks_title">हाल के</string>
     <string name="recording_fail">%1$s में उस समय माइक का उपयोग नहीं किया जा सकता है, जब इसका उपयोग %2$s में किया जा रहा हो।</string>
     <string name="recording_popup">%s माइक्रोफोन का उपयोग कर रहा है।</string>
-    <string name="recording_popup_device">फोन</string>
+    <string name="recording_popup_device">टैबलेट</string>
     <string name="recording_popup_with_bluetooth">%s ब्लूटूथ माइक्रोफोन का उपयोग कर रहा है।</string>
     <string name="recording_popup_with_device">%1$s, %2$s के माइक्रोफोन का उपयोग कर रहा है।</string>
     <string name="redo">फिर से करें</string>
@@ -2736,12 +2736,12 @@
     <string name="screenshot_edit">बदलाव करें</string>
     <string name="sd_card_unavailable_message">आप SD कार्ड का उपयोग नहीं कर सकते क्योंकि इसे एक दूसरी उपयोगकर्ता प्रोफाइल का उपयोग हो रहे होने के दौरान इंसर्ट किया गया था।</string>
     <string name="sd_card_unavailable_title">SD कार्ड अनुपलब्ध है</string>
-    <string name="sdcard_bad_removal_message">किसी SD कार्ड को असुरक्षित तरीके से निकाला गया था। अपने फोन को अनपेक्षित रूप से पुनः चालू होने से रोकने के लिए, सुरक्षित नहीं किए गए डाटा को सुरक्षित करें और अभी पुनः चालू करें।</string>
+    <string name="sdcard_bad_removal_message">किसी SD कार्ड को असुरक्षित तरीके से निकाला गया था। अपने टैबलेट को अनपेक्षित रूप से पुनः चालू होने से रोकने के लिए, सुरक्षित नहीं किए गए डाटा को सुरक्षित करें और अभी पुनः चालू करें।</string>
     <string name="sdcard_batch_decrypt_noti_content">SD कार्ड डिक्रिप्‍ट करें</string>
     <string name="sdcard_batch_decrypt_noti_title">SD कार्ड डिक्रिप्‍शन</string>
     <string name="sdcard_batch_decrypt_popup_content">उपयोग करने के पहले एन्क्रिप्‍ट किया गया SD कार्ड डिक्रिप्‍ट करना होगा। डिक्रिप्‍शन करने में एक घंटा या ज्यादा समय लग सकता है। चार्ज की गई बैटरी से शुरू करें और डिक्रिप्‍शन पूर्ण होने तक डिवाइस प्लग इन करे रखें। डिक्रिप्‍शन प्रक्रिया में रुकावट लाने से कुछ या सभी डाटा खो सकता है।</string>
     <string name="sdcard_decrypt_err_notification">SD कार्ड डिक्रिप्‍शन त्रुटि पाई गई।</string>
-    <string name="sdcard_decrypt_error_otherdevice">आपके SD कार्ड में मौजूद कुछ फाइलें किसी अन्य डिवाइस पर एन्क्रिप्ट की गई थीं और इस फोन पर उपयोग नहीं की जा सकती हैं।</string>
+    <string name="sdcard_decrypt_error_otherdevice">आपके SD कार्ड में मौजूद कुछ फाइलें किसी अन्य डिवाइस पर एन्क्रिप्ट की गई थीं और इस टैबलेट पर उपयोग नहीं की जा सकती हैं।</string>
     <string name="sdcard_decrypt_notification">SD कार्ड डिक्रिप्‍ट किया गया।</string>
     <string name="sdcard_decrypt_title_notification">SD कार्ड डिक्रिप्‍शन</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD कार्ड डिक्रिप्ट हो रहा है…</string>
@@ -2999,7 +2999,7 @@
     <string name="showing_touch_sensitivity_noti_action">चालू करें</string>
     <string name="showing_touch_sensitivity_noti_text">अधिक सटीक टच प्रतिक्रिया के लिए, Privacy Screen या Notepaper Screen का उपयोग करते समय टच संवेदनशीलता चालू करें।</string>
     <string name="showing_touch_sensitivity_noti_title">टच संवेदनशीलता बढ़ाएँ</string>
-    <string name="shutdown_confirm">आपका फ़ोन शट डाउन हो जाएगा.</string>
+    <string name="shutdown_confirm">आपकी टैबलेट शट डाउन हो जाएगी.</string>
     <string name="shutdown_confirm_question">क्‍या आप शट डाउन करना चाहते हैं?</string>
     <string name="shutdown_progress">शट डाउन हो रहा है...</string>
     <string name="side_key_double_press_deleted_app">एप अनइंस्टॉल की गई। कुछ और चुनें।</string>
@@ -3226,7 +3226,7 @@
     <string name="usb_abnormal_reset_title">USB कनेक्शन स्थिर नहीं है</string>
     <string name="usb_abnormal_reset_toast">USB कनेक्शन स्थिर नहीं है। केबल को अनप्लग करें और फिर से प्लग करें या कोई भिन्न केबल आजमाकर देखें।</string>
     <string name="usb_accessory_notification_title">USB उपसाधन से कनेक्ट किया गया</string>
-    <string name="usb_bad_removal_message">एक USB स्टोरेज डिवाइस को असुरक्षित रूप से निकाला गया था। अपने फोन को अनपेक्षित रूप से पुनः चालू होने से रोकने के लिए, सुरक्षित नहीं किए गए डाटा को सुरक्षित करें और अभी पुनः चालू करें।</string>
+    <string name="usb_bad_removal_message">एक USB स्टोरेज डिवाइस को असुरक्षित रूप से निकाला गया था। अपने टैबलेट को अनपेक्षित रूप से पुनः चालू होने से रोकने के लिए, सुरक्षित नहीं किए गए डाटा को सुरक्षित करें और अभी पुनः चालू करें।</string>
     <string name="usb_blocked_by_emergency_mode">USB के कुछ फंक्शंस आपातकालीन मोड में उपलब्ध नहीं हैं।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">अधिकतम पॉवर बचत मोड सक्षम होने पर कनेक्ट किए गए USB डिवाइस से संबंधित फंक्शंस का उपयोग करने में असमर्थ।</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">अधिकतम पॉवर बचत मोड चालू होने के दौरान कुछ USB फंक्शंस सीमित होंगे।</string>
@@ -3236,7 +3236,7 @@
     <string name="usb_camera_disconnected_notification_title">मीडिया डिवाइस डिस्कनेक्ट हुआ</string>
     <string name="usb_cd_installer_notification_title">सॉफ्टवेयर अपडेट</string>
     <string name="usb_charging_notification_title">यह डिवाइस यूएसबी से चार्ज हो रहा है</string>
-    <string name="usb_charing_only_notification_title">USB चार्जिंग</string>
+    <string name="usb_charing_only_notification_title">कनेक्ट किया गया</string>
     <string name="usb_contaminant_detected_message">यूएसबी पोर्ट अपने आप बंद हो गया है. ज़्यादा जानने के लिए टैप करें.</string>
     <string name="usb_contaminant_detected_title">यूएसबी पोर्ट में तरल चीज़ या कचरा है</string>
     <string name="usb_contaminant_not_detected_message">फ़ोन अब तरल चीज़ों या कचरे की पहचान नहीं करता.</string>
@@ -3248,11 +3248,11 @@
     <string name="usb_host_cable_disconnected_notification_title">USB कनेक्‍टर डिस्कनेक्ट किया गया।</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">यह डिवाइस उपयोग करने में अक्षम। कनेक्ट किए डिवाइस को बाह्य पॉवर पूर्ति की आवश्‍यकता है।</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">उच्च-पॉवर USB डिवाइस कनेक्ट किया गया।</string>
-    <string name="usb_host_resource_exceed_message">आपके फोन के USB नियंत्रक में इस डिवाइस से कनेक्ट करने के लिए पर्याप्त संसाधन नहीं हैं। डिवाइस को डिस्कनेक्ट करने और उसे फिर से कनेक्ट करने का प्रयास करें।</string>
+    <string name="usb_host_resource_exceed_message">आपके टैबलेट के USB नियंत्रक में इस डिवाइस से कनेक्ट करने के लिए पर्याप्त संसाधन नहीं हैं। डिवाइस को डिस्कनेक्ट करने और उसे फिर से कनेक्ट करने का प्रयास करें।</string>
     <string name="usb_host_resource_exceed_title">पर्याप्त USB नियंत्रक संसाधन नहीं</string>
-    <string name="usb_hub_depth_exceed_message">आपका फोन एक बार में केवल अधिकतम 5 USB हब कनेक्शंस का समर्थन कर सकता हैं।</string>
+    <string name="usb_hub_depth_exceed_message">आपका टैबलेट एक बार में केवल अधिकतम 5 USB हब कनेक्शंस का समर्थन कर सकता हैं।</string>
     <string name="usb_hub_depth_exceed_title">अधिकतम USB हब कनेक्शंस</string>
-    <string name="usb_hub_power_exceed_message">आपका फोन इस USB डिवाइस के लिए पर्याप्त पॉवर नहीं प्रदान कर सकता है। डिवाइस को अपने फोन से कनेक्ट करने से पहले उसे किसी स्व-संचालित USB हब से कनेक्ट करें।</string>
+    <string name="usb_hub_power_exceed_message">आपका टैबलेट इस USB डिवाइस के लिए पर्याप्त पॉवर नहीं प्रदान कर सकता है। डिवाइस को अपने टैबलेट से कनेक्ट करने से पहले उसे किसी स्व-संचालित USB हब से कनेक्ट करें।</string>
     <string name="usb_increase_battery_usage">USB कनेक्शन से बैटरी का उपयोग बढ़ सकता है।</string>
     <string name="usb_keyboard_connected_notification_title">कीबोर्ड कनेक्ट किया गया</string>
     <string name="usb_keyboard_disconnected_notification_title">कीबोर्ड डिस्कनेक्ट किया गया</string>
@@ -3295,8 +3295,8 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB मास स्टोरेज को अप्रत्याशित रूप से निकाला गया।</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB मास स्टोरेज जोड़ा गया</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB मास स्टोरेज को सुरक्षित रूप से निकाला गया।</string>
-    <string name="usb_unblock_by_screen_unlock">कनेक्ट किया गया USB डिवाइस उपयोग करने के लिए अपने फोन को अनलॉक करें।</string>
-    <string name="usb_unsupport_accessory_message">यह USB डिवाइस आपके फोन द्वारा समर्थित नहीं है।</string>
+    <string name="usb_unblock_by_screen_unlock">कनेक्ट किया गया USB डिवाइस उपयोग करने के लिए अपने टैबलेट को अनलॉक करें।</string>
+    <string name="usb_unsupport_accessory_message">यह USB डिवाइस आपके टैबलेट द्वारा समर्थित नहीं है।</string>
     <string name="usb_unsupport_accessory_title">USB डिवाइस समर्थित नहीं है</string>
     <string name="usb_unsupported_audio_accessory_message">अटैच किया गया डिवाइस इस फ़ोन से संगत नहीं है. ज़्यादा जानने के लिए टैप करें.</string>
     <string name="usb_unsupported_audio_accessory_title">एनालॉग ऑडियो एक्सेसरी का पता चला</string>
@@ -3317,19 +3317,19 @@
     <string name="usb_water_dialg_method_2_desc_2">पंखें या ड्रायर (ठंडी हवा केवल) को पोर्ट की ओर केंद्रित करके आप सुखाने की गति बढ़ा सकते हैं।</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"हमने आपके चार्जिंग/USB पोर्ट में नमी या बाहरी पदार्थ की पहचान की है।
 
-धूल या कचरे जैसे किसी बाहरी पदार्थ के लिए अपने चार्जिंग/USB पोर्ट की जांच करें। अपने फोन को नुकसान होने से बचाने के लिए, तब तक कुछ भी प्लग इन न करें जब तक कि चार्जिंग पोर्ट साफ न हो जाए और नमी चली न जाए।
+धूल या कचरे जैसे किसी बाहरी पदार्थ के लिए अपने चार्जिंग/USB पोर्ट की जांच करें। अपने टैबलेट को नुकसान होने से बचाने के लिए, तब तक कुछ भी प्लग इन न करें जब तक कि चार्जिंग पोर्ट साफ न हो जाए और नमी चली न जाए।
 
 पोर्ट को सुखाने के लिए, नमी को झाड़कर निकालें, फिर इसके सूखने की प्रतीक्षा करें, जिसमें कि कई घंटे लग सकते हैं। आप पोर्ट की तरफ कोई पंखा या ड्रायर लगाकर (केवल ठंडी हवा) सूखने की प्रक्रिया को तेज कर सकते हैं।"</string>
     <string name="usb_water_dialg_positive_button">ओके</string>
     <string name="usb_water_dialg_support_wireless_charging">"हमने आपके चार्जिंग/USB पोर्ट में नमी या बाहरी पदार्थ की पहचान की है।
 
-धूल या कचरे जैसे किसी बाहरी पदार्थ के लिए अपने चार्जिंग/USB पोर्ट की जांच करें। अपने फोन को नुकसान होने से बचाने के लिए, तब तक कुछ भी प्लग इन न करें जब तक कि चार्जिंग पोर्ट साफ न हो जाए और नमी चली न जाए।
+धूल या कचरे जैसे किसी बाहरी पदार्थ के लिए अपने चार्जिंग/USB पोर्ट की जांच करें। अपने टैबलेट को नुकसान होने से बचाने के लिए, तब तक कुछ भी प्लग इन न करें जब तक कि चार्जिंग पोर्ट साफ न हो जाए और नमी चली न जाए।
 
-पोर्ट को सुखाने के लिए, नमी को झाड़कर निकालें, फिर इसके सूखने की प्रतीक्षा करें, जिसमें कि कई घंटे लग सकते हैं। आप पोर्ट की तरफ कोई पंखा या ड्रायर लगाकर (केवल ठंडी हवा) सूखने की प्रक्रिया को तेज कर सकते हैं।
+पोर्ट को सुखाने के लिए, नमी को झाड़कर निकालें, फिर इसके सूखने की प्रतीक्षा करें, जिसमें कई घंटे लग सकते हैं। आप पोर्ट की तरफ कोई पंखा या ड्रायर लगाकर (केवल ठंडी हवा) सूखने की प्रक्रिया को तेज कर सकते हैं।
 
-इस दौरान, आप अपने फोन को वायरलेस रूप से चार्ज कर सकते हैं।"</string>
+इस दौरान, आप अपने टैबलेट को वायरलेस रूप से चार्ज कर सकते हैं।"</string>
     <string name="usb_water_notification_content">आपके चार्जिंग/USB पोर्ट में नमी या बाहरी पदार्थ है। चार्ज करने से पहले जांच लें।</string>
-    <string name="usb_water_notification_message">आपके चार्जर/USB पोर्ट में नमी का पता चला है। अपना फोन चार्ज करने से पहले सुनिश्चित करें कि यह सूखा हो। इसे पूरी तरह से सूखने में कुछ समय लग सकता है।</string>
+    <string name="usb_water_notification_message">आपके चार्जर/USB पोर्ट में नमी का पता चला है। अपना टैबलेट चार्ज करने से पहले सुनिश्चित करें कि यह सूखा हो। इसे पूरी तरह से सूखने में कुछ समय लग सकता है।</string>
     <string name="usb_water_notification_message_button">विवरण</string>
     <string name="usb_water_notification_title">चार्जर/USB पोर्ट जांचें</string>
     <string name="usbhostStorage_restrict">सुरक्षा नीति, USB होस्ट स्टोरेज का उपयोग करने से रोकती है।</string>
@@ -3347,7 +3347,7 @@
     <string name="user_switched">मौजूदा उपयोगकर्ता %1$s.</string>
     <string name="user_switching_message">%1$s पर स्विच किया जा रहा है…</string>
     <string name="validity_period">मान्यता:</string>
-    <string name="vdm_camera_access_denied">आपके %1$s से फ़ोन के कैमरे को ऐक्सेस नहीं किया जा सकता</string>
+    <string name="vdm_camera_access_denied">आपके %1$s से टैबलेट के कैमरे को ऐक्सेस नहीं किया जा सकता</string>
     <string name="vdm_pip_blocked">"स्ट्रीमिंग करते समय, 'पिक्चर में पिक्चर' सुविधा इस्तेमाल नहीं की जा सकती"</string>
     <string name="vdm_secure_window">स्ट्रीमिंग के दौरान, इसे ऐक्सेस नहीं किया जा सकता. इसके बजाय, अपने फ़ोन पर ऐक्सेस करके देखें.</string>
     <string name="view_and_control_notification_content">%s आपकी स्क्रीन को देख सकता है और कंट्रोल कर सकता है. ऐक्सेस की समीक्षा करने के लिए टैप करें.</string>

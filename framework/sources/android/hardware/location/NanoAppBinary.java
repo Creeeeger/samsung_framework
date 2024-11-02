@@ -31,18 +31,23 @@ public final class NanoAppBinary implements Parcelable {
     private byte mTargetChreApiMinorVersion;
     private static final ByteOrder HEADER_ORDER = ByteOrder.LITTLE_ENDIAN;
     public static final Parcelable.Creator<NanoAppBinary> CREATOR = new Parcelable.Creator<NanoAppBinary>() { // from class: android.hardware.location.NanoAppBinary.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NanoAppBinary createFromParcel(Parcel in) {
             return new NanoAppBinary(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppBinary[] newArray(int size) {
             return new NanoAppBinary[size];
         }
     };
+
+    /* synthetic */ NanoAppBinary(Parcel parcel, NanoAppBinaryIA nanoAppBinaryIA) {
+        this(parcel);
+    }
 
     public NanoAppBinary(byte[] appBinary) {
         this.mHasValidHeader = false;
@@ -147,5 +152,22 @@ public final class NanoAppBinary implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.mNanoAppBinary.length);
         out.writeByteArray(this.mNanoAppBinary);
+    }
+
+    /* renamed from: android.hardware.location.NanoAppBinary$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NanoAppBinary> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NanoAppBinary createFromParcel(Parcel in) {
+            return new NanoAppBinary(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NanoAppBinary[] newArray(int size) {
+            return new NanoAppBinary[size];
+        }
     }
 }

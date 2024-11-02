@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextActivityLocationLogging extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextActivityLocationLogging> CREATOR = new Parcelable.Creator<SemContextActivityLocationLogging>() { // from class: com.samsung.android.hardware.context.SemContextActivityLocationLogging.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextActivityLocationLogging createFromParcel(Parcel in) {
             return new SemContextActivityLocationLogging(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityLocationLogging[] newArray(int size) {
             return new SemContextActivityLocationLogging[size];
@@ -30,7 +31,23 @@ public class SemContextActivityLocationLogging extends SemContextEventContext {
     private Bundle mInfo;
     private int mType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextActivityLocationLogging$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityLocationLogging> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityLocationLogging createFromParcel(Parcel in) {
+            return new SemContextActivityLocationLogging(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextActivityLocationLogging[] newArray(int size) {
+            return new SemContextActivityLocationLogging[size];
+        }
+    }
+
     public SemContextActivityLocationLogging() {
         this.mContext = new Bundle();
         this.mInfo = new Bundle();

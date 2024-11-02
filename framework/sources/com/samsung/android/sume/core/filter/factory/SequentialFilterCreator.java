@@ -38,7 +38,7 @@ public class SequentialFilterCreator implements MediaFilterCreator {
         return sequentialFilters;
     }
 
-    /* renamed from: com.samsung.android.sume.core.filter.factory.SequentialFilterCreator$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.sume.core.filter.factory.SequentialFilterCreator$1 */
     /* loaded from: classes4.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$filter$collection$SequentialFilter$Type;

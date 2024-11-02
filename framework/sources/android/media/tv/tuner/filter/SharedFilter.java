@@ -60,7 +60,6 @@ public final class SharedFilter implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFilterStatus$0(int status) {
         synchronized (this.mCallbackLock) {
             SharedFilterCallback sharedFilterCallback = this.mCallback;
@@ -90,7 +89,6 @@ public final class SharedFilter implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFilterEvent$1(FilterEvent[] events) {
         synchronized (this.mCallbackLock) {
             SharedFilterCallback sharedFilterCallback = this.mCallback;

@@ -747,14 +747,14 @@ public interface ILauncherApps extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, LauncherActivityInfoInternal v) {
             reply.writeString(k);
             reply.writeTypedObject(v, 1);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ILauncherApps {
+        public static class Proxy implements ILauncherApps {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1377,7 +1377,6 @@ public interface ILauncherApps extends IInterface {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: package-private */
             public static /* synthetic */ void lambda$getActivityOverrides$0(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 LauncherActivityInfoInternal v = (LauncherActivityInfoInternal) _reply.readTypedObject(LauncherActivityInfoInternal.CREATOR);

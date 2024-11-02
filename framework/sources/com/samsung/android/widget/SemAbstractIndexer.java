@@ -207,7 +207,6 @@ public abstract class SemAbstractIndexer extends DataSetObserver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String[] getAlphabetArray() {
         return this.mAlphabetArray;
     }
@@ -234,7 +233,10 @@ public abstract class SemAbstractIndexer extends DataSetObserver {
         onEndTransaction();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x00e0, code lost:            if (r4 != '#') goto L63;     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x00e0, code lost:
+    
+        if (r4 != '#') goto L157;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

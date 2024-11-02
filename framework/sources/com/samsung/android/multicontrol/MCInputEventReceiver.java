@@ -37,7 +37,6 @@ public class MCInputEventReceiver extends InputEventReceiver {
     private WindowManager mWindowManager;
     private int triggerThreshold;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public enum Direction {
         RIGHT,
@@ -113,8 +112,7 @@ public class MCInputEventReceiver extends InputEventReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.multicontrol.MCInputEventReceiver$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.multicontrol.MCInputEventReceiver$1 */
     /* loaded from: classes5.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$multicontrol$MCInputEventReceiver$Direction;

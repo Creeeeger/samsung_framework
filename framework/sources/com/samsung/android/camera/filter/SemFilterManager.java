@@ -85,10 +85,31 @@ public class SemFilterManager {
         handlerThread.start();
         this.mObserverHandler = new Handler(this.mObserverHandlerThread.getLooper());
         this.mFilterAddObserver = new ContentObserver(this.mObserverHandler) { // from class: com.samsung.android.camera.filter.SemFilterManager.1
+            AnonymousClass1(Handler handler) {
+                super(handler);
+            }
+
+            /* renamed from: com.samsung.android.camera.filter.SemFilterManager$1$1 */
+            /* loaded from: classes5.dex */
+            class RunnableC00181 implements Runnable {
+                RunnableC00181() {
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                        SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(0);
+                    }
+                }
+            }
+
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange) {
                 if (SemFilterManager.this.mCallbackHandler != null) {
                     SemFilterManager.this.mCallbackHandler.post(new Runnable() { // from class: com.samsung.android.camera.filter.SemFilterManager.1.1
+                        RunnableC00181() {
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             if (SemFilterManager.this.mSemFilterManagerCallback != null) {
@@ -102,10 +123,31 @@ public class SemFilterManager {
             }
         };
         this.mFilterDeleteObserver = new ContentObserver(this.mObserverHandler) { // from class: com.samsung.android.camera.filter.SemFilterManager.2
+            AnonymousClass2(Handler handler) {
+                super(handler);
+            }
+
+            /* renamed from: com.samsung.android.camera.filter.SemFilterManager$2$1 */
+            /* loaded from: classes5.dex */
+            class AnonymousClass1 implements Runnable {
+                AnonymousClass1() {
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                        SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(1);
+                    }
+                }
+            }
+
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange) {
                 if (SemFilterManager.this.mCallbackHandler != null) {
                     SemFilterManager.this.mCallbackHandler.post(new Runnable() { // from class: com.samsung.android.camera.filter.SemFilterManager.2.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             if (SemFilterManager.this.mSemFilterManagerCallback != null) {
@@ -119,10 +161,31 @@ public class SemFilterManager {
             }
         };
         this.mLocaleChangeObserver = new ContentObserver(this.mObserverHandler) { // from class: com.samsung.android.camera.filter.SemFilterManager.3
+            AnonymousClass3(Handler handler) {
+                super(handler);
+            }
+
+            /* renamed from: com.samsung.android.camera.filter.SemFilterManager$3$1 */
+            /* loaded from: classes5.dex */
+            class AnonymousClass1 implements Runnable {
+                AnonymousClass1() {
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                        SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(2);
+                    }
+                }
+            }
+
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange) {
                 if (SemFilterManager.this.mCallbackHandler != null) {
                     SemFilterManager.this.mCallbackHandler.post(new Runnable() { // from class: com.samsung.android.camera.filter.SemFilterManager.3.1
+                        AnonymousClass1() {
+                        }
+
                         @Override // java.lang.Runnable
                         public void run() {
                             if (SemFilterManager.this.mSemFilterManagerCallback != null) {
@@ -136,6 +199,132 @@ public class SemFilterManager {
             }
         };
         registerObserver();
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.camera.filter.SemFilterManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends ContentObserver {
+        AnonymousClass1(Handler handler) {
+            super(handler);
+        }
+
+        /* renamed from: com.samsung.android.camera.filter.SemFilterManager$1$1 */
+        /* loaded from: classes5.dex */
+        class RunnableC00181 implements Runnable {
+            RunnableC00181() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                    SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(0);
+                }
+            }
+        }
+
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange) {
+            if (SemFilterManager.this.mCallbackHandler != null) {
+                SemFilterManager.this.mCallbackHandler.post(new Runnable() { // from class: com.samsung.android.camera.filter.SemFilterManager.1.1
+                    RunnableC00181() {
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                            SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(0);
+                        }
+                    }
+                });
+            } else if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(0);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.camera.filter.SemFilterManager$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends ContentObserver {
+        AnonymousClass2(Handler handler) {
+            super(handler);
+        }
+
+        /* renamed from: com.samsung.android.camera.filter.SemFilterManager$2$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                    SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(1);
+                }
+            }
+        }
+
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange) {
+            if (SemFilterManager.this.mCallbackHandler != null) {
+                SemFilterManager.this.mCallbackHandler.post(new Runnable() { // from class: com.samsung.android.camera.filter.SemFilterManager.2.1
+                    AnonymousClass1() {
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                            SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(1);
+                        }
+                    }
+                });
+            } else if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(1);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.camera.filter.SemFilterManager$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 extends ContentObserver {
+        AnonymousClass3(Handler handler) {
+            super(handler);
+        }
+
+        /* renamed from: com.samsung.android.camera.filter.SemFilterManager$3$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                    SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(2);
+                }
+            }
+        }
+
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange) {
+            if (SemFilterManager.this.mCallbackHandler != null) {
+                SemFilterManager.this.mCallbackHandler.post(new Runnable() { // from class: com.samsung.android.camera.filter.SemFilterManager.3.1
+                    AnonymousClass1() {
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                            SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(2);
+                        }
+                    }
+                });
+            } else if (SemFilterManager.this.mSemFilterManagerCallback != null) {
+                SemFilterManager.this.mSemFilterManagerCallback.onFilterChanged(2);
+            }
+        }
     }
 
     public void close() {
@@ -222,10 +411,22 @@ public class SemFilterManager {
         return Collections.unmodifiableList(FilterList);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x00a5, code lost:            if (r3 != null) goto L27;     */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x00a7, code lost:            r3.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x00b8, code lost:            return java.util.Collections.unmodifiableList(r1);     */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x00b1, code lost:            if (0 == 0) goto L34;     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x00a5, code lost:
+    
+        if (r3 != null) goto L81;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x00a7, code lost:
+    
+        r3.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x00b8, code lost:
+    
+        return java.util.Collections.unmodifiableList(r1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x00b1, code lost:
+    
+        if (0 == 0) goto L88;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -33,15 +33,14 @@ public class ParallelDNCFilter extends ParallelFilter {
         filters.forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.collection.ParallelDNCFilter$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                ParallelDNCFilter.this.m8776x2b822d1c((MediaFilter) obj);
+                ParallelDNCFilter.this.m8768x2b822d1c((MediaFilter) obj);
             }
         });
         return super.addFilter(filters);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$addFilter$0$com-samsung-android-sume-core-filter-collection-ParallelDNCFilter, reason: not valid java name */
-    public /* synthetic */ void m8776x2b822d1c(MediaFilter it) {
+    /* renamed from: lambda$addFilter$0$com-samsung-android-sume-core-filter-collection-ParallelDNCFilter */
+    public /* synthetic */ void m8768x2b822d1c(MediaFilter it) {
         ((AsyncFilter) it).addBufferChannels(this.inChannel, this.outChannel);
     }
 

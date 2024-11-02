@@ -84,8 +84,9 @@ public interface IAlarmCompleteListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IAlarmCompleteListener {
+        public static class Proxy implements IAlarmCompleteListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

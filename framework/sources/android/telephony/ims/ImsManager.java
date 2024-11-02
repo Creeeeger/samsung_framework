@@ -65,12 +65,10 @@ public class ImsManager {
         return new ProvisioningManager(subscriptionId);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static IImsRcsController getIImsRcsControllerInterface() {
         return IImsRcsController.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getTelephonyImsServiceRegisterer().get());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ITelephony getITelephonyInterface() {
         return ITelephony.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getTelephonyServiceRegisterer().get());
     }

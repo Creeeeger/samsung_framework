@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class ReadFileDataSource implements DataSource {
     private static final int CHUNK_SIZE = 1048576;
@@ -15,7 +14,6 @@ public class ReadFileDataSource implements DataSource {
     private final long mFilePosition;
     private final long mSize;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ReadFileDataSource(FileDescriptor fd, long position, long size) {
         this.mFd = fd;
         this.mFilePosition = position;

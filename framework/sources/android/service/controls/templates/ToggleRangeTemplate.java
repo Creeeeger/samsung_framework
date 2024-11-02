@@ -11,7 +11,6 @@ public final class ToggleRangeTemplate extends ControlTemplate {
     private final ControlButton mControlButton;
     private final RangeTemplate mRangeTemplate;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ToggleRangeTemplate(Bundle b) {
         super(b);
         this.mControlButton = (ControlButton) b.getParcelable(KEY_BUTTON, ControlButton.class);

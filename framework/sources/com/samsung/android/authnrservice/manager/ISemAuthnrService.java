@@ -406,7 +406,6 @@ public interface ISemAuthnrService extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
         public static class Proxy implements ISemAuthnrService {
             private IBinder mRemote;

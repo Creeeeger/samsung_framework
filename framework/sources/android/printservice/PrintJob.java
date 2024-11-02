@@ -14,7 +14,6 @@ public final class PrintJob {
     private final PrintDocument mDocument;
     private final IPrintServiceClient mPrintServiceClient;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PrintJob(Context context, PrintJobInfo jobInfo, IPrintServiceClient client) {
         this.mContext = context;
         this.mCachedInfo = jobInfo;

@@ -158,8 +158,9 @@ public interface ISehRadioDataIndication extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISehRadioDataIndication {
+        public static class Proxy implements ISehRadioDataIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

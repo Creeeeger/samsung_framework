@@ -8,7 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class GetInputForAttrResponse implements Parcelable {
     public static final Parcelable.Creator<GetInputForAttrResponse> CREATOR = new Parcelable.Creator<GetInputForAttrResponse>() { // from class: android.media.GetInputForAttrResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GetInputForAttrResponse createFromParcel(Parcel _aidl_source) {
             GetInputForAttrResponse _aidl_out = new GetInputForAttrResponse();
@@ -16,7 +18,6 @@ public class GetInputForAttrResponse implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetInputForAttrResponse[] newArray(int _aidl_size) {
             return new GetInputForAttrResponse[_aidl_size];
@@ -26,6 +27,25 @@ public class GetInputForAttrResponse implements Parcelable {
     public int input = 0;
     public int selectedDeviceId = 0;
     public int portId = 0;
+
+    /* renamed from: android.media.GetInputForAttrResponse$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GetInputForAttrResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GetInputForAttrResponse createFromParcel(Parcel _aidl_source) {
+            GetInputForAttrResponse _aidl_out = new GetInputForAttrResponse();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GetInputForAttrResponse[] newArray(int _aidl_size) {
+            return new GetInputForAttrResponse[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

@@ -511,7 +511,6 @@ public class ContrastColorUtil {
         return calculateLuminance(backgroundColor) > 0.5d;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ColorUtilsFromCompat {
         private static final int MIN_ALPHA_SEARCH_MAX_ITERATIONS = 10;

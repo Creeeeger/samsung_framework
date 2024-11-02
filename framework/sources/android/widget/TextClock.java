@@ -97,7 +97,6 @@ public class TextClock extends TextView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class FormatChangeObserver extends ContentObserver {
         public FormatChangeObserver(Handler handler) {
@@ -125,9 +124,65 @@ public class TextClock extends TextView {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TextClock$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends BroadcastReceiver {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            if (TextClock.this.mStopTicking) {
+                return;
+            }
+            if (TextClock.this.mTimeZone == null && Intent.ACTION_TIMEZONE_CHANGED.equals(intent.getAction())) {
+                String timeZone = intent.getStringExtra(Intent.EXTRA_TIMEZONE);
+                TextClock.this.createTime(timeZone);
+            } else if (!TextClock.this.mShouldRunTicker && (Intent.ACTION_TIME_TICK.equals(intent.getAction()) || Intent.ACTION_TIME_CHANGED.equals(intent.getAction()) || Intent.ACTION_SCREEN_ON.equals(intent.getAction()))) {
+                return;
+            }
+            TextClock.this.onTimeChanged();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TextClock$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ZonedDateTime nextTick;
+            TextClock.this.removeCallbacks(this);
+            if (TextClock.this.mStopTicking || !TextClock.this.mShouldRunTicker) {
+                return;
+            }
+            TextClock.this.onTimeChanged();
+            Instant now = TextClock.this.mTime.toInstant();
+            ZoneId zone = TextClock.this.mTime.getTimeZone().toZoneId();
+            if (TextClock.this.mHasSeconds) {
+                nextTick = now.atZone(zone).plusSeconds(1L).withNano(0);
+            } else {
+                ZonedDateTime nextTick2 = now.atZone(zone);
+                nextTick = nextTick2.plusMinutes(1L).withSecond(0).withNano(0);
+            }
+            long millisUntilNextTick = Duration.between(now, nextTick.toInstant()).toMillis();
+            if (millisUntilNextTick <= 0) {
+                millisUntilNextTick = 1000;
+            }
+            TextClock.this.postDelayed(this, millisUntilNextTick);
+        }
+    }
+
     public TextClock(Context context) {
         super(context);
         this.mIntentReceiver = new BroadcastReceiver() { // from class: android.widget.TextClock.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 if (TextClock.this.mStopTicking) {
@@ -143,6 +198,9 @@ public class TextClock extends TextView {
             }
         };
         this.mTicker = new Runnable() { // from class: android.widget.TextClock.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ZonedDateTime nextTick;
@@ -180,6 +238,9 @@ public class TextClock extends TextView {
     public TextClock(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mIntentReceiver = new BroadcastReceiver() { // from class: android.widget.TextClock.1
+            AnonymousClass1() {
+            }
+
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 if (TextClock.this.mStopTicking) {
@@ -195,6 +256,9 @@ public class TextClock extends TextView {
             }
         };
         this.mTicker = new Runnable() { // from class: android.widget.TextClock.2
+            AnonymousClass2() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ZonedDateTime nextTick;
@@ -243,7 +307,6 @@ public class TextClock extends TextView {
         chooseFormat();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void createTime(String timeZone) {
         if (timeZone != null) {
             this.mTime = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
@@ -323,7 +386,6 @@ public class TextClock extends TextView {
         return this.mFormat;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void chooseFormat() {
         boolean format24Requested = is24HourModeEnabled();
         if (format24Requested) {
@@ -352,7 +414,6 @@ public class TextClock extends TextView {
         return a == null ? b == null ? c : b : a;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -383,7 +444,6 @@ public class TextClock extends TextView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -435,7 +495,6 @@ public class TextClock extends TextView {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onTimeChanged() {
         this.mTime.setTimeInMillis(System.currentTimeMillis());
         if (!TextUtils.isEmpty(this.mFormat) && this.mFormat.toString().contains("per")) {
@@ -446,7 +505,6 @@ public class TextClock extends TextView {
         setContentDescription(DateFormat.format(this.mDescFormat, this.mTime));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.TextView, android.view.View
     public void encodeProperties(ViewHierarchyEncoder stream) {
         super.encodeProperties(stream);

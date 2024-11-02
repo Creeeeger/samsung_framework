@@ -9,6 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehCallDetails implements Parcelable {
     public static final Parcelable.Creator<SehCallDetails> CREATOR = new Parcelable.Creator<SehCallDetails>() { // from class: vendor.samsung.hardware.radio.network.SehCallDetails.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehCallDetails createFromParcel(Parcel _aidl_source) {
             SehCallDetails _aidl_out = new SehCallDetails();
@@ -23,6 +26,25 @@ public class SehCallDetails implements Parcelable {
     };
     public int callType;
     public String[] extras;
+
+    /* renamed from: vendor.samsung.hardware.radio.network.SehCallDetails$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehCallDetails> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehCallDetails createFromParcel(Parcel _aidl_source) {
+            SehCallDetails _aidl_out = new SehCallDetails();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehCallDetails[] newArray(int _aidl_size) {
+            return new SehCallDetails[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

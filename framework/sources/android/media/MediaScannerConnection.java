@@ -24,6 +24,9 @@ public class MediaScannerConnection implements ServiceConnection {
 
     @Deprecated
     private final IMediaScannerListener.Stub mListener = new IMediaScannerListener.Stub() { // from class: android.media.MediaScannerConnection.1
+        AnonymousClass1() {
+        }
+
         @Override // android.media.IMediaScannerListener
         public void scanCompleted(String path, Uri uri) {
         }
@@ -41,6 +44,17 @@ public class MediaScannerConnection implements ServiceConnection {
     /* loaded from: classes2.dex */
     public interface OnScanCompletedListener {
         void onScanCompleted(String str, Uri uri);
+    }
+
+    /* renamed from: android.media.MediaScannerConnection$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 extends IMediaScannerListener.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.media.IMediaScannerListener
+        public void scanCompleted(String path, Uri uri) {
+        }
     }
 
     public MediaScannerConnection(Context context, MediaScannerConnectionClient client) {
@@ -88,7 +102,6 @@ public class MediaScannerConnection implements ServiceConnection {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$scanFile$0(String path) {
         Uri uri = scanFileQuietly(this.mProvider, new File(path));
         runCallBack(this.mContext, this.mClient, path, uri);
@@ -103,7 +116,6 @@ public class MediaScannerConnection implements ServiceConnection {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$scanFile$1(Context context, String[] paths, OnScanCompletedListener callback) {
         ContentProviderClient client = context.getContentResolver().acquireContentProviderClient("media");
         try {

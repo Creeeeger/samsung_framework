@@ -23,13 +23,14 @@ public class SemImsUri implements Parcelable {
     private static final boolean DBG = "eng".equals(Build.TYPE);
     private static final Pattern PATTERN_WHITE_SPACES = Pattern.compile("\\s+");
     public static final Parcelable.Creator<SemImsUri> CREATOR = new Parcelable.Creator<SemImsUri>() { // from class: com.samsung.android.ims.util.SemImsUri.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemImsUri createFromParcel(Parcel in) {
             return new SemImsUri(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsUri[] newArray(int size) {
             return new SemImsUri[size];
@@ -41,6 +42,10 @@ public class SemImsUri implements Parcelable {
         TEL_URI,
         SIP_URI,
         URN
+    }
+
+    /* synthetic */ SemImsUri(Parcel parcel, SemImsUriIA semImsUriIA) {
+        this(parcel);
     }
 
     public static SemImsUri parse(String str) {
@@ -138,6 +143,23 @@ public class SemImsUri implements Parcelable {
         this.mUser = null;
         this.mUriType = UriType.TEL_URI;
         this.mUriToString = null;
+    }
+
+    /* renamed from: com.samsung.android.ims.util.SemImsUri$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemImsUri> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemImsUri createFromParcel(Parcel in) {
+            return new SemImsUri(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemImsUri[] newArray(int size) {
+            return new SemImsUri[size];
+        }
     }
 
     public String getUser() {

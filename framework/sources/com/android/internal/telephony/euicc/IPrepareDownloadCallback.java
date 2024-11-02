@@ -85,8 +85,9 @@ public interface IPrepareDownloadCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IPrepareDownloadCallback {
+        public static class Proxy implements IPrepareDownloadCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

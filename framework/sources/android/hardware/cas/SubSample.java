@@ -7,7 +7,9 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class SubSample implements Parcelable {
     public static final Parcelable.Creator<SubSample> CREATOR = new Parcelable.Creator<SubSample>() { // from class: android.hardware.cas.SubSample.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SubSample createFromParcel(Parcel _aidl_source) {
             SubSample _aidl_out = new SubSample();
@@ -15,7 +17,6 @@ public class SubSample implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubSample[] newArray(int _aidl_size) {
             return new SubSample[_aidl_size];
@@ -23,6 +24,25 @@ public class SubSample implements Parcelable {
     };
     public int numBytesOfClearData = 0;
     public int numBytesOfEncryptedData = 0;
+
+    /* renamed from: android.hardware.cas.SubSample$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SubSample> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SubSample createFromParcel(Parcel _aidl_source) {
+            SubSample _aidl_out = new SubSample();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SubSample[] newArray(int _aidl_size) {
+            return new SubSample[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -339,7 +339,7 @@
     <string name="ext_media_unsupported_notification_message">ဤကိရိယာက %s ကို ပံ့ပိုးမပေးပါ။ ပံ့ပိုးပေးထားသည့် ဖောမတ်ထဲတွင် သတ်မှတ်ရန် နှိပ်ပါ။</string>
     <string name="ext_media_unsupported_notification_title">%s ကို ပံ့ပိုးမပေးထားပါ</string>
     <string name="ext_storage_bad_removal_button">ပြန်စ</string>
-    <string name="ext_storage_bad_removal_title">သင့်ဖုန်းကို ပြန်လည်စတင်ပါ</string>
+    <string name="ext_storage_bad_removal_title">သင့်တက်ဘလက်ကို ပြန်လည်စတင်ပါ</string>
     <string name="extmedia_format_button_format">ပုံစံ</string>
     <string name="extmedia_format_message">သင့် ကဒ် ထဲက ဒေတာ အားလုံး ဆုံးသွားမည်။</string>
     <string name="extmedia_format_message_usbhost">သင်၏ USB သိုလှောင်ခန်းထဲ သိုလှောင်ထားသည့် ဖိုင်အားလုံး ဖျက်ခံရမည်။ ဒီလုပ်ရပ်ကို ပြန်ပြီး ပြောင်းလဲ မရနိုင်ပါ။</string>
@@ -602,16 +602,16 @@
     <string name="multisound_sound_via_bluetooth_multiselection">အသံကို သင့်ဘလူးတုသ် အော်ဒီယို ကိရိယာတွင် ဖွင့်နေသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ</string>
     <string name="multisound_sound_via_headphone">%s အသံကို သင့်နားကြပ်မှတဆင့် ဖွင့်ထားပါသည်။ ၎င်းကို ပိတ်ရန် ဤနေရာမှာ နှိပ်ပါ။</string>
     <string name="multisound_sound_via_headphone_multiselection">အသံကို သင့်နားကြပ်များမှတစ်ဆင့် ဖွင့်ထားပါသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ။</string>
-    <string name="multisound_sound_via_phone_speaker">%s အသံကို သင့်ဖုန်းစပီကာမှတဆင့် ဖွင့်ထားသည်။ ဤအရာကို ပိတ်ရန် ဤနေရာမှာ နှိပ်ပါ။</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">အသံကို သင့်ဖုန်းစပီကာမှတစ်ဆင့် ဖွင့်ထားသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ။</string>
+    <string name="multisound_sound_via_phone_speaker">%s အသံကို သင့်တက်ဘလက်စပီကာမှတဆင့် ဖွင့်ထားသည်။ ၎င်းကို ပိတ်ရန် ဤနေရာမှာ နှိပ်ပါ။</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">အသံကို သင့်တက်ဘလက်စပီကာမှတစ်ဆင့် ဖွင့်ထားသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ။</string>
     <string name="multisound_sound_via_usb_audio">%s အသံကို သင့် USB အော်ဒီယိုစက်မှတဆင့် ဖွင့်ထားပါသည်။ ၎င်းကို ပိတ်ရန် ဤနေရာမှာ နှိပ်ပါ။</string>
     <string name="multisound_sound_via_usb_audio_multiselection">အသံကို သင့် USB အော်ဒီယို ကိရိယာမှတစ်ဆင့် ဖွင့်ထားပါသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ။</string>
     <string name="multisound_title">အက်ပ် အသံကို ခွဲခြားပါ</string>
     <string name="multisound_turn_off_multisound">ပိတ်ပါ</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX တွင် %s က အလုပ်မလုပ်ပါ။ ဖုန်းအနေအထားတွင် လုပ်ဆောင်ကြည့်ပါ။</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX တွင် %s က အလုပ်မလုပ်ပါ။ ဖုန်း ပင်မ ဖန်သားပြင်များအတွက် ၎င်းကို ဒီဇိုင်းပြုလုပ်ထားသည်။</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ဂိမ်းအချို့သည် ထိနှိပ် ဖန်သားပြင်များတွင်သာ လုပ်ဆောင်နိုင်ပါသည်။ Samsung DeX တွင် မောက်စ်ဖြင့် ထိန်းချုပ်သည့်စနစ်များက အလုပ်မလုပ်ပါက ဖုန်းအနေအထားတွင် အစားထိုး ကစားကြည့်ပါ။</string>
-    <string name="my_device">ဤဖုန်း</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX တွင် %s က အလုပ်မလုပ်ပါ။ တက်ဘလက်အနေအထားတွင် လုပ်ဆောင်ကြည့်ပါ။</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX တွင် %s က အလုပ်မလုပ်ပါ။ တက်ဘလက် ပင်မ ဖန်သားပြင်များအတွက် ၎င်းကို ဒီဇိုင်းပြုလုပ်ထားသည်။</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ဂိမ်းအချို့သည် ထိနှိပ် ဖန်သားပြင်များတွင်သာ လုပ်ဆောင်နိုင်ပါသည်။ Samsung DeX တွင် မောက်စ်ဖြင့် ထိန်းချုပ်သည့်စနစ်များက အလုပ်မလုပ်ပါက တက်ဘလက်အနေအထားတွင် အစားထိုး ကစားကြည့်ပါ။</string>
+    <string name="my_device">ဤတက်ဘလက်</string>
     <string name="network_locked_sim_dialog_message_ais">သင့် SIM ကတ်သည် သင်၏ စာရင်းသွင်းမှာယူမှု စည်းမျဉ်းကန့်သတ်ချက်များကို မလိုက်နာသောကြောင့် ၎င်းက ဤဖုန်းဖြင့် အပြည့်အဝ မစီမံနိုင်ပါ။ သင့်တွင် မေးစရာများ ရှိလျှင် (သို့) ယင်းကိစ္စနှင့် ပတ်သက်၍ နောက်ထပ် အချက်အလက် လိုအပ်လျှင်၊ ဆမ်ဆောင် ဖောက်သည်ဝန်ဆာင်မှု တည်နေရာ (သို့) သင့်အား အဆိုပါပစ္စည်းများ ရောင်းချသော စတိုးဆိုင်ကို ဆက်သွယ်ပါ။</string>
     <string name="network_locked_sim_notification_text">ကွန်ရက် သော့ခတ် SIM ကဒ်ကို ထည့်ထား။</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -803,7 +803,7 @@
     <string name="policydesc_allow_desktopsync">ဒက်စ်တော့ပ်ဆင့်ခ်အား သုံးခြင်းကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_internetsharing">မိုဘိုင်း ဟော့စပေါ့သုံးခြင်းကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_irda">IrDA သုံးခြင်းကို တားမြစ်ပါ။</string>
-    <string name="policydesc_allow_popimapemail">ဖုန်းတွင် POP နှင့် IMAP အီးမေးလ်အသုံးပြုမှုကို တားမြစ်ပါ။</string>
+    <string name="policydesc_allow_popimapemail">တက်ဘလက်တွင် POP နှင့် IMAP အီးမေးလ်အသုံးပြုမှုကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_storagecard">SD ကတ်များ အသုံးပြုမှုကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_textmessaging">စာနှင့် မာတီမီဒီယာ မက်ဆေ့ချ်ပေးပို့စနစ် အသုံးပြုမှုကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_thirdParty">ဤအပလီကေးရှင်းက တတိယ-ကြားလူ၏ အပလီကေးရှင်းများအား သုံးခြင်းကို တားဆီးနိုင်ပါသည်။</string>
@@ -849,7 +849,7 @@
     <string name="pwd_change_enforced">သင့် စကားဝှက် ပြောင်းရန် လုံခြုံရေး ပေါ်လစီက တောင်းဆိုသည်။</string>
     <string name="recording_fail">%2$s တွင် ၎င်းကိုအသုံးပြုနေစဉ် %1$s ရှိ မိုက်ကို အသုံးမပြုနိုင်ပါ။</string>
     <string name="recording_popup">%s က မိုက်ခရိုဖုန်းကို အသုံးပြုနေသည်။</string>
-    <string name="recording_popup_device">ဖုန်း</string>
+    <string name="recording_popup_device">တက်ဘလက်</string>
     <string name="recording_popup_with_bluetooth">%s သည် ဘလူးတုသ် မိုက်ခရိုဖုန်းကို သုံးနေသည်။</string>
     <string name="recording_popup_with_device">%1$s သည် %2$s ၏ မိုက်ခရိုဖုန်းကို သုံးနေသည်။</string>
     <string name="redo">ပြန်လုပ်</string>
@@ -915,12 +915,12 @@
     <string name="screencapture_restrict">ဖန်သားပြင် ဖမ်းယူမှု သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="sd_card_unavailable_message">မတူညီသော အသုံးပြုသူပရိုဖိုင်ကို အသုံးပြုစဉ်တွင် SD ကတ်ကို ထည့်ထားသောကြောင့် ၎င်းကို အသုံးမပြုနိုင်ပါ။</string>
     <string name="sd_card_unavailable_title">SD ကတ် မရရှိနိုင်ပါ</string>
-    <string name="sdcard_bad_removal_message">အန္တရာယ်ရှိလျက်ဖြင့် SD ကတ်ကို ဖယ်ရှားခဲ့သည်။ မမျှော်လင့်ဘဲ သင့်ဖုန်း ပြန်လည်စတင်ခြင်းကို တားဆီးရန် မသိမ်းရသေးသည့် ဒေတာများကို သိမ်းပြီး ယခု ပြန်လည်စတင်ပါ။</string>
+    <string name="sdcard_bad_removal_message">အန္တရာယ်ရှိလျက်ဖြင့် SD ကတ်ကို ဖယ်ရှားခဲ့သည်။ မမျှော်လင့်ဘဲ သင့်တက်ဘလက် ပြန်လည်စတင်ခြင်းကို တားဆီးရန် မသိမ်းရသေးသည့် ဒေတာများကို သိမ်းပြီး ယခု ပြန်လည်စတင်ပါ။</string>
     <string name="sdcard_batch_decrypt_noti_content">SD ကတ် ပြန်ဖော်ပါ</string>
     <string name="sdcard_batch_decrypt_noti_title">SD ကတ် ဖော်ခြင်း</string>
     <string name="sdcard_batch_decrypt_popup_content">မြှုပ်ထားသည့် SD ကတ်ကို မသုံးမီ ပြန်ဖော်ရမည်။ ပြန်ဖော်ခြင်းက တစ်နာရီ သို့မဟုတ် ထို့ထက် ကြာနိုင်သည်။ အားသွင်းထားသော ဘက်ထရီ တစ်ခုဖြင့် စတင်ကာ ပြန်ဖော်ခြင်း ပြီးပြည့်စုံသည်အထိ ကိရိယာကို ပလက်ထိုးထားပါ။ ပြန်ဖော်ခြင်း လုပ်ငန်းစဉ်ကို နှောက်ယှက်ခြင်းက ဒေတာ အချို့ သို့မဟုတ် အားလုံး ဆုံးရှုံးစေနိုင်သည်။</string>
     <string name="sdcard_decrypt_err_notification">SD ကတ် ဖော်ခြင်း အမှား ဖြစ်သွားသည်။</string>
-    <string name="sdcard_decrypt_error_otherdevice">သင့် SD ကတ်ရှိ ဖိုင်အချို့ကို အခြားကိရိယာတွင် ကုဒ်ပြောင်းထည့်ခဲ့ပြီး ဤဖုန်းမှာ အသုံးပြုနိုင်မည် မဟုတ်ပါ။</string>
+    <string name="sdcard_decrypt_error_otherdevice">သင့် SD ကတ်ရှိ ဖိုင်အချို့ကို အခြားကိရိယာတွင် ကုဒ်ပြောင်းထည့်ခဲ့ပြီး ဤတက်ဘလက်မှာ အသုံးပြုနိုင်မည် မဟုတ်ပါ။</string>
     <string name="sdcard_decrypt_notification">SD ကတ် ဖော်ပြီးပြီ။</string>
     <string name="sdcard_decrypt_title_notification">SD ကတ် ဖော်ခြင်း</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD ကဒ်ကို ကုဒ်ပြောင်းဖော်နေဆဲ…</string>
@@ -1250,7 +1250,7 @@
     <string name="usb_abnormal_reset_title">USB ချိတ်ဆက်မှု မတည်ငြိမ်ပါ</string>
     <string name="usb_abnormal_reset_toast">USB ချိတ်ဆက်မှု မတည်ငြိမ်ပါ။ ကေဘယ်ကြိုး ပလတ်ဖြုတ်ပြီ ပလတ်ပြန်တပ်ပါ၊ (သို့) အခြားကေဘယ်ကြိုးဖြင့် ကြိုးစားကြည့်ပါ။</string>
     <string name="usb_accessory_notification_title">USB တွဲဖက်ပစ္စည်း တစ်ခုသို့ ချိတ်ဆက်ထားသည်</string>
-    <string name="usb_bad_removal_message">အန္တရာယ်ရှိလျက်ဖြင့် USB သိုလှောင်ခန်းကိရိယာကို ဖယ်ရှားခဲ့သည်။ မမျှော်လင့်ဘဲ သင့်ဖုန်း ပြန်လည်စတင်ခြင်းကို တားဆီးရန် မသိမ်းရသေးသည့် ဒေတာများကို သိမ်းပြီး ယခု ပြန်လည်စတင်ပါ။</string>
+    <string name="usb_bad_removal_message">အန္တရာယ်ရှိလျက်ဖြင့် USB သိုလှောင်ခန်းကိရိယာကို ဖယ်ရှားခဲ့သည်။ မမျှော်လင့်ဘဲ သင့်တက်ဘလက် ပြန်လည်စတင်ခြင်းကို တားဆီးရန် မသိမ်းရသေးသည့် ဒေတာများကို သိမ်းပြီး ယခု ပြန်လည်စတင်ပါ။</string>
     <string name="usb_blocked_by_emergency_mode">အရေးပေါ်အနေအထားတွင် အချို့သော USB လုပ်ဆောင်ချက်များကို မသုံးနိုင်ပါ။</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">အမြင့်ဆုံး ပါဝါချွေတာရေး အနေအထားဖွင့်ထားစဉ် ချိတ်ဆက်ထားသည့် USB ကိရိယာနှင့်ဆက်နွယ်သည့် လုပ်ဆောင်ချက်များကို အသုံးပြု၍ မရနိုင်ပါ။</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ပါဝါ အများဆုံး ချွေတာရေး အနေအထားကို ဖွင့်ထားစဉ် USB လုပ်ဆောင်ချက်အချို့ကို ကန့်သတ်ထားပါမည်။</string>
@@ -1259,18 +1259,18 @@
     <string name="usb_camera_connected_notification_title">မီဒီယာကိရိယာ ချိတ်ဆက်ထားသည်</string>
     <string name="usb_camera_disconnected_notification_title">မီဒီယာ ကိရိယာ ချိတ်ဆက်မှုဖြုတ်ထားသည်</string>
     <string name="usb_cd_installer_notification_title">ဆော့ဖ်ဝဲ အပ်ဒိတ်</string>
-    <string name="usb_charing_only_notification_title">USB ဖြင့် အားသွင်းခြင်း</string>
+    <string name="usb_charing_only_notification_title">ချိတ်ဆက်ထားသည်</string>
     <string name="usb_debugging_only_notification_title">ချွတ်ယွင်းချက် ရှာဖွေရန်သာ</string>
     <string name="usb_host_Unknown_device_connected_notification_title">မသိသော USB ကိရိယာ ချိတ်ဆက်ထားသည်။</string>
     <string name="usb_host_cable_connected_notification_title">USB ချိတ်ဆက်ကိရိယာ ချိတ်ဆက်ထားသည်။</string>
     <string name="usb_host_cable_disconnected_notification_title">USB ချိတ်ဆက်ကိရိယာ ဖြုတ်ထားသည်။</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">ဤ ကိရိယာသို့ ဝင်မရပါ။ ချိတ်ဆက်ထားသော ကိရိယာမှာ ပြင်ပ ပါဝါ အကူ လိုသည်။</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">ပါဝါ မြင့်သော USB ကိရိယာ ချိတ်ဆက်ထားသည်။</string>
-    <string name="usb_host_resource_exceed_message">သင့်ဖုန်း၏ USB ထိန်းချုပ်ကိရိယာတွင် ဤကိရိယာကို ချိတ်ဆက်ရန် ရင်းမြစ် အလုံအလောက် မရှိပါ။ ကိရိယာကို ချိတ်ဆက်မှုဖြုတ်ပြီး ပြန်ချိတ်ဆက်ကြည့်ပါ။</string>
+    <string name="usb_host_resource_exceed_message">သင့်တက်ဘလက်၏ USB ထိန်းချုပ်ကိရိယာတွင် ဤကိရိယာကို ချိတ်ဆက်ရန် ရင်းမြစ် အလုံအလောက် မရှိပါ။ ကိရိယာကို ချိတ်ဆက်မှုဖြုတ်ပြီး ပြန်ချိတ်ဆက်ကြည့်ပါ။</string>
     <string name="usb_host_resource_exceed_title">USB ထိန်းချုပ်ကိရိယာ အရင်းအမြစ်များ မလုံလောက်ပါ</string>
-    <string name="usb_hub_depth_exceed_message">သင့်ဖုန်းတွင် USB ဟဘ် ချိတ်ဆက်မှု အများဆုံး ၅ ခုကိုသာ တစ်ပြိုင်တည်း လုပ်ဆောင်နိုင်သည်။</string>
+    <string name="usb_hub_depth_exceed_message">သင့်တက်ဘလက်တွင် USB ဟဘ် ချိတ်ဆက်မှု အများဆုံး ၅ ခုကိုသာ တစ်ပြိုင်တည်း လုပ်ဆောင်နိုင်သည်။</string>
     <string name="usb_hub_depth_exceed_title">အများဆုံး USB ဟဘ် ချိတ်ဆက်မှုများ</string>
-    <string name="usb_hub_power_exceed_message">သင့်ဖုန်းသည် ဤ USB ကိရိယာအတွက် ပါဝါအလုံအလောက် ပံ့ပိုးမပေးနိုင်ပါ။ ကိရိယာကို သင့်ဖုန်းနှင့် မချိတ်ဆက်မီ ကိုယ်တိုင် အားသွင်းနိုင်သော USB ဟဘ်တစ်ခုနှင့် ချိတ်ဆက်ပါ။</string>
+    <string name="usb_hub_power_exceed_message">သင့်တက်ဘလက်သည် ဤ USB ကိရိယာအတွက် ပါဝါ အလုံအလောက် ပံ့ပိုးမပေးနိုင်ပါ။ ကိရိယာကို သင့်တက်ဘလက်နှင့် မချိတ်ဆက်မီ ကိုယ်တိုင်အားသွင်းနိုင်သော USB ဟဘ်နှင့် ချိတ်ဆက်ပါ။</string>
     <string name="usb_increase_battery_usage">USB ချိတ်ဆက်မှုသည် ဘက်ထရီ ပိုမို ကုန်စေနိုင်သည်။</string>
     <string name="usb_keyboard_connected_notification_title">ကီးဘုတ် ချိတ်ဆက်ထားသည်</string>
     <string name="usb_keyboard_disconnected_notification_title">ကီးဘုတ် ချိတ်ဆက်မှု ဖြတ်ထားသည်</string>
@@ -1300,8 +1300,8 @@
     <string name="usb_storage_stop_title">USB သိမ်းဆည်းရာနေရာ သုံးနေပါသည်။</string>
     <string name="usb_storage_title">USB ချိပ်ဆက်ပြီး။</string>
     <string name="usb_type_c_supply_power_notification_title">USB ဖြင့် အားသွင်းပြီး ချိတ်ဆက်ထားသည့် စက်များ</string>
-    <string name="usb_unblock_by_screen_unlock">ချိတ်ဆက်ထားသော USB ကိရိယာကို သုံးရန် သင့်ဖုန်းကို သော့ဖွင့်ပါ။</string>
-    <string name="usb_unsupport_accessory_message">ဤ USB ကိရိယာကို သင့်ဖုန်းက ပံ့ပိုးပေးမထားပါ။</string>
+    <string name="usb_unblock_by_screen_unlock">ချိတ်ဆက်ထားသော USB ကိရိယာကို သုံးရန် သင့်တက်ဘလက်ကို သော့ဖွင့်ပါ။</string>
+    <string name="usb_unsupport_accessory_message">ဤ USB ကိရိယာကို သင့်တက်ဘလက်က ပံ့ပိုးပေးမထားပါ။</string>
     <string name="usb_unsupport_accessory_title">USB ကိရိယာကို သုံး၍မရပါ</string>
     <string name="usb_unsupported_device">ချိတ်ဆက်ထားသော USB ကိရိယာကို ပံ့ပိုးပေးမထားပါ။</string>
     <string name="usb_unsupported_device_title">ကိရိယာကို ပံ့ပိုးမထားပါ</string>
@@ -1319,19 +1319,19 @@
     <string name="usb_water_dialg_method_2_desc_2">သင်သည် ပန်ကာ (သို့) အခြောက်ခံစက် (လေအေးသာလျှင်) ကို အပေါက်ဘက်သို့ လှည့်ထားခြင်းဖြင့် ပိုမိုမြန်ဆန်စွာ အခြောက်ခံနိုင်သည်။</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် အစိုဓာတ် (သို့) ပြင်ပပစ္စည်းကို ကျွန်ုပ်တို့ ရှာဖွေတွေ့ရှိထားသည်။
 
-သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် ဖုန် (သို့) အမှိုက်ကဲ့သို့ ပြင်ပပစ္စည်းတစ်ခုခု ရှိ၊ မရှိ စစ်ဆေးပါ။ သင့်ဖုန်းမပျက်စီးစေရန် အားသွင်းပေါက်ကို သန့်ရှင်းပြီး အစိုဓာတ်ပျောက်မသွားမချင်း မည်သည့်အရာကိုမျှ ပလတ်မထိုးပါနှင့်။
+သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် ဖုန် (သို့) အမှိုက်ကဲ့သို့ ပြင်ပပစ္စည်းတစ်ခုခု ရှိ၊ မရှိ စစ်ဆေးပါ။ သင့်တက်ဘလက် မပျက်စီးစေရန် အားသွင်းပေါက်ကို သန့်ရှင်းပြီး အစိုဓာတ်ပျောက်မသွားမချင်း မည်သည့်အရာကိုမျှ ပလတ်မထိုးပါနှင့်။
 
 အပေါက် ခြောက်သွေ့စေရန် အစိုဓာတ်မှန်သမျှကို ခါထုတ်ပြီး ခြောက်သွားသည်အထိ စောင့်ရမည်ဖြစ်ကာ ၎င်းသည် နာရီပေါင်းများစွာ ကြာနိုင်ပါသည်။ ပန်ကာ (သို့) အခြောက်ခံစက် (လေအေးသာလျှင်) ကို အပေါက်ဘက်သို့ လှည့်ထားပြီး အခြောက်မြန်အောင် လုပ်နိုင်ပါသည်။"</string>
     <string name="usb_water_dialg_positive_button">အိုကေ</string>
-    <string name="usb_water_dialg_support_wireless_charging">"သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် အစိုဓာတ် (သို့) ပြင်ပပစ္စည်းကို ကျွန်ုပ်တို့ ရှာဖွေတွေ့ရှိထားသည်။
+    <string name="usb_water_dialg_support_wireless_charging">"သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် အစိုဓာတ် (သို့) ပြင်ပပစ္စည်းကို တွေ့ရှိထားသည်။
 
-သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် ဖုန် (သို့) အမှိုက်ကဲ့သို့ ပြင်ပပစ္စည်းတစ်ခုခု ရှိ၊ မရှိ စစ်ဆေးပါ။ သင့်ဖုန်းမပျက်စီးစေရန် အားသွင်းပေါက်ကို သန့်ရှင်းပြီး အစိုဓာတ်ပျောက်မသွားမချင်း မည်သည့်အရာကိုမျှ ပလတ်မထိုးပါနှင့်။
+အားသွင်းပေါက်/USB ပေါက်တွင် ဖုန် (သို့) အမှိုက်ကဲ့သို့ ပြင်ပပစ္စည်းတစ်ခုခု ရှိ၊ မရှိ စစ်ဆေးပါ။ သင့်တက်ဘလက် မပျက်စီးစေရန် အားသွင်းပေါက်ကို သန့်ရှင်းအောင် မလုပ်ခင်နှင့် အစိုဓာတ် မပျောက်ခင် ဘာကိုမျှ မထည့်သွင်းပါနှင့်။
 
-အပေါက် ခြောက်သွေ့စေရန် အစိုဓာတ်မှန်သမျှကို ခါထုတ်ပြီး ခြောက်သွားသည်အထိ စောင့်ရမည်ဖြစ်ကာ ၎င်းသည် နာရီပေါင်းများစွာ ကြာနိုင်ပါသည်။ ပန်ကာ (သို့) အခြောက်ခံစက် (လေအေးသာလျှင်) ကို အပေါက်ဘက်သို့ လှည့်ထားပြီး အခြောက်မြန်အောင် လုပ်နိုင်ပါသည်။
+အပေါက် ခြောက်သွေ့စေရန် အစိုဓာတ်များကို ခါထုတ်ပြီး ခြောက်သွားသည်အထိ စောင့်ရမည်ဖြစ်ကာ ၎င်းသည် နာရီအနည်းငယ် ကြာနိုင်ပါသည်။ ပန်ကာ (သို့) အခြောက်ခံစက် (လေအေးသာလျှင်) ကို အပေါက်ဘက်သို့ လှည့်ထားပြီး အခြောက်မြန်အောင် လုပ်နိုင်ပါသည်။
 
-ထိုအချိန်တွင် သင့်ဖုန်းကို ကြိုးမဲ့ အားသွင်းနိုင်သည်။"</string>
+ထိုအချိန်တွင် သင့်တက်ဘလက်ကို ကြိုးမဲ့ အားသွင်းနိုင်သည်။"</string>
     <string name="usb_water_notification_content">သင်၏ အားသွင်း/USB ပေါက်ထဲတွင် ရေငွေ့ (သို့) ပြင်ပပစ္စည်းများ ရှိနေသည်။ အားမသွင်းမီ စစ်ဆေးပါ။</string>
-    <string name="usb_water_notification_message">သင့်အားသွင်းကိရိယာ/USB အပေါက်ထဲ၌ ရေငွေ့ ရှာတွေ့သည်။ သင့်ဖုန်းကို အားမသွင်းမီ ၎င်းသည်ခြောက်သွေ့နေကြောင်း သေချာအောင်ပြုလုပ်ပါ။ ၎င်းကို လုံးဝခြောက်သွေ့အောင်လုပ်ရန် အချိန်အနည်းငယ်ယူပါလိမ့်မည်။</string>
+    <string name="usb_water_notification_message">သင့်အားသွင်းကိရိယာ/USB အပေါက်ထဲ၌ ရေငွေ့ ရှာတွေ့သည်။ သင့်တက်ဘလက်ကို အားမသွင်းမီ ၎င်းသည်ခြောက်သွေ့နေကြောင်း သေချာအောင်ပြုလုပ်ပါ။ ၎င်းကို လုံးဝခြောက်သွေ့အောင်လုပ်ရန် အချိန်အနည်းငယ်ယူပါလိမ့်မည်။</string>
     <string name="usb_water_notification_message_button">အသေးစိတ်အချက်များ</string>
     <string name="usb_water_notification_title">အားသွင်းကိရိယာ/USB ပေါက်ကို စစ်ဆေးပါ</string>
     <string name="usbhostStorage_restrict">USB အိမ်ရှင် သိုလှောင်ခန်း သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>

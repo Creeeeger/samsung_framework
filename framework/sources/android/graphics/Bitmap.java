@@ -47,7 +47,9 @@ public final class Bitmap implements Parcelable {
     private int mWidth;
     private static volatile int sDefaultDensity = -1;
     public static final Parcelable.Creator<Bitmap> CREATOR = new Parcelable.Creator<Bitmap>() { // from class: android.graphics.Bitmap.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Bitmap createFromParcel(Parcel p) {
             Bitmap bm = Bitmap.nativeCreateFromParcel(p);
@@ -60,7 +62,6 @@ public final class Bitmap implements Parcelable {
             return bm;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Bitmap[] newArray(int size) {
             return new Bitmap[size];
@@ -87,7 +88,6 @@ public final class Bitmap implements Parcelable {
 
     private static native Bitmap nativeCreate(int[] iArr, int i, int i2, int i3, int i4, int i5, boolean z, long j);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native Bitmap nativeCreateFromParcel(Parcel parcel);
 
     private static native void nativeErase(long j, int i);
@@ -167,7 +167,6 @@ public final class Bitmap implements Parcelable {
         sDefaultDensity = density;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getDefaultDensity() {
         if (sDefaultDensity >= 0) {
             return sDefaultDensity;
@@ -277,7 +276,6 @@ public final class Bitmap implements Parcelable {
         return nativeGenerationId(this.mNativePtr);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void checkRecycled(String errorMessage) {
         if (this.mRecycled) {
             throw new IllegalStateException(errorMessage);
@@ -308,41 +306,24 @@ public final class Bitmap implements Parcelable {
         }
     }
 
-    /* JADX WARN: Enum visitor error
-    jadx.core.utils.exceptions.JadxRuntimeException: Can't remove SSA var: r1v0 android.graphics.Bitmap$Config, still in use, count: 1, list:
-  (r1v0 android.graphics.Bitmap$Config) from 0x0057: FILLED_NEW_ARRAY 
-  (null android.graphics.Bitmap$Config)
-  (r1v0 android.graphics.Bitmap$Config)
-  (null android.graphics.Bitmap$Config)
-  (r4v0 android.graphics.Bitmap$Config)
-  (r5v0 android.graphics.Bitmap$Config)
-  (r7v0 android.graphics.Bitmap$Config)
-  (r8v0 android.graphics.Bitmap$Config)
-  (r9v0 android.graphics.Bitmap$Config)
-  (r10v0 android.graphics.Bitmap$Config)
- A[WRAPPED] (LINE:579) elemType: android.graphics.Bitmap$Config
-    	at jadx.core.utils.InsnRemover.removeSsaVar(InsnRemover.java:151)
-    	at jadx.core.utils.InsnRemover.unbindResult(InsnRemover.java:116)
-    	at jadx.core.utils.InsnRemover.lambda$unbindInsns$1(InsnRemover.java:88)
-    	at java.base/java.util.ArrayList.forEach(Unknown Source)
-    	at jadx.core.utils.InsnRemover.unbindInsns(InsnRemover.java:87)
-    	at jadx.core.utils.InsnRemover.removeAllAndUnbind(InsnRemover.java:238)
-    	at jadx.core.dex.visitors.EnumVisitor.convertToEnum(EnumVisitor.java:180)
-    	at jadx.core.dex.visitors.EnumVisitor.visit(EnumVisitor.java:100)
-     */
-    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
     /* loaded from: classes.dex */
-    public static final class Config {
-        ALPHA_8(1),
-        RGB_565(3),
-        ARGB_4444(4),
-        ARGB_8888(5),
-        RGBA_F16(6),
-        HARDWARE(7),
-        RGBA_1010102(8);
+    public static final class Config extends Enum<Config> {
+        private static final /* synthetic */ Config[] $VALUES = $values();
+        public static final Config ALPHA_8;
 
+        @Deprecated
+        public static final Config ARGB_4444;
+        public static final Config ARGB_8888;
+        public static final Config HARDWARE;
+        public static final Config RGBA_1010102;
+        public static final Config RGBA_F16;
+        public static final Config RGB_565;
         private static Config[] sConfigs = {null, new Config(1), null, new Config(3), new Config(4), new Config(5), new Config(6), new Config(7), new Config(8)};
         final int nativeInt;
+
+        private static /* synthetic */ Config[] $values() {
+            return new Config[]{ALPHA_8, RGB_565, ARGB_4444, ARGB_8888, RGBA_F16, HARDWARE, RGBA_1010102};
+        }
 
         public static Config valueOf(String name) {
             return (Config) Enum.valueOf(Config.class, name);
@@ -353,9 +334,26 @@ public final class Bitmap implements Parcelable {
         }
 
         static {
+            Config config = new Config(1);
+            ALPHA_8 = config;
+            Config config2 = new Config(3);
+            RGB_565 = config2;
+            Config config3 = new Config(4);
+            ARGB_4444 = config3;
+            Config config4 = new Config(5);
+            ARGB_8888 = config4;
+            Config config5 = new Config(6);
+            RGBA_F16 = config5;
+            Config config6 = new Config(7);
+            HARDWARE = config6;
+            Config config7 = new Config(8);
+            RGBA_1010102 = config7;
+            $VALUES = $values();
+            sConfigs = new Config[]{null, config, null, config2, config3, config4, config5, config6, config7};
         }
 
-        private Config(int ni) {
+        private Config(String str, int i, int ni) {
+            super(str, i);
             this.nativeInt = ni;
         }
 
@@ -518,8 +516,7 @@ public final class Bitmap implements Parcelable {
         throw new UnsupportedOperationException("Method not decompiled: android.graphics.Bitmap.createBitmap(android.graphics.Bitmap, int, int, int, int, android.graphics.Matrix, boolean):android.graphics.Bitmap");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.graphics.Bitmap$2, reason: invalid class name */
+    /* renamed from: android.graphics.Bitmap$2 */
     /* loaded from: classes.dex */
     public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$android$graphics$Bitmap$Config;
@@ -1034,6 +1031,30 @@ public final class Bitmap implements Parcelable {
         }
         checkPixelsAccess(x, y, width, height, offset, stride, pixels);
         nativeSetPixels(this.mNativePtr, pixels, offset, stride, x, y, width, height);
+    }
+
+    /* renamed from: android.graphics.Bitmap$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Bitmap> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Bitmap createFromParcel(Parcel p) {
+            Bitmap bm = Bitmap.nativeCreateFromParcel(p);
+            if (bm == null) {
+                throw new RuntimeException("Failed to unparcel Bitmap");
+            }
+            if (p.readBoolean()) {
+                bm.setGainmap((Gainmap) p.readTypedObject(Gainmap.CREATOR));
+            }
+            return bm;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Bitmap[] newArray(int size) {
+            return new Bitmap[size];
+        }
     }
 
     @Override // android.os.Parcelable

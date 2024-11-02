@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class AvailableNfcAntenna implements Parcelable {
     public static final Parcelable.Creator<AvailableNfcAntenna> CREATOR = new Parcelable.Creator<AvailableNfcAntenna>() { // from class: android.nfc.AvailableNfcAntenna.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AvailableNfcAntenna createFromParcel(Parcel in) {
             return new AvailableNfcAntenna(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AvailableNfcAntenna[] newArray(int size) {
             return new AvailableNfcAntenna[size];
@@ -20,6 +21,10 @@ public final class AvailableNfcAntenna implements Parcelable {
     };
     private final int mLocationX;
     private final int mLocationY;
+
+    /* synthetic */ AvailableNfcAntenna(Parcel parcel, AvailableNfcAntennaIA availableNfcAntennaIA) {
+        this(parcel);
+    }
 
     public AvailableNfcAntenna(int locationX, int locationY) {
         this.mLocationX = locationX;
@@ -37,6 +42,23 @@ public final class AvailableNfcAntenna implements Parcelable {
     private AvailableNfcAntenna(Parcel in) {
         this.mLocationX = in.readInt();
         this.mLocationY = in.readInt();
+    }
+
+    /* renamed from: android.nfc.AvailableNfcAntenna$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AvailableNfcAntenna> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AvailableNfcAntenna createFromParcel(Parcel in) {
+            return new AvailableNfcAntenna(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AvailableNfcAntenna[] newArray(int size) {
+            return new AvailableNfcAntenna[size];
+        }
     }
 
     @Override // android.os.Parcelable

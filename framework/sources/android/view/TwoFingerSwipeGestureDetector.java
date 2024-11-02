@@ -86,7 +86,6 @@ public class TwoFingerSwipeGestureDetector implements WindowManagerPolicyConstan
     public @interface PositionDirection {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class Tuner {
         public static final String TIME_THRESHOLD = getSystemPropertiesKey("time_threshold");
@@ -408,7 +407,6 @@ public class TwoFingerSwipeGestureDetector implements WindowManagerPolicyConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Boolean lambda$onInputEvent$0(Integer x, Integer y) {
         return Boolean.valueOf(getPosition(x.intValue(), y.intValue(), this.mThresholdsForOneFinger) == 0);
     }
@@ -537,7 +535,6 @@ public class TwoFingerSwipeGestureDetector implements WindowManagerPolicyConstan
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean excludeRegionContains(float x, float y) {
         return this.mExcludeRegion.contains((int) x, (int) y);
     }

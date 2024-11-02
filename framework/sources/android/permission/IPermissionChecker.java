@@ -118,8 +118,9 @@ public interface IPermissionChecker extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IPermissionChecker {
+        public static class Proxy implements IPermissionChecker {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

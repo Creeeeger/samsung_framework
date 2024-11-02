@@ -93,11 +93,17 @@ public class SmartClipRemoteRequestDispatcher {
         }
     }
 
-    public void dispatchSmartClipRemoteRequest(final SmartClipRemoteRequestInfo request) {
+    public void dispatchSmartClipRemoteRequest(SmartClipRemoteRequestInfo request) {
         switch (request.mRequestType) {
             case 2:
                 checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request.mCallerPid, request.mCallerUid);
                 this.mHandler.post(new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.1
+                    final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+                    AnonymousClass1(SmartClipRemoteRequestInfo request2) {
+                        request = request2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SmartClipRemoteRequestDispatcher.this.dispatchAirCommandHitTest(request);
@@ -105,8 +111,14 @@ public class SmartClipRemoteRequestDispatcher {
                 });
                 return;
             case 3:
-                checkPermission("android.permission.INJECT_EVENTS", request.mCallerPid, request.mCallerUid);
+                checkPermission("android.permission.INJECT_EVENTS", request2.mCallerPid, request2.mCallerUid);
                 this.mHandler.post(new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.4
+                    final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+                    AnonymousClass4(SmartClipRemoteRequestInfo request2) {
+                        request = request2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SmartClipRemoteRequestDispatcher.this.dispatchInputEventInjection(request);
@@ -114,8 +126,14 @@ public class SmartClipRemoteRequestDispatcher {
                 });
                 return;
             case 4:
-                checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request.mCallerPid, request.mCallerUid);
+                checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request2.mCallerPid, request2.mCallerUid);
                 this.mHandler.post(new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.2
+                    final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+                    AnonymousClass2(SmartClipRemoteRequestInfo request2) {
+                        request = request2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SmartClipRemoteRequestDispatcher.this.dispatchScrollableAreaInfo(request);
@@ -123,8 +141,14 @@ public class SmartClipRemoteRequestDispatcher {
                 });
                 return;
             case 5:
-                checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request.mCallerPid, request.mCallerUid);
+                checkPermission("com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA", request2.mCallerPid, request2.mCallerUid);
                 this.mHandler.post(new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.3
+                    final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+                    AnonymousClass3(SmartClipRemoteRequestInfo request2) {
+                        request = request2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SmartClipRemoteRequestDispatcher.this.dispatchScrollableViewInfo(request);
@@ -132,13 +156,72 @@ public class SmartClipRemoteRequestDispatcher {
                 });
                 return;
             default:
-                Log.e(TAG, "dispatchSmartClipRemoteRequest : Unknown request type(" + request.mRequestType + NavigationBarInflaterView.KEY_CODE_END);
+                Log.e(TAG, "dispatchSmartClipRemoteRequest : Unknown request type(" + request2.mRequestType + NavigationBarInflaterView.KEY_CODE_END);
                 return;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void dispatchInputEventInjection(final SmartClipRemoteRequestInfo request) {
+    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+        AnonymousClass1(SmartClipRemoteRequestInfo request2) {
+            request = request2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SmartClipRemoteRequestDispatcher.this.dispatchAirCommandHitTest(request);
+        }
+    }
+
+    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+        AnonymousClass2(SmartClipRemoteRequestInfo request2) {
+            request = request2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SmartClipRemoteRequestDispatcher.this.dispatchScrollableAreaInfo(request);
+        }
+    }
+
+    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 implements Runnable {
+        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+        AnonymousClass3(SmartClipRemoteRequestInfo request2) {
+            request = request2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SmartClipRemoteRequestDispatcher.this.dispatchScrollableViewInfo(request);
+        }
+    }
+
+    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 implements Runnable {
+        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+
+        AnonymousClass4(SmartClipRemoteRequestInfo request2) {
+            request = request2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SmartClipRemoteRequestDispatcher.this.dispatchInputEventInjection(request);
+        }
+    }
+
+    public void dispatchInputEventInjection(SmartClipRemoteRequestInfo request) {
         if (request.mRequestData != null) {
             if (request.mRequestData instanceof MotionEvent) {
                 MotionEvent motionEvent = (MotionEvent) request.mRequestData;
@@ -155,20 +238,32 @@ public class SmartClipRemoteRequestDispatcher {
             }
             if (request.mRequestData instanceof Bundle) {
                 Bundle reqData = (Bundle) request.mRequestData;
-                final Parcelable[] events = reqData.getParcelableArray("events");
+                Parcelable[] events = reqData.getParcelableArray("events");
                 if (events != null) {
-                    final boolean waitUntilConsume = reqData.getBoolean(KEY_EVENT_INJECTION_WAIT_UNTIL_CONSUME);
+                    boolean waitUntilConsume = reqData.getBoolean(KEY_EVENT_INJECTION_WAIT_UNTIL_CONSUME);
                     long firstEventTime = events.length > 0 ? ((InputEvent) events[0]).getEventTime() : -1L;
                     if (this.DEBUG) {
                         Log.d(TAG, "dispatchInputEventInjection : wait = " + waitUntilConsume + "  eventCount=" + events.length);
                     }
                     for (Parcelable parcelable : events) {
-                        final InputEvent event = (InputEvent) parcelable;
+                        InputEvent event = (InputEvent) parcelable;
                         if (event != null) {
                             if (event instanceof MotionEvent) {
                                 transformTouchPosition((MotionEvent) event);
                             }
                             Runnable runnable = new Runnable() { // from class: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher.5
+                                final /* synthetic */ InputEvent val$event;
+                                final /* synthetic */ Parcelable[] val$events;
+                                final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+                                final /* synthetic */ boolean val$waitUntilConsume;
+
+                                AnonymousClass5(InputEvent event2, Parcelable[] events2, boolean waitUntilConsume2, SmartClipRemoteRequestInfo request2) {
+                                    event = event2;
+                                    events = events2;
+                                    waitUntilConsume = waitUntilConsume2;
+                                    request = request2;
+                                }
+
                                 @Override // java.lang.Runnable
                                 public void run() {
                                     long startTime = System.currentTimeMillis();
@@ -186,7 +281,7 @@ public class SmartClipRemoteRequestDispatcher {
                                     }
                                 }
                             };
-                            long delay = event.getEventTime() - firstEventTime;
+                            long delay = event2.getEventTime() - firstEventTime;
                             if (delay > 0) {
                                 this.mHandler.postDelayed(runnable, delay);
                             } else {
@@ -204,7 +299,39 @@ public class SmartClipRemoteRequestDispatcher {
         Log.e(TAG, "dispatchInputEventInjection : Empty input event!");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: com.samsung.android.content.smartclip.SmartClipRemoteRequestDispatcher$5 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass5 implements Runnable {
+        final /* synthetic */ InputEvent val$event;
+        final /* synthetic */ Parcelable[] val$events;
+        final /* synthetic */ SmartClipRemoteRequestInfo val$request;
+        final /* synthetic */ boolean val$waitUntilConsume;
+
+        AnonymousClass5(InputEvent event2, Parcelable[] events2, boolean waitUntilConsume2, SmartClipRemoteRequestInfo request2) {
+            event = event2;
+            events = events2;
+            waitUntilConsume = waitUntilConsume2;
+            request = request2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            long startTime = System.currentTimeMillis();
+            if (SmartClipRemoteRequestDispatcher.this.DEBUG) {
+                Log.d(SmartClipRemoteRequestDispatcher.TAG, "dispatchInputEventInjection : injecting.. " + event);
+            }
+            SmartClipRemoteRequestDispatcher.this.enqueueInputEvent(event, true);
+            InputEvent inputEvent2 = event;
+            Parcelable[] parcelableArr = events;
+            if (inputEvent2 == parcelableArr[parcelableArr.length - 1]) {
+                if (waitUntilConsume) {
+                    SmartClipRemoteRequestDispatcher.this.sendResult(request, null);
+                }
+                Log.d(SmartClipRemoteRequestDispatcher.TAG, "dispatchInputEventInjection : injection finished. Elapsed = " + (System.currentTimeMillis() - startTime));
+            }
+        }
+    }
+
     public void dispatchScrollableAreaInfo(SmartClipRemoteRequestInfo request) {
         View rootView = this.mViewRootImplGateway.getRootView();
         if (rootView == null) {
@@ -258,7 +385,6 @@ public class SmartClipRemoteRequestDispatcher {
         sendResult(request, resultData);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchScrollableViewInfo(SmartClipRemoteRequestInfo request) {
         View rootView = this.mViewRootImplGateway.getRootView();
         if (rootView != null) {
@@ -293,7 +419,6 @@ public class SmartClipRemoteRequestDispatcher {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchAirCommandHitTest(SmartClipRemoteRequestInfo request) {
         if (this.mContext != null) {
             Bundle resultData = new Bundle();
@@ -550,7 +675,6 @@ public class SmartClipRemoteRequestDispatcher {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void enqueueInputEvent(InputEvent inputEvent, boolean processImmediately) {
         ViewRootImplGateway viewRootImplGateway = this.mViewRootImplGateway;
         if (viewRootImplGateway == null) {
@@ -564,7 +688,6 @@ public class SmartClipRemoteRequestDispatcher {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendResult(SmartClipRemoteRequestInfo request, Parcelable resultData) {
         SpenGestureManager spenGestureManager = (SpenGestureManager) this.mContext.getSystemService(Context.SEM_SPEN_GESTURE_SERVICE);
         SmartClipRemoteRequestResult result = new SmartClipRemoteRequestResult(request.mRequestId, request.mRequestType, resultData);

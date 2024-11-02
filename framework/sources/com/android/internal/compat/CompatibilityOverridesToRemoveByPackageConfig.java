@@ -8,19 +8,24 @@ import java.util.Map;
 /* loaded from: classes4.dex */
 public final class CompatibilityOverridesToRemoveByPackageConfig implements Parcelable {
     public static final Parcelable.Creator<CompatibilityOverridesToRemoveByPackageConfig> CREATOR = new Parcelable.Creator<CompatibilityOverridesToRemoveByPackageConfig>() { // from class: com.android.internal.compat.CompatibilityOverridesToRemoveByPackageConfig.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CompatibilityOverridesToRemoveByPackageConfig createFromParcel(Parcel in) {
             return new CompatibilityOverridesToRemoveByPackageConfig(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityOverridesToRemoveByPackageConfig[] newArray(int size) {
             return new CompatibilityOverridesToRemoveByPackageConfig[size];
         }
     };
     public final Map<String, CompatibilityOverridesToRemoveConfig> packageNameToOverridesToRemove;
+
+    /* synthetic */ CompatibilityOverridesToRemoveByPackageConfig(Parcel parcel, CompatibilityOverridesToRemoveByPackageConfigIA compatibilityOverridesToRemoveByPackageConfigIA) {
+        this(parcel);
+    }
 
     public CompatibilityOverridesToRemoveByPackageConfig(Map<String, CompatibilityOverridesToRemoveConfig> packageNameToOverridesToRemove) {
         this.packageNameToOverridesToRemove = packageNameToOverridesToRemove;
@@ -46,6 +51,23 @@ public final class CompatibilityOverridesToRemoveByPackageConfig implements Parc
         for (String key : this.packageNameToOverridesToRemove.keySet()) {
             dest.writeString(key);
             this.packageNameToOverridesToRemove.get(key).writeToParcel(dest, 0);
+        }
+    }
+
+    /* renamed from: com.android.internal.compat.CompatibilityOverridesToRemoveByPackageConfig$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CompatibilityOverridesToRemoveByPackageConfig> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompatibilityOverridesToRemoveByPackageConfig createFromParcel(Parcel in) {
+            return new CompatibilityOverridesToRemoveByPackageConfig(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CompatibilityOverridesToRemoveByPackageConfig[] newArray(int size) {
+            return new CompatibilityOverridesToRemoveByPackageConfig[size];
         }
     }
 }

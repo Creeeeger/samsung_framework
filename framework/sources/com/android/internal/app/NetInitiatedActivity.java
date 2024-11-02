@@ -25,6 +25,9 @@ public class NetInitiatedActivity extends AlertActivity implements DialogInterfa
     private int default_response = -1;
     private int default_response_timeout = 6;
     private final Handler mHandler = new Handler() { // from class: com.android.internal.app.NetInitiatedActivity.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -41,7 +44,28 @@ public class NetInitiatedActivity extends AlertActivity implements DialogInterfa
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: com.android.internal.app.NetInitiatedActivity$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 extends Handler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    if (NetInitiatedActivity.this.notificationId != -1) {
+                        NetInitiatedActivity netInitiatedActivity = NetInitiatedActivity.this;
+                        netInitiatedActivity.sendUserResponse(netInitiatedActivity.default_response);
+                    }
+                    NetInitiatedActivity.this.finish();
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     @Override // com.android.internal.app.AlertActivity, android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,14 +88,12 @@ public class NetInitiatedActivity extends AlertActivity implements DialogInterfa
         setupAlert();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onPause() {
         super.onPause();
@@ -90,7 +112,6 @@ public class NetInitiatedActivity extends AlertActivity implements DialogInterfa
         this.notificationId = -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendUserResponse(int response) {
         Log.d(TAG, "sendUserResponse, response: " + response);
         LocationManagerInternal lm = (LocationManagerInternal) LocalServices.getService(LocationManagerInternal.class);

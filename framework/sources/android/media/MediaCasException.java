@@ -2,11 +2,14 @@ package android.media;
 
 /* loaded from: classes2.dex */
 public class MediaCasException extends Exception {
+    /* synthetic */ MediaCasException(String str, MediaCasExceptionIA mediaCasExceptionIA) {
+        this(str);
+    }
+
     private MediaCasException(String detailMessage) {
         super(detailMessage);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void throwExceptionIfNeeded(int error) throws MediaCasException {
         if (error == 0) {
             return;

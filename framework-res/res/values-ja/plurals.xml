@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">アプリがインストールされている外部SDカードが取り外されているため、この端末は不安定です。通常の状態に戻すために、この端末を%d秒後に再起動します。端末が再起動する前に、未保存のデータを保存してください。</item>
+        <item quantity="other">アプリがインストールされている外部SDカードが取り外されているため、このタブレットは不安定です。通常の状態に戻すために、このタブレットを%d秒後に再起動します。タブレットが再起動する前に、未保存のデータを保存してください。</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">この端末を%d秒後に再起動</item>
+        <item quantity="other">このタブレットを%d秒後に再起動</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

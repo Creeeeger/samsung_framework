@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class MultiResolutionChangeRequestInfo implements Parcelable {
     public static final Parcelable.Creator<MultiResolutionChangeRequestInfo> CREATOR = new Parcelable.Creator<MultiResolutionChangeRequestInfo>() { // from class: com.samsung.android.view.MultiResolutionChangeRequestInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public MultiResolutionChangeRequestInfo createFromParcel(Parcel in) {
             MultiResolutionChangeRequestInfo data = new MultiResolutionChangeRequestInfo();
@@ -14,7 +16,6 @@ public class MultiResolutionChangeRequestInfo implements Parcelable {
             return data;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MultiResolutionChangeRequestInfo[] newArray(int size) {
             return new MultiResolutionChangeRequestInfo[size];
@@ -27,6 +28,10 @@ public class MultiResolutionChangeRequestInfo implements Parcelable {
     private int mHeight;
     private boolean mSaveToSettings;
     private int mWidth;
+
+    /* synthetic */ MultiResolutionChangeRequestInfo(int i, int i2, int i3, int i4, boolean z, MultiResolutionChangeRequestInfoIA multiResolutionChangeRequestInfoIA) {
+        this(i, i2, i3, i4, z);
+    }
 
     public MultiResolutionChangeRequestInfo() {
         this.mForcedHideCutout = -1;
@@ -144,5 +149,24 @@ public class MultiResolutionChangeRequestInfo implements Parcelable {
         this.mSaveToSettings = source.readBoolean();
         this.mCallerInfo = source.readString();
         this.mForcedHideCutout = source.readInt();
+    }
+
+    /* renamed from: com.samsung.android.view.MultiResolutionChangeRequestInfo$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<MultiResolutionChangeRequestInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MultiResolutionChangeRequestInfo createFromParcel(Parcel in) {
+            MultiResolutionChangeRequestInfo data = new MultiResolutionChangeRequestInfo();
+            data.readFromParcel(in);
+            return data;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public MultiResolutionChangeRequestInfo[] newArray(int size) {
+            return new MultiResolutionChangeRequestInfo[size];
+        }
     }
 }

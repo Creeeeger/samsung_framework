@@ -409,12 +409,22 @@ public class PackageInstaller {
         }
     }
 
-    public void commitSessionAfterInstallConstraintsAreMet(final int sessionId, final IntentSender statusReceiver, InstallConstraints constraints, long timeoutMillis) {
+    public void commitSessionAfterInstallConstraintsAreMet(int sessionId, IntentSender statusReceiver, InstallConstraints constraints, long timeoutMillis) {
         try {
-            final IPackageInstallerSession session = this.mInstaller.openSession(sessionId);
+            IPackageInstallerSession session = this.mInstaller.openSession(sessionId);
             session.seal();
             List<String> packageNames = session.fetchPackageNames();
             IntentSender intentSender = new IntentSender((IIntentSender) new IIntentSender.Stub() { // from class: android.content.pm.PackageInstaller.1
+                final /* synthetic */ IPackageInstallerSession val$session;
+                final /* synthetic */ int val$sessionId;
+                final /* synthetic */ IntentSender val$statusReceiver;
+
+                AnonymousClass1(IPackageInstallerSession session2, IntentSender statusReceiver2, int sessionId2) {
+                    session = session2;
+                    statusReceiver = statusReceiver2;
+                    sessionId = sessionId2;
+                }
+
                 @Override // android.content.IIntentSender
                 public void send(int code, Intent intent, String resolvedType, IBinder allowlistToken, IIntentReceiver finishedReceiver, String requiredPermission, Bundle options) {
                     InstallConstraintsResult result = (InstallConstraintsResult) intent.getParcelableExtra(PackageInstaller.EXTRA_INSTALL_CONSTRAINTS_RESULT, InstallConstraintsResult.class);
@@ -438,7 +448,37 @@ public class PackageInstaller {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.content.pm.PackageInstaller$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends IIntentSender.Stub {
+        final /* synthetic */ IPackageInstallerSession val$session;
+        final /* synthetic */ int val$sessionId;
+        final /* synthetic */ IntentSender val$statusReceiver;
+
+        AnonymousClass1(IPackageInstallerSession session2, IntentSender statusReceiver2, int sessionId2) {
+            session = session2;
+            statusReceiver = statusReceiver2;
+            sessionId = sessionId2;
+        }
+
+        @Override // android.content.IIntentSender
+        public void send(int code, Intent intent, String resolvedType, IBinder allowlistToken, IIntentReceiver finishedReceiver, String requiredPermission, Bundle options) {
+            InstallConstraintsResult result = (InstallConstraintsResult) intent.getParcelableExtra(PackageInstaller.EXTRA_INSTALL_CONSTRAINTS_RESULT, InstallConstraintsResult.class);
+            try {
+                if (result.areAllConstraintsSatisfied()) {
+                    session.commit(statusReceiver, false);
+                } else {
+                    Intent fillIn = new Intent();
+                    fillIn.putExtra(PackageInstaller.EXTRA_SESSION_ID, sessionId);
+                    fillIn.putExtra(PackageInstaller.EXTRA_STATUS, 8);
+                    fillIn.putExtra(PackageInstaller.EXTRA_STATUS_MESSAGE, "Install constraints not satisfied within timeout");
+                    statusReceiver.sendIntent(ActivityThread.currentApplication(), 0, fillIn, null, null);
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
+
     /* loaded from: classes.dex */
     public static class SessionCallbackDelegate extends IPackageInstallerCallback.Stub {
         private static final int MSG_SESSION_ACTIVE_CHANGED = 3;
@@ -449,7 +489,6 @@ public class PackageInstaller {
         final SessionCallback mCallback;
         final Executor mExecutor;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public SessionCallbackDelegate(SessionCallback callback, Executor executor) {
             this.mCallback = callback;
             this.mExecutor = executor;
@@ -755,7 +794,7 @@ public class PackageInstaller {
             }
         }
 
-        /* renamed from: android.content.pm.PackageInstaller$Session$1, reason: invalid class name */
+        /* renamed from: android.content.pm.PackageInstaller$Session$1 */
         /* loaded from: classes.dex */
         class AnonymousClass1 extends IOnChecksumsReadyListener.Stub {
             final /* synthetic */ Executor val$executor;
@@ -1080,13 +1119,14 @@ public class PackageInstaller {
         public List<String> whitelistedRestrictedPermissions;
         public static final Set<String> RESTRICTED_PERMISSIONS_ALL = new ArraySet();
         public static final Parcelable.Creator<SessionParams> CREATOR = new Parcelable.Creator<SessionParams>() { // from class: android.content.pm.PackageInstaller.SessionParams.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SessionParams createFromParcel(Parcel p) {
                 return new SessionParams(p);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SessionParams[] newArray(int size) {
                 return new SessionParams[size];
@@ -1542,6 +1582,23 @@ public class PackageInstaller {
             dest.writeBoolean(this.applicationEnabledSettingPersistent);
             dest.writeInt(this.sessionFlags);
         }
+
+        /* renamed from: android.content.pm.PackageInstaller$SessionParams$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SessionParams> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SessionParams createFromParcel(Parcel p) {
+                return new SessionParams(p);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SessionParams[] newArray(int size) {
+                return new SessionParams[size];
+            }
+        }
     }
 
     /* loaded from: classes.dex */
@@ -1612,20 +1669,20 @@ public class PackageInstaller {
         public List<String> whitelistedRestrictedPermissions;
         private static final int[] NO_SESSIONS = new int[0];
         public static final Parcelable.Creator<SessionInfo> CREATOR = new Parcelable.Creator<SessionInfo>() { // from class: android.content.pm.PackageInstaller.SessionInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SessionInfo createFromParcel(Parcel p) {
                 return new SessionInfo(p);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SessionInfo[] newArray(int size) {
                 return new SessionInfo[size];
             }
         };
 
-        /* JADX INFO: Access modifiers changed from: private */
         public static String userActionToString(int requireUserAction) {
             switch (requireUserAction) {
                 case 1:
@@ -2018,18 +2075,36 @@ public class PackageInstaller {
             parcel.writeBoolean(this.applicationEnabledSettingPersistent);
             parcel.writeInt(this.pendingUserActionReason);
         }
+
+        /* renamed from: android.content.pm.PackageInstaller$SessionInfo$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SessionInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SessionInfo createFromParcel(Parcel p) {
+                return new SessionInfo(p);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SessionInfo[] newArray(int size) {
+                return new SessionInfo[size];
+            }
+        }
     }
 
     /* loaded from: classes.dex */
     public static final class PreapprovalDetails implements Parcelable {
         public static final Parcelable.Creator<PreapprovalDetails> CREATOR = new Parcelable.Creator<PreapprovalDetails>() { // from class: android.content.pm.PackageInstaller.PreapprovalDetails.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public PreapprovalDetails[] newArray(int size) {
                 return new PreapprovalDetails[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PreapprovalDetails createFromParcel(Parcel in) {
                 return new PreapprovalDetails(in);
@@ -2081,6 +2156,23 @@ public class PackageInstaller {
             Preconditions.checkArgument(!Objects.isNull(locale), "Locale cannot be null.");
             this.mPackageName = packageName;
             Preconditions.checkArgument(!TextUtils.isEmpty(packageName), "Package name cannot be empty.");
+        }
+
+        /* renamed from: android.content.pm.PackageInstaller$PreapprovalDetails$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<PreapprovalDetails> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PreapprovalDetails[] newArray(int size) {
+                return new PreapprovalDetails[size];
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public PreapprovalDetails createFromParcel(Parcel in) {
+                return new PreapprovalDetails(in);
+            }
         }
 
         /* loaded from: classes.dex */
@@ -2161,13 +2253,14 @@ public class PackageInstaller {
     /* loaded from: classes.dex */
     public static final class InstallConstraintsResult implements Parcelable {
         public static final Parcelable.Creator<InstallConstraintsResult> CREATOR = new Parcelable.Creator<InstallConstraintsResult>() { // from class: android.content.pm.PackageInstaller.InstallConstraintsResult.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public InstallConstraintsResult[] newArray(int size) {
                 return new InstallConstraintsResult[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InstallConstraintsResult createFromParcel(Parcel in) {
                 return new InstallConstraintsResult(in);
@@ -2200,6 +2293,23 @@ public class PackageInstaller {
             this.mAllConstraintsSatisfied = allConstraintsSatisfied;
         }
 
+        /* renamed from: android.content.pm.PackageInstaller$InstallConstraintsResult$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<InstallConstraintsResult> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InstallConstraintsResult[] newArray(int size) {
+                return new InstallConstraintsResult[size];
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InstallConstraintsResult createFromParcel(Parcel in) {
+                return new InstallConstraintsResult(in);
+            }
+        }
+
         @Deprecated
         private void __metadata() {
         }
@@ -2214,13 +2324,14 @@ public class PackageInstaller {
         private final boolean mNotInCallRequired;
         public static final InstallConstraints GENTLE_UPDATE = new Builder().setAppNotInteractingRequired().build();
         public static final Parcelable.Creator<InstallConstraints> CREATOR = new Parcelable.Creator<InstallConstraints>() { // from class: android.content.pm.PackageInstaller.InstallConstraints.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public InstallConstraints[] newArray(int size) {
                 return new InstallConstraints[size];
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public InstallConstraints createFromParcel(Parcel in) {
                 return new InstallConstraints(in);
@@ -2347,6 +2458,23 @@ public class PackageInstaller {
             this.mAppNotInteractingRequired = appNotInteractingRequired;
             this.mAppNotTopVisibleRequired = appNotTopVisibleRequired;
             this.mNotInCallRequired = notInCallRequired;
+        }
+
+        /* renamed from: android.content.pm.PackageInstaller$InstallConstraints$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<InstallConstraints> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InstallConstraints[] newArray(int size) {
+                return new InstallConstraints[size];
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public InstallConstraints createFromParcel(Parcel in) {
+                return new InstallConstraints(in);
+            }
         }
 
         @Deprecated

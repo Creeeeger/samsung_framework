@@ -26,7 +26,6 @@ public abstract class HdmiRecordListener {
         private boolean mProgrammed;
         private int mProgrammedInfo;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static TimerStatusData parseFrom(int result) {
             TimerStatusData data = new TimerStatusData();
             data.mOverlapped = ((result >> 31) & 1) != 0;

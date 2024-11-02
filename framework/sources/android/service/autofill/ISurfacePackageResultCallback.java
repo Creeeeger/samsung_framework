@@ -85,8 +85,9 @@ public interface ISurfacePackageResultCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ISurfacePackageResultCallback {
+        public static class Proxy implements ISurfacePackageResultCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

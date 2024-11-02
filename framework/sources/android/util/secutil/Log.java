@@ -23,6 +23,9 @@ public final class Log {
     public static final int VERBOSE = 2;
     public static final int WARN = 5;
     private static TerribleFailureHandler sWtfHandler = new TerribleFailureHandler() { // from class: android.util.secutil.Log.1
+        AnonymousClass1() {
+        }
+
         @Override // android.util.secutil.Log.TerribleFailureHandler
         public void onTerribleFailure(String tag, TerribleFailure what, boolean system) {
             RuntimeInit.wtf(tag, what, system);
@@ -34,8 +37,8 @@ public final class Log {
         void onTerribleFailure(String str, TerribleFailure terribleFailure, boolean z);
     }
 
-    /* renamed from: -$$Nest$smlogger_entry_max_payload_native, reason: not valid java name */
-    static /* bridge */ /* synthetic */ int m4961$$Nest$smlogger_entry_max_payload_native() {
+    /* renamed from: -$$Nest$smlogger_entry_max_payload_native */
+    static /* bridge */ /* synthetic */ int m4960$$Nest$smlogger_entry_max_payload_native() {
         return logger_entry_max_payload_native();
     }
 
@@ -45,11 +48,22 @@ public final class Log {
 
     public static native int println_native(int i, int i2, String str, String str2);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class TerribleFailure extends Exception {
         TerribleFailure(String msg, Throwable cause) {
             super(msg, cause);
+        }
+    }
+
+    /* renamed from: android.util.secutil.Log$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements TerribleFailureHandler {
+        AnonymousClass1() {
+        }
+
+        @Override // android.util.secutil.Log.TerribleFailureHandler
+        public void onTerribleFailure(String tag, TerribleFailure what, boolean system) {
+            RuntimeInit.wtf(tag, what, system);
         }
     }
 
@@ -266,7 +280,6 @@ public final class Log {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int wtf(int logId, String tag, String msg, Throwable tr, boolean localStack, boolean system) {
         TerribleFailure what = new TerribleFailure(msg, tr);
         int bytes = printlns(logId, 6, tag, msg, localStack ? what : tr);
@@ -274,7 +287,6 @@ public final class Log {
         return bytes;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void wtfQuiet(int logId, String tag, String msg, boolean system) {
         TerribleFailure what = new TerribleFailure(msg, null);
         sWtfHandler.onTerribleFailure(tag, what, system);
@@ -337,16 +349,14 @@ public final class Log {
         return logWriter.getWritten();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class NoPreloadHolder {
-        public static final int LOGGER_ENTRY_MAX_PAYLOAD = Log.m4961$$Nest$smlogger_entry_max_payload_native();
+        public static final int LOGGER_ENTRY_MAX_PAYLOAD = Log.m4960$$Nest$smlogger_entry_max_payload_native();
 
         NoPreloadHolder() {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class ImmediateLogWriter extends Writer {
         private int bufID;

@@ -216,8 +216,9 @@ public interface IDemux extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IDemux {
+        public static class Proxy implements IDemux {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

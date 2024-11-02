@@ -85,6 +85,10 @@ public final class PrintManager {
         this.mUserId = userId;
         this.mAppId = appId;
         this.mHandler = new Handler(context.getMainLooper(), null, false) { // from class: android.print.PrintManager.1
+            AnonymousClass1(Looper looper, Handler.Callback callback, boolean async) {
+                super(looper, callback, async);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message message) {
                 switch (message.what) {
@@ -105,6 +109,33 @@ public final class PrintManager {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.print.PrintManager$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper, Handler.Callback callback, boolean async) {
+            super(looper, callback, async);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message message) {
+            switch (message.what) {
+                case 1:
+                    SomeArgs args = (SomeArgs) message.obj;
+                    PrintJobStateChangeListenerWrapper wrapper = (PrintJobStateChangeListenerWrapper) args.arg1;
+                    PrintJobStateChangeListener listener = wrapper.getListener();
+                    if (listener != null) {
+                        PrintJobId printJobId = (PrintJobId) args.arg2;
+                        listener.onPrintJobStateChanged(printJobId);
+                    }
+                    args.recycle();
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     public PrintManager getGlobalPrintManagerForUser(int userId) {
         IPrintManager iPrintManager = this.mService;
         if (iPrintManager == null) {
@@ -114,7 +145,6 @@ public final class PrintManager {
         return new PrintManager(this.mContext, iPrintManager, userId, -2);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public PrintJobInfo getPrintJobInfo(PrintJobId printJobId) {
         try {
             return this.mService.getPrintJobInfo(printJobId, this.mAppId, this.mUserId);
@@ -213,7 +243,6 @@ public final class PrintManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void cancelPrintJob(PrintJobId printJobId) {
         IPrintManager iPrintManager = this.mService;
         if (iPrintManager == null) {
@@ -227,7 +256,6 @@ public final class PrintManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void restartPrintJob(PrintJobId printJobId) {
         IPrintManager iPrintManager = this.mService;
         if (iPrintManager == null) {
@@ -440,7 +468,6 @@ public final class PrintManager {
         private IPrintDocumentAdapterObserver mObserver;
         private DestroyableCallback mPendingCallback;
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public interface DestroyableCallback {
             void destroy();
@@ -592,7 +619,6 @@ public final class PrintManager {
             return this.mActivity == null;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void destroyLocked() {
             this.mActivity.getApplication().unregisterActivityLifecycleCallbacks(this);
             this.mActivity = null;
@@ -610,8 +636,9 @@ public final class PrintManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private final class MyHandler extends Handler {
+        public final class MyHandler extends Handler {
             public static final int MSG_ON_FINISH = 4;
             public static final int MSG_ON_KILL = 5;
             public static final int MSG_ON_LAYOUT = 2;

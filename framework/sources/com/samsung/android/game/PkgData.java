@@ -12,13 +12,14 @@ public class PkgData implements Parcelable {
     public static final int CATEGORY_UNDEFINED = -1;
     public static final int CPU_GPU_LEVEL_DEFAULT = 0;
     public static final Parcelable.Creator<PkgData> CREATOR = new Parcelable.Creator<PkgData>() { // from class: com.samsung.android.game.PkgData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PkgData createFromParcel(Parcel in) {
             return new PkgData(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PkgData[] newArray(int size) {
             return new PkgData[size];
@@ -38,6 +39,10 @@ public class PkgData implements Parcelable {
     private String mPkgName;
     private int mShiftTemperature;
     private int mUserID;
+
+    /* synthetic */ PkgData(Parcel parcel, PkgDataIA pkgDataIA) {
+        this(parcel);
+    }
 
     public PkgData(String pkgName) {
         this.mCategory = -1;
@@ -185,6 +190,23 @@ public class PkgData implements Parcelable {
             return null;
         }
         return true;
+    }
+
+    /* renamed from: com.samsung.android.game.PkgData$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PkgData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PkgData createFromParcel(Parcel in) {
+            return new PkgData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PkgData[] newArray(int size) {
+            return new PkgData[size];
+        }
     }
 
     @Override // android.os.Parcelable

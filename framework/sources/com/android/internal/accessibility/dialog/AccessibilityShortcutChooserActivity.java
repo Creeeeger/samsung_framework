@@ -22,7 +22,6 @@ public class AccessibilityShortcutChooserActivity extends Activity {
     private final int mShortcutType = 1;
     private final List<AccessibilityTarget> mTargets = new ArrayList();
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +48,10 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onCreate$0(DialogInterface dialog) {
         updateDialogListeners();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         this.mMenuDialog.setOnDismissListener(null);
@@ -62,14 +59,12 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         super.onDestroy();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_ACCESSIBILITY_SHORTCUT_MENU_MODE, this.mTargetAdapter.getShortcutMenuMode());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onTargetSelected(AdapterView<?> parent, View view, int position, long id) {
         AccessibilityTarget target = this.mTargets.get(position);
         if (((target instanceof AccessibilityServiceTarget) || (target instanceof AccessibilityActivityTarget)) && sendRestrictedDialogIntentIfNeeded(target)) {
@@ -79,7 +74,6 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         this.mMenuDialog.dismiss();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onTargetChecked(AdapterView<?> parent, View view, int position, long id) {
         AccessibilityTarget target = this.mTargets.get(position);
         if (!target.isShortcutEnabled()) {
@@ -127,18 +121,15 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         create.show();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$showPermissionDialogIfNeeded$1(ShortcutTargetAdapter targetAdapter, View v) {
         this.mPermissionDialog.dismiss();
         targetAdapter.notifyDataSetChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$showPermissionDialogIfNeeded$2(View v) {
         this.mPermissionDialog.dismiss();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$showPermissionDialogIfNeeded$3(DialogInterface dialog) {
         this.mPermissionDialog = null;
     }
@@ -192,12 +183,10 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$updateDialogListeners$4(View view) {
         onDoneButtonClicked();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$updateDialogListeners$5(View view) {
         onEditButtonClicked();
     }
@@ -217,7 +206,6 @@ public class AccessibilityShortcutChooserActivity extends Activity {
         return builder.create();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createMenuDialog$6(DialogInterface dialog) {
         finish();
     }

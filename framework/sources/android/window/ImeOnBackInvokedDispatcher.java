@@ -16,13 +16,14 @@ import java.util.Iterator;
 /* loaded from: classes4.dex */
 public class ImeOnBackInvokedDispatcher implements OnBackInvokedDispatcher, Parcelable {
     public static final Parcelable.Creator<ImeOnBackInvokedDispatcher> CREATOR = new Parcelable.Creator<ImeOnBackInvokedDispatcher>() { // from class: android.window.ImeOnBackInvokedDispatcher.2
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass2() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ImeOnBackInvokedDispatcher createFromParcel(Parcel in) {
             return new ImeOnBackInvokedDispatcher(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImeOnBackInvokedDispatcher[] newArray(int size) {
             return new ImeOnBackInvokedDispatcher[size];
@@ -37,8 +38,29 @@ public class ImeOnBackInvokedDispatcher implements OnBackInvokedDispatcher, Parc
     private final ArrayList<ImeOnBackInvokedCallback> mImeCallbacks = new ArrayList<>();
     private final ResultReceiver mResultReceiver;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.window.ImeOnBackInvokedDispatcher$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends ResultReceiver {
+        AnonymousClass1(Handler handler) {
+            super(handler);
+        }
+
+        @Override // android.os.ResultReceiver
+        public void onReceiveResult(int resultCode, Bundle resultData) {
+            WindowOnBackInvokedDispatcher dispatcher = ImeOnBackInvokedDispatcher.this.getReceivingDispatcher();
+            if (dispatcher != null) {
+                ImeOnBackInvokedDispatcher.this.receive(resultCode, resultData, dispatcher);
+            }
+        }
+    }
+
     public ImeOnBackInvokedDispatcher(Handler handler) {
         this.mResultReceiver = new ResultReceiver(handler) { // from class: android.window.ImeOnBackInvokedDispatcher.1
+            AnonymousClass1(Handler handler2) {
+                super(handler2);
+            }
+
             @Override // android.os.ResultReceiver
             public void onReceiveResult(int resultCode, Bundle resultData) {
                 WindowOnBackInvokedDispatcher dispatcher = ImeOnBackInvokedDispatcher.this.getReceivingDispatcher();
@@ -84,7 +106,23 @@ public class ImeOnBackInvokedDispatcher implements OnBackInvokedDispatcher, Parc
         dest.writeTypedObject(this.mResultReceiver, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.window.ImeOnBackInvokedDispatcher$2 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass2 implements Parcelable.Creator<ImeOnBackInvokedDispatcher> {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImeOnBackInvokedDispatcher createFromParcel(Parcel in) {
+            return new ImeOnBackInvokedDispatcher(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ImeOnBackInvokedDispatcher[] newArray(int size) {
+            return new ImeOnBackInvokedDispatcher[size];
+        }
+    }
+
     public void receive(int resultCode, Bundle resultData, WindowOnBackInvokedDispatcher receivingDispatcher) {
         int callbackId = resultData.getInt("id");
         if (resultCode == 0) {
@@ -134,7 +172,6 @@ public class ImeOnBackInvokedDispatcher implements OnBackInvokedDispatcher, Parc
         this.mImeCallbacks.clear();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ImeOnBackInvokedCallback implements OnBackInvokedCallback {
         private final IOnBackInvokedCallback mIOnBackInvokedCallback;
@@ -159,12 +196,10 @@ public class ImeOnBackInvokedDispatcher implements OnBackInvokedDispatcher, Parc
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public int getId() {
             return this.mId;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public IOnBackInvokedCallback getIOnBackInvokedCallback() {
             return this.mIOnBackInvokedCallback;
         }

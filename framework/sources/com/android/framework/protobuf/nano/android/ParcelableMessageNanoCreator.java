@@ -56,7 +56,6 @@ public final class ParcelableMessageNanoCreator<T extends MessageNano> implement
         return (T[]) ((MessageNano[]) Array.newInstance((Class<?>) this.mClazz, i));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static <T extends MessageNano> void writeToParcel(Class<T> clazz, MessageNano message, Parcel out) {
         out.writeString(clazz.getName());
         out.writeByteArray(MessageNano.toByteArray(message));

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
@@ -34,6 +35,9 @@ public class PhotoRemasterServiceClient {
     private CompletableFuture<Bundle> mServiceReturnValue = new CompletableFuture<>();
     private final ProgressObserver mProgressObserver = new ProgressObserver();
     private final ServiceConnection mConnection = new ServiceConnection() { // from class: com.samsung.android.photoremasterservice.PhotoRemasterServiceClient.2
+        AnonymousClass2() {
+        }
+
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName className, IBinder service) {
             PhotoRemasterServiceClient.this.mServiceMessenger = new Messenger(service);
@@ -61,6 +65,10 @@ public class PhotoRemasterServiceClient {
         this.mHandlerThread = handlerThread;
         handlerThread.start();
         Handler incomingHandler = new Handler(this.mHandlerThread.getLooper()) { // from class: com.samsung.android.photoremasterservice.PhotoRemasterServiceClient.1
+            AnonymousClass1(Looper arg0) {
+                super(arg0);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -81,6 +89,33 @@ public class PhotoRemasterServiceClient {
         };
         this.mServiceReturnValue = new CompletableFuture<>();
         this.mIncomingMessenger = new Messenger(incomingHandler);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.photoremasterservice.PhotoRemasterServiceClient$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper arg0) {
+            super(arg0);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case -1:
+                    PhotoRemasterServiceClient.this.mServiceReturnValue.complete(msg.getData());
+                    LogUtil.e(PhotoRemasterServiceClient.TAG, "Received exception : " + msg.what);
+                    return;
+                case 0:
+                    PhotoRemasterServiceClient.this.mServiceReturnValue.complete(msg.getData());
+                    LogUtil.d(PhotoRemasterServiceClient.TAG, "Received: " + msg.what);
+                    return;
+                default:
+                    LogUtil.e(PhotoRemasterServiceClient.TAG, "Wrong Message is received." + msg.what);
+                    super.handleMessage(msg);
+                    return;
+            }
+        }
     }
 
     public synchronized void deinitServiceCall() {
@@ -181,7 +216,7 @@ public class PhotoRemasterServiceClient {
         LogUtil.i(TAG, "Service is unbound.");
     }
 
-    public synchronized Bundle callService(final int serviceMessage, final Bundle bundle) {
+    public synchronized Bundle callService(int serviceMessage, Bundle bundle) {
         LogUtil.i(TAG, "Call Service. message: " + serviceMessage);
         if (!this.mIsBound) {
             bind();
@@ -195,6 +230,14 @@ public class PhotoRemasterServiceClient {
             return null;
         }
         new Thread(new Runnable() { // from class: com.samsung.android.photoremasterservice.PhotoRemasterServiceClient.1ServiceCallRunnable
+            final /* synthetic */ Bundle val$bundle;
+            final /* synthetic */ int val$serviceMessage;
+
+            C1ServiceCallRunnable(int serviceMessage2, Bundle bundle2) {
+                serviceMessage = serviceMessage2;
+                bundle = bundle2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -215,12 +258,68 @@ public class PhotoRemasterServiceClient {
         }).start();
         LogUtil.d(TAG, "Service called!");
         LogUtil.d(TAG, "Start waiting the return value.");
-        Bundle retBundle = serviceMessage == 4 ? getServiceReturnValue(19L) : getServiceReturnValue();
+        Bundle retBundle = serviceMessage2 == 4 ? getServiceReturnValue(19L) : getServiceReturnValue();
         if (retBundle == null) {
             LogUtil.e(TAG, "Service return bundle is null!");
             throw new RuntimeException("Service return bundle is null!");
         }
         LogUtil.i(TAG, "Service return value: " + retBundle);
         return retBundle;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.photoremasterservice.PhotoRemasterServiceClient$1ServiceCallRunnable */
+    /* loaded from: classes5.dex */
+    public class C1ServiceCallRunnable implements Runnable {
+        final /* synthetic */ Bundle val$bundle;
+        final /* synthetic */ int val$serviceMessage;
+
+        C1ServiceCallRunnable(int serviceMessage2, Bundle bundle2) {
+            serviceMessage = serviceMessage2;
+            bundle = bundle2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                LogUtil.d(PhotoRemasterServiceClient.TAG, "Send message to service...");
+                Message msg = Message.obtain((Handler) null, serviceMessage);
+                msg.setData(bundle);
+                msg.replyTo = PhotoRemasterServiceClient.this.mIncomingMessenger;
+                PhotoRemasterServiceClient.this.mServiceMessenger.send(msg);
+            } catch (RemoteException e) {
+                if (PhotoRemasterServiceClient.this.mIncomingMessenger.getBinder() == null) {
+                    LogUtil.e(PhotoRemasterServiceClient.TAG, "mIncomingMessenger is null!");
+                }
+                LogUtil.e(PhotoRemasterServiceClient.TAG, "Exception!!!! " + e);
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.photoremasterservice.PhotoRemasterServiceClient$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements ServiceConnection {
+        AnonymousClass2() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            PhotoRemasterServiceClient.this.mServiceMessenger = new Messenger(service);
+            PhotoRemasterServiceClient.this.mServiceReturnValue.complete(null);
+            LogUtil.i(PhotoRemasterServiceClient.TAG, "Service is connected(attached).");
+        }
+
+        @Override // android.content.ServiceConnection
+        public void onServiceDisconnected(ComponentName className) {
+            LogUtil.i(PhotoRemasterServiceClient.TAG, "Service is disconnected.");
+            PhotoRemasterServiceClient.this.mServiceMessenger = null;
+            if (!PhotoRemasterServiceClient.this.mDisconnectionRequested) {
+                LogUtil.e(PhotoRemasterServiceClient.TAG, "Unexpected disconnection with PhotoRemaster Service! CancellationException will be thrown!");
+                PhotoRemasterServiceClient.this.mServiceReturnValue.cancel(true);
+            }
+        }
     }
 }

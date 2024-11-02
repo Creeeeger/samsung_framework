@@ -286,8 +286,9 @@ public interface IRadioNetworkIndication extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IRadioNetworkIndication {
+        public static class Proxy implements IRadioNetworkIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -89,11 +89,43 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     private boolean mWasHomeEnabled;
     Window.Callback mWindowCallback;
 
+    /* renamed from: com.android.internal.widget.ActionBarView$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements View.OnClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            MenuItemImpl item = ActionBarView.this.mExpandedMenuPresenter.mCurrentExpandedItem;
+            if (item != null) {
+                item.collapseActionView();
+            }
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ActionBarView$2 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass2 implements View.OnClickListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            if (ActionBarView.this.mMenuPrepared) {
+                ActionBarView.this.mWindowCallback.onMenuItemSelected(0, ActionBarView.this.mLogoNavItem);
+            }
+        }
+    }
+
     public ActionBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mDisplayOptions = -1;
         this.mDefaultUpDescription = R.string.action_bar_up_description;
-        View.OnClickListener onClickListener = new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarView.1
+        AnonymousClass1 anonymousClass1 = new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 MenuItemImpl item = ActionBarView.this.mExpandedMenuPresenter.mCurrentExpandedItem;
@@ -102,8 +134,11 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
                 }
             }
         };
-        this.mExpandedActionViewUpListener = onClickListener;
-        View.OnClickListener onClickListener2 = new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarView.2
+        this.mExpandedActionViewUpListener = anonymousClass1;
+        AnonymousClass2 anonymousClass2 = new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarView.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 if (ActionBarView.this.mMenuPrepared) {
@@ -111,7 +146,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
                 }
             }
         };
-        this.mUpClickListener = onClickListener2;
+        this.mUpClickListener = anonymousClass2;
         setBackgroundResource(0);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ActionBar, 16843470, 0);
         this.mNavigationMode = a.getInt(7, 0);
@@ -127,7 +162,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         HomeView homeView = (HomeView) inflater.inflate(homeResId, this.mUpGoerFive, false);
         this.mExpandedHomeLayout = homeView;
         homeView.setShowUp(true);
-        this.mExpandedHomeLayout.setOnClickListener(onClickListener);
+        this.mExpandedHomeLayout.setOnClickListener(anonymousClass1);
         this.mExpandedHomeLayout.setContentDescription(getResources().getText(this.mDefaultUpDescription));
         Drawable upBackground = this.mUpGoerFive.getBackground();
         if (upBackground != null) {
@@ -151,7 +186,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         this.mContentHeight = a.getLayoutDimension(4, 0);
         a.recycle();
         this.mLogoNavItem = new ActionMenuItem(context, 0, 16908332, 0, 0, this.mTitle);
-        this.mUpGoerFive.setOnClickListener(onClickListener2);
+        this.mUpGoerFive.setOnClickListener(anonymousClass2);
         this.mUpGoerFive.setClickable(true);
         this.mUpGoerFive.setFocusable(true);
         if (getImportantForAccessibility() == 0) {
@@ -159,7 +194,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.internal.widget.AbsActionBarView, android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -455,7 +489,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         setHomeButtonEnabled(enable, true);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setHomeButtonEnabled(boolean enable, boolean recordState) {
         if (recordState) {
             this.mWasHomeEnabled = enable;
@@ -705,7 +738,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         return new ActionBar.LayoutParams(DEFAULT_CUSTOM_GRAVITY);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         ViewParent parent;
@@ -721,7 +753,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void initTitle() {
         if (this.mTitleLayout == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -780,7 +811,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Removed duplicated region for block: B:107:0x02ec  */
     /* JADX WARN: Removed duplicated region for block: B:110:0x02fa  */
     /* JADX WARN: Removed duplicated region for block: B:122:0x0320  */
@@ -802,7 +832,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.widget.ActionBarView.onMeasure(int, int):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Removed duplicated region for block: B:112:0x0252  */
     /* JADX WARN: Removed duplicated region for block: B:113:0x0129  */
@@ -918,17 +947,17 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         return this.mOptionsMenu;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.widget.ActionBarView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -936,6 +965,10 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         };
         int expandedMenuItemId;
         boolean isOverflowOpen;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -953,9 +986,25 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             parcel.writeInt(this.expandedMenuItemId);
             parcel.writeInt(this.isOverflowOpen ? 1 : 0);
         }
+
+        /* renamed from: com.android.internal.widget.ActionBarView$SavedState$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class HomeView extends FrameLayout {
         private static final long DEFAULT_TRANSITION_DURATION = 150;
@@ -1019,7 +1068,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onConfigurationChanged(Configuration newConfig) {
             super.onConfigurationChanged(newConfig);
@@ -1048,7 +1096,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             return onHoverEvent(event);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onFinishInflate() {
             this.mUpView = (ImageView) findViewById(R.id.up);
@@ -1067,7 +1114,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             return this.mUpWidth;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.FrameLayout, android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             measureChildWithMargins(this.mUpView, widthMeasureSpec, 0, heightMeasureSpec, 0);
@@ -1109,7 +1155,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             setMeasuredDimension(width, height);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
         public void onLayout(boolean changed, int l, int t, int r, int b) {
             int l2;
@@ -1166,11 +1211,14 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class ExpandedActionViewMenuPresenter implements MenuPresenter {
         MenuItemImpl mCurrentExpandedItem;
         MenuBuilder mMenu;
+
+        /* synthetic */ ExpandedActionViewMenuPresenter(ActionBarView actionBarView, ExpandedActionViewMenuPresenterIA expandedActionViewMenuPresenterIA) {
+            this();
+        }
 
         private ExpandedActionViewMenuPresenter() {
         }

@@ -17,8 +17,9 @@ public class SettingsWrapper {
     private final LogWrapper mLogWrapper;
     private final ContentResolver mResolver;
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class State {
+    public static class State {
         static int OFF = 0;
         static int ON = 1;
 

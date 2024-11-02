@@ -14,7 +14,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ListView;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public abstract class SemAbsSweepListAnimator {
     private static final float COSINE_VALUE_THESHOLD = 0.57f;
@@ -337,7 +336,6 @@ public abstract class SemAbsSweepListAnimator {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public float getAdjustedVelocityX(float[] mHistoricalVelocities) {
         if (this.mHistoricalVelocityIndex == 0) {
             return 0.0f;
@@ -360,7 +358,6 @@ public abstract class SemAbsSweepListAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void resetTouchState() {
         this.mItemPressed = false;
         this.mActivePointerId = INVALID_POINTER_ID;
@@ -379,7 +376,6 @@ public abstract class SemAbsSweepListAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void showForeground(View viewForeground) {
         if (viewForeground == null) {
             return;

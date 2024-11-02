@@ -153,16 +153,27 @@ public class SemIrisManager {
     private IBinder mToken = new Binder();
     private long mAuthBegin = 0;
     private IIrisServiceReceiver mServiceReceiver = new IIrisServiceReceiver.Stub() { // from class: com.samsung.android.bio.iris.SemIrisManager.4
+        AnonymousClass4() {
+        }
+
         @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
         public void onEnrollResult(long deviceId, int irisId, int groupId, int remaining) {
             SemIrisManager.this.mHandler.obtainMessage(100, remaining, 0, new Iris(null, groupId, irisId, deviceId)).sendToTarget();
         }
 
         @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onAcquired(final long deviceId, final int acquireInfo) {
+        public void onAcquired(long deviceId, int acquireInfo) {
             if (SemIrisManager.this.mExecutor != null) {
                 Log.v(SemIrisManager.TAG, "BioPrompt onAcquired 1");
                 SemIrisManager.this.mExecutor.execute(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.4.1
+                    final /* synthetic */ int val$acquireInfo;
+                    final /* synthetic */ long val$deviceId;
+
+                    AnonymousClass1(long deviceId2, int acquireInfo2) {
+                        deviceId = deviceId2;
+                        acquireInfo = acquireInfo2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SemIrisManager.this.sendAcquiredResult(deviceId, acquireInfo);
@@ -170,15 +181,40 @@ public class SemIrisManager {
                 });
             } else {
                 Log.v(SemIrisManager.TAG, "BioPrompt onAcquired 2");
-                SemIrisManager.this.mHandler.obtainMessage(101, acquireInfo, 0, Long.valueOf(deviceId)).sendToTarget();
+                SemIrisManager.this.mHandler.obtainMessage(101, acquireInfo2, 0, Long.valueOf(deviceId2)).sendToTarget();
+            }
+        }
+
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ int val$acquireInfo;
+            final /* synthetic */ long val$deviceId;
+
+            AnonymousClass1(long deviceId2, int acquireInfo2) {
+                deviceId = deviceId2;
+                acquireInfo = acquireInfo2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemIrisManager.this.sendAcquiredResult(deviceId, acquireInfo);
             }
         }
 
         @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onAuthenticationSucceeded(long deviceId, final Iris ir, final byte[] fidoResultData) {
+        public void onAuthenticationSucceeded(long deviceId, Iris ir, byte[] fidoResultData) {
             if (SemIrisManager.this.mExecutor != null) {
                 Log.v(SemIrisManager.TAG, "BioPrompt onAuthenticationSucceeded 1");
                 SemIrisManager.this.mExecutor.execute(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.4.2
+                    final /* synthetic */ byte[] val$fidoResultData;
+                    final /* synthetic */ Iris val$ir;
+
+                    AnonymousClass2(Iris ir2, byte[] fidoResultData2) {
+                        ir = ir2;
+                        fidoResultData = fidoResultData2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SemIrisManager.this.sendAuthenticatedSucceeded(ir, fidoResultData);
@@ -187,8 +223,26 @@ public class SemIrisManager {
                 });
             } else {
                 Log.v(SemIrisManager.TAG, "BioPrompt onAuthenticationSucceeded 2");
-                SemIrisManager.this.mHandler.obtainMessage(107, fidoResultData).sendToTarget();
-                SemIrisManager.this.mHandler.obtainMessage(102, ir).sendToTarget();
+                SemIrisManager.this.mHandler.obtainMessage(107, fidoResultData2).sendToTarget();
+                SemIrisManager.this.mHandler.obtainMessage(102, ir2).sendToTarget();
+            }
+        }
+
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4$2 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ byte[] val$fidoResultData;
+            final /* synthetic */ Iris val$ir;
+
+            AnonymousClass2(Iris ir2, byte[] fidoResultData2) {
+                ir = ir2;
+                fidoResultData = fidoResultData2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemIrisManager.this.sendAuthenticatedSucceeded(ir, fidoResultData);
+                SemIrisManager.this.mExecutor = null;
             }
         }
 
@@ -197,6 +251,9 @@ public class SemIrisManager {
             if (SemIrisManager.this.mExecutor != null) {
                 Log.v(SemIrisManager.TAG, "BioPrompt onAuthenticationFailed 1");
                 SemIrisManager.this.mExecutor.execute(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.4.3
+                    AnonymousClass3() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SemIrisManager.this.sendAuthenticatedFailed();
@@ -208,11 +265,31 @@ public class SemIrisManager {
             }
         }
 
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4$3 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass3 implements Runnable {
+            AnonymousClass3() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemIrisManager.this.sendAuthenticatedFailed();
+            }
+        }
+
         @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onError(final long deviceId, final int error) {
+        public void onError(long deviceId, int error) {
             if (SemIrisManager.this.mExecutor != null) {
                 Log.v(SemIrisManager.TAG, "BioPrompt onError 1");
                 SemIrisManager.this.mExecutor.execute(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.4.4
+                    final /* synthetic */ long val$deviceId;
+                    final /* synthetic */ int val$error;
+
+                    RunnableC00174(long deviceId2, int error2) {
+                        deviceId = deviceId2;
+                        error = error2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         SemIrisManager.this.sendErrorResult(deviceId, error);
@@ -221,7 +298,25 @@ public class SemIrisManager {
                 });
             } else {
                 Log.v(SemIrisManager.TAG, "BioPrompt onError 2");
-                SemIrisManager.this.mHandler.obtainMessage(104, error, 0, Long.valueOf(deviceId)).sendToTarget();
+                SemIrisManager.this.mHandler.obtainMessage(104, error2, 0, Long.valueOf(deviceId2)).sendToTarget();
+            }
+        }
+
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4$4 */
+        /* loaded from: classes5.dex */
+        class RunnableC00174 implements Runnable {
+            final /* synthetic */ long val$deviceId;
+            final /* synthetic */ int val$error;
+
+            RunnableC00174(long deviceId2, int error2) {
+                deviceId = deviceId2;
+                error = error2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemIrisManager.this.sendErrorResult(deviceId, error);
+                SemIrisManager.this.mExecutor = null;
             }
         }
 
@@ -241,9 +336,12 @@ public class SemIrisManager {
         void onIrImageReady(byte[] bArr, int i, int i2);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class OnEnrollCancelListener implements CancellationSignal.OnCancelListener {
+        /* synthetic */ OnEnrollCancelListener(SemIrisManager semIrisManager, OnEnrollCancelListenerIA onEnrollCancelListenerIA) {
+            this();
+        }
+
         private OnEnrollCancelListener() {
         }
 
@@ -253,7 +351,6 @@ public class SemIrisManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public class OnAuthenticationCancelListener implements CancellationSignal.OnCancelListener {
         private CryptoObject mCrypto;
@@ -587,8 +684,7 @@ public class SemIrisManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void checkAuthViewWindowToken(final CryptoObject crypto, final CancellationSignal cancel, final int flags, final AuthenticationCallback callback, final Handler handler, final int userId, final Bundle attr, final View irisView, final long sessionId, final byte[] fidoRequestData) {
+    public void checkAuthViewWindowToken(CryptoObject crypto, CancellationSignal cancel, int flags, AuthenticationCallback callback, Handler handler, int userId, Bundle attr, View irisView, long sessionId, byte[] fidoRequestData) {
         AuthenticationCallback authenticationCallback;
         if (this.mGetterHandler == null) {
             this.mGetterHandler = new GetterHandler(Looper.getMainLooper());
@@ -604,6 +700,30 @@ public class SemIrisManager {
                 return;
             }
             this.mGetterHandler.postGetterCallback(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.1
+                final /* synthetic */ Bundle val$attr;
+                final /* synthetic */ AuthenticationCallback val$callback;
+                final /* synthetic */ CancellationSignal val$cancel;
+                final /* synthetic */ CryptoObject val$crypto;
+                final /* synthetic */ byte[] val$fidoRequestData;
+                final /* synthetic */ int val$flags;
+                final /* synthetic */ Handler val$handler;
+                final /* synthetic */ View val$irisView;
+                final /* synthetic */ long val$sessionId;
+                final /* synthetic */ int val$userId;
+
+                AnonymousClass1(CryptoObject crypto2, CancellationSignal cancel2, int flags2, AuthenticationCallback callback2, Handler handler2, int userId2, Bundle attr2, View irisView2, long sessionId2, byte[] fidoRequestData2) {
+                    crypto = crypto2;
+                    cancel = cancel2;
+                    flags = flags2;
+                    callback = callback2;
+                    handler = handler2;
+                    userId = userId2;
+                    attr = attr2;
+                    irisView = irisView2;
+                    sessionId = sessionId2;
+                    fidoRequestData = fidoRequestData2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SemIrisManager.this.checkAuthViewWindowToken(crypto, cancel, flags, callback, handler, userId, attr, irisView, sessionId, fidoRequestData);
@@ -613,24 +733,24 @@ public class SemIrisManager {
         }
         this.mGetterHandler.removeAllGetterCallbacks();
         try {
-            IBinder mWindowToken = irisView.getWindowToken();
+            IBinder mWindowToken = irisView2.getWindowToken();
             int[] position = new int[2];
             try {
-                irisView.getLocationInWindow(position);
+                irisView2.getLocationInWindow(position);
                 if (this.mToken == null) {
                     Log.e(TAG, "mToken null");
                 }
                 Size mAuthViewSize = getMinimumIrisViewSize();
-                if (irisView.getWidth() >= mAuthViewSize.getWidth()) {
-                    if (irisView.getHeight() >= mAuthViewSize.getHeight()) {
-                        authenticationCallback = callback;
-                        this.mService.authenticate(this.mToken, mWindowToken, position[0], position[1], irisView.getWidth(), irisView.getHeight(), sessionId, userId, this.mServiceReceiver, flags, this.mContext.getOpPackageName(), attr, fidoRequestData);
+                if (irisView2.getWidth() >= mAuthViewSize.getWidth()) {
+                    if (irisView2.getHeight() >= mAuthViewSize.getHeight()) {
+                        authenticationCallback = callback2;
+                        this.mService.authenticate(this.mToken, mWindowToken, position[0], position[1], irisView2.getWidth(), irisView2.getHeight(), sessionId2, userId2, this.mServiceReceiver, flags2, this.mContext.getOpPackageName(), attr2, fidoRequestData2);
                     }
                 }
-                authenticationCallback = callback;
+                authenticationCallback = callback2;
                 if (authenticationCallback != null) {
                     try {
-                        Log.e(TAG, "Invalid irisView size. IrisView's proper size:" + mAuthViewSize.getWidth() + "x" + mAuthViewSize.getHeight() + ", but app's size:" + irisView.getWidth() + "x" + irisView.getHeight());
+                        Log.e(TAG, "Invalid irisView size. IrisView's proper size:" + mAuthViewSize.getWidth() + "x" + mAuthViewSize.getHeight() + ", but app's size:" + irisView2.getWidth() + "x" + irisView2.getHeight());
                     } catch (RemoteException e) {
                         Log.w(TAG, "Remote exception while authenticating");
                         if (authenticationCallback != null) {
@@ -640,19 +760,55 @@ public class SemIrisManager {
                         return;
                     }
                 }
-                this.mService.authenticate(this.mToken, mWindowToken, position[0], position[1], irisView.getWidth(), irisView.getHeight(), sessionId, userId, this.mServiceReceiver, flags, this.mContext.getOpPackageName(), attr, fidoRequestData);
+                this.mService.authenticate(this.mToken, mWindowToken, position[0], position[1], irisView2.getWidth(), irisView2.getHeight(), sessionId2, userId2, this.mServiceReceiver, flags2, this.mContext.getOpPackageName(), attr2, fidoRequestData2);
             } catch (RemoteException e2) {
-                authenticationCallback = callback;
+                authenticationCallback = callback2;
             }
         } catch (RemoteException e3) {
-            authenticationCallback = callback;
+            authenticationCallback = callback2;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.bio.iris.SemIrisManager$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ Bundle val$attr;
+        final /* synthetic */ AuthenticationCallback val$callback;
+        final /* synthetic */ CancellationSignal val$cancel;
+        final /* synthetic */ CryptoObject val$crypto;
+        final /* synthetic */ byte[] val$fidoRequestData;
+        final /* synthetic */ int val$flags;
+        final /* synthetic */ Handler val$handler;
+        final /* synthetic */ View val$irisView;
+        final /* synthetic */ long val$sessionId;
+        final /* synthetic */ int val$userId;
+
+        AnonymousClass1(CryptoObject crypto2, CancellationSignal cancel2, int flags2, AuthenticationCallback callback2, Handler handler2, int userId2, Bundle attr2, View irisView2, long sessionId2, byte[] fidoRequestData2) {
+            crypto = crypto2;
+            cancel = cancel2;
+            flags = flags2;
+            callback = callback2;
+            handler = handler2;
+            userId = userId2;
+            attr = attr2;
+            irisView = irisView2;
+            sessionId = sessionId2;
+            fidoRequestData = fidoRequestData2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SemIrisManager.this.checkAuthViewWindowToken(crypto, cancel, flags, callback, handler, userId, attr, irisView, sessionId, fidoRequestData);
+        }
+    }
+
     /* loaded from: classes5.dex */
     public static class GetterHandler extends Handler {
         private static final int IMAGE_GETTER_CALLBACK = 1;
+
+        /* synthetic */ GetterHandler(Looper looper, GetterHandlerIA getterHandlerIA) {
+            this(looper);
+        }
 
         public GetterHandler(Context context) {
             super(context.getMainLooper());
@@ -738,13 +894,30 @@ public class SemIrisManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void checkEnrollViewWindowToken(final byte[] token, final CancellationSignal cancel, final int flags, final int userId, final EnrollmentCallback callback, final Bundle attr, final View irisView) {
+    public void checkEnrollViewWindowToken(byte[] token, CancellationSignal cancel, int flags, int userId, EnrollmentCallback callback, Bundle attr, View irisView) {
         if (this.mGetterHandler == null) {
             this.mGetterHandler = new GetterHandler(Looper.getMainLooper());
         }
         if (irisView.getWindowToken() == null) {
             this.mGetterHandler.postGetterCallback(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.2
+                final /* synthetic */ Bundle val$attr;
+                final /* synthetic */ EnrollmentCallback val$callback;
+                final /* synthetic */ CancellationSignal val$cancel;
+                final /* synthetic */ int val$flags;
+                final /* synthetic */ View val$irisView;
+                final /* synthetic */ byte[] val$token;
+                final /* synthetic */ int val$userId;
+
+                AnonymousClass2(byte[] token2, CancellationSignal cancel2, int flags2, int userId2, EnrollmentCallback callback2, Bundle attr2, View irisView2) {
+                    token = token2;
+                    cancel = cancel2;
+                    flags = flags2;
+                    userId = userId2;
+                    callback = callback2;
+                    attr = attr2;
+                    irisView = irisView2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     SemIrisManager.this.checkEnrollViewWindowToken(token, cancel, flags, userId, callback, attr, irisView);
@@ -754,21 +927,48 @@ public class SemIrisManager {
         }
         this.mGetterHandler.removeAllGetterCallbacks();
         try {
-            IBinder mWindowToken = irisView.getWindowToken();
+            IBinder mWindowToken = irisView2.getWindowToken();
             int[] position = new int[2];
             try {
-                irisView.getLocationInWindow(position);
+                irisView2.getLocationInWindow(position);
                 if (this.mToken == null) {
                     Log.e(TAG, "mToken null");
                 }
-                this.mService.enroll(this.mToken, mWindowToken, position[0], position[1], irisView.getWidth(), irisView.getHeight(), token, userId, this.mServiceReceiver, flags, this.mContext.getOpPackageName(), attr);
+                this.mService.enroll(this.mToken, mWindowToken, position[0], position[1], irisView2.getWidth(), irisView2.getHeight(), token2, userId2, this.mServiceReceiver, flags2, this.mContext.getOpPackageName(), attr2);
             } catch (RemoteException e) {
                 Log.w(TAG, "Remote exception in enroll");
-                if (callback != null) {
-                    callback.onEnrollmentError(1, getErrorString(1));
+                if (callback2 != null) {
+                    callback2.onEnrollmentError(1, getErrorString(1));
                 }
             }
         } catch (RemoteException e2) {
+        }
+    }
+
+    /* renamed from: com.samsung.android.bio.iris.SemIrisManager$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ Bundle val$attr;
+        final /* synthetic */ EnrollmentCallback val$callback;
+        final /* synthetic */ CancellationSignal val$cancel;
+        final /* synthetic */ int val$flags;
+        final /* synthetic */ View val$irisView;
+        final /* synthetic */ byte[] val$token;
+        final /* synthetic */ int val$userId;
+
+        AnonymousClass2(byte[] token2, CancellationSignal cancel2, int flags2, int userId2, EnrollmentCallback callback2, Bundle attr2, View irisView2) {
+            token = token2;
+            cancel = cancel2;
+            flags = flags2;
+            userId = userId2;
+            callback = callback2;
+            attr = attr2;
+            irisView = irisView2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            SemIrisManager.this.checkEnrollViewWindowToken(token, cancel, flags, userId, callback, attr, irisView);
         }
     }
 
@@ -1174,19 +1374,33 @@ public class SemIrisManager {
         Log.w(TAG, "resetTimeout(): Service not connected!");
     }
 
-    public void addLockoutResetCallback(final LockoutResetCallback callback) {
+    public void addLockoutResetCallback(LockoutResetCallback callback) {
         if (!ensureServiceConnected()) {
             return;
         }
         if (this.mService != null) {
             try {
-                final PowerManager powerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
+                PowerManager powerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
                 this.mService.addLockoutResetCallback(new IIrisServiceLockoutResetCallback.Stub() { // from class: com.samsung.android.bio.iris.SemIrisManager.3
+                    final /* synthetic */ LockoutResetCallback val$callback;
+                    final /* synthetic */ PowerManager val$powerManager;
+
+                    AnonymousClass3(PowerManager powerManager2, LockoutResetCallback callback2) {
+                        powerManager = powerManager2;
+                        callback = callback2;
+                    }
+
                     @Override // com.samsung.android.camera.iris.IIrisServiceLockoutResetCallback
                     public void onLockoutReset(long deviceId) throws RemoteException {
-                        final PowerManager.WakeLock wakeLock = powerManager.newWakeLock(1, "lockoutResetCallback");
+                        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(1, "lockoutResetCallback");
                         wakeLock.acquire();
                         SemIrisManager.this.mHandler.post(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.3.1
+                            final /* synthetic */ PowerManager.WakeLock val$wakeLock;
+
+                            AnonymousClass1(PowerManager.WakeLock wakeLock2) {
+                                wakeLock = wakeLock2;
+                            }
+
                             @Override // java.lang.Runnable
                             public void run() {
                                 try {
@@ -1196,6 +1410,25 @@ public class SemIrisManager {
                                 }
                             }
                         });
+                    }
+
+                    /* renamed from: com.samsung.android.bio.iris.SemIrisManager$3$1 */
+                    /* loaded from: classes5.dex */
+                    class AnonymousClass1 implements Runnable {
+                        final /* synthetic */ PowerManager.WakeLock val$wakeLock;
+
+                        AnonymousClass1(PowerManager.WakeLock wakeLock2) {
+                            wakeLock = wakeLock2;
+                        }
+
+                        @Override // java.lang.Runnable
+                        public void run() {
+                            try {
+                                callback.onLockoutReset();
+                            } finally {
+                                wakeLock.release();
+                            }
+                        }
                     }
                 });
                 return;
@@ -1207,9 +1440,70 @@ public class SemIrisManager {
         Log.w(TAG, "addLockoutResetCallback(): Service not connected!");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.bio.iris.SemIrisManager$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 extends IIrisServiceLockoutResetCallback.Stub {
+        final /* synthetic */ LockoutResetCallback val$callback;
+        final /* synthetic */ PowerManager val$powerManager;
+
+        AnonymousClass3(PowerManager powerManager2, LockoutResetCallback callback2) {
+            powerManager = powerManager2;
+            callback = callback2;
+        }
+
+        @Override // com.samsung.android.camera.iris.IIrisServiceLockoutResetCallback
+        public void onLockoutReset(long deviceId) throws RemoteException {
+            PowerManager.WakeLock wakeLock2 = powerManager.newWakeLock(1, "lockoutResetCallback");
+            wakeLock2.acquire();
+            SemIrisManager.this.mHandler.post(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.3.1
+                final /* synthetic */ PowerManager.WakeLock val$wakeLock;
+
+                AnonymousClass1(PowerManager.WakeLock wakeLock22) {
+                    wakeLock = wakeLock22;
+                }
+
+                @Override // java.lang.Runnable
+                public void run() {
+                    try {
+                        callback.onLockoutReset();
+                    } finally {
+                        wakeLock.release();
+                    }
+                }
+            });
+        }
+
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$3$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ PowerManager.WakeLock val$wakeLock;
+
+            AnonymousClass1(PowerManager.WakeLock wakeLock22) {
+                wakeLock = wakeLock22;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    callback.onLockoutReset();
+                } finally {
+                    wakeLock.release();
+                }
+            }
+        }
+    }
+
     /* loaded from: classes5.dex */
     public class MyHandler extends Handler {
+        /* synthetic */ MyHandler(SemIrisManager semIrisManager, Context context, MyHandlerIA myHandlerIA) {
+            this(context);
+        }
+
+        /* synthetic */ MyHandler(SemIrisManager semIrisManager, Looper looper, MyHandlerIA myHandlerIA) {
+            this(looper);
+        }
+
         private MyHandler(Context context) {
             super(context.getMainLooper());
         }
@@ -1293,7 +1587,6 @@ public class SemIrisManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendErrorResult(long deviceId, int errMsgId) {
         Log.w(TAG, "sendErrorResult, errMsgId : " + errMsgId);
         if (errMsgId == 4) {
@@ -1315,7 +1608,6 @@ public class SemIrisManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendAcquiredResult(long deviceId, int acquireInfo) {
         AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
         if (authenticationCallback != null) {
@@ -1344,11 +1636,9 @@ public class SemIrisManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticatedSucceeded(Iris ir, byte[] fidoResultData) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendAuthenticatedFailed() {
         AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
         if (authenticationCallback != null) {
@@ -1375,7 +1665,6 @@ public class SemIrisManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cancelEnrollment() {
         IIrisService iIrisService;
         Log.e(TAG, "cancelEnrollment");
@@ -1388,7 +1677,6 @@ public class SemIrisManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void cancelAuthentication(CryptoObject cryptoObject) {
         IIrisService iIrisService;
         Log.e(TAG, "cancelAuthentication");
@@ -1498,6 +1786,188 @@ public class SemIrisManager {
         } catch (Resources.NotFoundException e2) {
             Log.d(TAG, "getAcquiredString, NotFoundException = " + e2);
             return null;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass4 extends IIrisServiceReceiver.Stub {
+        AnonymousClass4() {
+        }
+
+        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
+        public void onEnrollResult(long deviceId, int irisId, int groupId, int remaining) {
+            SemIrisManager.this.mHandler.obtainMessage(100, remaining, 0, new Iris(null, groupId, irisId, deviceId)).sendToTarget();
+        }
+
+        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
+        public void onAcquired(long deviceId2, int acquireInfo2) {
+            if (SemIrisManager.this.mExecutor != null) {
+                Log.v(SemIrisManager.TAG, "BioPrompt onAcquired 1");
+                SemIrisManager.this.mExecutor.execute(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.4.1
+                    final /* synthetic */ int val$acquireInfo;
+                    final /* synthetic */ long val$deviceId;
+
+                    AnonymousClass1(long deviceId22, int acquireInfo22) {
+                        deviceId = deviceId22;
+                        acquireInfo = acquireInfo22;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        SemIrisManager.this.sendAcquiredResult(deviceId, acquireInfo);
+                    }
+                });
+            } else {
+                Log.v(SemIrisManager.TAG, "BioPrompt onAcquired 2");
+                SemIrisManager.this.mHandler.obtainMessage(101, acquireInfo22, 0, Long.valueOf(deviceId22)).sendToTarget();
+            }
+        }
+
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ int val$acquireInfo;
+            final /* synthetic */ long val$deviceId;
+
+            AnonymousClass1(long deviceId22, int acquireInfo22) {
+                deviceId = deviceId22;
+                acquireInfo = acquireInfo22;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemIrisManager.this.sendAcquiredResult(deviceId, acquireInfo);
+            }
+        }
+
+        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
+        public void onAuthenticationSucceeded(long deviceId, Iris ir2, byte[] fidoResultData2) {
+            if (SemIrisManager.this.mExecutor != null) {
+                Log.v(SemIrisManager.TAG, "BioPrompt onAuthenticationSucceeded 1");
+                SemIrisManager.this.mExecutor.execute(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.4.2
+                    final /* synthetic */ byte[] val$fidoResultData;
+                    final /* synthetic */ Iris val$ir;
+
+                    AnonymousClass2(Iris ir22, byte[] fidoResultData22) {
+                        ir = ir22;
+                        fidoResultData = fidoResultData22;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        SemIrisManager.this.sendAuthenticatedSucceeded(ir, fidoResultData);
+                        SemIrisManager.this.mExecutor = null;
+                    }
+                });
+            } else {
+                Log.v(SemIrisManager.TAG, "BioPrompt onAuthenticationSucceeded 2");
+                SemIrisManager.this.mHandler.obtainMessage(107, fidoResultData22).sendToTarget();
+                SemIrisManager.this.mHandler.obtainMessage(102, ir22).sendToTarget();
+            }
+        }
+
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4$2 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ byte[] val$fidoResultData;
+            final /* synthetic */ Iris val$ir;
+
+            AnonymousClass2(Iris ir22, byte[] fidoResultData22) {
+                ir = ir22;
+                fidoResultData = fidoResultData22;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemIrisManager.this.sendAuthenticatedSucceeded(ir, fidoResultData);
+                SemIrisManager.this.mExecutor = null;
+            }
+        }
+
+        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
+        public void onAuthenticationFailed(long deviceId) {
+            if (SemIrisManager.this.mExecutor != null) {
+                Log.v(SemIrisManager.TAG, "BioPrompt onAuthenticationFailed 1");
+                SemIrisManager.this.mExecutor.execute(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.4.3
+                    AnonymousClass3() {
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        SemIrisManager.this.sendAuthenticatedFailed();
+                    }
+                });
+            } else {
+                Log.v(SemIrisManager.TAG, "BioPrompt onAuthenticationFailed 2");
+                SemIrisManager.this.mHandler.obtainMessage(103).sendToTarget();
+            }
+        }
+
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4$3 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass3 implements Runnable {
+            AnonymousClass3() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemIrisManager.this.sendAuthenticatedFailed();
+            }
+        }
+
+        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
+        public void onError(long deviceId2, int error2) {
+            if (SemIrisManager.this.mExecutor != null) {
+                Log.v(SemIrisManager.TAG, "BioPrompt onError 1");
+                SemIrisManager.this.mExecutor.execute(new Runnable() { // from class: com.samsung.android.bio.iris.SemIrisManager.4.4
+                    final /* synthetic */ long val$deviceId;
+                    final /* synthetic */ int val$error;
+
+                    RunnableC00174(long deviceId22, int error22) {
+                        deviceId = deviceId22;
+                        error = error22;
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        SemIrisManager.this.sendErrorResult(deviceId, error);
+                        SemIrisManager.this.mExecutor = null;
+                    }
+                });
+            } else {
+                Log.v(SemIrisManager.TAG, "BioPrompt onError 2");
+                SemIrisManager.this.mHandler.obtainMessage(104, error22, 0, Long.valueOf(deviceId22)).sendToTarget();
+            }
+        }
+
+        /* renamed from: com.samsung.android.bio.iris.SemIrisManager$4$4 */
+        /* loaded from: classes5.dex */
+        class RunnableC00174 implements Runnable {
+            final /* synthetic */ long val$deviceId;
+            final /* synthetic */ int val$error;
+
+            RunnableC00174(long deviceId22, int error22) {
+                deviceId = deviceId22;
+                error = error22;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                SemIrisManager.this.sendErrorResult(deviceId, error);
+                SemIrisManager.this.mExecutor = null;
+            }
+        }
+
+        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
+        public void onRemoved(long deviceId, int irisId, int groupId) {
+            SemIrisManager.this.mHandler.obtainMessage(105, irisId, groupId, Long.valueOf(deviceId)).sendToTarget();
+        }
+
+        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
+        public void onIRImage(long deviceId, byte[] irisImage, int width, int height) {
+            SemIrisManager.this.mHandler.obtainMessage(106, width, height, irisImage).sendToTarget();
         }
     }
 

@@ -36,7 +36,6 @@ public abstract class GraphBase<T> implements Graph<T> {
     protected final ConcurrentHashMap<Integer, MediaBuffer> outBufferMap = new ConcurrentHashMap<>();
     protected final MessageChannelRouter messageChannelRouter = new MessageChannelRouter(32);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GraphBase(List<GraphNode<T>> nodes, Graph.Option option) {
         this.nodes = nodes;
         this.option = option;
@@ -85,13 +84,12 @@ public abstract class GraphBase<T> implements Graph<T> {
         return mediaBuffer;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void runBatch(List<MediaBuffer> inBuffers, List<MediaBuffer> outBuffers) {
         Log.d(TAG, "runBatch: # of inputs " + inBuffers.size());
         inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                GraphBase.this.m8795lambda$runBatch$0$comsamsungandroidsumecoregraphGraphBase((MediaBuffer) obj);
+                GraphBase.this.m8787lambda$runBatch$0$comsamsungandroidsumecoregraphGraphBase((MediaBuffer) obj);
             }
         });
         try {
@@ -116,21 +114,19 @@ public abstract class GraphBase<T> implements Graph<T> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$runBatch$0$com-samsung-android-sume-core-graph-GraphBase, reason: not valid java name */
-    public /* synthetic */ void m8795lambda$runBatch$0$comsamsungandroidsumecoregraphGraphBase(MediaBuffer it) {
+    /* renamed from: lambda$runBatch$0$com-samsung-android-sume-core-graph-GraphBase */
+    public /* synthetic */ void m8787lambda$runBatch$0$comsamsungandroidsumecoregraphGraphBase(MediaBuffer it) {
         this.inputChannel.send(it);
         publishEvent(509, it);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void runOneByOne(List<MediaBuffer> inBuffers, final List<MediaBuffer> outBuffers) {
         Log.d(TAG, "runOneByOne: # of inputs " + inBuffers.size());
         try {
             inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.graph.GraphBase$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    GraphBase.this.m8796x8ab719a8(outBuffers, (MediaBuffer) obj);
+                    GraphBase.this.m8788x8ab719a8(outBuffers, (MediaBuffer) obj);
                 }
             });
         } catch (CancellationException e) {
@@ -138,9 +134,8 @@ public abstract class GraphBase<T> implements Graph<T> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$runOneByOne$1$com-samsung-android-sume-core-graph-GraphBase, reason: not valid java name */
-    public /* synthetic */ void m8796x8ab719a8(List outBuffers, MediaBuffer it) {
+    /* renamed from: lambda$runOneByOne$1$com-samsung-android-sume-core-graph-GraphBase */
+    public /* synthetic */ void m8788x8ab719a8(List outBuffers, MediaBuffer it) {
         this.inputChannel.send(it);
         publishEvent(509, it);
         MediaBuffer obuf = onReceiveOutputBuffer(this.outputChannel.receive());

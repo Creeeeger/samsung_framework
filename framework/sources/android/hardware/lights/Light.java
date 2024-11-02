@@ -9,13 +9,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class Light implements Parcelable {
     public static final Parcelable.Creator<Light> CREATOR = new Parcelable.Creator<Light>() { // from class: android.hardware.lights.Light.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public Light createFromParcel(Parcel in) {
             return new Light(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Light[] newArray(int size) {
             return new Light[size];
@@ -45,6 +46,10 @@ public final class Light implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface LightType {
+    }
+
+    /* synthetic */ Light(Parcel parcel, LightIA lightIA) {
+        this(parcel);
     }
 
     public Light(int id, int ordinal, int type) {
@@ -79,6 +84,23 @@ public final class Light implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.hardware.lights.Light$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<Light> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Light createFromParcel(Parcel in) {
+            return new Light(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public Light[] newArray(int size) {
+            return new Light[size];
+        }
     }
 
     public boolean equals(Object obj) {

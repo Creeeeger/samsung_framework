@@ -84,8 +84,9 @@ public interface IConversationListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IConversationListener {
+        public static class Proxy implements IConversationListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

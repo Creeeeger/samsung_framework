@@ -7,13 +7,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextFlatMotionForTableMode extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextFlatMotionForTableMode> CREATOR = new Parcelable.Creator<SemContextFlatMotionForTableMode>() { // from class: com.samsung.android.hardware.context.SemContextFlatMotionForTableMode.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextFlatMotionForTableMode createFromParcel(Parcel in) {
             return new SemContextFlatMotionForTableMode(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextFlatMotionForTableMode[] newArray(int size) {
             return new SemContextFlatMotionForTableMode[size];
@@ -24,7 +25,23 @@ public class SemContextFlatMotionForTableMode extends SemContextEventContext {
     public static final int TRUE = 1;
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextFlatMotionForTableMode$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextFlatMotionForTableMode> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextFlatMotionForTableMode createFromParcel(Parcel in) {
+            return new SemContextFlatMotionForTableMode(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextFlatMotionForTableMode[] newArray(int size) {
+            return new SemContextFlatMotionForTableMode[size];
+        }
+    }
+
     public SemContextFlatMotionForTableMode() {
         this.mContext = new Bundle();
     }

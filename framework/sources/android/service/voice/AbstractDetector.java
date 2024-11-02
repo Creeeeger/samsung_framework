@@ -25,7 +25,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public abstract class AbstractDetector implements HotwordDetector {
     private static final boolean DEBUG = false;
@@ -40,7 +39,6 @@ public abstract class AbstractDetector implements HotwordDetector {
 
     abstract void initialize(PersistableBundle persistableBundle, SharedMemory sharedMemory);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AbstractDetector(IVoiceInteractionManagerService managerService, Executor executor, HotwordDetector.Callback callback) {
         this.mManagerService = managerService;
         this.mCallback = callback;
@@ -48,7 +46,6 @@ public abstract class AbstractDetector implements HotwordDetector {
         this.mIsDetectorActive = new AtomicBoolean(true);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isSameToken(IBinder token) {
         return token != null && this.mToken == token;
     }
@@ -75,7 +72,6 @@ public abstract class AbstractDetector implements HotwordDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void initAndVerifyDetector(PersistableBundle options, SharedMemory sharedMemory, IHotwordRecognitionStatusCallback callback, int detectorType) {
         Identity identity = new Identity();
         identity.packageName = ActivityThread.currentOpPackageName();
@@ -86,7 +82,6 @@ public abstract class AbstractDetector implements HotwordDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void registerOnDestroyListener(Consumer<AbstractDetector> onDestroyListener) {
         synchronized (this.mLock) {
             if (this.mOnDestroyListener != null) {
@@ -112,7 +107,6 @@ public abstract class AbstractDetector implements HotwordDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void throwIfDetectorIsNoLongerActive() {
         if (!this.mIsDetectorActive.get()) {
             Slog.e(TAG, "attempting to use a destroyed detector which is no longer active");
@@ -120,7 +114,6 @@ public abstract class AbstractDetector implements HotwordDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class BinderCallback extends IMicrophoneHotwordDetectionVoiceInteractionCallback.Stub {
         private final HotwordDetector.Callback mCallback;
@@ -131,7 +124,6 @@ public abstract class AbstractDetector implements HotwordDetector {
             this.mExecutor = executor;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDetected$1(final AudioFormat audioFormat, final HotwordDetectedResult hotwordDetectedResult) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.AbstractDetector$BinderCallback$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
@@ -151,7 +143,6 @@ public abstract class AbstractDetector implements HotwordDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDetected$0(AudioFormat audioFormat, HotwordDetectedResult hotwordDetectedResult) {
             this.mCallback.onDetected(new AlwaysOnHotwordDetector.EventPayload.Builder().setCaptureAudioFormat(audioFormat).setHotwordDetectedResult(hotwordDetectedResult).build());
         }
@@ -167,7 +158,6 @@ public abstract class AbstractDetector implements HotwordDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onHotwordDetectionServiceFailure$3(final HotwordDetectionServiceFailure hotwordDetectionServiceFailure) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.AbstractDetector$BinderCallback$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
@@ -177,7 +167,6 @@ public abstract class AbstractDetector implements HotwordDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onHotwordDetectionServiceFailure$2(HotwordDetectionServiceFailure hotwordDetectionServiceFailure) {
             if (hotwordDetectionServiceFailure != null) {
                 this.mCallback.onFailure(hotwordDetectionServiceFailure);
@@ -186,7 +175,6 @@ public abstract class AbstractDetector implements HotwordDetector {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRejected$5(final HotwordRejectedResult result) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.service.voice.AbstractDetector$BinderCallback$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
@@ -206,7 +194,6 @@ public abstract class AbstractDetector implements HotwordDetector {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onRejected$4(HotwordRejectedResult result) {
             this.mCallback.onRejected(result != null ? result : new HotwordRejectedResult.Builder().build());
         }

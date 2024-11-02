@@ -69,6 +69,10 @@ public class BiometricManager {
         private final Context mContext;
         private final IAuthService mService;
 
+        /* synthetic */ Strings(Context context, IAuthService iAuthService, int i, StringsIA stringsIA) {
+            this(context, iAuthService, i);
+        }
+
         private Strings(Context context, IAuthService service, int authenticators) {
             this.mContext = context;
             this.mService = service;
@@ -139,7 +143,6 @@ public class BiometricManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ ITestSession lambda$createTestSession$0(Context context, int sensorId1, ITestSessionCallback callback) throws RemoteException {
         return this.mService.createTestSession(sensorId1, callback, context.getOpPackageName());
     }

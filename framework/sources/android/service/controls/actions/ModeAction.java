@@ -22,14 +22,14 @@ public final class ModeAction extends ControlAction {
         this(templateId, newMode, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ModeAction(Bundle b) {
         super(b);
         this.mNewMode = b.getInt(KEY_MODE);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.controls.actions.ControlAction
-    Bundle getDataBundle() {
+    public Bundle getDataBundle() {
         Bundle b = super.getDataBundle();
         b.putInt(KEY_MODE, this.mNewMode);
         return b;

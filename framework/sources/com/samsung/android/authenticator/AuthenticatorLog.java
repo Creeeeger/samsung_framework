@@ -14,21 +14,17 @@ final class AuthenticatorLog {
     static void v(String tag, String msg) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void d(String tag, String msg) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void i(String tag, String msg) {
         Log.i(TAG + tag, msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void w(String tag, String msg) {
         Log.w(TAG + tag, msg);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void e(String tag, String msg) {
         Log.e(TAG + tag, msg);
     }

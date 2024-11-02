@@ -147,7 +147,6 @@ public class EventScheduler {
         return event;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void flush() {
         this.mEventBuffer = new TreeMap();
     }

@@ -50,6 +50,10 @@ public class IsdbsFrontendSettings extends FrontendSettings {
     public @interface StreamIdType {
     }
 
+    /* synthetic */ IsdbsFrontendSettings(long j, int i, int i2, int i3, int i4, int i5, int i6, IsdbsFrontendSettingsIA isdbsFrontendSettingsIA) {
+        this(j, i, i2, i3, i4, i5, i6);
+    }
+
     private IsdbsFrontendSettings(long frequency, int streamId, int streamIdType, int modulation, int codeRate, int symbolRate, int rolloff) {
         super(frequency);
         this.mStreamId = streamId;
@@ -97,6 +101,10 @@ public class IsdbsFrontendSettings extends FrontendSettings {
         private int mStreamId;
         private int mStreamIdType;
         private int mSymbolRate;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mFrequency = 0L;

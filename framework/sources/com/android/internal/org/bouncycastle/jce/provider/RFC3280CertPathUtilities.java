@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class RFC3280CertPathUtilities {
     public static final String ANY_POLICY = "2.5.29.32.0";
@@ -472,27 +471,94 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x00e0, code lost:            r0 = (com.android.internal.org.bouncycastle.asn1.ASN1Sequence) com.android.internal.org.bouncycastle.jce.provider.CertPathValidatorUtilities.getExtensionValue(r5, com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.CERTIFICATE_POLICIES);     */
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x00e8, code lost:            r23 = r0.getObjects();     */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x00f3, code lost:            if (r23.hasMoreElements() == false) goto L119;     */
-    /* JADX WARN: Code restructure failed: missing block: B:45:0x00f6, code lost:            r0 = com.android.internal.org.bouncycastle.asn1.x509.PolicyInformation.getInstance(r23.nextElement());     */
-    /* JADX WARN: Code restructure failed: missing block: B:47:0x010c, code lost:            if (com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.ANY_POLICY.equals(r0.getPolicyIdentifier().getId()) == false) goto L120;     */
-    /* JADX WARN: Code restructure failed: missing block: B:49:0x010f, code lost:            r0 = com.android.internal.org.bouncycastle.jce.provider.CertPathValidatorUtilities.getQualifierSet(r0.getPolicyQualifiers());     */
-    /* JADX WARN: Code restructure failed: missing block: B:52:0x0132, code lost:            if (r5.getCriticalExtensionOIDs() == null) goto L55;     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x0134, code lost:            r8 = r5.getCriticalExtensionOIDs().contains(com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.CERTIFICATE_POLICIES);        r24 = r8;     */
-    /* JADX WARN: Code restructure failed: missing block: B:54:0x0143, code lost:            r10 = (com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode) r21.getParent();     */
-    /* JADX WARN: Code restructure failed: missing block: B:55:0x0152, code lost:            if (com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.ANY_POLICY.equals(r10.getValidPolicy()) == false) goto L59;     */
-    /* JADX WARN: Code restructure failed: missing block: B:56:0x0154, code lost:            r28 = r12;        r29 = r13;        r30 = r14;        r25 = new com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode(new java.util.ArrayList(), r15, (java.util.Set) r13.get(r11), r10, r0, r11, r24);        r10.addChild(r25);        r33[r15].add(r25);     */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x0187, code lost:            r28 = r12;        r29 = r13;        r30 = r14;     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x0141, code lost:            r24 = false;     */
-    /* JADX WARN: Code restructure failed: missing block: B:63:0x0119, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:65:0x0121, code lost:            throw new com.android.internal.org.bouncycastle.jce.exception.ExtCertPathValidatorException("Policy qualifier info set could not be decoded.", r0, r31, r32);     */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x0123, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:71:0x012b, code lost:            throw new java.security.cert.CertPathValidatorException("Policy information could not be decoded.", r0, r31, r32);     */
-    /* JADX WARN: Code restructure failed: missing block: B:73:0x012c, code lost:            r0 = null;     */
-    /* JADX WARN: Code restructure failed: missing block: B:75:0x0191, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:77:0x01a1, code lost:            throw new com.android.internal.org.bouncycastle.jce.exception.ExtCertPathValidatorException("Certificate policies extension could not be decoded.", r0, r31, r32);     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x00e0, code lost:
+    
+        r0 = (com.android.internal.org.bouncycastle.asn1.ASN1Sequence) com.android.internal.org.bouncycastle.jce.provider.CertPathValidatorUtilities.getExtensionValue(r5, com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.CERTIFICATE_POLICIES);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x00e8, code lost:
+    
+        r23 = r0.getObjects();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x00f3, code lost:
+    
+        if (r23.hasMoreElements() == false) goto L248;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x00f6, code lost:
+    
+        r0 = com.android.internal.org.bouncycastle.asn1.x509.PolicyInformation.getInstance(r23.nextElement());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x010c, code lost:
+    
+        if (com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.ANY_POLICY.equals(r0.getPolicyIdentifier().getId()) == false) goto L249;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x010f, code lost:
+    
+        r0 = com.android.internal.org.bouncycastle.jce.provider.CertPathValidatorUtilities.getQualifierSet(r0.getPolicyQualifiers());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x0132, code lost:
+    
+        if (r5.getCriticalExtensionOIDs() == null) goto L184;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x0134, code lost:
+    
+        r8 = r5.getCriticalExtensionOIDs().contains(com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.CERTIFICATE_POLICIES);
+        r24 = r8;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x0143, code lost:
+    
+        r10 = (com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode) r21.getParent();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:55:0x0152, code lost:
+    
+        if (com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.ANY_POLICY.equals(r10.getValidPolicy()) == false) goto L188;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x0154, code lost:
+    
+        r28 = r12;
+        r29 = r13;
+        r30 = r14;
+        r25 = new com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode(new java.util.ArrayList(), r15, (java.util.Set) r13.get(r11), r10, r0, r11, r24);
+        r10.addChild(r25);
+        r33[r15].add(r25);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x0187, code lost:
+    
+        r28 = r12;
+        r29 = r13;
+        r30 = r14;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x0141, code lost:
+    
+        r24 = false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:63:0x0119, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:65:0x0121, code lost:
+    
+        throw new com.android.internal.org.bouncycastle.jce.exception.ExtCertPathValidatorException("Policy qualifier info set could not be decoded.", r0, r31, r32);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x0123, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:71:0x012b, code lost:
+    
+        throw new java.security.cert.CertPathValidatorException("Policy information could not be decoded.", r0, r31, r32);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:73:0x012c, code lost:
+    
+        r0 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x0191, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:77:0x01a1, code lost:
+    
+        throw new com.android.internal.org.bouncycastle.jce.exception.ExtCertPathValidatorException("Certificate policies extension could not be decoded.", r0, r31, r32);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -505,7 +571,6 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.prepareCertB(java.security.cert.CertPath, int, java.util.List[], com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode, int):com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void prepareNextCertA(CertPath certPath, int index) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -533,14 +598,12 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void processCertF(CertPath certPath, int index, PKIXPolicyNode validPolicyTree, int explicitPolicy) throws CertPathValidatorException {
         if (explicitPolicy <= 0 && validPolicyTree == null) {
             throw new ExtCertPathValidatorException("No valid policy tree found when one expected.", null, certPath, index);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static PKIXPolicyNode processCertE(CertPath certPath, int index, PKIXPolicyNode validPolicyTree) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -555,7 +618,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void processCertBC(CertPath certPath, int index, PKIXNameConstraintValidator nameConstraintValidator, boolean isForCRLCheck) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -608,7 +670,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Incorrect condition in loop: B:101:0x012f */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -622,7 +683,6 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.processCertD(java.security.cert.CertPath, int, java.util.Set, com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode, java.util.List[], int, boolean):com.android.internal.org.bouncycastle.jce.provider.PKIXPolicyNode");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void processCertA(CertPath certPath, PKIXExtendedParameters paramsPKIX, Date validityDate, PKIXCertRevocationChecker revocationChecker, int index, PublicKey workingPublicKey, boolean verificationAlreadyPerformed, X500Name workingIssuerName, X509Certificate sign) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -665,10 +725,18 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0031, code lost:            r5 = com.android.internal.org.bouncycastle.asn1.ASN1Integer.getInstance(r4, false).intValueExact();     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x003a, code lost:            if (r5 >= r9) goto L19;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x003c, code lost:            return r5;     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0031, code lost:
+    
+        r5 = com.android.internal.org.bouncycastle.asn1.ASN1Integer.getInstance(r4, false).intValueExact();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x003a, code lost:
+    
+        if (r5 >= r9) goto L49;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x003c, code lost:
+    
+        return r5;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -719,10 +787,18 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.prepareNextCertI1(java.security.cert.CertPath, int, int):int");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0032, code lost:            r5 = com.android.internal.org.bouncycastle.asn1.ASN1Integer.getInstance(r4, false).intValueExact();     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x003b, code lost:            if (r5 >= r9) goto L19;     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x003d, code lost:            return r5;     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0032, code lost:
+    
+        r5 = com.android.internal.org.bouncycastle.asn1.ASN1Integer.getInstance(r4, false).intValueExact();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x003b, code lost:
+    
+        if (r5 >= r9) goto L49;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x003d, code lost:
+    
+        return r5;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -774,7 +850,6 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.prepareNextCertI2(java.security.cert.CertPath, int, int):int");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void prepareNextCertG(CertPath certPath, int index, PKIXNameConstraintValidator nameConstraintValidator) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -822,7 +897,6 @@ public class RFC3280CertPathUtilities {
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.jce.provider.RFC3280CertPathUtilities.checkCRL(com.android.internal.org.bouncycastle.jcajce.PKIXCertRevocationCheckerParameters, com.android.internal.org.bouncycastle.asn1.x509.DistributionPoint, com.android.internal.org.bouncycastle.jcajce.PKIXExtendedParameters, java.util.Date, java.util.Date, java.security.cert.X509Certificate, java.security.cert.X509Certificate, java.security.PublicKey, com.android.internal.org.bouncycastle.jce.provider.CertStatus, com.android.internal.org.bouncycastle.jce.provider.ReasonsMask, java.util.List, com.android.internal.org.bouncycastle.jcajce.util.JcaJceHelper):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void checkCRLs(PKIXCertRevocationCheckerParameters params, PKIXExtendedParameters paramsPKIX, Date currentDate, Date validityDate, X509Certificate cert, X509Certificate sign, PublicKey workingPublicKey, List certPathCerts, JcaJceHelper helper) throws AnnotatedException, RecoverableCertPathValidatorException {
         int i;
         CertStatus certStatus;
@@ -954,7 +1028,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int prepareNextCertJ(CertPath certPath, int index, int inhibitAnyPolicy) throws CertPathValidatorException {
         int _inhibitAnyPolicy;
         List certs = certPath.getCertificates();
@@ -970,7 +1043,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void prepareNextCertK(CertPath certPath, int index) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -988,7 +1060,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int prepareNextCertL(CertPath certPath, int index, int maxPathLength) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1001,7 +1072,6 @@ public class RFC3280CertPathUtilities {
         return maxPathLength;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int prepareNextCertM(CertPath certPath, int index, int maxPathLength) throws CertPathValidatorException {
         BigInteger _pathLengthConstraint;
         int _plc;
@@ -1018,7 +1088,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void prepareNextCertN(CertPath certPath, int index) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1030,7 +1099,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void prepareNextCertO(CertPath certPath, int index, Set criticalExtensions, List pathCheckers) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1047,7 +1115,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int prepareNextCertH1(CertPath certPath, int index, int explicitPolicy) {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1057,7 +1124,6 @@ public class RFC3280CertPathUtilities {
         return explicitPolicy;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int prepareNextCertH2(CertPath certPath, int index, int policyMapping) {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1067,7 +1133,6 @@ public class RFC3280CertPathUtilities {
         return policyMapping;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int prepareNextCertH3(CertPath certPath, int index, int inhibitAnyPolicy) {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1077,7 +1142,6 @@ public class RFC3280CertPathUtilities {
         return inhibitAnyPolicy;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int wrapupCertA(int explicitPolicy, X509Certificate cert) {
         if (!CertPathValidatorUtilities.isSelfIssued(cert) && explicitPolicy != 0) {
             return explicitPolicy - 1;
@@ -1085,7 +1149,6 @@ public class RFC3280CertPathUtilities {
         return explicitPolicy;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int wrapupCertB(CertPath certPath, int index, int explicitPolicy) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1116,7 +1179,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void wrapupCertF(CertPath certPath, int index, List pathCheckers, Set criticalExtensions) throws CertPathValidatorException {
         List certs = certPath.getCertificates();
         X509Certificate cert = (X509Certificate) certs.get(index);
@@ -1135,7 +1197,6 @@ public class RFC3280CertPathUtilities {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static PKIXPolicyNode wrapupCertG(CertPath certPath, PKIXExtendedParameters paramsPKIX, Set userInitialPolicySet, int index, List[] policyNodes, PKIXPolicyNode validPolicyTree, Set acceptablePolicies) throws CertPathValidatorException {
         PKIXPolicyNode validPolicyTree2;
         int n = certPath.getCertificates().size();

@@ -19,13 +19,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class EuiccProfileInfo implements Parcelable {
     public static final Parcelable.Creator<EuiccProfileInfo> CREATOR = new Parcelable.Creator<EuiccProfileInfo>() { // from class: android.service.euicc.EuiccProfileInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EuiccProfileInfo createFromParcel(Parcel in) {
             return new EuiccProfileInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EuiccProfileInfo[] newArray(int size) {
             return new EuiccProfileInfo[size];
@@ -64,6 +65,31 @@ public final class EuiccProfileInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface ProfileState {
+    }
+
+    /* synthetic */ EuiccProfileInfo(Parcel parcel, EuiccProfileInfoIA euiccProfileInfoIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ EuiccProfileInfo(String str, String str2, String str3, String str4, int i, int i2, CarrierIdentifier carrierIdentifier, int i3, List list, EuiccProfileInfoIA euiccProfileInfoIA) {
+        this(str, str2, str3, str4, i, i2, carrierIdentifier, i3, list);
+    }
+
+    /* renamed from: android.service.euicc.EuiccProfileInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EuiccProfileInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EuiccProfileInfo createFromParcel(Parcel in) {
+            return new EuiccProfileInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EuiccProfileInfo[] newArray(int size) {
+            return new EuiccProfileInfo[size];
+        }
     }
 
     @Deprecated

@@ -98,7 +98,6 @@ public class Profile {
         this.encapsulationType = encapsulationType;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Profile read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         Profile _instance = new Profile();
         String _raw = _parser.getAttributeValue(null, "name");

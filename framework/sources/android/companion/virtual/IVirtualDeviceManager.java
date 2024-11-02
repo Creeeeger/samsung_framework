@@ -235,7 +235,6 @@ public interface IVirtualDeviceManager extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements IVirtualDeviceManager {
             private IBinder mRemote;

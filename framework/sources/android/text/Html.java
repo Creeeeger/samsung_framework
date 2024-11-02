@@ -65,7 +65,6 @@ public class Html {
         return fromHtml(source, flags, null, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class HtmlParser {
         private static final HTMLSchema schema = new HTMLSchema();

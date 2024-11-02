@@ -45,6 +45,9 @@ public abstract class HotwordDetectionService extends Service implements Sandbox
     private ContentCaptureManager mContentCaptureManager;
     private IRecognitionServiceManager mIRecognitionServiceManager;
     private final ISandboxedDetectionService mInterface = new ISandboxedDetectionService.Stub() { // from class: android.service.voice.HotwordDetectionService.1
+        AnonymousClass1() {
+        }
+
         @Override // android.service.voice.ISandboxedDetectionService
         public void detectFromDspSource(SoundTrigger.KeyphraseRecognitionEvent event, AudioFormat audioFormat, long timeoutMillis, IDspHotwordDetectionCallback callback) throws RemoteException {
             HotwordDetectionService.this.onDetect(new AlwaysOnHotwordDetector.EventPayload.Builder(event).build(), timeoutMillis, new Callback(callback));
@@ -108,6 +111,69 @@ public abstract class HotwordDetectionService extends Service implements Sandbox
     @interface AudioSource {
     }
 
+    /* renamed from: android.service.voice.HotwordDetectionService$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends ISandboxedDetectionService.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void detectFromDspSource(SoundTrigger.KeyphraseRecognitionEvent event, AudioFormat audioFormat, long timeoutMillis, IDspHotwordDetectionCallback callback) throws RemoteException {
+            HotwordDetectionService.this.onDetect(new AlwaysOnHotwordDetector.EventPayload.Builder(event).build(), timeoutMillis, new Callback(callback));
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void updateState(PersistableBundle options, SharedMemory sharedMemory, IRemoteCallback callback) throws RemoteException {
+            Log.v(HotwordDetectionService.TAG, "#updateState" + (callback != null ? " with callback" : ""));
+            HotwordDetectionService.this.onUpdateStateInternal(options, sharedMemory, callback);
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void detectFromMicrophoneSource(ParcelFileDescriptor audioStream, int audioSource, AudioFormat audioFormat, PersistableBundle options, IDspHotwordDetectionCallback callback) throws RemoteException {
+            switch (audioSource) {
+                case 1:
+                    HotwordDetectionService.this.onDetect(new Callback(callback));
+                    return;
+                case 2:
+                    HotwordDetectionService.this.onDetect(audioStream, audioFormat, options, new Callback(callback));
+                    return;
+                default:
+                    Log.i(HotwordDetectionService.TAG, "Unsupported audio source " + audioSource);
+                    return;
+            }
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void detectWithVisualSignals(IDetectorSessionVisualQueryDetectionCallback callback) {
+            throw new UnsupportedOperationException("Not supported by HotwordDetectionService");
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void updateAudioFlinger(IBinder audioFlinger) {
+            AudioSystem.setAudioFlingerBinder(audioFlinger);
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void updateContentCaptureManager(IContentCaptureManager manager, ContentCaptureOptions options) {
+            HotwordDetectionService.this.mContentCaptureManager = new ContentCaptureManager(HotwordDetectionService.this, manager, options);
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void updateRecognitionServiceManager(IRecognitionServiceManager manager) {
+            HotwordDetectionService.this.mIRecognitionServiceManager = manager;
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void ping(IRemoteCallback callback) throws RemoteException {
+            callback.sendResult(null);
+        }
+
+        @Override // android.service.voice.ISandboxedDetectionService
+        public void stopDetection() {
+            HotwordDetectionService.this.onStopDetection();
+        }
+    }
+
     @Override // android.app.Service
     public final IBinder onBind(Intent intent) {
         if (SERVICE_INTERFACE.equals(intent.getAction())) {
@@ -153,7 +219,6 @@ public abstract class HotwordDetectionService extends Service implements Sandbox
         throw new UnsupportedOperationException();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onUpdateStateInternal(PersistableBundle options, SharedMemory sharedMemory, IRemoteCallback callback) {
         IntConsumer intConsumer = SandboxedDetectionInitializer.createInitializationStatusConsumer(callback);
         onUpdateState(options, sharedMemory, UPDATE_TIMEOUT_MILLIS, intConsumer);
@@ -166,6 +231,10 @@ public abstract class HotwordDetectionService extends Service implements Sandbox
     /* loaded from: classes3.dex */
     public static final class Callback {
         private final IDspHotwordDetectionCallback mRemoteCallback;
+
+        /* synthetic */ Callback(IDspHotwordDetectionCallback iDspHotwordDetectionCallback, CallbackIA callbackIA) {
+            this(iDspHotwordDetectionCallback);
+        }
 
         private Callback(IDspHotwordDetectionCallback remoteCallback) {
             this.mRemoteCallback = remoteCallback;

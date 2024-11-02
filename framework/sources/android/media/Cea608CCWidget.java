@@ -60,7 +60,6 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
         return this.mCaptionStyle;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* compiled from: ClosedCaptionRenderer.java */
     /* loaded from: classes2.dex */
     public static class CCLineBox extends TextView {
@@ -108,7 +107,6 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
             invalidate();
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.TextView, android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             float fontSize = View.MeasureSpec.getSize(heightMeasureSpec) * 0.75f;
@@ -129,7 +127,6 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.TextView, android.view.View
         public void onDraw(Canvas c) {
             int i = this.mEdgeType;
@@ -231,7 +228,6 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.LinearLayout, android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -251,7 +247,6 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
         public void onLayout(boolean changed, int l, int t, int r, int b) {
             int safeWidth;

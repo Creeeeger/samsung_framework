@@ -12,8 +12,9 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import com.android.internal.R;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class YearPickerView extends ListView {
+public class YearPickerView extends ListView {
     private final YearAdapter mAdapter;
     private final int mChildSize;
     private OnYearSelectedListener mOnYearSelectedListener;
@@ -40,6 +41,9 @@ class YearPickerView extends ListView {
         this.mViewSize = res.getDimensionPixelOffset(R.dimen.datepicker_view_animator_height);
         this.mChildSize = res.getDimensionPixelOffset(R.dimen.datepicker_year_label_height);
         setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: android.widget.YearPickerView.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.AdapterView.OnItemClickListener
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int year = YearPickerView.this.mAdapter.getYearForPosition(position);
@@ -54,13 +58,36 @@ class YearPickerView extends ListView {
         setAdapter((ListAdapter) yearAdapter);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.YearPickerView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements AdapterView.OnItemClickListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.AdapterView.OnItemClickListener
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            int year = YearPickerView.this.mAdapter.getYearForPosition(position);
+            YearPickerView.this.mAdapter.setSelection(year);
+            if (YearPickerView.this.mOnYearSelectedListener != null) {
+                YearPickerView.this.mOnYearSelectedListener.onYearChanged(YearPickerView.this, year);
+            }
+        }
+    }
+
     public void setOnYearSelectedListener(OnYearSelectedListener listener) {
         this.mOnYearSelectedListener = listener;
     }
 
-    public void setYear(final int year) {
+    public void setYear(int year) {
         this.mAdapter.setSelection(year);
         post(new Runnable() { // from class: android.widget.YearPickerView.2
+            final /* synthetic */ int val$year;
+
+            AnonymousClass2(int year2) {
+                year = year2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 int position = YearPickerView.this.mAdapter.getPositionForYear(year);
@@ -69,6 +96,25 @@ class YearPickerView extends ListView {
                 }
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.YearPickerView$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ int val$year;
+
+        AnonymousClass2(int year2) {
+            year = year2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            int position = YearPickerView.this.mAdapter.getPositionForYear(year);
+            if (position >= 0 && position < YearPickerView.this.getCount()) {
+                YearPickerView.this.setSelectionCentered(position);
+            }
+        }
     }
 
     public void setSelectionCentered(int position) {
@@ -80,8 +126,9 @@ class YearPickerView extends ListView {
         this.mAdapter.setRange(min, max);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private static class YearAdapter extends BaseAdapter {
+    public static class YearAdapter extends BaseAdapter {
         private static final int ITEM_LAYOUT = 17367517;
         private static final int ITEM_TEXT_ACTIVATED_APPEARANCE = 16974816;
         private static final int ITEM_TEXT_APPEARANCE = 16974815;

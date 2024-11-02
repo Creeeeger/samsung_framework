@@ -40,15 +40,17 @@ public class CameraExtensionJpegProcessor implements ICaptureProcessorImpl {
     private ImageWriter mPostviewOutputWriter = null;
     private ConcurrentLinkedQueue<JpegParameters> mJpegParameters = new ConcurrentLinkedQueue<>();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native int compressJpegFromYUV420pNative(int i, int i2, ByteBuffer byteBuffer, int i3, int i4, ByteBuffer byteBuffer2, int i5, int i6, ByteBuffer byteBuffer3, int i7, int i8, ByteBuffer byteBuffer4, int i9, int i10, int i11, int i12, int i13, int i14, int i15);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class JpegParameters {
         public int mQuality;
         public int mRotation;
         public HashSet<Long> mTimeStamps;
+
+        /* synthetic */ JpegParameters(JpegParametersIA jpegParametersIA) {
+            this();
+        }
 
         private JpegParameters() {
             this.mTimeStamps = new HashSet<>();
@@ -189,7 +191,6 @@ public class CameraExtensionJpegProcessor implements ICaptureProcessorImpl {
         throw new UnsupportedOperationException("Binder IPC not supported!");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public class YuvCallback implements ImageReader.OnImageAvailableListener {
         private ImageReader mImageReader;

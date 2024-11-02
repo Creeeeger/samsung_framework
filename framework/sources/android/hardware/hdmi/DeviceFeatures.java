@@ -5,11 +5,9 @@ import java.util.Objects;
 
 /* loaded from: classes2.dex */
 public class DeviceFeatures {
-    public static final DeviceFeatures ALL_FEATURES_SUPPORT_UNKNOWN;
     public static final int FEATURE_NOT_SUPPORTED = 0;
     public static final int FEATURE_SUPPORTED = 1;
     public static final int FEATURE_SUPPORT_UNKNOWN = 2;
-    public static final DeviceFeatures NO_FEATURES_SUPPORTED;
     private final int mArcRxSupport;
     private final int mArcTxSupport;
     private final int mDeckControlSupport;
@@ -17,14 +15,15 @@ public class DeviceFeatures {
     private final int mSetAudioRateSupport;
     private final int mSetAudioVolumeLevelSupport;
     private final int mSetOsdStringSupport;
+    public static final DeviceFeatures ALL_FEATURES_SUPPORT_UNKNOWN = new Builder(2).build();
+    public static final DeviceFeatures NO_FEATURES_SUPPORTED = new Builder(0).build();
 
     /* loaded from: classes2.dex */
     public @interface FeatureSupportStatus {
     }
 
-    static {
-        ALL_FEATURES_SUPPORT_UNKNOWN = new Builder(2).build();
-        NO_FEATURES_SUPPORTED = new Builder(0).build();
+    /* synthetic */ DeviceFeatures(Builder builder, DeviceFeaturesIA deviceFeaturesIA) {
+        this(builder);
     }
 
     private DeviceFeatures(Builder builder) {
@@ -50,7 +49,6 @@ public class DeviceFeatures {
         return builder.build();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static int updateFeatureSupportStatus(int oldStatus, int newStatus) {
         if (newStatus == 2) {
             return oldStatus;
@@ -158,6 +156,14 @@ public class DeviceFeatures {
         private int mRecordTvScreenSupport;
         private int mSetAudioRateSupport;
         private int mSetAudioVolumeLevelSupport;
+
+        /* synthetic */ Builder(int i, BuilderIA builderIA) {
+            this(i);
+        }
+
+        /* synthetic */ Builder(DeviceFeatures deviceFeatures, BuilderIA builderIA) {
+            this(deviceFeatures);
+        }
 
         private Builder(int defaultFeatureSupportStatus) {
             this.mRecordTvScreenSupport = defaultFeatureSupportStatus;

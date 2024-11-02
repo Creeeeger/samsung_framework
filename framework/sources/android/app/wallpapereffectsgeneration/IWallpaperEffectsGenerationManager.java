@@ -100,8 +100,9 @@ public interface IWallpaperEffectsGenerationManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IWallpaperEffectsGenerationManager {
+        public static class Proxy implements IWallpaperEffectsGenerationManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

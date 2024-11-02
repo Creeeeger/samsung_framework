@@ -29,8 +29,13 @@ public class TraceBuffer<P, S extends P, T extends P> {
         void write(S s, Queue<T> queue, OutputStream outputStream) throws IOException;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class ProtoOutputStreamProvider implements ProtoProvider<ProtoOutputStream, ProtoOutputStream, ProtoOutputStream> {
+    public static class ProtoOutputStreamProvider implements ProtoProvider<ProtoOutputStream, ProtoOutputStream, ProtoOutputStream> {
+        /* synthetic */ ProtoOutputStreamProvider(ProtoOutputStreamProviderIA protoOutputStreamProviderIA) {
+            this();
+        }
+
         private ProtoOutputStreamProvider() {
         }
 
@@ -107,7 +112,6 @@ public class TraceBuffer<P, S extends P, T extends P> {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$contains$0(byte[] other, Object p) {
         return Arrays.equals(this.mProtoProvider.getBytes(p), other);
     }

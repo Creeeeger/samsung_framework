@@ -31,7 +31,7 @@ public abstract class RuntimePermissionPresenterService extends Service {
         this.mHandler = new Handler(base.getMainLooper());
     }
 
-    /* renamed from: android.permissionpresenterservice.RuntimePermissionPresenterService$1, reason: invalid class name */
+    /* renamed from: android.permissionpresenterservice.RuntimePermissionPresenterService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IRuntimePermissionPresenter.Stub {
         AnonymousClass1() {
@@ -55,7 +55,6 @@ public abstract class RuntimePermissionPresenterService extends Service {
         return new AnonymousClass1();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void getAppPermissions(String packageName, RemoteCallback callback) {
         List<RuntimePermissionPresentationInfo> permissions = onGetAppPermissions(packageName);
         if (permissions != null && !permissions.isEmpty()) {

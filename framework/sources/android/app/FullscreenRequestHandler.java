@@ -19,8 +19,7 @@ public class FullscreenRequestHandler {
     public @interface RequestResult {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public static void requestFullscreenMode(int request, final OutcomeReceiver<Void, Throwable> approvalCallback, Configuration config, IBinder token) {
+    public static void requestFullscreenMode(int request, OutcomeReceiver<Void, Throwable> approvalCallback, Configuration config, IBinder token) {
         int earlyCheck = earlyCheckRequestMatchesWindowingMode(request, config.windowConfiguration.getWindowingMode());
         if (earlyCheck != 0) {
             if (approvalCallback != null) {
@@ -32,6 +31,9 @@ public class FullscreenRequestHandler {
         try {
             if (approvalCallback != null) {
                 ActivityClient.getInstance().requestMultiwindowFullscreen(token, request, new IRemoteCallback.Stub() { // from class: android.app.FullscreenRequestHandler.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // android.os.IRemoteCallback
                     public void sendResult(Bundle res) {
                         FullscreenRequestHandler.notifyFullscreenRequestResult(OutcomeReceiver.this, res.getInt("result"));
@@ -47,7 +49,18 @@ public class FullscreenRequestHandler {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.app.FullscreenRequestHandler$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends IRemoteCallback.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.IRemoteCallback
+        public void sendResult(Bundle res) {
+            FullscreenRequestHandler.notifyFullscreenRequestResult(OutcomeReceiver.this, res.getInt("result"));
+        }
+    }
+
     public static void notifyFullscreenRequestResult(OutcomeReceiver<Void, Throwable> callback, int result) {
         Throwable e = null;
         switch (result) {

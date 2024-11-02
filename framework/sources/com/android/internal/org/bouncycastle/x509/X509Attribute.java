@@ -13,7 +13,6 @@ import com.android.internal.org.bouncycastle.asn1.x509.Attribute;
 public class X509Attribute extends ASN1Object {
     Attribute attr;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public X509Attribute(ASN1Encodable at) {
         this.attr = Attribute.getInstance(at);
     }

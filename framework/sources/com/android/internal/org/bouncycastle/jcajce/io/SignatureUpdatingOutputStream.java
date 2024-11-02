@@ -9,7 +9,6 @@ import java.security.SignatureException;
 class SignatureUpdatingOutputStream extends OutputStream {
     private Signature sig;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SignatureUpdatingOutputStream(Signature sig) {
         this.sig = sig;
     }

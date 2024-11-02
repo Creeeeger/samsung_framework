@@ -12,13 +12,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class BeginGetCredentialResponse implements Parcelable {
     public static final Parcelable.Creator<BeginGetCredentialResponse> CREATOR = new Parcelable.Creator<BeginGetCredentialResponse>() { // from class: android.service.credentials.BeginGetCredentialResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public BeginGetCredentialResponse createFromParcel(Parcel in) {
             return new BeginGetCredentialResponse(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BeginGetCredentialResponse[] newArray(int size) {
             return new BeginGetCredentialResponse[size];
@@ -28,6 +29,14 @@ public final class BeginGetCredentialResponse implements Parcelable {
     private final ParceledListSlice<Action> mAuthenticationEntries;
     private final ParceledListSlice<CredentialEntry> mCredentialEntries;
     private final RemoteEntry mRemoteCredentialEntry;
+
+    /* synthetic */ BeginGetCredentialResponse(ParceledListSlice parceledListSlice, ParceledListSlice parceledListSlice2, ParceledListSlice parceledListSlice3, RemoteEntry remoteEntry, BeginGetCredentialResponseIA beginGetCredentialResponseIA) {
+        this(parceledListSlice, parceledListSlice2, parceledListSlice3, remoteEntry);
+    }
+
+    /* synthetic */ BeginGetCredentialResponse(Parcel parcel, BeginGetCredentialResponseIA beginGetCredentialResponseIA) {
+        this(parcel);
+    }
 
     public BeginGetCredentialResponse() {
         this(new ParceledListSlice(new ArrayList()), new ParceledListSlice(new ArrayList()), new ParceledListSlice(new ArrayList()), null);
@@ -45,6 +54,23 @@ public final class BeginGetCredentialResponse implements Parcelable {
         this.mAuthenticationEntries = (ParceledListSlice) in.readParcelable(null, ParceledListSlice.class);
         this.mActions = (ParceledListSlice) in.readParcelable(null, ParceledListSlice.class);
         this.mRemoteCredentialEntry = (RemoteEntry) in.readTypedObject(RemoteEntry.CREATOR);
+    }
+
+    /* renamed from: android.service.credentials.BeginGetCredentialResponse$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<BeginGetCredentialResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BeginGetCredentialResponse createFromParcel(Parcel in) {
+            return new BeginGetCredentialResponse(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public BeginGetCredentialResponse[] newArray(int size) {
+            return new BeginGetCredentialResponse[size];
+        }
     }
 
     @Override // android.os.Parcelable

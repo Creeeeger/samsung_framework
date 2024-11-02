@@ -8,7 +8,6 @@ public class SensorEvent {
     public long timestamp;
     public final float[] values;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SensorEvent(int valueSize) {
         this.values = new float[valueSize];
     }

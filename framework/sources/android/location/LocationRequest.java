@@ -27,13 +27,14 @@ public final class LocationRequest implements Parcelable {
     @Deprecated
     public static final int ACCURACY_FINE = 100;
     public static final Parcelable.Creator<LocationRequest> CREATOR = new Parcelable.Creator<LocationRequest>() { // from class: android.location.LocationRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public LocationRequest createFromParcel(Parcel in) {
             return new LocationRequest(in.readString(), in.readLong(), in.readInt(), in.readLong(), in.readLong(), in.readInt(), in.readLong(), in.readFloat(), in.readLong(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), (WorkSource) in.readTypedObject(WorkSource.CREATOR));
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocationRequest[] newArray(int size) {
             return new LocationRequest[size];
@@ -76,6 +77,10 @@ public final class LocationRequest implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface Quality {
+    }
+
+    /* synthetic */ LocationRequest(String str, long j, int i, long j2, long j3, int i2, long j4, float f, long j5, boolean z, boolean z2, boolean z3, boolean z4, WorkSource workSource, LocationRequestIA locationRequestIA) {
+        this(str, j, i, j2, j3, i2, j4, f, j5, z, z2, z3, z4, workSource);
     }
 
     @SystemApi
@@ -377,6 +382,23 @@ public final class LocationRequest implements Parcelable {
     @SystemApi
     public WorkSource getWorkSource() {
         return this.mWorkSource;
+    }
+
+    /* renamed from: android.location.LocationRequest$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<LocationRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocationRequest createFromParcel(Parcel in) {
+            return new LocationRequest(in.readString(), in.readLong(), in.readInt(), in.readLong(), in.readLong(), in.readInt(), in.readLong(), in.readFloat(), in.readLong(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), (WorkSource) in.readTypedObject(WorkSource.CREATOR));
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public LocationRequest[] newArray(int size) {
+            return new LocationRequest[size];
+        }
     }
 
     @Override // android.os.Parcelable

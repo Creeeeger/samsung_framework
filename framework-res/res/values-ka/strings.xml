@@ -269,12 +269,12 @@
     <string name="allow">უფლების მიცემა</string>
     <string name="alwaysUse">ამ ქმედებისთვის ნაგულისხმევად გამოყენება.</string>
     <string name="android_preparing_apk">ემზადება %1$s.</string>
-    <string name="android_start_title">მიმდინარეობს ტელეფონის ჩართვა…</string>
+    <string name="android_start_title">მიმდინარეობს ტაბლეტის ჩართვა…</string>
     <string name="android_system_label">Android-ის სისტემა</string>
     <string name="android_upgrading_complete">ჩატვირთვის დასასრული.</string>
     <string name="android_upgrading_notification_title">სისტემის განახლება სრულდება…</string>
     <string name="android_upgrading_starting_apps">აპების ჩართვა</string>
-    <string name="android_upgrading_title">მიმდინარეობს ტელეფონის განახლება…</string>
+    <string name="android_upgrading_title">მიმდინარეობს ტაბლეტის განახლება…</string>
     <string name="anr_activity_application">%2$s არ რეაგირებს</string>
     <string name="anr_activity_process">%1$s არ რეაგირებს</string>
     <string name="anr_application_process">%1$s არ რეაგირებს</string>
@@ -295,16 +295,16 @@
     <string name="app_not_found">ამ მოქმედების შესასრულებლად აპლიკაცია ვერ მოიძებნა</string>
     <string name="app_running_notification_text">შეეხეთ მეტი ინფორმაციისთვის ან აპის მუშაობის შესაწყვეტად.</string>
     <string name="app_running_notification_title">%1$s გაშვებულია</string>
-    <string name="app_streaming_blocked_message">ამჟამად ამ აპზე თქვენი %1$s-დან წვდომა შეუძლებელია. ცადეთ ტელეფონიდან.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">ეს აპი დამატებით უსაფრთხოებას ითხოვს. ცადეთ ტელეფონიდან.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">ამჟამად ამ აპზე თქვენი %1$s-დან წვდომა შეუძლებელია. ცადეთ ტელეფონიდან.</string>
+    <string name="app_streaming_blocked_message">ამჟამად ამ აპზე თქვენი %1$s-დან წვდომა შეუძლებელია. ცადეთ ტაბლეტიდან.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">ეს აპი დამატებით უსაფრთხოებას ითხოვს. ცადეთ ტაბლეტიდან.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">ამჟამად ამ აპზე თქვენი %1$s-დან წვდომა შეუძლებელია. ცადეთ ტაბლეტიდან.</string>
     <string name="app_streaming_blocked_title">%1$s მიუწვდომელია</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">კამერა მიუწვდომელია</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">ტელეფონზე გაგრძელება</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">მიკროფონი მიუწვდომელია</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">საჭიროა ნებართვა</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store მიუწვდომელია</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">ტელეფონის პარამეტრები მიუწვდომელია</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">ტაბლეტის პარამეტრები მიუწვდომელია</string>
     <string name="app_suspended_default_message">%1$s ამჟამად მიუწვდომელია. ის იმართება %2$s-ის მიერ.</string>
     <string name="app_suspended_more_details">შეიტყვეთ მეტი</string>
     <string name="app_suspended_title">აპი მიუწვდომელია</string>
@@ -344,7 +344,7 @@
     <string name="back_button_label">უკან</string>
     <string name="badPin">თქვენ მიერ შეყვანილი ძველი პინ-კოდი არასწორია.</string>
     <string name="badPuk">თქვენ მიერ შეყვანილი PUK კოდი არასწორია.</string>
-    <string name="battery_saver_charged_notification_summary">ტელეფონი საკმარისად არის დატენილი. ფუნქციები შეზღუდული აღარ არის.</string>
+    <string name="battery_saver_charged_notification_summary">ტაბლეტი საკმარისად არის დატენილი. ფუნქციები შეზღუდული აღარ არის.</string>
     <string name="battery_saver_description">ბატარეის დამზოგი ჩართავს მუქ თემას და შეზღუდავს ან გამორთავს ფონურ აქტივობას, ზოგიერთ ვიზუალურ ეფექტს, გარკვეულ ფუნქციებსა და ზოგიერთ ქსელთან კავშირს.</string>
     <string name="battery_saver_description_with_learn_more">ბატარეის დამზოგი ჩართავს მუქ თემას და შეზღუდავს ან გამორთავს ფონურ აქტივობას, ზოგიერთ ვიზუალურ ეფექტს, გარკვეულ ფუნქციებსა და ზოგიერთ ქსელთან კავშირს.</string>
     <string name="battery_saver_notification_channel_name">ბატარეის დამზოგი</string>
@@ -486,7 +486,7 @@
     <string name="decline">უარყოფა</string>
     <string name="decline_remote_bugreport_action">უარყოფა</string>
     <string name="default_audio_route_category_name">სისტემა</string>
-    <string name="default_audio_route_name">ტელეფონი</string>
+    <string name="default_audio_route_name">ტაბლეტი</string>
     <string name="default_audio_route_name_dock_speakers">სპიკერების მიმაგრება</string>
     <string name="default_audio_route_name_external_device">გარე მოწყობილობა</string>
     <string name="default_audio_route_name_headphones">ყურსასმენები</string>
@@ -707,7 +707,7 @@
     <string name="fingerprint_acquired_immobile">ოდნავ შეცვალეთ დაჭერის ადგილი ყოველ ჯერზე</string>
     <string name="fingerprint_acquired_insufficient">თითის ანაბეჭდის ამოცნობა ვერ ხერხდება. ცადეთ ხელახლა.</string>
     <string name="fingerprint_acquired_partial">მაგრად დააჭირეთ სენსორს</string>
-    <string name="fingerprint_acquired_power_press">აღმოჩენილია \u1cabლიერი დაჭერა</string>
+    <string name="fingerprint_acquired_power_press">აღმოჩენილია Ძლიერი დაჭერა</string>
     <string name="fingerprint_acquired_too_bright">ზედმეტად ნათელია</string>
     <string name="fingerprint_acquired_too_fast">მაგრად დააჭირეთ სენსორს</string>
     <string name="fingerprint_acquired_too_slow">თითის აღება მეტისმეტად ნელა მოხდა. გთხოვთ, სცადოთ ხელახლა.</string>
@@ -779,7 +779,7 @@
     <string name="global_action_silent_mode_on_status">ხმა გამორთულია</string>
     <string name="global_action_toggle_silent_mode">ჩუმი რეჟიმი</string>
     <string name="global_action_voice_assist">ხმოვანი ასისტ.</string>
-    <string name="global_actions">ტელეფონის პარამეტრები</string>
+    <string name="global_actions">ტაბლეტის პარამეტრები</string>
     <string name="global_actions_airplane_mode_off_status">თვითმფრინავის რეჟიმი გამორთულია.</string>
     <string name="global_actions_airplane_mode_on_status">თვითმფრინავის რეჟიმი ჩართულია.</string>
     <string name="global_actions_toggle_airplane_mode">თვითმფრინავის რეჟიმი</string>
@@ -920,11 +920,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">შეეხეთ პაროლის ასაკრეფად</font></string>
     <string name="keyguard_password_wrong_pin_code">არასწორი PIN კოდი.</string>
     <string name="kg_enter_confirm_pin_hint">სასურველი PIN კოდის დადასტურება</string>
-    <string name="kg_failed_attempts_almost_at_login">"თქვენ არასწორად დახატეთ თქვენი განბლოკვის ნიმუში %1$d-ჯერ. კიდევ %2$d წარუმატებელი ცდის შემდეგ, დაგჭირდებათ თქვენი ტელეფონის განბლოკვა ელფოსტის ანგარიშის გამოყენებით.
+    <string name="kg_failed_attempts_almost_at_login">"თქვენ არასწორად დახატეთ თქვენი განბლოკვის ნიმუში %1$d ჯერ. კიდევ %2$d წარუმატებელი ცდის შემდეგ მოგთხოვთ ტაბლეტის განბლოკვას ელფოსტის ანგარიშის გამოყენებით.
 
  ხელახლა სცადეთ %3$d წამში."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">თქვენ არასწორად სცადეთ ტელეფონის განბლოკვა %1$d-ჯერ. კიდევ %2$d წარუმატებელი ცდის შემდეგ ტელეფონზე დაყენდება საწყისი, ქარხნული პარამეტრები და მომხმარებლის ყველა მონაცემი დაიკარგება.</string>
-    <string name="kg_failed_attempts_now_wiping">თქვენ %d-ჯერ არასწორად სცადეთ ტელეფონის განბლოკვა. ამიტომ ტელეფონზე დადგება საწყისი, ქარხნული პარამეტრები.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">თქვენ არასწორად სცადეთ ტაბლეტის განბლოკვა %1$d-ჯერ. კიდევ %2$d წარუმატებელი ცდის შემდეგ ტაბლეტზე დაყენდება საწყისი, ქარხნული პარამეტრები და მომხმარებლის ყველა მონაცემი დაიკარგება.</string>
+    <string name="kg_failed_attempts_now_wiping">თქვენ არასწორად სცადეთ ტაბლეტის განბლოკვა %d-ჯერ. ტაბლეტზე დაყენდება საწყისი, ქარხნული პარამეტრები და მომხმარებლის ყველა მონაცემი დაიკარგება.</string>
     <string name="kg_forgot_pattern_button_text">დაგავიწყდათ ნიმუში</string>
     <string name="kg_invalid_confirm_pin_hint">PIN კოდები არ ემთხვევა</string>
     <string name="kg_invalid_puk">ხელახლა შეიყვანეთ სწორი PUK კოდი. რამდენიმე წარუმატებელი მცდელობა გამოიწვევს SIM ბარათის დაბლოკვას.</string>
@@ -989,11 +989,11 @@
     <string name="lockscreen_access_pattern_start">ნიმუშის შექმნა დაწყებულია</string>
     <string name="lockscreen_carrier_default">სერვისი არ არის</string>
     <string name="lockscreen_emergency_call">საგანგებო სამსახურები</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">თქვენ არასწორად სცადეთ ტელეფონის განბლოკვა %1$d ჯერ. კიდევ %2$d წარუმატებელი ცდის შემდეგ ტელეფონზე დაყენდება საწყისი, ქარხნული პარამეტრები და მომხმარებლის ყველა მონაცემი დაიკარგება.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"თქვენ არასწორად დახატეთ განბლოკვის ნიმუში %1$d-ჯერ. კიდევ %2$d წარუმატებელი ცდის შემდეგ დაგჭირდებათ თქვენი ტელეფონის განბლოკვა Google-ში შესვლით.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">თქვენ არასწორად სცადეთ ტაბლეტის განბლოკვა %1$d-ჯერ. კიდევ %2$d წარუმატებელი ცდის შემდეგ ტაბლეტზე დაყენდება საწყისი, ქარხნული პარამეტრები და მომხმარებლის ყველა მონაცემი დაიკარგება.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"თქვენ არასწორად დახატეთ განბლოკვის ნიმუში %1$d-ჯერ. კიდევ %2$d წარუმატებელი ცდის შემდეგ დაგჭირდებათ თქვენი ტაბლეტის განბლოკვა Google-ში შესვლით.
 
  გთხოვთ, ხელახლა სცადოთ %3$d წამში."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">თქვენ არასწორად სცადეთ ტელეფონის განბლოკვა %d ჯერ. ახლა ტელეფონზე დაყენდება საწყისი, ქარხნული პარამეტრები.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">თქვენ %d-ჯერ არასწორად სცადეთ ტაბლეტის განბლოკვა. ამიტომ ტაბლეტზე დადგება საწყისი, ქარხნული პარამეტრები.</string>
     <string name="lockscreen_forgot_pattern_button_text">დაგავიწყდათ გრაფიკული გასაღები?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"დაგავიწყდათ მომხმარებლის სახელი და პაროლი?
 ეწვიეთ ბმულს "<b>google.com/accounts/recovery</b>.</string>
@@ -1009,7 +1009,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">განბლოკვისთვის ან გადაუდებელი ზარისთვის დააჭირეთ მენიუს.</string>
     <string name="lockscreen_missing_sim_instructions">SIM-ის დამატება.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM აკლია ან არ იკითხება. SIM-ის დამატება.</string>
-    <string name="lockscreen_missing_sim_message">ტელეფონში SIM არ არის.</string>
+    <string name="lockscreen_missing_sim_message">ტაბლეტში SIM არ არის.</string>
     <string name="lockscreen_missing_sim_message_short">SIM არ არის</string>
     <string name="lockscreen_network_locked_message">ქსელი ჩაკეტილია</string>
     <string name="lockscreen_password_wrong">კიდევ სცადეთ</string>
@@ -1049,7 +1049,7 @@
     <string name="low_internal_storage_view_text">სისტემის ზოგიერთმა ფუნქციამ შესაძლოა არ იმუშავოს</string>
     <string name="low_internal_storage_view_text_no_boot">სისტემისათვის საკმარისი საცავი არ არის. დარწმუნდით, რომ იქონიოთ სულ მცირე 250 მბაიტი თავისუფალი სივრცე და დაიწყეთ ხელახლა.</string>
     <string name="low_internal_storage_view_title">თავისუფალი ადგილი იწურება</string>
-    <string name="low_memory">ტელეფონის მეხსიერება გავსებულია. ადგილის გასათავისუფლებლად წაშალეთ ფაილების ნაწილი.</string>
+    <string name="low_memory">ტაბლეტის მეხსიერება გავსებულია. ადგილის გასათავისუფლებლად წაშალეთ ფაილების ნაწილი.</string>
     <string name="managed_profile_app_label">%1$s-ის სამსახურის ვერსიაზე გადასვლა</string>
     <string name="managed_profile_label">სამსახურის პროფილზე გადართვა</string>
     <string name="managed_profile_label_badge">სამსახური %1$s</string>
@@ -1380,14 +1380,14 @@
     <string name="permdesc_bindNotificationListenerService">მფლობელს შეეძლება შეტყობინებების მსმენლის სერვისის ზედა დონის ინტერფეისთან დაკავშირება. არ უნდა მოხდეს მისი გამოყენება ჩვეუელებრივი აპებისთვის.ფ</string>
     <string name="permdesc_bind_connection_service">ნებას აძლევს აპს მოახდინოს ტელეფონიის სერვისებთან ინტერაქცია, რათა განახორციელოს/მიიღოს ზარები.</string>
     <string name="permdesc_bind_incall_service">აპს შეეძლება გაკონტროლება, როდის და როგორ დაინახავს მომხმარებელი საუბრის რეჟიმის ეკრანს.</string>
-    <string name="permdesc_bluetooth">აპს შეეძლება, ნახოს Bluetooth-ის კონფიგურაცია ტელეფონზე და შექმნას და მიიღოს კავშირები დაწყვილებულ მოწყობილობებთან.</string>
-    <string name="permdesc_bluetoothAdmin">აპს შეეძლება ტელეფონის ადგილობრივი Bluetooth პარამეტრების დაყენება და დისტანციური მოწყობილობების აღმოჩენა და დაწყვილება.</string>
+    <string name="permdesc_bluetooth">აპს შეეძლება, ნახოს Bluetooth-ის კონფიგურაცია ტაბლეტზე, შექმნას და მიიღოს კავშირები დაწყვილებულ მოწყობილობებთან.</string>
+    <string name="permdesc_bluetoothAdmin">აპს შეეძლება ადგილობრივი Bluetooth ტაბლეტის პარამეტრების დაყენება და დისტანციური მოწყობილობების აღმოჩენა და დაწყვილება.</string>
     <string name="permdesc_bluetooth_advertise">საშუალებას აძლევს აპს, რეკლამა განათავსოს ახლომახლო Bluetooth მოწყობილობებზე</string>
     <string name="permdesc_bluetooth_connect">საშუალებას აძლევს აპს, დაუკავშირდეს დაწყვილებულ Bluetooth მოწყობილობებს</string>
     <string name="permdesc_bluetooth_scan">საშუალებას აძლევს აპს, აღმოაჩინოს ახლომახლო Bluetooth მოწყობილობები დასაწყვილებლად</string>
     <string name="permdesc_bodySensors">საშუალებას აძლევს აპს, მისი გამოყენებისას, წვდომა ჰქონდეს სხეულის სენსორების მონაცემებზე, როგორიცაა გულისცემა, ტემპერატურა და სისხლში ჟანგბადის პროცენტული შემცველობა.</string>
     <string name="permdesc_bodySensors_background">საშუალებას აძლევს აპს, ფონურ რეჟიმში მუშაობისას, წვდომა ჰქონდეს სხეულის სენსორების მონაცემებზე, როგორიცაა გულისცემა, ტემპერატურა და სისხლში ჟანგბადის პროცენტული შემცველობა.</string>
-    <string name="permdesc_broadcastSticky">აპს შეეძლება არასაჩქარო შეტყობინებების გაგზავნა, რომელიც რჩებიან გაგზავნის დასრულების შემდეგაც. მავნე აპლიკაციებს შეუძლიათ თქვენი ტელეფონის მუშაობის შენელება ან შეფერხება ზედმეტად დიდი მოცულობის მეხსიერების გამოყენების შედეგად.</string>
+    <string name="permdesc_broadcastSticky">აპს შეეძლება არასაჩქარო შეტყობინებების გაგზავნა, რომლებიც რჩებიან გაგზავნის დასრულების შემდეგაც. ამ გადაგზავნის ზომაზე მეტად გამოყენებამ შეიძლება შეანელოს ან შეაფერხოს თქვენი ტაბლეტის მუშაობა ზედმეტად დიდი მოცულობის მეხსიერების გამოყენების შედეგად.</string>
     <string name="permdesc_callCompanionApp">საშუალებას აძლევს აპს, იხილოს და გააკონტროლოს მიმდინარე ზარები მოწყობილობაზე. აღნიშნული მოიცავს ისეთ ინფორმაციას, როგორიცაა ზარებთან დაკავშირებული აბონენტების ნომრები და ზარების მდგომარეობა.</string>
     <string name="permdesc_callPhone">საშუალებას აძლევს აპს, დარეკოს ტელეფონის ნომრებზე თქვენი ჩარევის გარეშე. ამან შეიძლება გამოიწვიოს მოულოდნელი ზარები ან თანხის ჩამოჭრა. გაითვალისწინეთ, რომ ეს საშუალებას არ აძლევს აპს, დარეკოს საგანგებო ვითარებაში საკონტაქტო პირის ნომრებზე. მავნე აპების გამოყენებით, შესაძლოა, თანხის გადახდა მოგიწიოთ თქვენი ნებართვის გარეშე განხორციელებული ზარების გამო, ან იმ ოპერატორების კოდების აკრეფის გამო, რომლებიც ავტომატურად გადაამისამართებს შემომავალ ზარებს სხვა ნომერზე.</string>
     <string name="permdesc_camera">ამ აპს გამოყენების დროს შეუძლია კამერით სურათების გადაღება და ვიდეოების ჩაწერა.</string>
@@ -1396,7 +1396,7 @@
     <string name="permdesc_changeTetherState">აპს შეეძლება, შეცვალოს მობილური ქსელის კავშირის მდგომარეობა.</string>
     <string name="permdesc_changeWifiMulticastState">აპს შეეძლება, მიიღოს Wi-Fi ქსელში ყველა მოწყობილობაზე გაგზავნილი პაკეტები ჯგუფური მისამართების გამოყენებით. მოიხმარს მეტ ენერგიას, ვიდრე არამრავალმისამართიანი რეჟიმი.</string>
     <string name="permdesc_changeWifiState">აპს შეეძლება Wi-Fi წვდომის წერტილებთან დაკავშირება და კავშირის გაწყვეტა და მოწყობილობის კონფიგურაციის შეცვლა Wi-Fi ქსელებისთვის.</string>
-    <string name="permdesc_changeWimaxState">აპს შეეძლება, დაუკავშიროს და გამოაერთოს ტელეფონი WiMAX ქსელებიდან.</string>
+    <string name="permdesc_changeWimaxState">აპს შეეძლება, დაუკავშიროს და გამოაერთოს ტაბლეტი WiMAX ქსელებიდან.</string>
     <string name="permdesc_companionProfileWatch">კომპანიონ აპს საშუალებას აძლევს, მართოს საათები.</string>
     <string name="permdesc_connection_manager">აპს ტელეკომის კავშირების მართვა შეეძლება.</string>
     <string name="permdesc_control_incall_experience">აპს საშუალებას აძლევს, უზრუნველყოს საუბრის რეჟიმში მომხმარებლის გამოცდილება.</string>
@@ -1422,7 +1422,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">ნებას რთავს აპს, გამოიყენოს პრიორიტეტული სერვისები ტიპის „სპეციალურიგამოყენება“ შემთხვევაში</string>
     <string name="permdesc_foregroundServiceSystemExempted">ნებას რთავს აპს, გამოიყენოს პრიორიტეტული სერვისები ტიპის „გათავისუფლებულისისტემა“ შემთხვევაში</string>
     <string name="permdesc_fullScreenIntent">ნებას რთავს აპს, აჩვენოს შეტყობინებები სრული ეკრანის აქტივობების სახით ჩაკეტილ მოწყობილობაზე</string>
-    <string name="permdesc_getAccounts">აპს შეეძლება, მიიღოს ტელეფონისთვის ცნობილი ანგარიშების სია. ეს შეიძლება მოიცავდეს ნებისმიერ ანგარიშს, რომელიც თქვენ მიერ დაყენებული აპლიკაციებით შეიქმნა.</string>
+    <string name="permdesc_getAccounts">აპს შეეძლება, მიიღოს ტაბლეტისთვის ცნობილი ანგარიშების სია. ეს შეიძლება მოიცავდეს ნებისმიერ ანგარიშს, რომელიც თქვენ მიერ დაყენებული აპლიკაციებით შეიქმნა.</string>
     <string name="permdesc_getPackageSize">აპს შეეძლება, მოიპოვოს თავისი კოდი, მონაცემები და ქეშის ზომები.</string>
     <string name="permdesc_getTasks">აპს შეეძლება მოიძიოს ინფორმაცია ამჟამად და უახლოეს წარსულში მიმდინარე ამოცანების შესახებ. ამგვარად, აპს აქვს შესაძლებლობა აღმოაჩინოს ინფორმაცია იმის შესახებ, თუ რომელი აპლიკაციებია გამოყენებული მოწყობილობაზე.</string>
     <string name="permdesc_handoverStatus">ნებას რთავს ამ აპლიკაციას, მიიღოს ინფორმაცია მიმდინარე Android Beam-ის ტრანსფერების შესახებ</string>
@@ -1445,16 +1445,16 @@
     <string name="permdesc_nearby_wifi_devices">საშუალებას აძლევს აპს, განაცხადოს ახლომახლო Wi-Fi მოწყობილობების შესახებ, დაუკავშირდეს მათ და განსაზღვროს მათი შედარებითი პოზიცია</string>
     <string name="permdesc_nfc">აპს შეეძლება ახლო მოქმედების რადიოკავშირის (NFC) მეშვეობით ტეგების, ბარათებისა და წამკითხველების შემცველი მონაცემების მიმოცვლა.</string>
     <string name="permdesc_observeCompanionDevicePresence">საშუალებას აძლევს კომპანიონ აპს, რომ დააკვირდეს, არის თუ არა სიახლოვეში მოწყობილობა, როდესაც მოწყობილობები იმყოფება ახლოს ან მოშორებით.</string>
-    <string name="permdesc_persistentActivity">აპს შეეძლება, საკუთარი ნაწილები მუდმივად ჩაწეროს მეხსიერებაში. ეს შეზღუდავს მეხსიერების ხელმისაწვდომობას სხვა აპებისთვის და შეანელებს ტელეფონს.</string>
+    <string name="permdesc_persistentActivity">აპს შეეძლება, საკუთარი ნაწილები მუდმივად ჩაწეროს მეხსიერებაში. ეს შეზღუდავს მეხსიერების ხელმისაწვდომობას სხვა აპებისთვის და შეანელებს ტაბლეტს.</string>
     <string name="permdesc_postNotification">უფლებას აძლევს აპს, აჩვენოს შეტყობინებები</string>
     <string name="permdesc_preferredPaymentInfo">საშუალებას აძლევს აპს, მიიღოს უპირატესი NFC გადახდის სერვისის ინფორმაცია, მაგალითად, რეგისტრირებული დახმარება და დანიშნულება.</string>
     <string name="permdesc_processOutgoingCalls">საშუალებას აძლევს აპს გამავალი ზარის დროს დაინახონ ზარის მიმღების ნომერი, ზარის სხვა მისამართზე გადამისამართებით ან ზარის საერთოდ შეწყვეტის საშუალებით.</string>
     <string name="permdesc_queryAllPackages">საშუალებას აძლევს აპს, ნახოს ყველა ინსტალირებული პაკეტი.</string>
     <string name="permdesc_readBasicPhoneState">აპს აძლევს მოწყობილობის ძირითად სატელეფონო ფუნქციებზე წვდომას.</string>
-    <string name="permdesc_readCalendar">ამ აპს შეუძლია თქვენს ტელეფონში შენახული კალენდრის ყველა მოვლენის წაკითხვა და თქვენი კალენდრის მონაცემების გაზიარება ან შენახვა.</string>
+    <string name="permdesc_readCalendar">ამ აპს შეუძლია თქვენს ტაბლეტში შენახული კალენდრის ყველა მოვლენის წაკითხვა და თქვენი კალენდრის მონაცემების გაზიარება ან შენახვა.</string>
     <string name="permdesc_readCallLog">ამ აპს შეუძლია თქვენი საუბრის ისტორიის წაკითხვა.</string>
     <string name="permdesc_readCellBroadcasts">აპს შეეძლება, წაიკითხოს თქვენს მოწყობილობაზე გამოგზავნილი ქსელის სამაუწყებლო შეტყობინებები. სამაუწყებლო გაფრთხილებები მოგეწოდებათ ზოგიერთ ადგილზე ექსტრემალური სიტუაციების შესახებ გასაფრთხილებლად. ქსელის გადაუდებელი შეტყონიბენის მიღების დროს მავნე აპებმა შეიძლება ხელი შეუშალონ თქვენი მოწყობილობის ფუნქციონირებას ან ოპერაციებს.</string>
-    <string name="permdesc_readContacts">აპს საშუალებას აძლევს, წაიკითხოს თქვენს ტელეფონზე შენახული კონტაქტების მონაცემები. აპს, ასევე, ექნება წვდომა თქვენს ტელეფონზე არსებულ ანგარიშებზე, რომლებსაც კონტაქტები აქვთ შექმნილი. ეს შეიძლება მოიცავდეს თქვენ მიერ ინსტალირებული აპების მიერ შექმნილ ანგარიშებს. ეს ნებართვა უფლებას აძლევს აპებს, შეინახონ თქვენი კონტაქტების მონაცემები და მავნე აპებმა შეიძლება თქვენთვის შეუტყობინებლად გააზიარონ საკონტაქტო მონაცემები.</string>
+    <string name="permdesc_readContacts">აპს საშუალებას აძლევს, წაიკითხოს თქვენს ტაბლეტზე შენახული კონტაქტების მონაცემები. აპს, ასევე, ექნება წვდომა თქვენს ტაბლეტზე არსებულ ანგარიშებზე, რომლებსაც კონტაქტები აქვთ შექმნილი. ეს შეიძლება მოიცავდეს თქვენ მიერ ინსტალირებული აპების მიერ შექმნილ ანგარიშებს. ეს ნებართვა უფლებას აძლევს აპებს, შეინახონ თქვენი კონტაქტების მონაცემები და მავნე აპებმა შეიძლება თქვენთვის შეუტყობინებლად გააზიარონ საკონტაქტო მონაცემები.</string>
     <string name="permdesc_readInstallSessions">საშუალებას აძლევს აპლიკაციას წაიკითხოს ინსტალაციის სესიები. ამით მას საშუალება აქვს იხილოს პაკეტის აქტიური ინსტალაციები.</string>
     <string name="permdesc_readMediaAudio">საშუალებას აძლევს აპს, წაიკითხოს აუდიო ფაილები თქვენი ზიარი მეხსიერებიდან.</string>
     <string name="permdesc_readMediaImages">საშუალებას აძლევს აპს, წაიკითხოს სურათის ფაილები თქვენი ზიარი მეხსიერებიდან.</string>
@@ -1462,11 +1462,11 @@
     <string name="permdesc_readNetworkUsageHistory">აპს შეეძლება კონკრეტული ქსელისა და აპების ისტორიული ქსელის გამოყენების წაკითხვას.</string>
     <string name="permdesc_readPhoneNumbers">აპს მოწყობილობის ტელეფონის ნომრებზე წვდომის საშუალებას მისცემს.</string>
     <string name="permdesc_readPhoneState">აპს შეეძლება ჰქონდეს წვდომა მოწყობილობის სატელეფონო ფუნქციებზე. აპმა მსგავსი უფლებით შეძლებს დაადგინოს ტელეფონის ნომერი, მისი სერიული გამოცემა, აქტიური ზარი, დაკავშირებული ნომერი და მსგავსი.</string>
-    <string name="permdesc_readSms">ამ აპს შეუძლია თქვენს ტელეფონში შენახული ყველა SMS (ტექსტური) შეტყობინების წაკითხვა.</string>
+    <string name="permdesc_readSms">ამ აპს შეუძლია თქვენს ტაბლეტში შენახული ყველა SMS (ტექსტური) შეტყობინების წაკითხვა.</string>
     <string name="permdesc_readSyncSettings">აპს შეეძლება, წაიკითხოს ანგარიშის სინქრონიზაციის პარამეტრები. მაგალითად, მას შეეძლება განსაზღვროს, არის თუ არა People აპი სინქრონიზებული ანგარიშთან.</string>
     <string name="permdesc_readSyncStats">აპს შეეძლება ანგარიშის სინქრონიზაციის სტატისტიკის, მათ შორის სინქრონიზაციის მოვლენების ისტორიისა და სინქრონიზაციისას გადაცემული მონაცემების რაოდენობის წაკითხვა.</string>
     <string name="permdesc_readVisualUserSelect">აპს შეეძლება წაიკითხოს სურათი და ვიდეო ფაილები, რომლებიც არჩეულია თქვენი საზიარო მეხსიერებიდან.</string>
-    <string name="permdesc_receiveBootCompleted">აპს შეეძლება საკუთარი თავის ჩართვა სისტემის ჩატვირთვისთანავე. ამან შეიძლება გამოიწვიოს ტელეფონის ჩატვირთვის დროის გაზრდა და ზოგადად ტელეფონის შენელება, რადგან აპი ყოველთვის ჩართული იქნება.</string>
+    <string name="permdesc_receiveBootCompleted">აპს შეეძლება საკუთარი თავის სისტემის ჩატვირთვისას ჩართვა. ამან შეიძლება გამოიწვიოს ჩატვირთვის დროის გაზრდა და ტაბლეტის შენელება, რადგან აპი ყოველთვის ჩართული იქნება.</string>
     <string name="permdesc_receiveMms">აპს შეეძლება MMS შეტყობინებების მიღება და დამუშავება. ეს ნიშნავს, რომ აპს შეეძლება შეტყობინებების მონიტორინგი და მათი წაშლა თქვენთვის ჩვენების გარეშე.</string>
     <string name="permdesc_receiveSms">აპს შეეძლება SMS შეტყობინებების მიღება და დამუშავება. ეს ნიშნავს, რომ აპს შეეძლება თქვენ მოწყობილობაზე გამოგზავნილი შეტყობინებების მონიტორინგი და მათი წაშლა თქვენთვის ჩვენების გარეშე.</string>
     <string name="permdesc_receiveWapPush">აპს შეეძლება WAP შეტყობინებების მიღება და გენერირება. ამ უფლებით აპი ისე დააკვირდება და წაშლის თქვენთვის გამოგზავნილ შეტყობინებებს, რომ თქვენ ვერც ნახავთ.</string>
@@ -1488,7 +1488,7 @@
     <string name="permdesc_sendSms">აპს შეეძლება, გაგზავნოს SMS შეტყობინებები, რამაც შეიძლება გაუთვალისწინებელი ხარჯები გამოიწვიოს. მავნე აპებმა შეიძლება დაგიხარჯონ ფული შეტყობინებების თქვენი თანხმობის გარეშე გაგზავნით.</string>
     <string name="permdesc_setAlarm">აპს შეეძლება მაღვიძარას დაყენება დაინსტალირებული მაღვიძარას აპლიკაციაში. ამ ფუნქციას მაღვიძარას ზოგიერთი აპი არ იყენებს.</string>
     <string name="permdesc_setInputCalibration">საშუალებას აძლევს აპს შეცვალოს სენსორული ეკრანის კალიბრაციის პარამეტრები. ჩვეულებრივ აპებს წესით არ უნდა დაჭირდეს.</string>
-    <string name="permdesc_setTimeZone">აპს შეეძლება ტელეფონის დროის სარტყელის შეცვლა.</string>
+    <string name="permdesc_setTimeZone">აპს შეეძლება, შეცვალოს ტაბლეტის დროის სარტყელი.</string>
     <string name="permdesc_setWallpaper">აპს შეეძლება, დააყენოს სისტემის ფონი.</string>
     <string name="permdesc_setWallpaperHints">აპს შეეძლება მინიშნებების დაყენება სისტემის ფონის ზომის მიხედვით.</string>
     <string name="permdesc_sim_communication">აპისთვის ნების დართვა გაუგზავნოს ბრძანებები SIM-ბარათს. ეს ძალიან საშიშია.</string>
@@ -1501,7 +1501,7 @@
     <string name="permdesc_subscribedFeedsRead">აპს შეეძლება ინფორმაციის მოპოვება ბოლოს სინქრონიზებული არხების შესახებ.</string>
     <string name="permdesc_systemAlertWindow">ამ აპს შეუძლია სხვა აპების ზემოდან ან ეკრანის სხვა ნაწილებში გამოჩენა. ამან შეიძლება გავლენა იქონიოს აპის ნორმალურ გამოყენებაზე და სხვა აპების იერსახეზე.</string>
     <string name="permdesc_systemCamera">ამ პრივილეგირებულ ან სისტემის აპს შეუძლია ფოტოების გადაღება და ვიდეოების ჩაწერა ნებისმიერ დროს სისტემის კამერის გამოყენებით. საჭიროა, რომ აპს ჰქოდეს android.permission.CAMERA ნებართვაც</string>
-    <string name="permdesc_transmitIr">რთავს ნებას აპს გამოიყენოს ტელეფონის ინფრაწითელი გადამცემი.</string>
+    <string name="permdesc_transmitIr">რთავს ნებას აპს გამოიყენოს ტაბლეტის ინფრაწითელი გადამცემი.</string>
     <string name="permdesc_turnScreenOn">უფლებას აძლევს აპს, ჩართოს ეკრანი.</string>
     <string name="permdesc_uninstall_shortcut">მთავარ ეკრანზე აპლიკაციისთვის მალსახმობების დამოუკიდებლად წაშლის უფლების მიცემა.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">საშუალებას აძლევს მომხმარებელს, დამოუკიდებლად განაახლოს მანამდე დაინსტალირებული აპი</string>
@@ -1514,10 +1514,10 @@
     <string name="permdesc_vibrate">აპს შეეძლება, მართოს ვიბრირება.</string>
     <string name="permdesc_vibrator_state">ნებას რთავს აპს, ჰქონდეს წვდომა ვიბრაციის მდგომარეობაზე.</string>
     <string name="permdesc_videoWrite">აპი შეძლებს თქვენი ვიდეოკოლექციის შეცვლას.</string>
-    <string name="permdesc_wakeLock">აპს შეეძლება ხელი შეუშალოს ტელეფონის დაძინებას.</string>
-    <string name="permdesc_writeCalendar">ამ აპს შეუძლია თქვენს ტელეფონში კალენდრის მოვლენების დამატება, ამოშლა ან შეცვლა. ამ აპს შეუძლია კალენდრების მფლობელების სახელით შეტყობინებების გაგზავნა ან მოვლენების მათი მფლობელების შეტყობინების გარეშე შეცვლა.</string>
-    <string name="permdesc_writeCallLog">აპს შეეძლება, შეცვალოს თქვენი ტელეფონის ზარების ჟურნალი, მათ შორის შემომავალი და გამავალი ზარების მონაცემები. მავნე აპებმა შეიძლება გამოიყენონ ეს თქვენი ზარების ჟურნალის წასაშლელად ან შესაცვლელად.</string>
-    <string name="permdesc_writeContacts">აპს საშუალებას აძლევს, შეცვალოს თქვენს ტელეფონზე შენახული კონტაქტების მონაცემები. ეს ნებართვა საშუალებას აძლევს აპებს, წაშალონ კონტაქტის მონაცემები.</string>
+    <string name="permdesc_wakeLock">აპს შეეძლება ხელი შეუშალოს ტაბლეტის დაძინებას.</string>
+    <string name="permdesc_writeCalendar">ამ აპს შეუძლია თქვენს ტაბლეტში კალენდრის მოვლენების დამატება, ამოშლა ან შეცვლა. ამ აპს შეუძლია კალენდრების მფლობელების სახელით შეტყობინებების გაგზავნა ან მოვლენების მათი მფლობელების შეტყობინების გარეშე შეცვლა.</string>
+    <string name="permdesc_writeCallLog">აპს შეეძლება, შეცვალოს თქვენი ტაბლეტის ზარების ჟურნალი, მათ შორის შემომავალი და გამავალი ზარების მონაცემები. მავნე აპებმა შეიძლება გამოიყენონ ეს თქვენი ზარების ჟურნალის წასაშლელად ან შესაცვლელად.</string>
+    <string name="permdesc_writeContacts">აპს საშუალებას აძლევს, შეცვალოს თქვენს ტაბლეტზე შენახული კონტაქტების მონაცემები. ეს ნებართვა საშუალებას აძლევს აპებს, წაშალონ კონტაქტის მონაცემები.</string>
     <string name="permdesc_writeSettings">აპს შეეძლება, შეცვალოს სისტემის პარამეტრების მონაცემები. მავნე აპებს შეუძლიათ დააზიანონ თქვენი სისტემის კონფიგურაცია.</string>
     <string name="permdesc_writeSyncSettings">აპს შეეძლება, შეცვალოს ანგარიშის სინქრონიზაციის პარამეტრები. მაგალითად, მისი გამოყენება შეიძლება ანგარიშის People აპთან სინქრონიზაციის ჩასართავად.</string>
     <string name="permgroupdesc_activityRecognition">ფიზიკურ აქტივობაზე წვდომა</string>
@@ -1714,7 +1714,7 @@
     <string name="permlab_uwb_ranging">შედარებითი პოზიციის დადგენა ახლომახლო ულტრაფართო სიხშირის მოწყობილობების შესახებ</string>
     <string name="permlab_vibrate">ვიბრაციის კონტროლი</string>
     <string name="permlab_videoWrite">თქვენი ვიდეოკოლექციის შეცვლა</string>
-    <string name="permlab_wakeLock">ტელეფონის ძილის რეჟიმში გადასვლის აღკვეთა</string>
+    <string name="permlab_wakeLock">დაიცავით ტაბლეტი დაძინებისგან</string>
     <string name="permlab_writeCalendar">კალენდრის ღონისძიებების დამატება და შეცვლა და მფლობელის გარეშე ელფოსტის გაგზავნა სტუმრებთან.</string>
     <string name="permlab_writeCallLog">ზარების ჟურნალში ჩაწერა</string>
     <string name="permlab_writeContacts">თქვენი კონტაქტების შეცვლა</string>
@@ -1757,10 +1757,10 @@
     <string name="policydesc_limitPassword">აკონტროლეთ ეკრანის ბლოკირების პაროლებისა და PIN-ების სიმბოლოების სიგრძე.</string>
     <string name="policydesc_resetPassword">ეკრანის დაბლოკვის შეცვლა</string>
     <string name="policydesc_setGlobalProxy">ჩართული პოლიტიკის დროს მოწყობილობის გლობალური პროქსის დაყენება. მხოლოდ მოწყობილობის მფლობელს შეუძლია გლობალური პროქსის დაყენება.</string>
-    <string name="policydesc_watchLogin">ეკრანის განბლოკვისთვის არასწორად აკრეფილი პაროლების რაოდენობის მონიტორინგი. ტელეფონის დაბლოკვა ან მასზე არსებული ყველა მონაცემის წაშლა ძალიან ბევრჯერ არასწორი პაროლის შეყვანის შემთხვევაში.</string>
-    <string name="policydesc_watchLogin_secondaryUser">ეკრანის განბლოკვისას არასწორი პაროლების შეყვანილი რაოდენობის მონიტორინგი და ტელეფონის დაბლოკვა ან მრავლალჯერ არასწორი პაროლის შეყვანის შემთხვევაში ამ მომხმარებლის მთელი ინფორმაციის წაშლა.</string>
-    <string name="policydesc_wipeData">ტელეფონის მონაცემების გაუფრთხილებლად წაშლა, ქარხნული მონაცემების აღდგენით</string>
-    <string name="policydesc_wipeData_secondaryUser">ამ მომხმარებლის მონაცემების გაუფრთხილებელი წაშლა ამ ტელეფონზე.</string>
+    <string name="policydesc_watchLogin">ეკრანის განბლოკვისთვის არასწორად აკრეფილი პაროლების რაოდენობის მონიტორინგი. ტაბლეტის დაბლოკვა ან მასზე არსებული ყველა მონაცემის წაშლა ძალიან ბევრჯერ არასწორი პაროლის შეყვანის შემთხვევაში.</string>
+    <string name="policydesc_watchLogin_secondaryUser">ეკრანის განბლოკვისას არასწორი პაროლების შეყვანილი რაოდენობის მონიტორინგი და ტაბლეტის დაბლოკვა ან მრავლალჯერ არასწორი პაროლის შეყვანის შემთხვევაში ამ მომხმარებლის მთელი ინფორმაციის წაშლა.</string>
+    <string name="policydesc_wipeData">ტაბლეტის მონაცემების გაუფრთხილებლად წაშლა, ქარხნული მონაცემების აღდგენით</string>
+    <string name="policydesc_wipeData_secondaryUser">ამ მომხმარებლის მონაცემების გაუფრთხილებელი წაშლა ამ ტაბლეტზე.</string>
     <string name="policylab_disableCamera">კამერების გათიშვა</string>
     <string name="policylab_disableKeyguardFeatures">დაბლოკვის ზოგი ფუნქციის გათიშვა</string>
     <string name="policylab_encryptedStorage">მეხსიერების დაშიფრვის დაყენება</string>
@@ -1777,7 +1777,7 @@
     <string name="postalTypeHome">სახლი</string>
     <string name="postalTypeOther">სხვა</string>
     <string name="postalTypeWork">სამსახური</string>
-    <string name="power_dialog">ტელეფონის პარამეტრები</string>
+    <string name="power_dialog">ტაბლეტის პარამეტრები</string>
     <string name="power_off">გამორთვა</string>
     <string name="prepend_shortcut_label">მენიუ+</string>
     <string name="preposition_for_date">თარიღი: %s</string>
@@ -1949,7 +1949,7 @@
     <string name="shortcut_restore_unknown_issue">მალსახმობის აღდგენა ვერ მოხერხდა</string>
     <string name="shortcut_restored_on_lower_version">აპის ვერსია დაქვეითებულია ან არაა თავსებადი ამ მალსახმობთან</string>
     <string name="show_ime">აქტიური ფიზიკური კლავიატურისას ეკრანზე შენარჩუნება</string>
-    <string name="shutdown_confirm">თქვენი ტელეფონი გაითიშება.</string>
+    <string name="shutdown_confirm">თქვენი ტაბლეტი გაითიშება.</string>
     <string name="shutdown_confirm_question">გსურთ გამორთვა?</string>
     <string name="shutdown_progress">გამორთვა…</string>
     <string name="silent_mode">ჩუმი რეჟიმი</string>
@@ -2121,9 +2121,9 @@
     <string name="user_switched">ამჟამინდელი მომხმარებელი %1$s.</string>
     <string name="user_switching_message">%1$s-ზე გადართვა…</string>
     <string name="validity_period">ვალიდურობა:</string>
-    <string name="vdm_camera_access_denied">ტელეფონის კამერაზე წვდომა ვერ მოხერხდა თქვენი %1$s-დან</string>
+    <string name="vdm_camera_access_denied">ტაბლეტის კამერაზე წვდომა ვერ მოხერხდა თქვენი %1$s-დან</string>
     <string name="vdm_pip_blocked">სტრიმინგის დროს ეკრანის ეკრანში ნახვა შეუძლებელია</string>
-    <string name="vdm_secure_window">მასზე წვდომის მი\u1ca6ება შეუძლებელია სტრიმინგის დროს. ცადეთ ტელეფონიდან.</string>
+    <string name="vdm_secure_window">მასზე წვდომის მიᲦება შეუძლებელია სტრიმინგის დროს. ცადეთ ტელეფონიდან.</string>
     <string name="view_and_control_notification_content">%s-ს შეუძლია თქვენი ეკრანის ნახვა და მართვა. შეეხეთ გადასახედად.</string>
     <string name="view_and_control_notification_title">სწრაფი წვდომის პარამეტრები</string>
     <string name="volume_alarm">მაღვიძარას ხმა</string>

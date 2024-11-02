@@ -29,7 +29,6 @@ public final class WallpaperEffectsGenerationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class CinematicEffectListenerWrapper extends ICinematicEffectListener.Stub {
         private final Executor mExecutor;
@@ -40,7 +39,6 @@ public final class WallpaperEffectsGenerationManager {
             this.mExecutor = executor;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCinematicEffectGenerated$0(CinematicEffectResponse response) {
             this.mListener.onCinematicEffectGenerated(response);
         }

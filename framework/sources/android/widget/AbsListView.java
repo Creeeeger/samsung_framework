@@ -540,9 +540,12 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class DeviceConfigChangeListener implements DeviceConfig.OnPropertiesChangedListener {
+        /* synthetic */ DeviceConfigChangeListener(DeviceConfigChangeListenerIA deviceConfigChangeListenerIA) {
+            this();
+        }
+
         private DeviceConfigChangeListener() {
         }
 
@@ -616,18 +619,27 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mShowGTPAtFirstTime = false;
         this.GO_TO_TOP_HIDE = 2500;
         this.mSemGoToToFadeOutRunnable = new Runnable() { // from class: android.widget.AbsListView.5
+            AnonymousClass5() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AbsListView.this.semPlayGotoToFadeOut();
             }
         };
         this.mSemGoToToFadeInRunnable = new Runnable() { // from class: android.widget.AbsListView.6
+            AnonymousClass6() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AbsListView.this.semPlayGotoToFadeIn();
             }
         };
         this.mSemAutoHide = new Runnable() { // from class: android.widget.AbsListView.7
+            AnonymousClass7() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AbsListView.this.semSetupGoToTop(0);
@@ -822,18 +834,27 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mShowGTPAtFirstTime = false;
         this.GO_TO_TOP_HIDE = 2500;
         this.mSemGoToToFadeOutRunnable = new Runnable() { // from class: android.widget.AbsListView.5
+            AnonymousClass5() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AbsListView.this.semPlayGotoToFadeOut();
             }
         };
         this.mSemGoToToFadeInRunnable = new Runnable() { // from class: android.widget.AbsListView.6
+            AnonymousClass6() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AbsListView.this.semPlayGotoToFadeIn();
             }
         };
         this.mSemAutoHide = new Runnable() { // from class: android.widget.AbsListView.7
+            AnonymousClass7() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AbsListView.this.semSetupGoToTop(0);
@@ -1273,7 +1294,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mMultiChoiceModeCallback.setWrapped(listener);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean contentFits() {
         int childCount = getChildCount();
         if (childCount == 0) {
@@ -1285,7 +1305,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return getChildAt(0).getTop() >= this.mListPadding.top && getChildAt(childCount + (-1)).getBottom() <= getHeight() - this.mListPadding.bottom;
     }
 
-    public void setFastScrollEnabled(final boolean enabled) {
+    public void setFastScrollEnabled(boolean enabled) {
         if (this.mFastScrollEnabled != enabled) {
             this.mFastScrollEnabled = enabled;
             if (isOwnerThread()) {
@@ -1298,6 +1318,12 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 }
             }
             post(new Runnable() { // from class: android.widget.AbsListView.1
+                final /* synthetic */ boolean val$enabled;
+
+                AnonymousClass1(boolean enabled2) {
+                    enabled = enabled2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (AbsListView.this.mSemFastScrollCustomEffectEnabled) {
@@ -1310,7 +1336,25 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.widget.AbsListView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ boolean val$enabled;
+
+        AnonymousClass1(boolean enabled2) {
+            enabled = enabled2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (AbsListView.this.mSemFastScrollCustomEffectEnabled) {
+                AbsListView.this.semSetFastScrollEnabledUiThread(enabled);
+            } else {
+                AbsListView.this.setFastScrollerEnabledUiThread(enabled);
+            }
+        }
+    }
+
     public void setFastScrollerEnabledUiThread(boolean enabled) {
         FastScroller fastScroller = this.mFastScroll;
         if (fastScroller != null) {
@@ -1337,7 +1381,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    public void setFastScrollAlwaysVisible(final boolean alwaysShow) {
+    public void setFastScrollAlwaysVisible(boolean alwaysShow) {
         if (this.mFastScrollAlwaysVisible != alwaysShow) {
             if (alwaysShow && !this.mFastScrollEnabled) {
                 setFastScrollEnabled(true);
@@ -1347,6 +1391,12 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 setFastScrollerAlwaysVisibleUiThread(alwaysShow);
             } else {
                 post(new Runnable() { // from class: android.widget.AbsListView.2
+                    final /* synthetic */ boolean val$alwaysShow;
+
+                    AnonymousClass2(boolean alwaysShow2) {
+                        alwaysShow = alwaysShow2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         AbsListView.this.setFastScrollerAlwaysVisibleUiThread(alwaysShow);
@@ -1356,7 +1406,21 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.widget.AbsListView$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ boolean val$alwaysShow;
+
+        AnonymousClass2(boolean alwaysShow2) {
+            alwaysShow = alwaysShow2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AbsListView.this.setFastScrollerAlwaysVisibleUiThread(alwaysShow);
+        }
+    }
+
     public void setFastScrollerAlwaysVisibleUiThread(boolean alwaysShow) {
         FastScroller fastScroller = this.mFastScroll;
         if (fastScroller != null) {
@@ -1437,7 +1501,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         invokeOnItemScrollListener();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invokeOnItemScrollListener() {
         FastScroller fastScroller = this.mFastScroll;
         if (fastScroller != null) {
@@ -1481,7 +1544,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         info.addAction(AccessibilityNodeInfo.AccessibilityAction.SEM_ACTION_AUTOSCROLL_OFF);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSelectionModeForAccessibility() {
         int choiceMode = getChoiceMode();
         switch (choiceMode) {
@@ -1647,7 +1709,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void requestLayoutIfNecessary() {
         if (getChildCount() > 0) {
             resetList();
@@ -1656,17 +1717,17 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.AbsListView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1682,6 +1743,10 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         int position;
         long selectedId;
         int viewTop;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -1732,6 +1797,23 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
         public String toString() {
             return "AbsListView.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " selectedId=" + this.selectedId + " firstId=" + this.firstId + " viewTop=" + this.viewTop + " position=" + this.position + " height=" + this.height + " filter=" + this.filter + " checkState=" + this.checkState + "}";
+        }
+
+        /* renamed from: android.widget.AbsListView$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
         }
     }
 
@@ -1785,7 +1867,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         ss.inActionMode = this.mChoiceMode == 3 && this.mChoiceActionMode != null;
         SparseBooleanArray sparseBooleanArray = this.mCheckStates;
         if (sparseBooleanArray != null) {
-            ss.checkState = sparseBooleanArray.m4952clone();
+            ss.checkState = sparseBooleanArray.m4951clone();
         }
         if (this.mCheckedIdStates != null) {
             LongSparseArray<Integer> idState = new LongSparseArray<>();
@@ -1871,7 +1953,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
@@ -1892,7 +1973,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void resetList() {
         removeAllViewsInLayout();
         this.mFirstPosition = 0;
@@ -1910,7 +1990,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollExtent() {
         int count = getChildCount();
@@ -1936,7 +2015,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollOffset() {
         int index;
@@ -1969,7 +2047,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollRange() {
         if (this.mSmoothScrollbarEnabled) {
@@ -1982,7 +2059,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return this.mItemCount;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getTopFadingEdgeStrength() {
         int count = getChildCount();
@@ -1998,7 +2074,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return top < this.mPaddingTop ? (-(top - this.mPaddingTop)) / fadeLength : fadeEdge;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getBottomFadingEdgeStrength() {
         int count = getChildCount();
@@ -2015,7 +2090,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return bottom > height - this.mPaddingBottom ? ((bottom - height) + this.mPaddingBottom) / fadeLength : fadeEdge;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (this.mSelector == null) {
@@ -2035,7 +2109,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -2072,7 +2145,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mInLayout = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int left, int top, int right, int bottom) {
         PopupWindow popupWindow;
@@ -2086,11 +2158,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return changed;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void layoutChildren() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View getAccessibilityFocusedChild(View focusedView) {
         ViewParent viewParent = focusedView.getParent();
         while ((viewParent instanceof View) && viewParent != this) {
@@ -2103,7 +2173,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return focusedView;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateScrollIndicators() {
         View view = this.mScrollUp;
         if (view != null) {
@@ -2159,7 +2228,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return this.mListPadding.right;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public View obtainView(int position, boolean[] outMetadata) {
         View updatedView;
         Trace.traceBegin(8L, "obtainView");
@@ -2244,7 +2312,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class ListItemAccessibilityDelegate extends View.AccessibilityDelegate {
         ListItemAccessibilityDelegate() {
@@ -2338,17 +2405,14 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isItemClickable(View view) {
         return !view.hasExplicitFocusable();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void positionSelectorLikeTouch(int position, View sel, float x, float y) {
         positionSelector(position, sel, true, x, y);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void positionSelectorLikeFocus(int position, View sel) {
         if (this.mSelector != null && this.mSelectorPosition != position && position != -1) {
             Rect bounds = this.mSelectorRect;
@@ -2360,7 +2424,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         positionSelector(position, sel);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void positionSelector(int position, View sel) {
         positionSelector(position, sel, false, -1.0f, -1.0f);
     }
@@ -2424,7 +2487,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mIsChildViewEnabled = selectedChildViewEnabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void dispatchDraw(Canvas canvas) {
         int saveCount = 0;
@@ -2510,7 +2572,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return this.mPaddingBottom;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void internalSetPadding(int left, int top, int right, int bottom) {
         super.internalSetPadding(left, top, right, bottom);
@@ -2519,7 +2580,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         handleBoundsChange();
@@ -2549,7 +2609,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean touchModeDrawsInPressedState() {
         switch (this.mTouchMode) {
             case 1:
@@ -2560,7 +2619,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean shouldShowSelector() {
         return (isFocused() && !isInTouchMode()) || (touchModeDrawsInPressedState() && isPressed());
     }
@@ -2623,7 +2681,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return this.mSelector;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void keyPressed() {
         View view;
         if (!isEnabled() || !isClickable()) {
@@ -2674,7 +2731,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mScrollDown = down;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateSelectorState() {
         Drawable selector = this.mSelector;
         if (selector != null && selector.isStateful()) {
@@ -2689,7 +2745,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -2735,7 +2790,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         SemFastScroller semFastScroller;
@@ -2761,7 +2815,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         AdapterDataSetObserver adapterDataSetObserver;
@@ -2909,10 +2962,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class WindowRunnnable {
         private int mOriginalAttachCount;
+
+        /* synthetic */ WindowRunnnable(AbsListView absListView, WindowRunnnableIA windowRunnnableIA) {
+            this();
+        }
 
         private WindowRunnnable() {
         }
@@ -2926,10 +2982,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PerformClick extends WindowRunnnable implements Runnable {
         int mClickMotionPosition;
+
+        /* synthetic */ PerformClick(AbsListView absListView, PerformClickIA performClickIA) {
+            this();
+        }
 
         private PerformClick() {
             super();
@@ -2967,12 +3026,15 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class CheckForLongPress extends WindowRunnnable implements Runnable {
         private static final int INVALID_COORD = -1;
         private float mX;
         private float mY;
+
+        /* synthetic */ CheckForLongPress(AbsListView absListView, CheckForLongPressIA checkForLongPressIA) {
+            this();
+        }
 
         private CheckForLongPress() {
             super();
@@ -2980,7 +3042,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             this.mY = -1.0f;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setCoords(float x, float y) {
             this.mX = x;
             this.mY = y;
@@ -3026,6 +3087,10 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class CheckForKeyLongPress extends WindowRunnnable implements Runnable {
+        /* synthetic */ CheckForKeyLongPress(AbsListView absListView, CheckForKeyLongPressIA checkForKeyLongPressIA) {
+            this();
+        }
+
         private CheckForKeyLongPress() {
             super();
         }
@@ -3076,7 +3141,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean performLongPress(View child, int longPressPosition, long longPressId) {
         return performLongPress(child, longPressPosition, longPressId, -1.0f, -1.0f);
     }
@@ -3332,11 +3396,14 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return Long.MIN_VALUE;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class CheckForTap implements Runnable {
         float x;
         float y;
+
+        /* synthetic */ CheckForTap(AbsListView absListView, CheckForTapIA checkForTapIA) {
+            this();
+        }
 
         private CheckForTap() {
         }
@@ -3931,7 +3998,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             case 1:
             case 2:
                 int childCount = this.mMotionPosition;
-                final View child = getChildAt(childCount - this.mFirstPosition);
+                View child = getChildAt(childCount - this.mFirstPosition);
                 if (child != null) {
                     if (this.mTouchMode != 0) {
                         child.setPressed(false);
@@ -3942,7 +4009,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                         if (this.mPerformClick == null) {
                             this.mPerformClick = new PerformClick();
                         }
-                        final PerformClick performClick = this.mPerformClick;
+                        PerformClick performClick = this.mPerformClick;
                         performClick.mClickMotionPosition = childCount;
                         performClick.rememberWindowAttachCount();
                         this.mResurrectToPosition = childCount;
@@ -3982,7 +4049,15 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                             if (runnable2 != null) {
                                 removeCallbacks(runnable2);
                             }
-                            Runnable runnable3 = new Runnable() { // from class: android.widget.AbsListView.3
+                            AnonymousClass3 anonymousClass3 = new Runnable() { // from class: android.widget.AbsListView.3
+                                final /* synthetic */ View val$child;
+                                final /* synthetic */ PerformClick val$performClick;
+
+                                AnonymousClass3(View child2, PerformClick performClick2) {
+                                    child = child2;
+                                    performClick = performClick2;
+                                }
+
                                 @Override // java.lang.Runnable
                                 public void run() {
                                     AbsListView.this.mTouchModeReset = null;
@@ -3994,12 +4069,12 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                                     }
                                 }
                             };
-                            this.mTouchModeReset = runnable3;
-                            postDelayed(runnable3, ViewConfiguration.getPressedStateDuration());
+                            this.mTouchModeReset = anonymousClass3;
+                            postDelayed(anonymousClass3, ViewConfiguration.getPressedStateDuration());
                             return;
                         }
                         if ((!this.mDataChanged || this.mForcedClick) && this.mAdapter.isEnabled(childCount)) {
-                            performClick.run();
+                            performClick2.run();
                         }
                     }
                 }
@@ -4133,6 +4208,29 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
+    /* renamed from: android.widget.AbsListView$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        final /* synthetic */ View val$child;
+        final /* synthetic */ PerformClick val$performClick;
+
+        AnonymousClass3(View child2, PerformClick performClick2) {
+            child = child2;
+            performClick = performClick2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AbsListView.this.mTouchModeReset = null;
+            AbsListView.this.mTouchMode = -1;
+            child.setPressed(false);
+            AbsListView.this.setPressed(false);
+            if ((!AbsListView.this.mDataChanged && !AbsListView.this.mIsDetaching && AbsListView.this.isAttachedToWindow()) || AbsListView.this.mForcedClick) {
+                performClick.run();
+            }
+        }
+    }
+
     private boolean shouldAbsorb(EdgeEffect edgeEffect, int velocity) {
         if (velocity > 0) {
             return true;
@@ -4145,7 +4243,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return flingDistance < distance;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public int consumeFlingInStretch(int unconsumed) {
         EdgeEffect edgeEffect;
         EdgeEffect edgeEffect2;
@@ -4642,7 +4739,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reportScrollStateChange(int newState) {
         OnScrollOffsetListener onScrollOffsetListener;
         if (newState != this.mLastScrollState) {
@@ -4689,11 +4785,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class FlingRunnable implements Runnable {
         private static final int FLYWHEEL_TIMEOUT = 40;
         private final Runnable mCheckFlywheel = new Runnable() { // from class: android.widget.AbsListView.FlingRunnable.1
+            AnonymousClass1() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 int activeId = AbsListView.this.mActivePointerId;
@@ -4716,6 +4814,33 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         private int mLastFlingY;
         private final OverScroller mScroller;
         private boolean mSuppressIdleStateChangeCall;
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.AbsListView$FlingRunnable$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                int activeId = AbsListView.this.mActivePointerId;
+                VelocityTracker vt = AbsListView.this.mVelocityTracker;
+                OverScroller scroller = FlingRunnable.this.mScroller;
+                if (vt == null || activeId == -1) {
+                    return;
+                }
+                vt.computeCurrentVelocity(1000, AbsListView.this.mMaximumVelocity);
+                float yvel = -vt.getYVelocity(activeId);
+                if (Math.abs(yvel) >= AbsListView.this.mMinimumVelocity && scroller.isScrollingInDirection(0.0f, yvel)) {
+                    AbsListView.this.postDelayed(this, 40L);
+                    return;
+                }
+                FlingRunnable.this.endFling();
+                AbsListView.this.mTouchMode = 3;
+                AbsListView.this.reportScrollStateChange(1);
+            }
+        }
 
         FlingRunnable() {
             this.mScroller = new OverScroller(AbsListView.this.getContext());
@@ -5074,7 +5199,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void smoothScrollByOffset(int position) {
         View child;
         int index = -1;
@@ -5109,11 +5233,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void clearScrollingCache() {
         if (!isHardwareAccelerated()) {
             if (this.mClearScrollingCache == null) {
                 this.mClearScrollingCache = new Runnable() { // from class: android.widget.AbsListView.4
+                    AnonymousClass4() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         if (AbsListView.this.mCachingStarted) {
@@ -5132,6 +5258,29 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 };
             }
             post(this.mClearScrollingCache);
+        }
+    }
+
+    /* renamed from: android.widget.AbsListView$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements Runnable {
+        AnonymousClass4() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (AbsListView.this.mCachingStarted) {
+                AbsListView absListView = AbsListView.this;
+                absListView.mCachingActive = false;
+                absListView.mCachingStarted = false;
+                AbsListView.this.setChildrenDrawnWithCacheEnabled(false);
+                if ((AbsListView.this.mPersistentDrawingCache & 2) == 0) {
+                    AbsListView.this.setChildrenDrawingCacheEnabled(false);
+                }
+                if (!AbsListView.this.isAlwaysDrawnWithCacheEnabled()) {
+                    AbsListView.this.invalidate();
+                }
+            }
         }
     }
 
@@ -5161,7 +5310,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Removed duplicated region for block: B:101:0x0273  */
     /* JADX WARN: Removed duplicated region for block: B:87:0x024a  */
     /* JADX WARN: Removed duplicated region for block: B:90:0x0256  */
@@ -5185,7 +5333,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void hideSelector() {
         if (this.mSelectedPosition != -1) {
             if (this.mLayoutMode != 4) {
@@ -5201,7 +5348,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int reconcileSelectedPosition() {
         int position = this.mSelectedPosition;
         if (position < 0) {
@@ -5226,7 +5372,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean resurrectSelectionIfNeeded() {
         if (this.mSelectedPosition < 0 && resurrectSelection()) {
             updateSelectorState();
@@ -5385,7 +5530,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     /* JADX WARN: Failed to find 'out' block for switch in B:40:0x0086. Please report as an issue. */
     @Override // android.widget.AdapterView
@@ -5486,7 +5630,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         checkSelectionChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDisplayHint(int hint) {
         PopupWindow popupWindow;
@@ -5536,7 +5679,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getDistance(Rect source, Rect dest, int direction) {
         int sX;
         int sY;
@@ -5589,7 +5731,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return this.mFiltered;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean sendToTextFilter(int keyCode, int count, KeyEvent event) {
         PopupWindow popupWindow;
         if (!acceptFilter()) {
@@ -5888,7 +6029,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public EditText getTextFilterInput() {
         if (this.mTextFilter == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
@@ -5973,7 +6113,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-1, -2, 0);
@@ -5989,7 +6128,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
@@ -6117,7 +6255,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     public void onRemoteAdapterDisconnected() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setVisibleRangeHint(int start, int end) {
         RemoteViewsAdapter remoteViewsAdapter = this.mRemoteAdapter;
         if (remoteViewsAdapter != null) {
@@ -6175,7 +6312,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         extras.putInt(ViewStructure.EXTRA_FIRST_ACTIVE_POSITION, getFirstVisiblePosition());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void reportActiveViewsToContentCapture() {
         ContentCaptureSession session;
         if (sContentCaptureReportingEnabledByDeviceConfig && (session = getContentCaptureSession()) != null) {
@@ -6185,10 +6321,8 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class AdapterDataSetObserver extends AdapterView<ListAdapter>.AdapterDataSetObserver {
-        /* JADX INFO: Access modifiers changed from: package-private */
         public AdapterDataSetObserver() {
             super();
         }
@@ -6223,7 +6357,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class MultiChoiceModeWrapper implements MultiChoiceModeListener {
         private MultiChoiceModeListener mWrapped;
@@ -6317,7 +6450,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             this.itemId = -1L;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.ViewGroup.LayoutParams
         public void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
@@ -6328,7 +6460,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class RecycleBin {
         private View[] mActiveViews = new View[0];
@@ -6394,7 +6525,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             return viewType >= 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void clear() {
             if (this.mViewTypeCount == 1) {
                 ArrayList<View> scrap = this.mCurrentScrap;
@@ -6409,7 +6539,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             clearTransientStateViews();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void fillActiveViews(int childCount, int firstActivePosition) {
             if (this.mActiveViews.length < childCount) {
                 this.mActiveViews = new View[childCount];
@@ -6430,7 +6559,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public View getActiveView(int position) {
             int index = position - this.mFirstActivePosition;
             View[] activeViews = this.mActiveViews;
@@ -6493,7 +6621,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             return retrieveFromScrap(arrayListArr[whichScrap], position);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void addScrapView(View scrap, int position) {
             LayoutParams lp = (LayoutParams) scrap.getLayoutParams();
             if (lp == null) {
@@ -6548,7 +6675,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             return this.mSkippedScrap;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void removeSkippedScrap() {
             ArrayList<View> arrayList = this.mSkippedScrap;
             if (arrayList == null) {
@@ -6561,7 +6687,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             this.mSkippedScrap.clear();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void scrapActiveViews() {
             View[] activeViews = this.mActiveViews;
             boolean hasListener = this.mRecyclerListener != null;
@@ -6610,7 +6735,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             pruneScrapViews();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void fullyDetachScrapViews() {
             int viewTypeCount = this.mViewTypeCount;
             ArrayList<View>[] scrapViews = this.mScrapViews;
@@ -6757,7 +6881,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getHeightForPosition(int position) {
         int firstVisiblePosition = getFirstVisiblePosition();
         int childCount = getChildCount();
@@ -6815,7 +6938,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.AdapterView, android.view.ViewGroup, android.view.View
     public void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
@@ -6832,7 +6954,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static abstract class AbsPositionScroller {
         public abstract void start(int i);
@@ -6849,7 +6970,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public class PositionScroller extends AbsPositionScroller implements Runnable {
         private static final int MOVE_DOWN_BOUND = 3;
@@ -6872,11 +6992,17 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
 
         @Override // android.widget.AbsListView.AbsPositionScroller
-        public void start(final int position) {
+        public void start(int position) {
             int viewTravelCount;
             stop();
             if (AbsListView.this.mDataChanged) {
                 AbsListView.this.mPositionScrollAfterLayout = new Runnable() { // from class: android.widget.AbsListView.PositionScroller.1
+                    final /* synthetic */ int val$position;
+
+                    AnonymousClass1(int position2) {
+                        position = position2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         PositionScroller.this.start(position);
@@ -6890,7 +7016,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
             int firstPos = AbsListView.this.mFirstPosition;
             int lastPos = (firstPos + childCount) - 1;
-            int clampedPosition = Math.max(0, Math.min(AbsListView.this.getCount() - 1, position));
+            int clampedPosition = Math.max(0, Math.min(AbsListView.this.getCount() - 1, position2));
             if (clampedPosition < firstPos) {
                 viewTravelCount = (firstPos - clampedPosition) + 1;
                 this.mMode = 2;
@@ -6915,8 +7041,23 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             AbsListView.this.postOnAnimation(this);
         }
 
+        /* renamed from: android.widget.AbsListView$PositionScroller$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Runnable {
+            final /* synthetic */ int val$position;
+
+            AnonymousClass1(int position2) {
+                position = position2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                PositionScroller.this.start(position);
+            }
+        }
+
         @Override // android.widget.AbsListView.AbsPositionScroller
-        public void start(final int position, final int boundPosition) {
+        public void start(int position, int boundPosition) {
             int viewTravelCount;
             stop();
             if (boundPosition == -1) {
@@ -6925,6 +7066,14 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
             if (AbsListView.this.mDataChanged) {
                 AbsListView.this.mPositionScrollAfterLayout = new Runnable() { // from class: android.widget.AbsListView.PositionScroller.2
+                    final /* synthetic */ int val$boundPosition;
+                    final /* synthetic */ int val$position;
+
+                    AnonymousClass2(int position2, int boundPosition2) {
+                        position = position2;
+                        boundPosition = boundPosition2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         PositionScroller.this.start(position, boundPosition);
@@ -6938,9 +7087,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
             int firstPos = AbsListView.this.mFirstPosition;
             int lastPos = (firstPos + childCount) - 1;
-            int clampedPosition = Math.max(0, Math.min(AbsListView.this.getCount() - 1, position));
+            int clampedPosition = Math.max(0, Math.min(AbsListView.this.getCount() - 1, position2));
             if (clampedPosition < firstPos) {
-                int boundPosFromLast = lastPos - boundPosition;
+                int boundPosFromLast = lastPos - boundPosition2;
                 if (boundPosFromLast < 1) {
                     return;
                 }
@@ -6954,7 +7103,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     this.mMode = 2;
                 }
             } else if (clampedPosition > lastPos) {
-                int boundPosFromFirst = boundPosition - firstPos;
+                int boundPosFromFirst = boundPosition2 - firstPos;
                 if (boundPosFromFirst < 1) {
                     return;
                 }
@@ -6967,7 +7116,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     viewTravelCount = posTravel2;
                 }
             } else {
-                scrollToVisible(clampedPosition, boundPosition, 200);
+                scrollToVisible(clampedPosition, boundPosition2, 200);
                 return;
             }
             if (viewTravelCount > 0) {
@@ -6976,9 +7125,26 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 this.mScrollDuration = 200;
             }
             this.mTargetPos = clampedPosition;
-            this.mBoundPos = boundPosition;
+            this.mBoundPos = boundPosition2;
             this.mLastSeenPos = -1;
             AbsListView.this.postOnAnimation(this);
+        }
+
+        /* renamed from: android.widget.AbsListView$PositionScroller$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements Runnable {
+            final /* synthetic */ int val$boundPosition;
+            final /* synthetic */ int val$position;
+
+            AnonymousClass2(int position2, int boundPosition2) {
+                position = position2;
+                boundPosition = boundPosition2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                PositionScroller.this.start(position, boundPosition);
+            }
         }
 
         @Override // android.widget.AbsListView.AbsPositionScroller
@@ -6987,11 +7153,21 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
 
         @Override // android.widget.AbsListView.AbsPositionScroller
-        public void startWithOffset(final int position, final int offset, final int duration) {
+        public void startWithOffset(int position, int offset, int duration) {
             int viewTravelCount;
             stop();
             if (AbsListView.this.mDataChanged) {
                 AbsListView.this.mPositionScrollAfterLayout = new Runnable() { // from class: android.widget.AbsListView.PositionScroller.3
+                    final /* synthetic */ int val$duration;
+                    final /* synthetic */ int val$position;
+                    final /* synthetic */ int val$postOffset;
+
+                    AnonymousClass3(int position2, int offset2, int duration2) {
+                        position = position2;
+                        offset = offset2;
+                        duration = duration2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         PositionScroller.this.startWithOffset(position, offset, duration);
@@ -7003,8 +7179,8 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             if (childCount == 0) {
                 return;
             }
-            int offset2 = offset + AbsListView.this.getPaddingTop();
-            this.mTargetPos = Math.max(0, Math.min(AbsListView.this.getCount() - 1, position));
+            int offset2 = offset2 + AbsListView.this.getPaddingTop();
+            this.mTargetPos = Math.max(0, Math.min(AbsListView.this.getCount() - 1, position2));
             this.mOffsetFromTop = offset2;
             this.mBoundPos = -1;
             this.mLastSeenPos = -1;
@@ -7018,13 +7194,32 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 viewTravelCount = i - lastPos;
             } else {
                 int targetTop = AbsListView.this.getChildAt(i - firstPos).getTop();
-                AbsListView.this.smoothScrollBy(targetTop - offset2, duration, true, false);
+                AbsListView.this.smoothScrollBy(targetTop - offset2, duration2, true, false);
                 return;
             }
             float screenTravelCount = viewTravelCount / childCount;
-            this.mScrollDuration = screenTravelCount < 1.0f ? duration : (int) (duration / screenTravelCount);
+            this.mScrollDuration = screenTravelCount < 1.0f ? duration2 : (int) (duration2 / screenTravelCount);
             this.mLastSeenPos = -1;
             AbsListView.this.postOnAnimation(this);
+        }
+
+        /* renamed from: android.widget.AbsListView$PositionScroller$3 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass3 implements Runnable {
+            final /* synthetic */ int val$duration;
+            final /* synthetic */ int val$position;
+            final /* synthetic */ int val$postOffset;
+
+            AnonymousClass3(int position2, int offset2, int duration2) {
+                position = position2;
+                offset = offset2;
+                duration = duration2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                PositionScroller.this.startWithOffset(position, offset, duration);
+            }
         }
 
         private void scrollToVisible(int targetPos, int boundPos, int duration) {
@@ -7253,11 +7448,49 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.AbsListView$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements Runnable {
+        AnonymousClass5() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AbsListView.this.semPlayGotoToFadeOut();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.AbsListView$6 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass6 implements Runnable {
+        AnonymousClass6() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AbsListView.this.semPlayGotoToFadeIn();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.AbsListView$7 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass7 implements Runnable {
+        AnonymousClass7() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AbsListView.this.semSetupGoToTop(0);
+        }
+    }
+
     public void setOnScrollOffsetListener(OnScrollOffsetListener scrollOffsetListener) {
         this.mOnScrollOffsetListener = scrollOffsetListener;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class ClickableViewState {
         private boolean mIsFocused;
@@ -7269,17 +7502,14 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             this.mWasFocused = wasFocused;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setWasFocused(boolean wasFocused) {
             this.mWasFocused = wasFocused;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean getWasFocused() {
             return this.mWasFocused;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setIsFocused(boolean isFocused) {
             this.mIsFocused = isFocused;
         }
@@ -7288,7 +7518,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             return this.mIsFocused;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public View getView() {
             return this.mView;
         }
@@ -7381,7 +7610,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class HoverScrollHandler extends Handler {
         private final WeakReference<AbsListView> mListView;
@@ -7399,7 +7627,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleMessage(Message msg) {
         int offset;
         switch (msg.what) {
@@ -7534,7 +7761,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mExtraPaddingInBottomHoverArea = (int) (TypedValue.applyDimension(1, extraSpace, this.mContext.getResources().getDisplayMetrics()) + 0.5f);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void addToPressItemListArray(int firstpoint, int secondpoint) {
         if (!this.mIsMultiFocusEnabled) {
             return;
@@ -7790,6 +8016,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             ofInt.setDuration(333L);
             this.mSemGoToTopFadeInAnimator.setInterpolator(new PathInterpolator(0.33f, 0.0f, 0.3f, 1.0f));
             this.mSemGoToTopFadeInAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.AbsListView.8
+                AnonymousClass8() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int value = ((Integer) animation.getAnimatedValue()).intValue();
@@ -7810,6 +8039,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             ofInt2.setDuration(333L);
             this.mSemGoToTopFadeOutAnimator.setInterpolator(new PathInterpolator(0.33f, 0.0f, 0.3f, 1.0f));
             this.mSemGoToTopFadeOutAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.AbsListView.9
+                AnonymousClass9() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int value = ((Integer) animation.getAnimatedValue()).intValue();
@@ -7818,6 +8050,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 }
             });
             this.mSemGoToTopFadeOutAnimator.addListener(new Animator.AnimatorListener() { // from class: android.widget.AbsListView.10
+                AnonymousClass10() {
+                }
+
                 @Override // android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     AbsListView.this.mShowFadeOutGTP = 1;
@@ -7841,6 +8076,68 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             RenderNode renderNode = new RenderNode("goToTop");
             this.mGoToTopRenderNode = renderNode;
             renderNode.setElevation(elevation);
+        }
+    }
+
+    /* renamed from: android.widget.AbsListView$8 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass8 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass8() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            int value = ((Integer) animation.getAnimatedValue()).intValue();
+            if (AbsListView.this.mAppWidgetGoToTop) {
+                Rect rect = AbsListView.this.mSemGoToTopImage.getBounds();
+                if (rect.left == 0 || rect.top == 0) {
+                    Log.w(AbsListView.TAG, "Hide GotoTop immediatley left: " + rect.left + " top" + rect.top);
+                    value = 0;
+                    AbsListView.this.semPlayGotoTopHideImmediatley();
+                }
+            }
+            AbsListView.this.mSemGoToTopImage.setAlpha(value);
+            AbsListView.this.invalidate();
+        }
+    }
+
+    /* renamed from: android.widget.AbsListView$9 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass9 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass9() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            int value = ((Integer) animation.getAnimatedValue()).intValue();
+            AbsListView.this.mSemGoToTopImage.setAlpha(value);
+            AbsListView.this.invalidate();
+        }
+    }
+
+    /* renamed from: android.widget.AbsListView$10 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass10 implements Animator.AnimatorListener {
+        AnonymousClass10() {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+            AbsListView.this.mShowFadeOutGTP = 1;
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            AbsListView.this.mShowFadeOutGTP = 2;
+            AbsListView.this.semSetupGoToTop(0);
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationRepeat(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
         }
     }
 
@@ -7869,7 +8166,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void semPlayGotoToFadeOut() {
         if (this.mSemGoToTopFadeOutAnimator.isRunning()) {
             return;
@@ -7881,7 +8177,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mSemGoToTopFadeOutAnimator.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void semPlayGotoToFadeIn() {
         if (this.mSemGoToTopFadeInAnimator.isRunning()) {
             return;
@@ -7893,7 +8188,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mSemGoToTopFadeInAnimator.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void semPlayGotoTopHideImmediatley() {
         if (this.mSemGoToTopFadeInAnimator.isRunning()) {
             return;
@@ -7904,7 +8198,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mSemGoToTopImage.setAlpha(0);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean semIsSupportGotoTop() {
         return this.mSemEnableGoToTop && !semIsTalkBackIsRunning();
     }
@@ -7926,19 +8219,40 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         semSetFastScrollEnabled(enabled);
     }
 
-    public void semSetFastScrollEnabled(final boolean enabled) {
+    public void semSetFastScrollEnabled(boolean enabled) {
         if (this.mFastScrollEnabled != enabled) {
             this.mFastScrollEnabled = enabled;
             if (isOwnerThread()) {
                 semSetFastScrollEnabledUiThread(enabled);
             } else {
                 post(new Runnable() { // from class: android.widget.AbsListView.11
+                    final /* synthetic */ boolean val$enabled;
+
+                    AnonymousClass11(boolean enabled2) {
+                        enabled = enabled2;
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         AbsListView.this.semSetFastScrollEnabledUiThread(enabled);
                     }
                 });
             }
+        }
+    }
+
+    /* renamed from: android.widget.AbsListView$11 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass11 implements Runnable {
+        final /* synthetic */ boolean val$enabled;
+
+        AnonymousClass11(boolean enabled2) {
+            enabled = enabled2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AbsListView.this.semSetFastScrollEnabledUiThread(enabled);
         }
     }
 
@@ -7950,7 +8264,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return semFastScroller.isEnabled();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void semSetFastScrollEnabledUiThread(boolean enabled) {
         SemFastScroller semFastScroller = this.mSemFastScroll;
         if (semFastScroller != null) {
@@ -8011,11 +8324,14 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mIsCtrlkeyPressed = pressed;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public final class CheckForDoublePenClick implements Runnable {
         int x;
         int y;
+
+        /* synthetic */ CheckForDoublePenClick(AbsListView absListView, CheckForDoublePenClickIA checkForDoublePenClickIA) {
+            this();
+        }
 
         private CheckForDoublePenClick() {
         }
@@ -8320,7 +8636,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mIsMovedbeforeUP = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void semToNotifyMultiSelectionEnded(int x, int y) {
         super.semNotifyMultiSelectedStop(x, y);
     }
@@ -8680,7 +8995,23 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         throw new UnsupportedOperationException("Method not decompiled: android.widget.AbsListView.dispatchTouchEvent(android.view.MotionEvent):boolean");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.AbsListView$12 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass12 implements Runnable {
+        AnonymousClass12() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (AbsListView.this.shouldSkipScroll()) {
+                AbsListView.this.smoothScrollToPositionFromTop(0, 0, 0);
+            } else {
+                AbsListView.this.smoothScrollToPosition(0);
+            }
+        }
+    }
+
     /* JADX WARN: Removed duplicated region for block: B:87:0x0380  */
     /* JADX WARN: Removed duplicated region for block: B:95:0x03a4  */
     /* JADX WARN: Removed duplicated region for block: B:99:0x03c0  */
@@ -8824,8 +9155,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return isRunning;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class SemSmoothScrollByMove implements Runnable {
+    public class SemSmoothScrollByMove implements Runnable {
+        /* synthetic */ SemSmoothScrollByMove(AbsListView absListView, SemSmoothScrollByMoveIA semSmoothScrollByMoveIA) {
+            this();
+        }
+
         private SemSmoothScrollByMove() {
         }
 
@@ -8844,7 +9180,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean semIsShowingScrollbar() {
         return super.semIsShowingScrollbar() && !this.mFastScrollEnabled;
@@ -8912,7 +9247,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mSemForcedDrawEdgeEffect = enable;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
@@ -8938,9 +9272,23 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         triggerDoubleFling(1);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.widget.AbsListView$13 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass13 implements Runnable {
+        AnonymousClass13() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            AbsListView.this.onJumpScrollToTopFinished();
+        }
+    }
+
     public void postOnJumpScrollToFinished() {
         postOnAnimation(new Runnable() { // from class: android.widget.AbsListView.13
+            AnonymousClass13() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 AbsListView.this.onJumpScrollToTopFinished();
@@ -8948,7 +9296,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onJumpScrollToTopFinished() {
         Log.d(TAG, "onJumpScrollToTopFinished()");
     }
@@ -8969,7 +9316,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removePendingCallbacks() {
         Handler handler = getHandler();
         if (handler != null) {
@@ -9053,7 +9399,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     public void updateCustomEdgeGlow(Drawable edgeeffectCustomEdge, Drawable edgeeffectCustomGlow) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean shouldSkipScroll() {
         return Settings.Global.getInt(getContext().getContentResolver(), "remove_animations", 0) == 1;
     }
@@ -9075,6 +9420,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             ValueAnimator ofInt = ValueAnimator.ofInt(this.mIndicatorDefaultSize, this.mIndicatorFocusedSize);
             this.mAnimator = ofInt;
             ofInt.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.AbsListView.14
+                AnonymousClass14() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     AbsListView.this.mIndicatorAnimatedSize = ((Integer) animation.getAnimatedValue()).intValue();
@@ -9082,6 +9430,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 }
             });
             this.mAnimator.addListener(new Animator.AnimatorListener() { // from class: android.widget.AbsListView.15
+                AnonymousClass15() {
+                }
+
                 @Override // android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     AbsListView absListView = AbsListView.this;
@@ -9100,6 +9451,44 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 public void onAnimationRepeat(Animator animation) {
                 }
             });
+        }
+    }
+
+    /* renamed from: android.widget.AbsListView$14 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass14 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass14() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            AbsListView.this.mIndicatorAnimatedSize = ((Integer) animation.getAnimatedValue()).intValue();
+            AbsListView.this.invalidate();
+        }
+    }
+
+    /* renamed from: android.widget.AbsListView$15 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass15 implements Animator.AnimatorListener {
+        AnonymousClass15() {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            AbsListView absListView = AbsListView.this;
+            absListView.mFocusedPos = absListView.mNewFocusedPos;
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
+        }
+
+        @Override // android.animation.Animator.AnimatorListener
+        public void onAnimationRepeat(Animator animation) {
         }
     }
 
@@ -9313,7 +9702,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         this.mAppWidgetImmersiveEnalbed = enabled;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void viewSelectorLikeFocus(View sel) {
         Rect clickableRect = this.mSelectorRect;
         clickableRect.set(sel.getLeft(), sel.getTop(), sel.getRight(), sel.getBottom());

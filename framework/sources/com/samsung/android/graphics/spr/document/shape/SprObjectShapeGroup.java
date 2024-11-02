@@ -51,7 +51,6 @@ public class SprObjectShapeGroup extends SprObjectBase {
         fromXml(parser);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     public void finalize() throws Throwable {
         super.finalize();
@@ -220,13 +219,13 @@ public class SprObjectShapeGroup extends SprObjectBase {
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     /* renamed from: clone */
-    public SprObjectShapeGroup mo8423clone() throws CloneNotSupportedException {
-        SprObjectShapeGroup object = (SprObjectShapeGroup) super.mo8423clone();
+    public SprObjectShapeGroup mo8415clone() throws CloneNotSupportedException {
+        SprObjectShapeGroup object = (SprObjectShapeGroup) super.mo8415clone();
         object.mObjectList = new ArrayList<>();
         Iterator<SprObjectBase> it = this.mObjectList.iterator();
         while (it.hasNext()) {
             SprObjectBase child = it.next();
-            object.mObjectList.add(child.mo8423clone());
+            object.mObjectList.add(child.mo8415clone());
         }
         return object;
     }

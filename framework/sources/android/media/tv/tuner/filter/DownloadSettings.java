@@ -10,6 +10,10 @@ public class DownloadSettings extends Settings {
     private final int mDownloadId;
     private final boolean mUseDownloadId;
 
+    /* synthetic */ DownloadSettings(int i, boolean z, int i2, DownloadSettingsIA downloadSettingsIA) {
+        this(i, z, i2);
+    }
+
     private DownloadSettings(int mainType, boolean useDownloadId, int downloadId) {
         super(TunerUtils.getFilterSubtype(mainType, 5));
         this.mUseDownloadId = useDownloadId;
@@ -33,6 +37,10 @@ public class DownloadSettings extends Settings {
         private int mDownloadId;
         private final int mMainType;
         private boolean mUseDownloadId;
+
+        /* synthetic */ Builder(int i, BuilderIA builderIA) {
+            this(i);
+        }
 
         private Builder(int mainType) {
             this.mUseDownloadId = false;

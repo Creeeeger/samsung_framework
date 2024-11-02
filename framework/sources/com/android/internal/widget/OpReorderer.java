@@ -3,11 +3,11 @@ package com.android.internal.widget;
 import com.android.internal.widget.AdapterHelper;
 import java.util.List;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class OpReorderer {
+public class OpReorderer {
     final Callback mCallback;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public interface Callback {
         AdapterHelper.UpdateOp obtainUpdateOp(int i, int i2, int i3, Object obj);
@@ -15,12 +15,10 @@ class OpReorderer {
         void recycleUpdateOp(AdapterHelper.UpdateOp updateOp);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public OpReorderer(Callback callback) {
         this.mCallback = callback;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void reorderOps(List<AdapterHelper.UpdateOp> ops) {
         while (true) {
             int badMove = getLastMoveOutOfOrder(ops);

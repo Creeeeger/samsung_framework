@@ -113,14 +113,13 @@ public class NNDescriptor extends PluginDescriptor {
         return (String) Optional.ofNullable(this.modelIdSupplier).map(new NNDescriptor$$ExternalSyntheticLambda0()).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.descriptor.nn.NNDescriptor$$ExternalSyntheticLambda1
             @Override // java.util.function.Supplier
             public final Object get() {
-                return NNDescriptor.this.m8751x6e850223();
+                return NNDescriptor.this.m8743x6e850223();
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$getModelId$0$com-samsung-android-sume-core-descriptor-nn-NNDescriptor, reason: not valid java name */
-    public /* synthetic */ String m8751x6e850223() {
+    /* renamed from: lambda$getModelId$0$com-samsung-android-sume-core-descriptor-nn-NNDescriptor */
+    public /* synthetic */ String m8743x6e850223() {
         return super.getFilterId();
     }
 

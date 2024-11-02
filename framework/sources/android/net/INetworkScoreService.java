@@ -245,8 +245,9 @@ public interface INetworkScoreService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements INetworkScoreService {
+        public static class Proxy implements INetworkScoreService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -57,7 +57,6 @@ public class GraphEdge {
         this.node = new Pair<>(startNode, endNode);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public static /* synthetic */ String lambda$getBeginNode$0(Pair it) {
         return (String) it.first;
@@ -72,7 +71,6 @@ public class GraphEdge {
         }).orElse("n/a");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public static /* synthetic */ String lambda$getEndNode$1(Pair it) {
         return (String) it.second;

@@ -74,6 +74,9 @@ public class ResourcesImpl {
     private final DrawableCache mDrawableCache = new DrawableCache();
     private final DrawableCache mColorDrawableCache = new DrawableCache();
     private final ConfigurationBoundResourceCache<ComplexColor> mComplexColorCache = new ConfigurationBoundResourceCache<ComplexColor>() { // from class: android.content.res.ResourcesImpl.1
+        AnonymousClass1() {
+        }
+
         @Override // android.content.res.ConfigurationBoundResourceCache, android.content.res.ThemedResourceCache
         public void onConfigurationChange(int configChanges) {
             if ((configChanges & 512) != 0) {
@@ -104,6 +107,22 @@ public class ResourcesImpl {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.content.res.ResourcesImpl$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends ConfigurationBoundResourceCache<ComplexColor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.res.ConfigurationBoundResourceCache, android.content.res.ThemedResourceCache
+        public void onConfigurationChange(int configChanges) {
+            if ((configChanges & 512) != 0) {
+                clear();
+            } else {
+                super.onConfigurationChange(configChanges);
+            }
+        }
+    }
+
     public static /* synthetic */ LookupStack lambda$new$0() {
         return new LookupStack();
     }
@@ -128,27 +147,22 @@ public class ResourcesImpl {
         return this.mAssets;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DisplayMetrics getDisplayMetrics() {
         return this.mMetrics;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration getConfiguration() {
         return this.mConfiguration;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration[] getSizeConfigurations() {
         return this.mAssets.getSizeConfigurations();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Configuration[] getSizeAndUiModeConfigurations() {
         return this.mAssets.getSizeAndUiModeConfigurations();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CompatibilityInfo getCompatibilityInfo() {
         return this.mDisplayAdjustments.getCompatibilityInfo();
     }
@@ -164,7 +178,6 @@ public class ResourcesImpl {
         return pluralRules;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void getValue(int id, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
         boolean found = this.mAssets.getResourceValue(id, 0, outValue, resolveRefs);
         if (found) {
@@ -173,7 +186,6 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void getValueForDensity(int id, int density, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
         boolean found = this.mAssets.getResourceValue(id, density, outValue, resolveRefs);
         if (found) {
@@ -182,7 +194,6 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void getValue(String name, TypedValue outValue, boolean resolveRefs) throws Resources.NotFoundException {
         int id = getIdentifier(name, "string", null);
         if (id != 0) {
@@ -192,7 +203,6 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("String resource name " + name);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getIdentifier(String name, String defType, String defPackage) {
         if (name == null) {
             throw new NullPointerException("name is null");
@@ -204,7 +214,6 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResourceName(int resid) throws Resources.NotFoundException {
         String str = this.mAssets.getResourceName(resid);
         if (str != null) {
@@ -213,7 +222,6 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Unable to find resource ID #0x" + Integer.toHexString(resid));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResourcePackageName(int resid) throws Resources.NotFoundException {
         String str = this.mAssets.getResourcePackageName(resid);
         if (str != null) {
@@ -222,7 +230,6 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Unable to find resource ID #0x" + Integer.toHexString(resid));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResourceTypeName(int resid) throws Resources.NotFoundException {
         String str = this.mAssets.getResourceTypeName(resid);
         if (str != null) {
@@ -231,7 +238,6 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Unable to find resource ID #0x" + Integer.toHexString(resid));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getResourceEntryName(int resid) throws Resources.NotFoundException {
         String str = this.mAssets.getResourceEntryName(resid);
         if (str != null) {
@@ -240,7 +246,6 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Unable to find resource ID #0x" + Integer.toHexString(resid));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getLastResourceResolution() throws Resources.NotFoundException {
         String str = this.mAssets.getLastResourceResolution();
         if (str != null) {
@@ -249,7 +254,6 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("Associated AssetManager hasn't resolved a resource");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getQuantityText(int id, int quantity) throws Resources.NotFoundException {
         PluralRules rule = getPluralRule();
         CharSequence res = this.mAssets.getResourceBagText(id, attrForQuantityCode(rule.select(quantity)));
@@ -322,7 +326,6 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AssetFileDescriptor openRawResourceFd(int id, TypedValue tempValue) throws Resources.NotFoundException {
         getValue(id, tempValue, true);
         try {
@@ -332,7 +335,6 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public InputStream openRawResource(int id, TypedValue value) throws Resources.NotFoundException {
         getValue(id, value, true);
         try {
@@ -344,12 +346,10 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ConfigurationBoundResourceCache<Animator> getAnimatorCache() {
         return this.mAnimatorCache;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ConfigurationBoundResourceCache<StateListAnimator> getStateListAnimatorCache() {
         return this.mStateListAnimatorCache;
     }
@@ -445,7 +445,10 @@ public class ResourcesImpl {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x002f, code lost:            if (r3.equals("id") != false) goto L19;     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x002f, code lost:
+    
+        if (r3.equals("id") != false) goto L45;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -547,7 +550,6 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Drawable loadDrawable(Resources wrapper, TypedValue value, int id, int density, Resources.Theme theme) throws Resources.NotFoundException {
         int i;
         byte[] imageData;
@@ -673,7 +675,6 @@ public class ResourcesImpl {
         return dr3;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Drawable loadDrawable(Resources wrapper, TypedValue value, int id, int density) throws Resources.NotFoundException {
         String name;
         boolean isColorDrawable;
@@ -997,7 +998,6 @@ public class ResourcesImpl {
         return complexColor3;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ComplexColor loadComplexColor(Resources wrapper, TypedValue value, int id, Resources.Theme theme) {
         long key = (value.assetCookie << 32) | value.data;
         if (value.type >= 28 && value.type <= 31) {
@@ -1017,7 +1017,6 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("File " + file + " from drawable resource ID #0x" + Integer.toHexString(id) + ": .xml extension required");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ColorStateList loadColorStateList(Resources wrapper, TypedValue value, int id, Resources.Theme theme) throws Resources.NotFoundException {
         long key = (value.assetCookie << 32) | value.data;
         if (value.type >= 28 && value.type <= 31) {
@@ -1084,7 +1083,6 @@ public class ResourcesImpl {
         throw new Resources.NotFoundException("File " + file + " from drawable resource ID #0x" + Integer.toHexString(id) + ": .xml extension required");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public XmlResourceParser loadXmlResourceParser(String file, int id, int assetCookie, String type) throws Resources.NotFoundException {
         if (id != 0) {
             try {
@@ -1133,7 +1131,6 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void finishPreloading() {
         if (this.mPreloading) {
             this.mPreloading = false;
@@ -1141,7 +1138,6 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int getAttributeSetSourceResId(AttributeSet set) {
         if (set == null || !(set instanceof XmlBlock.Parser)) {
             return 0;
@@ -1149,17 +1145,14 @@ public class ResourcesImpl {
         return ((XmlBlock.Parser) set).getSourceResId();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public LongSparseArray<Drawable.ConstantState> getPreloadedDrawables() {
         return sPreloadedDrawables[0];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ThemeImpl newThemeImpl() {
         return new ThemeImpl();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void dump(PrintWriter pw, String prefix) {
         pw.println(prefix + "class=" + getClass());
         pw.println(prefix + "assets");
@@ -1186,22 +1179,18 @@ public class ResourcesImpl {
             this.mAssets.releaseTheme(this.mTheme);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Resources.ThemeKey getKey() {
             return this.mKey;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public long getNativeTheme() {
             return this.mTheme;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getAppliedStyleResId() {
             return this.mThemeResId;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getParentThemeIdentifier(int resId) {
             if (resId > 0) {
                 return this.mAssets.getParentThemeIdentifier(resId);
@@ -1209,21 +1198,18 @@ public class ResourcesImpl {
             return 0;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void applyStyle(int resId, boolean force) {
             this.mAssets.applyStyleToTheme(this.mTheme, resId, force);
             this.mThemeResId = resId;
             this.mKey.append(resId, force);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void setTo(ThemeImpl other) {
             this.mAssets.setThemeTo(this.mTheme, other.mAssets, other.mTheme);
             this.mThemeResId = other.mThemeResId;
             this.mKey.setTo(other.getKey());
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public TypedArray obtainStyledAttributes(Resources.Theme wrapper, AttributeSet set, int[] attrs, int defStyleAttr, int defStyleRes) {
             int len = attrs.length;
             TypedArray array = TypedArray.obtain(wrapper.getResources(), len);
@@ -1234,7 +1220,6 @@ public class ResourcesImpl {
             return array;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public TypedArray resolveAttributes(Resources.Theme wrapper, int[] values, int[] attrs) {
             int len = attrs.length;
             if (values == null || len != values.length) {
@@ -1247,17 +1232,14 @@ public class ResourcesImpl {
             return array;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public boolean resolveAttribute(int resid, TypedValue outValue, boolean resolveRefs) {
             return this.mAssets.getThemeValue(this.mTheme, resid, outValue, resolveRefs);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int[] getAllAttributes() {
             return this.mAssets.getStyleAttributes(getAppliedStyleResId());
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public int getChangingConfigurations() {
             int nativeChangingConfig = AssetManager.nativeThemeGetChangingConfigurations(this.mTheme);
             return ActivityInfo.activityInfoConfigNativeToJava(nativeChangingConfig);
@@ -1267,7 +1249,6 @@ public class ResourcesImpl {
             this.mAssets.dumpTheme(this.mTheme, priority, tag, prefix);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public String[] getTheme() {
             int n = this.mKey.mCount;
             String[] themes = new String[n * 2];
@@ -1288,12 +1269,10 @@ public class ResourcesImpl {
             return themes;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void rebase() {
             rebase(this.mAssets);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public void rebase(AssetManager newAssets) {
             this.mAssets = this.mAssets.rebaseTheme(this.mTheme, newAssets, this.mKey.mResId, this.mKey.mForce, this.mKey.mCount);
         }
@@ -1303,11 +1282,14 @@ public class ResourcesImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class LookupStack {
         private int[] mIds;
         private int mSize;
+
+        /* synthetic */ LookupStack(LookupStackIA lookupStackIA) {
+            this();
+        }
 
         private LookupStack() {
             this.mIds = new int[4];

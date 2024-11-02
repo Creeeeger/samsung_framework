@@ -7,19 +7,37 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextAttribute implements Parcelable {
     public static final Parcelable.Creator<SemContextAttribute> CREATOR = new Parcelable.Creator<SemContextAttribute>() { // from class: com.samsung.android.hardware.context.SemContextAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextAttribute createFromParcel(Parcel in) {
             return new SemContextAttribute(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAttribute[] newArray(int size) {
             return new SemContextAttribute[size];
         }
     };
     private Bundle mAttribute = new Bundle();
+
+    /* renamed from: com.samsung.android.hardware.context.SemContextAttribute$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextAttribute createFromParcel(Parcel in) {
+            return new SemContextAttribute(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextAttribute[] newArray(int size) {
+            return new SemContextAttribute[size];
+        }
+    }
 
     public SemContextAttribute() {
     }
@@ -28,7 +46,6 @@ public class SemContextAttribute implements Parcelable {
         readFromParcel(src);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static SemContextAttribute getDefaultAttribute(int service) {
         switch (service) {
             case 1:

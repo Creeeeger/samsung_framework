@@ -19,13 +19,14 @@ import java.util.function.Function;
 /* loaded from: classes3.dex */
 public final class DataCallResponse implements Parcelable {
     public static final Parcelable.Creator<DataCallResponse> CREATOR = new Parcelable.Creator<DataCallResponse>() { // from class: android.telephony.data.DataCallResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DataCallResponse createFromParcel(Parcel source) {
             return new DataCallResponse(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataCallResponse[] newArray(int size) {
             return new DataCallResponse[size];
@@ -70,6 +71,10 @@ public final class DataCallResponse implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface LinkStatus {
+    }
+
+    /* synthetic */ DataCallResponse(int i, long j, int i2, int i3, int i4, String str, List list, List list2, List list3, List list4, int i5, int i6, int i7, int i8, int i9, Qos qos, List list5, NetworkSliceInfo networkSliceInfo, List list6, DataCallResponseIA dataCallResponseIA) {
+        this(i, j, i2, i3, i4, str, list, list2, list3, list4, i5, i6, i7, i8, i9, qos, list5, networkSliceInfo, list6);
     }
 
     public DataCallResponse(int cause, int suggestedRetryTime, int id, int linkStatus, int protocolType, String interfaceName, List<LinkAddress> addresses, List<InetAddress> dnsAddresses, List<InetAddress> gatewayAddresses, List<InetAddress> pcscfAddresses, int mtu) {
@@ -353,6 +358,23 @@ public final class DataCallResponse implements Parcelable {
         dest.writeList(this.mQosBearerSessions);
         dest.writeParcelable(this.mSliceInfo, flags);
         dest.writeList(this.mTrafficDescriptors);
+    }
+
+    /* renamed from: android.telephony.data.DataCallResponse$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DataCallResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataCallResponse createFromParcel(Parcel source) {
+            return new DataCallResponse(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataCallResponse[] newArray(int size) {
+            return new DataCallResponse[size];
+        }
     }
 
     public static String failureModeToString(int handoverFailureMode) {

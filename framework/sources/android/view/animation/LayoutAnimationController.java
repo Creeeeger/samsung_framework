@@ -108,7 +108,7 @@ public class LayoutAnimationController {
         long delay = getDelayForView(view) + this.mAnimation.getStartOffset();
         this.mMaxDelay = Math.max(this.mMaxDelay, delay);
         try {
-            Animation animation = this.mAnimation.mo5544clone();
+            Animation animation = this.mAnimation.mo5539clone();
             animation.setStartOffset(delay);
             return animation;
         } catch (CloneNotSupportedException e) {

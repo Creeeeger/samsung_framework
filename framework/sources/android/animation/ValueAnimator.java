@@ -231,7 +231,6 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         return this.mValues;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void initAnimation() {
         if (!this.mInitialized) {
             PropertyValuesHolder[] propertyValuesHolderArr = this.mValues;
@@ -495,8 +494,9 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    void startWithoutPulsing(boolean inReverse) {
+    public void startWithoutPulsing(boolean inReverse) {
         this.mSuppressSelfPulseRequested = true;
         if (inReverse) {
             reverse();
@@ -687,8 +687,9 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         return done;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    void animateValuesInRange(long currentPlayTime, long lastPlayTime) {
+    public void animateValuesInRange(long currentPlayTime, long lastPlayTime) {
         if (currentPlayTime < 0 || lastPlayTime < -1) {
             throw new UnsupportedOperationException("Error: Play time should never be negative.");
         }
@@ -720,8 +721,9 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         animateValue(getCurrentIterationFraction(fraction, false));
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    void animateSkipToEnds(long currentPlayTime, long lastPlayTime) {
+    public void animateSkipToEnds(long currentPlayTime, long lastPlayTime) {
         boolean doSkip = true;
         boolean inReverse = currentPlayTime < lastPlayTime;
         if (currentPlayTime <= 0 && lastPlayTime > 0) {
@@ -739,8 +741,9 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    void skipToEndValue(boolean inReverse) {
+    public void skipToEndValue(boolean inReverse) {
         initAnimation();
         float endFraction = inReverse ? 0.0f : 1.0f;
         if (this.mRepeatCount % 2 == 1 && this.mRepeatMode == 2) {
@@ -749,8 +752,9 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         animateValue(endFraction);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    boolean isInitialized() {
+    public boolean isInitialized() {
         return this.mInitialized;
     }
 
@@ -801,8 +805,9 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         return finished;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.Animator
-    boolean pulseAnimationFrame(long frameTime) {
+    public boolean pulseAnimationFrame(long frameTime) {
         if (this.mSelfPulse) {
             return false;
         }
@@ -834,7 +839,6 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
         return this.mCurrentFraction;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void animateValue(float fraction) {
         if (TRACE_ANIMATION_FRACTION) {
             Trace.traceCounter(8L, getNameForTrace() + hashCode(), (int) (1000.0f * fraction));
@@ -854,7 +858,7 @@ public class ValueAnimator extends Animator implements AnimationHandler.Animatio
     }
 
     @Override // android.animation.Animator
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    /* renamed from: clone */
     public ValueAnimator mo57clone() {
         ValueAnimator anim = (ValueAnimator) super.mo57clone();
         if (this.mUpdateListeners != null) {

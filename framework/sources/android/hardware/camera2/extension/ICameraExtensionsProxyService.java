@@ -200,7 +200,6 @@ public interface ICameraExtensionsProxyService extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class Proxy implements ICameraExtensionsProxyService {
             private IBinder mRemote;

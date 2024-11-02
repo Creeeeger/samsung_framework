@@ -36,13 +36,14 @@ public final class VirtualDeviceParams implements Parcelable {
     public static final int ACTIVITY_POLICY_DEFAULT_ALLOWED = 0;
     public static final int ACTIVITY_POLICY_DEFAULT_BLOCKED = 1;
     public static final Parcelable.Creator<VirtualDeviceParams> CREATOR = new Parcelable.Creator<VirtualDeviceParams>() { // from class: android.companion.virtual.VirtualDeviceParams.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VirtualDeviceParams createFromParcel(Parcel in) {
             return new VirtualDeviceParams(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualDeviceParams[] newArray(int size) {
             return new VirtualDeviceParams[size];
@@ -100,6 +101,14 @@ public final class VirtualDeviceParams implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes.dex */
     public @interface PolicyType {
+    }
+
+    /* synthetic */ VirtualDeviceParams(int i, Set set, Set set2, Set set3, int i2, Set set4, Set set5, int i3, String str, SparseIntArray sparseIntArray, List list, IVirtualSensorCallback iVirtualSensorCallback, int i4, int i5, VirtualDeviceParamsIA virtualDeviceParamsIA) {
+        this(i, set, set2, set3, i2, set4, set5, i3, str, sparseIntArray, list, iVirtualSensorCallback, i4, i5);
+    }
+
+    /* synthetic */ VirtualDeviceParams(Parcel parcel, VirtualDeviceParamsIA virtualDeviceParamsIA) {
+        this(parcel);
     }
 
     private VirtualDeviceParams(int lockState, Set<UserHandle> usersWithMatchingAccounts, Set<ComponentName> allowedCrossTaskNavigations, Set<ComponentName> blockedCrossTaskNavigations, int defaultNavigationPolicy, Set<ComponentName> allowedActivities, Set<ComponentName> blockedActivities, int defaultActivityPolicy, String name, SparseIntArray devicePolicies, List<VirtualSensorConfig> virtualSensorConfigs, IVirtualSensorCallback virtualSensorCallback, int audioPlaybackSessionId, int audioRecordingSessionId) {
@@ -251,6 +260,23 @@ public final class VirtualDeviceParams implements Parcelable {
         return "VirtualDeviceParams( mLockState=" + this.mLockState + " mUsersWithMatchingAccounts=" + this.mUsersWithMatchingAccounts + " mAllowedCrossTaskNavigations=" + this.mAllowedCrossTaskNavigations + " mBlockedCrossTaskNavigations=" + this.mBlockedCrossTaskNavigations + " mDefaultNavigationPolicy=" + this.mDefaultNavigationPolicy + " mAllowedActivities=" + this.mAllowedActivities + " mBlockedActivities=" + this.mBlockedActivities + " mDefaultActivityPolicy=" + this.mDefaultActivityPolicy + " mName=" + this.mName + " mDevicePolicies=" + this.mDevicePolicies + " mAudioPlaybackSessionId=" + this.mAudioPlaybackSessionId + " mAudioRecordingSessionId=" + this.mAudioRecordingSessionId + NavigationBarInflaterView.KEY_CODE_END;
     }
 
+    /* renamed from: android.companion.virtual.VirtualDeviceParams$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VirtualDeviceParams> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualDeviceParams createFromParcel(Parcel in) {
+            return new VirtualDeviceParams(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VirtualDeviceParams[] newArray(int size) {
+            return new VirtualDeviceParams[size];
+        }
+    }
+
     /* loaded from: classes.dex */
     public static final class Builder {
         private String mName;
@@ -273,7 +299,6 @@ public final class VirtualDeviceParams implements Parcelable {
         private int mAudioRecordingSessionId = 0;
         private List<VirtualSensorConfig> mVirtualSensorConfigs = new ArrayList();
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
         public static class VirtualSensorCallbackDelegate extends IVirtualSensorCallback.Stub {
             private final VirtualSensorCallback mCallback;
@@ -300,7 +325,6 @@ public final class VirtualDeviceParams implements Parcelable {
                 });
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onConfigurationChanged$0(VirtualSensor sensor, boolean enabled, Duration samplingPeriod, Duration batchReportingLatency) {
                 this.mCallback.onConfigurationChanged(sensor, enabled, samplingPeriod, batchReportingLatency);
             }
@@ -318,7 +342,6 @@ public final class VirtualDeviceParams implements Parcelable {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDirectChannelCreated$1(int channelHandle, SharedMemory sharedMemory) {
                 this.mDirectChannelCallback.onDirectChannelCreated(channelHandle, sharedMemory);
             }
@@ -336,7 +359,6 @@ public final class VirtualDeviceParams implements Parcelable {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDirectChannelDestroyed$2(int channelHandle) {
                 this.mDirectChannelCallback.onDirectChannelDestroyed(channelHandle);
             }
@@ -354,7 +376,6 @@ public final class VirtualDeviceParams implements Parcelable {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDirectChannelConfigured$3(int channelHandle, VirtualSensor sensor, int rateLevel, int reportToken) {
                 this.mDirectChannelCallback.onDirectChannelConfigured(channelHandle, sensor, rateLevel, reportToken);
             }

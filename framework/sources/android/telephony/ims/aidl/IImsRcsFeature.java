@@ -227,8 +227,9 @@ public interface IImsRcsFeature extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IImsRcsFeature {
+        public static class Proxy implements IImsRcsFeature {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

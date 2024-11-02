@@ -111,8 +111,9 @@ public interface IMidiDeviceListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMidiDeviceListener {
+        public static class Proxy implements IMidiDeviceListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

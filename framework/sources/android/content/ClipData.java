@@ -38,13 +38,14 @@ public class ClipData implements Parcelable {
     static final String[] MIMETYPES_TEXT_URILIST = {ClipDescription.MIMETYPE_TEXT_URILIST};
     static final String[] MIMETYPES_TEXT_INTENT = {ClipDescription.MIMETYPE_TEXT_INTENT};
     public static final Parcelable.Creator<ClipData> CREATOR = new Parcelable.Creator<ClipData>() { // from class: android.content.ClipData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ClipData createFromParcel(Parcel source) {
             return new ClipData(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClipData[] newArray(int size) {
             return new ClipData[size];
@@ -804,7 +805,6 @@ public class ClipData implements Parcelable {
         dest.writeString(this.mCallingPackageName);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ClipData(Parcel in) {
         this.mCallingUserId = -10000;
         this.mClipDescription = new ClipDescription(in);
@@ -830,6 +830,23 @@ public class ClipData implements Parcelable {
         int i2 = in.readInt();
         this.mCallingUserId = i2;
         this.mCallingPackageName = in.readString();
+    }
+
+    /* renamed from: android.content.ClipData$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ClipData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClipData createFromParcel(Parcel source) {
+            return new ClipData(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ClipData[] newArray(int size) {
+            return new ClipData[size];
+        }
     }
 
     public ArrayList<Item> semGetItems() {

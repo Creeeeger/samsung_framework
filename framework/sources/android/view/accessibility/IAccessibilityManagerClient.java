@@ -126,8 +126,9 @@ public interface IAccessibilityManagerClient extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IAccessibilityManagerClient {
+        public static class Proxy implements IAccessibilityManagerClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -11,19 +11,24 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class CoreStatesChangeItem extends ClientTransactionItem {
     public static final Parcelable.Creator<CoreStatesChangeItem> CREATOR = new Parcelable.Creator<CoreStatesChangeItem>() { // from class: android.app.servertransaction.CoreStatesChangeItem.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CoreStatesChangeItem createFromParcel(Parcel in) {
             return new CoreStatesChangeItem(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CoreStatesChangeItem[] newArray(int size) {
             return new CoreStatesChangeItem[size];
         }
     };
     private Bundle mState;
+
+    /* synthetic */ CoreStatesChangeItem(Parcel parcel, CoreStatesChangeItemIA coreStatesChangeItemIA) {
+        this(parcel);
+    }
 
     @Override // android.app.servertransaction.BaseClientRequest
     public void execute(ClientTransactionHandler client, IBinder token, PendingTransactionActions pendingActions) {
@@ -57,6 +62,23 @@ public class CoreStatesChangeItem extends ClientTransactionItem {
 
     private CoreStatesChangeItem(Parcel in) {
         this.mState = (Bundle) in.readTypedObject(Bundle.CREATOR);
+    }
+
+    /* renamed from: android.app.servertransaction.CoreStatesChangeItem$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CoreStatesChangeItem> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CoreStatesChangeItem createFromParcel(Parcel in) {
+            return new CoreStatesChangeItem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CoreStatesChangeItem[] newArray(int size) {
+            return new CoreStatesChangeItem[size];
+        }
     }
 
     public boolean equals(Object o) {

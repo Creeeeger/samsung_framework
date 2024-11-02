@@ -9,13 +9,14 @@ import android.util.Range;
 /* loaded from: classes3.dex */
 public final class AudioCodecAttributes implements Parcelable {
     public static final Parcelable.Creator<AudioCodecAttributes> CREATOR = new Parcelable.Creator<AudioCodecAttributes>() { // from class: android.telephony.ims.AudioCodecAttributes.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioCodecAttributes createFromParcel(Parcel in) {
             return new AudioCodecAttributes(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioCodecAttributes[] newArray(int size) {
             return new AudioCodecAttributes[size];
@@ -25,6 +26,10 @@ public final class AudioCodecAttributes implements Parcelable {
     private Range<Float> mBandwidthRangeKhz;
     private float mBitrateKbps;
     private Range<Float> mBitrateRangeKbps;
+
+    /* synthetic */ AudioCodecAttributes(Parcel parcel, AudioCodecAttributesIA audioCodecAttributesIA) {
+        this(parcel);
+    }
 
     public AudioCodecAttributes(float bitrateKbps, Range<Float> bitrateRangeKbps, float bandwidthKhz, Range<Float> bandwidthRangeKhz) {
         this.mBitrateKbps = bitrateKbps;
@@ -53,6 +58,23 @@ public final class AudioCodecAttributes implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.telephony.ims.AudioCodecAttributes$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioCodecAttributes> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioCodecAttributes createFromParcel(Parcel in) {
+            return new AudioCodecAttributes(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioCodecAttributes[] newArray(int size) {
+            return new AudioCodecAttributes[size];
+        }
     }
 
     public float getBitrateKbps() {

@@ -9,13 +9,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public class SensorPropertiesInternal implements Parcelable {
     public static final Parcelable.Creator<SensorPropertiesInternal> CREATOR = new Parcelable.Creator<SensorPropertiesInternal>() { // from class: android.hardware.biometrics.SensorPropertiesInternal.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SensorPropertiesInternal createFromParcel(Parcel in) {
             return new SensorPropertiesInternal(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SensorPropertiesInternal[] newArray(int size) {
             return new SensorPropertiesInternal[size];
@@ -41,7 +42,6 @@ public class SensorPropertiesInternal implements Parcelable {
         this.resetLockoutRequiresChallenge = resetLockoutRequiresChallenge;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public SensorPropertiesInternal(Parcel in) {
         this.sensorId = in.readInt();
         this.sensorStrength = in.readInt();
@@ -51,6 +51,23 @@ public class SensorPropertiesInternal implements Parcelable {
         in.readList(arrayList, ComponentInfoInternal.class.getClassLoader(), ComponentInfoInternal.class);
         this.resetLockoutRequiresHardwareAuthToken = in.readBoolean();
         this.resetLockoutRequiresChallenge = in.readBoolean();
+    }
+
+    /* renamed from: android.hardware.biometrics.SensorPropertiesInternal$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SensorPropertiesInternal> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SensorPropertiesInternal createFromParcel(Parcel in) {
+            return new SensorPropertiesInternal(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SensorPropertiesInternal[] newArray(int size) {
+            return new SensorPropertiesInternal[size];
+        }
     }
 
     @Override // android.os.Parcelable

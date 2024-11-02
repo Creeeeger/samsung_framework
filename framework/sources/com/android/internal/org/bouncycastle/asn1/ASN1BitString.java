@@ -13,11 +13,9 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
     protected final byte[] data;
     protected final int padBits;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static int getPadBits(int bitString) {
         int val = 0;
         int i = 3;
@@ -54,7 +52,6 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static byte[] getBytes(int bitString) {
         if (bitString == 0) {
             return new byte[0];
@@ -70,7 +67,6 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ASN1BitString(byte data, int padBits) {
         if (padBits > 7 || padBits < 0) {
             throw new IllegalArgumentException("pad bits cannot be greater than 7 or less than 0");
@@ -160,7 +156,6 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
         return this.padBits ^ ((hc * 257) ^ der);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1BitString)) {
@@ -192,7 +187,6 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
         return derA == derB;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ASN1BitString fromInputStream(int length, InputStream stream) throws IOException {
         if (length < 1) {
             throw new IllegalArgumentException("truncated BIT STRING detected");
@@ -214,13 +208,11 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
         return toASN1Primitive();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDERObject() {
         return new DERBitString(this.data, this.padBits);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
     public ASN1Primitive toDLObject() {
         return new DLBitString(this.data, this.padBits);

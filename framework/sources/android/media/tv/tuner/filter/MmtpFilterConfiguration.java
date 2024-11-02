@@ -7,6 +7,10 @@ import android.annotation.SystemApi;
 public final class MmtpFilterConfiguration extends FilterConfiguration {
     private final int mMmtpPid;
 
+    /* synthetic */ MmtpFilterConfiguration(Settings settings, int i, MmtpFilterConfigurationIA mmtpFilterConfigurationIA) {
+        this(settings, i);
+    }
+
     private MmtpFilterConfiguration(Settings settings, int mmtpPid) {
         super(settings);
         this.mMmtpPid = mmtpPid;
@@ -29,6 +33,10 @@ public final class MmtpFilterConfiguration extends FilterConfiguration {
     public static final class Builder {
         private int mMmtpPid;
         private Settings mSettings;
+
+        /* synthetic */ Builder(BuilderIA builderIA) {
+            this();
+        }
 
         private Builder() {
             this.mMmtpPid = 65535;

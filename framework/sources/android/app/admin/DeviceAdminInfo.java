@@ -112,13 +112,14 @@ public final class DeviceAdminInfo implements Parcelable {
             sKnownPolicies.put(pi.tag, Integer.valueOf(pi.ident));
         }
         CREATOR = new Parcelable.Creator<DeviceAdminInfo>() { // from class: android.app.admin.DeviceAdminInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public DeviceAdminInfo createFromParcel(Parcel source) {
                 return new DeviceAdminInfo(source);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DeviceAdminInfo[] newArray(int size) {
                 return new DeviceAdminInfo[size];
@@ -130,8 +131,14 @@ public final class DeviceAdminInfo implements Parcelable {
         this(context, resolveInfo.activityInfo);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x013b, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:?, code lost:            return;     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x013b, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:?, code lost:
+    
+        return;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -237,6 +244,23 @@ public final class DeviceAdminInfo implements Parcelable {
         dest.writeInt(this.mUsesPolicies);
         dest.writeBoolean(this.mSupportsTransferOwnership);
         dest.writeInt(this.mHeadlessDeviceOwnerMode);
+    }
+
+    /* renamed from: android.app.admin.DeviceAdminInfo$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DeviceAdminInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeviceAdminInfo createFromParcel(Parcel source) {
+            return new DeviceAdminInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DeviceAdminInfo[] newArray(int size) {
+            return new DeviceAdminInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

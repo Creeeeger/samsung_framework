@@ -4,7 +4,6 @@ package com.android.internal.org.bouncycastle.crypto.params;
 public class DHKeyParameters extends AsymmetricKeyParameter {
     private DHParameters params;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public DHKeyParameters(boolean isPrivate, DHParameters params) {
         super(isPrivate);
         this.params = params;

@@ -122,7 +122,6 @@ public class TableRow extends LinearLayout {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.widget.LinearLayout.LayoutParams, android.view.ViewGroup.MarginLayoutParams, android.view.ViewGroup.LayoutParams
         public void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
@@ -158,7 +157,6 @@ public class TableRow extends LinearLayout {
         this.mChildrenTracker.setOnHierarchyChangeListener(listener);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setColumnCollapsed(int columnIndex, boolean collapsed) {
         View child = getVirtualChildAt(columnIndex);
         if (child != null) {
@@ -166,13 +164,11 @@ public class TableRow extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         measureHorizontal(widthMeasureSpec, heightMeasureSpec);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         layoutHorizontal(l, t, r, b);
@@ -226,7 +222,6 @@ public class TableRow extends LinearLayout {
         return this.mConstrainedColumnWidths[childIndex];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.widget.LinearLayout
     public void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
         if (this.mConstrainedColumnWidths != null) {
@@ -289,7 +284,6 @@ public class TableRow extends LinearLayout {
         return ((LayoutParams) child.getLayoutParams()).mOffset[1];
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int[] getColumnsWidths(int widthMeasureSpec, int heightMeasureSpec) {
         int spec;
         int numColumns = getVirtualChildCount();
@@ -327,7 +321,6 @@ public class TableRow extends LinearLayout {
         return columnWidths;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setColumnsWidthConstraints(int[] columnWidths) {
         if (columnWidths == null || columnWidths.length < getVirtualChildCount()) {
             throw new IllegalArgumentException("columnWidths should be >= getVirtualChildCount()");
@@ -340,19 +333,16 @@ public class TableRow extends LinearLayout {
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
@@ -363,15 +353,17 @@ public class TableRow extends LinearLayout {
         return TableRow.class.getName();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ChildrenTracker implements ViewGroup.OnHierarchyChangeListener {
         private ViewGroup.OnHierarchyChangeListener listener;
 
+        /* synthetic */ ChildrenTracker(TableRow tableRow, ChildrenTrackerIA childrenTrackerIA) {
+            this();
+        }
+
         private ChildrenTracker() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void setOnHierarchyChangeListener(ViewGroup.OnHierarchyChangeListener listener) {
             this.listener = listener;
         }

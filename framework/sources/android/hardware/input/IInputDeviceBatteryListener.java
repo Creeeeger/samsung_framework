@@ -84,8 +84,9 @@ public interface IInputDeviceBatteryListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IInputDeviceBatteryListener {
+        public static class Proxy implements IInputDeviceBatteryListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

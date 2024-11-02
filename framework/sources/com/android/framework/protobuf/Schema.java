@@ -3,7 +3,6 @@ package com.android.framework.protobuf;
 import com.android.framework.protobuf.ArrayDecoders;
 import java.io.IOException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
 /* loaded from: classes4.dex */
 public interface Schema<T> {

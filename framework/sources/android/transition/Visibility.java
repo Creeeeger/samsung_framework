@@ -27,7 +27,6 @@ public abstract class Visibility extends Transition {
     @interface VisibilityMode {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class VisibilityInfo {
         ViewGroup endParent;
@@ -36,6 +35,10 @@ public abstract class Visibility extends Transition {
         ViewGroup startParent;
         int startVisibility;
         boolean visibilityChange;
+
+        /* synthetic */ VisibilityInfo(VisibilityInfoIA visibilityInfoIA) {
+            this();
+        }
 
         private VisibilityInfo() {
         }
@@ -191,11 +194,11 @@ public abstract class Visibility extends Transition {
     }
 
     public Animator onDisappear(ViewGroup sceneRoot, TransitionValues startValues, int startVisibility, TransitionValues endValues, int endVisibility) {
-        final ViewGroupOverlay overlay;
+        ViewGroupOverlay overlay;
         if ((this.mMode & 2) != 2 || startValues == null) {
             return null;
         }
-        final View startView = startValues.view;
+        View startView = startValues.view;
         View endView = endValues != null ? endValues.view : null;
         View overlayView = null;
         View viewToKeep = null;
@@ -258,8 +261,18 @@ public abstract class Visibility extends Transition {
                     overlay.remove(overlayView);
                 } else {
                     startView.setTagInternal(R.id.transition_overlay_view_tag, overlayView);
-                    final View finalOverlayView = overlayView;
+                    View finalOverlayView = overlayView;
                     addListener(new TransitionListenerAdapter() { // from class: android.transition.Visibility.1
+                        final /* synthetic */ View val$finalOverlayView;
+                        final /* synthetic */ ViewGroupOverlay val$overlay;
+                        final /* synthetic */ View val$startView;
+
+                        AnonymousClass1(ViewGroupOverlay overlay2, View finalOverlayView2, View startView2) {
+                            overlay = overlay2;
+                            finalOverlayView = finalOverlayView2;
+                            startView = startView2;
+                        }
+
                         @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
                         public void onTransitionPause(Transition transition) {
                             overlay.remove(finalOverlayView);
@@ -302,6 +315,41 @@ public abstract class Visibility extends Transition {
         return null;
     }
 
+    /* renamed from: android.transition.Visibility$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends TransitionListenerAdapter {
+        final /* synthetic */ View val$finalOverlayView;
+        final /* synthetic */ ViewGroupOverlay val$overlay;
+        final /* synthetic */ View val$startView;
+
+        AnonymousClass1(ViewGroupOverlay overlay2, View finalOverlayView2, View startView2) {
+            overlay = overlay2;
+            finalOverlayView = finalOverlayView2;
+            startView = startView2;
+        }
+
+        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
+        public void onTransitionPause(Transition transition) {
+            overlay.remove(finalOverlayView);
+        }
+
+        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
+        public void onTransitionResume(Transition transition) {
+            if (finalOverlayView.getParent() == null) {
+                overlay.add(finalOverlayView);
+            } else {
+                Visibility.this.cancel();
+            }
+        }
+
+        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
+        public void onTransitionEnd(Transition transition) {
+            startView.setTagInternal(R.id.transition_overlay_view_tag, null);
+            overlay.remove(finalOverlayView);
+            transition.removeListener(this);
+        }
+    }
+
     @Override // android.transition.Transition
     public boolean isTransitionRequired(TransitionValues startValues, TransitionValues newValues) {
         if (startValues == null && newValues == null) {
@@ -321,7 +369,6 @@ public abstract class Visibility extends Transition {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class DisappearListener extends TransitionListenerAdapter implements Animator.AnimatorListener, Animator.AnimatorPauseListener {
         boolean mCanceled = false;

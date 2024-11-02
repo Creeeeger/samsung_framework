@@ -29,7 +29,9 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public final class SystemUpdatePolicy implements Parcelable {
     public static final Parcelable.Creator<SystemUpdatePolicy> CREATOR = new Parcelable.Creator<SystemUpdatePolicy>() { // from class: android.app.admin.SystemUpdatePolicy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SystemUpdatePolicy createFromParcel(Parcel source) {
             SystemUpdatePolicy policy = new SystemUpdatePolicy();
@@ -46,7 +48,6 @@ public final class SystemUpdatePolicy implements Parcelable {
             return policy;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SystemUpdatePolicy[] newArray(int size) {
             return new SystemUpdatePolicy[size];
@@ -80,16 +81,21 @@ public final class SystemUpdatePolicy implements Parcelable {
     @interface SystemUpdatePolicyType {
     }
 
+    /* synthetic */ SystemUpdatePolicy(SystemUpdatePolicyIA systemUpdatePolicyIA) {
+        this();
+    }
+
     /* loaded from: classes.dex */
     public static final class ValidationFailedException extends IllegalArgumentException implements Parcelable {
         public static final Parcelable.Creator<ValidationFailedException> CREATOR = new Parcelable.Creator<ValidationFailedException>() { // from class: android.app.admin.SystemUpdatePolicy.ValidationFailedException.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public ValidationFailedException createFromParcel(Parcel source) {
                 return new ValidationFailedException(source.readInt(), source.readString());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ValidationFailedException[] newArray(int size) {
                 return new ValidationFailedException[size];
@@ -107,6 +113,10 @@ public final class SystemUpdatePolicy implements Parcelable {
         @Retention(RetentionPolicy.SOURCE)
         /* loaded from: classes.dex */
         @interface ValidationFailureType {
+        }
+
+        /* synthetic */ ValidationFailedException(int i, String str, ValidationFailedExceptionIA validationFailedExceptionIA) {
+            this(i, str);
         }
 
         private ValidationFailedException(int errorCode, String message) {
@@ -147,6 +157,23 @@ public final class SystemUpdatePolicy implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.mErrorCode);
             dest.writeString(getMessage());
+        }
+
+        /* renamed from: android.app.admin.SystemUpdatePolicy$ValidationFailedException$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Parcelable.Creator<ValidationFailedException> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ValidationFailedException createFromParcel(Parcel source) {
+                return new ValidationFailedException(source.readInt(), source.readString());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ValidationFailedException[] newArray(int size) {
+                return new ValidationFailedException[size];
+            }
         }
     }
 
@@ -411,6 +438,34 @@ public final class SystemUpdatePolicy implements Parcelable {
             dest.writeInt(interval.getStart().getDayOfMonth());
             dest.writeInt(interval.getEnd().getMonthValue());
             dest.writeInt(interval.getEnd().getDayOfMonth());
+        }
+    }
+
+    /* renamed from: android.app.admin.SystemUpdatePolicy$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SystemUpdatePolicy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SystemUpdatePolicy createFromParcel(Parcel source) {
+            SystemUpdatePolicy policy = new SystemUpdatePolicy();
+            policy.mPolicyType = source.readInt();
+            policy.mMaintenanceWindowStart = source.readInt();
+            policy.mMaintenanceWindowEnd = source.readInt();
+            int freezeCount = source.readInt();
+            policy.mFreezePeriods.ensureCapacity(freezeCount);
+            for (int i = 0; i < freezeCount; i++) {
+                MonthDay start = MonthDay.of(source.readInt(), source.readInt());
+                MonthDay end = MonthDay.of(source.readInt(), source.readInt());
+                policy.mFreezePeriods.add(new FreezePeriod(start, end));
+            }
+            return policy;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SystemUpdatePolicy[] newArray(int size) {
+            return new SystemUpdatePolicy[size];
         }
     }
 

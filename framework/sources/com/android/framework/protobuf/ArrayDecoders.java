@@ -7,14 +7,12 @@ import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import java.io.IOException;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
 /* loaded from: classes4.dex */
 public final class ArrayDecoders {
     private ArrayDecoders() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static final class Registers {
         public final ExtensionRegistryLite extensionRegistry;
@@ -26,7 +24,6 @@ public final class ArrayDecoders {
             this.extensionRegistry = ExtensionRegistryLite.getEmptyRegistry();
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public Registers(ExtensionRegistryLite extensionRegistry) {
             if (extensionRegistry == null) {
                 throw new NullPointerException();
@@ -35,7 +32,6 @@ public final class ArrayDecoders {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeVarint32(byte[] data, int position, Registers registers) {
         int position2 = position + 1;
         int value = data[position];
@@ -46,7 +42,6 @@ public final class ArrayDecoders {
         return decodeVarint32(value, data, position2, registers);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeVarint32(int firstByte, byte[] data, int position, Registers registers) {
         int value = firstByte & 127;
         int position2 = position + 1;
@@ -87,7 +82,6 @@ public final class ArrayDecoders {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeVarint64(byte[] data, int position, Registers registers) {
         int position2 = position + 1;
         long value = data[position];
@@ -114,27 +108,22 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeFixed32(byte[] data, int position) {
         return (data[position] & 255) | ((data[position + 1] & 255) << 8) | ((data[position + 2] & 255) << 16) | ((data[position + 3] & 255) << 24);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static long decodeFixed64(byte[] data, int position) {
         return (data[position] & 255) | ((data[position + 1] & 255) << 8) | ((data[position + 2] & 255) << 16) | ((data[position + 3] & 255) << 24) | ((data[position + 4] & 255) << 32) | ((data[position + 5] & 255) << 40) | ((data[position + 6] & 255) << 48) | ((255 & data[position + 7]) << 56);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static double decodeDouble(byte[] data, int position) {
         return Double.longBitsToDouble(decodeFixed64(data, position));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static float decodeFloat(byte[] data, int position) {
         return Float.intBitsToFloat(decodeFixed32(data, position));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeString(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
@@ -149,7 +138,6 @@ public final class ArrayDecoders {
         return position2 + length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeStringRequireUtf8(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
@@ -164,7 +152,6 @@ public final class ArrayDecoders {
         return position2 + length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeBytes(byte[] data, int position, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
@@ -182,7 +169,6 @@ public final class ArrayDecoders {
         return position2 + length;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeMessageField(Schema schema, byte[] data, int position, int limit, Registers registers) throws IOException {
         Object msg = schema.newInstance();
         int offset = mergeMessageField(msg, schema, data, position, limit, registers);
@@ -199,7 +185,6 @@ public final class ArrayDecoders {
         return offset;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int mergeMessageField(Object msg, Schema schema, byte[] bArr, int position, int limit, Registers registers) throws IOException {
         int position2;
         int position3 = position + 1;
@@ -219,7 +204,6 @@ public final class ArrayDecoders {
         return position2 + i;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int mergeGroupField(Object msg, Schema schema, byte[] data, int position, int limit, int endGroup, Registers registers) throws IOException {
         MessageSchema messageSchema = (MessageSchema) schema;
         int endPosition = messageSchema.parseProto2Message(msg, data, position, limit, endGroup, registers);
@@ -227,7 +211,6 @@ public final class ArrayDecoders {
         return endPosition;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeVarint32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -243,7 +226,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeVarint64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint64(data, position, registers);
@@ -259,7 +241,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeFixed32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         IntArrayList output = (IntArrayList) list;
         output.addInt(decodeFixed32(data, position));
@@ -275,7 +256,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeFixed64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         LongArrayList output = (LongArrayList) list;
         output.addLong(decodeFixed64(data, position));
@@ -291,7 +271,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeFloatList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         FloatArrayList output = (FloatArrayList) list;
         output.addFloat(decodeFloat(data, position));
@@ -307,7 +286,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeDoubleList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         DoubleArrayList output = (DoubleArrayList) list;
         output.addDouble(decodeDouble(data, position));
@@ -323,7 +301,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeBoolList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         BooleanArrayList output = (BooleanArrayList) list;
         int position2 = decodeVarint64(data, position, registers);
@@ -339,7 +316,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeSInt32List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -355,7 +331,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeSInt64List(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint64(data, position, registers);
@@ -371,7 +346,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedVarint32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -386,7 +360,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedVarint64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -401,7 +374,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedFixed32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -416,7 +388,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedFixed64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -431,7 +402,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedFloatList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         FloatArrayList output = (FloatArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -446,7 +416,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedDoubleList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         DoubleArrayList output = (DoubleArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -461,7 +430,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedBoolList(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         BooleanArrayList output = (BooleanArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -476,7 +444,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedSInt32List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         IntArrayList output = (IntArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -491,7 +458,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodePackedSInt64List(byte[] data, int position, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         LongArrayList output = (LongArrayList) list;
         int position2 = decodeVarint32(data, position, registers);
@@ -506,7 +472,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeStringList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
@@ -541,7 +506,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeStringListRequireUtf8(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
@@ -582,7 +546,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeBytesList(int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws InvalidProtocolBufferException {
         int position2 = decodeVarint32(data, position, registers);
         int length = registers.int1;
@@ -621,7 +584,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeMessageList(Schema<?> schema, int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         int position2 = decodeMessageField(schema, data, position, limit, registers);
         list.add(registers.object1);
@@ -636,7 +598,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeGroupList(Schema schema, int tag, byte[] data, int position, int limit, Internal.ProtobufList<?> list, Registers registers) throws IOException {
         int endgroup = (tag & (-8)) | 4;
         int position2 = decodeGroupField(schema, data, position, limit, endgroup, registers);
@@ -652,7 +613,6 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeExtensionOrUnknownField(int tag, byte[] data, int position, int limit, Object message, MessageLite defaultInstance, UnknownFieldSchema<UnknownFieldSetLite, UnknownFieldSetLite> unknownFieldSchema, Registers registers) throws IOException {
         int number = tag >>> 3;
         GeneratedMessageLite.GeneratedExtension extension = registers.extensionRegistry.findLiteExtensionByNumber(defaultInstance, number);
@@ -837,8 +797,7 @@ public final class ArrayDecoders {
         return position2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.framework.protobuf.ArrayDecoders$1, reason: invalid class name */
+    /* renamed from: com.android.framework.protobuf.ArrayDecoders$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
@@ -921,7 +880,6 @@ public final class ArrayDecoders {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int decodeUnknownField(int tag, byte[] data, int position, int limit, UnknownFieldSetLite unknownFields, Registers registers) throws InvalidProtocolBufferException {
         if (WireFormat.getTagFieldNumber(tag) == 0) {
             throw InvalidProtocolBufferException.invalidTag();
@@ -979,7 +937,6 @@ public final class ArrayDecoders {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int skipField(int tag, byte[] data, int position, int limit, Registers registers) throws InvalidProtocolBufferException {
         if (WireFormat.getTagFieldNumber(tag) == 0) {
             throw InvalidProtocolBufferException.invalidTag();

@@ -148,7 +148,6 @@ public final class UiTranslationManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class UiTranslationStateRemoteCallback extends IRemoteCallback.Stub {
         private final UiTranslationStateCallback mCallback;
@@ -161,7 +160,6 @@ public final class UiTranslationManager {
             this.mCallback = callback;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendResult$1(final Bundle bundle) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.view.translation.UiTranslationManager$UiTranslationStateRemoteCallback$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -181,8 +179,7 @@ public final class UiTranslationManager {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* renamed from: onStateChange, reason: merged with bridge method [inline-methods] */
+        /* renamed from: onStateChange */
         public void lambda$sendResult$0(Bundle bundle) {
             int state = bundle.getInt("state");
             String packageName = bundle.getString("package_name");

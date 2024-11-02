@@ -86,8 +86,9 @@ public interface IMusicRecognitionManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IMusicRecognitionManager {
+        public static class Proxy implements IMusicRecognitionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

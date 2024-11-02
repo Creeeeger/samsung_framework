@@ -15,13 +15,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class DataProfile implements Parcelable {
     public static final Parcelable.Creator<DataProfile> CREATOR = new Parcelable.Creator<DataProfile>() { // from class: android.telephony.data.DataProfile.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DataProfile createFromParcel(Parcel source) {
             return new DataProfile(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataProfile[] newArray(int size) {
             return new DataProfile[size];
@@ -41,6 +42,14 @@ public final class DataProfile implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface Type {
+    }
+
+    /* synthetic */ DataProfile(Parcel parcel, DataProfileIA dataProfileIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ DataProfile(Builder builder, DataProfileIA dataProfileIA) {
+        this(builder);
     }
 
     private DataProfile(Builder builder) {
@@ -339,6 +348,23 @@ public final class DataProfile implements Parcelable {
         dest.writeLong(this.mSetupTimestamp);
         dest.writeInt(this.mCid);
         dest.writeInt(this.mProfileId);
+    }
+
+    /* renamed from: android.telephony.data.DataProfile$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DataProfile> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataProfile createFromParcel(Parcel source) {
+            return new DataProfile(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DataProfile[] newArray(int size) {
+            return new DataProfile[size];
+        }
     }
 
     public boolean equals(Object o) {

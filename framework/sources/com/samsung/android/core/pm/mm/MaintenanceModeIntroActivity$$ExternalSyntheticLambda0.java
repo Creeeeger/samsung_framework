@@ -11,6 +11,6 @@ public final /* synthetic */ class MaintenanceModeIntroActivity$$ExternalSynthet
 
     @Override // java.lang.Runnable
     public final void run() {
-        MaintenanceModeIntroActivity.$r8$lambda$0q5WPJKX4nJEhQ253MiWrEkvt3k(this.f$0);
+        this.f$0.updateCloudBackupMenuSubText();
     }
 }

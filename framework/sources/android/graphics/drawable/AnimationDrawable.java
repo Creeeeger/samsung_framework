@@ -18,6 +18,10 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
     private boolean mMutated;
     private boolean mRunning;
 
+    /* synthetic */ AnimationDrawable(AnimationState animationState, Resources resources, AnimationDrawableIA animationDrawableIA) {
+        this(animationState, resources);
+    }
+
     public AnimationDrawable() {
         this(null, null);
     }
@@ -138,15 +142,42 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         setFrame(0, true, false);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0040, code lost:            if (r7 == null) goto L20;     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0042, code lost:            r8 = r12.next();     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0048, code lost:            if (r8 != 4) goto L48;     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x004b, code lost:            if (r8 != 2) goto L39;     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x004d, code lost:            r7 = android.graphics.drawable.Drawable.createFromXmlInner(r11, r12, r13, r14);     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x006e, code lost:            throw new org.xmlpull.v1.XmlPullParserException(r12.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");     */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x006f, code lost:            r10.mAnimationState.addFrame(r7, r6);     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x0074, code lost:            if (r7 == null) goto L46;     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0076, code lost:            r7.setCallback(r10);     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0040, code lost:
+    
+        if (r7 == null) goto L71;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0042, code lost:
+    
+        r8 = r12.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0048, code lost:
+    
+        if (r8 != 4) goto L99;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x004b, code lost:
+    
+        if (r8 != 2) goto L90;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x004d, code lost:
+    
+        r7 = android.graphics.drawable.Drawable.createFromXmlInner(r11, r12, r13, r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x006e, code lost:
+    
+        throw new org.xmlpull.v1.XmlPullParserException(r12.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x006f, code lost:
+    
+        r10.mAnimationState.addFrame(r7, r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x0074, code lost:
+    
+        if (r7 == null) goto L97;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x0076, code lost:
+    
+        r7.setCallback(r10);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -248,7 +279,6 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         return this;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.DrawableContainer
     public AnimationState cloneConstantState() {
         return new AnimationState(this.mAnimationState, this, null);
@@ -260,7 +290,6 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         this.mMutated = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class AnimationState extends DrawableContainer.DrawableContainerState {
         private int[] mDurations;
@@ -278,7 +307,6 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void mutate() {
             this.mDurations = (int[]) this.mDurations.clone();
         }
@@ -319,8 +347,9 @@ public class AnimationDrawable extends DrawableContainer implements Runnable, An
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableContainer
-    protected void setConstantState(DrawableContainer.DrawableContainerState state) {
+    public void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);
         if (state instanceof AnimationState) {
             this.mAnimationState = (AnimationState) state;

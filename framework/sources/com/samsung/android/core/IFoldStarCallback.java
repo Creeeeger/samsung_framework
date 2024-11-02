@@ -87,8 +87,9 @@ public interface IFoldStarCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IFoldStarCallback {
+        public static class Proxy implements IFoldStarCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

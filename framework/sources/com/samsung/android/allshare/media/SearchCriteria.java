@@ -9,6 +9,10 @@ public class SearchCriteria {
     private String mKeyword;
     private ArrayList<Item.MediaType> mMediaTypes;
 
+    /* synthetic */ SearchCriteria(Builder builder, SearchCriteriaIA searchCriteriaIA) {
+        this(builder);
+    }
+
     private SearchCriteria(Builder builder) {
         this.mKeyword = builder.mKeyword;
         this.mMediaTypes = builder.mMediaTypes;

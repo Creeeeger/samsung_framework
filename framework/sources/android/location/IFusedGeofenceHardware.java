@@ -166,8 +166,9 @@ public interface IFusedGeofenceHardware extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IFusedGeofenceHardware {
+        public static class Proxy implements IFusedGeofenceHardware {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

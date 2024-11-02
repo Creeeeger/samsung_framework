@@ -7,6 +7,9 @@ import android.os.Bundle;
 /* loaded from: classes.dex */
 public class PackageInstallObserver {
     private final IPackageInstallObserver2.Stub mBinder = new IPackageInstallObserver2.Stub() { // from class: android.app.PackageInstallObserver.1
+        AnonymousClass1() {
+        }
+
         @Override // android.content.pm.IPackageInstallObserver2
         public void onUserActionRequired(Intent intent) {
             PackageInstallObserver.this.onUserActionRequired(intent);
@@ -17,6 +20,23 @@ public class PackageInstallObserver {
             PackageInstallObserver.this.onPackageInstalled(basePackageName, returnCode, msg, extras);
         }
     };
+
+    /* renamed from: android.app.PackageInstallObserver$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 extends IPackageInstallObserver2.Stub {
+        AnonymousClass1() {
+        }
+
+        @Override // android.content.pm.IPackageInstallObserver2
+        public void onUserActionRequired(Intent intent) {
+            PackageInstallObserver.this.onUserActionRequired(intent);
+        }
+
+        @Override // android.content.pm.IPackageInstallObserver2
+        public void onPackageInstalled(String basePackageName, int returnCode, String msg, Bundle extras) {
+            PackageInstallObserver.this.onPackageInstalled(basePackageName, returnCode, msg, extras);
+        }
+    }
 
     public IPackageInstallObserver2 getBinder() {
         return this.mBinder;

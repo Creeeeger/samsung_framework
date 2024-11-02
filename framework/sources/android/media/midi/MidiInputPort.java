@@ -24,7 +24,6 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
     private final IBinder mToken;
     private AtomicInteger mTotalBytes;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MidiInputPort(IMidiDeviceServer server, IBinder token, FileDescriptor fd, int portNumber) {
         super(1015);
         CloseGuard closeGuard = CloseGuard.get();
@@ -39,7 +38,6 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
         closeGuard.open("close");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MidiInputPort(FileDescriptor fd, int portNumber) {
         this(null, null, fd, portNumber);
     }
@@ -77,7 +75,6 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FileDescriptor claimFileDescriptor() {
         synchronized (this.mGuard) {
             synchronized (this.mBuffer) {
@@ -94,12 +91,10 @@ public final class MidiInputPort extends MidiReceiver implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IBinder getToken() {
         return this.mToken;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public IMidiDeviceServer getDeviceServer() {
         return this.mDeviceServer;
     }

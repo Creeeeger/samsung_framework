@@ -10,8 +10,13 @@ public class MidiEventScheduler extends EventScheduler {
     private static final String TAG = "MidiEventScheduler";
     private MidiReceiver mReceiver = new SchedulingReceiver();
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class SchedulingReceiver extends MidiReceiver {
+    public class SchedulingReceiver extends MidiReceiver {
+        /* synthetic */ SchedulingReceiver(MidiEventScheduler midiEventScheduler, SchedulingReceiverIA schedulingReceiverIA) {
+            this();
+        }
+
         private SchedulingReceiver() {
         }
 
@@ -33,6 +38,14 @@ public class MidiEventScheduler extends EventScheduler {
     public static class MidiEvent extends EventScheduler.SchedulableEvent {
         public int count;
         public byte[] data;
+
+        /* synthetic */ MidiEvent(int i, MidiEventIA midiEventIA) {
+            this(i);
+        }
+
+        /* synthetic */ MidiEvent(byte[] bArr, int i, int i2, long j, MidiEventIA midiEventIA) {
+            this(bArr, i, i2, j);
+        }
 
         private MidiEvent(int count) {
             super(0L);
@@ -60,7 +73,6 @@ public class MidiEventScheduler extends EventScheduler {
 
     public MidiEvent createScheduledEvent(byte[] msg, int offset, int count, long timestamp) {
         MidiEvent event;
-        int i = 16;
         if (count > 16) {
             return new MidiEvent(msg, offset, count, timestamp);
         }
@@ -68,7 +80,7 @@ public class MidiEventScheduler extends EventScheduler {
         if (event2 != null) {
             event = event2;
         } else {
-            event = new MidiEvent(i);
+            event = new MidiEvent(16);
         }
         System.arraycopy(msg, offset, event.data, 0, count);
         event.count = count;

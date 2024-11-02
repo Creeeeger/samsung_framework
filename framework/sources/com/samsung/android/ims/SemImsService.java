@@ -683,8 +683,9 @@ public interface SemImsService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements SemImsService {
+        public static class Proxy implements SemImsService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

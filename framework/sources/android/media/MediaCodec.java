@@ -143,7 +143,6 @@ public final class MediaCodec {
 
     private final native MediaCodecInfo getOwnCodecInfo();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native void native_closeMediaImage(long j);
 
     private final native void native_configure(String[] strArr, Object[] objArr, Surface surface, MediaCrypto mediaCrypto, IHwBinder iHwBinder, int i);
@@ -174,19 +173,16 @@ public final class MediaCodec {
 
     private static native Image native_mapHardwareBuffer(HardwareBuffer hardwareBuffer);
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native void native_queueHardwareBuffer(int i, HardwareBuffer hardwareBuffer, long j, int i2, ArrayList<String> arrayList, ArrayList<Object> arrayList2);
 
     private final native void native_queueInputBuffer(int i, int i2, int i3, long j, int i4) throws CryptoException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public native void native_queueLinearBlock(int i, LinearBlock linearBlock, int i2, int i3, CryptoInfo cryptoInfo, long j, int i4, ArrayList<String> arrayList, ArrayList<Object> arrayList2);
 
     private final native void native_queueSecureInputBuffer(int i, int i2, CryptoInfo cryptoInfo, long j, int i3) throws CryptoException;
 
     private final native void native_release();
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static final native void native_releasePersistentInputSurface(Surface surface);
 
     private final native void native_reset();
@@ -242,7 +238,6 @@ public final class MediaCodec {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public class EventHandler extends Handler {
         private MediaCodec mCodec;
@@ -391,7 +386,7 @@ public final class MediaCodec {
         this(name, nameIsType, encoder, -1, -1);
     }
 
-    private MediaCodec(String str, boolean z, boolean z2, int i, int i2) {
+    private MediaCodec(String name, boolean nameIsType, boolean encoder, int pid, int uid) {
         this.mListenerLock = new Object();
         this.mCodecInfoLock = new Object();
         this.mHasSurface = false;
@@ -405,13 +400,13 @@ public final class MediaCodec {
         this.mOutputFrames = new ArrayList<>();
         this.mNativeContext = 0L;
         this.mNativeContextLock = new ReentrantLock();
-        Looper myLooper = Looper.myLooper();
-        if (myLooper != null) {
-            this.mEventHandler = new EventHandler(this, myLooper);
+        Looper looper = Looper.myLooper();
+        if (looper != null) {
+            this.mEventHandler = new EventHandler(this, looper);
         } else {
-            Looper mainLooper = Looper.getMainLooper();
-            if (mainLooper != null) {
-                this.mEventHandler = new EventHandler(this, mainLooper);
+            Looper looper2 = Looper.getMainLooper();
+            if (looper2 != null) {
+                this.mEventHandler = new EventHandler(this, looper2);
             } else {
                 this.mEventHandler = null;
             }
@@ -421,8 +416,8 @@ public final class MediaCodec {
         this.mOnFirstTunnelFrameReadyHandler = eventHandler;
         this.mOnFrameRenderedHandler = eventHandler;
         this.mBufferLock = new Object();
-        this.mNameAtCreation = z ? null : str;
-        native_setup(str, z, z2, i, i2);
+        this.mNameAtCreation = nameIsType ? null : name;
+        native_setup(name, nameIsType, encoder, pid, uid);
     }
 
     protected void finalize() {
@@ -949,6 +944,10 @@ public final class MediaCodec {
         private final ArrayList<String> mTuningKeys;
         private final ArrayList<Object> mTuningValues;
 
+        /* synthetic */ QueueRequest(MediaCodec mediaCodec, MediaCodec mediaCodec2, int i, QueueRequestIA queueRequestIA) {
+            this(mediaCodec2, i);
+        }
+
         private QueueRequest(MediaCodec codec, int index) {
             this.mLinearBlock = null;
             this.mOffset = 0;
@@ -1197,20 +1196,26 @@ public final class MediaCodec {
         return new MediaFormat(getOutputFormatNative(index));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes2.dex */
     public static class BufferMap {
         private final Map<Integer, CodecBuffer> mMap;
+
+        /* synthetic */ BufferMap(BufferMapIA bufferMapIA) {
+            this();
+        }
 
         private BufferMap() {
             this.mMap = new HashMap();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
         public static class CodecBuffer {
             private ByteBuffer mByteBuffer;
             private Image mImage;
+
+            /* synthetic */ CodecBuffer(CodecBufferIA codecBufferIA) {
+                this();
+            }
 
             private CodecBuffer() {
             }
@@ -1288,7 +1293,6 @@ public final class MediaCodec {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void validateInputByteBufferLocked(ByteBuffer[] buffers, int index) {
         ByteBuffer buffer;
         if (buffers == null) {
@@ -1315,7 +1319,6 @@ public final class MediaCodec {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void validateOutputByteBufferLocked(ByteBuffer[] buffers, int index, BufferInfo info) {
         ByteBuffer buffer;
         if (buffers == null) {

@@ -111,14 +111,12 @@ public class TaskFragmentOrganizer extends WindowOrganizer {
         onTransactionHandled(transaction.getTransactionToken(), new WindowContainerTransaction(), 0, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.window.TaskFragmentOrganizer$1, reason: invalid class name */
+    /* renamed from: android.window.TaskFragmentOrganizer$1 */
     /* loaded from: classes4.dex */
     public class AnonymousClass1 extends ITaskFragmentOrganizer.Stub {
         AnonymousClass1() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTransactionReady$0(TaskFragmentTransaction transaction) {
             TaskFragmentOrganizer.this.onTransactionReady(transaction);
         }

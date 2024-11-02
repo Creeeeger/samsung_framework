@@ -39,7 +39,6 @@ public class DualDarAuthUtils {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$setInnerAuthUserId$0(int innerAuthUserId, int userId, IDarManagerService service) {
         try {
             service.setInnerAuthUserId(innerAuthUserId, userId);
@@ -60,7 +59,6 @@ public class DualDarAuthUtils {
         return -10000;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$getInnerAuthUserId$1(int userId, IDarManagerService service) {
         try {
             return Integer.valueOf(service.getInnerAuthUserId(userId));
@@ -79,7 +77,6 @@ public class DualDarAuthUtils {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$setMainUserId$2(int mainUserId, int innerAuthUserId, IDarManagerService service) {
         try {
             service.setMainUserId(mainUserId, innerAuthUserId);
@@ -100,7 +97,6 @@ public class DualDarAuthUtils {
         }).orElse(-10000)).intValue();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$getMainUserId$3(int innerAuthUserId, IDarManagerService service) {
         try {
             return Integer.valueOf(service.getMainUserId(innerAuthUserId));
@@ -122,7 +118,6 @@ public class DualDarAuthUtils {
         return -10000;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$getInnerAuthUserForDo$4(IDarManagerService service) {
         try {
             return Integer.valueOf(service.getInnerAuthUserId(0));
@@ -148,7 +143,6 @@ public class DualDarAuthUtils {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ Integer lambda$getPasswordMinimumLengthForInner$5(IDarManagerService service) {
         try {
             return Integer.valueOf(service.getPasswordMinimumLengthForInner());

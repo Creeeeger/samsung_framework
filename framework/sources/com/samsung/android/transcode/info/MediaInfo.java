@@ -172,7 +172,10 @@ public class MediaInfo {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x004e, code lost:            if (r1 == null) goto L30;     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x004e, code lost:
+    
+        if (r1 == null) goto L70;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

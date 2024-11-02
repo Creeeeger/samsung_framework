@@ -16,13 +16,14 @@ import java.util.Objects;
 public class DiskInfo implements Parcelable {
     public static final String ACTION_DISK_SCANNED = "android.os.storage.action.DISK_SCANNED";
     public static final Parcelable.Creator<DiskInfo> CREATOR = new Parcelable.Creator<DiskInfo>() { // from class: android.os.storage.DiskInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public DiskInfo createFromParcel(Parcel in) {
             return new DiskInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DiskInfo[] newArray(int size) {
             return new DiskInfo[size];
@@ -132,8 +133,8 @@ public class DiskInfo implements Parcelable {
         pw.println();
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public DiskInfo m3276clone() {
+    /* renamed from: clone */
+    public DiskInfo m3275clone() {
         Parcel temp = Parcel.obtain();
         try {
             writeToParcel(temp, 0);
@@ -153,6 +154,23 @@ public class DiskInfo implements Parcelable {
 
     public int hashCode() {
         return this.id.hashCode();
+    }
+
+    /* renamed from: android.os.storage.DiskInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<DiskInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DiskInfo createFromParcel(Parcel in) {
+            return new DiskInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public DiskInfo[] newArray(int size) {
+            return new DiskInfo[size];
+        }
     }
 
     @Override // android.os.Parcelable

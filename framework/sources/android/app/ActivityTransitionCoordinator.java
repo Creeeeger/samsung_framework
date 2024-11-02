@@ -25,7 +25,6 @@ import com.android.internal.policy.DecorView;
 import com.android.internal.view.OneShotPreDrawListener;
 import java.util.ArrayList;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public abstract class ActivityTransitionCoordinator extends ResultReceiver {
     protected static final String KEY_ELEVATION = "shared_element:elevation";
@@ -85,7 +84,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         this.mIsReturning = isReturning;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void viewsReady(ArrayMap<String, View> sharedElements) {
         sharedElements.retainAll(this.mAllSharedElementNames);
         SharedElementCallback sharedElementCallback = this.mListener;
@@ -134,7 +132,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void stripOffscreenViews() {
         if (this.mTransitioningViews == null) {
             return;
@@ -149,7 +146,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Window getWindow() {
         return this.mWindow;
     }
@@ -231,10 +227,9 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Transition configureTransition(Transition transition, boolean includeTransitioningViews) {
         if (transition != null) {
-            Transition transition2 = transition.mo4917clone();
+            Transition transition2 = transition.mo4916clone();
             transition2.setEpicenterCallback(this.mEpicenterCallback);
             transition = setTargets(transition2, includeTransitioningViews);
         }
@@ -242,7 +237,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return transition;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void removeExcludedViews(Transition transition, ArrayList<View> views) {
         ArraySet<View> included = new ArraySet<>();
         findIncludedViews(transition, views, included);
@@ -276,7 +270,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static Transition mergeTransitions(Transition transition1, Transition transition2) {
         if (transition1 == null) {
             return transition2;
@@ -290,7 +283,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return transitionSet;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ArrayMap<String, View> mapSharedElements(ArrayList<String> accepted, ArrayList<View> localViews) {
         ArrayMap<String, View> sharedElements = new ArrayMap<>();
         if (accepted != null) {
@@ -306,7 +298,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return sharedElements;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setResultReceiver(ResultReceiver resultReceiver) {
         this.mResultReceiver = resultReceiver;
     }
@@ -424,7 +415,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         matrix.set(parentMatrix);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public ArrayList<SharedElementOriginalState> setSharedElementState(Bundle sharedElementState, ArrayList<View> snapshots) {
         ArrayList<SharedElementOriginalState> originalImageState = new ArrayList<>();
         if (sharedElementState != null) {
@@ -446,8 +436,7 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return originalImageState;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* renamed from: notifySharedElementEnd, reason: merged with bridge method [inline-methods] */
+    /* renamed from: notifySharedElementEnd */
     public void lambda$scheduleSetSharedElementEnd$0(ArrayList<View> snapshots) {
         SharedElementCallback sharedElementCallback = this.mListener;
         if (sharedElementCallback != null) {
@@ -455,7 +444,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void scheduleSetSharedElementEnd(final ArrayList<View> snapshots) {
         View decorView = getDecor();
         if (decorView != null) {
@@ -497,7 +485,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return state;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     /* JADX WARN: Removed duplicated region for block: B:19:0x005b  */
     /* JADX WARN: Removed duplicated region for block: B:23:0x006d  */
     /*
@@ -573,7 +560,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         throw new UnsupportedOperationException("Method not decompiled: android.app.ActivityTransitionCoordinator.createSnapshots(android.os.Bundle, java.util.Collection):java.util.ArrayList");
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public static void setOriginalSharedElementState(ArrayList<View> sharedElements, ArrayList<SharedElementOriginalState> originalState) {
         for (int i = 0; i < originalState.size(); i++) {
             View view = sharedElements.get(i);
@@ -594,7 +580,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Bundle captureSharedElementState() {
         Bundle bundle = new Bundle();
         RectF tempBounds = new RectF();
@@ -607,7 +592,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return bundle;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void clearState() {
         View decor = getDecor();
         ViewRootImpl viewRoot = decor != null ? decor.getViewRootImpl() : null;
@@ -625,12 +609,10 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         this.mSharedElementParentMatrices = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public long getFadeDuration() {
         return getWindow().getTransitionBackgroundFadeDuration();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void hideViews(ArrayList<View> views) {
         int count = views.size();
         for (int i = 0; i < count; i++) {
@@ -642,7 +624,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void showViews(ArrayList<View> views, boolean setTransitionAlpha) {
         int count = views.size();
         for (int i = 0; i < count; i++) {
@@ -660,7 +641,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void captureSharedElementState(View view, String name, Bundle transitionArgs, Matrix tempMatrix, RectF tempBounds) {
         Bundle sharedElementBundle = new Bundle();
         tempMatrix.reset();
@@ -698,7 +678,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         transitionArgs.putBundle(name, sharedElementBundle);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void startTransition(Runnable runnable) {
         if (this.mIsStartingTransition) {
             this.mPendingTransition = runnable;
@@ -708,18 +687,15 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void transitionStarted() {
         this.mIsStartingTransition = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean cancelPendingTransitions() {
         this.mPendingTransition = null;
         return this.mIsStartingTransition;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void moveSharedElementsToOverlay() {
         Window window = this.mWindow;
         if (window == null || !window.getSharedElementsUseOverlay()) {
@@ -765,7 +741,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return isInTransitionGroup(parent.getParent(), decor);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void moveSharedElementsFromOverlay() {
         ViewGroup decor;
         int numListeners = this.mGhostViewListeners.size();
@@ -785,8 +760,7 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* renamed from: setGhostVisibility, reason: merged with bridge method [inline-methods] */
+    /* renamed from: setGhostVisibility */
     public void lambda$scheduleGhostVisibilityChange$1(int visibility) {
         int numSharedElements = this.mSharedElements.size();
         for (int i = 0; i < numSharedElements; i++) {
@@ -797,7 +771,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void scheduleGhostVisibilityChange(final int visibility) {
         View decorView = getDecor();
         if (decorView != null) {
@@ -810,23 +783,19 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isViewsTransitionComplete() {
         return this.mViewsTransitionComplete;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void viewsTransitionComplete() {
         this.mViewsTransitionComplete = true;
         startInputWhenTransitionsComplete();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void backgroundAnimatorComplete() {
         this.mBackgroundAnimatorComplete = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void sharedElementTransitionComplete() {
         this.mSharedElementTransitionComplete = true;
         startInputWhenTransitionsComplete();
@@ -843,7 +812,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void pauseInput() {
         View decor = getDecor();
         ViewRootImpl viewRoot = decor == null ? null : decor.getViewRootImpl();
@@ -855,9 +823,9 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
     protected void onTransitionsComplete() {
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     /* loaded from: classes.dex */
-    protected class ContinueTransitionListener extends TransitionListenerAdapter {
-        /* JADX INFO: Access modifiers changed from: protected */
+    public class ContinueTransitionListener extends TransitionListenerAdapter {
         public ContinueTransitionListener() {
         }
 
@@ -893,7 +861,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setTransitioningViewsVisiblity(int visiblity, boolean invalidate) {
         ArrayList<View> arrayList = this.mTransitioningViews;
         int numElements = arrayList == null ? 0 : arrayList.size();
@@ -924,10 +891,13 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         return (this.mViewsTransitionComplete && this.mSharedElementTransitionComplete && this.mBackgroundAnimatorComplete) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class FixedEpicenterCallback extends Transition.EpicenterCallback {
         private Rect mEpicenter;
+
+        /* synthetic */ FixedEpicenterCallback(FixedEpicenterCallbackIA fixedEpicenterCallbackIA) {
+            this();
+        }
 
         private FixedEpicenterCallback() {
         }
@@ -942,8 +912,9 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class GhostViewListeners implements ViewTreeObserver.OnPreDrawListener, View.OnAttachStateChangeListener {
+    public static class GhostViewListeners implements ViewTreeObserver.OnPreDrawListener, View.OnAttachStateChangeListener {
         private ViewGroup mDecor;
         private Matrix mMatrix = new Matrix();
         private View mParent;
@@ -993,7 +964,6 @@ public abstract class ActivityTransitionCoordinator extends ResultReceiver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static class SharedElementOriginalState {
         int mBottom;

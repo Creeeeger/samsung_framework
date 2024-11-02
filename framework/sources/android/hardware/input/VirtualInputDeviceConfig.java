@@ -11,7 +11,6 @@ public abstract class VirtualInputDeviceConfig {
     private final int mProductId;
     private final int mVendorId;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public VirtualInputDeviceConfig(Builder<? extends Builder<?>> builder) {
         this.mVendorId = ((Builder) builder).mVendorId;
         this.mProductId = ((Builder) builder).mProductId;
@@ -19,7 +18,6 @@ public abstract class VirtualInputDeviceConfig {
         this.mInputDeviceName = ((Builder) builder).mInputDeviceName;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public VirtualInputDeviceConfig(Parcel in) {
         this.mVendorId = in.readInt();
         this.mProductId = in.readInt();
@@ -43,7 +41,6 @@ public abstract class VirtualInputDeviceConfig {
         return this.mInputDeviceName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mVendorId);
         dest.writeInt(this.mProductId);

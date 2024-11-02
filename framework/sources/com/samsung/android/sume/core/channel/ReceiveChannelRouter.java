@@ -75,7 +75,6 @@ public class ReceiveChannelRouter extends ChannelRouterBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public MediaBuffer receiveAll() {
         final List<MediaBuffer> buffers = (List) ((Stream) this.channels.stream().parallel()).map(new ReceiveChannelRouter$$ExternalSyntheticLambda2()).collect(Collectors.toList());
         int primaryId = IntStream.range(0, buffers.size()).filter(new IntPredicate() { // from class: com.samsung.android.sume.core.channel.ReceiveChannelRouter$$ExternalSyntheticLambda6
@@ -89,7 +88,6 @@ public class ReceiveChannelRouter extends ChannelRouterBase {
         return MediaBuffer.groupOf(primaryId, buffers);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public MediaBuffer receiveAny() {
         String str = TAG;
         Log.d(str, "anyReceived: # of channel=" + this.channels.size());
@@ -103,7 +101,7 @@ public class ReceiveChannelRouter extends ChannelRouterBase {
         Map<Integer, Future<MediaBuffer>> results = (Map) IntStream.range(0, this.channels.size()).boxed().collect(Collectors.toMap(Function.identity(), new Function() { // from class: com.samsung.android.sume.core.channel.ReceiveChannelRouter$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return ReceiveChannelRouter.this.m8739x12a5943b(threadPool, queue, (Integer) obj);
+                return ReceiveChannelRouter.this.m8731x12a5943b(threadPool, queue, (Integer) obj);
             }
         }));
         while (!results.isEmpty()) {
@@ -129,20 +127,18 @@ public class ReceiveChannelRouter extends ChannelRouterBase {
         throw new CancellationException("all buffer-channels are canceled");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$receiveAny$2$com-samsung-android-sume-core-channel-ReceiveChannelRouter, reason: not valid java name */
-    public /* synthetic */ Future m8739x12a5943b(ExecutorService threadPool, final BlockingQueue queue, final Integer it) {
+    /* renamed from: lambda$receiveAny$2$com-samsung-android-sume-core-channel-ReceiveChannelRouter */
+    public /* synthetic */ Future m8731x12a5943b(ExecutorService threadPool, final BlockingQueue queue, final Integer it) {
         return threadPool.submit(new Callable() { // from class: com.samsung.android.sume.core.channel.ReceiveChannelRouter$$ExternalSyntheticLambda5
             @Override // java.util.concurrent.Callable
             public final Object call() {
-                return ReceiveChannelRouter.this.m8738xca1c8dc(it, queue);
+                return ReceiveChannelRouter.this.m8730xca1c8dc(it, queue);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$receiveAny$1$com-samsung-android-sume-core-channel-ReceiveChannelRouter, reason: not valid java name */
-    public /* synthetic */ MediaBuffer m8738xca1c8dc(Integer it, BlockingQueue queue) throws Exception {
+    /* renamed from: lambda$receiveAny$1$com-samsung-android-sume-core-channel-ReceiveChannelRouter */
+    public /* synthetic */ MediaBuffer m8730xca1c8dc(Integer it, BlockingQueue queue) throws Exception {
         try {
             MediaBuffer buffer = this.channels.get(it.intValue()).receive();
             queue.put(it);
@@ -159,7 +155,6 @@ public class ReceiveChannelRouter extends ChannelRouterBase {
         throw new UnsupportedOperationException();
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.channel.Channel
     public MediaBuffer receive() {
         return this.receiveOp.get();

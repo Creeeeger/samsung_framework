@@ -216,8 +216,9 @@ public interface ITrustAgentServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements ITrustAgentServiceCallback {
+        public static class Proxy implements ITrustAgentServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

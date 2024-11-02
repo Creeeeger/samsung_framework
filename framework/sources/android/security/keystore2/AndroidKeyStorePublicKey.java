@@ -13,7 +13,6 @@ public abstract class AndroidKeyStorePublicKey extends AndroidKeyStoreKey implem
     private final byte[] mCertificateChain;
     private final byte[] mEncoded;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public abstract AndroidKeyStorePrivateKey getPrivateKey();
 
     public AndroidKeyStorePublicKey(KeyDescriptor descriptor, KeyMetadata metadata, byte[] x509EncodedForm, String algorithm, KeyStoreSecurityLevel securityLevel) {

@@ -202,7 +202,7 @@ public class ImageView extends View {
         saveAttributeDataForStyleable(context, R.styleable.ImageView, attrs, a, defStyleAttr, defStyleRes);
         Drawable d = a.getDrawable(0);
         if (d != null) {
-            setImageDrawable(d);
+            lambda$setImageURIAsync$2(d);
         }
         this.mBaselineAlignBottom = a.getBoolean(6, false);
         this.mBaseline = a.getDimensionPixelSize(8, -1);
@@ -250,8 +250,9 @@ public class ImageView extends View {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
-    protected boolean verifyDrawable(Drawable dr) {
+    public boolean verifyDrawable(Drawable dr) {
         return this.mDrawable == dr || super.verifyDrawable(dr);
     }
 
@@ -334,8 +335,9 @@ public class ImageView extends View {
         return drawable;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class ImageDrawableCallback implements Runnable {
+    public class ImageDrawableCallback implements Runnable {
         private final Drawable drawable;
         private final int resource;
         private final Uri uri;
@@ -348,7 +350,7 @@ public class ImageView extends View {
 
         @Override // java.lang.Runnable
         public void run() {
-            ImageView.this.setImageDrawable(this.drawable);
+            ImageView.this.lambda$setImageURIAsync$2(this.drawable);
             ImageView.this.mUri = this.uri;
             ImageView.this.mResource = this.resource;
         }
@@ -416,7 +418,8 @@ public class ImageView extends View {
         return new ImageDrawableCallback(d, uri, 0);
     }
 
-    public void setImageDrawable(Drawable drawable) {
+    /* renamed from: setImageDrawable */
+    public void lambda$setImageURIAsync$2(Drawable drawable) {
         if (this.mDrawable != drawable) {
             this.mResource = 0;
             this.mUri = null;
@@ -432,7 +435,7 @@ public class ImageView extends View {
 
     @RemotableViewMethod(asyncImpl = "setImageIconAsync")
     public void setImageIcon(Icon icon) {
-        setImageDrawable(icon == null ? null : icon.loadDrawable(this.mContext));
+        lambda$setImageURIAsync$2(icon == null ? null : icon.loadDrawable(this.mContext));
     }
 
     public Runnable setImageIconAsync(Icon icon) {
@@ -501,7 +504,7 @@ public class ImageView extends View {
         } else {
             bitmapDrawable.setBitmap(bm);
         }
-        setImageDrawable(this.mRecycleableBitmapDrawable);
+        lambda$setImageURIAsync$2(this.mRecycleableBitmapDrawable);
     }
 
     public void setImageState(int[] state, boolean merge) {
@@ -744,7 +747,6 @@ public class ImageView extends View {
         return sS2FArray[st.nativeInt - 1];
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int h;
@@ -850,7 +852,6 @@ public class ImageView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int l, int t, int r, int b) {
         boolean changed = super.setFrame(l, t, r, b);
@@ -933,7 +934,6 @@ public class ImageView extends View {
         matrix3.setRectToRect(this.mTempSrc, this.mTempDst, scaleTypeToScaleToFit(this.mScaleType));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void drawableStateChanged() {
         super.drawableStateChanged();
@@ -972,7 +972,6 @@ public class ImageView extends View {
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -1154,7 +1153,6 @@ public class ImageView extends View {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -1164,8 +1162,9 @@ public class ImageView extends View {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
-    protected void onDetachedFromWindow() {
+    public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         Drawable drawable = this.mDrawable;
         if (drawable != null && sCompatDrawableVisibilityDispatch) {
@@ -1178,8 +1177,9 @@ public class ImageView extends View {
         return ImageView.class.getName();
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
-    protected void encodeProperties(ViewHierarchyEncoder stream) {
+    public void encodeProperties(ViewHierarchyEncoder stream) {
         super.encodeProperties(stream);
         stream.addProperty("layout:baseline", getBaseline());
     }

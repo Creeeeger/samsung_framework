@@ -10,13 +10,14 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes.dex */
 public final class ProviderDialogResult extends BaseDialogResult implements Parcelable {
     public static final Parcelable.Creator<ProviderDialogResult> CREATOR = new Parcelable.Creator<ProviderDialogResult>() { // from class: android.credentials.ui.ProviderDialogResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ProviderDialogResult createFromParcel(Parcel in) {
             return new ProviderDialogResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ProviderDialogResult[] newArray(int size) {
             return new ProviderDialogResult[size];
@@ -58,5 +59,22 @@ public final class ProviderDialogResult extends BaseDialogResult implements Parc
     @Override // android.credentials.ui.BaseDialogResult, android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.credentials.ui.ProviderDialogResult$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ProviderDialogResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderDialogResult createFromParcel(Parcel in) {
+            return new ProviderDialogResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ProviderDialogResult[] newArray(int size) {
+            return new ProviderDialogResult[size];
+        }
     }
 }

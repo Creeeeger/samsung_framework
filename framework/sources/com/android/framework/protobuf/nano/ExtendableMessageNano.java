@@ -7,7 +7,6 @@ import java.io.IOException;
 public abstract class ExtendableMessageNano<M extends ExtendableMessageNano<M>> extends MessageNano {
     protected FieldArray unknownFieldData;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.framework.protobuf.nano.MessageNano
     public int computeSerializedSize() {
         int size = 0;
@@ -102,8 +101,8 @@ public abstract class ExtendableMessageNano<M extends ExtendableMessageNano<M>> 
 
     @Override // com.android.framework.protobuf.nano.MessageNano
     /* renamed from: clone */
-    public M mo7010clone() throws CloneNotSupportedException {
-        M m = (M) super.mo7010clone();
+    public M mo7005clone() throws CloneNotSupportedException {
+        M m = (M) super.mo7005clone();
         InternalNano.cloneUnknownFieldData(this, m);
         return m;
     }

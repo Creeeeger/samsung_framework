@@ -84,8 +84,9 @@ public interface ISpellCheckerServiceCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ISpellCheckerServiceCallback {
+        public static class Proxy implements ISpellCheckerServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

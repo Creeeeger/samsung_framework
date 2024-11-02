@@ -11,7 +11,9 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class UnixEpochTime implements Parcelable {
     public static final Parcelable.Creator<UnixEpochTime> CREATOR = new Parcelable.Creator<UnixEpochTime>() { // from class: android.app.time.UnixEpochTime.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public UnixEpochTime createFromParcel(Parcel source) {
             long elapsedRealtimeMillis = source.readLong();
@@ -19,7 +21,6 @@ public final class UnixEpochTime implements Parcelable {
             return new UnixEpochTime(elapsedRealtimeMillis, unixEpochTimeMillis);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UnixEpochTime[] newArray(int size) {
             return new UnixEpochTime[size];
@@ -119,6 +120,25 @@ public final class UnixEpochTime implements Parcelable {
 
     public String toString() {
         return "UnixEpochTime{mElapsedRealtimeMillis=" + this.mElapsedRealtimeMillis + ", mUnixEpochTimeMillis=" + this.mUnixEpochTimeMillis + '}';
+    }
+
+    /* renamed from: android.app.time.UnixEpochTime$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<UnixEpochTime> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UnixEpochTime createFromParcel(Parcel source) {
+            long elapsedRealtimeMillis = source.readLong();
+            long unixEpochTimeMillis = source.readLong();
+            return new UnixEpochTime(elapsedRealtimeMillis, unixEpochTimeMillis);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public UnixEpochTime[] newArray(int size) {
+            return new UnixEpochTime[size];
+        }
     }
 
     @Override // android.os.Parcelable

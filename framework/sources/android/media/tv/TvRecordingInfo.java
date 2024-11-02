@@ -12,13 +12,14 @@ import java.util.function.Consumer;
 /* loaded from: classes2.dex */
 public final class TvRecordingInfo implements Parcelable {
     public static final Parcelable.Creator<TvRecordingInfo> CREATOR = new Parcelable.Creator<TvRecordingInfo>() { // from class: android.media.tv.TvRecordingInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TvRecordingInfo createFromParcel(Parcel in) {
             return new TvRecordingInfo(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvRecordingInfo[] newArray(int size) {
             return new TvRecordingInfo[size];
@@ -57,6 +58,10 @@ public final class TvRecordingInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface TvRecordingListType {
+    }
+
+    /* synthetic */ TvRecordingInfo(Parcel parcel, TvRecordingInfoIA tvRecordingInfoIA) {
+        this(parcel);
     }
 
     public TvRecordingInfo(String recordingId, long startPadding, long endPadding, int repeatDays, String name, String description, long scheduledStartTime, long scheduledDuration, Uri channelUri, Uri programUri, List<TvContentRating> contentRatings, Uri recordingUri, long recordingStartTime, long recordingDuration) {
@@ -197,8 +202,24 @@ public final class TvRecordingInfo implements Parcelable {
         this.mRecordingStartTimeMillis = in.readLong();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$1(String rating) {
         this.mContentRatings.add(TvContentRating.unflattenFromString(rating));
+    }
+
+    /* renamed from: android.media.tv.TvRecordingInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TvRecordingInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvRecordingInfo createFromParcel(Parcel in) {
+            return new TvRecordingInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TvRecordingInfo[] newArray(int size) {
+            return new TvRecordingInfo[size];
+        }
     }
 }

@@ -3,14 +3,12 @@ package com.android.internal.org.bouncycastle.asn1;
 import java.io.IOException;
 import java.io.InputStream;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public class ConstructedOctetStream extends InputStream {
     private InputStream _currentStream;
     private boolean _first = true;
     private final ASN1StreamParser _parser;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ConstructedOctetStream(ASN1StreamParser parser) {
         this._parser = parser;
     }

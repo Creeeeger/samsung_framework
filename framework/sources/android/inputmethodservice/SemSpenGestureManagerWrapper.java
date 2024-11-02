@@ -11,7 +11,6 @@ final class SemSpenGestureManagerWrapper {
     SemSpenGestureManagerWrapper() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void notifyKeyboardClosedForAGIF(Context context) {
         if (mSpenGestureManager == null) {
             mSpenGestureManager = (SpenGestureManager) context.getSystemService(Context.SEM_SPEN_GESTURE_SERVICE);

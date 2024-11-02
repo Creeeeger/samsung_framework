@@ -101,8 +101,52 @@ public class SpeechRecognizer {
     public @interface RecognitionError {
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.speech.SpeechRecognizer$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends Handler {
+        AnonymousClass1(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    SpeechRecognizer.this.handleStartListening((Intent) msg.obj);
+                    return;
+                case 2:
+                    SpeechRecognizer.this.handleStopMessage();
+                    return;
+                case 3:
+                    SpeechRecognizer.this.handleCancelMessage();
+                    return;
+                case 4:
+                    SpeechRecognizer.this.handleChangeListener((RecognitionListener) msg.obj);
+                    return;
+                case 5:
+                    SpeechRecognizer.this.handleSetTemporaryComponent((ComponentName) msg.obj);
+                    return;
+                case 6:
+                    CheckRecognitionSupportArgs args = (CheckRecognitionSupportArgs) msg.obj;
+                    SpeechRecognizer.this.handleCheckRecognitionSupport(args.mIntent, args.mCallbackExecutor, args.mCallback);
+                    return;
+                case 7:
+                    ModelDownloadListenerArgs modelDownloadListenerArgs = (ModelDownloadListenerArgs) msg.obj;
+                    SpeechRecognizer.this.handleTriggerModelDownload(modelDownloadListenerArgs.mIntent, modelDownloadListenerArgs.mExecutor, modelDownloadListenerArgs.mModelDownloadListener);
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     private SpeechRecognizer(Context context, ComponentName serviceComponent) {
         this.mHandler = new Handler(Looper.getMainLooper()) { // from class: android.speech.SpeechRecognizer.1
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -144,6 +188,10 @@ public class SpeechRecognizer {
 
     private SpeechRecognizer(Context context, boolean onDevice) {
         this.mHandler = new Handler(Looper.getMainLooper()) { // from class: android.speech.SpeechRecognizer.1
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
             @Override // android.os.Handler
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -259,12 +307,12 @@ public class SpeechRecognizer {
         putMessage(Message.obtain(this.mHandler, 6, new CheckRecognitionSupportArgs(recognizerIntent, executor, supportListener)));
     }
 
-    public void triggerModelDownload(Intent intent) {
-        Objects.requireNonNull(intent, "intent must not be null");
+    public void triggerModelDownload(Intent recognizerIntent) {
+        Objects.requireNonNull(recognizerIntent, "intent must not be null");
         if (this.mService == null) {
             connectToSystemService();
         }
-        putMessage(Message.obtain(this.mHandler, 7, new ModelDownloadListenerArgs(intent, null, 0 == true ? 1 : 0)));
+        putMessage(Message.obtain(this.mHandler, 7, new ModelDownloadListenerArgs(recognizerIntent, null, null)));
     }
 
     public void triggerModelDownload(Intent recognizerIntent, Executor executor, ModelDownloadListener listener) {
@@ -294,7 +342,6 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleStartListening(Intent recognizerIntent) {
         if (!checkOpenConnection()) {
             return;
@@ -307,7 +354,6 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleStopMessage() {
         if (!checkOpenConnection()) {
             return;
@@ -320,7 +366,6 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleCancelMessage() {
         if (!checkOpenConnection()) {
             return;
@@ -333,7 +378,6 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleSetTemporaryComponent(ComponentName componentName) {
         if (!maybeInitializeManagerService()) {
             return;
@@ -345,7 +389,6 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleCheckRecognitionSupport(Intent recognizerIntent, Executor callbackExecutor, final RecognitionSupportCallback recognitionSupportCallback) {
         if (!maybeInitializeManagerService() || !checkOpenConnection()) {
             return;
@@ -363,31 +406,29 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleTriggerModelDownload(Intent recognizerIntent, Executor callbackExecutor, final ModelDownloadListener modelDownloadListener) {
-        if (!maybeInitializeManagerService() || !checkOpenConnection()) {
-            return;
-        }
-        if (modelDownloadListener == null) {
-            try {
-                this.mService.triggerModelDownload(recognizerIntent, this.mContext.getAttributionSource(), null);
-                return;
-            } catch (RemoteException e) {
-                Log.e(TAG, "triggerModelDownload() without a listener failed", e);
-                this.mListener.onError(5);
-                return;
-            }
-        }
-        try {
-            this.mService.triggerModelDownload(recognizerIntent, this.mContext.getAttributionSource(), new InternalModelDownloadListener(callbackExecutor, modelDownloadListener));
-        } catch (RemoteException e2) {
-            Log.e(TAG, "triggerModelDownload() with a listener failed", e2);
-            callbackExecutor.execute(new Runnable() { // from class: android.speech.SpeechRecognizer$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    ModelDownloadListener.this.onError(5);
+        if (maybeInitializeManagerService() && checkOpenConnection()) {
+            if (modelDownloadListener == null) {
+                try {
+                    this.mService.triggerModelDownload(recognizerIntent, this.mContext.getAttributionSource(), null);
+                    return;
+                } catch (RemoteException e) {
+                    Log.e(TAG, "triggerModelDownload() without a listener failed", e);
+                    this.mListener.onError(5);
+                    return;
                 }
-            });
+            }
+            try {
+                this.mService.triggerModelDownload(recognizerIntent, this.mContext.getAttributionSource(), new InternalModelDownloadListener(callbackExecutor, modelDownloadListener));
+            } catch (RemoteException e2) {
+                Log.e(TAG, "triggerModelDownload() with a listener failed", e2);
+                callbackExecutor.execute(new Runnable() { // from class: android.speech.SpeechRecognizer$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        ModelDownloadListener.this.onError(5);
+                    }
+                });
+            }
         }
     }
 
@@ -400,7 +441,6 @@ public class SpeechRecognizer {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void handleChangeListener(RecognitionListener listener) {
         this.mListener.mInternalListener = listener;
     }
@@ -430,6 +470,9 @@ public class SpeechRecognizer {
         }
         try {
             this.mManagerService.createSession(componentName, this.mClientToken, z, new IRecognitionServiceManagerCallback.Stub() { // from class: android.speech.SpeechRecognizer.2
+                AnonymousClass2() {
+                }
+
                 @Override // android.speech.IRecognitionServiceManagerCallback
                 public void onSuccess(IRecognitionService service) throws RemoteException {
                     SpeechRecognizer.this.mService = service;
@@ -446,6 +489,27 @@ public class SpeechRecognizer {
             });
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
+        }
+    }
+
+    /* renamed from: android.speech.SpeechRecognizer$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 extends IRecognitionServiceManagerCallback.Stub {
+        AnonymousClass2() {
+        }
+
+        @Override // android.speech.IRecognitionServiceManagerCallback
+        public void onSuccess(IRecognitionService service) throws RemoteException {
+            SpeechRecognizer.this.mService = service;
+            while (!SpeechRecognizer.this.mPendingTasks.isEmpty()) {
+                SpeechRecognizer.this.mHandler.sendMessage((Message) SpeechRecognizer.this.mPendingTasks.poll());
+            }
+        }
+
+        @Override // android.speech.IRecognitionServiceManagerCallback
+        public void onError(int errorCode) throws RemoteException {
+            Log.e(SpeechRecognizer.TAG, "Bind to system recognition service failed with error " + errorCode);
+            SpeechRecognizer.this.mListener.onError(errorCode);
         }
     }
 
@@ -492,6 +556,10 @@ public class SpeechRecognizer {
         final Executor mCallbackExecutor;
         final Intent mIntent;
 
+        /* synthetic */ CheckRecognitionSupportArgs(Intent intent, Executor executor, RecognitionSupportCallback recognitionSupportCallback, CheckRecognitionSupportArgsIA checkRecognitionSupportArgsIA) {
+            this(intent, executor, recognitionSupportCallback);
+        }
+
         private CheckRecognitionSupportArgs(Intent intent, Executor callbackExecutor, RecognitionSupportCallback callback) {
             this.mIntent = intent;
             this.mCallbackExecutor = callbackExecutor;
@@ -505,6 +573,10 @@ public class SpeechRecognizer {
         final Intent mIntent;
         final ModelDownloadListener mModelDownloadListener;
 
+        /* synthetic */ ModelDownloadListenerArgs(Intent intent, Executor executor, ModelDownloadListener modelDownloadListener, ModelDownloadListenerArgsIA modelDownloadListenerArgsIA) {
+            this(intent, executor, modelDownloadListener);
+        }
+
         private ModelDownloadListenerArgs(Intent intent, Executor executor, ModelDownloadListener modelDownloadListener) {
             this.mIntent = intent;
             this.mExecutor = executor;
@@ -512,7 +584,6 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class InternalRecognitionListener extends IRecognitionListener.Stub {
         private static final int MSG_BEGINNING_OF_SPEECH = 1;
@@ -530,8 +601,16 @@ public class SpeechRecognizer {
         private final Handler mInternalHandler;
         private RecognitionListener mInternalListener;
 
+        /* synthetic */ InternalRecognitionListener(InternalRecognitionListenerIA internalRecognitionListenerIA) {
+            this();
+        }
+
         private InternalRecognitionListener() {
             this.mInternalHandler = new Handler(Looper.getMainLooper()) { // from class: android.speech.SpeechRecognizer.InternalRecognitionListener.1
+                AnonymousClass1(Looper looper) {
+                    super(looper);
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     if (InternalRecognitionListener.this.mInternalListener == null) {
@@ -579,6 +658,62 @@ public class SpeechRecognizer {
                     }
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.speech.SpeechRecognizer$InternalRecognitionListener$1 */
+        /* loaded from: classes3.dex */
+        public class AnonymousClass1 extends Handler {
+            AnonymousClass1(Looper looper) {
+                super(looper);
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                if (InternalRecognitionListener.this.mInternalListener == null) {
+                    return;
+                }
+                switch (msg.what) {
+                    case 1:
+                        InternalRecognitionListener.this.mInternalListener.onBeginningOfSpeech();
+                        return;
+                    case 2:
+                        InternalRecognitionListener.this.mInternalListener.onBufferReceived((byte[]) msg.obj);
+                        return;
+                    case 3:
+                        InternalRecognitionListener.this.mInternalListener.onEndOfSpeech();
+                        return;
+                    case 4:
+                        InternalRecognitionListener.this.mInternalListener.onError(((Integer) msg.obj).intValue());
+                        return;
+                    case 5:
+                        InternalRecognitionListener.this.mInternalListener.onReadyForSpeech((Bundle) msg.obj);
+                        return;
+                    case 6:
+                        InternalRecognitionListener.this.mInternalListener.onResults((Bundle) msg.obj);
+                        return;
+                    case 7:
+                        InternalRecognitionListener.this.mInternalListener.onPartialResults((Bundle) msg.obj);
+                        return;
+                    case 8:
+                        InternalRecognitionListener.this.mInternalListener.onRmsChanged(((Float) msg.obj).floatValue());
+                        return;
+                    case 9:
+                        InternalRecognitionListener.this.mInternalListener.onEvent(msg.arg1, (Bundle) msg.obj);
+                        return;
+                    case 10:
+                        InternalRecognitionListener.this.mInternalListener.onSegmentResults((Bundle) msg.obj);
+                        return;
+                    case 11:
+                        InternalRecognitionListener.this.mInternalListener.onEndOfSegmentedSession();
+                        return;
+                    case 12:
+                        InternalRecognitionListener.this.mInternalListener.onLanguageDetection((Bundle) msg.obj);
+                        return;
+                    default:
+                        return;
+                }
+            }
         }
 
         @Override // android.speech.IRecognitionListener
@@ -642,18 +777,20 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class InternalSupportCallback extends IRecognitionSupportCallback.Stub {
         private final RecognitionSupportCallback mCallback;
         private final Executor mExecutor;
+
+        /* synthetic */ InternalSupportCallback(Executor executor, RecognitionSupportCallback recognitionSupportCallback, InternalSupportCallbackIA internalSupportCallbackIA) {
+            this(executor, recognitionSupportCallback);
+        }
 
         private InternalSupportCallback(Executor executor, RecognitionSupportCallback callback) {
             this.mExecutor = executor;
             this.mCallback = callback;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSupportResult$0(RecognitionSupport recognitionSupport) {
             this.mCallback.onSupportResult(recognitionSupport);
         }
@@ -668,7 +805,6 @@ public class SpeechRecognizer {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$1(int errorCode) {
             this.mCallback.onError(errorCode);
         }
@@ -684,18 +820,20 @@ public class SpeechRecognizer {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class InternalModelDownloadListener extends IModelDownloadListener.Stub {
         private final Executor mExecutor;
         private final ModelDownloadListener mModelDownloadListener;
+
+        /* synthetic */ InternalModelDownloadListener(Executor executor, ModelDownloadListener modelDownloadListener, InternalModelDownloadListenerIA internalModelDownloadListenerIA) {
+            this(executor, modelDownloadListener);
+        }
 
         private InternalModelDownloadListener(Executor executor, ModelDownloadListener modelDownloadListener) {
             this.mExecutor = executor;
             this.mModelDownloadListener = modelDownloadListener;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onProgress$0(int completedPercent) {
             this.mModelDownloadListener.onProgress(completedPercent);
         }
@@ -710,7 +848,6 @@ public class SpeechRecognizer {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSuccess$1() {
             this.mModelDownloadListener.onSuccess();
         }
@@ -725,7 +862,6 @@ public class SpeechRecognizer {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onScheduled$2() {
             this.mModelDownloadListener.onScheduled();
         }
@@ -740,7 +876,6 @@ public class SpeechRecognizer {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onError$3(int error) {
             this.mModelDownloadListener.onError(error);
         }

@@ -13,13 +13,14 @@ import java.io.IOException;
 /* loaded from: classes.dex */
 public class AssetFileDescriptor implements Parcelable, Closeable {
     public static final Parcelable.Creator<AssetFileDescriptor> CREATOR = new Parcelable.Creator<AssetFileDescriptor>() { // from class: android.content.res.AssetFileDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AssetFileDescriptor createFromParcel(Parcel in) {
             return new AssetFileDescriptor(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AssetFileDescriptor[] newArray(int size) {
             return new AssetFileDescriptor[size];
@@ -305,6 +306,23 @@ public class AssetFileDescriptor implements Parcelable, Closeable {
             this.mExtras = src.readBundle();
         } else {
             this.mExtras = null;
+        }
+    }
+
+    /* renamed from: android.content.res.AssetFileDescriptor$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AssetFileDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssetFileDescriptor createFromParcel(Parcel in) {
+            return new AssetFileDescriptor(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AssetFileDescriptor[] newArray(int size) {
+            return new AssetFileDescriptor[size];
         }
     }
 }

@@ -385,12 +385,12 @@ Je kunt deze sneltoets op een andere functie instellen via Instellingen > Toegan
     <string name="allow_settings_changes">Wijzigen van instellingen wordt voorkomen door beveiligingsbeleid.</string>
     <string name="alwaysUse">Standaard gebruiken voor deze actie.</string>
     <string name="android_preparing_apk">%1$s voorbereiden.</string>
-    <string name="android_start_title">Telefoon wordt gestart…</string>
+    <string name="android_start_title">Tablet wordt gestart…</string>
     <string name="android_system_label">Android-systeem</string>
     <string name="android_upgrading_complete">Opstarten afronden.</string>
     <string name="android_upgrading_notification_title">Systeemupdate voltooien…</string>
     <string name="android_upgrading_starting_apps">Apps starten.</string>
-    <string name="android_upgrading_title">Telefoon wordt geüpdatet…</string>
+    <string name="android_upgrading_title">Tablet wordt geüpdatet…</string>
     <string name="anr_activity_application">%2$s reageert niet</string>
     <string name="anr_activity_process">%1$s reageert niet</string>
     <string name="anr_application_process">%1$s reageert niet</string>
@@ -424,16 +424,16 @@ Je kunt deze sneltoets op een andere functie instellen via Instellingen > Toegan
     <string name="app_restricted_message_concentration_mode">%s wordt geblokkeerd in Concentratiestand. Neem contact op met uw IT-beheerder voor meer informatie.</string>
     <string name="app_running_notification_text">Tik voor meer informatie of om de app te stoppen.</string>
     <string name="app_running_notification_title">%1$s wordt uitgevoerd</string>
-    <string name="app_streaming_blocked_message">Je hebt hier nu geen toegang toe op je %1$s. Probeer het in plaats daarvan op je telefoon.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Deze app vraagt om aanvullende beveiliging. Probeer het in plaats daarvan op je telefoon.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Je hebt hier geen toegang toe op je %1$s. Probeer het in plaats daarvan op je telefoon.</string>
+    <string name="app_streaming_blocked_message">Je hebt hier nu geen toegang toe op je %1$s. Probeer het in plaats daarvan op je tablet.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Deze app vraagt om aanvullende beveiliging. Probeer het in plaats daarvan op je tablet.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Je hebt hier geen toegang toe op je %1$s. Probeer het in plaats daarvan op je tablet.</string>
     <string name="app_streaming_blocked_title">%1$s niet beschikbaar</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Camera niet beschikbaar</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Doorgaan op telefoon</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Microfoon niet beschikbaar</string>
     <string name="app_streaming_blocked_title_for_permission_dialog">Rechten vereist</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store niet beschikbaar</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Telefooninstellingen niet beschikbaar</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Tabletinstellingen niet beschikbaar</string>
     <string name="app_suspended_default_message">%1$s is nu niet beschikbaar. Dit wordt beheerd door %2$s.</string>
     <string name="app_suspended_more_details">Meer info</string>
     <string name="app_suspended_title">App is niet beschikbaar</string>
@@ -504,7 +504,7 @@ Als je deze app toch wil installeren, controleer dan of deze afkomstig is uit ee
     <string name="badPuk">De pukcode die je hebt ingevoerd, is onjuist.</string>
     <string name="badPuk2">De ingevoerde PUK2 is niet juist</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Telefoon is voldoende opgeladen. Functies worden niet meer beperkt.</string>
+    <string name="battery_saver_charged_notification_summary">Tablet is voldoende opgeladen. Functies worden niet meer beperkt.</string>
     <string name="battery_saver_description">Met Batterijbesparing wordt het donkere thema aangezet en worden achtergrondactiviteit, bepaalde visuele effecten, bepaalde functies en sommige netwerkverbindingen beperkt of uitgezet.</string>
     <string name="battery_saver_description_with_learn_more">Met Batterijbesparing wordt het donkere thema aangezet en worden achtergrondactiviteit, bepaalde visuele effecten, bepaalde functies en sommige netwerkverbindingen beperkt of uitgezet.</string>
     <string name="battery_saver_notification_channel_name">Batterijbesparing</string>
@@ -734,7 +734,7 @@ Het hoofdtelefoonvolume is hoger dan aanbevolen, wat je gehoor kan beschadigen"<
     <string name="decline">Weigeren</string>
     <string name="decline_remote_bugreport_action">WEIGEREN</string>
     <string name="default_audio_route_category_name">Systeem</string>
-    <string name="default_audio_route_name">Telefoon</string>
+    <string name="default_audio_route_name">Tablet</string>
     <string name="default_audio_route_name_dock_speakers">Dockluidsprekers</string>
     <string name="default_audio_route_name_external_device">Extern apparaat</string>
     <string name="default_audio_route_name_headphones">Hoofdtelefoon</string>
@@ -862,7 +862,7 @@ boek"</string>
     <string name="emergency_call_dialog_number_for_display">Alarmnummer</string>
     <string name="emergency_calls_only">Alleen noodoproepen</string>
     <string name="enablePin">Mislukt. Zet SIM/RUIM-vergrendeling aan.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s wil Verkennen via aanraking aanzetten. Als Verkennen via aanraking aanstaat, kun je beschrijvingen beluisteren of bekijken van wat er onder je vinger staat of aanraakbewerkingen uitvoeren op de telefoon.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s wil Verkennen via aanraking aanzetten. Als Verkennen via aanraking aanstaat, kun je beschrijvingen beluisteren of bekijken van wat er onder je vinger staat of aanraakbewerkingen uitvoeren op de tablet.</string>
     <string name="enable_explore_by_touch_warning_title">"'Verkennen via aanraking' aan?"</string>
     <string name="error_message_change_not_allowed">Deze wijziging is niet toegestaan door je beheerder</string>
     <string name="error_message_title">Fout</string>
@@ -926,7 +926,7 @@ boek"</string>
     <string name="ext_media_unsupported_notification_message">Dit apparaat ondersteunt deze %s niet. Tik om een ondersteunde indeling in te stellen.</string>
     <string name="ext_media_unsupported_notification_title">Niet-ondersteunde %s</string>
     <string name="ext_storage_bad_removal_button">Opnieuw starten</string>
-    <string name="ext_storage_bad_removal_title">Uw telefoon opnieuw starten</string>
+    <string name="ext_storage_bad_removal_title">Uw tablet opnieuw starten</string>
     <string name="extmedia_format_button_format">Formaat</string>
     <string name="extmedia_format_message">Alle gegevens op uw kaart worden gewist.</string>
     <string name="extmedia_format_message_usbhost">Alle bestanden die in uw USB-opslag zijn opgeslagen, worden gewist. Deze actie kan niet ongedaan worden gemaakt.</string>
@@ -1130,7 +1130,7 @@ Raak de knop voorzichtig aan terwijl je je vingerafdruk instelt."</string>
     <string name="global_action_toggle_sealed_mode">Verzegelde stand</string>
     <string name="global_action_toggle_silent_mode">Stille modus</string>
     <string name="global_action_voice_assist">Spraakassistent</string>
-    <string name="global_actions">Telefoonopties</string>
+    <string name="global_actions">Tabletopties</string>
     <string name="global_actions_airplane_mode_off_status">Vliegtuigmodus is UIT</string>
     <string name="global_actions_airplane_mode_on_status">Vliegtuigmodus is AAN</string>
     <string name="global_actions_toggle_airplane_mode">Vliegtuig­modus</string>
@@ -1315,11 +1315,11 @@ Weet u zeker dat u deze pagina wilt verlaten?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Tik om het wachtwoord te typen&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Onjuiste pincode.</string>
     <string name="kg_enter_confirm_pin_hint">Gewenste pincode bevestigen</string>
-    <string name="kg_failed_attempts_almost_at_login">"Je hebt je ontgrendelingspatroon %1$d keer onjuist getekend. Na nog eens %2$d mislukte pogingen wordt u gevraagd je telefoon te ontgrendelen via een e-mailaccount.
+    <string name="kg_failed_attempts_almost_at_login">"Je hebt je ontgrendelingspatroon %1$d keer onjuist getekend. Na nog eens %2$d mislukte pogingen wordt u gevraagd je tablet te ontgrendelen via een e-mailaccount.
 
  Probeer het over %3$d seconden opnieuw."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Je hebt nu %1$d keer geprobeerd de telefoon op een onjuiste manier te ontgrendelen. Na nog eens %2$d mislukte pogingen worden de fabrieksinstellingen hersteld op de telefoon en gaan alle gebruikersgegevens verloren.</string>
-    <string name="kg_failed_attempts_now_wiping">Je hebt %d keer geprobeerd de telefoon op een onjuiste manier te ontgrendelen. De fabrieksinstellingen worden nu hersteld op de telefoon.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Je hebt %1$d keer geprobeerd de tablet op een onjuiste manier te ontgrendelen. Na nog eens %2$d mislukte pogingen worden de fabrieksinstellingen hersteld op de tablet en gaan alle gebruikersgegevens verloren.</string>
+    <string name="kg_failed_attempts_now_wiping">Je hebt %d keer geprobeerd de tablet op een onjuiste manier te ontgrendelen. De fabrieksinstellingen worden nu hersteld op de tablet.</string>
     <string name="kg_forgot_pattern_button_text">Patroon vergeten</string>
     <string name="kg_invalid_confirm_pin_hint">Pincodes komen niet overeen</string>
     <string name="kg_invalid_puk">Geef de juiste pukcode opnieuw op. Bij herhaalde pogingen wordt de simkaart permanent uitgezet.</string>
@@ -1407,11 +1407,11 @@ Probeer het opnieuw over %2$d seconden."</string>
     <string name="lockscreen_carrier_default">Geen service</string>
     <string name="lockscreen_carrier_noservice">(Geen service.)</string>
     <string name="lockscreen_emergency_call">Noodgeval</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Je hebt nu %1$d keer geprobeerd de telefoon op een onjuiste manier te ontgrendelen. Na nog eens %2$d mislukte pogingen worden de fabrieksinstellingen hersteld op de telefoon en gaan alle gebruikersgegevens verloren.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Je hebt je ontgrendelingspatroon %1$d keer onjuist getekend. Na nog eens %2$d mislukte pogingen wordt u gevraagd je telefoon te ontgrendelen met je aanmeldingsgegevens voor Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Je hebt %1$d keer geprobeerd de tablet op een onjuiste manier te ontgrendelen. Na nog eens %2$d mislukte pogingen worden de fabrieksinstellingen hersteld op de tablet en gaan alle gebruikersgegevens verloren.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Je hebt je ontgrendelingspatroon %1$d keer onjuist getekend. Na nog eens %2$d mislukte pogingen wordt u gevraagd je tablet te ontgrendelen met je aanmeldingsgegevens voor Google.
 
  Probeer het over %3$d seconden opnieuw."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Je hebt %d keer geprobeerd de telefoon op een onjuiste manier te ontgrendelen. De fabrieksinstellingen worden nu hersteld op de telefoon.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Je hebt %d keer geprobeerd de tablet op een onjuiste manier te ontgrendelen. De fabrieksinstellingen worden nu hersteld op de tablet.</string>
     <string name="lockscreen_forgot_pattern_button_text">Patroon vergeten?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Bent u je gebruikersnaam of wachtwoord vergeten?
 Ga naar "<b>https://www.google.com/accounts/recovery</b>.</string>
@@ -1427,7 +1427,7 @@ Ga naar "<b>https://www.google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">"Druk op 'Menu' om te ontgrendelen of noodoproep te plaatsen."</string>
     <string name="lockscreen_missing_sim_instructions">Voeg een simkaart toe.</string>
     <string name="lockscreen_missing_sim_instructions_long">De simkaart ontbreekt of kan niet worden gelezen. Voeg een simkaart toe.</string>
-    <string name="lockscreen_missing_sim_message">Geen simkaart in telefoon.</string>
+    <string name="lockscreen_missing_sim_message">Geen simkaart in tablet.</string>
     <string name="lockscreen_missing_sim_message_short">Geen simkaart</string>
     <string name="lockscreen_network_locked_message">Netwerk vergrendeld</string>
     <string name="lockscreen_password_wrong">Nogmaals proberen</string>
@@ -1467,7 +1467,7 @@ Probeer het opnieuw over %2$d seconden."</string>
     <string name="low_internal_storage_view_text">Bepaalde systeemfuncties werken mogelijk niet</string>
     <string name="low_internal_storage_view_text_no_boot">Onvoldoende opslagruimte voor het systeem. Zorg ervoor dat je 250 MB vrije ruimte hebt en start opnieuw.</string>
     <string name="low_internal_storage_view_title">Opslagruimte is bijna vol</string>
-    <string name="low_memory">Telefoongeheugen is vol. Verwijder enkele bestanden om ruimte vrij te maken.</string>
+    <string name="low_memory">Tabletgeheugen is vol. Verwijder enkele bestanden om ruimte vrij te maken.</string>
     <string name="ltb_kill_content_v2_phone">%s is gesloten omdat uw telefoon hierdoor oververhit raakte. U kunt de app later opnieuw openen nadat uw telefoon is afgekoeld.</string>
     <string name="ltb_kill_content_v2_tablet">%s is gesloten omdat uw tablet hierdoor oververhit raakte. U kunt de app later opnieuw openen nadat uw tablet is afgekoeld.</string>
     <string name="ltb_warning_button">Niet sluiten</string>
@@ -1779,18 +1779,18 @@ Uw tablet wordt weldra opnieuw gestart."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Geluid wordt afgespeeld op uw Bluetooth-audioapparaat. Tik hier om dit uit te schakelen</string>
     <string name="multisound_sound_via_headphone">Geluid van %s wordt afgespeeld via de koptelefoon. Tik hier om dit uit te schakelen.</string>
     <string name="multisound_sound_via_headphone_multiselection">Geluid wordt afgespeeld via de koptelefoon. Tik hier om dit uit te schakelen.</string>
-    <string name="multisound_sound_via_phone_speaker">Geluid van %s wordt afgespeeld via de luidspreker van uw telefoon. Tik hier om dit uit te schakelen.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Geluid wordt afgespeeld via de luidspreker van uw telefoon. Tik hier om dit uit te schakelen.</string>
+    <string name="multisound_sound_via_phone_speaker">Geluid van %s wordt afgespeeld via de luidspreker van uw tablet. Tik hier om dit uit te schakelen.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Geluid wordt afgespeeld via de luidspreker van uw tablet. Tik hier om dit uit te schakelen.</string>
     <string name="multisound_sound_via_usb_audio">Geluid van %s wordt afgespeeld via het USB-audioapparaat. Tik hier om dit uit te schakelen.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Geluid wordt afgespeeld via het USB-audioapparaat. Tik hier om dit uit te schakelen.</string>
     <string name="multisound_title">Afzonderlijk app-geluid</string>
     <string name="multisound_turn_off_multisound">Uit</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s kan niet worden uitgevoerd in Samsung DeX. Probeer het in de telefoonstand.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s kan niet worden uitgevoerd in Samsung DeX. De app is ontworpen voor telefoons met startschermen.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sommige games werken alleen op touchscreens. Als muiscontrols niet werken in Samsung DeX, probeert u in plaats daarvan de game in de telefoonstand te spelen.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s kan niet worden uitgevoerd in Samsung DeX. Probeer het in de tabletstand.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s kan niet worden uitgevoerd in Samsung DeX. De app is ontworpen voor startschermen van tablets.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sommige games werken alleen op touchscreens. Als muiscontrols niet werken in Samsung DeX, probeer je in plaats daarvan de game in de tabletstand te spelen.</string>
     <string name="music_recognition_manager_service">Beheerservice voor muziekherkenning</string>
     <string name="muted_by">%1$s zet sommige geluiden uit</string>
-    <string name="my_device">Deze telefoon</string>
+    <string name="my_device">Deze tablet</string>
     <string name="nas_upgrade_notification_content">Voorgestelde acties en antwoorden worden nu geleverd via verbeterde meldingen. Aanpasbare Android-meldingen worden niet meer ondersteund.</string>
     <string name="nas_upgrade_notification_disable_action">Uitzetten</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1955,23 +1955,23 @@ Verbeterde meldingen hebben toegang tot meldingscontent, waaronder persoonlijke 
     <string name="permdesc_bindNotificationListenerService">Hiermee kan de houder koppelen aan de hoofdinterface van een listener-service voor meldingen. Nooit vereist voor normale apps.</string>
     <string name="permdesc_bind_connection_service">Hiermee kan de app met telefonische diensten communiceren zodat je kunt bellen of gebeld worden.</string>
     <string name="permdesc_bind_incall_service">Hiermee kan de app bepalen wanneer en hoe de gebruiker het scherm in een actief gesprek te zien krijgt.</string>
-    <string name="permdesc_bluetooth">Hiermee kan de app de Bluetooth-configuratie van de telefoon bekijken en verbindingen met gekoppelde apparaten maken en accepteren.</string>
-    <string name="permdesc_bluetoothAdmin">Hiermee kan de app de lokale bluetooth-telefoon instellen en externe apparaten zoeken en koppelen.</string>
+    <string name="permdesc_bluetooth">Hiermee kan de app de Bluetooth-configuratie van de tablet bekijken en verbindingen met gekoppelde apparaten maken en accepteren.</string>
+    <string name="permdesc_bluetoothAdmin">Hiermee kan de app de lokale bluetooth-tablet instellen en externe apparaten zoeken en koppelen.</string>
     <string name="permdesc_bluetooth_advertise">Hiermee kan de app uitzenden naar bluetooth-apparaten in de buurt</string>
     <string name="permdesc_bluetooth_connect">Hiermee kan de app verbinding maken met gekoppelde bluetooth-apparaten</string>
     <string name="permdesc_bluetooth_scan">Hiermee kan de app bluetooth-apparaten in de buurt vinden en koppelen</string>
     <string name="permdesc_bodySensors">De app heeft toegang tot gegevens van lichaamssensoren, zoals hartslag, temperatuur en zuurstofpercentage in het bloed, terwijl de app wordt gebruikt.</string>
     <string name="permdesc_bodySensors_background">De app heeft toegang tot gegevens van lichaamssensoren, zoals hartslag, temperatuur en zuurstofpercentage in het bloed, terwijl de app op de achtergrond wordt uitgevoerd.</string>
-    <string name="permdesc_broadcastSticky">Hiermee kan de app sticky broadcasts verzenden die behouden blijven nadat de broadcast is beëindigd. Bij overmatig gebruik kan de telefoon traag of instabiel worden omdat er te veel geheugenruimte wordt gebruikt.</string>
+    <string name="permdesc_broadcastSticky">Hiermee kan de app sticky broadcasts verzenden die behouden blijven nadat de broadcast is beëindigd. Bij overmatig gebruik kan de tablet traag of instabiel worden omdat er te veel geheugenruimte wordt gebruikt.</string>
     <string name="permdesc_callCompanionApp">Hiermee kan de app actieve gesprekken op het apparaat bekijken en beheren. Dit omvat informatie zoals nummers voor gesprekken en de status van de gesprekken.</string>
     <string name="permdesc_callPhone">Hiermee kan de app telefoonnummers bellen zonder je tussenkomst. Dit kan resulteren in onverwachte kosten of gesprekken. Dit geeft de app geen rechten om alarmnummers te bellen. Kwaadwillende apps kunnen je geld kosten omdat ze zonder je toestemming kunnen bellen. Ook kunnen ze providercodes kiezen waardoor inkomende gesprekken automatisch worden doorgestuurd naar een ander nummer.</string>
     <string name="permdesc_camera">"Deze app kan foto's maken en video's opnemen met de camera als de app wordt gebruikt."</string>
     <string name="permdesc_cameraOpenCloseListener">Deze app kan callbacks ontvangen als een camera-apparaat wordt geopend (en door welke app) of gesloten.</string>
     <string name="permdesc_changeNetworkState">Hiermee kan de app de status van de netwerkverbinding wijzigen.</string>
     <string name="permdesc_changeTetherState">Hiermee kan de app de status van de getetherde netwerkverbinding wijzigen.</string>
-    <string name="permdesc_changeWifiMulticastState">Hiermee kan de app pakketten ontvangen die via multicastadressen naar alle apparaten in een wifi-netwerk worden verzonden, niet alleen naar je telefoon. Het stroomgebruik ligt hierbij hoger dan in de niet-multicastmodus.</string>
+    <string name="permdesc_changeWifiMulticastState">Hiermee kan de app pakketten ontvangen die via multicastadressen naar alle apparaten in een wifi-netwerk worden verzonden, niet alleen naar je tablet. Het stroomgebruik ligt hierbij hoger dan in de niet-multicastmodus.</string>
     <string name="permdesc_changeWifiState">Hiermee kan de app zich koppelen aan en ontkoppelen van wifi-toegangspunten en wijzigingen aanbrengen in de apparaatconfiguratie voor wifi-netwerken.</string>
-    <string name="permdesc_changeWimaxState">Hiermee kan de app de telefoon verbinden met WiMAX-netwerken en de verbinding daarmee verbreken.</string>
+    <string name="permdesc_changeWimaxState">Hiermee kan de app de tablet verbinden met WiMAX-netwerken en de verbinding daarmee verbreken.</string>
     <string name="permdesc_companionProfileWatch">Hiermee kan een bijbehorende app smartwatches beheren.</string>
     <string name="permdesc_connection_manager">Hiermee kan de app telecomverbindingen beheren.</string>
     <string name="permdesc_control_incall_experience">Hiermee kan de app een gebruikerservaring bieden tijdens een gesprek.</string>
@@ -1999,7 +1999,7 @@ Verbeterde meldingen hebben toegang tot meldingscontent, waaronder persoonlijke 
     <string name="permdesc_foregroundServiceSpecialUse">"Hiermee kan de app gebruikmaken van services op de voorgrond van het type 'specialUse'"</string>
     <string name="permdesc_foregroundServiceSystemExempted">"Hiermee kan de app gebruikmaken van services op de voorgrond van het type 'systemExempted'"</string>
     <string name="permdesc_fullScreenIntent">Hiermee kan de app meldingen als activiteiten op volledig scherm tonen op een vergrendeld apparaat</string>
-    <string name="permdesc_getAccounts">Hiermee krijgt de app toegang tot de lijst met accounts die op de telefoon bekend zijn. Dit kunnen ook accounts zijn die zijn gemaakt door apps die je hebt geïnstalleerd.</string>
+    <string name="permdesc_getAccounts">Hiermee krijgt de app toegang tot de lijst met accounts die op de tablet bekend zijn. Dit kunnen ook accounts zijn die zijn gemaakt door apps die je hebt geïnstalleerd.</string>
     <string name="permdesc_getAppList">Toestaan dat een app de lijst met geïnstalleerde apps leest.</string>
     <string name="permdesc_getPackageSize">Hiermee kan de app de bijbehorende code, gegevens en cachegrootten ophalen.</string>
     <string name="permdesc_getTasks">Hiermee kan de app informatie ophalen over actieve en recent uitgevoerde taken. Zo kan de app informatie vinden over welke apps op het apparaat worden gebruikt.</string>
@@ -2098,16 +2098,16 @@ STUUR NAAR"</string>
     <string name="permdesc_nearby_wifi_devices">Hiermee kan de app uitzenden, verbindingen maken en de relatieve positie bepalen van wifi-apparaten in de buurt</string>
     <string name="permdesc_nfc">Hiermee kan de app communiceren met NFC-tags (Near Field Communication), kaarten en lezers.</string>
     <string name="permdesc_observeCompanionDevicePresence">Hiermee kan een bijbehorende app de aanwezigheid van bijbehorende apparaten waarnemen als deze in de buurt of ver weg zijn.</string>
-    <string name="permdesc_persistentActivity">Hiermee kan de app gedeelten van zichzelf persistent maken in het geheugen. Dit kan de hoeveelheid geheugen beperken die beschikbaar is voor andere apps, waardoor de telefoon trager kan worden.</string>
+    <string name="permdesc_persistentActivity">Hiermee kan de app gedeelten van zichzelf persistent maken in het geheugen. Dit kan de hoeveelheid geheugen beperken die beschikbaar is voor andere apps, waardoor de tablet trager kan worden.</string>
     <string name="permdesc_postNotification">Hiermee kan de app meldingen laten zien</string>
     <string name="permdesc_preferredPaymentInfo">Hiermee kun je zorgen dat de app informatie krijgt over de voorkeursservice voor NFC-betaling, zoals geregistreerde hulpmiddelen en routebestemmingen.</string>
     <string name="permdesc_processOutgoingCalls">De app toestaan het nummer te bekijken dat wordt gekozen voor een uitgaand gesprek, met de mogelijkheid het gesprek om te leiden naar een ander nummer of het gesprek helemaal af te breken.</string>
     <string name="permdesc_queryAllPackages">Hiermee kan een app alle geïnstalleerde pakketten zien.</string>
     <string name="permdesc_readBasicPhoneState">Hiermee geef je de app toegang tot de basistelefoonfuncties van het apparaat.</string>
-    <string name="permdesc_readCalendar">Deze app kan alle agenda-afspraken lezen die zijn opgeslagen op je telefoon en je agendagegevens delen of opslaan.</string>
+    <string name="permdesc_readCalendar">Deze app kan alle agenda-afspraken lezen die zijn opgeslagen op je tablet en je agendagegevens delen of opslaan.</string>
     <string name="permdesc_readCallLog">Deze app kan je gespreksgeschiedenis lezen.</string>
     <string name="permdesc_readCellBroadcasts">Toestaan dat de app infodienstberichten leest die worden ontvangen op je apparaat. Infodienstberichten worden verzonden naar bepaalde locaties om u te waarschjeen voor noodsituaties. Schadelijke apps kunnen de prestaties of verwerking van je apparaat verstoren wanneer een infodienstbericht wordt ontvangen.</string>
-    <string name="permdesc_readContacts">Hiermee kan de app gegevens lezen over de contacten die zijn opgeslagen op je telefoon. Apps hebben ook toegang tot de accounts op je telefoon waarvoor contacten zijn gemaakt. Dit kan accounts omvatten die zijn gemaakt door apps die je hebt geïnstalleerd. Met dit recht kunnen apps je contactgegevens opslaan en kunnen schadelijke apps zonder je medeweten contactgegevens delen.</string>
+    <string name="permdesc_readContacts">Hiermee kan de app gegevens lezen over de contacten die zijn opgeslagen op je tablet. Apps hebben ook toegang tot de accounts op je tablet waarvoor contacten zijn gemaakt. Dit kan accounts omvatten die zijn gemaakt door apps die je hebt geïnstalleerd. Met dit recht kunnen apps je contactgegevens opslaan en kunnen schadelijke apps zonder je medeweten contactgegevens delen.</string>
     <string name="permdesc_readInstallSessions">Hiermee wordt een app toegestaan installatiesessies te lezen. Zo kan de app informatie bekijken over actieve pakketinstallaties.</string>
     <string name="permdesc_readMediaAudio">Hiermee kan de app audiobestanden in je gedeelde opslag lezen.</string>
     <string name="permdesc_readMediaImages">Hiermee kan de app afbeeldingsbestanden in je gedeelde opslag lezen.</string>
@@ -2115,11 +2115,11 @@ STUUR NAAR"</string>
     <string name="permdesc_readNetworkUsageHistory">Hiermee kan de app historisch netwerkgebruik voor specifieke netwerken en apps lezen.</string>
     <string name="permdesc_readPhoneNumbers">Hiermee kan de app toegang krijgen tot de telefoonnummers van het apparaat.</string>
     <string name="permdesc_readPhoneState">"Hiermee kan de app toegang krijgen tot de telefoonfuncties van het apparaat, Met deze rechten kan de app het telefoonnummer en de apparaat-ID's bepalen, of een gesprek actief is, en het andere telefoonnummer waarmee wordt gebeld."</string>
-    <string name="permdesc_readSms">Deze app kan alle sms-berichten lezen die zijn opgeslagen op je telefoon.</string>
+    <string name="permdesc_readSms">Deze app kan alle sms-berichten lezen die zijn opgeslagen op je tablet.</string>
     <string name="permdesc_readSyncSettings">Hiermee kan de app de synchronisatie-instellingen voor een account lezen. Dit kan bijvoorbeeld bepalen of de app Personen wordt gesynchroniseerd met een account.</string>
     <string name="permdesc_readSyncStats">Hiermee kan een app de synchronisatiestatistieken voor een account lezen, inclusief de geschiedenis van synchronisatie-activiteiten en hoeveel gegevens zijn gesynchroniseerd.</string>
     <string name="permdesc_readVisualUserSelect">Hiermee kan de app afbeeldings- en videobestanden lezen die je selecteert in je gedeelde opslag.</string>
-    <string name="permdesc_receiveBootCompleted">Hiermee kan de app zichzelf starten zodra het systeem klaar is met opstarten. Hierdoor kan het langer duren voordat de telefoon is opgestart en kan de app de telefoonprocessen vertragen door altijd actief te zijn.</string>
+    <string name="permdesc_receiveBootCompleted">Hiermee kan de app zichzelf laten starten zodra het systeem is opgestart. Hierdoor kan het langer duren voordat de tablet is opgestart en een app kan altijd actief zijn, wat de tablet kan vertragen.</string>
     <string name="permdesc_receiveMms">Hiermee kan de app mms-berichten ontvangen en verwerken. Dit betekent dat de app berichten die naar je apparaat zijn verstuurd, kan bijhouden of verwijderen zonder deze te tonen.</string>
     <string name="permdesc_receiveSms">Hiermee kan de app sms-berichten ontvangen en verwerken. Dit betekent dat de app berichten die naar je apparaat zijn verstuurd, kan bijhouden of verwijderen zonder deze te tonen.</string>
     <string name="permdesc_receiveWapPush">Hiermee kan de app WAP-berichten ontvangen en verwerken. Dit betekent dat de app berichten die naar je apparaat zijn verstuurd, kan bijhouden of verwijderen zonder deze te tonen.</string>
@@ -2141,7 +2141,7 @@ STUUR NAAR"</string>
     <string name="permdesc_sendSms">Hiermee kan de app sms-berichten verzenden. Dit kan tot onverwachte kosten leiden. Schadelijke apps kunnen u geld kosten doordat ze zonder je bevestiging berichten kunnen verzenden.</string>
     <string name="permdesc_setAlarm">Hiermee kan de app een wekker instellen in een geïnstalleerde wekker-app. Deze functie wordt door sommige wekker-apps niet geïmplementeerd.</string>
     <string name="permdesc_setInputCalibration">Hiermee kan de app de kalibratieparameters van het aanraakscherm aanpassen. Nooit vereist voor normale apps.</string>
-    <string name="permdesc_setTimeZone">Hiermee kan de app de tijdzone van de telefoon wijzigen.</string>
+    <string name="permdesc_setTimeZone">Hiermee kan de app de tijdzone van de tablet wijzigen.</string>
     <string name="permdesc_setWallpaper">Hiermee kan de app de systeemachtergrond instellen.</string>
     <string name="permdesc_setWallpaperHints">Hiermee kan de app de grootte van de achtergrond instellen.</string>
     <string name="permdesc_sim_communication">Hiermee kan de app opdrachten verzenden naar de simkaart. Dit is erg gevaarlijk.</string>
@@ -2155,7 +2155,7 @@ STUUR NAAR"</string>
     <string name="permdesc_subscribedFeedsRead">Hiermee kan de app details over de huidige gesynchroniseerde feeds achterhalen.</string>
     <string name="permdesc_systemAlertWindow">Deze app kan op de voorgrond worden weergegeven vóór andere apps of andere gedeelten van het scherm. Dit kan het normale app-gebruik verstoren en de manier wijzigen waarop andere apps worden weergegeven.</string>
     <string name="permdesc_systemCamera">"Deze gemachtigde app of systeem-app kan op elk gewenst moment foto's maken en video's opnemen met een systeemcamera. De app moet ook het recht android.permission.CAMERA hebben."</string>
-    <string name="permdesc_transmitIr">Hiermee kan de app de infraroodzender van de telefoon gebruiken.</string>
+    <string name="permdesc_transmitIr">Hiermee kan de app de infraroodzender van de tablet gebruiken.</string>
     <string name="permdesc_turnScreenOn">Hiermee kan de app het scherm aanzetten.</string>
     <string name="permdesc_ucsPlugin">Werk met invoegtoepassingen voor de opslag van aanmeldingsgegevens van derden.</string>
     <string name="permdesc_uninstall_shortcut">De app toestaan snelkoppelingen van het startscherm te verwijderen zonder tussenkomst van de gebruiker.</string>
@@ -2169,10 +2169,10 @@ STUUR NAAR"</string>
     <string name="permdesc_vibrate">Hiermee kan de app de trilstand beheren.</string>
     <string name="permdesc_vibrator_state">Hiermee heeft de app toegang tot de status van de trilstand.</string>
     <string name="permdesc_videoWrite">Hiermee sta je de app toe je videocollectie aan te passen.</string>
-    <string name="permdesc_wakeLock">Hiermee kan de app voorkomen dat de telefoon overschakelt naar de slaapmodus.</string>
-    <string name="permdesc_writeCalendar">Deze app kan agenda-afspraken toevoegen, verwijderen of wijzigen op je telefoon. Deze app kan berichten verzenden die afkomstig lijken te zijn van agenda-eigenaren of afspraken aanpassen zonder dit aan de eigenaar te melden.</string>
-    <string name="permdesc_writeCallLog">Toestaan dat de app de gesprekslijst van je telefoon aanpast, waaronder gegevens over inkomende en uitgaande gesprekken. Schadelijke apps kunnen hiermee je gesprekslijst wissen of aanpassen.</string>
-    <string name="permdesc_writeContacts">Hiermee kan de app gegevens wijzigen over de contacten die zijn opgeslagen op je telefoon. Met dit recht kunnen apps contactgegevens verwijderen.</string>
+    <string name="permdesc_wakeLock">Hiermee kan de app voorkomen dat de tablet overschakelt naar de slaapmodus.</string>
+    <string name="permdesc_writeCalendar">Deze app kan agenda-afspraken toevoegen, verwijderen of wijzigen op je tablet. Deze app kan berichten verzenden die afkomstig lijken te zijn van agenda-eigenaren of afspraken aanpassen zonder dit aan de eigenaar te melden.</string>
+    <string name="permdesc_writeCallLog">Toestaan dat de app de gesprekslijst van je tablet aanpast, waaronder gegevens over inkomende en uitgaande gesprekken. Schadelijke apps kunnen hiermee je gesprekslijst wissen of aanpassen.</string>
+    <string name="permdesc_writeContacts">Hiermee kan de app gegevens wijzigen over de contacten die zijn opgeslagen op je tablet. Met dit recht kunnen apps contactgegevens verwijderen.</string>
     <string name="permdesc_writeSettings">Hiermee kan de app de instellingsgegevens van het systeem aanpassen. Schadelijke apps kunnen de configuratie van je systeem verstoren.</string>
     <string name="permdesc_writeSyncSettings">Hiermee kan een app de synchronisatie-instellingen aanpassen voor een account. Deze toestemming kan bijvoorbeeld worden gebruikt om de synchronisatie van de app Personen aan te zetten voor een account.</string>
     <string name="permgroupdesc_activityRecognition">toegang tot je fysieke activiteit</string>
@@ -2447,7 +2447,7 @@ voor account %s."</string>
     <string name="permlab_uwb_ranging">relatieve positie tussen ultrabreedbandapparaten in de buurt bepalen</string>
     <string name="permlab_vibrate">trilling beheren</string>
     <string name="permlab_videoWrite">je videocollectie aanpassen</string>
-    <string name="permlab_wakeLock">voorkomen dat telefoon overschakelt naar slaapmodus</string>
+    <string name="permlab_wakeLock">voorkomen dat tablet overschakelt naar slaapmodus</string>
     <string name="permlab_writeCalendar">agenda-afspraken toevoegen of wijzigen en e-mails verzenden aan gasten zonder medeweten van de eigenaren</string>
     <string name="permlab_writeCallLog">gesprekslijst schrijven</string>
     <string name="permlab_writeContacts">je contacten aanpassen</string>
@@ -2489,7 +2489,7 @@ voor account %s."</string>
     <string name="policydesc_allow_desktopsync">Verhinder het gebruik van desktopsynchronisatie.</string>
     <string name="policydesc_allow_internetsharing">Verhinder het gebruik van Mobiele hotspot.</string>
     <string name="policydesc_allow_irda">Verhinder het gebruik van IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Verhinder het gebruik van POP- en IMAP-e-mail op de telefoon.</string>
+    <string name="policydesc_allow_popimapemail">Verhinder het gebruik van POP- en IMAP-e-mail op de tablet.</string>
     <string name="policydesc_allow_storagecard">Verhinder het gebruik van SD-kaarten.</string>
     <string name="policydesc_allow_textmessaging">Verhinder het gebruik van sms- en mms-berichten.</string>
     <string name="policydesc_allow_thirdParty">Deze applicatie kan het openen van applicaties van derden verhinderen.</string>
@@ -2507,10 +2507,10 @@ voor account %s."</string>
     <string name="policydesc_setGlobalProxy">De algemene proxy voor het apparaat instellen die moet worden gebruikt terwijl het beleid is geactiveerd. Alleen de eigenaar van het apparaat kan de algemene proxy instellen.</string>
     <string name="policydesc_unsigned_app">Deze applicatie kan het openen van applicaties uit onbekende bronnen verhinderen.</string>
     <string name="policydesc_unsigned_pkg">Deze applicatie kan de installatie van applicaties uit onbekende bronnen verhinderen.</string>
-    <string name="policydesc_watchLogin">Bijhouden hoe vaak onjuiste wachtwoorden worden ingevoerd wanneer het scherm wordt ontgrendeld en de telefoon vergrendelen of alle gegevens op de telefoon wissen als te veel onjuiste wachtwoorden worden ingevoerd.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Bijhouden hoe vaak onjuiste wachtwoorden worden ingevoerd wanneer het scherm wordt ontgrendeld en de telefoon vergrendelen of alle gegevens van deze gebruiker wissen als te veel onjuiste wachtwoorden worden ingevoerd.</string>
-    <string name="policydesc_wipeData">Wis de gegevens van de telefoon zonder waarschuwing door de fabrieksinstellingen te herstellen.</string>
-    <string name="policydesc_wipeData_secondaryUser">De gegevens van deze gebruiker op deze telefoon zonder waarschuwing wissen.</string>
+    <string name="policydesc_watchLogin">Bijhouden hoe vaak onjuiste wachtwoorden worden ingevoerd wanneer het scherm wordt ontgrendeld en de tablet vergrendelen of alle gegevens op de tablet wissen als te veel onjuiste wachtwoorden worden ingevoerd.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Bijhouden hoe vaak onjuiste wachtwoorden worden ingevoerd wanneer het scherm wordt ontgrendeld en de tablet vergrendelen of alle gegevens van deze gebruiker wissen als te veel onjuiste wachtwoorden worden ingevoerd.</string>
+    <string name="policydesc_wipeData">De gegevens van de tablet zonder waarschuwing wissen door de fabrieksinstellingen te herstellen.</string>
+    <string name="policydesc_wipeData_secondaryUser">De gegevens van deze gebruiker op deze tablet zonder waarschuwing wissen.</string>
     <string name="policylab_allow_bluetoothmode">Bluetooth uitschakelen</string>
     <string name="policylab_allow_browser">Internet inschakelen</string>
     <string name="policylab_allow_camera">Camera´s uitschakelen</string>
@@ -2544,7 +2544,7 @@ voor account %s."</string>
     <string name="postalTypeHome">Thuis</string>
     <string name="postalTypeOther">Overig</string>
     <string name="postalTypeWork">Werk</string>
-    <string name="power_dialog">Telefoonopties</string>
+    <string name="power_dialog">Tabletopties</string>
     <string name="power_off">Uitzetten</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">op %s</string>
@@ -2590,7 +2590,7 @@ voor account %s."</string>
     <string name="recent_tasks_title">Recent</string>
     <string name="recording_fail">Kan microfoon niet in %1$s gebruiken terwijl deze in %2$s wordt gebruikt.</string>
     <string name="recording_popup">%s gebruikt de microfoon.</string>
-    <string name="recording_popup_device">Telefoon</string>
+    <string name="recording_popup_device">Tablet</string>
     <string name="recording_popup_with_bluetooth">%s gebruikt de Bluetooth-microfoon.</string>
     <string name="recording_popup_with_device">%1$s gebruikt de microfoon van %2$s.</string>
     <string name="redo">Opnieuw</string>
@@ -2737,12 +2737,12 @@ Als je langere tijd op hoog volume naar muziek luistert, raakt je gehoor mogelij
     <string name="screenshot_edit">Bewerken</string>
     <string name="sd_card_unavailable_message">U kunt de SD-kaart niet gebruiken omdat deze is geplaatst terwijl een ander gebruikersprofiel in gebruik was.</string>
     <string name="sd_card_unavailable_title">SD-kaart niet beschikbaar</string>
-    <string name="sdcard_bad_removal_message">Er is een SD-kaart niet veilig verwijderd. Als u wilt voorkomen dat uw telefoon onverwacht opnieuw start, slaat u niet-opgeslagen gegevens op en start u deze nu opnieuw.</string>
+    <string name="sdcard_bad_removal_message">Er is een SD-kaart niet veilig verwijderd. Als u wilt voorkomen dat uw tablet onverwacht opnieuw start, slaat u niet-opgeslagen gegevens op en start u deze nu opnieuw.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD-kaart decoderen</string>
     <string name="sdcard_batch_decrypt_noti_title">SD-kaart decoderen</string>
     <string name="sdcard_batch_decrypt_popup_content">De gecodeerde SD-kaart moet worden gedecodeerd voordat deze wordt gebruikt. Het decoderen duurt een uur of langer. Begin met een geladen batterij en laat het apparaat aangesloten op de voeding totdat de decodering is voltooid. Bij een onderbreking van het decodeerproces gaan enkele of alle gegevens verloren.</string>
     <string name="sdcard_decrypt_err_notification">Fout opgetreden bij decoderen van SD-kaart.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Sommige bestanden op uw SD-kaart zijn gecodeerd op een ander apparaat en kunnen niet worden gebruikt op deze telefoon.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Sommige bestanden op uw SD-kaart zijn gecodeerd op een ander apparaat en kunnen niet worden gebruikt op deze tablet.</string>
     <string name="sdcard_decrypt_notification">SD-kaart gedecodeerd.</string>
     <string name="sdcard_decrypt_title_notification">SD-kaart decoderen</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD-kaart decoderen…</string>
@@ -3000,7 +3000,7 @@ Als u de knoppen weer zichtbaar wilt maken, veegt u naar boven vanaf de onderkan
     <string name="showing_touch_sensitivity_noti_action">Inschakelen</string>
     <string name="showing_touch_sensitivity_noti_text">Schakel Aanraakgevoeligheid in bij het gebruik van Privacy Screen of Notepaper Screen voor een nauwkeurigere reactie bij aanraken.</string>
     <string name="showing_touch_sensitivity_noti_title">Aanraakgevoeligheid verhogen</string>
-    <string name="shutdown_confirm">Je telefoon wordt uitgezet.</string>
+    <string name="shutdown_confirm">Je tablet wordt uitgezet.</string>
     <string name="shutdown_confirm_question">Wil je afsluiten?</string>
     <string name="shutdown_progress">Uitzetten…</string>
     <string name="side_key_double_press_deleted_app">App verwijderd. Kies iets anders.</string>
@@ -3227,7 +3227,7 @@ Als je deze beveiliging wilt verwijderen, ga je naar Instellingen > Beveiliging 
     <string name="usb_abnormal_reset_title">USB-verbinding is niet stabiel</string>
     <string name="usb_abnormal_reset_toast">USB-verbinding is niet stabiel. Haal de kabel los en sluit deze opnieuw aan of probeer een andere kabel.</string>
     <string name="usb_accessory_notification_title">Verbonden met een USB-accessoire</string>
-    <string name="usb_bad_removal_message">Er is een USB-opslagapparaat niet veilig verwijderd. Als u wilt voorkomen dat uw telefoon onverwacht opnieuw start, slaat u niet-opgeslagen gegevens op en start u deze nu opnieuw.</string>
+    <string name="usb_bad_removal_message">Er is een USB-opslagapparaat niet veilig verwijderd. Als u wilt voorkomen dat uw tablet onverwacht opnieuw start, slaat u niet-opgeslagen gegevens op en start u deze nu opnieuw.</string>
     <string name="usb_blocked_by_emergency_mode">Sommige USB-functies zijn niet beschikbaar in de Alarmstand.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Kan de functies die samenhangen met het verbonden USB-apparaat niet gebruiken terwijl Maximale spaarstand is ingeschakeld.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Sommige USB-functies zijn beperkt terwijl Maximale spaarstand is ingeschakeld.</string>
@@ -3237,7 +3237,7 @@ Als je deze beveiliging wilt verwijderen, ga je naar Instellingen > Beveiliging 
     <string name="usb_camera_disconnected_notification_title">Verbinding media-apparaat verbroken</string>
     <string name="usb_cd_installer_notification_title">Softwareupdate</string>
     <string name="usb_charging_notification_title">Dit apparaat wordt opgeladen via USB</string>
-    <string name="usb_charing_only_notification_title">Opladen via USB</string>
+    <string name="usb_charing_only_notification_title">Verbonden</string>
     <string name="usb_contaminant_detected_message">USB-poort is automatisch uitgezet. Tik voor meer informatie.</string>
     <string name="usb_contaminant_detected_title">Vloeistof of vuil in USB-poort</string>
     <string name="usb_contaminant_not_detected_message">De telefoon detecteert geen vloeistof of vuil meer.</string>
@@ -3249,11 +3249,11 @@ Als je deze beveiliging wilt verwijderen, ga je naar Instellingen > Beveiliging 
     <string name="usb_host_cable_disconnected_notification_title">USB-connector losgekoppeld.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Kan geen toegang krijgen tot apparaat. Aangesloten apparaat vereist externe voedingsbron.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">USB-apparaat met hoog vermogen aangesloten.</string>
-    <string name="usb_host_resource_exceed_message">De USB-controller van uw telefoon heeft onvoldoende bronnen om dit apparaat te verbinden. Probeer de verbinding met het apparaat te verbreken en opnieuw verbinding te maken.</string>
+    <string name="usb_host_resource_exceed_message">De USB-controller van uw tablet heeft onvoldoende bronnen om dit apparaat te verbinden. Probeer de verbinding met het apparaat te verbreken en opnieuw verbinding te maken.</string>
     <string name="usb_host_resource_exceed_title">Onvoldoende bronnen voor USB-controller</string>
-    <string name="usb_hub_depth_exceed_message">Uw telefoon kan maximaal 5 verbindingen met USB-hub tegelijk ondersteunen.</string>
+    <string name="usb_hub_depth_exceed_message">Uw tablet kan maximaal 5 verbindingen met USB-hub tegelijk ondersteunen.</string>
     <string name="usb_hub_depth_exceed_title">Max verbindingen USB-hub</string>
-    <string name="usb_hub_power_exceed_message">De telefoon kan onvoldoende voeding leveren voor dit USB-apparaat. Verbind het apparaat met een zelfstandige USB-hub voordat u verbinding maakt met uw telefoon.</string>
+    <string name="usb_hub_power_exceed_message">De tablet kan onvoldoende voeding leveren voor dit USB-apparaat. Verbind het apparaat met een zelfstandige USB-hub voordat u verbinding maakt met uw tablet.</string>
     <string name="usb_increase_battery_usage">USB-verbinding verhoogt mogelijk het batterijgebruik.</string>
     <string name="usb_keyboard_connected_notification_title">Toetsenbord aangesloten</string>
     <string name="usb_keyboard_disconnected_notification_title">Toetsenbord losgekoppeld</string>
@@ -3296,8 +3296,8 @@ Als je deze beveiliging wilt verwijderen, ga je naar Instellingen > Beveiliging 
     <string name="usb_ums_connected_notification_message_usbhost">USB-apparaat voor massaopslag onverwacht verwijderd.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB-massaopslag aangesloten</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB-apparaat voor massaopslag veilig verwijderd.</string>
-    <string name="usb_unblock_by_screen_unlock">Ontgrendel je telefoon om het aangesloten USB-apparaat te gebruiken.</string>
-    <string name="usb_unsupport_accessory_message">Dit USB-apparaat wordt niet ondersteund door uw telefoon.</string>
+    <string name="usb_unblock_by_screen_unlock">Ontgrendel je tablet om het aangesloten USB-apparaat te gebruiken.</string>
+    <string name="usb_unsupport_accessory_message">Dit USB-apparaat wordt niet ondersteund door uw tablet.</string>
     <string name="usb_unsupport_accessory_title">USB-apparaat niet ondersteund</string>
     <string name="usb_unsupported_audio_accessory_message">Het aangesloten apparaat werkt niet met deze telefoon. Tik voor meer informatie.</string>
     <string name="usb_unsupported_audio_accessory_title">Analoog audioaccessoire gedetecteerd</string>
@@ -3318,19 +3318,19 @@ Als je deze beveiliging wilt verwijderen, ga je naar Instellingen > Beveiliging 
     <string name="usb_water_dialg_method_2_desc_2">U kunt het drogen versnellen door een ventilator of föhn (alleen koude lucht) op de poort te richten.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Er is vocht of vreemd materiaal gedetecteerd in je oplaad-/USB-poort.
 
-Controleer je oplaad-/USB-poort op vreemd materiaal zoals stof en vuil. Voorkom schade aan je telefoon en sluit geen apparaten aan totdat de oplaadpoort schoon is en het vocht is verwijderd.
+Controleer je oplaad-/USB-poort op vreemd materiaal zoals stof en vuil. Voorkom schade aan je tablet en sluit geen apparaten aan totdat de oplaadpoort schoon is en het vocht is verwijderd.
 
 Voor het drogen van de poort schud je eventueel vocht eruit en wacht je tot de poort droog is. Dit kan een paar uur duren. Je kunt het drogen versnellen door een ventilator of droger (alleen koude lucht) op de poort te richten."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
-    <string name="usb_water_dialg_support_wireless_charging">"Er is vocht of vreemd materiaal gedetecteerd in je oplaad-/USB-poort.
+    <string name="usb_water_dialg_support_wireless_charging">"Er is vocht of vreemd materiaal gedetecteerd in de oplaad-/USB-poort.
 
-Controleer je oplaad-/USB-poort op vreemd materiaal zoals stof en vuil. Voorkom schade aan je telefoon en sluit geen apparaten aan totdat de oplaadpoort schoon is en het vocht is verwijderd.
+Controleer de oplaad-/USB-poort op vreemd materiaal zoals stof en vuil. Voorkom schade aan je tablet en sluit geen apparaten aan totdat de oplaadpoort schoon is en het vocht is verdwenen.
 
 Voor het drogen van de poort schud je eventueel vocht eruit en wacht je tot de poort droog is. Dit kan een paar uur duren. Je kunt het drogen versnellen door een ventilator of droger (alleen koude lucht) op de poort te richten.
 
-Ondertussen kun je de telefoon draadloos opladen."</string>
+Ondertussen kun je de tablet draadloos opladen."</string>
     <string name="usb_water_notification_content">Er zit vocht of vreemd materiaal in je oplaad-/USB-poort. Controleer voordat je gaat opladen.</string>
-    <string name="usb_water_notification_message">Er is vocht gedetecteerd in uw oplader-/USB-poort. Zorg ervoor dat de poort droog is voordat u de telefoon oplaadt. Het kan enige tijd duren voordat de poort helemaal droog is.</string>
+    <string name="usb_water_notification_message">Er is vocht gedetecteerd in uw oplader-/USB-poort. Zorg ervoor dat de poort droog is voordat u de tablet oplaadt. Het kan enige tijd duren voordat de poort helemaal droog is.</string>
     <string name="usb_water_notification_message_button">Details</string>
     <string name="usb_water_notification_title">Oplader-/USB-poort controleren</string>
     <string name="usbhostStorage_restrict">Gebruik van USB-hostopslag wordt voorkomen door beveiligingsbeleid.</string>
@@ -3348,7 +3348,7 @@ Ondertussen kun je de telefoon draadloos opladen."</string>
     <string name="user_switched">Huidige gebruiker %1$s.</string>
     <string name="user_switching_message">Overschakelen naar %1$s…</string>
     <string name="validity_period">Geldigheid:</string>
-    <string name="vdm_camera_access_denied">Kan geen toegang tot de camera van de telefoon krijgen vanaf je %1$s</string>
+    <string name="vdm_camera_access_denied">Kan geen toegang tot de camera van de tablet krijgen vanaf je %1$s</string>
     <string name="vdm_pip_blocked">Kan scherm-in-scherm niet bekijken tijdens het streamen</string>
     <string name="vdm_secure_window">Je hebt hier geen toegang toe tijdens streaming. Probeer het in plaats daarvan op je telefoon.</string>
     <string name="view_and_control_notification_content">%s kan je scherm bekijken en bedienen. Tik om te checken.</string>

@@ -10,7 +10,7 @@ public enum State {
     DEVICE_LOCK_DATA_LOCK,
     DEVICE_UNLOCK_DATA_LOCK;
 
-    /* renamed from: com.samsung.android.knox.dar.ddar.fsm.State$1, reason: invalid class name */
+    /* renamed from: com.samsung.android.knox.dar.ddar.fsm.State$1 */
     /* loaded from: classes5.dex */
     static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$knox$dar$ddar$fsm$State;

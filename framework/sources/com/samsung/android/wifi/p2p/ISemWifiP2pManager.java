@@ -367,8 +367,9 @@ public interface ISemWifiP2pManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes6.dex */
-        private static class Proxy implements ISemWifiP2pManager {
+        public static class Proxy implements ISemWifiP2pManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

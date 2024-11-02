@@ -8,7 +8,6 @@ import java.security.MessageDigest;
 class DigestUpdatingOutputStream extends OutputStream {
     private MessageDigest digest;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DigestUpdatingOutputStream(MessageDigest digest) {
         this.digest = digest;
     }

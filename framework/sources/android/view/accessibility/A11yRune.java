@@ -84,11 +84,26 @@ public class A11yRune {
         mClient = null;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0035, code lost:            if (r0 != null) goto L30;     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x005e, code lost:            return android.view.accessibility.A11yRune.value;     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0059, code lost:            r0.close();     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x0047, code lost:            if (r0 == null) goto L31;     */
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x0057, code lost:            if (r0 == null) goto L31;     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0035, code lost:
+    
+        if (r0 != null) goto L72;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x005e, code lost:
+    
+        return android.view.accessibility.A11yRune.value;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x0059, code lost:
+    
+        r0.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x0047, code lost:
+    
+        if (r0 == null) goto L73;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x0057, code lost:
+    
+        if (r0 == null) goto L73;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

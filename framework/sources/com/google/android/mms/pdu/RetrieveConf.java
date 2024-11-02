@@ -12,7 +12,6 @@ public class RetrieveConf extends MultimediaMessagePdu {
         super(headers);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RetrieveConf(PduHeaders headers, PduBody body) {
         super(headers, body);
     }

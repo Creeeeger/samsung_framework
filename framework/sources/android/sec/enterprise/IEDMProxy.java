@@ -1970,7 +1970,6 @@ public interface IEDMProxy extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class Proxy implements IEDMProxy {
             private IBinder mRemote;

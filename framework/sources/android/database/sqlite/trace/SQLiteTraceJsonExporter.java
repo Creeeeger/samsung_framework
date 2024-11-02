@@ -33,7 +33,6 @@ public class SQLiteTraceJsonExporter extends SQLiteTraceExporter {
         this.mWriter.beginArray();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.database.sqlite.trace.SQLiteTraceExporter
     public void writeOperations(List<SQLiteTrace.TraceOperation> operations) throws IOException {
         for (SQLiteTrace.TraceOperation operation : operations) {

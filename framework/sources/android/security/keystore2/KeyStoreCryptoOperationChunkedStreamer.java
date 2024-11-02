@@ -17,7 +17,6 @@ class KeyStoreCryptoOperationChunkedStreamer implements KeyStoreCryptoOperationS
     private final Stream mKeyStoreStream;
     private long mProducedOutputSizeBytes;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public interface Stream {
         byte[] finish(byte[] bArr, byte[] bArr2) throws KeyStoreException;
@@ -25,12 +24,10 @@ class KeyStoreCryptoOperationChunkedStreamer implements KeyStoreCryptoOperationS
         byte[] update(byte[] bArr) throws KeyStoreException;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public KeyStoreCryptoOperationChunkedStreamer(Stream operation) {
         this(operation, 2048, 32768);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public KeyStoreCryptoOperationChunkedStreamer(Stream operation, int chunkSizeThreshold) {
         this(operation, chunkSizeThreshold, 32768);
     }
@@ -128,7 +125,6 @@ class KeyStoreCryptoOperationChunkedStreamer implements KeyStoreCryptoOperationS
     public static class MainDataStream implements Stream {
         private final KeyStoreOperation mOperation;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public MainDataStream(KeyStoreOperation operation) {
             this.mOperation = operation;
         }

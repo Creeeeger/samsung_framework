@@ -75,7 +75,6 @@ public class DrmRights {
         return this.mSubscriptionId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isValid() {
         byte[] bArr;
         String str = this.mMimeType;

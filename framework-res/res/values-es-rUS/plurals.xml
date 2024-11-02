@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Su teléfono es inestable debido a que se retiró una tarjeta de memoria que tenía aplicaciones instaladas. Su teléfono se reiniciará dentro de %d segundos para volver al estado normal. Guarde los datos que no haya guardado antes de que se reinicie el teléfono.</item>
+        <item quantity="other">Su tableta es inestable debido a que se retiró una tarjeta de memoria que tenía aplicaciones instaladas. Su tableta se reiniciará dentro de %d segundos para volver al estado normal. Guarde los datos que no haya guardado antes de que se reinicie la tableta.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Su teléfono es inestable debido a que se retiró una tarjeta de memoria que tenía aplicaciones instaladas. Su teléfono se reiniciará dentro de %d segundo para volver al estado normal. Guarde los datos que no haya guardado antes de que se reinicie el teléfono.</item>
+        <item quantity="one">Su tableta es inestable debido a que se retiró una tarjeta de memoria que tenía aplicaciones instaladas. Su tableta se reiniciará dentro de %d segundo para volver al estado normal. Guarde los datos que no haya guardado antes de que se reinicie la tableta.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Su teléfono se reiniciará en %d segundos</item>
+        <item quantity="other">Su tableta se reiniciará en %d segundos</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Su teléfono se reiniciará en %d segundo</item>
+        <item quantity="one">Su tableta se reiniciará en %d segundo</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

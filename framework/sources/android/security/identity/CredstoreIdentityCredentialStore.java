@@ -8,7 +8,6 @@ import android.os.ServiceManager;
 import android.os.ServiceSpecificException;
 import android.security.identity.ICredentialStoreFactory;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public class CredstoreIdentityCredentialStore extends IdentityCredentialStore {
     private static final String TAG = "CredstoreIdentityCredentialStore";

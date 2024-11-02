@@ -14,14 +14,15 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class ManagedSubscriptionsPolicy implements Parcelable {
     public static final Parcelable.Creator<ManagedSubscriptionsPolicy> CREATOR = new Parcelable.Creator<ManagedSubscriptionsPolicy>() { // from class: android.app.admin.ManagedSubscriptionsPolicy.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ManagedSubscriptionsPolicy createFromParcel(Parcel in) {
             ManagedSubscriptionsPolicy policy = new ManagedSubscriptionsPolicy(in.readInt());
             return policy;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ManagedSubscriptionsPolicy[] newArray(int size) {
             return new ManagedSubscriptionsPolicy[size];
@@ -43,6 +44,24 @@ public final class ManagedSubscriptionsPolicy implements Parcelable {
             throw new IllegalArgumentException("Invalid policy type");
         }
         this.mPolicyType = policyType;
+    }
+
+    /* renamed from: android.app.admin.ManagedSubscriptionsPolicy$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ManagedSubscriptionsPolicy> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ManagedSubscriptionsPolicy createFromParcel(Parcel in) {
+            ManagedSubscriptionsPolicy policy = new ManagedSubscriptionsPolicy(in.readInt());
+            return policy;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ManagedSubscriptionsPolicy[] newArray(int size) {
+            return new ManagedSubscriptionsPolicy[size];
+        }
     }
 
     public int getPolicyType() {

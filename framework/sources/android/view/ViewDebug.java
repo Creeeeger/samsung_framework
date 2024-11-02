@@ -169,7 +169,6 @@ public class ViewDebug {
         MOVE_FROM_ACTIVE_TO_SCRAP_HEAP
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static abstract class PropertyInfo<T extends Annotation, R extends AccessibleObject & Member> {
         public final R member;
@@ -188,7 +187,6 @@ public class ViewDebug {
             this.returnType = cls2;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static <T extends Annotation> PropertyInfo<T, ?> forMethod(Method method, Class<T> property) {
             try {
                 if (method.getReturnType() != Void.class) {
@@ -207,7 +205,6 @@ public class ViewDebug {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static <T extends Annotation> PropertyInfo<T, ?> forField(Field field, Class<T> property) {
             if (!field.isAnnotationPresent(property)) {
                 return null;
@@ -217,7 +214,6 @@ public class ViewDebug {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class MethodPI<T extends Annotation> extends PropertyInfo<T, Method> {
         MethodPI(Method method, Class<T> property) {
@@ -230,7 +226,6 @@ public class ViewDebug {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class FieldPI<T extends Annotation> extends PropertyInfo<T, Field> {
         FieldPI(Field field, Class<T> property) {
@@ -275,7 +270,6 @@ public class ViewDebug {
     public static void stopHierarchyTracing() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static void dispatchCommand(View view, String command, String parameters, OutputStream clientStream) throws IOException {
         View view2 = view.getRootView();
         if (REMOTE_COMMAND_DUMP.equalsIgnoreCase(command)) {
@@ -339,14 +333,29 @@ public class ViewDebug {
     }
 
     private static void requestLayout(View root, String parameter) {
-        final View view = findView(root, parameter);
+        View view = findView(root, parameter);
         if (view != null) {
             root.post(new Runnable() { // from class: android.view.ViewDebug.1
+                AnonymousClass1() {
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     View.this.requestLayout();
                 }
             });
+        }
+    }
+
+    /* renamed from: android.view.ViewDebug$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            View.this.requestLayout();
         }
     }
 
@@ -403,8 +412,40 @@ public class ViewDebug {
         }
     }
 
-    private static long profileViewMeasure(final View view) {
+    /* renamed from: android.view.ViewDebug$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements ViewOperation {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.ViewDebug.ViewOperation
+        public void pre() {
+            forceLayout(View.this);
+        }
+
+        private void forceLayout(View view) {
+            view.forceLayout();
+            if (view instanceof ViewGroup) {
+                ViewGroup group = (ViewGroup) view;
+                int count = group.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    forceLayout(group.getChildAt(i));
+                }
+            }
+        }
+
+        @Override // android.view.ViewDebug.ViewOperation
+        public void run() {
+            View view = View.this;
+            view.measure(view.mOldWidthMeasureSpec, View.this.mOldHeightMeasureSpec);
+        }
+    }
+
+    private static long profileViewMeasure(View view) {
         return profileViewOperation(view, new ViewOperation() { // from class: android.view.ViewDebug.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.ViewDebug.ViewOperation
             public void pre() {
                 forceLayout(View.this);
@@ -471,7 +512,6 @@ public class ViewDebug {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public interface ViewOperation {
         void run();
@@ -502,7 +542,6 @@ public class ViewDebug {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$profileViewOperation$3(ViewOperation operation, long[] duration, CountDownLatch latch) {
         try {
             operation.pre();
@@ -583,6 +622,10 @@ public class ViewDebug {
         private Thread mRenderThread;
         private final HardwareRenderer mRenderer;
         private boolean mStopListening;
+
+        /* synthetic */ PictureCallbackHandler(HardwareRenderer hardwareRenderer, Function function, Executor executor, PictureCallbackHandlerIA pictureCallbackHandlerIA) {
+            this(hardwareRenderer, function, executor);
+        }
 
         private PictureCallbackHandler(HardwareRenderer renderer, Function<Picture, Boolean> callback, Executor executor) {
             this.mLock = new ReentrantLock(false);
@@ -672,6 +715,10 @@ public class ViewDebug {
         private Thread mRenderThread;
         private final HardwareRenderer mRenderer;
         private boolean mStopListening;
+
+        /* synthetic */ StreamingPictureCallbackHandler(HardwareRenderer hardwareRenderer, Callable callable, Executor executor, StreamingPictureCallbackHandlerIA streamingPictureCallbackHandlerIA) {
+            this(hardwareRenderer, callable, executor);
+        }
 
         private StreamingPictureCallbackHandler(HardwareRenderer renderer, Callable<OutputStream> callback, Executor executor) {
             this.mLock = new ReentrantLock(false);
@@ -810,7 +857,6 @@ public class ViewDebug {
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$performViewCapture$4(View captureView, Bitmap[] cache, boolean skipChildren, CountDownLatch latch) {
         try {
             try {
@@ -852,10 +898,18 @@ public class ViewDebug {
         }
     }
 
-    public static void dumpv2(final View view, ByteArrayOutputStream out) throws InterruptedException {
-        final ViewHierarchyEncoder encoder = new ViewHierarchyEncoder(out);
-        final CountDownLatch latch = new CountDownLatch(1);
+    public static void dumpv2(View view, ByteArrayOutputStream out) throws InterruptedException {
+        ViewHierarchyEncoder encoder = new ViewHierarchyEncoder(out);
+        CountDownLatch latch = new CountDownLatch(1);
         view.post(new Runnable() { // from class: android.view.ViewDebug.3
+            final /* synthetic */ CountDownLatch val$latch;
+            final /* synthetic */ View val$view;
+
+            AnonymousClass3(View view2, CountDownLatch latch2) {
+                view = view2;
+                latch = latch2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 ViewHierarchyEncoder.this.addProperty("window:left", view.mAttachInfo.mWindowLeft);
@@ -864,8 +918,29 @@ public class ViewDebug {
                 latch.countDown();
             }
         });
-        latch.await(2L, TimeUnit.SECONDS);
+        latch2.await(2L, TimeUnit.SECONDS);
         encoder.endStream();
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewDebug$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        final /* synthetic */ CountDownLatch val$latch;
+        final /* synthetic */ View val$view;
+
+        AnonymousClass3(View view2, CountDownLatch latch2) {
+            view = view2;
+            latch = latch2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ViewHierarchyEncoder.this.addProperty("window:left", view.mAttachInfo.mWindowLeft);
+            ViewHierarchyEncoder.this.addProperty("window:top", view.mAttachInfo.mWindowTop);
+            view.encode(ViewHierarchyEncoder.this);
+            latch.countDown();
+        }
     }
 
     private static void dumpEncoded(View view, OutputStream out) throws IOException {
@@ -1034,7 +1109,6 @@ public class ViewDebug {
         } while (klass != Object.class);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Multi-variable type inference failed */
     public static void dumpViewHierarchyOnUIThread(Context context, ViewGroup viewGroup, BufferedWriter out, int level, boolean skipChildren, boolean includeProperties) {
         if (!dumpView(context, viewGroup, out, level, includeProperties) || skipChildren) {
@@ -1111,12 +1185,10 @@ public class ViewDebug {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$convertToPropertyInfos$8(Object i) {
         return i != null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ PropertyInfo[] lambda$convertToPropertyInfos$9(int x$0) {
         return new PropertyInfo[x$0];
     }
@@ -1365,7 +1437,6 @@ public class ViewDebug {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Object resolveId(Context context, int id) {
         Resources resources = context.getResources();
         if (id >= 0) {
@@ -1440,11 +1511,27 @@ public class ViewDebug {
         Log.d(tag, (klass.getName() + ": ") + exportCapturedViewProperties(view, klass, ""));
     }
 
-    public static Object invokeViewMethod(final View view, final Method method, final Object[] args) {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicReference<Object> result = new AtomicReference<>();
-        final AtomicReference<Throwable> exception = new AtomicReference<>();
+    public static Object invokeViewMethod(View view, Method method, Object[] args) {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Object> result = new AtomicReference<>();
+        AtomicReference<Throwable> exception = new AtomicReference<>();
         view.post(new Runnable() { // from class: android.view.ViewDebug.4
+            final /* synthetic */ Object[] val$args;
+            final /* synthetic */ AtomicReference val$exception;
+            final /* synthetic */ CountDownLatch val$latch;
+            final /* synthetic */ Method val$method;
+            final /* synthetic */ AtomicReference val$result;
+            final /* synthetic */ View val$view;
+
+            AnonymousClass4(AtomicReference result2, Method method2, View view2, Object[] args2, AtomicReference exception2, CountDownLatch latch2) {
+                result = result2;
+                method = method2;
+                view = view2;
+                args = args2;
+                exception = exception2;
+                latch = latch2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -1458,29 +1545,84 @@ public class ViewDebug {
             }
         });
         try {
-            latch.await();
-            if (exception.get() != null) {
-                throw new RuntimeException(exception.get());
+            latch2.await();
+            if (exception2.get() != null) {
+                throw new RuntimeException(exception2.get());
             }
-            return result.get();
+            return result2.get();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void setLayoutParameter(final View view, String param, int value) throws NoSuchFieldException, IllegalAccessException {
-        final ViewGroup.LayoutParams p = view.getLayoutParams();
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewDebug$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements Runnable {
+        final /* synthetic */ Object[] val$args;
+        final /* synthetic */ AtomicReference val$exception;
+        final /* synthetic */ CountDownLatch val$latch;
+        final /* synthetic */ Method val$method;
+        final /* synthetic */ AtomicReference val$result;
+        final /* synthetic */ View val$view;
+
+        AnonymousClass4(AtomicReference result2, Method method2, View view2, Object[] args2, AtomicReference exception2, CountDownLatch latch2) {
+            result = result2;
+            method = method2;
+            view = view2;
+            args = args2;
+            exception = exception2;
+            latch = latch2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            try {
+                result.set(method.invoke(view, args));
+            } catch (InvocationTargetException e) {
+                exception.set(e.getCause());
+            } catch (Exception e2) {
+                exception.set(e2);
+            }
+            latch.countDown();
+        }
+    }
+
+    public static void setLayoutParameter(View view, String param, int value) throws NoSuchFieldException, IllegalAccessException {
+        ViewGroup.LayoutParams p = view.getLayoutParams();
         Field f = p.getClass().getField(param);
         if (f.getType() != Integer.TYPE) {
             throw new RuntimeException("Only integer layout parameters can be set. Field " + param + " is of type " + f.getType().getSimpleName());
         }
         f.set(p, Integer.valueOf(value));
         view.post(new Runnable() { // from class: android.view.ViewDebug.5
+            final /* synthetic */ ViewGroup.LayoutParams val$p;
+
+            AnonymousClass5(ViewGroup.LayoutParams p2) {
+                p = p2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 View.this.setLayoutParams(p);
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.view.ViewDebug$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements Runnable {
+        final /* synthetic */ ViewGroup.LayoutParams val$p;
+
+        AnonymousClass5(ViewGroup.LayoutParams p2) {
+            p = p2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            View.this.setLayoutParams(p);
+        }
     }
 
     /* loaded from: classes4.dex */

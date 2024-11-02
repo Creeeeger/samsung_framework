@@ -85,7 +85,6 @@ public class PssTable extends SparseMappingTable.Table {
         ProtoUtils.toAggStatsProto(proto, 1146756268040L, stats[statsIndex + 7], stats[statsIndex + 8], stats[statsIndex + 9]);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public long[] getRssMeanAndMax(int key) {
         long[] stats = getArrayForKey(key);
         int statsIndex = SparseMappingTable.getIndexFromKey(key);

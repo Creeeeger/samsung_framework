@@ -30,7 +30,6 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class ConnectLine {
         Type mAllocationType;
@@ -51,7 +50,6 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes3.dex */
     public static class Node {
         int dagNumber;
@@ -162,7 +160,6 @@ public final class ScriptGroup extends BaseObj {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.renderscript.BaseObj
         public void finalize() throws Throwable {
             this.mReturnValue = null;
@@ -235,7 +232,6 @@ public final class ScriptGroup extends BaseObj {
             this.mRS.nClosureSetGlobal(getID(this.mRS), fieldID.getID(this.mRS), vs.value, vs.size);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static final class ValueAndSize {
             public int size;

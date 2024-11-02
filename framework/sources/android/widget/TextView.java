@@ -892,7 +892,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         mShowPenSelectionRunnable = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
     public static class Drawables {
         static final int BOTTOM = 3;
@@ -1522,7 +1521,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mLayout;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final Layout getHintLayout() {
         return this.mHintLayout;
     }
@@ -1637,7 +1635,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setTransformationMethodInternal(TransformationMethod method, boolean updateText) {
         Spannable spannable;
         TransformationMethod transformationMethod = this.mTransformation;
@@ -2368,7 +2365,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         this.mFontFamily = attributes.mFontFamily;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class TextAppearanceAttributes {
         boolean mAllCaps;
@@ -2403,6 +2399,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         int mTextSizeUnit;
         int mTextStyle;
         int mTypefaceIndex;
+
+        /* synthetic */ TextAppearanceAttributes(TextAppearanceAttributesIA textAppearanceAttributesIA) {
+            this();
+        }
 
         private TextAppearanceAttributes() {
             this.mTextColorHighlight = 0;
@@ -2688,7 +2688,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         Editor editor;
@@ -2874,7 +2873,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mUseFallbackLineSpacing == 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isFallbackLineSpacingForStaticLayout() {
         int i = this.mUseFallbackLineSpacing;
         return i == 2 || i == 1;
@@ -3546,7 +3544,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void clearGesturePreviewHighlight() {
         this.mGesturePreviewHighlightStart = -1;
         this.mGesturePreviewHighlightEnd = -1;
@@ -3554,7 +3551,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasGesturePreviewHighlight() {
         return this.mGesturePreviewHighlightStart >= 0;
     }
@@ -3610,7 +3606,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void drawableStateChanged() {
         ColorStateList colorStateList;
@@ -3689,7 +3684,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return superState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeMisspelledSpans(Spannable spannable) {
         SuggestionSpan[] suggestionSpans = (SuggestionSpan[]) spannable.getSpans(0, spannable.length(), SuggestionSpan.class);
         for (int i = 0; i < suggestionSpans.length; i++) {
@@ -3728,8 +3722,14 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             }
         }
         if (ss.error != null) {
-            final CharSequence error = ss.error;
+            CharSequence error = ss.error;
             post(new Runnable() { // from class: android.widget.TextView.1
+                final /* synthetic */ CharSequence val$error;
+
+                AnonymousClass1(CharSequence error2) {
+                    error = error2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     if (TextView.this.mEditor == null || !TextView.this.mEditor.mErrorWasChanged) {
@@ -3741,6 +3741,24 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         if (ss.editorState != null) {
             createEditorIfNeeded();
             this.mEditor.restoreInstanceState(ss.editorState);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TextView$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        final /* synthetic */ CharSequence val$error;
+
+        AnonymousClass1(CharSequence error2) {
+            error = error2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (TextView.this.mEditor == null || !TextView.this.mEditor.mErrorWasChanged) {
+                TextView.this.setError(error);
+            }
         }
     }
 
@@ -3958,7 +3976,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean hasPasswordTransformationMethod() {
         return this.mTransformation instanceof PasswordTransformationMethod;
     }
@@ -3968,7 +3985,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return isPasswordInputType(inputType) || isVisiblePasswordInputType(inputType);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static boolean isPasswordInputType(int inputType) {
         int variation = inputType & 4095;
         return variation == 129 || variation == 225 || variation == 18;
@@ -4242,7 +4258,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         notifyViewAccessibilityStateChangedIfNeeded(3072);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int l, int t, int r, int b) {
         boolean result = super.setFrame(l, t, r, b);
@@ -4321,7 +4336,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return (getMeasuredHeight() - padding) + opticalInsets.top + opticalInsets.bottom;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getVerticalOffset(boolean forceNormal) {
         int boxht;
         int textht;
@@ -4360,7 +4374,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return voffset2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateCursorPath() {
         if (this.mHighlightPathBogus) {
             invalidateCursor();
@@ -4385,7 +4398,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         invalidate(bounds.left + horizontalPadding, bounds.top + verticalPadding, bounds.right + horizontalPadding, bounds.bottom + verticalPadding);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateCursor() {
         int where = getSelectionEnd();
         invalidateCursor(where, where, where);
@@ -4399,7 +4411,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void invalidateRegion(int start, int end, boolean invalidateCursor) {
         int lineEnd;
         int left;
@@ -4483,7 +4494,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -4501,7 +4511,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDetachedFromWindowInternal() {
         if (this.mPreDrawRegistered) {
@@ -4555,7 +4564,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return (-(getCompoundPaddingRight() - this.mPaddingRight)) + ((int) Math.max(0.0f, this.mShadowDx + this.mShadowRadius));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean verifyDrawable(Drawable who) {
         Drawables drawables;
@@ -4664,7 +4672,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int[] onCreateDrawableState(int extraSpace) {
         int[] drawableState;
@@ -4891,7 +4898,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         Layout layout;
@@ -6133,7 +6139,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$performHandwritingInsertModeGesture$3() {
         this.mEditor.exitInsertMode();
     }
@@ -6286,7 +6291,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:87:0x0241, code lost:            if (r21 == r23.mLayout.getParagraphDirection(r15)) goto L119;     */
+    /* JADX WARN: Code restructure failed: missing block: B:87:0x0241, code lost:
+    
+        if (r21 == r23.mLayout.getParagraphDirection(r15)) goto L253;
+     */
     /* JADX WARN: Removed duplicated region for block: B:100:0x026d  */
     /* JADX WARN: Removed duplicated region for block: B:103:? A[RETURN, SYNTHETIC] */
     /*
@@ -6367,6 +6375,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             if (overflow > 0.0f && overflow <= 0.07f) {
                 this.mTextPaint.setTextScaleX((1.0f - overflow) - 0.005f);
                 post(new Runnable() { // from class: android.widget.TextView.2
+                    AnonymousClass2() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         TextView.this.requestLayout();
@@ -6376,6 +6387,18 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             }
         }
         return false;
+    }
+
+    /* renamed from: android.widget.TextView$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements Runnable {
+        AnonymousClass2() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            TextView.this.requestLayout();
+        }
     }
 
     private static int desired(Layout layout) {
@@ -6408,7 +6431,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mIncludePad;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width;
@@ -6831,7 +6853,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         invalidate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -7049,8 +7070,7 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TextView$8, reason: invalid class name */
+    /* renamed from: android.widget.TextView$8 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass8 {
         static final /* synthetic */ int[] $SwitchMap$android$text$Layout$Alignment;
@@ -7167,12 +7187,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return copy;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int viewportToContentHorizontalOffset() {
         return getCompoundPaddingLeft() - this.mScrollX;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int viewportToContentVerticalOffset() {
         int offset = getExtendedPaddingTop() - this.mScrollY;
         if ((this.mGravity & 112) != 48) {
@@ -7213,13 +7231,11 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         this.mLayout.getSelection(transformedStart, transformedEnd, consumer);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSelectionStartTransformed() {
         int start = getSelectionStart();
         return start < 0 ? start : originalToTransformed(start, 1);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getSelectionEndTransformed() {
         int end = getSelectionEnd();
         return end < 0 ? end : originalToTransformed(end, 1);
@@ -7240,7 +7256,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return selectionMin >= 0 && selectionMax > 0 && selectionMin != selectionMax;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getSelectedText() {
         if (!hasSelection()) {
             return null;
@@ -7426,7 +7441,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mCursorVisibleFromAttr;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean canMarquee() {
         Layout layout;
         int width = ((this.mRight - this.mLeft) - getCompoundPaddingLeft()) - getCompoundPaddingRight();
@@ -7486,7 +7500,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
     }
 
@@ -7509,7 +7522,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void sendBeforeTextChanged(CharSequence text, int start, int before, int after) {
         if (this.mListeners != null) {
             ArrayList<TextWatcher> list = this.mListeners;
@@ -7542,7 +7554,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void removeAdjacentSuggestionSpans(int pos) {
         CharSequence charSequence = this.mText;
         if (charSequence instanceof Editable) {
@@ -7621,7 +7632,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return getAutofillType() != 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void updateAfterEdit() {
         invalidate();
         int curs = getSelectionStart();
@@ -7804,7 +7814,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         Spannable spannable;
@@ -7838,7 +7847,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         startStopMarquee(hasWindowFocus);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
@@ -7877,7 +7885,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isFromPrimePointer(MotionEvent event, boolean fromHandleView) {
         boolean res = true;
         int i = this.mPrimePointerId;
@@ -8012,7 +8019,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return super.showContextMenu(x, y);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isTextEditable() {
         return (this.mText instanceof Editable) && onCheckIsTextEditor() && isEnabled();
     }
@@ -8045,7 +8051,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         this.mScroller = s;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getLeftFadingEdgeStrength() {
         Marquee marquee;
@@ -8066,7 +8071,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return super.getLeftFadingEdgeStrength();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public float getRightFadingEdgeStrength() {
         Marquee marquee;
@@ -8101,7 +8105,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mEllipsize == TextUtils.TruncateAt.MARQUEE && this.mMarqueeFadeMode != 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeHorizontalScrollRange() {
         Layout layout = this.mLayout;
@@ -8111,7 +8114,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return super.computeHorizontalScrollRange();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollRange() {
         Layout layout = this.mLayout;
@@ -8121,7 +8123,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return super.computeVerticalScrollRange();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public int computeVerticalScrollExtent() {
         return (getHeight() - getCompoundPaddingTop()) - getCompoundPaddingBottom();
@@ -8229,13 +8230,11 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return super.onKeyShortcut(keyCode, event);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canSelectText() {
         Editor editor;
         return (this.mText.length() == 0 || (editor = this.mEditor) == null || !editor.hasSelectionController()) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean textCanBeSelected() {
         MovementMethod movementMethod = this.mMovement;
         if (movementMethod == null || !movementMethod.canSelectArbitrarily()) {
@@ -8280,7 +8279,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return imm.isStylusHandwritingAvailableAsUser(userId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public final TextServicesManager getTextServicesManagerForUser() {
         return (TextServicesManager) getServiceManagerForUser("android", TextServicesManager.class);
     }
@@ -8304,7 +8302,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startActivityAsTextOperationUserIfNecessary(Intent intent) {
         if (this.mTextOperationUser != null) {
             getContext().startActivityAsUser(intent, this.mTextOperationUser);
@@ -8333,8 +8330,23 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return getTextServicesLocale(true);
     }
 
+    /* renamed from: android.widget.TextView$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            TextView.this.updateTextServicesLocaleLocked();
+        }
+    }
+
     private void updateTextServicesLocaleAsync() {
         AsyncTask.execute(new Runnable() { // from class: android.widget.TextView.3
+            AnonymousClass3() {
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 TextView.this.updateTextServicesLocaleLocked();
@@ -8342,7 +8354,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateTextServicesLocaleLocked() {
         Locale locale;
         TextServicesManager textServicesManager = getTextServicesManagerForUser();
@@ -8358,7 +8369,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         this.mCurrentSpellCheckerLocaleCache = locale;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void onLocaleChanged() {
         this.mEditor.onLocaleChanged();
     }
@@ -8396,8 +8406,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return TextView.class.getName();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Code restructure failed: missing block: B:93:0x0150, code lost:            if (r6 >= r0.length()) goto L74;     */
+    /* JADX WARN: Code restructure failed: missing block: B:93:0x0150, code lost:
+    
+        if (r6 >= r0.length()) goto L201;
+     */
     @Override // android.view.View
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -8411,7 +8423,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         throw new UnsupportedOperationException("Method not decompiled: android.widget.TextView.onProvideStructure(android.view.ViewStructure, int, int):void");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canRequestAutofill() {
         AutofillManager afm;
         if (isFlipCoverClosed() || this.mIsThemeDeviceDefault || (this.mActionModeFlags & 131072) != 131072 || !isAutofillable() || (afm = (AutofillManager) this.mContext.getSystemService(AutofillManager.class)) == null) {
@@ -9061,7 +9072,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return TextUtils.trimToParcelableSize(this.mTransformed);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isVisibleToAccessibility() {
         return AccessibilityManager.getInstance(this.mContext).isEnabled() && (isFocused() || (isSelected() && isShown()));
     }
@@ -9075,7 +9085,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         sendAccessibilityEventUnchecked(event);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void sendAccessibilityEventTypeViewTextChanged(CharSequence beforeText, int fromIndex, int toIndex) {
         AccessibilityEvent event = AccessibilityEvent.obtain(16);
         event.setFromIndex(fromIndex);
@@ -9267,7 +9276,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CharSequence getTransformedText(int start, int end) {
         return removeSuggestionSpans(this.mTransformed.subSequence(start, end));
     }
@@ -9304,7 +9312,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return handled;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onScrollChanged(int horiz, int vert, int oldHoriz, int oldVert) {
         super.onScrollChanged(horiz, vert, oldHoriz, oldVert);
@@ -9365,7 +9372,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return textClassifier;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TextClassifier getTextClassificationSession() {
         String widgetType;
         TextClassifier textClassifier = this.mTextClassificationSession;
@@ -9394,12 +9400,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mTextClassificationSession;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public TextClassificationContext getTextClassificationContext() {
         return this.mTextClassificationContext;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean usesNoOpTextClassifier() {
         return getTextClassifier() == TextClassifier.NO_OP;
     }
@@ -9451,12 +9455,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextClassification lambda$handleClick$4(TextClassification.Request request) {
         return getTextClassificationSession().classifyText(request);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$handleClick$5(TextClassification classification) {
         if (classification == null) {
             Log.d(LOG_TAG, "Timeout while classifying text");
@@ -9473,7 +9475,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void stopTextActionMode() {
         Editor editor = this.mEditor;
         if (editor != null) {
@@ -9488,25 +9489,21 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canUndo() {
         Editor editor = this.mEditor;
         return editor != null && editor.canUndo();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canRedo() {
         Editor editor = this.mEditor;
         return editor != null && editor.canRedo();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canCut() {
         Editor editor;
         return (hasPasswordTransformationMethod() || isKeyguardLocked() || this.mText.length() <= 0 || !hasSelection() || !(this.mText instanceof Editable) || (editor = this.mEditor) == null || editor.mKeyListener == null) ? false : true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canCopy() {
         return (hasPasswordTransformationMethod() || isKeyguardLocked() || this.mText.length() <= 0 || !hasSelection() || this.mEditor == null) ? false : true;
     }
@@ -9515,12 +9512,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return !hasPasswordTransformationMethod() && this.mText.length() > 0 && (this.mText instanceof Editable) && this.mEditor != null && isSuggestionsEnabled() && this.mEditor.shouldOfferToShowSuggestions();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canShare() {
         return !isFlipCoverClosed() && getContext().canStartActivityForResult() && isDeviceProvisioned() && canCopy() && isFinishSetupWizard() && (this.mActionModeFlags & 8192) == 8192;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isDeviceProvisioned() {
         int i;
         if (this.mDeviceProvisionedState == 0) {
@@ -9534,13 +9529,11 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mDeviceProvisionedState == 2;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canPaste() {
         Editor editor;
         return (this.mText instanceof Editable) && (editor = this.mEditor) != null && editor.mKeyListener != null && getSelectionStart() >= 0 && getSelectionEnd() >= 0 && getClipboardManagerForUser().hasPrimaryClip();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canPasteAsPlainText() {
         ClipDescription description;
         if (!canPaste() || (description = getClipboardManagerForUser().getPrimaryClipDescription()) == null) {
@@ -9550,7 +9543,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return (isPlainType && description.isStyledText()) || description.hasMimeType("text/html");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canProcessText() {
         if (getId() == -1) {
             return false;
@@ -9558,12 +9550,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return canShare();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canSelectAllText() {
         return isFocused() && canSelectText() && !hasPasswordTransformationMethod() && !(getSelectionStart() == 0 && getSelectionEnd() == this.mText.length());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean selectAllText() {
         if (this.mEditor != null) {
             hideFloatingToolbar(500);
@@ -9611,12 +9601,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return offset;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float convertToLocalHorizontalCoordinate(float x) {
         return Math.min((getWidth() - getTotalPaddingRight()) - 1, Math.max(0.0f, x - getTotalPaddingLeft())) + getScrollX();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getLineAtCoordinate(float y) {
         return getLayout().getLineForVertical((int) (Math.min((getHeight() - getTotalPaddingBottom()) - 1, Math.max(0.0f, y - getTotalPaddingTop())) + getScrollY()));
     }
@@ -9625,7 +9613,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return getLayout().getLineForVertical((int) ((y - getTotalPaddingTop()) + getScrollY()));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getOffsetAtCoordinate(int line, float x) {
         int offset = getLayout().getOffsetForHorizontal(line, convertToLocalHorizontalCoordinate(x));
         return transformedToOriginal(offset, 1);
@@ -9685,7 +9672,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isInBatchEditMode() {
         Editor editor = this.mEditor;
         if (editor == null) {
@@ -9769,7 +9755,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void resetResolvedDrawables() {
         super.resetResolvedDrawables();
@@ -9782,22 +9767,18 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void deleteText_internal(int start, int end) {
         ((Editable) this.mText).delete(start, end);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void replaceText_internal(int start, int end, CharSequence text) {
         ((Editable) this.mText).replace(start, end, text);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setSpan_internal(Object span, int start, int end, int flags) {
         ((Editable) this.mText).setSpan(span, start, end, flags);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public void setCursorPosition_internal(int start, int end) {
         semSetSelection((Editable) this.mText, start, end);
     }
@@ -9880,7 +9861,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void encodeProperties(ViewHierarchyEncoder stream) {
         super.encodeProperties(stream);
@@ -9900,13 +9880,14 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
     /* loaded from: classes4.dex */
     public static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.TextView.SavedState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -9918,6 +9899,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         int selEnd;
         int selStart;
         CharSequence text;
+
+        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
+            this(parcel);
+        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -9954,6 +9939,23 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             return str + "}";
         }
 
+        /* renamed from: android.widget.TextView$SavedState$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        }
+
         private SavedState(Parcel in) {
             super(in);
             this.selStart = -1;
@@ -9971,7 +9973,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class CharWrapper implements CharSequence, GetChars, GraphicsOperations {
         private char[] mChars;
@@ -10065,7 +10066,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class Marquee {
         private static final int MARQUEE_DELAY = 1200;
@@ -10087,12 +10087,18 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         private final WeakReference<TextView> mView;
         private byte mStatus = 0;
         private Choreographer.FrameCallback mTickCallback = new Choreographer.FrameCallback() { // from class: android.widget.TextView.Marquee.1
+            AnonymousClass1() {
+            }
+
             @Override // android.view.Choreographer.FrameCallback
             public void doFrame(long frameTimeNanos) {
                 Marquee.this.tick();
             }
         };
         private Choreographer.FrameCallback mStartCallback = new Choreographer.FrameCallback() { // from class: android.widget.TextView.Marquee.2
+            AnonymousClass2() {
+            }
+
             @Override // android.view.Choreographer.FrameCallback
             public void doFrame(long frameTimeNanos) {
                 Marquee.this.mStatus = (byte) 2;
@@ -10102,6 +10108,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             }
         };
         private Choreographer.FrameCallback mRestartCallback = new Choreographer.FrameCallback() { // from class: android.widget.TextView.Marquee.3
+            AnonymousClass3() {
+            }
+
             @Override // android.view.Choreographer.FrameCallback
             public void doFrame(long frameTimeNanos) {
                 if (Marquee.this.mStatus == 2) {
@@ -10120,6 +10129,55 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             this.mPixelsPerMs = (30.0f * density) / 1000.0f;
             this.mView = new WeakReference<>(v);
             this.mChoreographer = Choreographer.getInstance();
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.TextView$Marquee$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements Choreographer.FrameCallback {
+            AnonymousClass1() {
+            }
+
+            @Override // android.view.Choreographer.FrameCallback
+            public void doFrame(long frameTimeNanos) {
+                Marquee.this.tick();
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.TextView$Marquee$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 implements Choreographer.FrameCallback {
+            AnonymousClass2() {
+            }
+
+            @Override // android.view.Choreographer.FrameCallback
+            public void doFrame(long frameTimeNanos) {
+                Marquee.this.mStatus = (byte) 2;
+                Marquee marquee = Marquee.this;
+                marquee.mLastAnimationMs = marquee.mChoreographer.getFrameTime();
+                Marquee.this.tick();
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.TextView$Marquee$3 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass3 implements Choreographer.FrameCallback {
+            AnonymousClass3() {
+            }
+
+            @Override // android.view.Choreographer.FrameCallback
+            public void doFrame(long frameTimeNanos) {
+                if (Marquee.this.mStatus == 2) {
+                    if (Marquee.this.mRepeatLimit >= 0) {
+                        Marquee marquee = Marquee.this;
+                        marquee.mRepeatLimit--;
+                    }
+                    Marquee marquee2 = Marquee.this;
+                    marquee2.start(marquee2.mRepeatLimit);
+                }
+            }
         }
 
         void tick() {
@@ -10217,10 +10275,13 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class ChangeWatcher implements TextWatcher, SpanWatcher {
         private CharSequence mBeforeText;
+
+        /* synthetic */ ChangeWatcher(TextView textView, ChangeWatcherIA changeWatcherIA) {
+            this();
+        }
 
         private ChangeWatcher() {
         }
@@ -10370,8 +10431,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // com.samsung.android.widget.SemHoverPopupWindow
-        protected void setInstanceByType(int type) {
+        public void setInstanceByType(int type) {
             super.setInstanceByType(type);
             if (type == 2) {
                 this.mPopupGravity = 12849;
@@ -10483,18 +10545,49 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             this.mDrawTextStrikeAnimator = ofFloat;
             ofFloat.setDuration(400L);
             this.mDrawTextStrikeAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.TextView.4
+                AnonymousClass4() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     TextView.this.mLineIsDrawed = true;
                 }
             });
             this.mDrawTextStrikeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.TextView.5
+                AnonymousClass5() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator anim) {
                     TextView.this.mDrawStrikeAnimationValue = anim.getAnimatedFraction();
                     TextView.this.invalidate();
                 }
             });
+        }
+    }
+
+    /* renamed from: android.widget.TextView$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 extends AnimatorListenerAdapter {
+        AnonymousClass4() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            TextView.this.mLineIsDrawed = true;
+        }
+    }
+
+    /* renamed from: android.widget.TextView$5 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass5 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass5() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator anim) {
+            TextView.this.mDrawStrikeAnimationValue = anim.getAnimatedFraction();
+            TextView.this.invalidate();
         }
     }
 
@@ -10687,12 +10780,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return !hasPasswordTransformationMethod() && this.mText.length() > 0 && hasSelection();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canWebSearch() {
         return canCopy() && isFinishSetupWizard() && (this.mActionModeFlags & 16384) == 16384;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canClipboard() {
         if (isFlipCoverClosed() || !isFinishSetupWizard()) {
             return false;
@@ -10741,7 +10832,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canScanText() {
         InputMethodManager imm;
         if (isFlipCoverClosed() || !ViewRune.SUPPORT_EAGLE_EYE) {
@@ -10760,7 +10850,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return Build.VERSION.SEM_PLATFORM_INT >= 130100 && SemInputMethodManagerUtils.METHOD_ID_HONEYBOARD.equals(defaultIME) && !hasSelection();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canHBDTranslate() {
         boolean isPwdTypeWithTypeNull = false;
         int variation = getInputType() & 4095;
@@ -10778,7 +10867,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return SemInputMethodManagerUtils.METHOD_ID_HONEYBOARD.equals(defaultIME) && hasSelection() && isTextEditable();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean canAssist() {
         return (this.mActionModeFlags & 65536) == 65536 && isFinishSetupWizard() && !isKeyguardLocked() && !isFlipCoverClosed();
     }
@@ -10795,7 +10883,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mIsThemeDeviceDefault;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public boolean isDesktopMode() {
         ViewRootImpl viewRootImpl = getViewRootImpl();
         return viewRootImpl != null && viewRootImpl.isDesktopMode();
@@ -10834,13 +10921,16 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return desktopMode == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class TouchMonitorListener implements ViewRootImpl.MotionEventMonitor.OnTouchListener {
         private static final int globalTimeForTouch = 1000;
         private long mPressTime;
         private float mStartX;
         private float mStartY;
+
+        /* synthetic */ TouchMonitorListener(TextView textView, TouchMonitorListenerIA touchMonitorListenerIA) {
+            this();
+        }
 
         private TouchMonitorListener() {
             this.mStartX = 0.0f;
@@ -10987,7 +11077,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return rect;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public Point getScreenPointOfView(View view) {
         Point screenPointOfView = new Point();
         int[] screenOffsetOfView = new int[2];
@@ -11015,7 +11104,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return isSPenHoveringOn && Settings.System.getIntForUser(this.mContext.getContentResolver(), Settings.System.PEN_HOVERING_LINK_PREVIEW, 0, -3) == 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean canTextMultiSelection() {
         return ViewRune.WIDGET_PEN_SUPPORTED && this.mEnableMultiSelection && isCoverOpened() && isFinishSetupWizard() && !isCarMode() && !isKeyguardLocked() && !isDisabledStylusPenEvent() && !isSubWindow();
     }
@@ -11072,7 +11160,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkPosInView(int x, int y, int overplus) {
         if (!isVisibleToUser()) {
             return false;
@@ -11085,7 +11172,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkPosOnText(int x, int y, int overplus) {
         int textEndX;
         Layout layout = getLayout();
@@ -11520,7 +11606,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         mMotionEventMonitorListener = null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean selectCurrentWordForMultiSelection(int minOffset, int maxOffset) {
         CharSequence text;
         int selectionStart;
@@ -11600,7 +11685,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void showMultiSelectPopupWindow() {
         MultiSelectPopupWindow multiSelectPopupWindow;
         if (!ViewRune.WIDGET_PEN_SUPPORTED || this.mLayout == null || (multiSelectPopupWindow = this.mMultiSelectPopupWindow) == null) {
@@ -11610,7 +11694,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         this.mMultiSelectPopupWindow.showMultiSelectPopupWindow();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void hideMultiSelectPopupWindow() {
         if (!ViewRune.WIDGET_PEN_SUPPORTED) {
             return;
@@ -11773,7 +11856,7 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             boolean isBtnPressed = (event.getButtonState() & 32) != 0;
             int action = event.getActionMasked();
             this.mEnableLinkPreview = isLinkPreviewEnabled(event.getToolType(0));
-            final InputDevice inputDevice = event.getDevice();
+            InputDevice inputDevice = event.getDevice();
             if (action == 9) {
                 this.mCanTextMultiSelection = canTextMultiSelection();
             }
@@ -11886,6 +11969,12 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                                 }
                                 this.mHoverEnterTime = System.currentTimeMillis();
                                 post(new Runnable() { // from class: android.widget.TextView.7
+                                    final /* synthetic */ InputDevice val$inputDevice;
+
+                                    AnonymousClass7(InputDevice inputDevice2) {
+                                        inputDevice = inputDevice2;
+                                    }
+
                                     @Override // java.lang.Runnable
                                     public void run() {
                                         MultiSelection.setTextViewHovered(true, 20010);
@@ -11900,8 +11989,8 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                         }
                         if (this.mIsShowingLinkPreview) {
                             MultiSelection.setTextViewHovered(false);
-                            if (inputDevice != null) {
-                                inputDevice.setPointerType(20001);
+                            if (inputDevice2 != null) {
+                                inputDevice2.setPointerType(20001);
                             }
                             this.mIsShowingLinkPreview = false;
                         }
@@ -11923,8 +12012,8 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                         } else {
                             this.mHoverExitTime = System.currentTimeMillis();
                             MultiSelection.setTextViewHovered(false);
-                            if (inputDevice != null) {
-                                inputDevice.setPointerType(20001);
+                            if (inputDevice2 != null) {
+                                inputDevice2.setPointerType(20001);
                             }
                         }
                         return super.onHoverEvent(event);
@@ -11932,6 +12021,12 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                 } else {
                     if (MultiSelection.getHoveredIcon() != 20002) {
                         post(new Runnable() { // from class: android.widget.TextView.6
+                            final /* synthetic */ InputDevice val$inputDevice;
+
+                            AnonymousClass6(InputDevice inputDevice2) {
+                                inputDevice = inputDevice2;
+                            }
+
                             @Override // java.lang.Runnable
                             public void run() {
                                 MultiSelection.setTextViewHovered(true, 20002);
@@ -11960,6 +12055,46 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return super.onHoverEvent(event);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TextView$6 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass6 implements Runnable {
+        final /* synthetic */ InputDevice val$inputDevice;
+
+        AnonymousClass6(InputDevice inputDevice2) {
+            inputDevice = inputDevice2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            MultiSelection.setTextViewHovered(true, 20002);
+            InputDevice inputDevice2 = inputDevice;
+            if (inputDevice2 != null) {
+                inputDevice2.setPointerType(20002);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TextView$7 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass7 implements Runnable {
+        final /* synthetic */ InputDevice val$inputDevice;
+
+        AnonymousClass7(InputDevice inputDevice2) {
+            inputDevice = inputDevice2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            MultiSelection.setTextViewHovered(true, 20010);
+            InputDevice inputDevice2 = inputDevice;
+            if (inputDevice2 != null) {
+                inputDevice2.setPointerType(20010);
+            }
+        }
+    }
+
     @Override // android.view.View
     public void onStartTemporaryDetach() {
         super.onStartTemporaryDetach();
@@ -11978,7 +12113,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public PenSelectionController getPenSelectionController() {
         if (this.mPenSelectionController == null) {
             this.mPenSelectionController = PenSelectionController.getInstance();
@@ -11986,7 +12120,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         return this.mPenSelectionController;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class StylusEventListener implements ViewTreeObserver.SemOnStylusButtonEventListener {
         private TextView mThisView;
@@ -12236,6 +12369,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                     TextView.mShowPenSelectionRunnable = null;
                 }
                 TextView.mShowPenSelectionRunnable = new Runnable() { // from class: android.widget.TextView.StylusEventListener.1
+                    AnonymousClass1() {
+                    }
+
                     @Override // java.lang.Runnable
                     public void run() {
                         CharSequence text2 = TextView.this.getTextForMultiSelection();
@@ -12308,6 +12444,35 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             TextView.this.mIsTouchDown = false;
             this.mPressed = false;
         }
+
+        /* renamed from: android.widget.TextView$StylusEventListener$1 */
+        /* loaded from: classes4.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                CharSequence text2 = TextView.this.getTextForMultiSelection();
+                boolean isPenSelected = TextView.this.selectCurrentWordForMultiSelection(StylusEventListener.this.mStartCurPosition, StylusEventListener.this.mEndCurPosition);
+                if (isPenSelected) {
+                    StylusEventListener.this.mStartCurPosition = MultiSelection.getSelectionStart((Spannable) text2);
+                    StylusEventListener.this.mEndCurPosition = MultiSelection.getSelectionEnd((Spannable) text2);
+                    TextView.this.showMultiSelectPopupWindow();
+                    try {
+                        SemInfoExtractionManager infoExtractionManager = new SemInfoExtractionManager(TextView.this.getContext());
+                        infoExtractionManager.training(text2.subSequence(StylusEventListener.this.mStartCurPosition, StylusEventListener.this.mEndCurPosition).toString());
+                    } catch (IllegalStateException e) {
+                        Log.e(TextView.LOG_TAG, "** skip SemInfoExtractionManager Service by IllegalStateException **");
+                    }
+                    Log.d(TextView.LOG_TAG, "Pen up with side button! : end text selection");
+                    TextView.this.registerForTouchMonitorListener();
+                    TextView.this.mhasMultiSelection = true;
+                    MultiSelection.setIsMultiSelectingText(false);
+                    MultiSelection.setNeedToScroll(false);
+                }
+            }
+        }
     }
 
     @RemotableViewMethod
@@ -12371,12 +12536,10 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public float getCursorThicknessScale() {
         return this.mCursorThicknessScale;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startChooserPopupActivity(Point location, boolean isMultiSelect) {
         Intent intent = makeChooserIntent(isMultiSelect);
         if (intent == null) {

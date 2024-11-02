@@ -11,13 +11,14 @@ import java.util.List;
 /* loaded from: classes2.dex */
 public class FingerprintSensorPropertiesInternal extends SensorPropertiesInternal {
     public static final Parcelable.Creator<FingerprintSensorPropertiesInternal> CREATOR = new Parcelable.Creator<FingerprintSensorPropertiesInternal>() { // from class: android.hardware.fingerprint.FingerprintSensorPropertiesInternal.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public FingerprintSensorPropertiesInternal createFromParcel(Parcel in) {
             return new FingerprintSensorPropertiesInternal(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FingerprintSensorPropertiesInternal[] newArray(int size) {
             return new FingerprintSensorPropertiesInternal[size];
@@ -43,6 +44,23 @@ public class FingerprintSensorPropertiesInternal extends SensorPropertiesInterna
         this.sensorType = in.readInt();
         this.halControlsIllumination = in.readBoolean();
         this.mSensorLocations = in.createTypedArrayList(SensorLocationInternal.CREATOR);
+    }
+
+    /* renamed from: android.hardware.fingerprint.FingerprintSensorPropertiesInternal$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<FingerprintSensorPropertiesInternal> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FingerprintSensorPropertiesInternal createFromParcel(Parcel in) {
+            return new FingerprintSensorPropertiesInternal(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public FingerprintSensorPropertiesInternal[] newArray(int size) {
+            return new FingerprintSensorPropertiesInternal[size];
+        }
     }
 
     @Override // android.hardware.biometrics.SensorPropertiesInternal, android.os.Parcelable

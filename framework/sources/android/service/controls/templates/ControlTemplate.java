@@ -9,10 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 
 /* loaded from: classes3.dex */
 public abstract class ControlTemplate {
-    private static final ControlTemplate ERROR_TEMPLATE;
     private static final String KEY_TEMPLATE_ID = "key_template_id";
     private static final String KEY_TEMPLATE_TYPE = "key_template_type";
-    public static final ControlTemplate NO_TEMPLATE;
     private static final String TAG = "ControlTemplate";
     public static final int TYPE_ERROR = -1;
     public static final int TYPE_NO_TEMPLATE = 0;
@@ -23,6 +21,26 @@ public abstract class ControlTemplate {
     public static final int TYPE_TOGGLE = 1;
     public static final int TYPE_TOGGLE_RANGE = 6;
     private final String mTemplateId;
+    public static final ControlTemplate NO_TEMPLATE = new ControlTemplate("") { // from class: android.service.controls.templates.ControlTemplate.1
+        AnonymousClass1(String templateId) {
+            super(templateId);
+        }
+
+        @Override // android.service.controls.templates.ControlTemplate
+        public int getTemplateType() {
+            return 0;
+        }
+    };
+    private static final ControlTemplate ERROR_TEMPLATE = new ControlTemplate("") { // from class: android.service.controls.templates.ControlTemplate.2
+        AnonymousClass2(String templateId) {
+            super(templateId);
+        }
+
+        @Override // android.service.controls.templates.ControlTemplate
+        public int getTemplateType() {
+            return -1;
+        }
+    };
 
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
@@ -31,27 +49,36 @@ public abstract class ControlTemplate {
 
     public abstract int getTemplateType();
 
-    static {
-        String str = "";
-        NO_TEMPLATE = new ControlTemplate(str) { // from class: android.service.controls.templates.ControlTemplate.1
-            @Override // android.service.controls.templates.ControlTemplate
-            public int getTemplateType() {
-                return 0;
-            }
-        };
-        ERROR_TEMPLATE = new ControlTemplate(str) { // from class: android.service.controls.templates.ControlTemplate.2
-            @Override // android.service.controls.templates.ControlTemplate
-            public int getTemplateType() {
-                return -1;
-            }
-        };
+    /* renamed from: android.service.controls.templates.ControlTemplate$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends ControlTemplate {
+        AnonymousClass1(String templateId) {
+            super(templateId);
+        }
+
+        @Override // android.service.controls.templates.ControlTemplate
+        public int getTemplateType() {
+            return 0;
+        }
+    }
+
+    /* renamed from: android.service.controls.templates.ControlTemplate$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 extends ControlTemplate {
+        AnonymousClass2(String templateId) {
+            super(templateId);
+        }
+
+        @Override // android.service.controls.templates.ControlTemplate
+        public int getTemplateType() {
+            return -1;
+        }
     }
 
     public String getTemplateId() {
         return this.mTemplateId;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Bundle getDataBundle() {
         Bundle b = new Bundle();
         b.putInt(KEY_TEMPLATE_TYPE, getTemplateType());
@@ -63,12 +90,10 @@ public abstract class ControlTemplate {
         this.mTemplateId = "";
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ControlTemplate(Bundle b) {
         this.mTemplateId = b.getString(KEY_TEMPLATE_ID);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ControlTemplate(String templateId) {
         Preconditions.checkNotNull(templateId);
         this.mTemplateId = templateId;
@@ -77,7 +102,6 @@ public abstract class ControlTemplate {
     public void prepareTemplateForBinder(Context context) {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ControlTemplate createTemplateFromBundle(Bundle bundle) {
         if (bundle == null) {
             Log.e(TAG, "Null bundle");

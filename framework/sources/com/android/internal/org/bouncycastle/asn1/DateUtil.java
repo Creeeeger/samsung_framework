@@ -29,7 +29,6 @@ class DateUtil {
         return Locale.getDefault();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static Date epochAdjust(Date date) throws ParseException {
         Locale locale = Locale.getDefault();
         if (locale == null) {

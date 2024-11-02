@@ -15,13 +15,14 @@ import java.lang.annotation.RetentionPolicy;
 public final class IpManagerEvent implements IpConnectivityLog.Event {
     public static final int COMPLETE_LIFECYCLE = 3;
     public static final Parcelable.Creator<IpManagerEvent> CREATOR = new Parcelable.Creator<IpManagerEvent>() { // from class: android.net.metrics.IpManagerEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public IpManagerEvent createFromParcel(Parcel in) {
             return new IpManagerEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IpManagerEvent[] newArray(int size) {
             return new IpManagerEvent[size];
@@ -40,6 +41,10 @@ public final class IpManagerEvent implements IpConnectivityLog.Event {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface EventType {
+    }
+
+    /* synthetic */ IpManagerEvent(Parcel parcel, IpManagerEventIA ipManagerEventIA) {
+        this(parcel);
     }
 
     public IpManagerEvent(int eventType, long duration) {
@@ -61,6 +66,23 @@ public final class IpManagerEvent implements IpConnectivityLog.Event {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.net.metrics.IpManagerEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<IpManagerEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IpManagerEvent createFromParcel(Parcel in) {
+            return new IpManagerEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public IpManagerEvent[] newArray(int size) {
+            return new IpManagerEvent[size];
+        }
     }
 
     public String toString() {

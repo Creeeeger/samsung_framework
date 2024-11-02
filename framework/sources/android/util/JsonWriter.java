@@ -224,8 +224,7 @@ public final class JsonWriter implements Closeable {
         replaceTop(JsonScope.DANGLING_NAME);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.util.JsonWriter$1, reason: invalid class name */
+    /* renamed from: android.util.JsonWriter$1 */
     /* loaded from: classes4.dex */
     public static /* synthetic */ class AnonymousClass1 {
         static final /* synthetic */ int[] $SwitchMap$android$util$JsonScope;

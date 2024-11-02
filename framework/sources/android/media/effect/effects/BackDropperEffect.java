@@ -16,10 +16,27 @@ public class BackDropperEffect extends FilterGraphEffect {
     private EffectUpdateListener mEffectListener;
     private BackDropperFilter.LearningDoneListener mLearningListener;
 
+    /* renamed from: android.media.effect.effects.BackDropperEffect$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements BackDropperFilter.LearningDoneListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener
+        public void onLearningDone(BackDropperFilter filter) {
+            if (BackDropperEffect.this.mEffectListener != null) {
+                BackDropperEffect.this.mEffectListener.onEffectUpdated(BackDropperEffect.this, null);
+            }
+        }
+    }
+
     public BackDropperEffect(EffectContext context, String name) {
         super(context, name, mGraphDefinition, "foreground", "output", OneShotScheduler.class);
         this.mEffectListener = null;
         this.mLearningListener = new BackDropperFilter.LearningDoneListener() { // from class: android.media.effect.effects.BackDropperEffect.1
+            AnonymousClass1() {
+            }
+
             @Override // android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener
             public void onLearningDone(BackDropperFilter filter) {
                 if (BackDropperEffect.this.mEffectListener != null) {

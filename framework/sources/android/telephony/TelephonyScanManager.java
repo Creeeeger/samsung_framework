@@ -48,7 +48,6 @@ public final class TelephonyScanManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class NetworkScanInfo {
         private final NetworkScanCallback mCallback;
@@ -71,6 +70,9 @@ public final class TelephonyScanManager {
         this.mHandler = anonymousClass1;
         this.mMessenger = new Messenger(anonymousClass1);
         this.mDeathRecipient = new IBinder.DeathRecipient() { // from class: android.telephony.TelephonyScanManager.2
+            AnonymousClass2() {
+            }
+
             @Override // android.os.IBinder.DeathRecipient
             public void binderDied() {
                 TelephonyScanManager.this.mHandler.obtainMessage(5).sendToTarget();
@@ -78,9 +80,10 @@ public final class TelephonyScanManager {
         };
     }
 
-    /* renamed from: android.telephony.TelephonyScanManager$1, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telephony.TelephonyScanManager$1 */
     /* loaded from: classes3.dex */
-    class AnonymousClass1 extends Handler {
+    public class AnonymousClass1 extends Handler {
         AnonymousClass1(Looper looper) {
             super(looper);
         }
@@ -182,22 +185,32 @@ public final class TelephonyScanManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$handleMessage$1(CellInfo[] ci, NetworkScanCallback callback) {
             com.android.telephony.Rlog.d(TelephonyScanManager.TAG, "onResults: " + Arrays.toString(ci));
             callback.onResults(Arrays.asList(ci));
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$handleMessage$2(int errorCode, NetworkScanCallback callback) {
             com.android.telephony.Rlog.d(TelephonyScanManager.TAG, "onError: " + errorCode);
             callback.onError(errorCode);
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ void lambda$handleMessage$3(NetworkScanCallback callback) {
             com.android.telephony.Rlog.d(TelephonyScanManager.TAG, "onComplete");
             callback.onComplete();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telephony.TelephonyScanManager$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements IBinder.DeathRecipient {
+        AnonymousClass2() {
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public void binderDied() {
+            TelephonyScanManager.this.mHandler.obtainMessage(5).sendToTarget();
         }
     }
 

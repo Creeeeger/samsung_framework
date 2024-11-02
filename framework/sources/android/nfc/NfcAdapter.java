@@ -121,6 +121,9 @@ public final class NfcAdapter {
     private Cursor mRestrictionCr;
     private Uri mUri;
     OnActivityPausedListener mForegroundDispatchListener = new OnActivityPausedListener() { // from class: android.nfc.NfcAdapter.1
+        AnonymousClass1() {
+        }
+
         @Override // android.app.OnActivityPausedListener
         public void onPaused(Activity activity) {
             NfcAdapter.this.disableForegroundDispatchInternal(activity, true);
@@ -560,6 +563,19 @@ public final class NfcAdapter {
         disableForegroundDispatchInternal(activity, false);
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.nfc.NfcAdapter$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements OnActivityPausedListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.app.OnActivityPausedListener
+        public void onPaused(Activity activity) {
+            NfcAdapter.this.disableForegroundDispatchInternal(activity, true);
+        }
+    }
+
     void disableForegroundDispatchInternal(Activity activity, boolean force) {
         try {
             sService.setForegroundDispatch(null, null, null);
@@ -833,15 +849,38 @@ public final class NfcAdapter {
         return false;
     }
 
-    public boolean ignore(Tag tag, int debounceMs, final OnTagRemovedListener tagRemovedListener, final Handler handler) {
+    public boolean ignore(Tag tag, int debounceMs, OnTagRemovedListener tagRemovedListener, Handler handler) {
         ITagRemovedCallback.Stub iListener = null;
         if (tagRemovedListener != null) {
             iListener = new ITagRemovedCallback.Stub() { // from class: android.nfc.NfcAdapter.2
+                final /* synthetic */ Handler val$handler;
+                final /* synthetic */ OnTagRemovedListener val$tagRemovedListener;
+
+                AnonymousClass2(Handler handler2, OnTagRemovedListener tagRemovedListener2) {
+                    handler = handler2;
+                    tagRemovedListener = tagRemovedListener2;
+                }
+
+                /* renamed from: android.nfc.NfcAdapter$2$1 */
+                /* loaded from: classes3.dex */
+                class AnonymousClass1 implements Runnable {
+                    AnonymousClass1() {
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        tagRemovedListener.onTagRemoved();
+                    }
+                }
+
                 @Override // android.nfc.ITagRemovedCallback
                 public void onTagRemoved() throws RemoteException {
                     Handler handler2 = handler;
                     if (handler2 != null) {
                         handler2.post(new Runnable() { // from class: android.nfc.NfcAdapter.2.1
+                            AnonymousClass1() {
+                            }
+
                             @Override // java.lang.Runnable
                             public void run() {
                                 tagRemovedListener.onTagRemoved();
@@ -863,6 +902,52 @@ public final class NfcAdapter {
             return sService.ignore(tag.getServiceHandle(), debounceMs, iListener);
         } catch (RemoteException e) {
             return false;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.nfc.NfcAdapter$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 extends ITagRemovedCallback.Stub {
+        final /* synthetic */ Handler val$handler;
+        final /* synthetic */ OnTagRemovedListener val$tagRemovedListener;
+
+        AnonymousClass2(Handler handler2, OnTagRemovedListener tagRemovedListener2) {
+            handler = handler2;
+            tagRemovedListener = tagRemovedListener2;
+        }
+
+        /* renamed from: android.nfc.NfcAdapter$2$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Runnable {
+            AnonymousClass1() {
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                tagRemovedListener.onTagRemoved();
+            }
+        }
+
+        @Override // android.nfc.ITagRemovedCallback
+        public void onTagRemoved() throws RemoteException {
+            Handler handler2 = handler;
+            if (handler2 != null) {
+                handler2.post(new Runnable() { // from class: android.nfc.NfcAdapter.2.1
+                    AnonymousClass1() {
+                    }
+
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        tagRemovedListener.onTagRemoved();
+                    }
+                });
+            } else {
+                tagRemovedListener.onTagRemoved();
+            }
+            synchronized (NfcAdapter.this.mLock) {
+                NfcAdapter.this.mTagRemovedListener = null;
+            }
         }
     }
 
@@ -973,6 +1058,9 @@ public final class NfcAdapter {
                         }
                         if (cursor2.getString(cursor2.getColumnIndex("isNFCStateChangeAllowed")).equals("false")) {
                             new Handler(Looper.getMainLooper()).post(new Runnable() { // from class: android.nfc.NfcAdapter.3
+                                AnonymousClass3() {
+                                }
+
                                 @Override // java.lang.Runnable
                                 public void run() {
                                     Toast.makeText(NfcAdapter.this.mContext, NfcAdapter.this.mContext.getString(R.string.allow_settings_changes), 0).show();
@@ -994,8 +1082,20 @@ public final class NfcAdapter {
         return true;
     }
 
+    /* renamed from: android.nfc.NfcAdapter$3 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass3 implements Runnable {
+        AnonymousClass3() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            Toast.makeText(NfcAdapter.this.mContext, NfcAdapter.this.mContext.getString(R.string.allow_settings_changes), 0).show();
+        }
+    }
+
     @SystemApi
-    public boolean addNfcUnlockHandler(final NfcUnlockHandler unlockHandler, String[] tagTechnologies) {
+    public boolean addNfcUnlockHandler(NfcUnlockHandler unlockHandler, String[] tagTechnologies) {
         synchronized (NfcAdapter.class) {
             if (!sHasNfcFeature) {
                 throw new UnsupportedOperationException();
@@ -1011,13 +1111,19 @@ public final class NfcAdapter {
                     this.mNfcUnlockHandlers.remove(unlockHandler);
                 }
                 INfcUnlockHandler.Stub iHandler = new INfcUnlockHandler.Stub() { // from class: android.nfc.NfcAdapter.4
+                    final /* synthetic */ NfcUnlockHandler val$unlockHandler;
+
+                    AnonymousClass4(NfcUnlockHandler unlockHandler2) {
+                        unlockHandler = unlockHandler2;
+                    }
+
                     @Override // android.nfc.INfcUnlockHandler
                     public boolean onUnlockAttempted(Tag tag) throws RemoteException {
                         return unlockHandler.onUnlockAttempted(tag);
                     }
                 };
                 sService.addNfcUnlockHandler(iHandler, Tag.getTechCodesFromStrings(tagTechnologies));
-                this.mNfcUnlockHandlers.put(unlockHandler, iHandler);
+                this.mNfcUnlockHandlers.put(unlockHandler2, iHandler);
             }
             return true;
         } catch (RemoteException e) {
@@ -1026,6 +1132,21 @@ public final class NfcAdapter {
         } catch (IllegalArgumentException e2) {
             Log.e(TAG, "Unable to register LockscreenDispatch", e2);
             return false;
+        }
+    }
+
+    /* renamed from: android.nfc.NfcAdapter$4 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass4 extends INfcUnlockHandler.Stub {
+        final /* synthetic */ NfcUnlockHandler val$unlockHandler;
+
+        AnonymousClass4(NfcUnlockHandler unlockHandler2) {
+            unlockHandler = unlockHandler2;
+        }
+
+        @Override // android.nfc.INfcUnlockHandler
+        public boolean onUnlockAttempted(Tag tag) throws RemoteException {
+            return unlockHandler.onUnlockAttempted(tag);
         }
     }
 

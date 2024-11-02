@@ -32,7 +32,6 @@ public class RSAUtil {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static RSAKeyParameters generatePublicKeyParameter(RSAPublicKey key) {
         if (key instanceof BCRSAPublicKey) {
             return ((BCRSAPublicKey) key).engineGetKeyParameters();
@@ -40,7 +39,6 @@ public class RSAUtil {
         return new RSAKeyParameters(false, key.getModulus(), key.getPublicExponent());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static RSAKeyParameters generatePrivateKeyParameter(RSAPrivateKey key) {
         if (key instanceof BCRSAPrivateKey) {
             return ((BCRSAPrivateKey) key).engineGetKeyParameters();
@@ -52,12 +50,10 @@ public class RSAUtil {
         return new RSAKeyParameters(true, key.getModulus(), key.getPrivateExponent());
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String generateKeyFingerprint(BigInteger modulus) {
         return new Fingerprint(modulus.toByteArray()).toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String generateExponentFingerprint(BigInteger exponent) {
         return new Fingerprint(exponent.toByteArray(), 32).toString();
     }

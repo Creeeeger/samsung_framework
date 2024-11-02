@@ -13,13 +13,14 @@ import java.lang.annotation.Annotation;
 /* loaded from: classes.dex */
 public final class RuntimeAppOpAccessMessage implements Parcelable {
     public static final Parcelable.Creator<RuntimeAppOpAccessMessage> CREATOR = new Parcelable.Creator<RuntimeAppOpAccessMessage>() { // from class: android.app.RuntimeAppOpAccessMessage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RuntimeAppOpAccessMessage[] newArray(int size) {
             return new RuntimeAppOpAccessMessage[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RuntimeAppOpAccessMessage createFromParcel(Parcel in) {
             return new RuntimeAppOpAccessMessage(in);
@@ -109,6 +110,23 @@ public final class RuntimeAppOpAccessMessage implements Parcelable {
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) message);
         this.mSamplingStrategy = samplingStrategy;
         AnnotationValidations.validate((Class<? extends Annotation>) AppOpsManager.SamplingStrategy.class, (Annotation) null, samplingStrategy);
+    }
+
+    /* renamed from: android.app.RuntimeAppOpAccessMessage$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RuntimeAppOpAccessMessage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RuntimeAppOpAccessMessage[] newArray(int size) {
+            return new RuntimeAppOpAccessMessage[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RuntimeAppOpAccessMessage createFromParcel(Parcel in) {
+            return new RuntimeAppOpAccessMessage(in);
+        }
     }
 
     @Deprecated

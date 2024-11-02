@@ -119,10 +119,8 @@ public final class ImageDecoder implements AutoCloseable {
 
     private static native ImageDecoder nCreate(InputStream inputStream, byte[] bArr, boolean z, Source source) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native ImageDecoder nCreate(ByteBuffer byteBuffer, int i, int i2, boolean z, Source source) throws IOException;
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static native ImageDecoder nCreate(byte[] bArr, int i, int i2, boolean z, Source source) throws IOException;
 
     private static native ImageDecoder nCreateQMG(long j, boolean z, Source source) throws IOException;
@@ -141,6 +139,10 @@ public final class ImageDecoder implements AutoCloseable {
 
     /* loaded from: classes.dex */
     public static abstract class Source {
+        /* synthetic */ Source(SourceIA sourceIA) {
+            this();
+        }
+
         abstract ImageDecoder createImageDecoder(boolean z) throws IOException;
 
         private Source() {
@@ -163,7 +165,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ByteArraySource extends Source {
         private final byte[] mData;
@@ -214,7 +215,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class ContentResolverSource extends Source {
         private final ContentResolver mResolver;
@@ -263,7 +263,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromFile(File file, boolean preferAnimation, Source source) throws IOException {
         FileInputStream stream = new FileInputStream(file);
         FileDescriptor fd = stream.getFD();
@@ -286,7 +285,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromStream(InputStream is, boolean closeInputStream, boolean preferAnimation, Source source) throws IOException {
         byte[] storage = new byte[16384];
         ImageDecoder decoder = null;
@@ -306,7 +304,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromStreamQMG(InputStream is, boolean closeInputStream, boolean preferAnimation, Source source) throws IOException {
         byte[] storage = new byte[16384];
         ImageDecoder decoder = null;
@@ -326,7 +323,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromAssetFileDescriptor(AssetFileDescriptor assetFd, boolean preferAnimation, Source source) throws IOException {
         if (assetFd == null) {
             throw new FileNotFoundException();
@@ -357,7 +353,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class InputStreamSource extends Source {
         final int mInputDensity;
@@ -536,8 +531,9 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class ResourceSource extends Source {
+    public static class ResourceSource extends Source {
         private Object mLock;
         int mResDensity;
         final int mResId;
@@ -588,7 +584,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromAsset(AssetManager.AssetInputStream ais, boolean preferAnimation, Source source) throws IOException {
         ImageDecoder decoder = null;
         try {
@@ -605,7 +600,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromAssetQMG(AssetManager.AssetInputStream ais, boolean preferAnimation, Source source) throws IOException {
         ImageDecoder decoder = null;
         try {
@@ -644,8 +638,9 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    private static class FileSource extends Source {
+    public static class FileSource extends Source {
         private final File mFile;
 
         FileSource(File file) {
@@ -663,7 +658,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class CallableSource extends Source {
         private final Callable<AssetFileDescriptor> mCallable;
@@ -697,6 +691,10 @@ public final class ImageDecoder implements AutoCloseable {
         private final boolean mIsAnimated;
         private final String mMimeType;
         private final Size mSize;
+
+        /* synthetic */ ImageInfo(Size size, boolean z, String str, ColorSpace colorSpace, ImageInfoIA imageInfoIA) {
+            this(size, z, str, colorSpace);
+        }
 
         private ImageInfo(Size size, boolean isAnimated, String mimeType, ColorSpace colorSpace) {
             this.mSize = size;
@@ -1444,11 +1442,17 @@ public final class ImageDecoder implements AutoCloseable {
     }
 
     private static AutoCloseable traceDecoderSource(ImageDecoder decoder) {
-        final boolean resourceTracingEnabled = Trace.isTagEnabled(8192L);
+        boolean resourceTracingEnabled = Trace.isTagEnabled(8192L);
         if (resourceTracingEnabled) {
             Trace.traceBegin(8192L, describeDecoderForTrace(decoder));
         }
         return new AutoCloseable() { // from class: android.graphics.ImageDecoder.1
+            final /* synthetic */ boolean val$resourceTracingEnabled;
+
+            AnonymousClass1(boolean resourceTracingEnabled2) {
+                resourceTracingEnabled = resourceTracingEnabled2;
+            }
+
             @Override // java.lang.AutoCloseable
             public void close() throws Exception {
                 if (resourceTracingEnabled) {
@@ -1456,6 +1460,23 @@ public final class ImageDecoder implements AutoCloseable {
                 }
             }
         };
+    }
+
+    /* renamed from: android.graphics.ImageDecoder$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements AutoCloseable {
+        final /* synthetic */ boolean val$resourceTracingEnabled;
+
+        AnonymousClass1(boolean resourceTracingEnabled2) {
+            resourceTracingEnabled = resourceTracingEnabled2;
+        }
+
+        @Override // java.lang.AutoCloseable
+        public void close() throws Exception {
+            if (resourceTracingEnabled) {
+                Trace.traceEnd(8192L);
+            }
+        }
     }
 
     private int computeDensity(Source src) {
@@ -1577,7 +1598,6 @@ public final class ImageDecoder implements AutoCloseable {
         throw exception;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static String describeDecoderForTrace(ImageDecoder decoder) {
         StringBuilder builder = new StringBuilder();
         builder.append("ID#w=");
@@ -1595,7 +1615,6 @@ public final class ImageDecoder implements AutoCloseable {
         return builder.toString();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class ImageDecoderSourceTrace implements AutoCloseable {
         private final boolean mResourceTracingEnabled;

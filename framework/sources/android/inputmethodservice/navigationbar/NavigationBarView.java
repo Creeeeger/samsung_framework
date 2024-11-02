@@ -226,7 +226,6 @@ public final class NavigationBarView extends FrameLayout {
         reloadNavIcons();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onDraw(Canvas canvas) {
         this.mDeadZone.onDraw(canvas);
@@ -269,12 +268,10 @@ public final class NavigationBarView extends FrameLayout {
         updateNavButtonIcons();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$reorient$1(View view) {
         return view instanceof NavigationBarFrame;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -286,7 +283,6 @@ public final class NavigationBarView extends FrameLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -295,7 +291,6 @@ public final class NavigationBarView extends FrameLayout {
         updateNavButtonIcons();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup, android.view.View
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();

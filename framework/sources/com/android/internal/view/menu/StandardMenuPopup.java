@@ -22,7 +22,7 @@ import com.android.internal.view.menu.MenuPresenter;
 import java.util.Objects;
 
 /* loaded from: classes5.dex */
-final class StandardMenuPopup extends MenuPopup implements PopupWindow.OnDismissListener, AdapterView.OnItemClickListener, MenuPresenter, View.OnKeyListener {
+public final class StandardMenuPopup extends MenuPopup implements PopupWindow.OnDismissListener, AdapterView.OnItemClickListener, MenuPresenter, View.OnKeyListener {
     private static final int ITEM_LAYOUT = 17367282;
     private static final int SEM_ITEM_LAYOUT = 17367405;
     private final MenuAdapter mAdapter;
@@ -44,6 +44,9 @@ final class StandardMenuPopup extends MenuPopup implements PopupWindow.OnDismiss
     private ViewTreeObserver mTreeObserver;
     private boolean mWasDismissed;
     private final ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.android.internal.view.menu.StandardMenuPopup.1
+        AnonymousClass1() {
+        }
+
         @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
         public void onGlobalLayout() {
             if (StandardMenuPopup.this.mIsParentThemeDeviceDefault && StandardMenuPopup.this.isShowing()) {
@@ -67,6 +70,9 @@ final class StandardMenuPopup extends MenuPopup implements PopupWindow.OnDismiss
         }
     };
     private final View.OnAttachStateChangeListener mAttachStateChangeListener = new View.OnAttachStateChangeListener() { // from class: com.android.internal.view.menu.StandardMenuPopup.2
+        AnonymousClass2() {
+        }
+
         @Override // android.view.View.OnAttachStateChangeListener
         public void onViewAttachedToWindow(View v) {
         }
@@ -84,6 +90,59 @@ final class StandardMenuPopup extends MenuPopup implements PopupWindow.OnDismiss
     };
     private int mDropDownGravity = 0;
     private int mPopupWindowLayout = 0;
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.view.menu.StandardMenuPopup$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements ViewTreeObserver.OnGlobalLayoutListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
+        public void onGlobalLayout() {
+            if (StandardMenuPopup.this.mIsParentThemeDeviceDefault && StandardMenuPopup.this.isShowing()) {
+                View anchor = StandardMenuPopup.this.mShownAnchorView;
+                if (anchor == null || !anchor.isShown()) {
+                    StandardMenuPopup.this.dismiss();
+                    return;
+                } else {
+                    StandardMenuPopup.this.mPopup.show();
+                    return;
+                }
+            }
+            if (StandardMenuPopup.this.isShowing() && !StandardMenuPopup.this.mPopup.isModal()) {
+                View anchor2 = StandardMenuPopup.this.mShownAnchorView;
+                if (anchor2 == null || !anchor2.isShown()) {
+                    StandardMenuPopup.this.dismiss();
+                } else {
+                    StandardMenuPopup.this.mPopup.show();
+                }
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.view.menu.StandardMenuPopup$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 implements View.OnAttachStateChangeListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.view.View.OnAttachStateChangeListener
+        public void onViewAttachedToWindow(View v) {
+        }
+
+        @Override // android.view.View.OnAttachStateChangeListener
+        public void onViewDetachedFromWindow(View v) {
+            if (StandardMenuPopup.this.mTreeObserver != null) {
+                if (!StandardMenuPopup.this.mTreeObserver.isAlive()) {
+                    StandardMenuPopup.this.mTreeObserver = v.getViewTreeObserver();
+                }
+                StandardMenuPopup.this.mTreeObserver.removeGlobalOnLayoutListener(StandardMenuPopup.this.mGlobalLayoutListener);
+            }
+            v.removeOnAttachStateChangeListener(this);
+        }
+    }
 
     public StandardMenuPopup(Context context, MenuBuilder menu, View anchorView, int popupStyleAttr, int popupStyleRes, boolean overflowOnly) {
         this.mContext = (Context) Objects.requireNonNull(context);

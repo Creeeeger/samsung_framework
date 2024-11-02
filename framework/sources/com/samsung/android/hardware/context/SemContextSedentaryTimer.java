@@ -8,13 +8,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class SemContextSedentaryTimer extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextSedentaryTimer> CREATOR = new Parcelable.Creator<SemContextSedentaryTimer>() { // from class: com.samsung.android.hardware.context.SemContextSedentaryTimer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemContextSedentaryTimer createFromParcel(Parcel in) {
             return new SemContextSedentaryTimer(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSedentaryTimer[] newArray(int size) {
             return new SemContextSedentaryTimer[size];
@@ -27,7 +28,23 @@ public class SemContextSedentaryTimer extends SemContextEventContext {
     public static final int STATUS_SEDENTARY_START = 1;
     private Bundle mContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.hardware.context.SemContextSedentaryTimer$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemContextSedentaryTimer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextSedentaryTimer createFromParcel(Parcel in) {
+            return new SemContextSedentaryTimer(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemContextSedentaryTimer[] newArray(int size) {
+            return new SemContextSedentaryTimer[size];
+        }
+    }
+
     public SemContextSedentaryTimer() {
         this.mContext = new Bundle();
     }

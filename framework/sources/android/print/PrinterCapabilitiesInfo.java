@@ -26,18 +26,23 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
     private List<PrintAttributes.Resolution> mResolutions;
     private static final PrintAttributes.Margins DEFAULT_MARGINS = new PrintAttributes.Margins(0, 0, 0, 0);
     public static final Parcelable.Creator<PrinterCapabilitiesInfo> CREATOR = new Parcelable.Creator<PrinterCapabilitiesInfo>() { // from class: android.print.PrinterCapabilitiesInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrinterCapabilitiesInfo createFromParcel(Parcel parcel) {
             return new PrinterCapabilitiesInfo(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrinterCapabilitiesInfo[] newArray(int size) {
             return new PrinterCapabilitiesInfo[size];
         }
     };
+
+    /* synthetic */ PrinterCapabilitiesInfo(Parcel parcel, PrinterCapabilitiesInfoIA printerCapabilitiesInfoIA) {
+        this(parcel);
+    }
 
     public PrinterCapabilitiesInfo() {
         this.mMinMargins = DEFAULT_MARGINS;
@@ -129,7 +134,6 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
         return builder.build();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void enforceValidMask(int mask, IntConsumer enforceSingle) {
         int current = mask;
         while (current > 0) {
@@ -455,6 +459,23 @@ public final class PrinterCapabilitiesInfo implements Parcelable {
             if (this.mPrototype.mDefaults[propertyIndex] != -1) {
                 throw new IllegalArgumentException("Default already specified.");
             }
+        }
+    }
+
+    /* renamed from: android.print.PrinterCapabilitiesInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrinterCapabilitiesInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrinterCapabilitiesInfo createFromParcel(Parcel parcel) {
+            return new PrinterCapabilitiesInfo(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrinterCapabilitiesInfo[] newArray(int size) {
+            return new PrinterCapabilitiesInfo[size];
         }
     }
 }

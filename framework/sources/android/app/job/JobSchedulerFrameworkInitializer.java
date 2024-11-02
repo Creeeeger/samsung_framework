@@ -52,17 +52,14 @@ public class JobSchedulerFrameworkInitializer {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ JobScheduler lambda$registerServiceWrappers$0(Context context, IBinder b) {
         return new JobSchedulerImpl(context, IJobScheduler.Stub.asInterface(b));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ DeviceIdleManager lambda$registerServiceWrappers$1(Context context, IBinder b) {
         return new DeviceIdleManager(context, IDeviceIdleController.Stub.asInterface(b));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ EconomyManager lambda$registerServiceWrappers$2(IBinder b) {
         return new EconomyManager(IEconomyManager.Stub.asInterface(b));
     }

@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SyncNotedAppOp implements Parcelable {
     public static final Parcelable.Creator<SyncNotedAppOp> CREATOR = new Parcelable.Creator<SyncNotedAppOp>() { // from class: android.app.SyncNotedAppOp.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SyncNotedAppOp[] newArray(int size) {
             return new SyncNotedAppOp[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncNotedAppOp createFromParcel(Parcel in) {
             return new SyncNotedAppOp(in);
@@ -120,6 +121,23 @@ public final class SyncNotedAppOp implements Parcelable {
         AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, opCode, "from", 0L, "to", 135L);
         this.mAttributionTag = attributionTag;
         this.mPackageName = packageName;
+    }
+
+    /* renamed from: android.app.SyncNotedAppOp$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SyncNotedAppOp> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncNotedAppOp[] newArray(int size) {
+            return new SyncNotedAppOp[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncNotedAppOp createFromParcel(Parcel in) {
+            return new SyncNotedAppOp(in);
+        }
     }
 
     @Deprecated

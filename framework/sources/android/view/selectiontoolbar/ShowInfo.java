@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class ShowInfo implements Parcelable {
     public static final Parcelable.Creator<ShowInfo> CREATOR = new Parcelable.Creator<ShowInfo>() { // from class: android.view.selectiontoolbar.ShowInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ShowInfo[] newArray(int size) {
             return new ShowInfo[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ShowInfo createFromParcel(Parcel in) {
             return new ShowInfo(in);
@@ -147,6 +148,23 @@ public final class ShowInfo implements Parcelable {
         this.mHostInputToken = hostInputToken;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hostInputToken);
         this.mIsLightTheme = isLightTheme;
+    }
+
+    /* renamed from: android.view.selectiontoolbar.ShowInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ShowInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ShowInfo[] newArray(int size) {
+            return new ShowInfo[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ShowInfo createFromParcel(Parcel in) {
+            return new ShowInfo(in);
+        }
     }
 
     @Deprecated

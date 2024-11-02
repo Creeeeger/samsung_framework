@@ -116,7 +116,6 @@ public final class SpringForce implements Force {
         this.mInitialized = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public DynamicAnimation.MassState updateValues(double lastDisplacement, double lastVelocity, long timeElapsed) {
         double displacement;
         double cosCoeff;
@@ -165,7 +164,6 @@ public final class SpringForce implements Force {
         return this.mMassState;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setValueThreshold(double threshold) {
         double abs = Math.abs(threshold);
         this.mValueThreshold = abs;

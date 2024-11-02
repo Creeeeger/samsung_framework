@@ -96,7 +96,6 @@ public class ClipRectAnimation extends Animation {
         this(new Rect(fromL, fromT, fromR, fromB), new Rect(toL, toT, toR, toB));
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.animation.Animation
     public void applyTransformation(float it, Transformation tr) {
         int l = this.mFromRect.left + ((int) ((this.mToRect.left - this.mFromRect.left) * it));

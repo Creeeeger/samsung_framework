@@ -19,7 +19,9 @@ import java.util.function.Predicate;
 /* loaded from: classes4.dex */
 public final class ContentInfo implements Parcelable {
     public static final Parcelable.Creator<ContentInfo> CREATOR = new Parcelable.Creator<ContentInfo>() { // from class: android.view.ContentInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ContentInfo createFromParcel(Parcel parcel) {
             ClipData clip = ClipData.CREATOR.createFromParcel(parcel);
@@ -40,7 +42,6 @@ public final class ContentInfo implements Parcelable {
             return new Builder(clip, source).setFlags(flags).setLinkUri(linkUri).setExtras(extras).setInputContentInfo(inputContentInfo).setDragAndDropPermissions(dragAndDropPermissions).build();
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentInfo[] newArray(int size) {
             return new ContentInfo[size];
@@ -69,6 +70,10 @@ public final class ContentInfo implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes4.dex */
     public @interface Source {
+    }
+
+    /* synthetic */ ContentInfo(Builder builder, ContentInfoIA contentInfoIA) {
+        this(builder);
     }
 
     static String sourceToString(int source) {
@@ -256,6 +261,38 @@ public final class ContentInfo implements Parcelable {
         } else {
             dest.writeInt(1);
             this.mDragAndDropPermissions.writeToParcel(dest, flags);
+        }
+    }
+
+    /* renamed from: android.view.ContentInfo$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ContentInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentInfo createFromParcel(Parcel parcel) {
+            ClipData clip = ClipData.CREATOR.createFromParcel(parcel);
+            int source = parcel.readInt();
+            int flags = parcel.readInt();
+            Uri linkUri = Uri.CREATOR.createFromParcel(parcel);
+            Bundle extras = parcel.readBundle();
+            InputContentInfo inputContentInfo = null;
+            if (parcel.readInt() != 0) {
+                InputContentInfo inputContentInfo2 = InputContentInfo.CREATOR.createFromParcel(parcel);
+                inputContentInfo = inputContentInfo2;
+            }
+            DragAndDropPermissions dragAndDropPermissions = null;
+            if (parcel.readInt() != 0) {
+                DragAndDropPermissions dragAndDropPermissions2 = DragAndDropPermissions.CREATOR.createFromParcel(parcel);
+                dragAndDropPermissions = dragAndDropPermissions2;
+            }
+            return new Builder(clip, source).setFlags(flags).setLinkUri(linkUri).setExtras(extras).setInputContentInfo(inputContentInfo).setDragAndDropPermissions(dragAndDropPermissions).build();
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ContentInfo[] newArray(int size) {
+            return new ContentInfo[size];
         }
     }
 }

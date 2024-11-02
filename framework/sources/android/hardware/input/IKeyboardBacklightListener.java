@@ -86,8 +86,9 @@ public interface IKeyboardBacklightListener extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IKeyboardBacklightListener {
+        public static class Proxy implements IKeyboardBacklightListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

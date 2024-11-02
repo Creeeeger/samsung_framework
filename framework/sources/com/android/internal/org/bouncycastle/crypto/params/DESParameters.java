@@ -16,7 +16,10 @@ public class DESParameters extends KeyParameter {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x001c, code lost:            r0 = r0 + 1;     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x001c, code lost:
+    
+        r0 = r0 + 1;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

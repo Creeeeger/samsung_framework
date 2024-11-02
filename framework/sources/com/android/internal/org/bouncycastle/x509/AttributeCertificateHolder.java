@@ -32,7 +32,6 @@ import javax.security.auth.x500.X500Principal;
 public class AttributeCertificateHolder implements CertSelector, Selector {
     final Holder holder;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AttributeCertificateHolder(ASN1Sequence seq) {
         this.holder = Holder.getInstance(seq);
     }

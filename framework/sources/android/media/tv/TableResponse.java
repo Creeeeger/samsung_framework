@@ -8,14 +8,15 @@ import android.os.SharedMemory;
 /* loaded from: classes2.dex */
 public final class TableResponse extends BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<TableResponse> CREATOR = new Parcelable.Creator<TableResponse>() { // from class: android.media.tv.TableResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TableResponse createFromParcel(Parcel source) {
             source.readInt();
             return TableResponse.createFromParcelBody(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TableResponse[] newArray(int size) {
             return new TableResponse[size];
@@ -28,7 +29,28 @@ public final class TableResponse extends BroadcastInfoResponse implements Parcel
     private final Uri mTableUri;
     private final int mVersion;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ TableResponse(int i, int i2, int i3, int i4, int i5, Uri uri, byte[] bArr, SharedMemory sharedMemory, TableResponseIA tableResponseIA) {
+        this(i, i2, i3, i4, i5, uri, bArr, sharedMemory);
+    }
+
+    /* renamed from: android.media.tv.TableResponse$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TableResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TableResponse createFromParcel(Parcel source) {
+            source.readInt();
+            return TableResponse.createFromParcelBody(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TableResponse[] newArray(int size) {
+            return new TableResponse[size];
+        }
+    }
+
     public static TableResponse createFromParcelBody(Parcel in) {
         return new TableResponse(in);
     }

@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaSignalInfoRecord implements Parcelable {
     public static final Parcelable.Creator<CdmaSignalInfoRecord> CREATOR = new Parcelable.Creator<CdmaSignalInfoRecord>() { // from class: android.hardware.radio.voice.CdmaSignalInfoRecord.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CdmaSignalInfoRecord createFromParcel(Parcel _aidl_source) {
             CdmaSignalInfoRecord _aidl_out = new CdmaSignalInfoRecord();
@@ -16,7 +18,6 @@ public class CdmaSignalInfoRecord implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSignalInfoRecord[] newArray(int _aidl_size) {
             return new CdmaSignalInfoRecord[_aidl_size];
@@ -26,6 +27,25 @@ public class CdmaSignalInfoRecord implements Parcelable {
     public byte signalType = 0;
     public byte alertPitch = 0;
     public byte signal = 0;
+
+    /* renamed from: android.hardware.radio.voice.CdmaSignalInfoRecord$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CdmaSignalInfoRecord> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaSignalInfoRecord createFromParcel(Parcel _aidl_source) {
+            CdmaSignalInfoRecord _aidl_out = new CdmaSignalInfoRecord();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CdmaSignalInfoRecord[] newArray(int _aidl_size) {
+            return new CdmaSignalInfoRecord[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

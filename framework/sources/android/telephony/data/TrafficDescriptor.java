@@ -14,13 +14,14 @@ import java.util.regex.Pattern;
 /* loaded from: classes3.dex */
 public final class TrafficDescriptor implements Parcelable {
     public static final Parcelable.Creator<TrafficDescriptor> CREATOR = new Parcelable.Creator<TrafficDescriptor>() { // from class: android.telephony.data.TrafficDescriptor.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TrafficDescriptor createFromParcel(Parcel source) {
             return new TrafficDescriptor(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TrafficDescriptor[] newArray(int size) {
             return new TrafficDescriptor[size];
@@ -28,6 +29,10 @@ public final class TrafficDescriptor implements Parcelable {
     };
     private final String mDnn;
     private final OsAppId mOsAppId;
+
+    /* synthetic */ TrafficDescriptor(Parcel parcel, TrafficDescriptorIA trafficDescriptorIA) {
+        this(parcel);
+    }
 
     /* loaded from: classes3.dex */
     public static final class OsAppId {
@@ -172,6 +177,23 @@ public final class TrafficDescriptor implements Parcelable {
         dest.writeString(this.mDnn);
         OsAppId osAppId = this.mOsAppId;
         dest.writeByteArray(osAppId != null ? osAppId.getBytes() : null);
+    }
+
+    /* renamed from: android.telephony.data.TrafficDescriptor$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TrafficDescriptor> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TrafficDescriptor createFromParcel(Parcel source) {
+            return new TrafficDescriptor(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TrafficDescriptor[] newArray(int size) {
+            return new TrafficDescriptor[size];
+        }
     }
 
     public boolean equals(Object o) {

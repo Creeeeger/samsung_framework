@@ -29,14 +29,12 @@ public class SipTransportImplBase {
     private final ISipTransport.Stub mSipTransportImpl = new AnonymousClass2();
     private final ArrayList<SipDelegateAidlWrapper> mDelegates = new ArrayList<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.stub.SipTransportImplBase$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.stub.SipTransportImplBase$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 implements IBinder.DeathRecipient {
         AnonymousClass1() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$binderDied$0() {
             SipTransportImplBase.this.binderDiedInternal(null);
         }
@@ -51,7 +49,6 @@ public class SipTransportImplBase {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$binderDied$1(IBinder who) {
             SipTransportImplBase.this.binderDiedInternal(who);
         }
@@ -67,8 +64,7 @@ public class SipTransportImplBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.stub.SipTransportImplBase$2, reason: invalid class name */
+    /* renamed from: android.telephony.ims.stub.SipTransportImplBase$2 */
     /* loaded from: classes3.dex */
     public class AnonymousClass2 extends ISipTransport.Stub {
         AnonymousClass2() {
@@ -89,7 +85,6 @@ public class SipTransportImplBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$createSipDelegate$0(int subId, DelegateRequest request, ISipDelegateStateCallback dc, ISipDelegateMessageCallback mc) {
             SipTransportImplBase.this.createSipDelegateInternal(subId, request, dc, mc);
         }
@@ -109,7 +104,6 @@ public class SipTransportImplBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$destroySipDelegate$1(ISipDelegate delegate, int reason) {
             SipTransportImplBase.this.destroySipDelegateInternal(delegate, reason);
         }
@@ -133,7 +127,6 @@ public class SipTransportImplBase {
         throw new UnsupportedOperationException("destroySipDelegate not implemented!");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void createSipDelegateInternal(int subId, DelegateRequest r, ISipDelegateStateCallback cb, ISipDelegateMessageCallback mc) {
         SipDelegateAidlWrapper wrapper = new SipDelegateAidlWrapper(this.mBinderExecutor, cb, mc);
         this.mDelegates.add(wrapper);
@@ -141,7 +134,6 @@ public class SipTransportImplBase {
         createSipDelegate(subId, r, wrapper, wrapper);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void destroySipDelegateInternal(ISipDelegate d, int reason) {
         SipDelegateAidlWrapper result = null;
         Iterator<SipDelegateAidlWrapper> it = this.mDelegates.iterator();
@@ -180,7 +172,6 @@ public class SipTransportImplBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void binderDiedInternal(IBinder who) {
         Iterator<SipDelegateAidlWrapper> it = this.mDelegates.iterator();
         while (it.hasNext()) {

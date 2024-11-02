@@ -97,8 +97,9 @@ public interface IWindowFocusObserver extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes4.dex */
-        private static class Proxy implements IWindowFocusObserver {
+        public static class Proxy implements IWindowFocusObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

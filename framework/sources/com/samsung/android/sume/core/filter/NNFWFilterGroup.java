@@ -27,7 +27,7 @@ public class NNFWFilterGroup extends NNFWFilter implements MediaFilterGroup {
         descriptor.getNNDescriptor().setModelSelector(new ModelSelector() { // from class: com.samsung.android.sume.core.filter.NNFWFilterGroup$$ExternalSyntheticLambda0
             @Override // com.samsung.android.sume.core.functional.ModelSelector
             public final ModelSelector.Item select(MediaBuffer mediaBuffer) {
-                return NNFWFilterGroup.this.m8767xd3f4c5ae(mediaBuffer);
+                return NNFWFilterGroup.this.m8759xd3f4c5ae(mediaBuffer);
             }
         });
         this.filters = filters;
@@ -38,9 +38,8 @@ public class NNFWFilterGroup extends NNFWFilter implements MediaFilterGroup {
         super(descriptor);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: loadModel, reason: merged with bridge method [inline-methods] */
-    public ModelSelector.Item m8767xd3f4c5ae(MediaBuffer mediaBuffer) {
+    /* renamed from: loadModel */
+    public ModelSelector.Item m8759xd3f4c5ae(MediaBuffer mediaBuffer) {
         final ModelSelector.Item found = this.modelSelector.select(mediaBuffer);
         Log.d(TAG, "load model: " + found.name);
         this.mediaFilter = this.filters.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.filter.NNFWFilterGroup$$ExternalSyntheticLambda2
@@ -59,7 +58,6 @@ public class NNFWFilterGroup extends NNFWFilter implements MediaFilterGroup {
         return found;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ IllegalStateException lambda$loadModel$2(ModelSelector.Item found) {
         return new IllegalStateException("no matched model with " + found);
     }
@@ -69,14 +67,13 @@ public class NNFWFilterGroup extends NNFWFilter implements MediaFilterGroup {
         this.filters.forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.NNFWFilterGroup$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                NNFWFilterGroup.this.m8768x92910fc4((MediaFilter) obj);
+                NNFWFilterGroup.this.m8760x92910fc4((MediaFilter) obj);
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: lambda$prepare$3$com-samsung-android-sume-core-filter-NNFWFilterGroup, reason: not valid java name */
-    public /* synthetic */ void m8768x92910fc4(MediaFilter it) {
+    /* renamed from: lambda$prepare$3$com-samsung-android-sume-core-filter-NNFWFilterGroup */
+    public /* synthetic */ void m8760x92910fc4(MediaFilter it) {
         MediaFilter filter = it;
         if (it instanceof DecorateFilter) {
             filter = ((DecorateFilter) it).getEnclosedFilter();
@@ -90,7 +87,7 @@ public class NNFWFilterGroup extends NNFWFilter implements MediaFilterGroup {
     @Override // com.samsung.android.sume.core.filter.NNFWFilter, com.samsung.android.sume.core.functional.Operator
     public MutableMediaBuffer run(MediaBuffer ibuf, MutableMediaBuffer obuf) {
         if (this.mediaFilter == null) {
-            m8767xd3f4c5ae(ibuf);
+            m8759xd3f4c5ae(ibuf);
         }
         MutableMediaBuffer obuf2 = this.mediaFilter.run(ibuf, obuf);
         if (this.descriptor.isInstant()) {

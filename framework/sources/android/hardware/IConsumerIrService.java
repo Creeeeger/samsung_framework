@@ -129,8 +129,9 @@ public interface IConsumerIrService extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements IConsumerIrService {
+        public static class Proxy implements IConsumerIrService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

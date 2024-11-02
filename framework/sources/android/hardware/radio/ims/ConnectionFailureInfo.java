@@ -8,7 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ConnectionFailureInfo implements Parcelable {
     public static final Parcelable.Creator<ConnectionFailureInfo> CREATOR = new Parcelable.Creator<ConnectionFailureInfo>() { // from class: android.hardware.radio.ims.ConnectionFailureInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ConnectionFailureInfo createFromParcel(Parcel _aidl_source) {
             ConnectionFailureInfo _aidl_out = new ConnectionFailureInfo();
@@ -16,7 +18,6 @@ public class ConnectionFailureInfo implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConnectionFailureInfo[] newArray(int _aidl_size) {
             return new ConnectionFailureInfo[_aidl_size];
@@ -38,6 +39,25 @@ public class ConnectionFailureInfo implements Parcelable {
         public static final int REASON_RRC_REJECT = 5;
         public static final int REASON_RRC_TIMEOUT = 6;
         public static final int REASON_UNSPECIFIED = 65535;
+    }
+
+    /* renamed from: android.hardware.radio.ims.ConnectionFailureInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConnectionFailureInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConnectionFailureInfo createFromParcel(Parcel _aidl_source) {
+            ConnectionFailureInfo _aidl_out = new ConnectionFailureInfo();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConnectionFailureInfo[] newArray(int _aidl_size) {
+            return new ConnectionFailureInfo[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

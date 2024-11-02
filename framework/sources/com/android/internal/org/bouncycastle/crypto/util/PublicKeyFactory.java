@@ -80,9 +80,12 @@ public class PublicKeyFactory {
         return converter.getPublicKeyParameters(keyInfo, defaultParams);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static abstract class SubjectPublicKeyInfoConverter {
+        /* synthetic */ SubjectPublicKeyInfoConverter(SubjectPublicKeyInfoConverterIA subjectPublicKeyInfoConverterIA) {
+            this();
+        }
+
         abstract AsymmetricKeyParameter getPublicKeyParameters(SubjectPublicKeyInfo subjectPublicKeyInfo, Object obj) throws IOException;
 
         private SubjectPublicKeyInfoConverter() {
@@ -91,6 +94,10 @@ public class PublicKeyFactory {
 
     /* loaded from: classes5.dex */
     private static class RSAConverter extends SubjectPublicKeyInfoConverter {
+        /* synthetic */ RSAConverter(RSAConverterIA rSAConverterIA) {
+            this();
+        }
+
         private RSAConverter() {
             super();
         }
@@ -104,6 +111,10 @@ public class PublicKeyFactory {
 
     /* loaded from: classes5.dex */
     private static class DHPublicNumberConverter extends SubjectPublicKeyInfoConverter {
+        /* synthetic */ DHPublicNumberConverter(DHPublicNumberConverterIA dHPublicNumberConverterIA) {
+            this();
+        }
+
         private DHPublicNumberConverter() {
             super();
         }
@@ -139,6 +150,10 @@ public class PublicKeyFactory {
 
     /* loaded from: classes5.dex */
     private static class DHAgreementConverter extends SubjectPublicKeyInfoConverter {
+        /* synthetic */ DHAgreementConverter(DHAgreementConverterIA dHAgreementConverterIA) {
+            this();
+        }
+
         private DHAgreementConverter() {
             super();
         }
@@ -156,6 +171,10 @@ public class PublicKeyFactory {
 
     /* loaded from: classes5.dex */
     private static class DSAConverter extends SubjectPublicKeyInfoConverter {
+        /* synthetic */ DSAConverter(DSAConverterIA dSAConverterIA) {
+            this();
+        }
+
         private DSAConverter() {
             super();
         }
@@ -175,6 +194,10 @@ public class PublicKeyFactory {
 
     /* loaded from: classes5.dex */
     private static class ECConverter extends SubjectPublicKeyInfoConverter {
+        /* synthetic */ ECConverter(ECConverterIA eCConverterIA) {
+            this();
+        }
+
         private ECConverter() {
             super();
         }

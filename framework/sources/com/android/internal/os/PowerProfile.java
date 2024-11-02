@@ -323,7 +323,6 @@ public class PowerProfile {
         throw new RuntimeException("Power brackets should be specified for all clusters or no clusters");
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class CpuClusterKey {
         public final String clusterPowerKey;
@@ -331,6 +330,10 @@ public class PowerProfile {
         public final String freqKey;
         public final int numCpus;
         public int[] powerBrackets;
+
+        /* synthetic */ CpuClusterKey(String str, String str2, String str3, int i, CpuClusterKeyIA cpuClusterKeyIA) {
+            this(str, str2, str3, i);
+        }
 
         private CpuClusterKey(String freqKey, String clusterPowerKey, String corePowerKey, int numCpus) {
             this.freqKey = freqKey;
@@ -663,13 +666,11 @@ public class PowerProfile {
         ipw.decreaseIndent();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$dump$0(IndentingPrintWriter ipw, String key, Double value) {
         ipw.print(key, value);
         ipw.println();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$dump$1(IndentingPrintWriter ipw, String key, Double[] value) {
         ipw.print(key, Arrays.toString(value));
         ipw.println();

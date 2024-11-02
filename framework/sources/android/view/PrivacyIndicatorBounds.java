@@ -11,13 +11,14 @@ import java.util.Arrays;
 /* loaded from: classes4.dex */
 public class PrivacyIndicatorBounds implements Parcelable {
     public static final Parcelable.Creator<PrivacyIndicatorBounds> CREATOR = new Parcelable.Creator<PrivacyIndicatorBounds>() { // from class: android.view.PrivacyIndicatorBounds.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PrivacyIndicatorBounds[] newArray(int size) {
             return new PrivacyIndicatorBounds[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrivacyIndicatorBounds createFromParcel(Parcel in) {
             return new PrivacyIndicatorBounds(in);
@@ -155,6 +156,23 @@ public class PrivacyIndicatorBounds implements Parcelable {
         this.mStaticBounds = staticBounds;
         AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) staticBounds);
         this.mRotation = rotation;
+    }
+
+    /* renamed from: android.view.PrivacyIndicatorBounds$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PrivacyIndicatorBounds> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrivacyIndicatorBounds[] newArray(int size) {
+            return new PrivacyIndicatorBounds[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PrivacyIndicatorBounds createFromParcel(Parcel in) {
+            return new PrivacyIndicatorBounds(in);
+        }
     }
 
     @Deprecated

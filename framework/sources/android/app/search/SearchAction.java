@@ -15,13 +15,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SearchAction implements Parcelable {
     public static final Parcelable.Creator<SearchAction> CREATOR = new Parcelable.Creator<SearchAction>() { // from class: android.app.search.SearchAction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SearchAction createFromParcel(Parcel in) {
             return new SearchAction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchAction[] newArray(int size) {
             return new SearchAction[size];
@@ -37,6 +38,10 @@ public final class SearchAction implements Parcelable {
     private final CharSequence mSubtitle;
     private final CharSequence mTitle;
     private final UserHandle mUserHandle;
+
+    /* synthetic */ SearchAction(String str, CharSequence charSequence, Icon icon, CharSequence charSequence2, CharSequence charSequence3, PendingIntent pendingIntent, Intent intent, UserHandle userHandle, Bundle bundle, SearchActionIA searchActionIA) {
+        this(str, charSequence, icon, charSequence2, charSequence3, pendingIntent, intent, userHandle, bundle);
+    }
 
     SearchAction(Parcel in) {
         this.mId = in.readString();
@@ -142,6 +147,23 @@ public final class SearchAction implements Parcelable {
         PendingIntent pendingIntent = this.mPendingIntent;
         String str = append.append(pendingIntent == null ? "" : pendingIntent.getIntent()).append(" intent=").append(this.mIntent).append(" userHandle=").append(this.mUserHandle).toString();
         return str;
+    }
+
+    /* renamed from: android.app.search.SearchAction$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SearchAction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchAction createFromParcel(Parcel in) {
+            return new SearchAction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SearchAction[] newArray(int size) {
+            return new SearchAction[size];
+        }
     }
 
     @SystemApi

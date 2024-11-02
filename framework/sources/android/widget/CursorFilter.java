@@ -3,12 +3,14 @@ package android.widget;
 import android.database.Cursor;
 import android.widget.Filter;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-class CursorFilter extends Filter {
+public class CursorFilter extends Filter {
     CursorFilterClient mClient;
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes4.dex */
-    interface CursorFilterClient {
+    public interface CursorFilterClient {
         void changeCursor(Cursor cursor);
 
         CharSequence convertToString(Cursor cursor);
@@ -18,7 +20,6 @@ class CursorFilter extends Filter {
         Cursor runQueryOnBackgroundThread(CharSequence charSequence);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public CursorFilter(CursorFilterClient client) {
         this.mClient = client;
     }

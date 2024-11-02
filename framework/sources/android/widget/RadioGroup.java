@@ -75,7 +75,6 @@ public class RadioGroup extends LinearLayout {
         this.mPassThroughListener.mOnHierarchyChangeListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -119,7 +118,6 @@ public class RadioGroup extends LinearLayout {
         setCheckedId(id);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setCheckedId(int id) {
         AutofillManager afm;
         boolean changed = id != this.mCheckedId;
@@ -133,7 +131,6 @@ public class RadioGroup extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void setCheckedStateForView(int viewId, boolean checked) {
         View checkedView = findViewById(viewId);
         if (checkedView != null && (checkedView instanceof RadioButton)) {
@@ -158,13 +155,11 @@ public class RadioGroup extends LinearLayout {
         return new LayoutParams(getContext(), attrs);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.LinearLayout, android.view.ViewGroup
     public LinearLayout.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-2, -2);
@@ -212,9 +207,12 @@ public class RadioGroup extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class CheckedStateTracker implements CompoundButton.OnCheckedChangeListener {
+        /* synthetic */ CheckedStateTracker(RadioGroup radioGroup, CheckedStateTrackerIA checkedStateTrackerIA) {
+            this();
+        }
+
         private CheckedStateTracker() {
         }
 
@@ -234,10 +232,13 @@ public class RadioGroup extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PassThroughHierarchyChangeListener implements ViewGroup.OnHierarchyChangeListener {
         private ViewGroup.OnHierarchyChangeListener mOnHierarchyChangeListener;
+
+        /* synthetic */ PassThroughHierarchyChangeListener(RadioGroup radioGroup, PassThroughHierarchyChangeListenerIA passThroughHierarchyChangeListenerIA) {
+            this();
+        }
 
         private PassThroughHierarchyChangeListener() {
         }
@@ -270,7 +271,6 @@ public class RadioGroup extends LinearLayout {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
         super.onProvideStructure(structure, viewFor, flags);
@@ -336,7 +336,6 @@ public class RadioGroup extends LinearLayout {
         return count;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getIndexWithinVisibleButtons(View child) {
         if (!(child instanceof RadioButton)) {
             return -1;

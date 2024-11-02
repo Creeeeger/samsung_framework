@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Ihr Telefon ist instabil, da eine SD-Karte mit installierten Apps entfernt wurde. Ihr Telefon wird in %d Sekunden neu gestartet, um in den Normalzustand zurückzukehren. Speichern Sie vor dem Neustart des Telefons alle nicht gespeicherten Daten.</item>
+        <item quantity="other">Ihr Tablet ist instabil, da eine SD-Karte mit installierten Apps entfernt wurde. Ihr Tablet wird in %d Sekunden neu gestartet, um in den Normalzustand zurückzukehren. Speichern Sie vor den Neustart des Tablets alle nicht gespeicherten Daten.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Ihr Telefon ist instabil, da eine SD-Karte mit installierten Apps entfernt wurde. Ihr Telefon wird in %d Sekunde neu gestartet, um in den Normalzustand zurückzukehren. Speichern Sie vor dem Neustart des Telefons alle nicht gespeicherten Daten.</item>
+        <item quantity="one">Ihr Tablet ist instabil, da eine SD-Karte mit installierten Apps entfernt wurde. Ihr Tablet wird in %d Sekunde neu gestartet, um in den Normalzustand zurückzukehren. Speichern Sie vor den Neustart des Tablets alle nicht gespeicherten Daten.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefonneustart in %d Sekunden</item>
+        <item quantity="other">Tablet wird in %d Sekunden neu gestartet</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefonneustart in %d Sekunde</item>
+        <item quantity="one">Tablet wird in %d Sekunde neu gestartet</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

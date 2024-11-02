@@ -126,7 +126,7 @@ public class ToolbarWidgetWrapper implements DecorToolbar {
         this.mToolbar.setNavigationOnClickListener(new View.OnClickListener() { // from class: com.android.internal.widget.ToolbarWidgetWrapper.1
             final ActionMenuItem mNavItem;
 
-            {
+            AnonymousClass1() {
                 this.mNavItem = new ActionMenuItem(ToolbarWidgetWrapper.this.mToolbar.getContext(), 0, 16908332, 0, 0, ToolbarWidgetWrapper.this.mTitle);
             }
 
@@ -137,6 +137,24 @@ public class ToolbarWidgetWrapper implements DecorToolbar {
                 }
             }
         });
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.widget.ToolbarWidgetWrapper$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements View.OnClickListener {
+        final ActionMenuItem mNavItem;
+
+        AnonymousClass1() {
+            this.mNavItem = new ActionMenuItem(ToolbarWidgetWrapper.this.mToolbar.getContext(), 0, 16908332, 0, 0, ToolbarWidgetWrapper.this.mTitle);
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View v) {
+            if (ToolbarWidgetWrapper.this.mWindowCallback != null && ToolbarWidgetWrapper.this.mMenuPrepared) {
+                ToolbarWidgetWrapper.this.mWindowCallback.onMenuItemSelected(0, this.mNavItem);
+            }
+        }
     }
 
     @Override // com.android.internal.widget.DecorToolbar
@@ -565,6 +583,9 @@ public class ToolbarWidgetWrapper implements DecorToolbar {
             anim.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.ToolbarWidgetWrapper.2
                 private boolean mCanceled = false;
 
+                AnonymousClass2() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     if (!this.mCanceled) {
@@ -583,6 +604,9 @@ public class ToolbarWidgetWrapper implements DecorToolbar {
             ObjectAnimator anim2 = ObjectAnimator.ofFloat(this.mToolbar, (Property<Toolbar, Float>) View.ALPHA, 0.0f, 1.0f);
             anim2.setDuration(duration);
             anim2.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.widget.ToolbarWidgetWrapper.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     ToolbarWidgetWrapper.this.mToolbar.setVisibility(0);
@@ -591,6 +615,39 @@ public class ToolbarWidgetWrapper implements DecorToolbar {
             return anim2;
         }
         return null;
+    }
+
+    /* renamed from: com.android.internal.widget.ToolbarWidgetWrapper$2 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        private boolean mCanceled = false;
+
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            if (!this.mCanceled) {
+                ToolbarWidgetWrapper.this.mToolbar.setVisibility(8);
+            }
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationCancel(Animator animation) {
+            this.mCanceled = true;
+        }
+    }
+
+    /* renamed from: com.android.internal.widget.ToolbarWidgetWrapper$3 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass3 extends AnimatorListenerAdapter {
+        AnonymousClass3() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationStart(Animator animation) {
+            ToolbarWidgetWrapper.this.mToolbar.setVisibility(0);
+        }
     }
 
     @Override // com.android.internal.widget.DecorToolbar

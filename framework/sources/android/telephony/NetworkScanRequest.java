@@ -10,13 +10,14 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public final class NetworkScanRequest implements Parcelable {
     public static final Parcelable.Creator<NetworkScanRequest> CREATOR = new Parcelable.Creator<NetworkScanRequest>() { // from class: android.telephony.NetworkScanRequest.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NetworkScanRequest createFromParcel(Parcel in) {
             return new NetworkScanRequest(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkScanRequest[] newArray(int size) {
             return new NetworkScanRequest[size];
@@ -45,6 +46,10 @@ public final class NetworkScanRequest implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface ScanType {
+    }
+
+    /* synthetic */ NetworkScanRequest(Parcel parcel, NetworkScanRequestIA networkScanRequestIA) {
+        this(parcel);
     }
 
     public NetworkScanRequest(int scanType, RadioAccessSpecifier[] specifiers, int searchPeriodicity, int maxSearchTime, boolean incrementalResults, int incrementalResultsPeriodicity, ArrayList<String> mccMncs) {
@@ -145,5 +150,22 @@ public final class NetworkScanRequest implements Parcelable {
 
     public int hashCode() {
         return (this.mScanType * 31) + (Arrays.hashCode(this.mSpecifiers) * 37) + (this.mSearchPeriodicity * 41) + (this.mMaxSearchTime * 43) + ((!this.mIncrementalResults ? 0 : 1) * 47) + (this.mIncrementalResultsPeriodicity * 53) + (this.mMccMncs.hashCode() * 59);
+    }
+
+    /* renamed from: android.telephony.NetworkScanRequest$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NetworkScanRequest> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkScanRequest createFromParcel(Parcel in) {
+            return new NetworkScanRequest(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NetworkScanRequest[] newArray(int size) {
+            return new NetworkScanRequest[size];
+        }
     }
 }

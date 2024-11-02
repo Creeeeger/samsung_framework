@@ -195,8 +195,14 @@ public class FilterGraph {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x0085, code lost:            if (r4 == false) goto L29;     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x00ba, code lost:            throw new java.lang.RuntimeException("Type mismatch: Filter " + r8 + " expects a format of type " + r3 + " but got a format of type " + r2 + "!");     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0085, code lost:
+    
+        if (r4 == false) goto L63;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x00ba, code lost:
+    
+        throw new java.lang.RuntimeException("Type mismatch: Filter " + r8 + " expects a format of type " + r3 + " but got a format of type " + r2 + "!");
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -382,7 +388,6 @@ public class FilterGraph {
         return sourceFilters;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setupFilters() {
         if (this.mDiscardUnconnectedOutputs) {
             discardUnconnectedOutputs();

@@ -24,6 +24,10 @@ public final class AudioHalVersionInfo implements Parcelable, Comparable<AudioHa
     public @interface AudioHalType {
     }
 
+    /* synthetic */ AudioHalVersionInfo(Parcel parcel, AudioHalVersionInfoIA audioHalVersionInfoIA) {
+        this(parcel);
+    }
+
     static {
         AudioHalVersionInfo audioHalVersionInfo = new AudioHalVersionInfo(0, 7, 1);
         HIDL_7_1 = audioHalVersionInfo;
@@ -38,13 +42,14 @@ public final class AudioHalVersionInfo implements Parcelable, Comparable<AudioHa
         HIDL_2_0 = new AudioHalVersionInfo(0, 2, 0);
         VERSIONS = List.of(audioHalVersionInfo, audioHalVersionInfo2, audioHalVersionInfo3, audioHalVersionInfo4, audioHalVersionInfo5);
         CREATOR = new Parcelable.Creator<AudioHalVersionInfo>() { // from class: android.media.AudioHalVersionInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AudioHalVersionInfo createFromParcel(Parcel in) {
                 return new AudioHalVersionInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AudioHalVersionInfo[] newArray(int size) {
                 return new AudioHalVersionInfo[size];
@@ -114,5 +119,22 @@ public final class AudioHalVersionInfo implements Parcelable, Comparable<AudioHa
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flag) {
         out.writeTypedObject(this.mHalVersion, flag);
+    }
+
+    /* renamed from: android.media.AudioHalVersionInfo$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioHalVersionInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalVersionInfo createFromParcel(Parcel in) {
+            return new AudioHalVersionInfo(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioHalVersionInfo[] newArray(int size) {
+            return new AudioHalVersionInfo[size];
+        }
     }
 }

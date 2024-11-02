@@ -64,21 +64,18 @@ public class GLFrame extends Frame {
 
     private native boolean setNativeViewport(int i, int i2, int i3, int i4);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GLFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         this.glFrameId = -1;
         this.mOwnsTexture = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public GLFrame(FrameFormat format, FrameManager frameManager, int bindingType, long bindingId) {
         super(format, frameManager, bindingType, bindingId);
         this.glFrameId = -1;
         this.mOwnsTexture = true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void init(GLEnvironment glEnv) {
         FrameFormat format = getFormat();
         this.mGLEnvironment = glEnv;
@@ -149,13 +146,11 @@ public class GLFrame extends Frame {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public synchronized boolean hasNativeAllocation() {
         return this.glFrameId != -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public synchronized void releaseNativeAllocation() {
         nativeDeallocate();
@@ -311,7 +306,6 @@ public class GLFrame extends Frame {
         return "GLFrame id: " + this.glFrameId + " (" + getFormat() + ") with texture ID " + getTextureId() + ", FBO ID " + getFboId();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public void reset(FrameFormat newFormat) {
         if (!nativeResetParams()) {
@@ -320,7 +314,6 @@ public class GLFrame extends Frame {
         super.reset(newFormat);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public void onFrameStore() {
         if (!this.mOwnsTexture) {
@@ -328,7 +321,6 @@ public class GLFrame extends Frame {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.filterfw.core.Frame
     public void onFrameFetch() {
         if (!this.mOwnsTexture) {

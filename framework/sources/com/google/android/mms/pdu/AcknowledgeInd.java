@@ -10,7 +10,6 @@ public class AcknowledgeInd extends GenericPdu {
         setTransactionId(transactionId);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AcknowledgeInd(PduHeaders headers) {
         super(headers);
     }

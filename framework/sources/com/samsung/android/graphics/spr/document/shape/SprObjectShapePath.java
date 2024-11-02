@@ -45,9 +45,8 @@ public class SprObjectShapePath extends SprObjectBase {
         public float y1 = 0.0f;
         public float y2 = 0.0f;
 
-        /* JADX INFO: Access modifiers changed from: protected */
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-        public PathInfo m8424clone() throws CloneNotSupportedException {
+        /* renamed from: clone */
+        public PathInfo m8416clone() throws CloneNotSupportedException {
             return (PathInfo) super.clone();
         }
     }
@@ -80,7 +79,6 @@ public class SprObjectShapePath extends SprObjectBase {
         fromXml(parser);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     public void finalize() throws Throwable {
         super.finalize();
@@ -463,14 +461,14 @@ public class SprObjectShapePath extends SprObjectBase {
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     /* renamed from: clone */
-    public SprObjectBase mo8423clone() throws CloneNotSupportedException {
-        SprObjectShapePath object = (SprObjectShapePath) super.mo8423clone();
+    public SprObjectBase mo8415clone() throws CloneNotSupportedException {
+        SprObjectShapePath object = (SprObjectShapePath) super.mo8415clone();
         if (this.mPathInfoList != null) {
             object.mPathInfoList = new ArrayList<>();
             Iterator<PathInfo> it = this.mPathInfoList.iterator();
             while (it.hasNext()) {
                 PathInfo path = it.next();
-                object.mPathInfoList.add(path.m8424clone());
+                object.mPathInfoList.add(path.m8416clone());
             }
         }
         object.path = new Path(this.path);
@@ -526,11 +524,14 @@ public class SprObjectShapePath extends SprObjectBase {
         return end;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
     public static class ExtractFloatResult {
         int mEndPosition;
         boolean mEndWithNegSign;
+
+        /* synthetic */ ExtractFloatResult(ExtractFloatResultIA extractFloatResultIA) {
+            this();
+        }
 
         private ExtractFloatResult() {
         }

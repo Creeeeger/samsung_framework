@@ -191,7 +191,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$1, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -237,7 +237,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$2, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$2 */
     /* loaded from: classes3.dex */
     class AnonymousClass2 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -250,7 +250,6 @@ public class SatelliteManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle resultData) {
             if (resultCode == 0) {
@@ -320,7 +319,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$3, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$3 */
     /* loaded from: classes3.dex */
     class AnonymousClass3 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -333,7 +332,6 @@ public class SatelliteManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle resultData) {
             if (resultCode == 0) {
@@ -403,7 +401,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$4, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$4 */
     /* loaded from: classes3.dex */
     class AnonymousClass4 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -416,7 +414,6 @@ public class SatelliteManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle resultData) {
             if (resultCode == 0) {
@@ -486,7 +483,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$5, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$5 */
     /* loaded from: classes3.dex */
     class AnonymousClass5 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -499,7 +496,6 @@ public class SatelliteManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle resultData) {
             if (resultCode == 0) {
@@ -572,7 +568,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$6, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$6 */
     /* loaded from: classes3.dex */
     class AnonymousClass6 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -601,7 +597,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$7, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$7 */
     /* loaded from: classes3.dex */
     class AnonymousClass7 extends ISatelliteTransmissionUpdateCallback.Stub {
         final /* synthetic */ SatelliteTransmissionUpdateCallback val$callback;
@@ -698,7 +694,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$8, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$8 */
     /* loaded from: classes3.dex */
     class AnonymousClass8 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -752,7 +748,7 @@ public class SatelliteManager {
         throw new IllegalStateException("telephony service is null.");
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$9, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$9 */
     /* loaded from: classes3.dex */
     class AnonymousClass9 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -799,7 +795,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$10, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$10 */
     /* loaded from: classes3.dex */
     class AnonymousClass10 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -846,7 +842,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$11, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$11 */
     /* loaded from: classes3.dex */
     class AnonymousClass11 extends ISatelliteProvisionStateCallback.Stub {
         final /* synthetic */ SatelliteProvisionStateCallback val$callback;
@@ -912,7 +908,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$12, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$12 */
     /* loaded from: classes3.dex */
     class AnonymousClass12 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -925,7 +921,6 @@ public class SatelliteManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle resultData) {
             if (resultCode == 0) {
@@ -996,7 +991,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$13, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$13 */
     /* loaded from: classes3.dex */
     class AnonymousClass13 extends ISatelliteModemStateCallback.Stub {
         final /* synthetic */ SatelliteModemStateCallback val$callback;
@@ -1063,9 +1058,10 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$14, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telephony.satellite.SatelliteManager$14 */
     /* loaded from: classes3.dex */
-    class AnonymousClass14 extends ISatelliteDatagramCallback.Stub {
+    public class AnonymousClass14 extends ISatelliteDatagramCallback.Stub {
         final /* synthetic */ SatelliteDatagramCallback val$callback;
         final /* synthetic */ Executor val$executor;
 
@@ -1074,9 +1070,34 @@ public class SatelliteManager {
             this.val$callback = satelliteDatagramCallback;
         }
 
+        /* renamed from: android.telephony.satellite.SatelliteManager$14$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Consumer<Void> {
+            final /* synthetic */ IVoidConsumer val$internalAck;
+
+            AnonymousClass1(IVoidConsumer iVoidConsumer) {
+                internalAck = iVoidConsumer;
+            }
+
+            @Override // java.util.function.Consumer
+            public void accept(Void result) {
+                try {
+                    internalAck.accept();
+                } catch (RemoteException e) {
+                    SatelliteManager.logd("onSatelliteDatagramReceived RemoteException: " + e);
+                }
+            }
+        }
+
         @Override // android.telephony.satellite.ISatelliteDatagramCallback
-        public void onSatelliteDatagramReceived(final long datagramId, final SatelliteDatagram datagram, final int pendingCount, final IVoidConsumer internalAck) {
+        public void onSatelliteDatagramReceived(final long datagramId, final SatelliteDatagram datagram, final int pendingCount, IVoidConsumer internalAck) {
             final Consumer<Void> externalAck = new Consumer<Void>() { // from class: android.telephony.satellite.SatelliteManager.14.1
+                final /* synthetic */ IVoidConsumer val$internalAck;
+
+                AnonymousClass1(IVoidConsumer internalAck2) {
+                    internalAck = internalAck2;
+                }
+
                 @Override // java.util.function.Consumer
                 public void accept(Void result) {
                     try {
@@ -1139,7 +1160,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$15, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$15 */
     /* loaded from: classes3.dex */
     class AnonymousClass15 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -1186,7 +1207,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$16, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$16 */
     /* loaded from: classes3.dex */
     class AnonymousClass16 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -1232,7 +1253,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$17, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$17 */
     /* loaded from: classes3.dex */
     class AnonymousClass17 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -1245,7 +1266,6 @@ public class SatelliteManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle resultData) {
             if (resultCode == 0) {
@@ -1315,7 +1335,7 @@ public class SatelliteManager {
         }
     }
 
-    /* renamed from: android.telephony.satellite.SatelliteManager$18, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$18 */
     /* loaded from: classes3.dex */
     class AnonymousClass18 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -1328,7 +1348,6 @@ public class SatelliteManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle resultData) {
             if (resultCode == 0) {
@@ -1437,8 +1456,7 @@ public class SatelliteManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.satellite.SatelliteManager$19, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$19 */
     /* loaded from: classes3.dex */
     public class AnonymousClass19 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -1485,8 +1503,7 @@ public class SatelliteManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.satellite.SatelliteManager$20, reason: invalid class name */
+    /* renamed from: android.telephony.satellite.SatelliteManager$20 */
     /* loaded from: classes3.dex */
     public class AnonymousClass20 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -1562,12 +1579,10 @@ public class SatelliteManager {
         return binder;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void logd(String log) {
         Rlog.d(TAG, log);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void loge(String log) {
         Rlog.e(TAG, log);
     }

@@ -13,13 +13,14 @@ import java.util.stream.Collectors;
 /* loaded from: classes5.dex */
 public class SemBatteryStats implements Cloneable, Parcelable {
     public static final Parcelable.Creator<SemBatteryStats> CREATOR = new Parcelable.Creator<SemBatteryStats>() { // from class: com.samsung.android.sdhms.SemBatteryStats.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemBatteryStats createFromParcel(Parcel in) {
             return new SemBatteryStats(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemBatteryStats[] newArray(int size) {
             return new SemBatteryStats[size];
@@ -312,6 +313,23 @@ public class SemBatteryStats implements Cloneable, Parcelable {
         this.sysDetailList = in.createTypedArrayList(SysDetailUsage.CREATOR);
     }
 
+    /* renamed from: com.samsung.android.sdhms.SemBatteryStats$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemBatteryStats> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemBatteryStats createFromParcel(Parcel in) {
+            return new SemBatteryStats(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemBatteryStats[] newArray(int size) {
+            return new SemBatteryStats[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -334,8 +352,8 @@ public class SemBatteryStats implements Cloneable, Parcelable {
         parcel.writeTypedList(this.sysDetailList);
     }
 
-    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-    public SemBatteryStats m8636clone() {
+    /* renamed from: clone */
+    public SemBatteryStats m8628clone() {
         SemBatteryStats result = null;
         try {
             result = (SemBatteryStats) super.clone();
@@ -343,7 +361,7 @@ public class SemBatteryStats implements Cloneable, Parcelable {
                 result.appDetailList = (List) result.getAppDetailUsages().stream().map(new Function() { // from class: com.samsung.android.sdhms.SemBatteryStats$$ExternalSyntheticLambda0
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
-                        return ((SemBatteryStats.AppDetailUsage) obj).m8637clone();
+                        return ((SemBatteryStats.AppDetailUsage) obj).m8629clone();
                     }
                 }).collect(Collectors.toList());
             }
@@ -351,7 +369,7 @@ public class SemBatteryStats implements Cloneable, Parcelable {
                 result.sysDetailList = (List) result.getSysDetailUsages().stream().map(new Function() { // from class: com.samsung.android.sdhms.SemBatteryStats$$ExternalSyntheticLambda1
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
-                        return ((SemBatteryStats.SysDetailUsage) obj).m8665clone();
+                        return ((SemBatteryStats.SysDetailUsage) obj).m8657clone();
                     }
                 }).collect(Collectors.toList());
             }
@@ -363,13 +381,14 @@ public class SemBatteryStats implements Cloneable, Parcelable {
     /* loaded from: classes5.dex */
     public static class AppDetailUsage implements Cloneable, Parcelable {
         public static final Parcelable.Creator<AppDetailUsage> CREATOR = new Parcelable.Creator<AppDetailUsage>() { // from class: com.samsung.android.sdhms.SemBatteryStats.AppDetailUsage.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AppDetailUsage createFromParcel(Parcel in) {
                 return new AppDetailUsage(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AppDetailUsage[] newArray(int size) {
                 return new AppDetailUsage[size];
@@ -644,6 +663,23 @@ public class SemBatteryStats implements Cloneable, Parcelable {
             this.bluetoothScanCount = in.readInt();
         }
 
+        /* renamed from: com.samsung.android.sdhms.SemBatteryStats$AppDetailUsage$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AppDetailUsage> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AppDetailUsage createFromParcel(Parcel in) {
+                return new AppDetailUsage(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AppDetailUsage[] newArray(int size) {
+                return new AppDetailUsage[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -667,8 +703,8 @@ public class SemBatteryStats implements Cloneable, Parcelable {
             parcel.writeInt(this.bluetoothScanCount);
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-        public AppDetailUsage m8637clone() {
+        /* renamed from: clone */
+        public AppDetailUsage m8629clone() {
             try {
                 return (AppDetailUsage) super.clone();
             } catch (CloneNotSupportedException e) {
@@ -680,13 +716,14 @@ public class SemBatteryStats implements Cloneable, Parcelable {
     /* loaded from: classes5.dex */
     public static class SysDetailUsage implements Cloneable, Parcelable {
         public static final Parcelable.Creator<SysDetailUsage> CREATOR = new Parcelable.Creator<SysDetailUsage>() { // from class: com.samsung.android.sdhms.SemBatteryStats.SysDetailUsage.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public SysDetailUsage createFromParcel(Parcel in) {
                 return new SysDetailUsage(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SysDetailUsage[] newArray(int size) {
                 return new SysDetailUsage[size];
@@ -774,6 +811,23 @@ public class SemBatteryStats implements Cloneable, Parcelable {
             this.usedTime = in.readLong();
         }
 
+        /* renamed from: com.samsung.android.sdhms.SemBatteryStats$SysDetailUsage$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<SysDetailUsage> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SysDetailUsage createFromParcel(Parcel in) {
+                return new SysDetailUsage(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public SysDetailUsage[] newArray(int size) {
+                return new SysDetailUsage[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -786,8 +840,8 @@ public class SemBatteryStats implements Cloneable, Parcelable {
             parcel.writeLong(this.usedTime);
         }
 
-        /* renamed from: clone, reason: merged with bridge method [inline-methods] */
-        public SysDetailUsage m8665clone() {
+        /* renamed from: clone */
+        public SysDetailUsage m8657clone() {
             try {
                 return (SysDetailUsage) super.clone();
             } catch (CloneNotSupportedException e) {

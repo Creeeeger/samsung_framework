@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.RandomAccess;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class FloatArrayList extends AbstractProtobufList<Float> implements Internal.FloatList, RandomAccess, PrimitiveNonBoxingCollection {
     private static final FloatArrayList EMPTY_LIST;
@@ -22,7 +21,6 @@ public final class FloatArrayList extends AbstractProtobufList<Float> implements
         return EMPTY_LIST;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public FloatArrayList() {
         this(new float[10], 0);
     }

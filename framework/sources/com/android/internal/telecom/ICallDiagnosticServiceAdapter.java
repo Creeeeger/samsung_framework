@@ -133,8 +133,9 @@ public interface ICallDiagnosticServiceAdapter extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ICallDiagnosticServiceAdapter {
+        public static class Proxy implements ICallDiagnosticServiceAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

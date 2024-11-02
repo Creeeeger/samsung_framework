@@ -18,7 +18,6 @@ public final class CursorToBulkCursorAdaptor extends BulkCursorNative implements
     private ContentObserverProxy mObserver;
     private final String mProviderName;
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static final class ContentObserverProxy extends ContentObserver {
         protected IContentObserver mRemote;

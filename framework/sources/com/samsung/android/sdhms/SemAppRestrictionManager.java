@@ -14,13 +14,14 @@ import java.util.List;
 /* loaded from: classes5.dex */
 public class SemAppRestrictionManager implements Parcelable {
     public static final Parcelable.Creator<SemAppRestrictionManager> CREATOR = new Parcelable.Creator<SemAppRestrictionManager>() { // from class: com.samsung.android.sdhms.SemAppRestrictionManager.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemAppRestrictionManager createFromParcel(Parcel in) {
             return new SemAppRestrictionManager(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemAppRestrictionManager[] newArray(int size) {
             return new SemAppRestrictionManager[size];
@@ -187,6 +188,23 @@ public class SemAppRestrictionManager implements Parcelable {
         }
     }
 
+    /* renamed from: com.samsung.android.sdhms.SemAppRestrictionManager$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemAppRestrictionManager> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemAppRestrictionManager createFromParcel(Parcel in) {
+            return new SemAppRestrictionManager(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemAppRestrictionManager[] newArray(int size) {
+            return new SemAppRestrictionManager[size];
+        }
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -199,13 +217,14 @@ public class SemAppRestrictionManager implements Parcelable {
     /* loaded from: classes5.dex */
     public static class RestrictionInfo implements Parcelable {
         public static final Parcelable.Creator<RestrictionInfo> CREATOR = new Parcelable.Creator<RestrictionInfo>() { // from class: com.samsung.android.sdhms.SemAppRestrictionManager.RestrictionInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public RestrictionInfo createFromParcel(Parcel in) {
                 return new RestrictionInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public RestrictionInfo[] newArray(int size) {
                 return new RestrictionInfo[size];
@@ -261,6 +280,23 @@ public class SemAppRestrictionManager implements Parcelable {
             this.byUser = in.readBoolean();
         }
 
+        /* renamed from: com.samsung.android.sdhms.SemAppRestrictionManager$RestrictionInfo$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<RestrictionInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RestrictionInfo createFromParcel(Parcel in) {
+                return new RestrictionInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public RestrictionInfo[] newArray(int size) {
+                return new RestrictionInfo[size];
+            }
+        }
+
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
@@ -278,13 +314,14 @@ public class SemAppRestrictionManager implements Parcelable {
     /* loaded from: classes5.dex */
     public static class AppRestrictionInfo implements Parcelable {
         public static final Parcelable.Creator<AppRestrictionInfo> CREATOR = new Parcelable.Creator<AppRestrictionInfo>() { // from class: com.samsung.android.sdhms.SemAppRestrictionManager.AppRestrictionInfo.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public AppRestrictionInfo createFromParcel(Parcel in) {
                 return new AppRestrictionInfo(in);
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AppRestrictionInfo[] newArray(int size) {
                 return new AppRestrictionInfo[size];
@@ -330,6 +367,23 @@ public class SemAppRestrictionManager implements Parcelable {
             this.packageName = in.readString();
             this.uid = in.readInt();
             this.restrictionInfo = (RestrictionInfo) in.readParcelable(RestrictionInfo.class.getClassLoader());
+        }
+
+        /* renamed from: com.samsung.android.sdhms.SemAppRestrictionManager$AppRestrictionInfo$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<AppRestrictionInfo> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AppRestrictionInfo createFromParcel(Parcel in) {
+                return new AppRestrictionInfo(in);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public AppRestrictionInfo[] newArray(int size) {
+                return new AppRestrictionInfo[size];
+            }
         }
 
         @Override // android.os.Parcelable

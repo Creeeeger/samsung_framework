@@ -6,13 +6,14 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class TaProcessBuffer implements Parcelable {
     public static final Parcelable.Creator<TaProcessBuffer> CREATOR = new Parcelable.Creator<TaProcessBuffer>() { // from class: com.samsung.android.knox.knoxai.TaProcessBuffer.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TaProcessBuffer createFromParcel(Parcel in) {
             return new TaProcessBuffer(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaProcessBuffer[] newArray(int size) {
             return new TaProcessBuffer[size];
@@ -20,6 +21,10 @@ public class TaProcessBuffer implements Parcelable {
     };
     private byte[] buffer;
     private int processBufferType;
+
+    /* synthetic */ TaProcessBuffer(Parcel parcel, TaProcessBufferIA taProcessBufferIA) {
+        this(parcel);
+    }
 
     /* loaded from: classes5.dex */
     public enum ProcessType {
@@ -48,6 +53,23 @@ public class TaProcessBuffer implements Parcelable {
     }
 
     public TaProcessBuffer() {
+    }
+
+    /* renamed from: com.samsung.android.knox.knoxai.TaProcessBuffer$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TaProcessBuffer> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaProcessBuffer createFromParcel(Parcel in) {
+            return new TaProcessBuffer(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TaProcessBuffer[] newArray(int size) {
+            return new TaProcessBuffer[size];
+        }
     }
 
     private TaProcessBuffer(Parcel in) {

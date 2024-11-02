@@ -137,8 +137,9 @@ public interface IGnssPowerIndicationCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes2.dex */
-        private static class Proxy implements IGnssPowerIndicationCallback {
+        public static class Proxy implements IGnssPowerIndicationCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

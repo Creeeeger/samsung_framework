@@ -8,6 +8,9 @@ import android.os.Parcelable;
 /* loaded from: classes5.dex */
 public class PSIAvailableMem implements Parcelable {
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: com.samsung.android.chimera.PSIAvailableMem.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PSIAvailableMem createFromParcel(Parcel in) {
             return new PSIAvailableMem(in);
@@ -23,6 +26,10 @@ public class PSIAvailableMem implements Parcelable {
     long checkTime;
     long running;
 
+    /* synthetic */ PSIAvailableMem(Parcel parcel, PSIAvailableMemIA pSIAvailableMemIA) {
+        this(parcel);
+    }
+
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public PSIAvailableMem(long availMem, long running, long cached, long checkTime) {
         this.availMem = availMem;
@@ -33,6 +40,23 @@ public class PSIAvailableMem implements Parcelable {
 
     private PSIAvailableMem(Parcel in) {
         readFromParcel(in);
+    }
+
+    /* renamed from: com.samsung.android.chimera.PSIAvailableMem$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PSIAvailableMem createFromParcel(Parcel in) {
+            return new PSIAvailableMem(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PSIAvailableMem[] newArray(int size) {
+            return new PSIAvailableMem[size];
+        }
     }
 
     public void readFromParcel(Parcel in) {

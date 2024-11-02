@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Telefon barqaror ishlamayapti, chunki ilovalar o‘rnatilgan SD-karta olib tashlangan. Telefoningiz normal holatga qaytishi uchun %d soniyada qayta ishga tushiriladi. Telefon qayta ishga tushirilishidan oldin saqlanmagan ma’lumotlaringizni saqlang.</item>
+        <item quantity="other">Planshetingiz yaxshi ishlamayapti, chunki ilovalar o‘rnatilgan SD-karta olib tashlangan. Normal holatga qaytarish uchun planshetingiz %d soniyadan so‘ng qayta ishga tushiriladi. Planshet qayta ishga tushirilishidan oldin saqlanmagan ma’lumotlarni saqlang.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefon barqaror ishlamayapti, chunki ilovalar o‘rnatilgan SD-karta olib tashlangan. Telefoningiz normal holatga qaytishi uchun %d soniyada qayta ishga tushiriladi. Telefon qayta ishga tushirilishidan oldin saqlanmagan ma’lumotlaringizni saqlang.</item>
+        <item quantity="one">Planshetingiz yaxshi ishlamayapti, chunki ilovalar o‘rnatilgan SD-karta olib tashlangan. Normal holatga qaytarish uchun planshetingiz %d soniyadan so‘ng qayta ishga tushiriladi. Planshet qayta ishga tushirilishidan oldin saqlanmagan ma’lumotlarni saqlang.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Telefon %d soniyada qayta yuklanadi</item>
+        <item quantity="other">Planshet %d soniya. o‘chirib yoqiladi</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Telefon %d soniyada qayta yuklanadi</item>
+        <item quantity="one">Planshet %d soniya. o‘chirib yoqiladi</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

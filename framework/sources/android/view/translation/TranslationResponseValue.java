@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TranslationResponseValue implements Parcelable {
     public static final Parcelable.Creator<TranslationResponseValue> CREATOR = new Parcelable.Creator<TranslationResponseValue>() { // from class: android.view.translation.TranslationResponseValue.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TranslationResponseValue[] newArray(int size) {
             return new TranslationResponseValue[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationResponseValue createFromParcel(Parcel in) {
             return new TranslationResponseValue(in);
@@ -38,18 +39,18 @@ public final class TranslationResponseValue implements Parcelable {
     public @interface Status {
     }
 
-    /* renamed from: -$$Nest$smdefaultExtras, reason: not valid java name */
-    static /* bridge */ /* synthetic */ Bundle m5859$$Nest$smdefaultExtras() {
+    /* renamed from: -$$Nest$smdefaultExtras */
+    static /* bridge */ /* synthetic */ Bundle m5854$$Nest$smdefaultExtras() {
         return defaultExtras();
     }
 
-    /* renamed from: -$$Nest$smdefaultText, reason: not valid java name */
-    static /* bridge */ /* synthetic */ CharSequence m5860$$Nest$smdefaultText() {
+    /* renamed from: -$$Nest$smdefaultText */
+    static /* bridge */ /* synthetic */ CharSequence m5855$$Nest$smdefaultText() {
         return defaultText();
     }
 
-    /* renamed from: -$$Nest$smdefaultTransliteration, reason: not valid java name */
-    static /* bridge */ /* synthetic */ CharSequence m5861$$Nest$smdefaultTransliteration() {
+    /* renamed from: -$$Nest$smdefaultTransliteration */
+    static /* bridge */ /* synthetic */ CharSequence m5856$$Nest$smdefaultTransliteration() {
         return defaultTransliteration();
     }
 
@@ -180,6 +181,23 @@ public final class TranslationResponseValue implements Parcelable {
         this.mTransliteration = transliteration;
     }
 
+    /* renamed from: android.view.translation.TranslationResponseValue$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TranslationResponseValue> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TranslationResponseValue[] newArray(int size) {
+            return new TranslationResponseValue[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TranslationResponseValue createFromParcel(Parcel in) {
+            return new TranslationResponseValue(in);
+        }
+    }
+
     /* loaded from: classes4.dex */
     public static final class Builder extends BaseBuilder {
         private long mBuilderFieldsSet = 0;
@@ -221,13 +239,13 @@ public final class TranslationResponseValue implements Parcelable {
             long j = this.mBuilderFieldsSet | 16;
             this.mBuilderFieldsSet = j;
             if ((j & 2) == 0) {
-                this.mText = TranslationResponseValue.m5860$$Nest$smdefaultText();
+                this.mText = TranslationResponseValue.m5855$$Nest$smdefaultText();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mExtras = TranslationResponseValue.m5859$$Nest$smdefaultExtras();
+                this.mExtras = TranslationResponseValue.m5854$$Nest$smdefaultExtras();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mTransliteration = TranslationResponseValue.m5861$$Nest$smdefaultTransliteration();
+                this.mTransliteration = TranslationResponseValue.m5856$$Nest$smdefaultTransliteration();
             }
             TranslationResponseValue o = new TranslationResponseValue(this.mStatusCode, this.mText, this.mExtras, this.mTransliteration);
             return o;

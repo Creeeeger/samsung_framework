@@ -578,8 +578,9 @@ public interface IInCallAdapter extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IInCallAdapter {
+        public static class Proxy implements IInCallAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

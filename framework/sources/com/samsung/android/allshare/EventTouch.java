@@ -3,12 +3,13 @@ package com.samsung.android.allshare;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: IAppControlAPI.java */
 /* loaded from: classes5.dex */
 public class EventTouch implements Parcelable {
     public static final Parcelable.Creator<EventTouch> CREATOR = new Parcelable.Creator<EventTouch>() { // from class: com.samsung.android.allshare.EventTouch.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public EventTouch createFromParcel(Parcel source) {
             EventTouch eventsync = new EventTouch();
@@ -25,7 +26,6 @@ public class EventTouch implements Parcelable {
             return eventsync;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EventTouch[] newArray(int size) {
             return new EventTouch[size];
@@ -59,5 +59,34 @@ public class EventTouch implements Parcelable {
         dest.writeInt(this.mDistance);
         dest.writeInt(this.mDegree);
         dest.writeString(this.mStr);
+    }
+
+    /* compiled from: IAppControlAPI.java */
+    /* renamed from: com.samsung.android.allshare.EventTouch$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<EventTouch> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EventTouch createFromParcel(Parcel source) {
+            EventTouch eventsync = new EventTouch();
+            eventsync.mX = source.readInt();
+            eventsync.mY = source.readInt();
+            eventsync.mDX = source.readInt();
+            eventsync.mDY = source.readInt();
+            eventsync.mAccelLevel = source.readInt();
+            eventsync.mFingerId = source.readInt();
+            eventsync.mType = source.readInt();
+            eventsync.mDistance = source.readInt();
+            eventsync.mDegree = source.readInt();
+            eventsync.mStr = source.readString();
+            return eventsync;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public EventTouch[] newArray(int size) {
+            return new EventTouch[size];
+        }
     }
 }

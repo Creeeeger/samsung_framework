@@ -6,14 +6,15 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class StreamEventResponse extends BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<StreamEventResponse> CREATOR = new Parcelable.Creator<StreamEventResponse>() { // from class: android.media.tv.StreamEventResponse.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public StreamEventResponse createFromParcel(Parcel source) {
             source.readInt();
             return StreamEventResponse.createFromParcelBody(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StreamEventResponse[] newArray(int size) {
             return new StreamEventResponse[size];
@@ -24,7 +25,24 @@ public final class StreamEventResponse extends BroadcastInfoResponse implements 
     private final int mEventId;
     private final long mNptMillis;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.media.tv.StreamEventResponse$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<StreamEventResponse> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StreamEventResponse createFromParcel(Parcel source) {
+            source.readInt();
+            return StreamEventResponse.createFromParcelBody(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public StreamEventResponse[] newArray(int size) {
+            return new StreamEventResponse[size];
+        }
+    }
+
     public static StreamEventResponse createFromParcelBody(Parcel in) {
         return new StreamEventResponse(in);
     }

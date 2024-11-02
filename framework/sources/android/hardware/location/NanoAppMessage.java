@@ -13,13 +13,14 @@ import libcore.util.HexEncoding;
 /* loaded from: classes2.dex */
 public final class NanoAppMessage implements Parcelable {
     public static final Parcelable.Creator<NanoAppMessage> CREATOR = new Parcelable.Creator<NanoAppMessage>() { // from class: android.hardware.location.NanoAppMessage.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public NanoAppMessage createFromParcel(Parcel in) {
             return new NanoAppMessage(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoAppMessage[] newArray(int size) {
             return new NanoAppMessage[size];
@@ -30,6 +31,10 @@ public final class NanoAppMessage implements Parcelable {
     private byte[] mMessageBody;
     private int mMessageType;
     private long mNanoAppId;
+
+    /* synthetic */ NanoAppMessage(Parcel parcel, NanoAppMessageIA nanoAppMessageIA) {
+        this(parcel);
+    }
 
     private NanoAppMessage(long nanoAppId, int messageType, byte[] messageBody, boolean broadcasted) {
         this.mNanoAppId = nanoAppId;
@@ -84,6 +89,23 @@ public final class NanoAppMessage implements Parcelable {
         parcel.writeInt(this.mMessageType);
         parcel.writeInt(this.mMessageBody.length);
         parcel.writeByteArray(this.mMessageBody);
+    }
+
+    /* renamed from: android.hardware.location.NanoAppMessage$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<NanoAppMessage> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NanoAppMessage createFromParcel(Parcel in) {
+            return new NanoAppMessage(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public NanoAppMessage[] newArray(int size) {
+            return new NanoAppMessage[size];
+        }
     }
 
     public String toString() {

@@ -89,7 +89,6 @@ public class ServiceID {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
         public static /* synthetic */ IllegalArgumentException lambda$createFromId$0(int code) {
             return new IllegalArgumentException("Invalid ID : " + code);
         }

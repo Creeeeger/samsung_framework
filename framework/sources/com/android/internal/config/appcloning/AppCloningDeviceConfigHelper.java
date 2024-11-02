@@ -41,7 +41,6 @@ public class AppCloningDeviceConfigHelper {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$initializeDeviceConfigChangeListener$0(DeviceConfig.Properties properties) {
         String name;
         if (!"app_cloning".equals(properties.getNamespace())) {

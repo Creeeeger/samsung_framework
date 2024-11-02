@@ -92,14 +92,12 @@ public class ImsRegistrationImplBase {
         this.mExecutor = executor;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.ims.stub.ImsRegistrationImplBase$1, reason: invalid class name */
+    /* renamed from: android.telephony.ims.stub.ImsRegistrationImplBase$1 */
     /* loaded from: classes3.dex */
     public class AnonymousClass1 extends IImsRegistration.Stub {
         AnonymousClass1() {
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$getRegistrationTechnology$0() {
             return Integer.valueOf(ImsRegistrationImplBase.this.mRegistrationAttributes == null ? -1 : ImsRegistrationImplBase.this.mRegistrationAttributes.getRegistrationTechnology());
         }
@@ -130,7 +128,6 @@ public class ImsRegistrationImplBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$addRegistrationCallback$1(IImsRegistrationCallback c, AtomicReference exceptionRef) {
             try {
                 ImsRegistrationImplBase.this.addRegistrationCallback(c);
@@ -139,7 +136,6 @@ public class ImsRegistrationImplBase {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$removeRegistrationCallback$2(IImsRegistrationCallback c) {
             ImsRegistrationImplBase.this.removeRegistrationCallback(c);
         }
@@ -154,7 +150,6 @@ public class ImsRegistrationImplBase {
             }, "removeRegistrationCallback");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$triggerFullNetworkRegistration$3(int sipCode, String sipReason) {
             ImsRegistrationImplBase.this.triggerFullNetworkRegistration(sipCode, sipReason);
         }
@@ -169,7 +164,6 @@ public class ImsRegistrationImplBase {
             }, "triggerFullNetworkRegistration");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$triggerUpdateSipDelegateRegistration$4() {
             ImsRegistrationImplBase.this.updateSipDelegateRegistration();
         }
@@ -184,7 +178,6 @@ public class ImsRegistrationImplBase {
             }, "triggerUpdateSipDelegateRegistration");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$triggerSipDelegateDeregistration$5() {
             ImsRegistrationImplBase.this.triggerSipDelegateDeregistration();
         }
@@ -199,7 +192,6 @@ public class ImsRegistrationImplBase {
             }, "triggerSipDelegateDeregistration");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$triggerDeregistration$6(int reason) {
             ImsRegistrationImplBase.this.triggerDeregistration(reason);
         }
@@ -263,13 +255,11 @@ public class ImsRegistrationImplBase {
         return this.mBinder;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void addRegistrationCallback(IImsRegistrationCallback c) throws RemoteException {
         this.mCallbacks.register(c);
         updateNewCallbackWithState(c);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void removeRegistrationCallback(IImsRegistrationCallback c) {
         this.mCallbacks.unregister(c);
     }
@@ -305,7 +295,6 @@ public class ImsRegistrationImplBase {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onRegistered$0(ImsRegistrationAttributes attributes, IImsRegistrationCallback c) {
         try {
             c.onRegistered(attributes);
@@ -330,7 +319,6 @@ public class ImsRegistrationImplBase {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onRegistering$1(ImsRegistrationAttributes attributes, IImsRegistrationCallback c) {
         try {
             c.onRegistering(attributes);
@@ -356,7 +344,6 @@ public class ImsRegistrationImplBase {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onDeregistered$2(ImsReasonInfo reasonInfo, int suggestedAction, int imsRadioTech, IImsRegistrationCallback c) {
         try {
             c.onDeregistered(reasonInfo, suggestedAction, imsRadioTech);
@@ -382,7 +369,6 @@ public class ImsRegistrationImplBase {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onDeregistered$3(ImsReasonInfo reasonInfo, int suggestedAction, int imsRadioTech, SipDetails details, IImsRegistrationCallback c) {
         try {
             c.onDeregisteredWithDetails(reasonInfo, suggestedAction, imsRadioTech, details);
@@ -402,7 +388,6 @@ public class ImsRegistrationImplBase {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$onTechnologyChangeFailed$4(int imsRadioTech, ImsReasonInfo reasonInfo, IImsRegistrationCallback c) {
         try {
             c.onTechnologyChangeFailed(imsRadioTech, reasonInfo);
@@ -431,8 +416,7 @@ public class ImsRegistrationImplBase {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: onSubscriberAssociatedUriChanged, reason: merged with bridge method [inline-methods] */
+    /* renamed from: onSubscriberAssociatedUriChanged */
     public void lambda$onSubscriberAssociatedUriChanged$5(IImsRegistrationCallback callback, Uri[] uris) {
         try {
             callback.onSubscriberAssociatedUriChanged(uris);

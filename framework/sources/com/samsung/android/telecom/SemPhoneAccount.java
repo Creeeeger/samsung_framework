@@ -8,13 +8,14 @@ import android.telecom.PhoneAccount;
 /* loaded from: classes5.dex */
 public final class SemPhoneAccount implements Parcelable {
     public static final Parcelable.Creator<SemPhoneAccount> CREATOR = new Parcelable.Creator<SemPhoneAccount>() { // from class: com.samsung.android.telecom.SemPhoneAccount.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemPhoneAccount createFromParcel(Parcel in) {
             return new SemPhoneAccount(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemPhoneAccount[] newArray(int size) {
             return new SemPhoneAccount[size];
@@ -27,6 +28,10 @@ public final class SemPhoneAccount implements Parcelable {
     private final String mPackageName;
     private final PhoneAccount mPhoneAccount;
     private final boolean mSelfManaged;
+
+    /* synthetic */ SemPhoneAccount(Parcel parcel, SemPhoneAccountIA semPhoneAccountIA) {
+        this(parcel);
+    }
 
     /* loaded from: classes5.dex */
     public static class Builder {
@@ -132,6 +137,23 @@ public final class SemPhoneAccount implements Parcelable {
         out.writeInt(this.mOrder);
         out.writeBoolean(this.mSelfManaged);
         out.writeBoolean(this.mAllowed);
+    }
+
+    /* renamed from: com.samsung.android.telecom.SemPhoneAccount$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemPhoneAccount> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemPhoneAccount createFromParcel(Parcel in) {
+            return new SemPhoneAccount(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemPhoneAccount[] newArray(int size) {
+            return new SemPhoneAccount[size];
+        }
     }
 
     private SemPhoneAccount(Parcel in) {

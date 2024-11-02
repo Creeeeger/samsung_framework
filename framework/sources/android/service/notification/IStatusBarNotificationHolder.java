@@ -84,7 +84,6 @@ public interface IStatusBarNotificationHolder extends IInterface {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
         public static class Proxy implements IStatusBarNotificationHolder {
             private IBinder mRemote;

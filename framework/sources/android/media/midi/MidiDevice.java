@@ -71,7 +71,6 @@ public final class MidiDevice implements Closeable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MidiDevice(MidiDeviceInfo deviceInfo, IMidiDeviceServer server, IMidiManager midiManager, IBinder clientToken, IBinder deviceToken) {
         CloseGuard closeGuard = CloseGuard.get();
         this.mGuard = closeGuard;

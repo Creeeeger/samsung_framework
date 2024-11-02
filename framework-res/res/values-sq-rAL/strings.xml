@@ -338,7 +338,7 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="ext_media_unsupported_notification_message">Kjo pajisje nuk e mbështet këtë %s. Trokit për të konfiguruar në një format të mbështetur.</string>
     <string name="ext_media_unsupported_notification_title">%s e pambështetur</string>
     <string name="ext_storage_bad_removal_button">Rinis</string>
-    <string name="ext_storage_bad_removal_title">Rinise telefonin</string>
+    <string name="ext_storage_bad_removal_title">Rinise tabletën</string>
     <string name="extmedia_format_button_format">Formato</string>
     <string name="extmedia_format_message">Vërtet dëshiron ta formatosh kartën SD? Të gjitha të dhënat në kartë do të humbasin.</string>
     <string name="extmedia_format_message_usbhost">Të gjithë skedarët e ruajtur në magazinën tënde USB do të fshihen. Ky veprim nuk mund të zhbëhet.</string>
@@ -599,16 +599,16 @@ Tableta jote do të riniset së shpejti."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Tingulli po luhet në pajisjen tënde audio Bluetooth. Trokit këtu për ta fikur këtë</string>
     <string name="multisound_sound_via_headphone">Tingulli %s po luhet përmes kufjeve. Trokit këtu për ta fikur këtë.</string>
     <string name="multisound_sound_via_headphone_multiselection">Tingulli po luhet përmes kufjeve. Trokit këtu për ta fikur këtë.</string>
-    <string name="multisound_sound_via_phone_speaker">Tingulli %s po luhet përmes altoparlantit të telefonit. Trokit këtu për ta fikur këtë.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Tingulli po luhet përmes altoparlantit të telefonit. Trokit këtu për ta fikur këtë.</string>
+    <string name="multisound_sound_via_phone_speaker">Tingulli %s po luhet përmes altoparlantit të tabletës. Trokit këtu për ta fikur këtë.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Tingulli po luhet përmes altoparlantit të tabletës. Trokit këtu për ta fikur këtë.</string>
     <string name="multisound_sound_via_usb_audio">Tingulli %s po luhet përmes pajisjes audio USB. Trokit këtu për ta fikur këtë.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Tingulli po luhet përmes pajisjes audio USB. Trokit këtu për ta fikur këtë.</string>
     <string name="multisound_title">Audio më vete për app-in</string>
     <string name="multisound_turn_off_multisound">Fik</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s nuk mund të punojë në Samsung DeX. Provoje me regjimin telefon.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s nuk mund të punojë në Samsung DeX. Është dizajnuar për Ekrane bazë telefonash.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Disa lojëra punojnë vetëm me ekran me prekje. Nëse komandat e miut nuk punojnë në Samsung DeX, atëherë provo të luash në regjimin telefon.</string>
-    <string name="my_device">Ky telefon</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s nuk mund të punojë në Samsung DeX. Provoje me regjimin tabletë.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s nuk mund të punojë në Samsung DeX. Është dizajnuar për Ekrane bazë tabletash.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Disa lojëra punojnë vetëm me ekran me prekje. Në qoftë se komandat e miut nuk punojnë në Samsung DeX, atëherë provo të luash në regjimin tabletë.</string>
+    <string name="my_device">Kjo tabletë</string>
     <string name="network_locked_sim_dialog_message_ais">Karta jote SIM nuk është tërësisht operative me këtë telefon, sepse nuk pajtohet me termat dhe kushtet e abonimit tënd. Po të kesh pyetje ose të kesh nevojë për më shumë informacion rreth kësaj çështjeje, lidhu me pikën ose dyqanin e Shërbimit të klientit Samsung, që t’i ka shitur këto produkte.</string>
     <string name="network_locked_sim_notification_text">Futur kartë SIM bllokuar nga rrjeti.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
@@ -801,7 +801,7 @@ KTHEJE TE"</string>
     <string name="policydesc_allow_desktopsync">Mos lejo që të përdoret sinkronizimi desktop.</string>
     <string name="policydesc_allow_internetsharing">Mos lejo që të përdoret Shpërndarësja celulare.</string>
     <string name="policydesc_allow_irda">Mos lejo që të përdoret IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Mos lejo që të përdoret e-posta POP dhe IMAP në telefon.</string>
+    <string name="policydesc_allow_popimapemail">Mos lejo që të përdoret e-posta POP dhe IMAP në tabletë.</string>
     <string name="policydesc_allow_storagecard">Mos lejo që të përdoren kartat SD.</string>
     <string name="policydesc_allow_textmessaging">Mos lejo që të përdoret mesazhimi tekst dhe multimedia.</string>
     <string name="policydesc_allow_thirdParty">Ky aplikacion mund të mos lejojë ekzekutimin e aplikacioneve nga palë të treta.</string>
@@ -847,7 +847,7 @@ KTHEJE TE"</string>
     <string name="pwd_change_enforced">Rregullorja e sigurisë kërkon që të ta ndërrosh fjalëkalimin.</string>
     <string name="recording_fail">S’mund të përdorësh mikrofonin në %1$s kur po përdoret në %2$s.</string>
     <string name="recording_popup">%s po përdor mikrofonin.</string>
-    <string name="recording_popup_device">Telefon</string>
+    <string name="recording_popup_device">Tabletë</string>
     <string name="recording_popup_with_bluetooth">%s po përdor mikrofonin Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s po përdor mikrofonin e %2$s.</string>
     <string name="redo">Ribëje</string>
@@ -913,12 +913,12 @@ KTHEJE TE"</string>
     <string name="screencapture_restrict">Politika e sigurisë nuk lejon përdorimin e kapjes së ekranit.</string>
     <string name="sd_card_unavailable_message">Nuk mund ta përdorësh këtë kartë SD, sepse ajo u fut kur po përdorej një profil tjetër përdoruesi.</string>
     <string name="sd_card_unavailable_title">Karta SD s’është e përdorshme</string>
-    <string name="sdcard_bad_removal_message">Është hequr një kartë SD në mënyrë jo të sigurt. Që të mos e lejosh telefonin të riniset papritur, ruaj të dhënat e paruajtura dhe rinise tani.</string>
+    <string name="sdcard_bad_removal_message">Është hequr një kartë SD në mënyrë jo të sigurt. Që të mos e lejosh tabletën të riniset papritur, ruaj të dhënat e paruajtura dhe rinise tani.</string>
     <string name="sdcard_batch_decrypt_noti_content">Dekripto kartën SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Dekriptimi i kartës SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Karta e enkriptuar SD duhet të dekriptohet përpara përdorimit. Dekriptimi mund të marrë një orë a më tepër. Fillo me bateri të ngarkuar dhe mbaje pajisjen në prizë derisa të mbarojë dekriptimi. Ndërprerja e procesit të dekriptimit mund të shkaktojë humbje të një pjese apo të të gjitha të dhënave.</string>
     <string name="sdcard_decrypt_err_notification">Ndodhi gabim me dekriptimin e kartës SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Disa skedarë te karta jote SD janë enkriptuar te një pajisje tjetër dhe nuk mund të përdoren te ky telefon.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Disa skedarë te karta jote SD janë enkriptuar te një pajisje tjetër dhe nuk mund të përdoren te kjo tabletë.</string>
     <string name="sdcard_decrypt_notification">Karta SD u dekriptua.</string>
     <string name="sdcard_decrypt_title_notification">Dekriptimi i kartës SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Po dekriptoj kartën SD…</string>
@@ -1247,7 +1247,7 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="usb_abnormal_reset_title">Lidhja USB e paqëndrueshme</string>
     <string name="usb_abnormal_reset_toast">Lidhja USB nuk është e qëndrueshme. Shkëpute kabllon dhe lidhe sërish, ose provo një kabllo tjetër.</string>
     <string name="usb_accessory_notification_title">U lidh me një aksesor USB</string>
-    <string name="usb_bad_removal_message">Është hequr një pajisje magazinë USB në mënyrë jo të sigurt. Që të mos e lejosh telefonin të riniset papritur, ruaj të dhënat e paruajtura dhe rinise tani.</string>
+    <string name="usb_bad_removal_message">Është hequr një pajisje magazinë USB në mënyrë jo të sigurt. Që të mos e lejosh tabletën të riniset papritur, ruaj të dhënat e paruajtura dhe rinise tani.</string>
     <string name="usb_blocked_by_emergency_mode">Disa funksione USB nuk ofrohen në Regjimin urgjencë.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Nuk mund përdor funksione të ndërlidhura me pajisjen USB të lidhur, kur është aftësuar regjimi Kursim energjie maksimal.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Disa funksione USB do të kufizohen, kur është ndezur Regjimi kursim energjie maksimal.</string>
@@ -1256,18 +1256,18 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="usb_camera_connected_notification_title">U lidh një pajisje media</string>
     <string name="usb_camera_disconnected_notification_title">Pajisja media u shkëput</string>
     <string name="usb_cd_installer_notification_title">Përditësimi i softuerit</string>
-    <string name="usb_charing_only_notification_title">Karikohet me USB</string>
+    <string name="usb_charing_only_notification_title">Lidhur</string>
     <string name="usb_debugging_only_notification_title">Vetëm debugging</string>
     <string name="usb_host_Unknown_device_connected_notification_title">Pajisje e panjohur USB u lidh.</string>
     <string name="usb_host_cable_connected_notification_title">Lidhësi USB u lidh.</string>
     <string name="usb_host_cable_disconnected_notification_title">Lidhësi USB u shkëput.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Kjo pajisje nuk mund të hapet. Pajisja e lidhur ka nevojë për furnizim të jashtëm me rrymë.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Pajisja USB me fuqi të lartë u lidh.</string>
-    <string name="usb_host_resource_exceed_message">Kontrolluesi USB i telefonit tënd nuk ka burime të mjaftueshme për t’u lidhur me këtë pajisje. Provo ta shkëputësh pajisjen dhe ta lidhësh sërish.</string>
+    <string name="usb_host_resource_exceed_message">Kontrolluesi USB i tabletës sate nuk ka burime të mjaftueshme për t’u lidhur me këtë pajisje. Provo ta shkëputësh pajisjen dhe ta lidhësh sërish.</string>
     <string name="usb_host_resource_exceed_title">S’ka mjaft burime për kontrolluesin USB</string>
-    <string name="usb_hub_depth_exceed_message">Telefoni yt mund të mbështetë jo më shumë se 5 lidhje USB me qendrën njëkohësisht.</string>
+    <string name="usb_hub_depth_exceed_message">Tableta jote mund të mbështetë jo më shumë se 5 lidhje USB me qendrën njëkohësisht.</string>
     <string name="usb_hub_depth_exceed_title">Maksimumi i lidhjeve USB</string>
-    <string name="usb_hub_power_exceed_message">Telefoni yt nuk mund të sigurojë energji të mjaftueshme për këtë pajisje USB. Lidhe pajisjen me një qendër USB që furnizon vetë me energji, para se ta lidhësh me telefonin.</string>
+    <string name="usb_hub_power_exceed_message">Tableta jote nuk mund të sigurojë energji të mjaftueshme për këtë pajisje USB. Lidhe pajisjen me një qendër USB që furnizon vetë me energji, para se ta lidhësh me tabletën.</string>
     <string name="usb_increase_battery_usage">Lidhja USB mund të rritë përdorimin e baterisë.</string>
     <string name="usb_keyboard_connected_notification_title">Tastiera u lidh</string>
     <string name="usb_keyboard_disconnected_notification_title">Tastiera u shkëput</string>
@@ -1300,8 +1300,8 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="usb_ums_connected_notification_message_usbhost">Magazina masive USB u largua papritur.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Memoria e brendshme USB u lidh</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Magazina masive USB u largua në mënyrë të sigurt.</string>
-    <string name="usb_unblock_by_screen_unlock">Zhbllokoje telefonin për të përdorur pajisjen e lidhur USB.</string>
-    <string name="usb_unsupport_accessory_message">Kjo pajisje USB nuk mbështetet nga telefoni yt.</string>
+    <string name="usb_unblock_by_screen_unlock">Zhbllokoje tabletën për të përdorur pajisjen e lidhur USB.</string>
+    <string name="usb_unsupport_accessory_message">Kjo pajisje USB nuk mbështetet nga tableta jote.</string>
     <string name="usb_unsupport_accessory_title">Pajisja USB nuk mbështetet</string>
     <string name="usb_unsupported_device">Pajisja e lidhur USB nuk mbështetet.</string>
     <string name="usb_unsupported_device_title">Pajisja nuk mbështetet</string>
@@ -1319,19 +1319,19 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="usb_water_dialg_method_2_desc_2">Mund ta shpejtosh tharjen duke drejtuar një ventilator ose tharëse flokësh (vetëm me ajër të ftohtë) drejt portës.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Kemi pikasur lagështi ose materiale të huaja në portën e karikimit/USB.
 
-Kontrolloje portën e karikimit/USB për ndonjë material të huaj, si pluhur ose mbeturina. Për të parandaluar dëmtimin e telefonit, mos fut asgjë në portën e karikimit, derisa ajo të jetë e pastër dhe të mos ketë më lagështi.
+Kontrolloje portën e karikimit/USB për ndonjë material të huaj, si pluhur ose mbeturina. Për të parandaluar dëmtimin e tabletës, mos fut asgjë në portën e karikimit, derisa ajo të jetë e pastër dhe të mos ketë më lagështi.
 
-Për ta tharë portën, tunde telefonin pastaj prit që të thahet, çfarë mund të kërkojë disa orë. Mund ta përshpejtosh tharjen duke drejtuar një ventilator ose tharëse (vetëm me ajër të ftohtë) për nga porta."</string>
+Për ta tharë portën, tunde tabletën pastaj prit që të thahet, çfarë mund të kërkojë disa orë. Mund ta përshpejtosh tharjen duke drejtuar një ventilator ose tharëse (vetëm me ajër të ftohtë) për nga porta."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Kemi pikasur lagështi ose materiale të huaja në portën e karikimit/USB.
 
-Kontrolloje portën e karikimit/USB për ndonjë material të huaj, si pluhur ose mbeturina. Për të parandaluar dëmtimin e telefonit, mos fut asgjë në portën e karikimit, derisa ajo të jetë e pastër dhe të mos ketë më lagështi.
+Kontrolloje portën e karikimit/USB për ndonjë material të huaj, si pluhur ose mbeturina. Për të parandaluar dëmtimin e tabletës, mos fut asgjë në portën e karikimit, derisa ajo të jetë e pastër dhe të mos ketë më lagështi.
 
-Për ta tharë portën, tunde telefonin pastaj prit që të thahet, çfarë mund të kërkojë disa orë. Mund ta përshpejtosh tharjen duke drejtuar një ventilator ose tharëse (vetëm me ajër të ftohtë) për nga porta.
+Për ta tharë portën, tunde tabletën pastaj prit që të thahet, çfarë mund të kërkojë disa orë. Mund ta përshpejtosh tharjen duke drejtuar një ventilator ose tharëse (vetëm me ajër të ftohtë) për nga porta.
 
-Ndërkohë, mund ta karikosh telefonin pa tel."</string>
+Ndërkohë, mund ta karikosh tabletën pa tel."</string>
     <string name="usb_water_notification_content">Ka lagështirë ose material të huaj në portën e karikimit/USB. Kontrollo para karikimit.</string>
-    <string name="usb_water_notification_message">U pikas lagështi në portën e karikuesit/USB. Sigurohu që ajo të jetë tërësisht e thatë, para se ta karikosh telefonin. Tharja e plotë mund të marrë ca kohë.</string>
+    <string name="usb_water_notification_message">U pikas lagështi në portën e karikuesit/USB. Sigurohu që ajo të jetë tërësisht e thatë, para se ta karikosh tabletën. Tharja e plotë mund të marrë ca kohë.</string>
     <string name="usb_water_notification_message_button">Hollësi</string>
     <string name="usb_water_notification_title">Kontrollo karikuesin/portën USB</string>
     <string name="usbhostStorage_restrict">Politika e sigurisë nuk lejon përdorimin e magazinës USB në pritës.</string>

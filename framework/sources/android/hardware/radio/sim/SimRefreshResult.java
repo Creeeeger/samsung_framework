@@ -9,7 +9,9 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SimRefreshResult implements Parcelable {
     public static final Parcelable.Creator<SimRefreshResult> CREATOR = new Parcelable.Creator<SimRefreshResult>() { // from class: android.hardware.radio.sim.SimRefreshResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SimRefreshResult createFromParcel(Parcel _aidl_source) {
             SimRefreshResult _aidl_out = new SimRefreshResult();
@@ -17,7 +19,6 @@ public class SimRefreshResult implements Parcelable {
             return _aidl_out;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SimRefreshResult[] newArray(int _aidl_size) {
             return new SimRefreshResult[_aidl_size];
@@ -29,6 +30,25 @@ public class SimRefreshResult implements Parcelable {
     public String aid;
     public int type = 0;
     public int efId = 0;
+
+    /* renamed from: android.hardware.radio.sim.SimRefreshResult$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SimRefreshResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SimRefreshResult createFromParcel(Parcel _aidl_source) {
+            SimRefreshResult _aidl_out = new SimRefreshResult();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SimRefreshResult[] newArray(int _aidl_size) {
+            return new SimRefreshResult[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

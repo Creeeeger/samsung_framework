@@ -184,8 +184,9 @@ public interface ICallControl extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ICallControl {
+        public static class Proxy implements ICallControl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

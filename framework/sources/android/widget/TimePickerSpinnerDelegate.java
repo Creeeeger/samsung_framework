@@ -16,7 +16,6 @@ import android.widget.TimePicker;
 import com.android.internal.R;
 import java.util.Calendar;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDelegate {
     private static final boolean DEFAULT_ENABLED_STATE = true;
@@ -49,6 +48,9 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         NumberPicker numberPicker = (NumberPicker) delegator.findViewById(R.id.hour);
         this.mHourSpinner = numberPicker;
         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.1
+            AnonymousClass1() {
+            }
+
             @Override // android.widget.NumberPicker.OnValueChangeListener
             public void onValueChange(NumberPicker spinner, int oldVal, int newVal) {
                 TimePickerSpinnerDelegate.this.updateInputState();
@@ -74,6 +76,9 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         numberPicker2.setOnLongPressUpdateInterval(100L);
         numberPicker2.setFormatter(NumberPicker.getTwoDigitFormatter());
         numberPicker2.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.2
+            AnonymousClass2() {
+            }
+
             @Override // android.widget.NumberPicker.OnValueChangeListener
             public void onValueChange(NumberPicker spinner, int oldVal, int newVal) {
                 TimePickerSpinnerDelegate.this.updateInputState();
@@ -109,6 +114,9 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
             Button button = (Button) amPmView;
             this.mAmPmButton = button;
             button.setOnClickListener(new View.OnClickListener() { // from class: android.widget.TimePickerSpinnerDelegate.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.view.View.OnClickListener
                 public void onClick(View button2) {
                     button2.requestFocus();
@@ -125,6 +133,9 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
             numberPicker3.setMaxValue(1);
             numberPicker3.setDisplayedValues(amPmStrings);
             numberPicker3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() { // from class: android.widget.TimePickerSpinnerDelegate.4
+                AnonymousClass4() {
+                }
+
                 @Override // android.widget.NumberPicker.OnValueChangeListener
                 public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                     TimePickerSpinnerDelegate.this.updateInputState();
@@ -164,6 +175,88 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         setContentDescriptions();
         if (this.mDelegator.getImportantForAccessibility() == 0) {
             this.mDelegator.setImportantForAccessibility(1);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TimePickerSpinnerDelegate$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements NumberPicker.OnValueChangeListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.widget.NumberPicker.OnValueChangeListener
+        public void onValueChange(NumberPicker spinner, int oldVal, int newVal) {
+            TimePickerSpinnerDelegate.this.updateInputState();
+            if (!TimePickerSpinnerDelegate.this.is24Hour() && ((oldVal == 11 && newVal == 12) || (oldVal == 12 && newVal == 11))) {
+                TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
+                TimePickerSpinnerDelegate.this.updateAmPmControl();
+            }
+            TimePickerSpinnerDelegate.this.onTimeChanged();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TimePickerSpinnerDelegate$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 implements NumberPicker.OnValueChangeListener {
+        AnonymousClass2() {
+        }
+
+        @Override // android.widget.NumberPicker.OnValueChangeListener
+        public void onValueChange(NumberPicker spinner, int oldVal, int newVal) {
+            TimePickerSpinnerDelegate.this.updateInputState();
+            int minValue = TimePickerSpinnerDelegate.this.mMinuteSpinner.getMinValue();
+            int maxValue = TimePickerSpinnerDelegate.this.mMinuteSpinner.getMaxValue();
+            if (oldVal == maxValue && newVal == minValue) {
+                int newHour = TimePickerSpinnerDelegate.this.mHourSpinner.getValue() + 1;
+                if (!TimePickerSpinnerDelegate.this.is24Hour() && newHour == 12) {
+                    TimePickerSpinnerDelegate.this.mIsAm = !r3.mIsAm;
+                    TimePickerSpinnerDelegate.this.updateAmPmControl();
+                }
+                TimePickerSpinnerDelegate.this.mHourSpinner.setValue(newHour);
+            } else if (oldVal == minValue && newVal == maxValue) {
+                int newHour2 = TimePickerSpinnerDelegate.this.mHourSpinner.getValue() - 1;
+                if (!TimePickerSpinnerDelegate.this.is24Hour() && newHour2 == 11) {
+                    TimePickerSpinnerDelegate.this.mIsAm = !r3.mIsAm;
+                    TimePickerSpinnerDelegate.this.updateAmPmControl();
+                }
+                TimePickerSpinnerDelegate.this.mHourSpinner.setValue(newHour2);
+            }
+            TimePickerSpinnerDelegate.this.onTimeChanged();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TimePickerSpinnerDelegate$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements View.OnClickListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.view.View.OnClickListener
+        public void onClick(View button2) {
+            button2.requestFocus();
+            TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
+            TimePickerSpinnerDelegate.this.updateAmPmControl();
+            TimePickerSpinnerDelegate.this.onTimeChanged();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.TimePickerSpinnerDelegate$4 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass4 implements NumberPicker.OnValueChangeListener {
+        AnonymousClass4() {
+        }
+
+        @Override // android.widget.NumberPicker.OnValueChangeListener
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            TimePickerSpinnerDelegate.this.updateInputState();
+            picker.requestFocus();
+            TimePickerSpinnerDelegate.this.mIsAm = !r0.mIsAm;
+            TimePickerSpinnerDelegate.this.updateAmPmControl();
+            TimePickerSpinnerDelegate.this.onTimeChanged();
         }
     }
 
@@ -385,7 +478,6 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         return this.mAmPmSpinnerInput;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateInputState() {
         InputMethodManager inputMethodManager = (InputMethodManager) this.mContext.getSystemService(InputMethodManager.class);
         if (inputMethodManager != null) {
@@ -402,7 +494,6 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateAmPmControl() {
         if (is24Hour()) {
             NumberPicker numberPicker = this.mAmPmSpinner;
@@ -425,7 +516,6 @@ public class TimePickerSpinnerDelegate extends TimePicker.AbstractTimePickerDele
         this.mDelegator.sendAccessibilityEvent(4);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void onTimeChanged() {
         this.mDelegator.sendAccessibilityEvent(4);
         if (this.mOnTimeChangedListener != null) {

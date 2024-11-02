@@ -60,8 +60,9 @@ public interface ITipsManager extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements ITipsManager {
+        public static class Proxy implements ITipsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

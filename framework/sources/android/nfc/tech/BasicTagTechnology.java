@@ -6,7 +6,6 @@ import android.os.RemoteException;
 import android.util.Log;
 import java.io.IOException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
 public abstract class BasicTagTechnology implements TagTechnology {
     private static final String TAG = "NFC";
@@ -14,7 +13,6 @@ public abstract class BasicTagTechnology implements TagTechnology {
     int mSelectedTechnology;
     final Tag mTag;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BasicTagTechnology(Tag tag, int tech) throws RemoteException {
         this.mTag = tag;
         this.mSelectedTechnology = tech;
@@ -25,7 +23,6 @@ public abstract class BasicTagTechnology implements TagTechnology {
         return this.mTag;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void checkConnected() {
         if (this.mTag.getConnectedTechnology() != this.mSelectedTechnology || this.mTag.getConnectedTechnology() == -1) {
             throw new IllegalStateException("Call connect() first!");
@@ -102,7 +99,6 @@ public abstract class BasicTagTechnology implements TagTechnology {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getMaxTransceiveLengthInternal() {
         try {
             return this.mTag.getTagService().getMaxTransceiveLength(this.mSelectedTechnology);
@@ -112,7 +108,6 @@ public abstract class BasicTagTechnology implements TagTechnology {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public byte[] transceive(byte[] data, boolean raw) throws IOException {
         checkConnected();
         try {

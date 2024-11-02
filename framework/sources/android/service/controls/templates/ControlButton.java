@@ -7,13 +7,14 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class ControlButton implements Parcelable {
     public static final Parcelable.Creator<ControlButton> CREATOR = new Parcelable.Creator<ControlButton>() { // from class: android.service.controls.templates.ControlButton.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ControlButton createFromParcel(Parcel source) {
             return new ControlButton(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ControlButton[] newArray(int size) {
             return new ControlButton[size];
@@ -50,5 +51,22 @@ public final class ControlButton implements Parcelable {
     ControlButton(Parcel in) {
         this.mChecked = in.readByte() != 0;
         this.mActionDescription = in.readCharSequence();
+    }
+
+    /* renamed from: android.service.controls.templates.ControlButton$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ControlButton> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ControlButton createFromParcel(Parcel source) {
+            return new ControlButton(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ControlButton[] newArray(int size) {
+            return new ControlButton[size];
+        }
     }
 }

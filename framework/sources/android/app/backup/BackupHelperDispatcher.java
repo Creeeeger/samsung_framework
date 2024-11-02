@@ -22,11 +22,14 @@ public class BackupHelperDispatcher {
 
     private static native int writeHeader_native(Header header, FileDescriptor fileDescriptor, int i);
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class Header {
         int chunkSize;
         String keyPrefix;
+
+        /* synthetic */ Header(HeaderIA headerIA) {
+            this();
+        }
 
         private Header() {
         }

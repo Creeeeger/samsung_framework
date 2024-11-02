@@ -14,13 +14,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class PictureInPictureSurfaceTransaction implements Parcelable {
     public static final Parcelable.Creator<PictureInPictureSurfaceTransaction> CREATOR = new Parcelable.Creator<PictureInPictureSurfaceTransaction>() { // from class: android.window.PictureInPictureSurfaceTransaction.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PictureInPictureSurfaceTransaction createFromParcel(Parcel in) {
             return new PictureInPictureSurfaceTransaction(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureSurfaceTransaction[] newArray(int size) {
             return new PictureInPictureSurfaceTransaction[size];
@@ -35,6 +36,14 @@ public final class PictureInPictureSurfaceTransaction implements Parcelable {
     public final float mShadowRadius;
     private boolean mShouldDisableCanAffectSystemUiFlags;
     private final Rect mWindowCrop;
+
+    /* synthetic */ PictureInPictureSurfaceTransaction(float f, PointF pointF, float[] fArr, float f2, float f3, float f4, Rect rect, PictureInPictureSurfaceTransactionIA pictureInPictureSurfaceTransactionIA) {
+        this(f, pointF, fArr, f2, f3, f4, rect);
+    }
+
+    /* synthetic */ PictureInPictureSurfaceTransaction(Parcel parcel, PictureInPictureSurfaceTransactionIA pictureInPictureSurfaceTransactionIA) {
+        this(parcel);
+    }
 
     private PictureInPictureSurfaceTransaction(Parcel in) {
         this.mAlpha = in.readFloat();
@@ -150,6 +159,23 @@ public final class PictureInPictureSurfaceTransaction implements Parcelable {
         float f = surfaceTransaction.mAlpha;
         if (f != -1.0f) {
             tx.setAlpha(surfaceControl, f);
+        }
+    }
+
+    /* renamed from: android.window.PictureInPictureSurfaceTransaction$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PictureInPictureSurfaceTransaction> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PictureInPictureSurfaceTransaction createFromParcel(Parcel in) {
+            return new PictureInPictureSurfaceTransaction(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PictureInPictureSurfaceTransaction[] newArray(int size) {
+            return new PictureInPictureSurfaceTransaction[size];
         }
     }
 

@@ -14,7 +14,9 @@ import java.util.Collections;
 /* loaded from: classes2.dex */
 public class GpsMeasurementsEvent implements Parcelable {
     public static final Parcelable.Creator<GpsMeasurementsEvent> CREATOR = new Parcelable.Creator<GpsMeasurementsEvent>() { // from class: android.location.GpsMeasurementsEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public GpsMeasurementsEvent createFromParcel(Parcel in) {
             ClassLoader classLoader = getClass().getClassLoader();
@@ -25,7 +27,6 @@ public class GpsMeasurementsEvent implements Parcelable {
             return new GpsMeasurementsEvent(clock, measurementsArray);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GpsMeasurementsEvent[] newArray(int size) {
             return new GpsMeasurementsEvent[size];
@@ -63,6 +64,28 @@ public class GpsMeasurementsEvent implements Parcelable {
 
     public Collection<GpsMeasurement> getMeasurements() {
         return this.mReadOnlyMeasurements;
+    }
+
+    /* renamed from: android.location.GpsMeasurementsEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<GpsMeasurementsEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsMeasurementsEvent createFromParcel(Parcel in) {
+            ClassLoader classLoader = getClass().getClassLoader();
+            GpsClock clock = (GpsClock) in.readParcelable(classLoader, GpsClock.class);
+            int measurementsLength = in.readInt();
+            GpsMeasurement[] measurementsArray = new GpsMeasurement[measurementsLength];
+            in.readTypedArray(measurementsArray, GpsMeasurement.CREATOR);
+            return new GpsMeasurementsEvent(clock, measurementsArray);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public GpsMeasurementsEvent[] newArray(int size) {
+            return new GpsMeasurementsEvent[size];
+        }
     }
 
     @Override // android.os.Parcelable

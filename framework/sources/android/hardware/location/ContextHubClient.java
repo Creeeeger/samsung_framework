@@ -19,7 +19,6 @@ public class ContextHubClient implements Closeable {
     private final AtomicBoolean mIsClosed = new AtomicBoolean(false);
     private Integer mId = null;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ContextHubClient(ContextHubInfo hubInfo, boolean persistent) {
         this.mAttachedHub = hubInfo;
         this.mPersistent = persistent;
@@ -32,7 +31,6 @@ public class ContextHubClient implements Closeable {
         closeGuard.open("ContextHubClient.close");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public synchronized void setClientProxy(IContextHubClient clientProxy) {
         Objects.requireNonNull(clientProxy, "IContextHubClient cannot be null");
         if (this.mClientProxy != null) {

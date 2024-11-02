@@ -230,8 +230,9 @@ public interface IIncidentCompanion extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes3.dex */
-        private static class Proxy implements IIncidentCompanion {
+        public static class Proxy implements IIncidentCompanion {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

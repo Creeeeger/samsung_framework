@@ -45,10 +45,15 @@ public abstract class AbstractCache<K, V> {
         return this.mCacheMap.size();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes5.dex */
-    private static class CacheEntry<V> {
+    public static class CacheEntry<V> {
         int hit;
         V value;
+
+        /* synthetic */ CacheEntry(CacheEntryIA cacheEntryIA) {
+            this();
+        }
 
         private CacheEntry() {
         }

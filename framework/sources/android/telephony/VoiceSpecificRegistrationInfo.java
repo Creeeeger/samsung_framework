@@ -7,13 +7,14 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public class VoiceSpecificRegistrationInfo implements Parcelable {
     public static final Parcelable.Creator<VoiceSpecificRegistrationInfo> CREATOR = new Parcelable.Creator<VoiceSpecificRegistrationInfo>() { // from class: android.telephony.VoiceSpecificRegistrationInfo.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public VoiceSpecificRegistrationInfo createFromParcel(Parcel source) {
             return new VoiceSpecificRegistrationInfo(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VoiceSpecificRegistrationInfo[] newArray(int size) {
             return new VoiceSpecificRegistrationInfo[size];
@@ -24,7 +25,10 @@ public class VoiceSpecificRegistrationInfo implements Parcelable {
     public final int roamingIndicator;
     public final int systemIsInPrl;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
+    /* synthetic */ VoiceSpecificRegistrationInfo(Parcel parcel, VoiceSpecificRegistrationInfoIA voiceSpecificRegistrationInfoIA) {
+        this(parcel);
+    }
+
     public VoiceSpecificRegistrationInfo(boolean cssSupported, int roamingIndicator, int systemIsInPrl, int defaultRoamingIndicator) {
         this.cssSupported = cssSupported;
         this.roamingIndicator = roamingIndicator;
@@ -32,7 +36,6 @@ public class VoiceSpecificRegistrationInfo implements Parcelable {
         this.defaultRoamingIndicator = defaultRoamingIndicator;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public VoiceSpecificRegistrationInfo(VoiceSpecificRegistrationInfo vsri) {
         this.cssSupported = vsri.cssSupported;
         this.roamingIndicator = vsri.roamingIndicator;
@@ -80,5 +83,22 @@ public class VoiceSpecificRegistrationInfo implements Parcelable {
             return true;
         }
         return false;
+    }
+
+    /* renamed from: android.telephony.VoiceSpecificRegistrationInfo$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<VoiceSpecificRegistrationInfo> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VoiceSpecificRegistrationInfo createFromParcel(Parcel source) {
+            return new VoiceSpecificRegistrationInfo(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public VoiceSpecificRegistrationInfo[] newArray(int size) {
+            return new VoiceSpecificRegistrationInfo[size];
+        }
     }
 }

@@ -10,13 +10,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class CreateCredentialProviderData extends ProviderData implements Parcelable {
     public static final Parcelable.Creator<CreateCredentialProviderData> CREATOR = new Parcelable.Creator<CreateCredentialProviderData>() { // from class: android.credentials.ui.CreateCredentialProviderData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CreateCredentialProviderData createFromParcel(Parcel in) {
             return new CreateCredentialProviderData(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CreateCredentialProviderData[] newArray(int size) {
             return new CreateCredentialProviderData[size];
@@ -24,6 +25,10 @@ public final class CreateCredentialProviderData extends ProviderData implements 
     };
     private final Entry mRemoteEntry;
     private final List<Entry> mSaveEntries;
+
+    /* synthetic */ CreateCredentialProviderData(Parcel parcel, CreateCredentialProviderDataIA createCredentialProviderDataIA) {
+        this(parcel);
+    }
 
     public CreateCredentialProviderData(String providerFlattenedComponentName, List<Entry> saveEntries, Entry remoteEntry) {
         super(providerFlattenedComponentName);
@@ -59,6 +64,23 @@ public final class CreateCredentialProviderData extends ProviderData implements 
     @Override // android.credentials.ui.ProviderData, android.os.Parcelable
     public int describeContents() {
         return 0;
+    }
+
+    /* renamed from: android.credentials.ui.CreateCredentialProviderData$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CreateCredentialProviderData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CreateCredentialProviderData createFromParcel(Parcel in) {
+            return new CreateCredentialProviderData(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CreateCredentialProviderData[] newArray(int size) {
+            return new CreateCredentialProviderData[size];
+        }
     }
 
     /* loaded from: classes.dex */

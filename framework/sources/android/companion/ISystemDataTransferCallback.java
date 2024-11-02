@@ -96,8 +96,9 @@ public interface ISystemDataTransferCallback extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes.dex */
-        private static class Proxy implements ISystemDataTransferCallback {
+        public static class Proxy implements ISystemDataTransferCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

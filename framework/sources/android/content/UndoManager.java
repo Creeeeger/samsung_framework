@@ -522,7 +522,6 @@ public class UndoManager {
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes.dex */
     public static final class UndoState {
         private boolean mCanMerge;

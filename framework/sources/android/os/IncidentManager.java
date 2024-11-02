@@ -122,6 +122,9 @@ public class IncidentManager {
     /* loaded from: classes3.dex */
     public static class IncidentReport implements Parcelable, Closeable {
         public static final Parcelable.Creator<IncidentReport> CREATOR = new Parcelable.Creator() { // from class: android.os.IncidentManager.IncidentReport.1
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public IncidentReport[] newArray(int size) {
                 return new IncidentReport[size];
@@ -189,6 +192,23 @@ public class IncidentManager {
                 out.writeInt(0);
             }
         }
+
+        /* renamed from: android.os.IncidentManager$IncidentReport$1 */
+        /* loaded from: classes3.dex */
+        class AnonymousClass1 implements Parcelable.Creator {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public IncidentReport[] newArray(int size) {
+                return new IncidentReport[size];
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public IncidentReport createFromParcel(Parcel in) {
+                return new IncidentReport(in);
+            }
+        }
     }
 
     /* loaded from: classes3.dex */
@@ -196,8 +216,7 @@ public class IncidentManager {
         IIncidentAuthListener.Stub mBinder = new AnonymousClass1();
         Executor mExecutor;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.os.IncidentManager$AuthListener$1, reason: invalid class name */
+        /* renamed from: android.os.IncidentManager$AuthListener$1 */
         /* loaded from: classes3.dex */
         public class AnonymousClass1 extends IIncidentAuthListener.Stub {
             AnonymousClass1() {
@@ -217,7 +236,6 @@ public class IncidentManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onReportApproved$0() {
                 AuthListener.this.onReportApproved();
             }
@@ -236,7 +254,6 @@ public class IncidentManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onReportDenied$1() {
                 AuthListener.this.onReportDenied();
             }
@@ -255,8 +272,7 @@ public class IncidentManager {
         private Executor mExecutor;
         private int mId;
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.os.IncidentManager$DumpCallback$1, reason: invalid class name */
+        /* renamed from: android.os.IncidentManager$DumpCallback$1 */
         /* loaded from: classes3.dex */
         public class AnonymousClass1 extends IIncidentDumpCallback.Stub {
             AnonymousClass1() {
@@ -277,7 +293,6 @@ public class IncidentManager {
                 }
             }
 
-            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDumpSection$0(ParcelFileDescriptor pfd) {
                 DumpCallback dumpCallback = DumpCallback.this;
                 dumpCallback.onDumpSection(dumpCallback.mId, new ParcelFileDescriptor.AutoCloseOutputStream(pfd));
@@ -482,7 +497,6 @@ public class IncidentManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getIIncidentManagerLocked$0() {
         synchronized (this.mLock) {
             this.mIncidentService = null;
@@ -513,7 +527,6 @@ public class IncidentManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getCompanionServiceLocked$1() {
         synchronized (this.mLock) {
             this.mCompanionService = null;

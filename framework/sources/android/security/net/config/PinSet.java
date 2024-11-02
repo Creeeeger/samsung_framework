@@ -18,7 +18,6 @@ public final class PinSet {
         this.expirationTime = expirationTime;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Set<String> getPinAlgorithms() {
         Set<String> algorithms = new ArraySet<>();
         for (Pin pin : this.pins) {

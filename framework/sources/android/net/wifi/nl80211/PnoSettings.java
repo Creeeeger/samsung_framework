@@ -11,7 +11,9 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class PnoSettings implements Parcelable {
     public static final Parcelable.Creator<PnoSettings> CREATOR = new Parcelable.Creator<PnoSettings>() { // from class: android.net.wifi.nl80211.PnoSettings.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public PnoSettings createFromParcel(Parcel in) {
             PnoSettings result = new PnoSettings();
@@ -26,7 +28,6 @@ public final class PnoSettings implements Parcelable {
             return result;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PnoSettings[] newArray(int size) {
             return new PnoSettings[size];
@@ -125,5 +126,31 @@ public final class PnoSettings implements Parcelable {
         out.writeInt(this.mScanIterations);
         out.writeInt(this.mScanIntervalMultiplier);
         out.writeTypedList(this.mPnoNetworks);
+    }
+
+    /* renamed from: android.net.wifi.nl80211.PnoSettings$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<PnoSettings> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PnoSettings createFromParcel(Parcel in) {
+            PnoSettings result = new PnoSettings();
+            result.mIntervalMs = in.readLong();
+            result.mMin2gRssi = in.readInt();
+            result.mMin5gRssi = in.readInt();
+            result.mMin6gRssi = in.readInt();
+            result.mScanIterations = in.readInt();
+            result.mScanIntervalMultiplier = in.readInt();
+            result.mPnoNetworks = new ArrayList();
+            in.readTypedList(result.mPnoNetworks, PnoNetwork.CREATOR);
+            return result;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public PnoSettings[] newArray(int size) {
+            return new PnoSettings[size];
+        }
     }
 }

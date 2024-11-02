@@ -10,13 +10,14 @@ import java.util.List;
 /* loaded from: classes4.dex */
 public final class TextAttribute implements Parcelable {
     public static final Parcelable.Creator<TextAttribute> CREATOR = new Parcelable.Creator<TextAttribute>() { // from class: android.view.inputmethod.TextAttribute.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public TextAttribute createFromParcel(Parcel source) {
             return new TextAttribute(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextAttribute[] newArray(int size) {
             return new TextAttribute[size];
@@ -24,6 +25,14 @@ public final class TextAttribute implements Parcelable {
     };
     private final PersistableBundle mExtras;
     private final List<String> mTextConversionSuggestions;
+
+    /* synthetic */ TextAttribute(Parcel parcel, TextAttributeIA textAttributeIA) {
+        this(parcel);
+    }
+
+    /* synthetic */ TextAttribute(Builder builder, TextAttributeIA textAttributeIA) {
+        this(builder);
+    }
 
     private TextAttribute(Builder builder) {
         this.mTextConversionSuggestions = builder.mTextConversionSuggestions;
@@ -72,5 +81,22 @@ public final class TextAttribute implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringList(this.mTextConversionSuggestions);
         dest.writePersistableBundle(this.mExtras);
+    }
+
+    /* renamed from: android.view.inputmethod.TextAttribute$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<TextAttribute> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextAttribute createFromParcel(Parcel source) {
+            return new TextAttribute(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public TextAttribute[] newArray(int size) {
+            return new TextAttribute[size];
+        }
     }
 }

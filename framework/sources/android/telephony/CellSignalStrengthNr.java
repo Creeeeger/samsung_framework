@@ -35,13 +35,14 @@ public final class CellSignalStrengthNr extends CellSignalStrength implements Pa
     private int mTimingAdvance;
     private static final CellSignalStrengthNr sInvalid = new CellSignalStrengthNr();
     public static final Parcelable.Creator<CellSignalStrengthNr> CREATOR = new Parcelable.Creator<CellSignalStrengthNr>() { // from class: android.telephony.CellSignalStrengthNr.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthNr createFromParcel(Parcel in) {
             return new CellSignalStrengthNr(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthNr[] newArray(int size) {
             return new CellSignalStrengthNr[size];
@@ -51,6 +52,10 @@ public final class CellSignalStrengthNr extends CellSignalStrength implements Pa
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes3.dex */
     public @interface SignalLevelAndReportCriteriaSource {
+    }
+
+    /* synthetic */ CellSignalStrengthNr(Parcel parcel, CellSignalStrengthNrIA cellSignalStrengthNrIA) {
+        this(parcel);
     }
 
     public CellSignalStrengthNr() {
@@ -298,5 +303,22 @@ public final class CellSignalStrengthNr extends CellSignalStrength implements Pa
 
     public String toString() {
         return "CellSignalStrengthNr:{" + (" csiRsrp = " + this.mCsiRsrp) + (" csiRsrq = " + this.mCsiRsrq) + (" csiCqiTableIndex = " + this.mCsiCqiTableIndex) + (" csiCqiReport = " + this.mCsiCqiReport) + (" ssRsrp = " + this.mSsRsrp) + (" ssRsrq = " + this.mSsRsrq) + (" ssSinr = " + this.mSsSinr) + (" level = " + this.mLevel) + (" parametersUseForLevel = " + this.mParametersUseForLevel) + (" timingAdvance = " + this.mTimingAdvance) + " }";
+    }
+
+    /* renamed from: android.telephony.CellSignalStrengthNr$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 implements Parcelable.Creator<CellSignalStrengthNr> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellSignalStrengthNr createFromParcel(Parcel in) {
+            return new CellSignalStrengthNr(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public CellSignalStrengthNr[] newArray(int size) {
+            return new CellSignalStrengthNr[size];
+        }
     }
 }

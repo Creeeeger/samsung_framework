@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class StreamUtil {
+public class StreamUtil {
     StreamUtil() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int findLimit(InputStream in) {
         if (in instanceof LimitedInputStream) {
             return ((LimitedInputStream) in).getLimit();
@@ -39,7 +39,6 @@ class StreamUtil {
         return (int) maxMemory;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int calculateBodyLength(int length) {
         int count = 1;
         if (length > 127) {
@@ -60,7 +59,6 @@ class StreamUtil {
         return count;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static int calculateTagLength(int tagNo) throws IOException {
         if (tagNo < 31) {
             return 1;

@@ -22,14 +22,15 @@ import java.util.Random;
 /* loaded from: classes5.dex */
 public abstract class SemClipData implements Parcelable, Serializable {
     public static final Parcelable.Creator<SemClipData> CREATOR = new Parcelable.Creator<SemClipData>() { // from class: com.samsung.android.content.clipboard.data.SemClipData.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SemClipData createFromParcel(Parcel source) {
             SemClipData concreteData = ClipboardDataFactory.createClipBoardData(source);
             return concreteData;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemClipData[] newArray(int size) {
             return new SemClipData[size];
@@ -340,6 +341,24 @@ public abstract class SemClipData implements Parcelable, Serializable {
         }
     }
 
+    /* renamed from: com.samsung.android.content.clipboard.data.SemClipData$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SemClipData> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemClipData createFromParcel(Parcel source) {
+            SemClipData concreteData = ClipboardDataFactory.createClipBoardData(source);
+            return concreteData;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SemClipData[] newArray(int size) {
+            return new SemClipData[size];
+        }
+    }
+
     public boolean setLabel(CharSequence label) {
         if (TextUtils.isEmpty(label)) {
             return false;
@@ -540,17 +559,46 @@ public abstract class SemClipData implements Parcelable, Serializable {
         this.mRemoteState = state;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0072, code lost:            if (r2 == null) goto L28;     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0074, code lost:            r4 = android.os.Binder.clearCallingIdentity();     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0078, code lost:            r11.getContentResolver().delete(r2, null, null);     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0085, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x00a4, code lost:            android.os.Binder.restoreCallingIdentity(r4);     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x00a7, code lost:            throw r0;     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0087, code lost:            r0 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0088, code lost:            android.sec.clipboard.util.Log.e(com.samsung.android.content.clipboard.data.SemClipData.TAG, "Exception occurs in deleteContentUri because " + r0.getMessage());     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x00a8, code lost:            return;     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x006f, code lost:            if (r3 == null) goto L17;     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0072, code lost:
+    
+        if (r2 == null) goto L66;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0074, code lost:
+    
+        r4 = android.os.Binder.clearCallingIdentity();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0078, code lost:
+    
+        r11.getContentResolver().delete(r2, null, null);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0085, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x00a4, code lost:
+    
+        android.os.Binder.restoreCallingIdentity(r4);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x00a7, code lost:
+    
+        throw r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0087, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0088, code lost:
+    
+        android.sec.clipboard.util.Log.e(com.samsung.android.content.clipboard.data.SemClipData.TAG, "Exception occurs in deleteContentUri because " + r0.getMessage());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x00a8, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x006f, code lost:
+    
+        if (r3 == null) goto L55;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

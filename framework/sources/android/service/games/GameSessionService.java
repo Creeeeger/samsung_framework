@@ -25,7 +25,7 @@ public abstract class GameSessionService extends Service {
 
     public abstract GameSession onNewSession(CreateGameSessionRequest createGameSessionRequest);
 
-    /* renamed from: android.service.games.GameSessionService$1, reason: invalid class name */
+    /* renamed from: android.service.games.GameSessionService$1 */
     /* loaded from: classes3.dex */
     class AnonymousClass1 extends IGameSessionService.Stub {
         AnonymousClass1() {
@@ -56,7 +56,6 @@ public abstract class GameSessionService extends Service {
         return this.mInterface.asBinder();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void doCreate(IGameSessionController gameSessionController, CreateGameSessionRequest createGameSessionRequest, GameSessionViewHostConfiguration gameSessionViewHostConfiguration, AndroidFuture<CreateGameSessionResult> createGameSessionResultFuture) {
         GameSession gameSession = onNewSession(createGameSessionRequest);
         Objects.requireNonNull(gameSession);

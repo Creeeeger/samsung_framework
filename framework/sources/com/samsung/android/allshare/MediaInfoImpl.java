@@ -9,7 +9,6 @@ final class MediaInfoImpl extends MediaInfo {
     private Bundle mBundle;
     private long mMediaDuration = -1;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public MediaInfoImpl(Bundle bundle) {
         this.mBundle = null;
         this.mBundle = bundle;

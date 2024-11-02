@@ -11,13 +11,11 @@ public class AnnotatedPrivateKey implements PrivateKey {
     private final Map<String, Object> annotations;
     private final PrivateKey key;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AnnotatedPrivateKey(PrivateKey key, String label) {
         this.key = key;
         this.annotations = Collections.singletonMap("label", label);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public AnnotatedPrivateKey(PrivateKey key, Map<String, Object> annotations) {
         this.key = key;
         this.annotations = annotations;

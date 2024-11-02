@@ -9,13 +9,14 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioIoFlags implements Parcelable {
     public static final Parcelable.Creator<AudioIoFlags> CREATOR = new Parcelable.Creator<AudioIoFlags>() { // from class: android.media.audio.common.AudioIoFlags.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public AudioIoFlags createFromParcel(Parcel _aidl_source) {
             return new AudioIoFlags(_aidl_source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioIoFlags[] newArray(int _aidl_size) {
             return new AudioIoFlags[_aidl_size];
@@ -30,6 +31,10 @@ public final class AudioIoFlags implements Parcelable {
     public @interface Tag {
         public static final int input = 0;
         public static final int output = 1;
+    }
+
+    /* synthetic */ AudioIoFlags(Parcel parcel, AudioIoFlagsIA audioIoFlagsIA) {
+        this(parcel);
     }
 
     public AudioIoFlags() {
@@ -79,6 +84,23 @@ public final class AudioIoFlags implements Parcelable {
     @Override // android.os.Parcelable
     public final int getStability() {
         return 1;
+    }
+
+    /* renamed from: android.media.audio.common.AudioIoFlags$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<AudioIoFlags> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioIoFlags createFromParcel(Parcel _aidl_source) {
+            return new AudioIoFlags(_aidl_source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public AudioIoFlags[] newArray(int _aidl_size) {
+            return new AudioIoFlags[_aidl_size];
+        }
     }
 
     @Override // android.os.Parcelable

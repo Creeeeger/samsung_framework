@@ -1,6 +1,5 @@
 package com.android.framework.protobuf;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 @CheckReturnValue
 /* loaded from: classes4.dex */
 public final class RawMessageInfo implements MessageInfo {
@@ -9,7 +8,6 @@ public final class RawMessageInfo implements MessageInfo {
     private final String info;
     private final Object[] objects;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public RawMessageInfo(MessageLite defaultInstance, String info, Object[] objects) {
         this.defaultInstance = defaultInstance;
         this.info = info;
@@ -36,12 +34,10 @@ public final class RawMessageInfo implements MessageInfo {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public String getStringInfo() {
         return this.info;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Object[] getObjects() {
         return this.objects;
     }

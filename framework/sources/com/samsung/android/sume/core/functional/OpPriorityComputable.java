@@ -11,19 +11,16 @@ public class OpPriorityComputable {
     private OpPriorityCompute priorityCompute;
     private final Enum<?> type;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @FunctionalInterface
     /* loaded from: classes4.dex */
     public interface ComputeBridge {
         float compute(MutableMediaFormat mutableMediaFormat, MediaFormat mediaFormat, OpPriorityCompute opPriorityCompute);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public OpPriorityComputable(Enum<?> type) {
         this.type = type;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void setComputeBridge(ComputeBridge bridge, OpPriorityCompute priorityCompute) {
         this.bridge = bridge;
         this.priorityCompute = priorityCompute;
@@ -38,12 +35,10 @@ public class OpPriorityComputable {
         })).compute(input, output, this.priorityCompute);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ float lambda$compute$0(MutableMediaFormat ifmt, MediaFormat ofmt, OpPriorityCompute compute) {
         return -1.0f;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ ComputeBridge lambda$compute$1() {
         return new ComputeBridge() { // from class: com.samsung.android.sume.core.functional.OpPriorityComputable$$ExternalSyntheticLambda1
             @Override // com.samsung.android.sume.core.functional.OpPriorityComputable.ComputeBridge

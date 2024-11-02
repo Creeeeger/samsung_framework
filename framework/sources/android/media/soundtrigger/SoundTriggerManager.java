@@ -79,7 +79,6 @@ public final class SoundTriggerManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$new$0(SoundTrigger.ModuleProperties prop) {
         return !prop.getSupportedModelArch().equals("injection");
     }

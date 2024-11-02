@@ -11,13 +11,14 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class ConversationChannel implements Parcelable {
     public static final Parcelable.Creator<ConversationChannel> CREATOR = new Parcelable.Creator<ConversationChannel>() { // from class: android.app.people.ConversationChannel.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ConversationChannel createFromParcel(Parcel in) {
             return new ConversationChannel(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConversationChannel[] newArray(int size) {
             return new ConversationChannel[size];
@@ -31,6 +32,23 @@ public final class ConversationChannel implements Parcelable {
     private ShortcutInfo mShortcutInfo;
     private List<ConversationStatus> mStatuses;
     private int mUid;
+
+    /* renamed from: android.app.people.ConversationChannel$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ConversationChannel> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConversationChannel createFromParcel(Parcel in) {
+            return new ConversationChannel(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ConversationChannel[] newArray(int size) {
+            return new ConversationChannel[size];
+        }
+    }
 
     public ConversationChannel(ShortcutInfo shortcutInfo, int uid, NotificationChannel parentNotificationChannel, NotificationChannelGroup parentNotificationChannelGroup, long lastEventTimestamp, boolean hasActiveNotifications) {
         this.mShortcutInfo = shortcutInfo;

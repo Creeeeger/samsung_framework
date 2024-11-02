@@ -51,6 +51,9 @@ public class MultiSelectPopupWindow {
     private Drawable mSelectHandleRight;
     private SelectionController mSelectionController;
     private final Runnable mShowFloatingToolbar = new Runnable() { // from class: android.widget.MultiSelectPopupWindow.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             if (MultiSelectPopupWindow.sTextActionMode != null) {
@@ -68,7 +71,6 @@ public class MultiSelectPopupWindow {
         void show();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public interface TextViewPositionListener {
         void updatePosition(int i, int i2, boolean z, boolean z2);
@@ -124,6 +126,21 @@ public class MultiSelectPopupWindow {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.widget.MultiSelectPopupWindow$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            if (MultiSelectPopupWindow.sTextActionMode != null) {
+                MultiSelectPopupWindow.sTextActionMode.hide(0L);
+            }
+        }
+    }
+
     private void hideFloatingToolbar() {
         if (sTextActionMode != null) {
             sTextView.removeCallbacks(this.mShowFloatingToolbar);
@@ -138,7 +155,6 @@ public class MultiSelectPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void updateFloatingToolbarVisibility(MotionEvent event) {
         if (sTextActionMode != null) {
             switch (event.getActionMasked()) {
@@ -155,7 +171,6 @@ public class MultiSelectPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class TextActionModeCallback extends ActionMode.Callback2 {
         private int mHandleHeight;
@@ -267,7 +282,6 @@ public class MultiSelectPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isSelectAllEnable() {
         CharSequence text = sTextView.getTextForMultiSelection();
         if (text != null) {
@@ -277,7 +291,6 @@ public class MultiSelectPopupWindow {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isShareViaEnable() {
         if (isEmergencyMode()) {
             return false;
@@ -305,7 +318,6 @@ public class MultiSelectPopupWindow {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public boolean isEmergencyMode() {
         boolean isEmergencyMode = Settings.System.getInt(sTextView.getContext().getContentResolver(), Settings.System.SEM_EMERGENCY_MODE, 0) == 1;
         boolean isUPSMode = Settings.System.getInt(sTextView.getContext().getContentResolver(), Settings.System.SEM_ULTRA_POWERSAVING_MODE, 0) == 1;
@@ -316,7 +328,6 @@ public class MultiSelectPopupWindow {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public PositionListener getPositionListener() {
         if (this.mPositionListener == null) {
             this.mPositionListener = new PositionListener();
@@ -342,7 +353,6 @@ public class MultiSelectPopupWindow {
         return this.mSelectionController;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class PositionListener implements ViewTreeObserver.OnPreDrawListener {
         private final int MAXIMUM_NUMBER_OF_LISTENERS;
@@ -355,6 +365,10 @@ public class MultiSelectPopupWindow {
         private int[] mRect;
         private boolean mScrollHasChanged;
         final int[] mTempCoords;
+
+        /* synthetic */ PositionListener(MultiSelectPopupWindow multiSelectPopupWindow, PositionListenerIA positionListenerIA) {
+            this();
+        }
 
         private PositionListener() {
             this.MAXIMUM_NUMBER_OF_LISTENERS = 2;
@@ -476,11 +490,14 @@ public class MultiSelectPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SelectionController implements CursorController {
         private SelectionEndHandleView mEndHandle;
         private SelectionStartHandleView mStartHandle;
+
+        /* synthetic */ SelectionController(MultiSelectPopupWindow multiSelectPopupWindow, SelectionControllerIA selectionControllerIA) {
+            this();
+        }
 
         private SelectionController() {
         }
@@ -491,7 +508,6 @@ public class MultiSelectPopupWindow {
             initHandles();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void initDrawables() {
             if (MultiSelectPopupWindow.this.mSelectHandleLeft == null) {
                 MultiSelectPopupWindow.this.mSelectHandleLeft = MultiSelectPopupWindow.sTextView.getContext().getResources().getDrawable(MultiSelectPopupWindow.sTextView.mTextSelectHandleLeftRes);
@@ -501,7 +517,6 @@ public class MultiSelectPopupWindow {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public void initHandles() {
             if (this.mStartHandle == null) {
                 MultiSelectPopupWindow multiSelectPopupWindow = MultiSelectPopupWindow.this;
@@ -570,7 +585,6 @@ public class MultiSelectPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public abstract class HandleView extends View implements TextViewPositionListener {
         static final int HANDLE_TYPE_END = 2;
@@ -687,7 +701,6 @@ public class MultiSelectPopupWindow {
             return new Rect(left - (offset - hotspot), 0, (left - (offset - hotspot)) + width, height);
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             if (this.mIsDragging || this.mIsResetAnimating) {
@@ -866,7 +879,6 @@ public class MultiSelectPopupWindow {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.view.View
         public void onDraw(Canvas c) {
             int drawWidth = this.mDrawable.getIntrinsicWidth();
@@ -981,14 +993,17 @@ public class MultiSelectPopupWindow {
             requestLayout();
             int drawableStartWidth = this.mDrawable.getIntrinsicWidth();
             int drawableStartHeight = this.mDrawable.getIntrinsicHeight();
-            final int drawableTargetWidth = (int) (drawableStartWidth * 1.5f);
-            final int drawableTargetHeight = (int) (drawableStartHeight * 1.5f);
+            int drawableTargetWidth = (int) (drawableStartWidth * 1.5f);
+            int drawableTargetHeight = (int) (drawableStartHeight * 1.5f);
             PropertyValuesHolder[] holders = {PropertyValuesHolder.ofInt("width", drawableStartWidth, drawableTargetWidth), PropertyValuesHolder.ofInt("height", drawableStartHeight, drawableTargetHeight)};
             ValueAnimator ofPropertyValuesHolder = ValueAnimator.ofPropertyValuesHolder(holders);
             this.mMagnifySizeAnimator = ofPropertyValuesHolder;
             ofPropertyValuesHolder.setDuration(250L);
             this.mMagnifySizeAnimator.setInterpolator(new PathInterpolator(0.25f, 0.46f, 0.45f, 1.0f));
             this.mMagnifySizeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.MultiSelectPopupWindow.HandleView.1
+                AnonymousClass1() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int width = ((Integer) animation.getAnimatedValue("width")).intValue();
@@ -998,6 +1013,14 @@ public class MultiSelectPopupWindow {
                 }
             });
             this.mMagnifySizeAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.MultiSelectPopupWindow.HandleView.2
+                final /* synthetic */ int val$drawableTargetHeight;
+                final /* synthetic */ int val$drawableTargetWidth;
+
+                AnonymousClass2(int drawableTargetWidth2, int drawableTargetHeight2) {
+                    drawableTargetWidth = drawableTargetWidth2;
+                    drawableTargetHeight = drawableTargetHeight2;
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     HandleView.this.mDrawable.setBounds(HandleView.this.getDrawableBounds(drawableTargetWidth, drawableTargetHeight));
@@ -1005,6 +1028,39 @@ public class MultiSelectPopupWindow {
                 }
             });
             this.mMagnifySizeAnimator.start();
+        }
+
+        /* renamed from: android.widget.MultiSelectPopupWindow$HandleView$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass1() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int width = ((Integer) animation.getAnimatedValue("width")).intValue();
+                int height = ((Integer) animation.getAnimatedValue("height")).intValue();
+                HandleView.this.mDrawable.setBounds(HandleView.this.getDrawableBounds(width, height));
+                HandleView.this.invalidate();
+            }
+        }
+
+        /* renamed from: android.widget.MultiSelectPopupWindow$HandleView$2 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass2 extends AnimatorListenerAdapter {
+            final /* synthetic */ int val$drawableTargetHeight;
+            final /* synthetic */ int val$drawableTargetWidth;
+
+            AnonymousClass2(int drawableTargetWidth2, int drawableTargetHeight2) {
+                drawableTargetWidth = drawableTargetWidth2;
+                drawableTargetHeight = drawableTargetHeight2;
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                HandleView.this.mDrawable.setBounds(HandleView.this.getDrawableBounds(drawableTargetWidth, drawableTargetHeight));
+                HandleView.this.invalidate();
+            }
         }
 
         private void resetHandleView() {
@@ -1022,6 +1078,9 @@ public class MultiSelectPopupWindow {
             ofPropertyValuesHolder.setDuration(250L);
             this.mResetAnimator.setInterpolator(new PathInterpolator(0.25f, 0.46f, 0.45f, 1.0f));
             this.mResetAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.widget.MultiSelectPopupWindow.HandleView.3
+                AnonymousClass3() {
+                }
+
                 @Override // android.animation.ValueAnimator.AnimatorUpdateListener
                 public void onAnimationUpdate(ValueAnimator animation) {
                     if (!HandleView.this.mIsResetAnimating) {
@@ -1034,6 +1093,9 @@ public class MultiSelectPopupWindow {
                 }
             });
             this.mResetAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.MultiSelectPopupWindow.HandleView.4
+                AnonymousClass4() {
+                }
+
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     if (!HandleView.this.mIsResetAnimating) {
@@ -1046,9 +1108,43 @@ public class MultiSelectPopupWindow {
             });
             this.mResetAnimator.start();
         }
+
+        /* renamed from: android.widget.MultiSelectPopupWindow$HandleView$3 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass3 implements ValueAnimator.AnimatorUpdateListener {
+            AnonymousClass3() {
+            }
+
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if (!HandleView.this.mIsResetAnimating) {
+                    return;
+                }
+                int width = ((Integer) animation.getAnimatedValue("width")).intValue();
+                int height = ((Integer) animation.getAnimatedValue("height")).intValue();
+                HandleView.this.mDrawable.setBounds(HandleView.this.getDrawableBounds(width, height));
+                HandleView.this.invalidate();
+            }
+        }
+
+        /* renamed from: android.widget.MultiSelectPopupWindow$HandleView$4 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass4 extends AnimatorListenerAdapter {
+            AnonymousClass4() {
+            }
+
+            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            public void onAnimationEnd(Animator animation) {
+                if (!HandleView.this.mIsResetAnimating) {
+                    return;
+                }
+                HandleView.this.mIsResetAnimating = false;
+                HandleView.this.requestLayout();
+                HandleView.this.invalidate();
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SelectionStartHandleView extends HandleView {
         public SelectionStartHandleView(Drawable drawableLtr, Drawable drawableRtl) {
@@ -1159,7 +1255,6 @@ public class MultiSelectPopupWindow {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class SelectionEndHandleView extends HandleView {
         public SelectionEndHandleView(Drawable drawableLtr, Drawable drawableRtl) {

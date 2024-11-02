@@ -7,8 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class SecCarrier {
+public class SecCarrier {
     private static final String FEATURE_GROUP_KEY = "CarrierFeature_Common_CarrierGroup";
     private static final String TAG_CARRIER_ID = "canonical_id";
     private static final String TAG_CUSTOMER = "customer";
@@ -23,7 +24,6 @@ class SecCarrier {
     private String mapped_cid_version;
     private String version;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SecCarrier(String jsonText, String salesCode, int carrierId) throws JSONException {
         JSONArray specificFeatureObject;
         this.isCarrierGroupValid = false;
@@ -81,22 +81,18 @@ class SecCarrier {
         this.feature = custFeatures;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Map<String, String> getFeature() {
         return this.feature;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getVersion() {
         return Integer.parseInt(this.version);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public int getMappedCidVersion() {
         return Integer.parseInt(this.mapped_cid_version);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public boolean isCarrierGroupValid() {
         return this.isCarrierGroupValid;
     }

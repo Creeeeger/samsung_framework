@@ -148,7 +148,6 @@ public class ECAlgorithms {
         return c.decodePoint(p.getEncoded(false));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ECPoint implCheckResult(ECPoint p) {
         if (!p.isValidPartial()) {
             throw new IllegalStateException("Invalid result");
@@ -181,7 +180,6 @@ public class ECAlgorithms {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ECPoint implShamirsTrickWNaf(ECPoint P, BigInteger k, ECPoint Q, BigInteger l) {
         boolean negK = k.signum() < 0;
         boolean negL = l.signum() < 0;
@@ -207,7 +205,6 @@ public class ECAlgorithms {
         return implShamirsTrickWNaf(preCompP, preCompNegP, wnafP, preCompQ, preCompNegQ, wnafQ);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ECPoint implShamirsTrickWNaf(ECEndomorphism endomorphism, ECPoint P, BigInteger k, BigInteger l) {
         boolean negK = k.signum() < 0;
         boolean negL = l.signum() < 0;

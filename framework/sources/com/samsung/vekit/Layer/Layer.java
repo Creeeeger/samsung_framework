@@ -29,7 +29,6 @@ public class Layer extends Element implements HierarchyInterface<Item> {
     Panel panel;
     protected ArrayList<TransitionAnimation> transitionAnimationList;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Layer(VEContext context, LayerType type, int id, String name) {
         super(context, ElementType.LAYER, id, name);
         this.itemList = new ArrayList<>();
@@ -51,7 +50,7 @@ public class Layer extends Element implements HierarchyInterface<Item> {
     }
 
     public Layer setPanel(Panel panel) {
-        this.panel = panel.m8993clone();
+        this.panel = panel.m8985clone();
         return this;
     }
 
@@ -154,7 +153,6 @@ public class Layer extends Element implements HierarchyInterface<Item> {
         return this.itemList.indexOf(element);
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.vekit.Interface.HierarchyInterface
     public Item getChild(int index) {
         return this.itemList.get(index);
@@ -314,7 +312,6 @@ public class Layer extends Element implements HierarchyInterface<Item> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$checkValidItem$0(Item item, ItemType type) {
         return type == item.getItemType();
     }

@@ -8,13 +8,14 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class RemoveSpaceGesture extends HandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<RemoveSpaceGesture> CREATOR = new Parcelable.Creator<RemoveSpaceGesture>() { // from class: android.view.inputmethod.RemoveSpaceGesture.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public RemoveSpaceGesture createFromParcel(Parcel source) {
             return new RemoveSpaceGesture(source);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoveSpaceGesture[] newArray(int size) {
             return new RemoveSpaceGesture[size];
@@ -22,6 +23,14 @@ public final class RemoveSpaceGesture extends HandwritingGesture implements Parc
     };
     private final PointF mEndPoint;
     private final PointF mStartPoint;
+
+    /* synthetic */ RemoveSpaceGesture(PointF pointF, PointF pointF2, String str, RemoveSpaceGestureIA removeSpaceGestureIA) {
+        this(pointF, pointF2, str);
+    }
+
+    /* synthetic */ RemoveSpaceGesture(Parcel parcel, RemoveSpaceGestureIA removeSpaceGestureIA) {
+        this(parcel);
+    }
 
     private RemoveSpaceGesture(PointF startPoint, PointF endPoint, String fallbackText) {
         this.mType = 8;
@@ -67,6 +76,23 @@ public final class RemoveSpaceGesture extends HandwritingGesture implements Parc
                 throw new IllegalArgumentException("Start and end points must be set.");
             }
             return new RemoveSpaceGesture(this.mStartPoint, this.mEndPoint, this.mFallbackText);
+        }
+    }
+
+    /* renamed from: android.view.inputmethod.RemoveSpaceGesture$1 */
+    /* loaded from: classes4.dex */
+    class AnonymousClass1 implements Parcelable.Creator<RemoveSpaceGesture> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoveSpaceGesture createFromParcel(Parcel source) {
+            return new RemoveSpaceGesture(source);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public RemoveSpaceGesture[] newArray(int size) {
+            return new RemoveSpaceGesture[size];
         }
     }
 

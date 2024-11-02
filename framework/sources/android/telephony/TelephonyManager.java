@@ -1145,6 +1145,28 @@ public class TelephonyManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.telephony.TelephonyManager$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 extends PropertyInvalidatedCache<PhoneAccountHandle, Integer> {
+        AnonymousClass1(int maxEntries, String propertyName) {
+            super(maxEntries, propertyName);
+        }
+
+        @Override // android.app.PropertyInvalidatedCache
+        public Integer recompute(PhoneAccountHandle phoneAccountHandle) {
+            try {
+                ITelephony telephony = TelephonyManager.this.getITelephony();
+                if (telephony != null) {
+                    return Integer.valueOf(telephony.getSubIdForPhoneAccountHandle(phoneAccountHandle, TelephonyManager.this.mContext.getOpPackageName(), TelephonyManager.this.mContext.getAttributionTag()));
+                }
+                return -1;
+            } catch (RemoteException e) {
+                throw e.rethrowAsRuntimeException();
+            }
+        }
+    }
+
     public TelephonyManager(Context context) {
         this(context, Integer.MAX_VALUE);
     }
@@ -1152,6 +1174,10 @@ public class TelephonyManager {
     public TelephonyManager(Context context, int subId) {
         this.mDocument = null;
         this.mPhoneAccountHandleToSubIdCache = new PropertyInvalidatedCache<PhoneAccountHandle, Integer>(4, CACHE_KEY_PHONE_ACCOUNT_TO_SUBID) { // from class: android.telephony.TelephonyManager.1
+            AnonymousClass1(int maxEntries, String propertyName) {
+                super(maxEntries, propertyName);
+            }
+
             @Override // android.app.PropertyInvalidatedCache
             public Integer recompute(PhoneAccountHandle phoneAccountHandle) {
                 try {
@@ -1174,6 +1200,10 @@ public class TelephonyManager {
     private TelephonyManager() {
         this.mDocument = null;
         this.mPhoneAccountHandleToSubIdCache = new PropertyInvalidatedCache<PhoneAccountHandle, Integer>(4, CACHE_KEY_PHONE_ACCOUNT_TO_SUBID) { // from class: android.telephony.TelephonyManager.1
+            AnonymousClass1(int maxEntries, String propertyName) {
+                super(maxEntries, propertyName);
+            }
+
             @Override // android.app.PropertyInvalidatedCache
             public Integer recompute(PhoneAccountHandle phoneAccountHandle) {
                 try {
@@ -1277,8 +1307,7 @@ public class TelephonyManager {
         return getActiveModemCount();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyManager$22, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$22 */
     /* loaded from: classes3.dex */
     public static /* synthetic */ class AnonymousClass22 {
         static final /* synthetic */ int[] $SwitchMap$android$telephony$TelephonyManager$MultiSimVariants;
@@ -2450,8 +2479,7 @@ public class TelephonyManager {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$uploadCallComposerPicture$1(Path pictureToUpload, final OutcomeReceiver callback, String contentType, Executor executor) {
+    public /* synthetic */ void lambda$uploadCallComposerPicture$1(Path pictureToUpload, OutcomeReceiver callback, String contentType, Executor executor) {
         try {
             if (Looper.getMainLooper().isCurrentThread()) {
                 Log.w(TAG, "Uploading call composer picture on main thread! hic sunt dracones!");
@@ -2461,9 +2489,17 @@ public class TelephonyManager {
                 callback.onError(new CallComposerException(2, null));
                 return;
             }
-            final InputStream fileStream = Files.newInputStream(pictureToUpload, new OpenOption[0]);
+            InputStream fileStream = Files.newInputStream(pictureToUpload, new OpenOption[0]);
             try {
                 uploadCallComposerPicture(fileStream, contentType, executor, new OutcomeReceiver<ParcelUuid, CallComposerException>() { // from class: android.telephony.TelephonyManager.2
+                    final /* synthetic */ OutcomeReceiver val$callback;
+                    final /* synthetic */ InputStream val$fileStream;
+
+                    AnonymousClass2(InputStream fileStream2, OutcomeReceiver callback2) {
+                        fileStream = fileStream2;
+                        callback = callback2;
+                    }
+
                     @Override // android.os.OutcomeReceiver
                     public void onResult(ParcelUuid result) {
                         try {
@@ -2487,14 +2523,46 @@ public class TelephonyManager {
             } catch (Exception e) {
                 Log.e(TAG, "Got exception calling into stream-version of uploadCallComposerPicture: " + e);
                 try {
-                    fileStream.close();
+                    fileStream2.close();
                 } catch (IOException e2) {
                     Log.e(TAG, "Error closing file input stream when uploading call composer pic");
                 }
             }
         } catch (IOException e3) {
             Log.e(TAG, "IOException when uploading call composer pic:" + e3);
-            callback.onError(new CallComposerException(5, e3));
+            callback2.onError(new CallComposerException(5, e3));
+        }
+    }
+
+    /* renamed from: android.telephony.TelephonyManager$2 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass2 implements OutcomeReceiver<ParcelUuid, CallComposerException> {
+        final /* synthetic */ OutcomeReceiver val$callback;
+        final /* synthetic */ InputStream val$fileStream;
+
+        AnonymousClass2(InputStream fileStream2, OutcomeReceiver callback2) {
+            fileStream = fileStream2;
+            callback = callback2;
+        }
+
+        @Override // android.os.OutcomeReceiver
+        public void onResult(ParcelUuid result) {
+            try {
+                fileStream.close();
+            } catch (IOException e) {
+                Log.e(TelephonyManager.TAG, "Error closing file input stream when uploading call composer pic");
+            }
+            callback.onResult(result);
+        }
+
+        @Override // android.os.OutcomeReceiver
+        public void onError(CallComposerException error) {
+            try {
+                fileStream.close();
+            } catch (IOException e) {
+                Log.e(TelephonyManager.TAG, "Error closing file input stream when uploading call composer pic");
+            }
+            callback.onError(error);
         }
     }
 
@@ -2533,8 +2601,7 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyManager$3, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$3 */
     /* loaded from: classes3.dex */
     public class AnonymousClass3 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -2547,7 +2614,6 @@ public class TelephonyManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle result) {
             if (resultCode != -1) {
@@ -2585,11 +2651,23 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x002b, code lost:            android.util.Log.e(android.telephony.TelephonyManager.TAG, "Read too many bytes from call composer pic stream: " + r1);     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0041, code lost:            r10.onError(new android.telephony.TelephonyManager.CallComposerException(2, null));        r11.closeWithError("too large");     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0053, code lost:            r5 = move-exception;     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0054, code lost:            android.util.Log.e(android.telephony.TelephonyManager.TAG, "Error closing fd pipe: " + r5);     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x002b, code lost:
+    
+        android.util.Log.e(android.telephony.TelephonyManager.TAG, "Read too many bytes from call composer pic stream: " + r1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0041, code lost:
+    
+        r10.onError(new android.telephony.TelephonyManager.CallComposerException(2, null));
+        r11.closeWithError("too large");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0053, code lost:
+    
+        r5 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0054, code lost:
+    
+        android.util.Log.e(android.telephony.TelephonyManager.TAG, "Error closing fd pipe: " + r5);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -3299,7 +3377,6 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public ITelephony getITelephony() {
         if (!sServiceHandleCacheEnabled) {
             return ITelephony.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getTelephonyServiceRegisterer().get());
@@ -3543,7 +3620,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$4, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$4 */
     /* loaded from: classes3.dex */
     class AnonymousClass4 extends ICellInfoCallback.Stub {
         final /* synthetic */ CellInfoCallback val$callback;
@@ -3616,7 +3693,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$5, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$5 */
     /* loaded from: classes3.dex */
     class AnonymousClass5 extends ICellInfoCallback.Stub {
         final /* synthetic */ CellInfoCallback val$callback;
@@ -3662,7 +3739,6 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Throwable createThrowableByClassName(String className, String message) {
         if (className == null) {
             return null;
@@ -4301,7 +4377,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$6, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$6 */
     /* loaded from: classes3.dex */
     class AnonymousClass6 extends INumberVerificationCallback.Stub {
         final /* synthetic */ NumberVerificationCallback val$callback;
@@ -4873,7 +4949,6 @@ public class TelephonyManager {
         return TextUtils.isEmpty(networkTypeName) ? "UNKNOWN" : networkTypeName;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ boolean lambda$convertNetworkTypeBitmaskToString$11(long networkTypeBitmask, int x) {
         return (getBitMaskForNetworkType(x) & networkTypeBitmask) == getBitMaskForNetworkType(x);
     }
@@ -5370,10 +5445,19 @@ public class TelephonyManager {
         }
     }
 
-    public void sendUssdRequest(String ussdRequest, final UssdResponseCallback callback, Handler handler) {
+    public void sendUssdRequest(String ussdRequest, UssdResponseCallback callback, Handler handler) {
         Preconditions.checkNotNull(callback, "UssdResponseCallback cannot be null.");
         ResultReceiver wrappedCallback = new ResultReceiver(handler) { // from class: android.telephony.TelephonyManager.7
-            /* JADX INFO: Access modifiers changed from: protected */
+            final /* synthetic */ UssdResponseCallback val$callback;
+            final /* synthetic */ TelephonyManager val$telephonyManager;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            AnonymousClass7(Handler handler2, UssdResponseCallback callback2, TelephonyManager this) {
+                super(handler2);
+                callback = callback2;
+                telephonyManager = telephonyManager;
+            }
+
             @Override // android.os.ResultReceiver
             public void onReceiveResult(int resultCode, Bundle ussdResponse) {
                 com.android.telephony.Rlog.d(TelephonyManager.TAG, "USSD:" + resultCode);
@@ -5397,6 +5481,32 @@ public class TelephonyManager {
             Bundle returnData = new Bundle();
             returnData.putParcelable(USSD_RESPONSE, response);
             wrappedCallback.send(-2, returnData);
+        }
+    }
+
+    /* renamed from: android.telephony.TelephonyManager$7 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass7 extends ResultReceiver {
+        final /* synthetic */ UssdResponseCallback val$callback;
+        final /* synthetic */ TelephonyManager val$telephonyManager;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        AnonymousClass7(Handler handler2, UssdResponseCallback callback2, TelephonyManager this) {
+            super(handler2);
+            callback = callback2;
+            telephonyManager = telephonyManager;
+        }
+
+        @Override // android.os.ResultReceiver
+        public void onReceiveResult(int resultCode, Bundle ussdResponse) {
+            com.android.telephony.Rlog.d(TelephonyManager.TAG, "USSD:" + resultCode);
+            Preconditions.checkNotNull(ussdResponse, "ussdResponse cannot be null.");
+            UssdResponse response = (UssdResponse) ussdResponse.getParcelable(TelephonyManager.USSD_RESPONSE, UssdResponse.class);
+            if (resultCode == 100) {
+                callback.onReceiveUssdResponse(telephonyManager, response.getUssdRequest(), response.getReturnMessage());
+            } else {
+                callback.onReceiveUssdResponseFailed(telephonyManager, response.getUssdRequest(), resultCode);
+            }
         }
     }
 
@@ -6126,8 +6236,7 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyManager$8, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$8 */
     /* loaded from: classes3.dex */
     public class AnonymousClass8 extends IIntegerConsumer.Stub {
         final /* synthetic */ Consumer val$callback;
@@ -6460,7 +6569,7 @@ public class TelephonyManager {
         });
     }
 
-    /* renamed from: android.telephony.TelephonyManager$9, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$9 */
     /* loaded from: classes3.dex */
     class AnonymousClass9 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -6473,7 +6582,6 @@ public class TelephonyManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(int resultCode, Bundle data) {
             if (data == null) {
@@ -6850,7 +6958,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$10, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$10 */
     /* loaded from: classes3.dex */
     class AnonymousClass10 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -7396,7 +7504,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$11, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$11 */
     /* loaded from: classes3.dex */
     class AnonymousClass11 extends ISetOpportunisticDataCallback.Stub {
         final /* synthetic */ Consumer val$callback;
@@ -7428,7 +7536,6 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$setPreferredOpportunisticDataSubscription$16(Consumer callback) {
         if (Compatibility.isChangeEnabled(CALLBACK_ON_MORE_ERROR_CODE_CHANGE)) {
             callback.accept(4);
@@ -7488,7 +7595,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$12, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$12 */
     /* loaded from: classes3.dex */
     class AnonymousClass12 extends IUpdateAvailableNetworksCallback.Stub {
         final /* synthetic */ Consumer val$callback;
@@ -7520,7 +7627,6 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static /* synthetic */ void lambda$updateAvailableNetworks$18(Consumer callback) {
         if (Compatibility.isChangeEnabled(CALLBACK_ON_MORE_ERROR_CODE_CHANGE)) {
             callback.accept(9);
@@ -7739,8 +7845,7 @@ public class TelephonyManager {
         setSystemSelectionChannelsInternal(specifiers, null, null);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyManager$13, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$13 */
     /* loaded from: classes3.dex */
     public class AnonymousClass13 extends IBooleanConsumer.Stub {
         final /* synthetic */ Consumer val$callback;
@@ -7825,7 +7930,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$14, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$14 */
     /* loaded from: classes3.dex */
     class AnonymousClass14 extends ICallForwardingInfoCallback.Stub {
         final /* synthetic */ CallForwardingInfoCallback val$callback;
@@ -7906,7 +8011,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$15, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$15 */
     /* loaded from: classes3.dex */
     class AnonymousClass15 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -7954,7 +8059,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$16, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$16 */
     /* loaded from: classes3.dex */
     class AnonymousClass16 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -8003,7 +8108,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$17, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$17 */
     /* loaded from: classes3.dex */
     class AnonymousClass17 extends IIntegerConsumer.Stub {
         final /* synthetic */ Executor val$executor;
@@ -8161,9 +8266,12 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class DeathRecipient implements IBinder.DeathRecipient {
+        /* synthetic */ DeathRecipient(DeathRecipientIA deathRecipientIA) {
+            this();
+        }
+
         private DeathRecipient() {
         }
 
@@ -8173,7 +8281,6 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static void resetServiceCache() {
         synchronized (sCacheLock) {
             ITelephony iTelephony = sITelephony;
@@ -8210,7 +8317,6 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static IPhoneSubInfo getSubscriberInfoService() {
         if (!sServiceHandleCacheEnabled) {
             return IPhoneSubInfo.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getPhoneSubServiceRegisterer().get());
@@ -8251,7 +8357,6 @@ public class TelephonyManager {
         return sISemPhoneSubInfo;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ISub getSubscriptionService() {
         if (!sServiceHandleCacheEnabled) {
             return ISub.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getSubscriptionServiceRegisterer().get());
@@ -8272,7 +8377,6 @@ public class TelephonyManager {
         return sISub;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ISms getSmsService() {
         if (!sServiceHandleCacheEnabled) {
             return ISms.Stub.asInterface(TelephonyFrameworkInitializer.getTelephonyServiceManager().getSmsServiceRegisterer().get());
@@ -8459,7 +8563,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$18, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$18 */
     /* loaded from: classes3.dex */
     class AnonymousClass18 extends IBootstrapAuthenticationCallback.Stub {
         final /* synthetic */ BootstrapAuthenticationCallback val$callback;
@@ -8622,8 +8726,7 @@ public class TelephonyManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.TelephonyManager$19, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$19 */
     /* loaded from: classes3.dex */
     public class AnonymousClass19 extends ResultReceiver {
         final /* synthetic */ OutcomeReceiver val$callback;
@@ -8636,7 +8739,6 @@ public class TelephonyManager {
             this.val$callback = outcomeReceiver;
         }
 
-        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.ResultReceiver
         public void onReceiveResult(final int resultCode, Bundle result) {
             if (resultCode == 1) {
@@ -8670,12 +8772,10 @@ public class TelephonyManager {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReceiveResult$0(OutcomeReceiver callback, int resultCode) {
             callback.onError(new TimeoutException(resultCode));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onReceiveResult$1(OutcomeReceiver callback, int resultCode) {
             callback.onError(new ModemErrorException(resultCode));
         }
@@ -8756,7 +8856,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$20, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$20 */
     /* loaded from: classes3.dex */
     class AnonymousClass20 extends IIntegerConsumer.Stub {
         final /* synthetic */ Consumer val$callback;
@@ -8981,7 +9081,7 @@ public class TelephonyManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyManager$21, reason: invalid class name */
+    /* renamed from: android.telephony.TelephonyManager$21 */
     /* loaded from: classes3.dex */
     class AnonymousClass21 extends IIntegerConsumer.Stub {
         final /* synthetic */ Consumer val$callback;

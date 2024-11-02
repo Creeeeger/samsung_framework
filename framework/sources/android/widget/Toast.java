@@ -73,8 +73,8 @@ public class Toast {
     public @interface Duration {
     }
 
-    /* renamed from: -$$Nest$smgetService, reason: not valid java name */
-    static /* bridge */ /* synthetic */ INotificationManager m6792$$Nest$smgetService() {
+    /* renamed from: -$$Nest$smgetService */
+    static /* bridge */ /* synthetic */ INotificationManager m6787$$Nest$smgetService() {
         return getService();
     }
 
@@ -307,7 +307,6 @@ public class Toast {
         return asInterface;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class TN extends ITransientNotification.Stub {
         private static final int CANCEL = 2;
@@ -333,13 +332,17 @@ public class Toast {
 
         TN(Context context, String packageName, Binder token, List<Callback> callbacks, Looper looper) {
             IAccessibilityManager accessibilityManager = IAccessibilityManager.Stub.asInterface(ServiceManager.getService(Context.ACCESSIBILITY_SERVICE));
-            ToastPresenter toastPresenter = new ToastPresenter(context, accessibilityManager, Toast.m6792$$Nest$smgetService(), packageName);
+            ToastPresenter toastPresenter = new ToastPresenter(context, accessibilityManager, Toast.m6787$$Nest$smgetService(), packageName);
             this.mPresenter = toastPresenter;
             this.mParams = toastPresenter.getLayoutParams();
             this.mPackageName = packageName;
             this.mToken = token;
             this.mCallbacks = new WeakReference<>(callbacks);
             this.mHandler = new Handler(looper, null) { // from class: android.widget.Toast.TN.1
+                AnonymousClass1(Looper looper2, Handler.Callback callback) {
+                    super(looper2, callback);
+                }
+
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
@@ -355,7 +358,7 @@ public class Toast {
                             TN.this.handleHide();
                             TN.this.mNextView = null;
                             try {
-                                Toast.m6792$$Nest$smgetService().cancelToast(TN.this.mPackageName, TN.this.mToken);
+                                Toast.m6787$$Nest$smgetService().cancelToast(TN.this.mPackageName, TN.this.mToken);
                                 return;
                             } catch (RemoteException e) {
                                 return;
@@ -365,6 +368,40 @@ public class Toast {
                     }
                 }
             };
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: android.widget.Toast$TN$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 extends Handler {
+            AnonymousClass1(Looper looper2, Handler.Callback callback) {
+                super(looper2, callback);
+            }
+
+            @Override // android.os.Handler
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 0:
+                        IBinder token2 = (IBinder) msg.obj;
+                        TN.this.handleShow(token2);
+                        return;
+                    case 1:
+                        TN.this.handleHide();
+                        TN.this.mNextView = null;
+                        return;
+                    case 2:
+                        TN.this.handleHide();
+                        TN.this.mNextView = null;
+                        try {
+                            Toast.m6787$$Nest$smgetService().cancelToast(TN.this.mPackageName, TN.this.mToken);
+                            return;
+                        } catch (RemoteException e) {
+                            return;
+                        }
+                    default:
+                        return;
+                }
+            }
         }
 
         private List<Callback> getCallbacks() {
@@ -439,11 +476,14 @@ public class Toast {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class CallbackBinder extends ITransientNotificationCallback.Stub {
         private final List<Callback> mCallbacks;
         private final Handler mHandler;
+
+        /* synthetic */ CallbackBinder(List list, Handler handler, CallbackBinderIA callbackBinderIA) {
+            this(list, handler);
+        }
 
         private CallbackBinder(List<Callback> callbacks, Handler handler) {
             this.mCallbacks = callbacks;
@@ -460,7 +500,6 @@ public class Toast {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onToastShown$0() {
             for (Callback callback : getCallbacks()) {
                 callback.onToastShown();
@@ -477,7 +516,6 @@ public class Toast {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onToastHidden$1() {
             for (Callback callback : getCallbacks()) {
                 callback.onToastHidden();

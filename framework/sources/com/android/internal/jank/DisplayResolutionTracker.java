@@ -34,6 +34,9 @@ public class DisplayResolutionTracker {
         this.mLock = new Object();
         this.mManager = manager;
         manager.registerDisplayListener(new DisplayManager.DisplayListener() { // from class: com.android.internal.jank.DisplayResolutionTracker.1
+            AnonymousClass1() {
+            }
+
             @Override // android.hardware.display.DisplayManager.DisplayListener
             public void onDisplayAdded(int displayId) {
                 DisplayResolutionTracker.this.updateDisplay(displayId);
@@ -50,7 +53,28 @@ public class DisplayResolutionTracker {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.jank.DisplayResolutionTracker$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 implements DisplayManager.DisplayListener {
+        AnonymousClass1() {
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayAdded(int displayId) {
+            DisplayResolutionTracker.this.updateDisplay(displayId);
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayChanged(int displayId) {
+            DisplayResolutionTracker.this.updateDisplay(displayId);
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public void onDisplayRemoved(int displayId) {
+        }
+    }
+
     public void updateDisplay(int displayId) {
         DisplayInfo info = this.mManager.getDisplayInfo(displayId);
         if (info == null) {
@@ -87,9 +111,35 @@ public class DisplayResolutionTracker {
 
         void registerDisplayListener(DisplayManager.DisplayListener displayListener);
 
-        static DisplayInterface getDefault(final Handler handler) {
-            final DisplayManagerGlobal manager = DisplayManagerGlobal.getInstance();
+        /* renamed from: com.android.internal.jank.DisplayResolutionTracker$DisplayInterface$1 */
+        /* loaded from: classes4.dex */
+        public class AnonymousClass1 implements DisplayInterface {
+            final /* synthetic */ Handler val$handler;
+
+            AnonymousClass1(Handler handler) {
+                handler = handler;
+            }
+
+            @Override // com.android.internal.jank.DisplayResolutionTracker.DisplayInterface
+            public void registerDisplayListener(DisplayManager.DisplayListener listener) {
+                DisplayManagerGlobal.this.registerDisplayListener(listener, handler, 5L);
+            }
+
+            @Override // com.android.internal.jank.DisplayResolutionTracker.DisplayInterface
+            public DisplayInfo getDisplayInfo(int displayId) {
+                return DisplayManagerGlobal.this.getDisplayInfo(displayId);
+            }
+        }
+
+        static DisplayInterface getDefault(Handler handler) {
+            DisplayManagerGlobal manager = DisplayManagerGlobal.getInstance();
             return new DisplayInterface() { // from class: com.android.internal.jank.DisplayResolutionTracker.DisplayInterface.1
+                final /* synthetic */ Handler val$handler;
+
+                AnonymousClass1(Handler handler2) {
+                    handler = handler2;
+                }
+
                 @Override // com.android.internal.jank.DisplayResolutionTracker.DisplayInterface
                 public void registerDisplayListener(DisplayManager.DisplayListener listener) {
                     DisplayManagerGlobal.this.registerDisplayListener(listener, handler, 5L);

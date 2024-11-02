@@ -29,7 +29,6 @@ import java.util.concurrent.CountDownLatch;
 import libcore.io.IoUtils;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public final class SharedPreferencesImpl implements SharedPreferences {
     private static final long CALLBACK_ON_CLEAR_CHANGE = 119147584;
@@ -54,7 +53,6 @@ public final class SharedPreferencesImpl implements SharedPreferences {
     private Map<String, Object> mMap = null;
     private Throwable mThrowable = null;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public SharedPreferencesImpl(File file, int mode) {
         this.mLoaded = false;
         this.mFile = file;
@@ -64,12 +62,15 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         startLoadFromDisk();
     }
 
-    /* JADX WARN: Type inference failed for: r0v1, types: [android.app.SharedPreferencesImpl$1] */
     private void startLoadFromDisk() {
         synchronized (this.mLock) {
             this.mLoaded = false;
         }
         new Thread("SharedPreferencesImpl-load") { // from class: android.app.SharedPreferencesImpl.1
+            AnonymousClass1(String name) {
+                super(name);
+            }
+
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 SharedPreferencesImpl.this.loadFromDisk();
@@ -77,7 +78,19 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         }.start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.app.SharedPreferencesImpl$1 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass1 extends Thread {
+        AnonymousClass1(String name) {
+            super(name);
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public void run() {
+            SharedPreferencesImpl.this.loadFromDisk();
+        }
+    }
+
     public void loadFromDisk() {
         StructStat stat;
         Map<String, Object> map;
@@ -147,12 +160,10 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static File makeBackupFile(File prefsFile) {
         return new File(prefsFile.getPath() + ".bak");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public void startReloadIfChangedUnexpectedly() {
         synchronized (this.mLock) {
             if (hasFileChangedUnexpectedly()) {
@@ -303,7 +314,6 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         return new EditorImpl();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
     public static class MemoryCommitResult {
         final boolean keysCleared;
@@ -314,6 +324,10 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         boolean wasWritten;
         volatile boolean writeToDiskResult;
         final CountDownLatch writtenToDiskLatch;
+
+        /* synthetic */ MemoryCommitResult(long j, boolean z, List list, Set set, Map map, MemoryCommitResultIA memoryCommitResultIA) {
+            this(j, z, list, set, map);
+        }
 
         private MemoryCommitResult(long memoryStateGeneration, boolean keysCleared, List<String> keysModified, Set<SharedPreferences.OnSharedPreferenceChangeListener> listeners, Map<String, Object> mapToWriteToDisk) {
             this.writtenToDiskLatch = new CountDownLatch(1);
@@ -408,9 +422,17 @@ public final class SharedPreferencesImpl implements SharedPreferences {
 
         @Override // android.content.SharedPreferences.Editor
         public void apply() {
-            final long startTime = System.currentTimeMillis();
-            final MemoryCommitResult mcr = commitToMemory();
-            final Runnable awaitCommit = new Runnable() { // from class: android.app.SharedPreferencesImpl.EditorImpl.1
+            long startTime = System.currentTimeMillis();
+            MemoryCommitResult mcr = commitToMemory();
+            Runnable awaitCommit = new Runnable() { // from class: android.app.SharedPreferencesImpl.EditorImpl.1
+                final /* synthetic */ MemoryCommitResult val$mcr;
+                final /* synthetic */ long val$startTime;
+
+                AnonymousClass1(MemoryCommitResult mcr2, long startTime2) {
+                    mcr = mcr2;
+                    startTime = startTime2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
@@ -421,14 +443,56 @@ public final class SharedPreferencesImpl implements SharedPreferences {
             };
             QueuedWork.addFinisher(awaitCommit);
             Runnable postWriteRunnable = new Runnable() { // from class: android.app.SharedPreferencesImpl.EditorImpl.2
+                final /* synthetic */ Runnable val$awaitCommit;
+
+                AnonymousClass2(Runnable awaitCommit2) {
+                    awaitCommit = awaitCommit2;
+                }
+
                 @Override // java.lang.Runnable
                 public void run() {
                     awaitCommit.run();
                     QueuedWork.removeFinisher(awaitCommit);
                 }
             };
-            SharedPreferencesImpl.this.enqueueDiskWrite(mcr, postWriteRunnable);
-            lambda$notifyListeners$0(mcr);
+            SharedPreferencesImpl.this.enqueueDiskWrite(mcr2, postWriteRunnable);
+            lambda$notifyListeners$0(mcr2);
+        }
+
+        /* renamed from: android.app.SharedPreferencesImpl$EditorImpl$1 */
+        /* loaded from: classes.dex */
+        class AnonymousClass1 implements Runnable {
+            final /* synthetic */ MemoryCommitResult val$mcr;
+            final /* synthetic */ long val$startTime;
+
+            AnonymousClass1(MemoryCommitResult mcr2, long startTime2) {
+                mcr = mcr2;
+                startTime = startTime2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    mcr.writtenToDiskLatch.await();
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+
+        /* renamed from: android.app.SharedPreferencesImpl$EditorImpl$2 */
+        /* loaded from: classes.dex */
+        class AnonymousClass2 implements Runnable {
+            final /* synthetic */ Runnable val$awaitCommit;
+
+            AnonymousClass2(Runnable awaitCommit2) {
+                awaitCommit = awaitCommit2;
+            }
+
+            @Override // java.lang.Runnable
+            public void run() {
+                awaitCommit.run();
+                QueuedWork.removeFinisher(awaitCommit);
+            }
         }
 
         /* JADX WARN: Removed duplicated region for block: B:41:0x00b9 A[Catch: all -> 0x00e5, TryCatch #0 {, blocks: (B:17:0x005f, B:19:0x0063, B:21:0x0069, B:22:0x006d, B:23:0x0070, B:24:0x007a, B:26:0x0080, B:45:0x0095, B:47:0x009b, B:49:0x00a1, B:52:0x00a8, B:41:0x00b9, B:31:0x00ac, B:38:0x00b3, B:60:0x00bd, B:62:0x00c4, B:63:0x00d0, B:64:0x00d7), top: B:16:0x005f, outer: #1 }] */
@@ -457,8 +521,7 @@ public final class SharedPreferencesImpl implements SharedPreferences {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* renamed from: notifyListeners, reason: merged with bridge method [inline-methods] */
+        /* renamed from: notifyListeners */
         public void lambda$notifyListeners$0(final MemoryCommitResult mcr) {
             if (mcr.listeners != null) {
                 if (mcr.keysModified == null && !mcr.keysCleared) {
@@ -492,11 +555,20 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void enqueueDiskWrite(final MemoryCommitResult mcr, final Runnable postWriteRunnable) {
+    public void enqueueDiskWrite(MemoryCommitResult mcr, Runnable postWriteRunnable) {
         boolean wasEmpty;
-        final boolean isFromSyncCommit = postWriteRunnable == null;
+        boolean isFromSyncCommit = postWriteRunnable == null;
         Runnable writeToDiskRunnable = new Runnable() { // from class: android.app.SharedPreferencesImpl.2
+            final /* synthetic */ boolean val$isFromSyncCommit;
+            final /* synthetic */ MemoryCommitResult val$mcr;
+            final /* synthetic */ Runnable val$postWriteRunnable;
+
+            AnonymousClass2(MemoryCommitResult mcr2, boolean isFromSyncCommit2, Runnable postWriteRunnable2) {
+                mcr = mcr2;
+                isFromSyncCommit = isFromSyncCommit2;
+                postWriteRunnable = postWriteRunnable2;
+            }
+
             @Override // java.lang.Runnable
             public void run() {
                 synchronized (SharedPreferencesImpl.this.mWritingToDiskLock) {
@@ -512,7 +584,7 @@ public final class SharedPreferencesImpl implements SharedPreferences {
                 }
             }
         };
-        if (isFromSyncCommit) {
+        if (isFromSyncCommit2) {
             synchronized (this.mLock) {
                 wasEmpty = this.mDiskWritesInFlight == 1;
             }
@@ -521,7 +593,36 @@ public final class SharedPreferencesImpl implements SharedPreferences {
                 return;
             }
         }
-        QueuedWork.queue(writeToDiskRunnable, isFromSyncCommit ? false : true);
+        QueuedWork.queue(writeToDiskRunnable, isFromSyncCommit2 ? false : true);
+    }
+
+    /* renamed from: android.app.SharedPreferencesImpl$2 */
+    /* loaded from: classes.dex */
+    public class AnonymousClass2 implements Runnable {
+        final /* synthetic */ boolean val$isFromSyncCommit;
+        final /* synthetic */ MemoryCommitResult val$mcr;
+        final /* synthetic */ Runnable val$postWriteRunnable;
+
+        AnonymousClass2(MemoryCommitResult mcr2, boolean isFromSyncCommit2, Runnable postWriteRunnable2) {
+            mcr = mcr2;
+            isFromSyncCommit = isFromSyncCommit2;
+            postWriteRunnable = postWriteRunnable2;
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            synchronized (SharedPreferencesImpl.this.mWritingToDiskLock) {
+                SharedPreferencesImpl.this.writeToFile(mcr, isFromSyncCommit);
+            }
+            synchronized (SharedPreferencesImpl.this.mLock) {
+                SharedPreferencesImpl sharedPreferencesImpl = SharedPreferencesImpl.this;
+                sharedPreferencesImpl.mDiskWritesInFlight--;
+            }
+            Runnable runnable = postWriteRunnable;
+            if (runnable != null) {
+                runnable.run();
+            }
+        }
     }
 
     private static FileOutputStream createFileOutputStream(File file) {
@@ -545,7 +646,6 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void writeToFile(MemoryCommitResult mcr, boolean isFromSyncCommit) {
         boolean fileExists = this.mFile.exists();
         if (fileExists) {

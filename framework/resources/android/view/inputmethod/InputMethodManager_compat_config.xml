@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="Clear {@link #SHOW_FORCED} flag when the next IME focused application changed. &lt;p&gt; Note that when this flag enabled in server side, {@link #SHOW_FORCED} will no longer affect the next focused application to keep showing IME, in case of unexpected IME visible when the next focused app isn't be the IME requester. &lt;/p&gt;" enableSinceTargetSdk="33" id="214016041" name="CLEAR_SHOW_FORCED_FLAG_WHEN_LEAVING"><meta-data definedIn="android.view.inputmethod.InputMethodManager" sourcePosition="frameworks/base/core/java/android/view/inputmethod/InputMethodManager.java:425"/></compat-change></config>
+Error decode xml
+java.util.zip.ZipException: invalid END header (bad central directory offset)
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
+

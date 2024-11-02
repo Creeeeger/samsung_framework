@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
 public final class RopeByteString extends ByteString {
     static final int[] minLengthByDepth = {1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, MetricsProto.MetricsEvent.FUELGAUGE_ANOMALY_DETAIL, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986, 102334155, 165580141, 267914296, 433494437, 701408733, 1134903170, 1836311903, Integer.MAX_VALUE};
@@ -27,6 +26,10 @@ public final class RopeByteString extends ByteString {
     private final int totalLength;
     private final int treeDepth;
 
+    /* synthetic */ RopeByteString(ByteString x0, ByteString x1, AnonymousClass1 x2) {
+        this(x0, x1);
+    }
+
     private RopeByteString(ByteString left, ByteString right) {
         this.left = left;
         this.right = right;
@@ -36,7 +39,6 @@ public final class RopeByteString extends ByteString {
         this.treeDepth = Math.max(left.getTreeDepth(), right.getTreeDepth()) + 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static ByteString concatenate(ByteString left, ByteString right) {
         if (right.size() == 0) {
             return left;
@@ -94,7 +96,6 @@ public final class RopeByteString extends ByteString {
         return internalByteAt(index);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ByteString
     public byte internalByteAt(int index) {
         int i = this.leftLength;
@@ -109,6 +110,43 @@ public final class RopeByteString extends ByteString {
         return this.totalLength;
     }
 
+    /* renamed from: com.android.framework.protobuf.RopeByteString$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends ByteString.AbstractByteIterator {
+        ByteString.ByteIterator current = nextPiece();
+        final PieceIterator pieces;
+
+        AnonymousClass1() {
+            this.pieces = new PieceIterator(RopeByteString.this);
+        }
+
+        /* JADX WARN: Type inference failed for: r0v5, types: [com.android.framework.protobuf.ByteString$ByteIterator] */
+        private ByteString.ByteIterator nextPiece() {
+            if (this.pieces.hasNext()) {
+                return this.pieces.next().iterator2();
+            }
+            return null;
+        }
+
+        @Override // java.util.Iterator
+        public boolean hasNext() {
+            return this.current != null;
+        }
+
+        @Override // com.android.framework.protobuf.ByteString.ByteIterator
+        public byte nextByte() {
+            ByteString.ByteIterator byteIterator = this.current;
+            if (byteIterator == null) {
+                throw new NoSuchElementException();
+            }
+            byte b = byteIterator.nextByte();
+            if (!this.current.hasNext()) {
+                this.current = nextPiece();
+            }
+            return b;
+        }
+    }
+
     @Override // com.android.framework.protobuf.ByteString, java.lang.Iterable
     /* renamed from: iterator */
     public Iterator<Byte> iterator2() {
@@ -116,7 +154,7 @@ public final class RopeByteString extends ByteString {
             ByteString.ByteIterator current = nextPiece();
             final PieceIterator pieces;
 
-            {
+            AnonymousClass1() {
                 this.pieces = new PieceIterator(RopeByteString.this);
             }
 
@@ -148,13 +186,11 @@ public final class RopeByteString extends ByteString {
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.framework.protobuf.ByteString
     public int getTreeDepth() {
         return this.treeDepth;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.framework.protobuf.ByteString
     public boolean isBalanced() {
         return this.totalLength >= minLength(this.treeDepth);
@@ -181,7 +217,6 @@ public final class RopeByteString extends ByteString {
         return new RopeByteString(leftSub, rightSub);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.framework.protobuf.ByteString
     public void copyToInternal(byte[] target, int sourceOffset, int targetOffset, int numberToCopy) {
         int i = sourceOffset + numberToCopy;
@@ -228,7 +263,6 @@ public final class RopeByteString extends ByteString {
         this.right.writeTo(outputStream);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ByteString
     public void writeToInternal(OutputStream out, int sourceOffset, int numberToWrite) throws IOException {
         int i = sourceOffset + numberToWrite;
@@ -246,14 +280,12 @@ public final class RopeByteString extends ByteString {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ByteString
     public void writeTo(ByteOutput output) throws IOException {
         this.left.writeTo(output);
         this.right.writeTo(output);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // com.android.framework.protobuf.ByteString
     public void writeToReverse(ByteOutput output) throws IOException {
         this.right.writeToReverse(output);
@@ -273,7 +305,6 @@ public final class RopeByteString extends ByteString {
         return state == 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.framework.protobuf.ByteString
     public int partialIsValidUtf8(int state, int offset, int length) {
         int toIndex = offset + length;
@@ -357,7 +388,6 @@ public final class RopeByteString extends ByteString {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // com.android.framework.protobuf.ByteString
     public int partialHash(int h, int offset, int length) {
         int toIndex = offset + length;
@@ -383,7 +413,6 @@ public final class RopeByteString extends ByteString {
         return new RopeInputStream();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class Balancer {
         private final ArrayDeque<ByteString> prefixesStack;
@@ -392,7 +421,10 @@ public final class RopeByteString extends ByteString {
             this.prefixesStack = new ArrayDeque<>();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
+        /* synthetic */ Balancer(AnonymousClass1 x0) {
+            this();
+        }
+
         public ByteString balance(ByteString left, ByteString right) {
             doBalance(left);
             doBalance(right);
@@ -427,10 +459,7 @@ public final class RopeByteString extends ByteString {
             }
             int binStart = RopeByteString.minLength(depthBin);
             ByteString newTree = this.prefixesStack.pop();
-            while (true) {
-                if (this.prefixesStack.isEmpty() || this.prefixesStack.peek().size() >= binStart) {
-                    break;
-                }
+            while (!this.prefixesStack.isEmpty() && this.prefixesStack.peek().size() < binStart) {
                 ByteString left = this.prefixesStack.pop();
                 newTree = new RopeByteString(left, newTree);
             }
@@ -456,11 +485,14 @@ public final class RopeByteString extends ByteString {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static final class PieceIterator implements Iterator<ByteString.LeafByteString> {
         private final ArrayDeque<RopeByteString> breadCrumbs;
         private ByteString.LeafByteString next;
+
+        /* synthetic */ PieceIterator(ByteString x0, AnonymousClass1 x1) {
+            this(x0);
+        }
 
         private PieceIterator(ByteString root) {
             if (root instanceof RopeByteString) {
@@ -503,7 +535,6 @@ public final class RopeByteString extends ByteString {
             return this.next != null;
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // java.util.Iterator
         public ByteString.LeafByteString next() {
             if (this.next == null) {

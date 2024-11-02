@@ -147,6 +147,10 @@ public class Broadcaster {
         int[] targetWhats;
         Handler[] targets;
 
+        /* synthetic */ Registration(Broadcaster broadcaster, RegistrationIA registrationIA) {
+            this();
+        }
+
         private Registration() {
         }
     }

@@ -57,9 +57,12 @@ public abstract class ExternalStorageService extends Service {
         return this.mWrapper;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public class ExternalStorageServiceWrapper extends IExternalStorageService.Stub {
+        /* synthetic */ ExternalStorageServiceWrapper(ExternalStorageService externalStorageService, ExternalStorageServiceWrapperIA externalStorageServiceWrapperIA) {
+            this();
+        }
+
         private ExternalStorageServiceWrapper() {
         }
 
@@ -73,7 +76,6 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$startSession$0(String sessionId, int flag, ParcelFileDescriptor deviceFd, String upperPath, String lowerPath, RemoteCallback callback) {
             try {
                 ExternalStorageService.this.onStartSession(sessionId, flag, deviceFd, new File(upperPath), new File(lowerPath));
@@ -93,7 +95,6 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyVolumeStateChanged$1(StorageVolume vol, String sessionId, RemoteCallback callback) {
             try {
                 ExternalStorageService.this.onVolumeStateChanged(vol);
@@ -113,7 +114,6 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$freeCache$2(String volumeUuid, long bytes, String sessionId, RemoteCallback callback) {
             try {
                 ExternalStorageService.this.onFreeCache(StorageManager.convert(volumeUuid), bytes);
@@ -133,7 +133,6 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$endSession$3(String sessionId, RemoteCallback callback) {
             try {
                 ExternalStorageService.this.onEndSession(sessionId);
@@ -153,7 +152,6 @@ public abstract class ExternalStorageService extends Service {
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyAnrDelayStarted$4(String packageName, int uid, int tid, int reason) {
             try {
                 ExternalStorageService.this.onAnrDelayStarted(packageName, uid, tid, reason);

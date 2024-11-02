@@ -11,7 +11,6 @@ class LegacyErrorStrings {
     private LegacyErrorStrings() {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static String getString(int errorCode, Context context) {
         return context.getText(getResource(errorCode)).toString();
     }

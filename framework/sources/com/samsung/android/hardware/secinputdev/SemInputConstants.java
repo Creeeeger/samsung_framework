@@ -60,13 +60,14 @@ public class SemInputConstants {
         SPEN_SET_WIRELESS_CHARGER_TX_ID(46, false, false);
 
         public static final Parcelable.Creator<Command> CREATOR = new Parcelable.Creator<Command>() { // from class: com.samsung.android.hardware.secinputdev.SemInputConstants.Command.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Command createFromParcel(Parcel in) {
                 return Command.getFromInt(in.readInt());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Command[] newArray(int size) {
                 return new Command[size];
@@ -112,6 +113,23 @@ public class SemInputConstants {
         public int describeContents() {
             return 0;
         }
+
+        /* renamed from: com.samsung.android.hardware.secinputdev.SemInputConstants$Command$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Command> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Command createFromParcel(Parcel in) {
+                return Command.getFromInt(in.readInt());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Command[] newArray(int size) {
+                return new Command[size];
+            }
+        }
     }
 
     /* loaded from: classes5.dex */
@@ -126,13 +144,14 @@ public class SemInputConstants {
         NOT_SPECIFIED(100, "");
 
         public static final Parcelable.Creator<Device> CREATOR = new Parcelable.Creator<Device>() { // from class: com.samsung.android.hardware.secinputdev.SemInputConstants.Device.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Device createFromParcel(Parcel in) {
                 return Device.getFromInt(in.readInt());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Device[] newArray(int size) {
                 return new Device[size];
@@ -177,6 +196,23 @@ public class SemInputConstants {
         public int describeContents() {
             return 0;
         }
+
+        /* renamed from: com.samsung.android.hardware.secinputdev.SemInputConstants$Device$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Device> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Device createFromParcel(Parcel in) {
+                return Device.getFromInt(in.readInt());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Device[] newArray(int size) {
+                return new Device[size];
+            }
+        }
     }
 
     /* loaded from: classes5.dex */
@@ -191,13 +227,14 @@ public class SemInputConstants {
         FORCE_ON(22, true);
 
         public static final Parcelable.Creator<DisplayState> CREATOR = new Parcelable.Creator<DisplayState>() { // from class: com.samsung.android.hardware.secinputdev.SemInputConstants.DisplayState.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public DisplayState createFromParcel(Parcel in) {
                 return DisplayState.getFromInt(in.readInt());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DisplayState[] newArray(int size) {
                 return new DisplayState[size];
@@ -242,6 +279,23 @@ public class SemInputConstants {
         public int describeContents() {
             return 0;
         }
+
+        /* renamed from: com.samsung.android.hardware.secinputdev.SemInputConstants$DisplayState$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<DisplayState> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DisplayState createFromParcel(Parcel in) {
+                return DisplayState.getFromInt(in.readInt());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public DisplayState[] newArray(int size) {
+                return new DisplayState[size];
+            }
+        }
     }
 
     /* loaded from: classes5.dex */
@@ -267,13 +321,14 @@ public class SemInputConstants {
         CMD(18, "cmd", false, false);
 
         public static final Parcelable.Creator<Property> CREATOR = new Parcelable.Creator<Property>() { // from class: com.samsung.android.hardware.secinputdev.SemInputConstants.Property.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public Property createFromParcel(Parcel in) {
                 return Property.getFromInt(in.readInt());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Property[] newArray(int size) {
                 return new Property[size];
@@ -325,6 +380,23 @@ public class SemInputConstants {
         public int describeContents() {
             return 0;
         }
+
+        /* renamed from: com.samsung.android.hardware.secinputdev.SemInputConstants$Property$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<Property> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Property createFromParcel(Parcel in) {
+                return Property.getFromInt(in.readInt());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public Property[] newArray(int size) {
+                return new Property[size];
+            }
+        }
     }
 
     /* loaded from: classes5.dex */
@@ -341,13 +413,14 @@ public class SemInputConstants {
         APD(9, SemInputDeviceManager.MOTION_ENABLE_TYPE_POCKET_DETECT, 524288);
 
         public static final Parcelable.Creator<MotionType> CREATOR = new Parcelable.Creator<MotionType>() { // from class: com.samsung.android.hardware.secinputdev.SemInputConstants.MotionType.1
-            /* JADX WARN: Can't rename method to resolve collision */
+            AnonymousClass1() {
+            }
+
             @Override // android.os.Parcelable.Creator
             public MotionType createFromParcel(Parcel in) {
                 return MotionType.getFromInt(in.readInt());
             }
 
-            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MotionType[] newArray(int size) {
                 return new MotionType[size];
@@ -404,6 +477,23 @@ public class SemInputConstants {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
+        }
+
+        /* renamed from: com.samsung.android.hardware.secinputdev.SemInputConstants$MotionType$1 */
+        /* loaded from: classes5.dex */
+        class AnonymousClass1 implements Parcelable.Creator<MotionType> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public MotionType createFromParcel(Parcel in) {
+                return MotionType.getFromInt(in.readInt());
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public MotionType[] newArray(int size) {
+                return new MotionType[size];
+            }
         }
     }
 }

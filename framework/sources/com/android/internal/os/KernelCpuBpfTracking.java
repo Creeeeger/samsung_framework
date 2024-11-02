@@ -8,7 +8,6 @@ public final class KernelCpuBpfTracking {
 
     private static native int[] getFreqsClustersInternal();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static native long[] getFreqsInternal();
 
     public static native boolean isSupported();

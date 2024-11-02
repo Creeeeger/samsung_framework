@@ -66,7 +66,6 @@ public final class HdmiProperties {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static Integer tryParseInteger(String str) {
         try {
             return Integer.valueOf(str);

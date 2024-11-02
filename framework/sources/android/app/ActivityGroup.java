@@ -19,7 +19,6 @@ public class ActivityGroup extends Activity {
         this.mLocalActivityManager = new LocalActivityManager(this, singleActivityMode);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,14 +26,12 @@ public class ActivityGroup extends Activity {
         this.mLocalActivityManager.dispatchCreate(states);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onResume() {
         super.onResume();
         this.mLocalActivityManager.dispatchResume();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -44,21 +41,18 @@ public class ActivityGroup extends Activity {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onPause() {
         super.onPause();
         this.mLocalActivityManager.dispatchPause(isFinishing());
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onStop() {
         super.onStop();
         this.mLocalActivityManager.dispatchStop();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Activity
     public void onDestroy() {
         super.onDestroy();
@@ -78,7 +72,6 @@ public class ActivityGroup extends Activity {
         return this.mLocalActivityManager;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.app.Activity
     public void dispatchActivityResult(String who, int requestCode, int resultCode, Intent data, String reason) {
         Activity act;

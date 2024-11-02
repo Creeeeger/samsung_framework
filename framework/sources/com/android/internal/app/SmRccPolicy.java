@@ -74,8 +74,7 @@ public final class SmRccPolicy {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: registerRccDBObserver, reason: merged with bridge method [inline-methods] */
+    /* renamed from: registerRccDBObserver */
     public void lambda$new$0() {
         try {
             RccAppDBObserver rccDBObserver = new RccAppDBObserver(this.mHandler);
@@ -86,7 +85,6 @@ public final class SmRccPolicy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public class RccAppDBObserver extends ContentObserver {
         public RccAppDBObserver(Handler handler) {
@@ -149,8 +147,9 @@ public final class SmRccPolicy {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
-    private class MyHandler extends Handler {
+    public class MyHandler extends Handler {
         public MyHandler(Looper looper) {
             super(looper);
         }
@@ -185,7 +184,6 @@ public final class SmRccPolicy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void loadRccAppFromSm() {
         Slog.i(TAG, "loadRccAppFromSm: ");
         mRccPkgMap.clear();
@@ -287,7 +285,6 @@ public final class SmRccPolicy {
         this.mHandler.sendMessage(message);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void callResetSmRccOpen(String packageName) {
         if (packageName != null && mRccPkgMap.containsKey(packageName)) {
             Bundle bundle = new Bundle();
@@ -314,7 +311,6 @@ public final class SmRccPolicy {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes4.dex */
     public static class RccApp {
         private String open;

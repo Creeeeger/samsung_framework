@@ -13,13 +13,14 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class SplitPermissionInfoParcelable implements Parcelable {
     public static final Parcelable.Creator<SplitPermissionInfoParcelable> CREATOR = new Parcelable.Creator<SplitPermissionInfoParcelable>() { // from class: android.content.pm.permission.SplitPermissionInfoParcelable.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SplitPermissionInfoParcelable[] newArray(int size) {
             return new SplitPermissionInfoParcelable[size];
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SplitPermissionInfoParcelable createFromParcel(Parcel in) {
             return new SplitPermissionInfoParcelable(in);
@@ -98,6 +99,23 @@ public class SplitPermissionInfoParcelable implements Parcelable {
         this.mTargetSdk = targetSdk;
         AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, targetSdk, "from", 0L);
         onConstructed();
+    }
+
+    /* renamed from: android.content.pm.permission.SplitPermissionInfoParcelable$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SplitPermissionInfoParcelable> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SplitPermissionInfoParcelable[] newArray(int size) {
+            return new SplitPermissionInfoParcelable[size];
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SplitPermissionInfoParcelable createFromParcel(Parcel in) {
+            return new SplitPermissionInfoParcelable(in);
+        }
     }
 
     @Deprecated

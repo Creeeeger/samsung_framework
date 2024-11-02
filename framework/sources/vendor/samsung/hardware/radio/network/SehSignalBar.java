@@ -8,6 +8,9 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehSignalBar implements Parcelable {
     public static final Parcelable.Creator<SehSignalBar> CREATOR = new Parcelable.Creator<SehSignalBar>() { // from class: vendor.samsung.hardware.radio.network.SehSignalBar.1
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SehSignalBar createFromParcel(Parcel _aidl_source) {
             SehSignalBar _aidl_out = new SehSignalBar();
@@ -27,6 +30,25 @@ public class SehSignalBar implements Parcelable {
     public int nrLevel;
     public int tdscdmaLevel;
     public int wcdmaLevel;
+
+    /* renamed from: vendor.samsung.hardware.radio.network.SehSignalBar$1 */
+    /* loaded from: classes6.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SehSignalBar> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehSignalBar createFromParcel(Parcel _aidl_source) {
+            SehSignalBar _aidl_out = new SehSignalBar();
+            _aidl_out.readFromParcel(_aidl_source);
+            return _aidl_out;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SehSignalBar[] newArray(int _aidl_size) {
+            return new SehSignalBar[_aidl_size];
+        }
+    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

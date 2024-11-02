@@ -35,6 +35,9 @@ public class BinderLatencyObserver {
     private float mBucketScaleFactor = 1.125f;
     private int mStatsdPushIntervalMinutes = 360;
     private Runnable mLatencyObserverRunnable = new Runnable() { // from class: com.android.internal.os.BinderLatencyObserver.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             ArrayMap<LatencyDims, int[]> histogramMap;
@@ -64,7 +67,42 @@ public class BinderLatencyObserver {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.os.BinderLatencyObserver$1 */
+    /* loaded from: classes5.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            ArrayMap<LatencyDims, int[]> histogramMap;
+            BinderLatencyObserver.this.noteLatencyDelayed();
+            synchronized (BinderLatencyObserver.this.mLock) {
+                histogramMap = new ArrayMap<>((ArrayMap<LatencyDims, int[]>) BinderLatencyObserver.this.mLatencyHistograms);
+                BinderLatencyObserver.this.mLatencyHistograms.clear();
+            }
+            BinderTransactionNameResolver resolver = new BinderTransactionNameResolver();
+            ProtoOutputStream proto = new ProtoOutputStream();
+            int histogramsWritten = 0;
+            for (LatencyDims dims : histogramMap.keySet()) {
+                if (proto.getRawSize() + 1000 > BinderLatencyObserver.this.getMaxAtomSizeBytes()) {
+                    if (histogramsWritten > 0) {
+                        BinderLatencyObserver.this.writeAtomToStatsd(proto);
+                    }
+                    proto = new ProtoOutputStream();
+                    histogramsWritten = 0;
+                }
+                String transactionName = resolver.getMethodName(dims.getBinderClass(), dims.getTransactionCode());
+                BinderLatencyObserver.this.fillApiStatsProto(proto, dims, transactionName, histogramMap.get(dims));
+                histogramsWritten++;
+            }
+            if (histogramsWritten > 0) {
+                BinderLatencyObserver.this.writeAtomToStatsd(proto);
+            }
+        }
+    }
+
     public void fillApiStatsProto(ProtoOutputStream proto, LatencyDims dims, String transactionName, int[] histogram) {
         int i;
         int firstNonEmptyBucket = 0;
@@ -114,7 +152,6 @@ public class BinderLatencyObserver {
         FrameworkStatsLog.write(342, atom.getBytes(), this.mPeriodicSamplingInterval, this.mShardingModulo, this.mBucketCount, this.mFirstBucketSize, this.mBucketScaleFactor);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void noteLatencyDelayed() {
         this.mLatencyObserverHandler.removeCallbacks(this.mLatencyObserverRunnable);
         this.mLatencyObserverHandler.postDelayed(this.mLatencyObserverRunnable, this.mStatsdPushIntervalMinutes * 60 * 1000);

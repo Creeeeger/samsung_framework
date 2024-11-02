@@ -82,6 +82,9 @@ public class WindowDecorActionBar extends ActionBar implements ActionBarOverlayL
     private boolean mContentAnimations = true;
     private boolean mNowShowing = true;
     final Animator.AnimatorListener mHideListener = new AnimatorListenerAdapter() { // from class: com.android.internal.app.WindowDecorActionBar.1
+        AnonymousClass1() {
+        }
+
         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
         public void onAnimationEnd(Animator animation) {
             if (WindowDecorActionBar.this.mContentAnimations && WindowDecorActionBar.this.mContentView != null) {
@@ -101,6 +104,9 @@ public class WindowDecorActionBar extends ActionBar implements ActionBarOverlayL
         }
     };
     final Animator.AnimatorListener mShowListener = new AnimatorListenerAdapter() { // from class: com.android.internal.app.WindowDecorActionBar.2
+        AnonymousClass2() {
+        }
+
         @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
         public void onAnimationEnd(Animator animation) {
             WindowDecorActionBar.this.mCurrentShowAnim = null;
@@ -108,11 +114,67 @@ public class WindowDecorActionBar extends ActionBar implements ActionBarOverlayL
         }
     };
     final ValueAnimator.AnimatorUpdateListener mUpdateListener = new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.internal.app.WindowDecorActionBar.3
+        AnonymousClass3() {
+        }
+
         @Override // android.animation.ValueAnimator.AnimatorUpdateListener
         public void onAnimationUpdate(ValueAnimator animation) {
             ((View) WindowDecorActionBar.this.mContainerView.getParent()).invalidate();
         }
     };
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.WindowDecorActionBar$1 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass1 extends AnimatorListenerAdapter {
+        AnonymousClass1() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            if (WindowDecorActionBar.this.mContentAnimations && WindowDecorActionBar.this.mContentView != null) {
+                WindowDecorActionBar.this.mContentView.setTranslationY(0.0f);
+                WindowDecorActionBar.this.mContainerView.setTranslationY(0.0f);
+            }
+            if (WindowDecorActionBar.this.mSplitView != null && WindowDecorActionBar.this.mContextDisplayMode == 1) {
+                WindowDecorActionBar.this.mSplitView.setVisibility(8);
+            }
+            WindowDecorActionBar.this.mContainerView.setVisibility(8);
+            WindowDecorActionBar.this.mContainerView.setTransitioning(false);
+            WindowDecorActionBar.this.mCurrentShowAnim = null;
+            WindowDecorActionBar.this.completeDeferredDestroyActionMode();
+            if (WindowDecorActionBar.this.mOverlayLayout != null) {
+                WindowDecorActionBar.this.mOverlayLayout.requestApplyInsets();
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.WindowDecorActionBar$2 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass2 extends AnimatorListenerAdapter {
+        AnonymousClass2() {
+        }
+
+        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        public void onAnimationEnd(Animator animation) {
+            WindowDecorActionBar.this.mCurrentShowAnim = null;
+            WindowDecorActionBar.this.mContainerView.requestLayout();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.android.internal.app.WindowDecorActionBar$3 */
+    /* loaded from: classes4.dex */
+    public class AnonymousClass3 implements ValueAnimator.AnimatorUpdateListener {
+        AnonymousClass3() {
+        }
+
+        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        public void onAnimationUpdate(ValueAnimator animation) {
+            ((View) WindowDecorActionBar.this.mContainerView.getParent()).invalidate();
+        }
+    }
 
     public WindowDecorActionBar(Activity activity) {
         this.mActivity = activity;
@@ -673,7 +735,6 @@ public class WindowDecorActionBar extends ActionBar implements ActionBarOverlayL
         this.mOverlayLayout.setActionBarHideOffset(offset);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public static boolean checkShowingFlags(boolean hiddenByApp, boolean hiddenBySystem, boolean showingForMode) {
         if (showingForMode) {
             return true;

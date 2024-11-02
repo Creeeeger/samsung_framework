@@ -9,13 +9,14 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class ActivityId implements Parcelable {
     public static final Parcelable.Creator<ActivityId> CREATOR = new Parcelable.Creator<ActivityId>() { // from class: android.app.assist.ActivityId.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ActivityId createFromParcel(Parcel parcel) {
             return new ActivityId(parcel);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityId[] newArray(int size) {
             return new ActivityId[size];
@@ -51,6 +52,23 @@ public final class ActivityId implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mTaskId);
         dest.writeStrongBinder(this.mActivityId);
+    }
+
+    /* renamed from: android.app.assist.ActivityId$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ActivityId> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityId createFromParcel(Parcel parcel) {
+            return new ActivityId(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ActivityId[] newArray(int size) {
+            return new ActivityId[size];
+        }
     }
 
     public String toString() {

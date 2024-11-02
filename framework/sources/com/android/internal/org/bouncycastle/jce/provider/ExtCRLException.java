@@ -2,11 +2,11 @@ package com.android.internal.org.bouncycastle.jce.provider;
 
 import java.security.cert.CRLException;
 
+/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-class ExtCRLException extends CRLException {
+public class ExtCRLException extends CRLException {
     Throwable cause;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public ExtCRLException(String message, Throwable cause) {
         super(message);
         this.cause = cause;

@@ -100,8 +100,9 @@ public interface IVirtualDisplayAliveChecker extends IInterface {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* loaded from: classes5.dex */
-        private static class Proxy implements IVirtualDisplayAliveChecker {
+        public static class Proxy implements IVirtualDisplayAliveChecker {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

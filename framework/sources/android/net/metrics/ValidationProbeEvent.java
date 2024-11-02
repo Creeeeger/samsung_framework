@@ -14,13 +14,14 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes2.dex */
 public final class ValidationProbeEvent implements IpConnectivityLog.Event {
     public static final Parcelable.Creator<ValidationProbeEvent> CREATOR = new Parcelable.Creator<ValidationProbeEvent>() { // from class: android.net.metrics.ValidationProbeEvent.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ValidationProbeEvent createFromParcel(Parcel in) {
             return new ValidationProbeEvent(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ValidationProbeEvent[] newArray(int size) {
             return new ValidationProbeEvent[size];
@@ -43,6 +44,14 @@ public final class ValidationProbeEvent implements IpConnectivityLog.Event {
     @Retention(RetentionPolicy.SOURCE)
     /* loaded from: classes2.dex */
     public @interface ReturnCode {
+    }
+
+    /* synthetic */ ValidationProbeEvent(long j, int i, int i2, ValidationProbeEventIA validationProbeEventIA) {
+        this(j, i, i2);
+    }
+
+    /* synthetic */ ValidationProbeEvent(Parcel parcel, ValidationProbeEventIA validationProbeEventIA) {
+        this(parcel);
     }
 
     private ValidationProbeEvent(long durationMs, int probeType, int returnCode) {
@@ -95,7 +104,23 @@ public final class ValidationProbeEvent implements IpConnectivityLog.Event {
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: android.net.metrics.ValidationProbeEvent$1 */
+    /* loaded from: classes2.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ValidationProbeEvent> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ValidationProbeEvent createFromParcel(Parcel in) {
+            return new ValidationProbeEvent(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ValidationProbeEvent[] newArray(int size) {
+            return new ValidationProbeEvent[size];
+        }
+    }
+
     public static int makeProbeType(int probeType, boolean firstValidation) {
         return (probeType & 255) | (firstValidation ? 256 : 512);
     }
@@ -120,7 +145,6 @@ public final class ValidationProbeEvent implements IpConnectivityLog.Event {
         return this.durationMs == other.durationMs && this.probeType == other.probeType && this.returnCode == other.returnCode;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes2.dex */
     public static final class Decoder {
         static final SparseArray<String> constants = MessageUtils.findMessageNames(new Class[]{ValidationProbeEvent.class}, new String[]{"PROBE_", "FIRST_", "REVALIDATION"});

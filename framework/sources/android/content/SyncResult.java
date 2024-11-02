@@ -9,13 +9,14 @@ import com.samsung.android.share.SemShareConstants;
 public final class SyncResult implements Parcelable {
     public static final SyncResult ALREADY_IN_PROGRESS = new SyncResult(true);
     public static final Parcelable.Creator<SyncResult> CREATOR = new Parcelable.Creator<SyncResult>() { // from class: android.content.SyncResult.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public SyncResult createFromParcel(Parcel in) {
             return new SyncResult(in);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncResult[] newArray(int size) {
             return new SyncResult[size];
@@ -30,6 +31,10 @@ public final class SyncResult implements Parcelable {
     public final boolean syncAlreadyInProgress;
     public boolean tooManyDeletions;
     public boolean tooManyRetries;
+
+    /* synthetic */ SyncResult(Parcel parcel, SyncResultIA syncResultIA) {
+        this(parcel);
+    }
 
     public SyncResult() {
         this(false);
@@ -86,6 +91,23 @@ public final class SyncResult implements Parcelable {
         this.moreRecordsToGet = false;
         this.delayUntil = 0L;
         this.stats.clear();
+    }
+
+    /* renamed from: android.content.SyncResult$1 */
+    /* loaded from: classes.dex */
+    class AnonymousClass1 implements Parcelable.Creator<SyncResult> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncResult createFromParcel(Parcel in) {
+            return new SyncResult(in);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public SyncResult[] newArray(int size) {
+            return new SyncResult[size];
+        }
     }
 
     @Override // android.os.Parcelable

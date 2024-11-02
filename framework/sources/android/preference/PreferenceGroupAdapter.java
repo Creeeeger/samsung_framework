@@ -28,6 +28,9 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
     private volatile boolean mIsSyncing = false;
     private Handler mHandler = new Handler();
     private Runnable mSyncRunnable = new Runnable() { // from class: android.preference.PreferenceGroupAdapter.1
+        AnonymousClass1() {
+        }
+
         @Override // java.lang.Runnable
         public void run() {
             PreferenceGroupAdapter.this.syncMyPreferences();
@@ -35,12 +38,28 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
     };
     private int mHighlightedPosition = -1;
 
-    /* JADX INFO: Access modifiers changed from: private */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: android.preference.PreferenceGroupAdapter$1 */
+    /* loaded from: classes3.dex */
+    public class AnonymousClass1 implements Runnable {
+        AnonymousClass1() {
+        }
+
+        @Override // java.lang.Runnable
+        public void run() {
+            PreferenceGroupAdapter.this.syncMyPreferences();
+        }
+    }
+
     /* loaded from: classes3.dex */
     public static class PreferenceLayout implements Comparable<PreferenceLayout> {
         private String name;
         private int resId;
         private int widgetResId;
+
+        /* synthetic */ PreferenceLayout(PreferenceLayoutIA preferenceLayoutIA) {
+            this();
+        }
 
         private PreferenceLayout() {
         }
@@ -73,7 +92,6 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
         syncMyPreferences();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void syncMyPreferences() {
         synchronized (this) {
             if (this.mIsSyncing) {
@@ -94,7 +112,10 @@ public class PreferenceGroupAdapter extends BaseAdapter implements Preference.On
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0051, code lost:            if (r6 != null) goto L31;     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0051, code lost:
+    
+        if (r6 != null) goto L104;
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences

@@ -8,6 +8,10 @@ public class AlteredCharSequence implements CharSequence, GetChars {
     private CharSequence mSource;
     private int mStart;
 
+    /* synthetic */ AlteredCharSequence(CharSequence charSequence, char[] cArr, int i, int i2, AlteredCharSequenceIA alteredCharSequenceIA) {
+        this(charSequence, cArr, i, i2);
+    }
+
     public static AlteredCharSequence make(CharSequence source, char[] sub, int substart, int subend) {
         if (source instanceof Spanned) {
             return new AlteredSpanned(source, sub, substart, subend);
@@ -28,10 +32,13 @@ public class AlteredCharSequence implements CharSequence, GetChars {
         this.mEnd = subend;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes3.dex */
     public static class AlteredSpanned extends AlteredCharSequence implements Spanned {
         private Spanned mSpanned;
+
+        /* synthetic */ AlteredSpanned(CharSequence charSequence, char[] cArr, int i, int i2, AlteredSpannedIA alteredSpannedIA) {
+            this(charSequence, cArr, i, i2);
+        }
 
         private AlteredSpanned(CharSequence source, char[] sub, int substart, int subend) {
             super(source, sub, substart, subend);

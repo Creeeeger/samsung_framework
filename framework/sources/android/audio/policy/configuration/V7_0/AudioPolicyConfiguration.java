@@ -74,7 +74,6 @@ public class AudioPolicyConfiguration {
         this.version = version;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public static AudioPolicyConfiguration read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         AudioPolicyConfiguration _instance = new AudioPolicyConfiguration();

@@ -35,7 +35,6 @@ public class BCRSAPrivateCrtKey extends BCRSAPrivateKey implements RSAPrivateCrt
         this.crtCoefficient = key.getQInv();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateCrtKey(AlgorithmIdentifier algorithmIdentifier, RSAPrivateCrtKeyParameters key) {
         super(algorithmIdentifier, key);
         this.publicExponent = key.getPublicExponent();
@@ -46,7 +45,6 @@ public class BCRSAPrivateCrtKey extends BCRSAPrivateKey implements RSAPrivateCrt
         this.crtCoefficient = key.getQInv();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateCrtKey(RSAPrivateCrtKeySpec spec) {
         super(new RSAPrivateCrtKeyParameters(spec.getModulus(), spec.getPublicExponent(), spec.getPrivateExponent(), spec.getPrimeP(), spec.getPrimeQ(), spec.getPrimeExponentP(), spec.getPrimeExponentQ(), spec.getCrtCoefficient()));
         this.modulus = spec.getModulus();
@@ -59,7 +57,6 @@ public class BCRSAPrivateCrtKey extends BCRSAPrivateKey implements RSAPrivateCrt
         this.crtCoefficient = spec.getCrtCoefficient();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateCrtKey(RSAPrivateCrtKey key) {
         super(new RSAPrivateCrtKeyParameters(key.getModulus(), key.getPublicExponent(), key.getPrivateExponent(), key.getPrimeP(), key.getPrimeQ(), key.getPrimeExponentP(), key.getPrimeExponentQ(), key.getCrtCoefficient()));
         this.modulus = key.getModulus();
@@ -72,12 +69,10 @@ public class BCRSAPrivateCrtKey extends BCRSAPrivateKey implements RSAPrivateCrt
         this.crtCoefficient = key.getCrtCoefficient();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateCrtKey(PrivateKeyInfo info) throws IOException {
         this(info.getPrivateKeyAlgorithm(), RSAPrivateKey.getInstance(info.parsePrivateKey()));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public BCRSAPrivateCrtKey(RSAPrivateKey key) {
         this(BCRSAPublicKey.DEFAULT_ALGORITHM_IDENTIFIER, key);
     }

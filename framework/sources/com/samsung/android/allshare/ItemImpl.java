@@ -16,17 +16,17 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.TimeZone;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
 public final class ItemImpl extends Item {
     public static final Parcelable.Creator<ItemImpl> CREATOR = new Parcelable.Creator<ItemImpl>() { // from class: com.samsung.android.allshare.ItemImpl.1
-        /* JADX WARN: Can't rename method to resolve collision */
+        AnonymousClass1() {
+        }
+
         @Override // android.os.Parcelable.Creator
         public ItemImpl createFromParcel(Parcel src) {
             return new ItemImpl(src);
         }
 
-        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ItemImpl[] newArray(int size) {
             return new ItemImpl[size];
@@ -49,7 +49,10 @@ public final class ItemImpl extends Item {
     private static final String TAG = "ItemImpl";
     private Bundle mBundle;
 
-    /* JADX INFO: Access modifiers changed from: protected */
+    /* synthetic */ ItemImpl(Parcel parcel, ItemImplIA itemImplIA) {
+        this(parcel);
+    }
+
     public ItemImpl(Bundle bundle) {
         this.mBundle = null;
         this.mBundle = bundle;
@@ -115,12 +118,10 @@ public final class ItemImpl extends Item {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     public Bundle getBundle() {
         return this.mBundle;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public final String getObjectID() {
         String objID;
         Bundle bundle = getBundle();
@@ -171,6 +172,23 @@ public final class ItemImpl extends Item {
     private ItemImpl(Parcel src) {
         this.mBundle = null;
         readFromParcel(src);
+    }
+
+    /* renamed from: com.samsung.android.allshare.ItemImpl$1 */
+    /* loaded from: classes5.dex */
+    class AnonymousClass1 implements Parcelable.Creator<ItemImpl> {
+        AnonymousClass1() {
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ItemImpl createFromParcel(Parcel src) {
+            return new ItemImpl(src);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public ItemImpl[] newArray(int size) {
+            return new ItemImpl[size];
+        }
     }
 
     @Override // com.samsung.android.allshare.Item
@@ -264,9 +282,10 @@ public final class ItemImpl extends Item {
         }
     }
 
-    /* renamed from: com.samsung.android.allshare.ItemImpl$2, reason: invalid class name */
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* renamed from: com.samsung.android.allshare.ItemImpl$2 */
     /* loaded from: classes5.dex */
-    static /* synthetic */ class AnonymousClass2 {
+    public static /* synthetic */ class AnonymousClass2 {
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;
         static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType;
 
@@ -371,23 +390,27 @@ public final class ItemImpl extends Item {
         return result;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* loaded from: classes5.dex */
     public final class ResourceImpl extends Item.Resource {
         public final Parcelable.Creator<ResourceImpl> CREATOR;
         private Bundle mBundle;
 
+        /* synthetic */ ResourceImpl(ItemImpl itemImpl, Parcel parcel, ResourceImplIA resourceImplIA) {
+            this(parcel);
+        }
+
         ResourceImpl(Bundle bundle) {
             super();
             this.mBundle = null;
             this.CREATOR = new Parcelable.Creator<ResourceImpl>() { // from class: com.samsung.android.allshare.ItemImpl.ResourceImpl.1
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Parcelable.Creator
                 public ResourceImpl createFromParcel(Parcel source) {
                     return new ResourceImpl(source);
                 }
 
-                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public ResourceImpl[] newArray(int size) {
                     return new ResourceImpl[size];
@@ -499,19 +522,38 @@ public final class ItemImpl extends Item {
             super();
             this.mBundle = null;
             this.CREATOR = new Parcelable.Creator<ResourceImpl>() { // from class: com.samsung.android.allshare.ItemImpl.ResourceImpl.1
-                /* JADX WARN: Can't rename method to resolve collision */
+                AnonymousClass1() {
+                }
+
                 @Override // android.os.Parcelable.Creator
                 public ResourceImpl createFromParcel(Parcel source) {
                     return new ResourceImpl(source);
                 }
 
-                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public ResourceImpl[] newArray(int size) {
                     return new ResourceImpl[size];
                 }
             };
             readFromParcel(src);
+        }
+
+        /* JADX INFO: Access modifiers changed from: package-private */
+        /* renamed from: com.samsung.android.allshare.ItemImpl$ResourceImpl$1 */
+        /* loaded from: classes5.dex */
+        public class AnonymousClass1 implements Parcelable.Creator<ResourceImpl> {
+            AnonymousClass1() {
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ResourceImpl createFromParcel(Parcel source) {
+                return new ResourceImpl(source);
+            }
+
+            @Override // android.os.Parcelable.Creator
+            public ResourceImpl[] newArray(int size) {
+                return new ResourceImpl[size];
+            }
         }
     }
 

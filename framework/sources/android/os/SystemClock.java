@@ -9,6 +9,7 @@ import android.util.Slog;
 import dalvik.annotation.optimization.CriticalNative;
 import java.time.Clock;
 import java.time.DateTimeException;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 /* loaded from: classes3.dex */
@@ -81,8 +82,25 @@ public final class SystemClock {
         return sIAlarmManager;
     }
 
+    /* renamed from: android.os.SystemClock$1 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass1 extends SimpleClock {
+        AnonymousClass1(ZoneId zone) {
+            super(zone);
+        }
+
+        @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
+        public long millis() {
+            return SystemClock.uptimeMillis();
+        }
+    }
+
     public static Clock uptimeClock() {
         return new SimpleClock(ZoneOffset.UTC) { // from class: android.os.SystemClock.1
+            AnonymousClass1(ZoneId zone) {
+                super(zone);
+            }
+
             @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
             public long millis() {
                 return SystemClock.uptimeMillis();
@@ -90,8 +108,25 @@ public final class SystemClock {
         };
     }
 
+    /* renamed from: android.os.SystemClock$2 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass2 extends SimpleClock {
+        AnonymousClass2(ZoneId zone) {
+            super(zone);
+        }
+
+        @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
+        public long millis() {
+            return SystemClock.elapsedRealtime();
+        }
+    }
+
     public static Clock elapsedRealtimeClock() {
         return new SimpleClock(ZoneOffset.UTC) { // from class: android.os.SystemClock.2
+            AnonymousClass2(ZoneId zone) {
+                super(zone);
+            }
+
             @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
             public long millis() {
                 return SystemClock.elapsedRealtime();
@@ -120,8 +155,25 @@ public final class SystemClock {
         throw new RuntimeException(new DeadSystemException());
     }
 
+    /* renamed from: android.os.SystemClock$3 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass3 extends SimpleClock {
+        AnonymousClass3(ZoneId zone) {
+            super(zone);
+        }
+
+        @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
+        public long millis() {
+            return SystemClock.currentNetworkTimeMillis();
+        }
+    }
+
     public static Clock currentNetworkTimeClock() {
         return new SimpleClock(ZoneOffset.UTC) { // from class: android.os.SystemClock.3
+            AnonymousClass3(ZoneId zone) {
+                super(zone);
+            }
+
             @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
             public long millis() {
                 return SystemClock.currentNetworkTimeMillis();
@@ -129,9 +181,40 @@ public final class SystemClock {
         };
     }
 
+    /* renamed from: android.os.SystemClock$4 */
+    /* loaded from: classes3.dex */
+    class AnonymousClass4 extends SimpleClock {
+        private final ILocationManager mMgr = ILocationManager.Stub.asInterface(ServiceManager.getService("location"));
+
+        AnonymousClass4(ZoneId zone) {
+            super(zone);
+            this.mMgr = ILocationManager.Stub.asInterface(ServiceManager.getService("location"));
+        }
+
+        @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
+        public long millis() {
+            try {
+                LocationTime time = this.mMgr.getGnssTimeMillis();
+                if (time == null) {
+                    throw new DateTimeException("Gnss based time is not available.");
+                }
+                long currentNanos = SystemClock.elapsedRealtimeNanos();
+                long deltaMs = (currentNanos - time.getElapsedRealtimeNanos()) / 1000000;
+                return time.getUnixEpochTimeMillis() + deltaMs;
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
     public static Clock currentGnssTimeClock() {
         return new SimpleClock(ZoneOffset.UTC) { // from class: android.os.SystemClock.4
             private final ILocationManager mMgr = ILocationManager.Stub.asInterface(ServiceManager.getService("location"));
+
+            AnonymousClass4(ZoneId zone) {
+                super(zone);
+                this.mMgr = ILocationManager.Stub.asInterface(ServiceManager.getService("location"));
+            }
 
             @Override // android.os.SimpleClock, java.time.Clock, java.time.InstantSource
             public long millis() {

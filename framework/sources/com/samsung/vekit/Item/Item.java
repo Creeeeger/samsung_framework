@@ -35,7 +35,6 @@ public class Item extends Element implements ItemStatusListener {
     protected ArrayList<Region> regionList;
     protected float speed;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     public Item(VEContext context, ItemType type, int id, String name) {
         super(context, ElementType.ITEM, id, name);
         this.speed = 1.0f;
@@ -66,7 +65,7 @@ public class Item extends Element implements ItemStatusListener {
     }
 
     public Item setPanel(Panel panel) {
-        this.panel = panel.m8993clone();
+        this.panel = panel.m8985clone();
         return this;
     }
 
